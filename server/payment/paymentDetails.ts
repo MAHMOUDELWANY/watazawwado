@@ -1,7 +1,7 @@
 /**
  * ====================================================================
  * MAHMOUD TEACHING PLATFORM — SERVER PAYMENT DETAILS
- * File: api/payment/paymentDetails.ts
+ * File: server/payment/paymentDetails.ts
  * Role: Server-side official payment details & formatting
  * ====================================================================
  */

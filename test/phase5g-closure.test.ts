@@ -2,7 +2,7 @@ import { describe, it, before, after } from 'node:test';
 import * as assert from 'node:assert';
 import http from 'node:http';
 import app from '../api/index.js';
-import { getGoogleOAuthCredentials, generateGoogleAuthUrl } from '../api/integrations/googleCalendar.js';
+import { getGoogleOAuthCredentials, generateGoogleAuthUrl } from '../server/integrations/googleCalendar.js';
 
 describe('Phase 5G - Final Last-Mile Closure', () => {
   let server: http.Server;

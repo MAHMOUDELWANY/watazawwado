@@ -1,7 +1,7 @@
 /**
  * ====================================================================
  * MAHMOUD TEACHING PLATFORM — PAYMENT DETAILS & INSTRUCTIONS
- * File: src/lib/paymentDetails.ts & api/payment/paymentDetails.ts
+ * File: src/lib/paymentDetails.ts & server/payment/paymentDetails.ts
  * Role: Official Teacher-Supplied Public Payment Details & Helpers
  * ====================================================================
  */

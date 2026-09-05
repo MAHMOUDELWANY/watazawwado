@@ -1,7 +1,7 @@
 /**
  * ====================================================================
  * MAHMOUD TEACHING PLATFORM — ZOOM INTEGRATION
- * File: api/integrations/zoom.ts
+ * File: server/integrations/zoom.ts
  * Role: Server-Side Zoom Meeting Creation & Classroom Link Management
  * ====================================================================
  */

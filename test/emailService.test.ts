@@ -14,7 +14,7 @@ import {
   getEmailConfigStatus,
   OFFICIAL_TEACHER_EMAIL,
   DEFAULT_TEACHER_EMAIL
-} from '../api/notifications/emailService.js';
+} from '../server/notifications/emailService.js';
 import {
   escapeHtml,
   sanitizeUrl,
@@ -22,12 +22,12 @@ import {
   renderStudentTrialConfirmation,
   renderStudentPaymentConfirmed,
   renderTeacherNotification
-} from '../api/notifications/emailTemplates.js';
+} from '../server/notifications/emailTemplates.js';
 import {
   dispatchNotification,
   clearIdempotencyCache,
   buildIdempotencyKey
-} from '../api/notifications/dispatcher.js';
+} from '../server/notifications/dispatcher.js';
 
 describe('Brevo Email Service Tests', () => {
   const originalEnv = { ...process.env };

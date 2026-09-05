@@ -11,7 +11,7 @@ import {
   ALLOWED_LEAD_TRANSITIONS,
   VALID_LEAD_STATUSES,
   isAllowedLeadTransition
-} from '../api/leadTransitions.js';
+} from '../server/leadTransitions.js';
 
 interface TestResult {
   name: string;

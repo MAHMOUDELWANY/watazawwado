@@ -1,7 +1,7 @@
 /**
  * ====================================================================
  * MAHMOUD TEACHING PLATFORM — EMAIL TEMPLATES
- * File: api/notifications/emailTemplates.ts
+ * File: server/notifications/emailTemplates.ts
  * Role: Art-directed, responsive, brand-aligned HTML & text emails
  *       with strict HTML escaping on all dynamic learner/booking values.
  * ====================================================================

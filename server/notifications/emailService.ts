@@ -1,7 +1,7 @@
 /**
  * ====================================================================
  * MAHMOUD TEACHING PLATFORM — EMAIL SERVICE (BREVO TRANSACTIONAL LAYER)
- * File: api/notifications/emailService.ts
+ * File: server/notifications/emailService.ts
  * Role: Provider-neutral transactional email service adapter backed by
  *       Brevo HTTP API (https://api.brevo.com/v3/smtp/email).
  * ====================================================================

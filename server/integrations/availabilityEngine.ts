@@ -1,7 +1,7 @@
 /**
  * ====================================================================
  * MAHMOUD TEACHING PLATFORM — SERVER-SIDE AVAILABILITY ENGINE
- * File: api/integrations/availabilityEngine.ts
+ * File: server/integrations/availabilityEngine.ts
  * Role: Real Availability Validator & Timezone Projection
  * ====================================================================
  */

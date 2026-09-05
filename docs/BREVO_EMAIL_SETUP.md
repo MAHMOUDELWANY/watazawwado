@@ -71,7 +71,7 @@ The platform automatically sends branded, HTML-escaped emails for the following 
 
 ## 4. Security & Idempotency Principles
 
-1. **Server-Only API Key**: `BREVO_API_KEY` is only used on the Express backend (`api/notifications/emailService.ts`). It is never bundled into client-side code or exposed via API routes.
+1. **Server-Only API Key**: `BREVO_API_KEY` is only used on the Express backend (`server/notifications/emailService.ts`). It is never bundled into client-side code or exposed via API routes.
 2. **Deterministic Idempotency**: Each notification generates a deterministic key (e.g., `booking:REF123:BOOKING_CONFIRMED`). Duplicate event triggers will not send duplicate emails.
 3. **Strict HTML Escaping**: All user-supplied inputs (names, emails, notes, reference codes) are sanitized with `escapeHtml()` and `sanitizeUrl()` before rendering into email HTML to prevent XSS.
 4. **Retry Safety**: If email delivery fails, the event is not marked as completed, allowing retry workers to re-attempt delivery.

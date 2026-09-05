@@ -1,7 +1,7 @@
 /**
  * ====================================================================
  * MAHMOUD TEACHING PLATFORM — SERVER WHATSAPP UTILITIES
- * File: api/notifications/whatsapp.ts
+ * File: server/notifications/whatsapp.ts
  * Role: Contextual WhatsApp link generator for server notifications
  * ====================================================================
  */

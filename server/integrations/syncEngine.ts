@@ -1,7 +1,7 @@
 /**
  * ====================================================================
  * MAHMOUD TEACHING PLATFORM — INTEGRATIONS SYNC ENGINE
- * File: api/integrations/syncEngine.ts
+ * File: server/integrations/syncEngine.ts
  * Role: Atomic Sync Orchestrator for Google Calendar & Zoom
  * ====================================================================
  */

@@ -5,35 +5,35 @@ import { DateTime } from 'luxon';
 import { GoogleGenAI } from '@google/genai';
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
-import { encryptToken } from './integrations/crypto.js';
-import { getActiveGoogleConnection } from './integrations/syncEngine.js';
-import { getZoomCredentials } from './integrations/zoom.js';
+import { encryptToken } from '../server/integrations/crypto.js';
+import { getActiveGoogleConnection } from '../server/integrations/syncEngine.js';
+import { getZoomCredentials } from '../server/integrations/zoom.js';
 import {
   generateGoogleAuthUrl,
   exchangeGoogleCodeForTokens
-} from './integrations/googleCalendar.js';
+} from '../server/integrations/googleCalendar.js';
 import {
   syncBookingIntegrations,
   syncRescheduledBooking,
   syncCancelledBooking
-} from './integrations/syncEngine.js';
+} from '../server/integrations/syncEngine.js';
 import {
   computeAvailableSlots,
   validateSlotAvailability
-} from './integrations/availabilityEngine.js';
+} from '../server/integrations/availabilityEngine.js';
 import {
   ALLOWED_LEAD_TRANSITIONS,
   VALID_LEAD_STATUSES,
   isAllowedLeadTransition
-} from './leadTransitions.js';
-import { dispatchNotification } from './notifications/dispatcher.js';
+} from '../server/leadTransitions.js';
+import { dispatchNotification } from '../server/notifications/dispatcher.js';
 import {
   scheduleBookingReminders,
   rescheduleBookingReminders,
   cancelBookingReminders,
   processDueReminders
-} from './notifications/reminderEngine.js';
-import { getEmailConfigStatus } from './notifications/emailService.js';
+} from '../server/notifications/reminderEngine.js';
+import { getEmailConfigStatus } from '../server/notifications/emailService.js';
 
 dotenv.config();
 

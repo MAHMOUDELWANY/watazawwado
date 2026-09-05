@@ -1,7 +1,7 @@
 /**
  * ====================================================================
  * MAHMOUD TEACHING PLATFORM — REMINDER SCHEDULER ENGINE
- * File: api/notifications/reminderEngine.ts
+ * File: server/notifications/reminderEngine.ts
  * Role: Timezone-aware, idempotent 24h & 1h lesson reminder processor
  *       with durable claim ownership and complete Supabase error inspection.
  * ====================================================================

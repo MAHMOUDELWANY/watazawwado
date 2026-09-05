@@ -1,7 +1,7 @@
 /**
  * ====================================================================
  * MAHMOUD TEACHING PLATFORM — CANONICAL LEAD LIFECYCLE TRANSITIONS
- * File: api/leadTransitions.ts
+ * File: server/leadTransitions.ts
  * Purpose: Master Spec Lead Lifecycle Transition Map & Validation Helper
  * ====================================================================
  */

@@ -14,12 +14,12 @@ import {
   buildIdempotencyKey,
   sanitizeErrorSummary,
   sanitizeDispatcherError
-} from '../api/notifications/dispatcher.js';
+} from '../server/notifications/dispatcher.js';
 import {
   scheduleBookingReminders,
   processDueReminders,
   cancelBookingReminders
-} from '../api/notifications/reminderEngine.js';
+} from '../server/notifications/reminderEngine.js';
 
 describe('Concurrency & Tokenized Ownership Tests', () => {
   const originalEnv = { ...process.env };

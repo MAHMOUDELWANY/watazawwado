@@ -1,7 +1,7 @@
 /**
  * ====================================================================
  * MAHMOUD TEACHING PLATFORM — GOOGLE CALENDAR INTEGRATION
- * File: api/integrations/googleCalendar.ts
+ * File: server/integrations/googleCalendar.ts
  * Role: Robust, Server-Side Google Calendar v3 OAuth & Event Sync
  * ====================================================================
  */

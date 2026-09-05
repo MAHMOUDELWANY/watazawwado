@@ -1,7 +1,7 @@
 /**
  * ====================================================================
  * MAHMOUD TEACHING PLATFORM — NOTIFICATION DISPATCHER
- * File: api/notifications/dispatcher.ts
+ * File: server/notifications/dispatcher.ts
  * Role: Centralized, Idempotent Event Dispatcher with Durable Claim Ownership
  * ====================================================================
  */
