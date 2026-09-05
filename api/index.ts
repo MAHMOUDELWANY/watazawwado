@@ -10,7 +10,8 @@ import { getActiveGoogleConnection } from '../server/integrations/syncEngine.js'
 import { getZoomCredentials } from '../server/integrations/zoom.js';
 import {
   generateGoogleAuthUrl,
-  exchangeGoogleCodeForTokens
+  exchangeGoogleCodeForTokens,
+  getGoogleOAuthCredentials
 } from '../server/integrations/googleCalendar.js';
 import {
   syncBookingIntegrations,
@@ -125,12 +126,13 @@ ${MASTER_SPEC}
 app.get('/api/integrations/status', verifyTeacherAuth, async (req, res) => {
   try {
     const googleConn = await getActiveGoogleConnection();
+    const googleCreds = getGoogleOAuthCredentials();
     const zoomCreds = getZoomCredentials();
     const emailStatus = getEmailConfigStatus();
 
     res.json({
       googleCalendar: {
-        isConfigured: !!process.env.GOOGLE_OAUTH_CLIENT_ID,
+        isConfigured: googleCreds.isConfigured,
         isConnected: !!googleConn,
         accountEmail: googleConn?.accountEmail || null
       },
