@@ -7,18 +7,21 @@ const APPROVED_TEACHER_EMAILS = [
   'mahmoudelwany98@gmail.com'
 ];
 
-interface TeacherAuthContextType {
+interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
   isTeacherAuthenticated: boolean;
   userRole: 'teacher' | 'student' | null;
   signIn: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  signUp: (email: string, password: string, name: string) => Promise<{ success: boolean; error?: string }>;
+  resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
+  updatePassword: (newPassword: string) => Promise<{ success: boolean; error?: string }>;
   signOut: () => Promise<void>;
   isConfigured: boolean;
 }
 
-const TeacherAuthContext = createContext<TeacherAuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -98,7 +101,6 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
       }
       console.warn('[Development] Authenticating with local development mock.');
       
-      // Strict exact match for local dev mock
       if (APPROVED_TEACHER_EMAILS.includes(normalizedEmail)) {
         sessionStorage.setItem('mahmoud_teacher_authenticated', 'true');
         setUser({
@@ -112,7 +114,6 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
         setUserRole('teacher');
         return { success: true };
       } else {
-        // Mock student login
         sessionStorage.setItem('student_authenticated', 'true');
         setUser({
           id: 'student-mock-001',
@@ -146,6 +147,67 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   };
 
+  const signUp = async (email: string, password: string, name: string): Promise<{ success: boolean; error?: string }> => {
+    if (!email || !password || !name) {
+      return { success: false, error: 'Please provide name, email, and password.' };
+    }
+    const normalizedEmail = email.toLowerCase().trim();
+
+    if (!isConfigured) {
+      return { success: false, error: 'Authentication is unavailable.' };
+    }
+    if (APPROVED_TEACHER_EMAILS.includes(normalizedEmail)) {
+      return { success: false, error: 'Teacher registration is not permitted.' };
+    }
+
+    try {
+      const { error } = await supabase.auth.signUp({
+        email: normalizedEmail,
+        password,
+        options: {
+          data: {
+            full_name: name,
+          }
+        }
+      });
+      if (error) return { success: false, error: error.message };
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message };
+    }
+  };
+
+  const resetPassword = async (email: string): Promise<{ success: boolean; error?: string }> => {
+    if (!email) return { success: false, error: 'Please enter your email.' };
+    if (!isConfigured) return { success: false, error: 'Authentication is unavailable.' };
+
+    try {
+      const redirectUrl = typeof window !== 'undefined'
+        ? `${window.location.origin}/#reset-password`
+        : undefined;
+      const { error } = await supabase.auth.resetPasswordForEmail(email.toLowerCase().trim(), {
+        redirectTo: redirectUrl
+      });
+      if (error) return { success: false, error: error.message };
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message };
+    }
+  };
+
+  const updatePassword = async (newPassword: string): Promise<{ success: boolean; error?: string }> => {
+    if (!newPassword || newPassword.length < 6) return { success: false, error: 'Password must be at least 6 characters.' };
+    if (!isConfigured) return { success: false, error: 'Authentication is unavailable.' };
+
+    try {
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) return { success: false, error: error.message };
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message };
+    }
+  };
+
   const signOut = async () => {
     if (isConfigured) {
       await supabase.auth.signOut();
@@ -158,7 +220,7 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   return (
-    <TeacherAuthContext.Provider
+    <AuthContext.Provider
       value={{
         user,
         session,
@@ -166,19 +228,22 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
         isTeacherAuthenticated: userRole === 'teacher',
         userRole,
         signIn,
+        signUp,
+        resetPassword,
+        updatePassword,
         signOut,
         isConfigured,
       }}
     >
       {children}
-    </TeacherAuthContext.Provider>
+    </AuthContext.Provider>
   );
 };
 
 export const useTeacherAuth = () => {
-  const context = useContext(TeacherAuthContext);
+  const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useTeacherAuth must be used within a TeacherAuthProvider');
+    throw new Error('useTeacherAuth must be used within an AuthProvider');
   }
   return context;
 };

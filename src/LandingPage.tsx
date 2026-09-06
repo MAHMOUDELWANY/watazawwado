@@ -17,6 +17,7 @@ import { Footer } from './components/Footer';
 import { TrialBookingModal } from './components/TrialBookingModal';
 import { ManageBookingModal } from './components/booking/ManageBookingModal';
 import { TeacherAuthModal } from './components/TeacherAuthModal';
+import { StudentAuthModal } from './components/StudentAuthModal';
 import { TeacherAuthProvider } from './lib/auth';
 import { Language, ThemeMode } from './types';
 import { BookingMode } from './booking/types';
@@ -40,6 +41,7 @@ export function LandingPage() {
   const [preselectedService, setPreselectedService] = useState<string | undefined>();
   const [manageModalOpen, setManageModalOpen] = useState<boolean>(false);
   const [teacherModalOpen, setTeacherModalOpen] = useState<boolean>(false);
+  const [studentModalOpen, setStudentModalOpen] = useState<boolean>(false);
 
   // Manage RTL / LTR layout and HTML lang attribute
   useEffect(() => {
@@ -61,7 +63,7 @@ export function LandingPage() {
     }
   }, [theme]);
 
-  // Listen to hash / URL changes for direct routes (#book, #free-trial, #manage, #teacher)
+  // Listen to hash / URL changes for direct routes (#book, #free-trial, #manage, #teacher, #student-login)
   useEffect(() => {
     const handleHashCheck = () => {
       const hash = window.location.hash.toLowerCase();
@@ -72,6 +74,8 @@ export function LandingPage() {
         setManageModalOpen(true);
       } else if (hash === '#teacher' || hash === '#admin' || hash === '#portal') {
         setTeacherModalOpen(true);
+      } else if (hash === '#student-login' || hash === '#student' || hash === '#reset-password' || hash.includes('type=recovery')) {
+        setStudentModalOpen(true);
       }
     };
 
@@ -188,6 +192,13 @@ export function LandingPage() {
         <TeacherAuthModal
           isOpen={teacherModalOpen}
           onClose={() => setTeacherModalOpen(false)}
+          lang={lang}
+        />
+
+        {/* Student Auth Modal */}
+        <StudentAuthModal
+          isOpen={studentModalOpen}
+          onClose={() => setStudentModalOpen(false)}
           lang={lang}
         />
 

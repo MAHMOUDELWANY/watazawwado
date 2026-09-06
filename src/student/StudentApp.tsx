@@ -5,7 +5,7 @@ import { useTeacherAuth } from '../lib/auth';
 import StudentHomePage from './pages/StudentHomePage';
 
 export default function StudentApp() {
-  const { user, isTeacherAuthenticated, signOut } = useTeacherAuth();
+  const { user, isTeacherAuthenticated, userRole, signOut } = useTeacherAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
@@ -19,7 +19,7 @@ export default function StudentApp() {
 
   // If not authenticated at all, redirect to home.
   // Note: Since this app uses Supabase Auth, we check `user` existence.
-  if (!user) {
+  if (!user || userRole !== 'student') {
     return (
       <div className="min-h-screen bg-[#F5E6D3] dark:bg-[#1E1923] flex items-center justify-center p-6 text-[#362E3B] dark:text-[#F5E6D3]">
         <div className="max-w-md w-full bg-white dark:bg-[#2A2431] rounded-2xl p-8 shadow-sm text-center">

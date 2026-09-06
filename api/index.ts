@@ -596,6 +596,224 @@ app.post('/api/integrations/retry-sync', verifyTeacherAuth, async (req, res) => 
 });
 
 // 12. SERVER-SIDE TEACHER AUTHENTICATION & AUTHORIZATION MIDDLEWARE
+
+async function verifyStudentAuth(req: any, res: any, next: any) {
+  try {
+    const authHeader = req.headers.authorization;
+    const isProd = process.env.NODE_ENV === 'production';
+    if (!authHeader) {
+      return res.status(401).json({ error: 'Authentication required. Authorization header missing.' });
+    }
+    const token = authHeader.startsWith('Bearer ') ? authHeader.substring(7) : null;
+    if (!token) {
+      return res.status(401).json({ error: 'Authentication required. Expected Bearer token format.' });
+    }
+    
+    // Strict production security
+    if (isProd && (token === 'dev-student-token' || token === 'dev-student-b-token' || token === 'dev-teacher-token')) {
+      return res.status(401).json({ error: 'Unauthorized. Development tokens are strictly forbidden in production.' });
+    }
+
+    const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (supabaseUrl && serviceKey) {
+      // Allow dev test tokens in non-production environments when testing
+      if (!isProd && token === 'dev-student-token') {
+        req.studentUser = {
+          auth_id: 'student-mock-auth-001',
+          email: 'student.a@example.com',
+          student_id: '11111111-2222-3333-4444-555555555555',
+          name: 'Student A',
+          studentProfile: {
+            id: '11111111-2222-3333-4444-555555555555',
+            name: 'Student A',
+            email: 'student.a@example.com',
+            timezone: 'America/New_York',
+            learner_type: 'adult',
+            current_level: 'intermediate',
+            status: 'active'
+          }
+        };
+        return next();
+      }
+
+      if (!isProd && token === 'dev-student-b-token') {
+        req.studentUser = {
+          auth_id: 'student-mock-auth-002',
+          email: 'student.b@example.com',
+          student_id: '22222222-2222-3333-4444-555555555555',
+          name: 'Student B',
+          studentProfile: {
+            id: '22222222-2222-3333-4444-555555555555',
+            name: 'Student B',
+            email: 'student.b@example.com',
+            timezone: 'Europe/London',
+            learner_type: 'adult',
+            current_level: 'beginner',
+            status: 'active'
+          }
+        };
+        return next();
+      }
+
+      // Explicitly reject teacher tokens attempting student portal APIs
+      if (!isProd && (token === 'dev-teacher-token' || req.headers['x-dev-teacher-auth'])) {
+        return res.status(403).json({ error: 'Forbidden. Teachers cannot access student portal APIs.' });
+      }
+
+      const supabaseAdmin = getSupabaseAdminClient();
+      if (!supabaseAdmin) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+
+      const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
+      if (error || !user) return res.status(401).json({ error: 'Invalid or expired session token.' });
+
+      // Check if it's a teacher trying to access the student portal
+      const userEmail = (user.email || '').toLowerCase().trim();
+      const { data: teacherRecord } = await supabaseAdmin
+        .from('teacher_accounts')
+        .select('email')
+        .eq('email', userEmail)
+        .eq('is_active', true)
+        .maybeSingle();
+
+      if (teacherRecord) {
+        return res.status(403).json({ error: 'Forbidden. Teachers cannot access student portal APIs.' });
+      }
+
+      // Check student profile by auth_user_id
+      let { data: studentRecord, error: studentError } = await supabaseAdmin
+        .from('students')
+        .select('id, name, email, timezone, learner_type, current_level, status')
+        .eq('auth_user_id', user.id)
+        .maybeSingle();
+
+      if (studentError) {
+        console.error('[verifyStudentAuth] Database error resolving student profile:', studentError.message);
+        return res.status(500).json({ error: 'Internal server error resolving student profile.' });
+      }
+
+      // Safe deterministic linking if an unlinked historical record exists for this verified email
+      if (!studentRecord && userEmail) {
+        const { data: matchingStudents, error: matchError } = await supabaseAdmin
+          .from('students')
+          .select('id, name, email, timezone, learner_type, current_level, status, auth_user_id')
+          .ilike('email', userEmail);
+
+        if (!matchError && matchingStudents) {
+          const unlinked = matchingStudents.filter((s: any) => !s.auth_user_id);
+          // Only auto-link if exactly 1 unlinked record exists and no other records exist for this email
+          if (unlinked.length === 1 && matchingStudents.length === 1) {
+            const candidate = unlinked[0];
+            const { data: linkedStudent, error: linkError } = await supabaseAdmin
+              .from('students')
+              .update({ auth_user_id: user.id })
+              .eq('id', candidate.id)
+              .is('auth_user_id', null)
+              .select('id, name, email, timezone, learner_type, current_level, status')
+              .single();
+
+            if (!linkError && linkedStudent) {
+              console.log(`[verifyStudentAuth] Safely linked existing student profile ${candidate.id} to auth user ${user.id}`);
+              studentRecord = linkedStudent;
+            }
+          }
+        }
+      }
+
+      // If still no student record exists, create exactly one student profile
+      if (!studentRecord) {
+        const fullName = user.user_metadata?.full_name || user.user_metadata?.name || userEmail.split('@')[0] || 'Student';
+        const { data: newStudent, error: insertError } = await supabaseAdmin
+          .from('students')
+          .insert({
+            auth_user_id: user.id,
+            name: fullName,
+            email: userEmail,
+            status: 'active',
+            timezone: 'UTC',
+            learner_type: 'adult',
+            current_level: 'beginner'
+          })
+          .select('id, name, email, timezone, learner_type, current_level, status')
+          .single();
+
+        if (!insertError && newStudent) {
+          studentRecord = newStudent;
+        } else {
+          // Retry select in case of concurrent creation
+          const { data: retryStudent } = await supabaseAdmin
+            .from('students')
+            .select('id, name, email, timezone, learner_type, current_level, status')
+            .eq('auth_user_id', user.id)
+            .maybeSingle();
+          if (retryStudent) {
+            studentRecord = retryStudent;
+          }
+        }
+      }
+
+      req.studentUser = {
+        auth_id: user.id,
+        email: userEmail,
+        student_id: studentRecord?.id || null,
+        name: studentRecord?.name || user.user_metadata?.full_name || 'Student',
+        studentProfile: studentRecord || null
+      };
+      
+      return next();
+    }
+
+    // Non-production fallback when Supabase is not configured
+    if (!isProd && token === 'dev-student-token') {
+      req.studentUser = {
+        auth_id: 'student-mock-auth-001',
+        email: 'student.a@example.com',
+        student_id: '11111111-2222-3333-4444-555555555555',
+        name: 'Student A',
+        studentProfile: {
+          id: '11111111-2222-3333-4444-555555555555',
+          name: 'Student A',
+          email: 'student.a@example.com',
+          timezone: 'America/New_York',
+          learner_type: 'adult',
+          current_level: 'intermediate',
+          status: 'active'
+        }
+      };
+      return next();
+    }
+
+    if (!isProd && token === 'dev-student-b-token') {
+      req.studentUser = {
+        auth_id: 'student-mock-auth-002',
+        email: 'student.b@example.com',
+        student_id: '22222222-2222-3333-4444-555555555555',
+        name: 'Student B',
+        studentProfile: {
+          id: '22222222-2222-3333-4444-555555555555',
+          name: 'Student B',
+          email: 'student.b@example.com',
+          timezone: 'Europe/London',
+          learner_type: 'adult',
+          current_level: 'beginner',
+          status: 'active'
+        }
+      };
+      return next();
+    }
+
+    if (!isProd && (token === 'dev-teacher-token' || req.headers['x-dev-teacher-auth'])) {
+      return res.status(403).json({ error: 'Forbidden. Teachers cannot access student portal APIs.' });
+    }
+
+    return res.status(401).json({ error: 'Unauthorized access.' });
+  } catch (err: any) {
+    console.error('Student Auth Verification Error:', err);
+    return res.status(500).json({ error: 'Internal server error during authentication.' });
+  }
+}
+
 async function verifyTeacherAuth(req: any, res: any, next: any) {
   try {
     const authHeader = req.headers.authorization;
@@ -4089,6 +4307,337 @@ app.all('/api/cron/process-reminders', async (req, res) => {
   } catch (err: any) {
     console.error('[Cron Process Reminders Error]', err);
     res.status(500).json({ error: 'Internal Server Error processing reminders.' });
+  }
+});
+
+// ====================================================================
+// 24. STUDENT PORTAL APIS (Phase 7 Foundation)
+// ====================================================================
+
+// GET /api/student/me - Retrieve authenticated student's profile
+app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
+  try {
+    const studentId = req.studentUser?.student_id;
+    if (!studentId) {
+      return res.status(404).json({ error: 'Student profile not found.' });
+    }
+
+    const isProd = process.env.NODE_ENV === 'production';
+    const supabaseAdmin = getSupabaseAdminClient();
+
+    if (!supabaseAdmin || (!isProd && req.studentUser?.studentProfile)) {
+      const mockProfile = req.studentUser?.studentProfile || {
+        id: studentId,
+        name: req.studentUser?.name || 'Student',
+        email: req.studentUser?.email || 'student@example.com',
+        timezone: 'UTC',
+        status: 'active',
+        learner_type: 'adult',
+        current_level: 'beginner'
+      };
+      return res.json({
+        id: mockProfile.id,
+        name: mockProfile.name,
+        email: mockProfile.email,
+        whatsapp: mockProfile.whatsapp || null,
+        country: mockProfile.country || null,
+        timezone: mockProfile.timezone || 'UTC',
+        learnerType: mockProfile.learner_type || 'adult',
+        currentLevel: mockProfile.current_level || 'beginner',
+        status: mockProfile.status || 'active',
+        createdAt: mockProfile.created_at || new Date().toISOString(),
+        guardian: null,
+        goals: []
+      });
+    }
+
+    try {
+      const [studentRes, guardianRes, goalsRes] = await Promise.all([
+        supabaseAdmin
+          .from('students')
+          .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, created_at')
+          .eq('id', studentId)
+          .single(),
+        supabaseAdmin
+          .from('guardians')
+          .select('parent_name, parent_email, parent_whatsapp, relationship_type')
+          .eq('student_id', studentId)
+          .maybeSingle(),
+        supabaseAdmin
+          .from('student_goals')
+          .select('id, goal_text, is_primary, status')
+          .eq('student_id', studentId)
+          .eq('status', 'in_progress')
+      ]);
+
+      if (studentRes.error || !studentRes.data) {
+        if (!isProd && req.studentUser?.studentProfile) {
+          const mp = req.studentUser.studentProfile;
+          return res.json({
+            id: mp.id,
+            name: mp.name,
+            email: mp.email,
+            timezone: mp.timezone || 'UTC',
+            learnerType: mp.learner_type || 'adult',
+            currentLevel: mp.current_level || 'beginner',
+            status: mp.status || 'active',
+            createdAt: new Date().toISOString(),
+            guardian: null,
+            goals: []
+          });
+        }
+        return res.status(404).json({ error: 'Student profile not found.' });
+      }
+
+      const profile = studentRes.data;
+      const guardian = guardianRes.data || null;
+      const goals = goalsRes.data || [];
+
+      return res.json({
+        id: profile.id,
+        name: profile.name,
+        email: profile.email,
+        whatsapp: profile.whatsapp || null,
+        country: profile.country || null,
+        timezone: profile.timezone || 'UTC',
+        learnerType: profile.learner_type || 'adult',
+        currentLevel: profile.current_level || 'beginner',
+        status: profile.status || 'active',
+        createdAt: profile.created_at,
+        guardian: guardian ? {
+          parentName: guardian.parent_name,
+          parentEmail: guardian.parent_email,
+          parentWhatsapp: guardian.parent_whatsapp || null,
+          relationshipType: guardian.relationship_type || 'parent'
+        } : null,
+        goals: goals.map((g: any) => ({
+          id: g.id,
+          goalText: g.goal_text,
+          isPrimary: g.is_primary,
+          status: g.status
+        }))
+      });
+    } catch (dbErr: any) {
+      if (!isProd && req.studentUser?.studentProfile) {
+        const mp = req.studentUser.studentProfile;
+        return res.json({
+          id: mp.id,
+          name: mp.name,
+          email: mp.email,
+          timezone: mp.timezone || 'UTC',
+          learnerType: mp.learner_type || 'adult',
+          currentLevel: mp.current_level || 'beginner',
+          status: mp.status || 'active',
+          createdAt: new Date().toISOString(),
+          guardian: null,
+          goals: []
+        });
+      }
+      throw dbErr;
+    }
+  } catch (err: any) {
+    console.error('[GET /api/student/me Error]', err);
+    return res.status(500).json({ error: 'Internal server error retrieving student profile.' });
+  }
+});
+
+// PATCH /api/student/me - Safely update authenticated student's profile
+app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
+  try {
+    const studentId = req.studentUser?.student_id;
+    if (!studentId) {
+      return res.status(404).json({ error: 'Student profile not found.' });
+    }
+
+    const { name, timezone, whatsapp, country, parentName, parentWhatsapp } = req.body || {};
+
+    // Validate safe fields only - explicitly reject any attempts to modify forbidden attributes
+    const forbiddenFields = ['id', 'auth_user_id', 'status', 'lead_id', 'notes', 'created_at', 'updated_at', 'current_level'];
+    for (const field of forbiddenFields) {
+      if (req.body && req.body[field] !== undefined) {
+        return res.status(422).json({ error: `Modification of field '${field}' is strictly forbidden.` });
+      }
+    }
+
+    const updatePayload: Record<string, any> = {
+      updated_at: new Date().toISOString()
+    };
+
+    if (name !== undefined) {
+      if (typeof name !== 'string' || name.trim().length < 2) {
+        return res.status(422).json({ error: 'Name must be at least 2 characters long.' });
+      }
+      updatePayload.name = name.trim();
+    }
+
+    if (timezone !== undefined) {
+      if (typeof timezone !== 'string' || !DateTime.now().setZone(timezone.trim()).isValid) {
+        return res.status(422).json({ error: `Invalid IANA timezone identifier: '${timezone}'.` });
+      }
+      updatePayload.timezone = timezone.trim();
+    }
+
+    if (whatsapp !== undefined) {
+      updatePayload.whatsapp = typeof whatsapp === 'string' ? whatsapp.trim() : null;
+    }
+
+    if (country !== undefined) {
+      updatePayload.country = typeof country === 'string' ? country.trim() : null;
+    }
+
+    const isProd = process.env.NODE_ENV === 'production';
+    const supabaseAdmin = getSupabaseAdminClient();
+
+    if (!supabaseAdmin || (!isProd && req.studentUser?.studentProfile)) {
+      if (req.studentUser?.studentProfile) {
+        if (updatePayload.name) req.studentUser.studentProfile.name = updatePayload.name;
+        if (updatePayload.timezone) req.studentUser.studentProfile.timezone = updatePayload.timezone;
+        if (updatePayload.whatsapp !== undefined) req.studentUser.studentProfile.whatsapp = updatePayload.whatsapp;
+        if (updatePayload.country !== undefined) req.studentUser.studentProfile.country = updatePayload.country;
+      }
+      return res.json({
+        id: studentId,
+        name: updatePayload.name || req.studentUser?.name || 'Student',
+        email: req.studentUser?.email || 'student@example.com',
+        whatsapp: updatePayload.whatsapp || null,
+        country: updatePayload.country || null,
+        timezone: updatePayload.timezone || req.studentUser?.studentProfile?.timezone || 'UTC',
+        learnerType: req.studentUser?.studentProfile?.learner_type || 'adult',
+        currentLevel: req.studentUser?.studentProfile?.current_level || 'beginner',
+        status: req.studentUser?.studentProfile?.status || 'active',
+        updatedAt: new Date().toISOString()
+      });
+    }
+
+    const { data: updatedStudent, error: updateError } = await supabaseAdmin
+      .from('students')
+      .update(updatePayload)
+      .eq('id', studentId)
+      .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, created_at, updated_at')
+      .single();
+
+    if (updateError || !updatedStudent) {
+      console.error('[PATCH /api/student/me DB Error]', updateError);
+      return res.status(500).json({ error: 'Failed to update student profile.' });
+    }
+
+    // Handle guardian updates if provided for child learner
+    if (parentName !== undefined || parentWhatsapp !== undefined) {
+      const { data: existingGuardian } = await supabaseAdmin
+        .from('guardians')
+        .select('id')
+        .eq('student_id', studentId)
+        .maybeSingle();
+
+      if (existingGuardian) {
+        const guardianPayload: Record<string, any> = {};
+        if (parentName !== undefined) guardianPayload.parent_name = String(parentName).trim();
+        if (parentWhatsapp !== undefined) guardianPayload.parent_whatsapp = String(parentWhatsapp).trim();
+        await supabaseAdmin
+          .from('guardians')
+          .update(guardianPayload)
+          .eq('student_id', studentId);
+      }
+    }
+
+    return res.json({
+      id: updatedStudent.id,
+      name: updatedStudent.name,
+      email: updatedStudent.email,
+      whatsapp: updatedStudent.whatsapp,
+      country: updatedStudent.country,
+      timezone: updatedStudent.timezone,
+      learnerType: updatedStudent.learner_type,
+      currentLevel: updatedStudent.current_level,
+      status: updatedStudent.status,
+      updatedAt: updatedStudent.updated_at
+    });
+  } catch (err: any) {
+    console.error('[PATCH /api/student/me Error]', err);
+    return res.status(500).json({ error: 'Internal server error updating student profile.' });
+  }
+});
+
+// GET /api/student/bookings - Retrieve authenticated student's bookings
+app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) => {
+  try {
+    const studentId = req.studentUser?.student_id;
+    if (!studentId) {
+      return res.json([]);
+    }
+
+    const isProd = process.env.NODE_ENV === 'production';
+    const supabaseAdmin = getSupabaseAdminClient();
+    if (!supabaseAdmin || (!isProd && req.studentUser?.studentProfile)) {
+      return res.json([]);
+    }
+
+    // Fetch bookings belonging strictly to this authenticated student
+    const { data: bookingsData, error: bookingsError } = await supabaseAdmin
+      .from('bookings')
+      .select('id, reference_code, service_id, booking_type, duration_minutes, scheduled_start, scheduled_end, student_timezone, status, contact_name, contact_email, zoom_meeting_link, created_at')
+      .eq('student_id', studentId)
+      .order('scheduled_start', { ascending: true });
+
+    if (bookingsError) {
+      console.error('[GET /api/student/bookings DB Error]', bookingsError);
+      return res.status(500).json({ error: 'Failed to retrieve student bookings.' });
+    }
+
+    // Resolve services metadata safely
+    const serviceIds = Array.from(new Set((bookingsData || []).map((b: any) => b.service_id).filter(Boolean)));
+    const serviceMap = new Map<string, any>();
+
+    if (serviceIds.length > 0) {
+      const { data: servicesData } = await supabaseAdmin
+        .from('services')
+        .select('id, title, arabic_title')
+        .in('id', serviceIds);
+
+      if (servicesData) {
+        for (const s of servicesData) {
+          serviceMap.set(s.id, s);
+        }
+      }
+    }
+
+    // Map to a clean, coherent DTO that matches both the new explicit contract and legacy fields
+    const formattedBookings = (bookingsData || []).map((b: any) => {
+      const s = serviceMap.get(b.service_id);
+      const serviceTitle = s?.title || 'Lesson';
+      const zoomUrl = (b.zoom_meeting_link && typeof b.zoom_meeting_link === 'string' && b.zoom_meeting_link.trim().length > 0)
+        ? b.zoom_meeting_link.trim()
+        : null;
+
+      return {
+        id: b.id,
+        referenceCode: b.reference_code,
+        serviceId: b.service_id,
+        serviceTitle,
+        serviceArabicTitle: s?.arabic_title || '',
+        bookingType: b.booking_type,
+        scheduledStart: b.scheduled_start,
+        scheduledEnd: b.scheduled_end,
+        durationMinutes: b.duration_minutes,
+        studentTimezone: b.student_timezone,
+        status: b.status,
+        zoomMeetingLink: zoomUrl,
+        // Harmonized contract aliases for UI compatibility
+        lesson_date: b.scheduled_start,
+        duration: b.duration_minutes,
+        zoom_join_url: zoomUrl,
+        services: {
+          title: serviceTitle,
+          arabic_title: s?.arabic_title || ''
+        },
+        createdAt: b.created_at
+      };
+    });
+
+    return res.json(formattedBookings);
+  } catch (err: any) {
+    console.error('[GET /api/student/bookings Error]', err);
+    return res.status(500).json({ error: 'Internal server error retrieving student bookings.' });
   }
 });
 
