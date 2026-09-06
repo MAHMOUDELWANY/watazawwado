@@ -32,14 +32,23 @@ export interface DayAvailabilityDto {
   slots: AvailableSlotDto[];
 }
 
-function getServerSupabase() {
+export function isServerSupabaseConfigured(): boolean {
   const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!supabaseUrl || !serviceKey) {
-    console.error('[Configuration Error] SUPABASE_SERVICE_ROLE_KEY is missing. Required for availability engine.');
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+  return Boolean(
+    supabaseUrl &&
+    serviceKey &&
+    supabaseUrl !== 'https://your-project.supabase.co' &&
+    serviceKey !== 'your-service-role-key' &&
+    supabaseUrl.startsWith('https://')
+  );
+}
+
+function getServerSupabase() {
+  if (!isServerSupabaseConfigured()) {
     return null;
   }
-  return createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
+  return createClient(process.env.VITE_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, { auth: { persistSession: false } });
 }
 
 /**

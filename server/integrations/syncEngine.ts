@@ -34,10 +34,15 @@ export interface BookingSyncResult {
  */
 function getServerSupabase() {
   const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
   
-  if (!supabaseUrl || !serviceKey) {
-    console.error('[Configuration Error] SUPABASE_SERVICE_ROLE_KEY is missing. Required for integration sync.');
+  if (
+    !supabaseUrl ||
+    !serviceKey ||
+    supabaseUrl === 'https://your-project.supabase.co' ||
+    serviceKey === 'your-service-role-key' ||
+    !supabaseUrl.startsWith('https://')
+  ) {
     return null;
   }
 
