@@ -562,7 +562,7 @@ export function renderTeacherNotification(params: {
   const safeTitle = escapeHtml(params.title);
   const safeSummary = escapeHtml(params.summary);
   const safeActionUrl = sanitizeUrl(params.actionUrl);
-  const subject = `[Fikra Alert] ${params.title}`;
+  const subject = `[Watazawwado Alert] ${params.title}`;
   
   const detailRows = Object.entries(params.details)
     .filter(([_, v]) => v !== undefined && v !== null && v !== '')

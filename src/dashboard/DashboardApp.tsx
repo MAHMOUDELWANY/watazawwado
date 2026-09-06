@@ -84,7 +84,7 @@ export function DashboardApp() {
       `}>
         <div className="h-16 flex items-center justify-between px-6 border-b border-[#D5D0CA]/30 dark:border-[#3E3545]/30">
           <Link to="/" className="text-lg font-semibold tracking-tight text-[#6F907D] dark:text-[#8FAE9B]">
-            Fikra Workspace
+            Watazawwado Workspace
           </Link>
           <button onClick={toggleMobileMenu} className="md:hidden opacity-70 hover:opacity-100">
             <X className="w-5 h-5" />
@@ -141,7 +141,7 @@ export function DashboardApp() {
           <button onClick={toggleMobileMenu} className="p-2 -ml-2 opacity-70 hover:opacity-100">
             <Menu className="w-5 h-5" />
           </button>
-          <span className="font-semibold text-[#6F907D] dark:text-[#8FAE9B]">Fikra Workspace</span>
+          <span className="font-semibold text-[#6F907D] dark:text-[#8FAE9B]">Watazawwado Workspace</span>
           <div className="w-9" /> {/* Spacer for centering */}
         </header>
 
