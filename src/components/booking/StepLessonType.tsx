@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { Check, ArrowRight, ArrowLeft, Clock, Gift, CalendarCheck, HelpCircle, MessageSquare } from 'lucide-react';
 import { BookingMode, Language, LessonDuration } from '../../booking/types';
 import { BOOKING_SERVICES, calculateLessonFee } from '../../booking/mockData';
+import { buildWhatsAppUrl } from '../../lib/whatsapp';
 
 interface StepLessonTypeProps {
   mode: BookingMode;
@@ -230,7 +231,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               : '٦٠ دقيقة هي الحد الأقصى للجلسات العادية حفاظاً على جودة التركيز والصوت. إذا كنت بحاجة لجلسات مكثفة أطول أو ترتيب عائلي، يرجى '}
           </span>
           <a
-            href="https://wa.me/201099616802?text=Assalamu%20Alaikum%20Ustadh%20Mahmoud,%20I%20would%20like%20to%20request%20an%20extended%20lesson%20session%20(longer%20than%2060%20minutes)."
+            href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I would like to request an extended lesson session (longer than 60 minutes).')}
             target="_blank"
             rel="noopener noreferrer"
             className="text-[#6B5B73] dark:text-[#B8A9C9] font-medium underline hover:text-[#87A878]"

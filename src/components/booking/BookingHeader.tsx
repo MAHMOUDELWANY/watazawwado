@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { ArrowLeft, MessageCircle, X, CheckCircle2 } from 'lucide-react';
 import { BookingMode, Language } from '../../booking/types';
+import { buildWhatsAppUrl } from '../../lib/whatsapp';
 
 interface BookingHeaderProps {
   step: number;
@@ -86,7 +87,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
         <div className="flex items-center gap-2">
           {/* Subtle WhatsApp Assistance Path */}
           <a
-            href="https://wa.me/201099616802?text=Assalamu%20Alaikum%20Ustadh%20Mahmoud,%20I%20have%20a%20question%20regarding%20booking%20a%20lesson."
+            href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I have a question regarding booking a lesson.')}
             target="_blank"
             rel="noopener noreferrer"
             className="hidden sm:inline-flex items-center gap-1.5 text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]/70 hover:text-[#87A878] dark:hover:text-[#87A878] transition-colors"

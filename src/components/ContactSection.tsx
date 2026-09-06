@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { MessageCircle, Mail, Send, CheckCircle2, Clock, ShieldCheck, MapPin } from 'lucide-react';
 import { Language } from '../types';
 import { ARABIC_TRANSLATIONS } from '../data/content';
+import { buildWhatsAppUrl } from '../lib/whatsapp';
 
 interface ContactSectionProps {
   lang: Language;
@@ -124,7 +125,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang, onOpenTria
               <motion.a
                 whileHover={{ scale: 1.025, y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                href="https://wa.me/201099616802?text=Assalamu%20Alaikum%20Ustadh%20Mahmoud,%20I%20would%20like%20to%20ask%20about%20your%201-on-1%20lessons."
+                href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I would like to ask about your 1-on-1 lessons.')}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-[#87A878] hover:bg-[#729263] text-white font-medium text-sm shadow-xs hover:shadow-sm transition-all"

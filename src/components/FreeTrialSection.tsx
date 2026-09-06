@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { Calendar, CheckCircle2, ShieldAlert, Sparkles, MessageCircle } from 'lucide-react';
 import { Language } from '../types';
 import { ARABIC_TRANSLATIONS } from '../data/content';
+import { buildWhatsAppUrl } from '../lib/whatsapp';
 
 interface FreeTrialSectionProps {
   lang: Language;
@@ -105,7 +106,7 @@ export const FreeTrialSection: React.FC<FreeTrialSectionProps> = ({ lang, onOpen
               <motion.a
                 whileHover={{ scale: 1.02, y: -1 }}
                 whileTap={{ scale: 0.98 }}
-                href="https://wa.me/201099616802?text=Assalamu%20Alaikum%20Ustadh%20Mahmoud,%20I%20have%20a%20question%20before%20booking%20a%20free%20trial."
+                href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I have a question before booking a free trial.')}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white dark:bg-[#231D28] hover:bg-[#EDE3D4] dark:hover:bg-[#342D3B] text-[#362E3B] dark:text-[#F5E6D3] border border-[#D5D0CA] dark:border-[#3E3545] text-sm font-medium transition-all shadow-2xs hover:shadow-xs group"

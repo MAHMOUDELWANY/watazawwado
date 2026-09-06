@@ -20,6 +20,7 @@ import { bookingService } from '../../booking/bookingService';
 import { DayAvailability, TimeSlot, Language, BookingMode } from '../../booking/types';
 import { TimezoneSelectorModal } from './TimezoneSelectorModal';
 import { MAJOR_TIMEZONES } from '../../booking/mockData';
+import { buildWhatsAppUrl } from '../../lib/whatsapp';
 
 interface StepDateTimeProps {
   mode: BookingMode;
@@ -284,7 +285,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                   </button>
 
                   <a
-                    href="https://wa.me/201099616802?text=Assalamu%20Alaikum%20Ustadh%20Mahmoud,%20I%20would%20like%20to%20request%20a%20specific%20lesson%20time%20that%20is%20not%20open%20on%20the%20schedule."
+                    href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I would like to request a specific lesson time that is not open on the schedule.')}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white dark:bg-[#1E1923] border border-[#D5D0CA] dark:border-[#3E3545] text-xs font-medium text-[#362E3B] dark:text-[#D5D0CA] hover:bg-[#EDE3D4]"

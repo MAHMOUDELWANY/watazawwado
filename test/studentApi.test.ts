@@ -6,8 +6,37 @@ import app from '../api/index.js';
 describe('Phase 5D — Student Management API Integration Tests', () => {
   let server: http.Server;
   let baseUrl: string;
+  let originalFetch: typeof globalThis.fetch;
 
   before(async () => {
+    originalFetch = globalThis.fetch;
+    globalThis.fetch = async (url: any, options: any) => {
+      const urlStr = typeof url === 'string' ? url : url?.toString() || '';
+      if (urlStr.includes('supabase.co/rest/v1/students')) {
+        const mockStudents = [
+          {
+            id: '11111111-1111-1111-1111-111111111111',
+            full_name: 'Zaid Al-Harithi',
+            email: 'zaid@example.com',
+            parent_email: null,
+            parent_name: null,
+            status: 'active',
+            timezone: 'America/Toronto',
+            created_at: '2026-09-01T00:00:00Z',
+            updated_at: '2026-09-01T00:00:00Z'
+          }
+        ];
+        return {
+          ok: true,
+          status: 200,
+          json: async () => mockStudents,
+          text: async () => JSON.stringify(mockStudents),
+          headers: new Headers({ 'content-type': 'application/json' })
+        } as any;
+      }
+      return originalFetch(url, options);
+    };
+
     await new Promise<void>((resolve) => {
       // Bind to ephemeral port for testing
       server = app.listen(0, '127.0.0.1', () => {
@@ -19,6 +48,7 @@ describe('Phase 5D — Student Management API Integration Tests', () => {
   });
 
   after(async () => {
+    globalThis.fetch = originalFetch;
     await new Promise<void>((resolve) => {
       server.close(() => resolve());
     });

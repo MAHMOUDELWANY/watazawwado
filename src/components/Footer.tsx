@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { Globe, MessageCircle, Mail, ArrowUp } from 'lucide-react';
 import { Language } from '../types';
 import { ARABIC_TRANSLATIONS } from '../data/content';
+import { buildWhatsAppUrl, MAHMOUD_OFFICIAL_PHONE_INTL } from '../lib/whatsapp';
 
 interface FooterProps {
   lang: Language;
@@ -128,13 +129,13 @@ export const Footer: React.FC<FooterProps> = ({
             <motion.a
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.98 }}
-              href="https://wa.me/201099616802"
+              href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I am visiting your website and have a question.')}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] text-xs text-[#362E3B] dark:text-[#D5D0CA] hover:bg-[#F5E6D3] dark:hover:bg-[#29232F] transition-colors"
             >
               <MessageCircle className="w-3.5 h-3.5 text-[#87A878]" />
-              <span>WhatsApp: +20 109 961 6802</span>
+              <span>WhatsApp: {MAHMOUD_OFFICIAL_PHONE_INTL}</span>
             </motion.a>
           </div>
 
