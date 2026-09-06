@@ -13,6 +13,7 @@ import {
   DollarSign
 } from 'lucide-react';
 import { dashboardFetch } from '../lib/dashboardApi';
+import { IntegrationsManager } from '../../components/dashboard/IntegrationsManager';
 
 interface Setting {
   key: string;
@@ -490,72 +491,8 @@ export default function SettingsPage() {
 
           {/* 5. Integrations & Sync */}
           {activeTab === 'Integrations' && (
-            <div className="bg-white dark:bg-[#2A2431] rounded-2xl border border-[#D5D0CA]/30 dark:border-[#3E3545]/30 p-6 space-y-6">
-              <div>
-                <h2 className="text-lg font-serif font-semibold text-[#362E3B] dark:text-[#F5E6D3]">Integrations & External Synchronization</h2>
-                <p className="text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]">
-                  Connection status for Google Calendar and Zoom meeting engines. Secrets are securely managed on the server.
-                </p>
-              </div>
-
-              <div className="space-y-4">
-                {/* Google Calendar */}
-                <div className="p-4 rounded-xl border border-[#D5D0CA]/30 dark:border-[#3E3545]/30 flex items-center justify-between">
-                  <div>
-                    <span className="text-sm font-semibold text-[#362E3B] dark:text-[#F5E6D3] block">Google Calendar</span>
-                    <span className="text-xs text-stone-500">
-                      {integrationsStatus?.googleCalendar?.isConnected 
-                        ? `Connected as ${integrationsStatus.googleCalendar.accountEmail}` 
-                        : integrationsStatus?.googleCalendar?.isConfigured 
-                          ? 'Configured (OAuth Ready)' 
-                          : 'Not Configured'}
-                    </span>
-                  </div>
-                  <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                    integrationsStatus?.googleCalendar?.isConnected 
-                      ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300' 
-                      : 'bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-300'
-                  }`}>
-                    {integrationsStatus?.googleCalendar?.isConnected ? 'Active' : 'Offline'}
-                  </span>
-                </div>
-
-                {/* Zoom */}
-                <div className="p-4 rounded-xl border border-[#D5D0CA]/30 dark:border-[#3E3545]/30 flex items-center justify-between">
-                  <div>
-                    <span className="text-sm font-semibold text-[#362E3B] dark:text-[#F5E6D3] block">Zoom Video Integration</span>
-                    <span className="text-xs text-stone-500">
-                      {integrationsStatus?.zoom?.isConfigured ? 'OAuth / Server Credentials Active' : 'Not Configured'}
-                    </span>
-                  </div>
-                  <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                    integrationsStatus?.zoom?.isConfigured 
-                      ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300' 
-                      : 'bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-300'
-                  }`}>
-                    {integrationsStatus?.zoom?.isConfigured ? 'Active' : 'Offline'}
-                  </span>
-                </div>
-
-                {/* Brevo Transactional Email */}
-                <div className="p-4 rounded-xl border border-[#D5D0CA]/30 dark:border-[#3E3545]/30 flex items-center justify-between">
-                  <div>
-                    <span className="text-sm font-semibold text-[#362E3B] dark:text-[#F5E6D3] block">Brevo Transactional Email</span>
-                    <span className="text-xs text-stone-500">
-                      {integrationsStatus?.email?.isConfigured
-                        ? `Active — ${integrationsStatus.email.senderName} (${integrationsStatus.email.senderEmail})`
-                        : 'Not Configured (Requires BREVO_API_KEY)'}
-                    </span>
-                  </div>
-                  <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                    integrationsStatus?.email?.isConfigured 
-                      ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300' 
-                      : 'bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-300'
-                  }`}>
-                    {integrationsStatus?.email?.isConfigured ? 'Active' : 'Offline'}
-                  </span>
-                </div>
-              </div>
+            <div className="bg-white dark:bg-[#2A2431] rounded-2xl border border-[#D5D0CA]/30 dark:border-[#3E3545]/30 p-6">
+              <IntegrationsManager lang={(getSetting('language') as any) || 'en'} />
             </div>
           )}
 

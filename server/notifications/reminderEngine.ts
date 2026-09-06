@@ -10,11 +10,12 @@
 import { DateTime } from 'luxon';
 import { createClient } from '@supabase/supabase-js';
 import { dispatchNotification } from './dispatcher.js';
+import { isServerSupabaseConfigured } from '../integrations/availabilityEngine.js';
 
 function getServerSupabase() {
+  if (!isServerSupabaseConfigured()) return null;
   const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!supabaseUrl || !serviceKey) return null;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
   return createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
 }
 
