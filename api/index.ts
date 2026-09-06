@@ -4060,14 +4060,19 @@ app.all('/api/cron/process-reminders', async (req, res) => {
   try {
     const cronSecret = process.env.CRON_SECRET;
     const authHeader = req.headers.authorization;
-    const providedSecret = String(req.query.secret || (authHeader && authHeader.replace(/^Bearer\s+/i, '')) || '');
 
     if (process.env.NODE_ENV === 'production' && !cronSecret) {
       return res.status(503).json({ error: 'CRON_SECRET is not configured on the server.' });
     }
 
+    // Require Authorization: Bearer <CRON_SECRET> header; query-string secrets are strictly rejected
     if (cronSecret) {
-      const aBuf = Buffer.from(providedSecret, 'utf8');
+      if (!authHeader || !/^Bearer\s+\S+/i.test(authHeader)) {
+        return res.status(401).json({ error: 'Unauthorized cron request.' });
+      }
+
+      const token = authHeader.replace(/^Bearer\s+/i, '').trim();
+      const aBuf = Buffer.from(token, 'utf8');
       const bBuf = Buffer.from(cronSecret, 'utf8');
       const isAuthorized = aBuf.length === bBuf.length && crypto.timingSafeEqual(aBuf, bBuf);
       if (!isAuthorized) {
