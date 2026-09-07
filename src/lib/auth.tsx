@@ -161,10 +161,15 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
 
     try {
+      const redirectUrl = typeof window !== 'undefined'
+        ? `${window.location.origin}/student`
+        : undefined;
+
       const { error } = await supabase.auth.signUp({
         email: normalizedEmail,
         password,
         options: {
+          emailRedirectTo: redirectUrl,
           data: {
             full_name: name,
           }
