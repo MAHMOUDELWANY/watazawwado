@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'motion/react';
-import { Calendar, ArrowRight, Star } from 'lucide-react';
+import { Calendar, ArrowRight, Star, Sparkles } from 'lucide-react';
 import { PortraitImage } from './PortraitImage';
 import { Language } from '../types';
 
@@ -157,13 +157,13 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
               )}
             </motion.p>
 
-            {/* Action Buttons: Solid Sage "Get Started Today" + Outlined Stone "Learn More" */}
+            {/* Action Buttons: Solid Sage "Get Started Today" + Guest Demo "Explore as Guest" + Outlined Stone "Learn More" */}
             <motion.div
               variants={{
                 hidden: { opacity: 0, y: 12 },
                 visible: { opacity: 1, y: 0, transition: { duration: 0.45 } },
               }}
-              className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto mb-10"
+              className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 w-full sm:w-auto mb-10"
             >
               <motion.button
                 whileHover={{ scale: 1.025, y: -2 }}
@@ -179,9 +179,20 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
               <motion.a
                 whileHover={{ scale: 1.015, y: -1 }}
                 whileTap={{ scale: 0.98 }}
+                href="/student/demo"
+                id="hero-demo-btn"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 dark:bg-amber-500/15 dark:hover:bg-amber-500/25 text-amber-900 dark:text-amber-200 border border-amber-500/30 font-medium text-base transition-colors"
+              >
+                <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                <span>{isEn ? 'Explore as Guest' : 'استكشف كضيف'}</span>
+              </motion.a>
+
+              <motion.a
+                whileHover={{ scale: 1.015, y: -1 }}
+                whileTap={{ scale: 0.98 }}
                 href="#services"
                 id="hero-learn-more-btn"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-white dark:bg-[#29232F] hover:bg-[#F5E6D3] dark:hover:bg-[#342D3B] text-[#362E3B] dark:text-[#F5E6D3] border border-[#D5D0CA] dark:border-[#3E3545] font-medium text-base transition-colors"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-white dark:bg-[#29232F] hover:bg-[#F5E6D3] dark:hover:bg-[#342D3B] text-[#362E3B] dark:text-[#F5E6D3] border border-[#D5D0CA] dark:border-[#3E3545] font-medium text-base transition-colors"
               >
                 <span>{isEn ? 'Learn More' : 'استكشف المسارات'}</span>
               </motion.a>

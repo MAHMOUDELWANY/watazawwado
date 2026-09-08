@@ -18,7 +18,16 @@ export default function StudentApp() {
 
   // If user navigated to /student/demo, always allow direct demo access without requiring authentication
   if (location.pathname.startsWith('/student/demo')) {
-    return <StudentDemoPage onOpenSignupModal={() => setAuthModalOpen(true)} />;
+    return (
+      <>
+        <StudentDemoPage onOpenSignupModal={() => setAuthModalOpen(true)} />
+        <StudentAuthModal
+          isOpen={authModalOpen}
+          onClose={() => setAuthModalOpen(false)}
+          lang="en"
+        />
+      </>
+    );
   }
 
   // If a teacher lands here, redirect to the teacher dashboard

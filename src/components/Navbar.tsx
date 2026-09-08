@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, Sun, Moon, Globe, ArrowRight } from 'lucide-react';
+import { Menu, X, Sun, Moon, Globe, ArrowRight, Sparkles } from 'lucide-react';
 import { Language, ThemeMode } from '../types';
 import { ARABIC_TRANSLATIONS } from '../data/content';
 
@@ -87,6 +87,15 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#87A878] dark:bg-[#B8A9C9] transition-all duration-300 group-hover:w-full rounded-full" />
             </motion.a>
           ))}
+
+          <a
+            href="/student/demo"
+            id="nav-demo-link"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/20 transition-all cursor-pointer"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+            <span>{lang === 'en' ? 'Explore as Guest' : 'استكشف كضيف'}</span>
+          </a>
 
           {onOpenManageModal && (
             <button
@@ -176,6 +185,16 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </a>
               ))}
               <div className="pt-4 border-t border-[#D5D0CA] dark:border-[#3E3545] space-y-2.5">
+                <a
+                  href="/student/demo"
+                  id="mobile-demo-link"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-300 font-medium text-xs border border-amber-500/20 transition-colors"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                  <span>{lang === 'en' ? 'Explore as Guest (Interactive Demo)' : 'استكشف كضيف (عرض تجريبي)'}</span>
+                </a>
+
                 <motion.button
                   whileTap={{ scale: 0.98 }}
                   onClick={() => {
