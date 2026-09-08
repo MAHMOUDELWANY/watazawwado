@@ -828,8 +828,8 @@ async function verifyTeacherAuth(req: any, res: any, next: any) {
 
     const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.substring(7) : null;
 
-    // Strict production security: dev-teacher-token is NEVER accepted in production
-    if (isProd && (token === 'dev-teacher-token' || devHeader)) {
+    // Strict production security: dev tokens are NEVER accepted in production
+    if (isProd && (token === 'dev-teacher-token' || token === 'dev-student-token' || token === 'dev-student-b-token' || devHeader)) {
       return res.status(401).json({ error: 'Unauthorized. Development tokens are strictly forbidden in production.' });
     }
 
@@ -4592,6 +4592,20 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
         });
     }
 
+    // 4. Safe deterministic legacy guest booking linking during onboarding:
+    // Claim unlinked guest bookings strictly matching verified student email and with student_id IS NULL
+    if (updatedStudent?.email) {
+      try {
+        await supabaseAdmin
+          .from('bookings')
+          .update({ student_id: studentId })
+          .is('student_id', null)
+          .eq('contact_email', updatedStudent.email.toLowerCase().trim());
+      } catch (linkErr) {
+        console.warn('[Onboarding Claim Bookings Warning]', linkErr);
+      }
+    }
+
     return res.json({
       success: true,
       onboardingCompleted: true,
@@ -4625,7 +4639,11 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
     const { name, timezone, whatsapp, country, parentName, parentWhatsapp } = req.body || {};
 
     // Validate safe fields only - explicitly reject any attempts to modify forbidden attributes
-    const forbiddenFields = ['id', 'auth_user_id', 'status', 'lead_id', 'notes', 'created_at', 'updated_at', 'current_level'];
+    const forbiddenFields = [
+      'id', 'student_id', 'studentId', 'auth_user_id', 'auth_id', 'status',
+      'lead_id', 'notes', 'created_at', 'updated_at', 'current_level', 'role',
+      'email', 'onboarding_completed'
+    ];
     for (const field of forbiddenFields) {
       if (req.body && req.body[field] !== undefined) {
         return res.status(422).json({ error: `Modification of field '${field}' is strictly forbidden.` });
@@ -4731,7 +4749,7 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
   }
 });
 
-// GET /api/student/bookings - Retrieve authenticated student's bookings
+// GET /api/student/bookings - Retrieve authenticated student's bookings (pure read-only)
 app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) => {
   try {
     const studentId = req.studentUser?.student_id;
@@ -4745,20 +4763,7 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
       return res.json([]);
     }
 
-    // Auto-link any existing guest bookings that match this student's email where student_id is null
-    if (req.studentUser?.email) {
-      try {
-        await supabaseAdmin
-          .from('bookings')
-          .update({ student_id: studentId })
-          .is('student_id', null)
-          .ilike('contact_email', req.studentUser.email);
-      } catch (linkErr) {
-        console.warn('[Auto-link Bookings Warning]', linkErr);
-      }
-    }
-
-    // Fetch bookings belonging strictly to this authenticated student
+    // Fetch bookings belonging strictly to this authenticated student (idempotent read)
     const { data: bookingsData, error: bookingsError } = await supabaseAdmin
       .from('bookings')
       .select('id, reference_code, service_id, booking_type, duration_minutes, scheduled_start, scheduled_end, student_timezone, status, contact_name, contact_email, fee_amount_usd, zoom_meeting_link, created_at')

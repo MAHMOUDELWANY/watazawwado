@@ -166,7 +166,7 @@ BEGIN
         EXIT WHEN NOT EXISTS (SELECT 1 FROM public.bookings WHERE reference_code = v_ref_code);
     END LOOP;
 
-    v_management_token := encode(gen_random_bytes(24), 'hex');
+    v_management_token := encode(extensions.gen_random_bytes(24), 'hex');
 
     -- 4. Leads Deterministic Upsert
     INSERT INTO public.leads (

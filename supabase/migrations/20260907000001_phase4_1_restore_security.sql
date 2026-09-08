@@ -38,7 +38,7 @@ BEGIN
     END IF;
 
     -- Secure authentication via hash comparison
-    IF v_booking.management_token_hash IS NULL OR crypt(v_clean_token, v_booking.management_token_hash) <> v_booking.management_token_hash THEN
+    IF v_booking.management_token_hash IS NULL OR extensions.crypt(v_clean_token, v_booking.management_token_hash) <> v_booking.management_token_hash THEN
         RAISE EXCEPTION 'No matching booking found for the provided management credentials.';
     END IF;
 
@@ -106,7 +106,7 @@ BEGIN
         RAISE EXCEPTION 'Booking not found.';
     END IF;
 
-    IF v_booking.management_token_hash IS NULL OR crypt(v_clean_token, v_booking.management_token_hash) <> v_booking.management_token_hash THEN
+    IF v_booking.management_token_hash IS NULL OR extensions.crypt(v_clean_token, v_booking.management_token_hash) <> v_booking.management_token_hash THEN
         RAISE EXCEPTION 'Unauthorized.';
     END IF;
 
@@ -156,7 +156,7 @@ BEGIN
         RAISE EXCEPTION 'Booking not found.';
     END IF;
 
-    IF v_booking.management_token_hash IS NULL OR crypt(v_clean_token, v_booking.management_token_hash) <> v_booking.management_token_hash THEN
+    IF v_booking.management_token_hash IS NULL OR extensions.crypt(v_clean_token, v_booking.management_token_hash) <> v_booking.management_token_hash THEN
         RAISE EXCEPTION 'Unauthorized.';
     END IF;
 

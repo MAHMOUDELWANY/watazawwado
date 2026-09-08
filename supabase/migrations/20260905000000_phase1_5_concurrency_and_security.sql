@@ -16,7 +16,7 @@ ADD COLUMN IF NOT EXISTS management_token TEXT;
 
 -- Populate tokens for existing rows if any exist without one
 UPDATE public.bookings
-SET management_token = encode(gen_random_bytes(24), 'hex')
+SET management_token = encode(extensions.gen_random_bytes(24), 'hex')
 WHERE management_token IS NULL;
 
 ALTER TABLE public.bookings
@@ -381,7 +381,7 @@ BEGIN
         EXIT WHEN NOT EXISTS (SELECT 1 FROM public.bookings WHERE reference_code = v_ref_code);
     END LOOP;
 
-    v_management_token := encode(gen_random_bytes(24), 'hex');
+    v_management_token := encode(extensions.gen_random_bytes(24), 'hex');
 
     -- 5. Leads Deterministic Upsert (FIX #3)
     INSERT INTO public.leads (

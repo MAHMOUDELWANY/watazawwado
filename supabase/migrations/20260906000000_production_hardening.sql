@@ -6,7 +6,7 @@ ALTER TABLE public.bookings ADD COLUMN IF NOT EXISTS management_token_hash TEXT;
 
 -- For existing records (since this is pre-production), hash the plaintext token
 UPDATE public.bookings 
-SET management_token_hash = crypt(management_token, gen_salt('bf'))
+SET management_token_hash = extensions.crypt(management_token, extensions.gen_salt('bf'))
 WHERE management_token IS NOT NULL AND management_token_hash IS NULL;
 
 -- Keep management_token for a moment to prevent view breakage but nullify it to secure data
@@ -118,12 +118,12 @@ BEGIN
 
     -- 3. Secure Reference Code & Management Token Generation
     LOOP
-        v_ref_code := 'MHM-' || upper(encode(gen_random_bytes(3), 'hex'));
+        v_ref_code := 'MHM-' || upper(encode(extensions.gen_random_bytes(3), 'hex'));
         EXIT WHEN NOT EXISTS (SELECT 1 FROM public.bookings WHERE reference_code = v_ref_code);
     END LOOP;
 
-    v_management_token := encode(gen_random_bytes(24), 'hex');
-    v_management_token_hash := crypt(v_management_token, gen_salt('bf'));
+    v_management_token := encode(extensions.gen_random_bytes(24), 'hex');
+    v_management_token_hash := extensions.crypt(v_management_token, extensions.gen_salt('bf'));
 
     -- 4. Leads Deterministic Upsert
     INSERT INTO public.leads (
@@ -235,7 +235,7 @@ BEGIN
     END IF;
 
     -- Secure authentication via hash comparison
-    IF v_booking.management_token_hash IS NULL OR crypt(v_clean_token, v_booking.management_token_hash) <> v_booking.management_token_hash THEN
+    IF v_booking.management_token_hash IS NULL OR extensions.crypt(v_clean_token, v_booking.management_token_hash) <> v_booking.management_token_hash THEN
         RAISE EXCEPTION 'No matching booking found for the provided management credentials.';
     END IF;
 
@@ -314,7 +314,7 @@ BEGIN
     FROM public.bookings
     WHERE upper(reference_code) = v_clean_ref;
 
-    IF NOT FOUND OR v_booking.management_token_hash IS NULL OR crypt(v_clean_token, v_booking.management_token_hash) <> v_booking.management_token_hash THEN
+    IF NOT FOUND OR v_booking.management_token_hash IS NULL OR extensions.crypt(v_clean_token, v_booking.management_token_hash) <> v_booking.management_token_hash THEN
         RAISE EXCEPTION 'No matching booking found for the provided management credentials.';
     END IF;
 
@@ -377,7 +377,7 @@ BEGIN
     FROM public.bookings
     WHERE upper(reference_code) = v_clean_ref;
 
-    IF NOT FOUND OR v_booking.management_token_hash IS NULL OR crypt(v_clean_token, v_booking.management_token_hash) <> v_booking.management_token_hash THEN
+    IF NOT FOUND OR v_booking.management_token_hash IS NULL OR extensions.crypt(v_clean_token, v_booking.management_token_hash) <> v_booking.management_token_hash THEN
         RAISE EXCEPTION 'No matching booking found for the provided management credentials.';
     END IF;
 

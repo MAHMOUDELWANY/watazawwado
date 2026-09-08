@@ -47,10 +47,18 @@ BEGIN
 
   -- 2C. Safe deterministic guest-to-account linking:
   -- Count how many existing unlinked student rows have this exact email
-  SELECT COUNT(*), MIN(id)
-  INTO v_unlinked_count, v_existing_student_id
+  SELECT COUNT(*)
+  INTO v_unlinked_count
   FROM public.students
   WHERE lower(trim(email)) = v_clean_email AND auth_user_id IS NULL;
+
+  IF v_unlinked_count = 1 THEN
+    SELECT id
+    INTO v_existing_student_id
+    FROM public.students
+    WHERE lower(trim(email)) = v_clean_email AND auth_user_id IS NULL
+    LIMIT 1;
+  END IF;
 
   -- Only link if exactly 1 unlinked record exists and no student is already linked to this auth_user_id
   IF v_unlinked_count = 1 AND v_existing_student_id IS NOT NULL THEN
