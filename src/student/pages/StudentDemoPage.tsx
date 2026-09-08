@@ -42,7 +42,7 @@ export default function StudentDemoPage({ onOpenSignupModal }: StudentDemoPagePr
     if (onOpenSignupModal) {
       onOpenSignupModal();
     } else {
-      navigate('/#student-login');
+      navigate('/get-started');
     }
   };
 

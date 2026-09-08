@@ -146,7 +146,7 @@ export default function StaffLoginPage() {
         <div className="mt-8 pt-6 border-t border-[#E2DDD5] dark:border-[#3E3545] text-center text-xs text-[#7A827B] dark:text-[#A69FA8]">
           <span>Are you an active student? </span>
           <Link
-            to="/#student-login"
+            to="/student"
             className="font-semibold text-[#6F907D] dark:text-[#8FAE9B] hover:underline"
           >
             Go to Student Portal

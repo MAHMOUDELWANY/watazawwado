@@ -69,7 +69,7 @@ export function LandingPage({ initialGetStartedOpen = false }: LandingPageProps)
     }
   }, [theme]);
 
-  // Listen to hash / URL changes for direct routes (#book, #free-trial, #manage, #teacher, #student-login)
+  // Listen to hash / URL changes for direct routes (#book, #free-trial, #manage, #manage)
   useEffect(() => {
     const handleHashCheck = () => {
       const hash = window.location.hash.toLowerCase();
@@ -80,9 +80,7 @@ export function LandingPage({ initialGetStartedOpen = false }: LandingPageProps)
         setBookingModalOpen(true);
       } else if (hash === '#manage' || hash === '#reschedule') {
         setManageModalOpen(true);
-      } else if (hash === '#teacher' || hash === '#admin' || hash === '#portal') {
-        setTeacherModalOpen(true);
-      } else if (hash === '#student-login' || hash === '#student' || hash === '#reset-password' || hash.includes('type=recovery')) {
+      } else if (hash === '#reset-password' || hash.includes('type=recovery')) {
         setStudentModalOpen(true);
       }
     };

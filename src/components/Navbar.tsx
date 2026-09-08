@@ -37,7 +37,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     { href: '#services', label: lang === 'en' ? 'Course Offered' : ARABIC_TRANSLATIONS.nav.services },
     { href: '#testimonials', label: lang === 'en' ? 'Reviews' : ARABIC_TRANSLATIONS.nav.testimonials },
     { href: '#contact', label: lang === 'en' ? 'Contact Mahmoud' : ARABIC_TRANSLATIONS.nav.contact },
-    { href: '#student-login', label: lang === 'en' ? 'Student Portal' : 'دخول الطالب' }
   ];
 
   return (

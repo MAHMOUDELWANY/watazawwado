@@ -43,7 +43,7 @@ export function DashboardApp() {
           <ShieldCheckIcon className="w-12 h-12 text-sage-600 dark:text-sage-400 mx-auto mb-4" />
           <h1 className="text-xl font-semibold mb-2">Teacher Access Required</h1>
           <p className="text-sm opacity-80 mb-6">You must be logged in as a teacher to view the dashboard.</p>
-          <Link to="/#teacher" className="inline-flex items-center justify-center px-6 py-2.5 bg-[#8FAE9B] hover:bg-[#6F907D] text-white rounded-xl transition-colors font-medium">
+          <Link to="/staff/login" className="inline-flex items-center justify-center px-6 py-2.5 bg-[#8FAE9B] hover:bg-[#6F907D] text-white rounded-xl transition-colors font-medium">
             Go to Login
           </Link>
         </div>

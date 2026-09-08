@@ -170,13 +170,6 @@ export const Footer: React.FC<FooterProps> = ({
             </a>
             <span>•</span>
             <a
-              href="#student-login"
-              className="text-[#6B5B73] dark:text-[#B8A9C9] hover:underline font-medium"
-            >
-              {isEn ? 'Student Portal' : 'بوابة الطالب'}
-            </a>
-            <span>•</span>
-            <a
               href="/staff/login"
               className="text-[#87A878] hover:underline font-medium flex items-center gap-1"
             >
