@@ -270,7 +270,12 @@ export const bookingRepository = {
       whatsapp: contactWhatsapp
     };
 
-    this.mockBookingStore.push(bookingResult);
+    // Real Supabase persistence is authoritative. Only store in in-memory mockBookingStore
+    // when running in unconfigured / offline fallback mode. This prevents real Production
+    // bookings from leaking into demo/test data or serving as an unauthorized second source of truth.
+    if (!isSupabaseConfigured()) {
+      this.mockBookingStore.push(bookingResult);
+    }
 
     return {
       success: true,
@@ -317,10 +322,16 @@ export const bookingRepository = {
         };
       } catch (err) {
         console.error('Database lookup failed:', err);
+        return null;
       }
     }
 
-    // Local store lookup
+    // In production / configured Supabase environment, never fall back to in-memory mock storage
+    if (isSupabaseConfigured()) {
+      return null;
+    }
+
+    // Local store lookup (only in unconfigured / offline development mode)
     const found = this.mockBookingStore.find(
       (b) => b.reference.toUpperCase() === cleanRef.toUpperCase() && (!managementToken || b.managementToken === managementToken)
     );
@@ -342,10 +353,12 @@ export const bookingRepository = {
       }
     }
 
-    // Update local store
-    const local = this.mockBookingStore.find((b) => b.reference.toUpperCase() === cleanRef.toUpperCase());
-    if (local) {
-      local.status = 'cancelled';
+    // Update local store only in unconfigured / offline development mode
+    if (!isSupabaseConfigured()) {
+      const local = this.mockBookingStore.find((b) => b.reference.toUpperCase() === cleanRef.toUpperCase());
+      if (local) {
+        local.status = 'cancelled';
+      }
     }
 
     // Notify integration cancellation in background
@@ -412,13 +425,15 @@ export const bookingRepository = {
       }
     }
 
-    // Update local store
-    const local = this.mockBookingStore.find((b) => b.reference.toUpperCase() === cleanRef.toUpperCase());
-    if (local) {
-      local.scheduledIsoDatetime = scheduledStartUtc;
-      local.scheduledEndIsoDatetime = scheduledEndUtc;
-      local.cairoTimeDisplay = cairoTimeDisplay;
-      local.status = 'rescheduled';
+    // Update local store only in unconfigured / offline development mode
+    if (!isSupabaseConfigured()) {
+      const local = this.mockBookingStore.find((b) => b.reference.toUpperCase() === cleanRef.toUpperCase());
+      if (local) {
+        local.scheduledIsoDatetime = scheduledStartUtc;
+        local.scheduledEndIsoDatetime = scheduledEndUtc;
+        local.cairoTimeDisplay = cairoTimeDisplay;
+        local.status = 'rescheduled';
+      }
     }
 
     // Notify integration reschedule in background
