@@ -45,14 +45,18 @@ dotenv.config();
 const app = express();
 
 export function getSupabaseAdminClient() {
-  const rawUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
+  const rawUrl = (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '').trim();
   const cleanUrl = rawUrl.replace(/\/rest\/v1\/?$/, '').replace(/\/+$/, '');
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+  const serviceKey = (process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
   if (!cleanUrl || !serviceKey) return null;
-  return createClient(cleanUrl, serviceKey, { 
-    auth: { persistSession: false },
-    global: { fetch: (input: any, init?: any) => globalThis.fetch(input, init) }
-  });
+  try {
+    return createClient(cleanUrl, serviceKey, { 
+      auth: { persistSession: false },
+      global: { fetch: (input: any, init?: any) => globalThis.fetch(input, init) }
+    });
+  } catch {
+    return null;
+  }
 }
 
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
@@ -924,6 +928,30 @@ app.get('/api/teacher-auth-diagnostic', verifyTeacherAuth, (req: any, res: any) 
     supabaseConfig: 'present',
     projectConsistency,
     stage: 'AUTHORIZED'
+  });
+});
+
+// ----------------------------------------------------------------------------
+// Task 0.55.4-B: Public-Safe Vercel Runtime Supabase Configuration Diagnostic
+// Purpose: Allows pre-authentication diagnosis of Vercel serverless environment variables.
+// Absolutely NEVER exposes secret values, prefixes, suffixes, lengths, or hashes.
+// ----------------------------------------------------------------------------
+app.get('/api/runtime-supabase-diagnostic', (req, res) => {
+  const hasUrl = Boolean(
+    (process.env.SUPABASE_URL && process.env.SUPABASE_URL.trim()) ||
+    (process.env.VITE_SUPABASE_URL && process.env.VITE_SUPABASE_URL.trim())
+  );
+  const hasServiceRoleKey = Boolean(
+    process.env.SUPABASE_SERVICE_ROLE_KEY && process.env.SUPABASE_SERVICE_ROLE_KEY.trim()
+  );
+  const adminClient = getSupabaseAdminClient();
+
+  res.json({
+    diagnostic: true,
+    runtime: "vercel",
+    supabaseUrl: hasUrl ? "PRESENT" : "MISSING",
+    supabaseServiceRoleKey: hasServiceRoleKey ? "PRESENT" : "MISSING",
+    adminClient: adminClient ? "AVAILABLE" : "UNAVAILABLE"
   });
 });
 
