@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase, isSupabaseConfigured } from './supabase';
 
-const APPROVED_TEACHER_EMAILS = [
+export const APPROVED_TEACHER_EMAILS = [
   'mhmwdlwany4222@gmail.com',
   'mahmoudelwany98@gmail.com'
 ];

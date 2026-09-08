@@ -161,18 +161,27 @@ export const Footer: React.FC<FooterProps> = ({
             ) : (
               <span>{isEn ? 'Guest Booking Supported' : 'حجز مرن ومباشر'}</span>
             )}
-            {onOpenTeacherModal && (
-              <>
-                <span>•</span>
-                <button
-                  type="button"
-                  onClick={onOpenTeacherModal}
-                  className="text-[#87A878] hover:underline font-medium cursor-pointer flex items-center gap-1"
-                >
-                  <span>{isEn ? 'Teacher Portal (Phase 3)' : 'بوابة المعلم (المرحلة ٣)'}</span>
-                </button>
-              </>
-            )}
+            <span>•</span>
+            <a
+              href="/student/demo"
+              className="hover:underline font-medium text-[#7A827B] dark:text-[#A69FA8] hover:text-[#362E3B] dark:hover:text-white transition-colors"
+            >
+              {isEn ? 'Interactive Demo' : 'عرض تجريبي تفاعلي'}
+            </a>
+            <span>•</span>
+            <a
+              href="#student-login"
+              className="text-[#6B5B73] dark:text-[#B8A9C9] hover:underline font-medium"
+            >
+              {isEn ? 'Student Portal' : 'بوابة الطالب'}
+            </a>
+            <span>•</span>
+            <a
+              href="/staff/login"
+              className="text-[#87A878] hover:underline font-medium flex items-center gap-1"
+            >
+              <span>{isEn ? 'Staff / Teacher Entrance' : 'دخول المعلم / الإدارة'}</span>
+            </a>
             <span>•</span>
             <motion.button
               whileHover={{ scale: 1.15, y: -2 }}

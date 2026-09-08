@@ -18,13 +18,18 @@ import { TrialBookingModal } from './components/TrialBookingModal';
 import { ManageBookingModal } from './components/booking/ManageBookingModal';
 import { TeacherAuthModal } from './components/TeacherAuthModal';
 import { StudentAuthModal } from './components/StudentAuthModal';
+import { GetStartedModal } from './components/GetStartedModal';
 import { TeacherAuthProvider } from './lib/auth';
 import { Language, ThemeMode } from './types';
 import { BookingMode } from './booking/types';
 
 import { LearningGuide } from './components/LearningGuide';
 
-export function LandingPage() {
+interface LandingPageProps {
+  initialGetStartedOpen?: boolean;
+}
+
+export function LandingPage({ initialGetStartedOpen = false }: LandingPageProps) {
   const [lang, setLang] = useState<Language>('en');
   const [theme, setTheme] = useState<ThemeMode>(() => {
     try {
@@ -36,6 +41,7 @@ export function LandingPage() {
     return 'light';
   });
 
+  const [getStartedModalOpen, setGetStartedModalOpen] = useState<boolean>(Boolean(initialGetStartedOpen));
   const [bookingModalOpen, setBookingModalOpen] = useState<boolean>(false);
   const [bookingMode, setBookingMode] = useState<BookingMode>('trial');
   const [preselectedService, setPreselectedService] = useState<string | undefined>();
@@ -67,7 +73,9 @@ export function LandingPage() {
   useEffect(() => {
     const handleHashCheck = () => {
       const hash = window.location.hash.toLowerCase();
-      if (hash === '#book' || hash === '#trial' || hash === '#free-trial') {
+      if (hash === '#get-started' || hash === '#start') {
+        setGetStartedModalOpen(true);
+      } else if (hash === '#book' || hash === '#trial' || hash === '#free-trial') {
         setBookingMode('trial');
         setBookingModalOpen(true);
       } else if (hash === '#manage' || hash === '#reschedule') {
@@ -192,6 +200,16 @@ export function LandingPage() {
         <TeacherAuthModal
           isOpen={teacherModalOpen}
           onClose={() => setTeacherModalOpen(false)}
+          lang={lang}
+        />
+
+        {/* Get Started Choice Modal (Guest Demo, Account Creation, Login, Direct Trial) */}
+        <GetStartedModal
+          isOpen={getStartedModalOpen}
+          onClose={() => setGetStartedModalOpen(false)}
+          onOpenStudentSignup={() => setStudentModalOpen(true)}
+          onOpenStudentLogin={() => setStudentModalOpen(true)}
+          onOpenDirectTrialBooking={() => handleOpenBooking(undefined, 'trial')}
           lang={lang}
         />
 

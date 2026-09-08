@@ -4355,7 +4355,7 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       const [studentRes, guardianRes, goalsRes] = await Promise.all([
         supabaseAdmin
           .from('students')
-          .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, created_at')
+          .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, created_at, onboarding_completed, learning_interest, learning_goal, learning_needs')
           .eq('id', studentId)
           .single(),
         supabaseAdmin
@@ -4381,6 +4381,10 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
             learnerType: mp.learner_type || 'adult',
             currentLevel: mp.current_level || 'beginner',
             status: mp.status || 'active',
+            onboardingCompleted: mp.onboarding_completed ?? true,
+            learningInterest: mp.learning_interest || 'Quran Reading',
+            learningGoal: mp.learning_goal || null,
+            learningNeeds: mp.learning_needs || null,
             createdAt: new Date().toISOString(),
             guardian: null,
             goals: []
@@ -4403,6 +4407,10 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
         learnerType: profile.learner_type || 'adult',
         currentLevel: profile.current_level || 'beginner',
         status: profile.status || 'active',
+        onboardingCompleted: profile.onboarding_completed ?? false,
+        learningInterest: profile.learning_interest || null,
+        learningGoal: profile.learning_goal || (goals[0]?.goal_text || null),
+        learningNeeds: profile.learning_needs || null,
         createdAt: profile.created_at,
         guardian: guardian ? {
           parentName: guardian.parent_name,
@@ -4428,6 +4436,10 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
           learnerType: mp.learner_type || 'adult',
           currentLevel: mp.current_level || 'beginner',
           status: mp.status || 'active',
+          onboardingCompleted: mp.onboarding_completed ?? true,
+          learningInterest: mp.learning_interest || 'Quran Reading',
+          learningGoal: mp.learning_goal || null,
+          learningNeeds: mp.learning_needs || null,
           createdAt: new Date().toISOString(),
           guardian: null,
           goals: []
@@ -4438,6 +4450,167 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
   } catch (err: any) {
     console.error('[GET /api/student/me Error]', err);
     return res.status(500).json({ error: 'Internal server error retrieving student profile.' });
+  }
+});
+
+// POST /api/student/onboarding - Complete onboarding for new student
+app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any) => {
+  try {
+    const studentId = req.studentUser?.student_id;
+    if (!studentId) {
+      return res.status(404).json({ error: 'Student profile not found.' });
+    }
+
+    const {
+      name,
+      learnerType,
+      parentName,
+      parentWhatsapp,
+      learningInterest,
+      currentLevel,
+      learningGoal,
+      learningNeeds,
+      timezone,
+      whatsapp
+    } = req.body || {};
+
+    if (!name || typeof name !== 'string' || name.trim().length < 2) {
+      return res.status(422).json({ error: 'Please provide a valid name (at least 2 characters).' });
+    }
+
+    const validLevels = ['beginner', 'elementary', 'intermediate', 'advanced'];
+    const resolvedLevel = validLevels.includes(currentLevel) ? currentLevel : 'beginner';
+    const resolvedLearnerType = learnerType === 'child' ? 'child' : 'adult';
+
+    let resolvedTimezone = 'UTC';
+    if (timezone && typeof timezone === 'string' && DateTime.now().setZone(timezone.trim()).isValid) {
+      resolvedTimezone = timezone.trim();
+    } else if (req.studentUser?.studentProfile?.timezone) {
+      resolvedTimezone = req.studentUser.studentProfile.timezone;
+    }
+
+    const isProd = process.env.NODE_ENV === 'production';
+    const supabaseAdmin = getSupabaseAdminClient();
+
+    if (!supabaseAdmin || (!isProd && req.studentUser?.studentProfile)) {
+      if (req.studentUser?.studentProfile) {
+        req.studentUser.studentProfile.name = name.trim();
+        req.studentUser.studentProfile.learner_type = resolvedLearnerType;
+        req.studentUser.studentProfile.current_level = resolvedLevel;
+        req.studentUser.studentProfile.timezone = resolvedTimezone;
+        req.studentUser.studentProfile.onboarding_completed = true;
+        if (whatsapp) req.studentUser.studentProfile.whatsapp = String(whatsapp).trim();
+        if (learningInterest) req.studentUser.studentProfile.learning_interest = String(learningInterest).trim();
+        if (learningGoal) req.studentUser.studentProfile.learning_goal = String(learningGoal).trim();
+        if (learningNeeds) req.studentUser.studentProfile.learning_needs = String(learningNeeds).trim();
+      }
+      return res.json({
+        success: true,
+        onboardingCompleted: true,
+        profile: {
+          id: studentId,
+          name: name.trim(),
+          email: req.studentUser?.email || 'student@example.com',
+          timezone: resolvedTimezone,
+          learnerType: resolvedLearnerType,
+          currentLevel: resolvedLevel,
+          onboardingCompleted: true,
+          learningInterest: learningInterest || null,
+          learningGoal: learningGoal || null,
+          learningNeeds: learningNeeds || null
+        }
+      });
+    }
+
+    // 1. Update students row
+    const studentUpdate: Record<string, any> = {
+      name: name.trim(),
+      learner_type: resolvedLearnerType,
+      current_level: resolvedLevel,
+      timezone: resolvedTimezone,
+      onboarding_completed: true,
+      updated_at: new Date().toISOString()
+    };
+    if (whatsapp) studentUpdate.whatsapp = String(whatsapp).trim();
+    if (learningInterest) studentUpdate.learning_interest = String(learningInterest).trim();
+    if (learningGoal) studentUpdate.learning_goal = String(learningGoal).trim();
+    if (learningNeeds) studentUpdate.learning_needs = String(learningNeeds).trim();
+
+    const { data: updatedStudent, error: updateErr } = await supabaseAdmin
+      .from('students')
+      .update(studentUpdate)
+      .eq('id', studentId)
+      .select()
+      .single();
+
+    if (updateErr) {
+      console.error('[POST /api/student/onboarding DB Error]', updateErr);
+      return res.status(500).json({ error: 'Failed to save onboarding information.' });
+    }
+
+    // 2. Handle child guardian if provided
+    if (resolvedLearnerType === 'child' && parentName && typeof parentName === 'string' && parentName.trim().length > 1) {
+      const parentNameClean = parentName.trim();
+      const parentPhoneClean = parentWhatsapp ? String(parentWhatsapp).trim() : null;
+
+      const { data: existingG } = await supabaseAdmin
+        .from('guardians')
+        .select('id')
+        .eq('student_id', studentId)
+        .maybeSingle();
+
+      if (existingG) {
+        await supabaseAdmin
+          .from('guardians')
+          .update({
+            parent_name: parentNameClean,
+            parent_whatsapp: parentPhoneClean
+          })
+          .eq('student_id', studentId);
+      } else {
+        await supabaseAdmin
+          .from('guardians')
+          .insert({
+            student_id: studentId,
+            parent_name: parentNameClean,
+            parent_email: updatedStudent?.email || req.studentUser?.email,
+            parent_whatsapp: parentPhoneClean,
+            relationship_type: 'parent'
+          });
+      }
+    }
+
+    // 3. Save primary learning goal to student_goals if provided
+    if (learningGoal && typeof learningGoal === 'string' && learningGoal.trim().length > 0) {
+      await supabaseAdmin
+        .from('student_goals')
+        .insert({
+          student_id: studentId,
+          goal_text: learningGoal.trim(),
+          is_primary: true,
+          status: 'in_progress'
+        });
+    }
+
+    return res.json({
+      success: true,
+      onboardingCompleted: true,
+      profile: {
+        id: updatedStudent.id,
+        name: updatedStudent.name,
+        email: updatedStudent.email,
+        timezone: updatedStudent.timezone,
+        learnerType: updatedStudent.learner_type,
+        currentLevel: updatedStudent.current_level,
+        onboardingCompleted: true,
+        learningInterest: updatedStudent.learning_interest,
+        learningGoal: updatedStudent.learning_goal,
+        learningNeeds: updatedStudent.learning_needs
+      }
+    });
+  } catch (err: any) {
+    console.error('[POST /api/student/onboarding Error]', err);
+    return res.status(500).json({ error: 'Internal server error processing onboarding.' });
   }
 });
 
@@ -4572,10 +4745,23 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
       return res.json([]);
     }
 
+    // Auto-link any existing guest bookings that match this student's email where student_id is null
+    if (req.studentUser?.email) {
+      try {
+        await supabaseAdmin
+          .from('bookings')
+          .update({ student_id: studentId })
+          .is('student_id', null)
+          .ilike('contact_email', req.studentUser.email);
+      } catch (linkErr) {
+        console.warn('[Auto-link Bookings Warning]', linkErr);
+      }
+    }
+
     // Fetch bookings belonging strictly to this authenticated student
     const { data: bookingsData, error: bookingsError } = await supabaseAdmin
       .from('bookings')
-      .select('id, reference_code, service_id, booking_type, duration_minutes, scheduled_start, scheduled_end, student_timezone, status, contact_name, contact_email, zoom_meeting_link, created_at')
+      .select('id, reference_code, service_id, booking_type, duration_minutes, scheduled_start, scheduled_end, student_timezone, status, contact_name, contact_email, fee_amount_usd, zoom_meeting_link, created_at')
       .eq('student_id', studentId)
       .order('scheduled_start', { ascending: true });
 
@@ -4621,6 +4807,7 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
         durationMinutes: b.duration_minutes,
         studentTimezone: b.student_timezone,
         status: b.status,
+        feeAmountUsd: b.fee_amount_usd,
         zoomMeetingLink: zoomUrl,
         // Harmonized contract aliases for UI compatibility
         lesson_date: b.scheduled_start,

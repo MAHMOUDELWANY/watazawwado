@@ -149,9 +149,24 @@ export const bookingRepository = {
     let zoomMeetingLink = '';
     let serviceName = '1-on-1 Lesson';
     let feeAmountUsd = isTrial ? 0 : 7.00;
+    let studentIdToLink: string | null = (data as any).studentId || null;
 
     if (isSupabaseConfigured()) {
       try {
+        if (!studentIdToLink) {
+          const { data: sessionData } = await supabase.auth.getSession();
+          if (sessionData?.session?.user?.id) {
+            const { data: stud } = await supabase
+              .from('students')
+              .select('id')
+              .eq('auth_user_id', sessionData.session.user.id)
+              .maybeSingle();
+            if (stud?.id) {
+              studentIdToLink = stud.id;
+            }
+          }
+        }
+
         const { data: atomicResult, error: atomicError } = await supabase.rpc('create_booking_atomic', {
           p_booking: {
             contact_name: learnerName,
@@ -168,6 +183,7 @@ export const bookingRepository = {
             cairo_time_display: cairoTimeDisplay,
             goal: data.goal === 'custom' ? data.customGoalText : data.goal,
             notes: data.audience === 'child' ? data.parentNotes : data.notes,
+            student_id: studentIdToLink,
           },
         });
 
