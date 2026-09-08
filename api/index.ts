@@ -6,7 +6,10 @@ import { GoogleGenAI } from '@google/genai';
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
 import { encryptToken } from '../server/integrations/crypto.js';
-import { getActiveGoogleConnection } from '../server/integrations/syncEngine.js';
+import {
+  getActiveGoogleConnection,
+  isTeacherCurrentlyAuthorized
+} from '../server/integrations/syncEngine.js';
 import { getZoomCredentials } from '../server/integrations/zoom.js';
 import {
   generateGoogleAuthUrl,
@@ -34,6 +37,7 @@ import {
   cancelBookingReminders,
   processDueReminders
 } from '../server/notifications/reminderEngine.js';
+import { processIntegrationJobs } from '../server/integrations/worker.js';
 import { getEmailConfigStatus } from '../server/notifications/emailService.js';
 
 dotenv.config();
@@ -41,11 +45,14 @@ dotenv.config();
 const app = express();
 
 export function getSupabaseAdminClient() {
-  const rawUrl = process.env.VITE_SUPABASE_URL || '';
+  const rawUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
   const cleanUrl = rawUrl.replace(/\/rest\/v1\/?$/, '').replace(/\/+$/, '');
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
   if (!cleanUrl || !serviceKey) return null;
-  return createClient(cleanUrl, serviceKey, { auth: { persistSession: false } });
+  return createClient(cleanUrl, serviceKey, { 
+    auth: { persistSession: false },
+    global: { fetch: (input: any, init?: any) => globalThis.fetch(input, init) }
+  });
 }
 
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
@@ -123,9 +130,10 @@ ${MASTER_SPEC}
 });
 
 // 1. INTEGRATIONS: STATUS ENDPOINT
-app.get('/api/integrations/status', verifyTeacherAuth, async (req, res) => {
+app.get('/api/integrations/status', verifyTeacherAuth, async (req: any, res) => {
   try {
-    const googleConn = await getActiveGoogleConnection();
+    const teacherId = req.teacherUser?.id;
+    const googleConn = teacherId ? await getActiveGoogleConnection(teacherId) : null;
     const googleCreds = getGoogleOAuthCredentials();
     const zoomCreds = getZoomCredentials();
     const emailStatus = getEmailConfigStatus();
@@ -153,20 +161,31 @@ app.get('/api/integrations/status', verifyTeacherAuth, async (req, res) => {
 });
 
 // 2. INTEGRATIONS: GOOGLE CALENDAR AUTH URL
-app.get('/api/integrations/google-calendar/auth-url', verifyTeacherAuth, (req, res) => {
+app.get('/api/integrations/google-calendar/auth-url', verifyTeacherAuth, (req: any, res: any) => {
   try {
-    const crypto = require('crypto');
-    const state = crypto.randomBytes(16).toString('hex');
+    
+    const teacherId = req.teacherUser?.id;
+    if (!teacherId) {
+      return res.status(401).json({ error: 'Unauthorized: missing teacher identity' });
+    }
+
+    const nonce = crypto.randomBytes(16).toString('hex');
+    const payload = `${teacherId}:${nonce}`;
+    const hmac = crypto.createHmac('sha256', process.env.SUPABASE_SERVICE_ROLE_KEY || 'dev-secret');
+    hmac.update(payload);
+    const signature = hmac.digest('hex');
+    const state = `${Buffer.from(payload).toString('base64')}.${signature}`;
+
     res.setHeader('Set-Cookie', `oauth_state=${state}; HttpOnly; Path=/; Max-Age=600; SameSite=Lax${process.env.NODE_ENV === 'production' ? '; Secure' : ''}`);
     const authUrl = generateGoogleAuthUrl(state);
     res.json({ authUrl });
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to generate auth url.', code: 'AUTH_URL_GENERATION_FAILED' });
+    console.error("AUTH_URL_ERROR:", error); res.status(500).json({ error: String(error.stack || error) });
   }
 });
 
 // 3. INTEGRATIONS: GOOGLE CALENDAR OAUTH CALLBACK
-app.get('/api/integrations/google-calendar/callback', async (req, res) => {
+app.get('/api/integrations/google-calendar/callback', async (req: any, res: any) => {
   try {
     const code = req.query.code as string;
     const state = req.query.state as string;
@@ -182,23 +201,52 @@ app.get('/api/integrations/google-calendar/callback', async (req, res) => {
       return res.status(403).send('Invalid or expired OAuth state parameter (CSRF).');
     }
 
+    
+    const parts = state.split('.');
+    if (parts.length !== 2) {
+      return res.status(403).send('Malformed OAuth state parameter.');
+    }
+    const [b64Payload, signature] = parts;
+
+    const payload = Buffer.from(b64Payload, 'base64').toString('utf8');
+    const hmac = crypto.createHmac('sha256', process.env.SUPABASE_SERVICE_ROLE_KEY || 'dev-secret');
+    hmac.update(payload);
+    const expectedSignature = hmac.digest('hex');
+
+    if (signature !== expectedSignature) {
+      return res.status(403).send('Invalid OAuth state signature.');
+    }
+
+    const [teacherId, nonce] = payload.split(':');
+    if (!teacherId) {
+      return res.status(403).send('OAuth state missing teacher identity.');
+    }
+
+    // Explicitly revalidate teacher authorization at callback time
+    const isAuthorized = await isTeacherCurrentlyAuthorized(teacherId);
+    if (!isAuthorized) {
+      return res.status(403).send('Unauthorized: Teacher account is not authorized or has been deactivated.');
+    }
+
     const tokenData = await exchangeGoogleCodeForTokens(code);
     
     // Store securely in DB using service role
-    const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
+    const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
     
     if (supabaseUrl && serviceKey) {
       const supabase = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
       
-      // Invalidate old connections
+      // Invalidate old connections FOR THIS TEACHER ONLY
       await supabase
         .from('calendar_connections')
         .update({ is_active: false })
-        .eq('provider', 'google_calendar');
+        .eq('provider', 'google_calendar')
+        .eq('teacher_id', teacherId);
 
       // Insert new connection
       await supabase.from('calendar_connections').insert({
+        teacher_id: teacherId,
         provider: 'google_calendar',
         account_email: tokenData.accountEmail || 'unknown@calendar.google.com',
         is_active: true,
@@ -236,6 +284,9 @@ app.get('/api/integrations/google-calendar/callback', async (req, res) => {
       email: tokenData.accountEmail || 'Connected' 
     }).replace(/</g, '\\u003c').replace(/>/g, '\\u003e');
 
+    // Clear oauth_state cookie to prevent replay attacks
+    res.setHeader('Set-Cookie', 'oauth_state=; HttpOnly; Path=/; Max-Age=0; SameSite=Lax');
+
     // Return HTML to close popup and notify parent
     res.send(`
       <html>
@@ -255,15 +306,20 @@ app.get('/api/integrations/google-calendar/callback', async (req, res) => {
       </html>
     `);
   } catch (error: any) {
-    console.error('Google callback error:', error);
+    console.error("CALLBACK_ERROR:", error);
     res.status(500).send('Authentication Failed: Google Calendar connection failed. Please try again.');
   }
 });
 
 // 6. INTEGRATIONS: GOOGLE CALENDAR DISCONNECT
-app.post('/api/integrations/google-calendar/disconnect', verifyTeacherAuth, async (req, res) => {
+app.post('/api/integrations/google-calendar/disconnect', verifyTeacherAuth, async (req: any, res: any) => {
   try {
-    const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
+    const teacherId = req.teacherUser?.id;
+    if (!teacherId) {
+      return res.status(401).json({ error: 'Unauthorized: missing teacher identity' });
+    }
+
+    const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
     
     if (supabaseUrl && serviceKey) {
@@ -272,7 +328,8 @@ app.post('/api/integrations/google-calendar/disconnect', verifyTeacherAuth, asyn
       await supabase
         .from('calendar_connections')
         .update({ is_active: false, updated_at: new Date().toISOString() })
-        .eq('provider', 'google_calendar');
+        .eq('provider', 'google_calendar')
+        .eq('teacher_id', teacherId);
     }
 
     res.json({ success: true, message: 'Google Calendar disconnected.' });
@@ -284,7 +341,7 @@ app.post('/api/integrations/google-calendar/disconnect', verifyTeacherAuth, asyn
 // --- AUTH HELPER ---
 async function verifyManagementToken(referenceCode: string, managementToken: string): Promise<boolean> {
   if (!referenceCode || !managementToken) return false;
-  const supabaseUrl = process.env.VITE_SUPABASE_URL;
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!supabaseUrl || !serviceKey) {
     console.error('[Configuration Error] SUPABASE_SERVICE_ROLE_KEY missing for management auth check.');
@@ -305,7 +362,7 @@ async function verifyManagementToken(referenceCode: string, managementToken: str
 app.post('/api/integrations/sync-booking', async (req, res) => {
   try {
     const { booking } = req.body;
-    if (!booking || !booking.referenceCode || !booking.scheduledStart || !booking.managementToken) {
+    if (!booking || !booking.referenceCode || !booking.managementToken) {
       return res.status(400).json({ error: 'Invalid booking data for synchronization.' });
     }
 
@@ -314,58 +371,34 @@ app.post('/api/integrations/sync-booking', async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized.' });
     }
 
-    const syncResult = await syncBookingIntegrations(booking);
+    // Option B: Fast-path. Trigger the outbox worker immediately for faster UI feedback
+    await processIntegrationJobs(2); // Process small batch to return quickly
 
-    // Schedule idempotent 24h & 1h reminders and dispatch notification asynchronously
-    try {
-      const isTrial = booking.mode === 'trial' || booking.booking_type === 'trial';
-      const scheduledStartIso = booking.scheduledStart;
-      const scheduledEndIso = booking.scheduledEnd || (scheduledStartIso && booking.durationMinutes
-        ? DateTime.fromISO(scheduledStartIso).plus({ minutes: booking.durationMinutes }).toISO()
-        : scheduledStartIso);
-      const studentTz = booking.studentTimezone || 'Africa/Cairo';
-      const startLuxon = DateTime.fromISO(scheduledStartIso).setZone(studentTz);
-
-      await scheduleBookingReminders({
-        id: booking.id || booking.referenceCode,
-        scheduledStartUtc: scheduledStartIso,
-        referenceCode: booking.referenceCode
-      });
-
-      await dispatchNotification({
-        eventType: isTrial ? 'TRIAL_BOOKED' : 'BOOKING_CONFIRMED',
-        booking: {
-          id: booking.id,
-          referenceCode: booking.referenceCode,
-          serviceName: booking.serviceName || (isTrial ? 'Free Trial Lesson' : '1-on-1 Lesson'),
-          learnerName: booking.learnerName || booking.studentName || 'Student',
-          contactEmail: booking.contactEmail,
-          contactWhatsapp: booking.contactWhatsapp || null,
-          date: startLuxon.toFormat('cccc, MMMM d, yyyy'),
-          timeDisplay: startLuxon.toFormat('hh:mm a'),
-          timezone: studentTz,
-          durationMinutes: booking.durationMinutes || (isTrial ? 30 : 60),
-          zoomLink: syncResult.zoomMeetingLink || booking.zoomMeetingLink || null,
-          cairoTimeDisplay: booking.cairoTimeDisplay || null,
-          isTrial
+    // Fetch the updated booking to return the latest zoom link
+    const supabase = getSupabaseAdminClient();
+    if (supabase) {
+        const { data: b } = await supabase.from('bookings').select('zoom_meeting_link, google_calendar_event_id, integration_status').eq('reference_code', booking.referenceCode).maybeSingle();
+        if (b) {
+            return res.json({
+                zoomMeetingLink: b.zoom_meeting_link,
+                googleEventId: b.google_calendar_event_id,
+                integrationStatus: b.integration_status
+            });
         }
-      });
-    } catch (notifErr) {
-      console.error('[Notification/Reminder Setup Error]', notifErr);
     }
 
-    res.json(syncResult);
+    res.json({ integrationStatus: 'pending' });
   } catch (error: any) {
-    console.error('Sync booking error:', error);
-    res.status(500).json({ error: 'Failed to synchronize booking.', code: 'SYNC_FAILED' });
+    console.error('Sync booking fast-path error:', error);
+    res.json({ integrationStatus: 'pending' });
   }
 });
 
 // 8. INTEGRATIONS: RESCHEDULE EVENT SYNC
 app.post('/api/integrations/reschedule', async (req, res) => {
   try {
-    const { referenceCode, managementToken, newStartUtc, newEndUtc, cairoTimeDisplay } = req.body;
-    if (!referenceCode || !managementToken || !newStartUtc || !newEndUtc) {
+    const { referenceCode, managementToken } = req.body;
+    if (!referenceCode || !managementToken) {
       return res.status(400).json({ error: 'Missing reschedule parameters.' });
     }
 
@@ -374,58 +407,15 @@ app.post('/api/integrations/reschedule', async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized.' });
     }
 
-    const result = await syncRescheduledBooking(referenceCode, newStartUtc, newEndUtc, cairoTimeDisplay);
+    // Trigger worker asynchronously to process the job
+    processIntegrationJobs().catch(err => console.error('[Fast-path reschedule error]', err));
 
-    // Reschedule reminder jobs and dispatch notification asynchronously
-    try {
-      const supabase = getSupabaseAdminClient();
-      if (supabase) {
-        const { data: b } = await supabase
-          .from('bookings')
-          .select('*')
-          .eq('reference_code', referenceCode)
-          .maybeSingle();
-
-        if (b) {
-          await rescheduleBookingReminders(b.id, newStartUtc, referenceCode);
-
-          const studentTz = b.student_timezone || 'Africa/Cairo';
-          const newStartLuxon = DateTime.fromISO(newStartUtc).setZone(studentTz);
-          const oldStartLuxon = b.scheduled_start ? DateTime.fromISO(b.scheduled_start).setZone(studentTz) : null;
-
-          await dispatchNotification({
-            eventType: 'BOOKING_RESCHEDULED',
-            booking: {
-              id: b.id,
-              referenceCode: referenceCode,
-              serviceName: b.service_name || '1-on-1 Lesson',
-              learnerName: b.student_name || b.contact_name || 'Student',
-              contactEmail: b.contact_email,
-              contactWhatsapp: b.contact_whatsapp || null,
-              date: newStartLuxon.toFormat('cccc, MMMM d, yyyy'),
-              timeDisplay: newStartLuxon.toFormat('hh:mm a'),
-              timezone: studentTz,
-              durationMinutes: b.duration_minutes || 60,
-              zoomLink: b.zoom_meeting_link || null,
-              cairoTimeDisplay: cairoTimeDisplay || b.cairo_time_display || null,
-              oldDate: oldStartLuxon ? oldStartLuxon.toFormat('cccc, MMMM d, yyyy') : undefined,
-              oldTimeDisplay: oldStartLuxon ? oldStartLuxon.toFormat('hh:mm a') : undefined
-            }
-          });
-        }
-      }
-    } catch (notifErr) {
-      console.error('[Reschedule Notification Error]', notifErr);
-    }
-
-    res.json(result);
-  } catch (error: any) {
-    console.error('Reschedule sync error:', error);
-    res.status(500).json({ error: 'Failed to sync rescheduled event.', code: 'RESCHEDULE_SYNC_FAILED' });
+    return res.status(202).json({ success: true, message: 'Reschedule job queued for background processing.' });
+  } catch (err: any) {
+    console.error('Error in /api/integrations/reschedule:', err);
+    res.status(500).json({ error: 'Internal server error.' });
   }
 });
-
-// 9. INTEGRATIONS: CANCEL EVENT SYNC
 app.post('/api/integrations/cancel', async (req, res) => {
   try {
     const { referenceCode, managementToken } = req.body;
@@ -438,50 +428,13 @@ app.post('/api/integrations/cancel', async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized.' });
     }
 
-    const result = await syncCancelledBooking(referenceCode);
+    // Trigger worker asynchronously to process the job
+    processIntegrationJobs().catch(err => console.error('[Fast-path cancel error]', err));
 
-    // Cancel pending reminder jobs and dispatch notification asynchronously
-    try {
-      const supabase = getSupabaseAdminClient();
-      if (supabase) {
-        const { data: b } = await supabase
-          .from('bookings')
-          .select('*')
-          .eq('reference_code', referenceCode)
-          .maybeSingle();
-
-        if (b) {
-          await cancelBookingReminders(b.id);
-
-          const studentTz = b.student_timezone || 'Africa/Cairo';
-          const startLuxon = DateTime.fromISO(b.scheduled_start).setZone(studentTz);
-
-          await dispatchNotification({
-            eventType: 'BOOKING_CANCELLED',
-            booking: {
-              id: b.id,
-              referenceCode: referenceCode,
-              serviceName: b.service_name || '1-on-1 Lesson',
-              learnerName: b.student_name || b.contact_name || 'Student',
-              contactEmail: b.contact_email,
-              contactWhatsapp: b.contact_whatsapp || null,
-              date: startLuxon.toFormat('cccc, MMMM d, yyyy'),
-              timeDisplay: startLuxon.toFormat('hh:mm a'),
-              timezone: studentTz,
-              durationMinutes: b.duration_minutes || 60,
-              zoomLink: b.zoom_meeting_link || null
-            }
-          });
-        }
-      }
-    } catch (notifErr) {
-      console.error('[Cancel Notification Error]', notifErr);
-    }
-
-    res.json(result);
+    return res.status(202).json({ success: true, message: 'Cancellation job queued for background processing.' });
   } catch (error: any) {
     console.error('Cancel sync error:', error);
-    res.status(500).json({ error: 'Failed to sync cancelled event.', code: 'CANCEL_SYNC_FAILED' });
+    res.status(500).json({ error: 'Failed to queue cancelled event.', code: 'CANCEL_QUEUE_FAILED' });
   }
 });
 
@@ -516,7 +469,8 @@ app.get('/api/integrations/availability', async (req, res) => {
       return res.status(400).json({ error: 'Invalid duration.', code: 'INVALID_AVAILABILITY_REQUEST' });
     }
 
-    const days = await computeAvailableSlots(timezone, daysCount, duration);
+    const teacherId = typeof req.query.teacherId === 'string' ? req.query.teacherId : (typeof req.query.teacher_id === 'string' ? req.query.teacher_id : undefined);
+    const days = await computeAvailableSlots(timezone, daysCount, duration, teacherId);
     res.json({ success: true, days, timezone });
   } catch (error: any) {
     console.error('Availability fetch error:', error);
@@ -527,7 +481,7 @@ app.get('/api/integrations/availability', async (req, res) => {
 // 11. INTEGRATIONS: VALIDATE SLOT AVAILABILITY (SERVER-SIDE AUTHORITATIVE CHECK)
 app.post('/api/integrations/validate-slot', async (req, res) => {
   try {
-    const { scheduledStartUtc, scheduledEndUtc } = req.body;
+    const { scheduledStartUtc, scheduledEndUtc, teacherId, teacher_id } = req.body;
     if (!scheduledStartUtc || !scheduledEndUtc) {
       return res.status(400).json({ isAvailable: false, conflictReason: 'Missing slot timestamps.' });
     }
@@ -536,7 +490,8 @@ app.post('/api/integrations/validate-slot', async (req, res) => {
       return res.status(400).json({ isAvailable: false, conflictReason: 'Invalid slot timestamps.' });
     }
 
-    const result = await validateSlotAvailability(scheduledStartUtc, scheduledEndUtc);
+    const resolvedTeacherId = typeof teacherId === 'string' ? teacherId : (typeof teacher_id === 'string' ? teacher_id : undefined);
+    const result = await validateSlotAvailability(scheduledStartUtc, scheduledEndUtc, resolvedTeacherId);
     res.json(result);
   } catch (error: any) {
     console.error('Slot validation error:', error);
@@ -552,7 +507,7 @@ app.post('/api/integrations/retry-sync', verifyTeacherAuth, async (req, res) => 
       return res.status(400).json({ error: 'Missing booking reference code.' });
     }
 
-    const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
+    const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
     if (!supabaseUrl || !serviceKey) {
@@ -573,6 +528,7 @@ app.post('/api/integrations/retry-sync', verifyTeacherAuth, async (req, res) => 
 
     const syncResult = await syncBookingIntegrations({
       referenceCode: booking.reference_code,
+      teacherId: (req as any).teacherUser?.id || booking.teacher_id,
       learnerName: booking.contact_name,
       parentName: booking.parent_name,
       serviceName: '1-on-1 Lesson',
@@ -814,91 +770,162 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
   }
 }
 
+function extractSupabaseProjectRef(urlStr?: string): string | null {
+  if (!urlStr) return null;
+  try {
+    const url = new URL(urlStr.trim());
+    const hostname = url.hostname.toLowerCase();
+    const parts = hostname.split('.');
+    if (parts.length >= 3 && parts[1] === 'supabase' && parts[2] === 'co') {
+      return parts[0];
+    }
+  } catch {}
+  return null;
+}
+
 async function verifyTeacherAuth(req: any, res: any, next: any) {
   try {
     const authHeader = req.headers.authorization;
     const devHeader = req.headers['x-dev-teacher-auth'];
-    const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
-    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
     const isProd = process.env.NODE_ENV === 'production';
 
+    // Safe project consistency diagnosis (never exposes credentials or ref strings)
+    const clientProjectRef = typeof req.headers['x-client-project-ref'] === 'string' ? req.headers['x-client-project-ref'].trim() : null;
+    const backendProjectRef = extractSupabaseProjectRef(process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL);
+    if (clientProjectRef && backendProjectRef) {
+      res.setHeader('x-project-consistency', clientProjectRef === backendProjectRef ? 'MATCH' : 'MISMATCH');
+    } else {
+      res.setHeader('x-project-consistency', 'UNKNOWN');
+    }
+
     if (!authHeader && !devHeader) {
-      return res.status(401).json({ error: 'Authentication required. Authorization header missing.' });
+      const stage = 'NO_AUTH_HEADER';
+      res.setHeader('x-auth-diagnostic-stage', stage);
+      return res.status(401).json({ error: 'Authentication required. Authorization header missing.', diagnosticStage: stage });
     }
 
     const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.substring(7) : null;
 
     // Strict production security: dev tokens are NEVER accepted in production
     if (isProd && (token === 'dev-teacher-token' || token === 'dev-student-token' || token === 'dev-student-b-token' || devHeader)) {
-      return res.status(401).json({ error: 'Unauthorized. Development tokens are strictly forbidden in production.' });
+      const stage = 'DEV_TOKEN_REJECTED_PROD';
+      res.setHeader('x-auth-diagnostic-stage', stage);
+      return res.status(401).json({ error: 'Unauthorized. Development tokens are strictly forbidden in production.', diagnosticStage: stage });
     }
 
-    // 1. Supabase Verification when service key is available
-    if (supabaseUrl && serviceKey) {
-      if (!token) {
-        return res.status(401).json({ error: 'Authentication required. Expected Bearer token format.' });
-      }
-
-      // Check if dev token in local non-prod ONLY
-      if (!isProd && token === 'dev-teacher-token') {
-        req.teacherUser = {
-          id: 'teacher-mahmoud-001',
-          email: 'mhmwdlwany4222@gmail.com',
-          name: 'Ustadh Mahmoud',
-          role: 'super_admin'
-        };
-        return next();
-      }
-
-      const supabaseAdmin = getSupabaseAdminClient();
-      if (!supabaseAdmin) {
-        return res.status(503).json({ error: 'Database integration is not properly configured.' });
-      }
-      const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
-
-      if (error || !user) {
-        return res.status(401).json({ error: 'Invalid or expired session token.' });
-      }
-
-      const email = (user.email || '').toLowerCase().trim();
-      
-      // Authoritative role lookup in teacher_accounts allowlist
-      const { data: teacherRecord, error: teacherError } = await supabaseAdmin
-        .from('teacher_accounts')
-        .select('role')
-        .eq('email', email)
-        .eq('is_active', true)
-        .single();
-
-      if (teacherError || !teacherRecord) {
-        return res.status(403).json({ error: 'Access denied. Account is not authorized for the teacher workspace.' });
-      }
-
+    // Dev token bypass for local development / non-production ONLY
+    if (!isProd && (token === 'dev-teacher-token' || devHeader === 'true')) {
       req.teacherUser = {
-        ...user,
-        appRole: teacherRecord.role
+        id: 'teacher-mahmoud-001',
+        email: 'mhmwdlwany4222@gmail.com',
+        name: 'Ustadh Mahmoud',
+        role: 'super_admin'
       };
+      req.teacherAuthStage = 'AUTHORIZED';
+      res.setHeader('x-auth-diagnostic-stage', 'AUTHORIZED');
       return next();
     }
 
-    // 2. Non-production development fallback if Supabase environment is not configured
-    if (!isProd) {
-      if (token === 'dev-teacher-token' || devHeader === 'true') {
-        req.teacherUser = {
-          id: 'teacher-mahmoud-001',
-          email: 'mhmwdlwany4222@gmail.com',
-          name: 'Ustadh Mahmoud',
-          role: 'super_admin'
-        };
-        return next();
-      }
+    // For all real tokens: token MUST be provided in Bearer format
+    if (!token) {
+      const stage = 'INVALID_BEARER_FORMAT';
+      res.setHeader('x-auth-diagnostic-stage', stage);
+      return res.status(401).json({ error: 'Authentication required. Expected Bearer token format.', diagnosticStage: stage });
     }
 
-    return res.status(401).json({ error: 'Unauthorized access.' });
+    const supabaseAdmin = getSupabaseAdminClient();
+    if (!supabaseAdmin) {
+      const stage = 'SUPABASE_CONFIG_MISSING';
+      res.setHeader('x-auth-diagnostic-stage', stage);
+      console.error('[verifyTeacherAuth] Database integration is not properly configured. Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY.');
+      return res.status(503).json({ error: 'Database integration is not properly configured.', diagnosticStage: stage });
+    }
+
+    const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
+
+    if (error || !user) {
+      const stage = 'SUPABASE_TOKEN_REJECTED';
+      res.setHeader('x-auth-diagnostic-stage', stage);
+      return res.status(401).json({ error: 'Invalid or expired session token.', diagnosticStage: stage });
+    }
+
+    const email = (user.email || '').toLowerCase().trim();
+    
+    // Authoritative role lookup in teacher_accounts allowlist
+    const { data: teacherRecord, error: teacherError } = await supabaseAdmin
+      .from('teacher_accounts')
+      .select('role, is_active')
+      .eq('email', email)
+      .maybeSingle();
+
+    if (teacherError || !teacherRecord) {
+      const stage = 'TEACHER_NOT_FOUND';
+      res.setHeader('x-auth-diagnostic-stage', stage);
+      return res.status(403).json({ error: 'Access denied. Account is not authorized for the teacher workspace.', diagnosticStage: stage });
+    }
+
+    if (!teacherRecord.is_active) {
+      const stage = 'TEACHER_INACTIVE';
+      res.setHeader('x-auth-diagnostic-stage', stage);
+      return res.status(403).json({ error: 'Access denied. Teacher account is inactive.', diagnosticStage: stage });
+    }
+
+    // Ensure teacher profile exists in public.profiles for relational integrity (e.g. calendar_connections.teacher_id -> profiles.id)
+    try {
+      const { data: existingProfile } = await supabaseAdmin
+        .from('profiles')
+        .select('id')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (!existingProfile) {
+        await supabaseAdmin
+          .from('profiles')
+          .upsert({
+            id: user.id,
+            email: email,
+            display_name: user.user_metadata?.full_name || 'Ustadh Mahmoud',
+            role: teacherRecord.role,
+            timezone: 'Africa/Cairo'
+          });
+      }
+    } catch (profileErr) {
+      console.warn('[verifyTeacherAuth] Profile sync warning:', profileErr);
+    }
+
+    req.teacherAuthStage = 'AUTHORIZED';
+    res.setHeader('x-auth-diagnostic-stage', 'AUTHORIZED');
+    req.teacherUser = {
+      ...user,
+      appRole: teacherRecord.role
+    };
+    return next();
   } catch (err) {
-    return res.status(401).json({ error: 'Authentication check failed.' });
+    console.error('[verifyTeacherAuth] Unexpected error during authentication verification:', err);
+    res.setHeader('x-auth-diagnostic-stage', 'INTERNAL_ERROR');
+    return res.status(500).json({ error: 'Internal server error during authentication.', diagnosticStage: 'INTERNAL_ERROR' });
   }
 }
+
+app.get('/api/teacher-auth-diagnostic', verifyTeacherAuth, (req: any, res: any) => {
+  const clientRef = typeof req.headers['x-client-project-ref'] === 'string' ? req.headers['x-client-project-ref'].trim() : null;
+  const backendRef = extractSupabaseProjectRef(process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL);
+
+  let projectConsistency: 'MATCH' | 'MISMATCH' | 'UNKNOWN' = 'UNKNOWN';
+  if (clientRef && backendRef) {
+    projectConsistency = clientRef === backendRef ? 'MATCH' : 'MISMATCH';
+  }
+
+  res.json({
+    diagnostic: true,
+    authenticated: true,
+    tokenVerification: 'success',
+    teacherAuthorization: 'authorized',
+    supabaseConfig: 'present',
+    projectConsistency,
+    stage: 'AUTHORIZED'
+  });
+});
 
 function transformBookingToDashboardLesson(b: any) {
   const scheduledStart = b.scheduled_start;
@@ -2407,6 +2434,49 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
       return res.status(404).json({ error: 'Booking not found.' });
     }
 
+    // 1. Transactional Cancellation Path
+    if (status === 'cancelled') {
+      const { data: rpcData, error: rpcErr } = await supabase.rpc('teacher_cancel_booking', {
+        p_booking_id: id,
+        p_reason: cancellation_reason || 'Cancelled by teacher',
+        p_notes: notes || null
+      });
+
+      if (rpcErr) {
+        console.error('[Teacher Cancel RPC Error]', rpcErr);
+        return res.status(500).json({ error: rpcErr.message || 'Failed to cancel booking.' });
+      }
+
+      // Best-effort fast path worker trigger AFTER commit
+      processIntegrationJobs().catch(err => console.error('[Teacher Cancel job process error]', err));
+
+      const { data: updatedBooking } = await supabase.from('bookings').select('*').eq('id', id).single();
+      return res.json({ success: true, booking: updatedBooking });
+    }
+
+    // 2. Transactional Reschedule Path
+    if (scheduled_start && scheduled_end) {
+      const { data: rpcData, error: rpcErr } = await supabase.rpc('teacher_reschedule_booking', {
+        p_booking_id: id,
+        p_new_start: scheduled_start,
+        p_new_end: scheduled_end,
+        p_cairo_time_display: cairo_time_display || null,
+        p_notes: notes || null
+      });
+
+      if (rpcErr) {
+        console.error('[Teacher Reschedule RPC Error]', rpcErr);
+        return res.status(500).json({ error: rpcErr.message || 'Failed to reschedule booking.' });
+      }
+
+      // Best-effort fast path worker trigger AFTER commit
+      processIntegrationJobs().catch(err => console.error('[Teacher Reschedule job process error]', err));
+
+      const { data: updatedBooking } = await supabase.from('bookings').select('*').eq('id', id).single();
+      return res.json({ success: true, booking: updatedBooking });
+    }
+
+    // 3. Fallback standard update path (for non-lifecycle updates like notes, completion)
     const updatePayload: Record<string, any> = {
       updated_at: new Date().toISOString()
     };
@@ -2415,29 +2485,13 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
       updatePayload.notes = notes;
     }
 
-    // Status changes
     if (status && status !== existingBooking.status) {
-      const validStatuses = ['pending', 'confirmed', 'cancelled', 'rescheduled', 'completed', 'no_show'];
+      const validStatuses = ['pending', 'confirmed', 'completed', 'no_show'];
       if (!validStatuses.includes(status)) {
         return res.status(400).json({ error: `Invalid status: ${status}` });
       }
-
       updatePayload.status = status;
 
-      // Handle cancellation: safe external sync
-      if (status === 'cancelled') {
-        updatePayload.cancellation_reason = cancellation_reason || 'Cancelled by teacher';
-        // Remove Google Calendar event if synced
-        if (existingBooking.reference_code) {
-          try {
-            await syncCancelledBooking(existingBooking.reference_code);
-          } catch (syncErr) {
-            console.warn('[Sync Cancel Warning]', syncErr);
-          }
-        }
-      }
-
-      // Handle completion: record lesson session if student is enrolled
       if (status === 'completed' && existingBooking.student_id) {
         const { data: existingSession } = await supabase
           .from('lesson_sessions')
@@ -2454,32 +2508,6 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
             completion_status: 'completed',
             covered_material: covered_material || null
           });
-        }
-      }
-    }
-
-    // Handle rescheduling
-    if (scheduled_start && scheduled_end) {
-      updatePayload.scheduled_start = scheduled_start;
-      updatePayload.scheduled_end = scheduled_end;
-      if (cairo_time_display) {
-        updatePayload.cairo_time_display = cairo_time_display;
-      }
-      if (status !== 'cancelled') {
-        updatePayload.status = 'rescheduled';
-      }
-
-      // Sync reschedule with Google Calendar
-      if (existingBooking.reference_code) {
-        try {
-          await syncRescheduledBooking(
-            existingBooking.reference_code,
-            scheduled_start,
-            scheduled_end,
-            cairo_time_display || existingBooking.cairo_time_display
-          );
-        } catch (syncErr) {
-          console.warn('[Sync Reschedule Warning]', syncErr);
         }
       }
     }
@@ -4298,11 +4326,14 @@ app.all('/api/cron/process-reminders', async (req, res) => {
       }
     }
 
+    const integrationsProcessed = await processIntegrationJobs();
+
     const summary = await processDueReminders();
     res.json({
       success: true,
       timestamp: new Date().toISOString(),
-      summary
+      summary,
+      integrationsProcessed
     });
   } catch (err: any) {
     console.error('[Cron Process Reminders Error]', err);

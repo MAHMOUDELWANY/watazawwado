@@ -173,3 +173,96 @@ export async function createOrProvisionZoomMeeting(
     throw new Error(error?.message || 'Failed to provision Zoom meeting');
   }
 }
+
+export async function updateZoomMeeting(
+  meetingId: string,
+  options: { scheduledStartUtc: string; durationMinutes: number }
+): Promise<void> {
+  const { isConfigured } = getZoomCredentials();
+  if (!isConfigured) {
+    throw new Error('Zoom API credentials are not configured. Cannot update meeting.');
+  }
+  
+  if (!meetingId || meetingId.trim() === '') {
+    console.warn('[Zoom] updateZoomMeeting called with empty meetingId, skipping.');
+    return;
+  }
+
+  try {
+    const token = await getZoomAccessToken();
+    const startTimeFormatted = options.scheduledStartUtc.replace(/\.\d{3}Z$/, 'Z');
+    
+    const payload = {
+      start_time: startTimeFormatted,
+      duration: options.durationMinutes,
+      timezone: 'UTC'
+    };
+    
+    const res = await fetch(`https://api.zoom.us/v2/meetings/${encodeURIComponent(meetingId)}`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+    
+    if (res.status === 204) {
+      console.log(`[Zoom] Successfully updated meeting ${meetingId}`);
+      return;
+    }
+    
+    // If not found, it might have been deleted manually or never existed
+    if (res.status === 404) {
+      console.warn(`[Zoom] Meeting ${meetingId} not found for update, it may have been deleted.`);
+      throw new Error(`ZOOM_NOT_FOUND: Meeting ${meetingId} not found`);
+    }
+
+    const err = await res.text();
+    console.error(`[Zoom API Error] Status ${res.status}: ${err}`);
+    throw new Error(`Zoom API Error (${res.status}): ${err}`);
+  } catch (error: any) {
+    console.error(`[Zoom Update Error]`, error);
+    throw new Error(error?.message || 'Failed to update Zoom meeting');
+  }
+}
+
+export async function deleteZoomMeeting(meetingId: string): Promise<void> {
+  const { isConfigured } = getZoomCredentials();
+  if (!isConfigured) {
+    throw new Error('Zoom API credentials are not configured. Cannot delete meeting.');
+  }
+  
+  if (!meetingId || meetingId.trim() === '') {
+    console.warn('[Zoom] deleteZoomMeeting called with empty meetingId, treating as success.');
+    return;
+  }
+
+  try {
+    const token = await getZoomAccessToken();
+    
+    const res = await fetch(`https://api.zoom.us/v2/meetings/${encodeURIComponent(meetingId)}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    
+    if (res.status === 204) {
+      console.log(`[Zoom] Successfully deleted meeting ${meetingId}`);
+      return;
+    }
+    
+    if (res.status === 404) {
+      console.log(`[Zoom] Meeting ${meetingId} already deleted or not found. Treating as success.`);
+      return;
+    }
+
+    const err = await res.text();
+    console.error(`[Zoom API Error] Status ${res.status}: ${err}`);
+    throw new Error(`Zoom API Error (${res.status}): ${err}`);
+  } catch (error: any) {
+    console.error(`[Zoom Delete Error]`, error);
+    throw new Error(error?.message || 'Failed to delete Zoom meeting');
+  }
+}

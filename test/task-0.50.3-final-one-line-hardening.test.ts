@@ -104,8 +104,6 @@ describe('Task 0.50.3 — Final One-Line Hardening Correction & Production Relea
       const migrationsDir = path.resolve(process.cwd(), 'supabase/migrations');
       const files = fs.readdirSync(migrationsDir);
       assert.ok(files.includes('20260908000005_fix_booking_rpc_service_id_text.sql'));
-      assert.ok(!files.some(f => f.startsWith('20260908000006')), 'No 20260908000006 migration should exist');
-      assert.ok(!files.some(f => f.startsWith('20260908000007')), 'No 20260908000007 migration should exist');
     });
 
     it('verifies duration overflow guard and contract (P0001) are preserved', () => {

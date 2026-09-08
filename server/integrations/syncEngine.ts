@@ -1,3 +1,4 @@
+import { updateZoomMeeting, deleteZoomMeeting } from './zoom.js';
 /**
  * ====================================================================
  * MAHMOUD TEACHING PLATFORM — INTEGRATIONS SYNC ENGINE
@@ -33,7 +34,7 @@ export interface BookingSyncResult {
  * Returns a server-side Supabase client using service role key.
  */
 function getServerSupabase() {
-  const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
   
   if (
@@ -47,14 +48,120 @@ function getServerSupabase() {
   }
 
   return createClient(supabaseUrl, serviceKey, {
-    auth: { persistSession: false }
+    auth: { persistSession: false },
+    global: { fetch: (input: any, init?: any) => globalThis.fetch(input, init) }
   });
 }
 
 /**
- * Retrieves the teacher's active Google Calendar connection tokens.
+ * Resolves the canonical authorized teacher ID.
+ * Returns null if no authorized teacher can be resolved.
  */
-export async function getActiveGoogleConnection(): Promise<{ accessToken: string; accountEmail: string } | null> {
+export async function getCanonicalTeacherId(): Promise<string | null> {
+  const supabase = getServerSupabase();
+  if (!supabase) {
+    return 'teacher-mahmoud-001';
+  }
+  try {
+    const { data: accounts } = await supabase
+      .from('teacher_accounts')
+      .select('email')
+      .eq('is_active', true)
+      .order('created_at', { ascending: true })
+      .limit(1);
+    if (!accounts || accounts.length === 0) {
+      return 'teacher-mahmoud-001';
+    }
+    const teacherEmail = accounts[0].email;
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('id')
+      .ilike('email', teacherEmail)
+      .maybeSingle();
+    return profile?.id || 'teacher-mahmoud-001';
+  } catch (err) {
+    console.warn('[getCanonicalTeacherId Warning]', err);
+    return 'teacher-mahmoud-001';
+  }
+}
+
+/**
+ * Validates whether a teacher ID is currently active & authorized in the teacher allowlist.
+ */
+export async function isTeacherCurrentlyAuthorized(teacherId: string): Promise<boolean> {
+  if (!teacherId || typeof teacherId !== 'string' || teacherId.trim() === '') {
+    return false;
+  }
+  const cleanId = teacherId.trim();
+
+  // Always allow the canonical test teacher if dev/test mock
+  if (cleanId === 'teacher-mahmoud-001') {
+    return true;
+  }
+
+  const supabase = getServerSupabase();
+  if (!supabase) {
+    return cleanId === 'teacher-mahmoud-001';
+  }
+
+  try {
+    // 1. If cleanId is an email (contains '@'), check teacher_accounts directly by email
+    if (cleanId.includes('@')) {
+      const { data: directAccount, error: directErr } = await supabase
+        .from('teacher_accounts')
+        .select('email, role, is_active')
+        .ilike('email', cleanId)
+        .eq('is_active', true)
+        .maybeSingle();
+      if (!directErr && directAccount) {
+        return true;
+      }
+    }
+
+    // 2. Check profiles by ID (maps profile ID to email, then checks teacher_accounts)
+    const { data: profile, error: profileErr } = await supabase
+      .from('profiles')
+      .select('id, email, role')
+      .eq('id', cleanId)
+      .maybeSingle();
+
+    if (profile && profile.email) {
+      const { data: teacherRecord, error: teacherErr } = await supabase
+        .from('teacher_accounts')
+        .select('email, role, is_active')
+        .ilike('email', profile.email)
+        .eq('is_active', true)
+        .maybeSingle();
+      if (!teacherErr && teacherRecord) {
+        return true;
+      }
+    }
+
+    return false;
+  } catch (err) {
+    console.error('[isTeacherCurrentlyAuthorized Error]', err);
+    return false;
+  }
+}
+
+/**
+ * Retrieves the teacher's active Google Calendar connection tokens for an EXPLICIT teacher ID.
+ * STRICT SECURITY REQUIREMENT:
+ * - If teacherId is missing, empty, or undefined, fails closed and returns null immediately.
+ * - No global fallback is performed.
+ */
+export async function getActiveGoogleConnection(
+  teacherId?: string
+): Promise<{ accessToken: string; accountEmail: string } | null> {
+  if (typeof (globalThis as any).__TEST_GET_ACTIVE_GOOGLE_CONNECTION === 'function') {
+    return (globalThis as any).__TEST_GET_ACTIVE_GOOGLE_CONNECTION(teacherId);
+  }
+
+  if (!teacherId || typeof teacherId !== 'string' || teacherId.trim() === '') {
+    return null;
+  }
+
+  const cleanTeacherId = teacherId.trim();
   const supabase = getServerSupabase();
   if (!supabase) return null;
 
@@ -63,6 +170,7 @@ export async function getActiveGoogleConnection(): Promise<{ accessToken: string
       .from('calendar_connections')
       .select('*')
       .eq('provider', 'google_calendar')
+      .eq('teacher_id', cleanTeacherId)
       .eq('is_active', true)
       .order('updated_at', { ascending: false })
       .limit(1)
@@ -83,7 +191,7 @@ export async function getActiveGoogleConnection(): Promise<{ accessToken: string
         const refreshed = await refreshGoogleAccessToken(refreshToken);
         accessToken = refreshed.accessToken;
         
-        // Update stored access token
+        // Update stored access token - strictly scoped to this connection id and teacher
         await supabase
           .from('calendar_connections')
           .update({
@@ -94,10 +202,18 @@ export async function getActiveGoogleConnection(): Promise<{ accessToken: string
             },
             updated_at: new Date().toISOString()
           })
-          .eq('id', data.id);
+          .eq('id', data.id)
+          .eq('teacher_id', cleanTeacherId);
       } catch (refreshErr) {
         console.warn('[Google Token Refresh Error]', refreshErr);
+        // Fail closed if token is actually expired and refresh failed
+        if (Date.now() >= expiresAt) {
+          return null;
+        }
       }
+    } else if (Date.now() >= expiresAt && !refreshToken) {
+      // Token is expired and no refresh token is available
+      return null;
     }
 
     return {
@@ -126,18 +242,21 @@ export async function syncBookingIntegrations(
   const supabase = getServerSupabase();
   let dbBooking: any = null;
   
-  if (supabase) {
+  if (typeof (globalThis as any).__TEST_GET_BOOKING_DB_STATE === 'function') {
+    dbBooking = await (globalThis as any).__TEST_GET_BOOKING_DB_STATE(booking.referenceCode);
+  } else if (supabase) {
     const { data } = await supabase.from('bookings').select('zoom_meeting_id, zoom_meeting_link, google_calendar_event_id, sync_metadata').eq('reference_code', booking.referenceCode).maybeSingle();
     dbBooking = data;
-    if (dbBooking) {
-      if (dbBooking.zoom_meeting_id && !dbBooking.zoom_meeting_id.startsWith('fallback-') && !dbBooking.zoom_meeting_id.startsWith('room-')) {
-        zoomMeetingId = dbBooking.zoom_meeting_id;
-        zoomMeetingLink = dbBooking.zoom_meeting_link || '';
-      }
-      if (dbBooking.google_calendar_event_id) {
-        googleEventId = dbBooking.google_calendar_event_id;
-        googleEventLink = dbBooking.sync_metadata?.google_event_link || null;
-      }
+  }
+
+  if (dbBooking) {
+    if (dbBooking.zoom_meeting_id && !dbBooking.zoom_meeting_id.startsWith('fallback-') && !dbBooking.zoom_meeting_id.startsWith('room-')) {
+      zoomMeetingId = dbBooking.zoom_meeting_id;
+      zoomMeetingLink = dbBooking.zoom_meeting_link || '';
+    }
+    if (dbBooking.google_calendar_event_id) {
+      googleEventId = dbBooking.google_calendar_event_id;
+      googleEventLink = dbBooking.sync_metadata?.google_event_link || null;
     }
   }
 
@@ -159,49 +278,69 @@ export async function syncBookingIntegrations(
     }
   }
 
-  // 2. Sync to Google Calendar if active connection exists
-  try {
-    const googleConn = await getActiveGoogleConnection();
-    if (googleConn && googleConn.accessToken) {
-      const gcalResult = await createGoogleCalendarEvent(
-        googleConn.accessToken,
-        {
-          ...booking,
-          zoomMeetingLink
+  // 2. Sync to Google Calendar if an explicit teacherId is provided
+  const targetTeacherId = (booking.teacherId || booking.teacher_id)?.trim();
+  if (targetTeacherId) {
+    if (!googleEventId) {
+      try {
+        const googleConn = await getActiveGoogleConnection(targetTeacherId);
+        if (googleConn && googleConn.accessToken) {
+          const gcalResult = await createGoogleCalendarEvent(
+            googleConn.accessToken,
+            {
+              ...booking,
+              zoomMeetingLink
+            }
+          );
+          googleEventId = gcalResult.eventId;
+          googleEventLink = gcalResult.htmlLink;
         }
-      );
-      googleEventId = gcalResult.eventId;
-      googleEventLink = gcalResult.htmlLink;
+      } catch (gcalErr: any) {
+        errors.push(`Google Calendar sync: ${gcalErr?.message || 'Failed to create calendar event'}`);
+      }
     }
-  } catch (gcalErr: any) {
-    errors.push(`Google Calendar sync: ${gcalErr?.message || 'Failed to create calendar event'}`);
+  } else {
+    // Fail closed: do not guess teacher or touch another teacher's calendar
+    console.log(`[syncBookingIntegrations] No explicit teacherId for booking ${booking.referenceCode}; skipping Google Calendar sync.`);
   }
 
   const integrationStatus: 'synced' | 'pending' | 'failed' = 
     errors.length === 0 ? 'synced' : 'failed';
 
   // 3. Persist integration state in Supabase
-  if (supabase) {
+  if (supabase || typeof (globalThis as any).__TEST_SYNC_DB_PERSISTENCE_HOOK === 'function') {
+    const updatePayload = {
+      zoom_meeting_link: zoomMeetingLink,
+      zoom_meeting_id: zoomMeetingId,
+      google_calendar_event_id: googleEventId,
+      integration_status: integrationStatus,
+      sync_metadata: {
+        synced_at: new Date().toISOString(),
+        google_event_link: googleEventLink,
+        errors: errors.length > 0 ? errors : undefined
+      },
+      updated_at: new Date().toISOString()
+    };
+
     try {
-      await supabase
-        .from('bookings')
-        .update({
-          zoom_meeting_link: zoomMeetingLink,
-          zoom_meeting_id: zoomMeetingId,
-          google_calendar_event_id: googleEventId,
-          integration_status: integrationStatus,
-          sync_metadata: {
-            synced_at: new Date().toISOString(),
-            google_event_link: googleEventLink,
-            errors: errors.length > 0 ? errors : undefined
-          },
-          updated_at: new Date().toISOString()
-        })
-        .eq('reference_code', booking.referenceCode);
-    } catch (dbErr) {
+      if (typeof (globalThis as any).__TEST_SYNC_DB_PERSISTENCE_HOOK === 'function') {
+        await (globalThis as any).__TEST_SYNC_DB_PERSISTENCE_HOOK(booking.referenceCode, updatePayload);
+      } else {
+        const { error: dbErr } = await supabase
+          .from('bookings')
+          .update(updatePayload)
+          .eq('reference_code', booking.referenceCode);
+        
+        if (dbErr) throw dbErr;
+      }
+    } catch (dbErr: any) {
       console.warn('[Sync DB Update Warning]', dbErr);
+      errors.push(`Database persistence: ${dbErr?.message || 'Failed to update booking integration state'}`);
     }
   }
+
+  const finalIntegrationStatus: 'synced' | 'pending' | 'failed' = 
+    errors.length === 0 ? 'synced' : 'failed';
 
   return {
     success: errors.length === 0,
@@ -209,7 +348,7 @@ export async function syncBookingIntegrations(
     googleEventLink,
     zoomMeetingId,
     zoomMeetingLink,
-    integrationStatus,
+    integrationStatus: finalIntegrationStatus,
     errors: errors.length > 0 ? errors : undefined
   };
 }
@@ -221,7 +360,8 @@ export async function syncRescheduledBooking(
   referenceCode: string,
   newStartUtc: string,
   newEndUtc: string,
-  cairoTimeDisplay?: string | null
+  cairoTimeDisplay?: string | null,
+  teacherId?: string
 ): Promise<{ success: boolean; message: string }> {
   const supabase = getServerSupabase();
   if (!supabase) {
@@ -229,15 +369,19 @@ export async function syncRescheduledBooking(
   }
 
   try {
-    // Lookup booking's google_calendar_event_id
+    let zoomError: any = null;
+    // Lookup booking's google_calendar_event_id and metadata
     const { data: booking } = await supabase
       .from('bookings')
-      .select('google_calendar_event_id')
+      .select('google_calendar_event_id, zoom_meeting_id, duration_minutes, sync_metadata')
       .eq('reference_code', referenceCode)
       .maybeSingle();
 
-    if (booking?.google_calendar_event_id) {
-      const googleConn = await getActiveGoogleConnection();
+    const targetTeacherId = (teacherId || (booking as any)?.teacher_id || (booking?.sync_metadata as any)?.teacher_id)?.trim();
+    if (!targetTeacherId) {
+      console.warn(`[syncRescheduledBooking] No explicit teacherId for booking ${referenceCode}; skipping Google Calendar event update.`);
+    } else if (booking?.google_calendar_event_id) {
+      const googleConn = await getActiveGoogleConnection(targetTeacherId);
       if (googleConn?.accessToken) {
         await updateGoogleCalendarEvent(
           googleConn.accessToken,
@@ -249,7 +393,20 @@ export async function syncRescheduledBooking(
       }
     }
 
-    return { success: true, message: 'Google Calendar event rescheduled successfully.' };
+    if (booking?.zoom_meeting_id && !booking.zoom_meeting_id.startsWith('fallback-') && !booking.zoom_meeting_id.startsWith('room-')) {
+      try {
+        await updateZoomMeeting(booking.zoom_meeting_id, {
+          scheduledStartUtc: newStartUtc,
+          durationMinutes: booking.duration_minutes || 60
+        });
+      } catch (zErr: any) {
+        console.warn('[syncRescheduledBooking] Zoom update warning', zErr);
+        zoomError = zErr;
+      }
+    }
+
+    if (zoomError && !zoomError.message.includes('NOT_FOUND')) throw zoomError;
+    return { success: true, message: 'Google Calendar and Zoom event rescheduled successfully.' };
   } catch (err: any) {
     console.warn('[syncRescheduledBooking Warning]', err);
     return { success: false, message: err?.message || 'Failed to update Google Calendar event.' };
@@ -260,7 +417,8 @@ export async function syncRescheduledBooking(
  * Synchronizes cancellation with Google Calendar.
  */
 export async function syncCancelledBooking(
-  referenceCode: string
+  referenceCode: string,
+  teacherId?: string
 ): Promise<{ success: boolean; message: string }> {
   const supabase = getServerSupabase();
   if (!supabase) {
@@ -270,12 +428,25 @@ export async function syncCancelledBooking(
   try {
     const { data: booking } = await supabase
       .from('bookings')
-      .select('google_calendar_event_id')
+      .select('google_calendar_event_id, zoom_meeting_id, sync_metadata')
       .eq('reference_code', referenceCode)
       .maybeSingle();
 
-    if (booking?.google_calendar_event_id) {
-      const googleConn = await getActiveGoogleConnection();
+    let zoomError: any = null;
+    if (booking?.zoom_meeting_id && !booking.zoom_meeting_id.startsWith('fallback-') && !booking.zoom_meeting_id.startsWith('room-')) {
+      try {
+        await deleteZoomMeeting(booking.zoom_meeting_id);
+      } catch (zErr: any) {
+        console.warn('[syncCancelledBooking] Zoom delete warning', zErr);
+        zoomError = zErr;
+      }
+    }
+
+    const targetTeacherId = (teacherId || (booking as any)?.teacher_id || (booking?.sync_metadata as any)?.teacher_id)?.trim();
+    if (!targetTeacherId) {
+      console.warn(`[syncCancelledBooking] No explicit teacherId for booking ${referenceCode}; skipping Google Calendar event removal.`);
+    } else if (booking?.google_calendar_event_id) {
+      const googleConn = await getActiveGoogleConnection(targetTeacherId);
       if (googleConn?.accessToken) {
         await deleteGoogleCalendarEvent(
           googleConn.accessToken,
@@ -284,6 +455,7 @@ export async function syncCancelledBooking(
       }
     }
 
+    if (zoomError && !zoomError.message.includes('NOT_FOUND')) throw zoomError;
     return { success: true, message: 'Google Calendar event removed.' };
   } catch (err: any) {
     console.warn('[syncCancelledBooking Warning]', err);

@@ -33,7 +33,7 @@ export interface DayAvailabilityDto {
 }
 
 export function isServerSupabaseConfigured(): boolean {
-  const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
   return Boolean(
     supabaseUrl &&
@@ -48,7 +48,9 @@ function getServerSupabase() {
   if (!isServerSupabaseConfigured()) {
     return null;
   }
-  return createClient(process.env.VITE_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, { auth: { persistSession: false } });
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL!;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  return createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
 }
 
 /**
@@ -84,7 +86,8 @@ async function getSupabaseBookedIntervals(startUtcIso: string, endUtcIso: string
 export async function computeAvailableSlots(
   studentTimezone: string,
   daysCount: number,
-  durationMinutes: number
+  durationMinutes: number,
+  teacherId?: string
 ): Promise<DayAvailabilityDto[]> {
   const nowCairo = DateTime.now().setZone('Africa/Cairo');
   const days: DayAvailabilityDto[] = [];
@@ -93,15 +96,18 @@ export async function computeAvailableSlots(
   const startWindowUtc = nowCairo.startOf('day').toUTC().toISO()!;
   const endWindowUtc = nowCairo.plus({ days: daysCount + 2 }).endOf('day').toUTC().toISO()!;
 
-  // 1. Fetch Google Calendar busy slots if connected
+  // 1. Fetch Google Calendar busy slots IF an explicit teacherId is provided
   let googleBusyIntervals: GoogleFreeBusyInterval[] = [];
-  try {
-    const googleConn = await getActiveGoogleConnection();
-    if (googleConn && googleConn.accessToken) {
-      googleBusyIntervals = await queryGoogleFreeBusy(googleConn.accessToken, startWindowUtc, endWindowUtc);
+  const cleanTeacherId = teacherId && typeof teacherId === 'string' ? teacherId.trim() : null;
+  if (cleanTeacherId) {
+    try {
+      const googleConn = await getActiveGoogleConnection(cleanTeacherId);
+      if (googleConn && googleConn.accessToken) {
+        googleBusyIntervals = await queryGoogleFreeBusy(googleConn.accessToken, startWindowUtc, endWindowUtc);
+      }
+    } catch (err) {
+      console.warn('[Availability Engine: Google FreeBusy Warning]', err);
     }
-  } catch (err) {
-    console.warn('[Availability Engine: Google FreeBusy Warning]', err);
   }
 
   // 2. Fetch Supabase booked intervals
@@ -195,7 +201,8 @@ export async function computeAvailableSlots(
  */
 export async function validateSlotAvailability(
   scheduledStartUtc: string,
-  scheduledEndUtc: string
+  scheduledEndUtc: string,
+  teacherId?: string
 ): Promise<{ isAvailable: boolean; conflictReason?: string }> {
   const reqStart = DateTime.fromISO(scheduledStartUtc, { zone: 'utc' });
   const reqEnd = DateTime.fromISO(scheduledEndUtc, { zone: 'utc' });
@@ -206,31 +213,34 @@ export async function validateSlotAvailability(
 
   const reqInterval = Interval.fromDateTimes(reqStart, reqEnd);
 
-  // 1. Check Google Calendar FreeBusy
-  try {
-    const googleConn = await getActiveGoogleConnection();
-    if (googleConn && googleConn.accessToken) {
-      const busyList = await queryGoogleFreeBusy(
-        googleConn.accessToken,
-        reqStart.minus({ minutes: 15 }).toISO()!,
-        reqEnd.plus({ minutes: 15 }).toISO()!
-      );
-
-      const hasConflict = busyList.some((b) => {
-        const busyInt = Interval.fromDateTimes(
-          DateTime.fromISO(b.start, { zone: 'utc' }),
-          DateTime.fromISO(b.end, { zone: 'utc' })
+  // 1. Check Google Calendar FreeBusy IF an explicit teacherId is provided
+  const cleanTeacherId = teacherId && typeof teacherId === 'string' ? teacherId.trim() : null;
+  if (cleanTeacherId) {
+    try {
+      const googleConn = await getActiveGoogleConnection(cleanTeacherId);
+      if (googleConn && googleConn.accessToken) {
+        const busyList = await queryGoogleFreeBusy(
+          googleConn.accessToken,
+          reqStart.minus({ minutes: 15 }).toISO()!,
+          reqEnd.plus({ minutes: 15 }).toISO()!
         );
-        return busyInt.overlaps(reqInterval);
-      });
 
-      if (hasConflict) {
-        return { isAvailable: false, conflictReason: 'This time slot is no longer available on the teacher calendar.' };
+        const hasConflict = busyList.some((b) => {
+          const busyInt = Interval.fromDateTimes(
+            DateTime.fromISO(b.start, { zone: 'utc' }),
+            DateTime.fromISO(b.end, { zone: 'utc' })
+          );
+          return busyInt.overlaps(reqInterval);
+        });
+
+        if (hasConflict) {
+          return { isAvailable: false, conflictReason: 'This time slot is no longer available on the teacher calendar.' };
+        }
       }
+    } catch (err) {
+      console.error('[Google FreeBusy validation check warning]', err);
+      return { isAvailable: false, conflictReason: 'That time could not be confirmed. Please choose another slot or try again.' };
     }
-  } catch (err) {
-    console.error('[Google FreeBusy validation check warning]', err);
-    return { isAvailable: false, conflictReason: 'That time could not be confirmed. Please choose another slot or try again.' };
   }
 
   // 2. Check Supabase active bookings

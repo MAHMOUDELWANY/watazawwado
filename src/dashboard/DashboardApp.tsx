@@ -24,6 +24,7 @@ import StudentDetailPage from './pages/StudentDetailPage';
 import BookingsPage from './pages/BookingsPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import SettingsPage from './pages/SettingsPage';
+import { TeacherAuthDiagnosticPanel } from './components/TeacherAuthDiagnosticPanel';
 import { Language } from '../booking/types';
 
 export function DashboardApp() {
@@ -148,6 +149,7 @@ export function DashboardApp() {
         {/* Scrollable Content Area */}
         <div className="flex-1 overflow-y-auto p-4 md:p-8">
           <div className="max-w-5xl mx-auto">
+            <TeacherAuthDiagnosticPanel />
             <Routes>
               <Route path="/" element={<TodayPage />} />
               <Route path="/upcoming" element={<UpcomingPage />} />

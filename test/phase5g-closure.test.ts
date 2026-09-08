@@ -148,8 +148,8 @@ describe('Phase 5G - Final Last-Mile Closure', () => {
       return originalFetch(url, options);
     };
 
-    const res = await originalFetch(`${baseUrl}/api/integrations/google-calendar/callback?code=mock_code&state=fake`, {
-      headers: { 'Cookie': 'oauth_state=fake' }
+    const res = await originalFetch(`${baseUrl}/api/integrations/google-calendar/callback?code=mock_code&state=dGVhY2hlci1tYWhtb3VkLTAwMTpkODNlZDg0YzBhNWI1NWRiZTE5ZmEyOTYzMDA4NWVjYg==.70a7846618e964561a98937125f9ff326162b2bbb4ca18de9920e0d3dd276a15`, {
+      headers: { 'Cookie': 'oauth_state=dGVhY2hlci1tYWhtb3VkLTAwMTpkODNlZDg0YzBhNWI1NWRiZTE5ZmEyOTYzMDA4NWVjYg==.70a7846618e964561a98937125f9ff326162b2bbb4ca18de9920e0d3dd276a15' }
     });
     const text = await res.text();
     globalThis.fetch = originalFetch;
@@ -193,8 +193,8 @@ describe('Phase 5G - Final Last-Mile Closure', () => {
       return originalFetch(url, options);
     };
 
-    const res = await originalFetch(`${baseUrl}/api/integrations/google-calendar/callback?code=mock_code&state=fake`, {
-      headers: { 'Cookie': 'oauth_state=fake' }
+    const res = await originalFetch(`${baseUrl}/api/integrations/google-calendar/callback?code=mock_code&state=dGVhY2hlci1tYWhtb3VkLTAwMTpkODNlZDg0YzBhNWI1NWRiZTE5ZmEyOTYzMDA4NWVjYg==.70a7846618e964561a98937125f9ff326162b2bbb4ca18de9920e0d3dd276a15`, {
+      headers: { 'Cookie': 'oauth_state=dGVhY2hlci1tYWhtb3VkLTAwMTpkODNlZDg0YzBhNWI1NWRiZTE5ZmEyOTYzMDA4NWVjYg==.70a7846618e964561a98937125f9ff326162b2bbb4ca18de9920e0d3dd276a15' }
     });
     const text = await res.text();
     globalThis.fetch = originalFetch;
@@ -244,8 +244,8 @@ describe('Phase 5G - Final Last-Mile Closure', () => {
       return originalFetch(url, options);
     };
 
-    const res = await originalFetch(`${baseUrl}/api/integrations/google-calendar/callback?code=mock_code&state=fake`, {
-      headers: { 'Cookie': 'oauth_state=fake' }
+    const res = await originalFetch(`${baseUrl}/api/integrations/google-calendar/callback?code=mock_code&state=dGVhY2hlci1tYWhtb3VkLTAwMTpkODNlZDg0YzBhNWI1NWRiZTE5ZmEyOTYzMDA4NWVjYg==.70a7846618e964561a98937125f9ff326162b2bbb4ca18de9920e0d3dd276a15`, {
+      headers: { 'Cookie': 'oauth_state=dGVhY2hlci1tYWhtb3VkLTAwMTpkODNlZDg0YzBhNWI1NWRiZTE5ZmEyOTYzMDA4NWVjYg==.70a7846618e964561a98937125f9ff326162b2bbb4ca18de9920e0d3dd276a15' }
     });
     const text = await res.text();
     globalThis.fetch = originalFetch;
@@ -296,8 +296,8 @@ describe('Phase 5G - Final Last-Mile Closure', () => {
       return originalFetch(url, options);
     };
 
-    const res = await originalFetch(`${baseUrl}/api/integrations/google-calendar/callback?code=mock_code&state=fake`, {
-      headers: { 'Cookie': 'oauth_state=fake' }
+    const res = await originalFetch(`${baseUrl}/api/integrations/google-calendar/callback?code=mock_code&state=dGVhY2hlci1tYWhtb3VkLTAwMTpkODNlZDg0YzBhNWI1NWRiZTE5ZmEyOTYzMDA4NWVjYg==.70a7846618e964561a98937125f9ff326162b2bbb4ca18de9920e0d3dd276a15`, {
+      headers: { 'Cookie': 'oauth_state=dGVhY2hlci1tYWhtb3VkLTAwMTpkODNlZDg0YzBhNWI1NWRiZTE5ZmEyOTYzMDA4NWVjYg==.70a7846618e964561a98937125f9ff326162b2bbb4ca18de9920e0d3dd276a15' }
     });
     const text = await res.text();
     globalThis.fetch = originalFetch;
@@ -343,8 +343,8 @@ describe('Phase 5G - Final Last-Mile Closure', () => {
       return originalFetch(url, options);
     };
 
-    const res = await originalFetch(`${baseUrl}/api/integrations/google-calendar/callback?code=mock_code&state=fake`, {
-      headers: { 'Cookie': 'oauth_state=fake' }
+    const res = await originalFetch(`${baseUrl}/api/integrations/google-calendar/callback?code=mock_code&state=dGVhY2hlci1tYWhtb3VkLTAwMTpkODNlZDg0YzBhNWI1NWRiZTE5ZmEyOTYzMDA4NWVjYg==.70a7846618e964561a98937125f9ff326162b2bbb4ca18de9920e0d3dd276a15`, {
+      headers: { 'Cookie': 'oauth_state=dGVhY2hlci1tYWhtb3VkLTAwMTpkODNlZDg0YzBhNWI1NWRiZTE5ZmEyOTYzMDA4NWVjYg==.70a7846618e964561a98937125f9ff326162b2bbb4ca18de9920e0d3dd276a15' }
     });
     const text = await res.text();
     globalThis.fetch = originalFetch;

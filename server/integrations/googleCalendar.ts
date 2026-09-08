@@ -6,6 +6,8 @@
  * ====================================================================
  */
 
+import crypto from 'crypto';
+
 export interface GoogleTokens {
   accessToken: string;
   refreshToken?: string;
@@ -15,6 +17,8 @@ export interface GoogleTokens {
 }
 
 export interface CalendarEventPayload {
+  teacherId?: string;
+  teacher_id?: string;
   referenceCode: string;
   learnerName: string;
   parentName?: string | null;
@@ -228,12 +232,83 @@ export async function queryGoogleFreeBusy(
 }
 
 /**
+ * Generates a deterministic SHA-256 hexadecimal event ID for Google Calendar.
+ *
+ * Google Calendar API v3 specification for event `id`:
+ * - Characters allowed: lowercase digits 0-9 and letters a-v (length between 5 and 1024 chars).
+ *
+ * Deterministic SHA-256 output is 64 hexadecimal characters ([0-9a-f]).
+ * Since [0-9a-f] is a strict subset of [0-9a-v], the lowercase hexadecimal
+ * SHA-256 digest is guaranteed to be a valid Google Calendar event ID.
+ *
+ * Identity composition:
+ * - referenceCode: Unique booking reference code (e.g. WTZ-2026-XXXXX)
+ * - teacherId: Authoritative teacher ID (e.g. teacher-001)
+ * This guarantees:
+ * 1. Booking X with Teacher A -> deterministic ID A
+ * 2. Booking X with Teacher B -> deterministic ID B (teacher isolation)
+ * 3. Calling this N times concurrently produces identical ID
+ */
+export function generateDeterministicGoogleCalendarEventId(
+  referenceCode: string,
+  teacherId?: string | null
+): string {
+  const normRef = (referenceCode || '').trim().toLowerCase();
+  const normTeacher = (teacherId || 'default').trim().toLowerCase();
+
+  return crypto
+    .createHash('sha256')
+    .update(`watazawwado:${normRef}:${normTeacher}`)
+    .digest('hex');
+}
+
+/**
+ * Retrieves a single Google Calendar event by its ID.
+ * Returns null if the event does not exist (404/410).
+ * Throws explicit errors on authorization failure (401/403) or transient API errors (5xx).
+ */
+export async function getGoogleCalendarEvent(
+  accessToken: string,
+  eventId: string,
+  calendarId = 'primary'
+): Promise<{ eventId: string; htmlLink: string; status?: string } | null> {
+  const response = await fetch(
+    `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events/${encodeURIComponent(eventId)}`,
+    {
+      headers: { Authorization: `Bearer ${accessToken}` }
+    }
+  );
+
+  if (response.status === 404 || response.status === 410) {
+    return null;
+  }
+
+  if (response.status === 401 || response.status === 403) {
+    const err = await response.text();
+    throw new Error(`Google Calendar getEvent unauthorized (${response.status}): ${err}`);
+  }
+
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`Google Calendar getEvent error (${response.status}): ${err}`);
+  }
+
+  const data = await response.json();
+  return {
+    eventId: data.id,
+    htmlLink: data.htmlLink || '',
+    status: data.status
+  };
+}
+
+/**
  * Searches for an existing calendar event matching the booking reference code to prevent duplicates.
  */
 export async function findExistingGoogleCalendarEvent(
   accessToken: string,
   referenceCode: string,
-  calendarId = 'primary'
+  calendarId = 'primary',
+  targetTeacherId?: string
 ): Promise<{ eventId: string; htmlLink: string } | null> {
   try {
     const query = encodeURIComponent(referenceCode);
@@ -248,11 +323,20 @@ export async function findExistingGoogleCalendarEvent(
 
     const data = await response.json();
     const items = data.items || [];
-    const matched = items.find((item: any) =>
-      item.summary?.includes(referenceCode) ||
-      item.description?.includes(referenceCode) ||
-      item.extendedProperties?.private?.booking_reference === referenceCode
-    );
+    const matched = items.find((item: any) => {
+      const matchesRef =
+        item.summary?.includes(referenceCode) ||
+        item.description?.includes(referenceCode) ||
+        item.extendedProperties?.private?.booking_reference === referenceCode;
+
+      if (!matchesRef) return false;
+
+      const eventTeacherId = item.extendedProperties?.private?.teacher_id;
+      if (eventTeacherId && targetTeacherId && eventTeacherId !== targetTeacherId) {
+        return false;
+      }
+      return true;
+    });
 
     if (matched) {
       return {
@@ -268,26 +352,58 @@ export async function findExistingGoogleCalendarEvent(
 
 /**
  * Creates an event on Mahmoud's Google Calendar for a confirmed booking.
- * Employs idempotency and structured extendedProperties.
+ * Employs deterministic event IDs, atomic insertion, and HTTP 409 Conflict reconciliation
+ * to guarantee strict idempotency under concurrent workers, retries, and network timeouts.
  */
 export async function createGoogleCalendarEvent(
   accessToken: string,
   booking: CalendarEventPayload,
   calendarId = 'primary'
 ): Promise<{ eventId: string; htmlLink: string }> {
-  // 1. Check if event was already created on a previous attempt
-  const existing = await findExistingGoogleCalendarEvent(accessToken, booking.referenceCode, calendarId);
-  if (existing) {
-    // Already created, update times if needed
+  const targetTeacherId = (booking.teacherId || booking.teacher_id || '').trim();
+  const deterministicEventId = generateDeterministicGoogleCalendarEventId(
+    booking.referenceCode,
+    targetTeacherId
+  );
+
+  // 1. Direct O(1) lookup by deterministic event ID
+  let existingById: { eventId: string; htmlLink: string; status?: string } | null = null;
+  try {
+    existingById = await getGoogleCalendarEvent(accessToken, deterministicEventId, calendarId);
+  } catch (lookupErr: any) {
+    // If it was an explicit auth error (401/403), rethrow immediately
+    const msg = (lookupErr?.message || '').toLowerCase();
+    if (msg.includes('unauthorized') || msg.includes('(401)') || msg.includes('(403)')) {
+      throw lookupErr;
+    }
+    // For other transient errors before POST, proceed to try creation
+  }
+
+  if (existingById && existingById.status !== 'cancelled') {
+    // Already created on Google Calendar. Update times if rescheduled
     await updateGoogleCalendarEvent(
       accessToken,
-      existing.eventId,
+      existingById.eventId,
       booking.scheduledStart,
       booking.scheduledEnd,
       booking.cairoTimeDisplay,
       calendarId
     );
-    return existing;
+    return existingById;
+  }
+
+  // 2. Secondary recovery check: legacy search by reference code (for events created prior to deterministic IDs)
+  const existingBySearch = await findExistingGoogleCalendarEvent(accessToken, booking.referenceCode, calendarId, targetTeacherId);
+  if (existingBySearch) {
+    await updateGoogleCalendarEvent(
+      accessToken,
+      existingBySearch.eventId,
+      booking.scheduledStart,
+      booking.scheduledEnd,
+      booking.cairoTimeDisplay,
+      calendarId
+    );
+    return existingBySearch;
   }
 
   const isTrial = booking.mode === 'trial';
@@ -319,6 +435,7 @@ export async function createGoogleCalendarEvent(
   ].filter(Boolean);
 
   const eventBody = {
+    id: deterministicEventId,
     summary,
     description: descriptionLines.join('\n'),
     start: {
@@ -335,7 +452,9 @@ export async function createGoogleCalendarEvent(
         booking_reference: booking.referenceCode,
         learner_name: booking.learnerName,
         service_name: booking.serviceName,
-        booking_mode: booking.mode
+        booking_mode: booking.mode,
+        idempotency_key: deterministicEventId,
+        teacher_id: targetTeacherId
       }
     },
     reminders: {
@@ -356,6 +475,29 @@ export async function createGoogleCalendarEvent(
     body: JSON.stringify(eventBody)
   });
 
+  // 3. Handle 409 Conflict: Concurrent worker or retry after lost response
+  if (response.status === 409) {
+    console.log(`[createGoogleCalendarEvent] Event ${deterministicEventId} already exists (HTTP 409 Conflict). Reconciling existing event.`);
+    const existing = await getGoogleCalendarEvent(accessToken, deterministicEventId, calendarId);
+    if (existing) {
+      // Reconcile times if rescheduled
+      await updateGoogleCalendarEvent(
+        accessToken,
+        existing.eventId,
+        booking.scheduledStart,
+        booking.scheduledEnd,
+        booking.cairoTimeDisplay,
+        calendarId
+      );
+      return existing;
+    }
+    // If GET returned null (404/410), event existence is unconfirmed on Google Calendar.
+    // MUST NOT return a false-success stub! Throw a retryable error for the worker outbox.
+    throw new Error(
+      `Google Calendar event conflict (409) reconciliation pending for ${deterministicEventId}: remote event unavailable; retryable.`
+    );
+  }
+
   if (!response.ok) {
     const err = await response.text();
     throw new Error(`Google Calendar event creation failed (${response.status}): ${err}`);
@@ -363,7 +505,7 @@ export async function createGoogleCalendarEvent(
 
   const result = await response.json();
   return {
-    eventId: result.id,
+    eventId: result.id || deterministicEventId,
     htmlLink: result.htmlLink || ''
   };
 }
@@ -403,6 +545,10 @@ export async function updateGoogleCalendarEvent(
   );
 
   if (!response.ok) {
+    if (response.status === 404 || response.status === 410) {
+      console.warn(`[updateGoogleCalendarEvent] Event ${eventId} not found (status ${response.status}) on Google Calendar.`);
+      return false;
+    }
     const err = await response.text();
     throw new Error(`Google Calendar event update failed (${response.status}): ${err}`);
   }
