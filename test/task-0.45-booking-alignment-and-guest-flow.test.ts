@@ -48,13 +48,13 @@ describe('Task 0.45 — Production Booking Schema Alignment & Explicit Guest/Stu
   // 2. Client & Modal UI Contract Alignment
   // ====================================================================
 
-  it('3. Verifies GetStartedModal contains distinct Book as Guest and Continue as Student paths', () => {
+  it('3. Verifies GetStartedModal contains distinct Explore as Guest and Continue as Student paths', () => {
     const modalPath = path.resolve('src/components/GetStartedModal.tsx');
     const content = fs.readFileSync(modalPath, 'utf8');
 
-    // Must provide first-class Guest booking button
-    assert.ok(content.includes('get-started-guest-booking-btn') || content.includes('Book as Guest'), 'Must have prominent Book as Guest option');
-    assert.ok(content.includes('handleDirectGuestBooking') || content.includes('onOpenDirectTrialBooking'), 'Must call direct booking handler');
+    // Must provide first-class Guest Demo button (updated in 0.46)
+    assert.ok(content.includes('get-started-demo-btn') || content.includes('Explore as Guest'), 'Must have prominent Explore as Guest option');
+    assert.ok(content.includes('handleLaunchDemo'), 'Must call demo launcher');
 
     // Must provide Student account path
     assert.ok(content.includes('Continue as Student') || content.includes('get-started-student-signup-btn'), 'Must have Continue as Student option');
@@ -62,12 +62,13 @@ describe('Task 0.45 — Production Booking Schema Alignment & Explicit Guest/Stu
     assert.ok(content.includes('onOpenStudentLogin'), 'Must offer login trigger');
   });
 
-  it('4. Verifies LandingPage wires Get Started CTAs to GetStartedModal preserving service pre-selection', () => {
+  it('4. Verifies LandingPage wires Get Started CTAs to GetStartedModal', () => {
     const landingPath = path.resolve('src/LandingPage.tsx');
     const content = fs.readFileSync(landingPath, 'utf8');
 
     assert.ok(content.includes('handleOpenGetStarted'), 'LandingPage must define handleOpenGetStarted handler');
-    assert.ok(content.includes('onOpenDirectTrialBooking={() => handleOpenBooking(preselectedService, \'trial\')}'), 'GetStartedModal must receive preselected service');
+    // Task 0.46 removed direct trial booking from Guest flow, so GetStartedModal doesn't receive onOpenDirectTrialBooking anymore
+    assert.ok(!content.includes('onOpenDirectTrialBooking={() => handleOpenBooking(preselectedService, \'trial\')}'), 'GetStartedModal must no longer receive real trial booking handler directly');
   });
 
   // ====================================================================

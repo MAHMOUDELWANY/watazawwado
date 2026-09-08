@@ -206,13 +206,12 @@ export function LandingPage({ initialGetStartedOpen = false }: LandingPageProps)
           lang={lang}
         />
 
-        {/* Get Started Choice Modal (Guest Demo, Account Creation, Login, Direct Trial) */}
+        {/* Get Started Choice Modal (Guest Demo, Account Creation, Login) */}
         <GetStartedModal
           isOpen={getStartedModalOpen}
           onClose={() => setGetStartedModalOpen(false)}
           onOpenStudentSignup={() => setStudentModalOpen(true)}
           onOpenStudentLogin={() => setStudentModalOpen(true)}
-          onOpenDirectTrialBooking={() => handleOpenBooking(preselectedService, 'trial')}
           lang={lang}
         />
 

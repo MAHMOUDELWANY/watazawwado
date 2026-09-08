@@ -21,7 +21,6 @@ interface GetStartedModalProps {
   onClose: () => void;
   onOpenStudentSignup: () => void;
   onOpenStudentLogin: () => void;
-  onOpenDirectTrialBooking: () => void;
   lang?: Language;
 }
 
@@ -30,7 +29,6 @@ export const GetStartedModal: React.FC<GetStartedModalProps> = ({
   onClose,
   onOpenStudentSignup,
   onOpenStudentLogin,
-  onOpenDirectTrialBooking,
   lang = 'en'
 }) => {
   const navigate = useNavigate();
@@ -52,11 +50,6 @@ export const GetStartedModal: React.FC<GetStartedModalProps> = ({
   const handleOpenLogin = () => {
     onClose();
     onOpenStudentLogin();
-  };
-
-  const handleDirectGuestBooking = () => {
-    onClose();
-    onOpenDirectTrialBooking();
   };
 
   return (
@@ -110,42 +103,42 @@ export const GetStartedModal: React.FC<GetStartedModalProps> = ({
 
           {/* Primary Pathways Selection: Guest vs Student */}
           <div className="space-y-4">
-            {/* OPTION 1: Book as Guest (First-class Instant Direct Booking) */}
+            {/* OPTION 1: Explore as Guest (Interactive Demo) */}
             <div 
               className="p-5 rounded-2xl bg-white dark:bg-[#2D2635] border border-[#E2DDD5] dark:border-[#473D50] hover:border-[#8FAE9B] dark:hover:border-[#8FAE9B] hover:shadow-md transition-all group"
             >
               <div className="flex items-start gap-4">
-                <div className="w-11 h-11 rounded-xl bg-[#8FAE9B]/15 text-[#557161] dark:text-[#A8C9B4] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                  <Calendar className="w-5 h-5" />
+                <div className="w-11 h-11 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <Sparkles className="w-5 h-5" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="font-semibold text-base text-[#30332F] dark:text-[#F8F6F0] group-hover:text-[#6F907D] dark:group-hover:text-[#8FAE9B] transition-colors">
-                      {isAr ? 'احجز كضيف (حجز فوري)' : 'Book as Guest'}
+                    <span className="font-semibold text-base text-[#30332F] dark:text-[#F8F6F0] group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                      {isAr ? 'استكشف كضيف' : 'Explore as Guest'}
                     </span>
-                    <span className="text-xs px-2.5 py-0.5 rounded-full font-medium bg-[#8FAE9B]/15 text-[#557161] dark:text-[#A8C9B4] whitespace-nowrap">
-                      {isAr ? 'بدون حساب' : 'No Account Needed'}
+                    <span className="text-xs px-2.5 py-0.5 rounded-full font-medium bg-amber-500/15 text-amber-700 dark:text-amber-400 whitespace-nowrap">
+                      {isAr ? 'عرض تجريبي' : 'Interactive Demo'}
                     </span>
                   </div>
                   <p className="text-xs sm:text-sm text-[#626A64] dark:text-[#D5D0CA] mt-1.5 leading-relaxed">
                     {isAr 
-                      ? 'لا يلزم إنشاء حساب. احجز درسك التجريبي المجاني (30 دقيقة) مباشرة مع اختيار الوقت واستلام رابط Zoom فوراً.'
-                      : 'No account needed. Book your complimentary 30-min trial session directly in 6 simple steps without creating a student profile.'}
+                      ? 'جرب عملية الحجز بدون إنشاء حساب. هذا عرض توضيحي - لن يتم إنشاء حجز حقيقي.'
+                      : 'Experience the booking process without creating an account. This is a guided demo — no real booking is created.'}
                   </p>
                   
                   <div className="mt-3.5 pt-3 border-t border-[#F0EBE1] dark:border-[#3A3242] flex items-center justify-between">
                     <div className="flex items-center gap-1.5 text-xs text-[#7A827B] dark:text-[#A69FA8]">
-                      <Clock className="w-3.5 h-3.5 text-[#8FAE9B]" />
-                      <span>{isAr ? 'حجز فوري في دقيقتين' : 'Instant 2-minute booking'}</span>
+                      <Clock className="w-3.5 h-3.5 text-amber-500" />
+                      <span>{isAr ? 'بدون حساب' : 'No account required'}</span>
                     </div>
                     <button
                       type="button"
-                      onClick={handleDirectGuestBooking}
-                      id="get-started-guest-booking-btn"
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#8FAE9B] hover:bg-[#6F907D] text-white text-xs sm:text-sm font-medium transition-colors shadow-xs cursor-pointer"
+                      onClick={handleLaunchDemo}
+                      id="get-started-demo-btn"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs sm:text-sm font-medium transition-colors shadow-xs cursor-pointer"
                     >
-                      <span>{isAr ? 'احجز الآن كضيف' : 'Book as Guest'}</span>
-                      <ArrowRight className={`w-3.5 h-3.5 ${isAr ? 'rotate-180' : ''}`} />
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>{isAr ? 'جرب العرض التوضيحي' : 'Try the Demo'}</span>
                     </button>
                   </div>
                 </div>
@@ -166,13 +159,13 @@ export const GetStartedModal: React.FC<GetStartedModalProps> = ({
                       {isAr ? 'المتابعة كطالب مسجل' : 'Continue as Student'}
                     </span>
                     <span className="text-xs px-2.5 py-0.5 rounded-full font-medium bg-[#6B5B73]/10 text-[#6B5B73] dark:text-[#B8A9C9] whitespace-nowrap">
-                      {isAr ? 'موصى به' : 'Recommended'}
+                      {isAr ? 'حجز حقيقي' : 'Real Booking'}
                     </span>
                   </div>
                   <p className="text-xs sm:text-sm text-[#626A64] dark:text-[#D5D0CA] mt-1.5 leading-relaxed">
                     {isAr
-                      ? 'سجل دخولك أو أنشئ حساباً لربط حجوزاتك ومواعيد Zoom وملاحظات المعلم وتقارير التقدم بملفك الشخصي.'
-                      : 'Sign in or create an account to keep your bookings, scheduled lessons, Zoom links, and teacher feedback connected to your profile.'}
+                      ? 'سجل دخولك أو أنشئ حساباً لحجز درس حقيقي، وربط حجوزاتك، واستلام رابط Zoom الخاص بك.'
+                      : 'Sign in or create an account to book an actual lesson, keep your bookings connected, and receive your Zoom link.'}
                   </p>
 
                   <div className="mt-3.5 pt-3 border-t border-[#F0EBE1] dark:border-[#3A3242] flex flex-wrap items-center justify-between gap-2">
@@ -200,17 +193,8 @@ export const GetStartedModal: React.FC<GetStartedModalProps> = ({
             </div>
           </div>
 
-          {/* Secondary Pathways: Interactive Demo & Staff Entrance */}
-          <div className="mt-5 pt-4 border-t border-[#E2DDD5] dark:border-[#3E3545] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#7A827B] dark:text-[#A69FA8]">
-            <button
-              onClick={handleLaunchDemo}
-              id="get-started-demo-btn"
-              className="inline-flex items-center gap-1.5 font-medium text-amber-700 dark:text-amber-400 hover:underline cursor-pointer"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>{isAr ? 'معاينة تجريبية للوحة التحكم (عرض توضيحي)' : 'Explore Interactive Demo (Sample Data)'}</span>
-            </button>
-
+          {/* Secondary Pathways: Staff Entrance */}
+          <div className="mt-5 pt-4 border-t border-[#E2DDD5] dark:border-[#3E3545] flex items-center justify-center text-xs text-[#7A827B] dark:text-[#A69FA8]">
             <a
               href="/staff/login"
               id="get-started-staff-link"

@@ -501,19 +501,20 @@ export default function StudentDemoPage({ onOpenSignupModal }: StudentDemoPagePr
               ) : (
                 <div className="text-center py-4">
                   <div className="w-14 h-14 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto mb-4">
-                    <CheckCircle2 className="w-8 h-8" />
+                    <Sparkles className="w-8 h-8" />
                   </div>
                   <h3 className="text-xl font-serif font-bold mb-2">
-                    Demo Booking Completed!
+                    You've Seen How Simple It Is
                   </h3>
                   <p className="text-xs sm:text-sm text-[#626A64] dark:text-[#D5D0CA] leading-relaxed mb-6">
-                    In the live production system, your time slot is reserved instantly in Ustadh Mahmoud's Google Calendar, your Zoom room is generated, and reminder notifications are scheduled.
+                    You've just walked through the same simple booking experience used to arrange your lessons with Ustadh Mahmoud.
                   </p>
 
-                  <div className="p-4 rounded-2xl bg-[#FAF8F5] dark:bg-[#2D2635] border border-[#E2DDD5] dark:border-[#3E3545] text-left text-xs space-y-1.5 mb-6">
-                    <div><strong>Selected:</strong> {demoSelectedSubject}</div>
-                    <div><strong>Duration:</strong> {demoSelectedDuration}</div>
-                    <div><strong>Simulated Reference:</strong> MHM-DEMO-789</div>
+                  <div className="p-5 rounded-2xl bg-[#FAF8F5] dark:bg-[#2D2635] border border-[#E2DDD5] dark:border-[#3E3545] text-left text-xs mb-6">
+                    <h4 className="font-semibold text-base mb-2 text-[#30332F] dark:text-[#F8F6F0]">Ready for the real experience?</h4>
+                    <p className="text-[#626A64] dark:text-[#D5D0CA] leading-relaxed mb-0">
+                      Create your free student account to book an actual lesson, keep your bookings connected to your profile, receive your lesson details, and continue your learning journey.
+                    </p>
                   </div>
 
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -523,19 +524,17 @@ export default function StudentDemoPage({ onOpenSignupModal }: StudentDemoPagePr
                         setDemoBookingSuccess(false);
                         handleOpenSignup();
                       }}
-                      className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#6F907D] hover:bg-[#557161] text-white text-xs font-semibold transition-all cursor-pointer"
+                      className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#6F907D] hover:bg-[#557161] text-white text-xs font-semibold transition-all cursor-pointer inline-flex items-center justify-center gap-2"
                     >
-                      Create Real Account Now
+                      <span>Create Free Account</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
                     </button>
 
                     <button
-                      onClick={() => {
-                        setBookingDemoModalOpen(false);
-                        setDemoBookingSuccess(false);
-                      }}
-                      className="w-full sm:w-auto px-4 py-2.5 rounded-xl text-xs font-medium text-[#7A827B] hover:text-[#30332F] dark:hover:text-white"
+                      onClick={() => navigate('/')}
+                      className="w-full sm:w-auto px-4 py-2.5 rounded-xl text-xs font-medium text-[#7A827B] hover:text-[#30332F] dark:hover:text-white transition-colors cursor-pointer"
                     >
-                      Close Demo
+                      Return to Homepage
                     </button>
                   </div>
                 </div>
