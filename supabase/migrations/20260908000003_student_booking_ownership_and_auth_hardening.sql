@@ -192,7 +192,7 @@ BEGIN
     END IF;
 
     -- Resolve service metadata
-    SELECT id, title, price_hourly_usd, trial_eligible
+    SELECT id, title, hourly_rate_usd, trial_allowed
     INTO v_service
     FROM public.services
     WHERE id = v_service_id;
@@ -201,7 +201,7 @@ BEGIN
         RAISE EXCEPTION 'The selected service does not exist.';
     END IF;
 
-    IF v_booking_type = 'trial' AND NOT v_service.trial_eligible THEN
+    IF v_booking_type = 'trial' AND NOT v_service.trial_allowed THEN
         RAISE EXCEPTION 'The selected service is not eligible for a free trial.';
     END IF;
 
@@ -209,7 +209,7 @@ BEGIN
     IF v_booking_type = 'trial' THEN
         v_calculated_fee := 0.00;
     ELSE
-        v_calculated_fee := round((v_service.price_hourly_usd * (v_duration::numeric / 60.0)), 2);
+        v_calculated_fee := round((v_service.hourly_rate_usd * (v_duration::numeric / 60.0)), 2);
     END IF;
 
     -- 2. One Free Trial Rule: Atomic Verification

@@ -98,6 +98,11 @@ export function LandingPage({ initialGetStartedOpen = false }: LandingPageProps)
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
+  const handleOpenGetStarted = (serviceId?: string) => {
+    setPreselectedService(serviceId);
+    setGetStartedModalOpen(true);
+  };
+
   const handleOpenBooking = (serviceId?: string, mode: BookingMode = 'trial') => {
     setPreselectedService(serviceId);
     setBookingMode(mode);
@@ -112,13 +117,13 @@ export function LandingPage({ initialGetStartedOpen = false }: LandingPageProps)
           onToggleLang={handleToggleLang}
           theme={theme}
           onToggleTheme={handleToggleTheme}
-          onOpenTrialModal={(serviceId) => handleOpenBooking(serviceId, 'trial')}
+          onOpenTrialModal={(serviceId) => handleOpenGetStarted(serviceId)}
           onOpenManageModal={() => setManageModalOpen(true)}
         />
 
         <main id="main-content">
           {/* Editorial Hero */}
-          <Hero lang={lang} onOpenTrialModal={() => handleOpenBooking(undefined, 'trial')} />
+          <Hero lang={lang} onOpenTrialModal={() => handleOpenGetStarted(undefined)} />
 
           {/* Running Marquee Ticker (00:00 in video) */}
           <MarqueeTicker lang={lang} />
@@ -126,25 +131,25 @@ export function LandingPage({ initialGetStartedOpen = false }: LandingPageProps)
           {/* Convergence Scroll Animation: 3 Scattered Subscriptions -> 1 Unified Mentorship (00:01 - 00:04 in video) */}
           <UnifiedMentorshipConvergence
             lang={lang}
-            onOpenTrialModal={() => handleOpenBooking(undefined, 'trial')}
+            onOpenTrialModal={() => handleOpenGetStarted(undefined)}
           />
 
           {/* Interactive Discipline Switcher with Active Accent Bar & Connection Diagram (00:04 - 00:07 in video) */}
           <DisciplineSwitcherShowcase
             lang={lang}
-            onOpenTrialModal={(serviceId) => handleOpenBooking(serviceId, 'trial')}
+            onOpenTrialModal={(serviceId) => handleOpenGetStarted(serviceId)}
           />
 
           {/* 3D Scroll Perspective Classroom & Terminal Showcase (00:08 - 00:10 in video) */}
           <LessonStudioShowcase
             lang={lang}
-            onOpenTrialModal={() => handleOpenBooking(undefined, 'trial')}
+            onOpenTrialModal={() => handleOpenGetStarted(undefined)}
           />
 
           {/* 13 Core Services Arranged by Pillars */}
           <ServicesSection
             lang={lang}
-            onSelectServiceForTrial={(id) => handleOpenBooking(id, 'trial')}
+            onSelectServiceForTrial={(id) => handleOpenGetStarted(id)}
           />
 
           {/* About Mahmoud & Verified Trust Credentials */}
@@ -154,10 +159,10 @@ export function LandingPage({ initialGetStartedOpen = false }: LandingPageProps)
           <TeachingApproach lang={lang} />
 
           {/* How It Works (Student Journey) */}
-          <HowItWorks lang={lang} onOpenTrialModal={() => handleOpenBooking(undefined, 'trial')} />
+          <HowItWorks lang={lang} onOpenTrialModal={() => handleOpenGetStarted(undefined)} />
 
           {/* Primary Free Trial Invitation */}
-          <FreeTrialSection lang={lang} onOpenTrialModal={() => handleOpenBooking(undefined, 'trial')} />
+          <FreeTrialSection lang={lang} onOpenTrialModal={() => handleOpenGetStarted(undefined)} />
 
           {/* Authentic Student & Parent Reflections */}
           <TestimonialsSection lang={lang} />
@@ -166,14 +171,14 @@ export function LandingPage({ initialGetStartedOpen = false }: LandingPageProps)
           <FAQSection lang={lang} />
 
           {/* Direct Contact & WhatsApp */}
-          <ContactSection lang={lang} onOpenTrialModal={() => handleOpenBooking(undefined, 'trial')} />
+          <ContactSection lang={lang} onOpenTrialModal={() => handleOpenGetStarted(undefined)} />
         </main>
 
         {/* Footer */}
         <Footer
           lang={lang}
           onToggleLang={handleToggleLang}
-          onOpenTrialModal={() => handleOpenBooking(undefined, 'trial')}
+          onOpenTrialModal={() => handleOpenGetStarted(undefined)}
           onOpenManageModal={() => setManageModalOpen(true)}
           onOpenTeacherModal={() => setTeacherModalOpen(true)}
         />
@@ -207,7 +212,7 @@ export function LandingPage({ initialGetStartedOpen = false }: LandingPageProps)
           onClose={() => setGetStartedModalOpen(false)}
           onOpenStudentSignup={() => setStudentModalOpen(true)}
           onOpenStudentLogin={() => setStudentModalOpen(true)}
-          onOpenDirectTrialBooking={() => handleOpenBooking(undefined, 'trial')}
+          onOpenDirectTrialBooking={() => handleOpenBooking(preselectedService, 'trial')}
           lang={lang}
         />
 

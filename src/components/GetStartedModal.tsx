@@ -1,7 +1,20 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, UserPlus, LogIn, X, BookOpen, Calendar, ArrowRight, ShieldCheck } from 'lucide-react';
+import { 
+  Sparkles, 
+  UserCheck, 
+  LogIn, 
+  UserPlus, 
+  X, 
+  Calendar, 
+  ArrowRight, 
+  ShieldCheck, 
+  GraduationCap,
+  Clock,
+  CheckCircle2
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Language } from '../booking/types';
 
 interface GetStartedModalProps {
   isOpen: boolean;
@@ -9,7 +22,7 @@ interface GetStartedModalProps {
   onOpenStudentSignup: () => void;
   onOpenStudentLogin: () => void;
   onOpenDirectTrialBooking: () => void;
-  lang?: 'en' | 'ar';
+  lang?: Language;
 }
 
 export const GetStartedModal: React.FC<GetStartedModalProps> = ({
@@ -41,7 +54,7 @@ export const GetStartedModal: React.FC<GetStartedModalProps> = ({
     onOpenStudentLogin();
   };
 
-  const handleDirectBooking = () => {
+  const handleDirectGuestBooking = () => {
     onClose();
     onOpenDirectTrialBooking();
   };
@@ -81,108 +94,126 @@ export const GetStartedModal: React.FC<GetStartedModalProps> = ({
           </button>
 
           {/* Header */}
-          <div className="text-center max-w-md mx-auto mb-7">
+          <div className="text-center max-w-md mx-auto mb-6">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#8FAE9B]/15 text-[#6F907D] dark:text-[#8FAE9B] mb-3">
-              <BookOpen className="w-6 h-6" />
+              <GraduationCap className="w-6 h-6" />
             </div>
             <h2 id="get-started-title" className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-[#30332F] dark:text-[#F8F6F0]">
               {isAr ? 'ابدأ رحلتك التعليمية' : 'Begin Your Learning Journey'}
             </h2>
             <p className="mt-2 text-sm text-[#626A64] dark:text-[#D5D0CA] leading-relaxed">
               {isAr 
-                ? 'اختر الطريقة التي تفضلها للتعرف على المنصة وجدولة دروسك المباشرة 1-على-1 مع الأستاذ محمود.'
-                : 'Choose how you would like to explore the platform and schedule your direct 1-on-1 sessions with Ustadh Mahmoud.'}
+                ? 'اختر كيف ترغب في جدولة دروسك المباشرة 1-على-1 مع الأستاذ محمود.'
+                : 'Choose how you would like to schedule your direct 1-on-1 sessions with Ustadh Mahmoud.'}
             </p>
           </div>
 
-          {/* Pathways Selection */}
-          <div className="space-y-3.5">
-            {/* Option 1: Explore as Guest (Interactive Demo) */}
-            <button
-              onClick={handleLaunchDemo}
-              className="w-full text-left p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#2D2635] border border-[#E2DDD5] dark:border-[#473D50] hover:border-[#8FAE9B] dark:hover:border-[#8FAE9B] hover:shadow-md transition-all group cursor-pointer flex items-start gap-4"
+          {/* Primary Pathways Selection: Guest vs Student */}
+          <div className="space-y-4">
+            {/* OPTION 1: Book as Guest (First-class Instant Direct Booking) */}
+            <div 
+              className="p-5 rounded-2xl bg-white dark:bg-[#2D2635] border border-[#E2DDD5] dark:border-[#473D50] hover:border-[#8FAE9B] dark:hover:border-[#8FAE9B] hover:shadow-md transition-all group"
             >
-              <div className="w-11 h-11 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <Sparkles className="w-5 h-5" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-base text-[#30332F] dark:text-[#F8F6F0] group-hover:text-[#6F907D] dark:group-hover:text-[#8FAE9B] transition-colors">
-                    {isAr ? 'استكشف كضيف (عرض توضيحي تفاعلي)' : 'Explore as Guest (Interactive Demo)'}
-                  </span>
-                  <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-amber-100 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300">
-                    {isAr ? 'بدون تسجيل' : 'No Account'}
-                  </span>
+              <div className="flex items-start gap-4">
+                <div className="w-11 h-11 rounded-xl bg-[#8FAE9B]/15 text-[#557161] dark:text-[#A8C9B4] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <Calendar className="w-5 h-5" />
                 </div>
-                <p className="text-xs sm:text-sm text-[#626A64] dark:text-[#D5D0CA] mt-1 leading-relaxed">
-                  {isAr 
-                    ? 'جرب لوحة تحكم الطالب، ونظام متابعة ولي الأمر، ومعاينة الحجز التجريبي ببيانات واقعية دون إنشاء حساب.'
-                    : 'Experience the live student dashboard, parent view, and booking preview with sample data — completely risk-free.'}
-                </p>
-              </div>
-              <ArrowRight className="w-4 h-4 text-[#8FAE9B] self-center shrink-0 opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all" />
-            </button>
-
-            {/* Option 2: Create Student Account */}
-            <button
-              onClick={handleOpenSignup}
-              className="w-full text-left p-4 sm:p-5 rounded-2xl bg-[#8FAE9B]/10 dark:bg-[#8FAE9B]/15 border border-[#8FAE9B]/40 hover:border-[#6F907D] hover:shadow-md transition-all group cursor-pointer flex items-start gap-4"
-            >
-              <div className="w-11 h-11 rounded-xl bg-[#6F907D] text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <UserPlus className="w-5 h-5" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-base text-[#30332F] dark:text-[#F8F6F0] group-hover:text-[#6F907D] dark:group-hover:text-[#8FAE9B] transition-colors">
-                    {isAr ? 'إنشاء حساب طالب جديد' : 'Create Student Account'}
-                  </span>
-                  <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-[#8FAE9B]/20 text-[#557161] dark:text-[#A8C9B4]">
-                    {isAr ? 'موصى به' : 'Recommended'}
-                  </span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-semibold text-base text-[#30332F] dark:text-[#F8F6F0] group-hover:text-[#6F907D] dark:group-hover:text-[#8FAE9B] transition-colors">
+                      {isAr ? 'احجز كضيف (حجز فوري)' : 'Book as Guest'}
+                    </span>
+                    <span className="text-xs px-2.5 py-0.5 rounded-full font-medium bg-[#8FAE9B]/15 text-[#557161] dark:text-[#A8C9B4] whitespace-nowrap">
+                      {isAr ? 'بدون حساب' : 'No Account Needed'}
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-[#626A64] dark:text-[#D5D0CA] mt-1.5 leading-relaxed">
+                    {isAr 
+                      ? 'لا يلزم إنشاء حساب. احجز درسك التجريبي المجاني (30 دقيقة) مباشرة مع اختيار الوقت واستلام رابط Zoom فوراً.'
+                      : 'No account needed. Book your complimentary 30-min trial session directly in 6 simple steps without creating a student profile.'}
+                  </p>
+                  
+                  <div className="mt-3.5 pt-3 border-t border-[#F0EBE1] dark:border-[#3A3242] flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 text-xs text-[#7A827B] dark:text-[#A69FA8]">
+                      <Clock className="w-3.5 h-3.5 text-[#8FAE9B]" />
+                      <span>{isAr ? 'حجز فوري في دقيقتين' : 'Instant 2-minute booking'}</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleDirectGuestBooking}
+                      id="get-started-guest-booking-btn"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#8FAE9B] hover:bg-[#6F907D] text-white text-xs sm:text-sm font-medium transition-colors shadow-xs cursor-pointer"
+                    >
+                      <span>{isAr ? 'احجز الآن كضيف' : 'Book as Guest'}</span>
+                      <ArrowRight className={`w-3.5 h-3.5 ${isAr ? 'rotate-180' : ''}`} />
+                    </button>
+                  </div>
                 </div>
-                <p className="text-xs sm:text-sm text-[#626A64] dark:text-[#D5D0CA] mt-1 leading-relaxed">
-                  {isAr
-                    ? 'سجل للبدء في خطة تعلم مخصصة مع الأستاذ محمود، وتحديد مستواك، وحجز جلستك المجانية الأولى.'
-                    : 'Register for personalized 1-on-1 mentorship, complete quick onboarding, and secure your complimentary trial.'}
-                </p>
               </div>
-              <ArrowRight className="w-4 h-4 text-[#6F907D] dark:text-[#8FAE9B] self-center shrink-0 opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all" />
-            </button>
+            </div>
 
-            {/* Option 3: Student Sign In */}
-            <button
-              onClick={handleOpenLogin}
-              className="w-full text-left p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#2D2635] border border-[#E2DDD5] dark:border-[#473D50] hover:border-[#8FAE9B] hover:shadow-md transition-all group cursor-pointer flex items-start gap-4"
+            {/* OPTION 2: Continue as Student (Student Account) */}
+            <div 
+              className="p-5 rounded-2xl bg-white dark:bg-[#2D2635] border border-[#8FAE9B]/40 dark:border-[#8FAE9B]/30 hover:border-[#6F907D] hover:shadow-md transition-all group"
             >
-              <div className="w-11 h-11 rounded-xl bg-[#6B5B73]/10 text-[#6B5B73] dark:text-[#B8A9C9] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <LogIn className="w-5 h-5" />
+              <div className="flex items-start gap-4">
+                <div className="w-11 h-11 rounded-xl bg-[#6B5B73]/10 text-[#6B5B73] dark:text-[#B8A9C9] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <UserCheck className="w-5 h-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-semibold text-base text-[#30332F] dark:text-[#F8F6F0] group-hover:text-[#6B5B73] dark:group-hover:text-[#B8A9C9] transition-colors">
+                      {isAr ? 'المتابعة كطالب مسجل' : 'Continue as Student'}
+                    </span>
+                    <span className="text-xs px-2.5 py-0.5 rounded-full font-medium bg-[#6B5B73]/10 text-[#6B5B73] dark:text-[#B8A9C9] whitespace-nowrap">
+                      {isAr ? 'موصى به' : 'Recommended'}
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-[#626A64] dark:text-[#D5D0CA] mt-1.5 leading-relaxed">
+                    {isAr
+                      ? 'سجل دخولك أو أنشئ حساباً لربط حجوزاتك ومواعيد Zoom وملاحظات المعلم وتقارير التقدم بملفك الشخصي.'
+                      : 'Sign in or create an account to keep your bookings, scheduled lessons, Zoom links, and teacher feedback connected to your profile.'}
+                  </p>
+
+                  <div className="mt-3.5 pt-3 border-t border-[#F0EBE1] dark:border-[#3A3242] flex flex-wrap items-center justify-between gap-2">
+                    <button
+                      type="button"
+                      onClick={handleOpenSignup}
+                      id="get-started-student-signup-btn"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#6B5B73] hover:bg-[#584960] text-white text-xs font-medium transition-colors shadow-xs cursor-pointer"
+                    >
+                      <UserPlus className="w-3.5 h-3.5" />
+                      <span>{isAr ? 'إنشاء حساب طالب' : 'Create Account'}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleOpenLogin}
+                      id="get-started-student-login-btn"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-[#30332F] dark:text-[#F8F6F0] text-xs font-medium transition-colors cursor-pointer border border-[#D5D0CA] dark:border-[#473D50]"
+                    >
+                      <LogIn className="w-3.5 h-3.5 text-[#6B5B73] dark:text-[#B8A9C9]" />
+                      <span>{isAr ? 'تسجيل الدخول' : 'Sign In'}</span>
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <span className="font-semibold text-base text-[#30332F] dark:text-[#F8F6F0] group-hover:text-[#6B5B73] dark:group-hover:text-[#B8A9C9] transition-colors">
-                  {isAr ? 'تسجيل دخول الطالب' : 'Student Sign In'}
-                </span>
-                <p className="text-xs sm:text-sm text-[#626A64] dark:text-[#D5D0CA] mt-1 leading-relaxed">
-                  {isAr
-                    ? 'لديك حساب بالفعل؟ سجل دخولك لمتابعة دروسك القادمة، والانضمام لفصل Zoom، ومراجعة ملاحظات المعلم.'
-                    : 'Already registered? Sign in to view scheduled classes, join your private Zoom room, and review teacher notes.'}
-                </p>
-              </div>
-              <ArrowRight className="w-4 h-4 text-[#6B5B73] dark:text-[#B8A9C9] self-center shrink-0 opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all" />
-            </button>
+            </div>
           </div>
 
-          {/* Direct Guest Booking Link (Honoring Section 5) */}
-          <div className="mt-6 pt-5 border-t border-[#E2DDD5] dark:border-[#3E3545] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#7A827B] dark:text-[#A69FA8]">
+          {/* Secondary Pathways: Interactive Demo & Staff Entrance */}
+          <div className="mt-5 pt-4 border-t border-[#E2DDD5] dark:border-[#3E3545] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#7A827B] dark:text-[#A69FA8]">
             <button
-              onClick={handleDirectBooking}
-              className="inline-flex items-center gap-1.5 font-medium text-[#6F907D] dark:text-[#8FAE9B] hover:underline cursor-pointer"
+              onClick={handleLaunchDemo}
+              id="get-started-demo-btn"
+              className="inline-flex items-center gap-1.5 font-medium text-amber-700 dark:text-amber-400 hover:underline cursor-pointer"
             >
-              <Calendar className="w-3.5 h-3.5" />
-              <span>{isAr ? 'أو احجز جلسة تجريبية مباشرة كضيف' : 'Or book a 1-on-1 free trial directly as a guest'}</span>
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>{isAr ? 'معاينة تجريبية للوحة التحكم (عرض توضيحي)' : 'Explore Interactive Demo (Sample Data)'}</span>
             </button>
 
             <a
               href="/staff/login"
+              id="get-started-staff-link"
               className="text-[#7A827B] dark:text-[#A69FA8] hover:text-[#30332F] dark:hover:text-white transition-colors"
             >
               {isAr ? 'دخول المعلم / الإدارة' : 'Staff / Teacher Entrance'}

@@ -1,27 +1,12 @@
 -- ====================================================================
--- MAHMOUD TEACHING PLATFORM — PHASE 7 ONBOARDING & BOOKING LINK
--- Migration: 20260908000002_phase7_onboarding_and_booking_link.sql
--- Adds onboarding completion state & learning preferences to students table,
--- and links student_id deterministically in create_booking_atomic.
+-- MAHMOUD TEACHING PLATFORM — TASK 0.45
+-- Schema Alignment: Reconcile create_booking_atomic with Canonical Services Schema
+-- File: supabase/migrations/20260908000004_fix_booking_rpc_schema_alignment.sql
 -- ====================================================================
 
--- 1. Extend students table with onboarding columns
-ALTER TABLE public.students 
-ADD COLUMN IF NOT EXISTS onboarding_completed BOOLEAN NOT NULL DEFAULT false,
-ADD COLUMN IF NOT EXISTS learning_interest TEXT,
-ADD COLUMN IF NOT EXISTS learning_goal TEXT,
-ADD COLUMN IF NOT EXISTS learning_needs TEXT;
-
--- 2. Prevent existing active students from being trapped in onboarding
-UPDATE public.students 
-SET onboarding_completed = true 
-WHERE status = 'active' AND (
-  EXISTS (SELECT 1 FROM public.student_goals sg WHERE sg.student_id = public.students.id)
-  OR EXISTS (SELECT 1 FROM public.bookings b WHERE b.student_id = public.students.id)
-);
-
--- 3. Update create_booking_atomic to automatically link student_id
-CREATE OR REPLACE FUNCTION public.create_booking_atomic(p_booking jsonb)
+CREATE OR REPLACE FUNCTION public.create_booking_atomic(
+    p_booking jsonb
+)
 RETURNS jsonb
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -33,44 +18,42 @@ DECLARE
     v_contact_whatsapp TEXT;
     v_parent_name TEXT;
     v_audience TEXT;
-    v_service_id TEXT;
+    v_service_id UUID;
     v_booking_type TEXT;
-    v_duration INTEGER;
+    v_duration INT;
     v_scheduled_start TIMESTAMPTZ;
     v_scheduled_end TIMESTAMPTZ;
     v_timezone TEXT;
     v_cairo_time_display TEXT;
     v_goal TEXT;
     v_notes TEXT;
-    
+
+    v_service RECORD;
+    v_calculated_fee NUMERIC(10, 2);
+    v_student_id UUID := NULL;
+    v_lead_id UUID := NULL;
+    v_booking_id UUID;
     v_ref_code TEXT;
     v_management_token TEXT;
     v_management_token_hash TEXT;
-    v_service RECORD;
-    v_calculated_fee NUMERIC(6, 2);
-    v_lead_id UUID;
-    v_student_id UUID;
-    v_booking_id UUID;
     v_rem_24h TIMESTAMPTZ;
     v_rem_1h TIMESTAMPTZ;
 BEGIN
-    -- Extract and sanitize inputs
+    -- Extract and normalize inputs
     v_contact_name := trim(COALESCE(p_booking->>'contact_name', ''));
     v_contact_email := lower(trim(COALESCE(p_booking->>'contact_email', '')));
-    -- Normalize phone: keep only + and digits
-    v_contact_whatsapp := regexp_replace(trim(COALESCE(p_booking->>'contact_whatsapp', '')), '[^0-9+]', '', 'g');
+    v_contact_whatsapp := trim(COALESCE(p_booking->>'contact_whatsapp', ''));
     v_parent_name := trim(COALESCE(p_booking->>'parent_name', ''));
     v_audience := COALESCE(p_booking->>'audience', 'adult');
-    v_service_id := trim(COALESCE(p_booking->>'service_id', ''));
+    v_service_id := (p_booking->>'service_id')::UUID;
     v_booking_type := COALESCE(p_booking->>'booking_type', 'trial');
-    v_duration := COALESCE((p_booking->>'duration_minutes')::INTEGER, 30);
+    v_duration := COALESCE((p_booking->>'duration_minutes')::INT, 30);
     v_scheduled_start := (p_booking->>'scheduled_start')::TIMESTAMPTZ;
     v_scheduled_end := (p_booking->>'scheduled_end')::TIMESTAMPTZ;
-    v_timezone := trim(COALESCE(p_booking->>'student_timezone', 'UTC'));
-    -- Cairo display is derived server-side to prevent client spoofing
-    v_cairo_time_display := to_char(v_scheduled_start AT TIME ZONE 'Africa/Cairo', 'DD Mon YYYY, HH12:MI AM');
-    v_goal := trim(COALESCE(p_booking->>'goal', ''));
-    v_notes := trim(COALESCE(p_booking->>'notes', ''));
+    v_timezone := COALESCE(p_booking->>'student_timezone', 'UTC');
+    v_cairo_time_display := COALESCE(p_booking->>'cairo_time_display', '');
+    v_goal := COALESCE(p_booking->>'goal', '');
+    v_notes := COALESCE(p_booking->>'notes', '');
 
     -- 1. Strict Server-Side Validation
     IF v_contact_name = '' OR length(v_contact_name) < 2 THEN
@@ -100,7 +83,7 @@ BEGIN
         RAISE EXCEPTION 'Free trial duration cannot exceed 45 minutes.';
     END IF;
 
-    -- Resolve service metadata
+    -- Resolve service metadata using canonical schema: hourly_rate_usd and trial_allowed
     SELECT id, title, hourly_rate_usd, trial_allowed
     INTO v_service
     FROM public.services
@@ -136,15 +119,37 @@ BEGIN
         END IF;
     END IF;
 
-    -- 3. Resolve student_id if booking is from authenticated student or matching existing profile
-    IF p_booking ? 'student_id' AND (p_booking->>'student_id') IS NOT NULL AND (p_booking->>'student_id') <> '' THEN
-        v_student_id := (p_booking->>'student_id')::UUID;
+    -- 3. Authoritative Student Identity & Ownership Resolution
+    -- A browser-supplied student_id must NEVER be treated as proof of ownership.
+    IF auth.uid() IS NOT NULL THEN
+        -- Authenticated user: resolve strictly via auth_user_id
+        SELECT id INTO v_student_id
+        FROM public.students
+        WHERE auth_user_id = auth.uid();
+
+        IF v_student_id IS NULL THEN
+            RAISE EXCEPTION 'Authenticated student profile is not ready. Please complete student onboarding or sign in again.';
+        END IF;
+
+        -- If client provided a student_id, ensure it does not attempt to impersonate another student
+        IF p_booking ? 'student_id'
+            AND (p_booking->>'student_id') IS NOT NULL
+            AND (p_booking->>'student_id') <> '' 
+        THEN
+            IF (p_booking->>'student_id')::UUID <> v_student_id THEN
+                RAISE EXCEPTION 'Forbidden. Cannot create a booking on behalf of another student.';
+            END IF;
+        END IF;
     ELSE
-        SELECT id INTO v_student_id 
-        FROM public.students 
-        WHERE lower(trim(email)) = v_contact_email 
-        ORDER BY (auth_user_id IS NOT NULL) DESC, created_at ASC 
-        LIMIT 1;
+        -- Guest booking (auth.uid() IS NULL)
+        -- Unauthenticated guests can never specify a student_id
+        IF p_booking ? 'student_id'
+            AND (p_booking->>'student_id') IS NOT NULL
+            AND (p_booking->>'student_id') <> '' 
+        THEN
+            RAISE EXCEPTION 'Unauthenticated guests cannot specify a student ID.';
+        END IF;
+        v_student_id := NULL;
     END IF;
 
     -- 4. Cryptographic Codes Generation
@@ -173,15 +178,15 @@ BEGIN
         updated_at = timezone('utc'::text, now())
     RETURNING id INTO v_lead_id;
 
-    -- 6. Insert Booking Record with linked student_id
+    -- 6. Insert Booking Record with authoritatively resolved student_id
     BEGIN
         INSERT INTO public.bookings (
-            reference_code, management_token_hash, student_id, lead_id, service_id, booking_type, duration_minutes,
+            reference_code, management_token, management_token_hash, student_id, lead_id, service_id, booking_type, duration_minutes,
             scheduled_start, scheduled_end, student_timezone, cairo_time_display,
             status, contact_name, contact_email, contact_whatsapp, parent_name,
             fee_amount_usd, zoom_meeting_link, notes
         ) VALUES (
-            v_ref_code, v_management_token_hash, v_student_id, v_lead_id, v_service.id, v_booking_type, v_duration,
+            v_ref_code, v_management_token, v_management_token_hash, v_student_id, v_lead_id, v_service.id, v_booking_type, v_duration,
             v_scheduled_start, v_scheduled_end, v_timezone, v_cairo_time_display,
             'confirmed', v_contact_name, v_contact_email, NULLIF(v_contact_whatsapp, ''), NULLIF(v_parent_name, ''),
             v_calculated_fee, 'pending', v_notes
@@ -227,3 +232,6 @@ BEGIN
     );
 END;
 $$;
+
+REVOKE ALL ON FUNCTION public.create_booking_atomic(jsonb) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.create_booking_atomic(jsonb) TO anon, authenticated;
