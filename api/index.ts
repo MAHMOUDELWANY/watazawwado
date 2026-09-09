@@ -242,14 +242,19 @@ app.get('/api/integrations/google-calendar/callback', async (req: any, res: any)
       const supabase = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
       
       // Invalidate old connections FOR THIS TEACHER ONLY
-      await supabase
+      const { error: updateError } = await supabase
         .from('calendar_connections')
         .update({ is_active: false })
         .eq('provider', 'google_calendar')
         .eq('teacher_id', teacherId);
 
+      if (updateError) {
+        console.error('[OAuth Callback] Failed to deactivate previous calendar connections:', updateError);
+        return res.status(500).send('Database Error: Failed to prepare calendar connection state. Please try again.');
+      }
+
       // Insert new connection
-      await supabase.from('calendar_connections').insert({
+      const { data: insertData, error: insertError } = await supabase.from('calendar_connections').insert({
         teacher_id: teacherId,
         provider: 'google_calendar',
         account_email: tokenData.accountEmail || 'unknown@calendar.google.com',
@@ -259,7 +264,15 @@ app.get('/api/integrations/google-calendar/callback', async (req: any, res: any)
           refresh_token: tokenData.refreshToken ? encryptToken(tokenData.refreshToken) : undefined,
           expires_at: tokenData.expiresAt
         }
-      });
+      }).select('id').single();
+
+      if (insertError || !insertData) {
+        console.error('[OAuth Callback] Failed to insert new calendar connection:', insertError);
+        return res.status(500).send('Database Error: Google Calendar was authorized, but the connection could not be saved to your account. Please try again.');
+      }
+    } else {
+      console.error('[OAuth Callback] Missing Supabase configuration. Cannot persist calendar connection.');
+      return res.status(503).send('Configuration Error: Database credentials missing. Please contact support.');
     }
 
     const isProduction = process.env.NODE_ENV === 'production';
