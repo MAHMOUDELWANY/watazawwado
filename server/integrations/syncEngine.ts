@@ -107,34 +107,63 @@ export async function isTeacherCurrentlyAuthorized(teacherId: string): Promise<b
   try {
     // 1. If cleanId is an email (contains '@'), check teacher_accounts directly by email
     if (cleanId.includes('@')) {
+      const normalizedEmail = cleanId.toLowerCase().trim();
       const { data: directAccount, error: directErr } = await supabase
         .from('teacher_accounts')
         .select('email, role, is_active')
-        .ilike('email', cleanId)
+        .ilike('email', normalizedEmail)
         .eq('is_active', true)
         .maybeSingle();
       if (!directErr && directAccount) {
         return true;
       }
+      return false;
     }
 
-    // 2. Check profiles by ID (maps profile ID to email, then checks teacher_accounts)
-    const { data: profile, error: profileErr } = await supabase
-      .from('profiles')
-      .select('id, email, role')
-      .eq('id', cleanId)
-      .maybeSingle();
-
-    if (profile && profile.email) {
-      const { data: teacherRecord, error: teacherErr } = await supabase
-        .from('teacher_accounts')
-        .select('email, role, is_active')
-        .ilike('email', profile.email)
-        .eq('is_active', true)
-        .maybeSingle();
-      if (!teacherErr && teacherRecord) {
-        return true;
+    // 2. Authoritative Flow: cleanId is a Supabase Auth User UUID.
+    // Query Supabase Admin Auth to retrieve the user's authoritative email, then verify against teacher_accounts.
+    try {
+      if (supabase.auth?.admin?.getUserById) {
+        const { data: authUserData, error: authUserErr } = await supabase.auth.admin.getUserById(cleanId);
+        if (!authUserErr && authUserData?.user?.email) {
+          const normalizedEmail = authUserData.user.email.toLowerCase().trim();
+          const { data: teacherRecord, error: teacherErr } = await supabase
+            .from('teacher_accounts')
+            .select('email, role, is_active')
+            .ilike('email', normalizedEmail)
+            .eq('is_active', true)
+            .maybeSingle();
+          if (!teacherErr && teacherRecord) {
+            return true;
+          }
+        }
       }
+    } catch (authLookupErr) {
+      console.warn('[isTeacherCurrentlyAuthorized] Supabase Auth admin lookup warning:', authLookupErr);
+    }
+
+    // 3. Fallback / legacy check: Map profile ID to email if profile exists, then check teacher_accounts
+    try {
+      const { data: profile, error: profileErr } = await supabase
+        .from('profiles')
+        .select('id, email, role')
+        .eq('id', cleanId)
+        .maybeSingle();
+
+      if (!profileErr && profile?.email) {
+        const normalizedEmail = profile.email.toLowerCase().trim();
+        const { data: teacherRecord, error: teacherErr } = await supabase
+          .from('teacher_accounts')
+          .select('email, role, is_active')
+          .ilike('email', normalizedEmail)
+          .eq('is_active', true)
+          .maybeSingle();
+        if (!teacherErr && teacherRecord) {
+          return true;
+        }
+      }
+    } catch (profileLookupErr) {
+      console.warn('[isTeacherCurrentlyAuthorized] Profile lookup warning:', profileLookupErr);
     }
 
     return false;
