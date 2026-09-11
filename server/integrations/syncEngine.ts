@@ -485,7 +485,21 @@ export async function syncCancelledBooking(
     }
 
     if (zoomError && !zoomError.message.includes('NOT_FOUND')) throw zoomError;
-    return { success: true, message: 'Google Calendar event removed.' };
+
+    // Update booking integration status to 'cancelled' in database
+    await supabase
+      .from('bookings')
+      .update({
+        integration_status: 'cancelled',
+        sync_metadata: {
+          ...((booking?.sync_metadata as any) || {}),
+          cancelled_at: new Date().toISOString()
+        },
+        updated_at: new Date().toISOString()
+      })
+      .eq('reference_code', referenceCode);
+
+    return { success: true, message: 'Google Calendar event removed and Zoom meeting cancelled.' };
   } catch (err: any) {
     console.warn('[syncCancelledBooking Warning]', err);
     return { success: false, message: err?.message || 'Failed to remove Google Calendar event.' };

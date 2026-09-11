@@ -26,16 +26,21 @@ function getAdminSupabase() {
   return createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
 }
 
-export async function processIntegrationJobs(batchSize = 5, clientOverride?: any): Promise<number> {
+export async function processIntegrationJobs(batchSize = 5, clientOverride?: any, targetBookingId?: string): Promise<number> {
   const supabase = clientOverride || getAdminSupabase();
   if (!supabase) {
     console.warn('[Integration Worker] Admin Supabase client not configured.');
     return 0;
   }
 
-  // 1. Claim Jobs
+  // 1. Claim Jobs (strictly scoped to targetBookingId when provided)
+  const rpcParams: { p_batch_size: number; p_booking_id?: string } = { p_batch_size: batchSize };
+  if (targetBookingId && typeof targetBookingId === 'string' && targetBookingId.trim() !== '') {
+    rpcParams.p_booking_id = targetBookingId.trim();
+  }
+
   const { data: jobs, error: claimError } = await supabase
-    .rpc('claim_integration_jobs', { p_batch_size: batchSize });
+    .rpc('claim_integration_jobs', rpcParams);
 
   if (claimError || !jobs || jobs.length === 0) {
     if (claimError) console.error('[Integration Worker] Claim error:', claimError);

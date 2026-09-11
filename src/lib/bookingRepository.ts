@@ -339,6 +339,18 @@ export const bookingRepository = {
   },
 
   async cancelBooking(cleanRef: string, token: string, reason?: string) {
+    // 1. Pre-check 3-hour policy eligibility if booking details can be resolved
+    const existing = await this.lookupBooking(cleanRef, token);
+    if (existing?.scheduledIsoDatetime) {
+      const eligibility = this.checkPolicyEligibility(existing.scheduledIsoDatetime);
+      if (!eligibility.eligible) {
+        return {
+          success: false,
+          message: eligibility.explanation || 'Cancellation is closed within 3 hours of the lesson. Please contact Mahmoud directly.'
+        };
+      }
+    }
+
     if (isSupabaseConfigured() && token) {
       try {
         const { error: rpcError } = await supabase.rpc('cancel_booking_by_management', {
@@ -347,7 +359,12 @@ export const bookingRepository = {
           p_reason: reason || 'Cancelled by student through portal',
         });
         
-        if (rpcError) return { success: false, message: `Cancellation failed: ${rpcError.message}` };
+        if (rpcError) {
+          const msg = rpcError.message.includes('within 3 hours')
+            ? 'Self-service cancellation is closed within 3 hours of the lesson. Please contact Mahmoud directly.'
+            : `Cancellation failed: ${rpcError.message}`;
+          return { success: false, message: msg };
+        }
       } catch (err: any) {
         return { success: false, message: `Cancellation failed: ${err?.message || 'Database error'}` };
       }
@@ -376,6 +393,18 @@ export const bookingRepository = {
   },
 
   async rescheduleBooking(cleanRef: string, token: string, newDate: string, newTime24: string, timezone: string, durationMinutes: number) {
+    // 1. Pre-check 3-hour policy eligibility on current lesson time
+    const existing = await this.lookupBooking(cleanRef, token);
+    if (existing?.scheduledIsoDatetime) {
+      const eligibility = this.checkPolicyEligibility(existing.scheduledIsoDatetime);
+      if (!eligibility.eligible) {
+        return {
+          success: false,
+          message: eligibility.explanation || 'Rescheduling is closed within 3 hours of the lesson. Please contact Mahmoud directly.'
+        };
+      }
+    }
+
     let scheduledStartUtc: string;
     let scheduledEndUtc: string;
     let cairoTimeDisplay: string;
@@ -419,7 +448,12 @@ export const bookingRepository = {
           p_cairo_time_display: cairoTimeDisplay,
         });
 
-        if (rpcError) return { success: false, message: `Reschedule failed: ${rpcError.message}` };
+        if (rpcError) {
+          const msg = rpcError.message.includes('within 3 hours')
+            ? 'Self-service rescheduling is closed within 3 hours of the lesson. Please contact Mahmoud directly.'
+            : `Reschedule failed: ${rpcError.message}`;
+          return { success: false, message: msg };
+        }
       } catch (err: any) {
         return { success: false, message: `Reschedule failed: ${err?.message || 'Database error'}` };
       }

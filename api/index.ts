@@ -356,13 +356,13 @@ app.post('/api/integrations/google-calendar/disconnect', verifyTeacherAuth, asyn
 });
 
 // --- AUTH HELPER ---
-async function verifyManagementToken(referenceCode: string, managementToken: string): Promise<boolean> {
-  if (!referenceCode || !managementToken) return false;
+async function getVerifiedBookingManagement(referenceCode: string, managementToken: string): Promise<any | null> {
+  if (!referenceCode || !managementToken) return null;
   const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!supabaseUrl || !serviceKey) {
     console.error('[Configuration Error] SUPABASE_SERVICE_ROLE_KEY missing for management auth check.');
-    return false; // Fail closed
+    return null; // Fail closed
   }
   
   const supabase = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
@@ -371,7 +371,28 @@ async function verifyManagementToken(referenceCode: string, managementToken: str
     p_management_token: managementToken
   });
     
-  return !error && data && data.reference;
+  if (error || !data || !data.reference) {
+    return null;
+  }
+
+  // Ensure bookingId is populated
+  if (!data.bookingId) {
+    const { data: b } = await supabase
+      .from('bookings')
+      .select('id')
+      .eq('reference_code', data.reference)
+      .maybeSingle();
+    if (b?.id) {
+      data.bookingId = b.id;
+    }
+  }
+
+  return data;
+}
+
+async function verifyManagementToken(referenceCode: string, managementToken: string): Promise<boolean> {
+  const data = await getVerifiedBookingManagement(referenceCode, managementToken);
+  return Boolean(data && data.reference);
 }
 // ---
 
@@ -388,8 +409,13 @@ app.post('/api/integrations/sync-booking', async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized.' });
     }
 
-    // Option B: Fast-path. Trigger the outbox worker immediately for faster UI feedback
-    await processIntegrationJobs(2); // Process small batch to return quickly
+    const managementData = await getVerifiedBookingManagement(booking.referenceCode, booking.managementToken);
+    const targetBookingId = managementData?.bookingId;
+
+    // Fast-path: Trigger the outbox worker strictly scoped to THIS booking!
+    if (targetBookingId) {
+      await processIntegrationJobs(1, undefined, targetBookingId);
+    }
 
     // Fetch the updated booking to return the latest zoom link
     const supabase = getSupabaseAdminClient();
@@ -419,13 +445,17 @@ app.post('/api/integrations/reschedule', async (req, res) => {
       return res.status(400).json({ error: 'Missing reschedule parameters.' });
     }
 
-    const isAuth = await verifyManagementToken(referenceCode, managementToken);
-    if (!isAuth) {
+    const managementData = await getVerifiedBookingManagement(referenceCode, managementToken);
+    if (!managementData) {
       return res.status(401).json({ error: 'Unauthorized.' });
     }
 
-    // Trigger worker asynchronously to process the job
-    processIntegrationJobs().catch(err => console.error('[Fast-path reschedule error]', err));
+    const targetBookingId = managementData.bookingId;
+
+    // Trigger worker asynchronously strictly scoped to this booking
+    if (targetBookingId) {
+      processIntegrationJobs(1, undefined, targetBookingId).catch(err => console.error('[Fast-path reschedule error]', err));
+    }
 
     return res.status(202).json({ success: true, message: 'Reschedule job queued for background processing.' });
   } catch (err: any) {
@@ -440,13 +470,17 @@ app.post('/api/integrations/cancel', async (req, res) => {
       return res.status(400).json({ error: 'Missing reference code or token.' });
     }
 
-    const isAuth = await verifyManagementToken(referenceCode, managementToken);
-    if (!isAuth) {
+    const managementData = await getVerifiedBookingManagement(referenceCode, managementToken);
+    if (!managementData) {
       return res.status(401).json({ error: 'Unauthorized.' });
     }
 
-    // Trigger worker asynchronously to process the job
-    processIntegrationJobs().catch(err => console.error('[Fast-path cancel error]', err));
+    const targetBookingId = managementData.bookingId;
+
+    // Trigger worker asynchronously strictly scoped to this booking
+    if (targetBookingId) {
+      processIntegrationJobs(1, undefined, targetBookingId).catch(err => console.error('[Fast-path cancel error]', err));
+    }
 
     return res.status(202).json({ success: true, message: 'Cancellation job queued for background processing.' });
   } catch (error: any) {

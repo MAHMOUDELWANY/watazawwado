@@ -80,6 +80,63 @@ async function getSupabaseBookedIntervals(startUtcIso: string, endUtcIso: string
 }
 
 /**
+ * Resolves the authoritative teacher for availability checks.
+ * Rules:
+ * 1) Scoped to active 'google_calendar' connections.
+ * 2) If there is exactly ONE active connection:
+ *    - If caller passed a teacherId, it MUST match the active teacher (no arbitrary teacher ID injection).
+ *    - If caller passed no teacherId (e.g. public guest booking flow), use the active teacher.
+ * 3) If there are 0 or >1 active connections and no valid matching teacherId is provided:
+ *    - Fail closed (return null, never guess).
+ */
+export async function resolveAuthoritativeTeacherForAvailability(
+  suppliedTeacherId?: string
+): Promise<string | null> {
+  if (typeof (globalThis as any).__TEST_RESOLVE_AUTHORITATIVE_TEACHER === 'function') {
+    return (globalThis as any).__TEST_RESOLVE_AUTHORITATIVE_TEACHER(suppliedTeacherId);
+  }
+
+  const supabase = getServerSupabase();
+  if (!supabase) return null;
+
+  try {
+    const { data: conns, error } = await supabase
+      .from('calendar_connections')
+      .select('teacher_id')
+      .eq('provider', 'google_calendar')
+      .eq('is_active', true);
+
+    if (error || !conns || conns.length === 0) {
+      return null;
+    }
+
+    const cleanSupplied = suppliedTeacherId && typeof suppliedTeacherId === 'string' ? suppliedTeacherId.trim() : null;
+
+    if (conns.length === 1) {
+      const activeTeacherId = conns[0].teacher_id;
+      // If a teacherId was passed, enforce that it matches the authorized active teacher
+      if (cleanSupplied) {
+        return cleanSupplied.toLowerCase() === activeTeacherId.toLowerCase() ? activeTeacherId : null;
+      }
+      // Public flow without teacherId -> use the single active teacher
+      return activeTeacherId;
+    }
+
+    // Multiple active connections: fail closed unless caller explicitly matched one of the active connections
+    if (cleanSupplied) {
+      const match = conns.find(c => c.teacher_id.toLowerCase() === cleanSupplied.toLowerCase());
+      return match ? match.teacher_id : null;
+    }
+
+    // Multiple connections and no teacherId -> fail closed
+    return null;
+  } catch (err) {
+    console.warn('[resolveAuthoritativeTeacherForAvailability Error]', err);
+    return null;
+  }
+}
+
+/**
  * Computes available booking days and slots for a given timezone and date range.
  * Merges Cairo teaching hours + Google Calendar Busy + Supabase Bookings.
  */
@@ -96,9 +153,9 @@ export async function computeAvailableSlots(
   const startWindowUtc = nowCairo.startOf('day').toUTC().toISO()!;
   const endWindowUtc = nowCairo.plus({ days: daysCount + 2 }).endOf('day').toUTC().toISO()!;
 
-  // 1. Fetch Google Calendar busy slots IF an explicit teacherId is provided
+  // 1. Fetch Google Calendar busy slots for authoritative teacher
   let googleBusyIntervals: GoogleFreeBusyInterval[] = [];
-  const cleanTeacherId = teacherId && typeof teacherId === 'string' ? teacherId.trim() : null;
+  const cleanTeacherId = await resolveAuthoritativeTeacherForAvailability(teacherId);
   if (cleanTeacherId) {
     try {
       const googleConn = await getActiveGoogleConnection(cleanTeacherId);
@@ -213,8 +270,8 @@ export async function validateSlotAvailability(
 
   const reqInterval = Interval.fromDateTimes(reqStart, reqEnd);
 
-  // 1. Check Google Calendar FreeBusy IF an explicit teacherId is provided
-  const cleanTeacherId = teacherId && typeof teacherId === 'string' ? teacherId.trim() : null;
+  // 1. Check Google Calendar FreeBusy for authoritative teacher
+  const cleanTeacherId = await resolveAuthoritativeTeacherForAvailability(teacherId);
   if (cleanTeacherId) {
     try {
       const googleConn = await getActiveGoogleConnection(cleanTeacherId);
