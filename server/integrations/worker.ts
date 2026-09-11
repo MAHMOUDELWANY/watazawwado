@@ -11,6 +11,14 @@ import { scheduleBookingReminders, cancelBookingReminders, rescheduleBookingRemi
 import { dispatchNotification } from '../notifications/dispatcher.js';
 import { DateTime } from 'luxon';
 
+function sanitizeErrorMessage(msg: string): string {
+  if (!msg) return 'Unknown error';
+  return msg
+    .replace(/ya29\.[0-9A-Za-z\-_]+/g, '[REDACTED_TOKEN]')
+    .replace(/Bearer\s+[A-Za-z0-9\-_.]+/gi, 'Bearer [REDACTED]')
+    .replace(/(access_token|refresh_token|client_secret)=[^&\s]+/gi, '$1=[REDACTED]');
+}
+
 function getAdminSupabase() {
   const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
@@ -18,8 +26,8 @@ function getAdminSupabase() {
   return createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
 }
 
-export async function processIntegrationJobs(batchSize = 5): Promise<number> {
-  const supabase = getAdminSupabase();
+export async function processIntegrationJobs(batchSize = 5, clientOverride?: any): Promise<number> {
+  const supabase = clientOverride || getAdminSupabase();
   if (!supabase) {
     console.warn('[Integration Worker] Admin Supabase client not configured.');
     return 0;
@@ -46,22 +54,36 @@ export async function processIntegrationJobs(batchSize = 5): Promise<number> {
           .eq('id', job.booking_id)
           .maybeSingle();
 
-        if (bError || !booking) {
-          throw new Error('Booking not found or DB error');
+        if (bError) {
+          throw new Error(`Booking database query error: ${bError.message}`);
+        }
+        if (!booking) {
+          throw new Error(`Booking record not found: ${job.booking_id}`);
         }
 
         // Stale job protection: If booking was cancelled, do not sync or email
         if (booking.status === 'cancelled') {
           console.log(`[Worker] job_type=booking_sync but booking ${booking.reference_code} is cancelled. Skipping sync.`);
-          await supabase
+          const { error: skipErr, data: updatedJobs } = await supabase
             .from('integration_jobs')
             .update({
               status: 'completed',
               completed_at: new Date().toISOString(),
               locked_at: null,
+              last_error: null,
               updated_at: new Date().toISOString()
             })
-            .eq('id', job.id);
+            .eq('id', job.id)
+            .eq('status', 'processing')
+            .select('id');
+
+          if (skipErr) {
+            throw new Error(`Failed to persist skipped job completion: ${skipErr.message}`);
+          }
+          if (!updatedJobs || updatedJobs.length === 0) {
+            throw new Error(`Job ${job.id} cancelled skip lost update: status was no longer 'processing'`);
+          }
+
           processedCount++;
           continue;
         }
@@ -85,6 +107,13 @@ export async function processIntegrationJobs(batchSize = 5): Promise<number> {
           zoomMeetingLink: booking.zoom_meeting_link,
           notes: booking.notes
         });
+
+        if (!syncResult.success) {
+          const errMsg = syncResult.errors && syncResult.errors.length > 0 
+            ? syncResult.errors.join(', ') 
+            : 'Sync failed without explicit message';
+          throw new Error(errMsg);
+        }
 
         // Notifications
         try {
@@ -121,16 +150,26 @@ export async function processIntegrationJobs(batchSize = 5): Promise<number> {
           console.error('[Integration Worker] Notification Dispatch Error', notifErr);
         }
 
-        // Mark Success
-        await supabase
+        // Mark Success: Fail-safe persistence check with lost-update protection
+        const { error: updateErr, data: updatedJobs } = await supabase
           .from('integration_jobs')
           .update({
             status: 'completed',
             completed_at: new Date().toISOString(),
             locked_at: null,
+            last_error: null,
             updated_at: new Date().toISOString()
           })
-          .eq('id', job.id);
+          .eq('id', job.id)
+          .eq('status', 'processing')
+          .select('id');
+
+        if (updateErr) {
+          throw new Error(`Failed to persist job completion: ${updateErr.message}`);
+        }
+        if (!updatedJobs || updatedJobs.length === 0) {
+          throw new Error(`Job ${job.id} completion lost update: status was no longer 'processing'`);
+        }
 
         processedCount++;
 
@@ -141,10 +180,12 @@ export async function processIntegrationJobs(batchSize = 5): Promise<number> {
           .eq('id', job.booking_id)
           .maybeSingle();
           
-        if (bError || !booking) {
-          throw new Error('Booking not found or DB error');
+        if (bError) {
+          throw new Error(`Booking database query error: ${bError.message}`);
         }
-        
+        if (!booking) {
+          throw new Error(`Booking record not found: ${job.booking_id}`);
+        }
         
         // We ensure authoritative state is cancelled
         if (booking.status !== 'cancelled') {
@@ -186,16 +227,27 @@ export async function processIntegrationJobs(batchSize = 5): Promise<number> {
            }
         }
 
-        // Mark Success
-        await supabase
+        // Mark Success: Fail-safe persistence check with lost-update protection
+        const { error: updateErr, data: updatedJobs } = await supabase
           .from('integration_jobs')
           .update({
             status: 'completed',
             completed_at: new Date().toISOString(),
             locked_at: null,
+            last_error: null,
             updated_at: new Date().toISOString()
           })
-          .eq('id', job.id);
+          .eq('id', job.id)
+          .eq('status', 'processing')
+          .select('id');
+
+        if (updateErr) {
+          throw new Error(`Failed to persist cancel job completion: ${updateErr.message}`);
+        }
+        if (!updatedJobs || updatedJobs.length === 0) {
+          throw new Error(`Job ${job.id} cancel completion lost update: status was no longer 'processing'`);
+        }
+
         processedCount++;
 
       } else if (job.job_type === 'booking_reschedule') {
@@ -205,10 +257,12 @@ export async function processIntegrationJobs(batchSize = 5): Promise<number> {
           .eq('id', job.booking_id)
           .maybeSingle();
           
-        if (bError || !booking) {
-          throw new Error('Booking not found or DB error');
+        if (bError) {
+          throw new Error(`Booking database query error: ${bError.message}`);
         }
-        
+        if (!booking) {
+          throw new Error(`Booking record not found: ${job.booking_id}`);
+        }
         
         // Ensure authoritative state is not cancelled
         if (booking.status === 'cancelled') {
@@ -250,16 +304,27 @@ export async function processIntegrationJobs(batchSize = 5): Promise<number> {
            }
         }
 
-        // Mark Success
-        await supabase
+        // Mark Success: Fail-safe persistence check with lost-update protection
+        const { error: updateErr, data: updatedJobs } = await supabase
           .from('integration_jobs')
           .update({
             status: 'completed',
             completed_at: new Date().toISOString(),
             locked_at: null,
+            last_error: null,
             updated_at: new Date().toISOString()
           })
-          .eq('id', job.id);
+          .eq('id', job.id)
+          .eq('status', 'processing')
+          .select('id');
+
+        if (updateErr) {
+          throw new Error(`Failed to persist reschedule job completion: ${updateErr.message}`);
+        }
+        if (!updatedJobs || updatedJobs.length === 0) {
+          throw new Error(`Job ${job.id} reschedule completion lost update: status was no longer 'processing'`);
+        }
+
         processedCount++;
 
       } else {
@@ -267,33 +332,39 @@ export async function processIntegrationJobs(batchSize = 5): Promise<number> {
         throw new Error(`Unknown job_type: ${job.job_type}`);
       }
     } catch (jobErr: any) {
-      console.error(`[Integration Worker] Failed job ${job.id}:`, jobErr);
+      const sanitizedErrMsg = sanitizeErrorMessage(jobErr?.message);
+      console.error(`[Integration Worker] Failed job ${job.id}:`, sanitizedErrMsg);
       
-      const newAttempts = job.attempts + 1;
-      const errMsg = (jobErr?.message || '').toLowerCase();
-      const isPermanent = errMsg.includes('invalid_grant') || 
-                          errMsg.includes('unauthorized') || 
-                          errMsg.includes('not found') || 
-                          errMsg.includes('(401)') || 
-                          errMsg.includes('(403)') || 
-                          errMsg.includes('(400)');
+      const newAttempts = (job.attempts || 0) + 1;
+      const lowerErr = sanitizedErrMsg.toLowerCase();
+      const isPermanent = lowerErr.includes('invalid_grant') || 
+                          lowerErr.includes('unauthorized') || 
+                          lowerErr.includes('not found') || 
+                          lowerErr.includes('(401)') || 
+                          lowerErr.includes('(403)') || 
+                          lowerErr.includes('(400)');
 
       const isDead = isPermanent || newAttempts >= 5;
       
       // Backoff: 1m, 5m, 15m, 1h
       const backoffMinutes = [1, 5, 15, 60][newAttempts - 1] || 60;
       
-      await supabase
+      const { error: failPersistErr } = await supabase
         .from('integration_jobs')
         .update({
           status: isDead ? 'dead_letter' : 'failed',
           attempts: isPermanent ? Math.max(newAttempts, 5) : newAttempts,
-          last_error: jobErr?.message || 'Unknown error',
+          last_error: sanitizedErrMsg,
           locked_at: null,
           next_attempt_at: isDead ? null : DateTime.utc().plus({ minutes: backoffMinutes }).toISO(),
           updated_at: new Date().toISOString()
         })
         .eq('id', job.id);
+
+      if (failPersistErr) {
+        console.error(`[Integration Worker] CRITICAL: Failed to persist failure state for job ${job.id}:`, failPersistErr);
+        throw new Error(`CRITICAL: Failed to persist failure state for job ${job.id}: ${failPersistErr.message}`);
+      }
     }
   }
 
