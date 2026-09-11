@@ -43,13 +43,60 @@ export interface GoogleFreeBusyInterval {
 /**
  * Returns Google OAuth client credentials safely from environment.
  */
-export function getGoogleOAuthCredentials() {
+/**
+ * Sanitizes authorization code returned by Google OAuth.
+ * Strips whitespace, unexpected fragments or parameters, quotes, and decodes any URL-encoded
+ * characters (e.g. '%2F' for '/') so that URLSearchParams does not double-encode it into '%252F',
+ * which triggers Google's 400 invalid_grant "Malformed auth code." error.
+ */
+export function sanitizeGoogleAuthCode(rawCode: unknown): string {
+  if (!rawCode) return '';
+  let code = Array.isArray(rawCode) ? String(rawCode[0] || '') : String(rawCode);
+  code = code.trim();
+  // Strip fragment identifier or unexpected trailing parameters (e.g. # or &)
+  code = code.split('#')[0].split('&')[0].trim();
+  // Strip any accidental wrapping quotes
+  if ((code.startsWith('"') && code.endsWith('"')) || (code.startsWith("'") && code.endsWith("'"))) {
+    code = code.slice(1, -1).trim();
+  }
+  // Decode if the code was URL-encoded (e.g. '4%2F0A...') so URLSearchParams doesn't double-encode it to '4%252F0A...'
+  let maxPasses = 3;
+  while (code.includes('%') && maxPasses > 0) {
+    try {
+      const decoded = decodeURIComponent(code);
+      if (decoded === code) break;
+      code = decoded;
+      maxPasses--;
+    } catch {
+      break;
+    }
+  }
+  return code.trim();
+}
+
+/**
+ * Returns Google OAuth client credentials safely from environment.
+ * Supports explicit customRedirectUri and derives callback from GOOGLE_REDIRECT_URI or APP_URL.
+ * In production, fails closed (returns empty redirectUri) if neither is configured.
+ */
+export function getGoogleOAuthCredentials(customRedirectUri?: string) {
   const clientId = process.env.GOOGLE_CLIENT_ID || '';
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET || '';
   const isProduction = process.env.NODE_ENV === 'production';
 
   let redirectUri = '';
-  if (process.env.GOOGLE_REDIRECT_URI) {
+  if (customRedirectUri) {
+    try {
+      const parsed = new URL(customRedirectUri);
+      if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+        redirectUri = customRedirectUri;
+      }
+    } catch {
+      redirectUri = '';
+    }
+  }
+
+  if (!redirectUri && process.env.GOOGLE_REDIRECT_URI) {
     try {
       const parsed = new URL(process.env.GOOGLE_REDIRECT_URI);
       if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
@@ -58,17 +105,20 @@ export function getGoogleOAuthCredentials() {
     } catch {
       redirectUri = '';
     }
-  } else if (process.env.APP_URL) {
+  }
+
+  if (!redirectUri && process.env.APP_URL) {
     try {
       const parsed = new URL(process.env.APP_URL);
       if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
-        const base = parsed.origin;
-        redirectUri = `${base}/api/integrations/google-calendar/callback`;
+        redirectUri = `${parsed.origin}/api/integrations/google-calendar/callback`;
       }
     } catch {
       redirectUri = '';
     }
-  } else if (!isProduction) {
+  }
+
+  if (!redirectUri && !isProduction) {
     redirectUri = 'http://localhost:3000/api/integrations/google-calendar/callback';
   }
 
@@ -83,8 +133,8 @@ export function getGoogleOAuthCredentials() {
 /**
  * Generates the secure OAuth 2.0 Authorization URL for Mahmoud.
  */
-export function generateGoogleAuthUrl(state = 'teacher_auth'): string {
-  const { clientId, redirectUri, isConfigured } = getGoogleOAuthCredentials();
+export function generateGoogleAuthUrl(state = 'teacher_auth', customRedirectUri?: string): string {
+  const { clientId, redirectUri, isConfigured } = getGoogleOAuthCredentials(customRedirectUri);
   
   if (!isConfigured) {
     throw new Error('Google OAuth is not configured. Please set GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, and APP_URL or GOOGLE_REDIRECT_URI in environment.');
@@ -109,61 +159,122 @@ export function generateGoogleAuthUrl(state = 'teacher_auth'): string {
   return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
 }
 
+// In-flight exchange promises to prevent race conditions from concurrent browser requests / prefetch
+const inFlightExchanges = new Map<string, Promise<GoogleTokens & { accountEmail: string }>>();
+
 /**
  * Exchanges authorization code for Google access and refresh tokens.
+ * Handles code sanitization, in-flight request deduplication, and candidate redirect URI fallback.
  */
-export async function exchangeGoogleCodeForTokens(code: string): Promise<GoogleTokens & { accountEmail: string }> {
-  const { clientId, clientSecret, redirectUri, isConfigured } = getGoogleOAuthCredentials();
-
-  if (!isConfigured) {
-    throw new Error('Google OAuth is not configured. Please set GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, and APP_URL or GOOGLE_REDIRECT_URI in environment.');
+export async function exchangeGoogleCodeForTokens(code: string, customRedirectUri?: string): Promise<GoogleTokens & { accountEmail: string }> {
+  const sanitizedCode = sanitizeGoogleAuthCode(code);
+  if (!sanitizedCode) {
+    throw new Error('Authorization code is empty or malformed.');
   }
 
-  const response = await fetch('https://oauth2.googleapis.com/token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      code,
-      client_id: clientId,
-      client_secret: clientSecret,
-      redirect_uri: redirectUri,
-      grant_type: 'authorization_code'
-    })
-  });
-
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Google token exchange failed (${response.status}): ${errText}`);
+  const inFlight = inFlightExchanges.get(sanitizedCode);
+  if (inFlight) {
+    return await inFlight;
   }
 
-  const tokenData = await response.json();
-  const accessToken = tokenData.access_token;
-  const refreshToken = tokenData.refresh_token;
-  const expiresIn = tokenData.expires_in || 3600;
-  const expiresAt = Date.now() + expiresIn * 1000;
+  const exchangePromise = (async () => {
+    const { clientId, clientSecret, redirectUri, isConfigured } = getGoogleOAuthCredentials(customRedirectUri);
 
-  // Retrieve teacher's account email
-  let accountEmail = 'teacher@mahmoudteaching.com';
-  try {
-    const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
-    if (userInfoRes.ok) {
-      const userInfo = await userInfoRes.json();
-      if (userInfo.email) accountEmail = userInfo.email;
+    if (!isConfigured) {
+      throw new Error('Google OAuth is not configured. Please set GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, and APP_URL or GOOGLE_REDIRECT_URI in environment.');
     }
-  } catch {
-    // Non-fatal fallback
-  }
 
-  return {
-    accessToken,
-    refreshToken,
-    expiresAt,
-    tokenType: tokenData.token_type || 'Bearer',
-    scope: tokenData.scope,
-    accountEmail
-  };
+    // Determine candidate redirect URIs to try (primary first, then configured alternative if different)
+    const candidates: string[] = [redirectUri];
+    if (process.env.GOOGLE_REDIRECT_URI && !candidates.includes(process.env.GOOGLE_REDIRECT_URI)) {
+      candidates.push(process.env.GOOGLE_REDIRECT_URI);
+    }
+    if (process.env.APP_URL) {
+      try {
+        const appUrlRedirect = `${new URL(process.env.APP_URL).origin}/api/integrations/google-calendar/callback`;
+        if (!candidates.includes(appUrlRedirect)) {
+          candidates.push(appUrlRedirect);
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    let lastError: Error | null = null;
+    for (let i = 0; i < candidates.length; i++) {
+      const currentRedirectUri = candidates[i];
+      try {
+        const response = await fetch('https://oauth2.googleapis.com/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            code: sanitizedCode,
+            client_id: clientId,
+            client_secret: clientSecret,
+            redirect_uri: currentRedirectUri,
+            grant_type: 'authorization_code'
+          })
+        });
+
+        if (!response.ok) {
+          const errText = await response.text();
+          // If candidate failed with invalid_grant or redirect_uri_mismatch and there is another candidate, try next
+          if ((errText.includes('invalid_grant') || errText.includes('redirect_uri_mismatch')) && i < candidates.length - 1) {
+            console.warn(`[Google OAuth] Token exchange with redirect_uri "${currentRedirectUri}" failed. Trying candidate "${candidates[i + 1]}".`);
+            lastError = new Error(`Google token exchange failed (${response.status}): ${errText}`);
+            continue;
+          }
+          throw new Error(`Google token exchange failed (${response.status}): ${errText}`);
+        }
+
+        const tokenData = await response.json();
+        const accessToken = tokenData.access_token;
+        const refreshToken = tokenData.refresh_token;
+        const expiresIn = tokenData.expires_in || 3600;
+        const expiresAt = Date.now() + expiresIn * 1000;
+
+        // Retrieve teacher's account email
+        let accountEmail = 'teacher@mahmoudteaching.com';
+        try {
+          const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+            headers: { Authorization: `Bearer ${accessToken}` }
+          });
+          if (userInfoRes.ok) {
+            const userInfo = await userInfoRes.json();
+            if (userInfo.email) accountEmail = userInfo.email;
+          }
+        } catch {
+          // Non-fatal fallback
+        }
+
+        const result: GoogleTokens & { accountEmail: string } = {
+          accessToken,
+          refreshToken,
+          expiresAt,
+          tokenType: tokenData.token_type || 'Bearer',
+          scope: tokenData.scope,
+          accountEmail
+        };
+
+        return result;
+      } catch (err: any) {
+        lastError = err;
+        // If not a network/redirect error or no more candidates, rethrow
+        if (i >= candidates.length - 1) {
+          throw err;
+        }
+      }
+    }
+
+    throw lastError || new Error('Google token exchange failed.');
+  })();
+
+  inFlightExchanges.set(sanitizedCode, exchangePromise);
+  try {
+    return await exchangePromise;
+  } finally {
+    inFlightExchanges.delete(sanitizedCode);
+  }
 }
 
 /**

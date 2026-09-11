@@ -78,6 +78,11 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
           type: 'success'
         });
         fetchStatus();
+      } else if (event.data?.type === 'GOOGLE_CALENDAR_ERROR') {
+        setActionMessage({
+          text: event.data.error || 'Google Calendar connection failed. Please try again.',
+          type: 'error'
+        });
       }
     };
 

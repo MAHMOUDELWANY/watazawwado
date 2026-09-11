@@ -14,7 +14,8 @@ import { getZoomCredentials } from '../server/integrations/zoom.js';
 import {
   generateGoogleAuthUrl,
   exchangeGoogleCodeForTokens,
-  getGoogleOAuthCredentials
+  getGoogleOAuthCredentials,
+  sanitizeGoogleAuthCode
 } from '../server/integrations/googleCalendar.js';
 import {
   syncBookingIntegrations,
@@ -167,21 +168,22 @@ app.get('/api/integrations/status', verifyTeacherAuth, async (req: any, res) => 
 // 2. INTEGRATIONS: GOOGLE CALENDAR AUTH URL
 app.get('/api/integrations/google-calendar/auth-url', verifyTeacherAuth, (req: any, res: any) => {
   try {
-    
     const teacherId = req.teacherUser?.id;
     if (!teacherId) {
       return res.status(401).json({ error: 'Unauthorized: missing teacher identity' });
     }
 
+    const { redirectUri } = getGoogleOAuthCredentials();
     const nonce = crypto.randomBytes(16).toString('hex');
-    const payload = `${teacherId}:${nonce}`;
+    const b64Redirect = Buffer.from(redirectUri).toString('base64');
+    const payload = `${teacherId}:${nonce}:${b64Redirect}`;
     const hmac = crypto.createHmac('sha256', process.env.SUPABASE_SERVICE_ROLE_KEY || 'dev-secret');
     hmac.update(payload);
     const signature = hmac.digest('hex');
     const state = `${Buffer.from(payload).toString('base64')}.${signature}`;
 
     res.setHeader('Set-Cookie', `oauth_state=${state}; HttpOnly; Path=/; Max-Age=600; SameSite=Lax${process.env.NODE_ENV === 'production' ? '; Secure' : ''}`);
-    const authUrl = generateGoogleAuthUrl(state);
+    const authUrl = generateGoogleAuthUrl(state, redirectUri);
     res.json({ authUrl });
   } catch (error: any) {
     console.error("AUTH_URL_ERROR:", error); res.status(500).json({ error: String(error.stack || error) });
@@ -190,11 +192,94 @@ app.get('/api/integrations/google-calendar/auth-url', verifyTeacherAuth, (req: a
 
 // 3. INTEGRATIONS: GOOGLE CALENDAR OAUTH CALLBACK
 app.get('/api/integrations/google-calendar/callback', async (req: any, res: any) => {
+  const isProduction = process.env.NODE_ENV === 'production';
+  let trustedOrigin: string | null = null;
+  
+  if (process.env.APP_URL) {
+    try {
+      const parsedUrl = new URL(process.env.APP_URL);
+      if (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') {
+        trustedOrigin = parsedUrl.origin;
+      }
+    } catch {
+      trustedOrigin = null;
+    }
+  } else if (!isProduction) {
+    trustedOrigin = 'http://localhost:3000';
+  }
+
+  const renderError = (status: number, message: string) => {
+    const postMessageScript = trustedOrigin ? `
+            <script>
+              if (window.opener) {
+                try {
+                  const payload = ${JSON.stringify({ type: 'GOOGLE_CALENDAR_ERROR', error: message }).replace(/</g, '\\u003c').replace(/>/g, '\\u003e')};
+                  window.opener.postMessage(payload, '${trustedOrigin}');
+                } catch (e) {}
+              }
+            </script>` : '';
+
+    res.status(status).send(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <title>Google Calendar Connection Failed</title>
+          <style>
+            body {
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              min-height: 100vh;
+              margin: 0;
+              background: #FAF8F5;
+              color: #362E3B;
+              padding: 24px;
+              box-sizing: border-box;
+            }
+            .card {
+              background: white;
+              border-radius: 12px;
+              padding: 32px;
+              max-width: 440px;
+              width: 100%;
+              text-align: center;
+              box-shadow: 0 4px 20px rgba(54, 46, 59, 0.08);
+              border: 1px solid #E8E5E0;
+            }
+            h2 { color: #BA7A6A; margin-top: 0; font-size: 20px; }
+            p { color: #574F5A; font-size: 14px; line-height: 1.5; margin-bottom: 24px; }
+            button {
+              background: #6F907D;
+              color: white;
+              border: none;
+              border-radius: 8px;
+              padding: 10px 20px;
+              font-size: 14px;
+              cursor: pointer;
+              font-weight: 500;
+            }
+            button:hover { background: #5B7A68; }
+          </style>
+        </head>
+        <body>
+          <div class="card">
+            <h2>Connection Incomplete</h2>
+            <p>${message}</p>
+            <button onclick="window.close()">Close Window</button>
+            ${postMessageScript}
+          </div>
+        </body>
+      </html>
+    `);
+  };
+
   try {
-    const code = req.query.code as string;
+    const rawCode = req.query.code;
     const state = req.query.state as string;
-    if (!code) {
-      return res.status(400).send('Missing authorization code.');
+    if (!rawCode) {
+      return renderError(400, 'Missing authorization code.');
     }
 
     const cookieHeader = req.headers.cookie || '';
@@ -202,13 +287,12 @@ app.get('/api/integrations/google-calendar/callback', async (req: any, res: any)
     const expectedState = match ? match[1] : null;
 
     if (!expectedState || state !== expectedState) {
-      return res.status(403).send('Invalid or expired OAuth state parameter (CSRF).');
+      return renderError(403, 'Invalid or expired OAuth state parameter (CSRF).');
     }
 
-    
     const parts = state.split('.');
     if (parts.length !== 2) {
-      return res.status(403).send('Malformed OAuth state parameter.');
+      return renderError(403, 'Malformed OAuth state parameter.');
     }
     const [b64Payload, signature] = parts;
 
@@ -218,21 +302,37 @@ app.get('/api/integrations/google-calendar/callback', async (req: any, res: any)
     const expectedSignature = hmac.digest('hex');
 
     if (signature !== expectedSignature) {
-      return res.status(403).send('Invalid OAuth state signature.');
+      return renderError(403, 'Invalid OAuth state signature.');
     }
 
-    const [teacherId, nonce] = payload.split(':');
+    const [teacherId, nonce, b64Redirect] = payload.split(':');
     if (!teacherId) {
-      return res.status(403).send('OAuth state missing teacher identity.');
+      return renderError(403, 'OAuth state missing teacher identity.');
+    }
+
+    let embeddedRedirectUri: string | undefined;
+    if (b64Redirect) {
+      try {
+        embeddedRedirectUri = Buffer.from(b64Redirect, 'base64').toString('utf8');
+        if (embeddedRedirectUri) {
+          const redirectOrigin = new URL(embeddedRedirectUri).origin;
+          if (redirectOrigin) {
+            trustedOrigin = redirectOrigin;
+          }
+        }
+      } catch {
+        embeddedRedirectUri = undefined;
+      }
     }
 
     // Explicitly revalidate teacher authorization at callback time
     const isAuthorized = await isTeacherCurrentlyAuthorized(teacherId);
     if (!isAuthorized) {
-      return res.status(403).send('Unauthorized: Teacher account is not authorized or has been deactivated.');
+      return renderError(403, 'Unauthorized: Teacher account is not authorized or has been deactivated.');
     }
 
-    const tokenData = await exchangeGoogleCodeForTokens(code);
+    const code = sanitizeGoogleAuthCode(rawCode);
+    const tokenData = await exchangeGoogleCodeForTokens(code, embeddedRedirectUri);
     
     // Store securely in DB using service role
     const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
@@ -250,7 +350,7 @@ app.get('/api/integrations/google-calendar/callback', async (req: any, res: any)
 
       if (updateError) {
         console.error('[OAuth Callback] Failed to deactivate previous calendar connections:', updateError);
-        return res.status(500).send('Database Error: Failed to prepare calendar connection state. Please try again.');
+        return renderError(500, 'Database Error: Failed to prepare calendar connection state. Please try again.');
       }
 
       // Insert new connection
@@ -268,32 +368,16 @@ app.get('/api/integrations/google-calendar/callback', async (req: any, res: any)
 
       if (insertError || !insertData) {
         console.error('[OAuth Callback] Failed to insert new calendar connection:', insertError);
-        return res.status(500).send('Database Error: Google Calendar was authorized, but the connection could not be saved to your account. Please try again.');
+        return renderError(500, 'Database Error: Google Calendar was authorized, but the connection could not be saved to your account. Please try again.');
       }
     } else {
       console.error('[OAuth Callback] Missing Supabase configuration. Cannot persist calendar connection.');
-      return res.status(503).send('Configuration Error: Database credentials missing. Please contact support.');
-    }
-
-    const isProduction = process.env.NODE_ENV === 'production';
-    let trustedOrigin: string | null = null;
-    
-    if (process.env.APP_URL) {
-      try {
-        const parsedUrl = new URL(process.env.APP_URL);
-        if (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') {
-          trustedOrigin = parsedUrl.origin;
-        }
-      } catch {
-        trustedOrigin = null;
-      }
-    } else if (!isProduction) {
-      trustedOrigin = 'http://localhost:3000';
+      return renderError(503, 'Configuration Error: Database credentials missing. Please contact support.');
     }
 
     if (!trustedOrigin) {
       console.error('[OAuth Callback] Trusted origin could not be determined. APP_URL is missing or invalid.');
-      return res.status(500).send('Authentication Failed: Google Calendar connection failed. Please try again.');
+      return renderError(500, 'Authentication Failed: Google Calendar connection failed. Please try again.');
     }
     
     const safePayload = JSON.stringify({ 
@@ -306,16 +390,21 @@ app.get('/api/integrations/google-calendar/callback', async (req: any, res: any)
 
     // Return HTML to close popup and notify parent
     res.send(`
+      <!DOCTYPE html>
       <html>
-        <head><title>Success</title></head>
+        <head><title>Integration Successful</title></head>
         <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #FAF8F5; color: #362E3B;">
           <div style="text-align: center;">
             <h2 style="color: #6F907D;">Integration Successful!</h2>
             <p>Google Calendar has been connected. You can close this window.</p>
             <script>
               if (window.opener) {
-                window.opener.postMessage(${safePayload}, '${trustedOrigin}');
-                setTimeout(() => window.close(), 2000);
+                try {
+                  window.opener.postMessage(${safePayload}, '${trustedOrigin}');
+                } catch (e) {}
+                setTimeout(() => window.close(), 1500);
+              } else {
+                setTimeout(() => window.close(), 2500);
               }
             </script>
           </div>
@@ -324,7 +413,7 @@ app.get('/api/integrations/google-calendar/callback', async (req: any, res: any)
     `);
   } catch (error: any) {
     console.error("CALLBACK_ERROR:", error);
-    res.status(500).send('Authentication Failed: Google Calendar connection failed. Please try again.');
+    renderError(500, 'Authentication Failed: Google Calendar connection failed. Please try again.');
   }
 });
 
