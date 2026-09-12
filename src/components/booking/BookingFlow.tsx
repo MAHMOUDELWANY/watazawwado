@@ -17,6 +17,12 @@ import { ManageBookingModal } from './ManageBookingModal';
 interface BookingFlowProps {
   initialServiceId?: string;
   initialMode?: BookingMode;
+  initialData?: Partial<BookingFormData>;
+  trialDisabled?: boolean;
+  trialDisabledReason?: string;
+  cardClassName?: string;
+  doneLabel?: string;
+  onDone?: () => void;
   lang: Language;
   onClose?: () => void;
   isModalView?: boolean;
@@ -25,6 +31,12 @@ interface BookingFlowProps {
 export const BookingFlow: React.FC<BookingFlowProps> = ({
   initialServiceId,
   initialMode = 'trial',
+  initialData,
+  trialDisabled = false,
+  trialDisabledReason,
+  cardClassName,
+  doneLabel,
+  onDone,
   lang,
   onClose,
   isModalView = false
@@ -48,29 +60,32 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
       // Fallback
     }
 
+    const effectiveMode = (trialDisabled && initialMode === 'trial') ? 'regular' : (initialMode || 'trial');
+
     return {
-      mode: initialMode,
-      serviceId: initialServiceId || 'quran-reading',
-      goal: '',
-      customGoalText: '',
-      audience: 'adult',
-      studentName: '',
-      email: '',
-      whatsapp: '',
-      ageGroup: '18-29',
-      currentLevel: 'beginner',
-      notes: '',
-      childName: '',
-      childAge: '8-11',
-      parentName: '',
-      parentEmail: '',
-      parentWhatsapp: '',
-      childLevel: 'beginner',
-      parentNotes: '',
-      duration: initialMode === 'trial' ? 30 : 45,
-      date: '',
-      timeSlot: null,
-      timezone: userTz
+      mode: effectiveMode,
+      serviceId: initialServiceId || initialData?.serviceId || 'quran-reading',
+      goal: initialData?.goal || '',
+      customGoalText: initialData?.customGoalText || '',
+      audience: initialData?.audience || 'adult',
+      studentName: initialData?.studentName || '',
+      email: initialData?.email || '',
+      whatsapp: initialData?.whatsapp || '',
+      ageGroup: initialData?.ageGroup || '18-29',
+      currentLevel: initialData?.currentLevel || 'beginner',
+      notes: initialData?.notes || '',
+      childName: initialData?.childName || '',
+      childAge: initialData?.childAge || '8-11',
+      parentName: initialData?.parentName || '',
+      parentEmail: initialData?.parentEmail || '',
+      parentWhatsapp: initialData?.parentWhatsapp || '',
+      childLevel: initialData?.childLevel || 'beginner',
+      parentNotes: initialData?.parentNotes || '',
+      duration: effectiveMode === 'trial' ? 30 : (initialData?.duration || 45),
+      date: initialData?.date || '',
+      timeSlot: initialData?.timeSlot || null,
+      timezone: initialData?.timezone || userTz,
+      studentId: initialData?.studentId
     };
   });
 
@@ -152,15 +167,19 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   const handleResetForNewBooking = () => {
     setConfirmation(null);
     setStep(1);
-    if (onClose) onClose();
+    if (onDone) {
+      onDone();
+    } else if (onClose) {
+      onClose();
+    }
   };
 
   return (
     <div
       className={`w-full ${
-        isModalView
+        cardClassName || (isModalView
           ? 'bg-[#F5E6D3] dark:bg-[#231D28] text-[#362E3B] dark:text-[#D5D0CA] p-5 sm:p-8 rounded-3xl max-w-3xl mx-auto shadow-2xl border border-[#87A878]/30 max-h-[92vh] overflow-y-auto'
-          : 'bg-[#F5E6D3] dark:bg-[#1E1923] text-[#362E3B] dark:text-[#D5D0CA] py-8 sm:py-12 px-4 sm:px-6'
+          : 'bg-[#F5E6D3] dark:bg-[#1E1923] text-[#362E3B] dark:text-[#D5D0CA] py-8 sm:py-12 px-4 sm:px-6')
       }`}
     >
       {/* Confirmation State */}
@@ -170,6 +189,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
           onOpenManageModal={handleOpenManageModal}
           onDone={handleResetForNewBooking}
           lang={lang}
+          doneLabel={doneLabel}
         />
       ) : (
         /* Multi-Step Flow */
@@ -277,6 +297,8 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                   onNext={handleNext}
                   onBack={handleBack}
                   lang={lang}
+                  trialDisabled={trialDisabled}
+                  trialDisabledReason={trialDisabledReason}
                 />
               </motion.div>
             )}

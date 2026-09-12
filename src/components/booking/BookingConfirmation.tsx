@@ -28,20 +28,24 @@ interface BookingConfirmationProps {
   onOpenManageModal?: (refCode: string) => void;
   onDone: () => void;
   lang: Language;
+  doneLabel?: string;
 }
 
 export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
   confirmation,
   onOpenManageModal,
   onDone,
-  lang
+  lang,
+  doneLabel
 }) => {
   const isEn = lang === 'en';
   const [downloadedIcs, setDownloadedIcs] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [showPaymentDetails, setShowPaymentDetails] = useState(!confirmation.isFreeTrial);
 
-  const zoomUrl = confirmation.zoomDetails?.meetingLinkPlaceholder || '';
+  const rawZoom = confirmation.zoomDetails?.meetingLinkPlaceholder?.trim() || '';
+  const isValidZoomUrl = Boolean(rawZoom && (rawZoom.startsWith('https://') || rawZoom.startsWith('http://')));
+  const zoomUrl = isValidZoomUrl ? rawZoom : '';
 
   // Generate downloadable .ics calendar file
   const handleDownloadIcs = () => {
@@ -203,7 +207,11 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
                 {copiedLink ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copiedLink ? (isEn ? 'Copied' : 'تم النسخ') : (isEn ? 'Copy Link' : 'نسخ الرابط')}</span>
               </button>
-            ) : null}
+            ) : (
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-amber-100 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40">
+                {isEn ? 'Link Pending' : 'قيد التجهيز'}
+              </span>
+            )}
           </div>
           <div className="flex items-center justify-between text-xs pt-1">
             {zoomUrl ? (
@@ -222,9 +230,11 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
                 </a>
               </>
             ) : (
-              <span className="text-[11px] text-blue-800/80 dark:text-blue-300/80 max-w-[280px]">
-                {isEn ? 'Your lesson link will appear here once the meeting is ready.' : 'سيظهر رابط الدخول هنا بمجرد تجهيز الجلسة.'}
-              </span>
+              <p className="text-[11px] text-blue-900/70 dark:text-blue-200/70 leading-relaxed">
+                {isEn
+                  ? 'Your personalized lesson link is being finalized and will be delivered to your email and WhatsApp before class.'
+                  : 'جاري تجهيز رابط الدرس المخصص وسيرسل إلى بريدك الإلكتروني والواتساب قبل موعد الجلسة.'}
+              </p>
             )}
           </div>
         </div>
@@ -326,7 +336,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           onClick={onDone}
           className="px-6 py-2.5 rounded-xl text-xs font-medium text-[#362E3B]/70 dark:text-[#D5D0CA]/70 hover:bg-[#EDE3D4] dark:hover:bg-[#29232F] transition-colors cursor-pointer"
         >
-          {isEn ? 'Done & Return to Homepage' : 'تم والعودة للموقع'}
+          {doneLabel || (isEn ? 'Done & Return to Homepage' : 'تم والعودة للموقع')}
         </button>
       </div>
     </motion.div>

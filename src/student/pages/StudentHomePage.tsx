@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { BookOpen, UserCircle, Target, Book, Sparkles, Calendar, Clock, Video } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { BookOpen, UserCircle, Target, Book, Sparkles, Calendar, Clock, Video, Plus } from 'lucide-react';
 import { useTeacherAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
 import { DateTime } from 'luxon';
@@ -55,13 +56,22 @@ export default function StudentHomePage() {
 
   return (
     <div className="space-y-6">
-      <header>
-        <h1 className="text-2xl font-semibold tracking-tight text-[#362E3B] dark:text-[#F5E6D3]">
-          Welcome back{profile?.name ? `, ${profile.name.split(' ')[0]}` : ''}
-        </h1>
-        <p className="text-sm opacity-70 mt-1">
-          Continue your learning journey with Ustadh Mahmoud
-        </p>
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-[#362E3B] dark:text-[#F5E6D3]">
+            Welcome back{profile?.name ? `, ${profile.name.split(' ')[0]}` : ''}
+          </h1>
+          <p className="text-sm opacity-70 mt-1">
+            Continue your learning journey with Ustadh Mahmoud
+          </p>
+        </div>
+        <Link
+          to="/student/book"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#8FAE9B] hover:bg-[#6F907D] text-white rounded-xl text-xs sm:text-sm font-medium transition-colors shadow-xs self-start sm:self-auto"
+        >
+          <Plus className="w-4 h-4" />
+          <span>Book a Lesson</span>
+        </Link>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -111,16 +121,25 @@ export default function StudentHomePage() {
                   Meeting link will appear soon
                 </div>
               )}
+              <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 flex justify-between items-center text-xs">
+                <span className="opacity-70">Need another session?</span>
+                <Link
+                  to="/student/book"
+                  className="font-medium text-[#6F907D] dark:text-[#8FAE9B] hover:underline"
+                >
+                  Book another lesson →
+                </Link>
+              </div>
             </div>
           ) : (
             <div className="text-center py-6">
               <p className="text-sm opacity-60 mb-4">Your learning journey will appear here after your first booking.</p>
-              <a 
-                href="/#book"
+              <Link 
+                to="/student/book"
                 className="inline-flex px-4 py-2 bg-[#8FAE9B] hover:bg-[#6F907D] text-white rounded-xl text-sm font-medium transition-colors"
               >
                 Book a Lesson
-              </a>
+              </Link>
             </div>
           )}
         </div>

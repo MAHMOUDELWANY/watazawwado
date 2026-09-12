@@ -80,6 +80,7 @@ export interface BookingFormData {
   date: string; // YYYY-MM-DD
   timeSlot: TimeSlot | null;
   timezone: string;
+  studentId?: string;
 }
 
 export interface BookingConfirmationData {

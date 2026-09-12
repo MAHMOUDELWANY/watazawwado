@@ -14,6 +14,8 @@ interface StepLessonTypeProps {
   onNext: () => void;
   onBack: () => void;
   lang: Language;
+  trialDisabled?: boolean;
+  trialDisabledReason?: string;
 }
 
 export const StepLessonType: React.FC<StepLessonTypeProps> = ({
@@ -24,7 +26,9 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
   onChangeDuration,
   onNext,
   onBack,
-  lang
+  lang,
+  trialDisabled = false,
+  trialDisabledReason
 }) => {
   const isEn = lang === 'en';
   const service = BOOKING_SERVICES.find((s) => s.id === serviceId) || BOOKING_SERVICES[0];
@@ -63,40 +67,45 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           {/* Free Trial Card */}
           <motion.div
-            whileHover={{ scale: 1.015, y: -1 }}
-            whileTap={{ scale: 0.985 }}
+            whileHover={trialDisabled ? {} : { scale: 1.015, y: -1 }}
+            whileTap={trialDisabled ? {} : { scale: 0.985 }}
             onClick={() => {
+              if (trialDisabled) return;
               onChangeMode('trial');
               if (duration > 45) onChangeDuration(30);
             }}
-            className={`p-4 sm:p-5 rounded-2xl border text-start transition-all cursor-pointer relative ${
-              mode === 'trial'
-                ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-[#87A878] ring-2 ring-[#87A878]/30 shadow-xs'
-                : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] hover:bg-[#F5E6D3]/40'
+            className={`p-4 sm:p-5 rounded-2xl border text-start transition-all relative ${
+              trialDisabled
+                ? 'opacity-60 cursor-not-allowed bg-gray-50 dark:bg-[#1E1923]/60 border-[#D5D0CA] dark:border-[#3E3545]'
+                : mode === 'trial'
+                ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-[#87A878] ring-2 ring-[#87A878]/30 shadow-xs cursor-pointer'
+                : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] hover:bg-[#F5E6D3]/40 cursor-pointer'
             }`}
           >
             <div className="flex items-start justify-between gap-3 mb-2">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-xl bg-[#87A878]/20 text-[#87A878]">
+                <div className={`p-2 rounded-xl ${trialDisabled ? 'bg-gray-200 dark:bg-gray-800 text-gray-500' : 'bg-[#87A878]/20 text-[#87A878]'}`}>
                   <Gift className="w-5 h-5" />
                 </div>
                 <div>
                   <h4 className="font-serif text-base font-medium text-[#362E3B] dark:text-[#F5E6D3]">
                     {isEn ? 'Free Trial Session' : 'جلسة تجريبية مجانية'}
                   </h4>
-                  <span className="text-xs font-semibold text-[#87A878]">
-                    {isEn ? '$0.00 • No card required' : 'مجاناً (٠.٠٠ دولار)'}
+                  <span className={`text-xs font-semibold ${trialDisabled ? 'text-gray-500 dark:text-gray-400' : 'text-[#87A878]'}`}>
+                    {trialDisabled
+                      ? (isEn ? 'Already Claimed' : 'مستخدمة مسبقاً')
+                      : (isEn ? '$0.00 • No card required' : 'مجاناً (٠.٠٠ دولار)')}
                   </span>
                 </div>
               </div>
               <div
                 className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-colors ${
-                  mode === 'trial'
+                  mode === 'trial' && !trialDisabled
                     ? 'bg-[#87A878] text-white'
                     : 'border border-[#D5D0CA] dark:border-[#3E3545]'
                 }`}
               >
-                {mode === 'trial' && <Check className="w-3.5 h-3.5" />}
+                {mode === 'trial' && !trialDisabled && <Check className="w-3.5 h-3.5" />}
               </div>
             </div>
 
@@ -107,7 +116,9 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
             </p>
 
             <div className="text-[11px] text-[#6B5B73] dark:text-[#B8A9C9] font-medium">
-              {isEn ? '• One free trial per new student' : '• جلسة تجريبية واحدة لكل طالب جديد'}
+              {trialDisabled
+                ? (trialDisabledReason || (isEn ? '• One free trial per student (already used)' : '• جلسة تجريبية واحدة لكل طالب (تم حجزها)'))
+                : (isEn ? '• One free trial per new student' : '• جلسة تجريبية واحدة لكل طالب جديد')}
             </div>
           </motion.div>
 

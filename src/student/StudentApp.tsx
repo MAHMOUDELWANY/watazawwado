@@ -6,6 +6,7 @@ import StudentHomePage from './pages/StudentHomePage';
 import StudentProfilePage from './pages/StudentProfilePage';
 import StudentOnboardingPage from './pages/StudentOnboardingPage';
 import StudentDemoPage from './pages/StudentDemoPage';
+import StudentBookingPage from './pages/StudentBookingPage';
 import { StudentAuthModal } from '../components/StudentAuthModal';
 
 export default function StudentApp() {
@@ -138,6 +139,7 @@ export default function StudentApp() {
 
   const navItems = [
     { name: 'Home & Schedule', path: '/student', icon: BookOpen },
+    { name: 'Book a Lesson', path: '/student/book', icon: Calendar },
     { name: 'Profile & Goals', path: '/student/profile', icon: User },
     { name: 'Interactive Demo', path: '/student/demo', icon: Sparkles },
   ];
@@ -249,6 +251,7 @@ export default function StudentApp() {
           <div className="max-w-5xl mx-auto">
             <Routes>
               <Route path="/" element={<StudentHomePage />} />
+              <Route path="/book" element={<StudentBookingPage profile={profile} />} />
               <Route path="/profile" element={<StudentProfilePage />} />
               <Route path="/onboarding" element={
                 <StudentOnboardingPage
