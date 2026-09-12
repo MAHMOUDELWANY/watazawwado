@@ -17,6 +17,47 @@ export default function StudentApp() {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const location = useLocation();
 
+  // Load student profile when authenticated.
+  // Rules of Hooks compliance: Hook is called unconditionally before any early returns.
+  // Single auth source: Uses strictly session.access_token from the auth architecture (no storage fallback).
+  useEffect(() => {
+    let isMounted = true;
+    const loadProfile = async () => {
+      if (
+        location.pathname.startsWith('/student/demo') ||
+        isTeacherAuthenticated ||
+        !user ||
+        userRole !== 'student' ||
+        !session?.access_token
+      ) {
+        if (isMounted) setLoadingProfile(false);
+        return;
+      }
+
+      try {
+        setLoadingProfile(true);
+        const headers: Record<string, string> = {
+          Authorization: `Bearer ${session.access_token}`,
+        };
+
+        const res = await fetch('/api/student/me', { headers });
+        if (res.ok) {
+          const data = await res.json();
+          if (isMounted) setProfile(data);
+        }
+      } catch (err) {
+        console.error('Error fetching student profile:', err);
+      } finally {
+        if (isMounted) setLoadingProfile(false);
+      }
+    };
+
+    loadProfile();
+    return () => {
+      isMounted = false;
+    };
+  }, [user, userRole, session, isTeacherAuthenticated, location.pathname]);
+
   // If user navigated to /student/demo, always allow direct demo access without requiring authentication
   if (location.pathname.startsWith('/student/demo')) {
     return (
@@ -35,37 +76,6 @@ export default function StudentApp() {
   if (isTeacherAuthenticated) {
     return <Navigate to="/dashboard" replace />;
   }
-
-  // Load student profile when authenticated
-  useEffect(() => {
-    let isMounted = true;
-    const loadProfile = async () => {
-      if (!user || userRole !== 'student') {
-        if (isMounted) setLoadingProfile(false);
-        return;
-      }
-
-      try {
-        setLoadingProfile(true);
-        const token = session?.access_token || localStorage.getItem('supabase_access_token') || sessionStorage.getItem('supabase_access_token');
-        const headers: Record<string, string> = {};
-        if (token) headers['Authorization'] = `Bearer ${token}`;
-
-        const res = await fetch('/api/student/me', { headers });
-        if (res.ok) {
-          const data = await res.json();
-          if (isMounted) setProfile(data);
-        }
-      } catch (err) {
-        console.error('Error fetching student profile:', err);
-      } finally {
-        if (isMounted) setLoadingProfile(false);
-      }
-    };
-
-    loadProfile();
-    return () => { isMounted = false; };
-  }, [user, userRole, session]);
 
   // If not authenticated, provide choices: Sign In, Create Account, or Explore as Guest Demo
   if (!user || userRole !== 'student') {
@@ -139,7 +149,6 @@ export default function StudentApp() {
 
   const navItems = [
     { name: 'Home & Schedule', path: '/student', icon: BookOpen },
-    { name: 'Book a Lesson', path: '/student/book', icon: Calendar },
     { name: 'Profile & Goals', path: '/student/profile', icon: User },
     { name: 'Interactive Demo', path: '/student/demo', icon: Sparkles },
   ];
@@ -211,13 +220,18 @@ export default function StudentApp() {
             );
           })}
 
-          <a
-            href="/#book"
-            className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-[#6F907D] dark:text-[#8FAE9B] hover:bg-[#8FAE9B]/10 transition-colors"
+          <Link
+            to="/student/book"
+            onClick={() => setSidebarOpen(false)}
+            className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors ${
+              location.pathname === '/student/book'
+                ? 'bg-[#8FAE9B]/15 text-[#557161] dark:text-[#A8C9B4] font-semibold'
+                : 'text-[#6F907D] dark:text-[#8FAE9B] hover:bg-[#8FAE9B]/10'
+            }`}
           >
             <Calendar className="w-4 h-4" />
             <span>Book New Lesson</span>
-          </a>
+          </Link>
         </nav>
 
         <div className="p-4 border-t border-[#E2DDD5]/60 dark:border-[#3E3545]/60 space-y-2">
@@ -251,7 +265,7 @@ export default function StudentApp() {
           <div className="max-w-5xl mx-auto">
             <Routes>
               <Route path="/" element={<StudentHomePage />} />
-              <Route path="/book" element={<StudentBookingPage profile={profile} />} />
+              <Route path="/book" element={<StudentBookingPage profile={profile} session={session} />} />
               <Route path="/profile" element={<StudentProfilePage />} />
               <Route path="/onboarding" element={
                 <StudentOnboardingPage

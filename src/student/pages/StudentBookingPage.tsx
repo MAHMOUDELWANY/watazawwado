@@ -1,123 +1,79 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { motion } from 'motion/react';
-import { ArrowLeft, CheckCircle2, Loader2, Sparkles, AlertCircle, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, Loader2, AlertCircle, ShieldCheck, RefreshCw } from 'lucide-react';
 import { BookingFlow } from '../../components/booking/BookingFlow';
 import { BOOKING_SERVICES } from '../../booking/mockData';
 import { BookingFormData, BookingMode, ProficiencyLevel } from '../../booking/types';
+import { useTeacherAuth } from '../../lib/auth';
 
-interface StudentBookingPageProps {
+export interface StudentBookingPageProps {
   profile?: any;
+  session?: any;
 }
 
-export default function StudentBookingPage({ profile: initialProfile }: StudentBookingPageProps) {
-  const navigate = useNavigate();
+export interface TrialEligibilityResult {
+  canBookTrial: boolean;
+  hasUsedTrial: boolean;
+  trialDisabledReason?: string;
+}
 
-  const [profile, setProfile] = useState<any>(initialProfile || null);
-  const [bookings, setBookings] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(!initialProfile);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    async function loadStudentData() {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const token = localStorage.getItem('supabase_access_token') || sessionStorage.getItem('supabase_access_token');
-        const headers: Record<string, string> = {};
-        if (token) headers['Authorization'] = `Bearer ${token}`;
-
-        // Load profile if not provided
-        let currentProf = initialProfile;
-        if (!currentProf) {
-          const profRes = await fetch('/api/student/me', { headers });
-          if (!profRes.ok) {
-            throw new Error('Failed to load student profile.');
-          }
-          currentProf = await profRes.json();
-          if (isMounted) setProfile(currentProf);
-        }
-
-        // Load bookings to inspect trial usage
-        try {
-          const bookRes = await fetch('/api/student/bookings', { headers });
-          if (bookRes.ok) {
-            const bookData = await bookRes.json();
-            if (isMounted && Array.isArray(bookData)) {
-              setBookings(bookData);
-            }
-          }
-        } catch {
-          // Graceful fallback: non-blocking
-        }
-      } catch (err: any) {
-        if (isMounted) setError(err.message || 'Unable to prepare booking page.');
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    }
-
-    loadStudentData();
-
-    return () => {
-      isMounted = false;
+/**
+ * Pure evaluation of trial eligibility based on verified bookings history.
+ * Invariant: An API failure or unverified state must NEVER result in canBookTrial = true.
+ */
+export function calculateTrialEligibility(
+  bookings: any[] | null,
+  bookingsError: string | null
+): TrialEligibilityResult {
+  if (bookingsError) {
+    return {
+      canBookTrial: false,
+      hasUsedTrial: false,
+      trialDisabledReason: 'Unable to verify trial eligibility due to a network or server issue. Free trial is unavailable until verified.'
     };
-  }, [initialProfile]);
-
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
-        <Loader2 className="w-8 h-8 animate-spin text-[#8FAE9B]" />
-        <p className="text-sm font-medium text-[#7A827B] dark:text-[#A69FA8]">
-          Preparing your student booking details...
-        </p>
-      </div>
-    );
   }
 
-  if (error || !profile) {
-    return (
-      <div className="max-w-xl mx-auto py-12 px-4 text-center space-y-4">
-        <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 mx-auto flex items-center justify-center">
-          <AlertCircle className="w-6 h-6" />
-        </div>
-        <h2 className="text-lg font-semibold text-[#30332F] dark:text-[#F8F6F0]">
-          Unable to load student profile
-        </h2>
-        <p className="text-sm text-[#7A827B] dark:text-[#A69FA8]">
-          {error || 'Please ensure you are signed in to your student account before booking.'}
-        </p>
-        <div className="pt-2 flex justify-center gap-3">
-          <Link
-            to="/student"
-            className="px-4 py-2 rounded-xl text-xs font-semibold bg-[#EDE3D4] dark:bg-[#2A2431] text-[#362E3B] dark:text-[#F5E6D3] hover:bg-[#D5D0CA] transition-colors"
-          >
-            ← Return to Dashboard
-          </Link>
-          <button
-            type="button"
-            onClick={() => window.location.reload()}
-            className="px-4 py-2 rounded-xl text-xs font-semibold bg-[#8FAE9B] hover:bg-[#6F907D] text-white transition-colors cursor-pointer"
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    );
+  if (bookings === null) {
+    return {
+      canBookTrial: false,
+      hasUsedTrial: false,
+      trialDisabledReason: 'Verifying booking history...'
+    };
   }
 
-  // Determine trial eligibility from existing bookings
   const hasUsedTrial = bookings.some(
     (b) => (b.booking_type === 'trial' || b.bookingType === 'trial') && b.status !== 'cancelled'
   );
-  const canBookTrial = !hasUsedTrial;
-  const initialMode: BookingMode = canBookTrial ? 'trial' : 'regular';
-  const trialDisabledReason = 'You have already scheduled or completed your complimentary trial lesson.';
 
-  // Map serviceId from learningInterest
+  return {
+    canBookTrial: !hasUsedTrial,
+    hasUsedTrial,
+    trialDisabledReason: hasUsedTrial
+      ? 'You have already scheduled or completed your complimentary trial lesson.'
+      : undefined
+  };
+}
+
+/**
+ * Pure mapping of authenticated Student Profile (Adult or Child with Guardian)
+ * into initial BookingFormData for BookingFlow.
+ */
+export function mapStudentProfileToBookingInitialData(
+  profile: any,
+  canBookTrial: boolean
+): {
+  initialData: Partial<BookingFormData>;
+  matchedServiceId: string;
+  initialMode: BookingMode;
+} {
+  if (!profile) {
+    return {
+      initialData: {},
+      matchedServiceId: 'quran-reading',
+      initialMode: canBookTrial ? 'trial' : 'regular'
+    };
+  }
+
   let matchedServiceId = 'quran-reading';
   if (profile.learningInterest) {
     const interest = String(profile.learningInterest).toLowerCase();
@@ -139,9 +95,9 @@ export default function StudentBookingPage({ profile: initialProfile }: StudentB
     }
   }
 
-  // Map audience and profile details
   const isChildAccount = Boolean(
-    profile.guardian && (profile.guardian.parentName || profile.guardian.relationship)
+    profile.guardian &&
+    (profile.guardian.parentName || profile.guardian.relationship || profile.guardian.parentEmail)
   );
 
   const mappedLevel: ProficiencyLevel =
@@ -151,6 +107,8 @@ export default function StudentBookingPage({ profile: initialProfile }: StudentB
     profile.currentLevel === 'advanced'
       ? profile.currentLevel
       : 'beginner';
+
+  const initialMode: BookingMode = canBookTrial ? 'trial' : 'regular';
 
   const initialData: Partial<BookingFormData> = {
     serviceId: matchedServiceId,
@@ -173,6 +131,205 @@ export default function StudentBookingPage({ profile: initialProfile }: StudentB
     timezone: profile.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/New_York',
     studentId: profile.id
   };
+
+  return {
+    initialData,
+    matchedServiceId,
+    initialMode
+  };
+}
+
+export default function StudentBookingPage({ profile: initialProfile, session: propSession }: StudentBookingPageProps) {
+  const navigate = useNavigate();
+  const auth = useTeacherAuth();
+  const activeSession = propSession || auth.session;
+  // Authenticated Student booking flow must strictly use the session supplied by the auth architecture
+  const accessToken = activeSession?.access_token || null;
+
+  const [profile, setProfile] = useState<any>(initialProfile || null);
+  const [profileLoading, setProfileLoading] = useState<boolean>(!initialProfile && Boolean(accessToken));
+  const [profileError, setProfileError] = useState<string | null>(null);
+
+  const [bookings, setBookings] = useState<any[] | null>(null);
+  const [bookingsLoading, setBookingsLoading] = useState<boolean>(Boolean(accessToken));
+  const [bookingsError, setBookingsError] = useState<string | null>(null);
+
+  const fetchBookings = useCallback(async (token?: string | null) => {
+    const effectiveToken = token !== undefined ? token : accessToken;
+    if (!effectiveToken) {
+      setBookings(null);
+      setBookingsLoading(false);
+      return;
+    }
+    const headers: Record<string, string> = {
+      Authorization: `Bearer ${effectiveToken}`,
+    };
+
+    try {
+      setBookingsLoading(true);
+      setBookingsError(null);
+
+      const bookRes = await fetch('/api/student/bookings', { headers });
+      if (!bookRes.ok) {
+        throw new Error(`Failed to load booking history (${bookRes.status})`);
+      }
+      const bookData = await bookRes.json();
+      if (!Array.isArray(bookData)) {
+        throw new Error('Invalid booking history response.');
+      }
+      setBookings(bookData);
+      setBookingsError(null);
+    } catch (err: any) {
+      console.error('[StudentBookingPage] Error loading bookings:', err);
+      setBookings(null);
+      setBookingsError(err.message || 'Unable to verify your booking history and trial eligibility.');
+    } finally {
+      setBookingsLoading(false);
+    }
+  }, [accessToken]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadStudentData() {
+      if (!accessToken) {
+        // Do not attempt authenticated Student API calls without an authenticated session
+        if (isMounted) {
+          setProfileLoading(false);
+          setBookingsLoading(false);
+        }
+        return;
+      }
+
+      const headers: Record<string, string> = {
+        Authorization: `Bearer ${accessToken}`,
+      };
+
+      // 1. Load Profile if not provided
+      let currentProf = initialProfile;
+      if (!currentProf) {
+        try {
+          setProfileLoading(true);
+          setProfileError(null);
+          const profRes = await fetch('/api/student/me', { headers });
+          if (!profRes.ok) {
+            throw new Error(`Failed to load student profile (${profRes.status}).`);
+          }
+          currentProf = await profRes.json();
+          if (isMounted) setProfile(currentProf);
+        } catch (err: any) {
+          if (isMounted) setProfileError(err.message || 'Unable to load profile.');
+        } finally {
+          if (isMounted) setProfileLoading(false);
+        }
+      }
+
+      // 2. Load Bookings for trial eligibility
+      if (isMounted) {
+        await fetchBookings(accessToken);
+      }
+    }
+
+    loadStudentData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [initialProfile, accessToken, fetchBookings]);
+
+  if (auth.loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
+        <Loader2 className="w-8 h-8 animate-spin text-[#8FAE9B]" />
+        <p className="text-sm font-medium text-[#7A827B] dark:text-[#A69FA8]">
+          Verifying your student session...
+        </p>
+      </div>
+    );
+  }
+
+  // Authentication Required Gate: No session means no access to authenticated booking
+  if (!accessToken) {
+    return (
+      <div className="max-w-xl mx-auto py-12 px-4 text-center space-y-4">
+        <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 mx-auto flex items-center justify-center">
+          <AlertCircle className="w-6 h-6" />
+        </div>
+        <h2 className="text-lg font-semibold text-[#30332F] dark:text-[#F8F6F0]">
+          Authentication Required
+        </h2>
+        <p className="text-sm text-[#7A827B] dark:text-[#A69FA8]">
+          You must be signed in to your student account to access the authenticated lesson booking portal.
+        </p>
+        <div className="pt-2 flex justify-center gap-3">
+          <Link
+            to="/student"
+            className="px-4 py-2 rounded-xl text-xs font-semibold bg-[#EDE3D4] dark:bg-[#2A2431] text-[#362E3B] dark:text-[#F5E6D3] hover:bg-[#D5D0CA] transition-colors"
+          >
+            ← Return to Dashboard
+          </Link>
+          <button
+            type="button"
+            onClick={() => navigate('/student')}
+            className="px-4 py-2 rounded-xl text-xs font-semibold bg-[#8FAE9B] hover:bg-[#6F907D] text-white transition-colors cursor-pointer"
+          >
+            Sign In
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (profileLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
+        <Loader2 className="w-8 h-8 animate-spin text-[#8FAE9B]" />
+        <p className="text-sm font-medium text-[#7A827B] dark:text-[#A69FA8]">
+          Preparing your student booking details...
+        </p>
+      </div>
+    );
+  }
+
+  if (profileError || !profile) {
+    return (
+      <div className="max-w-xl mx-auto py-12 px-4 text-center space-y-4">
+        <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 mx-auto flex items-center justify-center">
+          <AlertCircle className="w-6 h-6" />
+        </div>
+        <h2 className="text-lg font-semibold text-[#30332F] dark:text-[#F8F6F0]">
+          Unable to load student profile
+        </h2>
+        <p className="text-sm text-[#7A827B] dark:text-[#A69FA8]">
+          {profileError || 'Please ensure you are signed in to your student account before booking.'}
+        </p>
+        <div className="pt-2 flex justify-center gap-3">
+          <Link
+            to="/student"
+            className="px-4 py-2 rounded-xl text-xs font-semibold bg-[#EDE3D4] dark:bg-[#2A2431] text-[#362E3B] dark:text-[#F5E6D3] hover:bg-[#D5D0CA] transition-colors"
+          >
+            ← Return to Dashboard
+          </Link>
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 rounded-xl text-xs font-semibold bg-[#8FAE9B] hover:bg-[#6F907D] text-white transition-colors cursor-pointer"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Calculate authoritative trial eligibility
+  const { canBookTrial, trialDisabledReason } = calculateTrialEligibility(bookings, bookingsError);
+
+  // Map initial form values from profile
+  const { initialData, matchedServiceId, initialMode } = mapStudentProfileToBookingInitialData(
+    profile,
+    canBookTrial
+  );
 
   return (
     <div className="space-y-6">
@@ -210,6 +367,27 @@ export default function StudentBookingPage({ profile: initialProfile }: StudentB
           </div>
         </div>
       </div>
+
+      {/* Bookings Verification Warning / Retry (if /api/student/bookings failed) */}
+      {bookingsError && (
+        <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-amber-900 dark:text-amber-200">
+          <div className="flex items-center gap-2.5">
+            <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
+            <span>
+              {bookingsError} Free trial booking is unavailable until history is verified.
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => fetchBookings(accessToken)}
+            disabled={bookingsLoading}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-medium self-start sm:self-auto transition-colors cursor-pointer disabled:opacity-50"
+          >
+            {bookingsLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
+            <span>Retry Verification</span>
+          </button>
+        </div>
+      )}
 
       {/* Embedded Booking Flow Container */}
       <BookingFlow
