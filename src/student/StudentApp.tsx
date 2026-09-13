@@ -139,6 +139,7 @@ export default function StudentApp() {
       <div className="min-h-screen bg-[#FAF8F5] dark:bg-[#1E1923] text-[#30332F] dark:text-[#F8F6F0]">
         <StudentOnboardingPage
           currentProfile={profile}
+          session={session}
           onCompleted={(updated) => {
             setProfile((prev: any) => ({ ...prev, ...updated, onboardingCompleted: true }));
           }}
@@ -270,6 +271,7 @@ export default function StudentApp() {
               <Route path="/onboarding" element={
                 <StudentOnboardingPage
                   currentProfile={profile}
+                  session={session}
                   onCompleted={(updated) => {
                     setProfile((prev: any) => ({ ...prev, ...updated, onboardingCompleted: true }));
                   }}

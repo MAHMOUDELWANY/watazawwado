@@ -18,6 +18,9 @@ import { useNavigate } from 'react-router-dom';
 
 interface StudentOnboardingPageProps {
   currentProfile?: any;
+  session?: {
+    access_token?: string | null;
+  } | null;
   onCompleted?: (profile: any) => void;
   onOpenBookingModal?: () => void;
 }
@@ -41,6 +44,7 @@ const LEVEL_OPTIONS = [
 
 export default function StudentOnboardingPage({
   currentProfile,
+  session,
   onCompleted,
   onOpenBookingModal
 }: StudentOnboardingPageProps) {
@@ -89,14 +93,16 @@ export default function StudentOnboardingPage({
     setIsSubmitting(true);
 
     try {
-      // Determine token from localStorage or session
-      const token = localStorage.getItem('supabase_access_token') || sessionStorage.getItem('supabase_access_token');
+      const token = session?.access_token;
+
+      if (!token) {
+        throw new Error('Authentication session unavailable. Please sign in again.');
+      }
+
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       };
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
 
       const res = await fetch('/api/student/onboarding', {
         method: 'POST',
