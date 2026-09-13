@@ -156,7 +156,85 @@ describe('Phase 7 — Student Authentication & Portal API Tests', () => {
     assert.strictEqual(body.timezone, 'Europe/London');
   });
 
-  // 5. Tenant Isolation & Guest Booking Safety
+  // 5. Booking Preference Feature Tests
+  it('returns bookingPreference, canBookForChild, and linkedChildren in GET /api/student/me', async () => {
+    const res = await fetch(`${baseUrl}/api/student/me`, {
+      headers: { Authorization: 'Bearer dev-student-token' }
+    });
+    assert.strictEqual(res.status, 200);
+    const body = await res.json();
+    assert.strictEqual(body.bookingPreference, 'self');
+    assert.strictEqual(body.canBookForChild, false);
+    assert.ok(Array.isArray(body.linkedChildren));
+  });
+
+  it('allows authenticated student to update bookingPreference to self via PATCH /api/student/me', async () => {
+    const res = await fetch(`${baseUrl}/api/student/me`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: 'Bearer dev-student-token',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ bookingPreference: 'self' })
+    });
+    assert.strictEqual(res.status, 200);
+    const body = await res.json();
+    assert.strictEqual(body.bookingPreference, 'self');
+  });
+
+  it('rejects setting bookingPreference to child with 422 if student has no child relationship', async () => {
+    const res = await fetch(`${baseUrl}/api/student/me`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: 'Bearer dev-student-token',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ bookingPreference: 'child' })
+    });
+    assert.strictEqual(res.status, 422);
+    const body = await res.json();
+    assert.ok(body.error.toLowerCase().includes('child'));
+  });
+
+  it('allows student with linked child/guardian (dev-guardian-student-token) to set bookingPreference to child', async () => {
+    // 1. Verify dev-guardian-student-token profile
+    const getRes = await fetch(`${baseUrl}/api/student/me`, {
+      headers: { Authorization: 'Bearer dev-guardian-student-token' }
+    });
+    assert.strictEqual(getRes.status, 200);
+    const getBody = await getRes.json();
+    assert.strictEqual(getBody.canBookForChild, true);
+    assert.ok(getBody.linkedChildren.length > 0);
+
+    // 2. Update booking preference to child
+    const patchRes = await fetch(`${baseUrl}/api/student/me`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: 'Bearer dev-guardian-student-token',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ bookingPreference: 'child' })
+    });
+    assert.strictEqual(patchRes.status, 200);
+    const patchBody = await patchRes.json();
+    assert.strictEqual(patchBody.bookingPreference, 'child');
+  });
+
+  it('rejects invalid bookingPreference values with 422', async () => {
+    const res = await fetch(`${baseUrl}/api/student/me`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: 'Bearer dev-student-token',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ bookingPreference: 'invalid_option' })
+    });
+    assert.strictEqual(res.status, 422);
+    const body = await res.json();
+    assert.ok(body.error.toLowerCase().includes('booking preference'));
+  });
+
+  // 6. Tenant Isolation & Guest Booking Safety
   it('enforces tenant isolation between Student A and Student B', async () => {
     const resA = await fetch(`${baseUrl}/api/student/me`, {
       headers: { Authorization: 'Bearer dev-student-token' }

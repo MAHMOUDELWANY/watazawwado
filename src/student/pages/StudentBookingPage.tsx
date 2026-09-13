@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Loader2, AlertCircle, ShieldCheck, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Loader2, AlertCircle, ShieldCheck, RefreshCw, RotateCcw, Check } from 'lucide-react';
 import { BookingFlow } from '../../components/booking/BookingFlow';
 import { BOOKING_SERVICES } from '../../booking/mockData';
-import { BookingFormData, BookingMode, ProficiencyLevel } from '../../booking/types';
+import { BookingFormData, BookingMode, ProficiencyLevel, LessonDuration } from '../../booking/types';
 import { useTeacherAuth } from '../../lib/auth';
 
 export interface StudentBookingPageProps {
@@ -51,6 +51,269 @@ export function calculateTrialEligibility(
     trialDisabledReason: hasUsedTrial
       ? 'You have already scheduled or completed your complimentary trial lesson.'
       : undefined
+  };
+}
+
+/**
+ * Resolves the most recent eligible previous booking for repeating.
+ * Eligibility rules:
+ * - Must belong to authenticated student (enforced by API & DB)
+ * - Must not be cancelled or failed
+ * - Must have a valid service recognized in BOOKING_SERVICES
+ * - Must have a valid duration (30, 45, or 60)
+ * - Sorts newest first by scheduled start or creation date
+ * - Returns null if none eligible (fails closed safely)
+ */
+export function findLastEligibleBooking(bookings: any[] | null): any | null {
+  if (!Array.isArray(bookings) || bookings.length === 0) {
+    return null;
+  }
+
+  const validDurations = [30, 45, 60];
+  const validStatuses = ['completed'];
+
+  const eligible = bookings.filter((b) => {
+    if (!b || typeof b !== 'object') return false;
+
+    // Check status: reject cancelled or failed or no_show
+    const status = String(b.status || '').toLowerCase().trim();
+    if (status === 'cancelled' || status === 'failed' || status === 'no_show') return false;
+    if (status && !validStatuses.includes(status)) return false;
+
+    // Check completion/past status: must be actually taken/completed
+    // Do NOT include future pending/confirmed/rescheduled bookings.
+    const dateStr = b.scheduledStart || b.scheduled_start || b.lesson_date;
+    if (dateStr) {
+      const scheduledTime = new Date(dateStr).getTime();
+      const now = Date.now();
+      // Future completed is logically contradictory, but we block it just in case
+      if (scheduledTime > now) {
+        return false;
+      }
+    }
+
+    // Check service validity
+    const rawServiceId = b.serviceId || b.service_id;
+    if (!rawServiceId || typeof rawServiceId !== 'string') return false;
+    const cleanServiceId = rawServiceId.toLowerCase().trim();
+    const serviceMatched = BOOKING_SERVICES.some(
+      (s) => s.id === cleanServiceId || s.name.toLowerCase() === cleanServiceId
+    );
+    if (!serviceMatched) return false;
+
+    // Check duration validity
+    const rawDuration = b.durationMinutes ?? b.duration_minutes ?? b.duration;
+    if (rawDuration === undefined || rawDuration === null) return false;
+    const numDuration = Number(rawDuration);
+    if (!validDurations.includes(numDuration)) return false;
+
+    return true;
+  });
+
+  if (eligible.length === 0) return null;
+
+  // Sort newest first by scheduled_start or scheduledStart or lesson_date or created_at or createdAt
+  eligible.sort((a, b) => {
+    const timeA = new Date(
+      a.scheduledStart || a.scheduled_start || a.lesson_date || a.createdAt || a.created_at || 0
+    ).getTime();
+    const timeB = new Date(
+      b.scheduledStart || b.scheduled_start || b.lesson_date || b.createdAt || b.created_at || 0
+    ).getTime();
+    return timeB - timeA;
+  });
+
+  return eligible[0];
+}
+
+/**
+ * Formats the summary text for the last booking reuse section:
+ * "[lesson/service] · [level if available] · [duration]"
+ */
+export function formatLastBookingSummary(
+  booking: any,
+  profile?: any
+): {
+  serviceTitle: string;
+  levelText?: string;
+  durationText: string;
+  summaryText: string;
+} {
+  if (!booking) {
+    return {
+      serviceTitle: 'Lesson',
+      durationText: '45 mins',
+      summaryText: 'Lesson · 45 mins'
+    };
+  }
+
+  const rawServiceId = booking.serviceId || booking.service_id;
+  const srv = BOOKING_SERVICES.find(
+    (s) => s.id === rawServiceId || s.name.toLowerCase() === String(rawServiceId).toLowerCase()
+  );
+  const serviceTitle = srv?.name || booking.serviceTitle || booking.services?.title || 'Lesson';
+
+  const rawLevel =
+    booking.currentLevel ||
+    booking.current_level ||
+    booking.childLevel ||
+    booking.child_level ||
+    profile?.currentLevel ||
+    profile?.current_level;
+
+  let levelText: string | undefined;
+  if (rawLevel && typeof rawLevel === 'string' && rawLevel.trim().length > 0) {
+    const clean = rawLevel.trim().toLowerCase();
+    levelText = clean.charAt(0).toUpperCase() + clean.slice(1);
+  }
+
+  const rawDuration = booking.durationMinutes ?? booking.duration_minutes ?? booking.duration ?? 45;
+  const durationText = `${rawDuration} mins`;
+
+  const parts = [serviceTitle, levelText, durationText].filter(Boolean);
+  const summaryText = parts.join(' · ');
+
+  return {
+    serviceTitle,
+    levelText,
+    durationText,
+    summaryText
+  };
+}
+
+/**
+ * Pure mapping of previous eligible booking to BookingFormData,
+ * advancing user directly to Step 5 (Schedule / Date & Time).
+ */
+export function mapLastBookingToBookingFormData(
+  lastBooking: any,
+  profile: any,
+  canBookTrial: boolean
+): {
+  initialData: Partial<BookingFormData>;
+  matchedServiceId: string;
+  initialMode: BookingMode;
+  initialStep: number;
+} {
+  const rawServiceId = lastBooking.serviceId || lastBooking.service_id;
+  const srv = BOOKING_SERVICES.find(
+    (s) => s.id === rawServiceId || s.name.toLowerCase() === String(rawServiceId).toLowerCase()
+  );
+  const matchedServiceId = srv?.id || 'quran-reading';
+
+  const rawDuration = lastBooking.durationMinutes ?? lastBooking.duration_minutes ?? lastBooking.duration;
+  const duration = ([30, 45, 60].includes(Number(rawDuration)) ? Number(rawDuration) : 45) as LessonDuration;
+
+  const lastType = lastBooking.bookingType || lastBooking.booking_type;
+  const initialMode: BookingMode = canBookTrial && lastType === 'trial' ? 'trial' : 'regular';
+
+  // Determine audience: child vs adult
+  const isChild = Boolean(
+    lastBooking.parentName ||
+      lastBooking.parent_name ||
+      profile?.bookingPreference === 'child' ||
+      profile?.learnerType === 'child' ||
+      (profile?.guardian && (profile.guardian.parentName || profile.guardian.parentEmail))
+  );
+  const audience = isChild ? 'child' : 'adult';
+
+  const mappedLevel: ProficiencyLevel =
+    profile?.currentLevel === 'beginner' ||
+    profile?.currentLevel === 'elementary' ||
+    profile?.currentLevel === 'intermediate' ||
+    profile?.currentLevel === 'advanced'
+      ? profile.currentLevel
+      : 'beginner';
+
+  let studentName = '';
+  let email = '';
+  let whatsapp = '';
+  let childName = '';
+  let childLevel: ProficiencyLevel = mappedLevel;
+  let parentName = '';
+  let parentEmail = '';
+  let parentWhatsapp = '';
+  let parentNotes = '';
+  let notes = '';
+  
+  let repeatStudentId = lastBooking.studentId || lastBooking.student_id;
+
+  if (isChild) {
+    if (profile?.linkedChildren && profile.linkedChildren.length > 0) {
+      const child = profile.linkedChildren.find((c: any) => c.id === repeatStudentId);
+      if (child) {
+        childName = child.name || '';
+        childLevel =
+          child.current_level === 'beginner' ||
+          child.current_level === 'elementary' ||
+          child.current_level === 'intermediate' ||
+          child.current_level === 'advanced'
+            ? child.current_level
+            : (child.currentLevel || mappedLevel);
+      } else {
+        // Child no longer linked or unknown identity, clear selection
+        repeatStudentId = '';
+        childName = lastBooking.contactName || lastBooking.contact_name || '';
+      }
+    } else {
+      // No linked children available
+      repeatStudentId = profile?.id || '';
+      childName = lastBooking.contactName || lastBooking.contact_name || '';
+    }
+
+    parentName = lastBooking.parentName || lastBooking.parent_name || profile?.name || '';
+    parentEmail = lastBooking.contactEmail || lastBooking.contact_email || profile?.email || '';
+    parentWhatsapp = lastBooking.contactWhatsapp || lastBooking.contact_whatsapp || profile?.whatsapp || '';
+    parentNotes = lastBooking.notes || profile?.learningNeeds || '';
+  } else {
+    repeatStudentId = profile?.id || '';
+    studentName = lastBooking.contactName || lastBooking.contact_name || profile?.name || '';
+    email = lastBooking.contactEmail || lastBooking.contact_email || profile?.email || '';
+    whatsapp = lastBooking.contactWhatsapp || lastBooking.contact_whatsapp || profile?.whatsapp || '';
+    notes = lastBooking.notes || profile?.learningNeeds || '';
+  }
+
+  const goal =
+    lastBooking.goal ||
+    (srv?.suggestedGoals && srv.suggestedGoals[0]) ||
+    profile?.learningGoal ||
+    'Personalized study with Ustadh Mahmoud';
+
+  const timezone =
+    lastBooking.studentTimezone ||
+    lastBooking.student_timezone ||
+    profile?.timezone ||
+    'America/New_York';
+
+  const initialData: Partial<BookingFormData> = {
+    serviceId: matchedServiceId,
+    mode: initialMode,
+    duration,
+    audience,
+    studentName,
+    email,
+    whatsapp,
+    currentLevel: mappedLevel,
+    notes,
+    childName,
+    childLevel,
+    parentName,
+    parentEmail,
+    parentWhatsapp,
+    parentNotes,
+    goal,
+    customGoalText: lastBooking.customGoalText || '',
+    timezone,
+    studentId: repeatStudentId,
+    date: '',
+    timeSlot: null
+  };
+
+  return {
+    initialData,
+    matchedServiceId,
+    initialMode,
+    initialStep: 5 // Step 5 is StepDateTime (schedule/time-selection)
   };
 }
 
@@ -110,26 +373,72 @@ export function mapStudentProfileToBookingInitialData(
 
   const initialMode: BookingMode = canBookTrial ? 'trial' : 'regular';
 
+  const pref = profile.bookingPreference || profile.booking_preference;
+  const isBookingForChild = pref === 'child' || (isChildAccount && pref !== 'self');
+  const audience = isBookingForChild ? 'child' : 'adult';
+
+  const hasLinkedChildren = Array.isArray(profile.linkedChildren) && profile.linkedChildren.length > 0;
+  
+  // Only default to a child if there is exactly one
+  const defaultChild = (hasLinkedChildren && profile.linkedChildren.length === 1) ? profile.linkedChildren[0] : null;
+
+  let childName = '';
+  let childLevel: ProficiencyLevel = mappedLevel;
+  let parentName = '';
+  let parentEmail = '';
+  let parentWhatsapp = '';
+  let parentNotes = '';
+
+  if (isBookingForChild) {
+    if (defaultChild) {
+      childName = defaultChild.name || '';
+      childLevel =
+        defaultChild.currentLevel === 'beginner' ||
+        defaultChild.currentLevel === 'elementary' ||
+        defaultChild.currentLevel === 'intermediate' ||
+        defaultChild.currentLevel === 'advanced'
+          ? defaultChild.currentLevel
+          : 'beginner';
+      parentName = profile.name || '';
+      parentEmail = profile.email || '';
+      parentWhatsapp = profile.whatsapp || '';
+      parentNotes = profile.learningNeeds || '';
+    } else if (hasLinkedChildren && profile.linkedChildren.length > 1) {
+      // Multiple linked children: Do not pre-fill child identity, force selection
+      childName = '';
+      parentName = profile.name || '';
+      parentEmail = profile.email || '';
+      parentWhatsapp = profile.whatsapp || '';
+      parentNotes = profile.learningNeeds || '';
+    } else if (isChildAccount) {
+      childName = profile.name || '';
+      childLevel = mappedLevel;
+      parentName = profile.guardian?.parentName || '';
+      parentEmail = profile.guardian?.parentEmail || profile.email || '';
+      parentWhatsapp =
+        profile.guardian?.parentWhatsapp || profile.guardian?.parentPhone || profile.whatsapp || '';
+      parentNotes = profile.learningNeeds || '';
+    }
+  }
+
   const initialData: Partial<BookingFormData> = {
     serviceId: matchedServiceId,
     mode: initialMode,
-    audience: isChildAccount ? 'child' : 'adult',
+    audience,
     studentName: profile.name || '',
     email: profile.email || '',
     whatsapp: profile.whatsapp || '',
     currentLevel: mappedLevel,
     notes: profile.learningNeeds || '',
     goal: profile.learningGoal || '',
-    childName: isChildAccount ? profile.name || '' : '',
-    childLevel: mappedLevel,
-    parentName: isChildAccount ? profile.guardian?.parentName || '' : '',
-    parentEmail: isChildAccount ? profile.guardian?.parentEmail || profile.email || '' : '',
-    parentWhatsapp: isChildAccount
-      ? profile.guardian?.parentWhatsapp || profile.guardian?.parentPhone || profile.whatsapp || ''
-      : '',
-    parentNotes: isChildAccount ? profile.learningNeeds || '' : '',
+    childName,
+    childLevel,
+    parentName,
+    parentEmail,
+    parentWhatsapp,
+    parentNotes,
     timezone: profile.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/New_York',
-    studentId: profile.id
+    studentId: (isBookingForChild && defaultChild) ? defaultChild.id : ((isBookingForChild && hasLinkedChildren && profile.linkedChildren.length > 1) ? '' : profile.id)
   };
 
   return {
@@ -326,10 +635,57 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
   const { canBookTrial, trialDisabledReason } = calculateTrialEligibility(bookings, bookingsError);
 
   // Map initial form values from profile
-  const { initialData, matchedServiceId, initialMode } = mapStudentProfileToBookingInitialData(
-    profile,
-    canBookTrial
-  );
+  const { initialData: standardInitialData, matchedServiceId: standardServiceId, initialMode: standardMode } =
+    mapStudentProfileToBookingInitialData(profile, canBookTrial);
+
+  // Identify last eligible booking for repeat workflow
+  const lastEligibleBooking = findLastEligibleBooking(bookings);
+  const lastBookingSummary = lastEligibleBooking
+    ? formatLastBookingSummary(lastEligibleBooking, profile)
+    : null;
+
+  // Local state for reuse interaction
+  const [reuseDismissed, setReuseDismissed] = useState<boolean>(false);
+  const [isReusing, setIsReusing] = useState<boolean>(false);
+  const [flowKey, setFlowKey] = useState<number>(0);
+  const [flowStep, setFlowStep] = useState<number>(1);
+  const [activeConfig, setActiveConfig] = useState<{
+    initialData: Partial<BookingFormData>;
+    matchedServiceId: string;
+    initialMode: BookingMode;
+  } | null>(null);
+
+  const handleReuseLastBooking = () => {
+    if (!lastEligibleBooking) return;
+    const reused = mapLastBookingToBookingFormData(lastEligibleBooking, profile, canBookTrial);
+    setActiveConfig({
+      initialData: reused.initialData,
+      matchedServiceId: reused.matchedServiceId,
+      initialMode: reused.initialMode
+    });
+    setFlowStep(5);
+    setIsReusing(true);
+    setFlowKey((k) => k + 1);
+  };
+
+  const handleDismissReuse = () => {
+    setReuseDismissed(true);
+    setIsReusing(false);
+    setActiveConfig(null);
+    setFlowStep(1);
+    setFlowKey((k) => k + 1);
+  };
+
+  const handleResetToNewBooking = () => {
+    setIsReusing(false);
+    setActiveConfig(null);
+    setFlowStep(1);
+    setFlowKey((k) => k + 1);
+  };
+
+  const currentInitialData = activeConfig ? activeConfig.initialData : standardInitialData;
+  const currentServiceId = activeConfig ? activeConfig.matchedServiceId : standardServiceId;
+  const currentMode = activeConfig ? activeConfig.initialMode : standardMode;
 
   return (
     <div className="space-y-6">
@@ -362,7 +718,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
               {profile.name || profile.email}
             </div>
             <div className="text-[10px] text-[#7A827B] dark:text-[#A69FA8] leading-tight">
-              Linked Student Account
+              {profile.bookingPreference === 'child' ? 'Booking for Child' : 'Linked Student Account'}
             </div>
           </div>
         </div>
@@ -389,11 +745,99 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
         </div>
       )}
 
+      {/* Repeat Last Booking Section: Compact banner for eligible students */}
+      {lastEligibleBooking && lastBookingSummary && !reuseDismissed && !isReusing && (
+        <div
+          id="repeat-last-booking-card"
+          className="p-4 sm:p-5 rounded-2xl bg-[#FBF9F5] dark:bg-[#26202D] border border-[#E2DDD5] dark:border-[#3E3545] shadow-xs"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <div className="p-1 rounded-md bg-[#8FAE9B]/20 text-[#557161] dark:text-[#A8C9B4]">
+                  <RotateCcw className="w-3.5 h-3.5" />
+                </div>
+                <h2 className="text-sm sm:text-base font-semibold text-[#30332F] dark:text-[#F8F6F0]">
+                  Book another lesson
+                </h2>
+              </div>
+              <div className="text-xs text-[#7A827B] dark:text-[#A69FA8] pt-0.5">
+                <span>Your last lesson: </span>
+                <span className="font-semibold text-[#30332F] dark:text-[#F8F6F0]">
+                  {lastBookingSummary.summaryText}
+                </span>
+              </div>
+              <p className="text-xs text-[#7A827B] dark:text-[#A69FA8]">
+                Would you like to reuse those details?
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 pt-1 sm:pt-0">
+              <button
+                type="button"
+                id="btn-reuse-last-booking"
+                onClick={handleReuseLastBooking}
+                className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-[#8FAE9B] hover:bg-[#6F907D] text-white transition-colors cursor-pointer flex items-center gap-1.5 shadow-xs"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Book with the same details</span>
+              </button>
+
+              <button
+                type="button"
+                id="btn-dismiss-reuse-booking"
+                onClick={handleDismissReuse}
+                className="px-3.5 py-2 rounded-xl text-xs font-medium bg-white dark:bg-[#2A2431] border border-[#E2DDD5] dark:border-[#3E3545] text-[#7A827B] dark:text-[#A69FA8] hover:text-[#30332F] dark:hover:text-white transition-colors cursor-pointer"
+              >
+                Make a new booking
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Dismissed subtle helper: available if user changed their mind */}
+      {lastEligibleBooking && lastBookingSummary && reuseDismissed && !isReusing && (
+        <div className="flex items-center justify-between text-xs text-[#7A827B] dark:text-[#A69FA8] px-1">
+          <button
+            type="button"
+            id="btn-reopen-reuse-booking"
+            onClick={handleReuseLastBooking}
+            className="inline-flex items-center gap-1.5 font-medium text-[#557161] dark:text-[#A8C9B4] hover:underline cursor-pointer"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span>Reuse last lesson details ({lastBookingSummary.summaryText})</span>
+          </button>
+        </div>
+      )}
+
+      {/* Active reuse feedback banner */}
+      {isReusing && lastBookingSummary && (
+        <div className="p-3.5 rounded-2xl bg-[#8FAE9B]/15 border border-[#8FAE9B]/30 text-xs text-[#557161] dark:text-[#A8C9B4] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <Check className="w-4 h-4 text-[#557161] dark:text-[#A8C9B4] shrink-0" />
+            <span>
+              Reusing details from your last lesson: <strong>{lastBookingSummary.summaryText}</strong>. Choose your date &amp; time below, or edit any details.
+            </span>
+          </div>
+          <button
+            type="button"
+            id="btn-reset-reuse-booking"
+            onClick={handleResetToNewBooking}
+            className="text-xs font-medium underline hover:text-[#362E3B] dark:hover:text-white cursor-pointer self-start sm:self-auto"
+          >
+            Start fresh instead
+          </button>
+        </div>
+      )}
+
       {/* Embedded Booking Flow Container */}
       <BookingFlow
-        initialServiceId={matchedServiceId}
-        initialMode={initialMode}
-        initialData={initialData}
+        key={flowKey}
+        initialServiceId={currentServiceId}
+        initialMode={currentMode}
+        initialData={currentInitialData}
+        initialStep={flowStep}
         trialDisabled={!canBookTrial}
         trialDisabledReason={trialDisabledReason}
         cardClassName="w-full bg-white dark:bg-[#231D28] text-[#362E3B] dark:text-[#D5D0CA] p-5 sm:p-8 rounded-3xl border border-[#D5D0CA]/40 dark:border-[#3E3545]/40 shadow-sm"
@@ -402,6 +846,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
         onClose={() => navigate('/student')}
         lang="en"
         isModalView={false}
+        linkedChildren={profile?.linkedChildren || []}
       />
     </div>
   );

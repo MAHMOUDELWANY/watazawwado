@@ -18,6 +18,7 @@ interface BookingFlowProps {
   initialServiceId?: string;
   initialMode?: BookingMode;
   initialData?: Partial<BookingFormData>;
+  initialStep?: number;
   trialDisabled?: boolean;
   trialDisabledReason?: string;
   cardClassName?: string;
@@ -26,12 +27,14 @@ interface BookingFlowProps {
   lang: Language;
   onClose?: () => void;
   isModalView?: boolean;
+  linkedChildren?: any[];
 }
 
 export const BookingFlow: React.FC<BookingFlowProps> = ({
   initialServiceId,
   initialMode = 'trial',
   initialData,
+  initialStep = 1,
   trialDisabled = false,
   trialDisabledReason,
   cardClassName,
@@ -39,11 +42,12 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   onDone,
   lang,
   onClose,
-  isModalView = false
+  isModalView = false,
+  linkedChildren = []
 }) => {
   const isEn = lang === 'en';
 
-  const [step, setStep] = useState<number>(1);
+  const [step, setStep] = useState<number>(initialStep && initialStep >= 1 && initialStep <= 6 ? initialStep : 1);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [confirmation, setConfirmation] = useState<BookingConfirmationData | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -89,7 +93,12 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     };
   });
 
-  // Sync initial service changes from outside
+  useEffect(() => {
+    if (initialStep && initialStep >= 1 && initialStep <= 6) {
+      setStep(initialStep);
+    }
+  }, [initialStep]);
+
   useEffect(() => {
     if (initialServiceId) {
       setFormData((prev) => ({ ...prev, serviceId: initialServiceId }));
@@ -276,6 +285,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                   onNext={handleNext}
                   onBack={handleBack}
                   lang={lang}
+                  linkedChildren={linkedChildren}
                 />
               </motion.div>
             )}

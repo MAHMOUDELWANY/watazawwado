@@ -267,7 +267,15 @@ export default function StudentApp() {
             <Routes>
               <Route path="/" element={<StudentHomePage />} />
               <Route path="/book" element={<StudentBookingPage profile={profile} session={session} />} />
-              <Route path="/profile" element={<StudentProfilePage />} />
+              <Route path="/profile" element={
+                <StudentProfilePage
+                  profile={profile}
+                  session={session}
+                  onProfileUpdated={(updated) => {
+                    setProfile((prev: any) => ({ ...prev, ...updated }));
+                  }}
+                />
+              } />
               <Route path="/onboarding" element={
                 <StudentOnboardingPage
                   currentProfile={profile}

@@ -185,6 +185,7 @@ export interface Database {
           timezone: string;
           current_level: StudentProficiency;
           notes: string | null;
+          booking_preference?: 'self' | 'child';
           status: StudentStatus;
           created_at: string;
           updated_at: string;
@@ -200,6 +201,7 @@ export interface Database {
           timezone?: string;
           current_level?: StudentProficiency;
           notes?: string | null;
+          booking_preference?: 'self' | 'child';
           status?: StudentStatus;
           created_at?: string;
           updated_at?: string;
@@ -215,6 +217,7 @@ export interface Database {
           timezone?: string;
           current_level?: StudentProficiency;
           notes?: string | null;
+          booking_preference?: 'self' | 'child';
           status?: StudentStatus;
           created_at?: string;
           updated_at?: string;

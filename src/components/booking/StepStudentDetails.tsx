@@ -9,6 +9,7 @@ interface StepStudentDetailsProps {
   onNext: () => void;
   onBack: () => void;
   lang: Language;
+  linkedChildren?: any[];
 }
 
 export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
@@ -16,7 +17,8 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
   updateForm,
   onNext,
   onBack,
-  lang
+  lang,
+  linkedChildren = []
 }) => {
   const isEn = lang === 'en';
   const isChild = formData.audience === 'child';
@@ -56,10 +58,27 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
     ? formData.childName.trim().length > 0 &&
       formData.parentName.trim().length > 0 &&
       formData.parentEmail.trim().length > 0 &&
-      formData.parentEmail.includes('@')
+      formData.parentEmail.includes('@') &&
+      (linkedChildren.length === 0 || !!formData.studentId)
     : formData.studentName.trim().length > 0 &&
       formData.email.trim().length > 0 &&
       formData.email.includes('@');
+
+  // Handle child selection
+  const handleChildSelect = (childId: string) => {
+    if (!childId) {
+      updateForm({ studentId: '', childName: '' });
+      return;
+    }
+    const child = linkedChildren.find((c: any) => c.id === childId);
+    if (child) {
+      updateForm({
+        studentId: child.id,
+        childName: child.name,
+        childLevel: child.current_level || child.currentLevel || formData.childLevel
+      });
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -201,14 +220,28 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                 <label className="block text-xs font-semibold uppercase tracking-wider text-[#362E3B]/80 dark:text-[#D5D0CA]/80 mb-1">
                   {isEn ? 'Child’s Full Name' : 'اسم الطفل الكريم'} <span className="text-[#6B5B73] dark:text-[#B8A9C9]">*</span>
                 </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.childName}
-                  onChange={(e) => updateForm({ childName: e.target.value })}
-                  placeholder={isEn ? 'e.g. Yusuf' : 'مثال: يوسف'}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-[#F5E6D3]/30 dark:bg-[#1E1923] text-sm text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#87A878]"
-                />
+                {linkedChildren.length > 0 ? (
+                  <select
+                    value={formData.studentId || ''}
+                    onChange={(e) => handleChildSelect(e.target.value)}
+                    required
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-[#F5E6D3]/30 dark:bg-[#1E1923] text-sm text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#87A878]"
+                  >
+                    <option value="" disabled>{isEn ? 'Select a child' : 'اختر طفلاً'}</option>
+                    {linkedChildren.map((child: any) => (
+                      <option key={child.id} value={child.id}>{child.name}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    required
+                    value={formData.childName}
+                    onChange={(e) => updateForm({ childName: e.target.value })}
+                    placeholder={isEn ? 'e.g. Yusuf' : 'مثال: يوسف'}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-[#F5E6D3]/30 dark:bg-[#1E1923] text-sm text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#87A878]"
+                  />
+                )}
               </div>
 
               <div>

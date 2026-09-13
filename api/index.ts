@@ -747,7 +747,34 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
             timezone: 'Europe/London',
             learner_type: 'adult',
             current_level: 'beginner',
-            status: 'active'
+            status: 'active',
+            booking_preference: 'self',
+            canBookForChild: false,
+            linkedChildren: []
+          }
+        };
+        return next();
+      }
+
+      if (!isProd && token === 'dev-guardian-student-token') {
+        req.studentUser = {
+          auth_id: 'guardian-mock-auth-003',
+          email: 'guardian@example.com',
+          student_id: '33333333-3333-3333-3333-333333333333',
+          name: 'Parent Guardian',
+          studentProfile: {
+            id: '33333333-3333-3333-3333-333333333333',
+            name: 'Parent Guardian',
+            email: 'guardian@example.com',
+            timezone: 'America/Toronto',
+            learner_type: 'adult',
+            current_level: 'intermediate',
+            status: 'active',
+            booking_preference: 'child',
+            canBookForChild: true,
+            linkedChildren: [
+              { id: 'child-001', name: 'Aisha Al-Harithi', currentLevel: 'beginner' }
+            ]
           }
         };
         return next();
@@ -874,7 +901,10 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
           timezone: 'America/New_York',
           learner_type: 'adult',
           current_level: 'intermediate',
-          status: 'active'
+          status: 'active',
+          booking_preference: 'self',
+          canBookForChild: false,
+          linkedChildren: []
         }
       };
       return next();
@@ -893,7 +923,34 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
           timezone: 'Europe/London',
           learner_type: 'adult',
           current_level: 'beginner',
-          status: 'active'
+          status: 'active',
+          booking_preference: 'self',
+          canBookForChild: false,
+          linkedChildren: []
+        }
+      };
+      return next();
+    }
+
+    if (!isProd && token === 'dev-guardian-student-token') {
+      req.studentUser = {
+        auth_id: 'guardian-mock-auth-003',
+        email: 'guardian@example.com',
+        student_id: '33333333-3333-3333-3333-333333333333',
+        name: 'Parent Guardian',
+        studentProfile: {
+          id: '33333333-3333-3333-3333-333333333333',
+          name: 'Parent Guardian',
+          email: 'guardian@example.com',
+          timezone: 'America/Toronto',
+          learner_type: 'adult',
+          current_level: 'intermediate',
+          status: 'active',
+          booking_preference: 'child',
+          canBookForChild: true,
+          linkedChildren: [
+            { id: 'child-001', name: 'Aisha Al-Harithi', currentLevel: 'beginner' }
+          ]
         }
       };
       return next();
@@ -4530,6 +4587,14 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
         learner_type: 'adult',
         current_level: 'beginner'
       };
+      const mockCanBookForChild = mockProfile.canBookForChild ?? (
+        mockProfile.learner_type === 'child' ||
+        Boolean(mockProfile.guardian) ||
+        Boolean(mockProfile.linkedChildren && mockProfile.linkedChildren.length > 0)
+      );
+      const rawPref = mockProfile.booking_preference || mockProfile.bookingPreference || 'self';
+      const safePref = mockCanBookForChild ? rawPref : 'self';
+
       return res.json({
         id: mockProfile.id,
         name: mockProfile.name,
@@ -4540,6 +4605,9 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
         learnerType: mockProfile.learner_type || 'adult',
         currentLevel: mockProfile.current_level || 'beginner',
         status: mockProfile.status || 'active',
+        bookingPreference: safePref,
+        canBookForChild: mockCanBookForChild,
+        linkedChildren: mockProfile.linkedChildren || [],
         createdAt: mockProfile.created_at || new Date().toISOString(),
         guardian: null,
         goals: []
@@ -4547,10 +4615,10 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
     }
 
     try {
-      const [studentRes, guardianRes, goalsRes] = await Promise.all([
+      const [studentRes, guardianRes, goalsRes, linkedChildrenRes] = await Promise.all([
         supabaseAdmin
           .from('students')
-          .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, created_at, onboarding_completed, learning_interest, learning_goal, learning_needs')
+          .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, created_at, onboarding_completed, learning_interest, learning_goal, learning_needs, booking_preference')
           .eq('id', studentId)
           .single(),
         supabaseAdmin
@@ -4562,12 +4630,24 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
           .from('student_goals')
           .select('id, goal_text, is_primary, status')
           .eq('student_id', studentId)
-          .eq('status', 'in_progress')
+          .eq('status', 'in_progress'),
+        supabaseAdmin
+          .from('guardians')
+          .select('student_id, parent_name, parent_email, students:student_id(id, name, current_level)')
+          .ilike('parent_email', (req.studentUser?.email || '').trim())
       ]);
 
       if (studentRes.error || !studentRes.data) {
         if (!isProd && req.studentUser?.studentProfile) {
           const mp = req.studentUser.studentProfile;
+          const mockCanBookForChild = mp.canBookForChild ?? (
+            mp.learner_type === 'child' ||
+            Boolean(mp.guardian) ||
+            Boolean(mp.linkedChildren && mp.linkedChildren.length > 0)
+          );
+          const rawPref = mp.booking_preference || mp.bookingPreference || 'self';
+          const safePref = mockCanBookForChild ? rawPref : 'self';
+
           return res.json({
             id: mp.id,
             name: mp.name,
@@ -4576,6 +4656,9 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
             learnerType: mp.learner_type || 'adult',
             currentLevel: mp.current_level || 'beginner',
             status: mp.status || 'active',
+            bookingPreference: safePref,
+            canBookForChild: mockCanBookForChild,
+            linkedChildren: mp.linkedChildren || [],
             onboardingCompleted: mp.onboarding_completed ?? true,
             learningInterest: mp.learning_interest || 'Quran Reading',
             learningGoal: mp.learning_goal || null,
@@ -4592,6 +4675,15 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       const guardian = guardianRes.data || null;
       const goals = goalsRes.data || [];
 
+      // Determine child booking eligibility authoritatively
+      const isChildStudentWithGuardian = profile.learner_type === 'child' && Boolean(guardian);
+      const linkedChildrenFromGuardians = (linkedChildrenRes?.data || [])
+        .map((g: any) => g.students)
+        .filter(Boolean);
+      const canBookForChild = isChildStudentWithGuardian || linkedChildrenFromGuardians.length > 0;
+      const rawPref = profile.booking_preference || 'self';
+      const bookingPreference = canBookForChild ? rawPref : 'self';
+
       return res.json({
         id: profile.id,
         name: profile.name,
@@ -4602,6 +4694,9 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
         learnerType: profile.learner_type || 'adult',
         currentLevel: profile.current_level || 'beginner',
         status: profile.status || 'active',
+        bookingPreference,
+        canBookForChild,
+        linkedChildren: linkedChildrenFromGuardians,
         onboardingCompleted: profile.onboarding_completed ?? false,
         learningInterest: profile.learning_interest || null,
         learningGoal: profile.learning_goal || (goals[0]?.goal_text || null),
@@ -4623,6 +4718,14 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
     } catch (dbErr: any) {
       if (!isProd && req.studentUser?.studentProfile) {
         const mp = req.studentUser.studentProfile;
+        const mockCanBookForChild = mp.canBookForChild ?? (
+          mp.learner_type === 'child' ||
+          Boolean(mp.guardian) ||
+          Boolean(mp.linkedChildren && mp.linkedChildren.length > 0)
+        );
+        const rawPref = mp.booking_preference || mp.bookingPreference || 'self';
+        const safePref = mockCanBookForChild ? rawPref : 'self';
+
         return res.json({
           id: mp.id,
           name: mp.name,
@@ -4631,6 +4734,9 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
           learnerType: mp.learner_type || 'adult',
           currentLevel: mp.current_level || 'beginner',
           status: mp.status || 'active',
+          bookingPreference: safePref,
+          canBookForChild: mockCanBookForChild,
+          linkedChildren: mp.linkedChildren || [],
           onboardingCompleted: mp.onboarding_completed ?? true,
           learningInterest: mp.learning_interest || 'Quran Reading',
           learningGoal: mp.learning_goal || null,
@@ -4831,7 +4937,7 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       return res.status(404).json({ error: 'Student profile not found.' });
     }
 
-    const { name, timezone, whatsapp, country, parentName, parentWhatsapp } = req.body || {};
+    const { name, timezone, whatsapp, country, parentName, parentWhatsapp, booking_preference, bookingPreference } = req.body || {};
 
     // Validate safe fields only - explicitly reject any attempts to modify forbidden attributes
     const forbiddenFields = [
@@ -4874,12 +4980,52 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
     const isProd = process.env.NODE_ENV === 'production';
     const supabaseAdmin = getSupabaseAdminClient();
 
+    // Booking preference validation & persistence
+    const rawBookingPref = booking_preference !== undefined ? booking_preference : bookingPreference;
+    if (rawBookingPref !== undefined) {
+      if (rawBookingPref !== 'self' && rawBookingPref !== 'child') {
+        return res.status(422).json({ error: "Invalid booking preference. Must be 'self' or 'child'." });
+      }
+
+      // Check if student has an authoritative child/guardian relationship
+      let studentCanBookChild = false;
+      if (!supabaseAdmin || (!isProd && req.studentUser?.studentProfile)) {
+        const mp = req.studentUser?.studentProfile;
+        studentCanBookChild = mp?.canBookForChild ?? (
+          mp?.learner_type === 'child' ||
+          Boolean(mp?.guardian) ||
+          Boolean(mp?.linkedChildren && mp?.linkedChildren.length > 0)
+        );
+      } else {
+        const [studentCheck, guardianCheck, parentCheck] = await Promise.all([
+          supabaseAdmin.from('students').select('learner_type').eq('id', studentId).single(),
+          supabaseAdmin.from('guardians').select('id').eq('student_id', studentId).maybeSingle(),
+          supabaseAdmin.from('guardians').select('id').ilike('parent_email', (req.studentUser?.email || '').trim()).limit(1)
+        ]);
+        const isChildWithGuardian = studentCheck.data?.learner_type === 'child' && Boolean(guardianCheck.data);
+        const isParentOfChild = Boolean(parentCheck.data && parentCheck.data.length > 0);
+        studentCanBookChild = isChildWithGuardian || isParentOfChild;
+      }
+
+      if (rawBookingPref === 'child' && !studentCanBookChild) {
+        return res.status(422).json({
+          error: 'Account has no linked child relationship. Booking preference cannot be set to child.'
+        });
+      }
+
+      updatePayload.booking_preference = rawBookingPref;
+    }
+
     if (!supabaseAdmin || (!isProd && req.studentUser?.studentProfile)) {
       if (req.studentUser?.studentProfile) {
         if (updatePayload.name) req.studentUser.studentProfile.name = updatePayload.name;
         if (updatePayload.timezone) req.studentUser.studentProfile.timezone = updatePayload.timezone;
         if (updatePayload.whatsapp !== undefined) req.studentUser.studentProfile.whatsapp = updatePayload.whatsapp;
         if (updatePayload.country !== undefined) req.studentUser.studentProfile.country = updatePayload.country;
+        if (updatePayload.booking_preference !== undefined) {
+          req.studentUser.studentProfile.booking_preference = updatePayload.booking_preference;
+          req.studentUser.studentProfile.bookingPreference = updatePayload.booking_preference;
+        }
       }
       return res.json({
         id: studentId,
@@ -4890,6 +5036,7 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
         timezone: updatePayload.timezone || req.studentUser?.studentProfile?.timezone || 'UTC',
         learnerType: req.studentUser?.studentProfile?.learner_type || 'adult',
         currentLevel: req.studentUser?.studentProfile?.current_level || 'beginner',
+        bookingPreference: updatePayload.booking_preference || req.studentUser?.studentProfile?.booking_preference || 'self',
         status: req.studentUser?.studentProfile?.status || 'active',
         updatedAt: new Date().toISOString()
       });
@@ -4899,7 +5046,7 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       .from('students')
       .update(updatePayload)
       .eq('id', studentId)
-      .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, created_at, updated_at')
+      .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, booking_preference, created_at, updated_at')
       .single();
 
     if (updateError || !updatedStudent) {
@@ -4935,6 +5082,7 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       timezone: updatedStudent.timezone,
       learnerType: updatedStudent.learner_type,
       currentLevel: updatedStudent.current_level,
+      bookingPreference: updatedStudent.booking_preference || 'self',
       status: updatedStudent.status,
       updatedAt: updatedStudent.updated_at
     });
@@ -4955,13 +5103,16 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
     const isProd = process.env.NODE_ENV === 'production';
     const supabaseAdmin = getSupabaseAdminClient();
     if (!supabaseAdmin || (!isProd && req.studentUser?.studentProfile)) {
+      if (req.studentUser?.studentBookings) {
+        return res.json(req.studentUser.studentBookings);
+      }
       return res.json([]);
     }
 
     // Fetch bookings belonging strictly to this authenticated student (idempotent read)
     const { data: bookingsData, error: bookingsError } = await supabaseAdmin
       .from('bookings')
-      .select('id, reference_code, service_id, booking_type, duration_minutes, scheduled_start, scheduled_end, student_timezone, status, contact_name, contact_email, fee_amount_usd, zoom_meeting_link, created_at')
+      .select('id, reference_code, service_id, booking_type, duration_minutes, scheduled_start, scheduled_end, student_timezone, status, contact_name, contact_email, contact_whatsapp, parent_name, notes, fee_amount_usd, zoom_meeting_link, created_at')
       .eq('student_id', studentId)
       .order('scheduled_start', { ascending: true });
 
@@ -5007,6 +5158,11 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
         durationMinutes: b.duration_minutes,
         studentTimezone: b.student_timezone,
         status: b.status,
+        contactName: b.contact_name || null,
+        contactEmail: b.contact_email || null,
+        contactWhatsapp: b.contact_whatsapp || null,
+        parentName: b.parent_name || null,
+        notes: b.notes || null,
         feeAmountUsd: b.fee_amount_usd,
         zoomMeetingLink: zoomUrl,
         // Harmonized contract aliases for UI compatibility
