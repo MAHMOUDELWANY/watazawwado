@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BookingFormData, BookingConfirmationData, BookingMode, Language } from '../../booking/types';
+import { BookingFormData, BookingConfirmationData, BookingMode, Language, LearnerAudience, ProficiencyLevel } from '../../booking/types';
 import { BOOKING_SERVICES } from '../../booking/mockData';
 import { bookingService } from '../../booking/bookingService';
 import { validateStep } from '../../booking/validation';
@@ -28,6 +28,11 @@ interface BookingFlowProps {
   onClose?: () => void;
   isModalView?: boolean;
   linkedChildren?: any[];
+  isAuthenticatedStudent?: boolean;
+  bookingPreference?: 'self' | 'child';
+  canBookForChild?: boolean;
+  studentName?: string;
+  studentEmail?: string;
 }
 
 export const BookingFlow: React.FC<BookingFlowProps> = ({
@@ -43,7 +48,12 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   lang,
   onClose,
   isModalView = false,
-  linkedChildren = []
+  linkedChildren = [],
+  isAuthenticatedStudent = false,
+  bookingPreference = 'self',
+  canBookForChild = false,
+  studentName,
+  studentEmail
 }) => {
   const isEn = lang === 'en';
 
@@ -66,30 +76,54 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
 
     const effectiveMode = (trialDisabled && initialMode === 'trial') ? 'regular' : (initialMode || 'trial');
 
+    const isChildAuthorized = Boolean(isAuthenticatedStudent && canBookForChild && linkedChildren && linkedChildren.length > 0);
+    const preferChild = Boolean(isChildAuthorized && (bookingPreference === 'child' || initialData?.audience === 'child'));
+    const singleChild = isChildAuthorized && linkedChildren && linkedChildren.length === 1 ? linkedChildren[0] : null;
+
+    const resolvedAudience: LearnerAudience = preferChild
+      ? 'child'
+      : (initialData?.audience || (isAuthenticatedStudent ? 'adult' : 'adult'));
+
+    let resolvedStudentId = initialData?.studentId;
+    let resolvedChildName = initialData?.childName || '';
+    let resolvedChildLevel: ProficiencyLevel = initialData?.childLevel || 'beginner';
+
+    if (resolvedAudience === 'child') {
+      if (singleChild) {
+        resolvedStudentId = resolvedStudentId || singleChild.id;
+        resolvedChildName = resolvedChildName || singleChild.name || '';
+        resolvedChildLevel = (singleChild.current_level || singleChild.currentLevel || resolvedChildLevel) as ProficiencyLevel;
+      } else if (isChildAuthorized && linkedChildren && linkedChildren.length > 1 && !resolvedStudentId) {
+        // Multiple children: explicit selection required, don't default to child 0
+        resolvedStudentId = '';
+        resolvedChildName = '';
+      }
+    }
+
     return {
       mode: effectiveMode,
       serviceId: initialServiceId || initialData?.serviceId || 'quran-reading',
       goal: initialData?.goal || '',
       customGoalText: initialData?.customGoalText || '',
-      audience: initialData?.audience || 'adult',
-      studentName: initialData?.studentName || '',
-      email: initialData?.email || '',
+      audience: resolvedAudience,
+      studentName: initialData?.studentName || studentName || '',
+      email: initialData?.email || studentEmail || '',
       whatsapp: initialData?.whatsapp || '',
       ageGroup: initialData?.ageGroup || '18-29',
       currentLevel: initialData?.currentLevel || 'beginner',
       notes: initialData?.notes || '',
-      childName: initialData?.childName || '',
+      childName: resolvedChildName,
       childAge: initialData?.childAge || '8-11',
-      parentName: initialData?.parentName || '',
-      parentEmail: initialData?.parentEmail || '',
+      parentName: initialData?.parentName || (resolvedAudience === 'child' ? (studentName || '') : ''),
+      parentEmail: initialData?.parentEmail || (resolvedAudience === 'child' ? (studentEmail || '') : ''),
       parentWhatsapp: initialData?.parentWhatsapp || '',
-      childLevel: initialData?.childLevel || 'beginner',
+      childLevel: resolvedChildLevel,
       parentNotes: initialData?.parentNotes || '',
       duration: effectiveMode === 'trial' ? 30 : (initialData?.duration || 45),
       date: initialData?.date || '',
       timeSlot: initialData?.timeSlot || null,
       timezone: initialData?.timezone || userTz,
-      studentId: initialData?.studentId
+      studentId: resolvedStudentId
     };
   });
 
@@ -286,6 +320,11 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                   onBack={handleBack}
                   lang={lang}
                   linkedChildren={linkedChildren}
+                  isAuthenticatedStudent={isAuthenticatedStudent}
+                  bookingPreference={bookingPreference}
+                  canBookForChild={canBookForChild}
+                  studentName={studentName || formData.studentName}
+                  studentEmail={studentEmail || formData.email}
                 />
               </motion.div>
             )}

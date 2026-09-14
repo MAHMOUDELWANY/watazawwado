@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useLocation, useSearchParams, Link } from 'react-router-dom';
-import { ArrowLeft, Loader2, AlertCircle, ShieldCheck, RefreshCw, RotateCcw, Check } from 'lucide-react';
+import { ArrowLeft, Loader2, AlertCircle, ShieldCheck, RefreshCw, RotateCcw, Check, Sparkles } from 'lucide-react';
 import { BookingFlow } from '../../components/booking/BookingFlow';
 import { BOOKING_SERVICES } from '../../booking/mockData';
 import { BookingFormData, BookingMode, ProficiencyLevel, LessonDuration } from '../../booking/types';
@@ -770,109 +770,136 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
         </div>
       )}
 
-      {/* Repeat Last Booking Section: Compact banner for eligible students */}
-      {lastEligibleBooking && lastBookingSummary && !reuseDismissed && !isReusing && (
+      {/*
+        BOOKING ENTRY POINT:
+        Case A: First-time booking / New booking from scratch -> Render BookingFlow directly.
+        Case B: Repeat booking when an eligible completed lesson exists -> Show the "Book another lesson"
+                choice first BEFORE the detailed form.
+      */}
+      {lastEligibleBooking && lastBookingSummary && !reuseDismissed && !isReusing && !requestedServiceId ? (
         <div
           id="repeat-last-booking-card"
-          className="p-4 sm:p-5 rounded-2xl bg-[#FBF9F5] dark:bg-[#26202D] border border-[#E2DDD5] dark:border-[#3E3545] shadow-xs"
+          className="max-w-xl mx-auto p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#231D28] border border-[#D5D0CA]/40 dark:border-[#3E3545]/40 shadow-sm space-y-6"
         >
-          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <div className="p-1 rounded-md bg-[#8FAE9B]/20 text-[#557161] dark:text-[#A8C9B4]">
-                  <RotateCcw className="w-3.5 h-3.5" />
-                </div>
-                <h2 className="text-sm sm:text-base font-semibold text-[#30332F] dark:text-[#F8F6F0]">
-                  Book another lesson
-                </h2>
-              </div>
-              <div className="text-xs text-[#7A827B] dark:text-[#A69FA8] pt-0.5">
-                <span>Your last lesson: </span>
-                <span className="font-semibold text-[#30332F] dark:text-[#F8F6F0]">
-                  {lastBookingSummary.summaryText}
-                </span>
-              </div>
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-2xl bg-[#8FAE9B]/20 text-[#557161] dark:text-[#A8C9B4]">
+              <RotateCcw className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="text-lg font-serif font-bold text-[#30332F] dark:text-[#F8F6F0]">
+                Book another lesson
+              </h2>
               <p className="text-xs text-[#7A827B] dark:text-[#A69FA8]">
-                Would you like to reuse those details?
+                Continue from your last completed lesson?
               </p>
             </div>
+          </div>
 
-            <div className="flex flex-wrap items-center gap-2 pt-1 sm:pt-0">
-              <button
-                type="button"
-                id="btn-reuse-last-booking"
-                onClick={handleReuseLastBooking}
-                className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-[#8FAE9B] hover:bg-[#6F907D] text-white transition-colors cursor-pointer flex items-center gap-1.5 shadow-xs"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                <span>Book with the same details</span>
-              </button>
-
-              <button
-                type="button"
-                id="btn-dismiss-reuse-booking"
-                onClick={handleDismissReuse}
-                className="px-3.5 py-2 rounded-xl text-xs font-medium bg-white dark:bg-[#2A2431] border border-[#E2DDD5] dark:border-[#3E3545] text-[#7A827B] dark:text-[#A69FA8] hover:text-[#30332F] dark:hover:text-white transition-colors cursor-pointer"
-              >
-                Make a new booking
-              </button>
+          <div className="p-4 rounded-2xl bg-[#FBF9F5] dark:bg-[#1E1923] border border-[#E2DDD5]/70 dark:border-[#3E3545]/70 space-y-1.5 text-xs">
+            <div className="text-[11px] font-medium text-[#7A827B] dark:text-[#A69FA8] uppercase tracking-wider">
+              Previous lesson details
+            </div>
+            <div className="font-semibold text-sm text-[#30332F] dark:text-[#F8F6F0]">
+              {lastBookingSummary.summaryText}
+            </div>
+            <div className="text-[11px] text-[#7A827B] dark:text-[#A69FA8]">
+              Subject, level, and learner preferences will be carried forward automatically.
             </div>
           </div>
-        </div>
-      )}
 
-      {/* Dismissed subtle helper: available if user changed their mind */}
-      {lastEligibleBooking && lastBookingSummary && reuseDismissed && !isReusing && (
-        <div className="flex items-center justify-between text-xs text-[#7A827B] dark:text-[#A69FA8] px-1">
-          <button
-            type="button"
-            id="btn-reopen-reuse-booking"
-            onClick={handleReuseLastBooking}
-            className="inline-flex items-center gap-1.5 font-medium text-[#557161] dark:text-[#A8C9B4] hover:underline cursor-pointer"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span>Reuse last lesson details ({lastBookingSummary.summaryText})</span>
-          </button>
-        </div>
-      )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <button
+              type="button"
+              id="btn-reuse-last-booking"
+              onClick={handleReuseLastBooking}
+              className="w-full p-4 rounded-2xl bg-[#8FAE9B] hover:bg-[#6F907D] text-white font-medium text-xs transition-all shadow-sm flex flex-col items-start gap-1 cursor-pointer text-left"
+            >
+              <div className="flex items-center gap-1.5 font-semibold text-sm">
+                <RotateCcw className="w-4 h-4" />
+                <span>Book with the same details</span>
+              </div>
+              <span className="text-[11px] opacity-90 leading-tight">
+                Uses your last lesson’s subject, level, and preferences. You will choose a new date and time.
+              </span>
+            </button>
 
-      {/* Active reuse feedback banner */}
-      {isReusing && lastBookingSummary && (
-        <div className="p-3.5 rounded-2xl bg-[#8FAE9B]/15 border border-[#8FAE9B]/30 text-xs text-[#557161] dark:text-[#A8C9B4] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <Check className="w-4 h-4 text-[#557161] dark:text-[#A8C9B4] shrink-0" />
-            <span>
-              Reusing details from your last lesson: <strong>{lastBookingSummary.summaryText}</strong>. Choose your date &amp; time below, or edit any details.
-            </span>
+            <button
+              type="button"
+              id="btn-dismiss-reuse-booking"
+              onClick={handleDismissReuse}
+              className="w-full p-4 rounded-2xl bg-white dark:bg-[#2A2431] border border-[#D5D0CA] dark:border-[#3E3545] text-[#30332F] dark:text-[#F8F6F0] hover:bg-[#F5E6D3]/30 font-medium text-xs transition-all shadow-xs flex flex-col items-start gap-1 cursor-pointer text-left"
+            >
+              <div className="flex items-center gap-1.5 font-semibold text-sm">
+                <Sparkles className="w-4 h-4 text-[#8FAE9B]" />
+                <span>Make a new booking</span>
+              </div>
+              <span className="text-[11px] text-[#7A827B] dark:text-[#A69FA8] leading-tight">
+                Start fresh and choose lesson details again.
+              </span>
+            </button>
           </div>
-          <button
-            type="button"
-            id="btn-reset-reuse-booking"
-            onClick={handleResetToNewBooking}
-            className="text-xs font-medium underline hover:text-[#362E3B] dark:hover:text-white cursor-pointer self-start sm:self-auto"
-          >
-            Start fresh instead
-          </button>
+        </div>
+      ) : (
+        /* Detailed Booking Flow Container */
+        <div className="space-y-4">
+          {/* Active reuse feedback banner */}
+          {isReusing && lastBookingSummary && (
+            <div className="p-3.5 rounded-2xl bg-[#8FAE9B]/15 border border-[#8FAE9B]/30 text-xs text-[#557161] dark:text-[#A8C9B4] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <Check className="w-4 h-4 text-[#557161] dark:text-[#A8C9B4] shrink-0" />
+                <span>
+                  Reusing details from your last lesson: <strong>{lastBookingSummary.summaryText}</strong>. Choose your date &amp; time below, or edit any details.
+                </span>
+              </div>
+              <button
+                type="button"
+                id="btn-reset-reuse-booking"
+                onClick={handleResetToNewBooking}
+                className="text-xs font-medium underline hover:text-[#362E3B] dark:hover:text-white cursor-pointer self-start sm:self-auto"
+              >
+                Start fresh instead
+              </button>
+            </div>
+          )}
+
+          {/* Dismissed subtle helper: available if user changed their mind */}
+          {lastEligibleBooking && lastBookingSummary && reuseDismissed && !isReusing && (
+            <div className="flex items-center justify-between text-xs text-[#7A827B] dark:text-[#A69FA8] px-1">
+              <button
+                type="button"
+                id="btn-reopen-reuse-booking"
+                onClick={handleReuseLastBooking}
+                className="inline-flex items-center gap-1.5 font-medium text-[#557161] dark:text-[#A8C9B4] hover:underline cursor-pointer"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Reuse last lesson details ({lastBookingSummary.summaryText})</span>
+              </button>
+            </div>
+          )}
+
+          <BookingFlow
+            key={flowKey}
+            initialServiceId={currentServiceId}
+            initialMode={currentMode}
+            initialData={currentInitialData}
+            initialStep={flowStep}
+            trialDisabled={!canBookTrial}
+            trialDisabledReason={trialDisabledReason}
+            cardClassName="w-full bg-white dark:bg-[#231D28] text-[#362E3B] dark:text-[#D5D0CA] p-5 sm:p-8 rounded-3xl border border-[#D5D0CA]/40 dark:border-[#3E3545]/40 shadow-sm"
+            doneLabel="Done & Return to Student Portal"
+            onDone={() => navigate('/student')}
+            onClose={() => navigate('/student')}
+            lang="en"
+            isModalView={false}
+            linkedChildren={profile?.linkedChildren || []}
+            isAuthenticatedStudent={true}
+            bookingPreference={profile?.bookingPreference || 'self'}
+            canBookForChild={Boolean(profile?.canBookForChild && Array.isArray(profile?.linkedChildren) && profile.linkedChildren.length > 0)}
+            studentName={profile?.name}
+            studentEmail={profile?.email}
+          />
         </div>
       )}
-
-      {/* Embedded Booking Flow Container */}
-      <BookingFlow
-        key={flowKey}
-        initialServiceId={currentServiceId}
-        initialMode={currentMode}
-        initialData={currentInitialData}
-        initialStep={flowStep}
-        trialDisabled={!canBookTrial}
-        trialDisabledReason={trialDisabledReason}
-        cardClassName="w-full bg-white dark:bg-[#231D28] text-[#362E3B] dark:text-[#D5D0CA] p-5 sm:p-8 rounded-3xl border border-[#D5D0CA]/40 dark:border-[#3E3545]/40 shadow-sm"
-        doneLabel="Done & Return to Student Portal"
-        onDone={() => navigate('/student')}
-        onClose={() => navigate('/student')}
-        lang="en"
-        isModalView={false}
-        linkedChildren={profile?.linkedChildren || []}
-      />
     </div>
   );
 }
