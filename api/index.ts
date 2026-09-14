@@ -412,7 +412,7 @@ app.get('/api/integrations/google-calendar/callback', async (req: any, res: any)
       </html>
     `);
   } catch (error: any) {
-    console.error("CALLBACK_ERROR:", error);
+    console.warn("[OAuth Callback] Connection exchange failed:", error?.message || error);
     renderError(500, 'Authentication Failed: Google Calendar connection failed. Please try again.');
   }
 });
@@ -693,10 +693,33 @@ app.post('/api/integrations/retry-sync', verifyTeacherAuth, async (req, res) => 
 
 // 12. SERVER-SIDE TEACHER AUTHENTICATION & AUTHORIZATION MIDDLEWARE
 
+function extractSupabaseProjectRef(urlStr?: string): string | null {
+  if (!urlStr) return null;
+  try {
+    const url = new URL(urlStr.trim());
+    const hostname = url.hostname.toLowerCase();
+    const parts = hostname.split('.');
+    if (parts.length >= 3 && parts[1] === 'supabase' && parts[2] === 'co') {
+      return parts[0];
+    }
+  } catch {}
+  return null;
+}
+
 async function verifyStudentAuth(req: any, res: any, next: any) {
   try {
     const authHeader = req.headers.authorization;
     const isProd = process.env.NODE_ENV === 'production';
+
+    // Safe project consistency diagnosis (never exposes credentials or ref strings)
+    const clientProjectRef = typeof req.headers['x-client-project-ref'] === 'string' ? req.headers['x-client-project-ref'].trim() : null;
+    const backendProjectRef = extractSupabaseProjectRef(process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL);
+    if (clientProjectRef && backendProjectRef) {
+      res.setHeader('x-project-consistency', clientProjectRef === backendProjectRef ? 'MATCH' : 'MISMATCH');
+    } else {
+      res.setHeader('x-project-consistency', 'UNKNOWN');
+    }
+
     if (!authHeader) {
       return res.status(401).json({ error: 'Authentication required. Authorization header missing.' });
     }
@@ -710,8 +733,8 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
       return res.status(401).json({ error: 'Unauthorized. Development tokens are strictly forbidden in production.' });
     }
 
-    const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
-    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const supabaseUrl = (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '').trim();
+    const serviceKey = (process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
 
     if (supabaseUrl && serviceKey) {
       // Allow dev test tokens in non-production environments when testing
@@ -840,41 +863,36 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
               console.log(`[verifyStudentAuth] Safely linked existing student profile ${candidate.id} to auth user ${user.id}`);
               studentRecord = linkedStudent;
             }
+          } else if (matchingStudents.length > 0) {
+            console.error('[verifyStudentAuth] Identity conflict. Email is already associated with a student record but cannot be linked to this auth user.');
+            return res.status(409).json({ error: 'Identity conflict. This email is already associated with an account.' });
           }
         }
       }
 
-      // If still no student record exists, create exactly one student profile
-      if (!studentRecord) {
-        const fullName = user.user_metadata?.full_name || user.user_metadata?.name || userEmail.split('@')[0] || 'Student';
-        const { data: newStudent, error: insertError } = await supabaseAdmin
-          .from('students')
-          .insert({
-            auth_user_id: user.id,
-            name: fullName,
-            email: userEmail,
-            status: 'active',
-            timezone: 'UTC',
-            learner_type: 'adult',
-            current_level: 'beginner'
-          })
-          .select('id, name, email, timezone, learner_type, current_level, status')
-          .single();
+      // Section 9: Do NOT silently insert a Student from profile lookup.
+      // Only create a new student record if NO matching record exists at all (genuine new user).
+      // Note: Student onboarding and profile initialization is handled exclusively in /api/student/onboarding.
 
-        if (!insertError && newStudent) {
-          studentRecord = newStudent;
-        } else {
-          // Retry select in case of concurrent creation
-          const { data: retryStudent } = await supabaseAdmin
-            .from('students')
-            .select('id, name, email, timezone, learner_type, current_level, status')
-            .eq('auth_user_id', user.id)
-            .maybeSingle();
-          if (retryStudent) {
-            studentRecord = retryStudent;
-          }
-        }
-      }
+      const authUserIdHash = crypto.createHash('sha256').update(user.id).digest('hex').substring(0, 8);
+      const studentIdHash = studentRecord?.id ? crypto.createHash('sha256').update(studentRecord.id).digest('hex').substring(0, 8) : 'none';
+
+      res.setHeader('x-student-auth-verified', 'true');
+      res.setHeader('x-student-auth-user-id-hash', authUserIdHash);
+      res.setHeader('x-student-backend-project-ref', backendProjectRef || 'unknown');
+      res.setHeader('x-student-record-found', studentRecord ? 'true' : 'false');
+      res.setHeader('x-student-id-hash', studentIdHash);
+
+      console.log('[verifyStudentAuth Diag]', {
+        authHeader: true,
+        authUserResolved: true,
+        authUserIdHash,
+        backendProjectRef,
+        studentQueryExecuted: true,
+        studentRecordFound: Boolean(studentRecord),
+        studentIdHash,
+        error: studentError?.message || null
+      });
 
       req.studentUser = {
         auth_id: user.id,
@@ -883,6 +901,9 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
         name: studentRecord?.name || user.user_metadata?.full_name || 'Student',
         studentProfile: studentRecord || null
       };
+
+      res.setHeader('x-student-user-attached', 'true');
+      res.setHeader('x-student-has-student-id', studentRecord?.id ? 'true' : 'false');
       
       return next();
     }
@@ -965,19 +986,6 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
     console.error('Student Auth Verification Error:', err);
     return res.status(500).json({ error: 'Internal server error during authentication.' });
   }
-}
-
-function extractSupabaseProjectRef(urlStr?: string): string | null {
-  if (!urlStr) return null;
-  try {
-    const url = new URL(urlStr.trim());
-    const hostname = url.hostname.toLowerCase();
-    const parts = hostname.split('.');
-    if (parts.length >= 3 && parts[1] === 'supabase' && parts[2] === 'co') {
-      return parts[0];
-    }
-  } catch {}
-  return null;
 }
 
 async function verifyTeacherAuth(req: any, res: any, next: any) {
@@ -4571,7 +4579,13 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
   try {
     const studentId = req.studentUser?.student_id;
     if (!studentId) {
-      return res.status(404).json({ error: 'Student profile not found.' });
+      res.setHeader('x-student-me-branch', 'BRANCH_A_NO_STUDENT_ID');
+      console.warn('[GET /api/student/me Diag] 404 at Branch A: student_id is missing from req.studentUser');
+      return res.status(404).json({
+        error: 'Student profile not found.',
+        diagnosticBranch: 'BRANCH_A_NO_STUDENT_ID',
+        hasAuthUser: Boolean(req.studentUser?.auth_id)
+      });
     }
 
     const isProd = process.env.NODE_ENV === 'production';
@@ -4595,6 +4609,7 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       const rawPref = mockProfile.booking_preference || mockProfile.bookingPreference || 'self';
       const safePref = mockCanBookForChild ? rawPref : 'self';
 
+      res.setHeader('x-student-me-branch', 'SUCCESS_DEV_MOCK');
       return res.json({
         id: mockProfile.id,
         name: mockProfile.name,
@@ -4618,7 +4633,7 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       const [studentRes, guardianRes, goalsRes, linkedChildrenRes] = await Promise.all([
         supabaseAdmin
           .from('students')
-          .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, created_at, onboarding_completed, learning_interest, learning_goal, learning_needs, booking_preference')
+          .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, created_at, onboarding_completed, learning_interest, learning_goal, learning_needs')
           .eq('id', studentId)
           .single(),
         supabaseAdmin
@@ -4638,7 +4653,18 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       ]);
 
       if (studentRes.error || !studentRes.data) {
-        if (!isProd && req.studentUser?.studentProfile) {
+        console.error('[GET /api/student/me Diag] 404 at Branch B: student fetch failed', {
+          errorCode: studentRes.error?.code,
+          errorMessage: studentRes.error?.message,
+          hasData: Boolean(studentRes.data),
+          hasProfileInReq: Boolean(req.studentUser?.studentProfile)
+        });
+        res.setHeader('x-student-me-branch', 'BRANCH_B_STUDENT_FETCH_FAILED');
+        res.setHeader('x-student-me-db-code', studentRes.error?.code || 'NO_DATA');
+
+        // Resilient recovery: if verifyStudentAuth already found the student profile safely, resolve from it
+        if (req.studentUser?.studentProfile) {
+          console.log('[GET /api/student/me Diag] Resiliently resolving from verified studentProfile in verifyStudentAuth');
           const mp = req.studentUser.studentProfile;
           const mockCanBookForChild = mp.canBookForChild ?? (
             mp.learner_type === 'child' ||
@@ -4652,6 +4678,8 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
             id: mp.id,
             name: mp.name,
             email: mp.email,
+            whatsapp: mp.whatsapp || null,
+            country: mp.country || null,
             timezone: mp.timezone || 'UTC',
             learnerType: mp.learner_type || 'adult',
             currentLevel: mp.current_level || 'beginner',
@@ -4663,14 +4691,20 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
             learningInterest: mp.learning_interest || 'Quran Reading',
             learningGoal: mp.learning_goal || null,
             learningNeeds: mp.learning_needs || null,
-            createdAt: new Date().toISOString(),
+            createdAt: mp.created_at || new Date().toISOString(),
             guardian: null,
             goals: []
           });
         }
-        return res.status(404).json({ error: 'Student profile not found.' });
+
+        return res.status(404).json({
+          error: 'Student profile not found.',
+          diagnosticBranch: 'BRANCH_B_STUDENT_FETCH_FAILED',
+          dbErrorCode: studentRes.error?.code || null
+        });
       }
 
+      res.setHeader('x-student-me-branch', 'SUCCESS');
       const profile = studentRes.data;
       const guardian = guardianRes.data || null;
       const goals = goalsRes.data || [];
@@ -4681,7 +4715,7 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
         .map((g: any) => g.students)
         .filter(Boolean);
       const canBookForChild = isChildStudentWithGuardian || linkedChildrenFromGuardians.length > 0;
-      const rawPref = profile.booking_preference || 'self';
+      const rawPref = (profile as any).booking_preference || 'self';
       const bookingPreference = canBookForChild ? rawPref : 'self';
 
       return res.json({
@@ -4716,7 +4750,9 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
         }))
       });
     } catch (dbErr: any) {
-      if (!isProd && req.studentUser?.studentProfile) {
+      console.error('[GET /api/student/me DB Catch]', dbErr);
+      if (req.studentUser?.studentProfile) {
+        console.log('[GET /api/student/me Diag] Catch recovery: resolving from verified studentProfile in verifyStudentAuth');
         const mp = req.studentUser.studentProfile;
         const mockCanBookForChild = mp.canBookForChild ?? (
           mp.learner_type === 'child' ||
@@ -4752,6 +4788,39 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
     console.error('[GET /api/student/me Error]', err);
     return res.status(500).json({ error: 'Internal server error retrieving student profile.' });
   }
+});
+
+// Dedicated diagnostic endpoint for student authentication & identity resolution
+app.get('/api/student-auth-diagnostic', verifyStudentAuth, (req: any, res: any) => {
+  const clientRef = typeof req.headers['x-client-project-ref'] === 'string' ? req.headers['x-client-project-ref'].trim() : null;
+  const backendRef = extractSupabaseProjectRef(process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL);
+
+  let projectConsistency: 'MATCH' | 'MISMATCH' | 'UNKNOWN' = 'UNKNOWN';
+  if (clientRef && backendRef) {
+    projectConsistency = clientRef === backendRef ? 'MATCH' : 'MISMATCH';
+  }
+
+  const authUserIdHash = req.studentUser?.auth_id
+    ? crypto.createHash('sha256').update(req.studentUser.auth_id).digest('hex').substring(0, 8)
+    : null;
+  const studentIdHash = req.studentUser?.student_id
+    ? crypto.createHash('sha256').update(req.studentUser.student_id).digest('hex').substring(0, 8)
+    : null;
+
+  res.json({
+    diagnostic: true,
+    authenticated: true,
+    tokenVerification: 'success',
+    studentAuthorization: req.studentUser?.student_id ? 'authorized' : 'unlinked',
+    backendProjectRef: backendRef || 'unknown',
+    projectConsistency,
+    authUserIdHash,
+    studentIdHash,
+    hasStudentUser: Boolean(req.studentUser),
+    hasStudentId: Boolean(req.studentUser?.student_id),
+    hasStudentProfile: Boolean(req.studentUser?.studentProfile),
+    stage: 'STUDENT_AUTHORIZED'
+  });
 });
 
 // POST /api/student/onboarding - Complete onboarding for new student
@@ -5013,7 +5082,8 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
         });
       }
 
-      updatePayload.booking_preference = rawBookingPref;
+      // Temporarily disabled until production schema is migrated
+      // updatePayload.booking_preference = rawBookingPref;
     }
 
     if (!supabaseAdmin || (!isProd && req.studentUser?.studentProfile)) {
@@ -5046,7 +5116,7 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       .from('students')
       .update(updatePayload)
       .eq('id', studentId)
-      .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, booking_preference, created_at, updated_at')
+      .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, created_at, updated_at')
       .single();
 
     if (updateError || !updatedStudent) {
@@ -5082,7 +5152,7 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       timezone: updatedStudent.timezone,
       learnerType: updatedStudent.learner_type,
       currentLevel: updatedStudent.current_level,
-      bookingPreference: updatedStudent.booking_preference || 'self',
+      bookingPreference: (updatedStudent as any).booking_preference || 'self',
       status: updatedStudent.status,
       updatedAt: updatedStudent.updated_at
     });

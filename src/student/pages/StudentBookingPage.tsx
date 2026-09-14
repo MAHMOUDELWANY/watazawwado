@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useNavigate, useLocation, useSearchParams, Link } from 'react-router-dom';
 import { ArrowLeft, Loader2, AlertCircle, ShieldCheck, RefreshCw, RotateCcw, Check } from 'lucide-react';
 import { BookingFlow } from '../../components/booking/BookingFlow';
 import { BOOKING_SERVICES } from '../../booking/mockData';
@@ -450,6 +450,8 @@ export function mapStudentProfileToBookingInitialData(
 
 export default function StudentBookingPage({ profile: initialProfile, session: propSession }: StudentBookingPageProps) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
   const auth = useTeacherAuth();
   const activeSession = propSession || auth.session;
   // Authenticated Student booking flow must strictly use the session supplied by the auth architecture
@@ -655,7 +657,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
     initialMode: BookingMode;
   } | null>(null);
 
-  const handleReuseLastBooking = () => {
+  const handleReuseLastBooking = useCallback(() => {
     if (!lastEligibleBooking) return;
     const reused = mapLastBookingToBookingFormData(lastEligibleBooking, profile, canBookTrial);
     setActiveConfig({
@@ -666,7 +668,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
     setFlowStep(5);
     setIsReusing(true);
     setFlowKey((k) => k + 1);
-  };
+  }, [lastEligibleBooking, profile, canBookTrial]);
 
   const handleDismissReuse = () => {
     setReuseDismissed(true);
@@ -674,6 +676,9 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
     setActiveConfig(null);
     setFlowStep(1);
     setFlowKey((k) => k + 1);
+    if (searchParams.get('repeat') === 'true') {
+      navigate('/student/book', { replace: true });
+    }
   };
 
   const handleResetToNewBooking = () => {
@@ -681,10 +686,30 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
     setActiveConfig(null);
     setFlowStep(1);
     setFlowKey((k) => k + 1);
+    if (searchParams.get('repeat') === 'true') {
+      navigate('/student/book', { replace: true });
+    }
   };
 
+  // Deep-linking: auto-trigger repeat workflow if requested via query param (?repeat=true) or location state ({ repeat: true })
+  const autoTriggeredRepeatRef = useRef(false);
+  useEffect(() => {
+    if (autoTriggeredRepeatRef.current) return;
+    const wantsRepeat = searchParams.get('repeat') === 'true' || (location.state as any)?.repeat === true;
+    if (wantsRepeat && lastEligibleBooking && !reuseDismissed && !isReusing) {
+      autoTriggeredRepeatRef.current = true;
+      handleReuseLastBooking();
+    }
+  }, [searchParams, location.state, lastEligibleBooking, reuseDismissed, isReusing, handleReuseLastBooking]);
+
+  // Support direct service parameter if not in active reuse mode (e.g. /student/book?service=tajweed)
+  const requestedServiceId = searchParams.get('service');
+  const matchedQueryServiceId = requestedServiceId && BOOKING_SERVICES.some((s) => s.id === requestedServiceId)
+    ? requestedServiceId
+    : standardServiceId;
+
   const currentInitialData = activeConfig ? activeConfig.initialData : standardInitialData;
-  const currentServiceId = activeConfig ? activeConfig.matchedServiceId : standardServiceId;
+  const currentServiceId = activeConfig ? activeConfig.matchedServiceId : matchedQueryServiceId;
   const currentMode = activeConfig ? activeConfig.initialMode : standardMode;
 
   return (

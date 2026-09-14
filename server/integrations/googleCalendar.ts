@@ -53,6 +53,13 @@ export function sanitizeGoogleAuthCode(rawCode: unknown): string {
   if (!rawCode) return '';
   let code = Array.isArray(rawCode) ? String(rawCode[0] || '') : String(rawCode);
   code = code.trim();
+  // If a full callback URL was provided accidentally, extract the code query param
+  if (code.includes('code=')) {
+    const match = code.match(/[?&]code=([^&#]+)/);
+    if (match && match[1]) {
+      code = match[1];
+    }
+  }
   // Strip fragment identifier or unexpected trailing parameters (e.g. # or &)
   code = code.split('#')[0].split('&')[0].trim();
   // Strip any accidental wrapping quotes
@@ -218,9 +225,10 @@ export async function exchangeGoogleCodeForTokens(code: string, customRedirectUr
 
         if (!response.ok) {
           const errText = await response.text();
-          // If candidate failed with invalid_grant or redirect_uri_mismatch and there is another candidate, try next
-          if ((errText.includes('invalid_grant') || errText.includes('redirect_uri_mismatch')) && i < candidates.length - 1) {
-            console.warn(`[Google OAuth] Token exchange with redirect_uri "${currentRedirectUri}" failed. Trying candidate "${candidates[i + 1]}".`);
+          const isRedirectMismatch = errText.includes('redirect_uri_mismatch') || (errText.includes('invalid_grant') && errText.toLowerCase().includes('redirect_uri'));
+          const isMalformedCode = errText.includes('Malformed auth code') || errText.includes('malformed');
+          if (isRedirectMismatch && !isMalformedCode && i < candidates.length - 1) {
+            console.warn(`[Google OAuth] Token exchange with redirect_uri "${currentRedirectUri}" failed (${response.status}). Trying candidate "${candidates[i + 1]}".`);
             lastError = new Error(`Google token exchange failed (${response.status}): ${errText}`);
             continue;
           }

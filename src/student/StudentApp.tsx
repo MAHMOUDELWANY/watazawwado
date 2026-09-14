@@ -151,7 +151,6 @@ export default function StudentApp() {
   const navItems = [
     { name: 'Home & Schedule', path: '/student', icon: BookOpen },
     { name: 'Profile & Goals', path: '/student/profile', icon: User },
-    { name: 'Interactive Demo', path: '/student/demo', icon: Sparkles },
   ];
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);

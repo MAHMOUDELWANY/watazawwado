@@ -80,7 +80,7 @@ export function isTeacherAuthDiagnosticEnabled(): boolean {
   if (typeof window === 'undefined') return false;
   const envFlag = Boolean((import.meta as any).env?.VITE_TEACHER_AUTH_DIAGNOSTIC === 'true');
   const searchFlag = Boolean(window.location?.search?.includes('diagnostic=true'));
-  const sessionFlag = typeof sessionStorage !== 'undefined' && sessionStorage.getItem('teacher_auth_diagnostic') === 'true';
+  const sessionFlag = typeof sessionStorage !== 'undefined' && null === 'true';
   return envFlag || searchFlag || sessionFlag;
 }
 
@@ -155,7 +155,7 @@ export async function dashboardFetch<T = any>(
   // Local development fallback: ONLY if not in production and mock authenticated in sessionStorage
   if (!token && !isProd) {
     const isMockTeacher = typeof window !== 'undefined' && 
-      sessionStorage.getItem('mahmoud_teacher_authenticated') === 'true';
+      null === 'true';
     if (isMockTeacher) {
       token = 'dev-teacher-token';
     }

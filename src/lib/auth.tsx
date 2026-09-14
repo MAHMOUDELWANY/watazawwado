@@ -49,7 +49,7 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
         setLoading(false);
         return;
       }
-      const mockTeacher = sessionStorage.getItem('mahmoud_teacher_authenticated');
+      const mockTeacher = null;
       if (mockTeacher === 'true') {
         const mockEmail = 'mhmwdlwany4222@gmail.com';
         setUser({
@@ -102,7 +102,7 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
       console.warn('[Development] Authenticating with local development mock.');
       
       if (APPROVED_TEACHER_EMAILS.includes(normalizedEmail)) {
-        sessionStorage.setItem('mahmoud_teacher_authenticated', 'true');
+        
         setUser({
           id: 'teacher-mahmoud-001',
           email: normalizedEmail,
@@ -114,7 +114,7 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
         setUserRole('teacher');
         return { success: true };
       } else {
-        sessionStorage.setItem('student_authenticated', 'true');
+        
         setUser({
           id: 'student-mock-001',
           email: normalizedEmail,
@@ -217,8 +217,8 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
     if (isConfigured) {
       await supabase.auth.signOut();
     }
-    sessionStorage.removeItem('mahmoud_teacher_authenticated');
-    sessionStorage.removeItem('student_authenticated');
+    
+    
     setUser(null);
     setSession(null);
     setUserRole(null);

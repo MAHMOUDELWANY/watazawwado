@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, UserCircle, Target, Book, Sparkles, Calendar, Clock, Video, Plus } from 'lucide-react';
+import { BookOpen, UserCircle, Target, Book, Sparkles, Calendar, Clock, Video, Plus, RotateCcw } from 'lucide-react';
 import { useTeacherAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
 import { DateTime } from 'luxon';
+import { findLastEligibleBooking, formatLastBookingSummary } from './StudentBookingPage';
 
 export default function StudentHomePage() {
   const { user, session } = useTeacherAuth();
@@ -53,6 +54,12 @@ export default function StudentHomePage() {
 
   const upcomingBookings = bookings.filter(b => b.status === 'confirmed' || b.status === 'pending');
   const nextBooking = upcomingBookings.length > 0 ? upcomingBookings[0] : null;
+  const lastEligibleBooking = findLastEligibleBooking(bookings);
+  const lastBookingSummary = lastEligibleBooking ? formatLastBookingSummary(lastEligibleBooking, profile) : null;
+
+  // Validate Zoom meeting link: never treat 'pending' or malformed strings as valid web URLs
+  const rawZoom = (nextBooking?.zoomMeetingLink || nextBooking?.zoom_join_url || '').trim();
+  const hasValidZoomUrl = Boolean(rawZoom && (rawZoom.startsWith('https://') || rawZoom.startsWith('http://')));
 
   return (
     <div className="space-y-6">
@@ -106,9 +113,9 @@ export default function StudentHomePage() {
                   </span>
                 </div>
               </div>
-              {(nextBooking.zoomMeetingLink || nextBooking.zoom_join_url) ? (
+              {hasValidZoomUrl ? (
                 <a 
-                  href={nextBooking.zoomMeetingLink || nextBooking.zoom_join_url}
+                  href={rawZoom}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full flex items-center justify-center gap-2 py-2.5 bg-[#8FAE9B] hover:bg-[#6F907D] text-white rounded-xl text-sm font-medium transition-colors"
@@ -121,19 +128,75 @@ export default function StudentHomePage() {
                   Meeting link will appear soon
                 </div>
               )}
-              <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 flex justify-between items-center text-xs">
-                <span className="opacity-70">Need another session?</span>
+              {lastEligibleBooking ? (
+                <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-xs">
+                  <span className="opacity-70">Schedule another session:</span>
+                  <div className="flex items-center gap-2">
+                    <Link
+                      id="link-home-repeat-lesson"
+                      to="/student/book?repeat=true"
+                      className="font-medium text-[#6F907D] dark:text-[#8FAE9B] hover:underline flex items-center gap-1"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                      <span>Repeat topic ({lastBookingSummary?.durationText})</span>
+                    </Link>
+                    <span className="opacity-30">•</span>
+                    <Link
+                      to="/student/book"
+                      className="text-[#7A827B] dark:text-[#A69FA8] hover:underline"
+                    >
+                      New topic →
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 flex justify-between items-center text-xs">
+                  <span className="opacity-70">Need another session?</span>
+                  <Link
+                    to="/student/book"
+                    className="font-medium text-[#6F907D] dark:text-[#8FAE9B] hover:underline"
+                  >
+                    Book another lesson →
+                  </Link>
+                </div>
+              )}
+            </div>
+          ) : lastEligibleBooking ? (
+            <div className="py-2 space-y-3">
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-[#557161] dark:text-[#A8C9B4]">
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Ready for your next session</span>
+              </div>
+              <div>
+                <h4 className="font-medium text-lg text-[#362E3B] dark:text-[#F5E6D3]">
+                  {lastBookingSummary?.serviceTitle || 'Continue Your Learning'}
+                </h4>
+                <p className="text-xs text-[#7A827B] dark:text-[#A69FA8] mt-0.5">
+                  {lastBookingSummary?.summaryText ? `Last lesson: ${lastBookingSummary.summaryText}` : 'Continue from where you left off with Ustadh Mahmoud.'}
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-2 pt-2">
                 <Link
-                  to="/student/book"
-                  className="font-medium text-[#6F907D] dark:text-[#8FAE9B] hover:underline"
+                  id="btn-home-repeat-lesson"
+                  to="/student/book?repeat=true"
+                  className="flex-1 inline-flex items-center justify-center gap-2 py-2.5 px-4 bg-[#8FAE9B] hover:bg-[#6F907D] text-white rounded-xl text-xs sm:text-sm font-medium transition-colors shadow-xs"
                 >
-                  Book another lesson →
+                  <RotateCcw className="w-4 h-4" />
+                  <span>Repeat Last Lesson</span>
+                </Link>
+                <Link
+                  id="btn-home-book-different"
+                  to="/student/book"
+                  className="inline-flex items-center justify-center py-2.5 px-4 bg-[#FAF8F5] dark:bg-[#382F42] hover:bg-[#F2EFE9] dark:hover:bg-[#43394F] text-[#30332F] dark:text-[#F8F6F0] border border-[#E2DDD5] dark:border-[#473D50] rounded-xl text-xs sm:text-sm font-medium transition-colors"
+                >
+                  <span>Explore Topics</span>
                 </Link>
               </div>
             </div>
           ) : (
             <div className="text-center py-6">
-              <p className="text-sm opacity-60 mb-4">Your learning journey will appear here after your first booking.</p>
+              <p className="text-sm opacity-60 mb-4">Welcome to your student portal. Schedule your first lesson or trial with Ustadh Mahmoud.</p>
               <Link 
                 to="/student/book"
                 className="inline-flex px-4 py-2 bg-[#8FAE9B] hover:bg-[#6F907D] text-white rounded-xl text-sm font-medium transition-colors"
@@ -155,17 +218,38 @@ export default function StudentHomePage() {
           <div className="py-2 max-h-[220px] overflow-y-auto">
             {bookings.length > 0 ? (
               <ul className="space-y-3">
-                {bookings.map(b => (
-                  <li key={b.id} className="flex justify-between items-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50">
-                    <div>
-                      <div className="text-sm font-medium">{b.serviceTitle || b.services?.title || 'Lesson'}</div>
-                      <div className="text-xs opacity-60">{DateTime.fromISO(b.scheduledStart || b.lesson_date).toLocaleString(DateTime.DATE_MED)}</div>
-                    </div>
-                    <div className="text-xs capitalize font-medium px-2 py-1 rounded bg-white dark:bg-stone-700 shadow-sm border border-stone-100 dark:border-stone-600">
-                      {b.status}
-                    </div>
-                  </li>
-                ))}
+                {bookings.map(b => {
+                  const isRepeatable = b.status === 'completed' || b.status === 'confirmed';
+                  const bServiceId = b.serviceId || b.service_id || '';
+                  return (
+                    <li key={b.id} className="flex justify-between items-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50">
+                      <div>
+                        <div className="text-sm font-medium text-[#30332F] dark:text-[#F8F6F0]">
+                          {b.serviceTitle || b.services?.title || 'Lesson'}
+                        </div>
+                        <div className="text-xs opacity-60">
+                          {DateTime.fromISO(b.scheduledStart || b.lesson_date).toLocaleString(DateTime.DATE_MED)}
+                          {b.durationMinutes || b.duration ? ` • ${b.durationMinutes || b.duration} min` : ''}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs capitalize font-medium px-2 py-1 rounded bg-white dark:bg-stone-700 shadow-xs border border-stone-100 dark:border-stone-600">
+                          {b.status}
+                        </span>
+                        {isRepeatable && (
+                          <Link
+                            id={`btn-repeat-history-${b.id}`}
+                            to={`/student/book?repeat=true${bServiceId ? `&service=${bServiceId}` : ''}`}
+                            className="p-1.5 rounded-lg text-[#557161] hover:bg-[#8FAE9B]/15 dark:text-[#A8C9B4] transition-colors"
+                            title="Repeat this lesson topic"
+                          >
+                            <RotateCcw className="w-3.5 h-3.5" />
+                          </Link>
+                        )}
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             ) : (
               <div className="text-center py-6">
