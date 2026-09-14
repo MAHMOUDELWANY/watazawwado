@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { User, Mail, Globe, Phone, Clock, Target, Users, CheckCircle2, AlertCircle, Loader2, Sparkles, Terminal, ShieldCheck, Copy, Check } from 'lucide-react';
+import { User, Mail, Globe, Phone, Clock, Target, Users, CheckCircle2, AlertCircle, Loader2, Sparkles, Terminal, ShieldCheck, Copy, Check, Activity } from 'lucide-react';
 import { useTeacherAuth } from '../../lib/auth';
 
 export interface StudentProfilePageProps {
@@ -110,6 +110,95 @@ export default function StudentProfilePage({
     navigator.clipboard.writeText(JSON.stringify(diagResult, null, 2));
     setCopiedDiag(true);
     setTimeout(() => setCopiedDiag(false), 2000);
+  };
+
+  // Temporary /api/student/me Endpoint Probe State (Task 0.58-D)
+  const [probeRunning, setProbeRunning] = useState(false);
+  const [probeResult, setProbeResult] = useState<any | null>(null);
+  const [probeError, setProbeError] = useState<string | null>(null);
+  const [copiedProbe, setCopiedProbe] = useState(false);
+
+  const redactId = (id?: string | null): string => {
+    if (!id) return 'none';
+    if (id.length <= 8) return id;
+    return `${id.slice(0, 4)}...${id.slice(-4)}`;
+  };
+
+  const probeStudentMe = async () => {
+    setProbeRunning(true);
+    setProbeError(null);
+    setProbeResult(null);
+    setCopiedProbe(false);
+
+    try {
+      const token = effectiveSession?.access_token;
+      if (!token) {
+        throw new Error('Authentication required. Active Supabase session token is missing.');
+      }
+
+      const res = await fetch('/api/student/me', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      const status = res.status;
+      let rawData: any = null;
+      try {
+        rawData = await res.json();
+      } catch {
+        rawData = { rawText: 'Non-JSON response' };
+      }
+
+      const keys = rawData && typeof rawData === 'object' && !Array.isArray(rawData) ? Object.keys(rawData) : [];
+
+      const safeOutput: any = {
+        httpStatus: status,
+        request: 'GET /api/student/me',
+        authenticatedSessionPresent: 'YES',
+        responseStatus: status === 200 ? 'OK' : status === 404 ? 'NOT_FOUND' : 'ERROR',
+        responseKeys: keys,
+        diagHeaders: {
+          'x-student-me-branch': res.headers.get('x-student-me-branch'),
+          'x-student-auth-verified': res.headers.get('x-student-auth-verified'),
+          'x-student-record-found': res.headers.get('x-student-record-found'),
+          'x-student-has-student-id': res.headers.get('x-student-has-student-id'),
+          'x-student-me-db-code': res.headers.get('x-student-me-db-code')
+        },
+        timestamp: new Date().toISOString()
+      };
+
+      if (status === 200) {
+        const studentObj = rawData?.student || rawData;
+        safeOutput.hasStudent = Boolean(rawData?.student || rawData?.id);
+        safeOutput.hasGuardians = Boolean(rawData?.guardians || rawData?.guardian);
+        safeOutput.hasGoals = Boolean(rawData?.goals);
+        safeOutput.hasLinkedChildren = Boolean(rawData?.linkedChildren);
+        safeOutput.studentId = redactId(rawData?.id || rawData?.student?.id);
+        safeOutput.learnerType = studentObj?.learner_type || studentObj?.learnerType || 'unknown';
+        safeOutput.currentLevel = studentObj?.current_level || studentObj?.currentLevel || 'unknown';
+        safeOutput.status = studentObj?.status || 'unknown';
+        safeOutput.bookingPreference = studentObj?.booking_preference || studentObj?.bookingPreference || 'unknown';
+      } else {
+        // EXACT JSON body captured on 404 or any other error (Section 4 requirement)
+        safeOutput.exactBody = rawData;
+        safeOutput.safeError = rawData?.error || `Request returned HTTP ${status}`;
+      }
+
+      setProbeResult(safeOutput);
+    } catch (err: any) {
+      setProbeError(err.message || 'Error executing /api/student/me probe.');
+    } finally {
+      setProbeRunning(false);
+    }
+  };
+
+  const copyProbeResult = () => {
+    if (!probeResult) return;
+    navigator.clipboard.writeText(JSON.stringify(probeResult, null, 2));
+    setCopiedProbe(true);
+    setTimeout(() => setCopiedProbe(false), 2000);
   };
 
   const canBookForChild = Boolean(profile?.canBookForChild);
@@ -628,6 +717,149 @@ export default function StudentProfilePage({
                   </div>
                   <pre className="p-2.5 rounded-xl bg-[#1D1822] text-[#F8F6F0] font-mono text-[10px] overflow-x-auto max-h-40 border border-[#3E3545]">
                     {JSON.stringify(diagResult, null, 2)}
+                  </pre>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Temporary /api/student/me Endpoint Probe Card (Task 0.58-D) */}
+          <div className="bg-white dark:bg-[#251F2C] border border-[#E2DDD5] dark:border-[#3E3545] rounded-3xl p-6 shadow-xs" id="student-me-probe-card">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-serif font-bold flex items-center gap-2">
+                <Activity className="w-4 h-4 text-[#8FAE9B]" />
+                Endpoint Probe (/me)
+              </h3>
+              <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-[#8FAE9B]/10 text-[#6F907D] dark:text-[#8FAE9B] font-semibold">
+                Task 0.58-D
+              </span>
+            </div>
+
+            <p className="text-xs text-[#7A827B] dark:text-[#A69FA8] mb-4">
+              Direct probe against <code className="text-[11px] font-mono text-[#30332F] dark:text-[#F8F6F0]">GET /api/student/me</code> using active Supabase session token.
+            </p>
+
+            <button
+              id="btn-probe-student-me"
+              type="button"
+              onClick={probeStudentMe}
+              disabled={probeRunning}
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#8FAE9B]/15 hover:bg-[#8FAE9B]/25 text-[#30332F] dark:text-[#F8F6F0] border border-[#8FAE9B]/30 rounded-xl text-xs font-medium transition-colors disabled:opacity-50 cursor-pointer"
+            >
+              {probeRunning ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  Probing /api/student/me...
+                </>
+              ) : (
+                <>
+                  <Activity className="w-3.5 h-3.5 text-[#6F907D] dark:text-[#8FAE9B]" />
+                  Probe Student /me
+                </>
+              )}
+            </button>
+
+            {probeError && (
+              <div className="mt-3 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <span>{probeError}</span>
+              </div>
+            )}
+
+            {probeResult && (
+              <div className="mt-4 pt-3 border-t border-[#E2DDD5]/60 dark:border-[#3E3545]/60 space-y-2.5 text-xs" id="student-me-probe-results">
+                <div className="flex items-center justify-between">
+                  <span className="text-[#7A827B] dark:text-[#A69FA8]">HTTP Status</span>
+                  <span className={`font-mono font-bold text-sm ${probeResult.httpStatus === 200 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
+                    {probeResult.httpStatus}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-[#7A827B] dark:text-[#A69FA8]">Request</span>
+                  <span className="font-mono text-[11px] text-[#30332F] dark:text-[#F8F6F0]">
+                    {probeResult.request}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-[#7A827B] dark:text-[#A69FA8]">Session Present</span>
+                  <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                    {probeResult.authenticatedSessionPresent}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-[#7A827B] dark:text-[#A69FA8]">Response Status</span>
+                  <span className="font-mono text-[11px] font-semibold text-[#30332F] dark:text-[#F8F6F0]">
+                    {probeResult.responseStatus}
+                  </span>
+                </div>
+
+                {probeResult.diagHeaders && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#7A827B] dark:text-[#A69FA8]">Branch Header</span>
+                    <span className="font-mono text-[11px] text-[#6F907D] dark:text-[#8FAE9B]">
+                      {probeResult.diagHeaders['x-student-me-branch'] || 'none'}
+                    </span>
+                  </div>
+                )}
+
+                {probeResult.httpStatus === 200 ? (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#7A827B] dark:text-[#A69FA8]">Student ID</span>
+                      <span className="font-mono text-[11px] text-[#30332F] dark:text-[#F8F6F0]">
+                        {probeResult.studentId}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#7A827B] dark:text-[#A69FA8]">Response Keys</span>
+                      <span className="font-mono text-[10px] text-[#7A827B] dark:text-[#A69FA8]">
+                        {probeResult.responseKeys?.join(', ')}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className="text-[#7A827B] dark:text-[#A69FA8]">Payload Flags</span>
+                      <span className="font-mono text-[10px] text-[#30332F] dark:text-[#F8F6F0]">
+                        {`student:${probeResult.hasStudent} guardians:${probeResult.hasGuardians} goals:${probeResult.hasGoals}`}
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#7A827B] dark:text-[#A69FA8]">Safe Error</span>
+                    <span className="font-semibold text-red-600 dark:text-red-400">
+                      {probeResult.safeError}
+                    </span>
+                  </div>
+                )}
+
+                <div className="pt-2">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[11px] text-[#7A827B] dark:text-[#A69FA8]">
+                      {probeResult.httpStatus === 404 ? 'Exact 404 Body' : 'Safe Output'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={copyProbeResult}
+                      className="text-[11px] text-[#6F907D] dark:text-[#8FAE9B] hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      {copiedProbe ? (
+                        <>
+                          <Check className="w-3 h-3 text-emerald-500" />
+                          <span>Copied</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3 h-3" />
+                          <span>Copy JSON</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <pre className="p-2.5 rounded-xl bg-[#1D1822] text-[#F8F6F0] font-mono text-[10px] overflow-x-auto max-h-40 border border-[#3E3545]">
+                    {JSON.stringify(probeResult, null, 2)}
                   </pre>
                 </div>
               </div>
