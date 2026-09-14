@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { User, Mail, Globe, Phone, Clock, Target, Users, CheckCircle2, AlertCircle, Loader2, Sparkles } from 'lucide-react';
+import { User, Mail, Globe, Phone, Clock, Target, Users, CheckCircle2, AlertCircle, Loader2, Sparkles, Terminal, ShieldCheck, Copy, Check } from 'lucide-react';
 import { useTeacherAuth } from '../../lib/auth';
 
 export interface StudentProfilePageProps {
@@ -32,6 +32,85 @@ export default function StudentProfilePage({
   const [bookingPreference, setBookingPreference] = useState<'self' | 'child'>(
     initialProfile?.bookingPreference || initialProfile?.booking_preference || 'self'
   );
+
+  // Temporary Authenticated Diagnostic State (Task 0.58-C1)
+  const [diagRunning, setDiagRunning] = useState(false);
+  const [diagResult, setDiagResult] = useState<any | null>(null);
+  const [diagError, setDiagError] = useState<string | null>(null);
+  const [copiedDiag, setCopiedDiag] = useState(false);
+
+  const runIdentityDiagnostic = async () => {
+    setDiagRunning(true);
+    setDiagError(null);
+    setDiagResult(null);
+    setCopiedDiag(false);
+
+    try {
+      const token = effectiveSession?.access_token;
+      if (!token) {
+        throw new Error('Authentication required. Active Supabase session token is missing.');
+      }
+
+      // Safe client project ref extraction
+      const envUrl = (import.meta as any).env?.VITE_SUPABASE_URL || '';
+      let clientRef = '';
+      try {
+        if (envUrl) {
+          const u = new URL(envUrl);
+          const parts = u.hostname.toLowerCase().split('.');
+          if (parts.length >= 3 && parts[1] === 'supabase' && parts[2] === 'co') {
+            clientRef = parts[0];
+          }
+        }
+      } catch {}
+
+      const headers: Record<string, string> = {
+        Authorization: `Bearer ${token}`
+      };
+      if (clientRef) {
+        headers['x-client-project-ref'] = clientRef;
+      }
+
+      const res = await fetch('/api/student-auth-diagnostic', {
+        method: 'GET',
+        headers
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || `Diagnostic request failed with status ${res.status}`);
+      }
+
+      // Safe sanitized result (never storing or rendering raw tokens)
+      const safeData = {
+        authenticated: Boolean(data.authenticated),
+        tokenVerification: data.tokenVerification || 'unknown',
+        studentAuthorization: data.studentAuthorization || 'unknown',
+        backendProjectRef: data.backendProjectRef || 'unknown',
+        projectConsistency: data.projectConsistency || 'UNKNOWN',
+        authUserIdHash: data.authUserIdHash || 'none',
+        studentIdHash: data.studentIdHash || 'none',
+        hasStudentUser: Boolean(data.hasStudentUser),
+        hasStudentId: Boolean(data.hasStudentId),
+        hasStudentProfile: Boolean(data.hasStudentProfile),
+        stage: data.stage || 'UNKNOWN',
+        timestamp: new Date().toISOString()
+      };
+
+      setDiagResult(safeData);
+    } catch (err: any) {
+      setDiagError(err.message || 'Error running identity diagnostic probe.');
+    } finally {
+      setDiagRunning(false);
+    }
+  };
+
+  const copyDiagnosticResult = () => {
+    if (!diagResult) return;
+    navigator.clipboard.writeText(JSON.stringify(diagResult, null, 2));
+    setCopiedDiag(true);
+    setTimeout(() => setCopiedDiag(false), 2000);
+  };
 
   const canBookForChild = Boolean(profile?.canBookForChild);
   const linkedChildren = Array.isArray(profile?.linkedChildren) ? profile.linkedChildren : [];
@@ -425,6 +504,135 @@ export default function StudentProfilePage({
               </div>
             </div>
           )}
+
+          {/* Temporary Diagnostic Probe Card (Task 0.58-C1) */}
+          <div className="bg-white dark:bg-[#251F2C] border border-[#E2DDD5] dark:border-[#3E3545] rounded-3xl p-6 shadow-xs" id="identity-diagnostic-card">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-serif font-bold flex items-center gap-2">
+                <Terminal className="w-4 h-4 text-[#8FAE9B]" />
+                Identity Diagnostic
+              </h3>
+              <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-[#8FAE9B]/10 text-[#6F907D] dark:text-[#8FAE9B] font-semibold">
+                Task 0.58-C1
+              </span>
+            </div>
+
+            <p className="text-xs text-[#7A827B] dark:text-[#A69FA8] mb-4">
+              Authenticated probe against <code className="text-[11px] font-mono text-[#30332F] dark:text-[#F8F6F0]">/api/student-auth-diagnostic</code> using active session token.
+            </p>
+
+            <button
+              id="btn-run-identity-diagnostic"
+              type="button"
+              onClick={runIdentityDiagnostic}
+              disabled={diagRunning}
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#8FAE9B]/15 hover:bg-[#8FAE9B]/25 text-[#30332F] dark:text-[#F8F6F0] border border-[#8FAE9B]/30 rounded-xl text-xs font-medium transition-colors disabled:opacity-50 cursor-pointer"
+            >
+              {diagRunning ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  Running Diagnostic...
+                </>
+              ) : (
+                <>
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#6F907D] dark:text-[#8FAE9B]" />
+                  Run Identity Diagnostic
+                </>
+              )}
+            </button>
+
+            {diagError && (
+              <div className="mt-3 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <span>{diagError}</span>
+              </div>
+            )}
+
+            {diagResult && (
+              <div className="mt-4 pt-3 border-t border-[#E2DDD5]/60 dark:border-[#3E3545]/60 space-y-2.5 text-xs" id="identity-diagnostic-results">
+                <div className="flex items-center justify-between">
+                  <span className="text-[#7A827B] dark:text-[#A69FA8]">Authentication</span>
+                  <span className={`font-semibold ${diagResult.authenticated ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600'}`}>
+                    {diagResult.authenticated ? 'Verified (200 OK)' : 'Failed'}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-[#7A827B] dark:text-[#A69FA8]">Backend Project Ref</span>
+                  <span className="font-mono text-[11px] font-semibold text-[#30332F] dark:text-[#F8F6F0]">
+                    {diagResult.backendProjectRef}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-[#7A827B] dark:text-[#A69FA8]">Project Consistency</span>
+                  <span className={`font-mono text-[11px] font-bold px-1.5 py-0.5 rounded ${
+                    diagResult.projectConsistency === 'MATCH'
+                      ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                      : diagResult.projectConsistency === 'MISMATCH'
+                      ? 'bg-red-500/10 text-red-600 dark:text-red-400'
+                      : 'bg-amber-500/10 text-amber-600'
+                  }`}>
+                    {diagResult.projectConsistency}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-[#7A827B] dark:text-[#A69FA8]">Student Record</span>
+                  <span className={`font-semibold ${diagResult.hasStudentId ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}>
+                    {diagResult.hasStudentId ? 'Linked / Found' : 'Unlinked (No Student ID)'}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-[#7A827B] dark:text-[#A69FA8]">Auth User Hash</span>
+                  <span className="font-mono text-[11px] text-[#30332F] dark:text-[#F8F6F0]">
+                    {diagResult.authUserIdHash}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-[#7A827B] dark:text-[#A69FA8]">Student ID Hash</span>
+                  <span className="font-mono text-[11px] text-[#30332F] dark:text-[#F8F6F0]">
+                    {diagResult.studentIdHash}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-[#7A827B] dark:text-[#A69FA8]">Diagnostic Stage</span>
+                  <span className="font-mono text-[11px] text-[#6F907D] dark:text-[#8FAE9B]">
+                    {diagResult.stage}
+                  </span>
+                </div>
+
+                <div className="pt-2">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[11px] text-[#7A827B] dark:text-[#A69FA8]">Safe JSON Output</span>
+                    <button
+                      type="button"
+                      onClick={copyDiagnosticResult}
+                      className="text-[11px] text-[#6F907D] dark:text-[#8FAE9B] hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      {copiedDiag ? (
+                        <>
+                          <Check className="w-3 h-3 text-emerald-500" />
+                          <span>Copied</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3 h-3" />
+                          <span>Copy JSON</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <pre className="p-2.5 rounded-xl bg-[#1D1822] text-[#F8F6F0] font-mono text-[10px] overflow-x-auto max-h-40 border border-[#3E3545]">
+                    {JSON.stringify(diagResult, null, 2)}
+                  </pre>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
