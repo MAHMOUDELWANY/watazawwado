@@ -21,7 +21,8 @@ import {
   RotateCcw,
   CalendarCheck2,
   ChevronRight,
-  Plus
+  Plus,
+  UserX
 } from 'lucide-react';
 import { DashboardBookingDetail, DashboardPayment, BookingPaymentStatus } from '../types';
 import { dashboardFetch } from '../lib/dashboardApi';
@@ -61,6 +62,12 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
   const [isCancelling, setIsCancelling] = useState(false);
   const [cancellationReason, setCancellationReason] = useState('');
   const [cancelling, setCancelling] = useState(false);
+
+  // No-Show state
+  const [isMarkingNoShow, setIsMarkingNoShow] = useState(false);
+  const [noShowReason, setNoShowReason] = useState('');
+  const [markingNoShow, setMarkingNoShow] = useState(false);
+  const [markingCompleted, setMarkingCompleted] = useState(false);
 
   // Record payment modal state
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -134,6 +141,8 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
   const handleMarkCompleted = async () => {
     if (!booking) return;
+    if (!window.confirm('Mark lesson as completed?\n\nThis records that the lesson took place.')) return;
+    setMarkingCompleted(true);
     try {
       await dashboardFetch(`/api/dashboard/bookings/${booking.id}`, {
         method: 'PATCH',
@@ -143,7 +152,35 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
       loadBooking();
       if (onBookingUpdated) onBookingUpdated();
     } catch (err: any) {
-      setActionMessage({ type: 'error', text: 'Failed to update booking status.' });
+      setActionMessage({ type: 'error', text: err?.message || 'Failed to update booking status.' });
+    } finally {
+      setMarkingCompleted(false);
+    }
+  };
+
+  const handleConfirmNoShow = async () => {
+    if (!booking) return;
+    if (!window.confirm('Mark student as no-show?\n\nThis records that the scheduled lesson did not take place because the student did not attend.')) return;
+    setMarkingNoShow(true);
+    try {
+      await dashboardFetch(`/api/dashboard/bookings/${booking.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          status: 'no_show',
+          notes: noShowReason.trim()
+            ? (booking.notes ? `${booking.notes}\n[No-Show Note]: ${noShowReason.trim()}` : `[No-Show Note]: ${noShowReason.trim()}`)
+            : undefined
+        })
+      });
+      setActionMessage({ type: 'success', text: 'Booking marked as No-Show.' });
+      setIsMarkingNoShow(false);
+      setNoShowReason('');
+      loadBooking();
+      if (onBookingUpdated) onBookingUpdated();
+    } catch (err: any) {
+      setActionMessage({ type: 'error', text: err?.message || 'Failed to mark booking as no-show.' });
+    } finally {
+      setMarkingNoShow(false);
     }
   };
 
@@ -791,17 +828,76 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                 </div>
               )}
 
+              {/* No-Show Box */}
+              {isMarkingNoShow && (
+                <div className="p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/60 rounded-xl space-y-3 animate-in fade-in">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-semibold text-amber-900 dark:text-amber-300 flex items-center gap-1.5">
+                      <UserX className="w-3.5 h-3.5" />
+                      Record Student No-Show
+                    </h4>
+                    <button onClick={() => setIsMarkingNoShow(false)} className="text-xs text-stone-400 hover:text-stone-600">
+                      Dismiss
+                    </button>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Optional note (e.g. Student did not attend, waited 15 mins)"
+                    value={noShowReason}
+                    onChange={(e) => setNoShowReason(e.target.value)}
+                    className="w-full p-2 text-xs bg-white dark:bg-[#1E1923] border border-amber-200 dark:border-amber-800 rounded-lg"
+                  />
+                  <button
+                    onClick={handleConfirmNoShow}
+                    disabled={markingNoShow}
+                    className="w-full py-2 text-xs font-semibold text-white bg-amber-700 hover:bg-amber-800 rounded-lg transition-colors disabled:opacity-50"
+                  >
+                    {markingNoShow ? 'Recording No-Show...' : 'Confirm Student No-Show'}
+                  </button>
+                </div>
+              )}
+
               {/* Master Booking Controls Footer */}
               <div className="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-[#D5D0CA]/40 dark:border-[#3E3545]">
-                <div className="flex items-center gap-2">
-                  {booking.status !== 'completed' && booking.status !== 'cancelled' && (
-                    <button
-                      onClick={handleMarkCompleted}
-                      className="px-3.5 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-xs transition-colors flex items-center gap-1.5"
-                    >
-                      <CalendarCheck2 className="w-4 h-4" />
-                      Mark Completed
-                    </button>
+                <div className="flex flex-wrap items-center gap-2">
+                  {booking.status === 'completed' && (
+                    <span className="px-3.5 py-2 text-xs font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl border border-emerald-300 dark:border-emerald-800/60 flex items-center gap-1.5">
+                      <Check className="w-4 h-4" />
+                      Completed
+                    </span>
+                  )}
+
+                  {booking.status === 'no_show' && (
+                    <span className="px-3.5 py-2 text-xs font-semibold text-amber-800 dark:text-amber-200 bg-amber-100 dark:bg-amber-900/40 rounded-xl border border-amber-300 dark:border-amber-800/60 flex items-center gap-1.5">
+                      <UserX className="w-4 h-4" />
+                      Marked No-Show
+                    </span>
+                  )}
+
+                  {booking.status !== 'completed' && booking.status !== 'no_show' && booking.status !== 'cancelled' && (
+                    <>
+                      <button
+                        onClick={handleMarkCompleted}
+                        disabled={markingCompleted || Boolean(startUtc && startUtc > DateTime.now().plus({ minutes: 15 }))}
+                        title={startUtc && startUtc > DateTime.now().plus({ minutes: 15 }) ? 'Cannot mark completed before lesson start time' : 'Mark lesson completed'}
+                        className="px-3.5 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-xs transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <CalendarCheck2 className="w-4 h-4" />
+                        {markingCompleted ? 'Saving...' : 'Mark Completed'}
+                      </button>
+
+                      {!isMarkingNoShow && (
+                        <button
+                          onClick={() => setIsMarkingNoShow(true)}
+                          disabled={Boolean(startUtc && startUtc > DateTime.now().plus({ minutes: 15 }))}
+                          title={startUtc && startUtc > DateTime.now().plus({ minutes: 15 }) ? 'Cannot record no-show before lesson start time' : 'Record student no-show'}
+                          className="px-3 py-2 text-xs font-medium text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 rounded-xl border border-amber-300 dark:border-amber-800/60 transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <UserX className="w-3.5 h-3.5" />
+                          No-Show
+                        </button>
+                      )}
+                    </>
                   )}
 
                   {booking.status !== 'cancelled' && !isRescheduling && (

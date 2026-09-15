@@ -1248,28 +1248,24 @@ app.get('/api/dashboard/today', verifyTeacherAuth, async (req, res) => {
     const activeLessons = lessons.filter(l => l.status !== 'cancelled');
     const trialsCount = activeLessons.filter(l => l.is_free_trial).length;
     
-    // Check completed: status === 'completed' or scheduled end is past
-    const completedCount = lessons.filter(l => {
-      if (l.status === 'cancelled') return false;
-      if (l.status === 'completed') return true;
-      if (!l.scheduled_start) return false;
-      const startDt = DateTime.fromISO(l.scheduled_start);
-      if (!startDt.isValid) return false;
-      const endDt = l.scheduled_end 
-        ? DateTime.fromISO(l.scheduled_end) 
-        : startDt.plus({ minutes: l.duration_minutes || 30 });
-      return endDt <= nowUtc;
-    }).length;
+    // Check completed: strictly count lessons where teacher explicitly recorded status === 'completed'
+    const completedCount = lessons.filter(l => l.status === 'completed').length;
 
-    // Check items needing attention: failed integrations or missing Zoom on upcoming active lesson
+    // Check items needing attention: failed integrations, missing Zoom on upcoming active lesson, or past unresolved lesson
     const needsAttentionCount = activeLessons.filter(l => {
+      if (l.status === 'completed' || l.status === 'no_show') return false;
       const isFailed = l.integration_status === 'failed' || l.integration_status === 'manual_action_required';
       const isMissingZoom = !l.zoom_host_url && !l.zoom_join_url;
       if (!l.scheduled_start) return isFailed;
       const startDt = DateTime.fromISO(l.scheduled_start);
       if (!startDt.isValid) return isFailed;
-      // Attention if failed or if starting in < 2 hours with no zoom link
-      return isFailed || (isMissingZoom && startDt.diff(nowUtc, 'hours').hours < 2 && startDt > nowUtc);
+      const endDt = l.scheduled_end 
+        ? DateTime.fromISO(l.scheduled_end) 
+        : startDt.plus({ minutes: l.duration_minutes || 30 });
+      // Attention if failed, starting in < 2 hours with no zoom, or scheduled end passed without outcome
+      const isSoon = startDt.diff(nowUtc, 'hours').hours < 2 && startDt > nowUtc;
+      const isPastUnresolved = endDt < nowUtc && l.status === 'confirmed';
+      return isFailed || (isMissingZoom && isSoon) || isPastUnresolved;
     }).length;
 
     // Next lesson algorithm:
@@ -1277,13 +1273,14 @@ app.get('/api/dashboard/today', verifyTeacherAuth, async (req, res) => {
     // - Valid scheduled_start
     // - Not cancelled (l.status !== 'cancelled')
     // - Not completed (l.status !== 'completed')
+    // - Not no_show (l.status !== 'no_show')
     // - Current time is before lesson end (endDt > nowUtc)
     // Priority:
     // 1. In Progress (nowUtc >= startDt && nowUtc <= endDt)
     // 2. Next upcoming lesson (startDt > nowUtc, sorted by startDt ascending)
     const validCandidates = lessons.filter(l => {
       if (!l.scheduled_start) return false;
-      if (l.status === 'cancelled' || l.status === 'completed') return false;
+      if (l.status === 'cancelled' || l.status === 'completed' || l.status === 'no_show') return false;
       const startDt = DateTime.fromISO(l.scheduled_start);
       if (!startDt.isValid) return false;
       const endDt = l.scheduled_end 
@@ -2634,6 +2631,65 @@ app.get('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => {
   }
 });
 
+// Shared validation logic for teacher booking transitions
+export function validateTeacherLifecycleTransition(
+  existingBooking: any,
+  newStatus: string | undefined,
+  teacherUserId: string | undefined,
+  nowUtcIso: string
+): { 
+  valid: boolean; 
+  statusCode?: number; 
+  error?: string; 
+  isIdempotent?: boolean; 
+  message?: string 
+} {
+  // 1. Authorization check
+  if (existingBooking.teacher_id && existingBooking.teacher_id !== teacherUserId) {
+    return { valid: false, statusCode: 403, error: 'Not authorized to manage this booking.' };
+  }
+
+  if (!newStatus || newStatus === existingBooking.status) {
+    if (!newStatus) return { valid: true };
+  }
+
+  // 2. Cancellation check
+  if (newStatus !== 'cancelled' && existingBooking.status === 'cancelled') {
+    return { valid: false, statusCode: 400, error: 'Cannot change status of a cancelled booking.' };
+  }
+
+  // 3. Status validity
+  const validTransitions = ['completed', 'no_show', 'cancelled'];
+  if (!validTransitions.includes(newStatus) && newStatus !== existingBooking.status) {
+    return { valid: false, statusCode: 400, error: `Invalid status transition: ${newStatus}` };
+  }
+
+  const nowUtc = DateTime.fromISO(nowUtcIso);
+  const startDt = existingBooking.scheduled_start ? DateTime.fromISO(existingBooking.scheduled_start) : null;
+
+  // 4. Completed transitions
+  if (newStatus === 'completed') {
+    if (existingBooking.status === 'completed') {
+      return { valid: true, isIdempotent: true, message: 'Booking already marked as completed.' };
+    }
+    if (startDt && startDt.isValid && startDt > nowUtc.plus({ minutes: 15 })) {
+      return { valid: false, statusCode: 400, error: 'Cannot mark a future lesson as completed before its scheduled start time.' };
+    }
+  }
+
+  // 5. No-show transitions
+  if (newStatus === 'no_show') {
+    if (existingBooking.status === 'no_show') {
+      return { valid: true, isIdempotent: true, message: 'Booking already marked as no-show.' };
+    }
+    if (startDt && startDt.isValid && startDt > nowUtc) {
+      return { valid: false, statusCode: 400, error: 'Cannot mark a future lesson as no-show before its scheduled start time.' };
+    }
+  }
+
+  return { valid: true };
+}
+
 // 16c. DASHBOARD: Update booking (status, notes, cancellation, reschedule)
 app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => {
   try {
@@ -2661,6 +2717,22 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
 
     if (fetchErr || !existingBooking) {
       return res.status(404).json({ error: 'Booking not found.' });
+    }
+
+    const nowUtc = DateTime.now().toUTC();
+    const transitionValidation = validateTeacherLifecycleTransition(
+      existingBooking,
+      status,
+      (req as any).teacherUser?.id,
+      nowUtc.toISO()!
+    );
+
+    if (!transitionValidation.valid) {
+      return res.status(transitionValidation.statusCode || 400).json({ error: transitionValidation.error });
+    }
+
+    if (transitionValidation.isIdempotent) {
+      return res.json({ success: true, booking: existingBooking, message: transitionValidation.message });
     }
 
     // 1. Transactional Cancellation Path
@@ -2705,40 +2777,39 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
       return res.json({ success: true, booking: updatedBooking });
     }
 
-    // 3. Fallback standard update path (for non-lifecycle updates like notes, completion)
+    // 3. Transactional Outcome Path
+    if (status === 'completed' || status === 'no_show') {
+      const { data: rpcData, error: rpcErr } = await supabase.rpc('teacher_record_lesson_outcome', {
+        p_booking_id: id,
+        p_teacher_id: (req as any).teacherUser?.id,
+        p_outcome: status,
+        p_notes: notes || null,
+        p_covered_material: covered_material || null
+      });
+
+      if (rpcErr) {
+        console.error(`[Teacher Record Outcome RPC Error]`, rpcErr);
+        const statusCode = rpcErr.code === 'P0002' ? 404 :
+                           rpcErr.code === 'P0003' ? 403 :
+                           400;
+        return res.status(statusCode).json({ error: rpcErr.message || `Failed to record lesson outcome: ${status}` });
+      }
+
+      return res.json(rpcData);
+    }
+
+    // 4. Fallback standard update path (for non-lifecycle updates like notes only)
+    if (status && status !== existingBooking.status) {
+       // Block arbitrary status updates
+       return res.status(400).json({ error: 'Cannot set arbitrary booking status via this endpoint.' });
+    }
+
     const updatePayload: Record<string, any> = {
       updated_at: new Date().toISOString()
     };
 
     if (notes !== undefined) {
       updatePayload.notes = notes;
-    }
-
-    if (status && status !== existingBooking.status) {
-      const validStatuses = ['pending', 'confirmed', 'completed', 'no_show'];
-      if (!validStatuses.includes(status)) {
-        return res.status(400).json({ error: `Invalid status: ${status}` });
-      }
-      updatePayload.status = status;
-
-      if (status === 'completed' && existingBooking.student_id) {
-        const { data: existingSession } = await supabase
-          .from('lesson_sessions')
-          .select('id')
-          .eq('booking_id', id)
-          .maybeSingle();
-
-        if (!existingSession) {
-          await supabase.from('lesson_sessions').insert({
-            booking_id: id,
-            student_id: existingBooking.student_id,
-            lesson_date: existingBooking.scheduled_start,
-            attendance: 'attended',
-            completion_status: 'completed',
-            covered_material: covered_material || null
-          });
-        }
-      }
     }
 
     const { data: updatedBooking, error: updateErr } = await supabase
@@ -2750,7 +2821,7 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
 
     if (updateErr) {
       console.error('[Update Booking Error]', updateErr);
-      return res.status(500).json({ error: updateErr.message || 'Failed to update booking.' });
+      return res.status(500).json({ error: updateErr.message || 'Failed to update booking notes.' });
     }
 
     res.json({ success: true, booking: updatedBooking });

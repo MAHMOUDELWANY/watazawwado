@@ -238,7 +238,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
             /* Authorized Guardian choosing to book for themselves (adult self) */
             <div
               id="guardian-self-context"
-              className="p-4 rounded-2xl bg-[#8FAE9B]/10 border border-[#8FAE9B]/30 flex items-center justify-between gap-3 text-xs"
+              className="p-4 rounded-2xl bg-[#8FAE9B]/10 border border-[#8FAE9B]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
             >
               <div className="flex items-center gap-2.5">
                 <div className="p-1.5 rounded-xl bg-[#8FAE9B]/20 text-[#557161] dark:text-[#A8C9B4]">
@@ -258,12 +258,34 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
               <button
                 type="button"
                 onClick={() => handleAudienceChange('child')}
-                className="text-[11px] font-medium text-[#6F907D] dark:text-[#8FAE9B] hover:underline cursor-pointer"
+                className="text-[11px] font-medium text-[#6F907D] dark:text-[#8FAE9B] hover:underline cursor-pointer sm:shrink-0"
               >
                 {isEn ? 'Booking for your child instead?' : 'الحجز لطفلك بدلاً من ذلك؟'}
               </button>
             </div>
           )}
+        </div>
+      ) : isAuthenticatedStudent ? (
+        /* Authorized Student choosing to book for themselves (adult self) without child access */
+        <div
+          id="student-self-context"
+          className="p-4 rounded-2xl bg-[#8FAE9B]/10 border border-[#8FAE9B]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+        >
+          <div className="flex items-center gap-2.5">
+            <div className="p-1.5 rounded-xl bg-[#8FAE9B]/20 text-[#557161] dark:text-[#A8C9B4]">
+              <User className="w-4 h-4" />
+            </div>
+            <div>
+              <span className="font-semibold text-[#30332F] dark:text-[#F8F6F0] block text-sm">
+                {isEn
+                  ? `Booking for ${formData.studentName || studentName || 'Yourself'}`
+                  : `حجز شخصي: ${formData.studentName || studentName || 'لك'}`}
+              </span>
+              <span className="text-[#7A827B] dark:text-[#A69FA8] text-[11px]">
+                {isEn ? 'Authenticated Student Account · Self-Learning' : 'حساب طالب موثق · تعلم شخصي'}
+              </span>
+            </div>
+          </div>
         </div>
       ) : (
         /* Guest / Unauthenticated flow: Traditional 2-card selector */

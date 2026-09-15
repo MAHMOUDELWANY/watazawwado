@@ -78,8 +78,16 @@ export default function TodayPage() {
       return { type: 'cancelled', label: 'Cancelled' };
     }
 
-    if (nowCairo > endCairo || lesson.status === 'completed') {
-      return { type: 'past', label: 'Completed' };
+    if (lesson.status === 'completed') {
+      return { type: 'completed', label: 'Completed' };
+    }
+
+    if (lesson.status === 'no_show') {
+      return { type: 'no_show', label: 'No-Show' };
+    }
+
+    if (nowCairo > endCairo) {
+      return { type: 'needs_outcome', label: 'Needs Outcome' };
     }
 
     if (nowCairo >= startCairo && nowCairo <= endCairo) {
@@ -94,14 +102,18 @@ export default function TodayPage() {
     return { type: 'upcoming', label: startCairo.toFormat('hh:mm a') };
   };
 
-  // Find attention items
+  // Find attention items: failed integrations, upcoming missing zoom, or past lessons awaiting outcome
   const attentionLessons = lessons.filter(l => {
-    if (l.status === 'cancelled') return false;
+    if (l.status === 'cancelled' || l.status === 'completed' || l.status === 'no_show') return false;
     const isFailed = l.integration_status === 'failed' || l.integration_status === 'manual_action_required';
     const isMissingZoom = !l.zoom_host_url && !l.zoom_join_url;
     const startCairo = DateTime.fromISO(l.scheduled_start).setZone('Africa/Cairo');
+    const endCairo = l.scheduled_end 
+      ? DateTime.fromISO(l.scheduled_end).setZone('Africa/Cairo')
+      : startCairo.plus({ minutes: l.duration_minutes });
     const isSoon = startCairo.diff(nowCairo, 'hours').hours < 2 && startCairo > nowCairo;
-    return isFailed || (isMissingZoom && isSoon);
+    const isPastUnresolved = endCairo < nowCairo && l.status === 'confirmed';
+    return isFailed || (isMissingZoom && isSoon) || isPastUnresolved;
   });
 
   return (
@@ -322,6 +334,7 @@ export default function TodayPage() {
         <LessonDetailModal 
           lesson={selectedLesson} 
           onClose={() => setSelectedLesson(null)} 
+          onBookingUpdated={() => fetchTodayLessons(true)}
         />
       )}
     </div>
@@ -442,7 +455,10 @@ function TodayLessonRow({
   const hasStartLink = Boolean(lesson.zoom_host_url || lesson.zoom_meeting_link);
   const startLink = lesson.zoom_host_url || lesson.zoom_meeting_link || '';
 
-  const isPast = timeContext.type === 'past';
+  const isCompleted = lesson.status === 'completed';
+  const isNoShow = lesson.status === 'no_show';
+  const isNeedsOutcome = timeContext.type === 'needs_outcome';
+  const isPast = timeContext.type === 'past' || isCompleted;
   const isCancelled = timeContext.type === 'cancelled';
   const isInProgress = timeContext.type === 'in_progress';
   const isStartingSoon = timeContext.type === 'starting_soon';
@@ -451,7 +467,13 @@ function TodayLessonRow({
     <div 
       className={`
         rounded-2xl p-4 sm:p-5 border transition-all duration-150 flex flex-col sm:flex-row sm:items-center justify-between gap-4
-        ${isPast 
+        ${isCompleted
+          ? 'bg-blue-50/20 dark:bg-blue-950/10 border-blue-200/40 dark:border-blue-900/30 opacity-80'
+          : isNoShow
+          ? 'bg-amber-50/25 dark:bg-amber-950/10 border-amber-300/40 dark:border-amber-900/30 opacity-80'
+          : isNeedsOutcome
+          ? 'bg-amber-50/50 dark:bg-amber-950/20 border-amber-300 dark:border-amber-800/60 shadow-xs'
+          : isPast 
           ? 'bg-white/60 dark:bg-[#2A2431]/50 border-[#D5D0CA]/20 dark:border-[#3E3545]/20 opacity-60' 
           : isCancelled
           ? 'bg-red-50/30 dark:bg-red-950/10 border-red-200/40 dark:border-red-900/30 opacity-70'
@@ -505,13 +527,31 @@ function TodayLessonRow({
             </span>
           )}
 
+          {isCompleted && (
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">
+              Completed
+            </span>
+          )}
+
+          {isNoShow && (
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-900 dark:bg-amber-900/40 dark:text-amber-200">
+              No-Show
+            </span>
+          )}
+
+          {isNeedsOutcome && (
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-900 dark:bg-amber-900/40 dark:text-amber-200 border border-amber-300/50">
+              Needs Outcome
+            </span>
+          )}
+
           {isCancelled && (
             <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300">
               Cancelled
             </span>
           )}
 
-          {!isInProgress && !isStartingSoon && !isCancelled && (
+          {!isInProgress && !isStartingSoon && !isCancelled && !isCompleted && !isNoShow && !isNeedsOutcome && (
             <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
               lesson.status === 'confirmed' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300' :
               lesson.status === 'rescheduled' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' :

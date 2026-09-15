@@ -15,18 +15,62 @@ import {
   FileText,
   ExternalLink,
   ShieldCheck,
-  DollarSign
+  DollarSign,
+  CalendarCheck2,
+  UserX
 } from 'lucide-react';
 import { DashboardLesson } from '../types';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
+import { dashboardFetch } from '../lib/dashboardApi';
 
 interface LessonDetailModalProps {
   lesson: DashboardLesson | null;
   onClose: () => void;
+  onBookingUpdated?: () => void;
 }
 
-export function LessonDetailModal({ lesson, onClose }: LessonDetailModalProps) {
+export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonDetailModalProps) {
   const [copiedLink, setCopiedLink] = useState<'host' | 'join' | null>(null);
+  const [currentStatus, setCurrentStatus] = useState<string | null>(lesson?.status || null);
+  const [updatingStatus, setUpdatingStatus] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  useEffect(() => {
+    setCurrentStatus(lesson?.status || null);
+    setStatusMessage(null);
+  }, [lesson]);
+
+  const handleUpdateStatus = async (newStatus: 'completed' | 'no_show') => {
+    if (!lesson) return;
+    
+    if (newStatus === 'completed') {
+      if (!window.confirm('Mark lesson as completed?\n\nThis records that the lesson took place.')) return;
+    } else if (newStatus === 'no_show') {
+      if (!window.confirm('Mark student as no-show?\n\nThis records that the scheduled lesson did not take place because the student did not attend.')) return;
+    }
+
+    setUpdatingStatus(true);
+    setStatusMessage(null);
+    try {
+      await dashboardFetch(`/api/dashboard/bookings/${lesson.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status: newStatus })
+      });
+      setCurrentStatus(newStatus);
+      setStatusMessage({
+        type: 'success',
+        text: newStatus === 'completed' ? 'Marked as completed.' : 'Recorded as no-show.'
+      });
+      if (onBookingUpdated) onBookingUpdated();
+    } catch (err: any) {
+      setStatusMessage({
+        type: 'error',
+        text: err?.message || 'Failed to update lesson status.'
+      });
+    } finally {
+      setUpdatingStatus(false);
+    }
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -98,12 +142,14 @@ export function LessonDetailModal({ lesson, onClose }: LessonDetailModalProps) {
                 </span>
               )}
               <span className={`text-xs font-medium px-2 py-0.5 rounded-full capitalize ${
-                lesson.status === 'confirmed' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300' :
-                lesson.status === 'cancelled' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' :
-                lesson.status === 'rescheduled' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' :
+                currentStatus === 'confirmed' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300' :
+                currentStatus === 'completed' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' :
+                currentStatus === 'no_show' ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300' :
+                currentStatus === 'cancelled' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' :
+                currentStatus === 'rescheduled' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' :
                 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'
               }`}>
-                {lesson.status || 'Status unavailable'}
+                {currentStatus === 'no_show' ? 'No-Show' : (currentStatus || 'Status unavailable')}
               </span>
             </div>
             <h2 id="lesson-detail-title" className="text-xl font-semibold tracking-tight text-[#362E3B] dark:text-[#F5E6D3]">
@@ -299,10 +345,43 @@ export function LessonDetailModal({ lesson, onClose }: LessonDetailModalProps) {
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-[#D5D0CA]/30 dark:border-[#3E3545]/30 bg-[#F8F6F0]/60 dark:bg-[#1E1923]/40 flex items-center justify-end">
+        <div className="p-4 border-t border-[#D5D0CA]/30 dark:border-[#3E3545]/30 bg-[#F8F6F0]/60 dark:bg-[#1E1923]/40 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            {statusMessage && (
+              <span className={`text-xs font-medium px-2.5 py-1 rounded-lg ${
+                statusMessage.type === 'success' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300' : 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300'
+              }`}>
+                {statusMessage.text}
+              </span>
+            )}
+
+            {currentStatus !== 'completed' && currentStatus !== 'no_show' && currentStatus !== 'cancelled' && (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleUpdateStatus('completed')}
+                  disabled={updatingStatus || Boolean(startUtc > DateTime.now().plus({ minutes: 15 }))}
+                  title={startUtc > DateTime.now().plus({ minutes: 15 }) ? 'Cannot mark completed before lesson start time' : 'Mark lesson completed'}
+                  className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-xs transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <CalendarCheck2 className="w-3.5 h-3.5" />
+                  {updatingStatus ? 'Updating...' : 'Mark Completed'}
+                </button>
+                <button
+                  onClick={() => handleUpdateStatus('no_show')}
+                  disabled={updatingStatus || Boolean(startUtc > DateTime.now().plus({ minutes: 15 }))}
+                  title={startUtc > DateTime.now().plus({ minutes: 15 }) ? 'Cannot record no-show before lesson start time' : 'Record student no-show'}
+                  className="px-3 py-1.5 bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800/60 rounded-xl text-xs font-medium transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <UserX className="w-3.5 h-3.5" />
+                  No-Show
+                </button>
+              </div>
+            )}
+          </div>
+
           <button 
             onClick={onClose}
-            className="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-[#362E3B] dark:text-[#F5E6D3] rounded-xl text-sm font-medium transition-colors"
+            className="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-[#362E3B] dark:text-[#F5E6D3] rounded-xl text-sm font-medium transition-colors ml-auto"
           >
             Close
           </button>
