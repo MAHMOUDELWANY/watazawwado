@@ -177,7 +177,11 @@ app.get('/api/integrations/google-calendar/auth-url', verifyTeacherAuth, (req: a
     const nonce = crypto.randomBytes(16).toString('hex');
     const b64Redirect = Buffer.from(redirectUri).toString('base64');
     const payload = `${teacherId}:${nonce}:${b64Redirect}`;
-    const hmac = crypto.createHmac('sha256', process.env.SUPABASE_SERVICE_ROLE_KEY || 'dev-secret');
+    const roleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (process.env.NODE_ENV === 'production' && !roleKey) {
+      return res.status(500).json({ error: 'Server configuration error: missing required cryptographic secrets.' });
+    }
+    const hmac = crypto.createHmac('sha256', roleKey || (process.env.NODE_ENV !== 'production' ? 'dev-secret' : ''));
     hmac.update(payload);
     const signature = hmac.digest('hex');
     const state = `${Buffer.from(payload).toString('base64')}.${signature}`;
@@ -297,7 +301,11 @@ app.get('/api/integrations/google-calendar/callback', async (req: any, res: any)
     const [b64Payload, signature] = parts;
 
     const payload = Buffer.from(b64Payload, 'base64').toString('utf8');
-    const hmac = crypto.createHmac('sha256', process.env.SUPABASE_SERVICE_ROLE_KEY || 'dev-secret');
+    const roleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (process.env.NODE_ENV === 'production' && !roleKey) {
+      return renderError(500, 'Server configuration error: missing required cryptographic secrets.');
+    }
+    const hmac = crypto.createHmac('sha256', roleKey || (process.env.NODE_ENV !== 'production' ? 'dev-secret' : ''));
     hmac.update(payload);
     const expectedSignature = hmac.digest('hex');
 
