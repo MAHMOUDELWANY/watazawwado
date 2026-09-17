@@ -177,6 +177,7 @@ export interface Database {
         Row: {
           id: string;
           lead_id: string | null;
+          assigned_teacher_id: string | null;
           name: string;
           email: string | null;
           whatsapp: string | null;
@@ -193,6 +194,7 @@ export interface Database {
         Insert: {
           id?: string;
           lead_id?: string | null;
+          assigned_teacher_id?: string | null;
           name: string;
           email?: string | null;
           whatsapp?: string | null;
@@ -209,6 +211,7 @@ export interface Database {
         Update: {
           id?: string;
           lead_id?: string | null;
+          assigned_teacher_id?: string | null;
           name?: string;
           email?: string | null;
           whatsapp?: string | null;
