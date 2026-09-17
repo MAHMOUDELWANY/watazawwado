@@ -198,6 +198,17 @@ Note: Set BREVO_API_KEY to enable live email delivery.`);
         body: JSON.stringify(requestBody),
         signal: controller.signal
       });
+    } catch (err: any) {
+      const timeoutTriggered = err?.name === 'AbortError';
+      console.error(
+        `[Brevo Transport Diagnostic] type=${timeoutTriggered ? 'timeout' : 'network_error'} error_class=${timeoutTriggered ? 'AbortError' : err?.constructor?.name || 'TypeError'} reached_brevo=false`
+      );
+      return {
+        success: false,
+        status: 'failed',
+        provider: 'brevo',
+        error: timeoutTriggered ? 'Email provider request timed out.' : 'Email dispatch failed.'
+      };
     } finally {
       clearTimeout(timeoutId);
     }
