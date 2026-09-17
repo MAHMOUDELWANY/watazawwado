@@ -222,23 +222,42 @@ Note: Set BREVO_API_KEY to enable live email delivery.`);
 
     // Handle provider error without exposing secrets or raw internal error payloads
     let sanitizedError = 'Email delivery failed.';
+    let providerCode = 'unknown';
+    let providerMessageClassification = 'dispatch_failed';
+
     try {
       const errorJson = await response.json();
+      const rawCode = typeof errorJson?.code === 'string' ? errorJson.code : null;
+      providerCode = rawCode ? String(rawCode).replace(/[^A-Za-z0-9_.:-]/g, '').slice(0, 128) || 'unknown' : 'unknown';
+
       if (response.status === 401 || response.status === 403) {
-        console.error('[Brevo Auth Error] Invalid or unauthorized BREVO_API_KEY. Status:', response.status);
+        providerMessageClassification = 'authentication_failed';
+        console.error(
+          `[Brevo Dispatch Diagnostic] status=${response.status} reached_brevo=true provider_code=${providerCode} provider_message_classification=${providerMessageClassification}`
+        );
         sanitizedError = 'Email service authentication failed.';
       } else if (response.status === 400) {
-        console.error('[Brevo Bad Request] Message rejected by provider. Code:', errorJson?.code, 'Message:', errorJson?.message);
+        providerMessageClassification = 'parameters_rejected';
+        console.error(
+          `[Brevo Dispatch Diagnostic] status=${response.status} reached_brevo=true provider_code=${providerCode} provider_message_classification=${providerMessageClassification}`
+        );
         sanitizedError = 'Email parameters rejected by provider.';
       } else if (response.status === 402 || response.status === 429) {
-        console.error('[Brevo Rate Limit / Quota] Quota exceeded. Status:', response.status);
+        providerMessageClassification = 'quota_exceeded';
+        console.error(
+          `[Brevo Dispatch Diagnostic] status=${response.status} reached_brevo=true provider_code=${providerCode} provider_message_classification=${providerMessageClassification}`
+        );
         sanitizedError = 'Email daily send limit reached. Please try again later.';
       } else {
-        console.error('[Brevo Dispatch Error] Status:', response.status);
+        console.error(
+          `[Brevo Dispatch Diagnostic] status=${response.status} reached_brevo=true provider_code=${providerCode} provider_message_classification=${providerMessageClassification}`
+        );
         sanitizedError = 'Email delivery failed.';
       }
     } catch {
-      console.error('[Brevo HTTP Error] Status:', response.status);
+      console.error(
+        `[Brevo Dispatch Diagnostic] status=${response.status} reached_brevo=true provider_code=unknown provider_message_classification=unparseable_response`
+      );
     }
 
     return {
