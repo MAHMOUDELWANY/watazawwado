@@ -81,6 +81,7 @@ export interface BookingFormData {
   timeSlot: TimeSlot | null;
   timezone: string;
   studentId?: string;
+  selectedPackageId?: string;
 }
 
 export interface BookingConfirmationData {
@@ -128,4 +129,15 @@ export interface MockBookingRecord {
   zoomMeetingLink?: string | null;
   googleCalendarEventId?: string | null;
   integrationStatus?: 'pending' | 'synced' | 'failed' | 'cancelled';
+}
+
+export interface PackageCatalogEntry {
+  id: string;
+  package_type: 'weekly' | 'monthly' | string;
+  name: string;
+  lesson_count: number;
+  price_amount: number;
+  currency: string;
+  is_active: boolean;
+  eligibility_rules?: any;
 }

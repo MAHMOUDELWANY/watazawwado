@@ -1,8 +1,9 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { Check, ArrowRight, ArrowLeft, Clock, Gift, CalendarCheck, HelpCircle, MessageSquare } from 'lucide-react';
-import { BookingMode, Language, LessonDuration } from '../../booking/types';
+import { BookingMode, Language, LessonDuration, PackageCatalogEntry } from '../../booking/types';
 import { BOOKING_SERVICES, calculateLessonFee } from '../../booking/mockData';
+import { useEffect, useState } from 'react';
 import { buildWhatsAppUrl } from '../../lib/whatsapp';
 
 interface StepLessonTypeProps {
@@ -16,6 +17,8 @@ interface StepLessonTypeProps {
   lang: Language;
   trialDisabled?: boolean;
   trialDisabledReason?: string;
+  selectedPackageId?: string;
+  onSelectPackage?: (id: string | undefined) => void;
 }
 
 export const StepLessonType: React.FC<StepLessonTypeProps> = ({
@@ -28,9 +31,27 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
   onBack,
   lang,
   trialDisabled = false,
-  trialDisabledReason
+  trialDisabledReason,
+  selectedPackageId,
+  onSelectPackage
 }) => {
   const isEn = lang === 'en';
+
+  const [packages, setPackages] = useState<PackageCatalogEntry[]>([]);
+  const [loadingPackages, setLoadingPackages] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/packages')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data) {
+          setPackages(data.data);
+        }
+      })
+      .catch(console.error)
+      .finally(() => setLoadingPackages(false));
+  }, []);
+
   const service = BOOKING_SERVICES.find((s) => s.id === serviceId) || BOOKING_SERVICES[0];
 
   const durations: { length: LessonDuration; label: string; arabicLabel: string; note: string; arabicNote: string }[] = [
@@ -231,6 +252,69 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
           })}
         </div>
       </div>
+
+
+      {/* Package Selection */}
+      {!loadingPackages && packages.length > 0 && mode === 'regular' && (
+        <div className="pt-4 border-t border-[#D5D0CA] dark:border-[#3E3545]">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-[#362E3B]/70 dark:text-[#D5D0CA]/70 mb-2.5">
+            {isEn ? 'Purchase Option (Optional)' : 'خيار الشراء (اختياري)'}
+          </label>
+          <div className="grid grid-cols-1 gap-3">
+            <motion.div
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              onClick={() => onSelectPackage?.(undefined)}
+              className={`p-4 rounded-xl border text-start transition-all cursor-pointer ${
+                !selectedPackageId
+                  ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-[#87A878] ring-2 ring-[#87A878]/30'
+                  : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] opacity-75'
+              }`}
+            >
+              <h4 className="font-serif font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+                {isEn ? 'Single Lesson (Pay as you go)' : 'درس واحد (دفع عند الحجز)'}
+              </h4>
+              <p className="text-xs text-[#362E3B]/65 dark:text-[#D5D0CA]/70 mt-1">
+                {isEn ? 'Standard booking for one session.' : 'حجز قياسي لجلسة واحدة.'}
+              </p>
+            </motion.div>
+
+            {packages.map((pkg) => {
+              const isSelected = selectedPackageId === pkg.id;
+              return (
+                <motion.div
+                  key={pkg.id}
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
+                  onClick={() => onSelectPackage?.(pkg.id)}
+                  className={`p-4 rounded-xl border text-start transition-all cursor-pointer ${
+                    isSelected
+                      ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-[#87A878] ring-2 ring-[#87A878]/30'
+                      : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] opacity-75'
+                  }`}
+                >
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h4 className="font-serif font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+                        {pkg.name}
+                      </h4>
+                      <p className="text-xs text-[#362E3B]/65 dark:text-[#D5D0CA]/70 mt-1">
+                        {isEn
+                          ? `${pkg.lesson_count} lessons • Prepaid ${pkg.package_type} package`
+                          : `${pkg.lesson_count} دروس • باقة ${pkg.package_type} مدفوعة مسبقاً`}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <span className="font-medium text-[#87A878]">\${pkg.price_amount}</span>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
 
       {/* Manual Request for Sessions > 60 min note */}
       <div className="p-3.5 rounded-xl bg-white dark:bg-[#231D28] border border-[#D5D0CA] dark:border-[#3E3545] text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]/70 flex items-start gap-2.5">

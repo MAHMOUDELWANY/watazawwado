@@ -343,6 +343,8 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                   serviceId={formData.serviceId}
                   onChangeMode={(mode) => updateFormData({ mode })}
                   onChangeDuration={(duration) => updateFormData({ duration })}
+                  selectedPackageId={formData.selectedPackageId}
+                  onSelectPackage={(selectedPackageId) => updateFormData({ selectedPackageId })}
                   onNext={handleNext}
                   onBack={handleBack}
                   lang={lang}
