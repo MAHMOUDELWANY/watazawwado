@@ -75,32 +75,25 @@ FOR SELECT
 TO authenticated
 USING (purchaser_account_id = auth.uid());
 
-DROP POLICY IF EXISTS "Users manage their package entitlements" ON public.package_entitlements;
-CREATE POLICY "Users manage their package entitlements"
-ON public.package_entitlements
-FOR INSERT
-TO authenticated
-WITH CHECK (purchaser_account_id = auth.uid());
-
-CREATE POLICY "Users update own package entitlements"
-ON public.package_entitlements
-FOR UPDATE
-TO authenticated
-USING (purchaser_account_id = auth.uid())
-WITH CHECK (purchaser_account_id = auth.uid());
-
-CREATE POLICY "Teachers can view package entitlements for known learners"
+CREATE POLICY "Teachers read only package entitlements for their assigned bookings"
 ON public.package_entitlements
 FOR SELECT
 TO authenticated
 USING (
     EXISTS (
         SELECT 1
-        FROM public.teacher_accounts ta
-        WHERE lower(ta.email) = lower(auth.jwt() ->> 'email')
-          AND ta.is_active = true
+        FROM public.bookings b
+        WHERE b.package_entitlement_id = package_entitlements.id
+          AND b.teacher_id = auth.uid()
     )
 );
+
+CREATE POLICY "No direct browser mutation of package entitlements"
+ON public.package_entitlements
+FOR ALL
+TO authenticated
+USING (false)
+WITH CHECK (false);
 
 CREATE POLICY "Users read own credit ledger entries"
 ON public.package_credit_ledger
@@ -115,9 +108,9 @@ USING (
     )
     OR EXISTS (
         SELECT 1
-        FROM public.teacher_accounts ta
-        WHERE lower(ta.email) = lower(auth.jwt() ->> 'email')
-          AND ta.is_active = true
+        FROM public.bookings b
+        WHERE b.package_entitlement_id = package_credit_ledger.package_entitlement_id
+          AND b.teacher_id = auth.uid()
     )
 );
 
@@ -326,34 +319,6 @@ CREATE OR REPLACE FUNCTION public.teacher_record_lesson_outcome(
     p_teacher_id UUID,
     p_outcome TEXT,
     p_notes TEXT DEFAULT NULL,
-    p_covered_material TEXT DEFAULT NULL
-)
-RETURNS jsonb
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = public, pg_temp
-AS $$
-DECLARE
-    v_booking RECORD;
-    v_session_id UUID;
-    v_now TIMESTAMPTZ := timezone('utc'::text, now());
-BEGIN
-    RETURN public.teacher_record_lesson_outcome_v2(
-        p_booking_id,
-        p_teacher_id,
-        p_outcome,
-        p_notes,
-        p_covered_material,
-        NULL
-    );
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION public.teacher_record_lesson_outcome_v2(
-    p_booking_id UUID,
-    p_teacher_id UUID,
-    p_outcome TEXT,
-    p_notes TEXT DEFAULT NULL,
     p_covered_material TEXT DEFAULT NULL,
     p_no_show_credit_decision TEXT DEFAULT NULL
 )
@@ -363,7 +328,7 @@ SECURITY DEFINER
 SET search_path = public, pg_temp
 AS $$
 DECLARE
-    v_booking record;
+    v_booking RECORD;
     v_session_id UUID;
     v_now TIMESTAMPTZ := timezone('utc'::text, now());
 BEGIN
@@ -397,7 +362,8 @@ BEGIN
         RAISE EXCEPTION 'Cannot change status of a cancelled booking.' USING ERRCODE = 'P0004';
     END IF;
 
-    IF (v_booking.status = 'completed' AND p_outcome = 'no_show') OR (v_booking.status = 'no_show' AND p_outcome = 'completed') THEN
+    IF (v_booking.status = 'completed' AND p_outcome = 'no_show') OR
+       (v_booking.status = 'no_show' AND p_outcome = 'completed') THEN
         RAISE EXCEPTION 'Cannot transition directly from % to %.', v_booking.status, p_outcome USING ERRCODE = 'P0004';
     END IF;
 
@@ -475,10 +441,38 @@ BEGIN
 END;
 $$;
 
-REVOKE ALL ON FUNCTION public.teacher_record_lesson_outcome(UUID, UUID, TEXT, TEXT, TEXT) FROM PUBLIC;
-REVOKE EXECUTE ON FUNCTION public.teacher_record_lesson_outcome(UUID, UUID, TEXT, TEXT, TEXT) FROM authenticated;
-GRANT EXECUTE ON FUNCTION public.teacher_record_lesson_outcome(UUID, UUID, TEXT, TEXT, TEXT) TO service_role;
+CREATE OR REPLACE FUNCTION public.teacher_record_lesson_outcome_legacy(
+    p_booking_id UUID,
+    p_teacher_id UUID,
+    p_outcome TEXT,
+    p_notes TEXT DEFAULT NULL,
+    p_covered_material TEXT DEFAULT NULL
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+BEGIN
+    IF p_outcome = 'no_show' THEN
+        RAISE EXCEPTION 'Explicit no-show credit decision is required: credit_used or credit_returned.' USING ERRCODE = 'P0007';
+    END IF;
 
-REVOKE ALL ON FUNCTION public.teacher_record_lesson_outcome_v2(UUID, UUID, TEXT, TEXT, TEXT, TEXT) FROM PUBLIC;
-REVOKE EXECUTE ON FUNCTION public.teacher_record_lesson_outcome_v2(UUID, UUID, TEXT, TEXT, TEXT, TEXT) FROM authenticated;
-GRANT EXECUTE ON FUNCTION public.teacher_record_lesson_outcome_v2(UUID, UUID, TEXT, TEXT, TEXT, TEXT) TO service_role;
+    RETURN public.teacher_record_lesson_outcome(
+        p_booking_id,
+        p_teacher_id,
+        p_outcome,
+        p_notes,
+        p_covered_material,
+        NULL
+    );
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.teacher_record_lesson_outcome(UUID, UUID, TEXT, TEXT, TEXT, TEXT) FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.teacher_record_lesson_outcome(UUID, UUID, TEXT, TEXT, TEXT, TEXT) FROM authenticated;
+GRANT EXECUTE ON FUNCTION public.teacher_record_lesson_outcome(UUID, UUID, TEXT, TEXT, TEXT, TEXT) TO service_role;
+
+REVOKE ALL ON FUNCTION public.teacher_record_lesson_outcome_legacy(UUID, UUID, TEXT, TEXT, TEXT) FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.teacher_record_lesson_outcome_legacy(UUID, UUID, TEXT, TEXT, TEXT) FROM authenticated;
+GRANT EXECUTE ON FUNCTION public.teacher_record_lesson_outcome_legacy(UUID, UUID, TEXT, TEXT, TEXT) TO service_role;

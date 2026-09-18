@@ -23,14 +23,15 @@ This repository now includes the minimal persistent package-credit foundation re
 ### Security and RLS
 
 - `package_catalog` is readable by anonymous and authenticated users for active catalog visibility only.
-- `package_entitlements` can be read and updated only by the owning authenticated account.
-- `package_credit_ledger` cannot be mutated directly from the browser; only server-side SQL functions may write it.
+- `package_entitlements` are readable by the owning authenticated account and by a teacher only when the entitlement is tied to a booking assigned to that teacher.
+- `package_credit_ledger` is readable by the purchaser or by the assigned teacher for that booking; browser mutations are denied by policy.
 - All package credit logic is enforced server-side through security-definer functions with `SET search_path` fixed to the public schema.
-- The teacher outcome RPC remains the authoritative place to apply the lifecycle outcome and corresponding package-credit effects.
+- The canonical teacher outcome RPC is `public.teacher_record_lesson_outcome(UUID, UUID, TEXT, TEXT, TEXT, TEXT)` and it enforces the explicit no-show decision requirement.
+- The 5-argument compatibility overload remains only as a legacy guardrail and rejects `no_show` unless a decision is passed explicitly.
 
-### Payment boundary
+### Package activation boundary
 
-Payment is intentionally not implemented in this workflow. Package entitlements are stored in a safe future-payment boundary: they remain `pending_payment` until a future payment confirmation path sets them active. No fake payment success is granted from frontend state.
+Payment is intentionally not implemented in this workflow. Package entitlements are stored in a safe future-payment boundary: they remain `pending_payment` until a future payment confirmation path sets them active. The browser is forbidden from creating or activating a package entitlement directly, and no frontend claim of payment success can grant credits.
 
 ### Production migration reference
 
