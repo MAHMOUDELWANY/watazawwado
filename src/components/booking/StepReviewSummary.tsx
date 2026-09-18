@@ -42,6 +42,21 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
   const isTrial = formData.mode === 'trial';
   const fee = calculateLessonFee(formData.serviceId, formData.duration, isTrial);
 
+  const [packageDetails, setPackageDetails] = React.useState<any>(null);
+  React.useEffect(() => {
+    if (formData.selectedPackageId) {
+      fetch('/api/packages')
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.data) {
+            const pkg = data.data.find((p: any) => p.id === formData.selectedPackageId);
+            if (pkg) setPackageDetails(pkg);
+          }
+        })
+        .catch(console.error);
+    }
+  }, [formData.selectedPackageId]);
+
   const matchedTz = MAJOR_TIMEZONES.find((t) => t.value === formData.timezone);
   const tzName = matchedTz ? matchedTz.label : formData.timezone;
 

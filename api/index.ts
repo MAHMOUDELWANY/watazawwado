@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import { MASTER_SPEC } from '../src/data/master_spec.js';
 import express from 'express';
+import { supabase, isSupabaseConfigured } from '../src/lib/supabase';
 import { DateTime } from 'luxon';
 import { GoogleGenAI } from '@google/genai';
 import { createClient } from '@supabase/supabase-js';
@@ -486,6 +487,62 @@ async function verifyManagementToken(referenceCode: string, managementToken: str
 // ---
 
 // 7. INTEGRATIONS: SYNC BOOKING (CALENDAR & ZOOM)
+
+// ==========================================
+// Phase 3A: Package Catalog Integration
+// ==========================================
+
+app.get('/api/packages', async (req, res) => {
+  if (!isSupabaseConfigured()) {
+    // Return mock data for UI testing in offline mode
+    return res.json({
+      success: true,
+      data: [
+        {
+          id: 'mock-weekly-1',
+          package_type: 'weekly',
+          name: 'Weekly Boost Package',
+          lesson_count: 4,
+          price_amount: 25.00,
+          currency: 'USD',
+          is_active: true,
+          eligibility_rules: {}
+        },
+        {
+          id: 'mock-monthly-1',
+          package_type: 'monthly',
+          name: 'Monthly Mastery Package',
+          lesson_count: 12,
+          price_amount: 70.00,
+          currency: 'USD',
+          is_active: true,
+          eligibility_rules: {}
+        }
+      ]
+    });
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('package_catalog')
+      .select('id, package_type, name, lesson_count, price_amount, currency, is_active, eligibility_rules')
+      .eq('is_active', true)
+      .order('price_amount', { ascending: true });
+
+    if (error) {
+      // If table does not exist or fails, fail gracefully
+      console.warn('[Package Catalog] Error fetching packages:', error.message);
+      return res.json({ success: true, data: [] });
+    }
+
+    res.json({ success: true, data: data || [] });
+  } catch (err) {
+    console.error('[Package Catalog] Unexpected error:', err);
+    res.json({ success: true, data: [] });
+  }
+});
+
+
 app.post('/api/integrations/sync-booking', async (req, res) => {
   try {
     const { booking } = req.body;
