@@ -2636,7 +2636,8 @@ export function validateTeacherLifecycleTransition(
   existingBooking: any,
   newStatus: string | undefined,
   teacherUserId: string | undefined,
-  nowUtcIso: string
+  nowUtcIso: string,
+  noShowCreditDecision?: 'credit_used' | 'credit_returned'
 ): { 
   valid: boolean; 
   statusCode?: number; 
@@ -2682,6 +2683,13 @@ export function validateTeacherLifecycleTransition(
     if (existingBooking.status === 'no_show') {
       return { valid: true, isIdempotent: true, message: 'Booking already marked as no-show.' };
     }
+    if (!noShowCreditDecision || !['credit_used', 'credit_returned'].includes(noShowCreditDecision)) {
+      return {
+        valid: false,
+        statusCode: 400,
+        error: 'Explicit no-show credit decision is required: credit_used or credit_returned.'
+      };
+    }
     if (startDt && startDt.isValid && startDt > nowUtc) {
       return { valid: false, statusCode: 400, error: 'Cannot mark a future lesson as no-show before its scheduled start time.' };
     }
@@ -2706,8 +2714,12 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
       scheduled_start, 
       scheduled_end, 
       cairo_time_display,
-      covered_material
+      covered_material,
+      no_show_credit_decision,
+      noShowCreditDecision
     } = req.body;
+
+    const resolvedNoShowCreditDecision = (no_show_credit_decision ?? noShowCreditDecision ?? null) as 'credit_used' | 'credit_returned' | null;
 
     const { data: existingBooking, error: fetchErr } = await supabase
       .from('bookings')
@@ -2724,7 +2736,8 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
       existingBooking,
       status,
       (req as any).teacherUser?.id,
-      nowUtc.toISO()!
+      nowUtc.toISO()!,
+      resolvedNoShowCreditDecision ?? undefined
     );
 
     if (!transitionValidation.valid) {
@@ -2784,7 +2797,8 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
         p_teacher_id: (req as any).teacherUser?.id,
         p_outcome: status,
         p_notes: notes || null,
-        p_covered_material: covered_material || null
+        p_covered_material: covered_material || null,
+        p_no_show_credit_decision: status === 'no_show' ? (resolvedNoShowCreditDecision ?? null) : null
       });
 
       if (rpcErr) {

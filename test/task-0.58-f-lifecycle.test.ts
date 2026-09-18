@@ -18,9 +18,9 @@ describe('Task 0.58-F — Teacher Lesson Lifecycle Controls', () => {
       assert.strictEqual(res.valid, true);
     });
 
-    it('allows Authorized Teacher to mark owned confirmed booking no-show (past time)', () => {
+    it('allows Authorized Teacher to mark owned confirmed booking no-show (past time) with explicit credit decision', () => {
       const booking = { status: 'confirmed', teacher_id: teacherA, scheduled_start: pastTime };
-      const res = validateTeacherLifecycleTransition(booking, 'no_show', teacherA, now.toISO());
+      const res = validateTeacherLifecycleTransition(booking, 'no_show', teacherA, now.toISO(), 'credit_used');
       assert.strictEqual(res.valid, true);
     });
 
