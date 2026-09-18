@@ -62,26 +62,22 @@ export default function StudentHomePage() {
   const hasValidZoomUrl = Boolean(rawZoom && (rawZoom.startsWith('https://') || rawZoom.startsWith('http://')));
 
   return (
-    <div className="space-y-6">
-      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-5">
+      <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-[#362E3B] dark:text-[#F5E6D3]">
+          <p className="text-[11px] uppercase tracking-[0.18em] text-[#6F907D] dark:text-[#8FAE9B] font-semibold">
+            Student portal
+          </p>
+          <h1 className="text-2xl font-semibold tracking-tight text-[#362E3B] dark:text-[#F5E6D3] mt-1">
             Welcome back{profile?.name ? `, ${profile.name.split(' ')[0]}` : ''}
           </h1>
           <p className="text-sm opacity-70 mt-1">
             Continue your learning journey with Ustadh Mahmoud
           </p>
         </div>
-        <Link
-          to="/student/book"
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#8FAE9B] hover:bg-[#6F907D] text-white rounded-xl text-xs sm:text-sm font-medium transition-colors shadow-xs self-start sm:self-auto"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Book a Lesson</span>
-        </Link>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="space-y-4">
         <div className="bg-white dark:bg-[#2A2431] border border-[#D5D0CA]/30 dark:border-[#3E3545]/30 rounded-2xl p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
@@ -96,7 +92,7 @@ export default function StudentHomePage() {
               </span>
             )}
           </div>
-          
+
           {nextBooking ? (
             <div className="py-2">
               <h4 className="font-medium text-lg mb-2">{nextBooking.serviceTitle || nextBooking.services?.title || 'Lesson'}</h4>
@@ -114,7 +110,7 @@ export default function StudentHomePage() {
                 </div>
               </div>
               {hasValidZoomUrl ? (
-                <a 
+                <a
                   href={rawZoom}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -131,7 +127,7 @@ export default function StudentHomePage() {
               {lastEligibleBooking ? (
                 <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-xs">
                   <span className="opacity-70">Schedule another session:</span>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <Link
                       id="link-home-repeat-lesson"
                       to="/student/book?repeat=true"
@@ -150,7 +146,7 @@ export default function StudentHomePage() {
                   </div>
                 </div>
               ) : (
-                <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 flex justify-between items-center text-xs">
+                <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 flex justify-between items-center text-xs gap-2">
                   <span className="opacity-70">Need another session?</span>
                   <Link
                     to="/student/book"
@@ -197,7 +193,7 @@ export default function StudentHomePage() {
           ) : (
             <div className="text-center py-6">
               <p className="text-sm opacity-60 mb-4">Welcome to your student portal. Schedule your first lesson or trial with Ustadh Mahmoud.</p>
-              <Link 
+              <Link
                 to="/student/book"
                 className="inline-flex px-4 py-2 bg-[#8FAE9B] hover:bg-[#6F907D] text-white rounded-xl text-sm font-medium transition-colors"
               >
@@ -207,6 +203,26 @@ export default function StudentHomePage() {
           )}
         </div>
 
+        <div className="bg-white dark:bg-[#2A2431] border border-[#D5D0CA]/30 dark:border-[#3E3545]/30 rounded-2xl p-5 shadow-sm">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <div>
+              <p className="text-[11px] uppercase tracking-[0.18em] text-[#7A827B] dark:text-[#A69FA8] font-semibold">
+                Quick action
+              </p>
+              <h3 className="mt-1 text-base font-semibold text-[#362E3B] dark:text-[#F5E6D3]">
+                Book your next lesson
+              </h3>
+            </div>
+            <Link
+              to="/student/book"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#8FAE9B] hover:bg-[#6F907D] text-white rounded-xl text-sm font-medium transition-colors shadow-xs"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Book New Lesson</span>
+            </Link>
+          </div>
+        </div>
+
         <div className="bg-white dark:bg-[#2A2431] border border-[#D5D0CA]/30 dark:border-[#3E3545]/30 rounded-2xl p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-2 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-lg">
@@ -214,7 +230,7 @@ export default function StudentHomePage() {
             </div>
             <h3 className="font-semibold text-[#362E3B] dark:text-[#F5E6D3]">Learning History</h3>
           </div>
-          
+
           <div className="py-2 max-h-[220px] overflow-y-auto">
             {bookings.length > 0 ? (
               <ul className="space-y-3">
