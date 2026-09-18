@@ -139,7 +139,40 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
           </button>
         </div>
 
-        {/* Learner Details & Communication */}
+
+      {/* Package Intent Info (If Selected) */}
+      {formData.selectedPackageId && packageDetails && !isTrial && (
+        <div className="mt-4 p-4 rounded-xl bg-[#F5E6D3]/40 dark:bg-[#29232F]/60 border border-[#87A878]/30">
+          <div className="flex justify-between items-start">
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-lg bg-[#87A878]/10 text-[#87A878]">
+                <Target className="w-5 h-5" />
+              </div>
+              <div>
+                <span className="block text-sm font-semibold text-[#362E3B] dark:text-[#F5E6D3] mb-1">
+                  {isEn ? 'Package Added to Cart' : 'تمت إضافة الباقة للسلة'}
+                </span>
+                <span className="block text-xs font-medium text-[#362E3B] dark:text-[#D5D0CA]">
+                  {isEn ? packageDetails.name : `باقة ${packageDetails.package_type}`}
+                </span>
+                <span className="block text-[11px] text-[#362E3B]/70 dark:text-[#D5D0CA]/70 mt-1">
+                  {isEn
+                    ? 'Available for purchase at checkout. The current booking is a single session.'
+                    : 'متاحة للشراء عند الدفع. الحجز الحالي هو لجلسة واحدة.'}
+                </span>
+              </div>
+            </div>
+            <div className="text-right">
+              <span className="block text-sm font-semibold text-[#87A878]">
+                ${packageDetails.price_amount}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+      {/* Learner Details & Communication */}
         <div className="flex items-start justify-between gap-4 pb-4 border-b border-[#D5D0CA] dark:border-[#3E3545]">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#6B5B73] dark:text-[#B8A9C9]">

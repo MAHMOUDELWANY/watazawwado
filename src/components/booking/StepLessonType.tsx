@@ -254,40 +254,43 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
       </div>
 
 
+
       {/* Package Selection */}
       {!loadingPackages && packages.length > 0 && mode === 'regular' && (
-        <div className="pt-4 border-t border-[#D5D0CA] dark:border-[#3E3545]">
-          <label className="block text-xs font-semibold uppercase tracking-wider text-[#362E3B]/70 dark:text-[#D5D0CA]/70 mb-2.5">
+        <div className="pt-4 border-t border-[#D5D0CA] dark:border-[#3E3545]" role="radiogroup" aria-labelledby="package-selection-label">
+          <label id="package-selection-label" className="block text-xs font-semibold uppercase tracking-wider text-[#362E3B]/70 dark:text-[#D5D0CA]/70 mb-2.5">
             {isEn ? 'Purchase Option (Optional)' : 'خيار الشراء (اختياري)'}
           </label>
           <div className="grid grid-cols-1 gap-3">
-            <motion.div
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.99 }}
+            <button
+              type="button"
+              role="radio"
+              aria-checked={!selectedPackageId}
               onClick={() => onSelectPackage?.(undefined)}
-              className={`p-4 rounded-xl border text-start transition-all cursor-pointer ${
+              className={`w-full p-4 min-h-[44px] rounded-xl border text-start transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#87A878] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#1E1923] ${
                 !selectedPackageId
                   ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-[#87A878] ring-2 ring-[#87A878]/30'
                   : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] opacity-75'
               }`}
             >
               <h4 className="font-serif font-medium text-[#362E3B] dark:text-[#F5E6D3]">
-                {isEn ? 'Single Lesson (Pay as you go)' : 'درس واحد (دفع عند الحجز)'}
+                {isEn ? 'Single Lesson' : 'درس واحد'}
               </h4>
               <p className="text-xs text-[#362E3B]/65 dark:text-[#D5D0CA]/70 mt-1">
-                {isEn ? 'Standard booking for one session.' : 'حجز قياسي لجلسة واحدة.'}
+                {isEn ? 'Book one standard session.' : 'حجز جلسة واحدة.'}
               </p>
-            </motion.div>
+            </button>
 
             {packages.map((pkg) => {
               const isSelected = selectedPackageId === pkg.id;
               return (
-                <motion.div
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={isSelected}
                   key={pkg.id}
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
                   onClick={() => onSelectPackage?.(pkg.id)}
-                  className={`p-4 rounded-xl border text-start transition-all cursor-pointer ${
+                  className={`w-full p-4 min-h-[44px] rounded-xl border text-start transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#87A878] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#1E1923] ${
                     isSelected
                       ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-[#87A878] ring-2 ring-[#87A878]/30'
                       : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] opacity-75'
@@ -300,15 +303,15 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                       </h4>
                       <p className="text-xs text-[#362E3B]/65 dark:text-[#D5D0CA]/70 mt-1">
                         {isEn
-                          ? `${pkg.lesson_count} lessons • Prepaid ${pkg.package_type} package`
-                          : `${pkg.lesson_count} دروس • باقة ${pkg.package_type} مدفوعة مسبقاً`}
+                          ? `${pkg.lesson_count} lessons • Available with checkout`
+                          : `${pkg.lesson_count} دروس • متاح عند الدفع`}
                       </p>
                     </div>
                     <div className="text-right">
                       <span className="font-medium text-[#87A878]">\${pkg.price_amount}</span>
                     </div>
                   </div>
-                </motion.div>
+                </button>
               );
             })}
           </div>

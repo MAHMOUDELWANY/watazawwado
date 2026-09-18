@@ -35,3 +35,9 @@ The existing `public.package_catalog` table (which is already live in the Produc
 - Tests written for UI Integration and Backend API behavior (`test/task-03-a-package-catalog.test.ts`).
 - `npm run test`, `npm run lint`, and `tsc --noEmit` pass the relevant booking validation gates without regression.
 - No Supabase migration was required, meaning zero risk of production schema drift or RLS regression.
+
+## Post-Review Hardening Changes
+1. **Removed Fake Data**: The `/api/packages` route correctly returns an empty array when mock mode is enabled or when no packages exist. We do not fabricate dummy prices or package counts.
+2. **Fail Closed**: Database errors from `public.package_catalog` return `500 Internal Server Error` rather than silently succeeding.
+3. **Accessibility**: `StepLessonType.tsx` uses interactive `<button role="radio">` with clear focus states (`focus-visible`).
+4. **Corrected Purchase Intent**: `StepReviewSummary.tsx` displays the selection as an intent ("Available for purchase at checkout") rather than confusing it with the actual booking fee, which remains the single lesson price.

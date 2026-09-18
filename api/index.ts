@@ -494,32 +494,8 @@ async function verifyManagementToken(referenceCode: string, managementToken: str
 
 app.get('/api/packages', async (req, res) => {
   if (!isSupabaseConfigured()) {
-    // Return mock data for UI testing in offline mode
-    return res.json({
-      success: true,
-      data: [
-        {
-          id: 'mock-weekly-1',
-          package_type: 'weekly',
-          name: 'Weekly Boost Package',
-          lesson_count: 4,
-          price_amount: 25.00,
-          currency: 'USD',
-          is_active: true,
-          eligibility_rules: {}
-        },
-        {
-          id: 'mock-monthly-1',
-          package_type: 'monthly',
-          name: 'Monthly Mastery Package',
-          lesson_count: 12,
-          price_amount: 70.00,
-          currency: 'USD',
-          is_active: true,
-          eligibility_rules: {}
-        }
-      ]
-    });
+    // Return empty catalog in offline/mock mode to avoid inventing prices or packages
+    return res.json({ success: true, data: [] });
   }
 
   try {
@@ -530,15 +506,14 @@ app.get('/api/packages', async (req, res) => {
       .order('price_amount', { ascending: true });
 
     if (error) {
-      // If table does not exist or fails, fail gracefully
       console.warn('[Package Catalog] Error fetching packages:', error.message);
-      return res.json({ success: true, data: [] });
+      return res.status(500).json({ success: false, error: 'Failed to retrieve package catalog.' });
     }
 
     res.json({ success: true, data: data || [] });
   } catch (err) {
     console.error('[Package Catalog] Unexpected error:', err);
-    res.json({ success: true, data: [] });
+    res.status(500).json({ success: false, error: 'Internal server error while retrieving packages.' });
   }
 });
 
