@@ -89,42 +89,25 @@ export const PortraitImage: React.FC<PortraitImageProps> = ({ className = '', pr
         onChange={handleFileChange}
       />
 
-      {/* Floating Status Pill: "Live Booking Open" */}
-      <motion.div
-        animate={{ y: [0, -5, 0] }}
-        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute -top-3.5 left-6 z-30 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white dark:bg-[#29232F] border border-[#87A878]/50 shadow-md text-xs font-semibold text-[#362E3B] dark:text-[#F5E6D3] cursor-default backdrop-blur-md"
-      >
-        <span className="relative flex h-2.5 w-2.5">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#87A878] opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#87A878]"></span>
-        </span>
-        <span>Accepting 1-on-1 Students</span>
-      </motion.div>
-
-      {/* Floating Accreditation Badge */}
-      <motion.div
-        animate={{ y: [0, 5, 0] }}
-        transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
-        className="absolute -bottom-4 right-4 z-30 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white dark:bg-[#29232F] border border-[#B8A9C9]/50 shadow-lg text-xs font-medium text-[#362E3B] dark:text-[#F5E6D3] cursor-default backdrop-blur-md"
-      >
-        <Sparkles className="w-3.5 h-3.5 text-[#B8A9C9]" />
-        <span>Al-Azhar Foundation</span>
-      </motion.div>
+      {/* Subtle Status Pill */}
+      <div className="absolute -top-3.5 left-6 z-30 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface/90 border border-border shadow-xs text-xs font-medium text-foreground backdrop-blur-md">
+        <span className="w-2 h-2 rounded-full bg-primary" />
+        <span>1-on-1 Online Mentorship</span>
+      </div>
 
       {/* Main Portrait Frame */}
       <div
-        className={`relative overflow-hidden rounded-3xl bg-white dark:bg-[#29232F] border-2 transition-all duration-300 ${
+        className={`relative overflow-hidden rounded-2xl bg-surface border transition-all duration-300 ${
           isDragging
-            ? 'border-[#87A878] ring-4 ring-[#87A878]/30 scale-[1.01]'
-            : 'border-white/90 dark:border-[#3E3545] shadow-[0_20px_50px_rgba(54,46,59,0.14)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)]'
-        } aspect-[4/5] sm:aspect-[4/5.2] w-full max-w-[430px] mx-auto`}
+            ? 'border-primary ring-4 ring-primary/20 scale-[1.01]'
+            : 'border-border shadow-md'
+        } aspect-[4/5] sm:aspect-[4/5.2] w-full max-w-[420px] mx-auto`}
       >
         <motion.img
           src={imgSrc}
           alt="Ustadh Mahmoud - 1-on-1 Quran, Arabic, and Islamic Studies Teacher"
           className="w-full h-full object-cover object-top transition-transform duration-700 ease-out"
-          whileHover={{ scale: 1.04 }}
+          whileHover={{ scale: 1.03 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
           loading={priority ? 'eager' : 'lazy'}
           decoding="async"
@@ -136,23 +119,23 @@ export const PortraitImage: React.FC<PortraitImageProps> = ({ className = '', pr
         />
 
         {/* Subtle Warm Gradient Vignette at bottom */}
-        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#201A24]/85 via-[#201A24]/30 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/75 via-black/30 to-transparent pointer-events-none" />
 
         {/* Name and Credentials Tag at bottom */}
         <div className="absolute bottom-4 left-5 right-5 flex items-end justify-between text-white pointer-events-none">
           <div>
-            <div className="flex items-center gap-1.5 mb-0.5">
-              <span className="w-2 h-2 rounded-full bg-[#87A878]"></span>
+            <div className="flex items-center gap-1.5 mb-1">
+              <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
               <p className="font-serif text-lg font-medium text-white tracking-tight leading-none">
                 Ustadh Mahmoud
               </p>
             </div>
-            <p className="text-[12px] text-[#F5E6D3]/90 font-sans tracking-wide">
-              Al-Azhar Graduate • Online 1-on-1
+            <p className="text-xs text-white/80 font-sans tracking-wide">
+              Al-Azhar Foundation • Cairo, Egypt
             </p>
           </div>
-          <span className="px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-md text-[10px] uppercase tracking-wider text-[#B8A9C9] font-semibold">
-            Certified
+          <span className="px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] text-white font-medium">
+            1-on-1 Private
           </span>
         </div>
 
@@ -194,15 +177,11 @@ export const PortraitImage: React.FC<PortraitImageProps> = ({ className = '', pr
       </div>
 
       {/* Understated Framing Accent in Lavender & Sage */}
-      <motion.div
-        animate={{ scale: [1, 1.05, 1] }}
-        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute -bottom-3 -right-3 w-16 h-16 border-b-2 border-r-2 border-[#B8A9C9]/50 rounded-br-3xl -z-10 pointer-events-none"
+      <div
+        className="absolute -bottom-2 -right-2 w-16 h-16 border-b-2 border-r-2 border-primary/30 rounded-br-2xl -z-10 pointer-events-none"
       />
-      <motion.div
-        animate={{ scale: [1, 1.05, 1] }}
-        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-        className="absolute -top-3 -left-3 w-16 h-16 border-t-2 border-l-2 border-[#87A878]/40 rounded-tl-3xl -z-10 pointer-events-none"
+      <div
+        className="absolute -top-2 -left-2 w-16 h-16 border-t-2 border-l-2 border-border rounded-tl-2xl -z-10 pointer-events-none"
       />
     </motion.div>
   );

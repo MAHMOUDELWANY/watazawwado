@@ -41,11 +41,11 @@ export const MarqueeTicker: React.FC<MarqueeTickerProps> = ({ lang }) => {
   return (
     <div
       id="marquee-ticker"
-      className="relative overflow-hidden bg-white dark:bg-[#1A161E] border-y border-[#D5D0CA]/80 dark:border-[#3E3545] py-3 select-none transition-colors"
+      className="relative overflow-hidden bg-surface border-y border-border py-3 select-none transition-colors"
     >
       {/* Gradient Fades on edges for smooth appearance */}
-      <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-r from-white dark:from-[#1A161E] to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-l from-white dark:from-[#1A161E] to-transparent z-10 pointer-events-none" />
+      <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-r from-surface to-transparent z-10 pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-l from-surface to-transparent z-10 pointer-events-none" />
 
       <div className="flex w-max animate-marquee hover:[animation-play-state:paused]">
         {duplicatedItems.map((item, idx) => {
@@ -53,9 +53,9 @@ export const MarqueeTicker: React.FC<MarqueeTickerProps> = ({ lang }) => {
           return (
             <div
               key={idx}
-              className="flex items-center gap-2.5 mx-4 sm:mx-6 px-3.5 py-1.5 rounded-full bg-[#F5E6D3]/40 dark:bg-[#26202C] border border-[#D5D0CA]/60 dark:border-[#3E3545] text-xs sm:text-sm font-medium text-[#362E3B] dark:text-[#F5E6D3] whitespace-nowrap"
+              className="flex items-center gap-2.5 mx-4 sm:mx-6 px-3.5 py-1.5 rounded-full bg-surface-subtle border border-border text-xs sm:text-sm font-medium text-foreground whitespace-nowrap"
             >
-              <Icon className="w-3.5 h-3.5 text-[#87A878] dark:text-[#A3BF96] shrink-0" />
+              <Icon className="w-3.5 h-3.5 text-primary shrink-0" />
               <span>{item.text}</span>
             </div>
           );

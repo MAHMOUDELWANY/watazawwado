@@ -115,14 +115,14 @@ export default function StudentsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-serif font-bold text-[#362E3B] dark:text-[#F5E6D3]">
+            <h1 className="text-2xl font-serif font-bold text-foreground">
               Students Directory
             </h1>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#EAF0EB] text-[#6F907D] dark:bg-[#6F907D]/20 dark:text-[#8FAE9B] font-medium">
+            <span className="text-xs px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 font-medium">
               {counts.active} Active Learners
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-[#362E3B]/70 dark:text-[#D5D0CA]/70 mt-1">
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
             Enrolled 1-on-1 students, learning progress, lesson history, and private teacher notes.
           </p>
         </div>
@@ -130,7 +130,7 @@ export default function StudentsPage() {
         <button
           onClick={() => fetchStudents(true)}
           disabled={refreshing}
-          className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl bg-white dark:bg-[#2A2431] border border-[#D5D0CA]/50 dark:border-[#3E3545]/50 text-[#362E3B]/80 dark:text-[#D5D0CA]/80 hover:bg-black/5 dark:hover:bg-white/5 transition-colors disabled:opacity-50"
+          className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl bg-surface border border-border text-foreground hover:bg-surface-subtle transition-colors disabled:opacity-50 cursor-pointer"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
           <span>Refresh</span>
@@ -140,43 +140,43 @@ export default function StudentsPage() {
       {/* Filter Tabs & Search Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Status Filter Tabs */}
-        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-white/60 dark:bg-[#2A2431]/60 border border-[#D5D0CA]/30 dark:border-[#3E3545]/30 overflow-x-auto">
+        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-surface-subtle border border-border-subtle overflow-x-auto">
           <button
             onClick={() => setStatusFilter('all')}
-            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap ${
+            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap cursor-pointer ${
               statusFilter === 'all'
-                ? 'bg-[#6F907D] text-white shadow-xs'
-                : 'text-[#362E3B]/70 dark:text-[#D5D0CA]/70 hover:text-[#362E3B] dark:hover:text-white'
+                ? 'bg-surface text-foreground shadow-2xs font-semibold'
+                : 'text-muted-foreground hover:text-foreground'
             }`}
           >
             All Students ({counts.all})
           </button>
           <button
             onClick={() => setStatusFilter('active')}
-            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap ${
+            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap cursor-pointer ${
               statusFilter === 'active'
-                ? 'bg-[#6F907D] text-white shadow-xs'
-                : 'text-[#362E3B]/70 dark:text-[#D5D0CA]/70 hover:text-[#362E3B] dark:hover:text-white'
+                ? 'bg-surface text-foreground shadow-2xs font-semibold'
+                : 'text-muted-foreground hover:text-foreground'
             }`}
           >
             Active ({counts.active})
           </button>
           <button
             onClick={() => setStatusFilter('paused')}
-            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap ${
+            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap cursor-pointer ${
               statusFilter === 'paused'
-                ? 'bg-[#6F907D] text-white shadow-xs'
-                : 'text-[#362E3B]/70 dark:text-[#D5D0CA]/70 hover:text-[#362E3B] dark:hover:text-white'
+                ? 'bg-surface text-foreground shadow-2xs font-semibold'
+                : 'text-muted-foreground hover:text-foreground'
             }`}
           >
             Paused ({counts.paused})
           </button>
           <button
             onClick={() => setStatusFilter('inactive')}
-            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap ${
+            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap cursor-pointer ${
               statusFilter === 'inactive'
-                ? 'bg-[#6F907D] text-white shadow-xs'
-                : 'text-[#362E3B]/70 dark:text-[#D5D0CA]/70 hover:text-[#362E3B] dark:hover:text-white'
+                ? 'bg-surface text-foreground shadow-2xs font-semibold'
+                : 'text-muted-foreground hover:text-foreground'
             }`}
           >
             Inactive ({counts.inactive})
@@ -186,20 +186,20 @@ export default function StudentsPage() {
         {/* Search & Sort Controls */}
         <div className="flex items-center gap-3 w-full md:w-auto">
           <div className="relative flex-1 md:w-64">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#362E3B]/40 dark:text-[#D5D0CA]/40" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="Search by student, parent, email..."
-              className="w-full pl-9 pr-3.5 py-1.5 text-xs rounded-xl border border-[#D5D0CA]/50 dark:border-[#3E3545]/50 bg-white dark:bg-[#2A2431] text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+              className="w-full pl-9 pr-3.5 py-1.5 text-xs rounded-xl border border-border bg-surface text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
           <select
             value={sortBy}
             onChange={e => setSortBy(e.target.value as any)}
-            className="px-3 py-1.5 text-xs rounded-xl border border-[#D5D0CA]/50 dark:border-[#3E3545]/50 bg-white dark:bg-[#2A2431] text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+            className="px-3 py-1.5 text-xs rounded-xl border border-border bg-surface text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
           >
             <option value="recent">Recently Added</option>
             <option value="name">Name (A-Z)</option>
@@ -213,27 +213,27 @@ export default function StudentsPage() {
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-pulse">
           {[1, 2, 3, 4].map(i => (
-            <div key={i} className="h-44 bg-white/60 dark:bg-[#2A2431]/60 rounded-2xl border border-[#D5D0CA]/30 dark:border-[#3E3545]/30" />
+            <div key={i} className="h-44 bg-surface rounded-2xl border border-border" />
           ))}
         </div>
       ) : error ? (
-        <div className="bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/30 rounded-2xl p-6 text-center space-y-3">
-          <AlertCircle className="w-8 h-8 text-red-500 mx-auto" />
-          <h3 className="text-sm font-medium text-red-800 dark:text-red-300">{error}</h3>
+        <div className="bg-destructive/10 border border-destructive/20 rounded-2xl p-6 text-center space-y-3">
+          <AlertCircle className="w-8 h-8 text-destructive mx-auto" />
+          <h3 className="text-sm font-medium text-destructive">{error}</h3>
           <button
             onClick={() => fetchStudents()}
-            className="px-4 py-1.5 text-xs font-medium rounded-xl bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-200 hover:bg-red-200 transition-colors"
+            className="px-4 py-1.5 text-xs font-medium rounded-xl bg-destructive/20 text-destructive hover:bg-destructive/30 transition-colors cursor-pointer"
           >
             Retry Loading
           </button>
         </div>
       ) : displayedStudents.length === 0 ? (
-        <div className="bg-white dark:bg-[#2A2431] border border-[#D5D0CA]/30 dark:border-[#3E3545]/30 rounded-2xl p-12 text-center space-y-3">
-          <Users className="w-10 h-10 text-[#8FAE9B] mx-auto opacity-70" />
-          <h3 className="text-base font-serif font-semibold text-[#362E3B] dark:text-[#F5E6D3]">
+        <div className="bg-surface border border-border rounded-2xl p-12 text-center space-y-3">
+          <Users className="w-10 h-10 text-muted-foreground mx-auto opacity-70" />
+          <h3 className="text-base font-serif font-semibold text-foreground">
             {searchQuery || statusFilter !== 'all' ? 'No matching students found' : 'No registered students yet'}
           </h3>
-          <p className="text-xs text-[#362E3B]/60 dark:text-[#D5D0CA]/60 max-w-sm mx-auto">
+          <p className="text-xs text-muted-foreground max-w-sm mx-auto">
             {searchQuery || statusFilter !== 'all'
               ? 'Try adjusting your search criteria or resetting the status filter.'
               : 'Students converted from trial bookings or enrolled directly will be listed here with complete profiles and private notes.'}
@@ -252,7 +252,7 @@ export default function StudentsPage() {
             return (
               <div
                 key={student.id}
-                className="bg-white dark:bg-[#2A2431] border border-[#D5D0CA]/40 dark:border-[#3E3545]/40 rounded-2xl p-5 shadow-xs space-y-4 hover:border-[#8FAE9B]/60 transition-all flex flex-col justify-between"
+                className="bg-surface border border-border rounded-2xl p-5 shadow-2xs space-y-4 hover:border-primary/50 transition-all flex flex-col justify-between"
               >
                 {/* Card Header: Name, Learner Type, Status */}
                 <div className="space-y-2">
@@ -261,23 +261,23 @@ export default function StudentsPage() {
                       <div className="flex items-center gap-2 flex-wrap">
                         <Link
                           to={`/dashboard/students/${student.id}`}
-                          className="text-base font-serif font-bold text-[#362E3B] dark:text-[#F5E6D3] hover:text-[#6F907D] dark:hover:text-[#8FAE9B] transition-colors"
+                          className="text-base font-serif font-bold text-foreground hover:text-primary transition-colors"
                         >
                           {student.name}
                         </Link>
                         {student.learner_type === 'child' ? (
-                          <span className="text-[10px] px-2 py-0.2 rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300 font-medium">
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-accent/15 text-accent border border-accent/25 font-medium">
                             Child {student.parent_name ? `(${student.parent_name})` : ''}
                           </span>
                         ) : student.learner_type === 'adult' ? (
-                          <span className="text-[10px] px-2 py-0.2 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 font-medium">
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 font-medium">
                             Adult
                           </span>
                         ) : null}
                       </div>
 
                       {student.primary_service_name && (
-                        <p className="text-xs text-[#6F907D] dark:text-[#8FAE9B] font-medium mt-0.5">
+                        <p className="text-xs text-primary font-medium mt-0.5">
                           {student.primary_service_name}
                         </p>
                       )}
@@ -285,19 +285,19 @@ export default function StudentsPage() {
 
                     <span className={`text-[11px] px-2.5 py-0.5 rounded-full font-medium shrink-0 ${
                       student.status === 'active'
-                        ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300'
+                        ? 'bg-success/15 text-success border border-success/30'
                         : student.status === 'paused'
-                        ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300'
-                        : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'
+                        ? 'bg-warning/15 text-warning-foreground border border-warning/30'
+                        : 'bg-surface-subtle text-muted-foreground border border-border-subtle'
                     }`}>
                       {student.status ? student.status.charAt(0).toUpperCase() + student.status.slice(1) : 'Active'}
                     </span>
                   </div>
 
                   {/* Level & Location Row */}
-                  <div className="flex items-center gap-3 text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]/70 flex-wrap">
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
                     {student.current_level ? (
-                      <span className="capitalize px-2 py-0.5 rounded-md bg-[#F8F6F0] dark:bg-[#1E1923] border border-[#D5D0CA]/30 dark:border-[#3E3545]/30">
+                      <span className="capitalize px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-foreground">
                         {student.current_level}
                       </span>
                     ) : (
@@ -320,51 +320,51 @@ export default function StudentsPage() {
                 </div>
 
                 {/* Middle: Next Lesson & Stats */}
-                <div className="pt-3 border-t border-[#D5D0CA]/20 dark:border-[#3E3545]/20 space-y-2 text-xs">
+                <div className="pt-3 border-t border-border-subtle space-y-2 text-xs">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-[#362E3B]/60 dark:text-[#D5D0CA]/60 flex items-center gap-1.5">
-                      <BookOpen className="w-3.5 h-3.5 text-[#8FAE9B]" />
+                    <span className="text-muted-foreground flex items-center gap-1.5">
+                      <BookOpen className="w-3.5 h-3.5 text-primary" />
                       <span>{student.total_completed_lessons} Completed Lessons</span>
                     </span>
 
                     {student.notes_count > 0 && (
-                      <span className="text-[#362E3B]/60 dark:text-[#D5D0CA]/60 flex items-center gap-1">
-                        <Lock className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+                      <span className="text-muted-foreground flex items-center gap-1">
+                        <Lock className="w-3 h-3 text-warning" />
                         <span>{student.notes_count} Notes</span>
                       </span>
                     )}
                   </div>
 
                   {student.next_lesson ? (
-                    <div className="p-2.5 rounded-xl bg-[#F8F6F0] dark:bg-[#1E1923] border border-[#D5D0CA]/30 dark:border-[#3E3545]/30 flex items-center justify-between text-[11px]">
+                    <div className="p-2.5 rounded-xl bg-surface-subtle border border-border-subtle flex items-center justify-between text-[11px]">
                       <div className="flex items-center gap-2">
-                        <Clock className="w-3.5 h-3.5 text-[#6F907D]" />
+                        <Clock className="w-3.5 h-3.5 text-primary" />
                         <div>
-                          <span className="font-semibold text-[#362E3B] dark:text-[#F5E6D3]">
+                          <span className="font-semibold text-foreground">
                             Next: {DateTime.fromISO(student.next_lesson.scheduled_start).toFormat('EEE, MMM d • hh:mm a')}
                           </span>
                         </div>
                       </div>
-                      <span className="text-[10px] px-1.5 py-0.2 rounded bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 font-medium">
                         Upcoming
                       </span>
                     </div>
                   ) : (
-                    <p className="text-[11px] text-[#362E3B]/50 dark:text-[#D5D0CA]/50 italic">
+                    <p className="text-[11px] text-muted-foreground italic">
                       No upcoming lesson scheduled
                     </p>
                   )}
                 </div>
 
                 {/* Card Footer: WhatsApp & View Record Link */}
-                <div className="pt-3 border-t border-[#D5D0CA]/20 dark:border-[#3E3545]/20 flex items-center justify-between">
+                <div className="pt-3 border-t border-border-subtle flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     {waUrl && (
                       <a
                         href={waUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-xs text-emerald-700 dark:text-emerald-400 font-medium hover:underline"
+                        className="inline-flex items-center gap-1 text-xs text-success font-medium hover:underline cursor-pointer"
                         title="Message student on WhatsApp"
                       >
                         <MessageCircle className="w-3.5 h-3.5" />
@@ -375,7 +375,7 @@ export default function StudentsPage() {
 
                   <Link
                     to={`/dashboard/students/${student.id}`}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-xl bg-[#6F907D]/10 text-[#6F907D] dark:bg-[#8FAE9B]/15 dark:text-[#8FAE9B] hover:bg-[#6F907D] hover:text-white dark:hover:bg-[#8FAE9B] dark:hover:text-[#1E1923] transition-colors"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
                   >
                     <span>View Record</span>
                     <ChevronRight className="w-3.5 h-3.5" />

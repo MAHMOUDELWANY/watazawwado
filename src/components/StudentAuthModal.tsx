@@ -83,21 +83,27 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white dark:bg-[#2A2431] rounded-2xl shadow-xl w-full max-w-md overflow-hidden relative">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="auth-modal-title"
+    >
+      <div className="bg-surface border border-border rounded-3xl shadow-2xl w-full max-w-md overflow-hidden relative">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 transition-colors"
+          aria-label="Close dialog"
+          className="absolute top-4 end-4 p-2 text-muted-foreground hover:text-foreground hover:bg-surface-subtle rounded-full transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <div className="p-8">
+        <div className="p-7 sm:p-8">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-serif font-bold text-[#362E3B] dark:text-[#F5E6D3]">
+            <h2 id="auth-modal-title" className="text-2xl sm:text-3xl font-serif font-bold text-foreground">
               {view === 'login' ? 'Student Login' : view === 'signup' ? 'Create Account' : view === 'forgot' ? 'Reset Password' : 'Set New Password'}
             </h2>
-            <p className="text-stone-500 dark:text-stone-400 mt-2 text-sm">
+            <p className="text-muted-foreground mt-2 text-sm">
               {view === 'login' 
                 ? 'Welcome back to your learning journey.' 
                 : view === 'signup' 
@@ -111,17 +117,17 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
           <form onSubmit={handleSubmit} className="space-y-4">
             {view === 'signup' && (
               <div>
-                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+                <label className="block text-xs font-semibold text-foreground mb-1.5">
                   Full Name
                 </label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+                  <User className="absolute start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
                   <input
                     type="text"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 focus:ring-2 focus:ring-[#8FAE9B] outline-none text-stone-900 dark:text-white"
+                    className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border bg-surface-subtle focus:bg-surface focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all"
                     placeholder="John Doe"
                   />
                 </div>
@@ -130,17 +136,17 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
 
             {view !== 'update-password' && (
               <div>
-                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+                <label className="block text-xs font-semibold text-foreground mb-1.5">
                   Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+                  <Mail className="absolute start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 focus:ring-2 focus:ring-[#8FAE9B] outline-none text-stone-900 dark:text-white"
+                    className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border bg-surface-subtle focus:bg-surface focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all"
                     placeholder="you@example.com"
                   />
                 </div>
@@ -149,27 +155,27 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
 
             {view !== 'forgot' && (
               <div>
-                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+                <label className="block text-xs font-semibold text-foreground mb-1.5">
                   {view === 'update-password' ? 'New Password' : 'Password'}
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+                  <Lock className="absolute start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
                   <input
                     type="password"
                     required
                     minLength={6}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 focus:ring-2 focus:ring-[#8FAE9B] outline-none text-stone-900 dark:text-white"
+                    className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border bg-surface-subtle focus:bg-surface focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all"
                     placeholder="••••••••"
                   />
                 </div>
                 {view === 'login' && (
-                  <div className="flex justify-end mt-1">
+                  <div className="flex justify-end mt-1.5">
                     <button
                       type="button"
                       onClick={() => setView('forgot')}
-                      className="text-xs text-[#8FAE9B] hover:underline"
+                      className="text-xs text-primary hover:underline"
                     >
                       Forgot password?
                     </button>
@@ -179,13 +185,13 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
             )}
 
             {error && (
-              <div className="p-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm rounded-xl">
+              <div className="p-3 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-xl">
                 {error}
               </div>
             )}
             
             {success && (
-              <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-sm rounded-xl">
+              <div className="p-3 bg-success/10 border border-success/20 text-success text-sm rounded-xl">
                 {success}
               </div>
             )}
@@ -193,10 +199,10 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-2.5 bg-[#8FAE9B] hover:bg-[#6F907D] text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2 mt-6"
+              className="w-full py-3 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl font-medium text-sm transition-all flex items-center justify-center gap-2 mt-6 cursor-pointer disabled:opacity-50 shadow-xs"
             >
               {isSubmitting ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin" />
               ) : view === 'login' ? (
                 'Sign In'
               ) : view === 'signup' ? (
@@ -209,25 +215,25 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
             </button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-stone-500">
+          <div className="mt-6 text-center text-sm text-muted-foreground">
             {view === 'login' ? (
               <p>
                 Don't have an account?{' '}
-                <button onClick={() => setView('signup')} className="text-[#8FAE9B] font-medium hover:underline">
+                <button onClick={() => setView('signup')} className="text-primary font-medium hover:underline">
                   Sign up
                 </button>
               </p>
             ) : view === 'signup' ? (
               <p>
                 Already have an account?{' '}
-                <button onClick={() => setView('login')} className="text-[#8FAE9B] font-medium hover:underline">
+                <button onClick={() => setView('login')} className="text-primary font-medium hover:underline">
                   Sign in
                 </button>
               </p>
             ) : (
               <p>
                 Remember your password?{' '}
-                <button onClick={() => setView('login')} className="text-[#8FAE9B] font-medium hover:underline">
+                <button onClick={() => setView('login')} className="text-primary font-medium hover:underline">
                   Sign in
                 </button>
               </p>

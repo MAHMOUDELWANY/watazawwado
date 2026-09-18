@@ -287,17 +287,19 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
   const getBookingStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
       case 'confirmed':
-        return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/50';
+        return 'bg-success/15 text-success border-success/30';
       case 'completed':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border-blue-200 dark:border-blue-800/50';
+        return 'bg-primary/15 text-primary border-primary/30';
       case 'pending':
-        return 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 border-amber-200 dark:border-amber-800/50';
+        return 'bg-warning/15 text-warning border-warning/30';
       case 'cancelled':
-        return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 border-red-200 dark:border-red-800/50';
+        return 'bg-destructive/15 text-destructive border-destructive/30';
+      case 'no_show':
+        return 'bg-destructive/10 text-destructive border-destructive/20';
       case 'rescheduled':
-        return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300 border-purple-200 dark:border-purple-800/50';
+        return 'bg-secondary/25 text-secondary-foreground border-secondary/40';
       default:
-        return 'bg-stone-100 text-stone-800 dark:bg-stone-800 dark:text-stone-300 border-stone-200';
+        return 'bg-muted text-muted-foreground border-border';
     }
   };
 
@@ -306,33 +308,33 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
       case 'paid':
         return {
           text: 'Payment Confirmed',
-          classes: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300 border-emerald-300'
+          classes: 'bg-success/15 text-success border-success/30'
         };
       case 'pending_review':
         return {
           text: 'Payment Pending Review',
-          classes: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 border-amber-300'
+          classes: 'bg-warning/15 text-warning border-warning/30'
         };
       case 'unpaid':
         return {
           text: 'Payment Unpaid',
-          classes: 'bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300 border-stone-300'
+          classes: 'bg-muted text-muted-foreground border-border'
         };
       case 'partially_paid':
         return {
           text: 'Partially Paid',
-          classes: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300 border-yellow-300'
+          classes: 'bg-warning/15 text-warning border-warning/30'
         };
       case 'payment_rejected':
         return {
           text: 'Payment Rejected',
-          classes: 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300 border-red-300'
+          classes: 'bg-destructive/15 text-destructive border-destructive/30'
         };
       case 'free_trial':
       default:
         return {
           text: 'Free Trial ($0)',
-          classes: 'bg-teal-100 text-teal-800 dark:bg-teal-900/40 dark:text-teal-300 border-teal-300'
+          classes: 'bg-primary/15 text-primary border-primary/30'
         };
     }
   };
@@ -346,28 +348,29 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
       aria-labelledby="booking-detail-title"
     >
       <div 
-        className="bg-[#FAF8F5] dark:bg-[#231E28] border border-[#D5D0CA]/60 dark:border-[#3E3545] rounded-2xl w-full max-w-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
+        className="bg-surface border border-border rounded-2xl w-full max-w-3xl shadow-xl overflow-hidden flex flex-col max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-6 py-4 border-b border-[#D5D0CA]/40 dark:border-[#3E3545] flex items-center justify-between bg-white/60 dark:bg-[#2A2431]/60">
+        <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-surface-subtle/50">
           <div className="flex items-center gap-3">
             <div>
               <div className="flex items-center gap-2">
-                <h2 id="booking-detail-title" className="text-lg font-semibold text-[#362E3B] dark:text-[#F5E6D3]">
+                <h2 id="booking-detail-title" className="text-lg font-serif font-semibold text-foreground">
                   Booking {booking?.reference_code}
                 </h2>
                 {booking && (
                   <button
                     onClick={() => copyToClipboard(booking.reference_code, 'ref')}
-                    className="p-1 rounded-md text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 transition-colors"
+                    className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
                     title="Copy reference code"
+                    aria-label="Copy reference code"
                   >
-                    {copiedField === 'ref' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copiedField === 'ref' ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5" />}
                   </button>
                 )}
               </div>
-              <p className="text-xs text-[#362E3B]/70 dark:text-[#F5E6D3]/70">
+              <p className="text-xs text-muted-foreground">
                 Created on {booking ? DateTime.fromISO(booking.created_at).toFormat('LLL dd, yyyy') : '...'}
               </p>
             </div>
@@ -376,17 +379,17 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
           <div className="flex items-center gap-2">
             {booking && (
               <>
-                <span className={`px-2.5 py-1 text-xs font-medium rounded-full border ${getBookingStatusBadge(booking.status)}`}>
+                <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border ${getBookingStatusBadge(booking.status)}`}>
                   {booking.status.toUpperCase()}
                 </span>
-                <span className={`px-2.5 py-1 text-xs font-medium rounded-full border ${getPaymentBadge(booking.payment_status).classes}`}>
+                <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border ${getPaymentBadge(booking.payment_status).classes}`}>
                   {getPaymentBadge(booking.payment_status).text}
                 </span>
               </>
             )}
             <button 
               onClick={onClose}
-              className="p-1.5 rounded-lg text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors ml-2"
+              className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors ms-2 cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center"
               aria-label="Close modal"
             >
               <X className="w-5 h-5" />
@@ -396,13 +399,17 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
         {/* Action alert if any */}
         {actionMessage && (
-          <div className={`px-6 py-2 text-xs flex items-center justify-between ${
+          <div className={`px-6 py-2 text-xs flex items-center justify-between border-b ${
             actionMessage.type === 'success' 
-              ? 'bg-emerald-50 text-emerald-800 border-b border-emerald-200' 
-              : 'bg-red-50 text-red-800 border-b border-red-200'
+              ? 'bg-success/15 text-success border-success/30' 
+              : 'bg-destructive/15 text-destructive border-destructive/30'
           }`}>
             <span>{actionMessage.text}</span>
-            <button onClick={() => setActionMessage(null)} className="opacity-70 hover:opacity-100">
+            <button 
+              onClick={() => setActionMessage(null)} 
+              className="opacity-70 hover:opacity-100 p-1 cursor-pointer"
+              aria-label="Dismiss alert"
+            >
               <X className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -412,56 +419,56 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
         <div className="p-6 overflow-y-auto space-y-6">
           {loading ? (
             <div className="space-y-4 animate-pulse">
-              <div className="h-20 bg-stone-200 dark:bg-stone-800 rounded-xl"></div>
-              <div className="h-32 bg-stone-200 dark:bg-stone-800 rounded-xl"></div>
-              <div className="h-24 bg-stone-200 dark:bg-stone-800 rounded-xl"></div>
+              <div className="h-20 bg-surface-subtle rounded-xl border border-border"></div>
+              <div className="h-32 bg-surface-subtle rounded-xl border border-border"></div>
+              <div className="h-24 bg-surface-subtle rounded-xl border border-border"></div>
             </div>
           ) : error || !booking ? (
-            <div className="p-6 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 rounded-xl text-center">
-              <AlertCircle className="w-8 h-8 text-red-500 mx-auto mb-2" />
-              <p className="text-sm font-medium text-red-800 dark:text-red-400">{error || 'Booking not found'}</p>
+            <div className="p-6 bg-destructive/10 border border-destructive/20 rounded-xl text-center">
+              <AlertCircle className="w-8 h-8 text-destructive mx-auto mb-2" />
+              <p className="text-sm font-medium text-destructive">{error || 'Booking not found'}</p>
             </div>
           ) : (
             <>
               {/* Top Details Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Learner & Contact Card */}
-                <div className="bg-white dark:bg-[#1E1923] p-4 rounded-xl border border-[#D5D0CA]/50 dark:border-[#3E3545] shadow-xs space-y-3">
-                  <div className="flex items-center justify-between border-b border-stone-100 dark:border-stone-800 pb-2">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-stone-500 flex items-center gap-1.5">
-                      <User className="w-3.5 h-3.5 text-[#8FAE9B]" />
+                <div className="bg-surface p-4 rounded-xl border border-border shadow-2xs space-y-3">
+                  <div className="flex items-center justify-between border-b border-border pb-2">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                      <User className="w-3.5 h-3.5 text-primary" />
                       Learner & Contact
                     </span>
                     {booking.student_id ? (
-                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 font-medium">
+                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-success/15 text-success font-semibold">
                         Active Student
                       </span>
                     ) : (
-                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-400 font-medium">
+                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-medium">
                         Guest Learner
                       </span>
                     )}
                   </div>
 
                   <div>
-                    <h3 className="text-base font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+                    <h3 className="text-base font-semibold text-foreground">
                       {booking.contact_name}
                     </h3>
                     {booking.parent_name && (
-                      <p className="text-xs text-stone-500 mt-0.5">
-                        Parent / Guardian: <span className="font-medium text-stone-700 dark:text-stone-300">{booking.parent_name}</span>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Parent / Guardian: <span className="font-medium text-foreground">{booking.parent_name}</span>
                       </p>
                     )}
                   </div>
 
-                  <div className="space-y-1.5 text-xs text-stone-600 dark:text-stone-300">
+                  <div className="space-y-1.5 text-xs text-foreground">
                     <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-1.5 text-stone-500">
+                      <span className="flex items-center gap-1.5 text-muted-foreground">
                         <Mail className="w-3.5 h-3.5" /> Email:
                       </span>
                       <a 
                         href={`mailto:${booking.contact_email}`} 
-                        className="font-mono text-[11px] hover:underline text-[#6F907D] font-medium"
+                        className="font-mono text-[11px] hover:underline text-primary font-medium"
                       >
                         {booking.contact_email}
                       </a>
@@ -469,7 +476,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
                     {booking.contact_whatsapp && (
                       <div className="flex items-center justify-between">
-                        <span className="flex items-center gap-1.5 text-stone-500">
+                        <span className="flex items-center gap-1.5 text-muted-foreground">
                           <MessageSquare className="w-3.5 h-3.5" /> WhatsApp:
                         </span>
                         <a 
@@ -479,7 +486,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                           )} 
                           target="_blank" 
                           rel="noreferrer"
-                          className="hover:underline text-emerald-600 font-medium"
+                          className="hover:underline text-success font-medium"
                         >
                           {booking.contact_whatsapp}
                         </a>
@@ -487,10 +494,10 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     )}
 
                     <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-1.5 text-stone-500">
+                      <span className="flex items-center gap-1.5 text-muted-foreground">
                         <Globe className="w-3.5 h-3.5" /> Timezone:
                       </span>
-                      <span className="font-medium text-stone-700 dark:text-stone-300">
+                      <span className="font-medium text-foreground">
                         {booking.student_timezone || 'Not specified'}
                       </span>
                     </div>
@@ -498,42 +505,42 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                 </div>
 
                 {/* Lesson & Scheduling Card */}
-                <div className="bg-white dark:bg-[#1E1923] p-4 rounded-xl border border-[#D5D0CA]/50 dark:border-[#3E3545] shadow-xs space-y-3">
-                  <div className="flex items-center justify-between border-b border-stone-100 dark:border-stone-800 pb-2">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-stone-500 flex items-center gap-1.5">
-                      <CalendarIcon className="w-3.5 h-3.5 text-[#8FAE9B]" />
+                <div className="bg-surface p-4 rounded-xl border border-border shadow-2xs space-y-3">
+                  <div className="flex items-center justify-between border-b border-border pb-2">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                      <CalendarIcon className="w-3.5 h-3.5 text-primary" />
                       Lesson Details
                     </span>
-                    <span className="text-[11px] px-2 py-0.5 rounded-full bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-400 font-medium">
+                    <span className="text-[11px] px-2 py-0.5 rounded-full bg-surface-subtle text-muted-foreground border border-border font-medium">
                       {booking.booking_type === 'trial' ? 'Free Trial' : 'Regular 1-on-1'}
                     </span>
                   </div>
 
                   <div>
-                    <h3 className="text-base font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+                    <h3 className="text-base font-semibold text-foreground">
                       {booking.service_name}
                     </h3>
-                    <p className="text-xs text-stone-500 mt-0.5">
-                      Duration: <span className="font-medium text-stone-700 dark:text-stone-300">{booking.duration_minutes} Minutes</span>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Duration: <span className="font-medium text-foreground">{booking.duration_minutes} Minutes</span>
                     </p>
                   </div>
 
-                  <div className="space-y-1.5 text-xs text-stone-600 dark:text-stone-300">
+                  <div className="space-y-1.5 text-xs text-foreground">
                     <div className="flex items-start justify-between">
-                      <span className="text-stone-500 flex items-center gap-1.5">
+                      <span className="text-muted-foreground flex items-center gap-1.5">
                         <Clock className="w-3.5 h-3.5" /> Cairo Time:
                       </span>
-                      <span className="font-medium text-stone-800 dark:text-stone-200 text-right">
+                      <span className="font-medium text-foreground text-end">
                         {startCairo ? startCairo.toFormat('EEE, LLL dd, yyyy • hh:mm a') : '...'}
                       </span>
                     </div>
 
                     {startStudent && (
                       <div className="flex items-start justify-between">
-                        <span className="text-stone-500 flex items-center gap-1.5">
+                        <span className="text-muted-foreground flex items-center gap-1.5">
                           <Globe className="w-3.5 h-3.5" /> Student Time:
                         </span>
-                        <span className="font-medium text-stone-700 dark:text-stone-300 text-right">
+                        <span className="font-medium text-foreground text-end">
                           {startStudent.toFormat('EEE, LLL dd, yyyy • hh:mm a')}
                         </span>
                       </div>
@@ -543,16 +550,16 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
               </div>
 
               {/* Integrations Bar: Zoom & Google Calendar */}
-              <div className="bg-white dark:bg-[#1E1923] p-4 rounded-xl border border-[#D5D0CA]/50 dark:border-[#3E3545] shadow-xs space-y-3">
-                <div className="flex items-center justify-between border-b border-stone-100 dark:border-stone-800 pb-2">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-stone-500 flex items-center gap-1.5">
-                    <Video className="w-3.5 h-3.5 text-[#8FAE9B]" />
+              <div className="bg-surface p-4 rounded-xl border border-border shadow-2xs space-y-3">
+                <div className="flex items-center justify-between border-b border-border pb-2">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                    <Video className="w-3.5 h-3.5 text-primary" />
                     Online Classroom & Calendar Sync
                   </span>
                   <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${
                     booking.google_calendar_event_id 
-                      ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300' 
-                      : 'bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-400'
+                      ? 'bg-success/15 text-success border border-success/30' 
+                      : 'bg-muted text-muted-foreground border border-border'
                   }`}>
                     {booking.google_calendar_event_id ? 'Google Calendar Synced' : 'Calendar Local'}
                   </span>
@@ -560,15 +567,15 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div className="space-y-1">
-                    <p className="text-xs font-medium text-stone-700 dark:text-stone-300">
+                    <p className="text-xs font-medium text-foreground">
                       Zoom Meeting Room:
                     </p>
                     {booking.zoom_meeting_link ? (
-                      <span className="font-mono text-xs text-stone-600 dark:text-stone-400 truncate max-w-sm block">
+                      <span className="font-mono text-xs text-muted-foreground truncate max-w-sm block">
                         {booking.zoom_meeting_link}
                       </span>
                     ) : (
-                      <span className="text-xs text-stone-400 italic">
+                      <span className="text-xs text-muted-foreground italic">
                         No meeting link assigned yet
                       </span>
                     )}
@@ -580,7 +587,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                         href={booking.zoom_host_url}
                         target="_blank"
                         rel="noreferrer"
-                        className="px-3 py-1.5 text-xs font-semibold text-white bg-[#6F907D] hover:bg-[#5E7D6B] rounded-lg transition-colors flex items-center gap-1.5"
+                        className="px-3.5 py-2 text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary-hover rounded-xl transition-colors flex items-center gap-1.5 min-h-[36px]"
                       >
                         <Video className="w-3.5 h-3.5" />
                         Launch as Host
@@ -589,9 +596,9 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     {booking.zoom_meeting_link && (
                       <button
                         onClick={() => copyToClipboard(booking.zoom_meeting_link || '', 'zoom')}
-                        className="px-3 py-1.5 text-xs font-medium text-stone-700 dark:text-stone-300 bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 rounded-lg transition-colors flex items-center gap-1.5"
+                        className="px-3.5 py-2 text-xs font-medium text-foreground bg-surface-subtle hover:bg-surface border border-border rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer min-h-[36px]"
                       >
-                        {copiedField === 'zoom' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                        {copiedField === 'zoom' ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5" />}
                         Copy Link
                       </button>
                     )}
@@ -600,20 +607,20 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
               </div>
 
               {/* PAYMENT RECONCILIATION SECTION */}
-              <div className="bg-white dark:bg-[#1E1923] p-5 rounded-xl border border-[#D5D0CA]/50 dark:border-[#3E3545] shadow-xs space-y-4">
-                <div className="flex items-center justify-between border-b border-stone-100 dark:border-stone-800 pb-3">
+              <div className="bg-surface p-5 rounded-xl border border-border shadow-2xs space-y-4">
+                <div className="flex items-center justify-between border-b border-border pb-3">
                   <div>
-                    <span className="text-xs font-semibold uppercase tracking-wider text-stone-500 flex items-center gap-1.5">
-                      <DollarSign className="w-4 h-4 text-[#8FAE9B]" />
+                    <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                      <DollarSign className="w-4 h-4 text-primary" />
                       Payment Tracking & Reconciliation
                     </span>
-                    <p className="text-xs text-stone-500 mt-0.5">
+                    <p className="text-xs text-muted-foreground mt-0.5">
                       Manual ledger verification and financial settlement
                     </p>
                   </div>
                   <button
                     onClick={() => setShowPaymentModal(true)}
-                    className="px-3 py-1.5 text-xs font-medium text-white bg-[#6F907D] hover:bg-[#5E7D6B] rounded-lg transition-colors flex items-center gap-1"
+                    className="px-3 py-1.5 text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary-hover rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     Record Payment
@@ -622,9 +629,9 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
                 {/* Amounts Breakdown */}
                 <div className="grid grid-cols-3 gap-3">
-                  <div className="p-3 bg-[#FAF8F5] dark:bg-[#2A2431] rounded-xl border border-[#D5D0CA]/40 dark:border-[#3E3545]">
-                    <span className="text-[11px] text-stone-500 block">Expected Fee</span>
-                    <span className="text-base font-semibold text-stone-800 dark:text-stone-200">
+                  <div className="p-3 bg-surface-subtle rounded-xl border border-border">
+                    <span className="text-[11px] text-muted-foreground block">Expected Fee</span>
+                    <span className="text-base font-semibold text-foreground">
                       {booking.booking_type === 'trial' 
                         ? 'Free Trial ($0.00)' 
                         : booking.expected_amount !== null 
@@ -633,17 +640,17 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     </span>
                   </div>
 
-                  <div className="p-3 bg-[#FAF8F5] dark:bg-[#2A2431] rounded-xl border border-[#D5D0CA]/40 dark:border-[#3E3545]">
-                    <span className="text-[11px] text-stone-500 block">Confirmed Received</span>
-                    <span className="text-base font-semibold text-emerald-700 dark:text-emerald-400">
+                  <div className="p-3 bg-surface-subtle rounded-xl border border-border">
+                    <span className="text-[11px] text-muted-foreground block">Confirmed Received</span>
+                    <span className="text-base font-semibold text-success">
                       ${booking.confirmed_amount.toFixed(2)} {booking.currency}
                     </span>
                   </div>
 
-                  <div className="p-3 bg-[#FAF8F5] dark:bg-[#2A2431] rounded-xl border border-[#D5D0CA]/40 dark:border-[#3E3545]">
-                    <span className="text-[11px] text-stone-500 block">Reconciliation State</span>
+                  <div className="p-3 bg-surface-subtle rounded-xl border border-border">
+                    <span className="text-[11px] text-muted-foreground block">Reconciliation State</span>
                     <span className="text-xs font-semibold mt-1 block">
-                      <span className={`px-2 py-0.5 rounded-md ${getPaymentBadge(booking.payment_status).classes}`}>
+                      <span className={`px-2 py-0.5 rounded-md border ${getPaymentBadge(booking.payment_status).classes}`}>
                         {getPaymentBadge(booking.payment_status).text}
                       </span>
                     </span>
@@ -652,12 +659,12 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
                 {/* Payment Records List */}
                 <div className="space-y-2">
-                  <h4 className="text-xs font-semibold text-stone-700 dark:text-stone-300">
+                  <h4 className="text-xs font-semibold text-foreground">
                     Payment History ({booking.payments?.length || 0} record{booking.payments?.length === 1 ? '' : 's'})
                   </h4>
 
                   {(!booking.payments || booking.payments.length === 0) ? (
-                    <div className="p-4 rounded-xl border border-dashed border-stone-200 dark:border-stone-800 text-center text-xs text-stone-400">
+                    <div className="p-4 rounded-xl border border-dashed border-border text-center text-xs text-muted-foreground">
                       {booking.booking_type === 'trial' 
                         ? 'No payments needed for this trial lesson.' 
                         : 'No payment records submitted or logged for this booking yet.'}
@@ -667,41 +674,41 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                       {booking.payments.map((p) => (
                         <div 
                           key={p.id} 
-                          className="p-3 bg-stone-50 dark:bg-stone-900/60 rounded-xl border border-stone-200 dark:border-stone-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+                          className="p-3 bg-surface-subtle rounded-xl border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
                         >
                           <div className="space-y-1">
                             <div className="flex items-center gap-2">
-                              <span className="font-semibold text-stone-900 dark:text-stone-100">
+                              <span className="font-semibold text-foreground">
                                 ${Number(p.amount).toFixed(2)} {p.currency}
                               </span>
-                              <span className="text-stone-400">•</span>
-                              <span className="capitalize text-stone-600 dark:text-stone-300 font-medium">
+                              <span className="text-border">•</span>
+                              <span className="capitalize text-muted-foreground font-medium">
                                 {p.payment_method.replace(/_/g, ' ')}
                               </span>
-                              <span className="text-stone-400">•</span>
-                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                              <span className="text-border">•</span>
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
                                 p.status === 'confirmed' 
-                                  ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300' 
+                                  ? 'bg-success/15 text-success border-success/30' 
                                   : p.status === 'pending'
-                                  ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300'
-                                  : 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300'
+                                  ? 'bg-warning/15 text-warning border-warning/30' 
+                                  : 'bg-destructive/15 text-destructive border-destructive/30'
                               }`}>
                                 {p.status.toUpperCase()}
                               </span>
                             </div>
 
-                            <div className="text-[11px] text-stone-500 flex flex-wrap items-center gap-x-3 gap-y-0.5">
+                            <div className="text-[11px] text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-0.5">
                               {p.payment_reference && (
-                                <span>Ref: <span className="font-mono text-stone-700 dark:text-stone-300">{p.payment_reference}</span></span>
+                                <span>Ref: <span className="font-mono text-foreground">{p.payment_reference}</span></span>
                               )}
                               <span>Logged: {DateTime.fromISO(p.created_at).toFormat('LLL dd, hh:mm a')}</span>
                               {p.confirmed_at && (
-                                <span className="text-emerald-600">Confirmed: {DateTime.fromISO(p.confirmed_at).toFormat('LLL dd')}</span>
+                                <span className="text-success font-medium">Confirmed: {DateTime.fromISO(p.confirmed_at).toFormat('LLL dd')}</span>
                               )}
                             </div>
 
                             {p.notes && (
-                              <p className="text-[11px] text-stone-600 dark:text-stone-400 italic">
+                              <p className="text-[11px] text-muted-foreground italic">
                                 Note: {p.notes}
                               </p>
                             )}
@@ -712,14 +719,14 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                             <div className="flex items-center gap-2 shrink-0">
                               <button
                                 onClick={() => handleConfirmPayment(p.id)}
-                                className="px-2.5 py-1 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-xs transition-colors flex items-center gap-1"
+                                className="px-3 py-1.5 text-xs font-semibold text-success-foreground bg-success hover:bg-success/90 rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
                               >
                                 <CheckCircle2 className="w-3.5 h-3.5" />
                                 Confirm
                               </button>
                               <button
                                 onClick={() => handleRejectPayment(p.id)}
-                                className="px-2.5 py-1 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg border border-red-200 dark:border-red-900/50 transition-colors flex items-center gap-1"
+                                className="px-3 py-1.5 text-xs font-semibold text-destructive hover:bg-destructive/15 border border-destructive/30 rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
                               >
                                 <XCircle className="w-3.5 h-3.5" />
                                 Reject
@@ -734,9 +741,9 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
               </div>
 
               {/* Teacher Internal Notes Card */}
-              <div className="bg-white dark:bg-[#1E1923] p-4 rounded-xl border border-[#D5D0CA]/50 dark:border-[#3E3545] shadow-xs space-y-2">
-                <span className="text-xs font-semibold uppercase tracking-wider text-stone-500 flex items-center gap-1.5">
-                  <FileText className="w-3.5 h-3.5 text-[#8FAE9B]" />
+              <div className="bg-surface p-4 rounded-xl border border-border shadow-2xs space-y-2">
+                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                  <FileText className="w-3.5 h-3.5 text-primary" />
                   Internal Teacher Notes
                 </span>
                 <textarea
@@ -744,13 +751,13 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Private lesson observation, payment agreements, or pedagogical notes..."
-                  className="w-full p-2.5 text-xs bg-[#FAF8F5] dark:bg-[#141017] border border-[#D5D0CA]/70 dark:border-[#3E3545] rounded-xl text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+                  className="w-full p-2.5 text-xs bg-surface-subtle border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
                 />
                 <div className="flex justify-end">
                   <button
                     onClick={handleSaveNotes}
                     disabled={savingNotes}
-                    className="px-3 py-1.5 text-xs font-medium text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg border border-[#D5D0CA] dark:border-[#3E3545] transition-colors disabled:opacity-50"
+                    className="px-3.5 py-1.5 text-xs font-medium text-foreground hover:bg-surface-subtle rounded-xl border border-border transition-colors disabled:opacity-50 cursor-pointer min-h-[36px]"
                   >
                     {savingNotes ? 'Saving...' : 'Save Notes'}
                   </button>
@@ -759,40 +766,40 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
               {/* Reschedule Drawer/Box */}
               {isRescheduling && (
-                <div className="p-4 bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-900/60 rounded-xl space-y-3 animate-in fade-in">
+                <div className="p-4 bg-secondary/15 border border-secondary/30 rounded-xl space-y-3 animate-in fade-in">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-xs font-semibold text-purple-900 dark:text-purple-300 flex items-center gap-1.5">
+                    <h4 className="text-xs font-semibold text-secondary-foreground flex items-center gap-1.5">
                       <RotateCcw className="w-3.5 h-3.5" />
                       Reschedule Lesson Time
                     </h4>
-                    <button onClick={() => setIsRescheduling(false)} className="text-xs text-stone-400 hover:text-stone-600">
+                    <button onClick={() => setIsRescheduling(false)} className="text-xs text-muted-foreground hover:text-foreground cursor-pointer">
                       Cancel
                     </button>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-[11px] text-stone-600 dark:text-stone-400 mb-1">New Date</label>
+                      <label className="block text-[11px] text-muted-foreground mb-1">New Date</label>
                       <input 
                         type="date" 
                         value={newStartDate} 
                         onChange={(e) => setNewStartDate(e.target.value)}
-                        className="w-full p-2 text-xs bg-white dark:bg-[#1E1923] border border-purple-200 dark:border-purple-800 rounded-lg"
+                        className="w-full p-2 text-xs bg-surface border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] text-stone-600 dark:text-stone-400 mb-1">New Time ({booking.student_timezone || 'Local'})</label>
+                      <label className="block text-[11px] text-muted-foreground mb-1">New Time ({booking.student_timezone || 'Local'})</label>
                       <input 
                         type="time" 
                         value={newStartTime} 
                         onChange={(e) => setNewStartTime(e.target.value)}
-                        className="w-full p-2 text-xs bg-white dark:bg-[#1E1923] border border-purple-200 dark:border-purple-800 rounded-lg"
+                        className="w-full p-2 text-xs bg-surface border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                       />
                     </div>
                   </div>
                   <button
                     onClick={handleConfirmReschedule}
                     disabled={rescheduling || !newStartDate || !newStartTime}
-                    className="w-full py-2 text-xs font-semibold text-white bg-purple-700 hover:bg-purple-800 rounded-lg transition-colors disabled:opacity-50"
+                    className="w-full py-2 text-xs font-semibold text-secondary-foreground bg-secondary hover:bg-secondary/80 rounded-xl transition-colors disabled:opacity-50 cursor-pointer min-h-[40px]"
                   >
                     {rescheduling ? 'Rescheduling & Syncing Calendar...' : 'Confirm Rescheduled Time'}
                   </button>
@@ -801,13 +808,13 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
               {/* Cancellation Box */}
               {isCancelling && (
-                <div className="p-4 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/60 rounded-xl space-y-3 animate-in fade-in">
+                <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-xl space-y-3 animate-in fade-in">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-xs font-semibold text-red-900 dark:text-red-300 flex items-center gap-1.5">
+                    <h4 className="text-xs font-semibold text-destructive flex items-center gap-1.5">
                       <XCircle className="w-3.5 h-3.5" />
                       Cancel Booking
                     </h4>
-                    <button onClick={() => setIsCancelling(false)} className="text-xs text-stone-400 hover:text-stone-600">
+                    <button onClick={() => setIsCancelling(false)} className="text-xs text-muted-foreground hover:text-foreground cursor-pointer">
                       Dismiss
                     </button>
                   </div>
@@ -816,12 +823,12 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     placeholder="Reason for cancellation (e.g. Requested by student, emergency)"
                     value={cancellationReason}
                     onChange={(e) => setCancellationReason(e.target.value)}
-                    className="w-full p-2 text-xs bg-white dark:bg-[#1E1923] border border-red-200 dark:border-red-800 rounded-lg"
+                    className="w-full p-2 text-xs bg-surface border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-destructive/40"
                   />
                   <button
                     onClick={handleConfirmCancel}
                     disabled={cancelling}
-                    className="w-full py-2 text-xs font-semibold text-white bg-red-700 hover:bg-red-800 rounded-lg transition-colors disabled:opacity-50"
+                    className="w-full py-2 text-xs font-semibold text-destructive-foreground bg-destructive hover:bg-destructive/90 rounded-xl transition-colors disabled:opacity-50 cursor-pointer min-h-[40px]"
                   >
                     {cancelling ? 'Cancelling & Syncing Calendar...' : 'Confirm Cancellation'}
                   </button>
@@ -830,13 +837,13 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
               {/* No-Show Box */}
               {isMarkingNoShow && (
-                <div className="p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/60 rounded-xl space-y-3 animate-in fade-in">
+                <div className="p-4 bg-warning/10 border border-warning/20 rounded-xl space-y-3 animate-in fade-in">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-xs font-semibold text-amber-900 dark:text-amber-300 flex items-center gap-1.5">
+                    <h4 className="text-xs font-semibold text-warning flex items-center gap-1.5">
                       <UserX className="w-3.5 h-3.5" />
                       Record Student No-Show
                     </h4>
-                    <button onClick={() => setIsMarkingNoShow(false)} className="text-xs text-stone-400 hover:text-stone-600">
+                    <button onClick={() => setIsMarkingNoShow(false)} className="text-xs text-muted-foreground hover:text-foreground cursor-pointer">
                       Dismiss
                     </button>
                   </div>
@@ -845,12 +852,12 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     placeholder="Optional note (e.g. Student did not attend, waited 15 mins)"
                     value={noShowReason}
                     onChange={(e) => setNoShowReason(e.target.value)}
-                    className="w-full p-2 text-xs bg-white dark:bg-[#1E1923] border border-amber-200 dark:border-amber-800 rounded-lg"
+                    className="w-full p-2 text-xs bg-surface border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-warning/40"
                   />
                   <button
                     onClick={handleConfirmNoShow}
                     disabled={markingNoShow}
-                    className="w-full py-2 text-xs font-semibold text-white bg-amber-700 hover:bg-amber-800 rounded-lg transition-colors disabled:opacity-50"
+                    className="w-full py-2 text-xs font-semibold text-warning-foreground bg-warning hover:bg-warning/90 rounded-xl transition-colors disabled:opacity-50 cursor-pointer min-h-[40px]"
                   >
                     {markingNoShow ? 'Recording No-Show...' : 'Confirm Student No-Show'}
                   </button>
@@ -858,17 +865,17 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
               )}
 
               {/* Master Booking Controls Footer */}
-              <div className="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-[#D5D0CA]/40 dark:border-[#3E3545]">
+              <div className="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-border">
                 <div className="flex flex-wrap items-center gap-2">
                   {booking.status === 'completed' && (
-                    <span className="px-3.5 py-2 text-xs font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl border border-emerald-300 dark:border-emerald-800/60 flex items-center gap-1.5">
+                    <span className="px-3.5 py-2 text-xs font-semibold text-primary bg-primary/15 rounded-xl border border-primary/30 flex items-center gap-1.5">
                       <Check className="w-4 h-4" />
                       Completed
                     </span>
                   )}
 
                   {booking.status === 'no_show' && (
-                    <span className="px-3.5 py-2 text-xs font-semibold text-amber-800 dark:text-amber-200 bg-amber-100 dark:bg-amber-900/40 rounded-xl border border-amber-300 dark:border-amber-800/60 flex items-center gap-1.5">
+                    <span className="px-3.5 py-2 text-xs font-semibold text-destructive bg-destructive/10 rounded-xl border border-destructive/20 flex items-center gap-1.5">
                       <UserX className="w-4 h-4" />
                       Marked No-Show
                     </span>
@@ -880,7 +887,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                         onClick={handleMarkCompleted}
                         disabled={markingCompleted || Boolean(startUtc && startUtc > DateTime.now().plus({ minutes: 15 }))}
                         title={startUtc && startUtc > DateTime.now().plus({ minutes: 15 }) ? 'Cannot mark completed before lesson start time' : 'Mark lesson completed'}
-                        className="px-3.5 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-xs transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-3.5 py-2 text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary-hover rounded-xl shadow-xs transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer min-h-[40px]"
                       >
                         <CalendarCheck2 className="w-4 h-4" />
                         {markingCompleted ? 'Saving...' : 'Mark Completed'}
@@ -891,7 +898,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                           onClick={() => setIsMarkingNoShow(true)}
                           disabled={Boolean(startUtc && startUtc > DateTime.now().plus({ minutes: 15 }))}
                           title={startUtc && startUtc > DateTime.now().plus({ minutes: 15 }) ? 'Cannot record no-show before lesson start time' : 'Record student no-show'}
-                          className="px-3 py-2 text-xs font-medium text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 rounded-xl border border-amber-300 dark:border-amber-800/60 transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="px-3.5 py-2 text-xs font-medium text-warning bg-warning/15 hover:bg-warning/25 rounded-xl border border-warning/30 transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer min-h-[40px]"
                         >
                           <UserX className="w-3.5 h-3.5" />
                           No-Show
@@ -903,7 +910,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                   {booking.status !== 'cancelled' && !isRescheduling && (
                     <button
                       onClick={() => setIsRescheduling(true)}
-                      className="px-3 py-2 text-xs font-medium text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] transition-colors flex items-center gap-1.5"
+                      className="px-3.5 py-2 text-xs font-medium text-foreground hover:bg-surface-subtle rounded-xl border border-border transition-colors flex items-center gap-1.5 cursor-pointer min-h-[40px]"
                     >
                       <RotateCcw className="w-3.5 h-3.5" />
                       Reschedule
@@ -913,7 +920,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                   {booking.status !== 'cancelled' && !isCancelling && (
                     <button
                       onClick={() => setIsCancelling(true)}
-                      className="px-3 py-2 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-xl border border-red-200 dark:border-red-900/50 transition-colors flex items-center gap-1.5"
+                      className="px-3.5 py-2 text-xs font-medium text-destructive hover:bg-destructive/15 rounded-xl border border-destructive/30 transition-colors flex items-center gap-1.5 cursor-pointer min-h-[40px]"
                     >
                       <XCircle className="w-3.5 h-3.5" />
                       Cancel Booking
@@ -923,7 +930,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 text-xs font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-xl transition-colors"
+                  className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-surface-subtle rounded-xl transition-colors cursor-pointer min-h-[40px]"
                 >
                   Close
                 </button>

@@ -176,10 +176,10 @@ export default function StudentDetailPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-10 w-48 bg-white/50 dark:bg-white/5 rounded-xl animate-pulse" />
+        <div className="h-10 w-48 bg-surface rounded-xl animate-pulse" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="md:col-span-2 h-72 bg-white/50 dark:bg-white/5 rounded-2xl animate-pulse" />
-          <div className="h-72 bg-white/50 dark:bg-white/5 rounded-2xl animate-pulse" />
+          <div className="md:col-span-2 h-72 bg-surface rounded-2xl border border-border animate-pulse" />
+          <div className="h-72 bg-surface rounded-2xl border border-border animate-pulse" />
         </div>
       </div>
     );
@@ -187,17 +187,17 @@ export default function StudentDetailPage() {
 
   if (error || !studentDetail) {
     return (
-      <div className="bg-white dark:bg-[#2A2431] rounded-2xl p-8 border border-red-200 dark:border-red-900/30 text-center space-y-4">
-        <AlertCircle className="w-10 h-10 text-red-500 mx-auto" />
-        <h2 className="text-lg font-serif font-bold text-[#362E3B] dark:text-[#F5E6D3]">
+      <div className="bg-surface rounded-2xl p-8 border border-destructive/30 text-center space-y-4">
+        <AlertCircle className="w-10 h-10 text-destructive mx-auto" />
+        <h2 className="text-lg font-serif font-bold text-foreground">
           Student Record Not Found
         </h2>
-        <p className="text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]/70 max-w-md mx-auto">
+        <p className="text-xs text-muted-foreground max-w-md mx-auto">
           {error || "The requested student record could not be located or you don't have authorization to view it."}
         </p>
         <Link
           to="/dashboard/students"
-          className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium rounded-xl bg-[#6F907D] text-white hover:bg-[#5A7A67] transition-colors"
+          className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer"
         >
           <ChevronLeft className="w-4 h-4" />
           <span>Back to Students</span>
@@ -226,41 +226,41 @@ export default function StudentDetailPage() {
         <div className="flex items-center gap-3">
           <Link
             to="/dashboard/students"
-            className="p-2 rounded-xl bg-white dark:bg-[#2A2431] border border-[#D5D0CA]/50 dark:border-[#3E3545]/50 text-[#362E3B]/70 dark:text-[#D5D0CA]/70 hover:text-[#362E3B] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+            className="p-2 rounded-xl bg-surface border border-border text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
             title="Back to Students Directory"
           >
             <ChevronLeft className="w-5 h-5" />
           </Link>
           <div>
             <div className="flex items-center gap-2.5 flex-wrap">
-              <h1 className="text-2xl font-serif font-bold text-[#362E3B] dark:text-[#F5E6D3]">
+              <h1 className="text-2xl font-serif font-bold text-foreground">
                 {student.name}
               </h1>
               {/* Status Badge */}
               <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                 student.status === 'active'
-                  ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300'
+                  ? 'bg-success/15 text-success border border-success/30'
                   : student.status === 'paused'
-                  ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300'
-                  : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'
+                  ? 'bg-warning/15 text-warning-foreground border border-warning/30'
+                  : 'bg-surface-subtle text-muted-foreground border border-border-subtle'
               }`}>
                 {student.status ? (student.status.charAt(0).toUpperCase() + student.status.slice(1)) : 'Active'}
               </span>
 
               {/* Learner Type Badge */}
               {student.learner_type === 'child' ? (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent/15 text-accent border border-accent/25">
                   <Users className="w-3 h-3" />
                   <span>Child {guardian?.parent_name ? `(Parent: ${guardian.parent_name})` : ''}</span>
                 </span>
               ) : student.learner_type === 'adult' ? (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20">
                   <User className="w-3 h-3" />
                   <span>Adult Learner</span>
                 </span>
               ) : null}
             </div>
-            <p className="text-xs text-[#362E3B]/60 dark:text-[#D5D0CA]/60 mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5">
               Enrolled: {DateTime.fromISO(student.created_at).toFormat('MMMM d, yyyy')}
             </p>
           </div>
@@ -273,7 +273,7 @@ export default function StudentDetailPage() {
               href={waUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition-colors"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-success text-white hover:bg-success/90 shadow-2xs transition-colors cursor-pointer"
             >
               <MessageCircle className="w-3.5 h-3.5" />
               <span>WhatsApp</span>
@@ -283,16 +283,16 @@ export default function StudentDetailPage() {
           {student.email && (
             <a
               href={`mailto:${student.email}`}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium rounded-xl bg-white dark:bg-[#2A2431] border border-[#D5D0CA]/60 dark:border-[#3E3545] text-[#362E3B] dark:text-[#F5E6D3] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium rounded-xl bg-surface border border-border text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
             >
-              <Mail className="w-3.5 h-3.5 text-[#6F907D]" />
+              <Mail className="w-3.5 h-3.5 text-primary" />
               <span>Email</span>
             </a>
           )}
 
           <button
             onClick={() => setIsEditModalOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium rounded-xl bg-[#6F907D] hover:bg-[#5A7A67] text-white shadow-sm transition-colors"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-2xs transition-colors cursor-pointer"
           >
             <Edit3 className="w-3.5 h-3.5" />
             <span>Edit Profile</span>
@@ -305,41 +305,41 @@ export default function StudentDetailPage() {
         {/* Left 2 Columns: Identity, Next Lesson, History, Trial Context */}
         <div className="lg:col-span-2 space-y-6">
           {/* Identity & Learning Profile Card */}
-          <div className="bg-white dark:bg-[#2A2431] rounded-2xl p-6 border border-[#D5D0CA]/40 dark:border-[#3E3545]/40 shadow-sm space-y-5">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-[#362E3B]/70 dark:text-[#D5D0CA]/70 flex items-center gap-2">
-              <User className="w-4 h-4 text-[#8FAE9B]" />
+          <div className="bg-surface rounded-2xl p-6 border border-border shadow-2xs space-y-5">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+              <User className="w-4 h-4 text-primary" />
               <span>Learner Profile & Contacts</span>
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               {/* Email */}
-              <div className="p-3 rounded-xl bg-[#F8F6F0] dark:bg-[#1E1923] border border-[#D5D0CA]/30 dark:border-[#3E3545]/30 space-y-1">
-                <span className="text-[#362E3B]/60 dark:text-[#D5D0CA]/60">Student Email</span>
-                <p className="font-medium text-[#362E3B] dark:text-[#F5E6D3] break-all">
+              <div className="p-3 rounded-xl bg-surface-subtle border border-border-subtle space-y-1">
+                <span className="text-muted-foreground">Student Email</span>
+                <p className="font-medium text-foreground break-all">
                   {student.email || <span className="opacity-50 italic">Not set</span>}
                 </p>
               </div>
 
               {/* WhatsApp */}
-              <div className="p-3 rounded-xl bg-[#F8F6F0] dark:bg-[#1E1923] border border-[#D5D0CA]/30 dark:border-[#3E3545]/30 space-y-1">
-                <span className="text-[#362E3B]/60 dark:text-[#D5D0CA]/60">WhatsApp Phone</span>
-                <p className="font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+              <div className="p-3 rounded-xl bg-surface-subtle border border-border-subtle space-y-1">
+                <span className="text-muted-foreground">WhatsApp Phone</span>
+                <p className="font-medium text-foreground">
                   {student.whatsapp || <span className="opacity-50 italic">Not set</span>}
                 </p>
               </div>
 
               {/* Parent / Guardian Name & Contact */}
-              <div className="p-3 rounded-xl bg-[#F8F6F0] dark:bg-[#1E1923] border border-[#D5D0CA]/30 dark:border-[#3E3545]/30 space-y-1">
-                <span className="text-[#362E3B]/60 dark:text-[#D5D0CA]/60">Parent / Guardian</span>
-                <p className="font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+              <div className="p-3 rounded-xl bg-surface-subtle border border-border-subtle space-y-1">
+                <span className="text-muted-foreground">Parent / Guardian</span>
+                <p className="font-medium text-foreground">
                   {guardian?.parent_name || <span className="opacity-50 italic">Not specified</span>}
                 </p>
                 {(student.learner_type === 'child' || guardian?.parent_name) && (
-                  <div className="pt-1 text-[11px] text-[#362E3B]/70 dark:text-[#D5D0CA]/70 space-y-0.5 border-t border-[#D5D0CA]/20 dark:border-[#3E3545]/20 mt-1.5">
+                  <div className="pt-1 text-[11px] text-muted-foreground space-y-0.5 border-t border-border-subtle mt-1.5">
                     <div>
                       <span className="opacity-60">Email: </span>
                       {guardian?.parent_email ? (
-                        <span className="font-mono text-[#362E3B] dark:text-[#F5E6D3]">{guardian.parent_email}</span>
+                        <span className="font-mono text-foreground">{guardian.parent_email}</span>
                       ) : (
                         <span className="italic opacity-50">Not provided</span>
                       )}
@@ -347,7 +347,7 @@ export default function StudentDetailPage() {
                     {guardian?.parent_whatsapp && (
                       <div>
                         <span className="opacity-60">WhatsApp: </span>
-                        <span className="font-mono text-[#362E3B] dark:text-[#F5E6D3]">{guardian.parent_whatsapp}</span>
+                        <span className="font-mono text-foreground">{guardian.parent_whatsapp}</span>
                       </div>
                     )}
                   </div>
@@ -355,24 +355,24 @@ export default function StudentDetailPage() {
               </div>
 
               {/* Country & Location */}
-              <div className="p-3 rounded-xl bg-[#F8F6F0] dark:bg-[#1E1923] border border-[#D5D0CA]/30 dark:border-[#3E3545]/30 space-y-1">
-                <span className="text-[#362E3B]/60 dark:text-[#D5D0CA]/60">Country</span>
-                <p className="font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+              <div className="p-3 rounded-xl bg-surface-subtle border border-border-subtle space-y-1">
+                <span className="text-muted-foreground">Country</span>
+                <p className="font-medium text-foreground">
                   {student.country || <span className="opacity-50 italic">Not set</span>}
                 </p>
               </div>
 
               {/* Timezone & Current Time */}
-              <div className="p-3 rounded-xl bg-[#F8F6F0] dark:bg-[#1E1923] border border-[#D5D0CA]/30 dark:border-[#3E3545]/30 space-y-1 sm:col-span-2">
+              <div className="p-3 rounded-xl bg-surface-subtle border border-border-subtle space-y-1 sm:col-span-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[#362E3B]/60 dark:text-[#D5D0CA]/60">Timezone</span>
+                  <span className="text-muted-foreground">Timezone</span>
                   {localTime && (
-                    <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 font-medium">
+                    <span className="text-[11px] px-2 py-0.5 rounded-full bg-success/15 text-success font-medium border border-success/30">
                       Student Local: {localTime.toFormat('hh:mm a')}
                     </span>
                   )}
                 </div>
-                <p className="font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+                <p className="font-medium text-foreground">
                   {student.timezone ? (
                     <span>{student.timezone}</span>
                   ) : (
@@ -383,12 +383,12 @@ export default function StudentDetailPage() {
             </div>
 
             {/* Academic Focus & Level */}
-            <div className="pt-3 border-t border-[#D5D0CA]/30 dark:border-[#3E3545]/30 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-              <div className="p-3.5 rounded-xl bg-[#F8F6F0] dark:bg-[#1E1923] border border-[#D5D0CA]/30 dark:border-[#3E3545]/30 space-y-1">
-                <span className="text-[#362E3B]/60 dark:text-[#D5D0CA]/60">Assessed Level</span>
-                <p className="font-medium text-[#362E3B] dark:text-[#F5E6D3] capitalize">
+            <div className="pt-3 border-t border-border-subtle grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+              <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle space-y-1">
+                <span className="text-muted-foreground">Assessed Level</span>
+                <p className="font-medium text-foreground capitalize">
                   {student.current_level ? (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 dark:bg-amber-900/30 dark:text-amber-300">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-accent/15 text-accent border border-accent/25">
                       {student.current_level}
                     </span>
                   ) : (
@@ -397,9 +397,9 @@ export default function StudentDetailPage() {
                 </p>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-[#F8F6F0] dark:bg-[#1E1923] border border-[#D5D0CA]/30 dark:border-[#3E3545]/30 space-y-1">
-                <span className="text-[#362E3B]/60 dark:text-[#D5D0CA]/60">Primary Subject / Service</span>
-                <p className="font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+              <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle space-y-1">
+                <span className="text-muted-foreground">Primary Subject / Service</span>
+                <p className="font-medium text-foreground">
                   {primary_service_name || <span className="opacity-60 italic">Not set</span>}
                 </p>
               </div>
@@ -407,11 +407,11 @@ export default function StudentDetailPage() {
 
             {/* Profile General Notes */}
             {student.notes && (
-              <div className="p-3.5 rounded-xl bg-[#F8F6F0] dark:bg-[#1E1923] border border-[#D5D0CA]/30 dark:border-[#3E3545]/30 text-xs">
-                <span className="text-[#362E3B]/60 dark:text-[#D5D0CA]/60 block mb-1 font-medium">
+              <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle text-xs">
+                <span className="text-muted-foreground block mb-1 font-medium">
                   General Profile Notes
                 </span>
-                <p className="text-[#362E3B] dark:text-[#F5E6D3] whitespace-pre-line">
+                <p className="text-foreground whitespace-pre-line">
                   {student.notes}
                 </p>
               </div>
@@ -419,53 +419,53 @@ export default function StudentDetailPage() {
           </div>
 
           {/* Next Lesson Card (if any scheduled) */}
-          <div className="bg-white dark:bg-[#2A2431] rounded-2xl p-6 border border-[#D5D0CA]/40 dark:border-[#3E3545]/40 shadow-sm space-y-4">
+          <div className="bg-surface rounded-2xl p-6 border border-border shadow-2xs space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-[#362E3B]/70 dark:text-[#D5D0CA]/70 flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-[#6F907D]" />
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-primary" />
                 <span>Next Scheduled Lesson</span>
               </h2>
               {next_lesson && (
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 font-medium">
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 font-medium">
                   Upcoming
                 </span>
               )}
             </div>
 
             {next_lesson ? (
-              <div className="p-4 rounded-xl bg-[#F8F6F0] dark:bg-[#1E1923] border border-[#D5D0CA]/30 dark:border-[#3E3545]/30 space-y-3">
+              <div className="p-4 rounded-xl bg-surface-subtle border border-border-subtle space-y-3">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div>
-                    <h3 className="text-sm font-semibold text-[#362E3B] dark:text-[#F5E6D3]">
+                    <h3 className="text-sm font-semibold text-foreground">
                       {next_lesson.service_name || '1-on-1 Teaching Session'}
                     </h3>
-                    <p className="text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]/70 mt-0.5">
+                    <p className="text-xs text-muted-foreground mt-0.5">
                       Duration: {next_lesson.duration_minutes} minutes
                     </p>
                   </div>
                   <div className="text-right sm:text-right">
-                    <p className="text-xs font-semibold text-[#6F907D] dark:text-[#8FAE9B]">
+                    <p className="text-xs font-semibold text-primary">
                       {student.timezone 
                         ? DateTime.fromISO(next_lesson.scheduled_start).setZone(student.timezone).toFormat('EEE, MMM d, yyyy • hh:mm a')
                         : DateTime.fromISO(next_lesson.scheduled_start).toFormat('EEE, MMM d, yyyy • hh:mm a')}
                     </p>
-                    <p className="text-[11px] text-[#362E3B]/60 dark:text-[#D5D0CA]/60">
+                    <p className="text-[11px] text-muted-foreground">
                       Cairo: {DateTime.fromISO(next_lesson.scheduled_start).setZone('Africa/Cairo').toFormat('hh:mm a')}
                     </p>
                   </div>
                 </div>
 
                 {next_lesson.zoom_join_url && (
-                  <div className="pt-2 border-t border-[#D5D0CA]/20 dark:border-[#3E3545]/20 flex items-center justify-between">
-                    <span className="text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]/70 flex items-center gap-1.5">
-                      <Video className="w-3.5 h-3.5 text-[#6F907D]" />
+                  <div className="pt-2 border-t border-border-subtle flex items-center justify-between">
+                    <span className="text-xs text-muted-foreground flex items-center gap-1.5">
+                      <Video className="w-3.5 h-3.5 text-primary" />
                       <span>Zoom classroom is active</span>
                     </span>
                     <a
                       href={next_lesson.zoom_join_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#6F907D] text-white text-xs font-medium hover:bg-[#5A7A67] transition-colors"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors cursor-pointer"
                     >
                       <span>Join Zoom</span>
                       <ExternalLink className="w-3 h-3" />
@@ -474,12 +474,12 @@ export default function StudentDetailPage() {
                 )}
               </div>
             ) : (
-              <div className="p-6 rounded-xl bg-[#F8F6F0]/60 dark:bg-[#1E1923]/60 border border-dashed border-[#D5D0CA]/40 dark:border-[#3E3545]/40 text-center">
-                <Clock className="w-8 h-8 text-[#362E3B]/30 dark:text-[#D5D0CA]/30 mx-auto mb-2" />
-                <p className="text-xs font-medium text-[#362E3B]/70 dark:text-[#D5D0CA]/70">
+              <div className="p-6 rounded-xl bg-surface-subtle border border-dashed border-border text-center">
+                <Clock className="w-8 h-8 text-muted-foreground mx-auto mb-2 opacity-50" />
+                <p className="text-xs font-medium text-muted-foreground">
                   No upcoming lesson scheduled
                 </p>
-                <p className="text-[11px] text-[#362E3B]/50 dark:text-[#D5D0CA]/50 mt-0.5">
+                <p className="text-[11px] text-muted-foreground/80 mt-0.5">
                   Bookings scheduled for this student will appear here automatically.
                 </p>
               </div>
@@ -488,39 +488,39 @@ export default function StudentDetailPage() {
 
           {/* Trial & Assessment Context (if available) */}
           {trial_context && (
-            <div className="bg-gradient-to-br from-[#F8F6F0] to-[#EAF0EB] dark:from-[#2A2431] dark:to-[#1E1923] rounded-2xl p-6 border border-[#8FAE9B]/30 dark:border-[#6F907D]/30 shadow-sm space-y-4">
+            <div className="bg-surface rounded-2xl p-6 border border-primary/20 shadow-2xs space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-[#362E3B]/80 dark:text-[#F5E6D3]/80">
+                  <Sparkles className="w-4 h-4 text-accent" />
+                  <h2 className="text-sm font-semibold uppercase tracking-wider text-foreground">
                     Free Trial Assessment & Recommendation
                   </h2>
                 </div>
                 {trial_context.reference_code && (
-                  <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-white/70 dark:bg-black/30 text-[#362E3B]/70 dark:text-[#D5D0CA]/70">
+                  <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-muted-foreground">
                     Ref: {trial_context.reference_code}
                   </span>
                 )}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                <div className="p-3 rounded-xl bg-white/80 dark:bg-[#2A2431]/80 border border-[#D5D0CA]/30 dark:border-[#3E3545]/30">
-                  <span className="text-[#362E3B]/60 dark:text-[#D5D0CA]/60 block text-[11px]">Assessed Level</span>
-                  <p className="font-semibold text-[#362E3B] dark:text-[#F5E6D3] mt-0.5 capitalize">
+                <div className="p-3 rounded-xl bg-surface-subtle border border-border-subtle">
+                  <span className="text-muted-foreground block text-[11px]">Assessed Level</span>
+                  <p className="font-semibold text-foreground mt-0.5 capitalize">
                     {trial_context.assessed_level || <span className="opacity-50 font-normal">Not recorded</span>}
                   </p>
                 </div>
 
-                <div className="p-3 rounded-xl bg-white/80 dark:bg-[#2A2431]/80 border border-[#D5D0CA]/30 dark:border-[#3E3545]/30">
-                  <span className="text-[#362E3B]/60 dark:text-[#D5D0CA]/60 block text-[11px]">Recommended Service</span>
-                  <p className="font-semibold text-[#362E3B] dark:text-[#F5E6D3] mt-0.5">
+                <div className="p-3 rounded-xl bg-surface-subtle border border-border-subtle">
+                  <span className="text-muted-foreground block text-[11px]">Recommended Service</span>
+                  <p className="font-semibold text-foreground mt-0.5">
                     {trial_context.recommended_service_name || <span className="opacity-50 font-normal">Not recorded</span>}
                   </p>
                 </div>
 
-                <div className="p-3 rounded-xl bg-white/80 dark:bg-[#2A2431]/80 border border-[#D5D0CA]/30 dark:border-[#3E3545]/30">
-                  <span className="text-[#362E3B]/60 dark:text-[#D5D0CA]/60 block text-[11px]">Duration & Frequency</span>
-                  <p className="font-semibold text-[#362E3B] dark:text-[#F5E6D3] mt-0.5">
+                <div className="p-3 rounded-xl bg-surface-subtle border border-border-subtle">
+                  <span className="text-muted-foreground block text-[11px]">Duration & Frequency</span>
+                  <p className="font-semibold text-foreground mt-0.5">
                     {trial_context.recommended_duration ? `${trial_context.recommended_duration} min` : ''}{' '}
                     {trial_context.recommended_frequency ? `• ${trial_context.recommended_frequency}` : ''}
                     {!trial_context.recommended_duration && !trial_context.recommended_frequency && (
@@ -531,11 +531,11 @@ export default function StudentDetailPage() {
               </div>
 
               {trial_context.learning_plan_summary && (
-                <div className="p-3.5 rounded-xl bg-white/80 dark:bg-[#2A2431]/80 border border-[#D5D0CA]/30 dark:border-[#3E3545]/30 text-xs">
-                  <span className="text-[#362E3B]/60 dark:text-[#D5D0CA]/60 block mb-1 font-medium">
+                <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle text-xs">
+                  <span className="text-muted-foreground block mb-1 font-medium">
                     Personalized Learning Plan Summary:
                   </span>
-                  <p className="text-[#362E3B] dark:text-[#F5E6D3] whitespace-pre-line">
+                  <p className="text-foreground whitespace-pre-line">
                     {trial_context.learning_plan_summary}
                   </p>
                 </div>
@@ -544,54 +544,54 @@ export default function StudentDetailPage() {
           )}
 
           {/* Bookings & Lessons History Table */}
-          <div className="bg-white dark:bg-[#2A2431] rounded-2xl p-6 border border-[#D5D0CA]/40 dark:border-[#3E3545]/40 shadow-sm space-y-4">
+          <div className="bg-surface rounded-2xl p-6 border border-border shadow-2xs space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-sm font-semibold uppercase tracking-wider text-[#362E3B]/70 dark:text-[#D5D0CA]/70 flex items-center gap-2">
-                  <BookOpen className="w-4 h-4 text-[#8FAE9B]" />
+                <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-primary" />
                   <span>Lesson History & Attendance</span>
                 </h2>
-                <p className="text-xs text-[#362E3B]/60 dark:text-[#D5D0CA]/60 mt-0.5">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   Factual records of completed, pending, and scheduled lessons.
                 </p>
               </div>
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300 font-medium">
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-success/15 text-success border border-success/30 font-medium">
                 {total_completed_lessons} Completed
               </span>
             </div>
 
             {bookings && bookings.length > 0 ? (
-              <div className="divide-y divide-[#D5D0CA]/20 dark:divide-[#3E3545]/20">
+              <div className="divide-y divide-border-subtle">
                 {bookings.map(b => (
                   <div key={b.id} className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-[#362E3B] dark:text-[#F5E6D3]">
+                        <span className="font-semibold text-foreground">
                           {b.service_name || 'Teaching Lesson'}
                         </span>
                         {b.booking_type === 'trial' && (
-                          <span className="text-[10px] px-2 py-0.2 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 font-medium">
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-accent/15 text-accent border border-accent/25 font-medium">
                             Free Trial
                           </span>
                         )}
-                        <span className={`text-[10px] px-2 py-0.2 rounded-full font-medium ${
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
                           b.status === 'completed'
-                            ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300'
+                            ? 'bg-success/15 text-success border border-success/30'
                             : b.status === 'cancelled'
-                            ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
+                            ? 'bg-destructive/15 text-destructive border border-destructive/30'
                             : b.status === 'rescheduled'
-                            ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300'
-                            : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
+                            ? 'bg-warning/15 text-warning-foreground border border-warning/30'
+                            : 'bg-primary/10 text-primary border border-primary/20'
                         }`}>
                           {b.status ? b.status.charAt(0).toUpperCase() + b.status.slice(1) : 'Scheduled'}
                         </span>
                       </div>
-                      <p className="text-[#362E3B]/60 dark:text-[#D5D0CA]/60 mt-0.5">
+                      <p className="text-muted-foreground mt-0.5">
                         {DateTime.fromISO(b.scheduled_start).toFormat('EEE, MMM d, yyyy • hh:mm a')} ({b.duration_minutes} min)
                         {b.reference_code && ` • Ref: ${b.reference_code}`}
                       </p>
                       {b.cancellation_reason && (
-                        <p className="text-red-600 dark:text-red-400 text-[11px] mt-0.5">
+                        <p className="text-destructive text-[11px] mt-0.5">
                           Reason: {b.cancellation_reason}
                         </p>
                       )}
@@ -602,7 +602,7 @@ export default function StudentDetailPage() {
                         href={b.zoom_join_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="self-start sm:self-auto inline-flex items-center gap-1 text-[11px] text-[#6F907D] hover:text-[#5A7A67] font-medium"
+                        className="self-start sm:self-auto inline-flex items-center gap-1 text-[11px] text-primary hover:underline font-medium cursor-pointer"
                       >
                         <span>Zoom Meeting</span>
                         <ExternalLink className="w-3 h-3" />
@@ -612,9 +612,9 @@ export default function StudentDetailPage() {
                 ))}
               </div>
             ) : (
-              <div className="p-6 rounded-xl bg-[#F8F6F0]/60 dark:bg-[#1E1923]/60 border border-dashed border-[#D5D0CA]/40 dark:border-[#3E3545]/40 text-center">
-                <Calendar className="w-8 h-8 text-[#362E3B]/30 dark:text-[#D5D0CA]/30 mx-auto mb-2" />
-                <p className="text-xs font-medium text-[#362E3B]/70 dark:text-[#D5D0CA]/70">
+              <div className="p-6 rounded-xl bg-surface-subtle border border-dashed border-border text-center">
+                <Calendar className="w-8 h-8 text-muted-foreground mx-auto mb-2 opacity-50" />
+                <p className="text-xs font-medium text-muted-foreground">
                   No lesson records found for this student
                 </p>
               </div>
@@ -624,35 +624,35 @@ export default function StudentDetailPage() {
 
         {/* Right 1 Column: Private Notes (Mahmoud Only) */}
         <div className="space-y-6">
-          <div className="bg-white dark:bg-[#2A2431] rounded-2xl p-6 border border-[#D5D0CA]/40 dark:border-[#3E3545]/40 shadow-sm space-y-5">
+          <div className="bg-surface rounded-2xl p-6 border border-border shadow-2xs space-y-5">
             {/* Notes Section Header */}
             <div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Lock className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-[#362E3B]/80 dark:text-[#F5E6D3]/80">
+                  <Lock className="w-4 h-4 text-warning" />
+                  <h2 className="text-sm font-semibold uppercase tracking-wider text-foreground">
                     Teacher Private Notes
                   </h2>
                 </div>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-300 font-medium">
+                <span className="text-[10px] px-2 py-0.5 rounded bg-warning/15 text-warning-foreground border border-warning/25 font-medium">
                   Mahmoud Only
                 </span>
               </div>
-              <p className="text-[11px] text-[#362E3B]/60 dark:text-[#D5D0CA]/60 mt-1">
+              <p className="text-[11px] text-muted-foreground mt-1">
                 Strictly confidential private observations, progress tracking, and lesson notes. Never visible to students.
               </p>
             </div>
 
             {/* Note Creation Box */}
-            <form onSubmit={handleCreateNote} className="space-y-3 p-4 rounded-xl bg-[#F8F6F0] dark:bg-[#1E1923] border border-[#D5D0CA]/30 dark:border-[#3E3545]/30">
+            <form onSubmit={handleCreateNote} className="space-y-3 p-4 rounded-xl bg-surface-subtle border border-border-subtle">
               {noteFormError && (
-                <div className="p-2 rounded-lg bg-red-50 dark:bg-red-900/20 text-xs text-red-700 dark:text-red-300">
+                <div className="p-2 rounded-lg bg-destructive/15 text-xs text-destructive border border-destructive/30">
                   {noteFormError}
                 </div>
               )}
               <div>
-                <label className="block text-[11px] font-medium text-[#362E3B]/70 dark:text-[#D5D0CA]/70 mb-1">
-                  New Private Observation / Note <span className="text-red-500">*</span>
+                <label className="block text-[11px] font-medium text-muted-foreground mb-1">
+                  New Private Observation / Note <span className="text-destructive">*</span>
                 </label>
                 <textarea
                   rows={3}
@@ -660,7 +660,7 @@ export default function StudentDetailPage() {
                   onChange={e => setNewNoteContent(e.target.value)}
                   required
                   placeholder="Record lesson observations, Tajweed mastery, pronunciation notes..."
-                  className="w-full px-3 py-2 text-xs rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#2A2431] text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-border bg-surface text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
 
@@ -670,7 +670,7 @@ export default function StudentDetailPage() {
                   value={newNoteObservations}
                   onChange={e => setNewNoteObservations(e.target.value)}
                   placeholder="Specific observations (e.g. Needs practice on Noon Sakinah)"
-                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#2A2431] text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-border bg-surface text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
 
@@ -680,7 +680,7 @@ export default function StudentDetailPage() {
                   value={newNoteNextSteps}
                   onChange={e => setNewNoteNextSteps(e.target.value)}
                   placeholder="Next steps / homework assigned"
-                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#2A2431] text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-border bg-surface text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
 
@@ -688,7 +688,7 @@ export default function StudentDetailPage() {
                 <button
                   type="submit"
                   disabled={isSubmittingNote || !newNoteContent.trim()}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-xl bg-[#6F907D] hover:bg-[#5A7A67] text-white transition-colors disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>{isSubmittingNote ? 'Saving...' : 'Save Private Note'}</span>
@@ -702,7 +702,7 @@ export default function StudentDetailPage() {
                 notes.map(note => (
                   <div
                     key={note.id}
-                    className="p-3.5 rounded-xl bg-white dark:bg-[#2A2431] border border-[#D5D0CA]/40 dark:border-[#3E3545]/40 shadow-xs space-y-2 text-xs"
+                    className="p-3.5 rounded-xl bg-surface border border-border-subtle shadow-2xs space-y-2 text-xs"
                   >
                     {editingNoteId === note.id ? (
                       /* Inline Edit Mode */
@@ -711,27 +711,27 @@ export default function StudentDetailPage() {
                           rows={3}
                           value={editNoteContent}
                           onChange={e => setEditNoteContent(e.target.value)}
-                          className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-[#362E3B] dark:text-[#F5E6D3]"
+                          className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-border bg-surface text-foreground"
                         />
                         <input
                           type="text"
                           value={editNoteObservations}
                           onChange={e => setEditNoteObservations(e.target.value)}
                           placeholder="Observations"
-                          className="w-full px-2.5 py-1 text-xs rounded-lg border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-[#362E3B] dark:text-[#F5E6D3]"
+                          className="w-full px-2.5 py-1 text-xs rounded-lg border border-border bg-surface text-foreground"
                         />
                         <input
                           type="text"
                           value={editNoteNextSteps}
                           onChange={e => setEditNoteNextSteps(e.target.value)}
                           placeholder="Next steps"
-                          className="w-full px-2.5 py-1 text-xs rounded-lg border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-[#362E3B] dark:text-[#F5E6D3]"
+                          className="w-full px-2.5 py-1 text-xs rounded-lg border border-border bg-surface text-foreground"
                         />
                         <div className="flex items-center justify-end gap-2 pt-1">
                           <button
                             type="button"
                             onClick={() => setEditingNoteId(null)}
-                            className="px-2.5 py-1 text-[11px] rounded-lg text-[#362E3B]/70 dark:text-[#D5D0CA]/70 hover:bg-black/5"
+                            className="px-2.5 py-1 text-[11px] rounded-lg text-muted-foreground hover:bg-surface-subtle cursor-pointer"
                           >
                             Cancel
                           </button>
@@ -739,7 +739,7 @@ export default function StudentDetailPage() {
                             type="button"
                             onClick={() => handleUpdateNote(note.id)}
                             disabled={isUpdatingNote || !editNoteContent.trim()}
-                            className="px-3 py-1 text-[11px] font-medium rounded-lg bg-[#6F907D] text-white hover:bg-[#5A7A67]"
+                            className="px-3 py-1 text-[11px] font-semibold rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
                           >
                             {isUpdatingNote ? 'Saving...' : 'Save'}
                           </button>
@@ -748,19 +748,19 @@ export default function StudentDetailPage() {
                     ) : (
                       /* Display Mode */
                       <>
-                        <div className="flex items-center justify-between text-[11px] text-[#362E3B]/50 dark:text-[#D5D0CA]/50">
+                        <div className="flex items-center justify-between text-[11px] text-muted-foreground">
                           <span>{DateTime.fromISO(note.created_at).toFormat('MMM d, yyyy • hh:mm a')}</span>
                           <div className="flex items-center gap-1.5">
                             <button
                               onClick={() => handleStartEditNote(note)}
-                              className="p-1 hover:text-[#6F907D] transition-colors"
+                              className="p-1 hover:text-primary transition-colors cursor-pointer"
                               title="Edit note"
                             >
                               <Edit3 className="w-3.5 h-3.5" />
                             </button>
                             <button
                               onClick={() => handleDeleteNote(note.id)}
-                              className="p-1 hover:text-red-500 transition-colors"
+                              className="p-1 hover:text-destructive transition-colors cursor-pointer"
                               title="Delete note"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
@@ -768,19 +768,19 @@ export default function StudentDetailPage() {
                           </div>
                         </div>
 
-                        <p className="text-[#362E3B] dark:text-[#F5E6D3] whitespace-pre-line leading-relaxed">
+                        <p className="text-foreground whitespace-pre-line leading-relaxed">
                           {note.content}
                         </p>
 
                         {note.observations && (
-                          <p className="text-[11px] text-[#362E3B]/70 dark:text-[#D5D0CA]/70 bg-[#F8F6F0] dark:bg-[#1E1923] p-2 rounded-lg">
-                            <strong className="font-semibold text-[#6F907D]">Observations:</strong> {note.observations}
+                          <p className="text-[11px] text-muted-foreground bg-surface-subtle p-2 rounded-lg border border-border-subtle">
+                            <strong className="font-semibold text-primary">Observations:</strong> {note.observations}
                           </p>
                         )}
 
                         {note.next_steps && (
-                          <p className="text-[11px] text-[#362E3B]/70 dark:text-[#D5D0CA]/70 bg-[#F8F6F0] dark:bg-[#1E1923] p-2 rounded-lg">
-                            <strong className="font-semibold text-amber-700 dark:text-amber-400">Next Steps:</strong> {note.next_steps}
+                          <p className="text-[11px] text-muted-foreground bg-surface-subtle p-2 rounded-lg border border-border-subtle">
+                            <strong className="font-semibold text-warning-foreground">Next Steps:</strong> {note.next_steps}
                           </p>
                         )}
                       </>
@@ -788,12 +788,12 @@ export default function StudentDetailPage() {
                   </div>
                 ))
               ) : (
-                <div className="p-6 rounded-xl bg-[#F8F6F0]/60 dark:bg-[#1E1923]/60 border border-dashed border-[#D5D0CA]/40 dark:border-[#3E3545]/40 text-center">
-                  <FileText className="w-7 h-7 text-[#362E3B]/30 dark:text-[#D5D0CA]/30 mx-auto mb-1.5" />
-                  <p className="text-xs font-medium text-[#362E3B]/70 dark:text-[#D5D0CA]/70">
+                <div className="p-6 rounded-xl bg-surface-subtle border border-dashed border-border text-center">
+                  <FileText className="w-7 h-7 text-muted-foreground mx-auto mb-1.5 opacity-50" />
+                  <p className="text-xs font-medium text-muted-foreground">
                     No private notes recorded yet
                   </p>
-                  <p className="text-[11px] text-[#362E3B]/50 dark:text-[#D5D0CA]/50 mt-0.5">
+                  <p className="text-[11px] text-muted-foreground/80 mt-0.5">
                     Use the box above to record confidential observations.
                   </p>
                 </div>

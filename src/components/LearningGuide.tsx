@@ -86,10 +86,10 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-xl bg-[#87A878] text-white hover:bg-[#6F907D] transition-colors cursor-pointer flex items-center justify-center group"
+            className="fixed bottom-6 end-6 z-50 p-4 rounded-full shadow-xl bg-primary text-primary-foreground hover:bg-primary-hover transition-colors cursor-pointer flex items-center justify-center group"
           >
             <Sparkles className="w-6 h-6" />
-            <span className="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs group-hover:ml-2 transition-all duration-300 ease-in-out text-sm font-medium">
+            <span className="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs group-hover:ms-2 transition-all duration-300 ease-in-out text-sm font-medium">
               {isEn ? 'Learning Guide' : 'مرشد التعلم'}
             </span>
           </motion.button>
@@ -103,26 +103,26 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-6 right-6 z-50 w-[350px] max-w-[calc(100vw-2rem)] h-[500px] max-h-[calc(100vh-6rem)] bg-white dark:bg-[#231D28] rounded-2xl shadow-2xl border border-[#87A878]/30 overflow-hidden flex flex-col"
+            className="fixed bottom-6 end-6 z-50 w-[350px] max-w-[calc(100vw-2rem)] h-[500px] max-h-[calc(100vh-6rem)] bg-surface rounded-2xl shadow-2xl border border-border overflow-hidden flex flex-col"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 bg-[#EDE3D4] dark:bg-[#1E1923] border-b border-[#87A878]/20">
+            <div className="flex items-center justify-between p-4 bg-surface-subtle border-b border-border">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-[#87A878]" />
-                <h3 className="font-serif font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+                <Sparkles className="w-5 h-5 text-primary" />
+                <h3 className="font-serif font-medium text-foreground">
                   {isEn ? 'AI Learning Guide' : 'المرشد الذكي'}
                 </h3>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/5 text-[#362E3B]/70 dark:text-[#F5E6D3]/70 transition-colors cursor-pointer"
+                className="p-1.5 rounded-full hover:bg-surface text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-[#231D28]/50">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-surface-subtle/50">
               {messages.map((msg, idx) => (
                 <div
                   key={idx}
@@ -130,15 +130,15 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
                 >
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
                     msg.role === 'user' 
-                      ? 'bg-[#362E3B] text-white dark:bg-[#F5E6D3] dark:text-[#362E3B]' 
-                      : 'bg-[#87A878] text-white'
+                      ? 'bg-foreground text-background' 
+                      : 'bg-primary text-primary-foreground'
                   }`}>
                     {msg.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
                   </div>
                   <div className={`px-4 py-2.5 rounded-2xl max-w-[75%] text-sm leading-relaxed ${
                     msg.role === 'user'
-                      ? 'bg-[#362E3B] text-white dark:bg-[#F5E6D3] dark:text-[#362E3B] rounded-tr-sm'
-                      : 'bg-white dark:bg-[#1E1923] text-[#362E3B] dark:text-[#F5E6D3] border border-gray-100 dark:border-[#3E3545] rounded-tl-sm shadow-sm'
+                      ? 'bg-foreground text-background rounded-tr-sm'
+                      : 'bg-surface text-foreground border border-border rounded-tl-sm shadow-sm'
                   }`}>
                     {msg.content}
                   </div>
@@ -146,14 +146,14 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
               ))}
               {isLoading && (
                 <div className="flex gap-3 flex-row">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-[#87A878] text-white">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-primary text-primary-foreground">
                     <Bot className="w-4 h-4" />
                   </div>
-                  <div className="px-4 py-2.5 rounded-2xl bg-white dark:bg-[#1E1923] border border-gray-100 dark:border-[#3E3545] rounded-tl-sm shadow-sm">
+                  <div className="px-4 py-2.5 rounded-2xl bg-surface border border-border rounded-tl-sm shadow-sm">
                     <div className="flex gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#87A878] animate-bounce" />
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#87A878] animate-bounce [animation-delay:0.2s]" />
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#87A878] animate-bounce [animation-delay:0.4s]" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce [animation-delay:0.2s]" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce [animation-delay:0.4s]" />
                     </div>
                   </div>
                 </div>
@@ -162,19 +162,19 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
             </div>
 
             {/* Input */}
-            <form onSubmit={handleSubmit} className="p-3 bg-white dark:bg-[#231D28] border-t border-gray-100 dark:border-[#3E3545]">
+            <form onSubmit={handleSubmit} className="p-3 bg-surface border-t border-border">
               <div className="flex gap-2">
                 <input
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder={isEn ? "Ask me anything..." : "اسألني أي شيء..."}
-                  className="flex-1 bg-gray-50 dark:bg-[#1E1923] border border-gray-200 dark:border-[#3E3545] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#87A878] focus:ring-1 focus:ring-[#87A878] text-[#362E3B] dark:text-[#F5E6D3] placeholder-gray-400 dark:placeholder-gray-500"
+                  className="flex-1 bg-surface-subtle border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 text-foreground placeholder-muted-foreground"
                 />
                 <button
                   type="submit"
                   disabled={!input.trim() || isLoading}
-                  className="p-2.5 bg-[#87A878] text-white rounded-xl hover:bg-[#6F907D] disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer shrink-0 flex items-center justify-center"
+                  className="p-2.5 bg-primary text-primary-foreground rounded-xl hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer shrink-0 flex items-center justify-center"
                 >
                   <Send className="w-4 h-4" />
                 </button>

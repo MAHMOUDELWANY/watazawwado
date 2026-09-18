@@ -16,19 +16,12 @@ export function Alert({
   icon = true,
   ...props
 }: AlertProps) {
+  // Semantic design system variants
   const variants = {
-    info: 'bg-primary/10 text-primary-foreground border-primary/20', // wait, primary foreground is white. Let's use a subtle variant.
-    success: 'bg-success/10 text-success border-success/20',
-    warning: 'bg-warning/10 text-warning-foreground border-warning/20',
-    destructive: 'bg-destructive/10 text-destructive border-destructive/20',
-  };
-  
-  // Refined variants based on the theme
-  const refinedVariants = {
     info: 'bg-surface-subtle text-foreground border-border',
-    success: 'bg-[#6B8E70]/10 dark:bg-[#6B8E70]/20 text-[#4C6B3E] dark:text-[#A3BF96] border-[#6B8E70]/30',
-    warning: 'bg-[#DE9B61]/10 dark:bg-[#DE9B61]/20 text-[#B87A44] dark:text-[#E8B688] border-[#DE9B61]/30',
-    destructive: 'bg-[#D16D6A]/10 dark:bg-[#D16D6A]/20 text-[#B24D4A] dark:text-[#E29A98] border-[#D16D6A]/30',
+    success: 'bg-success/15 text-success border-success/30',
+    warning: 'bg-warning/15 text-warning-foreground border-warning/30',
+    destructive: 'bg-destructive/15 text-destructive border-destructive/30',
   };
 
   const Icons = {
@@ -45,7 +38,7 @@ export function Alert({
       role="alert"
       className={cn(
         'relative w-full rounded-xl border p-4 flex gap-3',
-        refinedVariants[variant],
+        variants[variant],
         className
       )}
       {...props}

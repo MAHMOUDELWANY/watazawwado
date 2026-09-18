@@ -551,8 +551,8 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
   if (auth.loading) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
-        <Loader2 className="w-8 h-8 animate-spin text-[#8FAE9B]" />
-        <p className="text-sm font-medium text-[#7A827B] dark:text-[#A69FA8]">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <p className="text-sm font-medium text-muted-foreground">
           Checking your student session…
         </p>
       </div>
@@ -563,26 +563,26 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
   if (!accessToken) {
     return (
       <div className="max-w-xl mx-auto py-12 px-4 text-center space-y-4">
-        <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 mx-auto flex items-center justify-center">
+        <div className="w-12 h-12 rounded-2xl bg-warning/10 text-warning mx-auto flex items-center justify-center">
           <AlertCircle className="w-6 h-6" />
         </div>
-        <h2 className="text-lg font-semibold text-[#30332F] dark:text-[#F8F6F0]">
+        <h2 className="text-lg font-semibold text-foreground">
           Sign in to continue
         </h2>
-        <p className="text-sm text-[#7A827B] dark:text-[#A69FA8]">
+        <p className="text-sm text-muted-foreground">
           Your student account is required to access the authenticated lesson booking portal.
         </p>
         <div className="pt-2 flex justify-center gap-3">
           <Link
             to="/student"
-            className="px-4 py-2 rounded-xl text-xs font-semibold bg-[#EDE3D4] dark:bg-[#2A2431] text-[#362E3B] dark:text-[#F5E6D3] hover:bg-[#D5D0CA] transition-colors"
+            className="px-4 py-2 rounded-xl text-xs font-semibold bg-surface-subtle text-foreground hover:bg-border/40 transition-colors"
           >
             ← Return to Dashboard
           </Link>
           <button
             type="button"
             onClick={() => navigate('/student')}
-            className="px-4 py-2 rounded-xl text-xs font-semibold bg-[#8FAE9B] hover:bg-[#6F907D] text-white transition-colors cursor-pointer"
+            className="px-4 py-2 rounded-xl text-xs font-semibold bg-primary hover:bg-primary-hover text-primary-foreground transition-colors cursor-pointer"
           >
             Sign In
           </button>
@@ -594,8 +594,8 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
   if (profileLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
-        <Loader2 className="w-8 h-8 animate-spin text-[#8FAE9B]" />
-        <p className="text-sm font-medium text-[#7A827B] dark:text-[#A69FA8]">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <p className="text-sm font-medium text-muted-foreground">
           Loading your lesson options…
         </p>
       </div>
@@ -605,26 +605,26 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
   if (profileError || !profile) {
     return (
       <div className="max-w-xl mx-auto py-12 px-4 text-center space-y-4">
-        <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 mx-auto flex items-center justify-center">
+        <div className="w-12 h-12 rounded-2xl bg-warning/10 text-warning mx-auto flex items-center justify-center">
           <AlertCircle className="w-6 h-6" />
         </div>
-        <h2 className="text-lg font-semibold text-[#30332F] dark:text-[#F8F6F0]">
+        <h2 className="text-lg font-semibold text-foreground">
           Unable to load student profile
         </h2>
-        <p className="text-sm text-[#7A827B] dark:text-[#A69FA8]">
+        <p className="text-sm text-muted-foreground">
           {profileError || 'Please ensure you are signed in to your student account before booking.'}
         </p>
         <div className="pt-2 flex justify-center gap-3">
           <Link
             to="/student"
-            className="px-4 py-2 rounded-xl text-xs font-semibold bg-[#EDE3D4] dark:bg-[#2A2431] text-[#362E3B] dark:text-[#F5E6D3] hover:bg-[#D5D0CA] transition-colors"
+            className="px-4 py-2 rounded-xl text-xs font-semibold bg-surface-subtle text-foreground hover:bg-border/40 transition-colors"
           >
             ← Return to Dashboard
           </Link>
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="px-4 py-2 rounded-xl text-xs font-semibold bg-[#8FAE9B] hover:bg-[#6F907D] text-white transition-colors cursor-pointer"
+            className="px-4 py-2 rounded-xl text-xs font-semibold bg-primary hover:bg-primary-hover text-primary-foreground transition-colors cursor-pointer"
           >
             Retry
           </button>
@@ -715,33 +715,33 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
   return (
     <div className="space-y-6">
       {/* Top Header & Context Breadcrumb */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#E2DDD5]/60 dark:border-[#3E3545]/60">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border/60">
         <div>
           <button
             type="button"
             onClick={() => navigate('/student')}
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-[#7A827B] hover:text-[#30332F] dark:text-[#A69FA8] dark:hover:text-white transition-colors mb-1.5 cursor-pointer"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors mb-1.5 cursor-pointer"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Return to Student Portal</span>
           </button>
-          <h1 className="text-2xl font-serif font-bold tracking-tight text-[#30332F] dark:text-[#F8F6F0]">
+          <h1 className="text-2xl font-serif font-bold tracking-tight text-foreground">
             Book a Lesson
           </h1>
-          <p className="text-xs sm:text-sm text-[#7A827B] dark:text-[#A69FA8] mt-0.5">
+          <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
             Choose your lesson, confirm your preferences, and schedule your next 1-on-1 session.
           </p>
         </div>
 
-        <div className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl bg-white dark:bg-[#231D28] border border-[#D5D0CA]/50 dark:border-[#3E3545]/50 shadow-xs self-start sm:self-auto">
-          <div className="p-1 rounded-full bg-[#8FAE9B]/20 text-[#6F907D] dark:text-[#8FAE9B]">
+        <div className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl bg-surface border border-border shadow-xs self-start sm:self-auto">
+          <div className="p-1 rounded-full bg-primary/10 text-primary">
             <ShieldCheck className="w-4 h-4" />
           </div>
           <div className="text-left">
-            <div className="text-[11px] font-semibold text-[#30332F] dark:text-[#F8F6F0] leading-tight truncate max-w-[160px] sm:max-w-[200px]">
+            <div className="text-[11px] font-semibold text-foreground leading-tight truncate max-w-[160px] sm:max-w-[200px]">
               {profile.name || profile.email}
             </div>
-            <div className="text-[10px] text-[#7A827B] dark:text-[#A69FA8] leading-tight">
+            <div className="text-[10px] text-muted-foreground leading-tight">
               {profile.bookingPreference === 'child' ? 'Booking for Child' : 'Linked Student Account'}
             </div>
           </div>
@@ -749,15 +749,15 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
       </div>
 
       {lastEligibleBooking && lastBookingSummary && !reuseDismissed && !isReusing && !requestedServiceId && (
-        <div className="rounded-2xl border border-[#D5D0CA]/60 dark:border-[#3E3545]/60 bg-[#FBF9F5] dark:bg-[#1E1923] p-4 shadow-xs">
-          <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.14em] text-[#7A827B] dark:text-[#A69FA8] font-semibold">
+        <div className="rounded-2xl border border-border/60 bg-surface-subtle p-4 shadow-xs">
+          <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.14em] text-muted-foreground font-semibold">
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Booking context</span>
           </div>
-          <div className="mt-2 text-sm font-medium text-[#30332F] dark:text-[#F8F6F0]">
+          <div className="mt-2 text-sm font-medium text-foreground">
             {lastBookingSummary.summaryText}
           </div>
-          <p className="mt-1 text-xs text-[#7A827B] dark:text-[#A69FA8]">
+          <p className="mt-1 text-xs text-muted-foreground">
             Reuse this recent lesson as a starting point or choose a fresh lesson from the form below.
           </p>
         </div>
@@ -765,9 +765,9 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
 
       {/* Bookings Verification Warning / Retry (if /api/student/bookings failed) */}
       {bookingsError && (
-        <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-amber-900 dark:text-amber-200">
+        <div className="p-4 rounded-2xl bg-warning/10 border border-warning/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-warning">
           <div className="flex items-center gap-2.5">
-            <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
+            <AlertCircle className="w-4 h-4 text-warning shrink-0" />
             <span>
               {bookingsError} Free trial booking is unavailable until history is verified.
             </span>
@@ -776,7 +776,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
             type="button"
             onClick={() => fetchBookings(accessToken)}
             disabled={bookingsLoading}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-medium self-start sm:self-auto transition-colors cursor-pointer disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-warning hover:bg-warning/90 text-primary-foreground font-medium self-start sm:self-auto transition-colors cursor-pointer disabled:opacity-50"
           >
             {bookingsLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
             <span>Retry Verification</span>
@@ -793,30 +793,30 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
       {lastEligibleBooking && lastBookingSummary && !reuseDismissed && !isReusing && !requestedServiceId ? (
         <div
           id="repeat-last-booking-card"
-          className="max-w-xl mx-auto p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#231D28] border border-[#D5D0CA]/40 dark:border-[#3E3545]/40 shadow-sm space-y-6"
+          className="max-w-xl mx-auto p-6 sm:p-8 rounded-3xl bg-surface border border-border shadow-sm space-y-6"
         >
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-2xl bg-[#8FAE9B]/20 text-[#557161] dark:text-[#A8C9B4]">
+            <div className="p-2.5 rounded-2xl bg-primary/10 text-primary">
               <RotateCcw className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-serif font-bold text-[#30332F] dark:text-[#F8F6F0]">
+              <h2 className="text-lg font-serif font-bold text-foreground">
                 Book another lesson
               </h2>
-              <p className="text-xs text-[#7A827B] dark:text-[#A69FA8]">
+              <p className="text-xs text-muted-foreground">
                 Continue from your last completed lesson?
               </p>
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-[#FBF9F5] dark:bg-[#1E1923] border border-[#E2DDD5]/70 dark:border-[#3E3545]/70 space-y-1.5 text-xs">
-            <div className="text-[11px] font-medium text-[#7A827B] dark:text-[#A69FA8] uppercase tracking-wider">
+          <div className="p-4 rounded-2xl bg-surface-subtle border border-border space-y-1.5 text-xs">
+            <div className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
               Previous lesson details
             </div>
-            <div className="font-semibold text-sm text-[#30332F] dark:text-[#F8F6F0]">
+            <div className="font-semibold text-sm text-foreground">
               {lastBookingSummary.summaryText}
             </div>
-            <div className="text-[11px] text-[#7A827B] dark:text-[#A69FA8]">
+            <div className="text-[11px] text-muted-foreground">
               Subject, level, and learner preferences will be carried forward automatically.
             </div>
           </div>
@@ -826,7 +826,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
               type="button"
               id="btn-reuse-last-booking"
               onClick={handleReuseLastBooking}
-              className="w-full p-4 rounded-2xl bg-[#8FAE9B] hover:bg-[#6F907D] text-white font-medium text-xs transition-all shadow-sm flex flex-col items-start gap-1 cursor-pointer text-left"
+              className="w-full p-4 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground font-medium text-xs transition-all shadow-xs flex flex-col items-start gap-1 cursor-pointer text-start"
             >
               <div className="flex items-center gap-1.5 font-semibold text-sm">
                 <RotateCcw className="w-4 h-4" />
@@ -841,13 +841,13 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
               type="button"
               id="btn-dismiss-reuse-booking"
               onClick={handleDismissReuse}
-              className="w-full p-4 rounded-2xl bg-white dark:bg-[#2A2431] border border-[#D5D0CA] dark:border-[#3E3545] text-[#30332F] dark:text-[#F8F6F0] hover:bg-[#F5E6D3]/30 font-medium text-xs transition-all shadow-xs flex flex-col items-start gap-1 cursor-pointer text-left"
+              className="w-full p-4 rounded-2xl bg-surface border border-border text-foreground hover:bg-surface-subtle font-medium text-xs transition-all shadow-xs flex flex-col items-start gap-1 cursor-pointer text-start"
             >
               <div className="flex items-center gap-1.5 font-semibold text-sm">
-                <Sparkles className="w-4 h-4 text-[#8FAE9B]" />
+                <Sparkles className="w-4 h-4 text-primary" />
                 <span>Make a new booking</span>
               </div>
-              <span className="text-[11px] text-[#7A827B] dark:text-[#A69FA8] leading-tight">
+              <span className="text-[11px] text-muted-foreground leading-tight">
                 Start fresh and choose lesson details again.
               </span>
             </button>
@@ -858,9 +858,9 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
         <div className="space-y-4">
           {/* Active reuse feedback banner */}
           {isReusing && lastBookingSummary && (
-            <div className="p-3.5 rounded-2xl bg-[#8FAE9B]/15 border border-[#8FAE9B]/30 text-xs text-[#557161] dark:text-[#A8C9B4] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div className="p-3.5 rounded-2xl bg-primary/10 border border-primary/20 text-xs text-primary flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-[#557161] dark:text-[#A8C9B4] shrink-0" />
+                <Check className="w-4 h-4 text-primary shrink-0" />
                 <span>
                   Reusing details from your last lesson: <strong>{lastBookingSummary.summaryText}</strong>. Choose your date &amp; time below, or edit any details.
                 </span>
@@ -869,7 +869,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
                 type="button"
                 id="btn-reset-reuse-booking"
                 onClick={handleResetToNewBooking}
-                className="text-xs font-medium underline hover:text-[#362E3B] dark:hover:text-white cursor-pointer self-start sm:self-auto"
+                className="text-xs font-medium underline hover:text-foreground cursor-pointer self-start sm:self-auto"
               >
                 Start fresh instead
               </button>
@@ -878,12 +878,12 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
 
           {/* Dismissed subtle helper: available if user changed their mind */}
           {lastEligibleBooking && lastBookingSummary && reuseDismissed && !isReusing && (
-            <div className="flex items-center justify-between text-xs text-[#7A827B] dark:text-[#A69FA8] px-1">
+            <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
               <button
                 type="button"
                 id="btn-reopen-reuse-booking"
                 onClick={handleReuseLastBooking}
-                className="inline-flex items-center gap-1.5 font-medium text-[#557161] dark:text-[#A8C9B4] hover:underline cursor-pointer"
+                className="inline-flex items-center gap-1.5 font-medium text-primary hover:underline cursor-pointer"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Reuse last lesson details ({lastBookingSummary.summaryText})</span>
@@ -899,7 +899,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
             initialStep={flowStep}
             trialDisabled={!canBookTrial}
             trialDisabledReason={trialDisabledReason}
-            cardClassName="w-full bg-white dark:bg-[#231D28] text-[#362E3B] dark:text-[#D5D0CA] p-5 sm:p-8 rounded-3xl border border-[#D5D0CA]/40 dark:border-[#3E3545]/40 shadow-sm"
+            cardClassName="w-full bg-surface text-foreground p-5 sm:p-8 rounded-3xl border border-border shadow-xs"
             doneLabel="Done & Return to Student Portal"
             onDone={() => navigate('/student')}
             onClose={() => navigate('/student')}

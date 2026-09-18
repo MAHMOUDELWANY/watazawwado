@@ -5,7 +5,6 @@ import {
   LayoutDashboard, 
   Calendar, 
   Users, 
-  Video, 
   BookOpen, 
   Settings, 
   LogOut, 
@@ -15,7 +14,10 @@ import {
   UserPlus,
   TrendingUp,
   Moon,
-  Sun
+  Sun,
+  ShieldCheck,
+  Globe,
+  Clock
 } from 'lucide-react';
 import { useTheme } from "../components/ThemeProvider";
 import TodayPage from './pages/TodayPage';
@@ -35,21 +37,90 @@ export function DashboardApp() {
   const { theme, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
-
   const [lang, setLang] = useState<Language>('en');
 
-  // If not authenticated, we should show a message or redirect.
-  // Wait, the TeacherAuthModal handles login on the landing page via hash #teacher.
-  // We can just render a simple forbidden state with a link back to login if they bypassed it.
+  const drawerRef = React.useRef<HTMLElement>(null);
+  const menuTriggerRef = React.useRef<HTMLButtonElement>(null);
+  const closeButtonRef = React.useRef<HTMLButtonElement>(null);
+  const prevMobileMenuOpenRef = React.useRef(isMobileMenuOpen);
+
+  // Manage body scroll lock and focus when mobile drawer opens/closes
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+
+      // Move focus inside the drawer
+      const timer = setTimeout(() => {
+        closeButtonRef.current?.focus();
+      }, 50);
+
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          setIsMobileMenuOpen(false);
+          return;
+        }
+
+        if (e.key === 'Tab' && drawerRef.current) {
+          const focusable = drawerRef.current.querySelectorAll<HTMLElement>(
+            'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          );
+          if (focusable.length === 0) return;
+
+          const firstEl = focusable[0];
+          const lastEl = focusable[focusable.length - 1];
+
+          if (e.shiftKey) {
+            if (document.activeElement === firstEl) {
+              e.preventDefault();
+              lastEl.focus();
+            }
+          } else {
+            if (document.activeElement === lastEl) {
+              e.preventDefault();
+              firstEl.focus();
+            }
+          }
+        }
+      };
+
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    } else {
+      document.body.style.overflow = '';
+      if (prevMobileMenuOpenRef.current) {
+        menuTriggerRef.current?.focus();
+      }
+    }
+    prevMobileMenuOpenRef.current = isMobileMenuOpen;
+  }, [isMobileMenuOpen]);
+
+  // Clean up overflow on unmount
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
+
+  // Handle unauthorized state
   if (!isTeacherAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#F5E6D3] dark:bg-[#1E1923] flex items-center justify-center p-6 text-[#362E3B] dark:text-[#F5E6D3]">
-        <div className="max-w-md w-full bg-white dark:bg-[#2A2431] rounded-2xl p-8 shadow-sm text-center">
-          <ShieldCheckIcon className="w-12 h-12 text-sage-600 dark:text-sage-400 mx-auto mb-4" />
-          <h1 className="text-xl font-semibold mb-2">Teacher Access Required</h1>
-          <p className="text-sm opacity-80 mb-6">You must be logged in as a teacher to view the dashboard.</p>
-          <Link to="/staff/login" className="inline-flex items-center justify-center px-6 py-2.5 bg-[#8FAE9B] hover:bg-[#6F907D] text-white rounded-xl transition-colors font-medium">
-            Go to Login
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-6">
+        <div className="max-w-md w-full bg-surface border border-border rounded-2xl p-8 shadow-sm text-center">
+          <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4">
+            <ShieldCheck className="w-7 h-7" />
+          </div>
+          <h1 className="text-xl font-serif font-semibold text-foreground mb-2">Teacher Workspace</h1>
+          <p className="text-sm text-muted-foreground mb-6">
+            You must be logged in as an authorized teacher to access the workspace.
+          </p>
+          <Link 
+            to="/staff/login" 
+            className="inline-flex items-center justify-center px-6 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl transition-all duration-base font-medium shadow-xs min-h-[44px]"
+          >
+            Go to Teacher Login
           </Link>
         </div>
       </div>
@@ -57,48 +128,77 @@ export function DashboardApp() {
   }
 
   const navigation = [
-    { name: 'Today', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'Upcoming', path: '/dashboard/upcoming', icon: Calendar },
-    { name: 'Trials', path: '/dashboard/trials', icon: Sparkles },
-    { name: 'Leads', path: '/dashboard/leads', icon: UserPlus },
-    { name: 'Students', path: '/dashboard/students', icon: Users },
-    { name: 'Bookings', path: '/dashboard/bookings', icon: BookOpen },
-    { name: 'Analytics', path: '/dashboard/analytics', icon: TrendingUp,
-  Moon,
-  Sun },
-    { name: 'Settings', path: '/dashboard/settings', icon: Settings },
+    { name: lang === 'ar' ? 'اليوم' : 'Today', path: '/dashboard', icon: LayoutDashboard },
+    { name: lang === 'ar' ? 'الجدول القادم' : 'Upcoming', path: '/dashboard/upcoming', icon: Calendar },
+    { name: lang === 'ar' ? 'التجريبية' : 'Trials', path: '/dashboard/trials', icon: Sparkles },
+    { name: lang === 'ar' ? 'التواصل' : 'Leads', path: '/dashboard/leads', icon: UserPlus },
+    { name: lang === 'ar' ? 'الطلاب' : 'Students', path: '/dashboard/students', icon: Users },
+    { name: lang === 'ar' ? 'الحجوزات' : 'Bookings', path: '/dashboard/bookings', icon: BookOpen },
+    { name: lang === 'ar' ? 'التقارير' : 'Analytics', path: '/dashboard/analytics', icon: TrendingUp },
+    { name: lang === 'ar' ? 'الإعدادات' : 'Settings', path: '/dashboard/settings', icon: Settings },
   ];
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+  const toggleLanguage = () => setLang(prev => prev === 'en' ? 'ar' : 'en');
 
   return (
-    <div className="min-h-screen bg-[#F5E6D3] dark:bg-[#1E1923] text-[#362E3B] dark:text-[#F5E6D3] font-sans flex overflow-hidden">
-      
+    <div 
+      className={`min-h-screen bg-background text-foreground font-sans flex overflow-hidden ${lang === 'ar' ? 'font-arabic' : ''}`}
+      dir={lang === 'ar' ? 'rtl' : 'ltr'}
+    >
       {/* Mobile Sidebar Overlay */}
       {isMobileMenuOpen && (
         <div 
-          className="fixed inset-0 bg-black/20 dark:bg-black/40 z-40 md:hidden"
+          className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-xs z-40 md:hidden transition-opacity"
           onClick={() => setIsMobileMenuOpen(false)}
+          aria-hidden="true"
         />
       )}
 
       {/* Sidebar */}
-      <aside className={`
-        fixed inset-y-0 start-0 z-50 w-64 bg-white dark:bg-[#2A2431] border-r border-[#D5D0CA]/30 dark:border-[#3E3545]/30
-        transform transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:inset-0
-        ${isMobileMenuOpen ? 'translate-x-0' : 'rtl:translate-x-full ltr:-translate-x-full'}
-        flex flex-col
-      `}>
-        <div className="h-16 flex items-center justify-between px-6 border-b border-[#D5D0CA]/30 dark:border-[#3E3545]/30">
-          <Link to="/" className="text-lg font-semibold tracking-tight text-[#6F907D] dark:text-[#8FAE9B]">
-            Watazawwado Workspace
+      <aside 
+        ref={drawerRef}
+        id="teacher-sidebar"
+        role={isMobileMenuOpen ? 'dialog' : undefined}
+        aria-modal={isMobileMenuOpen ? 'true' : undefined}
+        aria-label={lang === 'ar' ? 'شريط التنقل للمعلم' : 'Teacher Navigation Sidebar'}
+        className={`
+          fixed inset-y-0 start-0 z-50 w-64 max-w-[85vw] bg-surface border-e border-border
+          transform transition-transform duration-300 ease-premium md:translate-x-0 md:static md:inset-0
+          ${isMobileMenuOpen ? 'translate-x-0' : 'ltr:-translate-x-full rtl:translate-x-full md:ltr:translate-x-0 md:rtl:translate-x-0'}
+          flex flex-col shadow-xs
+        `}
+      >
+        {/* Workspace Brand Header */}
+        <div className="h-16 flex items-center justify-between px-5 border-b border-border">
+          <Link to="/" className="flex items-center gap-2.5 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg p-1">
+            <div className="w-8 h-8 rounded-xl bg-primary/15 text-primary flex items-center justify-center font-serif font-bold text-base transition-transform group-hover:scale-105 border border-primary/20">
+              و
+            </div>
+            <div>
+              <span className="text-sm font-serif font-semibold tracking-tight text-foreground block">
+                {lang === 'ar' ? 'وتزودوا — المعلم' : 'Watazawwado'}
+              </span>
+              <span className="text-[10px] text-muted-foreground uppercase tracking-wider block">
+                {lang === 'ar' ? 'مساحة الأستاذ' : 'Teacher Workspace'}
+              </span>
+            </div>
           </Link>
-          <button onClick={toggleMobileMenu} className="md:hidden opacity-70 hover:opacity-100">
+          <button 
+            ref={closeButtonRef}
+            onClick={toggleMobileMenu} 
+            className="md:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            aria-label={lang === 'ar' ? 'إغلاق القائمة' : 'Close menu'}
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto py-6 px-4 space-y-1">
+        {/* Navigation Links */}
+        <nav 
+          className="flex-1 overflow-y-auto py-5 px-3 space-y-1"
+          aria-label={lang === 'ar' ? 'روابط التنقل الرئيسية للمعلم' : 'Teacher Primary Navigation'}
+        >
           {navigation.map((item) => {
             const isActive = location.pathname === item.path || (item.path !== '/dashboard' && location.pathname.startsWith(item.path));
             return (
@@ -106,63 +206,103 @@ export function DashboardApp() {
                 key={item.name}
                 to={item.path}
                 onClick={() => setIsMobileMenuOpen(false)}
+                aria-current={isActive ? 'page' : undefined}
                 className={`
-                  flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors
+                  flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-base touch-manipulation min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
                   ${isActive 
-                    ? 'bg-[#EAF0EB] text-[#6F907D] dark:bg-[#8FAE9B]/10 dark:text-[#8FAE9B]' 
-                    : 'text-[#362E3B]/70 dark:text-[#F5E6D3]/70 hover:bg-[#F8F6F0] dark:hover:bg-[#3E3545]/30'
+                    ? 'bg-primary/15 text-primary dark:bg-primary/20 font-semibold shadow-2xs' 
+                    : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
                   }
                 `}
               >
-                <item.icon className="w-4 h-4" />
-                {item.name}
+                <item.icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-primary' : 'opacity-70'}`} />
+                <span>{item.name}</span>
               </Link>
             );
           })}
         </nav>
 
-        <div className="p-4 border-t border-[#D5D0CA]/30 dark:border-[#3E3545]/30">
-          <div className="flex items-center gap-3 px-4 py-3 mb-2 rounded-xl bg-[#F8F6F0] dark:bg-[#1E1923]">
-            <div className="w-8 h-8 rounded-full bg-[#D8C49A]/30 flex items-center justify-center text-[#6F907D] font-medium text-sm">
+        {/* Sidebar Footer Controls */}
+        <div className="p-3 border-t border-border space-y-2">
+          {/* Teacher Profile Card */}
+          <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-surface-subtle border border-border">
+            <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold text-xs shrink-0">
               M
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">{user?.user_metadata?.name || 'Mahmoud'}</p>
-              <p className="text-[10px] opacity-70 truncate">{user?.email}</p>
+              <p className="text-xs font-semibold text-foreground truncate">
+                {lang === 'ar' ? 'أستاذ محمود' : (user?.user_metadata?.name || 'Ustadh Mahmoud')}
+              </p>
+              <p className="text-[10px] text-muted-foreground truncate">{user?.email}</p>
             </div>
+            <span className="text-[10px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded bg-primary/10 text-primary shrink-0">
+              Teacher
+            </span>
           </div>
-          <button
-            onClick={toggleTheme}
-            className="w-full flex items-center gap-3 px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors mb-2"
-            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-          >
-            {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-            {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
-          </button>
+
+          {/* Language & Theme Controls */}
+          <div className="grid grid-cols-2 gap-1.5">
+            <button
+              onClick={toggleLanguage}
+              className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-surface hover:bg-surface-subtle border border-border text-foreground transition-colors min-h-[40px] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              aria-label="Toggle language"
+            >
+              <Globe className="w-3.5 h-3.5 opacity-70" />
+              <span>{lang === 'en' ? 'العربية' : 'English'}</span>
+            </button>
+
+            <button
+              onClick={toggleTheme}
+              className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-surface hover:bg-surface-subtle border border-border text-foreground transition-colors min-h-[40px] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+            >
+              {theme === 'light' ? <Moon className="w-3.5 h-3.5 opacity-70" /> : <Sun className="w-3.5 h-3.5 opacity-70" />}
+              <span>{theme === 'light' ? 'Dark' : 'Light'}</span>
+            </button>
+          </div>
+
+          {/* Sign Out Button */}
           <button 
             onClick={signOut}
-            className="w-full flex items-center gap-3 px-4 py-2 rounded-xl text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-destructive hover:bg-destructive/10 transition-colors min-h-[40px] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive"
           >
-            <LogOut className="w-4 h-4" />
-            Sign Out
+            <LogOut className="w-3.5 h-3.5" />
+            <span>{lang === 'ar' ? 'تسجيل الخروج' : 'Sign Out'}</span>
           </button>
         </div>
       </aside>
 
-      {/* Main Content */}
+      {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-        {/* Mobile Header */}
-        <header className="h-16 flex-shrink-0 flex items-center justify-between px-4 bg-white dark:bg-[#2A2431] border-b border-[#D5D0CA]/30 dark:border-[#3E3545]/30 md:hidden">
-          <button onClick={toggleMobileMenu} className="p-2 -ml-2 opacity-70 hover:opacity-100">
+        {/* Mobile Header Bar */}
+        <header className="h-16 shrink-0 flex items-center justify-between px-4 bg-surface border-b border-border md:hidden">
+          <button 
+            ref={menuTriggerRef}
+            onClick={toggleMobileMenu} 
+            className="p-2 -ms-1 text-muted-foreground hover:text-foreground rounded-xl transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer"
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="teacher-sidebar"
+            aria-label={lang === 'ar' ? 'فتح القائمة الرئيسية' : 'Open navigation menu'}
+          >
             <Menu className="w-5 h-5" />
           </button>
-          <span className="font-semibold text-[#6F907D] dark:text-[#8FAE9B]">Watazawwado Workspace</span>
-          <div className="w-9" /> {/* Spacer for centering */}
+          <span className="font-serif font-semibold text-foreground text-sm">
+            {lang === 'ar' ? 'مساحة الأستاذ محمود' : 'Watazawwado Workspace'}
+          </span>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={toggleTheme}
+              className="p-2 text-muted-foreground hover:text-foreground rounded-xl transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer"
+              aria-label="Toggle theme"
+            >
+              {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+            </button>
+          </div>
         </header>
 
-        {/* Scrollable Content Area */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-8">
-          <div className="max-w-5xl mx-auto">
+        {/* Scrollable Content Container */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-background">
+          <div className="max-w-5xl mx-auto space-y-6">
             <TeacherAuthDiagnosticPanel />
             <Routes>
               <Route path="/" element={<TodayPage />} />
@@ -180,25 +320,5 @@ export function DashboardApp() {
         </div>
       </main>
     </div>
-  );
-}
-
-function ShieldCheckIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
-      <path d="m9 12 2 2 4-4" />
-    </svg>
   );
 }

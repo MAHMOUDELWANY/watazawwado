@@ -151,17 +151,19 @@ export default function BookingsPage() {
   const getBookingStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
       case 'confirmed':
-        return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/50';
+        return 'bg-success/15 text-success border-success/30';
       case 'completed':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border-blue-200 dark:border-blue-800/50';
+        return 'bg-primary/15 text-primary border-primary/30';
       case 'pending':
-        return 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 border-amber-200 dark:border-amber-800/50';
+        return 'bg-warning/15 text-warning border-warning/30';
       case 'cancelled':
-        return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 border-red-200 dark:border-red-800/50';
+        return 'bg-destructive/15 text-destructive border-destructive/30';
+      case 'no_show':
+        return 'bg-destructive/10 text-destructive border-destructive/20';
       case 'rescheduled':
-        return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300 border-purple-200 dark:border-purple-800/50';
+        return 'bg-secondary/25 text-secondary-foreground border-secondary/40';
       default:
-        return 'bg-stone-100 text-stone-800 dark:bg-stone-800 dark:text-stone-300 border-stone-200';
+        return 'bg-muted text-muted-foreground border-border';
     }
   };
 
@@ -170,33 +172,33 @@ export default function BookingsPage() {
       case 'paid':
         return {
           text: 'Paid',
-          classes: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300 border-emerald-200'
+          classes: 'bg-success/15 text-success border-success/30'
         };
       case 'pending_review':
         return {
           text: 'Pending Review',
-          classes: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 border-amber-200'
+          classes: 'bg-warning/15 text-warning border-warning/30'
         };
       case 'unpaid':
         return {
           text: 'Unpaid',
-          classes: 'bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300 border-stone-300'
+          classes: 'bg-muted text-muted-foreground border-border'
         };
       case 'partially_paid':
         return {
           text: 'Partially Paid',
-          classes: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300 border-yellow-200'
+          classes: 'bg-warning/15 text-warning border-warning/30'
         };
       case 'payment_rejected':
         return {
           text: 'Payment Rejected',
-          classes: 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300 border-red-200'
+          classes: 'bg-destructive/15 text-destructive border-destructive/30'
         };
       case 'free_trial':
       default:
         return {
           text: 'Free Trial',
-          classes: 'bg-teal-100 text-teal-800 dark:bg-teal-900/40 dark:text-teal-300 border-teal-200'
+          classes: 'bg-primary/15 text-primary border-primary/30'
         };
     }
   };
@@ -206,10 +208,10 @@ export default function BookingsPage() {
       {/* Top Header */}
       <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-[#362E3B] dark:text-[#F5E6D3]">
+          <h1 className="text-2xl font-serif font-semibold tracking-tight text-foreground">
             Bookings & Payments
           </h1>
-          <p className="text-sm opacity-70 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Manage student teaching appointments, manual payments, and financial settlement
           </p>
         </div>
@@ -217,7 +219,7 @@ export default function BookingsPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setPaymentModalData({})}
-            className="px-3.5 py-2 text-xs font-semibold text-white bg-[#6F907D] hover:bg-[#5E7D6B] rounded-xl shadow-xs transition-colors flex items-center gap-1.5"
+            className="px-4 py-2 text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary-hover rounded-xl shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer min-h-[40px]"
           >
             <Plus className="w-4 h-4" />
             Record Payment
@@ -227,80 +229,80 @@ export default function BookingsPage() {
 
       {/* Operational Summary Metrics */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-        <div className="p-4 bg-white dark:bg-[#1E1923] rounded-2xl border border-[#D5D0CA]/40 dark:border-[#3E3545] shadow-xs">
-          <span className="text-xs text-stone-500 font-medium block">Total Bookings</span>
-          <span className="text-xl font-bold text-stone-800 dark:text-stone-100 mt-1 block">
+        <div className="p-4 bg-surface rounded-2xl border border-border shadow-2xs">
+          <span className="text-xs text-muted-foreground font-medium block">Total Bookings</span>
+          <span className="text-xl font-bold text-foreground mt-1 block">
             {summary.total_bookings}
           </span>
         </div>
 
-        <div className="p-4 bg-white dark:bg-[#1E1923] rounded-2xl border border-[#D5D0CA]/40 dark:border-[#3E3545] shadow-xs">
-          <span className="text-xs text-stone-500 font-medium block">Upcoming Lessons</span>
-          <span className="text-xl font-bold text-stone-800 dark:text-stone-100 mt-1 block">
+        <div className="p-4 bg-surface rounded-2xl border border-border shadow-2xs">
+          <span className="text-xs text-muted-foreground font-medium block">Upcoming Lessons</span>
+          <span className="text-xl font-bold text-foreground mt-1 block">
             {summary.upcoming_count}
           </span>
         </div>
 
-        <div className="p-4 bg-white dark:bg-[#1E1923] rounded-2xl border border-[#D5D0CA]/40 dark:border-[#3E3545] shadow-xs">
-          <span className="text-xs text-amber-600 dark:text-amber-400 font-medium block">Unpaid Upcoming</span>
+        <div className="p-4 bg-surface rounded-2xl border border-border shadow-2xs">
+          <span className="text-xs text-warning font-medium block">Unpaid Upcoming</span>
           <div className="flex items-center justify-between mt-1">
-            <span className="text-xl font-bold text-amber-700 dark:text-amber-300">
+            <span className="text-xl font-bold text-warning">
               {summary.unpaid_upcoming_count}
             </span>
             {summary.unpaid_upcoming_count > 0 && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-200 font-semibold">
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-warning/15 text-warning font-semibold">
                 Action
               </span>
             )}
           </div>
         </div>
 
-        <div className="p-4 bg-white dark:bg-[#1E1923] rounded-2xl border border-[#D5D0CA]/40 dark:border-[#3E3545] shadow-xs">
-          <span className="text-xs text-amber-600 dark:text-amber-400 font-medium block">Payments to Verify</span>
+        <div className="p-4 bg-surface rounded-2xl border border-border shadow-2xs">
+          <span className="text-xs text-warning font-medium block">Payments to Verify</span>
           <div className="flex items-center justify-between mt-1">
-            <span className="text-xl font-bold text-amber-700 dark:text-amber-300">
+            <span className="text-xl font-bold text-warning">
               {summary.pending_payments_count}
             </span>
             {summary.pending_payments_count > 0 && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-200 font-semibold">
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-warning/15 text-warning font-semibold">
                 Pending
               </span>
             )}
           </div>
         </div>
 
-        <div className="p-4 bg-white dark:bg-[#1E1923] rounded-2xl border border-[#D5D0CA]/40 dark:border-[#3E3545] shadow-xs col-span-2 sm:col-span-1">
-          <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium block">Completed Lessons</span>
-          <span className="text-xl font-bold text-emerald-700 dark:text-emerald-300 mt-1 block">
+        <div className="p-4 bg-surface rounded-2xl border border-border shadow-2xs col-span-2 sm:col-span-1">
+          <span className="text-xs text-success font-medium block">Completed Lessons</span>
+          <span className="text-xl font-bold text-success mt-1 block">
             {summary.completed_count}
           </span>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#D5D0CA]/40 dark:border-[#3E3545] pb-px">
+      <div className="flex items-center gap-2 border-b border-border pb-px">
         <button
           onClick={() => setActiveTab('bookings')}
-          className={`px-4 py-2 text-xs font-semibold rounded-t-xl transition-colors ${
+          className={`px-4 py-2.5 text-xs font-semibold rounded-t-xl transition-colors cursor-pointer ${
             activeTab === 'bookings'
-              ? 'bg-white dark:bg-[#1E1923] text-[#362E3B] dark:text-[#F5E6D3] border-t border-x border-[#D5D0CA]/60 dark:border-[#3E3545]'
-              : 'text-stone-500 hover:text-stone-800 dark:hover:text-stone-200'
+              ? 'bg-surface text-foreground border-t border-x border-border shadow-2xs'
+              : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle/50'
           }`}
         >
           Bookings & Lessons ({summary.total_bookings})
         </button>
         <button
           onClick={() => setActiveTab('payments')}
-          className={`px-4 py-2 text-xs font-semibold rounded-t-xl transition-colors flex items-center gap-1.5 ${
+          className={`px-4 py-2.5 text-xs font-semibold rounded-t-xl transition-colors flex items-center gap-1.5 cursor-pointer ${
             activeTab === 'payments'
-              ? 'bg-white dark:bg-[#1E1923] text-[#362E3B] dark:text-[#F5E6D3] border-t border-x border-[#D5D0CA]/60 dark:border-[#3E3545]'
-              : 'text-stone-500 hover:text-stone-800 dark:hover:text-stone-200'
+              ? 'bg-surface text-foreground border-t border-x border-border shadow-2xs'
+              : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle/50'
           }`}
         >
           <DollarSign className="w-3.5 h-3.5" />
           All Payments Ledger
           {summary.pending_payments_count > 0 && (
-            <span className="px-1.5 py-0.2 rounded-full bg-amber-500 text-white text-[10px]">
+            <span className="px-1.5 py-0.2 rounded-full bg-warning text-warning-foreground text-[10px] font-bold">
               {summary.pending_payments_count}
             </span>
           )}
@@ -311,26 +313,26 @@ export default function BookingsPage() {
       {activeTab === 'bookings' && (
         <div className="space-y-4">
           {/* Filters Bar */}
-          <div className="bg-white dark:bg-[#1E1923] p-3.5 rounded-2xl border border-[#D5D0CA]/40 dark:border-[#3E3545] shadow-xs flex flex-wrap items-center gap-3">
+          <div className="bg-surface p-3.5 rounded-2xl border border-border shadow-2xs flex flex-wrap items-center gap-3">
             {/* Search */}
             <div className="relative flex-1 min-w-[200px]">
-              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
+              <Search className="w-3.5 h-3.5 absolute start-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <input
                 type="text"
                 placeholder="Search by student, parent, email, or reference..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-8 pr-3 py-1.5 text-xs bg-[#FAF8F5] dark:bg-[#2A2431] border border-[#D5D0CA]/60 dark:border-[#3E3545] rounded-xl text-stone-800 dark:text-stone-200 focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+                className="w-full ps-8 pe-3 py-1.5 text-xs bg-surface-subtle border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
               />
             </div>
 
             {/* Status Filter */}
             <div className="flex items-center gap-1.5">
-              <span className="text-[11px] text-stone-500">Status:</span>
+              <span className="text-[11px] text-muted-foreground">Status:</span>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-2.5 py-1.5 bg-[#FAF8F5] dark:bg-[#2A2431] border border-[#D5D0CA]/60 dark:border-[#3E3545] rounded-xl text-xs text-stone-800 dark:text-stone-200 focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+                className="px-2.5 py-1.5 bg-surface-subtle border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary cursor-pointer"
               >
                 <option value="all">All Statuses</option>
                 <option value="confirmed">Confirmed</option>
@@ -343,11 +345,11 @@ export default function BookingsPage() {
 
             {/* Payment Filter */}
             <div className="flex items-center gap-1.5">
-              <span className="text-[11px] text-stone-500">Payment:</span>
+              <span className="text-[11px] text-muted-foreground">Payment:</span>
               <select
                 value={paymentFilter}
                 onChange={(e) => setPaymentFilter(e.target.value)}
-                className="px-2.5 py-1.5 bg-[#FAF8F5] dark:bg-[#2A2431] border border-[#D5D0CA]/60 dark:border-[#3E3545] rounded-xl text-xs text-stone-800 dark:text-stone-200 focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+                className="px-2.5 py-1.5 bg-surface-subtle border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary cursor-pointer"
               >
                 <option value="all">All Payments</option>
                 <option value="unpaid">Unpaid</option>
@@ -360,11 +362,11 @@ export default function BookingsPage() {
 
             {/* Date Range Filter */}
             <div className="flex items-center gap-1.5">
-              <span className="text-[11px] text-stone-500">Timing:</span>
+              <span className="text-[11px] text-muted-foreground">Timing:</span>
               <select
                 value={dateFilter}
                 onChange={(e) => setDateFilter(e.target.value)}
-                className="px-2.5 py-1.5 bg-[#FAF8F5] dark:bg-[#2A2431] border border-[#D5D0CA]/60 dark:border-[#3E3545] rounded-xl text-xs text-stone-800 dark:text-stone-200 focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+                className="px-2.5 py-1.5 bg-surface-subtle border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary cursor-pointer"
               >
                 <option value="all">All Dates</option>
                 <option value="upcoming">Upcoming</option>
@@ -376,8 +378,9 @@ export default function BookingsPage() {
             {/* Refresh */}
             <button
               onClick={fetchBookings}
-              className="p-1.5 text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+              className="p-2 text-muted-foreground hover:text-foreground rounded-lg hover:bg-surface-subtle transition-colors cursor-pointer"
               title="Refresh bookings"
+              aria-label="Refresh bookings"
             >
               <RefreshCw className="w-4 h-4" />
             </button>
@@ -387,25 +390,25 @@ export default function BookingsPage() {
           {loading ? (
             <div className="space-y-3 animate-pulse">
               {[1, 2, 3, 4].map(i => (
-                <div key={i} className="bg-white dark:bg-[#1E1923] rounded-2xl h-24 border border-[#D5D0CA]/30 dark:border-[#3E3545]/30"></div>
+                <div key={i} className="bg-surface rounded-2xl h-24 border border-border"></div>
               ))}
             </div>
           ) : error ? (
-            <div className="bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/30 rounded-2xl p-6 text-center">
-              <AlertCircle className="w-8 h-8 text-red-500 mx-auto mb-2" />
-              <h3 className="text-sm font-medium text-red-800 dark:text-red-400 mb-1">{error}</h3>
+            <div className="bg-destructive/10 border border-destructive/20 rounded-2xl p-6 text-center">
+              <AlertCircle className="w-8 h-8 text-destructive mx-auto mb-2" />
+              <h3 className="text-sm font-medium text-destructive mb-1">{error}</h3>
               <button 
                 onClick={fetchBookings}
-                className="mt-3 px-4 py-2 bg-red-600 text-white text-xs font-semibold rounded-xl hover:bg-red-700"
+                className="mt-3 px-4 py-2 bg-destructive text-destructive-foreground text-xs font-semibold rounded-xl hover:bg-destructive/90 cursor-pointer"
               >
                 Retry
               </button>
             </div>
           ) : bookings.length === 0 ? (
-            <div className="bg-white dark:bg-[#1E1923] border border-[#D5D0CA]/40 dark:border-[#3E3545] rounded-2xl p-8 text-center space-y-2">
-              <Calendar className="w-8 h-8 text-stone-400 mx-auto" />
-              <h3 className="text-sm font-semibold text-stone-700 dark:text-stone-300">No bookings match your current filters</h3>
-              <p className="text-xs text-stone-500 max-w-sm mx-auto">
+            <div className="bg-surface border border-border rounded-2xl p-8 text-center space-y-2">
+              <Calendar className="w-8 h-8 text-muted-foreground mx-auto" />
+              <h3 className="text-sm font-semibold text-foreground">No bookings match your current filters</h3>
+              <p className="text-xs text-muted-foreground max-w-sm mx-auto">
                 Try resetting or clearing your search criteria to see all scheduled lessons.
               </p>
             </div>
@@ -429,12 +432,12 @@ export default function BookingsPage() {
                   <div
                     key={b.id}
                     onClick={() => setSelectedBookingId(b.id)}
-                    className="bg-white dark:bg-[#1E1923] hover:bg-stone-50/80 dark:hover:bg-[#251F2C] p-4 sm:p-5 rounded-2xl border border-[#D5D0CA]/50 dark:border-[#3E3545] shadow-xs cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group"
+                    className="bg-surface hover:bg-surface-subtle/80 p-4 sm:p-5 rounded-2xl border border-border shadow-2xs cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group"
                   >
                     {/* Left: Learner & Lesson Details */}
                     <div className="space-y-1.5 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-mono font-bold text-xs text-[#6F907D] group-hover:underline">
+                        <span className="font-mono font-bold text-xs text-primary group-hover:underline">
                           {b.reference_code}
                         </span>
                         <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${getBookingStatusBadge(b.status)}`}>
@@ -444,36 +447,36 @@ export default function BookingsPage() {
                           {paymentBadgeInfo.text}
                         </span>
                         {b.booking_type === 'trial' && (
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-teal-50 text-teal-700 dark:bg-teal-950/40 dark:text-teal-300">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-primary/15 text-primary border border-primary/20">
                             Trial
                           </span>
                         )}
                       </div>
 
                       <div className="flex items-center gap-2">
-                        <h3 className="text-sm font-semibold text-[#362E3B] dark:text-[#F5E6D3]">
+                        <h3 className="text-sm font-semibold text-foreground">
                           {b.contact_name}
                         </h3>
                         {b.parent_name && (
-                          <span className="text-xs text-stone-500">
+                          <span className="text-xs text-muted-foreground">
                             (Parent: {b.parent_name})
                           </span>
                         )}
-                        <span className="text-stone-300 dark:text-stone-700">•</span>
-                        <span className="text-xs font-medium text-stone-600 dark:text-stone-400">
+                        <span className="text-border">•</span>
+                        <span className="text-xs font-medium text-muted-foreground">
                           {b.service_name} ({b.duration_minutes} min)
                         </span>
                       </div>
 
                       {/* Timestamps */}
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-stone-500">
-                        <span className="flex items-center gap-1 font-medium text-stone-700 dark:text-stone-300">
-                          <Clock className="w-3.5 h-3.5 text-stone-400" />
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                        <span className="flex items-center gap-1 font-medium text-foreground">
+                          <Clock className="w-3.5 h-3.5 text-muted-foreground" />
                           Cairo: {startCairo.toFormat('EEE, LLL dd • hh:mm a')}
                         </span>
                         {startStudent && (
                           <span className="flex items-center gap-1">
-                            <Globe className="w-3.5 h-3.5 text-stone-400" />
+                            <Globe className="w-3.5 h-3.5 text-muted-foreground" />
                             Local: {startStudent.toFormat('hh:mm a')} ({b.student_timezone})
                           </span>
                         )}
@@ -481,22 +484,22 @@ export default function BookingsPage() {
                     </div>
 
                     {/* Right: Payment Overview & Quick Actions */}
-                    <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 pt-2 md:pt-0 border-t md:border-t-0 border-stone-100 dark:border-stone-800 justify-between md:justify-end">
-                      <div className="text-right">
-                        <span className="text-[11px] text-stone-500 block">
+                    <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 pt-2 md:pt-0 border-t md:border-t-0 border-border justify-between md:justify-end">
+                      <div className="text-end">
+                        <span className="text-[11px] text-muted-foreground block">
                           {b.booking_type === 'trial' ? 'Trial Session' : 'Payment Status'}
                         </span>
                         <div className="text-xs font-semibold">
                           {b.booking_type === 'trial' ? (
-                            <span className="text-teal-600 dark:text-teal-400">$0.00 (Free)</span>
+                            <span className="text-primary">$0.00 (Free)</span>
                           ) : b.confirmed_amount > 0 ? (
-                            <span className="text-emerald-700 dark:text-emerald-400">
+                            <span className="text-success">
                               ${b.confirmed_amount.toFixed(2)} / {b.expected_amount !== null ? `$${b.expected_amount.toFixed(2)}` : 'Not set'}
                             </span>
                           ) : b.payment_status === 'pending_review' ? (
-                            <span className="text-amber-600 dark:text-amber-400">Payment in Review</span>
+                            <span className="text-warning">Payment in Review</span>
                           ) : (
-                            <span className="text-stone-500">
+                            <span className="text-muted-foreground">
                               {b.expected_amount !== null ? `Due: $${b.expected_amount.toFixed(2)}` : 'Fee not set'}
                             </span>
                           )}
@@ -507,7 +510,7 @@ export default function BookingsPage() {
                         {b.payment_status === 'pending_review' ? (
                           <button
                             onClick={() => setSelectedBookingId(b.id)}
-                            className="px-2.5 py-1.5 text-xs font-medium text-amber-800 bg-amber-100 hover:bg-amber-200 dark:bg-amber-950/60 dark:text-amber-300 rounded-xl transition-colors"
+                            className="px-3 py-1.5 text-xs font-medium text-warning bg-warning/15 hover:bg-warning/25 rounded-xl border border-warning/30 transition-colors cursor-pointer min-h-[36px]"
                           >
                             Review Payment
                           </button>
@@ -520,7 +523,7 @@ export default function BookingsPage() {
                               contactName: b.contact_name,
                               expectedAmount: b.expected_amount
                             })}
-                            className="px-2.5 py-1.5 text-xs font-medium text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl transition-colors"
+                            className="px-3 py-1.5 text-xs font-medium text-foreground bg-surface hover:bg-surface-subtle border border-border rounded-xl transition-colors cursor-pointer min-h-[36px]"
                           >
                             Record Payment
                           </button>
@@ -528,10 +531,11 @@ export default function BookingsPage() {
 
                         <button
                           onClick={() => setSelectedBookingId(b.id)}
-                          className="p-1.5 rounded-xl text-stone-400 group-hover:text-stone-800 dark:group-hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+                          className="p-2 rounded-xl text-muted-foreground group-hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center"
                           title="Open Booking Details"
+                          aria-label={`Open details for booking ${b.reference_code}`}
                         >
-                          <ChevronRight className="w-5 h-5" />
+                          <ChevronRight className="w-5 h-5 rtl:rotate-180" />
                         </button>
                       </div>
                     </div>
@@ -546,13 +550,13 @@ export default function BookingsPage() {
       {/* TAB 2: ALL PAYMENTS LEDGER */}
       {activeTab === 'payments' && (
         <div className="space-y-4">
-          <div className="bg-white dark:bg-[#1E1923] p-3.5 rounded-2xl border border-[#D5D0CA]/40 dark:border-[#3E3545] shadow-xs flex items-center justify-between gap-3">
+          <div className="bg-surface p-3.5 rounded-2xl border border-border shadow-2xs flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <span className="text-xs text-stone-500 font-medium">Status Filter:</span>
+              <span className="text-xs text-muted-foreground font-medium">Status Filter:</span>
               <select
                 value={paymentsStatusFilter}
                 onChange={(e) => setPaymentsStatusFilter(e.target.value)}
-                className="px-2.5 py-1.5 bg-[#FAF8F5] dark:bg-[#2A2431] border border-[#D5D0CA]/60 dark:border-[#3E3545] rounded-xl text-xs text-stone-800 dark:text-stone-200 focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+                className="px-2.5 py-1.5 bg-surface-subtle border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary cursor-pointer"
               >
                 <option value="all">All Payments</option>
                 <option value="pending">Pending Review</option>
@@ -563,7 +567,9 @@ export default function BookingsPage() {
 
             <button
               onClick={fetchPayments}
-              className="p-1.5 text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+              className="p-2 text-muted-foreground hover:text-foreground rounded-lg hover:bg-surface-subtle transition-colors cursor-pointer"
+              aria-label="Refresh payments ledger"
+              title="Refresh payments ledger"
             >
               <RefreshCw className="w-4 h-4" />
             </button>
@@ -572,58 +578,58 @@ export default function BookingsPage() {
           {loadingPayments ? (
             <div className="space-y-3 animate-pulse">
               {[1, 2, 3].map(i => (
-                <div key={i} className="bg-white dark:bg-[#1E1923] rounded-2xl h-20 border border-[#D5D0CA]/30 dark:border-[#3E3545]/30"></div>
+                <div key={i} className="bg-surface rounded-2xl h-20 border border-border"></div>
               ))}
             </div>
           ) : paymentsList.length === 0 ? (
-            <div className="bg-white dark:bg-[#1E1923] border border-[#D5D0CA]/40 dark:border-[#3E3545] rounded-2xl p-8 text-center space-y-2">
-              <DollarSign className="w-8 h-8 text-stone-400 mx-auto" />
-              <h3 className="text-sm font-semibold text-stone-700 dark:text-stone-300">No payment records found</h3>
-              <p className="text-xs text-stone-500">Record payments manually or when learners report payment claims.</p>
+            <div className="bg-surface border border-border rounded-2xl p-8 text-center space-y-2">
+              <DollarSign className="w-8 h-8 text-muted-foreground mx-auto" />
+              <h3 className="text-sm font-semibold text-foreground">No payment records found</h3>
+              <p className="text-xs text-muted-foreground">Record payments manually or when learners report payment claims.</p>
             </div>
           ) : (
             <div className="space-y-3">
               {paymentsList.map((p) => (
                 <div
                   key={p.id}
-                  className="bg-white dark:bg-[#1E1923] p-4 rounded-2xl border border-[#D5D0CA]/50 dark:border-[#3E3545] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+                  className="bg-surface p-4 rounded-2xl border border-border shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-[#362E3B] dark:text-[#F5E6D3]">
+                      <span className="text-sm font-bold text-foreground">
                         ${Number(p.amount).toFixed(2)} {p.currency}
                       </span>
-                      <span className="text-stone-400">•</span>
-                      <span className="capitalize font-medium text-stone-700 dark:text-stone-300">
+                      <span className="text-border">•</span>
+                      <span className="capitalize font-medium text-foreground">
                         {p.payment_method.replace(/_/g, ' ')}
                       </span>
-                      <span className="text-stone-400">•</span>
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                      <span className="text-border">•</span>
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
                         p.status === 'confirmed'
-                          ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300'
+                          ? 'bg-success/15 text-success border-success/30'
                           : p.status === 'pending'
-                          ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300'
-                          : 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300'
+                          ? 'bg-warning/15 text-warning border-warning/30'
+                          : 'bg-destructive/15 text-destructive border-destructive/30'
                       }`}>
                         {p.status.toUpperCase()}
                       </span>
                     </div>
 
-                    <div className="text-[11px] text-stone-500 flex flex-wrap items-center gap-x-3 gap-y-0.5">
+                    <div className="text-[11px] text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-0.5">
                       {p.contact_name && (
-                        <span>Student: <strong className="text-stone-700 dark:text-stone-300">{p.contact_name}</strong></span>
+                        <span>Student: <strong className="text-foreground">{p.contact_name}</strong></span>
                       )}
                       {p.booking_reference && (
-                        <span>Booking: <span className="font-mono text-stone-700 dark:text-stone-300 font-semibold">{p.booking_reference}</span></span>
+                        <span>Booking: <span className="font-mono text-foreground font-semibold">{p.booking_reference}</span></span>
                       )}
                       {p.payment_reference && (
-                        <span>Ref: <span className="font-mono text-stone-700 dark:text-stone-300">{p.payment_reference}</span></span>
+                        <span>Ref: <span className="font-mono text-foreground">{p.payment_reference}</span></span>
                       )}
                       <span>Logged: {DateTime.fromISO(p.created_at).toFormat('LLL dd, yyyy • hh:mm a')}</span>
                     </div>
 
                     {p.notes && (
-                      <p className="text-[11px] text-stone-600 dark:text-stone-400 italic">
+                      <p className="text-[11px] text-muted-foreground italic">
                         Note: {p.notes}
                       </p>
                     )}
@@ -634,14 +640,14 @@ export default function BookingsPage() {
                     <div className="flex items-center gap-2 shrink-0">
                       <button
                         onClick={() => handleConfirmPaymentRow(p.id)}
-                        className="px-3 py-1.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-colors flex items-center gap-1"
+                        className="px-3.5 py-2 text-xs font-semibold text-success-foreground bg-success hover:bg-success/90 rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
                       >
                         <CheckCircle2 className="w-3.5 h-3.5" />
                         Confirm Receipt
                       </button>
                       <button
                         onClick={() => handleRejectPaymentRow(p.id)}
-                        className="px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 border border-red-200 dark:border-red-900/50 rounded-xl transition-colors flex items-center gap-1"
+                        className="px-3.5 py-2 text-xs font-semibold text-destructive hover:bg-destructive/15 border border-destructive/30 rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
                       >
                         <XCircle className="w-3.5 h-3.5" />
                         Reject

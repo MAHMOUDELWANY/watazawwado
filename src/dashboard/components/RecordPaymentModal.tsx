@@ -118,17 +118,17 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
       aria-labelledby="record-payment-title"
     >
       <div 
-        className="bg-[#FAF8F5] dark:bg-[#231E28] border border-[#D5D0CA]/60 dark:border-[#3E3545] rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        className="bg-surface border border-border rounded-2xl w-full max-w-lg shadow-xl overflow-hidden flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-6 py-5 border-b border-[#D5D0CA]/40 dark:border-[#3E3545] flex items-center justify-between bg-white/50 dark:bg-[#2A2431]/50">
+        <div className="px-6 py-5 border-b border-border flex items-center justify-between bg-surface-subtle/50">
           <div>
-            <h2 id="record-payment-title" className="text-lg font-semibold text-[#362E3B] dark:text-[#F5E6D3] flex items-center gap-2">
-              <DollarSign className="w-5 h-5 text-[#8FAE9B]" />
+            <h2 id="record-payment-title" className="text-lg font-serif font-semibold text-foreground flex items-center gap-2">
+              <DollarSign className="w-5 h-5 text-primary" />
               Record Manual Payment
             </h2>
-            <p className="text-xs text-[#362E3B]/70 dark:text-[#F5E6D3]/70 mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5">
               {bookingReference ? `Linked to Booking ${bookingReference}` : 'Record manual receipt or claim'}
               {contactName ? ` (${contactName})` : ''}
             </p>
@@ -136,7 +136,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           <button 
             onClick={onClose}
             disabled={submitting}
-            className="p-1.5 rounded-lg text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+            className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center disabled:opacity-50"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
@@ -146,7 +146,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
         {/* Content & Form */}
         <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4">
           {error && (
-            <div className="p-3 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 rounded-xl text-xs text-red-700 dark:text-red-300 flex items-center gap-2">
+            <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-xl text-xs text-destructive flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{error}</span>
             </div>
@@ -155,7 +155,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           {/* Amount & Currency */}
           <div className="grid grid-cols-3 gap-3">
             <div className="col-span-2">
-              <label className="block text-xs font-medium text-[#362E3B] dark:text-[#F5E6D3] mb-1">
+              <label className="block text-xs font-medium text-foreground mb-1">
                 Amount Received *
               </label>
               <div className="relative">
@@ -167,21 +167,21 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                   placeholder="e.g. 25.00"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
-                  className="w-full pl-3 pr-3 py-2 text-sm bg-white dark:bg-[#1E1923] border border-[#D5D0CA] dark:border-[#3E3545] rounded-xl text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+                  className="w-full px-3 py-2 text-sm bg-surface-subtle border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
                   autoFocus
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#362E3B] dark:text-[#F5E6D3] mb-1">
+              <label className="block text-xs font-medium text-foreground mb-1">
                 Currency *
               </label>
               <select
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
                 required
-                className="w-full px-3 py-2 text-sm bg-white dark:bg-[#1E1923] border border-[#D5D0CA] dark:border-[#3E3545] rounded-xl text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+                className="w-full px-3 py-2 text-sm bg-surface-subtle border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
               >
                 {!currency && <option value="">Select currency...</option>}
                 <option value="USD">USD ($)</option>
@@ -196,13 +196,13 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
 
           {/* Payment Method */}
           <div>
-            <label className="block text-xs font-medium text-[#362E3B] dark:text-[#F5E6D3] mb-1">
+            <label className="block text-xs font-medium text-foreground mb-1">
               Payment Method *
             </label>
             <select
               value={paymentMethod}
               onChange={(e) => setPaymentMethod(e.target.value as PaymentMethodType)}
-              className="w-full px-3 py-2 text-sm bg-white dark:bg-[#1E1923] border border-[#D5D0CA] dark:border-[#3E3545] rounded-xl text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+              className="w-full px-3 py-2 text-sm bg-surface-subtle border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
             >
               <option value="paypal">PayPal</option>
               <option value="international_bank_iban">International Bank / IBAN</option>
@@ -215,15 +215,15 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
 
           {/* Status Selection */}
           <div>
-            <label className="block text-xs font-medium text-[#362E3B] dark:text-[#F5E6D3] mb-1">
+            <label className="block text-xs font-medium text-foreground mb-1">
               Initial Verification Status *
             </label>
             <div className="grid grid-cols-2 gap-2">
               <label 
                 className={`flex items-center gap-2 p-2.5 rounded-xl border text-xs font-medium cursor-pointer transition-colors ${
                   status === 'confirmed' 
-                    ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-500 text-emerald-800 dark:text-emerald-300' 
-                    : 'bg-white dark:bg-[#1E1923] border-[#D5D0CA] dark:border-[#3E3545] text-stone-600 dark:text-stone-300'
+                    ? 'bg-success/15 border-success/40 text-success' 
+                    : 'bg-surface-subtle border-border text-foreground hover:bg-surface'
                 }`}
               >
                 <input 
@@ -232,7 +232,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                   value="confirmed" 
                   checked={status === 'confirmed'} 
                   onChange={() => setStatus('confirmed')}
-                  className="text-emerald-600 focus:ring-emerald-500" 
+                  className="accent-primary focus:ring-primary/40" 
                 />
                 <div>
                   <span className="block font-semibold">Confirmed</span>
@@ -243,8 +243,8 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
               <label 
                 className={`flex items-center gap-2 p-2.5 rounded-xl border text-xs font-medium cursor-pointer transition-colors ${
                   status === 'pending' 
-                    ? 'bg-amber-50 dark:bg-amber-950/30 border-amber-500 text-amber-800 dark:text-amber-300' 
-                    : 'bg-white dark:bg-[#1E1923] border-[#D5D0CA] dark:border-[#3E3545] text-stone-600 dark:text-stone-300'
+                    ? 'bg-warning/15 border-warning/40 text-warning' 
+                    : 'bg-surface-subtle border-border text-foreground hover:bg-surface'
                 }`}
               >
                 <input 
@@ -253,7 +253,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                   value="pending" 
                   checked={status === 'pending'} 
                   onChange={() => setStatus('pending')}
-                  className="text-amber-600 focus:ring-amber-500" 
+                  className="accent-primary focus:ring-primary/40" 
                 />
                 <div>
                   <span className="block font-semibold">Pending Review</span>
@@ -265,7 +265,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
 
           {/* Reference / Transaction ID */}
           <div>
-            <label className="block text-xs font-medium text-[#362E3B] dark:text-[#F5E6D3] mb-1">
+            <label className="block text-xs font-medium text-foreground mb-1">
               Payment Reference / Transaction ID (Optional)
             </label>
             <input
@@ -273,13 +273,13 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
               placeholder="e.g. PayPal TXN-987654 or Bank Transfer Ref"
               value={paymentReference}
               onChange={(e) => setPaymentReference(e.target.value)}
-              className="w-full px-3 py-2 text-sm bg-white dark:bg-[#1E1923] border border-[#D5D0CA] dark:border-[#3E3545] rounded-xl text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+              className="w-full px-3 py-2 text-sm bg-surface-subtle border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
             />
           </div>
 
           {/* Notes */}
           <div>
-            <label className="block text-xs font-medium text-[#362E3B] dark:text-[#F5E6D3] mb-1">
+            <label className="block text-xs font-medium text-foreground mb-1">
               Private Teacher Notes (Optional)
             </label>
             <textarea
@@ -287,24 +287,24 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
               placeholder="e.g. Sent from student's father account, verified via Wise receipt"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full px-3 py-2 text-sm bg-white dark:bg-[#1E1923] border border-[#D5D0CA] dark:border-[#3E3545] rounded-xl text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+              className="w-full px-3 py-2 text-sm bg-surface-subtle border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
             />
           </div>
 
           {/* Actions */}
-          <div className="pt-3 flex items-center justify-end gap-3 border-t border-[#D5D0CA]/40 dark:border-[#3E3545]">
+          <div className="pt-3 flex items-center justify-end gap-3 border-t border-border">
             <button
               type="button"
               onClick={onClose}
               disabled={submitting}
-              className="px-4 py-2 text-xs font-medium text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-xl transition-colors"
+              className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-surface-subtle rounded-xl transition-colors cursor-pointer min-h-[40px]"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-5 py-2 text-xs font-semibold text-white bg-[#6F907D] hover:bg-[#5E7D6B] rounded-xl shadow-xs transition-colors flex items-center gap-1.5 disabled:opacity-50"
+              className="px-5 py-2 text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary-hover rounded-xl shadow-xs transition-colors flex items-center gap-1.5 disabled:opacity-50 cursor-pointer min-h-[40px]"
             >
               {submitting ? (
                 <span>Recording...</span>

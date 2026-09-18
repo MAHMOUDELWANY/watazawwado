@@ -1,8 +1,9 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'motion/react';
-import { Calendar, ArrowRight, Star, Sparkles } from 'lucide-react';
+import { Calendar, ArrowRight, Sparkles, GraduationCap, Languages, UserCheck, Clock } from 'lucide-react';
 import { PortraitImage } from './PortraitImage';
 import { Language } from '../types';
+import { ARABIC_TRANSLATIONS } from '../data/content';
 
 interface HeroProps {
   lang: Language;
@@ -24,47 +25,18 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
     restDelta: 0.001,
   });
 
-  // Parallax shifts as user scrolls through the hero
-  const portraitY = useTransform(smoothProgress, [0, 1], [0, 45]);
-  const bgScale = useTransform(smoothProgress, [0, 1], [1, 1.05]);
+  const portraitY = useTransform(smoothProgress, [0, 1], [0, 30]);
 
   return (
     <section
       ref={heroRef}
       id="hero"
-      className="relative overflow-hidden bg-white dark:bg-[#1E1923] pt-24 pb-16 md:pt-32 md:pb-24 transition-colors"
+      className="relative overflow-hidden bg-background pt-24 pb-16 md:pt-32 md:pb-24 border-b border-border/60 transition-colors"
     >
-      {/* Background Split Block: Sage Green on Right Column */}
-      <motion.div
-        style={{ scale: bgScale }}
-        className="absolute top-0 right-0 bottom-0 w-full lg:w-[46%] bg-[#87A878] dark:bg-[#33422E] -z-0 hidden lg:block origin-top-right"
-      >
-        {/* Chalk-style decorative white marks / doodle stars in top-right */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 0.85, scale: 1 }}
-          transition={{ duration: 1, ease: 'easeOut', delay: 0.2 }}
-          className="absolute top-12 right-12 select-none pointer-events-none"
-        >
-          <svg width="90" height="90" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            {/* 4-point stars and plus marks */}
-            <path d="M20 10 L22 18 L30 20 L22 22 L20 30 L18 22 L10 20 L18 18 Z" fill="white" />
-            <path d="M65 15 L66.5 21 L73 22.5 L66.5 24 L65 30 L63.5 24 L57 22.5 L63.5 21 Z" fill="white" opacity="0.9" />
-            <path d="M45 40 L46 45 L51 46 L46 47 L45 52 L44 47 L39 46 L44 45 Z" fill="white" opacity="0.75" />
-            <path d="M78 48 L79 53 L84 54 L79 55 L78 60 L77 55 L72 54 L77 53 Z" fill="white" opacity="0.85" />
-            {/* Small cross marks */}
-            <path d="M35 15 L43 23 M43 15 L35 23" stroke="white" strokeWidth="2.2" strokeLinecap="round" opacity="0.9" />
-            <path d="M75 32 L81 38 M81 32 L75 38" stroke="white" strokeWidth="2" strokeLinecap="round" opacity="0.85" />
-            <path d="M25 45 L31 51 M31 45 L25 51" stroke="white" strokeWidth="2" strokeLinecap="round" opacity="0.7" />
-            <path d="M58 55 L64 61 M64 55 L58 61" stroke="white" strokeWidth="2" strokeLinecap="round" opacity="0.8" />
-          </svg>
-        </motion.div>
-      </motion.div>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           
-          {/* Left Column: Headline, Description, Buttons, Social Proof (7 cols) */}
+          {/* Left Column: Headline, Description, Buttons, Genuine Proof Points (7 cols) */}
           <motion.div
             initial="hidden"
             animate="visible"
@@ -73,249 +45,176 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
               visible: {
                 opacity: 1,
                 transition: {
-                  staggerChildren: 0.12,
+                  staggerChildren: 0.1,
                   delayChildren: 0.05,
                 },
               },
             }}
-            className="lg:col-span-7 flex flex-col items-start text-start lg:pr-8"
+            className="lg:col-span-7 flex flex-col items-start text-start lg:pr-8 rtl:lg:pr-0 rtl:lg:pl-8"
           >
-            {/* Eyebrow with horizontal line: "Meet With ────" */}
+            {/* Editorial Eyebrow */}
             <motion.div
               variants={{
-                hidden: { opacity: 0, x: -12 },
-                visible: { opacity: 1, x: 0, transition: { duration: 0.45 } },
+                hidden: { opacity: 0, x: isEn ? -12 : 12 },
+                visible: { opacity: 1, x: 0, transition: { duration: 0.4 } },
               }}
-              className="flex items-center gap-3 mb-4"
+              className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary mb-5"
             >
-              <span className="text-xs uppercase tracking-wider text-[#6B5B73] dark:text-[#B8A9C9] font-semibold">
-                {isEn ? 'Meet With' : 'تعرّف على'}
-              </span>
-              <span className="w-12 h-[1.5px] bg-[#D5D0CA] dark:bg-[#3E3545] inline-block"></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+              <span>{isEn ? 'Direct 1-on-1 Mentorship' : ARABIC_TRANSLATIONS.hero.eyebrow}</span>
             </motion.div>
 
-            {/* High-Impact Display Headline with Highlighted Sage & Lavender Accents */}
+            {/* Main Headline */}
             <motion.h1
               variants={{
-                hidden: { opacity: 0, y: 18 },
-                visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] } },
+                hidden: { opacity: 0, y: 16 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
               }}
-              className="font-serif text-4xl sm:text-5xl lg:text-[3.5rem] leading-[1.14] tracking-tight text-[#362E3B] dark:text-[#F5E6D3] mb-6"
+              className="font-serif text-4xl sm:text-5xl lg:text-[3.35rem] leading-[1.16] tracking-tight text-foreground mb-6"
             >
               {isEn ? (
                 <>
                   Personal{' '}
-                  <span className="text-[#87A878] dark:text-[#A3BF96] font-semibold">Quran & Arabic</span>{' '}
-                  with{' '}
-                  <span className="text-[#87A878] dark:text-[#A3BF96] font-semibold">Expert</span>{' '}
-                  Online Guidance{' '}
-                  <motion.span
-                    animate={{ rotate: [0, 15, -10, 0] }}
-                    transition={{ repeat: Infinity, duration: 8, ease: "easeInOut" }}
-                    className="inline-block text-[#B8A9C9] dark:text-[#B8A9C9] text-3xl sm:text-4xl align-middle font-sans"
-                  >
-                    ✳
-                  </motion.span>
+                  <span className="text-primary font-medium">Quran & Arabic</span>{' '}
+                  with dedicated online guidance.
                 </>
               ) : (
                 <>
                   تعليم{' '}
-                  <span className="text-[#87A878] dark:text-[#A3BF96] font-semibold">القرآن والعربية</span>{' '}
-                  بإشراف{' '}
-                  <span className="text-[#87A878] dark:text-[#A3BF96] font-semibold">أكاديمي</span>{' '}
-                  وتوجيه فردي مباشر{' '}
-                  <motion.span
-                    animate={{ rotate: [0, 15, -10, 0] }}
-                    transition={{ repeat: Infinity, duration: 8, ease: "easeInOut" }}
-                    className="inline-block text-[#B8A9C9] dark:text-[#B8A9C9] text-3xl sm:text-4xl align-middle font-sans"
-                  >
-                    ✳
-                  </motion.span>
+                  <span className="text-primary font-medium">القرآن الكريم واللغة العربية</span>{' '}
+                  بتوجيه فردي ورعاية مباشرة.
                 </>
               )}
             </motion.h1>
 
-            {/* Clear, Human Value Proposition */}
+            {/* Value Proposition Subtitle */}
             <motion.p
-              variants={{
-                hidden: { opacity: 0, y: 14 },
-                visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-              }}
-              className="text-base sm:text-lg text-[#362E3B]/80 dark:text-[#D5D0CA] leading-relaxed max-w-xl mb-8 font-normal"
-            >
-              {isEn ? (
-                <>
-                  Dedicated one-on-one lessons for adults returning to structured learning, youth,
-                  and Muslim families living in Canada, the US, the UK, and Australia. Grounded in Al-Azhar
-                  scholarship and taught with calm patience in fluent C1 English.
-                </>
-              ) : (
-                <>
-                  دروس فردية مباشرة ومخصصة للكبار الساعين للتعلم المنظم، والناشئة، والعائلات
-                  المسلمة في المهجر. بإشراف أزهري وبنهج يقوم على الصبر والتدرج، مع إتقان تام للإنجليزية عند الحاجة.
-                </>
-              )}
-            </motion.p>
-
-            {/* Action Buttons: Solid Sage "Get Started Today" + Guest Demo "Explore as Guest" + Outlined Stone "Learn More" */}
-            <motion.div
               variants={{
                 hidden: { opacity: 0, y: 12 },
                 visible: { opacity: 1, y: 0, transition: { duration: 0.45 } },
               }}
-              className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 w-full sm:w-auto mb-10"
+              className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl mb-8 font-normal"
             >
-              <motion.button
-                whileHover={{ scale: 1.025, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={onOpenTrialModal}
-                id="hero-get-started-btn"
-                className="inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl bg-[#87A878] hover:bg-[#729263] text-white font-medium text-base shadow-md shadow-[#87A878]/25 transition-all cursor-pointer group"
-              >
-                <span>{isEn ? 'Get Started Today' : 'ابدأ جلستك الأولى'}</span>
-                <ArrowRight className={`w-4 h-4 transition-transform group-hover:translate-x-1 ${lang === 'ar' ? 'rotate-180 group-hover:-translate-x-1' : ''}`} />
-              </motion.button>
+              {isEn ? (
+                <>
+                  Private one-on-one lessons for adults, youth, and Muslim families living in Canada, the US, the UK, and Australia. Grounded in Al-Azhar scholarship and taught with patient pacing in fluent C1 English.
+                </>
+              ) : (
+                <>
+                  دروس فردية مخصصة للكبار والناشئة والعائلات المسلمة في المهجر. بإشراف أزهري وبنهج يقوم على الصبر والتدرج، مع إتقان تام للغة الإنجليزية للتوضيح عند الحاجة.
+                </>
+              )}
+            </motion.p>
 
-              <motion.a
-                whileHover={{ scale: 1.015, y: -1 }}
-                whileTap={{ scale: 0.98 }}
-                href="/student/demo"
-                id="hero-demo-btn"
-                className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 dark:bg-amber-500/15 dark:hover:bg-amber-500/25 text-amber-900 dark:text-amber-200 border border-amber-500/30 font-medium text-base transition-colors"
-              >
-                <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                <span>{isEn ? 'Explore as Guest' : 'استكشف كضيف'}</span>
-              </motion.a>
-
-              <motion.a
-                whileHover={{ scale: 1.015, y: -1 }}
-                whileTap={{ scale: 0.98 }}
-                href="#services"
-                id="hero-learn-more-btn"
-                className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-white dark:bg-[#29232F] hover:bg-[#F5E6D3] dark:hover:bg-[#342D3B] text-[#362E3B] dark:text-[#F5E6D3] border border-[#D5D0CA] dark:border-[#3E3545] font-medium text-base transition-colors"
-              >
-                <span>{isEn ? 'Learn More' : 'استكشف المسارات'}</span>
-              </motion.a>
-            </motion.div>
-
-            {/* Social Proof Strip */}
+            {/* Action Buttons: Primary + Guest Demo */}
             <motion.div
               variants={{
                 hidden: { opacity: 0, y: 10 },
                 visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
               }}
-              className="flex flex-wrap items-center gap-4 pt-2"
+              className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto mb-10"
             >
-              {/* Rating Badge */}
-              <motion.div
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                className="flex items-center gap-1.5 bg-[#F5E6D3] dark:bg-[#29232F] px-3.5 py-2 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] cursor-default shadow-xs transition-shadow hover:shadow-sm"
+              <button
+                onClick={onOpenTrialModal}
+                id="hero-get-started-btn"
+                className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-medium text-sm sm:text-base shadow-sm hover:shadow-md transition-all cursor-pointer group"
               >
-                <div className="flex items-center gap-0.5">
-                  {[...Array(5)].map((_, i) => (
-                    <motion.div
-                      key={i}
-                      whileHover={{ scale: 1.25, rotate: 10 }}
-                      transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-                    >
-                      <Star className="w-3.5 h-3.5 fill-[#87A878] text-[#87A878]" />
-                    </motion.div>
-                  ))}
-                </div>
-                <span className="text-xs font-semibold text-[#362E3B] dark:text-[#F5E6D3] tracking-tight">
-                  5.0 Rating
-                </span>
-              </motion.div>
+                <Calendar className="w-4 h-4" />
+                <span>{isEn ? 'Book Free 30-Min Trial' : ARABIC_TRANSLATIONS.hero.ctaPrimary}</span>
+                <ArrowRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
+              </button>
 
-              {/* Overlapping Student Avatars Cluster */}
-              <motion.div
-                whileHover={{ scale: 1.04, y: -2 }}
-                className="flex items-center cursor-default bg-white dark:bg-[#29232F] px-3 py-1.5 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] shadow-xs"
+              <a
+                href="/student/demo"
+                id="hero-demo-btn"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-surface hover:bg-surface-subtle text-foreground border border-border font-medium text-sm sm:text-base shadow-2xs hover:shadow-xs transition-all"
               >
-                <div className="flex -space-x-2.5 overflow-hidden">
-                  <motion.img
-                    whileHover={{ scale: 1.2, zIndex: 10 }}
-                    className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-[#1E1923] object-cover transition-transform cursor-pointer"
-                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80"
-                    alt="Student Maryam"
-                  />
-                  <motion.img
-                    whileHover={{ scale: 1.2, zIndex: 10 }}
-                    className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-[#1E1923] object-cover transition-transform cursor-pointer"
-                    src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=120&auto=format&fit=crop&q=80"
-                    alt="Student Tarek"
-                  />
-                  <motion.img
-                    whileHover={{ scale: 1.2, zIndex: 10 }}
-                    className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-[#1E1923] object-cover transition-transform cursor-pointer"
-                    src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&auto=format&fit=crop&q=80"
-                    alt="Student Sarah"
-                  />
-                  <motion.img
-                    whileHover={{ scale: 1.2, zIndex: 10 }}
-                    className="inline-block h-8 w-8 rounded-full ring-2 ring-white dark:ring-[#1E1923] object-cover transition-transform cursor-pointer"
-                    src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80"
-                    alt="Student Omar"
-                  />
+                <Sparkles className="w-4 h-4 text-amber-500" />
+                <span>{isEn ? 'Explore as Guest' : 'استكشف كضيف'}</span>
+              </a>
+
+              <a
+                href="#services"
+                id="hero-learn-more-btn"
+                className="inline-flex items-center justify-center gap-1.5 px-4 py-3.5 text-muted-foreground hover:text-foreground text-xs sm:text-sm font-medium transition-colors"
+              >
+                <span>{isEn ? 'View Teaching Areas' : 'استعراض المسارات'}</span>
+                <span aria-hidden="true" className="rtl:rotate-180">↓</span>
+              </a>
+            </motion.div>
+
+            {/* Authentic Credibility & Trust Markers */}
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 10 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+              }}
+              className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full pt-4 border-t border-border/80"
+            >
+              <div className="flex items-start gap-2">
+                <GraduationCap className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                <div>
+                  <div className="text-xs font-semibold text-foreground">
+                    {isEn ? 'Al-Azhar Degree' : 'خريج الأزهر'}
+                  </div>
+                  <div className="text-[11px] text-muted-foreground">
+                    {isEn ? 'Classical grounding' : 'تأصيل شرعي ولغوي'}
+                  </div>
                 </div>
-                <span className="ml-2.5 px-2.5 py-1 rounded-full bg-[#87A878]/20 dark:bg-[#87A878]/30 text-[#4C6B3E] dark:text-[#A3BF96] text-xs font-semibold">
-                  +30 students taught
-                </span>
-              </motion.div>
+              </div>
+
+              <div className="flex items-start gap-2">
+                <Languages className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                <div>
+                  <div className="text-xs font-semibold text-foreground">
+                    {isEn ? 'IELTS C1 Certified' : 'إتقان الإنجليزية C1'}
+                  </div>
+                  <div className="text-[11px] text-muted-foreground">
+                    {isEn ? 'Fluent explanations' : 'تواصل سلس ومباشر'}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-2">
+                <UserCheck className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                <div>
+                  <div className="text-xs font-semibold text-foreground">
+                    {isEn ? 'Always 1-on-1' : 'تعليم فردي دائماً'}
+                  </div>
+                  <div className="text-[11px] text-muted-foreground">
+                    {isEn ? 'No rotating tutors' : 'مع محمود مباشرة'}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-2">
+                <Clock className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                <div>
+                  <div className="text-xs font-semibold text-foreground">
+                    {isEn ? 'Global Timezones' : 'توقيتات مرنة'}
+                  </div>
+                  <div className="text-[11px] text-muted-foreground">
+                    {isEn ? 'Canada, US, UK, AU' : 'كندا وأمريكا وبريطانيا'}
+                  </div>
+                </div>
+              </div>
             </motion.div>
 
           </motion.div>
 
-          {/* Right Column: Ustadh Mahmoud Portrait Overlapping Split Boundary (5 cols) */}
+          {/* Right Column: Ustadh Mahmoud Portrait Frame (5 cols) */}
           <motion.div
             style={{ y: portraitY }}
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-5 flex flex-col items-center justify-center relative z-20 py-4 lg:py-0"
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:col-span-5 flex flex-col items-center justify-center relative z-20"
           >
-            {/* Mobile sage background card for small screens */}
-            <div className="absolute inset-0 bg-[#87A878] rounded-3xl -z-10 lg:hidden transform scale-95 opacity-90"></div>
-            
             <PortraitImage priority={true} />
           </motion.div>
 
         </div>
       </div>
-
-      {/* Playful Organic Squiggle Loop centered below Hero with animated path */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.3 }}
-        animate={{ y: [0, -3, 0] }}
-        className="w-full flex justify-center mt-12 sm:mt-16 pointer-events-none select-none"
-      >
-        <svg
-          width="110"
-          height="32"
-          viewBox="0 0 110 32"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="text-[#87A878] dark:text-[#B8A9C9]"
-        >
-          {/* Organic hand-drawn looping squiggle */}
-          <motion.path
-            d="M5 18 C12 6, 20 6, 26 18 C32 28, 40 28, 46 18 C52 8, 60 8, 66 18 C72 28, 80 28, 86 18 C92 8, 100 8, 105 18"
-            stroke="currentColor"
-            strokeWidth="3.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            initial={{ pathLength: 0 }}
-            whileInView={{ pathLength: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.2, ease: 'easeInOut' }}
-          />
-        </svg>
-      </motion.div>
     </section>
   );
 };
-

@@ -17,7 +17,8 @@ import {
   CheckCircle2,
   ChevronRight,
   Send,
-  AlertCircle
+  AlertCircle,
+  GraduationCap
 } from 'lucide-react';
 import { DashboardTrial, TrialAssessment, LeadStatus } from '../types';
 import { dashboardFetch } from '../lib/dashboardApi';
@@ -286,47 +287,47 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
       aria-modal="true"
     >
       <div
-        className="bg-white dark:bg-[#2A2431] text-[#362E3B] dark:text-[#F5E6D3] rounded-2xl w-full max-w-2xl shadow-xl border border-[#D5D0CA]/40 dark:border-[#3E3545]/40 overflow-hidden flex flex-col max-h-[92vh]"
+        className="bg-surface text-foreground rounded-2xl w-full max-w-2xl shadow-xl border border-border overflow-hidden flex flex-col max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="p-5 sm:p-6 border-b border-[#D5D0CA]/30 dark:border-[#3E3545]/30 flex items-start justify-between gap-4 bg-[#F8F6F0]/80 dark:bg-[#1E1923]/60">
+        <div className="p-5 sm:p-6 border-b border-border-subtle flex items-start justify-between gap-4 bg-surface-subtle">
           <div>
             <div className="flex items-center gap-2 mb-1 flex-wrap">
-              <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-[#8FAE9B]/20 text-[#6F907D] dark:text-[#8FAE9B]">
+              <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-primary/20 text-primary">
                 {trial.reference_code}
               </span>
-              <span className="text-xs font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+              <span className="text-xs font-semibold px-2 py-0.5 rounded bg-warning/15 text-warning-foreground border border-warning/30">
                 Free Trial (30 min)
               </span>
               {trial.status ? (
-                <span className={`text-xs font-semibold px-2 py-0.5 rounded ${
+                <span className={`text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded ${
                   trial.status === 'completed'
-                    ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300'
+                    ? 'bg-success/15 text-success border border-success/30'
                     : trial.status === 'cancelled'
-                    ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
-                    : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
+                    ? 'bg-destructive/15 text-destructive border border-destructive/20'
+                    : 'bg-primary/10 text-primary border border-primary/20'
                 }`}>
-                  {trial.status.toUpperCase()}
+                  {trial.status}
                 </span>
               ) : (
-                <span className="text-xs font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-300">
+                <span className="text-xs font-medium px-2 py-0.5 rounded bg-surface-subtle text-muted-foreground border border-border-subtle">
                   Status unavailable
                 </span>
               )}
             </div>
-            <h2 className="text-xl sm:text-2xl font-serif font-bold text-[#362E3B] dark:text-[#F5E6D3]">
+            <h2 className="text-xl sm:text-2xl font-serif font-bold text-foreground">
               {trial.learner_name || 'Anonymous Student'}
             </h2>
             {trial.parent_name && (
-              <p className="text-xs text-[#6F907D] dark:text-[#8FAE9B] font-medium mt-0.5">
-                Parent / Guardian: {trial.parent_name}
+              <p className="text-xs text-muted-foreground font-medium mt-0.5">
+                Parent / Guardian: <span className="text-foreground">{trial.parent_name}</span>
               </p>
             )}
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-[#362E3B]/60 dark:text-[#F5E6D3]/60 hover:bg-[#D5D0CA]/30 dark:hover:bg-[#3E3545]/50 transition-colors"
+            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -335,46 +336,46 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
         {/* Modal Body */}
         <div className="p-5 sm:p-6 overflow-y-auto space-y-6 flex-1 text-sm">
           {saveMessage && (
-            <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/40 text-xs text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
+            <div className="p-3.5 rounded-xl bg-success/10 border border-success/30 text-xs text-success flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 shrink-0" />
               <span>{saveMessage}</span>
             </div>
           )}
 
           {errorMessage && (
-            <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800/40 text-xs text-rose-800 dark:text-rose-300 flex items-center gap-2">
+            <div className="p-3.5 rounded-xl bg-destructive/10 border border-destructive/20 text-xs text-destructive flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{errorMessage}</span>
             </div>
           )}
 
           {/* Section 1: Trial Time & Zoom */}
-          <div className="bg-[#F8F6F0]/60 dark:bg-[#1E1923]/40 p-4 rounded-xl border border-[#D5D0CA]/30 dark:border-[#3E3545]/30 space-y-3">
+          <div className="bg-surface-subtle p-4 rounded-xl border border-border-subtle space-y-3">
             <div className="flex items-center justify-between flex-wrap gap-2">
-              <div className="flex items-center gap-2 text-[#6F907D] dark:text-[#8FAE9B] font-semibold text-xs uppercase tracking-wider">
+              <div className="flex items-center gap-2 text-primary font-semibold text-xs uppercase tracking-wider">
                 <Clock className="w-4 h-4" />
                 <span>Session Timing & Room</span>
               </div>
-              <span className="text-xs text-[#362E3B]/70 dark:text-[#F5E6D3]/70 font-mono">
+              <span className="text-xs text-muted-foreground font-mono">
                 Requested: {trial.service_name}
               </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              <div className="p-3 rounded-lg bg-white dark:bg-[#2A2431] border border-[#D5D0CA]/30 dark:border-[#3E3545]/30">
-                <div className="text-[11px] uppercase tracking-wider text-[#362E3B]/60 dark:text-[#F5E6D3]/60 mb-0.5">
+              <div className="p-3 rounded-lg bg-surface border border-border">
+                <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">
                   Mahmoud's Time (Cairo)
                 </div>
-                <div className="font-semibold text-sm">
+                <div className="font-semibold text-sm text-foreground">
                   {startCairo ? startCairo.toFormat('EEE, MMM d • hh:mm a') : (trial.cairo_time_display || 'Time not set')}
                 </div>
               </div>
 
-              <div className="p-3 rounded-lg bg-white dark:bg-[#2A2431] border border-[#D5D0CA]/30 dark:border-[#3E3545]/30">
-                <div className="text-[11px] uppercase tracking-wider text-[#362E3B]/60 dark:text-[#F5E6D3]/60 mb-0.5">
+              <div className="p-3 rounded-lg bg-surface border border-border">
+                <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">
                   Student's Local Time
                 </div>
-                <div className="font-semibold text-sm">
+                <div className="font-semibold text-sm text-foreground">
                   {startStudent ? (
                     `${startStudent.toFormat('hh:mm a')} (${trial.student_timezone})`
                   ) : (
@@ -391,14 +392,14 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                   href={hostUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#6F907D] hover:bg-[#5C7868] text-white text-xs font-medium shadow-xs transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold shadow-2xs transition-colors"
                 >
                   <Video className="w-3.5 h-3.5" />
                   <span>Start as Host</span>
-                  <ExternalLink className="w-3 h-3 ml-0.5 opacity-80" />
+                  <ExternalLink className="w-3 h-3 ms-0.5 opacity-80" />
                 </a>
               ) : (
-                <div className="text-xs text-amber-700 dark:text-amber-300 font-medium flex items-center gap-1.5">
+                <div className="text-xs text-warning font-medium flex items-center gap-1.5">
                   <AlertCircle className="w-3.5 h-3.5" />
                   <span>Zoom host link not generated yet</span>
                 </div>
@@ -408,9 +409,9 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 <button
                   type="button"
                   onClick={() => copyToClipboard(joinUrl, 'join')}
-                  className="inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-white dark:bg-[#2A2431] border border-[#D5D0CA]/40 dark:border-[#3E3545]/40 text-xs font-medium hover:bg-stone-50 transition-colors"
+                  className="inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-surface border border-border text-xs font-medium text-foreground hover:bg-surface-subtle transition-colors"
                 >
-                  {copiedLink === 'join' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-stone-500" />}
+                  {copiedLink === 'join' ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5 text-muted-foreground" />}
                   <span>{copiedLink === 'join' ? 'Student Link Copied!' : 'Copy Student Link'}</span>
                 </button>
               )}
@@ -420,13 +421,13 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40 text-xs font-medium hover:bg-emerald-100 transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-success/10 text-success border border-success/30 text-xs font-medium hover:bg-success/20 transition-colors"
                 >
                   <MessageCircle className="w-3.5 h-3.5" />
                   <span>Send Zoom on WhatsApp</span>
                 </a>
               ) : (
-                <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-400 dark:text-stone-500 border border-stone-200 dark:border-stone-700 text-xs font-medium cursor-not-allowed">
+                <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface-subtle text-muted-foreground border border-border-subtle text-xs font-medium cursor-not-allowed">
                   <MessageCircle className="w-3.5 h-3.5" />
                   <span>No WhatsApp Number</span>
                 </span>
@@ -436,12 +437,12 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
 
           {/* Section 2: Student Learning Need & Goal */}
           {(trial.goal || trial.notes) && (
-            <div className="bg-[#F8F6F0]/40 dark:bg-[#1E1923]/20 p-4 rounded-xl border border-[#D5D0CA]/30 dark:border-[#3E3545]/30">
-              <div className="flex items-center gap-2 text-stone-600 dark:text-stone-300 font-semibold text-xs uppercase tracking-wider mb-1.5">
+            <div className="bg-surface-subtle p-4 rounded-xl border border-border-subtle">
+              <div className="flex items-center gap-2 text-muted-foreground font-semibold text-xs uppercase tracking-wider mb-1.5">
                 <FileText className="w-4 h-4" />
                 <span>Learner Goal & Inquired Needs</span>
               </div>
-              <p className="text-xs sm:text-sm text-[#362E3B]/85 dark:text-[#F5E6D3]/85 leading-relaxed whitespace-pre-wrap">
+              <p className="text-xs sm:text-sm text-foreground leading-relaxed whitespace-pre-wrap">
                 {trial.goal || trial.notes}
               </p>
             </div>
@@ -450,25 +451,25 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
           {/* Section 3: Trial Assessment (Teacher Observation) */}
           <div className="space-y-3 pt-2">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-[#6F907D] dark:text-[#8FAE9B] font-semibold text-xs uppercase tracking-wider">
+              <div className="flex items-center gap-2 text-primary font-semibold text-xs uppercase tracking-wider">
                 <Sparkles className="w-4 h-4" />
                 <span>Mini-Lesson Assessment</span>
               </div>
-              <span className="text-[11px] text-[#362E3B]/60 dark:text-[#F5E6D3]/60">
+              <span className="text-[11px] text-muted-foreground">
                 Teacher Observation
               </span>
             </div>
 
             {/* Dynamic Learning Plan Templates Picker */}
-            <div className="p-3.5 rounded-xl bg-[#8FAE9B]/10 dark:bg-[#8FAE9B]/5 border border-[#8FAE9B]/30 space-y-2">
+            <div className="p-3.5 rounded-xl bg-primary/10 border border-primary/20 space-y-2">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-[#6F907D] dark:text-[#8FAE9B]">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-primary">
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>Dynamic Learning Plan Templates</span>
                 </div>
-                <span className="text-[10px] text-stone-500">1-click pedagogical assessment</span>
+                <span className="text-[10px] text-muted-foreground">1-click pedagogical assessment</span>
               </div>
-              <p className="text-[11px] text-[#362E3B]/70 dark:text-[#D5D0CA]/70">
+              <p className="text-[11px] text-muted-foreground">
                 Choose a pre-defined curriculum baseline to quickly populate assessment goals, strengths, and recommended plan:
               </p>
               <div className="flex flex-wrap gap-1.5 pt-1">
@@ -481,13 +482,13 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                       onClick={() => handleApplyTemplate(tmpl)}
                       className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1 cursor-pointer ${
                         isSelected
-                          ? 'bg-[#6F907D] text-white shadow-xs'
-                          : 'bg-white dark:bg-[#2A2431] text-[#362E3B] dark:text-[#F5E6D3] border border-[#D5D0CA]/50 dark:border-[#3E3545] hover:border-[#8FAE9B]'
+                          ? 'bg-primary text-primary-foreground shadow-2xs font-semibold'
+                          : 'bg-surface text-foreground border border-border hover:border-primary/50'
                       }`}
                     >
                       {isSelected && <Check className="w-3 h-3" />}
                       <span>{tmpl.title}</span>
-                      <span className="text-[10px] opacity-60">({tmpl.duration}m)</span>
+                      <span className="text-[10px] opacity-70">({tmpl.duration}m)</span>
                     </button>
                   );
                 })}
@@ -496,13 +497,13 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-medium text-[#362E3B]/80 dark:text-[#F5E6D3]/80 mb-1">
+                <label className="block text-xs font-medium text-foreground mb-1">
                   Current Assessed Level
                 </label>
                 <select
                   value={currentLevel}
                   onChange={(e) => setCurrentLevel(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#2A2431] text-xs"
+                  className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="">-- Unassessed / Not Evaluated Yet --</option>
                   <option value="beginner">Beginner (Starting from basics)</option>
@@ -513,13 +514,13 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#362E3B]/80 dark:text-[#F5E6D3]/80 mb-1">
+                <label className="block text-xs font-medium text-foreground mb-1">
                   Follow-Up Status
                 </label>
                 <select
                   value={followUpStatus}
                   onChange={(e) => setFollowUpStatus(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#2A2431] text-xs"
+                  className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="needs_follow_up">Needs Follow-Up</option>
                   <option value="awaiting_response">Awaiting Student Response</option>
@@ -532,7 +533,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#362E3B]/80 dark:text-[#F5E6D3]/80 mb-1">
+              <label className="block text-xs font-medium text-foreground mb-1">
                 Observed Strengths
               </label>
               <input
@@ -540,12 +541,12 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 value={strengths}
                 onChange={(e) => setStrengths(e.target.value)}
                 placeholder="e.g. Attentive, knows Arabic alphabet, good pronunciation of standard sounds"
-                className="w-full px-3 py-2 rounded-lg border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#2A2431] text-xs"
+                className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#362E3B]/80 dark:text-[#F5E6D3]/80 mb-1">
+              <label className="block text-xs font-medium text-foreground mb-1">
                 Areas Needing Work & Gaps
               </label>
               <input
@@ -553,12 +554,12 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 value={areasNeedingWork}
                 onChange={(e) => setAreasNeedingWork(e.target.value)}
                 placeholder="e.g. Heavy letters (Taa, Saad), Noon Sakinah rules, reading confidence"
-                className="w-full px-3 py-2 rounded-lg border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#2A2431] text-xs"
+                className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#362E3B]/80 dark:text-[#F5E6D3]/80 mb-1">
+              <label className="block text-xs font-medium text-foreground mb-1">
                 Private Teacher Notes
               </label>
               <textarea
@@ -566,37 +567,37 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 value={assessmentNotes}
                 onChange={(e) => setAssessmentNotes(e.target.value)}
                 placeholder="Observations on pace, focus, parent expectations, preferred timings..."
-                className="w-full px-3 py-2 rounded-lg border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#2A2431] text-xs"
+                className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
           </div>
 
           {/* Section 4: Recommended Learning Plan */}
-          <div className="p-4 rounded-xl bg-[#EAF0EB]/50 dark:bg-[#8FAE9B]/10 border border-[#8FAE9B]/30 space-y-3">
+          <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 space-y-3">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-[#6F907D] dark:text-[#8FAE9B] font-semibold text-xs uppercase tracking-wider">
+              <div className="flex items-center gap-2 text-primary font-semibold text-xs uppercase tracking-wider">
                 <GraduationCap className="w-4 h-4" />
                 <span>Your Recommended Learning Plan</span>
               </div>
               <button
                 type="button"
                 onClick={() => copyToClipboard(studentPlanMessage, 'plan')}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-white dark:bg-[#2A2431] text-xs font-medium text-[#6F907D] dark:text-[#8FAE9B] border border-[#8FAE9B]/40 hover:bg-[#8FAE9B]/15 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface text-xs font-medium text-foreground border border-border hover:bg-surface-subtle transition-colors cursor-pointer"
               >
-                {copiedLink === 'plan' ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                {copiedLink === 'plan' ? <Check className="w-3 h-3 text-success" /> : <Copy className="w-3 h-3 opacity-70" />}
                 <span>{copiedLink === 'plan' ? 'Plan Copied!' : 'Copy Plan for Student'}</span>
               </button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label className="block text-xs font-medium text-[#362E3B]/80 dark:text-[#F5E6D3]/80 mb-1">
+                <label className="block text-xs font-medium text-foreground mb-1">
                   Recommended Service
                 </label>
                 <select
                   value={recommendedServiceId}
                   onChange={(e) => setRecommendedServiceId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#2A2431] text-xs"
+                  className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   {AVAILABLE_SERVICES.map(s => (
                     <option key={s.id} value={s.id}>{s.name}</option>
@@ -605,13 +606,13 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#362E3B]/80 dark:text-[#F5E6D3]/80 mb-1">
+                <label className="block text-xs font-medium text-foreground mb-1">
                   Lesson Length
                 </label>
                 <select
                   value={recommendedDuration}
                   onChange={(e) => setRecommendedDuration(Number(e.target.value))}
-                  className="w-full px-3 py-2 rounded-lg border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#2A2431] text-xs"
+                  className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value={30}>30 minutes (Best for kids)</option>
                   <option value={45}>45 minutes (Standard focus)</option>
@@ -620,13 +621,13 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#362E3B]/80 dark:text-[#F5E6D3]/80 mb-1">
+                <label className="block text-xs font-medium text-foreground mb-1">
                   Weekly Frequency
                 </label>
                 <select
                   value={recommendedFrequency}
                   onChange={(e) => setRecommendedFrequency(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#2A2431] text-xs"
+                  className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="1x weekly">1× weekly</option>
                   <option value="2x weekly">2× weekly (Recommended)</option>
@@ -637,7 +638,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#362E3B]/80 dark:text-[#F5E6D3]/80 mb-1">
+              <label className="block text-xs font-medium text-foreground mb-1">
                 Learning Plan Summary / Core Milestone
               </label>
               <textarea
@@ -645,20 +646,20 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 value={learningPlanSummary}
                 onChange={(e) => setLearningPlanSummary(e.target.value)}
                 placeholder="e.g. Master Noon Sakinah rules in 4 weeks, then progress to Surah Al-Mulk recitation..."
-                className="w-full px-3 py-2 rounded-lg border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#2A2431] text-xs"
+                className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
           </div>
         </div>
 
         {/* Modal Footer / Pipeline Actions */}
-        <div className="p-4 sm:p-5 border-t border-[#D5D0CA]/30 dark:border-[#3E3545]/30 bg-[#F8F6F0]/80 dark:bg-[#1E1923]/60 flex flex-wrap items-center justify-between gap-3">
+        <div className="p-4 sm:p-5 border-t border-border-subtle bg-surface-subtle flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <button
               type="button"
               disabled={saving}
               onClick={() => handleSaveAssessment(false)}
-              className="px-4 py-2 rounded-xl bg-white dark:bg-[#2A2431] border border-[#D5D0CA] dark:border-[#3E3545] text-xs font-medium hover:bg-stone-50 transition-colors cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-surface border border-border text-xs font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
             >
               {saving ? 'Saving...' : 'Save Assessment'}
             </button>
@@ -668,7 +669,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 type="button"
                 disabled={saving}
                 onClick={() => handleSaveAssessment(true, 'trial_completed')}
-                className="px-4 py-2 rounded-xl bg-[#6F907D] hover:bg-[#5C7868] text-white text-xs font-medium transition-colors cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold transition-colors cursor-pointer"
               >
                 Mark Attended & Completed
               </button>
@@ -680,7 +681,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               type="button"
               disabled={saving}
               onClick={() => handleSaveAssessment(true, 'potential_student')}
-              className="px-3.5 py-2 rounded-xl bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40 text-xs font-medium hover:bg-amber-100 transition-colors cursor-pointer"
+              className="px-3.5 py-2 rounded-xl bg-warning/10 hover:bg-warning/20 text-warning-foreground border border-warning/30 text-xs font-medium transition-colors cursor-pointer"
             >
               Mark Potential Student
             </button>
@@ -689,7 +690,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               type="button"
               disabled={saving}
               onClick={() => handleSaveAssessment(true, 'active_student')}
-              className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium transition-colors shadow-xs cursor-pointer flex items-center gap-1.5"
+              className="px-3.5 py-2 rounded-xl bg-success hover:bg-success/90 text-white text-xs font-semibold transition-colors shadow-2xs cursor-pointer flex items-center gap-1.5"
             >
               <CheckCircle2 className="w-3.5 h-3.5" />
               <span>Enroll as Active Student</span>
@@ -698,25 +699,5 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
         </div>
       </div>
     </div>
-  );
-}
-
-function GraduationCap(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-      <path d="M6 12v5c3 3 9 3 12 0v-5" />
-    </svg>
   );
 }

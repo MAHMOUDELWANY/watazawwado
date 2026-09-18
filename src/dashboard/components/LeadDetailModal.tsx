@@ -45,47 +45,47 @@ const AVAILABLE_SERVICES = [
 const STAGE_CONFIG: Record<LeadStatus, { label: string; color: string; description: string }> = {
   visitor: {
     label: 'Visitor',
-    color: 'bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300',
+    color: 'bg-surface-subtle text-muted-foreground border border-border-subtle',
     description: 'Initial touchpoint or browsing inquiry'
   },
   lead: {
     label: 'New Lead',
-    color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
+    color: 'bg-primary/10 text-primary border border-primary/20',
     description: 'Inquiry received via website form or initial message'
   },
   contacted: {
     label: 'Contacted',
-    color: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300',
+    color: 'bg-accent/15 text-accent border border-accent/25',
     description: 'Mahmoud has reached out via WhatsApp or email'
   },
   trial_booked: {
     label: 'Trial Booked',
-    color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
+    color: 'bg-warning/15 text-warning-foreground border border-warning/30',
     description: 'Scheduled for an upcoming 30-minute free trial session'
   },
   trial_completed: {
     label: 'Trial Completed',
-    color: 'bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300',
+    color: 'bg-primary/15 text-primary border border-primary/30',
     description: 'Attended free trial mini-lesson and level evaluated'
   },
   potential_student: {
     label: 'Potential Student',
-    color: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300',
+    color: 'bg-accent/10 text-accent border border-accent/25',
     description: 'Received Recommended Learning Plan; discussing schedule or package'
   },
   active_student: {
     label: 'Active Student',
-    color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',
+    color: 'bg-success/15 text-success border border-success/30',
     description: 'Enrolled in regular lessons with reserved weekly slots'
   },
   returning_student: {
     label: 'Returning Student',
-    color: 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-300',
+    color: 'bg-primary/10 text-primary border border-primary/25',
     description: 'Re-enrolled after a break or completing a previous cycle'
   },
   lost: {
     label: 'Lost / Postponed',
-    color: 'bg-stone-200 text-stone-600 dark:bg-stone-800 dark:text-stone-400',
+    color: 'bg-surface-subtle text-muted-foreground border border-border-subtle',
     description: 'Decided not to proceed or uncontactable'
   }
 };
@@ -176,37 +176,37 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
       aria-modal="true"
     >
       <div
-        className="bg-white dark:bg-[#2A2431] text-[#362E3B] dark:text-[#F5E6D3] rounded-2xl w-full max-w-2xl shadow-xl border border-[#D5D0CA]/40 dark:border-[#3E3545]/40 overflow-hidden flex flex-col max-h-[92vh]"
+        className="bg-surface text-foreground rounded-2xl w-full max-w-2xl shadow-xl border border-border overflow-hidden flex flex-col max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="p-5 sm:p-6 border-b border-[#D5D0CA]/30 dark:border-[#3E3545]/30 flex items-start justify-between gap-4 bg-[#F8F6F0]/80 dark:bg-[#1E1923]/60">
+        <div className="p-5 sm:p-6 border-b border-border flex items-start justify-between gap-4 bg-surface-subtle">
           <div>
             <div className="flex items-center gap-2 mb-1 flex-wrap">
-              <span className={`text-xs font-semibold px-2.5 py-0.5 rounded ${STAGE_CONFIG[currentStatus]?.color || 'bg-stone-100'}`}>
+              <span className={`text-xs font-semibold px-2.5 py-0.5 rounded ${STAGE_CONFIG[currentStatus]?.color || 'bg-surface-subtle text-foreground'}`}>
                 {STAGE_CONFIG[currentStatus]?.label || currentStatus}
               </span>
-              <span className="text-xs font-medium px-2 py-0.5 rounded bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">
+              <span className="text-xs font-medium px-2 py-0.5 rounded bg-surface border border-border-subtle text-muted-foreground">
                 {lead.learner_type === 'child' ? 'Child Learner' : 'Adult Learner'}
               </span>
               {lead.source && (
-                <span className="text-xs text-[#6F907D] dark:text-[#8FAE9B] font-mono px-2 py-0.5 rounded bg-[#8FAE9B]/10">
+                <span className="text-xs text-primary font-mono px-2 py-0.5 rounded bg-primary/10 border border-primary/20">
                   Source: {lead.source}
                 </span>
               )}
             </div>
-            <h2 className="text-xl sm:text-2xl font-serif font-bold text-[#362E3B] dark:text-[#F5E6D3]">
+            <h2 className="text-xl sm:text-2xl font-serif font-bold text-foreground">
               {lead.name}
             </h2>
             {lead.parent_name && (
-              <p className="text-xs text-[#6F907D] dark:text-[#8FAE9B] font-medium mt-0.5">
-                Parent / Guardian: {lead.parent_name}
+              <p className="text-xs text-muted-foreground font-medium mt-0.5">
+                Parent / Guardian: <span className="text-foreground">{lead.parent_name}</span>
               </p>
             )}
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-[#362E3B]/60 dark:text-[#F5E6D3]/60 hover:bg-[#D5D0CA]/30 dark:hover:bg-[#3E3545]/50 transition-colors"
+            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -215,14 +215,14 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
         {/* Modal Body */}
         <div className="p-5 sm:p-6 overflow-y-auto space-y-6 flex-1 text-sm">
           {successMessage && (
-            <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/40 text-xs text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
+            <div className="p-3.5 rounded-xl bg-success/15 border border-success/30 text-xs text-success flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 shrink-0" />
               <span>{successMessage}</span>
             </div>
           )}
 
           {errorMessage && (
-            <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800/40 text-xs text-rose-800 dark:text-rose-300 space-y-2">
+            <div className="p-3.5 rounded-xl bg-destructive/10 border border-destructive/20 text-xs text-destructive space-y-2">
               <div className="flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{errorMessage}</span>
@@ -233,9 +233,9 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                   id="teacher-override"
                   checked={teacherOverride}
                   onChange={(e) => setTeacherOverride(e.target.checked)}
-                  className="rounded border-rose-300 text-[#6F907D] focus:ring-[#6F907D]"
+                  className="rounded border-border text-primary focus:ring-primary"
                 />
-                <label htmlFor="teacher-override" className="text-xs text-stone-700 dark:text-stone-300">
+                <label htmlFor="teacher-override" className="text-xs text-foreground cursor-pointer">
                   Allow manual stage correction / teacher override
                 </label>
               </div>
@@ -243,16 +243,16 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
           )}
 
           {/* Quick Communication Bar */}
-          <div className="p-4 rounded-xl bg-[#F8F6F0]/70 dark:bg-[#1E1923]/40 border border-[#D5D0CA]/30 dark:border-[#3E3545]/30 flex flex-wrap items-center justify-between gap-3">
+          <div className="p-4 rounded-xl bg-surface-subtle border border-border flex flex-wrap items-center justify-between gap-3">
             <div className="space-y-0.5 text-xs">
-              <div className="text-[11px] uppercase tracking-wider text-[#362E3B]/60 dark:text-[#D5D0CA]/60">
+              <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
                 Contact Information
               </div>
-              <div className="font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+              <div className="font-medium text-foreground">
                 {lead.email} {lead.whatsapp && `• ${lead.whatsapp}`}
               </div>
               {createdDateCairo && (
-                <div className="text-[11px] text-stone-500">
+                <div className="text-[11px] text-muted-foreground">
                   First Inquired: {createdDateCairo} (Cairo)
                 </div>
               )}
@@ -264,13 +264,13 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium transition-colors shadow-xs"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-success hover:bg-success/90 text-white text-xs font-semibold transition-colors shadow-2xs cursor-pointer"
                 >
                   <MessageCircle className="w-3.5 h-3.5" />
                   <span>WhatsApp</span>
                 </a>
               ) : (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-400 dark:text-stone-500 border border-stone-200 dark:border-stone-700 text-xs font-medium cursor-not-allowed">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface text-muted-foreground border border-border text-xs font-medium cursor-not-allowed opacity-60">
                   <MessageCircle className="w-3.5 h-3.5" />
                   <span>No WhatsApp</span>
                 </span>
@@ -278,7 +278,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
               {lead.email && (
                 <a
                   href={`mailto:${lead.email}`}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white dark:bg-[#2A2431] border border-[#D5D0CA]/50 text-xs font-medium hover:bg-stone-50 transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface border border-border text-xs font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
                 >
                   <Mail className="w-3.5 h-3.5" />
                   <span>Email</span>
@@ -290,10 +290,10 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
           {/* Pipeline Stage Transition Selector */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="block text-xs font-medium uppercase tracking-wider text-[#362E3B]/70 dark:text-[#D5D0CA]/70">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-foreground">
                 Pipeline Lifecycle Stage
               </label>
-              <span className="text-[11px] text-stone-500">
+              <span className="text-[11px] text-muted-foreground">
                 {STAGE_CONFIG[currentStatus]?.description}
               </span>
             </div>
@@ -306,10 +306,10 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                     key={statusKey}
                     type="button"
                     onClick={() => setCurrentStatus(statusKey)}
-                    className={`p-2 rounded-xl text-xs font-medium text-left border transition-all cursor-pointer ${
+                    className={`p-2 rounded-xl text-xs text-left border transition-all cursor-pointer ${
                       isSelected
-                        ? 'border-[#6F907D] bg-[#EAF0EB]/60 dark:bg-[#8FAE9B]/15 text-[#6F907D] dark:text-[#8FAE9B] font-semibold'
-                        : 'border-[#D5D0CA]/40 dark:border-[#3E3545]/40 bg-white dark:bg-[#2A2431] hover:bg-stone-50 dark:hover:bg-stone-800'
+                        ? 'border-primary bg-primary/10 text-primary font-semibold shadow-2xs'
+                        : 'border-border bg-surface text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
                     }`}
                   >
                     <div>{STAGE_CONFIG[statusKey].label}</div>
@@ -321,19 +321,19 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
 
           {/* Associated Trial Booking Card */}
           {lead.trial_booking ? (
-            <div className="p-4 rounded-xl bg-amber-50/60 dark:bg-amber-900/10 border border-amber-200/50 dark:border-amber-800/30 space-y-2">
+            <div className="p-4 rounded-xl bg-warning/10 border border-warning/30 space-y-2">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-amber-800 dark:text-amber-300 font-semibold text-xs uppercase tracking-wider">
+                <div className="flex items-center gap-2 text-warning-foreground font-semibold text-xs uppercase tracking-wider">
                   <Sparkles className="w-4 h-4" />
                   <span>Associated Free Trial</span>
                 </div>
-                <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-white dark:bg-[#2A2431] text-amber-900 dark:text-amber-300">
+                <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-surface text-warning-foreground border border-warning/30">
                   {lead.trial_booking.reference_code}
                 </span>
               </div>
 
-              <div className="text-xs text-[#362E3B]/80 dark:text-[#D5D0CA]">
-                <span>Status: </span>
+              <div className="text-xs text-foreground">
+                <span className="text-muted-foreground">Status: </span>
                 <span className="font-semibold uppercase">{lead.trial_booking.status || 'Scheduled'}</span>
                 {lead.trial_booking.scheduled_start && (
                   <span>
@@ -345,25 +345,25 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
 
               <div className="flex items-center gap-2 pt-1 text-[11px]">
                 {lead.trial_booking.has_assessment ? (
-                  <span className="text-emerald-700 dark:text-emerald-400 font-medium flex items-center gap-1">
+                  <span className="text-success font-medium flex items-center gap-1">
                     <CheckCircle2 className="w-3.5 h-3.5" />
                     <span>Evaluation & Learning Plan Saved</span>
                   </span>
                 ) : (
-                  <span className="text-stone-500">
+                  <span className="text-muted-foreground">
                     Awaiting assessment after mini-lesson
                   </span>
                 )}
               </div>
             </div>
           ) : (
-            <div className="p-3.5 rounded-xl bg-stone-50 dark:bg-stone-900/40 border border-stone-200 dark:border-stone-800 text-xs text-stone-500 flex items-center justify-between">
+            <div className="p-3.5 rounded-xl bg-surface-subtle border border-border text-xs text-muted-foreground flex items-center justify-between">
               <span>No trial booked yet by this lead.</span>
               {lead.status !== 'trial_booked' && (
                 <button
                   type="button"
                   onClick={() => setCurrentStatus('trial_booked')}
-                  className="text-xs text-[#6F907D] font-medium hover:underline cursor-pointer"
+                  className="text-xs text-primary font-semibold hover:underline cursor-pointer"
                 >
                   Mark as Booked
                 </button>
@@ -375,13 +375,13 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
           <div className="space-y-3">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-medium text-[#362E3B]/80 dark:text-[#D5D0CA] mb-1">
+                <label className="block text-xs font-medium text-foreground mb-1">
                   Service Interest
                 </label>
                 <select
                   value={serviceInterest}
                   onChange={(e) => setServiceInterest(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#2A2431] text-xs"
+                  className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="">General / Undecided</option>
                   {AVAILABLE_SERVICES.map(s => (
@@ -391,7 +391,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#362E3B]/80 dark:text-[#D5D0CA] mb-1">
+                <label className="block text-xs font-medium text-foreground mb-1">
                   Learning Goal Summary
                 </label>
                 <input
@@ -399,13 +399,13 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                   value={goal}
                   onChange={(e) => setGoal(e.target.value)}
                   placeholder="e.g. Reading fluency, Hifz Surah Al-Baqarah, speaking Egyptian Arabic"
-                  className="w-full px-3 py-2 rounded-lg border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#2A2431] text-xs"
+                  className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#362E3B]/80 dark:text-[#D5D0CA] mb-1">
+              <label className="block text-xs font-medium text-foreground mb-1">
                 Private Teacher Notes & Conversation History
               </label>
               <textarea
@@ -413,21 +413,21 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Log notes from WhatsApp chats, student background, budget, preferred lesson days, parent requests..."
-                className="w-full px-3 py-2 rounded-lg border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#2A2431] text-xs font-sans"
+                className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-xs font-sans text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
           </div>
         </div>
 
         {/* Modal Footer */}
-        <div className="p-4 sm:p-5 border-t border-[#D5D0CA]/30 dark:border-[#3E3545]/30 bg-[#F8F6F0]/80 dark:bg-[#1E1923]/60 flex flex-wrap items-center justify-between gap-3">
+        <div className="p-4 sm:p-5 border-t border-border bg-surface-subtle flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             {currentStatus !== 'active_student' && (
               <button
                 type="button"
                 disabled={saving}
                 onClick={() => handleUpdate('active_student')}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium transition-colors shadow-xs cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-success hover:bg-success/90 text-white text-xs font-semibold transition-colors shadow-2xs cursor-pointer"
               >
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>Enroll as Active Student</span>
@@ -439,7 +439,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                 type="button"
                 disabled={saving}
                 onClick={() => handleUpdate('lost')}
-                className="px-3 py-2 rounded-xl text-xs font-medium text-stone-500 hover:text-stone-700 dark:hover:text-stone-300 transition-colors cursor-pointer"
+                className="px-3 py-2 rounded-xl text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 Mark Lost
               </button>
@@ -450,7 +450,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
             <button
               type="button"
               onClick={onClose}
-              className="px-3.5 py-2 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] text-xs font-medium hover:bg-stone-50 transition-colors cursor-pointer"
+              className="px-3.5 py-2 rounded-xl border border-border text-xs font-medium text-foreground hover:bg-surface transition-colors cursor-pointer"
             >
               Cancel
             </button>
@@ -459,7 +459,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
               type="button"
               disabled={saving}
               onClick={() => handleUpdate()}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#6F907D] hover:bg-[#5C7868] text-white text-xs font-medium transition-colors shadow-xs cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold transition-colors shadow-2xs cursor-pointer"
             >
               <Save className="w-3.5 h-3.5" />
               <span>{saving ? 'Saving...' : 'Save Lead'}</span>

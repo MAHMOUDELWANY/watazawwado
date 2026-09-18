@@ -144,20 +144,20 @@ export default function StudentOnboardingPage({
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-white dark:bg-[#251F2C] border border-[#E2DDD5] dark:border-[#3E3545] rounded-3xl p-8 sm:p-12 shadow-sm"
+          className="bg-surface border border-border rounded-3xl p-8 sm:p-12 shadow-sm"
         >
-          <div className="w-16 h-16 rounded-full bg-[#8FAE9B]/20 text-[#6F907D] dark:text-[#8FAE9B] flex items-center justify-center mx-auto mb-5">
+          <div className="w-16 h-16 rounded-full bg-primary/15 text-primary flex items-center justify-center mx-auto mb-5">
             <CheckCircle2 className="w-9 h-9" />
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#30332F] dark:text-[#F8F6F0]">
+          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-foreground">
             Welcome, {studentName}!
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-[#626A64] dark:text-[#D5D0CA] max-w-lg mx-auto leading-relaxed">
+          <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-lg mx-auto leading-relaxed">
             Your personalized learning profile is set up. Ustadh Mahmoud has received your background and goals to prepare your curriculum.
           </p>
 
-          <div className="mt-8 pt-8 border-t border-[#E2DDD5] dark:border-[#3E3545] flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="mt-8 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-center gap-4">
             <button
               onClick={() => {
                 if (onOpenBookingModal) {
@@ -166,7 +166,7 @@ export default function StudentOnboardingPage({
                   navigate('/student/book');
                 }
               }}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl bg-[#6F907D] hover:bg-[#557161] text-white font-medium text-sm transition-all shadow-sm cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground font-medium text-sm transition-all shadow-xs cursor-pointer"
             >
               <Calendar className="w-4 h-4" />
               <span>Book Your 1-on-1 Free Trial</span>
@@ -174,7 +174,7 @@ export default function StudentOnboardingPage({
 
             <button
               onClick={() => navigate('/student')}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-white dark:bg-[#2D2635] border border-[#E2DDD5] dark:border-[#473D50] hover:bg-[#F8F6F0] dark:hover:bg-[#342D3D] text-[#30332F] dark:text-[#F8F6F0] font-medium text-sm transition-all cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-surface border border-border hover:bg-surface-subtle text-foreground font-medium text-sm transition-all cursor-pointer"
             >
               <span>Enter Dashboard</span>
               <ArrowRight className="w-4 h-4" />
@@ -189,14 +189,14 @@ export default function StudentOnboardingPage({
     <div className="max-w-2xl mx-auto py-8 sm:py-12 px-4">
       {/* Header */}
       <div className="text-center mb-8">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#8FAE9B]/15 text-[#557161] dark:text-[#A8C9B4] mb-3">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary mb-3">
           <Sparkles className="w-3.5 h-3.5" />
           Personalized Onboarding
         </span>
-        <h1 className="text-2xl sm:text-3xl font-serif font-bold text-[#30332F] dark:text-[#F8F6F0]">
+        <h1 className="text-2xl sm:text-3xl font-serif font-bold text-foreground">
           Set Up Your Learning Profile
         </h1>
-        <p className="mt-2 text-sm text-[#626A64] dark:text-[#D5D0CA]">
+        <p className="mt-2 text-sm text-muted-foreground">
           This takes 2 minutes and helps Ustadh Mahmoud adapt each lesson specifically to your pace and goals.
         </p>
 
@@ -207,10 +207,10 @@ export default function StudentOnboardingPage({
               key={s}
               className={`h-1.5 rounded-full transition-all duration-300 ${
                 s === step
-                  ? 'w-10 bg-[#6F907D] dark:bg-[#8FAE9B]'
+                  ? 'w-10 bg-primary'
                   : s < step
-                  ? 'w-6 bg-[#6F907D]/50'
-                  : 'w-6 bg-[#E2DDD5] dark:bg-[#3E3545]'
+                  ? 'w-6 bg-primary/50'
+                  : 'w-6 bg-border'
               }`}
             />
           ))}
@@ -218,13 +218,13 @@ export default function StudentOnboardingPage({
       </div>
 
       {error && (
-        <div className="mb-6 p-4 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 text-rose-800 dark:text-rose-300 text-sm">
+        <div className="mb-6 p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm">
           {error}
         </div>
       )}
 
       {/* Form Container */}
-      <div className="bg-white dark:bg-[#251F2C] border border-[#E2DDD5] dark:border-[#3E3545] rounded-3xl p-6 sm:p-8 shadow-sm">
+      <div className="bg-surface border border-border rounded-3xl p-6 sm:p-8 shadow-sm">
         {step === 1 && (
           <motion.div
             initial={{ opacity: 0, x: isRTL ? -10 : 10 }}
@@ -233,7 +233,7 @@ export default function StudentOnboardingPage({
             className="space-y-6"
           >
             <div>
-              <label className="block text-sm font-semibold text-[#30332F] dark:text-[#F8F6F0] mb-3">
+              <label className="block text-sm font-semibold text-foreground mb-3">
                 Who is taking the lessons?
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -242,11 +242,11 @@ export default function StudentOnboardingPage({
                   onClick={() => setLearnerType('adult')}
                   className={`p-4 rounded-2xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
                     learnerType === 'adult'
-                      ? 'border-[#6F907D] bg-[#8FAE9B]/10 dark:bg-[#8FAE9B]/15 text-[#30332F] dark:text-[#F8F6F0]'
-                      : 'border-[#E2DDD5] dark:border-[#3E3545] hover:border-[#8FAE9B] text-[#626A64] dark:text-[#D5D0CA]'
+                      ? 'border-primary bg-primary/10 text-foreground'
+                      : 'border-border hover:border-primary/50 text-muted-foreground'
                   }`}
                 >
-                  <User className="w-5 h-5 text-[#6F907D] dark:text-[#8FAE9B] shrink-0 mt-0.5" />
+                  <User className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                   <div>
                     <div className="font-semibold text-sm">Adult Learner</div>
                     <div className="text-xs opacity-75 mt-0.5">I am learning for myself</div>
@@ -258,11 +258,11 @@ export default function StudentOnboardingPage({
                   onClick={() => setLearnerType('child')}
                   className={`p-4 rounded-2xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
                     learnerType === 'child'
-                      ? 'border-[#6F907D] bg-[#8FAE9B]/10 dark:bg-[#8FAE9B]/15 text-[#30332F] dark:text-[#F8F6F0]'
-                      : 'border-[#E2DDD5] dark:border-[#3E3545] hover:border-[#8FAE9B] text-[#626A64] dark:text-[#D5D0CA]'
+                      ? 'border-primary bg-primary/10 text-foreground'
+                      : 'border-border hover:border-primary/50 text-muted-foreground'
                   }`}
                 >
-                  <Users className="w-5 h-5 text-[#6F907D] dark:text-[#8FAE9B] shrink-0 mt-0.5" />
+                  <Users className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                   <div>
                     <div className="font-semibold text-sm">Child / Youth</div>
                     <div className="text-xs opacity-75 mt-0.5">I am enrolling my child</div>
@@ -272,7 +272,7 @@ export default function StudentOnboardingPage({
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-[#30332F] dark:text-[#F8F6F0] mb-1.5">
+              <label className="block text-sm font-semibold text-foreground mb-1.5">
                 {learnerType === 'child' ? "Child's Full Name" : 'Your Full Name'}
               </label>
               <input
@@ -280,17 +280,17 @@ export default function StudentOnboardingPage({
                 value={studentName}
                 onChange={(e) => setStudentName(e.target.value)}
                 placeholder="e.g. Zayd Rahman"
-                className="w-full px-4 py-3 rounded-xl border border-[#E2DDD5] dark:border-[#3E3545] bg-[#FBF9F5] dark:bg-[#2D2635] text-[#30332F] dark:text-[#F8F6F0] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B] text-sm"
+                className="w-full px-4 py-3 rounded-xl border border-border bg-surface-subtle text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 text-sm"
               />
             </div>
 
             {learnerType === 'child' && (
-              <div className="p-4 rounded-2xl bg-[#F8F6F0] dark:bg-[#2D2635]/60 border border-[#E2DDD5] dark:border-[#3E3545] space-y-4">
-                <div className="text-xs font-semibold uppercase tracking-wider text-[#6F907D] dark:text-[#8FAE9B]">
+              <div className="p-4 rounded-2xl bg-surface-subtle border border-border space-y-4">
+                <div className="text-xs font-semibold uppercase tracking-wider text-primary">
                   Parent / Guardian Information
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#30332F] dark:text-[#F8F6F0] mb-1">
+                  <label className="block text-xs font-medium text-foreground mb-1">
                     Parent Name
                   </label>
                   <input
@@ -298,11 +298,11 @@ export default function StudentOnboardingPage({
                     value={parentName}
                     onChange={(e) => setParentName(e.target.value)}
                     placeholder="e.g. Tariq Rahman"
-                    className="w-full px-3.5 py-2.5 rounded-lg border border-[#E2DDD5] dark:border-[#3E3545] bg-white dark:bg-[#251F2C] text-sm"
+                    className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-[#30332F] dark:text-[#F8F6F0] mb-1">
+                  <label className="block text-xs font-medium text-foreground mb-1">
                     Parent WhatsApp (for lesson updates)
                   </label>
                   <input
@@ -310,7 +310,7 @@ export default function StudentOnboardingPage({
                     value={parentWhatsapp}
                     onChange={(e) => setParentWhatsapp(e.target.value)}
                     placeholder="+1 (555) 000-0000"
-                    className="w-full px-3.5 py-2.5 rounded-lg border border-[#E2DDD5] dark:border-[#3E3545] bg-white dark:bg-[#251F2C] text-sm"
+                    className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-sm"
                   />
                 </div>
               </div>
@@ -327,7 +327,7 @@ export default function StudentOnboardingPage({
                   setError(null);
                   setStep(2);
                 }}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#6F907D] hover:bg-[#557161] text-white font-medium text-sm transition-all cursor-pointer"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground font-medium text-sm transition-all cursor-pointer"
               >
                 <span>Continue: Subject & Level</span>
                 <ArrowRight className="w-4 h-4" />
@@ -344,13 +344,13 @@ export default function StudentOnboardingPage({
             className="space-y-6"
           >
             <div>
-              <label className="block text-sm font-semibold text-[#30332F] dark:text-[#F8F6F0] mb-2">
+              <label className="block text-sm font-semibold text-foreground mb-2">
                 Primary Subject of Interest
               </label>
               <select
                 value={learningInterest}
                 onChange={(e) => setLearningInterest(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-[#E2DDD5] dark:border-[#3E3545] bg-[#FBF9F5] dark:bg-[#2D2635] text-[#30332F] dark:text-[#F8F6F0] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B] text-sm"
+                className="w-full px-4 py-3 rounded-xl border border-border bg-surface-subtle text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 text-sm"
               >
                 {SERVICES_OPTIONS.map((opt) => (
                   <option key={opt.id} value={opt.id}>
@@ -361,7 +361,7 @@ export default function StudentOnboardingPage({
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-[#30332F] dark:text-[#F8F6F0] mb-2.5">
+              <label className="block text-sm font-semibold text-foreground mb-2.5">
                 Current Level Assessment
               </label>
               <div className="space-y-2.5">
@@ -372,8 +372,8 @@ export default function StudentOnboardingPage({
                     onClick={() => setCurrentLevel(lvl.id)}
                     className={`w-full p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex items-start justify-between gap-3 ${
                       currentLevel === lvl.id
-                        ? 'border-[#6F907D] bg-[#8FAE9B]/10 dark:bg-[#8FAE9B]/15 text-[#30332F] dark:text-[#F8F6F0]'
-                        : 'border-[#E2DDD5] dark:border-[#3E3545] hover:border-[#8FAE9B] text-[#626A64] dark:text-[#D5D0CA]'
+                        ? 'border-primary bg-primary/10 text-foreground'
+                        : 'border-border hover:border-primary/50 text-muted-foreground'
                     }`}
                   >
                     <div>
@@ -381,7 +381,7 @@ export default function StudentOnboardingPage({
                       <div className="text-xs opacity-75 mt-0.5">{lvl.desc}</div>
                     </div>
                     {currentLevel === lvl.id && (
-                      <CheckCircle2 className="w-4 h-4 text-[#6F907D] dark:text-[#8FAE9B] shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                     )}
                   </button>
                 ))}
@@ -392,7 +392,7 @@ export default function StudentOnboardingPage({
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="text-xs font-medium text-[#7A827B] hover:text-[#30332F] dark:hover:text-white transition-colors"
+                className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 Back
               </button>
@@ -400,7 +400,7 @@ export default function StudentOnboardingPage({
               <button
                 type="button"
                 onClick={() => setStep(3)}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#6F907D] hover:bg-[#557161] text-white font-medium text-sm transition-all cursor-pointer"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground font-medium text-sm transition-all cursor-pointer"
               >
                 <span>Continue: Goals & Contact</span>
                 <ArrowRight className="w-4 h-4" />
@@ -417,7 +417,7 @@ export default function StudentOnboardingPage({
             className="space-y-5"
           >
             <div>
-              <label className="block text-sm font-semibold text-[#30332F] dark:text-[#F8F6F0] mb-1.5">
+              <label className="block text-sm font-semibold text-foreground mb-1.5">
                 What is your main goal for this journey?
               </label>
               <input
@@ -425,45 +425,45 @@ export default function StudentOnboardingPage({
                 value={learningGoal}
                 onChange={(e) => setLearningGoal(e.target.value)}
                 placeholder="e.g. Read Surah Al-Baqarah fluently with Tajweed, or memorize Juz Amma"
-                className="w-full px-4 py-3 rounded-xl border border-[#E2DDD5] dark:border-[#3E3545] bg-[#FBF9F5] dark:bg-[#2D2635] text-[#30332F] dark:text-[#F8F6F0] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B] text-sm"
+                className="w-full px-4 py-3 rounded-xl border border-border bg-surface-subtle text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 text-sm"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-[#30332F] dark:text-[#F8F6F0] mb-1.5">
+                <label className="block text-xs font-semibold text-foreground mb-1.5">
                   Your Timezone (IANA)
                 </label>
                 <div className="relative">
-                  <Clock className="w-4 h-4 text-[#8FAE9B] absolute left-3.5 top-3.5 pointer-events-none" />
+                  <Clock className="w-4 h-4 text-primary absolute start-3.5 top-3.5 pointer-events-none" />
                   <input
                     type="text"
                     value={timezone}
                     onChange={(e) => setTimezone(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-[#E2DDD5] dark:border-[#3E3545] bg-[#FBF9F5] dark:bg-[#2D2635] text-sm"
+                    className="w-full ps-10 pe-3 py-2.5 rounded-xl border border-border bg-surface-subtle text-foreground text-sm"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#30332F] dark:text-[#F8F6F0] mb-1.5">
+                <label className="block text-xs font-semibold text-foreground mb-1.5">
                   WhatsApp / Phone Number
                 </label>
                 <div className="relative">
-                  <Phone className="w-4 h-4 text-[#8FAE9B] absolute left-3.5 top-3.5 pointer-events-none" />
+                  <Phone className="w-4 h-4 text-primary absolute start-3.5 top-3.5 pointer-events-none" />
                   <input
                     type="tel"
                     value={whatsapp}
                     onChange={(e) => setWhatsapp(e.target.value)}
                     placeholder="+1 (555) 000-0000"
-                    className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-[#E2DDD5] dark:border-[#3E3545] bg-[#FBF9F5] dark:bg-[#2D2635] text-sm"
+                    className="w-full ps-10 pe-3 py-2.5 rounded-xl border border-border bg-surface-subtle text-foreground text-sm"
                   />
                 </div>
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#30332F] dark:text-[#F8F6F0] mb-1.5">
+              <label className="block text-xs font-semibold text-foreground mb-1.5">
                 Any specific notes or learning needs for Ustadh Mahmoud? (Optional)
               </label>
               <textarea
@@ -471,7 +471,7 @@ export default function StudentOnboardingPage({
                 value={learningNeeds}
                 onChange={(e) => setLearningNeeds(e.target.value)}
                 placeholder="e.g. Prefers visual mnemonics, needs patience with pronunciation, scheduling preferences..."
-                className="w-full px-4 py-2.5 rounded-xl border border-[#E2DDD5] dark:border-[#3E3545] bg-[#FBF9F5] dark:bg-[#2D2635] text-sm"
+                className="w-full px-4 py-2.5 rounded-xl border border-border bg-surface-subtle text-foreground text-sm"
               />
             </div>
 
@@ -479,7 +479,7 @@ export default function StudentOnboardingPage({
               <button
                 type="button"
                 onClick={() => setStep(2)}
-                className="text-xs font-medium text-[#7A827B] hover:text-[#30332F] dark:hover:text-white transition-colors"
+                className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 Back
               </button>
@@ -488,7 +488,7 @@ export default function StudentOnboardingPage({
                 type="button"
                 disabled={isSubmitting}
                 onClick={handleSubmit}
-                className="inline-flex items-center gap-2 px-7 py-3 rounded-2xl bg-[#6F907D] hover:bg-[#557161] text-white font-medium text-sm transition-all shadow-sm cursor-pointer disabled:opacity-50"
+                className="inline-flex items-center gap-2 px-7 py-3 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground font-medium text-sm transition-all shadow-xs cursor-pointer disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <>
