@@ -84,9 +84,9 @@ export function DashboardApp() {
 
       {/* Sidebar */}
       <aside className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-[#2A2431] border-r border-[#D5D0CA]/30 dark:border-[#3E3545]/30
+        fixed inset-y-0 start-0 z-50 w-64 bg-white dark:bg-[#2A2431] border-r border-[#D5D0CA]/30 dark:border-[#3E3545]/30
         transform transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:inset-0
-        ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
+        ${isMobileMenuOpen ? 'translate-x-0' : 'rtl:translate-x-full ltr:-translate-x-full'}
         flex flex-col
       `}>
         <div className="h-16 flex items-center justify-between px-6 border-b border-[#D5D0CA]/30 dark:border-[#3E3545]/30">

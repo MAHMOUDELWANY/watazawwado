@@ -169,9 +169,9 @@ export default function StudentApp() {
 
       <aside
         className={`
-          fixed md:static inset-y-0 left-0 z-50 w-72 bg-white dark:bg-[#251F2C] border-r border-[#E2DDD5] dark:border-[#3E3545]
+          fixed md:static inset-y-0 start-0 z-50 w-72 bg-white dark:bg-[#251F2C] border-r border-[#E2DDD5] dark:border-[#3E3545]
           flex flex-col transform transition-transform duration-200 ease-out
-          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+          ${sidebarOpen ? 'translate-x-0' : 'rtl:translate-x-full ltr:-translate-x-full md:translate-x-0'}
         `}
       >
         <div className="h-16 flex items-center justify-between px-4 sm:px-5 border-b border-[#E2DDD5]/60 dark:border-[#3E3545]/60">

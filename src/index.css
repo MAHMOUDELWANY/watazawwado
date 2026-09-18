@@ -41,6 +41,18 @@
 
   --color-focus: var(--focus);
 
+  
+  
+  /* Default Transition Overrides */
+  --default-transition-duration: 250ms;
+  --default-transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Motion Tokens */
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 350ms;
+  --ease-premium: cubic-bezier(0.2, 0.8, 0.2, 1);
+
   /* Radius Scale */
   --radius-sm: calc(var(--radius) - 2px);
   --radius-md: var(--radius);
@@ -206,4 +218,18 @@ body {
 [dir="rtl"] button {
   /* Provide slightly more vertical clearance for Arabic ascenders/descenders in tight containers */
   padding-bottom: calc(0.25rem * 1.25);
+}
+
+/* WATAZAWWADO MOTION & INTERACTION FOUNDATION */
+
+/* 1. Global Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

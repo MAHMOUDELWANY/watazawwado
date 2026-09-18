@@ -48,6 +48,7 @@ export default function StudentOnboardingPage({
   onCompleted,
   onOpenBookingModal
 }: StudentOnboardingPageProps) {
+  const isRTL = document.documentElement.dir === "rtl";
   const navigate = useNavigate();
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
@@ -226,7 +227,7 @@ export default function StudentOnboardingPage({
       <div className="bg-white dark:bg-[#251F2C] border border-[#E2DDD5] dark:border-[#3E3545] rounded-3xl p-6 sm:p-8 shadow-sm">
         {step === 1 && (
           <motion.div
-            initial={{ opacity: 0, x: 10 }}
+            initial={{ opacity: 0, x: isRTL ? -10 : 10 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -10 }}
             className="space-y-6"
@@ -337,7 +338,7 @@ export default function StudentOnboardingPage({
 
         {step === 2 && (
           <motion.div
-            initial={{ opacity: 0, x: 10 }}
+            initial={{ opacity: 0, x: isRTL ? -10 : 10 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -10 }}
             className="space-y-6"
@@ -410,7 +411,7 @@ export default function StudentOnboardingPage({
 
         {step === 3 && (
           <motion.div
-            initial={{ opacity: 0, x: 10 }}
+            initial={{ opacity: 0, x: isRTL ? -10 : 10 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -10 }}
             className="space-y-5"
