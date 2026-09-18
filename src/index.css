@@ -96,3 +96,38 @@ body {
   font-family: 'Amiri', serif;
 }
 
+
+/* WATAZAWWADO RTL TYPOGRAPHY & LAYOUT FOUNDATION */
+
+/* 1. Global Line-Height and Spacing overrides for Arabic */
+[dir="rtl"] {
+  line-height: 1.7; /* Arabic generally requires looser vertical rhythm */
+}
+
+/* 2. Tracking Reset: Arabic script is cursive; negative tracking breaks it. */
+[dir="rtl"] .tracking-tighter,
+[dir="rtl"] .tracking-tight,
+[dir="rtl"] .tracking-wide,
+[dir="rtl"] .tracking-wider,
+[dir="rtl"] .tracking-widest {
+  letter-spacing: normal !important;
+}
+
+/* 3. Heading-specific line-height overrides in RTL */
+[dir="rtl"] h1, 
+[dir="rtl"] .text-4xl, 
+[dir="rtl"] .text-5xl {
+  line-height: 1.4; 
+}
+[dir="rtl"] h2, 
+[dir="rtl"] h3,
+[dir="rtl"] .text-2xl,
+[dir="rtl"] .text-3xl {
+  line-height: 1.5;
+}
+
+/* 4. Button RTL Optical Correction */
+[dir="rtl"] button {
+  /* Provide slightly more vertical clearance for Arabic ascenders/descenders in tight containers */
+  padding-bottom: calc(var(--spacing) * 1.25);
+}
