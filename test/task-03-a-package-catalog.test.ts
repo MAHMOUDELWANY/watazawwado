@@ -21,6 +21,6 @@ test('Workflow 03-A UI Integration Uses Accessible Patterns', async (t) => {
   assert.ok(stepLesson.includes('Available with checkout'), 'Must indicate package is a future purchase');
 
   const stepReview = fs.readFileSync('src/components/booking/StepReviewSummary.tsx', 'utf8');
-  assert.ok(stepReview.includes('Package Added to Cart') || stepReview.includes('Available for purchase at checkout'), 'Review summary correctly labels package as intent');
+  assert.ok(stepReview.includes('Package Selected') || stepReview.includes('Available for purchase at checkout'), 'Review summary correctly labels package as intent');
   assert.ok(!stepReview.includes('Amount to Pay Now'), 'Review summary should not override booking fee amount improperly');
 });

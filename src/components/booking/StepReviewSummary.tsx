@@ -150,7 +150,7 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
               </div>
               <div>
                 <span className="block text-sm font-semibold text-[#362E3B] dark:text-[#F5E6D3] mb-1">
-                  {isEn ? 'Package Added to Cart' : 'تمت إضافة الباقة للسلة'}
+                  {isEn ? 'Package Selected' : 'الباقة المختارة'}
                 </span>
                 <span className="block text-xs font-medium text-[#362E3B] dark:text-[#D5D0CA]">
                   {isEn ? packageDetails.name : `باقة ${packageDetails.package_type}`}
@@ -158,7 +158,7 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
                 <span className="block text-[11px] text-[#362E3B]/70 dark:text-[#D5D0CA]/70 mt-1">
                   {isEn
                     ? 'Available for purchase at checkout. The current booking is a single session.'
-                    : 'متاحة للشراء عند الدفع. الحجز الحالي هو لجلسة واحدة.'}
+                    : 'متاحة للشراء عند إتمام الدفع. الحجز الحالي هو لجلسة واحدة.'}
                 </span>
               </div>
             </div>
