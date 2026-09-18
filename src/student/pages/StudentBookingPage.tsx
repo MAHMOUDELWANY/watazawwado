@@ -553,7 +553,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
       <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
         <Loader2 className="w-8 h-8 animate-spin text-[#8FAE9B]" />
         <p className="text-sm font-medium text-[#7A827B] dark:text-[#A69FA8]">
-          Verifying your student session...
+          Checking your student session…
         </p>
       </div>
     );
@@ -567,10 +567,10 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
           <AlertCircle className="w-6 h-6" />
         </div>
         <h2 className="text-lg font-semibold text-[#30332F] dark:text-[#F8F6F0]">
-          Authentication Required
+          Sign in to continue
         </h2>
         <p className="text-sm text-[#7A827B] dark:text-[#A69FA8]">
-          You must be signed in to your student account to access the authenticated lesson booking portal.
+          Your student account is required to access the authenticated lesson booking portal.
         </p>
         <div className="pt-2 flex justify-center gap-3">
           <Link
@@ -596,7 +596,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
       <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
         <Loader2 className="w-8 h-8 animate-spin text-[#8FAE9B]" />
         <p className="text-sm font-medium text-[#7A827B] dark:text-[#A69FA8]">
-          Preparing your student booking details...
+          Loading your lesson options…
         </p>
       </div>
     );
@@ -729,11 +729,10 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
             Book a Lesson
           </h1>
           <p className="text-xs sm:text-sm text-[#7A827B] dark:text-[#A69FA8] mt-0.5">
-            Schedule your personalized 1-on-1 session with Ustadh Mahmoud.
+            Choose your lesson, confirm your preferences, and schedule your next 1-on-1 session.
           </p>
         </div>
 
-        {/* Authenticated Identity Badge */}
         <div className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl bg-white dark:bg-[#231D28] border border-[#D5D0CA]/50 dark:border-[#3E3545]/50 shadow-xs self-start sm:self-auto">
           <div className="p-1 rounded-full bg-[#8FAE9B]/20 text-[#6F907D] dark:text-[#8FAE9B]">
             <ShieldCheck className="w-4 h-4" />
@@ -748,6 +747,21 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
           </div>
         </div>
       </div>
+
+      {lastEligibleBooking && lastBookingSummary && !reuseDismissed && !isReusing && !requestedServiceId && (
+        <div className="rounded-2xl border border-[#D5D0CA]/60 dark:border-[#3E3545]/60 bg-[#FBF9F5] dark:bg-[#1E1923] p-4 shadow-xs">
+          <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.14em] text-[#7A827B] dark:text-[#A69FA8] font-semibold">
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span>Booking context</span>
+          </div>
+          <div className="mt-2 text-sm font-medium text-[#30332F] dark:text-[#F8F6F0]">
+            {lastBookingSummary.summaryText}
+          </div>
+          <p className="mt-1 text-xs text-[#7A827B] dark:text-[#A69FA8]">
+            Reuse this recent lesson as a starting point or choose a fresh lesson from the form below.
+          </p>
+        </div>
+      )}
 
       {/* Bookings Verification Warning / Retry (if /api/student/bookings failed) */}
       {bookingsError && (

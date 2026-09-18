@@ -141,24 +141,34 @@ export default function StudentProfilePage({
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-serif font-bold text-[#30332F] dark:text-[#F8F6F0]">
-          Student Profile & Settings
-        </h1>
-        <p className="text-xs sm:text-sm text-[#626A64] dark:text-[#D5D0CA] mt-1">
-          Manage your personal details, timezone, and lesson contact information.
-        </p>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-[11px] uppercase tracking-[0.18em] text-[#6F907D] dark:text-[#8FAE9B] font-semibold">
+            Student profile
+          </p>
+          <h1 className="text-2xl font-serif font-bold text-[#30332F] dark:text-[#F8F6F0] mt-1">
+            Profile & Settings
+          </h1>
+        </div>
+        <div className="inline-flex items-center gap-2 rounded-full bg-[#8FAE9B]/10 dark:bg-[#8FAE9B]/10 px-3 py-1.5 text-[11px] font-medium text-[#557161] dark:text-[#A8C9B4]">
+          <span className="w-2 h-2 rounded-full bg-[#8FAE9B]" />
+          {bookingPreference === 'child' ? 'Booking for child' : 'Booking for yourself'}
+        </div>
       </div>
 
+      <p className="text-xs sm:text-sm text-[#626A64] dark:text-[#D5D0CA] -mt-2">
+        Keep your personal details current and review your preferred lesson booking setup.
+      </p>
+
       {error && (
-        <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 text-rose-800 dark:text-rose-300 text-xs sm:text-sm flex items-center gap-2">
+        <div aria-live="polite" className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 text-rose-800 dark:text-rose-300 text-xs sm:text-sm flex items-center gap-2">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
       {success && (
-        <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50 text-emerald-800 dark:text-emerald-300 text-xs sm:text-sm flex items-center gap-2">
+        <div aria-live="polite" className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50 text-emerald-800 dark:text-emerald-300 text-xs sm:text-sm flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{success}</span>
         </div>
