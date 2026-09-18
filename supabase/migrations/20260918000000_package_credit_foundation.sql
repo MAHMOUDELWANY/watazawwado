@@ -2,7 +2,14 @@
 -- MAHMOUD TEACHING PLATFORM — PACKAGE CREDIT FOUNDATION
 -- Migration: 20260918000000_package_credit_foundation.sql
 -- Role: Safe package catalog, entitlement, and credit-ledger foundation
+-- Scope: This phase intentionally excludes purchase/activation grants.
+--        Package entitlements remain server-authoritative and are not
+--        directly grantable by browser clients. Future payment confirmation
+--        will be added in a separate migration.
 -- ====================================================================
+
+DROP FUNCTION IF EXISTS public.teacher_record_lesson_outcome(UUID, UUID, TEXT, TEXT, TEXT);
+DROP FUNCTION IF EXISTS public.teacher_record_lesson_outcome_v2(UUID, UUID, TEXT, TEXT, TEXT, TEXT);
 
 CREATE TABLE IF NOT EXISTS public.package_catalog (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -189,31 +196,44 @@ BEGIN
         WHERE booking_id = p_booking_id
           AND activity_type = 'completed_consumed';
 
-        IF v_existing_ledger_count = 0 THEN
-            INSERT INTO public.package_credit_ledger (
-                package_entitlement_id,
-                booking_id,
-                learner_student_id,
-                activity_type,
-                delta_credits,
-                idempotency_key,
-                reference_code
-            ) VALUES (
-                v_entitlement.id,
-                p_booking_id,
-                v_booking.student_id,
-                'completed_consumed',
-                -1,
-                v_idempotency_key,
-                v_booking.reference_code
+        IF v_existing_ledger_count > 0 THEN
+            RETURN jsonb_build_object(
+                'success', true,
+                'package_credit_applied', true,
+                'activity_type', 'completed_consumed',
+                'remaining_credits', (
+                    SELECT remaining_credits FROM public.package_entitlements WHERE id = v_entitlement.id
+                )
             );
-
-            UPDATE public.package_entitlements
-            SET remaining_credits = GREATEST(remaining_credits - 1, 0),
-                used_credits = used_credits + 1,
-                updated_at = timezone('utc'::text, now())
-            WHERE id = v_entitlement.id;
         END IF;
+
+        IF v_entitlement.remaining_credits <= 0 THEN
+            RAISE EXCEPTION 'No package credit available to consume for completed lesson.' USING ERRCODE = 'P0008';
+        END IF;
+
+        INSERT INTO public.package_credit_ledger (
+            package_entitlement_id,
+            booking_id,
+            learner_student_id,
+            activity_type,
+            delta_credits,
+            idempotency_key,
+            reference_code
+        ) VALUES (
+            v_entitlement.id,
+            p_booking_id,
+            v_booking.student_id,
+            'completed_consumed',
+            -1,
+            v_idempotency_key,
+            v_booking.reference_code
+        );
+
+        UPDATE public.package_entitlements
+        SET remaining_credits = remaining_credits - 1,
+            used_credits = used_credits + 1,
+            updated_at = timezone('utc'::text, now())
+        WHERE id = v_entitlement.id;
 
         RETURN jsonb_build_object(
             'success', true,
@@ -237,31 +257,44 @@ BEGIN
         WHERE booking_id = p_booking_id
           AND activity_type = 'no_show_used';
 
-        IF v_existing_ledger_count = 0 THEN
-            INSERT INTO public.package_credit_ledger (
-                package_entitlement_id,
-                booking_id,
-                learner_student_id,
-                activity_type,
-                delta_credits,
-                idempotency_key,
-                reference_code
-            ) VALUES (
-                v_entitlement.id,
-                p_booking_id,
-                v_booking.student_id,
-                'no_show_used',
-                -1,
-                v_idempotency_key,
-                v_booking.reference_code
+        IF v_existing_ledger_count > 0 THEN
+            RETURN jsonb_build_object(
+                'success', true,
+                'package_credit_applied', true,
+                'activity_type', 'no_show_used',
+                'remaining_credits', (
+                    SELECT remaining_credits FROM public.package_entitlements WHERE id = v_entitlement.id
+                )
             );
-
-            UPDATE public.package_entitlements
-            SET remaining_credits = GREATEST(remaining_credits - 1, 0),
-                used_credits = used_credits + 1,
-                updated_at = timezone('utc'::text, now())
-            WHERE id = v_entitlement.id;
         END IF;
+
+        IF v_entitlement.remaining_credits <= 0 THEN
+            RAISE EXCEPTION 'No package credit available to consume for no-show lesson.' USING ERRCODE = 'P0008';
+        END IF;
+
+        INSERT INTO public.package_credit_ledger (
+            package_entitlement_id,
+            booking_id,
+            learner_student_id,
+            activity_type,
+            delta_credits,
+            idempotency_key,
+            reference_code
+        ) VALUES (
+            v_entitlement.id,
+            p_booking_id,
+            v_booking.student_id,
+            'no_show_used',
+            -1,
+            v_idempotency_key,
+            v_booking.reference_code
+        );
+
+        UPDATE public.package_entitlements
+        SET remaining_credits = remaining_credits - 1,
+            used_credits = used_credits + 1,
+            updated_at = timezone('utc'::text, now())
+        WHERE id = v_entitlement.id;
 
         RETURN jsonb_build_object(
             'success', true,

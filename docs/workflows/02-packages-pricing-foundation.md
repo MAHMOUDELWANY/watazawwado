@@ -31,7 +31,7 @@ This repository now includes the minimal persistent package-credit foundation re
 
 ### Package activation boundary
 
-Payment is intentionally not implemented in this workflow. Package entitlements are stored in a safe future-payment boundary: they remain `pending_payment` until a future payment confirmation path sets them active. The browser is forbidden from creating or activating a package entitlement directly, and no frontend claim of payment success can grant credits.
+Payment and purchase flow are intentionally not implemented in this workflow. Package entitlements remain in a safe future-payment boundary: they remain `pending_payment` until a future server-side payment confirmation path sets them active. No client-side or browser grant path exists in this phase, and no frontend claim of payment success or package activation can create credits. The grant path is deliberately deferred for a later migration.
 
 ### Production migration reference
 
