@@ -157,28 +157,30 @@ export default function StudentApp() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F5] dark:bg-[#1E1923] text-[#30332F] dark:text-[#F8F6F0] font-sans flex overflow-hidden">
-      {/* Mobile Overlay */}
       {sidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black/30 dark:bg-black/50 z-40 md:hidden backdrop-blur-xs"
+        <div
+          className="fixed inset-0 bg-[#1E1923]/35 dark:bg-[#0F0C12]/55 z-40 md:hidden backdrop-blur-[1px]"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      {/* Sidebar */}
-      <aside 
+      <aside
         className={`
-          fixed md:static inset-y-0 left-0 z-50 w-64 bg-white dark:bg-[#251F2C] border-r border-[#E2DDD5] dark:border-[#3E3545] 
-          flex flex-col transform transition-transform duration-300 ease-in-out
+          fixed md:static inset-y-0 left-0 z-50 w-72 bg-white dark:bg-[#251F2C] border-r border-[#E2DDD5] dark:border-[#3E3545]
+          flex flex-col transform transition-transform duration-200 ease-out
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         `}
       >
-        <div className="h-16 flex items-center justify-between px-6 border-b border-[#E2DDD5]/60 dark:border-[#3E3545]/60">
+        <div className="h-16 flex items-center justify-between px-4 sm:px-5 border-b border-[#E2DDD5]/60 dark:border-[#3E3545]/60">
           <Link to="/student" className="font-serif font-bold text-lg text-[#6F907D] dark:text-[#8FAE9B] flex items-center gap-2">
             <BookOpen className="w-5 h-5" />
             <span>Student Portal</span>
           </Link>
-          <button onClick={toggleSidebar} className="md:hidden text-[#7A827B] hover:text-[#30332F] dark:hover:text-white">
+          <button
+            onClick={toggleSidebar}
+            className="md:hidden p-2 -mr-1 rounded-lg text-[#7A827B] hover:text-[#30332F] dark:hover:text-white hover:bg-[#F5F1EB] dark:hover:bg-[#2D2635]"
+            aria-label="Close menu"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -197,7 +199,7 @@ export default function StudentApp() {
           </div>
         </div>
 
-        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1.5">
           {navItems.map(item => {
             const isActive = location.pathname === item.path;
             const Icon = item.icon;
@@ -206,10 +208,11 @@ export default function StudentApp() {
                 key={item.path}
                 to={item.path}
                 onClick={() => setSidebarOpen(false)}
+                aria-current={isActive ? 'page' : undefined}
                 className={`
-                  flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors
-                  ${isActive 
-                    ? 'bg-[#8FAE9B]/15 text-[#557161] dark:text-[#A8C9B4] font-semibold' 
+                  flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors touch-manipulation
+                  ${isActive
+                    ? 'bg-[#8FAE9B]/15 text-[#557161] dark:text-[#A8C9B4] ring-1 ring-[#6F907D]/20 dark:ring-[#8FAE9B]/20 font-semibold'
                     : 'text-[#626A64] dark:text-[#D5D0CA] hover:bg-[#F8F6F0] dark:hover:bg-[#2D2635] hover:text-[#30332F] dark:hover:text-[#F8F6F0]'
                   }
                 `}
@@ -223,10 +226,11 @@ export default function StudentApp() {
           <Link
             to="/student/book"
             onClick={() => setSidebarOpen(false)}
-            className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors ${
+            aria-current={location.pathname === '/student/book' ? 'page' : undefined}
+            className={`flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs sm:text-sm font-semibold transition-colors touch-manipulation ${
               location.pathname === '/student/book'
-                ? 'bg-[#8FAE9B]/15 text-[#557161] dark:text-[#A8C9B4] font-semibold'
-                : 'text-[#6F907D] dark:text-[#8FAE9B] hover:bg-[#8FAE9B]/10'
+                ? 'bg-[#8FAE9B]/15 text-[#557161] dark:text-[#A8C9B4] ring-1 ring-[#6F907D]/20 dark:ring-[#8FAE9B]/20'
+                : 'bg-[#8FAE9B] text-white shadow-xs hover:bg-[#6F907D]'
             }`}
           >
             <Calendar className="w-4 h-4" />
@@ -243,7 +247,7 @@ export default function StudentApp() {
           </Link>
           <button
             onClick={() => signOut()}
-            className="flex items-center gap-2.5 w-full px-3.5 py-2 text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl transition-colors cursor-pointer"
+            className="flex items-center gap-2.5 w-full px-3.5 py-2.5 text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl transition-colors cursor-pointer touch-manipulation"
           >
             <LogOut className="w-4 h-4" />
             <span>Sign Out</span>
@@ -251,12 +255,14 @@ export default function StudentApp() {
         </div>
       </aside>
 
-      {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-        {/* Mobile Header */}
         <header className="md:hidden h-16 flex items-center justify-between px-4 bg-white dark:bg-[#251F2C] border-b border-[#E2DDD5] dark:border-[#3E3545]">
           <span className="font-serif font-bold text-[#6F907D] dark:text-[#8FAE9B]">Student Portal</span>
-          <button onClick={toggleSidebar} className="p-2 -mr-2 text-[#7A827B] hover:text-[#30332F] dark:hover:text-white">
+          <button
+            onClick={toggleSidebar}
+            className="p-2.5 -mr-1 rounded-xl text-[#7A827B] hover:text-[#30332F] dark:hover:text-white hover:bg-[#F5F1EB] dark:hover:bg-[#2D2635] touch-manipulation"
+            aria-label="Open menu"
+          >
             <Menu className="w-6 h-6" />
           </button>
         </header>
