@@ -2772,7 +2772,8 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
         p_teacher_id: (req as any).teacherUser?.id,
         p_outcome: status,
         p_notes: notes || null,
-        p_covered_material: covered_material || null
+        p_covered_material: covered_material || null,
+        p_no_show_credit_decision: req.body.consume_package_credit === true ? 'used' : 'returned'
       });
 
       if (rpcErr) {
