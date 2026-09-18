@@ -111,9 +111,6 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
   const config = getEmailConfigStatus();
   const apiKey = process.env.BREVO_API_KEY?.trim();
   const isProduction = process.env.NODE_ENV === 'production';
-  const recipientDomain = (options.to.split('@')[1] || '').toLowerCase();
-  const subjectClassification = /trial/i.test(options.subject) ? 'trial_confirmation' : /teacher|alert|new booking|new free trial/i.test(options.subject) ? 'teacher_alert' : 'booking_confirmation';
-  console.log(`[Email Service Diagnostic] configured=${config.isConfigured} recipient_domain=${recipientDomain || 'unknown'} subject_classification=${subjectClassification}`);
 
   // 1. Recipient validation
   if (!options.to || !isValidEmail(options.to)) {
@@ -203,9 +200,7 @@ Note: Set BREVO_API_KEY to enable live email delivery.`);
       });
     } catch (err: any) {
       const timeoutTriggered = err?.name === 'AbortError';
-      console.error(
-        `[Brevo Transport Diagnostic] type=${timeoutTriggered ? 'timeout' : 'network_error'} error_class=${timeoutTriggered ? 'AbortError' : err?.constructor?.name || 'TypeError'} reached_brevo=false`
-      );
+      console.error('[Email Dispatch Network Error]', timeoutTriggered ? 'Request timed out after 10s' : 'Network failure');
       return {
         success: false,
         status: 'failed',
@@ -246,32 +241,22 @@ Note: Set BREVO_API_KEY to enable live email delivery.`);
 
       if (response.status === 401 || response.status === 403) {
         providerMessageClassification = 'authentication_failed';
-        console.error(
-          `[Brevo Dispatch Diagnostic] status=${response.status} reached_brevo=true provider_code=${providerCode} provider_message_classification=${providerMessageClassification}`
-        );
+        console.error('[Brevo Provider Error]', { status: response.status, providerCode, providerMessageClassification });
         sanitizedError = 'Email service authentication failed.';
       } else if (response.status === 400) {
         providerMessageClassification = 'parameters_rejected';
-        console.error(
-          `[Brevo Dispatch Diagnostic] status=${response.status} reached_brevo=true provider_code=${providerCode} provider_message_classification=${providerMessageClassification}`
-        );
+        console.error('[Brevo Provider Error]', { status: response.status, providerCode, providerMessageClassification });
         sanitizedError = 'Email parameters rejected by provider.';
       } else if (response.status === 402 || response.status === 429) {
         providerMessageClassification = 'quota_exceeded';
-        console.error(
-          `[Brevo Dispatch Diagnostic] status=${response.status} reached_brevo=true provider_code=${providerCode} provider_message_classification=${providerMessageClassification}`
-        );
+        console.error('[Brevo Provider Error]', { status: response.status, providerCode, providerMessageClassification });
         sanitizedError = 'Email daily send limit reached. Please try again later.';
       } else {
-        console.error(
-          `[Brevo Dispatch Diagnostic] status=${response.status} reached_brevo=true provider_code=${providerCode} provider_message_classification=${providerMessageClassification}`
-        );
+        console.error('[Brevo Provider Error]', { status: response.status, providerCode, providerMessageClassification });
         sanitizedError = 'Email delivery failed.';
       }
     } catch {
-      console.error(
-        `[Brevo Dispatch Diagnostic] status=${response.status} reached_brevo=true provider_code=unknown provider_message_classification=unparseable_response`
-      );
+      console.error('[Brevo Provider Error]', { status: response.status, providerCode: 'unknown', providerMessageClassification: 'unparseable_response' });
     }
 
     return {

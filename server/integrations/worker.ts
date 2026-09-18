@@ -68,7 +68,6 @@ export async function processIntegrationJobs(batchSize = 5, clientOverride?: any
 
         // Stale job protection: If booking was cancelled, do not sync or email
         if (booking.status === 'cancelled') {
-          console.log(`[Worker] job_type=booking_sync but booking ${booking.reference_code} is cancelled. Skipping sync.`);
           const { error: skipErr, data: updatedJobs } = await supabase
             .from('integration_jobs')
             .update({
@@ -194,7 +193,6 @@ export async function processIntegrationJobs(batchSize = 5, clientOverride?: any
         
         // We ensure authoritative state is cancelled
         if (booking.status !== 'cancelled') {
-           console.log(`[Worker] job_type=booking_cancel but booking ${booking.reference_code} is not cancelled. Skipping.`);
         } else {
            const res = await syncCancelledBooking(booking.reference_code, booking.teacher_id);
            if (!res.success) {
@@ -271,7 +269,6 @@ export async function processIntegrationJobs(batchSize = 5, clientOverride?: any
         
         // Ensure authoritative state is not cancelled
         if (booking.status === 'cancelled') {
-           console.log(`[Worker] job_type=booking_reschedule but booking ${booking.reference_code} is cancelled. Skipping.`);
         } else {
            const res = await syncRescheduledBooking(booking.reference_code, booking.scheduled_start, booking.scheduled_end, booking.cairo_time_display, booking.teacher_id);
            if (!res.success) {

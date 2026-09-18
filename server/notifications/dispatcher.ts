@@ -272,7 +272,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               currency: booking.currency
             });
 
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=student recipient_domain=${(booking.contactEmail.split('@')[1] || '').toLowerCase()} claim_granted=true`);
             const studentRes = await sendEmail({
               to: booking.contactEmail,
               toName: booking.learnerName,
@@ -280,7 +279,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               html: studentEmail.html,
               text: studentEmail.text
             });
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=student result_status=${studentRes.status} provider=${studentRes.provider} success=${studentRes.success} error_classification=${studentRes.error ? (studentRes.error.includes('Email service authentication failed') ? 'authentication_failed' : studentRes.error.includes('Email parameters rejected by provider') ? 'parameters_rejected' : studentRes.error.includes('Email daily send limit reached') ? 'quota_exceeded' : studentRes.error.includes('timed out') ? 'timeout' : 'unknown') : 'none'}`);
             studentEmailSent = studentRes.success;
             await finalizeNotification(studentKey, claimRes.claimToken, studentRes.success, studentRes.error ? [studentRes.error] : undefined, studentRes.messageId);
             if (!studentRes.success && studentRes.error) {
@@ -313,7 +311,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               }
             });
 
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=teacher recipient_domain=${(OFFICIAL_TEACHER_EMAIL.split('@')[1] || '').toLowerCase()} claim_granted=true`);
             const teacherRes = await sendEmail({
               to: OFFICIAL_TEACHER_EMAIL,
               toName: 'Mahmoud Elwany',
@@ -321,7 +318,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               html: teacherEmail.html,
               text: teacherEmail.text
             });
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=teacher result_status=${teacherRes.status} provider=${teacherRes.provider} success=${teacherRes.success} error_classification=${teacherRes.error ? (teacherRes.error.includes('Email service authentication failed') ? 'authentication_failed' : teacherRes.error.includes('Email parameters rejected by provider') ? 'parameters_rejected' : teacherRes.error.includes('Email daily send limit reached') ? 'quota_exceeded' : teacherRes.error.includes('timed out') ? 'timeout' : 'unknown') : 'none'}`);
             teacherEmailSent = teacherRes.success;
             await finalizeNotification(teacherKey, claimRes.claimToken, teacherRes.success, teacherRes.error ? [teacherRes.error] : undefined, teacherRes.messageId);
             if (!teacherRes.success && teacherRes.error) {
@@ -353,7 +349,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               cairoTimeDisplay: booking.cairoTimeDisplay
             });
 
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=student recipient_domain=${(booking.contactEmail.split('@')[1] || '').toLowerCase()} claim_granted=true`);
             const studentRes = await sendEmail({
               to: booking.contactEmail,
               toName: booking.learnerName,
@@ -361,7 +356,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               html: studentEmail.html,
               text: studentEmail.text
             });
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=student result_status=${studentRes.status} provider=${studentRes.provider} success=${studentRes.success} error_classification=${studentRes.error ? (studentRes.error.includes('Email service authentication failed') ? 'authentication_failed' : studentRes.error.includes('Email parameters rejected by provider') ? 'parameters_rejected' : studentRes.error.includes('Email daily send limit reached') ? 'quota_exceeded' : studentRes.error.includes('timed out') ? 'timeout' : 'unknown') : 'none'}`);
             studentEmailSent = studentRes.success;
             await finalizeNotification(studentKey, claimRes.claimToken, studentRes.success, studentRes.error ? [studentRes.error] : undefined, studentRes.messageId);
             if (!studentRes.success && studentRes.error) {
@@ -394,7 +388,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               }
             });
 
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=teacher recipient_domain=${(OFFICIAL_TEACHER_EMAIL.split('@')[1] || '').toLowerCase()} claim_granted=true`);
             const teacherRes = await sendEmail({
               to: OFFICIAL_TEACHER_EMAIL,
               toName: 'Mahmoud Elwany',
@@ -402,7 +395,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               html: teacherEmail.html,
               text: teacherEmail.text
             });
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=teacher result_status=${teacherRes.status} provider=${teacherRes.provider} success=${teacherRes.success} error_classification=${teacherRes.error ? (teacherRes.error.includes('Email service authentication failed') ? 'authentication_failed' : teacherRes.error.includes('Email parameters rejected by provider') ? 'parameters_rejected' : teacherRes.error.includes('Email daily send limit reached') ? 'quota_exceeded' : teacherRes.error.includes('timed out') ? 'timeout' : 'unknown') : 'none'}`);
             teacherEmailSent = teacherRes.success;
             await finalizeNotification(teacherKey, claimRes.claimToken, teacherRes.success, teacherRes.error ? [teacherRes.error] : undefined, teacherRes.messageId);
             if (!teacherRes.success && teacherRes.error) {
@@ -437,7 +429,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               }
             });
 
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=teacher recipient_domain=${(OFFICIAL_TEACHER_EMAIL.split('@')[1] || '').toLowerCase()} claim_granted=true`);
             const teacherRes = await sendEmail({
               to: OFFICIAL_TEACHER_EMAIL,
               toName: 'Mahmoud Elwany',
@@ -445,7 +436,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               html: teacherEmail.html,
               text: teacherEmail.text
             });
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=teacher result_status=${teacherRes.status} provider=${teacherRes.provider} success=${teacherRes.success} error_classification=${teacherRes.error ? (teacherRes.error.includes('Email service authentication failed') ? 'authentication_failed' : teacherRes.error.includes('Email parameters rejected by provider') ? 'parameters_rejected' : teacherRes.error.includes('Email daily send limit reached') ? 'quota_exceeded' : teacherRes.error.includes('timed out') ? 'timeout' : 'unknown') : 'none'}`);
             teacherEmailSent = teacherRes.success;
             await finalizeNotification(teacherKey, claimRes.claimToken, teacherRes.success, teacherRes.error ? [teacherRes.error] : undefined, teacherRes.messageId);
             if (!teacherRes.success && teacherRes.error) {
@@ -476,7 +466,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
             });
 
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=student recipient_domain=${(booking.contactEmail.split('@')[1] || '').toLowerCase()} claim_granted=true`);
             const studentRes = await sendEmail({
               to: booking.contactEmail,
               toName: booking.learnerName,
@@ -484,7 +473,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               html: studentEmail.html,
               text: studentEmail.text
             });
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=student result_status=${studentRes.status} provider=${studentRes.provider} success=${studentRes.success} error_classification=${studentRes.error ? (studentRes.error.includes('Email service authentication failed') ? 'authentication_failed' : studentRes.error.includes('Email parameters rejected by provider') ? 'parameters_rejected' : studentRes.error.includes('Email daily send limit reached') ? 'quota_exceeded' : studentRes.error.includes('timed out') ? 'timeout' : 'unknown') : 'none'}`);
             studentEmailSent = studentRes.success;
             await finalizeNotification(studentKey, claimRes.claimToken, studentRes.success, studentRes.error ? [studentRes.error] : undefined, studentRes.messageId);
             if (!studentRes.success && studentRes.error) {
@@ -513,7 +501,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               bookingRef: booking.referenceCode
             });
 
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=student recipient_domain=${(booking.contactEmail.split('@')[1] || '').toLowerCase()} claim_granted=true`);
             const studentRes = await sendEmail({
               to: booking.contactEmail,
               toName: booking.learnerName,
@@ -521,7 +508,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               html: studentEmail.html,
               text: studentEmail.text
             });
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=student result_status=${studentRes.status} provider=${studentRes.provider} success=${studentRes.success} error_classification=${studentRes.error ? (studentRes.error.includes('Email service authentication failed') ? 'authentication_failed' : studentRes.error.includes('Email parameters rejected by provider') ? 'parameters_rejected' : studentRes.error.includes('Email daily send limit reached') ? 'quota_exceeded' : studentRes.error.includes('timed out') ? 'timeout' : 'unknown') : 'none'}`);
             studentEmailSent = studentRes.success;
             await finalizeNotification(studentKey, claimRes.claimToken, studentRes.success, studentRes.error ? [studentRes.error] : undefined, studentRes.messageId);
             if (!studentRes.success && studentRes.error) {
@@ -551,7 +537,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               }
             });
 
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=teacher recipient_domain=${(OFFICIAL_TEACHER_EMAIL.split('@')[1] || '').toLowerCase()} claim_granted=true`);
             const teacherRes = await sendEmail({
               to: OFFICIAL_TEACHER_EMAIL,
               toName: 'Mahmoud Elwany',
@@ -559,7 +544,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               html: teacherEmail.html,
               text: teacherEmail.text
             });
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=teacher result_status=${teacherRes.status} provider=${teacherRes.provider} success=${teacherRes.success} error_classification=${teacherRes.error ? (teacherRes.error.includes('Email service authentication failed') ? 'authentication_failed' : teacherRes.error.includes('Email parameters rejected by provider') ? 'parameters_rejected' : teacherRes.error.includes('Email daily send limit reached') ? 'quota_exceeded' : teacherRes.error.includes('timed out') ? 'timeout' : 'unknown') : 'none'}`);
             teacherEmailSent = teacherRes.success;
             await finalizeNotification(teacherKey, claimRes.claimToken, teacherRes.success, teacherRes.error ? [teacherRes.error] : undefined, teacherRes.messageId);
             if (!teacherRes.success && teacherRes.error) {
@@ -592,7 +576,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               zoomLink: booking.zoomLink
             });
 
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=student recipient_domain=${(booking.contactEmail.split('@')[1] || '').toLowerCase()} claim_granted=true`);
             const studentRes = await sendEmail({
               to: booking.contactEmail,
               toName: booking.learnerName,
@@ -600,7 +583,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               html: studentEmail.html,
               text: studentEmail.text
             });
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=student result_status=${studentRes.status} provider=${studentRes.provider} success=${studentRes.success} error_classification=${studentRes.error ? (studentRes.error.includes('Email service authentication failed') ? 'authentication_failed' : studentRes.error.includes('Email parameters rejected by provider') ? 'parameters_rejected' : studentRes.error.includes('Email daily send limit reached') ? 'quota_exceeded' : studentRes.error.includes('timed out') ? 'timeout' : 'unknown') : 'none'}`);
             studentEmailSent = studentRes.success;
             await finalizeNotification(studentKey, claimRes.claimToken, studentRes.success, studentRes.error ? [studentRes.error] : undefined, studentRes.messageId);
             if (!studentRes.success && studentRes.error) {
@@ -631,7 +613,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               }
             });
 
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=teacher recipient_domain=${(OFFICIAL_TEACHER_EMAIL.split('@')[1] || '').toLowerCase()} claim_granted=true`);
             const teacherRes = await sendEmail({
               to: OFFICIAL_TEACHER_EMAIL,
               toName: 'Mahmoud Elwany',
@@ -639,7 +620,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               html: teacherEmail.html,
               text: teacherEmail.text
             });
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=teacher result_status=${teacherRes.status} provider=${teacherRes.provider} success=${teacherRes.success} error_classification=${teacherRes.error ? (teacherRes.error.includes('Email service authentication failed') ? 'authentication_failed' : teacherRes.error.includes('Email parameters rejected by provider') ? 'parameters_rejected' : teacherRes.error.includes('Email daily send limit reached') ? 'quota_exceeded' : teacherRes.error.includes('timed out') ? 'timeout' : 'unknown') : 'none'}`);
             teacherEmailSent = teacherRes.success;
             await finalizeNotification(teacherKey, claimRes.claimToken, teacherRes.success, teacherRes.error ? [teacherRes.error] : undefined, teacherRes.messageId);
             if (!teacherRes.success && teacherRes.error) {
@@ -673,7 +653,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               }
             });
 
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=teacher recipient_domain=${(OFFICIAL_TEACHER_EMAIL.split('@')[1] || '').toLowerCase()} claim_granted=true`);
             const teacherRes = await sendEmail({
               to: OFFICIAL_TEACHER_EMAIL,
               toName: 'Mahmoud Elwany',
@@ -681,7 +660,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               html: teacherEmail.html,
               text: teacherEmail.text
             });
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=teacher result_status=${teacherRes.status} provider=${teacherRes.provider} success=${teacherRes.success} error_classification=${teacherRes.error ? (teacherRes.error.includes('Email service authentication failed') ? 'authentication_failed' : teacherRes.error.includes('Email parameters rejected by provider') ? 'parameters_rejected' : teacherRes.error.includes('Email daily send limit reached') ? 'quota_exceeded' : teacherRes.error.includes('timed out') ? 'timeout' : 'unknown') : 'none'}`);
             teacherEmailSent = teacherRes.success;
             await finalizeNotification(teacherKey, claimRes.claimToken, teacherRes.success, teacherRes.error ? [teacherRes.error] : undefined, teacherRes.messageId);
             if (!teacherRes.success && teacherRes.error) {
@@ -713,7 +691,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               isTrial: booking.isTrial
             });
 
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=student recipient_domain=${(booking.contactEmail.split('@')[1] || '').toLowerCase()} claim_granted=true`);
             const studentRes = await sendEmail({
               to: booking.contactEmail,
               toName: booking.learnerName,
@@ -721,7 +698,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               html: studentEmail.html,
               text: studentEmail.text
             });
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=student result_status=${studentRes.status} provider=${studentRes.provider} success=${studentRes.success} error_classification=${studentRes.error ? (studentRes.error.includes('Email service authentication failed') ? 'authentication_failed' : studentRes.error.includes('Email parameters rejected by provider') ? 'parameters_rejected' : studentRes.error.includes('Email daily send limit reached') ? 'quota_exceeded' : studentRes.error.includes('timed out') ? 'timeout' : 'unknown') : 'none'}`);
             studentEmailSent = studentRes.success;
             await finalizeNotification(studentKey, claimRes.claimToken, studentRes.success, studentRes.error ? [studentRes.error] : undefined, studentRes.messageId);
             if (!studentRes.success && studentRes.error) {
@@ -750,7 +726,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               zoomLink: booking.zoomLink
             });
 
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=student recipient_domain=${(booking.contactEmail.split('@')[1] || '').toLowerCase()} claim_granted=true`);
             const studentRes = await sendEmail({
               to: booking.contactEmail,
               toName: booking.learnerName,
@@ -758,7 +733,6 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
               html: studentEmail.html,
               text: studentEmail.text
             });
-            console.log(`[Notification Dispatch Diagnostic] event_type=${eventType} recipient_kind=student result_status=${studentRes.status} provider=${studentRes.provider} success=${studentRes.success} error_classification=${studentRes.error ? (studentRes.error.includes('Email service authentication failed') ? 'authentication_failed' : studentRes.error.includes('Email parameters rejected by provider') ? 'parameters_rejected' : studentRes.error.includes('Email daily send limit reached') ? 'quota_exceeded' : studentRes.error.includes('timed out') ? 'timeout' : 'unknown') : 'none'}`);
             studentEmailSent = studentRes.success;
             await finalizeNotification(studentKey, claimRes.claimToken, studentRes.success, studentRes.error ? [studentRes.error] : undefined, studentRes.messageId);
             if (!studentRes.success && studentRes.error) {

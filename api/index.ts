@@ -883,17 +883,6 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
       res.setHeader('x-student-record-found', studentRecord ? 'true' : 'false');
       res.setHeader('x-student-id-hash', studentIdHash);
 
-      console.log('[verifyStudentAuth Diag]', {
-        authHeader: true,
-        authUserResolved: true,
-        authUserIdHash,
-        backendProjectRef,
-        studentQueryExecuted: true,
-        studentRecordFound: Boolean(studentRecord),
-        studentIdHash,
-        error: studentError?.message || null
-      });
-
       req.studentUser = {
         auth_id: user.id,
         email: userEmail,
