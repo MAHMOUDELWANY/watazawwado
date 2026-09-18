@@ -196,17 +196,7 @@ describe('Phase 7 — Student Authentication & Portal API Tests', () => {
     assert.ok(body.error.toLowerCase().includes('child'));
   });
 
-  it('allows student with linked child/guardian (dev-guardian-student-token) to set bookingPreference to child', async () => {
-    // 1. Verify dev-guardian-student-token profile
-    const getRes = await fetch(`${baseUrl}/api/student/me`, {
-      headers: { Authorization: 'Bearer dev-guardian-student-token' }
-    });
-    assert.strictEqual(getRes.status, 200);
-    const getBody = await getRes.json();
-    assert.strictEqual(getBody.canBookForChild, true);
-    assert.ok(getBody.linkedChildren.length > 0);
-
-    // 2. Update booking preference to child
+  it('allows student with linked child/guardian (dev-guardian-student-token) to persist bookingPreference=child and read it back', async () => {
     const patchRes = await fetch(`${baseUrl}/api/student/me`, {
       method: 'PATCH',
       headers: {
@@ -218,6 +208,66 @@ describe('Phase 7 — Student Authentication & Portal API Tests', () => {
     assert.strictEqual(patchRes.status, 200);
     const patchBody = await patchRes.json();
     assert.strictEqual(patchBody.bookingPreference, 'child');
+
+    const getRes = await fetch(`${baseUrl}/api/student/me`, {
+      headers: { Authorization: 'Bearer dev-guardian-student-token' }
+    });
+    assert.strictEqual(getRes.status, 200);
+    const getBody = await getRes.json();
+    assert.strictEqual(getBody.canBookForChild, true);
+    assert.strictEqual(getBody.bookingPreference, 'child');
+  });
+
+  it('allows a child-eligible student to switch bookingPreference back to self and persist it', async () => {
+    const childRes = await fetch(`${baseUrl}/api/student/me`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: 'Bearer dev-guardian-student-token',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ bookingPreference: 'child' })
+    });
+    assert.strictEqual(childRes.status, 200);
+
+    const selfRes = await fetch(`${baseUrl}/api/student/me`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: 'Bearer dev-guardian-student-token',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ bookingPreference: 'self' })
+    });
+    assert.strictEqual(selfRes.status, 200);
+    const selfBody = await selfRes.json();
+    assert.strictEqual(selfBody.bookingPreference, 'self');
+
+    const getRes = await fetch(`${baseUrl}/api/student/me`, {
+      headers: { Authorization: 'Bearer dev-guardian-student-token' }
+    });
+    assert.strictEqual(getRes.status, 200);
+    const getBody = await getRes.json();
+    assert.strictEqual(getBody.bookingPreference, 'self');
+  });
+
+  it('rejects setting bookingPreference to child with 422 if student has no child relationship', async () => {
+    const res = await fetch(`${baseUrl}/api/student/me`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: 'Bearer dev-student-token',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ bookingPreference: 'child' })
+    });
+    assert.strictEqual(res.status, 422);
+    const body = await res.json();
+    assert.ok(body.error.toLowerCase().includes('child'));
+
+    const getRes = await fetch(`${baseUrl}/api/student/me`, {
+      headers: { Authorization: 'Bearer dev-student-token' }
+    });
+    assert.strictEqual(getRes.status, 200);
+    const getBody = await getRes.json();
+    assert.strictEqual(getBody.bookingPreference, 'self');
   });
 
   it('rejects invalid bookingPreference values with 422', async () => {

@@ -706,6 +706,65 @@ function extractSupabaseProjectRef(urlStr?: string): string | null {
   return null;
 }
 
+const devStudentProfiles: Record<string, any> = {
+  'dev-student-token': {
+    auth_id: 'student-mock-auth-001',
+    email: 'student.a@example.com',
+    student_id: '11111111-2222-3333-4444-555555555555',
+    name: 'Student A',
+    studentProfile: {
+      id: '11111111-2222-3333-4444-555555555555',
+      name: 'Student A',
+      email: 'student.a@example.com',
+      timezone: 'America/New_York',
+      learner_type: 'adult',
+      current_level: 'intermediate',
+      status: 'active',
+      booking_preference: 'self',
+      canBookForChild: false,
+      linkedChildren: []
+    }
+  },
+  'dev-student-b-token': {
+    auth_id: 'student-mock-auth-002',
+    email: 'student.b@example.com',
+    student_id: '22222222-2222-3333-4444-555555555555',
+    name: 'Student B',
+    studentProfile: {
+      id: '22222222-2222-3333-4444-555555555555',
+      name: 'Student B',
+      email: 'student.b@example.com',
+      timezone: 'Europe/London',
+      learner_type: 'adult',
+      current_level: 'beginner',
+      status: 'active',
+      booking_preference: 'self',
+      canBookForChild: false,
+      linkedChildren: []
+    }
+  },
+  'dev-guardian-student-token': {
+    auth_id: 'guardian-mock-auth-003',
+    email: 'guardian@example.com',
+    student_id: '33333333-3333-3333-3333-333333333333',
+    name: 'Parent Guardian',
+    studentProfile: {
+      id: '33333333-3333-3333-3333-333333333333',
+      name: 'Parent Guardian',
+      email: 'guardian@example.com',
+      timezone: 'America/Toronto',
+      learner_type: 'adult',
+      current_level: 'intermediate',
+      status: 'active',
+      booking_preference: 'self',
+      canBookForChild: true,
+      linkedChildren: [
+        { id: 'child-001', name: 'Aisha Al-Harithi', currentLevel: 'beginner' }
+      ]
+    }
+  }
+};
+
 async function verifyStudentAuth(req: any, res: any, next: any) {
   try {
     const authHeader = req.headers.authorization;
@@ -738,68 +797,8 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
 
     if (supabaseUrl && serviceKey) {
       // Allow dev test tokens in non-production environments when testing
-      if (!isProd && token === 'dev-student-token') {
-        req.studentUser = {
-          auth_id: 'student-mock-auth-001',
-          email: 'student.a@example.com',
-          student_id: '11111111-2222-3333-4444-555555555555',
-          name: 'Student A',
-          studentProfile: {
-            id: '11111111-2222-3333-4444-555555555555',
-            name: 'Student A',
-            email: 'student.a@example.com',
-            timezone: 'America/New_York',
-            learner_type: 'adult',
-            current_level: 'intermediate',
-            status: 'active'
-          }
-        };
-        return next();
-      }
-
-      if (!isProd && token === 'dev-student-b-token') {
-        req.studentUser = {
-          auth_id: 'student-mock-auth-002',
-          email: 'student.b@example.com',
-          student_id: '22222222-2222-3333-4444-555555555555',
-          name: 'Student B',
-          studentProfile: {
-            id: '22222222-2222-3333-4444-555555555555',
-            name: 'Student B',
-            email: 'student.b@example.com',
-            timezone: 'Europe/London',
-            learner_type: 'adult',
-            current_level: 'beginner',
-            status: 'active',
-            booking_preference: 'self',
-            canBookForChild: false,
-            linkedChildren: []
-          }
-        };
-        return next();
-      }
-
-      if (!isProd && token === 'dev-guardian-student-token') {
-        req.studentUser = {
-          auth_id: 'guardian-mock-auth-003',
-          email: 'guardian@example.com',
-          student_id: '33333333-3333-3333-3333-333333333333',
-          name: 'Parent Guardian',
-          studentProfile: {
-            id: '33333333-3333-3333-3333-333333333333',
-            name: 'Parent Guardian',
-            email: 'guardian@example.com',
-            timezone: 'America/Toronto',
-            learner_type: 'adult',
-            current_level: 'intermediate',
-            status: 'active',
-            booking_preference: 'child',
-            canBookForChild: true,
-            linkedChildren: [
-              { id: 'child-001', name: 'Aisha Al-Harithi', currentLevel: 'beginner' }
-            ]
-          }
-        };
+      if (!isProd && devStudentProfiles[token]) {
+        req.studentUser = JSON.parse(JSON.stringify(devStudentProfiles[token]));
         return next();
       }
 
@@ -898,71 +897,8 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
     }
 
     // Non-production fallback when Supabase is not configured
-    if (!isProd && token === 'dev-student-token') {
-      req.studentUser = {
-        auth_id: 'student-mock-auth-001',
-        email: 'student.a@example.com',
-        student_id: '11111111-2222-3333-4444-555555555555',
-        name: 'Student A',
-        studentProfile: {
-          id: '11111111-2222-3333-4444-555555555555',
-          name: 'Student A',
-          email: 'student.a@example.com',
-          timezone: 'America/New_York',
-          learner_type: 'adult',
-          current_level: 'intermediate',
-          status: 'active',
-          booking_preference: 'self',
-          canBookForChild: false,
-          linkedChildren: []
-        }
-      };
-      return next();
-    }
-
-    if (!isProd && token === 'dev-student-b-token') {
-      req.studentUser = {
-        auth_id: 'student-mock-auth-002',
-        email: 'student.b@example.com',
-        student_id: '22222222-2222-3333-4444-555555555555',
-        name: 'Student B',
-        studentProfile: {
-          id: '22222222-2222-3333-4444-555555555555',
-          name: 'Student B',
-          email: 'student.b@example.com',
-          timezone: 'Europe/London',
-          learner_type: 'adult',
-          current_level: 'beginner',
-          status: 'active',
-          booking_preference: 'self',
-          canBookForChild: false,
-          linkedChildren: []
-        }
-      };
-      return next();
-    }
-
-    if (!isProd && token === 'dev-guardian-student-token') {
-      req.studentUser = {
-        auth_id: 'guardian-mock-auth-003',
-        email: 'guardian@example.com',
-        student_id: '33333333-3333-3333-3333-333333333333',
-        name: 'Parent Guardian',
-        studentProfile: {
-          id: '33333333-3333-3333-3333-333333333333',
-          name: 'Parent Guardian',
-          email: 'guardian@example.com',
-          timezone: 'America/Toronto',
-          learner_type: 'adult',
-          current_level: 'intermediate',
-          status: 'active',
-          booking_preference: 'child',
-          canBookForChild: true,
-          linkedChildren: [
-            { id: 'child-001', name: 'Aisha Al-Harithi', currentLevel: 'beginner' }
-          ]
-        }
-      };
+    if (!isProd && devStudentProfiles[token]) {
+      req.studentUser = JSON.parse(JSON.stringify(devStudentProfiles[token]));
       return next();
     }
 
@@ -1005,6 +941,12 @@ async function verifyTeacherAuth(req: any, res: any, next: any) {
       const stage = 'DEV_TOKEN_REJECTED_PROD';
       res.setHeader('x-auth-diagnostic-stage', stage);
       return res.status(401).json({ error: 'Unauthorized. Development tokens are strictly forbidden in production.', diagnosticStage: stage });
+    }
+
+    if (!isProd && (token === 'dev-student-token' || token === 'dev-student-b-token' || token === 'dev-guardian-student-token')) {
+      const stage = 'STUDENT_TOKEN_REJECTED_FOR_TEACHER_API';
+      res.setHeader('x-auth-diagnostic-stage', stage);
+      return res.status(403).json({ error: 'Forbidden. Student accounts cannot access teacher dashboard APIs.', diagnosticStage: stage });
     }
 
     // Dev token bypass for local development / non-production ONLY
@@ -4693,7 +4635,7 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       const [studentRes, guardianRes, goalsRes, linkedChildrenRes] = await Promise.all([
         supabaseAdmin
           .from('students')
-          .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, created_at, onboarding_completed, learning_interest, learning_goal, learning_needs')
+          .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, booking_preference, created_at, onboarding_completed, learning_interest, learning_goal, learning_needs')
           .eq('id', studentId)
           .single(),
         supabaseAdmin
@@ -5112,40 +5054,38 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
     // Booking preference validation & persistence
     const rawBookingPref = booking_preference !== undefined ? booking_preference : bookingPreference;
     if (rawBookingPref !== undefined) {
-      if (rawBookingPref !== 'self' && rawBookingPref !== 'child') {
-        return res.status(422).json({ error: "Invalid booking preference. Must be 'self' or 'child'." });
+        if (rawBookingPref !== 'self' && rawBookingPref !== 'child') {
+          return res.status(422).json({ error: "Invalid booking preference. Must be 'self' or 'child'." });
+        }
+
+        // Check if student has an authoritative child/guardian relationship
+        let studentCanBookChild = false;
+        if (!supabaseAdmin || (!isProd && req.studentUser?.studentProfile)) {
+          const mp = req.studentUser?.studentProfile;
+          studentCanBookChild = mp?.canBookForChild ?? (
+            mp?.learner_type === 'child' ||
+            Boolean(mp?.guardian) ||
+            Boolean(mp?.linkedChildren && mp?.linkedChildren.length > 0)
+          );
+        } else {
+          const [studentCheck, guardianCheck, parentCheck] = await Promise.all([
+            supabaseAdmin.from('students').select('learner_type').eq('id', studentId).single(),
+            supabaseAdmin.from('guardians').select('id').eq('student_id', studentId).maybeSingle(),
+            supabaseAdmin.from('guardians').select('id').ilike('parent_email', (req.studentUser?.email || '').trim()).limit(1)
+          ]);
+          const isChildWithGuardian = studentCheck.data?.learner_type === 'child' && Boolean(guardianCheck.data);
+          const isParentOfChild = Boolean(parentCheck.data && parentCheck.data.length > 0);
+          studentCanBookChild = isChildWithGuardian || isParentOfChild;
+        }
+
+        if (rawBookingPref === 'child' && !studentCanBookChild) {
+          return res.status(422).json({
+            error: 'Account has no linked child relationship. Booking preference cannot be set to child.'
+          });
+        }
+
+        updatePayload.booking_preference = rawBookingPref;
       }
-
-      // Check if student has an authoritative child/guardian relationship
-      let studentCanBookChild = false;
-      if (!supabaseAdmin || (!isProd && req.studentUser?.studentProfile)) {
-        const mp = req.studentUser?.studentProfile;
-        studentCanBookChild = mp?.canBookForChild ?? (
-          mp?.learner_type === 'child' ||
-          Boolean(mp?.guardian) ||
-          Boolean(mp?.linkedChildren && mp?.linkedChildren.length > 0)
-        );
-      } else {
-        const [studentCheck, guardianCheck, parentCheck] = await Promise.all([
-          supabaseAdmin.from('students').select('learner_type').eq('id', studentId).single(),
-          supabaseAdmin.from('guardians').select('id').eq('student_id', studentId).maybeSingle(),
-          supabaseAdmin.from('guardians').select('id').ilike('parent_email', (req.studentUser?.email || '').trim()).limit(1)
-        ]);
-        const isChildWithGuardian = studentCheck.data?.learner_type === 'child' && Boolean(guardianCheck.data);
-        const isParentOfChild = Boolean(parentCheck.data && parentCheck.data.length > 0);
-        studentCanBookChild = isChildWithGuardian || isParentOfChild;
-      }
-
-      if (rawBookingPref === 'child' && !studentCanBookChild) {
-        return res.status(422).json({
-          error: 'Account has no linked child relationship. Booking preference cannot be set to child.'
-        });
-      }
-
-      // Temporarily disabled until production schema is migrated
-      // updatePayload.booking_preference = rawBookingPref;
-    }
-
     if (!supabaseAdmin || (!isProd && req.studentUser?.studentProfile)) {
       if (req.studentUser?.studentProfile) {
         if (updatePayload.name) req.studentUser.studentProfile.name = updatePayload.name;
@@ -5155,6 +5095,12 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
         if (updatePayload.booking_preference !== undefined) {
           req.studentUser.studentProfile.booking_preference = updatePayload.booking_preference;
           req.studentUser.studentProfile.bookingPreference = updatePayload.booking_preference;
+          const authHeader = req.headers.authorization;
+          const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.substring(7) : null;
+          if (!isProd && token && devStudentProfiles[token]) {
+            devStudentProfiles[token].studentProfile.booking_preference = updatePayload.booking_preference;
+            devStudentProfiles[token].studentProfile.bookingPreference = updatePayload.booking_preference;
+          }
         }
       }
       return res.json({
@@ -5176,7 +5122,7 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       .from('students')
       .update(updatePayload)
       .eq('id', studentId)
-      .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, created_at, updated_at')
+      .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, booking_preference, created_at, updated_at')
       .single();
 
     if (updateError || !updatedStudent) {
