@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
-import { BookOpen, LogOut, User, Menu, X, Sparkles, Calendar, ArrowRight, Loader2 } from 'lucide-react';
+import { BookOpen, LogOut, User, Menu, X, Sparkles, Calendar, ArrowRight, Loader2, Moon, Sun } from 'lucide-react';
 import { useTeacherAuth } from '../lib/auth';
+import { useTheme } from '../components/ThemeProvider';
+
 import StudentHomePage from './pages/StudentHomePage';
 import StudentProfilePage from './pages/StudentProfilePage';
 import StudentOnboardingPage from './pages/StudentOnboardingPage';
@@ -11,6 +13,7 @@ import { StudentAuthModal } from '../components/StudentAuthModal';
 
 export default function StudentApp() {
   const { user, session, isTeacherAuthenticated, userRole, signOut } = useTeacherAuth();
+  const { theme, toggleTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const [loadingProfile, setLoadingProfile] = useState<boolean>(true);
@@ -245,6 +248,14 @@ export default function StudentApp() {
           >
             ← Public Homepage
           </Link>
+          <button
+            onClick={toggleTheme}
+            className="flex items-center gap-2.5 w-full px-3.5 py-2.5 text-xs font-medium text-[#7A827B] hover:text-[#30332F] dark:hover:text-white hover:bg-[#F5F1EB] dark:hover:bg-[#2D2635] rounded-xl transition-colors cursor-pointer"
+            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+          >
+            {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+            <span>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
+          </button>
           <button
             onClick={() => signOut()}
             className="flex items-center gap-2.5 w-full px-3.5 py-2.5 text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl transition-colors cursor-pointer touch-manipulation"

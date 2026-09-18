@@ -13,8 +13,11 @@ import {
   X,
   Sparkles,
   UserPlus,
-  TrendingUp
+  TrendingUp,
+  Moon,
+  Sun
 } from 'lucide-react';
+import { useTheme } from "../components/ThemeProvider";
 import TodayPage from './pages/TodayPage';
 import UpcomingPage from './pages/UpcomingPage';
 import TrialsPage from './pages/TrialsPage';
@@ -29,6 +32,7 @@ import { Language } from '../booking/types';
 
 export function DashboardApp() {
   const { isTeacherAuthenticated, user, signOut } = useTeacherAuth();
+  const { theme, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
 
@@ -59,7 +63,9 @@ export function DashboardApp() {
     { name: 'Leads', path: '/dashboard/leads', icon: UserPlus },
     { name: 'Students', path: '/dashboard/students', icon: Users },
     { name: 'Bookings', path: '/dashboard/bookings', icon: BookOpen },
-    { name: 'Analytics', path: '/dashboard/analytics', icon: TrendingUp },
+    { name: 'Analytics', path: '/dashboard/analytics', icon: TrendingUp,
+  Moon,
+  Sun },
     { name: 'Settings', path: '/dashboard/settings', icon: Settings },
   ];
 
@@ -125,6 +131,14 @@ export function DashboardApp() {
               <p className="text-[10px] opacity-70 truncate">{user?.email}</p>
             </div>
           </div>
+          <button
+            onClick={toggleTheme}
+            className="w-full flex items-center gap-3 px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors mb-2"
+            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+          >
+            {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+            {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
+          </button>
           <button 
             onClick={signOut}
             className="w-full flex items-center gap-3 px-4 py-2 rounded-xl text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"

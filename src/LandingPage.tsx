@@ -22,8 +22,8 @@ import { GetStartedModal } from './components/GetStartedModal';
 import { TeacherAuthProvider } from './lib/auth';
 import { Language, ThemeMode } from './types';
 import { BookingMode } from './booking/types';
-
 import { LearningGuide } from './components/LearningGuide';
+import { useTheme } from './components/ThemeProvider';
 
 interface LandingPageProps {
   initialGetStartedOpen?: boolean;
@@ -31,15 +31,7 @@ interface LandingPageProps {
 
 export function LandingPage({ initialGetStartedOpen = false }: LandingPageProps) {
   const [lang, setLang] = useState<Language>('en');
-  const [theme, setTheme] = useState<ThemeMode>(() => {
-    try {
-      const saved = localStorage.getItem('mahmoud_theme');
-      if (saved === 'light' || saved === 'dark') return saved;
-    } catch {
-      // Ignore
-    }
-    return 'light';
-  });
+  const { theme, toggleTheme } = useTheme();
 
   const [getStartedModalOpen, setGetStartedModalOpen] = useState<boolean>(Boolean(initialGetStartedOpen));
   const [bookingModalOpen, setBookingModalOpen] = useState<boolean>(false);
@@ -54,20 +46,6 @@ export function LandingPage({ initialGetStartedOpen = false }: LandingPageProps)
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
   }, [lang]);
-
-  // Manage Dark / Light theme class on html element
-  useEffect(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-    try {
-      localStorage.setItem('mahmoud_theme', theme);
-    } catch {
-      // Ignore
-    }
-  }, [theme]);
 
   // Listen to hash / URL changes for direct routes (#book, #free-trial, #manage, #manage)
   useEffect(() => {
@@ -94,9 +72,6 @@ export function LandingPage({ initialGetStartedOpen = false }: LandingPageProps)
     setLang((prev) => (prev === 'en' ? 'ar' : 'en'));
   };
 
-  const handleToggleTheme = () => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
-  };
 
   const handleOpenGetStarted = (serviceId?: string) => {
     setPreselectedService(serviceId);
@@ -110,13 +85,13 @@ export function LandingPage({ initialGetStartedOpen = false }: LandingPageProps)
   };
 
   return (
-    <div className="min-h-screen bg-[#F5E6D3] dark:bg-[#1E1923] text-[#362E3B] dark:text-[#F5E6D3] transition-colors duration-300 font-sans">
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-300 font-sans">
         {/* Global Navigation */}
         <Navbar
           lang={lang}
           onToggleLang={handleToggleLang}
           theme={theme}
-          onToggleTheme={handleToggleTheme}
+          onToggleTheme={toggleTheme}
           onOpenTrialModal={(serviceId) => handleOpenGetStarted(serviceId)}
           onOpenManageModal={() => setManageModalOpen(true)}
         />

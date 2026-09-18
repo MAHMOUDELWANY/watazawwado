@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { TeacherAuthProvider } from './lib/auth';
+import { ThemeProvider } from './components/ThemeProvider';
 import { LandingPage } from './LandingPage';
 import { DashboardApp } from './dashboard/DashboardApp';
 import StudentApp from './student/StudentApp';
@@ -8,19 +9,21 @@ import StaffLoginPage from './pages/StaffLoginPage';
 
 export default function App() {
   return (
-    <TeacherAuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/get-started" element={<LandingPage initialGetStartedOpen={true} />} />
-          <Route path="/staff/login" element={<StaffLoginPage />} />
-          <Route path="/teacher/*" element={<DashboardApp />} />
-          <Route path="/dashboard/*" element={<DashboardApp />} />
-          <Route path="/student/*" element={<StudentApp />} />
-          <Route path="/demo" element={<Navigate to="/student/demo" replace />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </TeacherAuthProvider>
+    <ThemeProvider>
+      <TeacherAuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/get-started" element={<LandingPage initialGetStartedOpen={true} />} />
+            <Route path="/staff/login" element={<StaffLoginPage />} />
+            <Route path="/teacher/*" element={<DashboardApp />} />
+            <Route path="/dashboard/*" element={<DashboardApp />} />
+            <Route path="/student/*" element={<StudentApp />} />
+            <Route path="/demo" element={<Navigate to="/student/demo" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </TeacherAuthProvider>
+    </ThemeProvider>
   );
 }
