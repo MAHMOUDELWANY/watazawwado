@@ -73,22 +73,6 @@ export function getEmailConfigStatus(): EmailConfigStatus {
 }
 
 /**
- * Legacy compatibility alias for settings dashboards.
- */
-export function getGmailConfigStatus(): {
-  isConfigured: boolean;
-  senderEmail: string;
-  provider: 'brevo' | 'unconfigured';
-} {
-  const status = getEmailConfigStatus();
-  return {
-    isConfigured: status.isConfigured,
-    senderEmail: status.senderEmail,
-    provider: status.provider
-  };
-}
-
-/**
  * Validates basic email address structure.
  */
 function isValidEmail(email: string): boolean {
