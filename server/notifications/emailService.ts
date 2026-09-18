@@ -111,6 +111,9 @@ export async function sendEmail(options: SendEmailOptions): Promise<SendEmailRes
   const config = getEmailConfigStatus();
   const apiKey = process.env.BREVO_API_KEY?.trim();
   const isProduction = process.env.NODE_ENV === 'production';
+  const recipientDomain = (options.to.split('@')[1] || '').toLowerCase();
+  const subjectClassification = /trial/i.test(options.subject) ? 'trial_confirmation' : /teacher|alert|new booking|new free trial/i.test(options.subject) ? 'teacher_alert' : 'booking_confirmation';
+  console.log(`[Email Service Diagnostic] configured=${config.isConfigured} recipient_domain=${recipientDomain || 'unknown'} subject_classification=${subjectClassification}`);
 
   // 1. Recipient validation
   if (!options.to || !isValidEmail(options.to)) {
