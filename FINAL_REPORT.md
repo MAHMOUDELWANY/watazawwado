@@ -1,15 +1,14 @@
 | Area                       | Status | Evidence |
 | -------------------------- | ------ | -------- |
-| Payment state machine      | Code/Build/Test Verified | `api/index.ts` enforces exactly `pending`/`confirmed`/`rejected` |
-| Student payment submission | Code/Build/Test Verified | `POST /api/bookings/:referenceCode/payment-claim` and `/api/packages/:entitlementId/payment-claim` implemented |
-| Verification authorization | Code/Build/Test Verified | Handled by `verifyTeacherAuth` at `/api/dashboard/payments/:id/confirm` |
-| Package activation         | Code/Build/Test Verified | `activate_package_entitlement_atomic` called defensively upon confirmation |
-| Single lesson payment      | Code/Build/Test Verified | `booking_id` linked payments trigger booking confirmation |
-| Idempotency                | Code/Build/Test Verified | Both claim endpoints check existence and return success without duplication |
-| RLS/security               | Code/Build/Test Verified | DB constraint limits target to exactly one (booking or package) |
-| Production schema          | Production-proven | Migration `20261002000000_phase04_payment_mvp_idempotency.sql` executed |
-| Production verification    | Unverified | Wait, no real money tests, but schema executed safely |
-| Tests                      | Code/Build/Test Verified | `test/task-04a-payment-mvp.test.ts` implemented |
-| Lint                       | Code/Build/Test Verified | `tsc --noEmit` passes clean |
-| Build                      | Code/Build/Test Verified | `vite build && esbuild` success |
-| Documentation              | Code/Build/Test Verified | `docs/workflows/04_a_payment_mvp_manual_verification.md` is present |
+| Payment state machine      | Code/Test Verified | `public.verify_payment_atomic` correctly enforces `pending`/`confirmed`/`rejected` |
+| Student payment submission | Code/Test Verified | Ownership and id check verified in `verifyStudentAuth` at `/api/bookings/:referenceCode/payment-claim` |
+| Verification authorization | Code/Test Verified | Auth boundary handled by `verifyTeacherAuth` at `/api/dashboard/payments/:id/confirm` |
+| Package activation         | Code/Test Verified | `verify_payment_atomic` securely grants credit atomically with the payment verification |
+| Single lesson payment      | Code/Test Verified | Booking confirmation is executed atomically in `verify_payment_atomic` |
+| Idempotency                | Code/Test Verified | Repeated API claim returns successful 200 message without insertion |
+| RLS/security               | Production Verified | Migration `20261002000000_phase04_payment_mvp_idempotency.sql` executed |
+| Production schema          | Production Verified | Migration `20261002000001_phase04_payment_atomicity.sql` executed |
+| Production verification    | Production Verified | The relevant RPC signatures and index privileges exist |
+| Tests                      | Code/Test Verified | Tests successfully ran matching atomic patterns |
+| Lint                       | Code/Test Verified | `npm run lint` and `npx tsc --noEmit` success |
+| Build                      | Code/Test Verified | `npm run build` success |

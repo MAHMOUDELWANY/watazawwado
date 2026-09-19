@@ -2992,63 +2992,20 @@ app.post('/api/dashboard/payments/:id/confirm', verifyTeacherAuth, async (req, r
 
     const { id } = req.params;
 
-    const { data: payment, error: pErr } = await supabase
-      .from('payments')
-      .select('*')
-      .eq('id', id)
-      .maybeSingle();
+    // Use atomic RPC for state transition and downstream effects
+    const { data: result, error: rpcErr } = await supabase.rpc('verify_payment_atomic', {
+      p_payment_id: id
+    });
 
-    if (pErr || !payment) {
-      return res.status(404).json({ error: 'Payment record not found.' });
+    if (rpcErr) {
+      console.error('[Confirm Payment Error]', rpcErr);
+      return res.status(500).json({ error: 'Failed to confirm payment: ' + rpcErr.message, code: 'PAYMENT_CONFIRM_FAILED' });
     }
 
-    // Idempotency: already confirmed
-    if (payment.status === 'confirmed') {
-      return res.json({ 
-        success: true, 
-        message: 'Payment is already confirmed.', 
-        payment 
-      });
-    }
-
-    const { data: updated, error: uErr } = await supabase
-      .from('payments')
-      .update({
-        status: 'confirmed',
-        confirmed_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', id)
-      .select()
-      .single();
-
-    if (uErr) {
-      console.error('[Confirm Payment Error]', uErr);
-      return res.status(500).json({ error: 'Failed to confirm payment.', code: 'PAYMENT_CONFIRM_FAILED' });
-    }
-
-    // Downstream Activation (Atomic where possible)
-    try {
-      if (updated.booking_id) {
-        // Confirm the booking
-        await supabase
-          .from('bookings')
-          .update({ status: 'confirmed', updated_at: new Date().toISOString() })
-          .eq('id', updated.booking_id)
-          .eq('status', 'pending');
-      } else if (updated.entitlement_id) {
-        // Activate package entitlement using the existing atomic RPC
-        const { error: actErr } = await supabase.rpc('activate_package_entitlement_atomic', {
-          p_entitlement_id: updated.entitlement_id,
-          p_payment_reference: updated.payment_reference || updated.id
-        });
-        if (actErr) {
-          console.error('[Activate Package Error]', actErr);
-          // Payment confirmed but package activation failed - requires manual intervention.
-        }
-      }
-    } catch (downstreamErr) {
-      console.error('[Payment Downstream Execution Error]', downstreamErr);
+    // We still need to fetch the updated payment to trigger notifications
+    const { data: updated } = await supabase.from('payments').select('*').eq('id', id).single();
+    if (!updated) {
+       return res.status(404).json({ error: 'Payment not found.' });
     }
 
     // Dispatch payment confirmed notification asynchronously
@@ -3218,7 +3175,7 @@ app.delete('/api/dashboard/payments/:id', verifyTeacherAuth, async (req, res) =>
 });
 
 // 16i. PUBLIC/STUDENT: Report payment confirmation reference safely
-app.post('/api/bookings/:referenceCode/payment-claim', rateLimit, async (req, res) => {
+app.post('/api/bookings/:referenceCode/payment-claim', rateLimit, verifyStudentAuth, async (req: any, res: any) => {
   try {
     const supabase = getSupabaseAdminClient();
     if (!supabase) {
@@ -3237,6 +3194,11 @@ app.post('/api/bookings/:referenceCode/payment-claim', rateLimit, async (req, re
       return res.status(400).json({ error: `Payment method must be one of: ${validMethods.join(', ')}` });
     }
 
+    const studentId = req.studentUser?.student_id;
+    if (!studentId) {
+      return res.status(403).json({ error: 'Student authentication required.' });
+    }
+
     const { data: booking, error: bErr } = await supabase
       .from('bookings')
       .select('id, student_id, service_id, duration_minutes, booking_type, fee_amount_usd, status')
@@ -3247,6 +3209,10 @@ app.post('/api/bookings/:referenceCode/payment-claim', rateLimit, async (req, re
       return res.status(404).json({ error: 'Booking reference not found.' });
     }
 
+    if (booking.student_id !== studentId) {
+      return res.status(403).json({ error: 'You are not authorized to claim payment for this booking.' });
+    }
+
     if (booking.booking_type === 'trial') {
       return res.status(400).json({ error: 'Free trials do not require payment.' });
     }
@@ -3254,43 +3220,20 @@ app.post('/api/bookings/:referenceCode/payment-claim', rateLimit, async (req, re
     let finalAmount: number | null = null;
     let finalCurrency: string | null = null;
 
-    // 1. Amount validation - Never invent 0!
-    if (amount !== undefined && amount !== null && amount !== '') {
-      const parsedAmount = Number(amount);
-      if (isNaN(parsedAmount) || !isFinite(parsedAmount) || parsedAmount <= 0 || parsedAmount > 100000) {
-        return res.status(400).json({ error: 'A valid positive payment amount is required.' });
-      }
-      finalAmount = Number(parsedAmount.toFixed(2));
-    } else {
-      // Amount omitted: check trustworthy booking amount
-      if (booking.fee_amount_usd !== null && booking.fee_amount_usd !== undefined && Number(booking.fee_amount_usd) > 0) {
-        finalAmount = Number(Number(booking.fee_amount_usd).toFixed(2));
+    if (booking.fee_amount_usd !== null && booking.fee_amount_usd !== undefined && Number(booking.fee_amount_usd) > 0) {
+      finalAmount = Number(Number(booking.fee_amount_usd).toFixed(2));
+      finalCurrency = 'USD';
+    } else if (booking.service_id) {
+      const { data: srv } = await supabase.from('services').select('hourly_rate_usd').eq('id', booking.service_id).maybeSingle();
+      if (srv?.hourly_rate_usd && Number(srv.hourly_rate_usd) > 0) {
+        const duration = Number(booking.duration_minutes) || 60;
+        finalAmount = Number(((Number(srv.hourly_rate_usd) * duration) / 60).toFixed(2));
         finalCurrency = 'USD';
-      } else if (booking.service_id) {
-        const { data: srv } = await supabase.from('services').select('hourly_rate_usd').eq('id', booking.service_id).maybeSingle();
-        if (srv?.hourly_rate_usd && Number(srv.hourly_rate_usd) > 0) {
-          const duration = Number(booking.duration_minutes) || 60;
-          finalAmount = Number(((Number(srv.hourly_rate_usd) * duration) / 60).toFixed(2));
-          finalCurrency = 'USD';
-        }
       }
     }
 
-    if (!finalAmount || finalAmount <= 0) {
-      return res.status(400).json({ error: 'Payment amount could not be determined. Please explicitly provide the payment amount.' });
-    }
-
-    // 2. Currency validation - No arbitrary fallback
-    if (currency && typeof currency === 'string' && currency.trim()) {
-      const cleanCurrency = currency.trim().toUpperCase();
-      if (!/^[A-Z]{3}$/.test(cleanCurrency)) {
-        return res.status(400).json({ error: 'Invalid currency code. Please provide a standard 3-letter currency code (e.g. USD, CAD, GBP, EUR).' });
-      }
-      finalCurrency = cleanCurrency;
-    }
-
-    if (!finalCurrency) {
-      return res.status(400).json({ error: 'Currency is required for payment confirmation.' });
+    if (!finalAmount || finalAmount <= 0 || !finalCurrency) {
+      return res.status(400).json({ error: 'Authoritative payment amount/currency could not be determined from booking. Cannot process claim.' });
     }
 
     // Idempotency: Check if a payment with this reference already exists for this booking
@@ -3388,7 +3331,7 @@ app.post('/api/bookings/:referenceCode/payment-claim', rateLimit, async (req, re
 
 
 // 16j. PUBLIC/STUDENT: Report package payment confirmation reference safely
-app.post('/api/packages/:entitlementId/payment-claim', rateLimit, async (req, res) => {
+app.post('/api/packages/:entitlementId/payment-claim', rateLimit, verifyStudentAuth, async (req: any, res: any) => {
   try {
     const supabase = getSupabaseAdminClient();
     if (!supabase) {
@@ -3407,6 +3350,11 @@ app.post('/api/packages/:entitlementId/payment-claim', rateLimit, async (req, re
       return res.status(400).json({ error: `Payment method must be one of: ${validMethods.join(', ')}` });
     }
 
+    const studentId = req.studentUser?.student_id;
+    if (!studentId) {
+      return res.status(403).json({ error: 'Student authentication required.' });
+    }
+
     const { data: entitlement, error: eErr } = await supabase
       .from('package_entitlements')
       .select('id, purchaser_account_id, amount_paid, currency, status')
@@ -3417,6 +3365,10 @@ app.post('/api/packages/:entitlementId/payment-claim', rateLimit, async (req, re
       return res.status(404).json({ error: 'Package entitlement not found.' });
     }
 
+    if (entitlement.purchaser_account_id !== studentId) {
+      return res.status(403).json({ error: 'You are not authorized to claim payment for this package.' });
+    }
+
     if (entitlement.status !== 'pending_payment') {
       return res.status(400).json({ error: 'Package is not pending payment.' });
     }
@@ -3424,31 +3376,13 @@ app.post('/api/packages/:entitlementId/payment-claim', rateLimit, async (req, re
     let finalAmount: number | null = null;
     let finalCurrency: string | null = null;
 
-    if (amount !== undefined && amount !== null && amount !== '') {
-      const parsedAmount = Number(amount);
-      if (isNaN(parsedAmount) || !isFinite(parsedAmount) || parsedAmount <= 0 || parsedAmount > 100000) {
-        return res.status(400).json({ error: 'A valid positive payment amount is required.' });
-      }
-      finalAmount = Number(parsedAmount.toFixed(2));
-    } else if (entitlement.amount_paid !== null && Number(entitlement.amount_paid) > 0) {
+    if (entitlement.amount_paid !== null && Number(entitlement.amount_paid) > 0) {
       finalAmount = Number(Number(entitlement.amount_paid).toFixed(2));
       finalCurrency = entitlement.currency || 'USD';
     }
 
-    if (!finalAmount || finalAmount <= 0) {
-      return res.status(400).json({ error: 'Payment amount could not be determined. Please explicitly provide the payment amount.' });
-    }
-
-    if (currency && typeof currency === 'string' && currency.trim()) {
-      const cleanCurrency = currency.trim().toUpperCase();
-      if (!/^[A-Z]{3}$/.test(cleanCurrency)) {
-        return res.status(400).json({ error: 'Invalid currency code.' });
-      }
-      finalCurrency = cleanCurrency;
-    }
-
-    if (!finalCurrency) {
-      return res.status(400).json({ error: 'Currency is required for payment confirmation.' });
+    if (!finalAmount || finalAmount <= 0 || !finalCurrency) {
+      return res.status(400).json({ error: 'Authoritative payment amount/currency could not be determined from package. Cannot process claim.' });
     }
 
     // Idempotency check
