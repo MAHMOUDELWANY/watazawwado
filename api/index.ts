@@ -3350,14 +3350,14 @@ app.post('/api/packages/:entitlementId/payment-claim', rateLimit, verifyStudentA
       return res.status(400).json({ error: `Payment method must be one of: ${validMethods.join(', ')}` });
     }
 
-    const studentId = req.studentUser?.student_id;
-    if (!studentId) {
+    const authUserId = req.studentUser?.auth_id;
+    if (!authUserId) {
       return res.status(403).json({ error: 'Student authentication required.' });
     }
 
     const { data: entitlement, error: eErr } = await supabase
       .from('package_entitlements')
-      .select('id, purchaser_account_id, amount_paid, currency, status')
+      .select('id, purchaser_account_id, price_paid, currency, status, learner_student_id')
       .eq('id', entitlementId)
       .maybeSingle();
 
@@ -3365,7 +3365,7 @@ app.post('/api/packages/:entitlementId/payment-claim', rateLimit, verifyStudentA
       return res.status(404).json({ error: 'Package entitlement not found.' });
     }
 
-    if (entitlement.purchaser_account_id !== studentId) {
+    if (entitlement.purchaser_account_id !== authUserId) {
       return res.status(403).json({ error: 'You are not authorized to claim payment for this package.' });
     }
 
@@ -3376,8 +3376,8 @@ app.post('/api/packages/:entitlementId/payment-claim', rateLimit, verifyStudentA
     let finalAmount: number | null = null;
     let finalCurrency: string | null = null;
 
-    if (entitlement.amount_paid !== null && Number(entitlement.amount_paid) > 0) {
-      finalAmount = Number(Number(entitlement.amount_paid).toFixed(2));
+    if (entitlement.price_paid !== null && Number(entitlement.price_paid) > 0) {
+      finalAmount = Number(Number(entitlement.price_paid).toFixed(2));
       finalCurrency = entitlement.currency || 'USD';
     }
 
@@ -3406,7 +3406,7 @@ app.post('/api/packages/:entitlementId/payment-claim', rateLimit, verifyStudentA
       .insert({
         entitlement_id: entitlement.id,
         booking_id: null,
-        student_id: entitlement.purchaser_account_id || null,
+        student_id: entitlement.learner_student_id || req.studentUser?.student_id || null,
         amount: finalAmount,
         currency: finalCurrency,
         payment_method,

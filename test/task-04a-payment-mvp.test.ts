@@ -6,20 +6,31 @@ import path from 'node:path';
 describe('Task 04-A — Payment MVP Manual Verification Tests', () => {
 
   it('1. Verifies verify_payment_atomic atomic block structure', () => {
-    const migrationPath = path.resolve('supabase/migrations/20261002000001_phase04_payment_atomicity.sql');
+    const migrationPath = path.resolve('supabase/migrations/20261002000002_phase04_payment_atomicity_fix.sql');
     assert.ok(fs.existsSync(migrationPath), 'Migration file must exist');
 
     const sql = fs.readFileSync(migrationPath, 'utf8');
+
+    // Confirm that the status is updated at the END
+    const updatePaymentPos = sql.lastIndexOf("UPDATE public.payments");
+    const downstreamPackagePos = sql.indexOf("IF v_payment.entitlement_id IS NOT NULL THEN");
+    const downstreamBookingPos = sql.indexOf("IF v_payment.booking_id IS NOT NULL THEN");
+
+    assert.ok(updatePaymentPos > downstreamPackagePos, 'Payment is updated AFTER package logic');
+    assert.ok(updatePaymentPos > downstreamBookingPos, 'Payment is updated AFTER booking logic');
 
     assert.ok(sql.includes("UPDATE public.payments"), 'Must contain UPDATE public.payments');
     assert.ok(sql.includes("UPDATE public.bookings"), 'Must contain UPDATE public.bookings');
     assert.ok(sql.includes("UPDATE public.package_entitlements"), 'Must contain UPDATE public.package_entitlements');
     assert.ok(sql.includes("INSERT INTO public.package_credit_ledger"), 'Must contain INSERT INTO public.package_credit_ledger');
     assert.ok(sql.includes("FOR UPDATE"), 'Must use FOR UPDATE lock');
+
+    // Asserts 1 & 3:
+    assert.ok(sql.includes("IF v_booking.status != 'pending' THEN"), 'Must reject non-pending bookings');
   });
 
   it('2. Verifies privilege restrictions on verify_payment_atomic', () => {
-    const sql = fs.readFileSync(path.resolve('supabase/migrations/20261002000001_phase04_payment_atomicity.sql'), 'utf8');
+    const sql = fs.readFileSync(path.resolve('supabase/migrations/20261002000002_phase04_payment_atomicity_fix.sql'), 'utf8');
 
     assert.ok(sql.includes('REVOKE ALL ON FUNCTION public.verify_payment_atomic(UUID) FROM PUBLIC;'), 'Must revoke from PUBLIC');
     assert.ok(sql.includes('REVOKE ALL ON FUNCTION public.verify_payment_atomic(UUID) FROM anon;'), 'Must revoke from anon');
@@ -59,13 +70,13 @@ describe('Task 04-A — Payment MVP Manual Verification Tests', () => {
     it('enforces verifyStudentAuth for payment claims', () => {
       const apiCode = fs.readFileSync('api/index.ts', 'utf8');
       assert.ok(apiCode.includes("verifyStudentAuth, async (req: any, res: any)"), 'verifyStudentAuth is enforced');
-      assert.ok(apiCode.includes("req.studentUser?.student_id"), 'studentId is retrieved');
+      assert.ok(apiCode.includes("req.studentUser?.auth_id"), 'auth_id is retrieved');
     });
 
     it('enforces server-authoritative price', () => {
       const apiCode = fs.readFileSync('api/index.ts', 'utf8');
       assert.ok(apiCode.includes("finalAmount = Number(Number(booking.fee_amount_usd).toFixed(2));"), 'booking fee is fetched server side');
-      assert.ok(apiCode.includes("finalAmount = Number(Number(entitlement.amount_paid).toFixed(2));"), 'entitlement amount is fetched server side');
+      assert.ok(apiCode.includes("finalAmount = Number(Number(entitlement.price_paid).toFixed(2));"), 'entitlement amount is fetched server side');
     });
   });
 });
