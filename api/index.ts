@@ -1,7 +1,6 @@
 import crypto from 'crypto';
 import { MASTER_SPEC } from '../src/data/master_spec.js';
 import express from 'express';
-import { supabase, isSupabaseConfigured } from '../src/lib/supabase';
 import { DateTime } from 'luxon';
 import { GoogleGenAI } from '@google/genai';
 import { createClient } from '@supabase/supabase-js';
@@ -493,37 +492,13 @@ async function verifyManagementToken(referenceCode: string, managementToken: str
 // ==========================================
 
 app.get('/api/packages', async (req, res) => {
-  if (!isSupabaseConfigured()) {
-    // Return mock data for UI testing in offline mode
-    return res.json({
-      success: true,
-      data: [
-        {
-          id: 'mock-weekly-1',
-          package_type: 'weekly',
-          name: 'Weekly Boost Package',
-          lesson_count: 4,
-          price_amount: 25.00,
-          currency: 'USD',
-          is_active: true,
-          eligibility_rules: {}
-        },
-        {
-          id: 'mock-monthly-1',
-          package_type: 'monthly',
-          name: 'Monthly Mastery Package',
-          lesson_count: 12,
-          price_amount: 70.00,
-          currency: 'USD',
-          is_active: true,
-          eligibility_rules: {}
-        }
-      ]
-    });
-  }
-
   try {
-    const { data, error } = await supabase
+    const supabaseAdmin = getSupabaseAdminClient();
+    if (!supabaseAdmin) {
+      return res.status(503).json({ error: 'Database integration is not properly configured.' });
+    }
+
+    const { data, error } = await supabaseAdmin
       .from('package_catalog')
       .select('id, package_type, name, lesson_count, price_amount, currency, is_active, eligibility_rules')
       .eq('is_active', true)
@@ -3013,14 +2988,19 @@ app.post('/api/dashboard/payments/:id/confirm', verifyTeacherAuth, async (req, r
       let learnerName = 'Student';
       let contactEmail: string | undefined = undefined;
       let contactWhatsapp: string | undefined = undefined;
-      let reference = payment.payment_reference || id;
+      let reference = updated.payment_reference || id;
       let serviceName = '1-on-1 Teaching';
 
-      if (payment.booking_id) {
-        const { data: b } = await supabase
+      const supabaseAdmin = getSupabaseAdminClient();
+      if (!supabaseAdmin) {
+        return res.status(503).json({ error: 'Database integration is not properly configured.' });
+      }
+
+      if (updated.booking_id) {
+        const { data: b } = await supabaseAdmin
           .from('bookings')
           .select('reference_code, student_name, contact_name, contact_email, contact_whatsapp, service_name')
-          .eq('id', payment.booking_id)
+          .eq('id', updated.booking_id)
           .maybeSingle();
 
         if (b) {
@@ -3030,11 +3010,11 @@ app.post('/api/dashboard/payments/:id/confirm', verifyTeacherAuth, async (req, r
           reference = b.reference_code || reference;
           serviceName = b.service_name || serviceName;
         }
-      } else if (payment.student_id) {
-        const { data: st } = await supabase
+      } else if (updated.student_id) {
+        const { data: st } = await supabaseAdmin
           .from('students')
           .select('name, email, whatsapp')
-          .eq('id', payment.student_id)
+          .eq('id', updated.student_id)
           .maybeSingle();
 
         if (st) {
