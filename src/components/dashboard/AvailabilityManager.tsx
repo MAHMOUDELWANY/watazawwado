@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Clock, Plus, Trash2, Save, Loader2, Calendar as CalendarIcon, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { dashboardFetch } from '../../dashboard/lib/dashboardApi';
 
 interface TimeBlock {
   id?: string;
@@ -32,16 +33,10 @@ export default function AvailabilityManager() {
 
   const fetchAvailability = async () => {
     try {
-      const res = await fetch('/api/dashboard/availability', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('teacher_token')}`
-        }
-      });
-      if (!res.ok) throw new Error('Failed to load availability');
-      const data = await res.json();
+      const data = await dashboardFetch('/api/dashboard/availability');
       setBlocks(data || []);
     } catch (err: any) {
-      setMessage({ text: err.message, type: 'error' });
+      setMessage({ text: err.message || 'Failed to load availability', type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -51,12 +46,20 @@ export default function AvailabilityManager() {
     setSaving(true);
     setMessage(null);
     try {
-      const res = await fetch('/api/dashboard/availability', {
+      // Validation to enforce that no silent invalid times are saved
+      for (const b of blocks) {
+        if (!b.start_time || !b.end_time) {
+          throw new Error('Please enter valid start and end times for all active intervals.');
+        }
+        const startMinutes = parseInt(b.start_time.split(':')[0]) * 60 + parseInt(b.start_time.split(':')[1]);
+        const endMinutes = parseInt(b.end_time.split(':')[0]) * 60 + parseInt(b.end_time.split(':')[1]);
+        if (startMinutes >= endMinutes) {
+          throw new Error('Start time must be before end time.');
+        }
+      }
+
+      await dashboardFetch('/api/dashboard/availability', {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('teacher_token')}`
-        },
         body: JSON.stringify({ blocks: blocks.map(b => ({
           weekday: b.weekday,
           start_time: b.start_time.length === 5 ? `${b.start_time}:00` : b.start_time,
@@ -64,11 +67,6 @@ export default function AvailabilityManager() {
           is_active: b.is_active
         })) })
       });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || 'Failed to save availability');
-      }
 
       setMessage({ text: 'Availability saved successfully', type: 'success' });
     } catch (err: any) {
@@ -79,7 +77,8 @@ export default function AvailabilityManager() {
   };
 
   const addBlock = (weekday: number) => {
-    setBlocks([...blocks, { weekday, start_time: '09:00', end_time: '17:00', is_active: true }]);
+    // Add empty explicit time selections rather than silently defaulting to 09:00 - 17:00
+    setBlocks([...blocks, { weekday, start_time: '', end_time: '', is_active: true }]);
   };
 
   const removeBlock = (index: number) => {
@@ -177,7 +176,7 @@ export default function AvailabilityManager() {
                           <Clock className="w-4 h-4 text-[#87A878] absolute left-3 top-2.5 pointer-events-none" />
                           <input
                             type="time"
-                            value={block.start_time.substring(0, 5)}
+                            value={block.start_time ? block.start_time.substring(0, 5) : ''}
                             onChange={(e) => updateBlock(block.index, 'start_time', e.target.value)}
                             className="pl-9 pr-3 py-2 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-[#FBF9F5] dark:bg-[#1A1620] text-sm text-[#362E3B] dark:text-[#F5E6D3] focus:ring-2 focus:ring-[#87A878] focus:border-transparent outline-none"
                           />
@@ -187,7 +186,7 @@ export default function AvailabilityManager() {
                           <Clock className="w-4 h-4 text-[#87A878] absolute left-3 top-2.5 pointer-events-none" />
                           <input
                             type="time"
-                            value={block.end_time.substring(0, 5)}
+                            value={block.end_time ? block.end_time.substring(0, 5) : ''}
                             onChange={(e) => updateBlock(block.index, 'end_time', e.target.value)}
                             className="pl-9 pr-3 py-2 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-[#FBF9F5] dark:bg-[#1A1620] text-sm text-[#362E3B] dark:text-[#F5E6D3] focus:ring-2 focus:ring-[#87A878] focus:border-transparent outline-none"
                           />

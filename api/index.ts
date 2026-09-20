@@ -4220,7 +4220,7 @@ app.get('/api/dashboard/analytics', verifyTeacherAuth, async (req, res) => {
 // 20b. DASHBOARD: Get teacher availability
 app.get('/api/dashboard/availability', verifyTeacherAuth, async (req, res) => {
   try {
-    const supabase = getServerSupabase();
+    const supabase = getSupabaseAdminClient();
     if (!supabase) throw new Error('Database not configured');
 
     const teacherId = (req as any).teacherUser?.id;
@@ -4234,7 +4234,7 @@ app.get('/api/dashboard/availability', verifyTeacherAuth, async (req, res) => {
       .order('start_time', { ascending: true });
 
     if (error) throw error;
-    res.json(data);
+    res.json(data || []);
   } catch (err: any) {
     console.error('Failed to fetch availability:', err);
     res.status(500).json({ error: 'Failed to fetch availability.' });
@@ -4244,7 +4244,7 @@ app.get('/api/dashboard/availability', verifyTeacherAuth, async (req, res) => {
 // 20c. DASHBOARD: Update teacher availability
 app.put('/api/dashboard/availability', verifyTeacherAuth, async (req, res) => {
   try {
-    const supabase = getServerSupabase();
+    const supabase = getSupabaseAdminClient();
     if (!supabase) throw new Error('Database not configured');
 
     const teacherId = (req as any).teacherUser?.id;
@@ -4255,21 +4255,34 @@ app.put('/api/dashboard/availability', verifyTeacherAuth, async (req, res) => {
       return res.status(400).json({ error: 'Invalid payload.' });
     }
 
-    // Validate blocks
+    // Validate blocks strictly:
+    // A newly enabled weekday must not silently create business hours.
+    // Use an explicit time selection and block Save until valid times exist.
     for (const b of blocks) {
       if (typeof b.weekday !== 'number' || b.weekday < 0 || b.weekday > 6) {
         return res.status(400).json({ error: 'Invalid weekday.' });
       }
-      if (!/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/.test(b.start_time) && !/^([01]\d|2[0-3]):([0-5]\d)$/.test(b.start_time)) {
-        return res.status(400).json({ error: 'Invalid start time.' });
+      if (!b.start_time || !b.end_time) {
+        return res.status(400).json({ error: 'Start and end time are required.' });
       }
-      if (!/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/.test(b.end_time) && !/^([01]\d|2[0-3]):([0-5]\d)$/.test(b.end_time)) {
-        return res.status(400).json({ error: 'Invalid end time.' });
+
+      const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)(:[0-5]\d)?$/;
+      if (!timeRegex.test(b.start_time)) {
+        return res.status(400).json({ error: 'Invalid start time format.' });
+      }
+      if (!timeRegex.test(b.end_time)) {
+        return res.status(400).json({ error: 'Invalid end time format.' });
+      }
+
+      // Enforce start < end
+      const startMinutes = parseInt(b.start_time.split(':')[0]) * 60 + parseInt(b.start_time.split(':')[1]);
+      const endMinutes = parseInt(b.end_time.split(':')[0]) * 60 + parseInt(b.end_time.split(':')[1]);
+      if (startMinutes >= endMinutes) {
+        return res.status(400).json({ error: 'Start time must be before end time.' });
       }
     }
 
-    // Since RLS is on, we can safely delete and reinsert or do it in a transaction
-    // Supabase JS doesn't have multi-statement transactions but we can delete then insert
+    // Delete existing availability for this teacher
     const { error: delError } = await supabase
       .from('availability')
       .delete()
@@ -4277,97 +4290,13 @@ app.put('/api/dashboard/availability', verifyTeacherAuth, async (req, res) => {
 
     if (delError) throw delError;
 
+    // Insert new availability
     if (blocks.length > 0) {
       const insertData = blocks.map(b => ({
         teacher_id: teacherId,
         weekday: b.weekday,
-        start_time: b.start_time,
-        end_time: b.end_time,
-        is_active: b.is_active !== undefined ? b.is_active : true,
-        timezone: 'Africa/Cairo' // Fixed to Cairo as per instructions
-      }));
-
-      const { error: insError } = await supabase
-        .from('availability')
-        .insert(insertData);
-
-      if (insError) throw insError;
-    }
-
-    res.json({ success: true });
-  } catch (err: any) {
-    console.error('Failed to update availability:', err);
-    res.status(500).json({ error: 'Failed to update availability.' });
-  }
-});
-
-
-// 20b. DASHBOARD: Get teacher availability
-app.get('/api/dashboard/availability', verifyTeacherAuth, async (req, res) => {
-  try {
-    const supabase = getServerSupabase();
-    if (!supabase) throw new Error('Database not configured');
-
-    const teacherId = (req as any).teacherUser?.id;
-    if (!teacherId) return res.status(401).json({ error: 'Unauthorized' });
-
-    const { data, error } = await supabase
-      .from('availability')
-      .select('*')
-      .eq('teacher_id', teacherId)
-      .order('weekday', { ascending: true })
-      .order('start_time', { ascending: true });
-
-    if (error) throw error;
-    res.json(data);
-  } catch (err: any) {
-    console.error('Failed to fetch availability:', err);
-    res.status(500).json({ error: 'Failed to fetch availability.' });
-  }
-});
-
-// 20c. DASHBOARD: Update teacher availability
-app.put('/api/dashboard/availability', verifyTeacherAuth, async (req, res) => {
-  try {
-    const supabase = getServerSupabase();
-    if (!supabase) throw new Error('Database not configured');
-
-    const teacherId = (req as any).teacherUser?.id;
-    if (!teacherId) return res.status(401).json({ error: 'Unauthorized' });
-
-    const blocks = req.body.blocks;
-    if (!Array.isArray(blocks)) {
-      return res.status(400).json({ error: 'Invalid payload.' });
-    }
-
-    // Validate blocks
-    for (const b of blocks) {
-      if (typeof b.weekday !== 'number' || b.weekday < 0 || b.weekday > 6) {
-        return res.status(400).json({ error: 'Invalid weekday.' });
-      }
-      if (!/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/.test(b.start_time) && !/^([01]\d|2[0-3]):([0-5]\d)$/.test(b.start_time)) {
-        return res.status(400).json({ error: 'Invalid start time.' });
-      }
-      if (!/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/.test(b.end_time) && !/^([01]\d|2[0-3]):([0-5]\d)$/.test(b.end_time)) {
-        return res.status(400).json({ error: 'Invalid end time.' });
-      }
-    }
-
-    // Since RLS is on, we can safely delete and reinsert or do it in a transaction
-    // Supabase JS doesn't have multi-statement transactions but we can delete then insert
-    const { error: delError } = await supabase
-      .from('availability')
-      .delete()
-      .eq('teacher_id', teacherId);
-
-    if (delError) throw delError;
-
-    if (blocks.length > 0) {
-      const insertData = blocks.map(b => ({
-        teacher_id: teacherId,
-        weekday: b.weekday,
-        start_time: b.start_time,
-        end_time: b.end_time,
+        start_time: b.start_time.length === 5 ? b.start_time + ':00' : b.start_time,
+        end_time: b.end_time.length === 5 ? b.end_time + ':00' : b.end_time,
         is_active: b.is_active !== undefined ? b.is_active : true,
         timezone: 'Africa/Cairo' // Fixed to Cairo as per instructions
       }));
