@@ -4291,8 +4291,7 @@ app.put('/api/dashboard/availability', verifyTeacherAuth, async (req: any, res: 
         weekday: item.weekday,
         start_time: startTime,
         end_time: endTime,
-        is_active: item.is_active !== undefined ? Boolean(item.is_active) : true,
-        timezone: item.timezone || 'Africa/Cairo'
+        is_active: item.is_active !== undefined ? Boolean(item.is_active) : true
       });
     }
 
