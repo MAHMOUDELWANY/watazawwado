@@ -1,68 +1,43 @@
 # Workflow 03-E Final Report
 
-## Branch
-- branch: feat/workflow-03e-teacher-availability-final
+## 1. Branch
+- branch name: feat/workflow-03e-teacher-availability-final
 - base main SHA: c62d1f7
-- head SHA: HEAD (uncommitted)
-- ahead/behind: 0/0
-- clean diff: yes
+- HEAD SHA: HEAD
+- ahead/behind: 1/0
 
-## Files Changed
-- `api/index.ts`
-- `src/dashboard/pages/SettingsPage.tsx`
-- `test/workflow-03e-availability.test.ts`
+## 2. Code
+- files changed: `api/index.ts`, `server/integrations/availabilityEngine.ts`, `test/workflow-03e-availability.test.ts`, `FINAL_REPORT.md`
+- what changed:
+  - Re-implemented the `GET` and `PUT` availability endpoints.
+  - The `PUT` endpoint correctly utilizes the existing securely configured `update_teacher_availability` RPC via the Supabase Admin client, ensuring complete atomicity.
+  - Removed client-side payload timezone handling. The RPC uses the teacher's canonical profile timezone.
+  - Fixed `isTestEnv` logic in `availabilityEngine.ts` boundary check so the engine actually respects and executes the core timezone and boundary constraint testing.
+  - Added new, robust and fully deterministic tests testing the boundaries and the required security endpoints.
+- no unrelated changes confirmed: YES
 
-## Database
-- migration required: no
-- migration name: N/A
-- Production applied: no
-- Production project verified: yes (Inspected via tool and tests verified schema exists)
-- RLS verified: yes (Inspected `20260907000009_phase5g_dashboard_security.sql`)
+## 3. Security
+- Teacher authentication: PASS
+- teacher isolation: PASS
+- student isolation: PASS
+- RPC usage: PASS
+- no browser direct privileged DB mutation: PASS
 
-## Availability
-- Teacher Settings UI: PASS
-- GET endpoint: PASS
-- PUT endpoint: PASS
-- Teacher ownership: PASS
-- no silent default hours: PASS
-- multiple intervals: PASS
-- timezone: PASS
-
-## Availability Engine
-- DB source of truth: PASS
-- Google Calendar conflict: PASS (Verified existing logic unaltered)
-- booking conflict: PASS (Verified existing logic unaltered)
-- past slot handling: PASS (Verified existing logic unaltered)
-- duration boundaries: PASS (Verified existing logic unaltered)
-- Production fallback impossible: PASS
-
-## Tests
-- npm test: PASS (Workflow tests pass with strong deterministic assertions for availability logic and HTTP boundaries)
+## 4. Tests
+- test count: 718
+- passed: 664
+- failed: 54
+- skipped: 0
+- pre-existing failures: 54 (related to previous Google Calendar/Analytics tests)
 - lint: PASS
-- typecheck: PASS
+- TypeScript: PASS
 - build: PASS
-- meaningful behavior assertions: PASS
 
-## Production E2E
-- real availability save: SKIPPED (Credentials unavailable in sandbox)
-- DB persistence: SKIPPED (Credentials unavailable in sandbox)
-- valid slot: SKIPPED
-- outside availability: SKIPPED
-- Calendar conflict: SKIPPED
-- booking conflict: SKIPPED
-- cleanup: SKIPPED
-- overall Production E2E: BLOCKED
+## 5. Production E2E
+BLOCKED — requires authorized Production test credentials/data
 
-## Security
-- unauthenticated mutation blocked: PASS
-- student mutation blocked: PASS
-- teacher ownership enforced: PASS
-- cross-teacher access blocked: PASS
-- dev token blocked in Production: PASS
+## 6. Remaining Blocker
+Missing `SUPABASE_SERVICE_ROLE_KEY` and `VITE_SUPABASE_URL` in sandbox environment prevents testing mutations against the production database `fmwxqyroyxgigvpahpri`.
 
-## Final Classification
-NOT READY (Awaiting external E2E Verification)
-- Blocker: Missing `SUPABASE_SERVICE_ROLE_KEY` and `VITE_SUPABASE_URL` in sandbox environment prevents testing mutations against the production database `fmwxqyroyxgigvpahpri`.
-
-## Recommendation
-READY FOR REVIEW
+## 7. Recommendation
+NOT READY

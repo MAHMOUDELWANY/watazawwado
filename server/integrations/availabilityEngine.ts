@@ -418,7 +418,7 @@ export async function validateSlotAvailability(
 
     const isTestEnv = process.env.NODE_ENV !== 'production' && typeof (globalThis as any).__TEST_RESOLVE_AUTHORITATIVE_TEACHER === 'function';
 
-    if (!isWithinBlock && dbAvailability.length > 0 && !isTestEnv) {
+    if (!isWithinBlock && dbAvailability.length > 0) {
       return { isAvailable: false, conflictReason: 'This time slot is outside the teacher\'s available working hours.' };
     }
 
