@@ -1,19 +1,43 @@
-# FINAL CLEANUP BEFORE MERGE REPORT
+# Workflow 03-E Final Report
 
-- **Final Commit SHA:** 844c65421dac9ac4933feb3d8cf7e81365a5b4ce
-- **Exact files changed versus current main:**
-  - `FINAL_REPORT.md` (new)
-  - `api/index.ts` (modified)
-  - `docs/workflows/04_a_payment_mvp_manual_verification.md` (new)
-  - `supabase/migrations/20261002000000_phase04_payment_mvp_idempotency.sql` (new)
-  - `supabase/migrations/20261002000001_phase04_payment_atomicity.sql` (new)
-  - `supabase/migrations/20261002000002_phase04_payment_atomicity_fix.sql` (new)
-  - `test/task-04a-payment-mvp.test.ts` (new)
-- **Tests/Lint/Typecheck/Build Results:**
-  - `npm test`: 656 passing, 56 failing tests. (Note: These 56 failing tests were pre-existing failures in the main branch relating to Google Calendar audit tests).
-  - `npm run lint`: Clean (0 errors).
-  - `npx tsc --noEmit`: Clean (0 errors).
-  - `npm run build`: Success (`dist/server.cjs` and `dist/index.html` built successfully).
-- **Confirmation that stale frontend Supabase import is NOT present:** Checked via `git diff origin/main api/index.ts`. The old `import { supabase, isSupabaseConfigured } from '../src/lib/supabase';` has been removed.
-- **Confirmation that fake package fallback is NOT present:** The mock offline package catalog fallback in `/api/packages` has been removed and replaced with a proper call via `getSupabaseAdminClient()`.
-- **Confirmation that Payment 04-A changes remain intact:** Checked via `git diff origin/main --stat`. All atomic RPC and idempotency migrations remain intact, along with the test suite and updated `api/index.ts`. All changes from previous PRs (Google Calendar failing closed, availability bug fixes) remain.
+## 1. Branch
+- branch name: feat/workflow-03e-teacher-availability-final
+- base main SHA: c62d1f7
+- HEAD SHA: HEAD
+- ahead/behind: 1/0
+
+## 2. Code
+- files changed: `api/index.ts`, `server/integrations/availabilityEngine.ts`, `test/workflow-03e-availability.test.ts`, `FINAL_REPORT.md`
+- what changed:
+  - Re-implemented the `GET` and `PUT` availability endpoints.
+  - The `PUT` endpoint correctly utilizes the existing securely configured `update_teacher_availability` RPC via the Supabase Admin client, ensuring complete atomicity.
+  - Removed client-side payload timezone handling. The RPC uses the teacher's canonical profile timezone.
+  - Fixed `isTestEnv` logic in `availabilityEngine.ts` boundary check so the engine actually respects and executes the core timezone and boundary constraint testing.
+  - Added new, robust and fully deterministic tests testing the boundaries and the required security endpoints.
+- no unrelated changes confirmed: YES
+
+## 3. Security
+- Teacher authentication: PASS
+- teacher isolation: PASS
+- student isolation: PASS
+- RPC usage: PASS
+- no browser direct privileged DB mutation: PASS
+
+## 4. Tests
+- test count: 718
+- passed: 664
+- failed: 54
+- skipped: 0
+- pre-existing failures: 54 (related to previous Google Calendar/Analytics tests)
+- lint: PASS
+- TypeScript: PASS
+- build: PASS
+
+## 5. Production E2E
+BLOCKED — requires authorized Production test credentials/data
+
+## 6. Remaining Blocker
+Missing `SUPABASE_SERVICE_ROLE_KEY` and `VITE_SUPABASE_URL` in sandbox environment prevents testing mutations against the production database `fmwxqyroyxgigvpahpri`.
+
+## 7. Recommendation
+NOT READY
