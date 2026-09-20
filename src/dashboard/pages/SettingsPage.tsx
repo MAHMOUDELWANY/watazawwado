@@ -166,6 +166,7 @@ export default function SettingsPage() {
 
   const tabs = [
     { id: 'Profile', icon: User, label: 'Profile & Contact' },
+    { id: 'Availability', icon: Calendar, label: 'Availability' },
     { id: 'Services', icon: BookOpen, label: 'Services & Rates' },
     { id: 'Policy', icon: Calendar, label: 'Policies & Time' },
     { id: 'Payment', icon: CreditCard, label: 'Payment Methods' },
@@ -283,6 +284,11 @@ export default function SettingsPage() {
                 </div>
               </div>
             </div>
+          )}
+
+          {/* 1.5 Availability */}
+          {activeTab === 'Availability' && (
+            <AvailabilityManager />
           )}
 
           {/* 2. Services & Pricing */}

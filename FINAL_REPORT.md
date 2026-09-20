@@ -7,7 +7,7 @@
 - ahead/behind: 1/0
 
 ## 2. Code
-- files changed: `api/index.ts`, `server/integrations/availabilityEngine.ts`, `src/dashboard/pages/SettingsPage.tsx`, `src/components/dashboard/AvailabilityManager.tsx`, `test/workflow-03e-availability.test.ts`, `FINAL_REPORT.md`
+- files changed: `src/dashboard/pages/SettingsPage.tsx`
 - what changed:
   - Integrated `AvailabilityManager` into `SettingsPage.tsx`.
   - Re-implemented the `GET` and `PUT` availability endpoints.
