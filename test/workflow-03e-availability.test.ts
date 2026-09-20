@@ -35,34 +35,62 @@ test('Workflow 03-E Availability Engine Validations', async (t) => {
 
 });
 
-test('Workflow 03-E Endpoint Security Validations', async (t) => {
-    // If the server is not running during tests, we don't test HTTP level.
-    // In our isolated tsx run, the app isn't bound to a port.
-    // The previous run_tests.js handles binding to 3000, so these will execute properly there.
+import http from 'http';
+import app from '../api/index.js';
 
-    await t.test('GET /api/dashboard/availability requires auth', async () => {
-        try {
-            const res = await fetch('http://localhost:3000/api/dashboard/availability');
-            if (res) {
-                assert.strictEqual(res.status, 401, 'Expected 401 Unauthorized for unauthenticated GET request');
-            }
-        } catch (err) {
-            // expected in isolated runs
+test('Workflow 03-E Endpoint Security Validations', async (t) => {
+    let testServer: http.Server;
+    let port = 0;
+
+    t.before(async () => {
+        return new Promise<void>((resolve, reject) => {
+            testServer = app.listen(0, '127.0.0.1', () => {
+                port = (testServer.address() as any).port;
+                resolve();
+            });
+            testServer.on('error', reject);
+        });
+    });
+
+    t.after(() => {
+        if (testServer) {
+            testServer.close();
         }
     });
 
-    await t.test('PUT /api/dashboard/availability requires auth', async () => {
+    await t.test('GET /api/dashboard/availability requires auth', async () => {
+        let res;
         try {
-            const res = await fetch('http://localhost:3000/api/dashboard/availability', {
+            res = await fetch(`http://127.0.0.1:${port}/api/dashboard/availability`);
+        } catch (err: any) {
+            // In GitHub Actions or some environments, fetch fails with "fetch failed" instead of ECONNREFUSED code directly on the error object
+            if (err.message === 'fetch failed' || err.code === 'ECONNREFUSED') {
+                // If the test server failed to bind or is not running, we must fail the test as requested.
+                assert.fail(`Server is not running on ephemeral port ${port}. Endpoints could not be tested.`);
+            } else {
+                assert.fail('Fetch failed: ' + err.message);
+            }
+        }
+        assert.ok(res, 'Response should exist');
+        assert.strictEqual(res.status, 401, 'Expected 401 Unauthorized for unauthenticated GET request');
+    });
+
+    await t.test('PUT /api/dashboard/availability requires auth', async () => {
+        let res;
+        try {
+            res = await fetch(`http://127.0.0.1:${port}/api/dashboard/availability`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ schedule: [] })
             });
-            if (res) {
-                 assert.strictEqual(res.status, 401, 'Expected 401 Unauthorized for unauthenticated PUT request');
+        } catch (err: any) {
+             if (err.message === 'fetch failed' || err.code === 'ECONNREFUSED') {
+                assert.fail(`Server is not running on ephemeral port ${port}. Endpoints could not be tested.`);
+            } else {
+                assert.fail('Fetch failed: ' + err.message);
             }
-        } catch (err) {
-             // expected in isolated runs
         }
+        assert.ok(res, 'Response should exist');
+        assert.strictEqual(res.status, 401, 'Expected 401 Unauthorized for unauthenticated PUT request');
     });
 });

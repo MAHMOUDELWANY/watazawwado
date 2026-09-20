@@ -13,9 +13,9 @@
 - `test/workflow-03e-availability.test.ts`
 
 ## Database
-- migration required: no
-- migration name: N/A
-- Production applied: no
+- migration required: yes
+- migration name: 20261003000000_availability_atomicity.sql
+- Production applied: yes
 - Production project verified: yes (Inspected via tool and tests verified schema exists)
 - RLS verified: yes (Inspected `20260907000009_phase5g_dashboard_security.sql`)
 

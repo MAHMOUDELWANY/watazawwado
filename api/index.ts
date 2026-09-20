@@ -4296,26 +4296,16 @@ app.put('/api/dashboard/availability', verifyTeacherAuth, async (req: any, res: 
       });
     }
 
-    // Fallback: Delete existing, then insert new.
-    const { error: deleteError } = await supabase
-      .from('availability')
-      .delete()
-      .eq('teacher_id', teacherId);
+    // Atomic update via RPC
+    // Timezone is enforced server-side inside the RPC based on canonical teacher profile
+    const { error: rpcError } = await supabase.rpc('update_teacher_availability', {
+      p_teacher_id: teacherId,
+      p_schedule: validatedIntervals
+    });
 
-    if (deleteError) {
-      console.error('[Dashboard API] Error deleting old availability:', deleteError);
-      return res.status(500).json({ error: 'Failed to update availability. Could not remove old schedule.' });
-    }
-
-    if (validatedIntervals.length > 0) {
-      const { error: insertError } = await supabase
-        .from('availability')
-        .insert(validatedIntervals);
-
-      if (insertError) {
-         console.error('[Dashboard API] Error inserting new availability:', insertError);
-         return res.status(500).json({ error: 'Failed to update availability. Could not save new schedule.' });
-      }
+    if (rpcError) {
+      console.error('[Dashboard API] Error updating availability via RPC:', rpcError);
+      return res.status(500).json({ error: 'Failed to update availability transactionally.' });
     }
 
     return res.json({ success: true, message: 'Availability updated successfully.' });
