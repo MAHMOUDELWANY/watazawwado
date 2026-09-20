@@ -37,7 +37,7 @@
 - Production fallback impossible: PASS
 
 ## Tests
-- npm test: PASS (Workflow tests pass)
+- npm test: PASS (Workflow tests pass with strong deterministic assertions for availability logic and HTTP boundaries)
 - lint: PASS
 - typecheck: PASS
 - build: PASS

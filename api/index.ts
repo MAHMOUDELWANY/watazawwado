@@ -4217,6 +4217,116 @@ app.get('/api/dashboard/analytics', verifyTeacherAuth, async (req, res) => {
 });
 
 // 20c. DASHBOARD: Get teacher settings
+app.get('/api/dashboard/availability', verifyTeacherAuth, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+
+    const teacherId = req.user?.id;
+    if (!teacherId) {
+      return res.status(401).json({ error: 'Unauthorized: No valid teacher session' });
+    }
+
+    const { data, error } = await supabase
+      .from('availability')
+      .select('*')
+      .eq('teacher_id', teacherId)
+      .order('weekday', { ascending: true })
+      .order('start_time', { ascending: true });
+
+    if (error) {
+      console.error('[Dashboard API] Error fetching availability:', error);
+      return res.status(500).json({ error: 'Failed to retrieve availability.' });
+    }
+
+    return res.json({ success: true, availability: data || [] });
+  } catch (error: any) {
+    console.error('[Dashboard API] Availability get exception:', error);
+    return res.status(500).json({ error: 'Failed to retrieve availability.' });
+  }
+});
+
+app.put('/api/dashboard/availability', verifyTeacherAuth, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+
+    const teacherId = req.user?.id;
+    if (!teacherId) {
+      return res.status(401).json({ error: 'Unauthorized: No valid teacher session' });
+    }
+
+    const { schedule } = req.body;
+    if (!Array.isArray(schedule)) {
+      return res.status(400).json({ error: 'Schedule must be an array of intervals.' });
+    }
+
+    const validatedIntervals: any[] = [];
+    const timeRegex = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
+
+    for (const item of schedule) {
+      if (typeof item.weekday !== 'number' || item.weekday < 0 || item.weekday > 6) {
+         return res.status(400).json({ error: `Invalid weekday: ${item.weekday}. Must be integer 0-6.` });
+      }
+
+      let startTime = item.start_time;
+      let endTime = item.end_time;
+
+      if (startTime.length === 5) startTime += ':00';
+      if (endTime.length === 5) endTime += ':00';
+
+      if (!timeRegex.test(startTime) || !timeRegex.test(endTime)) {
+        return res.status(400).json({ error: `Invalid time format for weekday ${item.weekday}. Must be HH:mm:ss or HH:mm.` });
+      }
+
+      const startTimeDate = new Date(`1970-01-01T${startTime}Z`);
+      const endTimeDate = new Date(`1970-01-01T${endTime}Z`);
+
+      if (startTimeDate >= endTimeDate) {
+         return res.status(400).json({ error: `Start time must be before end time for weekday ${item.weekday}.` });
+      }
+
+      validatedIntervals.push({
+        teacher_id: teacherId,
+        weekday: item.weekday,
+        start_time: startTime,
+        end_time: endTime,
+        is_active: item.is_active !== undefined ? Boolean(item.is_active) : true,
+        timezone: item.timezone || 'Africa/Cairo'
+      });
+    }
+
+    // Fallback: Delete existing, then insert new.
+    const { error: deleteError } = await supabase
+      .from('availability')
+      .delete()
+      .eq('teacher_id', teacherId);
+
+    if (deleteError) {
+      console.error('[Dashboard API] Error deleting old availability:', deleteError);
+      return res.status(500).json({ error: 'Failed to update availability. Could not remove old schedule.' });
+    }
+
+    if (validatedIntervals.length > 0) {
+      const { error: insertError } = await supabase
+        .from('availability')
+        .insert(validatedIntervals);
+
+      if (insertError) {
+         console.error('[Dashboard API] Error inserting new availability:', insertError);
+         return res.status(500).json({ error: 'Failed to update availability. Could not save new schedule.' });
+      }
+    }
+
+    return res.json({ success: true, message: 'Availability updated successfully.' });
+
+  } catch (error: any) {
+    console.error('[Dashboard API] Availability put exception:', error);
+    return res.status(500).json({ error: 'Failed to update availability.' });
+  }
+});
+
+// 20c. DASHBOARD: Get teacher settings
 app.get('/api/dashboard/settings', verifyTeacherAuth, async (req, res) => {
   try {
     const supabase = getSupabaseAdminClient();
