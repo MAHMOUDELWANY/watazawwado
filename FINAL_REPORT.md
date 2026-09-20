@@ -7,8 +7,9 @@
 - ahead/behind: 1/0
 
 ## 2. Code
-- files changed: `api/index.ts`, `server/integrations/availabilityEngine.ts`, `test/workflow-03e-availability.test.ts`, `FINAL_REPORT.md`
+- files changed: `api/index.ts`, `server/integrations/availabilityEngine.ts`, `src/dashboard/pages/SettingsPage.tsx`, `src/components/dashboard/AvailabilityManager.tsx`, `test/workflow-03e-availability.test.ts`, `FINAL_REPORT.md`
 - what changed:
+  - Integrated `AvailabilityManager` into `SettingsPage.tsx`.
   - Re-implemented the `GET` and `PUT` availability endpoints.
   - The `PUT` endpoint correctly utilizes the existing securely configured `update_teacher_availability` RPC via the Supabase Admin client, ensuring complete atomicity.
   - Removed client-side payload timezone handling. The RPC uses the teacher's canonical profile timezone.

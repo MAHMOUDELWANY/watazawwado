@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { IntegrationsManager } from '../../components/dashboard/IntegrationsManager';
+import { AvailabilityManager } from '../../components/dashboard/AvailabilityManager';
 
 interface Setting {
   key: string;
