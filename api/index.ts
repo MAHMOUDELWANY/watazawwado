@@ -1,7 +1,6 @@
 import crypto from 'crypto';
 import { MASTER_SPEC } from '../src/data/master_spec.js';
 import express from 'express';
-import { supabase, isSupabaseConfigured } from '../src/lib/supabase';
 import { DateTime } from 'luxon';
 import { GoogleGenAI } from '@google/genai';
 import { createClient } from '@supabase/supabase-js';
@@ -493,37 +492,13 @@ async function verifyManagementToken(referenceCode: string, managementToken: str
 // ==========================================
 
 app.get('/api/packages', async (req, res) => {
-  if (!isSupabaseConfigured()) {
-    // Return mock data for UI testing in offline mode
-    return res.json({
-      success: true,
-      data: [
-        {
-          id: 'mock-weekly-1',
-          package_type: 'weekly',
-          name: 'Weekly Boost Package',
-          lesson_count: 4,
-          price_amount: 25.00,
-          currency: 'USD',
-          is_active: true,
-          eligibility_rules: {}
-        },
-        {
-          id: 'mock-monthly-1',
-          package_type: 'monthly',
-          name: 'Monthly Mastery Package',
-          lesson_count: 12,
-          price_amount: 70.00,
-          currency: 'USD',
-          is_active: true,
-          eligibility_rules: {}
-        }
-      ]
-    });
-  }
-
   try {
-    const { data, error } = await supabase
+    const supabaseAdmin = getSupabaseAdminClient();
+    if (!supabaseAdmin) {
+      return res.status(503).json({ error: 'Database integration is not properly configured.' });
+    }
+
+    const { data, error } = await supabaseAdmin
       .from('package_catalog')
       .select('id, package_type, name, lesson_count, price_amount, currency, is_active, eligibility_rules')
       .eq('is_active', true)
@@ -2992,39 +2967,20 @@ app.post('/api/dashboard/payments/:id/confirm', verifyTeacherAuth, async (req, r
 
     const { id } = req.params;
 
-    const { data: payment, error: pErr } = await supabase
-      .from('payments')
-      .select('*')
-      .eq('id', id)
-      .maybeSingle();
+    // Use atomic RPC for state transition and downstream effects
+    const { data: result, error: rpcErr } = await supabase.rpc('verify_payment_atomic', {
+      p_payment_id: id
+    });
 
-    if (pErr || !payment) {
-      return res.status(404).json({ error: 'Payment record not found.' });
+    if (rpcErr) {
+      console.error('[Confirm Payment Error]', rpcErr);
+      return res.status(500).json({ error: 'Failed to confirm payment: ' + rpcErr.message, code: 'PAYMENT_CONFIRM_FAILED' });
     }
 
-    // Idempotency: already confirmed
-    if (payment.status === 'confirmed') {
-      return res.json({ 
-        success: true, 
-        message: 'Payment is already confirmed.', 
-        payment 
-      });
-    }
-
-    const { data: updated, error: uErr } = await supabase
-      .from('payments')
-      .update({
-        status: 'confirmed',
-        confirmed_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', id)
-      .select()
-      .single();
-
-    if (uErr) {
-      console.error('[Confirm Payment Error]', uErr);
-      return res.status(500).json({ error: 'Failed to confirm payment.', code: 'PAYMENT_CONFIRM_FAILED' });
+    // We still need to fetch the updated payment to trigger notifications
+    const { data: updated } = await supabase.from('payments').select('*').eq('id', id).single();
+    if (!updated) {
+       return res.status(404).json({ error: 'Payment not found.' });
     }
 
     // Dispatch payment confirmed notification asynchronously
@@ -3032,14 +2988,19 @@ app.post('/api/dashboard/payments/:id/confirm', verifyTeacherAuth, async (req, r
       let learnerName = 'Student';
       let contactEmail: string | undefined = undefined;
       let contactWhatsapp: string | undefined = undefined;
-      let reference = payment.payment_reference || id;
+      let reference = updated.payment_reference || id;
       let serviceName = '1-on-1 Teaching';
 
-      if (payment.booking_id) {
-        const { data: b } = await supabase
+      const supabaseAdmin = getSupabaseAdminClient();
+      if (!supabaseAdmin) {
+        return res.status(503).json({ error: 'Database integration is not properly configured.' });
+      }
+
+      if (updated.booking_id) {
+        const { data: b } = await supabaseAdmin
           .from('bookings')
           .select('reference_code, student_name, contact_name, contact_email, contact_whatsapp, service_name')
-          .eq('id', payment.booking_id)
+          .eq('id', updated.booking_id)
           .maybeSingle();
 
         if (b) {
@@ -3049,11 +3010,11 @@ app.post('/api/dashboard/payments/:id/confirm', verifyTeacherAuth, async (req, r
           reference = b.reference_code || reference;
           serviceName = b.service_name || serviceName;
         }
-      } else if (payment.student_id) {
-        const { data: st } = await supabase
+      } else if (updated.student_id) {
+        const { data: st } = await supabaseAdmin
           .from('students')
           .select('name, email, whatsapp')
-          .eq('id', payment.student_id)
+          .eq('id', updated.student_id)
           .maybeSingle();
 
         if (st) {
@@ -3194,7 +3155,7 @@ app.delete('/api/dashboard/payments/:id', verifyTeacherAuth, async (req, res) =>
 });
 
 // 16i. PUBLIC/STUDENT: Report payment confirmation reference safely
-app.post('/api/bookings/:referenceCode/payment-claim', rateLimit, async (req, res) => {
+app.post('/api/bookings/:referenceCode/payment-claim', rateLimit, verifyStudentAuth, async (req: any, res: any) => {
   try {
     const supabase = getSupabaseAdminClient();
     if (!supabase) {
@@ -3213,6 +3174,11 @@ app.post('/api/bookings/:referenceCode/payment-claim', rateLimit, async (req, re
       return res.status(400).json({ error: `Payment method must be one of: ${validMethods.join(', ')}` });
     }
 
+    const studentId = req.studentUser?.student_id;
+    if (!studentId) {
+      return res.status(403).json({ error: 'Student authentication required.' });
+    }
+
     const { data: booking, error: bErr } = await supabase
       .from('bookings')
       .select('id, student_id, service_id, duration_minutes, booking_type, fee_amount_usd, status')
@@ -3223,6 +3189,10 @@ app.post('/api/bookings/:referenceCode/payment-claim', rateLimit, async (req, re
       return res.status(404).json({ error: 'Booking reference not found.' });
     }
 
+    if (booking.student_id !== studentId) {
+      return res.status(403).json({ error: 'You are not authorized to claim payment for this booking.' });
+    }
+
     if (booking.booking_type === 'trial') {
       return res.status(400).json({ error: 'Free trials do not require payment.' });
     }
@@ -3230,43 +3200,36 @@ app.post('/api/bookings/:referenceCode/payment-claim', rateLimit, async (req, re
     let finalAmount: number | null = null;
     let finalCurrency: string | null = null;
 
-    // 1. Amount validation - Never invent 0!
-    if (amount !== undefined && amount !== null && amount !== '') {
-      const parsedAmount = Number(amount);
-      if (isNaN(parsedAmount) || !isFinite(parsedAmount) || parsedAmount <= 0 || parsedAmount > 100000) {
-        return res.status(400).json({ error: 'A valid positive payment amount is required.' });
-      }
-      finalAmount = Number(parsedAmount.toFixed(2));
-    } else {
-      // Amount omitted: check trustworthy booking amount
-      if (booking.fee_amount_usd !== null && booking.fee_amount_usd !== undefined && Number(booking.fee_amount_usd) > 0) {
-        finalAmount = Number(Number(booking.fee_amount_usd).toFixed(2));
+    if (booking.fee_amount_usd !== null && booking.fee_amount_usd !== undefined && Number(booking.fee_amount_usd) > 0) {
+      finalAmount = Number(Number(booking.fee_amount_usd).toFixed(2));
+      finalCurrency = 'USD';
+    } else if (booking.service_id) {
+      const { data: srv } = await supabase.from('services').select('hourly_rate_usd').eq('id', booking.service_id).maybeSingle();
+      if (srv?.hourly_rate_usd && Number(srv.hourly_rate_usd) > 0) {
+        const duration = Number(booking.duration_minutes) || 60;
+        finalAmount = Number(((Number(srv.hourly_rate_usd) * duration) / 60).toFixed(2));
         finalCurrency = 'USD';
-      } else if (booking.service_id) {
-        const { data: srv } = await supabase.from('services').select('hourly_rate_usd').eq('id', booking.service_id).maybeSingle();
-        if (srv?.hourly_rate_usd && Number(srv.hourly_rate_usd) > 0) {
-          const duration = Number(booking.duration_minutes) || 60;
-          finalAmount = Number(((Number(srv.hourly_rate_usd) * duration) / 60).toFixed(2));
-          finalCurrency = 'USD';
-        }
       }
     }
 
-    if (!finalAmount || finalAmount <= 0) {
-      return res.status(400).json({ error: 'Payment amount could not be determined. Please explicitly provide the payment amount.' });
+    if (!finalAmount || finalAmount <= 0 || !finalCurrency) {
+      return res.status(400).json({ error: 'Authoritative payment amount/currency could not be determined from booking. Cannot process claim.' });
     }
 
-    // 2. Currency validation - No arbitrary fallback
-    if (currency && typeof currency === 'string' && currency.trim()) {
-      const cleanCurrency = currency.trim().toUpperCase();
-      if (!/^[A-Z]{3}$/.test(cleanCurrency)) {
-        return res.status(400).json({ error: 'Invalid currency code. Please provide a standard 3-letter currency code (e.g. USD, CAD, GBP, EUR).' });
-      }
-      finalCurrency = cleanCurrency;
-    }
+    // Idempotency: Check if a payment with this reference already exists for this booking
+    const { data: existingPayment } = await supabase
+      .from('payments')
+      .select('id, status')
+      .eq('booking_id', booking.id)
+      .eq('payment_reference', String(payment_reference).trim())
+      .maybeSingle();
 
-    if (!finalCurrency) {
-      return res.status(400).json({ error: 'Currency is required for payment confirmation.' });
+    if (existingPayment) {
+      return res.status(200).json({
+        success: true,
+        message: 'Payment reference already recorded. Awaiting verification.',
+        payment_id: existingPayment.id
+      });
     }
 
     const { data: newPayment, error: pErr } = await supabase
@@ -3342,6 +3305,140 @@ app.post('/api/bookings/:referenceCode/payment-claim', rateLimit, async (req, re
     });
   } catch (err) {
     console.error('[Payment Claim Server Error]', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+// 16j. PUBLIC/STUDENT: Report package payment confirmation reference safely
+app.post('/api/packages/:entitlementId/payment-claim', rateLimit, verifyStudentAuth, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) {
+      return res.status(503).json({ error: 'Database service unavailable.' });
+    }
+
+    const { entitlementId } = req.params;
+    const { payment_method, payment_reference, amount, currency, notes } = req.body;
+
+    if (!payment_reference || typeof payment_reference !== 'string' || !payment_reference.trim()) {
+      return res.status(400).json({ error: 'Payment reference code is required.' });
+    }
+
+    const validMethods = ['international_bank_iban', 'ach_routing', 'payoneer', 'paypal', 'wise', 'other'];
+    if (!payment_method || !validMethods.includes(payment_method)) {
+      return res.status(400).json({ error: `Payment method must be one of: ${validMethods.join(', ')}` });
+    }
+
+    const authUserId = req.studentUser?.auth_id;
+    if (!authUserId) {
+      return res.status(403).json({ error: 'Student authentication required.' });
+    }
+
+    const { data: entitlement, error: eErr } = await supabase
+      .from('package_entitlements')
+      .select('id, purchaser_account_id, price_paid, currency, status, learner_student_id')
+      .eq('id', entitlementId)
+      .maybeSingle();
+
+    if (eErr || !entitlement) {
+      return res.status(404).json({ error: 'Package entitlement not found.' });
+    }
+
+    if (entitlement.purchaser_account_id !== authUserId) {
+      return res.status(403).json({ error: 'You are not authorized to claim payment for this package.' });
+    }
+
+    if (entitlement.status !== 'pending_payment') {
+      return res.status(400).json({ error: 'Package is not pending payment.' });
+    }
+
+    let finalAmount: number | null = null;
+    let finalCurrency: string | null = null;
+
+    if (entitlement.price_paid !== null && Number(entitlement.price_paid) > 0) {
+      finalAmount = Number(Number(entitlement.price_paid).toFixed(2));
+      finalCurrency = entitlement.currency || 'USD';
+    }
+
+    if (!finalAmount || finalAmount <= 0 || !finalCurrency) {
+      return res.status(400).json({ error: 'Authoritative payment amount/currency could not be determined from package. Cannot process claim.' });
+    }
+
+    // Idempotency check
+    const { data: existingPayment } = await supabase
+      .from('payments')
+      .select('id, status')
+      .eq('entitlement_id', entitlement.id)
+      .eq('payment_reference', String(payment_reference).trim())
+      .maybeSingle();
+
+    if (existingPayment) {
+      return res.status(200).json({
+        success: true,
+        message: 'Payment reference already recorded. Awaiting verification.',
+        payment_id: existingPayment.id
+      });
+    }
+
+    const { data: newPayment, error: pErr } = await supabase
+      .from('payments')
+      .insert({
+        entitlement_id: entitlement.id,
+        booking_id: null,
+        student_id: entitlement.learner_student_id || req.studentUser?.student_id || null,
+        amount: finalAmount,
+        currency: finalCurrency,
+        payment_method,
+        payment_reference: String(payment_reference).trim(),
+        status: 'pending',
+        notes: notes ? `Student package claim: ${String(notes).trim()}` : 'Student reported package payment'
+      })
+      .select()
+      .single();
+
+    if (pErr) {
+      console.error('[Package Payment Claim Error]', pErr);
+      return res.status(500).json({ error: 'Could not record package payment reference.' });
+    }
+
+    // Attempt to update package_entitlements payment_reference (for legacy UI or tracking)
+    await supabase.from('package_entitlements').update({ payment_reference: String(payment_reference).trim() }).eq('id', entitlement.id);
+
+    try {
+      await dispatchNotification({
+        eventType: 'PAYMENT_CLAIMED',
+        payment: {
+          id: newPayment.id,
+          amount: finalAmount,
+          currency: finalCurrency,
+          paymentMethod: payment_method,
+          paymentReference: String(payment_reference).trim(),
+          notes: notes ? String(notes).trim() : undefined
+        },
+        booking: {
+          referenceCode: entitlement.id.substring(0, 8),
+          serviceName: 'Package Purchase',
+          learnerName: 'Student',
+          contactEmail: '',
+          contactWhatsapp: null,
+          date: '',
+          timeDisplay: '',
+          timezone: 'Africa/Cairo',
+          durationMinutes: 0
+        }
+      });
+    } catch (notifErr) {
+      console.error('[Package Payment Claim Notification Error]', notifErr);
+    }
+
+    res.status(201).json({
+      success: true,
+      message: 'Package payment reported successfully. Ustadh Mahmoud will verify and activate your package.',
+      payment_id: newPayment.id
+    });
+  } catch (err) {
+    console.error('[Package Payment Claim Server Error]', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
@@ -4116,6 +4213,176 @@ app.get('/api/dashboard/analytics', verifyTeacherAuth, async (req, res) => {
   } catch (err) {
     console.error('[Dashboard Analytics Error]', err);
     res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+// 20b. DASHBOARD: Get teacher availability
+app.get('/api/dashboard/availability', verifyTeacherAuth, async (req, res) => {
+  try {
+    const supabase = getServerSupabase();
+    if (!supabase) throw new Error('Database not configured');
+
+    const teacherId = (req as any).teacherUser?.id;
+    if (!teacherId) return res.status(401).json({ error: 'Unauthorized' });
+
+    const { data, error } = await supabase
+      .from('availability')
+      .select('*')
+      .eq('teacher_id', teacherId)
+      .order('weekday', { ascending: true })
+      .order('start_time', { ascending: true });
+
+    if (error) throw error;
+    res.json(data);
+  } catch (err: any) {
+    console.error('Failed to fetch availability:', err);
+    res.status(500).json({ error: 'Failed to fetch availability.' });
+  }
+});
+
+// 20c. DASHBOARD: Update teacher availability
+app.put('/api/dashboard/availability', verifyTeacherAuth, async (req, res) => {
+  try {
+    const supabase = getServerSupabase();
+    if (!supabase) throw new Error('Database not configured');
+
+    const teacherId = (req as any).teacherUser?.id;
+    if (!teacherId) return res.status(401).json({ error: 'Unauthorized' });
+
+    const blocks = req.body.blocks;
+    if (!Array.isArray(blocks)) {
+      return res.status(400).json({ error: 'Invalid payload.' });
+    }
+
+    // Validate blocks
+    for (const b of blocks) {
+      if (typeof b.weekday !== 'number' || b.weekday < 0 || b.weekday > 6) {
+        return res.status(400).json({ error: 'Invalid weekday.' });
+      }
+      if (!/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/.test(b.start_time) && !/^([01]\d|2[0-3]):([0-5]\d)$/.test(b.start_time)) {
+        return res.status(400).json({ error: 'Invalid start time.' });
+      }
+      if (!/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/.test(b.end_time) && !/^([01]\d|2[0-3]):([0-5]\d)$/.test(b.end_time)) {
+        return res.status(400).json({ error: 'Invalid end time.' });
+      }
+    }
+
+    // Since RLS is on, we can safely delete and reinsert or do it in a transaction
+    // Supabase JS doesn't have multi-statement transactions but we can delete then insert
+    const { error: delError } = await supabase
+      .from('availability')
+      .delete()
+      .eq('teacher_id', teacherId);
+
+    if (delError) throw delError;
+
+    if (blocks.length > 0) {
+      const insertData = blocks.map(b => ({
+        teacher_id: teacherId,
+        weekday: b.weekday,
+        start_time: b.start_time,
+        end_time: b.end_time,
+        is_active: b.is_active !== undefined ? b.is_active : true,
+        timezone: 'Africa/Cairo' // Fixed to Cairo as per instructions
+      }));
+
+      const { error: insError } = await supabase
+        .from('availability')
+        .insert(insertData);
+
+      if (insError) throw insError;
+    }
+
+    res.json({ success: true });
+  } catch (err: any) {
+    console.error('Failed to update availability:', err);
+    res.status(500).json({ error: 'Failed to update availability.' });
+  }
+});
+
+
+// 20b. DASHBOARD: Get teacher availability
+app.get('/api/dashboard/availability', verifyTeacherAuth, async (req, res) => {
+  try {
+    const supabase = getServerSupabase();
+    if (!supabase) throw new Error('Database not configured');
+
+    const teacherId = (req as any).teacherUser?.id;
+    if (!teacherId) return res.status(401).json({ error: 'Unauthorized' });
+
+    const { data, error } = await supabase
+      .from('availability')
+      .select('*')
+      .eq('teacher_id', teacherId)
+      .order('weekday', { ascending: true })
+      .order('start_time', { ascending: true });
+
+    if (error) throw error;
+    res.json(data);
+  } catch (err: any) {
+    console.error('Failed to fetch availability:', err);
+    res.status(500).json({ error: 'Failed to fetch availability.' });
+  }
+});
+
+// 20c. DASHBOARD: Update teacher availability
+app.put('/api/dashboard/availability', verifyTeacherAuth, async (req, res) => {
+  try {
+    const supabase = getServerSupabase();
+    if (!supabase) throw new Error('Database not configured');
+
+    const teacherId = (req as any).teacherUser?.id;
+    if (!teacherId) return res.status(401).json({ error: 'Unauthorized' });
+
+    const blocks = req.body.blocks;
+    if (!Array.isArray(blocks)) {
+      return res.status(400).json({ error: 'Invalid payload.' });
+    }
+
+    // Validate blocks
+    for (const b of blocks) {
+      if (typeof b.weekday !== 'number' || b.weekday < 0 || b.weekday > 6) {
+        return res.status(400).json({ error: 'Invalid weekday.' });
+      }
+      if (!/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/.test(b.start_time) && !/^([01]\d|2[0-3]):([0-5]\d)$/.test(b.start_time)) {
+        return res.status(400).json({ error: 'Invalid start time.' });
+      }
+      if (!/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/.test(b.end_time) && !/^([01]\d|2[0-3]):([0-5]\d)$/.test(b.end_time)) {
+        return res.status(400).json({ error: 'Invalid end time.' });
+      }
+    }
+
+    // Since RLS is on, we can safely delete and reinsert or do it in a transaction
+    // Supabase JS doesn't have multi-statement transactions but we can delete then insert
+    const { error: delError } = await supabase
+      .from('availability')
+      .delete()
+      .eq('teacher_id', teacherId);
+
+    if (delError) throw delError;
+
+    if (blocks.length > 0) {
+      const insertData = blocks.map(b => ({
+        teacher_id: teacherId,
+        weekday: b.weekday,
+        start_time: b.start_time,
+        end_time: b.end_time,
+        is_active: b.is_active !== undefined ? b.is_active : true,
+        timezone: 'Africa/Cairo' // Fixed to Cairo as per instructions
+      }));
+
+      const { error: insError } = await supabase
+        .from('availability')
+        .insert(insertData);
+
+      if (insError) throw insError;
+    }
+
+    res.json({ success: true });
+  } catch (err: any) {
+    console.error('Failed to update availability:', err);
+    res.status(500).json({ error: 'Failed to update availability.' });
   }
 });
 

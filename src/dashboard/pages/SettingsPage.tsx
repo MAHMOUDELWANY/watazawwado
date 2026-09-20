@@ -13,6 +13,7 @@ import {
   DollarSign
 } from 'lucide-react';
 import { dashboardFetch } from '../lib/dashboardApi';
+import AvailabilityManager from '../../components/dashboard/AvailabilityManager';
 import { IntegrationsManager } from '../../components/dashboard/IntegrationsManager';
 
 interface Setting {
@@ -281,6 +282,13 @@ export default function SettingsPage() {
                   </div>
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Availability */}
+          {activeTab === 'Availability' && (
+            <div className="bg-surface rounded-2xl border border-border p-6 space-y-6 shadow-2xs">
+              <AvailabilityManager />
             </div>
           )}
 
