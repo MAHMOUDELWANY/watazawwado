@@ -1047,7 +1047,7 @@ async function verifyTeacherAuth(req: any, res: any, next: any) {
         .maybeSingle();
 
       if (!existingProfile) {
-        await supabaseAdmin
+        const { error: upsertError } = await supabaseAdmin
           .from('profiles')
           .upsert({
             id: user.id,
@@ -1055,7 +1055,14 @@ async function verifyTeacherAuth(req: any, res: any, next: any) {
             display_name: user.user_metadata?.full_name || 'Ustadh Mahmoud',
             role: teacherRecord.role,
             timezone: 'Africa/Cairo'
-          });
+          }, { onConflict: 'id' });
+
+        if (upsertError) {
+          console.error('[verifyTeacherAuth] Profile upsert failed:', upsertError);
+          const stage = 'PROFILE_UPSERT_FAILED';
+          res.setHeader('x-auth-diagnostic-stage', stage);
+          return res.status(500).json({ error: 'Failed to initialize teacher profile.', diagnosticStage: stage });
+        }
       }
     } catch (profileErr) {
       console.warn('[verifyTeacherAuth] Profile sync warning:', profileErr);
