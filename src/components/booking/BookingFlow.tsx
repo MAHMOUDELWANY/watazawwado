@@ -301,6 +301,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                   onNext={handleNext}
                   onBack={handleBack}
                   lang={lang}
+                  teacherId={formData.teacherId || undefined}
                 />
               </motion.div>
             )}
@@ -373,6 +374,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                   onNext={handleNext}
                   onBack={handleBack}
                   lang={lang}
+                  teacherId={formData.teacherId || undefined}
                 />
               </motion.div>
             )}

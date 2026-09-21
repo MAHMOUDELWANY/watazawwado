@@ -23,6 +23,7 @@ import { MAJOR_TIMEZONES } from '../../booking/mockData';
 import { buildWhatsAppUrl } from '../../lib/whatsapp';
 
 interface StepDateTimeProps {
+  teacherId?: string;
   mode: BookingMode;
   selectedDate: string;
   selectedSlot: TimeSlot | null;
@@ -45,7 +46,8 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
   onSelectTimezone,
   onNext,
   onBack,
-  lang
+  lang,
+  teacherId
 }) => {
   const isEn = lang === 'en';
 
@@ -62,7 +64,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
     setError(null);
 
     bookingService
-      .getAvailability(timezone)
+      .getAvailability(timezone, 30, teacherId)
       .then((data) => {
         if (!isMounted) return;
         setDays(data);
