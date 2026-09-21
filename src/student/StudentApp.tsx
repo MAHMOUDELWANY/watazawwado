@@ -395,18 +395,22 @@ export default function StudentApp() {
   const studentInitial = profile?.name ? profile.name.charAt(0).toUpperCase() : (user?.email?.charAt(0).toUpperCase() || 'S');
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans flex overflow-hidden">
-      {/* Mobile Backdrop */}
+    <div 
+      className="min-h-screen bg-background text-foreground font-sans flex overflow-hidden"
+      dir={isAr ? 'rtl' : 'ltr'}
+      lang={lang}
+    >
+      {/* Mobile & Tablet Backdrop (< lg) */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/40 dark:bg-black/60 z-40 md:hidden backdrop-blur-xs transition-opacity"
+          className="fixed inset-0 bg-black/40 dark:bg-black/60 z-40 lg:hidden backdrop-blur-xs transition-opacity"
           onClick={() => setSidebarOpen(false)}
           aria-hidden="true"
         />
       )}
 
       {/* ========================================================================= */}
-      {/* MAIN PERSISTENT STUDENT SIDEBAR (Desktop ~260px, Accessible drawer on mobile) */}
+      {/* MAIN PERSISTENT STUDENT SIDEBAR (Desktop lg: ~280px persistent, accessible drawer on mobile & tablet) */}
       {/* ========================================================================= */}
       <aside
         ref={drawerRef}
@@ -415,9 +419,9 @@ export default function StudentApp() {
         aria-modal={sidebarOpen ? 'true' : undefined}
         aria-label={isAr ? 'شريط التنقل الجانبي للطالب' : 'Student Navigation Sidebar'}
         className={`
-          fixed md:static inset-y-0 start-0 z-50 w-64 lg:w-72 max-w-[85vw] bg-surface border-e border-border
+          fixed lg:static inset-y-0 start-0 z-50 w-64 lg:w-72 max-w-[85vw] bg-surface border-e border-border
           flex flex-col transform transition-transform duration-250 ease-out shadow-xs shrink-0
-          ${sidebarOpen ? 'translate-x-0' : 'rtl:translate-x-full ltr:-translate-x-full md:translate-x-0'}
+          ${sidebarOpen ? 'translate-x-0' : `${isAr ? 'translate-x-full' : '-translate-x-full'} rtl:translate-x-full ltr:-translate-x-full lg:translate-x-0`}
         `}
       >
         {/* Brand & Portal Header */}
@@ -441,7 +445,7 @@ export default function StudentApp() {
           <button
             ref={closeButtonRef}
             onClick={toggleSidebar}
-            className="md:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             aria-label={isAr ? 'إغلاق القائمة' : 'Close menu'}
           >
             <X className="w-5 h-5" />
@@ -585,7 +589,7 @@ export default function StudentApp() {
             <button
               ref={menuTriggerRef}
               onClick={toggleSidebar}
-              className="md:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle touch-manipulation cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle touch-manipulation cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               aria-label={isAr ? 'فتح القائمة الرئيسية' : 'Open menu'}
               aria-expanded={sidebarOpen}
               aria-controls="student-sidebar"
