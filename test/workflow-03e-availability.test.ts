@@ -164,4 +164,28 @@ test('Workflow 03-E Endpoint Security Validations', async (t) => {
         // This test does NOT prove Production authentication works with real Supabase tokens.
         assert.notStrictEqual(res.status, 401, 'Authorized PUT must not return 401');
     });
+
+    await t.test('Case 14 — (Development Only) PUT normalizes HH:mm properly without failing', async () => {
+        let res;
+        try {
+            res = await fetch(`http://127.0.0.1:${port}/api/dashboard/availability`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-dev-teacher-auth': 'true'
+                },
+                body: JSON.stringify({
+                    schedule: [
+                        { weekday: 1, start_time: '10:00', end_time: '18:00' }
+                    ]
+                })
+            });
+        } catch (err: any) {
+            assert.fail(`Server is not running. Fetch failed: ${err.message}`);
+        }
+
+        // As long as the payload validates format-wise it should pass the timeRegex logic and try to interact with the database.
+        // Even if the test db returns 500 error or rpc error here, we are verifying that it doesn't return 400 for bad time validation.
+        assert.notStrictEqual(res.status, 400, 'Authorized PUT must not fail due to invalid time format for 10:00');
+    });
 });

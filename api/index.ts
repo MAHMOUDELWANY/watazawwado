@@ -4263,7 +4263,7 @@ app.put('/api/dashboard/availability', verifyTeacherAuth, async (req: any, res: 
     }
 
     const validatedIntervals: any[] = [];
-    const timeRegex = /^([01]d|2[0-3]):([0-5]d):([0-5]d)$/;
+    const timeRegex = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
 
     for (const item of schedule) {
       if (typeof item.weekday !== 'number' || item.weekday < 0 || item.weekday > 6) {
