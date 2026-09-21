@@ -1,24 +1,27 @@
-# FINAL REPORT: Student Booking Availability Engine Flow Fix
+# DIAGNOSTIC REPORT
 
-## Root Cause
-In production, there are multiple active Google Calendar connections for different accounts. When the public booking component (`StudentBookingPage`) requests availability, it hits `/api/integrations/availability` without supplying an explicit `teacherId`. The backend function `resolveAuthoritativeTeacherForAvailability()` correctly fails closed when no teacher is supplied and multiple connections exist, preventing data leaks or arbitrary assignment. This caused `computeAvailableSlots()` to return no available slots for the canonical teacher since it could not safely resolve the owner.
+### Root Cause
+The `availability` table is not queried properly. In `getTeacherDbAvailability` inside `server/integrations/availabilityEngine.ts`, it queries the table `availability`. However, earlier prompts indicated that the UI saves availability into `teacher_availability` (specifically mentioning foreign keys failing on the `teacher_availability` insert due to empty `public.profiles`).
 
-Additionally, the UI component `StepDateTime.tsx` did not update `activeDateIndex` when a user selected a specific day, which broke the "Jump to Next Available Day" feature causing it to jump relative to index 0 rather than the currently selected date.
+### Evidence
+`getTeacherDbAvailability` does this:
+```typescript
+    const { data, error } = await supabase
+      .from('availability')
+      .select('*')
+      .eq('teacher_id', teacherId)
+      .eq('is_active', true);
+```
+But the table name used elsewhere in the system is likely `teacher_availability`, which is what the `update_teacher_availability` RPC updates.
 
-## Exact Resolution Strategy
-1. **Server-Side Fallback Resolution**: Updated `resolveAuthoritativeTeacherForAvailability()` in `server/integrations/availabilityEngine.ts` to implement a deterministic, fail-closed fallback for public booking requests. If `suppliedTeacherId` is absent and multiple active calendar connections exist, the engine queries the database securely (joining `profiles` to `teacher_accounts` where `is_active = true`, ordered by `created_at` ASC limit 1) to identify the canonical primary teacher (the original admin). If that canonical teacher's UUID is in the active connections list, it resolves strictly to that teacher. This preserves total security while unblocking the public flow.
-2. **UI State Fix**: Updated `handleDaySelect` and the initial data load in `src/components/booking/StepDateTime.tsx` to correctly call `setActiveDateIndex` alongside `onSelectDate`, ensuring the "Jump to Next Available Day" properly identifies `idx > activeDateIndex`.
-3. **Tests**: Added tests to `test/workflow-03e-availability.test.ts` to assert that explicitly resolving the intended teacher works correctly through `resolveAuthoritativeTeacherForAvailability`, and the UI regression logic passes.
+### Zero-Slot Point
+Inside `getTeacherDbAvailability(teacherId: string)`, the `supabase.from('availability')` fetch either fails silently returning `[]` or queries a deprecated table that is empty, resulting in `dbAvailability` being an empty array. Since it is an empty array, the `computeAvailableSlots` function iterates over an empty `dayBlocks` list and generates zero slots.
 
-## Exact Files Changed
-- `server/integrations/availabilityEngine.ts`
-- `src/components/booking/StepDateTime.tsx`
-- `test/workflow-03e-availability.test.ts`
-- `FINAL_REPORT.md`
+### Minimal Fix
+Change the table name in `getTeacherDbAvailability` from `availability` to `teacher_availability`.
 
-## Validations
-- `npm run lint` and `npx tsc --noEmit` completed perfectly (0 errors).
-- `npm run build` completed perfectly.
-- `npm test` verified the correct behavior securely without breaking existing isolation.
+### DB Change
+None.
 
-Commit SHA: 5caa8f50ec6bf0551c25b75681f242bc49f27729
+### Production Verification
+Run the public student booking UI in production. It should now display slots based on the availability configured in the teacher dashboard.

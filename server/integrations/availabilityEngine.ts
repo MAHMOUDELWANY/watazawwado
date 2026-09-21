@@ -66,7 +66,7 @@ async function getTeacherDbAvailability(teacherId: string): Promise<any[]> {
 
   try {
     const { data, error } = await supabase
-      .from('availability')
+      .from('teacher_availability')
       .select('*')
       .eq('teacher_id', teacherId)
       .eq('is_active', true);
@@ -154,24 +154,7 @@ export async function resolveAuthoritativeTeacherForAvailability(
       return match ? match.teacher_id : null;
     }
 
-    // Public flow without teacherId (multiple connections) -> Resolve intended teacher dynamically.
-    // Query public.teacher_accounts for the primary active super_admin.
-    const { data: authoritativeTeacher, error: authErr } = await supabase
-      .from('profiles')
-      .select('id, email, teacher_accounts!inner(role, is_active)')
-      .eq('teacher_accounts.is_active', true)
-      .order('created_at', { ascending: true })
-      .limit(1)
-      .maybeSingle();
-
-    if (!authErr && authoritativeTeacher?.id) {
-       const teacherIdMatch = conns.find(c => c.teacher_id === authoritativeTeacher.id);
-       if (teacherIdMatch) {
-         return authoritativeTeacher.id;
-       }
-    }
-
-    // Multiple connections and no identifiable intended teacher -> fail closed
+    // Multiple connections and no teacherId -> fail closed
     return null;
   } catch (err) {
     console.warn('[resolveAuthoritativeTeacherForAvailability Error]', err);
