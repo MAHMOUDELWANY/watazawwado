@@ -1,27 +1,46 @@
-# DIAGNOSTIC REPORT
+# FINAL ROOT-CAUSE TRACE REPORT
 
 ### Root Cause
-The `availability` table is not queried properly. In `getTeacherDbAvailability` inside `server/integrations/availabilityEngine.ts`, it queries the table `availability`. However, earlier prompts indicated that the UI saves availability into `teacher_availability` (specifically mentioning foreign keys failing on the `teacher_availability` insert due to empty `public.profiles`).
+The public Student Booking availability pipeline resolves `teacher_id` to `null` because there are multiple active calendar connections in Production and the UI request does not supply a `teacherId`. The engine explicitly fails closed in this scenario, preventing any `teacher_availability` database query from executing.
 
-### Evidence
-`getTeacherDbAvailability` does this:
+### Proof
+In `server/integrations/availabilityEngine.ts`:
 ```typescript
-    const { data, error } = await supabase
-      .from('availability')
-      .select('*')
-      .eq('teacher_id', teacherId)
+export async function resolveAuthoritativeTeacherForAvailability(
+  suppliedTeacherId?: string
+): Promise<string | null> {
+...
+    const { data: conns, error } = await supabase
+      .from('calendar_connections')
+      .select('teacher_id')
+      .eq('provider', 'google_calendar')
       .eq('is_active', true);
+...
+    if (conns.length === 1) { ... }
+
+    if (cleanSupplied) { ... }
+
+    // Multiple connections and no teacherId -> fail closed
+    return null;
+}
 ```
-But the table name used elsewhere in the system is likely `teacher_availability`, which is what the `update_teacher_availability` RPC updates.
+Production observation: The prompt confirms there are multiple active Google Calendar connections for different accounts. When the Student Booking UI calls `bookingService.getAvailability()` without a `teacherId` query parameter, `suppliedTeacherId` is `undefined`, and `conns.length > 1`. The function therefore reaches `return null;`.
 
 ### Zero-Slot Point
-Inside `getTeacherDbAvailability(teacherId: string)`, the `supabase.from('availability')` fetch either fails silently returning `[]` or queries a deprecated table that is empty, resulting in `dbAvailability` being an empty array. Since it is an empty array, the `computeAvailableSlots` function iterates over an empty `dayBlocks` list and generates zero slots.
+In `server/integrations/availabilityEngine.ts` inside `computeAvailableSlots`:
+```typescript
+  let dbAvailability: any[] = [];
+  if (cleanTeacherId) {
+    dbAvailability = await getTeacherDbAvailability(cleanTeacherId);
+  }
+```
+Because `cleanTeacherId` is `null`, `dbAvailability` is never queried and remains `[]`. When iterating over the days, `dayBlocks` is extracted from `dbAvailability` which is empty. The `while` loop that generates slot intervals never runs, resulting in 0 candidate slots and 0 final slots.
 
 ### Minimal Fix
-Change the table name in `getTeacherDbAvailability` from `availability` to `teacher_availability`.
+None yet, as instructed to "Do NOT modify code until the exact zero-slot point is proven" and "Do not report 'fixed' until the Student Booking UI actually displays real slots". The minimal fix will involve either providing the explicit `teacherId` in the API request from the frontend, or establishing a deterministic primary teacher resolution (which was previously reverted per instructions).
 
 ### DB Change
 None.
 
 ### Production Verification
-Run the public student booking UI in production. It should now display slots based on the availability configured in the teacher dashboard.
+Run the public student booking UI in production (or make a GET request to `/api/integrations/availability?timezone=Africa/Cairo`) and verify whether the payload includes `teacherId`. If it does not, supply the `teacherId` to verify slots are returned.
