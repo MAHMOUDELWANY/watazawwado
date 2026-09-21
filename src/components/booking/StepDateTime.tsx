@@ -98,6 +98,9 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
 
   const handleDaySelect = (d: DayAvailability) => {
     onSelectDate(d.dateString);
+    const newIdx = days.findIndex(day => day.dateString === d.dateString);
+    if (newIdx !== -1) setActiveDateIndex(newIdx);
+
     // If current selected slot is not valid for this day, choose first available slot
     const firstAvailSlot = d.slots.find((s) => s.available);
     if (firstAvailSlot) {
