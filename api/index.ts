@@ -4222,7 +4222,7 @@ app.get('/api/dashboard/availability', verifyTeacherAuth, async (req: any, res: 
     const supabase = getSupabaseAdminClient();
     if (!supabase) return res.status(503).json({ error: 'Database integration is not properly configured.' });
 
-    const teacherId = req.user?.id;
+    const teacherId = req.teacherUser?.id;
     if (!teacherId) {
       return res.status(401).json({ error: 'Unauthorized: No valid teacher session' });
     }
@@ -4251,7 +4251,7 @@ app.put('/api/dashboard/availability', verifyTeacherAuth, async (req: any, res: 
     const supabase = getSupabaseAdminClient();
     if (!supabase) return res.status(503).json({ error: 'Database integration is not properly configured.' });
 
-    const teacherId = req.user?.id;
+    const teacherId = req.teacherUser?.id;
     if (!teacherId) {
       return res.status(401).json({ error: 'Unauthorized: No valid teacher session' });
     }
