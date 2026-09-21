@@ -91,6 +91,16 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
   }, []);
 
   const handleConnectGoogle = async () => {
+    if (!status?.googleCalendar.isConfigured) {
+      setActionMessage({
+        text: isEn
+          ? 'Google OAuth credentials are not configured in environment variables (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET).'
+          : 'بيانات اعتماد جوجل غير مهيأة في متغيرات البيئة (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET).',
+        type: 'error'
+      });
+      return;
+    }
+
     try {
       setConnectingGoogle(true);
       setActionMessage(null);
@@ -211,9 +221,14 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                   <CheckCircle2 className="w-3 h-3" />
                   <span>{isEn ? 'Connected' : 'متصل'}</span>
                 </span>
-              ) : (
+              ) : status?.googleCalendar.isConfigured ? (
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#EDE3D4] dark:bg-[#1E1923] text-[#6B5B73] dark:text-[#B8A9C9]">
                   <span>{isEn ? 'Not Connected' : 'غير متصل'}</span>
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300">
+                  <AlertCircle className="w-3 h-3" />
+                  <span>{isEn ? 'Not Configured' : 'غير مهيأ'}</span>
                 </span>
               )}
             </div>
@@ -224,7 +239,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                 : 'مزامنة تلقائية للحجوزات على تقويم جوجل لمنع التعارض في المواعيد.'}
             </p>
 
-            {status?.googleCalendar.isConnected && status?.googleCalendar.accountEmail && (
+            {status?.googleCalendar.isConnected && status?.googleCalendar.accountEmail ? (
               <div className="p-2.5 rounded-xl bg-[#EDE3D4]/50 dark:bg-[#1E1923] text-xs space-y-1">
                 <span className="text-[10px] uppercase font-semibold text-[#6B5B73] dark:text-[#B8A9C9] block">
                   {isEn ? 'Connected Google Account' : 'الحساب المتصل'}
@@ -233,7 +248,16 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                   {status.googleCalendar.accountEmail}
                 </span>
               </div>
-            )}
+            ) : !status?.googleCalendar.isConfigured ? (
+              <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200/50 dark:border-amber-900/40 text-xs space-y-1">
+                <span className="text-[10px] uppercase font-semibold text-amber-800 dark:text-amber-300 block">
+                  {isEn ? 'Configuration Required' : 'يتطلب تهيئة'}
+                </span>
+                <span className="text-[11px] text-amber-700 dark:text-amber-400 block leading-tight">
+                  {isEn ? 'Requires GOOGLE_CLIENT_ID & GOOGLE_CLIENT_SECRET env' : 'يتطلب ضبط اعتمادات جوجل في متغيرات البيئة'}
+                </span>
+              </div>
+            ) : null}
           </div>
 
           <div className="pt-4 border-t border-[#D5D0CA]/50 dark:border-[#3E3545] mt-4 flex items-center justify-between">
@@ -250,8 +274,13 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
               <button
                 type="button"
                 onClick={handleConnectGoogle}
-                disabled={connectingGoogle || loading}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+                disabled={connectingGoogle || loading || !status?.googleCalendar.isConfigured}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold shadow-xs transition-colors ${
+                  status?.googleCalendar.isConfigured
+                    ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
+                    : 'bg-neutral-200 dark:bg-neutral-800 text-neutral-400 dark:text-neutral-500 cursor-not-allowed'
+                }`}
+                title={!status?.googleCalendar.isConfigured ? (isEn ? 'Set GOOGLE_CLIENT_ID & GOOGLE_CLIENT_SECRET in environment' : 'يجب ضبط اعتمادات جوجل في متغيرات البيئة أولاً') : undefined}
               >
                 <Zap className="w-3.5 h-3.5" />
                 <span>{connectingGoogle ? (isEn ? 'Connecting...' : 'جاري الاتصال...') : (isEn ? 'Connect' : 'ربط')}</span>

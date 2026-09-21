@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
-import { BookOpen, LogOut, User, Menu, X, Sparkles, Calendar, ArrowRight, Loader2, Moon, Sun, Globe } from 'lucide-react';
+import { BookOpen, LogOut, User, Menu, X, Sparkles, Calendar, ArrowRight, Loader2, Moon, Sun, Globe, Package, CreditCard } from 'lucide-react';
 import { useTeacherAuth } from '../lib/auth';
 import { useTheme } from '../components/ThemeProvider';
 
@@ -9,6 +9,9 @@ import StudentProfilePage from './pages/StudentProfilePage';
 import StudentOnboardingPage from './pages/StudentOnboardingPage';
 import StudentDemoPage from './pages/StudentDemoPage';
 import StudentBookingPage from './pages/StudentBookingPage';
+import StudentLessonsPage from './pages/StudentLessonsPage';
+import StudentPackagesPage from './pages/StudentPackagesPage';
+import StudentPaymentsPage from './pages/StudentPaymentsPage';
 import { StudentAuthModal } from '../components/StudentAuthModal';
 
 export default function StudentApp() {
@@ -251,6 +254,21 @@ export default function StudentApp() {
       icon: BookOpen 
     },
     { 
+      name: isAr ? 'جدول كافة الدروس' : 'My Lessons', 
+      path: '/student/lessons', 
+      icon: Calendar 
+    },
+    { 
+      name: isAr ? 'رصيد الباقات' : 'Package Credits', 
+      path: '/student/packages', 
+      icon: Package 
+    },
+    { 
+      name: isAr ? 'المدفوعات والفواتير' : 'Billing & Payments', 
+      path: '/student/payments', 
+      icon: CreditCard 
+    },
+    { 
       name: isAr ? 'الملف الشخصي والأهداف' : 'Profile & Goals', 
       path: '/student/profile', 
       icon: User 
@@ -460,6 +478,9 @@ export default function StudentApp() {
           <div className="max-w-5xl mx-auto">
             <Routes>
               <Route path="/" element={<StudentHomePage lang={lang} />} />
+              <Route path="/lessons" element={<StudentLessonsPage lang={lang} session={session} />} />
+              <Route path="/packages" element={<StudentPackagesPage lang={lang} session={session} />} />
+              <Route path="/payments" element={<StudentPaymentsPage lang={lang} session={session} />} />
               <Route path="/book" element={<StudentBookingPage profile={profile} session={session} />} />
               <Route path="/profile" element={
                 <StudentProfilePage

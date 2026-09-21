@@ -1,11 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { DateTime } from 'luxon';
-import { Calendar, Video, Clock, ArrowRight, Loader2, RotateCcw, AlertCircle, Plus, BookOpen, CheckCircle2 } from 'lucide-react';
+import {
+  Calendar,
+  Video,
+  Clock,
+  ArrowRight,
+  Loader2,
+  RotateCcw,
+  AlertCircle,
+  Plus,
+  BookOpen,
+  CheckCircle2,
+  Package,
+  CreditCard,
+  ExternalLink
+} from 'lucide-react';
 import { useTeacherAuth } from '../../lib/auth';
 import { findLastEligibleBooking, formatLastBookingSummary } from './StudentBookingPage';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
+import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal';
 
 export interface StudentHomePageProps {
   lang?: 'en' | 'ar';
@@ -15,8 +30,12 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
   const { session, user } = useTeacherAuth();
   const [profile, setProfile] = useState<any>(null);
   const [bookings, setBookings] = useState<any[]>([]);
+  const [packagesData, setPackagesData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Quick claim modal
+  const [paymentClaimBooking, setPaymentClaimBooking] = useState<any | null>(null);
 
   const isAr = lang === 'ar';
 
@@ -34,9 +53,10 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
         const headers = { Authorization: `Bearer ${token}` };
 
-        const [profileRes, bookingsRes] = await Promise.all([
+        const [profileRes, bookingsRes, packagesRes] = await Promise.all([
           fetch('/api/student/me', { headers }),
-          fetch('/api/student/bookings', { headers })
+          fetch('/api/student/bookings', { headers }),
+          fetch('/api/student/packages', { headers })
         ]);
 
         if (!profileRes.ok) {
@@ -45,10 +65,12 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
         const profileData = await profileRes.json();
         const bookingsData = bookingsRes.ok ? await bookingsRes.json() : [];
+        const packData = packagesRes.ok ? await packagesRes.json() : null;
 
         if (isMounted) {
           setProfile(profileData);
           setBookings(Array.isArray(bookingsData) ? bookingsData : []);
+          setPackagesData(packData);
         }
       } catch (err: any) {
         console.error('Error loading student dashboard data:', err);
@@ -151,7 +173,73 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
         </div>
       </div>
 
-      {/* 2. Main Dashboard Cards */}
+      {/* 2. Quick Navigation Bento Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* Card 1: My Lessons */}
+        <Link
+          to="/student/lessons"
+          className="p-4 rounded-2xl bg-surface border border-border hover:border-primary/40 transition-all flex items-center justify-between group cursor-pointer"
+        >
+          <div className="space-y-1">
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">
+              {isAr ? 'جدول الدروس' : 'My Lessons'}
+            </span>
+            <div className="text-xl sm:text-2xl font-serif font-bold text-foreground group-hover:text-primary transition-colors">
+              {bookings.length} {isAr ? 'درس' : 'sessions'}
+            </div>
+            <span className="text-[11px] text-muted-foreground block">
+              {isAr ? 'عرض كافة المواعيد والروابط' : 'View schedule & Zoom links'}
+            </span>
+          </div>
+          <div className="p-3 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all">
+            <Calendar className="w-5 h-5" />
+          </div>
+        </Link>
+
+        {/* Card 2: Package Credits */}
+        <Link
+          to="/student/packages"
+          className="p-4 rounded-2xl bg-surface border border-border hover:border-primary/40 transition-all flex items-center justify-between group cursor-pointer"
+        >
+          <div className="space-y-1">
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">
+              {isAr ? 'رصيد الباقات' : 'Package Credits'}
+            </span>
+            <div className="text-xl sm:text-2xl font-serif font-bold text-primary">
+              {packagesData?.creditSummary?.totalRemaining ?? 0} {isAr ? 'درس متاح' : 'available'}
+            </div>
+            <span className="text-[11px] text-muted-foreground block">
+              {isAr ? 'باقات فردية مسبقة الدفع' : 'Manage prepaid lesson balance'}
+            </span>
+          </div>
+          <div className="p-3 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all">
+            <Package className="w-5 h-5" />
+          </div>
+        </Link>
+
+        {/* Card 3: Payments & Billing */}
+        <Link
+          to="/student/payments"
+          className="p-4 rounded-2xl bg-surface border border-border hover:border-primary/40 transition-all flex items-center justify-between group cursor-pointer"
+        >
+          <div className="space-y-1">
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">
+              {isAr ? 'المدفوعات' : 'Payments & Billing'}
+            </span>
+            <div className="text-xl sm:text-2xl font-serif font-bold text-foreground group-hover:text-primary transition-colors">
+              {isAr ? 'سجل التحويلات' : 'Billing & Claims'}
+            </div>
+            <span className="text-[11px] text-muted-foreground block">
+              {isAr ? 'إرسال إثبات ومتابعة التحقق' : 'Submit reference & track status'}
+            </span>
+          </div>
+          <div className="p-3 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all">
+            <CreditCard className="w-5 h-5" />
+          </div>
+        </Link>
+      </div>
+
+      {/* 3. Main Dashboard Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left 2 Columns: Next Session Focus Card */}
         <div className="lg:col-span-2 space-y-6">
@@ -175,8 +263,8 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                 </div>
 
                 {nextBooking && (
-                  <Badge variant={nextBooking.status === 'confirmed' ? 'success' : 'secondary'}>
-                    {nextBooking.status}
+                  <Badge variant={nextBooking.status === 'confirmed' ? 'success' : nextBooking.status === 'pending' ? 'warning' : 'secondary'}>
+                    {nextBooking.status === 'pending' ? (isAr ? 'في انتظار الدفع' : 'Pending Payment') : nextBooking.status}
                   </Badge>
                 )}
               </div>
@@ -186,9 +274,16 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
               {nextBooking ? (
                 <div className="space-y-5 pt-2">
                   <div className="p-4 sm:p-5 rounded-2xl bg-surface-subtle border border-border-subtle">
-                    <h3 className="font-serif font-bold text-lg sm:text-xl text-foreground mb-2">
-                      {nextBooking.serviceTitle || nextBooking.services?.title || (isAr ? 'جلسة تعليمية' : 'Private Lesson')}
-                    </h3>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                      <h3 className="font-serif font-bold text-lg sm:text-xl text-foreground">
+                        {nextBooking.serviceTitle || nextBooking.services?.title || (isAr ? 'جلسة تعليمية' : 'Private Lesson')}
+                      </h3>
+                      {nextBooking.referenceCode && (
+                        <span className="font-mono text-xs text-muted-foreground">
+                          Ref: {nextBooking.referenceCode}
+                        </span>
+                      )}
+                    </div>
 
                     <div className="flex flex-wrap gap-y-2 gap-x-4 text-xs sm:text-sm text-muted-foreground">
                       <div className="flex items-center gap-1.5">
@@ -207,10 +302,32 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                         </div>
                       )}
                     </div>
+
+                    {/* Pending payment callout */}
+                    {nextBooking.status === 'pending' && (
+                      <div className="mt-3 pt-3 border-t border-border-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                        <div className="flex items-center gap-2 text-warning">
+                          <AlertCircle className="w-4 h-4 shrink-0" />
+                          <span>
+                            {isAr
+                              ? 'هذا الدرس في انتظار تأكيد الحوالة البنكية أو وسيلة الدفع'
+                              : 'This lesson is awaiting bank transfer or payment verification'}
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setPaymentClaimBooking(nextBooking)}
+                          className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-lg font-semibold transition-colors cursor-pointer text-xs shrink-0"
+                        >
+                          <CreditCard className="w-3.5 h-3.5" />
+                          <span>{isAr ? 'إرسال إثبات الدفع' : 'Submit Claim'}</span>
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   {/* Zoom Action Block */}
-                  <div>
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                     {hasValidZoomUrl ? (
                       <a
                         id="btn-join-zoom"
@@ -221,9 +338,10 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                       >
                         <Video className="w-4 h-4" />
                         <span>{isAr ? 'دخول الفصل الافتراضي (زووم)' : 'Join Zoom Classroom'}</span>
+                        <ExternalLink className="w-4 h-4 ml-1" />
                       </a>
                     ) : (
-                      <div className="p-4 rounded-xl bg-surface-subtle border border-border-subtle flex items-start gap-3 text-xs sm:text-sm text-muted-foreground">
+                      <div className="p-4 rounded-xl bg-surface-subtle border border-border-subtle flex items-start gap-3 text-xs sm:text-sm text-muted-foreground flex-1">
                         <Clock className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                         <div>
                           <span className="font-medium text-foreground block">
@@ -237,6 +355,13 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                         </div>
                       </div>
                     )}
+
+                    <Link
+                      to="/student/lessons"
+                      className="px-4 py-3 bg-surface hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors text-center min-h-[44px] flex items-center justify-center"
+                    >
+                      {isAr ? 'تفاصيل الموعد والخيارات' : 'Session Options & Details'}
+                    </Link>
                   </div>
 
                   {/* Optional quick repeat link when upcoming booking exists */}
@@ -362,55 +487,67 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
             <CardContent className="flex-1 flex flex-col">
               {bookings.length > 0 ? (
-                <ul 
-                  className="space-y-2.5 overflow-y-auto max-h-[380px] pe-1"
-                  aria-label={isAr ? 'قائمة الدروس السابقة' : 'Past lessons list'}
-                >
-                  {bookings.map(b => {
-                    const isRepeatable = b.status === 'completed' || b.status === 'confirmed';
-                    const bServiceId = b.serviceId || b.service_id || '';
-                    const dateObj = DateTime.fromISO(b.scheduledStart || b.scheduled_start || b.lesson_date);
+                <>
+                  <ul 
+                    className="space-y-2.5 overflow-y-auto max-h-[340px] pe-1"
+                    aria-label={isAr ? 'قائمة الدروس السابقة' : 'Past lessons list'}
+                  >
+                    {bookings.slice(0, 6).map(b => {
+                      const isRepeatable = b.status === 'completed' || b.status === 'confirmed';
+                      const bServiceId = b.serviceId || b.service_id || '';
+                      const dateObj = DateTime.fromISO(b.scheduledStart || b.scheduled_start || b.lesson_date);
 
-                    return (
-                      <li
-                        key={b.id}
-                        className="p-3 rounded-xl bg-surface-subtle border border-border-subtle flex items-center justify-between gap-3 text-start"
-                      >
-                        <div className="min-w-0 flex-1">
-                          <div className="text-xs sm:text-sm font-medium text-foreground truncate">
-                            {b.serviceTitle || b.services?.title || (isAr ? 'درس فردي' : 'Private Lesson')}
+                      return (
+                        <li
+                          key={b.id}
+                          className="p-3 rounded-xl bg-surface-subtle border border-border-subtle flex items-center justify-between gap-3 text-start"
+                        >
+                          <div className="min-w-0 flex-1">
+                            <div className="text-xs sm:text-sm font-medium text-foreground truncate">
+                              {b.serviceTitle || b.services?.title || (isAr ? 'درس فردي' : 'Private Lesson')}
+                            </div>
+                            <div className="text-[11px] text-muted-foreground mt-0.5">
+                              {dateObj.isValid
+                                ? dateObj.setLocale(isAr ? 'ar' : 'en').toLocaleString(DateTime.DATE_MED)
+                                : ''}
+                              {(b.durationMinutes || b.duration) && ` • ${b.durationMinutes || b.duration} ${isAr ? 'د' : 'min'}`}
+                            </div>
                           </div>
-                          <div className="text-[11px] text-muted-foreground mt-0.5">
-                            {dateObj.isValid
-                              ? dateObj.setLocale(isAr ? 'ar' : 'en').toLocaleString(DateTime.DATE_MED)
-                              : ''}
-                            {(b.durationMinutes || b.duration) && ` • ${b.durationMinutes || b.duration} ${isAr ? 'د' : 'min'}`}
-                          </div>
-                        </div>
 
-                        <div className="flex items-center gap-1.5 shrink-0">
-                          <Badge 
-                            variant={b.status === 'completed' ? 'success' : 'secondary'}
-                            className="text-[10px] uppercase font-medium px-2 py-0.5"
-                          >
-                            {b.status}
-                          </Badge>
-                          {isRepeatable && (
-                            <Link
-                              id={`btn-repeat-history-${b.id}`}
-                              to={`/student/book?repeat=true${bServiceId ? `&service=${bServiceId}` : ''}`}
-                              className="p-1.5 rounded-lg text-primary hover:bg-primary/10 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
-                              title={isAr ? 'حجز نفس موضوع هذا الدرس' : 'Repeat this lesson topic'}
-                              aria-label={isAr ? 'حجز نفس موضوع هذا الدرس' : 'Repeat this lesson topic'}
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <Badge 
+                              variant={b.status === 'completed' ? 'success' : b.status === 'pending' ? 'warning' : 'secondary'}
+                              className="text-[10px] uppercase font-medium px-2 py-0.5"
                             >
-                              <RotateCcw className="w-3.5 h-3.5" />
-                            </Link>
-                          )}
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
+                              {b.status}
+                            </Badge>
+                            {isRepeatable && (
+                              <Link
+                                id={`btn-repeat-history-${b.id}`}
+                                to={`/student/book?repeat=true${bServiceId ? `&service=${bServiceId}` : ''}`}
+                                className="p-1.5 rounded-lg text-primary hover:bg-primary/10 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+                                title={isAr ? 'حجز نفس موضوع هذا الدرس' : 'Repeat this lesson topic'}
+                                aria-label={isAr ? 'حجز نفس موضوع هذا الدرس' : 'Repeat this lesson topic'}
+                              >
+                                <RotateCcw className="w-3.5 h-3.5" />
+                              </Link>
+                            )}
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+
+                  <div className="pt-3 mt-auto border-t border-border-subtle">
+                    <Link
+                      to="/student/lessons"
+                      className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 bg-surface-subtle hover:bg-surface text-foreground border border-border rounded-xl text-xs font-semibold transition-colors"
+                    >
+                      <span>{isAr ? 'عرض جدول كافة الدروس' : 'View All Lessons'}</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
+                </>
               ) : (
                 <div className="text-center py-10 px-4 my-auto">
                   <p className="text-xs sm:text-sm text-muted-foreground">
@@ -424,6 +561,25 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
           </Card>
         </div>
       </div>
+
+      {/* Payment Claim Modal */}
+      {paymentClaimBooking && (
+        <StudentPaymentClaimModal
+          isOpen={Boolean(paymentClaimBooking)}
+          onClose={() => setPaymentClaimBooking(null)}
+          bookingReference={paymentClaimBooking.referenceCode}
+          itemTitle={paymentClaimBooking.serviceTitle}
+          amount={paymentClaimBooking.feeAmountUsd}
+          lang={lang}
+          sessionToken={session?.access_token}
+          onClaimSuccess={() => {
+            // refresh data
+            fetch('/api/student/bookings', { headers: { Authorization: `Bearer ${session?.access_token}` } })
+              .then(res => res.json())
+              .then(data => setBookings(Array.isArray(data) ? data : []));
+          }}
+        />
+      )}
     </div>
   );
 }

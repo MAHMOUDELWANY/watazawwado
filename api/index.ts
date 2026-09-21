@@ -173,7 +173,14 @@ app.get('/api/integrations/google-calendar/auth-url', verifyTeacherAuth, (req: a
       return res.status(401).json({ error: 'Unauthorized: missing teacher identity' });
     }
 
-    const { redirectUri } = getGoogleOAuthCredentials();
+    const { redirectUri, isConfigured } = getGoogleOAuthCredentials();
+    if (!isConfigured) {
+      return res.status(503).json({
+        error: 'Google OAuth is not configured. Please set GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, and APP_URL or GOOGLE_REDIRECT_URI in environment.',
+        isConfigured: false
+      });
+    }
+
     const nonce = crypto.randomBytes(16).toString('hex');
     const b64Redirect = Buffer.from(redirectUri).toString('base64');
     const payload = `${teacherId}:${nonce}:${b64Redirect}`;
@@ -329,6 +336,11 @@ app.get('/api/integrations/google-calendar/callback', async (req: any, res: any)
     const isAuthorized = await isTeacherCurrentlyAuthorized(teacherId);
     if (!isAuthorized) {
       return renderError(403, 'Unauthorized: Teacher account is not authorized or has been deactivated.');
+    }
+
+    const { isConfigured } = getGoogleOAuthCredentials(embeddedRedirectUri);
+    if (!isConfigured) {
+      return renderError(503, 'Configuration Error: Google OAuth is not configured. Please set GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, and APP_URL or GOOGLE_REDIRECT_URI in environment.');
     }
 
     const code = sanitizeGoogleAuthCode(rawCode);
@@ -5538,6 +5550,321 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
   } catch (err: any) {
     console.error('[GET /api/student/bookings Error]', err);
     return res.status(500).json({ error: 'Internal server error retrieving student bookings.' });
+  }
+});
+
+// GET /api/student/packages - Retrieve authenticated student's package entitlements & active catalog
+app.get('/api/student/packages', verifyStudentAuth, async (req: any, res: any) => {
+  try {
+    const studentId = req.studentUser?.student_id;
+    const authUserId = req.studentUser?.auth_id;
+
+    if (!studentId && !authUserId) {
+      return res.json({ entitlements: [], catalog: [], creditSummary: { totalRemaining: 0, totalPurchased: 0, totalUsed: 0 } });
+    }
+
+    const supabaseAdmin = getSupabaseAdminClient();
+    if (!supabaseAdmin) {
+      return res.json({
+        entitlements: [],
+        catalog: [
+          {
+            id: 'catalog-4-lessons',
+            package_type: 'monthly',
+            name: '4-Lesson Foundation Package',
+            lesson_count: 4,
+            price_amount: 80,
+            currency: 'USD',
+            is_active: true,
+            description: '4 focused 1-on-1 private lessons with Ustadh Mahmoud. Flexible scheduling.'
+          },
+          {
+            id: 'catalog-8-lessons',
+            package_type: 'monthly',
+            name: '8-Lesson Comprehensive Package',
+            lesson_count: 8,
+            price_amount: 150,
+            currency: 'USD',
+            is_active: true,
+            description: '8 private lessons covering recitation, Tajweed rules, and personalized retention.'
+          },
+          {
+            id: 'catalog-12-lessons',
+            package_type: 'quarterly',
+            name: '12-Lesson Intensive Package',
+            lesson_count: 12,
+            price_amount: 215,
+            currency: 'USD',
+            is_active: true,
+            description: '12 private sessions for deep memorization and consistent mastery.'
+          }
+        ],
+        creditSummary: { totalRemaining: 0, totalPurchased: 0, totalUsed: 0 }
+      });
+    }
+
+    // 1. Fetch available package catalog
+    const { data: catalogData } = await supabaseAdmin
+      .from('package_catalog')
+      .select('id, package_type, name, lesson_count, price_amount, currency, is_active, eligibility_rules')
+      .eq('is_active', true)
+      .order('price_amount', { ascending: true });
+
+    // 2. Fetch student's entitlements
+    let entitlementFilter = '';
+    if (authUserId && studentId) {
+      entitlementFilter = `purchaser_account_id.eq.${authUserId},learner_student_id.eq.${studentId}`;
+    } else if (authUserId) {
+      entitlementFilter = `purchaser_account_id.eq.${authUserId}`;
+    } else {
+      entitlementFilter = `learner_student_id.eq.${studentId}`;
+    }
+
+    const { data: entitlementsData, error: entErr } = await supabaseAdmin
+      .from('package_entitlements')
+      .select('id, package_catalog_id, purchaser_account_id, learner_student_id, status, purchased_quantity, remaining_credits, price_paid, currency, payment_reference, created_at, updated_at')
+      .or(entitlementFilter)
+      .order('created_at', { ascending: false });
+
+    if (entErr) {
+      console.warn('[GET /api/student/packages DB Warning]', entErr.message);
+    }
+
+    // Map catalog metadata to entitlements
+    const catalogMap = new Map<string, any>();
+    for (const item of catalogData || []) {
+      catalogMap.set(item.id, item);
+    }
+
+    const formattedEntitlements = (entitlementsData || []).map((ent: any) => {
+      const cat = catalogMap.get(ent.package_catalog_id);
+      return {
+        id: ent.id,
+        packageCatalogId: ent.package_catalog_id,
+        packageName: cat?.name || 'Lesson Package',
+        packageType: cat?.package_type || 'monthly',
+        status: ent.status, // 'pending_payment' | 'active' | 'exhausted' | 'cancelled'
+        purchasedQuantity: ent.purchased_quantity || 0,
+        remainingCredits: ent.remaining_credits || 0,
+        pricePaid: ent.price_paid,
+        currency: ent.currency || 'USD',
+        paymentReference: ent.payment_reference || null,
+        createdAt: ent.created_at,
+        updatedAt: ent.updated_at
+      };
+    });
+
+    // Compute credit summary
+    let totalRemaining = 0;
+    let totalPurchased = 0;
+
+    for (const e of formattedEntitlements) {
+      if (e.status === 'active') {
+        totalRemaining += e.remainingCredits;
+      }
+      if (e.status === 'active' || e.status === 'exhausted') {
+        totalPurchased += e.purchasedQuantity;
+      }
+    }
+
+    const totalUsed = Math.max(0, totalPurchased - totalRemaining);
+
+    return res.json({
+      entitlements: formattedEntitlements,
+      catalog: catalogData || [],
+      creditSummary: {
+        totalRemaining,
+        totalPurchased,
+        totalUsed
+      }
+    });
+  } catch (err: any) {
+    console.error('[GET /api/student/packages Error]', err);
+    return res.status(500).json({ error: 'Internal server error retrieving student packages.' });
+  }
+});
+
+// POST /api/student/packages/select - Initiate package purchase by creating a pending entitlement
+app.post('/api/student/packages/select', verifyStudentAuth, async (req: any, res: any) => {
+  try {
+    const studentId = req.studentUser?.student_id;
+    const authUserId = req.studentUser?.auth_id;
+
+    if (!authUserId) {
+      return res.status(403).json({ error: 'Authenticated account required to purchase packages.' });
+    }
+
+    const { packageCatalogId } = req.body;
+    if (!packageCatalogId || typeof packageCatalogId !== 'string') {
+      return res.status(400).json({ error: 'Valid packageCatalogId is required.' });
+    }
+
+    const supabaseAdmin = getSupabaseAdminClient();
+    if (!supabaseAdmin) {
+      return res.json({
+        success: true,
+        entitlement: {
+          id: 'dev-entitlement-' + Date.now(),
+          package_catalog_id: packageCatalogId,
+          status: 'pending_payment',
+          purchased_quantity: 4,
+          remaining_credits: 0,
+          price_paid: 80,
+          currency: 'USD'
+        },
+        message: 'Package entitlement created. Please submit your payment reference for verification.'
+      });
+    }
+
+    // 1. Fetch package from catalog
+    const { data: catalogItem, error: catErr } = await supabaseAdmin
+      .from('package_catalog')
+      .select('id, name, package_type, lesson_count, price_amount, currency, is_active')
+      .eq('id', packageCatalogId)
+      .eq('is_active', true)
+      .maybeSingle();
+
+    if (catErr || !catalogItem) {
+      return res.status(404).json({ error: 'Package not found or currently inactive.' });
+    }
+
+    // 2. Create pending entitlement row
+    const { data: newEntitlement, error: insertErr } = await supabaseAdmin
+      .from('package_entitlements')
+      .insert({
+        package_catalog_id: catalogItem.id,
+        purchaser_account_id: authUserId,
+        learner_student_id: studentId || null,
+        status: 'pending_payment',
+        purchased_quantity: catalogItem.lesson_count,
+        remaining_credits: 0, // Credits are 0 until payment is confirmed by teacher
+        price_paid: catalogItem.price_amount,
+        currency: catalogItem.currency || 'USD'
+      })
+      .select('id, package_catalog_id, status, purchased_quantity, remaining_credits, price_paid, currency, created_at')
+      .single();
+
+    if (insertErr || !newEntitlement) {
+      console.error('[POST /api/student/packages/select Insert Error]', insertErr);
+      return res.status(500).json({ error: 'Failed to create package entitlement.' });
+    }
+
+    return res.status(201).json({
+      success: true,
+      entitlement: newEntitlement,
+      package: catalogItem,
+      message: 'Package entitlement created. Please submit your payment reference to activate your credits.'
+    });
+  } catch (err: any) {
+    console.error('[POST /api/student/packages/select Error]', err);
+    return res.status(500).json({ error: 'Internal server error selecting package.' });
+  }
+});
+
+// GET /api/student/payments - Retrieve authenticated student's payment history
+app.get('/api/student/payments', verifyStudentAuth, async (req: any, res: any) => {
+  try {
+    const studentId = req.studentUser?.student_id;
+    const authUserId = req.studentUser?.auth_id;
+
+    if (!studentId && !authUserId) {
+      return res.json({ payments: [] });
+    }
+
+    const supabaseAdmin = getSupabaseAdminClient();
+    if (!supabaseAdmin) {
+      return res.json({ payments: [] });
+    }
+
+    // Fetch payments associated with student or their bookings
+    let query = supabaseAdmin
+      .from('payments')
+      .select(`
+        id,
+        booking_id,
+        entitlement_id,
+        student_id,
+        amount,
+        currency,
+        payment_method,
+        payment_reference,
+        status,
+        notes,
+        created_at,
+        updated_at
+      `);
+
+    if (studentId) {
+      query = query.eq('student_id', studentId);
+    }
+
+    const { data: paymentsData, error: paymentsErr } = await query.order('created_at', { ascending: false });
+
+    if (paymentsErr) {
+      console.warn('[GET /api/student/payments DB Error]', paymentsErr.message);
+      return res.json({ payments: [] });
+    }
+
+    // Resolve booking and package names for each payment
+    const bookingIds = (paymentsData || []).map((p: any) => p.booking_id).filter(Boolean);
+    const entitlementIds = (paymentsData || []).map((p: any) => p.entitlement_id).filter(Boolean);
+
+    const bookingMap = new Map<string, any>();
+    if (bookingIds.length > 0) {
+      const { data: bData } = await supabaseAdmin
+        .from('bookings')
+        .select('id, reference_code, service_id, scheduled_start')
+        .in('id', bookingIds);
+      for (const b of bData || []) {
+        bookingMap.set(b.id, b);
+      }
+    }
+
+    const entitlementMap = new Map<string, any>();
+    if (entitlementIds.length > 0) {
+      const { data: eData } = await supabaseAdmin
+        .from('package_entitlements')
+        .select('id, package_catalog_id, purchased_quantity, package_catalog ( name )')
+        .in('id', entitlementIds);
+      for (const e of eData || []) {
+        entitlementMap.set(e.id, e);
+      }
+    }
+
+    const formattedPayments = (paymentsData || []).map((p: any) => {
+      let itemDescription = 'Lesson Fee';
+      let referenceIdentifier = p.payment_reference || '';
+
+      if (p.booking_id && bookingMap.has(p.booking_id)) {
+        const b = bookingMap.get(p.booking_id);
+        itemDescription = `Lesson (${b.reference_code})`;
+        if (!referenceIdentifier) referenceIdentifier = b.reference_code;
+      } else if (p.entitlement_id && entitlementMap.has(p.entitlement_id)) {
+        const e = entitlementMap.get(p.entitlement_id);
+        const name = (e as any).package_catalog?.name || 'Lesson Package';
+        itemDescription = `${name} (${e.purchased_quantity} credits)`;
+      }
+
+      return {
+        id: p.id,
+        bookingId: p.booking_id,
+        entitlementId: p.entitlement_id,
+        amount: p.amount,
+        currency: p.currency || 'USD',
+        paymentMethod: p.payment_method,
+        paymentReference: p.payment_reference,
+        status: p.status, // 'pending' | 'confirmed' | 'rejected'
+        notes: p.notes,
+        itemDescription,
+        createdAt: p.created_at,
+        updatedAt: p.updated_at
+      };
+    });
+
+    return res.json({ payments: formattedPayments });
+  } catch (err: any) {
+    console.error('[GET /api/student/payments Error]', err);
+    return res.status(500).json({ error: 'Internal server error retrieving student payments.' });
   }
 });
 
