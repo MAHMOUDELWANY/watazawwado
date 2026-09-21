@@ -33,6 +33,7 @@ interface BookingFlowProps {
   canBookForChild?: boolean;
   studentName?: string;
   studentEmail?: string;
+  teacherId?: string;
 }
 
 export const BookingFlow: React.FC<BookingFlowProps> = ({
@@ -53,7 +54,8 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   bookingPreference = 'self',
   canBookForChild = false,
   studentName,
-  studentEmail
+  studentEmail,
+  teacherId
 }) => {
   const isEn = lang === 'en';
 
@@ -123,7 +125,8 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
       date: initialData?.date || '',
       timeSlot: initialData?.timeSlot || null,
       timezone: initialData?.timezone || userTz,
-      studentId: resolvedStudentId
+      studentId: resolvedStudentId,
+      teacherId: initialData?.teacherId || teacherId
     };
   });
 
@@ -364,6 +367,8 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
               >
                 <StepDateTime
                   mode={formData.mode}
+                  duration={formData.duration}
+                  teacherId={formData.teacherId}
                   selectedDate={formData.date}
                   selectedSlot={formData.timeSlot}
                   timezone={formData.timezone}

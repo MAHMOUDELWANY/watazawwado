@@ -641,7 +641,31 @@ app.get('/api/integrations/availability', async (req, res) => {
       return res.status(400).json({ error: 'Invalid duration.', code: 'INVALID_AVAILABILITY_REQUEST' });
     }
 
-    const teacherId = typeof req.query.teacherId === 'string' ? req.query.teacherId : (typeof req.query.teacher_id === 'string' ? req.query.teacher_id : undefined);
+    let teacherId = typeof req.query.teacherId === 'string' ? req.query.teacherId : (typeof req.query.teacher_id === 'string' ? req.query.teacher_id : undefined);
+
+    // If teacherId was not passed explicitly in query, attempt to resolve from authenticated student Bearer token if present
+    if (!teacherId && req.headers.authorization?.startsWith('Bearer ')) {
+      try {
+        const supabaseAdmin = getSupabaseAdminClient();
+        if (supabaseAdmin) {
+          const token = req.headers.authorization.split(' ')[1];
+          const { data: { user } } = await supabaseAdmin.auth.getUser(token);
+          if (user) {
+            const { data: student } = await supabaseAdmin
+              .from('students')
+              .select('assigned_teacher_id')
+              .eq('auth_user_id', user.id)
+              .maybeSingle();
+            if (student?.assigned_teacher_id) {
+              teacherId = student.assigned_teacher_id;
+            }
+          }
+        }
+      } catch {
+        // Silently continue to fallback resolution
+      }
+    }
+
     const days = await computeAvailableSlots(timezone, daysCount, duration, teacherId);
     res.json({ success: true, days, timezone });
   } catch (error: any) {
@@ -861,7 +885,7 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
       // Check student profile by auth_user_id
       let { data: studentRecord, error: studentError } = await supabaseAdmin
         .from('students')
-        .select('id, name, email, timezone, learner_type, current_level, status')
+        .select('id, name, email, timezone, learner_type, current_level, status, assigned_teacher_id')
         .eq('auth_user_id', user.id)
         .maybeSingle();
 
@@ -874,7 +898,7 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
       if (!studentRecord && userEmail) {
         const { data: matchingStudents, error: matchError } = await supabaseAdmin
           .from('students')
-          .select('id, name, email, timezone, learner_type, current_level, status, auth_user_id')
+          .select('id, name, email, timezone, learner_type, current_level, status, auth_user_id, assigned_teacher_id')
           .ilike('email', userEmail);
 
         if (!matchError && matchingStudents) {
@@ -887,7 +911,7 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
               .update({ auth_user_id: user.id })
               .eq('id', candidate.id)
               .is('auth_user_id', null)
-              .select('id, name, email, timezone, learner_type, current_level, status')
+              .select('id, name, email, timezone, learner_type, current_level, status, assigned_teacher_id')
               .single();
 
             if (!linkError && linkedStudent) {
@@ -918,6 +942,7 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
         auth_id: user.id,
         email: userEmail,
         student_id: studentRecord?.id || null,
+        assigned_teacher_id: studentRecord?.assigned_teacher_id || null,
         name: studentRecord?.name || user.user_metadata?.full_name || 'Student',
         studentProfile: studentRecord || null
       };
@@ -4889,7 +4914,7 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       const [studentRes, guardianRes, goalsRes, linkedChildrenRes] = await Promise.all([
         supabaseAdmin
           .from('students')
-          .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, booking_preference, created_at, onboarding_completed, learning_interest, learning_goal, learning_needs')
+          .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, booking_preference, created_at, onboarding_completed, learning_interest, learning_goal, learning_needs, assigned_teacher_id')
           .eq('id', studentId)
           .single(),
         supabaseAdmin
@@ -4984,6 +5009,7 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
         learnerType: profile.learner_type || 'adult',
         currentLevel: profile.current_level || 'beginner',
         status: profile.status || 'active',
+        assignedTeacherId: profile.assigned_teacher_id || null,
         bookingPreference,
         canBookForChild,
         linkedChildren: linkedChildrenFromGuardians,
@@ -5026,6 +5052,7 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
           learnerType: mp.learner_type || 'adult',
           currentLevel: mp.current_level || 'beginner',
           status: mp.status || 'active',
+          assignedTeacherId: mp.assigned_teacher_id || mp.assignedTeacherId || null,
           bookingPreference: safePref,
           canBookForChild: mockCanBookForChild,
           linkedChildren: mp.linkedChildren || [],

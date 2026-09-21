@@ -17,13 +17,15 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { bookingService } from '../../booking/bookingService';
-import { DayAvailability, TimeSlot, Language, BookingMode } from '../../booking/types';
+import { DayAvailability, TimeSlot, Language, BookingMode, LessonDuration } from '../../booking/types';
 import { TimezoneSelectorModal } from './TimezoneSelectorModal';
 import { MAJOR_TIMEZONES } from '../../booking/mockData';
 import { buildWhatsAppUrl } from '../../lib/whatsapp';
 
 interface StepDateTimeProps {
   mode: BookingMode;
+  duration?: LessonDuration;
+  teacherId?: string;
   selectedDate: string;
   selectedSlot: TimeSlot | null;
   timezone: string;
@@ -37,6 +39,8 @@ interface StepDateTimeProps {
 
 export const StepDateTime: React.FC<StepDateTimeProps> = ({
   mode,
+  duration,
+  teacherId,
   selectedDate,
   selectedSlot,
   timezone,
@@ -61,8 +65,10 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
     setLoading(true);
     setError(null);
 
+    const effectiveDuration = duration || (mode === 'trial' ? 30 : 45);
+
     bookingService
-      .getAvailability(timezone)
+      .getAvailability(timezone, effectiveDuration, teacherId)
       .then((data) => {
         if (!isMounted) return;
         setDays(data);
@@ -91,7 +97,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
     return () => {
       isMounted = false;
     };
-  }, [timezone]);
+  }, [timezone, duration, teacherId, mode, isEn]);
 
   // Current selected day
   const currentDay = days.find((d) => d.dateString === selectedDate) || days[0];

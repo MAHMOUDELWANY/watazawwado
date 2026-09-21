@@ -911,6 +911,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
             canBookForChild={Boolean(profile?.canBookForChild && Array.isArray(profile?.linkedChildren) && profile.linkedChildren.length > 0)}
             studentName={profile?.name}
             studentEmail={profile?.email}
+            teacherId={profile?.assignedTeacherId || profile?.assigned_teacher_id}
           />
         </div>
       )}

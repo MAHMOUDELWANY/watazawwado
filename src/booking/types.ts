@@ -81,6 +81,7 @@ export interface BookingFormData {
   timeSlot: TimeSlot | null;
   timezone: string;
   studentId?: string;
+  teacherId?: string;
   selectedPackageId?: string;
 }
 

@@ -165,29 +165,3 @@ test('Workflow 03-E Endpoint Security Validations', async (t) => {
         assert.notStrictEqual(res.status, 401, 'Authorized PUT must not return 401');
     });
 });
-        } catch (err: any) {
-            assert.fail(`Server is not running. Fetch failed: ${err.message}`);
-        }
-        // This test does NOT prove Production authentication works with real Supabase tokens.
-        // It only proves the dev token bypasses the middleware 401 correctly.
-        assert.notStrictEqual(res.status, 401, 'Authorized GET must not return 401');
-    });
-
-    await t.test('Case 13 — (Development Only) Authorized PUT bypasses 401', async () => {
-        let res;
-        try {
-            res = await fetch(`http://127.0.0.1:${port}/api/dashboard/availability`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-dev-teacher-auth': 'true'
-                },
-                body: JSON.stringify({ schedule: [] })
-            });
-        } catch (err: any) {
-            assert.fail(`Server is not running. Fetch failed: ${err.message}`);
-        }
-        // This test does NOT prove Production authentication works with real Supabase tokens.
-        assert.notStrictEqual(res.status, 401, 'Authorized PUT must not return 401');
-    });
-});

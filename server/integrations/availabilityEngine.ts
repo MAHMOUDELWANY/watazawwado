@@ -148,13 +148,33 @@ export async function resolveAuthoritativeTeacherForAvailability(
       return activeTeacherId;
     }
 
-    // Multiple active connections: fail closed unless caller explicitly matched one of the active connections
+    // Multiple active connections:
+    // If caller explicitly passed a teacherId (e.g. authenticated student with assigned_teacher_id), match against active connections
     if (cleanSupplied) {
       const match = conns.find(c => c.teacher_id.toLowerCase() === cleanSupplied.toLowerCase());
       return match ? match.teacher_id : null;
     }
 
-    // Multiple connections and no teacherId -> fail closed
+    // Multiple connections and no teacherId supplied (e.g. public guest flow or unassigned student):
+    // Disambiguate by checking which active connected teacher actually has active availability configured in public.availability
+    const connectedTeacherIds = conns.map(c => c.teacher_id);
+    const { data: availRows, error: availErr } = await supabase
+      .from('availability')
+      .select('teacher_id')
+      .in('teacher_id', connectedTeacherIds)
+      .eq('is_active', true);
+
+    if (!availErr && availRows && availRows.length > 0) {
+      const distinctTeachersWithAvail = Array.from(new Set(availRows.map((r: any) => r.teacher_id.toLowerCase())));
+      if (distinctTeachersWithAvail.length === 1) {
+        const resolvedTeacherId = conns.find(c => c.teacher_id.toLowerCase() === distinctTeachersWithAvail[0])?.teacher_id;
+        if (resolvedTeacherId) {
+          return resolvedTeacherId;
+        }
+      }
+    }
+
+    // Multiple connections with multiple (or zero) teachers offering availability -> fail closed
     return null;
   } catch (err) {
     console.warn('[resolveAuthoritativeTeacherForAvailability Error]', err);

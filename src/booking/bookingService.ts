@@ -21,9 +21,28 @@ export const bookingService = {
    * Fetches available dates and times for a given timezone.
    * Queries real server-side availability engine combining Google Calendar & Supabase.
    */
-  async getAvailability(timezone: string, duration = 30): Promise<DayAvailability[]> {
+  async getAvailability(timezone: string, duration = 30, teacherId?: string): Promise<DayAvailability[]> {
     try {
-      const res = await fetch(`/api/integrations/availability?timezone=${encodeURIComponent(timezone)}&duration=${duration}`);
+      let url = `/api/integrations/availability?timezone=${encodeURIComponent(timezone)}&duration=${duration}`;
+      if (teacherId && typeof teacherId === 'string' && teacherId.trim() !== '') {
+        url += `&teacherId=${encodeURIComponent(teacherId.trim())}`;
+      }
+
+      const headers: Record<string, string> = {};
+      try {
+        const token = localStorage.getItem('supabase_auth_token') || localStorage.getItem('sb-fmwxqyroyxgigvpahpri-auth-token');
+        if (token) {
+          const parsed = JSON.parse(token);
+          const accessToken = parsed.access_token || parsed?.currentSession?.access_token;
+          if (accessToken) {
+            headers['Authorization'] = `Bearer ${accessToken}`;
+          }
+        }
+      } catch {
+        // Ignore token parse errors
+      }
+
+      const res = await fetch(url, { headers });
       if (res.ok) {
         const data = await res.json();
         if (data.days && Array.isArray(data.days)) {
