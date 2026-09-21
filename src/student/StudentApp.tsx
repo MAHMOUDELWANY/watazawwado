@@ -420,8 +420,12 @@ export default function StudentApp() {
         aria-label={isAr ? 'شريط التنقل الجانبي للطالب' : 'Student Navigation Sidebar'}
         className={`
           fixed lg:static inset-y-0 start-0 z-50 w-64 lg:w-72 max-w-[85vw] bg-surface border-e border-border
-          flex flex-col transform transition-transform duration-250 ease-out shadow-xs shrink-0
-          ${sidebarOpen ? 'translate-x-0' : `${isAr ? 'translate-x-full' : '-translate-x-full'} rtl:translate-x-full ltr:-translate-x-full lg:translate-x-0`}
+          flex flex-col transition-transform duration-250 ease-out shadow-xs shrink-0
+          ${sidebarOpen 
+            ? 'max-lg:translate-x-0' 
+            : (isAr ? 'max-lg:translate-x-full' : 'max-lg:-translate-x-full')
+          }
+          lg:translate-x-0
         `}
       >
         {/* Brand & Portal Header */}
