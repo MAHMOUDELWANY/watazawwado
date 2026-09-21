@@ -4,16 +4,19 @@
 I successfully rebased/extracted the exact files from the previous PR attempt branch (`feat/workflow-03e-teacher-availability-final-13090903564844492151`). No files unrelated to the exact workflow 03-E were pulled in.
 
 ## Exact Files Changed
-- `api/index.ts` (API routes using `req.teacherUser?.id`)
+- `api/index.ts` (API routes using `req.teacherUser?.id` and repaired syntax)
 - `src/components/dashboard/AvailabilityManager.tsx` (The existing verified AvailabilityManager React component)
 - `src/dashboard/pages/SettingsPage.tsx` (To inject the component)
 - `server/integrations/availabilityEngine.ts` (Fixes the isTestEnv bypass)
 - `test/workflow-03e-availability.test.ts` (Robust test coverage)
 - `FINAL_REPORT.md` (This document)
 
+## Exact Syntax Issue/Root Cause
+The previous PR had somehow accidentally left an orphaned block of the old availability implementation (specifically a dangling `const teacherId = req.user?.id;` and catch block) right around line 4219. This was not wrapped in an `app.get` block or `try/catch` and resulted in an `Unexpected "}"` error during compilation in Vercel. I explicitly deleted this broken fragment and reinstated the correct block.
+
 ## Exact Implementation Included
 - **Teacher Settings**: Exposed Availability tab in `SettingsPage.tsx`, rendering `AvailabilityManager`.
-- **API**: GET and PUT endpoints at `/api/dashboard/availability` properly bound to `verifyTeacherAuth` and extracting the `req.teacherUser?.id` identity correctly, strictly avoiding the 401 bug. Time validations like `start_time >= end_time` were explicitly preserved.
+- **API**: GET and PUT endpoints at `/api/dashboard/availability` properly bound to `verifyTeacherAuth` and extracting the `req.teacherUser?.id` identity correctly exactly ONCE.
 - **Availability persistence**: Utilizes the pre-existing secure `update_teacher_availability` RPC. **NO** Supabase schema changes or new migrations were made.
 - **Availability engine**: Uses the fixed boundary conditions logic verified by robust isolated unit tests.
 - **Tests**: Kept meaningful workflow-03e boundary tests. Added tests checking `x-dev-teacher-auth: true` bypass the middleware 401 (explicitly labeling them as development-only and NOT proof of production authentication).
@@ -31,4 +34,4 @@ I successfully rebased/extracted the exact files from the previous PR attempt br
 
 - current main SHA used as base: 41442aa152c1e84a27546fb11796d1deeb0ff0f3
 - new branch name: feat/workflow-03e-clean-integration
-- commit SHA: f03c9cab232f1a8c92867240f1fb5744927330d2
+- commit SHA: ed85289cef4faafcce5e0be380dafcb1b54ddb75
