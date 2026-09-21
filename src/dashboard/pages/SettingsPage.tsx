@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { IntegrationsManager } from '../../components/dashboard/IntegrationsManager';
+import { AvailabilityManager } from '../../components/dashboard/AvailabilityManager';
 
 interface Setting {
   key: string;
@@ -165,6 +166,7 @@ export default function SettingsPage() {
 
   const tabs = [
     { id: 'Profile', icon: User, label: 'Profile & Contact' },
+    { id: 'Availability', icon: Calendar, label: 'Availability' },
     { id: 'Services', icon: BookOpen, label: 'Services & Rates' },
     { id: 'Policy', icon: Calendar, label: 'Policies & Time' },
     { id: 'Payment', icon: CreditCard, label: 'Payment Methods' },
@@ -282,6 +284,11 @@ export default function SettingsPage() {
                 </div>
               </div>
             </div>
+          )}
+
+          {/* 1.5 Availability */}
+          {activeTab === 'Availability' && (
+            <AvailabilityManager />
           )}
 
           {/* 2. Services & Pricing */}

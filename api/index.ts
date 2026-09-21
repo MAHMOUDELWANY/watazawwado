@@ -4216,13 +4216,7 @@ app.get('/api/dashboard/analytics', verifyTeacherAuth, async (req, res) => {
   }
 });
 
-// 20c. DASHBOARD: Get teacher settings
-app.get('/api/dashboard/availability', verifyTeacherAuth, async (req: any, res: any) => {
-  try {
-    const supabase = getSupabaseAdminClient();
-    if (!supabase) return res.status(503).json({ error: 'Database integration is not properly configured.' });
-
-    const teacherId = req.teacherUser?.id;
+    const teacherId = req.user?.id;
     if (!teacherId) {
       return res.status(401).json({ error: 'Unauthorized: No valid teacher session' });
     }
@@ -4246,12 +4240,7 @@ app.get('/api/dashboard/availability', verifyTeacherAuth, async (req: any, res: 
   }
 });
 
-app.put('/api/dashboard/availability', verifyTeacherAuth, async (req: any, res: any) => {
-  try {
-    const supabase = getSupabaseAdminClient();
-    if (!supabase) return res.status(503).json({ error: 'Database integration is not properly configured.' });
-
-    const teacherId = req.teacherUser?.id;
+    const teacherId = req.user?.id;
     if (!teacherId) {
       return res.status(401).json({ error: 'Unauthorized: No valid teacher session' });
     }
@@ -4297,6 +4286,101 @@ app.put('/api/dashboard/availability', verifyTeacherAuth, async (req: any, res: 
 
     // Atomic update via RPC
     // Timezone is enforced server-side inside the RPC based on canonical teacher profile
+    const { error: rpcError } = await supabase.rpc('update_teacher_availability', {
+      p_teacher_id: teacherId,
+      p_schedule: validatedIntervals
+    });
+
+    if (rpcError) {
+      console.error('[Dashboard API] Error updating availability via RPC:', rpcError);
+      return res.status(500).json({ error: 'Failed to update availability transactionally.' });
+    }
+
+    return res.json({ success: true, message: 'Availability updated successfully.' });
+
+  } catch (error: any) {
+    console.error('[Dashboard API] Availability put exception:', error);
+    return res.status(500).json({ error: 'Failed to update availability.' });
+  }
+});
+
+// 20b. DASHBOARD: Get teacher availability
+app.get('/api/dashboard/availability', verifyTeacherAuth, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+
+    const teacherId = req.teacherUser?.id;
+    if (!teacherId) {
+      return res.status(401).json({ error: 'Unauthorized: No valid teacher session' });
+    }
+
+    const { data, error } = await supabase
+      .from('availability')
+      .select('*')
+      .eq('teacher_id', teacherId)
+      .order('weekday', { ascending: true })
+      .order('start_time', { ascending: true });
+
+    if (error) {
+      console.error('[Dashboard API] Error fetching availability:', error);
+      return res.status(500).json({ error: 'Failed to retrieve availability.' });
+    }
+
+    return res.json({ success: true, availability: data || [] });
+  } catch (error: any) {
+    console.error('[Dashboard API] Availability get exception:', error);
+    return res.status(500).json({ error: 'Failed to retrieve availability.' });
+  }
+});
+
+app.put('/api/dashboard/availability', verifyTeacherAuth, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+
+    const teacherId = req.teacherUser?.id;
+    if (!teacherId) {
+      return res.status(401).json({ error: 'Unauthorized: No valid teacher session' });
+    }
+
+    const { schedule } = req.body;
+    if (!Array.isArray(schedule)) {
+      return res.status(400).json({ error: 'Schedule must be an array of intervals.' });
+    }
+
+    const validatedIntervals: any[] = [];
+    const timeRegex = /^([01]d|2[0-3]):([0-5]d):([0-5]d)$/;
+
+    for (const item of schedule) {
+      if (typeof item.weekday !== 'number' || item.weekday < 0 || item.weekday > 6) {
+         return res.status(400).json({ error: `Invalid weekday: ${item.weekday}. Must be integer 0-6.` });
+      }
+
+      let startTime = item.start_time;
+      let endTime = item.end_time;
+
+      if (startTime.length === 5) startTime += ':00';
+      if (endTime.length === 5) endTime += ':00';
+
+      if (!timeRegex.test(startTime) || !timeRegex.test(endTime)) {
+        return res.status(400).json({ error: `Invalid time format for weekday ${item.weekday}. Must be HH:mm:ss or HH:mm.` });
+      }
+
+      const startTimeDate = new Date(`1970-01-01T${startTime}Z`);
+      const endTimeDate = new Date(`1970-01-01T${endTime}Z`);
+
+      if (startTimeDate >= endTimeDate) {
+         return res.status(400).json({ error: `Start time must be before end time for weekday ${item.weekday}.` });
+      }
+
+      validatedIntervals.push({
+        weekday: item.weekday,
+        start_time: startTime,
+        end_time: endTime
+      });
+    }
+
     const { error: rpcError } = await supabase.rpc('update_teacher_availability', {
       p_teacher_id: teacherId,
       p_schedule: validatedIntervals

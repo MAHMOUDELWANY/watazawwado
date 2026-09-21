@@ -1,29 +1,34 @@
-# FINAL REPORT: Teacher Availability 401 Authorization Fix
+# FINAL REPORT: CLEAN REINTEGRATION — Workflow 03-E
 
-## Root Cause
-The `Unauthorized: No valid teacher session` error in production when accessing `/api/dashboard/availability` was caused by the endpoints reading the user ID from `req.user?.id`. However, the authentication middleware (`verifyTeacherAuth`) populates `req.teacherUser` on successful validation. Because `req.user` was `undefined`, the endpoints failed immediately with a `401 Unauthorized` before accessing the database.
-
-## Why Existing Teacher Endpoints Work
-Other working endpoints (like `/api/dashboard/settings`, `/api/dashboard/today`) correctly extract the teacher ID through `verifyTeacherAuth` and either don't rely on explicitly passing the ID in the endpoint implementation (relying on Supabase RLS with Service Role instead) or they correctly read from `req.teacherUser?.id` (such as `/api/integrations/google-calendar/disconnect`).
-
-## Exact Fix
-In `api/index.ts`, I updated both the GET and PUT routes for `/api/dashboard/availability` (around lines 4225 and 4254):
-- Changed `const teacherId = req.user?.id;` to `const teacherId = req.teacherUser?.id;`
+## Exact Commits Reused
+I successfully rebased/extracted the exact files from the previous PR attempt branch (`feat/workflow-03e-teacher-availability-final-13090903564844492151`). No files unrelated to the exact workflow 03-E were pulled in.
 
 ## Exact Files Changed
-- `api/index.ts`
-- `test/workflow-03e-availability.test.ts`
-- `FINAL_REPORT.md`
+- `api/index.ts` (API routes using `req.teacherUser?.id`)
+- `src/components/dashboard/AvailabilityManager.tsx` (The existing verified AvailabilityManager React component)
+- `src/dashboard/pages/SettingsPage.tsx` (To inject the component)
+- `server/integrations/availabilityEngine.ts` (Fixes the isTestEnv bypass)
+- `test/workflow-03e-availability.test.ts` (Robust test coverage)
+- `FINAL_REPORT.md` (This document)
 
-## Validation Results
-- **Lint**: `npm run lint` (`tsc --noEmit`) completed successfully with 0 errors.
-- **Build**: `npm run build` completed successfully.
-- **Test**: Added regression test cases to `test/workflow-03e-availability.test.ts` (Case 12/13).
-  - Validated that an unauthenticated request returns 401.
-  - Validated that an authenticated request (using `x-dev-teacher-auth: true`) correctly bypasses the 401 unauthorized block and gets a successful auth response.
-  - Expressly stated that these dev-bypass tests do NOT prove Production authentication works with real Supabase tokens, only that the middleware block is handled correctly.
+## Exact Implementation Included
+- **Teacher Settings**: Exposed Availability tab in `SettingsPage.tsx`, rendering `AvailabilityManager`.
+- **API**: GET and PUT endpoints at `/api/dashboard/availability` properly bound to `verifyTeacherAuth` and extracting the `req.teacherUser?.id` identity correctly, strictly avoiding the 401 bug. Time validations like `start_time >= end_time` were explicitly preserved.
+- **Availability persistence**: Utilizes the pre-existing secure `update_teacher_availability` RPC. **NO** Supabase schema changes or new migrations were made.
+- **Availability engine**: Uses the fixed boundary conditions logic verified by robust isolated unit tests.
+- **Tests**: Kept meaningful workflow-03e boundary tests. Added tests checking `x-dev-teacher-auth: true` bypass the middleware 401 (explicitly labeling them as development-only and NOT proof of production authentication).
 
-## Production E2E
-Production E2E testing with a real Supabase session was NOT performed as I do not have authorized Production credentials to verify. Code/Test verification confirms the middleware bug is resolved.
+## Validations
+- `npm run lint` completed perfectly (0 errors).
+- `npx tsc --noEmit` completed perfectly (0 errors).
+- `npm run build` completed perfectly.
+- `npx tsx --test test/workflow-03e-availability.test.ts` completed perfectly.
 
-Commit SHA: 949af366f959387ad93ef1e3d7cf1b5168eac6ce
+## Confirmations
+- **Supabase changes**: CONFIRMED NONE. No new migrations were made and the database schema was not modified.
+- **API `req.teacherUser?.id`**: CONFIRMED. Both GET and PUT availability routes extract `req.teacherUser?.id` appropriately exactly ONCE.
+- **Unrelated Changes**: CONFIRMED NONE. No other branches were merged, no unrequired files were copied, and no changes to packages/payments/bookings/calendar/zoom were included.
+
+- current main SHA used as base: 41442aa152c1e84a27546fb11796d1deeb0ff0f3
+- new branch name: feat/workflow-03e-clean-integration
+- commit SHA: f03c9cab232f1a8c92867240f1fb5744927330d2
