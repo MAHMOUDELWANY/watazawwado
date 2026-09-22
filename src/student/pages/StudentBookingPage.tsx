@@ -5,6 +5,7 @@ import { BookingFlow } from '../../components/booking/BookingFlow';
 import { BOOKING_SERVICES } from '../../booking/mockData';
 import { BookingFormData, BookingMode, ProficiencyLevel, LessonDuration } from '../../booking/types';
 import { useTeacherAuth } from '../../lib/auth';
+import { StudentPageBack } from '../components/StudentPageBack';
 
 export interface StudentBookingPageProps {
   profile?: any;
@@ -591,7 +592,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
     );
   }
 
-  if (profileLoading) {
+  if (profileLoading || (bookingsLoading && bookings === null)) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -717,14 +718,12 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
       {/* Top Header & Context Breadcrumb */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border/60">
         <div>
-          <button
-            type="button"
-            onClick={() => navigate('/student')}
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors mb-1.5 cursor-pointer"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Return to Student Portal</span>
-          </button>
+          <StudentPageBack
+            to="/student"
+            label="Return to Student Portal"
+            labelAr="العودة لبوابة الطالب"
+            className="mb-1.5"
+          />
           <h1 className="text-2xl font-serif font-bold tracking-tight text-foreground">
             Book a Lesson
           </h1>

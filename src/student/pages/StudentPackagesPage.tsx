@@ -19,6 +19,7 @@ import { useTeacherAuth } from '../../lib/auth';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal';
+import { StudentPageBack } from '../components/StudentPageBack';
 
 export interface StudentPackagesPageProps {
   lang?: 'en' | 'ar';
@@ -181,6 +182,12 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
       {/* 1. Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
         <div>
+          <StudentPageBack
+            to="/student"
+            label="Return to Student Portal"
+            labelAr="العودة لبوابة الطالب"
+            className="mb-1.5"
+          />
           <h1 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-foreground">
             {isAr ? 'الباقات ورصيد الدروس' : 'Packages & Lesson Credits'}
           </h1>

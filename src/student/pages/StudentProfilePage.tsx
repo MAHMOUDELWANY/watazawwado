@@ -22,6 +22,7 @@ import { useTheme } from '../../components/ThemeProvider';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
+import { StudentPageBack } from '../components/StudentPageBack';
 
 export interface StudentProfilePageProps {
   profile?: any;
@@ -269,6 +270,12 @@ export default function StudentProfilePage({
 
   return (
     <div className="space-y-6 sm:space-y-8 animate-fade-in text-start">
+      <StudentPageBack
+        to="/student"
+        label="Return to Student Portal"
+        labelAr="العودة لبوابة الطالب"
+        className="-mb-2"
+      />
       {/* 1. Page Header & Identity Summary */}
       <div className="p-5 sm:p-6 rounded-2xl bg-surface border border-border shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4 min-w-0">

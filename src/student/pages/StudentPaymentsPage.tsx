@@ -22,6 +22,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../..
 import { Badge } from '../../components/ui/Badge';
 import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal';
 import { buildPaymentWhatsAppUrl } from '../../lib/whatsapp';
+import { StudentPageBack } from '../components/StudentPageBack';
 
 export interface StudentPaymentsPageProps {
   lang?: 'en' | 'ar';
@@ -120,6 +121,12 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
       {/* 1. Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
         <div>
+          <StudentPageBack
+            to="/student"
+            label="Return to Student Portal"
+            labelAr="العودة لبوابة الطالب"
+            className="mb-1.5"
+          />
           <h1 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-foreground">
             {isAr ? 'المدفوعات وسجل التحويلات' : 'Payments & Billing'}
           </h1>

@@ -16,14 +16,17 @@ import {
   HelpCircle,
   CreditCard,
   Globe,
-  Tag
+  Tag,
+  ShieldCheck
 } from 'lucide-react';
 import { useTeacherAuth } from '../../lib/auth';
 import { Card, CardContent } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { Modal } from '../../components/ui/Modal';
 import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal';
+import { StudentPageBack } from '../components/StudentPageBack';
 import { buildWhatsAppUrl } from '../../lib/whatsapp';
+import { getBookingPaymentSummary } from '../../lib/paymentStatus';
 
 export interface StudentLessonsPageProps {
   lang?: 'en' | 'ar';
@@ -35,6 +38,7 @@ type LessonFilter = 'all' | 'upcoming' | 'completed' | 'cancelled';
 export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPageProps) {
   const { session } = useTeacherAuth();
   const [bookings, setBookings] = useState<any[]>([]);
+  const [payments, setPayments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<LessonFilter>('all');
@@ -46,7 +50,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
 
   const isAr = lang === 'ar';
 
-  const fetchBookings = useCallback(async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -55,16 +59,23 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
         throw new Error(isAr ? 'جلسة تسجيل الدخول منتهية' : 'No active session token found');
       }
 
-      const res = await fetch('/api/student/bookings', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const headers = { Authorization: `Bearer ${token}` };
+      const [bookingsRes, paymentsRes] = await Promise.all([
+        fetch('/api/student/bookings', { headers }),
+        fetch('/api/student/payments', { headers })
+      ]);
 
-      if (!res.ok) {
+      if (!bookingsRes.ok) {
         throw new Error(isAr ? 'فشل تحميل مواعيد الدروس' : 'Failed to load lessons');
       }
 
-      const data = await res.json();
-      setBookings(Array.isArray(data) ? data : []);
+      const bookingsData = await bookingsRes.json();
+      setBookings(Array.isArray(bookingsData) ? bookingsData : []);
+
+      if (paymentsRes.ok) {
+        const pJson = await paymentsRes.json();
+        setPayments(Array.isArray(pJson.payments) ? pJson.payments : []);
+      }
     } catch (err: any) {
       console.error('[StudentLessonsPage Fetch Error]', err);
       setError(err.message || (isAr ? 'تعذر تحميل بيانات الدروس' : 'Unable to load lessons'));
@@ -74,8 +85,8 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
   }, [session, isAr]);
 
   useEffect(() => {
-    fetchBookings();
-  }, [fetchBookings]);
+    fetchData();
+  }, [fetchData]);
 
   const handleCopyRef = (refCode: string) => {
     navigator.clipboard.writeText(refCode);
@@ -194,6 +205,16 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
 
   return (
     <div className="space-y-6 sm:space-y-8 animate-fade-in text-start max-w-5xl">
+      {/* 0. Page-Level Back Affordance */}
+      <div>
+        <StudentPageBack
+          to="/student"
+          label="Return to Student Portal"
+          labelAr="العودة لبوابة الطالب"
+          lang={lang}
+        />
+      </div>
+
       {/* 1. Header & Primary CTA */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
         <div>
@@ -290,7 +311,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
           <p className="text-xs text-muted-foreground max-w-md mx-auto">{error}</p>
           <button
             type="button"
-            onClick={fetchBookings}
+            onClick={fetchData}
             className="inline-flex items-center justify-center px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground text-xs rounded-xl font-medium cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
           >
             {isAr ? 'إعادة المحاولة' : 'Try Again'}
@@ -353,7 +374,9 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
               ? DateTime.fromISO(rawStart, { setZone: true }).setZone(studentTz)
               : null;
 
-            const isPendingPayment = b.status === 'pending';
+            // Reconcile payment status authoritatively using payments list
+            const paymentSummary = getBookingPaymentSummary(b, payments);
+            const isPendingPayment = paymentSummary.isPendingPayment;
             const isCancelled = b.status === 'cancelled';
             const isCompleted = b.status === 'completed';
             const isNoShow = b.status === 'no_show';
@@ -397,7 +420,24 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                       </div>
                     </div>
 
-                    <div className="self-start sm:self-center shrink-0">
+                    <div className="self-start sm:self-center shrink-0 flex items-center gap-2">
+                      {/* Payment Status Pill if awaiting verification or unpaid */}
+                      {paymentSummary.isAwaitingVerification && (
+                        <Badge variant="warning" className="px-2.5 py-1 text-xs font-medium">
+                          {isAr ? 'قيد مراجعة الدفع' : 'Payment Under Review'}
+                        </Badge>
+                      )}
+                      {paymentSummary.isUnpaid && !paymentSummary.isPaidOrTrial && b.status !== 'cancelled' && (
+                        <Badge variant="warning" className="px-2.5 py-1 text-xs font-medium">
+                          {isAr ? 'في انتظار الدفع' : 'Payment Needed'}
+                        </Badge>
+                      )}
+                      {paymentSummary.isPaidOrTrial && b.bookingType !== 'trial' && (
+                        <Badge variant="success" className="px-2.5 py-1 text-xs font-medium">
+                          {isAr ? 'مدفوع ومفعل' : 'Paid'}
+                        </Badge>
+                      )}
+
                       <Badge variant={getStatusBadgeVariant(b.status)} className="px-2.5 py-1 text-xs font-medium">
                         {getStatusLabel(b.status)}
                       </Badge>
@@ -529,7 +569,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
           lang={lang}
           sessionToken={session?.access_token}
           onClaimSuccess={() => {
-            fetchBookings();
+            fetchData();
           }}
         />
       )}
@@ -567,9 +607,17 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                 ? rescheduleModalBooking.serviceArabicTitle
                 : (rescheduleModalBooking.serviceTitle || 'Lesson');
 
-              const waMessage = isEligible
-                ? `Assalamu Alaikum Ustadh Mahmoud,\nRegarding booking ${rescheduleModalBooking.referenceCode} (${serviceTitle}), I would like to request a reschedule/cancellation.`
-                : `Assalamu Alaikum Ustadh Mahmoud,\nRegarding booking ${rescheduleModalBooking.referenceCode} (${serviceTitle}), my lesson is in less than 3 hours and I would like to coordinate regarding this short-notice change.`;
+              const scheduledDateFormatted = startObj.isValid
+                ? (isAr ? startObj.setLocale('ar').toFormat('dd MMMM yyyy - hh:mm a') : startObj.setLocale('en').toFormat('dd LLL yyyy, h:mm a'))
+                : '';
+
+              const waMessage = isAr
+                ? (isEligible
+                    ? `السلام عليكم أستاذ محمود،\nأود طلب إعادة جدولة أو إلغاء لموعد درسي (${serviceTitle}) برمز الحجز [${rescheduleModalBooking.referenceCode}] المقرر في (${scheduledDateFormatted}).`
+                    : `السلام عليكم أستاذ محمود،\nبخصوص درسي (${serviceTitle}) برمز الحجز [${rescheduleModalBooking.referenceCode}] المقرر في (${scheduledDateFormatted})، متبقي أقل من ٣ ساعات وأود التنسيق معكم بخصوص هذا التعديل.`)
+                : (isEligible
+                    ? `Assalamu Alaikum Ustadh Mahmoud,\nRegarding my booking [${rescheduleModalBooking.referenceCode}] (${serviceTitle}) scheduled for ${scheduledDateFormatted}, I would like to request a reschedule/cancellation.`
+                    : `Assalamu Alaikum Ustadh Mahmoud,\nRegarding booking [${rescheduleModalBooking.referenceCode}] (${serviceTitle}) scheduled for ${scheduledDateFormatted}, my lesson starts in less than 3 hours and I would like to coordinate regarding this short-notice adjustment.`);
 
               const waUrl = buildWhatsAppUrl(waMessage);
 

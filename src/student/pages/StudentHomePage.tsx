@@ -26,6 +26,7 @@ import { useTeacherAuth } from '../../lib/auth';
 import { findLastEligibleBooking, formatLastBookingSummary } from './StudentBookingPage';
 import { Badge } from '../../components/ui/Badge';
 import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal';
+import { getBookingPaymentSummary } from '../../lib/paymentStatus';
 
 export interface StudentHomePageProps {
   lang?: 'en' | 'ar';
@@ -233,7 +234,10 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
   const creditsRemaining = packagesData?.creditSummary?.totalRemaining ?? 0;
   const completedLessonsCount = bookings.filter(b => b.status === 'completed').length;
-  const pendingPaymentBookings = bookings.filter(b => b.status === 'pending');
+  const pendingPaymentBookings = bookings.filter(b => {
+    const summary = getBookingPaymentSummary(b, paymentsData || []);
+    return summary.isPendingPayment;
+  });
 
   return (
     <div className="space-y-8 animate-fade-in text-start pb-12">
@@ -398,26 +402,34 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   </div>
                 </div>
 
-                {/* Pending Payment Warning Notice - using semantic tokens */}
-                {nextBooking.status === 'pending' && (
-                  <div className="p-3.5 rounded-xl bg-warning/10 border border-warning/25 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                    <div className="flex items-center gap-2 text-warning">
-                      <AlertCircle className="w-4 h-4 shrink-0" />
-                      <span>
-                        {isAr
-                          ? 'هذا الموعد معلق حتى تأكيد إثبات الدفع.'
-                          : 'This booking is awaiting manual payment claim verification to guarantee your slot.'}
-                      </span>
+                {/* Pending Payment Warning Notice - using reconciled payment status */}
+                {(() => {
+                  const summary = getBookingPaymentSummary(nextBooking, paymentsData || []);
+                  if (!summary.isPendingPayment) return null;
+                  return (
+                    <div className="p-3.5 rounded-xl bg-warning/10 border border-warning/25 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                      <div className="flex items-center gap-2 text-warning">
+                        <AlertCircle className="w-4 h-4 shrink-0" />
+                        <span>
+                          {summary.isAwaitingVerification
+                            ? (isAr
+                                ? 'إثبات الدفع قيد المراجعة والتحقق من الأستاذ محمود.'
+                                : 'Payment proof under review by Ustadh Mahmoud.')
+                            : (isAr
+                                ? 'هذا الموعد معلق حتى تأكيد إثبات الدفع.'
+                                : 'This booking is awaiting manual payment claim verification to guarantee your slot.')}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setPaymentClaimBooking(nextBooking)}
+                        className="px-3 py-1.5 bg-warning hover:bg-warning/90 text-warning-foreground rounded-lg font-semibold transition-colors shrink-0 cursor-pointer self-start sm:self-center"
+                      >
+                        {isAr ? 'إرسال إثبات الدفع' : 'Submit Claim'}
+                      </button>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setPaymentClaimBooking(nextBooking)}
-                      className="px-3 py-1.5 bg-warning hover:bg-warning/90 text-warning-foreground rounded-lg font-semibold transition-colors shrink-0 cursor-pointer self-start sm:self-center"
-                    >
-                      {isAr ? 'إرسال إثبات الدفع' : 'Submit Claim'}
-                    </button>
-                  </div>
-                )}
+                  );
+                })()}
 
                 {/* Action Buttons */}
                 <div className="flex flex-wrap items-center gap-3 pt-1">

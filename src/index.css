@@ -4,9 +4,9 @@
 
 @theme {
   /* Fonts */
-  --font-serif: 'Fraunces', Georgia, serif;
-  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-arabic: 'IBM Plex Sans Arabic', 'Amiri', -apple-system, sans-serif;
+  --font-serif: 'Fraunces', Georgia, Cambria, 'Times New Roman', serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-arabic: 'IBM Plex Sans Arabic', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Arial, sans-serif;
 
   /* Semantic Colors */
   --color-background: var(--background);
@@ -218,6 +218,18 @@ body {
 [dir="rtl"] button {
   /* Provide slightly more vertical clearance for Arabic ascenders/descenders in tight containers */
   padding-bottom: calc(0.25rem * 1.25);
+}
+
+/* 5. Mobile RTL Viewport & Scrollbar Artifact Fix */
+[dir="rtl"] body {
+  overflow-x: hidden;
+}
+
+@media (max-width: 768px) {
+  [dir="rtl"] {
+    /* Prevent webkit scrollbar visual artifact on the left edge on mobile */
+    scrollbar-gutter: stable;
+  }
 }
 
 /* WATAZAWWADO MOTION & INTERACTION FOUNDATION */
