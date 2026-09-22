@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import {
@@ -9,21 +9,21 @@ import {
   Copy,
   Check,
   AlertCircle,
-  CheckCircle2,
   ExternalLink,
   MessageCircle,
   Plus,
   Loader2,
   HelpCircle,
   CreditCard,
-  XCircle,
-  Search
+  Globe,
+  Tag
 } from 'lucide-react';
 import { useTeacherAuth } from '../../lib/auth';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/Card';
+import { Card, CardContent } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { Modal } from '../../components/ui/Modal';
 import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal';
+import { buildWhatsAppUrl } from '../../lib/whatsapp';
 
 export interface StudentLessonsPageProps {
   lang?: 'en' | 'ar';
@@ -33,7 +33,7 @@ export interface StudentLessonsPageProps {
 type LessonFilter = 'all' | 'upcoming' | 'completed' | 'cancelled';
 
 export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPageProps) {
-  const { session, user } = useTeacherAuth();
+  const { session } = useTeacherAuth();
   const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -46,7 +46,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
 
   const isAr = lang === 'ar';
 
-  const fetchBookings = async () => {
+  const fetchBookings = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -71,11 +71,11 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
     } finally {
       setLoading(false);
     }
-  };
+  }, [session, isAr]);
 
   useEffect(() => {
     fetchBookings();
-  }, [session, isAr]);
+  }, [fetchBookings]);
 
   const handleCopyRef = (refCode: string) => {
     navigator.clipboard.writeText(refCode);
@@ -83,26 +83,8 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
     setTimeout(() => setCopiedRef(null), 2000);
   };
 
-  // Filter lessons
-  const filteredBookings = bookings.filter(b => {
-    const dateStr = b.scheduledStart || b.scheduled_start || b.lesson_date;
-    const start = dateStr ? DateTime.fromISO(dateStr) : null;
-    const isUpcomingTime = start && start.isValid && start.diffNow().as('minutes') > -60;
-
-    if (activeFilter === 'upcoming') {
-      const isUpcomingStatus = b.status === 'confirmed' || b.status === 'pending' || b.status === 'rescheduled';
-      return isUpcomingStatus && isUpcomingTime;
-    }
-    if (activeFilter === 'completed') {
-      return b.status === 'completed' || (!isUpcomingTime && b.status === 'confirmed');
-    }
-    if (activeFilter === 'cancelled') {
-      return b.status === 'cancelled' || b.status === 'no_show';
-    }
-    return true;
-  });
-
-  const getStatusBadgeVariant = (status: string) => {
+  // Status badge variant mapping using semantic tokens
+  const getStatusBadgeVariant = (status: string): 'default' | 'secondary' | 'destructive' | 'outline' | 'success' | 'warning' => {
     switch (status) {
       case 'confirmed':
         return 'success';
@@ -114,6 +96,8 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
         return 'destructive';
       case 'rescheduled':
         return 'secondary';
+      case 'no_show':
+        return 'destructive';
       default:
         return 'outline';
     }
@@ -138,10 +122,80 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
     }
   };
 
+  // Lifecycle categorization
+  // UPCOMING: confirmed / pending / rescheduled with scheduled_start >= now - 60 minutes
+  // PAST: completed / no_show / cancelled OR scheduled_start < now - 60 minutes
+  const categorizedBookings = useMemo(() => {
+    const upcomingList: any[] = [];
+    const completedList: any[] = [];
+    const cancelledList: any[] = [];
+
+    bookings.forEach(b => {
+      const dateStr = b.scheduledStart || b.scheduled_start || b.lesson_date;
+      const start = dateStr ? DateTime.fromISO(dateStr) : null;
+      const isUpcomingTime = start && start.isValid && start.diffNow().as('minutes') >= -60;
+
+      const isUpcomingStatus = b.status === 'confirmed' || b.status === 'pending' || b.status === 'rescheduled';
+
+      if (isUpcomingStatus && isUpcomingTime) {
+        upcomingList.push(b);
+      } else if (b.status === 'completed' || (b.status === 'confirmed' && !isUpcomingTime)) {
+        completedList.push(b);
+      } else if (b.status === 'cancelled' || b.status === 'no_show' || (!isUpcomingTime && (b.status === 'pending' || b.status === 'rescheduled'))) {
+        cancelledList.push(b);
+      } else {
+        completedList.push(b);
+      }
+    });
+
+    // Sort upcoming ascending (nearest first)
+    upcomingList.sort((a, b) => {
+      const dateA = DateTime.fromISO(a.scheduledStart || a.scheduled_start || a.lesson_date || '');
+      const dateB = DateTime.fromISO(b.scheduledStart || b.scheduled_start || b.lesson_date || '');
+      const timeA = dateA.isValid ? dateA.toMillis() : Infinity;
+      const timeB = dateB.isValid ? dateB.toMillis() : Infinity;
+      return timeA - timeB;
+    });
+
+    // Sort completed descending (most recent first)
+    completedList.sort((a, b) => {
+      const dateA = DateTime.fromISO(a.scheduledStart || a.scheduled_start || a.lesson_date || '');
+      const dateB = DateTime.fromISO(b.scheduledStart || b.scheduled_start || b.lesson_date || '');
+      const timeA = dateA.isValid ? dateA.toMillis() : 0;
+      const timeB = dateB.isValid ? dateB.toMillis() : 0;
+      return timeB - timeA;
+    });
+
+    // Sort cancelled descending (most recent first)
+    cancelledList.sort((a, b) => {
+      const dateA = DateTime.fromISO(a.scheduledStart || a.scheduled_start || a.lesson_date || '');
+      const dateB = DateTime.fromISO(b.scheduledStart || b.scheduled_start || b.lesson_date || '');
+      const timeA = dateA.isValid ? dateA.toMillis() : 0;
+      const timeB = dateB.isValid ? dateB.toMillis() : 0;
+      return timeB - timeA;
+    });
+
+    return {
+      all: [...upcomingList, ...completedList, ...cancelledList],
+      upcoming: upcomingList,
+      completed: completedList,
+      cancelled: cancelledList
+    };
+  }, [bookings]);
+
+  const displayedBookings = categorizedBookings[activeFilter];
+
+  const counts = {
+    all: bookings.length,
+    upcoming: categorizedBookings.upcoming.length,
+    completed: categorizedBookings.completed.length,
+    cancelled: categorizedBookings.cancelled.length
+  };
+
   return (
-    <div className="space-y-6 sm:space-y-8 animate-fade-in text-start">
-      {/* 1. Header & Quick Action */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
+    <div className="space-y-6 sm:space-y-8 animate-fade-in text-start max-w-5xl">
+      {/* 1. Header & Primary CTA */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
         <div>
           <h1 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-foreground">
             {isAr ? 'جدول دروسي ومواعيدي' : 'My Lessons & Schedule'}
@@ -155,15 +209,15 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
 
         <Link
           to="/student/book"
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-colors shadow-xs shrink-0 min-h-[44px]"
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-colors shadow-xs shrink-0 min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-4 h-4 shrink-0" />
           <span>{isAr ? 'حجز موعد جديد' : 'Book a Lesson'}</span>
         </Link>
       </div>
 
-      {/* 2. Cancellation / Rescheduling Policy Banner */}
-      <div className="p-4 rounded-2xl bg-surface-subtle border border-border-subtle flex items-start gap-3 text-xs leading-relaxed text-muted-foreground">
+      {/* 2. Compact Cancellation / Rescheduling Policy Notice */}
+      <div className="p-3.5 sm:p-4 rounded-xl bg-surface-subtle border border-border-subtle flex items-start gap-3 text-xs leading-relaxed text-muted-foreground">
         <HelpCircle className="w-4 h-4 text-primary shrink-0 mt-0.5" />
         <div>
           <span className="font-semibold text-foreground block mb-0.5">
@@ -178,7 +232,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
       </div>
 
       {/* 3. Filter Navigation Tabs */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
         {(['all', 'upcoming', 'completed', 'cancelled'] as const).map(tabKey => {
           const isActive = activeFilter === tabKey;
           const labels = {
@@ -187,91 +241,131 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
             completed: isAr ? 'المكتملة' : 'Completed',
             cancelled: isAr ? 'الملغاة / السابقة' : 'Cancelled & Past'
           };
+          const count = counts[tabKey];
 
           return (
             <button
               key={tabKey}
+              type="button"
               onClick={() => setActiveFilter(tabKey)}
               className={`
-                px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap cursor-pointer min-h-[38px]
+                inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm transition-all whitespace-nowrap cursor-pointer min-h-[40px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
                 ${isActive
                   ? 'bg-primary text-primary-foreground shadow-xs font-semibold'
-                  : 'bg-surface hover:bg-surface-subtle text-muted-foreground hover:text-foreground border border-border'
+                  : 'bg-surface hover:bg-surface-subtle text-muted-foreground hover:text-foreground border border-border font-medium'
                 }
               `}
             >
-              {labels[tabKey]}
+              <span>{labels[tabKey]}</span>
+              {!loading && !error && (
+                <span
+                  className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono leading-none ${
+                    isActive
+                      ? 'bg-primary-foreground/20 text-primary-foreground'
+                      : 'bg-muted text-muted-foreground'
+                  }`}
+                >
+                  {count}
+                </span>
+              )}
             </button>
           );
         })}
       </div>
 
-      {/* 4. Lessons List */}
+      {/* 4. Main Content Area */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-16 gap-3">
+        <div className="flex flex-col items-center justify-center py-16 gap-3 bg-surface border border-border rounded-2xl">
           <Loader2 className="w-8 h-8 text-primary animate-spin" />
           <p className="text-xs sm:text-sm text-muted-foreground">
             {isAr ? 'جارٍ تحميل الدروس...' : 'Loading your scheduled sessions...'}
           </p>
         </div>
       ) : error ? (
-        <div className="p-6 bg-surface border border-destructive/20 rounded-2xl text-center space-y-3">
+        <div className="p-6 sm:p-8 bg-surface border border-destructive/20 rounded-2xl text-center space-y-3">
           <AlertCircle className="w-8 h-8 text-destructive mx-auto" />
           <h3 className="text-sm font-semibold text-foreground">
             {isAr ? 'تعذر تحميل قائمة الدروس' : 'Could not load your lessons'}
           </h3>
-          <p className="text-xs text-muted-foreground">{error}</p>
+          <p className="text-xs text-muted-foreground max-w-md mx-auto">{error}</p>
           <button
+            type="button"
             onClick={fetchBookings}
-            className="px-4 py-2 bg-primary text-primary-foreground text-xs rounded-xl font-medium cursor-pointer"
+            className="inline-flex items-center justify-center px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground text-xs rounded-xl font-medium cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
           >
             {isAr ? 'إعادة المحاولة' : 'Try Again'}
           </button>
         </div>
-      ) : filteredBookings.length === 0 ? (
-        <div className="text-center py-16 px-4 bg-surface border border-border rounded-3xl space-y-4">
+      ) : displayedBookings.length === 0 ? (
+        <div className="text-center py-16 px-4 bg-surface border border-border rounded-2xl space-y-4">
           <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
             <Calendar className="w-6 h-6" />
           </div>
           <div>
             <h3 className="text-base sm:text-lg font-serif font-semibold text-foreground">
-              {isAr ? 'لا توجد جلسات تطابق هذا الاختيار' : 'No lessons found in this section'}
+              {activeFilter === 'upcoming'
+                ? (isAr ? 'لا توجد دروس قادمة مجدولة' : 'No upcoming lessons scheduled')
+                : activeFilter === 'completed'
+                ? (isAr ? 'لا توجد دروس مكتملة مسجلة بعد' : 'No completed lessons yet')
+                : activeFilter === 'cancelled'
+                ? (isAr ? 'لا توجد دروس ملغاة أو منتهية' : 'No cancelled or past records')
+                : (isAr ? 'لا توجد مواعيد مسجلة حتى الآن' : 'No lessons found')}
             </h3>
             <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto mt-1 leading-relaxed">
               {activeFilter === 'upcoming'
                 ? (isAr
-                    ? 'ليس لديك أي مواعيد قادمة مجدولة حالياً. هل ترغب في حجز درسك القادم الآن؟'
-                    : 'You do not have any upcoming lessons scheduled right now. Ready to book your next session?')
+                    ? 'ليس لديك أي مواعيد قادمة مجدولة حالياً. يمكنك اختيار موضوع وجلسة مع الأستاذ محمود الآن.'
+                    : 'You do not have any upcoming sessions on your calendar. Ready to book your next lesson?')
+                : activeFilter === 'completed'
+                ? (isAr
+                    ? 'سوف تظهر سجلات الجلسات المنتهية هنا فور اكتمالها.'
+                    : 'Records of finished sessions will appear here once held.')
+                : activeFilter === 'cancelled'
+                ? (isAr
+                    ? 'لا توجد أي جلسات ملغاة في سجلك التعليمي.'
+                    : 'There are no cancelled sessions in your lesson history.')
                 : (isAr
-                    ? 'لا توجد سجلات مسجلة ضمن هذه الفئة حالياً.'
-                    : 'There are no lesson records matching this category.')}
+                    ? 'ابدأ رحلتك التعليمية بحجز أول موعد مع الأستاذ محمود.'
+                    : 'Start your learning journey by booking your first session with Ustadh Mahmoud.')}
             </p>
           </div>
-          <Link
-            to="/student/book"
-            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-colors shadow-xs min-h-[44px]"
-          >
-            <Plus className="w-4 h-4" />
-            <span>{isAr ? 'حجز موعد الآن' : 'Schedule a Lesson'}</span>
-          </Link>
+          {(activeFilter === 'upcoming' || activeFilter === 'all') && (
+            <Link
+              to="/student/book"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-colors shadow-xs min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
+            >
+              <Plus className="w-4 h-4 shrink-0" />
+              <span>{isAr ? 'حجز موعد الآن' : 'Schedule a Lesson'}</span>
+            </Link>
+          )}
         </div>
       ) : (
         <div className="space-y-4">
-          {filteredBookings.map(b => {
+          {displayedBookings.map(b => {
             const rawZoom = (b.zoomMeetingLink || b.zoom_join_url || '').trim();
             const hasValidZoomUrl = Boolean(rawZoom && (rawZoom.startsWith('https://') || rawZoom.startsWith('http://')));
-            const dateObj = DateTime.fromISO(b.scheduledStart || b.scheduled_start || b.lesson_date);
-            const hoursUntil = dateObj.isValid ? dateObj.diffNow().as('hours') : 0;
-            const canSelfChange = hoursUntil >= 3;
+            
+            const rawStart = b.scheduledStart || b.scheduled_start || b.lesson_date;
+            const studentTz = b.studentTimezone || 'UTC';
+            
+            // Format time accurately in student's timezone using Luxon
+            const dateObj = rawStart
+              ? DateTime.fromISO(rawStart, { setZone: true }).setZone(studentTz)
+              : null;
+
             const isPendingPayment = b.status === 'pending';
+            const isCancelled = b.status === 'cancelled';
+            const isCompleted = b.status === 'completed';
+            const isNoShow = b.status === 'no_show';
+            const isActionableForChange = b.status === 'confirmed' || b.status === 'pending' || b.status === 'rescheduled';
 
             return (
-              <Card key={b.id} className="border-border hover:border-primary/30 transition-colors">
+              <Card key={b.id} className="border-border hover:border-primary/30 transition-colors bg-surface">
                 <CardContent className="p-5 sm:p-6 space-y-4">
-                  {/* Top Bar: Service Title + Status */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div>
-                      <div className="flex items-center gap-2">
+                  {/* Top Bar: Service Title + Badges */}
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                    <div className="space-y-1.5">
+                      <div className="flex flex-wrap items-center gap-2">
                         <h3 className="font-serif font-bold text-base sm:text-lg text-foreground">
                           {isAr && b.serviceArabicTitle ? b.serviceArabicTitle : b.serviceTitle}
                         </h3>
@@ -281,41 +375,49 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                           </Badge>
                         )}
                       </div>
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground mt-1">
+
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                         <div className="flex items-center gap-1.5">
-                          <Clock className="w-3.5 h-3.5 text-primary" />
-                          <span>
-                            {dateObj.isValid
+                          <Clock className="w-3.5 h-3.5 text-primary shrink-0" />
+                          <span className="font-medium text-foreground">
+                            {dateObj && dateObj.isValid
                               ? dateObj.setLocale(isAr ? 'ar' : 'en').toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)
                               : ''}
                           </span>
                         </div>
                         {(b.durationMinutes || b.duration) && (
-                          <span>• {b.durationMinutes || b.duration} {isAr ? 'دقيقة' : 'minutes'}</span>
+                          <span>• {b.durationMinutes || b.duration} {isAr ? 'دقيقة' : 'min'}</span>
                         )}
                         {b.studentTimezone && (
-                          <span className="hidden sm:inline-block">• {b.studentTimezone}</span>
+                          <span className="flex items-center gap-1">
+                            • <Globe className="w-3 h-3 opacity-70 shrink-0" />
+                            <span>{b.studentTimezone}</span>
+                          </span>
                         )}
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 self-start sm:self-center">
-                      <Badge variant={getStatusBadgeVariant(b.status)} className="px-2.5 py-1 text-xs">
+                    <div className="self-start sm:self-center shrink-0">
+                      <Badge variant={getStatusBadgeVariant(b.status)} className="px-2.5 py-1 text-xs font-medium">
                         {getStatusLabel(b.status)}
                       </Badge>
                     </div>
                   </div>
 
-                  {/* Middle: Details & Reference */}
-                  <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle flex flex-wrap items-center justify-between gap-3 text-xs">
+                  {/* Middle: Details & Reference Bar */}
+                  <div className="p-3 sm:p-3.5 rounded-xl bg-surface-subtle border border-border-subtle flex flex-wrap items-center justify-between gap-3 text-xs">
                     <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground">{isAr ? 'الرقم المرجعي:' : 'Booking Ref:'}</span>
-                      <span className="font-mono font-bold text-foreground">{b.referenceCode}</span>
+                      <span className="text-muted-foreground flex items-center gap-1">
+                        <Tag className="w-3 h-3 opacity-70 shrink-0" />
+                        <span>{isAr ? 'الرقم المرجعي:' : 'Booking Ref:'}</span>
+                      </span>
+                      <span className="font-mono font-bold text-foreground tracking-wider">{b.referenceCode}</span>
                       <button
                         type="button"
                         onClick={() => handleCopyRef(b.referenceCode)}
-                        className="p-1 rounded text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                        className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-surface transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                         title={isAr ? 'نسخ الرقم المرجعي' : 'Copy reference code'}
+                        aria-label={isAr ? `نسخ الرقم المرجعي ${b.referenceCode}` : `Copy reference code ${b.referenceCode}`}
                       >
                         {copiedRef === b.referenceCode ? (
                           <Check className="w-3.5 h-3.5 text-success" />
@@ -323,11 +425,16 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                           <Copy className="w-3.5 h-3.5" />
                         )}
                       </button>
+                      {copiedRef === b.referenceCode && (
+                        <span className="text-[10px] text-success font-medium">
+                          {isAr ? 'تم النسخ' : 'Copied'}
+                        </span>
+                      )}
                     </div>
 
                     {isPendingPayment && (
-                      <div className="flex items-center gap-2 text-warning font-medium">
-                        <AlertCircle className="w-3.5 h-3.5" />
+                      <div className="flex items-center gap-1.5 text-warning font-medium">
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                         <span>
                           {isAr ? 'في انتظار تأكيد الحوالة' : 'Awaiting payment verification'}
                         </span>
@@ -335,66 +442,73 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                     )}
                   </div>
 
-                  {/* Zoom Classroom & Actions Row */}
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2">
+                  {/* Actions Row */}
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-1 border-t border-border-subtle/50">
                     {/* Zoom State */}
                     <div className="flex-1">
-                      {hasValidZoomUrl ? (
+                      {isCancelled ? (
+                        <div className="inline-flex items-center gap-2 text-xs text-muted-foreground p-2 rounded-lg bg-surface-subtle border border-border-subtle">
+                          <span>{isAr ? 'تم إلغاء هذا الدرس' : 'This lesson has been cancelled.'}</span>
+                        </div>
+                      ) : hasValidZoomUrl ? (
                         <a
                           href={rawZoom}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-xs min-h-[42px]"
+                          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-xs min-h-[42px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
                         >
-                          <Video className="w-4 h-4" />
+                          <Video className="w-4 h-4 shrink-0" />
                           <span>{isAr ? 'دخول الفصل الافتراضي (زووم)' : 'Join Zoom Classroom'}</span>
-                          <ExternalLink className="w-3.5 h-3.5" />
+                          <ExternalLink className="w-3.5 h-3.5 shrink-0 ms-0.5" />
                         </a>
                       ) : (
                         <div className="inline-flex items-center gap-2 text-xs text-muted-foreground p-2 rounded-lg bg-surface-subtle border border-border-subtle">
-                          <Clock className="w-3.5 h-3.5 text-primary" />
+                          <Clock className="w-3.5 h-3.5 text-primary shrink-0" />
                           <span>
                             {isAr
-                              ? 'رابط زووم سيتوفر هنا مباشرة قبل موعد الجلسة'
-                              : 'Zoom meeting link will activate here prior to lesson start'}
+                              ? 'رابط زووم سيتوفر هنا مباشرة قبل موعد الجلسة.'
+                              : 'Zoom meeting room activates prior to the lesson.'}
                           </span>
                         </div>
                       )}
                     </div>
 
                     {/* Secondary Actions */}
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2 shrink-0">
+                      {/* Submit Payment Claim */}
                       {isPendingPayment && (
                         <button
                           type="button"
                           onClick={() => setPaymentModalBooking(b)}
-                          className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-xl text-xs font-semibold transition-colors cursor-pointer min-h-[38px]"
+                          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-xl text-xs font-semibold transition-colors cursor-pointer min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                         >
-                          <CreditCard className="w-3.5 h-3.5" />
+                          <CreditCard className="w-3.5 h-3.5 shrink-0" />
                           <span>{isAr ? 'إرسال إثبات الدفع' : 'Submit Payment Claim'}</span>
                         </button>
                       )}
 
-                      {/* Reschedule / Policy Coordinator */}
-                      {(b.status === 'confirmed' || b.status === 'pending' || b.status === 'rescheduled') && (
+                      {/* Reschedule / Cancel Coordinator */}
+                      {isActionableForChange && (
                         <button
                           type="button"
                           onClick={() => setRescheduleModalBooking(b)}
-                          className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-surface hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs font-medium transition-colors cursor-pointer min-h-[38px]"
+                          className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-surface hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs font-medium transition-colors cursor-pointer min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                         >
                           <span>{isAr ? 'تعديل / إلغاء' : 'Reschedule / Cancel'}</span>
                         </button>
                       )}
 
-                      {/* Repeat Topic */}
-                      <Link
-                        to={`/student/book?repeat=true${b.serviceId ? `&service=${b.serviceId}` : ''}`}
-                        className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-surface hover:bg-surface-subtle text-primary border border-border rounded-xl text-xs font-medium transition-colors min-h-[38px]"
-                        title={isAr ? 'حجز درس جديد في نفس الموضوع' : 'Book another session on this topic'}
-                      >
-                        <RotateCcw className="w-3.5 h-3.5" />
-                        <span>{isAr ? 'تكرار الموضوع' : 'Repeat Topic'}</span>
-                      </Link>
+                      {/* Rebook / Repeat Topic for completed or cancelled lessons */}
+                      {(isCompleted || isCancelled || isNoShow) && (
+                        <Link
+                          to={`/student/book?repeat=true${b.serviceId ? `&service=${b.serviceId}` : ''}`}
+                          className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-surface hover:bg-surface-subtle text-primary border border-border rounded-xl text-xs font-medium transition-colors min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                          title={isAr ? 'حجز درس جديد في نفس الموضوع' : 'Book another session on this topic'}
+                        >
+                          <RotateCcw className="w-3.5 h-3.5 shrink-0" />
+                          <span>{isAr ? 'تكرار الموضوع' : 'Repeat Topic'}</span>
+                        </Link>
+                      )}
                     </div>
                   </div>
                 </CardContent>
@@ -404,7 +518,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
         </div>
       )}
 
-      {/* 5. Payment Claim Modal */}
+      {/* 5. Payment Claim Modal (reusing production component) */}
       {paymentModalBooking && (
         <StudentPaymentClaimModal
           isOpen={Boolean(paymentModalBooking)}
@@ -420,7 +534,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
         />
       )}
 
-      {/* 6. Reschedule / Cancellation Dialog */}
+      {/* 6. Reschedule / Cancellation Coordinator Modal */}
       {rescheduleModalBooking && (
         <Modal
           isOpen={Boolean(rescheduleModalBooking)}
@@ -428,13 +542,13 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
           title={
             <div className="flex items-center gap-2.5">
               <div className="p-2 rounded-xl bg-primary/10 text-primary">
-                <Calendar className="w-5 h-5" />
+                <Calendar className="w-5 h-5 shrink-0" />
               </div>
               <div>
                 <h3 className="text-base font-serif font-bold text-foreground">
                   {isAr ? 'إعادة جدولة أو إلغاء الدرس' : 'Reschedule or Cancel Lesson'}
                 </h3>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground font-mono">
                   Ref: {rescheduleModalBooking.referenceCode}
                 </p>
               </div>
@@ -444,19 +558,25 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
           <div className="space-y-4 text-start text-xs sm:text-sm text-foreground">
             {(() => {
               const startObj = DateTime.fromISO(
-                rescheduleModalBooking.scheduledStart || rescheduleModalBooking.scheduled_start
+                rescheduleModalBooking.scheduledStart || rescheduleModalBooking.scheduled_start || rescheduleModalBooking.lesson_date || ''
               );
               const hrs = startObj.isValid ? startObj.diffNow().as('hours') : 0;
               const isEligible = hrs >= 3;
-              const waText = encodeURIComponent(
-                `Assalamu Alaikum Ustadh Mahmoud,\nRegarding booking ${rescheduleModalBooking.referenceCode} (${rescheduleModalBooking.serviceTitle}), I would like to request a reschedule/cancellation.`
-              );
-              const waUrl = `https://wa.me/201026042456?text=${waText}`;
+
+              const serviceTitle = isAr && rescheduleModalBooking.serviceArabicTitle
+                ? rescheduleModalBooking.serviceArabicTitle
+                : (rescheduleModalBooking.serviceTitle || 'Lesson');
+
+              const waMessage = isEligible
+                ? `Assalamu Alaikum Ustadh Mahmoud,\nRegarding booking ${rescheduleModalBooking.referenceCode} (${serviceTitle}), I would like to request a reschedule/cancellation.`
+                : `Assalamu Alaikum Ustadh Mahmoud,\nRegarding booking ${rescheduleModalBooking.referenceCode} (${serviceTitle}), my lesson is in less than 3 hours and I would like to coordinate regarding this short-notice change.`;
+
+              const waUrl = buildWhatsAppUrl(waMessage);
 
               return (
                 <>
                   <div
-                    className={`p-4 rounded-2xl border ${
+                    className={`p-4 rounded-xl border ${
                       isEligible
                         ? 'bg-surface-subtle border-border-subtle'
                         : 'bg-warning/10 border-warning/25 text-foreground'
@@ -470,7 +590,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                     <p className="text-xs text-muted-foreground leading-relaxed">
                       {isEligible
                         ? (isAr
-                            ? 'موعد درسك يبدأ بعد أكثر من ٣ ساعات، مما يتيح لك إعادة الجدولة أو الإلغاء بالتنسيق مع الأستاذ محمود.'
+                            ? 'موعد درسك يبدأ بعد أكثر من ٣ ساعات، مما يتيح لك إعادة الجدولة أو الإلغاء بالتنسيق مع الأستاذ محمود عبر واتساب.'
                             : 'Your lesson is scheduled more than 3 hours from now. You may coordinate a convenient new slot directly with Ustadh Mahmoud.')
                         : (isAr
                             ? 'نظراً لأن موعد الدرس خلال أقل من ٣ ساعات، يتطلب الإلغاء أو التعديل إشعاراً مباشراً للأستاذ محمود عبر واتساب لترتيب جدول الدروس.'
@@ -478,26 +598,26 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                     </p>
                   </div>
 
-                  <div className="space-y-3 pt-2">
+                  <div className="space-y-2.5 pt-2">
                     <a
                       href={waUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs sm:text-sm font-semibold transition-colors shadow-xs"
+                      className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-colors shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
                     >
-                      <MessageCircle className="w-4 h-4" />
+                      <MessageCircle className="w-4 h-4 shrink-0" />
                       <span>
                         {isAr
-                          ? 'التواصل عبر واتساب لترتيب الموعد الجديد'
+                          ? 'التواصل عبر واتساب للتنسيق'
                           : 'Message Ustadh Mahmoud on WhatsApp'}
                       </span>
-                      <ExternalLink className="w-3.5 h-3.5" />
+                      <ExternalLink className="w-3.5 h-3.5 shrink-0 ms-0.5" />
                     </a>
 
                     <button
                       type="button"
                       onClick={() => setRescheduleModalBooking(null)}
-                      className="w-full px-4 py-2.5 bg-surface hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer"
+                      className="w-full px-4 py-2.5 bg-surface hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                     >
                       {isAr ? 'إغلاق' : 'Close'}
                     </button>

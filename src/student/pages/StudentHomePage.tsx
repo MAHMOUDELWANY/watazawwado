@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import {
@@ -19,7 +19,8 @@ import {
   Sparkles,
   ChevronRight,
   ShieldCheck,
-  Award
+  Award,
+  RefreshCw
 } from 'lucide-react';
 import { useTeacherAuth } from '../../lib/auth';
 import { findLastEligibleBooking, formatLastBookingSummary } from './StudentBookingPage';
@@ -33,67 +34,124 @@ export interface StudentHomePageProps {
 export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
   const { session, user } = useTeacherAuth();
   const navigate = useNavigate();
+
+  // Core profile & bookings
   const [profile, setProfile] = useState<any>(null);
   const [bookings, setBookings] = useState<any[]>([]);
+  const [coreLoading, setCoreLoading] = useState(true);
+  const [coreError, setCoreError] = useState<string | null>(null);
+
+  // Independent package section state
   const [packagesData, setPackagesData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [packagesLoading, setPackagesLoading] = useState(true);
+  const [packagesError, setPackagesError] = useState<string | null>(null);
+
+  // Independent payments section state
+  const [paymentsData, setPaymentsData] = useState<any[] | null>(null);
+  const [paymentsLoading, setPaymentsLoading] = useState(true);
+  const [paymentsError, setPaymentsError] = useState<string | null>(null);
 
   // Quick claim modal
   const [paymentClaimBooking, setPaymentClaimBooking] = useState<any | null>(null);
 
   const isAr = lang === 'ar';
 
-  useEffect(() => {
-    let isMounted = true;
-    const fetchStudentData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+  // Fetch core profile and bookings
+  const fetchCoreData = useCallback(async () => {
+    try {
+      setCoreLoading(true);
+      setCoreError(null);
 
-        const token = session?.access_token;
-        if (!token) {
-          throw new Error(isAr ? 'جلسة تسجيل الدخول منتهية' : 'No active session token found');
-        }
-
-        const headers = { Authorization: `Bearer ${token}` };
-
-        const [profileRes, bookingsRes, packagesRes] = await Promise.all([
-          fetch('/api/student/me', { headers }),
-          fetch('/api/student/bookings', { headers }),
-          fetch('/api/student/packages', { headers })
-        ]);
-
-        if (!profileRes.ok) {
-          throw new Error(isAr ? 'فشل تحميل الملف الشخصي' : 'Failed to load profile');
-        }
-
-        const profileData = await profileRes.json();
-        const bookingsData = bookingsRes.ok ? await bookingsRes.json() : [];
-        const packData = packagesRes.ok ? await packagesRes.json() : null;
-
-        if (isMounted) {
-          setProfile(profileData);
-          setBookings(Array.isArray(bookingsData) ? bookingsData : []);
-          setPackagesData(packData);
-        }
-      } catch (err: any) {
-        console.error('Error loading student dashboard data:', err);
-        if (isMounted) {
-          setError(err.message || (isAr ? 'تعذر تحميل بيانات الطالب' : 'Unable to load dashboard data'));
-        }
-      } finally {
-        if (isMounted) setLoading(false);
+      const token = session?.access_token;
+      if (!token) {
+        throw new Error(isAr ? 'جلسة تسجيل الدخول منتهية' : 'No active session token found');
       }
-    };
 
-    fetchStudentData();
-    return () => {
-      isMounted = false;
-    };
+      const headers = { Authorization: `Bearer ${token}` };
+
+      const [profileRes, bookingsRes] = await Promise.all([
+        fetch('/api/student/me', { headers }),
+        fetch('/api/student/bookings', { headers })
+      ]);
+
+      if (!profileRes.ok) {
+        throw new Error(isAr ? 'فشل تحميل الملف الشخصي' : 'Failed to load profile');
+      }
+
+      const profileJson = await profileRes.json();
+      const bookingsJson = bookingsRes.ok ? await bookingsRes.json() : [];
+
+      setProfile(profileJson);
+      setBookings(Array.isArray(bookingsJson) ? bookingsJson : []);
+    } catch (err: any) {
+      console.error('Error loading core student overview data:', err);
+      setCoreError(err.message || (isAr ? 'تعذر تحميل بيانات الطالب' : 'Unable to load dashboard data'));
+    } finally {
+      setCoreLoading(false);
+    }
   }, [session, isAr]);
 
-  if (loading) {
+  // Fetch packages independently
+  const fetchPackagesData = useCallback(async () => {
+    try {
+      setPackagesLoading(true);
+      setPackagesError(null);
+
+      const token = session?.access_token;
+      if (!token) return;
+
+      const res = await fetch('/api/student/packages', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (!res.ok) {
+        throw new Error(isAr ? 'تعذر تحميل بيانات الباقات' : 'Unable to load packages');
+      }
+
+      const json = await res.json();
+      setPackagesData(json);
+    } catch (err: any) {
+      console.error('Error loading package snapshot:', err);
+      setPackagesError(err.message || (isAr ? 'تعذر تحميل بيانات الباقات' : 'Unable to load packages'));
+    } finally {
+      setPackagesLoading(false);
+    }
+  }, [session, isAr]);
+
+  // Fetch payments independently
+  const fetchPaymentsData = useCallback(async () => {
+    try {
+      setPaymentsLoading(true);
+      setPaymentsError(null);
+
+      const token = session?.access_token;
+      if (!token) return;
+
+      const res = await fetch('/api/student/payments', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (!res.ok) {
+        throw new Error(isAr ? 'تعذر تحميل بيانات المدفوعات' : 'Unable to load payments');
+      }
+
+      const json = await res.json();
+      setPaymentsData(Array.isArray(json.payments) ? json.payments : []);
+    } catch (err: any) {
+      console.error('Error loading payment snapshot:', err);
+      setPaymentsError(err.message || (isAr ? 'تعذر تحميل بيانات المدفوعات' : 'Unable to load payments'));
+    } finally {
+      setPaymentsLoading(false);
+    }
+  }, [session, isAr]);
+
+  useEffect(() => {
+    fetchCoreData();
+    fetchPackagesData();
+    fetchPaymentsData();
+  }, [fetchCoreData, fetchPackagesData, fetchPaymentsData]);
+
+  if (coreLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] gap-3">
         <Loader2 className="w-8 h-8 text-primary animate-spin" />
@@ -104,16 +162,16 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
     );
   }
 
-  if (error) {
+  if (coreError) {
     return (
       <div className="max-w-xl mx-auto my-8 p-6 bg-surface border border-destructive/20 rounded-2xl shadow-xs text-center">
         <AlertCircle className="w-8 h-8 text-destructive mx-auto mb-3" />
         <h3 className="text-base font-semibold text-foreground mb-1">
           {isAr ? 'حدث خطأ أثناء تحميل البيانات' : 'Could not load your student dashboard'}
         </h3>
-        <p className="text-xs sm:text-sm text-muted-foreground mb-5 leading-relaxed">{error}</p>
+        <p className="text-xs sm:text-sm text-muted-foreground mb-5 leading-relaxed">{coreError}</p>
         <button
-          onClick={() => window.location.reload()}
+          onClick={fetchCoreData}
           className="inline-flex items-center justify-center px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer"
         >
           {isAr ? 'إعادة المحاولة' : 'Try Again'}
@@ -211,12 +269,12 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
       </div>
 
       {/* ========================================================================= */}
-      {/* 2. QUICK ACTIONS (Compact, actionable buttons — NOT statistics cards!) */}
+      {/* 2. QUICK ACTIONS (Hierarchy: Primary 'Book a Lesson', Secondary others) */}
       {/* ========================================================================= */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <Link
           to="/student/book"
-          className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-primary text-primary-foreground hover:bg-primary-hover transition-all shadow-xs group cursor-pointer"
+          className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-primary text-primary-foreground hover:bg-primary-hover transition-all shadow-xs group cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
           <div className="flex items-center gap-2.5 min-w-0">
             <Calendar className="w-4 h-4 shrink-0" />
@@ -229,12 +287,14 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
         <Link
           to="/student/packages"
-          className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-surface border border-border hover:border-primary/40 text-foreground hover:text-primary transition-all shadow-2xs group cursor-pointer"
+          className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-surface border border-border hover:border-primary/40 text-foreground hover:text-primary transition-all shadow-2xs group cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
           <div className="flex items-center gap-2.5 min-w-0">
             <Package className="w-4 h-4 text-primary shrink-0" />
             <span className="text-xs sm:text-sm font-medium truncate">
-              {isAr ? 'استكشاف الباقات' : 'Explore Packages'}
+              {creditsRemaining > 0 
+                ? (isAr ? 'عرض باقتي' : 'View My Package') 
+                : (isAr ? 'استكشاف الباقات' : 'Explore Packages')}
             </span>
           </div>
           <ArrowRight className={`w-3.5 h-3.5 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all shrink-0 ${isAr ? 'rotate-180 group-hover:-translate-x-0.5' : ''}`} />
@@ -242,7 +302,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
         <Link
           to="/student/lessons"
-          className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-surface border border-border hover:border-primary/40 text-foreground hover:text-primary transition-all shadow-2xs group cursor-pointer"
+          className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-surface border border-border hover:border-primary/40 text-foreground hover:text-primary transition-all shadow-2xs group cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
           <div className="flex items-center gap-2.5 min-w-0">
             <BookOpen className="w-4 h-4 text-primary shrink-0" />
@@ -255,7 +315,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
         <Link
           to="/student/payments"
-          className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-surface border border-border hover:border-primary/40 text-foreground hover:text-primary transition-all shadow-2xs group cursor-pointer"
+          className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-surface border border-border hover:border-primary/40 text-foreground hover:text-primary transition-all shadow-2xs group cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
           <div className="flex items-center gap-2.5 min-w-0">
             <CreditCard className="w-4 h-4 text-primary shrink-0" />
@@ -338,10 +398,10 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   </div>
                 </div>
 
-                {/* Pending Payment Warning Notice */}
+                {/* Pending Payment Warning Notice - using semantic tokens */}
                 {nextBooking.status === 'pending' && (
-                  <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/25 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                    <div className="flex items-center gap-2 text-amber-800 dark:text-amber-300">
+                  <div className="p-3.5 rounded-xl bg-warning/10 border border-warning/25 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center gap-2 text-warning">
                       <AlertCircle className="w-4 h-4 shrink-0" />
                       <span>
                         {isAr
@@ -352,7 +412,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                     <button
                       type="button"
                       onClick={() => setPaymentClaimBooking(nextBooking)}
-                      className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-semibold transition-colors shrink-0 cursor-pointer self-start sm:self-center"
+                      className="px-3 py-1.5 bg-warning hover:bg-warning/90 text-warning-foreground rounded-lg font-semibold transition-colors shrink-0 cursor-pointer self-start sm:self-center"
                     >
                       {isAr ? 'إرسال إثبات الدفع' : 'Submit Claim'}
                     </button>
@@ -509,7 +569,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
         {/* RIGHT COLUMN: 4 COLS (Learning Snapshot, Package Status, Billing Status, Teacher Connection) */}
         <aside className="lg:col-span-4 space-y-6">
           
-          {/* 1. LEARNING SNAPSHOT (Subtle surface, clean typography) */}
+          {/* 1. LEARNING SNAPSHOT (Explicit labels, factual metrics only) */}
           <div className="rounded-2xl border border-border bg-surface p-5 space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-border">
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -519,18 +579,18 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
             </div>
 
             <div className="grid grid-cols-2 gap-3 text-start">
-              <div className="p-3 rounded-xl bg-surface-subtle border border-border-subtle">
+              <div className="p-3 rounded-xl bg-surface-subtle border border-border">
                 <span className="text-[11px] text-muted-foreground block">
-                  {isAr ? 'الدروس المكتملة' : 'Completed'}
+                  {isAr ? 'دروس مكتملة' : 'completed lessons'}
                 </span>
                 <span className="text-xl font-serif font-bold text-foreground">
                   {completedLessonsCount}
                 </span>
               </div>
 
-              <div className="p-3 rounded-xl bg-surface-subtle border border-border-subtle">
+              <div className="p-3 rounded-xl bg-surface-subtle border border-border">
                 <span className="text-[11px] text-muted-foreground block">
-                  {isAr ? 'الدروس القادمة' : 'Upcoming'}
+                  {isAr ? 'دروس قادمة' : 'upcoming lessons'}
                 </span>
                 <span className="text-xl font-serif font-bold text-primary">
                   {upcomingBookings.length}
@@ -554,7 +614,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
             </div>
           </div>
 
-          {/* 2. PACKAGE BALANCE SNAPSHOT */}
+          {/* 2. PACKAGE BALANCE SNAPSHOT (Independent loading/error/active state) */}
           <div className="rounded-2xl border border-border bg-surface p-5 space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-border">
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -563,33 +623,94 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
               <Package className="w-4 h-4 text-primary" />
             </div>
 
-            <div className="space-y-2">
-              <div className="flex items-baseline justify-between">
-                <span className="text-2xl font-serif font-bold text-primary">
-                  {creditsRemaining}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  {isAr ? 'حصص متبقية' : 'credits remaining'}
-                </span>
+            {packagesLoading ? (
+              <div className="py-4 flex items-center justify-center gap-2 text-muted-foreground text-xs">
+                <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                <span>{isAr ? 'جاري تحميل الباقات...' : 'Loading packages...'}</span>
               </div>
+            ) : packagesError ? (
+              <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20 text-xs space-y-2">
+                <p className="text-destructive font-medium">
+                  {isAr ? 'تعذر تحميل بيانات الباقات' : 'Unable to load package details.'}
+                </p>
+                <button
+                  type="button"
+                  onClick={fetchPackagesData}
+                  className="inline-flex items-center gap-1.5 text-xs text-destructive hover:underline font-semibold cursor-pointer"
+                >
+                  <RefreshCw className="w-3 h-3" />
+                  <span>{isAr ? 'إعادة المحاولة' : 'Try again'}</span>
+                </button>
+              </div>
+            ) : creditsRemaining > 0 ? (
+              /* Active package display */
+              <div className="space-y-3">
+                <div className="flex items-baseline justify-between">
+                  <span className="text-2xl font-serif font-bold text-primary">
+                    {creditsRemaining}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {isAr ? 'حصص متبقية' : 'credits remaining'}
+                  </span>
+                </div>
 
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                {creditsRemaining > 0
-                  ? (isAr ? 'لديك حصص مدفوعة مسبقاً جاهزة للحجز مع الأستاذ محمود.' : 'You have active prepaid credits ready to use for upcoming lessons.')
-                  : (isAr ? 'لا توجد باقة نشطة حالياً. استكشف الباقات لتنظيم خطتك التعليمية.' : 'No active package. Prepaid packages offer structured weekly or monthly learning.')}
-              </p>
-            </div>
+                {packagesData?.creditSummary && (
+                  <div className="grid grid-cols-2 gap-2 text-xs p-2.5 rounded-lg bg-surface-subtle border border-border text-muted-foreground">
+                    <div>
+                      <span>{isAr ? 'المستخدم:' : 'Used:'} </span>
+                      <span className="font-semibold text-foreground">
+                        {packagesData.creditSummary.totalUsed ?? 0}
+                      </span>
+                    </div>
+                    <div>
+                      <span>{isAr ? 'الإجمالي:' : 'Total:'} </span>
+                      <span className="font-semibold text-foreground">
+                        {packagesData.creditSummary.totalPurchased ?? creditsRemaining}
+                      </span>
+                    </div>
+                  </div>
+                )}
 
-            <Link
-              to={creditsRemaining > 0 ? '/student/book' : '/student/packages'}
-              className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-surface hover:bg-surface-subtle border border-border hover:border-primary/40 text-foreground hover:text-primary text-xs font-semibold transition-all shadow-2xs"
-            >
-              <span>{creditsRemaining > 0 ? (isAr ? 'حجز باستخدام الرصيد' : 'Book with Credits') : (isAr ? 'استكشاف الباقات' : 'Explore Packages')}</span>
-              <ArrowRight className={`w-3.5 h-3.5 ${isAr ? 'rotate-180' : ''}`} />
-            </Link>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  {isAr 
+                    ? 'لديك حصص مدفوعة مسبقاً جاهزة للحجز مع الأستاذ محمود.' 
+                    : 'You have active prepaid credits ready to use for upcoming lessons.'}
+                </p>
+
+                <Link
+                  to="/student/packages"
+                  className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-primary/10 hover:bg-primary text-primary hover:text-primary-foreground text-xs font-semibold transition-all shadow-2xs cursor-pointer"
+                >
+                  <span>{isAr ? 'عرض تفاصيل الباقة' : 'View My Package'}</span>
+                  <ArrowRight className={`w-3.5 h-3.5 ${isAr ? 'rotate-180' : ''}`} />
+                </Link>
+              </div>
+            ) : (
+              /* No active package */
+              <div className="space-y-3">
+                <div className="space-y-1">
+                  <h4 className="text-sm font-semibold text-foreground">
+                    {isAr ? 'لا توجد باقة نشطة' : 'No active package'}
+                  </h4>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {isAr 
+                      ? 'الباقات المدفوعة مسبقاً توفر تعليماً منظماً أسبوعياً أو شهرياً بأسعار مخفضة.' 
+                      : 'Prepaid packages offer structured weekly or monthly learning.'}
+                  </p>
+                </div>
+
+                <Link
+                  to="/student/packages"
+                  className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-surface hover:bg-surface-subtle border border-border hover:border-primary/40 text-foreground hover:text-primary text-xs font-semibold transition-all shadow-2xs cursor-pointer"
+                >
+                  <span>{isAr ? 'استكشاف الباقات' : 'Explore Packages'}</span>
+                  <ArrowRight className={`w-3.5 h-3.5 ${isAr ? 'rotate-180' : ''}`} />
+                </Link>
+              </div>
+            )}
           </div>
 
-          {/* 3. PAYMENT STATUS SNAPSHOT */}
+          {/* 3. PAYMENT STATUS SNAPSHOT (Independent loading/error/factual payment state) */}
           <div className="rounded-2xl border border-border bg-surface p-5 space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-border">
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -598,39 +719,94 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
               <CreditCard className="w-4 h-4 text-primary" />
             </div>
 
-            {pendingPaymentBookings.length > 0 ? (
-              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/25 space-y-2 text-xs">
-                <div className="flex items-center gap-1.5 font-semibold text-amber-800 dark:text-amber-300">
-                  <AlertCircle className="w-3.5 h-3.5" />
-                  <span>{pendingPaymentBookings.length} {isAr ? 'حجز بانتظار الإثبات' : 'booking awaiting proof'}</span>
+            {paymentsLoading ? (
+              <div className="py-4 flex items-center justify-center gap-2 text-muted-foreground text-xs">
+                <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                <span>{isAr ? 'جاري تحميل المدفوعات...' : 'Loading payments...'}</span>
+              </div>
+            ) : paymentsError ? (
+              <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20 text-xs space-y-2">
+                <p className="text-destructive font-medium">
+                  {isAr ? 'تعذر تحميل بيانات المدفوعات' : 'Unable to load payment status.'}
+                </p>
+                <button
+                  type="button"
+                  onClick={fetchPaymentsData}
+                  className="inline-flex items-center gap-1.5 text-xs text-destructive hover:underline font-semibold cursor-pointer"
+                >
+                  <RefreshCw className="w-3 h-3" />
+                  <span>{isAr ? 'إعادة المحاولة' : 'Try again'}</span>
+                </button>
+              </div>
+            ) : pendingPaymentBookings.length > 0 || (paymentsData && paymentsData.some(p => p.status === 'pending')) ? (
+              /* Pending verification state */
+              <div className="p-3 rounded-xl bg-warning/10 border border-warning/25 space-y-2 text-xs">
+                <div className="flex items-center gap-1.5 font-semibold text-warning">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <span>{isAr ? 'دفعة معلقة بانتظار التحقق' : 'Payment pending verification'}</span>
                 </div>
                 <p className="text-muted-foreground text-[11px] leading-relaxed">
                   {isAr
-                    ? 'أرسل تفاصيل الحوالة البنكية لتأكيد الحجز.'
+                    ? 'أرسل تفاصيل الحوالة البنكية لتأكيد الحجز ومتابعة الدرس.'
                     : 'Submit your transfer reference so Ustadh Mahmoud can verify your slot.'}
                 </p>
                 <Link
                   to="/student/payments"
                   className="inline-block text-xs font-semibold text-primary hover:underline"
                 >
-                  {isAr ? 'إرسال الإثبات الآن ←' : 'Submit proof now →'}
+                  {isAr ? 'عرض المدفوعات وإرسال الإثبات ←' : 'View payments & submit proof →'}
+                </Link>
+              </div>
+            ) : paymentsData && paymentsData.some(p => p.status === 'verified') ? (
+              /* Verified payments state */
+              <div className="space-y-2">
+                <div className="flex items-center gap-2.5 text-xs text-muted-foreground">
+                  <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
+                  <span className="text-foreground font-medium">
+                    {isAr ? 'تم التحقق من المدفوعات السابقة بنجاح.' : 'Payment verified.'}
+                  </span>
+                </div>
+                <Link
+                  to="/student/payments"
+                  className="text-xs text-primary hover:underline font-medium block pt-1"
+                >
+                  {isAr ? 'عرض إيصالات المدفوعات ←' : 'View verified payment receipts →'}
+                </Link>
+              </div>
+            ) : paymentsData && paymentsData.some(p => p.status === 'rejected') ? (
+              /* Rejected payment state */
+              <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20 space-y-2 text-xs">
+                <div className="flex items-center gap-1.5 font-semibold text-destructive">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <span>{isAr ? 'تم رفض إثبات الدفع' : 'Payment rejected'}</span>
+                </div>
+                <p className="text-muted-foreground text-[11px] leading-relaxed">
+                  {isAr
+                    ? 'يرجى التحقق من تفاصيل الإيصال أو التواصل مع الأستاذ محمود.'
+                    : 'Please review your transfer details or submit a corrected claim.'}
+                </p>
+                <Link
+                  to="/student/payments"
+                  className="inline-block text-xs font-semibold text-destructive hover:underline"
+                >
+                  {isAr ? 'مراجعة المدفوعات ←' : 'Review payments →'}
                 </Link>
               </div>
             ) : (
-              <div className="flex items-center gap-2.5 text-xs text-muted-foreground">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>
-                  {isAr ? 'كافة المدفوعات والحصص معتمدة ومؤكدة.' : 'All bookings and credits are settled.'}
-                </span>
+              /* Factual No payment history yet */
+              <div className="space-y-3">
+                <p className="text-xs text-muted-foreground">
+                  {isAr ? 'لا يوجد سجل مدفوعات مسجل حتى الآن.' : 'No payment history yet.'}
+                </p>
+                <Link
+                  to="/student/payments"
+                  className="w-full inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-surface hover:bg-surface-subtle border border-border text-foreground hover:text-primary text-xs font-medium transition-all shadow-2xs"
+                >
+                  <span>{isAr ? 'عرض صفحة المدفوعات' : 'View Payments'}</span>
+                  <ArrowRight className={`w-3.5 h-3.5 ${isAr ? 'rotate-180' : ''}`} />
+                </Link>
               </div>
             )}
-
-            <Link
-              to="/student/payments"
-              className="text-xs text-primary hover:underline font-medium block pt-1"
-            >
-              {isAr ? 'عرض سجل المدفوعات الكامل ←' : 'View payment history & instructions →'}
-            </Link>
           </div>
 
           {/* 4. TEACHER RELATIONSHIP NOTE */}
