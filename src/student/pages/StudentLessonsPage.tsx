@@ -397,6 +397,11 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                             {isAr ? 'تجريبي مجاني' : 'Free Trial'}
                           </Badge>
                         )}
+                        {(b.packageEntitlementId || b.isPackageBooking) && (
+                          <Badge variant="secondary" className="text-[10px] font-normal bg-primary/10 text-primary border-primary/20">
+                            {isAr ? 'باقة مسبقة الدفع' : 'Prepaid Package'}
+                          </Badge>
+                        )}
                       </div>
 
                       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">

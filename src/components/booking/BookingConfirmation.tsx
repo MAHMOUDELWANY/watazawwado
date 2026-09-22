@@ -250,8 +250,8 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         </div>
       </div>
 
-      {/* Payment Instructions & 1-Click Copy (For Paid Lessons) */}
-      {!confirmation.isFreeTrial && (
+      {/* Payment Instructions & 1-Click Copy (For Regular Standalone Paid Lessons) */}
+      {!confirmation.isFreeTrial && !confirmation.packageEntitlementId && (
         <PaymentInstructionsCard
           bookingReference={confirmation.bookingReference}
           serviceName={confirmation.serviceName}
@@ -260,6 +260,23 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           learnerName={confirmation.learnerName}
           lang={lang}
         />
+      )}
+
+      {/* Package Credit Confirmed Banner (For Lessons Booked via Package) */}
+      {!confirmation.isFreeTrial && confirmation.packageEntitlementId && (
+        <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-3 text-xs text-emerald-800 dark:text-emerald-300">
+          <CreditCard className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+          <div className="leading-relaxed">
+            <strong className="block text-emerald-900 dark:text-emerald-200 font-semibold mb-0.5">
+              {isEn ? 'Prepaid Lesson Package' : 'باقة دروس مسبقة الدفع'}
+            </strong>
+            <span>
+              {isEn
+                ? 'This lesson is covered by your active package credit. No additional payment is required for this session.'
+                : 'تمت تغطية هذا الدرس برصيد باقتك النشطة. لا يلزم أي دفع إضافي لهذه الجلسة.'}
+            </span>
+          </div>
+        </div>
       )}
 
       {/* Philosophy Reassurance / Post-Trial Human Expectation */}

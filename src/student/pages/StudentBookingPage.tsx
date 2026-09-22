@@ -529,6 +529,8 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
   const [bookingsLoading, setBookingsLoading] = useState<boolean>(Boolean(accessToken));
   const [bookingsError, setBookingsError] = useState<string | null>(null);
 
+  const [packagesData, setPackagesData] = useState<{ entitlements: any[]; creditSummary: any } | null>(null);
+
   // Local state for reuse interaction - ALL HOOKS UNCONDITIONALLY DECLARED AT TOP LEVEL
   const [reuseDismissed, setReuseDismissed] = useState<boolean>(false);
   const [isReusing, setIsReusing] = useState<boolean>(false);
@@ -662,6 +664,17 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
       if (isMounted) {
         await fetchBookings(accessToken);
       }
+
+      // 3. Load Student Packages for credit redemption
+      try {
+        const pkgRes = await fetch('/api/student/packages', { headers });
+        if (pkgRes.ok) {
+          const pkgData = await pkgRes.json();
+          if (isMounted) setPackagesData(pkgData);
+        }
+      } catch (err) {
+        console.error('[StudentBookingPage] Error loading packages:', err);
+      }
     }
 
     loadStudentData();
@@ -769,13 +782,19 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
 
   // Support direct service parameter if not in active reuse mode (e.g. /student/book?service=tajweed)
   const requestedServiceId = searchParams.get('service');
+  const requestedEntitlementId = searchParams.get('entitlementId') || (location.state as any)?.entitlementId;
   const matchedQueryServiceId = requestedServiceId && BOOKING_SERVICES.some((s) => s.id === requestedServiceId)
     ? requestedServiceId
     : standardServiceId;
 
-  const currentInitialData = activeConfig ? activeConfig.initialData : standardInitialData;
+  const currentInitialData = activeConfig
+    ? activeConfig.initialData
+    : {
+        ...standardInitialData,
+        ...(requestedEntitlementId ? { packageEntitlementId: requestedEntitlementId } : {})
+      };
   const currentServiceId = activeConfig ? activeConfig.matchedServiceId : matchedQueryServiceId;
-  const currentMode = activeConfig ? activeConfig.initialMode : standardMode;
+  const currentMode = activeConfig ? activeConfig.initialMode : (requestedEntitlementId ? 'regular' : standardMode);
 
   return (
     <div className="space-y-6">
@@ -976,6 +995,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
               studentName={profile?.name}
               studentEmail={profile?.email}
               teacherId={profile?.assignedTeacherId || profile?.assigned_teacher_id}
+              activeEntitlements={packagesData?.entitlements || []}
             />
           </div>
         </BookingErrorBoundary>

@@ -83,6 +83,7 @@ export interface BookingFormData {
   studentId?: string;
   teacherId?: string;
   selectedPackageId?: string;
+  packageEntitlementId?: string;
 }
 
 export interface BookingConfirmationData {
@@ -102,6 +103,7 @@ export interface BookingConfirmationData {
   cairoTimeDisplay: string;
   feeAmountUsd: number;
   isFreeTrial: boolean;
+  packageEntitlementId?: string;
   integrationStatus?: 'synced' | 'pending' | 'failed';
   zoomDetails: {
     platform: 'Zoom';
@@ -142,3 +144,19 @@ export interface PackageCatalogEntry {
   is_active: boolean;
   eligibility_rules?: any;
 }
+
+export interface PackageEntitlementEntry {
+  id: string;
+  packageCatalogId: string;
+  packageName: string;
+  packageType: string;
+  status: 'pending_payment' | 'active' | 'exhausted' | 'cancelled' | string;
+  purchasedQuantity: number;
+  remainingCredits: number;
+  pricePaid?: number;
+  currency?: string;
+  paymentReference?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+

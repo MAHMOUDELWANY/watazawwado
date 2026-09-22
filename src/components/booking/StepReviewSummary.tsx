@@ -40,7 +40,8 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
   const service = BOOKING_SERVICES.find((s) => s.id === formData.serviceId) || BOOKING_SERVICES[0];
   const isChild = formData.audience === 'child';
   const isTrial = formData.mode === 'trial';
-  const fee = calculateLessonFee(formData.serviceId, formData.duration, isTrial);
+  const isPackageCredit = Boolean(formData.packageEntitlementId);
+  const fee = isTrial || isPackageCredit ? 0 : calculateLessonFee(formData.serviceId, formData.duration, false);
 
   const [packageDetails, setPackageDetails] = React.useState<any>(null);
   React.useEffect(() => {
@@ -198,13 +199,19 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
             <span className="text-xs text-[#362E3B]/60 dark:text-[#D5D0CA]/60">
               {isTrial
                 ? isEn ? 'Free introductory assessment session' : 'جلسة تعارف وتقييم مجانية تماماً'
+                : isPackageCredit
+                ? isEn ? 'Prepaid package credit • 1 credit linked' : 'رصيد باقة مدفوعة مسبقاً • تم ربط رصيد درس واحد'
                 : isEn ? 'Pay per lesson / no lock-in' : 'دفع لكل درس دون التزام مقيد'}
             </span>
           </div>
 
           <div className="text-end">
             <span className="font-serif text-2xl font-bold text-[#87A878] dark:text-[#87A878]">
-              {isTrial ? (isEn ? 'FREE ($0.00)' : 'مجاناً ($٠.٠٠)') : `$${fee.toFixed(2)} USD`}
+              {isTrial
+                ? (isEn ? 'FREE ($0.00)' : 'مجاناً ($٠.٠٠)')
+                : isPackageCredit
+                ? (isEn ? '$0.00 USD (Covered by Package)' : '٠.٠٠$ (مغطى بالباقة)')
+                : `$${fee.toFixed(2)} USD`}
             </span>
           </div>
         </div>
@@ -257,6 +264,8 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
               <span>
                 {isTrial
                   ? isEn ? 'Confirm Free Trial' : 'تأكيد حجز الجلسة المجانية'
+                  : isPackageCredit
+                  ? isEn ? 'Confirm with Package Credit' : 'تأكيد الحجز برصيد الباقة'
                   : isEn ? 'Confirm 1-on-1 Lesson' : 'تأكيد حجز الدرس الفردي'}
               </span>
             </>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BookingFormData, BookingConfirmationData, BookingMode, Language, LearnerAudience, ProficiencyLevel } from '../../booking/types';
+import { BookingFormData, BookingConfirmationData, BookingMode, Language, LearnerAudience, ProficiencyLevel, PackageEntitlementEntry } from '../../booking/types';
 import { BOOKING_SERVICES } from '../../booking/mockData';
 import { bookingService } from '../../booking/bookingService';
 import { validateStep } from '../../booking/validation';
@@ -34,6 +34,7 @@ interface BookingFlowProps {
   studentName?: string;
   studentEmail?: string;
   teacherId?: string;
+  activeEntitlements?: PackageEntitlementEntry[];
 }
 
 export const BookingFlow: React.FC<BookingFlowProps> = ({
@@ -55,7 +56,8 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   canBookForChild = false,
   studentName,
   studentEmail,
-  teacherId
+  teacherId,
+  activeEntitlements = []
 }) => {
   const isEn = lang === 'en';
 
@@ -126,7 +128,9 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
       timeSlot: initialData?.timeSlot || null,
       timezone: initialData?.timezone || userTz,
       studentId: resolvedStudentId,
-      teacherId: initialData?.teacherId || teacherId
+      teacherId: initialData?.teacherId || teacherId,
+      selectedPackageId: initialData?.selectedPackageId,
+      packageEntitlementId: initialData?.packageEntitlementId
     };
   });
 
@@ -348,6 +352,9 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                   onChangeDuration={(duration) => updateFormData({ duration })}
                   selectedPackageId={formData.selectedPackageId}
                   onSelectPackage={(selectedPackageId) => updateFormData({ selectedPackageId })}
+                  activeEntitlements={activeEntitlements}
+                  packageEntitlementId={formData.packageEntitlementId}
+                  onSelectPackageEntitlement={(packageEntitlementId) => updateFormData({ packageEntitlementId })}
                   onNext={handleNext}
                   onBack={handleBack}
                   lang={lang}

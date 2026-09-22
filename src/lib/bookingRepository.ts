@@ -184,6 +184,7 @@ export const bookingRepository = {
             goal: data.goal === 'custom' ? data.customGoalText : data.goal,
             notes: data.audience === 'child' ? data.parentNotes : data.notes,
             student_id: studentIdToLink,
+            package_entitlement_id: data.packageEntitlementId || null,
           },
         });
 

@@ -5481,7 +5481,7 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
     // Fetch bookings belonging strictly to this authenticated student (idempotent read)
     const { data: bookingsData, error: bookingsError } = await supabaseAdmin
       .from('bookings')
-      .select('id, reference_code, service_id, booking_type, duration_minutes, scheduled_start, scheduled_end, student_timezone, status, contact_name, contact_email, contact_whatsapp, parent_name, notes, fee_amount_usd, zoom_meeting_link, created_at')
+      .select('id, reference_code, service_id, package_entitlement_id, booking_type, duration_minutes, scheduled_start, scheduled_end, student_timezone, status, contact_name, contact_email, contact_whatsapp, parent_name, notes, fee_amount_usd, zoom_meeting_link, created_at')
       .eq('student_id', studentId)
       .order('scheduled_start', { ascending: true });
 
@@ -5507,6 +5507,27 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
       }
     }
 
+    // Resolve package entitlement metadata safely (batched, 0 N+1)
+    const pkgEntitlementIds = Array.from(new Set((bookingsData || []).map((b: any) => b.package_entitlement_id).filter(Boolean)));
+    const packageMap = new Map<string, any>();
+
+    if (pkgEntitlementIds.length > 0) {
+      const { data: entRows } = await supabaseAdmin
+        .from('package_entitlements')
+        .select('id, package_catalog_id, package_catalog:package_catalog_id(id, name, package_type)')
+        .in('id', pkgEntitlementIds);
+
+      if (entRows) {
+        for (const ent of entRows) {
+          const cat: any = Array.isArray(ent.package_catalog) ? ent.package_catalog[0] : ent.package_catalog;
+          packageMap.set(ent.id, {
+            packageName: cat?.name || 'Lesson Package',
+            packageType: cat?.package_type || 'monthly'
+          });
+        }
+      }
+    }
+
     // Map to a clean, coherent DTO that matches both the new explicit contract and legacy fields
     const formattedBookings = (bookingsData || []).map((b: any) => {
       const s = serviceMap.get(b.service_id);
@@ -5514,6 +5535,8 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
       const zoomUrl = (b.zoom_meeting_link && typeof b.zoom_meeting_link === 'string' && b.zoom_meeting_link.trim().length > 0)
         ? b.zoom_meeting_link.trim()
         : null;
+
+      const pkgInfo = b.package_entitlement_id ? packageMap.get(b.package_entitlement_id) : null;
 
       return {
         id: b.id,
@@ -5534,6 +5557,10 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
         notes: b.notes || null,
         feeAmountUsd: b.fee_amount_usd,
         zoomMeetingLink: zoomUrl,
+        packageEntitlementId: b.package_entitlement_id || null,
+        packageName: pkgInfo?.packageName || (b.package_entitlement_id ? 'Lesson Package' : null),
+        packageType: pkgInfo?.packageType || (b.package_entitlement_id ? 'monthly' : null),
+        isPackageBooking: Boolean(b.package_entitlement_id),
         // Harmonized contract aliases for UI compatibility
         lesson_date: b.scheduled_start,
         duration: b.duration_minutes,
@@ -5553,17 +5580,90 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
   }
 });
 
-// GET /api/student/packages - Retrieve authenticated student's package entitlements & active catalog
+// Helper: resolve authorized learners for a student account (self + linked children)
+async function getAuthorizedLearnersForStudent(supabaseAdmin: any, req: any) {
+  const studentId = req.studentUser?.student_id;
+  const userEmail = (req.studentUser?.email || '').trim().toLowerCase();
+  const learners: Array<{ id: string; name: string; learnerType: string; isPrimary: boolean }> = [];
+
+  if (!supabaseAdmin) {
+    if (studentId) {
+      learners.push({
+        id: studentId,
+        name: req.studentUser?.name || 'Student',
+        learnerType: req.studentUser?.studentProfile?.learner_type || 'adult',
+        isPrimary: true
+      });
+    }
+    if (Array.isArray(req.studentUser?.studentProfile?.linkedChildren)) {
+      for (const child of req.studentUser.studentProfile.linkedChildren) {
+        if (child?.id && !learners.some(l => l.id === child.id)) {
+          learners.push({
+            id: child.id,
+            name: child.name || 'Child',
+            learnerType: 'child',
+            isPrimary: false
+          });
+        }
+      }
+    }
+    return learners;
+  }
+
+  // 1. Primary student
+  if (studentId) {
+    const studentName = req.studentUser?.name || req.studentUser?.studentProfile?.name || 'Student';
+    const learnerType = req.studentUser?.studentProfile?.learner_type || 'adult';
+    learners.push({
+      id: studentId,
+      name: studentName,
+      learnerType,
+      isPrimary: true
+    });
+  }
+
+  // 2. Linked children via guardians table
+  if (userEmail) {
+    try {
+      const { data: guardianRows } = await supabaseAdmin
+        .from('guardians')
+        .select('student_id, parent_name, parent_email, students:student_id(id, name, learner_type, current_level)')
+        .ilike('parent_email', userEmail);
+
+      if (guardianRows) {
+        for (const g of guardianRows) {
+          const child = g.students;
+          if (child && child.id && !learners.some(l => l.id === child.id)) {
+            learners.push({
+              id: child.id,
+              name: child.name || 'Child',
+              learnerType: child.learner_type || 'child',
+              isPrimary: false
+            });
+          }
+        }
+      }
+    } catch (gErr: any) {
+      console.warn('[getAuthorizedLearnersForStudent Warning]', gErr.message);
+    }
+  }
+
+  return learners;
+}
+
+// GET /api/student/packages - Retrieve authenticated student's package entitlements & active catalog & eligible learners
 app.get('/api/student/packages', verifyStudentAuth, async (req: any, res: any) => {
   try {
     const studentId = req.studentUser?.student_id;
     const authUserId = req.studentUser?.auth_id;
 
     if (!studentId && !authUserId) {
-      return res.json({ entitlements: [], catalog: [], creditSummary: { totalRemaining: 0, totalPurchased: 0, totalUsed: 0 } });
+      return res.json({ entitlements: [], catalog: [], creditSummary: { totalRemaining: 0, totalPurchased: 0, totalUsed: 0 }, learners: [] });
     }
 
     const supabaseAdmin = getSupabaseAdminClient();
+    const authorizedLearners = await getAuthorizedLearnersForStudent(supabaseAdmin, req);
+
     if (!supabaseAdmin) {
       return res.json({
         entitlements: [],
@@ -5599,7 +5699,8 @@ app.get('/api/student/packages', verifyStudentAuth, async (req: any, res: any) =
             description: '12 private sessions for deep memorization and consistent mastery.'
           }
         ],
-        creditSummary: { totalRemaining: 0, totalPurchased: 0, totalUsed: 0 }
+        creditSummary: { totalRemaining: 0, totalPurchased: 0, totalUsed: 0 },
+        learners: authorizedLearners
       });
     }
 
@@ -5610,14 +5711,18 @@ app.get('/api/student/packages', verifyStudentAuth, async (req: any, res: any) =
       .eq('is_active', true)
       .order('price_amount', { ascending: true });
 
-    // 2. Fetch student's entitlements
+    // 2. Build entitlement filter for purchaser account and all authorized learners
+    const authorizedStudentIds = authorizedLearners.map(l => l.id).filter(Boolean);
+    const learnerFilterParts = authorizedStudentIds.map(id => `learner_student_id.eq.${id}`);
+    
     let entitlementFilter = '';
-    if (authUserId && studentId) {
-      entitlementFilter = `purchaser_account_id.eq.${authUserId},learner_student_id.eq.${studentId}`;
-    } else if (authUserId) {
+    if (authUserId) {
       entitlementFilter = `purchaser_account_id.eq.${authUserId}`;
-    } else {
-      entitlementFilter = `learner_student_id.eq.${studentId}`;
+      if (learnerFilterParts.length > 0) {
+        entitlementFilter += `,${learnerFilterParts.join(',')}`;
+      }
+    } else if (learnerFilterParts.length > 0) {
+      entitlementFilter = learnerFilterParts.join(',');
     }
 
     const { data: entitlementsData, error: entErr } = await supabaseAdmin
@@ -5636,6 +5741,31 @@ app.get('/api/student/packages', verifyStudentAuth, async (req: any, res: any) =
       catalogMap.set(item.id, item);
     }
 
+    // Build learner names map
+    const learnerNameMap = new Map<string, string>();
+    for (const l of authorizedLearners) {
+      learnerNameMap.set(l.id, l.name);
+    }
+
+    // Resolve any remaining learner student IDs that weren't in authorizedLearners
+    const unmappedLearnerIds = Array.from(new Set(
+      (entitlementsData || [])
+        .map((e: any) => e.learner_student_id)
+        .filter((id: any) => Boolean(id) && !learnerNameMap.has(id))
+    ));
+
+    if (unmappedLearnerIds.length > 0) {
+      const { data: extraStudents } = await supabaseAdmin
+        .from('students')
+        .select('id, name')
+        .in('id', unmappedLearnerIds);
+      if (extraStudents) {
+        for (const es of extraStudents) {
+          learnerNameMap.set(es.id, es.name);
+        }
+      }
+    }
+
     const formattedEntitlements = (entitlementsData || []).map((ent: any) => {
       const cat = catalogMap.get(ent.package_catalog_id);
       return {
@@ -5649,6 +5779,8 @@ app.get('/api/student/packages', verifyStudentAuth, async (req: any, res: any) =
         pricePaid: ent.price_paid,
         currency: ent.currency || 'USD',
         paymentReference: ent.payment_reference || null,
+        learnerStudentId: ent.learner_student_id || null,
+        learnerName: ent.learner_student_id ? (learnerNameMap.get(ent.learner_student_id) || null) : null,
         createdAt: ent.created_at,
         updatedAt: ent.updated_at
       };
@@ -5676,7 +5808,8 @@ app.get('/api/student/packages', verifyStudentAuth, async (req: any, res: any) =
         totalRemaining,
         totalPurchased,
         totalUsed
-      }
+      },
+      learners: authorizedLearners
     });
   } catch (err: any) {
     console.error('[GET /api/student/packages Error]', err);
@@ -5684,7 +5817,7 @@ app.get('/api/student/packages', verifyStudentAuth, async (req: any, res: any) =
   }
 });
 
-// POST /api/student/packages/select - Initiate package purchase by creating a pending entitlement
+// POST /api/student/packages/select - Initiate package purchase with multi-child learner support
 app.post('/api/student/packages/select', verifyStudentAuth, async (req: any, res: any) => {
   try {
     const studentId = req.studentUser?.student_id;
@@ -5694,18 +5827,33 @@ app.post('/api/student/packages/select', verifyStudentAuth, async (req: any, res
       return res.status(403).json({ error: 'Authenticated account required to purchase packages.' });
     }
 
-    const { packageCatalogId } = req.body;
+    const { packageCatalogId, learnerStudentId } = req.body;
     if (!packageCatalogId || typeof packageCatalogId !== 'string') {
       return res.status(400).json({ error: 'Valid packageCatalogId is required.' });
     }
 
     const supabaseAdmin = getSupabaseAdminClient();
+    const authorizedLearners = await getAuthorizedLearnersForStudent(supabaseAdmin, req);
+
+    // Validate learner ownership / authorization
+    let targetLearnerId: string | null = studentId || null;
+    if (learnerStudentId) {
+      const isAuthorized = authorizedLearners.some(l => l.id === learnerStudentId);
+      if (!isAuthorized) {
+        return res.status(403).json({
+          error: 'Unauthorized learner selection. You can only purchase packages for your own account or authorized learners.'
+        });
+      }
+      targetLearnerId = learnerStudentId;
+    }
+
     if (!supabaseAdmin) {
       return res.json({
         success: true,
         entitlement: {
           id: 'dev-entitlement-' + Date.now(),
           package_catalog_id: packageCatalogId,
+          learner_student_id: targetLearnerId,
           status: 'pending_payment',
           purchased_quantity: 4,
           remaining_credits: 0,
@@ -5734,14 +5882,14 @@ app.post('/api/student/packages/select', verifyStudentAuth, async (req: any, res
       .insert({
         package_catalog_id: catalogItem.id,
         purchaser_account_id: authUserId,
-        learner_student_id: studentId || null,
+        learner_student_id: targetLearnerId,
         status: 'pending_payment',
         purchased_quantity: catalogItem.lesson_count,
         remaining_credits: 0, // Credits are 0 until payment is confirmed by teacher
         price_paid: catalogItem.price_amount,
         currency: catalogItem.currency || 'USD'
       })
-      .select('id, package_catalog_id, status, purchased_quantity, remaining_credits, price_paid, currency, created_at')
+      .select('id, package_catalog_id, learner_student_id, status, purchased_quantity, remaining_credits, price_paid, currency, created_at')
       .single();
 
     if (insertErr || !newEntitlement) {
@@ -5758,6 +5906,162 @@ app.post('/api/student/packages/select', verifyStudentAuth, async (req: any, res
   } catch (err: any) {
     console.error('[POST /api/student/packages/select Error]', err);
     return res.status(500).json({ error: 'Internal server error selecting package.' });
+  }
+});
+
+// GET /api/student/packages/ledger - Retrieve authenticated student's credit ledger history
+app.get('/api/student/packages/ledger', verifyStudentAuth, async (req: any, res: any) => {
+  try {
+    const studentId = req.studentUser?.student_id;
+    const authUserId = req.studentUser?.auth_id;
+
+    if (!studentId && !authUserId) {
+      return res.json({ ledger: [] });
+    }
+
+    const supabaseAdmin = getSupabaseAdminClient();
+    const authorizedLearners = await getAuthorizedLearnersForStudent(supabaseAdmin, req);
+
+    if (!supabaseAdmin) {
+      return res.json({
+        ledger: [
+          {
+            id: 'dev-ledger-001',
+            packageEntitlementId: 'dev-entitlement-001',
+            bookingId: 'dev-booking-001',
+            bookingReference: 'MHM-100234',
+            activityType: 'completed_consumed',
+            deltaCredits: -1,
+            createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+            learnerStudentId: studentId,
+            learnerName: req.studentUser?.name || 'Student',
+            packageName: '4-Lesson Foundation Package'
+          },
+          {
+            id: 'dev-ledger-002',
+            packageEntitlementId: 'dev-entitlement-001',
+            bookingId: null,
+            bookingReference: null,
+            activityType: 'grant',
+            deltaCredits: 4,
+            createdAt: new Date(Date.now() - 86400000 * 7).toISOString(),
+            learnerStudentId: studentId,
+            learnerName: req.studentUser?.name || 'Student',
+            packageName: '4-Lesson Foundation Package'
+          }
+        ]
+      });
+    }
+
+    // 1. Resolve authorized entitlement IDs
+    const authorizedStudentIds = authorizedLearners.map(l => l.id).filter(Boolean);
+    const learnerFilterParts = authorizedStudentIds.map(id => `learner_student_id.eq.${id}`);
+    
+    let entitlementFilter = '';
+    if (authUserId) {
+      entitlementFilter = `purchaser_account_id.eq.${authUserId}`;
+      if (learnerFilterParts.length > 0) {
+        entitlementFilter += `,${learnerFilterParts.join(',')}`;
+      }
+    } else if (learnerFilterParts.length > 0) {
+      entitlementFilter = learnerFilterParts.join(',');
+    }
+
+    const { data: entitlements, error: entErr } = await supabaseAdmin
+      .from('package_entitlements')
+      .select('id, package_catalog_id, learner_student_id, package_catalog:package_catalog_id(id, name)')
+      .or(entitlementFilter);
+
+    if (entErr) {
+      console.warn('[GET /api/student/packages/ledger DB Warning]', entErr.message);
+    }
+
+    const entitlementIds = (entitlements || []).map((e: any) => e.id);
+    if (entitlementIds.length === 0) {
+      return res.json({ ledger: [] });
+    }
+
+    // Map package catalog names by entitlement ID
+    const entitlementNameMap = new Map<string, string>();
+    for (const ent of entitlements || []) {
+      const cat: any = Array.isArray(ent.package_catalog) ? ent.package_catalog[0] : ent.package_catalog;
+      entitlementNameMap.set(ent.id, cat?.name || 'Lesson Package');
+    }
+
+    // 2. Query credit ledger strictly for authorized entitlements
+    const { data: ledgerRows, error: ledgerErr } = await supabaseAdmin
+      .from('package_credit_ledger')
+      .select('id, package_entitlement_id, booking_id, learner_student_id, activity_type, delta_credits, created_at')
+      .in('package_entitlement_id', entitlementIds)
+      .order('created_at', { ascending: false })
+      .limit(100);
+
+    if (ledgerErr) {
+      console.error('[GET /api/student/packages/ledger Error]', ledgerErr);
+      return res.status(500).json({ error: 'Failed to retrieve credit history.' });
+    }
+
+    // 3. Batch resolve booking references and learner names
+    const bookingIds = Array.from(new Set((ledgerRows || []).map((r: any) => r.booking_id).filter(Boolean)));
+    const bookingMap = new Map<string, any>();
+
+    if (bookingIds.length > 0) {
+      const { data: bookingsData } = await supabaseAdmin
+        .from('bookings')
+        .select('id, reference_code')
+        .in('id', bookingIds);
+
+      if (bookingsData) {
+        for (const b of bookingsData) {
+          bookingMap.set(b.id, b);
+        }
+      }
+    }
+
+    const learnerNameMap = new Map<string, string>();
+    for (const l of authorizedLearners) {
+      learnerNameMap.set(l.id, l.name);
+    }
+
+    const extraLearnerIds = Array.from(new Set(
+      (ledgerRows || [])
+        .map((r: any) => r.learner_student_id)
+        .filter((id: any) => Boolean(id) && !learnerNameMap.has(id))
+    ));
+
+    if (extraLearnerIds.length > 0) {
+      const { data: extraStudents } = await supabaseAdmin
+        .from('students')
+        .select('id, name')
+        .in('id', extraLearnerIds);
+      if (extraStudents) {
+        for (const es of extraStudents) {
+          learnerNameMap.set(es.id, es.name);
+        }
+      }
+    }
+
+    // 4. Format clean, safe student-facing DTO (no internal secrets or idempotency keys)
+    const formattedLedger = (ledgerRows || []).map((row: any) => {
+      const booking = row.booking_id ? bookingMap.get(row.booking_id) : null;
+      return {
+        id: row.id,
+        packageEntitlementId: row.package_entitlement_id,
+        bookingId: row.booking_id || null,
+        bookingReference: booking?.reference_code || null,
+        activityType: row.activity_type,
+        deltaCredits: Number(row.delta_credits) || 0,
+        createdAt: row.created_at,
+        learnerStudentId: row.learner_student_id || null,
+        learnerName: row.learner_student_id ? (learnerNameMap.get(row.learner_student_id) || null) : null,
+        packageName: entitlementNameMap.get(row.package_entitlement_id) || null
+      };
+    });
+
+    return res.json({ ledger: formattedLedger });
+  } catch (err: any) {
+    console.error('[GET /api/student/packages/ledger Error]', err);
+    return res.status(500).json({ error: 'Internal server error retrieving credit ledger.' });
   }
 });
 

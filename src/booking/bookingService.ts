@@ -85,6 +85,7 @@ export const bookingService = {
       cairoTimeDisplay: details.cairoTimeDisplay,
       feeAmountUsd: details.feeAmountUsd,
       isFreeTrial: details.mode === 'trial',
+      packageEntitlementId: data.packageEntitlementId,
       integrationStatus: details.integrationStatus || 'pending',
       zoomDetails: {
         platform: 'Zoom',

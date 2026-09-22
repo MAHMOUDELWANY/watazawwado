@@ -448,10 +448,19 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                     <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface-subtle border border-border text-muted-foreground text-xs min-h-[44px]">
                       <Video className="w-4 h-4 text-muted-foreground/70" />
                       <span>
-                        {isAr ? 'رابط زووم سيتوفر قبل موعد الدرس' : 'Zoom link will activate prior to lesson'}
+                        {isAr ? 'رابط زووم سيتوفر قبل موعد الدرس' : 'Meeting link will appear soon'}
                       </span>
                     </div>
                   )}
+
+                  <Link
+                    id="link-home-repeat-lesson"
+                    to="/student/book?repeat=true"
+                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-surface hover:bg-surface-subtle border border-border text-foreground text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5 text-primary" />
+                    <span>{isAr ? 'حجز درس مماثل' : 'Repeat Lesson'}</span>
+                  </Link>
 
                   <Link
                     to="/student/lessons"
@@ -459,6 +468,43 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   >
                     <span>{isAr ? 'عرض تفاصيل الدرس' : 'View Lesson Details'}</span>
                   </Link>
+                </div>
+              </div>
+            ) : lastEligibleBooking && lastBookingSummary ? (
+              <div className="rounded-2xl border border-primary/20 bg-surface p-6 sm:p-7 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <RotateCcw className="w-4 h-4 text-primary" />
+                      <span className="text-xs font-semibold text-primary uppercase tracking-wider">
+                        {isAr ? 'مواصلة مسارك التعليمي' : 'Ready for your next session?'}
+                      </span>
+                    </div>
+                    <h3 className="text-base sm:text-lg font-serif font-bold text-foreground">
+                      {isAr ? 'حجز درس جديد بنفس التفضيلات السابقة' : 'Continue from where you left off'}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-md">
+                      {isAr
+                        ? `آخر درس لك: ${lastBookingSummary.summaryText}. يمكنك الحجز بضغطة زر وتحديد الموعد.`
+                        : `Your last lesson was: ${lastBookingSummary.summaryText}. Pick a date and time with the same details.`}
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+                    <Link
+                      id="btn-home-repeat-lesson"
+                      to="/student/book?repeat=true"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-colors shadow-xs min-h-[44px]"
+                    >
+                      <RotateCcw className="w-4 h-4" />
+                      <span>{isAr ? 'حجز الدرس السابق' : 'Book with same details'}</span>
+                    </Link>
+                    <Link
+                      to="/student/book"
+                      className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-surface hover:bg-surface-subtle border border-border text-foreground rounded-xl text-xs sm:text-sm font-medium transition-colors min-h-[44px]"
+                    >
+                      <span>{isAr ? 'استكشاف المواد' : 'Explore Topics'}</span>
+                    </Link>
+                  </div>
                 </div>
               </div>
             ) : (
@@ -515,6 +561,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   const dateStr = b.scheduledStart || b.scheduled_start || b.lesson_date;
                   const dt = dateStr ? DateTime.fromISO(dateStr) : null;
                   const title = b.serviceTitle || b.services?.title || (isAr ? 'جلسة تعليمية' : 'Private Lesson');
+                  const bServiceId = b.serviceId || b.service_id;
 
                   return (
                     <div
@@ -554,21 +601,14 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                           {isAr ? 'التفاصيل' : 'Details'}
                         </Link>
 
-                        <button
-                          type="button"
-                          onClick={() => {
-                            navigate('/student/book', {
-                              state: {
-                                prefillServiceId: b.serviceId || b.service_id,
-                                prefillDuration: b.durationMinutes || b.duration || 45
-                              }
-                            });
-                          }}
+                        <Link
+                          id={`btn-repeat-history-${b.id}`}
+                          to={`/student/book?repeat=true${bServiceId ? `&service=${bServiceId}` : ''}`}
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary/10 hover:bg-primary text-primary hover:text-primary-foreground text-xs font-semibold transition-all cursor-pointer"
                         >
                           <RotateCcw className="w-3 h-3" />
                           <span>{isAr ? 'حجز مجدداً' : 'Rebook'}</span>
-                        </button>
+                        </Link>
                       </div>
                     </div>
                   );

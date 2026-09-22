@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { Check, ArrowRight, ArrowLeft, Clock, Gift, CalendarCheck, HelpCircle, MessageSquare } from 'lucide-react';
-import { BookingMode, Language, LessonDuration, PackageCatalogEntry } from '../../booking/types';
+import { Check, ArrowRight, ArrowLeft, Clock, Gift, CalendarCheck, HelpCircle, Sparkles, Package } from 'lucide-react';
+import { BookingMode, Language, LessonDuration, PackageCatalogEntry, PackageEntitlementEntry } from '../../booking/types';
 import { BOOKING_SERVICES, calculateLessonFee } from '../../booking/mockData';
-import { useEffect, useState } from 'react';
 import { buildWhatsAppUrl } from '../../lib/whatsapp';
 
 interface StepLessonTypeProps {
@@ -19,6 +18,9 @@ interface StepLessonTypeProps {
   trialDisabledReason?: string;
   selectedPackageId?: string;
   onSelectPackage?: (id: string | undefined) => void;
+  activeEntitlements?: PackageEntitlementEntry[];
+  packageEntitlementId?: string;
+  onSelectPackageEntitlement?: (id: string | undefined) => void;
 }
 
 export const StepLessonType: React.FC<StepLessonTypeProps> = ({
@@ -33,17 +35,26 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
   trialDisabled = false,
   trialDisabledReason,
   selectedPackageId,
-  onSelectPackage
+  onSelectPackage,
+  activeEntitlements = [],
+  packageEntitlementId,
+  onSelectPackageEntitlement
 }) => {
   const isEn = lang === 'en';
 
   const [packages, setPackages] = useState<PackageCatalogEntry[]>([]);
   const [loadingPackages, setLoadingPackages] = useState(true);
 
+  // Filter for valid active entitlements with positive remaining credits
+  const eligibleEntitlements = activeEntitlements.filter(
+    (e) => e.status === 'active' && e.remainingCredits > 0
+  );
+  const hasActiveCredits = eligibleEntitlements.length > 0;
+
   useEffect(() => {
     fetch('/api/packages')
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         if (data.success && data.data) {
           setPackages(data.data);
         }
@@ -51,6 +62,15 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
       .catch(console.error)
       .finally(() => setLoadingPackages(false));
   }, []);
+
+  // Auto-select first active entitlement if student has credits, mode is regular, and none chosen yet
+  useEffect(() => {
+    if (mode === 'regular' && hasActiveCredits && !packageEntitlementId && !selectedPackageId) {
+      if (eligibleEntitlements.length === 1) {
+        onSelectPackageEntitlement?.(eligibleEntitlements[0].id);
+      }
+    }
+  }, [mode, hasActiveCredits, packageEntitlementId, selectedPackageId, eligibleEntitlements, onSelectPackageEntitlement]);
 
   const service = BOOKING_SERVICES.find((s) => s.id === serviceId) || BOOKING_SERVICES[0];
 
@@ -94,6 +114,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               if (trialDisabled) return;
               onChangeMode('trial');
               if (duration > 45) onChangeDuration(30);
+              onSelectPackageEntitlement?.(undefined);
+              onSelectPackage?.(undefined);
             }}
             className={`p-4 sm:p-5 rounded-2xl border text-start transition-all relative ${
               trialDisabled
@@ -164,9 +186,11 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                     {isEn ? 'Regular 1-on-1 Lesson' : 'درس فردي منتظم'}
                   </h4>
                   <span className="text-xs font-semibold text-[#6B5B73] dark:text-[#B8A9C9]">
-                    {isEn
-                      ? `From $${calculateLessonFee(serviceId, 30, false)} • 30, 45, or 60 min`
-                      : `يبدأ من $${calculateLessonFee(serviceId, 30, false)} • ٣٠ أو ٤٥ أو ٦٠ دقيقة`}
+                    {hasActiveCredits
+                      ? (isEn ? 'Prepaid Credits Available • $0 today' : 'رصيد باقة متاح • ٠.٠٠$ اليوم')
+                      : (isEn
+                        ? `From $${calculateLessonFee(serviceId, 30, false)} • 30, 45, or 60 min`
+                        : `يبدأ من $${calculateLessonFee(serviceId, 30, false)} • ٣٠ أو ٤٥ أو ٦٠ دقيقة`)}
                   </span>
                 </div>
               </div>
@@ -188,7 +212,9 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
             </p>
 
             <div className="text-[11px] text-[#87A878] font-medium">
-              {isEn ? '• Standard 1-on-1 personalized pace' : '• تدريس فردي مخصص بالكامل'}
+              {hasActiveCredits
+                ? (isEn ? '• Redeemable using your active lesson package credits' : '• قابل للحجز باستخدام رصيد باقاتك النشطة')
+                : (isEn ? '• Standard 1-on-1 personalized pace' : '• تدريس فردي مخصص بالكامل')}
             </div>
           </motion.div>
         </div>
@@ -211,8 +237,14 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {durations.map((d) => {
             const isSelected = duration === d.length;
-            const fee = calculateLessonFee(serviceId, d.length, mode === 'trial');
+            const regularFee = calculateLessonFee(serviceId, d.length, false);
             const isDisabled = mode === 'trial' && d.length === 60; // Master Spec: 60 min is NOT a trial option (max trial is 45 min)
+
+            const displayPrice = mode === 'trial'
+              ? (isEn ? 'FREE' : 'مجاناً')
+              : packageEntitlementId
+              ? (isEn ? '1 Credit ($0 today)' : '١ رصيد (٠$ اليوم)')
+              : `$${regularFee}`;
 
             return (
               <button
@@ -233,8 +265,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                     <span className="font-serif text-base font-medium text-[#362E3B] dark:text-[#F5E6D3]">
                       {isEn ? d.label : d.arabicLabel}
                     </span>
-                    <span className={`text-xs font-semibold ${mode === 'trial' ? 'text-[#87A878]' : 'text-[#6B5B73] dark:text-[#B8A9C9]'}`}>
-                      {mode === 'trial' ? (isEn ? 'FREE' : 'مجاناً') : `$${fee}`}
+                    <span className={`text-xs font-semibold ${mode === 'trial' || packageEntitlementId ? 'text-[#87A878]' : 'text-[#6B5B73] dark:text-[#B8A9C9]'}`}>
+                      {displayPrice}
                     </span>
                   </div>
                   <p className="text-[11px] text-[#362E3B]/65 dark:text-[#D5D0CA]/70 leading-relaxed">
@@ -253,9 +285,111 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
         </div>
       </div>
 
+      {/* Package Entitlement Credit Redemption (When Active Entitlements Exist) */}
+      {mode === 'regular' && hasActiveCredits && (
+        <div className="pt-4 border-t border-[#D5D0CA] dark:border-[#3E3545] space-y-3">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-[#362E3B]/70 dark:text-[#D5D0CA]/70">
+            {isEn ? 'Payment & Credit Option' : 'خيارات الدفع واستخدام الرصيد'}
+          </label>
 
-      {/* Package Selection */}
-      {!loadingPackages && packages.length > 0 && mode === 'regular' && (
+          <div className="grid grid-cols-1 gap-3">
+            {/* Active Entitlements */}
+            {eligibleEntitlements.map((ent) => {
+              const isSelected = packageEntitlementId === ent.id;
+
+              return (
+                <motion.div
+                  key={ent.id}
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
+                  onClick={() => {
+                    onSelectPackageEntitlement?.(ent.id);
+                    onSelectPackage?.(undefined);
+                  }}
+                  className={`p-4 sm:p-5 rounded-2xl border text-start transition-all cursor-pointer relative ${
+                    isSelected
+                      ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-[#87A878] ring-2 ring-[#87A878]/30 shadow-xs'
+                      : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] hover:bg-[#F5E6D3]/30'
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-3 mb-1.5">
+                    <div className="flex items-center gap-2.5">
+                      <div className="p-2 rounded-xl bg-[#87A878]/20 text-[#87A878]">
+                        <Package className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-serif text-base font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+                            {ent.packageName}
+                          </h4>
+                          <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#87A878]/15 text-[#87A878]">
+                            {isEn ? `${ent.remainingCredits} lessons remaining` : `${ent.remainingCredits} دروس متبقية`}
+                          </span>
+                        </div>
+                        <span className="text-xs text-[#87A878] font-semibold">
+                          {isEn ? 'Use 1 Package Credit • $0 today' : 'خصم ١ درس من الرصيد • ٠.٠٠$ اليوم'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div
+                      className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-colors ${
+                        isSelected
+                          ? 'bg-[#87A878] text-white'
+                          : 'border border-[#D5D0CA] dark:border-[#3E3545]'
+                      }`}
+                    >
+                      {isSelected && <Check className="w-3.5 h-3.5" />}
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]/80 mt-2 leading-relaxed">
+                    {isEn
+                      ? 'This lesson will be linked to your prepaid package. No payment is required today. One credit will be deducted only after your lesson is completed.'
+                      : 'سيتم ربط هذا الدرس بباقاتك مسبقة الدفع دون الحاجة لأي دفع اليوم، وسيتم خصم الرصيد فقط بعد إتمام الدرس مع الأستاذ.'}
+                  </p>
+                </motion.div>
+              );
+            })}
+
+            {/* Standalone Pay per lesson option */}
+            <motion.div
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              onClick={() => {
+                onSelectPackageEntitlement?.(undefined);
+                onSelectPackage?.(undefined);
+              }}
+              className={`p-4 rounded-xl border text-start transition-all cursor-pointer ${
+                !packageEntitlementId
+                  ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-[#6B5B73] ring-2 ring-[#6B5B73]/30 shadow-xs'
+                  : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] opacity-75'
+              }`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h4 className="font-serif font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+                    {isEn ? 'Pay for this single lesson' : 'دفع مباشر لهذا الدرس بشكل مستقل'}
+                  </h4>
+                  <p className="text-xs text-[#362E3B]/65 dark:text-[#D5D0CA]/70 mt-1">
+                    {isEn
+                      ? `Standard standalone booking for one session ($${calculateLessonFee(serviceId, duration, false)} USD).`
+                      : `حجز مستقل لدرس واحد ($${calculateLessonFee(serviceId, duration, false)} دولار أمريكي).`}
+                  </p>
+                </div>
+                <div className="text-end">
+                  <span className="font-medium text-[#6B5B73] dark:text-[#B8A9C9]">
+                    ${calculateLessonFee(serviceId, duration, false)}
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      )}
+
+      {/* Package Catalog Selection (When No Active Entitlements Exist) */}
+      {!hasActiveCredits && !loadingPackages && packages.length > 0 && mode === 'regular' && (
         <div className="pt-4 border-t border-[#D5D0CA] dark:border-[#3E3545]">
           <label className="block text-xs font-semibold uppercase tracking-wider text-[#362E3B]/70 dark:text-[#D5D0CA]/70 mb-2.5">
             {isEn ? 'Purchase Option (Optional)' : 'خيار الشراء (اختياري)'}
@@ -305,7 +439,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                       </p>
                     </div>
                     <div className="text-right">
-                      <span className="font-medium text-[#87A878]">\${pkg.price_amount}</span>
+                      <span className="font-medium text-[#87A878]">${pkg.price_amount}</span>
                     </div>
                   </div>
                 </motion.div>
@@ -314,7 +448,6 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
           </div>
         </div>
       )}
-
 
       {/* Manual Request for Sessions > 60 min note */}
       <div className="p-3.5 rounded-xl bg-white dark:bg-[#231D28] border border-[#D5D0CA] dark:border-[#3E3545] text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]/70 flex items-start gap-2.5">
@@ -363,3 +496,4 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
     </div>
   );
 };
+
