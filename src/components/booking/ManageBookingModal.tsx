@@ -499,7 +499,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                 onClose={() => setShowPaymentModal(false)}
                 bookingReference={booking.reference}
                 serviceName={booking.serviceName}
-                amount={booking.feeAmount || undefined}
+                amount={booking.feeAmountUsd || undefined}
                 currency="USD"
                 learnerName={booking.learnerName}
                 lang={lang}

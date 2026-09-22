@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { Component, useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useLocation, useSearchParams, Link } from 'react-router-dom';
 import { ArrowLeft, Loader2, AlertCircle, ShieldCheck, RefreshCw, RotateCcw, Check, Sparkles } from 'lucide-react';
 import { BookingFlow } from '../../components/booking/BookingFlow';
@@ -16,6 +16,69 @@ export interface TrialEligibilityResult {
   canBookTrial: boolean;
   hasUsedTrial: boolean;
   trialDisabledReason?: string;
+}
+
+interface BookingErrorBoundaryProps {
+  children: React.ReactNode;
+}
+
+interface BookingErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+}
+
+export class BookingErrorBoundary extends Component<BookingErrorBoundaryProps, BookingErrorBoundaryState> {
+  override state: BookingErrorBoundaryState = { hasError: false, error: null };
+
+  constructor(props: BookingErrorBoundaryProps) {
+    super(props);
+  }
+
+  static getDerivedStateFromError(error: Error): BookingErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  override componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('[StudentBookingPage ErrorBoundary caught]:', error, errorInfo);
+  }
+
+  reset = () => {
+    this.setState({ hasError: false, error: null });
+  };
+
+  override render() {
+    if (this.state.hasError) {
+      return (
+        <div className="max-w-xl mx-auto py-12 px-4 text-center space-y-4">
+          <div className="w-12 h-12 rounded-2xl bg-warning/10 text-warning mx-auto flex items-center justify-center">
+            <AlertCircle className="w-6 h-6" />
+          </div>
+          <h2 className="text-lg font-semibold text-foreground">
+            Unable to display booking form
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            {this.state.error?.message || 'An unexpected error occurred while preparing your booking form.'}
+          </p>
+          <div className="pt-2 flex justify-center gap-3">
+            <Link
+              to="/student"
+              className="px-4 py-2 rounded-xl text-xs font-semibold bg-surface-subtle text-foreground hover:bg-border/40 transition-colors"
+            >
+              ← Return to Student Portal
+            </Link>
+            <button
+              type="button"
+              onClick={this.reset}
+              className="px-4 py-2 rounded-xl text-xs font-semibold bg-primary hover:bg-primary-hover text-primary-foreground transition-colors cursor-pointer"
+            >
+              Retry Booking Form
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
 }
 
 /**
@@ -466,6 +529,19 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
   const [bookingsLoading, setBookingsLoading] = useState<boolean>(Boolean(accessToken));
   const [bookingsError, setBookingsError] = useState<string | null>(null);
 
+  // Local state for reuse interaction - ALL HOOKS UNCONDITIONALLY DECLARED AT TOP LEVEL
+  const [reuseDismissed, setReuseDismissed] = useState<boolean>(false);
+  const [isReusing, setIsReusing] = useState<boolean>(false);
+  const [flowKey, setFlowKey] = useState<number>(0);
+  const [flowStep, setFlowStep] = useState<number>(1);
+  const [activeConfig, setActiveConfig] = useState<{
+    initialData: Partial<BookingFormData>;
+    matchedServiceId: string;
+    initialMode: BookingMode;
+  } | null>(null);
+
+  const autoTriggeredRepeatRef = useRef(false);
+
   const fetchBookings = useCallback(async (token?: string | null) => {
     const effectiveToken = token !== undefined ? token : accessToken;
     if (!effectiveToken) {
@@ -499,6 +575,52 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
       setBookingsLoading(false);
     }
   }, [accessToken]);
+
+  // Derived computations safe with null/empty states
+  const { canBookTrial, trialDisabledReason } = calculateTrialEligibility(bookings, bookingsError);
+  const { initialData: standardInitialData, matchedServiceId: standardServiceId, initialMode: standardMode } =
+    profile
+      ? mapStudentProfileToBookingInitialData(profile, canBookTrial)
+      : { initialData: {}, matchedServiceId: 'quran-reading', initialMode: (canBookTrial ? 'trial' : 'regular') as BookingMode };
+
+  const lastEligibleBooking = findLastEligibleBooking(bookings);
+  const lastBookingSummary = lastEligibleBooking
+    ? formatLastBookingSummary(lastEligibleBooking, profile)
+    : null;
+
+  const handleReuseLastBooking = useCallback(() => {
+    if (!lastEligibleBooking) return;
+    const reused = mapLastBookingToBookingFormData(lastEligibleBooking, profile, canBookTrial);
+    setActiveConfig({
+      initialData: reused.initialData,
+      matchedServiceId: reused.matchedServiceId,
+      initialMode: reused.initialMode
+    });
+    setFlowStep(5);
+    setIsReusing(true);
+    setFlowKey((k) => k + 1);
+  }, [lastEligibleBooking, profile, canBookTrial]);
+
+  const handleDismissReuse = useCallback(() => {
+    setReuseDismissed(true);
+    setIsReusing(false);
+    setActiveConfig(null);
+    setFlowStep(1);
+    setFlowKey((k) => k + 1);
+    if (searchParams.get('repeat') === 'true') {
+      navigate('/student/book', { replace: true });
+    }
+  }, [navigate, searchParams]);
+
+  const handleResetToNewBooking = useCallback(() => {
+    setIsReusing(false);
+    setActiveConfig(null);
+    setFlowStep(1);
+    setFlowKey((k) => k + 1);
+    if (searchParams.get('repeat') === 'true') {
+      navigate('/student/book', { replace: true });
+    }
+  }, [navigate, searchParams]);
 
   useEffect(() => {
     let isMounted = true;
@@ -549,6 +671,17 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
     };
   }, [initialProfile, accessToken, fetchBookings]);
 
+  // Deep-linking: auto-trigger repeat workflow if requested via query param (?repeat=true) or location state ({ repeat: true })
+  useEffect(() => {
+    if (autoTriggeredRepeatRef.current) return;
+    const wantsRepeat = searchParams.get('repeat') === 'true' || (location.state as any)?.repeat === true;
+    if (wantsRepeat && lastEligibleBooking && !reuseDismissed && !isReusing) {
+      autoTriggeredRepeatRef.current = true;
+      handleReuseLastBooking();
+    }
+  }, [searchParams, location.state, lastEligibleBooking, reuseDismissed, isReusing, handleReuseLastBooking]);
+
+  // Conditional early renders AFTER ALL HOOKS ARE CALLED
   if (auth.loading) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
@@ -633,75 +766,6 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
       </div>
     );
   }
-
-  // Calculate authoritative trial eligibility
-  const { canBookTrial, trialDisabledReason } = calculateTrialEligibility(bookings, bookingsError);
-
-  // Map initial form values from profile
-  const { initialData: standardInitialData, matchedServiceId: standardServiceId, initialMode: standardMode } =
-    mapStudentProfileToBookingInitialData(profile, canBookTrial);
-
-  // Identify last eligible booking for repeat workflow
-  const lastEligibleBooking = findLastEligibleBooking(bookings);
-  const lastBookingSummary = lastEligibleBooking
-    ? formatLastBookingSummary(lastEligibleBooking, profile)
-    : null;
-
-  // Local state for reuse interaction
-  const [reuseDismissed, setReuseDismissed] = useState<boolean>(false);
-  const [isReusing, setIsReusing] = useState<boolean>(false);
-  const [flowKey, setFlowKey] = useState<number>(0);
-  const [flowStep, setFlowStep] = useState<number>(1);
-  const [activeConfig, setActiveConfig] = useState<{
-    initialData: Partial<BookingFormData>;
-    matchedServiceId: string;
-    initialMode: BookingMode;
-  } | null>(null);
-
-  const handleReuseLastBooking = useCallback(() => {
-    if (!lastEligibleBooking) return;
-    const reused = mapLastBookingToBookingFormData(lastEligibleBooking, profile, canBookTrial);
-    setActiveConfig({
-      initialData: reused.initialData,
-      matchedServiceId: reused.matchedServiceId,
-      initialMode: reused.initialMode
-    });
-    setFlowStep(5);
-    setIsReusing(true);
-    setFlowKey((k) => k + 1);
-  }, [lastEligibleBooking, profile, canBookTrial]);
-
-  const handleDismissReuse = () => {
-    setReuseDismissed(true);
-    setIsReusing(false);
-    setActiveConfig(null);
-    setFlowStep(1);
-    setFlowKey((k) => k + 1);
-    if (searchParams.get('repeat') === 'true') {
-      navigate('/student/book', { replace: true });
-    }
-  };
-
-  const handleResetToNewBooking = () => {
-    setIsReusing(false);
-    setActiveConfig(null);
-    setFlowStep(1);
-    setFlowKey((k) => k + 1);
-    if (searchParams.get('repeat') === 'true') {
-      navigate('/student/book', { replace: true });
-    }
-  };
-
-  // Deep-linking: auto-trigger repeat workflow if requested via query param (?repeat=true) or location state ({ repeat: true })
-  const autoTriggeredRepeatRef = useRef(false);
-  useEffect(() => {
-    if (autoTriggeredRepeatRef.current) return;
-    const wantsRepeat = searchParams.get('repeat') === 'true' || (location.state as any)?.repeat === true;
-    if (wantsRepeat && lastEligibleBooking && !reuseDismissed && !isReusing) {
-      autoTriggeredRepeatRef.current = true;
-      handleReuseLastBooking();
-    }
-  }, [searchParams, location.state, lastEligibleBooking, reuseDismissed, isReusing, handleReuseLastBooking]);
 
   // Support direct service parameter if not in active reuse mode (e.g. /student/book?service=tajweed)
   const requestedServiceId = searchParams.get('service');
@@ -853,66 +917,68 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
           </div>
         </div>
       ) : (
-        /* Detailed Booking Flow Container */
-        <div className="space-y-4">
-          {/* Active reuse feedback banner */}
-          {isReusing && lastBookingSummary && (
-            <div className="p-3.5 rounded-2xl bg-primary/10 border border-primary/20 text-xs text-primary flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-primary shrink-0" />
-                <span>
-                  Reusing details from your last lesson: <strong>{lastBookingSummary.summaryText}</strong>. Choose your date &amp; time below, or edit any details.
-                </span>
+        /* Detailed Booking Flow Container wrapped in ErrorBoundary */
+        <BookingErrorBoundary>
+          <div className="space-y-4">
+            {/* Active reuse feedback banner */}
+            {isReusing && lastBookingSummary && (
+              <div className="p-3.5 rounded-2xl bg-primary/10 border border-primary/20 text-xs text-primary flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-primary shrink-0" />
+                  <span>
+                    Reusing details from your last lesson: <strong>{lastBookingSummary.summaryText}</strong>. Choose your date &amp; time below, or edit any details.
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  id="btn-reset-reuse-booking"
+                  onClick={handleResetToNewBooking}
+                  className="text-xs font-medium underline hover:text-foreground cursor-pointer self-start sm:self-auto"
+                >
+                  Start fresh instead
+                </button>
               </div>
-              <button
-                type="button"
-                id="btn-reset-reuse-booking"
-                onClick={handleResetToNewBooking}
-                className="text-xs font-medium underline hover:text-foreground cursor-pointer self-start sm:self-auto"
-              >
-                Start fresh instead
-              </button>
-            </div>
-          )}
+            )}
 
-          {/* Dismissed subtle helper: available if user changed their mind */}
-          {lastEligibleBooking && lastBookingSummary && reuseDismissed && !isReusing && (
-            <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
-              <button
-                type="button"
-                id="btn-reopen-reuse-booking"
-                onClick={handleReuseLastBooking}
-                className="inline-flex items-center gap-1.5 font-medium text-primary hover:underline cursor-pointer"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                <span>Reuse last lesson details ({lastBookingSummary.summaryText})</span>
-              </button>
-            </div>
-          )}
+            {/* Dismissed subtle helper: available if user changed their mind */}
+            {lastEligibleBooking && lastBookingSummary && reuseDismissed && !isReusing && (
+              <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
+                <button
+                  type="button"
+                  id="btn-reopen-reuse-booking"
+                  onClick={handleReuseLastBooking}
+                  className="inline-flex items-center gap-1.5 font-medium text-primary hover:underline cursor-pointer"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Reuse last lesson details ({lastBookingSummary.summaryText})</span>
+                </button>
+              </div>
+            )}
 
-          <BookingFlow
-            key={flowKey}
-            initialServiceId={currentServiceId}
-            initialMode={currentMode}
-            initialData={currentInitialData}
-            initialStep={flowStep}
-            trialDisabled={!canBookTrial}
-            trialDisabledReason={trialDisabledReason}
-            cardClassName="w-full bg-surface text-foreground p-5 sm:p-8 rounded-3xl border border-border shadow-xs"
-            doneLabel="Done & Return to Student Portal"
-            onDone={() => navigate('/student')}
-            onClose={() => navigate('/student')}
-            lang="en"
-            isModalView={false}
-            linkedChildren={profile?.linkedChildren || []}
-            isAuthenticatedStudent={true}
-            bookingPreference={profile?.bookingPreference || 'self'}
-            canBookForChild={Boolean(profile?.canBookForChild && Array.isArray(profile?.linkedChildren) && profile.linkedChildren.length > 0)}
-            studentName={profile?.name}
-            studentEmail={profile?.email}
-            teacherId={profile?.assignedTeacherId || profile?.assigned_teacher_id}
-          />
-        </div>
+            <BookingFlow
+              key={flowKey}
+              initialServiceId={currentServiceId}
+              initialMode={currentMode}
+              initialData={currentInitialData}
+              initialStep={flowStep}
+              trialDisabled={!canBookTrial}
+              trialDisabledReason={trialDisabledReason}
+              cardClassName="w-full bg-surface text-foreground p-5 sm:p-8 rounded-3xl border border-border shadow-xs"
+              doneLabel="Done & Return to Student Portal"
+              onDone={() => navigate('/student')}
+              onClose={() => navigate('/student')}
+              lang="en"
+              isModalView={false}
+              linkedChildren={profile?.linkedChildren || []}
+              isAuthenticatedStudent={true}
+              bookingPreference={profile?.bookingPreference || 'self'}
+              canBookForChild={Boolean(profile?.canBookForChild && Array.isArray(profile?.linkedChildren) && profile.linkedChildren.length > 0)}
+              studentName={profile?.name}
+              studentEmail={profile?.email}
+              teacherId={profile?.assignedTeacherId || profile?.assigned_teacher_id}
+            />
+          </div>
+        </BookingErrorBoundary>
       )}
     </div>
   );

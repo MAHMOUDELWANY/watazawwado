@@ -255,8 +255,8 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         <PaymentInstructionsCard
           bookingReference={confirmation.bookingReference}
           serviceName={confirmation.serviceName}
-          amount={confirmation.feeAmount || undefined}
-          currency={confirmation.currency || 'USD'}
+          amount={confirmation.feeAmountUsd || undefined}
+          currency="USD"
           learnerName={confirmation.learnerName}
           lang={lang}
         />
