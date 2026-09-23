@@ -72,6 +72,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   const [selectedLessons, setSelectedLessons] = useState<SelectedLesson[]>([]);
   const [manageModalOpen, setManageModalOpen] = useState<boolean>(false);
   const [manageRefCode, setManageRefCode] = useState<string>('');
+  const [multiConfirming, setMultiConfirming] = useState(false);
 
   // Progressive Form State
   const [formData, setFormData] = useState<BookingFormData>(() => {
@@ -203,6 +204,56 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     setValidationError(null);
     if (targetStep >= 1 && targetStep <= 6) {
       setStep(targetStep);
+    }
+  };
+
+  const handleConfirmMultiLesson = async () => {
+    if (lessonCount <= 1 || selectedLessons.length !== lessonCount) return;
+    const selectedCatalog = catalog.find(c => c.package_type === 'weekly' && c.lesson_count === lessonCount && c.is_active);
+    if (!selectedCatalog) {
+      setValidationError('This lesson plan is temporarily unavailable.');
+      return;
+    }
+    setMultiConfirming(true);
+    setValidationError(null);
+    try {
+      const result = await fetch('/api/student/multi-lesson-plan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          serviceId: formData.serviceId,
+          durationMinutes: formData.duration,
+          studentTimezone: formData.timezone,
+          catalogId: selectedCatalog.id,
+          lessonCount,
+          expectedTotalUsd: selectedCatalog.price_amount,
+          currency: selectedCatalog.currency,
+          lessons: selectedLessons.map(({ date, slot }) => {
+            const [h, m] = slot.time24.split(':').map(Number);
+            const local = new Date(date + 'T00:00:00');
+            local.setHours(h, m, 0, 0);
+            const start = local.toISOString();
+            return {
+              scheduledStart: start,
+              scheduledEnd: new Date(local.getTime() + formData.duration * 60000).toISOString()
+            };
+          }),
+          contactName: studentName || formData.name || '',
+          contactEmail: studentEmail || '',
+          contactWhatsapp: formData.whatsapp || '',
+          notes: formData.notes || ''
+        })
+      });
+      const data = await result.json().catch(() => ({}));
+      if (!result.ok || !data.success) {
+        throw new Error(data.error || 'The selected times could not be secured. Please choose again.');
+      }
+      setStep(6);
+      setValidationError(null);
+    } catch (err: any) {
+      setValidationError(err?.message || 'The selected lesson times could not be secured.');
+    } finally {
+      setMultiConfirming(false);
     }
   };
 
