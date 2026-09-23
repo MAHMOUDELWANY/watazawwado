@@ -603,20 +603,7 @@ app.post('/api/student/multi-lesson-plan', verifyStudentAuth, async (req: any, r
       .single();
 
     if (paymentErr || !payment) {
-      // Rollback is automatic inside the RPC transaction for booking+entitlement,
-      // but the payment row is a separate server insert. Cancel the pending
-      // entitlement/bookings explicitly if payment creation fails.
       console.error('[Multi-lesson payment creation]', paymentErr);
-      await supabaseAdmin
-        .from('package_entitlements')
-        .update({ status: 'cancelled', updated_at: new Date().toISOString() })
-        .eq('id', result.entitlementId)
-        .eq('status', 'pending_payment');
-      await supabaseAdmin
-        .from('bookings')
-        .update({ status: 'cancelled', cancellation_reason: 'Multi-lesson payment record creation failed.', updated_at: new Date().toISOString() })
-        .eq('package_entitlement_id', result.entitlementId)
-        .eq('status', 'pending');
       return res.status(500).json({ error: 'Could not create the payment record.' });
     }
 
