@@ -8,175 +8,27 @@ import {
   AlertCircle,
   Package,
   Calendar,
-  CreditCard,
   Video,
   ArrowRight,
   Check,
   Loader2,
-  Trash2,
   ExternalLink
 } from 'lucide-react';
 import { useTeacherAuth } from '../../lib/auth';
 import { Badge } from '../../components/ui/Badge';
 import { StudentPageBack } from '../components/StudentPageBack';
+import {
+  buildStudentNotifications,
+  countUnread,
+  notificationReadStateKey,
+  type StudentNotificationItem
+} from '../notificationsPresentation';
 
-export interface StudentNotificationItem {
-  id: string;
-  type: 'lesson_reminder' | 'payment_action' | 'payment_verified' | 'payment_review' | 'package_active' | 'lesson_cancelled' | 'booking_confirmed';
-  title: string;
-  titleAr: string;
-  description: string;
-  descriptionAr: string;
-  timestamp: string;
-  read: boolean;
-  actionUrl?: string;
-  actionLabel?: string;
-  actionLabelAr?: string;
-  zoomUrl?: string;
-}
+export type { StudentNotificationItem };
 
 export interface StudentNotificationsPageProps {
   lang?: 'en' | 'ar';
   session?: any;
-}
-
-export function buildStudentNotifications(
-  bookings: any[],
-  payments: any[],
-  packagesData: any,
-  readIds: Set<string>,
-  isAr: boolean
-): StudentNotificationItem[] {
-  const items: StudentNotificationItem[] = [];
-
-  // 1. Bookings Notifications
-  bookings.forEach((b: any) => {
-    const startStr = b.scheduledStart || b.scheduled_start || b.lesson_date;
-    const refCode = b.referenceCode || b.reference_code || '';
-    const title = b.serviceTitle || b.services?.title || (isAr ? 'جلسة تعليمية' : 'Private Lesson');
-
-    if (startStr) {
-      const dt = DateTime.fromISO(startStr);
-      if (dt.isValid) {
-        const diffHours = dt.diffNow().as('hours');
-
-        // Upcoming within 72 hours
-        if (diffHours > -1 && diffHours < 72 && (b.status === 'confirmed' || b.status === 'rescheduled')) {
-          const rawZoom = (b.zoomMeetingLink || b.zoom_join_url || '').trim();
-          const hasZoom = Boolean(rawZoom && (rawZoom.startsWith('http://') || rawZoom.startsWith('https://')));
-
-          items.push({
-            id: `upcoming_${b.id || refCode}`,
-            type: 'lesson_reminder',
-            title: `Upcoming Lesson: ${title}`,
-            titleAr: `موعد درس قادم: ${title}`,
-            description: `Scheduled for ${dt.setLocale('en').toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)} with Ustadh Mahmoud.`,
-            descriptionAr: `مجدول في ${dt.setLocale('ar').toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)} مع الأستاذ محمود.`,
-            timestamp: dt.toISO() || new Date().toISOString(),
-            read: readIds.has(`upcoming_${b.id || refCode}`),
-            actionUrl: hasZoom ? rawZoom : '/student/lessons',
-            actionLabel: hasZoom ? 'Join Zoom Classroom' : 'View Lesson',
-            actionLabelAr: hasZoom ? 'دخول فصل زووم' : 'تفاصيل الدرس',
-            zoomUrl: hasZoom ? rawZoom : undefined
-          });
-        }
-      }
-    }
-
-    // Pending payment needed
-    if (b.status === 'pending') {
-      items.push({
-        id: `pending_payment_${b.id || refCode}`,
-        type: 'payment_action',
-        title: `Payment Claim Needed: ${title}`,
-        titleAr: `مطلوب تأكيد الدفع: ${title}`,
-        description: `Booking ref ${refCode || 'N/A'} is awaiting payment confirmation to guarantee your schedule slot.`,
-        descriptionAr: `الحجز ذو المرجع ${refCode || 'N/A'} بانتظار إرسال إثبات الدفع لتثبيت الموعد.`,
-        timestamp: b.createdAt || b.created_at || new Date().toISOString(),
-        read: readIds.has(`pending_payment_${b.id || refCode}`),
-        actionUrl: '/student/payments',
-        actionLabel: 'Submit Payment Proof',
-        actionLabelAr: 'إرسال إثبات الدفع'
-      });
-    }
-
-    // Cancelled
-    if (b.status === 'cancelled') {
-      items.push({
-        id: `cancelled_${b.id || refCode}`,
-        type: 'lesson_cancelled',
-        title: `Lesson Cancelled: ${title}`,
-        titleAr: `تم إلغاء الدرس: ${title}`,
-        description: `The session originally set for ${startStr ? DateTime.fromISO(startStr).toFormat('LLL dd') : 'a scheduled date'} was cancelled.`,
-        descriptionAr: `تم إلغاء الجلسة التي كانت مجدولة مع الأستاذ محمود.`,
-        timestamp: b.updatedAt || b.updated_at || new Date().toISOString(),
-        read: readIds.has(`cancelled_${b.id || refCode}`),
-        actionUrl: '/student/lessons',
-        actionLabel: 'Check Schedule',
-        actionLabelAr: 'مراجعة الجدول'
-      });
-    }
-  });
-
-  // 2. Payments Notifications
-  payments.forEach((p: any) => {
-    const ref = p.reference_code || p.referenceCode || p.id?.slice(0, 8);
-    const amount = p.amount ? `$${p.amount}` : '';
-
-    if (p.status === 'confirmed') {
-      items.push({
-        id: `payment_confirmed_${p.id || ref}`,
-        type: 'payment_verified',
-        title: `Payment Verified & Confirmed ${amount}`,
-        titleAr: `تم تأكيد وقبول الدفع بنجاح ${amount}`,
-        description: `Ustadh Mahmoud has verified your payment reference ${ref}. Your session/credits are fully active.`,
-        descriptionAr: `قام الأستاذ محمود بالتحقق من الحوالة ذات المرجع ${ref}. تم تفعيل الحصص بنجاح.`,
-        timestamp: p.confirmed_at || p.updated_at || new Date().toISOString(),
-        read: readIds.has(`payment_confirmed_${p.id || ref}`),
-        actionUrl: '/student/payments',
-        actionLabel: 'View Receipt',
-        actionLabelAr: 'عرض الإيصال'
-      });
-    } else if (p.status === 'pending') {
-      items.push({
-        id: `payment_pending_${p.id || ref}`,
-        type: 'payment_review',
-        title: `Payment Under Review (${ref})`,
-        titleAr: `إثبات الدفع قيد المراجعة (${ref})`,
-        description: `Your payment claim of ${amount} via ${p.payment_method || 'transfer'} is being reviewed.`,
-        descriptionAr: `إثبات الدفع للحوالة ${amount} عبر ${p.payment_method || 'التحويل'} قيد المراجعة والاعتماد.`,
-        timestamp: p.created_at || new Date().toISOString(),
-        read: readIds.has(`payment_pending_${p.id || ref}`),
-        actionUrl: '/student/payments',
-        actionLabel: 'Track Status',
-        actionLabelAr: 'متابعة الحالة'
-      });
-    }
-  });
-
-  // 3. Package Status Notifications
-  if (packagesData?.creditSummary?.totalRemaining > 0) {
-    items.push({
-      id: `package_credits_available`,
-      type: 'package_active',
-      title: `${packagesData.creditSummary.totalRemaining} Lesson Credits Ready`,
-      titleAr: `لديك ${packagesData.creditSummary.totalRemaining} حصص جاهزة للحجز`,
-      description: `You have active prepaid package credits available. Select your preferred time with Ustadh Mahmoud.`,
-      descriptionAr: `رصيد باقتك متاح ومفعل. يمكنك حجز موعد جديد مباشرة باستخدام رصيدك.`,
-      timestamp: new Date().toISOString(),
-      read: readIds.has('package_credits_available'),
-      actionUrl: '/student/book',
-      actionLabel: 'Book with Package',
-      actionLabelAr: 'حجز باستخدام الرصيد'
-    });
-  }
-
-  // Sort descending by timestamp
-  return items.sort((a, b) => {
-    const timeA = new Date(a.timestamp).getTime();
-    const timeB = new Date(b.timestamp).getTime();
-    return timeB - timeA;
-  });
 }
 
 export default function StudentNotificationsPage({ lang = 'en', session }: StudentNotificationsPageProps) {
@@ -186,12 +38,13 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [authError, setAuthError] = useState(false);
   const [notifications, setNotifications] = useState<StudentNotificationItem[]>([]);
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
   const [readIds, setReadIds] = useState<Set<string>>(() => {
     if (typeof window !== 'undefined' && user?.id) {
       try {
-        const saved = localStorage.getItem(`watazawwado_notifications_${user.id}`);
+        const saved = localStorage.getItem(notificationReadStateKey(user.id));
         if (saved) {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed)) {
@@ -212,7 +65,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
     if (user?.id) {
       try {
         localStorage.setItem(
-          `watazawwado_notifications_${user.id}`,
+          notificationReadStateKey(user.id),
           JSON.stringify(Array.from(nextSet))
         );
       } catch {
@@ -225,8 +78,16 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
     try {
       setLoading(true);
       setError(null);
+      setAuthError(false);
       const token = effectiveSession?.access_token;
-      if (!token) return;
+
+      // Explicit auth/session state — never silently fall through to an empty
+      // notification list when authentication is unavailable.
+      if (!token) {
+        setAuthError(true);
+        setNotifications([]);
+        return;
+      }
 
       const headers = { Authorization: `Bearer ${token}` };
       const [bookingsRes, paymentsRes, packagesRes] = await Promise.all([
@@ -235,16 +96,30 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
         fetch('/api/student/packages', { headers })
       ]);
 
-      const bookingsData = bookingsRes.ok ? await bookingsRes.json() : [];
-      const paymentsJson = paymentsRes.ok ? await paymentsRes.json() : {};
+      // A 401 on the primary auth-guarded reads means the session is no longer
+      // valid — surface an explicit session state, not an empty history.
+      if (bookingsRes.status === 401 || paymentsRes.status === 401) {
+        setAuthError(true);
+        setNotifications([]);
+        return;
+      }
+
+      // Bookings and payments are the authoritative inputs; a failure here is a
+      // real error, never a fake empty state. Package credits are informational
+      // only, so a package read failure degrades gracefully.
+      if (!bookingsRes.ok || !paymentsRes.ok) {
+        throw new Error(isAr ? 'فشل تحميل التنبيهات' : 'Failed to load notifications');
+      }
+
+      const bookingsData = await bookingsRes.json();
+      const paymentsJson = await paymentsRes.json();
       const packagesData = packagesRes.ok ? await packagesRes.json() : null;
 
       const items = buildStudentNotifications(
         Array.isArray(bookingsData) ? bookingsData : [],
-        Array.isArray(paymentsJson.payments) ? paymentsJson.payments : [],
+        Array.isArray(paymentsJson?.payments) ? paymentsJson.payments : [],
         packagesData,
-        readIds,
-        isAr
+        readIds
       );
 
       setNotifications(items);
@@ -283,7 +158,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
     return notifications;
   }, [notifications, filter]);
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = countUnread(notifications);
 
   const getIcon = (type: StudentNotificationItem['type']) => {
     switch (type) {
@@ -295,6 +170,8 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
         return <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />;
       case 'payment_review':
         return <Clock className="w-5 h-5 text-blue-600 dark:text-blue-400" />;
+      case 'payment_partial':
+        return <Clock className="w-5 h-5 text-amber-600 dark:text-amber-400" />;
       case 'package_active':
         return <Package className="w-5 h-5 text-primary" />;
       case 'lesson_cancelled':
@@ -378,6 +255,33 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
             {isAr ? 'جارٍ تحميل التنبيهات...' : 'Loading notifications...'}
           </p>
         </div>
+      ) : authError ? (
+        <div className="p-6 bg-surface border border-warning/30 rounded-2xl text-center max-w-md mx-auto space-y-3">
+          <AlertCircle className="w-7 h-7 text-warning mx-auto" />
+          <p className="text-sm font-semibold text-foreground">
+            {isAr ? 'جلسة الدخول غير متاحة أو منتهية' : 'Your session is unavailable or has expired'}
+          </p>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            {isAr
+              ? 'يرجى تسجيل الدخول مرة أخرى لعرض تنبيهاتك. لم يتم حذف أي بيانات.'
+              : 'Please sign in again to view your notifications. No data has been lost.'}
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-1">
+            <Link
+              to="/student"
+              className="px-4 py-2 bg-primary text-primary-foreground rounded-xl text-xs font-semibold min-h-[44px] inline-flex items-center"
+            >
+              {isAr ? 'تسجيل الدخول مرة أخرى' : 'Sign In Again'}
+            </Link>
+            <button
+              type="button"
+              onClick={fetchNotificationData}
+              className="px-4 py-2 bg-surface border border-border text-foreground rounded-xl text-xs font-medium min-h-[44px]"
+            >
+              {isAr ? 'إعادة المحاولة' : 'Try Again'}
+            </button>
+          </div>
+        </div>
       ) : error ? (
         <div className="p-6 bg-surface border border-destructive/20 rounded-2xl text-center max-w-md mx-auto">
           <AlertCircle className="w-7 h-7 text-destructive mx-auto mb-2" />
@@ -385,7 +289,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
           <button
             type="button"
             onClick={fetchNotificationData}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-xl text-xs font-medium"
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-xl text-xs font-medium min-h-[44px]"
           >
             {isAr ? 'إعادة المحاولة' : 'Try Again'}
           </button>
