@@ -16,8 +16,7 @@ import {
   HelpCircle,
   CreditCard,
   Globe,
-  Tag,
-  ShieldCheck
+  Tag
 } from 'lucide-react';
 import { useTeacherAuth } from '../../lib/auth';
 import { Card, CardContent } from '../../components/ui/Card';
@@ -27,13 +26,17 @@ import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal
 import { StudentPageBack } from '../components/StudentPageBack';
 import { buildWhatsAppUrl } from '../../lib/whatsapp';
 import { getBookingPaymentSummary } from '../../lib/paymentStatus';
+import {
+  categorizeLessons,
+  getLessonDisplayStatus,
+  isCoordinationAllowed,
+  type LessonFilter
+} from '../lessonsPresentation';
 
 export interface StudentLessonsPageProps {
   lang?: 'en' | 'ar';
   session?: any;
 }
-
-type LessonFilter = 'all' | 'upcoming' | 'completed' | 'cancelled';
 
 export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPageProps) {
   const { session } = useTeacherAuth();
@@ -94,105 +97,11 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
     setTimeout(() => setCopiedRef(null), 2000);
   };
 
-  // Status badge variant mapping using semantic tokens
-  const getStatusBadgeVariant = (status: string): 'default' | 'secondary' | 'destructive' | 'outline' | 'success' | 'warning' => {
-    switch (status) {
-      case 'confirmed':
-        return 'success';
-      case 'completed':
-        return 'success';
-      case 'pending':
-        return 'warning';
-      case 'cancelled':
-        return 'destructive';
-      case 'rescheduled':
-        return 'secondary';
-      case 'no_show':
-        return 'destructive';
-      default:
-        return 'outline';
-    }
-  };
-
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'confirmed':
-        return isAr ? 'مؤكد ومجدول' : 'Confirmed';
-      case 'completed':
-        return isAr ? 'مكتمل' : 'Completed';
-      case 'pending':
-        return isAr ? 'في انتظار الدفع' : 'Pending Payment';
-      case 'cancelled':
-        return isAr ? 'ملغى' : 'Cancelled';
-      case 'rescheduled':
-        return isAr ? 'تمت إعادة الجدولة' : 'Rescheduled';
-      case 'no_show':
-        return isAr ? 'لم يحضر' : 'No Show';
-      default:
-        return status;
-    }
-  };
-
-  // Lifecycle categorization
-  // UPCOMING: confirmed / pending / rescheduled with scheduled_start >= now - 60 minutes
-  // PAST: completed / no_show / cancelled OR scheduled_start < now - 60 minutes
-  const categorizedBookings = useMemo(() => {
-    const upcomingList: any[] = [];
-    const completedList: any[] = [];
-    const cancelledList: any[] = [];
-
-    bookings.forEach(b => {
-      const dateStr = b.scheduledStart || b.scheduled_start || b.lesson_date;
-      const start = dateStr ? DateTime.fromISO(dateStr) : null;
-      const isUpcomingTime = start && start.isValid && start.diffNow().as('minutes') >= -60;
-
-      const isUpcomingStatus = b.status === 'confirmed' || b.status === 'pending' || b.status === 'rescheduled';
-
-      if (isUpcomingStatus && isUpcomingTime) {
-        upcomingList.push(b);
-      } else if (b.status === 'completed' || (b.status === 'confirmed' && !isUpcomingTime)) {
-        completedList.push(b);
-      } else if (b.status === 'cancelled' || b.status === 'no_show' || (!isUpcomingTime && (b.status === 'pending' || b.status === 'rescheduled'))) {
-        cancelledList.push(b);
-      } else {
-        completedList.push(b);
-      }
-    });
-
-    // Sort upcoming ascending (nearest first)
-    upcomingList.sort((a, b) => {
-      const dateA = DateTime.fromISO(a.scheduledStart || a.scheduled_start || a.lesson_date || '');
-      const dateB = DateTime.fromISO(b.scheduledStart || b.scheduled_start || b.lesson_date || '');
-      const timeA = dateA.isValid ? dateA.toMillis() : Infinity;
-      const timeB = dateB.isValid ? dateB.toMillis() : Infinity;
-      return timeA - timeB;
-    });
-
-    // Sort completed descending (most recent first)
-    completedList.sort((a, b) => {
-      const dateA = DateTime.fromISO(a.scheduledStart || a.scheduled_start || a.lesson_date || '');
-      const dateB = DateTime.fromISO(b.scheduledStart || b.scheduled_start || b.lesson_date || '');
-      const timeA = dateA.isValid ? dateA.toMillis() : 0;
-      const timeB = dateB.isValid ? dateB.toMillis() : 0;
-      return timeB - timeA;
-    });
-
-    // Sort cancelled descending (most recent first)
-    cancelledList.sort((a, b) => {
-      const dateA = DateTime.fromISO(a.scheduledStart || a.scheduled_start || a.lesson_date || '');
-      const dateB = DateTime.fromISO(b.scheduledStart || b.scheduled_start || b.lesson_date || '');
-      const timeA = dateA.isValid ? dateA.toMillis() : 0;
-      const timeB = dateB.isValid ? dateB.toMillis() : 0;
-      return timeB - timeA;
-    });
-
-    return {
-      all: [...upcomingList, ...completedList, ...cancelledList],
-      upcoming: upcomingList,
-      completed: completedList,
-      cancelled: cancelledList
-    };
-  }, [bookings]);
+  // Lifecycle categorization (pure, tested helper).
+  // UPCOMING: confirmed / pending / rescheduled whose scheduled_start >= now - 60 minutes
+  // HISTORY: cancelled / no_show, plus past-but-unfinalised in-flight lessons
+  // COMPLETED: ONLY bookings whose backend status is genuinely 'completed'
+  const categorizedBookings = useMemo(() => categorizeLessons(bookings), [bookings]);
 
   const displayedBookings = categorizedBookings[activeFilter];
 
@@ -380,7 +289,10 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
             const isCancelled = b.status === 'cancelled';
             const isCompleted = b.status === 'completed';
             const isNoShow = b.status === 'no_show';
-            const isActionableForChange = b.status === 'confirmed' || b.status === 'pending' || b.status === 'rescheduled';
+            // WhatsApp-only coordination entry point: eligible only for genuinely
+            // changeable, not-yet-started lessons. No mutation is performed here.
+            const canCoordinate = isCoordinationAllowed(b);
+            const displayStatus = getLessonDisplayStatus(b, paymentSummary, isAr);
 
             return (
               <Card key={b.id} className="border-border hover:border-primary/30 transition-colors bg-surface">
@@ -426,25 +338,17 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                     </div>
 
                     <div className="self-start sm:self-center shrink-0 flex items-center gap-2">
-                      {/* Payment Status Pill if awaiting verification or unpaid */}
-                      {paymentSummary.isAwaitingVerification && (
-                        <Badge variant="warning" className="px-2.5 py-1 text-xs font-medium">
-                          {isAr ? 'قيد مراجعة الدفع' : 'Payment Under Review'}
-                        </Badge>
-                      )}
-                      {paymentSummary.isUnpaid && !paymentSummary.isPaidOrTrial && b.status !== 'cancelled' && (
-                        <Badge variant="warning" className="px-2.5 py-1 text-xs font-medium">
-                          {isAr ? 'في انتظار الدفع' : 'Payment Needed'}
-                        </Badge>
-                      )}
-                      {paymentSummary.isPaidOrTrial && b.bookingType !== 'trial' && (
+                      {/* Package coverage is stated on the title row (Prepaid Package badge). */}
+                      {/* Payment state is surfaced truthfully here, and never overstates a booking as
+                          "Confirmed"/"Paid" while verification/collection is still outstanding. */}
+                      {paymentSummary.isPaidOrTrial && b.bookingType !== 'trial' && !paymentSummary.isPendingPayment && (
                         <Badge variant="success" className="px-2.5 py-1 text-xs font-medium">
                           {isAr ? 'مدفوع ومفعل' : 'Paid'}
                         </Badge>
                       )}
 
-                      <Badge variant={getStatusBadgeVariant(b.status)} className="px-2.5 py-1 text-xs font-medium">
-                        {getStatusLabel(b.status)}
+                      <Badge variant={displayStatus.variant} className="px-2.5 py-1 text-xs font-medium">
+                        {displayStatus.label}
                       </Badge>
                     </div>
                   </div>
@@ -481,7 +385,9 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                       <div className="flex items-center gap-1.5 text-warning font-medium">
                         <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                         <span>
-                          {isAr ? 'في انتظار تأكيد الحوالة' : 'Awaiting payment verification'}
+                          {paymentSummary.isAwaitingVerification
+                            ? (isAr ? 'تم إرسال إثبات الدفع، وبانتظار اعتماد الأستاذ' : 'Payment submitted, awaiting teacher verification')
+                            : (isAr ? 'لم يتم تأكيد الدفع بعد' : 'Payment not yet confirmed')}
                         </span>
                       </div>
                     )}
@@ -532,14 +438,15 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                         </button>
                       )}
 
-                      {/* Reschedule / Cancel Coordinator */}
-                      {isActionableForChange && (
+                      {/* Reschedule / Cancel coordination (WhatsApp only — no in-app mutation) */}
+                      {canCoordinate && (
                         <button
                           type="button"
                           onClick={() => setRescheduleModalBooking(b)}
                           className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-surface hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs font-medium transition-colors cursor-pointer min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                         >
-                          <span>{isAr ? 'تعديل / إلغاء' : 'Reschedule / Cancel'}</span>
+                          <MessageCircle className="w-3.5 h-3.5 shrink-0" />
+                          <span>{isAr ? 'تنسيق التعديل عبر واتساب' : 'Request Change via WhatsApp'}</span>
                         </button>
                       )}
 
@@ -591,7 +498,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
               </div>
               <div>
                 <h3 className="text-base font-serif font-bold text-foreground">
-                  {isAr ? 'إعادة جدولة أو إلغاء الدرس' : 'Reschedule or Cancel Lesson'}
+                  {isAr ? 'طلب تعديل أو إلغاء الدرس' : 'Request a Lesson Change'}
                 </h3>
                 <p className="text-xs text-muted-foreground font-mono">
                   Ref: {rescheduleModalBooking.referenceCode}
@@ -637,17 +544,17 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                   >
                     <div className="font-semibold text-foreground mb-1">
                       {isEligible
-                        ? (isAr ? 'مسموح بإعادة الجدولة والإلغاء' : 'Eligible for Rescheduling')
+                        ? (isAr ? 'يمكنك طلب التعديل الآن' : 'You can request a change now')
                         : (isAr ? 'تنبيه: متبقي أقل من ٣ ساعات' : 'Notice: Less than 3 hours remaining')}
                     </div>
                     <p className="text-xs text-muted-foreground leading-relaxed">
                       {isEligible
                         ? (isAr
-                            ? 'موعد درسك يبدأ بعد أكثر من ٣ ساعات، مما يتيح لك إعادة الجدولة أو الإلغاء بالتنسيق مع الأستاذ محمود عبر واتساب.'
-                            : 'Your lesson is scheduled more than 3 hours from now. You may coordinate a convenient new slot directly with Ustadh Mahmoud.')
+                            ? 'موعد درسك يبدأ بعد أكثر من ٣ ساعات. لطلب إعادة الجدولة أو الإلغاء، يرجى التنسيق مباشرة مع الأستاذ محمود عبر واتساب. لن يتم تعديل الموعد من داخل التطبيق.'
+                            : 'Your lesson is scheduled more than 3 hours from now. To request a reschedule or cancellation, coordinate directly with Ustadh Mahmoud on WhatsApp. The booking is not changed by the app itself.')
                         : (isAr
-                            ? 'نظراً لأن موعد الدرس خلال أقل من ٣ ساعات، يتطلب الإلغاء أو التعديل إشعاراً مباشراً للأستاذ محمود عبر واتساب لترتيب جدول الدروس.'
-                            : 'Because your session starts in less than 3 hours, short-notice adjustments require direct coordination with Ustadh Mahmoud via WhatsApp.')}
+                            ? 'نظراً لأن موعد الدرس خلال أقل من ٣ ساعات، يتطلب طلب الإلغاء أو التعديل تواصلاً مباشراً مع الأستاذ محمود عبر واتساب. لن يتم تعديل الموعد من داخل التطبيق.'
+                            : 'Because your session starts in less than 3 hours, requesting an adjustment requires direct coordination with Ustadh Mahmoud on WhatsApp. The booking is not changed by the app itself.')}
                     </p>
                   </div>
 
