@@ -68,7 +68,11 @@ export default function StudentProfilePage({
   const probeStudentMe = async () => {
     try {
       const token = effectiveSession?.access_token;
-      if (!token) return;
+      // Explicit session state — a missing session must not silently no-op.
+      if (!token) {
+        setError(isAr ? 'جلسة الدخول غير متاحة أو منتهية' : 'Your session is unavailable or has expired');
+        return;
+      }
       await fetch('/api/student/me', {
         method: 'GET',
         headers: {
@@ -84,7 +88,11 @@ export default function StudentProfilePage({
   const runDiagnosticProbe = async () => {
     try {
       const token = effectiveSession?.access_token;
-      if (!token) return;
+      // Explicit session state — a missing session must not silently no-op.
+      if (!token) {
+        setError(isAr ? 'جلسة الدخول غير متاحة أو منتهية' : 'Your session is unavailable or has expired');
+        return;
+      }
       await fetch('/api/student-auth-diagnostic', {
         method: 'GET',
         headers: {

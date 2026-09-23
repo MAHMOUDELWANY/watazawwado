@@ -99,7 +99,14 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
       setPackagesError(null);
 
       const token = session?.access_token;
-      if (!token) return;
+      // Explicit session state — never let a missing/expired session silently
+      // look like an empty package balance.
+      if (!token) {
+        setPackagesError(
+          isAr ? 'جلسة الدخول غير متاحة أو منتهية' : 'Your session is unavailable or has expired'
+        );
+        return;
+      }
 
       const res = await fetch('/api/student/packages', {
         headers: { Authorization: `Bearer ${token}` }
@@ -126,7 +133,14 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
       setPaymentsError(null);
 
       const token = session?.access_token;
-      if (!token) return;
+      // Explicit session state — never let a missing/expired session silently
+      // look like an empty payment history.
+      if (!token) {
+        setPaymentsError(
+          isAr ? 'جلسة الدخول غير متاحة أو منتهية' : 'Your session is unavailable or has expired'
+        );
+        return;
+      }
 
       const res = await fetch('/api/student/payments', {
         headers: { Authorization: `Bearer ${token}` }
@@ -238,6 +252,16 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
     const summary = getBookingPaymentSummary(b, paymentsData || []);
     return summary.isPendingPayment;
   });
+
+  // Authoritative "verified/paid" signal, derived ONLY from the existing
+  // reconciliation contract. NOTE: the canonical server payment status enum is
+  // 'pending' | 'confirmed' | 'rejected' | 'refunded' (api/index.ts) — there is
+  // NO 'verified' value, so we never test for one. Booking-linked payments reuse
+  // getBookingPaymentSummary; package/unlinked payments use the real server
+  // status 'confirmed'.
+  const hasVerifiedPayment =
+    bookings.some(b => getBookingPaymentSummary(b, paymentsData || []).payment_status === 'paid') ||
+    (paymentsData || []).some(p => p.status === 'confirmed');
 
   return (
     <div className="space-y-8 animate-fade-in text-start pb-12">
@@ -809,8 +833,8 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   {isAr ? 'عرض المدفوعات وإرسال الإثبات ←' : 'View payments & submit proof →'}
                 </Link>
               </div>
-            ) : paymentsData && paymentsData.some(p => p.status === 'verified') ? (
-              /* Verified payments state */
+            ) : hasVerifiedPayment ? (
+              /* Verified payments state (derived from authoritative reconciliation) */
               <div className="space-y-2">
                 <div className="flex items-center gap-2.5 text-xs text-muted-foreground">
                   <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
