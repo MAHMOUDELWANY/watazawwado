@@ -211,8 +211,15 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   };
 
   const handleConfirmMultiLesson = async () => {
-    if (multiPlanCreated || !isAuthenticatedStudent || !accessToken || formData.mode !== 'regular' ||
-        lessonCount <= 1 || selectedLessons.length !== lessonCount ||
+    if (multiPlanCreated || formData.mode !== 'regular') return;
+    // A genuinely missing session must be clear and actionable — never a silent dead button.
+    if (!isAuthenticatedStudent || !accessToken) {
+      setValidationError(isEn
+        ? 'Your session has expired. Please sign in again to create this lesson plan.'
+        : 'انتهت جلسة تسجيل الدخول. يرجى تسجيل الدخول مرة أخرى لإنشاء خطة الدروس.');
+      return;
+    }
+    if (lessonCount <= 1 || selectedLessons.length !== lessonCount ||
         new Set(selectedLessons.map(lesson => lesson.date)).size !== lessonCount ||
         selectedLessons.some(({ slot }) => !slot.utcStartIso || !slot.utcEndIso)) return;
     const selectedCatalog = catalog.find(c => c.package_type === 'weekly' && c.lesson_count === lessonCount && c.is_active);
