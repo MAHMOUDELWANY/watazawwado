@@ -18,6 +18,21 @@ interface StudentOffersPageProps {
   lang?: 'en' | 'ar';
 }
 
+interface OfferState {
+  approved: boolean;
+  purchasable: boolean;
+  accepted: boolean;
+  paid: boolean;
+  entitlement_active: boolean;
+  purchasability: {
+    purchasable: boolean;
+    package_catalog_id: string | null;
+    reason: string;
+    purchase_route: string | null;
+    message: { en: string; ar: string } | null;
+  };
+}
+
 interface OfferRow {
   id: string;
   intake_id: string;
@@ -27,6 +42,7 @@ interface OfferRow {
   offer: any | null;
   status: string;
   offered_at: string | null;
+  offer_state?: OfferState | null;
 }
 
 export default function StudentOffersPage({ session, lang = 'en' }: StudentOffersPageProps) {
@@ -72,9 +88,14 @@ export default function StudentOffersPage({ session, lang = 'en' }: StudentOffer
         headers: { 'Content-Type': 'application/json', ...authHeaders() },
       });
       if (r.ok) {
+        const data = await r.json().catch(() => null);
         analyticsRepository.logEvent('offer_accepted', {});
-        setOffers((prev) => prev.map((o) => (o.id === id ? { ...o, status: 'accepted' } : o)));
-      }    } finally {
+        // Merge the server-derived state; never infer payment from acceptance.
+        setOffers((prev) => prev.map((o) => (o.id === id
+          ? { ...o, status: 'accepted', offer_state: data?.offer_state ?? o.offer_state }
+          : o)));
+      }
+    } finally {
       setAccepting(null);
     }
   };
@@ -125,6 +146,26 @@ export default function StudentOffersPage({ session, lang = 'en' }: StudentOffer
         {offers.map((o) => {
           const hasOffer = o.offer && typeof o.offer === 'object';
           const finalPrice = hasOffer ? Number(o.offer.final_price_usd) : Number(o.approved_price_usd);
+          // Server-derived, non-collapsed state. Fall back conservatively
+          // (approved, not purchasable) if the derived block is missing.
+          const st: OfferState = o.offer_state || {
+            approved: Number(o.approved_price_usd) > 0,
+            purchasable: false,
+            accepted: o.status === 'accepted',
+            paid: false,
+            entitlement_active: false,
+            purchasability: {
+              purchasable: false,
+              package_catalog_id: null,
+              reason: 'not_provided',
+              purchase_route: null,
+              message: null,
+            },
+          };
+          const purchasable = st.purchasable;
+          const accepted = st.accepted || o.status === 'accepted';
+          const customizedNote = st.purchasability?.message;
+
           return (
             <motion.div
               key={o.id}
@@ -144,8 +185,38 @@ export default function StudentOffersPage({ session, lang = 'en' }: StudentOffer
                       {' '}· {o.duration_minutes} {isAr ? 'دقيقة' : 'min'}
                     </span>
                   </div>
+                  {/* Distinct state badges — never collapsed together. */}
+                  <div className="flex flex-wrap items-center gap-2 mt-2 text-xs">
+                    <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+                      {isAr ? 'معتمد من الأستاذ' : 'Approved by teacher'}
+                    </span>
+                    <span
+                      className={`px-2 py-0.5 rounded-full ${
+                        purchasable ? 'bg-success/10 text-success' : 'bg-muted text-muted-foreground'
+                      }`}
+                    >
+                      {purchasable
+                        ? (isAr ? 'متاح للشراء أونلاين' : 'Purchasable online')
+                        : (isAr ? 'الشراء أونلاين غير متاح حاليًا' : 'Online purchase: not available yet')}
+                    </span>
+                    {accepted && (
+                      <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+                        {isAr ? 'تم القبول' : 'Accepted'}
+                      </span>
+                    )}
+                    {st.paid && (
+                      <span className="px-2 py-0.5 rounded-full bg-success/10 text-success">
+                        {isAr ? 'مدفوع' : 'Paid'}
+                      </span>
+                    )}
+                    {st.entitlement_active && (
+                      <span className="px-2 py-0.5 rounded-full bg-success/10 text-success">
+                        {isAr ? 'الرصيد مُفعّل' : 'Credits active'}
+                      </span>
+                    )}
+                  </div>
                 </div>
-                {o.status === 'accepted' ? (
+                {accepted ? (
                   <span className="inline-flex items-center gap-1 text-success text-sm">
                     <CheckCircle2 className="w-4 h-4" /> {isAr ? 'تم قبول العرض' : 'Offer accepted'}
                   </span>
@@ -156,12 +227,13 @@ export default function StudentOffersPage({ session, lang = 'en' }: StudentOffer
                     className="h-10 px-4 rounded-lg bg-primary text-primary-foreground hover:bg-primary-hover text-sm font-medium disabled:opacity-50 inline-flex items-center gap-2"
                   >
                     {accepting === o.id && <Loader2 className="w-4 h-4 animate-spin" />}
+                    {/* Informational acceptance only — never labelled as payment. */}
                     {isAr ? 'أوافق على العرض' : 'Accept offer'}
                   </button>
                 )}
               </div>
 
-              {o.status === 'accepted' && (
+              {accepted && purchasable && !st.entitlement_active && (
                 <div className="mt-3 text-sm rounded-lg bg-muted/60 p-3 border border-border-subtle">
                   <p className="text-foreground font-medium">
                     {isAr ? 'الخطوة التالية: إتمام الحجز والدفع' : 'Next step: complete purchase & payment'}
@@ -178,6 +250,27 @@ export default function StudentOffersPage({ session, lang = 'en' }: StudentOffer
                     <ArrowRight className="w-4 h-4" />
                     {isAr ? 'إلى الباقات والدفع' : 'Go to Packages & payment'}
                   </a>
+                </div>
+              )}
+
+              {/* Custom approved price: approved, but online purchase is deferred.
+                  No "Accept and pay" path. Acceptance remains informational only. */}
+              {!purchasable && (
+                <div className="mt-3 text-sm rounded-lg bg-muted/60 p-3 border border-border-subtle">
+                  <p className="text-foreground font-medium">
+                    {isAr ? 'الدفع أونلاين غير متاح حاليًا' : 'Online purchase not available yet'}
+                  </p>
+                  <p className="text-muted-foreground mt-1">
+                    {(isAr ? customizedNote?.ar : customizedNote?.en) ||
+                      (isAr
+                        ? 'الأستاذ محمود وافق على العرض ده، لكن إتمام الدفع أونلاين بالسعر المخصص ده غير متاح حاليًا.'
+                        : 'Ustadh Mahmoud approved this offer, but online purchase for this custom price is not available yet.')}
+                  </p>
+                  <p className="text-muted-foreground mt-1">
+                    {isAr
+                      ? 'الموافقة على العرض هنا تسجيل لقبولك فقط، ومش دفع ولا تفعيل رصيد.'
+                      : 'Accepting here records your acknowledgement only — it is not payment and does not activate credits.'}
+                  </p>
                 </div>
               )}
 

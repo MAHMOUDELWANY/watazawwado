@@ -56,6 +56,15 @@ const t = {
     reload: 'Refresh',
     noPrice: 'No deterministic price — adjust to set an explicit approved amount.',
     noDeterministic: 'A manual approved price is required. Use "Adjust price" to set it.',
+    recPrice: 'AI recommended price',
+    apprPrice: 'Teacher-approved price',
+    apprStatus: 'Approved status',
+    purchStatus: 'Online purchase',
+    approvedYes: 'Approved',
+    approvedNo: 'Not approved yet',
+    purchaseAvailable: 'Available through the existing package purchase flow',
+    purchaseUnavailable: 'Not currently available for custom pricing',
+    purchaseDeferredNote: 'Approving records the authoritative price only. It does not create an entitlement or a payment.',
     subject: 'Subject', goal: 'Goal', level: 'Level', target: 'Target',
     skills: 'Focus', useCase: 'Use case', timeline: 'Timeline', duration: 'Duration',
   },
@@ -82,6 +91,15 @@ const t = {
     reload: 'تحديث',
     noPrice: 'لا يوجد سعر حتمي — عدّل لتحديد سعر معتمد.',
     noDeterministic: 'السعر المعتمد اليدوي مطلوب. استخدم «تعديل السعر» لتحديده.',
+    recPrice: 'سعر الترشيح الآلي',
+    apprPrice: 'السعر المعتمد من الأستاذ',
+    apprStatus: 'حالة الاعتماد',
+    purchStatus: 'الشراء أونلاين',
+    approvedYes: 'معتمد',
+    approvedNo: 'لسه مش معتمد',
+    purchaseAvailable: 'متاح من خلال مسار شراء الباقات الحالي',
+    purchaseUnavailable: 'غير متاح حاليًا للسعر المخصص',
+    purchaseDeferredNote: 'الاعتماد يسجّل السعر المعتمد فقط، ولا ينشئ رصيدًا ولا دفعة.',
     subject: 'المجال', goal: 'الهدف', level: 'المستوى', target: 'المستهدف',
     skills: 'التركيز', useCase: 'الاستخدام', timeline: 'التوقيت', duration: 'المدة',
   },
@@ -238,6 +256,44 @@ export default function IntakeReviewPanel({ lang, apiFetch }: IntakeReviewPanelP
                 <pre className="text-xs bg-muted rounded-lg p-3 overflow-auto whitespace-pre-wrap">
 {JSON.stringify(selected.pricing_recommendation || {}, null, 2)}
                 </pre>
+
+                {/* Approved vs purchasable — kept distinct. Approval never creates
+                    an entitlement; a custom price may be approved but not purchasable. */}
+                <div className="mt-4 rounded-lg border border-border-subtle bg-muted/40 p-3 text-sm space-y-1">
+                  <div className="flex justify-between gap-2">
+                    <span className="text-muted-foreground">{c.recPrice}</span>
+                    <span className="text-foreground">
+                      {selected.pricing_recommendation?.recommended_price_usd != null
+                        ? `$${selected.pricing_recommendation.recommended_price_usd}`
+                        : (lang === 'ar' ? 'لا يوجد' : 'None')}
+                    </span>
+                  </div>
+                  <div className="flex justify-between gap-2">
+                    <span className="text-muted-foreground">{c.apprPrice}</span>
+                    <span className="text-foreground font-medium">
+                      {selected.offer?.approved_price_usd != null
+                        ? `$${selected.offer.approved_price_usd}`
+                        : (lang === 'ar' ? 'غير محدد بعد' : 'Not set yet')}
+                    </span>
+                  </div>
+                  <div className="flex justify-between gap-2">
+                    <span className="text-muted-foreground">{c.apprStatus}</span>
+                    <span className="text-foreground">
+                      {selected.offer?.approved_price_usd != null ? c.approvedYes : c.approvedNo}
+                    </span>
+                  </div>
+                  <div className="flex justify-between gap-2">
+                    <span className="text-muted-foreground">{c.purchStatus}</span>
+                    <span className={selected.offer?.purchasable ? 'text-success' : 'text-muted-foreground'}>
+                      {selected.offer
+                        ? (selected.offer.purchasable ? c.purchaseAvailable : c.purchaseUnavailable)
+                        : '—'}
+                    </span>
+                  </div>
+                  {selected.offer && !selected.offer.purchasable && (
+                    <p className="text-xs text-muted-foreground pt-1">{c.purchaseDeferredNote}</p>
+                  )}
+                </div>
 
                 <div className="mt-4">
                   <label className="block text-sm text-muted-foreground mb-1">{c.price}</label>

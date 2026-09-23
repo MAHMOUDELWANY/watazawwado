@@ -57,6 +57,11 @@ import {
 import {
   validateIntakeOutput
 } from '../server/intake/intakeSchema.js';
+import {
+  resolveOfferPurchasability,
+  CUSTOM_OFFER_PURCHASE_UNAVAILABLE,
+  type CatalogEntry
+} from '../server/pricing/offerPurchasability.js';
 
 dotenv.config();
 
@@ -6338,6 +6343,85 @@ app.post('/api/intake/complete', rateLimit, verifyStudentAuth, async (req: any, 
   }
 });
 
+// --------------------------------------------------------------------
+// PHASE 05 — READ-TIME OFFER STATE (derived, never stored)
+// --------------------------------------------------------------------
+// Purchasability and purchase state are DERIVED at read time from existing
+// verified data. No column, no FK, and no catalog row is manufactured. A
+// teacher-approved CUSTOM price with no exact active-catalog carrier stays
+// approved-but-not-purchasable. Acceptance NEVER implies payment/entitlement.
+async function loadActiveCatalog(supabaseAdmin: any): Promise<CatalogEntry[]> {
+  const { data, error } = await supabaseAdmin
+    .from('package_catalog')
+    .select('id, price_amount, currency, lesson_count, is_active')
+    .eq('is_active', true);
+  if (error) {
+    console.warn('[phase05] package_catalog read failed:', error.message);
+    return [];
+  }
+  return (data || []) as CatalogEntry[];
+}
+
+async function loadActiveEntitlementCatalogIds(supabaseAdmin: any, authUserId: string): Promise<Set<string>> {
+  const set = new Set<string>();
+  if (!authUserId) return set;
+  const { data, error } = await supabaseAdmin
+    .from('package_entitlements')
+    .select('package_catalog_id, status')
+    .eq('purchaser_account_id', authUserId)
+    .eq('status', 'active');
+  if (error) {
+    console.warn('[phase05] package_entitlements read failed:', error.message);
+    return set;
+  }
+  for (const row of data || []) {
+    if (row?.package_catalog_id) set.add(row.package_catalog_id);
+  }
+  return set;
+}
+
+/**
+ * Derive the full, non-collapsed offer state for UI consumption. The five
+ * concepts stay distinct; `accepted` is never coerced into `paid` or
+ * `entitlement_active`. Every field is server-derived from verified data.
+ */
+function deriveOfferState(
+  offer: any,
+  activeCatalog: CatalogEntry[],
+  activeEntitlementCatalogIds: Set<string>
+) {
+  const purchasability = resolveOfferPurchasability(
+    { approved_price_usd: Number(offer?.approved_price_usd), currency: offer?.currency || 'USD' },
+    activeCatalog
+  );
+
+  const status = offer?.status || null;
+  const approved = offer?.approved_price_usd != null && Number(offer.approved_price_usd) > 0;
+  const accepted = status === 'accepted';
+  const entitlementActive = Boolean(
+    purchasability.purchasable &&
+      purchasability.packageCatalogId &&
+      activeEntitlementCatalogIds.has(purchasability.packageCatalogId)
+  );
+  // Payment is only ever confirmed by the existing entitlement activation flow.
+  const paid = entitlementActive;
+
+  return {
+    approved,
+    purchasable: purchasability.purchasable,
+    accepted,
+    paid,
+    entitlement_active: entitlementActive,
+    purchasability: {
+      purchasable: purchasability.purchasable,
+      package_catalog_id: purchasability.packageCatalogId,
+      reason: purchasability.reason,
+      purchase_route: purchasability.purchasable ? '/student/packages' : null,
+      message: purchasability.purchasable ? null : CUSTOM_OFFER_PURCHASE_UNAVAILABLE,
+    },
+  };
+}
+
 // GET /api/intake/:id — owner (or teacher) reads their intake + offer state
 app.get('/api/intake/:id', verifyStudentAuth, async (req: any, res: any) => {
   try {
@@ -6391,7 +6475,16 @@ app.get('/api/student/offers', verifyStudentAuth, async (req: any, res: any) => 
       console.warn('[GET /api/student/offers] Error:', error.message);
       return res.json({ offers: [] });
     }
-    return res.json({ offers: data || [] });
+
+    // Derive (never store) purchasability + purchase state at read time.
+    const activeCatalog = await loadActiveCatalog(supabaseAdmin);
+    const activeEntitlementCatalogIds = await loadActiveEntitlementCatalogIds(supabaseAdmin, authUserId);
+    const offers = (data || []).map((o: any) => ({
+      ...o,
+      offer_state: deriveOfferState(o, activeCatalog, activeEntitlementCatalogIds),
+    }));
+
+    return res.json({ offers });
   } catch (err: any) {
     console.error('[GET /api/student/offers Error]', err);
     return res.status(500).json({ error: 'Failed to load offers.' });
@@ -6423,6 +6516,17 @@ app.post('/api/student/offers/:id/accept', rateLimit, verifyStudentAuth, async (
       return res.status(404).json({ error: 'Offer not found.' });
     }
 
+    // Derive (never store) purchasability against real active catalog data.
+    // A custom approved price with no exact catalog carrier stays
+    // accepted-but-not-purchasable; acceptance never becomes payment.
+    const activeCatalog = await loadActiveCatalog(supabaseAdmin);
+    const activeEntitlementCatalogIds = await loadActiveEntitlementCatalogIds(supabaseAdmin, authUserId);
+    const currentState = deriveOfferState(
+      { ...offer, status: 'accepted' },
+      activeCatalog,
+      activeEntitlementCatalogIds
+    );
+
     // Acceptance is idempotent and never implies payment.
     const responseBody = {
       success: true,
@@ -6430,12 +6534,21 @@ app.post('/api/student/offers/:id/accept', rateLimit, verifyStudentAuth, async (
       // Explicit: acceptance != purchase == false.
       purchaseCompleted: false,
       purchaseRequired: true,
-      /** The existing purchase flow remains authoritative. */
-      nextStep: {
-        path: '/student/packages',
-        kind: 'existing_package_purchase',
-        message: 'Your offer is accepted. To activate lessons and credits, complete the existing package purchase and payment verification flow.',
-      },
+      /** Non-collapsed, server-derived state for the UI. */
+      offer_state: currentState,
+      /** The existing purchase flow remains authoritative — ONLY when purchasable. */
+      nextStep: currentState.purchasable
+        ? {
+            path: '/student/packages',
+            kind: 'existing_package_purchase',
+            message: 'Your offer is accepted. To activate lessons and credits, complete the existing package purchase and payment verification flow.',
+          }
+        : {
+            path: null,
+            kind: 'custom_offer_purchase_deferred',
+            message: CUSTOM_OFFER_PURCHASE_UNAVAILABLE.en,
+            message_ar: CUSTOM_OFFER_PURCHASE_UNAVAILABLE.ar,
+          },
     };
 
     if (offer.status === 'accepted') {
@@ -6485,15 +6598,34 @@ app.get('/api/dashboard/intakes', verifyTeacherAuth, async (req: any, res: any) 
       return res.json({ intakes: [] });
     }
 
-    // Attach any existing offers (approved data only).
+    // Attach any existing offers (approved data only), each enriched with
+    // read-time purchasability derived from REAL active catalog data.
     const ids = (data || []).map((i: any) => i.id);
     const offerMap = new Map<string, any>();
+    let activeCatalogForTeacher: CatalogEntry[] = [];
     if (ids.length > 0) {
+      activeCatalogForTeacher = await loadActiveCatalog(supabaseAdmin);
       const { data: offers } = await supabaseAdmin
         .from('learning_offers')
         .select('id, intake_id, approved_price_usd, teacher_adjusted, offer, status')
         .in('intake_id', ids);
-      for (const o of offers || []) offerMap.set(o.intake_id, o);
+      for (const o of offers || []) {
+        const purchasability = resolveOfferPurchasability(
+          { approved_price_usd: Number(o?.approved_price_usd), currency: 'USD' },
+          activeCatalogForTeacher
+        );
+        offerMap.set(o.intake_id, {
+          ...o,
+          purchasable: purchasability.purchasable,
+          purchasability: {
+            purchasable: purchasability.purchasable,
+            package_catalog_id: purchasability.packageCatalogId,
+            reason: purchasability.reason,
+            purchase_route: purchasability.purchasable ? '/student/packages' : null,
+            message: purchasability.purchasable ? null : CUSTOM_OFFER_PURCHASE_UNAVAILABLE,
+          },
+        });
+      }
     }
 
     return res.json({
@@ -6530,7 +6662,28 @@ app.get('/api/dashboard/intakes/:id', verifyTeacherAuth, async (req: any, res: a
       .eq('intake_id', intake.id)
       .order('created_at', { ascending: false });
 
-    return res.json({ intake, offers: offers || [], events: events || [] });
+    // Derive (never store) purchasability for each offer so the teacher UI can
+    // show approved vs purchasable distinctly. No schema change, no FK.
+    const activeCatalog = await loadActiveCatalog(supabaseAdmin);
+    const offersWithState = (offers || []).map((o: any) => {
+      const purchasability = resolveOfferPurchasability(
+        { approved_price_usd: Number(o?.approved_price_usd), currency: o?.currency || 'USD' },
+        activeCatalog
+      );
+      return {
+        ...o,
+        purchasable: purchasability.purchasable,
+        purchasability: {
+          purchasable: purchasability.purchasable,
+          package_catalog_id: purchasability.packageCatalogId,
+          reason: purchasability.reason,
+          purchase_route: purchasability.purchasable ? '/student/packages' : null,
+          message: purchasability.purchasable ? null : CUSTOM_OFFER_PURCHASE_UNAVAILABLE,
+        },
+      };
+    });
+
+    return res.json({ intake, offers: offersWithState, events: events || [] });
   } catch (err: any) {
     console.error('[GET /api/dashboard/intakes/:id Error]', err);
     return res.status(500).json({ error: 'Failed to load intake detail.' });
