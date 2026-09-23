@@ -33,6 +33,8 @@ import StudentLessonsPage from './pages/StudentLessonsPage';
 import StudentPackagesPage from './pages/StudentPackagesPage';
 import StudentPaymentsPage from './pages/StudentPaymentsPage';
 import StudentNotificationsPage from './pages/StudentNotificationsPage';
+import StudentOffersPage from './pages/StudentOffersPage';
+import IntakeConversation from '../components/intake/IntakeConversation';
 import { StudentAuthModal } from '../components/StudentAuthModal';
 
 export default function StudentApp() {
@@ -311,6 +313,18 @@ export default function StudentApp() {
       name: isAr ? 'جدول الدروس' : 'My Lessons', 
       path: '/student/lessons', 
       icon: Calendar,
+      badge: null
+    },
+    { 
+      name: isAr ? 'مرشد التعلّم' : 'Learning Guide', 
+      path: '/student/guide', 
+      icon: Sparkles,
+      badge: null
+    },
+    { 
+      name: isAr ? 'عروضي' : 'My Offers', 
+      path: '/student/offers', 
+      icon: Package,
       badge: null
     },
     { 
@@ -670,6 +684,8 @@ export default function StudentApp() {
               <Route path="/packages" element={<StudentPackagesPage lang={lang} session={session} />} />
               <Route path="/payments" element={<StudentPaymentsPage lang={lang} session={session} />} />
               <Route path="/notifications" element={<StudentNotificationsPage lang={lang} session={session} />} />
+              <Route path="/guide" element={<IntakeConversation session={session} lang={lang} />} />
+              <Route path="/offers" element={<StudentOffersPage session={session} lang={lang} />} />
               <Route path="/book" element={<StudentBookingPage profile={profile} session={session} />} />
               <Route path="/account" element={
                 <StudentProfilePage
