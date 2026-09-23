@@ -42,6 +42,9 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // Explicit session/auth state. A missing or expired session must NEVER be
+  // rendered as the truthful "no active packages" empty state.
+  const [authError, setAuthError] = useState(false);
 
   // Multi-child learner selection
   const [selectedLearnerId, setSelectedLearnerId] = useState<string>('');
@@ -62,7 +65,12 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
       setLoading(true);
       setError(null);
       const token = session?.access_token;
-      if (!token) return;
+      // Explicit session state — a missing/expired session must not silently
+      // look like an empty package balance.
+      if (!token) {
+        setAuthError(true);
+        return;
+      }
 
       const res = await fetch('/api/student/packages', {
         headers: { Authorization: `Bearer ${token}` }
@@ -106,7 +114,14 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
       setLedgerLoading(true);
       setLedgerError(null);
       const token = session?.access_token;
-      if (!token) return;
+      // Explicit session state — a missing/expired session must not silently
+      // render as an empty credit-activity ledger.
+      if (!token) {
+        setLedgerError(
+          isAr ? 'جلسة الدخول غير متاحة أو منتهية' : 'Your session is unavailable or has expired'
+        );
+        return;
+      }
 
       const res = await fetch('/api/student/packages/ledger', {
         headers: { Authorization: `Bearer ${token}` }
@@ -250,6 +265,42 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
   const creditSummary = data.creditSummary || { totalRemaining: 0, totalPurchased: 0, totalUsed: 0 };
   const learners = Array.isArray(data.learners) ? data.learners : [];
   const hasMultipleLearners = learners.length > 1;
+
+  // Explicit session state: never present a missing/expired session as the
+  // truthful "no active packages" empty state.
+  if (authError) {
+    return (
+      <div className="space-y-8 max-w-5xl mx-auto pb-12">
+        <StudentPageBack to="/student" label={isAr ? 'العودة للرئيسية' : 'Back to Dashboard'} />
+        <div className="p-6 bg-surface border border-warning/30 rounded-2xl text-center space-y-3">
+          <AlertCircle className="w-6 h-6 text-warning mx-auto" />
+          <p className="text-sm font-medium text-foreground">
+            {isAr ? 'جلسة الدخول غير متاحة أو منتهية' : 'Your session is unavailable or has expired'}
+          </p>
+          <p className="text-xs text-muted-foreground max-w-md mx-auto leading-relaxed">
+            {isAr
+              ? 'يرجى تسجيل الدخول مرة أخرى لعرض باقاتك ورصيد دروسك. لم يتم حذف أي بيانات.'
+              : 'Please sign in again to view your packages and lesson credits. No data has been lost.'}
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-1">
+            <Link
+              to="/student"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-colors cursor-pointer min-h-[44px]"
+            >
+              <span>{isAr ? 'تسجيل الدخول مرة أخرى' : 'Sign In Again'}</span>
+            </Link>
+            <button
+              type="button"
+              onClick={fetchPackages}
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-surface hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
+            >
+              <span>{isAr ? 'إعادة المحاولة' : 'Try Again'}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto pb-12">
