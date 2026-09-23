@@ -103,159 +103,24 @@ export interface RunIntakeResult {
 }
 
 /**
- * ====================================================================
- * TEMPORARY DIAGNOSTIC INSTRUMENTATION (provider error capture)
- * --------------------------------------------------------------------
- * Purpose: record ONLY sanitized Google GenAI provider error metadata in
- * runtime logs so a production failure can be classified into one of:
- *   - RESOURCE_EXHAUSTED / rate limit / quota
- *   - UNAVAILABLE / temporary provider overload
- *   - INVALID_ARGUMENT / request or structured-output rejection
- *   - MODEL_NOT_FOUND / model availability
- *   - OTHER
- *
- * It NEVER logs secrets or user data: no API key, no Authorization header,
- * no access token, no request body, no conversation messages, and no raw
- * provider payload. Only a flat, redacted metadata object is emitted.
- *
- * NOTE: This block is intentionally self-contained and behavior-neutral so
- * it can be removed cleanly once the production cause is identified.
- * ====================================================================
- */
-
-export type ProviderErrorClass =
-  | 'RESOURCE_EXHAUSTED_OR_RATE_LIMIT'
-  | 'UNAVAILABLE_OR_OVERLOAD'
-  | 'INVALID_ARGUMENT'
-  | 'MODEL_NOT_FOUND'
-  | 'OTHER';
-
-export interface SanitizedProviderError {
-  name: string;
-  constructorName: string;
-  status: number | string | null;
-  code: number | string | null;
-  providerStatus: string | null;
-  message: string;
-  classification: ProviderErrorClass;
-}
-
-/** Patterns that must never reach the logs; replaced with placeholders. */
-const PROVIDER_SECRET_PATTERNS: Array<[RegExp, string]> = [
-  // Google API keys (e.g. AIza...).
-  [/AIza[0-9A-Za-z_\-]{10,}/g, '[REDACTED_API_KEY]'],
-  // key= / api_key= / apikey= query-string secrets.
-  [/([?&](?:key|api_?key)=)[^&\s"']+/gi, '$1[REDACTED]'],
-  // Bearer tokens.
-  [/Bearer\s+[A-Za-z0-9\-_.]+/gi, 'Bearer [REDACTED]'],
-  // OAuth-style token query params.
-  [/\b(access_token|refresh_token|id_token|client_secret)=[^&\s"']+/gi, '$1=[REDACTED]'],
-  // JWTs (three base64url segments).
-  [/eyJ[A-Za-z0-9_\-]{6,}\.[A-Za-z0-9_\-]{6,}\.[A-Za-z0-9_\-]{6,}/g, '[REDACTED_JWT]'],
-];
-
-/** Redact secrets from an arbitrary string and bound its length. */
-export function sanitizeProviderErrorMessage(raw: unknown, maxLen = 600): string {
-  let s = typeof raw === 'string' ? raw : raw == null ? '' : String(raw);
-  for (const [pattern, replacement] of PROVIDER_SECRET_PATTERNS) {
-    s = s.replace(pattern, replacement);
-  }
-  s = s.replace(/\s+/g, ' ').trim();
-  if (s.length > maxLen) s = `${s.slice(0, maxLen)}…[truncated]`;
-  return s;
-}
-
-function classifyProviderError(
-  status: number | string | null,
-  code: number | string | null,
-  providerStatus: string | null,
-  message: string
-): ProviderErrorClass {
-  const tokens = [status, code, providerStatus].filter((v) => v != null).map((v) => String(v).toUpperCase()).join(' ');
-  const msg = (message || '').toUpperCase();
-  const haystack = `${tokens} ${msg}`;
-
-  if (/RESOURCE_EXHAUSTED|RATE[_ ]?LIMIT|QUOTA|429|EXHAUSTED/.test(haystack)) {
-    return 'RESOURCE_EXHAUSTED_OR_RATE_LIMIT';
-  }
-  if (/UNAVAILABLE|OVERLOAD|503|SERVICE UNAVAILABLE|TEMPORARILY/.test(haystack)) {
-    return 'UNAVAILABLE_OR_OVERLOAD';
-  }
-  if (/INVALID_ARGUMENT|400|INVALID_JSON|SCHEMA|INVALID VALUE/.test(haystack)) {
-    return 'INVALID_ARGUMENT';
-  }
-  if (/NOT_FOUND|MODEL_NOT_FOUND|404|NOT FOUND|UNSUPPORTED MODEL|MODEL.*NOT.*FOUND/.test(haystack)) {
-    return 'MODEL_NOT_FOUND';
-  }
-  return 'OTHER';
-}
-
-function asScalar(v: unknown): number | string | null {
-  if (typeof v === 'number' || typeof v === 'string') return v;
-  return null;
-}
-
-/**
- * Convert a thrown provider error into a flat, sanitized, log-safe object.
- * Reads only top-level scalar metadata; never serializes nested payloads,
- * request context, or user content.
- */
-export function sanitizeProviderError(err: any): SanitizedProviderError {
-  const name = typeof err?.name === 'string' && err.name ? err.name : 'Error';
-  const constructorName = err?.constructor?.name || 'Error';
-
-  const status = asScalar(err?.status) ?? asScalar(err?.statusCode) ?? asScalar(err?.response?.status);
-  const code = asScalar(err?.code) ?? asScalar(err?.errorCode) ?? asScalar(err?.error?.code);
-  const providerStatus = asScalar(err?.error?.status) != null ? String(err.error.status) : null;
-
-  const rawMessage = err?.message ?? err?.error?.message ?? '';
-  const message = sanitizeProviderErrorMessage(rawMessage);
-
-  return {
-    name,
-    constructorName,
-    status,
-    code,
-    providerStatus,
-    message,
-    classification: classifyProviderError(status, code, providerStatus, message),
-  };
-}
-
-/** Emit the sanitized provider-error metadata as a single flat log line. */
-function logSanitizedProviderError(scope: string, err: unknown, extra: Record<string, unknown> = {}): void {
-  const safe = sanitizeProviderError(err);
-  // JSON.stringify guarantees only the flat sanitized object is emitted.
-  console.error(`[intake:gemini] ${scope}`, JSON.stringify({ ...safe, ...extra }));
-}
-
-/**
  * Run one intake turn against Gemini with structured output, then validate.
  * `ai` may be injected for testing.
  */
 export async function runIntakeTurn(
   messages: IntakeTurnMessage[],
   ai: GoogleGenAI,
-  model = 'gemini-3.1-flash-lite'
+  model = 'gemini-3.5-flash-lite'
 ): Promise<RunIntakeResult> {
-  let response;
-  try {
-    response = await ai.models.generateContent({
-      model,
-      contents: buildIntakeContents(messages),
-      config: {
-        systemInstruction: buildIntakeSystemInstruction(),
-        temperature: 0.5,
-        responseMimeType: 'application/json',
-        responseSchema: INTAKE_RESPONSE_SCHEMA as any,
-      },
-    });
-  } catch (err) {
-    // TEMPORARY DIAGNOSTIC: log sanitized provider metadata, then preserve the
-    // existing control flow by re-throwing for the route's existing handler.
-    logSanitizedProviderError('generateContent failed', err, { stage: 'generateContent', model });
-    throw err;
-  }
+  const response = await ai.models.generateContent({
+    model,
+    contents: buildIntakeContents(messages),
+    config: {
+      systemInstruction: buildIntakeSystemInstruction(),
+      temperature: 0.5,
+      responseMimeType: 'application/json',
+      responseSchema: INTAKE_RESPONSE_SCHEMA as any,
+    },
+  });
 
   const raw = parseModelJson(response.text || '');
   if (!raw) {

@@ -50,7 +50,6 @@ import { computeOffer, isLegitimateOffer } from '../server/pricing/offers.js';
 import {
   runIntakeTurn,
   parseModelJson,
-  sanitizeProviderError,
   INTAKE_OPENING_AR,
   INTAKE_OPENING_EN,
   type IntakeTurnMessage
@@ -6334,18 +6333,7 @@ app.post('/api/intake/turn', rateLimit, verifyStudentAuth, async (req: any, res:
       recommendation,
     });
   } catch (err: any) {
-    // TEMPORARY DIAGNOSTIC: log only sanitized provider metadata (name, status,
-    // code, providerStatus, redacted message) to classify the production
-    // failure. No secrets, tokens, request body, or student messages are logged.
-    // User-facing behavior is intentionally unchanged (still HTTP 500).
-    try {
-      console.error('[intake:gemini] route catch', JSON.stringify({
-        ...sanitizeProviderError(err),
-        stage: 'route:/api/intake/turn',
-      }));
-    } catch {
-      console.error('[intake:gemini] route catch', 'sanitization_failed');
-    }
+    console.error('Intake error:', err);
     return res.status(500).json({ error: 'Failed to process intake turn.' });
   }
 });
