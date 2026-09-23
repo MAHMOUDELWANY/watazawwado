@@ -32,6 +32,8 @@ export interface TimeSlot {
   period: 'morning' | 'afternoon' | 'evening';
   available: boolean;
   cairoTimeEquiv: string; // Internal reference to Egypt time
+  utcStartIso?: string; // Authoritative availability response; absent in legacy/local mocks
+  utcEndIso?: string;
 }
 
 export interface DayAvailability {

@@ -997,6 +997,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
               teacherId={profile?.assignedTeacherId || profile?.assigned_teacher_id}
               activeEntitlements={packagesData?.entitlements || []}
               catalog={packagesData?.catalog || []}
+              accessToken={accessToken}
             />
           </div>
         </BookingErrorBoundary>

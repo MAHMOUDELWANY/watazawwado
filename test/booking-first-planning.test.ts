@@ -58,6 +58,14 @@ describe('multi-lesson atomic confirmation contract', () => {
     assert.match(flow, /fetch\('\/api\/student\/multi-lesson-plan'/);
     assert.match(flow, /catalogId: selectedCatalog\.id/);
     assert.match(flow, /lessons: selectedLessons\.map/);
+    assert.match(flow, /Authorization: `Bearer \$\{accessToken\}`/);
+    assert.match(read('student/pages/StudentBookingPage.tsx'), /accessToken=\{accessToken\}/);
+    assert.match(flow, /scheduledStart: slot\.utcStartIso/);
+    assert.match(flow, /scheduledEnd: slot\.utcEndIso/);
+    assert.doesNotMatch(flow, /new Date\(date \+ 'T00:00:00'\)/);
+    assert.match(flow, /onConfirm=\{handleConfirmMultiLesson\}/);
+    assert.match(flow, /multiPlanCreated/);
+    assert.match(flow, /Payment is not confirmed by this screen/);
     assert.doesNotMatch(flow, /package_entitlement_id/);
   });
 
@@ -65,6 +73,8 @@ describe('multi-lesson atomic confirmation contract', () => {
     const flow = read('components/booking/BookingFlow.tsx');
     assert.match(flow, /if \(!selectedCatalog\)/);
     assert.match(flow, /This lesson plan is temporarily unavailable/);
+    assert.match(flow, /!accessToken/);
+    assert.match(flow, /!slot\.utcStartIso \|\| !slot\.utcEndIso/);
   });
 
   it('keeps the display-only price calculation truthful', () => {
