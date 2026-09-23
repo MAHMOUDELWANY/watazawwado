@@ -26,6 +26,15 @@ export const TRIAGE_VALUES: Triage[] = ['low', 'medium', 'high'];
 export const LEVEL_VALUES: AssessedLevel[] = ['beginner', 'elementary', 'intermediate', 'advanced', 'specialized'];
 export const DURATION_VALUES: DurationMinutes[] = [30, 45, 60];
 
+/**
+ * Gemini structured-output `enum` values must be STRINGS (the provider rejects
+ * numeric enums with `400 INVALID_ARGUMENT ... (TYPE_STRING)`). We therefore
+ * advertise the durations as their canonical string forms and convert back to
+ * the numeric domain type during validation. The application/domain type stays
+ * `DurationMinutes = 30 | 45 | 60`.
+ */
+export const DURATION_ENUM_STRINGS: string[] = DURATION_VALUES.map((d) => String(d));
+
 export interface IntakeProfileFields {
   subject?: string | null;
   service_id?: string | null;
@@ -71,8 +80,24 @@ function isLevel(v: any): v is AssessedLevel {
   return LEVEL_VALUES.includes(v);
 }
 
-function isDuration(v: any): v is DurationMinutes {
-  return DURATION_VALUES.includes(v);
+/**
+ * Safely normalize a model-returned duration into the numeric `DurationMinutes`
+ * domain type. Accepts the canonical string representation (e.g. '30') produced
+ * by the string-enum schema, and — for backward compatibility with any caller
+ * that still supplies a number — the numeric form too. Membership is validated
+ * explicitly against `DURATION_VALUES`; never a blind `Number()` cast.
+ * Any non-matching value returns `null` (fail closed).
+ */
+export function normalizeDuration(v: any): DurationMinutes | null {
+  if (typeof v === 'string') {
+    if (!/^\d+$/.test(v.trim())) return null;
+    const n = Number(v.trim());
+    return DURATION_VALUES.includes(n as DurationMinutes) ? (n as DurationMinutes) : null;
+  }
+  if (typeof v === 'number') {
+    return DURATION_VALUES.includes(v as DurationMinutes) ? (v as DurationMinutes) : null;
+  }
+  return null;
 }
 
 function sanitizeStringArray(v: any): string[] | null {
@@ -115,7 +140,7 @@ export function validateIntakeOutput(raw: any): ValidationResult {
     use_case: typeof p.use_case === 'string' ? p.use_case.trim().slice(0, 300) : null,
     timeline: typeof p.timeline === 'string' ? p.timeline.trim().slice(0, 200) : null,
     previous_experience: typeof p.previous_experience === 'string' ? p.previous_experience.trim().slice(0, 400) : null,
-    preferred_duration: isDuration(p.preferred_duration) ? p.preferred_duration : null,
+    preferred_duration: normalizeDuration(p.preferred_duration),
     special_requirements: typeof p.special_requirements === 'string' ? p.special_requirements.trim().slice(0, 400) : null,
     stated_fields: sanitizeStringArray(p.stated_fields) || [],
     inferred_fields: sanitizeStringArray(p.inferred_fields) || [],
@@ -149,7 +174,7 @@ export function validateIntakeOutput(raw: any): ValidationResult {
         specialization: a.specialization === true,
         time_sensitive: a.time_sensitive === true,
         previous_experience: typeof a.previous_experience === 'string' ? a.previous_experience.trim().slice(0, 400) : null,
-        preferred_duration: isDuration(a.preferred_duration) ? a.preferred_duration : null,
+        preferred_duration: normalizeDuration(a.preferred_duration),
       };
     }
   }
@@ -213,7 +238,7 @@ export const INTAKE_RESPONSE_SCHEMA = {
         use_case: { type: 'string' },
         timeline: { type: 'string' },
         previous_experience: { type: 'string' },
-        preferred_duration: { type: 'integer', enum: DURATION_VALUES },
+        preferred_duration: { type: 'string', enum: DURATION_ENUM_STRINGS },
         special_requirements: { type: 'string' },
         stated_fields: { type: 'array', items: { type: 'string' } },
         inferred_fields: { type: 'array', items: { type: 'string' } },
@@ -236,7 +261,7 @@ export const INTAKE_RESPONSE_SCHEMA = {
         specialization: { type: 'boolean' },
         time_sensitive: { type: 'boolean' },
         previous_experience: { type: 'string' },
-        preferred_duration: { type: 'integer', enum: DURATION_VALUES },
+        preferred_duration: { type: 'string', enum: DURATION_ENUM_STRINGS },
       },
       required: ['service_category', 'complexity', 'preparation_required', 'customization', 'specialization'],
     },
