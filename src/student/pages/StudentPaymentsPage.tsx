@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import {
@@ -6,23 +6,26 @@ import {
   CheckCircle2,
   Clock,
   AlertCircle,
-  HelpCircle,
   Plus,
   Loader2,
   Copy,
   Check,
   MessageCircle,
   ExternalLink,
-  ShieldCheck,
-  Search,
-  FileText
+  ShieldCheck
 } from 'lucide-react';
 import { useTeacherAuth } from '../../lib/auth';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/Card';
+import { Card, CardContent } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal';
-import { buildPaymentWhatsAppUrl } from '../../lib/whatsapp';
 import { StudentPageBack } from '../components/StudentPageBack';
+import { getBookingPaymentSummary } from '../../lib/paymentStatus';
+import {
+  classifyPaymentItem,
+  presentBookingPayment,
+  presentDirectPayment,
+  type PaymentTone
+} from '../paymentPresentation';
 
 export interface StudentPaymentsPageProps {
   lang?: 'en' | 'ar';
@@ -30,11 +33,12 @@ export interface StudentPaymentsPageProps {
 }
 
 export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPageProps) {
-  const { session, user } = useTeacherAuth();
+  const { session, loading: authLoading } = useTeacherAuth();
   const [payments, setPayments] = useState<any[]>([]);
-  const [pendingBookings, setPendingBookings] = useState<any[]>([]);
+  const [allBookings, setAllBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [authError, setAuthError] = useState(false);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
   // Claim modal state
@@ -47,26 +51,42 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
     try {
       setLoading(true);
       setError(null);
+      setAuthError(false);
       const token = session?.access_token;
-      if (!token) return;
+
+      // Explicit, actionable session state. Never silently fall through to an
+      // empty payment history when authentication is unavailable.
+      if (!token) {
+        setAuthError(true);
+        setPayments([]);
+        setAllBookings([]);
+        return;
+      }
 
       const [paymentsRes, bookingsRes] = await Promise.all([
         fetch('/api/student/payments', { headers: { Authorization: `Bearer ${token}` } }),
         fetch('/api/student/bookings', { headers: { Authorization: `Bearer ${token}` } })
       ]);
 
-      if (paymentsRes.ok) {
-        const pJson = await paymentsRes.json();
-        setPayments(pJson.payments || []);
+      // 401 means the session is no longer valid — surface an auth state,
+      // not a misleading "no payments" empty state.
+      if (paymentsRes.status === 401 || bookingsRes.status === 401) {
+        setAuthError(true);
+        setPayments([]);
+        setAllBookings([]);
+        return;
       }
 
-      if (bookingsRes.ok) {
-        const bJson = await bookingsRes.json();
-        const pending = (Array.isArray(bJson) ? bJson : []).filter(
-          (b: any) => b.status === 'pending'
-        );
-        setPendingBookings(pending);
+      // Treat a failed fetch as an error, never as an empty history.
+      if (!paymentsRes.ok || !bookingsRes.ok) {
+        throw new Error(isAr ? 'فشل تحميل سجل المدفوعات' : 'Unable to load payment history');
       }
+
+      const pJson = await paymentsRes.json();
+      setPayments(Array.isArray(pJson.payments) ? pJson.payments : []);
+
+      const bJson = await bookingsRes.json();
+      setAllBookings(Array.isArray(bJson) ? bJson : []);
     } catch (err: any) {
       console.error('[StudentPaymentsPage Fetch Error]', err);
       setError(err.message || (isAr ? 'فشل تحميل سجل المدفوعات' : 'Unable to load payment history'));
@@ -85,36 +105,62 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
     setTimeout(() => setCopiedKey(null), 2000);
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'confirmed':
-        return (
-          <Badge variant="success" className="px-2.5 py-0.5 text-xs flex items-center gap-1">
-            <CheckCircle2 className="w-3 h-3" />
-            <span>{isAr ? 'مؤكد ومفعل' : 'Verified & Activated'}</span>
-          </Badge>
-        );
-      case 'pending':
-        return (
-          <Badge variant="warning" className="px-2.5 py-0.5 text-xs flex items-center gap-1">
-            <Clock className="w-3 h-3" />
-            <span>{isAr ? 'قيد المراجعة' : 'Under Review'}</span>
-          </Badge>
-        );
-      case 'rejected':
-        return (
-          <Badge variant="destructive" className="px-2.5 py-0.5 text-xs flex items-center gap-1">
-            <AlertCircle className="w-3 h-3" />
-            <span>{isAr ? 'مرفوض' : 'Rejected'}</span>
-          </Badge>
-        );
-      default:
-        return <Badge variant="outline">{status}</Badge>;
+  // Booking records already fetched for this student, keyed by id, so that
+  // booking-linked payments can be reconciled with the authoritative helper.
+  const bookingById = useMemo(() => {
+    const map = new Map<string, any>();
+    for (const b of allBookings) map.set(b.id, b);
+    return map;
+  }, [allBookings]);
+
+  // Map a payment record (or its underlying booking, when available) to a calm,
+  // truthful presentation. Booking-linked payments reuse the existing
+  // authoritative `getBookingPaymentSummary` helper; package/unlinked payments
+  // use the server's own status. No new payment-status enum is invented here.
+  const getPaymentPresentation = (p: any): ReturnType<typeof presentDirectPayment> => {
+    if (classifyPaymentItem(p) === 'booking') {
+      const booking = bookingById.get(p.bookingId || p.booking_id);
+      if (booking) {
+        const summary = getBookingPaymentSummary(booking, payments);
+        return presentBookingPayment(summary.payment_status, isAr);
+      }
     }
+    return presentDirectPayment(p.status, isAr);
   };
 
-  const verifiedCount = payments.filter(p => p.status === 'confirmed').length;
-  const pendingCount = payments.filter(p => p.status === 'pending').length;
+  const toneToBadgeVariant: Record<PaymentTone, 'success' | 'warning' | 'destructive' | 'outline'> = {
+    success: 'success',
+    warning: 'warning',
+    destructive: 'destructive',
+    neutral: 'outline'
+  };
+
+  const renderPaymentBadge = (p: any) => {
+    const pres = getPaymentPresentation(p);
+    const Icon = pres.tone === 'success' ? CheckCircle2 : pres.tone === 'destructive' ? AlertCircle : Clock;
+    return (
+      <Badge variant={toneToBadgeVariant[pres.tone]} className="px-2.5 py-0.5 text-xs flex items-center gap-1">
+        <Icon className="w-3 h-3" />
+        <span>{pres.label}</span>
+      </Badge>
+    );
+  };
+
+  // Split pending lessons into those still needing a claim and those already
+  // awaiting verification, so we never show "payment needed" for a booking
+  // whose claim was already submitted, and never show "awaiting verification"
+  // for a booking with no claim.
+  const pendingLessons = allBookings.filter(b => b.status === 'pending');
+  const awaitingClaim = pendingLessons.filter(b => {
+    const s = getBookingPaymentSummary(b, payments);
+    return s.isUnpaid || s.isRejected;
+  });
+  const awaitingVerification = pendingLessons.filter(
+    b => getBookingPaymentSummary(b, payments).isAwaitingVerification
+  );
+
+  const verifiedCount = payments.filter(p => getPaymentPresentation(p).tone === 'success').length;
+  const pendingCount = payments.filter(p => getPaymentPresentation(p).tone === 'warning').length;
 
   return (
     <div className="space-y-6 sm:space-y-8 animate-fade-in text-start">
@@ -219,24 +265,24 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
         </Card>
       </div>
 
-      {/* 4. Actionable Notice for Pending Bookings (if any) */}
-      {pendingBookings.length > 0 && (
+      {/* 4. Actionable notice — lessons with NO payment claim submitted yet */}
+      {awaitingClaim.length > 0 && (
         <div className="p-4 sm:p-5 rounded-2xl bg-warning/10 border border-warning/25 space-y-3">
           <div className="flex items-center gap-2 text-warning font-semibold text-sm">
             <AlertCircle className="w-4 h-4" />
             <span>
               {isAr
-                ? `لديك ${pendingBookings.length} درس في انتظار تأكيد الدفع`
-                : `You have ${pendingBookings.length} lesson(s) awaiting payment confirmation`}
+                ? `لديك ${awaitingClaim.length} درس في انتظار تأكيد الدفع`
+                : `You have ${awaitingClaim.length} lesson(s) awaiting payment confirmation`}
             </span>
           </div>
           <p className="text-xs text-muted-foreground leading-relaxed">
             {isAr
-              ? 'يرجى إرسال الرقم المرجعي للتحويل لتأكيد حجز موعدك وضمان انضمامك للدرس.'
-              : 'Please submit your transfer reference to confirm your scheduled lesson slot.'}
+              ? 'لم يتم إرسال إثبات دفع لهذه الدروس بعد. يرجى إرسال الرقم المرجعي للتحويل لتأكيد حجز موعدك.'
+              : 'No payment claim has been submitted for these lessons yet. Please submit your transfer reference to confirm your scheduled lesson slot.'}
           </p>
           <div className="flex flex-wrap gap-2 pt-1">
-            {pendingBookings.map(b => (
+            {awaitingClaim.map(b => (
               <button
                 key={b.id}
                 onClick={() => {
@@ -253,23 +299,76 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
         </div>
       )}
 
-      {/* 5. Payments History Table / Cards */}
+      {/* 5. Informational notice — payment claims already submitted and awaiting verification */}
+      {awaitingVerification.length > 0 && (
+        <div className="p-4 sm:p-5 rounded-2xl bg-primary/5 border border-primary/20 space-y-2">
+          <div className="flex items-center gap-2 text-foreground font-semibold text-sm">
+            <Clock className="w-4 h-4 text-primary" />
+            <span>
+              {isAr
+                ? `لديك ${awaitingVerification.length} إثبات دفع قيد المراجعة`
+                : `You have ${awaitingVerification.length} payment claim(s) awaiting verification`}
+            </span>
+          </div>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            {isAr
+              ? 'تم استلام إثباتك وهو بانتظار مراجعة الأستاذ محمود. لا يلزم اتخاذ أي إجراء إضافي.'
+              : 'Your payment claim has been received and is awaiting verification by Ustadh Mahmoud. No further action is required.'}
+          </p>
+        </div>
+      )}
+
+      {/* 6. Payments History Table / Cards */}
       <div className="space-y-4">
         <h2 className="text-lg font-serif font-bold text-foreground">
           {isAr ? 'سجل العمليات السابقة' : 'Payment History'}
         </h2>
 
-        {loading ? (
+        {authLoading || loading ? (
           <div className="flex flex-col items-center justify-center py-16 gap-3">
             <Loader2 className="w-8 h-8 text-primary animate-spin" />
             <p className="text-xs sm:text-sm text-muted-foreground">
               {isAr ? 'جارٍ تحميل سجل المدفوعات...' : 'Loading payments history...'}
             </p>
           </div>
+        ) : authError ? (
+          <div className="p-6 bg-surface border border-warning/30 rounded-2xl text-center space-y-3">
+            <AlertCircle className="w-6 h-6 text-warning mx-auto" />
+            <p className="text-sm font-medium text-foreground">
+              {isAr ? 'جلسة الدخول غير متاحة أو منتهية' : 'Your session is unavailable or has expired'}
+            </p>
+            <p className="text-xs text-muted-foreground max-w-md mx-auto leading-relaxed">
+              {isAr
+                ? 'يرجى تسجيل الدخول مرة أخرى لعرض سجل مدفوعاتك. لم يتم حذف أي بيانات.'
+                : 'Please sign in again to view your payment history. No data has been lost.'}
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-1">
+              <Link
+                to="/student"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-colors cursor-pointer min-h-[44px]"
+              >
+                <span>{isAr ? 'تسجيل الدخول مرة أخرى' : 'Sign In Again'}</span>
+              </Link>
+              <button
+                type="button"
+                onClick={fetchData}
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-surface hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
+              >
+                <span>{isAr ? 'إعادة المحاولة' : 'Try Again'}</span>
+              </button>
+            </div>
+          </div>
         ) : error ? (
-          <div className="p-6 bg-surface border border-destructive/20 rounded-2xl text-center space-y-2">
+          <div className="p-6 bg-surface border border-destructive/20 rounded-2xl text-center space-y-3">
             <AlertCircle className="w-6 h-6 text-destructive mx-auto" />
             <p className="text-xs text-muted-foreground">{error}</p>
+            <button
+              type="button"
+              onClick={fetchData}
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-colors cursor-pointer min-h-[44px]"
+            >
+              <span>{isAr ? 'إعادة المحاولة' : 'Try Again'}</span>
+            </button>
           </div>
         ) : payments.length === 0 ? (
           <div className="text-center py-16 px-4 bg-surface border border-border rounded-3xl space-y-4">
@@ -311,7 +410,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
                         <span className="font-serif font-bold text-sm sm:text-base text-foreground">
                           {p.itemDescription || (isAr ? 'رسوم درس' : 'Lesson Payment')}
                         </span>
-                        {getStatusBadge(p.status)}
+                        {renderPaymentBadge(p)}
                       </div>
 
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
@@ -373,7 +472,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
         )}
       </div>
 
-      {/* 6. Payment Claim Modal */}
+      {/* 7. Payment Claim Modal */}
       {isClaimModalOpen && (
         <StudentPaymentClaimModal
           isOpen={isClaimModalOpen}
