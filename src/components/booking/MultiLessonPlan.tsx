@@ -23,6 +23,19 @@ export function canReviewLessons(requested: number, available: number, selected:
 
 const money = (amount: number, currency: string) => new Intl.NumberFormat('en-US', { style: 'currency', currency, maximumFractionDigits: 2 }).format(amount);
 
+/**
+ * Display-only date label. Parses the ISO `YYYY-MM-DD` components directly (UTC) so the
+ * label never drifts with the browser timezone — the authoritative lesson times remain the
+ * availability-provided UTC fields, never a browser-local reconstruction.
+ */
+export function formatLessonDay(date: string): string {
+  const [y, m, d] = date.split('-').map(Number);
+  if (!y || !m || !d) return date;
+  return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('en-US', {
+    weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC'
+  });
+}
+
 interface Props {
   catalog: PackageCatalogEntry[];
   serviceId: string;
@@ -92,16 +105,69 @@ export const MultiLessonPlan: React.FC<Props> = ({ catalog, serviceId, duration,
   );
 
   if (phase === 'review') return (
-    <section className="space-y-4" aria-label="Multi-lesson review">
-      <h2 className="font-serif text-xl">Review your lesson plan</h2>
-      <p>{BOOKING_SERVICES.find(s => s.id === serviceId)?.name} · {duration} minutes · {count} lessons</p>
-      <p>These are the actual times you selected ({timezone}); they are not reserved or confirmed yet.</p>
-      <ol className="list-decimal pl-6">{selected.map(({ date, slot }) => <li key={`${date}-${slot.id}`}>{date} — {slot.timeDisplay}</li>)}</ol>
-      {price && <div className="rounded-xl border border-border p-4 space-y-1"><p>Regular total: {money(price.regular, price.currency)}</p>{price.saving > 0 && <p>You save: {money(price.saving, price.currency)}</p>}<p className="font-bold">Final catalog total: {money(price.total, price.currency)}</p><p>{money(price.perLesson, price.currency)} / lesson</p></div>}
-      <p className="rounded-xl bg-amber-500/10 p-4 text-sm">Your selected times will be rechecked on the server before the lesson plan is created. Payment is not taken automatically; the plan remains pending until payment is confirmed.</p>
-      <div className="flex gap-3">
-        <button type="button" onClick={onBack} className="rounded-xl border border-border p-3">Edit selected times</button>
-        <button type="button" onClick={onConfirm} disabled={!price || selected.length !== count || Boolean(confirming)} className="rounded-xl bg-primary text-primary-foreground p-3 disabled:opacity-40">
+    <section className="space-y-5" aria-label="Multi-lesson review">
+      <header className="space-y-1">
+        <h2 className="font-serif text-xl font-medium text-foreground">Review your lessons</h2>
+        <p className="text-sm text-muted-foreground">
+          {BOOKING_SERVICES.find(s => s.id === serviceId)?.name} · {duration} min · {count} lessons
+        </p>
+      </header>
+
+      {/* 1. What was selected — the actual lesson times, grouped cleanly */}
+      <div className="rounded-2xl border border-border bg-surface p-4 space-y-2">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+          Your selected times
+        </p>
+        <ul className="divide-y divide-border-subtle">
+          {selected.map(({ date, slot }) => (
+            <li key={`${date}-${slot.id}`} className="flex items-baseline justify-between gap-3 py-2">
+              <span className="text-sm text-muted-foreground">{formatLessonDay(date)}</span>
+              <span className="text-sm font-medium text-foreground tabular-nums">{slot.timeDisplay}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="text-xs text-muted-foreground">Times shown in {timezone}</p>
+      </div>
+
+      {/* 2. Price — total first, then per-lesson, then savings (never inflate the regular price) */}
+      {price && (
+        <div className="rounded-2xl border border-border bg-surface-subtle p-4 space-y-1">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Price</p>
+          <p className="font-serif text-2xl font-bold text-foreground">
+            {money(price.total, price.currency)}{' '}
+            <span className="font-sans text-sm font-medium text-muted-foreground">total</span>
+          </p>
+          <p className="text-sm text-muted-foreground">{money(price.perLesson, price.currency)} / lesson</p>
+          {price.saving > 0 && (
+            <p className="text-sm font-medium text-success">
+              You save: {money(price.saving, price.currency)}
+              <span className="font-normal text-muted-foreground"> · regular total: {money(price.regular, price.currency)}</span>
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* 3. What happens on confirm — one line, then one clarification */}
+      <div className="space-y-1 text-sm text-muted-foreground">
+        <p>Your selected times will be checked again before the lesson plan is created.</p>
+        <p>Payment is handled separately. These times are not confirmed until the plan is created and payment is confirmed.</p>
+      </div>
+
+      {/* 4. Actions — one obvious primary CTA, edit stays secondary */}
+      <div className="flex flex-col-reverse gap-3 pt-1 sm:flex-row sm:items-center sm:justify-between">
+        <button
+          type="button"
+          onClick={onBack}
+          className="rounded-xl border border-border px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-surface-subtle"
+        >
+          Edit times
+        </button>
+        <button
+          type="button"
+          onClick={onConfirm}
+          disabled={!price || selected.length !== count || Boolean(confirming)}
+          className="rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-xs transition-colors hover:bg-primary-hover disabled:opacity-40"
+        >
           {confirming ? 'Creating plan…' : 'Confirm lesson plan'}
         </button>
       </div>

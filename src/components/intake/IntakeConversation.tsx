@@ -49,7 +49,8 @@ const copy = {
     save: 'Save my brief',
     saved: 'Saved — we will take it from here ❤️',
     err: 'Something went wrong. Please try again.',
-    unavailable: 'The assistant is unavailable right now. You can still book a free trial or message Ustadh Mahmoud.',
+    unavailableTitle: 'The learning guide is unavailable right now.',
+    unavailable: 'You can still book a lesson or message Ustadh Mahmoud directly — your learning brief stays on this page.',
     subject: 'Subject',
     goal: 'Goal',
     level: 'Current level',
@@ -74,7 +75,8 @@ const copy = {
     save: 'احفظ الملخص',
     saved: 'اتحفظ ❤️ وهنكمل من هنا',
     err: 'حصلت مشكلة، جرب تاني.',
-    unavailable: 'المساعد مش متاح دلوقتي. تقدر تحجز حصة تجريبية أو تكلم الأستاذ محمود.',
+    unavailableTitle: 'مرشد التعلّم مش متاح دلوقتي.',
+    unavailable: 'تقدر تحجز درس أو تكلم الأستاذ محمود مباشرة — وملخص احتياجك هيفضل محفوظ في الصفحة.',
     subject: 'المجال',
     goal: 'الهدف',
     level: 'المستوى الحالي',
@@ -95,6 +97,7 @@ export default function IntakeConversation({ session, lang = 'en', onCompleted }
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [aiUnavailable, setAiUnavailable] = useState(false);
   const [opening, setOpening] = useState<string>('');
   const [profile, setProfile] = useState<any>(null);
   const [recommendation, setRecommendation] = useState<PricingRecommendationView | null>(null);
@@ -150,7 +153,9 @@ export default function IntakeConversation({ session, lang = 'en', onCompleted }
 
       if (!r.ok) {
         if (data?.code === 'AI_UNAVAILABLE' || r.status === 503) {
-          setError(t.unavailable);
+          // Distinct, intentional state — the guide is genuinely unavailable (e.g. server key
+          // not configured). Not an error, not a fake reply: keep the brief flow truthful.
+          setAiUnavailable(true);
         } else {
           setError(t.err);
         }
@@ -250,6 +255,19 @@ export default function IntakeConversation({ session, lang = 'en', onCompleted }
         )}
       </div>
 
+      {aiUnavailable && (
+        <div
+          role="status"
+          className="mt-3 flex items-start gap-2.5 text-sm text-muted-foreground bg-surface-subtle border border-border rounded-lg p-3.5"
+        >
+          <Info className="w-4 h-4 mt-0.5 shrink-0 text-foreground/60" aria-hidden="true" />
+          <div className="space-y-0.5">
+            <p className="font-medium text-foreground">{t.unavailableTitle}</p>
+            <p>{t.unavailable}</p>
+          </div>
+        </div>
+      )}
+
       {error && (
         <div className="mt-3 flex items-start gap-2 text-sm text-warning bg-warning/10 rounded-lg p-3">
           <Info className="w-4 h-4 mt-0.5 shrink-0" aria-hidden="true" />
@@ -257,7 +275,7 @@ export default function IntakeConversation({ session, lang = 'en', onCompleted }
         </div>
       )}
 
-      {!isComplete && (
+      {!isComplete && !aiUnavailable && (
         <div className="mt-4 flex items-end gap-2">
           <textarea
             value={input}
