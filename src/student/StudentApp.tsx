@@ -36,6 +36,11 @@ import StudentNotificationsPage from './pages/StudentNotificationsPage';
 import StudentOffersPage from './pages/StudentOffersPage';
 import IntakeConversation from '../components/intake/IntakeConversation';
 import { StudentAuthModal } from '../components/StudentAuthModal';
+import {
+  buildStudentNotifications,
+  countUnread,
+  notificationReadStateKey
+} from './notificationsPresentation';
 
 export default function StudentApp() {
   const { user, session, isTeacherAuthenticated, userRole, signOut } = useTeacherAuth();
@@ -155,10 +160,27 @@ export default function StudentApp() {
           Authorization: `Bearer ${session.access_token}`,
         };
 
-        const [profileRes, bookingsRes, paymentsRes] = await Promise.all([
+        // Compute the unread badge from the SAME notification projection used by
+        // StudentNotificationsPage, so the badge and the list never diverge.
+        // Read state is the current per-user localStorage contract.
+        const readIds: Set<string> = (() => {
+          try {
+            const saved = localStorage.getItem(notificationReadStateKey(user?.id));
+            if (saved) {
+              const parsed = JSON.parse(saved);
+              if (Array.isArray(parsed)) return new Set<string>(parsed.map(String));
+            }
+          } catch {
+            // Safe fallback
+          }
+          return new Set<string>();
+        })();
+
+        const [profileRes, bookingsRes, paymentsRes, packagesRes] = await Promise.all([
           fetch('/api/student/me', { headers }),
           fetch('/api/student/bookings', { headers }),
-          fetch('/api/student/payments', { headers })
+          fetch('/api/student/payments', { headers }),
+          fetch('/api/student/packages', { headers })
         ]);
 
         if (profileRes.ok) {
@@ -166,29 +188,21 @@ export default function StudentApp() {
           if (isMounted) setProfile(data);
         }
 
-        // Compute pending items requiring student attention
-        let count = 0;
-
-        if (bookingsRes.ok) {
+        // Only compute a truthful badge when the authoritative inputs loaded.
+        if (bookingsRes.ok && paymentsRes.ok) {
           const bookings = await bookingsRes.json();
-          if (Array.isArray(bookings)) {
-            bookings.forEach(b => {
-              if (b.status === 'pending') count++;
-            });
-          }
-        }
+          const paymentsJson = await paymentsRes.json();
+          const packagesData = packagesRes.ok ? await packagesRes.json() : null;
 
-        if (paymentsRes.ok) {
-          const payments = await paymentsRes.json();
-          if (Array.isArray(payments)) {
-            payments.forEach(p => {
-              if (p.status === 'under_review') count++;
-            });
-          }
-        }
+          const items = buildStudentNotifications(
+            Array.isArray(bookings) ? bookings : [],
+            Array.isArray(paymentsJson?.payments) ? paymentsJson.payments : [],
+            packagesData,
+            readIds
+          );
+          const count = countUnread(items);
 
-        if (isMounted) {
-          setUnreadNotificationsCount(count);
+          if (isMounted) setUnreadNotificationsCount(count);
         }
       } catch (err) {
         console.error('Error fetching student profile & notification count:', err);
