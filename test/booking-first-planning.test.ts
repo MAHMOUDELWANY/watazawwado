@@ -49,3 +49,27 @@ describe('booking-first planning (local contract boundary)', () => {
 });
 
 function plannerAndFlow() { return read('components/booking/MultiLessonPlan.tsx') + read('components/booking/BookingFlow.tsx'); }
+
+
+
+describe('multi-lesson atomic confirmation contract', () => {
+  it('routes multi-lesson confirmation through the server endpoint only', () => {
+    const flow = read('components/booking/BookingFlow.tsx');
+    assert.match(flow, /fetch\('\/api\/student\/multi-lesson-plan'/);
+    assert.match(flow, /catalogId: selectedCatalog\.id/);
+    assert.match(flow, /lessons: selectedLessons\.map/);
+    assert.doesNotMatch(flow, /package_entitlement_id/);
+  });
+
+  it('does not enable multi-lesson confirmation when catalog data is absent', () => {
+    const flow = read('components/booking/BookingFlow.tsx');
+    assert.match(flow, /if \(!selectedCatalog\)/);
+    assert.match(flow, /This lesson plan is temporarily unavailable/);
+  });
+
+  it('keeps the display-only price calculation truthful', () => {
+    assert.deepEqual(catalogPriceSummary(row(1, 8), row(2, 15)), {
+      regular: 16, saving: 1, total: 15, perLesson: 7.5, currency: 'USD'
+    });
+  });
+});
