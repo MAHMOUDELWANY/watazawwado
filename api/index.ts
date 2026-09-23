@@ -6398,7 +6398,13 @@ app.get('/api/student/offers', verifyStudentAuth, async (req: any, res: any) => 
   }
 });
 
-// POST /api/student/offers/:id/accept — student accepts a presented offer
+// POST /api/student/offers/:id/accept — student accepts a presented offer.
+//
+// SEMANTICS (critical): accepting an offer records the student's INTENT to
+// proceed. It is NOT payment, NOT entitlement creation, and NOT proof of
+// purchase. The authoritative commercial state lives exclusively in the
+// existing package/payment architecture (package_entitlements + payments).
+// Acceptance therefore hands the student off to that existing purchase flow.
 app.post('/api/student/offers/:id/accept', rateLimit, verifyStudentAuth, async (req: any, res: any) => {
   try {
     const authUserId = req.studentUser?.auth_id;
@@ -6409,15 +6415,31 @@ app.post('/api/student/offers/:id/accept', rateLimit, verifyStudentAuth, async (
 
     const { data: offer, error } = await supabaseAdmin
       .from('learning_offers')
-      .select('id, auth_user_id, status')
+      .select('id, auth_user_id, status, approved_price_usd, offer')
       .eq('id', req.params.id)
       .maybeSingle();
 
     if (error || !offer || offer.auth_user_id !== authUserId) {
       return res.status(404).json({ error: 'Offer not found.' });
     }
+
+    // Acceptance is idempotent and never implies payment.
+    const responseBody = {
+      success: true,
+      status: 'accepted',
+      // Explicit: acceptance != purchase == false.
+      purchaseCompleted: false,
+      purchaseRequired: true,
+      /** The existing purchase flow remains authoritative. */
+      nextStep: {
+        path: '/student/packages',
+        kind: 'existing_package_purchase',
+        message: 'Your offer is accepted. To activate lessons and credits, complete the existing package purchase and payment verification flow.',
+      },
+    };
+
     if (offer.status === 'accepted') {
-      return res.json({ success: true, status: 'accepted', isIdempotent: true });
+      return res.json({ ...responseBody, isIdempotent: true });
     }
     if (offer.status !== 'offered') {
       return res.status(409).json({ error: 'This offer can no longer be accepted.' });
@@ -6431,7 +6453,7 @@ app.post('/api/student/offers/:id/accept', rateLimit, verifyStudentAuth, async (
 
     if (updErr) return res.status(500).json({ error: 'Could not accept the offer.' });
 
-    return res.json({ success: true, status: 'accepted' });
+    return res.json(responseBody);
   } catch (err: any) {
     console.error('[POST /api/student/offers/:id/accept Error]', err);
     return res.status(500).json({ error: 'Failed to accept offer.' });

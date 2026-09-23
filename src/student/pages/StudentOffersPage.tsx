@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { Loader2, CheckCircle2, Clock, Sparkles, Info } from 'lucide-react';
+import { Loader2, CheckCircle2, Clock, Sparkles, Info, ArrowRight } from 'lucide-react';
 import { analyticsRepository } from '../../lib/analyticsRepository';
 
 /**
@@ -74,8 +74,7 @@ export default function StudentOffersPage({ session, lang = 'en' }: StudentOffer
       if (r.ok) {
         analyticsRepository.logEvent('offer_accepted', {});
         setOffers((prev) => prev.map((o) => (o.id === id ? { ...o, status: 'accepted' } : o)));
-      }
-    } finally {
+      }    } finally {
       setAccepting(null);
     }
   };
@@ -148,7 +147,7 @@ export default function StudentOffersPage({ session, lang = 'en' }: StudentOffer
                 </div>
                 {o.status === 'accepted' ? (
                   <span className="inline-flex items-center gap-1 text-success text-sm">
-                    <CheckCircle2 className="w-4 h-4" /> {isAr ? 'مقبول' : 'Accepted'}
+                    <CheckCircle2 className="w-4 h-4" /> {isAr ? 'تم قبول العرض' : 'Offer accepted'}
                   </span>
                 ) : (
                   <button
@@ -161,6 +160,26 @@ export default function StudentOffersPage({ session, lang = 'en' }: StudentOffer
                   </button>
                 )}
               </div>
+
+              {o.status === 'accepted' && (
+                <div className="mt-3 text-sm rounded-lg bg-muted/60 p-3 border border-border-subtle">
+                  <p className="text-foreground font-medium">
+                    {isAr ? 'الخطوة التالية: إتمام الحجز والدفع' : 'Next step: complete purchase & payment'}
+                  </p>
+                  <p className="text-muted-foreground mt-1">
+                    {isAr
+                      ? 'قبولك للعرض يسجّل رغبتك فقط. لتفعيل الحصص والرصيد، أكمل شراء الباقة وتأكيد الدفع عبر صفحة الباقات.'
+                      : 'Accepting records your intent only. To activate lessons and credits, complete the package purchase and payment verification in the Packages page.'}
+                  </p>
+                  <a
+                    href="/student/packages"
+                    className="inline-flex items-center gap-1 mt-2 text-primary hover:underline font-medium"
+                  >
+                    <ArrowRight className="w-4 h-4" />
+                    {isAr ? 'إلى الباقات والدفع' : 'Go to Packages & payment'}
+                  </a>
+                </div>
+              )}
 
               {hasOffer && (
                 <div className="mt-3 text-sm text-muted-foreground border-t border-border-subtle pt-3">

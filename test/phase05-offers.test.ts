@@ -21,8 +21,19 @@ describe('Phase 05 — Offers & Discounts', () => {
     assert.equal(o, null);
   });
 
-  it('computes a real package saving for multi-lesson bundles', () => {
-    const o = computeOffer({ approvedPriceUsd: 8, durationMinutes: 60, lessonCount: 8 });
+  it('applies NO discount by default (unapproved magnitudes are off)', () => {
+    // A multi-lesson bundle and a first lesson must BOTH yield no discount
+    // until Mahmoud approves explicit business magnitudes.
+    assert.equal(computeOffer({ approvedPriceUsd: 8, durationMinutes: 60, lessonCount: 8 }), null);
+    assert.equal(computeOffer({ approvedPriceUsd: 8, durationMinutes: 60, isFirstLesson: true }), null);
+    assert.equal(computeOffer({ approvedPriceUsd: 8, durationMinutes: 60, isReturningStudent: true }), null);
+  });
+
+  it('computes a real package saving when magnitudes are explicitly supplied', () => {
+    const o = computeOffer({
+      approvedPriceUsd: 8, durationMinutes: 60, lessonCount: 8,
+      config: { packagePercentPerExtraLesson: 0.03, packageMaxPercent: 0.2 },
+    });
     assert.ok(o);
     assert.equal(o!.kind, 'package_savings');
     assert.ok(o!.discount_usd > 0);
@@ -31,14 +42,20 @@ describe('Phase 05 — Offers & Discounts', () => {
   });
 
   it('caps the package discount at the configured maximum', () => {
-    const o = computeOffer({ approvedPriceUsd: 12, durationMinutes: 60, lessonCount: 100 });
+    const o = computeOffer({
+      approvedPriceUsd: 12, durationMinutes: 60, lessonCount: 100,
+      config: { packagePercentPerExtraLesson: 0.03, packageMaxPercent: 0.2 },
+    });
     assert.ok(o);
     // max 20% → discount <= 2.40
     assert.ok(o!.discount_usd <= 2.4 + 1e-9);
   });
 
   it('never yields a zero or negative final price', () => {
-    const o = computeOffer({ approvedPriceUsd: 0.01, durationMinutes: 30, lessonCount: 12 });
+    const o = computeOffer({
+      approvedPriceUsd: 0.01, durationMinutes: 30, lessonCount: 12,
+      config: { packagePercentPerExtraLesson: 0.03, packageMaxPercent: 0.2 },
+    });
     // either null or strictly positive final price
     if (o) assert.ok(o.final_price_usd > 0);
   });
@@ -80,7 +97,10 @@ describe('Phase 05 — Offers & Discounts', () => {
   });
 
   it('includes truthful bilingual explanations', () => {
-    const o = computeOffer({ approvedPriceUsd: 8, durationMinutes: 60, lessonCount: 4 });
+    const o = computeOffer({
+      approvedPriceUsd: 8, durationMinutes: 60, lessonCount: 4,
+      config: { packagePercentPerExtraLesson: 0.03, packageMaxPercent: 0.2 },
+    });
     assert.ok(o);
     assert.ok(o!.explanation_en.length > 0);
     assert.ok(o!.explanation_ar.length > 0);

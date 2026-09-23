@@ -55,6 +55,7 @@ const t = {
     err: 'Something went wrong.',
     reload: 'Refresh',
     noPrice: 'No deterministic price — adjust to set an explicit approved amount.',
+    noDeterministic: 'A manual approved price is required. Use "Adjust price" to set it.',
     subject: 'Subject', goal: 'Goal', level: 'Level', target: 'Target',
     skills: 'Focus', useCase: 'Use case', timeline: 'Timeline', duration: 'Duration',
   },
@@ -80,6 +81,7 @@ const t = {
     err: 'حدث خطأ.',
     reload: 'تحديث',
     noPrice: 'لا يوجد سعر حتمي — عدّل لتحديد سعر معتمد.',
+    noDeterministic: 'السعر المعتمد اليدوي مطلوب. استخدم «تعديل السعر» لتحديده.',
     subject: 'المجال', goal: 'الهدف', level: 'المستوى', target: 'المستهدف',
     skills: 'التركيز', useCase: 'الاستخدام', timeline: 'التوقيت', duration: 'المدة',
   },
@@ -109,6 +111,10 @@ export default function IntakeReviewPanel({ lang, apiFetch }: IntakeReviewPanelP
   }, [apiFetch]);
 
   React.useEffect(() => { load(); }, [load]);
+
+  // Approve is only meaningful when a deterministic price exists. The backend
+  // guard remains authoritative; this purely prevents a misleading UI action.
+  const canApprove = selected?.pricing_recommendation?.recommended_price_usd != null;
 
   const submitReview = async (action: 'approve' | 'adjust' | 'request_more_info') => {
     if (!selected) return;
@@ -261,8 +267,9 @@ export default function IntakeReviewPanel({ lang, apiFetch }: IntakeReviewPanelP
                 <div className="flex flex-wrap gap-2 mt-4">
                   <button
                     onClick={() => submitReview('approve')}
-                    disabled={!!busy}
-                    className="h-10 px-4 rounded-lg bg-primary text-primary-foreground hover:bg-primary-hover text-sm font-medium inline-flex items-center gap-2 disabled:opacity-50"
+                    disabled={!!busy || !canApprove}
+                    title={!canApprove ? c.noDeterministic : undefined}
+                    className="h-10 px-4 rounded-lg bg-primary text-primary-foreground hover:bg-primary-hover text-sm font-medium inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {busy === 'approve' ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
                     {c.approve}

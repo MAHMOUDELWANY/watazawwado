@@ -57,10 +57,16 @@ export interface OfferInput {
   };
 }
 
+/**
+ * Business magnitudes are NOT yet approved. Therefore ALL discount
+ * magnitudes default to 0 (off). The framework stays in place and can be
+ * activated the moment Mahmoud approves explicit numbers — but no
+ * unapproved discount can ever be applied by default.
+ */
 const DEFAULT_CONFIG = {
-  firstLessonPercent: 0, // default OFF until business confirms
-  packagePercentPerExtraLesson: 0.03,
-  packageMaxPercent: 0.20,
+  firstLessonPercent: 0,
+  packagePercentPerExtraLesson: 0,
+  packageMaxPercent: 0,
   returningStudentPercent: 0,
 };
 

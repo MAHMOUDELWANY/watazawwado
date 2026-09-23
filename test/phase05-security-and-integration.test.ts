@@ -81,6 +81,19 @@ describe('Phase 05 — Security & Integration (source-verified)', () => {
     it('offer acceptance verifies ownership server-side', () => {
       assert.ok(api.includes('offer.auth_user_id !== authUserId'));
     });
+    it('acceptance does NOT imply payment/entitlement (accepted != paid)', () => {
+      const accept = api.slice(
+        api.indexOf("app.post('/api/student/offers/:id/accept'"),
+        api.indexOf("// --------------------------------------------------------------------\n// TEACHER REVIEW")
+      );
+      assert.ok(accept.includes('purchaseCompleted: false'), 'accept must explicitly report purchase not completed');
+      assert.ok(accept.includes('purchaseRequired: true'), 'accept must indicate purchase is still required');
+      assert.ok(accept.includes('existing_package_purchase'), 'accept must hand off to the existing purchase flow');
+      // Must NOT create entitlements or touch the credit/payment tables.
+      assert.ok(!accept.includes('package_entitlements'), 'accept must not create entitlements');
+      assert.ok(!accept.includes('package_credit_ledger'), 'accept must not touch the ledger');
+      assert.ok(!accept.includes(".from('payments')"), 'accept must not create payments');
+    });
     it('intake read verifies ownership server-side', () => {
       assert.ok(api.includes("if (intake.auth_user_id !== authUserId) return res.status(404)"));
     });
