@@ -5687,51 +5687,43 @@ app.get('/api/student/packages', verifyStudentAuth, async (req: any, res: any) =
     const authorizedLearners = await getAuthorizedLearnersForStudent(supabaseAdmin, req);
 
     if (!supabaseAdmin) {
-      return res.json({
+      // The server/DB package catalog is the SINGLE source of truth for package
+      // prices, currency and lesson counts. When it is unavailable we MUST NOT
+      // fabricate package rows or prices. Return a truthful unavailable state.
+      console.warn('[GET /api/student/packages] Supabase unavailable — no synthetic catalog returned.');
+      return res.status(503).json({
+        error: 'Packages are temporarily unavailable. Please try again shortly.',
+        error_ar: 'الباقات غير متاحة حالياً. حاول مرة أخرى بعد قليل.',
+        code: 'PACKAGE_CATALOG_UNAVAILABLE',
+        catalogAvailable: false,
         entitlements: [],
-        catalog: [
-          {
-            id: 'catalog-4-lessons',
-            package_type: 'monthly',
-            name: '4-Lesson Foundation Package',
-            lesson_count: 4,
-            price_amount: 80,
-            currency: 'USD',
-            is_active: true,
-            description: '4 focused 1-on-1 private lessons with Ustadh Mahmoud. Flexible scheduling.'
-          },
-          {
-            id: 'catalog-8-lessons',
-            package_type: 'monthly',
-            name: '8-Lesson Comprehensive Package',
-            lesson_count: 8,
-            price_amount: 150,
-            currency: 'USD',
-            is_active: true,
-            description: '8 private lessons covering recitation, Tajweed rules, and personalized retention.'
-          },
-          {
-            id: 'catalog-12-lessons',
-            package_type: 'quarterly',
-            name: '12-Lesson Intensive Package',
-            lesson_count: 12,
-            price_amount: 215,
-            currency: 'USD',
-            is_active: true,
-            description: '12 private sessions for deep memorization and consistent mastery.'
-          }
-        ],
+        catalog: [],
         creditSummary: { totalRemaining: 0, totalPurchased: 0, totalUsed: 0 },
-        learners: authorizedLearners
+        learners: [],
       });
     }
 
-    // 1. Fetch available package catalog
-    const { data: catalogData } = await supabaseAdmin
+    // 1. Fetch available package catalog (authoritative source of truth)
+    const { data: catalogData, error: catalogError } = await supabaseAdmin
       .from('package_catalog')
       .select('id, package_type, name, lesson_count, price_amount, currency, is_active, eligibility_rules')
       .eq('is_active', true)
       .order('price_amount', { ascending: true });
+
+    if (catalogError) {
+      // Catalog read failed: fail truthfully, never fabricate prices.
+      console.warn('[GET /api/student/packages] Catalog read failed:', catalogError.message);
+      return res.status(503).json({
+        error: 'Packages are temporarily unavailable. Please try again shortly.',
+        error_ar: 'الباقات غير متاحة حالياً. حاول مرة أخرى بعد قليل.',
+        code: 'PACKAGE_CATALOG_UNAVAILABLE',
+        catalogAvailable: false,
+        entitlements: [],
+        catalog: [],
+        creditSummary: { totalRemaining: 0, totalPurchased: 0, totalUsed: 0 },
+        learners: authorizedLearners,
+      });
+    }
 
     // 2. Build entitlement filter for purchaser account and all authorized learners
     const authorizedStudentIds = authorizedLearners.map(l => l.id).filter(Boolean);
