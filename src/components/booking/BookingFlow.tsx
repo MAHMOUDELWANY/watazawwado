@@ -37,6 +37,7 @@ interface BookingFlowProps {
   teacherId?: string;
   activeEntitlements?: PackageEntitlementEntry[];
   catalog?: PackageCatalogEntry[];
+  accessToken?: string;
 }
 
 export const BookingFlow: React.FC<BookingFlowProps> = ({
@@ -60,7 +61,8 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   studentEmail,
   teacherId,
   activeEntitlements = [],
-  catalog = []
+  catalog = [],
+  accessToken
 }) => {
   const isEn = lang === 'en';
 
@@ -73,6 +75,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   const [manageModalOpen, setManageModalOpen] = useState<boolean>(false);
   const [manageRefCode, setManageRefCode] = useState<string>('');
   const [multiConfirming, setMultiConfirming] = useState(false);
+  const [multiPlanCreated, setMultiPlanCreated] = useState(false);
 
   // Progressive Form State
   const [formData, setFormData] = useState<BookingFormData>(() => {
@@ -208,7 +211,10 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   };
 
   const handleConfirmMultiLesson = async () => {
-    if (lessonCount <= 1 || selectedLessons.length !== lessonCount) return;
+    if (multiPlanCreated || !isAuthenticatedStudent || !accessToken || formData.mode !== 'regular' ||
+        lessonCount <= 1 || selectedLessons.length !== lessonCount ||
+        new Set(selectedLessons.map(lesson => lesson.date)).size !== lessonCount ||
+        selectedLessons.some(({ slot }) => !slot.utcStartIso || !slot.utcEndIso)) return;
     const selectedCatalog = catalog.find(c => c.package_type === 'weekly' && c.lesson_count === lessonCount && c.is_active);
     if (!selectedCatalog) {
       setValidationError('This lesson plan is temporarily unavailable.');
@@ -219,7 +225,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     try {
       const result = await fetch('/api/student/multi-lesson-plan', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
         body: JSON.stringify({
           serviceId: formData.serviceId,
           durationMinutes: formData.duration,
@@ -228,17 +234,11 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
           lessonCount,
           expectedTotalUsd: selectedCatalog.price_amount,
           currency: selectedCatalog.currency,
-          lessons: selectedLessons.map(({ date, slot }) => {
-            const [h, m] = slot.time24.split(':').map(Number);
-            const local = new Date(date + 'T00:00:00');
-            local.setHours(h, m, 0, 0);
-            const start = local.toISOString();
-            return {
-              scheduledStart: start,
-              scheduledEnd: new Date(local.getTime() + formData.duration * 60000).toISOString()
-            };
-          }),
-          contactName: studentName || formData.name || '',
+          lessons: selectedLessons.map(({ slot }) => ({
+            scheduledStart: slot.utcStartIso,
+            scheduledEnd: slot.utcEndIso
+          })),
+          contactName: studentName || formData.studentName || formData.childName || '',
           contactEmail: studentEmail || '',
           contactWhatsapp: formData.whatsapp || '',
           notes: formData.notes || ''
@@ -248,7 +248,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
       if (!result.ok || !data.success) {
         throw new Error(data.error || 'The selected times could not be secured. Please choose again.');
       }
-      setStep(6);
+      setMultiPlanCreated(true);
       setValidationError(null);
     } catch (err: any) {
       setValidationError(err?.message || 'The selected lesson times could not be secured.');
@@ -300,7 +300,13 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
       }`}
     >
       {/* Confirmation State */}
-      {confirmation ? (
+      {multiPlanCreated ? (
+        <section role="status" className="space-y-4">
+          <h2 className="font-serif text-xl">Lesson plan request created</h2>
+          <p>Your selected times were submitted to the server. Payment is not confirmed by this screen; check your Payments and My Lessons pages for the current status.</p>
+          <button type="button" onClick={handleResetForNewBooking} className="rounded-xl bg-primary p-3 text-primary-foreground">Return to student portal</button>
+        </section>
+      ) : confirmation ? (
         <BookingConfirmation
           confirmation={confirmation}
           onOpenManageModal={handleOpenManageModal}
@@ -480,7 +486,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                   <MultiLessonPlan catalog={catalog} serviceId={formData.serviceId} duration={formData.duration}
                     timezone={formData.timezone} teacherId={formData.teacherId} count={lessonCount}
                     onCount={setLessonCount} selected={selectedLessons} onSelected={setSelectedLessons}
-                    phase="review" onBack={handleBack} />
+                    phase="review" onBack={handleBack} onConfirm={handleConfirmMultiLesson} confirming={multiConfirming} />
                 ) : <StepReviewSummary
                   formData={formData}
                   onGoToStep={handleGoToStep}
