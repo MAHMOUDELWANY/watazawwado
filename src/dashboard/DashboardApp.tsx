@@ -17,7 +17,8 @@ import {
   Sun,
   ShieldCheck,
   Globe,
-  Clock
+  Clock,
+  ClipboardCheck
 } from 'lucide-react';
 import { useTheme } from "../components/ThemeProvider";
 import TodayPage from './pages/TodayPage';
@@ -29,6 +30,7 @@ import StudentDetailPage from './pages/StudentDetailPage';
 import BookingsPage from './pages/BookingsPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import SettingsPage from './pages/SettingsPage';
+import IntakeReviewPage from './pages/IntakeReviewPage';
 import { TeacherAuthDiagnosticPanel } from './components/TeacherAuthDiagnosticPanel';
 import { Language } from '../booking/types';
 
@@ -132,6 +134,7 @@ export function DashboardApp() {
     { name: lang === 'ar' ? 'الجدول القادم' : 'Upcoming', path: '/dashboard/upcoming', icon: Calendar },
     { name: lang === 'ar' ? 'التجريبية' : 'Trials', path: '/dashboard/trials', icon: Sparkles },
     { name: lang === 'ar' ? 'التواصل' : 'Leads', path: '/dashboard/leads', icon: UserPlus },
+    { name: lang === 'ar' ? 'مراجعة الطلبات' : 'Intake Review', path: '/dashboard/intakes', icon: ClipboardCheck },
     { name: lang === 'ar' ? 'الطلاب' : 'Students', path: '/dashboard/students', icon: Users },
     { name: lang === 'ar' ? 'الحجوزات' : 'Bookings', path: '/dashboard/bookings', icon: BookOpen },
     { name: lang === 'ar' ? 'التقارير' : 'Analytics', path: '/dashboard/analytics', icon: TrendingUp },
@@ -309,6 +312,7 @@ export function DashboardApp() {
               <Route path="/upcoming" element={<UpcomingPage />} />
               <Route path="/trials" element={<TrialsPage />} />
               <Route path="/leads" element={<LeadsPage />} />
+              <Route path="/intakes" element={<IntakeReviewPage />} />
               <Route path="/students" element={<StudentsPage />} />
               <Route path="/students/:id" element={<StudentDetailPage />} />
               <Route path="/bookings" element={<BookingsPage />} />

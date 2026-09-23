@@ -40,6 +40,28 @@ import {
 } from '../server/notifications/reminderEngine.js';
 import { processIntegrationJobs } from '../server/integrations/worker.js';
 import { getEmailConfigStatus } from '../server/notifications/emailService.js';
+import {
+  evaluateAssessment,
+  findForbiddenPricingFields,
+  SUPPORTED_DURATIONS,
+  type ServiceAssessment
+} from '../server/pricing/pricingEngine.js';
+import { computeOffer, isLegitimateOffer } from '../server/pricing/offers.js';
+import {
+  runIntakeTurn,
+  parseModelJson,
+  INTAKE_OPENING_AR,
+  INTAKE_OPENING_EN,
+  type IntakeTurnMessage
+} from '../server/intake/intakeService.js';
+import {
+  validateIntakeOutput
+} from '../server/intake/intakeSchema.js';
+import {
+  resolveOfferPurchasability,
+  CUSTOM_OFFER_PURCHASE_UNAVAILABLE,
+  type CatalogEntry
+} from '../server/pricing/offerPurchasability.js';
 
 dotenv.config();
 
@@ -6172,6 +6194,632 @@ app.get('/api/student/payments', verifyStudentAuth, async (req: any, res: any) =
   }
 });
 
+
+// ====================================================================
+// PHASE 05 — AI INTAKE + INTELLIGENT PRICING
+// Flow: understand → assess → summarize → recommend → teacher review → offer
+//
+// Security model (unchanged from the rest of the app):
+//   * Student identity derives ONLY from verifyStudentAuth (auth.uid() →
+//     students.auth_user_id → students.id). Browser-supplied ids are ignored.
+//   * All writes to intake/offer tables happen server-side (service_role).
+//   * RLS remains SELECT-only for owners; no widening.
+// ====================================================================
+
+const INTAKE_MAX_MESSAGES = 40;
+
+/** Normalise a transcript entry. */
+function coerceTurnMessages(raw: any): IntakeTurnMessage[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .filter((m) => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string')
+    .slice(-INTAKE_MAX_MESSAGES)
+    .map((m) => ({ role: m.role, content: String(m.content).slice(0, 4000) }));
+}
+
+// GET /api/intake/opening — brand-appropriate opening line (public, no PII)
+app.get('/api/intake/opening', (_req, res) => {
+  res.json({ ar: INTAKE_OPENING_AR, en: INTAKE_OPENING_EN });
+});
+
+// POST /api/intake/turn — run ONE adaptive intake turn (student-authenticated)
+// The response contains a NON-authoritative draft: reply, profile, assessment,
+// and the deterministic pricing recommendation. Nothing here is a final offer.
+app.post('/api/intake/turn', rateLimit, verifyStudentAuth, async (req: any, res: any) => {
+  try {
+    if (!process.env.GEMINI_API_KEY) {
+      return res.status(503).json({ error: 'AI service unavailable.', code: 'AI_UNAVAILABLE' });
+    }
+
+    const messages = coerceTurnMessages(req.body?.messages);
+    if (messages.length === 0 || messages[messages.length - 1].role !== 'user') {
+      return res.status(400).json({ error: 'A non-empty conversation ending with a user message is required.' });
+    }
+
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    const result = await runIntakeTurn(messages, ai);
+
+    if (!result.ok || !result.output) {
+      // Fail closed: never surface model text as authoritative.
+      console.warn('[POST /api/intake/turn] Invalid model output:', result.errors);
+      return res.status(502).json({ error: 'The assistant could not produce a valid response. Please try again.', code: 'INVALID_AI_OUTPUT' });
+    }
+
+    const output = result.output;
+
+    // Deterministic pricing — the model never provides numbers.
+    let recommendation = null;
+    if (output.assessment) {
+      const forbidden = findForbiddenPricingFields(output.assessment as any);
+      if (forbidden.length > 0) {
+        return res.status(502).json({ error: 'Invalid assessment payload.', code: 'FORBIDDEN_PRICING_FIELDS' });
+      }
+      recommendation = evaluateAssessment(output.assessment as ServiceAssessment);
+    }
+
+    return res.json({
+      reply: output.reply,
+      isComplete: output.is_complete,
+      nextQuestion: output.next_question || null,
+      profile: output.profile,
+      assessment: output.assessment,
+      recommendation,
+    });
+  } catch (err: any) {
+    console.error('[POST /api/intake/turn Error]', err);
+    return res.status(500).json({ error: 'Failed to process intake turn.' });
+  }
+});
+
+// POST /api/intake/complete — persist the structured intake (server-authoritative)
+app.post('/api/intake/complete', rateLimit, verifyStudentAuth, async (req: any, res: any) => {
+  try {
+    const authUserId = req.studentUser?.auth_id;
+    const learnerStudentId = req.studentUser?.student_id || null;
+
+    if (!authUserId) {
+      return res.status(401).json({ error: 'Authenticated student identity is required.' });
+    }
+
+    const rawProfile = req.body?.profile;
+    const rawAssessment = req.body?.assessment;
+    const conversation = coerceTurnMessages(req.body?.conversation);
+
+    if (!rawProfile || typeof rawProfile !== 'object') {
+      return res.status(400).json({ error: 'A structured learning profile is required.' });
+    }
+    if (!rawAssessment || typeof rawAssessment !== 'object') {
+      return res.status(400).json({ error: 'A structured service assessment is required.' });
+    }
+
+    // Re-validate through the same strict schema used for the model output.
+    const synthetic = { reply: 'ok', is_complete: true, profile: rawProfile, assessment: rawAssessment };
+    const validated = validateIntakeOutput(synthetic);
+    if (!validated.ok || !validated.value?.assessment) {
+      return res.status(400).json({ error: 'Invalid intake payload.', details: validated.errors });
+    }
+
+    // Recompute the deterministic recommendation SERVER-SIDE. Never trust a
+    // browser-supplied recommendation or price.
+    const recommendation = evaluateAssessment(validated.value.assessment);
+
+    const supabaseAdmin = getSupabaseAdminClient();
+    if (!supabaseAdmin) {
+      return res.status(503).json({ error: 'Database integration is not properly configured.' });
+    }
+
+    const { data: inserted, error } = await supabaseAdmin
+      .from('student_intakes')
+      .insert({
+        auth_user_id: authUserId,
+        learner_student_id: learnerStudentId,
+        status: recommendation.teacher_review_required ? 'awaiting_teacher_review' : 'offer_ready',
+        conversation,
+        learning_profile: validated.value.profile,
+        assessment: validated.value.assessment,
+        pricing_recommendation: recommendation,
+        service_category: recommendation.band === 'religious'
+          ? (validated.value.assessment.service_category === 'islamic_studies' ? 'islamic_studies' : 'quran')
+          : (validated.value.assessment.service_category === 'english' ? 'english' : 'arabic'),
+        teacher_review_required: recommendation.teacher_review_required,
+      })
+      .select('id, status, teacher_review_required, created_at')
+      .single();
+
+    if (error || !inserted) {
+      console.error('[POST /api/intake/complete] Insert error:', error?.message);
+      return res.status(500).json({ error: 'Could not save the intake.' });
+    }
+
+    return res.json({
+      intakeId: inserted.id,
+      status: inserted.status,
+      teacherReviewRequired: inserted.teacher_review_required,
+      recommendation,
+    });
+  } catch (err: any) {
+    console.error('[POST /api/intake/complete Error]', err);
+    return res.status(500).json({ error: 'Failed to save intake.' });
+  }
+});
+
+// --------------------------------------------------------------------
+// PHASE 05 — READ-TIME OFFER STATE (derived, never stored)
+// --------------------------------------------------------------------
+// Purchasability and purchase state are DERIVED at read time from existing
+// verified data. No column, no FK, and no catalog row is manufactured. A
+// teacher-approved CUSTOM price with no exact active-catalog carrier stays
+// approved-but-not-purchasable. Acceptance NEVER implies payment/entitlement.
+async function loadActiveCatalog(supabaseAdmin: any): Promise<CatalogEntry[]> {
+  const { data, error } = await supabaseAdmin
+    .from('package_catalog')
+    .select('id, price_amount, currency, lesson_count, is_active')
+    .eq('is_active', true);
+  if (error) {
+    console.warn('[phase05] package_catalog read failed:', error.message);
+    return [];
+  }
+  return (data || []) as CatalogEntry[];
+}
+
+async function loadActiveEntitlementCatalogIds(supabaseAdmin: any, authUserId: string): Promise<Set<string>> {
+  const set = new Set<string>();
+  if (!authUserId) return set;
+  const { data, error } = await supabaseAdmin
+    .from('package_entitlements')
+    .select('package_catalog_id, status')
+    .eq('purchaser_account_id', authUserId)
+    .eq('status', 'active');
+  if (error) {
+    console.warn('[phase05] package_entitlements read failed:', error.message);
+    return set;
+  }
+  for (const row of data || []) {
+    if (row?.package_catalog_id) set.add(row.package_catalog_id);
+  }
+  return set;
+}
+
+/**
+ * Derive the full, non-collapsed offer state for UI consumption. The five
+ * concepts stay distinct; `accepted` is never coerced into `paid` or
+ * `entitlement_active`. Every field is server-derived from verified data.
+ */
+function deriveOfferState(
+  offer: any,
+  activeCatalog: CatalogEntry[],
+  activeEntitlementCatalogIds: Set<string>
+) {
+  const purchasability = resolveOfferPurchasability(
+    { approved_price_usd: Number(offer?.approved_price_usd), currency: offer?.currency || 'USD' },
+    activeCatalog
+  );
+
+  const status = offer?.status || null;
+  const approved = offer?.approved_price_usd != null && Number(offer.approved_price_usd) > 0;
+  const accepted = status === 'accepted';
+  const entitlementActive = Boolean(
+    purchasability.purchasable &&
+      purchasability.packageCatalogId &&
+      activeEntitlementCatalogIds.has(purchasability.packageCatalogId)
+  );
+  // Payment is only ever confirmed by the existing entitlement activation flow.
+  const paid = entitlementActive;
+
+  return {
+    approved,
+    purchasable: purchasability.purchasable,
+    accepted,
+    paid,
+    entitlement_active: entitlementActive,
+    purchasability: {
+      purchasable: purchasability.purchasable,
+      package_catalog_id: purchasability.packageCatalogId,
+      reason: purchasability.reason,
+      purchase_route: purchasability.purchasable ? '/student/packages' : null,
+      message: purchasability.purchasable ? null : CUSTOM_OFFER_PURCHASE_UNAVAILABLE,
+    },
+  };
+}
+
+// GET /api/intake/:id — owner (or teacher) reads their intake + offer state
+app.get('/api/intake/:id', verifyStudentAuth, async (req: any, res: any) => {
+  try {
+    const authUserId = req.studentUser?.auth_id;
+    if (!authUserId) return res.status(401).json({ error: 'Authenticated student identity is required.' });
+
+    const supabaseAdmin = getSupabaseAdminClient();
+    if (!supabaseAdmin) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+
+    const { data: intake, error } = await supabaseAdmin
+      .from('student_intakes')
+      .select('id, auth_user_id, status, learning_profile, assessment, pricing_recommendation, teacher_review_required, created_at')
+      .eq('id', req.params.id)
+      .maybeSingle();
+
+    if (error || !intake) return res.status(404).json({ error: 'Intake not found.' });
+    // Ownership enforcement (server-side). teacher_notes are never included.
+    if (intake.auth_user_id !== authUserId) return res.status(404).json({ error: 'Intake not found.' });
+
+    const { data: offer } = await supabaseAdmin
+      .from('learning_offers')
+      .select('id, service_category, duration_minutes, approved_price_usd, teacher_adjusted, offer, status, offered_at')
+      .eq('intake_id', intake.id)
+      .in('status', ['offered', 'accepted'])
+      .maybeSingle();
+
+    return res.json({ intake, offer: offer || null });
+  } catch (err: any) {
+    console.error('[GET /api/intake/:id Error]', err);
+    return res.status(500).json({ error: 'Failed to load intake.' });
+  }
+});
+
+// GET /api/student/offers — presented offers for the authenticated student
+app.get('/api/student/offers', verifyStudentAuth, async (req: any, res: any) => {
+  try {
+    const authUserId = req.studentUser?.auth_id;
+    if (!authUserId) return res.status(401).json({ error: 'Authenticated student identity is required.' });
+
+    const supabaseAdmin = getSupabaseAdminClient();
+    if (!supabaseAdmin) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+
+    const { data, error } = await supabaseAdmin
+      .from('learning_offers')
+      .select('id, intake_id, service_category, service_id, duration_minutes, approved_price_usd, offer, status, offered_at')
+      .eq('auth_user_id', authUserId)
+      .in('status', ['offered', 'accepted'])
+      .order('offered_at', { ascending: false });
+
+    if (error) {
+      console.warn('[GET /api/student/offers] Error:', error.message);
+      return res.json({ offers: [] });
+    }
+
+    // Derive (never store) purchasability + purchase state at read time.
+    const activeCatalog = await loadActiveCatalog(supabaseAdmin);
+    const activeEntitlementCatalogIds = await loadActiveEntitlementCatalogIds(supabaseAdmin, authUserId);
+    const offers = (data || []).map((o: any) => ({
+      ...o,
+      offer_state: deriveOfferState(o, activeCatalog, activeEntitlementCatalogIds),
+    }));
+
+    return res.json({ offers });
+  } catch (err: any) {
+    console.error('[GET /api/student/offers Error]', err);
+    return res.status(500).json({ error: 'Failed to load offers.' });
+  }
+});
+
+// POST /api/student/offers/:id/accept — student accepts a presented offer.
+//
+// SEMANTICS (critical): accepting an offer records the student's INTENT to
+// proceed. It is NOT payment, NOT entitlement creation, and NOT proof of
+// purchase. The authoritative commercial state lives exclusively in the
+// existing package/payment architecture (package_entitlements + payments).
+// Acceptance therefore hands the student off to that existing purchase flow.
+app.post('/api/student/offers/:id/accept', rateLimit, verifyStudentAuth, async (req: any, res: any) => {
+  try {
+    const authUserId = req.studentUser?.auth_id;
+    if (!authUserId) return res.status(401).json({ error: 'Authenticated student identity is required.' });
+
+    const supabaseAdmin = getSupabaseAdminClient();
+    if (!supabaseAdmin) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+
+    const { data: offer, error } = await supabaseAdmin
+      .from('learning_offers')
+      .select('id, auth_user_id, status, approved_price_usd, offer')
+      .eq('id', req.params.id)
+      .maybeSingle();
+
+    if (error || !offer || offer.auth_user_id !== authUserId) {
+      return res.status(404).json({ error: 'Offer not found.' });
+    }
+
+    // Derive (never store) purchasability against real active catalog data.
+    // A custom approved price with no exact catalog carrier stays
+    // accepted-but-not-purchasable; acceptance never becomes payment.
+    const activeCatalog = await loadActiveCatalog(supabaseAdmin);
+    const activeEntitlementCatalogIds = await loadActiveEntitlementCatalogIds(supabaseAdmin, authUserId);
+    const currentState = deriveOfferState(
+      { ...offer, status: 'accepted' },
+      activeCatalog,
+      activeEntitlementCatalogIds
+    );
+
+    // Acceptance is idempotent and never implies payment.
+    const responseBody = {
+      success: true,
+      status: 'accepted',
+      // Explicit: acceptance != purchase == false.
+      purchaseCompleted: false,
+      purchaseRequired: true,
+      /** Non-collapsed, server-derived state for the UI. */
+      offer_state: currentState,
+      /** The existing purchase flow remains authoritative — ONLY when purchasable. */
+      nextStep: currentState.purchasable
+        ? {
+            path: '/student/packages',
+            kind: 'existing_package_purchase',
+            message: 'Your offer is accepted. To activate lessons and credits, complete the existing package purchase and payment verification flow.',
+          }
+        : {
+            path: null,
+            kind: 'custom_offer_purchase_deferred',
+            message: CUSTOM_OFFER_PURCHASE_UNAVAILABLE.en,
+            message_ar: CUSTOM_OFFER_PURCHASE_UNAVAILABLE.ar,
+          },
+    };
+
+    if (offer.status === 'accepted') {
+      return res.json({ ...responseBody, isIdempotent: true });
+    }
+    if (offer.status !== 'offered') {
+      return res.status(409).json({ error: 'This offer can no longer be accepted.' });
+    }
+
+    const { error: updErr } = await supabaseAdmin
+      .from('learning_offers')
+      .update({ status: 'accepted', decided_at: new Date().toISOString() })
+      .eq('id', offer.id)
+      .eq('status', 'offered');
+
+    if (updErr) return res.status(500).json({ error: 'Could not accept the offer.' });
+
+    return res.json(responseBody);
+  } catch (err: any) {
+    console.error('[POST /api/student/offers/:id/accept Error]', err);
+    return res.status(500).json({ error: 'Failed to accept offer.' });
+  }
+});
+
+// --------------------------------------------------------------------
+// TEACHER REVIEW (authoritative) — Mahmoud only
+// --------------------------------------------------------------------
+
+// GET /api/dashboard/intakes — review queue
+app.get('/api/dashboard/intakes', verifyTeacherAuth, async (req: any, res: any) => {
+  try {
+    const supabaseAdmin = getSupabaseAdminClient();
+    if (!supabaseAdmin) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+
+    const statusFilter = typeof req.query.status === 'string' ? req.query.status : null;
+    let query = supabaseAdmin
+      .from('student_intakes')
+      .select('id, auth_user_id, learner_student_id, status, service_category, learning_profile, assessment, pricing_recommendation, teacher_review_required, created_at')
+      .order('created_at', { ascending: false })
+      .limit(100);
+
+    if (statusFilter) query = query.eq('status', statusFilter);
+
+    const { data, error } = await query;
+    if (error) {
+      console.warn('[GET /api/dashboard/intakes] Error:', error.message);
+      return res.json({ intakes: [] });
+    }
+
+    // Attach any existing offers (approved data only), each enriched with
+    // read-time purchasability derived from REAL active catalog data.
+    const ids = (data || []).map((i: any) => i.id);
+    const offerMap = new Map<string, any>();
+    let activeCatalogForTeacher: CatalogEntry[] = [];
+    if (ids.length > 0) {
+      activeCatalogForTeacher = await loadActiveCatalog(supabaseAdmin);
+      const { data: offers } = await supabaseAdmin
+        .from('learning_offers')
+        .select('id, intake_id, approved_price_usd, teacher_adjusted, offer, status')
+        .in('intake_id', ids);
+      for (const o of offers || []) {
+        const purchasability = resolveOfferPurchasability(
+          { approved_price_usd: Number(o?.approved_price_usd), currency: 'USD' },
+          activeCatalogForTeacher
+        );
+        offerMap.set(o.intake_id, {
+          ...o,
+          purchasable: purchasability.purchasable,
+          purchasability: {
+            purchasable: purchasability.purchasable,
+            package_catalog_id: purchasability.packageCatalogId,
+            reason: purchasability.reason,
+            purchase_route: purchasability.purchasable ? '/student/packages' : null,
+            message: purchasability.purchasable ? null : CUSTOM_OFFER_PURCHASE_UNAVAILABLE,
+          },
+        });
+      }
+    }
+
+    return res.json({
+      intakes: (data || []).map((i: any) => ({ ...i, offer: offerMap.get(i.id) || null })),
+    });
+  } catch (err: any) {
+    console.error('[GET /api/dashboard/intakes Error]', err);
+    return res.status(500).json({ error: 'Failed to load intakes.' });
+  }
+});
+
+// GET /api/dashboard/intakes/:id — full detail incl. private notes + audit trail
+app.get('/api/dashboard/intakes/:id', verifyTeacherAuth, async (req: any, res: any) => {
+  try {
+    const supabaseAdmin = getSupabaseAdminClient();
+    if (!supabaseAdmin) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+
+    const { data: intake, error } = await supabaseAdmin
+      .from('student_intakes')
+      .select('*')
+      .eq('id', req.params.id)
+      .maybeSingle();
+    if (error || !intake) return res.status(404).json({ error: 'Intake not found.' });
+
+    const { data: offers } = await supabaseAdmin
+      .from('learning_offers')
+      .select('*')
+      .eq('intake_id', intake.id)
+      .order('created_at', { ascending: false });
+
+    const { data: events } = await supabaseAdmin
+      .from('intake_review_events')
+      .select('id, action, notes, teacher_id, created_at')
+      .eq('intake_id', intake.id)
+      .order('created_at', { ascending: false });
+
+    // Derive (never store) purchasability for each offer so the teacher UI can
+    // show approved vs purchasable distinctly. No schema change, no FK.
+    const activeCatalog = await loadActiveCatalog(supabaseAdmin);
+    const offersWithState = (offers || []).map((o: any) => {
+      const purchasability = resolveOfferPurchasability(
+        { approved_price_usd: Number(o?.approved_price_usd), currency: o?.currency || 'USD' },
+        activeCatalog
+      );
+      return {
+        ...o,
+        purchasable: purchasability.purchasable,
+        purchasability: {
+          purchasable: purchasability.purchasable,
+          package_catalog_id: purchasability.packageCatalogId,
+          reason: purchasability.reason,
+          purchase_route: purchasability.purchasable ? '/student/packages' : null,
+          message: purchasability.purchasable ? null : CUSTOM_OFFER_PURCHASE_UNAVAILABLE,
+        },
+      };
+    });
+
+    return res.json({ intake, offers: offersWithState, events: events || [] });
+  } catch (err: any) {
+    console.error('[GET /api/dashboard/intakes/:id Error]', err);
+    return res.status(500).json({ error: 'Failed to load intake detail.' });
+  }
+});
+
+// POST /api/dashboard/intakes/:id/review — approve | adjust | request_more_info
+app.post('/api/dashboard/intakes/:id/review', verifyTeacherAuth, async (req: any, res: any) => {
+  try {
+    const teacherId = req.teacherUser?.id;
+    if (!teacherId) return res.status(401).json({ error: 'Unauthorized: missing teacher identity' });
+
+    const action = req.body?.action;
+    if (!['approve', 'adjust', 'request_more_info'].includes(action)) {
+      return res.status(400).json({ error: 'Invalid action. Must be approve, adjust, or request_more_info.' });
+    }
+    const notes = typeof req.body?.notes === 'string' ? req.body.notes.slice(0, 2000) : null;
+
+    const supabaseAdmin = getSupabaseAdminClient();
+    if (!supabaseAdmin) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+
+    const { data: intake, error } = await supabaseAdmin
+      .from('student_intakes')
+      .select('*')
+      .eq('id', req.params.id)
+      .maybeSingle();
+    if (error || !intake) return res.status(404).json({ error: 'Intake not found.' });
+
+    const recommendation = intake.pricing_recommendation || {};
+    const assessment = intake.assessment || {};
+
+    // ---- request_more_info: no offer created; audit event only ----
+    if (action === 'request_more_info') {
+      await supabaseAdmin.from('intake_review_events').insert({
+        intake_id: intake.id, teacher_id: teacherId, action, notes,
+      });
+      await supabaseAdmin
+        .from('student_intakes')
+        .update({ status: 'draft', teacher_review_required: true })
+        .eq('id', intake.id);
+      return res.json({ success: true, action, status: 'draft' });
+    }
+
+    // ---- approve / adjust: create the authoritative offer ----
+    const duration = [30, 45, 60].includes(Number(req.body?.duration_minutes))
+      ? Number(req.body.duration_minutes)
+      : (assessment.preferred_duration || recommendation.duration_minutes || 60);
+
+    // Approved price: explicit teacher input for 'adjust'; recommendation for 'approve'.
+    let approvedPrice: number | null = null;
+    let teacherAdjusted = false;
+
+    if (action === 'adjust') {
+      const raw = req.body?.approved_price_usd;
+      if (typeof raw !== 'number' || !Number.isFinite(raw) || raw <= 0) {
+        return res.status(400).json({ error: 'A positive approved_price_usd is required when adjusting.' });
+      }
+      approvedPrice = Math.round((raw + Number.EPSILON) * 100) / 100;
+      teacherAdjusted = true;
+    } else {
+      if (typeof recommendation.recommended_price_usd !== 'number' || recommendation.recommended_price_usd <= 0) {
+        return res.status(409).json({
+          error: 'No deterministic price is available for this case. Use "adjust" to set an explicit approved amount.',
+          code: 'REVIEW_REQUIRED_MANUAL_PRICE',
+        });
+      }
+      approvedPrice = recommendation.recommended_price_usd;
+      teacherAdjusted = false;
+    }
+
+    // Optional legitimate offer (validated to be a real reduction).
+    let offerSnapshot: any = null;
+    const reqOffer = req.body?.offer;
+    if (reqOffer && typeof reqOffer === 'object') {
+      const candidate = computeOffer({
+        approvedPriceUsd: approvedPrice!,
+        durationMinutes: duration,
+        lessonCount: Number(reqOffer.lessonCount) || 1,
+        isFirstLesson: reqOffer.isFirstLesson === true,
+        isReturningStudent: reqOffer.isReturningStudent === true,
+      });
+      if (candidate && isLegitimateOffer(candidate)) offerSnapshot = candidate;
+    }
+
+    const serviceCategory = intake.service_category
+      || (assessment.service_category === 'english' ? 'english'
+        : assessment.service_category === 'islamic_studies' ? 'islamic_studies'
+        : assessment.service_category === 'arabic' ? 'arabic' : 'quran');
+
+    const { data: offerRow, error: offerErr } = await supabaseAdmin
+      .from('learning_offers')
+      .insert({
+        intake_id: intake.id,
+        auth_user_id: intake.auth_user_id,
+        learner_student_id: intake.learner_student_id || null,
+        service_category: serviceCategory,
+        service_id: assessment.service_id || null,
+        duration_minutes: duration,
+        recommended_price_usd: typeof recommendation.recommended_price_usd === 'number' ? recommendation.recommended_price_usd : null,
+        recommended_tier: recommendation.tier || null,
+        approved_price_usd: approvedPrice,
+        teacher_adjusted: teacherAdjusted,
+        offer: offerSnapshot,
+        status: 'offered',
+        teacher_notes: notes,
+        offered_at: new Date().toISOString(),
+      })
+      .select('id')
+      .single();
+
+    if (offerErr || !offerRow) {
+      console.error('[POST review] Offer insert error:', offerErr?.message);
+      return res.status(500).json({ error: 'Could not create the offer.' });
+    }
+
+    await supabaseAdmin.from('intake_review_events').insert({
+      intake_id: intake.id, offer_id: offerRow.id, teacher_id: teacherId, action, notes,
+    });
+    await supabaseAdmin
+      .from('student_intakes')
+      .update({ status: 'offer_ready', teacher_review_required: false })
+      .eq('id', intake.id);
+
+    return res.json({
+      success: true,
+      action,
+      offerId: offerRow.id,
+      approvedPriceUsd: approvedPrice,
+      teacherAdjusted,
+      offer: offerSnapshot,
+    });
+  } catch (err: any) {
+    console.error('[POST /api/dashboard/intakes/:id/review Error]', err);
+    return res.status(500).json({ error: 'Failed to record review.' });
+  }
+});
 
 export {
   ALLOWED_LEAD_TRANSITIONS,
