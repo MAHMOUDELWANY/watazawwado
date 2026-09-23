@@ -68,11 +68,24 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
         headers: { Authorization: `Bearer ${token}` }
       });
 
+      const json = await res.json().catch(() => ({}));
+
       if (!res.ok) {
-        throw new Error(isAr ? 'فشل تحميل بيانات الباقات' : 'Failed to load packages');
+        // The server tells us truthfully when the catalog is unavailable.
+        // NEVER fabricate packages here — surface the truthful message.
+        const unavailableAr = json?.error_ar || 'الباقات غير متاحة حالياً. حاول مرة أخرى بعد قليل.';
+        const unavailableEn = json?.error || 'Packages are temporarily unavailable. Please try again shortly.';
+        setData({
+          entitlements: [],
+          catalog: [],
+          catalogAvailable: false,
+          creditSummary: { totalRemaining: 0, totalPurchased: 0, totalUsed: 0 },
+          learners: [],
+        });
+        setError(isAr ? unavailableAr : unavailableEn);
+        return;
       }
 
-      const json = await res.json();
       setData(json);
 
       // Default selected learner to primary or first learner
@@ -207,41 +220,33 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
     }
   };
 
-  const fallbackCatalog = [
-    {
-      id: 'catalog-4-lessons',
-      name: isAr ? 'باقة التأسيس (٤ دروس)' : '4-Lesson Foundation Package',
-      lesson_count: 4,
-      price_amount: 80,
-      currency: 'USD',
-      description: isAr
-        ? '٤ دروس فردية خاصة ومباشرة مع الأستاذ محمود. مرونة كاملة في المواعيد.'
-        : '4 focused 1-on-1 private lessons with Ustadh Mahmoud. Flexible scheduling.'
-    },
-    {
-      id: 'catalog-8-lessons',
-      name: isAr ? 'باقة الإتقان (٨ دروس)' : '8-Lesson Comprehensive Package',
-      lesson_count: 8,
-      price_amount: 150,
-      currency: 'USD',
-      description: isAr
-        ? '٨ دروس تركز على تصحيح التلاوة، أحكام التجويد، والمتابعة الدورية المنتظمة.'
-        : '8 private lessons covering recitation, Tajweed rules, and personalized retention.'
-    },
-    {
-      id: 'catalog-12-lessons',
-      name: isAr ? 'باقة التثبيت والمتابعة المكثفة (١٢ درساً)' : '12-Lesson Intensive Package',
-      lesson_count: 12,
-      price_amount: 215,
-      currency: 'USD',
-      description: isAr
-        ? '١٢ جلسة تعليمية مخصصة للحفظ المتين والتقدم المنهجي المستمر.'
-        : '12 private sessions for deep memorization and consistent mastery.'
-    }
-  ];
-
-  const catalogItems = data.catalog && data.catalog.length > 0 ? data.catalog : fallbackCatalog;
+  // SERVER CATALOG ONLY. The package catalog is the single source of truth for
+  // package prices and currency. The UI must NEVER fabricate or show stale
+  // hardcoded package prices; when the server catalog is unavailable the UI
+  // renders a truthful unavailable state instead.
+  const catalogItems = Array.isArray(data.catalog) ? data.catalog : [];
   const entitlements = data.entitlements || [];
+
+  // Group the SERVER-provided catalog by its real package_type (weekly / monthly).
+  // No price is ever computed here — grouping is display-only.
+  const groupedCatalog = catalogItems.reduce((acc: Record<string, any[]>, cat: any) => {
+    const key = String(cat?.package_type || 'other').toLowerCase();
+    (acc[key] = acc[key] || []).push(cat);
+    return acc;
+  }, {});
+  const catalogGroupOrder = ['weekly', 'monthly'];
+  const catalogGroupKeys = [
+    ...catalogGroupOrder.filter((k) => groupedCatalog[k]?.length),
+    ...Object.keys(groupedCatalog).filter((k) => !catalogGroupOrder.includes(k)),
+  ];
+  const packageTypeLabel = (type: string): string => {
+    const map: Record<string, [string, string]> = {
+      weekly: ['Weekly', 'أسبوعية'],
+      monthly: ['Monthly', 'شهرية'],
+    };
+    const v = map[String(type || '').toLowerCase()];
+    return v ? (isAr ? v[1] : v[0]) : (type || '');
+  };
   const creditSummary = data.creditSummary || { totalRemaining: 0, totalPurchased: 0, totalUsed: 0 };
   const learners = Array.isArray(data.learners) ? data.learners : [];
   const hasMultipleLearners = learners.length > 1;
@@ -539,73 +544,40 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {catalogItems.map((cat: any) => {
-            const isPurchasing = purchasingCatalogId === cat.id;
-
-            return (
-              <Card
-                key={cat.id}
-                className="border-border hover:border-primary/40 transition-all flex flex-col justify-between bg-surface"
-              >
-                <CardContent className="p-6 space-y-5 flex-1 flex flex-col justify-between">
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-primary px-2.5 py-1 rounded-md bg-primary/10">
-                        {cat.lesson_count} {isAr ? 'دروس خاصة' : 'Private Lessons'}
-                      </span>
-                    </div>
-
-                    <div>
-                      <h3 className="text-lg font-serif font-bold text-foreground">
-                        {cat.name}
-                      </h3>
-                      <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                        {cat.description ||
-                          (isAr
-                            ? 'جلسات فردية مباشرة لتصحيح التلاوة، التجويد، والحفظ المستمر.'
-                            : 'Personalized private lessons for recitation, Tajweed, and retention.')}
-                      </p>
-                    </div>
-
-                    <div className="pt-2">
-                      <span className="text-3xl font-serif font-bold text-foreground">
-                        ${cat.price_amount}
-                      </span>
-                      <span className="text-xs text-muted-foreground ml-1">
-                        {cat.currency || 'USD'}
-                      </span>
-                      <div className="text-[11px] text-muted-foreground mt-0.5">
-                        ${Math.round(cat.price_amount / cat.lesson_count)} / {isAr ? 'درس' : 'lesson'}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="pt-4 border-t border-border">
-                    <button
-                      type="button"
-                      disabled={isPurchasing}
-                      onClick={() => handleSelectPackage(cat)}
-                      className="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-colors shadow-xs cursor-pointer disabled:opacity-50 min-h-[44px]"
-                    >
-                      {isPurchasing ? (
-                        <>
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                          <span>{isAr ? 'جارٍ المعالجة...' : 'Processing...'}</span>
-                        </>
-                      ) : (
-                        <>
-                          <Plus className="w-4 h-4" />
-                          <span>{isAr ? 'اختيار هذه الباقة' : 'Select Package'}</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+        {catalogItems.length === 0 ? (
+          <div
+            data-testid="packages-unavailable"
+            className="p-6 rounded-2xl bg-surface border border-border text-center text-xs sm:text-sm text-muted-foreground"
+          >
+            <AlertCircle className="w-5 h-5 mx-auto mb-2 text-muted-foreground" />
+            <p>
+              {isAr
+                ? 'الباقات غير متاحة حالياً. حاول مرة أخرى بعد قليل.'
+                : 'Packages are temporarily unavailable. Please try again shortly.'}
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-8">
+            {catalogGroupKeys.map((groupKey) => (
+              <div key={groupKey} className="space-y-3" data-testid={`package-group-${groupKey}`}>
+                <h3 className="text-sm font-semibold text-foreground">
+                  {packageTypeLabel(groupKey)}
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                  {groupedCatalog[groupKey].map((cat: any) => (
+                    <PackageCard
+                      key={cat.id}
+                      cat={cat}
+                      isAr={isAr}
+                      isPurchasing={purchasingCatalogId === cat.id}
+                      onSelect={handleSelectPackage}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* 6. Credit Activity / Ledger History Section */}
@@ -749,5 +721,96 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
         />
       )}
     </div>
+  );
+}
+
+/**
+ * PackageCard — renders ONE server-provided catalog row.
+ *
+ * Price authority: `cat.price_amount` / `cat.currency` come verbatim from the
+ * server package_catalog. Nothing here computes or overrides an authoritative
+ * price. The only client-side arithmetic is a DISPLAY-ONLY per-lesson equivalent
+ * and a transparent saving vs. single lessons, neither of which is ever sent to
+ * the server as a price.
+ */
+function PackageCard({
+  cat,
+  isAr,
+  isPurchasing,
+  onSelect,
+}: {
+  cat: any;
+  isAr: boolean;
+  isPurchasing: boolean;
+  onSelect: (cat: any) => void;
+}) {
+  const lessonCount = Number(cat?.lesson_count) || 0;
+  const price = Number(cat?.price_amount);
+  const currency = cat?.currency || 'USD';
+  const perLesson = lessonCount > 0 ? price / lessonCount : 0;
+
+  // Transparent, mathematically-real saving requires an authoritative
+  // single-lesson reference price. We only show a saving when the server row
+  // carries that reference (no invented reference price on the client).
+  const singleRef = Number(cat?.single_lesson_price ?? cat?.eligibility_rules?.single_lesson_price_usd);
+  const hasRef = Number.isFinite(singleRef) && singleRef > 0 && lessonCount > 0;
+  const saving = hasRef ? Math.round((singleRef * lessonCount - price) * 100) / 100 : 0;
+
+  return (
+    <Card className="border-border hover:border-primary/40 transition-all flex flex-col justify-between bg-surface">
+      <CardContent className="p-6 space-y-5 flex-1 flex flex-col justify-between">
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-primary px-2.5 py-1 rounded-md bg-primary/10">
+              {lessonCount} {isAr ? 'دروس خاصة' : 'Private Lessons'}
+            </span>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-serif font-bold text-foreground">{cat.name}</h3>
+            <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+              {cat.description ||
+                (isAr
+                  ? 'جلسات فردية مباشرة لتصحيح التلاوة، التجويد، والحفظ المستمر.'
+                  : 'Personalized private lessons for recitation, Tajweed, and retention.')}
+            </p>
+          </div>
+
+          <div className="pt-2">
+            <span className="text-3xl font-serif font-bold text-foreground">${price}</span>
+            <span className="text-xs text-muted-foreground ml-1">{currency}</span>
+            <div className="text-[11px] text-muted-foreground mt-0.5">
+              ${Math.round(perLesson)} / {isAr ? 'درس' : 'lesson'}
+            </div>
+            {hasRef && saving > 0 && (
+              <div className="text-[11px] font-medium text-success mt-1">
+                {isAr ? `توفير $${saving}` : `Save $${saving}`}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="pt-4 border-t border-border">
+          <button
+            type="button"
+            disabled={isPurchasing}
+            onClick={() => onSelect(cat)}
+            className="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-colors shadow-xs cursor-pointer disabled:opacity-50 min-h-[44px]"
+          >
+            {isPurchasing ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>{isAr ? 'جارٍ المعالجة...' : 'Processing...'}</span>
+              </>
+            ) : (
+              <>
+                <Plus className="w-4 h-4" />
+                <span>{isAr ? 'اختيار هذه الباقة' : 'Select Package'}</span>
+              </>
+            )}
+          </button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
