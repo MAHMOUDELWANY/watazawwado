@@ -328,12 +328,6 @@ export default function StudentApp() {
       badge: null
     },
     { 
-      name: isAr ? 'الباقات والرصيد' : 'Packages', 
-      path: '/student/packages', 
-      icon: Package,
-      badge: null
-    },
-    { 
       name: isAr ? 'المدفوعات' : 'Payments', 
       path: '/student/payments', 
       icon: CreditCard,
@@ -372,7 +366,7 @@ export default function StudentApp() {
     if (pathname.startsWith('/student/packages')) {
       return {
         title: isAr ? 'باقات الحصص والرصيد' : 'Packages & Credits',
-        subtitle: isAr ? 'رصيد الحصص المدفوعة مسبقاً والاشتراكات' : 'Prepaid lesson balances & learning plans'
+        subtitle: isAr ? 'رصيد الدروس وسجل الحساب' : 'Lesson credits and account history'
       };
     }
     if (pathname.startsWith('/student/payments')) {
@@ -749,15 +743,6 @@ export default function StudentApp() {
             <span className="text-foreground text-[10px] mt-0.5">{isAr ? 'حجز' : 'Book'}</span>
           </Link>
 
-          <Link
-            to="/student/packages"
-            className={`flex flex-col items-center justify-center py-1 px-2 text-[10px] min-h-[44px] transition-colors ${
-              location.pathname.startsWith('/student/packages') ? 'text-primary font-bold' : 'text-muted-foreground'
-            }`}
-          >
-            <Package className="w-4 h-4 mb-1" />
-            <span>{isAr ? 'الباقات' : 'Packages'}</span>
-          </Link>
 
           <Link
             to="/student/account"

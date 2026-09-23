@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BookingFormData, BookingConfirmationData, BookingMode, Language, LearnerAudience, ProficiencyLevel, PackageEntitlementEntry } from '../../booking/types';
+import { BookingFormData, BookingConfirmationData, BookingMode, Language, LearnerAudience, ProficiencyLevel, PackageEntitlementEntry, PackageCatalogEntry } from '../../booking/types';
 import { BOOKING_SERVICES } from '../../booking/mockData';
 import { bookingService } from '../../booking/bookingService';
 import { validateStep } from '../../booking/validation';
@@ -13,6 +13,7 @@ import { StepDateTime } from './StepDateTime';
 import { StepReviewSummary } from './StepReviewSummary';
 import { BookingConfirmation } from './BookingConfirmation';
 import { ManageBookingModal } from './ManageBookingModal';
+import { MultiLessonPlan, SelectedLesson } from './MultiLessonPlan';
 
 interface BookingFlowProps {
   initialServiceId?: string;
@@ -35,6 +36,7 @@ interface BookingFlowProps {
   studentEmail?: string;
   teacherId?: string;
   activeEntitlements?: PackageEntitlementEntry[];
+  catalog?: PackageCatalogEntry[];
 }
 
 export const BookingFlow: React.FC<BookingFlowProps> = ({
@@ -57,7 +59,8 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   studentName,
   studentEmail,
   teacherId,
-  activeEntitlements = []
+  activeEntitlements = [],
+  catalog = []
 }) => {
   const isEn = lang === 'en';
 
@@ -65,6 +68,8 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [confirmation, setConfirmation] = useState<BookingConfirmationData | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [lessonCount, setLessonCount] = useState(1);
+  const [selectedLessons, setSelectedLessons] = useState<SelectedLesson[]>([]);
   const [manageModalOpen, setManageModalOpen] = useState<boolean>(false);
   const [manageRefCode, setManageRefCode] = useState<string>('');
 
@@ -157,6 +162,10 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   }, [initialMode]);
 
   const updateFormData = (fields: Partial<BookingFormData>) => {
+    if ('duration' in fields || 'serviceId' in fields || 'mode' in fields || 'timezone' in fields || 'teacherId' in fields) {
+      setLessonCount(1);
+      setSelectedLessons([]);
+    }
     setFormData((prev) => ({ ...prev, ...fields }));
     setValidationError(null);
   };
@@ -164,6 +173,12 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   const currentService = BOOKING_SERVICES.find((s) => s.id === formData.serviceId);
 
   const handleNext = () => {
+    if (isAuthenticatedStudent && formData.mode === 'regular' && lessonCount > 1 && step === 5) {
+      // Multi-lesson selection is gated inside MultiLessonPlan. Never submit these
+      // slots through the single-booking RPC.
+      setStep(6);
+      return;
+    }
     const check = validateStep(step, formData, lang === 'ar');
     if (!check.isValid) {
       const firstError = Object.values(check.errors)[0];
@@ -192,6 +207,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   };
 
   const handleSubmitBooking = async () => {
+    if (lessonCount !== 1) return; // single-lesson persistence contract only
     setIsSubmitting(true);
     setValidationError(null);
     try {
@@ -351,6 +367,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                   onChangeMode={(mode) => updateFormData({ mode })}
                   onChangeDuration={(duration) => updateFormData({ duration })}
                   selectedPackageId={formData.selectedPackageId}
+                  hidePackagePurchase={isAuthenticatedStudent}
                   onSelectPackage={(selectedPackageId) => updateFormData({ selectedPackageId })}
                   activeEntitlements={activeEntitlements}
                   packageEntitlementId={formData.packageEntitlementId}
@@ -361,6 +378,12 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                   trialDisabled={trialDisabled}
                   trialDisabledReason={trialDisabledReason}
                 />
+                {isAuthenticatedStudent && formData.mode === 'regular' && (
+                  <MultiLessonPlan catalog={catalog} serviceId={formData.serviceId} duration={formData.duration}
+                    timezone={formData.timezone} teacherId={formData.teacherId} count={lessonCount}
+                    onCount={(count) => { setLessonCount(count); setSelectedLessons([]); if (count > 1) updateFormData({ packageEntitlementId: undefined, selectedPackageId: undefined }); }}
+                    selected={selectedLessons} onSelected={setSelectedLessons} phase="quantity" />
+                )}
               </motion.div>
             )}
 
@@ -372,7 +395,12 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                 exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.2 }}
               >
-                <StepDateTime
+                {isAuthenticatedStudent && formData.mode === 'regular' && lessonCount > 1 ? (
+                  <MultiLessonPlan catalog={catalog} serviceId={formData.serviceId} duration={formData.duration}
+                    timezone={formData.timezone} teacherId={formData.teacherId} count={lessonCount}
+                    onCount={setLessonCount} selected={selectedLessons} onSelected={setSelectedLessons}
+                    phase="schedule" onNext={handleNext} onBack={handleBack} />
+                ) : <StepDateTime
                   mode={formData.mode}
                   duration={formData.duration}
                   teacherId={formData.teacherId}
@@ -385,7 +413,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                   onNext={handleNext}
                   onBack={handleBack}
                   lang={lang}
-                />
+                />}
               </motion.div>
             )}
 
@@ -397,14 +425,19 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                 exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.2 }}
               >
-                <StepReviewSummary
+                {isAuthenticatedStudent && formData.mode === 'regular' && lessonCount > 1 ? (
+                  <MultiLessonPlan catalog={catalog} serviceId={formData.serviceId} duration={formData.duration}
+                    timezone={formData.timezone} teacherId={formData.teacherId} count={lessonCount}
+                    onCount={setLessonCount} selected={selectedLessons} onSelected={setSelectedLessons}
+                    phase="review" onBack={handleBack} />
+                ) : <StepReviewSummary
                   formData={formData}
                   onGoToStep={handleGoToStep}
                   onSubmit={handleSubmitBooking}
                   onBack={handleBack}
                   isSubmitting={isSubmitting}
                   lang={lang}
-                />
+                />}
               </motion.div>
             )}
           </AnimatePresence>

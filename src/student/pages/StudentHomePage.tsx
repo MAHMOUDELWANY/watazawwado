@@ -290,15 +290,15 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
         </Link>
 
         <Link
-          to="/student/packages"
+          to="/student/book"
           className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-surface border border-border hover:border-primary/40 text-foreground hover:text-primary transition-all shadow-2xs group cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
           <div className="flex items-center gap-2.5 min-w-0">
             <Package className="w-4 h-4 text-primary shrink-0" />
             <span className="text-xs sm:text-sm font-medium truncate">
-              {creditsRemaining > 0 
-                ? (isAr ? 'عرض باقتي' : 'View My Package') 
-                : (isAr ? 'استكشاف الباقات' : 'Explore Packages')}
+              {creditsRemaining > 0
+                ? (isAr ? `${creditsRemaining} رصيد درس متبقي` : `${creditsRemaining} lesson credits remaining`)
+                : (isAr ? 'احجز درساً' : 'Book a lesson')}
             </span>
           </div>
           <ArrowRight className={`w-3.5 h-3.5 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all shrink-0 ${isAr ? 'rotate-180 group-hover:-translate-x-0.5' : ''}`} />
@@ -730,10 +730,10 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                 </p>
 
                 <Link
-                  to="/student/packages"
+                  to="/student/book"
                   className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-primary/10 hover:bg-primary text-primary hover:text-primary-foreground text-xs font-semibold transition-all shadow-2xs cursor-pointer"
                 >
-                  <span>{isAr ? 'عرض تفاصيل الباقة' : 'View My Package'}</span>
+                  <span>{isAr ? 'احجز باستخدام الرصيد' : 'Book using a lesson credit'}</span>
                   <ArrowRight className={`w-3.5 h-3.5 ${isAr ? 'rotate-180' : ''}`} />
                 </Link>
               </div>
@@ -742,20 +742,20 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
               <div className="space-y-3">
                 <div className="space-y-1">
                   <h4 className="text-sm font-semibold text-foreground">
-                    {isAr ? 'لا توجد باقة نشطة' : 'No active package'}
+                    {isAr ? 'هل أنت مستعد لدرسك القادم؟' : 'Ready for your next lesson?'}
                   </h4>
                   <p className="text-xs text-muted-foreground leading-relaxed">
                     {isAr 
                       ? 'الباقات المدفوعة مسبقاً توفر تعليماً منظماً أسبوعياً أو شهرياً بأسعار مخفضة.' 
-                      : 'Prepaid packages offer structured weekly or monthly learning.'}
+                      : 'Choose what to learn and find an available time with Ustadh Mahmoud.'}
                   </p>
                 </div>
 
                 <Link
-                  to="/student/packages"
+                  to="/student/book"
                   className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-surface hover:bg-surface-subtle border border-border hover:border-primary/40 text-foreground hover:text-primary text-xs font-semibold transition-all shadow-2xs cursor-pointer"
                 >
-                  <span>{isAr ? 'استكشاف الباقات' : 'Explore Packages'}</span>
+                  <span>{isAr ? 'احجز درساً' : 'Book a lesson'}</span>
                   <ArrowRight className={`w-3.5 h-3.5 ${isAr ? 'rotate-180' : ''}`} />
                 </Link>
               </div>

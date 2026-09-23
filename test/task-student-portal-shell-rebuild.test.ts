@@ -21,7 +21,7 @@ describe('Task: Student Portal Information Architecture & Application Shell Rebu
       // Must include all core destinations
       assert.ok(studentAppSource.includes("path: '/student'"), 'Must include Overview route in navigation');
       assert.ok(studentAppSource.includes("path: '/student/lessons'"), 'Must include My Lessons route in navigation');
-      assert.ok(studentAppSource.includes("path: '/student/packages'"), 'Must include Packages route in navigation');
+      assert.ok(!studentAppSource.includes("path: '/student/packages'"), 'Packages must not be primary navigation');
       assert.ok(studentAppSource.includes("path: '/student/payments'"), 'Must include Payments route in navigation');
       assert.ok(studentAppSource.includes("path: '/student/notifications'"), 'Must include Notifications route in navigation');
       assert.ok(studentAppSource.includes("path: '/student/account'"), 'Must include Account route in navigation');
@@ -67,7 +67,7 @@ describe('Task: Student Portal Information Architecture & Application Shell Rebu
       assert.ok(studentHomeSource.includes('greetingWord'), 'Must include time-aware greeting');
       // Quick actions
       assert.ok(studentHomeSource.includes('to="/student/book"'), 'Quick actions must link to /student/book');
-      assert.ok(studentHomeSource.includes('to="/student/packages"'), 'Quick actions must link to /student/packages');
+      assert.ok(!studentHomeSource.includes('to="/student/packages"'), 'Quick actions must prioritize booking, not package shopping');
       assert.ok(studentHomeSource.includes('to="/student/lessons"'), 'Quick actions must link to /student/lessons');
       assert.ok(studentHomeSource.includes('to="/student/payments"'), 'Quick actions must link to /student/payments');
     });
