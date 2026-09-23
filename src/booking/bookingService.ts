@@ -21,9 +21,10 @@ export const bookingService = {
    * Fetches available dates and times for a given timezone.
    * Queries real server-side availability engine combining Google Calendar & Supabase.
    */
-  async getAvailability(timezone: string, duration = 30, teacherId?: string): Promise<DayAvailability[]> {
+  async getAvailability(timezone: string, duration = 30, teacherId?: string, days?: number): Promise<DayAvailability[]> {
     try {
       let url = `/api/integrations/availability?timezone=${encodeURIComponent(timezone)}&duration=${duration}`;
+      if (days !== undefined) url += `&days=${days}`;
       if (teacherId && typeof teacherId === 'string' && teacherId.trim() !== '') {
         url += `&teacherId=${encodeURIComponent(teacherId.trim())}`;
       }

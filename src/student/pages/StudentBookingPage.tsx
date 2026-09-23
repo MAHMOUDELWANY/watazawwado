@@ -3,7 +3,7 @@ import { useNavigate, useLocation, useSearchParams, Link } from 'react-router-do
 import { ArrowLeft, Loader2, AlertCircle, ShieldCheck, RefreshCw, RotateCcw, Check, Sparkles } from 'lucide-react';
 import { BookingFlow } from '../../components/booking/BookingFlow';
 import { BOOKING_SERVICES } from '../../booking/mockData';
-import { BookingFormData, BookingMode, ProficiencyLevel, LessonDuration } from '../../booking/types';
+import { BookingFormData, BookingMode, ProficiencyLevel, LessonDuration, PackageCatalogEntry } from '../../booking/types';
 import { useTeacherAuth } from '../../lib/auth';
 import { StudentPageBack } from '../components/StudentPageBack';
 
@@ -529,7 +529,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
   const [bookingsLoading, setBookingsLoading] = useState<boolean>(Boolean(accessToken));
   const [bookingsError, setBookingsError] = useState<string | null>(null);
 
-  const [packagesData, setPackagesData] = useState<{ entitlements: any[]; creditSummary: any } | null>(null);
+  const [packagesData, setPackagesData] = useState<{ entitlements: any[]; catalog: PackageCatalogEntry[]; creditSummary: any } | null>(null);
 
   // Local state for reuse interaction - ALL HOOKS UNCONDITIONALLY DECLARED AT TOP LEVEL
   const [reuseDismissed, setReuseDismissed] = useState<boolean>(false);
@@ -996,6 +996,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
               studentEmail={profile?.email}
               teacherId={profile?.assignedTeacherId || profile?.assigned_teacher_id}
               activeEntitlements={packagesData?.entitlements || []}
+              catalog={packagesData?.catalog || []}
             />
           </div>
         </BookingErrorBoundary>

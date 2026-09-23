@@ -525,6 +525,81 @@ async function verifyManagementToken(referenceCode: string, managementToken: str
 // Phase 3A: Package Catalog Integration
 // ==========================================
 
+
+/**
+ * Authenticated multi-lesson purchase plan.
+ * Server is the only authority for learner, catalog, price, availability,
+ * entitlement ownership, and booking creation.
+ */
+app.post('/api/student/multi-lesson-plan', verifyStudentAuth, async (req: any, res: any) => {
+  try {
+    const supabaseAdmin = getSupabaseAdminClient();
+    if (!supabaseAdmin) {
+      return res.status(503).json({ error: 'Database integration is not properly configured.' });
+    }
+
+    const authUserId = req.studentUser?.auth_id;
+    const studentId = req.studentUser?.student_id;
+    if (!authUserId || !studentId) {
+      return res.status(401).json({ error: 'Authenticated student profile required.' });
+    }
+
+    const {
+      serviceId, durationMinutes, studentTimezone, catalogId, lessonCount,
+      expectedTotalUsd, currency, lessons, contactName, contactEmail,
+      contactWhatsapp, notes
+    } = req.body || {};
+
+    if (!Array.isArray(lessons) || lessons.length < 2 || lessons.length !== Number(lessonCount)) {
+      return res.status(400).json({ error: 'Invalid lesson plan.' });
+    }
+
+    const { data: result, error: rpcErr } = await supabaseAdmin.rpc('create_multi_lesson_booking_plan', {
+      p_payload: {
+        student_id: studentId,
+        service_id: String(serviceId || ''),
+        duration_minutes: Number(durationMinutes),
+        student_timezone: String(studentTimezone || ''),
+        catalog_id: String(catalogId || ''),
+        lesson_count: Number(lessonCount),
+        expected_total_usd: Number(expectedTotalUsd),
+        currency: String(currency || 'USD').toUpperCase(),
+        lessons: lessons.map((l: any) => ({
+          scheduled_start: l.scheduledStart || l.scheduled_start,
+          scheduled_end: l.scheduledEnd || l.scheduled_end
+        })),
+        contact_name: String(contactName || ''),
+        contact_email: String(contactEmail || ''),
+        contact_whatsapp: contactWhatsapp ? String(contactWhatsapp) : '',
+        notes: notes ? String(notes) : ''
+      }
+    });
+
+    if (rpcErr) {
+      console.error('[Multi-lesson plan RPC]', rpcErr);
+      return res.status(409).json({ error: rpcErr.message || 'The selected lesson times are no longer available.' });
+    }
+
+    if (!result?.success || !result.entitlementId) {
+      return res.status(500).json({ error: 'Could not create the lesson plan.' });
+    }
+
+    return res.status(201).json({
+      success: true,
+      status: result.status,
+      entitlementId: result.entitlementId,
+      paymentId: result.paymentId,
+      lessonCount: result.lessonCount,
+      totalAmount: result.totalAmount,
+      currency: result.currency,
+      bookings: result.bookings
+    });
+  } catch (err: any) {
+    console.error('[Multi-lesson plan]', err);
+    return res.status(500).json({ error: 'Failed to create the lesson plan.' });
+  }
+});
+
 app.get('/api/packages', async (req, res) => {
   try {
     const supabaseAdmin = getSupabaseAdminClient();

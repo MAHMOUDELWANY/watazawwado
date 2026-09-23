@@ -17,6 +17,7 @@ interface StepLessonTypeProps {
   trialDisabled?: boolean;
   trialDisabledReason?: string;
   selectedPackageId?: string;
+  hidePackagePurchase?: boolean;
   onSelectPackage?: (id: string | undefined) => void;
   activeEntitlements?: PackageEntitlementEntry[];
   packageEntitlementId?: string;
@@ -35,6 +36,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
   trialDisabled = false,
   trialDisabledReason,
   selectedPackageId,
+  hidePackagePurchase = false,
   onSelectPackage,
   activeEntitlements = [],
   packageEntitlementId,
@@ -52,6 +54,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
   const hasActiveCredits = eligibleEntitlements.length > 0;
 
   useEffect(() => {
+    if (hidePackagePurchase) { setLoadingPackages(false); return; }
     fetch('/api/packages')
       .then((res) => res.json())
       .then((data) => {
@@ -62,15 +65,6 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
       .catch(console.error)
       .finally(() => setLoadingPackages(false));
   }, []);
-
-  // Auto-select first active entitlement if student has credits, mode is regular, and none chosen yet
-  useEffect(() => {
-    if (mode === 'regular' && hasActiveCredits && !packageEntitlementId && !selectedPackageId) {
-      if (eligibleEntitlements.length === 1) {
-        onSelectPackageEntitlement?.(eligibleEntitlements[0].id);
-      }
-    }
-  }, [mode, hasActiveCredits, packageEntitlementId, selectedPackageId, eligibleEntitlements, onSelectPackageEntitlement]);
 
   const service = BOOKING_SERVICES.find((s) => s.id === serviceId) || BOOKING_SERVICES[0];
 
@@ -289,7 +283,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
       {mode === 'regular' && hasActiveCredits && (
         <div className="pt-4 border-t border-[#D5D0CA] dark:border-[#3E3545] space-y-3">
           <label className="block text-xs font-semibold uppercase tracking-wider text-[#362E3B]/70 dark:text-[#D5D0CA]/70">
-            {isEn ? 'Payment & Credit Option' : 'خيارات الدفع واستخدام الرصيد'}
+            {isEn ? 'Use an existing lesson credit' : 'استخدم رصيد درس موجود'}
           </label>
 
           <div className="grid grid-cols-1 gap-3">
@@ -320,14 +314,14 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                       <div>
                         <div className="flex items-center gap-2">
                           <h4 className="font-serif text-base font-medium text-[#362E3B] dark:text-[#F5E6D3]">
-                            {ent.packageName}
+                            {isEn ? 'Existing lesson credit' : 'رصيد درس موجود'}
                           </h4>
                           <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#87A878]/15 text-[#87A878]">
                             {isEn ? `${ent.remainingCredits} lessons remaining` : `${ent.remainingCredits} دروس متبقية`}
                           </span>
                         </div>
                         <span className="text-xs text-[#87A878] font-semibold">
-                          {isEn ? 'Use 1 Package Credit • $0 today' : 'خصم ١ درس من الرصيد • ٠.٠٠$ اليوم'}
+                          {isEn ? 'Use 1 existing lesson credit' : 'استخدم رصيد درس واحد'}
                         </span>
                       </div>
                     </div>
@@ -389,7 +383,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
       )}
 
       {/* Package Catalog Selection (When No Active Entitlements Exist) */}
-      {!hasActiveCredits && !loadingPackages && packages.length > 0 && mode === 'regular' && (
+      {!hidePackagePurchase && !hasActiveCredits && !loadingPackages && packages.length > 0 && mode === 'regular' && (
         <div className="pt-4 border-t border-[#D5D0CA] dark:border-[#3E3545]">
           <label className="block text-xs font-semibold uppercase tracking-wider text-[#362E3B]/70 dark:text-[#D5D0CA]/70 mb-2.5">
             {isEn ? 'Purchase Option (Optional)' : 'خيار الشراء (اختياري)'}
