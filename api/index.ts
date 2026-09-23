@@ -584,34 +584,11 @@ app.post('/api/student/multi-lesson-plan', verifyStudentAuth, async (req: any, r
       return res.status(500).json({ error: 'Could not create the lesson plan.' });
     }
 
-    const paymentPayload = {
-      booking_id: null,
-      entitlement_id: result.entitlementId,
-      student_id: studentId,
-      amount: Number(result.totalAmount),
-      currency: String(result.currency || 'USD').toUpperCase(),
-      payment_method: 'manual',
-      status: 'pending',
-      payment_reference: null,
-      notes: '[MULTI_LESSON_PLAN] Awaiting teacher payment confirmation.'
-    };
-
-    const { data: payment, error: paymentErr } = await supabaseAdmin
-      .from('payments')
-      .insert(paymentPayload)
-      .select('id, entitlement_id, amount, currency, status, payment_method')
-      .single();
-
-    if (paymentErr || !payment) {
-      console.error('[Multi-lesson payment creation]', paymentErr);
-      return res.status(500).json({ error: 'Could not create the payment record.' });
-    }
-
     return res.status(201).json({
       success: true,
-      status: 'pending_payment',
+      status: result.status,
       entitlementId: result.entitlementId,
-      paymentId: payment.id,
+      paymentId: result.paymentId,
       lessonCount: result.lessonCount,
       totalAmount: result.totalAmount,
       currency: result.currency,
