@@ -36,9 +36,11 @@ interface Props {
   phase: 'quantity' | 'schedule' | 'review';
   onNext?: () => void;
   onBack?: () => void;
+  onConfirm?: () => void;
+  confirming?: boolean;
 }
 
-export const MultiLessonPlan: React.FC<Props> = ({ catalog, serviceId, duration, timezone, teacherId, count, onCount, selected, onSelected, phase, onNext, onBack }) => {
+export const MultiLessonPlan: React.FC<Props> = ({ catalog, serviceId, duration, timezone, teacherId, count, onCount, selected, onSelected, phase, onNext, onBack, onConfirm, confirming }) => {
   const [days, setDays] = useState<DayAvailability[]>([]);
   const [period, setPeriod] = useState('');
   const [loading, setLoading] = useState(false);
@@ -96,8 +98,13 @@ export const MultiLessonPlan: React.FC<Props> = ({ catalog, serviceId, duration,
       <p>These are the actual times you selected ({timezone}); they are not reserved or confirmed yet.</p>
       <ol className="list-decimal pl-6">{selected.map(({ date, slot }) => <li key={`${date}-${slot.id}`}>{date} — {slot.timeDisplay}</li>)}</ol>
       {price && <div className="rounded-xl border border-border p-4 space-y-1"><p>Regular total: {money(price.regular, price.currency)}</p>{price.saving > 0 && <p>You save: {money(price.saving, price.currency)}</p>}<p className="font-bold">Final catalog total: {money(price.total, price.currency)}</p><p>{money(price.perLesson, price.currency)} / lesson</p></div>}
-      <p className="rounded-xl bg-amber-500/10 p-4 text-sm">Multi-lesson confirmation is not yet available. The booking service currently confirms one lesson at a time and cannot reserve these times or attach one prepaid entitlement to all of them. No payment has been taken and no lessons have been booked.</p>
-      <button type="button" onClick={onBack} className="rounded-xl border border-border p-3">Edit selected times</button>
+      <p className="rounded-xl bg-amber-500/10 p-4 text-sm">Your selected times will be rechecked on the server before the lesson plan is created. Payment is not taken automatically; the plan remains pending until payment is confirmed.</p>
+      <div className="flex gap-3">
+        <button type="button" onClick={onBack} className="rounded-xl border border-border p-3">Edit selected times</button>
+        <button type="button" onClick={onConfirm} disabled={!price || selected.length !== count || Boolean(confirming)} className="rounded-xl bg-primary text-primary-foreground p-3 disabled:opacity-40">
+          {confirming ? 'Creating plan…' : 'Confirm lesson plan'}
+        </button>
+      </div>
     </section>
   );
 
