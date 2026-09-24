@@ -331,6 +331,7 @@ export async function syncBookingIntegrations(
   } else {
     // Fail closed: do not guess teacher or touch another teacher's calendar
     console.log(`[syncBookingIntegrations] No explicit teacherId for booking ${booking.referenceCode}; skipping Google Calendar sync.`);
+    errors.push('Google Calendar sync: teacher could not be resolved; retryable without assigning a Calendar owner.');
   }
 
   const integrationStatus: 'synced' | 'pending' | 'failed' = 
