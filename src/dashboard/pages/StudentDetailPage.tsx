@@ -23,8 +23,11 @@ import {
   MessageCircle,
   FileText,
   Target,
-  RefreshCw
+  RefreshCw,
+  ShieldCheck,
+  UserCheck
 } from 'lucide-react';
+import { useTeacherAuth } from '../../lib/auth';
 import { DashboardStudentDetail, StudentNote } from '../types';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
@@ -33,10 +36,18 @@ import { StudentEditModal } from '../components/StudentEditModal';
 export default function StudentDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { teacherRole } = useTeacherAuth();
+  const isSuperAdmin = teacherRole === 'super_admin';
 
   const [studentDetail, setStudentDetail] = useState<DashboardStudentDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Assignment State for Super Admin
+  const [selectedTeacherId, setSelectedTeacherId] = useState<string>('');
+  const [isAssigningTeacher, setIsAssigningTeacher] = useState(false);
+  const [assignSuccessMessage, setAssignSuccessMessage] = useState<string | null>(null);
+  const [assignErrorMessage, setAssignErrorMessage] = useState<string | null>(null);
 
   // Edit Modal State
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -62,6 +73,7 @@ export default function StudentDetailPage() {
     try {
       const data = await dashboardFetch(`/api/dashboard/students/${id}`);
       setStudentDetail(data);
+      setSelectedTeacherId(data.student.assigned_teacher_id || '');
     } catch (err: any) {
       setError(err.message || 'Could not load student record.');
     } finally {
@@ -72,6 +84,42 @@ export default function StudentDetailPage() {
   useEffect(() => {
     fetchStudent();
   }, [fetchStudent]);
+
+  // Handle Teacher Assignment (Super Admin Only)
+  const handleAssignTeacher = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!id) return;
+
+    setIsAssigningTeacher(true);
+    setAssignSuccessMessage(null);
+    setAssignErrorMessage(null);
+
+    try {
+      const res = await dashboardFetch(`/api/dashboard/admin/students/${id}/assign-teacher`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          teacher_id: selectedTeacherId || null
+        })
+      });
+
+      setAssignSuccessMessage(res.message || 'Faculty assignment updated successfully.');
+      setStudentDetail(prev => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          student: {
+            ...prev.student,
+            assigned_teacher_id: res.student?.assigned_teacher_id || (selectedTeacherId || null),
+            assigned_teacher_name: res.student?.assigned_teacher_name || (selectedTeacherId ? 'Ustadh Mahmoud' : null)
+          }
+        };
+      });
+    } catch (err: any) {
+      setAssignErrorMessage(err.message || 'Failed to update teacher assignment.');
+    } finally {
+      setIsAssigningTeacher(false);
+    }
+  };
 
   // Handle Add Note
   const handleCreateNote = async (e: React.FormEvent) => {
@@ -622,8 +670,101 @@ export default function StudentDetailPage() {
           </div>
         </div>
 
-        {/* Right 1 Column: Private Notes (Mahmoud Only) */}
+        {/* Right 1 Column: Faculty Assignment & Private Notes */}
         <div className="space-y-6">
+          {/* Faculty Assignment & Preferences Card */}
+          <div className="bg-surface rounded-2xl p-6 border border-border shadow-2xs space-y-5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <UserCheck className="w-4 h-4 text-primary" />
+                <h2 className="text-sm font-semibold uppercase tracking-wider text-foreground">
+                  Faculty Assignment
+                </h2>
+              </div>
+              {isSuperAdmin && (
+                <span className="text-[10px] px-2 py-0.5 rounded bg-primary/15 text-primary border border-primary/25 font-bold uppercase tracking-wider">
+                  Admin Control
+                </span>
+              )}
+            </div>
+
+            {/* Current Assignment Status */}
+            <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle space-y-2 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Assigned Teacher:</span>
+                <span className={`font-semibold ${student.assigned_teacher_name ? 'text-primary' : 'text-amber-600 dark:text-amber-400'}`}>
+                  {student.assigned_teacher_name || 'Unassigned'}
+                </span>
+              </div>
+
+              {/* Student Gender */}
+              <div className="flex items-center justify-between pt-1.5 border-t border-border-subtle">
+                <span className="text-muted-foreground">Student Gender:</span>
+                <span className="capitalize font-medium text-foreground">
+                  {student.gender === 'male' ? 'Male' : student.gender === 'female' ? 'Female' : 'Prefer not to say'}
+                </span>
+              </div>
+
+              {/* Teacher Gender Preference */}
+              <div className="flex items-center justify-between pt-1.5 border-t border-border-subtle">
+                <span className="text-muted-foreground">Teacher Preference:</span>
+                <span className="capitalize font-medium text-foreground">
+                  {student.teacher_gender_preference === 'female_teacher'
+                    ? 'Female Teacher'
+                    : student.teacher_gender_preference === 'male_teacher'
+                    ? 'Male Teacher'
+                    : 'No Preference'}
+                </span>
+              </div>
+            </div>
+
+            {/* Super Admin Assignment Action Form */}
+            {isSuperAdmin && (
+              <form onSubmit={handleAssignTeacher} className="space-y-3 pt-2">
+                <label className="block text-xs font-semibold text-foreground">
+                  Change Faculty Assignment:
+                </label>
+                <select
+                  value={selectedTeacherId}
+                  onChange={(e) => setSelectedTeacherId(e.target.value)}
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-border bg-surface text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="">-- Unassigned --</option>
+                  <option value="mhmwdlwany4222@gmail.com">Ustadh Mahmoud (Primary)</option>
+                  <option value="mahmoudelwany98@gmail.com">Ustadh Mahmoud (Super Admin)</option>
+                  <option value="afnan@example.com">Ustadha Afnan (Female Faculty)</option>
+                </select>
+
+                {assignSuccessMessage && (
+                  <p className="text-[11px] text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-medium">
+                    <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                    <span>{assignSuccessMessage}</span>
+                  </p>
+                )}
+
+                {assignErrorMessage && (
+                  <p className="text-[11px] text-destructive flex items-center gap-1 font-medium">
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                    <span>{assignErrorMessage}</span>
+                  </p>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={isAssigningTeacher}
+                  className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  {isAssigningTeacher ? (
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                  )}
+                  <span>{isAssigningTeacher ? 'Saving...' : 'Save Assignment'}</span>
+                </button>
+              </form>
+            )}
+          </div>
+
           <div className="bg-surface rounded-2xl p-6 border border-border shadow-2xs space-y-5">
             {/* Notes Section Header */}
             <div>

@@ -26,14 +26,15 @@ import { dashboardFetch } from '../lib/dashboardApi';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 
 export default function StudentsPage() {
-  const { session } = useTeacherAuth();
+  const { session, teacherRole } = useTeacherAuth();
+  const isSuperAdmin = teacherRole === 'super_admin';
   const [students, setStudents] = useState<DashboardStudentListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Filters & Search
-  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'paused' | 'inactive'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'paused' | 'inactive' | 'unassigned'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'name' | 'recent' | 'completed' | 'next'>('recent');
 
@@ -61,8 +62,10 @@ export default function StudentsPage() {
   const displayedStudents = useMemo(() => {
     let list = [...students];
 
-    // Status filter
-    if (statusFilter !== 'all') {
+    // Status / Assignment filter
+    if (statusFilter === 'unassigned') {
+      list = list.filter(s => !s.assigned_teacher_id);
+    } else if (statusFilter !== 'all') {
       list = list.filter(s => s.status === statusFilter);
     }
 
@@ -74,7 +77,8 @@ export default function StudentsPage() {
         (s.email && s.email.toLowerCase().includes(q)) ||
         (s.parent_name && s.parent_name.toLowerCase().includes(q)) ||
         (s.whatsapp && s.whatsapp.toLowerCase().includes(q)) ||
-        (s.primary_service_name && s.primary_service_name.toLowerCase().includes(q))
+        (s.primary_service_name && s.primary_service_name.toLowerCase().includes(q)) ||
+        (s.assigned_teacher_name && s.assigned_teacher_name.toLowerCase().includes(q))
       );
     }
 
@@ -105,7 +109,8 @@ export default function StudentsPage() {
       all: students.length,
       active: students.filter(s => s.status === 'active').length,
       paused: students.filter(s => s.status === 'paused').length,
-      inactive: students.filter(s => s.status === 'inactive').length
+      inactive: students.filter(s => s.status === 'inactive').length,
+      unassigned: students.filter(s => !s.assigned_teacher_id).length
     };
   }, [students]);
 
@@ -116,14 +121,16 @@ export default function StudentsPage() {
         <div>
           <div className="flex items-center gap-2.5">
             <h1 className="text-2xl font-serif font-bold text-foreground">
-              Students Directory
+              {isSuperAdmin ? 'Students Directory' : 'My Students'}
             </h1>
             <span className="text-xs px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 font-medium">
               {counts.active} Active Learners
             </span>
           </div>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-            Enrolled 1-on-1 students, learning progress, lesson history, and private teacher notes.
+            {isSuperAdmin 
+              ? 'Platform-wide student records, faculty assignments, learning goals, and lesson histories.'
+              : 'Students assigned to your teaching schedule, progress tracking, and private lesson notes.'}
           </p>
         </div>
 
@@ -149,7 +156,7 @@ export default function StudentsPage() {
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            All Students ({counts.all})
+            All ({counts.all})
           </button>
           <button
             onClick={() => setStatusFilter('active')}
@@ -171,6 +178,18 @@ export default function StudentsPage() {
           >
             Paused ({counts.paused})
           </button>
+          {isSuperAdmin && counts.unassigned > 0 && (
+            <button
+              onClick={() => setStatusFilter('unassigned')}
+              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap cursor-pointer ${
+                statusFilter === 'unassigned'
+                  ? 'bg-amber-500/20 text-amber-900 dark:text-amber-200 shadow-2xs font-bold border border-amber-500/30'
+                  : 'text-amber-700 dark:text-amber-300 hover:text-foreground'
+              }`}
+            >
+              Unassigned ({counts.unassigned})
+            </button>
+          )}
           <button
             onClick={() => setStatusFilter('inactive')}
             className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap cursor-pointer ${
@@ -314,6 +333,14 @@ export default function StudentsPage() {
                     {student.timezone && (
                       <span className="text-[11px] opacity-60">
                         {student.timezone}
+                      </span>
+                    )}
+
+                    {isSuperAdmin && (
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-semibold tracking-wider uppercase ${
+                        student.assigned_teacher_name ? 'bg-primary/10 text-primary' : 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30'
+                      }`}>
+                        {student.assigned_teacher_name ? `Teacher: ${student.assigned_teacher_name}` : 'Unassigned'}
                       </span>
                     )}
                   </div>

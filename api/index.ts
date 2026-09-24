@@ -2169,6 +2169,199 @@ app.patch('/api/dashboard/students/:id', verifyTeacherAuth, async (req, res) => 
   }
 });
 
+// 15C-2. DASHBOARD (Super Admin Only): Assign / Reassign Teacher to Student
+app.patch('/api/dashboard/admin/students/:id/assign-teacher', verifyTeacherAuth, requireSuperAdmin, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) {
+      return res.status(503).json({ error: 'Database integration is not properly configured.' });
+    }
+
+    const { id } = req.params;
+    const { teacher_id } = req.body;
+
+    const { data: student, error: sErr } = await supabase
+      .from('students')
+      .select('id, name')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (sErr || !student) {
+      return res.status(404).json({ error: 'Student not found.' });
+    }
+
+    let assignedTeacherEmail = null;
+    let assignedTeacherName = null;
+
+    if (teacher_id) {
+      const cleanTeacherId = String(teacher_id).trim();
+      const { data: teacher, error: tErr } = await supabase
+        .from('teacher_accounts')
+        .select('email, role, is_active')
+        .or(`email.eq.${cleanTeacherId}`)
+        .maybeSingle();
+
+      if (tErr || !teacher) {
+        // Allow well-known seeds even if fallback
+        assignedTeacherEmail = cleanTeacherId;
+        assignedTeacherName = cleanTeacherId.includes('afnan') ? 'Ustadha Afnan' : 'Ustadh Mahmoud';
+      } else {
+        assignedTeacherEmail = teacher.email;
+        assignedTeacherName = teacher.email.includes('afnan') ? 'Ustadha Afnan' : 'Ustadh Mahmoud';
+      }
+    }
+
+    const { data: updated, error: updateErr } = await supabase
+      .from('students')
+      .update({
+        assigned_teacher_id: assignedTeacherEmail,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (updateErr) {
+      console.error('[Assign Teacher Error]', updateErr);
+      return res.status(500).json({ error: 'Failed to update student teacher assignment.' });
+    }
+
+    res.json({
+      success: true,
+      message: assignedTeacherName 
+        ? `Student successfully assigned to ${assignedTeacherName}.` 
+        : 'Student teacher assignment unassigned.',
+      student: {
+        id: updated.id,
+        assigned_teacher_id: updated.assigned_teacher_id,
+        assigned_teacher_name: assignedTeacherName
+      }
+    });
+  } catch (err) {
+    console.error('[Assign Teacher Error]', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// 15C-3. DASHBOARD (Super Admin Only): Teacher accounts directory with operational metrics
+app.get('/api/dashboard/admin/teachers', verifyTeacherAuth, requireSuperAdmin, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) {
+      return res.status(503).json({ error: 'Database integration is not properly configured.' });
+    }
+
+    const { data: accounts, error: accErr } = await supabase
+      .from('teacher_accounts')
+      .select('*')
+      .order('created_at', { ascending: true });
+
+    if (accErr) {
+      console.error('[Admin Teachers Error]', accErr);
+      return res.status(500).json({ error: 'Failed to load teacher accounts.' });
+    }
+
+    const teachersList = accounts || [];
+    const nowIso = new Date().toISOString();
+
+    // Fetch assigned students count and upcoming lessons count per teacher
+    const [studentsRes, upcomingBookingsRes, completedBookingsRes] = await Promise.all([
+      supabase.from('students').select('id, assigned_teacher_id'),
+      supabase.from('bookings').select('id, teacher_id, scheduled_start, status').gte('scheduled_start', nowIso).neq('status', 'cancelled'),
+      supabase.from('bookings').select('id, teacher_id, status').eq('status', 'completed')
+    ]);
+
+    const assignedCountByTeacher = new Map<string, number>();
+    (studentsRes.data || []).forEach(s => {
+      if (s.assigned_teacher_id) {
+        const key = s.assigned_teacher_id.toLowerCase().trim();
+        assignedCountByTeacher.set(key, (assignedCountByTeacher.get(key) || 0) + 1);
+      }
+    });
+
+    const upcomingCountByTeacher = new Map<string, number>();
+    (upcomingBookingsRes.data || []).forEach(b => {
+      if (b.teacher_id) {
+        const key = b.teacher_id.toLowerCase().trim();
+        upcomingCountByTeacher.set(key, (upcomingCountByTeacher.get(key) || 0) + 1);
+      }
+    });
+
+    const completedCountByTeacher = new Map<string, number>();
+    (completedBookingsRes.data || []).forEach(b => {
+      if (b.teacher_id) {
+        const key = b.teacher_id.toLowerCase().trim();
+        completedCountByTeacher.set(key, (completedCountByTeacher.get(key) || 0) + 1);
+      }
+    });
+
+    const enriched = teachersList.map(t => {
+      const emailLower = t.email.toLowerCase().trim();
+      const displayName = t.email.includes('afnan') ? 'Ustadha Afnan' : 'Ustadh Mahmoud';
+      const gender = t.email.includes('afnan') ? 'female' : 'male';
+      return {
+        email: t.email,
+        display_name: displayName,
+        role: t.role,
+        is_active: t.is_active ?? true,
+        gender,
+        assigned_students_count: assignedCountByTeacher.get(emailLower) || 0,
+        upcoming_lessons_count: upcomingCountByTeacher.get(emailLower) || 0,
+        completed_lessons_count: completedCountByTeacher.get(emailLower) || 0,
+        created_at: t.created_at
+      };
+    });
+
+    res.json({ teachers: enriched });
+  } catch (err) {
+    console.error('[Admin Teachers Handler Error]', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// 15C-4. DASHBOARD (Super Admin Only): Toggle active status of teacher account
+app.patch('/api/dashboard/admin/teachers/:email/toggle-active', verifyTeacherAuth, requireSuperAdmin, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) {
+      return res.status(503).json({ error: 'Database integration is not properly configured.' });
+    }
+
+    const { email } = req.params;
+    const { is_active } = req.body;
+
+    if (typeof is_active !== 'boolean') {
+      return res.status(400).json({ error: 'Invalid is_active boolean value.' });
+    }
+
+    // Protect primary super admin account from accidental deactivation
+    if (email.toLowerCase().includes('mahmoudelwany98') && !is_active) {
+      return res.status(403).json({ error: 'The primary Super Admin account cannot be deactivated.' });
+    }
+
+    const { data: updated, error: updateErr } = await supabase
+      .from('teacher_accounts')
+      .update({ is_active, updated_at: new Date().toISOString() })
+      .eq('email', decodeURIComponent(email))
+      .select()
+      .single();
+
+    if (updateErr) {
+      console.error('[Toggle Teacher Active Error]', updateErr);
+      return res.status(500).json({ error: 'Failed to update teacher account status.' });
+    }
+
+    res.json({
+      success: true,
+      message: `Teacher ${email} status updated to ${is_active ? 'active' : 'inactive'}.`,
+      teacher: updated
+    });
+  } catch (err) {
+    console.error('[Toggle Teacher Active Error]', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 // 15D. DASHBOARD: Student Private Notes CRUD
 app.get('/api/dashboard/students/:id/notes', verifyTeacherAuth, async (req, res) => {
   try {
@@ -5112,7 +5305,7 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       const [studentRes, guardianRes, goalsRes, linkedChildrenRes] = await Promise.all([
         supabaseAdmin
           .from('students')
-          .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, booking_preference, created_at, onboarding_completed, learning_interest, learning_goal, learning_needs, assigned_teacher_id')
+          .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, booking_preference, created_at, onboarding_completed, learning_interest, learning_goal, learning_needs, assigned_teacher_id, gender, teacher_gender_preference')
           .eq('id', studentId)
           .single(),
         supabaseAdmin
@@ -5197,6 +5390,15 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       const rawPref = (profile as any).booking_preference || 'self';
       const bookingPreference = canBookForChild ? rawPref : 'self';
 
+      let assignedTeacherName = null;
+      if (profile.assigned_teacher_id) {
+        if (profile.assigned_teacher_id.includes('afnan')) {
+          assignedTeacherName = 'Ustadha Afnan';
+        } else {
+          assignedTeacherName = 'Ustadh Mahmoud';
+        }
+      }
+
       return res.json({
         id: profile.id,
         name: profile.name,
@@ -5208,6 +5410,9 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
         currentLevel: profile.current_level || 'beginner',
         status: profile.status || 'active',
         assignedTeacherId: profile.assigned_teacher_id || null,
+        assignedTeacherName,
+        gender: profile.gender || 'undisclosed',
+        teacherGenderPreference: profile.teacher_gender_preference || 'no_preference',
         bookingPreference,
         canBookForChild,
         linkedChildren: linkedChildrenFromGuardians,
@@ -5327,7 +5532,10 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
       learningGoal,
       learningNeeds,
       timezone,
-      whatsapp
+      whatsapp,
+      gender,
+      teacherGenderPreference,
+      teacher_gender_preference
     } = req.body || {};
 
     if (!name || typeof name !== 'string' || name.trim().length < 2) {
@@ -5337,6 +5545,9 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
     const validLevels = ['beginner', 'elementary', 'intermediate', 'advanced'];
     const resolvedLevel = validLevels.includes(currentLevel) ? currentLevel : 'beginner';
     const resolvedLearnerType = learnerType === 'child' ? 'child' : 'adult';
+    const resolvedGender = ['male', 'female', 'undisclosed'].includes(gender) ? gender : 'undisclosed';
+    const rawTeacherPref = teacherGenderPreference || teacher_gender_preference;
+    const resolvedTeacherPref = ['no_preference', 'male_teacher', 'female_teacher'].includes(rawTeacherPref) ? rawTeacherPref : 'no_preference';
 
     let resolvedTimezone = 'UTC';
     if (timezone && typeof timezone === 'string' && DateTime.now().setZone(timezone.trim()).isValid) {
@@ -5354,6 +5565,8 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
         req.studentUser.studentProfile.learner_type = resolvedLearnerType;
         req.studentUser.studentProfile.current_level = resolvedLevel;
         req.studentUser.studentProfile.timezone = resolvedTimezone;
+        req.studentUser.studentProfile.gender = resolvedGender;
+        req.studentUser.studentProfile.teacher_gender_preference = resolvedTeacherPref;
         req.studentUser.studentProfile.onboarding_completed = true;
         if (whatsapp) req.studentUser.studentProfile.whatsapp = String(whatsapp).trim();
         if (learningInterest) req.studentUser.studentProfile.learning_interest = String(learningInterest).trim();
@@ -5370,6 +5583,8 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
           timezone: resolvedTimezone,
           learnerType: resolvedLearnerType,
           currentLevel: resolvedLevel,
+          gender: resolvedGender,
+          teacherGenderPreference: resolvedTeacherPref,
           onboardingCompleted: true,
           learningInterest: learningInterest || null,
           learningGoal: learningGoal || null,
@@ -5384,6 +5599,8 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
       learner_type: resolvedLearnerType,
       current_level: resolvedLevel,
       timezone: resolvedTimezone,
+      gender: resolvedGender,
+      teacher_gender_preference: resolvedTeacherPref,
       onboarding_completed: true,
       updated_at: new Date().toISOString()
     };
@@ -5492,13 +5709,13 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       return res.status(404).json({ error: 'Student profile not found.' });
     }
 
-    const { name, timezone, whatsapp, country, parentName, parentWhatsapp, booking_preference, bookingPreference } = req.body || {};
+    const { name, timezone, whatsapp, country, parentName, parentWhatsapp, booking_preference, bookingPreference, gender, teacherGenderPreference, teacher_gender_preference } = req.body || {};
 
     // Validate safe fields only - explicitly reject any attempts to modify forbidden attributes
     const forbiddenFields = [
       'id', 'student_id', 'studentId', 'auth_user_id', 'auth_id', 'status',
       'lead_id', 'notes', 'created_at', 'updated_at', 'current_level', 'role',
-      'email', 'onboarding_completed'
+      'email', 'onboarding_completed', 'assigned_teacher_id'
     ];
     for (const field of forbiddenFields) {
       if (req.body && req.body[field] !== undefined) {
@@ -5530,6 +5747,21 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
 
     if (country !== undefined) {
       updatePayload.country = typeof country === 'string' ? country.trim() : null;
+    }
+
+    if (gender !== undefined) {
+      if (!['male', 'female', 'undisclosed'].includes(gender)) {
+        return res.status(422).json({ error: "Invalid gender. Must be 'male', 'female', or 'undisclosed'." });
+      }
+      updatePayload.gender = gender;
+    }
+
+    const rawTeacherPref = teacherGenderPreference !== undefined ? teacherGenderPreference : teacher_gender_preference;
+    if (rawTeacherPref !== undefined) {
+      if (!['no_preference', 'male_teacher', 'female_teacher'].includes(rawTeacherPref)) {
+        return res.status(422).json({ error: "Invalid teacher preference. Must be 'no_preference', 'male_teacher', or 'female_teacher'." });
+      }
+      updatePayload.teacher_gender_preference = rawTeacherPref;
     }
 
     const isProd = process.env.NODE_ENV === 'production';
@@ -5606,7 +5838,7 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       .from('students')
       .update(updatePayload)
       .eq('id', studentId)
-      .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, booking_preference, created_at, updated_at')
+      .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, booking_preference, created_at, updated_at, gender, teacher_gender_preference, assigned_teacher_id')
       .single();
 
     if (updateError || !updatedStudent) {
@@ -5633,6 +5865,11 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       }
     }
 
+    let assignedTeacherName = null;
+    if (updatedStudent.assigned_teacher_id) {
+      assignedTeacherName = updatedStudent.assigned_teacher_id.includes('afnan') ? 'Ustadha Afnan' : 'Ustadh Mahmoud';
+    }
+
     return res.json({
       id: updatedStudent.id,
       name: updatedStudent.name,
@@ -5644,6 +5881,10 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       currentLevel: updatedStudent.current_level,
       bookingPreference: (updatedStudent as any).booking_preference || 'self',
       status: updatedStudent.status,
+      gender: updatedStudent.gender || 'undisclosed',
+      teacherGenderPreference: updatedStudent.teacher_gender_preference || 'no_preference',
+      assignedTeacherId: updatedStudent.assigned_teacher_id || null,
+      assignedTeacherName,
       updatedAt: updatedStudent.updated_at
     });
   } catch (err: any) {

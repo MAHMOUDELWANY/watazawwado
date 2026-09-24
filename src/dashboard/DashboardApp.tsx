@@ -18,9 +18,11 @@ import {
   ShieldCheck,
   Globe,
   Clock,
-  ClipboardCheck
+  ClipboardCheck,
+  Shield
 } from 'lucide-react';
 import { useTheme } from "../components/ThemeProvider";
+import OverviewPage from './pages/OverviewPage';
 import TodayPage from './pages/TodayPage';
 import UpcomingPage from './pages/UpcomingPage';
 import TrialsPage from './pages/TrialsPage';
@@ -31,15 +33,18 @@ import BookingsPage from './pages/BookingsPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import SettingsPage from './pages/SettingsPage';
 import IntakeReviewPage from './pages/IntakeReviewPage';
+import TeachersPage from './pages/TeachersPage';
 import { TeacherAuthDiagnosticPanel } from './components/TeacherAuthDiagnosticPanel';
 import { Language } from '../booking/types';
 
 export function DashboardApp() {
-  const { isTeacherAuthenticated, user, signOut } = useTeacherAuth();
+  const { isTeacherAuthenticated, user, signOut, teacherRole } = useTeacherAuth();
   const { theme, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const [lang, setLang] = useState<Language>('en');
+
+  const isSuperAdmin = teacherRole === 'super_admin';
 
   const drawerRef = React.useRef<HTMLElement>(null);
   const menuTriggerRef = React.useRef<HTMLButtonElement>(null);
@@ -129,17 +134,32 @@ export function DashboardApp() {
     );
   }
 
-  const navigation = [
-    { name: lang === 'ar' ? 'اليوم' : 'Today', path: '/dashboard', icon: LayoutDashboard },
+  // Role-scoped navigation
+  const superAdminNavigation = [
+    { name: lang === 'ar' ? 'نظرة عامة' : 'Overview', path: '/dashboard', icon: LayoutDashboard },
+    { name: lang === 'ar' ? 'اليوم' : 'Today', path: '/dashboard/today', icon: Clock },
     { name: lang === 'ar' ? 'الجدول القادم' : 'Upcoming', path: '/dashboard/upcoming', icon: Calendar },
+    { name: lang === 'ar' ? 'المعلمون' : 'Teachers', path: '/dashboard/teachers', icon: Shield },
+    { name: lang === 'ar' ? 'الطلاب' : 'Students', path: '/dashboard/students', icon: Users },
+    { name: lang === 'ar' ? 'الحجوزات' : 'Bookings', path: '/dashboard/bookings', icon: BookOpen },
     { name: lang === 'ar' ? 'التجريبية' : 'Trials', path: '/dashboard/trials', icon: Sparkles },
     { name: lang === 'ar' ? 'التواصل' : 'Leads', path: '/dashboard/leads', icon: UserPlus },
     { name: lang === 'ar' ? 'مراجعة الطلبات' : 'Intake Review', path: '/dashboard/intakes', icon: ClipboardCheck },
-    { name: lang === 'ar' ? 'الطلاب' : 'Students', path: '/dashboard/students', icon: Users },
-    { name: lang === 'ar' ? 'الحجوزات' : 'Bookings', path: '/dashboard/bookings', icon: BookOpen },
     { name: lang === 'ar' ? 'التقارير' : 'Analytics', path: '/dashboard/analytics', icon: TrendingUp },
     { name: lang === 'ar' ? 'الإعدادات' : 'Settings', path: '/dashboard/settings', icon: Settings },
   ];
+
+  const teacherNavigation = [
+    { name: lang === 'ar' ? 'اليوم' : 'Today', path: '/dashboard', icon: LayoutDashboard },
+    { name: lang === 'ar' ? 'الجدول القادم' : 'Upcoming', path: '/dashboard/upcoming', icon: Calendar },
+    { name: lang === 'ar' ? 'التجريبية' : 'Trials', path: '/dashboard/trials', icon: Sparkles },
+    { name: lang === 'ar' ? 'طلابي' : 'My Students', path: '/dashboard/students', icon: Users },
+    { name: lang === 'ar' ? 'حجوزاتي' : 'My Bookings', path: '/dashboard/bookings', icon: BookOpen },
+    { name: lang === 'ar' ? 'إحصائياتي' : 'My Analytics', path: '/dashboard/analytics', icon: TrendingUp },
+    { name: lang === 'ar' ? 'الإعدادات' : 'Settings', path: '/dashboard/settings', icon: Settings },
+  ];
+
+  const navigation = isSuperAdmin ? superAdminNavigation : teacherNavigation;
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
   const toggleLanguage = () => setLang(prev => prev === 'en' ? 'ar' : 'en');
@@ -183,7 +203,7 @@ export function DashboardApp() {
                 {lang === 'ar' ? 'وتزودوا — المعلم' : 'Watazawwado'}
               </span>
               <span className="text-[10px] text-muted-foreground uppercase tracking-wider block">
-                {lang === 'ar' ? 'مساحة الأستاذ' : 'Teacher Workspace'}
+                {isSuperAdmin ? (lang === 'ar' ? 'الإدارة العامة' : 'Super Admin') : (lang === 'ar' ? 'مساحة المعلم' : 'Teacher Workspace')}
               </span>
             </div>
           </Link>
@@ -203,7 +223,10 @@ export function DashboardApp() {
           aria-label={lang === 'ar' ? 'روابط التنقل الرئيسية للمعلم' : 'Teacher Primary Navigation'}
         >
           {navigation.map((item) => {
-            const isActive = location.pathname === item.path || (item.path !== '/dashboard' && location.pathname.startsWith(item.path));
+            const isExactMatch = location.pathname === item.path;
+            const isSubPath = item.path !== '/dashboard' && location.pathname.startsWith(item.path);
+            const isActive = isExactMatch || isSubPath;
+
             return (
               <Link
                 key={item.name}
@@ -230,16 +253,18 @@ export function DashboardApp() {
           {/* Teacher Profile Card */}
           <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-surface-subtle border border-border">
             <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold text-xs shrink-0">
-              M
+              {user?.email?.charAt(0).toUpperCase() || 'M'}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs font-semibold text-foreground truncate">
-                {lang === 'ar' ? 'أستاذ محمود' : (user?.user_metadata?.name || 'Ustadh Mahmoud')}
+                {lang === 'ar' ? (isSuperAdmin ? 'أستاذ محمود (إدارة)' : 'الأستاذ') : (user?.user_metadata?.name || (isSuperAdmin ? 'Ustadh Mahmoud (Admin)' : 'Ustadh Mahmoud'))}
               </p>
               <p className="text-[10px] text-muted-foreground truncate">{user?.email}</p>
             </div>
-            <span className="text-[10px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded bg-primary/10 text-primary shrink-0">
-              Teacher
+            <span className={`text-[10px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0 ${
+              isSuperAdmin ? 'bg-primary/15 text-primary font-bold' : 'bg-primary/10 text-primary'
+            }`}>
+              {isSuperAdmin ? 'Admin' : 'Teacher'}
             </span>
           </div>
 
@@ -308,11 +333,15 @@ export function DashboardApp() {
           <div className="max-w-5xl mx-auto space-y-6">
             <TeacherAuthDiagnosticPanel />
             <Routes>
-              <Route path="/" element={<TodayPage />} />
+              {/* If super_admin, root /dashboard is Overview; if teacher, root /dashboard is Today */}
+              <Route path="/" element={isSuperAdmin ? <OverviewPage /> : <TodayPage />} />
+              <Route path="/overview" element={<OverviewPage />} />
+              <Route path="/today" element={<TodayPage />} />
               <Route path="/upcoming" element={<UpcomingPage />} />
               <Route path="/trials" element={<TrialsPage />} />
               <Route path="/leads" element={<LeadsPage />} />
               <Route path="/intakes" element={<IntakeReviewPage />} />
+              <Route path="/teachers" element={<TeachersPage />} />
               <Route path="/students" element={<StudentsPage />} />
               <Route path="/students/:id" element={<StudentDetailPage />} />
               <Route path="/bookings" element={<BookingsPage />} />
@@ -326,3 +355,4 @@ export function DashboardApp() {
     </div>
   );
 }
+

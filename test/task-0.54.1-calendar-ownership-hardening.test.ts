@@ -1,9 +1,10 @@
 import assert from 'node:assert';
-import { describe, it } from 'node:test';
+import { describe, it, before, after, beforeEach } from 'node:test';
+import http from 'node:http';
 import crypto from 'crypto';
-import fetch from 'node-fetch';
 import fs from 'fs';
 import path from 'path';
+import app from '../api/index.js';
 import {
   getActiveGoogleConnection,
   getCanonicalTeacherId,
@@ -18,10 +19,45 @@ import {
 } from '../server/integrations/availabilityEngine.js';
 
 describe('Task 0.54.1: Google Calendar Teacher Ownership & Security Hardening Gate', () => {
+  let server: http.Server;
+  let baseUrl: string;
+  let originalEnv: NodeJS.ProcessEnv;
+  const originalFetch = globalThis.fetch;
+
+  before(async () => {
+    originalEnv = { ...process.env };
+
+    await new Promise<void>((resolve) => {
+      server = app.listen(0, '127.0.0.1', () => {
+        const addr = server.address() as any;
+        baseUrl = `http://127.0.0.1:${addr.port}`;
+        resolve();
+      });
+    });
+  });
+
+  after(() => {
+    process.env = originalEnv;
+    globalThis.fetch = originalFetch;
+    server.close();
+  });
+
+  beforeEach(() => {
+    process.env = {
+      ...originalEnv,
+      GOOGLE_CLIENT_ID: 'test-google-client-id',
+      GOOGLE_CLIENT_SECRET: 'test-google-client-secret',
+      APP_URL: baseUrl,
+      SUPABASE_SERVICE_ROLE_KEY: 'test-secret-key-123',
+      ZOOM_ACCOUNT_ID: 'test-zoom-acc',
+      ZOOM_CLIENT_ID: 'test-zoom-client',
+      ZOOM_CLIENT_SECRET: 'test-zoom-secret'
+    };
+  });
 
   // A. AUTH-URL SIGNING & TEACHER EMBEDDING
   it('A1: /auth-url should embed teacher identity into HMAC-signed state and set HttpOnly cookie', async () => {
-    const res = await fetch('http://localhost:3000/api/integrations/google-calendar/auth-url', {
+    const res = await fetch(`${baseUrl}/api/integrations/google-calendar/auth-url`, {
       headers: {
         'Authorization': 'Bearer dev-teacher-token'
       }
@@ -44,12 +80,12 @@ describe('Task 0.54.1: Google Calendar Teacher Ownership & Security Hardening Ga
 
   // B. CALLBACK CSRF & SIGNATURE VERIFICATION
   it('B1: Callback should reject missing state with 403 CSRF error', async () => {
-    const res = await fetch('http://localhost:3000/api/integrations/google-calendar/callback?code=testcode');
+    const res = await fetch(`${baseUrl}/api/integrations/google-calendar/callback?code=testcode`);
     assert.strictEqual(res.status, 403, 'Should reject missing state');
   });
 
   it('B2: Callback should reject mismatched state (CSRF cookie mismatch)', async () => {
-    const res = await fetch('http://localhost:3000/api/integrations/google-calendar/callback?code=testcode&state=fake.state', {
+    const res = await fetch(`${baseUrl}/api/integrations/google-calendar/callback?code=testcode&state=fake.state`, {
       headers: {
         'Cookie': 'oauth_state=other.state'
       }
@@ -62,7 +98,7 @@ describe('Task 0.54.1: Google Calendar Teacher Ownership & Security Hardening Ga
     const nonce = 'randomnonce123';
     const payload = `${teacherId}:${nonce}`;
     const state = `${Buffer.from(payload).toString('base64')}.invalidsignaturexyz`;
-    const res = await fetch(`http://localhost:3000/api/integrations/google-calendar/callback?code=testcode&state=${state}`, {
+    const res = await fetch(`${baseUrl}/api/integrations/google-calendar/callback?code=testcode&state=${state}`, {
       headers: {
         'Cookie': `oauth_state=${state}`
       }
@@ -80,7 +116,7 @@ describe('Task 0.54.1: Google Calendar Teacher Ownership & Security Hardening Ga
     const signature = hmac.digest('hex');
     const state = `${Buffer.from(payload).toString('base64')}.${signature}`;
 
-    const res = await fetch(`http://localhost:3000/api/integrations/google-calendar/callback?code=testcode&state=${state}`, {
+    const res = await fetch(`${baseUrl}/api/integrations/google-calendar/callback?code=testcode&state=${state}`, {
       headers: {
         'Cookie': `oauth_state=${state}`
       }
@@ -92,7 +128,6 @@ describe('Task 0.54.1: Google Calendar Teacher Ownership & Security Hardening Ga
 
   // D. STATE OVERRIDE ATTACK
   it('D1: Query parameter teacher_id must NOT override the verified state payload identity', async () => {
-    // Attempting to pass ?teacher_id=victim-teacher while state is signed for unauthorized
     const unauthorizedTeacherId = 'attacker-teacher-001';
     const nonce = crypto.randomBytes(16).toString('hex');
     const payload = `${unauthorizedTeacherId}:${nonce}`;
@@ -101,7 +136,7 @@ describe('Task 0.54.1: Google Calendar Teacher Ownership & Security Hardening Ga
     const signature = hmac.digest('hex');
     const state = `${Buffer.from(payload).toString('base64')}.${signature}`;
 
-    const res = await fetch(`http://localhost:3000/api/integrations/google-calendar/callback?code=testcode&state=${state}&teacher_id=teacher-mahmoud-001`, {
+    const res = await fetch(`${baseUrl}/api/integrations/google-calendar/callback?code=testcode&state=${state}&teacher_id=teacher-mahmoud-001`, {
       headers: {
         'Cookie': `oauth_state=${state}`
       }
@@ -158,9 +193,31 @@ describe('Task 0.54.1: Google Calendar Teacher Ownership & Security Hardening Ga
       contactEmail: 'test@example.com'
     };
 
-    const syncRes = await syncBookingIntegrations(dummyBooking);
-    assert.ok(syncRes, 'syncBookingIntegrations returned a result');
-    assert.ok(syncRes.zoomMeetingLink || syncRes.zoomMeetingId, 'Zoom link provisioned');
+    const prevFetch = globalThis.fetch;
+    globalThis.fetch = async (url: any, options: any) => {
+      if (url.toString().includes('zoom.us/oauth/token')) {
+        return {
+          ok: true,
+          json: async () => ({ access_token: 'mock-zoom-token', expires_in: 3600 })
+        } as any;
+      }
+      if (url.toString().includes('api.zoom.us/v2/users/me/meetings')) {
+        return {
+          ok: true,
+          status: 201,
+          json: async () => ({ id: 98765432101, join_url: 'https://zoom.us/j/98765432101' })
+        } as any;
+      }
+      return prevFetch(url, options);
+    };
+
+    try {
+      const syncRes = await syncBookingIntegrations(dummyBooking);
+      assert.ok(syncRes, 'syncBookingIntegrations returned a result');
+      assert.ok(syncRes.zoomMeetingLink || syncRes.zoomMeetingId, 'Zoom link provisioned');
+    } finally {
+      globalThis.fetch = prevFetch;
+    }
   });
 
   it('G3: Availability engine functions should support optional teacherId parameter without failure', async () => {
@@ -176,7 +233,7 @@ describe('Task 0.54.1: Google Calendar Teacher Ownership & Security Hardening Ga
 
   // H. TOKEN SECRECY & STATUS ENDPOINT SCOPING
   it('H1: /api/integrations/status must never leak OAuth access_token or refresh_token in response payload', async () => {
-    const res = await fetch('http://localhost:3000/api/integrations/status', {
+    const res = await fetch(`${baseUrl}/api/integrations/status`, {
       headers: {
         'Authorization': 'Bearer dev-teacher-token'
       }
@@ -192,12 +249,12 @@ describe('Task 0.54.1: Google Calendar Teacher Ownership & Security Hardening Ga
 
   // I. DISCONNECT ENDPOINT SCOPING
   it('I1: /api/integrations/google-calendar/disconnect should require teacher authentication', async () => {
-    const unauthRes = await fetch('http://localhost:3000/api/integrations/google-calendar/disconnect', {
+    const unauthRes = await fetch(`${baseUrl}/api/integrations/google-calendar/disconnect`, {
       method: 'POST'
     });
     assert.strictEqual(unauthRes.status, 401, 'Disconnect must require authentication');
 
-    const authRes = await fetch('http://localhost:3000/api/integrations/google-calendar/disconnect', {
+    const authRes = await fetch(`${baseUrl}/api/integrations/google-calendar/disconnect`, {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer dev-teacher-token'

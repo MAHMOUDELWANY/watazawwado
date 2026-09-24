@@ -57,6 +57,12 @@ export default function StudentProfilePage({
   const [timezone, setTimezone] = useState(initialProfile?.timezone || 'UTC');
   const [whatsapp, setWhatsapp] = useState(initialProfile?.whatsapp || '');
   const [country, setCountry] = useState(initialProfile?.country || '');
+  const [gender, setGender] = useState<'male' | 'female' | 'undisclosed'>(
+    initialProfile?.gender || 'undisclosed'
+  );
+  const [teacherGenderPreference, setTeacherGenderPreference] = useState<'no_preference' | 'male_teacher' | 'female_teacher'>(
+    initialProfile?.teacherGenderPreference || initialProfile?.teacher_gender_preference || 'no_preference'
+  );
   const [bookingPreference, setBookingPreference] = useState<'self' | 'child'>(
     initialProfile?.bookingPreference || initialProfile?.booking_preference || 'self'
   );
@@ -131,6 +137,12 @@ export default function StudentProfilePage({
       setTimezone(data.timezone || 'UTC');
       setWhatsapp(data.whatsapp || '');
       setCountry(data.country || '');
+      if (data.gender) {
+        setGender(data.gender);
+      }
+      if (data.teacherGenderPreference) {
+        setTeacherGenderPreference(data.teacherGenderPreference);
+      }
       if (data.bookingPreference) {
         setBookingPreference(data.bookingPreference);
       }
@@ -150,6 +162,12 @@ export default function StudentProfilePage({
       setTimezone(initialProfile.timezone || 'UTC');
       setWhatsapp(initialProfile.whatsapp || '');
       setCountry(initialProfile.country || '');
+      if (initialProfile.gender) {
+        setGender(initialProfile.gender);
+      }
+      if (initialProfile.teacherGenderPreference || initialProfile.teacher_gender_preference) {
+        setTeacherGenderPreference(initialProfile.teacherGenderPreference || initialProfile.teacher_gender_preference);
+      }
       if (initialProfile.bookingPreference) {
         setBookingPreference(initialProfile.bookingPreference);
       }
@@ -180,6 +198,8 @@ export default function StudentProfilePage({
           timezone: timezone.trim(),
           whatsapp: whatsapp.trim() || null,
           country: country.trim() || null,
+          gender,
+          teacherGenderPreference,
           bookingPreference
         })
       });
@@ -553,6 +573,61 @@ export default function StudentProfilePage({
                   </div>
                 </div>
 
+                {/* Gender & Teacher Preference (Matching Metadata) */}
+                <div className="pt-2 border-t border-border grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                      {isAr ? 'الجنس' : 'Gender'}
+                    </label>
+                    <div className="flex gap-2">
+                      {[
+                        { value: 'male', labelEn: 'Male', labelAr: 'ذكر' },
+                        { value: 'female', labelEn: 'Female', labelAr: 'أنثى' },
+                        { value: 'undisclosed', labelEn: 'Prefer not to say', labelAr: 'غير محدد' }
+                      ].map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() => setGender(opt.value as any)}
+                          className={`flex-1 py-2 px-2.5 rounded-xl text-xs font-medium border transition-colors ${
+                            gender === opt.value
+                              ? 'bg-primary/10 border-primary text-primary font-semibold'
+                              : 'border-border bg-surface-subtle text-muted-foreground hover:bg-surface hover:text-foreground'
+                          }`}
+                        >
+                          {isAr ? opt.labelAr : opt.labelEn}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                      {isAr ? 'تفضيل جنس المعلم' : 'Teacher Preference'}
+                    </label>
+                    <div className="flex gap-2">
+                      {[
+                        { value: 'no_preference', labelEn: 'No preference', labelAr: 'بدون تفضيل' },
+                        { value: 'male_teacher', labelEn: 'Male teacher', labelAr: 'معلم' },
+                        { value: 'female_teacher', labelEn: 'Female teacher', labelAr: 'معلمة' }
+                      ].map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() => setTeacherGenderPreference(opt.value as any)}
+                          className={`flex-1 py-2 px-2.5 rounded-xl text-xs font-medium border transition-colors ${
+                            teacherGenderPreference === opt.value
+                              ? 'bg-primary/10 border-primary text-primary font-semibold'
+                              : 'border-border bg-surface-subtle text-muted-foreground hover:bg-surface hover:text-foreground'
+                          }`}
+                        >
+                          {isAr ? opt.labelAr : opt.labelEn}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
                 {/* Action Button */}
                 <div className="pt-3 border-t border-border flex items-center justify-between">
                   <Button
@@ -570,32 +645,32 @@ export default function StudentProfilePage({
             </div>
           )}
 
-          {/* PANEL 2: Learning Track & Ustadh Mahmoud */}
+          {/* PANEL 2: Learning Track & Teacher */}
           {activeCategory === 'learning' && (
             <div className="rounded-2xl border border-border bg-surface p-5 sm:p-7 shadow-2xs space-y-6">
               <div className="border-b border-border pb-4">
                 <h2 className="text-lg sm:text-xl font-serif font-bold text-foreground">
-                  {isAr ? 'المسار التعليمي والأستاذ' : 'Learning Track & Teacher'}
+                  {isAr ? 'المسار التعليمي والمعلم' : 'Learning Track & Teacher'}
                 </h2>
                 <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">
                   {isAr
-                    ? 'تفاصيل الإشراف المباشر مع الأستاذ محمود، المستوى الحالي، والأهداف المحددة'
-                    : 'Your 1-on-1 teaching relationship with Ustadh Mahmoud, current level, and target goals'}
+                    ? 'تفاصيل الإشراف التعليمي المباشر، المستوى الحالي، والأهداف المحددة'
+                    : 'Your 1-on-1 teaching relationship, current level, and target goals'}
                 </p>
               </div>
 
               {/* Teacher Relationship Banner */}
               <div className="p-4 rounded-2xl bg-surface-subtle border border-border flex items-start gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-primary/15 border border-primary/25 text-primary flex items-center justify-center font-serif font-bold text-lg shrink-0 mt-0.5 select-none">
-                  م
+                  {profile?.assignedTeacherName ? profile.assignedTeacherName.charAt(0) : 'م'}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-serif font-bold text-foreground text-base">
-                      {isAr ? 'الأستاذ محمود' : 'Ustadh Mahmoud'}
+                      {profile?.assignedTeacherName || (profile?.assignedTeacherId ? 'Ustadh Mahmoud' : (isAr ? 'الأستاذ محمود (المعلم الرئيسي)' : 'Ustadh Mahmoud (Primary Teacher)'))}
                     </span>
                     <Badge variant="secondary" className="text-[10px]">
-                      {isAr ? 'إشراف فردي مباشر' : '1-on-1 Teacher'}
+                      {profile?.assignedTeacherId ? (isAr ? 'معلم مخصص' : 'Assigned Teacher') : (isAr ? 'المعلم الافتراضي' : 'Default Teacher')}
                     </Badge>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">

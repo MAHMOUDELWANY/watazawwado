@@ -163,6 +163,10 @@ export interface DashboardStudentListItem {
   parent_name: string | null;
   country: string | null;
   timezone: string | null;
+  gender?: 'male' | 'female' | 'undisclosed' | null;
+  teacher_gender_preference?: 'no_preference' | 'male_teacher' | 'female_teacher' | null;
+  assigned_teacher_id?: string | null;
+  assigned_teacher_name?: string | null;
   current_level: 'beginner' | 'elementary' | 'intermediate' | 'advanced' | null;
   status: 'active' | 'paused' | 'inactive';
   primary_service_id: string | null;
@@ -199,6 +203,10 @@ export interface DashboardStudentDetail {
     learner_type: 'adult' | 'child' | null;
     country: string | null;
     timezone: string | null;
+    gender?: 'male' | 'female' | 'undisclosed' | null;
+    teacher_gender_preference?: 'no_preference' | 'male_teacher' | 'female_teacher' | null;
+    assigned_teacher_id?: string | null;
+    assigned_teacher_name?: string | null;
     current_level: 'beginner' | 'elementary' | 'intermediate' | 'advanced' | null;
     status: 'active' | 'paused' | 'inactive';
     notes: string | null;
@@ -280,6 +288,39 @@ export interface DashboardStudentDetail {
   } | null;
   notes: StudentNote[];
   services?: Array<{ id: string; title: string; arabic_title?: string }>;
+}
+
+export interface TeacherAccountItem {
+  id?: string;
+  email: string;
+  role: 'super_admin' | 'teacher';
+  is_active: boolean;
+  display_name: string;
+  assigned_students_count: number;
+  upcoming_lessons_count: number;
+  completed_lessons_count: number;
+  created_at?: string;
+}
+
+export interface SuperAdminOverviewMetrics {
+  active_students: number;
+  active_teachers: number;
+  lessons_today: number;
+  lessons_this_week: number;
+  trials_upcoming: number;
+  trials_total: number;
+  new_students_30d: number;
+  pending_payments: number;
+  unassigned_students: number;
+  students_needing_attention: number;
+  teacher_capacity: Array<{
+    teacher_id?: string;
+    email: string;
+    name: string;
+    role: string;
+    active_students: number;
+    lessons_this_week: number;
+  }>;
 }
 
 export type PaymentRecordStatus = 'pending' | 'confirmed' | 'rejected' | 'refunded';

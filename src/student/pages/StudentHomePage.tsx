@@ -889,11 +889,11 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
           <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5 space-y-3 text-start">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-full bg-primary/15 text-primary flex items-center justify-center font-bold text-sm">
-                م
+                {profile?.assignedTeacherName ? profile.assignedTeacherName.charAt(0) : 'و'}
               </div>
               <div>
                 <span className="text-xs font-semibold text-foreground block">
-                  {isAr ? 'الأستاذ محمود العلواني' : 'Ustadh Mahmoud'}
+                  {profile?.assignedTeacherName || (isAr ? 'جارٍ تعيين المعلم' : 'Teacher assignment pending')}
                 </span>
                 <span className="text-[11px] text-muted-foreground block">
                   {isAr ? 'معلمك الخاص' : 'Your 1-on-1 Mentor'}
@@ -904,7 +904,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
             <p className="text-xs text-muted-foreground leading-relaxed">
               {isAr
                 ? 'هل لديك استفسار حول خطتك التعليمية أو تحتاج لمراجعة تقدمك؟ تواصل مباشرة عبر واتساب.'
-                : 'Need to coordinate your lesson plan or have questions about what to prepare? You can message Mahmoud directly on WhatsApp.'}
+                : 'Need to coordinate your lesson plan or have questions about what to prepare? You can message Ustadh Mahmoud directly on WhatsApp.'}
             </p>
 
             <a
