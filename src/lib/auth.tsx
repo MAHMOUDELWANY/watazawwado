@@ -7,13 +7,34 @@ export const APPROVED_TEACHER_EMAILS = [
   'mahmoudelwany98@gmail.com'
 ];
 
+export async function verifyServerTeacherStatus(token?: string | null): Promise<boolean> {
+  if (!token) return false;
+  try {
+    const res = await fetch('/api/dashboard/me', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (!res.ok) return false;
+    const data = await res.json();
+    return Boolean(
+      data?.user?.isTeacher ||
+      data?.user?.role === 'teacher' ||
+      data?.user?.role === 'super_admin' ||
+      data?.role === 'teacher'
+    );
+  } catch {
+    return false;
+  }
+}
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
   isTeacherAuthenticated: boolean;
   userRole: 'teacher' | 'student' | null;
-  signIn: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  signIn: (email: string, password: string) => Promise<{ success: boolean; role?: 'teacher' | 'student' | null; error?: string }>;
   signUp: (email: string, password: string, name: string) => Promise<{ success: boolean; error?: string }>;
   resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
   updatePassword: (newPassword: string) => Promise<{ success: boolean; error?: string }>;
@@ -31,15 +52,29 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const isConfigured = isSupabaseConfigured();
   const isProduction = Boolean((import.meta as any).env?.PROD);
 
-  // Helper to determine role for UX navigation. 
+  // Helper to determine role for UX navigation via authoritative server state. 
   // Security is strictly enforced server-side.
-  const resolveUxRole = (email?: string): 'teacher' | 'student' | null => {
-    if (!email) return null;
-    const normalizedEmail = email.toLowerCase().trim();
-    if (APPROVED_TEACHER_EMAILS.includes(normalizedEmail)) {
+  const resolveRole = async (currSession: Session | null): Promise<'teacher' | 'student' | null> => {
+    if (!currSession?.user?.email) return null;
+    const token = currSession.access_token;
+    if (!token) return 'student';
+
+    // Allow dev token in non-production
+    if (!isProduction && token === 'dev-teacher-token') {
       return 'teacher';
     }
-    return 'student';
+
+    try {
+      const isTeacher = await verifyServerTeacherStatus(token);
+      if (isTeacher) return 'teacher';
+      return 'student';
+    } catch {
+      // Safe fallback in non-production offline environments only
+      if (!isProduction && APPROVED_TEACHER_EMAILS.includes(currSession.user.email.toLowerCase().trim())) {
+        return 'teacher';
+      }
+      return 'student';
+    }
   };
 
   useEffect(() => {
@@ -66,26 +101,36 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
       return;
     }
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      setUserRole(resolveUxRole(session?.user?.email));
+      if (session) {
+        const role = await resolveRole(session);
+        setUserRole(role);
+      } else {
+        setUserRole(null);
+      }
       setLoading(false);
     });
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
-      setUserRole(resolveUxRole(session?.user?.email));
+      if (session) {
+        const role = await resolveRole(session);
+        setUserRole(role);
+      } else {
+        setUserRole(null);
+      }
       setLoading(false);
     });
 
     return () => subscription.unsubscribe();
   }, [isConfigured, isProduction]);
 
-  const signIn = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+  const signIn = async (email: string, password: string): Promise<{ success: boolean; role?: 'teacher' | 'student' | null; error?: string }> => {
     if (!email || !password) {
       return { success: false, error: 'Please enter both your email address and password.' };
     }
@@ -112,7 +157,7 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
           created_at: new Date().toISOString(),
         } as any);
         setUserRole('teacher');
-        return { success: true };
+        return { success: true, role: 'teacher' };
       } else {
         
         setUser({
@@ -124,7 +169,7 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
           created_at: new Date().toISOString(),
         } as any);
         setUserRole('student');
-        return { success: true };
+        return { success: true, role: 'student' };
       }
     }
 
@@ -140,8 +185,9 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
       setUser(data.user);
       setSession(data.session);
-      setUserRole(resolveUxRole(data.user?.email));
-      return { success: true };
+      const role = await resolveRole(data.session);
+      setUserRole(role);
+      return { success: true, role };
     } catch (err: any) {
       return { success: false, error: err.message || 'An unexpected authentication error occurred.' };
     }

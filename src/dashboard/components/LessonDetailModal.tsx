@@ -17,6 +17,7 @@ import {
   ShieldCheck,
   DollarSign,
   CalendarCheck2,
+  BookOpen,
   UserX
 } from 'lucide-react';
 import { DashboardLesson } from '../types';
@@ -35,37 +36,85 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
+  // Lesson outcome actions state
+  const [isMarkingCompleted, setIsMarkingCompleted] = useState(false);
+  const [coveredMaterial, setCoveredMaterial] = useState('');
+  const [completionNotes, setCompletionNotes] = useState('');
+
+  const [isMarkingNoShow, setIsMarkingNoShow] = useState(false);
+  const [noShowReason, setNoShowReason] = useState('');
+  const [noShowCreditDecision, setNoShowCreditDecision] = useState<'returned' | 'used'>('returned');
+
   useEffect(() => {
     setCurrentStatus(lesson?.status || null);
     setStatusMessage(null);
+    setIsMarkingCompleted(false);
+    setIsMarkingNoShow(false);
+    setCoveredMaterial('');
+    setCompletionNotes('');
+    setNoShowReason('');
+    setNoShowCreditDecision('returned');
   }, [lesson]);
 
-  const handleUpdateStatus = async (newStatus: 'completed' | 'no_show') => {
+  const handleConfirmCompleted = async () => {
     if (!lesson) return;
-    
-    if (newStatus === 'completed') {
-      if (!window.confirm('Mark lesson as completed?\n\nThis records that the lesson took place.')) return;
-    } else if (newStatus === 'no_show') {
-      if (!window.confirm('Mark student as no-show?\n\nThis records that the scheduled lesson did not take place because the student did not attend.')) return;
-    }
-
     setUpdatingStatus(true);
     setStatusMessage(null);
     try {
       await dashboardFetch(`/api/dashboard/bookings/${lesson.id}`, {
         method: 'PATCH',
-        body: JSON.stringify({ status: newStatus })
+        body: JSON.stringify({
+          status: 'completed',
+          covered_material: coveredMaterial.trim() || undefined,
+          notes: completionNotes.trim()
+            ? (lesson.notes ? `${lesson.notes}\n[Lesson Notes]: ${completionNotes.trim()}` : completionNotes.trim())
+            : undefined
+        })
       });
-      setCurrentStatus(newStatus);
+      setCurrentStatus('completed');
       setStatusMessage({
         type: 'success',
-        text: newStatus === 'completed' ? 'Marked as completed.' : 'Recorded as no-show.'
+        text: 'Marked as completed.'
       });
+      setIsMarkingCompleted(false);
       if (onBookingUpdated) onBookingUpdated();
     } catch (err: any) {
       setStatusMessage({
         type: 'error',
         text: err?.message || 'Failed to update lesson status.'
+      });
+    } finally {
+      setUpdatingStatus(false);
+    }
+  };
+
+  const handleConfirmNoShow = async () => {
+    if (!lesson) return;
+    setUpdatingStatus(true);
+    setStatusMessage(null);
+    try {
+      await dashboardFetch(`/api/dashboard/bookings/${lesson.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          status: 'no_show',
+          no_show_credit_decision: noShowCreditDecision,
+          consume_package_credit: noShowCreditDecision === 'used',
+          notes: noShowReason.trim()
+            ? (lesson.notes ? `${lesson.notes}\n[No-Show Note]: ${noShowReason.trim()}` : `[No-Show Note]: ${noShowReason.trim()}`)
+            : undefined
+        })
+      });
+      setCurrentStatus('no_show');
+      setStatusMessage({
+        type: 'success',
+        text: 'Recorded as no-show.'
+      });
+      setIsMarkingNoShow(false);
+      if (onBookingUpdated) onBookingUpdated();
+    } catch (err: any) {
+      setStatusMessage({
+        type: 'error',
+        text: err?.message || 'Failed to record no-show.'
       });
     } finally {
       setUpdatingStatus(false);
@@ -342,6 +391,132 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
               </p>
             </div>
           )}
+
+          {/* Completed Lesson Form Drawer */}
+          {isMarkingCompleted && (
+            <div className="p-4 bg-primary/10 border border-primary/20 rounded-xl space-y-3 animate-in fade-in">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-semibold text-primary flex items-center gap-1.5">
+                  <CalendarCheck2 className="w-3.5 h-3.5" />
+                  Record Completed Lesson
+                </h4>
+                <button 
+                  onClick={() => setIsMarkingCompleted(false)} 
+                  className="text-xs text-muted-foreground hover:text-foreground cursor-pointer"
+                >
+                  Dismiss
+                </button>
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-foreground mb-1">
+                  Covered Material <span className="text-muted-foreground font-normal">(Surah / Ayahs, Page, Topics taught)</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Surah Al-Baqarah Ayahs 1–25, Tajweed rules of Meem Sakinah"
+                  value={coveredMaterial}
+                  onChange={(e) => setCoveredMaterial(e.target.value)}
+                  className="w-full p-2 text-xs bg-surface border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-medium text-foreground mb-1">
+                  Observations & Notes <span className="text-muted-foreground font-normal">(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Student demonstrated good Tajweed, review Ayah 15 next session"
+                  value={completionNotes}
+                  onChange={(e) => setCompletionNotes(e.target.value)}
+                  className="w-full p-2 text-xs bg-surface border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+                />
+              </div>
+              <button
+                onClick={handleConfirmCompleted}
+                disabled={updatingStatus}
+                className="w-full py-2 text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary-hover rounded-xl transition-colors disabled:opacity-50 cursor-pointer min-h-[40px]"
+              >
+                {updatingStatus ? 'Recording Completion...' : 'Confirm Lesson Completed'}
+              </button>
+            </div>
+          )}
+
+          {/* No-Show Form Drawer */}
+          {isMarkingNoShow && (
+            <div className="p-4 bg-warning/10 border border-warning/20 rounded-xl space-y-3 animate-in fade-in">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-semibold text-warning flex items-center gap-1.5">
+                  <UserX className="w-3.5 h-3.5" />
+                  Record Student No-Show
+                </h4>
+                <button onClick={() => setIsMarkingNoShow(false)} className="text-xs text-muted-foreground hover:text-foreground cursor-pointer">
+                  Dismiss
+                </button>
+              </div>
+
+              {/* Explicit Credit Decision Selector */}
+              <div className="space-y-1.5">
+                <label className="block text-[11px] font-semibold text-foreground">
+                  Package Credit Decision:
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setNoShowCreditDecision('returned')}
+                    className={`p-2.5 rounded-xl border text-start transition-all cursor-pointer ${
+                      noShowCreditDecision === 'returned'
+                        ? 'bg-surface border-primary ring-1 ring-primary text-foreground'
+                        : 'bg-surface/60 border-border text-muted-foreground hover:bg-surface'
+                    }`}
+                  >
+                    <span className="font-semibold text-xs block text-foreground">
+                      Return Credit
+                    </span>
+                    <span className="text-[10px] text-muted-foreground block mt-0.5">
+                      Refund / keep credit in student's package.
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setNoShowCreditDecision('used')}
+                    className={`p-2.5 rounded-xl border text-start transition-all cursor-pointer ${
+                      noShowCreditDecision === 'used'
+                        ? 'bg-surface border-warning ring-1 ring-warning text-foreground'
+                        : 'bg-surface/60 border-border text-muted-foreground hover:bg-surface'
+                    }`}
+                  >
+                    <span className="font-semibold text-xs block text-foreground">
+                      Deduct 1 Credit
+                    </span>
+                    <span className="text-[10px] text-muted-foreground block mt-0.5">
+                      Forfeit / mark 1 credit as used for missed lesson.
+                    </span>
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-medium text-foreground mb-1">
+                  Reason / Note <span className="text-muted-foreground font-normal">(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Optional note (e.g. Student did not attend, waited 15 mins)"
+                  value={noShowReason}
+                  onChange={(e) => setNoShowReason(e.target.value)}
+                  className="w-full p-2 text-xs bg-surface border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-warning/40"
+                />
+              </div>
+              <button
+                onClick={handleConfirmNoShow}
+                disabled={updatingStatus}
+                className="w-full py-2 text-xs font-semibold text-warning-foreground bg-warning hover:bg-warning/90 rounded-xl transition-colors disabled:opacity-50 cursor-pointer min-h-[40px]"
+              >
+                {updatingStatus ? 'Recording No-Show...' : 'Confirm Student No-Show'}
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Footer */}
@@ -357,24 +532,34 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
 
             {currentStatus !== 'completed' && currentStatus !== 'no_show' && currentStatus !== 'cancelled' && (
               <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handleUpdateStatus('completed')}
-                  disabled={updatingStatus || Boolean(startUtc > DateTime.now().plus({ minutes: 15 }))}
-                  title={startUtc > DateTime.now().plus({ minutes: 15 }) ? 'Cannot mark completed before lesson start time' : 'Mark lesson completed'}
-                  className="px-3 py-1.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs font-semibold shadow-2xs transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <CalendarCheck2 className="w-3.5 h-3.5" />
-                  {updatingStatus ? 'Updating...' : 'Mark Completed'}
-                </button>
-                <button
-                  onClick={() => handleUpdateStatus('no_show')}
-                  disabled={updatingStatus || Boolean(startUtc > DateTime.now().plus({ minutes: 15 }))}
-                  title={startUtc > DateTime.now().plus({ minutes: 15 }) ? 'Cannot record no-show before lesson start time' : 'Record student no-show'}
-                  className="px-3 py-1.5 bg-warning/10 hover:bg-warning/20 text-warning-foreground border border-warning/30 rounded-xl text-xs font-medium transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <UserX className="w-3.5 h-3.5" />
-                  No-Show
-                </button>
+                {!isMarkingCompleted && (
+                  <button
+                    onClick={() => {
+                      setIsMarkingCompleted(true);
+                      setIsMarkingNoShow(false);
+                    }}
+                    disabled={updatingStatus || Boolean(startUtc > DateTime.now().plus({ minutes: 15 }))}
+                    title={startUtc > DateTime.now().plus({ minutes: 15 }) ? 'Cannot mark completed before lesson start time' : 'Mark lesson completed'}
+                    className="px-3 py-1.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs font-semibold shadow-2xs transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                  >
+                    <CalendarCheck2 className="w-3.5 h-3.5" />
+                    Mark Completed
+                  </button>
+                )}
+                {!isMarkingNoShow && (
+                  <button
+                    onClick={() => {
+                      setIsMarkingNoShow(true);
+                      setIsMarkingCompleted(false);
+                    }}
+                    disabled={updatingStatus || Boolean(startUtc > DateTime.now().plus({ minutes: 15 }))}
+                    title={startUtc > DateTime.now().plus({ minutes: 15 }) ? 'Cannot record no-show before lesson start time' : 'Record student no-show'}
+                    className="px-3 py-1.5 bg-warning/10 hover:bg-warning/20 text-warning-foreground border border-warning/30 rounded-xl text-xs font-medium transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                  >
+                    <UserX className="w-3.5 h-3.5" />
+                    No-Show
+                  </button>
+                )}
               </div>
             )}
           </div>

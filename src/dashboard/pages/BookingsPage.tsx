@@ -64,6 +64,7 @@ export default function BookingsPage() {
   const [paymentsList, setPaymentsList] = useState<any[]>([]);
   const [paymentsStatusFilter, setPaymentsStatusFilter] = useState('all');
   const [loadingPayments, setLoadingPayments] = useState(false);
+  const [paymentsError, setPaymentsError] = useState<string | null>(null);
 
   // Modals state
   const [selectedBookingId, setSelectedBookingId] = useState<string | null>(null);
@@ -102,13 +103,15 @@ export default function BookingsPage() {
   // Fetch payments for secondary tab
   const fetchPayments = useCallback(async () => {
     setLoadingPayments(true);
+    setPaymentsError(null);
     try {
       const params = new URLSearchParams();
       if (paymentsStatusFilter !== 'all') params.set('status', paymentsStatusFilter);
       const data = await dashboardFetch(`/api/dashboard/payments?${params.toString()}`);
       setPaymentsList(data.payments || []);
-    } catch (err) {
+    } catch (err: any) {
       console.warn('[Fetch Payments Error]', err);
+      setPaymentsError(err?.message || 'Failed to load payments ledger. Please try again.');
     } finally {
       setLoadingPayments(false);
     }
@@ -567,15 +570,31 @@ export default function BookingsPage() {
 
             <button
               onClick={fetchPayments}
-              className="p-2 text-muted-foreground hover:text-foreground rounded-lg hover:bg-surface-subtle transition-colors cursor-pointer"
+              disabled={loadingPayments}
+              className="p-2 text-muted-foreground hover:text-foreground rounded-lg hover:bg-surface-subtle transition-colors cursor-pointer disabled:opacity-50"
               aria-label="Refresh payments ledger"
               title="Refresh payments ledger"
             >
-              <RefreshCw className="w-4 h-4" />
+              <RefreshCw className={`w-4 h-4 ${loadingPayments ? 'animate-spin' : ''}`} />
             </button>
           </div>
 
-          {loadingPayments ? (
+          {paymentsError ? (
+            <div className="bg-destructive/10 border border-destructive/20 text-destructive rounded-2xl p-6 text-center space-y-3">
+              <AlertCircle className="w-8 h-8 mx-auto" />
+              <div className="space-y-1">
+                <h3 className="text-sm font-semibold">Unable to Load Payment Ledger</h3>
+                <p className="text-xs text-destructive/80 max-w-md mx-auto">{paymentsError}</p>
+              </div>
+              <button
+                onClick={fetchPayments}
+                className="px-4 py-2 text-xs font-semibold bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-xl transition-colors cursor-pointer inline-flex items-center gap-1.5"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                Retry Loading Payments
+              </button>
+            </div>
+          ) : loadingPayments ? (
             <div className="space-y-3 animate-pulse">
               {[1, 2, 3].map(i => (
                 <div key={i} className="bg-surface rounded-2xl h-20 border border-border"></div>

@@ -1312,6 +1312,20 @@ function transformBookingToDashboardLesson(b: any) {
   };
 }
 
+// 12b. DASHBOARD: Teacher identity / workspace role verification
+app.get('/api/dashboard/me', verifyTeacherAuth, async (req: any, res: any) => {
+  return res.json({
+    success: true,
+    user: {
+      id: req.teacherUser?.id,
+      email: req.teacherUser?.email,
+      name: req.teacherUser?.name || req.teacherUser?.user_metadata?.name || 'Ustadh Mahmoud',
+      role: req.teacherUser?.appRole || 'teacher',
+      isTeacher: true
+    }
+  });
+});
+
 // 13. DASHBOARD: Fetch today's lessons
 app.get('/api/dashboard/today', verifyTeacherAuth, async (req, res) => {
   try {
@@ -2876,13 +2890,17 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
 
     // 3. Transactional Outcome Path
     if (status === 'completed' || status === 'no_show') {
+      const creditDecision = req.body.no_show_credit_decision === 'used' || req.body.consume_package_credit === true
+        ? 'used'
+        : 'returned';
+
       const { data: rpcData, error: rpcErr } = await supabase.rpc('teacher_record_lesson_outcome', {
         p_booking_id: id,
         p_teacher_id: (req as any).teacherUser?.id,
         p_outcome: status,
         p_notes: notes || null,
         p_covered_material: covered_material || null,
-        p_no_show_credit_decision: req.body.consume_package_credit === true ? 'used' : 'returned'
+        p_no_show_credit_decision: creditDecision
       });
 
       if (rpcErr) {

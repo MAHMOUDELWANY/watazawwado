@@ -22,6 +22,7 @@ import {
   CalendarCheck2,
   ChevronRight,
   Plus,
+  BookOpen,
   UserX
 } from 'lucide-react';
 import { DashboardBookingDetail, DashboardPayment, BookingPaymentStatus } from '../types';
@@ -66,8 +67,15 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
   // No-Show state
   const [isMarkingNoShow, setIsMarkingNoShow] = useState(false);
   const [noShowReason, setNoShowReason] = useState('');
+  const [noShowCreditDecision, setNoShowCreditDecision] = useState<'returned' | 'used'>('returned');
   const [markingNoShow, setMarkingNoShow] = useState(false);
+
+  // Completed Lesson state
+  const [isMarkingCompleted, setIsMarkingCompleted] = useState(false);
+  const [coveredMaterial, setCoveredMaterial] = useState('');
+  const [completionNotes, setCompletionNotes] = useState('');
   const [markingCompleted, setMarkingCompleted] = useState(false);
+  const [lessonSession, setLessonSession] = useState<any>(null);
 
   // Record payment modal state
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -82,6 +90,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
       if (data?.booking) {
         setBooking(data.booking);
         setNotes(data.booking.notes || '');
+        setLessonSession(data?.context?.lesson_session || null);
       } else {
         setError('Booking details could not be found.');
       }
@@ -97,6 +106,8 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
       loadBooking();
       setIsRescheduling(false);
       setIsCancelling(false);
+      setIsMarkingNoShow(false);
+      setIsMarkingCompleted(false);
       setActionMessage(null);
     }
   }, [isOpen, bookingId]);
@@ -139,16 +150,24 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
     }
   };
 
-  const handleMarkCompleted = async () => {
+  const handleConfirmCompleted = async () => {
     if (!booking) return;
-    if (!window.confirm('Mark lesson as completed?\n\nThis records that the lesson took place.')) return;
     setMarkingCompleted(true);
     try {
       await dashboardFetch(`/api/dashboard/bookings/${booking.id}`, {
         method: 'PATCH',
-        body: JSON.stringify({ status: 'completed' })
+        body: JSON.stringify({
+          status: 'completed',
+          covered_material: coveredMaterial.trim() || undefined,
+          notes: completionNotes.trim()
+            ? (booking.notes ? `${booking.notes}\n[Lesson Notes]: ${completionNotes.trim()}` : completionNotes.trim())
+            : undefined
+        })
       });
-      setActionMessage({ type: 'success', text: 'Booking marked as completed.' });
+      setActionMessage({ type: 'success', text: 'Lesson recorded as completed.' });
+      setIsMarkingCompleted(false);
+      setCoveredMaterial('');
+      setCompletionNotes('');
       loadBooking();
       if (onBookingUpdated) onBookingUpdated();
     } catch (err: any) {
@@ -160,19 +179,20 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
   const handleConfirmNoShow = async () => {
     if (!booking) return;
-    if (!window.confirm('Mark student as no-show?\n\nThis records that the scheduled lesson did not take place because the student did not attend.')) return;
     setMarkingNoShow(true);
     try {
       await dashboardFetch(`/api/dashboard/bookings/${booking.id}`, {
         method: 'PATCH',
         body: JSON.stringify({
           status: 'no_show',
+          no_show_credit_decision: noShowCreditDecision,
+          consume_package_credit: noShowCreditDecision === 'used',
           notes: noShowReason.trim()
             ? (booking.notes ? `${booking.notes}\n[No-Show Note]: ${noShowReason.trim()}` : `[No-Show Note]: ${noShowReason.trim()}`)
             : undefined
         })
       });
-      setActionMessage({ type: 'success', text: 'Booking marked as No-Show.' });
+      setActionMessage({ type: 'success', text: 'Booking recorded as No-Show.' });
       setIsMarkingNoShow(false);
       setNoShowReason('');
       loadBooking();
@@ -764,6 +784,19 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                 </div>
               </div>
 
+              {/* Recorded Covered Material Card (if session already has covered material) */}
+              {lessonSession?.covered_material && (
+                <div className="bg-primary/5 p-4 rounded-xl border border-primary/20 shadow-2xs space-y-1.5">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-primary flex items-center gap-1.5">
+                    <BookOpen className="w-3.5 h-3.5" />
+                    Covered Material Recorded
+                  </span>
+                  <p className="text-xs text-foreground font-medium leading-relaxed">
+                    {lessonSession.covered_material}
+                  </p>
+                </div>
+              )}
+
               {/* Reschedule Drawer/Box */}
               {isRescheduling && (
                 <div className="p-4 bg-secondary/15 border border-secondary/30 rounded-xl space-y-3 animate-in fade-in">
@@ -835,6 +868,55 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                 </div>
               )}
 
+              {/* Completed Lesson Box */}
+              {isMarkingCompleted && (
+                <div className="p-4 bg-primary/10 border border-primary/20 rounded-xl space-y-3 animate-in fade-in">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-semibold text-primary flex items-center gap-1.5">
+                      <CalendarCheck2 className="w-3.5 h-3.5" />
+                      Record Completed Lesson
+                    </h4>
+                    <button 
+                      onClick={() => setIsMarkingCompleted(false)} 
+                      className="text-xs text-muted-foreground hover:text-foreground cursor-pointer"
+                    >
+                      Dismiss
+                    </button>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-medium text-foreground mb-1">
+                      Covered Material <span className="text-muted-foreground font-normal">(Surah / Ayahs, Page, Topics taught)</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Surah Al-Baqarah Ayahs 1–25, Tajweed rules of Meem Sakinah"
+                      value={coveredMaterial}
+                      onChange={(e) => setCoveredMaterial(e.target.value)}
+                      className="w-full p-2 text-xs bg-surface border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-medium text-foreground mb-1">
+                      Observations & Notes <span className="text-muted-foreground font-normal">(optional)</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Student demonstrated good Tajweed, review Ayah 15 next session"
+                      value={completionNotes}
+                      onChange={(e) => setCompletionNotes(e.target.value)}
+                      className="w-full p-2 text-xs bg-surface border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+                    />
+                  </div>
+                  <button
+                    onClick={handleConfirmCompleted}
+                    disabled={markingCompleted}
+                    className="w-full py-2 text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary-hover rounded-xl transition-colors disabled:opacity-50 cursor-pointer min-h-[40px]"
+                  >
+                    {markingCompleted ? 'Recording Completion...' : 'Confirm Lesson Completed'}
+                  </button>
+                </div>
+              )}
+
               {/* No-Show Box */}
               {isMarkingNoShow && (
                 <div className="p-4 bg-warning/10 border border-warning/20 rounded-xl space-y-3 animate-in fade-in">
@@ -847,13 +929,61 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                       Dismiss
                     </button>
                   </div>
-                  <input
-                    type="text"
-                    placeholder="Optional note (e.g. Student did not attend, waited 15 mins)"
-                    value={noShowReason}
-                    onChange={(e) => setNoShowReason(e.target.value)}
-                    className="w-full p-2 text-xs bg-surface border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-warning/40"
-                  />
+
+                  {/* Explicit Credit Decision Selector */}
+                  <div className="space-y-1.5">
+                    <label className="block text-[11px] font-semibold text-foreground">
+                      Package Credit Decision:
+                    </label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setNoShowCreditDecision('returned')}
+                        className={`p-2.5 rounded-xl border text-start transition-all cursor-pointer ${
+                          noShowCreditDecision === 'returned'
+                            ? 'bg-surface border-primary ring-1 ring-primary text-foreground'
+                            : 'bg-surface/60 border-border text-muted-foreground hover:bg-surface'
+                        }`}
+                      >
+                        <span className="font-semibold text-xs block text-foreground">
+                          Return Credit
+                        </span>
+                        <span className="text-[10px] text-muted-foreground block mt-0.5">
+                          Refund / keep credit in student's package.
+                        </span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setNoShowCreditDecision('used')}
+                        className={`p-2.5 rounded-xl border text-start transition-all cursor-pointer ${
+                          noShowCreditDecision === 'used'
+                            ? 'bg-surface border-warning ring-1 ring-warning text-foreground'
+                            : 'bg-surface/60 border-border text-muted-foreground hover:bg-surface'
+                        }`}
+                      >
+                        <span className="font-semibold text-xs block text-foreground">
+                          Deduct 1 Credit
+                        </span>
+                        <span className="text-[10px] text-muted-foreground block mt-0.5">
+                          Forfeit / mark 1 credit as used for missed lesson.
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-medium text-foreground mb-1">
+                      Reason / Note <span className="text-muted-foreground font-normal">(optional)</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Optional note (e.g. Student did not attend, waited 15 mins)"
+                      value={noShowReason}
+                      onChange={(e) => setNoShowReason(e.target.value)}
+                      className="w-full p-2 text-xs bg-surface border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-warning/40"
+                    />
+                  </div>
                   <button
                     onClick={handleConfirmNoShow}
                     disabled={markingNoShow}
@@ -883,19 +1013,31 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
                   {booking.status !== 'completed' && booking.status !== 'no_show' && booking.status !== 'cancelled' && (
                     <>
-                      <button
-                        onClick={handleMarkCompleted}
-                        disabled={markingCompleted || Boolean(startUtc && startUtc > DateTime.now().plus({ minutes: 15 }))}
-                        title={startUtc && startUtc > DateTime.now().plus({ minutes: 15 }) ? 'Cannot mark completed before lesson start time' : 'Mark lesson completed'}
-                        className="px-3.5 py-2 text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary-hover rounded-xl shadow-xs transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer min-h-[40px]"
-                      >
-                        <CalendarCheck2 className="w-4 h-4" />
-                        {markingCompleted ? 'Saving...' : 'Mark Completed'}
-                      </button>
+                      {!isMarkingCompleted && (
+                        <button
+                          onClick={() => {
+                            setIsMarkingCompleted(true);
+                            setIsMarkingNoShow(false);
+                            setIsRescheduling(false);
+                            setIsCancelling(false);
+                          }}
+                          disabled={markingCompleted || Boolean(startUtc && startUtc > DateTime.now().plus({ minutes: 15 }))}
+                          title={startUtc && startUtc > DateTime.now().plus({ minutes: 15 }) ? 'Cannot mark completed before lesson start time' : 'Mark lesson completed'}
+                          className="px-3.5 py-2 text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary-hover rounded-xl shadow-xs transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer min-h-[40px]"
+                        >
+                          <CalendarCheck2 className="w-4 h-4" />
+                          Mark Completed
+                        </button>
+                      )}
 
                       {!isMarkingNoShow && (
                         <button
-                          onClick={() => setIsMarkingNoShow(true)}
+                          onClick={() => {
+                            setIsMarkingNoShow(true);
+                            setIsMarkingCompleted(false);
+                            setIsRescheduling(false);
+                            setIsCancelling(false);
+                          }}
                           disabled={Boolean(startUtc && startUtc > DateTime.now().plus({ minutes: 15 }))}
                           title={startUtc && startUtc > DateTime.now().plus({ minutes: 15 }) ? 'Cannot record no-show before lesson start time' : 'Record student no-show'}
                           className="px-3.5 py-2 text-xs font-medium text-warning bg-warning/15 hover:bg-warning/25 rounded-xl border border-warning/30 transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer min-h-[40px]"

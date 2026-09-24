@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Mail, Lock, Loader2, ShieldCheck, ArrowRight, BookOpen, AlertCircle, ArrowLeft } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useTeacherAuth, APPROVED_TEACHER_EMAILS } from '../lib/auth';
+import { useTeacherAuth } from '../lib/auth';
 
 export default function StaffLoginPage() {
   const [email, setEmail] = useState('');
@@ -28,7 +28,7 @@ export default function StaffLoginPage() {
     const cleanEmail = email.toLowerCase().trim();
 
     try {
-      const { success, error: authError } = await signIn(cleanEmail, password);
+      const { success, role, error: authError } = await signIn(cleanEmail, password);
       
       if (!success) {
         setError(authError || 'Authentication failed. Please verify your credentials.');
@@ -36,8 +36,8 @@ export default function StaffLoginPage() {
         return;
       }
 
-      // Check if this email is an approved teacher email
-      if (!APPROVED_TEACHER_EMAILS.includes(cleanEmail)) {
+      // Check if this account has teacher role authorized by the server
+      if (role !== 'teacher') {
         await signOut();
         setError('This portal is reserved for teaching staff. Please use the Student Portal to access your learner account.');
         setIsSubmitting(false);
