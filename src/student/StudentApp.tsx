@@ -39,7 +39,7 @@ import { StudentAuthModal } from '../components/StudentAuthModal';
 import {
   buildStudentNotifications,
   countUnread,
-  notificationReadStateKey
+  getSavedNotificationReadIds
 } from './notificationsPresentation';
 
 export default function StudentApp() {
@@ -162,19 +162,8 @@ export default function StudentApp() {
 
         // Compute the unread badge from the SAME notification projection used by
         // StudentNotificationsPage, so the badge and the list never diverge.
-        // Read state is the current per-user localStorage contract.
-        const readIds: Set<string> = (() => {
-          try {
-            const saved = localStorage.getItem(notificationReadStateKey(user?.id));
-            if (saved) {
-              const parsed = JSON.parse(saved);
-              if (Array.isArray(parsed)) return new Set<string>(parsed.map(String));
-            }
-          } catch {
-            // Safe fallback
-          }
-          return new Set<string>();
-        })();
+        // Read state is the current per-user storage contract.
+        const readIds: Set<string> = getSavedNotificationReadIds(user?.id);
 
         const [profileRes, bookingsRes, paymentsRes, packagesRes] = await Promise.all([
           fetch('/api/student/me', { headers }),

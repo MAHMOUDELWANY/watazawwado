@@ -311,3 +311,18 @@ export function buildStudentNotifications(
 export function countUnread(items: StudentNotificationItem[]): number {
   return (items || []).filter(i => !i.read).length;
 }
+
+/** Safely read saved notification read IDs from client storage */
+export function getSavedNotificationReadIds(userId?: string): Set<string> {
+  if (typeof window === 'undefined') return new Set<string>();
+  try {
+    const saved = window.localStorage.getItem(notificationReadStateKey(userId));
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) return new Set<string>(parsed.map(String));
+    }
+  } catch {
+    // Safe fallback
+  }
+  return new Set<string>();
+}

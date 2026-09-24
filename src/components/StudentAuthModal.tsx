@@ -17,7 +17,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { signIn, signUp, resetPassword, updatePassword } = useTeacherAuth();
+  const { signIn, signUp, resetPassword, updatePassword, signOut } = useTeacherAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,8 +39,17 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
 
     try {
       if (view === 'login') {
-        const { success, error: authError } = await signIn(email, password);
+        const { success, role, error: authError } = await signIn(email, password, 'student');
         if (success) {
+          if (role === 'teacher') {
+            await signOut();
+            setError(
+              lang === 'ar'
+                ? 'هذا الحساب مخصص للكادر التعليمي. يرجى تسجيل الدخول عبر بوابة المعلم.'
+                : 'This is a Teaching Staff account. Teaching staff must sign in through the Staff Login portal.'
+            );
+            return;
+          }
           onClose();
           navigate('/student');
         } else {

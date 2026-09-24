@@ -28,7 +28,7 @@ export default function StaffLoginPage() {
     const cleanEmail = email.toLowerCase().trim();
 
     try {
-      const { success, role, error: authError } = await signIn(cleanEmail, password);
+      const { success, role, error: authError } = await signIn(cleanEmail, password, 'teacher');
       
       if (!success) {
         setError(authError || 'Authentication failed. Please verify your credentials.');
@@ -36,8 +36,8 @@ export default function StaffLoginPage() {
         return;
       }
 
-      // Check if this account has teacher role authorized by the server
-      if (role !== 'teacher') {
+      // Check if this account has teacher or super_admin role authorized by the server
+      if (role !== 'teacher' && role !== 'super_admin') {
         await signOut();
         setError('This portal is reserved for teaching staff. Please use the Student Portal to access your learner account.');
         setIsSubmitting(false);

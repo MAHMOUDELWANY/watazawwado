@@ -7,6 +7,13 @@ export const APPROVED_TEACHER_EMAILS = [
   'mahmoudelwany98@gmail.com'
 ];
 
+export interface TeacherAuthVerificationResult {
+  isTeacher: boolean;
+  role?: 'teacher' | 'super_admin' | null;
+  isInactive?: boolean;
+  error?: string;
+}
+
 export async function verifyServerTeacherStatus(token?: string | null): Promise<boolean> {
   if (!token) return false;
   try {
@@ -28,13 +35,46 @@ export async function verifyServerTeacherStatus(token?: string | null): Promise<
   }
 }
 
+export async function checkServerTeacherAuthDetails(token?: string | null): Promise<TeacherAuthVerificationResult> {
+  if (!token) return { isTeacher: false };
+  try {
+    const res = await fetch('/api/dashboard/me', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const rawRole = data?.user?.role || data?.role;
+      const role: 'teacher' | 'super_admin' = rawRole === 'super_admin' ? 'super_admin' : 'teacher';
+      const isTeacher = Boolean(
+        data?.user?.isTeacher ||
+        rawRole === 'teacher' ||
+        rawRole === 'super_admin'
+      );
+      return { isTeacher, role };
+    }
+    const data = await res.json().catch(() => null);
+    if (res.status === 403) {
+      if (data?.diagnosticStage === 'TEACHER_INACTIVE' || data?.error?.toLowerCase().includes('inactive')) {
+        return { isTeacher: false, isInactive: true, error: 'Teacher account is inactive.' };
+      }
+      return { isTeacher: false, error: data?.error || 'Account is not authorized for the teacher workspace.' };
+    }
+    return { isTeacher: false, error: data?.error || 'Authentication verification failed.' };
+  } catch {
+    return { isTeacher: false, error: 'Network error verifying teacher authorization.' };
+  }
+}
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
   isTeacherAuthenticated: boolean;
   userRole: 'teacher' | 'student' | null;
-  signIn: (email: string, password: string) => Promise<{ success: boolean; role?: 'teacher' | 'student' | null; error?: string }>;
+  teacherRole: 'teacher' | 'super_admin' | null;
+  signIn: (email: string, password: string, requiredRole?: 'teacher' | 'student') => Promise<{ success: boolean; role?: 'teacher' | 'super_admin' | 'student' | null; error?: string }>;
   signUp: (email: string, password: string, name: string) => Promise<{ success: boolean; error?: string }>;
   resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
   updatePassword: (newPassword: string) => Promise<{ success: boolean; error?: string }>;
@@ -48,6 +88,7 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [userRole, setUserRole] = useState<'teacher' | 'student' | null>(null);
+  const [teacherRole, setTeacherRole] = useState<'teacher' | 'super_admin' | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const isConfigured = isSupabaseConfigured();
   const isProduction = Boolean((import.meta as any).env?.PROD);
@@ -60,7 +101,7 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
     if (!token) return 'student';
 
     // Allow dev token in non-production
-    if (!isProduction && token === 'dev-teacher-token') {
+    if (!isProduction && (token === 'dev-teacher-token' || token === 'dev-super-admin-token')) {
       return 'teacher';
     }
 
@@ -96,6 +137,7 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
           created_at: new Date().toISOString(),
         } as any);
         setUserRole('teacher');
+        setTeacherRole('teacher');
       }
       setLoading(false);
       return;
@@ -107,8 +149,15 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
       if (session) {
         const role = await resolveRole(session);
         setUserRole(role);
+        if (role === 'teacher') {
+          const details = await checkServerTeacherAuthDetails(session.access_token);
+          setTeacherRole(details.role || 'teacher');
+        } else {
+          setTeacherRole(null);
+        }
       } else {
         setUserRole(null);
+        setTeacherRole(null);
       }
       setLoading(false);
     });
@@ -121,8 +170,15 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
       if (session) {
         const role = await resolveRole(session);
         setUserRole(role);
+        if (role === 'teacher') {
+          const details = await checkServerTeacherAuthDetails(session.access_token);
+          setTeacherRole(details.role || 'teacher');
+        } else {
+          setTeacherRole(null);
+        }
       } else {
         setUserRole(null);
+        setTeacherRole(null);
       }
       setLoading(false);
     });
@@ -130,7 +186,11 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
     return () => subscription.unsubscribe();
   }, [isConfigured, isProduction]);
 
-  const signIn = async (email: string, password: string): Promise<{ success: boolean; role?: 'teacher' | 'student' | null; error?: string }> => {
+  const signIn = async (
+    email: string, 
+    password: string, 
+    requiredRole?: 'teacher' | 'student'
+  ): Promise<{ success: boolean; role?: 'teacher' | 'super_admin' | 'student' | null; error?: string }> => {
     if (!email || !password) {
       return { success: false, error: 'Please enter both your email address and password.' };
     }
@@ -146,10 +206,19 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
       }
       console.warn('[Development] Authenticating with local development mock.');
       
-      if (APPROVED_TEACHER_EMAILS.includes(normalizedEmail)) {
-        
+      const isTeacherEmail = normalizedEmail.includes('teacher') || APPROVED_TEACHER_EMAILS.includes(normalizedEmail);
+
+      if (isTeacherEmail) {
+        if (requiredRole === 'student') {
+          return {
+            success: false,
+            role: 'teacher',
+            error: 'This is a Teaching Staff account. Teaching staff must sign in through the Staff Login portal.'
+          };
+        }
+        const assignedRole: 'teacher' | 'super_admin' = normalizedEmail === 'mahmoudelwany98@gmail.com' ? 'super_admin' : 'teacher';
         setUser({
-          id: 'teacher-mahmoud-001',
+          id: assignedRole === 'super_admin' ? 'teacher-admin-001' : 'teacher-mahmoud-001',
           email: normalizedEmail,
           app_metadata: {},
           user_metadata: { name: 'Ustadh Mahmoud' },
@@ -157,9 +226,16 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
           created_at: new Date().toISOString(),
         } as any);
         setUserRole('teacher');
-        return { success: true, role: 'teacher' };
+        setTeacherRole(assignedRole);
+        return { success: true, role: assignedRole };
       } else {
-        
+        if (requiredRole === 'teacher') {
+          return {
+            success: false,
+            role: 'student',
+            error: 'This portal is reserved for teaching staff. Please use the Student Portal to access your learner account.'
+          };
+        }
         setUser({
           id: 'student-mock-001',
           email: normalizedEmail,
@@ -169,6 +245,7 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
           created_at: new Date().toISOString(),
         } as any);
         setUserRole('student');
+        setTeacherRole(null);
         return { success: true, role: 'student' };
       }
     }
@@ -183,11 +260,66 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
         return { success: false, error: error.message };
       }
 
+      // Check authoritative server teacher status
+      const teacherDetails = await checkServerTeacherAuthDetails(data.session?.access_token);
+
+      if (requiredRole === 'teacher') {
+        if (teacherDetails.isInactive) {
+          await supabase.auth.signOut();
+          setUser(null);
+          setSession(null);
+          setUserRole(null);
+          setTeacherRole(null);
+          return {
+            success: false,
+            role: null,
+            error: 'Your teacher account is currently inactive. Please contact the administrator.'
+          };
+        }
+
+        if (!teacherDetails.isTeacher) {
+          // In non-production fallback
+          if (!isProduction && APPROVED_TEACHER_EMAILS.includes(normalizedEmail)) {
+            // allow in dev fallback
+          } else {
+            await supabase.auth.signOut();
+            setUser(null);
+            setSession(null);
+            setUserRole(null);
+            setTeacherRole(null);
+            return {
+              success: false,
+              role: 'student',
+              error: 'This portal is reserved for teaching staff. Please use the Student Portal to access your learner account.'
+            };
+          }
+        }
+      }
+
+      if (requiredRole === 'student') {
+        if (teacherDetails.isTeacher || (!isProduction && APPROVED_TEACHER_EMAILS.includes(normalizedEmail))) {
+          await supabase.auth.signOut();
+          setUser(null);
+          setSession(null);
+          setUserRole(null);
+          setTeacherRole(null);
+          return {
+            success: false,
+            role: 'teacher',
+            error: 'This is a Teaching Staff account. Teaching staff must sign in through the Staff Login portal.'
+          };
+        }
+      }
+
       setUser(data.user);
       setSession(data.session);
       const role = await resolveRole(data.session);
       setUserRole(role);
-      return { success: true, role };
+      const currentTeacherRole = teacherDetails.isTeacher 
+        ? (teacherDetails.role || (normalizedEmail === 'mahmoudelwany98@gmail.com' ? 'super_admin' : 'teacher')) 
+        : null;
+      setTeacherRole(currentTeacherRole);
+      return { success: true, role: currentTeacherRole || role };
     } catch (err: any) {
       return { success: false, error: err.message || 'An unexpected authentication error occurred.' };
     }
@@ -264,10 +396,10 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
       await supabase.auth.signOut();
     }
     
-    
     setUser(null);
     setSession(null);
     setUserRole(null);
+    setTeacherRole(null);
   };
 
   return (
@@ -278,6 +410,7 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
         loading,
         isTeacherAuthenticated: userRole === 'teacher',
         userRole,
+        teacherRole,
         signIn,
         signUp,
         resetPassword,

@@ -953,7 +953,7 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
     }
     
     // Strict production security
-    if (isProd && (token === 'dev-student-token' || token === 'dev-student-b-token' || token === 'dev-teacher-token')) {
+    if (isProd && (token === 'dev-student-token' || token === 'dev-student-b-token' || token === 'dev-teacher-token' || token === 'dev-super-admin-token')) {
       return res.status(401).json({ error: 'Unauthorized. Development tokens are strictly forbidden in production.' });
     }
 
@@ -967,8 +967,8 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
         return next();
       }
 
-      // Explicitly reject teacher tokens attempting student portal APIs
-      if (!isProd && (token === 'dev-teacher-token' || req.headers['x-dev-teacher-auth'])) {
+      // Explicitly reject teacher and super admin tokens attempting student portal APIs
+      if (!isProd && (token === 'dev-teacher-token' || token === 'dev-super-admin-token' || token === 'dev-inactive-teacher-token' || req.headers['x-dev-teacher-auth'])) {
         return res.status(403).json({ error: 'Forbidden. Teachers cannot access student portal APIs.' });
       }
 
@@ -978,13 +978,12 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
       const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
       if (error || !user) return res.status(401).json({ error: 'Invalid or expired session token.' });
 
-      // Check if it's a teacher trying to access the student portal
+      // Check if it's a teacher trying to access the student portal (active or inactive)
       const userEmail = (user.email || '').toLowerCase().trim();
       const { data: teacherRecord } = await supabaseAdmin
         .from('teacher_accounts')
-        .select('email')
+        .select('email, role, is_active')
         .eq('email', userEmail)
-        .eq('is_active', true)
         .maybeSingle();
 
       if (teacherRecord) {
@@ -1068,7 +1067,7 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
       return next();
     }
 
-    if (!isProd && (token === 'dev-teacher-token' || req.headers['x-dev-teacher-auth'])) {
+    if (!isProd && (token === 'dev-teacher-token' || token === 'dev-inactive-teacher-token' || req.headers['x-dev-teacher-auth'])) {
       return res.status(403).json({ error: 'Forbidden. Teachers cannot access student portal APIs.' });
     }
 
@@ -1103,7 +1102,7 @@ async function verifyTeacherAuth(req: any, res: any, next: any) {
     const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.substring(7) : null;
 
     // Strict production security: dev tokens are NEVER accepted in production
-    if (isProd && (token === 'dev-teacher-token' || token === 'dev-student-token' || token === 'dev-student-b-token' || devHeader)) {
+    if (isProd && (token === 'dev-teacher-token' || token === 'dev-inactive-teacher-token' || token === 'dev-student-token' || token === 'dev-student-b-token' || devHeader)) {
       const stage = 'DEV_TOKEN_REJECTED_PROD';
       res.setHeader('x-auth-diagnostic-stage', stage);
       return res.status(401).json({ error: 'Unauthorized. Development tokens are strictly forbidden in production.', diagnosticStage: stage });
@@ -1115,13 +1114,35 @@ async function verifyTeacherAuth(req: any, res: any, next: any) {
       return res.status(403).json({ error: 'Forbidden. Student accounts cannot access teacher dashboard APIs.', diagnosticStage: stage });
     }
 
-    // Dev token bypass for local development / non-production ONLY
+    // Inactive teacher token check for test and development simulation
+    if (!isProd && token === 'dev-inactive-teacher-token') {
+      const stage = 'TEACHER_INACTIVE';
+      res.setHeader('x-auth-diagnostic-stage', stage);
+      return res.status(403).json({ error: 'Access denied. Teacher account is inactive.', diagnosticStage: stage });
+    }
+
+    // Dev super_admin token bypass for local development / non-production ONLY
+    if (!isProd && token === 'dev-super-admin-token') {
+      req.teacherUser = {
+        id: 'teacher-admin-001',
+        email: 'mahmoudelwany98@gmail.com',
+        name: 'Ustadh Mahmoud (Super Admin)',
+        role: 'super_admin',
+        appRole: 'super_admin'
+      };
+      req.teacherAuthStage = 'AUTHORIZED';
+      res.setHeader('x-auth-diagnostic-stage', 'AUTHORIZED');
+      return next();
+    }
+
+    // Dev teacher token bypass for local development / non-production ONLY
     if (!isProd && (token === 'dev-teacher-token' || devHeader === 'true')) {
       req.teacherUser = {
         id: 'teacher-mahmoud-001',
         email: 'mhmwdlwany4222@gmail.com',
         name: 'Ustadh Mahmoud',
-        role: 'super_admin'
+        role: 'teacher',
+        appRole: 'teacher'
       };
       req.teacherAuthStage = 'AUTHORIZED';
       res.setHeader('x-auth-diagnostic-stage', 'AUTHORIZED');
@@ -1199,6 +1220,7 @@ async function verifyTeacherAuth(req: any, res: any, next: any) {
     res.setHeader('x-auth-diagnostic-stage', 'AUTHORIZED');
     req.teacherUser = {
       ...user,
+      role: teacherRecord.role,
       appRole: teacherRecord.role
     };
     return next();
@@ -1208,6 +1230,21 @@ async function verifyTeacherAuth(req: any, res: any, next: any) {
     return res.status(500).json({ error: 'Internal server error during authentication.', diagnosticStage: 'INTERNAL_ERROR' });
   }
 }
+
+// Middleware: Strict Super Admin Authorization
+export const requireSuperAdmin = (req: any, res: any, next: any) => {
+  const role = req.teacherUser?.appRole || req.teacherUser?.role;
+  if (role !== 'super_admin') {
+    res.setHeader('x-auth-diagnostic-stage', 'SUPER_ADMIN_REQUIRED');
+    return res.status(403).json({
+      error: 'Forbidden. This action requires Super Admin privileges.',
+      diagnosticStage: 'SUPER_ADMIN_REQUIRED',
+      requiredRole: 'super_admin',
+      actualRole: role || 'teacher'
+    });
+  }
+  return next();
+};
 
 app.get('/api/teacher-auth-diagnostic', verifyTeacherAuth, (req: any, res: any) => {
   const clientRef = typeof req.headers['x-client-project-ref'] === 'string' ? req.headers['x-client-project-ref'].trim() : null;
@@ -1321,6 +1358,7 @@ app.get('/api/dashboard/me', verifyTeacherAuth, async (req: any, res: any) => {
       email: req.teacherUser?.email,
       name: req.teacherUser?.name || req.teacherUser?.user_metadata?.name || 'Ustadh Mahmoud',
       role: req.teacherUser?.appRole || 'teacher',
+      appRole: req.teacherUser?.appRole || 'teacher',
       isTeacher: true
     }
   });
@@ -2948,10 +2986,13 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
 });
 
 // 16d. DASHBOARD: Fetch all payments with status/unmatched filtering
-app.get('/api/dashboard/payments', verifyTeacherAuth, async (req, res) => {
+app.get('/api/dashboard/payments', verifyTeacherAuth, requireSuperAdmin, async (req, res) => {
   try {
     const supabase = getSupabaseAdminClient();
     if (!supabase) {
+      if (process.env.NODE_ENV !== 'production') {
+        return res.json({ payments: [] });
+      }
       return res.status(503).json({ error: 'Database integration is not properly configured.' });
     }
 
@@ -3016,11 +3057,6 @@ app.get('/api/dashboard/payments', verifyTeacherAuth, async (req, res) => {
 // 16e. DASHBOARD: Record manual payment directly
 app.post('/api/dashboard/payments', verifyTeacherAuth, async (req, res) => {
   try {
-    const supabase = getSupabaseAdminClient();
-    if (!supabase) {
-      return res.status(503).json({ error: 'Database integration is not properly configured.' });
-    }
-
     const {
       booking_id,
       student_id,
@@ -3046,16 +3082,8 @@ app.post('/api/dashboard/payments', verifyTeacherAuth, async (req, res) => {
         return res.status(400).json({ error: 'Invalid currency code. Please provide a standard 3-letter currency code (e.g. USD, CAD, GBP, EUR).' });
       }
       finalCurrency = cleanCur;
-    } else if (booking_id) {
-      // Check if booking has configured fee
-      const { data: b } = await supabase.from('bookings').select('fee_amount_usd, service_id').eq('id', booking_id).maybeSingle();
-      if (b?.fee_amount_usd !== null && b?.fee_amount_usd !== undefined) {
-        finalCurrency = 'USD';
-      }
-    }
-
-    if (!finalCurrency) {
-      return res.status(400).json({ error: 'A valid 3-letter currency code is required.' });
+    } else if (!booking_id) {
+      return res.status(400).json({ error: 'Currency is required for manual payments without a booking.' });
     }
 
     const validMethods = ['international_bank_iban', 'ach_routing', 'payoneer', 'paypal', 'wise', 'other'];
@@ -3066,6 +3094,23 @@ app.post('/api/dashboard/payments', verifyTeacherAuth, async (req, res) => {
     const validStatuses = ['pending', 'confirmed', 'rejected', 'refunded'];
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ error: 'Invalid payment status.' });
+    }
+
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) {
+      return res.status(503).json({ error: 'Database integration is not properly configured.' });
+    }
+
+    if (!finalCurrency && booking_id) {
+      // Check if booking has configured fee
+      const { data: b } = await supabase.from('bookings').select('fee_amount_usd, service_id').eq('id', booking_id).maybeSingle();
+      if (b?.fee_amount_usd !== null && b?.fee_amount_usd !== undefined) {
+        finalCurrency = 'USD';
+      }
+    }
+
+    if (!finalCurrency) {
+      return res.status(400).json({ error: 'A valid 3-letter currency code is required.' });
     }
 
     let finalStudentId = student_id || null;
@@ -3110,7 +3155,7 @@ app.post('/api/dashboard/payments', verifyTeacherAuth, async (req, res) => {
 });
 
 // 16f. DASHBOARD: Confirm pending payment (Idempotent)
-app.post('/api/dashboard/payments/:id/confirm', verifyTeacherAuth, async (req, res) => {
+app.post('/api/dashboard/payments/:id/confirm', verifyTeacherAuth, requireSuperAdmin, async (req, res) => {
   try {
     const supabase = getSupabaseAdminClient();
     if (!supabase) {
@@ -3210,7 +3255,7 @@ app.post('/api/dashboard/payments/:id/confirm', verifyTeacherAuth, async (req, r
 });
 
 // 16g. DASHBOARD: Reject pending payment (Idempotent and resilient)
-app.post('/api/dashboard/payments/:id/reject', verifyTeacherAuth, async (req, res) => {
+app.post('/api/dashboard/payments/:id/reject', verifyTeacherAuth, requireSuperAdmin, async (req, res) => {
   try {
     const supabase = getSupabaseAdminClient();
     if (!supabase) {
@@ -3281,7 +3326,7 @@ app.post('/api/dashboard/payments/:id/reject', verifyTeacherAuth, async (req, re
 });
 
 // 16h. DASHBOARD: Delete payment
-app.delete('/api/dashboard/payments/:id', verifyTeacherAuth, async (req, res) => {
+app.delete('/api/dashboard/payments/:id', verifyTeacherAuth, requireSuperAdmin, async (req, res) => {
   try {
     const supabase = getSupabaseAdminClient();
     if (!supabase) {
@@ -3948,10 +3993,13 @@ app.post('/api/dashboard/trials/:id/assessment', verifyTeacherAuth, async (req, 
 });
 
 // 20. DASHBOARD: Fetch leads with pipeline status & associated trial info
-app.get('/api/dashboard/leads', verifyTeacherAuth, async (req, res) => {
+app.get('/api/dashboard/leads', verifyTeacherAuth, requireSuperAdmin, async (req, res) => {
   try {
     const supabase = getSupabaseAdminClient();
     if (!supabase) {
+      if (process.env.NODE_ENV !== 'production') {
+        return res.json({ leads: [] });
+      }
       return res.status(503).json({ error: 'Database integration is not properly configured.' });
     }
 
@@ -4139,6 +4187,29 @@ app.get('/api/dashboard/analytics', verifyTeacherAuth, async (req, res) => {
   try {
     const supabase = getSupabaseAdminClient();
     if (!supabase) {
+      if (process.env.NODE_ENV !== 'production') {
+        return res.json({
+          funnel: {
+            steps: [],
+            rates: {
+              lead_to_trial_rate: 0,
+              trial_to_student_rate: 0,
+              overall_conversion_rate: 0
+            }
+          },
+          current_pipeline: {
+            lead: 0,
+            trial_booked: 0,
+            active_student: 0,
+            completed: 0,
+            lost: 0
+          },
+          time_to_convert_days: {
+            avg_lead_to_trial: null,
+            avg_trial_to_active: null
+          }
+        });
+      }
       return res.status(503).json({ error: 'Database integration is not properly configured.' });
     }
 
@@ -4601,9 +4672,6 @@ const SETTINGS_ALLOWLIST: Record<string, { category: string; validate: (v: any) 
 // 20d. DASHBOARD: Upsert teacher settings with strict server-side validation (Blocker #2)
 app.patch('/api/dashboard/settings', verifyTeacherAuth, async (req, res) => {
   try {
-    const supabase = getSupabaseAdminClient();
-    if (!supabase) return res.status(503).json({ error: 'Database integration is not properly configured.' });
-
     const { settings } = req.body;
     if (!Array.isArray(settings)) return res.status(400).json({ error: 'Settings array is required' });
 
@@ -4637,6 +4705,9 @@ app.patch('/api/dashboard/settings', verifyTeacherAuth, async (req, res) => {
         updated_at: now
       });
     }
+
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database integration is not properly configured.' });
 
     const { data, error } = await supabase.from('settings').upsert(validatedItems, { onConflict: 'key' }).select();
     if (error) throw error;
@@ -4700,7 +4771,7 @@ app.patch('/api/dashboard/services/:id', verifyTeacherAuth, async (req, res) => 
 });
 
 // 21. DASHBOARD: Update lead status, notes, or details
-app.patch('/api/dashboard/leads/:id', verifyTeacherAuth, async (req, res) => {
+app.patch('/api/dashboard/leads/:id', verifyTeacherAuth, requireSuperAdmin, async (req, res) => {
   try {
     const supabase = getSupabaseAdminClient();
     if (!supabase) {
@@ -5239,6 +5310,11 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
     const studentId = req.studentUser?.student_id;
     if (!studentId) {
       return res.status(404).json({ error: 'Student profile not found.' });
+    }
+
+    // Validate that client cannot submit or assign privileged roles
+    if (req.body && (req.body.role !== undefined || req.body.appRole !== undefined || req.body.isTeacher !== undefined || req.body.is_teacher !== undefined)) {
+      return res.status(422).json({ error: 'Assignment of privileged role is strictly forbidden.' });
     }
 
     const {
@@ -6663,7 +6739,7 @@ app.post('/api/student/offers/:id/accept', rateLimit, verifyStudentAuth, async (
 // --------------------------------------------------------------------
 
 // GET /api/dashboard/intakes — review queue
-app.get('/api/dashboard/intakes', verifyTeacherAuth, async (req: any, res: any) => {
+app.get('/api/dashboard/intakes', verifyTeacherAuth, requireSuperAdmin, async (req: any, res: any) => {
   try {
     const supabaseAdmin = getSupabaseAdminClient();
     if (!supabaseAdmin) return res.status(503).json({ error: 'Database integration is not properly configured.' });
@@ -6723,7 +6799,7 @@ app.get('/api/dashboard/intakes', verifyTeacherAuth, async (req: any, res: any) 
 });
 
 // GET /api/dashboard/intakes/:id — full detail incl. private notes + audit trail
-app.get('/api/dashboard/intakes/:id', verifyTeacherAuth, async (req: any, res: any) => {
+app.get('/api/dashboard/intakes/:id', verifyTeacherAuth, requireSuperAdmin, async (req: any, res: any) => {
   try {
     const supabaseAdmin = getSupabaseAdminClient();
     if (!supabaseAdmin) return res.status(503).json({ error: 'Database integration is not properly configured.' });
@@ -6776,7 +6852,7 @@ app.get('/api/dashboard/intakes/:id', verifyTeacherAuth, async (req: any, res: a
 });
 
 // POST /api/dashboard/intakes/:id/review — approve | adjust | request_more_info
-app.post('/api/dashboard/intakes/:id/review', verifyTeacherAuth, async (req: any, res: any) => {
+app.post('/api/dashboard/intakes/:id/review', verifyTeacherAuth, requireSuperAdmin, async (req: any, res: any) => {
   try {
     const teacherId = req.teacherUser?.id;
     if (!teacherId) return res.status(401).json({ error: 'Unauthorized: missing teacher identity' });
@@ -6903,6 +6979,81 @@ app.post('/api/dashboard/intakes/:id/review', verifyTeacherAuth, async (req: any
   } catch (err: any) {
     console.error('[POST /api/dashboard/intakes/:id/review Error]', err);
     return res.status(500).json({ error: 'Failed to record review.' });
+  }
+});
+
+// --------------------------------------------------------------------
+// 22. STAFF MANAGEMENT (Super Admin Only)
+// --------------------------------------------------------------------
+app.get('/api/dashboard/admin/teachers', verifyTeacherAuth, requireSuperAdmin, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) {
+      return res.json({
+        teachers: [
+          { email: 'mahmoudelwany98@gmail.com', role: 'super_admin', is_active: true },
+          { email: 'mhmwdlwany4222@gmail.com', role: 'teacher', is_active: true }
+        ]
+      });
+    }
+
+    const { data, error } = await supabase
+      .from('teacher_accounts')
+      .select('email, role, is_active, created_at, updated_at')
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      return res.status(500).json({ error: 'Failed to retrieve teacher accounts.' });
+    }
+
+    return res.json({ teachers: data || [] });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message || 'Internal server error.' });
+  }
+});
+
+app.post('/api/dashboard/admin/teachers', verifyTeacherAuth, requireSuperAdmin, async (req: any, res: any) => {
+  try {
+    const { email, role = 'teacher', is_active = true } = req.body || {};
+    if (!email || typeof email !== 'string') {
+      return res.status(400).json({ error: 'Valid email is required.' });
+    }
+
+    const cleanEmail = email.toLowerCase().trim();
+    if (!cleanEmail.includes('@') || !cleanEmail.includes('.')) {
+      return res.status(400).json({ error: 'Invalid email format.' });
+    }
+
+    if (role !== 'teacher' && role !== 'super_admin') {
+      return res.status(400).json({ error: 'Invalid teacher role. Must be teacher or super_admin.' });
+    }
+
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) {
+      return res.status(201).json({
+        success: true,
+        teacher: { email: cleanEmail, role, is_active: Boolean(is_active) }
+      });
+    }
+
+    const { data, error } = await supabase
+      .from('teacher_accounts')
+      .upsert({
+        email: cleanEmail,
+        role,
+        is_active: Boolean(is_active),
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'email' })
+      .select()
+      .single();
+
+    if (error) {
+      return res.status(500).json({ error: error.message || 'Failed to provision teacher account.' });
+    }
+
+    return res.status(201).json({ success: true, teacher: data });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message || 'Internal server error.' });
   }
 });
 
