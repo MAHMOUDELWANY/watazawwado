@@ -45,6 +45,7 @@ export default function StudentDetailPage() {
 
   // Assignment State for Super Admin
   const [selectedTeacherId, setSelectedTeacherId] = useState<string>('');
+  const [availableTeachers, setAvailableTeachers] = useState<any[]>([]);
   const [isAssigningTeacher, setIsAssigningTeacher] = useState(false);
   const [assignSuccessMessage, setAssignSuccessMessage] = useState<string | null>(null);
   const [assignErrorMessage, setAssignErrorMessage] = useState<string | null>(null);
@@ -83,7 +84,16 @@ export default function StudentDetailPage() {
 
   useEffect(() => {
     fetchStudent();
-  }, [fetchStudent]);
+    if (isSuperAdmin) {
+      dashboardFetch('/api/dashboard/admin/teachers')
+        .then((data) => {
+          if (data && Array.isArray(data.teachers)) {
+            setAvailableTeachers(data.teachers.filter((t: any) => t.is_active));
+          }
+        })
+        .catch(() => {});
+    }
+  }, [fetchStudent, isSuperAdmin]);
 
   // Handle Teacher Assignment (Super Admin Only)
   const handleAssignTeacher = async (e: React.FormEvent) => {
@@ -109,8 +119,8 @@ export default function StudentDetailPage() {
           ...prev,
           student: {
             ...prev.student,
-            assigned_teacher_id: res.student?.assigned_teacher_id || (selectedTeacherId || null),
-            assigned_teacher_name: res.student?.assigned_teacher_name || (selectedTeacherId ? 'Ustadh Mahmoud' : null)
+            assigned_teacher_id: res.assigned_teacher_id ?? null,
+            assigned_teacher_name: res.assigned_teacher ? res.assigned_teacher.name : null
           }
         };
       });
@@ -730,9 +740,11 @@ export default function StudentDetailPage() {
                   className="w-full px-3 py-2 text-xs rounded-xl border border-border bg-surface text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="">-- Unassigned --</option>
-                  <option value="mhmwdlwany4222@gmail.com">Ustadh Mahmoud (Primary)</option>
-                  <option value="mahmoudelwany98@gmail.com">Ustadh Mahmoud (Super Admin)</option>
-                  <option value="afnan@example.com">Ustadha Afnan (Female Faculty)</option>
+                  {availableTeachers.map((t) => (
+                    <option key={t.id || t.email} value={t.id || t.email}>
+                      {t.display_name} ({t.role === 'super_admin' ? 'Super Admin' : 'Teacher'})
+                    </option>
+                  ))}
                 </select>
 
                 {assignSuccessMessage && (

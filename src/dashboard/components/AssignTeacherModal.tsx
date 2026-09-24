@@ -66,7 +66,7 @@ export function AssignTeacherModal({
     let isMounted = true;
     setLoadingTeachers(true);
 
-    dashboardFetch('/api/dashboard/teachers')
+    dashboardFetch('/api/dashboard/admin/teachers')
       .then(res => {
         if (isMounted) {
           setTeachers(res.teachers || []);
@@ -77,17 +77,17 @@ export function AssignTeacherModal({
           // Graceful fallback to canonical teachers
           setTeachers([
             {
-              id: null,
+              id: 'teacher-admin-001',
               email: 'mahmoudelwany98@gmail.com',
-              name: 'Ustadh Mahmoud Elwany',
+              display_name: 'Ustadh Mahmoud (Super Admin)',
               role: 'super_admin',
               gender: 'male',
               is_active: true
             },
             {
-              id: null,
+              id: 'teacher-mahmoud-001',
               email: 'mhmwdlwany4222@gmail.com',
-              name: 'Ustadh Mahmoud (Staff)',
+              display_name: 'Ustadh Mahmoud',
               role: 'teacher',
               gender: 'male',
               is_active: true
@@ -415,7 +415,7 @@ export function AssignTeacherModal({
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="font-semibold text-foreground">
-                            {teacher.name}
+                            {teacher.display_name}
                           </span>
                           <span className="text-[10px] px-1.5 py-0.5 rounded bg-surface-subtle border border-border-subtle text-muted-foreground">
                             {teacher.role === 'super_admin' ? 'Super Admin' : 'Teacher'}

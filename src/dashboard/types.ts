@@ -296,10 +296,20 @@ export interface TeacherAccountItem {
   role: 'super_admin' | 'teacher';
   is_active: boolean;
   display_name: string;
+  gender?: 'male' | 'female';
   assigned_students_count: number;
   upcoming_lessons_count: number;
   completed_lessons_count: number;
   created_at?: string;
+}
+
+export interface TeacherOption {
+  id?: string;
+  email: string;
+  display_name: string;
+  gender?: 'male' | 'female';
+  role: 'super_admin' | 'teacher';
+  is_active: boolean;
 }
 
 export interface SuperAdminOverviewMetrics {

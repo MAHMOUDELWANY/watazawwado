@@ -1,35 +1,68 @@
 -- ====================================================================
--- WATAZAWWADO — ROLE-SCOPED TEACHER WORKSPACE & STUDENT ASSIGNMENT FOUNDATION
--- Migration: 20261005000000_teacher_workspace_and_student_assignment.sql
+-- WATAZAWWADO — TEACHER WORKSPACE FOUNDATION & DATA CONTRACT CANONICALIZATION
+-- Migration: 20261005000000_teacher_workspace_foundation.sql
 -- 
 -- 1. Student Gender & Teacher Gender Preference fields on public.students
--- 2. Teacher Metadata (name, gender) on public.teacher_accounts
+-- 2. Teacher Metadata (display_name, gender) on public.teacher_accounts
 -- 3. Scoped RLS policies for students and bookings (super_admin vs teacher)
--- 4. Authoritative indexes for query acceleration
+-- 4. Authoritative indexes for query acceleration and assignment model
 -- ====================================================================
 
 -- 1. Add gender and teacher_gender_preference to public.students
 ALTER TABLE public.students
-ADD COLUMN IF NOT EXISTS gender TEXT DEFAULT 'undisclosed' CHECK (gender IN ('male', 'female', 'undisclosed'));
+ADD COLUMN IF NOT EXISTS gender TEXT DEFAULT 'undisclosed';
 
 ALTER TABLE public.students
-ADD COLUMN IF NOT EXISTS teacher_gender_preference TEXT DEFAULT 'no_preference' CHECK (teacher_gender_preference IN ('no_preference', 'male_teacher', 'female_teacher'));
+ADD COLUMN IF NOT EXISTS teacher_gender_preference TEXT DEFAULT 'no_preference';
 
--- 2. Add teacher metadata columns to public.teacher_accounts
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint WHERE conname = 'students_gender_check'
+    ) THEN
+        ALTER TABLE public.students
+        ADD CONSTRAINT students_gender_check CHECK (gender IN ('male', 'female', 'undisclosed'));
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint WHERE conname = 'students_teacher_gender_pref_check'
+    ) THEN
+        ALTER TABLE public.students
+        ADD CONSTRAINT students_teacher_gender_pref_check CHECK (teacher_gender_preference IN ('no_preference', 'male_teacher', 'female_teacher'));
+    END IF;
+END $$;
+
+-- 2. Add teacher metadata columns (display_name, gender) to public.teacher_accounts
 ALTER TABLE public.teacher_accounts
-ADD COLUMN IF NOT EXISTS name TEXT DEFAULT 'Ustadh Mahmoud';
+ADD COLUMN IF NOT EXISTS display_name TEXT DEFAULT 'Ustadh Mahmoud';
 
 ALTER TABLE public.teacher_accounts
-ADD COLUMN IF NOT EXISTS gender TEXT DEFAULT 'male' CHECK (gender IN ('male', 'female'));
+ADD COLUMN IF NOT EXISTS gender TEXT DEFAULT 'male';
 
--- 3. Update canonical accounts with name and gender
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint WHERE conname = 'teacher_accounts_gender_check'
+    ) THEN
+        ALTER TABLE public.teacher_accounts
+        ADD CONSTRAINT teacher_accounts_gender_check CHECK (gender IN ('male', 'female'));
+    END IF;
+END $$;
+
+-- 3. Canonicalize display_name and gender for seeded authorized accounts
 UPDATE public.teacher_accounts
-SET name = 'Ustadh Mahmoud',
+SET display_name = 'Ustadh Mahmoud (Super Admin)',
     gender = 'male',
     updated_at = timezone('utc'::text, now())
-WHERE lower(email) IN ('mahmoudelwany98@gmail.com', 'mhmwdlwany4222@gmail.com');
+WHERE lower(email) = 'mahmoudelwany98@gmail.com';
 
--- 4. Ensure performance indexes exist
+UPDATE public.teacher_accounts
+SET display_name = 'Ustadh Mahmoud',
+    gender = 'male',
+    updated_at = timezone('utc'::text, now())
+WHERE lower(email) = 'mhmwdlwany4222@gmail.com';
+
+-- 4. Authoritative Performance Indexes
 CREATE INDEX IF NOT EXISTS idx_students_assigned_teacher_id
 ON public.students(assigned_teacher_id);
 
@@ -42,13 +75,18 @@ ON public.students(gender);
 CREATE INDEX IF NOT EXISTS idx_students_teacher_gender_pref
 ON public.students(teacher_gender_preference);
 
--- 5. Scoped RLS: Allow active super_admin full read/write, while normal teacher is scoped to assigned records
--- Drop previous blanket teacher policy on students
+CREATE INDEX IF NOT EXISTS idx_teacher_accounts_role_active
+ON public.teacher_accounts(role, is_active);
+
+-- 5. Additive Scoped RLS: Allow active super_admin full platform read/write,
+-- while normal teacher is scoped to assigned records.
+-- Preserves all student self-access policies and existing permissions.
+
 DROP POLICY IF EXISTS "Teacher allowlist access to students" ON public.students;
 DROP POLICY IF EXISTS "Teacher scoped access to students" ON public.students;
 DROP POLICY IF EXISTS "Super admin platform access to students" ON public.students;
 
--- Super Admin full platform access
+-- Super Admin full platform access to students
 CREATE POLICY "Super admin platform access to students" ON public.students
 FOR ALL TO authenticated
 USING (
@@ -68,7 +106,7 @@ WITH CHECK (
     )
 );
 
--- Teacher scoped access: ONLY assigned students
+-- Teacher scoped access: ONLY assigned students (assigned_teacher_id = auth.users.id)
 CREATE POLICY "Teacher scoped access to students" ON public.students
 FOR ALL TO authenticated
 USING (
