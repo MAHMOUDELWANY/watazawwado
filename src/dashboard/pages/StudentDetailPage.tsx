@@ -67,6 +67,28 @@ export default function StudentDetailPage() {
   const [editNoteNextSteps, setEditNoteNextSteps] = useState('');
   const [isUpdatingNote, setIsUpdatingNote] = useState(false);
 
+  // AI Brief State
+  const [aiBrief, setAiBrief] = useState<string | null>(null);
+  const [isGeneratingBrief, setIsGeneratingBrief] = useState(false);
+  const [briefError, setBriefError] = useState<string | null>(null);
+
+  const handleGenerateAiBrief = async () => {
+    if (!id) return;
+    setIsGeneratingBrief(true);
+    setBriefError(null);
+    setAiBrief(null);
+    try {
+      const res = await dashboardFetch(`/api/dashboard/students/${id}/ai-brief`, {
+        method: 'POST'
+      });
+      setAiBrief(res.brief);
+    } catch (err: any) {
+      setBriefError(err.message || 'Failed to generate AI Brief.');
+    } finally {
+      setIsGeneratingBrief(false);
+    }
+  };
+
   const fetchStudent = useCallback(async () => {
     if (!id) return;
     setLoading(true);
@@ -349,6 +371,15 @@ export default function StudentDetailPage() {
           )}
 
           <button
+            onClick={handleGenerateAiBrief}
+            disabled={isGeneratingBrief}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-accent text-white hover:bg-accent/90 shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>{isGeneratingBrief ? 'Generating...' : 'AI Brief'}</span>
+          </button>
+          
+          <button
             onClick={() => setIsEditModalOpen(true)}
             className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-2xs transition-colors cursor-pointer"
           >
@@ -362,6 +393,41 @@ export default function StudentDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left 2 Columns: Identity, Next Lesson, History, Trial Context */}
         <div className="lg:col-span-2 space-y-6">
+          
+          {/* AI Brief Section */}
+          {(aiBrief || briefError) && (
+            <div className="bg-surface rounded-2xl p-6 border border-accent/30 shadow-2xs space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-accent">
+                  <Sparkles className="w-5 h-5" />
+                  <h2 className="text-sm font-semibold uppercase tracking-wider">
+                    AI Lesson Preparation Brief
+                  </h2>
+                </div>
+                <button
+                  onClick={() => { setAiBrief(null); setBriefError(null); }}
+                  className="text-xl leading-none text-muted-foreground hover:text-foreground p-1 transition-colors"
+                  title="Dismiss"
+                >
+                  &times;
+                </button>
+              </div>
+              {briefError ? (
+                <div className="p-4 rounded-xl bg-destructive/10 text-destructive text-sm border border-destructive/20 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4" />
+                  {briefError}
+                </div>
+              ) : (
+                <div 
+                  className="p-5 rounded-xl bg-surface-subtle border border-border-subtle text-sm text-foreground whitespace-pre-wrap leading-relaxed" 
+                  dir="rtl"
+                >
+                  {aiBrief}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Identity & Learning Profile Card */}
           <div className="bg-surface rounded-2xl p-6 border border-border shadow-2xs space-y-5">
             <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">

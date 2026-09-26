@@ -18,7 +18,8 @@ import {
   DollarSign,
   CalendarCheck2,
   BookOpen,
-  UserX
+  UserX,
+  Sparkles
 } from 'lucide-react';
 import { DashboardLesson } from '../types';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
@@ -44,6 +45,28 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
   const [isMarkingNoShow, setIsMarkingNoShow] = useState(false);
   const [noShowReason, setNoShowReason] = useState('');
   const [noShowCreditDecision, setNoShowCreditDecision] = useState<'returned' | 'used'>('returned');
+
+  // AI Brief State
+  const [aiBrief, setAiBrief] = useState<string | null>(null);
+  const [isGeneratingBrief, setIsGeneratingBrief] = useState(false);
+  const [briefError, setBriefError] = useState<string | null>(null);
+
+  const handleGenerateAiBrief = async () => {
+    if (!lesson?.student_id) return;
+    setIsGeneratingBrief(true);
+    setBriefError(null);
+    setAiBrief(null);
+    try {
+      const res = await dashboardFetch(`/api/dashboard/students/${lesson.student_id}/ai-brief`, {
+        method: 'POST'
+      });
+      setAiBrief(res.brief);
+    } catch (err: any) {
+      setBriefError(err.message || 'Failed to generate AI Brief.');
+    } finally {
+      setIsGeneratingBrief(false);
+    }
+  };
 
   useEffect(() => {
     setCurrentStatus(lesson?.status || null);
@@ -332,6 +355,52 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
               <div className="p-3 rounded-xl bg-warning/10 border border-warning/30 text-xs text-foreground flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0 text-warning" />
                 <span>Dedicated Zoom meeting link is pending preparation.</span>
+              </div>
+            )}
+          </div>
+
+          {/* AI Lesson Preparation Brief */}
+          <div className="space-y-2">
+            <h3 className="text-xs uppercase tracking-wider font-semibold text-muted-foreground flex items-center justify-between">
+              <span className="flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5" />
+                AI Lesson Preparation
+              </span>
+              {!aiBrief && (
+                <button
+                  onClick={handleGenerateAiBrief}
+                  disabled={isGeneratingBrief}
+                  className="text-[10px] bg-accent/10 hover:bg-accent/20 text-accent px-2 py-0.5 rounded-full font-medium transition-colors disabled:opacity-50"
+                >
+                  {isGeneratingBrief ? 'Generating...' : 'Generate Brief'}
+                </button>
+              )}
+            </h3>
+            
+            {(aiBrief || briefError) && (
+              <div className="p-4 rounded-xl bg-surface-subtle border border-accent/20 text-sm">
+                <div className="flex justify-end mb-2">
+                  <button
+                    onClick={() => { setAiBrief(null); setBriefError(null); }}
+                    className="text-muted-foreground hover:text-foreground p-1 transition-colors leading-none"
+                    title="Dismiss"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+                {briefError ? (
+                  <div className="flex items-center gap-2 text-destructive">
+                    <AlertCircle className="w-4 h-4" />
+                    {briefError}
+                  </div>
+                ) : (
+                  <div 
+                    className="text-foreground whitespace-pre-wrap leading-relaxed" 
+                    dir="rtl"
+                  >
+                    {aiBrief}
+                  </div>
+                )}
               </div>
             )}
           </div>

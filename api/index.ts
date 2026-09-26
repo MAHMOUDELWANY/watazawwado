@@ -2049,6 +2049,100 @@ app.get('/api/dashboard/students/:id', verifyTeacherAuth, async (req: any, res: 
   }
 });
 
+// GET /api/dashboard/students/:id/ai-brief is POST because we might pass additional dynamic context later
+app.post('/api/dashboard/students/:id/ai-brief', verifyTeacherAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // 1. Fetch student to authorize
+    const { data: student, error: studentError } = await supabase
+      .from('students')
+      .select('assigned_teacher_id, name, learner_type, current_level, status')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (studentError) {
+      console.error('[AI Brief] Error fetching student:', studentError);
+      return res.status(500).json({ error: 'Failed to load student record.' });
+    }
+
+    if (!student) {
+      return res.status(404).json({ error: 'Student record not found.' });
+    }
+
+    // 2. Strict Scope Enforcement
+    if (req.teacherUser?.role !== 'super_admin') {
+      if (student.assigned_teacher_id !== req.teacherUser.id) {
+        return res.status(403).json({ error: 'Forbidden: You do not have authorization to view this student.' });
+      }
+    }
+
+    // 3. Gather Context (Minimizing PII)
+    const [goalsRes, lessonsRes, intakesRes] = await Promise.all([
+      supabase.from('student_goals').select('goal_text, service_id, is_primary').eq('student_id', id).order('created_at', { ascending: false }).limit(3),
+      supabase.from('lesson_notes').select('covered_material, next_steps, observations, private_notes, created_at').eq('student_id', id).order('created_at', { ascending: false }).limit(3),
+      supabase.from('student_intakes').select('content').eq('student_id', id).order('created_at', { ascending: false }).limit(1)
+    ]);
+
+    const context = {
+      student: {
+        first_name: student.name ? student.name.split(' ')[0] : 'Student',
+        learner_type: student.learner_type,
+        current_level: student.current_level,
+        status: student.status
+      },
+      goals: goalsRes.data || [],
+      recent_lessons: (lessonsRes.data || []).map(l => ({
+        date: l.created_at,
+        covered_material: l.covered_material,
+        next_steps: l.next_steps,
+        observations: l.observations,
+        private_notes: l.private_notes
+      })),
+      intake: intakesRes.data?.[0]?.content || null
+    };
+
+    if (!process.env.GEMINI_API_KEY) {
+      return res.status(503).json({ error: 'AI service unavailable (missing API key).' });
+    }
+
+    // 4. Generate AI Brief
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    const prompt = `You are an expert teaching assistant in the Watazawwado educational platform.
+Your task is to provide a brief, structured lesson preparation guide for the teacher based on the provided student context.
+
+Student Context:
+${JSON.stringify(context, null, 2)}
+
+Guidelines:
+- This is strictly advisory (human-in-the-loop).
+- Provide a short summary of the student's status.
+- Suggest 2-3 specific preparation ideas or topics to review.
+- Suggest 1-2 engaging questions or activities to start the next lesson.
+- If the context is insufficient (e.g., no past lessons), explicitly state that and offer general advice based on the learner type or level.
+- DO NOT make auth decisions, assign teachers, discuss pricing/financials, or invent history/abilities.
+- Use a calm, professional, and encouraging tone in Arabic.
+- Format the output in clear Markdown with headings and bullet points.
+- Include this exact label at the very top of your response (in bold): **«ملخص استرشادي مقترح — لا يغني عن تقييم المعلم المباشر»**`;
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.1-flash-lite',
+      contents: prompt
+    });
+
+    const brief = response.text || 'Unable to generate brief at this time.';
+
+    res.json({ brief });
+  } catch (err: any) {
+    console.error('[AI Brief Error]', err);
+    if (err.status === 503 || err.message?.toLowerCase().includes('timeout') || err.message?.toLowerCase().includes('fetch failed')) {
+      return res.status(503).json({ error: 'AI service is currently unavailable. Please try again later.' });
+    }
+    res.status(500).json({ error: 'Internal Server Error while generating brief.' });
+  }
+});
+
+
 // 15C. DASHBOARD: Update student profile fields
 app.patch('/api/dashboard/students/:id', verifyTeacherAuth, async (req: any, res: any) => {
   try {
