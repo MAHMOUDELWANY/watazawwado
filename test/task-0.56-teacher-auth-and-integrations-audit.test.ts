@@ -338,7 +338,7 @@ describe('Task 0.56: Teacher Authentication & Integrations Failure Audit and Rem
   // 3. isTeacherCurrentlyAuthorized: column verification & allowlist checks
   // --------------------------------------------------------------------------
   it('11. isTeacherCurrentlyAuthorized: validates canonical test teacher mock', async () => {
-    const isAuth = await isTeacherCurrentlyAuthorized('teacher-mahmoud-001');
+    const isAuth = await isTeacherCurrentlyAuthorized('9cd86044-eb13-4547-88e4-567c4f6a57d8');
     assert.strictEqual(isAuth, true);
   });
 

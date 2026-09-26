@@ -318,7 +318,7 @@ describe('Task 0.55.4-C: Google Calendar OAuth Callback Teacher Authorization Co
     assert.strictEqual(resMismatch.status, 403, 'Mismatched cookie state must return 403');
 
     // 3. Invalid signature
-    const payload = 'teacher-mahmoud-001:randomnonce';
+    const payload = '9cd86044-eb13-4547-88e4-567c4f6a57d8:randomnonce';
     const badState = `${Buffer.from(payload).toString('base64')}.invalidsignaturexyz`;
     const resBadSig = await fetch(`${baseUrl}/api/integrations/google-calendar/callback?code=testcode&state=${badState}`, {
       headers: { 'Cookie': `oauth_state=${badState}` }

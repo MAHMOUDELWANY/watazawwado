@@ -114,7 +114,7 @@ describe('Task 0.54.2: Calendar Connection Ownership Correction & RLS Schema Aud
     });
 
     it('3.2: computeAvailableSlots with explicit teacherId executes cleanly', async () => {
-      const slots = await computeAvailableSlots('Africa/Cairo', 2, 30, 'teacher-mahmoud-001');
+      const slots = await computeAvailableSlots('Africa/Cairo', 2, 30, '9cd86044-eb13-4547-88e4-567c4f6a57d8');
       assert.ok(Array.isArray(slots), 'Slots array returned');
       assert.strictEqual(slots.length, 2, 'Two days of availability returned');
     });
@@ -129,7 +129,7 @@ describe('Task 0.54.2: Calendar Connection Ownership Correction & RLS Schema Aud
     it('3.4: validateSlotAvailability with explicit teacherId executes cleanly', async () => {
       const start = new Date(Date.now() + 86400000).toISOString();
       const end = new Date(Date.now() + 88200000).toISOString();
-      const res = await validateSlotAvailability(start, end, 'teacher-mahmoud-001');
+      const res = await validateSlotAvailability(start, end, '9cd86044-eb13-4547-88e4-567c4f6a57d8');
       assert.ok(typeof res.isAvailable === 'boolean', 'isAvailable boolean returned');
     });
   });
@@ -147,7 +147,7 @@ describe('Task 0.54.2: Calendar Connection Ownership Correction & RLS Schema Aud
     });
 
     it('4.2: GET /api/integrations/availability works with explicit teacherId query parameter', async () => {
-      const res = await fetch('http://localhost:3000/api/integrations/availability?timezone=Africa/Cairo&days=2&duration=30&teacherId=teacher-mahmoud-001');
+      const res = await fetch('http://localhost:3000/api/integrations/availability?timezone=Africa/Cairo&days=2&duration=30&teacherId=9cd86044-eb13-4547-88e4-567c4f6a57d8');
       assert.strictEqual(res.status, 200, 'Endpoint should return 200 with teacherId query parameter');
       const data = await res.json() as any;
       assert.strictEqual(data.success, true);
@@ -176,7 +176,7 @@ describe('Task 0.54.2: Calendar Connection Ownership Correction & RLS Schema Aud
         body: JSON.stringify({
           scheduledStartUtc: start,
           scheduledEndUtc: end,
-          teacherId: 'teacher-mahmoud-001'
+          teacherId: '9cd86044-eb13-4547-88e4-567c4f6a57d8'
         })
       });
       assert.strictEqual(res.status, 200, 'Endpoint should return 200 with teacherId');
@@ -238,7 +238,7 @@ describe('Task 0.54.2: Calendar Connection Ownership Correction & RLS Schema Aud
     });
 
     it('6.2: isTeacherCurrentlyAuthorized accurately validates active teachers', async () => {
-      const isAuth = await isTeacherCurrentlyAuthorized('teacher-mahmoud-001');
+      const isAuth = await isTeacherCurrentlyAuthorized('9cd86044-eb13-4547-88e4-567c4f6a57d8');
       assert.strictEqual(isAuth, true, 'Mahmoud teacher ID is authorized');
 
       const isFake = await isTeacherCurrentlyAuthorized('hacker-id-999');

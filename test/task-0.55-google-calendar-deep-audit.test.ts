@@ -32,7 +32,7 @@ describe('Task 0.55: Google Calendar Deep Audit & Lifecycle Hardening Suite', ()
   describe('Category 1: OAuth Lifecycle & Security', () => {
     it('1. Valid authorized teacher callback initiates connection with proper state contract', async () => {
       // Teacher A signs state
-      const teacherId = 'teacher-mahmoud-001';
+      const teacherId = '9cd86044-eb13-4547-88e4-567c4f6a57d8';
       const nonce = crypto.randomBytes(16).toString('hex');
       const payload = `${teacherId}:${nonce}`;
       const secret = process.env.SUPABASE_SERVICE_ROLE_KEY || 'dev-secret';
@@ -72,7 +72,7 @@ describe('Task 0.55: Google Calendar Deep Audit & Lifecycle Hardening Suite', ()
     });
 
     it('3. State tampering (payload altered after signature) is strictly rejected with 403', async () => {
-      const teacherId = 'teacher-mahmoud-001';
+      const teacherId = '9cd86044-eb13-4547-88e4-567c4f6a57d8';
       const nonce = crypto.randomBytes(16).toString('hex');
       const payload = `${teacherId}:${nonce}`;
       const secret = process.env.SUPABASE_SERVICE_ROLE_KEY || 'dev-secret';
@@ -144,7 +144,7 @@ describe('Task 0.55: Google Calendar Deep Audit & Lifecycle Hardening Suite', ()
     });
 
     it('10. Teacher A uses Teacher A connection without leaking to other teachers', async () => {
-      const slotsTeacherA = await computeAvailableSlots('America/Toronto', 2, 30, 'teacher-mahmoud-001');
+      const slotsTeacherA = await computeAvailableSlots('America/Toronto', 2, 30, '9cd86044-eb13-4547-88e4-567c4f6a57d8');
       assert.ok(Array.isArray(slotsTeacherA));
       assert.strictEqual(slotsTeacherA.length, 2);
     });
@@ -156,7 +156,7 @@ describe('Task 0.55: Google Calendar Deep Audit & Lifecycle Hardening Suite', ()
     });
 
     it('12. Google failure or invalid datetime fails gracefully with clear user error', async () => {
-      const res = await validateSlotAvailability('invalid-start-iso', 'invalid-end-iso', 'teacher-mahmoud-001');
+      const res = await validateSlotAvailability('invalid-start-iso', 'invalid-end-iso', '9cd86044-eb13-4547-88e4-567c4f6a57d8');
       assert.strictEqual(res.isAvailable, false);
       assert.ok(res.conflictReason?.includes('Invalid slot datetime'));
     });
@@ -187,7 +187,7 @@ describe('Task 0.55: Google Calendar Deep Audit & Lifecycle Hardening Suite', ()
       const bookingWithEvent = {
         id: 'booking-idempotent-002',
         referenceCode: 'REF-IDEM-002',
-        teacherId: 'teacher-mahmoud-001',
+        teacherId: '9cd86044-eb13-4547-88e4-567c4f6a57d8',
         studentName: 'Amina',
         contactEmail: 'amina@example.com',
         scheduledStart: '2026-10-16T15:00:00.000Z',

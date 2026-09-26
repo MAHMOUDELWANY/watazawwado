@@ -63,7 +63,7 @@ describe('Task 0.54: Google Calendar Teacher Identity Binding & OAuth Security',
     const payload = Buffer.from(b64Payload, 'base64').toString('utf8');
     assert.ok(payload.includes(':'), 'Payload should contain teacherId and nonce');
     
-    assert.ok(payload.startsWith('teacher-mahmoud-001:'), 'State should bind strictly to the authorized teacher ID');
+    assert.ok(payload.startsWith('9cd86044-eb13-4547-88e4-567c4f6a57d8:'), 'State should bind strictly to the authorized teacher ID');
   });
 
   it('Should return 503 when Google OAuth credentials are not configured on auth-url', async () => {
@@ -86,7 +86,7 @@ describe('Task 0.54: Google Calendar Teacher Identity Binding & OAuth Security',
     delete process.env.GOOGLE_CLIENT_ID;
     delete process.env.GOOGLE_CLIENT_SECRET;
 
-    const teacherId = 'teacher-mahmoud-001';
+    const teacherId = '9cd86044-eb13-4547-88e4-567c4f6a57d8';
     const nonce = 'randomnonce123';
     const b64Redirect = Buffer.from(`${baseUrl}/api/integrations/google-calendar/callback`).toString('base64');
     const payload = `${teacherId}:${nonce}:${b64Redirect}`;
@@ -121,7 +121,7 @@ describe('Task 0.54: Google Calendar Teacher Identity Binding & OAuth Security',
   });
 
   it('Callback should reject invalid signature', async () => {
-    const teacherId = 'teacher-mahmoud-001';
+    const teacherId = '9cd86044-eb13-4547-88e4-567c4f6a57d8';
     const nonce = 'randomnonce';
     const payload = `${teacherId}:${nonce}`;
     const state = `${Buffer.from(payload).toString('base64')}.invalidsignature`;

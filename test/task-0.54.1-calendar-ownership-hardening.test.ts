@@ -75,7 +75,7 @@ describe('Task 0.54.1: Google Calendar Teacher Ownership & Security Hardening Ga
     const [b64Payload, signature] = state.split('.');
     const payload = Buffer.from(b64Payload, 'base64').toString('utf8');
     assert.ok(payload.includes(':'), 'Payload should contain teacherId:nonce');
-    assert.ok(payload.startsWith('teacher-mahmoud-001:'), 'State should bind strictly to the authorized teacher ID');
+    assert.ok(payload.startsWith('9cd86044-eb13-4547-88e4-567c4f6a57d8:'), 'State should bind strictly to the authorized teacher ID');
   });
 
   // B. CALLBACK CSRF & SIGNATURE VERIFICATION
@@ -94,7 +94,7 @@ describe('Task 0.54.1: Google Calendar Teacher Ownership & Security Hardening Ga
   });
 
   it('B3: Callback should reject forged state signature', async () => {
-    const teacherId = 'teacher-mahmoud-001';
+    const teacherId = '9cd86044-eb13-4547-88e4-567c4f6a57d8';
     const nonce = 'randomnonce123';
     const payload = `${teacherId}:${nonce}`;
     const state = `${Buffer.from(payload).toString('base64')}.invalidsignaturexyz`;
@@ -136,7 +136,7 @@ describe('Task 0.54.1: Google Calendar Teacher Ownership & Security Hardening Ga
     const signature = hmac.digest('hex');
     const state = `${Buffer.from(payload).toString('base64')}.${signature}`;
 
-    const res = await fetch(`${baseUrl}/api/integrations/google-calendar/callback?code=testcode&state=${state}&teacher_id=teacher-mahmoud-001`, {
+    const res = await fetch(`${baseUrl}/api/integrations/google-calendar/callback?code=testcode&state=${state}&teacher_id=9cd86044-eb13-4547-88e4-567c4f6a57d8`, {
       headers: {
         'Cookie': `oauth_state=${state}`
       }
@@ -161,8 +161,8 @@ describe('Task 0.54.1: Google Calendar Teacher Ownership & Security Hardening Ga
 
   // F. HELPER: isTeacherCurrentlyAuthorized
   it('F1: isTeacherCurrentlyAuthorized should correctly identify authorized vs unauthorized accounts', async () => {
-    const isMahmoudAuth = await isTeacherCurrentlyAuthorized('teacher-mahmoud-001');
-    assert.strictEqual(isMahmoudAuth, true, 'teacher-mahmoud-001 should be authorized');
+    const isMahmoudAuth = await isTeacherCurrentlyAuthorized('9cd86044-eb13-4547-88e4-567c4f6a57d8');
+    assert.strictEqual(isMahmoudAuth, true, '9cd86044-eb13-4547-88e4-567c4f6a57d8 should be authorized');
 
     const isFakeAuth = await isTeacherCurrentlyAuthorized('non-existent-teacher-99999');
     assert.strictEqual(isFakeAuth, false, 'Non-existent teacher must be unauthorized');
@@ -221,13 +221,13 @@ describe('Task 0.54.1: Google Calendar Teacher Ownership & Security Hardening Ga
   });
 
   it('G3: Availability engine functions should support optional teacherId parameter without failure', async () => {
-    const days = await computeAvailableSlots('America/New_York', 3, 30, 'teacher-mahmoud-001');
+    const days = await computeAvailableSlots('America/New_York', 3, 30, '9cd86044-eb13-4547-88e4-567c4f6a57d8');
     assert.ok(Array.isArray(days), 'Days should be an array');
     assert.strictEqual(days.length, 3, 'Should return 3 days of availability');
 
     const futureStart = new Date(Date.now() + 172800000).toISOString();
     const futureEnd = new Date(Date.now() + 174600000).toISOString();
-    const valRes = await validateSlotAvailability(futureStart, futureEnd, 'teacher-mahmoud-001');
+    const valRes = await validateSlotAvailability(futureStart, futureEnd, '9cd86044-eb13-4547-88e4-567c4f6a57d8');
     assert.ok(typeof valRes.isAvailable === 'boolean', 'Slot availability result returned');
   });
 

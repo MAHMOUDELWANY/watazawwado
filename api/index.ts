@@ -1124,7 +1124,7 @@ async function verifyTeacherAuth(req: any, res: any, next: any) {
     // Dev super_admin token bypass for local development / non-production ONLY
     if (!isProd && token === 'dev-super-admin-token') {
       req.teacherUser = {
-        id: 'teacher-admin-001',
+        id: 'd7d1e5b4-f2e6-41f8-ac40-3b3b8e862b76',
         email: 'mahmoudelwany98@gmail.com',
         name: 'Ustadh Mahmoud (Super Admin)',
         role: 'super_admin',
@@ -1138,7 +1138,7 @@ async function verifyTeacherAuth(req: any, res: any, next: any) {
     // Dev teacher token bypass for local development / non-production ONLY
     if (!isProd && (token === 'dev-teacher-token' || devHeader === 'true')) {
       req.teacherUser = {
-        id: 'teacher-mahmoud-001',
+        id: '9cd86044-eb13-4547-88e4-567c4f6a57d8',
         email: 'mhmwdlwany4222@gmail.com',
         name: 'Ustadh Mahmoud',
         role: 'teacher',
@@ -1249,32 +1249,6 @@ export async function resolveTeacherMetadata(
   if (!teacherIdentifier) return null;
   const clean = String(teacherIdentifier).trim();
   if (!clean || clean === 'null' || clean === 'undefined') return null;
-
-  // Non-production fallback resolution for seeded mock environments
-  if (!process.env.NODE_ENV || process.env.NODE_ENV !== 'production') {
-    if (clean === 'teacher-admin-001' || clean === 'mahmoudelwany98@gmail.com') {
-      return {
-        id: 'teacher-admin-001',
-        email: 'mahmoudelwany98@gmail.com',
-        name: 'Ustadh Mahmoud (Super Admin)',
-        display_name: 'Ustadh Mahmoud (Super Admin)',
-        gender: 'male',
-        role: 'super_admin',
-        is_active: true
-      };
-    }
-    if (clean === 'teacher-mahmoud-001' || clean === 'mhmwdlwany4222@gmail.com') {
-      return {
-        id: 'teacher-mahmoud-001',
-        email: 'mhmwdlwany4222@gmail.com',
-        name: 'Ustadh Mahmoud',
-        display_name: 'Ustadh Mahmoud',
-        gender: 'male',
-        role: 'teacher',
-        is_active: true
-      };
-    }
-  }
 
   if (!supabaseAdmin) return null;
 
@@ -2326,42 +2300,8 @@ app.patch('/api/dashboard/admin/students/:id/assign-teacher', verifyTeacherAuth,
     const { id } = req.params;
     const { teacher_id } = req.body;
 
-    // Dev/Mock fallback
     if (!supabase) {
-      if (!teacher_id || teacher_id === 'null') {
-        return res.json({
-          success: true,
-          student_id: id,
-          assigned_teacher_id: null,
-          assigned_teacher: null
-        });
-      }
-
-      const tid = String(teacher_id).toLowerCase().trim();
-      const isSuperAdmin = tid === 'mahmoudelwany98@gmail.com' || tid === 'teacher-admin-001';
-      const isTeacher = tid === 'mhmwdlwany4222@gmail.com' || tid === 'teacher-mahmoud-001';
-
-      if (!isSuperAdmin && !isTeacher) {
-        return res.status(400).json({ error: 'Target teacher account is not registered in active faculty.' });
-      }
-
-      const resolvedId = isSuperAdmin ? 'teacher-admin-001' : 'teacher-mahmoud-001';
-      const resolvedEmail = isSuperAdmin ? 'mahmoudelwany98@gmail.com' : 'mhmwdlwany4222@gmail.com';
-      const resolvedName = isSuperAdmin ? 'Ustadh Mahmoud (Super Admin)' : 'Ustadh Mahmoud';
-      const resolvedRole = isSuperAdmin ? 'super_admin' : 'teacher';
-
-      return res.json({
-        success: true,
-        student_id: id,
-        assigned_teacher_id: resolvedId,
-        assigned_teacher: {
-          id: resolvedId,
-          email: resolvedEmail,
-          name: resolvedName,
-          gender: 'male',
-          role: resolvedRole
-        }
-      });
+      return res.status(503).json({ error: 'Database integration is not configured.' });
     }
 
     const { data: student, error: sErr } = await supabase
@@ -2434,34 +2374,7 @@ app.get('/api/dashboard/admin/teachers', verifyTeacherAuth, requireSuperAdmin, a
   try {
     const supabase = getSupabaseAdminClient();
     if (!supabase) {
-      return res.json({
-        teachers: [
-          {
-            id: 'teacher-admin-001',
-            email: 'mahmoudelwany98@gmail.com',
-            display_name: 'Ustadh Mahmoud (Super Admin)',
-            role: 'super_admin',
-            is_active: true,
-            gender: 'male',
-            assigned_students_count: 0,
-            upcoming_lessons_count: 0,
-            completed_lessons_count: 0,
-            created_at: new Date().toISOString()
-          },
-          {
-            id: 'teacher-mahmoud-001',
-            email: 'mhmwdlwany4222@gmail.com',
-            display_name: 'Ustadh Mahmoud',
-            role: 'teacher',
-            is_active: true,
-            gender: 'male',
-            assigned_students_count: 0,
-            upcoming_lessons_count: 0,
-            completed_lessons_count: 0,
-            created_at: new Date().toISOString()
-          }
-        ]
-      });
+      return res.status(503).json({ error: 'Database integration is not configured.' });
     }
 
     const { data: accounts, error: accErr } = await supabase
@@ -7472,32 +7385,7 @@ app.post('/api/dashboard/intakes/:id/review', verifyTeacherAuth, requireSuperAdm
 // --------------------------------------------------------------------
 // 22. STAFF MANAGEMENT (Super Admin Only)
 // --------------------------------------------------------------------
-app.get('/api/dashboard/admin/teachers', verifyTeacherAuth, requireSuperAdmin, async (req: any, res: any) => {
-  try {
-    const supabase = getSupabaseAdminClient();
-    if (!supabase) {
-      return res.json({
-        teachers: [
-          { email: 'mahmoudelwany98@gmail.com', role: 'super_admin', is_active: true },
-          { email: 'mhmwdlwany4222@gmail.com', role: 'teacher', is_active: true }
-        ]
-      });
-    }
 
-    const { data, error } = await supabase
-      .from('teacher_accounts')
-      .select('email, role, is_active, created_at, updated_at')
-      .order('created_at', { ascending: true });
-
-    if (error) {
-      return res.status(500).json({ error: 'Failed to retrieve teacher accounts.' });
-    }
-
-    return res.json({ teachers: data || [] });
-  } catch (err: any) {
-    return res.status(500).json({ error: err.message || 'Internal server error.' });
-  }
-});
 
 app.post('/api/dashboard/admin/teachers', verifyTeacherAuth, requireSuperAdmin, async (req: any, res: any) => {
   try {
