@@ -2858,19 +2858,33 @@ app.get('/api/dashboard/bookings', verifyTeacherAuth, async (req, res) => {
         q = q.or(`contact_name.ilike.%${cleanSearch}%,contact_email.ilike.%${cleanSearch}%,reference_code.ilike.%${cleanSearch}%,parent_name.ilike.%${cleanSearch}%`);
       }
 
+      // Teacher scope enforcement
+      if ((req as any).teacherUser?.role !== 'super_admin') {
+        q = q.eq('teacher_id', (req as any).teacherUser.id);
+      }
+
       // Order by scheduled_start descending
       return q.order('scheduled_start', { ascending: false });
+    };
+
+    const isSuperAdmin = (req as any).teacherUser?.role === 'super_admin';
+    const tId = (req as any).teacherUser?.id;
+
+    const baseCountQuery = () => {
+      let q = supabase.from('bookings').select('*', { count: 'exact', head: true });
+      if (!isSuperAdmin) q = q.eq('teacher_id', tId);
+      return q;
     };
 
     // Parallel fetch services & operational summary counts
     const [servicesRes, summaryCountsRes] = await Promise.all([
       supabase.from('services').select('id, title, arabic_title, hourly_rate_usd'),
       Promise.all([
-        supabase.from('bookings').select('*', { count: 'exact', head: true }),
-        supabase.from('bookings').select('*', { count: 'exact', head: true }).gte('scheduled_start', nowIso).neq('status', 'cancelled'),
-        supabase.from('payments').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
-        supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('status', 'completed'),
-        supabase.from('payments').select('*', { count: 'exact', head: true }).eq('status', 'confirmed').gte('confirmed_at', DateTime.now().minus({ days: 7 }).toISO() || '')
+        baseCountQuery(),
+        baseCountQuery().gte('scheduled_start', nowIso).neq('status', 'cancelled'),
+        isSuperAdmin ? supabase.from('payments').select('*', { count: 'exact', head: true }).eq('status', 'pending') : Promise.resolve({ count: 0 }),
+        baseCountQuery().eq('status', 'completed'),
+        isSuperAdmin ? supabase.from('payments').select('*', { count: 'exact', head: true }).eq('status', 'confirmed').gte('confirmed_at', DateTime.now().minus({ days: 7 }).toISO() || '') : Promise.resolve({ count: 0 })
       ])
     ]);
 
@@ -2879,45 +2893,47 @@ app.get('/api/dashboard/bookings', verifyTeacherAuth, async (req, res) => {
     // Global calculation of unpaid_upcoming_count across the ENTIRE upcoming dataset
     let unpaidUpcomingCount = 0;
     try {
-      const { data: upcomingRegular } = await supabase
-        .from('bookings')
-        .select('id, fee_amount_usd, service_id, duration_minutes')
-        .gte('scheduled_start', nowIso)
-        .neq('status', 'cancelled')
-        .eq('booking_type', 'regular');
+      if (isSuperAdmin) {
+        const { data: upcomingRegular } = await supabase
+          .from('bookings')
+          .select('id, fee_amount_usd, service_id, duration_minutes')
+          .gte('scheduled_start', nowIso)
+          .neq('status', 'cancelled')
+          .eq('booking_type', 'regular');
 
-      if (upcomingRegular && upcomingRegular.length > 0) {
-        const upIds = upcomingRegular.map(b => b.id);
-        const { data: upPayments } = await supabase
-          .from('payments')
-          .select('booking_id, amount, status')
-          .in('booking_id', upIds);
+        if (upcomingRegular && upcomingRegular.length > 0) {
+          const upIds = upcomingRegular.map(b => b.id);
+          const { data: upPayments } = await supabase
+            .from('payments')
+            .select('booking_id, amount, status')
+            .in('booking_id', upIds);
 
-        const confirmedPaymentsByBooking = new Map<string, number>();
-        (upPayments || []).forEach(p => {
-          if (p.booking_id && p.status === 'confirmed') {
-            confirmedPaymentsByBooking.set(
-              p.booking_id, 
-              (confirmedPaymentsByBooking.get(p.booking_id) || 0) + Number(p.amount || 0)
-            );
-          }
-        });
-
-        for (const ub of upcomingRegular) {
-          let expAmt: number | null = null;
-          if (ub.fee_amount_usd !== null && ub.fee_amount_usd !== undefined && !isNaN(Number(ub.fee_amount_usd))) {
-            expAmt = Number(ub.fee_amount_usd);
-          } else {
-            const s = serviceMap.get(ub.service_id);
-            if (s?.hourly_rate_usd !== undefined && s?.hourly_rate_usd !== null && !isNaN(Number(s.hourly_rate_usd))) {
-              const dur = Number(ub.duration_minutes) || 60;
-              expAmt = Number(((Number(s.hourly_rate_usd) * dur) / 60).toFixed(2));
+          const confirmedPaymentsByBooking = new Map<string, number>();
+          (upPayments || []).forEach(p => {
+            if (p.booking_id && p.status === 'confirmed') {
+              confirmedPaymentsByBooking.set(
+                p.booking_id, 
+                (confirmedPaymentsByBooking.get(p.booking_id) || 0) + Number(p.amount || 0)
+              );
             }
-          }
-          const confAmt = confirmedPaymentsByBooking.get(ub.id) || 0;
-          const isFullyPaid = expAmt !== null && expAmt > 0 ? confAmt >= expAmt : (confAmt > 0);
-          if (!isFullyPaid) {
-            unpaidUpcomingCount++;
+          });
+
+          for (const ub of upcomingRegular) {
+            let expAmt: number | null = null;
+            if (ub.fee_amount_usd !== null && ub.fee_amount_usd !== undefined && !isNaN(Number(ub.fee_amount_usd))) {
+              expAmt = Number(ub.fee_amount_usd);
+            } else {
+              const s = serviceMap.get(ub.service_id);
+              if (s?.hourly_rate_usd !== undefined && s?.hourly_rate_usd !== null && !isNaN(Number(s.hourly_rate_usd))) {
+                const dur = Number(ub.duration_minutes) || 60;
+                expAmt = Number(((Number(s.hourly_rate_usd) * dur) / 60).toFixed(2));
+              }
+            }
+            const confAmt = confirmedPaymentsByBooking.get(ub.id) || 0;
+            const isFullyPaid = expAmt !== null && expAmt > 0 ? confAmt >= expAmt : (confAmt > 0);
+            if (!isFullyPaid) {
+              unpaidUpcomingCount++;
+            }
           }
         }
       }
@@ -3098,6 +3114,13 @@ app.get('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => {
 
     if (!booking) {
       return res.status(404).json({ error: 'Booking not found.' });
+    }
+
+    // Teacher visibility enforcement
+    if ((req as any).teacherUser?.role !== 'super_admin') {
+      if (booking.teacher_id !== (req as any).teacherUser.id) {
+        return res.status(403).json({ error: 'Forbidden: You do not have authorization to view this booking.' });
+      }
     }
 
     // Fetch related records in parallel
@@ -3994,6 +4017,82 @@ app.post('/api/packages/:entitlementId/payment-claim', rateLimit, verifyStudentA
   }
 });
 
+// 16d. DASHBOARD: Fetch super admin overview metrics
+app.get('/api/dashboard/overview-metrics', verifyTeacherAuth, requireSuperAdmin, async (req, res) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+
+    const nowCairo = DateTime.now().setZone('Africa/Cairo');
+    const startOfDayUtc = nowCairo.startOf('day').toUTC().toISO();
+    const endOfDayUtc = nowCairo.endOf('day').toUTC().toISO();
+    const startOfWeekUtc = nowCairo.startOf('week').toUTC().toISO();
+    const endOfWeekUtc = nowCairo.endOf('week').toUTC().toISO();
+    const thirtyDaysAgoUtc = nowCairo.minus({ days: 30 }).toUTC().toISO();
+    const nowUtc = DateTime.now().toUTC().toISO();
+
+    const [
+      activeStudentsRes,
+      teachersRes,
+      lessonsTodayRes,
+      lessonsThisWeekRes,
+      trialsUpcomingRes,
+      trialsTotalRes,
+      newStudents30dRes,
+      pendingPaymentsRes,
+      unassignedStudentsRes,
+      allActiveStudentsRes,
+      allBookingsThisWeekRes
+    ] = await Promise.all([
+      supabase.from('students').select('*', { count: 'exact', head: true }).eq('status', 'active'),
+      supabase.from('profiles').select('id, email, display_name, role'),
+      supabase.from('bookings').select('*', { count: 'exact', head: true }).gte('scheduled_start', startOfDayUtc).lte('scheduled_start', endOfDayUtc).neq('status', 'cancelled'),
+      supabase.from('bookings').select('*', { count: 'exact', head: true }).gte('scheduled_start', startOfWeekUtc).lte('scheduled_start', endOfWeekUtc).neq('status', 'cancelled'),
+      supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('booking_type', 'trial').gte('scheduled_start', nowUtc).neq('status', 'cancelled'),
+      supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('booking_type', 'trial'),
+      supabase.from('students').select('*', { count: 'exact', head: true }).gte('created_at', thirtyDaysAgoUtc),
+      supabase.from('payments').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+      supabase.from('students').select('*', { count: 'exact', head: true }).is('assigned_teacher_id', null).eq('status', 'active'),
+      supabase.from('students').select('id, assigned_teacher_id').eq('status', 'active'),
+      supabase.from('bookings').select('id, teacher_id').gte('scheduled_start', startOfWeekUtc).lte('scheduled_start', endOfWeekUtc).neq('status', 'cancelled')
+    ]);
+
+    const activeStudentsList = allActiveStudentsRes.data || [];
+    const bookingsThisWeekList = allBookingsThisWeekRes.data || [];
+    const teachersList = teachersRes.data || [];
+
+    const teacher_capacity = teachersList.map((t: any) => {
+      const active_students = activeStudentsList.filter((s: any) => s.assigned_teacher_id === t.id).length;
+      const lessons_this_week = bookingsThisWeekList.filter((b: any) => b.teacher_id === t.id).length;
+      return {
+        teacher_id: t.id,
+        email: t.email,
+        name: t.display_name || t.email,
+        role: t.role,
+        active_students,
+        lessons_this_week
+      };
+    });
+
+    res.json({
+      active_students: activeStudentsRes.count || 0,
+      active_teachers: teachersList.length,
+      lessons_today: lessonsTodayRes.count || 0,
+      lessons_this_week: lessonsThisWeekRes.count || 0,
+      trials_upcoming: trialsUpcomingRes.count || 0,
+      trials_total: trialsTotalRes.count || 0,
+      new_students_30d: newStudents30dRes.count || 0,
+      pending_payments: pendingPaymentsRes.count || 0,
+      unassigned_students: unassignedStudentsRes.count || 0,
+      students_needing_attention: 0,
+      teacher_capacity
+    });
+  } catch (err) {
+    console.error('[Dashboard Overview Metrics Error]', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 // 17. DASHBOARD: Fetch teacher stats
 app.get('/api/dashboard/stats', verifyTeacherAuth, async (req, res) => {
   try {
@@ -4002,12 +4101,25 @@ app.get('/api/dashboard/stats', verifyTeacherAuth, async (req, res) => {
       return res.status(503).json({ error: 'Database integration is not properly configured.' });
     }
 
+    const isSuperAdmin = (req as any).teacherUser?.role === 'super_admin';
+    const tId = (req as any).teacherUser?.id;
+
+    let studentsQ = supabase.from('students').select('*', { count: 'exact', head: true }).eq('status', 'active');
+    let bookingsQ = supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('status', 'confirmed');
+    let trialsQ = supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('booking_type', 'trial');
+
+    if (!isSuperAdmin) {
+      studentsQ = studentsQ.eq('assigned_teacher_id', tId);
+      bookingsQ = bookingsQ.eq('teacher_id', tId);
+      trialsQ = trialsQ.eq('teacher_id', tId);
+    }
+
     const [leadsRes, studentsRes, bookingsRes, trialsRes, paymentsRes] = await Promise.all([
-      supabase.from('leads').select('*', { count: 'exact', head: true }),
-      supabase.from('students').select('*', { count: 'exact', head: true }).eq('status', 'active'),
-      supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('status', 'confirmed'),
-      supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('booking_type', 'trial'),
-      supabase.from('payments').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+      isSuperAdmin ? supabase.from('leads').select('*', { count: 'exact', head: true }) : Promise.resolve({ count: 0 }),
+      studentsQ,
+      bookingsQ,
+      trialsQ,
+      isSuperAdmin ? supabase.from('payments').select('*', { count: 'exact', head: true }).eq('status', 'pending') : Promise.resolve({ count: 0 }),
     ]);
 
     res.json({
@@ -4092,12 +4204,18 @@ app.get('/api/dashboard/trials', verifyTeacherAuth, async (req, res) => {
       return res.status(503).json({ error: 'Database integration is not properly configured.' });
     }
 
+    let trialsQuery = supabase
+      .from('bookings')
+      .select('*')
+      .eq('booking_type', 'trial')
+      .order('scheduled_start', { ascending: true });
+
+    if ((req as any).teacherUser?.role !== 'super_admin') {
+      trialsQuery = trialsQuery.eq('teacher_id', (req as any).teacherUser.id);
+    }
+
     const [bookingsRes, leadsRes, servicesRes] = await Promise.all([
-      supabase
-        .from('bookings')
-        .select('*')
-        .eq('booking_type', 'trial')
-        .order('scheduled_start', { ascending: true }),
+      trialsQuery,
       supabase.from('leads').select('*'),
       supabase.from('services').select('id, title, arabic_title')
     ]);
@@ -4351,9 +4469,6 @@ app.get('/api/dashboard/leads', verifyTeacherAuth, requireSuperAdmin, async (req
   try {
     const supabase = getSupabaseAdminClient();
     if (!supabase) {
-      if (process.env.NODE_ENV !== 'production') {
-        return res.json({ leads: [] });
-      }
       return res.status(503).json({ error: 'Database integration is not properly configured.' });
     }
 
@@ -4541,29 +4656,6 @@ app.get('/api/dashboard/analytics', verifyTeacherAuth, async (req, res) => {
   try {
     const supabase = getSupabaseAdminClient();
     if (!supabase) {
-      if (process.env.NODE_ENV !== 'production') {
-        return res.json({
-          funnel: {
-            steps: [],
-            rates: {
-              lead_to_trial_rate: 0,
-              trial_to_student_rate: 0,
-              overall_conversion_rate: 0
-            }
-          },
-          current_pipeline: {
-            lead: 0,
-            trial_booked: 0,
-            active_student: 0,
-            completed: 0,
-            lost: 0
-          },
-          time_to_convert_days: {
-            avg_lead_to_trial: null,
-            avg_trial_to_active: null
-          }
-        });
-      }
       return res.status(503).json({ error: 'Database integration is not properly configured.' });
     }
 
@@ -4589,10 +4681,16 @@ app.get('/api/dashboard/analytics', verifyTeacherAuth, async (req, res) => {
       endDateIso = DateTime.fromISO(end_date as string).setZone('Africa/Cairo').endOf('day').toUTC().toISO();
     }
 
-    // 1. Current Pipeline: Always fetch ALL active leads for current stage distribution (unfiltered by date)
+    const isSuperAdmin = (req as any).teacherUser?.role === 'super_admin';
+    const tId = (req as any).teacherUser?.id;
+
+    // 1. Current Pipeline: Fetch students (scoped if teacher) and leads (superadmin only)
+    let studentsBase = supabase.from('students').select('id, lead_id, email, status, created_at');
+    if (!isSuperAdmin) studentsBase = studentsBase.eq('assigned_teacher_id', tId);
+
     const [allLeadsRes, allStudentsRes, servicesRes] = await Promise.all([
-      supabase.from('leads').select('id, name, email, status, service_interest_id, source, created_at, updated_at'),
-      supabase.from('students').select('id, lead_id, email, status, created_at'),
+      isSuperAdmin ? supabase.from('leads').select('id, name, email, status, service_interest_id, source, created_at, updated_at') : Promise.resolve({ data: [] }),
+      studentsBase,
       supabase.from('services').select('id, title')
     ]);
 
@@ -4630,6 +4728,10 @@ app.get('/api/dashboard/analytics', verifyTeacherAuth, async (req, res) => {
     let bookingsQuery = supabase.from('bookings').select('id, lead_id, student_id, contact_email, booking_type, status, scheduled_start, service_id, created_at');
     let paymentsQuery = supabase.from('payments').select('id, amount, status, created_at');
 
+    if (!isSuperAdmin) {
+      bookingsQuery = bookingsQuery.eq('teacher_id', tId);
+    }
+
     if (startDateIso && endDateIso) {
       leadsQuery = leadsQuery.gte('created_at', startDateIso).lte('created_at', endDateIso);
       bookingsQuery = bookingsQuery.gte('created_at', startDateIso).lte('created_at', endDateIso);
@@ -4637,9 +4739,9 @@ app.get('/api/dashboard/analytics', verifyTeacherAuth, async (req, res) => {
     }
 
     const [periodLeadsRes, periodBookingsRes, periodPaymentsRes] = await Promise.all([
-      leadsQuery,
+      isSuperAdmin ? leadsQuery : Promise.resolve({ data: [] }),
       bookingsQuery,
-      paymentsQuery
+      isSuperAdmin ? paymentsQuery : Promise.resolve({ data: [] })
     ]);
 
     const periodLeads = periodLeadsRes.data || [];
@@ -7405,10 +7507,7 @@ app.post('/api/dashboard/admin/teachers', verifyTeacherAuth, requireSuperAdmin, 
 
     const supabase = getSupabaseAdminClient();
     if (!supabase) {
-      return res.status(201).json({
-        success: true,
-        teacher: { email: cleanEmail, role, is_active: Boolean(is_active) }
-      });
+      return res.status(503).json({ error: 'Database integration is not properly configured.' });
     }
 
     const { data, error } = await supabase
