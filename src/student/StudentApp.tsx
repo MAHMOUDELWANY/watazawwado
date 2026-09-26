@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { useTeacherAuth } from '../lib/auth';
 import { useTheme } from '../components/ThemeProvider';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 
 import StudentHomePage from './pages/StudentHomePage';
 import StudentProfilePage from './pages/StudentProfilePage';
@@ -675,7 +676,8 @@ export default function StudentApp() {
           tabIndex={-1}
         >
           <div className="w-full max-w-7xl mx-auto">
-            <Routes>
+            <ErrorBoundary>
+              <Routes>
               <Route path="/" element={<StudentHomePage lang={lang} />} />
               <Route path="/lessons" element={<StudentLessonsPage lang={lang} session={session} />} />
               <Route path="/packages" element={<StudentPackagesPage lang={lang} session={session} />} />
@@ -708,6 +710,7 @@ export default function StudentApp() {
               <Route path="/demo" element={<StudentDemoPage onOpenSignupModal={() => setAuthModalOpen(true)} />} />
               <Route path="*" element={<Navigate to="/student" replace />} />
             </Routes>
+            </ErrorBoundary>
           </div>
         </main>
 

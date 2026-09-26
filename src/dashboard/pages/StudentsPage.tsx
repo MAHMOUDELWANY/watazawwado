@@ -24,6 +24,7 @@ import { useTeacherAuth } from '../../lib/auth';
 import { DashboardStudentListItem } from '../types';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
+import { EmptyState } from '../../components/EmptyState';
 
 export default function StudentsPage() {
   const { session, teacherRole } = useTeacherAuth();
@@ -247,17 +248,13 @@ export default function StudentsPage() {
           </button>
         </div>
       ) : displayedStudents.length === 0 ? (
-        <div className="bg-surface border border-border rounded-2xl p-12 text-center space-y-3">
-          <Users className="w-10 h-10 text-muted-foreground mx-auto opacity-70" />
-          <h3 className="text-base font-serif font-semibold text-foreground">
-            {searchQuery || statusFilter !== 'all' ? 'No matching students found' : 'No registered students yet'}
-          </h3>
-          <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-            {searchQuery || statusFilter !== 'all'
-              ? 'Try adjusting your search criteria or resetting the status filter.'
-              : 'Students converted from trial bookings or enrolled directly will be listed here with complete profiles and private notes.'}
-          </p>
-        </div>
+        <EmptyState
+          icon={Users}
+          title={searchQuery || statusFilter !== 'all' ? 'No matching students found' : 'No registered students yet'}
+          description={searchQuery || statusFilter !== 'all'
+            ? 'Try adjusting your search criteria or resetting the status filter.'
+            : 'Students converted from trial bookings or enrolled directly will be listed here with complete profiles and private notes.'}
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {displayedStudents.map(student => {

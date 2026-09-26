@@ -33,6 +33,7 @@ import {
 } from '../types';
 import { BookingDetailModal } from '../components/BookingDetailModal';
 import { RecordPaymentModal } from '../components/RecordPaymentModal';
+import { EmptyState } from '../../components/EmptyState';
 
 export default function BookingsPage() {
   const { session } = useTeacherAuth();
@@ -408,13 +409,11 @@ export default function BookingsPage() {
               </button>
             </div>
           ) : bookings.length === 0 ? (
-            <div className="bg-surface border border-border rounded-2xl p-8 text-center space-y-2">
-              <Calendar className="w-8 h-8 text-muted-foreground mx-auto" />
-              <h3 className="text-sm font-semibold text-foreground">No bookings match your current filters</h3>
-              <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-                Try resetting or clearing your search criteria to see all scheduled lessons.
-              </p>
-            </div>
+            <EmptyState
+              icon={Calendar}
+              title="No bookings match your current filters"
+              description="Try resetting or clearing your search criteria to see all scheduled lessons."
+            />
           ) : (
             <div className="space-y-3">
               {bookings.map((b) => {

@@ -24,6 +24,7 @@ import {
 import { DashboardLesson } from '../types';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 import { dashboardFetch } from '../lib/dashboardApi';
+import FocusTrap from '../../components/FocusTrap';
 
 interface LessonDetailModalProps {
   lesson: DashboardLesson | null;
@@ -193,10 +194,11 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
       aria-modal="true"
       aria-labelledby="lesson-detail-title"
     >
-      <div 
-        className="bg-surface text-foreground rounded-2xl w-full max-w-lg shadow-xl border border-border overflow-hidden flex flex-col max-h-[90vh]"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <FocusTrap isActive={true}>
+        <div 
+          className="bg-surface text-foreground rounded-2xl w-full max-w-lg shadow-xl border border-border overflow-hidden flex flex-col max-h-[90vh]"
+          onClick={(e) => e.stopPropagation()}
+        >
         {/* Header */}
         <div className="p-6 border-b border-border-subtle flex items-start justify-between gap-4 bg-surface-subtle">
           <div>
@@ -640,7 +642,8 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
             Close
           </button>
         </div>
-      </div>
+        </div>
+      </FocusTrap>
     </div>
   );
 }

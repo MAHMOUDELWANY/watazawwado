@@ -36,6 +36,7 @@ import IntakeReviewPage from './pages/IntakeReviewPage';
 import TeachersPage from './pages/TeachersPage';
 import { TeacherAuthDiagnosticPanel } from './components/TeacherAuthDiagnosticPanel';
 import { Language } from '../booking/types';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 
 export function DashboardApp() {
   const { isTeacherAuthenticated, user, signOut, teacherRole } = useTeacherAuth();
@@ -332,23 +333,25 @@ export function DashboardApp() {
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-background">
           <div className="max-w-5xl mx-auto space-y-6">
             <TeacherAuthDiagnosticPanel />
-            <Routes>
-              {/* If super_admin, root /dashboard is Overview; if teacher, root /dashboard is Today */}
-              <Route path="/" element={isSuperAdmin ? <OverviewPage /> : <TodayPage />} />
-              <Route path="/overview" element={<OverviewPage />} />
-              <Route path="/today" element={<TodayPage />} />
-              <Route path="/upcoming" element={<UpcomingPage />} />
-              <Route path="/trials" element={<TrialsPage />} />
-              <Route path="/leads" element={<LeadsPage />} />
-              <Route path="/intakes" element={<IntakeReviewPage />} />
-              <Route path="/teachers" element={<TeachersPage />} />
-              <Route path="/students" element={<StudentsPage />} />
-              <Route path="/students/:id" element={<StudentDetailPage />} />
-              <Route path="/bookings" element={<BookingsPage />} />
-              <Route path="/analytics" element={<AnalyticsPage />} />
-              <Route path="/settings" element={<SettingsPage />} />
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
-            </Routes>
+            <ErrorBoundary>
+              <Routes>
+                {/* If super_admin, root /dashboard is Overview; if teacher, root /dashboard is Today */}
+                <Route path="/" element={isSuperAdmin ? <OverviewPage /> : <TodayPage />} />
+                <Route path="/overview" element={<OverviewPage />} />
+                <Route path="/today" element={<TodayPage />} />
+                <Route path="/upcoming" element={<UpcomingPage />} />
+                <Route path="/trials" element={<TrialsPage />} />
+                <Route path="/leads" element={<LeadsPage />} />
+                <Route path="/intakes" element={<IntakeReviewPage />} />
+                <Route path="/teachers" element={<TeachersPage />} />
+                <Route path="/students" element={<StudentsPage />} />
+                <Route path="/students/:id" element={<StudentDetailPage />} />
+                <Route path="/bookings" element={<BookingsPage />} />
+                <Route path="/analytics" element={<AnalyticsPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
+                <Route path="*" element={<Navigate to="/dashboard" replace />} />
+              </Routes>
+            </ErrorBoundary>
           </div>
         </div>
       </main>
