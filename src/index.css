@@ -8,7 +8,7 @@
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-arabic: 'IBM Plex Sans Arabic', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Arial, sans-serif;
 
-  /* Semantic Colors */
+  /* Semantic Colors — mapped from CSS custom properties for Tailwind */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
@@ -16,6 +16,7 @@
   --color-surface-foreground: var(--surface-foreground);
   
   --color-surface-subtle: var(--surface-subtle);
+  --color-surface-warm: var(--surface-warm);
   
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
@@ -30,6 +31,11 @@
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
 
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-brand: var(--brand);
+
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   
@@ -41,8 +47,6 @@
 
   --color-focus: var(--focus);
 
-  
-  
   /* Default Transition Overrides */
   --default-transition-duration: 250ms;
   --default-transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -50,8 +54,10 @@
   /* Motion Tokens */
   --duration-fast: 150ms;
   --duration-base: 250ms;
-  --duration-slow: 350ms;
+  --duration-slow: 400ms;
   --ease-premium: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-entrance: cubic-bezier(0, 0, 0.2, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
 
   /* Radius Scale */
   --radius-sm: calc(var(--radius) - 2px);
@@ -61,17 +67,26 @@
   --radius-2xl: calc(var(--radius) + 12px);
 }
 
+/* ============================================================
+   WATAZAWWADO BRAND PALETTE — PRIMARY TOKENS
+   
+   Red:    #C51F24  — brand mark, critical emphasis
+   Teal:   #087D91  — primary interactive, CTAs, links
+   Copper: #8B4935  — warm accent, editorial highlights
+   Beige:  #D8C6AE  — environmental warmth, section washes
+   ============================================================ */
+
 :root {
   color-scheme: light;
   
-  /* Foundation Colors based on Watazawwado Premium Warm Direction */
-  /* Warm Ivory / Soft Neutral Background */
+  /* Environment — warm ivory study room foundation */
   --background: #F8F6F0; 
-  --foreground: #30332F; /* Deep charcoal text */
+  --foreground: #2C2A27;
 
   --surface: #FFFFFF;
-  --surface-foreground: #30332F;
+  --surface-foreground: #2C2A27;
   --surface-subtle: #F0EDE6;
+  --surface-warm: #EDE7DC;
 
   --muted: #EDEAE1;
   --muted-foreground: #6B6965;
@@ -79,27 +94,35 @@
   --border: #D5D3CC;
   --border-subtle: #E6E4DD;
 
-  /* Sage/Green Primary accent */
-  --primary: #8FAE9B; 
+  /* Primary — Teal (interactive, CTA, links) */
+  --primary: #087D91; 
   --primary-foreground: #FFFFFF;
-  --primary-hover: #7D9B88;
+  --primary-hover: #066A7C;
 
-  /* Warm Secondary / Accent */
-  --secondary: #D9CBB8;
+  /* Secondary — Warm beige (supporting backgrounds, soft buttons) */
+  --secondary: #D8C6AE;
   --secondary-foreground: #4A3E31;
 
-  --destructive: #D16D6A;
+  /* Accent — Copper (editorial highlights, category markers) */
+  --accent: #8B4935;
+  --accent-foreground: #FFFFFF;
+
+  /* Brand — Red (logo, identity, sparingly) */
+  --brand: #C51F24;
+
+  /* Status */
+  --destructive: #C51F24;
   --destructive-foreground: #FFFFFF;
 
-  --success: #6B8E70;
+  --success: #5A7D5E;
   --success-foreground: #FFFFFF;
 
-  --warning: #DE9B61;
+  --warning: #C48B3F;
   --warning-foreground: #FFFFFF;
 
-  --focus: #8FAE9B;
+  --focus: #087D91;
 
-  --radius: 0.5rem; /* 8px baseline radius for controls */
+  --radius: 0.5rem;
 }
 
 :root.dark {
@@ -111,6 +134,7 @@
   --surface: #242724;
   --surface-foreground: #EFEFEF;
   --surface-subtle: #2C302C;
+  --surface-warm: #2A2520;
 
   --muted: #2C302C;
   --muted-foreground: #989B98;
@@ -118,24 +142,33 @@
   --border: #3A3E3A;
   --border-subtle: #2C302C;
 
-  --primary: #8FAE9B;
-  --primary-foreground: #1A1C1A;
-  --primary-hover: #A3C1AF;
+  --primary: #0A9DB5;
+  --primary-foreground: #111311;
+  --primary-hover: #0CADC7;
 
-  --secondary: #3D3E3A;
-  --secondary-foreground: #D9CBB8;
+  --secondary: #3D3630;
+  --secondary-foreground: #D8C6AE;
 
-  --destructive: #D16D6A;
+  --accent: #A85F49;
+  --accent-foreground: #FFFFFF;
+
+  --brand: #D63338;
+
+  --destructive: #D63338;
   --destructive-foreground: #FFFFFF;
 
-  --success: #6B8E70;
-  --success-foreground: #FFFFFF;
+  --success: #7DA882;
+  --success-foreground: #111311;
 
-  --warning: #DE9B61;
-  --warning-foreground: #FFFFFF;
+  --warning: #E8AD76;
+  --warning-foreground: #111311;
 
-  --focus: #8FAE9B;
+  --focus: #0A9DB5;
 }
+
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
 
 html {
   scroll-behavior: smooth;
@@ -143,17 +176,17 @@ html {
   color: var(--foreground);
 }
 
-/* Custom subtle scrollbar */
+/* Subtle scrollbar — uses primary teal, thin and unobtrusive */
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: var(--primary);
-  opacity: 0.5;
+  opacity: 0.4;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -168,6 +201,17 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Text selection uses brand teal */
+::selection {
+  background-color: color-mix(in srgb, var(--primary) 20%, transparent);
+  color: var(--foreground);
+}
+
+/* ============================================================
+   TYPOGRAPHY UTILITY CLASSES
+   ============================================================ */
+
+/* Editorial serif — Fraunces (EN) / Amiri (AR) */
 .font-editorial {
   font-family: var(--font-serif);
 }
@@ -185,14 +229,16 @@ body {
   font-family: 'Amiri', serif;
 }
 
-/* WATAZAWWADO RTL TYPOGRAPHY & LAYOUT FOUNDATION */
+/* ============================================================
+   WATAZAWWADO RTL TYPOGRAPHY & LAYOUT FOUNDATION
+   ============================================================ */
 
-/* 1. Global Line-Height and Spacing overrides for Arabic */
+/* 1. Arabic requires looser vertical rhythm */
 [dir="rtl"] {
-  line-height: 1.7; /* Arabic generally requires looser vertical rhythm */
+  line-height: 1.7;
 }
 
-/* 2. Tracking Reset: Arabic script is cursive; negative tracking breaks it. */
+/* 2. Tracking Reset: Arabic script is cursive; negative tracking breaks it */
 [dir="rtl"] .tracking-tighter,
 [dir="rtl"] .tracking-tight,
 [dir="rtl"] .tracking-wide,
@@ -216,25 +262,25 @@ body {
 
 /* 4. Button RTL Optical Correction */
 [dir="rtl"] button {
-  /* Provide slightly more vertical clearance for Arabic ascenders/descenders in tight containers */
   padding-bottom: calc(0.25rem * 1.25);
 }
 
-/* 5. Mobile RTL Viewport & Scrollbar Artifact Fix */
+/* 5. Mobile RTL Viewport & Scrollbar Fix */
 [dir="rtl"] body {
   overflow-x: hidden;
 }
 
 @media (max-width: 768px) {
   [dir="rtl"] {
-    /* Prevent webkit scrollbar visual artifact on the left edge on mobile */
     scrollbar-gutter: stable;
   }
 }
 
-/* WATAZAWWADO MOTION & INTERACTION FOUNDATION */
+/* ============================================================
+   WATAZAWWADO MOTION & INTERACTION FOUNDATION
+   ============================================================ */
 
-/* 1. Global Reduced Motion Override */
+/* Global Reduced Motion Override */
 @media (prefers-reduced-motion: reduce) {
   *,
   ::before,
@@ -245,3 +291,194 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* ============================================================
+   WATAZAWWADO PUBLIC DESIGN SYSTEM — "STUDY ROOM" FOUNDATION
+   ============================================================ */
+
+/* --- Study Line ---
+   A subtle horizontal rule used as section dividers and content separators.
+   Evokes the ruled lines of a notebook / reading guide. */
+.study-line {
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--border) 15%,
+    var(--border) 85%,
+    transparent
+  );
+}
+.study-line--accent {
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in srgb, var(--accent) 40%, transparent) 15%,
+    color-mix(in srgb, var(--accent) 40%, transparent) 85%,
+    transparent
+  );
+}
+
+/* --- Margin Note ---
+   Small editorial annotations that appear alongside content.
+   Evokes a teacher's handwritten note in the margin. */
+.margin-note {
+  font-family: var(--font-serif);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--accent);
+  opacity: 0.75;
+  letter-spacing: 0.02em;
+}
+[dir="rtl"] .margin-note {
+  font-family: 'Amiri', serif;
+  letter-spacing: normal;
+}
+
+/* --- Warm Section ---
+   A section with the warm beige wash, creating the "paper" feeling. */
+.section-warm {
+  background-color: var(--surface-warm);
+}
+
+/* --- Public Section Spacing ---
+   Consistent vertical rhythm between homepage sections. */
+.public-section {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+@media (min-width: 768px) {
+  .public-section {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .public-section {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+}
+
+/* --- Public Container ---
+   Consistent max-width and padding for public page content. */
+.public-container {
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+@media (min-width: 640px) {
+  .public-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .public-container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* --- Portrait Treatment ---
+   Editorial portrait framing for Ustadh Mahmoud.
+   Warm paper border, subtle shadow, not a circle crop. */
+.portrait-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  border: 3px solid color-mix(in srgb, var(--secondary) 60%, transparent);
+  box-shadow: 
+    0 4px 12px rgba(0,0,0,0.06),
+    0 1px 3px rgba(0,0,0,0.04);
+}
+.portrait-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* --- Editorial Heading Pattern ---
+   Display heading with a subtle study-line accent below. */
+.editorial-heading {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--foreground);
+}
+[dir="rtl"] .editorial-heading {
+  font-family: 'Amiri', serif;
+  font-weight: 700;
+  letter-spacing: normal;
+}
+.editorial-heading::after {
+  content: '';
+  display: block;
+  width: 3rem;
+  height: 2px;
+  margin-top: 0.75rem;
+  background-color: var(--accent);
+  border-radius: 1px;
+}
+
+/* --- Section Transition ---
+   Smooth warm-to-white background transitions between sections.
+   "Turning pages in a notebook." */
+.section-transition-warm {
+  background: linear-gradient(
+    to bottom,
+    var(--background),
+    var(--surface-warm)
+  );
+}
+.section-transition-neutral {
+  background: linear-gradient(
+    to bottom,
+    var(--surface-warm),
+    var(--background)
+  );
+}
+
+/* --- Eyebrow Label ---
+   Small uppercase label above section headings.
+   Used for category markers and contextual labels. */
+.eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+[dir="rtl"] .eyebrow {
+  letter-spacing: normal;
+  font-weight: 700;
+}
+
+/* --- Fade In Animation ---
+   Subtle entrance for section reveals. Single fire via IntersectionObserver. */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in-up {
+  animation: fadeInUp var(--duration-slow) var(--ease-entrance) both;
+}
+
+/* --- Learning Area Color Accents ---
+   Subtle accent colors for the 5 learning taxonomy areas. 
+   Uses brand copper as the base with subtle hue shifts. */
+.learning-area-quran { --area-accent: #8B4935; }
+.learning-area-islamic { --area-accent: #7A5C3E; }
+.learning-area-msa { --area-accent: #087D91; }
+.learning-area-egyptian { --area-accent: #0A6B7A; }
+.learning-area-english { --area-accent: #5A6B5E; }
