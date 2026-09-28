@@ -9,7 +9,7 @@ import {
   Users, 
   BookOpen, 
   Settings, 
-  LogOut, 
+
   Menu,
   X,
   Sparkles,
@@ -18,7 +18,7 @@ import {
   Moon,
   Sun,
   ShieldCheck,
-  Globe,
+
   Clock,
   ClipboardCheck,
   Shield

@@ -1,7 +1,7 @@
 import { BrandLogo } from '../components/ui/BrandLogo';
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Mail, Lock, Loader2, ShieldCheck, ArrowRight, BookOpen, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Mail, Lock, Loader2, ShieldCheck, ArrowRight, AlertCircle, ArrowLeft } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTeacherAuth } from '../lib/auth';
 
