@@ -58,22 +58,22 @@ export const Footer: React.FC<FooterProps> = ({
               </div>
               <ul className="space-y-2 text-muted-foreground">
                 <li>
-                  <a href="#services" className="hover:text-foreground transition-colors">
+                  <a href="/learning" className="hover:text-foreground transition-colors">
                     {isEn ? 'Quran & Tajweed' : 'القرآن والتجويد'}
                   </a>
                 </li>
                 <li>
-                  <a href="#services" className="hover:text-foreground transition-colors">
+                  <a href="/learning" className="hover:text-foreground transition-colors">
                     {isEn ? 'Islamic Studies' : 'الدراسات الإسلامية'}
                   </a>
                 </li>
                 <li>
-                  <a href="#services" className="hover:text-foreground transition-colors">
+                  <a href="/learning" className="hover:text-foreground transition-colors">
                     {isEn ? 'Arabic Language' : 'اللغة العربية'}
                   </a>
                 </li>
                 <li>
-                  <a href="#services" className="hover:text-foreground transition-colors">
+                  <a href="/learning" className="hover:text-foreground transition-colors">
                     {isEn ? 'English Coaching' : 'اللغة الإنجليزية'}
                   </a>
                 </li>
@@ -86,22 +86,22 @@ export const Footer: React.FC<FooterProps> = ({
               </div>
               <ul className="space-y-2 text-muted-foreground">
                 <li>
-                  <a href="#about" className="hover:text-foreground transition-colors">
+                  <a href="/about" className="hover:text-foreground transition-colors">
                     {isEn ? 'About Mahmoud' : 'عن المعلم'}
                   </a>
                 </li>
                 <li>
-                  <a href="#approach" className="hover:text-foreground transition-colors">
+                  <a href="/about" className="hover:text-foreground transition-colors">
                     {isEn ? 'Our Approach' : 'المنهجية'}
                   </a>
                 </li>
                 <li>
-                  <a href="#how-it-works" className="hover:text-foreground transition-colors">
+                  <a href="/learning" className="hover:text-foreground transition-colors">
                     {isEn ? 'How It Works' : 'كيف نعمل'}
                   </a>
                 </li>
                 <li>
-                  <a href="#testimonials" className="hover:text-foreground transition-colors">
+                  <a href="/about" className="hover:text-foreground transition-colors">
                     {isEn ? 'Student Reviews' : 'آراء الطلاب'}
                   </a>
                 </li>

@@ -1,4 +1,6 @@
 import React from 'react';
+import { useOutletContext } from 'react-router-dom';
+import { PublicLayoutContextType } from '../layout/PublicLayout';
 import { Language } from '../../../types';
 import { ARABIC_TRANSLATIONS, AUTHENTIC_TESTIMONIALS, FAQS, VERIFIED_PROOF_POINTS } from '../../../data/content';
 import { 
@@ -14,12 +16,8 @@ import {
 } from '../PublicDesignSystem';
 import { Check, ArrowRight, ArrowLeft, Clock, BookOpen, User, Users, GraduationCap, Sparkles } from 'lucide-react';
 
-interface PublicHomepageProps {
-  lang: Language;
-  onOpenTrialModal: (serviceId?: string) => void;
-}
-
-export function PublicHomepage({ lang, onOpenTrialModal }: PublicHomepageProps) {
+export function PublicHomepage() {
+  const { lang, onOpenTrialModal } = useOutletContext<PublicLayoutContextType>();
   const isEn = lang === 'en';
 
   return (

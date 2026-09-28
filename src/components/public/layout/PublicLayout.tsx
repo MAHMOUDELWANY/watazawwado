@@ -1,36 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { Navbar } from './components/Navbar';
-import { Hero } from './components/Hero';
-import { MarqueeTicker } from './components/MarqueeTicker';
-import { UnifiedMentorshipConvergence } from './components/UnifiedMentorshipConvergence';
-import { DisciplineSwitcherShowcase } from './components/DisciplineSwitcherShowcase';
-import { LessonStudioShowcase } from './components/LessonStudioShowcase';
-import { ServicesSection } from './components/ServicesSection';
-import { AboutSection } from './components/AboutSection';
-import { TeachingApproach } from './components/TeachingApproach';
-import { HowItWorks } from './components/HowItWorks';
-import { FreeTrialSection } from './components/FreeTrialSection';
-import { TestimonialsSection } from './components/TestimonialsSection';
-import { FAQSection } from './components/FAQSection';
-import { ContactSection } from './components/ContactSection';
-import { Footer } from './components/Footer';
-import { TrialBookingModal } from './components/TrialBookingModal';
-import { ManageBookingModal } from './components/booking/ManageBookingModal';
-import { TeacherAuthModal } from './components/TeacherAuthModal';
-import { StudentAuthModal } from './components/StudentAuthModal';
-import { GetStartedModal } from './components/GetStartedModal';
-import { TeacherAuthProvider } from './lib/auth';
-import { Language, ThemeMode } from './types';
-import { BookingMode } from './booking/types';
-import { LearningGuide } from './components/LearningGuide';
-import { useTheme } from './components/ThemeProvider';
-import { PublicHomepage } from './components/public/homepage/PublicHomepage';
+import { Outlet } from 'react-router-dom';
+import { Navbar } from '../../Navbar';
+import { Footer } from '../../Footer';
+import { TrialBookingModal } from '../../TrialBookingModal';
+import { ManageBookingModal } from '../../booking/ManageBookingModal';
+import { TeacherAuthModal } from '../../TeacherAuthModal';
+import { StudentAuthModal } from '../../StudentAuthModal';
+import { GetStartedModal } from '../../GetStartedModal';
+import { Language } from '../../../types';
+import { BookingMode } from '../../../booking/types';
+import { LearningGuide } from '../../LearningGuide';
+import { useTheme } from '../../ThemeProvider';
 
-interface LandingPageProps {
+export interface PublicLayoutContextType {
+  lang: Language;
+  onOpenTrialModal: (serviceId?: string) => void;
+}
+
+interface PublicLayoutProps {
   initialGetStartedOpen?: boolean;
 }
 
-export function LandingPage({ initialGetStartedOpen = false }: LandingPageProps) {
+export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProps) {
   const [lang, setLang] = useState<Language>('en');
   const { theme, toggleTheme } = useTheme();
 
@@ -73,7 +64,6 @@ export function LandingPage({ initialGetStartedOpen = false }: LandingPageProps)
     setLang((prev) => (prev === 'en' ? 'ar' : 'en'));
   };
 
-
   const handleOpenGetStarted = (serviceId?: string) => {
     setPreselectedService(serviceId);
     setGetStartedModalOpen(true);
@@ -97,10 +87,7 @@ export function LandingPage({ initialGetStartedOpen = false }: LandingPageProps)
           onOpenManageModal={() => setManageModalOpen(true)}
         />
 
-        <PublicHomepage 
-          lang={lang} 
-          onOpenTrialModal={handleOpenGetStarted} 
-        />
+        <Outlet context={{ lang, onOpenTrialModal: handleOpenGetStarted } as PublicLayoutContextType} />
 
         {/* Footer */}
         <Footer

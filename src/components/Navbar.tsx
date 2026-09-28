@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { Link } from 'react-router-dom';
 import { Menu, X, Sun, Moon, Globe, Sparkles } from 'lucide-react';
 import { Language, ThemeMode } from '../types';
 import { ARABIC_TRANSLATIONS } from '../data/content';
@@ -33,11 +34,10 @@ export const Navbar: React.FC<NavbarProps> = ({
   }, []);
 
   const navLinks = [
-    { href: '#about', label: lang === 'en' ? 'About' : ARABIC_TRANSLATIONS.nav.about },
-    { href: '#services', label: lang === 'en' ? 'Lessons' : ARABIC_TRANSLATIONS.nav.services },
-    { href: '#approach', label: lang === 'en' ? 'Approach' : 'المنهجية' },
-    { href: '#testimonials', label: lang === 'en' ? 'Reviews' : ARABIC_TRANSLATIONS.nav.testimonials },
-    { href: '#contact', label: lang === 'en' ? 'Contact' : ARABIC_TRANSLATIONS.nav.contact },
+    { href: '/about', label: lang === 'en' ? 'About' : ARABIC_TRANSLATIONS.nav.about },
+    { href: '/learning', label: lang === 'en' ? 'Lessons' : ARABIC_TRANSLATIONS.nav.services },
+    { href: '/pricing', label: lang === 'en' ? 'Pricing' : 'الأسعار' },
+    { href: '/faq', label: lang === 'en' ? 'FAQ' : ARABIC_TRANSLATIONS.nav.faqs },
   ];
 
   return (
@@ -51,8 +51,8 @@ export const Navbar: React.FC<NavbarProps> = ({
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Brand identity */}
-        <a
-          href="#"
+        <Link
+          to="/"
           className="group flex items-center gap-3 text-foreground focus:outline-none rounded-md"
         >
           <div className="w-8 h-8 rounded-lg bg-primary/15 border border-primary/25 flex items-center justify-center text-primary font-serif font-bold text-base transition-transform group-hover:scale-105">
@@ -67,28 +67,28 @@ export const Navbar: React.FC<NavbarProps> = ({
               Ustadh Mahmoud
             </span>
           </div>
-        </a>
+        </Link>
 
         {/* Desktop Navigation Links */}
         <nav className="hidden md:flex items-center gap-6" aria-label="Main Navigation">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.href}
-              href={link.href}
+              to={link.href}
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors py-1"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
 
-          <a
-            href="/student/demo"
+          <Link
+            to="/student/demo"
             id="nav-demo-link"
             className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-surface border border-border text-foreground hover:bg-surface-subtle transition-all cursor-pointer"
           >
             <Sparkles className="w-3.5 h-3.5 text-primary" />
             <span>{lang === 'en' ? 'Explore as Guest' : 'استكشف كضيف'}</span>
-          </a>
+          </Link>
 
           {onOpenManageModal && (
             <button
@@ -161,25 +161,25 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <nav className="flex flex-col gap-3.5">
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.href}
-                  href={link.href}
+                  to={link.href}
                   onClick={() => setMobileMenuOpen(false)}
                   className="text-base font-medium text-foreground hover:text-primary transition-colors py-1"
                 >
                   {link.label}
-                </a>
+                </Link>
               ))}
               <div className="pt-4 border-t border-border space-y-2.5">
-                <a
-                  href="/student/demo"
+                <Link
+                  to="/student/demo"
                   id="mobile-demo-link"
                   onClick={() => setMobileMenuOpen(false)}
                   className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-surface hover:bg-surface-subtle text-foreground font-medium text-xs border border-border transition-colors"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-primary" />
                   <span>{lang === 'en' ? 'Explore as Guest (Interactive Demo)' : 'استكشف كضيف (عرض تجريبي)'}</span>
-                </a>
+                </Link>
 
                 <button
                   onClick={() => {
