@@ -1,3 +1,4 @@
+import { BrandLogo } from './ui/BrandLogo';
 import React from 'react';
 import { motion } from 'motion/react';
 import { Globe, MessageCircle, ArrowUp } from 'lucide-react';
@@ -31,7 +32,7 @@ export const Footer: React.FC<FooterProps> = ({
           
           {/* Brand & Purpose (5 cols on md) */}
           <div className="md:col-span-5 space-y-4">
-            <div className="font-serif text-2xl font-medium text-foreground tracking-tight flex items-center gap-2.5"><img src="/logo.png" alt="Watazawwado Logo" className="w-auto h-7 object-contain drop-shadow-sm dark:bg-[#EDE7DC] dark:px-1.5 dark:py-1 dark:rounded-lg shrink-0" />
+            <div className="font-display text-2xl font-medium text-foreground tracking-tight flex items-center gap-2.5"><BrandLogo variant="compact" />
               Watazawwado <span className="text-muted-foreground font-light text-xl">/ وتزودوا</span>
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-sm">

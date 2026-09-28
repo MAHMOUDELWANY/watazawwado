@@ -29,7 +29,7 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ lang }
           <div className="text-xs uppercase tracking-widest text-primary font-semibold mb-3">
             {isEn ? 'Student & Parent Reflections' : ARABIC_TRANSLATIONS.nav.testimonials}
           </div>
-          <h2 className="font-serif text-3xl sm:text-4xl text-foreground tracking-tight mb-4">
+          <h2 className="font-display text-3xl sm:text-4xl text-foreground tracking-tight mb-4">
             {isEn ? 'Experiences from students across the globe.' : 'تجارب حقيقية لطلاب وأولياء أمور حول العالم.'}
           </h2>
           <p className="text-base text-muted-foreground leading-relaxed">
@@ -52,7 +52,7 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ lang }
             >
               <div>
                 <Quote className="w-8 h-8 text-accent/40 mb-4" />
-                <p className="font-serif text-base sm:text-lg text-foreground leading-relaxed italic">
+                <p className="font-display text-base sm:text-lg text-foreground leading-relaxed italic">
                   “{testimonial.quote}”
                 </p>
               </div>
@@ -60,7 +60,7 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ lang }
               <div className="mt-8 pt-5 border-t border-border">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <h3 className="font-serif text-base font-semibold text-foreground">
+                    <h3 className="font-display text-base font-semibold text-foreground">
                       {testimonial.author}
                     </h3>
                     <p className="text-xs text-primary font-medium">

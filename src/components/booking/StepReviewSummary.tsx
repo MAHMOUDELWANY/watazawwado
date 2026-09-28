@@ -80,7 +80,7 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
               <BookOpen className="w-3.5 h-3.5 text-accent" />
               <span>{isEn ? 'Selected Discipline' : 'المادة المختارة'}</span>
             </div>
-            <h3 className="font-serif text-lg font-medium text-foreground dark:text-foreground">
+            <h3 className="font-display text-lg font-medium text-foreground dark:text-foreground">
               {isEn ? service.name : service.arabicName}
             </h3>
             <div className="text-xs text-foreground/70 dark:text-border/80">
@@ -113,7 +113,7 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
               <Calendar className="w-3.5 h-3.5 text-accent" />
               <span>{isEn ? 'Scheduled Date & Time' : 'الموعد والتوقيت'}</span>
             </div>
-            <div className="text-base font-serif font-medium text-foreground dark:text-foreground flex flex-wrap items-center gap-2">
+            <div className="text-base font-display font-medium text-foreground dark:text-foreground flex flex-wrap items-center gap-2">
               <span>{formData.date}</span>
               <span>•</span>
               <span className="text-primary font-semibold">{formData.timeSlot?.timeDisplay}</span>
@@ -206,7 +206,7 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
           </div>
 
           <div className="text-end">
-            <span className="font-serif text-2xl font-bold text-primary dark:text-primary">
+            <span className="font-display text-2xl font-bold text-primary dark:text-primary">
               {isTrial
                 ? (isEn ? 'FREE ($0.00)' : 'مجاناً ($٠.٠٠)')
                 : isPackageCredit

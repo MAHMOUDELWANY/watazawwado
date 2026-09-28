@@ -376,7 +376,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
           <div className="flex items-center gap-3">
             <div>
               <div className="flex items-center gap-2">
-                <h2 id="booking-detail-title" className="text-lg font-serif font-semibold text-foreground">
+                <h2 id="booking-detail-title" className="text-lg font-display font-semibold text-foreground">
                   Booking {booking?.reference_code}
                 </h2>
                 {booking && (

@@ -308,14 +308,14 @@ export default function StudentProfilePage({
       <div className="p-5 sm:p-6 rounded-2xl bg-surface border border-border shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4 min-w-0">
           <div 
-            className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-primary/15 border border-primary/25 text-accent text-xl sm:text-2xl font-serif font-bold flex items-center justify-center shrink-0 select-none"
+            className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-secondary/40 border border-secondary/60 text-accent text-xl sm:text-2xl font-display font-bold flex items-center justify-center shrink-0 select-none"
             aria-hidden="true"
           >
             {profile?.name?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase() || 'S'}
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2.5 flex-wrap">
-              <h1 className="text-lg sm:text-xl font-serif font-bold text-foreground tracking-tight truncate">
+              <h1 className="text-lg sm:text-xl font-display font-bold text-foreground tracking-tight truncate">
                 {profile?.name || user?.email?.split('@')[0] || (isAr ? 'طالب' : 'Student')}
               </h1>
               <Badge variant="secondary" className="text-xs px-2.5 py-0.5">
@@ -431,7 +431,7 @@ export default function StudentProfilePage({
           {/* Ustadh Mahmoud Trust Badge */}
           <div className="p-4 rounded-2xl bg-surface border border-border/80 text-xs space-y-2">
             <div className="flex items-center gap-2 text-foreground font-semibold">
-              <span className="w-6 h-6 rounded-lg bg-secondary/30 text-accent flex items-center justify-center font-serif font-bold text-xs">
+              <span className="w-6 h-6 rounded-lg bg-secondary/30 text-accent flex items-center justify-center font-display font-bold text-xs">
                 م
               </span>
               <span>{isAr ? 'الأستاذ محمود — إشراف مباشر' : 'Ustadh Mahmoud — 1-on-1 Teaching'}</span>
@@ -450,7 +450,7 @@ export default function StudentProfilePage({
           {activeCategory === 'profile' && (
             <div className="rounded-2xl border border-border bg-surface p-5 sm:p-7 shadow-2xs space-y-6">
               <div className="border-b border-border pb-4">
-                <h2 className="text-lg sm:text-xl font-serif font-bold text-foreground">
+                <h2 className="text-lg sm:text-xl font-display font-bold text-foreground">
                   {isAr ? 'البيانات الشخصية' : 'Personal Details'}
                 </h2>
                 <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">
@@ -649,7 +649,7 @@ export default function StudentProfilePage({
           {activeCategory === 'learning' && (
             <div className="rounded-2xl border border-border bg-surface p-5 sm:p-7 shadow-2xs space-y-6">
               <div className="border-b border-border pb-4">
-                <h2 className="text-lg sm:text-xl font-serif font-bold text-foreground">
+                <h2 className="text-lg sm:text-xl font-display font-bold text-foreground">
                   {isAr ? 'المسار التعليمي والمعلم' : 'Learning Track & Teacher'}
                 </h2>
                 <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">
@@ -661,12 +661,12 @@ export default function StudentProfilePage({
 
               {/* Teacher Relationship Banner */}
               <div className="p-4 rounded-2xl bg-surface-subtle border border-border flex items-start gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-primary/15 border border-primary/25 text-accent flex items-center justify-center font-serif font-bold text-lg shrink-0 mt-0.5 select-none">
+                <div className="w-12 h-12 rounded-2xl bg-secondary/40 border border-secondary/60 text-accent flex items-center justify-center font-display font-bold text-lg shrink-0 mt-0.5 select-none">
                   {profile?.assignedTeacherName ? profile.assignedTeacherName.charAt(0) : 'م'}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-serif font-bold text-foreground text-base">
+                    <span className="font-display font-bold text-foreground text-base">
                       {profile?.assignedTeacherName || (profile?.assignedTeacherId ? 'Ustadh Mahmoud' : (isAr ? 'الأستاذ محمود (المعلم الرئيسي)' : 'Ustadh Mahmoud (Primary Teacher)'))}
                     </span>
                     <Badge variant="secondary" className="text-[10px]">
@@ -804,7 +804,7 @@ export default function StudentProfilePage({
           {activeCategory === 'preferences' && (
             <div className="rounded-2xl border border-border bg-surface p-5 sm:p-7 shadow-2xs space-y-6">
               <div className="border-b border-border pb-4">
-                <h2 className="text-lg sm:text-xl font-serif font-bold text-foreground">
+                <h2 className="text-lg sm:text-xl font-display font-bold text-foreground">
                   {isAr ? 'تفضيلات الحجز والمظهر' : 'Booking & Preferences'}
                 </h2>
                 <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">
@@ -969,7 +969,7 @@ export default function StudentProfilePage({
           {activeCategory === 'security' && (
             <div className="rounded-2xl border border-border bg-surface p-5 sm:p-7 shadow-2xs space-y-6">
               <div className="border-b border-border pb-4">
-                <h2 className="text-lg sm:text-xl font-serif font-bold text-foreground">
+                <h2 className="text-lg sm:text-xl font-display font-bold text-foreground">
                   {isAr ? 'أمان الحساب والجلسة' : 'Security & Account'}
                 </h2>
                 <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">

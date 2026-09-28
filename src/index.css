@@ -4,6 +4,15 @@
 
 @theme {
   /* Fonts */
+  --font-brand-ar: 'Kafa', 'Changa', 'Rubik', sans-serif;
+  --font-display-ar: 'Kafa', 'Changa', 'Rubik', sans-serif;
+  --font-body-ar: 'IBM Plex Sans Arabic', 'Rubik', sans-serif;
+
+  --font-brand-en: 'Rubik', sans-serif;
+  --font-display-en: 'Rubik', sans-serif;
+  --font-body-en: 'Manrope', sans-serif;
+
+  --font-editorial: 'Newsreader', serif;
   --font-serif: 'Newsreader', Georgia, Cambria, 'Times New Roman', serif;
   --font-sans: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-arabic: 'IBM Plex Sans Arabic', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Arial, sans-serif;
@@ -498,3 +507,14 @@ body {
 .learning-area-msa { --area-accent: #087D91; }
 .learning-area-egyptian { --area-accent: #0A6B7A; }
 .learning-area-english { --area-accent: #5A6B5E; }
+
+@layer utilities {
+  .font-brand { font-family: var(--font-brand-en); }
+  [dir="rtl"] .font-brand { font-family: var(--font-brand-ar) !important; }
+
+  .font-display { font-family: var(--font-display-en); }
+  [dir="rtl"] .font-display { font-family: var(--font-display-ar) !important; }
+
+  .font-body { font-family: var(--font-body-en); }
+  [dir="rtl"] .font-body { font-family: var(--font-body-ar) !important; }
+}

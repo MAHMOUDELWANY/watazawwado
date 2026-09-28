@@ -121,7 +121,7 @@ export default function StudentsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-serif font-bold text-foreground">
+            <h1 className="text-2xl font-display font-bold text-foreground">
               {isSuperAdmin ? 'Students Directory' : 'My Students'}
             </h1>
             <span className="text-xs px-2.5 py-0.5 rounded-full bg-secondary/30 text-primary border border-secondary/50 font-medium">
@@ -277,7 +277,7 @@ export default function StudentsPage() {
                       <div className="flex items-center gap-2 flex-wrap">
                         <Link
                           to={`/dashboard/students/${student.id}`}
-                          className="text-base font-serif font-bold text-foreground hover:text-primary transition-colors"
+                          className="text-base font-display font-bold text-foreground hover:text-primary transition-colors"
                         >
                           {student.name}
                         </Link>

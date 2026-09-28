@@ -309,7 +309,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
       {/* Confirmation State */}
       {multiPlanCreated ? (
         <section role="status" className="space-y-4">
-          <h2 className="font-serif text-xl">Lesson plan request created</h2>
+          <h2 className="font-display text-xl">Lesson plan request created</h2>
           <p>Your selected times were submitted to the server. Payment is not confirmed by this screen; check your Payments and My Lessons pages for the current status.</p>
           <button type="button" onClick={handleResetForNewBooking} className="rounded-xl bg-primary p-3 text-primary-foreground">Return to student portal</button>
         </section>

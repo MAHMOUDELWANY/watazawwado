@@ -212,7 +212,7 @@ export default function BookingsPage() {
       {/* Top Header */}
       <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-serif font-semibold tracking-tight text-foreground">
+          <h1 className="text-2xl font-display font-semibold tracking-tight text-foreground">
             Bookings & Payments
           </h1>
           <p className="text-sm text-muted-foreground mt-1">

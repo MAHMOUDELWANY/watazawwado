@@ -127,7 +127,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
       {/* 1. Header & Primary CTA */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-foreground">
+          <h1 className="text-2xl sm:text-3xl font-display font-bold tracking-tight text-foreground">
             {isAr ? 'جدول دروسي ومواعيدي' : 'My Lessons & Schedule'}
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">
@@ -232,7 +232,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
             <Calendar className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-base sm:text-lg font-serif font-semibold text-foreground">
+            <h3 className="text-base sm:text-lg font-display font-semibold text-foreground">
               {activeFilter === 'upcoming'
                 ? (isAr ? 'لا توجد دروس قادمة مجدولة' : 'No upcoming lessons scheduled')
                 : activeFilter === 'completed'
@@ -301,7 +301,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                     <div className="space-y-1.5">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="font-serif font-bold text-base sm:text-lg text-foreground">
+                        <h3 className="font-display font-bold text-base sm:text-lg text-foreground">
                           {isAr && b.serviceArabicTitle ? b.serviceArabicTitle : b.serviceTitle}
                         </h3>
                         {b.bookingType === 'trial' && (
@@ -497,7 +497,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                 <Calendar className="w-5 h-5 shrink-0" />
               </div>
               <div>
-                <h3 className="text-base font-serif font-bold text-foreground">
+                <h3 className="text-base font-display font-bold text-foreground">
                   {isAr ? 'طلب تعديل أو إلغاء الدرس' : 'Request a Lesson Change'}
                 </h3>
                 <p className="text-xs text-muted-foreground font-mono">

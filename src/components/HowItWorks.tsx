@@ -30,7 +30,7 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ lang, onOpenTrialModal }
           <div className="text-xs uppercase tracking-widest text-primary font-semibold mb-3">
             {isEn ? 'The Student Journey' : ARABIC_TRANSLATIONS.nav.howItWorks}
           </div>
-          <h2 className="font-serif text-3xl sm:text-4xl text-foreground tracking-tight mb-4">
+          <h2 className="font-display text-3xl sm:text-4xl text-foreground tracking-tight mb-4">
             {isEn
               ? 'From your first trial to confident, consistent learning.'
               : 'من جلستك الأولى إلى إتقان حقيقي ومستمر.'}
@@ -56,7 +56,7 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ lang, onOpenTrialModal }
               <div>
                 {/* Step Number */}
                 <div className="flex items-center justify-between mb-5">
-                  <span className="font-serif text-3xl font-light text-primary">
+                  <span className="font-display text-3xl font-light text-primary">
                     {step.step}
                   </span>
                   <span className="text-[11px] font-medium tracking-wider uppercase px-2.5 py-0.5 rounded-md bg-surface-subtle text-foreground/80 border border-border/70">
@@ -64,7 +64,7 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ lang, onOpenTrialModal }
                   </span>
                 </div>
 
-                <h3 className="font-serif text-lg font-medium text-foreground mb-3 leading-snug">
+                <h3 className="font-display text-lg font-medium text-foreground mb-3 leading-snug">
                   {isEn ? step.title : step.arabicTitle}
                 </h3>
 
@@ -84,7 +84,7 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ lang, onOpenTrialModal }
         {/* Bottom Callout Banner */}
         <div className="mt-12 p-6 sm:p-8 rounded-2xl bg-surface border border-border flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xs">
           <div>
-            <h4 className="font-serif text-xl font-medium text-foreground">
+            <h4 className="font-display text-xl font-medium text-foreground">
               {isEn ? 'Ready to experience Mahmoud’s teaching style?' : 'هل ترغب في تجربة أسلوب الشرح والتدريس؟'}
             </h4>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">

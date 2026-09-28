@@ -193,7 +193,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
             className="mb-1.5"
           />
           <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-foreground">
+            <h1 className="text-2xl sm:text-3xl font-display font-bold tracking-tight text-foreground">
               {isAr ? 'التنبيهات والإشعارات' : 'Notifications'}
             </h1>
             {unreadCount > 0 && (
@@ -299,7 +299,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
           <div className="w-12 h-12 rounded-2xl bg-secondary/30 text-accent flex items-center justify-center mx-auto">
             <Bell className="w-6 h-6" />
           </div>
-          <h3 className="font-serif font-bold text-lg text-foreground">
+          <h3 className="font-display font-bold text-lg text-foreground">
             {isAr ? 'لا توجد تنبيهات حالياً' : 'All caught up!'}
           </h3>
           <p className="text-xs sm:text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed">

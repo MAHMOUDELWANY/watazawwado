@@ -28,7 +28,7 @@ export const TeachingApproach: React.FC<TeachingApproachProps> = ({ lang }) => {
           <div className="text-xs uppercase tracking-widest text-primary font-semibold mb-3">
             {isEn ? 'Teaching Philosophy' : 'منهجية التعليم'}
           </div>
-          <h2 className="font-serif text-3xl sm:text-4xl text-foreground tracking-tight mb-4">
+          <h2 className="font-display text-3xl sm:text-4xl text-foreground tracking-tight mb-4">
             {isEn
               ? 'Personalized teaching adapted to your level, pace, and life.'
               : 'تعليم شخصي يتكيف مع مستواك، سرعتك، وتفاصيل حياتك.'}
@@ -52,10 +52,10 @@ export const TeachingApproach: React.FC<TeachingApproachProps> = ({ lang }) => {
               className="p-8 sm:p-10 rounded-2xl bg-surface border border-border hover:border-primary/40 transition-all flex flex-col justify-between shadow-2xs hover:shadow-xs"
             >
               <div>
-                <div className="font-serif text-2xl font-light text-primary mb-3">
+                <div className="font-display text-2xl font-light text-primary mb-3">
                   0{index + 1}
                 </div>
-                <h3 className="font-serif text-xl font-medium text-foreground mb-3">
+                <h3 className="font-display text-xl font-medium text-foreground mb-3">
                   {isEn ? pillar.title : pillar.arabicTitle}
                 </h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">

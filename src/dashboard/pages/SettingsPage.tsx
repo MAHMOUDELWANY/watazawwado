@@ -177,7 +177,7 @@ export default function SettingsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-serif font-bold text-foreground flex items-center gap-2">
+          <h1 className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
             <SettingsIcon className="w-6 h-6 text-accent" />
             Teacher Settings
           </h1>
@@ -236,7 +236,7 @@ export default function SettingsPage() {
           {/* 1. Profile & Contact */}
           {activeTab === 'Profile' && (
             <div className="bg-surface rounded-2xl border border-border p-6 space-y-6 shadow-2xs">
-              <h2 className="text-lg font-serif font-semibold text-foreground">Profile & Contact Info</h2>
+              <h2 className="text-lg font-display font-semibold text-foreground">Profile & Contact Info</h2>
               
               <div className="space-y-4">
                 <div>
@@ -288,7 +288,7 @@ export default function SettingsPage() {
           {activeTab === 'Services' && (
             <div className="bg-surface rounded-2xl border border-border p-6 space-y-6 shadow-2xs">
               <div>
-                <h2 className="text-lg font-serif font-semibold text-foreground">Curriculum Services & Hourly Rates</h2>
+                <h2 className="text-lg font-display font-semibold text-foreground">Curriculum Services & Hourly Rates</h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   Manage hourly rates (USD) and trial permissions for active subject offerings.
                 </p>
@@ -367,7 +367,7 @@ export default function SettingsPage() {
           {/* 3. Policies & Timezone */}
           {activeTab === 'Policy' && (
             <div className="bg-surface rounded-2xl border border-border p-6 space-y-6 shadow-2xs">
-              <h2 className="text-lg font-serif font-semibold text-foreground">Policies & Base Timezone</h2>
+              <h2 className="text-lg font-display font-semibold text-foreground">Policies & Base Timezone</h2>
               
               <div className="space-y-6">
                 <div>
@@ -440,7 +440,7 @@ export default function SettingsPage() {
           {/* 4. Payment Methods & Instructions */}
           {activeTab === 'Payment' && (
             <div className="bg-surface rounded-2xl border border-border p-6 space-y-6 shadow-2xs">
-              <h2 className="text-lg font-serif font-semibold text-foreground">Accepted Payment Methods & Offline Instructions</h2>
+              <h2 className="text-lg font-display font-semibold text-foreground">Accepted Payment Methods & Offline Instructions</h2>
               <p className="text-xs text-muted-foreground">
                 Select allowed payment channels and configure instructions shown during payment claim submission.
               </p>
@@ -499,7 +499,7 @@ export default function SettingsPage() {
           {/* 6. Preferences */}
           {activeTab === 'Preferences' && (
             <div className="bg-surface rounded-2xl border border-border p-6 space-y-6 shadow-2xs">
-              <h2 className="text-lg font-serif font-semibold text-foreground">Dashboard Preferences</h2>
+              <h2 className="text-lg font-display font-semibold text-foreground">Dashboard Preferences</h2>
               
               <div className="space-y-4">
                 <div>

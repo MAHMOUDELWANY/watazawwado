@@ -309,7 +309,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
         <StudentPageBack to="/student" label={isAr ? 'العودة للرئيسية' : 'Back to Dashboard'} />
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-serif font-bold text-foreground tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-display font-bold text-foreground tracking-tight">
               {isAr ? 'باقات الدروس والرصيد' : 'Lesson Packages & Credits'}
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">
@@ -338,7 +338,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
               <span className="text-xs font-medium text-muted-foreground block">
                 {isAr ? 'الرصيد المتاح حالياً' : 'Remaining Credits'}
               </span>
-              <div className="text-3xl font-serif font-bold text-primary">
+              <div className="text-3xl font-display font-bold text-primary">
                 {creditSummary.totalRemaining}
               </div>
               <span className="text-xs text-muted-foreground block">
@@ -358,7 +358,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
               <span className="text-xs font-medium text-muted-foreground block">
                 {isAr ? 'الدروس المكتملة' : 'Completed Lessons'}
               </span>
-              <div className="text-3xl font-serif font-bold text-foreground">
+              <div className="text-3xl font-display font-bold text-foreground">
                 {creditSummary.totalUsed}
               </div>
               <span className="text-xs text-muted-foreground block">
@@ -378,7 +378,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
               <span className="text-xs font-medium text-muted-foreground block">
                 {isAr ? 'إجمالي الرصيد المكتسب' : 'Total Granted'}
               </span>
-              <div className="text-3xl font-serif font-bold text-foreground">
+              <div className="text-3xl font-display font-bold text-foreground">
                 {creditSummary.totalPurchased}
               </div>
               <span className="text-xs text-muted-foreground block">
@@ -435,7 +435,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
       {/* 4. Active Entitlements Section */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-serif font-bold text-foreground">
+          <h2 className="text-lg font-display font-bold text-foreground">
             {isAr ? 'باقاتي الحالية' : 'My Packages'}
           </h2>
           <span className="text-xs text-muted-foreground">
@@ -470,7 +470,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <div className="flex items-center gap-2">
-                          <h3 className="font-serif font-bold text-base text-foreground">
+                          <h3 className="font-display font-bold text-base text-foreground">
                             {ent.packageName}
                           </h3>
                         </div>
@@ -543,7 +543,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
       {/* 5. Packages Catalog Section */}
       <div className="space-y-4 pt-4">
         <div>
-          <h2 className="text-lg font-serif font-bold text-foreground">
+          <h2 className="text-lg font-display font-bold text-foreground">
             {isAr ? 'الباقات التعليمية المتاحة' : 'Available Lesson Packages'}
           </h2>
           <p className="text-xs text-muted-foreground mt-0.5">
@@ -635,7 +635,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
       <div className="space-y-4 pt-4">
         <div className="flex items-center justify-between">
           <div className="space-y-0.5">
-            <h2 className="text-lg font-serif font-bold text-foreground flex items-center gap-2">
+            <h2 className="text-lg font-display font-bold text-foreground flex items-center gap-2">
               <History className="w-4 h-4 text-accent" />
               <span>{isAr ? 'سجل حركة ونشاط الرصيد' : 'Credit Activity History'}</span>
             </h2>
@@ -818,7 +818,7 @@ function PackageCard({
           </div>
 
           <div>
-            <h3 className="text-lg font-serif font-bold text-foreground">{cat.name}</h3>
+            <h3 className="text-lg font-display font-bold text-foreground">{cat.name}</h3>
             <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
               {cat.description ||
                 (isAr
@@ -828,7 +828,7 @@ function PackageCard({
           </div>
 
           <div className="pt-2">
-            <span className="text-3xl font-serif font-bold text-foreground">${price}</span>
+            <span className="text-3xl font-display font-bold text-foreground">${price}</span>
             <span className="text-xs text-muted-foreground ml-1">{currency}</span>
             <div className="text-[11px] text-muted-foreground mt-0.5">
               ${Math.round(perLesson)} / {isAr ? 'درس' : 'lesson'}

@@ -270,7 +270,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
       {/* ========================================================================= */}
       <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 pb-2 border-b border-border">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-foreground">
+          <h1 className="text-2xl sm:text-3xl font-display font-bold tracking-tight text-foreground">
             {greetingWord}{studentFirstName ? `, ${studentFirstName}` : ''}
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">
@@ -365,7 +365,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
           {/* PRIMARY: NEXT LESSON FOCUS */}
           <section className="space-y-3" aria-labelledby="next-lesson-heading">
             <div className="flex items-center justify-between">
-              <h2 id="next-lesson-heading" className="text-base sm:text-lg font-serif font-bold text-foreground">
+              <h2 id="next-lesson-heading" className="text-base sm:text-lg font-display font-bold text-foreground">
                 {isAr ? 'الدرس القادم المجدول' : 'Next Scheduled Lesson'}
               </h2>
               {nextBooking && (
@@ -393,7 +393,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                       </span>
                     </div>
 
-                    <h3 className="text-xl sm:text-2xl font-serif font-bold text-foreground">
+                    <h3 className="text-xl sm:text-2xl font-display font-bold text-foreground">
                       {nextBooking.serviceTitle || nextBooking.services?.title || (isAr ? 'جلسة تعليمية' : 'Private Lesson')}
                     </h3>
                   </div>
@@ -504,7 +504,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                         {isAr ? 'مواصلة مسارك التعليمي' : 'Ready for your next session?'}
                       </span>
                     </div>
-                    <h3 className="text-base sm:text-lg font-serif font-bold text-foreground">
+                    <h3 className="text-base sm:text-lg font-display font-bold text-foreground">
                       {isAr ? 'حجز درس جديد بنفس التفضيلات السابقة' : 'Continue from where you left off'}
                     </h3>
                     <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-md">
@@ -535,7 +535,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
               /* Compact purposeful empty state (NO giant empty rectangle!) */
               <div className="rounded-2xl border border-border bg-surface p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="space-y-1">
-                  <h3 className="text-base sm:text-lg font-serif font-bold text-foreground">
+                  <h3 className="text-base sm:text-lg font-display font-bold text-foreground">
                     {isAr ? 'لا يوجد درس مجدول حالياً' : 'No lesson scheduled yet'}
                   </h3>
                   <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-md">
@@ -559,7 +559,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
           {/* RECENT LESSONS SECTION (Clean flat list with subtle dividers — NO trapped scrollbar!) */}
           <section className="space-y-3" aria-labelledby="recent-lessons-heading">
             <div className="flex items-center justify-between">
-              <h2 id="recent-lessons-heading" className="text-base sm:text-lg font-serif font-bold text-foreground">
+              <h2 id="recent-lessons-heading" className="text-base sm:text-lg font-display font-bold text-foreground">
                 {isAr ? 'أحدث الدروس والجلسات' : 'Recent Lessons'}
               </h2>
               <Link
@@ -659,7 +659,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                 <span className="text-[11px] text-muted-foreground block">
                   {isAr ? 'دروس مكتملة' : 'completed lessons'}
                 </span>
-                <span className="text-xl font-serif font-bold text-foreground">
+                <span className="text-xl font-display font-bold text-foreground">
                   {completedLessonsCount}
                 </span>
               </div>
@@ -668,7 +668,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                 <span className="text-[11px] text-muted-foreground block">
                   {isAr ? 'دروس قادمة' : 'upcoming lessons'}
                 </span>
-                <span className="text-xl font-serif font-bold text-primary">
+                <span className="text-xl font-display font-bold text-primary">
                   {upcomingBookings.length}
                 </span>
               </div>
@@ -722,7 +722,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
               /* Active package display */
               <div className="space-y-3">
                 <div className="flex items-baseline justify-between">
-                  <span className="text-2xl font-serif font-bold text-primary">
+                  <span className="text-2xl font-display font-bold text-primary">
                     {creditsRemaining}
                   </span>
                   <span className="text-xs text-muted-foreground">

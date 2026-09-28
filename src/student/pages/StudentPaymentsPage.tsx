@@ -173,7 +173,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
             labelAr="العودة لبوابة الطالب"
             className="mb-1.5"
           />
-          <h1 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-foreground">
+          <h1 className="text-2xl sm:text-3xl font-display font-bold tracking-tight text-foreground">
             {isAr ? 'المدفوعات وسجل التحويلات' : 'Payments & Billing'}
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">
@@ -232,7 +232,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">
                 {isAr ? 'المدفوعات المؤكدة والمفعلة' : 'Verified Payments'}
               </span>
-              <div className="text-3xl font-serif font-bold text-success">
+              <div className="text-3xl font-display font-bold text-success">
                 {verifiedCount}
               </div>
               <span className="text-xs text-muted-foreground block">
@@ -251,7 +251,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">
                 {isAr ? 'قيد المراجعة والتحقق' : 'Under Review'}
               </span>
-              <div className="text-3xl font-serif font-bold text-warning">
+              <div className="text-3xl font-display font-bold text-warning">
                 {pendingCount}
               </div>
               <span className="text-xs text-muted-foreground block">
@@ -320,7 +320,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
 
       {/* 6. Payments History Table / Cards */}
       <div className="space-y-4">
-        <h2 className="text-lg font-serif font-bold text-foreground">
+        <h2 className="text-lg font-display font-bold text-foreground">
           {isAr ? 'سجل العمليات السابقة' : 'Payment History'}
         </h2>
 
@@ -376,7 +376,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
               <CreditCard className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-serif font-semibold text-foreground">
+              <h3 className="text-base sm:text-lg font-display font-semibold text-foreground">
                 {isAr ? 'لا توجد دفعات مسجلة بعد' : 'No payments recorded yet'}
               </h3>
               <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto mt-1 leading-relaxed">
@@ -407,7 +407,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
                   <CardContent className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2">
-                        <span className="font-serif font-bold text-sm sm:text-base text-foreground">
+                        <span className="font-display font-bold text-sm sm:text-base text-foreground">
                           {p.itemDescription || (isAr ? 'رسوم درس' : 'Lesson Payment')}
                         </span>
                         {renderPaymentBadge(p)}
@@ -457,7 +457,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
                     </div>
 
                     <div className="text-start sm:text-end shrink-0">
-                      <span className="text-lg sm:text-xl font-serif font-bold text-foreground">
+                      <span className="text-lg sm:text-xl font-display font-bold text-foreground">
                         {p.amount ? `$${p.amount}` : '—'}
                       </span>
                       <span className="text-xs text-muted-foreground ml-1">

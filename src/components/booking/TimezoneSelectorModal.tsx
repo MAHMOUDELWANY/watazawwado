@@ -47,7 +47,7 @@ export const TimezoneSelectorModal: React.FC<TimezoneSelectorModalProps> = ({
             <div className="flex items-center justify-between pb-3 border-b border-border dark:border-border">
               <div className="flex items-center gap-2">
                 <Globe className="w-5 h-5 text-accent" />
-                <h3 className="font-serif text-lg font-medium">
+                <h3 className="font-display text-lg font-medium">
                   {isEn ? 'Select Your Timezone' : 'اختر منطقتك الزمنية'}
                 </h3>
               </div>

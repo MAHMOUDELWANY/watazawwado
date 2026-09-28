@@ -116,7 +116,7 @@ export default function AnalyticsPage() {
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-serif font-bold text-foreground dark:text-foreground">
+            <h1 className="text-2xl font-display font-bold text-foreground dark:text-foreground">
               Operational Analytics
             </h1>
             <span className="text-xs px-2.5 py-0.5 rounded-full bg-secondary/40 text-accent dark:text-primary font-medium">
@@ -202,7 +202,7 @@ export default function AnalyticsPage() {
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-serif font-bold text-foreground dark:text-foreground">
+            <span className="text-3xl font-display font-bold text-foreground dark:text-foreground">
               {rates?.lead_to_trial_rate !== null && rates?.lead_to_trial_rate !== undefined ? `${rates.lead_to_trial_rate}%` : 'N/A'}
             </span>
           </div>
@@ -221,7 +221,7 @@ export default function AnalyticsPage() {
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-serif font-bold text-emerald-700 dark:text-emerald-400">
+            <span className="text-3xl font-display font-bold text-emerald-700 dark:text-emerald-400">
               {rates?.trial_to_student_rate !== null && rates?.trial_to_student_rate !== undefined ? `${rates.trial_to_student_rate}%` : 'N/A'}
             </span>
           </div>
@@ -240,7 +240,7 @@ export default function AnalyticsPage() {
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-serif font-bold text-primary dark:text-primary">
+            <span className="text-3xl font-display font-bold text-primary dark:text-primary">
               {data?.total_students_enrolled || 0}
             </span>
           </div>
@@ -259,7 +259,7 @@ export default function AnalyticsPage() {
             </div>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-serif font-bold text-amber-700 dark:text-amber-400">
+            <span className="text-3xl font-display font-bold text-amber-700 dark:text-amber-400">
               {data?.total_bookings_count || 0}
             </span>
           </div>
@@ -274,7 +274,7 @@ export default function AnalyticsPage() {
         <div className="p-6 rounded-2xl bg-white dark:bg-surface border border-border/30 dark:border-border/30 shadow-xs space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-base font-serif font-semibold text-foreground dark:text-foreground">
+              <h2 className="text-base font-display font-semibold text-foreground dark:text-foreground">
                 Learner Lifecycle Stages
               </h2>
               <p className="text-xs text-foreground/70 dark:text-border">
@@ -323,7 +323,7 @@ export default function AnalyticsPage() {
           <div className="p-6 rounded-2xl bg-white dark:bg-surface border border-border/30 dark:border-border/30 shadow-xs space-y-4">
             <div className="flex items-center gap-2">
               <DollarSign className="w-4 h-4 text-accent dark:text-primary" />
-              <h2 className="text-base font-serif font-semibold text-foreground dark:text-foreground">
+              <h2 className="text-base font-display font-semibold text-foreground dark:text-foreground">
                 Payment Operational Status
               </h2>
             </div>
@@ -333,15 +333,15 @@ export default function AnalyticsPage() {
 
             <div className="grid grid-cols-3 gap-4 pt-2">
               <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/40 text-center">
-                <span className="block text-2xl font-serif font-bold text-emerald-700 dark:text-emerald-400">{payments?.confirmed_count || 0}</span>
+                <span className="block text-2xl font-display font-bold text-emerald-700 dark:text-emerald-400">{payments?.confirmed_count || 0}</span>
                 <span className="text-[10px] uppercase tracking-wider text-emerald-600 dark:text-emerald-500 font-medium">Confirmed</span>
               </div>
               <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800/40 text-center">
-                <span className="block text-2xl font-serif font-bold text-amber-700 dark:text-amber-400">{payments?.pending_count || 0}</span>
+                <span className="block text-2xl font-display font-bold text-amber-700 dark:text-amber-400">{payments?.pending_count || 0}</span>
                 <span className="text-[10px] uppercase tracking-wider text-amber-600 dark:text-amber-500 font-medium">Pending</span>
               </div>
               <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-800/40 text-center">
-                <span className="block text-2xl font-serif font-bold text-rose-700 dark:text-rose-400">{payments?.rejected_count || 0}</span>
+                <span className="block text-2xl font-display font-bold text-rose-700 dark:text-rose-400">{payments?.rejected_count || 0}</span>
                 <span className="text-[10px] uppercase tracking-wider text-rose-600 dark:text-rose-500 font-medium">Rejected</span>
               </div>
             </div>
@@ -351,7 +351,7 @@ export default function AnalyticsPage() {
           <div className="p-6 rounded-2xl bg-white dark:bg-surface border border-border/30 dark:border-border/30 shadow-xs space-y-4">
             <div className="flex items-center gap-2">
               <BookOpen className="w-4 h-4 text-accent dark:text-primary" />
-              <h2 className="text-base font-serif font-semibold text-foreground dark:text-foreground">
+              <h2 className="text-base font-display font-semibold text-foreground dark:text-foreground">
                 Service Demand
               </h2>
             </div>

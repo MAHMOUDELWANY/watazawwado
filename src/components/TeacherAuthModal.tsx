@@ -1,6 +1,7 @@
+import { BrandLogo } from './ui/BrandLogo';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import {
+{
   X,
   Lock,
   Key,
@@ -14,7 +15,7 @@ import {
   Clock,
   BookOpen,
   DollarSign,
-  FileText
+import   FileText
 } from 'lucide-react';
 import { useTeacherAuth } from '../lib/auth';
 import { teacherRepository, TeacherStats, DbBooking, DbLead } from '../lib/teacherRepository';
@@ -145,7 +146,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
               <div className="w-9 h-9 rounded-xl bg-secondary/30 dark:bg-primary/25 text-accent-hover dark:text-primary flex items-center justify-center">
                 <ShieldCheck className="w-5 h-5" /></div>
               <div>
-                <h3 className="font-serif text-lg font-bold text-foreground dark:text-foreground">
+                <h3 className="font-display text-lg font-bold text-foreground dark:text-foreground">
                   {isTeacherAuthenticated ? 'Teacher Backend Foundation' : 'Ustadh Mahmoud — Teacher Access'}
                 </h3>
                 <p className="text-[11px] text-muted-foreground dark:text-muted-foreground">
@@ -189,7 +190,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                   <div className="w-12 h-12 rounded-2xl bg-secondary/30 text-accent-hover dark:text-primary mx-auto flex items-center justify-center mb-3">
                     <Lock className="w-6 h-6" />
                   </div>
-                  <h4 className="font-serif text-xl font-bold text-foreground dark:text-foreground">
+                  <h4 className="font-display text-xl font-bold text-foreground dark:text-foreground">
                     Private Teacher Login
                   </h4>
                   <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">
@@ -269,7 +270,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-serif font-bold text-sm sm:text-base text-foreground dark:text-foreground">
+                        <span className="font-display font-bold text-sm sm:text-base text-foreground dark:text-foreground">
                           Ustadh Mahmoud
                         </span>
                         <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-semibold flex items-center gap-1">
@@ -402,7 +403,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                     <div className="p-5 rounded-2xl bg-white dark:bg-surface border border-border dark:border-border">
                       <div className="flex items-center justify-between mb-4">
                         <div>
-                          <h5 className="font-serif font-bold text-sm text-foreground dark:text-foreground">
+                          <h5 className="font-display font-bold text-sm text-foreground dark:text-foreground">
                             Recent Scheduled Bookings
                           </h5>
                           <p className="text-[11px] text-muted-foreground dark:text-muted-foreground">
@@ -447,7 +448,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                 {activeTab === 'security' && (
                   <div className="p-5 rounded-2xl bg-white dark:bg-surface border border-border dark:border-border space-y-4">
                     <div>
-                      <h5 className="font-serif font-bold text-sm text-foreground dark:text-foreground">
+                      <h5 className="font-display font-bold text-sm text-foreground dark:text-foreground">
                         Row Level Security (RLS) Verification
                       </h5>
                       <p className="text-xs text-muted-foreground dark:text-muted-foreground">
@@ -494,7 +495,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                 {activeTab === 'trial_test' && (
                   <div className="p-5 rounded-2xl bg-white dark:bg-surface border border-border dark:border-border space-y-4">
                     <div>
-                      <h5 className="font-serif font-bold text-sm text-foreground dark:text-foreground">
+                      <h5 className="font-display font-bold text-sm text-foreground dark:text-foreground">
                         Master Spec Section 10 & 15: One Free Trial Enforcement
                       </h5>
                       <p className="text-xs text-muted-foreground dark:text-muted-foreground">
@@ -535,7 +536,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                 {/* TAB 4: SCHEMA OVERVIEW */}
                 {activeTab === 'schema' && (
                   <div className="p-5 rounded-2xl bg-white dark:bg-surface border border-border dark:border-border space-y-3">
-                    <h5 className="font-serif font-bold text-sm text-foreground dark:text-foreground">
+                    <h5 className="font-display font-bold text-sm text-foreground dark:text-foreground">
                       Master Spec Relational Entities (19 Core Tables)
                     </h5>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono">

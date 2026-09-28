@@ -127,7 +127,7 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
             <CreditCard className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="font-serif text-lg font-semibold text-foreground dark:text-foreground">
+            <h3 className="font-display text-lg font-semibold text-foreground dark:text-foreground">
               {isEn ? 'Payment Instructions' : 'تفاصيل وطرق الدفع'}
             </h3>
             <p className="text-xs text-foreground/70 dark:text-border/70">
@@ -283,7 +283,7 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
                 onSubmit={handleSubmitClaim}
                 className="p-4 sm:p-5 rounded-2xl bg-surface-subtle dark:bg-background border border-secondary/60 space-y-4"
               >
-                <div className="flex items-center gap-2 font-serif text-sm font-semibold text-foreground dark:text-foreground">
+                <div className="flex items-center gap-2 font-display text-sm font-semibold text-foreground dark:text-foreground">
                   <Send className="w-4 h-4 text-accent-hover" />
                   <span>{isEn ? 'Confirm Your Payment' : 'تأكيد إرسال الدفعة'}</span>
                 </div>

@@ -77,7 +77,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
             </div>
 
             {/* Headline */}
-            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-foreground dark:text-foreground leading-[1.18] tracking-tight">
+            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-foreground dark:text-foreground leading-[1.18] tracking-tight">
               {isEn ? (
                 <>
                   Does every new subject need a new tutor?{' '}
@@ -187,7 +187,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                         Separate
                       </span>
                     </div>
-                    <h3 className="font-serif text-base font-semibold text-foreground dark:text-foreground mb-1">
+                    <h3 className="font-display text-base font-semibold text-foreground dark:text-foreground mb-1">
                       {isEn ? 'Quran Platform' : 'منصة تجويد متفرقة'}
                     </h3>
                     <p className="text-xs text-muted-foreground dark:text-muted-foreground leading-relaxed mb-3">
@@ -208,7 +208,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                         Separate
                       </span>
                     </div>
-                    <h3 className="font-serif text-base font-semibold text-foreground dark:text-foreground mb-1">
+                    <h3 className="font-display text-base font-semibold text-foreground dark:text-foreground mb-1">
                       {isEn ? 'Arabic Academy' : 'أكاديمية عربية'}
                     </h3>
                     <p className="text-xs text-muted-foreground dark:text-muted-foreground leading-relaxed mb-3">
@@ -232,7 +232,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                         Separate
                       </span>
                     </div>
-                    <h3 className="font-serif text-base font-semibold text-foreground dark:text-foreground mb-1">
+                    <h3 className="font-display text-base font-semibold text-foreground dark:text-foreground mb-1">
                       {isEn ? 'Islamic Studies' : 'مدرسة عطلة الأسبوع'}
                     </h3>
                     <p className="text-xs text-muted-foreground dark:text-muted-foreground leading-relaxed mb-3">
@@ -324,7 +324,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                   <div>
                     <div className="flex items-center gap-2 mb-1.5">
                       <span className="w-3 h-3 rounded-full bg-primary" />
-                      <span className="font-serif text-xl sm:text-2xl font-bold text-foreground dark:text-foreground">
+                      <span className="font-display text-xl sm:text-2xl font-bold text-foreground dark:text-foreground">
                         {isEn ? 'Ustadh Mahmoud Eldwany' : 'الأستاذ محمود الدواني'}
                       </span>
                       <ShieldCheck className="w-5 h-5 text-accent" />
@@ -341,7 +341,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                     <div className="text-xs font-mono text-primary dark:text-primary font-semibold uppercase tracking-wider">
                       {isEn ? 'First Session' : 'الجلسة الأولى'}
                     </div>
-                    <div className="font-serif text-2xl sm:text-3xl font-bold text-foreground dark:text-foreground">
+                    <div className="font-display text-2xl sm:text-3xl font-bold text-foreground dark:text-foreground">
                       {isEn ? '100% Free' : 'مجانية تماماً'}
                     </div>
                     <div className="text-[11px] text-muted-foreground dark:text-muted-foreground">

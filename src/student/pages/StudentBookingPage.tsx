@@ -807,7 +807,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
             labelAr="العودة لبوابة الطالب"
             className="mb-1.5"
           />
-          <h1 className="text-2xl font-serif font-bold tracking-tight text-foreground">
+          <h1 className="text-2xl font-display font-bold tracking-tight text-foreground">
             Book a Lesson
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
@@ -882,7 +882,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
               <RotateCcw className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-serif font-bold text-foreground">
+              <h2 className="text-lg font-display font-bold text-foreground">
                 Book another lesson
               </h2>
               <p className="text-xs text-muted-foreground">

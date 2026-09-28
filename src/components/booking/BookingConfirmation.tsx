@@ -135,7 +135,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           {isEn ? `Booking Reference: ${confirmation.bookingReference}` : `رقم الحجز المرجعي: ${confirmation.bookingReference}`}
         </span>
 
-        <h2 className="font-serif text-3xl sm:text-4xl font-medium text-foreground dark:text-foreground">
+        <h2 className="font-display text-3xl sm:text-4xl font-medium text-foreground dark:text-foreground">
           {confirmation.isFreeTrial
             ? isEn ? 'Your Free Trial is Booked' : 'تم تأكيد حجز جلستك التجريبية'
             : isEn ? 'Your Lesson is Scheduled' : 'تم تأكيد حجز درسك بنجاح'}
@@ -281,7 +281,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
 
       {/* Philosophy Reassurance / Post-Trial Human Expectation */}
       <div className="p-5 rounded-3xl bg-surface-warm dark:bg-surface border border-secondary/60 space-y-2">
-        <div className="flex items-center gap-2 font-serif text-sm font-medium text-foreground dark:text-foreground">
+        <div className="flex items-center gap-2 font-display text-sm font-medium text-foreground dark:text-foreground">
           <Sparkles className="w-4 h-4 text-accent" />
           <span>
             {confirmation.isFreeTrial

@@ -29,7 +29,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
           <div className="text-xs uppercase tracking-widest text-primary font-semibold mb-3">
             {isEn ? 'About Ustadh Mahmoud' : ARABIC_TRANSLATIONS.about.sectionTag}
           </div>
-          <h2 className="font-serif text-3xl sm:text-4xl text-foreground tracking-tight mb-4">
+          <h2 className="font-display text-3xl sm:text-4xl text-foreground tracking-tight mb-4">
             {isEn ? 'A dedicated teacher, committed to human connection.' : ARABIC_TRANSLATIONS.about.title}
           </h2>
           <p className="text-base text-muted-foreground leading-relaxed">
@@ -47,7 +47,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
             <p>
               {isEn ? (
                 <>
-                  <strong className="text-foreground font-serif text-lg">Assalamu Alaikum.</strong> I am{' '}
+                  <strong className="text-foreground font-display text-lg">Assalamu Alaikum.</strong> I am{' '}
                   <strong className="text-foreground">Mahmoud</strong>, an independent educator based in Cairo, Egypt. For the past three years, I have
                   worked directly with international Muslim learners, converts, and families living in Canada, the United
                   States, the UK, and Australia.
@@ -91,15 +91,15 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
                 </div>
                 <ul className="space-y-2.5 text-xs sm:text-sm text-muted-foreground">
                   <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0" />
                     <span>{isEn ? 'Patient, judgment-free pace adapted to your level' : 'صبر كامل وتدرج يناسب قدرتك'}</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0" />
                     <span>{isEn ? 'Direct WhatsApp contact between lessons' : 'تواصل مباشر عبر واتساب عند الحاجة'}</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0" />
                     <span>{isEn ? 'Flexible rescheduling up to 3 hours prior' : 'مرونة في إعادة الجدولة حتى ٣ ساعات قبل الدرس'}</span>
                   </li>
                 </ul>
@@ -112,15 +112,15 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
                 </div>
                 <ul className="space-y-2.5 text-xs sm:text-sm text-muted-foreground">
                   <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0" />
                     <span>{isEn ? 'Solid fundamentals before rushing into advanced rules' : 'ترسيخ الأساسيات أولاً قبل التعجل'}</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0" />
                     <span>{isEn ? 'Personalized study materials tailored to each student' : 'مواد دراسية مخصصة تناسب كل طالب'}</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0" />
                     <span>{isEn ? 'Transparent, pay-as-you-learn flexibility with no lock-in' : 'مرونة تامة وبدون أي عقود ملزمة'}</span>
                   </li>
                 </ul>
@@ -132,7 +132,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
           {/* Verified Proof Metrics Column (5 cols on lg) */}
           <div className="lg:col-span-5 space-y-4">
             <div className="p-6 rounded-2xl bg-surface border border-border shadow-2xs">
-              <h3 className="font-serif text-lg font-medium text-foreground mb-4 pb-3 border-b border-border">
+              <h3 className="font-display text-lg font-medium text-foreground mb-4 pb-3 border-b border-border">
                 {isEn ? 'Verified Teaching Background' : 'المؤهلات والخبرات المعتمدة'}
               </h3>
 
@@ -147,7 +147,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
                     </div>
                     <div>
                       <div className="flex items-baseline gap-1.5">
-                        <span className="font-serif text-lg font-bold text-foreground">
+                        <span className="font-display text-lg font-bold text-foreground">
                           {point.metric}
                         </span>
                         <span className="text-xs font-semibold text-primary">

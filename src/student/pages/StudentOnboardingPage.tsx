@@ -150,7 +150,7 @@ export default function StudentOnboardingPage({
             <CheckCircle2 className="w-9 h-9" />
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-foreground">
+          <h2 className="text-2xl sm:text-3xl font-display font-bold text-foreground">
             Welcome, {studentName}!
           </h2>
           <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-lg mx-auto leading-relaxed">
@@ -193,7 +193,7 @@ export default function StudentOnboardingPage({
           <Sparkles className="w-3.5 h-3.5" />
           Personalized Onboarding
         </span>
-        <h1 className="text-2xl sm:text-3xl font-serif font-bold text-foreground">
+        <h1 className="text-2xl sm:text-3xl font-display font-bold text-foreground">
           Set Up Your Learning Profile
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">

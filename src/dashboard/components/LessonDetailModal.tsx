@@ -226,7 +226,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                 {currentStatus === 'no_show' ? 'No-Show' : (currentStatus || 'Status unavailable')}
               </span>
             </div>
-            <h2 id="lesson-detail-title" className="text-xl font-serif font-semibold tracking-tight text-foreground">
+            <h2 id="lesson-detail-title" className="text-xl font-display font-semibold tracking-tight text-foreground">
               {lesson.learner_name || 'Learner name not recorded'}
             </h2>
             {lesson.parent_name && (

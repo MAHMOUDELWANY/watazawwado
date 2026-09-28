@@ -88,7 +88,7 @@ export default function TeachersPage() {
             <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-secondary/30 text-primary border border-secondary/50">
               Super Admin
             </span>
-            <h1 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-foreground">
+            <h1 className="text-2xl sm:text-3xl font-display font-bold tracking-tight text-foreground">
               Teachers & Faculty
             </h1>
           </div>
@@ -147,11 +147,11 @@ export default function TeachersPage() {
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-secondary/30 text-accent font-serif font-bold text-base flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-secondary/30 text-accent font-display font-bold text-base flex items-center justify-center">
                   {t.display_name.charAt(0)}
                 </div>
                 <div>
-                  <h3 className="text-sm font-serif font-semibold text-foreground">
+                  <h3 className="text-sm font-display font-semibold text-foreground">
                     {t.display_name}
                   </h3>
                   <p className="text-xs text-muted-foreground">{t.email}</p>
@@ -175,17 +175,17 @@ export default function TeachersPage() {
             <div className="grid grid-cols-3 gap-2 py-3 border-y border-border text-center">
               <div>
                 <span className="text-[10px] text-muted-foreground block uppercase tracking-wider">Assigned</span>
-                <span className="text-base font-serif font-bold text-foreground">{t.assigned_students_count}</span>
+                <span className="text-base font-display font-bold text-foreground">{t.assigned_students_count}</span>
                 <span className="text-[10px] text-muted-foreground block">students</span>
               </div>
               <div>
                 <span className="text-[10px] text-muted-foreground block uppercase tracking-wider">Upcoming</span>
-                <span className="text-base font-serif font-bold text-foreground">{t.upcoming_lessons_count}</span>
+                <span className="text-base font-display font-bold text-foreground">{t.upcoming_lessons_count}</span>
                 <span className="text-[10px] text-muted-foreground block">lessons</span>
               </div>
               <div>
                 <span className="text-[10px] text-muted-foreground block uppercase tracking-wider">Completed</span>
-                <span className="text-base font-serif font-bold text-foreground">{t.completed_lessons_count}</span>
+                <span className="text-base font-display font-bold text-foreground">{t.completed_lessons_count}</span>
                 <span className="text-[10px] text-muted-foreground block">lessons</span>
               </div>
             </div>

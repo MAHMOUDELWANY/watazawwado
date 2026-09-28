@@ -156,7 +156,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-border dark:border-border">
         <div>
-          <h2 className="font-serif text-2xl font-medium text-foreground dark:text-foreground flex items-center gap-2.5">
+          <h2 className="font-display text-2xl font-medium text-foreground dark:text-foreground flex items-center gap-2.5">
             <Layers className="w-6 h-6 text-accent" />
             <span>{isEn ? 'Calendar & Classroom Integrations' : 'ربط التقويم وقاعات التدريس'}</span>
           </h2>
@@ -207,7 +207,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                   <Calendar className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-serif text-base font-semibold text-foreground dark:text-foreground">
+                  <h3 className="font-display text-base font-semibold text-foreground dark:text-foreground">
                     Google Calendar
                   </h3>
                   <span className="text-[11px] text-foreground/60 dark:text-border/60">
@@ -302,7 +302,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                   <Video className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-serif text-base font-semibold text-foreground dark:text-foreground">
+                  <h3 className="font-display text-base font-semibold text-foreground dark:text-foreground">
                     Zoom Classroom
                   </h3>
                   <span className="text-[11px] text-foreground/60 dark:text-border/60">
@@ -359,7 +359,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                   <Mail className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-serif text-base font-semibold text-foreground dark:text-foreground">
+                  <h3 className="font-display text-base font-semibold text-foreground dark:text-foreground">
                     Brevo Email
                   </h3>
                   <span className="text-[11px] text-foreground/60 dark:text-border/60">
@@ -411,7 +411,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-3 border-b border-border dark:border-border">
           <div className="flex items-center gap-2">
             <Globe className="w-5 h-5 text-accent" />
-            <h3 className="font-serif text-base font-semibold text-foreground dark:text-foreground">
+            <h3 className="font-display text-base font-semibold text-foreground dark:text-foreground">
               {isEn ? 'International Timezone Matrix & DST Validator' : 'مصفوفة المناطق الزمنية والتوقيت الصيفي'}
             </h3>
           </div>

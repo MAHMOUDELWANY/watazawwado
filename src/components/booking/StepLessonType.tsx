@@ -125,7 +125,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                   <Gift className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="font-serif text-base font-medium text-foreground dark:text-foreground">
+                  <h4 className="font-display text-base font-medium text-foreground dark:text-foreground">
                     {isEn ? 'Free Trial Session' : 'جلسة تجريبية مجانية'}
                   </h4>
                   <span className={`text-xs font-semibold ${trialDisabled ? 'text-gray-500 dark:text-gray-400' : 'text-primary'}`}>
@@ -176,7 +176,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                   <CalendarCheck className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="font-serif text-base font-medium text-foreground dark:text-foreground">
+                  <h4 className="font-display text-base font-medium text-foreground dark:text-foreground">
                     {isEn ? 'Regular 1-on-1 Lesson' : 'درس فردي منتظم'}
                   </h4>
                   <span className="text-xs font-semibold text-muted-foreground dark:text-muted-foreground">
@@ -256,7 +256,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               >
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="font-serif text-base font-medium text-foreground dark:text-foreground">
+                    <span className="font-display text-base font-medium text-foreground dark:text-foreground">
                       {isEn ? d.label : d.arabicLabel}
                     </span>
                     <span className={`text-xs font-semibold ${mode === 'trial' || packageEntitlementId ? 'text-primary' : 'text-muted-foreground dark:text-muted-foreground'}`}>
@@ -313,7 +313,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h4 className="font-serif text-base font-medium text-foreground dark:text-foreground">
+                          <h4 className="font-display text-base font-medium text-foreground dark:text-foreground">
                             {isEn ? 'Existing lesson credit' : 'رصيد درس موجود'}
                           </h4>
                           <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-secondary/30 text-accent">
@@ -362,7 +362,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <h4 className="font-serif font-medium text-foreground dark:text-foreground">
+                  <h4 className="font-display font-medium text-foreground dark:text-foreground">
                     {isEn ? 'Pay for this single lesson' : 'دفع مباشر لهذا الدرس بشكل مستقل'}
                   </h4>
                   <p className="text-xs text-foreground/65 dark:text-border/70 mt-1">
@@ -399,7 +399,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                   : 'bg-white dark:bg-surface border-border dark:border-border opacity-75'
               }`}
             >
-              <h4 className="font-serif font-medium text-foreground dark:text-foreground">
+              <h4 className="font-display font-medium text-foreground dark:text-foreground">
                 {isEn ? 'Single Lesson (Pay as you go)' : 'درس واحد (دفع عند الحجز)'}
               </h4>
               <p className="text-xs text-foreground/65 dark:text-border/70 mt-1">
@@ -423,7 +423,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                 >
                   <div className="flex justify-between items-start">
                     <div>
-                      <h4 className="font-serif font-medium text-foreground dark:text-foreground">
+                      <h4 className="font-display font-medium text-foreground dark:text-foreground">
                         {pkg.name}
                       </h4>
                       <p className="text-xs text-foreground/65 dark:text-border/70 mt-1">

@@ -84,7 +84,7 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
             >
               <div>
                 <div className="flex items-start justify-between gap-3 mb-1.5">
-                  <h3 className="font-serif text-base sm:text-lg font-medium text-foreground dark:text-foreground group-hover:text-muted-foreground dark:group-hover:text-muted-foreground transition-colors leading-snug">
+                  <h3 className="font-display text-base sm:text-lg font-medium text-foreground dark:text-foreground group-hover:text-muted-foreground dark:group-hover:text-muted-foreground transition-colors leading-snug">
                     {isEn ? service.name : service.arabicName}
                   </h3>
                   <div

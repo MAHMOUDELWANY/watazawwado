@@ -161,7 +161,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
             <div className="flex items-center justify-between pb-4 border-b border-border dark:border-border">
               <div className="flex items-center gap-2.5">
                 <ShieldCheck className="w-5 h-5 text-accent" />
-                <h3 className="font-serif text-lg sm:text-xl font-medium">
+                <h3 className="font-display text-lg sm:text-xl font-medium">
                   {isEn ? 'Manage Lesson & Integration Status' : 'إدارة الحجز وحالة المزامنة'}
                 </h3>
               </div>
@@ -256,7 +256,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                     <span className="text-[10px] font-semibold uppercase tracking-wider text-foreground/50 dark:text-border/50">
                       {booking.reference} • {booking.mode === 'trial' ? 'Free Trial' : '1-on-1 Lesson'}
                     </span>
-                    <h4 className="font-serif text-base font-medium text-foreground dark:text-foreground">
+                    <h4 className="font-display text-base font-medium text-foreground dark:text-foreground">
                       {booking.serviceName}
                     </h4>
                     <p className="text-xs text-foreground/70 dark:text-border/70">
@@ -380,7 +380,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                 {/* Reschedule View if Active */}
                 {isRescheduling && (
                   <div className="p-3.5 rounded-xl bg-surface-warm dark:bg-surface-subtle border border-secondary/60 space-y-3">
-                    <h5 className="font-serif text-xs font-semibold uppercase tracking-wider text-muted-foreground dark:text-muted-foreground">
+                    <h5 className="font-display text-xs font-semibold uppercase tracking-wider text-muted-foreground dark:text-muted-foreground">
                       {isEn ? 'Choose New Date & Starting Time' : 'اختر التاريخ والموعد الجديد'}
                     </h5>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

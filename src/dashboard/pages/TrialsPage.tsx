@@ -81,7 +81,7 @@ export default function TrialsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border-subtle pb-5">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-serif font-bold text-foreground">
+            <h1 className="text-2xl font-display font-bold text-foreground">
               Trial Sessions
             </h1>
             <span className="text-xs px-2.5 py-0.5 rounded-full bg-secondary/30 text-accent font-medium">
@@ -221,7 +221,7 @@ export default function TrialsPage() {
       ) : displayedTrials.length === 0 ? (
         <div className="p-12 text-center rounded-2xl bg-surface border border-border shadow-2xs">
           <Sparkles className="w-8 h-8 mx-auto text-muted-foreground mb-2 opacity-60" />
-          <h3 className="font-serif font-medium text-base text-foreground">
+          <h3 className="font-display font-medium text-base text-foreground">
             {activeTab === 'upcoming' ? 'No Upcoming Trials' : 'No Trial Records Found'}
           </h3>
           <p className="text-xs text-muted-foreground max-w-sm mx-auto mt-1">
@@ -289,7 +289,7 @@ export default function TrialsPage() {
                   </div>
 
                   <div>
-                    <h4 className="font-serif font-medium text-base text-foreground truncate">
+                    <h4 className="font-display font-medium text-base text-foreground truncate">
                       {trial.learner_name || 'Anonymous Student'}
                       {trial.parent_name && (
                         <span className="text-xs font-normal text-muted-foreground ms-2">

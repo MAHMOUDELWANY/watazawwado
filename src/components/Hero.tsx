@@ -58,9 +58,9 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
                 hidden: { opacity: 0, x: isEn ? -12 : 12 },
                 visible: { opacity: 1, x: 0, transition: { duration: 0.4 } },
               }}
-              className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full bg-secondary/30 border border-secondary/50 text-xs font-semibold text-primary mb-5"
+              className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full bg-secondary/30 border border-secondary/50 text-xs font-semibold text-accent mb-5"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+              <span className="w-1.5 h-1.5 rounded-full bg-brand" />
               <span>{isEn ? 'Direct 1-on-1 Mentorship' : ARABIC_TRANSLATIONS.hero.eyebrow}</span>
             </motion.div>
 
@@ -70,18 +70,18 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
                 hidden: { opacity: 0, y: 16 },
                 visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
               }}
-              className="font-serif text-4xl sm:text-5xl lg:text-[3.35rem] leading-[1.16] tracking-tight text-foreground mb-6"
+              className="font-display text-4xl sm:text-5xl lg:text-[3.35rem] leading-[1.16] tracking-tight text-foreground mb-6"
             >
               {isEn ? (
                 <>
                   Personal{' '}
-                  <span className="text-primary font-medium">Quran & Arabic</span>{' '}
+                  <span className="text-brand font-medium">Quran & Arabic</span>{' '}
                   with dedicated online guidance.
                 </>
               ) : (
                 <>
                   تعليم{' '}
-                  <span className="text-primary font-medium">القرآن الكريم واللغة العربية</span>{' '}
+                  <span className="text-brand font-medium">القرآن الكريم واللغة العربية</span>{' '}
                   بتوجيه فردي ورعاية مباشرة.
                 </>
               )}

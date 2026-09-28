@@ -316,7 +316,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 </span>
               )}
             </div>
-            <h2 className="text-xl sm:text-2xl font-serif font-bold text-foreground">
+            <h2 className="text-xl sm:text-2xl font-display font-bold text-foreground">
               {trial.learner_name || 'Anonymous Student'}
             </h2>
             {trial.parent_name && (

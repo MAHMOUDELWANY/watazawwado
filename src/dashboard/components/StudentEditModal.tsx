@@ -132,7 +132,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border/30 dark:border-border/30 bg-background dark:bg-background">
           <div>
-            <h2 className="text-lg font-serif font-bold text-foreground dark:text-foreground">
+            <h2 className="text-lg font-display font-bold text-foreground dark:text-foreground">
               Edit Student Profile
             </h2>
             <p className="text-xs text-foreground/70 dark:text-border/70">

@@ -14,7 +14,7 @@ export function EmptyState({ icon: Icon = FileText, title, description, action }
       <div className="w-16 h-16 rounded-full bg-surface border border-border flex items-center justify-center mb-6 shadow-sm">
         <Icon className="w-8 h-8 text-muted-foreground" />
       </div>
-      <h3 className="text-xl font-serif font-semibold text-foreground mb-2">
+      <h3 className="text-xl font-display font-semibold text-foreground mb-2">
         {title}
       </h3>
       <p className="text-sm text-muted-foreground max-w-sm mb-6">

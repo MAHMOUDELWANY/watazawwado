@@ -34,7 +34,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ lang }) => {
           <div className="text-xs uppercase tracking-widest text-primary font-semibold mb-3">
             {isEn ? 'Practical Questions' : ARABIC_TRANSLATIONS.nav.faqs}
           </div>
-          <h2 className="font-serif text-3xl sm:text-4xl text-foreground tracking-tight mb-4">
+          <h2 className="font-display text-3xl sm:text-4xl text-foreground tracking-tight mb-4">
             {isEn ? 'Clear answers to common questions.' : 'إجابات واضحة لأهم التساؤلات الشائعة.'}
           </h2>
           <p className="text-base text-muted-foreground leading-relaxed">
@@ -67,7 +67,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ lang }) => {
                   className="w-full px-6 py-5 flex items-center justify-between text-start gap-4 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   aria-expanded={isOpen}
                 >
-                  <span className="font-serif text-base sm:text-lg font-medium text-foreground">
+                  <span className="font-display text-base sm:text-lg font-medium text-foreground">
                     {faq.question}
                   </span>
                   <span

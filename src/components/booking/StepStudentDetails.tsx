@@ -215,7 +215,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                         }`}
                       >
                         <div>
-                          <div className="font-serif text-xs font-semibold text-foreground dark:text-foreground">
+                          <div className="font-display text-xs font-semibold text-foreground dark:text-foreground">
                             {child.name}
                           </div>
                           <div className="text-[10px] text-foreground/60 dark:text-border/60 capitalize">
@@ -307,7 +307,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                 <User className="w-5 h-5" />
               </div>
               <div>
-                <div className="font-serif text-sm font-medium text-foreground dark:text-foreground">
+                <div className="font-display text-sm font-medium text-foreground dark:text-foreground">
                   {isEn ? 'I am learning (Adult / Self)' : 'أنا المتعلم (بالغ / شخصي)'}
                 </div>
                 <div className="text-[11px] text-foreground/60 dark:text-border/60">
@@ -329,7 +329,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                 <Users className="w-5 h-5" />
               </div>
               <div>
-                <div className="font-serif text-sm font-medium text-foreground dark:text-foreground">
+                <div className="font-display text-sm font-medium text-foreground dark:text-foreground">
                   {isEn ? 'For my child (Parent / Guardian)' : 'لطفلي (حجز ولي الأمر)'}
                 </div>
                 <div className="text-[11px] text-foreground/60 dark:text-border/60">
@@ -417,7 +417,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
         /* CHILD & PARENT FIELDS */
         <div className="space-y-4">
           <div className="p-4 rounded-2xl bg-white dark:bg-surface border border-border dark:border-border space-y-4">
-            <div className="font-serif text-sm font-medium text-muted-foreground dark:text-muted-foreground flex items-center gap-2">
+            <div className="font-display text-sm font-medium text-muted-foreground dark:text-muted-foreground flex items-center gap-2">
               <User className="w-4 h-4" />
               <span>{isEn ? '1. Learner (Child) Details' : '١. بيانات الطفل (الطالب)'}</span>
             </div>
@@ -470,7 +470,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
           </div>
 
           <div className="p-4 rounded-2xl bg-white dark:bg-surface border border-border dark:border-border space-y-4">
-            <div className="font-serif text-sm font-medium text-muted-foreground dark:text-muted-foreground flex items-center gap-2">
+            <div className="font-display text-sm font-medium text-muted-foreground dark:text-muted-foreground flex items-center gap-2">
               <Users className="w-4 h-4" />
               <span>{isEn ? '2. Parent / Guardian Contact' : '٢. بيانات ولي الأمر للتواصل والتنسيق'}</span>
             </div>
@@ -551,7 +551,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                     : 'bg-white dark:bg-surface border-border dark:border-border text-foreground/70 dark:text-border/70 hover:bg-foreground/30'
                 }`}
               >
-                <div className="font-serif text-xs font-medium mb-0.5">
+                <div className="font-display text-xs font-medium mb-0.5">
                   {isEn ? lvl.label : lvl.arabicLabel}
                 </div>
                 <div className="text-[10px] text-foreground/55 dark:text-border/55 line-clamp-2">

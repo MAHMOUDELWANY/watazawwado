@@ -158,7 +158,7 @@ export function StudentPaymentClaimModal({
             <CreditCard className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-base sm:text-lg font-serif font-bold text-foreground">
+            <h3 className="text-base sm:text-lg font-display font-bold text-foreground">
               {isAr ? 'تأكيد وإثبات الدفع' : 'Payment Instructions & Confirmation'}
             </h3>
             <p className="text-xs text-muted-foreground mt-0.5">
@@ -190,7 +190,7 @@ export function StudentPaymentClaimModal({
               <CheckCircle2 className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="text-base sm:text-lg font-serif font-bold text-foreground">
+              <h4 className="text-base sm:text-lg font-display font-bold text-foreground">
                 {isAr ? 'تم استلام بيانات التحويل بنجاح' : 'Payment Confirmation Submitted'}
               </h4>
               <p className="text-xs sm:text-sm text-muted-foreground mt-1 max-w-md mx-auto leading-relaxed">

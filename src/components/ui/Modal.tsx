@@ -92,7 +92,7 @@ export function Modal({
               {/* Header */}
               {title && (
                 <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
-                  <h3 className="text-lg font-semibold text-foreground font-serif">
+                  <h3 className="text-lg font-semibold text-foreground font-display">
                     {title}
                   </h3>
                   {!hideCloseButton && (

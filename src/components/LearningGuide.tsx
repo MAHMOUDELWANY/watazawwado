@@ -109,7 +109,7 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
             <div className="flex items-center justify-between p-4 bg-surface-subtle border-b border-border">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-accent" />
-                <h3 className="font-serif font-medium text-foreground">
+                <h3 className="font-display font-medium text-foreground">
                   {isEn ? 'AI Learning Guide' : 'المرشد الذكي'}
                 </h3>
               </div>

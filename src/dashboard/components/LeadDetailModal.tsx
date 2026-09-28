@@ -195,7 +195,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                 </span>
               )}
             </div>
-            <h2 className="text-xl sm:text-2xl font-serif font-bold text-foreground">
+            <h2 className="text-xl sm:text-2xl font-display font-bold text-foreground">
               {lead.name}
             </h2>
             {lead.parent_name && (

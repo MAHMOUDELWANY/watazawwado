@@ -208,7 +208,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                     <span className="text-[10px] uppercase font-semibold tracking-wider opacity-80">
                       {d.dayOfWeek}
                     </span>
-                    <span className="text-base sm:text-lg font-serif font-bold my-0.5">
+                    <span className="text-base sm:text-lg font-display font-bold my-0.5">
                       {d.dayOfMonth}
                     </span>
                     <span className="text-[10px] opacity-75">
@@ -238,7 +238,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
             <div className="flex items-center justify-between mb-4 pb-2 border-b border-border dark:border-border">
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-accent" />
-                <span className="font-serif text-sm font-medium text-foreground dark:text-foreground">
+                <span className="font-display text-sm font-medium text-foreground dark:text-foreground">
                   {currentDay?.dayOfWeek}, {currentDay?.monthName} {currentDay?.dayOfMonth}
                 </span>
               </div>
@@ -259,7 +259,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                 <div className="w-12 h-12 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto">
                   <Clock className="w-6 h-6" />
                 </div>
-                <h4 className="font-serif text-base font-medium text-foreground dark:text-foreground">
+                <h4 className="font-display text-base font-medium text-foreground dark:text-foreground">
                   {isEn ? 'No Slots Available on This Date' : 'لا توجد مواعيد متاحة في هذا اليوم'}
                 </h4>
                 <p className="text-xs text-foreground/70 dark:text-border/70 max-w-md mx-auto leading-relaxed">

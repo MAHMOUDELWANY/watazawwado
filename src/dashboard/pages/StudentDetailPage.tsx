@@ -269,7 +269,7 @@ export default function StudentDetailPage() {
     return (
       <div className="bg-surface rounded-2xl p-8 border border-destructive/30 text-center space-y-4">
         <AlertCircle className="w-10 h-10 text-destructive mx-auto" />
-        <h2 className="text-lg font-serif font-bold text-foreground">
+        <h2 className="text-lg font-display font-bold text-foreground">
           Student Record Not Found
         </h2>
         <p className="text-xs text-muted-foreground max-w-md mx-auto">
@@ -313,7 +313,7 @@ export default function StudentDetailPage() {
           </Link>
           <div>
             <div className="flex items-center gap-2.5 flex-wrap">
-              <h1 className="text-2xl font-serif font-bold text-foreground">
+              <h1 className="text-2xl font-display font-bold text-foreground">
                 {student.name}
               </h1>
               {/* Status Badge */}

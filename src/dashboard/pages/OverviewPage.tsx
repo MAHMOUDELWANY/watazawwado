@@ -76,7 +76,7 @@ export default function OverviewPage() {
             <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-secondary/30 text-primary border border-secondary/50">
               Super Admin
             </span>
-            <h1 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-foreground">
+            <h1 className="text-2xl sm:text-3xl font-display font-bold tracking-tight text-foreground">
               Platform Overview
             </h1>
           </div>
@@ -166,7 +166,7 @@ export default function OverviewPage() {
             <span className="text-xs font-semibold uppercase tracking-wider">Active Students</span>
             <Users className="w-4 h-4 text-accent" />
           </div>
-          <p className="text-2xl sm:text-3xl font-serif font-bold text-foreground">
+          <p className="text-2xl sm:text-3xl font-display font-bold text-foreground">
             {metrics.active_students}
           </p>
           <div className="flex items-center gap-1.5 mt-2 text-[11px] text-muted-foreground">
@@ -180,7 +180,7 @@ export default function OverviewPage() {
             <span className="text-xs font-semibold uppercase tracking-wider">Active Teachers</span>
             <ShieldCheck className="w-4 h-4 text-accent" />
           </div>
-          <p className="text-2xl sm:text-3xl font-serif font-bold text-foreground">
+          <p className="text-2xl sm:text-3xl font-display font-bold text-foreground">
             {metrics.active_teachers}
           </p>
           <div className="flex items-center gap-1.5 mt-2 text-[11px] text-muted-foreground">
@@ -195,7 +195,7 @@ export default function OverviewPage() {
             <span className="text-xs font-semibold uppercase tracking-wider">Lessons Today</span>
             <Clock className="w-4 h-4 text-accent" />
           </div>
-          <p className="text-2xl sm:text-3xl font-serif font-bold text-foreground">
+          <p className="text-2xl sm:text-3xl font-display font-bold text-foreground">
             {metrics.lessons_today}
           </p>
           <div className="flex items-center gap-1.5 mt-2 text-[11px] text-muted-foreground">
@@ -208,7 +208,7 @@ export default function OverviewPage() {
             <span className="text-xs font-semibold uppercase tracking-wider">Upcoming Trials</span>
             <Sparkles className="w-4 h-4 text-accent" />
           </div>
-          <p className="text-2xl sm:text-3xl font-serif font-bold text-foreground">
+          <p className="text-2xl sm:text-3xl font-display font-bold text-foreground">
             {metrics.trials_upcoming}
           </p>
           <div className="flex items-center gap-1.5 mt-2 text-[11px] text-muted-foreground">
@@ -221,7 +221,7 @@ export default function OverviewPage() {
       <div className="bg-surface border border-border rounded-2xl p-6 shadow-2xs space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-base font-serif font-semibold text-foreground">
+            <h2 className="text-base font-display font-semibold text-foreground">
               Faculty Workload & Assignment Distribution
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">

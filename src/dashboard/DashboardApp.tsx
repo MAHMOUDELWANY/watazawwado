@@ -1,3 +1,4 @@
+import { BrandLogo } from '../components/ui/BrandLogo';
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import { useTeacherAuth } from '../lib/auth';
@@ -19,7 +20,7 @@ import {
   Globe,
   Clock,
   ClipboardCheck,
-  Shield
+import   Shield
 } from 'lucide-react';
 import { useTheme } from "../components/ThemeProvider";
 import OverviewPage from './pages/OverviewPage';
@@ -120,7 +121,7 @@ export function DashboardApp() {
           <div className="w-14 h-14 rounded-2xl bg-secondary/30 text-accent flex items-center justify-center mx-auto mb-4">
             <ShieldCheck className="w-7 h-7" />
           </div>
-          <h1 className="text-xl font-serif font-semibold text-foreground mb-2">Teacher Workspace</h1>
+          <h1 className="text-xl font-display font-semibold text-foreground mb-2">Teacher Workspace</h1>
           <p className="text-sm text-muted-foreground mb-6">
             You must be logged in as an authorized teacher to access the workspace.
           </p>
@@ -196,9 +197,9 @@ export function DashboardApp() {
         {/* Workspace Brand Header */}
         <div className="h-16 flex items-center justify-between px-5 border-b border-border">
           <Link to="/" className="flex items-center gap-2.5 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg p-1">
-            <img src="/logo.png" alt="Watazawwado Logo" className="w-auto h-8 sm:h-9 object-contain drop-shadow-sm dark:bg-[#EDE7DC] dark:p-1.5 dark:rounded-xl shrink-0 transition-transform group-hover:scale-105" />
+            <BrandLogo variant="compact" />
             <div>
-              <span className="text-sm font-serif font-semibold tracking-tight text-foreground block">
+              <span className="text-sm font-display font-semibold tracking-tight text-foreground block">
                 {lang === 'ar' ? 'وتزودوا — المعلم' : 'Watazawwado'}
               </span>
               <span className="text-[10px] text-muted-foreground uppercase tracking-wider block">
@@ -313,7 +314,7 @@ export function DashboardApp() {
           >
             <Menu className="w-5 h-5" />
           </button>
-          <span className="font-serif font-semibold text-foreground text-sm">
+          <span className="font-display font-semibold text-foreground text-sm">
             {lang === 'ar' ? 'مساحة الأستاذ محمود' : 'Watazawwado Workspace'}
           </span>
           <div className="flex items-center gap-1">

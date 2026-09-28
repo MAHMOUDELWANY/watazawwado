@@ -142,7 +142,7 @@ export default function LeadsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-serif font-bold text-foreground">
+            <h1 className="text-2xl font-display font-bold text-foreground">
               Leads Pipeline
             </h1>
             <span className="text-xs px-2.5 py-0.5 rounded-full bg-secondary/30 text-primary font-medium border border-secondary/50">
@@ -340,7 +340,7 @@ export default function LeadsPage() {
       ) : filteredLeads.length === 0 ? (
         <div className="p-12 text-center rounded-2xl bg-surface border border-border">
           <Users className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
-          <h3 className="font-serif font-medium text-base text-foreground">
+          <h3 className="font-display font-medium text-base text-foreground">
             No Leads in This Stage
           </h3>
           <p className="text-xs text-muted-foreground max-w-sm mx-auto mt-1">
@@ -393,7 +393,7 @@ export default function LeadsPage() {
                   </div>
 
                   <div>
-                    <h4 className="font-serif font-medium text-base text-foreground truncate">
+                    <h4 className="font-display font-medium text-base text-foreground truncate">
                       {lead.name}
                       {lead.parent_name && (
                         <span className="text-xs font-normal text-muted-foreground ms-2">

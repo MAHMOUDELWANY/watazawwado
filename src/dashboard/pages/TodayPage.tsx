@@ -122,7 +122,7 @@ export default function TodayPage() {
       <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border-subtle pb-5">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-serif font-semibold tracking-tight text-foreground">
+            <h1 className="text-2xl font-display font-semibold tracking-tight text-foreground">
               Today
             </h1>
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary/30 text-accent">
@@ -244,7 +244,7 @@ export default function TodayPage() {
           {/* Today Timeline Header */}
           <div className="pt-2">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-serif font-semibold tracking-tight text-foreground">
+              <h2 className="text-lg font-display font-semibold tracking-tight text-foreground">
                 Schedule Timeline
               </h2>
               <span className="text-xs text-muted-foreground">
@@ -257,7 +257,7 @@ export default function TodayPage() {
                 <div className="w-12 h-12 rounded-2xl bg-secondary/30 text-accent flex items-center justify-center mb-3">
                   <CalendarIcon className="w-6 h-6" />
                 </div>
-                <h3 className="text-base font-serif font-semibold mb-1 text-foreground">
+                <h3 className="text-base font-display font-semibold mb-1 text-foreground">
                   Your schedule is clear today
                 </h3>
                 <p className="text-xs text-muted-foreground mb-5 max-w-sm">
@@ -296,7 +296,7 @@ export default function TodayPage() {
                   <div className="p-2 rounded-xl bg-warning/10 text-warning">
                     <Sparkles className="w-4 h-4" />
                   </div>
-                  <h3 className="font-serif font-medium text-sm text-foreground">
+                  <h3 className="font-display font-medium text-sm text-foreground">
                     Free Trial Sessions
                   </h3>
                 </div>
@@ -316,7 +316,7 @@ export default function TodayPage() {
                   <div className="p-2 rounded-xl bg-secondary/30 text-primary">
                     <UserPlus className="w-4 h-4" />
                   </div>
-                  <h3 className="font-serif font-medium text-sm text-foreground">
+                  <h3 className="font-display font-medium text-sm text-foreground">
                     Leads & Inquiries Pipeline
                   </h3>
                 </div>
@@ -395,7 +395,7 @@ function NextLessonSpotlight({
           </div>
 
           <div>
-            <h3 className="text-xl font-serif font-semibold tracking-tight text-foreground truncate">
+            <h3 className="text-xl font-display font-semibold tracking-tight text-foreground truncate">
               {lesson.learner_name || 'Learner name not recorded'}
             </h3>
             {lesson.parent_name && (

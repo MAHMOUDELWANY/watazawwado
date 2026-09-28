@@ -1,3 +1,4 @@
+import { BrandLogo } from '../components/ui/BrandLogo';
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Mail, Lock, Loader2, ShieldCheck, ArrowRight, BookOpen, AlertCircle, ArrowLeft } from 'lucide-react';
@@ -70,11 +71,12 @@ export default function StaffLoginPage() {
         animate={{ opacity: 1, y: 0 }}
         className="max-w-md w-full mx-auto bg-surface border border-border rounded-3xl p-8 sm:p-10 shadow-sm"
       >
-        <div className="text-center mb-8">              <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-white dark:bg-surface-warm border border-border shadow-sm flex items-center justify-center overflow-hidden shrink-0 p-1">                <img src="/logo.jpg" alt="Watazawwado Logo" className="w-full h-full object-contain mix-blend-multiply" />              </div>
+        <div className="text-center mb-8">
+<BrandLogo variant="large" className="mx-auto mb-5" />
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-secondary/30 text-accent mb-3">
             <ShieldCheck className="w-6 h-6" />
           </div>
-          <h1 className="text-2xl font-serif font-bold text-foreground">
+          <h1 className="text-2xl font-display font-bold text-foreground">
             Teaching Staff Portal
           </h1>
           <p className="mt-2 text-xs sm:text-sm text-muted-foreground">

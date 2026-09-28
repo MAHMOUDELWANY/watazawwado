@@ -126,7 +126,7 @@ export const PortraitImage: React.FC<PortraitImageProps> = ({ className = '', pr
           <div>
             <div className="flex items-center gap-1.5 mb-1">
               <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-              <p className="font-serif text-lg font-medium text-white tracking-tight leading-none">
+              <p className="font-display text-lg font-medium text-white tracking-tight leading-none">
                 Ustadh Mahmoud
               </p>
             </div>

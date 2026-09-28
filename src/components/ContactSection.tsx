@@ -72,7 +72,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
           <div className="text-xs uppercase tracking-widest text-primary font-semibold mb-3">
             {isEn ? 'Direct Communication' : ARABIC_TRANSLATIONS.nav.contact}
           </div>
-          <h2 className="font-serif text-3xl sm:text-4xl text-foreground tracking-tight mb-4">
+          <h2 className="font-display text-3xl sm:text-4xl text-foreground tracking-tight mb-4">
             {isEn ? 'Reach Mahmoud directly.' : 'تواصل مع محمود مباشرة.'}
           </h2>
           <p className="text-base text-muted-foreground leading-relaxed">
@@ -95,7 +95,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
                   <MessageCircle className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-serif text-lg font-medium text-foreground">
+                  <h3 className="font-display text-lg font-medium text-foreground">
                     WhatsApp Direct
                   </h3>
                   <p className="text-xs text-primary font-medium">
@@ -125,7 +125,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
             <div className="p-6 rounded-2xl bg-surface border border-border shadow-2xs">
               <div className="flex items-center gap-3 mb-2">
                 <Mail className="w-5 h-5 text-accent" />
-                <h4 className="font-serif text-base font-medium text-foreground">
+                <h4 className="font-display text-base font-medium text-foreground">
                   {isEn ? 'Email Correspondence' : 'المراسلة عبر البريد الإلكتروني'}
                 </h4>
               </div>
@@ -164,7 +164,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
                 <div className="w-14 h-14 rounded-full bg-secondary/30 text-accent flex items-center justify-center mx-auto">
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
-                <h3 className="font-serif text-2xl font-medium text-foreground">
+                <h3 className="font-display text-2xl font-medium text-foreground">
                   {isEn ? 'Message Sent Successfully' : 'تم استلام رسالتك بنجاح'}
                 </h3>
                 <p className="text-sm text-muted-foreground max-w-md mx-auto">
@@ -181,7 +181,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
-                <h3 className="font-serif text-xl font-medium text-foreground mb-2">
+                <h3 className="font-display text-xl font-medium text-foreground mb-2">
                   {isEn ? 'Send an Inquiry' : 'أرسل استفسارك'}
                 </h3>
                 <p className="text-xs text-muted-foreground mb-6">

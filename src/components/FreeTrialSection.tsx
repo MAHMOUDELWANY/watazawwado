@@ -33,7 +33,7 @@ export const FreeTrialSection: React.FC<FreeTrialSectionProps> = ({ lang, onOpen
               {isEn ? 'No-Risk Introduction' : 'جلسة تعارف وتقييم مجانية'}
             </div>
 
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-foreground tracking-tight leading-tight mb-6">
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-foreground tracking-tight leading-tight mb-6">
               {isEn
                 ? 'Experience your first 30-minute lesson free of charge.'
                 : ARABIC_TRANSLATIONS.trial.title}

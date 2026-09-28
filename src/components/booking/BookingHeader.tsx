@@ -118,7 +118,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
           <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground dark:text-muted-foreground block mb-0.5">
             {isEn ? `Step ${step} of ${totalSteps}` : `الخطوة ${step} من ${totalSteps}`}
           </span>
-          <h2 className="font-serif text-2xl sm:text-3xl font-medium text-foreground dark:text-foreground">
+          <h2 className="font-display text-2xl sm:text-3xl font-medium text-foreground dark:text-foreground">
             {currentStepTitle}
           </h2>
         </div>

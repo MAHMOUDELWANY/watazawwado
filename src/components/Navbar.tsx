@@ -1,3 +1,4 @@
+import { BrandLogo } from './ui/BrandLogo';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
@@ -55,10 +56,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           to="/"
           className="group flex items-center gap-3 text-foreground focus:outline-none rounded-md"
         >
-          <img src="/logo.png" alt="Watazawwado Logo" className="w-auto h-8 sm:h-9 object-contain drop-shadow-sm dark:bg-[#EDE7DC] dark:p-1.5 dark:rounded-xl shrink-0 transition-transform group-hover:scale-105" />
+          <BrandLogo variant="compact" />
           
           <div className="flex flex-col">
-            <span className="font-serif text-lg font-semibold tracking-tight text-foreground group-hover:text-primary transition-colors">
+            <span className="font-display text-lg font-semibold tracking-tight text-foreground group-hover:text-primary transition-colors">
               Watazawwado
             </span>
             <span className="text-[10px] text-muted-foreground tracking-wider uppercase">

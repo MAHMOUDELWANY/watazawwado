@@ -90,7 +90,7 @@ export const MultiLessonPlan: React.FC<Props> = ({ catalog, serviceId, duration,
 
   if (phase === 'quantity') return (
     <section className="space-y-3 border-t border-border pt-5" aria-label="Lesson quantity">
-      <h3 className="font-serif text-lg">How many lessons would you like to book?</h3>
+      <h3 className="font-display text-lg">How many lessons would you like to book?</h3>
       <button type="button" aria-pressed={count === 1} onClick={() => onCount(1)} className="rounded-xl border border-border p-3 mr-2">1 lesson — book a single time</button>
       {options.map(row => {
         const details = catalogPriceSummary(single, row)!;
@@ -107,7 +107,7 @@ export const MultiLessonPlan: React.FC<Props> = ({ catalog, serviceId, duration,
   if (phase === 'review') return (
     <section className="space-y-5" aria-label="Multi-lesson review">
       <header className="space-y-1">
-        <h2 className="font-serif text-xl font-medium text-foreground">Review your lessons</h2>
+        <h2 className="font-display text-xl font-medium text-foreground">Review your lessons</h2>
         <p className="text-sm text-muted-foreground">
           {BOOKING_SERVICES.find(s => s.id === serviceId)?.name} · {duration} min · {count} lessons
         </p>
@@ -133,7 +133,7 @@ export const MultiLessonPlan: React.FC<Props> = ({ catalog, serviceId, duration,
       {price && (
         <div className="rounded-2xl border border-border bg-surface-subtle p-4 space-y-1">
           <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Price</p>
-          <p className="font-serif text-2xl font-bold text-foreground">
+          <p className="font-display text-2xl font-bold text-foreground">
             {money(price.total, price.currency)}{' '}
             <span className="font-sans text-sm font-medium text-muted-foreground">total</span>
           </p>
@@ -175,7 +175,7 @@ export const MultiLessonPlan: React.FC<Props> = ({ catalog, serviceId, duration,
   );
 
   return <section className="space-y-4" aria-label="Select lesson times">
-    <h2 className="font-serif text-xl">Choose your period and actual lesson times</h2>
+    <h2 className="font-display text-xl">Choose your period and actual lesson times</h2>
     <p className="text-sm">{count} lessons · {duration} minutes · times in {timezone}</p>
     {price && <p className="text-sm">Regular total: {money(price.regular, price.currency)} · {price.saving > 0 && <>Save {money(price.saving, price.currency)} · </>}Total: {money(price.total, price.currency)} · {money(price.perLesson, price.currency)} / lesson</p>}
     {loading && <p>Checking live availability…</p>}

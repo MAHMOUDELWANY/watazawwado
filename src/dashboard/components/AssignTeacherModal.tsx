@@ -174,7 +174,7 @@ export function AssignTeacherModal({
           <div>
             <div className="flex items-center gap-2">
               <UserCheck className="w-5 h-5 text-accent" />
-              <h2 className="text-lg font-serif font-bold text-foreground">
+              <h2 className="text-lg font-display font-bold text-foreground">
                 Assign / Change Teacher
               </h2>
             </div>
@@ -203,12 +203,12 @@ export function AssignTeacherModal({
           {/* 1. Student Identity Header */}
           <div className="p-4 rounded-xl bg-surface-subtle border border-border-subtle flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-secondary/30 text-accent flex items-center justify-center font-serif font-bold text-sm border border-secondary/50">
+              <div className="w-10 h-10 rounded-full bg-secondary/30 text-accent flex items-center justify-center font-display font-bold text-sm border border-secondary/50">
                 {student.name.charAt(0).toUpperCase()}
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-serif font-bold text-foreground">
+                  <span className="text-sm font-display font-bold text-foreground">
                     {student.name}
                   </span>
                   {student.learner_type === 'child' ? (

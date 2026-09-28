@@ -71,7 +71,7 @@ export default function UpcomingPage() {
       {/* Header */}
       <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border-subtle pb-5">
         <div>
-          <h1 className="text-2xl font-serif font-semibold tracking-tight text-foreground">
+          <h1 className="text-2xl font-display font-semibold tracking-tight text-foreground">
             Upcoming Schedule
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
@@ -144,7 +144,7 @@ export default function UpcomingPage() {
           <div className="w-12 h-12 rounded-2xl bg-secondary/30 text-accent flex items-center justify-center mb-3">
             <CalendarIcon className="w-6 h-6" />
           </div>
-          <h3 className="text-base font-serif font-semibold mb-1 text-foreground">
+          <h3 className="text-base font-display font-semibold mb-1 text-foreground">
             No upcoming lessons scheduled
           </h3>
           <p className="text-xs text-muted-foreground max-w-sm">
@@ -162,7 +162,7 @@ export default function UpcomingPage() {
                 {/* Date Group Header */}
                 <div className="flex items-center justify-between px-1">
                   <div className="flex items-center gap-2">
-                    <h2 className="text-sm font-serif font-semibold tracking-tight text-foreground">
+                    <h2 className="text-sm font-display font-semibold tracking-tight text-foreground">
                       {isTomorrow ? 'Tomorrow' : group.date.toFormat('EEEE, MMMM d, yyyy')}
                     </h2>
                     {isTomorrow && (

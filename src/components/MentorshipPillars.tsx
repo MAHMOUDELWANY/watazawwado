@@ -43,7 +43,7 @@ export const MentorshipPillars: React.FC<MentorshipPillarsProps> = ({ lang }) =>
           <div className="text-xs uppercase tracking-widest text-primary font-semibold mb-3">
             {isEn ? 'The 1-on-1 Difference' : 'فارق التعليم الفردي المباشر'}
           </div>
-          <h2 className="font-serif text-3xl sm:text-4xl text-foreground tracking-tight mb-4">
+          <h2 className="font-display text-3xl sm:text-4xl text-foreground tracking-tight mb-4">
             {isEn
               ? 'One dedicated teacher. Not an anonymous platform.'
               : 'معلم مكرس يعرف صوتك وهدفك. لست مجرد رقم في منصة.'}
@@ -72,7 +72,7 @@ export const MentorshipPillars: React.FC<MentorshipPillarsProps> = ({ lang }) =>
                   <div className="w-11 h-11 rounded-xl bg-secondary/30 border border-secondary/50 flex items-center justify-center text-accent mb-6">
                     <Icon className="w-5 h-5" />
                   </div>
-                  <h3 className="font-serif text-xl font-medium text-foreground mb-3">
+                  <h3 className="font-display text-xl font-medium text-foreground mb-3">
                     {pillar.title}
                   </h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">

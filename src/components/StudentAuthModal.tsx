@@ -1,3 +1,4 @@
+import { BrandLogo } from './ui/BrandLogo';
 import React, { useState, useEffect } from 'react';
 import { Mail, Lock, Loader2, User, X } from 'lucide-react';
 import { useTeacherAuth } from '../lib/auth'; // it's now AuthProvider
@@ -108,8 +109,9 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
         </button>
 
         <div className="p-7 sm:p-8">
-          <div className="text-center mb-8">              <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-white dark:bg-surface-warm border border-border shadow-sm flex items-center justify-center overflow-hidden shrink-0 p-1">                <img src="/logo.jpg" alt="Watazawwado Logo" className="w-full h-full object-contain mix-blend-multiply" />              </div>
-            <h2 id="auth-modal-title" className="text-2xl sm:text-3xl font-serif font-bold text-foreground">
+          <div className="text-center mb-8">
+<BrandLogo variant="large" className="mx-auto mb-5" />
+            <h2 id="auth-modal-title" className="text-2xl sm:text-3xl font-display font-bold text-foreground">
               {view === 'login' ? 'Student Login' : view === 'signup' ? 'Create Account' : view === 'forgot' ? 'Reset Password' : 'Set New Password'}
             </h2>
             <p className="text-muted-foreground mt-2 text-sm">

@@ -91,7 +91,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
       className="relative overflow-x-clip bg-gradient-to-b from-white via-surface-warm to-foreground dark:from-background dark:via-background dark:to-background py-20 lg:py-32 transition-colors border-b border-border/70 dark:border-border"
     >
       {/* Subtle Background Atmosphere */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[450px] bg-primary/12 dark:bg-secondary/20 rounded-full blur-3xl pointer-events-none -z-0" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[450px] bg-secondary/30 dark:bg-secondary/20 rounded-full blur-3xl pointer-events-none -z-0" />
       <div className="absolute bottom-10 right-10 w-[450px] h-[350px] bg-muted-foreground/15 dark:bg-muted-foreground/5 rounded-full blur-3xl pointer-events-none -z-0" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -103,7 +103,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/15 dark:bg-primary/25 border border-secondary/60 text-primary-hover dark:text-primary text-xs font-semibold uppercase tracking-wider mb-4"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary/40 dark:bg-secondary/20 border border-secondary/60 text-accent text-xs font-semibold uppercase tracking-wider mb-4"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>{isEn ? 'Live 1-on-1 Studio Experience' : 'تجربة الاستوديو التعليمي المباشر'}</span>
@@ -114,7 +114,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.55, delay: 0.08 }}
-            className="font-serif text-3xl sm:text-4xl lg:text-5xl text-foreground dark:text-foreground tracking-tight mb-5"
+            className="font-display text-3xl sm:text-4xl lg:text-5xl text-foreground dark:text-foreground tracking-tight mb-5"
           >
             {isEn ? (
               <>
@@ -215,7 +215,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
                   live_makharij_check.azhar
                 </span>
               </div>
-              <span className="flex items-center gap-1 text-[10px] font-mono text-primary bg-primary/15 px-2 py-0.5 rounded-md">
+              <span className="flex items-center gap-1 text-[10px] font-mono text-accent bg-secondary/40 px-2 py-0.5 rounded-md">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                 LIVE
               </span>
@@ -230,7 +230,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
                   <span>[Makhraj Check]</span>
                   <span className="text-[10px] text-white/50">Edge of Tongue</span>
                 </div>
-                <div className="font-serif text-right text-lg text-foreground dir-rtl leading-relaxed font-bold">
+                <div className="font-display text-right text-lg text-foreground dir-rtl leading-relaxed font-bold">
                   غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ
                 </div>
                 <p className="text-[11px] text-white/70 leading-normal font-sans">
@@ -241,7 +241,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
               </div>
 
               {/* Teacher Verbal Feedback Transcript */}
-              <div className="p-2.5 rounded-lg bg-primary/15 border border-primary/25 text-[11px] font-sans">
+              <div className="p-2.5 rounded-lg bg-secondary/40 border border-secondary/60 text-[11px] font-sans">
                 <div className="text-primary font-semibold text-[10px] uppercase tracking-wider mb-1 flex items-center gap-1.5">
                   <Mic className="w-3 h-3 text-primary" />
                   <span>{isEn ? "Ustadh Mahmoud's Audio Note" : "ملاحظة صوتية من الأستاذ محمود"}</span>
@@ -370,7 +370,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
 
               {/* Status Pill */}
               <div className="flex items-center gap-2">
-                <span className="flex items-center gap-1.5 text-[11px] font-medium text-primary-hover dark:text-primary bg-primary/15 px-2.5 py-1 rounded-full border border-secondary/60">
+                <span className="flex items-center gap-1.5 text-[11px] font-medium text-accent bg-primary/15 px-2.5 py-1 rounded-full border border-secondary/60">
                   <span className="w-2 h-2 rounded-full bg-primary animate-ping" />
                   <span>{isEn ? 'Cairo ↔ Global Connected' : 'اتصال مباشر عالي الدقة'}</span>
                 </span>
@@ -404,7 +404,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
                           </div>
                           <button
                             onClick={() => setIsPlayingAudio(!isPlayingAudio)}
-                            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-primary/15 hover:bg-primary/25 text-primary-hover dark:text-primary text-[11px] font-medium transition-colors cursor-pointer"
+                            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-primary/15 hover:bg-primary/25 text-accent text-[11px] font-medium transition-colors cursor-pointer"
                           >
                             {isPlayingAudio ? (
                               <>
@@ -421,12 +421,12 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
                         </div>
 
                         {/* Bismillah Banner */}
-                        <div className="text-center font-serif text-lg text-primary dark:text-primary mb-4 dir-rtl font-semibold">
+                        <div className="text-center font-display text-lg text-primary dark:text-primary mb-4 dir-rtl font-semibold">
                           بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
                         </div>
 
                         {/* Quran Text with Authentic Tajweed Colors */}
-                        <div className="font-serif text-xl sm:text-2xl text-right leading-[2.2] sm:leading-[2.4] text-foreground dark:text-foreground dir-rtl selection:bg-primary/30">
+                        <div className="font-display text-xl sm:text-2xl text-right leading-[2.2] sm:leading-[2.4] text-foreground dark:text-foreground dir-rtl selection:bg-primary/30">
                           <span
                             onClick={() => setSelectedWord('كٓهيعٓصٓ')}
                             className={`px-1 rounded transition-colors cursor-pointer ${
@@ -512,7 +512,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
                             <div className="text-xs text-primary font-semibold mb-1">
                               {isEn ? 'Teacher (Mahmoud):' : 'المعلم (أستاذ محمود):'}
                             </div>
-                            <div className="font-serif text-lg text-right dir-rtl text-foreground dark:text-foreground">
+                            <div className="font-display text-lg text-right dir-rtl text-foreground dark:text-foreground">
                               «مَا هُوَ هَدَفُكَ الرَّئِيسِيُّ مِنْ تَعَلُّمِ اللُّغَةِ الْعَرَبِيَّةِ؟»
                             </div>
                             <div className="text-[11px] text-muted-foreground dark:text-muted-foreground mt-1">
@@ -521,10 +521,10 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
                           </div>
 
                           <div className="p-3 rounded-xl bg-secondary/30 border border-primary/25">
-                            <div className="text-xs text-primary-hover dark:text-primary font-semibold mb-1">
+                            <div className="text-xs text-accent font-semibold mb-1">
                               {isEn ? 'Student Response & Correction:' : 'إجابة الطالب والتحليل النحوي:'}
                             </div>
-                            <div className="font-serif text-lg text-right dir-rtl text-foreground dark:text-foreground">
+                            <div className="font-display text-lg text-right dir-rtl text-foreground dark:text-foreground">
                               «أُرِيدُ أَنْ <span className="text-primary font-bold">أَفْهَمَ</span> الْقُرْآنَ بِدُونِ تَرْجَمَةٍ.»
                             </div>
                             <div className="text-[11px] text-muted-foreground dark:text-muted-foreground mt-1">
@@ -566,7 +566,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
                             <span className="font-medium text-[11px]">
                               {isEn ? 'Lesson Notes & Reflections PDF' : 'ملخص الجلسة وملف الملاحظات'}
                             </span>
-                            <span className="text-[10px] text-primary bg-primary/15 px-2 py-0.5 rounded">
+                            <span className="text-[10px] text-accent bg-secondary/40 px-2 py-0.5 rounded">
                               Auto-Saved ✓
                             </span>
                           </div>
@@ -743,7 +743,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
           <div className="text-xs uppercase tracking-widest text-primary dark:text-primary font-semibold mb-3">
             {isEn ? 'Direct Teacher-to-Student Relationship' : 'علاقة مباشرة بين المعلم والطالب'}
           </div>
-          <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl text-foreground dark:text-foreground tracking-tight mb-4">
+          <h3 className="font-display text-2xl sm:text-3xl lg:text-4xl text-foreground dark:text-foreground tracking-tight mb-4">
             {isEn
               ? 'No middleman marketplaces. No generic pre-recorded videos.'
               : 'دون منصات وسيطة ودون تسجيلات جاهزة لا تلبي احتياجك.'}
@@ -756,7 +756,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left sm:text-center max-w-2xl mx-auto">
             <div className="p-4 rounded-xl bg-white dark:bg-surface-subtle border border-border dark:border-border">
-              <div className="font-serif text-xl font-bold text-primary dark:text-primary mb-1">
+              <div className="font-display text-xl font-bold text-primary dark:text-primary mb-1">
                 {isEn ? '30–60 Min' : '٣٠–٦٠ دقيقة'}
               </div>
               <div className="text-xs text-muted-foreground dark:text-muted-foreground">
@@ -765,7 +765,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
             </div>
 
             <div className="p-4 rounded-xl bg-white dark:bg-surface-subtle border border-border dark:border-border">
-              <div className="font-serif text-xl font-bold text-primary dark:text-primary mb-1">
+              <div className="font-display text-xl font-bold text-primary dark:text-primary mb-1">
                 {isEn ? 'One Free Trial' : 'جلسة مجانية أولى'}
               </div>
               <div className="text-xs text-muted-foreground dark:text-muted-foreground">
@@ -774,7 +774,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
             </div>
 
             <div className="p-4 rounded-xl bg-white dark:bg-surface-subtle border border-border dark:border-border">
-              <div className="font-serif text-xl font-bold text-primary dark:text-primary mb-1">
+              <div className="font-display text-xl font-bold text-primary dark:text-primary mb-1">
                 {isEn ? '3h Cancel Policy' : 'إلغاء قبل ٣ ساعات'}
               </div>
               <div className="text-xs text-muted-foreground dark:text-muted-foreground">

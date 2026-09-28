@@ -190,12 +190,12 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 sm:mb-16">
           <div className="max-w-2xl">
             {/* Index Tag */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/15 dark:bg-primary/25 border border-secondary/60 text-primary-hover dark:text-primary text-xs font-semibold tracking-wide mb-4">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary/40 dark:bg-secondary/20 border border-secondary/60 text-accent dark:text-accent text-xs font-semibold tracking-wide mb-4">
               <span className="font-mono text-[11px] font-bold">02</span>
               <span>{isEn ? 'Your Choice of Discipline' : 'اختيارك الشخصي'}</span>
             </div>
 
-            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-foreground dark:text-foreground tracking-tight mb-4">
+            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-foreground dark:text-foreground tracking-tight mb-4">
               {isEn ? (
                 <>
                   Choose the subject you need.{' '}
@@ -248,7 +248,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
                     {pillar.badge}
                   </div>
 
-                  <h3 className="font-serif text-2xl font-bold text-foreground dark:text-foreground mb-2">
+                  <h3 className="font-display text-2xl font-bold text-foreground dark:text-foreground mb-2">
                     {pillar.title}
                   </h3>
 
@@ -281,11 +281,11 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
         {/* ========================================================================= */}
         <motion.div
           layout
-          className="rounded-2xl sm:rounded-3xl bg-primary text-white p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg shadow-primary/20 mb-8"
+          className="rounded-2xl sm:rounded-3xl bg-surface-warm dark:bg-surface-subtle text-foreground border border-border p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg shadow-sm mb-8"
         >
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <span className="w-2.5 h-2.5 rounded-full bg-white animate-pulse" />
-            <span className="font-serif text-lg sm:text-xl font-semibold">
+            <span className="font-display text-lg sm:text-xl font-semibold">
               {currentPillarData.title}
             </span>
             <span className="hidden sm:inline text-white/70">→</span>

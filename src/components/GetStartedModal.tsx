@@ -88,7 +88,7 @@ const handleOpenSignup = () => {
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-secondary/30 text-accent mb-3">
               <GraduationCap className="w-6 h-6" />
             </div>
-            <h2 id="get-started-title" className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-foreground">
+            <h2 id="get-started-title" className="text-2xl sm:text-3xl font-display font-bold tracking-tight text-foreground">
               {isAr ? 'ابدأ رحلتك التعليمية' : 'Begin Your Learning Journey'}
             </h2>
             <p className="mt-2 text-sm text-muted-foreground leading-relaxed">

@@ -1,6 +1,7 @@
+import { BrandLogo } from '../components/ui/BrandLogo';
 import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
-import {
+{
   BookOpen,
   LogOut,
   User,
@@ -19,13 +20,13 @@ import {
   CheckCircle2,
   ChevronRight,
   HelpCircle,
-  ExternalLink
+import   ExternalLink
 } from 'lucide-react';
 import { useTeacherAuth } from '../lib/auth';
 import { useTheme } from '../components/ThemeProvider';
 import { ErrorBoundary } from '../components/ErrorBoundary';
-
-import StudentHomePage from './pages/StudentHomePage';
+import 
+StudentHomePage from './pages/StudentHomePage';
 import StudentProfilePage from './pages/StudentProfilePage';
 import StudentOnboardingPage from './pages/StudentOnboardingPage';
 import StudentBookingPage from './pages/StudentBookingPage';
@@ -36,10 +37,10 @@ import StudentNotificationsPage from './pages/StudentNotificationsPage';
 import StudentOffersPage from './pages/StudentOffersPage';
 import IntakeConversation from '../components/intake/IntakeConversation';
 import { StudentAuthModal } from '../components/StudentAuthModal';
-import {
+{
   buildStudentNotifications,
   countUnread,
-  getSavedNotificationReadIds
+import   getSavedNotificationReadIds
 } from './notificationsPresentation';
 
 export default function StudentApp() {
@@ -216,10 +217,10 @@ export default function StudentApp() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-6 text-foreground">
         <div className="max-w-md w-full bg-surface border border-border rounded-3xl p-8 sm:p-10 shadow-xs text-center">
-          <div className="w-14 h-14 rounded-2xl bg-secondary/30 text-accent flex items-center justify-center mx-auto mb-5 font-serif font-bold text-xl">
+          <div className="w-14 h-14 rounded-2xl bg-secondary/30 text-accent flex items-center justify-center mx-auto mb-5 font-display font-bold text-xl">
             و
           </div>
-          <h1 className="text-2xl font-serif font-bold mb-2 tracking-tight">
+          <h1 className="text-2xl font-display font-bold mb-2 tracking-tight">
             {isAr ? 'بوابة الطالب — وتزودوا' : 'Student Portal Access'}
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground mb-6 leading-relaxed">
@@ -423,9 +424,9 @@ export default function StudentApp() {
             to="/student" 
             className="flex items-center gap-2.5 text-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg p-1"
           >
-            <img src="/logo.png" alt="Watazawwado Logo" className="w-auto h-8 sm:h-9 object-contain drop-shadow-sm dark:bg-[#EDE7DC] dark:p-1.5 dark:rounded-xl shrink-0 transition-transform group-hover:scale-105" />
+            <BrandLogo variant="compact" />
             <div className="flex flex-col text-start">
-              <span className="font-serif font-bold text-base tracking-tight leading-none text-foreground">
+              <span className="font-display font-bold text-base tracking-tight leading-none text-foreground">
                 Watazawwado
               </span>
               <span className="text-[10px] text-muted-foreground tracking-wider uppercase mt-0.5">
@@ -589,7 +590,7 @@ export default function StudentApp() {
             </button>
 
             <div className="flex flex-col text-start min-w-0">
-              <h2 className="text-base sm:text-lg font-serif font-bold text-foreground leading-tight truncate">
+              <h2 className="text-base sm:text-lg font-display font-bold text-foreground leading-tight truncate">
                 {currentHeader.title}
               </h2>
               <span className="text-[11px] text-muted-foreground hidden sm:inline-block truncate">
