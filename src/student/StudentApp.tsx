@@ -12,13 +12,13 @@ import {  BookOpen,
   Calendar,
   Plus,
   ArrowRight,
-  Moon,
-  Sun,
+
+
   Bell,
   ChevronRight,
 } from 'lucide-react';
 import { useTeacherAuth } from '../lib/auth';
-import { useTheme } from '../components/ThemeProvider';
+
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import 
 StudentHomePage from './pages/StudentHomePage';
@@ -39,7 +39,7 @@ import {  buildStudentNotifications,
 
 export default function StudentApp() {
   const { user, session, isTeacherAuthenticated, userRole, signOut } = useTeacherAuth();
-  const { theme, toggleTheme } = useTheme();
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const [loadingProfile, setLoadingProfile] = useState<boolean>(true);

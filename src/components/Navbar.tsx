@@ -3,7 +3,7 @@ import { ThemeToggle } from './ui/ThemeToggle';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { Menu, X, Sun, Moon, Globe, Sparkles } from 'lucide-react';
+import { Menu, X, Globe, Sparkles } from 'lucide-react';
 import { Language, ThemeMode } from '../types';
 import { ARABIC_TRANSLATIONS } from '../data/content';
 
@@ -19,8 +19,6 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({
   lang,
   onToggleLang,
-  theme,
-  onToggleTheme,
   onOpenTrialModal,
   onOpenManageModal
 }) => {
