@@ -644,7 +644,7 @@ export default function StudentApp() {
                 key={item.path}
                 to={item.path}
                 id={isBook ? 'nav-book-link' : item.path === '/student/account' ? 'nav-account-link' : undefined}
-                className={elative flex flex-col items-center justify-center py-2 px-1 text-[10px] sm:text-xs min-h-[64px] transition-all group flex-1`}
+                className={`relative flex flex-col items-center justify-center py-2 px-1 text-[10px] sm:text-xs min-h-[64px] transition-all group flex-1`}
               >
                 {isBook ? (
                   <div className={`relative flex items-center justify-center w-12 h-9 rounded-[14px] shadow-sm transition-transform active:scale-95 mb-1 group-hover:bg-primary-hover ${
