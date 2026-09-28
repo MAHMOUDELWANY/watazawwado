@@ -23,7 +23,8 @@ import { useTeacherAuth } from '../../lib/auth';
 import { findLastEligibleBooking, formatLastBookingSummary } from './StudentBookingPage';
 import { Badge } from '../../components/ui/Badge';
 import { BrandLogo } from '../../components/ui/BrandLogo';
-import { OnboardingGuide, OnboardingStep } from '../../components/ui/OnboardingGuide';
+import { OnboardingGuide } from '../../components/ui/OnboardingGuide';
+import type { OnboardingStep } from '../../components/ui/OnboardingGuide';
 import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal';
 import { getBookingPaymentSummary } from '../../lib/paymentStatus';
 

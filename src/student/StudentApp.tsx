@@ -20,8 +20,7 @@ import {  BookOpen,
 import { useTeacherAuth } from '../lib/auth';
 
 import { ErrorBoundary } from '../components/ErrorBoundary';
-import 
-StudentHomePage from './pages/StudentHomePage';
+import StudentHomePage from './pages/StudentHomePage';
 import StudentProfilePage from './pages/StudentProfilePage';
 import StudentOnboardingPage from './pages/StudentOnboardingPage';
 import StudentBookingPage from './pages/StudentBookingPage';
