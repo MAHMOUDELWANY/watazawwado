@@ -59,7 +59,7 @@ export function PublicHomepage({ lang, onOpenTrialModal }: PublicHomepageProps) 
             </div>
           </div>
           
-          <div className="lg:col-span-5 relative hidden sm:block animate-fade-in-up" style={{ animationDelay: '150ms' }}>
+          <div className="lg:col-span-5 relative animate-fade-in-up mt-8 lg:mt-0" style={{ animationDelay: '150ms' }}>
             <div className="absolute -inset-4 bg-surface-warm/50 rounded-2xl -z-10 transform rotate-3" />
             <PortraitFrame src="/ustadh-mahmoud.jpg" alt="Ustadh Mahmoud" maxWidth={500} className="mx-auto" />
             <div className="absolute -bottom-6 -left-6 rtl:-left-auto rtl:-right-6 bg-surface p-4 rounded-lg shadow-sm border border-border-subtle max-w-[200px]">
@@ -73,7 +73,7 @@ export function PublicHomepage({ lang, onOpenTrialModal }: PublicHomepageProps) 
       </PublicSection>
 
       {/* 2. WHAT CAN I LEARN? */}
-      <PublicSection variant="transition-warm">
+      <PublicSection id="services" variant="transition-warm">
         <EditorialHeading eyebrow={isEn ? 'Areas of Study' : 'مسارات التعلم'} className="text-center lg:text-start">
           {isEn ? 'What do you want to learn?' : 'ماذا تريد أن تتعلم؟'}
         </EditorialHeading>
@@ -155,7 +155,7 @@ export function PublicHomepage({ lang, onOpenTrialModal }: PublicHomepageProps) 
       </PublicSection>
 
       {/* 4. HOW IT WORKS */}
-      <PublicSection variant="transition-neutral">
+      <PublicSection id="approach" variant="transition-neutral">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div>
             <EditorialHeading eyebrow={isEn ? 'The Journey' : 'رحلة التعلم'}>
@@ -204,7 +204,7 @@ export function PublicHomepage({ lang, onOpenTrialModal }: PublicHomepageProps) 
       </PublicSection>
 
       {/* 5. MEET USTADH MAHMOUD */}
-      <PublicSection>
+      <PublicSection id="about">
         <div className="max-w-5xl mx-auto">
           <div className="grid md:grid-cols-12 gap-10 items-start">
             <div className="md:col-span-4">
@@ -248,7 +248,7 @@ export function PublicHomepage({ lang, onOpenTrialModal }: PublicHomepageProps) 
       </PublicSection>
 
       {/* 6. WHAT STUDENTS SAY */}
-      <PublicSection variant="warm">
+      <PublicSection id="testimonials" variant="warm">
         <EditorialHeading className="text-center mb-16">
           {isEn ? 'What students say' : 'آراء الطلاب'}
         </EditorialHeading>
@@ -284,7 +284,7 @@ export function PublicHomepage({ lang, onOpenTrialModal }: PublicHomepageProps) 
       </PublicSection>
 
       {/* 8. FAQ & FINAL CTA */}
-      <PublicSection variant="transition-warm" className="border-t border-border-subtle">
+      <PublicSection id="contact" variant="transition-warm" className="border-t border-border-subtle">
         <div className="grid lg:grid-cols-12 gap-16">
           <div className="lg:col-span-5 space-y-6">
             <EditorialHeading noAccent>
