@@ -96,7 +96,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
     <div className="space-y-6">
       {/* Mode Choice (Free Trial vs Regular) */}
       <div>
-        <label className="block text-xs font-semibold uppercase tracking-wider text-[#362E3B]/70 dark:text-[#D5D0CA]/70 mb-2.5">
+        <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/70 dark:text-border/70 mb-2.5">
           {isEn ? 'Choose Your Booking Type' : 'نوع الحجز المطلوب'}
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -113,10 +113,10 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
             }}
             className={`p-4 sm:p-5 rounded-2xl border text-start transition-all relative ${
               trialDisabled
-                ? 'opacity-60 cursor-not-allowed bg-gray-50 dark:bg-[#1E1923]/60 border-[#D5D0CA] dark:border-[#3E3545]'
+                ? 'opacity-60 cursor-not-allowed bg-gray-50 dark:bg-background/60 border-border dark:border-border'
                 : mode === 'trial'
-                ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-primary ring-2 ring-primary/30 shadow-xs cursor-pointer'
-                : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] hover:bg-[#F5E6D3]/40 cursor-pointer'
+                ? 'bg-foreground dark:bg-[#29232F] border-primary ring-2 ring-primary/30 shadow-xs cursor-pointer'
+                : 'bg-white dark:bg-[#231D28] border-border dark:border-border hover:bg-foreground/40 cursor-pointer'
             }`}
           >
             <div className="flex items-start justify-between gap-3 mb-2">
@@ -125,7 +125,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                   <Gift className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="font-serif text-base font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+                  <h4 className="font-serif text-base font-medium text-foreground dark:text-foreground">
                     {isEn ? 'Free Trial Session' : 'جلسة تجريبية مجانية'}
                   </h4>
                   <span className={`text-xs font-semibold ${trialDisabled ? 'text-gray-500 dark:text-gray-400' : 'text-primary'}`}>
@@ -139,20 +139,20 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                 className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-colors ${
                   mode === 'trial' && !trialDisabled
                     ? 'bg-primary text-white'
-                    : 'border border-[#D5D0CA] dark:border-[#3E3545]'
+                    : 'border border-border dark:border-border'
                 }`}
               >
                 {mode === 'trial' && !trialDisabled && <Check className="w-3.5 h-3.5" />}
               </div>
             </div>
 
-            <p className="text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]/80 leading-relaxed mb-3">
+            <p className="text-xs text-foreground/70 dark:text-border/80 leading-relaxed mb-3">
               {isEn
                 ? 'A 30-minute introductory meeting to get to know each other, evaluate current ability, experience Mahmoud’s teaching style, and receive an honest learning plan.'
                 : 'لقاء تعريفي مدته ٣٠ دقيقة للتعارف وتقييم المستوى وتجربة أسلوب الشرح والحصول على خطة تعليمية مقترحة.'}
             </p>
 
-            <div className="text-[11px] text-[#6B5B73] dark:text-[#B8A9C9] font-medium">
+            <div className="text-[11px] text-muted-foreground dark:text-muted-foreground font-medium">
               {trialDisabled
                 ? (trialDisabledReason || (isEn ? '• One free trial per student (already used)' : '• جلسة تجريبية واحدة لكل طالب (تم حجزها)'))
                 : (isEn ? '• One free trial per new student' : '• جلسة تجريبية واحدة لكل طالب جديد')}
@@ -166,20 +166,20 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
             onClick={() => onChangeMode('regular')}
             className={`p-4 sm:p-5 rounded-2xl border text-start transition-all cursor-pointer relative ${
               mode === 'regular'
-                ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-[#6B5B73] ring-2 ring-[#6B5B73]/30 shadow-xs'
-                : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] hover:bg-[#F5E6D3]/40'
+                ? 'bg-foreground dark:bg-[#29232F] border-muted-foreground ring-2 ring-muted-foreground/30 shadow-xs'
+                : 'bg-white dark:bg-[#231D28] border-border dark:border-border hover:bg-foreground/40'
             }`}
           >
             <div className="flex items-start justify-between gap-3 mb-2">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-xl bg-[#6B5B73]/15 text-[#6B5B73] dark:text-[#B8A9C9]">
+                <div className="p-2 rounded-xl bg-muted-foreground/15 text-muted-foreground dark:text-muted-foreground">
                   <CalendarCheck className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="font-serif text-base font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+                  <h4 className="font-serif text-base font-medium text-foreground dark:text-foreground">
                     {isEn ? 'Regular 1-on-1 Lesson' : 'درس فردي منتظم'}
                   </h4>
-                  <span className="text-xs font-semibold text-[#6B5B73] dark:text-[#B8A9C9]">
+                  <span className="text-xs font-semibold text-muted-foreground dark:text-muted-foreground">
                     {hasActiveCredits
                       ? (isEn ? 'Prepaid Credits Available • $0 today' : 'رصيد باقة متاح • ٠.٠٠$ اليوم')
                       : (isEn
@@ -191,15 +191,15 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               <div
                 className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-colors ${
                   mode === 'regular'
-                    ? 'bg-[#6B5B73] text-white'
-                    : 'border border-[#D5D0CA] dark:border-[#3E3545]'
+                    ? 'bg-muted-foreground text-white'
+                    : 'border border-border dark:border-border'
                 }`}
               >
                 {mode === 'regular' && <Check className="w-3.5 h-3.5" />}
               </div>
             </div>
 
-            <p className="text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]/80 leading-relaxed mb-3">
+            <p className="text-xs text-foreground/70 dark:text-border/80 leading-relaxed mb-3">
               {isEn
                 ? 'Dedicated curriculum lesson for continuing students or those who wish to start scheduled instruction right away. Simple pay-per-lesson or monthly continuity.'
                 : 'درس منهجي متكامل للطلاب الراغبين في بدء الخطة المباشرة. دفع بالدرس أو باقات شهرية ميسرة.'}
@@ -217,10 +217,10 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
       {/* Lesson Duration Selection */}
       <div className="space-y-3 pt-2">
         <div className="flex items-center justify-between">
-          <label className="block text-xs font-semibold uppercase tracking-wider text-[#362E3B]/70 dark:text-[#D5D0CA]/70">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/70 dark:text-border/70">
             {isEn ? 'Select Preferred Lesson Duration' : 'اختر مدة الدرس المناسبة'}
           </label>
-          <span className="text-xs text-[#362E3B]/60 dark:text-[#D5D0CA]/60 flex items-center gap-1">
+          <span className="text-xs text-foreground/60 dark:text-border/60 flex items-center gap-1">
             <Clock className="w-3.5 h-3.5 text-primary" />
             {mode === 'trial'
               ? isEn ? 'Trial standard: 30 min (up to 45 min max)' : 'المدة للتجربة: ٣٠ دقيقة (بحد أقصى ٤٥ دقيقة)'
@@ -250,20 +250,20 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                   isDisabled
                     ? 'opacity-40 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent'
                     : isSelected
-                    ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-primary ring-1 ring-primary shadow-xs'
-                    : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] hover:bg-[#F5E6D3]/30'
+                    ? 'bg-foreground dark:bg-[#29232F] border-primary ring-1 ring-primary shadow-xs'
+                    : 'bg-white dark:bg-[#231D28] border-border dark:border-border hover:bg-foreground/30'
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="font-serif text-base font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+                    <span className="font-serif text-base font-medium text-foreground dark:text-foreground">
                       {isEn ? d.label : d.arabicLabel}
                     </span>
-                    <span className={`text-xs font-semibold ${mode === 'trial' || packageEntitlementId ? 'text-primary' : 'text-[#6B5B73] dark:text-[#B8A9C9]'}`}>
+                    <span className={`text-xs font-semibold ${mode === 'trial' || packageEntitlementId ? 'text-primary' : 'text-muted-foreground dark:text-muted-foreground'}`}>
                       {displayPrice}
                     </span>
                   </div>
-                  <p className="text-[11px] text-[#362E3B]/65 dark:text-[#D5D0CA]/70 leading-relaxed">
+                  <p className="text-[11px] text-foreground/65 dark:text-border/70 leading-relaxed">
                     {isEn ? d.note : d.arabicNote}
                   </p>
                 </div>
@@ -281,8 +281,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
 
       {/* Package Entitlement Credit Redemption (When Active Entitlements Exist) */}
       {mode === 'regular' && hasActiveCredits && (
-        <div className="pt-4 border-t border-[#D5D0CA] dark:border-[#3E3545] space-y-3">
-          <label className="block text-xs font-semibold uppercase tracking-wider text-[#362E3B]/70 dark:text-[#D5D0CA]/70">
+        <div className="pt-4 border-t border-border dark:border-border space-y-3">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/70 dark:text-border/70">
             {isEn ? 'Use an existing lesson credit' : 'استخدم رصيد درس موجود'}
           </label>
 
@@ -302,8 +302,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                   }}
                   className={`p-4 sm:p-5 rounded-2xl border text-start transition-all cursor-pointer relative ${
                     isSelected
-                      ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-primary ring-2 ring-primary/30 shadow-xs'
-                      : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] hover:bg-[#F5E6D3]/30'
+                      ? 'bg-foreground dark:bg-[#29232F] border-primary ring-2 ring-primary/30 shadow-xs'
+                      : 'bg-white dark:bg-[#231D28] border-border dark:border-border hover:bg-foreground/30'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3 mb-1.5">
@@ -313,7 +313,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h4 className="font-serif text-base font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+                          <h4 className="font-serif text-base font-medium text-foreground dark:text-foreground">
                             {isEn ? 'Existing lesson credit' : 'رصيد درس موجود'}
                           </h4>
                           <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-primary/15 text-primary">
@@ -330,14 +330,14 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                       className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-colors ${
                         isSelected
                           ? 'bg-primary text-white'
-                          : 'border border-[#D5D0CA] dark:border-[#3E3545]'
+                          : 'border border-border dark:border-border'
                       }`}
                     >
                       {isSelected && <Check className="w-3.5 h-3.5" />}
                     </div>
                   </div>
 
-                  <p className="text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]/80 mt-2 leading-relaxed">
+                  <p className="text-xs text-foreground/70 dark:text-border/80 mt-2 leading-relaxed">
                     {isEn
                       ? 'This lesson will be linked to your prepaid package. No payment is required today. One credit will be deducted only after your lesson is completed.'
                       : 'سيتم ربط هذا الدرس بباقاتك مسبقة الدفع دون الحاجة لأي دفع اليوم، وسيتم خصم الرصيد فقط بعد إتمام الدرس مع الأستاذ.'}
@@ -356,23 +356,23 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               }}
               className={`p-4 rounded-xl border text-start transition-all cursor-pointer ${
                 !packageEntitlementId
-                  ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-[#6B5B73] ring-2 ring-[#6B5B73]/30 shadow-xs'
-                  : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] opacity-75'
+                  ? 'bg-foreground dark:bg-[#29232F] border-muted-foreground ring-2 ring-muted-foreground/30 shadow-xs'
+                  : 'bg-white dark:bg-[#231D28] border-border dark:border-border opacity-75'
               }`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <h4 className="font-serif font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+                  <h4 className="font-serif font-medium text-foreground dark:text-foreground">
                     {isEn ? 'Pay for this single lesson' : 'دفع مباشر لهذا الدرس بشكل مستقل'}
                   </h4>
-                  <p className="text-xs text-[#362E3B]/65 dark:text-[#D5D0CA]/70 mt-1">
+                  <p className="text-xs text-foreground/65 dark:text-border/70 mt-1">
                     {isEn
                       ? `Standard standalone booking for one session ($${calculateLessonFee(serviceId, duration, false)} USD).`
                       : `حجز مستقل لدرس واحد ($${calculateLessonFee(serviceId, duration, false)} دولار أمريكي).`}
                   </p>
                 </div>
                 <div className="text-end">
-                  <span className="font-medium text-[#6B5B73] dark:text-[#B8A9C9]">
+                  <span className="font-medium text-muted-foreground dark:text-muted-foreground">
                     ${calculateLessonFee(serviceId, duration, false)}
                   </span>
                 </div>
@@ -384,8 +384,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
 
       {/* Package Catalog Selection (When No Active Entitlements Exist) */}
       {!hidePackagePurchase && !hasActiveCredits && !loadingPackages && packages.length > 0 && mode === 'regular' && (
-        <div className="pt-4 border-t border-[#D5D0CA] dark:border-[#3E3545]">
-          <label className="block text-xs font-semibold uppercase tracking-wider text-[#362E3B]/70 dark:text-[#D5D0CA]/70 mb-2.5">
+        <div className="pt-4 border-t border-border dark:border-border">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/70 dark:text-border/70 mb-2.5">
             {isEn ? 'Purchase Option (Optional)' : 'خيار الشراء (اختياري)'}
           </label>
           <div className="grid grid-cols-1 gap-3">
@@ -395,14 +395,14 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               onClick={() => onSelectPackage?.(undefined)}
               className={`p-4 rounded-xl border text-start transition-all cursor-pointer ${
                 !selectedPackageId
-                  ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-primary ring-2 ring-primary/30'
-                  : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] opacity-75'
+                  ? 'bg-foreground dark:bg-[#29232F] border-primary ring-2 ring-primary/30'
+                  : 'bg-white dark:bg-[#231D28] border-border dark:border-border opacity-75'
               }`}
             >
-              <h4 className="font-serif font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+              <h4 className="font-serif font-medium text-foreground dark:text-foreground">
                 {isEn ? 'Single Lesson (Pay as you go)' : 'درس واحد (دفع عند الحجز)'}
               </h4>
-              <p className="text-xs text-[#362E3B]/65 dark:text-[#D5D0CA]/70 mt-1">
+              <p className="text-xs text-foreground/65 dark:text-border/70 mt-1">
                 {isEn ? 'Standard booking for one session.' : 'حجز قياسي لجلسة واحدة.'}
               </p>
             </motion.div>
@@ -417,16 +417,16 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                   onClick={() => onSelectPackage?.(pkg.id)}
                   className={`p-4 rounded-xl border text-start transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-primary ring-2 ring-primary/30'
-                      : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] opacity-75'
+                      ? 'bg-foreground dark:bg-[#29232F] border-primary ring-2 ring-primary/30'
+                      : 'bg-white dark:bg-[#231D28] border-border dark:border-border opacity-75'
                   }`}
                 >
                   <div className="flex justify-between items-start">
                     <div>
-                      <h4 className="font-serif font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+                      <h4 className="font-serif font-medium text-foreground dark:text-foreground">
                         {pkg.name}
                       </h4>
-                      <p className="text-xs text-[#362E3B]/65 dark:text-[#D5D0CA]/70 mt-1">
+                      <p className="text-xs text-foreground/65 dark:text-border/70 mt-1">
                         {isEn
                           ? `${pkg.lesson_count} lessons • Prepaid ${pkg.package_type} package`
                           : `${pkg.lesson_count} دروس • باقة ${pkg.package_type} مدفوعة مسبقاً`}
@@ -444,7 +444,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
       )}
 
       {/* Manual Request for Sessions > 60 min note */}
-      <div className="p-3.5 rounded-xl bg-white dark:bg-[#231D28] border border-[#D5D0CA] dark:border-[#3E3545] text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]/70 flex items-start gap-2.5">
+      <div className="p-3.5 rounded-xl bg-white dark:bg-[#231D28] border border-border dark:border-border text-xs text-foreground/70 dark:text-border/70 flex items-start gap-2.5">
         <HelpCircle className="w-4 h-4 text-primary shrink-0 mt-0.5" />
         <div className="leading-relaxed">
           <span>
@@ -456,7 +456,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
             href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I would like to request an extended lesson session (longer than 60 minutes).')}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[#6B5B73] dark:text-[#B8A9C9] font-medium underline hover:text-primary"
+            className="text-muted-foreground dark:text-muted-foreground font-medium underline hover:text-primary"
           >
             {isEn ? 'request an extended session directly with Mahmoud' : 'مراسلة محمود مباشرة لترتيبها'}
           </a>
@@ -465,13 +465,13 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
       </div>
 
       {/* Controls */}
-      <div className="pt-4 border-t border-[#D5D0CA] dark:border-[#3E3545] flex items-center justify-between gap-4">
+      <div className="pt-4 border-t border-border dark:border-border flex items-center justify-between gap-4">
         <motion.button
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
           onClick={onBack}
           type="button"
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium text-[#362E3B]/80 dark:text-[#D5D0CA]/80 hover:bg-[#EDE3D4] dark:hover:bg-[#29232F] transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium text-foreground/80 dark:text-border/80 hover:bg-[#EDE3D4] dark:hover:bg-[#29232F] transition-colors cursor-pointer"
         >
           <ArrowLeft className={`w-3.5 h-3.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
           <span>{isEn ? 'Back to Student Details' : 'الرجوع للبيانات'}</span>
@@ -481,7 +481,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
           whileHover={{ scale: 1.03, y: -1 }}
           whileTap={{ scale: 0.97 }}
           onClick={onNext}
-          className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-[#6B5B73] hover:bg-[#584960] text-white text-sm font-medium shadow-xs transition-all cursor-pointer"
+          className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-muted-foreground hover:bg-[#584960] text-white text-sm font-medium shadow-xs transition-all cursor-pointer"
         >
           <span>{isEn ? 'Next: Pick Date & Time' : 'التالي: اختيار التاريخ والوقت'}</span>
           <ArrowRight className={`w-4 h-4 ${lang === 'ar' ? 'rotate-180' : ''}`} />

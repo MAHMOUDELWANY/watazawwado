@@ -149,16 +149,16 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-[#362E3B]/70 backdrop-blur-xs"
+          className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-foreground/70 backdrop-blur-xs"
         >
           <motion.div
             initial={{ scale: 0.95, opacity: 0, y: 15 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 15 }}
-            className="w-full max-w-xl bg-[#F5E6D3] dark:bg-[#231D28] rounded-3xl border border-primary/30 shadow-2xl p-6 sm:p-7 text-[#362E3B] dark:text-[#F5E6D3] max-h-[90vh] overflow-y-auto"
+            className="w-full max-w-xl bg-foreground dark:bg-[#231D28] rounded-3xl border border-primary/30 shadow-2xl p-6 sm:p-7 text-foreground dark:text-foreground max-h-[90vh] overflow-y-auto"
           >
             {/* Header */}
-            <div className="flex items-center justify-between pb-4 border-b border-[#D5D0CA] dark:border-[#3E3545]">
+            <div className="flex items-center justify-between pb-4 border-b border-border dark:border-border">
               <div className="flex items-center gap-2.5">
                 <ShieldCheck className="w-5 h-5 text-primary" />
                 <h3 className="font-serif text-lg sm:text-xl font-medium">
@@ -168,15 +168,15 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="p-1 rounded-full text-[#362E3B]/60 dark:text-[#D5D0CA]/60 hover:bg-[#EDE3D4] dark:hover:bg-[#29232F] cursor-pointer"
+                className="p-1 rounded-full text-foreground/60 dark:text-border/60 hover:bg-[#EDE3D4] dark:hover:bg-[#29232F] cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Policy Reminder */}
-            <div className="py-3 text-xs text-[#362E3B]/75 dark:text-[#D5D0CA]/75 leading-relaxed bg-[#EDE3D4]/60 dark:bg-[#1E1923] p-3 rounded-xl border border-primary/20 my-3">
-              <strong className="text-[#362E3B] dark:text-[#F5E6D3]">
+            <div className="py-3 text-xs text-foreground/75 dark:text-border/75 leading-relaxed bg-[#EDE3D4]/60 dark:bg-background p-3 rounded-xl border border-primary/20 my-3">
+              <strong className="text-foreground dark:text-foreground">
                 {isEn ? 'Cancellation & Rescheduling Rule: ' : 'سياسة التعديل والإلغاء: '}
               </strong>
               {isEn
@@ -186,7 +186,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
 
             {/* Quick Demo Selector */}
             <div className="mb-4">
-              <span className="text-[11px] uppercase font-semibold text-[#362E3B]/60 dark:text-[#D5D0CA]/60 block mb-1.5">
+              <span className="text-[11px] uppercase font-semibold text-foreground/60 dark:text-border/60 block mb-1.5">
                 {isEn ? 'Test Bookings (Click to Inspect Sync & Policy):' : 'حجوزات تجريبية (انقر للمعاينة):'}
               </span>
               <div className="flex flex-wrap gap-2">
@@ -200,7 +200,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                         setRefCode(b.reference);
                         handleSearch(b.reference);
                       }}
-                      className="px-2.5 py-1.5 rounded-lg border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-xs hover:bg-[#EDE3D4] transition-colors cursor-pointer text-start"
+                      className="px-2.5 py-1.5 rounded-lg border border-border dark:border-border bg-white dark:bg-background text-xs hover:bg-[#EDE3D4] transition-colors cursor-pointer text-start"
                     >
                       <span className="font-semibold">{b.reference}</span>{' '}
                       <span className={check.eligible ? 'text-primary' : 'text-amber-700 dark:text-amber-400'}>
@@ -215,20 +215,20 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
             {/* Search Input */}
             <div className="flex gap-2 mb-4">
               <div className="relative flex-1">
-                <Search className="w-4 h-4 absolute left-3 top-3 text-[#362E3B]/50 dark:text-[#D5D0CA]/50" />
+                <Search className="w-4 h-4 absolute left-3 top-3 text-foreground/50 dark:text-border/50" />
                 <input
                   type="text"
                   value={refCode}
                   onChange={(e) => setRefCode(e.target.value)}
                   placeholder={isEn ? 'Enter Booking Reference (e.g. MHM-84291)' : 'أدخل رقم الحجز (مثال: MHM-84291)'}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-xs text-[#362E3B] dark:text-[#F5E6D3] uppercase font-mono"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-border dark:border-border bg-white dark:bg-background text-xs text-foreground dark:text-foreground uppercase font-mono"
                 />
               </div>
               <button
                 type="button"
                 onClick={() => handleSearch(refCode)}
                 disabled={loading || !refCode.trim()}
-                className="px-4 py-2 rounded-xl bg-[#6B5B73] hover:bg-[#584960] text-white text-xs font-medium cursor-pointer disabled:opacity-50"
+                className="px-4 py-2 rounded-xl bg-muted-foreground hover:bg-[#584960] text-white text-xs font-medium cursor-pointer disabled:opacity-50"
               >
                 {loading ? (isEn ? 'Checking...' : 'فحص...') : (isEn ? 'Look Up' : 'بحث')}
               </button>
@@ -250,16 +250,16 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
 
             {/* Booking Result & Policy Evaluation */}
             {booking && eligibility && dualTimes && (
-              <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E1923] border border-primary/30 space-y-4">
+              <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-background border border-primary/30 space-y-4">
                 <div className="flex items-start justify-between">
                   <div>
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[#362E3B]/50 dark:text-[#D5D0CA]/50">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-foreground/50 dark:text-border/50">
                       {booking.reference} • {booking.mode === 'trial' ? 'Free Trial' : '1-on-1 Lesson'}
                     </span>
-                    <h4 className="font-serif text-base font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+                    <h4 className="font-serif text-base font-medium text-foreground dark:text-foreground">
                       {booking.serviceName}
                     </h4>
-                    <p className="text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]/70">
+                    <p className="text-xs text-foreground/70 dark:text-border/70">
                       {booking.learnerName} {booking.parentName ? `(Parent: ${booking.parentName})` : ''}
                     </p>
                   </div>
@@ -277,23 +277,23 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                       {booking.status.toUpperCase()}
                     </span>
 
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EDE3D4] dark:bg-[#29232F] text-[#6B5B73] dark:text-[#B8A9C9] font-medium">
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EDE3D4] dark:bg-[#29232F] text-muted-foreground dark:text-muted-foreground font-medium">
                       ✓ Cal & Zoom Synced
                     </span>
                   </div>
                 </div>
 
                 {/* Dual-Timezone Box */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs bg-[#F5E6D3]/40 dark:bg-[#29232F] p-3 rounded-xl border border-[#D5D0CA]/50">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs bg-foreground/40 dark:bg-[#29232F] p-3 rounded-xl border border-border/50">
                   <div>
-                    <div className="flex items-center gap-1.5 text-[10px] uppercase font-semibold text-[#6B5B73] dark:text-[#B8A9C9] mb-0.5">
+                    <div className="flex items-center gap-1.5 text-[10px] uppercase font-semibold text-muted-foreground dark:text-muted-foreground mb-0.5">
                       <Globe className="w-3.5 h-3.5" />
                       <span>{isEn ? 'Your Local Time' : 'توقيتك المحلي'}</span>
                     </div>
-                    <div className="font-semibold text-sm text-[#362E3B] dark:text-white">
+                    <div className="font-semibold text-sm text-foreground dark:text-white">
                       {dualTimes.localTime} ({dualTimes.studentOffset})
                     </div>
-                    <div className="text-[11px] text-[#362E3B]/70 dark:text-[#D5D0CA]/70">
+                    <div className="text-[11px] text-foreground/70 dark:text-border/70">
                       {dualTimes.localDate} • {dualTimes.durationMinutes} min
                     </div>
                   </div>
@@ -303,10 +303,10 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                       <Clock className="w-3.5 h-3.5" />
                       <span>{isEn ? "Mahmoud's Calendar (Cairo)" : 'توقيت القاهرة (محمود)'}</span>
                     </div>
-                    <div className="font-semibold text-sm text-[#362E3B] dark:text-white">
+                    <div className="font-semibold text-sm text-foreground dark:text-white">
                       {dualTimes.cairoTime} (Cairo)
                     </div>
-                    <div className="text-[11px] text-[#362E3B]/70 dark:text-[#D5D0CA]/70">
+                    <div className="text-[11px] text-foreground/70 dark:text-border/70">
                       {dualTimes.cairoDate}
                     </div>
                   </div>
@@ -323,7 +323,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                       <button
                         type="button"
                         onClick={() => copyClassroomLink(zoomUrl)}
-                        className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] bg-white dark:bg-[#1E1923] border border-blue-300 dark:border-blue-800 hover:bg-blue-100 text-blue-800 dark:text-blue-300 cursor-pointer"
+                        className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] bg-white dark:bg-background border border-blue-300 dark:border-blue-800 hover:bg-blue-100 text-blue-800 dark:text-blue-300 cursor-pointer"
                       >
                         {copiedLink ? <Check className="w-3 h-3 text-green-600" /> : <Copy className="w-3 h-3" />}
                         <span>{copiedLink ? (isEn ? 'Copied' : 'تم النسخ') : (isEn ? 'Copy Link' : 'نسخ الرابط')}</span>
@@ -358,7 +358,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                 <div
                   className={`p-3.5 rounded-xl border text-xs leading-relaxed ${
                     eligibility.eligible
-                      ? 'bg-primary/10 border-primary/40 text-[#362E3B] dark:text-[#F5E6D3]'
+                      ? 'bg-primary/10 border-primary/40 text-foreground dark:text-foreground'
                       : 'bg-amber-50 dark:bg-amber-950/30 border-amber-300 dark:border-amber-800 text-amber-900 dark:text-amber-200'
                   }`}
                 >
@@ -380,29 +380,29 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                 {/* Reschedule View if Active */}
                 {isRescheduling && (
                   <div className="p-3.5 rounded-xl bg-[#EDE3D4] dark:bg-[#29232F] border border-primary/30 space-y-3">
-                    <h5 className="font-serif text-xs font-semibold uppercase tracking-wider text-[#6B5B73] dark:text-[#B8A9C9]">
+                    <h5 className="font-serif text-xs font-semibold uppercase tracking-wider text-muted-foreground dark:text-muted-foreground">
                       {isEn ? 'Choose New Date & Starting Time' : 'اختر التاريخ والموعد الجديد'}
                     </h5>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-[10px] uppercase font-semibold text-[#362E3B]/70 dark:text-[#D5D0CA]/70 mb-1">
+                        <label className="block text-[10px] uppercase font-semibold text-foreground/70 dark:text-border/70 mb-1">
                           {isEn ? 'New Date' : 'التاريخ الجديد'}
                         </label>
                         <input
                           type="date"
                           value={newDate}
                           onChange={(e) => setNewDate(e.target.value)}
-                          className="w-full px-3 py-1.5 rounded-lg border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-xs text-[#362E3B] dark:text-white"
+                          className="w-full px-3 py-1.5 rounded-lg border border-border dark:border-border bg-white dark:bg-background text-xs text-foreground dark:text-white"
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] uppercase font-semibold text-[#362E3B]/70 dark:text-[#D5D0CA]/70 mb-1">
+                        <label className="block text-[10px] uppercase font-semibold text-foreground/70 dark:text-border/70 mb-1">
                           {isEn ? 'New Time Slot' : 'الوقت الجديد'}
                         </label>
                         <select
                           value={newTime}
                           onChange={(e) => setNewTime(e.target.value)}
-                          className="w-full px-3 py-1.5 rounded-lg border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-xs text-[#362E3B] dark:text-white"
+                          className="w-full px-3 py-1.5 rounded-lg border border-border dark:border-border bg-white dark:bg-background text-xs text-foreground dark:text-white"
                         >
                           <option value="10:00 AM">10:00 AM</option>
                           <option value="11:45 AM">11:45 AM</option>
@@ -418,14 +418,14 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                       <button
                         type="button"
                         onClick={() => setIsRescheduling(false)}
-                        className="px-3 py-1.5 rounded-lg text-xs hover:bg-[#D5D0CA] transition-colors"
+                        className="px-3 py-1.5 rounded-lg text-xs hover:bg-border transition-colors"
                       >
                         {isEn ? 'Cancel' : 'إلغاء'}
                       </button>
                       <button
                         type="button"
                         onClick={handleReschedule}
-                        className="px-4 py-1.5 rounded-lg bg-[#6B5B73] text-white text-xs font-medium cursor-pointer"
+                        className="px-4 py-1.5 rounded-lg bg-muted-foreground text-white text-xs font-medium cursor-pointer"
                       >
                         {isEn ? 'Save New Schedule' : 'حفظ الموعد الجديد'}
                       </button>
@@ -439,7 +439,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                     <button
                       type="button"
                       onClick={() => setIsRescheduling(true)}
-                      className="px-4 py-2 rounded-xl bg-[#6B5B73] hover:bg-[#584960] text-white text-xs font-medium cursor-pointer"
+                      className="px-4 py-2 rounded-xl bg-muted-foreground hover:bg-[#584960] text-white text-xs font-medium cursor-pointer"
                     >
                       {isEn ? 'Reschedule Lesson' : 'تغيير موعد الدرس'}
                     </button>
@@ -454,7 +454,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                       <button
                         type="button"
                         onClick={() => setShowPaymentModal(true)}
-                        className="px-4 py-2 rounded-xl bg-white dark:bg-[#231D28] border border-primary/50 text-xs font-medium text-[#362E3B] dark:text-[#F5E6D3] hover:bg-[#EDE3D4] transition-colors cursor-pointer flex items-center gap-1.5"
+                        className="px-4 py-2 rounded-xl bg-white dark:bg-[#231D28] border border-primary/50 text-xs font-medium text-foreground dark:text-foreground hover:bg-[#EDE3D4] transition-colors cursor-pointer flex items-center gap-1.5"
                       >
                         <CreditCard className="w-3.5 h-3.5 text-primary" />
                         <span>{isEn ? 'Payment Instructions & Claim' : 'طرق الدفع وتأكيد التحويل'}</span>
@@ -481,7 +481,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                       <button
                         type="button"
                         onClick={() => setShowPaymentModal(true)}
-                        className="px-4 py-2 rounded-xl bg-white dark:bg-[#231D28] border border-primary/50 text-xs font-medium text-[#362E3B] dark:text-[#F5E6D3] hover:bg-[#EDE3D4] transition-colors cursor-pointer flex items-center gap-1.5"
+                        className="px-4 py-2 rounded-xl bg-white dark:bg-[#231D28] border border-primary/50 text-xs font-medium text-foreground dark:text-foreground hover:bg-[#EDE3D4] transition-colors cursor-pointer flex items-center gap-1.5"
                       >
                         <CreditCard className="w-3.5 h-3.5 text-primary" />
                         <span>{isEn ? 'Payment Details' : 'تفاصيل الدفع'}</span>

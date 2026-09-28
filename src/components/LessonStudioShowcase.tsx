@@ -88,11 +88,11 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
     <section
       ref={containerRef}
       id="live-studio-showcase"
-      className="relative overflow-x-clip bg-gradient-to-b from-white via-[#F8F6F0] to-[#F5E6D3] dark:from-[#1E1923] dark:via-[#19151D] dark:to-[#1E1923] py-20 lg:py-32 transition-colors border-b border-[#D5D0CA]/70 dark:border-[#3E3545]"
+      className="relative overflow-x-clip bg-gradient-to-b from-white via-[#F8F6F0] to-foreground dark:from-background dark:via-[#19151D] dark:to-background py-20 lg:py-32 transition-colors border-b border-border/70 dark:border-border"
     >
       {/* Subtle Background Atmosphere */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[450px] bg-primary/12 dark:bg-primary/5 rounded-full blur-3xl pointer-events-none -z-0" />
-      <div className="absolute bottom-10 right-10 w-[450px] h-[350px] bg-[#B8A9C9]/15 dark:bg-[#B8A9C9]/5 rounded-full blur-3xl pointer-events-none -z-0" />
+      <div className="absolute bottom-10 right-10 w-[450px] h-[350px] bg-muted-foreground/15 dark:bg-muted-foreground/5 rounded-full blur-3xl pointer-events-none -z-0" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
@@ -114,7 +114,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.55, delay: 0.08 }}
-            className="font-serif text-3xl sm:text-4xl lg:text-5xl text-[#362E3B] dark:text-[#F5E6D3] tracking-tight mb-5"
+            className="font-serif text-3xl sm:text-4xl lg:text-5xl text-foreground dark:text-foreground tracking-tight mb-5"
           >
             {isEn ? (
               <>
@@ -134,7 +134,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.14 }}
-            className="text-base sm:text-lg text-[#362E3B]/75 dark:text-[#D5D0CA] leading-relaxed max-w-2xl mx-auto mb-8"
+            className="text-base sm:text-lg text-foreground/75 dark:text-border leading-relaxed max-w-2xl mx-auto mb-8"
           >
             {isEn
               ? 'Experience how live Tajweed phonetic corrections, personalized teacher notes, and calm 1-on-1 guidance unfold in real time.'
@@ -147,14 +147,14 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="inline-flex p-1.5 rounded-2xl bg-white dark:bg-[#26202C] border border-[#D5D0CA] dark:border-[#3E3545] shadow-xs gap-1.5"
+            className="inline-flex p-1.5 rounded-2xl bg-white dark:bg-surface-subtle border border-border dark:border-border shadow-xs gap-1.5"
           >
             <button
               onClick={() => setActiveTab('quran')}
               className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all cursor-pointer ${
                 activeTab === 'quran'
                   ? 'bg-primary text-white shadow-xs'
-                  : 'text-[#362E3B]/80 dark:text-[#F5E6D3]/80 hover:bg-[#F5E6D3]/60 dark:hover:bg-[#342D3B]'
+                  : 'text-foreground/80 dark:text-foreground/80 hover:bg-foreground/60 dark:hover:bg-[#342D3B]'
               }`}
             >
               {isEn ? 'Quran & Tajweed' : 'القرآن والتجويد'}
@@ -164,7 +164,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
               className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all cursor-pointer ${
                 activeTab === 'arabic'
                   ? 'bg-primary text-white shadow-xs'
-                  : 'text-[#362E3B]/80 dark:text-[#F5E6D3]/80 hover:bg-[#F5E6D3]/60 dark:hover:bg-[#342D3B]'
+                  : 'text-foreground/80 dark:text-foreground/80 hover:bg-foreground/60 dark:hover:bg-[#342D3B]'
               }`}
             >
               {isEn ? 'Arabic Language' : 'اللغة العربية'}
@@ -174,7 +174,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
               className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all cursor-pointer ${
                 activeTab === 'studies'
                   ? 'bg-primary text-white shadow-xs'
-                  : 'text-[#362E3B]/80 dark:text-[#F5E6D3]/80 hover:bg-[#F5E6D3]/60 dark:hover:bg-[#342D3B]'
+                  : 'text-foreground/80 dark:text-foreground/80 hover:bg-foreground/60 dark:hover:bg-[#342D3B]'
               }`}
             >
               {isEn ? 'Islamic Studies' : 'الدراسات الإسلامية'}
@@ -203,7 +203,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
             className={`absolute top-6 sm:top-10 ${
               isRtl ? 'right-1 sm:right-4 lg:-right-6' : 'left-1 sm:left-4 lg:-left-6'
-            } z-20 w-[260px] sm:w-[310px] lg:w-[350px] rounded-2xl bg-[#26202C] dark:bg-[#1A161E] text-white p-4 sm:p-6 shadow-2xl shadow-[#26202C]/40 border border-primary/30 backdrop-blur-md cursor-grab active:cursor-grabbing select-none`}
+            } z-20 w-[260px] sm:w-[310px] lg:w-[350px] rounded-2xl bg-surface-subtle dark:bg-background text-white p-4 sm:p-6 shadow-2xl shadow-[#26202C]/40 border border-primary/30 backdrop-blur-md cursor-grab active:cursor-grabbing select-none`}
           >
             {/* Terminal Header */}
             <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-3.5">
@@ -230,7 +230,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
                   <span>[Makhraj Check]</span>
                   <span className="text-[10px] text-white/50">Edge of Tongue</span>
                 </div>
-                <div className="font-serif text-right text-lg text-[#F5E6D3] dir-rtl leading-relaxed font-bold">
+                <div className="font-serif text-right text-lg text-foreground dir-rtl leading-relaxed font-bold">
                   غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ
                 </div>
                 <p className="text-[11px] text-white/70 leading-normal font-sans">
@@ -276,10 +276,10 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
             className={`absolute bottom-4 sm:bottom-8 ${
               isRtl ? 'left-1 sm:left-4 lg:-left-6' : 'right-1 sm:right-4 lg:-right-6'
-            } z-20 w-[260px] sm:w-[310px] lg:w-[350px] rounded-2xl bg-white dark:bg-[#29232F] text-[#362E3B] dark:text-[#F5E6D3] p-4 sm:p-6 shadow-2xl shadow-black/15 border border-[#D5D0CA] dark:border-[#3E3545] cursor-grab active:cursor-grabbing select-none`}
+            } z-20 w-[260px] sm:w-[310px] lg:w-[350px] rounded-2xl bg-white dark:bg-[#29232F] text-foreground dark:text-foreground p-4 sm:p-6 shadow-2xl shadow-black/15 border border-border dark:border-border cursor-grab active:cursor-grabbing select-none`}
           >
             {/* Header: Student Profile Info */}
-            <div className="flex items-center gap-3 border-b border-[#D5D0CA] dark:border-[#3E3545] pb-3 mb-3.5">
+            <div className="flex items-center gap-3 border-b border-border dark:border-border pb-3 mb-3.5">
               <img
                 src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
                 alt="Student Maryam"
@@ -287,14 +287,14 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
               />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
-                  <h4 className="font-semibold text-xs text-[#362E3B] dark:text-[#F5E6D3] truncate">
+                  <h4 className="font-semibold text-xs text-foreground dark:text-foreground truncate">
                     Maryam K.
                   </h4>
                   <span className="text-[10px] font-medium text-primary dark:text-[#A3BF96] bg-primary/10 px-2 py-0.5 rounded-full">
                     Active Student
                   </span>
                 </div>
-                <p className="text-[11px] text-[#6B5B73] dark:text-[#B8A9C9] truncate">
+                <p className="text-[11px] text-muted-foreground dark:text-muted-foreground truncate">
                   Toronto, Canada • Quran & Tajweed
                 </p>
               </div>
@@ -302,26 +302,26 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
 
             {/* Checklist of Milestones */}
             <div className="space-y-2 mb-3.5">
-              <div className="text-[11px] font-semibold text-[#6B5B73] dark:text-[#B8A9C9] uppercase tracking-wider">
+              <div className="text-[11px] font-semibold text-muted-foreground dark:text-muted-foreground uppercase tracking-wider">
                 {isEn ? "Today's Lesson Progress" : "إنجاز جلسة اليوم"}
               </div>
 
               <div className="flex items-start gap-2 text-xs">
                 <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                <span className="text-[#362E3B]/90 dark:text-[#D5D0CA]">
+                <span className="text-foreground/90 dark:text-border">
                   {isEn ? 'Noon Sakinah: Idgham with Ghunnah (Ayat 1-10)' : 'النون الساكنة: إدغام بغنة (الآيات ١-١٠)'}
                 </span>
               </div>
 
               <div className="flex items-start gap-2 text-xs">
                 <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                <span className="text-[#362E3B]/90 dark:text-[#D5D0CA]">
+                <span className="text-foreground/90 dark:text-border">
                   {isEn ? 'Surah Maryam recitation review passed' : 'اجتياز تسميع سورة مريم بثبات'}
                 </span>
               </div>
 
-              <div className="flex items-start gap-2 text-xs text-[#6B5B73] dark:text-[#B8A9C9]">
-                <Clock className="w-4 h-4 text-[#B8A9C9] shrink-0 mt-0.5" />
+              <div className="flex items-start gap-2 text-xs text-muted-foreground dark:text-muted-foreground">
+                <Clock className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />
                 <span>
                   {isEn ? 'Next Session: Thursday 6:00 PM EST (Zoom)' : 'الجلسة القادمة: الخميس ٦:٠٠ م بتوقيت كندا'}
                 </span>
@@ -329,11 +329,11 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
             </div>
 
             {/* Homework & Recommendation Pill */}
-            <div className="p-3 rounded-xl bg-[#F5E6D3] dark:bg-[#1E1923] border border-[#D5D0CA] dark:border-[#3E3545] text-xs">
+            <div className="p-3 rounded-xl bg-foreground dark:bg-background border border-border dark:border-border text-xs">
               <div className="text-[10px] font-semibold uppercase tracking-wider text-primary dark:text-[#A3BF96] mb-1">
                 {isEn ? 'Recommended Weekly Pace' : 'الوتيرة الأسبوعية المقترحة'}
               </div>
-              <p className="text-[11px] text-[#362E3B]/80 dark:text-[#D5D0CA]">
+              <p className="text-[11px] text-foreground/80 dark:text-border">
                 {isEn
                   ? '2 sessions/week × 45 min — Ideal balance between retention and busy family schedules.'
                   : 'جلستان أسبوعياً × ٤٥ دقيقة — توازن مثالي بين التثبيت ومشاغل العمل والأسرة.'}
@@ -351,15 +351,15 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
               y: centerY,
               transformStyle: 'preserve-3d',
             }}
-            className="w-full max-w-4xl bg-white dark:bg-[#231E2A] rounded-2xl sm:rounded-3xl shadow-2xl shadow-black/20 dark:shadow-black/60 border border-[#D5D0CA] dark:border-[#3E3545] overflow-hidden z-10 transition-shadow hover:shadow-3xl"
+            className="w-full max-w-4xl bg-white dark:bg-surface rounded-2xl sm:rounded-3xl shadow-2xl shadow-black/20 dark:shadow-black/60 border border-border dark:border-border overflow-hidden z-10 transition-shadow hover:shadow-3xl"
           >
             {/* Window Title Bar */}
-            <div className="bg-[#FAF7F2] dark:bg-[#1E1923] px-4 sm:px-6 py-3 border-b border-[#D5D0CA] dark:border-[#3E3545] flex items-center justify-between">
+            <div className="bg-[#FAF7F2] dark:bg-background px-4 sm:px-6 py-3 border-b border-border dark:border-border flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-[#FF5F56] inline-block" />
                 <span className="w-3 h-3 rounded-full bg-[#FFBD2E] inline-block" />
                 <span className="w-3 h-3 rounded-full bg-[#27C93F] inline-block" />
-                <span className="ml-3 text-xs font-medium text-[#6B5B73] dark:text-[#B8A9C9] flex items-center gap-1.5 truncate">
+                <span className="ml-3 text-xs font-medium text-muted-foreground dark:text-muted-foreground flex items-center gap-1.5 truncate">
                   <Video className="w-3.5 h-3.5 text-primary" />
                   <span className="hidden sm:inline">
                     {isEn ? "Ustadh Mahmoud's Classroom • 1-on-1 Studio" : 'فصل الأستاذ محمود • جلسة فردية مباشرة'}
@@ -378,10 +378,10 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
             </div>
 
             {/* Studio Workspace Content */}
-            <div className="p-4 sm:p-7 grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 bg-white dark:bg-[#231E2A]">
+            <div className="p-4 sm:p-7 grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 bg-white dark:bg-surface">
               
               {/* Left Column: Illuminated Subject Canvas (7 cols) */}
-              <div className="lg:col-span-7 bg-[#FAF7F2] dark:bg-[#1A1620] rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-[#D5D0CA] dark:border-[#3E3545] flex flex-col justify-between">
+              <div className="lg:col-span-7 bg-[#FAF7F2] dark:bg-[#1A1620] rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-border dark:border-border flex flex-col justify-between">
                 <div>
                   
                   {/* Dynamic Content based on Active Tab */}
@@ -395,10 +395,10 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
                         transition={{ duration: 0.25 }}
                       >
                         {/* Surah Header Banner */}
-                        <div className="flex items-center justify-between border-b border-[#D5D0CA] dark:border-[#3E3545] pb-3 mb-4">
+                        <div className="flex items-center justify-between border-b border-border dark:border-border pb-3 mb-4">
                           <div className="flex items-center gap-2">
                             <BookOpen className="w-4 h-4 text-primary" />
-                            <span className="text-xs font-semibold text-[#362E3B] dark:text-[#F5E6D3]">
+                            <span className="text-xs font-semibold text-foreground dark:text-foreground">
                               {isEn ? 'Surah Maryam (سُورَةُ مَرْيَمَ)' : 'سُورَةُ مَرْيَمَ (مكية)'}
                             </span>
                           </div>
@@ -426,7 +426,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
                         </div>
 
                         {/* Quran Text with Authentic Tajweed Colors */}
-                        <div className="font-serif text-xl sm:text-2xl text-right leading-[2.2] sm:leading-[2.4] text-[#362E3B] dark:text-[#F5E6D3] dir-rtl selection:bg-primary/30">
+                        <div className="font-serif text-xl sm:text-2xl text-right leading-[2.2] sm:leading-[2.4] text-foreground dark:text-foreground dir-rtl selection:bg-primary/30">
                           <span
                             onClick={() => setSelectedWord('كٓهيعٓصٓ')}
                             className={`px-1 rounded transition-colors cursor-pointer ${
@@ -472,8 +472,8 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
                         </div>
 
                         {/* Interactive Tajweed Legend */}
-                        <div className="mt-5 pt-3 border-t border-[#D5D0CA] dark:border-[#3E3545] flex flex-wrap items-center gap-2.5 text-[11px]">
-                          <span className="text-[#6B5B73] dark:text-[#B8A9C9] font-medium">
+                        <div className="mt-5 pt-3 border-t border-border dark:border-border flex flex-wrap items-center gap-2.5 text-[11px]">
+                          <span className="text-muted-foreground dark:text-muted-foreground font-medium">
                             {isEn ? 'Rules:' : 'الأحكام:'}
                           </span>
                           <span className="inline-flex items-center gap-1 text-[#2563EB] dark:text-[#60A5FA] bg-blue-500/10 px-2 py-0.5 rounded font-medium">
@@ -500,22 +500,22 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
                         exit={{ opacity: 0, y: -8 }}
                         transition={{ duration: 0.25 }}
                       >
-                        <div className="flex items-center justify-between border-b border-[#D5D0CA] dark:border-[#3E3545] pb-3 mb-4">
-                          <span className="text-xs font-semibold text-[#362E3B] dark:text-[#F5E6D3]">
+                        <div className="flex items-center justify-between border-b border-border dark:border-border pb-3 mb-4">
+                          <span className="text-xs font-semibold text-foreground dark:text-foreground">
                             {isEn ? 'Arabic Conversation & Grammar Module' : 'وحدة المحادثة والنحو العربي التطبيقي'}
                           </span>
                           <span className="text-[11px] text-primary font-medium">Level: A2/B1</span>
                         </div>
 
                         <div className="space-y-3 font-sans text-sm">
-                          <div className="p-3 rounded-xl bg-white dark:bg-[#26202C] border border-[#D5D0CA] dark:border-[#3E3545]">
+                          <div className="p-3 rounded-xl bg-white dark:bg-surface-subtle border border-border dark:border-border">
                             <div className="text-xs text-primary font-semibold mb-1">
                               {isEn ? 'Teacher (Mahmoud):' : 'المعلم (أستاذ محمود):'}
                             </div>
-                            <div className="font-serif text-lg text-right dir-rtl text-[#362E3B] dark:text-[#F5E6D3]">
+                            <div className="font-serif text-lg text-right dir-rtl text-foreground dark:text-foreground">
                               «مَا هُوَ هَدَفُكَ الرَّئِيسِيُّ مِنْ تَعَلُّمِ اللُّغَةِ الْعَرَبِيَّةِ؟»
                             </div>
-                            <div className="text-[11px] text-[#6B5B73] dark:text-[#B8A9C9] mt-1">
+                            <div className="text-[11px] text-muted-foreground dark:text-muted-foreground mt-1">
                               "What is your primary goal from learning the Arabic language?"
                             </div>
                           </div>
@@ -524,10 +524,10 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
                             <div className="text-xs text-primary-hover dark:text-[#A3BF96] font-semibold mb-1">
                               {isEn ? 'Student Response & Correction:' : 'إجابة الطالب والتحليل النحوي:'}
                             </div>
-                            <div className="font-serif text-lg text-right dir-rtl text-[#362E3B] dark:text-[#F5E6D3]">
+                            <div className="font-serif text-lg text-right dir-rtl text-foreground dark:text-foreground">
                               «أُرِيدُ أَنْ <span className="text-primary font-bold">أَفْهَمَ</span> الْقُرْآنَ بِدُونِ تَرْجَمَةٍ.»
                             </div>
-                            <div className="text-[11px] text-[#6B5B73] dark:text-[#B8A9C9] mt-1">
+                            <div className="text-[11px] text-muted-foreground dark:text-muted-foreground mt-1">
                               <span className="text-primary font-medium">Grammar point:</span> Mansoob with Fat-ha after 'An' (أَنْ الناصبة).
                             </div>
                           </div>
@@ -543,15 +543,15 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
                         exit={{ opacity: 0, y: -8 }}
                         transition={{ duration: 0.25 }}
                       >
-                        <div className="flex items-center justify-between border-b border-[#D5D0CA] dark:border-[#3E3545] pb-3 mb-4">
-                          <span className="text-xs font-semibold text-[#362E3B] dark:text-[#F5E6D3]">
+                        <div className="flex items-center justify-between border-b border-border dark:border-border pb-3 mb-4">
+                          <span className="text-xs font-semibold text-foreground dark:text-foreground">
                             {isEn ? 'Islamic Studies • Fiqh & Daily Practice' : 'الفقه الإسلامي والعبادات اليومية'}
                           </span>
                           <span className="text-[11px] text-primary font-medium">Al-Azhar Curriculum</span>
                         </div>
 
-                        <div className="space-y-2.5 text-xs text-[#362E3B]/85 dark:text-[#D5D0CA]">
-                          <div className="p-3 rounded-xl bg-white dark:bg-[#26202C] border border-[#D5D0CA] dark:border-[#3E3545]">
+                        <div className="space-y-2.5 text-xs text-foreground/85 dark:text-border">
+                          <div className="p-3 rounded-xl bg-white dark:bg-surface-subtle border border-border dark:border-border">
                             <div className="font-semibold text-xs text-primary mb-1">
                               {isEn ? 'Core Concept: Khushu in Daily Salah' : 'المفهوم الأساسي: الخشوع في الصلاة'}
                             </div>
@@ -562,7 +562,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
                             </p>
                           </div>
 
-                          <div className="p-2.5 rounded-lg bg-[#FAF7F2] dark:bg-[#1E1923] border border-[#D5D0CA] dark:border-[#3E3545] flex items-center justify-between">
+                          <div className="p-2.5 rounded-lg bg-[#FAF7F2] dark:bg-background border border-border dark:border-border flex items-center justify-between">
                             <span className="font-medium text-[11px]">
                               {isEn ? 'Lesson Notes & Reflections PDF' : 'ملخص الجلسة وملف الملاحظات'}
                             </span>
@@ -578,7 +578,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
                 </div>
 
                 {/* Live Pointer Bar */}
-                <div className="mt-4 pt-3 border-t border-[#D5D0CA]/60 dark:border-[#3E3545]/60 flex items-center justify-between text-xs text-[#6B5B73] dark:text-[#B8A9C9]">
+                <div className="mt-4 pt-3 border-t border-border/60 dark:border-border/60 flex items-center justify-between text-xs text-muted-foreground dark:text-muted-foreground">
                   <span className="flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-primary" />
                     {isEn ? "Ustadh Mahmoud is guiding this session" : "الأستاذ محمود يشرف على هذه الجلسة"}
@@ -591,7 +591,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
               <div className="lg:col-span-5 flex flex-col justify-between space-y-4">
                 
                 {/* Teacher Video Stream Mockup */}
-                <div className="relative rounded-xl sm:rounded-2xl overflow-hidden bg-[#26202C] border border-[#D5D0CA] dark:border-[#3E3545] aspect-4/3 shadow-md group">
+                <div className="relative rounded-xl sm:rounded-2xl overflow-hidden bg-surface-subtle border border-border dark:border-border aspect-4/3 shadow-md group">
                   <img
                     src="https://raw.githubusercontent.com/StackBlitz/stackblitz-images/main/teacher-mahmoud-portrait.jpg"
                     onError={(e) => {
@@ -651,26 +651,26 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
                 </div>
 
                 {/* Interactive Tool Actions */}
-                <div className="bg-[#FAF7F2] dark:bg-[#1A1620] rounded-xl p-3.5 border border-[#D5D0CA] dark:border-[#3E3545] space-y-2.5">
-                  <div className="text-[11px] font-semibold text-[#6B5B73] dark:text-[#B8A9C9] uppercase tracking-wider flex items-center justify-between">
+                <div className="bg-[#FAF7F2] dark:bg-[#1A1620] rounded-xl p-3.5 border border-border dark:border-border space-y-2.5">
+                  <div className="text-[11px] font-semibold text-muted-foreground dark:text-muted-foreground uppercase tracking-wider flex items-center justify-between">
                     <span>{isEn ? 'Interactive Teaching Tools' : 'أدوات الشرح التفاعلية'}</span>
                     <span className="text-[10px] text-primary font-normal">Active Session</span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="flex items-center gap-2 p-2 rounded-lg bg-white dark:bg-[#231E2A] border border-[#D5D0CA] dark:border-[#3E3545]">
+                    <div className="flex items-center gap-2 p-2 rounded-lg bg-white dark:bg-surface border border-border dark:border-border">
                       <Volume2 className="w-3.5 h-3.5 text-primary" />
                       <span className="text-[11px] font-medium">{isEn ? 'Slow Recitation' : 'تكرار متأنٍ'}</span>
                     </div>
-                    <div className="flex items-center gap-2 p-2 rounded-lg bg-white dark:bg-[#231E2A] border border-[#D5D0CA] dark:border-[#3E3545]">
+                    <div className="flex items-center gap-2 p-2 rounded-lg bg-white dark:bg-surface border border-border dark:border-border">
                       <Mic className="w-3.5 h-3.5 text-primary" />
                       <span className="text-[11px] font-medium">{isEn ? 'Makharij Guide' : 'مخارج الحروف'}</span>
                     </div>
-                    <div className="flex items-center gap-2 p-2 rounded-lg bg-white dark:bg-[#231E2A] border border-[#D5D0CA] dark:border-[#3E3545]">
+                    <div className="flex items-center gap-2 p-2 rounded-lg bg-white dark:bg-surface border border-border dark:border-border">
                       <MessageSquare className="w-3.5 h-3.5 text-primary" />
                       <span className="text-[11px] font-medium">{isEn ? 'Bilingual Chat' : 'حوار بالإنجليزية'}</span>
                     </div>
-                    <div className="flex items-center gap-2 p-2 rounded-lg bg-white dark:bg-[#231E2A] border border-[#D5D0CA] dark:border-[#3E3545]">
+                    <div className="flex items-center gap-2 p-2 rounded-lg bg-white dark:bg-surface border border-border dark:border-border">
                       <Calendar className="w-3.5 h-3.5 text-primary" />
                       <span className="text-[11px] font-medium">{isEn ? 'Flexible Times' : 'مواعيد مرنة'}</span>
                     </div>
@@ -698,10 +698,10 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
                 scale: dockScale,
                 y: dockY,
               }}
-              className="bg-[#FAF7F2] dark:bg-[#1E1923] border-t border-[#D5D0CA] dark:border-[#3E3545] px-4 sm:px-8 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs"
+              className="bg-[#FAF7F2] dark:bg-background border-t border-border dark:border-border px-4 sm:px-8 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs"
             >
-              <div className="flex items-center gap-2 text-[#6B5B73] dark:text-[#B8A9C9]">
-                <span className="font-semibold text-[#362E3B] dark:text-[#F5E6D3]">
+              <div className="flex items-center gap-2 text-muted-foreground dark:text-muted-foreground">
+                <span className="font-semibold text-foreground dark:text-foreground">
                   {isEn ? 'All 13 Disciplines' : '١٣ تخصصاً تعليمياً'}
                 </span>
                 <span>•</span>
@@ -710,19 +710,19 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
 
               {/* Badges Dock */}
               <div className="flex items-center gap-1.5 sm:gap-2">
-                <span className="px-2.5 py-1 rounded-md bg-white dark:bg-[#29232F] border border-[#D5D0CA] dark:border-[#3E3545] text-[#362E3B] dark:text-[#F5E6D3] text-[11px] font-medium shadow-xs">
+                <span className="px-2.5 py-1 rounded-md bg-white dark:bg-[#29232F] border border-border dark:border-border text-foreground dark:text-foreground text-[11px] font-medium shadow-xs">
                   Quran
                 </span>
-                <span className="px-2.5 py-1 rounded-md bg-white dark:bg-[#29232F] border border-[#D5D0CA] dark:border-[#3E3545] text-[#362E3B] dark:text-[#F5E6D3] text-[11px] font-medium shadow-xs">
+                <span className="px-2.5 py-1 rounded-md bg-white dark:bg-[#29232F] border border-border dark:border-border text-foreground dark:text-foreground text-[11px] font-medium shadow-xs">
                   Tajweed
                 </span>
-                <span className="px-2.5 py-1 rounded-md bg-white dark:bg-[#29232F] border border-[#D5D0CA] dark:border-[#3E3545] text-[#362E3B] dark:text-[#F5E6D3] text-[11px] font-medium shadow-xs">
+                <span className="px-2.5 py-1 rounded-md bg-white dark:bg-[#29232F] border border-border dark:border-border text-foreground dark:text-foreground text-[11px] font-medium shadow-xs">
                   Islamic Studies
                 </span>
-                <span className="px-2.5 py-1 rounded-md bg-white dark:bg-[#29232F] border border-[#D5D0CA] dark:border-[#3E3545] text-[#362E3B] dark:text-[#F5E6D3] text-[11px] font-medium shadow-xs">
+                <span className="px-2.5 py-1 rounded-md bg-white dark:bg-[#29232F] border border-border dark:border-border text-foreground dark:text-foreground text-[11px] font-medium shadow-xs">
                   Arabic
                 </span>
-                <span className="px-2.5 py-1 rounded-md bg-white dark:bg-[#29232F] border border-[#D5D0CA] dark:border-[#3E3545] text-[#362E3B] dark:text-[#F5E6D3] text-[11px] font-medium shadow-xs">
+                <span className="px-2.5 py-1 rounded-md bg-white dark:bg-[#29232F] border border-border dark:border-border text-foreground dark:text-foreground text-[11px] font-medium shadow-xs">
                   English
                 </span>
               </div>
@@ -738,46 +738,46 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-50px' }}
           transition={{ duration: 0.6 }}
-          className="mt-16 sm:mt-24 pt-12 border-t border-[#D5D0CA] dark:border-[#3E3545] max-w-4xl mx-auto text-center"
+          className="mt-16 sm:mt-24 pt-12 border-t border-border dark:border-border max-w-4xl mx-auto text-center"
         >
           <div className="text-xs uppercase tracking-widest text-primary dark:text-[#A3BF96] font-semibold mb-3">
             {isEn ? 'Direct Teacher-to-Student Relationship' : 'علاقة مباشرة بين المعلم والطالب'}
           </div>
-          <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl text-[#362E3B] dark:text-[#F5E6D3] tracking-tight mb-4">
+          <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl text-foreground dark:text-foreground tracking-tight mb-4">
             {isEn
               ? 'No middleman marketplaces. No generic pre-recorded videos.'
               : 'دون منصات وسيطة ودون تسجيلات جاهزة لا تلبي احتياجك.'}
           </h3>
-          <p className="text-base text-[#362E3B]/75 dark:text-[#D5D0CA] max-w-xl mx-auto mb-8">
+          <p className="text-base text-foreground/75 dark:text-border max-w-xl mx-auto mb-8">
             {isEn
               ? 'You work directly with Ustadh Mahmoud. Every lesson is scheduled to your local timezone, with dedicated follow-up over WhatsApp.'
               : 'تتعلم مباشرة مع الأستاذ محمود، في أوقات تتوافق مع منطقتك الزمنية، ومع تواصل مستمر عبر الواتساب.'}
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left sm:text-center max-w-2xl mx-auto">
-            <div className="p-4 rounded-xl bg-white dark:bg-[#29232F] border border-[#D5D0CA] dark:border-[#3E3545]">
+            <div className="p-4 rounded-xl bg-white dark:bg-[#29232F] border border-border dark:border-border">
               <div className="font-serif text-xl font-bold text-primary dark:text-[#A3BF96] mb-1">
                 {isEn ? '30–60 Min' : '٣٠–٦٠ دقيقة'}
               </div>
-              <div className="text-xs text-[#6B5B73] dark:text-[#B8A9C9]">
+              <div className="text-xs text-muted-foreground dark:text-muted-foreground">
                 {isEn ? 'Flexible lesson durations' : 'خيارات مدة مرنة تناسب طاقتك'}
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-white dark:bg-[#29232F] border border-[#D5D0CA] dark:border-[#3E3545]">
+            <div className="p-4 rounded-xl bg-white dark:bg-[#29232F] border border-border dark:border-border">
               <div className="font-serif text-xl font-bold text-primary dark:text-[#A3BF96] mb-1">
                 {isEn ? 'One Free Trial' : 'جلسة مجانية أولى'}
               </div>
-              <div className="text-xs text-[#6B5B73] dark:text-[#B8A9C9]">
+              <div className="text-xs text-muted-foreground dark:text-muted-foreground">
                 {isEn ? '30 min evaluation & mini lesson' : 'تقييم للمستوى ودرس مصغر'}
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-white dark:bg-[#29232F] border border-[#D5D0CA] dark:border-[#3E3545]">
+            <div className="p-4 rounded-xl bg-white dark:bg-[#29232F] border border-border dark:border-border">
               <div className="font-serif text-xl font-bold text-primary dark:text-[#A3BF96] mb-1">
                 {isEn ? '3h Cancel Policy' : 'إلغاء قبل ٣ ساعات'}
               </div>
-              <div className="text-xs text-[#6B5B73] dark:text-[#B8A9C9]">
+              <div className="text-xs text-muted-foreground dark:text-muted-foreground">
                 {isEn ? 'Self-service reschedule window' : 'مرونة في إعادة الجدولة'}
               </div>
             </div>

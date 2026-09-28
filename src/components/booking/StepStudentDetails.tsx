@@ -136,7 +136,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                       ? `Booking for ${formData.studentName || studentName || 'Yourself'}`
                       : `حجز شخصي: ${formData.studentName || studentName || 'لك'}`}
                   </span>
-                  <span className="text-[#7A827B] dark:text-[#A69FA8] text-[11px]">
+                  <span className="text-muted-foreground dark:text-muted-foreground text-[11px]">
                     {isEn ? 'Authenticated Student Account · Self-Learning' : 'حساب طالب موثق · تعلم شخصي'}
                   </span>
                 </div>
@@ -164,7 +164,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                         ? `Booking for child: ${formData.childName || linkedChildren[0].name}`
                         : `حجز للطفل: ${formData.childName || linkedChildren[0].name}`}
                     </span>
-                    <span className="text-[#7A827B] dark:text-[#A69FA8] text-[11px]">
+                    <span className="text-muted-foreground dark:text-muted-foreground text-[11px]">
                       {isEn
                         ? `Parent / Guardian: ${formData.parentName || studentName || 'Account Owner'}`
                         : `ولي الأمر: ${formData.parentName || studentName || 'صاحب الحساب'}`}
@@ -183,10 +183,10 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
               /* Multiple authorized children: Explicit selection required */
               <div
                 id="multi-child-selection-context"
-                className="space-y-3 p-4 rounded-2xl bg-white dark:bg-[#231D28] border border-[#D5D0CA] dark:border-[#3E3545]"
+                className="space-y-3 p-4 rounded-2xl bg-white dark:bg-[#231D28] border border-border dark:border-border"
               >
                 <div className="flex items-center justify-between">
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#362E3B]/80 dark:text-[#D5D0CA]/80">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80">
                     {isEn ? 'Who is this lesson for?' : 'من سيتعلم في هذا الدرس؟'} <span className="text-rose-500">*</span>
                   </label>
                   <button
@@ -197,7 +197,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                     {isEn ? 'Switch to self booking' : 'التحويل لحجز شخصي'}
                   </button>
                 </div>
-                <p className="text-xs text-[#7A827B] dark:text-[#A69FA8]">
+                <p className="text-xs text-muted-foreground dark:text-muted-foreground">
                   {isEn ? 'Please select which child will attend this session:' : 'يرجى تحديد الطفل الذي سيحضر هذا الدرس:'}
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -210,15 +210,15 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                         onClick={() => handleChildSelect(child.id)}
                         className={`p-3 rounded-xl border text-start transition-all cursor-pointer flex items-center justify-between ${
                           isSelected
-                            ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-primary ring-1 ring-primary'
-                            : 'bg-white dark:bg-[#1E1923] border-[#D5D0CA] dark:border-[#3E3545] hover:bg-[#F5E6D3]/30'
+                            ? 'bg-foreground dark:bg-[#29232F] border-primary ring-1 ring-primary'
+                            : 'bg-white dark:bg-background border-border dark:border-border hover:bg-foreground/30'
                         }`}
                       >
                         <div>
-                          <div className="font-serif text-xs font-semibold text-[#362E3B] dark:text-[#F5E6D3]">
+                          <div className="font-serif text-xs font-semibold text-foreground dark:text-foreground">
                             {child.name}
                           </div>
-                          <div className="text-[10px] text-[#362E3B]/60 dark:text-[#D5D0CA]/60 capitalize">
+                          <div className="text-[10px] text-foreground/60 dark:text-border/60 capitalize">
                             {child.current_level || child.currentLevel || 'Learner'}
                           </div>
                         </div>
@@ -250,7 +250,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                       ? `Booking for ${formData.studentName || studentName || 'Yourself'}`
                       : `حجز شخصي: ${formData.studentName || studentName || 'لك'}`}
                   </span>
-                  <span className="text-[#7A827B] dark:text-[#A69FA8] text-[11px]">
+                  <span className="text-muted-foreground dark:text-muted-foreground text-[11px]">
                     {isEn ? 'Authenticated Student Account · Self-Learning' : 'حساب طالب موثق · تعلم شخصي'}
                   </span>
                 </div>
@@ -281,7 +281,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                   ? `Booking for ${formData.studentName || studentName || 'Yourself'}`
                   : `حجز شخصي: ${formData.studentName || studentName || 'لك'}`}
               </span>
-              <span className="text-[#7A827B] dark:text-[#A69FA8] text-[11px]">
+              <span className="text-muted-foreground dark:text-muted-foreground text-[11px]">
                 {isEn ? 'Authenticated Student Account · Self-Learning' : 'حساب طالب موثق · تعلم شخصي'}
               </span>
             </div>
@@ -290,7 +290,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
       ) : (
         /* Guest / Unauthenticated flow: Traditional 2-card selector */
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-[#362E3B]/70 dark:text-[#D5D0CA]/70 mb-2">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/70 dark:text-border/70 mb-2">
             {isEn ? 'Who will be learning in this session?' : 'من سيتعلم في هذا الدرس؟'}
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -299,18 +299,18 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
               onClick={() => handleAudienceChange('adult')}
               className={`p-3.5 rounded-2xl border text-start transition-all cursor-pointer flex items-center gap-3.5 ${
                 !isChild
-                  ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-[#6B5B73] dark:border-[#B8A9C9] ring-1 ring-[#6B5B73] shadow-xs'
-                  : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] hover:bg-[#F5E6D3]/40'
+                  ? 'bg-foreground dark:bg-[#29232F] border-muted-foreground dark:border-muted-foreground ring-1 ring-muted-foreground shadow-xs'
+                  : 'bg-white dark:bg-[#231D28] border-border dark:border-border hover:bg-foreground/40'
               }`}
             >
-              <div className={`p-2 rounded-xl ${!isChild ? 'bg-[#6B5B73] text-white' : 'bg-[#EDE3D4] dark:bg-[#1E1923] text-[#362E3B] dark:text-[#D5D0CA]'}`}>
+              <div className={`p-2 rounded-xl ${!isChild ? 'bg-muted-foreground text-white' : 'bg-[#EDE3D4] dark:bg-background text-foreground dark:text-border'}`}>
                 <User className="w-5 h-5" />
               </div>
               <div>
-                <div className="font-serif text-sm font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+                <div className="font-serif text-sm font-medium text-foreground dark:text-foreground">
                   {isEn ? 'I am learning (Adult / Self)' : 'أنا المتعلم (بالغ / شخصي)'}
                 </div>
-                <div className="text-[11px] text-[#362E3B]/60 dark:text-[#D5D0CA]/60">
+                <div className="text-[11px] text-foreground/60 dark:text-border/60">
                   {isEn ? 'Direct communication for your own learning' : 'تواصل وتنسيق مباشر لتعلمك الشخصي'}
                 </div>
               </div>
@@ -321,18 +321,18 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
               onClick={() => handleAudienceChange('child')}
               className={`p-3.5 rounded-2xl border text-start transition-all cursor-pointer flex items-center gap-3.5 ${
                 isChild
-                  ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-[#6B5B73] dark:border-[#B8A9C9] ring-1 ring-[#6B5B73] shadow-xs'
-                  : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] hover:bg-[#F5E6D3]/40'
+                  ? 'bg-foreground dark:bg-[#29232F] border-muted-foreground dark:border-muted-foreground ring-1 ring-muted-foreground shadow-xs'
+                  : 'bg-white dark:bg-[#231D28] border-border dark:border-border hover:bg-foreground/40'
               }`}
             >
-              <div className={`p-2 rounded-xl ${isChild ? 'bg-[#6B5B73] text-white' : 'bg-[#EDE3D4] dark:bg-[#1E1923] text-[#362E3B] dark:text-[#D5D0CA]'}`}>
+              <div className={`p-2 rounded-xl ${isChild ? 'bg-muted-foreground text-white' : 'bg-[#EDE3D4] dark:bg-background text-foreground dark:text-border'}`}>
                 <Users className="w-5 h-5" />
               </div>
               <div>
-                <div className="font-serif text-sm font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+                <div className="font-serif text-sm font-medium text-foreground dark:text-foreground">
                   {isEn ? 'For my child (Parent / Guardian)' : 'لطفلي (حجز ولي الأمر)'}
                 </div>
-                <div className="text-[11px] text-[#362E3B]/60 dark:text-[#D5D0CA]/60">
+                <div className="text-[11px] text-foreground/60 dark:text-border/60">
                   {isEn ? 'Parents attend or receive updates' : 'متابعة وإشراف وتنسيق مع ولي الأمر'}
                 </div>
               </div>
@@ -347,8 +347,8 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
         <div className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-[#362E3B]/80 dark:text-[#D5D0CA]/80 mb-1.5">
-                {isEn ? 'Your Full Name' : 'اسمك الكريم'} <span className="text-[#6B5B73] dark:text-[#B8A9C9]">*</span>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1.5">
+                {isEn ? 'Your Full Name' : 'اسمك الكريم'} <span className="text-muted-foreground dark:text-muted-foreground">*</span>
               </label>
               <input
                 type="text"
@@ -356,18 +356,18 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                 value={formData.studentName}
                 onChange={(e) => updateForm({ studentName: e.target.value })}
                 placeholder={isEn ? 'e.g. Tariq Mansour' : 'مثال: طارق منصور'}
-                className="w-full px-4 py-2.5 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-sm text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-4 py-2.5 rounded-xl border border-border dark:border-border bg-white dark:bg-background text-sm text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-[#362E3B]/80 dark:text-[#D5D0CA]/80 mb-1.5">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1.5">
                 {isEn ? 'Age Group' : 'الفئة العمرية'}
               </label>
               <select
                 value={formData.ageGroup || '18-29'}
                 onChange={(e) => updateForm({ ageGroup: e.target.value })}
-                className="w-full px-4 py-2.5 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-sm text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-4 py-2.5 rounded-xl border border-border dark:border-border bg-white dark:bg-background text-sm text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="18-29">18 – 29 {isEn ? 'years' : 'سنة'}</option>
                 <option value="30-45">30 – 45 {isEn ? 'years' : 'سنة'}</option>
@@ -378,9 +378,9 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-[#362E3B]/80 dark:text-[#D5D0CA]/80 mb-1.5">
+              <label className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1.5">
                 <Mail className="w-3.5 h-3.5 text-primary" />
-                <span>{isEn ? 'Email Address' : 'البريد الإلكتروني'}</span> <span className="text-[#6B5B73] dark:text-[#B8A9C9]">*</span>
+                <span>{isEn ? 'Email Address' : 'البريد الإلكتروني'}</span> <span className="text-muted-foreground dark:text-muted-foreground">*</span>
               </label>
               <input
                 type="email"
@@ -388,15 +388,15 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                 value={formData.email}
                 onChange={(e) => updateForm({ email: e.target.value })}
                 placeholder="name@example.com"
-                className="w-full px-4 py-2.5 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-sm text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-4 py-2.5 rounded-xl border border-border dark:border-border bg-white dark:bg-background text-sm text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
-              <p className="text-[11px] text-[#362E3B]/55 dark:text-[#D5D0CA]/55 mt-1">
+              <p className="text-[11px] text-foreground/55 dark:text-border/55 mt-1">
                 {isEn ? 'Zoom meeting room credentials will be sent here.' : 'سيتم إرسال رابط قاعة زووم إلى هذا البريد.'}
               </p>
             </div>
 
             <div>
-              <label className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-[#362E3B]/80 dark:text-[#D5D0CA]/80 mb-1.5">
+              <label className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1.5">
                 <Phone className="w-3.5 h-3.5 text-primary" />
                 <span>{isEn ? 'WhatsApp Number (Recommended)' : 'رقم الواتساب (موصى به للتذكير)'}</span>
               </label>
@@ -405,9 +405,9 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                 value={formData.whatsapp}
                 onChange={(e) => updateForm({ whatsapp: e.target.value })}
                 placeholder="+1 (555) 000-0000"
-                className="w-full px-4 py-2.5 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-sm text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-4 py-2.5 rounded-xl border border-border dark:border-border bg-white dark:bg-background text-sm text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
-              <p className="text-[11px] text-[#362E3B]/55 dark:text-[#D5D0CA]/55 mt-1">
+              <p className="text-[11px] text-foreground/55 dark:text-border/55 mt-1">
                 {isEn ? 'For courteous lesson reminders and direct questions.' : 'للتذكير بموعد الدرس ولأي استفسار مباشر.'}
               </p>
             </div>
@@ -416,23 +416,23 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
       ) : (
         /* CHILD & PARENT FIELDS */
         <div className="space-y-4">
-          <div className="p-4 rounded-2xl bg-white dark:bg-[#231D28] border border-[#D5D0CA] dark:border-[#3E3545] space-y-4">
-            <div className="font-serif text-sm font-medium text-[#6B5B73] dark:text-[#B8A9C9] flex items-center gap-2">
+          <div className="p-4 rounded-2xl bg-white dark:bg-[#231D28] border border-border dark:border-border space-y-4">
+            <div className="font-serif text-sm font-medium text-muted-foreground dark:text-muted-foreground flex items-center gap-2">
               <User className="w-4 h-4" />
               <span>{isEn ? '1. Learner (Child) Details' : '١. بيانات الطفل (الطالب)'}</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-[#362E3B]/80 dark:text-[#D5D0CA]/80 mb-1">
-                  {isEn ? 'Child’s Full Name' : 'اسم الطفل الكريم'} <span className="text-[#6B5B73] dark:text-[#B8A9C9]">*</span>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1">
+                  {isEn ? 'Child’s Full Name' : 'اسم الطفل الكريم'} <span className="text-muted-foreground dark:text-muted-foreground">*</span>
                 </label>
                 {linkedChildren.length > 0 ? (
                   <select
                     value={formData.studentId || ''}
                     onChange={(e) => handleChildSelect(e.target.value)}
                     required
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-[#F5E6D3]/30 dark:bg-[#1E1923] text-sm text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-border dark:border-border bg-foreground/30 dark:bg-background text-sm text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   >
                     <option value="" disabled>{isEn ? 'Select a child' : 'اختر طفلاً'}</option>
                     {linkedChildren.map((child: any) => (
@@ -446,19 +446,19 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                     value={formData.childName}
                     onChange={(e) => updateForm({ childName: e.target.value })}
                     placeholder={isEn ? 'e.g. Yusuf' : 'مثال: يوسف'}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-[#F5E6D3]/30 dark:bg-[#1E1923] text-sm text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-border dark:border-border bg-foreground/30 dark:bg-background text-sm text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 )}
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-[#362E3B]/80 dark:text-[#D5D0CA]/80 mb-1">
-                  {isEn ? 'Child’s Age' : 'عمر الطفل'} <span className="text-[#6B5B73] dark:text-[#B8A9C9]">*</span>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1">
+                  {isEn ? 'Child’s Age' : 'عمر الطفل'} <span className="text-muted-foreground dark:text-muted-foreground">*</span>
                 </label>
                 <select
                   value={formData.childAge || '8-11'}
                   onChange={(e) => updateForm({ childAge: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-[#F5E6D3]/30 dark:bg-[#1E1923] text-sm text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-border dark:border-border bg-foreground/30 dark:bg-background text-sm text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="5-7">5 – 7 {isEn ? 'years old' : 'سنوات'}</option>
                   <option value="8-11">8 – 11 {isEn ? 'years old' : 'سنوات'}</option>
@@ -469,16 +469,16 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white dark:bg-[#231D28] border border-[#D5D0CA] dark:border-[#3E3545] space-y-4">
-            <div className="font-serif text-sm font-medium text-[#6B5B73] dark:text-[#B8A9C9] flex items-center gap-2">
+          <div className="p-4 rounded-2xl bg-white dark:bg-[#231D28] border border-border dark:border-border space-y-4">
+            <div className="font-serif text-sm font-medium text-muted-foreground dark:text-muted-foreground flex items-center gap-2">
               <Users className="w-4 h-4" />
               <span>{isEn ? '2. Parent / Guardian Contact' : '٢. بيانات ولي الأمر للتواصل والتنسيق'}</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-[#362E3B]/80 dark:text-[#D5D0CA]/80 mb-1">
-                  {isEn ? 'Parent’s Full Name' : 'اسم ولي الأمر'} <span className="text-[#6B5B73] dark:text-[#B8A9C9]">*</span>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1">
+                  {isEn ? 'Parent’s Full Name' : 'اسم ولي الأمر'} <span className="text-muted-foreground dark:text-muted-foreground">*</span>
                 </label>
                 <input
                   type="text"
@@ -486,13 +486,13 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                   value={formData.parentName}
                   onChange={(e) => updateForm({ parentName: e.target.value })}
                   placeholder={isEn ? 'e.g. Maryam Khan' : 'مثال: مريم خان'}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-[#F5E6D3]/30 dark:bg-[#1E1923] text-sm text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-border dark:border-border bg-foreground/30 dark:bg-background text-sm text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-[#362E3B]/80 dark:text-[#D5D0CA]/80 mb-1">
-                  {isEn ? 'Parent’s Email' : 'البريد الإلكتروني لولي الأمر'} <span className="text-[#6B5B73] dark:text-[#B8A9C9]">*</span>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1">
+                  {isEn ? 'Parent’s Email' : 'البريد الإلكتروني لولي الأمر'} <span className="text-muted-foreground dark:text-muted-foreground">*</span>
                 </label>
                 <input
                   type="email"
@@ -500,12 +500,12 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                   value={formData.parentEmail}
                   onChange={(e) => updateForm({ parentEmail: e.target.value })}
                   placeholder="parent@example.com"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-[#F5E6D3]/30 dark:bg-[#1E1923] text-sm text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-border dark:border-border bg-foreground/30 dark:bg-background text-sm text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-[#362E3B]/80 dark:text-[#D5D0CA]/80 mb-1">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1">
                   {isEn ? 'Parent’s WhatsApp' : 'رقم واتساب ولي الأمر'}
                 </label>
                 <input
@@ -513,7 +513,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                   value={formData.parentWhatsapp}
                   onChange={(e) => updateForm({ parentWhatsapp: e.target.value })}
                   placeholder="+1 (555) 000-0000"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-[#F5E6D3]/30 dark:bg-[#1E1923] text-sm text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-border dark:border-border bg-foreground/30 dark:bg-background text-sm text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
             </div>
@@ -523,7 +523,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
 
       {/* Starting Level Assessment */}
       <div className="space-y-2 pt-2">
-        <label className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#362E3B]/70 dark:text-[#D5D0CA]/70">
+        <label className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-foreground/70 dark:text-border/70">
           <BookMarked className="w-3.5 h-3.5 text-primary" />
           <span>
             {isChild
@@ -547,14 +547,14 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                 }
                 className={`p-3 rounded-xl border text-start transition-all cursor-pointer ${
                   isSelected
-                    ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-primary ring-1 ring-primary text-[#362E3B] dark:text-[#F5E6D3]'
-                    : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] text-[#362E3B]/70 dark:text-[#D5D0CA]/70 hover:bg-[#F5E6D3]/30'
+                    ? 'bg-foreground dark:bg-[#29232F] border-primary ring-1 ring-primary text-foreground dark:text-foreground'
+                    : 'bg-white dark:bg-[#231D28] border-border dark:border-border text-foreground/70 dark:text-border/70 hover:bg-foreground/30'
                 }`}
               >
                 <div className="font-serif text-xs font-medium mb-0.5">
                   {isEn ? lvl.label : lvl.arabicLabel}
                 </div>
-                <div className="text-[10px] text-[#362E3B]/55 dark:text-[#D5D0CA]/55 line-clamp-2">
+                <div className="text-[10px] text-foreground/55 dark:text-border/55 line-clamp-2">
                   {lvl.desc}
                 </div>
               </button>
@@ -564,7 +564,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
       </div>
 
       {/* Trust & Privacy Reassurance */}
-      <div className="p-3.5 rounded-xl bg-[#EDE3D4] dark:bg-[#29232F] border border-primary/30 flex items-center gap-3 text-xs text-[#362E3B]/80 dark:text-[#D5D0CA]/80">
+      <div className="p-3.5 rounded-xl bg-[#EDE3D4] dark:bg-[#29232F] border border-primary/30 flex items-center gap-3 text-xs text-foreground/80 dark:text-border/80">
         <ShieldCheck className="w-5 h-5 text-primary shrink-0" />
         <span>
           {isEn
@@ -574,13 +574,13 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
       </div>
 
       {/* Controls */}
-      <div className="pt-4 border-t border-[#D5D0CA] dark:border-[#3E3545] flex items-center justify-between gap-4">
+      <div className="pt-4 border-t border-border dark:border-border flex items-center justify-between gap-4">
         <motion.button
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
           onClick={onBack}
           type="button"
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium text-[#362E3B]/80 dark:text-[#D5D0CA]/80 hover:bg-[#EDE3D4] dark:hover:bg-[#29232F] transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium text-foreground/80 dark:text-border/80 hover:bg-[#EDE3D4] dark:hover:bg-[#29232F] transition-colors cursor-pointer"
         >
           <ArrowLeft className={`w-3.5 h-3.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
           <span>{isEn ? 'Back to Goals' : 'الرجوع للأهداف'}</span>
@@ -591,7 +591,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
           whileTap={{ scale: 0.97 }}
           onClick={onNext}
           disabled={!isFormValid}
-          className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-[#6B5B73] hover:bg-[#584960] text-white text-sm font-medium shadow-xs disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
+          className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-muted-foreground hover:bg-[#584960] text-white text-sm font-medium shadow-xs disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
         >
           <span>{isEn ? 'Next: Lesson Length & Type' : 'التالي: مدة ونوع الدرس'}</span>
           <ArrowRight className={`w-4 h-4 ${lang === 'ar' ? 'rotate-180' : ''}`} />

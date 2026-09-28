@@ -1,4 +1,4 @@
-import { supabase, isSupabaseConfigured } from './supabase';
+﻿import { supabase, isSupabaseConfigured } from './supabase';
 import {
   BookingFormData,
   MockBookingRecord,
@@ -273,7 +273,7 @@ export const bookingRepository = {
 
     // Real Supabase persistence is authoritative. Only store in in-memory mockBookingStore
     // when running in unconfigured / offline fallback mode. This prevents real Production
-    // bookings from leaking into demo/test data or serving as an unauthorized second source of truth.
+    // bookings from leaking into local test data or serving as an unauthorized second source of truth.
     if (!isSupabaseConfigured()) {
       this.mockBookingStore.push(bookingResult);
     }

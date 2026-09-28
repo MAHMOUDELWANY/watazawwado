@@ -55,7 +55,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
     <section
       ref={sectionRef}
       id="unified-mentorship"
-      className="relative bg-[#F8F6F0] dark:bg-[#1A161E] py-20 lg:py-32 border-b border-[#D5D0CA]/80 dark:border-[#3E3545] transition-colors"
+      className="relative bg-background dark:bg-background py-20 lg:py-32 border-b border-border/80 dark:border-border transition-colors"
     >
       {/* Background radial glow */}
       <div className="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[500px] bg-primary/10 dark:bg-primary/5 rounded-full blur-3xl pointer-events-none" />
@@ -77,7 +77,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
             </div>
 
             {/* Headline */}
-            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-[#362E3B] dark:text-[#F5E6D3] leading-[1.18] tracking-tight">
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-foreground dark:text-foreground leading-[1.18] tracking-tight">
               {isEn ? (
                 <>
                   Does every new subject need a new tutor?{' '}
@@ -92,7 +92,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
             </h2>
 
             {/* Body Copy */}
-            <p className="text-base sm:text-lg text-[#362E3B]/75 dark:text-[#D5D0CA] leading-relaxed">
+            <p className="text-base sm:text-lg text-foreground/75 dark:text-border leading-relaxed">
               {isEn
                 ? 'Instead of juggling three different platforms, rotating strangers, and conflicting timezones for Quran, Arabic, and Islamic Studies—receive one cohesive, personal curriculum tailored to you or your child.'
                 : 'بدلاً من إدارة ثلاث منصات مختلفة، ومعلمين غرباء يتغيرون باستمرار، ومواعيد متضاربة—احصل على منهج شخصي متكامل وشامل تحت إشراف معلم أزهري واحد يعرف مستواك ونقاط قوتك.'}
@@ -100,13 +100,13 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
 
             {/* Interactive Toggle for Direct Visual Comparison */}
             <div className="pt-2">
-              <div className="inline-flex p-1 rounded-xl bg-white dark:bg-[#26202C] border border-[#D5D0CA] dark:border-[#3E3545] shadow-xs gap-1">
+              <div className="inline-flex p-1 rounded-xl bg-white dark:bg-surface-subtle border border-border dark:border-border shadow-xs gap-1">
                 <button
                   onClick={() => setManualUnified(false)}
                   className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                     manualUnified === false
-                      ? 'bg-[#362E3B] dark:bg-white text-white dark:text-[#1E1923] shadow-xs'
-                      : 'text-[#6B5B73] dark:text-[#B8A9C9] hover:text-[#362E3B]'
+                      ? 'bg-foreground dark:bg-white text-white dark:text-background shadow-xs'
+                      : 'text-muted-foreground dark:text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   {isEn ? 'Scattered Marketplaces' : 'المنصات المتفرقة'}
@@ -116,7 +116,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                   className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                     manualUnified === true || manualUnified === null
                       ? 'bg-primary text-white shadow-xs'
-                      : 'text-[#6B5B73] dark:text-[#B8A9C9] hover:text-[#362E3B]'
+                      : 'text-muted-foreground dark:text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   {isEn ? '★ One Mentorship' : '★ إشراف محمود الموحد'}
@@ -125,17 +125,17 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
             </div>
 
             {/* Bottom summary note */}
-            <div className="pt-4 border-t border-[#D5D0CA]/80 dark:border-[#3E3545]/80 text-xs sm:text-sm text-[#6B5B73] dark:text-[#B8A9C9]">
+            <div className="pt-4 border-t border-border/80 dark:border-border/80 text-xs sm:text-sm text-muted-foreground dark:text-muted-foreground">
               {isEn ? (
                 <>
-                  <span className="font-semibold text-[#362E3B] dark:text-[#F5E6D3]">
+                  <span className="font-semibold text-foreground dark:text-foreground">
                     13 disciplines.
                   </span>{' '}
                   One teacher who knows your voice. One clean direct relationship.
                 </>
               ) : (
                 <>
-                  <span className="font-semibold text-[#362E3B] dark:text-[#F5E6D3]">
+                  <span className="font-semibold text-foreground dark:text-foreground">
                     ١٣ تخصصاً تعليمياً.
                   </span>{' '}
                   معلم واحد يتابع صوتك وتطورك خطوة بخطوة.
@@ -151,7 +151,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
             
             {/* Context Badge at top */}
             <div className="flex items-center justify-between mb-6 px-1">
-              <span className="text-xs font-semibold text-[#6B5B73] dark:text-[#B8A9C9] flex items-center gap-1.5">
+              <span className="text-xs font-semibold text-muted-foreground dark:text-muted-foreground flex items-center gap-1.5">
                 <AlertCircle className="w-3.5 h-3.5 text-[#D97706]" />
                 {isEn ? 'Traditional fragmented model' : 'النموذج التقليدي المشتت'}
               </span>
@@ -178,44 +178,44 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                 {/* Card 1: Quran Tutor on Marketplace */}
                 <motion.div
                   style={{ x: leftCardX }}
-                  className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#231E2A] border border-[#D5D0CA] dark:border-[#3E3545] shadow-sm flex flex-col justify-between"
+                  className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-surface border border-border dark:border-border shadow-sm flex flex-col justify-between"
                 >
                   <div>
-                    <div className="flex items-center justify-between text-[11px] font-mono text-[#6B5B73] dark:text-[#B8A9C9] mb-2">
+                    <div className="flex items-center justify-between text-[11px] font-mono text-muted-foreground dark:text-muted-foreground mb-2">
                       <span>01</span>
                       <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-[#D97706] font-semibold">
                         Separate
                       </span>
                     </div>
-                    <h3 className="font-serif text-base font-semibold text-[#362E3B] dark:text-[#F5E6D3] mb-1">
+                    <h3 className="font-serif text-base font-semibold text-foreground dark:text-foreground mb-1">
                       {isEn ? 'Quran Platform' : 'منصة تجويد متفرقة'}
                     </h3>
-                    <p className="text-xs text-[#6B5B73] dark:text-[#B8A9C9] leading-relaxed mb-3">
+                    <p className="text-xs text-muted-foreground dark:text-muted-foreground leading-relaxed mb-3">
                       {isEn ? 'Rotating strangers, marketplace commission, no long-term rapport.' : 'معلمون متغيرون وعمولات وساطة باهظة.'}
                     </p>
                   </div>
-                  <div className="text-[11px] font-mono text-red-500/90 dark:text-red-400/90 pt-2 border-t border-[#D5D0CA]/60 dark:border-[#3E3545]/60">
+                  <div className="text-[11px] font-mono text-red-500/90 dark:text-red-400/90 pt-2 border-t border-border/60 dark:border-border/60">
                     {isEn ? 'Separate Subscription' : 'اشتراك منفصل'}
                   </div>
                 </motion.div>
 
                 {/* Card 2: Arabic Group Academy */}
-                <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#231E2A] border border-[#D5D0CA] dark:border-[#3E3545] shadow-sm flex flex-col justify-between">
+                <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-surface border border-border dark:border-border shadow-sm flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center justify-between text-[11px] font-mono text-[#6B5B73] dark:text-[#B8A9C9] mb-2">
+                    <div className="flex items-center justify-between text-[11px] font-mono text-muted-foreground dark:text-muted-foreground mb-2">
                       <span>02</span>
                       <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-[#D97706] font-semibold">
                         Separate
                       </span>
                     </div>
-                    <h3 className="font-serif text-base font-semibold text-[#362E3B] dark:text-[#F5E6D3] mb-1">
+                    <h3 className="font-serif text-base font-semibold text-foreground dark:text-foreground mb-1">
                       {isEn ? 'Arabic Academy' : 'أكاديمية عربية'}
                     </h3>
-                    <p className="text-xs text-[#6B5B73] dark:text-[#B8A9C9] leading-relaxed mb-3">
+                    <p className="text-xs text-muted-foreground dark:text-muted-foreground leading-relaxed mb-3">
                       {isEn ? 'Mass zoom calls, rigid textbook speed, zero speaking correction.' : 'فصول جماعية وسرعة منهج ثابتة لا تراعي الفروق.'}
                     </p>
                   </div>
-                  <div className="text-[11px] font-mono text-red-500/90 dark:text-red-400/90 pt-2 border-t border-[#D5D0CA]/60 dark:border-[#3E3545]/60">
+                  <div className="text-[11px] font-mono text-red-500/90 dark:text-red-400/90 pt-2 border-t border-border/60 dark:border-border/60">
                     {isEn ? 'Separate Subscription' : 'اشتراك منفصل'}
                   </div>
                 </div>
@@ -223,23 +223,23 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                 {/* Card 3: Weekend Islamic School */}
                 <motion.div
                   style={{ x: rightCardX }}
-                  className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#231E2A] border border-[#D5D0CA] dark:border-[#3E3545] shadow-sm flex flex-col justify-between"
+                  className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-surface border border-border dark:border-border shadow-sm flex flex-col justify-between"
                 >
                   <div>
-                    <div className="flex items-center justify-between text-[11px] font-mono text-[#6B5B73] dark:text-[#B8A9C9] mb-2">
+                    <div className="flex items-center justify-between text-[11px] font-mono text-muted-foreground dark:text-muted-foreground mb-2">
                       <span>03</span>
                       <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-[#D97706] font-semibold">
                         Separate
                       </span>
                     </div>
-                    <h3 className="font-serif text-base font-semibold text-[#362E3B] dark:text-[#F5E6D3] mb-1">
+                    <h3 className="font-serif text-base font-semibold text-foreground dark:text-foreground mb-1">
                       {isEn ? 'Islamic Studies' : 'مدرسة عطلة الأسبوع'}
                     </h3>
-                    <p className="text-xs text-[#6B5B73] dark:text-[#B8A9C9] leading-relaxed mb-3">
+                    <p className="text-xs text-muted-foreground dark:text-muted-foreground leading-relaxed mb-3">
                       {isEn ? 'Commute fatigue, general lecture format, no 1-on-1 Q&A space.' : 'إرهاق تنقل ومحاضرات عامة دون مساحة للأسئلة.'}
                     </p>
                   </div>
-                  <div className="text-[11px] font-mono text-red-500/90 dark:text-red-400/90 pt-2 border-t border-[#D5D0CA]/60 dark:border-[#3E3545]/60">
+                  <div className="text-[11px] font-mono text-red-500/90 dark:text-red-400/90 pt-2 border-t border-border/60 dark:border-border/60">
                     {isEn ? 'Separate Subscription' : 'اشتراك منفصل'}
                   </div>
                 </motion.div>
@@ -312,7 +312,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                   scale: manualUnified === false ? 0.95 : manualUnified === true ? 1 : unifiedCardScale,
                   y: manualUnified === false ? 20 : manualUnified === true ? 0 : unifiedCardY,
                 }}
-                className="relative rounded-2xl sm:rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#26202C] border-2 border-primary shadow-2xl shadow-primary/15 dark:shadow-black/60 transition-all z-20"
+                className="relative rounded-2xl sm:rounded-3xl p-6 sm:p-8 bg-white dark:bg-surface-subtle border-2 border-primary shadow-2xl shadow-primary/15 dark:shadow-black/60 transition-all z-20"
               >
                 {/* Floating "Direct Teacher Model" Badge */}
                 <div className="absolute -top-3.5 right-6 sm:right-8 px-3.5 py-1 rounded-full bg-primary text-white text-[11px] font-semibold tracking-wide shadow-md flex items-center gap-1.5">
@@ -320,16 +320,16 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                   <span>{isEn ? 'All In One Direct Mentorship' : 'منهج موحد بإشراف مباشر'}</span>
                 </div>
 
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D5D0CA]/80 dark:border-[#3E3545] pb-6 mb-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/80 dark:border-border pb-6 mb-6">
                   <div>
                     <div className="flex items-center gap-2 mb-1.5">
                       <span className="w-3 h-3 rounded-full bg-primary" />
-                      <span className="font-serif text-xl sm:text-2xl font-bold text-[#362E3B] dark:text-[#F5E6D3]">
+                      <span className="font-serif text-xl sm:text-2xl font-bold text-foreground dark:text-foreground">
                         {isEn ? 'Ustadh Mahmoud Eldwany' : 'الأستاذ محمود الدواني'}
                       </span>
                       <ShieldCheck className="w-5 h-5 text-primary" />
                     </div>
-                    <p className="text-xs sm:text-sm text-[#6B5B73] dark:text-[#B8A9C9]">
+                    <p className="text-xs sm:text-sm text-muted-foreground dark:text-muted-foreground">
                       {isEn
                         ? 'Al-Azhar University Graduate • C1 English • 3+ Years International Experience'
                         : 'خريج الأزهر الشريف • إنجليزية بطلاقة C1 • خبرة ٣+ سنوات مع طلاب الغرب'}
@@ -341,10 +341,10 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                     <div className="text-xs font-mono text-primary dark:text-[#A3BF96] font-semibold uppercase tracking-wider">
                       {isEn ? 'First Session' : 'الجلسة الأولى'}
                     </div>
-                    <div className="font-serif text-2xl sm:text-3xl font-bold text-[#362E3B] dark:text-[#F5E6D3]">
+                    <div className="font-serif text-2xl sm:text-3xl font-bold text-foreground dark:text-foreground">
                       {isEn ? '100% Free' : 'مجانية تماماً'}
                     </div>
-                    <div className="text-[11px] text-[#6B5B73] dark:text-[#B8A9C9]">
+                    <div className="text-[11px] text-muted-foreground dark:text-muted-foreground">
                       {isEn ? '30 Min Assessment & Mini Lesson' : '٣٠ دقيقة تقييم ودرس مصغر'}
                     </div>
                   </div>
@@ -352,32 +352,32 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
 
                 {/* 3 Unified Pillar Badges */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-                  <div className="p-3 rounded-xl bg-[#F8F6F0] dark:bg-[#1E1923] border border-[#D5D0CA]/70 dark:border-[#3E3545]">
+                  <div className="p-3 rounded-xl bg-background dark:bg-background border border-border/70 dark:border-border">
                     <div className="text-xs font-semibold text-primary-hover dark:text-[#A3BF96] mb-1 flex items-center gap-1.5">
                       <Check className="w-3.5 h-3.5 text-primary" />
                       <span>{isEn ? 'Quran & Tajweed' : 'القرآن والتجويد'}</span>
                     </div>
-                    <div className="text-[11px] text-[#362E3B]/75 dark:text-[#D5D0CA]">
+                    <div className="text-[11px] text-foreground/75 dark:text-border">
                       {isEn ? 'Reading, Hifz, Makharij & Revision' : 'القراءة، الحفظ، المخارج والمراجعة'}
                     </div>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-[#F8F6F0] dark:bg-[#1E1923] border border-[#D5D0CA]/70 dark:border-[#3E3545]">
+                  <div className="p-3 rounded-xl bg-background dark:bg-background border border-border/70 dark:border-border">
                     <div className="text-xs font-semibold text-primary-hover dark:text-[#A3BF96] mb-1 flex items-center gap-1.5">
                       <Check className="w-3.5 h-3.5 text-primary" />
                       <span>{isEn ? 'Arabic Language' : 'اللغة العربية'}</span>
                     </div>
-                    <div className="text-[11px] text-[#362E3B]/75 dark:text-[#D5D0CA]">
+                    <div className="text-[11px] text-foreground/75 dark:text-border">
                       {isEn ? 'Fusha & Egyptian Conversation' : 'الفصحى والمحادثة والعامية المصرية'}
                     </div>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-[#F8F6F0] dark:bg-[#1E1923] border border-[#D5D0CA]/70 dark:border-[#3E3545]">
+                  <div className="p-3 rounded-xl bg-background dark:bg-background border border-border/70 dark:border-border">
                     <div className="text-xs font-semibold text-primary-hover dark:text-[#A3BF96] mb-1 flex items-center gap-1.5">
                       <Check className="w-3.5 h-3.5 text-primary" />
                       <span>{isEn ? 'Islamic Studies' : 'الدراسات الإسلامية'}</span>
                     </div>
-                    <div className="text-[11px] text-[#362E3B]/75 dark:text-[#D5D0CA]">
+                    <div className="text-[11px] text-foreground/75 dark:text-border">
                       {isEn ? 'Fiqh, Aqeedah, Salah & Seerah' : 'الفقه، العقيدة، الصلاة والسيرة'}
                     </div>
                   </div>
@@ -385,7 +385,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
 
                 {/* Call to action bar */}
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
-                  <div className="flex items-center gap-2 text-xs text-[#6B5B73] dark:text-[#B8A9C9]">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground dark:text-muted-foreground">
                     <MessageCircle className="w-4 h-4 text-primary" />
                     <span>
                       {isEn

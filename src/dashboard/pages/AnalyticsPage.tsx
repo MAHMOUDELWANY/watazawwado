@@ -68,7 +68,7 @@ export default function AnalyticsPage() {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin mb-4" />
-        <p className="text-sm font-medium text-foreground/70 dark:text-[#D5D0CA]">Calculating metrics...</p>
+        <p className="text-sm font-medium text-foreground/70 dark:text-border">Calculating metrics...</p>
       </div>
     );
   }
@@ -123,7 +123,7 @@ export default function AnalyticsPage() {
               Real-time
             </span>
           </div>
-          <p className="text-sm text-foreground/70 dark:text-[#D5D0CA] mt-1">
+          <p className="text-sm text-foreground/70 dark:text-border mt-1">
             Tracking learner progression, engagement, and operational metrics.
           </p>
         </div>
@@ -146,14 +146,14 @@ export default function AnalyticsPage() {
             <button
               onClick={() => fetchAnalytics(true)}
               disabled={refreshing}
-              className="px-3 py-1.5 rounded-xl border border-border dark:border-border bg-white dark:bg-surface text-xs font-medium text-foreground dark:text-foreground hover:bg-stone-50 dark:hover:bg-[#3E3545]/40 transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              className="px-3 py-1.5 rounded-xl border border-border dark:border-border bg-white dark:bg-surface text-xs font-medium text-foreground dark:text-foreground hover:bg-stone-50 dark:hover:bg-border/40 transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
               <span className="hidden sm:inline">Refresh</span>
             </button>
           </div>
           {lastRefreshed && (
-            <span className="text-[11px] text-foreground/50 dark:text-[#D5D0CA]/50 font-mono">
+            <span className="text-[11px] text-foreground/50 dark:text-border/50 font-mono">
               Updated {lastRefreshed.toFormat('HH:mm:ss')} Cairo
             </span>
           )}
@@ -161,7 +161,7 @@ export default function AnalyticsPage() {
       </div>
 
       {dateRange === 'custom' && (
-        <div className="flex flex-wrap items-center gap-3 p-3 rounded-xl bg-white dark:bg-surface border border-[#D5D0CA]/30 dark:border-border/30">
+        <div className="flex flex-wrap items-center gap-3 p-3 rounded-xl bg-white dark:bg-surface border border-border/30 dark:border-border/30">
           <div className="flex flex-col">
             <label className="text-[10px] uppercase tracking-wider text-stone-500 mb-1 font-medium">Start Date</label>
             <input 
@@ -192,9 +192,9 @@ export default function AnalyticsPage() {
 
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-5 rounded-2xl bg-white dark:bg-surface border border-[#D5D0CA]/30 dark:border-border/30 shadow-xs space-y-2">
+        <div className="p-5 rounded-2xl bg-white dark:bg-surface border border-border/30 dark:border-border/30 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs uppercase tracking-wider text-foreground/60 dark:text-[#D5D0CA]/60 font-medium">
+            <span className="text-xs uppercase tracking-wider text-foreground/60 dark:text-border/60 font-medium">
               Lead → Trial
             </span>
             <div className="w-8 h-8 rounded-full bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
@@ -206,14 +206,14 @@ export default function AnalyticsPage() {
               {rates?.lead_to_trial_rate !== null && rates?.lead_to_trial_rate !== undefined ? `${rates.lead_to_trial_rate}%` : 'N/A'}
             </span>
           </div>
-          <p className="text-[11px] text-foreground/70 dark:text-[#D5D0CA]/70">
+          <p className="text-[11px] text-foreground/70 dark:text-border/70">
             {rates?.lead_to_trial_rate === null ? 'No leads in date range' : 'Leads booking a trial'}
           </p>
         </div>
 
-        <div className="p-5 rounded-2xl bg-white dark:bg-surface border border-[#D5D0CA]/30 dark:border-border/30 shadow-xs space-y-2">
+        <div className="p-5 rounded-2xl bg-white dark:bg-surface border border-border/30 dark:border-border/30 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs uppercase tracking-wider text-foreground/60 dark:text-[#D5D0CA]/60 font-medium">
+            <span className="text-xs uppercase tracking-wider text-foreground/60 dark:text-border/60 font-medium">
               Trial → Student
             </span>
             <div className="w-8 h-8 rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
@@ -225,14 +225,14 @@ export default function AnalyticsPage() {
               {rates?.trial_to_student_rate !== null && rates?.trial_to_student_rate !== undefined ? `${rates.trial_to_student_rate}%` : 'N/A'}
             </span>
           </div>
-          <p className="text-[11px] text-foreground/70 dark:text-[#D5D0CA]/70">
+          <p className="text-[11px] text-foreground/70 dark:text-border/70">
             {rates?.trial_to_student_rate === null ? 'No completed trials in date range' : 'Trials converting to active'}
           </p>
         </div>
 
-        <div className="p-5 rounded-2xl bg-white dark:bg-surface border border-[#D5D0CA]/30 dark:border-border/30 shadow-xs space-y-2">
+        <div className="p-5 rounded-2xl bg-white dark:bg-surface border border-border/30 dark:border-border/30 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs uppercase tracking-wider text-foreground/60 dark:text-[#D5D0CA]/60 font-medium">
+            <span className="text-xs uppercase tracking-wider text-foreground/60 dark:text-border/60 font-medium">
               Total Active
             </span>
             <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary dark:text-primary">
@@ -244,14 +244,14 @@ export default function AnalyticsPage() {
               {data?.total_students_enrolled || 0}
             </span>
           </div>
-          <p className="text-[11px] text-foreground/70 dark:text-[#D5D0CA]/70">
+          <p className="text-[11px] text-foreground/70 dark:text-border/70">
             Current active students
           </p>
         </div>
         
-        <div className="p-5 rounded-2xl bg-white dark:bg-surface border border-[#D5D0CA]/30 dark:border-border/30 shadow-xs space-y-2">
+        <div className="p-5 rounded-2xl bg-white dark:bg-surface border border-border/30 dark:border-border/30 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs uppercase tracking-wider text-foreground/60 dark:text-[#D5D0CA]/60 font-medium">
+            <span className="text-xs uppercase tracking-wider text-foreground/60 dark:text-border/60 font-medium">
               Bookings
             </span>
             <div className="w-8 h-8 rounded-full bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400">
@@ -263,7 +263,7 @@ export default function AnalyticsPage() {
               {data?.total_bookings_count || 0}
             </span>
           </div>
-          <p className="text-[11px] text-foreground/70 dark:text-[#D5D0CA]/70">
+          <p className="text-[11px] text-foreground/70 dark:text-border/70">
             Lessons in period
           </p>
         </div>
@@ -271,13 +271,13 @@ export default function AnalyticsPage() {
 
       {/* Visual Pipeline Funnel & Payments */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="p-6 rounded-2xl bg-white dark:bg-surface border border-[#D5D0CA]/30 dark:border-border/30 shadow-xs space-y-6">
+        <div className="p-6 rounded-2xl bg-white dark:bg-surface border border-border/30 dark:border-border/30 shadow-xs space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-base font-serif font-semibold text-foreground dark:text-foreground">
                 Learner Lifecycle Stages
               </h2>
-              <p className="text-xs text-foreground/70 dark:text-[#D5D0CA]">
+              <p className="text-xs text-foreground/70 dark:text-border">
                 Volume distribution across the lifecycle transition states.
               </p>
             </div>
@@ -320,14 +320,14 @@ export default function AnalyticsPage() {
 
         <div className="space-y-6">
           {/* Payment Operational Status */}
-          <div className="p-6 rounded-2xl bg-white dark:bg-surface border border-[#D5D0CA]/30 dark:border-border/30 shadow-xs space-y-4">
+          <div className="p-6 rounded-2xl bg-white dark:bg-surface border border-border/30 dark:border-border/30 shadow-xs space-y-4">
             <div className="flex items-center gap-2">
               <DollarSign className="w-4 h-4 text-primary dark:text-primary" />
               <h2 className="text-base font-serif font-semibold text-foreground dark:text-foreground">
                 Payment Operational Status
               </h2>
             </div>
-            <p className="text-xs text-foreground/70 dark:text-[#D5D0CA]">
+            <p className="text-xs text-foreground/70 dark:text-border">
               Activity overview of payment records created in the selected period.
             </p>
 
@@ -348,7 +348,7 @@ export default function AnalyticsPage() {
           </div>
           
           {/* Service Demand Breakdown */}
-          <div className="p-6 rounded-2xl bg-white dark:bg-surface border border-[#D5D0CA]/30 dark:border-border/30 shadow-xs space-y-4">
+          <div className="p-6 rounded-2xl bg-white dark:bg-surface border border-border/30 dark:border-border/30 shadow-xs space-y-4">
             <div className="flex items-center gap-2">
               <BookOpen className="w-4 h-4 text-primary dark:text-primary" />
               <h2 className="text-base font-serif font-semibold text-foreground dark:text-foreground">

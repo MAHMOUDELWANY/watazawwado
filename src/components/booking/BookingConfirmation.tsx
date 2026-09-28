@@ -131,17 +131,17 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           <CheckCircle2 className="w-10 h-10" />
         </motion.div>
 
-        <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-[#EDE3D4] dark:bg-[#29232F] text-[#6B5B73] dark:text-[#B8A9C9] border border-primary/30">
+        <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-[#EDE3D4] dark:bg-[#29232F] text-muted-foreground dark:text-muted-foreground border border-primary/30">
           {isEn ? `Booking Reference: ${confirmation.bookingReference}` : `رقم الحجز المرجعي: ${confirmation.bookingReference}`}
         </span>
 
-        <h2 className="font-serif text-3xl sm:text-4xl font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+        <h2 className="font-serif text-3xl sm:text-4xl font-medium text-foreground dark:text-foreground">
           {confirmation.isFreeTrial
             ? isEn ? 'Your Free Trial is Booked' : 'تم تأكيد حجز جلستك التجريبية'
             : isEn ? 'Your Lesson is Scheduled' : 'تم تأكيد حجز درسك بنجاح'}
         </h2>
 
-        <p className="text-sm text-[#362E3B]/80 dark:text-[#D5D0CA] max-w-lg mx-auto leading-relaxed">
+        <p className="text-sm text-foreground/80 dark:text-border max-w-lg mx-auto leading-relaxed">
           {isEn
             ? `Assalamu Alaikum ${confirmation.learnerName}. Mahmoud is looking forward to meeting you. A confirmation summary has been logged for your local schedule.`
             : `السلام عليكم ${confirmation.learnerName}. يتطلع الأستاذ محمود للقائك في الموعد المحدد.`}
@@ -155,16 +155,16 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
 
       {/* Appointment Detail Card */}
       <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-[#231D28] border border-primary/30 shadow-xs space-y-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-4 border-b border-[#D5D0CA] dark:border-[#3E3545]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-4 border-b border-border dark:border-border">
           <div className="flex items-start gap-3">
-            <div className="p-2.5 rounded-xl bg-[#EDE3D4] dark:bg-[#1E1923] text-primary">
+            <div className="p-2.5 rounded-xl bg-[#EDE3D4] dark:bg-background text-primary">
               <Calendar className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-[11px] uppercase font-semibold text-[#362E3B]/55 dark:text-[#D5D0CA]/55 block">
+              <span className="text-[11px] uppercase font-semibold text-foreground/55 dark:text-border/55 block">
                 {isEn ? 'Date' : 'التاريخ'}
               </span>
-              <span className="text-sm font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+              <span className="text-sm font-medium text-foreground dark:text-foreground">
                 {confirmation.date}
               </span>
               <span className="text-[11px] text-primary block">
@@ -174,17 +174,17 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           </div>
 
           <div className="flex items-start gap-3">
-            <div className="p-2.5 rounded-xl bg-[#EDE3D4] dark:bg-[#1E1923] text-primary">
+            <div className="p-2.5 rounded-xl bg-[#EDE3D4] dark:bg-background text-primary">
               <Clock className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-[11px] uppercase font-semibold text-[#362E3B]/55 dark:text-[#D5D0CA]/55 block">
+              <span className="text-[11px] uppercase font-semibold text-foreground/55 dark:text-border/55 block">
                 {isEn ? 'Time (Your Local Time)' : 'الوقت (بتوقيتك المحلي)'}
               </span>
-              <span className="text-sm font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+              <span className="text-sm font-medium text-foreground dark:text-foreground">
                 {confirmation.timeDisplay}
               </span>
-              <span className="text-[11px] text-[#362E3B]/60 dark:text-[#D5D0CA]/60 block">
+              <span className="text-[11px] text-foreground/60 dark:text-border/60 block">
                 {confirmation.timezone} ({confirmation.durationMinutes} min)
               </span>
             </div>
@@ -202,7 +202,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
               <button
                 type="button"
                 onClick={copyClassroomLink}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs bg-white dark:bg-[#1E1923] border border-blue-300 dark:border-blue-800 hover:bg-blue-100 text-blue-800 dark:text-blue-300 cursor-pointer"
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs bg-white dark:bg-background border border-blue-300 dark:border-blue-800 hover:bg-blue-100 text-blue-800 dark:text-blue-300 cursor-pointer"
               >
                 {copiedLink ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copiedLink ? (isEn ? 'Copied' : 'تم النسخ') : (isEn ? 'Copy Link' : 'نسخ الرابط')}</span>
@@ -240,7 +240,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         </div>
 
         {/* Automated Reminders Note */}
-        <div className="flex items-center gap-2.5 p-3 rounded-xl bg-[#EDE3D4]/50 dark:bg-[#1E1923] text-xs text-[#362E3B]/80 dark:text-[#D5D0CA]/80">
+        <div className="flex items-center gap-2.5 p-3 rounded-xl bg-[#EDE3D4]/50 dark:bg-background text-xs text-foreground/80 dark:text-border/80">
           <BellRing className="w-4 h-4 text-primary shrink-0" />
           <span>
             {isEn
@@ -281,7 +281,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
 
       {/* Philosophy Reassurance / Post-Trial Human Expectation */}
       <div className="p-5 rounded-3xl bg-[#EDE3D4] dark:bg-[#231D28] border border-primary/30 space-y-2">
-        <div className="flex items-center gap-2 font-serif text-sm font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+        <div className="flex items-center gap-2 font-serif text-sm font-medium text-foreground dark:text-foreground">
           <Sparkles className="w-4 h-4 text-primary" />
           <span>
             {confirmation.isFreeTrial
@@ -290,7 +290,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           </span>
         </div>
 
-        <p className="text-xs text-[#362E3B]/80 dark:text-[#D5D0CA]/80 leading-relaxed">
+        <p className="text-xs text-foreground/80 dark:text-border/80 leading-relaxed">
           {confirmation.isFreeTrial
             ? isEn
               ? 'The trial is a relaxed chance for us to meet, assess where you or your child currently stand, and demonstrate the teaching method through a brief sample lesson. If it feels like a natural fit, Mahmoud will share an honest learning roadmap. There is zero obligation to commit.'
@@ -317,7 +317,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           href={getGoogleCalendarUrl()}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-white dark:bg-[#231D28] border border-[#D5D0CA] dark:border-[#3E3545] text-xs font-semibold text-[#362E3B] dark:text-[#F5E6D3] hover:bg-[#EDE3D4] dark:hover:bg-[#1E1923] transition-colors"
+          className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-white dark:bg-[#231D28] border border-border dark:border-border text-xs font-semibold text-foreground dark:text-foreground hover:bg-[#EDE3D4] dark:hover:bg-background transition-colors"
         >
           <Calendar className="w-4 h-4 text-blue-600" />
           <span>{isEn ? 'Google Calendar' : 'تقويم جوجل'}</span>
@@ -326,7 +326,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         <button
           type="button"
           onClick={handleDownloadIcs}
-          className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-white dark:bg-[#231D28] border border-[#D5D0CA] dark:border-[#3E3545] text-xs font-semibold text-[#362E3B] dark:text-[#F5E6D3] hover:bg-[#EDE3D4] dark:hover:bg-[#1E1923] transition-colors cursor-pointer"
+          className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-white dark:bg-[#231D28] border border-border dark:border-border text-xs font-semibold text-foreground dark:text-foreground hover:bg-[#EDE3D4] dark:hover:bg-background transition-colors cursor-pointer"
         >
           <Download className="w-4 h-4 text-primary" />
           <span>{downloadedIcs ? (isEn ? 'Downloaded' : 'تم التنزيل') : (isEn ? 'Apple/Outlook (.ics)' : 'تنزيل .ics')}</span>
@@ -338,7 +338,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         <button
           type="button"
           onClick={() => onOpenManageModal && onOpenManageModal(confirmation.bookingReference)}
-          className="text-xs text-[#6B5B73] dark:text-[#B8A9C9] hover:underline font-medium cursor-pointer"
+          className="text-xs text-muted-foreground dark:text-muted-foreground hover:underline font-medium cursor-pointer"
         >
           {isEn
             ? 'Need to reschedule or check cancellation eligibility? Manage here.'
@@ -351,7 +351,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         <button
           type="button"
           onClick={onDone}
-          className="px-6 py-2.5 rounded-xl text-xs font-medium text-[#362E3B]/70 dark:text-[#D5D0CA]/70 hover:bg-[#EDE3D4] dark:hover:bg-[#29232F] transition-colors cursor-pointer"
+          className="px-6 py-2.5 rounded-xl text-xs font-medium text-foreground/70 dark:text-border/70 hover:bg-[#EDE3D4] dark:hover:bg-[#29232F] transition-colors cursor-pointer"
         >
           {doneLabel || (isEn ? 'Done & Return to Homepage' : 'تم والعودة للموقع')}
         </button>

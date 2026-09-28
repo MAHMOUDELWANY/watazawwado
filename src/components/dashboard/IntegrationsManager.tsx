@@ -154,13 +154,13 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-[#D5D0CA] dark:border-[#3E3545]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-border dark:border-border">
         <div>
-          <h2 className="font-serif text-2xl font-medium text-[#362E3B] dark:text-[#F5E6D3] flex items-center gap-2.5">
+          <h2 className="font-serif text-2xl font-medium text-foreground dark:text-foreground flex items-center gap-2.5">
             <Layers className="w-6 h-6 text-primary" />
             <span>{isEn ? 'Calendar & Classroom Integrations' : 'ربط التقويم وقاعات التدريس'}</span>
           </h2>
-          <p className="text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]/70 mt-1">
+          <p className="text-xs text-foreground/70 dark:text-border/70 mt-1">
             {isEn
               ? 'Real-time synchronization engine connecting Google Calendar scheduling and Zoom online classrooms.'
               : 'محرك المزامنة الحية لجدولة الدروس عبر تقويم جوجل وغرف زووم المباشرة.'}
@@ -170,7 +170,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
         <button
           type="button"
           onClick={fetchStatus}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#231D28] text-xs font-medium hover:bg-[#EDE3D4] cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border dark:border-border bg-white dark:bg-[#231D28] text-xs font-medium hover:bg-[#EDE3D4] cursor-pointer"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-primary' : ''}`} />
           <span>{isEn ? 'Refresh Status' : 'تحديث الحالة'}</span>
@@ -207,10 +207,10 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                   <Calendar className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-serif text-base font-semibold text-[#362E3B] dark:text-[#F5E6D3]">
+                  <h3 className="font-serif text-base font-semibold text-foreground dark:text-foreground">
                     Google Calendar
                   </h3>
-                  <span className="text-[11px] text-[#362E3B]/60 dark:text-[#D5D0CA]/60">
+                  <span className="text-[11px] text-foreground/60 dark:text-border/60">
                     {isEn ? 'Primary Scheduling Source' : 'المصدر الأساسي للمواعيد'}
                   </span>
                 </div>
@@ -222,7 +222,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                   <span>{isEn ? 'Connected' : 'متصل'}</span>
                 </span>
               ) : status?.googleCalendar.isConfigured ? (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#EDE3D4] dark:bg-[#1E1923] text-[#6B5B73] dark:text-[#B8A9C9]">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#EDE3D4] dark:bg-background text-muted-foreground dark:text-muted-foreground">
                   <span>{isEn ? 'Not Connected' : 'غير متصل'}</span>
                 </span>
               ) : (
@@ -233,18 +233,18 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
               )}
             </div>
 
-            <p className="text-xs text-[#362E3B]/80 dark:text-[#D5D0CA]/80 leading-relaxed">
+            <p className="text-xs text-foreground/80 dark:text-border/80 leading-relaxed">
               {isEn
                 ? 'Syncs all trial and regular bookings to Mahmoud’s official Google Calendar. Prevents double bookings automatically.'
                 : 'مزامنة تلقائية للحجوزات على تقويم جوجل لمنع التعارض في المواعيد.'}
             </p>
 
             {status?.googleCalendar.isConnected && status?.googleCalendar.accountEmail ? (
-              <div className="p-2.5 rounded-xl bg-[#EDE3D4]/50 dark:bg-[#1E1923] text-xs space-y-1">
-                <span className="text-[10px] uppercase font-semibold text-[#6B5B73] dark:text-[#B8A9C9] block">
+              <div className="p-2.5 rounded-xl bg-[#EDE3D4]/50 dark:bg-background text-xs space-y-1">
+                <span className="text-[10px] uppercase font-semibold text-muted-foreground dark:text-muted-foreground block">
                   {isEn ? 'Connected Google Account' : 'الحساب المتصل'}
                 </span>
-                <span className="font-mono text-xs text-[#362E3B] dark:text-[#F5E6D3] font-medium">
+                <span className="font-mono text-xs text-foreground dark:text-foreground font-medium">
                   {status.googleCalendar.accountEmail}
                 </span>
               </div>
@@ -260,7 +260,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
             ) : null}
           </div>
 
-          <div className="pt-4 border-t border-[#D5D0CA]/50 dark:border-[#3E3545] mt-4 flex items-center justify-between">
+          <div className="pt-4 border-t border-border/50 dark:border-border mt-4 flex items-center justify-between">
             {status?.googleCalendar.isConnected ? (
               <button
                 type="button"
@@ -287,7 +287,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
               </button>
             )}
 
-            <span className="text-[10px] text-[#362E3B]/50 dark:text-[#D5D0CA]/50">
+            <span className="text-[10px] text-foreground/50 dark:text-border/50">
               OAuth 2.0
             </span>
           </div>
@@ -302,10 +302,10 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                   <Video className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-serif text-base font-semibold text-[#362E3B] dark:text-[#F5E6D3]">
+                  <h3 className="font-serif text-base font-semibold text-foreground dark:text-foreground">
                     Zoom Classroom
                   </h3>
-                  <span className="text-[11px] text-[#362E3B]/60 dark:text-[#D5D0CA]/60">
+                  <span className="text-[11px] text-foreground/60 dark:text-border/60">
                     {isEn ? 'Live 1-on-1 Video' : 'قاعات التدريس المباشرة'}
                   </span>
                 </div>
@@ -314,24 +314,24 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
               <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold ${
                 status?.zoom.isConfigured
                   ? 'bg-green-100 dark:bg-green-950/50 text-green-800 dark:text-green-300'
-                  : 'bg-[#EDE3D4] dark:bg-[#1E1923] text-[#6B5B73] dark:text-[#B8A9C9]'
+                  : 'bg-[#EDE3D4] dark:bg-background text-muted-foreground dark:text-muted-foreground'
               }`}>
                 {status?.zoom.isConfigured ? <CheckCircle2 className="w-3 h-3" /> : null}
                 <span>{status?.zoom.isConfigured ? (isEn ? 'Active' : 'نشط') : (isEn ? 'Offline' : 'غير متصل')}</span>
               </span>
             </div>
 
-            <p className="text-xs text-[#362E3B]/80 dark:text-[#D5D0CA]/80 leading-relaxed">
+            <p className="text-xs text-foreground/80 dark:text-border/80 leading-relaxed">
               {isEn
                 ? 'Provisions dedicated 1-on-1 Zoom lesson rooms automatically via Server-to-Server OAuth for confirmed bookings.'
                 : 'توليد روابط غرف زووم مخصصة تلقائياً لكل جلسة مؤكدة عبر Server-to-Server OAuth.'}
             </p>
 
-            <div className="p-2.5 rounded-xl bg-[#EDE3D4]/50 dark:bg-[#1E1923] text-xs space-y-1">
-              <span className="text-[10px] uppercase font-semibold text-[#6B5B73] dark:text-[#B8A9C9] block">
+            <div className="p-2.5 rounded-xl bg-[#EDE3D4]/50 dark:bg-background text-xs space-y-1">
+              <span className="text-[10px] uppercase font-semibold text-muted-foreground dark:text-muted-foreground block">
                 {isEn ? 'Provisioning Status' : 'حالة التوليد'}
               </span>
-              <span className="font-mono text-[11px] text-[#362E3B] dark:text-[#F5E6D3] break-all">
+              <span className="font-mono text-[11px] text-foreground dark:text-foreground break-all">
                 {status?.zoom.isConfigured
                   ? (isEn ? 'Automated Room Generation Active' : 'توليد الروابط مفعل')
                   : (isEn ? 'Requires ZOOM_ACCOUNT_ID env' : 'يتطلب ضبط اعتمادات Zoom')}
@@ -339,12 +339,12 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
             </div>
           </div>
 
-          <div className="pt-4 border-t border-[#D5D0CA]/50 dark:border-[#3E3545] mt-4 flex items-center justify-between">
+          <div className="pt-4 border-t border-border/50 dark:border-border mt-4 flex items-center justify-between">
             <span className="text-xs font-medium text-emerald-700 dark:text-emerald-400">
               {status?.zoom.isConfigured ? (isEn ? 'Ready' : 'جاهز') : (isEn ? 'Needs Env' : 'يتطلب متغيرات البيئة')}
             </span>
 
-            <span className="text-[10px] text-[#362E3B]/50 dark:text-[#D5D0CA]/50">
+            <span className="text-[10px] text-foreground/50 dark:text-border/50">
               S2S OAuth
             </span>
           </div>
@@ -359,10 +359,10 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                   <Mail className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-serif text-base font-semibold text-[#362E3B] dark:text-[#F5E6D3]">
+                  <h3 className="font-serif text-base font-semibold text-foreground dark:text-foreground">
                     Brevo Email
                   </h3>
-                  <span className="text-[11px] text-[#362E3B]/60 dark:text-[#D5D0CA]/60">
+                  <span className="text-[11px] text-foreground/60 dark:text-border/60">
                     {isEn ? 'Transactional Email Engine' : 'محرك رسائل البريد الإلكتروني'}
                   </span>
                 </div>
@@ -371,35 +371,35 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
               <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold ${
                 status?.email?.isConfigured
                   ? 'bg-green-100 dark:bg-green-950/50 text-green-800 dark:text-green-300'
-                  : 'bg-[#EDE3D4] dark:bg-[#1E1923] text-[#6B5B73] dark:text-[#B8A9C9]'
+                  : 'bg-[#EDE3D4] dark:bg-background text-muted-foreground dark:text-muted-foreground'
               }`}>
                 {status?.email?.isConfigured ? <CheckCircle2 className="w-3 h-3" /> : null}
                 <span>{status?.email?.isConfigured ? (isEn ? 'Active' : 'نشط') : (isEn ? 'Not Configured' : 'غير مهيأ')}</span>
               </span>
             </div>
 
-            <p className="text-xs text-[#362E3B]/80 dark:text-[#D5D0CA]/80 leading-relaxed">
+            <p className="text-xs text-foreground/80 dark:text-border/80 leading-relaxed">
               {isEn
                 ? 'Delivers transactional confirmations, reminders (24h/1h), receipts, and alerts via Brevo HTTP API.'
                 : 'إرسال تأكيدات الحجز والتذكيرات وإشعارات الدفع عبر واجهة Brevo السحابية.'}
             </p>
 
-            <div className="p-2.5 rounded-xl bg-[#EDE3D4]/50 dark:bg-[#1E1923] text-xs space-y-1">
-              <span className="text-[10px] uppercase font-semibold text-[#6B5B73] dark:text-[#B8A9C9] block">
+            <div className="p-2.5 rounded-xl bg-[#EDE3D4]/50 dark:bg-background text-xs space-y-1">
+              <span className="text-[10px] uppercase font-semibold text-muted-foreground dark:text-muted-foreground block">
                 {isEn ? 'Sender Identity' : 'هوية المرسل'}
               </span>
-              <span className="font-mono text-[11px] text-[#362E3B] dark:text-[#F5E6D3] break-all block">
+              <span className="font-mono text-[11px] text-foreground dark:text-foreground break-all block">
                 {status?.email?.senderName || 'Mahmoud Elwany'} &lt;{status?.email?.senderEmail || 'mahmoudelwany98@gmail.com'}&gt;
               </span>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-[#D5D0CA]/50 dark:border-[#3E3545] mt-4 flex items-center justify-between">
+          <div className="pt-4 border-t border-border/50 dark:border-border mt-4 flex items-center justify-between">
             <span className="text-xs font-medium text-primary-hover">
               {status?.email?.isConfigured ? (isEn ? 'Ready (300/day free)' : 'جاهز') : (isEn ? 'Set BREVO_API_KEY' : 'يتطلب مفتاح Brevo')}
             </span>
 
-            <span className="text-[10px] text-[#362E3B]/50 dark:text-[#D5D0CA]/50">
+            <span className="text-[10px] text-foreground/50 dark:text-border/50">
               HTTPS API v3
             </span>
           </div>
@@ -408,10 +408,10 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
 
       {/* Timezone & DST Live Audit Matrix */}
       <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-[#231D28] border border-primary/30 shadow-xs space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-3 border-b border-[#D5D0CA] dark:border-[#3E3545]">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-3 border-b border-border dark:border-border">
           <div className="flex items-center gap-2">
             <Globe className="w-5 h-5 text-primary" />
-            <h3 className="font-serif text-base font-semibold text-[#362E3B] dark:text-[#F5E6D3]">
+            <h3 className="font-serif text-base font-semibold text-foreground dark:text-foreground">
               {isEn ? 'International Timezone Matrix & DST Validator' : 'مصفوفة المناطق الزمنية والتوقيت الصيفي'}
             </h3>
           </div>
@@ -421,19 +421,19 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
               type="date"
               value={selectedAuditDate}
               onChange={(e) => setSelectedAuditDate(e.target.value)}
-              className="px-2.5 py-1 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] text-xs bg-white dark:bg-[#1E1923]"
+              className="px-2.5 py-1 rounded-xl border border-border dark:border-border text-xs bg-white dark:bg-background"
             />
             <button
               type="button"
               onClick={handleRefreshMatrix}
-              className="px-3 py-1 rounded-xl bg-[#6B5B73] hover:bg-[#584960] text-white text-xs font-medium cursor-pointer"
+              className="px-3 py-1 rounded-xl bg-muted-foreground hover:bg-[#584960] text-white text-xs font-medium cursor-pointer"
             >
               {isEn ? 'Audit Conversion' : 'تدقيق'}
             </button>
           </div>
         </div>
 
-        <p className="text-xs text-[#362E3B]/75 dark:text-[#D5D0CA]/75 leading-relaxed">
+        <p className="text-xs text-foreground/75 dark:text-border/75 leading-relaxed">
           {isEn
             ? 'The table below models live conversion across the primary target regions (Canada, US, UK, Australia) to verify daylight-saving offset calculations against Africa/Cairo.'
             : 'جدول التحقق الحي من فروق التوقيت والتوقيت الصيفي بين الدول المستهدفة وتوقيت القاهرة.'}
@@ -442,7 +442,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
         <div className="overflow-x-auto">
           <table className="w-full text-xs text-start">
             <thead>
-              <tr className="border-b border-[#D5D0CA] dark:border-[#3E3545] text-[#362E3B]/60 dark:text-[#D5D0CA]/60 font-semibold uppercase text-[10px]">
+              <tr className="border-b border-border dark:border-border text-foreground/60 dark:text-border/60 font-semibold uppercase text-[10px]">
                 <th className="py-2 px-3 text-start">{isEn ? 'Target Region' : 'المنطقة'}</th>
                 <th className="py-2 px-3 text-start">{isEn ? 'IANA Zone' : 'المنطقة الزمنية'}</th>
                 <th className="py-2 px-3 text-start">{isEn ? 'UTC Offset' : 'الفارق الزمني'}</th>
@@ -451,13 +451,13 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                 <th className="py-2 px-3 text-start">{isEn ? 'Cairo Equivalent' : 'توقيت القاهرة'}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#EDE3D4] dark:divide-[#3E3545]">
+            <tbody className="divide-y divide-[#EDE3D4] dark:divide-border">
               {matrixItems.map((item) => (
-                <tr key={item.timezone} className="hover:bg-[#F5E6D3]/30 dark:hover:bg-[#1E1923]/50">
-                  <td className="py-2.5 px-3 font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+                <tr key={item.timezone} className="hover:bg-foreground/30 dark:hover:bg-background/50">
+                  <td className="py-2.5 px-3 font-medium text-foreground dark:text-foreground">
                     {item.region}
                   </td>
-                  <td className="py-2.5 px-3 font-mono text-[11px] text-[#6B5B73] dark:text-[#B8A9C9]">
+                  <td className="py-2.5 px-3 font-mono text-[11px] text-muted-foreground dark:text-muted-foreground">
                     {item.timezone}
                   </td>
                   <td className="py-2.5 px-3 font-mono text-[11px] font-semibold">
@@ -468,13 +468,13 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                       className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
                         item.isDstActive
                           ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300'
-                          : 'bg-[#EDE3D4] text-[#6B5B73] dark:bg-[#1E1923] dark:text-[#B8A9C9]'
+                          : 'bg-[#EDE3D4] text-muted-foreground dark:bg-background dark:text-muted-foreground'
                       }`}
                     >
                       {item.isDstActive ? (isEn ? 'DST Active' : 'صيفي') : (isEn ? 'Standard' : 'قياسي')}
                     </span>
                   </td>
-                  <td className="py-2.5 px-3 font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+                  <td className="py-2.5 px-3 font-medium text-foreground dark:text-foreground">
                     {item.sampleLocalTime}
                   </td>
                   <td className="py-2.5 px-3 text-primary font-semibold">
@@ -486,8 +486,8 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
           </table>
         </div>
         {/* Self-Test Suite Report */}
-        <div className="pt-4 border-t border-[#D5D0CA]/50 dark:border-[#3E3545] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div className="flex items-center gap-2 text-xs text-[#362E3B]/80 dark:text-[#D5D0CA]/80">
+        <div className="pt-4 border-t border-border/50 dark:border-border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex items-center gap-2 text-xs text-foreground/80 dark:text-border/80">
             <ShieldCheck className="w-4 h-4 text-primary" />
             <span>
               {isEn

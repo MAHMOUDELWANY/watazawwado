@@ -149,7 +149,7 @@ export const PortraitImage: React.FC<PortraitImageProps> = ({ className = '', pr
           aria-label="Upload photo"
           className={`absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-md transition-all duration-300 cursor-pointer text-xs font-medium ${
             isHovered || isDragging
-              ? 'opacity-100 translate-y-0 bg-[#362E3B]/80 hover:bg-[#362E3B] text-white shadow-md'
+              ? 'opacity-100 translate-y-0 bg-foreground/80 hover:bg-foreground text-white shadow-md'
               : 'opacity-0 -translate-y-2 pointer-events-none'
           }`}
         >

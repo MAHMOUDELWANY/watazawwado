@@ -129,13 +129,13 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
   return (
     <div className="space-y-6">
       {/* Timezone Reassurance Banner with quick switcher */}
-      <div className="p-3.5 rounded-2xl bg-white dark:bg-[#231D28] border border-[#D5D0CA] dark:border-[#3E3545] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+      <div className="p-3.5 rounded-2xl bg-white dark:bg-[#231D28] border border-border dark:border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
         <div className="flex items-center gap-2 text-xs">
           <Globe className="w-4 h-4 text-primary shrink-0" />
-          <span className="text-[#362E3B]/70 dark:text-[#D5D0CA]/70">
+          <span className="text-foreground/70 dark:text-border/70">
             {isEn ? 'Times shown in your local time:' : 'المواعيد تظهر وفق توقيتك المحلي:'}
           </span>
-          <span className="font-semibold text-[#6B5B73] dark:text-[#B8A9C9]">
+          <span className="font-semibold text-muted-foreground dark:text-muted-foreground">
             {timezoneReadable}
           </span>
         </div>
@@ -151,7 +151,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
 
       {/* Loading Skeleton */}
       {loading && (
-        <div className="py-12 flex flex-col items-center justify-center space-y-3 text-[#362E3B]/60 dark:text-[#D5D0CA]/60">
+        <div className="py-12 flex flex-col items-center justify-center space-y-3 text-foreground/60 dark:text-border/60">
           <RefreshCw className="w-6 h-6 animate-spin text-primary" />
           <span className="text-xs">
             {isEn ? 'Checking available teaching windows...' : 'جارٍ تحديث الأوقات المتاحة...'}
@@ -179,10 +179,10 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
           {/* Horizontal Date Picker Slider */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-xs font-semibold uppercase tracking-wider text-[#362E3B]/70 dark:text-[#D5D0CA]/70">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/70 dark:text-border/70">
                 {isEn ? '1. Select a Date (Upcoming 3 Weeks)' : '١. اختر التاريخ (الأسابيع الثلاثة القادمة)'}
               </label>
-              <span className="text-[11px] text-[#362E3B]/55 dark:text-[#D5D0CA]/55">
+              <span className="text-[11px] text-foreground/55 dark:text-border/55">
                 {isEn ? 'Swipe or click to view days' : 'انقر على اليوم لتصفح المواعيد'}
               </span>
             </div>
@@ -199,10 +199,10 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                     onClick={() => handleDaySelect(d)}
                     className={`min-w-[76px] py-3 px-2 rounded-2xl border text-center transition-all cursor-pointer shrink-0 flex flex-col items-center justify-center ${
                       isSelected
-                        ? 'bg-[#6B5B73] text-white border-[#6B5B73] shadow-xs'
+                        ? 'bg-muted-foreground text-white border-muted-foreground shadow-xs'
                         : d.isAvailable
-                        ? 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] text-[#362E3B] dark:text-[#F5E6D3] hover:border-primary/60'
-                        : 'bg-black/5 dark:bg-white/5 border-transparent text-[#362E3B]/40 dark:text-[#D5D0CA]/40'
+                        ? 'bg-white dark:bg-[#231D28] border-border dark:border-border text-foreground dark:text-foreground hover:border-primary/60'
+                        : 'bg-black/5 dark:bg-white/5 border-transparent text-foreground/40 dark:text-border/40'
                     }`}
                   >
                     <span className="text-[10px] uppercase font-semibold tracking-wider opacity-80">
@@ -234,15 +234,15 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
           </div>
 
           {/* Time Slots Area */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-[#EDE3D4]/50 dark:bg-[#231D28] border border-[#D5D0CA] dark:border-[#3E3545]">
-            <div className="flex items-center justify-between mb-4 pb-2 border-b border-[#D5D0CA] dark:border-[#3E3545]">
+          <div className="p-4 sm:p-5 rounded-2xl bg-[#EDE3D4]/50 dark:bg-[#231D28] border border-border dark:border-border">
+            <div className="flex items-center justify-between mb-4 pb-2 border-b border-border dark:border-border">
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-primary" />
-                <span className="font-serif text-sm font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+                <span className="font-serif text-sm font-medium text-foreground dark:text-foreground">
                   {currentDay?.dayOfWeek}, {currentDay?.monthName} {currentDay?.dayOfMonth}
                 </span>
               </div>
-              <span className="text-xs text-[#362E3B]/60 dark:text-[#D5D0CA]/60">
+              <span className="text-xs text-foreground/60 dark:text-border/60">
                 {currentDay?.isAvailable
                   ? isEn
                     ? 'Available Starting Times'
@@ -259,10 +259,10 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                 <div className="w-12 h-12 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto">
                   <Clock className="w-6 h-6" />
                 </div>
-                <h4 className="font-serif text-base font-medium text-[#362E3B] dark:text-[#F5E6D3]">
+                <h4 className="font-serif text-base font-medium text-foreground dark:text-foreground">
                   {isEn ? 'No Slots Available on This Date' : 'لا توجد مواعيد متاحة في هذا اليوم'}
                 </h4>
-                <p className="text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]/70 max-w-md mx-auto leading-relaxed">
+                <p className="text-xs text-foreground/70 dark:text-border/70 max-w-md mx-auto leading-relaxed">
                   {currentDay?.reasonUnavailable ||
                     (isEn
                       ? 'Mahmoud has scheduled prior teaching or revision on this date.'
@@ -273,7 +273,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                   <button
                     type="button"
                     onClick={handleNextDayWithAvailability}
-                    className="px-4 py-2 rounded-xl bg-[#6B5B73] hover:bg-[#584960] text-white text-xs font-medium cursor-pointer"
+                    className="px-4 py-2 rounded-xl bg-muted-foreground hover:bg-[#584960] text-white text-xs font-medium cursor-pointer"
                   >
                     {isEn ? 'Jump to Next Available Day' : 'الانتقال لليوم التالي المتاح'}
                   </button>
@@ -282,7 +282,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                     href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I would like to request a specific lesson time that is not open on the schedule.')}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white dark:bg-[#1E1923] border border-[#D5D0CA] dark:border-[#3E3545] text-xs font-medium text-[#362E3B] dark:text-[#D5D0CA] hover:bg-[#EDE3D4]"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white dark:bg-background border border-border dark:border-border text-xs font-medium text-foreground dark:text-border hover:bg-[#EDE3D4]"
                   >
                     <MessageCircle className="w-3.5 h-3.5 text-primary" />
                     <span>{isEn ? 'Request Custom Time on WhatsApp' : 'طلب موعد خاص على واتساب'}</span>
@@ -295,7 +295,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                 {/* Morning */}
                 {morningSlots.length > 0 && (
                   <div>
-                    <div className="flex items-center gap-1.5 text-xs font-semibold text-[#6B5B73] dark:text-[#B8A9C9] mb-2">
+                    <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground dark:text-muted-foreground mb-2">
                       <Sun className="w-3.5 h-3.5 text-amber-500" />
                       <span>{isEn ? 'Morning' : 'الفترة الصباحية'}</span>
                     </div>
@@ -310,17 +310,17 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                             onClick={() => onSelectSlot(slot)}
                             className={`p-3 rounded-xl border text-center transition-all cursor-pointer flex items-center justify-between ${
                               !slot.available
-                                ? 'opacity-35 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent text-[#362E3B]/40'
+                                ? 'opacity-35 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent text-foreground/40'
                                 : isSelected
                                 ? 'bg-primary text-white border-primary font-medium shadow-xs'
-                                : 'bg-white dark:bg-[#1E1923] border-[#D5D0CA] dark:border-[#3E3545] text-[#362E3B] dark:text-[#F5E6D3] hover:border-primary'
+                                : 'bg-white dark:bg-background border-border dark:border-border text-foreground dark:text-foreground hover:border-primary'
                             }`}
                           >
                             <span className="text-xs">{slot.timeDisplay}</span>
                             {isSelected ? (
                               <Check className="w-3.5 h-3.5 text-white" />
                             ) : (
-                              <span className="text-[10px] text-[#362E3B]/40 dark:text-[#D5D0CA]/40">
+                              <span className="text-[10px] text-foreground/40 dark:text-border/40">
                                 {slot.available ? (isEn ? 'Open' : 'متاح') : (isEn ? 'Booked' : 'محجوز')}
                               </span>
                             )}
@@ -334,7 +334,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                 {/* Afternoon */}
                 {afternoonSlots.length > 0 && (
                   <div>
-                    <div className="flex items-center gap-1.5 text-xs font-semibold text-[#6B5B73] dark:text-[#B8A9C9] mb-2">
+                    <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground dark:text-muted-foreground mb-2">
                       <Sunset className="w-3.5 h-3.5 text-orange-400" />
                       <span>{isEn ? 'Afternoon' : 'فترة بعد الظهر'}</span>
                     </div>
@@ -349,17 +349,17 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                             onClick={() => onSelectSlot(slot)}
                             className={`p-3 rounded-xl border text-center transition-all cursor-pointer flex items-center justify-between ${
                               !slot.available
-                                ? 'opacity-35 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent text-[#362E3B]/40'
+                                ? 'opacity-35 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent text-foreground/40'
                                 : isSelected
                                 ? 'bg-primary text-white border-primary font-medium shadow-xs'
-                                : 'bg-white dark:bg-[#1E1923] border-[#D5D0CA] dark:border-[#3E3545] text-[#362E3B] dark:text-[#F5E6D3] hover:border-primary'
+                                : 'bg-white dark:bg-background border-border dark:border-border text-foreground dark:text-foreground hover:border-primary'
                             }`}
                           >
                             <span className="text-xs">{slot.timeDisplay}</span>
                             {isSelected ? (
                               <Check className="w-3.5 h-3.5 text-white" />
                             ) : (
-                              <span className="text-[10px] text-[#362E3B]/40 dark:text-[#D5D0CA]/40">
+                              <span className="text-[10px] text-foreground/40 dark:text-border/40">
                                 {slot.available ? (isEn ? 'Open' : 'متاح') : (isEn ? 'Booked' : 'محجوز')}
                               </span>
                             )}
@@ -373,7 +373,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                 {/* Evening */}
                 {eveningSlots.length > 0 && (
                   <div>
-                    <div className="flex items-center gap-1.5 text-xs font-semibold text-[#6B5B73] dark:text-[#B8A9C9] mb-2">
+                    <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground dark:text-muted-foreground mb-2">
                       <Moon className="w-3.5 h-3.5 text-indigo-400" />
                       <span>{isEn ? 'Evening' : 'الفترة المسائية'}</span>
                     </div>
@@ -388,17 +388,17 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                             onClick={() => onSelectSlot(slot)}
                             className={`p-3 rounded-xl border text-center transition-all cursor-pointer flex items-center justify-between ${
                               !slot.available
-                                ? 'opacity-35 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent text-[#362E3B]/40'
+                                ? 'opacity-35 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent text-foreground/40'
                                 : isSelected
                                 ? 'bg-primary text-white border-primary font-medium shadow-xs'
-                                : 'bg-white dark:bg-[#1E1923] border-[#D5D0CA] dark:border-[#3E3545] text-[#362E3B] dark:text-[#F5E6D3] hover:border-primary'
+                                : 'bg-white dark:bg-background border-border dark:border-border text-foreground dark:text-foreground hover:border-primary'
                             }`}
                           >
                             <span className="text-xs">{slot.timeDisplay}</span>
                             {isSelected ? (
                               <Check className="w-3.5 h-3.5 text-white" />
                             ) : (
-                              <span className="text-[10px] text-[#362E3B]/40 dark:text-[#D5D0CA]/40">
+                              <span className="text-[10px] text-foreground/40 dark:text-border/40">
                                 {slot.available ? (isEn ? 'Open' : 'متاح') : (isEn ? 'Booked' : 'محجوز')}
                               </span>
                             )}
@@ -415,13 +415,13 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
       )}
 
       {/* Controls */}
-      <div className="pt-4 border-t border-[#D5D0CA] dark:border-[#3E3545] flex items-center justify-between gap-4">
+      <div className="pt-4 border-t border-border dark:border-border flex items-center justify-between gap-4">
         <motion.button
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
           onClick={onBack}
           type="button"
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium text-[#362E3B]/80 dark:text-[#D5D0CA]/80 hover:bg-[#EDE3D4] dark:hover:bg-[#29232F] transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium text-foreground/80 dark:text-border/80 hover:bg-[#EDE3D4] dark:hover:bg-[#29232F] transition-colors cursor-pointer"
         >
           <ArrowLeft className={`w-3.5 h-3.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
           <span>{isEn ? 'Back to Lesson Type' : 'الرجوع لنوع الدرس'}</span>
@@ -432,7 +432,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
           whileTap={{ scale: 0.97 }}
           onClick={onNext}
           disabled={!selectedDate || !selectedSlot}
-          className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-[#6B5B73] hover:bg-[#584960] text-white text-sm font-medium shadow-xs disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
+          className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-muted-foreground hover:bg-[#584960] text-white text-sm font-medium shadow-xs disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
         >
           <span>{isEn ? 'Next: Review Booking' : 'التالي: مراجعة الحجز'}</span>
           <ArrowRight className={`w-4 h-4 ${lang === 'ar' ? 'rotate-180' : ''}`} />

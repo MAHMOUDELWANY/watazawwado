@@ -302,8 +302,8 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     <div
       className={`w-full ${
         cardClassName || (isModalView
-          ? 'bg-[#F5E6D3] dark:bg-[#231D28] text-[#362E3B] dark:text-[#D5D0CA] p-5 sm:p-8 rounded-3xl max-w-3xl mx-auto shadow-2xl border border-primary/30 max-h-[92vh] overflow-y-auto'
-          : 'bg-[#F5E6D3] dark:bg-[#1E1923] text-[#362E3B] dark:text-[#D5D0CA] py-8 sm:py-12 px-4 sm:px-6')
+          ? 'bg-foreground dark:bg-[#231D28] text-foreground dark:text-border p-5 sm:p-8 rounded-3xl max-w-3xl mx-auto shadow-2xl border border-primary/30 max-h-[92vh] overflow-y-auto'
+          : 'bg-foreground dark:bg-background text-foreground dark:text-border py-8 sm:py-12 px-4 sm:px-6')
       }`}
     >
       {/* Confirmation State */}

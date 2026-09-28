@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Language, BookingMode } from '../booking/types';
 import { BookingFlow } from './booking/BookingFlow';
@@ -26,7 +26,7 @@ export const TrialBookingModal: React.FC<TrialBookingModalProps> = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-3 sm:p-6 bg-[#362E3B]/70 backdrop-blur-xs"
+          className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-3 sm:p-6 bg-foreground/70 backdrop-blur-xs"
         >
           <motion.div
             initial={{ scale: 0.95, opacity: 0, y: 15 }}

@@ -36,15 +36,15 @@ export const TimezoneSelectorModal: React.FC<TimezoneSelectorModalProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-[#362E3B]/70 backdrop-blur-xs"
+          className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-foreground/70 backdrop-blur-xs"
         >
           <motion.div
             initial={{ scale: 0.95, opacity: 0, y: 10 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 10 }}
-            className="w-full max-w-md bg-[#F5E6D3] dark:bg-[#231D28] rounded-3xl border border-primary/30 shadow-2xl p-6 text-[#362E3B] dark:text-[#F5E6D3] max-h-[85vh] flex flex-col"
+            className="w-full max-w-md bg-foreground dark:bg-[#231D28] rounded-3xl border border-primary/30 shadow-2xl p-6 text-foreground dark:text-foreground max-h-[85vh] flex flex-col"
           >
-            <div className="flex items-center justify-between pb-3 border-b border-[#D5D0CA] dark:border-[#3E3545]">
+            <div className="flex items-center justify-between pb-3 border-b border-border dark:border-border">
               <div className="flex items-center gap-2">
                 <Globe className="w-5 h-5 text-primary" />
                 <h3 className="font-serif text-lg font-medium">
@@ -54,7 +54,7 @@ export const TimezoneSelectorModal: React.FC<TimezoneSelectorModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="p-1 rounded-full text-[#362E3B]/60 dark:text-[#D5D0CA]/60 hover:bg-[#EDE3D4] dark:hover:bg-[#29232F] cursor-pointer"
+                className="p-1 rounded-full text-foreground/60 dark:text-border/60 hover:bg-[#EDE3D4] dark:hover:bg-[#29232F] cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -62,13 +62,13 @@ export const TimezoneSelectorModal: React.FC<TimezoneSelectorModalProps> = ({
 
             <div className="py-3">
               <div className="relative">
-                <Search className="w-4 h-4 absolute left-3 top-3 text-[#362E3B]/50 dark:text-[#D5D0CA]/50" />
+                <Search className="w-4 h-4 absolute left-3 top-3 text-foreground/50 dark:text-border/50" />
                 <input
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={isEn ? 'Search city or timezone (e.g. Toronto, London)...' : 'ابحث عن مدينة أو منطقة زمنية...'}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-xs text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-border dark:border-border bg-white dark:bg-background text-xs text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
             </div>
@@ -86,13 +86,13 @@ export const TimezoneSelectorModal: React.FC<TimezoneSelectorModalProps> = ({
                     }}
                     className={`w-full p-3 rounded-xl text-start transition-all cursor-pointer flex items-center justify-between ${
                       isSelected
-                        ? 'bg-[#6B5B73] text-white'
-                        : 'bg-white/80 dark:bg-[#1E1923] text-[#362E3B] dark:text-[#D5D0CA] hover:bg-[#EDE3D4] dark:hover:bg-[#29232F]'
+                        ? 'bg-muted-foreground text-white'
+                        : 'bg-white/80 dark:bg-background text-foreground dark:text-border hover:bg-[#EDE3D4] dark:hover:bg-[#29232F]'
                     }`}
                   >
                     <div>
                       <div className="text-xs font-medium">{tz.label}</div>
-                      <div className={`text-[11px] ${isSelected ? 'text-white/80' : 'text-[#362E3B]/60 dark:text-[#D5D0CA]/60'}`}>
+                      <div className={`text-[11px] ${isSelected ? 'text-white/80' : 'text-foreground/60 dark:text-border/60'}`}>
                         {tz.city} • {tz.offset}
                       </div>
                     </div>

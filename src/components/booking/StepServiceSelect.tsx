@@ -37,7 +37,7 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-sm sm:text-base text-[#362E3B]/80 dark:text-[#D5D0CA] leading-relaxed max-w-2xl">
+        <p className="text-sm sm:text-base text-foreground/80 dark:text-border leading-relaxed max-w-2xl">
           {isEn
             ? 'Choose the primary subject you would like to work on with Mahmoud. In a 1-on-1 setting, every lesson is adapted directly to your current level, whether you are starting from the alphabet or seeking advanced mastery.'
             : 'اختر المادة الأساسية التي ترغب في تعلمها مع محمود. في الدروس الفردية ١-على-١، تُصمم كل جلسة لتناسب مستواك وتطلعاتك الشخصية بدقة.'}
@@ -55,8 +55,8 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
               onClick={() => setActiveTab(grp.key)}
               className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                 isActive
-                  ? 'bg-[#6B5B73] text-white shadow-xs'
-                  : 'bg-white/80 dark:bg-[#231D28] text-[#362E3B]/70 dark:text-[#D5D0CA]/70 border border-[#D5D0CA] dark:border-[#3E3545] hover:bg-[#EDE3D4] dark:hover:bg-[#29232F]'
+                  ? 'bg-muted-foreground text-white shadow-xs'
+                  : 'bg-white/80 dark:bg-[#231D28] text-foreground/70 dark:text-border/70 border border-border dark:border-border hover:bg-[#EDE3D4] dark:hover:bg-[#29232F]'
               }`}
             >
               {grp.icon}
@@ -78,36 +78,36 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
               onClick={() => onSelectService(service.id)}
               className={`group p-4 sm:p-5 rounded-2xl border text-start transition-all cursor-pointer relative flex flex-col justify-between ${
                 isSelected
-                  ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-primary ring-2 ring-primary/30 shadow-sm'
-                  : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] hover:border-primary/60 hover:bg-[#F5E6D3]/40 shadow-xs'
+                  ? 'bg-foreground dark:bg-[#29232F] border-primary ring-2 ring-primary/30 shadow-sm'
+                  : 'bg-white dark:bg-[#231D28] border-border dark:border-border hover:border-primary/60 hover:bg-foreground/40 shadow-xs'
               }`}
             >
               <div>
                 <div className="flex items-start justify-between gap-3 mb-1.5">
-                  <h3 className="font-serif text-base sm:text-lg font-medium text-[#362E3B] dark:text-[#F5E6D3] group-hover:text-[#6B5B73] dark:group-hover:text-[#B8A9C9] transition-colors leading-snug">
+                  <h3 className="font-serif text-base sm:text-lg font-medium text-foreground dark:text-foreground group-hover:text-muted-foreground dark:group-hover:text-muted-foreground transition-colors leading-snug">
                     {isEn ? service.name : service.arabicName}
                   </h3>
                   <div
                     className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
                       isSelected
                         ? 'bg-primary text-white'
-                        : 'border border-[#D5D0CA] dark:border-[#3E3545] text-transparent'
+                        : 'border border-border dark:border-border text-transparent'
                     }`}
                   >
                     <Check className="w-3.5 h-3.5" />
                   </div>
                 </div>
 
-                <p className="text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]/80 leading-relaxed mb-3">
+                <p className="text-xs text-foreground/70 dark:text-border/80 leading-relaxed mb-3">
                   {isEn ? service.tagline : service.arabicTagline}
                 </p>
               </div>
 
-              <div className="pt-2 border-t border-[#D5D0CA]/60 dark:border-[#3E3545]/60 flex items-center justify-between text-[11px] text-[#362E3B]/60 dark:text-[#D5D0CA]/60">
+              <div className="pt-2 border-t border-border/60 dark:border-border/60 flex items-center justify-between text-[11px] text-foreground/60 dark:text-border/60">
                 <span>
                   {isEn ? 'Available lengths:' : 'المدد المتاحة:'} 30, 45, 60m
                 </span>
-                <span className="font-medium text-[#6B5B73] dark:text-[#B8A9C9]">
+                <span className="font-medium text-muted-foreground dark:text-muted-foreground">
                   {isEn ? `Rate baseline: $${service.hourlyRateUsd}/hr` : `المعدل الأساسي: $${service.hourlyRateUsd}/ساعة`}
                 </span>
               </div>
@@ -117,12 +117,12 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
       </div>
 
       {/* Selected Confirmation Bar & Next Action */}
-      <div className="pt-4 border-t border-[#D5D0CA] dark:border-[#3E3545] flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]/70 text-center sm:text-start">
+      <div className="pt-4 border-t border-border dark:border-border flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="text-xs text-foreground/70 dark:text-border/70 text-center sm:text-start">
           {selectedService ? (
             <span>
               {isEn ? 'Selected: ' : 'تم اختيار: '}
-              <strong className="text-[#362E3B] dark:text-[#F5E6D3]">
+              <strong className="text-foreground dark:text-foreground">
                 {isEn ? selectedService.name : selectedService.arabicName}
               </strong>
             </span>
@@ -136,7 +136,7 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
           whileTap={{ scale: 0.97 }}
           onClick={onNext}
           disabled={!selectedServiceId}
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 rounded-xl bg-[#6B5B73] hover:bg-[#584960] text-white text-sm font-medium shadow-xs disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 rounded-xl bg-muted-foreground hover:bg-[#584960] text-white text-sm font-medium shadow-xs disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
         >
           <span>{isEn ? 'Next: Define Your Goal' : 'التالي: حدد هدفك'}</span>
           <ArrowRight className={`w-4 h-4 ${lang === 'ar' ? 'rotate-180' : ''}`} />

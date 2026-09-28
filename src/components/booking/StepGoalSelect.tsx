@@ -43,11 +43,11 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
   return (
     <div className="space-y-6">
       <div>
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#6B5B73] dark:text-[#B8A9C9] mb-1">
+        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground dark:text-muted-foreground mb-1">
           <Target className="w-3.5 h-3.5" />
           <span>{isEn ? 'Tailored to Your Journey' : 'تخصيص مسارك التعليمي'}</span>
         </div>
-        <p className="text-sm sm:text-base text-[#362E3B]/80 dark:text-[#D5D0CA] leading-relaxed max-w-2xl">
+        <p className="text-sm sm:text-base text-foreground/80 dark:text-border leading-relaxed max-w-2xl">
           {isEn
             ? `What are you hoping to accomplish in ${service.name}? Selecting a suggested goal helps Mahmoud prepare relevant texts, verses, or diagnostic exercises for your first session.`
             : `ما الذي تأمل تحقيقه في ${service.arabicName}؟ تحديد هدفك يساعد محمود في تجهيز المواد والنصوص المناسبة لجلستك الأولى.`}
@@ -56,7 +56,7 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
 
       {/* Suggested Goals Chips */}
       <div>
-        <label className="block text-xs font-semibold uppercase tracking-wider text-[#362E3B]/70 dark:text-[#D5D0CA]/70 mb-2.5">
+        <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/70 dark:text-border/70 mb-2.5">
           {isEn ? 'Common Goals for this Subject (Click to Select)' : 'الأهداف الشائعة لهذه المادة (انقر للاختيار)'}
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -71,15 +71,15 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
                 onClick={() => handleGoalChipClick(goal)}
                 className={`p-3.5 rounded-xl border text-start text-xs sm:text-sm transition-all cursor-pointer flex items-start gap-3 ${
                   isSelected
-                    ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-primary ring-1 ring-primary font-medium text-[#362E3B] dark:text-[#F5E6D3] shadow-xs'
-                    : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] text-[#362E3B]/80 dark:text-[#D5D0CA] hover:border-primary/60 hover:bg-[#F5E6D3]/40'
+                    ? 'bg-foreground dark:bg-[#29232F] border-primary ring-1 ring-primary font-medium text-foreground dark:text-foreground shadow-xs'
+                    : 'bg-white dark:bg-[#231D28] border-border dark:border-border text-foreground/80 dark:text-border hover:border-primary/60 hover:bg-foreground/40'
                 }`}
               >
                 <div
                   className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
                     isSelected
                       ? 'bg-primary text-white'
-                      : 'border border-[#D5D0CA] dark:border-[#3E3545]'
+                      : 'border border-border dark:border-border'
                   }`}
                 >
                   {isSelected && <Check className="w-3 h-3" />}
@@ -93,7 +93,7 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
 
       {/* Custom Goal / Personal Context Free-Text */}
       <div className="space-y-2 pt-2">
-        <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#362E3B]/70 dark:text-[#D5D0CA]/70">
+        <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-foreground/70 dark:text-border/70">
           <Sparkles className="w-3.5 h-3.5 text-primary" />
           <span>
             {isEn
@@ -110,9 +110,9 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
               ? 'e.g. I can sound out letters slowly but I get stuck on Ghunnah rules, or my 7-year-old learns best through visual games...'
               : 'مثال: أقرأ الحروف ببطء وأرغب في ضبط أحكام الغنة، أو ابني ذو السبع سنوات يفضل التعلم بالألعاب التفاعلية...'
           }
-          className="w-full px-4 py-3 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-sm text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-[#362E3B]/40 dark:placeholder:text-[#D5D0CA]/40 leading-relaxed shadow-2xs"
+          className="w-full px-4 py-3 rounded-xl border border-border dark:border-border bg-white dark:bg-background text-sm text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-foreground/40 dark:placeholder:text-border/40 leading-relaxed shadow-2xs"
         />
-        <p className="text-[11px] text-[#362E3B]/55 dark:text-[#D5D0CA]/60">
+        <p className="text-[11px] text-foreground/55 dark:text-border/60">
           {isEn
             ? 'Feel free to share any past learning experience, challenges, or expectations.'
             : 'يمكنك مشاركة أي تجارب تعليمية سابقة أو تحديات تواجهها.'}
@@ -120,13 +120,13 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
       </div>
 
       {/* Controls */}
-      <div className="pt-4 border-t border-[#D5D0CA] dark:border-[#3E3545] flex items-center justify-between gap-4">
+      <div className="pt-4 border-t border-border dark:border-border flex items-center justify-between gap-4">
         <motion.button
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
           onClick={onBack}
           type="button"
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium text-[#362E3B]/80 dark:text-[#D5D0CA]/80 hover:bg-[#EDE3D4] dark:hover:bg-[#29232F] transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium text-foreground/80 dark:text-border/80 hover:bg-[#EDE3D4] dark:hover:bg-[#29232F] transition-colors cursor-pointer"
         >
           <ArrowLeft className={`w-3.5 h-3.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
           <span>{isEn ? 'Back to Subjects' : 'الرجوع للمواد'}</span>
@@ -137,7 +137,7 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
           whileTap={{ scale: 0.97 }}
           onClick={onNext}
           disabled={!hasGoal}
-          className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-[#6B5B73] hover:bg-[#584960] text-white text-sm font-medium shadow-xs disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
+          className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-muted-foreground hover:bg-[#584960] text-white text-sm font-medium shadow-xs disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
         >
           <span>{isEn ? 'Next: Student Details' : 'التالي: بيانات الطالب'}</span>
           <ArrowRight className={`w-4 h-4 ${lang === 'ar' ? 'rotate-180' : ''}`} />
