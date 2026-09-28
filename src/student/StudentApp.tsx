@@ -518,7 +518,17 @@ export default function StudentApp() {
           })}
         </nav>
 
-        `r`n          <div className="p-4 border-t border-border">`r`n            <button`r`n              onClick={() => { signOut(); setSidebarOpen(false); }}`r`n              className="flex w-full items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors"`r`n            >`r`n              <LogOut className="w-4 h-4 shrink-0" />`r`n              <span>{isAr ? "OO3OUSU, O U,OrOU^O" : "Sign Out"}</span>`r`n            </button>`r`n          </div>`r`n        </aside>
+        
+          <div className="p-4 border-t border-border">
+            <button
+              onClick={() => { signOut(); setSidebarOpen(false); }}
+              className="flex w-full items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors"
+            >
+              <LogOut className="w-4 h-4 shrink-0" />
+              <span>{isAr ? "OO3OUSU, O U,OrOU^O" : "Sign Out"}</span>
+            </button>
+          </div>
+        </aside>
 
       {/* ========================================================================= */}
       {/* MAIN APPLICATION VIEWPORT & HEADER */}
@@ -550,7 +560,23 @@ export default function StudentApp() {
                 {currentHeader.subtitle}
               </span>
             </div>
-          </div>`r`n`r`n          {/* Center: Desktop Navigation */}`r`n          <nav className="hidden lg:flex flex-1 items-center justify-center gap-1.5 px-4">`r`n            {navItems.map((item) => {`r`n              const isActive = location.pathname === item.path || (item.path !== "/student" && location.pathname.startsWith(item.path));`r`n              return (`r`n                <Link`r`n                  key={item.path}`r`n                  to={item.path}`r`n                  className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-colors ${isActive ? "bg-secondary/20 text-accent" : "text-muted-foreground hover:text-foreground hover:bg-surface-subtle"}`}`r`n                >`r`n                  {item.name}`r`n                </Link>`r`n              );`r`n            })}`r`n          </nav>
+          </div>
+
+          {/* Center: Desktop Navigation */}
+          <nav className="hidden lg:flex flex-1 items-center justify-center gap-1.5 px-4">
+            {navItems.map((item) => {
+              const isActive = location.pathname === item.path || (item.path !== "/student" && location.pathname.startsWith(item.path));
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-colors ${isActive ? "bg-secondary/20 text-accent" : "text-muted-foreground hover:text-foreground hover:bg-surface-subtle"}`}
+                >
+                  {item.name}
+                </Link>
+              );
+            })}
+          </nav>
 
           {/* Right Side: Quick Action Utilities (Notifications, Lang, Theme, User Pill) */}
           <div className="flex items-center gap-2 sm:gap-3">
@@ -584,7 +610,9 @@ export default function StudentApp() {
             </button>
 
             {/* User Profile Avatar Pill */}
-            <AccountDropdown initials={studentInitial} isAr={isAr} />`r`n`r`n              
+            <AccountDropdown initials={studentInitial} isAr={isAr} />
+
+              
           </div>
         </header>
 

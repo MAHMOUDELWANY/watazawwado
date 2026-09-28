@@ -278,12 +278,79 @@ export function DashboardApp() {
             <span>{lang === 'ar' ? 'تسجيل الخروج' : 'Sign Out'}</span>
           </button>
         </div>
-      `r`n          <div className="p-4 border-t border-border md:hidden">`r`n            <button`r`n              onClick={() => { signOut(); setIsMobileMenuOpen(false); }}`r`n              className="flex w-full items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors"`r`n            >`r`n              <LogOut className="w-4 h-4 shrink-0" />`r`n              <span>{lang === "ar" ? "OO3OUSU, O U,OrOU^O" : "Sign Out"}</span>`r`n            </button>`r`n          </div>`r`n        </aside>
+      
+          <div className="p-4 border-t border-border md:hidden">
+            <button
+              onClick={() => { signOut(); setIsMobileMenuOpen(false); }}
+              className="flex w-full items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors"
+            >
+              <LogOut className="w-4 h-4 shrink-0" />
+              <span>{lang === "ar" ? "OO3OUSU, O U,OrOU^O" : "Sign Out"}</span>
+            </button>
+          </div>
+        </aside>
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
         {/* Mobile Header Bar */}
-        <header className="h-16 shrink-0 flex items-center justify-between px-4 sm:px-6 lg:px-8 bg-surface border-b border-border z-10">`r`n            {/* Left: Mobile Toggle & BrandLogo */}`r`n            <div className="flex items-center gap-4">`r`n              <button `r`n                ref={menuTriggerRef}`r`n                onClick={toggleMobileMenu} `r`n                className="md:hidden p-2 -ms-1 text-muted-foreground hover:text-foreground rounded-xl transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"`r`n              >`r`n                <Menu className="w-5 h-5" />`r`n              </button>`r`n              <Link to="/" className="flex items-center gap-2">`r`n                <BrandLogo variant="compact" />`r`n                <span className="font-display font-semibold text-foreground text-sm hidden md:inline-block">`r`n                  {lang === "ar" ? "U.O3O O-Oc O U,OO3OO O U.O-U.U^O_" : "Watazawwado Workspace"}`r`n                </span>`r`n              </Link>`r`n            </div>`r`n`r`n            {/* Center: Desktop Navigation */}`r`n            <nav className="hidden md:flex flex-1 items-center justify-center gap-1.5 px-4">`r`n              {navigation.map((item) => {`r`n                const isExactMatch = location.pathname === item.path;`r`n                const isSubPath = item.path !== "/dashboard" && location.pathname.startsWith(item.path);`r`n                const isActive = isExactMatch || isSubPath;`r`n                return (`r`n                  <Link`r`n                    key={item.name}`r`n                    to={item.path}`r`n                    className={`px-3 py-2 rounded-xl text-xs font-medium transition-colors ${isActive ? "bg-secondary/20 text-accent font-semibold" : "text-muted-foreground hover:text-foreground hover:bg-surface-subtle"}`}`r`n                  >`r`n                    {item.name}`r`n                  </Link>`r`n                );`r`n              })}`r`n            </nav>`r`n`r`n            {/* Right: Actions */}`r`n            <div className="flex items-center gap-2">`r`n              <button`r`n                onClick={toggleLanguage}`r`n                className="hidden md:flex p-2 text-primary hover:bg-surface-subtle rounded-xl text-xs font-semibold"`r`n              >`r`n                {lang === "en" ? "O U,O1OO`USOc" : "EN"}`r`n              </button>`r`n              <button`r`n                onClick={toggleTheme}`r`n                className="p-2 text-muted-foreground hover:text-foreground rounded-xl transition-colors cursor-pointer"`r`n              >`r`n                {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}`r`n              </button>`r`n              <button`r`n                onClick={signOut}`r`n                className="hidden md:flex p-2 text-destructive hover:bg-destructive/10 rounded-xl transition-colors cursor-pointer"`r`n              >`r`n                <LogOut className="w-4 h-4" />`r`n              </button>`r`n            </div>`r`n          </header>
+        <header className="h-16 shrink-0 flex items-center justify-between px-4 sm:px-6 lg:px-8 bg-surface border-b border-border z-10">
+            {/* Left: Mobile Toggle & BrandLogo */}
+            <div className="flex items-center gap-4">
+              <button 
+                ref={menuTriggerRef}
+                onClick={toggleMobileMenu} 
+                className="md:hidden p-2 -ms-1 text-muted-foreground hover:text-foreground rounded-xl transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
+              >
+                <Menu className="w-5 h-5" />
+              </button>
+              <Link to="/" className="flex items-center gap-2">
+                <BrandLogo variant="compact" />
+                <span className="font-display font-semibold text-foreground text-sm hidden md:inline-block">
+                  {lang === "ar" ? "U.O3O O-Oc O U,OO3OO O U.O-U.U^O_" : "Watazawwado Workspace"}
+                </span>
+              </Link>
+            </div>
+
+            {/* Center: Desktop Navigation */}
+            <nav className="hidden md:flex flex-1 items-center justify-center gap-1.5 px-4">
+              {navigation.map((item) => {
+                const isExactMatch = location.pathname === item.path;
+                const isSubPath = item.path !== "/dashboard" && location.pathname.startsWith(item.path);
+                const isActive = isExactMatch || isSubPath;
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.path}
+                    className={`px-3 py-2 rounded-xl text-xs font-medium transition-colors ${isActive ? "bg-secondary/20 text-accent font-semibold" : "text-muted-foreground hover:text-foreground hover:bg-surface-subtle"}`}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* Right: Actions */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={toggleLanguage}
+                className="hidden md:flex p-2 text-primary hover:bg-surface-subtle rounded-xl text-xs font-semibold"
+              >
+                {lang === "en" ? "O U,O1OO`USOc" : "EN"}
+              </button>
+              <button
+                onClick={toggleTheme}
+                className="p-2 text-muted-foreground hover:text-foreground rounded-xl transition-colors cursor-pointer"
+              >
+                {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+              </button>
+              <button
+                onClick={signOut}
+                className="hidden md:flex p-2 text-destructive hover:bg-destructive/10 rounded-xl transition-colors cursor-pointer"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            </div>
+          </header>
 
         {/* Scrollable Content Container */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-background">
