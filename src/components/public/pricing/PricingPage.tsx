@@ -88,6 +88,33 @@ export function PricingPage() {
               </ul>
             </div>
 
+            {/* Weekly Packages */}
+            <div className="bg-surface p-8 rounded-2xl border border-border-subtle shadow-sm relative overflow-hidden lg:col-span-2">
+              <h3 className="font-editorial text-2xl text-foreground mb-2">
+                {isEn ? 'Weekly Packages' : 'الباقات الأسبوعية'}
+              </h3>
+              <p className="text-sm text-muted-foreground mb-8">
+                {isEn ? 'Flexible weekly commitments.' : 'التزامات أسبوعية مرنة.'}
+              </p>
+              
+              <div className="grid sm:grid-cols-2 md:grid-cols-5 gap-4">
+                {[
+                  { count: 1, price: 8 },
+                  { count: 2, price: 15 },
+                  { count: 3, price: 21 },
+                  { count: 4, price: 28 },
+                  { count: 5, price: 34 }
+                ].map((pkg) => (
+                  <div key={pkg.count} className="bg-background p-4 rounded-xl border border-border-subtle text-center">
+                    <div className="text-sm text-muted-foreground mb-1">
+                      {pkg.count} {isEn ? (pkg.count === 1 ? 'lesson' : 'lessons') : 'دروس'}
+                    </div>
+                    <div className="font-editorial text-2xl text-foreground">${pkg.price}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
           </div>
 
           <StudyLine className="my-16" />
