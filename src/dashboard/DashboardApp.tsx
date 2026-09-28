@@ -20,7 +20,7 @@ import {
   Globe,
   Clock,
   ClipboardCheck,
-import   Shield
+  Shield
 } from 'lucide-react';
 import { useTheme } from "../components/ThemeProvider";
 import OverviewPage from './pages/OverviewPage';

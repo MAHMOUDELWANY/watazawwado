@@ -1,8 +1,7 @@
 import { BrandLogo } from '../components/ui/BrandLogo';
 import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
-{
-  BookOpen,
+import {  BookOpen,
   LogOut,
   User,
   Menu,
@@ -20,7 +19,7 @@ import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
   CheckCircle2,
   ChevronRight,
   HelpCircle,
-import   ExternalLink
+  ExternalLink
 } from 'lucide-react';
 import { useTeacherAuth } from '../lib/auth';
 import { useTheme } from '../components/ThemeProvider';
@@ -37,10 +36,9 @@ import StudentNotificationsPage from './pages/StudentNotificationsPage';
 import StudentOffersPage from './pages/StudentOffersPage';
 import IntakeConversation from '../components/intake/IntakeConversation';
 import { StudentAuthModal } from '../components/StudentAuthModal';
-{
-  buildStudentNotifications,
+import {  buildStudentNotifications,
   countUnread,
-import   getSavedNotificationReadIds
+  getSavedNotificationReadIds
 } from './notificationsPresentation';
 
 export default function StudentApp() {

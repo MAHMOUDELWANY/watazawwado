@@ -1,8 +1,7 @@
 import { BrandLogo } from './ui/BrandLogo';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-{
-  X,
+import {  X,
   Lock,
   Key,
   ShieldCheck,
@@ -15,7 +14,7 @@ import { motion, AnimatePresence } from 'motion/react';
   Clock,
   BookOpen,
   DollarSign,
-import   FileText
+  FileText
 } from 'lucide-react';
 import { useTeacherAuth } from '../lib/auth';
 import { teacherRepository, TeacherStats, DbBooking, DbLead } from '../lib/teacherRepository';
