@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import {
-  Calendar,
   Video,
   Clock,
   ArrowRight,
@@ -10,15 +9,11 @@ import {
   RotateCcw,
   AlertCircle,
   Plus,
-  BookOpen,
   CheckCircle2,
   Package,
   CreditCard,
   ExternalLink,
   MessageCircle,
-  Sparkles,
-  ChevronRight,
-  ShieldCheck,
   Award,
   RefreshCw
 } from 'lucide-react';

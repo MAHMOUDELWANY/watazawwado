@@ -4,7 +4,6 @@ import { BrandLoader } from '../components/ui/BrandLoader';
 import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import {  BookOpen,
-  LogOut,
   User,
   Menu,
   X,
@@ -12,17 +11,10 @@ import {  BookOpen,
   Calendar,
   Plus,
   ArrowRight,
-  Loader2,
   Moon,
   Sun,
-  Globe,
-  Package,
-  CreditCard,
   Bell,
-  CheckCircle2,
   ChevronRight,
-  HelpCircle,
-  ExternalLink
 } from 'lucide-react';
 import { useTeacherAuth } from '../lib/auth';
 import { useTheme } from '../components/ThemeProvider';
