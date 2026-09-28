@@ -649,6 +649,7 @@ export default function StudentApp() {
           {navItems.map((item) => {
             const isActive = location.pathname === item.path || (item.path !== '/student' && location.pathname.startsWith(item.path));
             const isBook = item.path === '/student/book';
+            const Icon = item.icon;
 
             return (
               <Link
@@ -660,13 +661,13 @@ export default function StudentApp() {
                   <div className={`relative flex items-center justify-center w-12 h-9 rounded-[14px] shadow-sm transition-transform active:scale-95 mb-1 group-hover:bg-primary-hover ${
                     isActive ? 'bg-primary-hover text-primary-foreground' : 'bg-primary text-primary-foreground'
                   }`}>
-                    <item.icon className="w-5 h-5" />
+                    <Icon className="w-5 h-5" />
                   </div>
                 ) : (
                   <div className={`relative flex items-center justify-center w-8 h-8 rounded-full mb-0.5 transition-colors ${
                     isActive ? 'text-interactive' : 'text-muted-foreground group-hover:text-foreground group-hover:bg-surface-subtle'
                   }`}>
-                    <item.icon className={`w-[18px] h-[18px] transition-all duration-300 ${isActive ? '-translate-y-0.5' : ''}`} />
+                    <Icon className={`w-[18px] h-[18px] transition-all duration-300 ${isActive ? '-translate-y-0.5' : ''}`} />
                   </div>
                 )}
                 
