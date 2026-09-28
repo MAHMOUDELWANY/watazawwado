@@ -213,7 +213,7 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
           return {
             success: false,
             role: 'teacher',
-            error: 'This is a Teaching Staff account. Teaching staff must sign in through the Staff Login portal.'
+            error: 'This is a Teaching Staff account. Teaching staff must sign in through the Staff Login page.'
           };
         }
         const assignedRole: 'teacher' | 'super_admin' = normalizedEmail === 'mahmoudelwany98@gmail.com' ? 'super_admin' : 'teacher';
@@ -233,7 +233,7 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
           return {
             success: false,
             role: 'student',
-            error: 'This portal is reserved for teaching staff. Please use the Student Portal to access your learner account.'
+            error: 'This area is reserved for teaching staff. Please use the Learning Home to access your student account.'
           };
         }
         setUser({
@@ -290,7 +290,7 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
             return {
               success: false,
               role: 'student',
-              error: 'This portal is reserved for teaching staff. Please use the Student Portal to access your learner account.'
+              error: 'This area is reserved for teaching staff. Please use the Learning Home to access your student account.'
             };
           }
         }
@@ -306,7 +306,7 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
           return {
             success: false,
             role: 'teacher',
-            error: 'This is a Teaching Staff account. Teaching staff must sign in through the Staff Login portal.'
+            error: 'This is a Teaching Staff account. Teaching staff must sign in through the Staff Login page.'
           };
         }
       }

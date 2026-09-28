@@ -47,7 +47,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
             setError(
               lang === 'ar'
                 ? 'هذا الحساب مخصص للكادر التعليمي. يرجى تسجيل الدخول عبر بوابة المعلم.'
-                : 'This is a Teaching Staff account. Teaching staff must sign in through the Staff Login portal.'
+                : 'This is a Teaching Staff account. Teaching staff must sign in through the Staff Login page.'
             );
             return;
           }

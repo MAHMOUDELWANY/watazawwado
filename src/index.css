@@ -34,6 +34,9 @@
   --color-border-subtle: var(--border-subtle);
 
   --color-primary: var(--primary);
+  --color-interactive: var(--interactive);
+  --color-interactive-foreground: var(--interactive-foreground);
+  --color-interactive-hover: var(--interactive-hover);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary-hover: var(--primary-hover);
 
@@ -108,73 +111,25 @@
   --border: #D5D3CC;
   --border-subtle: #E6E4DD;
 
-  /* Primary — Teal (interactive, CTA, links, navigation) */
-  --primary: #087D91; 
+  /* Primary ?" Crimson */
+  --primary: #D63338;
   --primary-foreground: #FFFFFF;
-  --primary-hover: #066A7C;
+  --primary-hover: #B8272C;
 
-  /* Secondary — Warm beige (supporting backgrounds, soft buttons) */
-  --secondary: #D8C6AE;
-  --secondary-foreground: #4A3E31;
-
-  /* Accent — Copper (editorial highlights, category markers) */
-  --accent: #8B4935;
-  --accent-foreground: #FFFFFF;
-
-  /* Brand — Red (logo, identity, sparingly) */
-  --brand: #C51F24;
-  --brand-soft: color-mix(in srgb, #C51F24 12%, transparent);
-
-  /* Semantic Status Colors */
-  --destructive: #C51F24;
-  --destructive-foreground: #FFFFFF;
-
-  --success: #2E7D4F;
-  --success-foreground: #FFFFFF;
-
-  --warning: #B8860B;
-  --warning-foreground: #FFFFFF;
-
-  --info: #087D91;
-  --info-foreground: #FFFFFF;
-
-  --focus: #087D91;
-
-  --radius: 0.5rem;
-}
-
-:root.dark {
-  color-scheme: dark;
+  /* Interactive ?" Teal */
+  --interactive: #0A9DB5;
+  --interactive-foreground: #111110;
+  --interactive-hover: #0CADC7;
   
-  /* Environment — deep warm dark */
-  --background: #171614;
-  --foreground: #ECEAE6;
-
-  --surface: #211F1D;
-  --surface-foreground: #ECEAE6;
-  --surface-subtle: #2A2826;
-  --surface-warm: #282320;
-
-  --muted: #2A2826;
-  --muted-foreground: #9B9790;
-
-  --border: #3D3A37;
-  --border-subtle: #2E2C2A;
-
-  /* Primary — Teal (brighter in dark mode for contrast) */
-  --primary: #0A9DB5;
-  --primary-foreground: #111110;
-  --primary-hover: #0CADC7;
-
   /* Secondary */
   --secondary: #3D3630;
   --secondary-foreground: #D8C6AE;
-
-  /* Accent — Copper (warmer in dark) */
+  
+  /* Accent ?" Copper (warmer in dark) */
   --accent: #B06A52;
   --accent-foreground: #FFFFFF;
-
-  /* Brand — Red */
+  
+  /* Brand ?" Red */
   --brand: #D63338;
   --brand-soft: color-mix(in srgb, #D63338 15%, transparent);
 

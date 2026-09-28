@@ -59,7 +59,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <BrandLogo variant="compact" />
           
           <div className="flex flex-col">
-            <span className="font-display text-lg font-semibold tracking-tight text-foreground group-hover:text-primary transition-colors">
+            <span className="font-display text-lg font-semibold tracking-tight text-foreground group-hover:text-interactive transition-colors">
               Watazawwado
             </span>
             <span className="text-[10px] text-muted-foreground tracking-wider uppercase">
@@ -155,7 +155,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   key={link.href}
                   to={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-base font-medium text-foreground hover:text-primary transition-colors py-1"
+                  className="text-base font-medium text-foreground hover:text-interactive transition-colors py-1"
                 >
                   {link.label}
                 </Link>

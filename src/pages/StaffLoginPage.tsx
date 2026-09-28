@@ -40,7 +40,7 @@ export default function StaffLoginPage() {
       // Check if this account has teacher or super_admin role authorized by the server
       if (role !== 'teacher' && role !== 'super_admin') {
         await signOut();
-        setError('This portal is reserved for teaching staff. Please use the Student Portal to access your learner account.');
+        setError('This area is reserved for teaching staff. Please use the Learning Home to access your student account.');
         setIsSubmitting(false);
         return;
       }
@@ -77,7 +77,7 @@ export default function StaffLoginPage() {
             <ShieldCheck className="w-6 h-6" />
           </div>
           <h1 className="text-2xl font-display font-bold text-foreground">
-            Teaching Staff Portal
+            Teaching Staff Login
           </h1>
           <p className="mt-2 text-xs sm:text-sm text-muted-foreground">
             Secure workspace access for Ustadh Mahmoud & authorized administrators.
@@ -151,7 +151,7 @@ export default function StaffLoginPage() {
             to="/student"
             className="font-semibold text-primary hover:underline"
           >
-            Go to Student Portal
+            Go to Learning Home
           </Link>
         </div>
       </motion.div>

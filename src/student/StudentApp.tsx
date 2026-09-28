@@ -10,6 +10,7 @@ import {  BookOpen,
   X,
   Sparkles,
   Calendar,
+  Plus,
   ArrowRight,
   Loader2,
   Moon,
@@ -221,7 +222,7 @@ export default function StudentApp() {
             و
           </div>
           <h1 className="text-2xl font-display font-bold mb-2 tracking-tight">
-            {isAr ? 'بوابة الطالب — وتزودوا' : 'Student Portal Access'}
+            {isAr ? 'مساحتك التعليمية — وتزودوا' : 'Learning Home Access'}
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground mb-6 leading-relaxed">
             {isAr
@@ -259,7 +260,7 @@ export default function StudentApp() {
   if (loadingProfile && !profile) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center">
-        <BrandLoader size="page" text={isAr ? 'جارٍ تحميل بيانات الطالب...' : 'Loading your learning portal...'} />
+        <BrandLoader size="page" text={isAr ? 'جارٍ تحميل مساحتك التعليمية...' : 'Loading your learning home...'} />
       </div>
     );
   }
@@ -283,47 +284,36 @@ export default function StudentApp() {
   // Information Architecture Navigation Items
   const navItems = [
     { 
-      name: isAr ? 'لوحة التحكم' : 'Overview', 
+      name: isAr ? 'الرئيسية' : 'Home', 
       path: '/student', 
       icon: BookOpen,
       badge: null
     },
     { 
-      name: isAr ? 'جدول الدروس' : 'My Lessons', 
+      name: isAr ? 'الدروس' : 'Lessons', 
       path: '/student/lessons', 
       icon: Calendar,
+  Plus,
       badge: null
     },
     { 
-      name: isAr ? 'مرشد التعلّم' : 'Learning Guide', 
+      name: isAr ? 'حجز درس' : 'Book', 
+      path: '/student/book', 
+      icon: Plus,
+      badge: null
+    },
+    { 
+      name: isAr ? 'دليل التعلم' : 'Learning Guide', 
       path: '/student/guide', 
       icon: Sparkles,
       badge: null
     },
     { 
-      name: isAr ? 'عروضي' : 'My Offers', 
-      path: '/student/offers', 
-      icon: Package,
-      badge: null
-    },
-    { 
-      name: isAr ? 'المدفوعات' : 'Payments', 
-      path: '/student/payments', 
-      icon: CreditCard,
-      badge: null
-    },
-    { 
-      name: isAr ? 'التنبيهات' : 'Notifications', 
-      path: '/student/notifications', 
-      icon: Bell,
-      badge: unreadNotificationsCount > 0 ? unreadNotificationsCount : null
-    },
-    { 
-      name: isAr ? 'الحساب والإعدادات' : 'Account', 
+      name: isAr ? 'حسابي' : 'Account', 
       path: '/student/account', 
       icon: User,
       badge: null
-    },
+    }
   ];
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
@@ -373,7 +363,7 @@ export default function StudentApp() {
       };
     }
     return {
-      title: isAr ? 'بوابة الطالب' : 'Student Portal',
+      title: isAr ? 'الرئيسية' : 'Learning Home',
       subtitle: isAr ? 'وتزودوا — الأستاذ محمود' : 'Watazawwado with Ustadh Mahmoud'
     };
   };
@@ -427,7 +417,7 @@ export default function StudentApp() {
                 Watazawwado
               </span>
               <span className="text-[10px] text-muted-foreground tracking-wider uppercase mt-0.5">
-                {isAr ? 'بوابة الطالب' : 'Student Portal'}
+                {isAr ? 'الرئيسية' : 'Learning Home'}
               </span>
             </div>
           </Link>
@@ -653,51 +643,46 @@ export default function StudentApp() {
 
         {/* Mobile Bottom Navigation Bar (Fast 1-thumb switching for mobile users) */}
         <nav 
-          className="md:hidden fixed bottom-0 inset-x-0 h-16 bg-surface/95 backdrop-blur-md border-t border-border flex items-center justify-around px-2 z-30"
-          aria-label={isAr ? 'شريط التنقل السفلي' : 'Bottom mobile navigation'}
+          className="lg:hidden fixed bottom-0 inset-x-0 bg-surface/95 backdrop-blur-md border-t border-border flex items-center justify-around px-1 z-50 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_24px_rgba(0,0,0,0.04)]"
+          aria-label={isAr ? 'التنقل السفلي' : 'Bottom mobile navigation'}
         >
-          <Link
-            to="/student"
-            className={`flex flex-col items-center justify-center py-1 px-2 text-[10px] min-h-[44px] transition-colors ${
-              location.pathname === '/student' ? 'text-primary font-bold' : 'text-muted-foreground'
-            }`}
-          >
-            <BookOpen className="w-4 h-4 mb-1" />
-            <span>{isAr ? 'الرئيسية' : 'Home'}</span>
-          </Link>
+          {navItems.map((item) => {
+            const isActive = location.pathname === item.path || (item.path !== '/student' && location.pathname.startsWith(item.path));
+            const isBook = item.path === '/student/book';
 
-          <Link
-            to="/student/lessons"
-            className={`flex flex-col items-center justify-center py-1 px-2 text-[10px] min-h-[44px] transition-colors ${
-              location.pathname.startsWith('/student/lessons') ? 'text-primary font-bold' : 'text-muted-foreground'
-            }`}
-          >
-            <Calendar className="w-4 h-4 mb-1" />
-            <span>{isAr ? 'الدروس' : 'Lessons'}</span>
-          </Link>
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`relative flex flex-col items-center justify-center py-2 px-1 text-[10px] sm:text-xs min-h-[64px] transition-all group flex-1`}
+              >
+                {isBook ? (
+                  <div className={`relative flex items-center justify-center w-12 h-9 rounded-[14px] shadow-sm transition-transform active:scale-95 mb-1 group-hover:bg-primary-hover ${
+                    isActive ? 'bg-primary-hover text-primary-foreground' : 'bg-primary text-primary-foreground'
+                  }`}>
+                    <item.icon className="w-5 h-5" />
+                  </div>
+                ) : (
+                  <div className={`relative flex items-center justify-center w-8 h-8 rounded-full mb-0.5 transition-colors ${
+                    isActive ? 'text-interactive' : 'text-muted-foreground group-hover:text-foreground group-hover:bg-surface-subtle'
+                  }`}>
+                    <item.icon className={`w-[18px] h-[18px] transition-all duration-300 ${isActive ? '-translate-y-0.5' : ''}`} />
+                  </div>
+                )}
+                
+                <span className={`transition-all font-medium text-center truncate w-full ${
+                  isBook ? 'text-foreground font-bold' :
+                  isActive ? 'text-interactive font-bold' : 'text-muted-foreground'
+                }`}>
+                  {item.name}
+                </span>
 
-          <Link
-            to="/student/book"
-            className="flex flex-col items-center justify-center py-1 px-3 text-[10px] text-primary-foreground font-bold -mt-4"
-          >
-            <div className="w-11 h-11 rounded-full bg-primary shadow-md flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-accent-foreground" />
-            </div>
-            <span className="text-foreground text-[10px] mt-0.5">{isAr ? 'حجز' : 'Book'}</span>
-          </Link>
-
-
-          <Link
-            to="/student/account"
-            className={`flex flex-col items-center justify-center py-1 px-2 text-[10px] min-h-[44px] transition-colors ${
-              location.pathname.startsWith('/student/account') || location.pathname.startsWith('/student/profile')
-                ? 'text-primary font-bold' 
-                : 'text-muted-foreground'
-            }`}
-          >
-            <User className="w-4 h-4 mb-1" />
-            <span>{isAr ? 'حسابي' : 'Account'}</span>
-          </Link>
+                {!isBook && isActive && (
+                  <div className="absolute top-2 right-1/4 w-1.5 h-1.5 rounded-full bg-interactive opacity-90 animate-in fade-in zoom-in duration-300" />
+                )}
+              </Link>
+            );
+          })}
         </nav>
       </div>
 

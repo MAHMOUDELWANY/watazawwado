@@ -193,7 +193,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                     Private Teacher Login
                   </h4>
                   <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">
-                    Strict teacher management portal. Students book directly as guests and do not have accounts.
+                    Strict teacher management area. Students book directly as guests and do not have accounts.
                   </p>
                 </div>
 
