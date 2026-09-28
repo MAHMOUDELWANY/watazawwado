@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import {
+  Calendar,
   Video,
   Clock,
   ArrowRight,
@@ -9,11 +10,15 @@ import {
   RotateCcw,
   AlertCircle,
   Plus,
+  BookOpen,
   CheckCircle2,
   Package,
   CreditCard,
   ExternalLink,
   MessageCircle,
+  Sparkles,
+  ChevronRight,
+  ShieldCheck,
   Award,
   RefreshCw
 } from 'lucide-react';
@@ -234,7 +239,6 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
   const studentFirstName = profile?.name ? profile.name.split(' ')[0] : '';
 
-    // Time-aware greeting replaced by warm Welcome block
   const isReturning = bookings.length > 0;
   
   const welcomeTitle = isReturning 
@@ -245,18 +249,29 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
     ? (isAr ? '\u0646\u0643\u0645\u0644 \u0631\u062d\u0644\u062a\u0643 \u0627\u0644\u062a\u0639\u0644\u064a\u0645\u064a\u0629 \u0645\u0646 \u062d\u064a\u062b \u062a\u0648\u0642\u0641\u0646\u0627.' : 'Let\'s continue where you left off.')
     : (isAr ? '\u0643\u0644 \u0645\u0627 \u062a\u062d\u062a\u0627\u062c\u0647 \u0644\u062f\u0631\u0648\u0633\u0643 \u0645\u0639 \u0627\u0644\u0623\u0633\u062a\u0627\u0630 \u0645\u062d\u0645\u0648\u062f \u0641\u064a \u0645\u0643\u0627\u0646 \u0648\u0627\u062d\u062f.' : 'Everything you need for your lessons with Ustadh Mahmoud, in one place.');
 
-    const creditsRemaining = packagesData?.creditSummary?.totalRemaining ?? 0;
+  const creditsRemaining = packagesData?.creditSummary?.totalRemaining ?? 0;
   const completedLessonsCount = bookings.filter(b => b.status === 'completed').length;
   const pendingPaymentBookings = bookings.filter(b => {
     const summary = getBookingPaymentSummary(b, paymentsData || []);
     return summary.isPendingPayment;
   });
 
-  const hasVerifiedPayment = bookings.some(b => getBookingPaymentSummary(b, paymentsData || []).payment_status === 'paid') || (paymentsData || []).some(p => p.status === 'confirmed');
+  // Authoritative "verified/paid" signal, derived ONLY from the existing
+  // reconciliation contract. NOTE: the canonical server payment status enum is
+  // 'pending' | 'confirmed' | 'rejected' | 'refunded' (api/index.ts) — there is
+  // NO 'verified' value, so we never test for one. Booking-linked payments reuse
+  // getBookingPaymentSummary; package/unlinked payments use the real server
+  // status 'confirmed'.
+  const hasVerifiedPayment =
+    bookings.some(b => getBookingPaymentSummary(b, paymentsData || []).payment_status === 'paid') ||
+    (paymentsData || []).some(p => p.status === 'confirmed');
 
   return (
     <div className="space-y-8 animate-fade-in text-start pb-12">
-            {/* ========================================================================= */}
+      {/* ========================================================================= */}
+      {/* 1. OVERVIEW HEADER (Only place where greeting lives) */}
+      {/* ========================================================================= */}
+      {/* ========================================================================= */}
       {/* 1. WELCOME HEADER (Warm, editorial, brand-focused) */}
       {/* ========================================================================= */}
       <div className="flex flex-col gap-4 pb-4 border-b border-border">
@@ -275,7 +290,97 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
         </div>
       </div>
 
+      {/* ========================================================================= */}
+      {/* 2. QUICK ACTIONS (Hierarchy: Primary 'Book a Lesson', Secondary others) */}
+      {/* ========================================================================= */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <Link to="/student/book" className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-brand text-white hover:bg-brand/90 transition-all shadow-xs group cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <Calendar className="w-4 h-4 shrink-0" />
+            <span className="text-xs sm:text-sm font-semibold truncate">
+              {isAr ? 'حجز درس جديد' : 'Book a Lesson'}
+            </span>
+          </div>
+          <ArrowRight className={`w-3.5 h-3.5 opacity-80 group-hover:translate-x-0.5 transition-transform shrink-0 ${isAr ? 'rotate-180 group-hover:-translate-x-0.5' : ''}`} />
+        </Link>
+
         
+
+        <Link
+          to="/student/lessons"
+          className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-surface border border-border hover:border-primary/40 text-foreground hover:text-primary transition-all shadow-2xs group cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        >
+          <div className="flex items-center gap-2.5 min-w-0">
+            <BookOpen className="w-4 h-4 text-accent shrink-0" />
+            <span className="text-xs sm:text-sm font-medium truncate">
+              {isAr ? 'جدول كافة الدروس' : 'View Lessons'}
+            </span>
+          </div>
+          <ArrowRight className={`w-3.5 h-3.5 text-muted-foreground group-hover:text-accent group-hover:translate-x-0.5 transition-all shrink-0 ${isAr ? 'rotate-180 group-hover:-translate-x-0.5' : ''}`} />
+        </Link>
+
+        <Link
+          to="/student/payments"
+          className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-surface border border-border hover:border-primary/40 text-foreground hover:text-primary transition-all shadow-2xs group cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        >
+          <div className="flex items-center gap-2.5 min-w-0">
+            <CreditCard className="w-4 h-4 text-accent shrink-0" />
+            <span className="text-xs sm:text-sm font-medium truncate">
+              {isAr ? 'المدفوعات والحوالات' : 'View Payments'}
+            </span>
+          </div>
+          <ArrowRight className={`w-3.5 h-3.5 text-muted-foreground group-hover:text-accent group-hover:translate-x-0.5 transition-all shrink-0 ${isAr ? 'rotate-180 group-hover:-translate-x-0.5' : ''}`} />
+        </Link>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* 3. COMMAND CENTER: TWO-COLUMN BALANCED DESKTOP LAYOUT */}
+      {/* ========================================================================= */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* LEFT COLUMN: 8 COLS (Next Lesson + Recent Lessons) */}
+        <div className="lg:col-span-8 space-y-8">
+          
+          {/* PRIMARY: NEXT LESSON FOCUS */}
+          <section className="space-y-3" aria-labelledby="next-lesson-heading">
+            <div className="flex items-center justify-between">
+              <h2 id="next-lesson-heading" className="text-base sm:text-lg font-display font-bold text-foreground">
+                {isAr ? 'الدرس القادم المجدول' : 'Next Scheduled Lesson'}
+              </h2>
+              {nextBooking && (
+                <Link
+                  to="/student/lessons"
+                  className="text-xs text-primary hover:underline font-medium inline-flex items-center gap-1"
+                >
+                  <span>{isAr ? 'كافة المواعيد' : 'All sessions'}</span>
+                  <ArrowRight className={`w-3 h-3 ${isAr ? 'rotate-180' : ''}`} />
+                </Link>
+              )}
+            </div>
+
+            {nextBooking ? (
+              <div className="space-y-5 py-2">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-xs font-semibold text-primary uppercase tracking-wider">
+                        {isAr ? 'جلسة فردية مباشرة' : '1-on-1 Private Session'}
+                      </span>
+                      <span className="text-muted-foreground">•</span>
+                      <span className="text-xs text-muted-foreground">
+                        {isAr ? 'مع الأستاذ محمود' : 'with Ustadh Mahmoud'}
+                      </span>
+                    </div>
+
+                    <h3 className="text-heading-lg text-foreground">
+                      {nextBooking.serviceTitle || nextBooking.services?.title || (isAr ? 'جلسة تعليمية' : 'Private Lesson')}
+                    </h3>
+                  </div>
+
+                  <div className="shrink-0">
+                    <Badge variant={nextBooking.status === 'confirmed' ? 'success' : nextBooking.status === 'pending' ? 'warning' : 'secondary'}>
+                      {nextBooking.status === 'pending' ? (isAr ? 'بانتظار الدفع' : 'Payment Required') : nextBooking.status}
+                    </Badge>
+                  </div>
                 </div>
 
                 {/* Time & Duration Grid */}
