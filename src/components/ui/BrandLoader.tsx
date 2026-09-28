@@ -12,8 +12,8 @@ export function BrandLoader({ size = 'md', text, className = '' }: BrandLoaderPr
 
   if (size === 'inline') {
     return (
-      <div className={inline-flex items-center gap-2  + className}>
-        <div className={w-5 h-5 opacity-90  + (!isReducedMotion ? 'animate-pulse' : '')}>
+      <div className={`inline-flex items-center gap-2 ${className}`}>
+        <div className={`w-5 h-5 opacity-90 ${!isReducedMotion ? "animate-pulse" : ""}`}>
           <img src="/logo.png" alt="Loading..." className="w-full h-full object-contain" />
         </div>
         {text && <span className="text-body-sm font-medium">{text}</span>}
@@ -24,7 +24,7 @@ export function BrandLoader({ size = 'md', text, className = '' }: BrandLoaderPr
   const containerClasses = size === 'page' ? 'min-h-[50vh] flex-col items-center justify-center' : 'flex-col items-center justify-center';
 
   return (
-    <div className={lex gap-4  + containerClasses +   + className}>
+    <div className={`flex gap-4 ${containerClasses} ${className}`}>
       <div className="relative">
         <div 
           className="relative transition-transform" 
