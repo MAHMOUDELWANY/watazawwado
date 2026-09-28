@@ -46,7 +46,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
   const currentStepTitle = stepTitles[step - 1] || '';
 
   return (
-    <div className="pb-6 border-b border-border dark:border-border/80 mb-6 sm:mb-8">
+    <div className="pb-6 border-b border-border/80 mb-6 sm:mb-8">
       {/* Top Bar: Back, Status Tag, and Close */}
       <div className="flex items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-3">
@@ -56,7 +56,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
               whileTap={{ scale: 0.95 }}
               onClick={onBack}
               type="button"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-foreground dark:text-foreground bg-surface-warm dark:bg-surface-subtle hover:bg-border dark:hover:bg-surface-subtle transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-foreground bg-surface-warm dark:bg-surface-subtle hover:bg-border dark:hover:bg-surface-subtle transition-colors cursor-pointer"
             >
               <ArrowLeft className={`w-3.5 h-3.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
               <span>{isEn ? 'Back' : 'رجوع'}</span>
@@ -68,7 +68,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold tracking-wide ${
               mode === 'trial'
                 ? 'bg-secondary/40 text-accent dark:text-primary border border-secondary/60'
-                : 'bg-muted-foreground/15 text-muted-foreground dark:text-muted-foreground border border-muted-foreground/30'
+                : 'bg-muted-foreground/15 text-muted-foreground border border-muted-foreground/30'
             }`}
           >
             <CheckCircle2 className="w-3.5 h-3.5" />
@@ -115,10 +115,10 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
       {/* Step Title & Progress Track */}
       <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-3">
         <div>
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground dark:text-muted-foreground block mb-0.5">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block mb-0.5">
             {isEn ? `Step ${step} of ${totalSteps}` : `الخطوة ${step} من ${totalSteps}`}
           </span>
-          <h2 className="font-display text-2xl sm:text-3xl font-medium text-foreground dark:text-foreground">
+          <h2 className="font-display text-2xl sm:text-3xl font-medium text-foreground">
             {currentStepTitle}
           </h2>
         </div>
@@ -126,7 +126,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
         {serviceName && step > 1 && (
           <div className="text-xs text-foreground/70 dark:text-border/70 bg-white/60 dark:bg-background/60 px-2.5 py-1 rounded-md border border-border/60 dark:border-border/60 self-start sm:self-auto">
             <span className="text-foreground/50 dark:text-border/50">{isEn ? 'Selected: ' : 'المادة: '}</span>
-            <span className="font-medium text-foreground dark:text-foreground">{serviceName}</span>
+            <span className="font-medium text-foreground">{serviceName}</span>
           </div>
         )}
       </div>

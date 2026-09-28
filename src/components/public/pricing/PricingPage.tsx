@@ -29,7 +29,7 @@ export function PricingPage() {
           <div className="grid md:grid-cols-2 gap-8 pt-12">
             
             {/* Single Lessons */}
-            <div className="bg-surface p-8 rounded-2xl border border-border-subtle shadow-sm">
+            <BrandGlassCard intensity="subtle" className="p-8">
               <h3 className="font-editorial text-2xl text-foreground mb-2">
                 {isEn ? 'Single Lessons' : 'الدروس الفردية'}
               </h3>
@@ -59,7 +59,7 @@ export function PricingPage() {
             </div>
 
             {/* Monthly Packages */}
-            <div className="bg-surface-warm p-8 rounded-2xl border border-border-subtle shadow-sm relative overflow-hidden">
+            <BrandGlassCard intensity="high" className="p-8 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/20 rounded-bl-full -z-10" />
               <h3 className="font-editorial text-2xl text-foreground mb-2">
                 {isEn ? 'Monthly Packages' : 'الباقات الشهرية'}
@@ -86,10 +86,10 @@ export function PricingPage() {
                   <span>$112</span>
                 </li>
               </ul>
-            </div>
+            </BrandGlassCard>
 
             {/* Weekly Packages */}
-            <div className="bg-surface p-8 rounded-2xl border border-border-subtle shadow-sm relative overflow-hidden lg:col-span-2">
+            <BrandGlassCard intensity="subtle" className="p-8 relative overflow-hidden lg:col-span-2">
               <h3 className="font-editorial text-2xl text-foreground mb-2">
                 {isEn ? 'Weekly Packages' : 'الباقات الأسبوعية'}
               </h3>
@@ -113,7 +113,7 @@ export function PricingPage() {
                   </div>
                 ))}
               </div>
-            </div>
+            </BrandGlassCard>
 
           </div>
 

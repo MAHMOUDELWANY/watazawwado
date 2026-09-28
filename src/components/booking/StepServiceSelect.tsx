@@ -56,7 +56,7 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
               className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                 isActive
                   ? 'bg-muted-foreground text-white shadow-xs'
-                  : 'bg-white/80 dark:bg-surface text-foreground/70 dark:text-border/70 border border-border dark:border-border hover:bg-surface-warm dark:hover:bg-surface-subtle'
+                  : 'bg-white/80 dark:bg-surface text-foreground/70 dark:text-border/70 border border-border hover:bg-surface-warm dark:hover:bg-surface-subtle'
               }`}
             >
               {grp.icon}
@@ -79,19 +79,19 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
               className={`group p-4 sm:p-5 rounded-2xl border text-start transition-all cursor-pointer relative flex flex-col justify-between ${
                 isSelected
                   ? 'bg-foreground dark:bg-surface-subtle border-primary ring-2 ring-primary/30 shadow-sm'
-                  : 'bg-white dark:bg-surface border-border dark:border-border hover:border-accent/50 hover:bg-foreground/40 shadow-xs'
+                  : 'bg-surface border-border hover:border-accent/50 hover:bg-foreground/40 shadow-xs'
               }`}
             >
               <div>
                 <div className="flex items-start justify-between gap-3 mb-1.5">
-                  <h3 className="font-display text-base sm:text-lg font-medium text-foreground dark:text-foreground group-hover:text-muted-foreground dark:group-hover:text-muted-foreground transition-colors leading-snug">
+                  <h3 className="font-display text-base sm:text-lg font-medium text-foreground group-hover:text-muted-foreground dark:group-hover:text-muted-foreground transition-colors leading-snug">
                     {isEn ? service.name : service.arabicName}
                   </h3>
                   <div
                     className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
                       isSelected
                         ? 'bg-primary text-white'
-                        : 'border border-border dark:border-border text-transparent'
+                        : 'border border-border text-transparent'
                     }`}
                   >
                     <Check className="w-3.5 h-3.5" />
@@ -107,7 +107,7 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
                 <span>
                   {isEn ? 'Available lengths:' : 'المدد المتاحة:'} 30, 45, 60m
                 </span>
-                <span className="font-medium text-muted-foreground dark:text-muted-foreground">
+                <span className="font-medium text-muted-foreground">
                   {isEn ? `Rate baseline: $${service.hourlyRateUsd}/hr` : `المعدل الأساسي: $${service.hourlyRateUsd}/ساعة`}
                 </span>
               </div>
@@ -117,12 +117,12 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
       </div>
 
       {/* Selected Confirmation Bar & Next Action */}
-      <div className="pt-4 border-t border-border dark:border-border flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="pt-4 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="text-xs text-foreground/70 dark:text-border/70 text-center sm:text-start">
           {selectedService ? (
             <span>
               {isEn ? 'Selected: ' : 'تم اختيار: '}
-              <strong className="text-foreground dark:text-foreground">
+              <strong className="text-foreground">
                 {isEn ? selectedService.name : selectedService.arabicName}
               </strong>
             </span>

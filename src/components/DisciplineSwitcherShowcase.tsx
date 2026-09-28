@@ -182,7 +182,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
   return (
     <section
       id="discipline-switcher"
-      className="py-20 lg:py-28 bg-white dark:bg-background border-b border-border/80 dark:border-border transition-colors"
+      className="py-20 lg:py-28 bg-background border-b border-border/80 dark:border-border transition-colors"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -195,7 +195,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
               <span>{isEn ? 'Your Choice of Discipline' : 'اختيارك الشخصي'}</span>
             </div>
 
-            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-foreground dark:text-foreground tracking-tight mb-4">
+            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-foreground tracking-tight mb-4">
               {isEn ? (
                 <>
                   Choose the subject you need.{' '}
@@ -210,7 +210,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
             </h2>
           </div>
 
-          <div className="max-w-sm text-xs sm:text-sm text-muted-foreground dark:text-muted-foreground leading-relaxed">
+          <div className="max-w-sm text-xs sm:text-sm text-muted-foreground leading-relaxed">
             {isEn
               ? 'You pick the discipline before every lesson. When your family needs change, switch it seamlessly without looking for another teacher.'
               : 'تحدد المادة التي تريد التركيز عليها قبل كل جلسة. وحين تتغير متطلباتك، تنتقل بسلاسة مع نفس المعلم دون عناء البحث من جديد.'}
@@ -233,11 +233,11 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
                 className={`p-6 rounded-2xl sm:rounded-3xl border transition-all cursor-pointer flex flex-col justify-between ${
                   isSelected
                     ? 'bg-background dark:bg-surface-subtle border-primary shadow-lg shadow-primary/15 ring-2 ring-primary/20'
-                    : 'bg-white dark:bg-surface border-border dark:border-border hover:border-accent/50 shadow-xs'
+                    : 'bg-surface border-border hover:border-accent/50 shadow-xs'
                 }`}
               >
                 <div>
-                  <div className="flex items-center justify-between text-xs font-mono text-muted-foreground dark:text-muted-foreground mb-4">
+                  <div className="flex items-center justify-between text-xs font-mono text-muted-foreground mb-4">
                     <span>{pillar.number}</span>
                     <span className="text-[11px] text-primary font-medium bg-secondary/30 px-2.5 py-0.5 rounded-full">
                       {pillar.status}
@@ -248,11 +248,11 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
                     {pillar.badge}
                   </div>
 
-                  <h3 className="font-display text-2xl font-bold text-foreground dark:text-foreground mb-2">
+                  <h3 className="font-display text-2xl font-bold text-foreground mb-2">
                     {pillar.title}
                   </h3>
 
-                  <p className="text-xs sm:text-sm text-muted-foreground dark:text-muted-foreground leading-relaxed mb-6">
+                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed mb-6">
                     {pillar.subtitle}
                   </p>
                 </div>
@@ -265,7 +265,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
                     className={`w-5 h-5 rounded-full border flex items-center justify-center transition-colors ${
                       isSelected
                         ? 'bg-primary border-primary text-white'
-                        : 'border-border dark:border-border'
+                        : 'border-border'
                     }`}
                   >
                     {isSelected && <Check className="w-3 h-3" />}
@@ -308,11 +308,11 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
         </motion.div>
 
         {/* Level Selector & Real-Time Connection Diagram (Mirrors 00:07 in video) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-background dark:bg-surface p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-border dark:border-border">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-background dark:bg-surface p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-border">
           
           {/* Left: Step Levels (5 cols) */}
           <div className="lg:col-span-5 space-y-3">
-            <div className="text-xs font-semibold text-muted-foreground dark:text-muted-foreground uppercase tracking-wider mb-2">
+            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
               {isEn ? 'Curriculum Progression Levels' : 'مستويات التدرج التعليمي'}
             </div>
 
@@ -325,7 +325,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
                   onClick={() => setActiveLevelIndex(idx)}
                   className={`w-full text-left sm:text-start p-4 rounded-xl border transition-all cursor-pointer flex items-start gap-3 ${
                     isLvlSelected
-                      ? 'bg-white dark:bg-background border-primary shadow-sm'
+                      ? 'bg-background border-primary shadow-sm'
                       : 'bg-transparent border-transparent hover:bg-white/60 dark:hover:bg-surface-subtle'
                   }`}
                 >
@@ -333,10 +333,10 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
                     0{idx + 1}
                   </span>
                   <div className="flex-1">
-                    <div className="font-semibold text-xs sm:text-sm text-foreground dark:text-foreground">
+                    <div className="font-semibold text-xs sm:text-sm text-foreground">
                       {lvl.name}
                     </div>
-                    <div className="text-[11px] text-muted-foreground dark:text-muted-foreground mt-0.5">
+                    <div className="text-[11px] text-muted-foreground mt-0.5">
                       {lvl.durations}
                     </div>
                   </div>
@@ -346,11 +346,11 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
           </div>
 
           {/* Right: Live Connection Node Diagram (7 cols) */}
-          <div className="lg:col-span-7 bg-white dark:bg-background p-6 sm:p-8 rounded-2xl border border-border dark:border-border flex flex-col justify-between">
+          <div className="lg:col-span-7 bg-background p-6 sm:p-8 rounded-2xl border border-border flex flex-col justify-between">
             <div>
               {/* Status Header */}
               <div className="flex items-center justify-between pb-4 border-b border-border/80 dark:border-border mb-6">
-                <div className="text-xs font-semibold text-muted-foreground dark:text-muted-foreground">
+                <div className="text-xs font-semibold text-muted-foreground">
                   {isEn ? 'Selected Module Specification' : 'تفاصيل الوحدة المختارة'}
                 </div>
                 <span className="text-[10px] font-mono text-primary dark:text-primary bg-secondary/30 px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
@@ -363,14 +363,14 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
               <div className="py-4 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 my-4">
                 
                 {/* Learner Node */}
-                <div className="w-full sm:w-44 p-4 rounded-xl bg-surface-warm dark:bg-surface-subtle border border-border dark:border-border text-center">
+                <div className="w-full sm:w-44 p-4 rounded-xl bg-surface-warm dark:bg-surface-subtle border border-border text-center">
                   <div className="w-8 h-8 rounded-full bg-secondary/30 text-accent mx-auto mb-2 flex items-center justify-center font-bold text-xs">
                     You
                   </div>
-                  <div className="font-semibold text-xs text-foreground dark:text-foreground">
+                  <div className="font-semibold text-xs text-foreground">
                     {isEn ? 'Student / Family' : 'الطالب / الأسرة'}
                   </div>
-                  <div className="text-[10px] text-muted-foreground dark:text-muted-foreground">
+                  <div className="text-[10px] text-muted-foreground">
                     {isEn ? 'Local Timezone' : 'توقيتك المحلي'}
                   </div>
                 </div>
@@ -390,11 +390,11 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
                 </div>
 
                 {/* Teacher Node */}
-                <div className="w-full sm:w-44 p-4 rounded-xl bg-surface-warm dark:bg-surface-subtle border border-border dark:border-border text-center">
+                <div className="w-full sm:w-44 p-4 rounded-xl bg-surface-warm dark:bg-surface-subtle border border-border text-center">
                   <div className="w-8 h-8 rounded-full bg-secondary/30 text-accent mx-auto mb-2 flex items-center justify-center font-bold text-xs">
                     M
                   </div>
-                  <div className="font-semibold text-xs text-foreground dark:text-foreground">
+                  <div className="font-semibold text-xs text-foreground">
                     {isEn ? 'Ustadh Mahmoud' : 'الأستاذ محمود'}
                   </div>
                   <div className="text-[10px] text-primary flex items-center justify-center gap-1">
@@ -407,10 +407,10 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
 
               {/* Module Description */}
               <div className="p-4 rounded-xl bg-background dark:bg-surface-subtle border border-border/80 dark:border-border mt-4">
-                <div className="text-xs font-semibold text-foreground dark:text-foreground mb-1">
+                <div className="text-xs font-semibold text-foreground mb-1">
                   {currentLevel.name}
                 </div>
-                <p className="text-xs text-muted-foreground dark:text-muted-foreground leading-relaxed">
+                <p className="text-xs text-muted-foreground leading-relaxed">
                   {currentLevel.desc}
                 </p>
               </div>
@@ -426,7 +426,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
               </span>
               <button
                 onClick={() => onOpenTrialModal(currentPillarData.id)}
-                className="font-semibold text-foreground dark:text-foreground hover:text-primary flex items-center gap-1 cursor-pointer transition-colors"
+                className="font-semibold text-foreground hover:text-primary flex items-center gap-1 cursor-pointer transition-colors"
               >
                 <span>{isEn ? 'Start free trial' : 'ابدأ التجربة المجانية'}</span>
                 <ArrowRight className={`w-3.5 h-3.5 ${isRtl ? 'rotate-180' : ''}`} />

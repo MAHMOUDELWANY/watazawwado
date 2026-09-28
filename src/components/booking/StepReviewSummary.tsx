@@ -72,15 +72,15 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
       </div>
 
       {/* Main Review Card */}
-      <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-surface border border-secondary/60 shadow-xs space-y-5">
+      <div className="p-5 sm:p-6 rounded-3xl bg-surface border border-secondary/60 shadow-xs space-y-5">
         {/* Service & Goal */}
-        <div className="flex items-start justify-between gap-4 pb-4 border-b border-border dark:border-border">
+        <div className="flex items-start justify-between gap-4 pb-4 border-b border-border">
           <div className="space-y-1.5">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground dark:text-muted-foreground">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               <BookOpen className="w-3.5 h-3.5 text-accent" />
               <span>{isEn ? 'Selected Discipline' : 'المادة المختارة'}</span>
             </div>
-            <h3 className="font-display text-lg font-medium text-foreground dark:text-foreground">
+            <h3 className="font-display text-lg font-medium text-foreground">
               {isEn ? service.name : service.arabicName}
             </h3>
             <div className="text-xs text-foreground/70 dark:text-border/80">
@@ -107,13 +107,13 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
         </div>
 
         {/* Schedule & Timezone */}
-        <div className="flex items-start justify-between gap-4 pb-4 border-b border-border dark:border-border">
+        <div className="flex items-start justify-between gap-4 pb-4 border-b border-border">
           <div className="space-y-1.5">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground dark:text-muted-foreground">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               <Calendar className="w-3.5 h-3.5 text-accent" />
               <span>{isEn ? 'Scheduled Date & Time' : 'الموعد والتوقيت'}</span>
             </div>
-            <div className="text-base font-display font-medium text-foreground dark:text-foreground flex flex-wrap items-center gap-2">
+            <div className="text-base font-display font-medium text-foreground flex flex-wrap items-center gap-2">
               <span>{formData.date}</span>
               <span>•</span>
               <span className="text-primary font-semibold">{formData.timeSlot?.timeDisplay}</span>
@@ -141,14 +141,14 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
         </div>
 
         {/* Learner Details & Communication */}
-        <div className="flex items-start justify-between gap-4 pb-4 border-b border-border dark:border-border">
+        <div className="flex items-start justify-between gap-4 pb-4 border-b border-border">
           <div className="space-y-1.5">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground dark:text-muted-foreground">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               <User className="w-3.5 h-3.5 text-accent" />
               <span>{isEn ? 'Student & Contact' : 'بيانات الطالب والتواصل'}</span>
             </div>
 
-            <div className="text-sm font-medium text-foreground dark:text-foreground">
+            <div className="text-sm font-medium text-foreground">
               {isChild ? (
                 <span>
                   {formData.childName}{' '}
@@ -221,7 +221,7 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
       <div className="p-4 rounded-2xl bg-surface-warm dark:bg-surface-subtle border border-secondary/60 flex items-start gap-3 text-xs text-foreground/80 dark:text-border/80">
         <ShieldCheck className="w-5 h-5 text-accent shrink-0 mt-0.5" />
         <div className="leading-relaxed">
-          <strong className="text-foreground dark:text-foreground block mb-0.5">
+          <strong className="text-foreground block mb-0.5">
             {isEn ? 'Cancellation & Rescheduling Policy' : 'سياسة الإلغاء وتغيير الموعد'}
           </strong>
           <span>
@@ -233,7 +233,7 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
       </div>
 
       {/* Controls */}
-      <div className="pt-4 border-t border-border dark:border-border flex items-center justify-between gap-4">
+      <div className="pt-4 border-t border-border flex items-center justify-between gap-4">
         <motion.button
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}

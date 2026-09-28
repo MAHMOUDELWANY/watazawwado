@@ -259,6 +259,51 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
   // NO 'verified' value, so we never test for one. Booking-linked payments reuse
   // getBookingPaymentSummary; package/unlinked payments use the real server
   // status 'confirmed'.
+  // Onboarding state
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  
+  useEffect(() => {
+    // Show onboarding for new users automatically once
+    const hasSeen = localStorage.getItem('watazawwado_onboarding_seen');
+    if (!hasSeen && !coreLoading && bookings.length === 0) {
+      // Small delay to let UI render fully
+      const timer = setTimeout(() => setShowOnboarding(true), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [coreLoading, bookings.length]);
+
+  const handleCloseOnboarding = () => {
+    setShowOnboarding(false);
+    localStorage.setItem('watazawwado_onboarding_seen', 'true');
+  };
+
+  const onboardingSteps: OnboardingStep[] = [
+    {
+      targetId: 'onboarding-welcome',
+      title: isAr ? 'مساحتك التعليمية' : 'Your Learning Home',
+      description: isAr ? 'هنا تجد كل ما يخص دروسك مع الأستاذ محمود، من حجوزات ومتابعة وتفاصيل.' : 'This is your central hub for all your lessons with Ustadh Mahmoud.',
+      position: 'bottom'
+    },
+    {
+      targetId: ['nav-book-link-desktop', 'nav-book-link'],
+      title: isAr ? 'حجز درس جديد' : 'Book a New Lesson',
+      description: isAr ? 'اضغط هنا في أي وقت لحجز جلسة جديدة وتحديد الموعد المناسب.' : 'Tap here anytime to schedule a new 1-on-1 session.',
+      position: 'top'
+    },
+    {
+      targetId: 'onboarding-next-lesson',
+      title: isAr ? 'متابعة دروسك' : 'Track Your Lessons',
+      description: isAr ? 'هنا سيظهر درسك القادم، ويمكنك الانضمام إليه مباشرة.' : 'Your next scheduled lesson will appear here so you can easily join.',
+      position: 'bottom'
+    },
+    {
+      targetId: ['nav-account-link-desktop', 'nav-account-link'],
+      title: isAr ? 'حسابك وإعداداتك' : 'Your Account',
+      description: isAr ? 'تابع باقاتك، مدفوعاتك، وإعدادات منطقتك الزمنية من هنا.' : 'Manage your active packages, verified payments, and timezone settings.',
+      position: 'top'
+    }
+  ];
+
   const hasVerifiedPayment =
     bookings.some(b => getBookingPaymentSummary(b, paymentsData || []).payment_status === 'paid') ||
     (paymentsData || []).some(p => p.status === 'confirmed');
@@ -271,7 +316,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
       {/* ========================================================================= */}
       {/* 1. WELCOME HEADER (Warm, editorial, brand-focused) */}
       {/* ========================================================================= */}
-      <div className="flex flex-col gap-4 pb-4 border-b border-border">
+      <div id="onboarding-welcome" className="flex flex-col gap-4 pb-4 border-b border-border">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0">
             <BrandLogo variant="compact" />
@@ -901,6 +946,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
           }}
         />
       )}
+      <OnboardingGuide steps={onboardingSteps} isOpen={showOnboarding} onClose={handleCloseOnboarding} isAr={isAr} />
     </div>
   );
 }

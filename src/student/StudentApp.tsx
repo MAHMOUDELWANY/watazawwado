@@ -1,6 +1,7 @@
 import { BrandLogo } from '../components/ui/BrandLogo';
 import { AccountDropdown } from '../components/ui/AccountDropdown';
 import { BrandLoader } from '../components/ui/BrandLoader';
+import { ThemeToggle } from '../components/ui/ThemeToggle';
 import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import {  BookOpen,
@@ -475,8 +476,9 @@ export default function StudentApp() {
             return (
               <Link
                 key={item.path}
-                to={item.path}
-                onClick={() => setSidebarOpen(false)}
+                  to={item.path}
+                  id={item.path === '/student/book' ? 'nav-book-link-desktop' : item.path === '/student/account' ? 'nav-account-link-desktop' : undefined}
+                  onClick={() => setSidebarOpen(false)}
                 aria-current={isActive ? 'page' : undefined}
                 className={`
                   flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors touch-manipulation min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
@@ -574,13 +576,7 @@ export default function StudentApp() {
             </button>
 
             {/* Theme Switch */}
-            <button
-              onClick={toggleTheme}
-              className="min-h-[40px] min-w-[40px] hidden sm:flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
-              aria-label={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
-            >
-              {theme === 'light' ? <Moon className="w-4 h-4 text-accent" /> : <Sun className="w-4 h-4 text-accent" />}
-            </button>
+            <div className="hidden sm:flex items-center"><ThemeToggle /></div>
 
             {/* User Profile Avatar Pill */}
             <AccountDropdown initials={studentInitial} isAr={isAr} />
@@ -647,7 +643,8 @@ export default function StudentApp() {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`relative flex flex-col items-center justify-center py-2 px-1 text-[10px] sm:text-xs min-h-[64px] transition-all group flex-1`}
+                id={isBook ? 'nav-book-link' : item.path === '/student/account' ? 'nav-account-link' : undefined}
+                className={elative flex flex-col items-center justify-center py-2 px-1 text-[10px] sm:text-xs min-h-[64px] transition-all group flex-1`}
               >
                 {isBook ? (
                   <div className={`relative flex items-center justify-center w-12 h-9 rounded-[14px] shadow-sm transition-transform active:scale-95 mb-1 group-hover:bg-primary-hover ${

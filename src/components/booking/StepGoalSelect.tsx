@@ -43,7 +43,7 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
   return (
     <div className="space-y-6">
       <div>
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground dark:text-muted-foreground mb-1">
+        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
           <Target className="w-3.5 h-3.5" />
           <span>{isEn ? 'Tailored to Your Journey' : 'تخصيص مسارك التعليمي'}</span>
         </div>
@@ -71,15 +71,15 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
                 onClick={() => handleGoalChipClick(goal)}
                 className={`p-3.5 rounded-xl border text-start text-xs sm:text-sm transition-all cursor-pointer flex items-start gap-3 ${
                   isSelected
-                    ? 'bg-foreground dark:bg-surface-subtle border-primary ring-1 ring-primary font-medium text-foreground dark:text-foreground shadow-xs'
-                    : 'bg-white dark:bg-surface border-border dark:border-border text-foreground/80 dark:text-border hover:border-accent/50 hover:bg-foreground/40'
+                    ? 'bg-foreground dark:bg-surface-subtle border-primary ring-1 ring-primary font-medium text-foreground shadow-xs'
+                    : 'bg-surface border-border text-foreground/80 dark:text-border hover:border-accent/50 hover:bg-foreground/40'
                 }`}
               >
                 <div
                   className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
                     isSelected
                       ? 'bg-primary text-white'
-                      : 'border border-border dark:border-border'
+                      : 'border border-border'
                   }`}
                 >
                   {isSelected && <Check className="w-3 h-3" />}
@@ -110,7 +110,7 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
               ? 'e.g. I can sound out letters slowly but I get stuck on Ghunnah rules, or my 7-year-old learns best through visual games...'
               : 'مثال: أقرأ الحروف ببطء وأرغب في ضبط أحكام الغنة، أو ابني ذو السبع سنوات يفضل التعلم بالألعاب التفاعلية...'
           }
-          className="w-full px-4 py-3 rounded-xl border border-border dark:border-border bg-white dark:bg-background text-sm text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-foreground/40 dark:placeholder:text-border/40 leading-relaxed shadow-2xs"
+          className="w-full px-4 py-3 rounded-xl border border-border bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-foreground/40 dark:placeholder:text-border/40 leading-relaxed shadow-2xs"
         />
         <p className="text-[11px] text-foreground/55 dark:text-border/60">
           {isEn
@@ -120,7 +120,7 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
       </div>
 
       {/* Controls */}
-      <div className="pt-4 border-t border-border dark:border-border flex items-center justify-between gap-4">
+      <div className="pt-4 border-t border-border flex items-center justify-between gap-4">
         <motion.button
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}

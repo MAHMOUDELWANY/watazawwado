@@ -91,12 +91,7 @@
 :root {
   color-scheme: light;
   
-  /* ============================================================
-     WATAZAWWADO UNIFIED BRAND PALETTE
-     Teal #087D91 · Copper #8B4935 · Red #C51F24 · Beige #D8C6AE
-     ============================================================ */
-
-  /* Environment — warm ivory study room */
+  /* Environment - warm ivory */
   --background: #F8F6F0; 
   --foreground: #2C2A27;
 
@@ -105,47 +100,94 @@
   --surface-subtle: #F0EDE6;
   --surface-warm: #EDE7DC;
 
-  --muted: #EDEAE1;
+  --muted: #E6E4DD;
   --muted-foreground: #6B6965;
 
   --border: #D5D3CC;
   --border-subtle: #E6E4DD;
 
-  /* Primary ?" Crimson */
-  --primary: #D63338;
+  /* Primary - Crimson */
+  --primary: #C51F24;
   --primary-foreground: #FFFFFF;
-  --primary-hover: #B8272C;
+  --primary-hover: #A6181D;
 
-  /* Interactive ?" Teal */
-  --interactive: #0A9DB5;
-  --interactive-foreground: #111110;
-  --interactive-hover: #0CADC7;
+  /* Interactive - Teal */
+  --interactive: #087D91;
+  --interactive-foreground: #FFFFFF;
+  --interactive-hover: #066272;
   
-  /* Secondary */
+  /* Secondary - Beige surfaces */
+  --secondary: #F0EDE6;
+  --secondary-foreground: #2C2A27;
+  
+  /* Accent - Copper */
+  --accent: #8B4935;
+  --accent-foreground: #FFFFFF;
+  
+  /* Brand */
+  --brand: #C51F24;
+  --brand-soft: color-mix(in srgb, #C51F24 15%, transparent);
+
+  /* Semantic Status */
+  --destructive: #C51F24;
+  --destructive-foreground: #FFFFFF;
+  --success: #4CAF6E;
+  --success-foreground: #FFFFFF;
+  --warning: #E8AD76;
+  --warning-foreground: #111110;
+  --info: #087D91;
+  --info-foreground: #FFFFFF;
+  --focus: #087D91;
+}
+
+html.dark {
+  color-scheme: dark;
+  
+  /* Environment - warm charcoal */
+  --background: #1C1A19;
+  --foreground: #F8F6F0;
+  
+  --surface: #242220; 
+  --surface-foreground: #F8F6F0;
+  --surface-subtle: #2C2A27; 
+  --surface-warm: #332F2A;
+  
+  --muted: #383530;
+  --muted-foreground: #A39E93;
+  
+  --border: #423E39;
+  --border-subtle: #312E2A;
+
+  /* Primary - Crimson */
+  --primary: #C51F24;
+  --primary-foreground: #FFFFFF;
+  --primary-hover: #D63338;
+  
+  /* Interactive - Teal */
+  --interactive: #087D91;
+  --interactive-foreground: #FFFFFF;
+  --interactive-hover: #0A9DB5;
+
+  /* Secondary - Muted beige */
   --secondary: #3D3630;
   --secondary-foreground: #D8C6AE;
   
-  /* Accent ?" Copper (warmer in dark) */
+  /* Accent - Copper */
   --accent: #B06A52;
   --accent-foreground: #FFFFFF;
-  
-  /* Brand ?" Red */
-  --brand: #D63338;
-  --brand-soft: color-mix(in srgb, #D63338 15%, transparent);
 
-  /* Semantic Status Colors */
+  --brand: #C51F24;
+  --brand-soft: color-mix(in srgb, #C51F24 25%, transparent);
+
+  /* Semantic Status */
   --destructive: #D63338;
   --destructive-foreground: #FFFFFF;
-
   --success: #4CAF6E;
-  --success-foreground: #111110;
-
+  --success-foreground: #FFFFFF;
   --warning: #E8AD76;
   --warning-foreground: #111110;
-
   --info: #0A9DB5;
-  --info-foreground: #111110;
-
+  --info-foreground: #FFFFFF;
   --focus: #0A9DB5;
 }
 

@@ -137,18 +137,18 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
           initial={{ opacity: 0, scale: 0.96, y: 12 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.96, y: 12 }}
-          className="relative w-full max-w-4xl max-h-[90vh] flex flex-col bg-surface-subtle dark:bg-background rounded-2xl sm:rounded-3xl border border-border dark:border-border shadow-2xl overflow-hidden z-10"
+          className="relative w-full max-w-4xl max-h-[90vh] flex flex-col bg-surface-subtle dark:bg-background rounded-2xl sm:rounded-3xl border border-border shadow-2xl overflow-hidden z-10"
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-border dark:border-border bg-white dark:bg-surface">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-surface">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-secondary/30 dark:bg-primary/25 text-accent-hover dark:text-primary flex items-center justify-center">
                 <ShieldCheck className="w-5 h-5" /></div>
               <div>
-                <h3 className="font-display text-lg font-bold text-foreground dark:text-foreground">
+                <h3 className="font-display text-lg font-bold text-foreground">
                   {isTeacherAuthenticated ? 'Teacher Backend Foundation' : 'Ustadh Mahmoud — Teacher Access'}
                 </h3>
-                <p className="text-[11px] text-muted-foreground dark:text-muted-foreground">
+                <p className="text-[11px] text-muted-foreground">
                   Phase 3: Supabase Database, RLS Security & Teacher Auth
                 </p></div>
             </div>
@@ -189,18 +189,18 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                   <div className="w-12 h-12 rounded-2xl bg-secondary/30 text-accent-hover dark:text-primary mx-auto flex items-center justify-center mb-3">
                     <Lock className="w-6 h-6" />
                   </div>
-                  <h4 className="font-display text-xl font-bold text-foreground dark:text-foreground">
+                  <h4 className="font-display text-xl font-bold text-foreground">
                     Private Teacher Login
                   </h4>
-                  <p className="text-xs text-muted-foreground dark:text-muted-foreground mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     Strict teacher management area. Students book directly as guests and do not have accounts.
                   </p>
                 </div>
 
                 {/* Database Connectivity Badge */}
-                <div className="mb-6 p-3.5 rounded-xl border border-border dark:border-border bg-white dark:bg-surface text-xs">
+                <div className="mb-6 p-3.5 rounded-xl border border-border bg-surface text-xs">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-semibold text-foreground dark:text-foreground flex items-center gap-1.5">
+                    <span className="font-semibold text-foreground flex items-center gap-1.5">
                       <DbIcon className="w-3.5 h-3.5 text-accent" />
                       <span>Database Status</span>
                     </span>
@@ -208,7 +208,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                       {isConfigured ? 'Supabase Connected' : 'Local Fallback Mode'}
                     </span>
                   </div>
-                  <p className="text-[11px] text-muted-foreground dark:text-muted-foreground">
+                  <p className="text-[11px] text-muted-foreground">
                     {dbStatus?.message || 'Checking database endpoint...'}
                   </p>
                 </div>
@@ -222,7 +222,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
 
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-semibold text-foreground dark:text-foreground mb-1.5">
+                    <label className="block text-xs font-semibold text-foreground mb-1.5">
                       Teacher Email
                     </label>
                     <input
@@ -231,12 +231,12 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="mhmwdlwany4222@gmail.com"
                       required
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-border dark:border-border bg-white dark:bg-surface text-sm text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-surface text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-foreground dark:text-foreground mb-1.5">
+                    <label className="block text-xs font-semibold text-foreground mb-1.5">
                       Password
                     </label>
                     <input
@@ -245,7 +245,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••••••"
                       required
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-border dark:border-border bg-white dark:bg-surface text-sm text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-surface text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                   </div>
 
@@ -262,14 +262,14 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
               <div className="space-y-6">
                 
                 {/* Active Session Card */}
-                <div className="p-4 rounded-2xl bg-white dark:bg-surface border border-border dark:border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="p-4 rounded-2xl bg-surface border border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-secondary/30 text-accent flex items-center justify-center font-bold text-sm">
                       M
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-display font-bold text-sm sm:text-base text-foreground dark:text-foreground">
+                        <span className="font-display font-bold text-sm sm:text-base text-foreground">
                           Ustadh Mahmoud
                         </span>
                         <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-semibold flex items-center gap-1">
@@ -277,7 +277,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                           Authenticated
                         </span>
                       </div>
-                      <div className="text-xs text-muted-foreground dark:text-muted-foreground">
+                      <div className="text-xs text-muted-foreground">
                         {user?.email || 'mhmwdlwany4222@gmail.com'} • Primary Timezone: Cairo (UTC+2/3)
                       </div>
                     </div>
@@ -286,7 +286,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                   <button
                     onClick={loadTeacherData}
                     disabled={isLoadingData}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border dark:border-border text-xs font-medium text-foreground dark:text-foreground hover:bg-surface-subtle dark:hover:bg-surface cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border text-xs font-medium text-foreground hover:bg-surface-subtle dark:hover:bg-surface cursor-pointer"
                   >
                     <RefreshCw className={`w-3.5 h-3.5 ${isLoadingData ? 'animate-spin' : ''}`} />
                     <span>Refresh</span>
@@ -294,7 +294,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                 </div>
 
                 {/* Navigation Tabs */}
-                <div className="flex items-center gap-2 border-b border-border dark:border-border pb-2 text-xs font-medium overflow-x-auto">
+                <div className="flex items-center gap-2 border-b border-border pb-2 text-xs font-medium overflow-x-auto">
                   <button
                     onClick={() => setActiveTab('overview')}
                     className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer whitespace-nowrap ${
@@ -357,41 +357,41 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                   <div className="space-y-6">
                     {/* 4 Stat Cards */}
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-                      <div className="p-4 rounded-2xl bg-white dark:bg-surface border border-border dark:border-border">
-                        <div className="text-[11px] font-semibold text-muted-foreground dark:text-muted-foreground uppercase tracking-wider mb-1">
+                      <div className="p-4 rounded-2xl bg-surface border border-border">
+                        <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">
                           Leads in Funnel
                         </div>
-                        <div className="text-2xl font-bold font-mono text-foreground dark:text-foreground">
+                        <div className="text-2xl font-bold font-mono text-foreground">
                           {stats?.totalLeads ?? 0}
                         </div>
                         <div className="text-[10px] text-primary mt-1">Acquisition lifecycle</div>
                       </div>
 
-                      <div className="p-4 rounded-2xl bg-white dark:bg-surface border border-border dark:border-border">
-                        <div className="text-[11px] font-semibold text-muted-foreground dark:text-muted-foreground uppercase tracking-wider mb-1">
+                      <div className="p-4 rounded-2xl bg-surface border border-border">
+                        <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">
                           Active Students
                         </div>
-                        <div className="text-2xl font-bold font-mono text-foreground dark:text-foreground">
+                        <div className="text-2xl font-bold font-mono text-foreground">
                           {stats?.activeStudents ?? 0}
                         </div>
                         <div className="text-[10px] text-primary mt-1">1-on-1 direct learners</div>
                       </div>
 
-                      <div className="p-4 rounded-2xl bg-white dark:bg-surface border border-border dark:border-border">
-                        <div className="text-[11px] font-semibold text-muted-foreground dark:text-muted-foreground uppercase tracking-wider mb-1">
+                      <div className="p-4 rounded-2xl bg-surface border border-border">
+                        <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">
                           Upcoming Lessons
                         </div>
-                        <div className="text-2xl font-bold font-mono text-foreground dark:text-foreground">
+                        <div className="text-2xl font-bold font-mono text-foreground">
                           {stats?.upcomingBookings ?? 0}
                         </div>
                         <div className="text-[10px] text-primary mt-1">Scheduled appointments</div>
                       </div>
 
-                      <div className="p-4 rounded-2xl bg-white dark:bg-surface border border-border dark:border-border">
-                        <div className="text-[11px] font-semibold text-muted-foreground dark:text-muted-foreground uppercase tracking-wider mb-1">
+                      <div className="p-4 rounded-2xl bg-surface border border-border">
+                        <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">
                           Trial Sessions
                         </div>
-                        <div className="text-2xl font-bold font-mono text-foreground dark:text-foreground">
+                        <div className="text-2xl font-bold font-mono text-foreground">
                           {stats?.trialBookings ?? 0}
                         </div>
                         <div className="text-[10px] text-primary mt-1">30-min evaluations</div>
@@ -399,20 +399,20 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                     </div>
 
                     {/* Bookings Table Preview */}
-                    <div className="p-5 rounded-2xl bg-white dark:bg-surface border border-border dark:border-border">
+                    <div className="p-5 rounded-2xl bg-surface border border-border">
                       <div className="flex items-center justify-between mb-4">
                         <div>
-                          <h5 className="font-display font-bold text-sm text-foreground dark:text-foreground">
+                          <h5 className="font-display font-bold text-sm text-foreground">
                             Recent Scheduled Bookings
                           </h5>
-                          <p className="text-[11px] text-muted-foreground dark:text-muted-foreground">
+                          <p className="text-[11px] text-muted-foreground">
                             Stored in canonical UTC with student timezone offset & Cairo reference
                           </p>
                         </div>
                       </div>
 
                       {bookings.length === 0 ? (
-                        <div className="text-center py-8 text-xs text-muted-foreground dark:text-muted-foreground">
+                        <div className="text-center py-8 text-xs text-muted-foreground">
                           No bookings recorded yet in this environment. Use the public booking modal to create a test booking!
                         </div>
                       ) : (
@@ -420,10 +420,10 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                           {bookings.slice(0, 5).map((b) => (
                             <div key={b.id} className="py-2.5 flex items-center justify-between">
                               <div>
-                                <span className="font-mono font-bold text-foreground dark:text-foreground mr-2">
+                                <span className="font-mono font-bold text-foreground mr-2">
                                   {b.reference_code}
                                 </span>
-                                <span className="text-muted-foreground dark:text-muted-foreground">
+                                <span className="text-muted-foreground">
                                   {b.contact_name} ({b.booking_type === 'trial' ? 'Free Trial' : 'Regular'})
                                 </span>
                               </div>
@@ -445,12 +445,12 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
 
                 {/* TAB 2: SECURITY & RLS AUDIT */}
                 {activeTab === 'security' && (
-                  <div className="p-5 rounded-2xl bg-white dark:bg-surface border border-border dark:border-border space-y-4">
+                  <div className="p-5 rounded-2xl bg-surface border border-border space-y-4">
                     <div>
-                      <h5 className="font-display font-bold text-sm text-foreground dark:text-foreground">
+                      <h5 className="font-display font-bold text-sm text-foreground">
                         Row Level Security (RLS) Verification
                       </h5>
-                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                      <p className="text-xs text-muted-foreground">
                         Tests that unauthenticated anonymous visitors cannot query private tables (leads, students, private lesson notes, payments), while public services catalog remains readable.
                       </p>
                     </div>
@@ -473,11 +473,11 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                         <div className="divide-y divide-border/60 dark:divide-border/60 text-xs">
                           {auditResult.tests.map((t: any, idx: number) => (
                             <div key={idx} className="py-2.5 flex items-center justify-between">
-                              <div className="font-mono text-xs text-foreground dark:text-foreground">
+                              <div className="font-mono text-xs text-foreground">
                                 {t.resource}
                               </div>
                               <div className="flex items-center gap-2">
-                                <span className="text-[11px] text-muted-foreground dark:text-muted-foreground">
+                                <span className="text-[11px] text-muted-foreground">
                                   {t.actual}
                                 </span>
                                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
@@ -492,12 +492,12 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
 
                 {/* TAB 3: ONE FREE TRIAL RULE TEST */}
                 {activeTab === 'trial_test' && (
-                  <div className="p-5 rounded-2xl bg-white dark:bg-surface border border-border dark:border-border space-y-4">
+                  <div className="p-5 rounded-2xl bg-surface border border-border space-y-4">
                     <div>
-                      <h5 className="font-display font-bold text-sm text-foreground dark:text-foreground">
+                      <h5 className="font-display font-bold text-sm text-foreground">
                         Master Spec Section 10 & 15: One Free Trial Enforcement
                       </h5>
-                      <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+                      <p className="text-xs text-muted-foreground">
                         Test the database logic that prevents repeat trial abuse. The rule evaluates existing confirmed, pending, or completed trial bookings for an email or WhatsApp contact.
                       </p>
                     </div>
@@ -508,7 +508,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                         value={testEmail}
                         onChange={(e) => setTestEmail(e.target.value)}
                         placeholder="Enter email to test..."
-                        className="flex-1 px-3.5 py-2 rounded-xl border border-border dark:border-border bg-surface-subtle dark:bg-background text-xs text-foreground dark:text-foreground"
+                        className="flex-1 px-3.5 py-2 rounded-xl border border-border bg-surface-subtle dark:bg-background text-xs text-foreground"
                       />
                       <button
                         onClick={runTrialCheck}
@@ -534,8 +534,8 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
 
                 {/* TAB 4: SCHEMA OVERVIEW */}
                 {activeTab === 'schema' && (
-                  <div className="p-5 rounded-2xl bg-white dark:bg-surface border border-border dark:border-border space-y-3">
-                    <h5 className="font-display font-bold text-sm text-foreground dark:text-foreground">
+                  <div className="p-5 rounded-2xl bg-surface border border-border space-y-3">
+                    <h5 className="font-display font-bold text-sm text-foreground">
                       Master Spec Relational Entities (19 Core Tables)
                     </h5>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono">
@@ -562,7 +562,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                       ].map((table, idx) => (
                         <div key={idx} className="p-2 rounded-lg bg-surface-subtle dark:bg-background border border-border/80 dark:border-border flex items-center gap-2">
                           <span className="text-primary">✓</span>
-                          <span className="text-foreground dark:text-foreground text-[11px]">{table}</span>
+                          <span className="text-foreground text-[11px]">{table}</span>
                         </div>
                       ))}
                     </div>

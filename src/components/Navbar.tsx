@@ -1,4 +1,5 @@
 import { BrandLogo } from './ui/BrandLogo';
+import { ThemeToggle } from './ui/ThemeToggle';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
@@ -104,19 +105,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span>{lang === 'en' ? 'العربية' : 'EN'}</span>
           </button>
 
-          {/* Theme Switcher */}
-          <button
-            onClick={onToggleTheme}
-            id="theme-switch-btn"
-            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-            className="p-2 rounded-lg text-foreground hover:bg-surface-subtle border border-border transition-colors cursor-pointer"
-          >
-            {theme === 'light' ? (
-              <Moon className="w-4 h-4 text-accent" />
-            ) : (
-              <Sun className="w-4 h-4 text-accent" />
-            )}
-          </button>
+          {/* Theme Switcher */}`n          <div className="flex items-center"><ThemeToggle /></div>
 
           {/* Primary CTA */}
           <button

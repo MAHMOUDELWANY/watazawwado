@@ -42,9 +42,9 @@ export const TimezoneSelectorModal: React.FC<TimezoneSelectorModalProps> = ({
             initial={{ scale: 0.95, opacity: 0, y: 10 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 10 }}
-            className="w-full max-w-md bg-foreground dark:bg-surface rounded-3xl border border-secondary/60 shadow-2xl p-6 text-foreground dark:text-foreground max-h-[85vh] flex flex-col"
+            className="w-full max-w-md bg-foreground dark:bg-surface rounded-3xl border border-secondary/60 shadow-2xl p-6 text-foreground max-h-[85vh] flex flex-col"
           >
-            <div className="flex items-center justify-between pb-3 border-b border-border dark:border-border">
+            <div className="flex items-center justify-between pb-3 border-b border-border">
               <div className="flex items-center gap-2">
                 <Globe className="w-5 h-5 text-accent" />
                 <h3 className="font-display text-lg font-medium">
@@ -68,7 +68,7 @@ export const TimezoneSelectorModal: React.FC<TimezoneSelectorModalProps> = ({
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={isEn ? 'Search city or timezone (e.g. Toronto, London)...' : 'ابحث عن مدينة أو منطقة زمنية...'}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-border dark:border-border bg-white dark:bg-background text-xs text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-border bg-background text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
             </div>

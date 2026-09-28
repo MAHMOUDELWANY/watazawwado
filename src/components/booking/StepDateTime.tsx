@@ -129,13 +129,13 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
   return (
     <div className="space-y-6">
       {/* Timezone Reassurance Banner with quick switcher */}
-      <div className="p-3.5 rounded-2xl bg-white dark:bg-surface border border-border dark:border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+      <div className="p-3.5 rounded-2xl bg-surface border border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
         <div className="flex items-center gap-2 text-xs">
           <Globe className="w-4 h-4 text-accent shrink-0" />
           <span className="text-foreground/70 dark:text-border/70">
             {isEn ? 'Times shown in your local time:' : 'المواعيد تظهر وفق توقيتك المحلي:'}
           </span>
-          <span className="font-semibold text-muted-foreground dark:text-muted-foreground">
+          <span className="font-semibold text-muted-foreground">
             {timezoneReadable}
           </span>
         </div>
@@ -201,7 +201,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                       isSelected
                         ? 'bg-muted-foreground text-white border-muted-foreground shadow-xs'
                         : d.isAvailable
-                        ? 'bg-white dark:bg-surface border-border dark:border-border text-foreground dark:text-foreground hover:border-accent/50'
+                        ? 'bg-surface border-border text-foreground hover:border-accent/50'
                         : 'bg-black/5 dark:bg-white/5 border-transparent text-foreground/40 dark:text-border/40'
                     }`}
                   >
@@ -234,11 +234,11 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
           </div>
 
           {/* Time Slots Area */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-surface-warm/50 dark:bg-surface border border-border dark:border-border">
-            <div className="flex items-center justify-between mb-4 pb-2 border-b border-border dark:border-border">
+          <div className="p-4 sm:p-5 rounded-2xl bg-surface-warm/50 dark:bg-surface border border-border">
+            <div className="flex items-center justify-between mb-4 pb-2 border-b border-border">
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-accent" />
-                <span className="font-display text-sm font-medium text-foreground dark:text-foreground">
+                <span className="font-display text-sm font-medium text-foreground">
                   {currentDay?.dayOfWeek}, {currentDay?.monthName} {currentDay?.dayOfMonth}
                 </span>
               </div>
@@ -259,7 +259,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                 <div className="w-12 h-12 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto">
                   <Clock className="w-6 h-6" />
                 </div>
-                <h4 className="font-display text-base font-medium text-foreground dark:text-foreground">
+                <h4 className="font-display text-base font-medium text-foreground">
                   {isEn ? 'No Slots Available on This Date' : 'لا توجد مواعيد متاحة في هذا اليوم'}
                 </h4>
                 <p className="text-xs text-foreground/70 dark:text-border/70 max-w-md mx-auto leading-relaxed">
@@ -282,7 +282,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                     href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I would like to request a specific lesson time that is not open on the schedule.')}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white dark:bg-background border border-border dark:border-border text-xs font-medium text-foreground dark:text-border hover:bg-surface-warm"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-background border border-border text-xs font-medium text-foreground dark:text-border hover:bg-surface-warm"
                   >
                     <MessageCircle className="w-3.5 h-3.5 text-accent" />
                     <span>{isEn ? 'Request Custom Time on WhatsApp' : 'طلب موعد خاص على واتساب'}</span>
@@ -295,7 +295,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                 {/* Morning */}
                 {morningSlots.length > 0 && (
                   <div>
-                    <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground dark:text-muted-foreground mb-2">
+                    <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground mb-2">
                       <Sun className="w-3.5 h-3.5 text-amber-500" />
                       <span>{isEn ? 'Morning' : 'الفترة الصباحية'}</span>
                     </div>
@@ -313,7 +313,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                                 ? 'opacity-35 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent text-foreground/40'
                                 : isSelected
                                 ? 'bg-primary text-white border-primary font-medium shadow-xs'
-                                : 'bg-white dark:bg-background border-border dark:border-border text-foreground dark:text-foreground hover:border-primary'
+                                : 'bg-background border-border text-foreground hover:border-primary'
                             }`}
                           >
                             <span className="text-xs">{slot.timeDisplay}</span>
@@ -334,7 +334,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                 {/* Afternoon */}
                 {afternoonSlots.length > 0 && (
                   <div>
-                    <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground dark:text-muted-foreground mb-2">
+                    <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground mb-2">
                       <Sunset className="w-3.5 h-3.5 text-orange-400" />
                       <span>{isEn ? 'Afternoon' : 'فترة بعد الظهر'}</span>
                     </div>
@@ -352,7 +352,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                                 ? 'opacity-35 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent text-foreground/40'
                                 : isSelected
                                 ? 'bg-primary text-white border-primary font-medium shadow-xs'
-                                : 'bg-white dark:bg-background border-border dark:border-border text-foreground dark:text-foreground hover:border-primary'
+                                : 'bg-background border-border text-foreground hover:border-primary'
                             }`}
                           >
                             <span className="text-xs">{slot.timeDisplay}</span>
@@ -373,7 +373,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                 {/* Evening */}
                 {eveningSlots.length > 0 && (
                   <div>
-                    <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground dark:text-muted-foreground mb-2">
+                    <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground mb-2">
                       <Moon className="w-3.5 h-3.5 text-indigo-400" />
                       <span>{isEn ? 'Evening' : 'الفترة المسائية'}</span>
                     </div>
@@ -391,7 +391,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                                 ? 'opacity-35 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent text-foreground/40'
                                 : isSelected
                                 ? 'bg-primary text-white border-primary font-medium shadow-xs'
-                                : 'bg-white dark:bg-background border-border dark:border-border text-foreground dark:text-foreground hover:border-primary'
+                                : 'bg-background border-border text-foreground hover:border-primary'
                             }`}
                           >
                             <span className="text-xs">{slot.timeDisplay}</span>
@@ -415,7 +415,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
       )}
 
       {/* Controls */}
-      <div className="pt-4 border-t border-border dark:border-border flex items-center justify-between gap-4">
+      <div className="pt-4 border-t border-border flex items-center justify-between gap-4">
         <motion.button
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
