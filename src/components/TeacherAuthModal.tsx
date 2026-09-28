@@ -3,18 +3,14 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {  X,
   Lock,
-  Key,
+
   ShieldCheck,
   Database as DbIcon,
   CheckCircle2,
   AlertCircle,
   LogOut,
   RefreshCw,
-  UserCheck,
-  Clock,
-  BookOpen,
-  DollarSign,
-  FileText
+
 } from 'lucide-react';
 import { useTeacherAuth } from '../lib/auth';
 import { teacherRepository, TeacherStats, DbBooking, DbLead } from '../lib/teacherRepository';
