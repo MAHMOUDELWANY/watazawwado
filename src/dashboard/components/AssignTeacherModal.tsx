@@ -173,7 +173,7 @@ export function AssignTeacherModal({
         <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-surface-subtle">
           <div>
             <div className="flex items-center gap-2">
-              <UserCheck className="w-5 h-5 text-primary" />
+              <UserCheck className="w-5 h-5 text-accent" />
               <h2 className="text-lg font-serif font-bold text-foreground">
                 Assign / Change Teacher
               </h2>
@@ -203,7 +203,7 @@ export function AssignTeacherModal({
           {/* 1. Student Identity Header */}
           <div className="p-4 rounded-xl bg-surface-subtle border border-border-subtle flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-serif font-bold text-sm border border-primary/20">
+              <div className="w-10 h-10 rounded-full bg-secondary/30 text-accent flex items-center justify-center font-serif font-bold text-sm border border-secondary/50">
                 {student.name.charAt(0).toUpperCase()}
               </div>
               <div>
@@ -216,7 +216,7 @@ export function AssignTeacherModal({
                       Child {student.parent_name ? `(${student.parent_name})` : ''}
                     </span>
                   ) : (
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 font-medium">
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-secondary/30 text-primary border border-secondary/50 font-medium">
                       Adult
                     </span>
                   )}
@@ -243,7 +243,7 @@ export function AssignTeacherModal({
                 Current Teacher
               </span>
               <div className="flex items-center gap-2">
-                <User className="w-4 h-4 text-primary" />
+                <User className="w-4 h-4 text-accent" />
                 <span className="text-sm font-semibold text-foreground">
                   {student.assigned_teacher_name || (student.assigned_teacher_id ? 'Ustadh Mahmoud Elwany' : 'Unassigned')}
                 </span>
@@ -308,7 +308,7 @@ export function AssignTeacherModal({
                 onClick={() => setPreferredGender('male')}
                 className={`p-3 rounded-xl border text-xs font-medium transition-all flex flex-col items-center gap-1 cursor-pointer ${
                   preferredGender === 'male'
-                    ? 'border-primary bg-primary/10 text-primary font-semibold shadow-2xs'
+                    ? 'border-primary bg-secondary/30 text-primary font-semibold shadow-2xs'
                     : 'border-border bg-surface hover:bg-surface-subtle text-muted-foreground'
                 }`}
               >
@@ -400,7 +400,7 @@ export function AssignTeacherModal({
                     key={teacher.email}
                     className={`p-3 rounded-xl border flex items-center justify-between text-xs cursor-pointer transition-all ${
                       isSelected
-                        ? 'border-primary bg-primary/10 text-foreground shadow-2xs'
+                        ? 'border-primary bg-secondary/30 text-foreground shadow-2xs'
                         : 'border-border bg-surface hover:bg-surface-subtle text-muted-foreground'
                     }`}
                   >
@@ -420,7 +420,7 @@ export function AssignTeacherModal({
                           <span className="text-[10px] px-1.5 py-0.5 rounded bg-surface-subtle border border-border-subtle text-muted-foreground">
                             {teacher.role === 'super_admin' ? 'Super Admin' : 'Teacher'}
                           </span>
-                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary/30 text-primary border border-secondary/50">
                             {teacher.gender === 'female' ? 'Female' : 'Male'}
                           </span>
                         </div>

@@ -178,7 +178,7 @@ export default function SettingsPage() {
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-serif font-bold text-foreground flex items-center gap-2">
-            <SettingsIcon className="w-6 h-6 text-primary" />
+            <SettingsIcon className="w-6 h-6 text-accent" />
             Teacher Settings
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
@@ -224,7 +224,7 @@ export default function SettingsPage() {
                     : 'text-muted-foreground hover:bg-surface-subtle hover:text-foreground'
                 }`}
               >
-                <tab.icon className={`w-4 h-4 ${activeTab === tab.id ? 'text-primary' : 'opacity-70'}`} />
+                <tab.icon className={`w-4 h-4 ${activeTab === tab.id ? 'text-accent' : 'opacity-70'}`} />
                 {tab.label}
               </button>
             ))}
@@ -308,7 +308,7 @@ export default function SettingsPage() {
                         <button
                           onClick={() => handleSaveService(service)}
                           disabled={savingServiceId === service.id}
-                          className="self-start sm:self-auto px-3 py-1.5 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50 min-h-[36px]"
+                          className="self-start sm:self-auto px-3 py-1.5 rounded-xl bg-secondary/30 hover:bg-secondary/40 text-accent text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50 min-h-[36px]"
                         >
                           {savingServiceId === service.id ? <div className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin" /> : <Save className="w-3.5 h-3.5" />}
                           Update Service

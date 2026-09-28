@@ -308,7 +308,7 @@ export default function StudentProfilePage({
       <div className="p-5 sm:p-6 rounded-2xl bg-surface border border-border shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4 min-w-0">
           <div 
-            className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-primary/15 border border-primary/25 text-primary text-xl sm:text-2xl font-serif font-bold flex items-center justify-center shrink-0 select-none"
+            className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-primary/15 border border-primary/25 text-accent text-xl sm:text-2xl font-serif font-bold flex items-center justify-center shrink-0 select-none"
             aria-hidden="true"
           >
             {profile?.name?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase() || 'S'}
@@ -407,7 +407,7 @@ export default function StudentProfilePage({
                   className={`
                     w-full flex items-start gap-3 p-3.5 rounded-xl text-start transition-all cursor-pointer min-h-[44px]
                     ${isActive
-                      ? 'bg-primary/10 border border-primary/25 text-foreground font-semibold ring-1 ring-primary/20'
+                      ? 'bg-secondary/30 border border-primary/25 text-foreground font-semibold ring-1 ring-primary/20'
                       : 'text-muted-foreground hover:bg-surface-subtle hover:text-foreground border border-transparent'
                     }
                   `}
@@ -431,7 +431,7 @@ export default function StudentProfilePage({
           {/* Ustadh Mahmoud Trust Badge */}
           <div className="p-4 rounded-2xl bg-surface border border-border/80 text-xs space-y-2">
             <div className="flex items-center gap-2 text-foreground font-semibold">
-              <span className="w-6 h-6 rounded-lg bg-primary/15 text-primary flex items-center justify-center font-serif font-bold text-xs">
+              <span className="w-6 h-6 rounded-lg bg-secondary/30 text-accent flex items-center justify-center font-serif font-bold text-xs">
                 م
               </span>
               <span>{isAr ? 'الأستاذ محمود — إشراف مباشر' : 'Ustadh Mahmoud — 1-on-1 Teaching'}</span>
@@ -483,7 +483,7 @@ export default function StudentProfilePage({
                       {isAr ? 'البريد الإلكتروني' : 'Account Email'}
                     </label>
                     <span className="text-[11px] text-muted-foreground flex items-center gap-1">
-                      <ShieldCheck className="w-3.5 h-3.5 text-primary" />
+                      <ShieldCheck className="w-3.5 h-3.5 text-accent" />
                       <span>{isAr ? 'مرتبط بالحساب الأمني' : 'Managed by Auth'}</span>
                     </span>
                   </div>
@@ -509,7 +509,7 @@ export default function StudentProfilePage({
                       {isAr ? 'المنطقة الزمنية (IANA)' : 'Timezone (IANA)'}
                     </label>
                     <div className="relative">
-                      <Clock className="w-4 h-4 text-primary absolute start-3.5 top-3.5 pointer-events-none" />
+                      <Clock className="w-4 h-4 text-accent absolute start-3.5 top-3.5 pointer-events-none" />
                       <input
                         id="student-timezone"
                         type="text"
@@ -539,7 +539,7 @@ export default function StudentProfilePage({
                       {isAr ? 'رقم الواتساب للتنسيق' : 'WhatsApp Number'}
                     </label>
                     <div className="relative">
-                      <Phone className="w-4 h-4 text-primary absolute start-3.5 top-3.5 pointer-events-none" />
+                      <Phone className="w-4 h-4 text-accent absolute start-3.5 top-3.5 pointer-events-none" />
                       <input
                         id="student-whatsapp"
                         type="tel"
@@ -561,7 +561,7 @@ export default function StudentProfilePage({
                     {isAr ? 'بلد الإقامة' : 'Country / Location'}
                   </label>
                   <div className="relative">
-                    <Globe className="w-4 h-4 text-primary absolute start-3.5 top-3.5 pointer-events-none" />
+                    <Globe className="w-4 h-4 text-accent absolute start-3.5 top-3.5 pointer-events-none" />
                     <input
                       id="student-country"
                       type="text"
@@ -591,7 +591,7 @@ export default function StudentProfilePage({
                           onClick={() => setGender(opt.value as any)}
                           className={`flex-1 py-2 px-2.5 rounded-xl text-xs font-medium border transition-colors ${
                             gender === opt.value
-                              ? 'bg-primary/10 border-primary text-primary font-semibold'
+                              ? 'bg-secondary/30 border-primary text-primary font-semibold'
                               : 'border-border bg-surface-subtle text-muted-foreground hover:bg-surface hover:text-foreground'
                           }`}
                         >
@@ -617,7 +617,7 @@ export default function StudentProfilePage({
                           onClick={() => setTeacherGenderPreference(opt.value as any)}
                           className={`flex-1 py-2 px-2.5 rounded-xl text-xs font-medium border transition-colors ${
                             teacherGenderPreference === opt.value
-                              ? 'bg-primary/10 border-primary text-primary font-semibold'
+                              ? 'bg-secondary/30 border-primary text-primary font-semibold'
                               : 'border-border bg-surface-subtle text-muted-foreground hover:bg-surface hover:text-foreground'
                           }`}
                         >
@@ -661,7 +661,7 @@ export default function StudentProfilePage({
 
               {/* Teacher Relationship Banner */}
               <div className="p-4 rounded-2xl bg-surface-subtle border border-border flex items-start gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-primary/15 border border-primary/25 text-primary flex items-center justify-center font-serif font-bold text-lg shrink-0 mt-0.5 select-none">
+                <div className="w-12 h-12 rounded-2xl bg-primary/15 border border-primary/25 text-accent flex items-center justify-center font-serif font-bold text-lg shrink-0 mt-0.5 select-none">
                   {profile?.assignedTeacherName ? profile.assignedTeacherName.charAt(0) : 'م'}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -741,7 +741,7 @@ export default function StudentProfilePage({
               {linkedChildren.length > 0 && (
                 <div className="pt-4 border-t border-border space-y-3">
                   <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
-                    <Users className="w-4 h-4 text-primary" />
+                    <Users className="w-4 h-4 text-accent" />
                     <span>{isAr ? `الأبناء المسجلون (${linkedChildren.length})` : `Registered Children (${linkedChildren.length})`}</span>
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -774,7 +774,7 @@ export default function StudentProfilePage({
               {profile?.guardian && (
                 <div className="pt-4 border-t border-border space-y-3">
                   <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
-                    <Users className="w-4 h-4 text-primary" />
+                    <Users className="w-4 h-4 text-accent" />
                     <span>{isAr ? 'بيانات ولي الأمر المسؤول' : 'Parent / Guardian Responsible'}</span>
                   </h3>
                   <div className="p-3.5 rounded-xl bg-surface-subtle border border-border text-xs space-y-2">
@@ -832,7 +832,7 @@ export default function StudentProfilePage({
                   <label
                     className={`flex items-start gap-3.5 p-4 rounded-xl border cursor-pointer transition-all ${
                       bookingPreference === 'self'
-                        ? 'border-primary bg-primary/10 text-foreground ring-1 ring-primary/20'
+                        ? 'border-primary bg-secondary/30 text-foreground ring-1 ring-primary/20'
                         : 'border-border bg-surface-subtle text-muted-foreground hover:border-border'
                     }`}
                   >
@@ -862,7 +862,7 @@ export default function StudentProfilePage({
                       !canBookForChild
                         ? 'opacity-60 cursor-not-allowed border-border bg-surface-subtle/50'
                         : bookingPreference === 'child'
-                        ? 'border-primary bg-primary/10 text-foreground ring-1 ring-primary/20 cursor-pointer'
+                        ? 'border-primary bg-secondary/30 text-foreground ring-1 ring-primary/20 cursor-pointer'
                         : 'border-border bg-surface-subtle text-muted-foreground hover:border-border cursor-pointer'
                     }`}
                   >
@@ -909,7 +909,7 @@ export default function StudentProfilePage({
                   className="min-h-[44px] px-4 rounded-xl text-xs font-semibold cursor-pointer border-border hover:bg-surface bg-surface"
                   aria-label={isAr ? 'التبديل إلى الإنجليزية' : 'Switch to Arabic'}
                 >
-                  <Globe className="w-3.5 h-3.5 me-1.5 text-primary" />
+                  <Globe className="w-3.5 h-3.5 me-1.5 text-accent" />
                   <span>{isAr ? 'English' : 'العربية'}</span>
                 </Button>
               </div>
@@ -936,12 +936,12 @@ export default function StudentProfilePage({
                 >
                   {theme === 'light' ? (
                     <>
-                      <Moon className="w-3.5 h-3.5 me-1.5 text-primary" />
+                      <Moon className="w-3.5 h-3.5 me-1.5 text-accent" />
                       <span>{isAr ? 'الوضع الليلي' : 'Dark Mode'}</span>
                     </>
                   ) : (
                     <>
-                      <Sun className="w-3.5 h-3.5 me-1.5 text-primary" />
+                      <Sun className="w-3.5 h-3.5 me-1.5 text-accent" />
                       <span>{isAr ? 'الوضع النهاري' : 'Light Mode'}</span>
                     </>
                   )}
@@ -982,7 +982,7 @@ export default function StudentProfilePage({
               {/* Auth Verification Banner */}
               <div className="p-4 rounded-xl bg-surface-subtle border border-border space-y-2">
                 <div className="flex items-center gap-2 text-foreground font-semibold text-xs sm:text-sm">
-                  <ShieldCheck className="w-4 h-4 text-primary shrink-0" />
+                  <ShieldCheck className="w-4 h-4 text-accent shrink-0" />
                   <span>{isAr ? 'جلسة الطالب مؤمنة' : 'Authenticated Student Session'}</span>
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed">

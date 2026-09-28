@@ -199,7 +199,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
       {/* 2. Verification Policy & WhatsApp Card */}
       <div className="p-4 sm:p-5 rounded-2xl bg-surface-subtle border border-border-subtle flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs leading-relaxed text-muted-foreground">
         <div className="flex items-start gap-3">
-          <ShieldCheck className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+          <ShieldCheck className="w-5 h-5 text-accent shrink-0 mt-0.5" />
           <div className="space-y-1">
             <span className="font-semibold text-foreground text-sm block">
               {isAr ? 'كيف يتم التحقق وتأكيد الدفع؟' : 'How Payments Are Verified'}
@@ -301,9 +301,9 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
 
       {/* 5. Informational notice — payment claims already submitted and awaiting verification */}
       {awaitingVerification.length > 0 && (
-        <div className="p-4 sm:p-5 rounded-2xl bg-primary/5 border border-primary/20 space-y-2">
+        <div className="p-4 sm:p-5 rounded-2xl bg-secondary/20 border border-secondary/50 space-y-2">
           <div className="flex items-center gap-2 text-foreground font-semibold text-sm">
-            <Clock className="w-4 h-4 text-primary" />
+            <Clock className="w-4 h-4 text-accent" />
             <span>
               {isAr
                 ? `لديك ${awaitingVerification.length} إثبات دفع قيد المراجعة`
@@ -326,7 +326,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
 
         {authLoading || loading ? (
           <div className="flex flex-col items-center justify-center py-16 gap-3">
-            <Loader2 className="w-8 h-8 text-primary animate-spin" />
+            <Loader2 className="w-8 h-8 text-accent animate-spin" />
             <p className="text-xs sm:text-sm text-muted-foreground">
               {isAr ? 'جارٍ تحميل سجل المدفوعات...' : 'Loading payments history...'}
             </p>
@@ -372,7 +372,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
           </div>
         ) : payments.length === 0 ? (
           <div className="text-center py-16 px-4 bg-surface border border-border rounded-3xl space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
+            <div className="w-12 h-12 rounded-2xl bg-secondary/30 text-accent flex items-center justify-center mx-auto">
               <CreditCard className="w-6 h-6" />
             </div>
             <div>
@@ -403,7 +403,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
               const dateObj = DateTime.fromISO(p.createdAt || p.created_at);
 
               return (
-                <Card key={p.id} className="border-border bg-surface hover:border-primary/30 transition-colors">
+                <Card key={p.id} className="border-border bg-surface hover:border-secondary/60 transition-colors">
                   <CardContent className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2">
@@ -415,7 +415,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
 
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
                         <div className="flex items-center gap-1.5">
-                          <Clock className="w-3 h-3 text-primary" />
+                          <Clock className="w-3 h-3 text-accent" />
                           <span>
                             {dateObj.isValid
                               ? dateObj.setLocale(isAr ? 'ar' : 'en').toLocaleString(DateTime.DATETIME_MED)

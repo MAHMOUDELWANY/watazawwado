@@ -71,7 +71,7 @@ export default function StaffLoginPage() {
         className="max-w-md w-full mx-auto bg-surface border border-border rounded-3xl p-8 sm:p-10 shadow-sm"
       >
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/15 text-primary mb-3">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-secondary/30 text-accent mb-3">
             <ShieldCheck className="w-6 h-6" />
           </div>
           <h1 className="text-2xl font-serif font-bold text-foreground">
@@ -95,7 +95,7 @@ export default function StaffLoginPage() {
               Teacher Email
             </label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-primary absolute left-3.5 top-3.5 pointer-events-none" />
+              <Mail className="w-4 h-4 text-accent absolute left-3.5 top-3.5 pointer-events-none" />
               <input
                 type="email"
                 required
@@ -112,7 +112,7 @@ export default function StaffLoginPage() {
               Password
             </label>
             <div className="relative">
-              <Lock className="w-4 h-4 text-primary absolute left-3.5 top-3.5 pointer-events-none" />
+              <Lock className="w-4 h-4 text-accent absolute left-3.5 top-3.5 pointer-events-none" />
               <input
                 type="password"
                 required

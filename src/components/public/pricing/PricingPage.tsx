@@ -60,7 +60,7 @@ export function PricingPage() {
 
             {/* Monthly Packages */}
             <div className="bg-surface-warm p-8 rounded-2xl border border-border-subtle shadow-sm relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full -z-10" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/20 rounded-bl-full -z-10" />
               <h3 className="font-editorial text-2xl text-foreground mb-2">
                 {isEn ? 'Monthly Packages' : 'الباقات الشهرية'}
               </h3>

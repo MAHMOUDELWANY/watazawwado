@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { BookingFormData, BookingConfirmationData, BookingMode, Language, LearnerAudience, ProficiencyLevel, PackageEntitlementEntry, PackageCatalogEntry } from '../../booking/types';
 import { BOOKING_SERVICES } from '../../booking/mockData';
@@ -302,7 +302,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     <div
       className={`w-full ${
         cardClassName || (isModalView
-          ? 'bg-foreground dark:bg-[#231D28] text-foreground dark:text-border p-5 sm:p-8 rounded-3xl max-w-3xl mx-auto shadow-2xl border border-primary/30 max-h-[92vh] overflow-y-auto'
+          ? 'bg-foreground dark:bg-surface text-foreground dark:text-border p-5 sm:p-8 rounded-3xl max-w-3xl mx-auto shadow-2xl border border-secondary/60 max-h-[92vh] overflow-y-auto'
           : 'bg-foreground dark:bg-background text-foreground dark:text-border py-8 sm:py-12 px-4 sm:px-6')
       }`}
     >

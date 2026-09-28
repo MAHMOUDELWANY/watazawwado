@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import {
   CheckCircle2,
@@ -126,12 +126,12 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', damping: 15, stiffness: 300, delay: 0.1 }}
-          className="w-16 h-16 rounded-full bg-primary/20 text-primary flex items-center justify-center mx-auto"
+          className="w-16 h-16 rounded-full bg-secondary/40 text-accent flex items-center justify-center mx-auto"
         >
           <CheckCircle2 className="w-10 h-10" />
         </motion.div>
 
-        <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-[#EDE3D4] dark:bg-[#29232F] text-muted-foreground dark:text-muted-foreground border border-primary/30">
+        <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-surface-warm dark:bg-surface-subtle text-muted-foreground dark:text-muted-foreground border border-secondary/60">
           {isEn ? `Booking Reference: ${confirmation.bookingReference}` : `رقم الحجز المرجعي: ${confirmation.bookingReference}`}
         </span>
 
@@ -154,10 +154,10 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
       </div>
 
       {/* Appointment Detail Card */}
-      <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-[#231D28] border border-primary/30 shadow-xs space-y-4">
+      <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-surface border border-secondary/60 shadow-xs space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-4 border-b border-border dark:border-border">
           <div className="flex items-start gap-3">
-            <div className="p-2.5 rounded-xl bg-[#EDE3D4] dark:bg-background text-primary">
+            <div className="p-2.5 rounded-xl bg-surface-warm dark:bg-background text-primary">
               <Calendar className="w-5 h-5" />
             </div>
             <div>
@@ -174,7 +174,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           </div>
 
           <div className="flex items-start gap-3">
-            <div className="p-2.5 rounded-xl bg-[#EDE3D4] dark:bg-background text-primary">
+            <div className="p-2.5 rounded-xl bg-surface-warm dark:bg-background text-primary">
               <Clock className="w-5 h-5" />
             </div>
             <div>
@@ -240,8 +240,8 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         </div>
 
         {/* Automated Reminders Note */}
-        <div className="flex items-center gap-2.5 p-3 rounded-xl bg-[#EDE3D4]/50 dark:bg-background text-xs text-foreground/80 dark:text-border/80">
-          <BellRing className="w-4 h-4 text-primary shrink-0" />
+        <div className="flex items-center gap-2.5 p-3 rounded-xl bg-surface-warm/50 dark:bg-background text-xs text-foreground/80 dark:text-border/80">
+          <BellRing className="w-4 h-4 text-accent shrink-0" />
           <span>
             {isEn
               ? 'Automated lesson reminders will be delivered 24 hours and 1 hour before your scheduled session.'
@@ -280,9 +280,9 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
       )}
 
       {/* Philosophy Reassurance / Post-Trial Human Expectation */}
-      <div className="p-5 rounded-3xl bg-[#EDE3D4] dark:bg-[#231D28] border border-primary/30 space-y-2">
+      <div className="p-5 rounded-3xl bg-surface-warm dark:bg-surface border border-secondary/60 space-y-2">
         <div className="flex items-center gap-2 font-serif text-sm font-medium text-foreground dark:text-foreground">
-          <Sparkles className="w-4 h-4 text-primary" />
+          <Sparkles className="w-4 h-4 text-accent" />
           <span>
             {confirmation.isFreeTrial
               ? isEn ? 'What to Expect in Your Free Trial' : 'ماذا ينتظرك في الجلسة التجريبية؟'
@@ -317,7 +317,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           href={getGoogleCalendarUrl()}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-white dark:bg-[#231D28] border border-border dark:border-border text-xs font-semibold text-foreground dark:text-foreground hover:bg-[#EDE3D4] dark:hover:bg-background transition-colors"
+          className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-white dark:bg-surface border border-border dark:border-border text-xs font-semibold text-foreground dark:text-foreground hover:bg-surface-warm dark:hover:bg-background transition-colors"
         >
           <Calendar className="w-4 h-4 text-blue-600" />
           <span>{isEn ? 'Google Calendar' : 'تقويم جوجل'}</span>
@@ -326,9 +326,9 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         <button
           type="button"
           onClick={handleDownloadIcs}
-          className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-white dark:bg-[#231D28] border border-border dark:border-border text-xs font-semibold text-foreground dark:text-foreground hover:bg-[#EDE3D4] dark:hover:bg-background transition-colors cursor-pointer"
+          className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-white dark:bg-surface border border-border dark:border-border text-xs font-semibold text-foreground dark:text-foreground hover:bg-surface-warm dark:hover:bg-background transition-colors cursor-pointer"
         >
-          <Download className="w-4 h-4 text-primary" />
+          <Download className="w-4 h-4 text-accent" />
           <span>{downloadedIcs ? (isEn ? 'Downloaded' : 'تم التنزيل') : (isEn ? 'Apple/Outlook (.ics)' : 'تنزيل .ics')}</span>
         </button>
       </div>
@@ -351,7 +351,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         <button
           type="button"
           onClick={onDone}
-          className="px-6 py-2.5 rounded-xl text-xs font-medium text-foreground/70 dark:text-border/70 hover:bg-[#EDE3D4] dark:hover:bg-[#29232F] transition-colors cursor-pointer"
+          className="px-6 py-2.5 rounded-xl text-xs font-medium text-foreground/70 dark:text-border/70 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
         >
           {doneLabel || (isEn ? 'Done & Return to Homepage' : 'تم والعودة للموقع')}
         </button>

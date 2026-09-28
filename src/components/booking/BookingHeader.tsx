@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { motion } from 'motion/react';
 import { ArrowLeft, MessageCircle, X, CheckCircle2 } from 'lucide-react';
 import { BookingMode, Language } from '../../booking/types';
@@ -56,7 +56,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
               whileTap={{ scale: 0.95 }}
               onClick={onBack}
               type="button"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-foreground dark:text-foreground bg-[#EDE3D4] dark:bg-[#29232F] hover:bg-border dark:hover:bg-[#342D3B] transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-foreground dark:text-foreground bg-surface-warm dark:bg-surface-subtle hover:bg-border dark:hover:bg-surface-subtle transition-colors cursor-pointer"
             >
               <ArrowLeft className={`w-3.5 h-3.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
               <span>{isEn ? 'Back' : 'رجوع'}</span>
@@ -67,7 +67,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
           <span
             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold tracking-wide ${
               mode === 'trial'
-                ? 'bg-primary/20 text-primary dark:text-primary border border-primary/30'
+                ? 'bg-secondary/40 text-accent dark:text-primary border border-secondary/60'
                 : 'bg-muted-foreground/15 text-muted-foreground dark:text-muted-foreground border border-muted-foreground/30'
             }`}
           >
@@ -93,7 +93,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
             className="hidden sm:inline-flex items-center gap-1.5 text-xs text-foreground/70 dark:text-border/70 hover:text-primary dark:hover:text-primary transition-colors"
             title={isEn ? 'Ask a quick question first' : 'اسأل سؤالاً سريعاً على واتساب'}
           >
-            <MessageCircle className="w-3.5 h-3.5 text-primary" />
+            <MessageCircle className="w-3.5 h-3.5 text-accent" />
             <span>{isEn ? 'Ask Mahmoud on WhatsApp' : 'تواصل مع محمود على واتساب'}</span>
           </a>
 
@@ -103,7 +103,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
               whileTap={{ scale: 0.9 }}
               onClick={onClose}
               type="button"
-              className="p-1.5 rounded-full text-foreground/60 dark:text-border/60 hover:bg-[#EDE3D4] dark:hover:bg-[#29232F] transition-colors cursor-pointer"
+              className="p-1.5 rounded-full text-foreground/60 dark:text-border/60 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
               aria-label="Close"
             >
               <X className="w-5 h-5" />

@@ -69,7 +69,7 @@ export const MentorshipPillars: React.FC<MentorshipPillarsProps> = ({ lang }) =>
                 className="p-7 sm:p-8 rounded-2xl bg-surface border border-border flex flex-col justify-between shadow-2xs hover:shadow-xs hover:border-primary/40 transition-all"
               >
                 <div>
-                  <div className="w-11 h-11 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-6">
+                  <div className="w-11 h-11 rounded-xl bg-secondary/30 border border-secondary/50 flex items-center justify-center text-accent mb-6">
                     <Icon className="w-5 h-5" />
                   </div>
                   <h3 className="font-serif text-xl font-medium text-foreground mb-3">

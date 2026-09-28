@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Search, Globe, Check } from 'lucide-react';
 import { MAJOR_TIMEZONES } from '../../booking/mockData';
@@ -42,11 +42,11 @@ export const TimezoneSelectorModal: React.FC<TimezoneSelectorModalProps> = ({
             initial={{ scale: 0.95, opacity: 0, y: 10 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 10 }}
-            className="w-full max-w-md bg-foreground dark:bg-[#231D28] rounded-3xl border border-primary/30 shadow-2xl p-6 text-foreground dark:text-foreground max-h-[85vh] flex flex-col"
+            className="w-full max-w-md bg-foreground dark:bg-surface rounded-3xl border border-secondary/60 shadow-2xl p-6 text-foreground dark:text-foreground max-h-[85vh] flex flex-col"
           >
             <div className="flex items-center justify-between pb-3 border-b border-border dark:border-border">
               <div className="flex items-center gap-2">
-                <Globe className="w-5 h-5 text-primary" />
+                <Globe className="w-5 h-5 text-accent" />
                 <h3 className="font-serif text-lg font-medium">
                   {isEn ? 'Select Your Timezone' : 'اختر منطقتك الزمنية'}
                 </h3>
@@ -54,7 +54,7 @@ export const TimezoneSelectorModal: React.FC<TimezoneSelectorModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="p-1 rounded-full text-foreground/60 dark:text-border/60 hover:bg-[#EDE3D4] dark:hover:bg-[#29232F] cursor-pointer"
+                className="p-1 rounded-full text-foreground/60 dark:text-border/60 hover:bg-surface-warm dark:hover:bg-surface-subtle cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -87,7 +87,7 @@ export const TimezoneSelectorModal: React.FC<TimezoneSelectorModalProps> = ({
                     className={`w-full p-3 rounded-xl text-start transition-all cursor-pointer flex items-center justify-between ${
                       isSelected
                         ? 'bg-muted-foreground text-white'
-                        : 'bg-white/80 dark:bg-background text-foreground dark:text-border hover:bg-[#EDE3D4] dark:hover:bg-[#29232F]'
+                        : 'bg-white/80 dark:bg-background text-foreground dark:text-border hover:bg-surface-warm dark:hover:bg-surface-subtle'
                     }`}
                   >
                     <div>

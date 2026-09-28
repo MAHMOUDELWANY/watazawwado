@@ -98,14 +98,14 @@ export const FreeTrialSection: React.FC<FreeTrialSectionProps> = ({ lang, onOpen
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-surface hover:bg-surface-subtle text-foreground border border-border text-sm font-medium transition-all shadow-2xs hover:shadow-xs group"
               >
-                <MessageCircle className="w-4 h-4 text-primary" />
+                <MessageCircle className="w-4 h-4 text-accent" />
                 <span>{isEn ? 'Message on WhatsApp First' : 'تحدث معي على واتساب أولاً'}</span>
               </a>
             </div>
 
             {/* Free Trial Repeat Policy note */}
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <ShieldAlert className="w-3.5 h-3.5 text-primary shrink-0" />
+              <ShieldAlert className="w-3.5 h-3.5 text-accent shrink-0" />
               <span>
                 {isEn
                   ? 'Policy: One free trial per new student. Default duration is 30 minutes (up to 45 mins max). No credit card required.'

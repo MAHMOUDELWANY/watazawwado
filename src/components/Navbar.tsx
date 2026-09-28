@@ -55,7 +55,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           to="/"
           className="group flex items-center gap-3 text-foreground focus:outline-none rounded-md"
         >
-          <div className="w-8 h-8 rounded-lg bg-primary/15 border border-primary/25 flex items-center justify-center text-primary font-serif font-bold text-base transition-transform group-hover:scale-105">
+          <div className="w-8 h-8 rounded-lg bg-brand/10 border border-brand/20 flex items-center justify-center text-brand font-serif font-bold text-base transition-transform group-hover:scale-105">
             و
           </div>
           
@@ -101,7 +101,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             aria-label="Toggle language between English and Arabic"
             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-foreground hover:bg-surface-subtle border border-border transition-colors cursor-pointer"
           >
-            <Globe className="w-3.5 h-3.5 text-primary" />
+            <Globe className="w-3.5 h-3.5 text-accent" />
             <span>{lang === 'en' ? 'العربية' : 'EN'}</span>
           </button>
 
@@ -113,9 +113,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="p-2 rounded-lg text-foreground hover:bg-surface-subtle border border-border transition-colors cursor-pointer"
           >
             {theme === 'light' ? (
-              <Moon className="w-4 h-4 text-primary" />
+              <Moon className="w-4 h-4 text-accent" />
             ) : (
-              <Sun className="w-4 h-4 text-primary" />
+              <Sun className="w-4 h-4 text-accent" />
             )}
           </button>
 

@@ -309,7 +309,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
       case 'confirmed':
         return 'bg-success/15 text-success border-success/30';
       case 'completed':
-        return 'bg-primary/15 text-primary border-primary/30';
+        return 'bg-secondary/30 text-accent border-secondary/60';
       case 'pending':
         return 'bg-warning/15 text-warning border-warning/30';
       case 'cancelled':
@@ -354,7 +354,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
       default:
         return {
           text: 'Free Trial ($0)',
-          classes: 'bg-primary/15 text-primary border-primary/30'
+          classes: 'bg-secondary/30 text-accent border-secondary/60'
         };
     }
   };
@@ -456,7 +456,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                 <div className="bg-surface p-4 rounded-xl border border-border shadow-2xs space-y-3">
                   <div className="flex items-center justify-between border-b border-border pb-2">
                     <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                      <User className="w-3.5 h-3.5 text-primary" />
+                      <User className="w-3.5 h-3.5 text-accent" />
                       Learner & Contact
                     </span>
                     {booking.student_id ? (
@@ -528,7 +528,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                 <div className="bg-surface p-4 rounded-xl border border-border shadow-2xs space-y-3">
                   <div className="flex items-center justify-between border-b border-border pb-2">
                     <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                      <CalendarIcon className="w-3.5 h-3.5 text-primary" />
+                      <CalendarIcon className="w-3.5 h-3.5 text-accent" />
                       Lesson Details
                     </span>
                     <span className="text-[11px] px-2 py-0.5 rounded-full bg-surface-subtle text-muted-foreground border border-border font-medium">
@@ -573,7 +573,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
               <div className="bg-surface p-4 rounded-xl border border-border shadow-2xs space-y-3">
                 <div className="flex items-center justify-between border-b border-border pb-2">
                   <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                    <Video className="w-3.5 h-3.5 text-primary" />
+                    <Video className="w-3.5 h-3.5 text-accent" />
                     Online Classroom & Calendar Sync
                   </span>
                   <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${
@@ -631,7 +631,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                 <div className="flex items-center justify-between border-b border-border pb-3">
                   <div>
                     <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                      <DollarSign className="w-4 h-4 text-primary" />
+                      <DollarSign className="w-4 h-4 text-accent" />
                       Payment Tracking & Reconciliation
                     </span>
                     <p className="text-xs text-muted-foreground mt-0.5">
@@ -763,7 +763,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
               {/* Teacher Internal Notes Card */}
               <div className="bg-surface p-4 rounded-xl border border-border shadow-2xs space-y-2">
                 <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                  <FileText className="w-3.5 h-3.5 text-primary" />
+                  <FileText className="w-3.5 h-3.5 text-accent" />
                   Internal Teacher Notes
                 </span>
                 <textarea
@@ -786,7 +786,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
               {/* Recorded Covered Material Card (if session already has covered material) */}
               {lessonSession?.covered_material && (
-                <div className="bg-primary/5 p-4 rounded-xl border border-primary/20 shadow-2xs space-y-1.5">
+                <div className="bg-secondary/20 p-4 rounded-xl border border-secondary/50 shadow-2xs space-y-1.5">
                   <span className="text-xs font-semibold uppercase tracking-wider text-primary flex items-center gap-1.5">
                     <BookOpen className="w-3.5 h-3.5" />
                     Covered Material Recorded
@@ -870,7 +870,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
               {/* Completed Lesson Box */}
               {isMarkingCompleted && (
-                <div className="p-4 bg-primary/10 border border-primary/20 rounded-xl space-y-3 animate-in fade-in">
+                <div className="p-4 bg-secondary/30 border border-secondary/50 rounded-xl space-y-3 animate-in fade-in">
                   <div className="flex items-center justify-between">
                     <h4 className="text-xs font-semibold text-primary flex items-center gap-1.5">
                       <CalendarCheck2 className="w-3.5 h-3.5" />
@@ -998,7 +998,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
               <div className="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-border">
                 <div className="flex flex-wrap items-center gap-2">
                   {booking.status === 'completed' && (
-                    <span className="px-3.5 py-2 text-xs font-semibold text-primary bg-primary/15 rounded-xl border border-primary/30 flex items-center gap-1.5">
+                    <span className="px-3.5 py-2 text-xs font-semibold text-primary bg-primary/15 rounded-xl border border-secondary/60 flex items-center gap-1.5">
                       <Check className="w-4 h-4" />
                       Completed
                     </span>

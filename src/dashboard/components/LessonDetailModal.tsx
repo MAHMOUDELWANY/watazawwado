@@ -203,7 +203,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
         <div className="p-6 border-b border-border-subtle flex items-start justify-between gap-4 bg-surface-subtle">
           <div>
             <div className="flex items-center gap-2 mb-1 flex-wrap">
-              <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-primary/15 text-primary">
+              <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-secondary/30 text-accent">
                 {lesson.reference_code}
               </span>
               {lesson.is_free_trial ? (
@@ -211,7 +211,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                   Free Trial (30 min)
                 </span>
               ) : (
-                <span className="text-xs font-semibold px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
+                <span className="text-xs font-semibold px-2 py-0.5 rounded bg-secondary/30 text-primary border border-secondary/50">
                   1-on-1 Lesson ({lesson.duration_minutes} min)
                 </span>
               )}
@@ -220,7 +220,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                 currentStatus === 'completed' ? 'bg-surface-subtle text-muted-foreground border border-border-subtle' :
                 currentStatus === 'no_show' ? 'bg-warning/15 text-warning-foreground border border-warning/30' :
                 currentStatus === 'cancelled' ? 'bg-destructive/15 text-destructive border border-destructive/20' :
-                currentStatus === 'rescheduled' ? 'bg-primary/10 text-primary border border-primary/20' :
+                currentStatus === 'rescheduled' ? 'bg-secondary/30 text-primary border border-secondary/50' :
                 'bg-surface-subtle text-muted-foreground border border-border-subtle'
               }`}>
                 {currentStatus === 'no_show' ? 'No-Show' : (currentStatus || 'Status unavailable')}
@@ -284,7 +284,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
           </div>
 
           {/* Service & Subject */}
-          <div className="flex items-center justify-between p-3.5 rounded-xl bg-primary/10 border border-primary/20">
+          <div className="flex items-center justify-between p-3.5 rounded-xl bg-secondary/30 border border-secondary/50">
             <div>
               <span className="text-[11px] uppercase tracking-wider font-semibold text-primary block">
                 Subject
@@ -465,7 +465,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
 
           {/* Completed Lesson Form Drawer */}
           {isMarkingCompleted && (
-            <div className="p-4 bg-primary/10 border border-primary/20 rounded-xl space-y-3 animate-in fade-in">
+            <div className="p-4 bg-secondary/30 border border-secondary/50 rounded-xl space-y-3 animate-in fade-in">
               <div className="flex items-center justify-between">
                 <h4 className="text-xs font-semibold text-primary flex items-center gap-1.5">
                   <CalendarCheck2 className="w-3.5 h-3.5" />

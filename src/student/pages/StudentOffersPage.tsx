@@ -187,7 +187,7 @@ export default function StudentOffersPage({ session, lang = 'en' }: StudentOffer
                   </div>
                   {/* Distinct state badges — never collapsed together. */}
                   <div className="flex flex-wrap items-center gap-2 mt-2 text-xs">
-                    <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+                    <span className="px-2 py-0.5 rounded-full bg-secondary/30 text-primary">
                       {isAr ? 'معتمد من الأستاذ' : 'Approved by teacher'}
                     </span>
                     <span
@@ -200,7 +200,7 @@ export default function StudentOffersPage({ session, lang = 'en' }: StudentOffer
                         : (isAr ? 'الشراء أونلاين غير متاح حاليًا' : 'Online purchase: not available yet')}
                     </span>
                     {accepted && (
-                      <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+                      <span className="px-2 py-0.5 rounded-full bg-secondary/30 text-primary">
                         {isAr ? 'تم القبول' : 'Accepted'}
                       </span>
                     )}

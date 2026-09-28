@@ -163,7 +163,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
   const getIcon = (type: StudentNotificationItem['type']) => {
     switch (type) {
       case 'lesson_reminder':
-        return <Calendar className="w-5 h-5 text-primary" />;
+        return <Calendar className="w-5 h-5 text-accent" />;
       case 'payment_action':
         return <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400" />;
       case 'payment_verified':
@@ -173,11 +173,11 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
       case 'payment_partial':
         return <Clock className="w-5 h-5 text-amber-600 dark:text-amber-400" />;
       case 'package_active':
-        return <Package className="w-5 h-5 text-primary" />;
+        return <Package className="w-5 h-5 text-accent" />;
       case 'lesson_cancelled':
         return <AlertCircle className="w-5 h-5 text-destructive" />;
       default:
-        return <Bell className="w-5 h-5 text-primary" />;
+        return <Bell className="w-5 h-5 text-accent" />;
     }
   };
 
@@ -213,7 +213,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
           <button
             type="button"
             onClick={markAllAsRead}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium text-primary hover:bg-primary/10 rounded-xl transition-colors cursor-pointer self-start sm:self-center"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium text-primary hover:bg-secondary/30 rounded-xl transition-colors cursor-pointer self-start sm:self-center"
           >
             <Check className="w-4 h-4" />
             <span>{isAr ? 'تحديد الكل كمقروء' : 'Mark all as read'}</span>
@@ -250,7 +250,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
       {/* 3. Notifications List */}
       {loading ? (
         <div className="flex flex-col items-center justify-center min-h-[35vh] gap-3">
-          <Loader2 className="w-7 h-7 text-primary animate-spin" />
+          <Loader2 className="w-7 h-7 text-accent animate-spin" />
           <p className="text-xs text-muted-foreground">
             {isAr ? 'جارٍ تحميل التنبيهات...' : 'Loading notifications...'}
           </p>
@@ -296,7 +296,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
         </div>
       ) : filteredItems.length === 0 ? (
         <div className="p-10 bg-surface border border-border rounded-2xl text-center space-y-3">
-          <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
+          <div className="w-12 h-12 rounded-2xl bg-secondary/30 text-accent flex items-center justify-center mx-auto">
             <Bell className="w-6 h-6" />
           </div>
           <h3 className="font-serif font-bold text-lg text-foreground">
@@ -314,7 +314,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
             <div
               key={item.id}
               className={`p-4 sm:p-5 flex flex-col sm:flex-row sm:items-start justify-between gap-4 transition-colors ${
-                item.read ? 'opacity-85 hover:bg-surface-subtle/50' : 'bg-primary/5 hover:bg-primary/10'
+                item.read ? 'opacity-85 hover:bg-surface-subtle/50' : 'bg-secondary/20 hover:bg-secondary/30'
               }`}
             >
               <div className="flex items-start gap-3 sm:gap-4 min-w-0">

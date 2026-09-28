@@ -51,7 +51,7 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ lang }
               className="p-8 sm:p-10 rounded-2xl bg-surface border border-border flex flex-col justify-between shadow-2xs hover:shadow-xs transition-all cursor-default"
             >
               <div>
-                <Quote className="w-8 h-8 text-primary/40 mb-4" />
+                <Quote className="w-8 h-8 text-accent/40 mb-4" />
                 <p className="font-serif text-base sm:text-lg text-foreground leading-relaxed italic">
                   “{testimonial.quote}”
                 </p>
@@ -68,19 +68,19 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ lang }
                     </p>
                   </div>
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <MapPin className="w-3.5 h-3.5 text-primary" />
+                    <MapPin className="w-3.5 h-3.5 text-accent" />
                     <span>{testimonial.location}</span>
                   </div>
                 </div>
 
                 <div className="mt-3 flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
                   <span className="flex items-center gap-1">
-                    <BookOpen className="w-3 h-3 text-primary" />
+                    <BookOpen className="w-3 h-3 text-accent" />
                     {testimonial.subject}
                   </span>
                   <span>•</span>
                   <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3 text-primary" />
+                    <Clock className="w-3 h-3 text-accent" />
                     {testimonial.durationWithMahmoud}
                   </span>
                 </div>

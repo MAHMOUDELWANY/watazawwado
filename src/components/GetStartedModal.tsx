@@ -85,7 +85,7 @@ const handleOpenSignup = () => {
 
           {/* Header */}
           <div className="text-center max-w-md mx-auto mb-6">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/15 text-primary mb-3">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-secondary/30 text-accent mb-3">
               <GraduationCap className="w-6 h-6" />
             </div>
             <h2 id="get-started-title" className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-foreground">
@@ -101,10 +101,10 @@ const handleOpenSignup = () => {
           {/* Primary Pathways Selection: Guest vs Student */}
           <div className="space-y-4">            {/* OPTION 1: Continue as Student (Student Account) */}
             <div 
-              className="p-5 rounded-2xl bg-surface-subtle border border-primary/30 hover:border-primary hover:shadow-md transition-all group"
+              className="p-5 rounded-2xl bg-surface-subtle border border-secondary/60 hover:border-primary hover:shadow-md transition-all group"
             >
               <div className="flex items-start gap-4">
-                <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <div className="w-11 h-11 rounded-xl bg-secondary/30 text-accent flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                   <UserCheck className="w-5 h-5" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -112,7 +112,7 @@ const handleOpenSignup = () => {
                     <span className="font-semibold text-base text-foreground group-hover:text-primary transition-colors">
                       {isAr ? 'المتابعة كطالب مسجل' : 'Continue as Student'}
                     </span>
-                    <span className="text-xs px-2.5 py-0.5 rounded-full font-medium bg-primary/10 text-primary whitespace-nowrap">
+                    <span className="text-xs px-2.5 py-0.5 rounded-full font-medium bg-secondary/30 text-primary whitespace-nowrap">
                       {isAr ? 'حجز حقيقي' : 'Real Booking'}
                     </span>
                   </div>
@@ -138,7 +138,7 @@ const handleOpenSignup = () => {
                       id="get-started-student-login-btn"
                       className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-surface hover:bg-surface-subtle text-foreground text-xs sm:text-sm font-medium transition-colors cursor-pointer border border-border"
                     >
-                      <LogIn className="w-3.5 h-3.5 text-primary" />
+                      <LogIn className="w-3.5 h-3.5 text-accent" />
                       <span>{isAr ? 'تسجيل الدخول' : 'Sign In'}</span>
                     </button>
                   </div>

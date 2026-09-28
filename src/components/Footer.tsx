@@ -31,7 +31,7 @@ export const Footer: React.FC<FooterProps> = ({
           
           {/* Brand & Purpose (5 cols on md) */}
           <div className="md:col-span-5 space-y-4">
-            <div className="font-serif text-2xl font-medium text-foreground tracking-tight">
+            <div className="font-serif text-2xl font-medium text-foreground tracking-tight flex items-center gap-2.5">`n                <div className="w-2 h-2 rounded-full bg-brand"></div>
               Watazawwado <span className="text-muted-foreground font-light text-xl">/ وتزودوا</span>
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-sm">
@@ -126,7 +126,7 @@ export const Footer: React.FC<FooterProps> = ({
               rel="noopener noreferrer"
               className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-border text-xs text-foreground hover:bg-surface-subtle transition-colors"
             >
-              <MessageCircle className="w-3.5 h-3.5 text-primary" />
+              <MessageCircle className="w-3.5 h-3.5 text-accent" />
               <span>WhatsApp: {MAHMOUD_OFFICIAL_PHONE_INTL}</span>
             </a>
           </div>

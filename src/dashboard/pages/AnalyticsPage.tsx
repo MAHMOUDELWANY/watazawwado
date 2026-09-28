@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { 
   TrendingUp, 
   Users, 
@@ -119,7 +119,7 @@ export default function AnalyticsPage() {
             <h1 className="text-2xl font-serif font-bold text-foreground dark:text-foreground">
               Operational Analytics
             </h1>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-primary/20 text-primary dark:text-primary font-medium">
+            <span className="text-xs px-2.5 py-0.5 rounded-full bg-secondary/40 text-accent dark:text-primary font-medium">
               Real-time
             </span>
           </div>
@@ -235,7 +235,7 @@ export default function AnalyticsPage() {
             <span className="text-xs uppercase tracking-wider text-foreground/60 dark:text-border/60 font-medium">
               Total Active
             </span>
-            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary dark:text-primary">
+            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-accent dark:text-primary">
               <Users className="w-4 h-4" />
             </div>
           </div>
@@ -322,7 +322,7 @@ export default function AnalyticsPage() {
           {/* Payment Operational Status */}
           <div className="p-6 rounded-2xl bg-white dark:bg-surface border border-border/30 dark:border-border/30 shadow-xs space-y-4">
             <div className="flex items-center gap-2">
-              <DollarSign className="w-4 h-4 text-primary dark:text-primary" />
+              <DollarSign className="w-4 h-4 text-accent dark:text-primary" />
               <h2 className="text-base font-serif font-semibold text-foreground dark:text-foreground">
                 Payment Operational Status
               </h2>
@@ -350,7 +350,7 @@ export default function AnalyticsPage() {
           {/* Service Demand Breakdown */}
           <div className="p-6 rounded-2xl bg-white dark:bg-surface border border-border/30 dark:border-border/30 shadow-xs space-y-4">
             <div className="flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-primary dark:text-primary" />
+              <BookOpen className="w-4 h-4 text-accent dark:text-primary" />
               <h2 className="text-base font-serif font-semibold text-foreground dark:text-foreground">
                 Service Demand
               </h2>

@@ -698,7 +698,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
   if (auth.loading) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <Loader2 className="w-8 h-8 animate-spin text-accent" />
         <p className="text-sm font-medium text-muted-foreground">
           Checking your student session…
         </p>
@@ -741,7 +741,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
   if (profileLoading || (bookingsLoading && bookings === null)) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <Loader2 className="w-8 h-8 animate-spin text-accent" />
         <p className="text-sm font-medium text-muted-foreground">
           Loading your lesson options…
         </p>
@@ -816,7 +816,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
         </div>
 
         <div className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl bg-surface border border-border shadow-xs self-start sm:self-auto">
-          <div className="p-1 rounded-full bg-primary/10 text-primary">
+          <div className="p-1 rounded-full bg-secondary/30 text-primary">
             <ShieldCheck className="w-4 h-4" />
           </div>
           <div className="text-left">
@@ -878,7 +878,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
           className="max-w-xl mx-auto p-6 sm:p-8 rounded-3xl bg-surface border border-border shadow-sm space-y-6"
         >
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-2xl bg-primary/10 text-primary">
+            <div className="p-2.5 rounded-2xl bg-secondary/30 text-primary">
               <RotateCcw className="w-5 h-5" />
             </div>
             <div>
@@ -926,7 +926,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
               className="w-full p-4 rounded-2xl bg-surface border border-border text-foreground hover:bg-surface-subtle font-medium text-xs transition-all shadow-xs flex flex-col items-start gap-1 cursor-pointer text-start"
             >
               <div className="flex items-center gap-1.5 font-semibold text-sm">
-                <Sparkles className="w-4 h-4 text-primary" />
+                <Sparkles className="w-4 h-4 text-accent" />
                 <span>Make a new booking</span>
               </div>
               <span className="text-[11px] text-muted-foreground leading-tight">
@@ -941,9 +941,9 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
           <div className="space-y-4">
             {/* Active reuse feedback banner */}
             {isReusing && lastBookingSummary && (
-              <div className="p-3.5 rounded-2xl bg-primary/10 border border-primary/20 text-xs text-primary flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="p-3.5 rounded-2xl bg-secondary/30 border border-secondary/50 text-xs text-primary flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-primary shrink-0" />
+                  <Check className="w-4 h-4 text-accent shrink-0" />
                   <span>
                     Reusing details from your last lesson: <strong>{lastBookingSummary.summaryText}</strong>. Choose your date &amp; time below, or edit any details.
                   </span>

@@ -29,7 +29,7 @@ const STAGE_CONFIG: Record<LeadStatus, { label: string; color: string }> = {
   },
   lead: {
     label: 'New Lead',
-    color: 'bg-primary/10 text-primary border border-primary/20'
+    color: 'bg-secondary/30 text-primary border border-secondary/50'
   },
   contacted: {
     label: 'Contacted',
@@ -41,7 +41,7 @@ const STAGE_CONFIG: Record<LeadStatus, { label: string; color: string }> = {
   },
   trial_completed: {
     label: 'Trial Completed',
-    color: 'bg-primary/15 text-primary border border-primary/30'
+    color: 'bg-secondary/30 text-accent border border-secondary/60'
   },
   potential_student: {
     label: 'Potential Student',
@@ -53,7 +53,7 @@ const STAGE_CONFIG: Record<LeadStatus, { label: string; color: string }> = {
   },
   returning_student: {
     label: 'Returning Student',
-    color: 'bg-primary/10 text-primary border border-primary/25'
+    color: 'bg-secondary/30 text-primary border border-primary/25'
   },
   lost: {
     label: 'Lost / Postponed',
@@ -145,7 +145,7 @@ export default function LeadsPage() {
             <h1 className="text-2xl font-serif font-bold text-foreground">
               Leads Pipeline
             </h1>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium border border-primary/20">
+            <span className="text-xs px-2.5 py-0.5 rounded-full bg-secondary/30 text-primary font-medium border border-secondary/50">
               Student Acquisition
             </span>
           </div>
@@ -178,7 +178,7 @@ export default function LeadsPage() {
             <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
               New Inquiries
             </span>
-            <UserPlus className="w-4 h-4 text-primary" />
+            <UserPlus className="w-4 h-4 text-accent" />
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-2xl font-semibold text-foreground">
@@ -362,7 +362,7 @@ export default function LeadsPage() {
               <div
                 key={lead.id}
                 onClick={() => setSelectedLead(lead)}
-                className="p-4 sm:p-5 rounded-2xl bg-surface border border-border hover:border-primary/50 shadow-2xs hover:shadow-xs transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                className="p-4 sm:p-5 rounded-2xl bg-surface border border-border hover:border-accent/40 shadow-2xs hover:shadow-xs transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4"
               >
                 <div className="space-y-1.5 flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
@@ -454,7 +454,7 @@ export default function LeadsPage() {
                       e.stopPropagation();
                       setSelectedLead(lead);
                     }}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-xs font-semibold transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-secondary/30 hover:bg-secondary/40 text-accent text-xs font-semibold transition-colors cursor-pointer"
                   >
                     <span>Manage Lead</span>
                     <ChevronRight className="w-3.5 h-3.5" />

@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { DateTime } from 'luxon';
 import { X, User, Mail, Phone, Globe, Shield, BookOpen, AlertCircle, Check } from 'lucide-react';
 import { DashboardStudentDetail } from '../types';
@@ -126,7 +126,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm overflow-y-auto">
       <div 
-        className="relative w-full max-w-2xl bg-white dark:bg-[#2A2431] rounded-2xl shadow-xl border border-border/40 dark:border-border/40 overflow-hidden my-8"
+        className="relative w-full max-w-2xl bg-white dark:bg-surface-subtle rounded-2xl shadow-xl border border-border/40 dark:border-border/40 overflow-hidden my-8"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
@@ -223,7 +223,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
           {(learnerType === 'child' || parentName.trim().length > 0) && (
             <div className="p-3.5 rounded-xl bg-background/80 dark:bg-background/60 border border-border/40 dark:border-border/40 space-y-3">
               <span className="text-xs font-semibold text-foreground dark:text-foreground flex items-center gap-1.5">
-                <Shield className="w-3.5 h-3.5 text-primary" />
+                <Shield className="w-3.5 h-3.5 text-accent" />
                 Parent / Guardian Contact (Optional)
               </span>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

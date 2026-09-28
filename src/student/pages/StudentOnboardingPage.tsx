@@ -146,7 +146,7 @@ export default function StudentOnboardingPage({
           animate={{ opacity: 1, scale: 1 }}
           className="bg-surface border border-border rounded-3xl p-8 sm:p-12 shadow-sm"
         >
-          <div className="w-16 h-16 rounded-full bg-primary/15 text-primary flex items-center justify-center mx-auto mb-5">
+          <div className="w-16 h-16 rounded-full bg-secondary/30 text-accent flex items-center justify-center mx-auto mb-5">
             <CheckCircle2 className="w-9 h-9" />
           </div>
 
@@ -189,7 +189,7 @@ export default function StudentOnboardingPage({
     <div className="max-w-2xl mx-auto py-8 sm:py-12 px-4">
       {/* Header */}
       <div className="text-center mb-8">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary mb-3">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-secondary/30 text-primary mb-3">
           <Sparkles className="w-3.5 h-3.5" />
           Personalized Onboarding
         </span>
@@ -242,11 +242,11 @@ export default function StudentOnboardingPage({
                   onClick={() => setLearnerType('adult')}
                   className={`p-4 rounded-2xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
                     learnerType === 'adult'
-                      ? 'border-primary bg-primary/10 text-foreground'
-                      : 'border-border hover:border-primary/50 text-muted-foreground'
+                      ? 'border-primary bg-secondary/30 text-foreground'
+                      : 'border-border hover:border-accent/40 text-muted-foreground'
                   }`}
                 >
-                  <User className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                  <User className="w-5 h-5 text-accent shrink-0 mt-0.5" />
                   <div>
                     <div className="font-semibold text-sm">Adult Learner</div>
                     <div className="text-xs opacity-75 mt-0.5">I am learning for myself</div>
@@ -258,11 +258,11 @@ export default function StudentOnboardingPage({
                   onClick={() => setLearnerType('child')}
                   className={`p-4 rounded-2xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
                     learnerType === 'child'
-                      ? 'border-primary bg-primary/10 text-foreground'
-                      : 'border-border hover:border-primary/50 text-muted-foreground'
+                      ? 'border-primary bg-secondary/30 text-foreground'
+                      : 'border-border hover:border-accent/40 text-muted-foreground'
                   }`}
                 >
-                  <Users className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                  <Users className="w-5 h-5 text-accent shrink-0 mt-0.5" />
                   <div>
                     <div className="font-semibold text-sm">Child / Youth</div>
                     <div className="text-xs opacity-75 mt-0.5">I am enrolling my child</div>
@@ -372,8 +372,8 @@ export default function StudentOnboardingPage({
                     onClick={() => setCurrentLevel(lvl.id)}
                     className={`w-full p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex items-start justify-between gap-3 ${
                       currentLevel === lvl.id
-                        ? 'border-primary bg-primary/10 text-foreground'
-                        : 'border-border hover:border-primary/50 text-muted-foreground'
+                        ? 'border-primary bg-secondary/30 text-foreground'
+                        : 'border-border hover:border-accent/40 text-muted-foreground'
                     }`}
                   >
                     <div>
@@ -381,7 +381,7 @@ export default function StudentOnboardingPage({
                       <div className="text-xs opacity-75 mt-0.5">{lvl.desc}</div>
                     </div>
                     {currentLevel === lvl.id && (
-                      <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                     )}
                   </button>
                 ))}
@@ -435,7 +435,7 @@ export default function StudentOnboardingPage({
                   Your Timezone (IANA)
                 </label>
                 <div className="relative">
-                  <Clock className="w-4 h-4 text-primary absolute start-3.5 top-3.5 pointer-events-none" />
+                  <Clock className="w-4 h-4 text-accent absolute start-3.5 top-3.5 pointer-events-none" />
                   <input
                     type="text"
                     value={timezone}
@@ -450,7 +450,7 @@ export default function StudentOnboardingPage({
                   WhatsApp / Phone Number
                 </label>
                 <div className="relative">
-                  <Phone className="w-4 h-4 text-primary absolute start-3.5 top-3.5 pointer-events-none" />
+                  <Phone className="w-4 h-4 text-accent absolute start-3.5 top-3.5 pointer-events-none" />
                   <input
                     type="tel"
                     value={whatsapp}

@@ -124,7 +124,7 @@ export default function StudentsPage() {
             <h1 className="text-2xl font-serif font-bold text-foreground">
               {isSuperAdmin ? 'Students Directory' : 'My Students'}
             </h1>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 font-medium">
+            <span className="text-xs px-2.5 py-0.5 rounded-full bg-secondary/30 text-primary border border-secondary/50 font-medium">
               {counts.active} Active Learners
             </span>
           </div>
@@ -268,7 +268,7 @@ export default function StudentsPage() {
             return (
               <div
                 key={student.id}
-                className="bg-surface border border-border rounded-2xl p-5 shadow-2xs space-y-4 hover:border-primary/50 transition-all flex flex-col justify-between"
+                className="bg-surface border border-border rounded-2xl p-5 shadow-2xs space-y-4 hover:border-accent/40 transition-all flex flex-col justify-between"
               >
                 {/* Card Header: Name, Learner Type, Status */}
                 <div className="space-y-2">
@@ -286,7 +286,7 @@ export default function StudentsPage() {
                             Child {student.parent_name ? `(${student.parent_name})` : ''}
                           </span>
                         ) : student.learner_type === 'adult' ? (
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 font-medium">
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-secondary/30 text-primary border border-secondary/50 font-medium">
                             Adult
                           </span>
                         ) : null}
@@ -335,7 +335,7 @@ export default function StudentsPage() {
 
                     {isSuperAdmin && (
                       <span className={`px-2 py-0.5 rounded text-[10px] font-semibold tracking-wider uppercase ${
-                        student.assigned_teacher_name ? 'bg-primary/10 text-primary' : 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30'
+                        student.assigned_teacher_name ? 'bg-secondary/30 text-primary' : 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30'
                       }`}>
                         {student.assigned_teacher_name ? `Teacher: ${student.assigned_teacher_name}` : 'Unassigned'}
                       </span>
@@ -347,7 +347,7 @@ export default function StudentsPage() {
                 <div className="pt-3 border-t border-border-subtle space-y-2 text-xs">
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-muted-foreground flex items-center gap-1.5">
-                      <BookOpen className="w-3.5 h-3.5 text-primary" />
+                      <BookOpen className="w-3.5 h-3.5 text-accent" />
                       <span>{student.total_completed_lessons} Completed Lessons</span>
                     </span>
 
@@ -362,14 +362,14 @@ export default function StudentsPage() {
                   {student.next_lesson ? (
                     <div className="p-2.5 rounded-xl bg-surface-subtle border border-border-subtle flex items-center justify-between text-[11px]">
                       <div className="flex items-center gap-2">
-                        <Clock className="w-3.5 h-3.5 text-primary" />
+                        <Clock className="w-3.5 h-3.5 text-accent" />
                         <div>
                           <span className="font-semibold text-foreground">
                             Next: {DateTime.fromISO(student.next_lesson.scheduled_start).toFormat('EEE, MMM d • hh:mm a')}
                           </span>
                         </div>
                       </div>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 font-medium">
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary/30 text-primary border border-secondary/50 font-medium">
                         Upcoming
                       </span>
                     </div>
@@ -399,7 +399,7 @@ export default function StudentsPage() {
 
                   <Link
                     to={`/dashboard/students/${student.id}`}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-xl bg-secondary/30 text-primary hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
                   >
                     <span>View Record</span>
                     <ChevronRight className="w-3.5 h-3.5" />

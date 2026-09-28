@@ -345,7 +345,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                 {isAr ? 'دروس جاهزة للجدولة' : 'Lessons ready to schedule'}
               </span>
             </div>
-            <div className="p-3.5 rounded-2xl bg-primary/10 text-primary">
+            <div className="p-3.5 rounded-2xl bg-secondary/30 text-primary">
               <CheckCircle2 className="w-6 h-6" />
             </div>
           </CardContent>
@@ -395,7 +395,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
       {/* 3. Package Policy & Rules Card */}
       <div className="p-4 sm:p-5 rounded-2xl bg-surface-subtle border border-border-subtle flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs leading-relaxed text-muted-foreground">
         <div className="flex items-start gap-3">
-          <ShieldCheck className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+          <ShieldCheck className="w-5 h-5 text-accent shrink-0 mt-0.5" />
           <div className="space-y-1">
             <span className="font-semibold text-foreground text-sm block">
               {isAr ? 'كيف يعمل نظام الباقات ورصيد الدروس؟' : 'How Packages & Lesson Credits Work'}
@@ -480,7 +480,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                             {ent.pricePaid ? ` • $${ent.pricePaid} ${ent.currency}` : ''}
                           </span>
                           {ent.learnerName && (
-                            <Badge variant="outline" className="text-[10px] font-normal border-primary/20 text-primary bg-primary/5">
+                            <Badge variant="outline" className="text-[10px] font-normal border-secondary/50 text-primary bg-secondary/20">
                               {isAr ? `لـ ${ent.learnerName}` : `For ${ent.learnerName}`}
                             </Badge>
                           )}
@@ -523,7 +523,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                           to={`/student/book?entitlementId=${ent.id}`}
                           className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-surface hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs font-semibold transition-colors min-h-[40px]"
                         >
-                          <Plus className="w-3.5 h-3.5 text-primary" />
+                          <Plus className="w-3.5 h-3.5 text-accent" />
                           <span>{isAr ? 'حجز درس من هذا الرصيد' : 'Book a Session'}</span>
                         </Link>
                       ) : (
@@ -557,7 +557,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
         {hasMultipleLearners && (
           <div className="p-4 rounded-2xl bg-surface border border-border space-y-2">
             <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-              <Users className="w-3.5 h-3.5 text-primary" />
+              <Users className="w-3.5 h-3.5 text-accent" />
               <span>{isAr ? 'شراء الباقة لحساب المتعلم:' : 'Assign Package To Learner:'}</span>
             </label>
             <div className="flex flex-wrap gap-2">
@@ -636,7 +636,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
         <div className="flex items-center justify-between">
           <div className="space-y-0.5">
             <h2 className="text-lg font-serif font-bold text-foreground flex items-center gap-2">
-              <History className="w-4 h-4 text-primary" />
+              <History className="w-4 h-4 text-accent" />
               <span>{isAr ? 'سجل حركة ونشاط الرصيد' : 'Credit Activity History'}</span>
             </h2>
             <p className="text-xs text-muted-foreground">
@@ -652,7 +652,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
 
         {ledgerLoading ? (
           <div className="p-6 rounded-2xl bg-surface border border-border flex items-center justify-center gap-2 text-muted-foreground text-xs">
-            <Loader2 className="w-4 h-4 animate-spin text-primary" />
+            <Loader2 className="w-4 h-4 animate-spin text-accent" />
             <span>{isAr ? 'جارٍ تحميل سجل النشاط...' : 'Loading credit activity...'}</span>
           </div>
         ) : ledgerError ? (
@@ -695,7 +695,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                         isPositive
                           ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
                           : isNegative
-                          ? 'bg-primary/10 text-primary'
+                          ? 'bg-secondary/30 text-primary'
                           : 'bg-muted text-muted-foreground'
                       }`}
                     >
@@ -812,7 +812,7 @@ function PackageCard({
       <CardContent className="p-6 space-y-5 flex-1 flex flex-col justify-between">
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-primary px-2.5 py-1 rounded-md bg-primary/10">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-primary px-2.5 py-1 rounded-md bg-secondary/30">
               {lessonCount} {isAr ? 'دروس خاصة' : 'Private Lessons'}
             </span>
           </div>

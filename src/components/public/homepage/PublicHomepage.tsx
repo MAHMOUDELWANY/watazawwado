@@ -51,7 +51,7 @@ export function PublicHomepage() {
                 {isEn ? 'Book Free 30-Min Trial' : 'احجز جلستك الأولى (مجانًا)'}
               </PublicButton>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Check className="w-4 h-4 text-primary" />
+                <Check className="w-4 h-4 text-accent" />
                 <span>{isEn ? 'No credit card required' : 'بدون بطاقة بنكية'}</span>
               </div>
             </div>
@@ -123,7 +123,7 @@ export function PublicHomepage() {
 
             <EditorialBlock className="text-center md:text-start md:pe-8">
               <div className="w-12 h-12 bg-surface rounded-xl flex items-center justify-center mx-auto md:mx-0 mb-6 shadow-sm border border-border-subtle">
-                <User className="w-6 h-6 text-primary" />
+                <User className="w-6 h-6 text-accent" />
               </div>
               <h3 className="text-2xl font-editorial font-medium mb-4 text-foreground">
                 {isEn ? 'Learn for yourself' : 'تعلّم لنفسك'}

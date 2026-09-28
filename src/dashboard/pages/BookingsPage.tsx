@@ -157,7 +157,7 @@ export default function BookingsPage() {
       case 'confirmed':
         return 'bg-success/15 text-success border-success/30';
       case 'completed':
-        return 'bg-primary/15 text-primary border-primary/30';
+        return 'bg-secondary/30 text-accent border-secondary/60';
       case 'pending':
         return 'bg-warning/15 text-warning border-warning/30';
       case 'cancelled':
@@ -202,7 +202,7 @@ export default function BookingsPage() {
       default:
         return {
           text: 'Free Trial',
-          classes: 'bg-primary/15 text-primary border-primary/30'
+          classes: 'bg-secondary/30 text-accent border-secondary/60'
         };
     }
   };
@@ -449,7 +449,7 @@ export default function BookingsPage() {
                           {paymentBadgeInfo.text}
                         </span>
                         {b.booking_type === 'trial' && (
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-primary/15 text-primary border border-primary/20">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-secondary/30 text-accent border border-secondary/50">
                             Trial
                           </span>
                         )}

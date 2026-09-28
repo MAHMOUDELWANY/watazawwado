@@ -212,7 +212,7 @@ export default function IntakeReviewPanel({ lang, apiFetch }: IntakeReviewPanelP
                   animate={{ opacity: 1, y: 0 }}
                   onClick={() => { setSelected(i); setNotes(''); setAdjustedPrice(''); setMessage(null); }}
                   className={`w-full text-start bg-surface border rounded-xl p-4 transition-colors ${
-                    selected?.id === i.id ? 'border-primary' : 'border-border hover:border-primary/50'
+                    selected?.id === i.id ? 'border-primary' : 'border-border hover:border-accent/40'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2">

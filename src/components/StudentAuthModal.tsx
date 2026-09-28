@@ -130,7 +130,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
                   Full Name
                 </label>
                 <div className="relative">
-                  <User className="absolute start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
+                  <User className="absolute start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-accent" />
                   <input
                     type="text"
                     required
@@ -149,7 +149,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
                   Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="absolute start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
+                  <Mail className="absolute start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-accent" />
                   <input
                     type="email"
                     required
@@ -168,7 +168,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
                   {view === 'update-password' ? 'New Password' : 'Password'}
                 </label>
                 <div className="relative">
-                  <Lock className="absolute start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
+                  <Lock className="absolute start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-accent" />
                   <input
                     type="password"
                     required

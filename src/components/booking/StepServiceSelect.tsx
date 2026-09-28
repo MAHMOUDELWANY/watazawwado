@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Check, BookOpen, Compass, Languages, GraduationCap, ArrowRight } from 'lucide-react';
 import { BOOKING_SERVICES } from '../../booking/mockData';
@@ -56,7 +56,7 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
               className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                 isActive
                   ? 'bg-muted-foreground text-white shadow-xs'
-                  : 'bg-white/80 dark:bg-[#231D28] text-foreground/70 dark:text-border/70 border border-border dark:border-border hover:bg-[#EDE3D4] dark:hover:bg-[#29232F]'
+                  : 'bg-white/80 dark:bg-surface text-foreground/70 dark:text-border/70 border border-border dark:border-border hover:bg-surface-warm dark:hover:bg-surface-subtle'
               }`}
             >
               {grp.icon}
@@ -78,8 +78,8 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
               onClick={() => onSelectService(service.id)}
               className={`group p-4 sm:p-5 rounded-2xl border text-start transition-all cursor-pointer relative flex flex-col justify-between ${
                 isSelected
-                  ? 'bg-foreground dark:bg-[#29232F] border-primary ring-2 ring-primary/30 shadow-sm'
-                  : 'bg-white dark:bg-[#231D28] border-border dark:border-border hover:border-primary/60 hover:bg-foreground/40 shadow-xs'
+                  ? 'bg-foreground dark:bg-surface-subtle border-primary ring-2 ring-primary/30 shadow-sm'
+                  : 'bg-white dark:bg-surface border-border dark:border-border hover:border-accent/50 hover:bg-foreground/40 shadow-xs'
               }`}
             >
               <div>
@@ -136,7 +136,7 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
           whileTap={{ scale: 0.97 }}
           onClick={onNext}
           disabled={!selectedServiceId}
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 rounded-xl bg-muted-foreground hover:bg-[#584960] text-white text-sm font-medium shadow-xs disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 rounded-xl bg-muted-foreground hover:bg-muted text-white text-sm font-medium shadow-xs disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
         >
           <span>{isEn ? 'Next: Define Your Goal' : 'التالي: حدد هدفك'}</span>
           <ArrowRight className={`w-4 h-4 ${lang === 'ar' ? 'rotate-180' : ''}`} />

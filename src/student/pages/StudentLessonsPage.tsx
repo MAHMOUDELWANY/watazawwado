@@ -148,7 +148,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
 
       {/* 2. Compact Cancellation / Rescheduling Policy Notice */}
       <div className="p-3.5 sm:p-4 rounded-xl bg-surface-subtle border border-border-subtle flex items-start gap-3 text-xs leading-relaxed text-muted-foreground">
-        <HelpCircle className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+        <HelpCircle className="w-4 h-4 text-accent shrink-0 mt-0.5" />
         <div>
           <span className="font-semibold text-foreground block mb-0.5">
             {isAr ? 'سياسة الجدولة والإلغاء المعتمدة' : 'Cancellation & Rescheduling Policy'}
@@ -206,7 +206,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
       {/* 4. Main Content Area */}
       {loading ? (
         <div className="flex flex-col items-center justify-center py-16 gap-3 bg-surface border border-border rounded-2xl">
-          <Loader2 className="w-8 h-8 text-primary animate-spin" />
+          <Loader2 className="w-8 h-8 text-accent animate-spin" />
           <p className="text-xs sm:text-sm text-muted-foreground">
             {isAr ? 'جارٍ تحميل الدروس...' : 'Loading your scheduled sessions...'}
           </p>
@@ -228,7 +228,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
         </div>
       ) : displayedBookings.length === 0 ? (
         <div className="text-center py-16 px-4 bg-surface border border-border rounded-2xl space-y-4">
-          <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
+          <div className="w-12 h-12 rounded-2xl bg-secondary/30 text-accent flex items-center justify-center mx-auto">
             <Calendar className="w-6 h-6" />
           </div>
           <div>
@@ -295,7 +295,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
             const displayStatus = getLessonDisplayStatus(b, paymentSummary, isAr);
 
             return (
-              <Card key={b.id} className="border-border hover:border-primary/30 transition-colors bg-surface">
+              <Card key={b.id} className="border-border hover:border-secondary/60 transition-colors bg-surface">
                 <CardContent className="p-5 sm:p-6 space-y-4">
                   {/* Top Bar: Service Title + Badges */}
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
@@ -305,12 +305,12 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                           {isAr && b.serviceArabicTitle ? b.serviceArabicTitle : b.serviceTitle}
                         </h3>
                         {b.bookingType === 'trial' && (
-                          <Badge variant="outline" className="text-[10px] text-primary border-primary/30">
+                          <Badge variant="outline" className="text-[10px] text-primary border-secondary/60">
                             {isAr ? 'تجريبي مجاني' : 'Free Trial'}
                           </Badge>
                         )}
                         {(b.packageEntitlementId || b.isPackageBooking) && (
-                          <Badge variant="secondary" className="text-[10px] font-normal bg-primary/10 text-primary border-primary/20">
+                          <Badge variant="secondary" className="text-[10px] font-normal bg-secondary/30 text-primary border-secondary/50">
                             {isAr ? 'باقة مسبقة الدفع' : 'Prepaid Package'}
                           </Badge>
                         )}
@@ -318,7 +318,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
 
                       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                         <div className="flex items-center gap-1.5">
-                          <Clock className="w-3.5 h-3.5 text-primary shrink-0" />
+                          <Clock className="w-3.5 h-3.5 text-accent shrink-0" />
                           <span className="font-medium text-foreground">
                             {dateObj && dateObj.isValid
                               ? dateObj.setLocale(isAr ? 'ar' : 'en').toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)
@@ -414,7 +414,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                         </a>
                       ) : (
                         <div className="inline-flex items-center gap-2 text-xs text-muted-foreground p-2 rounded-lg bg-surface-subtle border border-border-subtle">
-                          <Clock className="w-3.5 h-3.5 text-primary shrink-0" />
+                          <Clock className="w-3.5 h-3.5 text-accent shrink-0" />
                           <span>
                             {isAr
                               ? 'رابط زووم سيتوفر هنا مباشرة قبل موعد الجلسة.'
@@ -431,7 +431,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                         <button
                           type="button"
                           onClick={() => setPaymentModalBooking(b)}
-                          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-xl text-xs font-semibold transition-colors cursor-pointer min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-secondary/30 hover:bg-secondary/40 text-accent border border-secondary/50 rounded-xl text-xs font-semibold transition-colors cursor-pointer min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                         >
                           <CreditCard className="w-3.5 h-3.5 shrink-0" />
                           <span>{isAr ? 'إرسال إثبات الدفع' : 'Submit Payment Claim'}</span>
@@ -493,7 +493,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
           onClose={() => setRescheduleModalBooking(null)}
           title={
             <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-xl bg-primary/10 text-primary">
+              <div className="p-2 rounded-xl bg-secondary/30 text-primary">
                 <Calendar className="w-5 h-5 shrink-0" />
               </div>
               <div>

@@ -294,7 +294,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
         <div className="p-5 sm:p-6 border-b border-border-subtle flex items-start justify-between gap-4 bg-surface-subtle">
           <div>
             <div className="flex items-center gap-2 mb-1 flex-wrap">
-              <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-primary/20 text-primary">
+              <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-secondary/40 text-accent">
                 {trial.reference_code}
               </span>
               <span className="text-xs font-semibold px-2 py-0.5 rounded bg-warning/15 text-warning-foreground border border-warning/30">
@@ -306,7 +306,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                     ? 'bg-success/15 text-success border border-success/30'
                     : trial.status === 'cancelled'
                     ? 'bg-destructive/15 text-destructive border border-destructive/20'
-                    : 'bg-primary/10 text-primary border border-primary/20'
+                    : 'bg-secondary/30 text-primary border border-secondary/50'
                 }`}>
                   {trial.status}
                 </span>
@@ -461,7 +461,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
             </div>
 
             {/* Dynamic Learning Plan Templates Picker */}
-            <div className="p-3.5 rounded-xl bg-primary/10 border border-primary/20 space-y-2">
+            <div className="p-3.5 rounded-xl bg-secondary/30 border border-secondary/50 space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5 text-xs font-semibold text-primary">
                   <Sparkles className="w-3.5 h-3.5" />
@@ -483,7 +483,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                       className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1 cursor-pointer ${
                         isSelected
                           ? 'bg-primary text-primary-foreground shadow-2xs font-semibold'
-                          : 'bg-surface text-foreground border border-border hover:border-primary/50'
+                          : 'bg-surface text-foreground border border-border hover:border-accent/40'
                       }`}
                     >
                       {isSelected && <Check className="w-3 h-3" />}
@@ -573,7 +573,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
           </div>
 
           {/* Section 4: Recommended Learning Plan */}
-          <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 space-y-3">
+          <div className="p-4 rounded-xl bg-secondary/30 border border-secondary/50 space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-primary font-semibold text-xs uppercase tracking-wider">
                 <GraduationCap className="w-4 h-4" />

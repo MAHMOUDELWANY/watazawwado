@@ -125,7 +125,7 @@ export default function TodayPage() {
             <h1 className="text-2xl font-serif font-semibold tracking-tight text-foreground">
               Today
             </h1>
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/15 text-primary">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary/30 text-accent">
               <Clock className="w-3 h-3" />
               <span>Cairo Time (UTC+2/3)</span>
             </span>
@@ -142,7 +142,7 @@ export default function TodayPage() {
             className="inline-flex items-center gap-2 px-3.5 py-2 bg-surface hover:bg-surface-subtle border border-border text-foreground rounded-xl text-xs font-medium transition-colors shadow-2xs"
             title="Refresh schedule"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-primary' : 'opacity-70'}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-accent' : 'opacity-70'}`} />
             <span>{refreshing ? 'Refreshing...' : 'Refresh'}</span>
           </button>
         </div>
@@ -254,7 +254,7 @@ export default function TodayPage() {
 
             {lessons.length === 0 ? (
               <div className="bg-surface border border-border rounded-2xl p-12 flex flex-col items-center justify-center text-center shadow-2xs">
-                <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-3">
+                <div className="w-12 h-12 rounded-2xl bg-secondary/30 text-accent flex items-center justify-center mb-3">
                   <CalendarIcon className="w-6 h-6" />
                 </div>
                 <h3 className="text-base font-serif font-semibold mb-1 text-foreground">
@@ -289,7 +289,7 @@ export default function TodayPage() {
           <div className="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Link
               to="/dashboard/trials"
-              className="p-5 rounded-2xl bg-surface border border-border hover:border-primary/50 shadow-2xs hover:shadow-xs transition-all group block"
+              className="p-5 rounded-2xl bg-surface border border-border hover:border-accent/40 shadow-2xs hover:shadow-xs transition-all group block"
             >
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2.5">
@@ -309,11 +309,11 @@ export default function TodayPage() {
 
             <Link
               to="/dashboard/leads"
-              className="p-5 rounded-2xl bg-surface border border-border hover:border-primary/50 shadow-2xs hover:shadow-xs transition-all group block"
+              className="p-5 rounded-2xl bg-surface border border-border hover:border-accent/40 shadow-2xs hover:shadow-xs transition-all group block"
             >
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-xl bg-primary/10 text-primary">
+                  <div className="p-2 rounded-xl bg-secondary/30 text-primary">
                     <UserPlus className="w-4 h-4" />
                   </div>
                   <h3 className="font-serif font-medium text-sm text-foreground">
@@ -363,7 +363,7 @@ function NextLessonSpotlight({
   const startLink = lesson.zoom_host_url || lesson.zoom_meeting_link || '';
 
   return (
-    <div className="relative overflow-hidden bg-primary/5 dark:bg-primary/10 border border-primary/30 rounded-2xl p-6 shadow-xs">
+    <div className="relative overflow-hidden bg-secondary/20 dark:bg-secondary/30 border border-secondary/60 rounded-2xl p-6 shadow-xs">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-2 flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
@@ -482,7 +482,7 @@ function TodayLessonRow({
           ? 'bg-success/10 border-success/40 shadow-2xs'
           : isStartingSoon
           ? 'bg-warning/10 border-warning/30 shadow-2xs'
-          : 'bg-surface border-border shadow-2xs hover:border-primary/50'
+          : 'bg-surface border-border shadow-2xs hover:border-accent/40'
         }
       `}
     >
@@ -511,7 +511,7 @@ function TodayLessonRow({
           )}
 
           {lesson.is_free_trial && (
-            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-primary/15 text-primary">
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-secondary/30 text-accent">
               Trial
             </span>
           )}
@@ -555,7 +555,7 @@ function TodayLessonRow({
           {!isInProgress && !isStartingSoon && !isCancelled && !isCompleted && !isNoShow && !isNeedsOutcome && (
             <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
               lesson.status === 'confirmed' ? 'bg-success/15 text-success border border-success/30' :
-              lesson.status === 'rescheduled' ? 'bg-primary/10 text-primary border border-primary/20' :
+              lesson.status === 'rescheduled' ? 'bg-secondary/30 text-primary border border-secondary/50' :
               'bg-surface-subtle text-muted-foreground border border-border-subtle'
             }`}>
               {lesson.status || 'Status unavailable'}

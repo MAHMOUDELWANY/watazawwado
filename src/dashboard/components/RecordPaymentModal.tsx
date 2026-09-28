@@ -125,7 +125,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
         <div className="px-6 py-5 border-b border-border flex items-center justify-between bg-surface-subtle/50">
           <div>
             <h2 id="record-payment-title" className="text-lg font-serif font-semibold text-foreground flex items-center gap-2">
-              <DollarSign className="w-5 h-5 text-primary" />
+              <DollarSign className="w-5 h-5 text-accent" />
               Record Manual Payment
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">

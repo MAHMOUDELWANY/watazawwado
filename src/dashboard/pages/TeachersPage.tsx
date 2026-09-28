@@ -74,7 +74,7 @@ export default function TeachersPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <RefreshCw className="w-8 h-8 animate-spin text-primary opacity-60" />
+        <RefreshCw className="w-8 h-8 animate-spin text-accent opacity-60" />
       </div>
     );
   }
@@ -85,7 +85,7 @@ export default function TeachersPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">
+            <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-secondary/30 text-primary border border-secondary/50">
               Super Admin
             </span>
             <h1 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-foreground">
@@ -108,7 +108,7 @@ export default function TeachersPage() {
 
       {/* Security & Provisioning Note */}
       <div className="bg-surface-subtle border border-border rounded-2xl p-4 flex items-start gap-3">
-        <ShieldCheck className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+        <ShieldCheck className="w-5 h-5 text-accent shrink-0 mt-0.5" />
         <div className="text-xs text-muted-foreground leading-relaxed">
           <p className="font-semibold text-foreground">Authoritative Access Control</p>
           <p className="mt-0.5">
@@ -147,7 +147,7 @@ export default function TeachersPage() {
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/15 text-primary font-serif font-bold text-base flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-secondary/30 text-accent font-serif font-bold text-base flex items-center justify-center">
                   {t.display_name.charAt(0)}
                 </div>
                 <div>
@@ -159,7 +159,7 @@ export default function TeachersPage() {
               </div>
               <div className="flex flex-col items-end gap-1">
                 <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider ${
-                  t.role === 'super_admin' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
+                  t.role === 'super_admin' ? 'bg-secondary/30 text-primary' : 'bg-muted text-muted-foreground'
                 }`}>
                   {t.role === 'super_admin' ? 'Super Admin' : 'Teacher'}
                 </span>
@@ -196,7 +196,7 @@ export default function TeachersPage() {
                 to={`/dashboard/students?teacher=${encodeURIComponent(t.email)}`}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-surface-subtle hover:bg-surface border border-border text-foreground transition-colors"
               >
-                <Users className="w-3.5 h-3.5 text-primary" />
+                <Users className="w-3.5 h-3.5 text-accent" />
                 <span>View Assigned Students</span>
               </Link>
 

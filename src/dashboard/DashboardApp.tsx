@@ -117,7 +117,7 @@ export function DashboardApp() {
     return (
       <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-6">
         <div className="max-w-md w-full bg-surface border border-border rounded-2xl p-8 shadow-sm text-center">
-          <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4">
+          <div className="w-14 h-14 rounded-2xl bg-secondary/30 text-accent flex items-center justify-center mx-auto mb-4">
             <ShieldCheck className="w-7 h-7" />
           </div>
           <h1 className="text-xl font-serif font-semibold text-foreground mb-2">Teacher Workspace</h1>
@@ -196,7 +196,7 @@ export function DashboardApp() {
         {/* Workspace Brand Header */}
         <div className="h-16 flex items-center justify-between px-5 border-b border-border">
           <Link to="/" className="flex items-center gap-2.5 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg p-1">
-            <div className="w-8 h-8 rounded-xl bg-primary/15 text-primary flex items-center justify-center font-serif font-bold text-base transition-transform group-hover:scale-105 border border-primary/20">
+            <div className="w-8 h-8 rounded-xl bg-brand/10 text-brand border border-brand/20 flex items-center justify-center font-serif font-bold text-base transition-transform group-hover:scale-105">
               و
             </div>
             <div>
@@ -237,12 +237,12 @@ export function DashboardApp() {
                 className={`
                   flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-base touch-manipulation min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
                   ${isActive 
-                    ? 'bg-primary/15 text-primary dark:bg-primary/20 font-semibold shadow-2xs' 
+                    ? 'bg-secondary/30 text-accent dark:bg-primary/20 font-semibold shadow-2xs' 
                     : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
                   }
                 `}
               >
-                <item.icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-primary' : 'opacity-70'}`} />
+                <item.icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-accent' : 'opacity-70'}`} />
                 <span>{item.name}</span>
               </Link>
             );
@@ -253,7 +253,7 @@ export function DashboardApp() {
         <div className="p-3 border-t border-border space-y-2">
           {/* Teacher Profile Card */}
           <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-surface-subtle border border-border">
-            <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold text-xs shrink-0">
+            <div className="w-8 h-8 rounded-full bg-secondary/40 text-accent flex items-center justify-center font-semibold text-xs shrink-0">
               {user?.email?.charAt(0).toUpperCase() || 'M'}
             </div>
             <div className="flex-1 min-w-0">
@@ -263,7 +263,7 @@ export function DashboardApp() {
               <p className="text-[10px] text-muted-foreground truncate">{user?.email}</p>
             </div>
             <span className={`text-[10px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0 ${
-              isSuperAdmin ? 'bg-primary/15 text-primary font-bold' : 'bg-primary/10 text-primary'
+              isSuperAdmin ? 'bg-secondary/30 text-accent font-bold' : 'bg-secondary/30 text-primary'
             }`}>
               {isSuperAdmin ? 'Admin' : 'Teacher'}
             </span>

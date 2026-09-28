@@ -107,7 +107,7 @@ export default function UpcomingPage() {
             className="inline-flex items-center gap-2 px-3.5 py-2 bg-surface hover:bg-surface-subtle border border-border text-foreground rounded-xl text-xs font-medium transition-colors shadow-2xs"
             title="Refresh upcoming schedule"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-primary' : 'opacity-70'}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-accent' : 'opacity-70'}`} />
             <span>{refreshing ? 'Refreshing...' : 'Refresh'}</span>
           </button>
         </div>
@@ -141,7 +141,7 @@ export default function UpcomingPage() {
         </div>
       ) : sortedDateKeys.length === 0 ? (
         <div className="bg-surface border border-border rounded-2xl p-12 flex flex-col items-center justify-center text-center shadow-2xs">
-          <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-3">
+          <div className="w-12 h-12 rounded-2xl bg-secondary/30 text-accent flex items-center justify-center mb-3">
             <CalendarIcon className="w-6 h-6" />
           </div>
           <h3 className="text-base font-serif font-semibold mb-1 text-foreground">
@@ -216,7 +216,7 @@ function UpcomingLessonRow({
   const hasStartLink = Boolean(lesson.zoom_host_url || lesson.zoom_meeting_link);
 
   return (
-    <div className="bg-surface border border-border rounded-2xl p-4 sm:p-5 shadow-2xs hover:border-primary/50 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="bg-surface border border-border rounded-2xl p-4 sm:p-5 shadow-2xs hover:border-accent/40 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       {/* Time & Duration */}
       <div className="flex items-center sm:block gap-3 shrink-0 sm:w-36">
         <div className="font-semibold text-lg tracking-tight text-foreground">
@@ -242,14 +242,14 @@ function UpcomingLessonRow({
           )}
 
           {lesson.is_free_trial && (
-            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-primary/15 text-primary">
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-secondary/30 text-accent">
               Trial
             </span>
           )}
 
           <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
             lesson.status === 'confirmed' ? 'bg-success/15 text-success border border-success/30' :
-            lesson.status === 'rescheduled' ? 'bg-primary/10 text-primary border border-primary/20' :
+            lesson.status === 'rescheduled' ? 'bg-secondary/30 text-primary border border-secondary/50' :
             'bg-surface-subtle text-muted-foreground border border-border-subtle'
           }`}>
             {lesson.status || 'Status unavailable'}

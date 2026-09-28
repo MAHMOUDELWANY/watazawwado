@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { BookOpen, Globe, Sparkles, Check, ArrowRight, Video, Calendar, ShieldCheck } from 'lucide-react';
 import { Language } from '../types';
@@ -190,7 +190,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 sm:mb-16">
           <div className="max-w-2xl">
             {/* Index Tag */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/15 dark:bg-primary/25 border border-primary/30 text-primary-hover dark:text-[#A3BF96] text-xs font-semibold tracking-wide mb-4">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/15 dark:bg-primary/25 border border-secondary/60 text-primary-hover dark:text-primary text-xs font-semibold tracking-wide mb-4">
               <span className="font-mono text-[11px] font-bold">02</span>
               <span>{isEn ? 'Your Choice of Discipline' : 'اختيارك الشخصي'}</span>
             </div>
@@ -199,12 +199,12 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
               {isEn ? (
                 <>
                   Choose the subject you need.{' '}
-                  <span className="text-primary dark:text-[#A3BF96]">Switch when your goals change.</span>
+                  <span className="text-primary dark:text-primary">Switch when your goals change.</span>
                 </>
               ) : (
                 <>
                   اختر التخصص الذي تريده.{' '}
-                  <span className="text-primary dark:text-[#A3BF96]">وغيّر تركيزك متى تطورت أهدافك.</span>
+                  <span className="text-primary dark:text-primary">وغيّر تركيزك متى تطورت أهدافك.</span>
                 </>
               )}
             </h2>
@@ -233,18 +233,18 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
                 className={`p-6 rounded-2xl sm:rounded-3xl border transition-all cursor-pointer flex flex-col justify-between ${
                   isSelected
                     ? 'bg-background dark:bg-surface-subtle border-primary shadow-lg shadow-primary/15 ring-2 ring-primary/20'
-                    : 'bg-white dark:bg-surface border-border dark:border-border hover:border-primary/60 shadow-xs'
+                    : 'bg-white dark:bg-surface border-border dark:border-border hover:border-accent/50 shadow-xs'
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between text-xs font-mono text-muted-foreground dark:text-muted-foreground mb-4">
                     <span>{pillar.number}</span>
-                    <span className="text-[11px] text-primary font-medium bg-primary/10 px-2.5 py-0.5 rounded-full">
+                    <span className="text-[11px] text-primary font-medium bg-secondary/30 px-2.5 py-0.5 rounded-full">
                       {pillar.status}
                     </span>
                   </div>
 
-                  <div className="text-xs font-semibold text-primary dark:text-[#A3BF96] mb-1">
+                  <div className="text-xs font-semibold text-primary dark:text-primary mb-1">
                     {pillar.badge}
                   </div>
 
@@ -258,7 +258,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
                 </div>
 
                 <div className="pt-4 border-t border-border/60 dark:border-border/60 flex items-center justify-between">
-                  <span className="text-xs font-semibold text-primary dark:text-[#A3BF96]">
+                  <span className="text-xs font-semibold text-primary dark:text-primary">
                     {isSelected ? (isEn ? '● Active Focus' : '● التخصص المختار') : (isEn ? 'Select Focus' : 'اختر المادة')}
                   </span>
                   <div
@@ -326,10 +326,10 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
                   className={`w-full text-left sm:text-start p-4 rounded-xl border transition-all cursor-pointer flex items-start gap-3 ${
                     isLvlSelected
                       ? 'bg-white dark:bg-background border-primary shadow-sm'
-                      : 'bg-transparent border-transparent hover:bg-white/60 dark:hover:bg-[#29232F]'
+                      : 'bg-transparent border-transparent hover:bg-white/60 dark:hover:bg-surface-subtle'
                   }`}
                 >
-                  <span className="font-mono text-xs font-bold text-primary dark:text-[#A3BF96] mt-0.5">
+                  <span className="font-mono text-xs font-bold text-primary dark:text-primary mt-0.5">
                     0{idx + 1}
                   </span>
                   <div className="flex-1">
@@ -353,7 +353,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
                 <div className="text-xs font-semibold text-muted-foreground dark:text-muted-foreground">
                   {isEn ? 'Selected Module Specification' : 'تفاصيل الوحدة المختارة'}
                 </div>
-                <span className="text-[10px] font-mono text-primary dark:text-[#A3BF96] bg-primary/10 px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
+                <span className="text-[10px] font-mono text-primary dark:text-primary bg-secondary/30 px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                   {isEn ? 'Ready in Free Trial' : 'جاهز للجلسة التجريبية'}
                 </span>
@@ -363,8 +363,8 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
               <div className="py-4 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 my-4">
                 
                 {/* Learner Node */}
-                <div className="w-full sm:w-44 p-4 rounded-xl bg-[#FAF7F2] dark:bg-[#29232F] border border-border dark:border-border text-center">
-                  <div className="w-8 h-8 rounded-full bg-primary/15 text-primary mx-auto mb-2 flex items-center justify-center font-bold text-xs">
+                <div className="w-full sm:w-44 p-4 rounded-xl bg-surface-warm dark:bg-surface-subtle border border-border dark:border-border text-center">
+                  <div className="w-8 h-8 rounded-full bg-secondary/30 text-accent mx-auto mb-2 flex items-center justify-center font-bold text-xs">
                     You
                   </div>
                   <div className="font-semibold text-xs text-foreground dark:text-foreground">
@@ -390,8 +390,8 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
                 </div>
 
                 {/* Teacher Node */}
-                <div className="w-full sm:w-44 p-4 rounded-xl bg-[#FAF7F2] dark:bg-[#29232F] border border-border dark:border-border text-center">
-                  <div className="w-8 h-8 rounded-full bg-primary/15 text-primary mx-auto mb-2 flex items-center justify-center font-bold text-xs">
+                <div className="w-full sm:w-44 p-4 rounded-xl bg-surface-warm dark:bg-surface-subtle border border-border dark:border-border text-center">
+                  <div className="w-8 h-8 rounded-full bg-secondary/30 text-accent mx-auto mb-2 flex items-center justify-center font-bold text-xs">
                     M
                   </div>
                   <div className="font-semibold text-xs text-foreground dark:text-foreground">
@@ -406,7 +406,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
               </div>
 
               {/* Module Description */}
-              <div className="p-4 rounded-xl bg-background dark:bg-[#29232F] border border-border/80 dark:border-border mt-4">
+              <div className="p-4 rounded-xl bg-background dark:bg-surface-subtle border border-border/80 dark:border-border mt-4">
                 <div className="text-xs font-semibold text-foreground dark:text-foreground mb-1">
                   {currentLevel.name}
                 </div>

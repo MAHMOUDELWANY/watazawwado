@@ -58,7 +58,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
                 hidden: { opacity: 0, x: isEn ? -12 : 12 },
                 visible: { opacity: 1, x: 0, transition: { duration: 0.4 } },
               }}
-              className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary mb-5"
+              className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full bg-secondary/30 border border-secondary/50 text-xs font-semibold text-primary mb-5"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-primary" />
               <span>{isEn ? 'Direct 1-on-1 Mentorship' : ARABIC_TRANSLATIONS.hero.eyebrow}</span>
@@ -143,7 +143,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
               className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full pt-4 border-t border-border/80"
             >
               <div className="flex items-start gap-2">
-                <GraduationCap className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                <GraduationCap className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                 <div>
                   <div className="text-xs font-semibold text-foreground">
                     {isEn ? 'Al-Azhar Degree' : 'خريج الأزهر'}
@@ -155,7 +155,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
               </div>
 
               <div className="flex items-start gap-2">
-                <Languages className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                <Languages className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                 <div>
                   <div className="text-xs font-semibold text-foreground">
                     {isEn ? 'IELTS C1 Certified' : 'إتقان الإنجليزية C1'}
@@ -167,7 +167,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
               </div>
 
               <div className="flex items-start gap-2">
-                <UserCheck className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                <UserCheck className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                 <div>
                   <div className="text-xs font-semibold text-foreground">
                     {isEn ? 'Always 1-on-1' : 'تعليم فردي دائماً'}
@@ -179,7 +179,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
               </div>
 
               <div className="flex items-start gap-2">
-                <Clock className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                <Clock className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                 <div>
                   <div className="text-xs font-semibold text-foreground">
                     {isEn ? 'Global Timezones' : 'توقيتات مرنة'}

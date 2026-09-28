@@ -91,7 +91,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
             {/* Primary WhatsApp Card */}
             <div className="p-7 rounded-2xl bg-surface border border-border shadow-2xs hover:border-primary/40 transition-all">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                <div className="w-11 h-11 rounded-xl bg-secondary/30 text-accent flex items-center justify-center">
                   <MessageCircle className="w-5 h-5" />
                 </div>
                 <div>
@@ -124,7 +124,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
             {/* Email Card */}
             <div className="p-6 rounded-2xl bg-surface border border-border shadow-2xs">
               <div className="flex items-center gap-3 mb-2">
-                <Mail className="w-5 h-5 text-primary" />
+                <Mail className="w-5 h-5 text-accent" />
                 <h4 className="font-serif text-base font-medium text-foreground">
                   {isEn ? 'Email Correspondence' : 'المراسلة عبر البريد الإلكتروني'}
                 </h4>
@@ -145,7 +145,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
             {/* Policy Recap */}
             <div className="p-5 rounded-xl bg-surface border border-border text-xs text-muted-foreground space-y-2">
               <div className="flex items-center gap-2 font-semibold text-foreground">
-                <Clock className="w-4 h-4 text-primary" />
+                <Clock className="w-4 h-4 text-accent" />
                 <span>{isEn ? 'Core Scheduling Policy' : 'سياسة المواعيد الأساسية'}</span>
               </div>
               <p>
@@ -161,7 +161,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
           <div className="lg:col-span-7 bg-surface border border-border rounded-2xl p-7 sm:p-9 shadow-xs">
             {formSubmitted ? (
               <div className="py-12 text-center space-y-4">
-                <div className="w-14 h-14 rounded-full bg-primary/15 text-primary flex items-center justify-center mx-auto">
+                <div className="w-14 h-14 rounded-full bg-secondary/30 text-accent flex items-center justify-center mx-auto">
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
                 <h3 className="font-serif text-2xl font-medium text-foreground">

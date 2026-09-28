@@ -50,7 +50,7 @@ const STAGE_CONFIG: Record<LeadStatus, { label: string; color: string; descripti
   },
   lead: {
     label: 'New Lead',
-    color: 'bg-primary/10 text-primary border border-primary/20',
+    color: 'bg-secondary/30 text-primary border border-secondary/50',
     description: 'Inquiry received via website form or initial message'
   },
   contacted: {
@@ -65,7 +65,7 @@ const STAGE_CONFIG: Record<LeadStatus, { label: string; color: string; descripti
   },
   trial_completed: {
     label: 'Trial Completed',
-    color: 'bg-primary/15 text-primary border border-primary/30',
+    color: 'bg-secondary/30 text-accent border border-secondary/60',
     description: 'Attended free trial mini-lesson and level evaluated'
   },
   potential_student: {
@@ -80,7 +80,7 @@ const STAGE_CONFIG: Record<LeadStatus, { label: string; color: string; descripti
   },
   returning_student: {
     label: 'Returning Student',
-    color: 'bg-primary/10 text-primary border border-primary/25',
+    color: 'bg-secondary/30 text-primary border border-primary/25',
     description: 'Re-enrolled after a break or completing a previous cycle'
   },
   lost: {
@@ -190,7 +190,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                 {lead.learner_type === 'child' ? 'Child Learner' : 'Adult Learner'}
               </span>
               {lead.source && (
-                <span className="text-xs text-primary font-mono px-2 py-0.5 rounded bg-primary/10 border border-primary/20">
+                <span className="text-xs text-primary font-mono px-2 py-0.5 rounded bg-secondary/30 border border-secondary/50">
                   Source: {lead.source}
                 </span>
               )}
@@ -308,7 +308,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                     onClick={() => setCurrentStatus(statusKey)}
                     className={`p-2 rounded-xl text-xs text-left border transition-all cursor-pointer ${
                       isSelected
-                        ? 'border-primary bg-primary/10 text-primary font-semibold shadow-2xs'
+                        ? 'border-primary bg-secondary/30 text-primary font-semibold shadow-2xs'
                         : 'border-border bg-surface text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
                     }`}
                   >

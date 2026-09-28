@@ -86,7 +86,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
             <div className="pt-6 grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="p-6 rounded-xl bg-surface border border-border shadow-2xs">
                 <div className="flex items-center gap-2 text-primary font-semibold text-xs uppercase tracking-wider mb-3">
-                  <Check className="w-4 h-4 text-primary" />
+                  <Check className="w-4 h-4 text-accent" />
                   <span>{isEn ? 'What You Can Count On' : ARABIC_TRANSLATIONS.about.whatIAm}</span>
                 </div>
                 <ul className="space-y-2.5 text-xs sm:text-sm text-muted-foreground">
@@ -107,7 +107,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
 
               <div className="p-6 rounded-xl bg-surface border border-border shadow-2xs">
                 <div className="flex items-center gap-2 text-primary font-semibold text-xs uppercase tracking-wider mb-3">
-                  <Shield className="w-4 h-4 text-primary" />
+                  <Shield className="w-4 h-4 text-accent" />
                   <span>{isEn ? 'My Teaching Commitments' : 'ثوابت التدريس المعتمدة'}</span>
                 </div>
                 <ul className="space-y-2.5 text-xs sm:text-sm text-muted-foreground">
@@ -169,7 +169,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
 
             {/* Timezone Note */}
             <div className="p-4 rounded-xl bg-surface border border-border flex items-center gap-3 text-xs text-muted-foreground shadow-2xs">
-              <Clock className="w-4 h-4 text-primary shrink-0" />
+              <Clock className="w-4 h-4 text-accent shrink-0" />
               <span>
                 {isEn
                   ? 'Based in Egypt (EET) • Flexible lesson scheduling for North American, European & Australian timezones.'

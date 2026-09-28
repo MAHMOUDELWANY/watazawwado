@@ -154,7 +154,7 @@ export function StudentPaymentClaimModal({
       maxWidth="2xl"
       title={
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-xl bg-primary/10 text-primary">
+          <div className="p-2 rounded-xl bg-secondary/30 text-primary">
             <CreditCard className="w-5 h-5" />
           </div>
           <div>
@@ -171,7 +171,7 @@ export function StudentPaymentClaimModal({
       <div className="space-y-6 text-foreground text-start">
         {/* Policy Notice */}
         <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle flex items-start gap-3 text-xs leading-relaxed text-muted-foreground">
-          <HelpCircle className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+          <HelpCircle className="w-4 h-4 text-accent shrink-0 mt-0.5" />
           <div>
             <span className="font-semibold text-foreground block mb-0.5">
               {isAr ? 'التحقق اليدوي المباشر مع الأستاذ محمود' : 'Manual Teacher Verification'}
@@ -237,7 +237,7 @@ export function StudentPaymentClaimModal({
                       className={`
                         p-3 rounded-xl border text-start transition-all cursor-pointer min-h-[56px] flex flex-col justify-between
                         ${isSelected
-                          ? 'border-primary bg-primary/10 text-primary ring-1 ring-primary/30'
+                          ? 'border-primary bg-secondary/30 text-primary ring-1 ring-primary/30'
                           : 'border-border bg-surface hover:bg-surface-subtle text-foreground'
                         }
                       `}
@@ -258,7 +258,7 @@ export function StudentPaymentClaimModal({
                 <span className="text-xs font-bold text-foreground">
                   {isAr ? activeOption.nameArabic : activeOption.name}
                 </span>
-                <span className="text-[11px] px-2 py-0.5 rounded-md bg-primary/15 text-primary font-medium">
+                <span className="text-[11px] px-2 py-0.5 rounded-md bg-secondary/30 text-accent font-medium">
                   {isAr ? activeOption.badgeArabic : activeOption.badge}
                 </span>
               </div>

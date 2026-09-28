@@ -334,7 +334,7 @@ export default function StudentDetailPage() {
                   <span>Child {guardian?.parent_name ? `(Parent: ${guardian.parent_name})` : ''}</span>
                 </span>
               ) : student.learner_type === 'adult' ? (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary/30 text-primary border border-secondary/50">
                   <User className="w-3 h-3" />
                   <span>Adult Learner</span>
                 </span>
@@ -365,7 +365,7 @@ export default function StudentDetailPage() {
               href={`mailto:${student.email}`}
               className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium rounded-xl bg-surface border border-border text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
             >
-              <Mail className="w-3.5 h-3.5 text-primary" />
+              <Mail className="w-3.5 h-3.5 text-accent" />
               <span>Email</span>
             </a>
           )}
@@ -431,7 +431,7 @@ export default function StudentDetailPage() {
           {/* Identity & Learning Profile Card */}
           <div className="bg-surface rounded-2xl p-6 border border-border shadow-2xs space-y-5">
             <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-              <User className="w-4 h-4 text-primary" />
+              <User className="w-4 h-4 text-accent" />
               <span>Learner Profile & Contacts</span>
             </h2>
 
@@ -546,11 +546,11 @@ export default function StudentDetailPage() {
           <div className="bg-surface rounded-2xl p-6 border border-border shadow-2xs space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-primary" />
+                <Calendar className="w-4 h-4 text-accent" />
                 <span>Next Scheduled Lesson</span>
               </h2>
               {next_lesson && (
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 font-medium">
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-secondary/30 text-primary border border-secondary/50 font-medium">
                   Upcoming
                 </span>
               )}
@@ -582,7 +582,7 @@ export default function StudentDetailPage() {
                 {next_lesson.zoom_join_url && (
                   <div className="pt-2 border-t border-border-subtle flex items-center justify-between">
                     <span className="text-xs text-muted-foreground flex items-center gap-1.5">
-                      <Video className="w-3.5 h-3.5 text-primary" />
+                      <Video className="w-3.5 h-3.5 text-accent" />
                       <span>Zoom classroom is active</span>
                     </span>
                     <a
@@ -612,7 +612,7 @@ export default function StudentDetailPage() {
 
           {/* Trial & Assessment Context (if available) */}
           {trial_context && (
-            <div className="bg-surface rounded-2xl p-6 border border-primary/20 shadow-2xs space-y-4">
+            <div className="bg-surface rounded-2xl p-6 border border-secondary/50 shadow-2xs space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-accent" />
@@ -672,7 +672,7 @@ export default function StudentDetailPage() {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                  <BookOpen className="w-4 h-4 text-primary" />
+                  <BookOpen className="w-4 h-4 text-accent" />
                   <span>Lesson History & Attendance</span>
                 </h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
@@ -705,7 +705,7 @@ export default function StudentDetailPage() {
                             ? 'bg-destructive/15 text-destructive border border-destructive/30'
                             : b.status === 'rescheduled'
                             ? 'bg-warning/15 text-warning-foreground border border-warning/30'
-                            : 'bg-primary/10 text-primary border border-primary/20'
+                            : 'bg-secondary/30 text-primary border border-secondary/50'
                         }`}>
                           {b.status ? b.status.charAt(0).toUpperCase() + b.status.slice(1) : 'Scheduled'}
                         </span>
@@ -752,13 +752,13 @@ export default function StudentDetailPage() {
           <div className="bg-surface rounded-2xl p-6 border border-border shadow-2xs space-y-5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <UserCheck className="w-4 h-4 text-primary" />
+                <UserCheck className="w-4 h-4 text-accent" />
                 <h2 className="text-sm font-semibold uppercase tracking-wider text-foreground">
                   Faculty Assignment
                 </h2>
               </div>
               {isSuperAdmin && (
-                <span className="text-[10px] px-2 py-0.5 rounded bg-primary/15 text-primary border border-primary/25 font-bold uppercase tracking-wider">
+                <span className="text-[10px] px-2 py-0.5 rounded bg-secondary/30 text-accent border border-primary/25 font-bold uppercase tracking-wider">
                   Admin Control
                 </span>
               )}

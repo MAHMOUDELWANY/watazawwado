@@ -94,7 +94,7 @@ export const MultiLessonPlan: React.FC<Props> = ({ catalog, serviceId, duration,
       <button type="button" aria-pressed={count === 1} onClick={() => onCount(1)} className="rounded-xl border border-border p-3 mr-2">1 lesson — book a single time</button>
       {options.map(row => {
         const details = catalogPriceSummary(single, row)!;
-        return <button key={row.id} type="button" aria-pressed={count === row.lesson_count} onClick={() => onCount(row.lesson_count)} className={`block w-full text-left rounded-xl border p-3 ${count === row.lesson_count ? 'border-primary bg-primary/10' : 'border-border'}`}>
+        return <button key={row.id} type="button" aria-pressed={count === row.lesson_count} onClick={() => onCount(row.lesson_count)} className={`block w-full text-left rounded-xl border p-3 ${count === row.lesson_count ? 'border-primary bg-secondary/30' : 'border-border'}`}>
           <strong>{row.lesson_count} lessons</strong> · Regular total: {money(details.regular, details.currency)} · {details.saving > 0 && <strong>Save {money(details.saving, details.currency)} · </strong>}Total: {money(details.total, details.currency)} · {money(details.perLesson, details.currency)} / lesson
         </button>;
       })}
@@ -190,7 +190,7 @@ export const MultiLessonPlan: React.FC<Props> = ({ catalog, serviceId, duration,
       {period && <p aria-live="polite">{selectedInPeriod.length} of {count} lessons selected</p>}
       {availableDays.map(day => <div key={day.dateString} className="rounded-xl border border-border p-3"><h3>{day.dayOfWeek}, {day.monthName} {day.dayOfMonth}</h3><div className="flex flex-wrap gap-2 mt-2">{day.slots.filter(slot => slot.available).map(slot => {
         const chosen = selectedInPeriod.some(item => item.date === day.dateString && item.slot.id === slot.id);
-        return <button key={slot.id} type="button" aria-pressed={chosen} className={`rounded-lg border p-2 ${chosen ? 'border-primary bg-primary/10' : 'border-border'}`} onClick={() => {
+        return <button key={slot.id} type="button" aria-pressed={chosen} className={`rounded-lg border p-2 ${chosen ? 'border-primary bg-secondary/30' : 'border-border'}`} onClick={() => {
           const remaining = selectedInPeriod.filter(item => item.date !== day.dateString);
           onSelected(chosen ? remaining : remaining.length < count ? [...remaining, { date: day.dateString, slot }] : selectedInPeriod);
         }}>{slot.timeDisplay}</button>;

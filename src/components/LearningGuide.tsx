@@ -108,7 +108,7 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
             {/* Header */}
             <div className="flex items-center justify-between p-4 bg-surface-subtle border-b border-border">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-primary" />
+                <Sparkles className="w-5 h-5 text-accent" />
                 <h3 className="font-serif font-medium text-foreground">
                   {isEn ? 'AI Learning Guide' : 'المرشد الذكي'}
                 </h3>
@@ -146,7 +146,7 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
               ))}
               {isLoading && (
                 <div className="flex gap-3 flex-row">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-primary text-primary-foreground">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-primary text-accent-foreground">
                     <Bot className="w-4 h-4" />
                   </div>
                   <div className="px-4 py-2.5 rounded-2xl bg-surface border border-border rounded-tl-sm shadow-sm">

@@ -84,7 +84,7 @@ export default function TrialsPage() {
             <h1 className="text-2xl font-serif font-bold text-foreground">
               Trial Sessions
             </h1>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-primary/15 text-primary font-medium">
+            <span className="text-xs px-2.5 py-0.5 rounded-full bg-secondary/30 text-accent font-medium">
               Free Trial Engine
             </span>
           </div>
@@ -104,7 +104,7 @@ export default function TrialsPage() {
             disabled={refreshing || loading}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface border border-border text-xs font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer shadow-2xs"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-primary' : 'opacity-70'}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-accent' : 'opacity-70'}`} />
             <span>Refresh</span>
           </button>
         </div>
@@ -147,7 +147,7 @@ export default function TrialsPage() {
             <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
               Total Inquired Trials
             </span>
-            <Calendar className="w-4 h-4 text-primary" />
+            <Calendar className="w-4 h-4 text-accent" />
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-2xl font-semibold text-foreground">
@@ -250,11 +250,11 @@ export default function TrialsPage() {
               <div
                 key={trial.id}
                 onClick={() => setSelectedTrial(trial)}
-                className="p-4 sm:p-5 rounded-2xl bg-surface border border-border hover:border-primary/60 shadow-2xs hover:shadow-sm transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                className="p-4 sm:p-5 rounded-2xl bg-surface border border-border hover:border-accent/50 shadow-2xs hover:shadow-sm transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4"
               >
                 <div className="space-y-1.5 flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-primary/15 text-primary">
+                    <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-secondary/30 text-accent">
                       {trial.reference_code}
                     </span>
                     <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-warning/15 text-warning-foreground border border-warning/30">
@@ -266,7 +266,7 @@ export default function TrialsPage() {
                           ? 'bg-success/15 text-success border border-success/30'
                           : trial.status === 'cancelled'
                           ? 'bg-destructive/15 text-destructive border border-destructive/20'
-                          : 'bg-primary/10 text-primary border border-primary/20'
+                          : 'bg-secondary/30 text-primary border border-secondary/50'
                       }`}>
                         {trial.status}
                       </span>
@@ -306,7 +306,7 @@ export default function TrialsPage() {
                   {/* Cairo & Student Local Time */}
                   <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
                     <div className="flex items-center gap-1.5 font-medium text-foreground">
-                      <Clock className="w-3.5 h-3.5 text-primary" />
+                      <Clock className="w-3.5 h-3.5 text-accent" />
                       <span>
                         Cairo: {startCairo ? startCairo.toFormat('EEE, MMM d • hh:mm a') : (trial.cairo_time_display || 'Time not set')}
                       </span>
@@ -342,7 +342,7 @@ export default function TrialsPage() {
                       e.stopPropagation();
                       setSelectedTrial(trial);
                     }}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-xs font-medium transition-colors cursor-pointer border border-primary/20"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-secondary/30 hover:bg-secondary/40 text-accent text-xs font-medium transition-colors cursor-pointer border border-secondary/50"
                   >
                     <span>{isAssessed ? 'View & Edit Plan' : 'Assess & Plan'}</span>
                     <ChevronRight className="w-3.5 h-3.5 rtl:rotate-180" />

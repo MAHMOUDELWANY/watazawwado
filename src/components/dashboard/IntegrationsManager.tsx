@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import {
   Calendar,
@@ -157,7 +157,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-border dark:border-border">
         <div>
           <h2 className="font-serif text-2xl font-medium text-foreground dark:text-foreground flex items-center gap-2.5">
-            <Layers className="w-6 h-6 text-primary" />
+            <Layers className="w-6 h-6 text-accent" />
             <span>{isEn ? 'Calendar & Classroom Integrations' : 'ربط التقويم وقاعات التدريس'}</span>
           </h2>
           <p className="text-xs text-foreground/70 dark:text-border/70 mt-1">
@@ -170,9 +170,9 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
         <button
           type="button"
           onClick={fetchStatus}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border dark:border-border bg-white dark:bg-[#231D28] text-xs font-medium hover:bg-[#EDE3D4] cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border dark:border-border bg-white dark:bg-surface text-xs font-medium hover:bg-surface-warm cursor-pointer"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-primary' : ''}`} />
+          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-accent' : ''}`} />
           <span>{isEn ? 'Refresh Status' : 'تحديث الحالة'}</span>
         </button>
       </div>
@@ -199,7 +199,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
       {/* Integration Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* Google Calendar Card */}
-        <div className="p-5 rounded-3xl bg-white dark:bg-[#231D28] border border-primary/30 shadow-xs flex flex-col justify-between">
+        <div className="p-5 rounded-3xl bg-white dark:bg-surface border border-secondary/60 shadow-xs flex flex-col justify-between">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -222,7 +222,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                   <span>{isEn ? 'Connected' : 'متصل'}</span>
                 </span>
               ) : status?.googleCalendar.isConfigured ? (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#EDE3D4] dark:bg-background text-muted-foreground dark:text-muted-foreground">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-surface-warm dark:bg-background text-muted-foreground dark:text-muted-foreground">
                   <span>{isEn ? 'Not Connected' : 'غير متصل'}</span>
                 </span>
               ) : (
@@ -240,7 +240,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
             </p>
 
             {status?.googleCalendar.isConnected && status?.googleCalendar.accountEmail ? (
-              <div className="p-2.5 rounded-xl bg-[#EDE3D4]/50 dark:bg-background text-xs space-y-1">
+              <div className="p-2.5 rounded-xl bg-surface-warm/50 dark:bg-background text-xs space-y-1">
                 <span className="text-[10px] uppercase font-semibold text-muted-foreground dark:text-muted-foreground block">
                   {isEn ? 'Connected Google Account' : 'الحساب المتصل'}
                 </span>
@@ -294,7 +294,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
         </div>
 
         {/* Zoom Classroom Card */}
-        <div className="p-5 rounded-3xl bg-white dark:bg-[#231D28] border border-primary/30 shadow-xs flex flex-col justify-between">
+        <div className="p-5 rounded-3xl bg-white dark:bg-surface border border-secondary/60 shadow-xs flex flex-col justify-between">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -314,7 +314,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
               <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold ${
                 status?.zoom.isConfigured
                   ? 'bg-green-100 dark:bg-green-950/50 text-green-800 dark:text-green-300'
-                  : 'bg-[#EDE3D4] dark:bg-background text-muted-foreground dark:text-muted-foreground'
+                  : 'bg-surface-warm dark:bg-background text-muted-foreground dark:text-muted-foreground'
               }`}>
                 {status?.zoom.isConfigured ? <CheckCircle2 className="w-3 h-3" /> : null}
                 <span>{status?.zoom.isConfigured ? (isEn ? 'Active' : 'نشط') : (isEn ? 'Offline' : 'غير متصل')}</span>
@@ -327,7 +327,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                 : 'توليد روابط غرف زووم مخصصة تلقائياً لكل جلسة مؤكدة عبر Server-to-Server OAuth.'}
             </p>
 
-            <div className="p-2.5 rounded-xl bg-[#EDE3D4]/50 dark:bg-background text-xs space-y-1">
+            <div className="p-2.5 rounded-xl bg-surface-warm/50 dark:bg-background text-xs space-y-1">
               <span className="text-[10px] uppercase font-semibold text-muted-foreground dark:text-muted-foreground block">
                 {isEn ? 'Provisioning Status' : 'حالة التوليد'}
               </span>
@@ -351,11 +351,11 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
         </div>
 
         {/* Transactional Email (Brevo) Card */}
-        <div className="p-5 rounded-3xl bg-white dark:bg-[#231D28] border border-primary/30 shadow-xs flex flex-col justify-between">
+        <div className="p-5 rounded-3xl bg-white dark:bg-surface border border-secondary/60 shadow-xs flex flex-col justify-between">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 text-primary-hover flex items-center justify-center">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 text-accent-hover flex items-center justify-center">
                   <Mail className="w-5 h-5" />
                 </div>
                 <div>
@@ -371,7 +371,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
               <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold ${
                 status?.email?.isConfigured
                   ? 'bg-green-100 dark:bg-green-950/50 text-green-800 dark:text-green-300'
-                  : 'bg-[#EDE3D4] dark:bg-background text-muted-foreground dark:text-muted-foreground'
+                  : 'bg-surface-warm dark:bg-background text-muted-foreground dark:text-muted-foreground'
               }`}>
                 {status?.email?.isConfigured ? <CheckCircle2 className="w-3 h-3" /> : null}
                 <span>{status?.email?.isConfigured ? (isEn ? 'Active' : 'نشط') : (isEn ? 'Not Configured' : 'غير مهيأ')}</span>
@@ -384,7 +384,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                 : 'إرسال تأكيدات الحجز والتذكيرات وإشعارات الدفع عبر واجهة Brevo السحابية.'}
             </p>
 
-            <div className="p-2.5 rounded-xl bg-[#EDE3D4]/50 dark:bg-background text-xs space-y-1">
+            <div className="p-2.5 rounded-xl bg-surface-warm/50 dark:bg-background text-xs space-y-1">
               <span className="text-[10px] uppercase font-semibold text-muted-foreground dark:text-muted-foreground block">
                 {isEn ? 'Sender Identity' : 'هوية المرسل'}
               </span>
@@ -407,10 +407,10 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
       </div>
 
       {/* Timezone & DST Live Audit Matrix */}
-      <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-[#231D28] border border-primary/30 shadow-xs space-y-4">
+      <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-surface border border-secondary/60 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-3 border-b border-border dark:border-border">
           <div className="flex items-center gap-2">
-            <Globe className="w-5 h-5 text-primary" />
+            <Globe className="w-5 h-5 text-accent" />
             <h3 className="font-serif text-base font-semibold text-foreground dark:text-foreground">
               {isEn ? 'International Timezone Matrix & DST Validator' : 'مصفوفة المناطق الزمنية والتوقيت الصيفي'}
             </h3>
@@ -426,7 +426,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
             <button
               type="button"
               onClick={handleRefreshMatrix}
-              className="px-3 py-1 rounded-xl bg-muted-foreground hover:bg-[#584960] text-white text-xs font-medium cursor-pointer"
+              className="px-3 py-1 rounded-xl bg-muted-foreground hover:bg-muted text-white text-xs font-medium cursor-pointer"
             >
               {isEn ? 'Audit Conversion' : 'تدقيق'}
             </button>
@@ -451,7 +451,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                 <th className="py-2 px-3 text-start">{isEn ? 'Cairo Equivalent' : 'توقيت القاهرة'}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#EDE3D4] dark:divide-border">
+            <tbody className="divide-y divide-border dark:divide-border">
               {matrixItems.map((item) => (
                 <tr key={item.timezone} className="hover:bg-foreground/30 dark:hover:bg-background/50">
                   <td className="py-2.5 px-3 font-medium text-foreground dark:text-foreground">
@@ -468,7 +468,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                       className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
                         item.isDstActive
                           ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300'
-                          : 'bg-[#EDE3D4] text-muted-foreground dark:bg-background dark:text-muted-foreground'
+                          : 'bg-surface-warm text-muted-foreground dark:bg-background dark:text-muted-foreground'
                       }`}
                     >
                       {item.isDstActive ? (isEn ? 'DST Active' : 'صيفي') : (isEn ? 'Standard' : 'قياسي')}
@@ -488,7 +488,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
         {/* Self-Test Suite Report */}
         <div className="pt-4 border-t border-border/50 dark:border-border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="flex items-center gap-2 text-xs text-foreground/80 dark:text-border/80">
-            <ShieldCheck className="w-4 h-4 text-primary" />
+            <ShieldCheck className="w-4 h-4 text-accent" />
             <span>
               {isEn
                 ? 'Integration & Timezone test suite verified (100% test coverage for DST shifts & 3-hour policy).'
@@ -507,7 +507,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                 type: 'success'
               });
             }}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary/20 hover:bg-primary/30 text-[#4D6A42] dark:text-[#A4C497] font-semibold text-xs transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary/20 hover:bg-primary/30 text-primary dark:text-primary font-semibold text-xs transition-colors cursor-pointer"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>{isEn ? 'Run Self-Test Suite' : 'تشغيل الفحص الآلي'}</span>

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   X,
@@ -155,12 +155,12 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
             initial={{ scale: 0.95, opacity: 0, y: 15 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 15 }}
-            className="w-full max-w-xl bg-foreground dark:bg-[#231D28] rounded-3xl border border-primary/30 shadow-2xl p-6 sm:p-7 text-foreground dark:text-foreground max-h-[90vh] overflow-y-auto"
+            className="w-full max-w-xl bg-foreground dark:bg-surface rounded-3xl border border-secondary/60 shadow-2xl p-6 sm:p-7 text-foreground dark:text-foreground max-h-[90vh] overflow-y-auto"
           >
             {/* Header */}
             <div className="flex items-center justify-between pb-4 border-b border-border dark:border-border">
               <div className="flex items-center gap-2.5">
-                <ShieldCheck className="w-5 h-5 text-primary" />
+                <ShieldCheck className="w-5 h-5 text-accent" />
                 <h3 className="font-serif text-lg sm:text-xl font-medium">
                   {isEn ? 'Manage Lesson & Integration Status' : 'إدارة الحجز وحالة المزامنة'}
                 </h3>
@@ -168,14 +168,14 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="p-1 rounded-full text-foreground/60 dark:text-border/60 hover:bg-[#EDE3D4] dark:hover:bg-[#29232F] cursor-pointer"
+                className="p-1 rounded-full text-foreground/60 dark:text-border/60 hover:bg-surface-warm dark:hover:bg-surface-subtle cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Policy Reminder */}
-            <div className="py-3 text-xs text-foreground/75 dark:text-border/75 leading-relaxed bg-[#EDE3D4]/60 dark:bg-background p-3 rounded-xl border border-primary/20 my-3">
+            <div className="py-3 text-xs text-foreground/75 dark:text-border/75 leading-relaxed bg-surface-warm/60 dark:bg-background p-3 rounded-xl border border-secondary/50 my-3">
               <strong className="text-foreground dark:text-foreground">
                 {isEn ? 'Cancellation & Rescheduling Rule: ' : 'سياسة التعديل والإلغاء: '}
               </strong>
@@ -200,7 +200,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                         setRefCode(b.reference);
                         handleSearch(b.reference);
                       }}
-                      className="px-2.5 py-1.5 rounded-lg border border-border dark:border-border bg-white dark:bg-background text-xs hover:bg-[#EDE3D4] transition-colors cursor-pointer text-start"
+                      className="px-2.5 py-1.5 rounded-lg border border-border dark:border-border bg-white dark:bg-background text-xs hover:bg-surface-warm transition-colors cursor-pointer text-start"
                     >
                       <span className="font-semibold">{b.reference}</span>{' '}
                       <span className={check.eligible ? 'text-primary' : 'text-amber-700 dark:text-amber-400'}>
@@ -228,7 +228,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                 type="button"
                 onClick={() => handleSearch(refCode)}
                 disabled={loading || !refCode.trim()}
-                className="px-4 py-2 rounded-xl bg-muted-foreground hover:bg-[#584960] text-white text-xs font-medium cursor-pointer disabled:opacity-50"
+                className="px-4 py-2 rounded-xl bg-muted-foreground hover:bg-muted text-white text-xs font-medium cursor-pointer disabled:opacity-50"
               >
                 {loading ? (isEn ? 'Checking...' : 'فحص...') : (isEn ? 'Look Up' : 'بحث')}
               </button>
@@ -250,7 +250,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
 
             {/* Booking Result & Policy Evaluation */}
             {booking && eligibility && dualTimes && (
-              <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-background border border-primary/30 space-y-4">
+              <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-background border border-secondary/60 space-y-4">
                 <div className="flex items-start justify-between">
                   <div>
                     <span className="text-[10px] font-semibold uppercase tracking-wider text-foreground/50 dark:text-border/50">
@@ -268,7 +268,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                     <span
                       className={`px-2.5 py-1 rounded-full text-[11px] font-semibold ${
                         booking.status === 'confirmed'
-                          ? 'bg-primary/20 text-primary'
+                          ? 'bg-secondary/40 text-accent'
                           : booking.status === 'cancelled'
                           ? 'bg-red-100 dark:bg-red-950/40 text-red-700 dark:text-red-400'
                           : 'bg-blue-100 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400'
@@ -277,14 +277,14 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                       {booking.status.toUpperCase()}
                     </span>
 
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EDE3D4] dark:bg-[#29232F] text-muted-foreground dark:text-muted-foreground font-medium">
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-surface-warm dark:bg-surface-subtle text-muted-foreground dark:text-muted-foreground font-medium">
                       ✓ Cal & Zoom Synced
                     </span>
                   </div>
                 </div>
 
                 {/* Dual-Timezone Box */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs bg-foreground/40 dark:bg-[#29232F] p-3 rounded-xl border border-border/50">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs bg-foreground/40 dark:bg-surface-subtle p-3 rounded-xl border border-border/50">
                   <div>
                     <div className="flex items-center gap-1.5 text-[10px] uppercase font-semibold text-muted-foreground dark:text-muted-foreground mb-0.5">
                       <Globe className="w-3.5 h-3.5" />
@@ -358,13 +358,13 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                 <div
                   className={`p-3.5 rounded-xl border text-xs leading-relaxed ${
                     eligibility.eligible
-                      ? 'bg-primary/10 border-primary/40 text-foreground dark:text-foreground'
+                      ? 'bg-secondary/30 border-primary/40 text-foreground dark:text-foreground'
                       : 'bg-amber-50 dark:bg-amber-950/30 border-amber-300 dark:border-amber-800 text-amber-900 dark:text-amber-200'
                   }`}
                 >
                   <div className="flex items-center gap-2 font-semibold mb-1">
                     {eligibility.eligible ? (
-                      <CheckCircle2 className="w-4 h-4 text-primary" />
+                      <CheckCircle2 className="w-4 h-4 text-accent" />
                     ) : (
                       <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                     )}
@@ -379,7 +379,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
 
                 {/* Reschedule View if Active */}
                 {isRescheduling && (
-                  <div className="p-3.5 rounded-xl bg-[#EDE3D4] dark:bg-[#29232F] border border-primary/30 space-y-3">
+                  <div className="p-3.5 rounded-xl bg-surface-warm dark:bg-surface-subtle border border-secondary/60 space-y-3">
                     <h5 className="font-serif text-xs font-semibold uppercase tracking-wider text-muted-foreground dark:text-muted-foreground">
                       {isEn ? 'Choose New Date & Starting Time' : 'اختر التاريخ والموعد الجديد'}
                     </h5>
@@ -439,7 +439,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                     <button
                       type="button"
                       onClick={() => setIsRescheduling(true)}
-                      className="px-4 py-2 rounded-xl bg-muted-foreground hover:bg-[#584960] text-white text-xs font-medium cursor-pointer"
+                      className="px-4 py-2 rounded-xl bg-muted-foreground hover:bg-muted text-white text-xs font-medium cursor-pointer"
                     >
                       {isEn ? 'Reschedule Lesson' : 'تغيير موعد الدرس'}
                     </button>
@@ -454,9 +454,9 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                       <button
                         type="button"
                         onClick={() => setShowPaymentModal(true)}
-                        className="px-4 py-2 rounded-xl bg-white dark:bg-[#231D28] border border-primary/50 text-xs font-medium text-foreground dark:text-foreground hover:bg-[#EDE3D4] transition-colors cursor-pointer flex items-center gap-1.5"
+                        className="px-4 py-2 rounded-xl bg-white dark:bg-surface border border-primary/50 text-xs font-medium text-foreground dark:text-foreground hover:bg-surface-warm transition-colors cursor-pointer flex items-center gap-1.5"
                       >
-                        <CreditCard className="w-3.5 h-3.5 text-primary" />
+                        <CreditCard className="w-3.5 h-3.5 text-accent" />
                         <span>{isEn ? 'Payment Instructions & Claim' : 'طرق الدفع وتأكيد التحويل'}</span>
                       </button>
                     )}
@@ -481,9 +481,9 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                       <button
                         type="button"
                         onClick={() => setShowPaymentModal(true)}
-                        className="px-4 py-2 rounded-xl bg-white dark:bg-[#231D28] border border-primary/50 text-xs font-medium text-foreground dark:text-foreground hover:bg-[#EDE3D4] transition-colors cursor-pointer flex items-center gap-1.5"
+                        className="px-4 py-2 rounded-xl bg-white dark:bg-surface border border-primary/50 text-xs font-medium text-foreground dark:text-foreground hover:bg-surface-warm transition-colors cursor-pointer flex items-center gap-1.5"
                       >
-                        <CreditCard className="w-3.5 h-3.5 text-primary" />
+                        <CreditCard className="w-3.5 h-3.5 text-accent" />
                         <span>{isEn ? 'Payment Details' : 'تفاصيل الدفع'}</span>
                       </button>
                     )}

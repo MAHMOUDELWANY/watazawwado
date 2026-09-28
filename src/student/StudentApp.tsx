@@ -216,7 +216,7 @@ export default function StudentApp() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-6 text-foreground">
         <div className="max-w-md w-full bg-surface border border-border rounded-3xl p-8 sm:p-10 shadow-xs text-center">
-          <div className="w-14 h-14 rounded-2xl bg-primary/15 text-primary flex items-center justify-center mx-auto mb-5 font-serif font-bold text-xl">
+          <div className="w-14 h-14 rounded-2xl bg-secondary/30 text-accent flex items-center justify-center mx-auto mb-5 font-serif font-bold text-xl">
             و
           </div>
           <h1 className="text-2xl font-serif font-bold mb-2 tracking-tight">
@@ -423,7 +423,7 @@ export default function StudentApp() {
             to="/student" 
             className="flex items-center gap-2.5 text-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg p-1"
           >
-            <div className="w-8 h-8 rounded-lg bg-primary/15 border border-primary/25 flex items-center justify-center text-primary font-serif font-bold text-base">
+            <div className="w-8 h-8 rounded-lg bg-brand/10 border border-brand/20 flex items-center justify-center text-brand font-serif font-bold text-base">
               و
             </div>
             <div className="flex flex-col text-start">
@@ -451,7 +451,7 @@ export default function StudentApp() {
           onClick={() => setSidebarOpen(false)}
           className="p-3.5 m-3 rounded-xl border border-border/80 bg-surface-subtle/40 hover:bg-surface-subtle transition-colors flex items-center gap-3 text-start group"
         >
-          <div className="w-9 h-9 rounded-full bg-primary/15 border border-primary/25 text-primary flex items-center justify-center font-bold text-sm shrink-0">
+          <div className="w-9 h-9 rounded-full bg-primary/15 border border-primary/25 text-accent flex items-center justify-center font-bold text-sm shrink-0">
             {studentInitial}
           </div>
           <div className="flex-1 min-w-0">
@@ -474,7 +474,7 @@ export default function StudentApp() {
             className={`
               flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl text-xs sm:text-sm font-semibold transition-all touch-manipulation min-h-[44px] shadow-xs cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
               ${location.pathname === '/student/book'
-                ? 'bg-primary/20 text-primary ring-1 ring-primary/30'
+                ? 'bg-secondary/40 text-accent ring-1 ring-primary/30'
                 : 'bg-primary hover:bg-primary-hover text-primary-foreground hover:shadow-sm'
               }
             `}
@@ -503,13 +503,13 @@ export default function StudentApp() {
                 className={`
                   flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors touch-manipulation min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
                   ${isActive
-                    ? 'bg-primary/15 text-primary font-semibold ring-1 ring-primary/20'
+                    ? 'bg-secondary/30 text-accent font-semibold ring-1 ring-primary/20'
                     : 'text-muted-foreground hover:bg-surface-subtle hover:text-foreground'
                   }
                 `}
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-primary' : 'opacity-70'}`} />
+                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-accent' : 'opacity-70'}`} />
                   <span className="truncate">{item.name}</span>
                 </div>
                 {item.badge !== null && item.badge > 0 && (
@@ -539,7 +539,7 @@ export default function StudentApp() {
             aria-label={isAr ? 'التبديل إلى الإنجليزية' : 'Switch to Arabic'}
           >
             <span className="flex items-center gap-2">
-              <Globe className="w-4 h-4 text-primary" />
+              <Globe className="w-4 h-4 text-accent" />
               <span>{isAr ? 'اللغة / Language' : 'Language / اللغة'}</span>
             </span>
             <span className="font-semibold text-primary">{isAr ? 'English' : 'العربية'}</span>
@@ -552,7 +552,7 @@ export default function StudentApp() {
             aria-label={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
           >
             <span className="flex items-center gap-2">
-              {theme === 'light' ? <Moon className="w-4 h-4 text-primary" /> : <Sun className="w-4 h-4 text-primary" />}
+              {theme === 'light' ? <Moon className="w-4 h-4 text-accent" /> : <Sun className="w-4 h-4 text-accent" />}
               <span>{theme === 'light' ? (isAr ? 'الوضع الليلي' : 'Dark Mode') : (isAr ? 'الوضع النهاري' : 'Light Mode')}</span>
             </span>
           </button>
@@ -628,7 +628,7 @@ export default function StudentApp() {
               className="min-h-[40px] min-w-[40px] hidden sm:flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
               aria-label={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
             >
-              {theme === 'light' ? <Moon className="w-4 h-4 text-primary" /> : <Sun className="w-4 h-4 text-primary" />}
+              {theme === 'light' ? <Moon className="w-4 h-4 text-accent" /> : <Sun className="w-4 h-4 text-accent" />}
             </button>
 
             {/* User Profile Avatar Pill */}
@@ -636,7 +636,7 @@ export default function StudentApp() {
               to="/student/account"
               className="flex items-center gap-2 p-1.5 pe-3 rounded-full bg-surface-subtle hover:bg-surface border border-border transition-colors"
             >
-              <div className="w-7 h-7 rounded-full bg-primary/20 text-primary font-bold text-xs flex items-center justify-center">
+              <div className="w-7 h-7 rounded-full bg-secondary/40 text-accent font-bold text-xs flex items-center justify-center">
                 {studentInitial}
               </div>
               <span className="text-xs font-medium text-foreground hidden md:inline-block max-w-[100px] truncate">
@@ -720,7 +720,7 @@ export default function StudentApp() {
             className="flex flex-col items-center justify-center py-1 px-3 text-[10px] text-primary-foreground font-bold -mt-4"
           >
             <div className="w-11 h-11 rounded-full bg-primary shadow-md flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-primary-foreground" />
+              <Calendar className="w-5 h-5 text-accent-foreground" />
             </div>
             <span className="text-foreground text-[10px] mt-0.5">{isAr ? 'حجز' : 'Book'}</span>
           </Link>

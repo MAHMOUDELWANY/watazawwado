@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   X,
@@ -140,9 +140,9 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
           className="relative w-full max-w-4xl max-h-[90vh] flex flex-col bg-surface-subtle dark:bg-background rounded-2xl sm:rounded-3xl border border-border dark:border-border shadow-2xl overflow-hidden z-10"
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-border dark:border-border bg-[#FFFFFF] dark:bg-surface">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-border dark:border-border bg-white dark:bg-surface">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-primary/15 dark:bg-primary/25 text-primary-hover dark:text-[#A3BF96] flex items-center justify-center">
+              <div className="w-9 h-9 rounded-xl bg-secondary/30 dark:bg-primary/25 text-accent-hover dark:text-primary flex items-center justify-center">
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <div>
@@ -175,7 +175,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
               )}
               <button
                 onClick={onClose}
-                className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:bg-[#EDE3D4] dark:hover:bg-[#2F2737] transition-colors cursor-pointer"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:bg-surface-warm dark:hover:bg-surface transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -188,7 +188,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
               /* LOGIN VIEW */
               <div className="max-w-md mx-auto py-6">
                 <div className="text-center mb-6">
-                  <div className="w-12 h-12 rounded-2xl bg-primary/15 text-primary-hover dark:text-[#A3BF96] mx-auto flex items-center justify-center mb-3">
+                  <div className="w-12 h-12 rounded-2xl bg-secondary/30 text-accent-hover dark:text-primary mx-auto flex items-center justify-center mb-3">
                     <Lock className="w-6 h-6" />
                   </div>
                   <h4 className="font-serif text-xl font-bold text-foreground dark:text-foreground">
@@ -203,7 +203,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                 <div className="mb-6 p-3.5 rounded-xl border border-border dark:border-border bg-white dark:bg-surface text-xs">
                   <div className="flex items-center justify-between mb-1">
                     <span className="font-semibold text-foreground dark:text-foreground flex items-center gap-1.5">
-                      <DbIcon className="w-3.5 h-3.5 text-primary" />
+                      <DbIcon className="w-3.5 h-3.5 text-accent" />
                       <span>Database Status</span>
                     </span>
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-medium ${isConfigured ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'}`}>
@@ -267,7 +267,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                 {/* Active Session Card */}
                 <div className="p-4 rounded-2xl bg-white dark:bg-surface border border-border dark:border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-primary/15 text-primary flex items-center justify-center font-bold text-sm">
+                    <div className="w-10 h-10 rounded-full bg-secondary/30 text-accent flex items-center justify-center font-bold text-sm">
                       M
                     </div>
                     <div>
@@ -289,7 +289,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                   <button
                     onClick={loadTeacherData}
                     disabled={isLoadingData}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border dark:border-border text-xs font-medium text-foreground dark:text-foreground hover:bg-surface-subtle dark:hover:bg-[#2F2737] cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border dark:border-border text-xs font-medium text-foreground dark:text-foreground hover:bg-surface-subtle dark:hover:bg-surface cursor-pointer"
                   >
                     <RefreshCw className={`w-3.5 h-3.5 ${isLoadingData ? 'animate-spin' : ''}`} />
                     <span>Refresh</span>
@@ -434,7 +434,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                                 <span className="font-mono text-[11px] text-primary">
                                   {new Date(b.scheduled_start).toLocaleDateString()}
                                 </span>
-                                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-primary/10 text-primary-hover dark:text-[#A3BF96]">
+                                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-secondary/30 text-primary-hover dark:text-primary">
                                   {b.status}
                                 </span>
                               </div>

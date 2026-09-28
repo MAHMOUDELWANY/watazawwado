@@ -47,7 +47,7 @@ export default function OverviewPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <RefreshCw className="w-8 h-8 animate-spin text-primary opacity-60" />
+        <RefreshCw className="w-8 h-8 animate-spin text-accent opacity-60" />
       </div>
     );
   }
@@ -73,7 +73,7 @@ export default function OverviewPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">
+            <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-secondary/30 text-primary border border-secondary/50">
               Super Admin
             </span>
             <h1 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-foreground">
@@ -164,7 +164,7 @@ export default function OverviewPage() {
         <div className="bg-surface border border-border rounded-2xl p-5 shadow-2xs">
           <div className="flex items-center justify-between text-muted-foreground mb-3">
             <span className="text-xs font-semibold uppercase tracking-wider">Active Students</span>
-            <Users className="w-4 h-4 text-primary" />
+            <Users className="w-4 h-4 text-accent" />
           </div>
           <p className="text-2xl sm:text-3xl font-serif font-bold text-foreground">
             {metrics.active_students}
@@ -178,7 +178,7 @@ export default function OverviewPage() {
         <div className="bg-surface border border-border rounded-2xl p-5 shadow-2xs">
           <div className="flex items-center justify-between text-muted-foreground mb-3">
             <span className="text-xs font-semibold uppercase tracking-wider">Active Teachers</span>
-            <ShieldCheck className="w-4 h-4 text-primary" />
+            <ShieldCheck className="w-4 h-4 text-accent" />
           </div>
           <p className="text-2xl sm:text-3xl font-serif font-bold text-foreground">
             {metrics.active_teachers}
@@ -193,7 +193,7 @@ export default function OverviewPage() {
         <div className="bg-surface border border-border rounded-2xl p-5 shadow-2xs">
           <div className="flex items-center justify-between text-muted-foreground mb-3">
             <span className="text-xs font-semibold uppercase tracking-wider">Lessons Today</span>
-            <Clock className="w-4 h-4 text-primary" />
+            <Clock className="w-4 h-4 text-accent" />
           </div>
           <p className="text-2xl sm:text-3xl font-serif font-bold text-foreground">
             {metrics.lessons_today}
@@ -206,7 +206,7 @@ export default function OverviewPage() {
         <div className="bg-surface border border-border rounded-2xl p-5 shadow-2xs">
           <div className="flex items-center justify-between text-muted-foreground mb-3">
             <span className="text-xs font-semibold uppercase tracking-wider">Upcoming Trials</span>
-            <Sparkles className="w-4 h-4 text-primary" />
+            <Sparkles className="w-4 h-4 text-accent" />
           </div>
           <p className="text-2xl sm:text-3xl font-serif font-bold text-foreground">
             {metrics.trials_upcoming}
@@ -256,7 +256,7 @@ export default function OverviewPage() {
                   </td>
                   <td className="py-3 px-3">
                     <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider ${
-                      t.role === 'super_admin' ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
+                      t.role === 'super_admin' ? 'bg-secondary/30 text-primary' : 'bg-muted text-muted-foreground'
                     }`}>
                       {t.role === 'super_admin' ? 'Super Admin' : 'Teacher'}
                     </span>

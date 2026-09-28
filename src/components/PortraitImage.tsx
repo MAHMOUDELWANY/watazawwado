@@ -1,4 +1,4 @@
-﻿import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'motion/react';
 import { Camera, Check, Upload, Sparkles, CheckCircle2 } from 'lucide-react';
 
@@ -155,7 +155,7 @@ export const PortraitImage: React.FC<PortraitImageProps> = ({ className = '', pr
         >
           {uploadSuccess ? (
             <>
-              <Check className="w-3.5 h-3.5 text-primary" />
+              <Check className="w-3.5 h-3.5 text-accent" />
               <span className="text-primary">Photo Updated!</span>
             </>
           ) : (
@@ -178,7 +178,7 @@ export const PortraitImage: React.FC<PortraitImageProps> = ({ className = '', pr
 
       {/* Understated Framing Accent in Lavender & Sage */}
       <div
-        className="absolute -bottom-2 -right-2 w-16 h-16 border-b-2 border-r-2 border-primary/30 rounded-br-2xl -z-10 pointer-events-none"
+        className="absolute -bottom-2 -right-2 w-16 h-16 border-b-2 border-r-2 border-secondary/60 rounded-br-2xl -z-10 pointer-events-none"
       />
       <div
         className="absolute -top-2 -left-2 w-16 h-16 border-t-2 border-l-2 border-border rounded-tl-2xl -z-10 pointer-events-none"

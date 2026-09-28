@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { Check, ArrowRight, ArrowLeft, Clock, Gift, CalendarCheck, HelpCircle, Sparkles, Package } from 'lucide-react';
 import { BookingMode, Language, LessonDuration, PackageCatalogEntry, PackageEntitlementEntry } from '../../booking/types';
@@ -115,13 +115,13 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               trialDisabled
                 ? 'opacity-60 cursor-not-allowed bg-gray-50 dark:bg-background/60 border-border dark:border-border'
                 : mode === 'trial'
-                ? 'bg-foreground dark:bg-[#29232F] border-primary ring-2 ring-primary/30 shadow-xs cursor-pointer'
-                : 'bg-white dark:bg-[#231D28] border-border dark:border-border hover:bg-foreground/40 cursor-pointer'
+                ? 'bg-foreground dark:bg-surface-subtle border-primary ring-2 ring-primary/30 shadow-xs cursor-pointer'
+                : 'bg-white dark:bg-surface border-border dark:border-border hover:bg-foreground/40 cursor-pointer'
             }`}
           >
             <div className="flex items-start justify-between gap-3 mb-2">
               <div className="flex items-center gap-2">
-                <div className={`p-2 rounded-xl ${trialDisabled ? 'bg-gray-200 dark:bg-gray-800 text-gray-500' : 'bg-primary/20 text-primary'}`}>
+                <div className={`p-2 rounded-xl ${trialDisabled ? 'bg-gray-200 dark:bg-gray-800 text-gray-500' : 'bg-secondary/40 text-accent'}`}>
                   <Gift className="w-5 h-5" />
                 </div>
                 <div>
@@ -166,8 +166,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
             onClick={() => onChangeMode('regular')}
             className={`p-4 sm:p-5 rounded-2xl border text-start transition-all cursor-pointer relative ${
               mode === 'regular'
-                ? 'bg-foreground dark:bg-[#29232F] border-muted-foreground ring-2 ring-muted-foreground/30 shadow-xs'
-                : 'bg-white dark:bg-[#231D28] border-border dark:border-border hover:bg-foreground/40'
+                ? 'bg-foreground dark:bg-surface-subtle border-muted-foreground ring-2 ring-muted-foreground/30 shadow-xs'
+                : 'bg-white dark:bg-surface border-border dark:border-border hover:bg-foreground/40'
             }`}
           >
             <div className="flex items-start justify-between gap-3 mb-2">
@@ -221,7 +221,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
             {isEn ? 'Select Preferred Lesson Duration' : 'اختر مدة الدرس المناسبة'}
           </label>
           <span className="text-xs text-foreground/60 dark:text-border/60 flex items-center gap-1">
-            <Clock className="w-3.5 h-3.5 text-primary" />
+            <Clock className="w-3.5 h-3.5 text-accent" />
             {mode === 'trial'
               ? isEn ? 'Trial standard: 30 min (up to 45 min max)' : 'المدة للتجربة: ٣٠ دقيقة (بحد أقصى ٤٥ دقيقة)'
               : isEn ? 'Standard durations: 30, 45, 60 min' : 'المدد المعتمدة: ٣٠، ٤٥، ٦٠ دقيقة'}
@@ -250,8 +250,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                   isDisabled
                     ? 'opacity-40 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent'
                     : isSelected
-                    ? 'bg-foreground dark:bg-[#29232F] border-primary ring-1 ring-primary shadow-xs'
-                    : 'bg-white dark:bg-[#231D28] border-border dark:border-border hover:bg-foreground/30'
+                    ? 'bg-foreground dark:bg-surface-subtle border-primary ring-1 ring-primary shadow-xs'
+                    : 'bg-white dark:bg-surface border-border dark:border-border hover:bg-foreground/30'
                 }`}
               >
                 <div>
@@ -302,13 +302,13 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                   }}
                   className={`p-4 sm:p-5 rounded-2xl border text-start transition-all cursor-pointer relative ${
                     isSelected
-                      ? 'bg-foreground dark:bg-[#29232F] border-primary ring-2 ring-primary/30 shadow-xs'
-                      : 'bg-white dark:bg-[#231D28] border-border dark:border-border hover:bg-foreground/30'
+                      ? 'bg-foreground dark:bg-surface-subtle border-primary ring-2 ring-primary/30 shadow-xs'
+                      : 'bg-white dark:bg-surface border-border dark:border-border hover:bg-foreground/30'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3 mb-1.5">
                     <div className="flex items-center gap-2.5">
-                      <div className="p-2 rounded-xl bg-primary/20 text-primary">
+                      <div className="p-2 rounded-xl bg-secondary/40 text-accent">
                         <Package className="w-5 h-5" />
                       </div>
                       <div>
@@ -316,7 +316,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                           <h4 className="font-serif text-base font-medium text-foreground dark:text-foreground">
                             {isEn ? 'Existing lesson credit' : 'رصيد درس موجود'}
                           </h4>
-                          <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-primary/15 text-primary">
+                          <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-secondary/30 text-accent">
                             {isEn ? `${ent.remainingCredits} lessons remaining` : `${ent.remainingCredits} دروس متبقية`}
                           </span>
                         </div>
@@ -356,8 +356,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               }}
               className={`p-4 rounded-xl border text-start transition-all cursor-pointer ${
                 !packageEntitlementId
-                  ? 'bg-foreground dark:bg-[#29232F] border-muted-foreground ring-2 ring-muted-foreground/30 shadow-xs'
-                  : 'bg-white dark:bg-[#231D28] border-border dark:border-border opacity-75'
+                  ? 'bg-foreground dark:bg-surface-subtle border-muted-foreground ring-2 ring-muted-foreground/30 shadow-xs'
+                  : 'bg-white dark:bg-surface border-border dark:border-border opacity-75'
               }`}
             >
               <div className="flex items-start justify-between gap-3">
@@ -395,8 +395,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               onClick={() => onSelectPackage?.(undefined)}
               className={`p-4 rounded-xl border text-start transition-all cursor-pointer ${
                 !selectedPackageId
-                  ? 'bg-foreground dark:bg-[#29232F] border-primary ring-2 ring-primary/30'
-                  : 'bg-white dark:bg-[#231D28] border-border dark:border-border opacity-75'
+                  ? 'bg-foreground dark:bg-surface-subtle border-primary ring-2 ring-primary/30'
+                  : 'bg-white dark:bg-surface border-border dark:border-border opacity-75'
               }`}
             >
               <h4 className="font-serif font-medium text-foreground dark:text-foreground">
@@ -417,8 +417,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                   onClick={() => onSelectPackage?.(pkg.id)}
                   className={`p-4 rounded-xl border text-start transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-foreground dark:bg-[#29232F] border-primary ring-2 ring-primary/30'
-                      : 'bg-white dark:bg-[#231D28] border-border dark:border-border opacity-75'
+                      ? 'bg-foreground dark:bg-surface-subtle border-primary ring-2 ring-primary/30'
+                      : 'bg-white dark:bg-surface border-border dark:border-border opacity-75'
                   }`}
                 >
                   <div className="flex justify-between items-start">
@@ -444,8 +444,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
       )}
 
       {/* Manual Request for Sessions > 60 min note */}
-      <div className="p-3.5 rounded-xl bg-white dark:bg-[#231D28] border border-border dark:border-border text-xs text-foreground/70 dark:text-border/70 flex items-start gap-2.5">
-        <HelpCircle className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+      <div className="p-3.5 rounded-xl bg-white dark:bg-surface border border-border dark:border-border text-xs text-foreground/70 dark:text-border/70 flex items-start gap-2.5">
+        <HelpCircle className="w-4 h-4 text-accent shrink-0 mt-0.5" />
         <div className="leading-relaxed">
           <span>
             {isEn
@@ -471,7 +471,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
           whileTap={{ scale: 0.97 }}
           onClick={onBack}
           type="button"
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium text-foreground/80 dark:text-border/80 hover:bg-[#EDE3D4] dark:hover:bg-[#29232F] transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium text-foreground/80 dark:text-border/80 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
         >
           <ArrowLeft className={`w-3.5 h-3.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
           <span>{isEn ? 'Back to Student Details' : 'الرجوع للبيانات'}</span>
@@ -481,7 +481,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
           whileHover={{ scale: 1.03, y: -1 }}
           whileTap={{ scale: 0.97 }}
           onClick={onNext}
-          className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-muted-foreground hover:bg-[#584960] text-white text-sm font-medium shadow-xs transition-all cursor-pointer"
+          className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-muted-foreground hover:bg-muted text-white text-sm font-medium shadow-xs transition-all cursor-pointer"
         >
           <span>{isEn ? 'Next: Pick Date & Time' : 'التالي: اختيار التاريخ والوقت'}</span>
           <ArrowRight className={`w-4 h-4 ${lang === 'ar' ? 'rotate-180' : ''}`} />

@@ -72,7 +72,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ lang, onSelect
                     : 'bg-surface text-foreground/80 hover:bg-surface-subtle border border-border'
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-primary-foreground' : 'text-primary'}`} />
+                <Icon className={`w-4 h-4 ${isActive ? 'text-accent-foreground' : 'text-primary'}`} />
                 <span>{isEn ? pillar.title : pillar.arabicTitle}</span>
                 <span
                   className={`text-[11px] px-1.5 py-0.5 rounded-md ${
@@ -130,7 +130,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ lang, onSelect
 
                   <div className="mt-3 flex items-center gap-3 text-[11px] text-muted-foreground">
                     <span className="flex items-center gap-1">
-                      <Clock className="w-3 h-3 text-primary" />
+                      <Clock className="w-3 h-3 text-accent" />
                       {service.durations.join(' / ')} mins
                     </span>
                     <span>•</span>
@@ -195,7 +195,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ lang, onSelect
                           key={idx}
                           className="flex items-start gap-2.5 text-sm text-foreground/90 p-1 rounded-lg"
                         >
-                          <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                          <Check className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                           <span>{item}</span>
                         </div>
                       ))}
