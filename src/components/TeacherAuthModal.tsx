@@ -143,16 +143,14 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
           <div className="flex items-center justify-between px-6 py-4 border-b border-border dark:border-border bg-white dark:bg-surface">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-secondary/30 dark:bg-primary/25 text-accent-hover dark:text-primary flex items-center justify-center">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
+                <ShieldCheck className="w-5 h-5" /></div>
               <div>
                 <h3 className="font-serif text-lg font-bold text-foreground dark:text-foreground">
                   {isTeacherAuthenticated ? 'Teacher Backend Foundation' : 'Ustadh Mahmoud — Teacher Access'}
                 </h3>
                 <p className="text-[11px] text-muted-foreground dark:text-muted-foreground">
                   Phase 3: Supabase Database, RLS Security & Teacher Auth
-                </p>
-              </div>
+                </p></div>
             </div>
 
             <div className="flex items-center gap-2">
@@ -258,8 +256,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                   >
                     {isSubmitting ? 'Authenticating...' : 'Sign In as Mahmoud'}
                   </button>
-                </form>
-              </div>
+                </form></div>
             ) : (
               /* AUTHENTICATED TEACHER VIEW */
               <div className="space-y-6">
@@ -571,8 +568,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                     </div>
                   </div>
                 )}
-
-              </div>
+</div>
             )}
           </div>
         </motion.div>

@@ -108,7 +108,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
         </button>
 
         <div className="p-7 sm:p-8">
-          <div className="text-center mb-8">
+          <div className="text-center mb-8">              <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-white dark:bg-surface-warm border border-border shadow-sm flex items-center justify-center overflow-hidden shrink-0 p-1">                <img src="/logo.jpg" alt="Watazawwado Logo" className="w-full h-full object-contain mix-blend-multiply" />              </div>
             <h2 id="auth-modal-title" className="text-2xl sm:text-3xl font-serif font-bold text-foreground">
               {view === 'login' ? 'Student Login' : view === 'signup' ? 'Create Account' : view === 'forgot' ? 'Reset Password' : 'Set New Password'}
             </h2>
@@ -139,8 +139,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
                     className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border bg-surface-subtle focus:bg-surface focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all"
                     placeholder="John Doe"
                   />
-                </div>
-              </div>
+                </div></div>
             )}
 
             {view !== 'update-password' && (
@@ -158,8 +157,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
                     className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border bg-surface-subtle focus:bg-surface focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all"
                     placeholder="you@example.com"
                   />
-                </div>
-              </div>
+                </div></div>
             )}
 
             {view !== 'forgot' && (
@@ -189,20 +187,17 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
                       Forgot password?
                     </button>
                   </div>
-                )}
-              </div>
+                )}</div>
             )}
 
             {error && (
               <div className="p-3 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-xl">
-                {error}
-              </div>
+                {error}</div>
             )}
             
             {success && (
               <div className="p-3 bg-success/10 border border-success/20 text-success text-sm rounded-xl">
-                {success}
-              </div>
+                {success}</div>
             )}
 
             <button

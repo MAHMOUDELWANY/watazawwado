@@ -196,9 +196,7 @@ export function DashboardApp() {
         {/* Workspace Brand Header */}
         <div className="h-16 flex items-center justify-between px-5 border-b border-border">
           <Link to="/" className="flex items-center gap-2.5 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg p-1">
-            <div className="w-8 h-8 rounded-xl bg-brand/10 text-brand border border-brand/20 flex items-center justify-center font-serif font-bold text-base transition-transform group-hover:scale-105">
-              و
-            </div>
+            <div className="w-9 h-9 rounded-lg bg-white dark:bg-surface-warm border border-border shadow-sm flex items-center justify-center overflow-hidden shrink-0 transition-transform group-hover:scale-105 p-0.5"><img src="/logo.jpg" alt="Watazawwado Logo" className="w-full h-full object-contain mix-blend-multiply" /></div>
             <div>
               <span className="text-sm font-serif font-semibold tracking-tight text-foreground block">
                 {lang === 'ar' ? 'وتزودوا — المعلم' : 'Watazawwado'}

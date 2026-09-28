@@ -423,9 +423,7 @@ export default function StudentApp() {
             to="/student" 
             className="flex items-center gap-2.5 text-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg p-1"
           >
-            <div className="w-8 h-8 rounded-lg bg-brand/10 border border-brand/20 flex items-center justify-center text-brand font-serif font-bold text-base">
-              و
-            </div>
+            <div className="w-9 h-9 rounded-lg bg-white dark:bg-surface-warm border border-border shadow-sm flex items-center justify-center overflow-hidden shrink-0 transition-transform group-hover:scale-105 p-0.5"><img src="/logo.jpg" alt="Watazawwado Logo" className="w-full h-full object-contain mix-blend-multiply" /></div>
             <div className="flex flex-col text-start">
               <span className="font-serif font-bold text-base tracking-tight leading-none text-foreground">
                 Watazawwado
@@ -451,7 +449,7 @@ export default function StudentApp() {
           onClick={() => setSidebarOpen(false)}
           className="p-3.5 m-3 rounded-xl border border-border/80 bg-surface-subtle/40 hover:bg-surface-subtle transition-colors flex items-center gap-3 text-start group"
         >
-          <div className="w-9 h-9 rounded-full bg-primary/15 border border-primary/25 text-accent flex items-center justify-center font-bold text-sm shrink-0">
+          <div className="w-9 h-9 rounded-full bg-secondary/40 border border-secondary/60 text-accent flex items-center justify-center font-bold text-sm shrink-0">
             {studentInitial}
           </div>
           <div className="flex-1 min-w-0">
