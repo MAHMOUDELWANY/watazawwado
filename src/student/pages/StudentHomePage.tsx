@@ -25,6 +25,7 @@ import {
 import { useTeacherAuth } from '../../lib/auth';
 import { findLastEligibleBooking, formatLastBookingSummary } from './StudentBookingPage';
 import { Badge } from '../../components/ui/Badge';
+import { BrandLogo } from '../../components/ui/BrandLogo';
 import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal';
 import { getBookingPaymentSummary } from '../../lib/paymentStatus';
 
