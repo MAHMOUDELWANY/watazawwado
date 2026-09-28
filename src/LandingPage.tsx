@@ -86,7 +86,7 @@ export function LandingPage({ initialGetStartedOpen = false }: LandingPageProps)
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-colors duration-300 font-sans">
+    <div className="theme-public min-h-screen bg-background text-foreground transition-colors duration-300 font-sans">
         {/* Global Navigation */}
         <Navbar
           lang={lang}

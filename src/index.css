@@ -79,7 +79,96 @@
 :root {
   color-scheme: light;
   
-  /* Environment — warm ivory study room foundation */
+  /* ============================================================
+     AUTHENTICATED APP PALETTE (SAGE GREEN)
+     Preserved to prevent visual regression in Teacher/Student portals.
+     ============================================================ */
+  --background: #F8F6F0; 
+  --foreground: #30332F;
+
+  --surface: #FFFFFF;
+  --surface-foreground: #30332F;
+  --surface-subtle: #F0EDE6;
+  --surface-warm: #EDE7DC;
+
+  --muted: #EDEAE1;
+  --muted-foreground: #6B6965;
+
+  --border: #D5D3CC;
+  --border-subtle: #E6E4DD;
+
+  --primary: #8FAE9B; 
+  --primary-foreground: #FFFFFF;
+  --primary-hover: #7D9B88;
+
+  --secondary: #D9CBB8;
+  --secondary-foreground: #4A3E31;
+
+  --accent: #8B4935;
+  --accent-foreground: #FFFFFF;
+
+  --brand: #C51F24;
+
+  --destructive: #D16D6A;
+  --destructive-foreground: #FFFFFF;
+
+  --success: #6B8E70;
+  --success-foreground: #FFFFFF;
+
+  --warning: #DE9B61;
+  --warning-foreground: #FFFFFF;
+
+  --focus: #8FAE9B;
+
+  --radius: 0.5rem;
+}
+
+:root.dark {
+  color-scheme: dark;
+  
+  --background: #1A1C1A;
+  --foreground: #EFEFEF;
+
+  --surface: #242724;
+  --surface-foreground: #EFEFEF;
+  --surface-subtle: #2C302C;
+  --surface-warm: #2A2520;
+
+  --muted: #2C302C;
+  --muted-foreground: #989B98;
+
+  --border: #3A3E3A;
+  --border-subtle: #2C302C;
+
+  --primary: #8FAE9B;
+  --primary-foreground: #1A1C1A;
+  --primary-hover: #A3C1AF;
+
+  --secondary: #3D3E3A;
+  --secondary-foreground: #D9CBB8;
+
+  --accent: #A85F49;
+  --accent-foreground: #FFFFFF;
+
+  --brand: #D63338;
+
+  --destructive: #D16D6A;
+  --destructive-foreground: #FFFFFF;
+
+  --success: #6B8E70;
+  --success-foreground: #FFFFFF;
+
+  --warning: #DE9B61;
+  --warning-foreground: #FFFFFF;
+
+  --focus: #8FAE9B;
+}
+
+/* ============================================================
+   PUBLIC WEBSITE PALETTE (TEAL/COPPER)
+   Scoped specifically to public pages to safely apply the new brand.
+   ============================================================ */
+.theme-public {
   --background: #F8F6F0; 
   --foreground: #2C2A27;
 
@@ -94,23 +183,18 @@
   --border: #D5D3CC;
   --border-subtle: #E6E4DD;
 
-  /* Primary — Teal (interactive, CTA, links) */
   --primary: #087D91; 
   --primary-foreground: #FFFFFF;
   --primary-hover: #066A7C;
 
-  /* Secondary — Warm beige (supporting backgrounds, soft buttons) */
   --secondary: #D8C6AE;
   --secondary-foreground: #4A3E31;
 
-  /* Accent — Copper (editorial highlights, category markers) */
   --accent: #8B4935;
   --accent-foreground: #FFFFFF;
 
-  /* Brand — Red (logo, identity, sparingly) */
   --brand: #C51F24;
 
-  /* Status */
   --destructive: #C51F24;
   --destructive-foreground: #FFFFFF;
 
@@ -121,13 +205,9 @@
   --warning-foreground: #FFFFFF;
 
   --focus: #087D91;
-
-  --radius: 0.5rem;
 }
 
-:root.dark {
-  color-scheme: dark;
-  
+.dark .theme-public {
   --background: #1A1C1A;
   --foreground: #EFEFEF;
 
