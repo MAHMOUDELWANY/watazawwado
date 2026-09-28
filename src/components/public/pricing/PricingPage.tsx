@@ -57,7 +57,7 @@ export function PricingPage() {
                   ? '* Language lessons (Arabic/English) are priced differently ($6 / $9 / $12).'
                   : '* دروس اللغات (العربية/الإنلجيزية) تسعر بشكل مختلف (٦$ / ٩$ / ١٢$).'}
               </div>
-            </div>
+            </BrandGlassCard>
 
             {/* Monthly Packages */}
             <BrandGlassCard intensity="high" className="p-8 relative overflow-hidden">
