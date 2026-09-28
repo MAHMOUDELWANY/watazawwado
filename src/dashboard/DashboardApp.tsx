@@ -269,26 +269,10 @@ export function DashboardApp() {
             </span>
           </div>
 
-          {/* Sign Out Button */}
-          <button 
-            onClick={signOut}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-destructive hover:bg-destructive/10 transition-colors min-h-[40px] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive"
-          >
-            <LogOut className="w-3.5 h-3.5" />
-            <span>{lang === 'ar' ? 'تسجيل الخروج' : 'Sign Out'}</span>
-          </button>
+          
         </div>
       
-          <div className="p-4 border-t border-border md:hidden">
-            <button
-              onClick={() => { signOut(); setIsMobileMenuOpen(false); }}
-              className="flex w-full items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors"
-            >
-              <LogOut className="w-4 h-4 shrink-0" />
-              <span>{lang === "ar" ? "OO3OUSU, O U,OrOU^O" : "Sign Out"}</span>
-            </button>
-          </div>
-        </aside>
+          </aside>
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
@@ -306,7 +290,7 @@ export function DashboardApp() {
               <Link to="/" className="flex items-center gap-2">
                 <BrandLogo variant="compact" />
                 <span className="font-display font-semibold text-foreground text-sm hidden md:inline-block">
-                  {lang === "ar" ? "U.O3O O-Oc O U,OO3OO O U.O-U.U^O_" : "Watazawwado Workspace"}
+                  {lang === "ar" ? '\u0645\u0633\u0627\u062D\u0629 \u0639\u0645\u0644 \u0648\u062A\u0632\u0648\u062F\u0648\u0627' : "Watazawwado Workspace"}
                 </span>
               </Link>
             </div>
@@ -335,7 +319,7 @@ export function DashboardApp() {
                 onClick={toggleLanguage}
                 className="hidden md:flex p-2 text-primary hover:bg-surface-subtle rounded-xl text-xs font-semibold"
               >
-                {lang === "en" ? "O U,O1OO`USOc" : "EN"}
+                {lang === "en" ? '\u0627\u0644\u0639\u0631\u0628\u064A\u0629' : "EN"}
               </button>
               <button
                 onClick={toggleTheme}
@@ -343,12 +327,7 @@ export function DashboardApp() {
               >
                 {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
               </button>
-              <button
-                onClick={signOut}
-                className="hidden md:flex p-2 text-destructive hover:bg-destructive/10 rounded-xl transition-colors cursor-pointer"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
+              <AccountDropdown initials={user?.email?.charAt(0)?.toUpperCase() || "M"} isAr={lang === "ar"} />
             </div>
           </header>
 

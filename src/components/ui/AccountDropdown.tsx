@@ -35,11 +35,11 @@ export function AccountDropdown({ initials, isAr }: { initials: string; isAr?: b
           <div className="p-1">
             <Link to="/student/account" onClick={() => setIsOpen(false)} className="flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-surface-subtle rounded-lg transition-colors">
               <User className="w-4 h-4 text-muted-foreground" />
-              <span>{isAr ? 'OU,O-O3OO"' : 'Profile'}</span>
+              <span>{isAr ? '\u0627\u0644\u0645\u0644\u0641 \u0627\u0644\u0634\u062E\u0635\u064A' : 'Profile'}</span>
             </Link>
             <Link to="/student/account/preferences" onClick={() => setIsOpen(false)} className="flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-surface-subtle rounded-lg transition-colors">
               <Settings className="w-4 h-4 text-muted-foreground" />
-              <span>{isAr ? 'OU,OO_O_OO_OO' : 'Preferences'}</span>
+              <span>{isAr ? '\u0627\u0644\u0625\u0639\u062F\u0627\u062F\u0627\u062A' : 'Preferences'}</span>
             </Link>
             <div className="h-px bg-border my-1" />
             <button 
@@ -47,7 +47,7 @@ export function AccountDropdown({ initials, isAr }: { initials: string; isAr?: b
               className="w-full flex items-center gap-2 px-3 py-2 text-sm text-destructive hover:bg-destructive/10 rounded-lg transition-colors cursor-pointer"
             >
               <LogOut className="w-4 h-4" />
-              <span>{isAr ? 'OO3OUSU, O_OO^O' : 'Sign Out'}</span>
+              <span>{isAr ? '\u062A\u0633\u062C\u064A\u0644 \u0627\u0644\u062E\u0631\u0648\u062C' : 'Sign Out'}</span>
             </button>
           </div>
         </div>

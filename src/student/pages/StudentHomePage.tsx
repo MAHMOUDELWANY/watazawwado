@@ -300,7 +300,218 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
       {/* 2. QUICK ACTIONS (Hierarchy: Primary 'Book a Lesson', Secondary others) */}
       {/* ========================================================================= */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <Link to="/student/book" className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-brand text-white hover:bg-brand/90 transition-all shadow-xs group cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <Calendar className="w-4 h-4 shrink-0" />
+            <span className="text-xs sm:text-sm font-semibold truncate">
+              {isAr ? 'حجز درس جديد' : 'Book a Lesson'}
+            </span>
+          </div>
+          <ArrowRight className={`w-3.5 h-3.5 opacity-80 group-hover:translate-x-0.5 transition-transform shrink-0 ${isAr ? 'rotate-180 group-hover:-translate-x-0.5' : ''}`} />
+        </Link>
+
         
+
+        <Link
+          to="/student/lessons"
+          className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-surface border border-border hover:border-primary/40 text-foreground hover:text-primary transition-all shadow-2xs group cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        >
+          <div className="flex items-center gap-2.5 min-w-0">
+            <BookOpen className="w-4 h-4 text-accent shrink-0" />
+            <span className="text-xs sm:text-sm font-medium truncate">
+              {isAr ? 'جدول كافة الدروس' : 'View Lessons'}
+            </span>
+          </div>
+          <ArrowRight className={`w-3.5 h-3.5 text-muted-foreground group-hover:text-accent group-hover:translate-x-0.5 transition-all shrink-0 ${isAr ? 'rotate-180 group-hover:-translate-x-0.5' : ''}`} />
+        </Link>
+
+        <Link
+          to="/student/payments"
+          className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-surface border border-border hover:border-primary/40 text-foreground hover:text-primary transition-all shadow-2xs group cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        >
+          <div className="flex items-center gap-2.5 min-w-0">
+            <CreditCard className="w-4 h-4 text-accent shrink-0" />
+            <span className="text-xs sm:text-sm font-medium truncate">
+              {isAr ? 'المدفوعات والحوالات' : 'View Payments'}
+            </span>
+          </div>
+          <ArrowRight className={`w-3.5 h-3.5 text-muted-foreground group-hover:text-accent group-hover:translate-x-0.5 transition-all shrink-0 ${isAr ? 'rotate-180 group-hover:-translate-x-0.5' : ''}`} />
+        </Link>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* 3. COMMAND CENTER: TWO-COLUMN BALANCED DESKTOP LAYOUT */}
+      {/* ========================================================================= */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* LEFT COLUMN: 8 COLS (Next Lesson + Recent Lessons) */}
+        <div className="lg:col-span-8 space-y-8">
+          
+          {/* PRIMARY: NEXT LESSON FOCUS */}
+          <section className="space-y-3" aria-labelledby="next-lesson-heading">
+            <div className="flex items-center justify-between">
+              <h2 id="next-lesson-heading" className="text-base sm:text-lg font-display font-bold text-foreground">
+                {isAr ? 'الدرس القادم المجدول' : 'Next Scheduled Lesson'}
+              </h2>
+              {nextBooking && (
+                <Link
+                  to="/student/lessons"
+                  className="text-xs text-primary hover:underline font-medium inline-flex items-center gap-1"
+                >
+                  <span>{isAr ? 'كافة المواعيد' : 'All sessions'}</span>
+                  <ArrowRight className={`w-3 h-3 ${isAr ? 'rotate-180' : ''}`} />
+                </Link>
+              )}
+            </div>
+
+            {nextBooking ? (
+              <div className="space-y-5 py-2">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-xs font-semibold text-primary uppercase tracking-wider">
+                        {isAr ? 'جلسة فردية مباشرة' : '1-on-1 Private Session'}
+                      </span>
+                      <span className="text-muted-foreground">•</span>
+                      <span className="text-xs text-muted-foreground">
+                        {isAr ? 'مع الأستاذ محمود' : 'with Ustadh Mahmoud'}
+                      </span>
+                    </div>
+
+                    <h3 className="text-heading-lg text-foreground">
+                      {nextBooking.serviceTitle || nextBooking.services?.title || (isAr ? 'جلسة تعليمية' : 'Private Lesson')}
+                    </h3>
+                  </div>
+
+                  <div className="shrink-0">
+                    <Badge variant={nextBooking.status === 'confirmed' ? 'success' : nextBooking.status === 'pending' ? 'warning' : 'secondary'}>
+                      {nextBooking.status === 'pending' ? (isAr ? 'بانتظار الدفع' : 'Payment Required') : nextBooking.status}
+                    </Badge>
+                  </div>
+                </div>
+
+                {/* Time & Duration Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-xl bg-surface-subtle border border-border/60 text-xs sm:text-sm">
+                  <div className="flex items-center gap-2.5 text-foreground">
+                    <Clock className="w-4 h-4 text-accent shrink-0" />
+                    <span>
+                      {DateTime.fromISO(nextBooking.scheduledStart || nextBooking.scheduled_start || nextBooking.lesson_date)
+                        .setLocale(isAr ? 'ar' : 'en')
+                        .toLocaleString(DateTime.DATETIME_MED_WITH_WEEKDAY)}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2.5 text-muted-foreground sm:justify-end">
+                    <span>{nextBooking.durationMinutes || nextBooking.duration || 45} {isAr ? 'دقيقة' : 'minutes'}</span>
+                    {nextBooking.referenceCode && (
+                      <span className="font-mono text-[11px] px-2 py-0.5 rounded bg-surface border border-border">
+                        {nextBooking.referenceCode}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Pending Payment Warning Notice - using reconciled payment status */}
+                {(() => {
+                  const summary = getBookingPaymentSummary(nextBooking, paymentsData || []);
+                  if (!summary.isPendingPayment) return null;
+                  return (
+                    <div className="p-3.5 rounded-xl bg-warning/10 border border-warning/25 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                      <div className="flex items-center gap-2 text-warning">
+                        <AlertCircle className="w-4 h-4 shrink-0" />
+                        <span>
+                          {summary.isAwaitingVerification
+                            ? (isAr
+                                ? 'إثبات الدفع قيد المراجعة والتحقق من الأستاذ محمود.'
+                                : 'Payment proof under review by Ustadh Mahmoud.')
+                            : (isAr
+                                ? 'هذا الموعد معلق حتى تأكيد إثبات الدفع.'
+                                : 'This booking is awaiting manual payment claim verification to guarantee your slot.')}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setPaymentClaimBooking(nextBooking)}
+                        className="px-3 py-1.5 bg-warning hover:bg-warning/90 text-warning-foreground rounded-lg font-semibold transition-colors shrink-0 cursor-pointer self-start sm:self-center"
+                      >
+                        {isAr ? 'إرسال إثبات الدفع' : 'Submit Claim'}
+                      </button>
+                    </div>
+                  );
+                })()}
+
+                {/* Action Buttons */}
+                <div className="flex flex-wrap items-center gap-3 pt-1">
+                  {hasValidZoomUrl ? (
+                    <a
+                      href={rawZoom}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-xs cursor-pointer min-h-[44px]"
+                    >
+                      <Video className="w-4 h-4" />
+                      <span>{isAr ? 'دخول فصل زووم' : 'Join Zoom Classroom'}</span>
+                      <ExternalLink className="w-3.5 h-3.5 opacity-80" />
+                    </a>
+                  ) : (
+                    <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface-subtle border border-border text-muted-foreground text-xs min-h-[44px]">
+                      <Video className="w-4 h-4 text-muted-foreground/70" />
+                      <span>
+                        {isAr ? 'رابط زووم سيتوفر قبل موعد الدرس' : 'Meeting link will appear soon'}
+                      </span>
+                    </div>
+                  )}
+
+                  <Link
+                    id="link-home-repeat-lesson"
+                    to="/student/book?repeat=true"
+                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-surface hover:bg-surface-subtle border border-border text-foreground text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5 text-accent" />
+                    <span>{isAr ? 'حجز درس مماثل' : 'Repeat Lesson'}</span>
+                  </Link>
+
+                  <Link
+                    to="/student/lessons"
+                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-surface hover:bg-surface-subtle border border-border text-foreground text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
+                  >
+                    <span>{isAr ? 'عرض تفاصيل الدرس' : 'View Lesson Details'}</span>
+                  </Link>
+                </div>
+              </div>
+            ) : lastEligibleBooking && lastBookingSummary ? (
+              <div className="rounded-2xl border border-secondary/50 bg-surface p-6 sm:p-7 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <RotateCcw className="w-4 h-4 text-accent" />
+                      <span className="text-xs font-semibold text-primary uppercase tracking-wider">
+                        {isAr ? 'مواصلة مسارك التعليمي' : 'Ready for your next session?'}
+                      </span>
+                    </div>
+                    <h3 className="text-base sm:text-lg font-display font-bold text-foreground">
+                      {isAr ? 'حجز درس جديد بنفس التفضيلات السابقة' : 'Continue from where you left off'}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-md">
+                      {isAr
+                        ? `آخر درس لك: ${lastBookingSummary.summaryText}. يمكنك الحجز بضغطة زر وتحديد الموعد.`
+                        : `Your last lesson was: ${lastBookingSummary.summaryText}. Pick a date and time with the same details.`}
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+                    <Link
+                      id="btn-home-repeat-lesson"
+                      to="/student/book?repeat=true"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-colors shadow-xs min-h-[44px]"
+                    >
+                      <RotateCcw className="w-4 h-4" />
+                      <span>{isAr ? 'حجز الدرس السابق' : 'Book with same details'}</span>
+                    </Link>
+                    <Link
+                      to="/student/book"
+                      className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-surface hover:bg-surface-subtle border border-border text-foreground rounded-xl text-xs sm:text-sm font-medium transition-colors min-h-[44px]"
+                    >
+                      <span>{isAr ? 'استكشاف المواد' : 'Explore Topics'}</span>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -525,6 +736,22 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                     ? 'لديك حصص مدفوعة مسبقاً جاهزة للحجز مع الأستاذ محمود.' 
                     : 'You have active prepaid credits ready to use for upcoming lessons.'}
                 </p>
+
+                
+              </div>
+            ) : (
+              /* No active package */
+              <div className="space-y-3">
+                <div className="space-y-1">
+                  <h4 className="text-sm font-semibold text-foreground">
+                    {isAr ? 'هل أنت مستعد لدرسك القادم؟' : 'Ready for your next lesson?'}
+                  </h4>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {isAr 
+                      ? 'الباقات المدفوعة مسبقاً توفر تعليماً منظماً أسبوعياً أو شهرياً بأسعار مخفضة.' 
+                      : 'Choose what to learn and find an available time with Ustadh Mahmoud.'}
+                  </p>
+                </div>
 
                 
               </div>
