@@ -246,7 +246,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
     : (isAr ? '\u0623\u0647\u0644\u064b\u0627 \u0628\u0643 \u0641\u064a \u0645\u0633\u0627\u062d\u062a\u0643 \u0627\u0644\u062a\u0639\u0644\u064a\u0645\u064a\u0629.' : 'Welcome to your learning home.');
     
   const welcomeSubtitle = isReturning
-    ? (isAr ? '\u0646\u0643\u0645\u0644 \u0631\u062d\u0644\u062a\u0643 \u0627\u0644\u062a\u0639\u0644\u064a\u0645\u064a\u0629 \u0645\u0646 \u062d\u064a\u062b \u062a\u0648\u0642\u0641\u0646\u0627.' : 'Let''s continue where you left off.')
+    ? (isAr ? '\u0646\u0643\u0645\u0644 \u0631\u062d\u0644\u062a\u0643 \u0627\u0644\u062a\u0639\u0644\u064a\u0645\u064a\u0629 \u0645\u0646 \u062d\u064a\u062b \u062a\u0648\u0642\u0641\u0646\u0627.' : 'Let\'s continue where you left off.')
     : (isAr ? '\u0643\u0644 \u0645\u0627 \u062a\u062d\u062a\u0627\u062c\u0647 \u0644\u062f\u0631\u0648\u0633\u0643 \u0645\u0639 \u0627\u0644\u0623\u0633\u062a\u0627\u0630 \u0645\u062d\u0645\u0648\u062f \u0641\u064a \u0645\u0643\u0627\u0646 \u0648\u0627\u062d\u062f.' : 'Everything you need for your lessons with Ustadh Mahmoud, in one place.');
 
     const creditsRemaining = packagesData?.creditSummary?.totalRemaining ?? 0;
