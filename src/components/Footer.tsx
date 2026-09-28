@@ -31,7 +31,7 @@ export const Footer: React.FC<FooterProps> = ({
           
           {/* Brand & Purpose (5 cols on md) */}
           <div className="md:col-span-5 space-y-4">
-            <div className="font-serif text-2xl font-medium text-foreground tracking-tight flex items-center gap-2.5"><div className="w-7 h-7 rounded-md bg-white dark:bg-surface-warm border border-border shadow-sm flex items-center justify-center overflow-hidden shrink-0 p-0.5"><img src="/logo.jpg" alt="Watazawwado Logo" className="w-full h-full object-contain mix-blend-multiply" /></div>
+            <div className="font-serif text-2xl font-medium text-foreground tracking-tight flex items-center gap-2.5"><img src="/logo.png" alt="Watazawwado Logo" className="w-auto h-7 object-contain drop-shadow-sm dark:bg-[#EDE7DC] dark:px-1.5 dark:py-1 dark:rounded-lg shrink-0" />
               Watazawwado <span className="text-muted-foreground font-light text-xl">/ وتزودوا</span>
             </div>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-sm">

@@ -4,8 +4,8 @@
 
 @theme {
   /* Fonts */
-  --font-serif: 'Fraunces', Georgia, Cambria, 'Times New Roman', serif;
-  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-serif: 'Newsreader', Georgia, Cambria, 'Times New Roman', serif;
+  --font-sans: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-arabic: 'IBM Plex Sans Arabic', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Arial, sans-serif;
 
   /* Semantic Colors — mapped from CSS custom properties for Tailwind */
@@ -231,9 +231,8 @@ body {
    ============================================================ */
 
 /* Editorial serif — Fraunces (EN) / Amiri (AR) */
-.font-editorial {
-  font-family: var(--font-serif);
-}
+.font-editorial { font-family: var(--font-serif); }
+.font-arabic-display { font-family: 'Kafa', 'Amiri', serif; }
 .font-arabic-calligraphic {
   font-family: 'Amiri', serif;
 }
@@ -244,9 +243,7 @@ body {
 [dir="rtl"] {
   font-family: var(--font-arabic);
 }
-[dir="rtl"] .font-editorial {
-  font-family: 'Amiri', serif;
-}
+[dir="rtl"] .font-editorial, [dir="rtl"] .font-serif { font-family: 'Kafa', 'Amiri', serif !important; }
 
 /* ============================================================
    WATAZAWWADO RTL TYPOGRAPHY & LAYOUT FOUNDATION

@@ -55,7 +55,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           to="/"
           className="group flex items-center gap-3 text-foreground focus:outline-none rounded-md"
         >
-          <div className="w-9 h-9 rounded-lg bg-white dark:bg-surface-warm border border-border shadow-sm flex items-center justify-center overflow-hidden shrink-0 transition-transform group-hover:scale-105 p-0.5"><img src="/logo.jpg" alt="Watazawwado Logo" className="w-full h-full object-contain mix-blend-multiply" /></div>
+          <img src="/logo.png" alt="Watazawwado Logo" className="w-auto h-8 sm:h-9 object-contain drop-shadow-sm dark:bg-[#EDE7DC] dark:p-1.5 dark:rounded-xl shrink-0 transition-transform group-hover:scale-105" />
           
           <div className="flex flex-col">
             <span className="font-serif text-lg font-semibold tracking-tight text-foreground group-hover:text-primary transition-colors">

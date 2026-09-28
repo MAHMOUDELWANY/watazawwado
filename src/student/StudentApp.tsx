@@ -423,7 +423,7 @@ export default function StudentApp() {
             to="/student" 
             className="flex items-center gap-2.5 text-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg p-1"
           >
-            <div className="w-9 h-9 rounded-lg bg-white dark:bg-surface-warm border border-border shadow-sm flex items-center justify-center overflow-hidden shrink-0 transition-transform group-hover:scale-105 p-0.5"><img src="/logo.jpg" alt="Watazawwado Logo" className="w-full h-full object-contain mix-blend-multiply" /></div>
+            <img src="/logo.png" alt="Watazawwado Logo" className="w-auto h-8 sm:h-9 object-contain drop-shadow-sm dark:bg-[#EDE7DC] dark:p-1.5 dark:rounded-xl shrink-0 transition-transform group-hover:scale-105" />
             <div className="flex flex-col text-start">
               <span className="font-serif font-bold text-base tracking-tight leading-none text-foreground">
                 Watazawwado
