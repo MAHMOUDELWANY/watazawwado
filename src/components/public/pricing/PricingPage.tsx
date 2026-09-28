@@ -2,6 +2,7 @@ import React from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
 import { PublicSection, EditorialHeading, StudyLine, MarginNote, PublicButton } from '../PublicDesignSystem';
+import { BrandGlassCard } from '../../ui/BrandGlassCard';
 
 export function PricingPage() {
   const { lang, onOpenTrialModal } = useOutletContext<PublicLayoutContextType>();

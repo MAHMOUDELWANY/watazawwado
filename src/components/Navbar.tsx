@@ -105,7 +105,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span>{lang === 'en' ? 'العربية' : 'EN'}</span>
           </button>
 
-          {/* Theme Switcher */}`n          <div className="flex items-center"><ThemeToggle /></div>
+          {/* Theme Switcher */}
+          <div className="flex items-center"><ThemeToggle /></div>
 
           {/* Primary CTA */}
           <button
