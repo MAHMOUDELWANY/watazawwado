@@ -235,6 +235,8 @@ export default function StudentApp() {
             >
               <span>{isAr ? 'تسجيل الدخول / إنشاء حساب' : 'Sign In / Create Account'}</span>
               <ArrowRight className={`w-4 h-4 ${isAr ? 'rotate-180' : ''}`} />
+            </button>
+
             <div className="pt-4 border-t border-border text-xs text-muted-foreground">
               <Link to="/" className="hover:text-foreground transition-colors hover:underline">
                 {isAr ? '← العودة إلى الصفحة الرئيسية' : '← Back to Ustadh Mahmoud Homepage'}
