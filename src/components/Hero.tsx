@@ -70,7 +70,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
                 hidden: { opacity: 0, y: 16 },
                 visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
               }}
-              className="font-display text-4xl sm:text-5xl lg:text-[3.35rem] leading-[1.16] tracking-tight text-foreground mb-6"
+              className="text-display-xl text-foreground mb-6"
             >
               {isEn ? (
                 <>

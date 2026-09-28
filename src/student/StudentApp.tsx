@@ -1,4 +1,5 @@
 import { BrandLogo } from '../components/ui/BrandLogo';
+import { BrandLoader } from '../components/ui/BrandLoader';
 import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import {  BookOpen,
@@ -256,11 +257,8 @@ export default function StudentApp() {
   // Profile is loading
   if (loadingProfile && !profile) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center text-primary gap-3">
-        <Loader2 className="w-8 h-8 animate-spin" />
-        <p className="text-xs text-muted-foreground">
-          {isAr ? 'جارٍ تحميل بيانات الطالب...' : 'Loading your learning portal...'}
-        </p>
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center">
+        <BrandLoader size="page" text={isAr ? 'جارٍ تحميل بيانات الطالب...' : 'Loading your learning portal...'} />
       </div>
     );
   }
@@ -519,51 +517,7 @@ export default function StudentApp() {
           })}
         </nav>
 
-        {/* Bottom Utility Controls */}
-        <div className="p-3 border-t border-border space-y-1">
-          {/* Back to Public Site */}
-          <Link
-            to="/"
-            className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-surface-subtle rounded-xl transition-colors min-h-[38px]"
-          >
-            <span>{isAr ? '← الصفحة الرئيسية' : '← Public Homepage'}</span>
-          </Link>
-
-          {/* Language Switcher */}
-          <button
-            onClick={toggleLang}
-            className="flex items-center justify-between w-full px-3 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-surface-subtle rounded-xl transition-colors cursor-pointer min-h-[38px]"
-            aria-label={isAr ? 'التبديل إلى الإنجليزية' : 'Switch to Arabic'}
-          >
-            <span className="flex items-center gap-2">
-              <Globe className="w-4 h-4 text-accent" />
-              <span>{isAr ? 'اللغة / Language' : 'Language / اللغة'}</span>
-            </span>
-            <span className="font-semibold text-primary">{isAr ? 'English' : 'العربية'}</span>
-          </button>
-
-          {/* Theme Toggle */}
-          <button
-            onClick={toggleTheme}
-            className="flex items-center justify-between w-full px-3 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-surface-subtle rounded-xl transition-colors cursor-pointer min-h-[38px]"
-            aria-label={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
-          >
-            <span className="flex items-center gap-2">
-              {theme === 'light' ? <Moon className="w-4 h-4 text-accent" /> : <Sun className="w-4 h-4 text-accent" />}
-              <span>{theme === 'light' ? (isAr ? 'الوضع الليلي' : 'Dark Mode') : (isAr ? 'الوضع النهاري' : 'Light Mode')}</span>
-            </span>
-          </button>
-
-          {/* Sign Out */}
-          <button
-            onClick={() => signOut()}
-            className="flex items-center gap-2.5 w-full px-3 py-2 text-xs font-medium text-destructive/80 hover:text-destructive hover:bg-destructive/10 rounded-xl transition-colors cursor-pointer touch-manipulation min-h-[38px]"
-          >
-            <LogOut className="w-4 h-4" />
-            <span>{isAr ? 'تسجيل الخروج' : 'Sign Out'}</span>
-          </button>
-        </div>
-      </aside>
+        </aside>
 
       {/* ========================================================================= */}
       {/* MAIN APPLICATION VIEWPORT & HEADER */}

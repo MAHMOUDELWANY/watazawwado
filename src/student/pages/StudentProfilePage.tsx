@@ -23,13 +23,14 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../..
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { StudentPageBack } from '../components/StudentPageBack';
+import { BrandFrame } from '../../components/ui/BrandFrame';
 
 export interface StudentProfilePageProps {
   profile?: any;
   session?: any;
   onProfileUpdated?: (updated: any) => void;
   lang?: 'en' | 'ar';
-  onToggleLang?: () => void;
+  
 }
 
 export default function StudentProfilePage({
@@ -37,7 +38,7 @@ export default function StudentProfilePage({
   session: propSession,
   onProfileUpdated,
   lang = (typeof document !== 'undefined' && document.documentElement.lang === 'ar' ? 'ar' : 'en'),
-  onToggleLang
+  
 }: StudentProfilePageProps) {
   const auth = useTeacherAuth();
   const effectiveSession = propSession || auth.session;
@@ -231,16 +232,7 @@ export default function StudentProfilePage({
     }
   };
 
-  const handleToggleLang = () => {
-    if (onToggleLang) {
-      onToggleLang();
-    } else {
-      const newLang = isAr ? 'en' : 'ar';
-      document.documentElement.lang = newLang;
-      document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
-      window.location.reload();
-    }
-  };
+  
 
   const formattedMemberSince = useMemo(() => {
     const rawDate = profile?.createdAt || profile?.created_at;
@@ -307,12 +299,9 @@ export default function StudentProfilePage({
       {/* 1. Page Header & Identity Summary */}
       <div className="p-5 sm:p-6 rounded-2xl bg-surface border border-border shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4 min-w-0">
-          <div 
-            className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-secondary/40 border border-secondary/60 text-accent text-xl sm:text-2xl font-display font-bold flex items-center justify-center shrink-0 select-none"
-            aria-hidden="true"
-          >
-            {profile?.name?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase() || 'S'}
-          </div>
+          <BrandFrame variant="subtle" className="w-14 h-14 sm:w-16 sm:h-16 shrink-0" innerClassName="items-center justify-center text-accent text-xl sm:text-2xl font-display font-bold select-none">
+                {profile?.full_name?.charAt(0) || user?.email?.charAt(0)?.toUpperCase() || "S"}
+              </BrandFrame>
           <div className="min-w-0">
             <div className="flex items-center gap-2.5 flex-wrap">
               <h1 className="text-lg sm:text-xl font-display font-bold text-foreground tracking-tight truncate">

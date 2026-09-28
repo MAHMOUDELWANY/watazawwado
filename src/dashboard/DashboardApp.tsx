@@ -268,27 +268,6 @@ export function DashboardApp() {
             </span>
           </div>
 
-          {/* Language & Theme Controls */}
-          <div className="grid grid-cols-2 gap-1.5">
-            <button
-              onClick={toggleLanguage}
-              className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-surface hover:bg-surface-subtle border border-border text-foreground transition-colors min-h-[40px] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-              aria-label="Toggle language"
-            >
-              <Globe className="w-3.5 h-3.5 opacity-70" />
-              <span>{lang === 'en' ? 'العربية' : 'English'}</span>
-            </button>
-
-            <button
-              onClick={toggleTheme}
-              className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-surface hover:bg-surface-subtle border border-border text-foreground transition-colors min-h-[40px] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-              aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-            >
-              {theme === 'light' ? <Moon className="w-3.5 h-3.5 opacity-70" /> : <Sun className="w-3.5 h-3.5 opacity-70" />}
-              <span>{theme === 'light' ? 'Dark' : 'Light'}</span>
-            </button>
-          </div>
-
           {/* Sign Out Button */}
           <button 
             onClick={signOut}

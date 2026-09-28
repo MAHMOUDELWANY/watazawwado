@@ -41,7 +41,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ lang, onSelect
           <div className="text-xs uppercase tracking-widest text-primary font-semibold mb-3">
             {isEn ? 'Core Teaching Subjects' : ARABIC_TRANSLATIONS.services.sectionTag}
           </div>
-          <h2 className="font-display text-3xl sm:text-4xl text-foreground tracking-tight mb-4">
+          <h2 className="text-display-lg text-foreground mb-4">
             {isEn
               ? '13 Personalized subjects, arranged around your journey.'
               : ARABIC_TRANSLATIONS.services.title}
@@ -110,7 +110,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ lang, onSelect
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <h3 className="font-display text-lg font-medium text-foreground group-hover:text-primary transition-colors">
+                      <h3 className="text-heading-md text-foreground group-hover:text-primary transition-colors">
                         {service.name}
                       </h3>
                       <p className="text-xs text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
@@ -165,7 +165,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ lang, onSelect
                       </span>
                     </div>
 
-                    <h3 className="font-display text-2xl sm:text-3xl text-foreground font-medium">
+                    <h3 className="text-heading-xl text-foreground">
                       {selectedServiceDetail.name}
                     </h3>
 

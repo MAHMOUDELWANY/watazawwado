@@ -982,7 +982,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
               initialStep={flowStep}
               trialDisabled={!canBookTrial}
               trialDisabledReason={trialDisabledReason}
-              cardClassName="w-full bg-surface text-foreground p-5 sm:p-8 rounded-3xl border border-border shadow-xs"
+              cardClassName="w-full py-6"
               doneLabel="Done & Return to Student Portal"
               onDone={() => navigate('/student')}
               onClose={() => navigate('/student')}

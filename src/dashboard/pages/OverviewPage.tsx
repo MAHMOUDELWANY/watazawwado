@@ -160,8 +160,8 @@ export default function OverviewPage() {
       )}
 
       {/* Core Platform KPIs Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        <div className="bg-surface border border-border rounded-2xl p-5 shadow-2xs">
+      <div className="bg-surface border border-border rounded-2xl shadow-sm grid grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x rtl:sm:divide-x-reverse divide-border overflow-hidden">
+        <div className="p-6">
           <div className="flex items-center justify-between text-muted-foreground mb-3">
             <span className="text-xs font-semibold uppercase tracking-wider">Active Students</span>
             <Users className="w-4 h-4 text-accent" />
@@ -174,8 +174,7 @@ export default function OverviewPage() {
             <span>new in last 30d</span>
           </div>
         </div>
-
-        <div className="bg-surface border border-border rounded-2xl p-5 shadow-2xs">
+        <div className="p-6">
           <div className="flex items-center justify-between text-muted-foreground mb-3">
             <span className="text-xs font-semibold uppercase tracking-wider">Active Teachers</span>
             <ShieldCheck className="w-4 h-4 text-accent" />
@@ -189,8 +188,7 @@ export default function OverviewPage() {
             </Link>
           </div>
         </div>
-
-        <div className="bg-surface border border-border rounded-2xl p-5 shadow-2xs">
+        <div className="p-6">
           <div className="flex items-center justify-between text-muted-foreground mb-3">
             <span className="text-xs font-semibold uppercase tracking-wider">Lessons Today</span>
             <Clock className="w-4 h-4 text-accent" />
@@ -202,8 +200,7 @@ export default function OverviewPage() {
             <span>{metrics.lessons_this_week} this week</span>
           </div>
         </div>
-
-        <div className="bg-surface border border-border rounded-2xl p-5 shadow-2xs">
+        <div className="p-6">
           <div className="flex items-center justify-between text-muted-foreground mb-3">
             <span className="text-xs font-semibold uppercase tracking-wider">Upcoming Trials</span>
             <Sparkles className="w-4 h-4 text-accent" />
@@ -214,7 +211,7 @@ export default function OverviewPage() {
           <div className="flex items-center gap-1.5 mt-2 text-[11px] text-muted-foreground">
             <span>{metrics.trials_total} total trials recorded</span>
           </div>
-        </div>
+      </div>
       </div>
 
       {/* Teacher Capacity & Assignment Distribution */}

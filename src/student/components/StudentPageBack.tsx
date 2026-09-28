@@ -12,7 +12,8 @@ export interface StudentPageBackProps {
 
 /**
  * Standardized, accessible Back Navigation button for inner student pages.
- * Supports explicit destination (`to`) or native browser back (`navigate(-1)`),
+ * Supports explicit destination (`to`) or native browser back (
+avigate(-1)`),
  * with strict LTR/RTL chevron flipping and 44px min touch target.
  */
 export function StudentPageBack({

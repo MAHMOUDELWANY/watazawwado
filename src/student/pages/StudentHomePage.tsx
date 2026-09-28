@@ -270,7 +270,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
       {/* ========================================================================= */}
       <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 pb-2 border-b border-border">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-display font-bold tracking-tight text-foreground">
+          <h1 className="text-heading-xl text-foreground">
             {greetingWord}{studentFirstName ? `, ${studentFirstName}` : ''}
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">
@@ -380,7 +380,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
             </div>
 
             {nextBooking ? (
-              <div className="rounded-2xl border border-secondary/50 bg-surface p-5 sm:p-6 shadow-xs space-y-5">
+              <div className="space-y-5 py-2">
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 flex-wrap">
@@ -393,7 +393,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                       </span>
                     </div>
 
-                    <h3 className="text-xl sm:text-2xl font-display font-bold text-foreground">
+                    <h3 className="text-heading-lg text-foreground">
                       {nextBooking.serviceTitle || nextBooking.services?.title || (isAr ? 'جلسة تعليمية' : 'Private Lesson')}
                     </h3>
                   </div>
@@ -646,7 +646,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
         <aside className="lg:col-span-4 space-y-6">
           
           {/* 1. LEARNING SNAPSHOT (Explicit labels, factual metrics only) */}
-          <div className="rounded-2xl border border-border bg-surface p-5 space-y-4">
+          <div className="space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-border">
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 {isAr ? 'ملخص التعلم' : 'Learning Snapshot'}
@@ -655,20 +655,20 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
             </div>
 
             <div className="grid grid-cols-2 gap-3 text-start">
-              <div className="p-3 rounded-xl bg-surface-subtle border border-border">
+              <div className="py-2 border-b border-border/50">
                 <span className="text-[11px] text-muted-foreground block">
                   {isAr ? 'دروس مكتملة' : 'completed lessons'}
                 </span>
-                <span className="text-xl font-display font-bold text-foreground">
+                <span className="text-heading-md text-foreground">
                   {completedLessonsCount}
                 </span>
               </div>
 
-              <div className="p-3 rounded-xl bg-surface-subtle border border-border">
+              <div className="py-2 border-b border-border/50">
                 <span className="text-[11px] text-muted-foreground block">
                   {isAr ? 'دروس قادمة' : 'upcoming lessons'}
                 </span>
-                <span className="text-xl font-display font-bold text-primary">
+                <span className="text-heading-md text-primary">
                   {upcomingBookings.length}
                 </span>
               </div>
@@ -691,7 +691,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
           </div>
 
           {/* 2. PACKAGE BALANCE SNAPSHOT (Independent loading/error/active state) */}
-          <div className="rounded-2xl border border-border bg-surface p-5 space-y-4">
+          <div className="space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-border">
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 {isAr ? 'رصيد الباقات' : 'Package Credits'}
@@ -722,7 +722,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
               /* Active package display */
               <div className="space-y-3">
                 <div className="flex items-baseline justify-between">
-                  <span className="text-2xl font-display font-bold text-primary">
+                  <span className="text-heading-lg text-primary">
                     {creditsRemaining}
                   </span>
                   <span className="text-xs text-muted-foreground">
@@ -787,7 +787,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
           </div>
 
           {/* 3. PAYMENT STATUS SNAPSHOT (Independent loading/error/factual payment state) */}
-          <div className="rounded-2xl border border-border bg-surface p-5 space-y-4">
+          <div className="space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-border">
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 {isAr ? 'حالة المدفوعات' : 'Payment Status'}
