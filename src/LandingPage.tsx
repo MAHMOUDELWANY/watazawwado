@@ -24,6 +24,7 @@ import { Language, ThemeMode } from './types';
 import { BookingMode } from './booking/types';
 import { LearningGuide } from './components/LearningGuide';
 import { useTheme } from './components/ThemeProvider';
+import { PublicHomepage } from './components/public/homepage/PublicHomepage';
 
 interface LandingPageProps {
   initialGetStartedOpen?: boolean;
@@ -96,58 +97,10 @@ export function LandingPage({ initialGetStartedOpen = false }: LandingPageProps)
           onOpenManageModal={() => setManageModalOpen(true)}
         />
 
-        <main id="main-content">
-          {/* Editorial Hero */}
-          <Hero lang={lang} onOpenTrialModal={() => handleOpenGetStarted(undefined)} />
-
-          {/* Running Marquee Ticker (00:00 in video) */}
-          <MarqueeTicker lang={lang} />
-
-          {/* Convergence Scroll Animation: 3 Scattered Subscriptions -> 1 Unified Mentorship (00:01 - 00:04 in video) */}
-          <UnifiedMentorshipConvergence
-            lang={lang}
-            onOpenTrialModal={() => handleOpenGetStarted(undefined)}
-          />
-
-          {/* Interactive Discipline Switcher with Active Accent Bar & Connection Diagram (00:04 - 00:07 in video) */}
-          <DisciplineSwitcherShowcase
-            lang={lang}
-            onOpenTrialModal={(serviceId) => handleOpenGetStarted(serviceId)}
-          />
-
-          {/* 3D Scroll Perspective Classroom & Terminal Showcase (00:08 - 00:10 in video) */}
-          <LessonStudioShowcase
-            lang={lang}
-            onOpenTrialModal={() => handleOpenGetStarted(undefined)}
-          />
-
-          {/* 13 Core Services Arranged by Pillars */}
-          <ServicesSection
-            lang={lang}
-            onSelectServiceForTrial={(id) => handleOpenGetStarted(id)}
-          />
-
-          {/* About Mahmoud & Verified Trust Credentials */}
-          <AboutSection lang={lang} />
-
-          {/* Teaching Philosophy & 4 Core Pillars */}
-          <TeachingApproach lang={lang} />
-
-          {/* How It Works (Student Journey) */}
-          <HowItWorks lang={lang} onOpenTrialModal={() => handleOpenGetStarted(undefined)} />
-
-          {/* Primary Free Trial Invitation */}
-          <FreeTrialSection lang={lang} onOpenTrialModal={() => handleOpenGetStarted(undefined)} />
-
-          {/* Authentic Student & Parent Reflections */}
-          <TestimonialsSection lang={lang} />
-
-          {/* Practical Questions & FAQ */}
-          <FAQSection lang={lang} />
-
-          {/* Direct Contact & WhatsApp */}
-          <ContactSection lang={lang} onOpenTrialModal={() => handleOpenGetStarted(undefined)} />
-        </main>
+        <PublicHomepage 
+          lang={lang} 
+          onOpenTrialModal={handleOpenGetStarted} 
+        />
 
         {/* Footer */}
         <Footer
