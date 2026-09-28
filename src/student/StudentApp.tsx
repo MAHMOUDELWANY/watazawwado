@@ -1,4 +1,5 @@
 import { BrandLogo } from '../components/ui/BrandLogo';
+import { AccountDropdown } from '../components/ui/AccountDropdown';
 import { BrandLoader } from '../components/ui/BrandLoader';
 import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
@@ -405,7 +406,7 @@ export default function StudentApp() {
         aria-modal={sidebarOpen ? 'true' : undefined}
         aria-label={isAr ? 'شريط التنقل الجانبي للطالب' : 'Student Navigation Sidebar'}
         className={`
-          fixed lg:static inset-y-0 start-0 z-50 w-64 lg:w-72 max-w-[85vw] bg-surface border-e border-border
+          fixed lg:hidden inset-y-0 start-0 z-50 w-64 max-w-[85vw] bg-surface border-e border-border
           flex flex-col transition-transform duration-250 ease-out shadow-xs shrink-0
           ${sidebarOpen 
             ? 'max-lg:translate-x-0' 
@@ -517,7 +518,7 @@ export default function StudentApp() {
           })}
         </nav>
 
-        </aside>
+        `r`n          <div className="p-4 border-t border-border">`r`n            <button`r`n              onClick={() => { signOut(); setSidebarOpen(false); }}`r`n              className="flex w-full items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors"`r`n            >`r`n              <LogOut className="w-4 h-4 shrink-0" />`r`n              <span>{isAr ? "OO3OUSU, O U,OrOU^O" : "Sign Out"}</span>`r`n            </button>`r`n          </div>`r`n        </aside>
 
       {/* ========================================================================= */}
       {/* MAIN APPLICATION VIEWPORT & HEADER */}
@@ -549,7 +550,7 @@ export default function StudentApp() {
                 {currentHeader.subtitle}
               </span>
             </div>
-          </div>
+          </div>`r`n`r`n          {/* Center: Desktop Navigation */}`r`n          <nav className="hidden lg:flex flex-1 items-center justify-center gap-1.5 px-4">`r`n            {navItems.map((item) => {`r`n              const isActive = location.pathname === item.path || (item.path !== "/student" && location.pathname.startsWith(item.path));`r`n              return (`r`n                <Link`r`n                  key={item.path}`r`n                  to={item.path}`r`n                  className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-colors ${isActive ? "bg-secondary/20 text-accent" : "text-muted-foreground hover:text-foreground hover:bg-surface-subtle"}`}`r`n                >`r`n                  {item.name}`r`n                </Link>`r`n              );`r`n            })}`r`n          </nav>
 
           {/* Right Side: Quick Action Utilities (Notifications, Lang, Theme, User Pill) */}
           <div className="flex items-center gap-2 sm:gap-3">
@@ -583,17 +584,7 @@ export default function StudentApp() {
             </button>
 
             {/* User Profile Avatar Pill */}
-            <Link
-              to="/student/account"
-              className="flex items-center gap-2 p-1.5 pe-3 rounded-full bg-surface-subtle hover:bg-surface border border-border transition-colors"
-            >
-              <div className="w-7 h-7 rounded-full bg-secondary/40 text-accent font-bold text-xs flex items-center justify-center">
-                {studentInitial}
-              </div>
-              <span className="text-xs font-medium text-foreground hidden md:inline-block max-w-[100px] truncate">
-                {profile?.name ? profile.name.split(' ')[0] : 'Student'}
-              </span>
-            </Link>
+            <AccountDropdown initials={studentInitial} isAr={isAr} />`r`n`r`n              
           </div>
         </header>
 

@@ -4,16 +4,16 @@
 
 @theme {
   /* Fonts */
-  --font-brand-ar: 'Kafa', 'Changa', 'Rubik', sans-serif;
-  --font-display-ar: 'Kafa', 'Changa', 'Rubik', sans-serif;
-  --font-body-ar: 'IBM Plex Sans Arabic', 'Rubik', sans-serif;
+  --font-brand-ar: 'Changa', sans-serif;
+  --font-display-ar: 'Changa', sans-serif;
+  --font-body-ar: 'IBM Plex Sans Arabic', sans-serif;
 
-  --font-brand-en: 'Rubik', sans-serif;
-  --font-display-en: 'Rubik', sans-serif;
+  --font-brand-en: 'Changa', sans-serif;
+  --font-display-en: 'Changa', sans-serif;
   --font-body-en: 'Manrope', sans-serif;
 
-  --font-editorial: 'Newsreader', serif;
-  --font-serif: 'Newsreader', Georgia, Cambria, 'Times New Roman', serif;
+  --font-editorial: 'Changa', sans-serif;
+  --font-serif: 'Changa', sans-serif;
   --font-sans: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-arabic: 'IBM Plex Sans Arabic', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Arial, sans-serif;
 
@@ -241,7 +241,7 @@ body {
 
 /* Editorial serif — Fraunces (EN) / Amiri (AR) */
 .font-editorial { font-family: var(--font-serif); }
-.font-arabic-display { font-family: 'Kafa', 'Amiri', serif; }
+.font-arabic-display { font-family: 'Changa', sans-serif; }
 .font-arabic-calligraphic {
   font-family: 'Amiri', serif;
 }
@@ -252,7 +252,7 @@ body {
 [dir="rtl"] {
   font-family: var(--font-arabic);
 }
-[dir="rtl"] .font-editorial, [dir="rtl"] .font-serif { font-family: 'Kafa', 'Amiri', serif !important; }
+[dir="rtl"] .font-editorial, [dir="rtl"] .font-serif { font-family: 'Changa', sans-serif !important; }
 
 /* ============================================================
    WATAZAWWADO RTL TYPOGRAPHY & LAYOUT FOUNDATION
@@ -590,6 +590,16 @@ body {
   .dark .glass-panel {
     background: rgba(44, 42, 39, 0.75);
     border: 1px solid rgba(216, 198, 174, 0.15);
+  }
+
+    /* ================== BRAND MOTION ================== */
+  @keyframes brandBreath {
+    0%, 100% { transform: scale(0.96); }
+    50% { transform: scale(1.00); }
+  }
+  @keyframes brandOpacityBreath {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
   }
 
   /* ================== MOTION SYSTEM ================== */

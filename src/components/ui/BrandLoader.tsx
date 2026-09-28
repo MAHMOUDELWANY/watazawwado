@@ -8,28 +8,37 @@ interface BrandLoaderProps {
 }
 
 export function BrandLoader({ size = 'md', text, className = '' }: BrandLoaderProps) {
+  const isReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   if (size === 'inline') {
     return (
-      <div className={`inline-flex items-center gap-2 ${className}`}>
-        <div className="w-4 h-4 rounded-full border-[1.5px] border-brand border-t-transparent animate-spin shrink-0" />
+      <div className={inline-flex items-center gap-2  + className}>
+        <div className={w-5 h-5 opacity-90  + (!isReducedMotion ? 'animate-pulse' : '')}>
+          <img src="/logo.png" alt="Loading..." className="w-full h-full object-contain" />
+        </div>
         {text && <span className="text-body-sm font-medium">{text}</span>}
       </div>
     );
   }
 
-  const logoVariant = size === 'sm' ? 'compact' : size === 'lg' || size === 'page' ? 'large' : 'standard';
-  const containerClasses = size === 'page' ? 'min-h-[60vh] flex-col items-center justify-center' : 'flex-col items-center justify-center';
+  const containerClasses = size === 'page' ? 'min-h-[50vh] flex-col items-center justify-center' : 'flex-col items-center justify-center';
 
   return (
-    <div className={`flex gap-5 ${containerClasses} ${className}`}>
+    <div className={lex gap-4  + containerClasses +   + className}>
       <div className="relative">
-        <div className="absolute -inset-4 bg-brand-gradient opacity-20 blur-2xl rounded-full animate-pulse" style={{ animationDuration: '3s' }} />
-        <div className="relative animate-pulse transition-transform" style={{ animationDuration: '2.5s' }}>
-          <BrandLogo variant={logoVariant} />
+        <div 
+          className="relative transition-transform" 
+          style={!isReducedMotion ? { animation: 'brandBreath 3s ease-in-out infinite' } : {}}
+        >
+          {/* Constrain page loaders to compact (48px-56px) so it's not giant */}
+          <BrandLogo variant="compact" />
         </div>
       </div>
       {text && (
-        <span className="text-body-sm text-foreground/70 font-medium animate-pulse tracking-wide" style={{ animationDuration: '2.5s' }}>
+        <span 
+          className="text-sm text-foreground/70 font-medium tracking-wide" 
+          style={!isReducedMotion ? { animation: 'brandOpacityBreath 3s ease-in-out infinite' } : {}}
+        >
           {text}
         </span>
       )}
