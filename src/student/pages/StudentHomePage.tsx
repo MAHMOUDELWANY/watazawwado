@@ -16,9 +16,6 @@ import {
   CreditCard,
   ExternalLink,
   MessageCircle,
-  Sparkles,
-  ChevronRight,
-  ShieldCheck,
   Award,
   RefreshCw
 } from 'lucide-react';
