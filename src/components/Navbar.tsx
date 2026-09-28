@@ -3,7 +3,7 @@ import { ThemeToggle } from './ui/ThemeToggle';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { Menu, X, Globe, Sparkles } from 'lucide-react';
+import { Menu, X, Globe } from 'lucide-react';
 import { Language, ThemeMode } from '../types';
 import { ARABIC_TRANSLATIONS } from '../data/content';
 

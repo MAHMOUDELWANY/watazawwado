@@ -35,17 +35,7 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
     if (currentTarget) {
       // Add a tiny bit of padding around the target
       const rect = currentTarget.getBoundingClientRect();
-      setTargetRect({
-        top: rect.top - 8,
-        left: rect.left - 8,
-        width: rect.width + 16,
-        height: rect.height + 16,
-        bottom: rect.bottom + 8,
-        right: rect.right + 8,
-        x: rect.x - 8,
-        y: rect.y - 8,
-        toJSON: rect.toJSON
-      });
+      setTargetRect(new DOMRect(rect.x - 8, rect.y - 8, rect.width + 16, rect.height + 16));
       // Scroll into view if needed
       currentTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
