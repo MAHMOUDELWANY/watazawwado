@@ -81,7 +81,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             </Link>
           ))}
 
-
           {onOpenManageModal && (
             <button
               type="button"

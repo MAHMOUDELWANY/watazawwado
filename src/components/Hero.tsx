@@ -124,7 +124,6 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
                 <ArrowRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
               </button>
 
-
               <a
                 href="#services"
                 id="hero-learn-more-btn"

@@ -36,9 +36,7 @@ export const GetStartedModal: React.FC<GetStartedModalProps> = ({
   if (!isOpen) return null;
 
   const isAr = lang === 'ar';
-
-
-  const handleOpenSignup = () => {
+const handleOpenSignup = () => {
     onClose();
     onOpenStudentSignup();
   };
@@ -101,8 +99,7 @@ export const GetStartedModal: React.FC<GetStartedModalProps> = ({
           </div>
 
           {/* Primary Pathways Selection: Guest vs Student */}
-          <div className="space-y-4">
-            {/* OPTION 1: Continue as Student (Student Account) */}
+          <div className="space-y-4">            {/* OPTION 1: Continue as Student (Student Account) */}
             <div 
               className="p-5 rounded-2xl bg-surface-subtle border border-primary/30 hover:border-primary hover:shadow-md transition-all group"
             >
