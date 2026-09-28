@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+﻿import crypto from 'crypto';
 import { MASTER_SPEC } from '../src/data/master_spec.js';
 import express from 'express';
 import { DateTime } from 'luxon';
@@ -280,7 +280,7 @@ app.get('/api/integrations/google-calendar/callback', async (req: any, res: any)
             h2 { color: #BA7A6A; margin-top: 0; font-size: 20px; }
             p { color: #574F5A; font-size: 14px; line-height: 1.5; margin-bottom: 24px; }
             button {
-              background: #6F907D;
+              background: #087D91;
               color: white;
               border: none;
               border-radius: 8px;
@@ -429,7 +429,7 @@ app.get('/api/integrations/google-calendar/callback', async (req: any, res: any)
         <head><title>Integration Successful</title></head>
         <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #FAF8F5; color: #362E3B;">
           <div style="text-align: center;">
-            <h2 style="color: #6F907D;">Integration Successful!</h2>
+            <h2 style="color: #087D91;">Integration Successful!</h2>
             <p>Google Calendar has been connected. You can close this window.</p>
             <script>
               if (window.opener) {

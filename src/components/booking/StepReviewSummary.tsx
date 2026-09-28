@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion } from 'motion/react';
 import {
   Check,
@@ -72,12 +72,12 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
       </div>
 
       {/* Main Review Card */}
-      <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-[#231D28] border border-[#87A878]/30 shadow-xs space-y-5">
+      <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-[#231D28] border border-primary/30 shadow-xs space-y-5">
         {/* Service & Goal */}
         <div className="flex items-start justify-between gap-4 pb-4 border-b border-[#D5D0CA] dark:border-[#3E3545]">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#6B5B73] dark:text-[#B8A9C9]">
-              <BookOpen className="w-3.5 h-3.5 text-[#87A878]" />
+              <BookOpen className="w-3.5 h-3.5 text-primary" />
               <span>{isEn ? 'Selected Discipline' : 'المادة المختارة'}</span>
             </div>
             <h3 className="font-serif text-lg font-medium text-[#362E3B] dark:text-[#F5E6D3]">
@@ -110,13 +110,13 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
         <div className="flex items-start justify-between gap-4 pb-4 border-b border-[#D5D0CA] dark:border-[#3E3545]">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#6B5B73] dark:text-[#B8A9C9]">
-              <Calendar className="w-3.5 h-3.5 text-[#87A878]" />
+              <Calendar className="w-3.5 h-3.5 text-primary" />
               <span>{isEn ? 'Scheduled Date & Time' : 'الموعد والتوقيت'}</span>
             </div>
             <div className="text-base font-serif font-medium text-[#362E3B] dark:text-[#F5E6D3] flex flex-wrap items-center gap-2">
               <span>{formData.date}</span>
               <span>•</span>
-              <span className="text-[#87A878] font-semibold">{formData.timeSlot?.timeDisplay}</span>
+              <span className="text-primary font-semibold">{formData.timeSlot?.timeDisplay}</span>
             </div>
             <div className="text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]/70 flex flex-wrap items-center gap-2">
               <span className="flex items-center gap-1">
@@ -144,7 +144,7 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
         <div className="flex items-start justify-between gap-4 pb-4 border-b border-[#D5D0CA] dark:border-[#3E3545]">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#6B5B73] dark:text-[#B8A9C9]">
-              <User className="w-3.5 h-3.5 text-[#87A878]" />
+              <User className="w-3.5 h-3.5 text-primary" />
               <span>{isEn ? 'Student & Contact' : 'بيانات الطالب والتواصل'}</span>
             </div>
 
@@ -168,12 +168,12 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
 
             <div className="text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]/70 flex flex-wrap items-center gap-3">
               <span className="flex items-center gap-1">
-                <Mail className="w-3 h-3 text-[#87A878]" />
+                <Mail className="w-3 h-3 text-primary" />
                 {isChild ? formData.parentEmail : formData.email}
               </span>
               {(isChild ? formData.parentWhatsapp : formData.whatsapp) && (
                 <span className="flex items-center gap-1">
-                  <Phone className="w-3 h-3 text-[#87A878]" />
+                  <Phone className="w-3 h-3 text-primary" />
                   {isChild ? formData.parentWhatsapp : formData.whatsapp}
                 </span>
               )}
@@ -206,7 +206,7 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
           </div>
 
           <div className="text-end">
-            <span className="font-serif text-2xl font-bold text-[#87A878] dark:text-[#87A878]">
+            <span className="font-serif text-2xl font-bold text-primary dark:text-primary">
               {isTrial
                 ? (isEn ? 'FREE ($0.00)' : 'مجاناً ($٠.٠٠)')
                 : isPackageCredit
@@ -218,8 +218,8 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
       </div>
 
       {/* Cancellation / Rescheduling Policy Notice (Master Spec Section 21) */}
-      <div className="p-4 rounded-2xl bg-[#EDE3D4] dark:bg-[#29232F] border border-[#87A878]/30 flex items-start gap-3 text-xs text-[#362E3B]/80 dark:text-[#D5D0CA]/80">
-        <ShieldCheck className="w-5 h-5 text-[#87A878] shrink-0 mt-0.5" />
+      <div className="p-4 rounded-2xl bg-[#EDE3D4] dark:bg-[#29232F] border border-primary/30 flex items-start gap-3 text-xs text-[#362E3B]/80 dark:text-[#D5D0CA]/80">
+        <ShieldCheck className="w-5 h-5 text-primary shrink-0 mt-0.5" />
         <div className="leading-relaxed">
           <strong className="text-[#362E3B] dark:text-[#F5E6D3] block mb-0.5">
             {isEn ? 'Cancellation & Rescheduling Policy' : 'سياسة الإلغاء وتغيير الموعد'}

@@ -37,7 +37,6 @@ export default function App() {
               <Route path="/teacher/*" element={<DashboardApp />} />
               <Route path="/dashboard/*" element={<DashboardApp />} />
               <Route path="/student/*" element={<StudentApp />} />
-              <Route path="/demo" element={<Navigate to="/student/demo" replace />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </ErrorBoundary>

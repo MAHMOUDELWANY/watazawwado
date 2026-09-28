@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Search, Globe, Check } from 'lucide-react';
 import { MAJOR_TIMEZONES } from '../../booking/mockData';
@@ -42,11 +42,11 @@ export const TimezoneSelectorModal: React.FC<TimezoneSelectorModalProps> = ({
             initial={{ scale: 0.95, opacity: 0, y: 10 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 10 }}
-            className="w-full max-w-md bg-[#F5E6D3] dark:bg-[#231D28] rounded-3xl border border-[#87A878]/30 shadow-2xl p-6 text-[#362E3B] dark:text-[#F5E6D3] max-h-[85vh] flex flex-col"
+            className="w-full max-w-md bg-[#F5E6D3] dark:bg-[#231D28] rounded-3xl border border-primary/30 shadow-2xl p-6 text-[#362E3B] dark:text-[#F5E6D3] max-h-[85vh] flex flex-col"
           >
             <div className="flex items-center justify-between pb-3 border-b border-[#D5D0CA] dark:border-[#3E3545]">
               <div className="flex items-center gap-2">
-                <Globe className="w-5 h-5 text-[#87A878]" />
+                <Globe className="w-5 h-5 text-primary" />
                 <h3 className="font-serif text-lg font-medium">
                   {isEn ? 'Select Your Timezone' : 'اختر منطقتك الزمنية'}
                 </h3>
@@ -68,7 +68,7 @@ export const TimezoneSelectorModal: React.FC<TimezoneSelectorModalProps> = ({
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={isEn ? 'Search city or timezone (e.g. Toronto, London)...' : 'ابحث عن مدينة أو منطقة زمنية...'}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-xs text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#87A878]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-xs text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
             </div>

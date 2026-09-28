@@ -80,95 +80,11 @@
   color-scheme: light;
   
   /* ============================================================
-     AUTHENTICATED APP PALETTE (SAGE GREEN)
-     Preserved to prevent visual regression in Teacher/Student portals.
+     WATAZAWWADO UNIFIED BRAND PALETTE
+     Teal #087D91 · Copper #8B4935 · Red #C51F24 · Beige #D8C6AE
      ============================================================ */
-  --background: #F8F6F0; 
-  --foreground: #30332F;
 
-  --surface: #FFFFFF;
-  --surface-foreground: #30332F;
-  --surface-subtle: #F0EDE6;
-  --surface-warm: #EDE7DC;
-
-  --muted: #EDEAE1;
-  --muted-foreground: #6B6965;
-
-  --border: #D5D3CC;
-  --border-subtle: #E6E4DD;
-
-  --primary: #8FAE9B; 
-  --primary-foreground: #FFFFFF;
-  --primary-hover: #7D9B88;
-
-  --secondary: #D9CBB8;
-  --secondary-foreground: #4A3E31;
-
-  --accent: #8B4935;
-  --accent-foreground: #FFFFFF;
-
-  --brand: #C51F24;
-
-  --destructive: #D16D6A;
-  --destructive-foreground: #FFFFFF;
-
-  --success: #6B8E70;
-  --success-foreground: #FFFFFF;
-
-  --warning: #DE9B61;
-  --warning-foreground: #FFFFFF;
-
-  --focus: #8FAE9B;
-
-  --radius: 0.5rem;
-}
-
-:root.dark {
-  color-scheme: dark;
-  
-  --background: #1A1C1A;
-  --foreground: #EFEFEF;
-
-  --surface: #242724;
-  --surface-foreground: #EFEFEF;
-  --surface-subtle: #2C302C;
-  --surface-warm: #2A2520;
-
-  --muted: #2C302C;
-  --muted-foreground: #989B98;
-
-  --border: #3A3E3A;
-  --border-subtle: #2C302C;
-
-  --primary: #8FAE9B;
-  --primary-foreground: #1A1C1A;
-  --primary-hover: #A3C1AF;
-
-  --secondary: #3D3E3A;
-  --secondary-foreground: #D9CBB8;
-
-  --accent: #A85F49;
-  --accent-foreground: #FFFFFF;
-
-  --brand: #D63338;
-
-  --destructive: #D16D6A;
-  --destructive-foreground: #FFFFFF;
-
-  --success: #6B8E70;
-  --success-foreground: #FFFFFF;
-
-  --warning: #DE9B61;
-  --warning-foreground: #FFFFFF;
-
-  --focus: #8FAE9B;
-}
-
-/* ============================================================
-   PUBLIC WEBSITE PALETTE (TEAL/COPPER)
-   Scoped specifically to public pages to safely apply the new brand.
-   ============================================================ */
-.theme-public {
+  /* Environment — warm ivory study room */
   --background: #F8F6F0; 
   --foreground: #2C2A27;
 
@@ -183,65 +99,88 @@
   --border: #D5D3CC;
   --border-subtle: #E6E4DD;
 
+  /* Primary — Teal (interactive, CTA, links, navigation) */
   --primary: #087D91; 
   --primary-foreground: #FFFFFF;
   --primary-hover: #066A7C;
 
+  /* Secondary — Warm beige (supporting backgrounds, soft buttons) */
   --secondary: #D8C6AE;
   --secondary-foreground: #4A3E31;
 
+  /* Accent — Copper (editorial highlights, category markers) */
   --accent: #8B4935;
   --accent-foreground: #FFFFFF;
 
+  /* Brand — Red (logo, identity, sparingly) */
   --brand: #C51F24;
+  --brand-soft: color-mix(in srgb, #C51F24 12%, transparent);
 
+  /* Semantic Status Colors */
   --destructive: #C51F24;
   --destructive-foreground: #FFFFFF;
 
-  --success: #5A7D5E;
+  --success: #2E7D4F;
   --success-foreground: #FFFFFF;
 
-  --warning: #C48B3F;
+  --warning: #B8860B;
   --warning-foreground: #FFFFFF;
 
+  --info: #087D91;
+  --info-foreground: #FFFFFF;
+
   --focus: #087D91;
+
+  --radius: 0.5rem;
 }
 
-.dark .theme-public {
-  --background: #1A1C1A;
-  --foreground: #EFEFEF;
+:root.dark {
+  color-scheme: dark;
+  
+  /* Environment — deep warm dark */
+  --background: #171614;
+  --foreground: #ECEAE6;
 
-  --surface: #242724;
-  --surface-foreground: #EFEFEF;
-  --surface-subtle: #2C302C;
-  --surface-warm: #2A2520;
+  --surface: #211F1D;
+  --surface-foreground: #ECEAE6;
+  --surface-subtle: #2A2826;
+  --surface-warm: #282320;
 
-  --muted: #2C302C;
-  --muted-foreground: #989B98;
+  --muted: #2A2826;
+  --muted-foreground: #9B9790;
 
-  --border: #3A3E3A;
-  --border-subtle: #2C302C;
+  --border: #3D3A37;
+  --border-subtle: #2E2C2A;
 
+  /* Primary — Teal (brighter in dark mode for contrast) */
   --primary: #0A9DB5;
-  --primary-foreground: #111311;
+  --primary-foreground: #111110;
   --primary-hover: #0CADC7;
 
+  /* Secondary */
   --secondary: #3D3630;
   --secondary-foreground: #D8C6AE;
 
-  --accent: #A85F49;
+  /* Accent — Copper (warmer in dark) */
+  --accent: #B06A52;
   --accent-foreground: #FFFFFF;
 
+  /* Brand — Red */
   --brand: #D63338;
+  --brand-soft: color-mix(in srgb, #D63338 15%, transparent);
 
+  /* Semantic Status Colors */
   --destructive: #D63338;
   --destructive-foreground: #FFFFFF;
 
-  --success: #7DA882;
-  --success-foreground: #111311;
+  --success: #4CAF6E;
+  --success-foreground: #111110;
 
   --warning: #E8AD76;
-  --warning-foreground: #111311;
+  --warning-foreground: #111110;
+
+  --info: #0A9DB5;
+  --info-foreground: #111110;
 
   --focus: #0A9DB5;
 }

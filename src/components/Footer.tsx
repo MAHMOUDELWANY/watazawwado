@@ -155,14 +155,6 @@ export const Footer: React.FC<FooterProps> = ({
             )}
             <span>•</span>
             <a
-              href="/student/demo"
-              id="footer-demo-link"
-              className="hover:underline font-medium text-primary transition-colors"
-            >
-              {isEn ? 'Explore as Guest' : 'استكشف كضيف'}
-            </a>
-            <span>•</span>
-            <a
               href="/staff/login"
               className="text-muted-foreground hover:text-foreground hover:underline font-medium flex items-center gap-1"
             >

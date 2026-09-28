@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { BookOpen, Globe, Sparkles, Check, ArrowRight, Video, Calendar, ShieldCheck } from 'lucide-react';
 import { Language } from '../types';
@@ -190,7 +190,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 sm:mb-16">
           <div className="max-w-2xl">
             {/* Index Tag */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#87A878]/15 dark:bg-[#87A878]/25 border border-[#87A878]/30 text-[#446237] dark:text-[#A3BF96] text-xs font-semibold tracking-wide mb-4">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/15 dark:bg-primary/25 border border-primary/30 text-primary-hover dark:text-[#A3BF96] text-xs font-semibold tracking-wide mb-4">
               <span className="font-mono text-[11px] font-bold">02</span>
               <span>{isEn ? 'Your Choice of Discipline' : 'اختيارك الشخصي'}</span>
             </div>
@@ -199,12 +199,12 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
               {isEn ? (
                 <>
                   Choose the subject you need.{' '}
-                  <span className="text-[#87A878] dark:text-[#A3BF96]">Switch when your goals change.</span>
+                  <span className="text-primary dark:text-[#A3BF96]">Switch when your goals change.</span>
                 </>
               ) : (
                 <>
                   اختر التخصص الذي تريده.{' '}
-                  <span className="text-[#87A878] dark:text-[#A3BF96]">وغيّر تركيزك متى تطورت أهدافك.</span>
+                  <span className="text-primary dark:text-[#A3BF96]">وغيّر تركيزك متى تطورت أهدافك.</span>
                 </>
               )}
             </h2>
@@ -232,19 +232,19 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
                 whileHover={{ y: -4 }}
                 className={`p-6 rounded-2xl sm:rounded-3xl border transition-all cursor-pointer flex flex-col justify-between ${
                   isSelected
-                    ? 'bg-[#F8F6F0] dark:bg-[#26202C] border-[#87A878] shadow-lg shadow-[#87A878]/15 ring-2 ring-[#87A878]/20'
-                    : 'bg-white dark:bg-[#231E2A] border-[#D5D0CA] dark:border-[#3E3545] hover:border-[#87A878]/60 shadow-xs'
+                    ? 'bg-[#F8F6F0] dark:bg-[#26202C] border-primary shadow-lg shadow-primary/15 ring-2 ring-primary/20'
+                    : 'bg-white dark:bg-[#231E2A] border-[#D5D0CA] dark:border-[#3E3545] hover:border-primary/60 shadow-xs'
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between text-xs font-mono text-[#6B5B73] dark:text-[#B8A9C9] mb-4">
                     <span>{pillar.number}</span>
-                    <span className="text-[11px] text-[#87A878] font-medium bg-[#87A878]/10 px-2.5 py-0.5 rounded-full">
+                    <span className="text-[11px] text-primary font-medium bg-primary/10 px-2.5 py-0.5 rounded-full">
                       {pillar.status}
                     </span>
                   </div>
 
-                  <div className="text-xs font-semibold text-[#87A878] dark:text-[#A3BF96] mb-1">
+                  <div className="text-xs font-semibold text-primary dark:text-[#A3BF96] mb-1">
                     {pillar.badge}
                   </div>
 
@@ -258,13 +258,13 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
                 </div>
 
                 <div className="pt-4 border-t border-[#D5D0CA]/60 dark:border-[#3E3545]/60 flex items-center justify-between">
-                  <span className="text-xs font-semibold text-[#87A878] dark:text-[#A3BF96]">
+                  <span className="text-xs font-semibold text-primary dark:text-[#A3BF96]">
                     {isSelected ? (isEn ? '● Active Focus' : '● التخصص المختار') : (isEn ? 'Select Focus' : 'اختر المادة')}
                   </span>
                   <div
                     className={`w-5 h-5 rounded-full border flex items-center justify-center transition-colors ${
                       isSelected
-                        ? 'bg-[#87A878] border-[#87A878] text-white'
+                        ? 'bg-primary border-primary text-white'
                         : 'border-[#D5D0CA] dark:border-[#3E3545]'
                     }`}
                   >
@@ -281,7 +281,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
         {/* ========================================================================= */}
         <motion.div
           layout
-          className="rounded-2xl sm:rounded-3xl bg-[#87A878] text-white p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg shadow-[#87A878]/20 mb-8"
+          className="rounded-2xl sm:rounded-3xl bg-primary text-white p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg shadow-primary/20 mb-8"
         >
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <span className="w-2.5 h-2.5 rounded-full bg-white animate-pulse" />
@@ -325,11 +325,11 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
                   onClick={() => setActiveLevelIndex(idx)}
                   className={`w-full text-left sm:text-start p-4 rounded-xl border transition-all cursor-pointer flex items-start gap-3 ${
                     isLvlSelected
-                      ? 'bg-white dark:bg-[#1E1923] border-[#87A878] shadow-sm'
+                      ? 'bg-white dark:bg-[#1E1923] border-primary shadow-sm'
                       : 'bg-transparent border-transparent hover:bg-white/60 dark:hover:bg-[#29232F]'
                   }`}
                 >
-                  <span className="font-mono text-xs font-bold text-[#87A878] dark:text-[#A3BF96] mt-0.5">
+                  <span className="font-mono text-xs font-bold text-primary dark:text-[#A3BF96] mt-0.5">
                     0{idx + 1}
                   </span>
                   <div className="flex-1">
@@ -353,8 +353,8 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
                 <div className="text-xs font-semibold text-[#6B5B73] dark:text-[#B8A9C9]">
                   {isEn ? 'Selected Module Specification' : 'تفاصيل الوحدة المختارة'}
                 </div>
-                <span className="text-[10px] font-mono text-[#87A878] dark:text-[#A3BF96] bg-[#87A878]/10 px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#87A878] animate-pulse" />
+                <span className="text-[10px] font-mono text-primary dark:text-[#A3BF96] bg-primary/10 px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                   {isEn ? 'Ready in Free Trial' : 'جاهز للجلسة التجريبية'}
                 </span>
               </div>
@@ -364,7 +364,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
                 
                 {/* Learner Node */}
                 <div className="w-full sm:w-44 p-4 rounded-xl bg-[#FAF7F2] dark:bg-[#29232F] border border-[#D5D0CA] dark:border-[#3E3545] text-center">
-                  <div className="w-8 h-8 rounded-full bg-[#87A878]/15 text-[#87A878] mx-auto mb-2 flex items-center justify-center font-bold text-xs">
+                  <div className="w-8 h-8 rounded-full bg-primary/15 text-primary mx-auto mb-2 flex items-center justify-center font-bold text-xs">
                     You
                   </div>
                   <div className="font-semibold text-xs text-[#362E3B] dark:text-[#F5E6D3]">
@@ -377,27 +377,27 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
 
                 {/* Connection Bridge */}
                 <div className="flex flex-col items-center gap-1">
-                  <span className="text-[10px] font-mono font-semibold text-[#87A878] bg-[#87A878]/15 px-2 py-0.5 rounded">
+                  <span className="text-[10px] font-mono font-semibold text-primary bg-primary/15 px-2 py-0.5 rounded">
                     Direct Zoom HD
                   </span>
-                  <div className="w-16 h-0.5 bg-[#87A878]/40 relative">
+                  <div className="w-16 h-0.5 bg-primary/40 relative">
                     <motion.div
                       animate={{ x: [0, 60, 0] }}
                       transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                      className="w-2 h-2 rounded-full bg-[#87A878] absolute -top-[3px]"
+                      className="w-2 h-2 rounded-full bg-primary absolute -top-[3px]"
                     />
                   </div>
                 </div>
 
                 {/* Teacher Node */}
                 <div className="w-full sm:w-44 p-4 rounded-xl bg-[#FAF7F2] dark:bg-[#29232F] border border-[#D5D0CA] dark:border-[#3E3545] text-center">
-                  <div className="w-8 h-8 rounded-full bg-[#87A878]/15 text-[#87A878] mx-auto mb-2 flex items-center justify-center font-bold text-xs">
+                  <div className="w-8 h-8 rounded-full bg-primary/15 text-primary mx-auto mb-2 flex items-center justify-center font-bold text-xs">
                     M
                   </div>
                   <div className="font-semibold text-xs text-[#362E3B] dark:text-[#F5E6D3]">
                     {isEn ? 'Ustadh Mahmoud' : 'الأستاذ محمود'}
                   </div>
-                  <div className="text-[10px] text-[#87A878] flex items-center justify-center gap-1">
+                  <div className="text-[10px] text-primary flex items-center justify-center gap-1">
                     <ShieldCheck className="w-3 h-3" />
                     <span>Al-Azhar Verified</span>
                   </div>
@@ -418,7 +418,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
 
             {/* Bottom confirmation */}
             <div className="mt-6 pt-4 border-t border-[#D5D0CA]/80 dark:border-[#3E3545] flex items-center justify-between text-xs">
-              <span className="text-[#87A878] font-medium flex items-center gap-1.5">
+              <span className="text-primary font-medium flex items-center gap-1.5">
                 <Check className="w-4 h-4" />
                 <span>
                   {isEn ? `Module ready for your free trial` : `الوحدة جاهزة لجلسة التقييم الأولى`}
@@ -426,7 +426,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
               </span>
               <button
                 onClick={() => onOpenTrialModal(currentPillarData.id)}
-                className="font-semibold text-[#362E3B] dark:text-[#F5E6D3] hover:text-[#87A878] flex items-center gap-1 cursor-pointer transition-colors"
+                className="font-semibold text-[#362E3B] dark:text-[#F5E6D3] hover:text-primary flex items-center gap-1 cursor-pointer transition-colors"
               >
                 <span>{isEn ? 'Start free trial' : 'ابدأ التجربة المجانية'}</span>
                 <ArrowRight className={`w-3.5 h-3.5 ${isRtl ? 'rotate-180' : ''}`} />

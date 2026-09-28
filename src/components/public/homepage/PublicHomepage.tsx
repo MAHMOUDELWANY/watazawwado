@@ -154,13 +154,13 @@ export function PublicHomepage() {
 
       {/* 4. HOW IT WORKS */}
       <PublicSection id="approach" variant="transition-neutral">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="max-w-3xl mx-auto">
           <div>
             <EditorialHeading eyebrow={isEn ? 'The Journey' : 'رحلة التعلم'}>
               {isEn ? 'How learning works' : 'كيف تبدأ رحلتك'}
             </EditorialHeading>
             <StudyLine />
-            <div className="space-y-8">
+            <div className="space-y-8 mt-10">
               <div className="flex gap-4">
                 <span className="text-sm font-bold text-accent font-editorial pt-1">01</span>
                 <div>
@@ -183,20 +183,6 @@ export function PublicHomepage() {
                 </div>
               </div>
             </div>
-          </div>
-          <div className="bg-surface-warm p-8 rounded-2xl border border-border-subtle relative">
-            <div className="absolute top-4 right-4 rtl:right-auto rtl:left-4">
-              <Sparkles className="w-5 h-5 text-accent/40" />
-            </div>
-            <h4 className="font-editorial text-xl mb-4 text-foreground">{isEn ? 'Try the interactive demo' : 'استكشف المنصة كضيف'}</h4>
-            <p className="text-muted-foreground text-sm mb-6">
-              {isEn 
-                ? 'Want to see how booking works before creating an account? Explore the student portal as a guest.'
-                : 'هل تريد رؤية كيفية الحجز وإدارة الدروس قبل إنشاء حساب؟ استكشف بوابة الطالب كضيف.'}
-            </p>
-            <PublicButton variant="secondary" onClick={() => window.location.href = '/student/demo'}>
-              {isEn ? 'Explore Guest Demo' : 'عرض تجريبي للضيوف'}
-            </PublicButton>
           </div>
         </div>
       </PublicSection>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import {
   Calendar,
@@ -157,7 +157,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-[#D5D0CA] dark:border-[#3E3545]">
         <div>
           <h2 className="font-serif text-2xl font-medium text-[#362E3B] dark:text-[#F5E6D3] flex items-center gap-2.5">
-            <Layers className="w-6 h-6 text-[#87A878]" />
+            <Layers className="w-6 h-6 text-primary" />
             <span>{isEn ? 'Calendar & Classroom Integrations' : 'ربط التقويم وقاعات التدريس'}</span>
           </h2>
           <p className="text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]/70 mt-1">
@@ -172,7 +172,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
           onClick={fetchStatus}
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#231D28] text-xs font-medium hover:bg-[#EDE3D4] cursor-pointer"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-[#87A878]' : ''}`} />
+          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-primary' : ''}`} />
           <span>{isEn ? 'Refresh Status' : 'تحديث الحالة'}</span>
         </button>
       </div>
@@ -199,7 +199,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
       {/* Integration Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* Google Calendar Card */}
-        <div className="p-5 rounded-3xl bg-white dark:bg-[#231D28] border border-[#87A878]/30 shadow-xs flex flex-col justify-between">
+        <div className="p-5 rounded-3xl bg-white dark:bg-[#231D28] border border-primary/30 shadow-xs flex flex-col justify-between">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -294,7 +294,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
         </div>
 
         {/* Zoom Classroom Card */}
-        <div className="p-5 rounded-3xl bg-white dark:bg-[#231D28] border border-[#87A878]/30 shadow-xs flex flex-col justify-between">
+        <div className="p-5 rounded-3xl bg-white dark:bg-[#231D28] border border-primary/30 shadow-xs flex flex-col justify-between">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -351,11 +351,11 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
         </div>
 
         {/* Transactional Email (Brevo) Card */}
-        <div className="p-5 rounded-3xl bg-white dark:bg-[#231D28] border border-[#87A878]/30 shadow-xs flex flex-col justify-between">
+        <div className="p-5 rounded-3xl bg-white dark:bg-[#231D28] border border-primary/30 shadow-xs flex flex-col justify-between">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 text-[#6F907D] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 text-primary-hover flex items-center justify-center">
                   <Mail className="w-5 h-5" />
                 </div>
                 <div>
@@ -395,7 +395,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
           </div>
 
           <div className="pt-4 border-t border-[#D5D0CA]/50 dark:border-[#3E3545] mt-4 flex items-center justify-between">
-            <span className="text-xs font-medium text-[#6F907D]">
+            <span className="text-xs font-medium text-primary-hover">
               {status?.email?.isConfigured ? (isEn ? 'Ready (300/day free)' : 'جاهز') : (isEn ? 'Set BREVO_API_KEY' : 'يتطلب مفتاح Brevo')}
             </span>
 
@@ -407,10 +407,10 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
       </div>
 
       {/* Timezone & DST Live Audit Matrix */}
-      <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-[#231D28] border border-[#87A878]/30 shadow-xs space-y-4">
+      <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-[#231D28] border border-primary/30 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-3 border-b border-[#D5D0CA] dark:border-[#3E3545]">
           <div className="flex items-center gap-2">
-            <Globe className="w-5 h-5 text-[#87A878]" />
+            <Globe className="w-5 h-5 text-primary" />
             <h3 className="font-serif text-base font-semibold text-[#362E3B] dark:text-[#F5E6D3]">
               {isEn ? 'International Timezone Matrix & DST Validator' : 'مصفوفة المناطق الزمنية والتوقيت الصيفي'}
             </h3>
@@ -477,7 +477,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                   <td className="py-2.5 px-3 font-medium text-[#362E3B] dark:text-[#F5E6D3]">
                     {item.sampleLocalTime}
                   </td>
-                  <td className="py-2.5 px-3 text-[#87A878] font-semibold">
+                  <td className="py-2.5 px-3 text-primary font-semibold">
                     {item.cairoTime}
                   </td>
                 </tr>
@@ -488,7 +488,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
         {/* Self-Test Suite Report */}
         <div className="pt-4 border-t border-[#D5D0CA]/50 dark:border-[#3E3545] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="flex items-center gap-2 text-xs text-[#362E3B]/80 dark:text-[#D5D0CA]/80">
-            <ShieldCheck className="w-4 h-4 text-[#87A878]" />
+            <ShieldCheck className="w-4 h-4 text-primary" />
             <span>
               {isEn
                 ? 'Integration & Timezone test suite verified (100% test coverage for DST shifts & 3-hour policy).'
@@ -507,7 +507,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                 type: 'success'
               });
             }}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#87A878]/20 hover:bg-[#87A878]/30 text-[#4D6A42] dark:text-[#A4C497] font-semibold text-xs transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary/20 hover:bg-primary/30 text-[#4D6A42] dark:text-[#A4C497] font-semibold text-xs transition-colors cursor-pointer"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>{isEn ? 'Run Self-Test Suite' : 'تشغيل الفحص الآلي'}</span>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { DateTime } from 'luxon';
 import { X, User, Mail, Phone, Globe, Shield, BookOpen, AlertCircle, Check } from 'lucide-react';
 import { DashboardStudentDetail } from '../types';
@@ -126,13 +126,13 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm overflow-y-auto">
       <div 
-        className="relative w-full max-w-2xl bg-white dark:bg-[#2A2431] rounded-2xl shadow-xl border border-[#D5D0CA]/40 dark:border-[#3E3545]/40 overflow-hidden my-8"
+        className="relative w-full max-w-2xl bg-white dark:bg-[#2A2431] rounded-2xl shadow-xl border border-border/40 dark:border-border/40 overflow-hidden my-8"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#D5D0CA]/30 dark:border-[#3E3545]/30 bg-[#F8F6F0] dark:bg-[#1E1923]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border/30 dark:border-border/30 bg-[#F8F6F0] dark:bg-[#1E1923]">
           <div>
-            <h2 className="text-lg font-serif font-bold text-[#362E3B] dark:text-[#F5E6D3]">
+            <h2 className="text-lg font-serif font-bold text-foreground dark:text-foreground">
               Edit Student Profile
             </h2>
             <p className="text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]/70">
@@ -167,7 +167,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
                 value={name}
                 onChange={e => setName(e.target.value)}
                 required
-                className="w-full px-3.5 py-2 text-sm rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+                className="w-full px-3.5 py-2 text-sm rounded-xl border border-border dark:border-border bg-surface dark:bg-surface text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="e.g. Zaid Rahman"
               />
             </div>
@@ -179,7 +179,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
               <select
                 value={status}
                 onChange={e => setStatus(e.target.value as any)}
-                className="w-full px-3.5 py-2 text-sm rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+                className="w-full px-3.5 py-2 text-sm rounded-xl border border-border dark:border-border bg-surface dark:bg-surface text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="active">Active (Currently Learning)</option>
                 <option value="paused">Paused (Temporarily on hold)</option>
@@ -197,7 +197,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
               <select
                 value={learnerType}
                 onChange={e => setLearnerType(e.target.value as any)}
-                className="w-full px-3.5 py-2 text-sm rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+                className="w-full px-3.5 py-2 text-sm rounded-xl border border-border dark:border-border bg-surface dark:bg-surface text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="">Unspecified (Unknown)</option>
                 <option value="adult">Adult Learner</option>
@@ -213,7 +213,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
                 type="text"
                 value={parentName}
                 onChange={e => setParentName(e.target.value)}
-                className="w-full px-3.5 py-2 text-sm rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+                className="w-full px-3.5 py-2 text-sm rounded-xl border border-border dark:border-border bg-surface dark:bg-surface text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="e.g. Tariq Rahman"
               />
             </div>
@@ -221,9 +221,9 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
 
           {/* Parent / Guardian Contact Details (Optional) */}
           {(learnerType === 'child' || parentName.trim().length > 0) && (
-            <div className="p-3.5 rounded-xl bg-[#F8F6F0]/80 dark:bg-[#1E1923]/60 border border-[#D5D0CA]/40 dark:border-[#3E3545]/40 space-y-3">
-              <span className="text-xs font-semibold text-[#362E3B] dark:text-[#F5E6D3] flex items-center gap-1.5">
-                <Shield className="w-3.5 h-3.5 text-[#8FAE9B]" />
+            <div className="p-3.5 rounded-xl bg-[#F8F6F0]/80 dark:bg-[#1E1923]/60 border border-border/40 dark:border-border/40 space-y-3">
+              <span className="text-xs font-semibold text-foreground dark:text-foreground flex items-center gap-1.5">
+                <Shield className="w-3.5 h-3.5 text-primary" />
                 Parent / Guardian Contact (Optional)
               </span>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -235,7 +235,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
                     type="email"
                     value={parentEmail}
                     onChange={e => setParentEmail(e.target.value)}
-                    className="w-full px-3 py-1.5 text-sm rounded-lg border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+                    className="w-full px-3 py-1.5 text-sm rounded-lg border border-border dark:border-border bg-surface dark:bg-surface text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="parent@example.com"
                   />
                 </div>
@@ -247,7 +247,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
                     type="text"
                     value={parentWhatsapp}
                     onChange={e => setParentWhatsapp(e.target.value)}
-                    className="w-full px-3 py-1.5 text-sm rounded-lg border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+                    className="w-full px-3 py-1.5 text-sm rounded-lg border border-border dark:border-border bg-surface dark:bg-surface text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="+1 555 987 6543"
                   />
                 </div>
@@ -265,7 +265,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                className="w-full px-3.5 py-2 text-sm rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+                className="w-full px-3.5 py-2 text-sm rounded-xl border border-border dark:border-border bg-surface dark:bg-surface text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="student@example.com"
               />
             </div>
@@ -278,7 +278,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
                 type="text"
                 value={whatsapp}
                 onChange={e => setWhatsapp(e.target.value)}
-                className="w-full px-3.5 py-2 text-sm rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+                className="w-full px-3.5 py-2 text-sm rounded-xl border border-border dark:border-border bg-surface dark:bg-surface text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="+1 555 123 4567"
               />
             </div>
@@ -294,7 +294,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
                 type="text"
                 value={country}
                 onChange={e => setCountry(e.target.value)}
-                className="w-full px-3.5 py-2 text-sm rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+                className="w-full px-3.5 py-2 text-sm rounded-xl border border-border dark:border-border bg-surface dark:bg-surface text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="e.g. Canada, United Kingdom, USA"
               />
             </div>
@@ -309,7 +309,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
                   setTimezone(e.target.value);
                   if (e.target.value) setCustomTimezone('');
                 }}
-                className="w-full px-3.5 py-2 text-sm rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+                className="w-full px-3.5 py-2 text-sm rounded-xl border border-border dark:border-border bg-surface dark:bg-surface text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 {COMMON_TIMEZONES.map(tz => (
                   <option key={tz.value} value={tz.value}>
@@ -325,7 +325,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
                     setCustomTimezone(e.target.value);
                     if (e.target.value) setTimezone('');
                   }}
-                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-[#D5D0CA]/70 dark:border-[#3E3545]/70 bg-white dark:bg-[#1E1923] text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-border/70 dark:border-border/70 bg-surface dark:bg-surface text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="Or enter custom IANA zone (e.g. Europe/Dublin)"
                 />
               </div>
@@ -340,7 +340,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
             <select
               value={currentLevel}
               onChange={e => setCurrentLevel(e.target.value)}
-              className="w-full px-3.5 py-2 text-sm rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+              className="w-full px-3.5 py-2 text-sm rounded-xl border border-border dark:border-border bg-surface dark:bg-surface text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="">Not assessed yet (Unknown)</option>
               <option value="beginner">Beginner (No prior knowledge)</option>
@@ -359,13 +359,13 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
               rows={3}
               value={notes}
               onChange={e => setNotes(e.target.value)}
-              className="w-full px-3.5 py-2 text-sm rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#1E1923] text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+              className="w-full px-3.5 py-2 text-sm rounded-xl border border-border dark:border-border bg-surface dark:bg-surface text-foreground dark:text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               placeholder="Background, student goals, special learning preferences..."
             />
           </div>
 
           {/* Footer Controls */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#D5D0CA]/30 dark:border-[#3E3545]/30">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-border/30 dark:border-border/30">
             <button
               type="button"
               onClick={onClose}
@@ -377,7 +377,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
             <button
               type="submit"
               disabled={saving}
-              className="px-5 py-2 text-xs font-medium rounded-xl bg-[#6F907D] hover:bg-[#5A7A67] text-white shadow-sm transition-colors flex items-center gap-1.5 disabled:opacity-50"
+              className="px-5 py-2 text-xs font-medium rounded-xl bg-primary hover:bg-primary-hover text-white shadow-sm transition-colors flex items-center gap-1.5 disabled:opacity-50"
             >
               {saving ? (
                 <span>Saving Changes...</span>

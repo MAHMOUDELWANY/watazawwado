@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion } from 'motion/react';
 import { ArrowLeft, MessageCircle, X, CheckCircle2 } from 'lucide-react';
 import { BookingMode, Language } from '../../booking/types';
@@ -67,7 +67,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
           <span
             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold tracking-wide ${
               mode === 'trial'
-                ? 'bg-[#87A878]/20 text-[#87A878] dark:text-[#87A878] border border-[#87A878]/30'
+                ? 'bg-primary/20 text-primary dark:text-primary border border-primary/30'
                 : 'bg-[#6B5B73]/15 text-[#6B5B73] dark:text-[#B8A9C9] border border-[#6B5B73]/30'
             }`}
           >
@@ -90,10 +90,10 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
             href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I have a question regarding booking a lesson.')}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:inline-flex items-center gap-1.5 text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]/70 hover:text-[#87A878] dark:hover:text-[#87A878] transition-colors"
+            className="hidden sm:inline-flex items-center gap-1.5 text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]/70 hover:text-primary dark:hover:text-primary transition-colors"
             title={isEn ? 'Ask a quick question first' : 'اسأل سؤالاً سريعاً على واتساب'}
           >
-            <MessageCircle className="w-3.5 h-3.5 text-[#87A878]" />
+            <MessageCircle className="w-3.5 h-3.5 text-primary" />
             <span>{isEn ? 'Ask Mahmoud on WhatsApp' : 'تواصل مع محمود على واتساب'}</span>
           </a>
 

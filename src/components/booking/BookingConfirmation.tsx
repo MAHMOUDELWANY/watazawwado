@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import {
   CheckCircle2,
@@ -126,12 +126,12 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', damping: 15, stiffness: 300, delay: 0.1 }}
-          className="w-16 h-16 rounded-full bg-[#87A878]/20 text-[#87A878] flex items-center justify-center mx-auto"
+          className="w-16 h-16 rounded-full bg-primary/20 text-primary flex items-center justify-center mx-auto"
         >
           <CheckCircle2 className="w-10 h-10" />
         </motion.div>
 
-        <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-[#EDE3D4] dark:bg-[#29232F] text-[#6B5B73] dark:text-[#B8A9C9] border border-[#87A878]/30">
+        <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-[#EDE3D4] dark:bg-[#29232F] text-[#6B5B73] dark:text-[#B8A9C9] border border-primary/30">
           {isEn ? `Booking Reference: ${confirmation.bookingReference}` : `رقم الحجز المرجعي: ${confirmation.bookingReference}`}
         </span>
 
@@ -154,10 +154,10 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
       </div>
 
       {/* Appointment Detail Card */}
-      <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-[#231D28] border border-[#87A878]/30 shadow-xs space-y-4">
+      <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-[#231D28] border border-primary/30 shadow-xs space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-4 border-b border-[#D5D0CA] dark:border-[#3E3545]">
           <div className="flex items-start gap-3">
-            <div className="p-2.5 rounded-xl bg-[#EDE3D4] dark:bg-[#1E1923] text-[#87A878]">
+            <div className="p-2.5 rounded-xl bg-[#EDE3D4] dark:bg-[#1E1923] text-primary">
               <Calendar className="w-5 h-5" />
             </div>
             <div>
@@ -167,14 +167,14 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
               <span className="text-sm font-medium text-[#362E3B] dark:text-[#F5E6D3]">
                 {confirmation.date}
               </span>
-              <span className="text-[11px] text-[#87A878] block">
+              <span className="text-[11px] text-primary block">
                 {confirmation.cairoTimeDisplay ? `(${confirmation.cairoTimeDisplay})` : ''}
               </span>
             </div>
           </div>
 
           <div className="flex items-start gap-3">
-            <div className="p-2.5 rounded-xl bg-[#EDE3D4] dark:bg-[#1E1923] text-[#87A878]">
+            <div className="p-2.5 rounded-xl bg-[#EDE3D4] dark:bg-[#1E1923] text-primary">
               <Clock className="w-5 h-5" />
             </div>
             <div>
@@ -241,7 +241,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
 
         {/* Automated Reminders Note */}
         <div className="flex items-center gap-2.5 p-3 rounded-xl bg-[#EDE3D4]/50 dark:bg-[#1E1923] text-xs text-[#362E3B]/80 dark:text-[#D5D0CA]/80">
-          <BellRing className="w-4 h-4 text-[#87A878] shrink-0" />
+          <BellRing className="w-4 h-4 text-primary shrink-0" />
           <span>
             {isEn
               ? 'Automated lesson reminders will be delivered 24 hours and 1 hour before your scheduled session.'
@@ -280,9 +280,9 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
       )}
 
       {/* Philosophy Reassurance / Post-Trial Human Expectation */}
-      <div className="p-5 rounded-3xl bg-[#EDE3D4] dark:bg-[#231D28] border border-[#87A878]/30 space-y-2">
+      <div className="p-5 rounded-3xl bg-[#EDE3D4] dark:bg-[#231D28] border border-primary/30 space-y-2">
         <div className="flex items-center gap-2 font-serif text-sm font-medium text-[#362E3B] dark:text-[#F5E6D3]">
-          <Sparkles className="w-4 h-4 text-[#87A878]" />
+          <Sparkles className="w-4 h-4 text-primary" />
           <span>
             {confirmation.isFreeTrial
               ? isEn ? 'What to Expect in Your Free Trial' : 'ماذا ينتظرك في الجلسة التجريبية؟'
@@ -307,7 +307,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           href={whatsappLink}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#87A878] hover:bg-[#6F907D] text-white text-xs font-semibold shadow-xs transition-colors"
+          className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-primary hover:bg-primary-hover text-white text-xs font-semibold shadow-xs transition-colors"
         >
           <MessageCircle className="w-4 h-4" />
           <span>{isEn ? 'WhatsApp Mahmoud' : 'مراسلة واتساب'}</span>
@@ -328,7 +328,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           onClick={handleDownloadIcs}
           className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-white dark:bg-[#231D28] border border-[#D5D0CA] dark:border-[#3E3545] text-xs font-semibold text-[#362E3B] dark:text-[#F5E6D3] hover:bg-[#EDE3D4] dark:hover:bg-[#1E1923] transition-colors cursor-pointer"
         >
-          <Download className="w-4 h-4 text-[#87A878]" />
+          <Download className="w-4 h-4 text-primary" />
           <span>{downloadedIcs ? (isEn ? 'Downloaded' : 'تم التنزيل') : (isEn ? 'Apple/Outlook (.ics)' : 'تنزيل .ics')}</span>
         </button>
       </div>

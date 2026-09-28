@@ -81,14 +81,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             </Link>
           ))}
 
-          <Link
-            to="/student/demo"
-            id="nav-demo-link"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-surface border border-border text-foreground hover:bg-surface-subtle transition-all cursor-pointer"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-primary" />
-            <span>{lang === 'en' ? 'Explore as Guest' : 'استكشف كضيف'}</span>
-          </Link>
 
           {onOpenManageModal && (
             <button
@@ -171,15 +163,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </Link>
               ))}
               <div className="pt-4 border-t border-border space-y-2.5">
-                <Link
-                  to="/student/demo"
-                  id="mobile-demo-link"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-surface hover:bg-surface-subtle text-foreground font-medium text-xs border border-border transition-colors"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-primary" />
-                  <span>{lang === 'en' ? 'Explore as Guest (Interactive Demo)' : 'استكشف كضيف (عرض تجريبي)'}</span>
-                </Link>
 
                 <button
                   onClick={() => {

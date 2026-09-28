@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   X,
@@ -142,7 +142,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-[#D5D0CA] dark:border-[#3E3545] bg-[#FFFFFF] dark:bg-[#251F2C]">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-[#87A878]/15 dark:bg-[#87A878]/25 text-[#446237] dark:text-[#A3BF96] flex items-center justify-center">
+              <div className="w-9 h-9 rounded-xl bg-primary/15 dark:bg-primary/25 text-primary-hover dark:text-[#A3BF96] flex items-center justify-center">
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <div>
@@ -160,7 +160,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                 <>
                   <a
                     href="/dashboard"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white bg-[#8FAE9B] hover:bg-[#6F907D] transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white bg-primary hover:bg-primary-hover transition-colors cursor-pointer"
                   >
                     Open Workspace
                   </a>
@@ -188,7 +188,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
               /* LOGIN VIEW */
               <div className="max-w-md mx-auto py-6">
                 <div className="text-center mb-6">
-                  <div className="w-12 h-12 rounded-2xl bg-[#87A878]/15 text-[#446237] dark:text-[#A3BF96] mx-auto flex items-center justify-center mb-3">
+                  <div className="w-12 h-12 rounded-2xl bg-primary/15 text-primary-hover dark:text-[#A3BF96] mx-auto flex items-center justify-center mb-3">
                     <Lock className="w-6 h-6" />
                   </div>
                   <h4 className="font-serif text-xl font-bold text-[#362E3B] dark:text-[#F5E6D3]">
@@ -203,7 +203,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                 <div className="mb-6 p-3.5 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#251F2C] text-xs">
                   <div className="flex items-center justify-between mb-1">
                     <span className="font-semibold text-[#362E3B] dark:text-[#F5E6D3] flex items-center gap-1.5">
-                      <DbIcon className="w-3.5 h-3.5 text-[#87A878]" />
+                      <DbIcon className="w-3.5 h-3.5 text-primary" />
                       <span>Database Status</span>
                     </span>
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-medium ${isConfigured ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'}`}>
@@ -233,7 +233,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="mhmwdlwany4222@gmail.com"
                       required
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#251F2C] text-sm text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#87A878]"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#251F2C] text-sm text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                   </div>
 
@@ -247,14 +247,14 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••••••"
                       required
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#251F2C] text-sm text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-[#87A878]"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#251F2C] text-sm text-[#362E3B] dark:text-[#F5E6D3] focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-2.5 px-4 rounded-xl bg-[#87A878] hover:bg-[#729263] text-white text-xs font-semibold tracking-wide transition-colors shadow-sm cursor-pointer disabled:opacity-50"
+                    className="w-full py-2.5 px-4 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-semibold tracking-wide transition-colors shadow-sm cursor-pointer disabled:opacity-50"
                   >
                     {isSubmitting ? 'Authenticating...' : 'Sign In as Mahmoud'}
                   </button>
@@ -267,7 +267,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                 {/* Active Session Card */}
                 <div className="p-4 rounded-2xl bg-white dark:bg-[#251F2C] border border-[#D5D0CA] dark:border-[#3E3545] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#87A878]/15 text-[#87A878] flex items-center justify-center font-bold text-sm">
+                    <div className="w-10 h-10 rounded-full bg-primary/15 text-primary flex items-center justify-center font-bold text-sm">
                       M
                     </div>
                     <div>
@@ -302,7 +302,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                     onClick={() => setActiveTab('overview')}
                     className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer whitespace-nowrap ${
                       activeTab === 'overview'
-                        ? 'bg-[#87A878] text-white font-semibold'
+                        ? 'bg-primary text-white font-semibold'
                         : 'text-[#6B5B73] hover:text-[#362E3B] dark:text-[#B8A9C9]'
                     }`}
                   >
@@ -312,7 +312,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                     onClick={() => setActiveTab('integrations')}
                     className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer whitespace-nowrap ${
                       activeTab === 'integrations'
-                        ? 'bg-[#87A878] text-white font-semibold'
+                        ? 'bg-primary text-white font-semibold'
                         : 'text-[#6B5B73] hover:text-[#362E3B] dark:text-[#B8A9C9]'
                     }`}
                   >
@@ -322,7 +322,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                     onClick={() => setActiveTab('security')}
                     className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer whitespace-nowrap ${
                       activeTab === 'security'
-                        ? 'bg-[#87A878] text-white font-semibold'
+                        ? 'bg-primary text-white font-semibold'
                         : 'text-[#6B5B73] hover:text-[#362E3B] dark:text-[#B8A9C9]'
                     }`}
                   >
@@ -332,7 +332,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                     onClick={() => setActiveTab('trial_test')}
                     className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer whitespace-nowrap ${
                       activeTab === 'trial_test'
-                        ? 'bg-[#87A878] text-white font-semibold'
+                        ? 'bg-primary text-white font-semibold'
                         : 'text-[#6B5B73] hover:text-[#362E3B] dark:text-[#B8A9C9]'
                     }`}
                   >
@@ -342,7 +342,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                     onClick={() => setActiveTab('schema')}
                     className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer whitespace-nowrap ${
                       activeTab === 'schema'
-                        ? 'bg-[#87A878] text-white font-semibold'
+                        ? 'bg-primary text-white font-semibold'
                         : 'text-[#6B5B73] hover:text-[#362E3B] dark:text-[#B8A9C9]'
                     }`}
                   >
@@ -367,7 +367,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                         <div className="text-2xl font-bold font-mono text-[#362E3B] dark:text-[#F5E6D3]">
                           {stats?.totalLeads ?? 0}
                         </div>
-                        <div className="text-[10px] text-[#87A878] mt-1">Acquisition lifecycle</div>
+                        <div className="text-[10px] text-primary mt-1">Acquisition lifecycle</div>
                       </div>
 
                       <div className="p-4 rounded-2xl bg-white dark:bg-[#251F2C] border border-[#D5D0CA] dark:border-[#3E3545]">
@@ -377,7 +377,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                         <div className="text-2xl font-bold font-mono text-[#362E3B] dark:text-[#F5E6D3]">
                           {stats?.activeStudents ?? 0}
                         </div>
-                        <div className="text-[10px] text-[#87A878] mt-1">1-on-1 direct learners</div>
+                        <div className="text-[10px] text-primary mt-1">1-on-1 direct learners</div>
                       </div>
 
                       <div className="p-4 rounded-2xl bg-white dark:bg-[#251F2C] border border-[#D5D0CA] dark:border-[#3E3545]">
@@ -387,7 +387,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                         <div className="text-2xl font-bold font-mono text-[#362E3B] dark:text-[#F5E6D3]">
                           {stats?.upcomingBookings ?? 0}
                         </div>
-                        <div className="text-[10px] text-[#87A878] mt-1">Scheduled appointments</div>
+                        <div className="text-[10px] text-primary mt-1">Scheduled appointments</div>
                       </div>
 
                       <div className="p-4 rounded-2xl bg-white dark:bg-[#251F2C] border border-[#D5D0CA] dark:border-[#3E3545]">
@@ -397,7 +397,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                         <div className="text-2xl font-bold font-mono text-[#362E3B] dark:text-[#F5E6D3]">
                           {stats?.trialBookings ?? 0}
                         </div>
-                        <div className="text-[10px] text-[#87A878] mt-1">30-min evaluations</div>
+                        <div className="text-[10px] text-primary mt-1">30-min evaluations</div>
                       </div>
                     </div>
 
@@ -431,10 +431,10 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                                 </span>
                               </div>
                               <div className="flex items-center gap-3">
-                                <span className="font-mono text-[11px] text-[#87A878]">
+                                <span className="font-mono text-[11px] text-primary">
                                   {new Date(b.scheduled_start).toLocaleDateString()}
                                 </span>
-                                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-[#87A878]/10 text-[#446237] dark:text-[#A3BF96]">
+                                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-primary/10 text-primary-hover dark:text-[#A3BF96]">
                                   {b.status}
                                 </span>
                               </div>
@@ -461,7 +461,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                     <button
                       onClick={runSecurityAudit}
                       disabled={isAuditing}
-                      className="px-4 py-2 rounded-xl bg-[#87A878] hover:bg-[#729263] text-white text-xs font-semibold transition-colors cursor-pointer disabled:opacity-50"
+                      className="px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-semibold transition-colors cursor-pointer disabled:opacity-50"
                     >
                       {isAuditing ? 'Running Security Audit...' : 'Execute Live RLS Boundary Test'}
                     </button>
@@ -516,7 +516,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                       <button
                         onClick={runTrialCheck}
                         disabled={isTestingTrial}
-                        className="px-4 py-2 rounded-xl bg-[#87A878] hover:bg-[#729263] text-white text-xs font-semibold cursor-pointer"
+                        className="px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-semibold cursor-pointer"
                       >
                         {isTestingTrial ? 'Testing...' : 'Check Eligibility'}
                       </button>
@@ -564,7 +564,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                         'settings (Platform Business Rules & Policies)'
                       ].map((table, idx) => (
                         <div key={idx} className="p-2 rounded-lg bg-[#FAF8F5] dark:bg-[#1E1923] border border-[#D5D0CA]/80 dark:border-[#3E3545] flex items-center gap-2">
-                          <span className="text-[#87A878]">✓</span>
+                          <span className="text-primary">✓</span>
                           <span className="text-[#362E3B] dark:text-[#F5E6D3] text-[11px]">{table}</span>
                         </div>
                       ))}

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+﻿import React, { useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'motion/react';
 import { Check, ArrowRight, ShieldCheck, Sparkles, MessageCircle, AlertCircle } from 'lucide-react';
 import { Language } from '../types';
@@ -58,7 +58,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
       className="relative bg-[#F8F6F0] dark:bg-[#1A161E] py-20 lg:py-32 border-b border-[#D5D0CA]/80 dark:border-[#3E3545] transition-colors"
     >
       {/* Background radial glow */}
-      <div className="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[500px] bg-[#87A878]/10 dark:bg-[#87A878]/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[500px] bg-primary/10 dark:bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-start">
@@ -69,7 +69,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
           <div className="lg:col-span-5 lg:sticky lg:top-28 space-y-6">
             
             {/* Index Tag */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#87A878]/15 dark:bg-[#87A878]/25 border border-[#87A878]/30 text-[#446237] dark:text-[#A3BF96] text-xs font-semibold tracking-wide">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/15 dark:bg-primary/25 border border-primary/30 text-primary-hover dark:text-[#A3BF96] text-xs font-semibold tracking-wide">
               <span className="font-mono text-[11px] font-bold">01</span>
               <span>
                 {isEn ? 'One Mentorship Instead of Scattered Bills' : 'معلم مباشر واحد بدلاً من تشتت الاشتراكات'}
@@ -81,12 +81,12 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
               {isEn ? (
                 <>
                   Does every new subject need a new tutor?{' '}
-                  <span className="text-[#87A878] dark:text-[#A3BF96]">Not with Mahmoud.</span>
+                  <span className="text-primary dark:text-[#A3BF96]">Not with Mahmoud.</span>
                 </>
               ) : (
                 <>
                   هل تحتاج إلى معلم واشتراك منفصل لكل مادة؟{' '}
-                  <span className="text-[#87A878] dark:text-[#A3BF96]">مع الأستاذ محمود، الحل واحد.</span>
+                  <span className="text-primary dark:text-[#A3BF96]">مع الأستاذ محمود، الحل واحد.</span>
                 </>
               )}
             </h2>
@@ -115,7 +115,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                   onClick={() => setManualUnified(true)}
                   className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                     manualUnified === true || manualUnified === null
-                      ? 'bg-[#87A878] text-white shadow-xs'
+                      ? 'bg-primary text-white shadow-xs'
                       : 'text-[#6B5B73] dark:text-[#B8A9C9] hover:text-[#362E3B]'
                   }`}
                 >
@@ -155,7 +155,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                 <AlertCircle className="w-3.5 h-3.5 text-[#D97706]" />
                 {isEn ? 'Traditional fragmented model' : 'النموذج التقليدي المشتت'}
               </span>
-              <span className="text-xs font-mono text-[#87A878] dark:text-[#A3BF96]">
+              <span className="text-xs font-mono text-primary dark:text-[#A3BF96]">
                 {manualUnified || manualUnified === null ? 'Unified Model' : '3 Disconnected Subscriptions'}
               </span>
             </div>
@@ -258,7 +258,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                   {/* Left Connector Curve */}
                   <motion.path
                     d="M 100 0 C 100 60, 300 60, 300 120"
-                    stroke="#87A878"
+                    stroke="#087D91"
                     strokeWidth="2"
                     strokeDasharray="4 4"
                     style={{
@@ -269,7 +269,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                   {/* Center Connector Vertical */}
                   <motion.path
                     d="M 300 0 L 300 120"
-                    stroke="#87A878"
+                    stroke="#087D91"
                     strokeWidth="2.5"
                     style={{
                       pathLength: manualUnified === true ? 1 : manualUnified === false ? 0 : lineProgress,
@@ -279,7 +279,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                   {/* Right Connector Curve */}
                   <motion.path
                     d="M 500 0 C 500 60, 300 60, 300 120"
-                    stroke="#87A878"
+                    stroke="#087D91"
                     strokeWidth="2"
                     strokeDasharray="4 4"
                     style={{
@@ -295,7 +295,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                     opacity: manualUnified === true ? 0 : manualUnified === false ? 0 : nodeOpacity,
                     scale: manualUnified === true ? 0.5 : manualUnified === false ? 0.5 : nodeScale,
                   }}
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-3 py-1 rounded-full bg-[#87A878] text-white text-xs font-mono font-bold tracking-widest shadow-md shadow-[#87A878]/30 flex items-center gap-1"
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-3 py-1 rounded-full bg-primary text-white text-xs font-mono font-bold tracking-widest shadow-md shadow-primary/30 flex items-center gap-1"
                 >
                   <span>•</span>
                   <span>•</span>
@@ -312,10 +312,10 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                   scale: manualUnified === false ? 0.95 : manualUnified === true ? 1 : unifiedCardScale,
                   y: manualUnified === false ? 20 : manualUnified === true ? 0 : unifiedCardY,
                 }}
-                className="relative rounded-2xl sm:rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#26202C] border-2 border-[#87A878] shadow-2xl shadow-[#87A878]/15 dark:shadow-black/60 transition-all z-20"
+                className="relative rounded-2xl sm:rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#26202C] border-2 border-primary shadow-2xl shadow-primary/15 dark:shadow-black/60 transition-all z-20"
               >
                 {/* Floating "Direct Teacher Model" Badge */}
-                <div className="absolute -top-3.5 right-6 sm:right-8 px-3.5 py-1 rounded-full bg-[#87A878] text-white text-[11px] font-semibold tracking-wide shadow-md flex items-center gap-1.5">
+                <div className="absolute -top-3.5 right-6 sm:right-8 px-3.5 py-1 rounded-full bg-primary text-white text-[11px] font-semibold tracking-wide shadow-md flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>{isEn ? 'All In One Direct Mentorship' : 'منهج موحد بإشراف مباشر'}</span>
                 </div>
@@ -323,11 +323,11 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D5D0CA]/80 dark:border-[#3E3545] pb-6 mb-6">
                   <div>
                     <div className="flex items-center gap-2 mb-1.5">
-                      <span className="w-3 h-3 rounded-full bg-[#87A878]" />
+                      <span className="w-3 h-3 rounded-full bg-primary" />
                       <span className="font-serif text-xl sm:text-2xl font-bold text-[#362E3B] dark:text-[#F5E6D3]">
                         {isEn ? 'Ustadh Mahmoud Eldwany' : 'الأستاذ محمود الدواني'}
                       </span>
-                      <ShieldCheck className="w-5 h-5 text-[#87A878]" />
+                      <ShieldCheck className="w-5 h-5 text-primary" />
                     </div>
                     <p className="text-xs sm:text-sm text-[#6B5B73] dark:text-[#B8A9C9]">
                       {isEn
@@ -338,7 +338,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
 
                   {/* Pricing / Trial pill */}
                   <div className="sm:text-right shrink-0">
-                    <div className="text-xs font-mono text-[#87A878] dark:text-[#A3BF96] font-semibold uppercase tracking-wider">
+                    <div className="text-xs font-mono text-primary dark:text-[#A3BF96] font-semibold uppercase tracking-wider">
                       {isEn ? 'First Session' : 'الجلسة الأولى'}
                     </div>
                     <div className="font-serif text-2xl sm:text-3xl font-bold text-[#362E3B] dark:text-[#F5E6D3]">
@@ -353,8 +353,8 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                 {/* 3 Unified Pillar Badges */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
                   <div className="p-3 rounded-xl bg-[#F8F6F0] dark:bg-[#1E1923] border border-[#D5D0CA]/70 dark:border-[#3E3545]">
-                    <div className="text-xs font-semibold text-[#446237] dark:text-[#A3BF96] mb-1 flex items-center gap-1.5">
-                      <Check className="w-3.5 h-3.5 text-[#87A878]" />
+                    <div className="text-xs font-semibold text-primary-hover dark:text-[#A3BF96] mb-1 flex items-center gap-1.5">
+                      <Check className="w-3.5 h-3.5 text-primary" />
                       <span>{isEn ? 'Quran & Tajweed' : 'القرآن والتجويد'}</span>
                     </div>
                     <div className="text-[11px] text-[#362E3B]/75 dark:text-[#D5D0CA]">
@@ -363,8 +363,8 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                   </div>
 
                   <div className="p-3 rounded-xl bg-[#F8F6F0] dark:bg-[#1E1923] border border-[#D5D0CA]/70 dark:border-[#3E3545]">
-                    <div className="text-xs font-semibold text-[#446237] dark:text-[#A3BF96] mb-1 flex items-center gap-1.5">
-                      <Check className="w-3.5 h-3.5 text-[#87A878]" />
+                    <div className="text-xs font-semibold text-primary-hover dark:text-[#A3BF96] mb-1 flex items-center gap-1.5">
+                      <Check className="w-3.5 h-3.5 text-primary" />
                       <span>{isEn ? 'Arabic Language' : 'اللغة العربية'}</span>
                     </div>
                     <div className="text-[11px] text-[#362E3B]/75 dark:text-[#D5D0CA]">
@@ -373,8 +373,8 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                   </div>
 
                   <div className="p-3 rounded-xl bg-[#F8F6F0] dark:bg-[#1E1923] border border-[#D5D0CA]/70 dark:border-[#3E3545]">
-                    <div className="text-xs font-semibold text-[#446237] dark:text-[#A3BF96] mb-1 flex items-center gap-1.5">
-                      <Check className="w-3.5 h-3.5 text-[#87A878]" />
+                    <div className="text-xs font-semibold text-primary-hover dark:text-[#A3BF96] mb-1 flex items-center gap-1.5">
+                      <Check className="w-3.5 h-3.5 text-primary" />
                       <span>{isEn ? 'Islamic Studies' : 'الدراسات الإسلامية'}</span>
                     </div>
                     <div className="text-[11px] text-[#362E3B]/75 dark:text-[#D5D0CA]">
@@ -386,7 +386,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                 {/* Call to action bar */}
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
                   <div className="flex items-center gap-2 text-xs text-[#6B5B73] dark:text-[#B8A9C9]">
-                    <MessageCircle className="w-4 h-4 text-[#87A878]" />
+                    <MessageCircle className="w-4 h-4 text-primary" />
                     <span>
                       {isEn
                         ? 'Direct WhatsApp follow-up after every lesson'
@@ -396,7 +396,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
 
                   <button
                     onClick={onOpenTrialModal}
-                    className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#87A878] hover:bg-[#729263] text-white font-medium text-xs sm:text-sm shadow-md shadow-[#87A878]/30 flex items-center justify-center gap-2 transition-all cursor-pointer"
+                    className="w-full sm:w-auto px-6 py-3 rounded-xl bg-primary hover:bg-primary-hover text-white font-medium text-xs sm:text-sm shadow-md shadow-primary/30 flex items-center justify-center gap-2 transition-all cursor-pointer"
                   >
                     <span>{isEn ? 'Book Free 30-Min Trial' : 'احجز جلستك التجريبية مجاناً'}</span>
                     <ArrowRight className={`w-4 h-4 ${isRtl ? 'rotate-180' : ''}`} />

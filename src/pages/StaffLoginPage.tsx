@@ -53,12 +53,12 @@ export default function StaffLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FBF9F5] dark:bg-[#1E1923] text-[#30332F] dark:text-[#F8F6F0] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-background text-foreground flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
       {/* Back to Home Link */}
       <div className="max-w-md w-full mx-auto mb-6">
         <Link
           to="/"
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-[#7A827B] hover:text-[#30332F] dark:hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Ustadh Mahmoud Homepage</span>
@@ -68,16 +68,16 @@ export default function StaffLoginPage() {
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-md w-full mx-auto bg-white dark:bg-[#251F2C] border border-[#E2DDD5] dark:border-[#3E3545] rounded-3xl p-8 sm:p-10 shadow-sm"
+        className="max-w-md w-full mx-auto bg-surface border border-border rounded-3xl p-8 sm:p-10 shadow-sm"
       >
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-[#6F907D]/15 text-[#6F907D] dark:text-[#8FAE9B] mb-3">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-primary/15 text-primary mb-3">
             <ShieldCheck className="w-6 h-6" />
           </div>
-          <h1 className="text-2xl font-serif font-bold text-[#30332F] dark:text-[#F8F6F0]">
+          <h1 className="text-2xl font-serif font-bold text-foreground">
             Teaching Staff Portal
           </h1>
-          <p className="mt-2 text-xs sm:text-sm text-[#626A64] dark:text-[#D5D0CA]">
+          <p className="mt-2 text-xs sm:text-sm text-muted-foreground">
             Secure workspace access for Ustadh Mahmoud & authorized administrators.
           </p>
         </div>
@@ -91,35 +91,35 @@ export default function StaffLoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-[#30332F] dark:text-[#F8F6F0] mb-1.5">
+            <label className="block text-xs font-semibold text-foreground mb-1.5">
               Teacher Email
             </label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-[#8FAE9B] absolute left-3.5 top-3.5 pointer-events-none" />
+              <Mail className="w-4 h-4 text-primary absolute left-3.5 top-3.5 pointer-events-none" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="teacher@example.com"
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#E2DDD5] dark:border-[#3E3545] bg-[#FAF8F5] dark:bg-[#2D2635] text-[#30332F] dark:text-[#F8F6F0] text-sm focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-border bg-surface-subtle text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#30332F] dark:text-[#F8F6F0] mb-1.5">
+            <label className="block text-xs font-semibold text-foreground mb-1.5">
               Password
             </label>
             <div className="relative">
-              <Lock className="w-4 h-4 text-[#8FAE9B] absolute left-3.5 top-3.5 pointer-events-none" />
+              <Lock className="w-4 h-4 text-primary absolute left-3.5 top-3.5 pointer-events-none" />
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#E2DDD5] dark:border-[#3E3545] bg-[#FAF8F5] dark:bg-[#2D2635] text-[#30332F] dark:text-[#F8F6F0] text-sm focus:outline-none focus:ring-2 focus:ring-[#8FAE9B]"
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-border bg-surface-subtle text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
           </div>
@@ -127,7 +127,7 @@ export default function StaffLoginPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full mt-4 flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-[#6F907D] hover:bg-[#557161] text-white font-medium text-sm transition-all shadow-xs cursor-pointer disabled:opacity-50"
+            className="w-full mt-4 flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-medium text-sm transition-all shadow-xs cursor-pointer disabled:opacity-50"
           >
             {isSubmitting ? (
               <>
@@ -143,11 +143,11 @@ export default function StaffLoginPage() {
           </button>
         </form>
 
-        <div className="mt-8 pt-6 border-t border-[#E2DDD5] dark:border-[#3E3545] text-center text-xs text-[#7A827B] dark:text-[#A69FA8]">
+        <div className="mt-8 pt-6 border-t border-border text-center text-xs text-muted-foreground">
           <span>Are you an active student? </span>
           <Link
             to="/student"
-            className="font-semibold text-[#6F907D] dark:text-[#8FAE9B] hover:underline"
+            className="font-semibold text-primary hover:underline"
           >
             Go to Student Portal
           </Link>

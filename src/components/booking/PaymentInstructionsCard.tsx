@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ====================================================================
  * MAHMOUD TEACHING PLATFORM — PAYMENT INSTRUCTIONS CARD
  * File: src/components/booking/PaymentInstructionsCard.tsx
@@ -119,11 +119,11 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
   });
 
   return (
-    <div className={`rounded-3xl bg-white dark:bg-[#231D28] border border-[#87A878]/30 shadow-xs overflow-hidden ${compact ? 'p-4 sm:p-5' : 'p-6 sm:p-7'} space-y-5`}>
+    <div className={`rounded-3xl bg-white dark:bg-[#231D28] border border-primary/30 shadow-xs overflow-hidden ${compact ? 'p-4 sm:p-5' : 'p-6 sm:p-7'} space-y-5`}>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-[#D5D0CA] dark:border-[#3E3545]">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-2xl bg-[#EDE3D4] dark:bg-[#1E1923] text-[#87A878]">
+          <div className="p-2.5 rounded-2xl bg-[#EDE3D4] dark:bg-[#1E1923] text-primary">
             <CreditCard className="w-5 h-5" />
           </div>
           <div>
@@ -139,11 +139,11 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
         </div>
 
         {amount && (
-          <div className="text-left sm:text-right bg-[#FAF8F5] dark:bg-[#1E1923] px-3.5 py-2 rounded-2xl border border-[#87A878]/20">
+          <div className="text-left sm:text-right bg-[#FAF8F5] dark:bg-[#1E1923] px-3.5 py-2 rounded-2xl border border-primary/20">
             <span className="text-[11px] uppercase font-semibold text-[#362E3B]/55 dark:text-[#D5D0CA]/55 block">
               {isEn ? 'Lesson Fee' : 'قيمة الدرس'}
             </span>
-            <span className="text-base font-bold text-[#6F907D] dark:text-[#8FAE9B]">
+            <span className="text-base font-bold text-primary-hover dark:text-primary">
               {amount.toFixed(2)} {currency}
             </span>
           </div>
@@ -165,15 +165,15 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
               }}
               className={`p-3 rounded-2xl text-left border transition-all cursor-pointer flex flex-col justify-between ${
                 isSelected
-                  ? 'bg-[#EAF0EB] dark:bg-[#2A352F] border-[#6F907D] text-[#30332F] dark:text-[#F5E6D3] shadow-xs'
-                  : 'bg-[#FAF8F5] dark:bg-[#1E1923] border-[#D5D0CA]/60 dark:border-[#3E3545] text-[#362E3B]/70 dark:text-[#D5D0CA]/70 hover:border-[#87A878]/50'
+                  ? 'bg-[#EAF0EB] dark:bg-[#2A352F] border-primary-hover text-foreground dark:text-[#F5E6D3] shadow-xs'
+                  : 'bg-[#FAF8F5] dark:bg-[#1E1923] border-[#D5D0CA]/60 dark:border-[#3E3545] text-[#362E3B]/70 dark:text-[#D5D0CA]/70 hover:border-primary/50'
               }`}
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-semibold">{isEn ? opt.name : opt.nameArabic}</span>
-                {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-[#6F907D]" />}
+                {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-primary-hover" />}
               </div>
-              <span className="text-[10px] text-[#6F907D] dark:text-[#8FAE9B] font-medium">
+              <span className="text-[10px] text-primary-hover dark:text-primary font-medium">
                 {isEn ? opt.badge : opt.badgeArabic}
               </span>
             </button>
@@ -182,10 +182,10 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
       </div>
 
       {/* Selected Payment Method Details Card */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-[#FAF8F5] dark:bg-[#1E1923] border border-[#87A878]/30 space-y-4">
+      <div className="p-4 sm:p-5 rounded-2xl bg-[#FAF8F5] dark:bg-[#1E1923] border border-primary/30 space-y-4">
         <div>
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#6F907D] dark:text-[#8FAE9B]">
+            <span className="text-xs font-semibold uppercase tracking-wider text-primary-hover dark:text-primary">
               {isEn ? activeOption.name : activeOption.nameArabic}
             </span>
             <span className="text-[11px] text-[#362E3B]/60 dark:text-[#D5D0CA]/60">
@@ -215,12 +215,12 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
               <button
                 type="button"
                 onClick={() => handleCopy(label, val)}
-                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#EDE3D4]/50 dark:bg-[#1E1923] hover:bg-[#87A878]/20 text-[#362E3B] dark:text-[#F5E6D3] transition-colors cursor-pointer shrink-0"
+                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#EDE3D4]/50 dark:bg-[#1E1923] hover:bg-primary/20 text-[#362E3B] dark:text-[#F5E6D3] transition-colors cursor-pointer shrink-0"
               >
                 {copiedKey === label ? (
                   <>
-                    <Check className="w-3.5 h-3.5 text-[#6F907D]" />
-                    <span className="text-[#6F907D] font-semibold">{isEn ? 'Copied' : 'تم'}</span>
+                    <Check className="w-3.5 h-3.5 text-primary-hover" />
+                    <span className="text-primary-hover font-semibold">{isEn ? 'Copied' : 'تم'}</span>
                   </>
                 ) : (
                   <>
@@ -255,7 +255,7 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
               <button
                 type="button"
                 onClick={() => setIsClaimOpen(!isClaimOpen)}
-                className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#6F907D] hover:bg-[#5C7969] text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+                className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-primary-hover hover:bg-[#5C7969] text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer"
               >
                 <Check className="w-4 h-4" />
                 <span>{isEn ? "I've Made the Payment" : 'قمت بالتحويل بالفعل'}</span>
@@ -268,7 +268,7 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-white dark:bg-[#1E1923] border border-[#D5D0CA] dark:border-[#3E3545] text-xs font-semibold text-[#362E3B] dark:text-[#F5E6D3] hover:bg-[#FAF8F5] transition-colors"
             >
-              <MessageCircle className="w-4 h-4 text-[#87A878]" />
+              <MessageCircle className="w-4 h-4 text-primary" />
               <span>{isEn ? 'Ask Mahmoud on WhatsApp' : 'استفسار عبر واتساب'}</span>
             </a>
           </div>
@@ -281,10 +281,10 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
                 onSubmit={handleSubmitClaim}
-                className="p-4 sm:p-5 rounded-2xl bg-[#FAF8F5] dark:bg-[#1E1923] border border-[#87A878]/30 space-y-4"
+                className="p-4 sm:p-5 rounded-2xl bg-[#FAF8F5] dark:bg-[#1E1923] border border-primary/30 space-y-4"
               >
                 <div className="flex items-center gap-2 font-serif text-sm font-semibold text-[#362E3B] dark:text-[#F5E6D3]">
-                  <Send className="w-4 h-4 text-[#6F907D]" />
+                  <Send className="w-4 h-4 text-primary-hover" />
                   <span>{isEn ? 'Confirm Your Payment' : 'تأكيد إرسال الدفعة'}</span>
                 </div>
 
@@ -311,7 +311,7 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
                       placeholder={isEn ? 'e.g. PayPal Transaction ID or Bank Ref' : 'مثال: رقم الحوالة أو اسم الحساب'}
                       value={claimReference}
                       onChange={(e) => setClaimReference(e.target.value)}
-                      className="w-full px-3.5 py-2 rounded-xl text-xs border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#231D28] text-[#362E3B] dark:text-[#F5E6D3] focus:border-[#6F907D] outline-none"
+                      className="w-full px-3.5 py-2 rounded-xl text-xs border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#231D28] text-[#362E3B] dark:text-[#F5E6D3] focus:border-primary-hover outline-none"
                     />
                   </div>
 
@@ -326,14 +326,14 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
                         placeholder="15.00"
                         value={claimAmount}
                         onChange={(e) => setClaimAmount(e.target.value)}
-                        className="w-2/3 px-3.5 py-2 rounded-xl text-xs border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#231D28] text-[#362E3B] dark:text-[#F5E6D3] focus:border-[#6F907D] outline-none"
+                        className="w-2/3 px-3.5 py-2 rounded-xl text-xs border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#231D28] text-[#362E3B] dark:text-[#F5E6D3] focus:border-primary-hover outline-none"
                       />
                       <input
                         type="text"
                         maxLength={3}
                         value={claimCurrency}
                         onChange={(e) => setClaimCurrency(e.target.value.toUpperCase())}
-                        className="w-1/3 px-2 py-2 text-center rounded-xl text-xs font-mono uppercase border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#231D28] text-[#362E3B] dark:text-[#F5E6D3] focus:border-[#6F907D] outline-none"
+                        className="w-1/3 px-2 py-2 text-center rounded-xl text-xs font-mono uppercase border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#231D28] text-[#362E3B] dark:text-[#F5E6D3] focus:border-primary-hover outline-none"
                       />
                     </div>
                   </div>
@@ -348,7 +348,7 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
                     placeholder={isEn ? 'Any additional transfer info...' : 'أي تفاصيل أخرى حول التحويل...'}
                     value={claimNotes}
                     onChange={(e) => setClaimNotes(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl text-xs border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#231D28] text-[#362E3B] dark:text-[#F5E6D3] focus:border-[#6F907D] outline-none"
+                    className="w-full px-3.5 py-2 rounded-xl text-xs border border-[#D5D0CA] dark:border-[#3E3545] bg-white dark:bg-[#231D28] text-[#362E3B] dark:text-[#F5E6D3] focus:border-primary-hover outline-none"
                   />
                 </div>
 
@@ -363,7 +363,7 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
                   <button
                     type="submit"
                     disabled={isSubmittingClaim}
-                    className="px-5 py-2 rounded-xl bg-[#6F907D] hover:bg-[#5C7969] text-white text-xs font-semibold transition-colors cursor-pointer disabled:opacity-50"
+                    className="px-5 py-2 rounded-xl bg-primary-hover hover:bg-[#5C7969] text-white text-xs font-semibold transition-colors cursor-pointer disabled:opacity-50"
                   >
                     {isSubmittingClaim ? (isEn ? 'Submitting...' : 'جاري الإرسال...') : (isEn ? 'Submit for Verification' : 'إرسال للمراجعة')}
                   </button>
@@ -376,7 +376,7 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
 
       {/* Safety & Integrity Guarantee Footer */}
       <div className="flex items-center gap-2 pt-2 text-[11px] text-[#362E3B]/60 dark:text-[#D5D0CA]/60">
-        <ShieldCheck className="w-3.5 h-3.5 text-[#6F907D] shrink-0" />
+        <ShieldCheck className="w-3.5 h-3.5 text-primary-hover shrink-0" />
         <span>
           {isEn
             ? 'Payments are verified directly by Mahmoud. We never store credit cards or sensitive bank credentials.'

@@ -37,10 +37,6 @@ export const GetStartedModal: React.FC<GetStartedModalProps> = ({
 
   const isAr = lang === 'ar';
 
-  const handleLaunchDemo = () => {
-    onClose();
-    navigate('/student/demo');
-  };
 
   const handleOpenSignup = () => {
     onClose();
@@ -106,49 +102,7 @@ export const GetStartedModal: React.FC<GetStartedModalProps> = ({
 
           {/* Primary Pathways Selection: Guest vs Student */}
           <div className="space-y-4">
-            {/* OPTION 1: Explore as Guest (Interactive Demo) */}
-            <div 
-              className="p-5 rounded-2xl bg-surface-subtle border border-border hover:border-warning/50 hover:shadow-md transition-all group"
-            >
-              <div className="flex items-start gap-4">
-                <div className="w-11 h-11 rounded-xl bg-warning/15 text-warning flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                  <Sparkles className="w-5 h-5" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-semibold text-base text-foreground group-hover:text-warning transition-colors">
-                      {isAr ? 'استكشف كضيف' : 'Explore as Guest'}
-                    </span>
-                    <span className="text-xs px-2.5 py-0.5 rounded-full font-medium bg-warning/15 text-warning whitespace-nowrap">
-                      {isAr ? 'عرض تجريبي' : 'Interactive Demo'}
-                    </span>
-                  </div>
-                  <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 leading-relaxed">
-                    {isAr 
-                      ? 'جرب عملية الحجز بدون إنشاء حساب. هذا عرض توضيحي - لن يتم إنشاء حجز حقيقي.'
-                      : 'Experience the booking process without creating an account. This is a guided demo — no real booking is created.'}
-                  </p>
-                  
-                  <div className="mt-3.5 pt-3 border-t border-border flex items-center justify-between">
-                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                      <Clock className="w-3.5 h-3.5 text-warning" />
-                      <span>{isAr ? 'بدون حساب' : 'No account required'}</span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={handleLaunchDemo}
-                      id="get-started-demo-btn"
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-warning hover:bg-warning/90 text-warning-foreground text-xs sm:text-sm font-medium transition-colors shadow-xs cursor-pointer"
-                    >
-                      <Sparkles className="w-3.5 h-3.5" />
-                      <span>{isAr ? 'جرب العرض التوضيحي' : 'Try the Demo'}</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* OPTION 2: Continue as Student (Student Account) */}
+            {/* OPTION 1: Continue as Student (Student Account) */}
             <div 
               className="p-5 rounded-2xl bg-surface-subtle border border-primary/30 hover:border-primary hover:shadow-md transition-all group"
             >

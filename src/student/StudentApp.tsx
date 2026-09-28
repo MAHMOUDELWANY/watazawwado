@@ -28,7 +28,6 @@ import { ErrorBoundary } from '../components/ErrorBoundary';
 import StudentHomePage from './pages/StudentHomePage';
 import StudentProfilePage from './pages/StudentProfilePage';
 import StudentOnboardingPage from './pages/StudentOnboardingPage';
-import StudentDemoPage from './pages/StudentDemoPage';
 import StudentBookingPage from './pages/StudentBookingPage';
 import StudentLessonsPage from './pages/StudentLessonsPage';
 import StudentPackagesPage from './pages/StudentPackagesPage';
@@ -145,7 +144,6 @@ export default function StudentApp() {
     let isMounted = true;
     const loadProfile = async () => {
       if (
-        location.pathname.startsWith('/student/demo') ||
         isTeacherAuthenticated ||
         !user ||
         userRole !== 'student' ||
@@ -207,26 +205,13 @@ export default function StudentApp() {
     };
   }, [user, userRole, session, isTeacherAuthenticated, location.pathname]);
 
-  // If user navigated to /student/demo, always allow direct demo access without requiring authentication
-  if (location.pathname.startsWith('/student/demo')) {
-    return (
-      <>
-        <StudentDemoPage onOpenSignupModal={() => setAuthModalOpen(true)} />
-        <StudentAuthModal
-          isOpen={authModalOpen}
-          onClose={() => setAuthModalOpen(false)}
-          lang={lang}
-        />
-      </>
-    );
-  }
 
   // If a teacher lands here, redirect to the teacher dashboard
   if (isTeacherAuthenticated) {
     return <Navigate to="/dashboard" replace />;
   }
 
-  // If not authenticated, provide choices: Sign In, Create Account, or Explore as Guest Demo
+  // If not authenticated, provide choices: Sign In, Create Account
   if (!user || userRole !== 'student') {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-6 text-foreground">
@@ -250,16 +235,6 @@ export default function StudentApp() {
             >
               <span>{isAr ? 'تسجيل الدخول / إنشاء حساب' : 'Sign In / Create Account'}</span>
               <ArrowRight className={`w-4 h-4 ${isAr ? 'rotate-180' : ''}`} />
-            </button>
-
-            <Link
-              to="/student/demo"
-              className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-surface hover:bg-surface-subtle text-foreground border border-border rounded-xl transition-all font-medium text-sm cursor-pointer"
-            >
-              <Sparkles className="w-4 h-4 text-primary" />
-              <span>{isAr ? 'استكشف كضيف (عرض تجريبي)' : 'Explore as Guest (Interactive Demo)'}</span>
-            </Link>
-
             <div className="pt-4 border-t border-border text-xs text-muted-foreground">
               <Link to="/" className="hover:text-foreground transition-colors hover:underline">
                 {isAr ? '← العودة إلى الصفحة الرئيسية' : '← Back to Ustadh Mahmoud Homepage'}
@@ -707,7 +682,6 @@ export default function StudentApp() {
                   }}
                 />
               } />
-              <Route path="/demo" element={<StudentDemoPage onOpenSignupModal={() => setAuthModalOpen(true)} />} />
               <Route path="*" element={<Navigate to="/student" replace />} />
             </Routes>
             </ErrorBoundary>

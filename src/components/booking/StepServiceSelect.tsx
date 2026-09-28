@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Check, BookOpen, Compass, Languages, GraduationCap, ArrowRight } from 'lucide-react';
 import { BOOKING_SERVICES } from '../../booking/mockData';
@@ -78,8 +78,8 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
               onClick={() => onSelectService(service.id)}
               className={`group p-4 sm:p-5 rounded-2xl border text-start transition-all cursor-pointer relative flex flex-col justify-between ${
                 isSelected
-                  ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-[#87A878] ring-2 ring-[#87A878]/30 shadow-sm'
-                  : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] hover:border-[#87A878]/60 hover:bg-[#F5E6D3]/40 shadow-xs'
+                  ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-primary ring-2 ring-primary/30 shadow-sm'
+                  : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] hover:border-primary/60 hover:bg-[#F5E6D3]/40 shadow-xs'
               }`}
             >
               <div>
@@ -90,7 +90,7 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
                   <div
                     className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
                       isSelected
-                        ? 'bg-[#87A878] text-white'
+                        ? 'bg-primary text-white'
                         : 'border border-[#D5D0CA] dark:border-[#3E3545] text-transparent'
                     }`}
                   >

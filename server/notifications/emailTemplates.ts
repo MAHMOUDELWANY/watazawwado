@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ====================================================================
  * MAHMOUD TEACHING PLATFORM — EMAIL TEMPLATES
  * File: server/notifications/emailTemplates.ts
@@ -16,10 +16,10 @@ export interface EmailRenderResult {
 // Brand Styles & Colors
 const BRAND_BG = '#F8F6F0';
 const CARD_BG = '#FFFFFF';
-const TEXT_MAIN = '#30332F';
+const TEXT_MAIN = '#2C2A27';
 const TEXT_MUTED = '#6B706A';
-const ACCENT_SAGE = '#6F907D';
-const ACCENT_LIGHT_SAGE = '#8FAE9B';
+const ACCENT_SAGE = '#087D91';
+const ACCENT_LIGHT_SAGE = '#087D91';
 const ACCENT_BG = '#EAF0EB';
 const BORDER_COLOR = '#E5DFD5';
 

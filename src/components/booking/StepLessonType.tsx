@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { Check, ArrowRight, ArrowLeft, Clock, Gift, CalendarCheck, HelpCircle, Sparkles, Package } from 'lucide-react';
 import { BookingMode, Language, LessonDuration, PackageCatalogEntry, PackageEntitlementEntry } from '../../booking/types';
@@ -115,20 +115,20 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               trialDisabled
                 ? 'opacity-60 cursor-not-allowed bg-gray-50 dark:bg-[#1E1923]/60 border-[#D5D0CA] dark:border-[#3E3545]'
                 : mode === 'trial'
-                ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-[#87A878] ring-2 ring-[#87A878]/30 shadow-xs cursor-pointer'
+                ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-primary ring-2 ring-primary/30 shadow-xs cursor-pointer'
                 : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] hover:bg-[#F5E6D3]/40 cursor-pointer'
             }`}
           >
             <div className="flex items-start justify-between gap-3 mb-2">
               <div className="flex items-center gap-2">
-                <div className={`p-2 rounded-xl ${trialDisabled ? 'bg-gray-200 dark:bg-gray-800 text-gray-500' : 'bg-[#87A878]/20 text-[#87A878]'}`}>
+                <div className={`p-2 rounded-xl ${trialDisabled ? 'bg-gray-200 dark:bg-gray-800 text-gray-500' : 'bg-primary/20 text-primary'}`}>
                   <Gift className="w-5 h-5" />
                 </div>
                 <div>
                   <h4 className="font-serif text-base font-medium text-[#362E3B] dark:text-[#F5E6D3]">
                     {isEn ? 'Free Trial Session' : 'جلسة تجريبية مجانية'}
                   </h4>
-                  <span className={`text-xs font-semibold ${trialDisabled ? 'text-gray-500 dark:text-gray-400' : 'text-[#87A878]'}`}>
+                  <span className={`text-xs font-semibold ${trialDisabled ? 'text-gray-500 dark:text-gray-400' : 'text-primary'}`}>
                     {trialDisabled
                       ? (isEn ? 'Already Claimed' : 'مستخدمة مسبقاً')
                       : (isEn ? '$0.00 • No card required' : 'مجاناً (٠.٠٠ دولار)')}
@@ -138,7 +138,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               <div
                 className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-colors ${
                   mode === 'trial' && !trialDisabled
-                    ? 'bg-[#87A878] text-white'
+                    ? 'bg-primary text-white'
                     : 'border border-[#D5D0CA] dark:border-[#3E3545]'
                 }`}
               >
@@ -205,7 +205,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                 : 'درس منهجي متكامل للطلاب الراغبين في بدء الخطة المباشرة. دفع بالدرس أو باقات شهرية ميسرة.'}
             </p>
 
-            <div className="text-[11px] text-[#87A878] font-medium">
+            <div className="text-[11px] text-primary font-medium">
               {hasActiveCredits
                 ? (isEn ? '• Redeemable using your active lesson package credits' : '• قابل للحجز باستخدام رصيد باقاتك النشطة')
                 : (isEn ? '• Standard 1-on-1 personalized pace' : '• تدريس فردي مخصص بالكامل')}
@@ -221,7 +221,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
             {isEn ? 'Select Preferred Lesson Duration' : 'اختر مدة الدرس المناسبة'}
           </label>
           <span className="text-xs text-[#362E3B]/60 dark:text-[#D5D0CA]/60 flex items-center gap-1">
-            <Clock className="w-3.5 h-3.5 text-[#87A878]" />
+            <Clock className="w-3.5 h-3.5 text-primary" />
             {mode === 'trial'
               ? isEn ? 'Trial standard: 30 min (up to 45 min max)' : 'المدة للتجربة: ٣٠ دقيقة (بحد أقصى ٤٥ دقيقة)'
               : isEn ? 'Standard durations: 30, 45, 60 min' : 'المدد المعتمدة: ٣٠، ٤٥، ٦٠ دقيقة'}
@@ -250,7 +250,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                   isDisabled
                     ? 'opacity-40 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent'
                     : isSelected
-                    ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-[#87A878] ring-1 ring-[#87A878] shadow-xs'
+                    ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-primary ring-1 ring-primary shadow-xs'
                     : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] hover:bg-[#F5E6D3]/30'
                 }`}
               >
@@ -259,7 +259,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                     <span className="font-serif text-base font-medium text-[#362E3B] dark:text-[#F5E6D3]">
                       {isEn ? d.label : d.arabicLabel}
                     </span>
-                    <span className={`text-xs font-semibold ${mode === 'trial' || packageEntitlementId ? 'text-[#87A878]' : 'text-[#6B5B73] dark:text-[#B8A9C9]'}`}>
+                    <span className={`text-xs font-semibold ${mode === 'trial' || packageEntitlementId ? 'text-primary' : 'text-[#6B5B73] dark:text-[#B8A9C9]'}`}>
                       {displayPrice}
                     </span>
                   </div>
@@ -302,13 +302,13 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                   }}
                   className={`p-4 sm:p-5 rounded-2xl border text-start transition-all cursor-pointer relative ${
                     isSelected
-                      ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-[#87A878] ring-2 ring-[#87A878]/30 shadow-xs'
+                      ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-primary ring-2 ring-primary/30 shadow-xs'
                       : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] hover:bg-[#F5E6D3]/30'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3 mb-1.5">
                     <div className="flex items-center gap-2.5">
-                      <div className="p-2 rounded-xl bg-[#87A878]/20 text-[#87A878]">
+                      <div className="p-2 rounded-xl bg-primary/20 text-primary">
                         <Package className="w-5 h-5" />
                       </div>
                       <div>
@@ -316,11 +316,11 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                           <h4 className="font-serif text-base font-medium text-[#362E3B] dark:text-[#F5E6D3]">
                             {isEn ? 'Existing lesson credit' : 'رصيد درس موجود'}
                           </h4>
-                          <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#87A878]/15 text-[#87A878]">
+                          <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-primary/15 text-primary">
                             {isEn ? `${ent.remainingCredits} lessons remaining` : `${ent.remainingCredits} دروس متبقية`}
                           </span>
                         </div>
-                        <span className="text-xs text-[#87A878] font-semibold">
+                        <span className="text-xs text-primary font-semibold">
                           {isEn ? 'Use 1 existing lesson credit' : 'استخدم رصيد درس واحد'}
                         </span>
                       </div>
@@ -329,7 +329,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                     <div
                       className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-colors ${
                         isSelected
-                          ? 'bg-[#87A878] text-white'
+                          ? 'bg-primary text-white'
                           : 'border border-[#D5D0CA] dark:border-[#3E3545]'
                       }`}
                     >
@@ -395,7 +395,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               onClick={() => onSelectPackage?.(undefined)}
               className={`p-4 rounded-xl border text-start transition-all cursor-pointer ${
                 !selectedPackageId
-                  ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-[#87A878] ring-2 ring-[#87A878]/30'
+                  ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-primary ring-2 ring-primary/30'
                   : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] opacity-75'
               }`}
             >
@@ -417,7 +417,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                   onClick={() => onSelectPackage?.(pkg.id)}
                   className={`p-4 rounded-xl border text-start transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-[#87A878] ring-2 ring-[#87A878]/30'
+                      ? 'bg-[#F5E6D3] dark:bg-[#29232F] border-primary ring-2 ring-primary/30'
                       : 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] opacity-75'
                   }`}
                 >
@@ -433,7 +433,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                       </p>
                     </div>
                     <div className="text-right">
-                      <span className="font-medium text-[#87A878]">${pkg.price_amount}</span>
+                      <span className="font-medium text-primary">${pkg.price_amount}</span>
                     </div>
                   </div>
                 </motion.div>
@@ -445,7 +445,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
 
       {/* Manual Request for Sessions > 60 min note */}
       <div className="p-3.5 rounded-xl bg-white dark:bg-[#231D28] border border-[#D5D0CA] dark:border-[#3E3545] text-xs text-[#362E3B]/70 dark:text-[#D5D0CA]/70 flex items-start gap-2.5">
-        <HelpCircle className="w-4 h-4 text-[#87A878] shrink-0 mt-0.5" />
+        <HelpCircle className="w-4 h-4 text-primary shrink-0 mt-0.5" />
         <div className="leading-relaxed">
           <span>
             {isEn
@@ -456,7 +456,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
             href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I would like to request an extended lesson session (longer than 60 minutes).')}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[#6B5B73] dark:text-[#B8A9C9] font-medium underline hover:text-[#87A878]"
+            className="text-[#6B5B73] dark:text-[#B8A9C9] font-medium underline hover:text-primary"
           >
             {isEn ? 'request an extended session directly with Mahmoud' : 'مراسلة محمود مباشرة لترتيبها'}
           </a>

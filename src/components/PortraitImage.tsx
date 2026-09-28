@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+﻿import React, { useState, useRef } from 'react';
 import { motion } from 'motion/react';
 import { Camera, Check, Upload, Sparkles, CheckCircle2 } from 'lucide-react';
 
@@ -155,8 +155,8 @@ export const PortraitImage: React.FC<PortraitImageProps> = ({ className = '', pr
         >
           {uploadSuccess ? (
             <>
-              <Check className="w-3.5 h-3.5 text-[#87A878]" />
-              <span className="text-[#87A878]">Photo Updated!</span>
+              <Check className="w-3.5 h-3.5 text-primary" />
+              <span className="text-primary">Photo Updated!</span>
             </>
           ) : (
             <>
@@ -168,7 +168,7 @@ export const PortraitImage: React.FC<PortraitImageProps> = ({ className = '', pr
 
         {/* Drag Overlay Hint */}
         {isDragging && (
-          <div className="absolute inset-0 bg-[#87A878]/85 backdrop-blur-xs flex flex-col items-center justify-center text-white text-center p-6 animate-fadeIn">
+          <div className="absolute inset-0 bg-primary/85 backdrop-blur-xs flex flex-col items-center justify-center text-white text-center p-6 animate-fadeIn">
             <Upload className="w-10 h-10 mb-2 animate-bounce" />
             <p className="font-medium text-sm">Drop Mahmoud’s photo here</p>
             <p className="text-xs text-white/80 mt-1">IMG_20260809_132258_580.jpg</p>

@@ -106,7 +106,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
               )}
             </motion.p>
 
-            {/* Action Buttons: Primary + Guest Demo */}
+            {/* Action Buttons: Primary */}
             <motion.div
               variants={{
                 hidden: { opacity: 0, y: 10 },
@@ -124,14 +124,6 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
                 <ArrowRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
               </button>
 
-              <a
-                href="/student/demo"
-                id="hero-demo-btn"
-                className="inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-surface hover:bg-surface-subtle text-foreground border border-border font-medium text-sm sm:text-base shadow-2xs hover:shadow-xs transition-all"
-              >
-                <Sparkles className="w-4 h-4 text-amber-500" />
-                <span>{isEn ? 'Explore as Guest' : 'استكشف كضيف'}</span>
-              </a>
 
               <a
                 href="#services"

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Calendar,
@@ -131,7 +131,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
       {/* Timezone Reassurance Banner with quick switcher */}
       <div className="p-3.5 rounded-2xl bg-white dark:bg-[#231D28] border border-[#D5D0CA] dark:border-[#3E3545] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
         <div className="flex items-center gap-2 text-xs">
-          <Globe className="w-4 h-4 text-[#87A878] shrink-0" />
+          <Globe className="w-4 h-4 text-primary shrink-0" />
           <span className="text-[#362E3B]/70 dark:text-[#D5D0CA]/70">
             {isEn ? 'Times shown in your local time:' : 'المواعيد تظهر وفق توقيتك المحلي:'}
           </span>
@@ -143,7 +143,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
         <button
           type="button"
           onClick={() => setTzModalOpen(true)}
-          className="text-xs text-[#87A878] hover:text-[#6F907D] font-medium underline cursor-pointer self-end sm:self-auto"
+          className="text-xs text-primary hover:text-primary-hover font-medium underline cursor-pointer self-end sm:self-auto"
         >
           {isEn ? 'Change timezone' : 'تغيير المنطقة الزمنية'}
         </button>
@@ -152,7 +152,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
       {/* Loading Skeleton */}
       {loading && (
         <div className="py-12 flex flex-col items-center justify-center space-y-3 text-[#362E3B]/60 dark:text-[#D5D0CA]/60">
-          <RefreshCw className="w-6 h-6 animate-spin text-[#87A878]" />
+          <RefreshCw className="w-6 h-6 animate-spin text-primary" />
           <span className="text-xs">
             {isEn ? 'Checking available teaching windows...' : 'جارٍ تحديث الأوقات المتاحة...'}
           </span>
@@ -201,7 +201,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                       isSelected
                         ? 'bg-[#6B5B73] text-white border-[#6B5B73] shadow-xs'
                         : d.isAvailable
-                        ? 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] text-[#362E3B] dark:text-[#F5E6D3] hover:border-[#87A878]/60'
+                        ? 'bg-white dark:bg-[#231D28] border-[#D5D0CA] dark:border-[#3E3545] text-[#362E3B] dark:text-[#F5E6D3] hover:border-primary/60'
                         : 'bg-black/5 dark:bg-white/5 border-transparent text-[#362E3B]/40 dark:text-[#D5D0CA]/40'
                     }`}
                   >
@@ -220,7 +220,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                       {d.isAvailable ? (
                         <div
                           className={`w-1.5 h-1.5 rounded-full ${
-                            isSelected ? 'bg-[#87A878]' : 'bg-[#87A878]/70'
+                            isSelected ? 'bg-primary' : 'bg-primary/70'
                           }`}
                         />
                       ) : (
@@ -237,7 +237,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
           <div className="p-4 sm:p-5 rounded-2xl bg-[#EDE3D4]/50 dark:bg-[#231D28] border border-[#D5D0CA] dark:border-[#3E3545]">
             <div className="flex items-center justify-between mb-4 pb-2 border-b border-[#D5D0CA] dark:border-[#3E3545]">
               <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-[#87A878]" />
+                <Calendar className="w-4 h-4 text-primary" />
                 <span className="font-serif text-sm font-medium text-[#362E3B] dark:text-[#F5E6D3]">
                   {currentDay?.dayOfWeek}, {currentDay?.monthName} {currentDay?.dayOfMonth}
                 </span>
@@ -284,7 +284,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white dark:bg-[#1E1923] border border-[#D5D0CA] dark:border-[#3E3545] text-xs font-medium text-[#362E3B] dark:text-[#D5D0CA] hover:bg-[#EDE3D4]"
                   >
-                    <MessageCircle className="w-3.5 h-3.5 text-[#87A878]" />
+                    <MessageCircle className="w-3.5 h-3.5 text-primary" />
                     <span>{isEn ? 'Request Custom Time on WhatsApp' : 'طلب موعد خاص على واتساب'}</span>
                   </a>
                 </div>
@@ -312,8 +312,8 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                               !slot.available
                                 ? 'opacity-35 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent text-[#362E3B]/40'
                                 : isSelected
-                                ? 'bg-[#87A878] text-white border-[#87A878] font-medium shadow-xs'
-                                : 'bg-white dark:bg-[#1E1923] border-[#D5D0CA] dark:border-[#3E3545] text-[#362E3B] dark:text-[#F5E6D3] hover:border-[#87A878]'
+                                ? 'bg-primary text-white border-primary font-medium shadow-xs'
+                                : 'bg-white dark:bg-[#1E1923] border-[#D5D0CA] dark:border-[#3E3545] text-[#362E3B] dark:text-[#F5E6D3] hover:border-primary'
                             }`}
                           >
                             <span className="text-xs">{slot.timeDisplay}</span>
@@ -351,8 +351,8 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                               !slot.available
                                 ? 'opacity-35 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent text-[#362E3B]/40'
                                 : isSelected
-                                ? 'bg-[#87A878] text-white border-[#87A878] font-medium shadow-xs'
-                                : 'bg-white dark:bg-[#1E1923] border-[#D5D0CA] dark:border-[#3E3545] text-[#362E3B] dark:text-[#F5E6D3] hover:border-[#87A878]'
+                                ? 'bg-primary text-white border-primary font-medium shadow-xs'
+                                : 'bg-white dark:bg-[#1E1923] border-[#D5D0CA] dark:border-[#3E3545] text-[#362E3B] dark:text-[#F5E6D3] hover:border-primary'
                             }`}
                           >
                             <span className="text-xs">{slot.timeDisplay}</span>
@@ -390,8 +390,8 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                               !slot.available
                                 ? 'opacity-35 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent text-[#362E3B]/40'
                                 : isSelected
-                                ? 'bg-[#87A878] text-white border-[#87A878] font-medium shadow-xs'
-                                : 'bg-white dark:bg-[#1E1923] border-[#D5D0CA] dark:border-[#3E3545] text-[#362E3B] dark:text-[#F5E6D3] hover:border-[#87A878]'
+                                ? 'bg-primary text-white border-primary font-medium shadow-xs'
+                                : 'bg-white dark:bg-[#1E1923] border-[#D5D0CA] dark:border-[#3E3545] text-[#362E3B] dark:text-[#F5E6D3] hover:border-primary'
                             }`}
                           >
                             <span className="text-xs">{slot.timeDisplay}</span>
