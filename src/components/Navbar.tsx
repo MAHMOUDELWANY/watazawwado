@@ -96,14 +96,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="group flex items-center gap-2 sm:gap-2.5 text-foreground focus:outline-none rounded-lg shrink-0 min-w-0"
           >
             <BrandLogo variant="compact" />
-            <div className="flex flex-col min-w-0">
-              <span className="font-display text-lg sm:text-xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors truncate">
-                {isEn ? 'Watazawwado' : 'وتزودوا'}
-              </span>
-              <span className="text-[11px] font-sans text-muted-foreground hidden sm:block truncate">
-                {isEn ? 'Quran & Arabic Academy' : 'أكاديمية القرآن واللغة العربية'}
-              </span>
-            </div>
+            <span className="font-display text-lg sm:text-xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors truncate">
+              {isEn ? 'Watazawwado' : 'وتزودوا'}
+            </span>
           </Link>
 
           {/* ─── RIGHT CONTROLS: Clean, Spacious, and Accessible on Both Desktop & Mobile ─── */}
@@ -123,16 +118,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Globe className="w-3.5 h-3.5 text-accent transition-colors" />
               <span>{isEn ? 'العربية' : 'EN'}</span>
-            </button>
-
-            {/* Primary CTA Button (Free Trial) */}
-            <button
-              onClick={() => onOpenTrialModal()}
-              id="header-get-started-cta"
-              data-tour="header-get-started-cta"
-              className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl btn-primary-material text-white text-xs sm:text-sm font-bold transition-all shadow-sm cursor-pointer active:scale-95"
-            >
-              <span>{isEn ? 'Free Trial' : 'جلسة تجريبية'}</span>
             </button>
 
             {/* ─── SIDEBAR TOGGLE BUTTON (Opens the side menu on Desktop and Mobile) ─── */}

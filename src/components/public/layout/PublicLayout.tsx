@@ -60,7 +60,7 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
       position: 'bottom',
     },
     {
-      targetId: ['header-get-started-cta', 'hero-get-started-btn'],
+      targetId: 'hero-get-started-btn',
       title: lang === 'ar' ? 'جلسة تجريبية مجانية' : 'Free 30-Min Trial',
       description: lang === 'ar'
         ? 'احجز جلستك التجريبية الأولى مجاناً لتحديد مستواك ومناقشة أهدافك مباشرة بدون أي التزام مالي.'

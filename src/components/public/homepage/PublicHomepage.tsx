@@ -195,11 +195,11 @@ export function PublicHomepage() {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch">
             {/* Link 1: Lessons */}
             <Link
               to="/learning"
-              className="p-5 rounded-2xl bg-surface border border-border/80 hover:border-teal-500/60 shadow-xs hover:shadow-md transition-all group flex flex-col justify-between"
+              className="p-5 rounded-2xl bg-surface border border-border/80 hover:border-teal-500/60 shadow-xs hover:shadow-md transition-all group flex flex-col justify-between h-full"
             >
               <div>
                 <div className="w-10 h-10 rounded-xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center mb-3">
@@ -223,7 +223,7 @@ export function PublicHomepage() {
             {/* Link 2: How It Works */}
             <Link
               to="/how-it-works"
-              className="p-5 rounded-2xl bg-surface border border-border/80 hover:border-teal-500/60 shadow-xs hover:shadow-md transition-all group flex flex-col justify-between"
+              className="p-5 rounded-2xl bg-surface border border-border/80 hover:border-teal-500/60 shadow-xs hover:shadow-md transition-all group flex flex-col justify-between h-full"
             >
               <div>
                 <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-3">
@@ -247,7 +247,7 @@ export function PublicHomepage() {
             {/* Link 3: About Ustadh Mahmoud */}
             <Link
               to="/about"
-              className="p-5 rounded-2xl bg-surface border border-border/80 hover:border-teal-500/60 shadow-xs hover:shadow-md transition-all group flex flex-col justify-between"
+              className="p-5 rounded-2xl bg-surface border border-border/80 hover:border-teal-500/60 shadow-xs hover:shadow-md transition-all group flex flex-col justify-between h-full"
             >
               <div>
                 <div className="w-10 h-10 rounded-xl bg-terracotta/10 text-accent flex items-center justify-center mb-3">
@@ -271,7 +271,7 @@ export function PublicHomepage() {
             {/* Link 4: Pricing */}
             <Link
               to="/pricing"
-              className="p-5 rounded-2xl bg-surface border border-border/80 hover:border-teal-500/60 shadow-xs hover:shadow-md transition-all group flex flex-col justify-between"
+              className="p-5 rounded-2xl bg-surface border border-border/80 hover:border-teal-500/60 shadow-xs hover:shadow-md transition-all group flex flex-col justify-between h-full"
             >
               <div>
                 <div className="w-10 h-10 rounded-xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center mb-3">
@@ -295,10 +295,10 @@ export function PublicHomepage() {
             {/* Link 5: FAQ */}
             <Link
               to="/faq"
-              className="p-5 rounded-2xl bg-surface border border-border/80 hover:border-teal-500/60 shadow-xs hover:shadow-md transition-all group flex flex-col justify-between sm:col-span-2 lg:col-span-2"
+              className="p-5 rounded-2xl bg-surface border border-border/80 hover:border-teal-500/60 shadow-xs hover:shadow-md transition-all group flex flex-col justify-between h-full"
             >
               <div>
-                <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-3">
+                <div className="w-10 h-10 rounded-xl bg-terracotta/10 text-accent flex items-center justify-center mb-3">
                   <HelpCircle className="w-5 h-5" />
                 </div>
                 <h3 className="font-bold text-base text-foreground group-hover:text-primary transition-colors">
@@ -306,12 +306,36 @@ export function PublicHomepage() {
                 </h3>
                 <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
                   {isEn 
-                    ? 'Clear answers regarding scheduling, cancellation policy, Zoom setup, payment options, and trial lesson.' 
+                    ? 'Clear answers regarding scheduling, cancellation policy, Zoom setup, and payment options.' 
                     : 'إجابات شاملة ومفصلة حول المواعيد، سياسة الإلغاء، طريقة الدفع، واستخدام برنامج زووم.'}
                 </p>
               </div>
-              <div className="pt-3 mt-3 border-t border-border/40 flex items-center gap-1 text-xs font-bold text-primary">
+              <div className="pt-3 mt-3 border-t border-border/40 flex items-center gap-1 text-xs font-bold text-accent">
                 <span>{isEn ? 'Browse All FAQs' : 'تصفح كل الأسئلة'}</span>
+                <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
+              </div>
+            </Link>
+
+            {/* Link 6: Student Portal */}
+            <Link
+              to="/student"
+              className="p-5 rounded-2xl bg-surface border border-border/80 hover:border-teal-500/60 shadow-xs hover:shadow-md transition-all group flex flex-col justify-between h-full"
+            >
+              <div>
+                <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-3">
+                  <User className="w-5 h-5" />
+                </div>
+                <h3 className="font-bold text-base text-foreground group-hover:text-primary transition-colors">
+                  {isEn ? 'Student Portal' : 'بوابة ومساحة الطالب'}
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                  {isEn 
+                    ? 'Your private sanctuary to manage lessons, schedule sessions, and track milestones with the teacher.' 
+                    : 'مساحتك الخاصة لمتابعة الدروس، إدارة جدول المواعيد، وتقارير التقدم مع المعلم.'}
+                </p>
+              </div>
+              <div className="pt-3 mt-3 border-t border-border/40 flex items-center gap-1 text-xs font-bold text-primary">
+                <span>{isEn ? 'Enter Portal' : 'دخول البوابة'}</span>
                 <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
               </div>
             </Link>
