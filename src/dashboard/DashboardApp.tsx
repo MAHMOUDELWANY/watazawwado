@@ -1,5 +1,6 @@
 import { BrandLogo } from '../components/ui/BrandLogo';
 import { ThemeToggle } from '../components/ui/ThemeToggle';
+import { OnboardingGuide } from '../components/ui/OnboardingGuide';
 import { AccountDropdown } from '../components/ui/AccountDropdown';
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
@@ -45,6 +46,8 @@ export function DashboardApp() {
   const { isTeacherAuthenticated, user, signOut, teacherRole } = useTeacherAuth();
   const { theme, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
+  const [showGlobalTour, setShowGlobalTour] = useState(false);
   const location = useLocation();
   const [lang, setLang] = useState<Language>('en');
 
@@ -166,6 +169,23 @@ export function DashboardApp() {
   const navigation = isSuperAdmin ? superAdminNavigation : teacherNavigation;
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+  const globalTourSteps = [
+    {
+      targetId: 'teacher-sidebar',
+      title: lang === 'ar' ? 'القائمة الجانبية' : 'Navigation',
+      content: lang === 'ar' ? 'يمكنك التنقل بين لوحة التحكم، الطلاب، الجدولة، والفواتير.' : 'Navigate through dashboard, students, schedule, and billing.'
+    },
+    {
+      targetId: 'language-toggle',
+      title: lang === 'ar' ? 'تغيير اللغة' : 'Change Language',
+      content: lang === 'ar' ? 'تبديل واجهة المعلم بين العربية والإنجليزية.' : 'Toggle teacher interface between Arabic and English.'
+    },
+    {
+      targetId: 'teacher-logout',
+      title: lang === 'ar' ? 'تسجيل الخروج' : 'Log Out',
+      content: lang === 'ar' ? 'تسجيل الخروج من الحساب.' : 'Sign out of your account.'
+    }
+  ];
   const toggleLanguage = () => setLang(prev => prev === 'en' ? 'ar' : 'en');
 
   return (
@@ -197,7 +217,7 @@ export function DashboardApp() {
             : 'max-md:ltr:-translate-x-full max-md:rtl:translate-x-full'
           }
           /* Desktop styling */
-          md:static md:translate-x-0 md:w-[280px] md:m-4 md:rounded-3xl md:glass-nav md:shadow-xl md:border md:border-border/50
+          ${desktopSidebarOpen ? 'md:static md:translate-x-0 md:w-[280px] md:m-4 md:rounded-3xl md:glass-nav md:shadow-xl md:border md:border-border/50' : 'md:hidden md:w-0 md:m-0'}
         `}
       >
         {/* Workspace Brand Header */}
@@ -269,19 +289,41 @@ export function DashboardApp() {
             </div>
           </div>
           
-          <div className="flex items-center justify-between px-2 pt-2">
-            <span className="text-xs text-muted-foreground">{lang === 'ar' ? 'السمة' : 'Theme'}</span>
-            <ThemeToggle />
-          </div>
-          <div className="flex items-center justify-between px-2 pb-1">
-            <span className="text-xs text-muted-foreground">{lang === 'ar' ? 'اللغة' : 'Language'}</span>
-            <button
-              onClick={toggleLanguage}
-              className="px-2 py-1 text-accent hover:bg-surface-subtle rounded-lg text-xs font-semibold cursor-pointer"
-            >
-              {lang === "en" ? 'العربية' : "EN"}
-            </button>
-          </div>
+          
+            <div className="flex items-center justify-between px-2 pt-2">
+              <span className="text-xs text-muted-foreground">{lang === 'ar' ? 'السمة' : 'Theme'}</span>
+              <ThemeToggle />
+            </div>
+            
+            <div className="flex items-center justify-between px-2 pb-1">
+              <span className="text-xs font-medium text-muted-foreground">{lang === 'ar' ? 'اللغة' : 'Language'}</span>
+              <button
+                onClick={toggleLanguage}
+                data-tour="language-toggle"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all cursor-pointer shadow-sm"
+              >
+                <Globe className="w-3.5 h-3.5" />
+                <span>{lang === "en" ? 'عربي' : 'EN'}</span>
+              </button>
+            </div>
+            
+            <div className="pt-2 flex flex-col gap-2">
+              <button 
+                onClick={() => { setIsMobileMenuOpen(false); setShowGlobalTour(true); }}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all font-semibold text-sm cursor-pointer"
+              >
+                <HelpCircle className="w-4 h-4" />
+                <span>{lang === 'ar' ? 'دليل الاستخدام' : 'Tour Guide'}</span>
+              </button>
+              <button 
+                onClick={() => signOut()}
+                data-tour="teacher-logout"
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-destructive/10 text-destructive hover:bg-destructive hover:text-destructive-foreground transition-all font-semibold text-sm cursor-pointer"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>{lang === 'ar' ? 'تسجيل الخروج' : 'Log Out'}</span>
+              </button>
+            </div>
         </div>
       </aside>
 

@@ -1,10 +1,11 @@
 import { BrandLogo } from '../components/ui/BrandLogo';
 import { AccountDropdown } from '../components/ui/AccountDropdown';
+import { OnboardingGuide } from '../components/ui/OnboardingGuide';
 import { BrandLoader } from '../components/ui/BrandLoader';
 import { ThemeToggle } from '../components/ui/ThemeToggle';
 import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
-import {  BookOpen,
+import { HelpCircle, Globe, LogOut, BookOpen,
   User,
   Menu,
   X,
@@ -40,6 +41,8 @@ export default function StudentApp() {
   const { user, session, isTeacherAuthenticated, userRole, signOut } = useTeacherAuth();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
+  const [showGlobalTour, setShowGlobalTour] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const [loadingProfile, setLoadingProfile] = useState<boolean>(true);
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -239,7 +242,9 @@ export default function StudentApp() {
           </div>
         </div>
 
-        <StudentAuthModal
+        {/* Global Onboarding Guide */}
+      <OnboardingGuide steps={globalTourSteps} isOpen={showGlobalTour} onClose={() => setShowGlobalTour(false)} isAr={isAr} />
+      <StudentAuthModal
           isOpen={authModalOpen}
           onClose={() => setAuthModalOpen(false)}
           lang={lang}
@@ -309,6 +314,28 @@ export default function StudentApp() {
   ];
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+  const globalTourSteps = [
+    {
+      targetId: 'nav-book-link-desktop',
+      title: isAr ? 'حجز الدروس' : 'Book Lessons',
+      content: isAr ? 'من هنا يمكنك اختيار الدرس وحجز مواعيدك بكل سهولة.' : 'From here you can choose a subject and book your lessons easily.'
+    },
+    {
+      targetId: 'nav-account-link-desktop',
+      title: isAr ? 'إدارة الحساب' : 'Account Management',
+      content: isAr ? 'تعديل بياناتك، متابعة رصيدك، وتغيير الإعدادات من هذا القسم.' : 'Update your profile, check your balance, and change settings here.'
+    },
+    {
+      targetId: 'language-toggle',
+      title: isAr ? 'تغيير اللغة' : 'Change Language',
+      content: isAr ? 'يمكنك التبديل بين العربية والإنجليزية في أي وقت.' : 'You can switch between Arabic and English at any time.'
+    },
+    {
+      targetId: 'student-logout',
+      title: isAr ? 'تسجيل الخروج' : 'Log Out',
+      content: isAr ? 'عند الانتهاء، يمكنك تسجيل الخروج من هنا بأمان.' : 'When you are done, you can safely log out from here.'
+    }
+  ];
 
   // Dynamic Header Title & Subtitle helper
   const getHeaderInfo = (pathname: string) => {
@@ -396,7 +423,7 @@ export default function StudentApp() {
             : (isAr ? 'max-lg:translate-x-full' : 'max-lg:-translate-x-full')
           }
           /* Desktop styling: floating glass sidebar */
-          lg:static lg:translate-x-0 lg:w-[280px] lg:m-4 lg:rounded-3xl lg:glass-nav lg:shadow-xl lg:border lg:border-border/50
+          ${desktopSidebarOpen ? 'lg:static lg:translate-x-0 lg:w-[280px] lg:m-4 lg:rounded-3xl lg:glass-nav lg:shadow-xl lg:border lg:border-border/50' : 'lg:hidden lg:w-0 lg:m-0'}
         `}
       >
         {/* Brand & Portal Header */}
@@ -504,8 +531,27 @@ export default function StudentApp() {
               {isAr ? 'English' : 'عربي'}
             </button>
           </div>
-        </div>
-      </aside>
+        
+    
+      <div className="p-4 mt-auto mb-[env(safe-area-inset-bottom)] lg:mb-0 border-t border-border/10">
+        <button 
+          onClick={() => { setSidebarOpen(false); setShowGlobalTour(true); }}
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 mb-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all font-semibold text-sm"
+        >
+          <HelpCircle className="w-4 h-4" />
+          <span>{isAr ? 'دليل الاستخدام' : 'Tour Guide'}</span>
+        </button>
+        <button 
+        onClick={() => signOut()}
+        data-tour="student-logout"
+        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-destructive/10 text-destructive hover:bg-destructive hover:text-destructive-foreground transition-all font-semibold text-sm"
+      >
+        <LogOut className="w-4 h-4" />
+        <span>{isAr ? 'تسجيل الخروج' : 'Log Out'}</span>
+      </button>
+    </div>
+  </div>
+</aside>
 
       {/* ========================================================================= */}
       {/* MAIN APPLICATION VIEWPORT & HEADER */}
