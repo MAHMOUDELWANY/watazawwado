@@ -168,14 +168,14 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="p-1 rounded-full text-foreground/60 dark:text-border/60 hover:bg-surface-warm dark:hover:bg-surface-subtle cursor-pointer"
+                className="p-1 rounded-full text-foreground/60 dark:text-muted-foreground/60 hover:bg-surface-warm dark:hover:bg-surface-subtle cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Policy Reminder */}
-            <div className="py-3 text-sm text-foreground/75 dark:text-border/75 leading-relaxed bg-surface-warm/60 dark:bg-background p-3 rounded-xl border border-secondary/50 my-3">
+            <div className="py-3 text-sm text-foreground/75 dark:text-muted-foreground/75 leading-relaxed bg-surface-warm/60 dark:bg-background p-3 rounded-xl border border-secondary/50 my-3">
               <strong className="text-foreground">
                 {isEn ? 'Cancellation & Rescheduling Rule: ' : 'سياسة التعديل والإلغاء: '}
               </strong>
@@ -186,7 +186,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
 
             {/* Quick Demo Selector */}
             <div className="mb-4">
-              <span className="text-[11px] uppercase font-semibold text-foreground/60 dark:text-border/60 block mb-1.5">
+              <span className="text-[11px] uppercase font-semibold text-foreground/60 dark:text-muted-foreground/60 block mb-1.5">
                 {isEn ? 'Test Bookings (Click to Inspect Sync & Policy):' : 'حجوزات تجريبية (انقر للمعاينة):'}
               </span>
               <div className="flex flex-wrap gap-2">
@@ -215,7 +215,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
             {/* Search Input */}
             <div className="flex gap-2 mb-4">
               <div className="relative flex-1">
-                <Search className="w-4 h-4 absolute left-3 top-3 text-foreground/50 dark:text-border/50" />
+                <Search className="w-4 h-4 absolute left-3 top-3 text-foreground/50 dark:text-muted-foreground/50" />
                 <input
                   type="text"
                   value={refCode}
@@ -253,13 +253,13 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
               <div className="p-4 sm:p-5 rounded-2xl bg-background border border-secondary/60 space-y-4">
                 <div className="flex items-start justify-between">
                   <div>
-                    <span className="text-[13px] font-semibold uppercase tracking-wider text-foreground/50 dark:text-border/50">
+                    <span className="text-[13px] font-semibold uppercase tracking-wider text-foreground/50 dark:text-muted-foreground/50">
                       {booking.reference} • {booking.mode === 'trial' ? 'Free Trial' : '1-on-1 Lesson'}
                     </span>
                     <h4 className="font-display text-base font-medium text-foreground">
                       {booking.serviceName}
                     </h4>
-                    <p className="text-sm text-foreground/70 dark:text-border/70">
+                    <p className="text-sm text-foreground/70 dark:text-muted-foreground/70">
                       {booking.learnerName} {booking.parentName ? `(Parent: ${booking.parentName})` : ''}
                     </p>
                   </div>
@@ -293,7 +293,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                     <div className="font-semibold text-sm text-foreground dark:text-white">
                       {dualTimes.localTime} ({dualTimes.studentOffset})
                     </div>
-                    <div className="text-[11px] text-foreground/70 dark:text-border/70">
+                    <div className="text-[11px] text-foreground/70 dark:text-muted-foreground/70">
                       {dualTimes.localDate} • {dualTimes.durationMinutes} min
                     </div>
                   </div>
@@ -306,7 +306,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                     <div className="font-semibold text-sm text-foreground dark:text-white">
                       {dualTimes.cairoTime} (Cairo)
                     </div>
-                    <div className="text-[11px] text-foreground/70 dark:text-border/70">
+                    <div className="text-[11px] text-foreground/70 dark:text-muted-foreground/70">
                       {dualTimes.cairoDate}
                     </div>
                   </div>
@@ -385,7 +385,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                     </h5>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-[13px] uppercase font-semibold text-foreground/70 dark:text-border/70 mb-1">
+                        <label className="block text-[13px] uppercase font-semibold text-foreground/70 dark:text-muted-foreground/70 mb-1">
                           {isEn ? 'New Date' : 'التاريخ الجديد'}
                         </label>
                         <input
@@ -396,7 +396,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                         />
                       </div>
                       <div>
-                        <label className="block text-[13px] uppercase font-semibold text-foreground/70 dark:text-border/70 mb-1">
+                        <label className="block text-[13px] uppercase font-semibold text-foreground/70 dark:text-muted-foreground/70 mb-1">
                           {isEn ? 'New Time Slot' : 'الوقت الجديد'}
                         </label>
                         <select

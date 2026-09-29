@@ -160,7 +160,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
             <Layers className="w-6 h-6 text-accent" />
             <span>{isEn ? 'Calendar & Classroom Integrations' : 'ربط التقويم وقاعات التدريس'}</span>
           </h2>
-          <p className="text-sm text-foreground/70 dark:text-border/70 mt-1">
+          <p className="text-sm text-foreground/70 dark:text-muted-foreground/70 mt-1">
             {isEn
               ? 'Real-time synchronization engine connecting Google Calendar scheduling and Zoom online classrooms.'
               : 'محرك المزامنة الحية لجدولة الدروس عبر تقويم جوجل وغرف زووم المباشرة.'}
@@ -210,7 +210,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                   <h3 className="font-display text-base font-semibold text-foreground">
                     Google Calendar
                   </h3>
-                  <span className="text-[11px] text-foreground/60 dark:text-border/60">
+                  <span className="text-[11px] text-foreground/60 dark:text-muted-foreground/60">
                     {isEn ? 'Primary Scheduling Source' : 'المصدر الأساسي للمواعيد'}
                   </span>
                 </div>
@@ -233,7 +233,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
               )}
             </div>
 
-            <p className="text-sm text-foreground/80 dark:text-border/80 leading-relaxed">
+            <p className="text-sm text-foreground/80 dark:text-muted-foreground/80 leading-relaxed">
               {isEn
                 ? 'Syncs all trial and regular bookings to Mahmoud’s official Google Calendar. Prevents double bookings automatically.'
                 : 'مزامنة تلقائية للحجوزات على تقويم جوجل لمنع التعارض في المواعيد.'}
@@ -287,7 +287,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
               </button>
             )}
 
-            <span className="text-[13px] text-foreground/50 dark:text-border/50">
+            <span className="text-[13px] text-foreground/50 dark:text-muted-foreground/50">
               OAuth 2.0
             </span>
           </div>
@@ -305,7 +305,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                   <h3 className="font-display text-base font-semibold text-foreground">
                     Zoom Classroom
                   </h3>
-                  <span className="text-[11px] text-foreground/60 dark:text-border/60">
+                  <span className="text-[11px] text-foreground/60 dark:text-muted-foreground/60">
                     {isEn ? 'Live 1-on-1 Video' : 'قاعات التدريس المباشرة'}
                   </span>
                 </div>
@@ -321,7 +321,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
               </span>
             </div>
 
-            <p className="text-sm text-foreground/80 dark:text-border/80 leading-relaxed">
+            <p className="text-sm text-foreground/80 dark:text-muted-foreground/80 leading-relaxed">
               {isEn
                 ? 'Provisions dedicated 1-on-1 Zoom lesson rooms automatically via Server-to-Server OAuth for confirmed bookings.'
                 : 'توليد روابط غرف زووم مخصصة تلقائياً لكل جلسة مؤكدة عبر Server-to-Server OAuth.'}
@@ -344,7 +344,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
               {status?.zoom.isConfigured ? (isEn ? 'Ready' : 'جاهز') : (isEn ? 'Needs Env' : 'يتطلب متغيرات البيئة')}
             </span>
 
-            <span className="text-[13px] text-foreground/50 dark:text-border/50">
+            <span className="text-[13px] text-foreground/50 dark:text-muted-foreground/50">
               S2S OAuth
             </span>
           </div>
@@ -362,7 +362,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                   <h3 className="font-display text-base font-semibold text-foreground">
                     Brevo Email
                   </h3>
-                  <span className="text-[11px] text-foreground/60 dark:text-border/60">
+                  <span className="text-[11px] text-foreground/60 dark:text-muted-foreground/60">
                     {isEn ? 'Transactional Email Engine' : 'محرك رسائل البريد الإلكتروني'}
                   </span>
                 </div>
@@ -378,7 +378,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
               </span>
             </div>
 
-            <p className="text-sm text-foreground/80 dark:text-border/80 leading-relaxed">
+            <p className="text-sm text-foreground/80 dark:text-muted-foreground/80 leading-relaxed">
               {isEn
                 ? 'Delivers transactional confirmations, reminders (24h/1h), receipts, and alerts via Brevo HTTP API.'
                 : 'إرسال تأكيدات الحجز والتذكيرات وإشعارات الدفع عبر واجهة Brevo السحابية.'}
@@ -399,7 +399,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
               {status?.email?.isConfigured ? (isEn ? 'Ready (300/day free)' : 'جاهز') : (isEn ? 'Set BREVO_API_KEY' : 'يتطلب مفتاح Brevo')}
             </span>
 
-            <span className="text-[13px] text-foreground/50 dark:text-border/50">
+            <span className="text-[13px] text-foreground/50 dark:text-muted-foreground/50">
               HTTPS API v3
             </span>
           </div>
@@ -433,7 +433,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
           </div>
         </div>
 
-        <p className="text-sm text-foreground/75 dark:text-border/75 leading-relaxed">
+        <p className="text-sm text-foreground/75 dark:text-muted-foreground/75 leading-relaxed">
           {isEn
             ? 'The table below models live conversion across the primary target regions (Canada, US, UK, Australia) to verify daylight-saving offset calculations against Africa/Cairo.'
             : 'جدول التحقق الحي من فروق التوقيت والتوقيت الصيفي بين الدول المستهدفة وتوقيت القاهرة.'}
@@ -442,7 +442,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-start">
             <thead>
-              <tr className="border-b border-border text-foreground/60 dark:text-border/60 font-semibold uppercase text-[13px]">
+              <tr className="border-b border-border text-foreground/60 dark:text-muted-foreground/60 font-semibold uppercase text-[13px]">
                 <th className="py-2 px-3 text-start">{isEn ? 'Target Region' : 'المنطقة'}</th>
                 <th className="py-2 px-3 text-start">{isEn ? 'IANA Zone' : 'المنطقة الزمنية'}</th>
                 <th className="py-2 px-3 text-start">{isEn ? 'UTC Offset' : 'الفارق الزمني'}</th>
@@ -487,7 +487,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
         </div>
         {/* Self-Test Suite Report */}
         <div className="pt-4 border-t border-border/50 dark:border-border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div className="flex items-center gap-2 text-sm text-foreground/80 dark:text-border/80">
+          <div className="flex items-center gap-2 text-sm text-foreground/80 dark:text-muted-foreground/80">
             <ShieldCheck className="w-4 h-4 text-accent" />
             <span>
               {isEn

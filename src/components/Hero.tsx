@@ -1,4 +1,4 @@
-﻿import React, { useRef } from 'react';
+import React, { useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'motion/react';
 import { Calendar, ArrowRight, Sparkles, GraduationCap, Languages, UserCheck, Clock } from 'lucide-react';
 import { PortraitImage } from './PortraitImage';
@@ -80,9 +80,9 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
                 </>
               ) : (
                 <>
-                  تعليم{' '}
-                  <span className="text-brand font-medium">القرآن الكريم واللغة العربية</span>{' '}
-                  بتوجيه فردي ورعاية مباشرة.
+                  ?????{' '}
+                  <span className="text-brand font-medium">?????? ?????? ?????? ???????</span>{' '}
+                  ?????? ???? ?????? ??????.
                 </>
               )}
             </motion.h1>
@@ -101,7 +101,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
                 </>
               ) : (
                 <>
-                  دروس فردية مخصصة للكبار والناشئة والعائلات المسلمة في المهجر. بإشراف أزهري وبنهج يقوم على الصبر والتدرج، مع إتقان تام للغة الإنجليزية للتوضيح عند الحاجة.
+                  ???? ????? ????? ?????? ???????? ????????? ??????? ?? ??????. ?????? ????? ????? ???? ??? ????? ???????? ?? ????? ??? ???? ?????????? ??????? ??? ??????.
                 </>
               )}
             </motion.p>
@@ -129,8 +129,8 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
                 id="hero-learn-more-btn"
                 className="inline-flex items-center justify-center gap-1.5 px-4 py-3.5 text-muted-foreground hover:text-foreground text-sm sm:text-base font-medium transition-colors"
               >
-                <span>{isEn ? 'View Teaching Areas' : 'استعراض المسارات'}</span>
-                <span aria-hidden="true" className="rtl:rotate-180">↓</span>
+                <span>{isEn ? 'View Teaching Areas' : '??????? ????????'}</span>
+                <span aria-hidden="true" className="rtl:rotate-180">?</span>
               </a>
             </motion.div>
 
@@ -146,10 +146,10 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
                 <GraduationCap className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                 <div>
                   <div className="text-sm font-semibold text-foreground">
-                    {isEn ? 'Al-Azhar Degree' : 'خريج الأزهر'}
+                    {isEn ? 'Al-Azhar Degree' : '???? ??????'}
                   </div>
                   <div className="text-[13px] text-muted-foreground">
-                    {isEn ? 'Classical grounding' : 'تأصيل شرعي ولغوي'}
+                    {isEn ? 'Classical grounding' : '????? ???? ?????'}
                   </div>
                 </div>
               </div>
@@ -158,10 +158,10 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
                 <Languages className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                 <div>
                   <div className="text-sm font-semibold text-foreground">
-                    {isEn ? 'IELTS C1 Certified' : 'إتقان الإنجليزية C1'}
+                    {isEn ? 'IELTS C1 Certified' : '????? ?????????? C1'}
                   </div>
                   <div className="text-[13px] text-muted-foreground">
-                    {isEn ? 'Fluent explanations' : 'تواصل سلس ومباشر'}
+                    {isEn ? 'Fluent explanations' : '????? ??? ??????'}
                   </div>
                 </div>
               </div>
@@ -170,10 +170,10 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
                 <UserCheck className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                 <div>
                   <div className="text-sm font-semibold text-foreground">
-                    {isEn ? 'Always 1-on-1' : 'تعليم فردي دائماً'}
+                    {isEn ? 'Always 1-on-1' : '????? ???? ??????'}
                   </div>
                   <div className="text-[13px] text-muted-foreground">
-                    {isEn ? 'No rotating tutors' : 'مع محمود مباشرة'}
+                    {isEn ? 'No rotating tutors' : '?? ????? ??????'}
                   </div>
                 </div>
               </div>
@@ -182,10 +182,10 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
                 <Clock className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                 <div>
                   <div className="text-sm font-semibold text-foreground">
-                    {isEn ? 'Global Timezones' : 'توقيتات مرنة'}
+                    {isEn ? 'Global Timezones' : '??????? ????'}
                   </div>
                   <div className="text-[13px] text-muted-foreground">
-                    {isEn ? 'Canada, US, UK, AU' : 'كندا وأمريكا وبريطانيا'}
+                    {isEn ? 'Canada, US, UK, AU' : '???? ??????? ?????????'}
                   </div>
                 </div>
               </div>

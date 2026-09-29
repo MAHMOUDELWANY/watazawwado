@@ -135,13 +135,13 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
             <h2 className="text-lg font-display font-bold text-foreground">
               Edit Student Profile
             </h2>
-            <p className="text-sm text-foreground/70 dark:text-border/70">
+            <p className="text-sm text-foreground/70 dark:text-muted-foreground/70">
               Update details, parent contact, level assessment, and timezone.
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-foreground/60 dark:text-border/60 hover:text-foreground dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+            className="p-1.5 rounded-lg text-foreground/60 dark:text-muted-foreground/60 hover:text-foreground dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -159,7 +159,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
           {/* Core Identity */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-foreground/80 dark:text-border/80 mb-1.5">
+              <label className="block text-sm font-medium text-foreground/80 dark:text-muted-foreground/80 mb-1.5">
                 Student Name <span className="text-red-500">*</span>
               </label>
               <input
@@ -173,7 +173,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground/80 dark:text-border/80 mb-1.5">
+              <label className="block text-sm font-medium text-foreground/80 dark:text-muted-foreground/80 mb-1.5">
                 Status
               </label>
               <select
@@ -191,7 +191,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
           {/* Learner Type & Parent Name */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-foreground/80 dark:text-border/80 mb-1.5">
+              <label className="block text-sm font-medium text-foreground/80 dark:text-muted-foreground/80 mb-1.5">
                 Learner Type
               </label>
               <select
@@ -206,7 +206,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground/80 dark:text-border/80 mb-1.5">
+              <label className="block text-sm font-medium text-foreground/80 dark:text-muted-foreground/80 mb-1.5">
                 Parent / Guardian Name {learnerType === 'child' && <span className="text-amber-600 dark:text-amber-400 font-normal">(Recommended for Child)</span>}
               </label>
               <input
@@ -228,7 +228,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
               </span>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11px] font-medium text-foreground/70 dark:text-border/70 mb-1">
+                  <label className="block text-[11px] font-medium text-foreground/70 dark:text-muted-foreground/70 mb-1">
                     Parent Email <span className="font-normal opacity-60">(leave blank if not provided)</span>
                   </label>
                   <input
@@ -240,7 +240,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-medium text-foreground/70 dark:text-border/70 mb-1">
+                  <label className="block text-[11px] font-medium text-foreground/70 dark:text-muted-foreground/70 mb-1">
                     Parent WhatsApp <span className="font-normal opacity-60">(optional)</span>
                   </label>
                   <input
@@ -258,7 +258,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
           {/* Contact Details */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-foreground/80 dark:text-border/80 mb-1.5">
+              <label className="block text-sm font-medium text-foreground/80 dark:text-muted-foreground/80 mb-1.5">
                 Email Address
               </label>
               <input
@@ -271,7 +271,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground/80 dark:text-border/80 mb-1.5">
+              <label className="block text-sm font-medium text-foreground/80 dark:text-muted-foreground/80 mb-1.5">
                 WhatsApp Phone
               </label>
               <input
@@ -287,7 +287,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
           {/* Location & Timezone */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-foreground/80 dark:text-border/80 mb-1.5">
+              <label className="block text-sm font-medium text-foreground/80 dark:text-muted-foreground/80 mb-1.5">
                 Country
               </label>
               <input
@@ -300,7 +300,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground/80 dark:text-border/80 mb-1.5">
+              <label className="block text-sm font-medium text-foreground/80 dark:text-muted-foreground/80 mb-1.5">
                 Student Timezone
               </label>
               <select
@@ -334,7 +334,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
 
           {/* Level Assessment */}
           <div>
-            <label className="block text-sm font-medium text-foreground/80 dark:text-border/80 mb-1.5">
+            <label className="block text-sm font-medium text-foreground/80 dark:text-muted-foreground/80 mb-1.5">
               Assessed Level
             </label>
             <select
@@ -352,7 +352,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
 
           {/* General Profile Notes */}
           <div>
-            <label className="block text-sm font-medium text-foreground/80 dark:text-border/80 mb-1.5">
+            <label className="block text-sm font-medium text-foreground/80 dark:text-muted-foreground/80 mb-1.5">
               General Profile Notes
             </label>
             <textarea
@@ -370,7 +370,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
               type="button"
               onClick={onClose}
               disabled={saving}
-              className="px-4 py-2 text-sm font-medium rounded-xl text-foreground/80 dark:text-border/80 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              className="px-4 py-2 text-sm font-medium rounded-xl text-foreground/80 dark:text-muted-foreground/80 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
             >
               Cancel
             </button>

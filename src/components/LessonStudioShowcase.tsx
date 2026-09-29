@@ -134,7 +134,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.14 }}
-            className="text-base sm:text-lg text-foreground/75 dark:text-border leading-relaxed max-w-2xl mx-auto mb-8"
+            className="text-base sm:text-lg text-foreground/75 dark:text-muted-foreground leading-relaxed max-w-2xl mx-auto mb-8"
           >
             {isEn
               ? 'Experience how live Tajweed phonetic corrections, personalized teacher notes, and calm 1-on-1 guidance unfold in real time.'
@@ -308,14 +308,14 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
 
               <div className="flex items-start gap-2 text-sm">
                 <CheckCircle2 className="w-4 h-4 text-accent shrink-0 mt-0.5" />
-                <span className="text-foreground/90 dark:text-border">
+                <span className="text-foreground/90 dark:text-muted-foreground">
                   {isEn ? 'Noon Sakinah: Idgham with Ghunnah (Ayat 1-10)' : 'النون الساكنة: إدغام بغنة (الآيات ١-١٠)'}
                 </span>
               </div>
 
               <div className="flex items-start gap-2 text-sm">
                 <CheckCircle2 className="w-4 h-4 text-accent shrink-0 mt-0.5" />
-                <span className="text-foreground/90 dark:text-border">
+                <span className="text-foreground/90 dark:text-muted-foreground">
                   {isEn ? 'Surah Maryam recitation review passed' : 'اجتياز تسميع سورة مريم بثبات'}
                 </span>
               </div>
@@ -333,7 +333,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
               <div className="text-[13px] font-semibold uppercase tracking-wider text-primary dark:text-primary mb-1">
                 {isEn ? 'Recommended Weekly Pace' : 'الوتيرة الأسبوعية المقترحة'}
               </div>
-              <p className="text-[11px] text-foreground/80 dark:text-border">
+              <p className="text-[11px] text-foreground/80 dark:text-muted-foreground">
                 {isEn
                   ? '2 sessions/week × 45 min — Ideal balance between retention and busy family schedules.'
                   : 'جلستان أسبوعياً × ٤٥ دقيقة — توازن مثالي بين التثبيت ومشاغل العمل والأسرة.'}
@@ -550,7 +550,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
                           <span className="text-[11px] text-primary font-medium">Al-Azhar Curriculum</span>
                         </div>
 
-                        <div className="space-y-2.5 text-sm text-foreground/85 dark:text-border">
+                        <div className="space-y-2.5 text-sm text-foreground/85 dark:text-muted-foreground">
                           <div className="p-3 rounded-xl glass-surface border border-border">
                             <div className="font-semibold text-sm text-primary mb-1">
                               {isEn ? 'Core Concept: Khushu in Daily Salah' : 'المفهوم الأساسي: الخشوع في الصلاة'}
@@ -748,7 +748,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
               ? 'No middleman marketplaces. No generic pre-recorded videos.'
               : 'دون منصات وسيطة ودون تسجيلات جاهزة لا تلبي احتياجك.'}
           </h3>
-          <p className="text-base text-foreground/75 dark:text-border max-w-xl mx-auto mb-8">
+          <p className="text-base text-foreground/75 dark:text-muted-foreground max-w-xl mx-auto mb-8">
             {isEn
               ? 'You work directly with Ustadh Mahmoud. Every lesson is scheduled to your local timezone, with dedicated follow-up over WhatsApp.'
               : 'تتعلم مباشرة مع الأستاذ محمود، في أوقات تتوافق مع منطقتك الزمنية، ومع تواصل مستمر عبر الواتساب.'}

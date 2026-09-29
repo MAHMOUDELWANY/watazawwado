@@ -37,7 +37,7 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-sm sm:text-base text-foreground/80 dark:text-border leading-relaxed max-w-2xl">
+        <p className="text-sm sm:text-base text-foreground/80 dark:text-muted-foreground leading-relaxed max-w-2xl">
           {isEn
             ? 'Choose the primary subject you would like to work on with Mahmoud. In a 1-on-1 setting, every lesson is adapted directly to your current level, whether you are starting from the alphabet or seeking advanced mastery.'
             : 'اختر المادة الأساسية التي ترغب في تعلمها مع محمود. في الدروس الفردية ١-على-١، تُصمم كل جلسة لتناسب مستواك وتطلعاتك الشخصية بدقة.'}
@@ -56,7 +56,7 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
               className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                 isActive
                   ? 'bg-muted-foreground text-white shadow-xs'
-                  : 'bg-white/80 glass-card text-foreground/70 dark:text-border/70 border border-border hover:bg-surface-warm dark:hover:bg-surface-subtle'
+                  : 'bg-white/80 glass-card text-foreground/70 dark:text-muted-foreground/70 border border-border hover:bg-surface-warm dark:hover:bg-surface-subtle'
               }`}
             >
               {grp.icon}
@@ -98,12 +98,12 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
                   </div>
                 </div>
 
-                <p className="text-sm text-foreground/70 dark:text-border/80 leading-relaxed mb-3">
+                <p className="text-sm text-foreground/70 dark:text-muted-foreground/80 leading-relaxed mb-3">
                   {isEn ? service.tagline : service.arabicTagline}
                 </p>
               </div>
 
-              <div className="pt-2 border-t border-border/60 dark:border-border/60 flex items-center justify-between text-[11px] text-foreground/60 dark:text-border/60">
+              <div className="pt-2 border-t border-border/60 dark:border-border/60 flex items-center justify-between text-[11px] text-foreground/60 dark:text-muted-foreground/60">
                 <span>
                   {isEn ? 'Available lengths:' : 'المدد المتاحة:'} 30, 45, 60m
                 </span>
@@ -118,7 +118,7 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
 
       {/* Selected Confirmation Bar & Next Action */}
       <div className="pt-4 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="text-sm text-foreground/70 dark:text-border/70 text-center sm:text-start">
+        <div className="text-sm text-foreground/70 dark:text-muted-foreground/70 text-center sm:text-start">
           {selectedService ? (
             <span>
               {isEn ? 'Selected: ' : 'تم اختيار: '}

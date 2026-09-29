@@ -141,7 +141,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
             : isEn ? 'Your Lesson is Scheduled' : 'تم تأكيد حجز درسك بنجاح'}
         </h2>
 
-        <p className="text-sm text-foreground/80 dark:text-border max-w-lg mx-auto leading-relaxed">
+        <p className="text-sm text-foreground/80 dark:text-muted-foreground max-w-lg mx-auto leading-relaxed">
           {isEn
             ? `Assalamu Alaikum ${confirmation.learnerName}. Mahmoud is looking forward to meeting you. A confirmation summary has been logged for your local schedule.`
             : `السلام عليكم ${confirmation.learnerName}. يتطلع الأستاذ محمود للقائك في الموعد المحدد.`}
@@ -161,7 +161,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
               <Calendar className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-[11px] uppercase font-semibold text-foreground/55 dark:text-border/55 block">
+              <span className="text-[11px] uppercase font-semibold text-foreground/55 dark:text-muted-foreground/55 block">
                 {isEn ? 'Date' : 'التاريخ'}
               </span>
               <span className="text-sm font-medium text-foreground">
@@ -178,13 +178,13 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
               <Clock className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-[11px] uppercase font-semibold text-foreground/55 dark:text-border/55 block">
+              <span className="text-[11px] uppercase font-semibold text-foreground/55 dark:text-muted-foreground/55 block">
                 {isEn ? 'Time (Your Local Time)' : 'الوقت (بتوقيتك المحلي)'}
               </span>
               <span className="text-sm font-medium text-foreground">
                 {confirmation.timeDisplay}
               </span>
-              <span className="text-[11px] text-foreground/60 dark:text-border/60 block">
+              <span className="text-[11px] text-foreground/60 dark:text-muted-foreground/60 block">
                 {confirmation.timezone} ({confirmation.durationMinutes} min)
               </span>
             </div>
@@ -240,7 +240,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         </div>
 
         {/* Automated Reminders Note */}
-        <div className="flex items-center gap-2.5 p-3 rounded-xl bg-surface-warm/50 dark:bg-background text-sm text-foreground/80 dark:text-border/80">
+        <div className="flex items-center gap-2.5 p-3 rounded-xl bg-surface-warm/50 dark:bg-background text-sm text-foreground/80 dark:text-muted-foreground/80">
           <BellRing className="w-4 h-4 text-accent shrink-0" />
           <span>
             {isEn
@@ -290,7 +290,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           </span>
         </div>
 
-        <p className="text-sm text-foreground/80 dark:text-border/80 leading-relaxed">
+        <p className="text-sm text-foreground/80 dark:text-muted-foreground/80 leading-relaxed">
           {confirmation.isFreeTrial
             ? isEn
               ? 'The trial is a relaxed chance for us to meet, assess where you or your child currently stand, and demonstrate the teaching method through a brief sample lesson. If it feels like a natural fit, Mahmoud will share an honest learning roadmap. There is zero obligation to commit.'
@@ -351,7 +351,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         <button
           type="button"
           onClick={onDone}
-          className="px-6 py-2.5 rounded-xl text-sm font-medium text-foreground/70 dark:text-border/70 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
+          className="px-6 py-2.5 rounded-xl text-sm font-medium text-foreground/70 dark:text-muted-foreground/70 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
         >
           {doneLabel || (isEn ? 'Done & Return to Homepage' : 'تم والعودة للموقع')}
         </button>

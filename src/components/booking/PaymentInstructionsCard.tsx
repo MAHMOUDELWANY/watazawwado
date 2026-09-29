@@ -130,7 +130,7 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
             <h3 className="font-display text-lg font-semibold text-foreground">
               {isEn ? 'Payment Instructions' : 'تفاصيل وطرق الدفع'}
             </h3>
-            <p className="text-sm text-foreground/70 dark:text-border/70">
+            <p className="text-sm text-foreground/70 dark:text-muted-foreground/70">
               {isEn
                 ? 'Choose the method that is most convenient for you.'
                 : 'اختر الطريقة الأنسب والأسهل بالنسبة لك.'}
@@ -140,7 +140,7 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
 
         {amount && (
           <div className="text-left sm:text-right glass-surface dark:bg-background px-3.5 py-2 rounded-2xl border border-secondary/50">
-            <span className="text-[11px] uppercase font-semibold text-foreground/55 dark:text-border/55 block">
+            <span className="text-[11px] uppercase font-semibold text-foreground/55 dark:text-muted-foreground/55 block">
               {isEn ? 'Lesson Fee' : 'قيمة الدرس'}
             </span>
             <span className="text-base font-bold text-primary-hover dark:text-primary">
@@ -166,7 +166,7 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
               className={`p-3 rounded-2xl text-left border transition-all cursor-pointer flex flex-col justify-between ${
                 isSelected
                   ? 'bg-surface-warm glass-surface border-primary-hover text-foreground shadow-xs'
-                  : 'glass-surface dark:bg-background border-border/60 dark:border-border text-foreground/70 dark:text-border/70 hover:border-accent/40'
+                  : 'glass-surface dark:bg-background border-border/60 dark:border-border text-foreground/70 dark:text-muted-foreground/70 hover:border-accent/40'
               }`}
             >
               <div className="flex items-center justify-between mb-2">
@@ -188,11 +188,11 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
             <span className="text-sm font-semibold uppercase tracking-wider text-primary-hover dark:text-primary">
               {isEn ? activeOption.name : activeOption.nameArabic}
             </span>
-            <span className="text-[11px] text-foreground/60 dark:text-border/60">
+            <span className="text-[11px] text-foreground/60 dark:text-muted-foreground/60">
               {isEn ? activeOption.badge : activeOption.badgeArabic}
             </span>
           </div>
-          <p className="text-sm text-foreground/80 dark:text-border/80 mt-1 leading-relaxed">
+          <p className="text-sm text-foreground/80 dark:text-muted-foreground/80 mt-1 leading-relaxed">
             {isEn ? activeOption.instructions : activeOption.instructionsArabic}
           </p>
         </div>
@@ -205,7 +205,7 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
               className="flex items-center justify-between gap-2 p-2.5 rounded-xl glass-card border-none/40 dark:border-border"
             >
               <div className="min-w-0 flex-1">
-                <span className="text-[13px] uppercase font-semibold text-foreground/50 dark:text-border/50 block">
+                <span className="text-[13px] uppercase font-semibold text-foreground/50 dark:text-muted-foreground/50 block">
                   {label}
                 </span>
                 <span className="text-sm font-mono font-medium text-foreground select-all break-all">
@@ -288,7 +288,7 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
                   <span>{isEn ? 'Confirm Your Payment' : 'تأكيد إرسال الدفعة'}</span>
                 </div>
 
-                <p className="text-[11px] text-foreground/70 dark:text-border/70">
+                <p className="text-[11px] text-foreground/70 dark:text-muted-foreground/70">
                   {isEn
                     ? 'Please share your transaction reference code or sender name to help Mahmoud verify your payment.'
                     : 'يرجى تزويدنا برقم العملية أو اسم الحساب المحول منه ليتمكن الأستاذ محمود من تأكيد استلامها.'}
@@ -302,7 +302,7 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[11px] font-medium text-foreground/70 dark:text-border mb-1">
+                    <label className="block text-[11px] font-medium text-foreground/70 dark:text-muted-foreground mb-1">
                       {isEn ? 'Transaction Reference / Sender Name *' : 'رقم الحوالة أو اسم المحول *'}
                     </label>
                     <input
@@ -316,7 +316,7 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-medium text-foreground/70 dark:text-border mb-1">
+                    <label className="block text-[11px] font-medium text-foreground/70 dark:text-muted-foreground mb-1">
                       {isEn ? 'Amount Paid' : 'المبلغ المحول'}
                     </label>
                     <div className="flex gap-2">
@@ -340,7 +340,7 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-medium text-foreground/70 dark:text-border mb-1">
+                  <label className="block text-[11px] font-medium text-foreground/70 dark:text-muted-foreground mb-1">
                     {isEn ? 'Optional Note' : 'ملاحظات إضافية (اختياري)'}
                   </label>
                   <input
@@ -356,7 +356,7 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
                   <button
                     type="button"
                     onClick={() => setIsClaimOpen(false)}
-                    className="px-4 py-2 rounded-xl text-sm font-medium text-foreground/70 dark:text-border/70 hover:bg-surface-warm transition-colors cursor-pointer"
+                    className="px-4 py-2 rounded-xl text-sm font-medium text-foreground/70 dark:text-muted-foreground/70 hover:bg-surface-warm transition-colors cursor-pointer"
                   >
                     {isEn ? 'Cancel' : 'إلغاء'}
                   </button>
@@ -375,7 +375,7 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
       )}
 
       {/* Safety & Integrity Guarantee Footer */}
-      <div className="flex items-center gap-2 pt-2 text-[11px] text-foreground/60 dark:text-border/60">
+      <div className="flex items-center gap-2 pt-2 text-[11px] text-foreground/60 dark:text-muted-foreground/60">
         <ShieldCheck className="w-3.5 h-3.5 text-accent-hover shrink-0" />
         <span>
           {isEn

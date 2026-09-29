@@ -54,7 +54,7 @@ export const TimezoneSelectorModal: React.FC<TimezoneSelectorModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="p-1 rounded-full text-foreground/60 dark:text-border/60 hover:bg-surface-warm dark:hover:bg-surface-subtle cursor-pointer"
+                className="p-1 rounded-full text-foreground/60 dark:text-muted-foreground/60 hover:bg-surface-warm dark:hover:bg-surface-subtle cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -62,7 +62,7 @@ export const TimezoneSelectorModal: React.FC<TimezoneSelectorModalProps> = ({
 
             <div className="py-3">
               <div className="relative">
-                <Search className="w-4 h-4 absolute left-3 top-3 text-foreground/50 dark:text-border/50" />
+                <Search className="w-4 h-4 absolute left-3 top-3 text-foreground/50 dark:text-muted-foreground/50" />
                 <input
                   type="text"
                   value={search}
@@ -87,12 +87,12 @@ export const TimezoneSelectorModal: React.FC<TimezoneSelectorModalProps> = ({
                     className={`w-full p-3 rounded-xl text-start transition-all cursor-pointer flex items-center justify-between ${
                       isSelected
                         ? 'bg-muted-foreground text-white'
-                        : 'bg-white/80 dark:bg-background text-foreground dark:text-border hover:bg-surface-warm dark:hover:bg-surface-subtle'
+                        : 'bg-white/80 dark:bg-background text-foreground dark:text-muted-foreground hover:bg-surface-warm dark:hover:bg-surface-subtle'
                     }`}
                   >
                     <div>
                       <div className="text-sm font-medium">{tz.label}</div>
-                      <div className={`text-[11px] ${isSelected ? 'text-white/80' : 'text-foreground/60 dark:text-border/60'}`}>
+                      <div className={`text-[11px] ${isSelected ? 'text-white/80' : 'text-foreground/60 dark:text-muted-foreground/60'}`}>
                         {tz.city} • {tz.offset}
                       </div>
                     </div>

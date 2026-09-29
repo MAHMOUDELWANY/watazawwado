@@ -92,7 +92,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
             </h2>
 
             {/* Body Copy */}
-            <p className="text-base sm:text-lg text-foreground/75 dark:text-border leading-relaxed">
+            <p className="text-base sm:text-lg text-foreground/75 dark:text-muted-foreground leading-relaxed">
               {isEn
                 ? 'Instead of juggling three different platforms, rotating strangers, and conflicting timezones for Quran, Arabic, and Islamic Studies—receive one cohesive, personal curriculum tailored to you or your child.'
                 : 'بدلاً من إدارة ثلاث منصات مختلفة، ومعلمين غرباء يتغيرون باستمرار، ومواعيد متضاربة—احصل على منهج شخصي متكامل وشامل تحت إشراف معلم أزهري واحد يعرف مستواك ونقاط قوتك.'}
@@ -357,7 +357,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                       <Check className="w-3.5 h-3.5 text-accent" />
                       <span>{isEn ? 'Quran & Tajweed' : 'القرآن والتجويد'}</span>
                     </div>
-                    <div className="text-[11px] text-foreground/75 dark:text-border">
+                    <div className="text-[11px] text-foreground/75 dark:text-muted-foreground">
                       {isEn ? 'Reading, Hifz, Makharij & Revision' : 'القراءة، الحفظ، المخارج والمراجعة'}
                     </div>
                   </div>
@@ -367,7 +367,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                       <Check className="w-3.5 h-3.5 text-accent" />
                       <span>{isEn ? 'Arabic Language' : 'اللغة العربية'}</span>
                     </div>
-                    <div className="text-[11px] text-foreground/75 dark:text-border">
+                    <div className="text-[11px] text-foreground/75 dark:text-muted-foreground">
                       {isEn ? 'Fusha & Egyptian Conversation' : 'الفصحى والمحادثة والعامية المصرية'}
                     </div>
                   </div>
@@ -377,7 +377,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                       <Check className="w-3.5 h-3.5 text-accent" />
                       <span>{isEn ? 'Islamic Studies' : 'الدراسات الإسلامية'}</span>
                     </div>
-                    <div className="text-[11px] text-foreground/75 dark:text-border">
+                    <div className="text-[11px] text-foreground/75 dark:text-muted-foreground">
                       {isEn ? 'Fiqh, Aqeedah, Salah & Seerah' : 'الفقه، العقيدة، الصلاة والسيرة'}
                     </div>
                   </div>

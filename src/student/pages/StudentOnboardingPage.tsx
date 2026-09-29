@@ -249,7 +249,7 @@ export default function StudentOnboardingPage({
                   <User className="w-5 h-5 text-accent shrink-0 mt-0.5" />
                   <div>
                     <div className="font-semibold text-sm">Adult Learner</div>
-                    <div className="text-sm opacity-75 mt-0.5">I am learning for myself</div>
+                    <div className="text-sm opacity-75 mt-0.5">أنا هدرس لنفسي</div>
                   </div>
                 </button>
 

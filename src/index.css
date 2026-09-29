@@ -851,3 +851,24 @@ body {
   0%, 100% { transform: scaleX(0.7); }
   50% { transform: scaleX(1); }
 }
+
+  .btn-whatsapp {
+    background-color: rgba(37, 211, 102, 0.1);
+    color: #25D366;
+    border: 1px solid rgba(37, 211, 102, 0.2);
+    transition: all 0.2s ease-in-out;
+  }
+  .btn-whatsapp:hover {
+    background-color: rgba(37, 211, 102, 0.2);
+    color: #1DA851;
+  }
+  .dark .btn-whatsapp {
+    background-color: rgba(37, 211, 102, 0.15);
+    color: #4ade80;
+    border: 1px solid rgba(37, 211, 102, 0.25);
+  }
+  .dark .btn-whatsapp:hover {
+    background-color: rgba(37, 211, 102, 0.25);
+    color: #86efac;
+  }
+

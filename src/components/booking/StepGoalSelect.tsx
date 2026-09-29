@@ -47,7 +47,7 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
           <Target className="w-3.5 h-3.5" />
           <span>{isEn ? 'Tailored to Your Journey' : 'تخصيص مسارك التعليمي'}</span>
         </div>
-        <p className="text-sm sm:text-base text-foreground/80 dark:text-border leading-relaxed max-w-2xl">
+        <p className="text-sm sm:text-base text-foreground/80 dark:text-muted-foreground leading-relaxed max-w-2xl">
           {isEn
             ? `What are you hoping to accomplish in ${service.name}? Selecting a suggested goal helps Mahmoud prepare relevant texts, verses, or diagnostic exercises for your first session.`
             : `ما الذي تأمل تحقيقه في ${service.arabicName}؟ تحديد هدفك يساعد محمود في تجهيز المواد والنصوص المناسبة لجلستك الأولى.`}
@@ -56,7 +56,7 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
 
       {/* Suggested Goals Chips */}
       <div>
-        <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/70 dark:text-border/70 mb-2.5">
+        <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/70 dark:text-muted-foreground/70 mb-2.5">
           {isEn ? 'Common Goals for this Subject (Click to Select)' : 'الأهداف الشائعة لهذه المادة (انقر للاختيار)'}
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -72,7 +72,7 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
                 className={`p-3.5 rounded-xl border text-start text-sm sm:text-sm transition-all cursor-pointer flex items-start gap-3 ${
                   isSelected
                     ? 'bg-foreground glass-surface border-primary ring-1 ring-primary font-medium text-foreground shadow-xs'
-                    : 'glass-card border-border text-foreground/80 dark:text-border hover:border-accent/50 hover:bg-foreground/40'
+                    : 'glass-card border-border text-foreground/80 dark:text-muted-foreground hover:border-accent/50 hover:bg-foreground/40'
                 }`}
               >
                 <div
@@ -93,7 +93,7 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
 
       {/* Custom Goal / Personal Context Free-Text */}
       <div className="space-y-2 pt-2">
-        <label className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-foreground/70 dark:text-border/70">
+        <label className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-foreground/70 dark:text-muted-foreground/70">
           <Sparkles className="w-3.5 h-3.5 text-accent" />
           <span>
             {isEn
@@ -112,7 +112,7 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
           }
           className="w-full px-4 py-3 rounded-xl border border-border bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-foreground/40 dark:placeholder:text-border/40 leading-relaxed shadow-2xs"
         />
-        <p className="text-[11px] text-foreground/55 dark:text-border/60">
+        <p className="text-[11px] text-foreground/55 dark:text-muted-foreground/60">
           {isEn
             ? 'Feel free to share any past learning experience, challenges, or expectations.'
             : 'يمكنك مشاركة أي تجارب تعليمية سابقة أو تحديات تواجهها.'}
@@ -126,7 +126,7 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
           whileTap={{ scale: 0.97 }}
           onClick={onBack}
           type="button"
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium text-foreground/80 dark:text-border/80 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium text-foreground/80 dark:text-muted-foreground/80 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
         >
           <ArrowLeft className={`w-3.5 h-3.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
           <span>{isEn ? 'Back to Subjects' : 'الرجوع للمواد'}</span>

@@ -90,7 +90,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
             href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I have a question regarding booking a lesson.')}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:inline-flex items-center gap-1.5 text-sm text-foreground/70 dark:text-border/70 hover:text-primary dark:hover:text-primary transition-colors"
+            className="hidden sm:inline-flex items-center gap-1.5 text-sm text-foreground/70 dark:text-muted-foreground/70 hover:text-primary dark:hover:text-primary transition-colors"
             title={isEn ? 'Ask a quick question first' : 'اسأل سؤالاً سريعاً على واتساب'}
           >
             <MessageCircle className="w-3.5 h-3.5 text-accent" />
@@ -103,7 +103,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
               whileTap={{ scale: 0.9 }}
               onClick={onClose}
               type="button"
-              className="p-1.5 rounded-full text-foreground/60 dark:text-border/60 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
+              className="p-1.5 rounded-full text-foreground/60 dark:text-muted-foreground/60 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
               aria-label="Close"
             >
               <X className="w-5 h-5" />
@@ -124,8 +124,8 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
         </div>
 
         {serviceName && step > 1 && (
-          <div className="text-sm text-foreground/70 dark:text-border/70 bg-white/60 dark:bg-background/60 px-2.5 py-1 rounded-md border border-border/60 dark:border-border/60 self-start sm:self-auto">
-            <span className="text-foreground/50 dark:text-border/50">{isEn ? 'Selected: ' : 'المادة: '}</span>
+          <div className="text-sm text-foreground/70 dark:text-muted-foreground/70 bg-white/60 dark:bg-background/60 px-2.5 py-1 rounded-md border border-border/60 dark:border-border/60 self-start sm:self-auto">
+            <span className="text-foreground/50 dark:text-muted-foreground/50">{isEn ? 'Selected: ' : 'المادة: '}</span>
             <span className="font-medium text-foreground">{serviceName}</span>
           </div>
         )}
