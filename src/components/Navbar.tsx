@@ -46,13 +46,13 @@ export const Navbar: React.FC<NavbarProps> = ({
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
           ? 'glass-nav border-b-0 py-3'
-          : 'bg-transparent py-4 sm:py-5 border-b border-transparent'
+          : 'glass-nav py-4 sm:py-5 border-b-0 shadow-sm'
       }`}
     >
       <div className={`w-full transition-all duration-300 flex items-center justify-between ${
         isScrolled 
           ? 'max-w-6xl px-4 sm:px-6 lg:px-8 py-2.5 glass-nav rounded-full shadow-sm'
-          : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5 bg-transparent'
+          : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5'
       }`}>
         {/* Brand identity */}
         <Link
@@ -62,10 +62,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           <BrandLogo variant="compact" />
           
           <div className="flex flex-col">
-            <span className="font-display text-lg font-semibold tracking-tight text-foreground group-hover:text-interactive transition-colors">
+            <span className="font-display text-lg font-semibold  text-foreground group-hover:text-interactive transition-colors">
               Watazawwado
             </span>
-            <span className="text-[10px] text-muted-foreground tracking-wider uppercase">
+            <span className="text-[13px] text-muted-foreground tracking-wider uppercase">
               Ustadh Mahmoud
             </span>
           </div>
@@ -87,7 +87,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               type="button"
               onClick={onOpenManageModal}
-              className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer border-l border-border pl-4"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer border-l border-border pl-4"
             >
               {lang === 'en' ? 'Manage Booking' : 'إدارة الحجز'}
             </button>
@@ -101,7 +101,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={onToggleLang}
             id="lang-switch-btn"
             aria-label="Toggle language between English and Arabic"
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-foreground hover:bg-surface-subtle border border-border transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium text-foreground hover:bg-surface-subtle border border-border transition-colors cursor-pointer"
           >
             <Globe className="w-4 h-4 text-interactive transition-colors" />
             <span>{lang === 'en' ? 'العربية' : 'EN'}</span>
@@ -114,7 +114,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             onClick={() => onOpenTrialModal()}
             id="header-get-started-cta"
-            className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-medium transition-all shadow-xs cursor-pointer"
+            className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl btn-primary-material text-sm font-medium transition-all shadow-xs cursor-pointer"
           >
             <span>{lang === 'en' ? 'Free 30-Min Trial' : 'ابدأ جلستك الأولى'}</span>
           </button>
@@ -159,7 +159,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     setMobileMenuOpen(false);
                     onOpenTrialModal();
                   }}
-                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-medium text-sm shadow-xs"
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl btn-primary-material font-medium text-sm shadow-xs"
                 >
                   <span>{lang === 'en' ? 'Book Free 30-Min Trial' : 'احجز جلستك المجانية (٣٠ دقيقة)'}</span>
                 </button>
@@ -171,7 +171,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       setMobileMenuOpen(false);
                       onOpenManageModal();
                     }}
-                    className="w-full py-2.5 rounded-xl border border-border text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+                    className="w-full py-2.5 rounded-xl border border-border text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {lang === 'en' ? 'Manage or Reschedule Booking' : 'إدارة أو تعديل موعد الحجز'}
                   </button>
