@@ -124,11 +124,11 @@ export default function StudentsPage() {
             <h1 className="text-2xl font-display font-bold text-foreground">
               {isSuperAdmin ? 'Students Directory' : 'My Students'}
             </h1>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-secondary/30 text-primary border border-secondary/50 font-medium">
+            <span className="text-sm px-2.5 py-0.5 rounded-full bg-secondary/30 text-primary border border-secondary/50 font-medium">
               {counts.active} Active Learners
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+          <p className="text-sm sm:text-sm text-muted-foreground mt-1">
             {isSuperAdmin 
               ? 'Platform-wide student records, faculty assignments, learning goals, and lesson histories.'
               : 'Students assigned to your teaching schedule, progress tracking, and private lesson notes.'}
@@ -138,7 +138,7 @@ export default function StudentsPage() {
         <button
           onClick={() => fetchStudents(true)}
           disabled={refreshing}
-          className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl glass-card border-none text-foreground hover:bg-surface-subtle transition-colors disabled:opacity-50 cursor-pointer"
+          className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-xl glass-card border-none text-foreground hover:bg-surface-subtle transition-colors disabled:opacity-50 cursor-pointer"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
           <span>Refresh</span>
@@ -151,7 +151,7 @@ export default function StudentsPage() {
         <div className="flex items-center gap-1.5 p-1 rounded-xl glass-surface border border-border-subtle overflow-x-auto">
           <button
             onClick={() => setStatusFilter('all')}
-            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap cursor-pointer ${
+            className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-all whitespace-nowrap cursor-pointer ${
               statusFilter === 'all'
                 ? 'glass-card text-foreground shadow-2xs font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
@@ -161,7 +161,7 @@ export default function StudentsPage() {
           </button>
           <button
             onClick={() => setStatusFilter('active')}
-            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap cursor-pointer ${
+            className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-all whitespace-nowrap cursor-pointer ${
               statusFilter === 'active'
                 ? 'glass-card text-foreground shadow-2xs font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
@@ -171,7 +171,7 @@ export default function StudentsPage() {
           </button>
           <button
             onClick={() => setStatusFilter('paused')}
-            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap cursor-pointer ${
+            className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-all whitespace-nowrap cursor-pointer ${
               statusFilter === 'paused'
                 ? 'glass-card text-foreground shadow-2xs font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
@@ -182,7 +182,7 @@ export default function StudentsPage() {
           {isSuperAdmin && counts.unassigned > 0 && (
             <button
               onClick={() => setStatusFilter('unassigned')}
-              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap cursor-pointer ${
+              className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-all whitespace-nowrap cursor-pointer ${
                 statusFilter === 'unassigned'
                   ? 'bg-amber-500/20 text-amber-900 dark:text-amber-200 shadow-2xs font-bold border border-amber-500/30'
                   : 'text-amber-700 dark:text-amber-300 hover:text-foreground'
@@ -193,7 +193,7 @@ export default function StudentsPage() {
           )}
           <button
             onClick={() => setStatusFilter('inactive')}
-            className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap cursor-pointer ${
+            className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-all whitespace-nowrap cursor-pointer ${
               statusFilter === 'inactive'
                 ? 'glass-card text-foreground shadow-2xs font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
@@ -212,14 +212,14 @@ export default function StudentsPage() {
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="Search by student, parent, email..."
-              className="w-full pl-9 pr-3.5 py-1.5 text-xs rounded-xl border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full pl-9 pr-3.5 py-1.5 text-sm rounded-xl border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
           <select
             value={sortBy}
             onChange={e => setSortBy(e.target.value as any)}
-            className="px-3 py-1.5 text-xs rounded-xl border border-border glass-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            className="px-3 py-1.5 text-sm rounded-xl border border-border glass-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
           >
             <option value="recent">Recently Added</option>
             <option value="name">Name (A-Z)</option>
@@ -242,7 +242,7 @@ export default function StudentsPage() {
           <h3 className="text-sm font-medium text-destructive">{error}</h3>
           <button
             onClick={() => fetchStudents()}
-            className="px-4 py-1.5 text-xs font-medium rounded-xl bg-destructive/20 text-destructive hover:bg-destructive/30 transition-colors cursor-pointer"
+            className="px-4 py-1.5 text-sm font-medium rounded-xl bg-destructive/20 text-destructive hover:bg-destructive/30 transition-colors cursor-pointer"
           >
             Retry Loading
           </button>
@@ -282,18 +282,18 @@ export default function StudentsPage() {
                           {student.name}
                         </Link>
                         {student.learner_type === 'child' ? (
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-accent/15 text-accent border border-accent/25 font-medium">
+                          <span className="text-[13px] px-2 py-0.5 rounded-full bg-accent/15 text-accent border border-accent/25 font-medium">
                             Child {student.parent_name ? `(${student.parent_name})` : ''}
                           </span>
                         ) : student.learner_type === 'adult' ? (
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-secondary/30 text-primary border border-secondary/50 font-medium">
+                          <span className="text-[13px] px-2 py-0.5 rounded-full bg-secondary/30 text-primary border border-secondary/50 font-medium">
                             Adult
                           </span>
                         ) : null}
                       </div>
 
                       {student.primary_service_name && (
-                        <p className="text-xs text-primary font-medium mt-0.5">
+                        <p className="text-sm text-primary font-medium mt-0.5">
                           {student.primary_service_name}
                         </p>
                       )}
@@ -311,7 +311,7 @@ export default function StudentsPage() {
                   </div>
 
                   {/* Level & Location Row */}
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
+                  <div className="flex items-center gap-3 text-sm text-muted-foreground flex-wrap">
                     {student.current_level ? (
                       <span className="capitalize px-2 py-0.5 rounded-md glass-surface border border-border-subtle text-foreground">
                         {student.current_level}
@@ -334,7 +334,7 @@ export default function StudentsPage() {
                     )}
 
                     {isSuperAdmin && (
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-semibold tracking-wider uppercase ${
+                      <span className={`px-2 py-0.5 rounded text-[13px] font-semibold tracking-wider uppercase ${
                         student.assigned_teacher_name ? 'bg-secondary/30 text-primary' : 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30'
                       }`}>
                         {student.assigned_teacher_name ? `Teacher: ${student.assigned_teacher_name}` : 'Unassigned'}
@@ -344,8 +344,8 @@ export default function StudentsPage() {
                 </div>
 
                 {/* Middle: Next Lesson & Stats */}
-                <div className="pt-3 border-t border-border-subtle space-y-2 text-xs">
-                  <div className="flex items-center justify-between text-xs">
+                <div className="pt-3 border-t border-border-subtle space-y-2 text-sm">
+                  <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground flex items-center gap-1.5">
                       <BookOpen className="w-3.5 h-3.5 text-accent" />
                       <span>{student.total_completed_lessons} Completed Lessons</span>
@@ -369,7 +369,7 @@ export default function StudentsPage() {
                           </span>
                         </div>
                       </div>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary/30 text-primary border border-secondary/50 font-medium">
+                      <span className="text-[13px] px-1.5 py-0.5 rounded bg-secondary/30 text-primary border border-secondary/50 font-medium">
                         Upcoming
                       </span>
                     </div>
@@ -388,7 +388,7 @@ export default function StudentsPage() {
                         href={waUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-xs text-success font-medium hover:underline cursor-pointer"
+                        className="inline-flex items-center gap-1 text-sm text-success font-medium hover:underline cursor-pointer"
                         title="Message student on WhatsApp"
                       >
                         <MessageCircle className="w-3.5 h-3.5" />
@@ -399,7 +399,7 @@ export default function StudentsPage() {
 
                   <Link
                     to={`/dashboard/students/${student.id}`}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-xl bg-secondary/30 text-primary hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-semibold rounded-xl bg-secondary/30 text-primary hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
                   >
                     <span>View Record</span>
                     <ChevronRight className="w-3.5 h-3.5" />

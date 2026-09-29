@@ -120,7 +120,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
             <button
               onClick={onClose}
           aria-label="Close dialog"
-          className="absolute top-4 end-4 p-2 text-muted-foreground hover:text-foreground hover:glass-dialog-subtle rounded-full transition-colors cursor-pointer"
+          className="absolute top-4 end-4 p-2 text-muted-foreground hover:text-foreground hover:bg-surface-subtle rounded-full transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
@@ -145,7 +145,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
           <form onSubmit={handleSubmit} className="space-y-4">
             {view === 'signup' && (
               <div>
-                <label className="block text-xs font-semibold text-foreground mb-1.5">
+                <label className="block text-sm font-semibold text-foreground mb-1.5">
                   Full Name
                 </label>
                 <div className="relative">
@@ -163,7 +163,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
 
             {view !== 'update-password' && (
               <div>
-                <label className="block text-xs font-semibold text-foreground mb-1.5">
+                <label className="block text-sm font-semibold text-foreground mb-1.5">
                   Email Address
                 </label>
                 <div className="relative">
@@ -181,7 +181,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
 
             {view !== 'forgot' && (
               <div>
-                <label className="block text-xs font-semibold text-foreground mb-1.5">
+                <label className="block text-sm font-semibold text-foreground mb-1.5">
                   {view === 'update-password' ? 'New Password' : 'Password'}
                 </label>
                 <div className="relative">
@@ -201,7 +201,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
                     <button
                       type="button"
                       onClick={() => setView('forgot')}
-                      className="text-xs text-primary hover:underline"
+                      className="text-sm text-primary hover:underline"
                     >
                       Forgot password?
                     </button>
@@ -222,7 +222,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl font-medium text-sm transition-all flex items-center justify-center gap-2 mt-6 cursor-pointer disabled:opacity-50 shadow-xs"
+              className="w-full py-3 btn-primary-material text-primary-foreground rounded-xl font-medium text-sm transition-all flex items-center justify-center gap-2 mt-6 cursor-pointer disabled:opacity-50 shadow-xs"
             >
               {isSubmitting ? (
                 <Loader2 className="w-4 h-4 animate-spin" />

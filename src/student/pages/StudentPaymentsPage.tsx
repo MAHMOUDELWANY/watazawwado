@@ -139,7 +139,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
     const pres = getPaymentPresentation(p);
     const Icon = pres.tone === 'success' ? CheckCircle2 : pres.tone === 'destructive' ? AlertCircle : Clock;
     return (
-      <Badge variant={toneToBadgeVariant[pres.tone]} className="px-2.5 py-0.5 text-xs flex items-center gap-1">
+      <Badge variant={toneToBadgeVariant[pres.tone]} className="px-2.5 py-0.5 text-sm flex items-center gap-1">
         <Icon className="w-3 h-3" />
         <span>{pres.label}</span>
       </Badge>
@@ -173,10 +173,10 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
             labelAr="العودة لبوابة الطالب"
             className="mb-1.5"
           />
-          <h1 className="text-2xl sm:text-3xl font-display font-bold tracking-tight text-foreground">
+          <h1 className="text-2xl sm:text-3xl font-display font-bold  text-foreground">
             {isAr ? 'المدفوعات وسجل التحويلات' : 'Payments & Billing'}
           </h1>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">
+          <p className="text-sm sm:text-sm text-muted-foreground mt-1 leading-relaxed">
             {isAr
               ? 'متابعة سجل إثباتات الدفع، الحوالات البنكية، وتأكيدات الأستاذ محمود.'
               : 'Track payment confirmations, bank transfers, and manual verification status with Ustadh Mahmoud.'}
@@ -189,7 +189,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
             setSelectedBookingForClaim(null);
             setIsClaimModalOpen(true);
           }}
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-colors shadow-xs shrink-0 cursor-pointer min-h-[44px]"
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm sm:text-sm font-semibold transition-colors shadow-xs shrink-0 cursor-pointer min-h-[44px]"
         >
           <Plus className="w-4 h-4" />
           <span>{isAr ? 'إرسال إثبات دفع جديد' : 'Submit Payment Claim'}</span>
@@ -197,7 +197,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
       </div>
 
       {/* 2. Verification Policy & WhatsApp Card */}
-      <div className="p-4 sm:p-5 rounded-2xl glass-surface border border-border-subtle flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs leading-relaxed text-muted-foreground">
+      <div className="p-4 sm:p-5 rounded-2xl glass-surface border border-border-subtle flex flex-col md:flex-row md:items-center justify-between gap-4 text-sm leading-relaxed text-muted-foreground">
         <div className="flex items-start gap-3">
           <ShieldCheck className="w-5 h-5 text-accent shrink-0 mt-0.5" />
           <div className="space-y-1">
@@ -216,7 +216,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
           href="https://wa.me/201026042456?text=Assalamu%20Alaikum%20Ustadh%20Mahmoud%2C%20I%20have%20sent%20a%20payment%20transfer%20and%20would%20like%20to%20confirm%20it."
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold transition-colors shrink-0 self-start md:self-auto min-h-[38px] shadow-xs"
+          className="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold transition-colors shrink-0 self-start md:self-auto min-h-[38px] shadow-xs"
         >
           <MessageCircle className="w-3.5 h-3.5" />
           <span>{isAr ? 'إرسال الإيصال عبر واتساب' : 'Send Receipt on WhatsApp'}</span>
@@ -229,13 +229,13 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
         <Card className="border-border glass-card">
           <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">
+              <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider block">
                 {isAr ? 'المدفوعات المؤكدة والمفعلة' : 'Verified Payments'}
               </span>
               <div className="text-3xl font-display font-bold text-success">
                 {verifiedCount}
               </div>
-              <span className="text-xs text-muted-foreground block">
+              <span className="text-sm text-muted-foreground block">
                 {isAr ? 'تمت مطابقتها وتفعيل الخدمة' : 'Matched and activated'}
               </span>
             </div>
@@ -248,13 +248,13 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
         <Card className="border-border glass-card">
           <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">
+              <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider block">
                 {isAr ? 'قيد المراجعة والتحقق' : 'Under Review'}
               </span>
               <div className="text-3xl font-display font-bold text-warning">
                 {pendingCount}
               </div>
-              <span className="text-xs text-muted-foreground block">
+              <span className="text-sm text-muted-foreground block">
                 {isAr ? 'في انتظار مراجعة الأستاذ محمود' : 'Awaiting teacher confirmation'}
               </span>
             </div>
@@ -276,7 +276,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
                 : `You have ${awaitingClaim.length} lesson(s) awaiting payment confirmation`}
             </span>
           </div>
-          <p className="text-xs text-muted-foreground leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {isAr
               ? 'لم يتم إرسال إثبات دفع لهذه الدروس بعد. يرجى إرسال الرقم المرجعي للتحويل لتأكيد حجز موعدك.'
               : 'No payment claim has been submitted for these lessons yet. Please submit your transfer reference to confirm your scheduled lesson slot.'}
@@ -289,7 +289,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
                   setSelectedBookingForClaim(b);
                   setIsClaimModalOpen(true);
                 }}
-                className="inline-flex items-center gap-2 px-3.5 py-1.5 glass-card border border-warning/40 text-foreground hover:border-warning rounded-xl text-xs font-medium transition-colors cursor-pointer"
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 glass-card border border-warning/40 text-foreground hover:border-warning rounded-xl text-sm font-medium transition-colors cursor-pointer"
               >
                 <span>{b.serviceTitle} ({b.referenceCode})</span>
                 <span className="text-primary font-bold">{isAr ? 'إرسال الإثبات' : 'Claim'} →</span>
@@ -310,7 +310,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
                 : `You have ${awaitingVerification.length} payment claim(s) awaiting verification`}
             </span>
           </div>
-          <p className="text-xs text-muted-foreground leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {isAr
               ? 'تم استلام إثباتك وهو بانتظار مراجعة الأستاذ محمود. لا يلزم اتخاذ أي إجراء إضافي.'
               : 'Your payment claim has been received and is awaiting verification by Ustadh Mahmoud. No further action is required.'}
@@ -327,7 +327,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
         {authLoading || loading ? (
           <div className="flex flex-col items-center justify-center py-16 gap-3">
             <Loader2 className="w-8 h-8 text-accent animate-spin" />
-            <p className="text-xs sm:text-sm text-muted-foreground">
+            <p className="text-sm sm:text-sm text-muted-foreground">
               {isAr ? 'جارٍ تحميل سجل المدفوعات...' : 'Loading payments history...'}
             </p>
           </div>
@@ -337,7 +337,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
             <p className="text-sm font-medium text-foreground">
               {isAr ? 'جلسة الدخول غير متاحة أو منتهية' : 'Your session is unavailable or has expired'}
             </p>
-            <p className="text-xs text-muted-foreground max-w-md mx-auto leading-relaxed">
+            <p className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
               {isAr
                 ? 'يرجى تسجيل الدخول مرة أخرى لعرض سجل مدفوعاتك. لم يتم حذف أي بيانات.'
                 : 'Please sign in again to view your payment history. No data has been lost.'}
@@ -345,14 +345,14 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
             <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-1">
               <Link
                 to="/student"
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-colors cursor-pointer min-h-[44px]"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm sm:text-sm font-semibold transition-colors cursor-pointer min-h-[44px]"
               >
                 <span>{isAr ? 'تسجيل الدخول مرة أخرى' : 'Sign In Again'}</span>
               </Link>
               <button
                 type="button"
                 onClick={fetchData}
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-sm sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
               >
                 <span>{isAr ? 'إعادة المحاولة' : 'Try Again'}</span>
               </button>
@@ -361,11 +361,11 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
         ) : error ? (
           <div className="p-6 glass-card border border-destructive/20 rounded-2xl text-center space-y-3">
             <AlertCircle className="w-6 h-6 text-destructive mx-auto" />
-            <p className="text-xs text-muted-foreground">{error}</p>
+            <p className="text-sm text-muted-foreground">{error}</p>
             <button
               type="button"
               onClick={fetchData}
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-colors cursor-pointer min-h-[44px]"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm sm:text-sm font-semibold transition-colors cursor-pointer min-h-[44px]"
             >
               <span>{isAr ? 'إعادة المحاولة' : 'Try Again'}</span>
             </button>
@@ -379,7 +379,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
               <h3 className="text-base sm:text-lg font-display font-semibold text-foreground">
                 {isAr ? 'لا توجد دفعات مسجلة بعد' : 'No payments recorded yet'}
               </h3>
-              <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto mt-1 leading-relaxed">
+              <p className="text-sm sm:text-sm text-muted-foreground max-w-md mx-auto mt-1 leading-relaxed">
                 {isAr
                   ? 'عند قيامك بتحويل رسوم درس أو باقة وإرسال الرقم المرجعي، ستظهر هنا تفاصيل العملية وحالة مراجعتها.'
                   : 'When you submit a payment reference for a lesson or package, the transaction and verification status will appear here.'}
@@ -391,7 +391,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
                 setSelectedBookingForClaim(null);
                 setIsClaimModalOpen(true);
               }}
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-colors shadow-xs cursor-pointer min-h-[44px]"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm sm:text-sm font-semibold transition-colors shadow-xs cursor-pointer min-h-[44px]"
             >
               <Plus className="w-4 h-4" />
               <span>{isAr ? 'إرسال إثبات دفع' : 'Submit a Payment Claim'}</span>
@@ -413,7 +413,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
                         {renderPaymentBadge(p)}
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1.5">
                           <Clock className="w-3 h-3 text-accent" />
                           <span>
@@ -450,7 +450,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
                       </div>
 
                       {p.notes && (
-                        <p className="text-xs text-muted-foreground italic">
+                        <p className="text-sm text-muted-foreground italic">
                           "{p.notes}"
                         </p>
                       )}
@@ -460,7 +460,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
                       <span className="text-lg sm:text-xl font-display font-bold text-foreground">
                         {p.amount ? `$${p.amount}` : '—'}
                       </span>
-                      <span className="text-xs text-muted-foreground ml-1">
+                      <span className="text-sm text-muted-foreground ml-1">
                         {p.currency || 'USD'}
                       </span>
                     </div>

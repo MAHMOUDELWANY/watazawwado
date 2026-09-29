@@ -131,7 +131,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           <CheckCircle2 className="w-10 h-10" />
         </motion.div>
 
-        <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-surface-warm glass-surface text-muted-foreground border border-secondary/60">
+        <span className="inline-block px-3 py-1 rounded-full text-sm font-semibold bg-surface-warm glass-surface text-muted-foreground border border-secondary/60">
           {isEn ? `Booking Reference: ${confirmation.bookingReference}` : `رقم الحجز المرجعي: ${confirmation.bookingReference}`}
         </span>
 
@@ -146,7 +146,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
             ? `Assalamu Alaikum ${confirmation.learnerName}. Mahmoud is looking forward to meeting you. A confirmation summary has been logged for your local schedule.`
             : `السلام عليكم ${confirmation.learnerName}. يتطلع الأستاذ محمود للقائك في الموعد المحدد.`}
           {confirmation.integrationStatus === 'failed' && (
-            <span className="block mt-2 text-amber-700 dark:text-amber-500 font-medium text-xs">
+            <span className="block mt-2 text-amber-700 dark:text-amber-500 font-medium text-sm">
               {isEn ? 'Your booking is secured, but the lesson link is not ready yet. Please try again later or contact Mahmoud.' : 'حجزك مؤكد، ولكن رابط الدرس لم يتم تجهيزه بعد. يرجى المحاولة لاحقاً أو التواصل مع الأستاذ محمود.'}
             </span>
           )}
@@ -194,7 +194,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         {/* Zoom Classroom Room Box */}
         <div className="p-3.5 rounded-2xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/40 space-y-2">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs font-semibold text-blue-900 dark:text-blue-200">
+            <div className="flex items-center gap-2 text-sm font-semibold text-blue-900 dark:text-blue-200">
               <Video className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               <span>{isEn ? 'Zoom Online Classroom' : 'غرفة زووم التعليمية المباشرة'}</span>
             </div>
@@ -202,18 +202,18 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
               <button
                 type="button"
                 onClick={copyClassroomLink}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs bg-background border border-blue-300 dark:border-blue-800 hover:bg-blue-100 text-blue-800 dark:text-blue-300 cursor-pointer"
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-sm bg-background border border-blue-300 dark:border-blue-800 hover:bg-blue-100 text-blue-800 dark:text-blue-300 cursor-pointer"
               >
                 {copiedLink ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copiedLink ? (isEn ? 'Copied' : 'تم النسخ') : (isEn ? 'Copy Link' : 'نسخ الرابط')}</span>
               </button>
             ) : (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-amber-100 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[13px] font-medium bg-amber-100 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40">
                 {isEn ? 'Link Pending' : 'قيد التجهيز'}
               </span>
             )}
           </div>
-          <div className="flex items-center justify-between text-xs pt-1">
+          <div className="flex items-center justify-between text-sm pt-1">
             {zoomUrl ? (
               <>
                 <span className="text-[11px] text-blue-800/80 dark:text-blue-300/80 font-mono truncate max-w-[280px]">
@@ -223,7 +223,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
                   href={zoomUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs shadow-xs"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm shadow-xs"
                 >
                   <span>{isEn ? 'Join Classroom' : 'دخول الدرس'}</span>
                   <ExternalLink className="w-3 h-3" />
@@ -240,7 +240,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         </div>
 
         {/* Automated Reminders Note */}
-        <div className="flex items-center gap-2.5 p-3 rounded-xl bg-surface-warm/50 dark:bg-background text-xs text-foreground/80 dark:text-border/80">
+        <div className="flex items-center gap-2.5 p-3 rounded-xl bg-surface-warm/50 dark:bg-background text-sm text-foreground/80 dark:text-border/80">
           <BellRing className="w-4 h-4 text-accent shrink-0" />
           <span>
             {isEn
@@ -264,7 +264,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
 
       {/* Package Credit Confirmed Banner (For Lessons Booked via Package) */}
       {!confirmation.isFreeTrial && confirmation.packageEntitlementId && (
-        <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-3 text-xs text-emerald-800 dark:text-emerald-300">
+        <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-3 text-sm text-emerald-800 dark:text-emerald-300">
           <CreditCard className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
           <div className="leading-relaxed">
             <strong className="block text-emerald-900 dark:text-emerald-200 font-semibold mb-0.5">
@@ -290,7 +290,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           </span>
         </div>
 
-        <p className="text-xs text-foreground/80 dark:text-border/80 leading-relaxed">
+        <p className="text-sm text-foreground/80 dark:text-border/80 leading-relaxed">
           {confirmation.isFreeTrial
             ? isEn
               ? 'The trial is a relaxed chance for us to meet, assess where you or your child currently stand, and demonstrate the teaching method through a brief sample lesson. If it feels like a natural fit, Mahmoud will share an honest learning roadmap. There is zero obligation to commit.'
@@ -307,7 +307,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           href={whatsappLink}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-primary hover:bg-primary-hover text-white text-xs font-semibold shadow-xs transition-colors"
+          className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl btn-primary-material text-white text-sm font-semibold shadow-xs transition-colors"
         >
           <MessageCircle className="w-4 h-4" />
           <span>{isEn ? 'WhatsApp Mahmoud' : 'مراسلة واتساب'}</span>
@@ -317,7 +317,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           href={getGoogleCalendarUrl()}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl glass-card border-none text-xs font-semibold text-foreground hover:bg-surface-warm dark:hover:bg-background transition-colors"
+          className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl glass-card border-none text-sm font-semibold text-foreground hover:bg-surface-warm dark:hover:bg-background transition-colors"
         >
           <Calendar className="w-4 h-4 text-blue-600" />
           <span>{isEn ? 'Google Calendar' : 'تقويم جوجل'}</span>
@@ -326,7 +326,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         <button
           type="button"
           onClick={handleDownloadIcs}
-          className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl glass-card border-none text-xs font-semibold text-foreground hover:bg-surface-warm dark:hover:bg-background transition-colors cursor-pointer"
+          className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl glass-card border-none text-sm font-semibold text-foreground hover:bg-surface-warm dark:hover:bg-background transition-colors cursor-pointer"
         >
           <Download className="w-4 h-4 text-accent" />
           <span>{downloadedIcs ? (isEn ? 'Downloaded' : 'تم التنزيل') : (isEn ? 'Apple/Outlook (.ics)' : 'تنزيل .ics')}</span>
@@ -338,7 +338,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         <button
           type="button"
           onClick={() => onOpenManageModal && onOpenManageModal(confirmation.bookingReference)}
-          className="text-xs text-muted-foreground hover:underline font-medium cursor-pointer"
+          className="text-sm text-muted-foreground hover:underline font-medium cursor-pointer"
         >
           {isEn
             ? 'Need to reschedule or check cancellation eligibility? Manage here.'
@@ -351,7 +351,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         <button
           type="button"
           onClick={onDone}
-          className="px-6 py-2.5 rounded-xl text-xs font-medium text-foreground/70 dark:text-border/70 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
+          className="px-6 py-2.5 rounded-xl text-sm font-medium text-foreground/70 dark:text-border/70 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
         >
           {doneLabel || (isEn ? 'Done & Return to Homepage' : 'تم والعودة للموقع')}
         </button>

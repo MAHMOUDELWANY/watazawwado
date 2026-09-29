@@ -56,7 +56,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
               whileTap={{ scale: 0.95 }}
               onClick={onBack}
               type="button"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-foreground bg-surface-warm glass-surface hover:bg-border dark:hover:bg-surface-subtle transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-foreground bg-surface-warm glass-surface hover:bg-border dark:hover:bg-surface-subtle transition-colors cursor-pointer"
             >
               <ArrowLeft className={`w-3.5 h-3.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
               <span>{isEn ? 'Back' : 'رجوع'}</span>
@@ -65,7 +65,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
 
           {/* Mode Pill Badge */}
           <span
-            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold tracking-wide ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold tracking-wide ${
               mode === 'trial'
                 ? 'bg-secondary/40 text-accent dark:text-primary border border-secondary/60'
                 : 'bg-muted-foreground/15 text-muted-foreground border border-muted-foreground/30'
@@ -90,7 +90,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
             href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I have a question regarding booking a lesson.')}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:inline-flex items-center gap-1.5 text-xs text-foreground/70 dark:text-border/70 hover:text-primary dark:hover:text-primary transition-colors"
+            className="hidden sm:inline-flex items-center gap-1.5 text-sm text-foreground/70 dark:text-border/70 hover:text-primary dark:hover:text-primary transition-colors"
             title={isEn ? 'Ask a quick question first' : 'اسأل سؤالاً سريعاً على واتساب'}
           >
             <MessageCircle className="w-3.5 h-3.5 text-accent" />
@@ -124,7 +124,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
         </div>
 
         {serviceName && step > 1 && (
-          <div className="text-xs text-foreground/70 dark:text-border/70 bg-white/60 dark:bg-background/60 px-2.5 py-1 rounded-md border border-border/60 dark:border-border/60 self-start sm:self-auto">
+          <div className="text-sm text-foreground/70 dark:text-border/70 bg-white/60 dark:bg-background/60 px-2.5 py-1 rounded-md border border-border/60 dark:border-border/60 self-start sm:self-auto">
             <span className="text-foreground/50 dark:text-border/50">{isEn ? 'Selected: ' : 'المادة: '}</span>
             <span className="font-medium text-foreground">{serviceName}</span>
           </div>

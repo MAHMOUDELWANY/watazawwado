@@ -122,10 +122,10 @@ export default function TodayPage() {
       <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border-subtle pb-5">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-display font-semibold tracking-tight text-foreground">
+            <h1 className="text-2xl font-display font-semibold  text-foreground">
               Today
             </h1>
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary/30 text-accent">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-sm font-medium bg-secondary/30 text-accent">
               <Clock className="w-3 h-3" />
               <span>Cairo Time (UTC+2/3)</span>
             </span>
@@ -139,7 +139,7 @@ export default function TodayPage() {
           <button
             onClick={() => fetchTodayLessons(true)}
             disabled={refreshing || loading}
-            className="inline-flex items-center gap-2 px-3.5 py-2 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-xs font-medium transition-colors shadow-2xs"
+            className="inline-flex items-center gap-2 px-3.5 py-2 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-sm font-medium transition-colors shadow-2xs"
             title="Refresh schedule"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-accent' : 'opacity-70'}`} />
@@ -169,7 +169,7 @@ export default function TodayPage() {
           <h2 className="text-base font-semibold text-foreground mb-1">
             Your schedule couldn't be loaded
           </h2>
-          <p className="text-xs text-muted-foreground mb-4 max-w-md">
+          <p className="text-sm text-muted-foreground mb-4 max-w-md">
             {error}
           </p>
           <button 
@@ -184,29 +184,29 @@ export default function TodayPage() {
           {/* Summary Row */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="glass-card border-none rounded-2xl p-4 shadow-2xs">
-              <span className="text-xs text-muted-foreground font-medium">Lessons Today</span>
-              <div className="text-2xl font-semibold mt-1 tracking-tight text-foreground">
+              <span className="text-sm text-muted-foreground font-medium">Lessons Today</span>
+              <div className="text-2xl font-semibold mt-1  text-foreground">
                 {summary?.active_today ?? lessons.filter(l => l.status !== 'cancelled').length}
               </div>
             </div>
 
             <div className="glass-card border-none rounded-2xl p-4 shadow-2xs">
-              <span className="text-xs text-muted-foreground font-medium">Free Trials</span>
-              <div className="text-2xl font-semibold mt-1 tracking-tight text-primary">
+              <span className="text-sm text-muted-foreground font-medium">Free Trials</span>
+              <div className="text-2xl font-semibold mt-1  text-primary">
                 {summary?.trials_today ?? lessons.filter(l => l.is_free_trial && l.status !== 'cancelled').length}
               </div>
             </div>
 
             <div className="glass-card border-none rounded-2xl p-4 shadow-2xs">
-              <span className="text-xs text-muted-foreground font-medium">Completed</span>
-              <div className="text-2xl font-semibold mt-1 tracking-tight text-foreground">
+              <span className="text-sm text-muted-foreground font-medium">Completed</span>
+              <div className="text-2xl font-semibold mt-1  text-foreground">
                 {summary?.completed_today ?? 0}
               </div>
             </div>
 
             <div className="glass-card border-none rounded-2xl p-4 shadow-2xs">
-              <span className="text-xs text-muted-foreground font-medium">Needs Attention</span>
-              <div className={`text-2xl font-semibold mt-1 tracking-tight ${attentionLessons.length > 0 ? 'text-warning' : 'text-success'}`}>
+              <span className="text-sm text-muted-foreground font-medium">Needs Attention</span>
+              <div className={`text-2xl font-semibold mt-1  ${attentionLessons.length > 0 ? 'text-warning' : 'text-success'}`}>
                 {attentionLessons.length}
               </div>
             </div>
@@ -223,7 +223,7 @@ export default function TodayPage() {
                   </h3>
                   <div className="mt-1 space-y-1">
                     {attentionLessons.map(l => (
-                      <p key={l.id} className="text-xs text-muted-foreground">
+                      <p key={l.id} className="text-sm text-muted-foreground">
                         • <span className="font-medium text-foreground">{l.learner_name || 'Learner'}</span> ({l.service_name} at {DateTime.fromISO(l.scheduled_start).setZone('Africa/Cairo').toFormat('hh:mm a')}): Zoom link missing or integration sync pending.
                       </p>
                     ))}
@@ -244,10 +244,10 @@ export default function TodayPage() {
           {/* Today Timeline Header */}
           <div className="pt-2">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-display font-semibold tracking-tight text-foreground">
+              <h2 className="text-lg font-display font-semibold  text-foreground">
                 Schedule Timeline
               </h2>
-              <span className="text-xs text-muted-foreground">
+              <span className="text-sm text-muted-foreground">
                 {lessons.length} {lessons.length === 1 ? 'session' : 'sessions'} total
               </span>
             </div>
@@ -260,12 +260,12 @@ export default function TodayPage() {
                 <h3 className="text-base font-display font-semibold mb-1 text-foreground">
                   Your schedule is clear today
                 </h3>
-                <p className="text-xs text-muted-foreground mb-5 max-w-sm">
+                <p className="text-sm text-muted-foreground mb-5 max-w-sm">
                   No lessons are booked for today. You can review your upcoming teaching schedule for the coming days.
                 </p>
                 <Link
                   to="/dashboard/upcoming"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs font-medium transition-colors"
+                  className="inline-flex items-center gap-2 px-4 py-2 btn-primary-material text-primary-foreground rounded-xl text-sm font-medium transition-colors"
                 >
                   <span>View Upcoming Schedule</span>
                   <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
@@ -302,7 +302,7 @@ export default function TodayPage() {
                 </div>
                 <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform" />
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 Evaluate prospective learners, record mini-lesson observations, and generate recommended learning plans.
               </p>
             </Link>
@@ -322,7 +322,7 @@ export default function TodayPage() {
                 </div>
                 <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform" />
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 Track prospective students from initial inquiry through trial booking and active enrollment.
               </p>
             </Link>
@@ -367,39 +367,39 @@ function NextLessonSpotlight({
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-2 flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-xs uppercase tracking-wider font-semibold text-primary flex items-center gap-1.5">
+            <span className="text-sm uppercase tracking-wider font-semibold text-primary flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5" />
               Next Up
             </span>
 
             {isInProgress ? (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-success text-success-foreground animate-pulse">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-sm font-bold bg-success text-success-foreground animate-pulse">
                 <span className="w-1.5 h-1.5 rounded-full bg-white" />
                 In Progress
               </span>
             ) : diffMinutes <= 45 && diffMinutes > 0 ? (
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-warning/15 text-warning-foreground border border-warning/30">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-semibold bg-warning/15 text-warning-foreground border border-warning/30">
                 Starts in {diffMinutes} min
               </span>
             ) : (
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium glass-surface border border-border-subtle text-foreground">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium glass-surface border border-border-subtle text-foreground">
                 {startCairo.toFormat('hh:mm a')}
               </span>
             )}
 
             {lesson.is_free_trial && (
-              <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-secondary text-secondary-foreground">
+              <span className="inline-flex items-center px-2 py-0.5 rounded text-[13px] font-bold uppercase tracking-wider bg-secondary text-secondary-foreground">
                 Free Trial
               </span>
             )}
           </div>
 
           <div>
-            <h3 className="text-xl font-display font-semibold tracking-tight text-foreground truncate">
+            <h3 className="text-xl font-display font-semibold  text-foreground truncate">
               {lesson.learner_name || 'Learner name not recorded'}
             </h3>
             {lesson.parent_name && (
-              <p className="text-xs text-muted-foreground font-medium">
+              <p className="text-sm text-muted-foreground font-medium">
                 Parent/Guardian: {lesson.parent_name}
               </p>
             )}
@@ -416,14 +416,14 @@ function NextLessonSpotlight({
               href={startLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-sm font-semibold transition-all duration-base shadow-xs"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm font-semibold transition-all duration-base shadow-xs"
             >
               <Video className="w-4 h-4" />
               <span>Start Lesson</span>
               <ExternalLink className="w-3.5 h-3.5 opacity-70" />
             </a>
           ) : (
-            <div className="inline-flex items-center justify-center gap-2 px-4 py-2.5 glass-surface text-muted-foreground rounded-xl text-xs font-medium border border-border-subtle">
+            <div className="inline-flex items-center justify-center gap-2 px-4 py-2.5 glass-surface text-muted-foreground rounded-xl text-sm font-medium border border-border-subtle">
               <Clock className="w-3.5 h-3.5" />
               <span>Preparing Link</span>
             </div>
@@ -488,10 +488,10 @@ function TodayLessonRow({
     >
       {/* Time & Badge Column */}
       <div className="flex items-center sm:block gap-3 shrink-0 sm:w-36">
-        <div className="font-semibold text-lg tracking-tight text-foreground">
+        <div className="font-semibold text-lg  text-foreground">
           {startCairo.toFormat('hh:mm a')}
         </div>
-        <div className="text-xs text-muted-foreground flex items-center gap-1.5 mt-0.5">
+        <div className="text-sm text-muted-foreground flex items-center gap-1.5 mt-0.5">
           <Clock className="w-3.5 h-3.5" />
           <span>{lesson.duration_minutes} min</span>
         </div>
@@ -505,55 +505,55 @@ function TodayLessonRow({
           </h4>
 
           {lesson.parent_name && (
-            <span className="text-xs text-muted-foreground font-medium">
+            <span className="text-sm text-muted-foreground font-medium">
               (Parent: {lesson.parent_name})
             </span>
           )}
 
           {lesson.is_free_trial && (
-            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-secondary/30 text-accent">
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-[13px] font-bold uppercase tracking-wider bg-secondary/30 text-accent">
               Trial
             </span>
           )}
 
           {isInProgress && (
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-success text-success-foreground">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[13px] font-bold uppercase bg-success text-success-foreground">
               In Progress
             </span>
           )}
 
           {isStartingSoon && (
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-warning/15 text-warning-foreground border border-warning/30">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[13px] font-bold uppercase bg-warning/15 text-warning-foreground border border-warning/30">
               {timeContext.label}
             </span>
           )}
 
           {isCompleted && (
-            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider glass-surface text-muted-foreground border border-border-subtle">
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-[13px] font-bold uppercase tracking-wider glass-surface text-muted-foreground border border-border-subtle">
               Completed
             </span>
           )}
 
           {isNoShow && (
-            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-warning/10 text-warning-foreground border border-warning/30">
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-[13px] font-bold uppercase tracking-wider bg-warning/10 text-warning-foreground border border-warning/30">
               No-Show
             </span>
           )}
 
           {isNeedsOutcome && (
-            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-warning/15 text-warning-foreground border border-warning/40">
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-[13px] font-bold uppercase tracking-wider bg-warning/15 text-warning-foreground border border-warning/40">
               Needs Outcome
             </span>
           )}
 
           {isCancelled && (
-            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-destructive/15 text-destructive border border-destructive/20">
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-[13px] font-bold uppercase bg-destructive/15 text-destructive border border-destructive/20">
               Cancelled
             </span>
           )}
 
           {!isInProgress && !isStartingSoon && !isCancelled && !isCompleted && !isNoShow && !isNeedsOutcome && (
-            <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+            <span className={`inline-flex items-center px-2 py-0.5 rounded text-[13px] font-bold uppercase tracking-wider ${
               lesson.status === 'confirmed' ? 'bg-success/15 text-success border border-success/30' :
               lesson.status === 'rescheduled' ? 'bg-secondary/30 text-primary border border-secondary/50' :
               'glass-surface text-muted-foreground border border-border-subtle'
@@ -563,7 +563,7 @@ function TodayLessonRow({
           )}
         </div>
 
-        <p className="text-xs text-muted-foreground truncate">
+        <p className="text-sm text-muted-foreground truncate">
           {lesson.service_name}
           {lesson.student_timezone ? ` • Student in ${lesson.student_timezone}` : ''}
         </p>
@@ -576,7 +576,7 @@ function TodayLessonRow({
             href={startLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs font-medium transition-colors shadow-2xs"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 btn-primary-material text-primary-foreground rounded-xl text-sm font-medium transition-colors shadow-2xs"
             title="Start lesson as host"
           >
             <Video className="w-3.5 h-3.5" />
@@ -586,7 +586,7 @@ function TodayLessonRow({
 
         <button
           onClick={onSelect}
-          className="inline-flex items-center gap-1 px-3.5 py-2 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-xs font-medium transition-colors"
+          className="inline-flex items-center gap-1 px-3.5 py-2 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-sm font-medium transition-colors"
         >
           <span>Details</span>
           <ChevronRight className="w-3.5 h-3.5 opacity-60 rtl:rotate-180" />

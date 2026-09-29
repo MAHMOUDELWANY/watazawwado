@@ -190,12 +190,12 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 sm:mb-16">
           <div className="max-w-2xl">
             {/* Index Tag */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary/40 dark:bg-secondary/20 border border-secondary/60 text-accent dark:text-accent text-xs font-semibold tracking-wide mb-4">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary/40 dark:bg-secondary/20 border border-secondary/60 text-accent dark:text-accent text-sm font-semibold tracking-wide mb-4">
               <span className="font-mono text-[11px] font-bold">02</span>
               <span>{isEn ? 'Your Choice of Discipline' : 'اختيارك الشخصي'}</span>
             </div>
 
-            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-foreground tracking-tight mb-4">
+            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl text-foreground  mb-4">
               {isEn ? (
                 <>
                   Choose the subject you need.{' '}
@@ -210,7 +210,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
             </h2>
           </div>
 
-          <div className="max-w-sm text-xs sm:text-sm text-muted-foreground leading-relaxed">
+          <div className="max-w-sm text-sm sm:text-sm text-muted-foreground leading-relaxed">
             {isEn
               ? 'You pick the discipline before every lesson. When your family needs change, switch it seamlessly without looking for another teacher.'
               : 'تحدد المادة التي تريد التركيز عليها قبل كل جلسة. وحين تتغير متطلباتك، تنتقل بسلاسة مع نفس المعلم دون عناء البحث من جديد.'}
@@ -237,14 +237,14 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
                 }`}
               >
                 <div>
-                  <div className="flex items-center justify-between text-xs font-mono text-muted-foreground mb-4">
+                  <div className="flex items-center justify-between text-sm font-mono text-muted-foreground mb-4">
                     <span>{pillar.number}</span>
                     <span className="text-[11px] text-primary font-medium bg-secondary/30 px-2.5 py-0.5 rounded-full">
                       {pillar.status}
                     </span>
                   </div>
 
-                  <div className="text-xs font-semibold text-primary dark:text-primary mb-1">
+                  <div className="text-sm font-semibold text-primary dark:text-primary mb-1">
                     {pillar.badge}
                   </div>
 
@@ -252,13 +252,13 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
                     {pillar.title}
                   </h3>
 
-                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed mb-6">
+                  <p className="text-sm sm:text-sm text-muted-foreground leading-relaxed mb-6">
                     {pillar.subtitle}
                   </p>
                 </div>
 
                 <div className="pt-4 border-t border-border/60 dark:border-border/60 flex items-center justify-between">
-                  <span className="text-xs font-semibold text-primary dark:text-primary">
+                  <span className="text-sm font-semibold text-primary dark:text-primary">
                     {isSelected ? (isEn ? '● Active Focus' : '● التخصص المختار') : (isEn ? 'Select Focus' : 'اختر المادة')}
                   </span>
                   <div
@@ -289,18 +289,18 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
               {currentPillarData.title}
             </span>
             <span className="hidden sm:inline text-white/70">→</span>
-            <span className="text-xs sm:text-sm text-white/90">
+            <span className="text-sm sm:text-sm text-white/90">
               {isEn ? 'Sessions available: 30, 45, or 60 Min' : 'خيارات الجلسات: ٣٠، ٤٥، أو ٦٠ دقيقة'}
             </span>
           </div>
 
           <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
-            <span className="text-xs font-mono bg-white/20 px-3 py-1 rounded-lg">
+            <span className="text-sm font-mono bg-white/20 px-3 py-1 rounded-lg">
               {isEn ? 'Free Trial Available' : 'جلسة تجريبية مجانية'}
             </span>
             <button
               onClick={() => onOpenTrialModal(currentPillarData.id)}
-              className="px-4 py-2 rounded-xl bg-white text-foreground text-xs font-semibold hover:bg-foreground transition-colors cursor-pointer shadow-xs"
+              className="px-4 py-2 rounded-xl bg-white text-foreground text-sm font-semibold hover:bg-foreground transition-colors cursor-pointer shadow-xs"
             >
               {isEn ? 'Book for this subject' : 'احجز لهذه المادة'}
             </button>
@@ -312,7 +312,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
           
           {/* Left: Step Levels (5 cols) */}
           <div className="lg:col-span-5 space-y-3">
-            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+            <div className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2">
               {isEn ? 'Curriculum Progression Levels' : 'مستويات التدرج التعليمي'}
             </div>
 
@@ -329,11 +329,11 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
                       : 'bg-transparent border-transparent hover:bg-white/60 dark:hover:bg-surface-subtle'
                   }`}
                 >
-                  <span className="font-mono text-xs font-bold text-primary dark:text-primary mt-0.5">
+                  <span className="font-mono text-sm font-bold text-primary dark:text-primary mt-0.5">
                     0{idx + 1}
                   </span>
                   <div className="flex-1">
-                    <div className="font-semibold text-xs sm:text-sm text-foreground">
+                    <div className="font-semibold text-sm sm:text-sm text-foreground">
                       {lvl.name}
                     </div>
                     <div className="text-[11px] text-muted-foreground mt-0.5">
@@ -350,10 +350,10 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
             <div>
               {/* Status Header */}
               <div className="flex items-center justify-between pb-4 border-b border-border/80 dark:border-border mb-6">
-                <div className="text-xs font-semibold text-muted-foreground">
+                <div className="text-sm font-semibold text-muted-foreground">
                   {isEn ? 'Selected Module Specification' : 'تفاصيل الوحدة المختارة'}
                 </div>
-                <span className="text-[10px] font-mono text-primary dark:text-primary bg-secondary/30 px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
+                <span className="text-[13px] font-mono text-primary dark:text-primary bg-secondary/30 px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                   {isEn ? 'Ready in Free Trial' : 'جاهز للجلسة التجريبية'}
                 </span>
@@ -364,20 +364,20 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
                 
                 {/* Learner Node */}
                 <div className="w-full sm:w-44 p-4 rounded-xl bg-surface-warm glass-surface border border-border text-center">
-                  <div className="w-8 h-8 rounded-full bg-secondary/30 text-accent mx-auto mb-2 flex items-center justify-center font-bold text-xs">
+                  <div className="w-8 h-8 rounded-full bg-secondary/30 text-accent mx-auto mb-2 flex items-center justify-center font-bold text-sm">
                     You
                   </div>
-                  <div className="font-semibold text-xs text-foreground">
+                  <div className="font-semibold text-sm text-foreground">
                     {isEn ? 'Student / Family' : 'الطالب / الأسرة'}
                   </div>
-                  <div className="text-[10px] text-muted-foreground">
+                  <div className="text-[13px] text-muted-foreground">
                     {isEn ? 'Local Timezone' : 'توقيتك المحلي'}
                   </div>
                 </div>
 
                 {/* Connection Bridge */}
                 <div className="flex flex-col items-center gap-1">
-                  <span className="text-[10px] font-mono font-semibold text-primary bg-primary/15 px-2 py-0.5 rounded">
+                  <span className="text-[13px] font-mono font-semibold text-primary bg-primary/15 px-2 py-0.5 rounded">
                     Direct Zoom HD
                   </span>
                   <div className="w-16 h-0.5 bg-primary/40 relative">
@@ -391,13 +391,13 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
 
                 {/* Teacher Node */}
                 <div className="w-full sm:w-44 p-4 rounded-xl bg-surface-warm glass-surface border border-border text-center">
-                  <div className="w-8 h-8 rounded-full bg-secondary/30 text-accent mx-auto mb-2 flex items-center justify-center font-bold text-xs">
+                  <div className="w-8 h-8 rounded-full bg-secondary/30 text-accent mx-auto mb-2 flex items-center justify-center font-bold text-sm">
                     M
                   </div>
-                  <div className="font-semibold text-xs text-foreground">
+                  <div className="font-semibold text-sm text-foreground">
                     {isEn ? 'Ustadh Mahmoud' : 'الأستاذ محمود'}
                   </div>
-                  <div className="text-[10px] text-primary flex items-center justify-center gap-1">
+                  <div className="text-[13px] text-primary flex items-center justify-center gap-1">
                     <ShieldCheck className="w-3 h-3" />
                     <span>Al-Azhar Verified</span>
                   </div>
@@ -407,17 +407,17 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
 
               {/* Module Description */}
               <div className="p-4 rounded-xl bg-background glass-surface border border-border/80 dark:border-border mt-4">
-                <div className="text-xs font-semibold text-foreground mb-1">
+                <div className="text-sm font-semibold text-foreground mb-1">
                   {currentLevel.name}
                 </div>
-                <p className="text-xs text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   {currentLevel.desc}
                 </p>
               </div>
             </div>
 
             {/* Bottom confirmation */}
-            <div className="mt-6 pt-4 border-t border-border/80 dark:border-border flex items-center justify-between text-xs">
+            <div className="mt-6 pt-4 border-t border-border/80 dark:border-border flex items-center justify-between text-sm">
               <span className="text-primary font-medium flex items-center gap-1.5">
                 <Check className="w-4 h-4" />
                 <span>

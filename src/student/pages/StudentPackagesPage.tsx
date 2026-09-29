@@ -193,25 +193,25 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
     switch (status) {
       case 'active':
         return (
-          <Badge variant="success" className="px-2.5 py-0.5 text-xs">
+          <Badge variant="success" className="px-2.5 py-0.5 text-sm">
             {isAr ? 'مفعلة ونشطة' : 'Active'}
           </Badge>
         );
       case 'pending_payment':
         return (
-          <Badge variant="warning" className="px-2.5 py-0.5 text-xs">
+          <Badge variant="warning" className="px-2.5 py-0.5 text-sm">
             {isAr ? 'في انتظار إثبات الدفع' : 'Pending Payment'}
           </Badge>
         );
       case 'exhausted':
         return (
-          <Badge variant="secondary" className="px-2.5 py-0.5 text-xs">
+          <Badge variant="secondary" className="px-2.5 py-0.5 text-sm">
             {isAr ? 'مكتملة الاستخدام' : 'Exhausted'}
           </Badge>
         );
       case 'cancelled':
         return (
-          <Badge variant="destructive" className="px-2.5 py-0.5 text-xs">
+          <Badge variant="destructive" className="px-2.5 py-0.5 text-sm">
             {isAr ? 'ملغاة' : 'Cancelled'}
           </Badge>
         );
@@ -277,7 +277,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
           <p className="text-sm font-medium text-foreground">
             {isAr ? 'جلسة الدخول غير متاحة أو منتهية' : 'Your session is unavailable or has expired'}
           </p>
-          <p className="text-xs text-muted-foreground max-w-md mx-auto leading-relaxed">
+          <p className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
             {isAr
               ? 'يرجى تسجيل الدخول مرة أخرى لعرض باقاتك ورصيد دروسك. لم يتم حذف أي بيانات.'
               : 'Please sign in again to view your packages and lesson credits. No data has been lost.'}
@@ -285,14 +285,14 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
           <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-1">
             <Link
               to="/student"
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-colors cursor-pointer min-h-[44px]"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm sm:text-sm font-semibold transition-colors cursor-pointer min-h-[44px]"
             >
               <span>{isAr ? 'تسجيل الدخول مرة أخرى' : 'Sign In Again'}</span>
             </Link>
             <button
               type="button"
               onClick={fetchPackages}
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-sm sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
             >
               <span>{isAr ? 'إعادة المحاولة' : 'Try Again'}</span>
             </button>
@@ -309,10 +309,10 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
         <StudentPageBack to="/student" label={isAr ? 'العودة للرئيسية' : 'Back to Dashboard'} />
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-display font-bold text-foreground tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-display font-bold text-foreground ">
               {isAr ? 'باقات الدروس والرصيد' : 'Lesson Packages & Credits'}
             </h1>
-            <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+            <p className="text-sm sm:text-sm text-muted-foreground mt-1">
               {isAr
                 ? 'إدارة باقاتك التعليمية، رصيد الدروس الفردية، وسجل النشاط الموثق مع الأستاذ محمود'
                 : 'Manage your prepaid lesson bundles, active credits, and verified learning activity'}
@@ -321,7 +321,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
 
           <Link
             to="/student/book"
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-colors shadow-xs shrink-0 min-h-[42px]"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm sm:text-sm font-semibold transition-colors shadow-xs shrink-0 min-h-[42px]"
           >
             <Plus className="w-4 h-4" />
             <span>{isAr ? 'حجز درس جديد' : 'Book a Lesson'}</span>
@@ -335,13 +335,13 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
         <Card className="border-border glass-card">
           <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
-              <span className="text-xs font-medium text-muted-foreground block">
+              <span className="text-sm font-medium text-muted-foreground block">
                 {isAr ? 'الرصيد المتاح حالياً' : 'Remaining Credits'}
               </span>
               <div className="text-3xl font-display font-bold text-primary">
                 {creditSummary.totalRemaining}
               </div>
-              <span className="text-xs text-muted-foreground block">
+              <span className="text-sm text-muted-foreground block">
                 {isAr ? 'دروس جاهزة للجدولة' : 'Lessons ready to schedule'}
               </span>
             </div>
@@ -355,13 +355,13 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
         <Card className="border-border glass-card">
           <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
-              <span className="text-xs font-medium text-muted-foreground block">
+              <span className="text-sm font-medium text-muted-foreground block">
                 {isAr ? 'الدروس المكتملة' : 'Completed Lessons'}
               </span>
               <div className="text-3xl font-display font-bold text-foreground">
                 {creditSummary.totalUsed}
               </div>
-              <span className="text-xs text-muted-foreground block">
+              <span className="text-sm text-muted-foreground block">
                 {isAr ? 'دروس تم إتمامها واستهلاكها' : 'Consumed from active packages'}
               </span>
             </div>
@@ -375,13 +375,13 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
         <Card className="border-border glass-card">
           <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
-              <span className="text-xs font-medium text-muted-foreground block">
+              <span className="text-sm font-medium text-muted-foreground block">
                 {isAr ? 'إجمالي الرصيد المكتسب' : 'Total Granted'}
               </span>
               <div className="text-3xl font-display font-bold text-foreground">
                 {creditSummary.totalPurchased}
               </div>
-              <span className="text-xs text-muted-foreground block">
+              <span className="text-sm text-muted-foreground block">
                 {isAr ? 'رصيد تراكمي منذ بدء التعلم' : 'Cumulative lessons granted'}
               </span>
             </div>
@@ -393,7 +393,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
       </div>
 
       {/* 3. Package Policy & Rules Card */}
-      <div className="p-4 sm:p-5 rounded-2xl glass-surface border border-border-subtle flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs leading-relaxed text-muted-foreground">
+      <div className="p-4 sm:p-5 rounded-2xl glass-surface border border-border-subtle flex flex-col md:flex-row md:items-center justify-between gap-4 text-sm leading-relaxed text-muted-foreground">
         <div className="flex items-start gap-3">
           <ShieldCheck className="w-5 h-5 text-accent shrink-0 mt-0.5" />
           <div className="space-y-1">
@@ -424,7 +424,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
           href="https://wa.me/201026042456?text=Assalamu%20Alaikum%20Ustadh%20Mahmoud%2C%20I%20have%20a%20question%20regarding%20lesson%20packages."
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 px-4 py-2 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs font-medium transition-colors shrink-0 self-start md:self-auto min-h-[38px]"
+          className="inline-flex items-center gap-1.5 px-4 py-2 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-sm font-medium transition-colors shrink-0 self-start md:self-auto min-h-[38px]"
         >
           <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />
           <span>{isAr ? 'استفسار عبر واتساب' : 'Inquire on WhatsApp'}</span>
@@ -438,7 +438,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
           <h2 className="text-lg font-display font-bold text-foreground">
             {isAr ? 'باقاتي الحالية' : 'My Packages'}
           </h2>
-          <span className="text-xs text-muted-foreground">
+          <span className="text-sm text-muted-foreground">
             {entitlements.length} {isAr ? 'باقة مسجلة' : 'packages recorded'}
           </span>
         </div>
@@ -446,10 +446,10 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
         {entitlements.length === 0 ? (
           <div className="p-6 rounded-2xl glass-card border-none text-center space-y-2">
             <Package className="w-8 h-8 text-muted-foreground mx-auto" />
-            <p className="text-xs sm:text-sm text-foreground font-medium">
+            <p className="text-sm sm:text-sm text-foreground font-medium">
               {isAr ? 'ليس لديك باقات نشطة حالياً' : 'No active packages yet'}
             </p>
-            <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+            <p className="text-sm text-muted-foreground max-w-sm mx-auto">
               {isAr
                 ? 'اختر من الباقات المتاحة أدناه لبدء التعلم برصيد مسبق الدفع وحفظ الجلسات بمرونة.'
                 : 'Choose one of Ustadh Mahmoud’s lesson packages below to start learning with bundled credits.'}
@@ -474,13 +474,13 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                             {ent.packageName}
                           </h3>
                         </div>
-                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground mt-0.5">
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground mt-0.5">
                           <span>
                             {ent.purchasedQuantity} {isAr ? 'دروس فردية' : 'private 1-on-1 lessons'}
                             {ent.pricePaid ? ` • $${ent.pricePaid} ${ent.currency}` : ''}
                           </span>
                           {ent.learnerName && (
-                            <Badge variant="outline" className="text-[10px] font-normal border-secondary/50 text-primary bg-secondary/20">
+                            <Badge variant="outline" className="text-[13px] font-normal border-secondary/50 text-primary bg-secondary/20">
                               {isAr ? `لـ ${ent.learnerName}` : `For ${ent.learnerName}`}
                             </Badge>
                           )}
@@ -491,7 +491,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
 
                     {/* Credits progress */}
                     <div className="space-y-1.5">
-                      <div className="flex items-center justify-between text-xs">
+                      <div className="flex items-center justify-between text-sm">
                         <span className="text-muted-foreground">
                           {isAr ? 'الرصيد المتبقي:' : 'Remaining Credits:'}
                         </span>
@@ -513,7 +513,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                         <button
                           type="button"
                           onClick={() => setActiveClaimEntitlement(ent)}
-                          className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs font-semibold transition-colors cursor-pointer min-h-[40px]"
+                          className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm font-semibold transition-colors cursor-pointer min-h-[40px]"
                         >
                           <CreditCard className="w-3.5 h-3.5" />
                           <span>{isAr ? 'إرسال إثبات الدفع لتفعيل الرصيد' : 'Submit Payment Claim'}</span>
@@ -521,13 +521,13 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                       ) : ent.remainingCredits > 0 ? (
                         <Link
                           to={`/student/book?entitlementId=${ent.id}`}
-                          className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs font-semibold transition-colors min-h-[40px]"
+                          className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-sm font-semibold transition-colors min-h-[40px]"
                         >
                           <Plus className="w-3.5 h-3.5 text-accent" />
                           <span>{isAr ? 'حجز درس من هذا الرصيد' : 'Book a Session'}</span>
                         </Link>
                       ) : (
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-sm text-muted-foreground">
                           {isAr ? 'تم استهلاك جميع رصيد هذه الباقة' : 'All credits in this package have been used'}
                         </span>
                       )}
@@ -546,7 +546,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
           <h2 className="text-lg font-display font-bold text-foreground">
             {isAr ? 'الباقات التعليمية المتاحة' : 'Available Lesson Packages'}
           </h2>
-          <p className="text-xs text-muted-foreground mt-0.5">
+          <p className="text-sm text-muted-foreground mt-0.5">
             {isAr
               ? 'اختر الباقة المناسبة لخطة تعلمك الفردية مع الأستاذ محمود'
               : 'Choose the package that aligns with your individual learning goals'}
@@ -556,7 +556,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
         {/* Multi-Child Learner Selector (Only shown if account has multiple learners) */}
         {hasMultipleLearners && (
           <div className="p-4 rounded-2xl glass-card border-none space-y-2">
-            <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+            <label className="text-sm font-semibold text-foreground flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5 text-accent" />
               <span>{isAr ? 'شراء الباقة لحساب المتعلم:' : 'Assign Package To Learner:'}</span>
             </label>
@@ -568,7 +568,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                     key={l.id}
                     type="button"
                     onClick={() => setSelectedLearnerId(l.id)}
-                    className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer min-h-[38px] ${
+                    className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-medium transition-all cursor-pointer min-h-[38px] ${
                       isSelected
                         ? 'bg-primary text-primary-foreground shadow-xs'
                         : 'glass-surface glass-hover hover:bg-surface text-muted-foreground hover:text-foreground border border-border'
@@ -577,7 +577,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                     <User className="w-3.5 h-3.5" />
                     <span>{l.name}</span>
                     {l.isPrimary && (
-                      <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isSelected ? 'bg-primary-foreground/20' : 'bg-muted'}`}>
+                      <span className={`text-[13px] px-1.5 py-0.2 rounded-full ${isSelected ? 'bg-primary-foreground/20' : 'bg-muted'}`}>
                         {isAr ? 'الحساب الأساسي' : 'Primary'}
                       </span>
                     )}
@@ -589,7 +589,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
         )}
 
         {error && (
-          <div className="p-3.5 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs flex items-center gap-2">
+          <div className="p-3.5 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm flex items-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </div>
@@ -598,7 +598,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
         {catalogItems.length === 0 ? (
           <div
             data-testid="packages-unavailable"
-            className="p-6 rounded-2xl glass-card border-none text-center text-xs sm:text-sm text-muted-foreground"
+            className="p-6 rounded-2xl glass-card border-none text-center text-sm sm:text-sm text-muted-foreground"
           >
             <AlertCircle className="w-5 h-5 mx-auto mb-2 text-muted-foreground" />
             <p>
@@ -639,29 +639,29 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
               <History className="w-4 h-4 text-accent" />
               <span>{isAr ? 'سجل حركة ونشاط الرصيد' : 'Credit Activity History'}</span>
             </h2>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               {isAr
                 ? 'سجل زمني موثق لعمليات تفعيل الباقات، استهلاك الدروس، وتعديلات الرصيد'
                 : 'Authoritative audit trail of package activations and completed lessons'}
             </p>
           </div>
-          <span className="text-xs text-muted-foreground">
+          <span className="text-sm text-muted-foreground">
             {ledger.length} {isAr ? 'حركة مسجلة' : 'activities'}
           </span>
         </div>
 
         {ledgerLoading ? (
-          <div className="p-6 rounded-2xl glass-card border-none flex items-center justify-center gap-2 text-muted-foreground text-xs">
+          <div className="p-6 rounded-2xl glass-card border-none flex items-center justify-center gap-2 text-muted-foreground text-sm">
             <Loader2 className="w-4 h-4 animate-spin text-accent" />
             <span>{isAr ? 'جارٍ تحميل سجل النشاط...' : 'Loading credit activity...'}</span>
           </div>
         ) : ledgerError ? (
-          <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs flex items-center justify-between">
+          <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm flex items-center justify-between">
             <span>{ledgerError}</span>
             <button
               type="button"
               onClick={fetchLedger}
-              className="text-xs underline font-medium hover:opacity-80 cursor-pointer"
+              className="text-sm underline font-medium hover:opacity-80 cursor-pointer"
             >
               {isAr ? 'إعادة المحاولة' : 'Retry'}
             </button>
@@ -669,10 +669,10 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
         ) : ledger.length === 0 ? (
           <div className="p-6 rounded-2xl glass-card border-none text-center space-y-1.5">
             <History className="w-7 h-7 text-muted-foreground mx-auto" />
-            <p className="text-xs sm:text-sm text-foreground font-medium">
+            <p className="text-sm sm:text-sm text-foreground font-medium">
               {isAr ? 'لا يوجد نشاط رصيد مسجل بعد' : 'No credit activity yet'}
             </p>
-            <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+            <p className="text-sm text-muted-foreground max-w-sm mx-auto">
               {isAr
                 ? 'ستظهر هنا تفاصيل إضافة الرصيد واستهلاكه مع كل جلسة مكتملة.'
                 : 'Credit grants upon package activation and deductions upon lesson completion will appear here.'}
@@ -708,16 +708,16 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
 
                     <div className="space-y-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-xs sm:text-sm font-semibold text-foreground">
+                        <span className="text-sm sm:text-sm font-semibold text-foreground">
                           {formatActivityLabel(item.activityType)}
                         </span>
                         {item.bookingReference && (
-                          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded glass-surface border border-border text-muted-foreground">
+                          <span className="text-[13px] font-mono px-1.5 py-0.5 rounded glass-surface border border-border text-muted-foreground">
                             {item.bookingReference}
                           </span>
                         )}
                         {item.learnerName && (
-                          <span className="text-[10px] text-muted-foreground">
+                          <span className="text-[13px] text-muted-foreground">
                             • {item.learnerName}
                           </span>
                         )}
@@ -736,7 +736,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
 
                   <div className="text-right shrink-0">
                     <span
-                      className={`inline-block text-xs sm:text-sm font-mono font-bold px-2 py-0.5 rounded-md ${
+                      className={`inline-block text-sm sm:text-sm font-mono font-bold px-2 py-0.5 rounded-md ${
                         isPositive
                           ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
                           : isNegative
@@ -819,7 +819,7 @@ function PackageCard({
 
           <div>
             <h3 className="text-lg font-display font-bold text-foreground">{cat.name}</h3>
-            <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+            <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
               {cat.description ||
                 (isAr
                   ? 'جلسات فردية مباشرة لتصحيح التلاوة، التجويد، والحفظ المستمر.'
@@ -829,7 +829,7 @@ function PackageCard({
 
           <div className="pt-2">
             <span className="text-3xl font-display font-bold text-foreground">${price}</span>
-            <span className="text-xs text-muted-foreground ml-1">{currency}</span>
+            <span className="text-sm text-muted-foreground ml-1">{currency}</span>
             <div className="text-[11px] text-muted-foreground mt-0.5">
               ${Math.round(perLesson)} / {isAr ? 'درس' : 'lesson'}
             </div>
@@ -846,7 +846,7 @@ function PackageCard({
             type="button"
             disabled={isPurchasing}
             onClick={() => onSelect(cat)}
-            className="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-colors shadow-xs cursor-pointer disabled:opacity-50 min-h-[44px]"
+            className="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm sm:text-sm font-semibold transition-colors shadow-xs cursor-pointer disabled:opacity-50 min-h-[44px]"
           >
             {isPurchasing ? (
               <>

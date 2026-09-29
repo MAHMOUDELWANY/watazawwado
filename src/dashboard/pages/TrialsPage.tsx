@@ -84,11 +84,11 @@ export default function TrialsPage() {
             <h1 className="text-2xl font-display font-bold text-foreground">
               Trial Sessions
             </h1>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-secondary/30 text-accent font-medium">
+            <span className="text-sm px-2.5 py-0.5 rounded-full bg-secondary/30 text-accent font-medium">
               Free Trial Engine
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+          <p className="text-sm sm:text-sm text-muted-foreground mt-1">
             Evaluate prospective learners, record mini-lesson observations, and recommend personalized learning plans.
           </p>
         </div>
@@ -102,7 +102,7 @@ export default function TrialsPage() {
           <button
             onClick={() => fetchTrials(true)}
             disabled={refreshing || loading}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass-card border-none text-xs font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer shadow-2xs"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass-card border-none text-sm font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer shadow-2xs"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-accent' : 'opacity-70'}`} />
             <span>Refresh</span>
@@ -114,7 +114,7 @@ export default function TrialsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="p-5 rounded-2xl glass-card border-none shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+            <span className="text-sm uppercase tracking-wider text-muted-foreground font-medium">
               Upcoming Trials
             </span>
             <Sparkles className="w-4 h-4 text-warning" />
@@ -123,13 +123,13 @@ export default function TrialsPage() {
             <span className="text-2xl font-semibold text-foreground">
               {upcomingTrials.length}
             </span>
-            <span className="text-xs text-muted-foreground">scheduled</span>
+            <span className="text-sm text-muted-foreground">scheduled</span>
           </div>
         </div>
 
         <div className="p-5 rounded-2xl glass-card border-none shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+            <span className="text-sm uppercase tracking-wider text-muted-foreground font-medium">
               Completed & Evaluated
             </span>
             <CheckCircle2 className="w-4 h-4 text-success" />
@@ -138,13 +138,13 @@ export default function TrialsPage() {
             <span className="text-2xl font-semibold text-foreground">
               {completedCount}
             </span>
-            <span className="text-xs text-muted-foreground">attended</span>
+            <span className="text-sm text-muted-foreground">attended</span>
           </div>
         </div>
 
         <div className="p-5 rounded-2xl glass-card border-none shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+            <span className="text-sm uppercase tracking-wider text-muted-foreground font-medium">
               Total Inquired Trials
             </span>
             <Calendar className="w-4 h-4 text-accent" />
@@ -153,7 +153,7 @@ export default function TrialsPage() {
             <span className="text-2xl font-semibold text-foreground">
               {allTrials.length}
             </span>
-            <span className="text-xs text-muted-foreground">all-time</span>
+            <span className="text-sm text-muted-foreground">all-time</span>
           </div>
         </div>
       </div>
@@ -163,7 +163,7 @@ export default function TrialsPage() {
         <div className="flex items-center gap-1.5 p-1 rounded-xl glass-card border-none w-fit shadow-2xs">
           <button
             onClick={() => setActiveTab('upcoming')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all cursor-pointer ${
               activeTab === 'upcoming'
                 ? 'bg-primary text-primary-foreground font-semibold shadow-2xs'
                 : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
@@ -173,7 +173,7 @@ export default function TrialsPage() {
           </button>
           <button
             onClick={() => setActiveTab('recent')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all cursor-pointer ${
               activeTab === 'recent'
                 ? 'bg-primary text-primary-foreground font-semibold shadow-2xs'
                 : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
@@ -183,7 +183,7 @@ export default function TrialsPage() {
           </button>
           <button
             onClick={() => setActiveTab('all')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all cursor-pointer ${
               activeTab === 'all'
                 ? 'bg-primary text-primary-foreground font-semibold shadow-2xs'
                 : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
@@ -200,14 +200,14 @@ export default function TrialsPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search student, email, ref..."
-            className="w-full pl-9 pr-4 rtl:pl-4 rtl:pr-9 py-1.5 rounded-xl border border-border glass-card text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary shadow-2xs"
+            className="w-full pl-9 pr-4 rtl:pl-4 rtl:pr-9 py-1.5 rounded-xl border border-border glass-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary shadow-2xs"
           />
         </div>
       </div>
 
       {/* Error state */}
       {error && (
-        <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-xs text-destructive flex items-center gap-2">
+        <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-sm text-destructive flex items-center gap-2">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{error}</span>
         </div>
@@ -215,7 +215,7 @@ export default function TrialsPage() {
 
       {/* Trials List */}
       {loading ? (
-        <div className="p-12 text-center text-xs text-muted-foreground animate-pulse">
+        <div className="p-12 text-center text-sm text-muted-foreground animate-pulse">
           Loading trial sessions...
         </div>
       ) : displayedTrials.length === 0 ? (
@@ -224,7 +224,7 @@ export default function TrialsPage() {
           <h3 className="font-display font-medium text-base text-foreground">
             {activeTab === 'upcoming' ? 'No Upcoming Trials' : 'No Trial Records Found'}
           </h3>
-          <p className="text-xs text-muted-foreground max-w-sm mx-auto mt-1">
+          <p className="text-sm text-muted-foreground max-w-sm mx-auto mt-1">
             {activeTab === 'upcoming'
               ? 'When international students request a free trial lesson, they will appear here with Zoom readiness and assessment tools.'
               : 'Trial sessions and evaluations will appear here.'}
@@ -292,19 +292,19 @@ export default function TrialsPage() {
                     <h4 className="font-display font-medium text-base text-foreground truncate">
                       {trial.learner_name || 'Anonymous Student'}
                       {trial.parent_name && (
-                        <span className="text-xs font-normal text-muted-foreground ms-2">
+                        <span className="text-sm font-normal text-muted-foreground ms-2">
                           (Parent: {trial.parent_name})
                         </span>
                       )}
                     </h4>
-                    <p className="text-xs text-muted-foreground truncate">
+                    <p className="text-sm text-muted-foreground truncate">
                       Service: <span className="font-medium text-foreground">{trial.service_name}</span>
                       {trial.contact_email && <span> • {trial.contact_email}</span>}
                     </p>
                   </div>
 
                   {/* Cairo & Student Local Time */}
-                  <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
                     <div className="flex items-center gap-1.5 font-medium text-foreground">
                       <Clock className="w-3.5 h-3.5 text-accent" />
                       <span>
@@ -324,12 +324,12 @@ export default function TrialsPage() {
                 <div className="flex items-center gap-2 sm:flex-col sm:items-end justify-between pt-2 sm:pt-0 border-t sm:border-t-0 border-border-subtle">
                   <div className="flex items-center gap-2">
                     {trial.zoom_host_url ? (
-                      <span className="inline-flex items-center gap-1 text-xs text-success font-medium">
+                      <span className="inline-flex items-center gap-1 text-sm text-success font-medium">
                         <Video className="w-3.5 h-3.5" />
                         <span>Zoom Ready</span>
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                      <span className="inline-flex items-center gap-1 text-sm text-muted-foreground">
                         <Video className="w-3.5 h-3.5" />
                         <span>No Zoom Link</span>
                       </span>
@@ -342,7 +342,7 @@ export default function TrialsPage() {
                       e.stopPropagation();
                       setSelectedTrial(trial);
                     }}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-secondary/30 hover:bg-secondary/40 text-accent text-xs font-medium transition-colors cursor-pointer border border-secondary/50"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-secondary/30 hover:bg-secondary/40 text-accent text-sm font-medium transition-colors cursor-pointer border border-secondary/50"
                   >
                     <span>{isAssessed ? 'View & Edit Plan' : 'Assess & Plan'}</span>
                     <ChevronRight className="w-3.5 h-3.5 rtl:rotate-180" />

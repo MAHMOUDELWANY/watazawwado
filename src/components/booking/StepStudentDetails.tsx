@@ -124,7 +124,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
             /* Authenticated Student without child booking authorization: Strictly Self-Learning */
             <div
               id="student-identity-context"
-              className="p-4 rounded-2xl bg-secondary/30 border border-secondary/60 flex items-center justify-between gap-3 text-xs"
+              className="p-4 rounded-2xl bg-secondary/30 border border-secondary/60 flex items-center justify-between gap-3 text-sm"
             >
               <div className="flex items-center gap-2.5">
                 <div className="p-1.5 rounded-xl bg-secondary/40 text-accent-hover dark:text-primary">
@@ -152,7 +152,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
               /* Exactly one authorized child: Preselected */
               <div
                 id="child-preselected-context"
-                className="p-4 rounded-2xl bg-secondary/30 border border-secondary/60 flex items-center justify-between gap-3 text-xs"
+                className="p-4 rounded-2xl bg-secondary/30 border border-secondary/60 flex items-center justify-between gap-3 text-sm"
               >
                 <div className="flex items-center gap-2.5">
                   <div className="p-1.5 rounded-xl bg-secondary/40 text-accent-hover dark:text-primary">
@@ -186,7 +186,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                 className="space-y-3 p-4 rounded-2xl glass-card border-none"
               >
                 <div className="flex items-center justify-between">
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80">
+                  <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80">
                     {isEn ? 'Who is this lesson for?' : 'من سيتعلم في هذا الدرس؟'} <span className="text-rose-500">*</span>
                   </label>
                   <button
@@ -197,7 +197,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                     {isEn ? 'Switch to self booking' : 'التحويل لحجز شخصي'}
                   </button>
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   {isEn ? 'Please select which child will attend this session:' : 'يرجى تحديد الطفل الذي سيحضر هذا الدرس:'}
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -215,10 +215,10 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                         }`}
                       >
                         <div>
-                          <div className="font-display text-xs font-semibold text-foreground">
+                          <div className="font-display text-sm font-semibold text-foreground">
                             {child.name}
                           </div>
-                          <div className="text-[10px] text-foreground/60 dark:text-border/60 capitalize">
+                          <div className="text-[13px] text-foreground/60 dark:text-border/60 capitalize">
                             {child.current_level || child.currentLevel || 'Learner'}
                           </div>
                         </div>
@@ -238,7 +238,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
             /* Authorized Guardian choosing to book for themselves (adult self) */
             <div
               id="guardian-self-context"
-              className="p-4 rounded-2xl bg-secondary/30 border border-secondary/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+              className="p-4 rounded-2xl bg-secondary/30 border border-secondary/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm"
             >
               <div className="flex items-center gap-2.5">
                 <div className="p-1.5 rounded-xl bg-secondary/40 text-accent-hover dark:text-primary">
@@ -269,7 +269,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
         /* Authorized Student choosing to book for themselves (adult self) without child access */
         <div
           id="student-self-context"
-          className="p-4 rounded-2xl bg-secondary/30 border border-secondary/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+          className="p-4 rounded-2xl bg-secondary/30 border border-secondary/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm"
         >
           <div className="flex items-center gap-2.5">
             <div className="p-1.5 rounded-xl bg-secondary/40 text-accent-hover dark:text-primary">
@@ -290,7 +290,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
       ) : (
         /* Guest / Unauthenticated flow: Traditional 2-card selector */
         <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/70 dark:text-border/70 mb-2">
+          <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/70 dark:text-border/70 mb-2">
             {isEn ? 'Who will be learning in this session?' : 'من سيتعلم في هذا الدرس؟'}
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -347,7 +347,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
         <div className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1.5">
+              <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1.5">
                 {isEn ? 'Your Full Name' : 'اسمك الكريم'} <span className="text-muted-foreground">*</span>
               </label>
               <input
@@ -361,7 +361,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1.5">
+              <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1.5">
                 {isEn ? 'Age Group' : 'الفئة العمرية'}
               </label>
               <select
@@ -378,7 +378,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1.5">
+              <label className="flex items-center gap-1 text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1.5">
                 <Mail className="w-3.5 h-3.5 text-accent" />
                 <span>{isEn ? 'Email Address' : 'البريد الإلكتروني'}</span> <span className="text-muted-foreground">*</span>
               </label>
@@ -396,7 +396,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
             </div>
 
             <div>
-              <label className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1.5">
+              <label className="flex items-center gap-1 text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1.5">
                 <Phone className="w-3.5 h-3.5 text-accent" />
                 <span>{isEn ? 'WhatsApp Number (Recommended)' : 'رقم الواتساب (موصى به للتذكير)'}</span>
               </label>
@@ -424,7 +424,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1">
+                <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1">
                   {isEn ? 'Child’s Full Name' : 'اسم الطفل الكريم'} <span className="text-muted-foreground">*</span>
                 </label>
                 {linkedChildren.length > 0 ? (
@@ -452,7 +452,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1">
+                <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1">
                   {isEn ? 'Child’s Age' : 'عمر الطفل'} <span className="text-muted-foreground">*</span>
                 </label>
                 <select
@@ -477,7 +477,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1">
+                <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1">
                   {isEn ? 'Parent’s Full Name' : 'اسم ولي الأمر'} <span className="text-muted-foreground">*</span>
                 </label>
                 <input
@@ -491,7 +491,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1">
+                <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1">
                   {isEn ? 'Parent’s Email' : 'البريد الإلكتروني لولي الأمر'} <span className="text-muted-foreground">*</span>
                 </label>
                 <input
@@ -505,7 +505,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1">
+                <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80 mb-1">
                   {isEn ? 'Parent’s WhatsApp' : 'رقم واتساب ولي الأمر'}
                 </label>
                 <input
@@ -523,7 +523,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
 
       {/* Starting Level Assessment */}
       <div className="space-y-2 pt-2">
-        <label className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-foreground/70 dark:text-border/70">
+        <label className="flex items-center gap-1.5 text-sm font-semibold uppercase tracking-wider text-foreground/70 dark:text-border/70">
           <BookMarked className="w-3.5 h-3.5 text-accent" />
           <span>
             {isChild
@@ -551,10 +551,10 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                     : 'glass-card border-border text-foreground/70 dark:text-border/70 hover:bg-foreground/30'
                 }`}
               >
-                <div className="font-display text-xs font-medium mb-0.5">
+                <div className="font-display text-sm font-medium mb-0.5">
                   {isEn ? lvl.label : lvl.arabicLabel}
                 </div>
-                <div className="text-[10px] text-foreground/55 dark:text-border/55 line-clamp-2">
+                <div className="text-[13px] text-foreground/55 dark:text-border/55 line-clamp-2">
                   {lvl.desc}
                 </div>
               </button>
@@ -564,7 +564,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
       </div>
 
       {/* Trust & Privacy Reassurance */}
-      <div className="p-3.5 rounded-xl bg-surface-warm glass-surface border border-secondary/60 flex items-center gap-3 text-xs text-foreground/80 dark:text-border/80">
+      <div className="p-3.5 rounded-xl bg-surface-warm glass-surface border border-secondary/60 flex items-center gap-3 text-sm text-foreground/80 dark:text-border/80">
         <ShieldCheck className="w-5 h-5 text-accent shrink-0" />
         <span>
           {isEn
@@ -580,7 +580,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
           whileTap={{ scale: 0.97 }}
           onClick={onBack}
           type="button"
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium text-foreground/80 dark:text-border/80 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium text-foreground/80 dark:text-border/80 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
         >
           <ArrowLeft className={`w-3.5 h-3.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
           <span>{isEn ? 'Back to Goals' : 'الرجوع للأهداف'}</span>

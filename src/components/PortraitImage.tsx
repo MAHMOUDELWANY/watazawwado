@@ -90,7 +90,7 @@ export const PortraitImage: React.FC<PortraitImageProps> = ({ className = '', pr
       />
 
       {/* Subtle Status Pill */}
-      <div className="absolute -top-3.5 left-6 z-30 flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-card/90 border border-border shadow-xs text-xs font-medium text-foreground backdrop-blur-md">
+      <div className="absolute -top-3.5 left-6 z-30 flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-card/90 border border-border shadow-xs text-sm font-medium text-foreground backdrop-blur-md">
         <span className="w-2 h-2 rounded-full bg-primary" />
         <span>1-on-1 Online Mentorship</span>
       </div>
@@ -126,11 +126,11 @@ export const PortraitImage: React.FC<PortraitImageProps> = ({ className = '', pr
           <div>
             <div className="flex items-center gap-1.5 mb-1">
               <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-              <p className="font-display text-lg font-medium text-white tracking-tight leading-none">
+              <p className="font-display text-lg font-medium text-white  leading-none">
                 Ustadh Mahmoud
               </p>
             </div>
-            <p className="text-xs text-white/80 font-sans tracking-wide">
+            <p className="text-sm text-white/80 font-sans tracking-wide">
               Al-Azhar Foundation • Cairo, Egypt
             </p>
           </div>
@@ -147,7 +147,7 @@ export const PortraitImage: React.FC<PortraitImageProps> = ({ className = '', pr
           onClick={() => fileInputRef.current?.click()}
           title="Upload or update Ustadh Mahmoud's photo"
           aria-label="Upload photo"
-          className={`absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-md transition-all duration-300 cursor-pointer text-xs font-medium ${
+          className={`absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-md transition-all duration-300 cursor-pointer text-sm font-medium ${
             isHovered || isDragging
               ? 'opacity-100 translate-y-0 bg-foreground/80 hover:bg-foreground text-white shadow-md'
               : 'opacity-0 -translate-y-2 pointer-events-none'
@@ -171,7 +171,7 @@ export const PortraitImage: React.FC<PortraitImageProps> = ({ className = '', pr
           <div className="absolute inset-0 bg-primary/85 backdrop-blur-xs flex flex-col items-center justify-center text-white text-center p-6 animate-fadeIn">
             <Upload className="w-10 h-10 mb-2 animate-bounce" />
             <p className="font-medium text-sm">Drop Mahmoud’s photo here</p>
-            <p className="text-xs text-white/80 mt-1">IMG_20260809_132258_580.jpg</p>
+            <p className="text-sm text-white/80 mt-1">IMG_20260809_132258_580.jpg</p>
           </div>
         )}
       </div>

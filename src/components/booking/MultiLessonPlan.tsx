@@ -100,7 +100,7 @@ export const MultiLessonPlan: React.FC<Props> = ({ catalog, serviceId, duration,
       })}
       {!eligible && <p className="text-sm text-muted-foreground">Multi-lesson catalog pricing is not available for this subject and duration. You can book one lesson now.</p>}
       {eligible && !single && <p className="text-sm text-muted-foreground">Multi-lesson pricing is temporarily unavailable. You can still book one lesson.</p>}
-      <p className="text-xs text-muted-foreground">Multi-lesson choices are fixed prepaid lessons, not a subscription. Times must be chosen before any purchase can be confirmed.</p>
+      <p className="text-sm text-muted-foreground">Multi-lesson choices are fixed prepaid lessons, not a subscription. Times must be chosen before any purchase can be confirmed.</p>
     </section>
   );
 
@@ -126,7 +126,7 @@ export const MultiLessonPlan: React.FC<Props> = ({ catalog, serviceId, duration,
             </li>
           ))}
         </ul>
-        <p className="text-xs text-muted-foreground">Times shown in {timezone}</p>
+        <p className="text-sm text-muted-foreground">Times shown in {timezone}</p>
       </div>
 
       {/* 2. Price — total first, then per-lesson, then savings (never inflate the regular price) */}

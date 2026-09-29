@@ -76,7 +76,7 @@ export function EditorialHeading({
       )}
       <Tag
         className={cn(
-          'font-editorial font-medium tracking-tight text-foreground',
+          'font-editorial font-medium  text-foreground',
           sizeClasses,
           !noAccent && "editorial-heading",
           className
@@ -248,7 +248,7 @@ export function TestimonialQuote({ quote, name, detail, className }: Testimonial
       <footer className="mt-4 ps-4">
         <cite className="not-italic text-sm font-medium text-foreground">{name}</cite>
         {detail && (
-          <span className="block text-xs text-muted-foreground mt-0.5">{detail}</span>
+          <span className="block text-sm text-muted-foreground mt-0.5">{detail}</span>
         )}
       </footer>
     </blockquote>

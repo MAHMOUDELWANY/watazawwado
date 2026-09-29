@@ -127,10 +127,10 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
       {/* 1. Header & Primary CTA */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-display font-bold tracking-tight text-foreground">
+          <h1 className="text-2xl sm:text-3xl font-display font-bold  text-foreground">
             {isAr ? 'جدول دروسي ومواعيدي' : 'My Lessons & Schedule'}
           </h1>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">
+          <p className="text-sm sm:text-sm text-muted-foreground mt-1 leading-relaxed">
             {isAr
               ? 'متابعة كافة جلساتك التعليمية المباشرة مع الأستاذ محمود، الروابط، وحالة التأكيد.'
               : 'Direct 1-on-1 scheduled sessions with Ustadh Mahmoud, room access, and lesson history.'}
@@ -139,7 +139,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
 
         <Link
           to="/student/book"
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-colors shadow-xs shrink-0 min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm sm:text-sm font-semibold transition-colors shadow-xs shrink-0 min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
         >
           <Plus className="w-4 h-4 shrink-0" />
           <span>{isAr ? 'حجز موعد جديد' : 'Book a Lesson'}</span>
@@ -147,7 +147,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
       </div>
 
       {/* 2. Compact Cancellation / Rescheduling Policy Notice */}
-      <div className="p-3.5 sm:p-4 rounded-xl glass-surface border border-border-subtle flex items-start gap-3 text-xs leading-relaxed text-muted-foreground">
+      <div className="p-3.5 sm:p-4 rounded-xl glass-surface border border-border-subtle flex items-start gap-3 text-sm leading-relaxed text-muted-foreground">
         <HelpCircle className="w-4 h-4 text-accent shrink-0 mt-0.5" />
         <div>
           <span className="font-semibold text-foreground block mb-0.5">
@@ -179,7 +179,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
               type="button"
               onClick={() => setActiveFilter(tabKey)}
               className={`
-                inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm transition-all whitespace-nowrap cursor-pointer min-h-[40px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
+                inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm sm:text-sm transition-all whitespace-nowrap cursor-pointer min-h-[40px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
                 ${isActive
                   ? 'bg-primary text-primary-foreground shadow-xs font-semibold'
                   : 'glass-card hover:bg-surface-subtle text-muted-foreground hover:text-foreground border border-border font-medium'
@@ -189,7 +189,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
               <span>{labels[tabKey]}</span>
               {!loading && !error && (
                 <span
-                  className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono leading-none ${
+                  className={`px-1.5 py-0.5 rounded-full text-[13px] font-mono leading-none ${
                     isActive
                       ? 'bg-primary-foreground/20 text-primary-foreground'
                       : 'bg-muted text-muted-foreground'
@@ -207,7 +207,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
       {loading ? (
         <div className="flex flex-col items-center justify-center py-16 gap-3 glass-card border-none rounded-2xl">
           <Loader2 className="w-8 h-8 text-accent animate-spin" />
-          <p className="text-xs sm:text-sm text-muted-foreground">
+          <p className="text-sm sm:text-sm text-muted-foreground">
             {isAr ? 'جارٍ تحميل الدروس...' : 'Loading your scheduled sessions...'}
           </p>
         </div>
@@ -217,11 +217,11 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
           <h3 className="text-sm font-semibold text-foreground">
             {isAr ? 'تعذر تحميل قائمة الدروس' : 'Could not load your lessons'}
           </h3>
-          <p className="text-xs text-muted-foreground max-w-md mx-auto">{error}</p>
+          <p className="text-sm text-muted-foreground max-w-md mx-auto">{error}</p>
           <button
             type="button"
             onClick={fetchData}
-            className="inline-flex items-center justify-center px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground text-xs rounded-xl font-medium cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
+            className="inline-flex items-center justify-center px-4 py-2 btn-primary-material text-primary-foreground text-sm rounded-xl font-medium cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
           >
             {isAr ? 'إعادة المحاولة' : 'Try Again'}
           </button>
@@ -241,7 +241,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                 ? (isAr ? 'لا توجد دروس ملغاة أو منتهية' : 'No cancelled or past records')
                 : (isAr ? 'لا توجد مواعيد مسجلة حتى الآن' : 'No lessons found')}
             </h3>
-            <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto mt-1 leading-relaxed">
+            <p className="text-sm sm:text-sm text-muted-foreground max-w-md mx-auto mt-1 leading-relaxed">
               {activeFilter === 'upcoming'
                 ? (isAr
                     ? 'ليس لديك أي مواعيد قادمة مجدولة حالياً. يمكنك اختيار موضوع وجلسة مع الأستاذ محمود الآن.'
@@ -262,7 +262,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
           {(activeFilter === 'upcoming' || activeFilter === 'all') && (
             <Link
               to="/student/book"
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-colors shadow-xs min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm sm:text-sm font-semibold transition-colors shadow-xs min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
             >
               <Plus className="w-4 h-4 shrink-0" />
               <span>{isAr ? 'حجز موعد الآن' : 'Schedule a Lesson'}</span>
@@ -305,18 +305,18 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                           {isAr && b.serviceArabicTitle ? b.serviceArabicTitle : b.serviceTitle}
                         </h3>
                         {b.bookingType === 'trial' && (
-                          <Badge variant="outline" className="text-[10px] text-primary border-secondary/60">
+                          <Badge variant="outline" className="text-[13px] text-primary border-secondary/60">
                             {isAr ? 'تجريبي مجاني' : 'Free Trial'}
                           </Badge>
                         )}
                         {(b.packageEntitlementId || b.isPackageBooking) && (
-                          <Badge variant="secondary" className="text-[10px] font-normal bg-secondary/30 text-primary border-secondary/50">
+                          <Badge variant="secondary" className="text-[13px] font-normal bg-secondary/30 text-primary border-secondary/50">
                             {isAr ? 'باقة مسبقة الدفع' : 'Prepaid Package'}
                           </Badge>
                         )}
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1.5">
                           <Clock className="w-3.5 h-3.5 text-accent shrink-0" />
                           <span className="font-medium text-foreground">
@@ -342,19 +342,19 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                       {/* Payment state is surfaced truthfully here, and never overstates a booking as
                           "Confirmed"/"Paid" while verification/collection is still outstanding. */}
                       {paymentSummary.isPaidOrTrial && b.bookingType !== 'trial' && !paymentSummary.isPendingPayment && (
-                        <Badge variant="success" className="px-2.5 py-1 text-xs font-medium">
+                        <Badge variant="success" className="px-2.5 py-1 text-sm font-medium">
                           {isAr ? 'مدفوع ومفعل' : 'Paid'}
                         </Badge>
                       )}
 
-                      <Badge variant={displayStatus.variant} className="px-2.5 py-1 text-xs font-medium">
+                      <Badge variant={displayStatus.variant} className="px-2.5 py-1 text-sm font-medium">
                         {displayStatus.label}
                       </Badge>
                     </div>
                   </div>
 
                   {/* Middle: Details & Reference Bar */}
-                  <div className="p-3 sm:p-3.5 rounded-xl glass-surface border border-border-subtle flex flex-wrap items-center justify-between gap-3 text-xs">
+                  <div className="p-3 sm:p-3.5 rounded-xl glass-surface border border-border-subtle flex flex-wrap items-center justify-between gap-3 text-sm">
                     <div className="flex items-center gap-2">
                       <span className="text-muted-foreground flex items-center gap-1">
                         <Tag className="w-3 h-3 opacity-70 shrink-0" />
@@ -375,7 +375,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                         )}
                       </button>
                       {copiedRef === b.referenceCode && (
-                        <span className="text-[10px] text-success font-medium">
+                        <span className="text-[13px] text-success font-medium">
                           {isAr ? 'تم النسخ' : 'Copied'}
                         </span>
                       )}
@@ -398,7 +398,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                     {/* Zoom State */}
                     <div className="flex-1">
                       {isCancelled ? (
-                        <div className="inline-flex items-center gap-2 text-xs text-muted-foreground p-2 rounded-lg glass-surface border border-border-subtle">
+                        <div className="inline-flex items-center gap-2 text-sm text-muted-foreground p-2 rounded-lg glass-surface border border-border-subtle">
                           <span>{isAr ? 'تم إلغاء هذا الدرس' : 'This lesson has been cancelled.'}</span>
                         </div>
                       ) : hasValidZoomUrl ? (
@@ -406,14 +406,14 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                           href={rawZoom}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-xs min-h-[42px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
+                          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm sm:text-sm font-semibold transition-all shadow-xs min-h-[42px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
                         >
                           <Video className="w-4 h-4 shrink-0" />
                           <span>{isAr ? 'دخول الفصل الافتراضي (زووم)' : 'Join Zoom Classroom'}</span>
                           <ExternalLink className="w-3.5 h-3.5 shrink-0 ms-0.5" />
                         </a>
                       ) : (
-                        <div className="inline-flex items-center gap-2 text-xs text-muted-foreground p-2 rounded-lg glass-surface border border-border-subtle">
+                        <div className="inline-flex items-center gap-2 text-sm text-muted-foreground p-2 rounded-lg glass-surface border border-border-subtle">
                           <Clock className="w-3.5 h-3.5 text-accent shrink-0" />
                           <span>
                             {isAr
@@ -431,7 +431,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                         <button
                           type="button"
                           onClick={() => setPaymentModalBooking(b)}
-                          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-secondary/30 hover:bg-secondary/40 text-accent border border-secondary/50 rounded-xl text-xs font-semibold transition-colors cursor-pointer min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-secondary/30 hover:bg-secondary/40 text-accent border border-secondary/50 rounded-xl text-sm font-semibold transition-colors cursor-pointer min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                         >
                           <CreditCard className="w-3.5 h-3.5 shrink-0" />
                           <span>{isAr ? 'إرسال إثبات الدفع' : 'Submit Payment Claim'}</span>
@@ -443,7 +443,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                         <button
                           type="button"
                           onClick={() => setRescheduleModalBooking(b)}
-                          className="inline-flex items-center justify-center gap-1.5 px-3 py-2 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs font-medium transition-colors cursor-pointer min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                          className="inline-flex items-center justify-center gap-1.5 px-3 py-2 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-sm font-medium transition-colors cursor-pointer min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                         >
                           <MessageCircle className="w-3.5 h-3.5 shrink-0" />
                           <span>{isAr ? 'تنسيق التعديل عبر واتساب' : 'Request Change via WhatsApp'}</span>
@@ -454,7 +454,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                       {(isCompleted || isCancelled || isNoShow) && (
                         <Link
                           to={`/student/book?repeat=true${b.serviceId ? `&service=${b.serviceId}` : ''}`}
-                          className="inline-flex items-center justify-center gap-1.5 px-3 py-2 glass-card hover:bg-surface-subtle text-primary border border-border rounded-xl text-xs font-medium transition-colors min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                          className="inline-flex items-center justify-center gap-1.5 px-3 py-2 glass-card hover:bg-surface-subtle text-primary border border-border rounded-xl text-sm font-medium transition-colors min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                           title={isAr ? 'حجز درس جديد في نفس الموضوع' : 'Book another session on this topic'}
                         >
                           <RotateCcw className="w-3.5 h-3.5 shrink-0" />
@@ -500,14 +500,14 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                 <h3 className="text-base font-display font-bold text-foreground">
                   {isAr ? 'طلب تعديل أو إلغاء الدرس' : 'Request a Lesson Change'}
                 </h3>
-                <p className="text-xs text-muted-foreground font-mono">
+                <p className="text-sm text-muted-foreground font-mono">
                   Ref: {rescheduleModalBooking.referenceCode}
                 </p>
               </div>
             </div>
           }
         >
-          <div className="space-y-4 text-start text-xs sm:text-sm text-foreground">
+          <div className="space-y-4 text-start text-sm sm:text-sm text-foreground">
             {(() => {
               const startObj = DateTime.fromISO(
                 rescheduleModalBooking.scheduledStart || rescheduleModalBooking.scheduled_start || rescheduleModalBooking.lesson_date || ''
@@ -547,7 +547,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                         ? (isAr ? 'يمكنك طلب التعديل الآن' : 'You can request a change now')
                         : (isAr ? 'تنبيه: متبقي أقل من ٣ ساعات' : 'Notice: Less than 3 hours remaining')}
                     </div>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
                       {isEligible
                         ? (isAr
                             ? 'موعد درسك يبدأ بعد أكثر من ٣ ساعات. لطلب إعادة الجدولة أو الإلغاء، يرجى التنسيق مباشرة مع الأستاذ محمود عبر واتساب. لن يتم تعديل الموعد من داخل التطبيق.'
@@ -563,7 +563,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                       href={waUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-colors shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
+                      className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 btn-primary-material text-primary-foreground rounded-xl text-sm sm:text-sm font-semibold transition-colors shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
                     >
                       <MessageCircle className="w-4 h-4 shrink-0" />
                       <span>
@@ -577,7 +577,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                     <button
                       type="button"
                       onClick={() => setRescheduleModalBooking(null)}
-                      className="w-full px-4 py-2.5 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                      className="w-full px-4 py-2.5 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-sm sm:text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                     >
                       {isAr ? 'إغلاق' : 'Close'}
                     </button>

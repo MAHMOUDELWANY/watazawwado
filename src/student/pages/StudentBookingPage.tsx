@@ -62,14 +62,14 @@ export class BookingErrorBoundary extends Component<BookingErrorBoundaryProps, B
           <div className="pt-2 flex justify-center gap-3">
             <Link
               to="/student"
-              className="px-4 py-2 rounded-xl text-xs font-semibold glass-surface text-foreground hover:bg-border/40 transition-colors"
+              className="px-4 py-2 rounded-xl text-sm font-semibold glass-surface text-foreground hover:bg-border/40 transition-colors"
             >
               ← Return to Student Portal
             </Link>
             <button
               type="button"
               onClick={this.reset}
-              className="px-4 py-2 rounded-xl text-xs font-semibold bg-primary hover:bg-primary-hover text-primary-foreground transition-colors cursor-pointer"
+              className="px-4 py-2 rounded-xl text-sm font-semibold btn-primary-material text-primary-foreground transition-colors cursor-pointer"
             >
               Retry Booking Form
             </button>
@@ -722,14 +722,14 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
         <div className="pt-2 flex justify-center gap-3">
           <Link
             to="/student"
-            className="px-4 py-2 rounded-xl text-xs font-semibold glass-surface text-foreground hover:bg-border/40 transition-colors"
+            className="px-4 py-2 rounded-xl text-sm font-semibold glass-surface text-foreground hover:bg-border/40 transition-colors"
           >
             ← Return to Dashboard
           </Link>
           <button
             type="button"
             onClick={() => navigate('/student')}
-            className="px-4 py-2 rounded-xl text-xs font-semibold bg-primary hover:bg-primary-hover text-primary-foreground transition-colors cursor-pointer"
+            className="px-4 py-2 rounded-xl text-sm font-semibold btn-primary-material text-primary-foreground transition-colors cursor-pointer"
           >
             Sign In
           </button>
@@ -764,14 +764,14 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
         <div className="pt-2 flex justify-center gap-3">
           <Link
             to="/student"
-            className="px-4 py-2 rounded-xl text-xs font-semibold glass-surface text-foreground hover:bg-border/40 transition-colors"
+            className="px-4 py-2 rounded-xl text-sm font-semibold glass-surface text-foreground hover:bg-border/40 transition-colors"
           >
             ← Return to Dashboard
           </Link>
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="px-4 py-2 rounded-xl text-xs font-semibold bg-primary hover:bg-primary-hover text-primary-foreground transition-colors cursor-pointer"
+            className="px-4 py-2 rounded-xl text-sm font-semibold btn-primary-material text-primary-foreground transition-colors cursor-pointer"
           >
             Retry
           </button>
@@ -807,10 +807,10 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
             labelAr="العودة لبوابة الطالب"
             className="mb-1.5"
           />
-          <h1 className="text-2xl font-display font-bold tracking-tight text-foreground">
+          <h1 className="text-2xl font-display font-bold  text-foreground">
             Book a Lesson
           </h1>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+          <p className="text-sm sm:text-sm text-muted-foreground mt-0.5">
             Choose your lesson, confirm your preferences, and schedule your next 1-on-1 session.
           </p>
         </div>
@@ -823,7 +823,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
             <div className="text-[11px] font-semibold text-foreground leading-tight truncate max-w-[160px] sm:max-w-[200px]">
               {profile.name || profile.email}
             </div>
-            <div className="text-[10px] text-muted-foreground leading-tight">
+            <div className="text-[13px] text-muted-foreground leading-tight">
               {profile.bookingPreference === 'child' ? 'Booking for Child' : 'Linked Student Account'}
             </div>
           </div>
@@ -839,7 +839,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
           <div className="mt-2 text-sm font-medium text-foreground">
             {lastBookingSummary.summaryText}
           </div>
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="mt-1 text-sm text-muted-foreground">
             Reuse this recent lesson as a starting point or choose a fresh lesson from the form below.
           </p>
         </div>
@@ -847,7 +847,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
 
       {/* Bookings Verification Warning / Retry (if /api/student/bookings failed) */}
       {bookingsError && (
-        <div className="p-4 rounded-2xl bg-warning/10 border border-warning/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-warning">
+        <div className="p-4 rounded-2xl bg-warning/10 border border-warning/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm text-warning">
           <div className="flex items-center gap-2.5">
             <AlertCircle className="w-4 h-4 text-warning shrink-0" />
             <span>
@@ -885,13 +885,13 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
               <h2 className="text-lg font-display font-bold text-foreground">
                 Book another lesson
               </h2>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 Continue from your last completed lesson?
               </p>
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl glass-surface border border-border space-y-1.5 text-xs">
+          <div className="p-4 rounded-2xl glass-surface border border-border space-y-1.5 text-sm">
             <div className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
               Previous lesson details
             </div>
@@ -908,7 +908,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
               type="button"
               id="btn-reuse-last-booking"
               onClick={handleReuseLastBooking}
-              className="w-full p-4 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground font-medium text-xs transition-all shadow-xs flex flex-col items-start gap-1 cursor-pointer text-start"
+              className="w-full p-4 rounded-2xl btn-primary-material text-primary-foreground font-medium text-sm transition-all shadow-xs flex flex-col items-start gap-1 cursor-pointer text-start"
             >
               <div className="flex items-center gap-1.5 font-semibold text-sm">
                 <RotateCcw className="w-4 h-4" />
@@ -923,7 +923,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
               type="button"
               id="btn-dismiss-reuse-booking"
               onClick={handleDismissReuse}
-              className="w-full p-4 rounded-2xl glass-card border-none text-foreground hover:bg-surface-subtle font-medium text-xs transition-all shadow-xs flex flex-col items-start gap-1 cursor-pointer text-start"
+              className="w-full p-4 rounded-2xl glass-card border-none text-foreground hover:bg-surface-subtle font-medium text-sm transition-all shadow-xs flex flex-col items-start gap-1 cursor-pointer text-start"
             >
               <div className="flex items-center gap-1.5 font-semibold text-sm">
                 <Sparkles className="w-4 h-4 text-accent" />
@@ -941,7 +941,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
           <div className="space-y-4">
             {/* Active reuse feedback banner */}
             {isReusing && lastBookingSummary && (
-              <div className="p-3.5 rounded-2xl bg-secondary/30 border border-secondary/50 text-xs text-primary flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="p-3.5 rounded-2xl bg-secondary/30 border border-secondary/50 text-sm text-primary flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-accent shrink-0" />
                   <span>
@@ -952,7 +952,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
                   type="button"
                   id="btn-reset-reuse-booking"
                   onClick={handleResetToNewBooking}
-                  className="text-xs font-medium underline hover:text-foreground cursor-pointer self-start sm:self-auto"
+                  className="text-sm font-medium underline hover:text-foreground cursor-pointer self-start sm:self-auto"
                 >
                   Start fresh instead
                 </button>
@@ -961,7 +961,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
 
             {/* Dismissed subtle helper: available if user changed their mind */}
             {lastEligibleBooking && lastBookingSummary && reuseDismissed && !isReusing && (
-              <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
+              <div className="flex items-center justify-between text-sm text-muted-foreground px-1">
                 <button
                   type="button"
                   id="btn-reopen-reuse-booking"

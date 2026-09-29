@@ -78,7 +78,7 @@ const handleOpenSignup = () => {
           <button
             onClick={onClose}
             aria-label={isAr ? 'إغلاق' : 'Close modal'}
-            className="absolute top-5 end-5 p-2 rounded-full text-muted-foreground hover:text-foreground hover:glass-dialog-subtle transition-colors cursor-pointer"
+            className="absolute top-5 end-5 p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -88,7 +88,7 @@ const handleOpenSignup = () => {
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-[32px] glass-brand-edge glass-specular bg-secondary/30 text-accent mb-3">
               <GraduationCap className="w-6 h-6" />
             </div>
-            <h2 id="get-started-title" className="text-2xl sm:text-3xl font-display font-bold tracking-tight text-foreground">
+            <h2 id="get-started-title" className="text-2xl sm:text-3xl font-display font-bold  text-foreground">
               {isAr ? 'ابدأ رحلتك التعليمية' : 'Begin Your Learning Journey'}
             </h2>
             <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
@@ -112,11 +112,11 @@ const handleOpenSignup = () => {
                     <span className="font-semibold text-base text-foreground group-hover:text-primary transition-colors">
                       {isAr ? 'المتابعة كطالب مسجل' : 'Continue as Student'}
                     </span>
-                    <span className="text-xs px-2.5 py-0.5 rounded-full font-medium bg-secondary/30 text-primary whitespace-nowrap">
+                    <span className="text-sm px-2.5 py-0.5 rounded-full font-medium bg-secondary/30 text-primary whitespace-nowrap">
                       {isAr ? 'حجز حقيقي' : 'Real Booking'}
                     </span>
                   </div>
-                  <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 leading-relaxed">
+                  <p className="text-sm sm:text-sm text-muted-foreground mt-1.5 leading-relaxed">
                     {isAr
                       ? 'سجل دخولك أو أنشئ حساباً لحجز درس حقيقي، وربط حجوزاتك، واستلام رابط Zoom الخاص بك.'
                       : 'Sign in or create an account to book an actual lesson, keep your bookings connected, and receive your Zoom link.'}
@@ -127,7 +127,7 @@ const handleOpenSignup = () => {
                       type="button"
                       onClick={handleOpenSignup}
                       id="get-started-student-signup-btn"
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground text-xs sm:text-sm font-medium transition-colors shadow-xs cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl btn-primary-material text-primary-foreground text-sm sm:text-sm font-medium transition-colors shadow-xs cursor-pointer"
                     >
                       <UserPlus className="w-3.5 h-3.5" />
                       <span>{isAr ? 'إنشاء حساب طالب' : 'Create Account'}</span>
@@ -136,7 +136,7 @@ const handleOpenSignup = () => {
                       type="button"
                       onClick={handleOpenLogin}
                       id="get-started-student-login-btn"
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl glass-card hover:glass-dialog-subtle text-foreground text-xs sm:text-sm font-medium transition-colors cursor-pointer border border-border"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl glass-card hover:bg-surface-subtle text-foreground text-sm sm:text-sm font-medium transition-colors cursor-pointer border border-border"
                     >
                       <LogIn className="w-3.5 h-3.5 text-accent" />
                       <span>{isAr ? 'تسجيل الدخول' : 'Sign In'}</span>
@@ -148,7 +148,7 @@ const handleOpenSignup = () => {
           </div>
 
           {/* Secondary Pathways: Staff Entrance */}
-          <div className="mt-5 pt-4 border-t border-border flex items-center justify-center text-xs text-muted-foreground">
+          <div className="mt-5 pt-4 border-t border-border flex items-center justify-center text-sm text-muted-foreground">
             <a
               href="/staff/login"
               id="get-started-staff-link"

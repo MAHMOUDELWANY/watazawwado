@@ -26,10 +26,10 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ lang }
           transition={{ duration: 0.5 }}
           className="max-w-3xl mb-16"
         >
-          <div className="text-xs uppercase tracking-widest text-primary font-semibold mb-3">
+          <div className="text-sm uppercase tracking-widest text-primary font-semibold mb-3">
             {isEn ? 'Student & Parent Reflections' : ARABIC_TRANSLATIONS.nav.testimonials}
           </div>
-          <h2 className="font-display text-3xl sm:text-4xl text-foreground tracking-tight mb-4">
+          <h2 className="font-display text-3xl sm:text-4xl text-foreground  mb-4">
             {isEn ? 'Experiences from students across the globe.' : 'تجارب حقيقية لطلاب وأولياء أمور حول العالم.'}
           </h2>
           <p className="text-base text-muted-foreground leading-relaxed">
@@ -63,11 +63,11 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ lang }
                     <h3 className="font-display text-base font-semibold text-foreground">
                       {testimonial.author}
                     </h3>
-                    <p className="text-xs text-primary font-medium">
+                    <p className="text-sm text-primary font-medium">
                       {testimonial.role}
                     </p>
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                     <MapPin className="w-3.5 h-3.5 text-accent" />
                     <span>{testimonial.location}</span>
                   </div>

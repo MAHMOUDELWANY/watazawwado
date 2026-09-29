@@ -272,12 +272,12 @@ export default function StudentDetailPage() {
         <h2 className="text-lg font-display font-bold text-foreground">
           Student Record Not Found
         </h2>
-        <p className="text-xs text-muted-foreground max-w-md mx-auto">
+        <p className="text-sm text-muted-foreground max-w-md mx-auto">
           {error || "The requested student record could not be located or you don't have authorization to view it."}
         </p>
         <Link
           to="/dashboard/students"
-          className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer"
         >
           <ChevronLeft className="w-4 h-4" />
           <span>Back to Students</span>
@@ -317,7 +317,7 @@ export default function StudentDetailPage() {
                 {student.name}
               </h1>
               {/* Status Badge */}
-              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium ${
                 student.status === 'active'
                   ? 'bg-success/15 text-success border border-success/30'
                   : student.status === 'paused'
@@ -329,18 +329,18 @@ export default function StudentDetailPage() {
 
               {/* Learner Type Badge */}
               {student.learner_type === 'child' ? (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent/15 text-accent border border-accent/25">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-sm font-medium bg-accent/15 text-accent border border-accent/25">
                   <Users className="w-3 h-3" />
                   <span>Child {guardian?.parent_name ? `(Parent: ${guardian.parent_name})` : ''}</span>
                 </span>
               ) : student.learner_type === 'adult' ? (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary/30 text-primary border border-secondary/50">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-sm font-medium bg-secondary/30 text-primary border border-secondary/50">
                   <User className="w-3 h-3" />
                   <span>Adult Learner</span>
                 </span>
               ) : null}
             </div>
-            <p className="text-xs text-muted-foreground mt-0.5">
+            <p className="text-sm text-muted-foreground mt-0.5">
               Enrolled: {DateTime.fromISO(student.created_at).toFormat('MMMM d, yyyy')}
             </p>
           </div>
@@ -353,7 +353,7 @@ export default function StudentDetailPage() {
               href={waUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-success text-white hover:bg-success/90 shadow-2xs transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl bg-success text-white hover:bg-success/90 shadow-2xs transition-colors cursor-pointer"
             >
               <MessageCircle className="w-3.5 h-3.5" />
               <span>WhatsApp</span>
@@ -363,7 +363,7 @@ export default function StudentDetailPage() {
           {student.email && (
             <a
               href={`mailto:${student.email}`}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium rounded-xl glass-card border-none text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium rounded-xl glass-card border-none text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
             >
               <Mail className="w-3.5 h-3.5 text-accent" />
               <span>Email</span>
@@ -373,7 +373,7 @@ export default function StudentDetailPage() {
           <button
             onClick={handleGenerateAiBrief}
             disabled={isGeneratingBrief}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-accent text-white hover:bg-accent/90 shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl bg-accent text-white hover:bg-accent/90 shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>{isGeneratingBrief ? 'Generating...' : 'AI Brief'}</span>
@@ -381,7 +381,7 @@ export default function StudentDetailPage() {
           
           <button
             onClick={() => setIsEditModalOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-2xs transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-2xs transition-colors cursor-pointer"
           >
             <Edit3 className="w-3.5 h-3.5" />
             <span>Edit Profile</span>
@@ -435,7 +435,7 @@ export default function StudentDetailPage() {
               <span>Learner Profile & Contacts</span>
             </h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
               {/* Email */}
               <div className="p-3 rounded-xl glass-surface border border-border-subtle space-y-1">
                 <span className="text-muted-foreground">Student Email</span>
@@ -507,7 +507,7 @@ export default function StudentDetailPage() {
             </div>
 
             {/* Academic Focus & Level */}
-            <div className="pt-3 border-t border-border-subtle grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <div className="pt-3 border-t border-border-subtle grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
               <div className="p-3.5 rounded-xl glass-surface border border-border-subtle space-y-1">
                 <span className="text-muted-foreground">Assessed Level</span>
                 <p className="font-medium text-foreground capitalize">
@@ -531,7 +531,7 @@ export default function StudentDetailPage() {
 
             {/* Profile General Notes */}
             {student.notes && (
-              <div className="p-3.5 rounded-xl glass-surface border border-border-subtle text-xs">
+              <div className="p-3.5 rounded-xl glass-surface border border-border-subtle text-sm">
                 <span className="text-muted-foreground block mb-1 font-medium">
                   General Profile Notes
                 </span>
@@ -550,7 +550,7 @@ export default function StudentDetailPage() {
                 <span>Next Scheduled Lesson</span>
               </h2>
               {next_lesson && (
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-secondary/30 text-primary border border-secondary/50 font-medium">
+                <span className="text-sm px-2.5 py-0.5 rounded-full bg-secondary/30 text-primary border border-secondary/50 font-medium">
                   Upcoming
                 </span>
               )}
@@ -563,12 +563,12 @@ export default function StudentDetailPage() {
                     <h3 className="text-sm font-semibold text-foreground">
                       {next_lesson.service_name || '1-on-1 Teaching Session'}
                     </h3>
-                    <p className="text-xs text-muted-foreground mt-0.5">
+                    <p className="text-sm text-muted-foreground mt-0.5">
                       Duration: {next_lesson.duration_minutes} minutes
                     </p>
                   </div>
                   <div className="text-right sm:text-right">
-                    <p className="text-xs font-semibold text-primary">
+                    <p className="text-sm font-semibold text-primary">
                       {student.timezone 
                         ? DateTime.fromISO(next_lesson.scheduled_start).setZone(student.timezone).toFormat('EEE, MMM d, yyyy • hh:mm a')
                         : DateTime.fromISO(next_lesson.scheduled_start).toFormat('EEE, MMM d, yyyy • hh:mm a')}
@@ -581,7 +581,7 @@ export default function StudentDetailPage() {
 
                 {next_lesson.zoom_join_url && (
                   <div className="pt-2 border-t border-border-subtle flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground flex items-center gap-1.5">
+                    <span className="text-sm text-muted-foreground flex items-center gap-1.5">
                       <Video className="w-3.5 h-3.5 text-accent" />
                       <span>Zoom classroom is active</span>
                     </span>
@@ -589,7 +589,7 @@ export default function StudentDetailPage() {
                       href={next_lesson.zoom_join_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors cursor-pointer"
                     >
                       <span>Join Zoom</span>
                       <ExternalLink className="w-3 h-3" />
@@ -600,7 +600,7 @@ export default function StudentDetailPage() {
             ) : (
               <div className="p-6 rounded-xl glass-surface border border-dashed border-border text-center">
                 <Clock className="w-8 h-8 text-muted-foreground mx-auto mb-2 opacity-50" />
-                <p className="text-xs font-medium text-muted-foreground">
+                <p className="text-sm font-medium text-muted-foreground">
                   No upcoming lesson scheduled
                 </p>
                 <p className="text-[11px] text-muted-foreground/80 mt-0.5">
@@ -627,7 +627,7 @@ export default function StudentDetailPage() {
                 )}
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
                 <div className="p-3 rounded-xl glass-surface border border-border-subtle">
                   <span className="text-muted-foreground block text-[11px]">Assessed Level</span>
                   <p className="font-semibold text-foreground mt-0.5 capitalize">
@@ -655,7 +655,7 @@ export default function StudentDetailPage() {
               </div>
 
               {trial_context.learning_plan_summary && (
-                <div className="p-3.5 rounded-xl glass-surface border border-border-subtle text-xs">
+                <div className="p-3.5 rounded-xl glass-surface border border-border-subtle text-sm">
                   <span className="text-muted-foreground block mb-1 font-medium">
                     Personalized Learning Plan Summary:
                   </span>
@@ -675,11 +675,11 @@ export default function StudentDetailPage() {
                   <BookOpen className="w-4 h-4 text-accent" />
                   <span>Lesson History & Attendance</span>
                 </h2>
-                <p className="text-xs text-muted-foreground mt-0.5">
+                <p className="text-sm text-muted-foreground mt-0.5">
                   Factual records of completed, pending, and scheduled lessons.
                 </p>
               </div>
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-success/15 text-success border border-success/30 font-medium">
+              <span className="text-sm px-2.5 py-0.5 rounded-full bg-success/15 text-success border border-success/30 font-medium">
                 {total_completed_lessons} Completed
               </span>
             </div>
@@ -687,18 +687,18 @@ export default function StudentDetailPage() {
             {bookings && bookings.length > 0 ? (
               <div className="divide-y divide-border-subtle">
                 {bookings.map(b => (
-                  <div key={b.id} className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                  <div key={b.id} className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-sm">
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-foreground">
                           {b.service_name || 'Teaching Lesson'}
                         </span>
                         {b.booking_type === 'trial' && (
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-accent/15 text-accent border border-accent/25 font-medium">
+                          <span className="text-[13px] px-2 py-0.5 rounded-full bg-accent/15 text-accent border border-accent/25 font-medium">
                             Free Trial
                           </span>
                         )}
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                        <span className={`text-[13px] px-2 py-0.5 rounded-full font-medium ${
                           b.status === 'completed'
                             ? 'bg-success/15 text-success border border-success/30'
                             : b.status === 'cancelled'
@@ -738,7 +738,7 @@ export default function StudentDetailPage() {
             ) : (
               <div className="p-6 rounded-xl glass-surface border border-dashed border-border text-center">
                 <Calendar className="w-8 h-8 text-muted-foreground mx-auto mb-2 opacity-50" />
-                <p className="text-xs font-medium text-muted-foreground">
+                <p className="text-sm font-medium text-muted-foreground">
                   No lesson records found for this student
                 </p>
               </div>
@@ -758,14 +758,14 @@ export default function StudentDetailPage() {
                 </h2>
               </div>
               {isSuperAdmin && (
-                <span className="text-[10px] px-2 py-0.5 rounded bg-secondary/30 text-accent border border-primary/25 font-bold uppercase tracking-wider">
+                <span className="text-[13px] px-2 py-0.5 rounded bg-secondary/30 text-accent border border-primary/25 font-bold uppercase tracking-wider">
                   Admin Control
                 </span>
               )}
             </div>
 
             {/* Current Assignment Status */}
-            <div className="p-3.5 rounded-xl glass-surface border border-border-subtle space-y-2 text-xs">
+            <div className="p-3.5 rounded-xl glass-surface border border-border-subtle space-y-2 text-sm">
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Assigned Teacher:</span>
                 <span className={`font-semibold ${student.assigned_teacher_name ? 'text-primary' : 'text-amber-600 dark:text-amber-400'}`}>
@@ -797,13 +797,13 @@ export default function StudentDetailPage() {
             {/* Super Admin Assignment Action Form */}
             {isSuperAdmin && (
               <form onSubmit={handleAssignTeacher} className="space-y-3 pt-2">
-                <label className="block text-xs font-semibold text-foreground">
+                <label className="block text-sm font-semibold text-foreground">
                   Change Faculty Assignment:
                 </label>
                 <select
                   value={selectedTeacherId}
                   onChange={(e) => setSelectedTeacherId(e.target.value)}
-                  className="w-full px-3 py-2 text-xs rounded-xl border border-border glass-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 text-sm rounded-xl border border-border glass-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="">-- Unassigned --</option>
                   {availableTeachers.map((t) => (
@@ -830,7 +830,7 @@ export default function StudentDetailPage() {
                 <button
                   type="submit"
                   disabled={isAssigningTeacher}
-                  className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
+                  className="w-full inline-flex items-center justify-center gap-1.5 px-3 py-2 text-sm font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
                 >
                   {isAssigningTeacher ? (
                     <RefreshCw className="w-3.5 h-3.5 animate-spin" />
@@ -853,7 +853,7 @@ export default function StudentDetailPage() {
                     Teacher Private Notes
                   </h2>
                 </div>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-warning/15 text-warning-foreground border border-warning/25 font-medium">
+                <span className="text-[13px] px-2 py-0.5 rounded bg-warning/15 text-warning-foreground border border-warning/25 font-medium">
                   Mahmoud Only
                 </span>
               </div>
@@ -865,7 +865,7 @@ export default function StudentDetailPage() {
             {/* Note Creation Box */}
             <form onSubmit={handleCreateNote} className="space-y-3 p-4 rounded-xl glass-surface border border-border-subtle">
               {noteFormError && (
-                <div className="p-2 rounded-lg bg-destructive/15 text-xs text-destructive border border-destructive/30">
+                <div className="p-2 rounded-lg bg-destructive/15 text-sm text-destructive border border-destructive/30">
                   {noteFormError}
                 </div>
               )}
@@ -879,7 +879,7 @@ export default function StudentDetailPage() {
                   onChange={e => setNewNoteContent(e.target.value)}
                   required
                   placeholder="Record lesson observations, Tajweed mastery, pronunciation notes..."
-                  className="w-full px-3 py-2 text-xs rounded-xl border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 text-sm rounded-xl border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
 
@@ -889,7 +889,7 @@ export default function StudentDetailPage() {
                   value={newNoteObservations}
                   onChange={e => setNewNoteObservations(e.target.value)}
                   placeholder="Specific observations (e.g. Needs practice on Noon Sakinah)"
-                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-1.5 text-sm rounded-lg border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
 
@@ -899,7 +899,7 @@ export default function StudentDetailPage() {
                   value={newNoteNextSteps}
                   onChange={e => setNewNoteNextSteps(e.target.value)}
                   placeholder="Next steps / homework assigned"
-                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-1.5 text-sm rounded-lg border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
 
@@ -907,7 +907,7 @@ export default function StudentDetailPage() {
                 <button
                   type="submit"
                   disabled={isSubmittingNote || !newNoteContent.trim()}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>{isSubmittingNote ? 'Saving...' : 'Save Private Note'}</span>
@@ -921,7 +921,7 @@ export default function StudentDetailPage() {
                 notes.map(note => (
                   <div
                     key={note.id}
-                    className="p-3.5 rounded-xl glass-card border-none-subtle shadow-2xs space-y-2 text-xs"
+                    className="p-3.5 rounded-xl glass-card border-none-subtle shadow-2xs space-y-2 text-sm"
                   >
                     {editingNoteId === note.id ? (
                       /* Inline Edit Mode */
@@ -930,21 +930,21 @@ export default function StudentDetailPage() {
                           rows={3}
                           value={editNoteContent}
                           onChange={e => setEditNoteContent(e.target.value)}
-                          className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-border glass-card text-foreground"
+                          className="w-full px-2.5 py-1.5 text-sm rounded-lg border border-border glass-card text-foreground"
                         />
                         <input
                           type="text"
                           value={editNoteObservations}
                           onChange={e => setEditNoteObservations(e.target.value)}
                           placeholder="Observations"
-                          className="w-full px-2.5 py-1 text-xs rounded-lg border border-border glass-card text-foreground"
+                          className="w-full px-2.5 py-1 text-sm rounded-lg border border-border glass-card text-foreground"
                         />
                         <input
                           type="text"
                           value={editNoteNextSteps}
                           onChange={e => setEditNoteNextSteps(e.target.value)}
                           placeholder="Next steps"
-                          className="w-full px-2.5 py-1 text-xs rounded-lg border border-border glass-card text-foreground"
+                          className="w-full px-2.5 py-1 text-sm rounded-lg border border-border glass-card text-foreground"
                         />
                         <div className="flex items-center justify-end gap-2 pt-1">
                           <button
@@ -1009,7 +1009,7 @@ export default function StudentDetailPage() {
               ) : (
                 <div className="p-6 rounded-xl glass-surface border border-dashed border-border text-center">
                   <FileText className="w-7 h-7 text-muted-foreground mx-auto mb-1.5 opacity-50" />
-                  <p className="text-xs font-medium text-muted-foreground">
+                  <p className="text-sm font-medium text-muted-foreground">
                     No private notes recorded yet
                   </p>
                   <p className="text-[11px] text-muted-foreground/80 mt-0.5">

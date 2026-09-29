@@ -26,10 +26,10 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
           transition={{ duration: 0.5 }}
           className="max-w-3xl mb-16"
         >
-          <div className="text-xs uppercase tracking-widest text-primary font-semibold mb-3">
+          <div className="text-sm uppercase tracking-widest text-primary font-semibold mb-3">
             {isEn ? 'About Ustadh Mahmoud' : ARABIC_TRANSLATIONS.about.sectionTag}
           </div>
-          <h2 className="font-display text-3xl sm:text-4xl text-foreground tracking-tight mb-4">
+          <h2 className="font-display text-3xl sm:text-4xl text-foreground  mb-4">
             {isEn ? 'A dedicated teacher, committed to human connection.' : ARABIC_TRANSLATIONS.about.title}
           </h2>
           <p className="text-base text-muted-foreground leading-relaxed">
@@ -85,11 +85,11 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
             {/* Clear Standards: What You Can Count On vs Teaching Commitments */}
             <div className="pt-6 grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="p-6 rounded-xl glass-card border-none shadow-2xs">
-                <div className="flex items-center gap-2 text-primary font-semibold text-xs uppercase tracking-wider mb-3">
+                <div className="flex items-center gap-2 text-primary font-semibold text-sm uppercase tracking-wider mb-3">
                   <Check className="w-4 h-4 text-accent" />
                   <span>{isEn ? 'What You Can Count On' : ARABIC_TRANSLATIONS.about.whatIAm}</span>
                 </div>
-                <ul className="space-y-2.5 text-xs sm:text-sm text-muted-foreground">
+                <ul className="space-y-2.5 text-sm sm:text-sm text-muted-foreground">
                   <li className="flex items-start gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0" />
                     <span>{isEn ? 'Patient, judgment-free pace adapted to your level' : 'صبر كامل وتدرج يناسب قدرتك'}</span>
@@ -106,11 +106,11 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
               </div>
 
               <div className="p-6 rounded-xl glass-card border-none shadow-2xs">
-                <div className="flex items-center gap-2 text-primary font-semibold text-xs uppercase tracking-wider mb-3">
+                <div className="flex items-center gap-2 text-primary font-semibold text-sm uppercase tracking-wider mb-3">
                   <Shield className="w-4 h-4 text-accent" />
                   <span>{isEn ? 'My Teaching Commitments' : 'ثوابت التدريس المعتمدة'}</span>
                 </div>
-                <ul className="space-y-2.5 text-xs sm:text-sm text-muted-foreground">
+                <ul className="space-y-2.5 text-sm sm:text-sm text-muted-foreground">
                   <li className="flex items-start gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0" />
                     <span>{isEn ? 'Solid fundamentals before rushing into advanced rules' : 'ترسيخ الأساسيات أولاً قبل التعجل'}</span>
@@ -150,15 +150,15 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
                         <span className="font-display text-lg font-bold text-foreground">
                           {point.metric}
                         </span>
-                        <span className="text-xs font-semibold text-primary">
+                        <span className="text-sm font-semibold text-primary">
                           {point.unit}
                         </span>
-                        <span className="text-xs text-muted-foreground/50">•</span>
-                        <span className="text-xs font-medium text-foreground/80">
+                        <span className="text-sm text-muted-foreground/50">•</span>
+                        <span className="text-sm font-medium text-foreground/80">
                           {point.label}
                         </span>
                       </div>
-                      <p className="text-xs text-muted-foreground mt-0.5">
+                      <p className="text-sm text-muted-foreground mt-0.5">
                         {point.description}
                       </p>
                     </div>
@@ -168,7 +168,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
             </div>
 
             {/* Timezone Note */}
-            <div className="p-4 rounded-xl glass-card border-none flex items-center gap-3 text-xs text-muted-foreground shadow-2xs">
+            <div className="p-4 rounded-xl glass-card border-none flex items-center gap-3 text-sm text-muted-foreground shadow-2xs">
               <Clock className="w-4 h-4 text-accent shrink-0" />
               <span>
                 {isEn

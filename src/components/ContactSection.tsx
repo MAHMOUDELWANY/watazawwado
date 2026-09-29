@@ -69,10 +69,10 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
           transition={{ duration: 0.5 }}
           className="max-w-3xl mb-16"
         >
-          <div className="text-xs uppercase tracking-widest text-primary font-semibold mb-3">
+          <div className="text-sm uppercase tracking-widest text-primary font-semibold mb-3">
             {isEn ? 'Direct Communication' : ARABIC_TRANSLATIONS.nav.contact}
           </div>
-          <h2 className="font-display text-3xl sm:text-4xl text-foreground tracking-tight mb-4">
+          <h2 className="font-display text-3xl sm:text-4xl text-foreground  mb-4">
             {isEn ? 'Reach Mahmoud directly.' : 'تواصل مع محمود مباشرة.'}
           </h2>
           <p className="text-base text-muted-foreground leading-relaxed">
@@ -98,13 +98,13 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
                   <h3 className="font-display text-lg font-medium text-foreground">
                     WhatsApp Direct
                   </h3>
-                  <p className="text-xs text-primary font-medium">
+                  <p className="text-sm text-primary font-medium">
                     {isEn ? 'Fastest response • Usually within hours' : 'الرد الأسرع • خلال ساعات قليلة'}
                   </p>
                 </div>
               </div>
 
-              <p className="text-xs sm:text-sm text-muted-foreground mb-6 leading-relaxed">
+              <p className="text-sm sm:text-sm text-muted-foreground mb-6 leading-relaxed">
                 {isEn
                   ? 'Message Mahmoud directly to ask about your level, schedule compatibility, or lesson format.'
                   : 'تحدث مع محمود مباشرة للسؤال عن التوقيت، مستواك، أو تفاصيل الدروس.'}
@@ -114,7 +114,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
                 href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I would like to ask about your 1-on-1 lessons.')}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-medium text-sm shadow-xs hover:shadow-md transition-all"
+                className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl btn-primary-material text-primary-foreground font-medium text-sm shadow-xs hover:shadow-md transition-all"
               >
                 <MessageCircle className="w-4 h-4" />
                 <span>{isEn ? 'Open WhatsApp Chat' : 'فتح محادثة واتساب'}</span>
@@ -129,21 +129,21 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
                   {isEn ? 'Email Correspondence' : 'المراسلة عبر البريد الإلكتروني'}
                 </h4>
               </div>
-              <p className="text-xs text-muted-foreground mb-3">
+              <p className="text-sm text-muted-foreground mb-3">
                 {isEn
                   ? 'Ideal for detailed inquiries or institutional requests.'
                   : 'مناسب للاستفسارات المفصلة أو متطلبات العائلات.'}
               </p>
               <a
                 href="mailto:mhmwdlwany4222@gmail.com"
-                className="text-xs sm:text-sm font-mono text-primary hover:underline"
+                className="text-sm sm:text-sm font-mono text-primary hover:underline"
               >
                 mhmwdlwany4222@gmail.com
               </a>
             </div>
 
             {/* Policy Recap */}
-            <div className="p-5 rounded-xl glass-card border-none text-xs text-muted-foreground space-y-2">
+            <div className="p-5 rounded-xl glass-card border-none text-sm text-muted-foreground space-y-2">
               <div className="flex items-center gap-2 font-semibold text-foreground">
                 <Clock className="w-4 h-4 text-accent" />
                 <span>{isEn ? 'Core Scheduling Policy' : 'سياسة المواعيد الأساسية'}</span>
@@ -174,7 +174,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
                 </p>
                 <button
                   onClick={() => setFormSubmitted(false)}
-                  className="text-xs text-primary hover:underline font-medium mt-4 cursor-pointer"
+                  className="text-sm text-primary hover:underline font-medium mt-4 cursor-pointer"
                 >
                   {isEn ? 'Send another inquiry' : 'إرسال استفسار آخر'}
                 </button>
@@ -184,7 +184,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
                 <h3 className="font-display text-xl font-medium text-foreground mb-2">
                   {isEn ? 'Send an Inquiry' : 'أرسل استفسارك'}
                 </h3>
-                <p className="text-xs text-muted-foreground mb-6">
+                <p className="text-sm text-muted-foreground mb-6">
                   {isEn
                     ? 'Fill out this brief form and Mahmoud will personally get in touch.'
                     : 'املأ هذه البيانات البسيطة وسيتواصل معك محمود شخصياً.'}
@@ -192,7 +192,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+                    <label className="block text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
                       {isEn ? 'Your Name / Student Name' : 'اسمك / اسم الطالب'} *
                     </label>
                     <input
@@ -206,7 +206,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+                    <label className="block text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
                       {isEn ? 'Email Address' : 'البريد الإلكتروني'} *
                     </label>
                     <input
@@ -222,7 +222,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+                    <label className="block text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
                       {isEn ? 'WhatsApp Number (Optional)' : 'رقم الواتساب (اختياري)'}
                     </label>
                     <input
@@ -235,7 +235,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+                    <label className="block text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
                       {isEn ? 'Primary Learning Interest' : 'المجال الذي ترغب بتعلمه'}
                     </label>
                     <select
@@ -255,7 +255,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+                  <label className="block text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
                     {isEn ? 'Message or Any Specific Questions' : 'رسالتك أو أي تفاصيل ترغب بمشاركتها'} *
                   </label>
                   <textarea
@@ -273,7 +273,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
                 </div>
 
                 {formError && (
-                  <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/30 text-xs text-destructive">
+                  <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/30 text-sm text-destructive">
                     {formError}
                   </div>
                 )}
@@ -281,7 +281,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full py-3.5 px-6 rounded-xl bg-primary hover:bg-primary-hover disabled:opacity-60 disabled:cursor-not-allowed text-primary-foreground font-medium text-sm shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-3.5 px-6 rounded-xl btn-primary-material disabled:opacity-60 disabled:cursor-not-allowed text-primary-foreground font-medium text-sm shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Send className={`w-4 h-4 ${submitting ? 'animate-pulse' : ''}`} />
                   <span>

@@ -53,7 +53,7 @@ export function LearningPage() {
 
                 <div className="grid sm:grid-cols-2 gap-6">
                   {pillar.services.map((service) => (
-                    <div key={service.id} className="bg-surface-warm p-6 rounded-lg border border-border-subtle group">
+                    <div key={service.id} className="glass-card p-6 rounded-lg border border-border-subtle group">
                       <h3 className="font-medium text-foreground mb-2 group-hover:text-primary transition-colors">
                         {service.name}
                       </h3>
@@ -62,7 +62,7 @@ export function LearningPage() {
                       </p>
                       <button 
                         onClick={() => onOpenTrialModal(service.id)}
-                        className="text-xs font-medium text-primary hover:text-primary-hover flex items-center gap-1 transition-colors"
+                        className="text-sm font-medium text-primary hover:text-primary-hover flex items-center gap-1 transition-colors"
                       >
                         {isEn ? 'Discuss in trial lesson' : 'ناقش هذا المسار في الجلسة التجريبية'}
                         <span className="rtl:rotate-180">→</span>

@@ -53,7 +53,7 @@ export const MarqueeTicker: React.FC<MarqueeTickerProps> = ({ lang }) => {
           return (
             <div
               key={idx}
-              className="flex items-center gap-2.5 mx-4 sm:mx-6 px-3.5 py-1.5 rounded-full glass-surface border border-border text-xs sm:text-sm font-medium text-foreground whitespace-nowrap"
+              className="flex items-center gap-2.5 mx-4 sm:mx-6 px-3.5 py-1.5 rounded-full glass-surface border border-border text-sm sm:text-sm font-medium text-foreground whitespace-nowrap"
             >
               <Icon className="w-3.5 h-3.5 text-accent shrink-0" />
               <span>{item.text}</span>

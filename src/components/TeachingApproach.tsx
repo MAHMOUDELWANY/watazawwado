@@ -25,10 +25,10 @@ export const TeachingApproach: React.FC<TeachingApproachProps> = ({ lang }) => {
           transition={{ duration: 0.5 }}
           className="max-w-3xl mb-16"
         >
-          <div className="text-xs uppercase tracking-widest text-primary font-semibold mb-3">
+          <div className="text-sm uppercase tracking-widest text-primary font-semibold mb-3">
             {isEn ? 'Teaching Philosophy' : 'منهجية التعليم'}
           </div>
-          <h2 className="font-display text-3xl sm:text-4xl text-foreground tracking-tight mb-4">
+          <h2 className="font-display text-3xl sm:text-4xl text-foreground  mb-4">
             {isEn
               ? 'Personalized teaching adapted to your level, pace, and life.'
               : 'تعليم شخصي يتكيف مع مستواك، سرعتك، وتفاصيل حياتك.'}
@@ -63,7 +63,7 @@ export const TeachingApproach: React.FC<TeachingApproachProps> = ({ lang }) => {
                 </p>
               </div>
 
-              <div className="mt-8 pt-4 border-t border-border text-xs text-primary font-medium tracking-wider uppercase flex items-center justify-between">
+              <div className="mt-8 pt-4 border-t border-border text-sm text-primary font-medium tracking-wider uppercase flex items-center justify-between">
                 <span>{isEn ? `Foundational Pillar 0${index + 1}` : `الركن التعليمي ٠${index + 1}`}</span>
                 <span className="w-1.5 h-1.5 rounded-full bg-primary" />
               </div>

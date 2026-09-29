@@ -59,7 +59,7 @@ export default function OverviewPage() {
         <p className="font-medium text-sm">{error || 'Unable to load platform snapshot.'}</p>
         <button
           onClick={() => fetchOverview(true)}
-          className="mt-4 px-4 py-2 bg-destructive/20 hover:bg-destructive/30 rounded-xl text-xs font-semibold transition-colors"
+          className="mt-4 px-4 py-2 bg-destructive/20 hover:bg-destructive/30 rounded-xl text-sm font-semibold transition-colors"
         >
           Retry
         </button>
@@ -73,21 +73,21 @@ export default function OverviewPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-secondary/30 text-primary border border-secondary/50">
+            <span className="px-2 py-0.5 rounded text-[13px] font-bold uppercase tracking-wider bg-secondary/30 text-primary border border-secondary/50">
               Super Admin
             </span>
-            <h1 className="text-2xl sm:text-3xl font-display font-bold tracking-tight text-foreground">
+            <h1 className="text-2xl sm:text-3xl font-display font-bold  text-foreground">
               Platform Overview
             </h1>
           </div>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+          <p className="text-sm sm:text-sm text-muted-foreground mt-1">
             Authoritative snapshot of students, teachers, teaching operations, and assignments.
           </p>
         </div>
         <button
           onClick={() => fetchOverview(true)}
           disabled={refreshing}
-          className="self-start sm:self-auto flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold glass-card hover:bg-surface-subtle border border-border text-foreground transition-colors cursor-pointer"
+          className="self-start sm:self-auto flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold glass-card hover:bg-surface-subtle border border-border text-foreground transition-colors cursor-pointer"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
           <span>Refresh</span>
@@ -101,7 +101,7 @@ export default function OverviewPage() {
             <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 flex items-start gap-3">
               <UserPlus className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold text-amber-900 dark:text-amber-200">
+                <p className="text-sm font-semibold text-amber-900 dark:text-amber-200">
                   {metrics.unassigned_students} Unassigned Student{metrics.unassigned_students > 1 ? 's' : ''}
                 </p>
                 <p className="text-[11px] text-amber-700/80 dark:text-amber-300/80 mt-0.5">
@@ -121,7 +121,7 @@ export default function OverviewPage() {
             <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold text-red-900 dark:text-red-200">
+                <p className="text-sm font-semibold text-red-900 dark:text-red-200">
                   {metrics.students_needing_attention} Attention Item{metrics.students_needing_attention > 1 ? 's' : ''}
                 </p>
                 <p className="text-[11px] text-red-700/80 dark:text-red-300/80 mt-0.5">
@@ -141,7 +141,7 @@ export default function OverviewPage() {
             <div className="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-4 flex items-start gap-3">
               <CreditCard className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold text-blue-900 dark:text-blue-200">
+                <p className="text-sm font-semibold text-blue-900 dark:text-blue-200">
                   {metrics.pending_payments} Pending Payment{metrics.pending_payments > 1 ? 's' : ''}
                 </p>
                 <p className="text-[11px] text-blue-700/80 dark:text-blue-300/80 mt-0.5">
@@ -163,7 +163,7 @@ export default function OverviewPage() {
       <div className="glass-card border-none rounded-2xl shadow-sm grid grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x rtl:sm:divide-x-reverse divide-border overflow-hidden">
         <div className="p-6">
           <div className="flex items-center justify-between text-muted-foreground mb-3">
-            <span className="text-xs font-semibold uppercase tracking-wider">Active Students</span>
+            <span className="text-sm font-semibold uppercase tracking-wider">Active Students</span>
             <Users className="w-4 h-4 text-accent" />
           </div>
           <p className="text-2xl sm:text-3xl font-display font-bold text-foreground">
@@ -176,7 +176,7 @@ export default function OverviewPage() {
         </div>
         <div className="p-6">
           <div className="flex items-center justify-between text-muted-foreground mb-3">
-            <span className="text-xs font-semibold uppercase tracking-wider">Active Teachers</span>
+            <span className="text-sm font-semibold uppercase tracking-wider">Active Teachers</span>
             <ShieldCheck className="w-4 h-4 text-accent" />
           </div>
           <p className="text-2xl sm:text-3xl font-display font-bold text-foreground">
@@ -190,7 +190,7 @@ export default function OverviewPage() {
         </div>
         <div className="p-6">
           <div className="flex items-center justify-between text-muted-foreground mb-3">
-            <span className="text-xs font-semibold uppercase tracking-wider">Lessons Today</span>
+            <span className="text-sm font-semibold uppercase tracking-wider">Lessons Today</span>
             <Clock className="w-4 h-4 text-accent" />
           </div>
           <p className="text-2xl sm:text-3xl font-display font-bold text-foreground">
@@ -202,7 +202,7 @@ export default function OverviewPage() {
         </div>
         <div className="p-6">
           <div className="flex items-center justify-between text-muted-foreground mb-3">
-            <span className="text-xs font-semibold uppercase tracking-wider">Upcoming Trials</span>
+            <span className="text-sm font-semibold uppercase tracking-wider">Upcoming Trials</span>
             <Sparkles className="w-4 h-4 text-accent" />
           </div>
           <p className="text-2xl sm:text-3xl font-display font-bold text-foreground">
@@ -221,22 +221,22 @@ export default function OverviewPage() {
             <h2 className="text-base font-display font-semibold text-foreground">
               Faculty Workload & Assignment Distribution
             </h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
+            <p className="text-sm text-muted-foreground mt-0.5">
               Current teaching allocation per authorized faculty member.
             </p>
           </div>
           <Link
             to="/dashboard/teachers"
-            className="text-xs font-semibold text-primary hover:underline"
+            className="text-sm font-semibold text-primary hover:underline"
           >
             View all teachers →
           </Link>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
+          <table className="w-full text-left text-sm border-collapse">
             <thead>
-              <tr className="border-b border-border text-muted-foreground uppercase tracking-wider text-[10px]">
+              <tr className="border-b border-border text-muted-foreground uppercase tracking-wider text-[13px]">
                 <th className="py-2.5 px-3">Teacher</th>
                 <th className="py-2.5 px-3">Role</th>
                 <th className="py-2.5 px-3 text-center">Active Students</th>
@@ -252,7 +252,7 @@ export default function OverviewPage() {
                     <div className="text-[11px] text-muted-foreground">{t.email}</div>
                   </td>
                   <td className="py-3 px-3">
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider ${
+                    <span className={`px-2 py-0.5 rounded text-[13px] font-semibold uppercase tracking-wider ${
                       t.role === 'super_admin' ? 'bg-secondary/30 text-primary' : 'bg-muted text-muted-foreground'
                     }`}>
                       {t.role === 'super_admin' ? 'Super Admin' : 'Teacher'}
@@ -267,7 +267,7 @@ export default function OverviewPage() {
                   <td className="py-3 px-3 text-right">
                     <Link
                       to={`/dashboard/students?teacher=${encodeURIComponent(t.email)}`}
-                      className="text-xs font-semibold text-primary hover:underline"
+                      className="text-sm font-semibold text-primary hover:underline"
                     >
                       View students
                     </Link>

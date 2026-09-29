@@ -178,7 +178,7 @@ export function AssignTeacherModal({
                 Assign / Change Teacher
               </h2>
             </div>
-            <p className="text-xs text-muted-foreground mt-0.5">
+            <p className="text-sm text-muted-foreground mt-0.5">
               Manage instructor assignment and gender preferences for this learner.
             </p>
           </div>
@@ -194,7 +194,7 @@ export function AssignTeacherModal({
         {/* Modal Form */}
         <form onSubmit={handleSave} className="p-6 space-y-6">
           {error && (
-            <div className="p-3.5 rounded-xl bg-destructive/10 border border-destructive/20 text-xs text-destructive flex items-start gap-2.5">
+            <div className="p-3.5 rounded-xl bg-destructive/10 border border-destructive/20 text-sm text-destructive flex items-start gap-2.5">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
@@ -212,16 +212,16 @@ export function AssignTeacherModal({
                     {student.name}
                   </span>
                   {student.learner_type === 'child' ? (
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-accent/15 text-accent border border-accent/25 font-medium">
+                    <span className="text-[13px] px-2 py-0.5 rounded-full bg-accent/15 text-accent border border-accent/25 font-medium">
                       Child {student.parent_name ? `(${student.parent_name})` : ''}
                     </span>
                   ) : (
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-secondary/30 text-primary border border-secondary/50 font-medium">
+                    <span className="text-[13px] px-2 py-0.5 rounded-full bg-secondary/30 text-primary border border-secondary/50 font-medium">
                       Adult
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   {student.email || 'No email associated'}
                 </p>
               </div>
@@ -262,23 +262,23 @@ export function AssignTeacherModal({
               </span>
               <div className="flex items-center gap-2 pt-0.5">
                 {computedStatus === 'assigned' ? (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-success/15 text-success border border-success/30">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-semibold bg-success/15 text-success border border-success/30">
                     <CheckCircle2 className="w-3.5 h-3.5" />
                     <span>Assigned</span>
                   </span>
                 ) : computedStatus === 'preference_mismatch' ? (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-warning/15 text-warning-foreground border border-warning/30">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-semibold bg-warning/15 text-warning-foreground border border-warning/30">
                     <AlertTriangle className="w-3.5 h-3.5 text-warning" />
                     <span>Preference Mismatch</span>
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-warning/15 text-warning-foreground border border-warning/30">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-semibold bg-warning/15 text-warning-foreground border border-warning/30">
                     <AlertCircle className="w-3.5 h-3.5" />
                     <span>Unassigned</span>
                   </span>
                 )}
               </div>
-              <p className="text-[10px] text-muted-foreground mt-0.5">
+              <p className="text-[13px] text-muted-foreground mt-0.5">
                 {computedStatus === 'assigned'
                   ? 'Active dedicated instructor assigned.'
                   : computedStatus === 'preference_mismatch'
@@ -291,9 +291,9 @@ export function AssignTeacherModal({
           {/* 3. Preferred Teacher Gender Selector */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+              <label className="text-sm font-semibold text-foreground flex items-center gap-1.5">
                 <span>Preferred Teacher Gender</span>
-                <span className="text-[10px] text-muted-foreground font-normal">
+                <span className="text-[13px] text-muted-foreground font-normal">
                   (Learner Preference)
                 </span>
               </label>
@@ -306,7 +306,7 @@ export function AssignTeacherModal({
               <button
                 type="button"
                 onClick={() => setPreferredGender('male')}
-                className={`p-3 rounded-xl border text-xs font-medium transition-all flex flex-col items-center gap-1 cursor-pointer ${
+                className={`p-3 rounded-xl border text-sm font-medium transition-all flex flex-col items-center gap-1 cursor-pointer ${
                   preferredGender === 'male'
                     ? 'border-primary bg-secondary/30 text-primary font-semibold shadow-2xs'
                     : 'border-border glass-card hover:bg-surface-subtle text-muted-foreground'
@@ -319,7 +319,7 @@ export function AssignTeacherModal({
               <button
                 type="button"
                 onClick={() => setPreferredGender('female')}
-                className={`p-3 rounded-xl border text-xs font-medium transition-all flex flex-col items-center gap-1 cursor-pointer ${
+                className={`p-3 rounded-xl border text-sm font-medium transition-all flex flex-col items-center gap-1 cursor-pointer ${
                   preferredGender === 'female'
                     ? 'border-accent bg-accent/15 text-accent font-semibold shadow-2xs'
                     : 'border-border glass-card hover:bg-surface-subtle text-muted-foreground'
@@ -332,7 +332,7 @@ export function AssignTeacherModal({
               <button
                 type="button"
                 onClick={() => setPreferredGender('any')}
-                className={`p-3 rounded-xl border text-xs font-medium transition-all flex flex-col items-center gap-1 cursor-pointer ${
+                className={`p-3 rounded-xl border text-sm font-medium transition-all flex flex-col items-center gap-1 cursor-pointer ${
                   preferredGender === 'any'
                     ? 'border-primary/50 glass-surface text-foreground font-semibold shadow-2xs'
                     : 'border-border glass-card hover:bg-surface-subtle text-muted-foreground'
@@ -349,10 +349,10 @@ export function AssignTeacherModal({
 
           {/* 4. Teacher Selection Radio Cards */}
           <div className="space-y-2">
-            <label className="text-xs font-semibold text-foreground flex items-center justify-between">
+            <label className="text-sm font-semibold text-foreground flex items-center justify-between">
               <span>Select Assigned Teacher</span>
               {loadingTeachers && (
-                <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                <span className="text-[13px] text-muted-foreground flex items-center gap-1">
                   <Loader2 className="w-3 h-3 animate-spin" />
                   Loading staff...
                 </span>
@@ -362,7 +362,7 @@ export function AssignTeacherModal({
             <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
               {/* Unassigned Option */}
               <label
-                className={`p-3 rounded-xl border flex items-center justify-between text-xs cursor-pointer transition-all ${
+                className={`p-3 rounded-xl border flex items-center justify-between text-sm cursor-pointer transition-all ${
                   !selectedTeacherEmail
                     ? 'border-warning/60 bg-warning/5 text-foreground shadow-2xs'
                     : 'border-border glass-card hover:bg-surface-subtle text-muted-foreground'
@@ -385,7 +385,7 @@ export function AssignTeacherModal({
                     </p>
                   </div>
                 </div>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-warning/15 text-warning-foreground border border-warning/30 font-medium">
+                <span className="text-[13px] px-2 py-0.5 rounded-full bg-warning/15 text-warning-foreground border border-warning/30 font-medium">
                   None
                 </span>
               </label>
@@ -398,7 +398,7 @@ export function AssignTeacherModal({
                 return (
                   <label
                     key={teacher.email}
-                    className={`p-3 rounded-xl border flex items-center justify-between text-xs cursor-pointer transition-all ${
+                    className={`p-3 rounded-xl border flex items-center justify-between text-sm cursor-pointer transition-all ${
                       isSelected
                         ? 'border-primary bg-secondary/30 text-foreground shadow-2xs'
                         : 'border-border glass-card hover:bg-surface-subtle text-muted-foreground'
@@ -417,10 +417,10 @@ export function AssignTeacherModal({
                           <span className="font-semibold text-foreground">
                             {teacher.display_name}
                           </span>
-                          <span className="text-[10px] px-1.5 py-0.5 rounded glass-surface border border-border-subtle text-muted-foreground">
+                          <span className="text-[13px] px-1.5 py-0.5 rounded glass-surface border border-border-subtle text-muted-foreground">
                             {teacher.role === 'super_admin' ? 'Super Admin' : 'Teacher'}
                           </span>
-                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary/30 text-primary border border-secondary/50">
+                          <span className="text-[13px] px-1.5 py-0.5 rounded bg-secondary/30 text-primary border border-secondary/50">
                             {teacher.gender === 'female' ? 'Female' : 'Male'}
                           </span>
                         </div>
@@ -432,7 +432,7 @@ export function AssignTeacherModal({
 
                     <div className="text-right">
                       {preferredGender !== 'any' && (
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                        <span className={`text-[13px] px-2 py-0.5 rounded-full font-medium ${
                           isGenderMatch
                             ? 'bg-success/15 text-success border border-success/30'
                             : 'bg-warning/15 text-warning-foreground border border-warning/30'
@@ -449,7 +449,7 @@ export function AssignTeacherModal({
 
           {/* Mismatch Warning Alert (if any) */}
           {computedStatus === 'preference_mismatch' && (
-            <div className="p-3.5 rounded-xl bg-warning/10 border border-warning/30 text-xs text-warning-foreground flex items-start gap-2.5">
+            <div className="p-3.5 rounded-xl bg-warning/10 border border-warning/30 text-sm text-warning-foreground flex items-start gap-2.5">
               <AlertTriangle className="w-4 h-4 text-warning shrink-0 mt-0.5" />
               <div>
                 <strong className="font-semibold block">Gender Preference Note</strong>
@@ -466,7 +466,7 @@ export function AssignTeacherModal({
               type="button"
               onClick={onClose}
               disabled={saving}
-              className="px-4 py-2 text-xs font-medium rounded-xl border border-border text-foreground hover:bg-surface-subtle transition-colors cursor-pointer disabled:opacity-50"
+              className="px-4 py-2 text-sm font-medium rounded-xl border border-border text-foreground hover:bg-surface-subtle transition-colors cursor-pointer disabled:opacity-50"
             >
               Cancel
             </button>
@@ -474,7 +474,7 @@ export function AssignTeacherModal({
             <button
               type="submit"
               disabled={saving}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
             >
               {saving ? (
                 <>

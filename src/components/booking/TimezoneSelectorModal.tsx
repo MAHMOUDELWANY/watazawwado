@@ -68,7 +68,7 @@ export const TimezoneSelectorModal: React.FC<TimezoneSelectorModalProps> = ({
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={isEn ? 'Search city or timezone (e.g. Toronto, London)...' : 'ابحث عن مدينة أو منطقة زمنية...'}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-border bg-background text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-border bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
             </div>
@@ -91,7 +91,7 @@ export const TimezoneSelectorModal: React.FC<TimezoneSelectorModalProps> = ({
                     }`}
                   >
                     <div>
-                      <div className="text-xs font-medium">{tz.label}</div>
+                      <div className="text-sm font-medium">{tz.label}</div>
                       <div className={`text-[11px] ${isSelected ? 'text-white/80' : 'text-foreground/60 dark:text-border/60'}`}>
                         {tz.city} • {tz.offset}
                       </div>

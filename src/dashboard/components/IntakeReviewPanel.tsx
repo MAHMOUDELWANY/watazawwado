@@ -220,14 +220,14 @@ export default function IntakeReviewPanel({ lang, apiFetch }: IntakeReviewPanelP
                       <Sparkles className="w-4 h-4" /> {i.service_category || '—'}
                     </span>
                     {i.teacher_review_required && (
-                      <span className="inline-flex items-center gap-1 text-warning text-xs">
+                      <span className="inline-flex items-center gap-1 text-warning text-sm">
                         <AlertTriangle className="w-3.5 h-3.5" /> {c.review}
                       </span>
                     )}
                   </div>
                   <p className="text-foreground font-medium mt-1 truncate">{p.subject || p.learning_goal || 'Student'}</p>
                   <p className="text-muted-foreground text-sm mt-1 truncate">{p.learning_goal || ''}</p>
-                  <p className="text-xs text-muted-foreground mt-2">
+                  <p className="text-sm text-muted-foreground mt-2">
                     {rec.recommended_price_usd != null
                       ? `$${rec.recommended_price_usd} · ${rec.duration_minutes}min · ${rec.tier}`
                       : `— · ${rec.baseline_price_usd ? `$${rec.baseline_price_usd}` : ''} · ${rec.tier || ''}`}
@@ -248,12 +248,12 @@ export default function IntakeReviewPanel({ lang, apiFetch }: IntakeReviewPanelP
                 <Brief profile={selected.learning_profile || {}} c={c} />
 
                 <h3 className="font-semibold text-foreground mt-4 mb-2">{c.assessment}</h3>
-                <pre className="text-xs bg-muted rounded-lg p-3 overflow-auto whitespace-pre-wrap">
+                <pre className="text-sm bg-muted rounded-lg p-3 overflow-auto whitespace-pre-wrap">
 {JSON.stringify(selected.assessment || {}, null, 2)}
                 </pre>
 
                 <h3 className="font-semibold text-foreground mt-4 mb-2">{c.recommendation}</h3>
-                <pre className="text-xs bg-muted rounded-lg p-3 overflow-auto whitespace-pre-wrap">
+                <pre className="text-sm bg-muted rounded-lg p-3 overflow-auto whitespace-pre-wrap">
 {JSON.stringify(selected.pricing_recommendation || {}, null, 2)}
                 </pre>
 
@@ -291,7 +291,7 @@ export default function IntakeReviewPanel({ lang, apiFetch }: IntakeReviewPanelP
                     </span>
                   </div>
                   {selected.offer && !selected.offer.purchasable && (
-                    <p className="text-xs text-muted-foreground pt-1">{c.purchaseDeferredNote}</p>
+                    <p className="text-sm text-muted-foreground pt-1">{c.purchaseDeferredNote}</p>
                   )}
                 </div>
 
@@ -374,7 +374,7 @@ function Brief({ profile, c }: { profile: any; c: any }) {
     <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm">
       {rows.map(([k, v]) => (
         <div key={k}>
-          <dt className="text-xs text-muted-foreground">{k}</dt>
+          <dt className="text-sm text-muted-foreground">{k}</dt>
           <dd className="text-foreground">{v}</dd>
         </div>
       ))}

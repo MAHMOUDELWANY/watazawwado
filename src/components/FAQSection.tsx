@@ -31,10 +31,10 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ lang }) => {
           transition={{ duration: 0.5 }}
           className="text-center max-w-2xl mx-auto mb-16"
         >
-          <div className="text-xs uppercase tracking-widest text-primary font-semibold mb-3">
+          <div className="text-sm uppercase tracking-widest text-primary font-semibold mb-3">
             {isEn ? 'Practical Questions' : ARABIC_TRANSLATIONS.nav.faqs}
           </div>
-          <h2 className="font-display text-3xl sm:text-4xl text-foreground tracking-tight mb-4">
+          <h2 className="font-display text-3xl sm:text-4xl text-foreground  mb-4">
             {isEn ? 'Clear answers to common questions.' : 'إجابات واضحة لأهم التساؤلات الشائعة.'}
           </h2>
           <p className="text-base text-muted-foreground leading-relaxed">

@@ -285,7 +285,7 @@ export default function StudentProfilePage({
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] gap-3 text-primary">
         <Loader2 className="w-8 h-8 animate-spin" />
-        <p className="text-xs sm:text-sm text-muted-foreground">
+        <p className="text-sm sm:text-sm text-muted-foreground">
           {isAr ? 'جارٍ تحميل بيانات الطالب...' : 'Loading student profile...'}
         </p>
       </div>
@@ -308,20 +308,20 @@ export default function StudentProfilePage({
               </BrandFrame>
           <div className="min-w-0">
             <div className="flex items-center gap-2.5 flex-wrap">
-              <h1 className="text-lg sm:text-xl font-display font-bold text-foreground tracking-tight truncate">
+              <h1 className="text-lg sm:text-xl font-display font-bold text-foreground  truncate">
                 {profile?.name || user?.email?.split('@')[0] || (isAr ? 'طالب' : 'Student')}
               </h1>
-              <Badge variant="secondary" className="text-xs px-2.5 py-0.5">
+              <Badge variant="secondary" className="text-sm px-2.5 py-0.5">
                 {bookingPreference === 'child'
                   ? (isAr ? 'حساب ولي أمر' : 'Parent Account')
                   : (isAr ? 'طالب' : 'Student')}
               </Badge>
             </div>
-            <p className="text-xs text-muted-foreground mt-0.5 truncate font-mono">
+            <p className="text-sm text-muted-foreground mt-0.5 truncate font-mono">
               {profile?.email || user?.email}
             </p>
             {formattedMemberSince && (
-              <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1.5">
+              <p className="text-sm text-muted-foreground mt-1 flex items-center gap-1.5">
                 <span>{isAr ? 'تاريخ الانضمام:' : 'Member since:'}</span>
                 <span className="font-medium text-foreground">{formattedMemberSince}</span>
               </p>
@@ -330,7 +330,7 @@ export default function StudentProfilePage({
         </div>
 
         <div className="flex items-center gap-2 self-start md:self-center flex-wrap">
-          <Badge variant="outline" className="text-xs py-1.5 px-3 border-border glass-surface">
+          <Badge variant="outline" className="text-sm py-1.5 px-3 border-border glass-surface">
             {profile?.learnerType === 'child' ? (isAr ? 'ناشئ' : 'Child') : (isAr ? 'بالغ' : 'Adult')} • {profile?.currentLevel || (isAr ? 'مبتدئ' : 'Beginner')}
           </Badge>
         </div>
@@ -341,7 +341,7 @@ export default function StudentProfilePage({
         <div 
           role="alert"
           aria-live="polite" 
-          className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs sm:text-sm flex items-center gap-3"
+          className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm sm:text-sm flex items-center gap-3"
         >
           <AlertCircle className="w-5 h-5 shrink-0" />
           <span className="leading-relaxed">{error}</span>
@@ -352,7 +352,7 @@ export default function StudentProfilePage({
         <div 
           role="status"
           aria-live="polite" 
-          className="p-4 rounded-xl bg-success/10 border border-success/20 text-success text-xs sm:text-sm flex items-center gap-3"
+          className="p-4 rounded-xl bg-success/10 border border-success/20 text-success text-sm sm:text-sm flex items-center gap-3"
         >
           <CheckCircle2 className="w-5 h-5 shrink-0" />
           <span className="leading-relaxed">{success}</span>
@@ -369,7 +369,7 @@ export default function StudentProfilePage({
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
               className={`
-                flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap cursor-pointer min-h-[44px]
+                flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm sm:text-sm font-medium transition-all whitespace-nowrap cursor-pointer min-h-[44px]
                 ${isActive
                   ? 'bg-primary text-primary-foreground shadow-xs font-semibold'
                   : 'glass-card hover:bg-surface-subtle text-muted-foreground hover:text-foreground border border-border'
@@ -412,7 +412,7 @@ export default function StudentProfilePage({
                     <div className={`text-sm ${isActive ? 'text-foreground font-semibold' : 'text-foreground'}`}>
                       {cat.name}
                     </div>
-                    <div className="text-xs text-muted-foreground mt-0.5 line-clamp-1 leading-relaxed">
+                    <div className="text-sm text-muted-foreground mt-0.5 line-clamp-1 leading-relaxed">
                       {cat.description}
                     </div>
                   </div>
@@ -422,9 +422,9 @@ export default function StudentProfilePage({
           </div>
 
           {/* Ustadh Mahmoud Trust Badge */}
-          <div className="p-4 rounded-2xl glass-card border-none/80 text-xs space-y-2">
+          <div className="p-4 rounded-2xl glass-card border-none/80 text-sm space-y-2">
             <div className="flex items-center gap-2 text-foreground font-semibold">
-              <span className="w-6 h-6 rounded-lg bg-secondary/30 text-accent flex items-center justify-center font-display font-bold text-xs">
+              <span className="w-6 h-6 rounded-lg bg-secondary/30 text-accent flex items-center justify-center font-display font-bold text-sm">
                 م
               </span>
               <span>{isAr ? 'الأستاذ محمود — إشراف مباشر' : 'Ustadh Mahmoud — 1-on-1 Teaching'}</span>
@@ -446,7 +446,7 @@ export default function StudentProfilePage({
                 <h2 className="text-lg sm:text-xl font-display font-bold text-foreground">
                   {isAr ? 'البيانات الشخصية' : 'Personal Details'}
                 </h2>
-                <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">
+                <p className="text-sm sm:text-sm text-muted-foreground mt-1 leading-relaxed">
                   {isAr
                     ? 'الاسم الكامل، البريد، ورقم الواتساب المستخدم في تنسيق الدروس والمواعيد'
                     : 'Your contact information used for lesson confirmations and scheduling coordination'}
@@ -456,7 +456,7 @@ export default function StudentProfilePage({
               <form onSubmit={handleSave} className="space-y-5">
                 {/* Full Name */}
                 <div>
-                  <label htmlFor="student-name" className="block text-xs font-semibold text-foreground mb-1.5">
+                  <label htmlFor="student-name" className="block text-sm font-semibold text-foreground mb-1.5">
                     {isAr ? 'الاسم الكامل' : 'Full Name'}
                   </label>
                   <input
@@ -472,7 +472,7 @@ export default function StudentProfilePage({
                 {/* Account Email (Read-only, Managed by Supabase Auth) */}
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <label htmlFor="student-email" className="block text-xs font-semibold text-foreground">
+                    <label htmlFor="student-email" className="block text-sm font-semibold text-foreground">
                       {isAr ? 'البريد الإلكتروني' : 'Account Email'}
                     </label>
                     <span className="text-[11px] text-muted-foreground flex items-center gap-1">
@@ -485,7 +485,7 @@ export default function StudentProfilePage({
                     type="email"
                     disabled
                     value={profile?.email || user?.email || ''}
-                    className="w-full px-4 py-2.5 rounded-xl border border-border glass-surface/50 text-muted-foreground font-mono text-xs sm:text-sm opacity-80 cursor-not-allowed min-h-[44px]"
+                    className="w-full px-4 py-2.5 rounded-xl border border-border glass-surface/50 text-muted-foreground font-mono text-sm sm:text-sm opacity-80 cursor-not-allowed min-h-[44px]"
                   />
                   <p className="text-[11px] text-muted-foreground mt-1.5 leading-relaxed">
                     {isAr
@@ -498,7 +498,7 @@ export default function StudentProfilePage({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Timezone */}
                   <div>
-                    <label htmlFor="student-timezone" className="block text-xs font-semibold text-foreground mb-1.5">
+                    <label htmlFor="student-timezone" className="block text-sm font-semibold text-foreground mb-1.5">
                       {isAr ? 'المنطقة الزمنية (IANA)' : 'Timezone (IANA)'}
                     </label>
                     <div className="relative">
@@ -509,7 +509,7 @@ export default function StudentProfilePage({
                         required
                         value={timezone}
                         onChange={(e) => setTimezone(e.target.value)}
-                        className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px] font-mono text-xs sm:text-sm"
+                        className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px] font-mono text-sm sm:text-sm"
                       />
                     </div>
                     <div className="mt-1.5 flex items-center justify-between gap-2">
@@ -528,7 +528,7 @@ export default function StudentProfilePage({
 
                   {/* WhatsApp */}
                   <div>
-                    <label htmlFor="student-whatsapp" className="block text-xs font-semibold text-foreground mb-1.5">
+                    <label htmlFor="student-whatsapp" className="block text-sm font-semibold text-foreground mb-1.5">
                       {isAr ? 'رقم الواتساب للتنسيق' : 'WhatsApp Number'}
                     </label>
                     <div className="relative">
@@ -539,7 +539,7 @@ export default function StudentProfilePage({
                         value={whatsapp}
                         onChange={(e) => setWhatsapp(e.target.value)}
                         placeholder="+1 (555) 000-0000"
-                        className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px] font-mono text-xs sm:text-sm"
+                        className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px] font-mono text-sm sm:text-sm"
                       />
                     </div>
                     <p className="text-[11px] text-muted-foreground mt-1.5">
@@ -550,7 +550,7 @@ export default function StudentProfilePage({
 
                 {/* Country */}
                 <div>
-                  <label htmlFor="student-country" className="block text-xs font-semibold text-foreground mb-1.5">
+                  <label htmlFor="student-country" className="block text-sm font-semibold text-foreground mb-1.5">
                     {isAr ? 'بلد الإقامة' : 'Country / Location'}
                   </label>
                   <div className="relative">
@@ -569,7 +569,7 @@ export default function StudentProfilePage({
                 {/* Gender & Teacher Preference (Matching Metadata) */}
                 <div className="pt-2 border-t border-border grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    <label className="block text-sm font-semibold text-foreground mb-1.5">
                       {isAr ? 'الجنس' : 'Gender'}
                     </label>
                     <div className="flex gap-2">
@@ -582,7 +582,7 @@ export default function StudentProfilePage({
                           key={opt.value}
                           type="button"
                           onClick={() => setGender(opt.value as any)}
-                          className={`flex-1 py-2 px-2.5 rounded-xl text-xs font-medium border transition-colors ${
+                          className={`flex-1 py-2 px-2.5 rounded-xl text-sm font-medium border transition-colors ${
                             gender === opt.value
                               ? 'bg-secondary/30 border-primary text-primary font-semibold'
                               : 'border-border glass-surface text-muted-foreground glass-hover hover:bg-surface hover:text-foreground'
@@ -595,7 +595,7 @@ export default function StudentProfilePage({
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    <label className="block text-sm font-semibold text-foreground mb-1.5">
                       {isAr ? 'تفضيل جنس المعلم' : 'Teacher Preference'}
                     </label>
                     <div className="flex gap-2">
@@ -608,7 +608,7 @@ export default function StudentProfilePage({
                           key={opt.value}
                           type="button"
                           onClick={() => setTeacherGenderPreference(opt.value as any)}
-                          className={`flex-1 py-2 px-2.5 rounded-xl text-xs font-medium border transition-colors ${
+                          className={`flex-1 py-2 px-2.5 rounded-xl text-sm font-medium border transition-colors ${
                             teacherGenderPreference === opt.value
                               ? 'bg-secondary/30 border-primary text-primary font-semibold'
                               : 'border-border glass-surface text-muted-foreground glass-hover hover:bg-surface hover:text-foreground'
@@ -628,7 +628,7 @@ export default function StudentProfilePage({
                     variant="primary"
                     size="md"
                     isLoading={saving}
-                    className="min-h-[44px] px-7 rounded-xl text-xs sm:text-sm font-semibold cursor-pointer shadow-xs"
+                    className="min-h-[44px] px-7 rounded-xl text-sm sm:text-sm font-semibold cursor-pointer shadow-xs"
                   >
                     <Save className="w-4 h-4 me-2" />
                     <span>{isAr ? 'حفظ التعديلات' : 'Save Changes'}</span>
@@ -645,7 +645,7 @@ export default function StudentProfilePage({
                 <h2 className="text-lg sm:text-xl font-display font-bold text-foreground">
                   {isAr ? 'المسار التعليمي والمعلم' : 'Learning Track & Teacher'}
                 </h2>
-                <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">
+                <p className="text-sm sm:text-sm text-muted-foreground mt-1 leading-relaxed">
                   {isAr
                     ? 'تفاصيل الإشراف التعليمي المباشر، المستوى الحالي، والأهداف المحددة'
                     : 'Your 1-on-1 teaching relationship, current level, and target goals'}
@@ -662,16 +662,16 @@ export default function StudentProfilePage({
                     <span className="font-display font-bold text-foreground text-base">
                       {profile?.assignedTeacherName || (profile?.assignedTeacherId ? 'Ustadh Mahmoud' : (isAr ? 'الأستاذ محمود (المعلم الرئيسي)' : 'Ustadh Mahmoud (Primary Teacher)'))}
                     </span>
-                    <Badge variant="secondary" className="text-[10px]">
+                    <Badge variant="secondary" className="text-[13px]">
                       {profile?.assignedTeacherId ? (isAr ? 'معلم مخصص' : 'Assigned Teacher') : (isAr ? 'المعلم الافتراضي' : 'Default Teacher')}
                     </Badge>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                  <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">
                     {isAr
                       ? 'تأسيس متدرج في تلاوة القرآن الكريم وأحكام التجويد والدراسات الإسلامية واللغة العربية وفق خطة فردية تناسب مستواك وأهدافك.'
                       : 'Personalized curriculum in Quran recitation, Tajweed mastery, Islamic studies, and Arabic language tailored to your actual level.'}
                   </p>
-                  <div className="mt-3 flex items-center gap-2 text-xs text-primary font-medium">
+                  <div className="mt-3 flex items-center gap-2 text-sm text-primary font-medium">
                     <Check className="w-4 h-4 shrink-0" />
                     <span>{isAr ? 'الدروس تُعقد مباشرة عبر غرفة زووم المخصصة لكل موعد.' : 'Lessons take place directly via dedicated Zoom Classroom sessions.'}</span>
                   </div>
@@ -681,10 +681,10 @@ export default function StudentProfilePage({
               {/* Learning Track Details */}
               <div className="space-y-3.5 divide-y divide-border">
                 <div className="flex items-center justify-between pt-1 pb-3">
-                  <span className="text-xs sm:text-sm text-muted-foreground">
+                  <span className="text-sm sm:text-sm text-muted-foreground">
                     {isAr ? 'فئة المتعلم' : 'Learner Type'}
                   </span>
-                  <span className="text-xs sm:text-sm font-semibold capitalize text-foreground">
+                  <span className="text-sm sm:text-sm font-semibold capitalize text-foreground">
                     {profile?.learnerType === 'child'
                       ? (isAr ? 'ناشئ / طفل' : 'Child Learner')
                       : (isAr ? 'بالغ' : 'Adult Learner')}
@@ -692,38 +692,38 @@ export default function StudentProfilePage({
                 </div>
 
                 <div className="flex items-center justify-between py-3">
-                  <span className="text-xs sm:text-sm text-muted-foreground">
+                  <span className="text-sm sm:text-sm text-muted-foreground">
                     {isAr ? 'المستوى الحالي' : 'Current Level'}
                   </span>
-                  <Badge variant="secondary" className="capitalize text-primary font-medium text-xs">
+                  <Badge variant="secondary" className="capitalize text-primary font-medium text-sm">
                     {profile?.currentLevel || (isAr ? 'مبتدئ' : 'Beginner')}
                   </Badge>
                 </div>
 
                 <div className="flex items-center justify-between py-3">
-                  <span className="text-xs sm:text-sm text-muted-foreground">
+                  <span className="text-sm sm:text-sm text-muted-foreground">
                     {isAr ? 'المادة الأساسية' : 'Primary Subject'}
                   </span>
-                  <span className="text-xs sm:text-sm font-semibold text-foreground">
+                  <span className="text-sm sm:text-sm font-semibold text-foreground">
                     {profile?.learningInterest || (isAr ? 'تلاوة القرآن وتجويده' : 'Quran Reading & Tajweed')}
                   </span>
                 </div>
 
                 <div className="py-3">
-                  <span className="text-xs text-muted-foreground block mb-2">
+                  <span className="text-sm text-muted-foreground block mb-2">
                     {isAr ? 'الهدف التعليمي المسجل' : 'Target Learning Goal'}
                   </span>
-                  <div className="text-xs sm:text-sm text-foreground italic leading-relaxed glass-surface p-3.5 rounded-xl border border-border">
+                  <div className="text-sm sm:text-sm text-foreground italic leading-relaxed glass-surface p-3.5 rounded-xl border border-border">
                     "{profile?.learningGoal || (isAr ? 'إتقان التلاوة وضبط أحكام التجويد مع الأستاذ محمود' : 'Mastery of Quran recitation and Tajweed rules with Ustadh Mahmoud')}"
                   </div>
                 </div>
 
                 {profile?.learningNeeds && (
                   <div className="py-3">
-                    <span className="text-xs text-muted-foreground block mb-2">
+                    <span className="text-sm text-muted-foreground block mb-2">
                       {isAr ? 'ملاحظات وتفضيلات التعلم' : 'Special Notes & Context'}
                     </span>
-                    <div className="text-xs text-muted-foreground glass-surface/50 p-3 rounded-xl border border-border">
+                    <div className="text-sm text-muted-foreground glass-surface/50 p-3 rounded-xl border border-border">
                       {profile.learningNeeds}
                     </div>
                   </div>
@@ -741,13 +741,13 @@ export default function StudentProfilePage({
                     {linkedChildren.map((child: any) => (
                       <div
                         key={child.id}
-                        className="p-3.5 rounded-xl glass-surface border border-border text-xs space-y-1"
+                        className="p-3.5 rounded-xl glass-surface border border-border text-sm space-y-1"
                       >
                         <div className="flex items-center justify-between gap-2">
                           <span className="font-semibold text-foreground text-sm">
                             {child.name}
                           </span>
-                          <Badge variant="secondary" className="text-[10px] capitalize">
+                          <Badge variant="secondary" className="text-[13px] capitalize">
                             {child.learnerType || (isAr ? 'طالب' : 'Child')}
                           </Badge>
                         </div>
@@ -770,7 +770,7 @@ export default function StudentProfilePage({
                     <Users className="w-4 h-4 text-accent" />
                     <span>{isAr ? 'بيانات ولي الأمر المسؤول' : 'Parent / Guardian Responsible'}</span>
                   </h3>
-                  <div className="p-3.5 rounded-xl glass-surface border border-border text-xs space-y-2">
+                  <div className="p-3.5 rounded-xl glass-surface border border-border text-sm space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-muted-foreground">{isAr ? 'اسم ولي الأمر' : 'Parent Name'}</span>
                       <span className="font-semibold text-foreground">{profile.guardian.parentName}</span>
@@ -800,7 +800,7 @@ export default function StudentProfilePage({
                 <h2 className="text-lg sm:text-xl font-display font-bold text-foreground">
                   {isAr ? 'تفضيلات الحجز والمظهر' : 'Booking & Preferences'}
                 </h2>
-                <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">
+                <p className="text-sm sm:text-sm text-muted-foreground mt-1 leading-relaxed">
                   {isAr
                     ? 'تحديد المستفيد الافتراضي عند حجز الدروس، لغة المنصة، ومظهر العرض'
                     : 'Configure default learner preference, platform language, and display theme'}
@@ -810,10 +810,10 @@ export default function StudentProfilePage({
               {/* Default Booking Preference */}
               <div className="space-y-3">
                 <div>
-                  <span className="block text-xs font-semibold text-foreground">
+                  <span className="block text-sm font-semibold text-foreground">
                     {isAr ? 'تفضيل الحجز الافتراضي' : 'Default Booking Preference'}
                   </span>
-                  <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+                  <p className="text-sm text-muted-foreground mt-0.5 leading-relaxed">
                     {isAr
                       ? 'تحديد المستفيد الافتراضي عند حجز أي درس جديد (يمكنك دائماً تبديله لكل درس).'
                       : 'Select who you typically schedule lessons for. You can always adjust this on individual bookings.'}
@@ -838,10 +838,10 @@ export default function StudentProfilePage({
                       className="mt-0.5 text-primary focus:ring-primary cursor-pointer"
                     />
                     <div className="min-w-0">
-                      <span className="block text-xs font-bold text-foreground">
+                      <span className="block text-sm font-bold text-foreground">
                         {isAr ? 'لنفسي (المتعلم الأساسي)' : 'Myself (Primary Learner)'}
                       </span>
-                      <span className="block text-xs text-muted-foreground mt-1 leading-relaxed">
+                      <span className="block text-sm text-muted-foreground mt-1 leading-relaxed">
                         {isAr
                           ? 'يتم تخصيص الدروس والمسار التعليمي لحسابك الشخصي.'
                           : 'Lessons are scheduled directly for your own learning track.'}
@@ -871,10 +871,10 @@ export default function StudentProfilePage({
                       className="mt-0.5 text-primary focus:ring-primary disabled:opacity-50 cursor-pointer"
                     />
                     <div className="min-w-0">
-                      <span className="block text-xs font-bold text-foreground">
+                      <span className="block text-sm font-bold text-foreground">
                         {isAr ? 'لابني / ابنتي' : 'My Child'}
                       </span>
-                      <span className="block text-xs text-muted-foreground mt-1 leading-relaxed">
+                      <span className="block text-sm text-muted-foreground mt-1 leading-relaxed">
                         {canBookForChild
                           ? (isAr ? 'يتم حجز الدروس للطفل المسجل تحت إشراف ولي الأمر.' : 'Lessons are scheduled for your registered child learner.')
                           : (isAr ? 'متاح للحسابات المسجلة كأولياء أمور مع أطفال مرتبطين.' : 'Available for accounts with registered child/guardian relationships.')}
@@ -887,10 +887,10 @@ export default function StudentProfilePage({
               {/* Interface Language */}
               <div className="flex items-center justify-between p-4 rounded-xl glass-surface border border-border">
                 <div>
-                  <span className="font-semibold text-foreground text-xs sm:text-sm block">
+                  <span className="font-semibold text-foreground text-sm sm:text-sm block">
                     {isAr ? 'لغة الواجهة' : 'Interface Language'}
                   </span>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     {isAr ? 'العربية (الحالية)' : 'English (Current)'}
                   </span>
                 </div>
@@ -899,7 +899,7 @@ export default function StudentProfilePage({
                   variant="outline"
                   size="sm"
                   onClick={handleToggleLang}
-                  className="min-h-[44px] px-4 rounded-xl text-xs font-semibold cursor-pointer border-border glass-hover hover:bg-surface glass-card"
+                  className="min-h-[44px] px-4 rounded-xl text-sm font-semibold cursor-pointer border-border glass-hover hover:bg-surface glass-card"
                   aria-label={isAr ? 'التبديل إلى الإنجليزية' : 'Switch to Arabic'}
                 >
                   <Globe className="w-3.5 h-3.5 me-1.5 text-accent" />
@@ -910,10 +910,10 @@ export default function StudentProfilePage({
               {/* Theme Preference */}
               <div className="flex items-center justify-between p-4 rounded-xl glass-surface border border-border">
                 <div>
-                  <span className="font-semibold text-foreground text-xs sm:text-sm block">
+                  <span className="font-semibold text-foreground text-sm sm:text-sm block">
                     {isAr ? 'مظهر المنصة' : 'Appearance Theme'}
                   </span>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     {theme === 'dark' 
                       ? (isAr ? 'الوضع الليلي' : 'Dark Mode') 
                       : (isAr ? 'الوضع النهاري' : 'Light Mode')}
@@ -924,7 +924,7 @@ export default function StudentProfilePage({
                   variant="outline"
                   size="sm"
                   onClick={toggleTheme}
-                  className="min-h-[44px] px-4 rounded-xl text-xs font-semibold cursor-pointer border-border glass-hover hover:bg-surface glass-card"
+                  className="min-h-[44px] px-4 rounded-xl text-sm font-semibold cursor-pointer border-border glass-hover hover:bg-surface glass-card"
                   aria-label={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
                 >
                   {theme === 'light' ? (
@@ -949,7 +949,7 @@ export default function StudentProfilePage({
                   size="md"
                   onClick={handleSave}
                   isLoading={saving}
-                  className="min-h-[44px] px-7 rounded-xl text-xs sm:text-sm font-semibold cursor-pointer shadow-xs"
+                  className="min-h-[44px] px-7 rounded-xl text-sm sm:text-sm font-semibold cursor-pointer shadow-xs"
                 >
                   <Save className="w-4 h-4 me-2" />
                   <span>{isAr ? 'حفظ التفضيلات' : 'Save Preferences'}</span>
@@ -965,7 +965,7 @@ export default function StudentProfilePage({
                 <h2 className="text-lg sm:text-xl font-display font-bold text-foreground">
                   {isAr ? 'أمان الحساب والجلسة' : 'Security & Account'}
                 </h2>
-                <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">
+                <p className="text-sm sm:text-sm text-muted-foreground mt-1 leading-relaxed">
                   {isAr
                     ? 'تفاصيل المصادقة السحابية، فحص الاتصال الأمني، وإدارة تسجيل الدخول'
                     : 'Cloud authentication status, diagnostic verification, and session control'}
@@ -974,16 +974,16 @@ export default function StudentProfilePage({
 
               {/* Auth Verification Banner */}
               <div className="p-4 rounded-xl glass-surface border border-border space-y-2">
-                <div className="flex items-center gap-2 text-foreground font-semibold text-xs sm:text-sm">
+                <div className="flex items-center gap-2 text-foreground font-semibold text-sm sm:text-sm">
                   <ShieldCheck className="w-4 h-4 text-accent shrink-0" />
                   <span>{isAr ? 'جلسة الطالب مؤمنة' : 'Authenticated Student Session'}</span>
                 </div>
-                <p className="text-xs text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   {isAr
                     ? 'جلسة الدخول مؤمنة ومحمية بقواعد أمان صارمة (RLS). لا يمكن لأي مستخدم آخر الوصول إلى سجلاتك.'
                     : 'Your session is authenticated securely via Supabase Auth and isolated with Row Level Security.'}
                 </p>
-                <div className="pt-2 text-xs font-mono text-muted-foreground">
+                <div className="pt-2 text-sm font-mono text-muted-foreground">
                   <span>{isAr ? 'المعرف:' : 'Identifier:'}</span> <span className="text-foreground">{user?.email}</span>
                 </div>
               </div>
@@ -991,10 +991,10 @@ export default function StudentProfilePage({
               {/* Diagnostic Tools */}
               <div className="p-4 rounded-xl glass-surface border border-border space-y-3">
                 <div>
-                  <span className="block text-xs font-semibold text-foreground">
+                  <span className="block text-sm font-semibold text-foreground">
                     {isAr ? 'أدوات الفحص والتحقق الأمني' : 'Security Diagnostics & Connectivity Probe'}
                   </span>
-                  <p className="text-xs text-muted-foreground mt-0.5">
+                  <p className="text-sm text-muted-foreground mt-0.5">
                     {isAr
                       ? 'التحقق من صحة الاتصال بنقاط نهاية حساب الطالب'
                       : 'Verify live connection and token authorization with student endpoints'}
@@ -1004,14 +1004,14 @@ export default function StudentProfilePage({
                   <button
                     type="button"
                     onClick={probeStudentMe}
-                    className="px-3.5 py-2 rounded-xl glass-card border-none text-xs text-foreground font-medium hover:bg-surface-subtle transition-colors cursor-pointer min-h-[44px]"
+                    className="px-3.5 py-2 rounded-xl glass-card border-none text-sm text-foreground font-medium hover:bg-surface-subtle transition-colors cursor-pointer min-h-[44px]"
                   >
                     <span>{isAr ? 'فحص /api/student/me' : 'Probe /api/student/me'}</span>
                   </button>
                   <button
                     type="button"
                     onClick={runDiagnosticProbe}
-                    className="px-3.5 py-2 rounded-xl glass-card border-none text-xs text-foreground font-medium hover:bg-surface-subtle transition-colors cursor-pointer min-h-[44px]"
+                    className="px-3.5 py-2 rounded-xl glass-card border-none text-sm text-foreground font-medium hover:bg-surface-subtle transition-colors cursor-pointer min-h-[44px]"
                   >
                     <span>{isAr ? 'فحص /api/student-auth-diagnostic' : 'Probe /api/student-auth-diagnostic'}</span>
                   </button>
@@ -1021,17 +1021,17 @@ export default function StudentProfilePage({
               {/* Sign Out */}
               <div className="pt-4 border-t border-border flex items-center justify-between">
                 <div>
-                  <span className="block text-xs font-semibold text-foreground">
+                  <span className="block text-sm font-semibold text-foreground">
                     {isAr ? 'تسجيل الخروج من المنصة' : 'Sign Out of Student Portal'}
                   </span>
-                  <p className="text-xs text-muted-foreground mt-0.5">
+                  <p className="text-sm text-muted-foreground mt-0.5">
                     {isAr ? 'إنهاء جلسة الدخول الحالية بأمان' : 'Safely end your current authenticated session'}
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => auth.signOut()}
-                  className="flex items-center gap-2 py-2.5 px-5 rounded-xl text-xs sm:text-sm font-semibold text-destructive hover:bg-destructive/10 border border-destructive/20 transition-colors cursor-pointer min-h-[44px]"
+                  className="flex items-center gap-2 py-2.5 px-5 rounded-xl text-sm sm:text-sm font-semibold text-destructive hover:bg-destructive/10 border border-destructive/20 transition-colors cursor-pointer min-h-[44px]"
                 >
                   <LogOut className="w-4 h-4" />
                   <span>{isAr ? 'تسجيل الخروج' : 'Sign Out'}</span>

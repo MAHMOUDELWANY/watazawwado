@@ -29,11 +29,11 @@ export const FreeTrialSection: React.FC<FreeTrialSectionProps> = ({ lang, onOpen
         >
           
           <div className="max-w-3xl">
-            <div className="text-xs uppercase tracking-widest text-primary font-semibold mb-4">
+            <div className="text-sm uppercase tracking-widest text-primary font-semibold mb-4">
               {isEn ? 'No-Risk Introduction' : 'جلسة تعارف وتقييم مجانية'}
             </div>
 
-            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-foreground tracking-tight leading-tight mb-6">
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-foreground  leading-tight mb-6">
               {isEn
                 ? 'Experience your first 30-minute lesson free of charge.'
                 : ARABIC_TRANSLATIONS.trial.title}
@@ -48,10 +48,10 @@ export const FreeTrialSection: React.FC<FreeTrialSectionProps> = ({ lang, onOpen
             {/* Key Outcomes in the Trial */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
               <div className="p-5 rounded-xl glass-surface border border-border">
-                <div className="text-xs font-semibold uppercase tracking-wider text-primary mb-1">
+                <div className="text-sm font-semibold uppercase tracking-wider text-primary mb-1">
                   1. Get to Know You
                 </div>
-                <p className="text-xs text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   {isEn
                     ? 'We discuss your background, previous learning, and specific goals.'
                     : 'نتعرف على أهدافك وما ترغب في تحقيقه بدقة.'}
@@ -59,10 +59,10 @@ export const FreeTrialSection: React.FC<FreeTrialSectionProps> = ({ lang, onOpen
               </div>
 
               <div className="p-5 rounded-xl glass-surface border border-border">
-                <div className="text-xs font-semibold uppercase tracking-wider text-primary mb-1">
+                <div className="text-sm font-semibold uppercase tracking-wider text-primary mb-1">
                   2. Level Assessment
                 </div>
-                <p className="text-xs text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   {isEn
                     ? 'Gentle diagnostic exercises to see where your strengths and gaps are.'
                     : 'تقييم مريح لمستواك الحالي بدون أي ضغط.'}
@@ -70,10 +70,10 @@ export const FreeTrialSection: React.FC<FreeTrialSectionProps> = ({ lang, onOpen
               </div>
 
               <div className="p-5 rounded-xl glass-surface border border-border">
-                <div className="text-xs font-semibold uppercase tracking-wider text-primary mb-1">
+                <div className="text-sm font-semibold uppercase tracking-wider text-primary mb-1">
                   3. Mini-Lesson & Plan
                 </div>
-                <p className="text-xs text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   {isEn
                     ? 'A live sample lesson and a clear, recommended weekly study roadmap.'
                     : 'شرح عينة حية وتقديم خطة تعليمية مقترحة تناسبك.'}
@@ -86,7 +86,7 @@ export const FreeTrialSection: React.FC<FreeTrialSectionProps> = ({ lang, onOpen
               <button
                 onClick={onOpenTrialModal}
                 id="free-trial-main-cta"
-                className="inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-medium text-base shadow-xs hover:shadow-md transition-all cursor-pointer group"
+                className="inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl btn-primary-material text-primary-foreground font-medium text-base shadow-xs hover:shadow-md transition-all cursor-pointer group"
               >
                 <Calendar className="w-5 h-5" />
                 <span>{isEn ? 'Book Free 30-Min Trial' : 'احجز جلستك المجانية الآن'}</span>
@@ -104,7 +104,7 @@ export const FreeTrialSection: React.FC<FreeTrialSectionProps> = ({ lang, onOpen
             </div>
 
             {/* Free Trial Repeat Policy note */}
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <ShieldAlert className="w-3.5 h-3.5 text-accent shrink-0" />
               <span>
                 {isEn

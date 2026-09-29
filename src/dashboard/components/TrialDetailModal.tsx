@@ -294,14 +294,14 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
         <div className="p-5 sm:p-6 border-b border-border-subtle flex items-start justify-between gap-4 glass-surface">
           <div>
             <div className="flex items-center gap-2 mb-1 flex-wrap">
-              <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-secondary/40 text-accent">
+              <span className="text-sm font-mono font-semibold px-2 py-0.5 rounded bg-secondary/40 text-accent">
                 {trial.reference_code}
               </span>
-              <span className="text-xs font-semibold px-2 py-0.5 rounded bg-warning/15 text-warning-foreground border border-warning/30">
+              <span className="text-sm font-semibold px-2 py-0.5 rounded bg-warning/15 text-warning-foreground border border-warning/30">
                 Free Trial (30 min)
               </span>
               {trial.status ? (
-                <span className={`text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded ${
+                <span className={`text-sm font-bold uppercase tracking-wider px-2 py-0.5 rounded ${
                   trial.status === 'completed'
                     ? 'bg-success/15 text-success border border-success/30'
                     : trial.status === 'cancelled'
@@ -311,7 +311,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                   {trial.status}
                 </span>
               ) : (
-                <span className="text-xs font-medium px-2 py-0.5 rounded glass-surface text-muted-foreground border border-border-subtle">
+                <span className="text-sm font-medium px-2 py-0.5 rounded glass-surface text-muted-foreground border border-border-subtle">
                   Status unavailable
                 </span>
               )}
@@ -320,7 +320,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               {trial.learner_name || 'Anonymous Student'}
             </h2>
             {trial.parent_name && (
-              <p className="text-xs text-muted-foreground font-medium mt-0.5">
+              <p className="text-sm text-muted-foreground font-medium mt-0.5">
                 Parent / Guardian: <span className="text-foreground">{trial.parent_name}</span>
               </p>
             )}
@@ -336,14 +336,14 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
         {/* Modal Body */}
         <div className="p-5 sm:p-6 overflow-y-auto space-y-6 flex-1 text-sm">
           {saveMessage && (
-            <div className="p-3.5 rounded-xl bg-success/10 border border-success/30 text-xs text-success flex items-center gap-2">
+            <div className="p-3.5 rounded-xl bg-success/10 border border-success/30 text-sm text-success flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 shrink-0" />
               <span>{saveMessage}</span>
             </div>
           )}
 
           {errorMessage && (
-            <div className="p-3.5 rounded-xl bg-destructive/10 border border-destructive/20 text-xs text-destructive flex items-center gap-2">
+            <div className="p-3.5 rounded-xl bg-destructive/10 border border-destructive/20 text-sm text-destructive flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{errorMessage}</span>
             </div>
@@ -352,16 +352,16 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
           {/* Section 1: Trial Time & Zoom */}
           <div className="glass-surface p-4 rounded-xl border border-border-subtle space-y-3">
             <div className="flex items-center justify-between flex-wrap gap-2">
-              <div className="flex items-center gap-2 text-primary font-semibold text-xs uppercase tracking-wider">
+              <div className="flex items-center gap-2 text-primary font-semibold text-sm uppercase tracking-wider">
                 <Clock className="w-4 h-4" />
                 <span>Session Timing & Room</span>
               </div>
-              <span className="text-xs text-muted-foreground font-mono">
+              <span className="text-sm text-muted-foreground font-mono">
                 Requested: {trial.service_name}
               </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
               <div className="p-3 rounded-lg glass-card border-none">
                 <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">
                   Mahmoud's Time (Cairo)
@@ -392,14 +392,14 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                   href={hostUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold shadow-2xs transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg btn-primary-material text-primary-foreground text-sm font-semibold shadow-2xs transition-colors"
                 >
                   <Video className="w-3.5 h-3.5" />
                   <span>Start as Host</span>
                   <ExternalLink className="w-3 h-3 ms-0.5 opacity-80" />
                 </a>
               ) : (
-                <div className="text-xs text-warning font-medium flex items-center gap-1.5">
+                <div className="text-sm text-warning font-medium flex items-center gap-1.5">
                   <AlertCircle className="w-3.5 h-3.5" />
                   <span>Zoom host link not generated yet</span>
                 </div>
@@ -409,7 +409,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 <button
                   type="button"
                   onClick={() => copyToClipboard(joinUrl, 'join')}
-                  className="inline-flex items-center gap-1 px-3 py-2 rounded-lg glass-card border-none text-xs font-medium text-foreground hover:bg-surface-subtle transition-colors"
+                  className="inline-flex items-center gap-1 px-3 py-2 rounded-lg glass-card border-none text-sm font-medium text-foreground hover:bg-surface-subtle transition-colors"
                 >
                   {copiedLink === 'join' ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5 text-muted-foreground" />}
                   <span>{copiedLink === 'join' ? 'Student Link Copied!' : 'Copy Student Link'}</span>
@@ -421,13 +421,13 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-success/10 text-success border border-success/30 text-xs font-medium hover:bg-success/20 transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-success/10 text-success border border-success/30 text-sm font-medium hover:bg-success/20 transition-colors"
                 >
                   <MessageCircle className="w-3.5 h-3.5" />
                   <span>Send Zoom on WhatsApp</span>
                 </a>
               ) : (
-                <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg glass-surface text-muted-foreground border border-border-subtle text-xs font-medium cursor-not-allowed">
+                <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg glass-surface text-muted-foreground border border-border-subtle text-sm font-medium cursor-not-allowed">
                   <MessageCircle className="w-3.5 h-3.5" />
                   <span>No WhatsApp Number</span>
                 </span>
@@ -438,11 +438,11 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
           {/* Section 2: Student Learning Need & Goal */}
           {(trial.goal || trial.notes) && (
             <div className="glass-surface p-4 rounded-xl border border-border-subtle">
-              <div className="flex items-center gap-2 text-muted-foreground font-semibold text-xs uppercase tracking-wider mb-1.5">
+              <div className="flex items-center gap-2 text-muted-foreground font-semibold text-sm uppercase tracking-wider mb-1.5">
                 <FileText className="w-4 h-4" />
                 <span>Learner Goal & Inquired Needs</span>
               </div>
-              <p className="text-xs sm:text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+              <p className="text-sm sm:text-sm text-foreground leading-relaxed whitespace-pre-wrap">
                 {trial.goal || trial.notes}
               </p>
             </div>
@@ -451,7 +451,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
           {/* Section 3: Trial Assessment (Teacher Observation) */}
           <div className="space-y-3 pt-2">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-primary font-semibold text-xs uppercase tracking-wider">
+              <div className="flex items-center gap-2 text-primary font-semibold text-sm uppercase tracking-wider">
                 <Sparkles className="w-4 h-4" />
                 <span>Mini-Lesson Assessment</span>
               </div>
@@ -463,11 +463,11 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
             {/* Dynamic Learning Plan Templates Picker */}
             <div className="p-3.5 rounded-xl bg-secondary/30 border border-secondary/50 space-y-2">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-primary">
+                <div className="flex items-center gap-1.5 text-sm font-semibold text-primary">
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>Dynamic Learning Plan Templates</span>
                 </div>
-                <span className="text-[10px] text-muted-foreground">1-click pedagogical assessment</span>
+                <span className="text-[13px] text-muted-foreground">1-click pedagogical assessment</span>
               </div>
               <p className="text-[11px] text-muted-foreground">
                 Choose a pre-defined curriculum baseline to quickly populate assessment goals, strengths, and recommended plan:
@@ -480,7 +480,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                       key={tmpl.id}
                       type="button"
                       onClick={() => handleApplyTemplate(tmpl)}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1 cursor-pointer ${
+                      className={`px-2.5 py-1 rounded-lg text-sm font-medium transition-all flex items-center gap-1 cursor-pointer ${
                         isSelected
                           ? 'bg-primary text-primary-foreground shadow-2xs font-semibold'
                           : 'glass-card text-foreground border border-border hover:border-accent/40'
@@ -488,7 +488,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                     >
                       {isSelected && <Check className="w-3 h-3" />}
                       <span>{tmpl.title}</span>
-                      <span className="text-[10px] opacity-70">({tmpl.duration}m)</span>
+                      <span className="text-[13px] opacity-70">({tmpl.duration}m)</span>
                     </button>
                   );
                 })}
@@ -497,13 +497,13 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-medium text-foreground mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Current Assessed Level
                 </label>
                 <select
                   value={currentLevel}
                   onChange={(e) => setCurrentLevel(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-border glass-card text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 rounded-lg border border-border glass-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="">-- Unassessed / Not Evaluated Yet --</option>
                   <option value="beginner">Beginner (Starting from basics)</option>
@@ -514,13 +514,13 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-foreground mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Follow-Up Status
                 </label>
                 <select
                   value={followUpStatus}
                   onChange={(e) => setFollowUpStatus(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-border glass-card text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 rounded-lg border border-border glass-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="needs_follow_up">Needs Follow-Up</option>
                   <option value="awaiting_response">Awaiting Student Response</option>
@@ -533,7 +533,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-foreground mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 Observed Strengths
               </label>
               <input
@@ -541,12 +541,12 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 value={strengths}
                 onChange={(e) => setStrengths(e.target.value)}
                 placeholder="e.g. Attentive, knows Arabic alphabet, good pronunciation of standard sounds"
-                className="w-full px-3 py-2 rounded-lg border border-border glass-card text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 rounded-lg border border-border glass-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-foreground mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 Areas Needing Work & Gaps
               </label>
               <input
@@ -554,12 +554,12 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 value={areasNeedingWork}
                 onChange={(e) => setAreasNeedingWork(e.target.value)}
                 placeholder="e.g. Heavy letters (Taa, Saad), Noon Sakinah rules, reading confidence"
-                className="w-full px-3 py-2 rounded-lg border border-border glass-card text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 rounded-lg border border-border glass-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-foreground mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 Private Teacher Notes
               </label>
               <textarea
@@ -567,7 +567,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 value={assessmentNotes}
                 onChange={(e) => setAssessmentNotes(e.target.value)}
                 placeholder="Observations on pace, focus, parent expectations, preferred timings..."
-                className="w-full px-3 py-2 rounded-lg border border-border glass-card text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 rounded-lg border border-border glass-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
           </div>
@@ -575,14 +575,14 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
           {/* Section 4: Recommended Learning Plan */}
           <div className="p-4 rounded-xl bg-secondary/30 border border-secondary/50 space-y-3">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-primary font-semibold text-xs uppercase tracking-wider">
+              <div className="flex items-center gap-2 text-primary font-semibold text-sm uppercase tracking-wider">
                 <GraduationCap className="w-4 h-4" />
                 <span>Your Recommended Learning Plan</span>
               </div>
               <button
                 type="button"
                 onClick={() => copyToClipboard(studentPlanMessage, 'plan')}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg glass-card text-xs font-medium text-foreground border border-border hover:bg-surface-subtle transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg glass-card text-sm font-medium text-foreground border border-border hover:bg-surface-subtle transition-colors cursor-pointer"
               >
                 {copiedLink === 'plan' ? <Check className="w-3 h-3 text-success" /> : <Copy className="w-3 h-3 opacity-70" />}
                 <span>{copiedLink === 'plan' ? 'Plan Copied!' : 'Copy Plan for Student'}</span>
@@ -591,13 +591,13 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label className="block text-xs font-medium text-foreground mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Recommended Service
                 </label>
                 <select
                   value={recommendedServiceId}
                   onChange={(e) => setRecommendedServiceId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-border glass-card text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 rounded-lg border border-border glass-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   {AVAILABLE_SERVICES.map(s => (
                     <option key={s.id} value={s.id}>{s.name}</option>
@@ -606,13 +606,13 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-foreground mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Lesson Length
                 </label>
                 <select
                   value={recommendedDuration}
                   onChange={(e) => setRecommendedDuration(Number(e.target.value))}
-                  className="w-full px-3 py-2 rounded-lg border border-border glass-card text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 rounded-lg border border-border glass-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value={30}>30 minutes (Best for kids)</option>
                   <option value={45}>45 minutes (Standard focus)</option>
@@ -621,13 +621,13 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-foreground mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Weekly Frequency
                 </label>
                 <select
                   value={recommendedFrequency}
                   onChange={(e) => setRecommendedFrequency(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-border glass-card text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 rounded-lg border border-border glass-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="1x weekly">1× weekly</option>
                   <option value="2x weekly">2× weekly (Recommended)</option>
@@ -638,7 +638,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-foreground mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 Learning Plan Summary / Core Milestone
               </label>
               <textarea
@@ -646,7 +646,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 value={learningPlanSummary}
                 onChange={(e) => setLearningPlanSummary(e.target.value)}
                 placeholder="e.g. Master Noon Sakinah rules in 4 weeks, then progress to Surah Al-Mulk recitation..."
-                className="w-full px-3 py-2 rounded-lg border border-border glass-card text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 rounded-lg border border-border glass-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
           </div>
@@ -659,7 +659,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               type="button"
               disabled={saving}
               onClick={() => handleSaveAssessment(false)}
-              className="px-4 py-2 rounded-xl glass-card border-none text-xs font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
+              className="px-4 py-2 rounded-xl glass-card border-none text-sm font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
             >
               {saving ? 'Saving...' : 'Save Assessment'}
             </button>
@@ -669,7 +669,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 type="button"
                 disabled={saving}
                 onClick={() => handleSaveAssessment(true, 'trial_completed')}
-                className="px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold transition-colors cursor-pointer"
+                className="px-4 py-2 rounded-xl btn-primary-material text-primary-foreground text-sm font-semibold transition-colors cursor-pointer"
               >
                 Mark Attended & Completed
               </button>
@@ -681,7 +681,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               type="button"
               disabled={saving}
               onClick={() => handleSaveAssessment(true, 'potential_student')}
-              className="px-3.5 py-2 rounded-xl bg-warning/10 hover:bg-warning/20 text-warning-foreground border border-warning/30 text-xs font-medium transition-colors cursor-pointer"
+              className="px-3.5 py-2 rounded-xl bg-warning/10 hover:bg-warning/20 text-warning-foreground border border-warning/30 text-sm font-medium transition-colors cursor-pointer"
             >
               Mark Potential Student
             </button>
@@ -690,7 +690,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               type="button"
               disabled={saving}
               onClick={() => handleSaveAssessment(true, 'active_student')}
-              className="px-3.5 py-2 rounded-xl bg-success hover:bg-success/90 text-white text-xs font-semibold transition-colors shadow-2xs cursor-pointer flex items-center gap-1.5"
+              className="px-3.5 py-2 rounded-xl bg-success hover:bg-success/90 text-white text-sm font-semibold transition-colors shadow-2xs cursor-pointer flex items-center gap-1.5"
             >
               <CheckCircle2 className="w-3.5 h-3.5" />
               <span>Enroll as Active Student</span>

@@ -186,7 +186,7 @@ export default function StudentOffersPage({ session, lang = 'en' }: StudentOffer
                     </span>
                   </div>
                   {/* Distinct state badges — never collapsed together. */}
-                  <div className="flex flex-wrap items-center gap-2 mt-2 text-xs">
+                  <div className="flex flex-wrap items-center gap-2 mt-2 text-sm">
                     <span className="px-2 py-0.5 rounded-full bg-secondary/30 text-primary">
                       {isAr ? 'معتمد من الأستاذ' : 'Approved by teacher'}
                     </span>

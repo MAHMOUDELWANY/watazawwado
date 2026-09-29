@@ -53,7 +53,7 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
               key={grp.key}
               type="button"
               onClick={() => setActiveTab(grp.key)}
-              className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+              className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                 isActive
                   ? 'bg-muted-foreground text-white shadow-xs'
                   : 'bg-white/80 glass-card text-foreground/70 dark:text-border/70 border border-border hover:bg-surface-warm dark:hover:bg-surface-subtle'
@@ -98,7 +98,7 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
                   </div>
                 </div>
 
-                <p className="text-xs text-foreground/70 dark:text-border/80 leading-relaxed mb-3">
+                <p className="text-sm text-foreground/70 dark:text-border/80 leading-relaxed mb-3">
                   {isEn ? service.tagline : service.arabicTagline}
                 </p>
               </div>
@@ -118,7 +118,7 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
 
       {/* Selected Confirmation Bar & Next Action */}
       <div className="pt-4 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="text-xs text-foreground/70 dark:text-border/70 text-center sm:text-start">
+        <div className="text-sm text-foreground/70 dark:text-border/70 text-center sm:text-start">
           {selectedService ? (
             <span>
               {isEn ? 'Selected: ' : 'تم اختيار: '}

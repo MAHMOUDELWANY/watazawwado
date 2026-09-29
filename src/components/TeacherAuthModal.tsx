@@ -156,13 +156,13 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                 <>
                   <a
                     href="/dashboard"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white bg-primary hover:bg-primary-hover transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-white btn-primary-material transition-colors cursor-pointer"
                   >
                     Open Workspace
                   </a>
                   <button
                     onClick={signOut}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-rose-700 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-rose-700 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
                   >
                     <LogOut className="w-3.5 h-3.5" />
                     <span>Sign Out</span>
@@ -190,19 +190,19 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                   <h4 className="font-display text-xl font-bold text-foreground">
                     Private Teacher Login
                   </h4>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-sm text-muted-foreground mt-1">
                     Strict teacher management area. Students book directly as guests and do not have accounts.
                   </p>
                 </div>
 
                 {/* Database Connectivity Badge */}
-                <div className="mb-6 p-3.5 rounded-xl border border-border glass-card text-xs">
+                <div className="mb-6 p-3.5 rounded-xl border border-border glass-card text-sm">
                   <div className="flex items-center justify-between mb-1">
                     <span className="font-semibold text-foreground flex items-center gap-1.5">
                       <DbIcon className="w-3.5 h-3.5 text-accent" />
                       <span>Database Status</span>
                     </span>
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-medium ${isConfigured ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'}`}>
+                    <span className={`px-2 py-0.5 rounded-full text-[13px] font-mono font-medium ${isConfigured ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'}`}>
                       {isConfigured ? 'Supabase Connected' : 'Local Fallback Mode'}
                     </span>
                   </div>
@@ -212,7 +212,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                 </div>
 
                 {loginError && (
-                  <div className="mb-4 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900 text-rose-700 dark:text-rose-300 text-xs flex items-start gap-2">
+                  <div className="mb-4 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900 text-rose-700 dark:text-rose-300 text-sm flex items-start gap-2">
                     <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                     <span>{loginError}</span>
                   </div>
@@ -220,7 +220,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
 
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    <label className="block text-sm font-semibold text-foreground mb-1.5">
                       Teacher Email
                     </label>
                     <input
@@ -234,7 +234,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    <label className="block text-sm font-semibold text-foreground mb-1.5">
                       Password
                     </label>
                     <input
@@ -250,7 +250,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-2.5 px-4 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-semibold tracking-wide transition-colors shadow-sm cursor-pointer disabled:opacity-50"
+                    className="w-full py-2.5 px-4 rounded-xl btn-primary-material text-white text-sm font-semibold tracking-wide transition-colors shadow-sm cursor-pointer disabled:opacity-50"
                   >
                     {isSubmitting ? 'Authenticating...' : 'Sign In as Mahmoud'}
                   </button>
@@ -271,12 +271,12 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                         <span className="font-display font-bold text-sm sm:text-base text-foreground">
                           Ustadh Mahmoud
                         </span>
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-semibold flex items-center gap-1">
+                        <span className="px-2 py-0.5 rounded-full text-[13px] font-mono bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-semibold flex items-center gap-1">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                           Authenticated
                         </span>
                       </div>
-                      <div className="text-xs text-muted-foreground">
+                      <div className="text-sm text-muted-foreground">
                         {user?.email || 'mhmwdlwany4222@gmail.com'} • Primary Timezone: Cairo (UTC+2/3)
                       </div>
                     </div>
@@ -285,7 +285,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                   <button
                     onClick={loadTeacherData}
                     disabled={isLoadingData}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border text-xs font-medium text-foreground hover:bg-surface-subtle dark:hover:bg-surface cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border text-sm font-medium text-foreground hover:bg-surface-subtle dark:hover:bg-surface cursor-pointer"
                   >
                     <RefreshCw className={`w-3.5 h-3.5 ${isLoadingData ? 'animate-spin' : ''}`} />
                     <span>Refresh</span>
@@ -293,7 +293,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                 </div>
 
                 {/* Navigation Tabs */}
-                <div className="flex items-center gap-2 border-b border-border pb-2 text-xs font-medium overflow-x-auto">
+                <div className="flex items-center gap-2 border-b border-border pb-2 text-sm font-medium overflow-x-auto">
                   <button
                     onClick={() => setActiveTab('overview')}
                     className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer whitespace-nowrap ${
@@ -363,7 +363,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                         <div className="text-2xl font-bold font-mono text-foreground">
                           {stats?.totalLeads ?? 0}
                         </div>
-                        <div className="text-[10px] text-primary mt-1">Acquisition lifecycle</div>
+                        <div className="text-[13px] text-primary mt-1">Acquisition lifecycle</div>
                       </div>
 
                       <div className="p-4 rounded-2xl glass-card border-none">
@@ -373,7 +373,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                         <div className="text-2xl font-bold font-mono text-foreground">
                           {stats?.activeStudents ?? 0}
                         </div>
-                        <div className="text-[10px] text-primary mt-1">1-on-1 direct learners</div>
+                        <div className="text-[13px] text-primary mt-1">1-on-1 direct learners</div>
                       </div>
 
                       <div className="p-4 rounded-2xl glass-card border-none">
@@ -383,7 +383,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                         <div className="text-2xl font-bold font-mono text-foreground">
                           {stats?.upcomingBookings ?? 0}
                         </div>
-                        <div className="text-[10px] text-primary mt-1">Scheduled appointments</div>
+                        <div className="text-[13px] text-primary mt-1">Scheduled appointments</div>
                       </div>
 
                       <div className="p-4 rounded-2xl glass-card border-none">
@@ -393,7 +393,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                         <div className="text-2xl font-bold font-mono text-foreground">
                           {stats?.trialBookings ?? 0}
                         </div>
-                        <div className="text-[10px] text-primary mt-1">30-min evaluations</div>
+                        <div className="text-[13px] text-primary mt-1">30-min evaluations</div>
                       </div>
                     </div>
 
@@ -411,11 +411,11 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                       </div>
 
                       {bookings.length === 0 ? (
-                        <div className="text-center py-8 text-xs text-muted-foreground">
+                        <div className="text-center py-8 text-sm text-muted-foreground">
                           No bookings recorded yet in this environment. Use the public booking modal to create a test booking!
                         </div>
                       ) : (
-                        <div className="divide-y divide-border/60 dark:divide-border/60 text-xs">
+                        <div className="divide-y divide-border/60 dark:divide-border/60 text-sm">
                           {bookings.slice(0, 5).map((b) => (
                             <div key={b.id} className="py-2.5 flex items-center justify-between">
                               <div>
@@ -430,7 +430,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                                 <span className="font-mono text-[11px] text-primary">
                                   {new Date(b.scheduled_start).toLocaleDateString()}
                                 </span>
-                                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-secondary/30 text-primary-hover dark:text-primary">
+                                <span className="px-2 py-0.5 rounded-full text-[13px] font-mono bg-secondary/30 text-primary-hover dark:text-primary">
                                   {b.status}
                                 </span>
                               </div>
@@ -449,7 +449,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                       <h5 className="font-display font-bold text-sm text-foreground">
                         Row Level Security (RLS) Verification
                       </h5>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-sm text-muted-foreground">
                         Tests that unauthenticated anonymous visitors cannot query private tables (leads, students, private lesson notes, payments), while public services catalog remains readable.
                       </p>
                     </div>
@@ -457,22 +457,22 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                     <button
                       onClick={runSecurityAudit}
                       disabled={isAuditing}
-                      className="px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-semibold transition-colors cursor-pointer disabled:opacity-50"
+                      className="px-4 py-2 rounded-xl btn-primary-material text-white text-sm font-semibold transition-colors cursor-pointer disabled:opacity-50"
                     >
                       {isAuditing ? 'Running Security Audit...' : 'Execute Live RLS Boundary Test'}
                     </button>
 
                     {auditResult && (
                       <div className="mt-4 space-y-2">
-                        <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900 text-emerald-800 dark:text-emerald-300 text-xs font-semibold flex items-center gap-2">
+                        <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900 text-emerald-800 dark:text-emerald-300 text-sm font-semibold flex items-center gap-2">
                           <CheckCircle2 className="w-4 h-4" />
                           <span>RLS Boundaries Verified: All private data access tests passed!</span>
                         </div>
 
-                        <div className="divide-y divide-border/60 dark:divide-border/60 text-xs">
+                        <div className="divide-y divide-border/60 dark:divide-border/60 text-sm">
                           {auditResult.tests.map((t: any, idx: number) => (
                             <div key={idx} className="py-2.5 flex items-center justify-between">
-                              <div className="font-mono text-xs text-foreground">
+                              <div className="font-mono text-sm text-foreground">
                                 {t.resource}
                               </div>
                               <div className="flex items-center gap-2">
@@ -496,7 +496,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                       <h5 className="font-display font-bold text-sm text-foreground">
                         Master Spec Section 10 & 15: One Free Trial Enforcement
                       </h5>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-sm text-muted-foreground">
                         Test the database logic that prevents repeat trial abuse. The rule evaluates existing confirmed, pending, or completed trial bookings for an email or WhatsApp contact.
                       </p>
                     </div>
@@ -507,19 +507,19 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                         value={testEmail}
                         onChange={(e) => setTestEmail(e.target.value)}
                         placeholder="Enter email to test..."
-                        className="flex-1 px-3.5 py-2 rounded-xl border border-border glass-surface dark:bg-background text-xs text-foreground"
+                        className="flex-1 px-3.5 py-2 rounded-xl border border-border glass-surface dark:bg-background text-sm text-foreground"
                       />
                       <button
                         onClick={runTrialCheck}
                         disabled={isTestingTrial}
-                        className="px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-semibold cursor-pointer"
+                        className="px-4 py-2 rounded-xl btn-primary-material text-white text-sm font-semibold cursor-pointer"
                       >
                         {isTestingTrial ? 'Testing...' : 'Check Eligibility'}
                       </button>
                     </div>
 
                     {testResult && (
-                      <div className={`p-3.5 rounded-xl border text-xs ${testResult.eligible ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 text-emerald-800 dark:text-emerald-300' : 'bg-amber-50 dark:bg-amber-950/30 border-amber-200 text-amber-800 dark:text-amber-300'}`}>
+                      <div className={`p-3.5 rounded-xl border text-sm ${testResult.eligible ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 text-emerald-800 dark:text-emerald-300' : 'bg-amber-50 dark:bg-amber-950/30 border-amber-200 text-amber-800 dark:text-amber-300'}`}>
                         <div className="font-semibold mb-0.5">
                           {testResult.eligible ? '✓ Eligible for Complimentary Trial' : '⚠️ Not Eligible (Trial Already Used)'}
                         </div>
@@ -537,7 +537,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                     <h5 className="font-display font-bold text-sm text-foreground">
                       Master Spec Relational Entities (19 Core Tables)
                     </h5>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm font-mono">
                       {[
                         'profiles (Teacher Profile & Al-Azhar Bio)',
                         'services (13 Configurable Offerings)',

@@ -40,10 +40,10 @@ export const MentorshipPillars: React.FC<MentorshipPillarsProps> = ({ lang }) =>
         
         {/* Section Header */}
         <div className="max-w-3xl mb-12 md:mb-16">
-          <div className="text-xs uppercase tracking-widest text-primary font-semibold mb-3">
+          <div className="text-sm uppercase tracking-widest text-primary font-semibold mb-3">
             {isEn ? 'The 1-on-1 Difference' : 'فارق التعليم الفردي المباشر'}
           </div>
-          <h2 className="font-display text-3xl sm:text-4xl text-foreground tracking-tight mb-4">
+          <h2 className="font-display text-3xl sm:text-4xl text-foreground  mb-4">
             {isEn
               ? 'One dedicated teacher. Not an anonymous platform.'
               : 'معلم مكرس يعرف صوتك وهدفك. لست مجرد رقم في منصة.'}
@@ -93,7 +93,7 @@ export const MentorshipPillars: React.FC<MentorshipPillarsProps> = ({ lang }) =>
           </p>
           <a
             href="#services"
-            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-primary hover:text-primary-hover transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm sm:text-sm font-semibold text-primary hover:text-primary-hover transition-colors"
           >
             <span>{isEn ? 'Explore All Subjects' : 'استعراض جميع البرامج'}</span>
             <ArrowRight className={`w-3.5 h-3.5 rtl:rotate-180`} />

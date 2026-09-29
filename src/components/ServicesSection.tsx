@@ -38,7 +38,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ lang, onSelect
           transition={{ duration: 0.5 }}
           className="max-w-3xl mb-12"
         >
-          <div className="text-xs uppercase tracking-widest text-primary font-semibold mb-3">
+          <div className="text-sm uppercase tracking-widest text-primary font-semibold mb-3">
             {isEn ? 'Core Teaching Subjects' : ARABIC_TRANSLATIONS.services.sectionTag}
           </div>
           <h2 className="text-display-lg text-foreground mb-4">
@@ -66,7 +66,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ lang, onSelect
                   setActivePillarId(pillar.id);
                   setSelectedServiceDetail(pillar.services[0]);
                 }}
-                className={`flex items-center gap-2.5 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all cursor-pointer ${
+                className={`flex items-center gap-2.5 px-4 sm:px-5 py-2.5 rounded-xl text-sm sm:text-sm font-medium transition-all cursor-pointer ${
                   isActive
                     ? 'bg-primary text-primary-foreground shadow-xs'
                     : 'glass-card text-foreground/80 hover:bg-surface-subtle border border-border'
@@ -91,7 +91,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ lang, onSelect
           
           {/* Services List in Current Pillar (5 cols on lg) */}
           <div className="lg:col-span-5 space-y-3">
-            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 px-1">
+            <div className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2 px-1">
               {isEn ? `${activePillar.title} Services` : activePillar.arabicTitle}
             </div>
 
@@ -113,7 +113,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ lang, onSelect
                       <h3 className="text-heading-md text-foreground group-hover:text-primary transition-colors">
                         {service.name}
                       </h3>
-                      <p className="text-xs text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
+                      <p className="text-sm text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
                         {service.tagline}
                       </p>
                     </div>
@@ -156,11 +156,11 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ lang, onSelect
                   {/* Service Header */}
                   <div className="border-b border-border pb-6 mb-6">
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs uppercase tracking-widest text-primary font-semibold">
+                      <span className="text-sm uppercase tracking-widest text-primary font-semibold">
                         {activePillar.title}
                       </span>
                       <span className="text-muted-foreground/40">•</span>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-sm text-muted-foreground">
                         {isEn ? '1-on-1 Zoom Classroom' : 'جلسات فردية عبر زووم'}
                       </span>
                     </div>
@@ -176,7 +176,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ lang, onSelect
 
                   {/* Who Is It For */}
                   <div className="mb-6">
-                    <h4 className="text-xs font-semibold uppercase tracking-wider text-foreground mb-2">
+                    <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground mb-2">
                       {isEn ? 'Who this is designed for:' : ARABIC_TRANSLATIONS.services.whoLabel}
                     </h4>
                     <p className="text-sm text-muted-foreground glass-surface p-3.5 rounded-xl border border-border">
@@ -186,7 +186,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ lang, onSelect
 
                   {/* What You Will Learn / Practical Outcomes */}
                   <div className="mb-8">
-                    <h4 className="text-xs font-semibold uppercase tracking-wider text-foreground mb-3">
+                    <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground mb-3">
                       {isEn ? 'What we focus on together:' : ARABIC_TRANSLATIONS.services.learnLabel}
                     </h4>
                     <div className="space-y-2">
@@ -205,14 +205,14 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ lang, onSelect
                   {/* Lesson Formats & Action */}
                   <div className="pt-6 border-t border-border flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
                     <div>
-                      <div className="text-xs text-muted-foreground">
+                      <div className="text-sm text-muted-foreground">
                         {isEn ? 'Standard Lesson Lengths:' : ARABIC_TRANSLATIONS.services.durationsLabel}
                       </div>
                       <div className="flex items-center gap-2 mt-1">
                         {selectedServiceDetail.durations.map((d) => (
                           <span
                             key={d}
-                            className="px-2.5 py-1 rounded-md text-xs font-medium glass-surface border border-border text-foreground shadow-2xs"
+                            className="px-2.5 py-1 rounded-md text-sm font-medium glass-surface border border-border text-foreground shadow-2xs"
                           >
                             {d} mins
                           </span>
@@ -222,7 +222,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ lang, onSelect
 
                     <button
                       onClick={() => onSelectServiceForTrial(selectedServiceDetail.id)}
-                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground text-sm font-medium shadow-xs hover:shadow-md transition-all cursor-pointer group"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl btn-primary-material text-primary-foreground text-sm font-medium shadow-xs hover:shadow-md transition-all cursor-pointer group"
                     >
                       <Calendar className="w-4 h-4" />
                       <span>{isEn ? 'Try This in Free Trial' : ARABIC_TRANSLATIONS.services.tryInTrial}</span>

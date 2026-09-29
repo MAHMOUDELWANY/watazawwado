@@ -183,14 +183,14 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
         <div className="p-5 sm:p-6 border-b border-border flex items-start justify-between gap-4 glass-surface">
           <div>
             <div className="flex items-center gap-2 mb-1 flex-wrap">
-              <span className={`text-xs font-semibold px-2.5 py-0.5 rounded ${STAGE_CONFIG[currentStatus]?.color || 'glass-surface text-foreground'}`}>
+              <span className={`text-sm font-semibold px-2.5 py-0.5 rounded ${STAGE_CONFIG[currentStatus]?.color || 'glass-surface text-foreground'}`}>
                 {STAGE_CONFIG[currentStatus]?.label || currentStatus}
               </span>
-              <span className="text-xs font-medium px-2 py-0.5 rounded glass-card border-none-subtle text-muted-foreground">
+              <span className="text-sm font-medium px-2 py-0.5 rounded glass-card border-none-subtle text-muted-foreground">
                 {lead.learner_type === 'child' ? 'Child Learner' : 'Adult Learner'}
               </span>
               {lead.source && (
-                <span className="text-xs text-primary font-mono px-2 py-0.5 rounded bg-secondary/30 border border-secondary/50">
+                <span className="text-sm text-primary font-mono px-2 py-0.5 rounded bg-secondary/30 border border-secondary/50">
                   Source: {lead.source}
                 </span>
               )}
@@ -199,7 +199,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
               {lead.name}
             </h2>
             {lead.parent_name && (
-              <p className="text-xs text-muted-foreground font-medium mt-0.5">
+              <p className="text-sm text-muted-foreground font-medium mt-0.5">
                 Parent / Guardian: <span className="text-foreground">{lead.parent_name}</span>
               </p>
             )}
@@ -215,14 +215,14 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
         {/* Modal Body */}
         <div className="p-5 sm:p-6 overflow-y-auto space-y-6 flex-1 text-sm">
           {successMessage && (
-            <div className="p-3.5 rounded-xl bg-success/15 border border-success/30 text-xs text-success flex items-center gap-2">
+            <div className="p-3.5 rounded-xl bg-success/15 border border-success/30 text-sm text-success flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 shrink-0" />
               <span>{successMessage}</span>
             </div>
           )}
 
           {errorMessage && (
-            <div className="p-3.5 rounded-xl bg-destructive/10 border border-destructive/20 text-xs text-destructive space-y-2">
+            <div className="p-3.5 rounded-xl bg-destructive/10 border border-destructive/20 text-sm text-destructive space-y-2">
               <div className="flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{errorMessage}</span>
@@ -235,7 +235,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                   onChange={(e) => setTeacherOverride(e.target.checked)}
                   className="rounded border-border text-primary focus:ring-primary"
                 />
-                <label htmlFor="teacher-override" className="text-xs text-foreground cursor-pointer">
+                <label htmlFor="teacher-override" className="text-sm text-foreground cursor-pointer">
                   Allow manual stage correction / teacher override
                 </label>
               </div>
@@ -244,7 +244,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
 
           {/* Quick Communication Bar */}
           <div className="p-4 rounded-xl glass-surface border border-border flex flex-wrap items-center justify-between gap-3">
-            <div className="space-y-0.5 text-xs">
+            <div className="space-y-0.5 text-sm">
               <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
                 Contact Information
               </div>
@@ -264,13 +264,13 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-success hover:bg-success/90 text-white text-xs font-semibold transition-colors shadow-2xs cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-success hover:bg-success/90 text-white text-sm font-semibold transition-colors shadow-2xs cursor-pointer"
                 >
                   <MessageCircle className="w-3.5 h-3.5" />
                   <span>WhatsApp</span>
                 </a>
               ) : (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg glass-card text-muted-foreground border border-border text-xs font-medium cursor-not-allowed opacity-60">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg glass-card text-muted-foreground border border-border text-sm font-medium cursor-not-allowed opacity-60">
                   <MessageCircle className="w-3.5 h-3.5" />
                   <span>No WhatsApp</span>
                 </span>
@@ -278,7 +278,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
               {lead.email && (
                 <a
                   href={`mailto:${lead.email}`}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg glass-card border-none text-xs font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg glass-card border-none text-sm font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
                 >
                   <Mail className="w-3.5 h-3.5" />
                   <span>Email</span>
@@ -290,7 +290,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
           {/* Pipeline Stage Transition Selector */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="block text-xs font-semibold uppercase tracking-wider text-foreground">
+              <label className="block text-sm font-semibold uppercase tracking-wider text-foreground">
                 Pipeline Lifecycle Stage
               </label>
               <span className="text-[11px] text-muted-foreground">
@@ -306,7 +306,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                     key={statusKey}
                     type="button"
                     onClick={() => setCurrentStatus(statusKey)}
-                    className={`p-2 rounded-xl text-xs text-left border transition-all cursor-pointer ${
+                    className={`p-2 rounded-xl text-sm text-left border transition-all cursor-pointer ${
                       isSelected
                         ? 'border-primary bg-secondary/30 text-primary font-semibold shadow-2xs'
                         : 'border-border glass-card text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
@@ -323,16 +323,16 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
           {lead.trial_booking ? (
             <div className="p-4 rounded-xl bg-warning/10 border border-warning/30 space-y-2">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-warning-foreground font-semibold text-xs uppercase tracking-wider">
+                <div className="flex items-center gap-2 text-warning-foreground font-semibold text-sm uppercase tracking-wider">
                   <Sparkles className="w-4 h-4" />
                   <span>Associated Free Trial</span>
                 </div>
-                <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded glass-card text-warning-foreground border border-warning/30">
+                <span className="text-sm font-mono font-semibold px-2 py-0.5 rounded glass-card text-warning-foreground border border-warning/30">
                   {lead.trial_booking.reference_code}
                 </span>
               </div>
 
-              <div className="text-xs text-foreground">
+              <div className="text-sm text-foreground">
                 <span className="text-muted-foreground">Status: </span>
                 <span className="font-semibold uppercase">{lead.trial_booking.status || 'Scheduled'}</span>
                 {lead.trial_booking.scheduled_start && (
@@ -357,13 +357,13 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
               </div>
             </div>
           ) : (
-            <div className="p-3.5 rounded-xl glass-surface border border-border text-xs text-muted-foreground flex items-center justify-between">
+            <div className="p-3.5 rounded-xl glass-surface border border-border text-sm text-muted-foreground flex items-center justify-between">
               <span>No trial booked yet by this lead.</span>
               {lead.status !== 'trial_booked' && (
                 <button
                   type="button"
                   onClick={() => setCurrentStatus('trial_booked')}
-                  className="text-xs text-primary font-semibold hover:underline cursor-pointer"
+                  className="text-sm text-primary font-semibold hover:underline cursor-pointer"
                 >
                   Mark as Booked
                 </button>
@@ -375,13 +375,13 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
           <div className="space-y-3">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-medium text-foreground mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Service Interest
                 </label>
                 <select
                   value={serviceInterest}
                   onChange={(e) => setServiceInterest(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-border glass-card text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 rounded-lg border border-border glass-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="">General / Undecided</option>
                   {AVAILABLE_SERVICES.map(s => (
@@ -391,7 +391,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-foreground mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Learning Goal Summary
                 </label>
                 <input
@@ -399,13 +399,13 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                   value={goal}
                   onChange={(e) => setGoal(e.target.value)}
                   placeholder="e.g. Reading fluency, Hifz Surah Al-Baqarah, speaking Egyptian Arabic"
-                  className="w-full px-3 py-2 rounded-lg border border-border glass-card text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 rounded-lg border border-border glass-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-foreground mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 Private Teacher Notes & Conversation History
               </label>
               <textarea
@@ -413,7 +413,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Log notes from WhatsApp chats, student background, budget, preferred lesson days, parent requests..."
-                className="w-full px-3 py-2 rounded-lg border border-border glass-card text-xs font-sans text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 rounded-lg border border-border glass-card text-sm font-sans text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
           </div>
@@ -427,7 +427,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                 type="button"
                 disabled={saving}
                 onClick={() => handleUpdate('active_student')}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-success hover:bg-success/90 text-white text-xs font-semibold transition-colors shadow-2xs cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-success hover:bg-success/90 text-white text-sm font-semibold transition-colors shadow-2xs cursor-pointer"
               >
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>Enroll as Active Student</span>
@@ -439,7 +439,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                 type="button"
                 disabled={saving}
                 onClick={() => handleUpdate('lost')}
-                className="px-3 py-2 rounded-xl text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                className="px-3 py-2 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 Mark Lost
               </button>
@@ -450,7 +450,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
             <button
               type="button"
               onClick={onClose}
-              className="px-3.5 py-2 rounded-xl border border-border text-xs font-medium text-foreground glass-hover hover:bg-surface transition-colors cursor-pointer"
+              className="px-3.5 py-2 rounded-xl border border-border text-sm font-medium text-foreground glass-hover hover:bg-surface transition-colors cursor-pointer"
             >
               Cancel
             </button>
@@ -459,7 +459,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
               type="button"
               disabled={saving}
               onClick={() => handleUpdate()}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold transition-colors shadow-2xs cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl btn-primary-material text-primary-foreground text-sm font-semibold transition-colors shadow-2xs cursor-pointer"
             >
               <Save className="w-3.5 h-3.5" />
               <span>{saving ? 'Saving...' : 'Save Lead'}</span>

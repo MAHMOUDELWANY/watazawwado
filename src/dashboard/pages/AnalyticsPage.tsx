@@ -119,7 +119,7 @@ export default function AnalyticsPage() {
             <h1 className="text-2xl font-display font-bold text-foreground">
               Operational Analytics
             </h1>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-secondary/40 text-accent dark:text-primary font-medium">
+            <span className="text-sm px-2.5 py-0.5 rounded-full bg-secondary/40 text-accent dark:text-primary font-medium">
               Real-time
             </span>
           </div>
@@ -133,7 +133,7 @@ export default function AnalyticsPage() {
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value as DateRange)}
-              className="px-3 py-1.5 rounded-xl border border-border glass-card text-xs font-medium text-foreground focus:ring-2 focus:ring-primary/30 outline-none"
+              className="px-3 py-1.5 rounded-xl border border-border glass-card text-sm font-medium text-foreground focus:ring-2 focus:ring-primary/30 outline-none"
             >
               <option value="all_time">All Time</option>
               <option value="today">Today</option>
@@ -146,7 +146,7 @@ export default function AnalyticsPage() {
             <button
               onClick={() => fetchAnalytics(true)}
               disabled={refreshing}
-              className="px-3 py-1.5 rounded-xl border border-border glass-card text-xs font-medium text-foreground hover:bg-stone-50 dark:hover:bg-border/40 transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              className="px-3 py-1.5 rounded-xl border border-border glass-card text-sm font-medium text-foreground hover:bg-stone-50 dark:hover:bg-border/40 transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
               <span className="hidden sm:inline">Refresh</span>
@@ -163,7 +163,7 @@ export default function AnalyticsPage() {
       {dateRange === 'custom' && (
         <div className="flex flex-wrap items-center gap-3 p-3 rounded-xl glass-card border-none/30 dark:border-border/30">
           <div className="flex flex-col">
-            <label className="text-[10px] uppercase tracking-wider text-stone-500 mb-1 font-medium">Start Date</label>
+            <label className="text-[13px] uppercase tracking-wider text-stone-500 mb-1 font-medium">Start Date</label>
             <input 
               type="date" 
               value={customStart}
@@ -172,7 +172,7 @@ export default function AnalyticsPage() {
             />
           </div>
           <div className="flex flex-col">
-            <label className="text-[10px] uppercase tracking-wider text-stone-500 mb-1 font-medium">End Date</label>
+            <label className="text-[13px] uppercase tracking-wider text-stone-500 mb-1 font-medium">End Date</label>
             <input 
               type="date" 
               value={customEnd}
@@ -184,7 +184,7 @@ export default function AnalyticsPage() {
       )}
 
       {error && (
-        <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800/40 text-xs text-rose-800 dark:text-rose-300 flex items-center gap-2">
+        <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800/40 text-sm text-rose-800 dark:text-rose-300 flex items-center gap-2">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{error}</span>
         </div>
@@ -194,7 +194,7 @@ export default function AnalyticsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="p-5 rounded-2xl glass-card border-none/30 dark:border-border/30 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs uppercase tracking-wider text-foreground/60 dark:text-border/60 font-medium">
+            <span className="text-sm uppercase tracking-wider text-foreground/60 dark:text-border/60 font-medium">
               Lead → Trial
             </span>
             <div className="w-8 h-8 rounded-full bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
@@ -213,7 +213,7 @@ export default function AnalyticsPage() {
 
         <div className="p-5 rounded-2xl glass-card border-none/30 dark:border-border/30 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs uppercase tracking-wider text-foreground/60 dark:text-border/60 font-medium">
+            <span className="text-sm uppercase tracking-wider text-foreground/60 dark:text-border/60 font-medium">
               Trial → Student
             </span>
             <div className="w-8 h-8 rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
@@ -232,7 +232,7 @@ export default function AnalyticsPage() {
 
         <div className="p-5 rounded-2xl glass-card border-none/30 dark:border-border/30 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs uppercase tracking-wider text-foreground/60 dark:text-border/60 font-medium">
+            <span className="text-sm uppercase tracking-wider text-foreground/60 dark:text-border/60 font-medium">
               Total Active
             </span>
             <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-accent dark:text-primary">
@@ -251,7 +251,7 @@ export default function AnalyticsPage() {
         
         <div className="p-5 rounded-2xl glass-card border-none/30 dark:border-border/30 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs uppercase tracking-wider text-foreground/60 dark:text-border/60 font-medium">
+            <span className="text-sm uppercase tracking-wider text-foreground/60 dark:text-border/60 font-medium">
               Bookings
             </span>
             <div className="w-8 h-8 rounded-full bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400">
@@ -277,11 +277,11 @@ export default function AnalyticsPage() {
               <h2 className="text-base font-display font-semibold text-foreground">
                 Learner Lifecycle Stages
               </h2>
-              <p className="text-xs text-foreground/70 dark:text-border">
+              <p className="text-sm text-foreground/70 dark:text-border">
                 Volume distribution across the lifecycle transition states.
               </p>
             </div>
-            <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">
+            <span className="text-sm font-medium px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">
               {funnel?.total_leads || 0} Leads
             </span>
           </div>
@@ -295,7 +295,7 @@ export default function AnalyticsPage() {
 
               return (
                 <div key={stage.label} className="space-y-1.5">
-                  <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-2">
                       <span className="font-mono text-stone-400 font-medium">0{idx + 1}</span>
                       <span className="font-medium text-foreground">{stage.label}</span>
@@ -327,22 +327,22 @@ export default function AnalyticsPage() {
                 Payment Operational Status
               </h2>
             </div>
-            <p className="text-xs text-foreground/70 dark:text-border">
+            <p className="text-sm text-foreground/70 dark:text-border">
               Activity overview of payment records created in the selected period.
             </p>
 
             <div className="grid grid-cols-3 gap-4 pt-2">
               <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/40 text-center">
                 <span className="block text-2xl font-display font-bold text-emerald-700 dark:text-emerald-400">{payments?.confirmed_count || 0}</span>
-                <span className="text-[10px] uppercase tracking-wider text-emerald-600 dark:text-emerald-500 font-medium">Confirmed</span>
+                <span className="text-[13px] uppercase tracking-wider text-emerald-600 dark:text-emerald-500 font-medium">Confirmed</span>
               </div>
               <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800/40 text-center">
                 <span className="block text-2xl font-display font-bold text-amber-700 dark:text-amber-400">{payments?.pending_count || 0}</span>
-                <span className="text-[10px] uppercase tracking-wider text-amber-600 dark:text-amber-500 font-medium">Pending</span>
+                <span className="text-[13px] uppercase tracking-wider text-amber-600 dark:text-amber-500 font-medium">Pending</span>
               </div>
               <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-800/40 text-center">
                 <span className="block text-2xl font-display font-bold text-rose-700 dark:text-rose-400">{payments?.rejected_count || 0}</span>
-                <span className="text-[10px] uppercase tracking-wider text-rose-600 dark:text-rose-500 font-medium">Rejected</span>
+                <span className="text-[13px] uppercase tracking-wider text-rose-600 dark:text-rose-500 font-medium">Rejected</span>
               </div>
             </div>
           </div>
@@ -358,7 +358,7 @@ export default function AnalyticsPage() {
             
             <div className="space-y-3 pt-2">
               {Object.entries(data?.services_distribution || {}).length === 0 ? (
-                <p className="text-xs text-stone-400 py-4 text-center">No service inquiries in period.</p>
+                <p className="text-sm text-stone-400 py-4 text-center">No service inquiries in period.</p>
               ) : (
                 Object.entries(data?.services_distribution || {}).map(([serviceName, countVal]) => {
                   const count = Number(countVal) || 0;
@@ -366,7 +366,7 @@ export default function AnalyticsPage() {
                   const pct = Math.round((count / total) * 100);
                   return (
                     <div key={serviceName} className="space-y-1">
-                      <div className="flex items-center justify-between text-xs">
+                      <div className="flex items-center justify-between text-sm">
                         <span className="text-foreground font-medium">{serviceName}</span>
                         <span className="text-stone-500 font-mono">{count} ({pct}%)</span>
                       </div>

@@ -58,7 +58,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
                 hidden: { opacity: 0, x: isEn ? -12 : 12 },
                 visible: { opacity: 1, x: 0, transition: { duration: 0.4 } },
               }}
-              className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full bg-secondary/30 border border-secondary/50 text-xs font-semibold text-accent mb-5"
+              className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full bg-secondary/30 border border-secondary/50 text-sm font-semibold text-accent mb-5"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-brand" />
               <span>{isEn ? 'Direct 1-on-1 Mentorship' : ARABIC_TRANSLATIONS.hero.eyebrow}</span>
@@ -127,7 +127,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
               <a
                 href="#services"
                 id="hero-learn-more-btn"
-                className="inline-flex items-center justify-center gap-1.5 px-4 py-3.5 text-muted-foreground hover:text-foreground text-xs sm:text-base font-medium transition-colors"
+                className="inline-flex items-center justify-center gap-1.5 px-4 py-3.5 text-muted-foreground hover:text-foreground text-sm sm:text-base font-medium transition-colors"
               >
                 <span>{isEn ? 'View Teaching Areas' : 'استعراض المسارات'}</span>
                 <span aria-hidden="true" className="rtl:rotate-180">↓</span>
@@ -145,10 +145,10 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
               <div className="flex items-start gap-2">
                 <GraduationCap className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                 <div>
-                  <div className="text-xs font-semibold text-foreground">
+                  <div className="text-sm font-semibold text-foreground">
                     {isEn ? 'Al-Azhar Degree' : 'خريج الأزهر'}
                   </div>
-                  <div className="text-[11px] text-muted-foreground">
+                  <div className="text-[13px] text-muted-foreground">
                     {isEn ? 'Classical grounding' : 'تأصيل شرعي ولغوي'}
                   </div>
                 </div>
@@ -157,10 +157,10 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
               <div className="flex items-start gap-2">
                 <Languages className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                 <div>
-                  <div className="text-xs font-semibold text-foreground">
+                  <div className="text-sm font-semibold text-foreground">
                     {isEn ? 'IELTS C1 Certified' : 'إتقان الإنجليزية C1'}
                   </div>
-                  <div className="text-[11px] text-muted-foreground">
+                  <div className="text-[13px] text-muted-foreground">
                     {isEn ? 'Fluent explanations' : 'تواصل سلس ومباشر'}
                   </div>
                 </div>
@@ -169,10 +169,10 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
               <div className="flex items-start gap-2">
                 <UserCheck className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                 <div>
-                  <div className="text-xs font-semibold text-foreground">
+                  <div className="text-sm font-semibold text-foreground">
                     {isEn ? 'Always 1-on-1' : 'تعليم فردي دائماً'}
                   </div>
-                  <div className="text-[11px] text-muted-foreground">
+                  <div className="text-[13px] text-muted-foreground">
                     {isEn ? 'No rotating tutors' : 'مع محمود مباشرة'}
                   </div>
                 </div>
@@ -181,10 +181,10 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
               <div className="flex items-start gap-2">
                 <Clock className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                 <div>
-                  <div className="text-xs font-semibold text-foreground">
+                  <div className="text-sm font-semibold text-foreground">
                     {isEn ? 'Global Timezones' : 'توقيتات مرنة'}
                   </div>
-                  <div className="text-[11px] text-muted-foreground">
+                  <div className="text-[13px] text-muted-foreground">
                     {isEn ? 'Canada, US, UK, AU' : 'كندا وأمريكا وبريطانيا'}
                   </div>
                 </div>

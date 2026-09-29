@@ -128,7 +128,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
               <DollarSign className="w-5 h-5 text-accent" />
               Record Manual Payment
             </h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
+            <p className="text-sm text-muted-foreground mt-0.5">
               {bookingReference ? `Linked to Booking ${bookingReference}` : 'Record manual receipt or claim'}
               {contactName ? ` (${contactName})` : ''}
             </p>
@@ -146,7 +146,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
         {/* Content & Form */}
         <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4">
           {error && (
-            <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-xl text-xs text-destructive flex items-center gap-2">
+            <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-xl text-sm text-destructive flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{error}</span>
             </div>
@@ -155,7 +155,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           {/* Amount & Currency */}
           <div className="grid grid-cols-3 gap-3">
             <div className="col-span-2">
-              <label className="block text-xs font-medium text-foreground mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 Amount Received *
               </label>
               <div className="relative">
@@ -174,7 +174,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-foreground mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 Currency *
               </label>
               <select
@@ -196,7 +196,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
 
           {/* Payment Method */}
           <div>
-            <label className="block text-xs font-medium text-foreground mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               Payment Method *
             </label>
             <select
@@ -215,12 +215,12 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
 
           {/* Status Selection */}
           <div>
-            <label className="block text-xs font-medium text-foreground mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               Initial Verification Status *
             </label>
             <div className="grid grid-cols-2 gap-2">
               <label 
-                className={`flex items-center gap-2 p-2.5 rounded-xl border text-xs font-medium cursor-pointer transition-colors ${
+                className={`flex items-center gap-2 p-2.5 rounded-xl border text-sm font-medium cursor-pointer transition-colors ${
                   status === 'confirmed' 
                     ? 'bg-success/15 border-success/40 text-success' 
                     : 'glass-surface border-border text-foreground glass-hover hover:bg-surface'
@@ -236,12 +236,12 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                 />
                 <div>
                   <span className="block font-semibold">Confirmed</span>
-                  <span className="block text-[10px] opacity-75">Funds already received & verified</span>
+                  <span className="block text-[13px] opacity-75">Funds already received & verified</span>
                 </div>
               </label>
 
               <label 
-                className={`flex items-center gap-2 p-2.5 rounded-xl border text-xs font-medium cursor-pointer transition-colors ${
+                className={`flex items-center gap-2 p-2.5 rounded-xl border text-sm font-medium cursor-pointer transition-colors ${
                   status === 'pending' 
                     ? 'bg-warning/15 border-warning/40 text-warning' 
                     : 'glass-surface border-border text-foreground glass-hover hover:bg-surface'
@@ -257,7 +257,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                 />
                 <div>
                   <span className="block font-semibold">Pending Review</span>
-                  <span className="block text-[10px] opacity-75">To be verified by Mahmoud</span>
+                  <span className="block text-[13px] opacity-75">To be verified by Mahmoud</span>
                 </div>
               </label>
             </div>
@@ -265,7 +265,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
 
           {/* Reference / Transaction ID */}
           <div>
-            <label className="block text-xs font-medium text-foreground mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               Payment Reference / Transaction ID (Optional)
             </label>
             <input
@@ -279,7 +279,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
 
           {/* Notes */}
           <div>
-            <label className="block text-xs font-medium text-foreground mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               Private Teacher Notes (Optional)
             </label>
             <textarea
@@ -297,14 +297,14 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
               type="button"
               onClick={onClose}
               disabled={submitting}
-              className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-surface-subtle rounded-xl transition-colors cursor-pointer min-h-[40px]"
+              className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-surface-subtle rounded-xl transition-colors cursor-pointer min-h-[40px]"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-5 py-2 text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary-hover rounded-xl shadow-xs transition-colors flex items-center gap-1.5 disabled:opacity-50 cursor-pointer min-h-[40px]"
+              className="px-5 py-2 text-sm font-semibold text-primary-foreground btn-primary-material rounded-xl shadow-xs transition-colors flex items-center gap-1.5 disabled:opacity-50 cursor-pointer min-h-[40px]"
             >
               {submitting ? (
                 <span>Recording...</span>

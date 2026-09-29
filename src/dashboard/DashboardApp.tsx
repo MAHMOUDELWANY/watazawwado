@@ -128,7 +128,7 @@ export function DashboardApp() {
           </p>
           <Link 
             to="/staff/login" 
-            className="inline-flex items-center justify-center px-6 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl transition-all duration-base font-medium shadow-xs min-h-[44px]"
+            className="inline-flex items-center justify-center px-6 py-2.5 btn-primary-material text-primary-foreground rounded-xl transition-all duration-base font-medium shadow-xs min-h-[44px]"
           >
             Go to Teacher Login
           </Link>
@@ -200,10 +200,10 @@ export function DashboardApp() {
           <Link to="/" className="flex items-center gap-2.5 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg p-1">
             <BrandLogo variant="compact" />
             <div>
-              <span className="text-sm font-display font-semibold tracking-tight text-foreground block">
+              <span className="text-sm font-display font-semibold  text-foreground block">
                 {lang === 'ar' ? 'وتزودوا — المعلم' : 'Watazawwado'}
               </span>
-              <span className="text-[10px] text-muted-foreground uppercase tracking-wider block">
+              <span className="text-[13px] text-muted-foreground uppercase tracking-wider block">
                 {isSuperAdmin ? (lang === 'ar' ? 'الإدارة العامة' : 'Super Admin') : (lang === 'ar' ? 'مساحة المعلم' : 'Teacher Workspace')}
               </span>
             </div>
@@ -253,16 +253,16 @@ export function DashboardApp() {
         <div className="p-3 border-t border-border space-y-2">
           {/* Teacher Profile Card */}
           <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl glass-surface border border-border">
-            <div className="w-8 h-8 rounded-full bg-secondary/40 text-accent flex items-center justify-center font-semibold text-xs shrink-0">
+            <div className="w-8 h-8 rounded-full bg-secondary/40 text-accent flex items-center justify-center font-semibold text-sm shrink-0">
               {user?.email?.charAt(0).toUpperCase() || 'M'}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-foreground truncate">
+              <p className="text-sm font-semibold text-foreground truncate">
                 {lang === 'ar' ? (isSuperAdmin ? 'أستاذ محمود (إدارة)' : 'الأستاذ') : (user?.user_metadata?.name || (isSuperAdmin ? 'Ustadh Mahmoud (Admin)' : 'Ustadh Mahmoud'))}
               </p>
-              <p className="text-[10px] text-muted-foreground truncate">{user?.email}</p>
+              <p className="text-[13px] text-muted-foreground truncate">{user?.email}</p>
             </div>
-            <span className={`text-[10px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0 ${
+            <span className={`text-[13px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0 ${
               isSuperAdmin ? 'bg-secondary/30 text-accent font-bold' : 'bg-secondary/30 text-primary'
             }`}>
               {isSuperAdmin ? 'Admin' : 'Teacher'}
@@ -305,7 +305,7 @@ export function DashboardApp() {
                   <Link
                     key={item.name}
                     to={item.path}
-                    className={`px-3 py-2 rounded-xl text-xs font-medium transition-colors ${isActive ? "bg-secondary/20 text-accent font-semibold" : "text-muted-foreground hover:text-foreground hover:bg-surface-subtle"}`}
+                    className={`px-3 py-2 rounded-xl text-sm font-medium transition-colors ${isActive ? "bg-secondary/20 text-accent font-semibold" : "text-muted-foreground hover:text-foreground hover:bg-surface-subtle"}`}
                   >
                     {item.name}
                   </Link>
@@ -317,7 +317,7 @@ export function DashboardApp() {
             <div className="flex items-center gap-2">
               <button
                 onClick={toggleLanguage}
-                className="hidden md:flex p-2 text-primary hover:bg-surface-subtle rounded-xl text-xs font-semibold"
+                className="hidden md:flex p-2 text-primary hover:bg-surface-subtle rounded-xl text-sm font-semibold"
               >
                 {lang === "en" ? '\u0627\u0644\u0639\u0631\u0628\u064A\u0629' : "EN"}
               </button>

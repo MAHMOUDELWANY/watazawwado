@@ -46,7 +46,7 @@ export function StudentPageBack({
   );
 
   const baseClasses =
-    'group inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors cursor-pointer py-1.5 pe-3 min-h-[36px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus rounded-lg select-none';
+    'group inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors cursor-pointer py-1.5 pe-3 min-h-[36px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus rounded-lg select-none';
 
   if (!to) {
     return (

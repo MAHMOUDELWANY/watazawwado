@@ -32,7 +32,7 @@ export const Footer: React.FC<FooterProps> = ({
           
           {/* Brand & Purpose (5 cols on md) */}
           <div className="md:col-span-5 space-y-4">
-            <div className="font-display text-2xl font-medium text-foreground tracking-tight flex items-center gap-2.5"><BrandLogo variant="compact" />
+            <div className="font-display text-2xl font-medium text-foreground flex items-center gap-2.5"><BrandLogo variant="compact" />
               Watazawwado <span className="text-muted-foreground font-light text-xl">/ وتزودوا</span>
             </div>
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-sm">
@@ -43,7 +43,7 @@ export const Footer: React.FC<FooterProps> = ({
             <div className="flex items-center gap-3 pt-1">
               <button
                 onClick={onToggleLang}
-                className="inline-flex items-center gap-1.5 text-xs text-interactive hover:underline cursor-pointer"
+                className="inline-flex items-center gap-1.5 text-sm text-interactive hover:underline cursor-pointer"
               >
                 <Globe className="w-3.5 h-3.5" />
                 <span>{isEn ? 'Switch to العربية' : 'Switch to English'}</span>
@@ -54,7 +54,7 @@ export const Footer: React.FC<FooterProps> = ({
           {/* Quick Navigation (4 cols on md) */}
           <div className="md:col-span-4 grid grid-cols-2 gap-4 text-sm sm:text-base">
             <div>
-              <div className="font-semibold uppercase tracking-wider text-primary text-xs mb-3">
+              <div className="font-semibold uppercase tracking-wider text-primary text-sm mb-3">
                 {isEn ? 'Teaching' : 'الدروس والبرامج'}
               </div>
               <ul className="space-y-2 text-muted-foreground">
@@ -82,7 +82,7 @@ export const Footer: React.FC<FooterProps> = ({
             </div>
 
             <div>
-              <div className="font-semibold uppercase tracking-wider text-primary text-xs mb-3">
+              <div className="font-semibold uppercase tracking-wider text-primary text-sm mb-3">
                 {isEn ? 'Experience' : 'التجربة'}
               </div>
               <ul className="space-y-2 text-muted-foreground">
@@ -112,12 +112,12 @@ export const Footer: React.FC<FooterProps> = ({
 
           {/* Action & Contact (3 cols on md) */}
           <div className="md:col-span-3 space-y-3">
-            <div className="font-semibold uppercase tracking-wider text-primary text-xs mb-2">
+            <div className="font-semibold uppercase tracking-wider text-primary text-sm mb-2">
               {isEn ? 'Get Started' : 'ابدأ الآن'}
             </div>
             <button
               onClick={onOpenTrialModal}
-              className="w-full py-2.5 px-4 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-medium transition-colors shadow-xs cursor-pointer"
+              className="w-full py-2.5 px-4 rounded-xl btn-primary-material text-primary-foreground text-sm font-medium transition-colors shadow-xs cursor-pointer"
             >
               {isEn ? 'Book Free 30-Min Trial' : 'احجز جلسة تجريبية مجانية'}
             </button>
@@ -125,7 +125,7 @@ export const Footer: React.FC<FooterProps> = ({
               href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I am visiting your website and have a question.')}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-border text-xs text-foreground hover:bg-surface-subtle transition-colors"
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-border text-sm text-foreground hover:bg-surface-subtle transition-colors"
             >
               <MessageCircle className="w-3.5 h-3.5 text-accent" />
               <span>WhatsApp: {MAHMOUD_OFFICIAL_PHONE_INTL}</span>
@@ -135,7 +135,7 @@ export const Footer: React.FC<FooterProps> = ({
         </div>
 
         {/* Bottom Credits & Policies */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
           <div>
             © {new Date().getFullYear()} Watazawwado • Ustadh Mahmoud. {isEn ? 'Personal Teaching Practice. All rights reserved.' : 'جميع الحقوق محفوظة للأستاذ محمود.'}
           </div>

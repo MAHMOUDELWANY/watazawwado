@@ -135,7 +135,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
             <h2 className="text-lg font-display font-bold text-foreground">
               Edit Student Profile
             </h2>
-            <p className="text-xs text-foreground/70 dark:text-border/70">
+            <p className="text-sm text-foreground/70 dark:text-border/70">
               Update details, parent contact, level assessment, and timezone.
             </p>
           </div>
@@ -150,7 +150,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
         {/* Form Body */}
         <form onSubmit={handleSave} className="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
           {error && (
-            <div className="p-3.5 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/40 flex items-start gap-2 text-xs text-red-700 dark:text-red-300">
+            <div className="p-3.5 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/40 flex items-start gap-2 text-sm text-red-700 dark:text-red-300">
               <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
               <span>{error}</span>
             </div>
@@ -159,7 +159,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
           {/* Core Identity */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-foreground/80 dark:text-border/80 mb-1.5">
+              <label className="block text-sm font-medium text-foreground/80 dark:text-border/80 mb-1.5">
                 Student Name <span className="text-red-500">*</span>
               </label>
               <input
@@ -173,7 +173,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-foreground/80 dark:text-border/80 mb-1.5">
+              <label className="block text-sm font-medium text-foreground/80 dark:text-border/80 mb-1.5">
                 Status
               </label>
               <select
@@ -191,7 +191,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
           {/* Learner Type & Parent Name */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-foreground/80 dark:text-border/80 mb-1.5">
+              <label className="block text-sm font-medium text-foreground/80 dark:text-border/80 mb-1.5">
                 Learner Type
               </label>
               <select
@@ -206,7 +206,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-foreground/80 dark:text-border/80 mb-1.5">
+              <label className="block text-sm font-medium text-foreground/80 dark:text-border/80 mb-1.5">
                 Parent / Guardian Name {learnerType === 'child' && <span className="text-amber-600 dark:text-amber-400 font-normal">(Recommended for Child)</span>}
               </label>
               <input
@@ -222,7 +222,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
           {/* Parent / Guardian Contact Details (Optional) */}
           {(learnerType === 'child' || parentName.trim().length > 0) && (
             <div className="p-3.5 rounded-xl bg-background/80 dark:bg-background/60 border border-border/40 dark:border-border/40 space-y-3">
-              <span className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+              <span className="text-sm font-semibold text-foreground flex items-center gap-1.5">
                 <Shield className="w-3.5 h-3.5 text-accent" />
                 Parent / Guardian Contact (Optional)
               </span>
@@ -258,7 +258,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
           {/* Contact Details */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-foreground/80 dark:text-border/80 mb-1.5">
+              <label className="block text-sm font-medium text-foreground/80 dark:text-border/80 mb-1.5">
                 Email Address
               </label>
               <input
@@ -271,7 +271,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-foreground/80 dark:text-border/80 mb-1.5">
+              <label className="block text-sm font-medium text-foreground/80 dark:text-border/80 mb-1.5">
                 WhatsApp Phone
               </label>
               <input
@@ -287,7 +287,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
           {/* Location & Timezone */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-foreground/80 dark:text-border/80 mb-1.5">
+              <label className="block text-sm font-medium text-foreground/80 dark:text-border/80 mb-1.5">
                 Country
               </label>
               <input
@@ -300,7 +300,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-foreground/80 dark:text-border/80 mb-1.5">
+              <label className="block text-sm font-medium text-foreground/80 dark:text-border/80 mb-1.5">
                 Student Timezone
               </label>
               <select
@@ -325,7 +325,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
                     setCustomTimezone(e.target.value);
                     if (e.target.value) setTimezone('');
                   }}
-                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-border/70 dark:border-border/70 glass-card glass-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-1.5 text-sm rounded-lg border border-border/70 dark:border-border/70 glass-card glass-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="Or enter custom IANA zone (e.g. Europe/Dublin)"
                 />
               </div>
@@ -334,7 +334,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
 
           {/* Level Assessment */}
           <div>
-            <label className="block text-xs font-medium text-foreground/80 dark:text-border/80 mb-1.5">
+            <label className="block text-sm font-medium text-foreground/80 dark:text-border/80 mb-1.5">
               Assessed Level
             </label>
             <select
@@ -352,7 +352,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
 
           {/* General Profile Notes */}
           <div>
-            <label className="block text-xs font-medium text-foreground/80 dark:text-border/80 mb-1.5">
+            <label className="block text-sm font-medium text-foreground/80 dark:text-border/80 mb-1.5">
               General Profile Notes
             </label>
             <textarea
@@ -370,14 +370,14 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
               type="button"
               onClick={onClose}
               disabled={saving}
-              className="px-4 py-2 text-xs font-medium rounded-xl text-foreground/80 dark:text-border/80 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              className="px-4 py-2 text-sm font-medium rounded-xl text-foreground/80 dark:text-border/80 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="px-5 py-2 text-xs font-medium rounded-xl bg-primary hover:bg-primary-hover text-white shadow-sm transition-colors flex items-center gap-1.5 disabled:opacity-50"
+              className="px-5 py-2 text-sm font-medium rounded-xl btn-primary-material text-white shadow-sm transition-colors flex items-center gap-1.5 disabled:opacity-50"
             >
               {saving ? (
                 <span>Saving Changes...</span>

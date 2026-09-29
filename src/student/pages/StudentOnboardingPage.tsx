@@ -166,7 +166,7 @@ export default function StudentOnboardingPage({
                   navigate('/student/book');
                 }
               }}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground font-medium text-sm transition-all shadow-xs cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl btn-primary-material text-primary-foreground font-medium text-sm transition-all shadow-xs cursor-pointer"
             >
               <Calendar className="w-4 h-4" />
               <span>Book Your 1-on-1 Free Trial</span>
@@ -189,7 +189,7 @@ export default function StudentOnboardingPage({
     <div className="max-w-2xl mx-auto py-8 sm:py-12 px-4">
       {/* Header */}
       <div className="text-center mb-8">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-secondary/30 text-primary mb-3">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-secondary/30 text-primary mb-3">
           <Sparkles className="w-3.5 h-3.5" />
           Personalized Onboarding
         </span>
@@ -249,7 +249,7 @@ export default function StudentOnboardingPage({
                   <User className="w-5 h-5 text-accent shrink-0 mt-0.5" />
                   <div>
                     <div className="font-semibold text-sm">Adult Learner</div>
-                    <div className="text-xs opacity-75 mt-0.5">I am learning for myself</div>
+                    <div className="text-sm opacity-75 mt-0.5">I am learning for myself</div>
                   </div>
                 </button>
 
@@ -265,7 +265,7 @@ export default function StudentOnboardingPage({
                   <Users className="w-5 h-5 text-accent shrink-0 mt-0.5" />
                   <div>
                     <div className="font-semibold text-sm">Child / Youth</div>
-                    <div className="text-xs opacity-75 mt-0.5">I am enrolling my child</div>
+                    <div className="text-sm opacity-75 mt-0.5">I am enrolling my child</div>
                   </div>
                 </button>
               </div>
@@ -286,11 +286,11 @@ export default function StudentOnboardingPage({
 
             {learnerType === 'child' && (
               <div className="p-4 rounded-2xl glass-surface border border-border space-y-4">
-                <div className="text-xs font-semibold uppercase tracking-wider text-primary">
+                <div className="text-sm font-semibold uppercase tracking-wider text-primary">
                   Parent / Guardian Information
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-foreground mb-1">
+                  <label className="block text-sm font-medium text-foreground mb-1">
                     Parent Name
                   </label>
                   <input
@@ -302,7 +302,7 @@ export default function StudentOnboardingPage({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-foreground mb-1">
+                  <label className="block text-sm font-medium text-foreground mb-1">
                     Parent WhatsApp (for lesson updates)
                   </label>
                   <input
@@ -327,7 +327,7 @@ export default function StudentOnboardingPage({
                   setError(null);
                   setStep(2);
                 }}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground font-medium text-sm transition-all cursor-pointer"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl btn-primary-material text-primary-foreground font-medium text-sm transition-all cursor-pointer"
               >
                 <span>Continue: Subject & Level</span>
                 <ArrowRight className="w-4 h-4" />
@@ -378,7 +378,7 @@ export default function StudentOnboardingPage({
                   >
                     <div>
                       <div className="font-semibold text-sm">{lvl.title}</div>
-                      <div className="text-xs opacity-75 mt-0.5">{lvl.desc}</div>
+                      <div className="text-sm opacity-75 mt-0.5">{lvl.desc}</div>
                     </div>
                     {currentLevel === lvl.id && (
                       <CheckCircle2 className="w-4 h-4 text-accent shrink-0 mt-0.5" />
@@ -392,7 +392,7 @@ export default function StudentOnboardingPage({
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 Back
               </button>
@@ -400,7 +400,7 @@ export default function StudentOnboardingPage({
               <button
                 type="button"
                 onClick={() => setStep(3)}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground font-medium text-sm transition-all cursor-pointer"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl btn-primary-material text-primary-foreground font-medium text-sm transition-all cursor-pointer"
               >
                 <span>Continue: Goals & Contact</span>
                 <ArrowRight className="w-4 h-4" />
@@ -431,7 +431,7 @@ export default function StudentOnboardingPage({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-foreground mb-1.5">
+                <label className="block text-sm font-semibold text-foreground mb-1.5">
                   Your Timezone (IANA)
                 </label>
                 <div className="relative">
@@ -446,7 +446,7 @@ export default function StudentOnboardingPage({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-foreground mb-1.5">
+                <label className="block text-sm font-semibold text-foreground mb-1.5">
                   WhatsApp / Phone Number
                 </label>
                 <div className="relative">
@@ -463,7 +463,7 @@ export default function StudentOnboardingPage({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-foreground mb-1.5">
+              <label className="block text-sm font-semibold text-foreground mb-1.5">
                 Any specific notes or learning needs for Ustadh Mahmoud? (Optional)
               </label>
               <textarea
@@ -479,7 +479,7 @@ export default function StudentOnboardingPage({
               <button
                 type="button"
                 onClick={() => setStep(2)}
-                className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 Back
               </button>
@@ -488,7 +488,7 @@ export default function StudentOnboardingPage({
                 type="button"
                 disabled={isSubmitting}
                 onClick={handleSubmit}
-                className="inline-flex items-center gap-2 px-7 py-3 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground font-medium text-sm transition-all shadow-xs cursor-pointer disabled:opacity-50"
+                className="inline-flex items-center gap-2 px-7 py-3 rounded-2xl btn-primary-material text-primary-foreground font-medium text-sm transition-all shadow-xs cursor-pointer disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <>

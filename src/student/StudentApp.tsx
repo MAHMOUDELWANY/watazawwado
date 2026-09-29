@@ -213,10 +213,10 @@ export default function StudentApp() {
           <div className="w-14 h-14 rounded-2xl bg-secondary/30 text-interactive flex items-center justify-center mx-auto mb-5 font-display font-bold text-xl">
             و
           </div>
-          <h1 className="text-2xl font-display font-bold mb-2 tracking-tight">
+          <h1 className="text-2xl font-display font-bold mb-2 ">
             {isAr ? 'مساحتك التعليمية — وتزودوا' : 'Learning Home Access'}
           </h1>
-          <p className="text-xs sm:text-sm text-muted-foreground mb-6 leading-relaxed">
+          <p className="text-sm sm:text-sm text-muted-foreground mb-6 leading-relaxed">
             {isAr
               ? 'سجّل الدخول للوصول إلى مواعيد دروسك الفردية المباشرة مع الأستاذ محمود ورابط فصل زووم.'
               : 'Sign in to view your scheduled 1-on-1 lessons, join your Zoom classroom, or review teacher feedback.'}
@@ -225,13 +225,13 @@ export default function StudentApp() {
           <div className="space-y-3">
             <button
               onClick={() => setAuthModalOpen(true)}
-              className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl transition-all font-medium text-sm shadow-xs cursor-pointer focus-visible:ring-2 focus-visible:ring-primary"
+              className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 btn-primary-material text-primary-foreground rounded-xl transition-all font-medium text-sm shadow-xs cursor-pointer focus-visible:ring-2 focus-visible:ring-primary"
             >
               <span>{isAr ? 'تسجيل الدخول / إنشاء حساب' : 'Sign In / Create Account'}</span>
               <ArrowRight className={`w-4 h-4 ${isAr ? 'rotate-180' : ''}`} />
             </button>
 
-            <div className="pt-4 border-t border-border text-xs text-muted-foreground">
+            <div className="pt-4 border-t border-border text-sm text-muted-foreground">
               <Link to="/" className="hover:text-foreground transition-colors hover:underline">
                 {isAr ? '← العودة إلى الصفحة الرئيسية' : '← Back to Ustadh Mahmoud Homepage'}
               </Link>
@@ -405,10 +405,10 @@ export default function StudentApp() {
           >
             <BrandLogo variant="compact" />
             <div className="flex flex-col text-start">
-              <span className="font-display font-bold text-base tracking-tight leading-none text-foreground">
+              <span className="font-display font-bold text-base  leading-none text-foreground">
                 Watazawwado
               </span>
-              <span className="text-[10px] text-muted-foreground tracking-wider uppercase mt-0.5">
+              <span className="text-[13px] text-muted-foreground tracking-wider uppercase mt-0.5">
                 {isAr ? 'الرئيسية' : 'Learning Home'}
               </span>
             </div>
@@ -433,7 +433,7 @@ export default function StudentApp() {
             {studentInitial}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-xs font-semibold truncate text-foreground group-hover:text-primary transition-colors">
+            <div className="text-sm font-semibold truncate text-foreground group-hover:text-primary transition-colors">
               {profile?.name || user?.email?.split('@')[0] || (isAr ? 'طالب' : 'Student')}
             </div>
             <div className="text-[11px] text-muted-foreground truncate capitalize">
@@ -450,10 +450,10 @@ export default function StudentApp() {
             onClick={() => setSidebarOpen(false)}
             aria-current={location.pathname === '/student/book' ? 'page' : undefined}
             className={`
-              flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl text-xs sm:text-sm font-semibold transition-all touch-manipulation min-h-[44px] shadow-xs cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
+              flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl text-sm sm:text-sm font-semibold transition-all touch-manipulation min-h-[44px] shadow-xs cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
               ${location.pathname === '/student/book'
                 ? 'bg-secondary/40 text-interactive ring-1 ring-primary/30'
-                : 'bg-primary hover:bg-primary-hover text-primary-foreground hover:shadow-sm'
+                : 'btn-primary-material text-primary-foreground hover:shadow-sm'
               }
             `}
           >
@@ -480,7 +480,7 @@ export default function StudentApp() {
                   onClick={() => setSidebarOpen(false)}
                 aria-current={isActive ? 'page' : undefined}
                 className={`
-                  flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors touch-manipulation min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
+                  flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm sm:text-sm font-medium transition-colors touch-manipulation min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
                   ${isActive
                     ? 'bg-secondary/30 text-interactive font-semibold ring-1 ring-primary/20'
                     : 'text-muted-foreground hover:bg-surface-subtle hover:text-foreground'
@@ -492,7 +492,7 @@ export default function StudentApp() {
                   <span className="truncate">{item.name}</span>
                 </div>
                 {item.badge !== null && item.badge > 0 && (
-                  <span className="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-primary text-primary-foreground">
+                  <span className="px-1.5 py-0.5 text-[13px] font-bold rounded-full bg-primary text-primary-foreground">
                     {item.badge}
                   </span>
                 )}
@@ -569,7 +569,7 @@ export default function StudentApp() {
             {/* Language Switch */}
             <button
               onClick={toggleLang}
-              className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-primary hover:bg-surface-subtle border border-border transition-colors cursor-pointer"
+              className="px-2.5 py-1.5 rounded-lg text-sm font-semibold text-primary hover:bg-surface-subtle border border-border transition-colors cursor-pointer"
             >
               {isAr ? 'EN' : 'عربي'}
             </button>
@@ -643,7 +643,7 @@ export default function StudentApp() {
                 key={item.path}
                 to={item.path}
                 id={isBook ? 'nav-book-link' : item.path === '/student/account' ? 'nav-account-link' : undefined}
-                className={`relative flex flex-col items-center justify-center py-2 px-1 text-[10px] sm:text-xs min-h-[64px] transition-all group flex-1`}
+                className={`relative flex flex-col items-center justify-center py-2 px-1 text-[13px] sm:text-sm min-h-[64px] transition-all group flex-1`}
               >
                 {isBook ? (
                   <div className={`relative flex items-center justify-center w-12 h-9 rounded-[14px] shadow-sm transition-transform active:scale-95 mb-1 group-hover:bg-primary-hover ${

@@ -212,7 +212,7 @@ export default function BookingsPage() {
       {/* Top Header */}
       <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-display font-semibold tracking-tight text-foreground">
+          <h1 className="text-2xl font-display font-semibold  text-foreground">
             Bookings & Payments
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
@@ -223,7 +223,7 @@ export default function BookingsPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setPaymentModalData({})}
-            className="px-4 py-2 text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary-hover rounded-xl shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer min-h-[40px]"
+            className="px-4 py-2 text-sm font-semibold text-primary-foreground btn-primary-material rounded-xl shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer min-h-[40px]"
           >
             <Plus className="w-4 h-4" />
             Record Payment
@@ -234,27 +234,27 @@ export default function BookingsPage() {
       {/* Operational Summary Metrics */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         <div className="p-4 glass-card rounded-2xl border border-border shadow-2xs">
-          <span className="text-xs text-muted-foreground font-medium block">Total Bookings</span>
+          <span className="text-sm text-muted-foreground font-medium block">Total Bookings</span>
           <span className="text-xl font-bold text-foreground mt-1 block">
             {summary.total_bookings}
           </span>
         </div>
 
         <div className="p-4 glass-card rounded-2xl border border-border shadow-2xs">
-          <span className="text-xs text-muted-foreground font-medium block">Upcoming Lessons</span>
+          <span className="text-sm text-muted-foreground font-medium block">Upcoming Lessons</span>
           <span className="text-xl font-bold text-foreground mt-1 block">
             {summary.upcoming_count}
           </span>
         </div>
 
         <div className="p-4 glass-card rounded-2xl border border-border shadow-2xs">
-          <span className="text-xs text-warning font-medium block">Unpaid Upcoming</span>
+          <span className="text-sm text-warning font-medium block">Unpaid Upcoming</span>
           <div className="flex items-center justify-between mt-1">
             <span className="text-xl font-bold text-warning">
               {summary.unpaid_upcoming_count}
             </span>
             {summary.unpaid_upcoming_count > 0 && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-warning/15 text-warning font-semibold">
+              <span className="text-[13px] px-1.5 py-0.5 rounded bg-warning/15 text-warning font-semibold">
                 Action
               </span>
             )}
@@ -262,13 +262,13 @@ export default function BookingsPage() {
         </div>
 
         <div className="p-4 glass-card rounded-2xl border border-border shadow-2xs">
-          <span className="text-xs text-warning font-medium block">Payments to Verify</span>
+          <span className="text-sm text-warning font-medium block">Payments to Verify</span>
           <div className="flex items-center justify-between mt-1">
             <span className="text-xl font-bold text-warning">
               {summary.pending_payments_count}
             </span>
             {summary.pending_payments_count > 0 && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-warning/15 text-warning font-semibold">
+              <span className="text-[13px] px-1.5 py-0.5 rounded bg-warning/15 text-warning font-semibold">
                 Pending
               </span>
             )}
@@ -276,7 +276,7 @@ export default function BookingsPage() {
         </div>
 
         <div className="p-4 glass-card rounded-2xl border border-border shadow-2xs col-span-2 sm:col-span-1">
-          <span className="text-xs text-success font-medium block">Completed Lessons</span>
+          <span className="text-sm text-success font-medium block">Completed Lessons</span>
           <span className="text-xl font-bold text-success mt-1 block">
             {summary.completed_count}
           </span>
@@ -287,7 +287,7 @@ export default function BookingsPage() {
       <div className="flex items-center gap-2 border-b border-border pb-px">
         <button
           onClick={() => setActiveTab('bookings')}
-          className={`px-4 py-2.5 text-xs font-semibold rounded-t-xl transition-colors cursor-pointer ${
+          className={`px-4 py-2.5 text-sm font-semibold rounded-t-xl transition-colors cursor-pointer ${
             activeTab === 'bookings'
               ? 'glass-card text-foreground border-t border-x border-border shadow-2xs'
               : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle/50'
@@ -297,7 +297,7 @@ export default function BookingsPage() {
         </button>
         <button
           onClick={() => setActiveTab('payments')}
-          className={`px-4 py-2.5 text-xs font-semibold rounded-t-xl transition-colors flex items-center gap-1.5 cursor-pointer ${
+          className={`px-4 py-2.5 text-sm font-semibold rounded-t-xl transition-colors flex items-center gap-1.5 cursor-pointer ${
             activeTab === 'payments'
               ? 'glass-card text-foreground border-t border-x border-border shadow-2xs'
               : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle/50'
@@ -306,7 +306,7 @@ export default function BookingsPage() {
           <DollarSign className="w-3.5 h-3.5" />
           All Payments Ledger
           {summary.pending_payments_count > 0 && (
-            <span className="px-1.5 py-0.2 rounded-full bg-warning text-warning-foreground text-[10px] font-bold">
+            <span className="px-1.5 py-0.2 rounded-full bg-warning text-warning-foreground text-[13px] font-bold">
               {summary.pending_payments_count}
             </span>
           )}
@@ -326,7 +326,7 @@ export default function BookingsPage() {
                 placeholder="Search by student, parent, email, or reference..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full ps-8 pe-3 py-1.5 text-xs glass-surface border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+                className="w-full ps-8 pe-3 py-1.5 text-sm glass-surface border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
               />
             </div>
 
@@ -336,7 +336,7 @@ export default function BookingsPage() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-2.5 py-1.5 glass-surface border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary cursor-pointer"
+                className="px-2.5 py-1.5 glass-surface border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary cursor-pointer"
               >
                 <option value="all">All Statuses</option>
                 <option value="confirmed">Confirmed</option>
@@ -353,7 +353,7 @@ export default function BookingsPage() {
               <select
                 value={paymentFilter}
                 onChange={(e) => setPaymentFilter(e.target.value)}
-                className="px-2.5 py-1.5 glass-surface border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary cursor-pointer"
+                className="px-2.5 py-1.5 glass-surface border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary cursor-pointer"
               >
                 <option value="all">All Payments</option>
                 <option value="unpaid">Unpaid</option>
@@ -370,7 +370,7 @@ export default function BookingsPage() {
               <select
                 value={dateFilter}
                 onChange={(e) => setDateFilter(e.target.value)}
-                className="px-2.5 py-1.5 glass-surface border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary cursor-pointer"
+                className="px-2.5 py-1.5 glass-surface border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary cursor-pointer"
               >
                 <option value="all">All Dates</option>
                 <option value="upcoming">Upcoming</option>
@@ -403,7 +403,7 @@ export default function BookingsPage() {
               <h3 className="text-sm font-medium text-destructive mb-1">{error}</h3>
               <button 
                 onClick={fetchBookings}
-                className="mt-3 px-4 py-2 bg-destructive text-destructive-foreground text-xs font-semibold rounded-xl hover:bg-destructive/90 cursor-pointer"
+                className="mt-3 px-4 py-2 bg-destructive text-destructive-foreground text-sm font-semibold rounded-xl hover:bg-destructive/90 cursor-pointer"
               >
                 Retry
               </button>
@@ -439,17 +439,17 @@ export default function BookingsPage() {
                     {/* Left: Learner & Lesson Details */}
                     <div className="space-y-1.5 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-mono font-bold text-xs text-primary group-hover:underline">
+                        <span className="font-mono font-bold text-sm text-primary group-hover:underline">
                           {b.reference_code}
                         </span>
-                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${getBookingStatusBadge(b.status)}`}>
+                        <span className={`px-2 py-0.5 rounded-full text-[13px] font-semibold border ${getBookingStatusBadge(b.status)}`}>
                           {b.status.toUpperCase()}
                         </span>
-                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${paymentBadgeInfo.classes}`}>
+                        <span className={`px-2 py-0.5 rounded-full text-[13px] font-semibold border ${paymentBadgeInfo.classes}`}>
                           {paymentBadgeInfo.text}
                         </span>
                         {b.booking_type === 'trial' && (
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-secondary/30 text-accent border border-secondary/50">
+                          <span className="px-2 py-0.5 rounded-full text-[13px] font-medium bg-secondary/30 text-accent border border-secondary/50">
                             Trial
                           </span>
                         )}
@@ -460,18 +460,18 @@ export default function BookingsPage() {
                           {b.contact_name}
                         </h3>
                         {b.parent_name && (
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-sm text-muted-foreground">
                             (Parent: {b.parent_name})
                           </span>
                         )}
                         <span className="text-border">•</span>
-                        <span className="text-xs font-medium text-muted-foreground">
+                        <span className="text-sm font-medium text-muted-foreground">
                           {b.service_name} ({b.duration_minutes} min)
                         </span>
                       </div>
 
                       {/* Timestamps */}
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1 font-medium text-foreground">
                           <Clock className="w-3.5 h-3.5 text-muted-foreground" />
                           Cairo: {startCairo.toFormat('EEE, LLL dd • hh:mm a')}
@@ -491,7 +491,7 @@ export default function BookingsPage() {
                         <span className="text-[11px] text-muted-foreground block">
                           {b.booking_type === 'trial' ? 'Trial Session' : 'Payment Status'}
                         </span>
-                        <div className="text-xs font-semibold">
+                        <div className="text-sm font-semibold">
                           {b.booking_type === 'trial' ? (
                             <span className="text-primary">$0.00 (Free)</span>
                           ) : b.confirmed_amount > 0 ? (
@@ -512,7 +512,7 @@ export default function BookingsPage() {
                         {b.payment_status === 'pending_review' ? (
                           <button
                             onClick={() => setSelectedBookingId(b.id)}
-                            className="px-3 py-1.5 text-xs font-medium text-warning bg-warning/15 hover:bg-warning/25 rounded-xl border border-warning/30 transition-colors cursor-pointer min-h-[36px]"
+                            className="px-3 py-1.5 text-sm font-medium text-warning bg-warning/15 hover:bg-warning/25 rounded-xl border border-warning/30 transition-colors cursor-pointer min-h-[36px]"
                           >
                             Review Payment
                           </button>
@@ -525,7 +525,7 @@ export default function BookingsPage() {
                               contactName: b.contact_name,
                               expectedAmount: b.expected_amount
                             })}
-                            className="px-3 py-1.5 text-xs font-medium text-foreground glass-card hover:bg-surface-subtle border border-border rounded-xl transition-colors cursor-pointer min-h-[36px]"
+                            className="px-3 py-1.5 text-sm font-medium text-foreground glass-card hover:bg-surface-subtle border border-border rounded-xl transition-colors cursor-pointer min-h-[36px]"
                           >
                             Record Payment
                           </button>
@@ -554,11 +554,11 @@ export default function BookingsPage() {
         <div className="space-y-4">
           <div className="glass-card p-3.5 rounded-2xl border border-border shadow-2xs flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground font-medium">Status Filter:</span>
+              <span className="text-sm text-muted-foreground font-medium">Status Filter:</span>
               <select
                 value={paymentsStatusFilter}
                 onChange={(e) => setPaymentsStatusFilter(e.target.value)}
-                className="px-2.5 py-1.5 glass-surface border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary cursor-pointer"
+                className="px-2.5 py-1.5 glass-surface border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary cursor-pointer"
               >
                 <option value="all">All Payments</option>
                 <option value="pending">Pending Review</option>
@@ -583,11 +583,11 @@ export default function BookingsPage() {
               <AlertCircle className="w-8 h-8 mx-auto" />
               <div className="space-y-1">
                 <h3 className="text-sm font-semibold">Unable to Load Payment Ledger</h3>
-                <p className="text-xs text-destructive/80 max-w-md mx-auto">{paymentsError}</p>
+                <p className="text-sm text-destructive/80 max-w-md mx-auto">{paymentsError}</p>
               </div>
               <button
                 onClick={fetchPayments}
-                className="px-4 py-2 text-xs font-semibold bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-xl transition-colors cursor-pointer inline-flex items-center gap-1.5"
+                className="px-4 py-2 text-sm font-semibold bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-xl transition-colors cursor-pointer inline-flex items-center gap-1.5"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
                 Retry Loading Payments
@@ -603,14 +603,14 @@ export default function BookingsPage() {
             <div className="glass-card border-none rounded-2xl p-8 text-center space-y-2">
               <DollarSign className="w-8 h-8 text-muted-foreground mx-auto" />
               <h3 className="text-sm font-semibold text-foreground">No payment records found</h3>
-              <p className="text-xs text-muted-foreground">Record payments manually or when learners report payment claims.</p>
+              <p className="text-sm text-muted-foreground">Record payments manually or when learners report payment claims.</p>
             </div>
           ) : (
             <div className="space-y-3">
               {paymentsList.map((p) => (
                 <div
                   key={p.id}
-                  className="glass-card p-4 rounded-2xl border border-border shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+                  className="glass-card p-4 rounded-2xl border border-border shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm"
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
@@ -622,7 +622,7 @@ export default function BookingsPage() {
                         {p.payment_method.replace(/_/g, ' ')}
                       </span>
                       <span className="text-border">•</span>
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
+                      <span className={`px-2 py-0.5 rounded-full text-[13px] font-semibold border ${
                         p.status === 'confirmed'
                           ? 'bg-success/15 text-success border-success/30'
                           : p.status === 'pending'
@@ -658,14 +658,14 @@ export default function BookingsPage() {
                     <div className="flex items-center gap-2 shrink-0">
                       <button
                         onClick={() => handleConfirmPaymentRow(p.id)}
-                        className="px-3.5 py-2 text-xs font-semibold text-success-foreground bg-success hover:bg-success/90 rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
+                        className="px-3.5 py-2 text-sm font-semibold text-success-foreground bg-success hover:bg-success/90 rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
                       >
                         <CheckCircle2 className="w-3.5 h-3.5" />
                         Confirm Receipt
                       </button>
                       <button
                         onClick={() => handleRejectPaymentRow(p.id)}
-                        className="px-3.5 py-2 text-xs font-semibold text-destructive hover:bg-destructive/15 border border-destructive/30 rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
+                        className="px-3.5 py-2 text-sm font-semibold text-destructive hover:bg-destructive/15 border border-destructive/30 rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
                       >
                         <XCircle className="w-3.5 h-3.5" />
                         Reject

@@ -59,7 +59,7 @@ export default function StaffLoginPage() {
       <div className="max-w-md w-full mx-auto mb-6">
         <Link
           to="/"
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Ustadh Mahmoud Homepage</span>
@@ -79,13 +79,13 @@ export default function StaffLoginPage() {
           <h1 className="text-2xl font-display font-bold text-foreground">
             Teaching Staff Login
           </h1>
-          <p className="mt-2 text-xs sm:text-sm text-muted-foreground">
+          <p className="mt-2 text-sm sm:text-sm text-muted-foreground">
             Secure workspace access for Ustadh Mahmoud & authorized administrators.
           </p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 text-rose-800 dark:text-rose-300 text-xs sm:text-sm flex items-start gap-2.5">
+          <div className="mb-6 p-4 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 text-rose-800 dark:text-rose-300 text-sm sm:text-sm flex items-start gap-2.5">
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
             <span>{error}</span>
           </div>
@@ -93,7 +93,7 @@ export default function StaffLoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-foreground mb-1.5">
+            <label className="block text-sm font-semibold text-foreground mb-1.5">
               Teacher Email
             </label>
             <div className="relative">
@@ -110,7 +110,7 @@ export default function StaffLoginPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-foreground mb-1.5">
+            <label className="block text-sm font-semibold text-foreground mb-1.5">
               Password
             </label>
             <div className="relative">
@@ -129,7 +129,7 @@ export default function StaffLoginPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full mt-4 flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-medium text-sm transition-all shadow-xs cursor-pointer disabled:opacity-50"
+            className="w-full mt-4 flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl btn-primary-material text-primary-foreground font-medium text-sm transition-all shadow-xs cursor-pointer disabled:opacity-50"
           >
             {isSubmitting ? (
               <>
@@ -145,7 +145,7 @@ export default function StaffLoginPage() {
           </button>
         </form>
 
-        <div className="mt-8 pt-6 border-t border-border text-center text-xs text-muted-foreground">
+        <div className="mt-8 pt-6 border-t border-border text-center text-sm text-muted-foreground">
           <span>Are you an active student? </span>
           <Link
             to="/student"

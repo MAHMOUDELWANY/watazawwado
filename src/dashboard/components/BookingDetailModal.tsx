@@ -390,7 +390,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                   </button>
                 )}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 Created on {booking ? DateTime.fromISO(booking.created_at).toFormat('LLL dd, yyyy') : '...'}
               </p>
             </div>
@@ -399,10 +399,10 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
           <div className="flex items-center gap-2">
             {booking && (
               <>
-                <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border ${getBookingStatusBadge(booking.status)}`}>
+                <span className={`px-2.5 py-1 text-sm font-semibold rounded-full border ${getBookingStatusBadge(booking.status)}`}>
                   {booking.status.toUpperCase()}
                 </span>
-                <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border ${getPaymentBadge(booking.payment_status).classes}`}>
+                <span className={`px-2.5 py-1 text-sm font-semibold rounded-full border ${getPaymentBadge(booking.payment_status).classes}`}>
                   {getPaymentBadge(booking.payment_status).text}
                 </span>
               </>
@@ -419,7 +419,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
         {/* Action alert if any */}
         {actionMessage && (
-          <div className={`px-6 py-2 text-xs flex items-center justify-between border-b ${
+          <div className={`px-6 py-2 text-sm flex items-center justify-between border-b ${
             actionMessage.type === 'success' 
               ? 'bg-success/15 text-success border-success/30' 
               : 'bg-destructive/15 text-destructive border-destructive/30'
@@ -455,7 +455,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                 {/* Learner & Contact Card */}
                 <div className="glass-card p-4 rounded-xl border border-border shadow-2xs space-y-3">
                   <div className="flex items-center justify-between border-b border-border pb-2">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                    <span className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
                       <User className="w-3.5 h-3.5 text-accent" />
                       Learner & Contact
                     </span>
@@ -475,13 +475,13 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                       {booking.contact_name}
                     </h3>
                     {booking.parent_name && (
-                      <p className="text-xs text-muted-foreground mt-0.5">
+                      <p className="text-sm text-muted-foreground mt-0.5">
                         Parent / Guardian: <span className="font-medium text-foreground">{booking.parent_name}</span>
                       </p>
                     )}
                   </div>
 
-                  <div className="space-y-1.5 text-xs text-foreground">
+                  <div className="space-y-1.5 text-sm text-foreground">
                     <div className="flex items-center justify-between">
                       <span className="flex items-center gap-1.5 text-muted-foreground">
                         <Mail className="w-3.5 h-3.5" /> Email:
@@ -527,7 +527,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                 {/* Lesson & Scheduling Card */}
                 <div className="glass-card p-4 rounded-xl border border-border shadow-2xs space-y-3">
                   <div className="flex items-center justify-between border-b border-border pb-2">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                    <span className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
                       <CalendarIcon className="w-3.5 h-3.5 text-accent" />
                       Lesson Details
                     </span>
@@ -540,12 +540,12 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     <h3 className="text-base font-semibold text-foreground">
                       {booking.service_name}
                     </h3>
-                    <p className="text-xs text-muted-foreground mt-0.5">
+                    <p className="text-sm text-muted-foreground mt-0.5">
                       Duration: <span className="font-medium text-foreground">{booking.duration_minutes} Minutes</span>
                     </p>
                   </div>
 
-                  <div className="space-y-1.5 text-xs text-foreground">
+                  <div className="space-y-1.5 text-sm text-foreground">
                     <div className="flex items-start justify-between">
                       <span className="text-muted-foreground flex items-center gap-1.5">
                         <Clock className="w-3.5 h-3.5" /> Cairo Time:
@@ -572,7 +572,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
               {/* Integrations Bar: Zoom & Google Calendar */}
               <div className="glass-card p-4 rounded-xl border border-border shadow-2xs space-y-3">
                 <div className="flex items-center justify-between border-b border-border pb-2">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                  <span className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
                     <Video className="w-3.5 h-3.5 text-accent" />
                     Online Classroom & Calendar Sync
                   </span>
@@ -587,15 +587,15 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div className="space-y-1">
-                    <p className="text-xs font-medium text-foreground">
+                    <p className="text-sm font-medium text-foreground">
                       Zoom Meeting Room:
                     </p>
                     {booking.zoom_meeting_link ? (
-                      <span className="font-mono text-xs text-muted-foreground truncate max-w-sm block">
+                      <span className="font-mono text-sm text-muted-foreground truncate max-w-sm block">
                         {booking.zoom_meeting_link}
                       </span>
                     ) : (
-                      <span className="text-xs text-muted-foreground italic">
+                      <span className="text-sm text-muted-foreground italic">
                         No meeting link assigned yet
                       </span>
                     )}
@@ -607,7 +607,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                         href={booking.zoom_host_url}
                         target="_blank"
                         rel="noreferrer"
-                        className="px-3.5 py-2 text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary-hover rounded-xl transition-colors flex items-center gap-1.5 min-h-[36px]"
+                        className="px-3.5 py-2 text-sm font-semibold text-primary-foreground btn-primary-material rounded-xl transition-colors flex items-center gap-1.5 min-h-[36px]"
                       >
                         <Video className="w-3.5 h-3.5" />
                         Launch as Host
@@ -616,7 +616,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     {booking.zoom_meeting_link && (
                       <button
                         onClick={() => copyToClipboard(booking.zoom_meeting_link || '', 'zoom')}
-                        className="px-3.5 py-2 text-xs font-medium text-foreground glass-surface glass-hover hover:bg-surface border-none rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer min-h-[36px]"
+                        className="px-3.5 py-2 text-sm font-medium text-foreground glass-surface glass-hover hover:bg-surface border-none rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer min-h-[36px]"
                       >
                         {copiedField === 'zoom' ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5" />}
                         Copy Link
@@ -630,17 +630,17 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
               <div className="glass-card p-5 rounded-xl border border-border shadow-2xs space-y-4">
                 <div className="flex items-center justify-between border-b border-border pb-3">
                   <div>
-                    <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                    <span className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
                       <DollarSign className="w-4 h-4 text-accent" />
                       Payment Tracking & Reconciliation
                     </span>
-                    <p className="text-xs text-muted-foreground mt-0.5">
+                    <p className="text-sm text-muted-foreground mt-0.5">
                       Manual ledger verification and financial settlement
                     </p>
                   </div>
                   <button
                     onClick={() => setShowPaymentModal(true)}
-                    className="px-3 py-1.5 text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary-hover rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
+                    className="px-3 py-1.5 text-sm font-semibold text-primary-foreground btn-primary-material rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     Record Payment
@@ -669,7 +669,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
                   <div className="p-3 glass-surface rounded-xl border border-border">
                     <span className="text-[11px] text-muted-foreground block">Reconciliation State</span>
-                    <span className="text-xs font-semibold mt-1 block">
+                    <span className="text-sm font-semibold mt-1 block">
                       <span className={`px-2 py-0.5 rounded-md border ${getPaymentBadge(booking.payment_status).classes}`}>
                         {getPaymentBadge(booking.payment_status).text}
                       </span>
@@ -679,12 +679,12 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
                 {/* Payment Records List */}
                 <div className="space-y-2">
-                  <h4 className="text-xs font-semibold text-foreground">
+                  <h4 className="text-sm font-semibold text-foreground">
                     Payment History ({booking.payments?.length || 0} record{booking.payments?.length === 1 ? '' : 's'})
                   </h4>
 
                   {(!booking.payments || booking.payments.length === 0) ? (
-                    <div className="p-4 rounded-xl border border-dashed border-border text-center text-xs text-muted-foreground">
+                    <div className="p-4 rounded-xl border border-dashed border-border text-center text-sm text-muted-foreground">
                       {booking.booking_type === 'trial' 
                         ? 'No payments needed for this trial lesson.' 
                         : 'No payment records submitted or logged for this booking yet.'}
@@ -694,7 +694,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                       {booking.payments.map((p) => (
                         <div 
                           key={p.id} 
-                          className="p-3 glass-surface rounded-xl border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+                          className="p-3 glass-surface rounded-xl border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm"
                         >
                           <div className="space-y-1">
                             <div className="flex items-center gap-2">
@@ -706,7 +706,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                                 {p.payment_method.replace(/_/g, ' ')}
                               </span>
                               <span className="text-border">•</span>
-                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
+                              <span className={`px-2 py-0.5 rounded-full text-[13px] font-semibold border ${
                                 p.status === 'confirmed' 
                                   ? 'bg-success/15 text-success border-success/30' 
                                   : p.status === 'pending'
@@ -739,14 +739,14 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                             <div className="flex items-center gap-2 shrink-0">
                               <button
                                 onClick={() => handleConfirmPayment(p.id)}
-                                className="px-3 py-1.5 text-xs font-semibold text-success-foreground bg-success hover:bg-success/90 rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
+                                className="px-3 py-1.5 text-sm font-semibold text-success-foreground bg-success hover:bg-success/90 rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
                               >
                                 <CheckCircle2 className="w-3.5 h-3.5" />
                                 Confirm
                               </button>
                               <button
                                 onClick={() => handleRejectPayment(p.id)}
-                                className="px-3 py-1.5 text-xs font-semibold text-destructive hover:bg-destructive/15 border border-destructive/30 rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
+                                className="px-3 py-1.5 text-sm font-semibold text-destructive hover:bg-destructive/15 border border-destructive/30 rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
                               >
                                 <XCircle className="w-3.5 h-3.5" />
                                 Reject
@@ -762,7 +762,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
               {/* Teacher Internal Notes Card */}
               <div className="glass-card p-4 rounded-xl border border-border shadow-2xs space-y-2">
-                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                <span className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
                   <FileText className="w-3.5 h-3.5 text-accent" />
                   Internal Teacher Notes
                 </span>
@@ -771,13 +771,13 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Private lesson observation, payment agreements, or pedagogical notes..."
-                  className="w-full p-2.5 text-xs glass-surface border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+                  className="w-full p-2.5 text-sm glass-surface border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
                 />
                 <div className="flex justify-end">
                   <button
                     onClick={handleSaveNotes}
                     disabled={savingNotes}
-                    className="px-3.5 py-1.5 text-xs font-medium text-foreground hover:bg-surface-subtle rounded-xl border border-border transition-colors disabled:opacity-50 cursor-pointer min-h-[36px]"
+                    className="px-3.5 py-1.5 text-sm font-medium text-foreground hover:bg-surface-subtle rounded-xl border border-border transition-colors disabled:opacity-50 cursor-pointer min-h-[36px]"
                   >
                     {savingNotes ? 'Saving...' : 'Save Notes'}
                   </button>
@@ -787,11 +787,11 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
               {/* Recorded Covered Material Card (if session already has covered material) */}
               {lessonSession?.covered_material && (
                 <div className="bg-secondary/20 p-4 rounded-xl border border-secondary/50 shadow-2xs space-y-1.5">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-primary flex items-center gap-1.5">
+                  <span className="text-sm font-semibold uppercase tracking-wider text-primary flex items-center gap-1.5">
                     <BookOpen className="w-3.5 h-3.5" />
                     Covered Material Recorded
                   </span>
-                  <p className="text-xs text-foreground font-medium leading-relaxed">
+                  <p className="text-sm text-foreground font-medium leading-relaxed">
                     {lessonSession.covered_material}
                   </p>
                 </div>
@@ -801,11 +801,11 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
               {isRescheduling && (
                 <div className="p-4 bg-secondary/15 border border-secondary/30 rounded-xl space-y-3 animate-in fade-in">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-xs font-semibold text-secondary-foreground flex items-center gap-1.5">
+                    <h4 className="text-sm font-semibold text-secondary-foreground flex items-center gap-1.5">
                       <RotateCcw className="w-3.5 h-3.5" />
                       Reschedule Lesson Time
                     </h4>
-                    <button onClick={() => setIsRescheduling(false)} className="text-xs text-muted-foreground hover:text-foreground cursor-pointer">
+                    <button onClick={() => setIsRescheduling(false)} className="text-sm text-muted-foreground hover:text-foreground cursor-pointer">
                       Cancel
                     </button>
                   </div>
@@ -816,7 +816,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                         type="date" 
                         value={newStartDate} 
                         onChange={(e) => setNewStartDate(e.target.value)}
-                        className="w-full p-2 text-xs glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+                        className="w-full p-2 text-sm glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                       />
                     </div>
                     <div>
@@ -825,14 +825,14 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                         type="time" 
                         value={newStartTime} 
                         onChange={(e) => setNewStartTime(e.target.value)}
-                        className="w-full p-2 text-xs glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+                        className="w-full p-2 text-sm glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                       />
                     </div>
                   </div>
                   <button
                     onClick={handleConfirmReschedule}
                     disabled={rescheduling || !newStartDate || !newStartTime}
-                    className="w-full py-2 text-xs font-semibold text-secondary-foreground bg-secondary hover:bg-secondary/80 rounded-xl transition-colors disabled:opacity-50 cursor-pointer min-h-[40px]"
+                    className="w-full py-2 text-sm font-semibold text-secondary-foreground bg-secondary hover:bg-secondary/80 rounded-xl transition-colors disabled:opacity-50 cursor-pointer min-h-[40px]"
                   >
                     {rescheduling ? 'Rescheduling & Syncing Calendar...' : 'Confirm Rescheduled Time'}
                   </button>
@@ -843,11 +843,11 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
               {isCancelling && (
                 <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-xl space-y-3 animate-in fade-in">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-xs font-semibold text-destructive flex items-center gap-1.5">
+                    <h4 className="text-sm font-semibold text-destructive flex items-center gap-1.5">
                       <XCircle className="w-3.5 h-3.5" />
                       Cancel Booking
                     </h4>
-                    <button onClick={() => setIsCancelling(false)} className="text-xs text-muted-foreground hover:text-foreground cursor-pointer">
+                    <button onClick={() => setIsCancelling(false)} className="text-sm text-muted-foreground hover:text-foreground cursor-pointer">
                       Dismiss
                     </button>
                   </div>
@@ -856,12 +856,12 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     placeholder="Reason for cancellation (e.g. Requested by student, emergency)"
                     value={cancellationReason}
                     onChange={(e) => setCancellationReason(e.target.value)}
-                    className="w-full p-2 text-xs glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-destructive/40"
+                    className="w-full p-2 text-sm glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-destructive/40"
                   />
                   <button
                     onClick={handleConfirmCancel}
                     disabled={cancelling}
-                    className="w-full py-2 text-xs font-semibold text-destructive-foreground bg-destructive hover:bg-destructive/90 rounded-xl transition-colors disabled:opacity-50 cursor-pointer min-h-[40px]"
+                    className="w-full py-2 text-sm font-semibold text-destructive-foreground bg-destructive hover:bg-destructive/90 rounded-xl transition-colors disabled:opacity-50 cursor-pointer min-h-[40px]"
                   >
                     {cancelling ? 'Cancelling & Syncing Calendar...' : 'Confirm Cancellation'}
                   </button>
@@ -872,13 +872,13 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
               {isMarkingCompleted && (
                 <div className="p-4 bg-secondary/30 border border-secondary/50 rounded-xl space-y-3 animate-in fade-in">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-xs font-semibold text-primary flex items-center gap-1.5">
+                    <h4 className="text-sm font-semibold text-primary flex items-center gap-1.5">
                       <CalendarCheck2 className="w-3.5 h-3.5" />
                       Record Completed Lesson
                     </h4>
                     <button 
                       onClick={() => setIsMarkingCompleted(false)} 
-                      className="text-xs text-muted-foreground hover:text-foreground cursor-pointer"
+                      className="text-sm text-muted-foreground hover:text-foreground cursor-pointer"
                     >
                       Dismiss
                     </button>
@@ -892,7 +892,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                       placeholder="e.g. Surah Al-Baqarah Ayahs 1–25, Tajweed rules of Meem Sakinah"
                       value={coveredMaterial}
                       onChange={(e) => setCoveredMaterial(e.target.value)}
-                      className="w-full p-2 text-xs glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+                      className="w-full p-2 text-sm glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                     />
                   </div>
                   <div>
@@ -904,13 +904,13 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                       placeholder="e.g. Student demonstrated good Tajweed, review Ayah 15 next session"
                       value={completionNotes}
                       onChange={(e) => setCompletionNotes(e.target.value)}
-                      className="w-full p-2 text-xs glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+                      className="w-full p-2 text-sm glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                     />
                   </div>
                   <button
                     onClick={handleConfirmCompleted}
                     disabled={markingCompleted}
-                    className="w-full py-2 text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary-hover rounded-xl transition-colors disabled:opacity-50 cursor-pointer min-h-[40px]"
+                    className="w-full py-2 text-sm font-semibold text-primary-foreground btn-primary-material rounded-xl transition-colors disabled:opacity-50 cursor-pointer min-h-[40px]"
                   >
                     {markingCompleted ? 'Recording Completion...' : 'Confirm Lesson Completed'}
                   </button>
@@ -921,11 +921,11 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
               {isMarkingNoShow && (
                 <div className="p-4 bg-warning/10 border border-warning/20 rounded-xl space-y-3 animate-in fade-in">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-xs font-semibold text-warning flex items-center gap-1.5">
+                    <h4 className="text-sm font-semibold text-warning flex items-center gap-1.5">
                       <UserX className="w-3.5 h-3.5" />
                       Record Student No-Show
                     </h4>
-                    <button onClick={() => setIsMarkingNoShow(false)} className="text-xs text-muted-foreground hover:text-foreground cursor-pointer">
+                    <button onClick={() => setIsMarkingNoShow(false)} className="text-sm text-muted-foreground hover:text-foreground cursor-pointer">
                       Dismiss
                     </button>
                   </div>
@@ -945,10 +945,10 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                             : 'glass-card/60 border-border text-muted-foreground glass-hover hover:bg-surface'
                         }`}
                       >
-                        <span className="font-semibold text-xs block text-foreground">
+                        <span className="font-semibold text-sm block text-foreground">
                           Return Credit
                         </span>
-                        <span className="text-[10px] text-muted-foreground block mt-0.5">
+                        <span className="text-[13px] text-muted-foreground block mt-0.5">
                           Refund / keep credit in student's package.
                         </span>
                       </button>
@@ -962,10 +962,10 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                             : 'glass-card/60 border-border text-muted-foreground glass-hover hover:bg-surface'
                         }`}
                       >
-                        <span className="font-semibold text-xs block text-foreground">
+                        <span className="font-semibold text-sm block text-foreground">
                           Deduct 1 Credit
                         </span>
-                        <span className="text-[10px] text-muted-foreground block mt-0.5">
+                        <span className="text-[13px] text-muted-foreground block mt-0.5">
                           Forfeit / mark 1 credit as used for missed lesson.
                         </span>
                       </button>
@@ -981,13 +981,13 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                       placeholder="Optional note (e.g. Student did not attend, waited 15 mins)"
                       value={noShowReason}
                       onChange={(e) => setNoShowReason(e.target.value)}
-                      className="w-full p-2 text-xs glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-warning/40"
+                      className="w-full p-2 text-sm glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-warning/40"
                     />
                   </div>
                   <button
                     onClick={handleConfirmNoShow}
                     disabled={markingNoShow}
-                    className="w-full py-2 text-xs font-semibold text-warning-foreground bg-warning hover:bg-warning/90 rounded-xl transition-colors disabled:opacity-50 cursor-pointer min-h-[40px]"
+                    className="w-full py-2 text-sm font-semibold text-warning-foreground bg-warning hover:bg-warning/90 rounded-xl transition-colors disabled:opacity-50 cursor-pointer min-h-[40px]"
                   >
                     {markingNoShow ? 'Recording No-Show...' : 'Confirm Student No-Show'}
                   </button>
@@ -998,14 +998,14 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
               <div className="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-border">
                 <div className="flex flex-wrap items-center gap-2">
                   {booking.status === 'completed' && (
-                    <span className="px-3.5 py-2 text-xs font-semibold text-primary bg-primary/15 rounded-xl border border-secondary/60 flex items-center gap-1.5">
+                    <span className="px-3.5 py-2 text-sm font-semibold text-primary bg-primary/15 rounded-xl border border-secondary/60 flex items-center gap-1.5">
                       <Check className="w-4 h-4" />
                       Completed
                     </span>
                   )}
 
                   {booking.status === 'no_show' && (
-                    <span className="px-3.5 py-2 text-xs font-semibold text-destructive bg-destructive/10 rounded-xl border border-destructive/20 flex items-center gap-1.5">
+                    <span className="px-3.5 py-2 text-sm font-semibold text-destructive bg-destructive/10 rounded-xl border border-destructive/20 flex items-center gap-1.5">
                       <UserX className="w-4 h-4" />
                       Marked No-Show
                     </span>
@@ -1023,7 +1023,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                           }}
                           disabled={markingCompleted || Boolean(startUtc && startUtc > DateTime.now().plus({ minutes: 15 }))}
                           title={startUtc && startUtc > DateTime.now().plus({ minutes: 15 }) ? 'Cannot mark completed before lesson start time' : 'Mark lesson completed'}
-                          className="px-3.5 py-2 text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary-hover rounded-xl shadow-xs transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer min-h-[40px]"
+                          className="px-3.5 py-2 text-sm font-semibold text-primary-foreground btn-primary-material rounded-xl shadow-xs transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer min-h-[40px]"
                         >
                           <CalendarCheck2 className="w-4 h-4" />
                           Mark Completed
@@ -1040,7 +1040,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                           }}
                           disabled={Boolean(startUtc && startUtc > DateTime.now().plus({ minutes: 15 }))}
                           title={startUtc && startUtc > DateTime.now().plus({ minutes: 15 }) ? 'Cannot record no-show before lesson start time' : 'Record student no-show'}
-                          className="px-3.5 py-2 text-xs font-medium text-warning bg-warning/15 hover:bg-warning/25 rounded-xl border border-warning/30 transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer min-h-[40px]"
+                          className="px-3.5 py-2 text-sm font-medium text-warning bg-warning/15 hover:bg-warning/25 rounded-xl border border-warning/30 transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer min-h-[40px]"
                         >
                           <UserX className="w-3.5 h-3.5" />
                           No-Show
@@ -1052,7 +1052,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                   {booking.status !== 'cancelled' && !isRescheduling && (
                     <button
                       onClick={() => setIsRescheduling(true)}
-                      className="px-3.5 py-2 text-xs font-medium text-foreground hover:bg-surface-subtle rounded-xl border border-border transition-colors flex items-center gap-1.5 cursor-pointer min-h-[40px]"
+                      className="px-3.5 py-2 text-sm font-medium text-foreground hover:bg-surface-subtle rounded-xl border border-border transition-colors flex items-center gap-1.5 cursor-pointer min-h-[40px]"
                     >
                       <RotateCcw className="w-3.5 h-3.5" />
                       Reschedule
@@ -1062,7 +1062,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                   {booking.status !== 'cancelled' && !isCancelling && (
                     <button
                       onClick={() => setIsCancelling(true)}
-                      className="px-3.5 py-2 text-xs font-medium text-destructive hover:bg-destructive/15 rounded-xl border border-destructive/30 transition-colors flex items-center gap-1.5 cursor-pointer min-h-[40px]"
+                      className="px-3.5 py-2 text-sm font-medium text-destructive hover:bg-destructive/15 rounded-xl border border-destructive/30 transition-colors flex items-center gap-1.5 cursor-pointer min-h-[40px]"
                     >
                       <XCircle className="w-3.5 h-3.5" />
                       Cancel Booking
@@ -1072,7 +1072,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-surface-subtle rounded-xl transition-colors cursor-pointer min-h-[40px]"
+                  className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-surface-subtle rounded-xl transition-colors cursor-pointer min-h-[40px]"
                 >
                   Close
                 </button>

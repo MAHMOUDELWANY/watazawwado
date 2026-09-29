@@ -43,7 +43,7 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
   return (
     <div className="space-y-6">
       <div>
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+        <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-1">
           <Target className="w-3.5 h-3.5" />
           <span>{isEn ? 'Tailored to Your Journey' : 'تخصيص مسارك التعليمي'}</span>
         </div>
@@ -56,7 +56,7 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
 
       {/* Suggested Goals Chips */}
       <div>
-        <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/70 dark:text-border/70 mb-2.5">
+        <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/70 dark:text-border/70 mb-2.5">
           {isEn ? 'Common Goals for this Subject (Click to Select)' : 'الأهداف الشائعة لهذه المادة (انقر للاختيار)'}
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -69,7 +69,7 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
                 whileHover={{ scale: 1.015, y: -1 }}
                 whileTap={{ scale: 0.985 }}
                 onClick={() => handleGoalChipClick(goal)}
-                className={`p-3.5 rounded-xl border text-start text-xs sm:text-sm transition-all cursor-pointer flex items-start gap-3 ${
+                className={`p-3.5 rounded-xl border text-start text-sm sm:text-sm transition-all cursor-pointer flex items-start gap-3 ${
                   isSelected
                     ? 'bg-foreground glass-surface border-primary ring-1 ring-primary font-medium text-foreground shadow-xs'
                     : 'glass-card border-border text-foreground/80 dark:text-border hover:border-accent/50 hover:bg-foreground/40'
@@ -93,7 +93,7 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
 
       {/* Custom Goal / Personal Context Free-Text */}
       <div className="space-y-2 pt-2">
-        <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-foreground/70 dark:text-border/70">
+        <label className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-foreground/70 dark:text-border/70">
           <Sparkles className="w-3.5 h-3.5 text-accent" />
           <span>
             {isEn
@@ -126,7 +126,7 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
           whileTap={{ scale: 0.97 }}
           onClick={onBack}
           type="button"
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium text-foreground/80 dark:text-border/80 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium text-foreground/80 dark:text-border/80 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
         >
           <ArrowLeft className={`w-3.5 h-3.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
           <span>{isEn ? 'Back to Subjects' : 'الرجوع للمواد'}</span>

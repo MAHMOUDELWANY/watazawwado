@@ -30,7 +30,7 @@ export function PricingPage() {
           <div className="grid md:grid-cols-2 gap-8 pt-12">
             
             {/* Single Lessons */}
-            <BrandGlassCard intensity="subtle" className="p-8">
+            <BrandGlassCard intensity="subtle" className="p-8 glass-hover">
               <h3 className="font-editorial text-2xl text-foreground mb-2">
                 {isEn ? 'Single Lessons' : 'الدروس الفردية'}
               </h3>
@@ -52,7 +52,7 @@ export function PricingPage() {
                   <span>$8</span>
                 </li>
               </ul>
-              <div className="mt-6 pt-6 border-t border-border-subtle text-xs text-muted-foreground">
+              <div className="mt-6 pt-6 border-t border-border-subtle text-sm text-muted-foreground">
                 {isEn 
                   ? '* Language lessons (Arabic/English) are priced differently ($6 / $9 / $12).'
                   : '* دروس اللغات (العربية/الإنلجيزية) تسعر بشكل مختلف (٦$ / ٩$ / ١٢$).'}
@@ -60,7 +60,7 @@ export function PricingPage() {
             </BrandGlassCard>
 
             {/* Monthly Packages */}
-            <BrandGlassCard intensity="high" className="p-8 relative overflow-hidden">
+            <BrandGlassCard intensity="high" className="p-8 relative overflow-hidden glass-hover">
               <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/20 rounded-bl-full -z-10" />
               <h3 className="font-editorial text-2xl text-foreground mb-2">
                 {isEn ? 'Monthly Packages' : 'الباقات الشهرية'}
@@ -90,7 +90,7 @@ export function PricingPage() {
             </BrandGlassCard>
 
             {/* Weekly Packages */}
-            <BrandGlassCard intensity="subtle" className="p-8 relative overflow-hidden lg:col-span-2">
+            <BrandGlassCard intensity="subtle" className="p-8 relative overflow-hidden lg:col-span-2 glass-hover">
               <h3 className="font-editorial text-2xl text-foreground mb-2">
                 {isEn ? 'Weekly Packages' : 'الباقات الأسبوعية'}
               </h3>

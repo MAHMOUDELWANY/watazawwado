@@ -378,7 +378,7 @@ function Bubble({ role, children }: { role: 'user' | 'assistant'; children: Reac
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col">
-      <dt className="text-muted-foreground text-xs">{label}</dt>
+      <dt className="text-muted-foreground text-sm">{label}</dt>
       <dd className="text-foreground">{value}</dd>
     </div>
   );

@@ -31,7 +31,7 @@ export function PublicHomepage() {
               {isEn ? 'Private 1-on-1 Learning' : 'تعليم فردي مباشر'}
             </MarginNote>
             
-            <h1 className={`font-editorial text-4xl sm:text-5xl lg:text-6xl text-foreground font-medium tracking-tight leading-tight ${isEn ? '' : 'font-bold'}`}>
+            <h1 className={`font-editorial text-4xl sm:text-5xl lg:text-6xl text-foreground font-medium leading-tight ${isEn ? '' : 'font-bold'}`}>
               {isEn ? (
                 <>Learn for yourself.<br />Learn for your family.</>
               ) : (
@@ -62,7 +62,7 @@ export function PublicHomepage() {
             <PortraitFrame src="/ustadh-mahmoud.jpg" alt="Ustadh Mahmoud" maxWidth={500} className="mx-auto" />
             <div className="absolute -bottom-6 -left-6 rtl:-left-auto rtl:-right-6 glass-card p-4 rounded-lg shadow-sm border border-border-subtle max-w-[200px]">
               <StudyLine variant="accent" className="my-2" />
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 {isEn ? '3+ years experience, teaching students across Canada, US, UK, and Australia.' : 'خبرة +٣ سنوات في تدريس الطلاب في أمريكا، كندا، بريطانيا، وأستراليا.'}
               </p>
             </div>
@@ -215,15 +215,15 @@ export function PublicHomepage() {
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 pt-6 border-t border-border-subtle mt-8">
                 <div>
                   <p className="text-2xl font-editorial text-foreground">3+</p>
-                  <p className="text-xs text-muted-foreground mt-1">{isEn ? 'Years Teaching' : 'سنوات خبرة'}</p>
+                  <p className="text-sm text-muted-foreground mt-1">{isEn ? 'Years Teaching' : 'سنوات خبرة'}</p>
                 </div>
                 <div>
                   <p className="text-2xl font-editorial text-foreground">Al-Azhar</p>
-                  <p className="text-xs text-muted-foreground mt-1">{isEn ? 'Background' : 'خريج الأزهر'}</p>
+                  <p className="text-sm text-muted-foreground mt-1">{isEn ? 'Background' : 'خريج الأزهر'}</p>
                 </div>
                 <div>
                   <p className="text-2xl font-editorial text-foreground">IELTS C1</p>
-                  <p className="text-xs text-muted-foreground mt-1">{isEn ? 'English Fluency' : 'إتقان الإنجليزية'}</p>
+                  <p className="text-sm text-muted-foreground mt-1">{isEn ? 'English Fluency' : 'إتقان الإنجليزية'}</p>
                 </div>
               </div>
             </div>

@@ -31,7 +31,7 @@ export function AboutPage() {
               <PortraitFrame src="/ustadh-mahmoud.jpg" alt="Ustadh Mahmoud" className="w-full max-w-sm mx-auto md:mx-0" />
               <div className="absolute -bottom-6 -right-6 rtl:-right-auto rtl:-left-6 glass-card p-4 rounded-lg shadow-sm border border-border-subtle max-w-[200px] hidden sm:block">
                 <StudyLine variant="accent" className="my-2" />
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   {isEn ? 'Al-Azhar educated. IELTS C1 Certified.' : 'خريج الأزهر الشريف. معتمد بشهادة IELTS C1.'}
                 </p>
               </div>
@@ -65,7 +65,7 @@ export function AboutPage() {
             </EditorialHeading>
             
             <div className="grid md:grid-cols-2 gap-8">
-              <div className="bg-surface-warm p-8 rounded-xl border border-border-subtle">
+              <div className="glass-card p-8 rounded-xl border border-border-subtle">
                 <h3 className="font-editorial text-xl text-foreground mb-3">
                   {isEn ? 'Start from where you are' : 'نبدأ من مستواك الفعلي'}
                 </h3>
@@ -75,7 +75,7 @@ export function AboutPage() {
                     : 'لا يوجد طالب متأخر. سواء كنت لا تقرأ حرفاً واحداً، أو لديك حفظ قديم تحتاج لمراجعته، نبدأ معاً بدون أي أحكام لبناء أساس متين.'}
                 </p>
               </div>
-              <div className="bg-surface-warm p-8 rounded-xl border border-border-subtle">
+              <div className="glass-card p-8 rounded-xl border border-border-subtle">
                 <h3 className="font-editorial text-xl text-foreground mb-3">
                   {isEn ? 'A safe space to make mistakes' : 'بيئة آمنة تخلو من الحرج'}
                 </h3>
@@ -85,7 +85,7 @@ export function AboutPage() {
                     : 'تعلم لغة جديدة أو تلاوة القرآن قد يسبب التوتر. لذلك نحرص على أن تكون الدروس هادئة ومشجعة، وكل تصحيح يتم بصبر ولطف.'}
                 </p>
               </div>
-              <div className="bg-surface-warm p-8 rounded-xl border border-border-subtle">
+              <div className="glass-card p-8 rounded-xl border border-border-subtle">
                 <h3 className="font-editorial text-xl text-foreground mb-3">
                   {isEn ? 'Continuity & Context' : 'الاستمرارية والفهم الشخصي'}
                 </h3>
@@ -95,7 +95,7 @@ export function AboutPage() {
                     : 'لأنك تتعلم مع نفس المعلم في كل مرة، يتم تتبع تقدمك بدقة. المعلم يفهم طريقتك في التعلم، وما تواجهه من صعوبات، وكيف يشجعك.'}
                 </p>
               </div>
-              <div className="bg-surface-warm p-8 rounded-xl border border-border-subtle">
+              <div className="glass-card p-8 rounded-xl border border-border-subtle">
                 <h3 className="font-editorial text-xl text-foreground mb-3">
                   {isEn ? 'Direct Relationship' : 'تواصل مباشر بدون وسطاء'}
                 </h3>

@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Language, BookingMode } from '../booking/types';
 import { BookingFlow } from './booking/BookingFlow';

@@ -203,19 +203,19 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
         <div className="p-6 border-b border-border-subtle flex items-start justify-between gap-4 glass-surface">
           <div>
             <div className="flex items-center gap-2 mb-1 flex-wrap">
-              <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-secondary/30 text-accent">
+              <span className="text-sm font-mono font-semibold px-2 py-0.5 rounded bg-secondary/30 text-accent">
                 {lesson.reference_code}
               </span>
               {lesson.is_free_trial ? (
-                <span className="text-xs font-semibold px-2 py-0.5 rounded bg-warning/15 text-warning-foreground border border-warning/30">
+                <span className="text-sm font-semibold px-2 py-0.5 rounded bg-warning/15 text-warning-foreground border border-warning/30">
                   Free Trial (30 min)
                 </span>
               ) : (
-                <span className="text-xs font-semibold px-2 py-0.5 rounded bg-secondary/30 text-primary border border-secondary/50">
+                <span className="text-sm font-semibold px-2 py-0.5 rounded bg-secondary/30 text-primary border border-secondary/50">
                   1-on-1 Lesson ({lesson.duration_minutes} min)
                 </span>
               )}
-              <span className={`text-xs font-medium px-2 py-0.5 rounded-full capitalize ${
+              <span className={`text-sm font-medium px-2 py-0.5 rounded-full capitalize ${
                 currentStatus === 'confirmed' ? 'bg-success/15 text-success border border-success/30' :
                 currentStatus === 'completed' ? 'glass-surface text-muted-foreground border border-border-subtle' :
                 currentStatus === 'no_show' ? 'bg-warning/15 text-warning-foreground border border-warning/30' :
@@ -226,11 +226,11 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                 {currentStatus === 'no_show' ? 'No-Show' : (currentStatus || 'Status unavailable')}
               </span>
             </div>
-            <h2 id="lesson-detail-title" className="text-xl font-display font-semibold tracking-tight text-foreground">
+            <h2 id="lesson-detail-title" className="text-xl font-display font-semibold  text-foreground">
               {lesson.learner_name || 'Learner name not recorded'}
             </h2>
             {lesson.parent_name && (
-              <p className="text-xs text-muted-foreground mt-0.5">
+              <p className="text-sm text-muted-foreground mt-0.5">
                 Parent/Guardian: <span className="font-medium text-foreground">{lesson.parent_name}</span>
               </p>
             )}
@@ -249,20 +249,20 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
           {/* Time and Service Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="p-4 rounded-xl glass-surface border border-border-subtle">
-              <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-1">
+              <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-1">
                 <Clock className="w-3.5 h-3.5" />
                 <span>Cairo Time (Teacher)</span>
               </div>
               <div className="font-semibold text-base text-foreground">
                 {startCairo.toFormat('hh:mm a')}
               </div>
-              <div className="text-xs text-muted-foreground mt-0.5">
+              <div className="text-sm text-muted-foreground mt-0.5">
                 {startCairo.toFormat('EEEE, MMMM d, yyyy')}
               </div>
             </div>
 
             <div className="p-4 rounded-xl glass-surface border border-border-subtle">
-              <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-1">
+              <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-1">
                 <Globe className="w-3.5 h-3.5" />
                 <span>Student Timezone</span>
               </div>
@@ -271,12 +271,12 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                   <div className="font-semibold text-base text-foreground">
                     {startStudent.toFormat('hh:mm a')}
                   </div>
-                  <div className="text-xs text-muted-foreground mt-0.5 truncate" title={lesson.student_timezone || ''}>
+                  <div className="text-sm text-muted-foreground mt-0.5 truncate" title={lesson.student_timezone || ''}>
                     {lesson.student_timezone}
                   </div>
                 </>
               ) : (
-                <div className="text-xs text-muted-foreground mt-1">
+                <div className="text-sm text-muted-foreground mt-1">
                   {lesson.student_timezone ? `Timezone: ${lesson.student_timezone}` : 'Timezone unavailable'}
                 </div>
               )}
@@ -304,7 +304,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
           </div>
 
           {/* Lesson Fee Context */}
-          <div className="flex items-center justify-between text-xs py-2.5 px-3.5 rounded-xl glass-surface border border-border-subtle">
+          <div className="flex items-center justify-between text-sm py-2.5 px-3.5 rounded-xl glass-surface border border-border-subtle">
             <span className="text-muted-foreground flex items-center gap-1.5 font-medium">
               <DollarSign className="w-3.5 h-3.5" />
               Lesson Fee
@@ -320,7 +320,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
 
           {/* Zoom Section */}
           <div className="space-y-2">
-            <h3 className="text-xs uppercase tracking-wider font-semibold text-muted-foreground flex items-center gap-1.5">
+            <h3 className="text-sm uppercase tracking-wider font-semibold text-muted-foreground flex items-center gap-1.5">
               <Video className="w-3.5 h-3.5" />
               Zoom Classroom
             </h3>
@@ -332,7 +332,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                     href={hostUrl} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-sm font-semibold transition-colors shadow-2xs"
+                    className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm font-semibold transition-colors shadow-2xs"
                   >
                     <Video className="w-4 h-4" />
                     Start Lesson as Host
@@ -344,7 +344,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                     title="Copy Student Join Link"
                   >
                     {copiedLink === 'join' ? <Check className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4 opacity-70" />}
-                    <span className="text-xs hidden sm:inline">Copy Link</span>
+                    <span className="text-sm hidden sm:inline">Copy Link</span>
                   </button>
                 </div>
                 {lesson.zoom_meeting_id && (
@@ -354,7 +354,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                 )}
               </div>
             ) : (
-              <div className="p-3 rounded-xl bg-warning/10 border border-warning/30 text-xs text-foreground flex items-center gap-2">
+              <div className="p-3 rounded-xl bg-warning/10 border border-warning/30 text-sm text-foreground flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0 text-warning" />
                 <span>Dedicated Zoom meeting link is pending preparation.</span>
               </div>
@@ -363,7 +363,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
 
           {/* AI Lesson Preparation Brief */}
           <div className="space-y-2">
-            <h3 className="text-xs uppercase tracking-wider font-semibold text-muted-foreground flex items-center justify-between">
+            <h3 className="text-sm uppercase tracking-wider font-semibold text-muted-foreground flex items-center justify-between">
               <span className="flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" />
                 AI Lesson Preparation
@@ -372,7 +372,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                 <button
                   onClick={handleGenerateAiBrief}
                   disabled={isGeneratingBrief}
-                  className="text-[10px] bg-accent/10 hover:bg-accent/20 text-accent px-2 py-0.5 rounded-full font-medium transition-colors disabled:opacity-50"
+                  className="text-[13px] bg-accent/10 hover:bg-accent/20 text-accent px-2 py-0.5 rounded-full font-medium transition-colors disabled:opacity-50"
                 >
                   {isGeneratingBrief ? 'Generating...' : 'Generate Brief'}
                 </button>
@@ -409,7 +409,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
 
           {/* Contact Actions */}
           <div className="space-y-2">
-            <h3 className="text-xs uppercase tracking-wider font-semibold text-muted-foreground">
+            <h3 className="text-sm uppercase tracking-wider font-semibold text-muted-foreground">
               Student Communication
             </h3>
             <div className="flex flex-wrap items-center gap-2">
@@ -418,19 +418,19 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-3.5 py-2 bg-success/10 text-success border border-success/30 rounded-xl text-xs font-medium hover:bg-success/20 transition-colors"
+                  className="inline-flex items-center gap-2 px-3.5 py-2 bg-success/10 text-success border border-success/30 rounded-xl text-sm font-medium hover:bg-success/20 transition-colors"
                 >
                   <MessageSquare className="w-3.5 h-3.5" />
                   WhatsApp ({lesson.contact_whatsapp})
                 </a>
               ) : (
-                <span className="text-xs text-muted-foreground">No WhatsApp provided</span>
+                <span className="text-sm text-muted-foreground">No WhatsApp provided</span>
               )}
 
               {lesson.contact_email && (
                 <a 
                   href={`mailto:${lesson.contact_email}?subject=${encodeURIComponent(`Ustadh Mahmoud — ${lesson.service_name} Lesson`)}`}
-                  className="inline-flex items-center gap-2 px-3.5 py-2 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-xs font-medium transition-colors"
+                  className="inline-flex items-center gap-2 px-3.5 py-2 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-sm font-medium transition-colors"
                 >
                   <Mail className="w-3.5 h-3.5 opacity-70" />
                   {lesson.contact_email}
@@ -440,7 +440,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
           </div>
 
           {/* Calendar Sync Status */}
-          <div className="flex items-center justify-between text-xs py-2 px-3.5 rounded-xl glass-surface border border-border-subtle">
+          <div className="flex items-center justify-between text-sm py-2 px-3.5 rounded-xl glass-surface border border-border-subtle">
             <span className="text-muted-foreground flex items-center gap-1.5 font-medium">
               <CalendarIcon className="w-3.5 h-3.5" />
               Google Calendar Sync
@@ -453,11 +453,11 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
           {/* Student Notes */}
           {lesson.notes && lesson.notes.trim().length > 0 && (
             <div className="space-y-1.5 p-3.5 rounded-xl glass-surface border border-border-subtle">
-              <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+              <div className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
                 <FileText className="w-3.5 h-3.5" />
                 <span>Student Learning Goal & Notes</span>
               </div>
-              <p className="text-xs leading-relaxed text-foreground whitespace-pre-wrap">
+              <p className="text-sm leading-relaxed text-foreground whitespace-pre-wrap">
                 {lesson.notes}
               </p>
             </div>
@@ -467,13 +467,13 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
           {isMarkingCompleted && (
             <div className="p-4 bg-secondary/30 border border-secondary/50 rounded-xl space-y-3 animate-in fade-in">
               <div className="flex items-center justify-between">
-                <h4 className="text-xs font-semibold text-primary flex items-center gap-1.5">
+                <h4 className="text-sm font-semibold text-primary flex items-center gap-1.5">
                   <CalendarCheck2 className="w-3.5 h-3.5" />
                   Record Completed Lesson
                 </h4>
                 <button 
                   onClick={() => setIsMarkingCompleted(false)} 
-                  className="text-xs text-muted-foreground hover:text-foreground cursor-pointer"
+                  className="text-sm text-muted-foreground hover:text-foreground cursor-pointer"
                 >
                   Dismiss
                 </button>
@@ -487,7 +487,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                   placeholder="e.g. Surah Al-Baqarah Ayahs 1–25, Tajweed rules of Meem Sakinah"
                   value={coveredMaterial}
                   onChange={(e) => setCoveredMaterial(e.target.value)}
-                  className="w-full p-2 text-xs glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+                  className="w-full p-2 text-sm glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                 />
               </div>
               <div>
@@ -499,13 +499,13 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                   placeholder="e.g. Student demonstrated good Tajweed, review Ayah 15 next session"
                   value={completionNotes}
                   onChange={(e) => setCompletionNotes(e.target.value)}
-                  className="w-full p-2 text-xs glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+                  className="w-full p-2 text-sm glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                 />
               </div>
               <button
                 onClick={handleConfirmCompleted}
                 disabled={updatingStatus}
-                className="w-full py-2 text-xs font-semibold text-primary-foreground bg-primary hover:bg-primary-hover rounded-xl transition-colors disabled:opacity-50 cursor-pointer min-h-[40px]"
+                className="w-full py-2 text-sm font-semibold text-primary-foreground btn-primary-material rounded-xl transition-colors disabled:opacity-50 cursor-pointer min-h-[40px]"
               >
                 {updatingStatus ? 'Recording Completion...' : 'Confirm Lesson Completed'}
               </button>
@@ -516,11 +516,11 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
           {isMarkingNoShow && (
             <div className="p-4 bg-warning/10 border border-warning/20 rounded-xl space-y-3 animate-in fade-in">
               <div className="flex items-center justify-between">
-                <h4 className="text-xs font-semibold text-warning flex items-center gap-1.5">
+                <h4 className="text-sm font-semibold text-warning flex items-center gap-1.5">
                   <UserX className="w-3.5 h-3.5" />
                   Record Student No-Show
                 </h4>
-                <button onClick={() => setIsMarkingNoShow(false)} className="text-xs text-muted-foreground hover:text-foreground cursor-pointer">
+                <button onClick={() => setIsMarkingNoShow(false)} className="text-sm text-muted-foreground hover:text-foreground cursor-pointer">
                   Dismiss
                 </button>
               </div>
@@ -540,10 +540,10 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                         : 'glass-card/60 border-border text-muted-foreground glass-hover hover:bg-surface'
                     }`}
                   >
-                    <span className="font-semibold text-xs block text-foreground">
+                    <span className="font-semibold text-sm block text-foreground">
                       Return Credit
                     </span>
-                    <span className="text-[10px] text-muted-foreground block mt-0.5">
+                    <span className="text-[13px] text-muted-foreground block mt-0.5">
                       Refund / keep credit in student's package.
                     </span>
                   </button>
@@ -557,10 +557,10 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                         : 'glass-card/60 border-border text-muted-foreground glass-hover hover:bg-surface'
                     }`}
                   >
-                    <span className="font-semibold text-xs block text-foreground">
+                    <span className="font-semibold text-sm block text-foreground">
                       Deduct 1 Credit
                     </span>
-                    <span className="text-[10px] text-muted-foreground block mt-0.5">
+                    <span className="text-[13px] text-muted-foreground block mt-0.5">
                       Forfeit / mark 1 credit as used for missed lesson.
                     </span>
                   </button>
@@ -576,13 +576,13 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                   placeholder="Optional note (e.g. Student did not attend, waited 15 mins)"
                   value={noShowReason}
                   onChange={(e) => setNoShowReason(e.target.value)}
-                  className="w-full p-2 text-xs glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-warning/40"
+                  className="w-full p-2 text-sm glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-warning/40"
                 />
               </div>
               <button
                 onClick={handleConfirmNoShow}
                 disabled={updatingStatus}
-                className="w-full py-2 text-xs font-semibold text-warning-foreground bg-warning hover:bg-warning/90 rounded-xl transition-colors disabled:opacity-50 cursor-pointer min-h-[40px]"
+                className="w-full py-2 text-sm font-semibold text-warning-foreground bg-warning hover:bg-warning/90 rounded-xl transition-colors disabled:opacity-50 cursor-pointer min-h-[40px]"
               >
                 {updatingStatus ? 'Recording No-Show...' : 'Confirm Student No-Show'}
               </button>
@@ -594,7 +594,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
         <div className="p-4 border-t border-border-subtle glass-surface flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
             {statusMessage && (
-              <span className={`text-xs font-medium px-2.5 py-1 rounded-lg ${
+              <span className={`text-sm font-medium px-2.5 py-1 rounded-lg ${
                 statusMessage.type === 'success' ? 'bg-success/15 text-success border border-success/30' : 'bg-destructive/15 text-destructive border border-destructive/30'
               }`}>
                 {statusMessage.text}
@@ -611,7 +611,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                     }}
                     disabled={updatingStatus || Boolean(startUtc > DateTime.now().plus({ minutes: 15 }))}
                     title={startUtc > DateTime.now().plus({ minutes: 15 }) ? 'Cannot mark completed before lesson start time' : 'Mark lesson completed'}
-                    className="px-3 py-1.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs font-semibold shadow-2xs transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                    className="px-3 py-1.5 btn-primary-material text-primary-foreground rounded-xl text-sm font-semibold shadow-2xs transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   >
                     <CalendarCheck2 className="w-3.5 h-3.5" />
                     Mark Completed
@@ -625,7 +625,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                     }}
                     disabled={updatingStatus || Boolean(startUtc > DateTime.now().plus({ minutes: 15 }))}
                     title={startUtc > DateTime.now().plus({ minutes: 15 }) ? 'Cannot record no-show before lesson start time' : 'Record student no-show'}
-                    className="px-3 py-1.5 bg-warning/10 hover:bg-warning/20 text-warning-foreground border border-warning/30 rounded-xl text-xs font-medium transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                    className="px-3 py-1.5 bg-warning/10 hover:bg-warning/20 text-warning-foreground border border-warning/30 rounded-xl text-sm font-medium transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   >
                     <UserX className="w-3.5 h-3.5" />
                     No-Show

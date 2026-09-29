@@ -240,7 +240,7 @@ export default function SettingsPage() {
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-xs font-medium text-muted-foreground mb-1">Teacher Name</label>
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">Teacher Name</label>
                   <input
                     type="text"
                     value={getSetting('teacher_name')}
@@ -249,7 +249,7 @@ export default function SettingsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-muted-foreground mb-1">Biography</label>
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">Biography</label>
                   <textarea
                     value={getSetting('bio')}
                     onChange={(e) => updateSetting('bio', e.target.value)}
@@ -260,7 +260,7 @@ export default function SettingsPage() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium text-muted-foreground mb-1">WhatsApp Number</label>
+                    <label className="block text-sm font-medium text-muted-foreground mb-1">WhatsApp Number</label>
                     <input
                       type="tel"
                       value={getSetting('contact_whatsapp')}
@@ -270,7 +270,7 @@ export default function SettingsPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-muted-foreground mb-1">Contact Email</label>
+                    <label className="block text-sm font-medium text-muted-foreground mb-1">Contact Email</label>
                     <input
                       type="email"
                       value={getSetting('contact_email')}
@@ -289,7 +289,7 @@ export default function SettingsPage() {
             <div className="glass-card rounded-2xl border border-border p-6 space-y-6 shadow-2xs">
               <div>
                 <h2 className="text-lg font-display font-semibold text-foreground">Curriculum Services & Hourly Rates</h2>
-                <p className="text-xs text-muted-foreground mt-0.5">
+                <p className="text-sm text-muted-foreground mt-0.5">
                   Manage hourly rates (USD) and trial permissions for active subject offerings.
                 </p>
               </div>
@@ -303,12 +303,12 @@ export default function SettingsPage() {
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <div>
                           <span className="text-sm font-semibold text-foreground">{service.title}</span>
-                          <span className="ms-2 text-xs text-muted-foreground">({service.arabic_title})</span>
+                          <span className="ms-2 text-sm text-muted-foreground">({service.arabic_title})</span>
                         </div>
                         <button
                           onClick={() => handleSaveService(service)}
                           disabled={savingServiceId === service.id}
-                          className="self-start sm:self-auto px-3 py-1.5 rounded-xl bg-secondary/30 hover:bg-secondary/40 text-accent text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50 min-h-[36px]"
+                          className="self-start sm:self-auto px-3 py-1.5 rounded-xl bg-secondary/30 hover:bg-secondary/40 text-accent text-sm font-semibold transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50 min-h-[36px]"
                         >
                           {savingServiceId === service.id ? <div className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin" /> : <Save className="w-3.5 h-3.5" />}
                           Update Service
@@ -319,7 +319,7 @@ export default function SettingsPage() {
                         <div>
                           <label className="block text-[11px] font-medium text-muted-foreground mb-1">Hourly Rate (USD)</label>
                           <div className="relative">
-                            <span className="absolute start-3 top-2.5 text-xs text-muted-foreground font-medium">$</span>
+                            <span className="absolute start-3 top-2.5 text-sm text-muted-foreground font-medium">$</span>
                             <input
                               type="number"
                               min="0"
@@ -339,7 +339,7 @@ export default function SettingsPage() {
                             onChange={(e) => updateServiceField(service.id, 'trial_allowed', e.target.checked)}
                             className="w-4 h-4 accent-primary rounded border-border"
                           />
-                          <label htmlFor={`trial-${service.id}`} className="text-xs font-medium text-foreground cursor-pointer">
+                          <label htmlFor={`trial-${service.id}`} className="text-sm font-medium text-foreground cursor-pointer">
                             Trial Permitted
                           </label>
                         </div>
@@ -352,7 +352,7 @@ export default function SettingsPage() {
                             onChange={(e) => updateServiceField(service.id, 'is_active', e.target.checked)}
                             className="w-4 h-4 accent-primary rounded border-border"
                           />
-                          <label htmlFor={`active-${service.id}`} className="text-xs font-medium text-foreground cursor-pointer">
+                          <label htmlFor={`active-${service.id}`} className="text-sm font-medium text-foreground cursor-pointer">
                             Active Offering
                           </label>
                         </div>
@@ -371,7 +371,7 @@ export default function SettingsPage() {
               
               <div className="space-y-6">
                 <div>
-                  <label className="block text-xs font-medium text-muted-foreground mb-1">Base Timezone</label>
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">Base Timezone</label>
                   <select
                     value={getSetting('timezone')}
                     onChange={(e) => updateSetting('timezone', e.target.value)}
@@ -405,7 +405,7 @@ export default function SettingsPage() {
 
                 {getSetting('trial_enabled') === true && (
                   <div>
-                    <label className="block text-xs font-medium text-muted-foreground mb-1">Trial Duration (Minutes)</label>
+                    <label className="block text-sm font-medium text-muted-foreground mb-1">Trial Duration (Minutes)</label>
                     <input
                       type="number"
                       max={45}
@@ -422,7 +422,7 @@ export default function SettingsPage() {
                 <hr className="border-border" />
 
                 <div>
-                  <label className="block text-xs font-medium text-muted-foreground mb-1">Cancellation / Reschedule Notice (Hours)</label>
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">Cancellation / Reschedule Notice (Hours)</label>
                   <input
                     type="number"
                     min={1}
@@ -441,7 +441,7 @@ export default function SettingsPage() {
           {activeTab === 'Payment' && (
             <div className="glass-card rounded-2xl border border-border p-6 space-y-6 shadow-2xs">
               <h2 className="text-lg font-display font-semibold text-foreground">Accepted Payment Methods & Offline Instructions</h2>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 Select allowed payment channels and configure instructions shown during payment claim submission.
               </p>
               
@@ -477,7 +477,7 @@ export default function SettingsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1">Payment Instructions for Students</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Payment Instructions for Students</label>
                 <textarea
                   value={getSetting('payment_instructions')}
                   onChange={(e) => updateSetting('payment_instructions', e.target.value)}
@@ -503,7 +503,7 @@ export default function SettingsPage() {
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-xs font-medium text-muted-foreground mb-1">Language</label>
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">Language</label>
                   <select
                     value={getSetting('language')}
                     onChange={(e) => updateSetting('language', e.target.value)}
@@ -515,7 +515,7 @@ export default function SettingsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-muted-foreground mb-1">Theme</label>
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">Theme</label>
                   <select
                     value={getSetting('theme')}
                     onChange={(e) => updateSetting('theme', e.target.value)}

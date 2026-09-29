@@ -59,7 +59,7 @@ export class ErrorBoundary extends Component<Props, State> {
           {process.env.NODE_ENV !== 'production' && this.state.error && (
             <div className="mt-8 p-4 glass-surface border border-border-subtle rounded-lg text-left overflow-auto max-w-2xl w-full">
               <p className="font-mono text-sm text-destructive font-semibold mb-2">{this.state.error.message}</p>
-              <pre className="font-mono text-xs text-muted-foreground whitespace-pre-wrap">
+              <pre className="font-mono text-sm text-muted-foreground whitespace-pre-wrap">
                 {this.state.error.stack}
               </pre>
             </div>

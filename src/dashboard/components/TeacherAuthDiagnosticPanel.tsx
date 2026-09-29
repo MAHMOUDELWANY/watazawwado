@@ -131,9 +131,9 @@ export function TeacherAuthDiagnosticPanel() {
           <div>
             <div className="flex items-center space-x-2">
               <span className="font-semibold text-sm tracking-wide text-white">Teacher Auth Observability</span>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 font-mono">Task 0.55.4-A</span>
+              <span className="text-sm px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 font-mono">Task 0.55.4-A</span>
             </div>
-            <p className="text-xs text-slate-400">Tablet-ready diagnostic tool for 401 Unauthorized root-cause analysis</p>
+            <p className="text-sm text-slate-400">Tablet-ready diagnostic tool for 401 Unauthorized root-cause analysis</p>
           </div>
         </div>
 
@@ -143,7 +143,7 @@ export function TeacherAuthDiagnosticPanel() {
             type="button"
             onClick={handleRunCheck}
             disabled={running}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium transition-colors disabled:opacity-50"
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium transition-colors disabled:opacity-50"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${running ? 'animate-spin' : ''}`} />
             <span>{running ? 'Checking...' : 'Run Check'}</span>
@@ -153,7 +153,7 @@ export function TeacherAuthDiagnosticPanel() {
             id="diagnostic-copy-btn"
             type="button"
             onClick={handleCopySummary}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-medium transition-colors"
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200 text-sm font-medium transition-colors"
           >
             {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
             <span>{copied ? 'Copied' : 'Copy'}</span>
@@ -172,12 +172,12 @@ export function TeacherAuthDiagnosticPanel() {
       </div>
 
       {!collapsed && (
-        <div id="teacher-auth-diagnostic-body" className="p-4 space-y-4 text-xs">
+        <div id="teacher-auth-diagnostic-body" className="p-4 space-y-4 text-sm">
           {/* Diagnostic indicators grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
             {/* 1. Session State */}
             <div id="diagnostic-session-card" className="p-3 bg-slate-800/60 border border-slate-700/50 rounded-lg">
-              <span className="text-slate-400 uppercase tracking-wider text-[10px] font-semibold block mb-1">
+              <span className="text-slate-400 uppercase tracking-wider text-[13px] font-semibold block mb-1">
                 Supabase Session
               </span>
               <div className="flex items-center justify-between">
@@ -197,7 +197,7 @@ export function TeacherAuthDiagnosticPanel() {
 
             {/* 2. Header State */}
             <div id="diagnostic-header-card" className="p-3 bg-slate-800/60 border border-slate-700/50 rounded-lg">
-              <span className="text-slate-400 uppercase tracking-wider text-[10px] font-semibold block mb-1">
+              <span className="text-slate-400 uppercase tracking-wider text-[13px] font-semibold block mb-1">
                 Authorization Header
               </span>
               <div className="flex items-center justify-between">
@@ -217,7 +217,7 @@ export function TeacherAuthDiagnosticPanel() {
 
             {/* 3. Project Consistency */}
             <div id="diagnostic-project-card" className="p-3 bg-slate-800/60 border border-slate-700/50 rounded-lg">
-              <span className="text-slate-400 uppercase tracking-wider text-[10px] font-semibold block mb-1">
+              <span className="text-slate-400 uppercase tracking-wider text-[13px] font-semibold block mb-1">
                 Supabase Project Ref
               </span>
               <div className="flex items-center justify-between">
@@ -239,11 +239,11 @@ export function TeacherAuthDiagnosticPanel() {
 
             {/* 4. Primary Endpoint Classification */}
             <div id="diagnostic-classification-card" className="p-3 bg-slate-800/60 border border-slate-700/50 rounded-lg">
-              <span className="text-slate-400 uppercase tracking-wider text-[10px] font-semibold block mb-1">
+              <span className="text-slate-400 uppercase tracking-wider text-[13px] font-semibold block mb-1">
                 Primary Stage
               </span>
               <div className="flex items-center justify-between">
-                <span className="text-xs font-mono font-semibold text-emerald-300 truncate max-w-[150px]" title={primaryStage || 'None'}>
+                <span className="text-sm font-mono font-semibold text-emerald-300 truncate max-w-[150px]" title={primaryStage || 'None'}>
                   {primaryStage || 'None'}
                 </span>
                 {primaryStage === 'AUTHORIZED' ? (
@@ -270,7 +270,7 @@ export function TeacherAuthDiagnosticPanel() {
                   <div key={ep} className="px-3 py-2 flex items-center justify-between hover:bg-slate-700/20">
                     <span className="text-slate-300">{ep}</span>
                     <div className="flex items-center space-x-3">
-                      <span className={`px-2 py-0.5 rounded text-[10px] ${
+                      <span className={`px-2 py-0.5 rounded text-[13px] ${
                         res?.httpStatus === 200 
                           ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
                           : res?.httpStatus === 401 

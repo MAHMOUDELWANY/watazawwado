@@ -145,11 +145,11 @@ export default function LeadsPage() {
             <h1 className="text-2xl font-display font-bold text-foreground">
               Leads Pipeline
             </h1>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-secondary/30 text-primary font-medium border border-secondary/50">
+            <span className="text-sm px-2.5 py-0.5 rounded-full bg-secondary/30 text-primary font-medium border border-secondary/50">
               Student Acquisition
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+          <p className="text-sm sm:text-sm text-muted-foreground mt-1">
             Track inquiries from initial contact through trial booking and long-term student enrollment.
           </p>
         </div>
@@ -163,7 +163,7 @@ export default function LeadsPage() {
           <button
             onClick={() => fetchLeads(true)}
             disabled={refreshing || loading}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass-card border-none text-xs font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass-card border-none text-sm font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
             <span>Refresh</span>
@@ -175,7 +175,7 @@ export default function LeadsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <div className="p-4 sm:p-5 rounded-2xl glass-card border-none shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+            <span className="text-sm uppercase tracking-wider text-muted-foreground font-medium">
               New Inquiries
             </span>
             <UserPlus className="w-4 h-4 text-accent" />
@@ -184,13 +184,13 @@ export default function LeadsPage() {
             <span className="text-2xl font-semibold text-foreground">
               {newLeadsCount}
             </span>
-            <span className="text-xs text-muted-foreground">needs outreach</span>
+            <span className="text-sm text-muted-foreground">needs outreach</span>
           </div>
         </div>
 
         <div className="p-4 sm:p-5 rounded-2xl glass-card border-none shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+            <span className="text-sm uppercase tracking-wider text-muted-foreground font-medium">
               In Trial Phase
             </span>
             <Sparkles className="w-4 h-4 text-warning" />
@@ -199,13 +199,13 @@ export default function LeadsPage() {
             <span className="text-2xl font-semibold text-foreground">
               {trialCount}
             </span>
-            <span className="text-xs text-muted-foreground">trial booked/done</span>
+            <span className="text-sm text-muted-foreground">trial booked/done</span>
           </div>
         </div>
 
         <div className="p-4 sm:p-5 rounded-2xl glass-card border-none shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+            <span className="text-sm uppercase tracking-wider text-muted-foreground font-medium">
               Potential Students
             </span>
             <Clock className="w-4 h-4 text-accent" />
@@ -214,13 +214,13 @@ export default function LeadsPage() {
             <span className="text-2xl font-semibold text-foreground">
               {pipelineSummary.potential_student || 0}
             </span>
-            <span className="text-xs text-muted-foreground">plan proposed</span>
+            <span className="text-sm text-muted-foreground">plan proposed</span>
           </div>
         </div>
 
         <div className="p-4 sm:p-5 rounded-2xl glass-card border-none shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+            <span className="text-sm uppercase tracking-wider text-muted-foreground font-medium">
               Active Enrolled
             </span>
             <CheckCircle2 className="w-4 h-4 text-success" />
@@ -229,7 +229,7 @@ export default function LeadsPage() {
             <span className="text-2xl font-semibold text-foreground">
               {activeCount}
             </span>
-            <span className="text-xs text-muted-foreground">regular learners</span>
+            <span className="text-sm text-muted-foreground">regular learners</span>
           </div>
         </div>
       </div>
@@ -239,7 +239,7 @@ export default function LeadsPage() {
         <div className="flex items-center gap-1.5 p-1 rounded-xl glass-surface border border-border-subtle overflow-x-auto max-w-full">
           <button
             onClick={() => setFilterCategory('all')}
-            className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
+            className={`px-3 py-1 rounded-lg text-sm font-medium whitespace-nowrap transition-all cursor-pointer ${
               filterCategory === 'all'
                 ? 'glass-card text-foreground shadow-2xs font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
@@ -250,7 +250,7 @@ export default function LeadsPage() {
           {followupCount > 0 && (
             <button
               onClick={() => setFilterCategory('followup')}
-              className={`px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
+              className={`px-3 py-1 rounded-lg text-sm font-semibold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
                 filterCategory === 'followup'
                   ? 'bg-warning text-warning-foreground shadow-2xs'
                   : 'bg-warning/15 text-warning-foreground hover:bg-warning/25'
@@ -262,7 +262,7 @@ export default function LeadsPage() {
           )}
           <button
             onClick={() => setFilterCategory('new')}
-            className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
+            className={`px-3 py-1 rounded-lg text-sm font-medium whitespace-nowrap transition-all cursor-pointer ${
               filterCategory === 'new'
                 ? 'glass-card text-foreground shadow-2xs font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
@@ -272,7 +272,7 @@ export default function LeadsPage() {
           </button>
           <button
             onClick={() => setFilterCategory('contacted')}
-            className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
+            className={`px-3 py-1 rounded-lg text-sm font-medium whitespace-nowrap transition-all cursor-pointer ${
               filterCategory === 'contacted'
                 ? 'glass-card text-foreground shadow-2xs font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
@@ -282,7 +282,7 @@ export default function LeadsPage() {
           </button>
           <button
             onClick={() => setFilterCategory('trials')}
-            className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
+            className={`px-3 py-1 rounded-lg text-sm font-medium whitespace-nowrap transition-all cursor-pointer ${
               filterCategory === 'trials'
                 ? 'glass-card text-foreground shadow-2xs font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
@@ -292,7 +292,7 @@ export default function LeadsPage() {
           </button>
           <button
             onClick={() => setFilterCategory('potential')}
-            className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
+            className={`px-3 py-1 rounded-lg text-sm font-medium whitespace-nowrap transition-all cursor-pointer ${
               filterCategory === 'potential'
                 ? 'glass-card text-foreground shadow-2xs font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
@@ -302,7 +302,7 @@ export default function LeadsPage() {
           </button>
           <button
             onClick={() => setFilterCategory('active')}
-            className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
+            className={`px-3 py-1 rounded-lg text-sm font-medium whitespace-nowrap transition-all cursor-pointer ${
               filterCategory === 'active'
                 ? 'glass-card text-foreground shadow-2xs font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
@@ -319,14 +319,14 @@ export default function LeadsPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search lead, email, phone..."
-            className="w-full pl-9 pr-4 py-1.5 rounded-xl border border-border glass-card text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full pl-9 pr-4 py-1.5 rounded-xl border border-border glass-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
       </div>
 
       {/* Error state */}
       {error && (
-        <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-xs text-destructive flex items-center gap-2">
+        <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-sm text-destructive flex items-center gap-2">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{error}</span>
         </div>
@@ -334,7 +334,7 @@ export default function LeadsPage() {
 
       {/* Leads List */}
       {loading ? (
-        <div className="p-12 text-center text-xs text-muted-foreground animate-pulse">
+        <div className="p-12 text-center text-sm text-muted-foreground animate-pulse">
           Loading leads pipeline...
         </div>
       ) : filteredLeads.length === 0 ? (
@@ -343,7 +343,7 @@ export default function LeadsPage() {
           <h3 className="font-display font-medium text-base text-foreground">
             No Leads in This Stage
           </h3>
-          <p className="text-xs text-muted-foreground max-w-sm mx-auto mt-1">
+          <p className="text-sm text-muted-foreground max-w-sm mx-auto mt-1">
             New contact submissions and website booking inquiries will appear here automatically.
           </p>
         </div>
@@ -373,7 +373,7 @@ export default function LeadsPage() {
                     </span>
 
                     {lead.needs_followup && (
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-warning/15 text-warning-foreground border border-warning/30 flex items-center gap-1">
+                      <span className="text-[13px] font-semibold px-2 py-0.5 rounded-full bg-warning/15 text-warning-foreground border border-warning/30 flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         <span>Follow-up: {lead.followup_reason}</span>
                       </span>
@@ -386,7 +386,7 @@ export default function LeadsPage() {
                     )}
 
                     {lead.source && (
-                      <span className="text-[10px] font-mono text-muted-foreground px-1.5 py-0.5 rounded glass-surface border border-border-subtle">
+                      <span className="text-[13px] font-mono text-muted-foreground px-1.5 py-0.5 rounded glass-surface border border-border-subtle">
                         {lead.source}
                       </span>
                     )}
@@ -396,19 +396,19 @@ export default function LeadsPage() {
                     <h4 className="font-display font-medium text-base text-foreground truncate">
                       {lead.name}
                       {lead.parent_name && (
-                        <span className="text-xs font-normal text-muted-foreground ms-2">
+                        <span className="text-sm font-normal text-muted-foreground ms-2">
                           (Parent: <span className="text-foreground">{lead.parent_name}</span>)
                         </span>
                       )}
                     </h4>
-                    <p className="text-xs text-muted-foreground truncate">
+                    <p className="text-sm text-muted-foreground truncate">
                       Interest: <span className="font-medium text-foreground">{lead.service_interest_name || 'General Inquiry'}</span>
                       {lead.email && <span> • {lead.email}</span>}
                     </p>
                   </div>
 
                   {/* Goal & Trial summary */}
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
+                  <div className="flex items-center gap-3 text-sm text-muted-foreground flex-wrap">
                     {cairoCreated && (
                       <span>Inquired: {cairoCreated}</span>
                     )}
@@ -454,7 +454,7 @@ export default function LeadsPage() {
                       e.stopPropagation();
                       setSelectedLead(lead);
                     }}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-secondary/30 hover:bg-secondary/40 text-accent text-xs font-semibold transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-secondary/30 hover:bg-secondary/40 text-accent text-sm font-semibold transition-colors cursor-pointer"
                   >
                     <span>Manage Lead</span>
                     <ChevronRight className="w-3.5 h-3.5" />

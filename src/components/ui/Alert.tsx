@@ -49,7 +49,7 @@ export function Alert({
         </div>
       )}
       <div className="flex-1">
-        {title && <h5 className="font-semibold mb-1 leading-none tracking-tight">{title}</h5>}
+        {title && <h5 className="font-semibold mb-1 leading-none ">{title}</h5>}
         <div className="text-sm opacity-90 leading-relaxed">
           {children}
         </div>

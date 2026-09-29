@@ -193,16 +193,16 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
             className="mb-1.5"
           />
           <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl sm:text-3xl font-display font-bold tracking-tight text-foreground">
+            <h1 className="text-2xl sm:text-3xl font-display font-bold  text-foreground">
               {isAr ? 'التنبيهات والإشعارات' : 'Notifications'}
             </h1>
             {unreadCount > 0 && (
-              <Badge variant="warning" className="px-2.5 py-0.5 text-xs font-semibold">
+              <Badge variant="warning" className="px-2.5 py-0.5 text-sm font-semibold">
                 {unreadCount} {isAr ? 'جديد' : 'new'}
               </Badge>
             )}
           </div>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">
+          <p className="text-sm sm:text-sm text-muted-foreground mt-1 leading-relaxed">
             {isAr
               ? 'متابعة تحديثات المواعيد، تأكيدات الحوالات المالية، وتنبيهات الباقات.'
               : 'Direct lesson reminders, payment verification updates, and package entitlements.'}
@@ -213,7 +213,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
           <button
             type="button"
             onClick={markAllAsRead}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium text-primary hover:bg-secondary/30 rounded-xl transition-colors cursor-pointer self-start sm:self-center"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium text-primary hover:bg-secondary/30 rounded-xl transition-colors cursor-pointer self-start sm:self-center"
           >
             <Check className="w-4 h-4" />
             <span>{isAr ? 'تحديد الكل كمقروء' : 'Mark all as read'}</span>
@@ -226,7 +226,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
         <button
           type="button"
           onClick={() => setFilter('all')}
-          className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+          className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
             filter === 'all'
               ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
               : 'glass-card text-muted-foreground hover:text-foreground border border-border'
@@ -237,7 +237,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
         <button
           type="button"
           onClick={() => setFilter('unread')}
-          className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+          className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
             filter === 'unread'
               ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
               : 'glass-card text-muted-foreground hover:text-foreground border border-border'
@@ -251,7 +251,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
       {loading ? (
         <div className="flex flex-col items-center justify-center min-h-[35vh] gap-3">
           <Loader2 className="w-7 h-7 text-accent animate-spin" />
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             {isAr ? 'جارٍ تحميل التنبيهات...' : 'Loading notifications...'}
           </p>
         </div>
@@ -261,7 +261,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
           <p className="text-sm font-semibold text-foreground">
             {isAr ? 'جلسة الدخول غير متاحة أو منتهية' : 'Your session is unavailable or has expired'}
           </p>
-          <p className="text-xs text-muted-foreground leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {isAr
               ? 'يرجى تسجيل الدخول مرة أخرى لعرض تنبيهاتك. لم يتم حذف أي بيانات.'
               : 'Please sign in again to view your notifications. No data has been lost.'}
@@ -269,14 +269,14 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
           <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-1">
             <Link
               to="/student"
-              className="px-4 py-2 bg-primary text-primary-foreground rounded-xl text-xs font-semibold min-h-[44px] inline-flex items-center"
+              className="px-4 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-semibold min-h-[44px] inline-flex items-center"
             >
               {isAr ? 'تسجيل الدخول مرة أخرى' : 'Sign In Again'}
             </Link>
             <button
               type="button"
               onClick={fetchNotificationData}
-              className="px-4 py-2 glass-card border-none text-foreground rounded-xl text-xs font-medium min-h-[44px]"
+              className="px-4 py-2 glass-card border-none text-foreground rounded-xl text-sm font-medium min-h-[44px]"
             >
               {isAr ? 'إعادة المحاولة' : 'Try Again'}
             </button>
@@ -289,7 +289,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
           <button
             type="button"
             onClick={fetchNotificationData}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-xl text-xs font-medium min-h-[44px]"
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-medium min-h-[44px]"
           >
             {isAr ? 'إعادة المحاولة' : 'Try Again'}
           </button>
@@ -302,7 +302,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
           <h3 className="font-display font-bold text-lg text-foreground">
             {isAr ? 'لا توجد تنبيهات حالياً' : 'All caught up!'}
           </h3>
-          <p className="text-xs sm:text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed">
+          <p className="text-sm sm:text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed">
             {filter === 'unread'
               ? (isAr ? 'لا توجد تنبيهات غير مقروءة في الوقت الحالي.' : 'You have no unread notifications right now.')
               : (isAr ? 'ستظهر هنا إشعارات الدروس القادمة، تأكيدات الحوالات، وتحديثات الباقات.' : 'Upcoming lesson reminders, payment receipts, and schedule updates will appear here.')}
@@ -330,7 +330,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
                       <span className="w-2 h-2 rounded-full bg-primary shrink-0" />
                     )}
                   </div>
-                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-sm sm:text-sm text-muted-foreground leading-relaxed">
                     {isAr ? item.descriptionAr : item.description}
                   </p>
                   <span className="text-[11px] text-muted-foreground block pt-0.5">
@@ -347,7 +347,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
                       href={item.actionUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs font-semibold transition-colors shadow-2xs"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 btn-primary-material text-primary-foreground rounded-xl text-sm font-semibold transition-colors shadow-2xs"
                     >
                       <Video className="w-3.5 h-3.5" />
                       <span>{isAr ? (item.actionLabelAr || 'دخول') : (item.actionLabel || 'Open')}</span>
@@ -356,7 +356,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
                   ) : (
                     <Link
                       to={item.actionUrl}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 glass-card hover:bg-surface-subtle border border-border text-foreground hover:text-primary rounded-xl text-xs font-semibold transition-colors shadow-2xs"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 glass-card hover:bg-surface-subtle border border-border text-foreground hover:text-primary rounded-xl text-sm font-semibold transition-colors shadow-2xs"
                     >
                       <span>{isAr ? (item.actionLabelAr || 'عرض') : (item.actionLabel || 'View')}</span>
                       <ArrowRight className={`w-3.5 h-3.5 ${isAr ? 'rotate-180' : ''}`} />

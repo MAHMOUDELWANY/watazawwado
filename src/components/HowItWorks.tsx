@@ -27,10 +27,10 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ lang, onOpenTrialModal }
           transition={{ duration: 0.5 }}
           className="max-w-3xl mb-16"
         >
-          <div className="text-xs uppercase tracking-widest text-primary font-semibold mb-3">
+          <div className="text-sm uppercase tracking-widest text-primary font-semibold mb-3">
             {isEn ? 'The Student Journey' : ARABIC_TRANSLATIONS.nav.howItWorks}
           </div>
-          <h2 className="font-display text-3xl sm:text-4xl text-foreground tracking-tight mb-4">
+          <h2 className="font-display text-3xl sm:text-4xl text-foreground  mb-4">
             {isEn
               ? 'From your first trial to confident, consistent learning.'
               : 'من جلستك الأولى إلى إتقان حقيقي ومستمر.'}
@@ -68,12 +68,12 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ lang, onOpenTrialModal }
                   {isEn ? step.title : step.arabicTitle}
                 </h3>
 
-                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                <p className="text-sm sm:text-sm text-muted-foreground leading-relaxed">
                   {step.description}
                 </p>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-border flex items-center justify-between text-xs font-medium text-primary">
+              <div className="mt-6 pt-4 border-t border-border flex items-center justify-between text-sm font-medium text-primary">
                 <span>{isEn ? `Stage ${index + 1}` : `المرحلة ${index + 1}`}</span>
                 <span className="w-1.5 h-1.5 rounded-full bg-primary" />
               </div>
@@ -87,7 +87,7 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ lang, onOpenTrialModal }
             <h4 className="font-display text-xl font-medium text-foreground">
               {isEn ? 'Ready to experience Mahmoud’s teaching style?' : 'هل ترغب في تجربة أسلوب الشرح والتدريس؟'}
             </h4>
-            <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+            <p className="text-sm sm:text-sm text-muted-foreground mt-1">
               {isEn
                 ? 'Your free trial is 30 minutes. No credit card, no pressure, zero obligation.'
                 : 'جلستك التجريبية مدتها ٣٠ دقيقة مجانية تماماً وبدون أي بطاقة بنكية.'}
@@ -96,7 +96,7 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ lang, onOpenTrialModal }
 
           <button
             onClick={onOpenTrialModal}
-            className="shrink-0 inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-medium text-sm shadow-xs hover:shadow-md transition-all cursor-pointer group"
+            className="shrink-0 inline-flex items-center gap-2 px-6 py-3.5 rounded-xl btn-primary-material text-primary-foreground font-medium text-sm shadow-xs hover:shadow-md transition-all cursor-pointer group"
           >
             <Calendar className="w-4 h-4" />
             <span>{isEn ? 'Book Free Trial Now' : 'احجز جلستك الآن'}</span>

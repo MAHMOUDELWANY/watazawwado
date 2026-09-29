@@ -43,7 +43,7 @@ export function FAQPage() {
             ))}
           </div>
 
-          <div className="bg-surface-warm p-8 sm:p-12 rounded-2xl border border-border-subtle text-center mt-16">
+          <div className="glass-card p-8 sm:p-12 rounded-2xl border border-border-subtle text-center mt-16">
             <EditorialHeading noAccent className="mx-auto flex flex-col items-center">
               {isEn ? 'Still have questions?' : 'لا زال لديك أسئلة؟'}
             </EditorialHeading>

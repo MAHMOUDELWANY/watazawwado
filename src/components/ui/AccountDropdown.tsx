@@ -24,7 +24,7 @@ export function AccountDropdown({ initials, isAr }: { initials: string; isAr?: b
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 p-1.5 pe-3 rounded-full glass-surface glass-hover hover:bg-surface border-none transition-colors cursor-pointer"
       >
-        <div className="w-7 h-7 rounded-full bg-secondary/40 text-accent font-bold text-xs flex items-center justify-center">
+        <div className="w-7 h-7 rounded-full bg-secondary/40 text-accent font-bold text-sm flex items-center justify-center">
           {initials}
         </div>
         <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
