@@ -132,10 +132,10 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
       <div className="p-3.5 rounded-2xl glass-card border-none flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
         <div className="flex items-center gap-2 text-sm">
           <Globe className="w-4 h-4 text-accent shrink-0" />
-          <span className="text-foreground/70 dark:text-muted-foreground/70">
+          <span className="text-accent/80 dark:text-accent/80">
             {isEn ? 'Times shown in your local time:' : 'المواعيد تظهر وفق توقيتك المحلي:'}
           </span>
-          <span className="font-semibold text-muted-foreground">
+          <span className="font-semibold text-accent">
             {timezoneReadable}
           </span>
         </div>
@@ -151,7 +151,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
 
       {/* Loading Skeleton */}
       {loading && (
-        <div className="py-12 flex flex-col items-center justify-center space-y-3 text-foreground/60 dark:text-muted-foreground/60">
+        <div className="py-12 flex flex-col items-center justify-center space-y-3 text-foreground/60 dark:text-accent/90/60">
           <RefreshCw className="w-6 h-6 animate-spin text-accent" />
           <span className="text-sm">
             {isEn ? 'Checking available teaching windows...' : 'جارٍ تحديث الأوقات المتاحة...'}
@@ -179,10 +179,10 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
           {/* Horizontal Date Picker Slider */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/70 dark:text-muted-foreground/70">
+              <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/90">
                 {isEn ? '1. Select a Date (Upcoming 3 Weeks)' : '١. اختر التاريخ (الأسابيع الثلاثة القادمة)'}
               </label>
-              <span className="text-[11px] text-foreground/55 dark:text-muted-foreground/55">
+              <span className="text-[11px] text-foreground/55 dark:text-accent/50">
                 {isEn ? 'Swipe or click to view days' : 'انقر على اليوم لتصفح المواعيد'}
               </span>
             </div>
@@ -202,7 +202,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                         ? 'bg-muted-foreground text-white border-muted-foreground shadow-xs'
                         : d.isAvailable
                         ? 'glass-card border-border text-foreground hover:border-accent/50'
-                        : 'bg-black/5 dark:bg-white/5 border-transparent text-foreground/40 dark:text-muted-foreground/40'
+                        : 'bg-black/5 dark:bg-white/5 border-transparent text-foreground/40 dark:text-accent/90/40'
                     }`}
                   >
                     <span className="text-[13px] uppercase font-semibold tracking-wider opacity-80">
@@ -242,7 +242,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                   {currentDay?.dayOfWeek}, {currentDay?.monthName} {currentDay?.dayOfMonth}
                 </span>
               </div>
-              <span className="text-sm text-foreground/60 dark:text-muted-foreground/60">
+              <span className="text-sm text-foreground/60 dark:text-accent/90/60">
                 {currentDay?.isAvailable
                   ? isEn
                     ? 'Available Starting Times'
@@ -262,7 +262,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                 <h4 className="font-display text-base font-medium text-foreground">
                   {isEn ? 'No Slots Available on This Date' : 'لا توجد مواعيد متاحة في هذا اليوم'}
                 </h4>
-                <p className="text-sm text-foreground/70 dark:text-muted-foreground/70 max-w-md mx-auto leading-relaxed">
+                <p className="text-sm text-foreground/80 dark:text-accent/90 max-w-md mx-auto leading-relaxed">
                   {currentDay?.reasonUnavailable ||
                     (isEn
                       ? 'Mahmoud has scheduled prior teaching or revision on this date.'
@@ -282,7 +282,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                     href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I would like to request a specific lesson time that is not open on the schedule.')}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-background border border-border text-sm font-medium text-foreground dark:text-muted-foreground hover:bg-surface-warm"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-background border border-border text-sm font-medium text-foreground dark:text-accent/90 hover:bg-surface-warm"
                   >
                     <MessageCircle className="w-3.5 h-3.5 text-accent" />
                     <span>{isEn ? 'Request Custom Time on WhatsApp' : 'طلب موعد خاص على واتساب'}</span>
@@ -320,7 +320,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                             {isSelected ? (
                               <Check className="w-3.5 h-3.5 text-white" />
                             ) : (
-                              <span className="text-[13px] text-foreground/40 dark:text-muted-foreground/40">
+                              <span className="text-[13px] text-foreground/40 dark:text-accent/90/40">
                                 {slot.available ? (isEn ? 'Open' : 'متاح') : (isEn ? 'Booked' : 'محجوز')}
                               </span>
                             )}
@@ -359,7 +359,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                             {isSelected ? (
                               <Check className="w-3.5 h-3.5 text-white" />
                             ) : (
-                              <span className="text-[13px] text-foreground/40 dark:text-muted-foreground/40">
+                              <span className="text-[13px] text-foreground/40 dark:text-accent/90/40">
                                 {slot.available ? (isEn ? 'Open' : 'متاح') : (isEn ? 'Booked' : 'محجوز')}
                               </span>
                             )}
@@ -398,7 +398,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                             {isSelected ? (
                               <Check className="w-3.5 h-3.5 text-white" />
                             ) : (
-                              <span className="text-[13px] text-foreground/40 dark:text-muted-foreground/40">
+                              <span className="text-[13px] text-foreground/40 dark:text-accent/90/40">
                                 {slot.available ? (isEn ? 'Open' : 'متاح') : (isEn ? 'Booked' : 'محجوز')}
                               </span>
                             )}
@@ -421,7 +421,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
           whileTap={{ scale: 0.97 }}
           onClick={onBack}
           type="button"
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium text-foreground/80 dark:text-muted-foreground/80 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium text-foreground/80 dark:text-accent/80 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
         >
           <ArrowLeft className={`w-3.5 h-3.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
           <span>{isEn ? 'Back to Lesson Type' : 'الرجوع لنوع الدرس'}</span>

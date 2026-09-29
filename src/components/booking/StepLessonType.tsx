@@ -96,7 +96,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
     <div className="space-y-6">
       {/* Mode Choice (Free Trial vs Regular) */}
       <div>
-        <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/70 dark:text-muted-foreground/70 mb-2.5">
+        <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/90 mb-2.5">
           {isEn ? 'Choose Your Booking Type' : 'نوع الحجز المطلوب'}
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -146,7 +146,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               </div>
             </div>
 
-            <p className="text-sm text-foreground/70 dark:text-muted-foreground/80 leading-relaxed mb-3">
+            <p className="text-sm text-foreground/80 dark:text-accent/80 leading-relaxed mb-3">
               {isEn
                 ? 'A 30-minute introductory meeting to get to know each other, evaluate current ability, experience Mahmoud’s teaching style, and receive an honest learning plan.'
                 : 'لقاء تعريفي مدته ٣٠ دقيقة للتعارف وتقييم المستوى وتجربة أسلوب الشرح والحصول على خطة تعليمية مقترحة.'}
@@ -199,7 +199,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               </div>
             </div>
 
-            <p className="text-sm text-foreground/70 dark:text-muted-foreground/80 leading-relaxed mb-3">
+            <p className="text-sm text-foreground/80 dark:text-accent/80 leading-relaxed mb-3">
               {isEn
                 ? 'Dedicated curriculum lesson for continuing students or those who wish to start scheduled instruction right away. Simple pay-per-lesson or monthly continuity.'
                 : 'درس منهجي متكامل للطلاب الراغبين في بدء الخطة المباشرة. دفع بالدرس أو باقات شهرية ميسرة.'}
@@ -217,10 +217,10 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
       {/* Lesson Duration Selection */}
       <div className="space-y-3 pt-2">
         <div className="flex items-center justify-between">
-          <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/70 dark:text-muted-foreground/70">
+          <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/90">
             {isEn ? 'Select Preferred Lesson Duration' : 'اختر مدة الدرس المناسبة'}
           </label>
-          <span className="text-sm text-foreground/60 dark:text-muted-foreground/60 flex items-center gap-1">
+          <span className="text-sm text-foreground/60 dark:text-accent/90/60 flex items-center gap-1">
             <Clock className="w-3.5 h-3.5 text-accent" />
             {mode === 'trial'
               ? isEn ? 'Trial standard: 30 min (up to 45 min max)' : 'المدة للتجربة: ٣٠ دقيقة (بحد أقصى ٤٥ دقيقة)'
@@ -263,7 +263,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                       {displayPrice}
                     </span>
                   </div>
-                  <p className="text-[11px] text-foreground/65 dark:text-muted-foreground/70 leading-relaxed">
+                  <p className="text-[11px] text-foreground/80 dark:text-accent/90 leading-relaxed">
                     {isEn ? d.note : d.arabicNote}
                   </p>
                 </div>
@@ -282,7 +282,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
       {/* Package Entitlement Credit Redemption (When Active Entitlements Exist) */}
       {mode === 'regular' && hasActiveCredits && (
         <div className="pt-4 border-t border-border space-y-3">
-          <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/70 dark:text-muted-foreground/70">
+          <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/90">
             {isEn ? 'Use an existing lesson credit' : 'استخدم رصيد درس موجود'}
           </label>
 
@@ -337,7 +337,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                     </div>
                   </div>
 
-                  <p className="text-sm text-foreground/70 dark:text-muted-foreground/80 mt-2 leading-relaxed">
+                  <p className="text-sm text-foreground/80 dark:text-accent/80 mt-2 leading-relaxed">
                     {isEn
                       ? 'This lesson will be linked to your prepaid package. No payment is required today. One credit will be deducted only after your lesson is completed.'
                       : 'سيتم ربط هذا الدرس بباقاتك مسبقة الدفع دون الحاجة لأي دفع اليوم، وسيتم خصم الرصيد فقط بعد إتمام الدرس مع الأستاذ.'}
@@ -365,7 +365,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                   <h4 className="font-display font-medium text-foreground">
                     {isEn ? 'Pay for this single lesson' : 'دفع مباشر لهذا الدرس بشكل مستقل'}
                   </h4>
-                  <p className="text-sm text-foreground/65 dark:text-muted-foreground/70 mt-1">
+                  <p className="text-sm text-foreground/80 dark:text-accent/90 mt-1">
                     {isEn
                       ? `Standard standalone booking for one session ($${calculateLessonFee(serviceId, duration, false)} USD).`
                       : `حجز مستقل لدرس واحد ($${calculateLessonFee(serviceId, duration, false)} دولار أمريكي).`}
@@ -385,7 +385,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
       {/* Package Catalog Selection (When No Active Entitlements Exist) */}
       {!hidePackagePurchase && !hasActiveCredits && !loadingPackages && packages.length > 0 && mode === 'regular' && (
         <div className="pt-4 border-t border-border">
-          <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/70 dark:text-muted-foreground/70 mb-2.5">
+          <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/90 mb-2.5">
             {isEn ? 'Purchase Option (Optional)' : 'خيار الشراء (اختياري)'}
           </label>
           <div className="grid grid-cols-1 gap-3">
@@ -402,7 +402,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               <h4 className="font-display font-medium text-foreground">
                 {isEn ? 'Single Lesson (Pay as you go)' : 'درس واحد (دفع عند الحجز)'}
               </h4>
-              <p className="text-sm text-foreground/65 dark:text-muted-foreground/70 mt-1">
+              <p className="text-sm text-foreground/80 dark:text-accent/90 mt-1">
                 {isEn ? 'Standard booking for one session.' : 'حجز قياسي لجلسة واحدة.'}
               </p>
             </motion.div>
@@ -426,7 +426,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                       <h4 className="font-display font-medium text-foreground">
                         {pkg.name}
                       </h4>
-                      <p className="text-sm text-foreground/65 dark:text-muted-foreground/70 mt-1">
+                      <p className="text-sm text-foreground/80 dark:text-accent/90 mt-1">
                         {isEn
                           ? `${pkg.lesson_count} lessons • Prepaid ${pkg.package_type} package`
                           : `${pkg.lesson_count} دروس • باقة ${pkg.package_type} مدفوعة مسبقاً`}
@@ -444,7 +444,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
       )}
 
       {/* Manual Request for Sessions > 60 min note */}
-      <div className="p-3.5 rounded-xl glass-card border-none text-sm text-foreground/70 dark:text-muted-foreground/70 flex items-start gap-2.5">
+      <div className="p-3.5 rounded-xl glass-card border-none text-sm text-foreground/80 dark:text-accent/90 flex items-start gap-2.5">
         <HelpCircle className="w-4 h-4 text-accent shrink-0 mt-0.5" />
         <div className="leading-relaxed">
           <span>
@@ -471,7 +471,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
           whileTap={{ scale: 0.97 }}
           onClick={onBack}
           type="button"
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium text-foreground/80 dark:text-muted-foreground/80 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium text-foreground/80 dark:text-accent/80 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
         >
           <ArrowLeft className={`w-3.5 h-3.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
           <span>{isEn ? 'Back to Student Details' : 'الرجوع للبيانات'}</span>

@@ -727,8 +727,10 @@ app.get('/api/integrations/availability', async (req, res) => {
       return res.status(400).json({ error: 'Timezone is required.', code: 'INVALID_AVAILABILITY_REQUEST' });
     }
 
-    if (!DateTime.local().setZone(timezone).isValid) {
-      return res.status(400).json({ error: 'Invalid timezone.', code: 'INVALID_AVAILABILITY_REQUEST' });
+    let safeTimezone = timezone;
+    if (!DateTime.local().setZone(safeTimezone).isValid) {
+      console.warn('Invalid timezone received, falling back to Africa/Cairo: ', timezone);
+      safeTimezone = 'Africa/Cairo';
     }
 
     const parseStrictInt = (str: string | undefined, defaultVal: number): number | null => {
@@ -775,8 +777,8 @@ app.get('/api/integrations/availability', async (req, res) => {
       }
     }
 
-    const days = await computeAvailableSlots(timezone, daysCount, duration, teacherId);
-    res.json({ success: true, days, timezone });
+    const days = await computeAvailableSlots(safeTimezone, daysCount, duration, teacherId);
+    res.json({ success: true, days, timezone: safeTimezone });
   } catch (error: any) {
     console.error('Availability fetch error:', error);
     res.status(500).json({ error: 'Failed to compute availability.', code: 'AVAILABILITY_FETCH_FAILED' });
