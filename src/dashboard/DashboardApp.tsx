@@ -173,17 +173,17 @@ export function DashboardApp() {
     {
       targetId: 'teacher-sidebar',
       title: lang === 'ar' ? 'القائمة الجانبية' : 'Navigation',
-      content: lang === 'ar' ? 'يمكنك التنقل بين لوحة التحكم، الطلاب، الجدولة، والفواتير.' : 'Navigate through dashboard, students, schedule, and billing.'
+      description: lang === 'ar' ? 'يمكنك التنقل بين لوحة التحكم، الطلاب، الجدولة، والفواتير.' : 'Navigate through dashboard, students, schedule, and billing.'
     },
     {
       targetId: 'language-toggle',
       title: lang === 'ar' ? 'تغيير اللغة' : 'Change Language',
-      content: lang === 'ar' ? 'تبديل واجهة المعلم بين العربية والإنجليزية.' : 'Toggle teacher interface between Arabic and English.'
+      description: lang === 'ar' ? 'تبديل واجهة المعلم بين العربية والإنجليزية.' : 'Toggle teacher interface between Arabic and English.'
     },
     {
       targetId: 'teacher-logout',
       title: lang === 'ar' ? 'تسجيل الخروج' : 'Log Out',
-      content: lang === 'ar' ? 'تسجيل الخروج من الحساب.' : 'Sign out of your account.'
+      description: lang === 'ar' ? 'تسجيل الخروج من الحساب.' : 'Sign out of your account.'
     }
   ];
   const toggleLanguage = () => setLang(prev => prev === 'en' ? 'ar' : 'en');
@@ -309,7 +309,7 @@ export function DashboardApp() {
             
             <div className="pt-2 flex flex-col gap-2">
               <button 
-                onClick={() => { setIsMobileMenuOpen(false); setShowGlobalTour(true); }}
+                onClick={() => setShowGlobalTour(true)}
                 className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all font-semibold text-sm cursor-pointer"
               >
                 <HelpCircle className="w-4 h-4" />
