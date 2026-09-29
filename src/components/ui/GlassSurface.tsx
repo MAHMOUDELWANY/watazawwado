@@ -20,7 +20,7 @@ const glassLevelClasses: Record<GlassLevel, string> = {
 };
 
 export const GlassSurface = React.forwardRef<HTMLDivElement, GlassSurfaceProps>(
-  ({ level = 'card', hover = false, specular = false, brandEdge = false, as: Tag = 'div', className, children, ...props }, ref) => {
+  ({ level = 'card', hover = false, specular = true, brandEdge = false, as: Tag = 'div', className, children, ...props }, ref) => {
     return (
       <Tag
         ref={ref as any}

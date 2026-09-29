@@ -49,7 +49,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           : 'bg-transparent py-4 sm:py-5 border-b border-transparent'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+      <div className={`w-full transition-all duration-300 flex items-center justify-between ${
+        isScrolled 
+          ? 'max-w-6xl px-4 sm:px-6 lg:px-8 py-2.5 glass-nav rounded-full shadow-sm'
+          : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5 bg-transparent'
+      }`}>
         {/* Brand identity */}
         <Link
           to="/"
@@ -73,7 +77,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Link
               key={link.href}
               to={link.href}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors py-1"
+              className="text-sm font-medium text-muted-foreground hover:text-interactive transition-colors py-1"
             >
               {link.label}
             </Link>
@@ -99,7 +103,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             aria-label="Toggle language between English and Arabic"
             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-foreground hover:bg-surface-subtle border border-border transition-colors cursor-pointer"
           >
-            <Globe className="w-3.5 h-3.5 text-accent" />
+            <Globe className="w-4 h-4 text-interactive transition-colors" />
             <span>{lang === 'en' ? 'العربية' : 'EN'}</span>
           </button>
 

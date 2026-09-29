@@ -120,7 +120,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
             <button
               onClick={onClose}
           aria-label="Close dialog"
-          className="absolute top-4 end-4 p-2 text-muted-foreground hover:text-foreground hover:bg-surface-subtle rounded-full transition-colors cursor-pointer"
+          className="absolute top-4 end-4 p-2 text-muted-foreground hover:text-foreground hover:glass-dialog-subtle rounded-full transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>

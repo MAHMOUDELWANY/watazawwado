@@ -28,10 +28,10 @@ export function ThemeToggle({ className = '' }: { className?: string }) {
       onClick={toggleTheme}
       className={`
         relative inline-flex items-center justify-between
-        w-[64px] h-[32px] p-1
+        w-[64px] h-[32px] p-[2px]
         rounded-full
-        glass-surface dark:bg-surface-warm
-        border border-border/50 dark:border-border/20
+        bg-black/5 dark:bg-white/10
+        border border-black/5 dark:border-white/10
         shadow-inner focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background
         transition-colors duration-300 ease-in-out
         ${className}
@@ -40,12 +40,12 @@ export function ThemeToggle({ className = '' }: { className?: string }) {
       {/* Sliding Thumb */}
       <span
         className={`
-          absolute left-1 top-1
-          w-[24px] h-[24px]
-          glass-card dark:bg-[#423E39]
-          rounded-full shadow-sm
-          border border-border/20
-          transform transition-transform duration-300 cubic-bezier(0.2, 0.8, 0.2, 1)
+          absolute left-[2px] top-[2px]
+          w-[26px] h-[26px]
+          bg-white dark:bg-[#423E39]
+          rounded-full shadow-[0_2px_4px_rgba(0,0,0,0.1),0_1px_1px_rgba(0,0,0,0.05)]
+          border border-black/5 dark:border-white/5
+          transform transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]
           ${isDark ? 'translate-x-[32px]' : 'translate-x-0'}
         `}
       />

@@ -82,7 +82,7 @@ export function Modal({
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               className={cn(
-                "relative w-full rounded-2xl glass-dialog text-surface-foreground flex flex-col max-h-[90vh] overflow-hidden my-auto",
+                "relative w-full rounded-[32px] glass-dialog glass-specular text-surface-foreground flex flex-col max-h-[90vh] overflow-hidden my-auto",
                 maxWidthClasses[maxWidth],
                 className
               )}

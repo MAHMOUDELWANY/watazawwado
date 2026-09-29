@@ -210,7 +210,7 @@ export default function StudentApp() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-6 text-foreground">
         <div className="max-w-md w-full glass-card border-none rounded-3xl p-8 sm:p-10 shadow-xs text-center">
-          <div className="w-14 h-14 rounded-2xl bg-secondary/30 text-accent flex items-center justify-center mx-auto mb-5 font-display font-bold text-xl">
+          <div className="w-14 h-14 rounded-2xl bg-secondary/30 text-interactive flex items-center justify-center mx-auto mb-5 font-display font-bold text-xl">
             و
           </div>
           <h1 className="text-2xl font-display font-bold mb-2 tracking-tight">
@@ -429,7 +429,7 @@ export default function StudentApp() {
           onClick={() => setSidebarOpen(false)}
           className="p-3.5 m-3 rounded-xl border border-border/80 bg-surface-subtle/40 hover:bg-surface-subtle transition-colors flex items-center gap-3 text-start group"
         >
-          <div className="w-9 h-9 rounded-full bg-secondary/40 border border-secondary/60 text-accent flex items-center justify-center font-bold text-sm shrink-0">
+          <div className="w-9 h-9 rounded-full bg-secondary/40 border border-secondary/60 text-interactive flex items-center justify-center font-bold text-sm shrink-0">
             {studentInitial}
           </div>
           <div className="flex-1 min-w-0">
@@ -452,7 +452,7 @@ export default function StudentApp() {
             className={`
               flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl text-xs sm:text-sm font-semibold transition-all touch-manipulation min-h-[44px] shadow-xs cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
               ${location.pathname === '/student/book'
-                ? 'bg-secondary/40 text-accent ring-1 ring-primary/30'
+                ? 'bg-secondary/40 text-interactive ring-1 ring-primary/30'
                 : 'bg-primary hover:bg-primary-hover text-primary-foreground hover:shadow-sm'
               }
             `}
@@ -482,13 +482,13 @@ export default function StudentApp() {
                 className={`
                   flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors touch-manipulation min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
                   ${isActive
-                    ? 'bg-secondary/30 text-accent font-semibold ring-1 ring-primary/20'
+                    ? 'bg-secondary/30 text-interactive font-semibold ring-1 ring-primary/20'
                     : 'text-muted-foreground hover:bg-surface-subtle hover:text-foreground'
                   }
                 `}
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-accent' : 'opacity-70'}`} />
+                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-interactive' : 'opacity-70'}`} />
                   <span className="truncate">{item.name}</span>
                 </div>
                 {item.badge !== null && item.badge > 0 && (
@@ -544,7 +544,7 @@ export default function StudentApp() {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-colors ${isActive ? "bg-secondary/20 text-accent" : "text-muted-foreground hover:text-foreground hover:bg-surface-subtle"}`}
+                  className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-colors ${isActive ? "bg-secondary/20 text-interactive" : "text-muted-foreground hover:text-foreground hover:bg-surface-subtle"}`}
                 >
                   {item.name}
                 </Link>

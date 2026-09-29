@@ -35,7 +35,7 @@ export const Footer: React.FC<FooterProps> = ({
             <div className="font-display text-2xl font-medium text-foreground tracking-tight flex items-center gap-2.5"><BrandLogo variant="compact" />
               Watazawwado <span className="text-muted-foreground font-light text-xl">/ وتزودوا</span>
             </div>
-            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-sm">
+            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-sm">
               {isEn
                 ? 'Personal teaching platform of Ustadh Mahmoud. Direct 1-on-1 instruction in Quran reading, Tajweed, Arabic language, and Islamic Studies for international students and families.'
                 : 'المنصة التعليمية الخاصة بالأستاذ محمود. تعليم فردي مباشر للقرآن الكريم وأحكام التجويد واللغة العربية والدراسات الإسلامية للطلاب والعائلات المسلمة حول العالم.'}
@@ -43,7 +43,7 @@ export const Footer: React.FC<FooterProps> = ({
             <div className="flex items-center gap-3 pt-1">
               <button
                 onClick={onToggleLang}
-                className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline cursor-pointer"
+                className="inline-flex items-center gap-1.5 text-xs text-interactive hover:underline cursor-pointer"
               >
                 <Globe className="w-3.5 h-3.5" />
                 <span>{isEn ? 'Switch to العربية' : 'Switch to English'}</span>
@@ -52,7 +52,7 @@ export const Footer: React.FC<FooterProps> = ({
           </div>
 
           {/* Quick Navigation (4 cols on md) */}
-          <div className="md:col-span-4 grid grid-cols-2 gap-4 text-xs sm:text-sm">
+          <div className="md:col-span-4 grid grid-cols-2 gap-4 text-sm sm:text-base">
             <div>
               <div className="font-semibold uppercase tracking-wider text-primary text-xs mb-3">
                 {isEn ? 'Teaching' : 'الدروس والبرامج'}

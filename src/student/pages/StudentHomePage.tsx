@@ -183,7 +183,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] gap-3">
         <Loader2 className="w-8 h-8 text-accent animate-spin" />
-        <p className="text-xs sm:text-sm text-muted-foreground">
+        <p className="text-sm sm:text-[15px] text-muted-foreground">
           {isAr ? 'جارٍ تحميل جدول دروسك...' : 'Loading your lesson schedule...'}
         </p>
       </div>
@@ -197,10 +197,10 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
         <h3 className="text-base font-semibold text-foreground mb-1">
           {isAr ? 'حدث خطأ أثناء تحميل البيانات' : 'Could not load your student dashboard'}
         </h3>
-        <p className="text-xs sm:text-sm text-muted-foreground mb-5 leading-relaxed">{coreError}</p>
+        <p className="text-sm sm:text-[15px] text-muted-foreground mb-5 leading-relaxed">{coreError}</p>
         <button
           onClick={fetchCoreData}
-          className="inline-flex items-center justify-center px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer"
+          className="inline-flex items-center justify-center px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-sm sm:text-[15px] font-medium transition-colors cursor-pointer"
         >
           {isAr ? 'إعادة المحاولة' : 'Try Again'}
         </button>
@@ -327,7 +327,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
             <h1 className="text-2xl sm:text-3xl font-display font-bold text-foreground">
               {welcomeTitle}
             </h1>
-            <p className="text-sm sm:text-base text-muted-foreground mt-1 leading-relaxed max-w-2xl">
+            <p className="text-[15px] sm:text-base text-muted-foreground mt-1 leading-relaxed max-w-2xl">
               {welcomeSubtitle}
             </p>
           </div>
@@ -341,7 +341,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
         <Link to="/student/book" className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-brand text-white hover:bg-brand/90 transition-all shadow-xs group cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
           <div className="flex items-center gap-2.5 min-w-0">
             <Calendar className="w-4 h-4 shrink-0" />
-            <span className="text-xs sm:text-sm font-semibold truncate">
+            <span className="text-sm sm:text-[15px] font-semibold truncate">
               {isAr ? 'حجز درس جديد' : 'Book a Lesson'}
             </span>
           </div>
@@ -356,7 +356,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
         >
           <div className="flex items-center gap-2.5 min-w-0">
             <BookOpen className="w-4 h-4 text-accent shrink-0" />
-            <span className="text-xs sm:text-sm font-medium truncate">
+            <span className="text-sm sm:text-[15px] font-medium truncate">
               {isAr ? 'جدول كافة الدروس' : 'View Lessons'}
             </span>
           </div>
@@ -369,7 +369,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
         >
           <div className="flex items-center gap-2.5 min-w-0">
             <CreditCard className="w-4 h-4 text-accent shrink-0" />
-            <span className="text-xs sm:text-sm font-medium truncate">
+            <span className="text-sm sm:text-[15px] font-medium truncate">
               {isAr ? 'المدفوعات والحوالات' : 'View Payments'}
             </span>
           </div>
@@ -393,7 +393,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
               {nextBooking && (
                 <Link
                   to="/student/lessons"
-                  className="text-xs text-primary hover:underline font-medium inline-flex items-center gap-1"
+                  className="text-sm text-primary hover:underline font-medium inline-flex items-center gap-1"
                 >
                   <span>{isAr ? 'كافة المواعيد' : 'All sessions'}</span>
                   <ArrowRight className={`w-3 h-3 ${isAr ? 'rotate-180' : ''}`} />
@@ -406,11 +406,11 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-xs font-semibold text-primary uppercase tracking-wider">
+                      <span className="text-sm font-semibold text-primary uppercase tracking-wider">
                         {isAr ? 'جلسة فردية مباشرة' : '1-on-1 Private Session'}
                       </span>
                       <span className="text-muted-foreground">•</span>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-sm text-muted-foreground">
                         {isAr ? 'مع الأستاذ محمود' : 'with Ustadh Mahmoud'}
                       </span>
                     </div>
@@ -428,7 +428,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                 </div>
 
                 {/* Time & Duration Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-xl glass-surface border border-border/60 text-xs sm:text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-xl glass-surface border border-border/60 text-sm sm:text-[15px]">
                   <div className="flex items-center gap-2.5 text-foreground">
                     <Clock className="w-4 h-4 text-accent shrink-0" />
                     <span>
@@ -453,7 +453,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   const summary = getBookingPaymentSummary(nextBooking, paymentsData || []);
                   if (!summary.isPendingPayment) return null;
                   return (
-                    <div className="p-3.5 rounded-xl bg-warning/10 border border-warning/25 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    <div className="p-3.5 rounded-xl bg-warning/10 border border-warning/25 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm">
                       <div className="flex items-center gap-2 text-warning">
                         <AlertCircle className="w-4 h-4 shrink-0" />
                         <span>
@@ -484,14 +484,14 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                       href={rawZoom}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-xs cursor-pointer min-h-[44px]"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-sm sm:text-[15px] font-semibold transition-all shadow-xs cursor-pointer min-h-[44px]"
                     >
                       <Video className="w-4 h-4" />
                       <span>{isAr ? 'دخول فصل زووم' : 'Join Zoom Classroom'}</span>
                       <ExternalLink className="w-3.5 h-3.5 opacity-80" />
                     </a>
                   ) : (
-                    <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl glass-surface border border-border text-muted-foreground text-xs min-h-[44px]">
+                    <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl glass-surface border border-border text-muted-foreground text-sm min-h-[44px]">
                       <Video className="w-4 h-4 text-muted-foreground/70" />
                       <span>
                         {isAr ? 'رابط زووم سيتوفر قبل موعد الدرس' : 'Meeting link will appear soon'}
@@ -502,7 +502,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   <Link
                     id="link-home-repeat-lesson"
                     to="/student/book?repeat=true"
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl glass-card hover:bg-surface-subtle border border-border text-foreground text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
+                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl glass-card hover:bg-surface-subtle border border-border text-foreground text-sm sm:text-[15px] font-medium transition-colors cursor-pointer min-h-[44px]"
                   >
                     <RotateCcw className="w-3.5 h-3.5 text-accent" />
                     <span>{isAr ? 'حجز درس مماثل' : 'Repeat Lesson'}</span>
@@ -510,7 +510,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
                   <Link
                     to="/student/lessons"
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl glass-card hover:bg-surface-subtle border border-border text-foreground text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
+                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl glass-card hover:bg-surface-subtle border border-border text-foreground text-sm sm:text-[15px] font-medium transition-colors cursor-pointer min-h-[44px]"
                   >
                     <span>{isAr ? 'عرض تفاصيل الدرس' : 'View Lesson Details'}</span>
                   </Link>
@@ -522,14 +522,14 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <RotateCcw className="w-4 h-4 text-accent" />
-                      <span className="text-xs font-semibold text-primary uppercase tracking-wider">
+                      <span className="text-sm font-semibold text-primary uppercase tracking-wider">
                         {isAr ? 'مواصلة مسارك التعليمي' : 'Ready for your next session?'}
                       </span>
                     </div>
                     <h3 className="text-base sm:text-lg font-display font-bold text-foreground">
                       {isAr ? 'حجز درس جديد بنفس التفضيلات السابقة' : 'Continue from where you left off'}
                     </h3>
-                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-md">
+                    <p className="text-sm sm:text-[15px] text-muted-foreground leading-relaxed max-w-md">
                       {isAr
                         ? `آخر درس لك: ${lastBookingSummary.summaryText}. يمكنك الحجز بضغطة زر وتحديد الموعد.`
                         : `Your last lesson was: ${lastBookingSummary.summaryText}. Pick a date and time with the same details.`}
@@ -539,14 +539,14 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                     <Link
                       id="btn-home-repeat-lesson"
                       to="/student/book?repeat=true"
-                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-colors shadow-xs min-h-[44px]"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-sm sm:text-[15px] font-semibold transition-colors shadow-xs min-h-[44px]"
                     >
                       <RotateCcw className="w-4 h-4" />
                       <span>{isAr ? 'حجز الدرس السابق' : 'Book with same details'}</span>
                     </Link>
                     <Link
                       to="/student/book"
-                      className="inline-flex items-center justify-center gap-2 px-4 py-2.5 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-xs sm:text-sm font-medium transition-colors min-h-[44px]"
+                      className="inline-flex items-center justify-center gap-2 px-4 py-2.5 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-sm sm:text-[15px] font-medium transition-colors min-h-[44px]"
                     >
                       <span>{isAr ? 'استكشاف المواد' : 'Explore Topics'}</span>
                     </Link>
@@ -560,7 +560,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   <h3 className="text-base sm:text-lg font-display font-bold text-foreground">
                     {isAr ? 'لا يوجد درس مجدول حالياً' : 'No lesson scheduled yet'}
                   </h3>
-                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-md">
+                  <p className="text-sm sm:text-[15px] text-muted-foreground leading-relaxed max-w-md">
                     {isAr
                       ? 'احجز موعد جلستك الفردية القادمة مع الأستاذ محمود عندما تكون مستعداً.'
                       : 'Book your next private 1-on-1 lesson with Ustadh Mahmoud when you are ready.'}
@@ -569,7 +569,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
                 <Link
                   to="/student/book"
-                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs sm:text-sm font-semibold transition-colors shadow-xs shrink-0 min-h-[44px]"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-sm sm:text-[15px] font-semibold transition-colors shadow-xs shrink-0 min-h-[44px]"
                 >
                   <Plus className="w-4 h-4" />
                   <span>{isAr ? 'حجز درس جديد' : 'Book a Lesson'}</span>
@@ -586,7 +586,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
               </h2>
               <Link
                 to="/student/lessons"
-                className="text-xs text-primary hover:underline font-medium inline-flex items-center gap-1"
+                className="text-sm text-primary hover:underline font-medium inline-flex items-center gap-1"
               >
                 <span>{isAr ? 'عرض كامل السجل' : 'View all lessons'}</span>
                 <ArrowRight className={`w-3 h-3 ${isAr ? 'rotate-180' : ''}`} />
@@ -595,7 +595,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
             {recentLessons.length === 0 ? (
               <div className="p-6 rounded-2xl border border-border glass-card text-center">
-                <p className="text-xs sm:text-sm text-muted-foreground">
+                <p className="text-sm sm:text-[15px] text-muted-foreground">
                   {isAr
                     ? 'لم تكتمل أي دروس بعد. ستظهر جلساتك السابقة وملاحظات الأستاذ محمود هنا.'
                     : 'No past lessons recorded yet. Completed sessions and teacher feedback will appear here.'}
@@ -616,7 +616,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                     >
                       <div className="space-y-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <h4 className="font-semibold text-sm sm:text-base text-foreground truncate">
+                          <h4 className="font-semibold text-[15px] sm:text-base text-foreground truncate">
                             {title}
                           </h4>
                           <Badge variant={b.status === 'completed' ? 'success' : b.status === 'cancelled' ? 'destructive' : 'secondary'} className="text-[11px] px-2 py-0">
@@ -624,7 +624,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                           </Badge>
                         </div>
 
-                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-3 text-sm text-muted-foreground">
                           {dt && dt.isValid && (
                             <span>{dt.setLocale(isAr ? 'ar' : 'en').toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}</span>
                           )}
@@ -642,7 +642,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                       <div className="flex items-center gap-2 self-start sm:self-center shrink-0">
                         <Link
                           to="/student/lessons"
-                          className="px-3 py-1.5 rounded-lg border border-border glass-hover hover:bg-surface text-foreground text-xs font-medium transition-colors"
+                          className="px-3 py-1.5 rounded-lg border border-border glass-hover hover:bg-surface text-foreground text-sm font-medium transition-colors"
                         >
                           {isAr ? 'التفاصيل' : 'Details'}
                         </Link>
@@ -650,7 +650,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                         <Link
                           id={`btn-repeat-history-${b.id}`}
                           to={`/student/book?repeat=true${bServiceId ? `&service=${bServiceId}` : ''}`}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary/30 hover:bg-primary text-primary hover:text-primary-foreground text-xs font-semibold transition-all cursor-pointer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary/30 hover:bg-primary text-primary hover:text-primary-foreground text-sm font-semibold transition-all cursor-pointer"
                         >
                           <RotateCcw className="w-3 h-3" />
                           <span>{isAr ? 'حجز مجدداً' : 'Rebook'}</span>
@@ -670,7 +670,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
           {/* 1. LEARNING SNAPSHOT (Explicit labels, factual metrics only) */}
           <div className="space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-border">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
                 {isAr ? 'ملخص التعلم' : 'Learning Snapshot'}
               </span>
               <Award className="w-4 h-4 text-accent" />
@@ -696,7 +696,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
               </div>
             </div>
 
-            <div className="space-y-1.5 pt-1 text-xs text-muted-foreground">
+            <div className="space-y-1.5 pt-1 text-sm text-muted-foreground">
               <div className="flex items-center justify-between">
                 <span>{isAr ? 'المستوى التعليمي:' : 'Current Level:'}</span>
                 <span className="font-semibold text-foreground capitalize">
@@ -715,26 +715,26 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
           {/* 2. PACKAGE BALANCE SNAPSHOT (Independent loading/error/active state) */}
           <div className="space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-border">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
                 {isAr ? 'رصيد الباقات' : 'Package Credits'}
               </span>
               <Package className="w-4 h-4 text-accent" />
             </div>
 
             {packagesLoading ? (
-              <div className="py-4 flex items-center justify-center gap-2 text-muted-foreground text-xs">
+              <div className="py-4 flex items-center justify-center gap-2 text-muted-foreground text-sm">
                 <Loader2 className="w-4 h-4 animate-spin text-accent" />
                 <span>{isAr ? 'جاري تحميل الباقات...' : 'Loading packages...'}</span>
               </div>
             ) : packagesError ? (
-              <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20 text-xs space-y-2">
+              <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20 text-sm space-y-2">
                 <p className="text-destructive font-medium">
                   {isAr ? 'تعذر تحميل بيانات الباقات' : 'Unable to load package details.'}
                 </p>
                 <button
                   type="button"
                   onClick={fetchPackagesData}
-                  className="inline-flex items-center gap-1.5 text-xs text-destructive hover:underline font-semibold cursor-pointer"
+                  className="inline-flex items-center gap-1.5 text-sm text-destructive hover:underline font-semibold cursor-pointer"
                 >
                   <RefreshCw className="w-3 h-3" />
                   <span>{isAr ? 'إعادة المحاولة' : 'Try again'}</span>
@@ -747,13 +747,13 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   <span className="text-heading-lg text-primary">
                     {creditsRemaining}
                   </span>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     {isAr ? 'حصص متبقية' : 'credits remaining'}
                   </span>
                 </div>
 
                 {packagesData?.creditSummary && (
-                  <div className="grid grid-cols-2 gap-2 text-xs p-2.5 rounded-lg glass-surface border border-border text-muted-foreground">
+                  <div className="grid grid-cols-2 gap-2 text-sm p-2.5 rounded-lg glass-surface border border-border text-muted-foreground">
                     <div>
                       <span>{isAr ? 'المستخدم:' : 'Used:'} </span>
                       <span className="font-semibold text-foreground">
@@ -769,7 +769,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   </div>
                 )}
 
-                <p className="text-xs text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   {isAr 
                     ? 'لديك حصص مدفوعة مسبقاً جاهزة للحجز مع الأستاذ محمود.' 
                     : 'You have active prepaid credits ready to use for upcoming lessons.'}
@@ -781,10 +781,10 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
               /* No active package */
               <div className="space-y-3">
                 <div className="space-y-1">
-                  <h4 className="text-sm font-semibold text-foreground">
+                  <h4 className="text-[15px] font-semibold text-foreground">
                     {isAr ? 'هل أنت مستعد لدرسك القادم؟' : 'Ready for your next lesson?'}
                   </h4>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
                     {isAr 
                       ? 'الباقات المدفوعة مسبقاً توفر تعليماً منظماً أسبوعياً أو شهرياً بأسعار مخفضة.' 
                       : 'Choose what to learn and find an available time with Ustadh Mahmoud.'}
@@ -799,26 +799,26 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
           {/* 3. PAYMENT STATUS SNAPSHOT (Independent loading/error/factual payment state) */}
           <div className="space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-border">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
                 {isAr ? 'حالة المدفوعات' : 'Payment Status'}
               </span>
               <CreditCard className="w-4 h-4 text-accent" />
             </div>
 
             {paymentsLoading ? (
-              <div className="py-4 flex items-center justify-center gap-2 text-muted-foreground text-xs">
+              <div className="py-4 flex items-center justify-center gap-2 text-muted-foreground text-sm">
                 <Loader2 className="w-4 h-4 animate-spin text-accent" />
                 <span>{isAr ? 'جاري تحميل المدفوعات...' : 'Loading payments...'}</span>
               </div>
             ) : paymentsError ? (
-              <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20 text-xs space-y-2">
+              <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20 text-sm space-y-2">
                 <p className="text-destructive font-medium">
                   {isAr ? 'تعذر تحميل بيانات المدفوعات' : 'Unable to load payment status.'}
                 </p>
                 <button
                   type="button"
                   onClick={fetchPaymentsData}
-                  className="inline-flex items-center gap-1.5 text-xs text-destructive hover:underline font-semibold cursor-pointer"
+                  className="inline-flex items-center gap-1.5 text-sm text-destructive hover:underline font-semibold cursor-pointer"
                 >
                   <RefreshCw className="w-3 h-3" />
                   <span>{isAr ? 'إعادة المحاولة' : 'Try again'}</span>
@@ -826,7 +826,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
               </div>
             ) : pendingPaymentBookings.length > 0 || (paymentsData && paymentsData.some(p => p.status === 'pending')) ? (
               /* Pending verification state */
-              <div className="p-3 rounded-xl bg-warning/10 border border-warning/25 space-y-2 text-xs">
+              <div className="p-3 rounded-xl bg-warning/10 border border-warning/25 space-y-2 text-sm">
                 <div className="flex items-center gap-1.5 font-semibold text-warning">
                   <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                   <span>{isAr ? 'دفعة معلقة بانتظار التحقق' : 'Payment pending verification'}</span>
@@ -838,7 +838,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                 </p>
                 <Link
                   to="/student/payments"
-                  className="inline-block text-xs font-semibold text-primary hover:underline"
+                  className="inline-block text-sm font-semibold text-primary hover:underline"
                 >
                   {isAr ? 'عرض المدفوعات وإرسال الإثبات ←' : 'View payments & submit proof →'}
                 </Link>
@@ -846,7 +846,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
             ) : hasVerifiedPayment ? (
               /* Verified payments state (derived from authoritative reconciliation) */
               <div className="space-y-2">
-                <div className="flex items-center gap-2.5 text-xs text-muted-foreground">
+                <div className="flex items-center gap-2.5 text-sm text-muted-foreground">
                   <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
                   <span className="text-foreground font-medium">
                     {isAr ? 'تم التحقق من المدفوعات السابقة بنجاح.' : 'Payment verified.'}
@@ -854,14 +854,14 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                 </div>
                 <Link
                   to="/student/payments"
-                  className="text-xs text-primary hover:underline font-medium block pt-1"
+                  className="text-sm text-primary hover:underline font-medium block pt-1"
                 >
                   {isAr ? 'عرض إيصالات المدفوعات ←' : 'View verified payment receipts →'}
                 </Link>
               </div>
             ) : paymentsData && paymentsData.some(p => p.status === 'rejected') ? (
               /* Rejected payment state */
-              <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20 space-y-2 text-xs">
+              <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20 space-y-2 text-sm">
                 <div className="flex items-center gap-1.5 font-semibold text-destructive">
                   <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                   <span>{isAr ? 'تم رفض إثبات الدفع' : 'Payment rejected'}</span>
@@ -873,7 +873,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                 </p>
                 <Link
                   to="/student/payments"
-                  className="inline-block text-xs font-semibold text-destructive hover:underline"
+                  className="inline-block text-sm font-semibold text-destructive hover:underline"
                 >
                   {isAr ? 'مراجعة المدفوعات ←' : 'Review payments →'}
                 </Link>
@@ -881,12 +881,12 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
             ) : (
               /* Factual No payment history yet */
               <div className="space-y-3">
-                <p className="text-xs text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   {isAr ? 'لا يوجد سجل مدفوعات مسجل حتى الآن.' : 'No payment history yet.'}
                 </p>
                 <Link
                   to="/student/payments"
-                  className="w-full inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl glass-card hover:bg-surface-subtle border border-border text-foreground hover:text-primary text-xs font-medium transition-all shadow-2xs"
+                  className="w-full inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl glass-card hover:bg-surface-subtle border border-border text-foreground hover:text-primary text-sm font-medium transition-all shadow-2xs"
                 >
                   <span>{isAr ? 'عرض صفحة المدفوعات' : 'View Payments'}</span>
                   <ArrowRight className={`w-3.5 h-3.5 ${isAr ? 'rotate-180' : ''}`} />
@@ -898,11 +898,11 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
           {/* 4. TEACHER RELATIONSHIP NOTE */}
           <div className="rounded-2xl border border-secondary/50 bg-secondary/20 p-5 space-y-3 text-start">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-secondary/30 text-accent flex items-center justify-center font-bold text-sm">
+              <div className="w-8 h-8 rounded-full bg-secondary/30 text-accent flex items-center justify-center font-bold text-[15px]">
                 {profile?.assignedTeacherName ? profile.assignedTeacherName.charAt(0) : 'و'}
               </div>
               <div>
-                <span className="text-xs font-semibold text-foreground block">
+                <span className="text-sm font-semibold text-foreground block">
                   {profile?.assignedTeacherName || (isAr ? 'جارٍ تعيين المعلم' : 'Teacher assignment pending')}
                 </span>
                 <span className="text-[11px] text-muted-foreground block">
@@ -911,7 +911,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
               </div>
             </div>
 
-            <p className="text-xs text-muted-foreground leading-relaxed">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               {isAr
                 ? 'هل لديك استفسار حول خطتك التعليمية أو تحتاج لمراجعة تقدمك؟ تواصل مباشرة عبر واتساب.'
                 : 'Need to coordinate your lesson plan or have questions about what to prepare? You can message Ustadh Mahmoud directly on WhatsApp.'}
@@ -921,7 +921,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
               href="https://wa.me/201021464424"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-xs font-semibold text-primary hover:underline"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
             >
               <MessageCircle className="w-3.5 h-3.5" />
               <span>{isAr ? 'محادثة مباشرة على واتساب' : 'Direct WhatsApp message'}</span>

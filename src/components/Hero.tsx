@@ -117,7 +117,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
               <button
                 onClick={onOpenTrialModal}
                 id="hero-get-started-btn"
-                className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-medium text-sm sm:text-base shadow-sm hover:shadow-md transition-all cursor-pointer group"
+                className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl btn-primary-material font-medium text-base sm:text-base shadow-sm hover:shadow-md transition-all cursor-pointer group"
               >
                 <Calendar className="w-4 h-4" />
                 <span>{isEn ? 'Book Free 30-Min Trial' : ARABIC_TRANSLATIONS.hero.ctaPrimary}</span>
@@ -127,7 +127,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
               <a
                 href="#services"
                 id="hero-learn-more-btn"
-                className="inline-flex items-center justify-center gap-1.5 px-4 py-3.5 text-muted-foreground hover:text-foreground text-xs sm:text-sm font-medium transition-colors"
+                className="inline-flex items-center justify-center gap-1.5 px-4 py-3.5 text-muted-foreground hover:text-foreground text-xs sm:text-base font-medium transition-colors"
               >
                 <span>{isEn ? 'View Teaching Areas' : 'استعراض المسارات'}</span>
                 <span aria-hidden="true" className="rtl:rotate-180">↓</span>
