@@ -27,7 +27,7 @@ export const Footer: React.FC<FooterProps> = ({
   };
 
   return (
-    <footer className="glass-surface border-t-0 mt-8 rounded-t-3xl mx-2 sm:mx-4 mb-2 sm:mb-4 py-14 transition-colors">
+    <footer className="glass-surface border-t-0 mt-8 rounded-t-3xl mx-2 sm:mx-4 mb-2 sm:mb-4 py-14 transition-colors overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-border">
           
@@ -149,17 +149,7 @@ export const Footer: React.FC<FooterProps> = ({
           <div className="flex flex-wrap items-center gap-4 sm:gap-6">
             <span>{isEn ? '3-Hour Reschedule Policy' : 'إعادة الجدولة حتى ٣ ساعات قبل الدرس'}</span>
             <span>•</span>
-            {onOpenManageModal ? (
-              <button
-                type="button"
-                onClick={onOpenManageModal}
-                className="text-primary hover:underline font-medium cursor-pointer"
-              >
-                {isEn ? 'Manage or Reschedule Booking' : 'إدارة أو تعديل الحجز'}
-              </button>
-            ) : (
-              <span>{isEn ? 'Flexible Booking' : 'حجز مرن ومباشر'}</span>
-            )}
+            <span>{isEn ? 'Flexible Booking' : 'حجز مرن ومباشر'}</span>
             <span>•</span>
             <Link
               to="/staff/login"

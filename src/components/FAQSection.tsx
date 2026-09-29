@@ -19,7 +19,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ lang }) => {
   return (
     <section
       id="faq"
-      className="py-20 md:py-28 bg-background border-b border-border/80 transition-colors"
+      className="py-20 md:py-28 bg-background border-b border-border/80 transition-colors overflow-hidden"
     >
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         

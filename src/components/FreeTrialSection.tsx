@@ -16,7 +16,7 @@ export const FreeTrialSection: React.FC<FreeTrialSectionProps> = ({ lang, onOpen
   return (
     <section
       id="free-trial"
-      className="py-20 md:py-28 bg-background border-b border-border/80 transition-colors"
+      className="py-20 md:py-28 bg-background border-b border-border/80 transition-colors overflow-hidden"
     >
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         

@@ -337,30 +337,30 @@ export function DashboardApp() {
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
         {/* Mobile Header Bar */}
-        <header className="h-20 shrink-0 flex items-center justify-between px-6 lg:px-10 border-b border-border/10 bg-background/50 backdrop-blur-md z-10">
+        <header className="h-16 sm:h-20 shrink-0 flex items-center justify-between px-3 sm:px-6 lg:px-10 border-b border-border/10 bg-background/50 backdrop-blur-md z-10">
             {/* Left: Mobile Toggle & BrandLogo */}
-            <div className="flex items-center gap-4 min-w-0">
+            <div className="flex items-center gap-2.5 sm:gap-4 min-w-0 flex-1">
               <button 
                 ref={menuTriggerRef}
                 id="teacher-mobile-menu-btn"
                 data-tour="teacher-mobile-menu-btn"
                 onClick={toggleMobileMenu} 
-                className="md:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle touch-manipulation cursor-pointer"
+                className="md:hidden min-h-[40px] min-w-[40px] sm:min-h-[44px] sm:min-w-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle touch-manipulation cursor-pointer shrink-0"
                 aria-label={lang === 'ar' ? 'القائمة الجانبية' : 'Menu'}
               >
-                <Menu className="w-6 h-6" />
+                <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
               
               <div className="flex flex-col text-start min-w-0 md:hidden">
-                <span className="text-xl sm:text-2xl font-display font-bold text-foreground leading-tight truncate">
+                <span className="text-lg sm:text-2xl font-display font-bold text-foreground leading-tight truncate">
                   {lang === "ar" ? 'مساحة العمل' : "Workspace"}
                 </span>
               </div>
             </div>
 
             {/* Right: Actions */}
-            <div className="flex items-center gap-2 sm:gap-3">
-              {/* Tour Guide Button */}
+            <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+              {/* Tour Guide Button (hidden on phone) */}
               <button
                 type="button"
                 id="teacher-header-tour-btn"
@@ -368,7 +368,7 @@ export function DashboardApp() {
                 onClick={() => setShowGlobalTour(true)}
                 title={lang === 'ar' ? 'دليل الاستخدام' : 'Tour Guide'}
                 aria-label={lang === 'ar' ? 'دليل الاستخدام' : 'Tour Guide'}
-                className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-teal-800 dark:text-teal-200 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 transition-all cursor-pointer shadow-2xs"
+                className="hidden sm:flex w-9 h-9 sm:w-10 sm:h-10 items-center justify-center rounded-full text-teal-800 dark:text-teal-200 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 transition-all cursor-pointer shadow-2xs"
               >
                 <Compass className="w-4.5 h-4.5 text-teal-600 dark:text-teal-400" />
               </button>
@@ -379,7 +379,7 @@ export function DashboardApp() {
                 id="teacher-lang-btn"
                 data-tour="teacher-lang-btn"
                 onClick={toggleLanguage}
-                className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-foreground hover:bg-surface-subtle border border-border/80 transition-colors cursor-pointer flex items-center gap-1"
+                className="px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold text-foreground hover:bg-surface-subtle border border-border/80 transition-colors cursor-pointer flex items-center gap-1"
               >
                 <Globe className="w-3.5 h-3.5 text-accent" />
                 <span>{lang === "en" ? 'عربي' : 'EN'}</span>
@@ -392,8 +392,8 @@ export function DashboardApp() {
           </header>
 
         {/* Scrollable Content Container */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 pb-24 md:pb-8 bg-background">
-          <div className="max-w-5xl mx-auto space-y-6">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-6 lg:p-8 pb-24 md:pb-8 bg-background w-full max-w-full">
+          <div className="max-w-5xl mx-auto space-y-6 min-w-0">
             <TeacherAuthDiagnosticPanel />
             <ErrorBoundary>
               <Routes>

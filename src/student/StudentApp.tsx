@@ -561,33 +561,33 @@ export default function StudentApp() {
         aria-hidden={sidebarOpen ? true : undefined}
       >
         {/* TOP APPLICATION HEADER (Responsive for Desktop and Mobile) */}
-        <header className="h-20 flex items-center justify-between px-6 lg:px-10 shrink-0 z-10 border-b border-border/10 bg-background/50 backdrop-blur-md">
+        <header className="h-16 sm:h-20 flex items-center justify-between px-3 sm:px-6 lg:px-10 shrink-0 z-10 border-b border-border/10 bg-background/50 backdrop-blur-md">
           {/* Left Side: Mobile Menu Button + Dynamic Page Title */}
-          <div className="flex items-center gap-4 min-w-0">
+          <div className="flex items-center gap-2.5 sm:gap-4 min-w-0 flex-1">
             <button
               ref={menuTriggerRef}
               onClick={toggleSidebar}
-              className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle touch-manipulation cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              className="lg:hidden min-h-[40px] min-w-[40px] sm:min-h-[44px] sm:min-w-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle touch-manipulation cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary shrink-0"
               aria-label={isAr ? 'فتح القائمة الرئيسية' : 'Open menu'}
               aria-expanded={sidebarOpen}
               aria-controls="student-sidebar"
             >
-              <Menu className="w-6 h-6" />
+              <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
 
-            <div className="flex flex-col text-start min-w-0">
-              <h2 className="text-xl sm:text-2xl font-display font-bold text-foreground leading-tight truncate">
+            <div className="flex flex-col text-start min-w-0 flex-1">
+              <h2 className="text-lg sm:text-2xl font-display font-bold text-foreground leading-tight truncate">
                 {currentHeader.title}
               </h2>
-              <span className="text-xs sm:text-sm text-muted-foreground truncate">
+              <span className="text-xs sm:text-sm text-muted-foreground truncate hidden xs:block">
                 {currentHeader.subtitle}
               </span>
             </div>
           </div>
 
           {/* Right Side: Quick Action Utilities (Tour, Lang, Notifications, Account) */}
-          <div className="flex items-center gap-2 sm:gap-2.5">
-            {/* Quick Tour Button */}
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+            {/* Quick Tour Button (hidden on phone, accessible via drawer/settings) */}
             <button
               type="button"
               id="student-header-tour-btn"
@@ -595,7 +595,7 @@ export default function StudentApp() {
               onClick={() => setShowGlobalTour(true)}
               title={isAr ? 'دليل الاستخدام' : 'Tour Guide'}
               aria-label={isAr ? 'دليل الاستخدام' : 'Tour Guide'}
-              className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-teal-800 dark:text-teal-200 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 transition-all cursor-pointer shadow-2xs"
+              className="hidden sm:flex w-9 h-9 sm:w-10 sm:h-10 items-center justify-center rounded-full text-teal-800 dark:text-teal-200 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 transition-all cursor-pointer shadow-2xs"
             >
               <Compass className="w-4.5 h-4.5 text-teal-600 dark:text-teal-400" />
             </button>
@@ -606,7 +606,7 @@ export default function StudentApp() {
               id="header-lang-btn"
               data-tour="header-lang-btn"
               onClick={toggleLang}
-              className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-foreground hover:bg-surface-subtle border border-border/80 transition-colors cursor-pointer flex items-center gap-1"
+              className="px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold text-foreground hover:bg-surface-subtle border border-border/80 transition-colors cursor-pointer flex items-center gap-1"
             >
               <Globe className="w-3.5 h-3.5 text-accent" />
               <span>{isAr ? 'EN' : 'عربي'}</span>
@@ -616,12 +616,12 @@ export default function StudentApp() {
               to="/student/notifications"
               id="student-notifications"
               data-tour="student-notifications"
-              className="relative w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer border border-border/60"
+              className="relative w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer border border-border/60 shrink-0"
               aria-label={isAr ? 'التنبيهات' : 'Notifications'}
             >
-              <Bell className="w-4.5 h-4.5" />
+              <Bell className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
               {unreadNotificationsCount > 0 && (
-                <span className="absolute top-1.5 end-1.5 w-2 h-2 rounded-full bg-primary ring-2 ring-surface animate-pulse" />
+                <span className="absolute top-1 end-1 w-2 h-2 rounded-full bg-primary ring-2 ring-surface animate-pulse" />
               )}
             </Link>
             <AccountDropdown 
@@ -634,10 +634,10 @@ export default function StudentApp() {
         {/* Scrollable Main Application Content (Using full available viewport width intelligently) */}
         <main 
           id="student-main-content"
-          className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 focus:outline-none pb-24 md:pb-8"
+          className="flex-1 overflow-y-auto overflow-x-hidden w-full max-w-full px-3 sm:px-6 lg:px-8 py-5 sm:py-8 focus:outline-none pb-24 md:pb-8"
           tabIndex={-1}
         >
-          <div className="w-full max-w-7xl mx-auto">
+          <div className="w-full max-w-7xl mx-auto min-w-0">
             <ErrorBoundary>
               <Routes>
               <Route path="/" element={<StudentHomePage lang={lang} />} />

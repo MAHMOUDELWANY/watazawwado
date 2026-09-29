@@ -55,7 +55,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
     <section
       ref={sectionRef}
       id="unified-mentorship"
-      className="relative bg-background dark:bg-background py-20 lg:py-32 border-b border-border/80 dark:border-border transition-colors"
+      className="relative overflow-hidden bg-background dark:bg-background py-20 lg:py-32 border-b border-border/80 dark:border-border transition-colors"
     >
       {/* Background radial glow */}
       <div className="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[500px] bg-secondary/30 dark:bg-secondary/20 rounded-full blur-3xl pointer-events-none" />

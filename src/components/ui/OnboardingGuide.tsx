@@ -355,12 +355,11 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
           />
         )}
 
-        <BrandGlassCard
-          intensity="high"
-          interactive={false}
-          className="shadow-2xl shadow-black/40 border border-border/90 rounded-2xl overflow-hidden bg-surface"
+        <div
+          className="shadow-2xl shadow-black/60 border-2 border-border/80 rounded-2xl overflow-hidden text-foreground relative z-30"
+          style={{ backgroundColor: 'var(--surface)', opacity: 1 }}
         >
-          <div className="p-5 flex flex-col gap-3 relative">
+          <div className="p-5 flex flex-col gap-3 relative bg-surface">
             
             {/* Top Bar: Skip button & Close button */}
             <div className="flex items-center justify-between">
@@ -457,7 +456,7 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
             </div>
 
           </div>
-        </BrandGlassCard>
+        </div>
       </motion.div>
     </div>
   );

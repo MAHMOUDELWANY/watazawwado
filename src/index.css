@@ -274,6 +274,23 @@ html {
   scroll-behavior: smooth;
   background-color: var(--background);
   color: var(--foreground);
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
+}
+
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
+  position: relative;
+}
+
+#root {
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
+  position: relative;
 }
 
 /* Subtle scrollbar — uses primary teal, thin and unobtrusive */
@@ -446,8 +463,11 @@ body {
 /* --- Public Section Spacing ---
    Consistent vertical rhythm between homepage sections. */
 .public-section {
-  padding-top: 4rem;
-  padding-bottom: 4rem;
+  padding-top: 3.5rem;
+  padding-bottom: 3.5rem;
+  position: relative;
+  overflow-x: hidden;
+  width: 100%;
 }
 @media (min-width: 768px) {
   .public-section {
@@ -470,6 +490,8 @@ body {
   margin-right: auto;
   padding-left: 1rem;
   padding-right: 1rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 @media (min-width: 640px) {
   .public-container {
@@ -879,72 +901,62 @@ body {
   }
 
   .glass-surface {
-    background: rgba(248, 246, 240, 0.4);
-    backdrop-filter: blur(8px) saturate(110%);
-    -webkit-backdrop-filter: blur(8px) saturate(110%);
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8), 0 1px 3px rgba(0,0,0,0.02);
-    border: 1px solid rgba(216, 198, 174, 0.4);
+    background: var(--surface);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8), 0 1px 3px rgba(0,0,0,0.04);
+    border: 1px solid var(--border);
   }
   .dark .glass-surface {
-    background: rgba(36, 34, 32, 0.4);
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 1px 3px rgba(0,0,0,0.1);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--surface);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05), 0 1px 3px rgba(0,0,0,0.2);
+    border: 1px solid var(--border);
   }
 
   .glass-panel {
-    background: rgba(248, 246, 240, 0.6);
-    backdrop-filter: blur(12px) saturate(120%);
-    -webkit-backdrop-filter: blur(12px) saturate(120%);
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8), 0 4px 12px rgba(0,0,0,0.03);
-    border: 1px solid rgba(216, 198, 174, 0.5);
+    background: var(--surface);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8), 0 4px 12px rgba(0,0,0,0.06);
+    border: 1px solid var(--border);
     border-radius: var(--radius-xl);
   }
   .dark .glass-panel {
-    background: rgba(44, 42, 39, 0.6);
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 4px 12px rgba(0,0,0,0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--surface);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
   }
 
   .glass-card {
-    background: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(16px) saturate(130%);
-    -webkit-backdrop-filter: blur(16px) saturate(130%);
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.9), 0 8px 24px rgba(0,0,0,0.04);
-    border: 1px solid rgba(216, 198, 174, 0.6);
+    background: var(--surface);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.9), 0 8px 24px rgba(0,0,0,0.06);
+    border: 1px solid var(--border);
     border-radius: var(--radius-xl);
   }
   .dark .glass-card {
-    background: rgba(50, 48, 45, 0.5);
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 8px 24px rgba(0,0,0,0.25);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: var(--surface);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05), 0 8px 24px rgba(0,0,0,0.35);
+    border: 1px solid var(--border);
   }
 
   .glass-nav {
-    background: rgba(255, 255, 255, 0.65);
-    backdrop-filter: blur(20px) saturate(140%);
-    -webkit-backdrop-filter: blur(20px) saturate(140%);
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.9), 0 4px 16px rgba(0,0,0,0.05);
-    border: 1px solid rgba(216, 198, 174, 0.4);
+    background: var(--surface);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border: 1px solid var(--border);
     border-radius: 100px;
   }
   .dark .glass-nav {
-    background: rgba(40, 38, 35, 0.65);
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 4px 16px rgba(0,0,0,0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--surface);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+    border: 1px solid var(--border);
   }
 
   .glass-sheet {
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(24px) saturate(150%);
-    -webkit-backdrop-filter: blur(24px) saturate(150%);
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.9), 0 16px 48px rgba(0,0,0,0.08);
-    border: 1px solid rgba(216, 198, 174, 0.6);
+    background: var(--surface);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.18);
+    border: 1px solid var(--border);
     border-radius: var(--radius-2xl);
   }
   .dark .glass-sheet {
-    background: rgba(45, 43, 40, 0.75);
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 16px 48px rgba(0,0,0,0.4);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--surface);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+    border: 1px solid var(--border);
   }
 
   .glass-dialog {

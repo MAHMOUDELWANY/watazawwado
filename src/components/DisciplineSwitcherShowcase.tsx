@@ -182,7 +182,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
   return (
     <section
       id="discipline-switcher"
-      className="py-20 lg:py-28 bg-background border-b border-border/80 dark:border-border transition-colors"
+      className="py-20 lg:py-28 bg-background border-b border-border/80 dark:border-border transition-colors overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
