@@ -19,6 +19,7 @@ import { HelpCircle, Globe, LogOut, BookOpen,
   ChevronRight,
 } from 'lucide-react';
 import { useTeacherAuth } from '../lib/auth';
+import { useAppLanguage } from '../lib/language';
 
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import StudentHomePage from './pages/StudentHomePage';
@@ -54,24 +55,8 @@ export default function StudentApp() {
   const drawerRef = useRef<HTMLElement>(null);
   const prevSidebarOpenRef = useRef<boolean>(false);
 
-  // Language management with document synchronization
-  const [lang, setLang] = useState<'en' | 'ar'>(() => {
-    if (typeof document !== 'undefined' && document.documentElement.lang === 'ar') {
-      return 'ar';
-    }
-    return 'en';
-  });
-
-  const isAr = lang === 'ar';
-
-  useEffect(() => {
-    document.documentElement.lang = lang;
-    document.documentElement.dir = isAr ? 'rtl' : 'ltr';
-  }, [lang, isAr]);
-
-  const toggleLang = () => {
-    setLang(prev => (prev === 'en' ? 'ar' : 'en'));
-  };
+  // Synchronized language management across public & student apps
+  const { lang, isAr, toggleLanguage: toggleLang } = useAppLanguage();
 
   // Mobile drawer accessibility: focus management, scroll lock, keyboard trap, and Escape key
   useEffect(() => {
@@ -242,11 +227,7 @@ export default function StudentApp() {
           </div>
         </div>
 
-        {/* Global Onboarding Guide */}
-      <OnboardingGuide steps={globalTourSteps} isOpen={showGlobalTour} onClose={() => setShowGlobalTour(false)} isAr={isAr} />
-      {/* Global Onboarding Guide */}
-      <OnboardingGuide steps={globalTourSteps} isOpen={showGlobalTour} onClose={() => setShowGlobalTour(false)} isAr={isAr} />
-      <StudentAuthModal
+        <StudentAuthModal
           isOpen={authModalOpen}
           onClose={() => setAuthModalOpen(false)}
           lang={lang}
@@ -280,7 +261,7 @@ export default function StudentApp() {
     );
   }
 
-  // Information Architecture Navigation Items
+  // Information Architecture Navigation Items (Reduced words, friendly, concise)
   const navItems = [
     { 
       name: isAr ? 'الرئيسية' : 'Home', 
@@ -292,17 +273,16 @@ export default function StudentApp() {
       name: isAr ? 'الدروس' : 'Lessons', 
       path: '/student/lessons', 
       icon: Calendar,
-  Plus,
       badge: null
     },
     { 
-      name: isAr ? 'حجز درس' : 'Book', 
+      name: isAr ? 'حجز جديد' : 'Book', 
       path: '/student/book', 
       icon: Plus,
       badge: null
     },
     { 
-      name: isAr ? 'دليل التعلم' : 'Learning Guide', 
+      name: isAr ? 'المرشد' : 'Guide', 
       path: '/student/guide', 
       icon: Sparkles,
       badge: null
@@ -318,74 +298,90 @@ export default function StudentApp() {
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const globalTourSteps = [
     {
-      targetId: 'nav-book-link-desktop',
+      targetId: ['nav-book-link', 'nav-book-link-desktop', 'student-book'],
       title: isAr ? 'حجز الدروس' : 'Book Lessons',
-      description: isAr ? 'من هنا يمكنك اختيار الدرس وحجز مواعيدك بكل سهولة.' : 'From here you can choose a subject and book your lessons easily.'
+      description: isAr ? 'من هنا يمكنك حجز مواعيد حصصك الفردية المباشرة بكل سهولة.' : 'Schedule your personalized 1-on-1 sessions at your preferred times.',
+      position: 'bottom' as const,
     },
     {
-      targetId: 'nav-account-link-desktop',
-      title: isAr ? 'إدارة الحساب' : 'Account Management',
-      description: isAr ? 'تعديل بياناتك، متابعة رصيدك، وتغيير الإعدادات من هذا القسم.' : 'Update your profile, check your balance, and change settings here.'
+      targetId: ['nav-lessons-link', 'nav-lessons-link-desktop', 'student-lessons'],
+      title: isAr ? 'جدول الدروس' : 'My Lessons',
+      description: isAr ? 'متابعة جميع حصصك القادمة والسابقة وروابط زووم المباشرة.' : 'Review your upcoming schedule, past sessions, and direct Zoom links.',
+      position: 'bottom' as const,
     },
     {
-      targetId: 'language-toggle',
-      title: isAr ? 'تغيير اللغة' : 'Change Language',
-      description: isAr ? 'يمكنك التبديل بين العربية والإنجليزية في أي وقت.' : 'You can switch between Arabic and English at any time.'
+      targetId: ['nav-account-link', 'nav-account-link-desktop', 'student-account'],
+      title: isAr ? 'إدارة الحساب' : 'Account & Profile',
+      description: isAr ? 'تعديل بياناتك، متابعة رصيدك، وضبط أهدافك التعليمية.' : 'Manage your profile, track active credits, and adjust preferences.',
+      position: 'bottom' as const,
     },
     {
-      targetId: 'student-logout',
-      title: isAr ? 'تسجيل الخروج' : 'Log Out',
-      description: isAr ? 'عند الانتهاء، يمكنك تسجيل الخروج من هنا بأمان.' : 'When you are done, you can safely log out from here.'
+      targetId: ['student-notifications', 'header-notification-btn'],
+      title: isAr ? 'التنبيهات' : 'Notifications',
+      description: isAr ? 'إشعارات فورية بمواعيد الجلسات وتأكيدات الدفع والتحديثات.' : 'Instant alerts for lesson timings, payment confirmations, and updates.',
+      position: 'bottom' as const,
+    },
+    {
+      targetId: ['student-header-tour-btn', 'header-lang-btn', 'language-toggle'],
+      title: isAr ? 'اللغة والإعدادات' : 'Language & Settings',
+      description: isAr ? 'التبديل بين العربية والإنجليزية، وتغيير المظهر الليلي والنهاري.' : 'Switch between Arabic & English, or toggle between light and dark modes.',
+      position: 'bottom' as const,
     }
   ];
 
-  // Dynamic Header Title & Subtitle helper
+  // Dynamic Header Title & Subtitle helper (Concise & friendly)
   const getHeaderInfo = (pathname: string) => {
     if (pathname === '/student' || pathname === '/student/') {
       return {
         title: isAr ? 'لوحة التحكم' : 'Overview',
-        subtitle: isAr ? 'مركز متابعة رحلتك التعليمية' : 'Learning Command Center'
+        subtitle: isAr ? 'مرحباً بك في مساحتك التعليمية' : 'Welcome to your learning space'
       };
     }
     if (pathname.startsWith('/student/lessons')) {
       return {
-        title: isAr ? 'جدول كافة الدروس' : 'My Lessons',
-        subtitle: isAr ? 'الجلسات القادمة والمكتملة مع الأستاذ محمود' : 'Scheduled & past 1-on-1 sessions'
+        title: isAr ? 'الدروس' : 'Lessons',
+        subtitle: isAr ? 'جدول الجلسات المباشرة' : 'Your scheduled 1-on-1 sessions'
       };
     }
     if (pathname.startsWith('/student/packages')) {
       return {
-        title: isAr ? 'باقات الحصص والرصيد' : 'Packages & Credits',
-        subtitle: isAr ? 'رصيد الدروس وسجل الحساب' : 'Lesson credits and account history'
-      };
-    }
-    if (pathname.startsWith('/student/payments')) {
-      return {
-        title: isAr ? 'سجل المدفوعات والحوالات' : 'Payments',
-        subtitle: isAr ? 'إثباتات الدفع وتعليمات التحويل البنكي' : 'Transfer instructions & verified receipts'
-      };
-    }
-    if (pathname.startsWith('/student/notifications')) {
-      return {
-        title: isAr ? 'التنبيهات والإشعارات' : 'Notifications',
-        subtitle: isAr ? 'آخر تحديثات المواعيد وتأكيدات الدفع' : 'Updates on lessons, payments, and packages'
-      };
-    }
-    if (pathname.startsWith('/student/account') || pathname.startsWith('/student/profile')) {
-      return {
-        title: isAr ? 'الحساب والإعدادات' : 'Account & Settings',
-        subtitle: isAr ? 'بياناتك الشخصية وتفضيلات التعلم' : 'Personal information, timezone & learning profile'
+        title: isAr ? 'الباقات' : 'Packages',
+        subtitle: isAr ? 'رصيد الحصص والسجل' : 'Lesson credits and history'
       };
     }
     if (pathname.startsWith('/student/book')) {
       return {
-        title: isAr ? 'حجز درس جديد' : 'Book a Lesson',
-        subtitle: isAr ? 'جلسة فردية مباشرة مع الأستاذ محمود' : '1-on-1 private session with Ustadh Mahmoud'
+        title: isAr ? 'حجز درس' : 'Book a Lesson',
+        subtitle: isAr ? 'اختر الوقت المناسب لك' : 'Choose your preferred time'
+      };
+    }
+    if (pathname.startsWith('/student/guide')) {
+      return {
+        title: isAr ? 'مرشد التعلم' : 'Learning Guide',
+        subtitle: isAr ? 'مساعدك الذكي للتخطيط' : 'AI study assistant'
+      };
+    }
+    if (pathname.startsWith('/student/account') || pathname.startsWith('/student/profile')) {
+      return {
+        title: isAr ? 'حسابي' : 'Account',
+        subtitle: isAr ? 'إعدادات الملف الشخصي' : 'Profile & settings'
+      };
+    }
+    if (pathname.startsWith('/student/notifications')) {
+      return {
+        title: isAr ? 'التنبيهات' : 'Notifications',
+        subtitle: isAr ? 'آخر التحديثات والإشعارات' : 'Recent updates and alerts'
+      };
+    }
+    if (pathname.startsWith('/student/payments')) {
+      return {
+        title: isAr ? 'المدفوعات' : 'Payments',
+        subtitle: isAr ? 'سجل الحصص والإيصالات' : 'Receipts & payment history'
       };
     }
     return {
-      title: isAr ? 'الرئيسية' : 'Learning Home',
-      subtitle: isAr ? 'وتزودوا — الأستاذ محمود' : 'Watazawwado with Ustadh Mahmoud'
+      title: isAr ? 'لوحة التحكم' : 'Overview',
+      subtitle: isAr ? 'مساحتك التعليمية' : 'Learning Space'
     };
   };
 
@@ -537,8 +533,8 @@ export default function StudentApp() {
     
       <div className="p-4 mt-auto mb-[env(safe-area-inset-bottom)] lg:mb-0 border-t border-border/10">
         <button 
-          onClick={() => setShowGlobalTour(true)}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 mb-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all font-semibold text-sm"
+          onClick={() => { setSidebarOpen(false); setShowGlobalTour(true); }}
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 mb-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all font-semibold text-sm cursor-pointer"
         >
           <HelpCircle className="w-4 h-4" />
           <span>{isAr ? 'دليل الاستخدام' : 'Tour Guide'}</span>
@@ -587,17 +583,43 @@ export default function StudentApp() {
             </div>
           </div>
 
-          {/* Right Side: Quick Action Utilities (Notifications) */}
-          <div className="flex items-center gap-3">
+          {/* Right Side: Quick Action Utilities (Tour, Lang, Notifications, Account) */}
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            {/* Quick Tour Button */}
+            <button
+              type="button"
+              id="student-header-tour-btn"
+              data-tour="student-header-tour-btn"
+              onClick={() => setShowGlobalTour(true)}
+              title={isAr ? 'دليل الاستخدام' : 'Tour Guide'}
+              aria-label={isAr ? 'دليل الاستخدام' : 'Tour Guide'}
+              className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-teal-800 dark:text-teal-200 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 transition-all cursor-pointer shadow-2xs"
+            >
+              <Compass className="w-4.5 h-4.5 text-teal-600 dark:text-teal-400" />
+            </button>
+
+            {/* Language Switcher */}
+            <button
+              type="button"
+              id="header-lang-btn"
+              data-tour="header-lang-btn"
+              onClick={toggleLang}
+              className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-foreground hover:bg-surface-subtle border border-border/80 transition-colors cursor-pointer flex items-center gap-1"
+            >
+              <Globe className="w-3.5 h-3.5 text-accent" />
+              <span>{isAr ? 'EN' : 'عربي'}</span>
+            </button>
+
             <Link
               to="/student/notifications"
+              id="student-notifications"
               data-tour="student-notifications"
-              className="relative w-10 h-10 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer glass-surface"
+              className="relative w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer border border-border/60"
               aria-label={isAr ? 'التنبيهات' : 'Notifications'}
             >
-              <Bell className="w-5 h-5" />
+              <Bell className="w-4.5 h-4.5" />
               {unreadNotificationsCount > 0 && (
-                <span className="absolute top-2 end-2 w-2 h-2 rounded-full bg-primary ring-2 ring-surface animate-pulse" />
+                <span className="absolute top-1.5 end-1.5 w-2 h-2 rounded-full bg-primary ring-2 ring-surface animate-pulse" />
               )}
             </Link>
             <AccountDropdown />
@@ -607,7 +629,7 @@ export default function StudentApp() {
         {/* Scrollable Main Application Content (Using full available viewport width intelligently) */}
         <main 
           id="student-main-content"
-          className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 focus:outline-none pb-20 md:pb-8"
+          className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 focus:outline-none pb-24 md:pb-8"
           tabIndex={-1}
         >
           <div className="w-full max-w-7xl mx-auto">
@@ -648,10 +670,10 @@ export default function StudentApp() {
           </div>
         </main>
 
-        {/* Mobile Bottom Navigation Bar (Floating Pill Design) */}
-        <div className="lg:hidden fixed bottom-6 inset-x-4 z-50">
+        {/* Mobile Bottom Navigation Bar (Floating Pill Design V5) */}
+        <div className="lg:hidden fixed bottom-4 inset-x-3 sm:inset-x-6 max-w-sm mx-auto z-40 pb-[env(safe-area-inset-bottom)] pointer-events-none">
           <nav 
-            className="relative w-full h-[68px] glass-nav rounded-full flex items-center justify-between px-2 shadow-2xl border border-border/30"
+            className="pointer-events-auto relative w-full h-[62px] bg-surface/95 dark:bg-surface/90 backdrop-blur-xl rounded-full flex items-center justify-around px-2 shadow-2xl border border-border/80"
             aria-label={isAr ? 'التنقل السفلي' : 'Bottom mobile navigation'}
           >
             {navItems.map((item) => {
@@ -665,28 +687,36 @@ export default function StudentApp() {
                     <Link
                       to={item.path}
                       id="nav-book-link"
-                      className="absolute -top-7 w-[60px] h-[60px] rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-[0_8px_16px_rgba(197,31,36,0.3)] hover:bg-primary-hover active:scale-95 transition-all border-[4px] border-background"
+                      data-tour="student-book"
+                      className="absolute -top-5 w-12 h-12 rounded-full bg-islamic-gradient text-white flex items-center justify-center shadow-lg shadow-teal-900/30 active:scale-90 hover:opacity-95 transition-all border-[3px] border-background"
+                      aria-label={item.name}
                     >
-                      <Icon className="w-7 h-7" />
+                      <Icon className="w-5 h-5 text-white" />
                     </Link>
                   </div>
                 );
               }
 
+              const itemNavId = item.path === '/student' ? 'nav-home-link' : item.path === '/student/lessons' ? 'nav-lessons-link' : item.path === '/student/account' ? 'nav-account-link' : undefined;
+              const itemTourId = item.path === '/student' ? 'student-home' : item.path === '/student/lessons' ? 'student-lessons' : item.path === '/student/account' ? 'student-account' : undefined;
+
               return (
                 <Link
                   key={item.path}
                   to={item.path}
-                  id={item.path === '/student/account' ? 'nav-account-link' : undefined}
-                  className="relative flex flex-col items-center justify-center py-2 flex-1 group h-full"
+                  id={itemNavId}
+                  data-tour={itemTourId}
+                  className="relative flex items-center justify-center flex-1 h-full touch-manipulation group"
+                  aria-label={item.name}
+                  aria-current={isActive ? 'page' : undefined}
                 >
-                  <div className={`relative flex items-center justify-center w-12 h-12 rounded-full transition-colors ${
-                    isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'
+                  <div className={`relative flex items-center justify-center w-10 h-10 rounded-full transition-all duration-200 ${
+                    isActive ? 'text-teal-700 dark:text-teal-300 bg-teal-500/15 shadow-2xs' : 'text-muted-foreground group-hover:text-foreground'
                   }`}>
-                    <Icon className={`w-6 h-6 transition-transform duration-300 ${isActive ? 'translate-y-1' : ''}`} />
-                    {/* Active Dot Indicator */}
+                    <Icon className="w-5 h-5 transition-transform group-active:scale-90" />
+                    {/* Active Dot Indicator in Teal */}
                     {isActive && (
-                      <span className="absolute top-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(197,31,36,0.8)]" />
+                      <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-teal-600 dark:bg-teal-400" />
                     )}
                   </div>
                 </Link>
@@ -695,6 +725,14 @@ export default function StudentApp() {
           </nav>
         </div>
       </div>
+
+      {/* Global Onboarding Guide */}
+      <OnboardingGuide
+        steps={globalTourSteps}
+        isOpen={showGlobalTour}
+        onClose={() => setShowGlobalTour(false)}
+        isAr={isAr}
+      />
 
       <StudentAuthModal
         isOpen={authModalOpen}

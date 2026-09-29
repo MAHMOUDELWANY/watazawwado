@@ -20,7 +20,14 @@ import { LessonDetailModal } from '../components/LessonDetailModal';
 import { Link } from 'react-router-dom';
 import { dashboardFetch } from '../lib/dashboardApi';
 
-export default function TodayPage() {
+import { Language } from '../../booking/types';
+
+interface TodayPageProps {
+  lang?: Language;
+}
+
+export default function TodayPage({ lang = 'en' }: TodayPageProps) {
+  const isAr = lang === 'ar';
   const { session } = useTeacherAuth();
   const [lessons, setLessons] = useState<DashboardLesson[]>([]);
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
@@ -119,19 +126,19 @@ export default function TodayPage() {
   return (
     <div className="space-y-6 pb-12">
       {/* Operational Header */}
-      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border-subtle pb-5">
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/60 pb-5">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-display font-semibold  text-foreground">
-              Today
+            <h1 className="text-2xl font-display font-bold text-foreground">
+              {isAr ? 'اليوم' : 'Today'}
             </h1>
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-sm font-medium bg-secondary/30 text-accent">
-              <Clock className="w-3 h-3" />
-              <span>Cairo Time (UTC+2/3)</span>
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-secondary text-secondary-foreground border border-border/60">
+              <Clock className="w-3 h-3 text-secondary-foreground" />
+              <span>{isAr ? 'توقيت القاهرة' : 'Cairo Time (UTC+2/3)'}</span>
             </span>
           </div>
           <p className="text-sm text-muted-foreground mt-1">
-            {nowCairo.toFormat('EEEE, MMMM d, yyyy')} • {nowCairo.toFormat('hh:mm a')} • Ustadh Mahmoud's teaching schedule for today.
+            {nowCairo.toFormat('EEEE, MMMM d, yyyy')} • {nowCairo.toFormat('hh:mm a')} • {isAr ? 'جدول التدريس والمواعيد المقررة لليوم.' : "Ustadh Mahmoud's teaching schedule for today."}
           </p>
         </div>
 
@@ -139,11 +146,11 @@ export default function TodayPage() {
           <button
             onClick={() => fetchTodayLessons(true)}
             disabled={refreshing || loading}
-            className="inline-flex items-center gap-2 px-3.5 py-2 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-sm font-medium transition-colors shadow-2xs"
-            title="Refresh schedule"
+            className="inline-flex items-center gap-2 px-3.5 py-2 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-sm font-semibold transition-colors shadow-2xs cursor-pointer"
+            title={isAr ? 'تحديث الجدول' : 'Refresh schedule'}
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-accent' : 'opacity-70'}`} />
-            <span>{refreshing ? 'Refreshing...' : 'Refresh'}</span>
+            <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-primary' : 'opacity-70'}`} />
+            <span>{refreshing ? (isAr ? 'جارٍ التحديث...' : 'Refreshing...') : (isAr ? 'تحديث' : 'Refresh')}</span>
           </button>
         </div>
       </header>
@@ -167,7 +174,7 @@ export default function TodayPage() {
         <div className="bg-destructive/10 border border-destructive/20 rounded-2xl p-8 flex flex-col items-center justify-center text-center">
           <AlertCircle className="w-10 h-10 text-destructive mb-3" />
           <h2 className="text-base font-semibold text-foreground mb-1">
-            Your schedule couldn't be loaded
+            {isAr ? 'تعذر تحميل جدول اليوم' : "Your schedule couldn't be loaded"}
           </h2>
           <p className="text-sm text-muted-foreground mb-4 max-w-md">
             {error}
@@ -176,37 +183,37 @@ export default function TodayPage() {
             onClick={() => fetchTodayLessons(true)}
             className="px-5 py-2.5 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-sm font-medium transition-colors"
           >
-            Retry Loading
+            {isAr ? 'إعادة المحاولة' : 'Retry Loading'}
           </button>
         </div>
       ) : (
         <>
           {/* Summary Row */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="glass-card border-none rounded-2xl p-4 shadow-2xs">
-              <span className="text-sm text-muted-foreground font-medium">Lessons Today</span>
-              <div className="text-2xl font-semibold mt-1  text-foreground">
+            <div className="glass-card border border-border/60 rounded-2xl p-4 shadow-2xs">
+              <span className="text-xs sm:text-sm text-muted-foreground font-semibold">{isAr ? 'دروس اليوم' : 'Lessons Today'}</span>
+              <div className="text-2xl font-bold mt-1 text-foreground">
                 {summary?.active_today ?? lessons.filter(l => l.status !== 'cancelled').length}
               </div>
             </div>
 
-            <div className="glass-card border-none rounded-2xl p-4 shadow-2xs">
-              <span className="text-sm text-muted-foreground font-medium">Free Trials</span>
-              <div className="text-2xl font-semibold mt-1  text-primary">
+            <div className="glass-card border border-border/60 rounded-2xl p-4 shadow-2xs">
+              <span className="text-xs sm:text-sm text-muted-foreground font-semibold">{isAr ? 'التجريبية' : 'Free Trials'}</span>
+              <div className="text-2xl font-bold mt-1 text-primary">
                 {summary?.trials_today ?? lessons.filter(l => l.is_free_trial && l.status !== 'cancelled').length}
               </div>
             </div>
 
-            <div className="glass-card border-none rounded-2xl p-4 shadow-2xs">
-              <span className="text-sm text-muted-foreground font-medium">Completed</span>
-              <div className="text-2xl font-semibold mt-1  text-foreground">
+            <div className="glass-card border border-border/60 rounded-2xl p-4 shadow-2xs">
+              <span className="text-xs sm:text-sm text-muted-foreground font-semibold">{isAr ? 'المكتملة' : 'Completed'}</span>
+              <div className="text-2xl font-bold mt-1 text-foreground">
                 {summary?.completed_today ?? 0}
               </div>
             </div>
 
-            <div className="glass-card border-none rounded-2xl p-4 shadow-2xs">
-              <span className="text-sm text-muted-foreground font-medium">Needs Attention</span>
-              <div className={`text-2xl font-semibold mt-1  ${attentionLessons.length > 0 ? 'text-warning' : 'text-success'}`}>
+            <div className="glass-card border border-border/60 rounded-2xl p-4 shadow-2xs">
+              <span className="text-xs sm:text-sm text-muted-foreground font-semibold">{isAr ? 'بحاجة لمتابعة' : 'Needs Attention'}</span>
+              <div className={`text-2xl font-bold mt-1 ${attentionLessons.length > 0 ? 'text-warning' : 'text-success'}`}>
                 {attentionLessons.length}
               </div>
             </div>

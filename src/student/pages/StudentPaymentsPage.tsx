@@ -216,11 +216,11 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
           href="https://wa.me/201026042456?text=Assalamu%20Alaikum%20Ustadh%20Mahmoud%2C%20I%20have%20sent%20a%20payment%20transfer%20and%20would%20like%20to%20confirm%20it."
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold transition-colors shrink-0 self-start md:self-auto min-h-[38px] shadow-xs"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 btn-whatsapp-solid rounded-xl text-sm font-bold shadow-md shrink-0 self-start md:self-auto min-h-[38px]"
         >
-          <MessageCircle className="w-3.5 h-3.5" />
+          <MessageCircle className="w-4 h-4 fill-current shrink-0" />
           <span>{isAr ? 'إرسال الإيصال عبر واتساب' : 'Send Receipt on WhatsApp'}</span>
-          <ExternalLink className="w-3 h-3" />
+          <ExternalLink className="w-3.5 h-3.5" />
         </a>
       </div>
 

@@ -4,13 +4,19 @@ export type ThemeMode = 'light' | 'dark';
 export interface ServiceItem {
   id: string;
   name: string;
+  arabicName?: string;
   category: 'quran' | 'islamic_studies' | 'arabic' | 'english';
   tagline: string;
+  arabicTagline?: string;
   description: string;
+  arabicDescription?: string;
   whoIsItFor: string;
+  arabicWhoIsItFor?: string;
   whatYouWillLearn: string[];
+  arabicWhatYouWillLearn?: string[];
   durations: (30 | 45 | 60)[];
   recommendedFrequency: string;
+  arabicRecommendedFrequency?: string;
 }
 
 export interface ServicePillar {
@@ -18,21 +24,30 @@ export interface ServicePillar {
   title: string;
   arabicTitle: string;
   description: string;
+  arabicDescription?: string;
   services: ServiceItem[];
 }
 
 export interface TestimonialItem {
   id: string;
   quote: string;
+  arabicQuote?: string;
   author: string;
-  role: string; // e.g., "Parent of 8-year-old student" or "Adult learner"
-  location: string; // Canada, UK, US, Australia
+  arabicAuthor?: string;
+  role: string;
+  arabicRole?: string;
+  location: string;
+  arabicLocation?: string;
   subject: string;
+  arabicSubject?: string;
   durationWithMahmoud: string;
+  arabicDurationWithMahmoud?: string;
 }
 
 export interface FAQItem {
   question: string;
+  arabicQuestion?: string;
   answer: string;
+  arabicAnswer?: string;
   category: 'general' | 'trial' | 'booking' | 'teaching';
 }

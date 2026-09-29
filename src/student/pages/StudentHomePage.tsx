@@ -385,7 +385,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
         <div className="lg:col-span-8 space-y-8">
           
           {/* PRIMARY: NEXT LESSON FOCUS */}
-          <section className="space-y-3" aria-labelledby="next-lesson-heading">
+          <section id="onboarding-next-lesson" className="space-y-3" aria-labelledby="next-lesson-heading">
             <div className="flex items-center justify-between">
               <h2 id="next-lesson-heading" className="text-base sm:text-lg font-display font-bold text-foreground">
                 {isAr ? 'الدرس القادم المجدول' : 'Next Scheduled Lesson'}
@@ -921,11 +921,11 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
               href="https://wa.me/201021464424"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl btn-whatsapp-solid text-sm font-bold shadow-sm"
             >
-              <MessageCircle className="w-3.5 h-3.5" />
+              <MessageCircle className="w-4 h-4 fill-current shrink-0" />
               <span>{isAr ? 'محادثة مباشرة على واتساب' : 'Direct WhatsApp message'}</span>
-              <ExternalLink className="w-3 h-3 opacity-70" />
+              <ExternalLink className="w-3.5 h-3.5 opacity-80" />
             </a>
           </div>
 

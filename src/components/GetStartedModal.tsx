@@ -13,7 +13,7 @@ import {
   Clock,
   CheckCircle2
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Language } from '../booking/types';
 
 interface GetStartedModalProps {
@@ -149,13 +149,14 @@ const handleOpenSignup = () => {
 
           {/* Secondary Pathways: Staff Entrance */}
           <div className="mt-5 pt-4 border-t border-border flex items-center justify-center text-sm text-muted-foreground">
-            <a
-              href="/staff/login"
+            <Link
+              to="/staff/login"
+              onClick={onClose}
               id="get-started-staff-link"
-              className="text-muted-foreground hover:text-foreground transition-colors"
+              className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
             >
               {isAr ? 'دخول المعلم / الإدارة' : 'Staff / Teacher Entrance'}
-            </a>
+            </Link>
           </div>
         </motion.div>
       </div>

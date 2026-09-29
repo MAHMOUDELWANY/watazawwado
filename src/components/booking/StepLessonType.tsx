@@ -115,30 +115,30 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               trialDisabled
                 ? 'opacity-60 cursor-not-allowed bg-gray-50 dark:bg-background/60 border-border'
                 : mode === 'trial'
-                ? 'bg-foreground glass-surface border-primary ring-2 ring-primary/30 shadow-xs cursor-pointer'
-                : 'glass-card border-border hover:bg-foreground/40 cursor-pointer'
+                ? 'glass-card bg-teal-500/10 border-teal-500 ring-2 ring-teal-500/30 shadow-xs cursor-pointer'
+                : 'glass-card border-border/80 hover:border-teal-500/40 hover:bg-surface-subtle cursor-pointer'
             }`}
           >
             <div className="flex items-start justify-between gap-3 mb-2">
               <div className="flex items-center gap-2">
-                <div className={`p-2 rounded-xl ${trialDisabled ? 'bg-gray-200 dark:bg-gray-800 text-gray-500' : 'bg-secondary/40 text-accent'}`}>
+                <div className={`p-2 rounded-xl ${trialDisabled ? 'bg-gray-200 dark:bg-gray-800 text-gray-500' : 'bg-teal-500/15 text-teal-700 dark:text-teal-300'}`}>
                   <Gift className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="font-display text-base font-medium text-foreground">
+                  <h4 className="font-display text-base font-bold text-foreground">
                     {isEn ? 'Free Trial Session' : 'جلسة تجريبية مجانية'}
                   </h4>
-                  <span className={`text-sm font-semibold ${trialDisabled ? 'text-gray-500 dark:text-gray-400' : 'text-primary'}`}>
+                  <span className={`text-sm font-semibold ${trialDisabled ? 'text-gray-500 dark:text-gray-400' : 'text-teal-700 dark:text-teal-300'}`}>
                     {trialDisabled
                       ? (isEn ? 'Already Claimed' : 'مستخدمة مسبقاً')
-                      : (isEn ? '$0.00 • No card required' : 'مجاناً (٠.٠٠ دولار)')}
+                      : (isEn ? '$0.00 • No card required' : 'مجاناً (٠.٠٠ دولار) • بدون بطاقة')}
                   </span>
                 </div>
               </div>
               <div
                 className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-colors ${
                   mode === 'trial' && !trialDisabled
-                    ? 'bg-primary text-white'
+                    ? 'bg-teal-600 text-white'
                     : 'border border-border'
                 }`}
               >
@@ -146,13 +146,13 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               </div>
             </div>
 
-            <p className="text-sm text-foreground/80 dark:text-accent/80 leading-relaxed mb-3">
+            <p className="text-sm text-muted-foreground leading-relaxed mb-3">
               {isEn
                 ? 'A 30-minute introductory meeting to get to know each other, evaluate current ability, experience Mahmoud’s teaching style, and receive an honest learning plan.'
                 : 'لقاء تعريفي مدته ٣٠ دقيقة للتعارف وتقييم المستوى وتجربة أسلوب الشرح والحصول على خطة تعليمية مقترحة.'}
             </p>
 
-            <div className="text-[11px] text-muted-foreground font-medium">
+            <div className="text-xs text-muted-foreground font-medium">
               {trialDisabled
                 ? (trialDisabledReason || (isEn ? '• One free trial per student (already used)' : '• جلسة تجريبية واحدة لكل طالب (تم حجزها)'))
                 : (isEn ? '• One free trial per new student' : '• جلسة تجريبية واحدة لكل طالب جديد')}
@@ -166,8 +166,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
             onClick={() => onChangeMode('regular')}
             className={`p-4 sm:p-5 rounded-2xl border text-start transition-all cursor-pointer relative ${
               mode === 'regular'
-                ? 'bg-foreground glass-surface border-muted-foreground ring-2 ring-muted-foreground/30 shadow-xs'
-                : 'glass-card border-border hover:bg-foreground/40'
+                ? 'glass-card bg-primary/10 border-primary ring-2 ring-primary/30 shadow-xs'
+                : 'glass-card border-border/80 hover:border-primary/40 hover:bg-surface-subtle'
             }`}
           >
             <div className="flex items-start justify-between gap-3 mb-2">
@@ -456,7 +456,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
             href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I would like to request an extended lesson session (longer than 60 minutes).')}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-muted-foreground font-medium underline hover:text-primary"
+            className="text-[#25D366] dark:text-[#25D366] font-bold underline hover:opacity-80 transition-opacity"
           >
             {isEn ? 'request an extended session directly with Mahmoud' : 'مراسلة محمود مباشرة لترتيبها'}
           </a>
@@ -481,7 +481,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
           whileHover={{ scale: 1.03, y: -1 }}
           whileTap={{ scale: 0.97 }}
           onClick={onNext}
-          className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-muted-foreground hover:bg-muted text-white text-sm font-medium shadow-xs transition-all cursor-pointer"
+          className="inline-flex items-center gap-2 px-7 py-3 rounded-xl btn-primary-material text-white text-sm font-semibold shadow-md transition-all cursor-pointer"
         >
           <span>{isEn ? 'Next: Pick Date & Time' : 'التالي: اختيار التاريخ والوقت'}</span>
           <ArrowRight className={`w-4 h-4 ${lang === 'ar' ? 'rotate-180' : ''}`} />

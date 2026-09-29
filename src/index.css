@@ -42,11 +42,36 @@
 
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary-hover: var(--secondary-hover);
 
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
 
   --color-brand: var(--brand);
+
+  /* The 4 Architectural Colors Inspired by Ancient Islamic Heritage */
+  --color-teal: var(--teal);
+  --color-teal-foreground: var(--teal-foreground);
+  --color-teal-hover: var(--teal-hover);
+  --color-teal-light: var(--teal-light);
+  --color-teal-border: var(--teal-border);
+
+  --color-crimson: var(--crimson);
+  --color-crimson-foreground: var(--crimson-foreground);
+  --color-crimson-hover: var(--crimson-hover);
+  --color-crimson-light: var(--crimson-light);
+  --color-crimson-border: var(--crimson-border);
+
+  --color-terracotta: var(--terracotta);
+  --color-terracotta-foreground: var(--terracotta-foreground);
+  --color-terracotta-hover: var(--terracotta-hover);
+  --color-terracotta-light: var(--terracotta-light);
+  --color-terracotta-border: var(--terracotta-border);
+
+  --color-sand: var(--sand);
+  --color-sand-foreground: var(--sand-foreground);
+  --color-sand-light: var(--sand-light);
+  --color-sand-border: var(--sand-border);
 
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
@@ -80,61 +105,86 @@
 }
 
 /* ============================================================
-   WATAZAWWADO BRAND PALETTE — PRIMARY TOKENS
+   ISLAMIC ARCHITECTURAL 4-COLOR HERITAGE PALETTE
    
-   Red:    #C51F24  — brand mark, critical emphasis
-   Teal:   #087D91  — primary interactive, CTAs, links
-   Copper: #8B4935  — warm accent, editorial highlights
-   Beige:  #D8C6AE  — environmental warmth, section washes
+   1. Teal / Firouzi:    #087D91 — Glazed Ceramic Zellij (calm, wisdom, tiles)
+   2. Crimson / Qirmizi: #C51F24 — Andalusian Brick Arch (focal actions, mark)
+   3. Terracotta / Nahas:#8B4935 — Carved Cedarwood & Copper (editorial warmth)
+   4. Sand / Ramli:      #D8C6AE — Limestone Parchment & Stucco (surfaces, air)
    ============================================================ */
 
 :root {
   color-scheme: light;
   
-  /* Environment - warm ivory */
-  --background: #F8F6F0; 
-  --foreground: #2C2A27;
+  /* Environment - Artisanal warm ivory paper with rich contrast */
+  --background: #FAF7F2; 
+  --foreground: #12100E;
 
   --surface: #FFFFFF;
-  --surface-foreground: #2C2A27;
-  --surface-subtle: #F0EDE6;
-  --surface-warm: #EDE7DC;
+  --surface-foreground: #12100E;
+  --surface-subtle: #F6F1EA;
+  --surface-warm: #EFE7DC;
 
-  --muted: #E6E4DD;
-  --muted-foreground: #6B6965;
+  --muted: #E2DBD0;
+  --muted-foreground: #453D34; /* High WCAG AAA contrast ratio > 7:1 against light bg */
 
-  --border: #D5D3CC;
-  --border-subtle: #E6E4DD;
+  --border: #D4CBBC;
+  --border-subtle: #E8E0D2;
 
-  /* Primary - Crimson */
+  /* 4 Heritage Architectural Colors */
+  --teal: #087D91;
+  --teal-foreground: #FFFFFF;
+  --teal-hover: #066474;
+  --teal-light: rgba(8, 125, 145, 0.10);
+  --teal-border: rgba(8, 125, 145, 0.30);
+
+  --crimson: #C51F24;
+  --crimson-foreground: #FFFFFF;
+  --crimson-hover: #9E161A;
+  --crimson-light: rgba(197, 31, 36, 0.10);
+  --crimson-border: rgba(197, 31, 36, 0.30);
+
+  --terracotta: #8B4935;
+  --terracotta-foreground: #FFFFFF;
+  --terracotta-hover: #713827;
+  --terracotta-light: rgba(139, 73, 53, 0.10);
+  --terracotta-border: rgba(139, 73, 53, 0.30);
+
+  --sand: #D8C6AE;
+  --sand-foreground: #12100E;
+  --sand-light: #F7F3EB;
+  --sand-border: #D8C6AE;
+
+  /* Primary Action - Andalusian Crimson */
   --primary: #C51F24;
   --primary-foreground: #FFFFFF;
-  --primary-hover: #A6181D;
+  --primary-hover: #A0161A;
 
-  /* Interactive - Teal */
+  /* Secondary & Interactive - Oceanic Islamic Teal */
+  --secondary: #087D91;
+  --secondary-foreground: #FFFFFF;
+  --secondary-hover: #066474;
+
   --interactive: #087D91;
   --interactive-foreground: #FFFFFF;
-  --interactive-hover: #066272;
+  --interactive-hover: #055C6B;
   
-  /* Secondary - Beige surfaces */
-  --secondary: #F0EDE6;
-  --secondary-foreground: #2C2A27;
-  
-  /* Accent - Copper */
+  /* Accent - Warm Terracotta Copper */
   --accent: #8B4935;
   --accent-foreground: #FFFFFF;
+  --accent-hover: #713827;
   
   /* Brand */
   --brand: #C51F24;
-  --brand-soft: color-mix(in srgb, #C51F24 15%, transparent);
+  --brand-soft: rgba(197, 31, 36, 0.12);
 
   /* Semantic Status */
   --destructive: #C51F24;
   --destructive-foreground: #FFFFFF;
-  --success: #4CAF6E;
+  --success: #237A4B;
   --success-foreground: #FFFFFF;
-  --warning: #E8AD76;
-  --warning-foreground: #111110;
+  --warning: #C26300;
+  --warning-foreground: #FFFFFF;
   --info: #087D91;
   --info-foreground: #FFFFFF;
   --focus: #087D91;
@@ -143,52 +193,77 @@
 html.dark {
   color-scheme: dark;
   
-  /* Environment - warm charcoal */
-  --background: #1C1A19;
-  --foreground: #F8F6F0;
+  /* Environment - Deep luxurious espresso charcoal with punchy contrast */
+  --background: #110F0E;
+  --foreground: #FAF7F2;
   
-  --surface: #242220; 
-  --surface-foreground: #F8F6F0;
-  --surface-subtle: #2C2A27; 
-  --surface-warm: #332F2A;
+  --surface: #1B1816; 
+  --surface-foreground: #FAF7F2;
+  --surface-subtle: #24201D; 
+  --surface-warm: #2E2824;
   
-  --muted: #383530;
-  --muted-foreground: #A39E93;
+  --muted: #38312B;
+  --muted-foreground: #C4B9AA; /* High contrast > 8:1 for dark mode */
   
-  --border: #423E39;
-  --border-subtle: #312E2A;
+  --border: #443B33;
+  --border-subtle: #2E2721;
 
-  /* Primary - Crimson */
-  --primary: #C51F24;
+  /* 4 Heritage Architectural Colors (Luminous Dark Mode variants) */
+  --teal: #12A4BC;
+  --teal-foreground: #FFFFFF;
+  --teal-hover: #22BBD4;
+  --teal-light: rgba(18, 164, 188, 0.18);
+  --teal-border: rgba(18, 164, 188, 0.38);
+
+  --crimson: #E82C32;
+  --crimson-foreground: #FFFFFF;
+  --crimson-hover: #F8454B;
+  --crimson-light: rgba(232, 44, 50, 0.18);
+  --crimson-border: rgba(232, 44, 50, 0.38);
+
+  --terracotta: #DA7960;
+  --terracotta-foreground: #FFFFFF;
+  --terracotta-hover: #E8927B;
+  --terracotta-light: rgba(218, 121, 96, 0.18);
+  --terracotta-border: rgba(218, 121, 96, 0.38);
+
+  --sand: #3D352D;
+  --sand-foreground: #FAF7F2;
+  --sand-light: #25201C;
+  --sand-border: #4E4338;
+
+  /* Primary Action - Luminous Crimson */
+  --primary: #E82C32;
   --primary-foreground: #FFFFFF;
-  --primary-hover: #D63338;
+  --primary-hover: #F74046;
   
-  /* Interactive - Teal */
-  --interactive: #087D91;
+  /* Secondary & Interactive - Luminous Sacred Teal */
+  --secondary: #12A4BC;
+  --secondary-foreground: #FFFFFF;
+  --secondary-hover: #22BBD4;
+
+  --interactive: #12A4BC;
   --interactive-foreground: #FFFFFF;
-  --interactive-hover: #0A9DB5;
+  --interactive-hover: #22BCD4;
 
-  /* Secondary - Muted beige */
-  --secondary: #3D3630;
-  --secondary-foreground: #D8C6AE;
-  
-  /* Accent - Copper */
-  --accent: #B06A52;
+  /* Accent - Luminous Terracotta Copper */
+  --accent: #DA7960;
   --accent-foreground: #FFFFFF;
+  --accent-hover: #E8927B;
 
-  --brand: #C51F24;
-  --brand-soft: color-mix(in srgb, #C51F24 25%, transparent);
+  --brand: #E82C32;
+  --brand-soft: rgba(232, 44, 50, 0.22);
 
   /* Semantic Status */
-  --destructive: #D63338;
+  --destructive: #E22B31;
   --destructive-foreground: #FFFFFF;
-  --success: #4CAF6E;
+  --success: #34A853;
   --success-foreground: #FFFFFF;
-  --warning: #E8AD76;
-  --warning-foreground: #111110;
-  --info: #0A9DB5;
+  --warning: #F59E0B;
+  --warning-foreground: #1C1817;
+  --info: #10A3BA;
   --info-foreground: #FFFFFF;
-  --focus: #0A9DB5;
+  --focus: #10A3BA;
 }
 
 /* ============================================================
@@ -500,14 +575,18 @@ body {
   animation: fadeInUp var(--duration-slow) var(--ease-entrance) both;
 }
 
-/* --- Learning Area Color Accents ---
-   Subtle accent colors for the 5 learning taxonomy areas. 
-   Uses brand copper as the base with subtle hue shifts. */
-.learning-area-quran { --area-accent: #8B4935; }
-.learning-area-islamic { --area-accent: #7A5C3E; }
-.learning-area-msa { --area-accent: #087D91; }
-.learning-area-egyptian { --area-accent: #0A6B7A; }
-.learning-area-english { --area-accent: #5A6B5E; }
+/* --- Learning Area Color Accents (Ancient Islamic Heritage Palette) --- */
+.learning-area-quran { --area-accent: #C51F24; }
+.learning-area-islamic { --area-accent: #087D91; }
+.learning-area-msa { --area-accent: #8B4935; }
+.learning-area-egyptian { --area-accent: #C26300; }
+.learning-area-english { --area-accent: #087D91; }
+
+.dark .learning-area-quran { --area-accent: #E82C32; }
+.dark .learning-area-islamic { --area-accent: #12A4BC; }
+.dark .learning-area-msa { --area-accent: #DA7960; }
+.dark .learning-area-egyptian { --area-accent: #F59E0B; }
+.dark .learning-area-english { --area-accent: #12A4BC; }
 
 @layer utilities {
   /* ================== TYPOGRAPHY SYSTEM ================== */
@@ -570,12 +649,37 @@ body {
     font-family: var(--font-display-ar) !important;
   }
 
-  /* ================== BRAND GRADIENT ================== */
+  /* ================== ISLAMIC HERITAGE GRADIENTS ================== */
+  .bg-islamic-gradient {
+    background: linear-gradient(135deg, var(--teal) 0%, var(--crimson) 38%, var(--terracotta) 72%, var(--sand) 100%);
+  }
+  .text-islamic-gradient {
+    background: linear-gradient(135deg, var(--teal) 0%, var(--crimson) 45%, var(--terracotta) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .bg-teal-gradient {
+    background: linear-gradient(135deg, var(--teal) 0%, #055C6B 100%);
+  }
+  .text-teal-gradient {
+    background: linear-gradient(135deg, var(--teal) 0%, #0284C7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .bg-crimson-gradient {
+    background: linear-gradient(135deg, var(--crimson) 0%, #8B1A1E 100%);
+  }
+  .bg-terracotta-gradient {
+    background: linear-gradient(135deg, var(--terracotta) 0%, #B45309 100%);
+  }
+
   .bg-brand-gradient {
-    background: linear-gradient(135deg, #C51F24 0%, #8B4935 45%, #D8C6AE 85%, #087D91 100%);
+    background: linear-gradient(135deg, var(--teal) 0%, var(--crimson) 38%, var(--terracotta) 72%, var(--sand) 100%);
   }
   .text-brand-gradient {
-    background: linear-gradient(135deg, #C51F24 0%, #8B4935 60%, #087D91 100%);
+    background: linear-gradient(135deg, var(--teal) 0%, var(--crimson) 50%, var(--terracotta) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -614,22 +718,22 @@ body {
     transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  /* ================== BUTTON MATERIAL ================== */
+  /* ================== HERITAGE BUTTON MATERIALS ================== */
   .btn-primary-material {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    background: linear-gradient(180deg, rgba(197, 31, 36, 0.8) 0%, rgba(170, 24, 28, 0.9) 100%);
+    background: linear-gradient(180deg, rgba(197, 31, 36, 0.92) 0%, rgba(160, 22, 26, 0.98) 100%);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     box-shadow: 
       inset 0 1px 1px rgba(255, 255, 255, 0.25),
       inset 0 2px 4px rgba(255, 255, 255, 0.1),
-      0 4px 12px rgba(197, 31, 36, 0.25),
-      0 1px 3px rgba(0, 0, 0, 0.1);
+      0 4px 12px rgba(197, 31, 36, 0.3),
+      0 1px 3px rgba(0, 0, 0, 0.12);
     color: white;
-    border: 1px solid rgba(197, 31, 36, 0.3);
+    border: 1px solid rgba(197, 31, 36, 0.35);
     position: relative;
     overflow: hidden;
   }
@@ -637,7 +741,7 @@ body {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
     transform: translateX(-100%);
     transition: transform 0.5s ease;
   }
@@ -645,17 +749,84 @@ body {
     transform: translateX(100%);
   }
   .btn-primary-material:hover {
-    background: linear-gradient(180deg, rgba(214, 51, 56, 0.85) 0%, rgba(197, 31, 36, 0.95) 100%);
+    background: linear-gradient(180deg, rgba(214, 45, 50, 0.95) 0%, rgba(185, 25, 30, 1) 100%);
     box-shadow: 
       inset 0 1px 1px rgba(255, 255, 255, 0.3),
       inset 0 2px 4px rgba(255, 255, 255, 0.15),
-      0 6px 16px rgba(197, 31, 36, 0.35),
+      0 6px 18px rgba(197, 31, 36, 0.4),
       0 2px 4px rgba(0, 0, 0, 0.15);
     transform: translateY(-1px);
   }
   .btn-primary-material:active {
     transform: translateY(1px) scale(0.98);
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(197, 31, 36, 0.2);
+  }
+
+  /* Glazed Zellij Teal Button Material */
+  .btn-teal-material {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: linear-gradient(180deg, rgba(8, 125, 145, 0.92) 0%, rgba(5, 92, 107, 0.98) 100%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 
+      inset 0 1px 1px rgba(255, 255, 255, 0.3),
+      inset 0 2px 4px rgba(255, 255, 255, 0.12),
+      0 4px 14px rgba(8, 125, 145, 0.32),
+      0 1px 3px rgba(0, 0, 0, 0.1);
+    color: white;
+    border: 1px solid rgba(8, 125, 145, 0.4);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-teal-material::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+  }
+  .btn-teal-material:hover::before {
+    transform: translateX(100%);
+  }
+  .btn-teal-material:hover {
+    background: linear-gradient(180deg, rgba(10, 145, 168, 0.95) 0%, rgba(8, 125, 145, 1) 100%);
+    box-shadow: 
+      inset 0 1px 1px rgba(255, 255, 255, 0.35),
+      0 6px 18px rgba(8, 125, 145, 0.42),
+      0 2px 4px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+  }
+  .btn-teal-material:active {
+    transform: translateY(1px) scale(0.98);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(8, 125, 145, 0.2);
+  }
+
+  /* Terracotta Copper Button Material */
+  .btn-terracotta-material {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: linear-gradient(180deg, rgba(139, 73, 53, 0.92) 0%, rgba(113, 56, 39, 0.98) 100%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 
+      inset 0 1px 1px rgba(255, 255, 255, 0.25),
+      0 4px 12px rgba(139, 73, 53, 0.3),
+      0 1px 3px rgba(0, 0, 0, 0.1);
+    color: white;
+    border: 1px solid rgba(139, 73, 53, 0.4);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-terracotta-material:hover {
+    background: linear-gradient(180deg, rgba(158, 84, 62, 0.95) 0%, rgba(139, 73, 53, 1) 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(139, 73, 53, 0.38);
   }
 
   .btn-secondary-material {
@@ -790,7 +961,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
-  /* 4-Color Edge */
+  /* 4-Color Heritage Architectural Edge */
   .glass-brand-edge {
     position: relative;
     border-color: transparent !important;
@@ -801,15 +972,15 @@ body {
     inset: 0;
     border-radius: inherit;
     padding: 1.5px;
-    background: linear-gradient(135deg, #C51F24, #8B4935, #D8C6AE, #087D91);
+    background: linear-gradient(135deg, var(--teal) 0%, var(--crimson) 38%, var(--terracotta) 72%, var(--sand) 100%);
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     pointer-events: none;
   }
   .dark .glass-brand-edge::before {
-    background: linear-gradient(135deg, #C51F24, #B06A52, #3D3630, #087D91);
-    opacity: 0.9;
+    background: linear-gradient(135deg, var(--teal) 0%, var(--crimson) 38%, var(--terracotta) 72%, var(--sand) 100%);
+    opacity: 0.95;
   }
 
   /* Specular Highlight */
@@ -852,23 +1023,63 @@ body {
   50% { transform: scaleX(1); }
 }
 
-  .btn-whatsapp {
-    background-color: rgba(37, 211, 102, 0.1);
-    color: #25D366;
-    border: 1px solid rgba(37, 211, 102, 0.2);
+  /* ================== WHATSAPP BRAND UTILITIES ================== */
+  .btn-whatsapp-solid {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: #25D366;
+    color: #ffffff !important;
+    font-weight: 700;
+    box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
     transition: all 0.2s ease-in-out;
   }
-  .btn-whatsapp:hover {
-    background-color: rgba(37, 211, 102, 0.2);
-    color: #1DA851;
+  .btn-whatsapp-solid:hover {
+    background-color: #1fbe58;
+    color: #ffffff !important;
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+    transform: translateY(-1px);
   }
-  .dark .btn-whatsapp {
+
+  .btn-whatsapp-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: rgba(37, 211, 102, 0.1);
+    color: #15803d !important;
+    border: 1.5px solid #25D366;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+  }
+  .dark .btn-whatsapp-outline {
     background-color: rgba(37, 211, 102, 0.15);
-    color: #4ade80;
-    border: 1px solid rgba(37, 211, 102, 0.25);
+    color: #25D366 !important;
+    border: 1.5px solid #25D366;
   }
-  .dark .btn-whatsapp:hover {
-    background-color: rgba(37, 211, 102, 0.25);
-    color: #86efac;
+  .btn-whatsapp-outline:hover, .dark .btn-whatsapp-outline:hover {
+    background-color: #25D366;
+    color: #ffffff !important;
+    border-color: #25D366;
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+  }
+
+  .badge-whatsapp {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    background-color: #25D366;
+    color: #ffffff !important;
+    font-size: 0.75rem;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(37, 211, 102, 0.35);
+  }
+  .dark .badge-whatsapp {
+    background-color: #25D366;
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(37, 211, 102, 0.45);
   }
 

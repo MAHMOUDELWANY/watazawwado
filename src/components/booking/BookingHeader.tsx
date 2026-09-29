@@ -65,18 +65,18 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
 
           {/* Mode Pill Badge */}
           <span
-            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold tracking-wide ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs sm:text-sm font-semibold tracking-wide ${
               mode === 'trial'
-                ? 'bg-secondary/40 text-accent dark:text-primary border border-secondary/60'
+                ? 'bg-teal-500/15 text-teal-800 dark:text-teal-200 border border-teal-500/30'
                 : 'bg-muted-foreground/15 text-muted-foreground border border-muted-foreground/30'
             }`}
           >
-            <CheckCircle2 className="w-3.5 h-3.5" />
+            <CheckCircle2 className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
             <span>
               {mode === 'trial'
                 ? isEn
                   ? 'Free 30-Min Trial Session'
-                  : 'جلسة تجريبية مجانية (٣٠ دقيقة)'
+                  : 'جلسة تعارف وتحديد مستوى (٣٠ دقيقة مجانًا)'
                 : isEn
                 ? 'Regular 1-on-1 Lesson'
                 : 'درس فردي منتظم'}
@@ -85,15 +85,15 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Subtle WhatsApp Assistance Path */}
+          {/* WhatsApp Assistance Badge */}
           <a
-            href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I have a question regarding booking a lesson.')}
+            href={buildWhatsAppUrl(isEn ? 'Assalamu Alaikum Ustadh Mahmoud, I have a question regarding booking a lesson.' : 'السلام عليكم أستاذ محمود، لدي استفسار بخصوص حجز درس.')}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:inline-flex items-center gap-1.5 text-sm text-foreground/70 dark:text-muted-foreground/70 hover:text-primary dark:hover:text-primary transition-colors"
+            className="hidden sm:inline-flex items-center gap-1.5 badge-whatsapp hover:scale-105 transition-all cursor-pointer"
             title={isEn ? 'Ask a quick question first' : 'اسأل سؤالاً سريعاً على واتساب'}
           >
-            <MessageCircle className="w-3.5 h-3.5 text-accent" />
+            <MessageCircle className="w-3.5 h-3.5 fill-current shrink-0" />
             <span>{isEn ? 'Ask Mahmoud on WhatsApp' : 'تواصل مع محمود على واتساب'}</span>
           </a>
 
@@ -131,10 +131,10 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
         )}
       </div>
 
-      {/* Modern, calm visual progress line */}
-      <div className="w-full bg-border/60 dark:bg-border h-1.5 rounded-full overflow-hidden">
+      {/* Modern, calm visual progress line with Islamic gradient */}
+      <div className="w-full bg-border/60 dark:bg-border h-2 rounded-full overflow-hidden">
         <motion.div
-          className="bg-muted-foreground dark:bg-muted-foreground h-full rounded-full"
+          className="bg-gradient-to-r from-teal-500 via-primary to-accent h-full rounded-full"
           initial={false}
           animate={{ width: `${(step / totalSteps) * 100}%` }}
           transition={{ duration: 0.35, ease: 'easeInOut' }}

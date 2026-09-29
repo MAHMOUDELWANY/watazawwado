@@ -1,5 +1,6 @@
 import { BrandLogo } from './ui/BrandLogo';
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {  X,
   Lock,
@@ -141,34 +142,38 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
               <BrandLogo variant="compact" />
               <div>
                 <h3 className="font-display text-lg font-bold text-foreground">
-                  {isTeacherAuthenticated ? 'Teacher Backend Foundation' : 'Ustadh Mahmoud — Teacher Access'}
+                  {isTeacherAuthenticated 
+                    ? (isEn ? 'Teacher Backend Foundation' : 'لوحة تحكم المعلم')
+                    : (isEn ? 'Ustadh Mahmoud — Teacher Access' : 'الأستاذ محمود — بوابة دخول المعلم')}
                 </h3>
                 <p className="text-[11px] text-muted-foreground">
-                  Phase 3: Supabase Database, RLS Security & Teacher Auth
+                  {isEn ? 'Supabase Database, RLS Security & Teacher Auth' : 'إدارة الحجوزات والطلاب وقاعدة البيانات الآمنة'}
                 </p>
-</div>
+              </div>
             </div>
 
             <div className="flex items-center gap-2">
               {isTeacherAuthenticated && (
                 <>
-                  <a
-                    href="/dashboard"
+                  <Link
+                    to="/dashboard"
+                    onClick={onClose}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-white btn-primary-material transition-colors cursor-pointer"
                   >
-                    Open Workspace
-                  </a>
+                    {isEn ? 'Open Workspace' : 'فتح مساحة العمل'}
+                  </Link>
                   <button
                     onClick={signOut}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-rose-700 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
                   >
                     <LogOut className="w-3.5 h-3.5" />
-                    <span>Sign Out</span>
+                    <span>{isEn ? 'Sign Out' : 'تسجيل الخروج'}</span>
                   </button>
                 </>
               )}
               <button
                 onClick={onClose}
+                aria-label={isEn ? 'Close' : 'إغلاق'}
                 className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:bg-surface-warm dark:hover:bg-surface transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
@@ -184,10 +189,12 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                 <div className="text-center mb-6">
                   <BrandLogo variant="large" className="mx-auto mb-5" />
                   <h4 className="font-display text-xl font-bold text-foreground">
-                    Private Teacher Login
+                    {isEn ? 'Private Teacher Login' : 'تسجيل دخول المعلم'}
                   </h4>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Strict teacher management area. Students book directly as guests and do not have accounts.
+                  <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                    {isEn
+                      ? 'Strict teacher management area. Students book directly as guests or through student login.'
+                      : 'منطقة خاصة بإدارة المعلم. الطلاب يحجزون مباشرة كزوار أو عبر بوابة الطلاب.'}
                   </p>
                 </div>
 
@@ -195,15 +202,15 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                 <div className="mb-6 p-3.5 rounded-xl border border-border glass-card text-sm">
                   <div className="flex items-center justify-between mb-1">
                     <span className="font-semibold text-foreground flex items-center gap-1.5">
-                      <DbIcon className="w-3.5 h-3.5 text-accent" />
-                      <span>Database Status</span>
+                      <DbIcon className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
+                      <span>{isEn ? 'Database Status' : 'حالة قاعدة البيانات'}</span>
                     </span>
-                    <span className={`px-2 py-0.5 rounded-full text-[13px] font-mono font-medium ${isConfigured ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'}`}>
-                      {isConfigured ? 'Supabase Connected' : 'Local Fallback Mode'}
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-mono font-medium ${isConfigured ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'}`}>
+                      {isConfigured ? (isEn ? 'Connected' : 'متصل') : (isEn ? 'Local Fallback' : 'وضع محلي احتياطي')}
                     </span>
                   </div>
-                  <p className="text-[11px] text-muted-foreground">
-                    {dbStatus?.message || 'Checking database endpoint...'}
+                  <p className="text-xs text-muted-foreground">
+                    {dbStatus?.message || (isEn ? 'Checking database endpoint...' : 'جاري فحص الاتصال...')}
                   </p>
                 </div>
 
@@ -217,7 +224,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div>
                     <label className="block text-sm font-semibold text-foreground mb-1.5">
-                      Teacher Email
+                      {isEn ? 'Teacher Email' : 'البريد الإلكتروني للمعلم'}
                     </label>
                     <input
                       type="email"
@@ -225,13 +232,14 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="mhmwdlwany4222@gmail.com"
                       required
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-border glass-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-border glass-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-teal-500 text-start"
+                      dir="ltr"
                     />
                   </div>
 
                   <div>
                     <label className="block text-sm font-semibold text-foreground mb-1.5">
-                      Password
+                      {isEn ? 'Password' : 'كلمة المرور'}
                     </label>
                     <input
                       type="password"
@@ -239,19 +247,19 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••••••"
                       required
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-border glass-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-border glass-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-teal-500"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-2.5 px-4 rounded-xl btn-primary-material text-white text-sm font-semibold tracking-wide transition-colors shadow-sm cursor-pointer disabled:opacity-50"
+                    className="w-full py-3 px-4 rounded-xl btn-primary-material text-white text-sm font-bold tracking-wide transition-all shadow-md cursor-pointer disabled:opacity-50"
                   >
-                    {isSubmitting ? 'Authenticating...' : 'Sign In as Mahmoud'}
+                    {isSubmitting ? (isEn ? 'Authenticating...' : 'جاري التحقق...') : (isEn ? 'Sign In as Mahmoud' : 'تسجيل الدخول كمعلم')}
                   </button>
                 </form>
-</div>
+              </div>
             ) : (
               /* AUTHENTICATED TEACHER VIEW */
               <div className="space-y-6">

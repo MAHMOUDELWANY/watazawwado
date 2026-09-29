@@ -21,6 +21,8 @@ export function ThemeToggle({ className = '' }: { className?: string }) {
 
   return (
     <button
+      id="theme-toggle-btn"
+      data-tour="theme-toggle-btn"
       type="button"
       role="switch"
       aria-checked={isDark}

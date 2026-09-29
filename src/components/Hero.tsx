@@ -80,9 +80,9 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
                 </>
               ) : (
                 <>
-                  ?????{' '}
-                  <span className="text-brand font-medium">?????? ?????? ?????? ???????</span>{' '}
-                  ?????? ???? ?????? ??????.
+                  تعلّم{' '}
+                  <span className="text-brand font-medium">القرآن الكريم واللغة العربية</span>{' '}
+                  بتوجيه تعليمي مباشر وخاص.
                 </>
               )}
             </motion.h1>
@@ -101,7 +101,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
                 </>
               ) : (
                 <>
-                  ???? ????? ????? ?????? ???????? ????????? ??????? ?? ??????. ?????? ????? ????? ???? ??? ????? ???????? ?? ????? ??? ???? ?????????? ??????? ??? ??????.
+                  دروس فردية مباشرة للكبار والناشئة والعائلات المسلمة في كندا وأمريكا وبريطانيا وأستراليا. تأصيل علمي من الأزهر الشريف بأسلوب صبور وشرح واضح باللغتين العربية والإنجليزية.
                 </>
               )}
             </motion.p>
@@ -129,8 +129,8 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
                 id="hero-learn-more-btn"
                 className="inline-flex items-center justify-center gap-1.5 px-4 py-3.5 text-muted-foreground hover:text-foreground text-sm sm:text-base font-medium transition-colors"
               >
-                <span>{isEn ? 'View Teaching Areas' : '??????? ????????'}</span>
-                <span aria-hidden="true" className="rtl:rotate-180">?</span>
+                <span>{isEn ? 'View Teaching Areas' : 'استكشف المسارات التعليمية'}</span>
+                <span aria-hidden="true" className="rtl:rotate-180">→</span>
               </a>
             </motion.div>
 
@@ -146,10 +146,10 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
                 <GraduationCap className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                 <div>
                   <div className="text-sm font-semibold text-foreground">
-                    {isEn ? 'Al-Azhar Degree' : '???? ??????'}
+                    {isEn ? 'Al-Azhar Degree' : 'خريج الأزهر الشريف'}
                   </div>
                   <div className="text-[13px] text-muted-foreground">
-                    {isEn ? 'Classical grounding' : '????? ???? ?????'}
+                    {isEn ? 'Classical grounding' : 'تأصيل علمي رصين'}
                   </div>
                 </div>
               </div>
@@ -158,10 +158,10 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
                 <Languages className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                 <div>
                   <div className="text-sm font-semibold text-foreground">
-                    {isEn ? 'IELTS C1 Certified' : '????? ?????????? C1'}
+                    {isEn ? 'IELTS C1 Certified' : 'إتقان تام للإنجليزية C1'}
                   </div>
                   <div className="text-[13px] text-muted-foreground">
-                    {isEn ? 'Fluent explanations' : '????? ??? ??????'}
+                    {isEn ? 'Fluent explanations' : 'شرح سلس وواضح'}
                   </div>
                 </div>
               </div>
@@ -170,10 +170,10 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
                 <UserCheck className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                 <div>
                   <div className="text-sm font-semibold text-foreground">
-                    {isEn ? 'Always 1-on-1' : '????? ???? ??????'}
+                    {isEn ? 'Always 1-on-1' : 'تعليم فردي مباشر'}
                   </div>
                   <div className="text-[13px] text-muted-foreground">
-                    {isEn ? 'No rotating tutors' : '?? ????? ??????'}
+                    {isEn ? 'No rotating tutors' : 'معلمك ثابت دائماً'}
                   </div>
                 </div>
               </div>
@@ -182,10 +182,10 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
                 <Clock className="w-4 h-4 text-accent shrink-0 mt-0.5" />
                 <div>
                   <div className="text-sm font-semibold text-foreground">
-                    {isEn ? 'Global Timezones' : '??????? ????'}
+                    {isEn ? 'Global Timezones' : 'توقيتات مرنة تناسبك'}
                   </div>
                   <div className="text-[13px] text-muted-foreground">
-                    {isEn ? 'Canada, US, UK, AU' : '???? ??????? ?????????'}
+                    {isEn ? 'Canada, US, UK, AU' : 'كندا، أمريكا، بريطانيا، أستراليا'}
                   </div>
                 </div>
               </div>

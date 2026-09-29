@@ -86,10 +86,10 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-6 end-6 z-50 p-4 rounded-full shadow-xl bg-primary text-primary-foreground hover:bg-primary-hover transition-colors cursor-pointer flex items-center justify-center group"
+            className="fixed bottom-6 end-6 z-50 p-4 rounded-full shadow-xl bg-gradient-to-r from-teal-600 via-primary to-accent text-white hover:opacity-95 transition-all cursor-pointer flex items-center justify-center group shadow-teal-500/20"
           >
-            <Sparkles className="w-6 h-6" />
-            <span className="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs group-hover:ms-2 transition-all duration-300 ease-in-out text-sm font-medium">
+            <Sparkles className="w-6 h-6 animate-pulse" />
+            <span className="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs group-hover:ms-2 transition-all duration-300 ease-in-out text-sm font-bold">
               {isEn ? 'Learning Guide' : 'مرشد التعلم'}
             </span>
           </motion.button>

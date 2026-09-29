@@ -1,160 +1,233 @@
-import React from 'react';
-import { useOutletContext } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useOutletContext, Link } from 'react-router-dom';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
-import { PublicSection, EditorialHeading, StudyLine, MarginNote, PublicButton } from '../PublicDesignSystem';
-import { BrandGlassCard } from '../../ui/BrandGlassCard';
+import { PublicSection, MarginNote, PublicButton } from '../PublicDesignSystem';
+import { InteractivePocketCard, PricingPlan } from './InteractivePocketCard';
+import { Clock, ShieldCheck, HeartHandshake, Sparkles, CheckCircle2 } from 'lucide-react';
 
 export function PricingPage() {
   const { lang, onOpenTrialModal } = useOutletContext<PublicLayoutContextType>();
   const isEn = lang === 'en';
 
+  // Initially closed so all numbers are tucked inside the envelopes (as requested)
+  const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
+
+  // Exactly 3 clean plans with expert psychological pricing framing
+  const monthlyPlans: PricingPlan[] = [
+    {
+      id: 'pkg-4',
+      name: 'Starter Pace',
+      arabicName: 'باقة التأسيس والبداية',
+      subtitle: '1 private session per week for a calm, sustainable habit.',
+      arabicSubtitle: 'حصة واحدة أسبوعياً لتأسيس سليم وثابت دون أي ضغط على جدولك.',
+      lessonsCount: 4,
+      durationMin: 60,
+      price: 30,
+      perLessonPrice: 7.5,
+      badge: 'Starter',
+      arabicBadge: 'بداية ميسرة',
+      psychologicalHook: '✨ Ideal for beginners & busy schedules',
+      arabicPsychologicalHook: '✨ الأنسب للمبتدئين وأصحاب الجداول المزدحمة',
+      unitComparison: 'Equivalent to $7.50 / week',
+      arabicUnitComparison: 'استثمار أسبوعي رمزي يعادل $7.5 فقط',
+      features: [
+        '4 private 1-on-1 Zoom sessions (60 min)',
+        'Direct WhatsApp voice notes & recitation checks',
+        'Free rescheduling up to 3 hours before session'
+      ],
+      arabicFeatures: [
+        '٤ حصص فردية خاصة عبر زووم (٦٠ دقيقة)',
+        'متابعة وتصحيح صوتي مباشر بين الحصص',
+        'إمكانية إعادة الجدولة مجاناً حتى ٣ ساعات قبل الدرس'
+      ]
+    },
+    {
+      id: 'pkg-8',
+      name: 'Consistent Growth',
+      arabicName: 'باقة الاستمرار والانتظام',
+      subtitle: '2 private sessions per week — the proven rhythm for Quran fluency.',
+      arabicSubtitle: 'حصتان أسبوعياً — الوتيرة الذهبية المعتمدة للتقدم الملموس في التلاوة والتجويد.',
+      lessonsCount: 8,
+      durationMin: 60,
+      price: 58,
+      perLessonPrice: 7.25,
+      badge: 'Most Popular',
+      arabicBadge: 'الأكثر طلباً واختياراً',
+      isPopular: true,
+      savingBadge: 'Best Value',
+      arabicSavingBadge: 'الخيار الذهبي الموصى به',
+      psychologicalHook: '⭐️ Chosen by 85% of active students for true retention',
+      arabicPsychologicalHook: '⭐️ يختارها ٨٥٪ من الطلاب لضمان رسوخ الحفظ وعدم النسيان',
+      unitComparison: 'Just $7.25 per full 60-min private lesson',
+      arabicUnitComparison: 'فقط $7.25 للحصة الخاصة الكاملة (أقل من ثمن وجبة خفيفة)',
+      features: [
+        '8 private 1-on-1 Zoom sessions (60 min)',
+        'Priority daily WhatsApp homework feedback',
+        'Shareable with 1 child under the same family account'
+      ],
+      arabicFeatures: [
+        '٨ حصص فردية خاصة عبر زووم (٦٠ دقيقة)',
+        'أولوية المتابعة اليومية وتصحيح الحفظ والتجويد',
+        'إمكانية مشاركة رصيد الحصص مع أحد الأبناء'
+      ]
+    },
+    {
+      id: 'pkg-12',
+      name: 'Intensive Track',
+      arabicName: 'باقة الإتقان والتثبيت',
+      subtitle: '3 private sessions per week for rapid memorization or Arabic grammar.',
+      arabicSubtitle: '٣ حصص أسبوعياً للحفظ المتقن السريع ودراسة قواعد النحو العربي.',
+      lessonsCount: 12,
+      durationMin: 60,
+      price: 84,
+      perLessonPrice: 7.0,
+      badge: 'Maximum Progress',
+      arabicBadge: 'أعلى وتيرة إنجاز',
+      savingBadge: 'Lowest Per-Lesson Rate',
+      arabicSavingBadge: 'أقل سعر للحصة ($7.00)',
+      psychologicalHook: '🚀 Maximum results with lowest cost per lesson',
+      arabicPsychologicalHook: '🚀 أقصى سرعة إنجاز مع أعلى وفر في تكلفة الحصة',
+      unitComparison: 'Lowest rate: only $7.00 per hour',
+      arabicUnitComparison: 'أقل سعر للحصة: فقط $7.00 للساعة الكاملة',
+      features: [
+        '12 private 1-on-1 Zoom sessions (60 min)',
+        'Deep grammar & Tajweed drills with progress reports',
+        'Allocatable between 2 siblings in family profile'
+      ],
+      arabicFeatures: [
+        '١٢ حصة فردية مكثفة عبر زووم (٦٠ دقيقة)',
+        'تدريبات لغوية وتجويدية متقدمة وتقارير إنجاز دورية',
+        'إمكانية توزيع الرصيد بين طالبين من العائلة'
+      ]
+    }
+  ];
+
+  const handleSelectPlan = (_plan: PricingPlan) => {
+    // Single clear flow: trial session first to verify level with Ustadh Mahmoud
+    onOpenTrialModal();
+  };
+
   return (
-    <main id="main-content" className="pt-24 lg:pt-32 pb-16">
+    <main id="main-content" className="pt-24 lg:pt-32 pb-20">
       <PublicSection>
-        <div className="max-w-4xl mx-auto space-y-12">
+        <div className="max-w-5xl mx-auto space-y-12">
           
-          <div className="text-center space-y-6">
+          {/* Header */}
+          <div className="text-center space-y-4 max-w-2xl mx-auto">
             <MarginNote className="mx-auto">
-              {isEn ? 'Clear Pricing' : 'أسعار واضحة'}
+              {isEn ? 'Transparent Prepaid Packages' : 'باقات مسبقة الدفع • أسعار شفافة وبسيطة'}
             </MarginNote>
-            <h1 className="font-editorial text-4xl sm:text-5xl text-foreground">
-              {isEn ? 'Simple, transparent packages.' : 'باقات بسيطة وشفافة.'}
-            </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-              {isEn 
-                ? 'No subscription traps. No hidden fees. Just prepaid packages you can use flexibly for yourself or your family.'
-                : 'لا توجد فخاخ اشتراكات ولا رسوم خفية. فقط باقات مسبقة الدفع يمكنك استخدامها بمرونة لنفسك أو لعائلتك.'}
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8 pt-12">
             
-            {/* Single Lessons */}
-            <BrandGlassCard intensity="subtle" className="p-8 glass-hover">
-              <h3 className="font-editorial text-2xl text-foreground mb-2">
-                {isEn ? 'Single Lessons' : 'الدروس الفردية'}
-              </h3>
-              <p className="text-sm text-muted-foreground mb-8">
-                {isEn ? 'Quran & Islamic Studies base rates.' : 'الأسعار الأساسية للقرآن والعلوم الإسلامية.'}
-              </p>
-              
-              <ul className="space-y-4 font-medium text-foreground">
-                <li className="flex justify-between items-center pb-4 border-b border-border-subtle/50">
-                  <span>{isEn ? '30 minutes' : '٣٠ دقيقة'}</span>
-                  <span>$4</span>
-                </li>
-                <li className="flex justify-between items-center pb-4 border-b border-border-subtle/50">
-                  <span>{isEn ? '45 minutes' : '٤٥ دقيقة'}</span>
-                  <span>$6</span>
-                </li>
-                <li className="flex justify-between items-center">
-                  <span>{isEn ? '60 minutes' : '٦٠ دقيقة'}</span>
-                  <span>$8</span>
-                </li>
-              </ul>
-              <div className="mt-6 pt-6 border-t border-border-subtle text-sm text-muted-foreground">
-                {isEn 
-                  ? '* Language lessons (Arabic/English) are priced differently ($6 / $9 / $12).'
-                  : '* دروس اللغات (العربية/الإنلجيزية) تسعر بشكل مختلف (٦$ / ٩$ / ١٢$).'}
-              </div>
-            </BrandGlassCard>
-
-            {/* Monthly Packages */}
-            <BrandGlassCard intensity="high" className="p-8 relative overflow-hidden glass-hover">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/20 rounded-bl-full -z-10" />
-              <h3 className="font-editorial text-2xl text-foreground mb-2">
-                {isEn ? 'Monthly Packages' : 'الباقات الشهرية'}
-              </h3>
-              <p className="text-sm text-muted-foreground mb-8">
-                {isEn ? 'Prepaid bundles for consistent learning (60-min sessions).' : 'باقات مسبقة الدفع لتعلم مستمر (جلسات ٦٠ دقيقة).'}
-              </p>
-              
-              <ul className="space-y-4 font-medium text-foreground">
-                <li className="flex justify-between items-center pb-4 border-b border-border-subtle/50">
-                  <span>{isEn ? '4 lessons' : '٤ دروس'}</span>
-                  <span>$30</span>
-                </li>
-                <li className="flex justify-between items-center pb-4 border-b border-border-subtle/50">
-                  <span>{isEn ? '8 lessons' : '٨ دروس'}</span>
-                  <span>$58</span>
-                </li>
-                <li className="flex justify-between items-center pb-4 border-b border-border-subtle/50">
-                  <span>{isEn ? '12 lessons' : '١٢ درس'}</span>
-                  <span>$84</span>
-                </li>
-                <li className="flex justify-between items-center">
-                  <span>{isEn ? '16 lessons' : '١٦ درس'}</span>
-                  <span>$112</span>
-                </li>
-              </ul>
-            </BrandGlassCard>
-
-            {/* Weekly Packages */}
-            <BrandGlassCard intensity="subtle" className="p-8 relative overflow-hidden lg:col-span-2 glass-hover">
-              <h3 className="font-editorial text-2xl text-foreground mb-2">
-                {isEn ? 'Weekly Packages' : 'الباقات الأسبوعية'}
-              </h3>
-              <p className="text-sm text-muted-foreground mb-8">
-                {isEn ? 'Flexible weekly commitments.' : 'التزامات أسبوعية مرنة.'}
-              </p>
-              
-              <div className="grid sm:grid-cols-2 md:grid-cols-5 gap-4">
-                {[
-                  { count: 1, price: 8 },
-                  { count: 2, price: 15 },
-                  { count: 3, price: 21 },
-                  { count: 4, price: 28 },
-                  { count: 5, price: 34 }
-                ].map((pkg) => (
-                  <div key={pkg.count} className="glass-surface p-4 rounded-xl border border-none text-center">
-                    <div className="text-sm text-muted-foreground mb-1">
-                      {pkg.count} {isEn ? (pkg.count === 1 ? 'lesson' : 'lessons') : 'دروس'}
-                    </div>
-                    <div className="font-editorial text-2xl text-foreground">${pkg.price}</div>
-                  </div>
-                ))}
-              </div>
-            </BrandGlassCard>
-
-          </div>
-
-          <StudyLine className="my-16" />
-
-          <div className="grid md:grid-cols-2 gap-12">
-            <div>
-              <EditorialHeading noAccent eyebrow={isEn ? 'Family Management' : 'إدارة العائلة'}>
-                {isEn ? 'Learn for your family' : 'تعلّم لعائلتك'}
-              </EditorialHeading>
-              <p className="text-muted-foreground leading-relaxed mt-4">
-                {isEn 
-                  ? 'A parent or account holder can manage learning for their children. You can purchase packages and allocate lessons to different family members under your account, providing complete visibility over their progress and schedule.'
-                  : 'يمكن لولي الأمر أو صاحب الحساب إدارة تعلم أبنائه. يمكنك شراء الباقات وتخصيص الدروس لأفراد العائلة المختلفين تحت حسابك، مع توفير رؤية كاملة لتقدمهم وجدولهم.'}
-              </p>
-            </div>
-            <div>
-              <EditorialHeading noAccent eyebrow={isEn ? 'Flexibility' : 'المرونة'}>
-                {isEn ? 'No recurring traps' : 'لا اشتراكات تلقائية'}
-              </EditorialHeading>
-              <p className="text-muted-foreground leading-relaxed mt-4">
-                {isEn 
-                  ? 'These are prepaid entitlements, not subscriptions. You will never be charged automatically. You buy a package and use the lessons according to the agreed schedule.'
-                  : 'هذه استحقاقات مسبقة الدفع وليست اشتراكات. لن يتم الخصم منك تلقائياً أبداً. أنت تشتري باقة وتستخدم الدروس وفقاً للجدول المتفق عليه.'}
-              </p>
-            </div>
-          </div>
-
-          <div className="text-center pt-16">
-            <h3 className="font-editorial text-2xl text-foreground mb-4">
-              {isEn ? 'Ready to discuss your plan?' : 'مستعد لمناقشة خطتك؟'}
-            </h3>
-            <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+            <h1 className="font-editorial text-3xl sm:text-4xl lg:text-5xl text-foreground font-bold tracking-tight">
+              {isEn ? 'Choose the pace that fits your goal' : 'اختر الوتيرة المناسبة لهدفك ووقتك'}
+            </h1>
+            
+            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
               {isEn 
-                ? 'We determine the right package and duration for you during the free trial.'
-                : 'نحدد الباقة والمدة المناسبة لك خلال الجلسة التجريبية المجانية.'}
+                ? 'Prepaid monthly lesson bundles with full schedule flexibility and no surprise auto-debits.'
+                : 'باقات شهرية مسبقة الدفع تحدد مواعيدها بحرية كاملة، بدون أي تجديد تلقائي أو خصومات مفاجئة.'}
             </p>
-            <PublicButton size="lg" onClick={() => onOpenTrialModal()}>
-              {isEn ? 'Book Free Trial' : 'احجز جلستك المجانية'}
-            </PublicButton>
+
+            {/* Interactive hint */}
+            <p className="text-xs text-muted-foreground font-medium pt-2">
+              {isEn 
+                ? '👆 Tap or hover on any package envelope to reveal pricing breakdown.' 
+                : '👆 اسحب أو مرر الفأرة فوق أي ظرف لكشف تفاصيل السعر ومزايا الباقة.'}
+            </p>
+          </div>
+
+          {/* Interactive Pocket Cards (Exactly 3 cards) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-2 pb-10">
+            {monthlyPlans.map((plan) => {
+              const isCardExpanded = expandedCardId === plan.id;
+              return (
+                <InteractivePocketCard
+                  key={plan.id}
+                  plan={plan}
+                  lang={lang}
+                  isExpanded={isCardExpanded}
+                  onToggle={() => {
+                    setExpandedCardId(expandedCardId === plan.id ? null : plan.id);
+                  }}
+                  onSelectPlan={handleSelectPlan}
+                />
+              );
+            })}
+          </div>
+
+          {/* 3 Calm Trust Points */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-5 rounded-2xl glass-card border border-border/80 text-xs sm:text-sm mt-8">
+            <div className="flex items-center gap-3">
+              <span className="p-2 rounded-xl bg-teal-500/15 text-teal-700 dark:text-teal-300 shrink-0">
+                <Clock className="w-4 h-4" />
+              </span>
+              <div>
+                <h5 className="font-bold text-foreground">
+                  {isEn ? 'Flexible 3-Hour Notice' : 'مرونة الإلغاء والتعديل'}
+                </h5>
+                <p className="text-muted-foreground text-xs">
+                  {isEn ? 'Reschedule anytime up to 3h before session' : 'إعادة جدولة مجاناً حتى ٣ ساعات قبل الدرس'}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <span className="p-2 rounded-xl bg-teal-500/15 text-teal-700 dark:text-teal-300 shrink-0">
+                <ShieldCheck className="w-4 h-4" />
+              </span>
+              <div>
+                <h5 className="font-bold text-foreground">
+                  {isEn ? 'Zero Automatic Debits' : 'لا يوجد سحب آلي'}
+                </h5>
+                <p className="text-muted-foreground text-xs">
+                  {isEn ? 'Prepaid credit, you decide when to renew' : 'أنت من يقرر متى يجدد رصيده'}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <span className="p-2 rounded-xl bg-teal-500/15 text-teal-700 dark:text-teal-300 shrink-0">
+                <HeartHandshake className="w-4 h-4" />
+              </span>
+              <div>
+                <h5 className="font-bold text-foreground">
+                  {isEn ? 'Direct Personal Guidance' : 'متابعة مباشرة مع المعلم'}
+                </h5>
+                <p className="text-muted-foreground text-xs">
+                  {isEn ? 'Direct teacher communication on WhatsApp' : 'تواصل وتصحيح صوتي مع محمود'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Single Focused Page Action */}
+          <div className="text-center pt-4 max-w-xl mx-auto space-y-4">
+            <p className="text-sm text-muted-foreground">
+              {isEn 
+                ? 'Want to experience the teaching style first? Book a complimentary 30-minute introductory lesson.'
+                : 'هل تفضل تجربة أسلوب الشرح أولاً؟ احجز جلسة تعارف مجانية مدتها ٣٠ دقيقة بدون أي مقابل.'}
+            </p>
+
+            <div>
+              <PublicButton size="lg" onClick={() => onOpenTrialModal()} className="px-8 py-3.5 shadow-md">
+                {isEn ? 'Book Free 30-Min Trial' : 'احجز جلستك المجانية الآن'}
+              </PublicButton>
+            </div>
+
+            {/* Subtle Cross-links preserving language */}
+            <div className="pt-4 flex items-center justify-center gap-4 text-xs text-muted-foreground">
+              <Link to="/how-it-works" className="hover:text-foreground font-medium underline transition-colors">
+                {isEn ? 'How It Works' : 'كيف نعمل'}
+              </Link>
+              <span>•</span>
+              <Link to="/learning" className="hover:text-foreground font-medium underline transition-colors">
+                {isEn ? 'Curriculum' : 'مجالات الدراسة'}
+              </Link>
+              <span>•</span>
+              <Link to="/faq" className="hover:text-foreground font-medium underline transition-colors">
+                {isEn ? 'FAQ' : 'الأسئلة الشائعة'}
+              </Link>
+            </div>
           </div>
 
         </div>

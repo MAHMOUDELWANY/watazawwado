@@ -141,28 +141,28 @@ export function DashboardApp() {
     );
   }
 
-  // Role-scoped navigation
+  // Role-scoped navigation (Concise, friendly, uncluttered)
   const superAdminNavigation = [
-    { name: lang === 'ar' ? 'نظرة عامة' : 'Overview', path: '/dashboard', icon: LayoutDashboard },
+    { name: lang === 'ar' ? 'الرئيسية' : 'Overview', path: '/dashboard', icon: LayoutDashboard },
     { name: lang === 'ar' ? 'اليوم' : 'Today', path: '/dashboard/today', icon: Clock },
-    { name: lang === 'ar' ? 'الجدول القادم' : 'Upcoming', path: '/dashboard/upcoming', icon: Calendar },
-    { name: lang === 'ar' ? 'المعلمون' : 'Teachers', path: '/dashboard/teachers', icon: Shield },
+    { name: lang === 'ar' ? 'الجدول' : 'Schedule', path: '/dashboard/upcoming', icon: Calendar },
+    { name: lang === 'ar' ? 'المعلمون' : 'Faculty', path: '/dashboard/teachers', icon: Shield },
     { name: lang === 'ar' ? 'الطلاب' : 'Students', path: '/dashboard/students', icon: Users },
     { name: lang === 'ar' ? 'الحجوزات' : 'Bookings', path: '/dashboard/bookings', icon: BookOpen },
     { name: lang === 'ar' ? 'التجريبية' : 'Trials', path: '/dashboard/trials', icon: Sparkles },
-    { name: lang === 'ar' ? 'التواصل' : 'Leads', path: '/dashboard/leads', icon: UserPlus },
-    { name: lang === 'ar' ? 'مراجعة الطلبات' : 'Intake Review', path: '/dashboard/intakes', icon: ClipboardCheck },
-    { name: lang === 'ar' ? 'التقارير' : 'Analytics', path: '/dashboard/analytics', icon: TrendingUp },
+    { name: lang === 'ar' ? 'المهتمون' : 'Leads', path: '/dashboard/leads', icon: UserPlus },
+    { name: lang === 'ar' ? 'الطلبات' : 'Requests', path: '/dashboard/intakes', icon: ClipboardCheck },
+    { name: lang === 'ar' ? 'التقارير' : 'Reports', path: '/dashboard/analytics', icon: TrendingUp },
     { name: lang === 'ar' ? 'الإعدادات' : 'Settings', path: '/dashboard/settings', icon: Settings },
   ];
 
   const teacherNavigation = [
-    { name: lang === 'ar' ? 'اليوم' : 'Today', path: '/dashboard', icon: LayoutDashboard },
-    { name: lang === 'ar' ? 'الجدول القادم' : 'Upcoming', path: '/dashboard/upcoming', icon: Calendar },
+    { name: lang === 'ar' ? 'اليوم' : 'Today', path: '/dashboard', icon: Clock },
+    { name: lang === 'ar' ? 'الجدول' : 'Schedule', path: '/dashboard/upcoming', icon: Calendar },
     { name: lang === 'ar' ? 'التجريبية' : 'Trials', path: '/dashboard/trials', icon: Sparkles },
-    { name: lang === 'ar' ? 'طلابي' : 'My Students', path: '/dashboard/students', icon: Users },
-    { name: lang === 'ar' ? 'حجوزاتي' : 'My Bookings', path: '/dashboard/bookings', icon: BookOpen },
-    { name: lang === 'ar' ? 'إحصائياتي' : 'My Analytics', path: '/dashboard/analytics', icon: TrendingUp },
+    { name: lang === 'ar' ? 'طلابي' : 'Students', path: '/dashboard/students', icon: Users },
+    { name: lang === 'ar' ? 'الحجوزات' : 'Bookings', path: '/dashboard/bookings', icon: BookOpen },
+    { name: lang === 'ar' ? 'التقارير' : 'Reports', path: '/dashboard/analytics', icon: TrendingUp },
     { name: lang === 'ar' ? 'الإعدادات' : 'Settings', path: '/dashboard/settings', icon: Settings },
   ];
 
@@ -171,19 +171,22 @@ export function DashboardApp() {
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
   const globalTourSteps = [
     {
-      targetId: 'teacher-sidebar',
-      title: lang === 'ar' ? 'القائمة الجانبية' : 'Navigation',
-      description: lang === 'ar' ? 'يمكنك التنقل بين لوحة التحكم، الطلاب، الجدولة، والفواتير.' : 'Navigate through dashboard, students, schedule, and billing.'
+      targetId: ['teacher-sidebar', 'teacher-mobile-menu-btn'],
+      title: lang === 'ar' ? 'القائمة الرئيسية' : 'Workspace Navigation',
+      description: lang === 'ar' ? 'التنقل بين الدروس، جدول المواعيد، قائمة الطلاب، وإدارة المنصة.' : 'Easily navigate between sessions, schedule, student roster, and workspace controls.',
+      position: 'bottom' as const,
     },
     {
-      targetId: 'language-toggle',
-      title: lang === 'ar' ? 'تغيير اللغة' : 'Change Language',
-      description: lang === 'ar' ? 'تبديل واجهة المعلم بين العربية والإنجليزية.' : 'Toggle teacher interface between Arabic and English.'
+      targetId: ['teacher-header-tour-btn', 'teacher-lang-btn', 'language-toggle'],
+      title: lang === 'ar' ? 'تغيير اللغة والعرض' : 'Language & Display',
+      description: lang === 'ar' ? 'تبديل واجهة المعلم بين العربية والإنجليزية بلمسة واحدة.' : 'Toggle teacher workspace between Arabic and English with one tap.',
+      position: 'bottom' as const,
     },
     {
-      targetId: 'teacher-logout',
-      title: lang === 'ar' ? 'تسجيل الخروج' : 'Log Out',
-      description: lang === 'ar' ? 'تسجيل الخروج من الحساب.' : 'Sign out of your account.'
+      targetId: ['teacher-account-dropdown', 'teacher-logout'],
+      title: lang === 'ar' ? 'الحساب وتسجيل الخروج' : 'Account & Access',
+      description: lang === 'ar' ? 'إدارة تفاصيل الحساب وتسجيل الخروج بأمان عند الانتهاء.' : 'Manage account details and securely sign out when done.',
+      position: 'bottom' as const,
     }
   ];
   const toggleLanguage = () => setLang(prev => prev === 'en' ? 'ar' : 'en');
@@ -262,12 +265,12 @@ export function DashboardApp() {
                 className={`
                   flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-base touch-manipulation min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary group
                   ${isActive 
-                    ? 'bg-secondary/30 text-accent dark:bg-primary/20 font-semibold shadow-2xs' 
+                    ? 'bg-primary text-primary-foreground font-bold shadow-xs' 
                     : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
                   }
                 `}
               >
-                <item.icon className={`w-4.5 h-4.5 shrink-0 ${isActive ? 'text-accent' : 'opacity-70 group-hover:opacity-100 transition-opacity'}`} />
+                <item.icon className={`w-4.5 h-4.5 shrink-0 ${isActive ? 'text-primary-foreground' : 'opacity-70 group-hover:opacity-100 transition-opacity'}`} />
                 <span className="truncate">{item.name}</span>
               </Link>
             );
@@ -309,7 +312,7 @@ export function DashboardApp() {
             
             <div className="pt-2 flex flex-col gap-2">
               <button 
-                onClick={() => setShowGlobalTour(true)}
+                onClick={() => { setIsMobileMenuOpen(false); setShowGlobalTour(true); }}
                 className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all font-semibold text-sm cursor-pointer"
               >
                 <HelpCircle className="w-4 h-4" />
@@ -335,8 +338,11 @@ export function DashboardApp() {
             <div className="flex items-center gap-4 min-w-0">
               <button 
                 ref={menuTriggerRef}
+                id="teacher-mobile-menu-btn"
+                data-tour="teacher-mobile-menu-btn"
                 onClick={toggleMobileMenu} 
                 className="md:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle touch-manipulation cursor-pointer"
+                aria-label={lang === 'ar' ? 'القائمة الجانبية' : 'Menu'}
               >
                 <Menu className="w-6 h-6" />
               </button>
@@ -349,13 +355,40 @@ export function DashboardApp() {
             </div>
 
             {/* Right: Actions */}
-            <div className="flex items-center gap-3">
-              <AccountDropdown initials={user?.email?.charAt(0)?.toUpperCase() || "M"} isAr={lang === "ar"} />
+            <div className="flex items-center gap-2 sm:gap-3">
+              {/* Tour Guide Button */}
+              <button
+                type="button"
+                id="teacher-header-tour-btn"
+                data-tour="teacher-header-tour-btn"
+                onClick={() => setShowGlobalTour(true)}
+                title={lang === 'ar' ? 'دليل الاستخدام' : 'Tour Guide'}
+                aria-label={lang === 'ar' ? 'دليل الاستخدام' : 'Tour Guide'}
+                className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-teal-800 dark:text-teal-200 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 transition-all cursor-pointer shadow-2xs"
+              >
+                <Compass className="w-4.5 h-4.5 text-teal-600 dark:text-teal-400" />
+              </button>
+
+              {/* Language Switcher */}
+              <button
+                type="button"
+                id="teacher-lang-btn"
+                data-tour="teacher-lang-btn"
+                onClick={toggleLanguage}
+                className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-foreground hover:bg-surface-subtle border border-border/80 transition-colors cursor-pointer flex items-center gap-1"
+              >
+                <Globe className="w-3.5 h-3.5 text-accent" />
+                <span>{lang === "en" ? 'عربي' : 'EN'}</span>
+              </button>
+
+              <div id="teacher-account-dropdown" data-tour="teacher-account-dropdown">
+                <AccountDropdown initials={user?.email?.charAt(0)?.toUpperCase() || "M"} isAr={lang === "ar"} />
+              </div>
             </div>
           </header>
 
         {/* Scrollable Content Container */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-background">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 pb-24 md:pb-8 bg-background">
           <div className="max-w-5xl mx-auto space-y-6">
             <TeacherAuthDiagnosticPanel />
             <ErrorBoundary>
@@ -379,7 +412,53 @@ export function DashboardApp() {
             </ErrorBoundary>
           </div>
         </div>
-            </main>
+
+        {/* Mobile Bottom Quick Navigation Bar (Navigation Tabs V5) */}
+        <div className="md:hidden fixed bottom-4 inset-x-3 sm:inset-x-6 max-w-sm mx-auto z-40 pb-[env(safe-area-inset-bottom)] pointer-events-none">
+          <nav 
+            className="pointer-events-auto relative w-full h-[60px] bg-surface/92 dark:bg-surface/90 backdrop-blur-xl rounded-full flex items-center justify-around px-2 shadow-2xl border border-border/80"
+            aria-label={lang === 'ar' ? 'التنقل السريع' : 'Quick mobile navigation'}
+          >
+            {navigation.slice(0, 4).map((item) => {
+              const isExactMatch = location.pathname === item.path;
+              const isSubPath = item.path !== '/dashboard' && location.pathname.startsWith(item.path);
+              const isActive = isExactMatch || isSubPath;
+              const Icon = item.icon;
+
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className="relative flex items-center justify-center flex-1 h-full touch-manipulation group"
+                  aria-label={item.name}
+                  aria-current={isActive ? 'page' : undefined}
+                >
+                  <div className={`relative flex items-center justify-center w-10 h-10 rounded-full transition-all duration-200 ${
+                    isActive ? 'text-teal-700 dark:text-teal-300 bg-teal-500/15 shadow-2xs' : 'text-muted-foreground group-hover:text-foreground'
+                  }`}>
+                    <Icon className="w-5 h-5 transition-transform group-active:scale-90" />
+                    {isActive && (
+                      <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-teal-600 dark:bg-teal-400" />
+                    )}
+                  </div>
+                </Link>
+              );
+            })}
+
+            {/* Menu button to open full drawer */}
+            <button
+              type="button"
+              onClick={toggleMobileMenu}
+              className="relative flex items-center justify-center flex-1 h-full touch-manipulation group text-muted-foreground hover:text-foreground cursor-pointer"
+              aria-label={lang === 'ar' ? 'القائمة الكاملة' : 'Full menu'}
+            >
+              <div className="w-10 h-10 rounded-full flex items-center justify-center group-hover:bg-surface-subtle transition-colors">
+                <Menu className="w-5 h-5" />
+              </div>
+            </button>
+          </nav>
+        </div>
+      </main>
       {/* Global Onboarding Guide */}
       <OnboardingGuide steps={globalTourSteps} isOpen={showGlobalTour} onClose={() => setShowGlobalTour(false)} isAr={lang === 'ar'} />
     </div>

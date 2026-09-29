@@ -218,13 +218,13 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
       </div>
 
       {/* Cancellation / Rescheduling Policy Notice (Master Spec Section 21) */}
-      <div className="p-4 rounded-2xl bg-surface-warm glass-surface border border-secondary/60 flex items-start gap-3 text-sm text-foreground/80 dark:text-accent/80">
-        <ShieldCheck className="w-5 h-5 text-accent shrink-0 mt-0.5" />
+      <div className="p-4 rounded-2xl glass-card border border-teal-500/30 bg-teal-500/5 flex items-start gap-3 text-sm text-foreground">
+        <ShieldCheck className="w-5 h-5 text-teal-600 dark:text-teal-400 shrink-0 mt-0.5" />
         <div className="leading-relaxed">
-          <strong className="text-foreground block mb-0.5">
+          <strong className="text-foreground block mb-0.5 font-bold">
             {isEn ? 'Cancellation & Rescheduling Policy' : 'سياسة الإلغاء وتغيير الموعد'}
           </strong>
-          <span>
+          <span className="text-muted-foreground text-xs sm:text-sm">
             {isEn
               ? 'You can easily reschedule or cancel anytime up to 3 hours before your lesson. For requests within the 3-hour window, please contact Mahmoud directly on WhatsApp.'
               : 'يمكنك تعديل الموعد أو الإلغاء بكل سهولة حتى ٣ ساعات قبل بدء الدرس. في حال رغبتك بالتعديل خلال الساعات الثلاث السابقة للدرس، يُرجى مراسلة محمود مباشرة على واتساب.'}
@@ -240,7 +240,7 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
           onClick={onBack}
           type="button"
           disabled={isSubmitting}
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium text-foreground/80 dark:text-accent/80 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium text-foreground hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
         >
           <ArrowLeft className={`w-3.5 h-3.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
           <span>{isEn ? 'Back to Schedule' : 'الرجوع للموعد'}</span>
@@ -251,7 +251,7 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
           whileTap={{ scale: 0.97 }}
           onClick={onSubmit}
           disabled={isSubmitting}
-          className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-muted-foreground hover:bg-muted text-white text-sm font-semibold shadow-md transition-all cursor-pointer"
+          className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl btn-primary-material text-white text-sm sm:text-base font-bold shadow-lg shadow-primary/20 transition-all cursor-pointer"
         >
           {isSubmitting ? (
             <>

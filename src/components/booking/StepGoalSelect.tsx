@@ -69,16 +69,16 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
                 whileHover={{ scale: 1.015, y: -1 }}
                 whileTap={{ scale: 0.985 }}
                 onClick={() => handleGoalChipClick(goal)}
-                className={`p-3.5 rounded-xl border text-start text-sm sm:text-sm transition-all cursor-pointer flex items-start gap-3 ${
+                className={`p-3.5 rounded-xl border text-start text-sm transition-all cursor-pointer flex items-start gap-3 ${
                   isSelected
-                    ? 'bg-foreground glass-surface border-primary ring-1 ring-primary font-medium text-foreground shadow-xs'
-                    : 'glass-card border-border text-foreground/80 dark:text-accent/90 hover:border-accent/50 hover:bg-foreground/40'
+                    ? 'glass-card bg-teal-500/10 border-teal-500 ring-2 ring-teal-500/30 font-semibold text-foreground shadow-xs'
+                    : 'glass-card border-border/80 text-foreground/80 hover:border-teal-500/40 hover:bg-surface-subtle'
                 }`}
               >
                 <div
                   className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
                     isSelected
-                      ? 'bg-primary text-white'
+                      ? 'bg-teal-600 text-white'
                       : 'border border-border'
                   }`}
                 >
@@ -137,7 +137,7 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
           whileTap={{ scale: 0.97 }}
           onClick={onNext}
           disabled={!hasGoal}
-          className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-muted-foreground hover:bg-muted text-white text-sm font-medium shadow-xs disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
+          className="inline-flex items-center gap-2 px-7 py-3 rounded-xl btn-primary-material text-white text-sm font-semibold shadow-md disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
         >
           <span>{isEn ? 'Next: Student Details' : 'التالي: بيانات الطالب'}</span>
           <ArrowRight className={`w-4 h-4 ${lang === 'ar' ? 'rotate-180' : ''}`} />

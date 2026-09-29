@@ -1,9 +1,10 @@
 import { BrandLogo } from './ui/BrandLogo';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Globe, MessageCircle, ArrowUp } from 'lucide-react';
 import { Language } from '../types';
-import { buildWhatsAppUrl, MAHMOUD_OFFICIAL_PHONE_INTL } from '../lib/whatsapp';
+import { buildWhatsAppUrl } from '../lib/whatsapp';
 
 interface FooterProps {
   lang: Language;
@@ -37,8 +38,8 @@ export const Footer: React.FC<FooterProps> = ({
             </div>
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-sm">
               {isEn
-                ? 'Personal teaching platform of Ustadh Mahmoud. Direct 1-on-1 instruction in Quran reading, Tajweed, Arabic language, and Islamic Studies for international students and families.'
-                : 'المنصة التعليمية الخاصة بالأستاذ محمود. تعليم فردي مباشر للقرآن الكريم وأحكام التجويد واللغة العربية والدراسات الإسلامية للطلاب والعائلات المسلمة حول العالم.'}
+                ? 'Dedicated space for direct 1-on-1 instruction in Quran reading, Tajweed, Arabic language, and Islamic Studies for international students and families.'
+                : 'مساحة مخصصة للتعليم الفردي المباشر في القرآن الكريم وأحكام التجويد واللغة العربية والدراسات الإسلامية للطلاب والعائلات المسلمة حول العالم.'}
             </p>
             <div className="flex items-center gap-3 pt-1">
               <button
@@ -54,57 +55,62 @@ export const Footer: React.FC<FooterProps> = ({
           {/* Quick Navigation (4 cols on md) */}
           <div className="md:col-span-4 grid grid-cols-2 gap-4 text-sm sm:text-base">
             <div>
-              <div className="font-semibold uppercase tracking-wider text-primary text-sm mb-3">
+              <div className="font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300 text-xs mb-3">
                 {isEn ? 'Teaching' : 'الدروس والبرامج'}
               </div>
-              <ul className="space-y-2 text-muted-foreground">
+              <ul className="space-y-2 text-muted-foreground font-medium">
                 <li>
-                  <a href="/learning" className="hover:text-foreground transition-colors">
+                  <Link to="/learning" className="hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
                     {isEn ? 'Quran & Tajweed' : 'القرآن والتجويد'}
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/learning" className="hover:text-foreground transition-colors">
+                  <Link to="/learning" className="hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
                     {isEn ? 'Islamic Studies' : 'الدراسات الإسلامية'}
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/learning" className="hover:text-foreground transition-colors">
+                  <Link to="/learning" className="hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
                     {isEn ? 'Arabic Language' : 'اللغة العربية'}
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/learning" className="hover:text-foreground transition-colors">
+                  <Link to="/learning" className="hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
                     {isEn ? 'English Coaching' : 'اللغة الإنجليزية'}
-                  </a>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/pricing" className="hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
+                    {isEn ? 'Pricing & Packages' : 'باقات الأسعار'}
+                  </Link>
                 </li>
               </ul>
             </div>
 
             <div>
-              <div className="font-semibold uppercase tracking-wider text-primary text-sm mb-3">
+              <div className="font-bold uppercase tracking-wider text-accent text-xs mb-3">
                 {isEn ? 'Experience' : 'التجربة'}
               </div>
-              <ul className="space-y-2 text-muted-foreground">
+              <ul className="space-y-2 text-muted-foreground font-medium">
                 <li>
-                  <a href="/about" className="hover:text-foreground transition-colors">
+                  <Link to="/about" className="hover:text-accent transition-colors">
                     {isEn ? 'About Mahmoud' : 'عن المعلم'}
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/about" className="hover:text-foreground transition-colors">
-                    {isEn ? 'Our Approach' : 'المنهجية'}
-                  </a>
-                </li>
-                <li>
-                  <a href="/learning" className="hover:text-foreground transition-colors">
+                  <Link to="/how-it-works" className="hover:text-accent font-semibold transition-colors">
                     {isEn ? 'How It Works' : 'كيف نعمل'}
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/about" className="hover:text-foreground transition-colors">
-                    {isEn ? 'Student Reviews' : 'آراء الطلاب'}
-                  </a>
+                  <Link to="/pricing" className="hover:text-accent transition-colors">
+                    {isEn ? 'Pricing' : 'الأسعار'}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/faq" className="hover:text-accent transition-colors">
+                    {isEn ? 'FAQ' : 'الأسئلة الشائعة'}
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -112,23 +118,23 @@ export const Footer: React.FC<FooterProps> = ({
 
           {/* Action & Contact (3 cols on md) */}
           <div className="md:col-span-3 space-y-3">
-            <div className="font-semibold uppercase tracking-wider text-primary text-sm mb-2">
+            <div className="font-bold uppercase tracking-wider text-primary text-xs mb-2">
               {isEn ? 'Get Started' : 'ابدأ الآن'}
             </div>
             <button
               onClick={onOpenTrialModal}
-              className="w-full py-2.5 px-4 rounded-xl btn-primary-material text-primary-foreground text-sm font-medium transition-colors shadow-xs cursor-pointer"
+              className="w-full py-2.5 px-4 rounded-xl btn-primary-material text-white text-sm font-bold transition-all shadow-sm cursor-pointer"
             >
               {isEn ? 'Book Free 30-Min Trial' : 'احجز جلسة تجريبية مجانية'}
             </button>
             <a
-              href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I am visiting your website and have a question.')}
+              href={buildWhatsAppUrl(isEn ? 'Assalamu Alaikum Ustadh Mahmoud, I am visiting your website and have a question.' : 'السلام عليكم أستاذ محمود، زرت موقعكم الكريم وأود الاستفسار عن الدروس')}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-border text-sm text-foreground hover:bg-surface-subtle transition-colors"
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl btn-whatsapp-solid text-sm font-bold shadow-sm"
             >
-              <MessageCircle className="w-3.5 h-3.5 text-accent" />
-              <span>WhatsApp: {MAHMOUD_OFFICIAL_PHONE_INTL}</span>
+              <MessageCircle className="w-4 h-4 fill-current shrink-0" />
+              <span>{isEn ? 'Message on WhatsApp' : 'تواصل عبر واتساب'}</span>
             </a>
           </div>
 
@@ -155,12 +161,12 @@ export const Footer: React.FC<FooterProps> = ({
               <span>{isEn ? 'Flexible Booking' : 'حجز مرن ومباشر'}</span>
             )}
             <span>•</span>
-            <a
-              href="/staff/login"
+            <Link
+              to="/staff/login"
               className="text-muted-foreground hover:text-foreground hover:underline font-medium flex items-center gap-1"
             >
               <span>{isEn ? 'Teacher Login' : 'دخول المعلم'}</span>
-            </a>
+            </Link>
             <span>•</span>
             <button
               onClick={scrollToTop}

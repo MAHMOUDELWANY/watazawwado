@@ -6,6 +6,7 @@ import { PublicLayout } from './components/public/layout/PublicLayout';
 import { PublicHomepage } from './components/public/homepage/PublicHomepage';
 import { AboutPage } from './components/public/about/AboutPage';
 import { LearningPage } from './components/public/learning/LearningPage';
+import { HowItWorksPage } from './components/public/how-it-works/HowItWorksPage';
 import { PricingPage } from './components/public/pricing/PricingPage';
 import { FAQPage } from './components/public/faq/FAQPage';
 import { DashboardApp } from './dashboard/DashboardApp';
@@ -27,6 +28,7 @@ export default function App() {
                 <Route path="/" element={<PublicHomepage />} />
                 <Route path="/get-started" element={<PublicHomepage />} />
                 <Route path="/about" element={<AboutPage />} />
+                <Route path="/how-it-works" element={<HowItWorksPage />} />
                 <Route path="/learning" element={<LearningPage />} />
                 <Route path="/pricing" element={<PricingPage />} />
                 <Route path="/faq" element={<FAQPage />} />

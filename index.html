@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Watazawwado — Private 1-on-1 Quran, Arabic & Islamic Studies | وتزودوا</title>
-    <meta name="description" content="Learn Quran, Arabic, Islamic Studies, and English one-on-one with Ustadh Mahmoud. Personalized lessons for you and your family. Starting from $4/lesson." />
-    <meta property="og:title" content="Watazawwado — Private 1-on-1 Quran, Arabic & Islamic Studies" />
-    <meta property="og:description" content="Learn Quran, Arabic, Islamic Studies, and English one-on-one with Ustadh Mahmoud. Personalized lessons for you and your family." />
+    <title>Mahmoud | 1-on-1 Quran, Arabic & Islamic Studies</title>
+    <meta name="description" content="Personalized 1-on-1 teaching in Quran reading, Tajweed, Arabic language, and Islamic Studies directly with Mahmoud for international learners and families." />
+    <meta property="og:title" content="Mahmoud | 1-on-1 Quran, Arabic & Islamic Studies" />
+    <meta property="og:description" content="Personalized 1-on-1 teaching in Quran reading, Tajweed, Arabic language, and Islamic Studies directly with Mahmoud for international learners and families." />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:site_name" content="Watazawwado" />
@@ -14,13 +14,23 @@
     <meta name="theme-color" content="#087D91" />
 
     <!-- Google Fonts — Async loading for performance -->
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('watazawwado_lang');
+          var l = (saved === 'en') ? 'en' : 'ar';
+          document.documentElement.lang = l;
+          document.documentElement.dir = (l === 'ar') ? 'rtl' : 'ltr';
+        } catch(e) {}
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Changa:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" />
     <link href="https://fonts.googleapis.com/css2?family=Changa:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
     <noscript><link href="https://fonts.googleapis.com/css2?family=Changa:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" /></noscript>
   </head>
-  <body class="bg-[#F8F6F0] text-[#2C2A27] antialiased">
+  <body class="bg-background text-foreground antialiased overflow-x-hidden min-h-screen selection:bg-primary/20 selection:text-primary">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -563,9 +563,9 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                       href={waUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 btn-primary-material text-primary-foreground rounded-xl text-sm sm:text-sm font-semibold transition-colors shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
+                      className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 btn-whatsapp-solid rounded-xl text-sm font-bold shadow-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
                     >
-                      <MessageCircle className="w-4 h-4 shrink-0" />
+                      <MessageCircle className="w-4 h-4 fill-current shrink-0" />
                       <span>
                         {isAr
                           ? 'التواصل عبر واتساب للتنسيق'

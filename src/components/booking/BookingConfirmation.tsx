@@ -307,9 +307,9 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           href={whatsappLink}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl btn-primary-material text-white text-sm font-semibold shadow-xs transition-colors"
+          className="btn-whatsapp-solid px-4 py-3 rounded-2xl text-sm font-bold shadow-md"
         >
-          <MessageCircle className="w-4 h-4" />
+          <MessageCircle className="w-4 h-4 fill-current shrink-0" />
           <span>{isEn ? 'WhatsApp Mahmoud' : 'مراسلة واتساب'}</span>
         </a>
 
