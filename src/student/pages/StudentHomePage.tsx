@@ -166,6 +166,19 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
     fetchPaymentsData();
   }, [fetchCoreData, fetchPackagesData, fetchPaymentsData]);
 
+  // Onboarding state
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  
+  useEffect(() => {
+    // Show onboarding for new users automatically once
+    const hasSeen = localStorage.getItem('watazawwado_onboarding_seen');
+    if (!hasSeen && !coreLoading && bookings.length === 0) {
+      // Small delay to let UI render fully
+      const timer = setTimeout(() => setShowOnboarding(true), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [coreLoading, bookings.length]);
+
   if (coreLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] gap-3">
@@ -261,19 +274,6 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
   // NO 'verified' value, so we never test for one. Booking-linked payments reuse
   // getBookingPaymentSummary; package/unlinked payments use the real server
   // status 'confirmed'.
-  // Onboarding state
-  const [showOnboarding, setShowOnboarding] = useState(false);
-  
-  useEffect(() => {
-    // Show onboarding for new users automatically once
-    const hasSeen = localStorage.getItem('watazawwado_onboarding_seen');
-    if (!hasSeen && !coreLoading && bookings.length === 0) {
-      // Small delay to let UI render fully
-      const timer = setTimeout(() => setShowOnboarding(true), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [coreLoading, bookings.length]);
-
   const handleCloseOnboarding = () => {
     setShowOnboarding(false);
     localStorage.setItem('watazawwado_onboarding_seen', 'true');

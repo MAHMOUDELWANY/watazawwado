@@ -5,6 +5,8 @@ export type { LeadStatus };
 export interface DashboardLesson {
   id: string;
   reference_code?: string | null;
+  student_id?: string | null;
+  studentId?: string | null;
   learner_name: string | null;
   parent_name?: string | null;
   contact_email: string;

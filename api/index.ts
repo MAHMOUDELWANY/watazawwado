@@ -1,4 +1,4 @@
-﻿import crypto from 'crypto';
+import crypto from 'crypto';
 import { MASTER_SPEC } from '../src/data/master_spec.js';
 import express from 'express';
 import { DateTime } from 'luxon';
@@ -2050,9 +2050,11 @@ app.get('/api/dashboard/students/:id', verifyTeacherAuth, async (req: any, res: 
 });
 
 // GET /api/dashboard/students/:id/ai-brief is POST because we might pass additional dynamic context later
-app.post('/api/dashboard/students/:id/ai-brief', verifyTeacherAuth, async (req, res) => {
+app.post('/api/dashboard/students/:id/ai-brief', verifyTeacherAuth, async (req: any, res: any) => {
   try {
     const { id } = req.params;
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database integration is not properly configured.' });
 
     // 1. Fetch student to authorize
     const { data: student, error: studentError } = await supabase

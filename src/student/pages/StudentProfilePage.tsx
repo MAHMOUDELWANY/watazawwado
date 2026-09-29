@@ -30,7 +30,7 @@ export interface StudentProfilePageProps {
   session?: any;
   onProfileUpdated?: (updated: any) => void;
   lang?: 'en' | 'ar';
-  
+  onToggleLang?: () => void;
 }
 
 export default function StudentProfilePage({
@@ -38,11 +38,15 @@ export default function StudentProfilePage({
   session: propSession,
   onProfileUpdated,
   lang = (typeof document !== 'undefined' && document.documentElement.lang === 'ar' ? 'ar' : 'en'),
-  
+  onToggleLang
 }: StudentProfilePageProps) {
   const auth = useTeacherAuth();
   const effectiveSession = propSession || auth.session;
   const user = auth.user;
+
+  const handleToggleLang = () => {
+    if (onToggleLang) onToggleLang();
+  };
   const { theme, toggleTheme } = useTheme();
 
   const [profile, setProfile] = useState<any>(initialProfile || null);
