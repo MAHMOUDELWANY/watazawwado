@@ -13,8 +13,7 @@ import { HelpCircle, Globe, LogOut, BookOpen,
   Calendar,
   Plus,
   ArrowRight,
-
-
+  Compass,
   Bell,
   ChevronRight,
 } from 'lucide-react';
@@ -35,6 +34,7 @@ import IntakeConversation from '../components/intake/IntakeConversation';
 import { StudentAuthModal } from '../components/StudentAuthModal';
 import {  buildStudentNotifications,
   countUnread,
+  notificationReadStateKey,
   getSavedNotificationReadIds
 } from './notificationsPresentation';
 
@@ -622,7 +622,10 @@ export default function StudentApp() {
                 <span className="absolute top-1.5 end-1.5 w-2 h-2 rounded-full bg-primary ring-2 ring-surface animate-pulse" />
               )}
             </Link>
-            <AccountDropdown />
+            <AccountDropdown 
+              initials={profile?.display_name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || 'S'} 
+              isAr={isAr} 
+            />
           </div>
         </header>
 

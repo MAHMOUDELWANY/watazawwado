@@ -23,7 +23,11 @@ import {
 
   Clock,
   ClipboardCheck,
-  Shield
+  Shield,
+  Compass,
+  Globe,
+  HelpCircle,
+  LogOut
 } from 'lucide-react';
 import { useTheme } from "../components/ThemeProvider";
 import OverviewPage from './pages/OverviewPage';
