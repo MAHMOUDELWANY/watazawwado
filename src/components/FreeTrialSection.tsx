@@ -25,7 +25,7 @@ export const FreeTrialSection: React.FC<FreeTrialSectionProps> = ({ lang, onOpen
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.5 }}
-          className="rounded-2xl bg-surface border border-border p-8 sm:p-12 md:p-14 shadow-xs relative overflow-hidden"
+          className="rounded-2xl glass-card border-none p-8 sm:p-12 md:p-14 shadow-xs relative overflow-hidden"
         >
           
           <div className="max-w-3xl">
@@ -47,7 +47,7 @@ export const FreeTrialSection: React.FC<FreeTrialSectionProps> = ({ lang, onOpen
 
             {/* Key Outcomes in the Trial */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
-              <div className="p-5 rounded-xl bg-surface-subtle border border-border">
+              <div className="p-5 rounded-xl glass-surface border border-border">
                 <div className="text-xs font-semibold uppercase tracking-wider text-primary mb-1">
                   1. Get to Know You
                 </div>
@@ -58,7 +58,7 @@ export const FreeTrialSection: React.FC<FreeTrialSectionProps> = ({ lang, onOpen
                 </p>
               </div>
 
-              <div className="p-5 rounded-xl bg-surface-subtle border border-border">
+              <div className="p-5 rounded-xl glass-surface border border-border">
                 <div className="text-xs font-semibold uppercase tracking-wider text-primary mb-1">
                   2. Level Assessment
                 </div>
@@ -69,7 +69,7 @@ export const FreeTrialSection: React.FC<FreeTrialSectionProps> = ({ lang, onOpen
                 </p>
               </div>
 
-              <div className="p-5 rounded-xl bg-surface-subtle border border-border">
+              <div className="p-5 rounded-xl glass-surface border border-border">
                 <div className="text-xs font-semibold uppercase tracking-wider text-primary mb-1">
                   3. Mini-Lesson & Plan
                 </div>
@@ -96,7 +96,7 @@ export const FreeTrialSection: React.FC<FreeTrialSectionProps> = ({ lang, onOpen
                 href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I have a question before booking a free trial.')}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-surface hover:bg-surface-subtle text-foreground border border-border text-sm font-medium transition-all shadow-2xs hover:shadow-xs group"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl glass-card hover:glass-surface text-foreground border border-border text-sm font-medium transition-all shadow-2xs hover:shadow-xs group"
               >
                 <MessageCircle className="w-4 h-4 text-accent" />
                 <span>{isEn ? 'Message on WhatsApp First' : 'تحدث معي على واتساب أولاً'}</span>

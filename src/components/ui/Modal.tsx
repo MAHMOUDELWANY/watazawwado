@@ -69,7 +69,7 @@ export function Modal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/40 backdrop-blur-md"
             onClick={onClose}
             aria-hidden="true"
           />
@@ -82,7 +82,7 @@ export function Modal({
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               className={cn(
-                "relative w-full rounded-2xl bg-surface text-surface-foreground border border-border shadow-xl flex flex-col max-h-[90vh] overflow-hidden my-auto",
+                "relative w-full rounded-2xl glass-dialog text-surface-foreground flex flex-col max-h-[90vh] overflow-hidden my-auto",
                 maxWidthClasses[maxWidth],
                 className
               )}
@@ -111,7 +111,7 @@ export function Modal({
               {!title && !hideCloseButton && (
                 <button
                   onClick={onClose}
-                  className="absolute top-4 end-4 z-10 p-2 rounded-xl bg-surface/50 backdrop-blur-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors shadow-xs"
+                  className="absolute top-4 end-4 z-10 p-2 rounded-xl glass-card/50 backdrop-blur-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors shadow-xs"
                   aria-label="Close modal"
                 >
                   <X className="w-5 h-5" />
@@ -125,7 +125,7 @@ export function Modal({
 
               {/* Footer */}
               {footer && (
-                <div className="px-6 py-4 border-t border-border-subtle bg-surface-subtle shrink-0 flex items-center justify-end gap-3">
+                <div className="px-6 py-4 border-t border-border-subtle glass-surface shrink-0 flex items-center justify-end gap-3">
                   {footer}
                 </div>
               )}

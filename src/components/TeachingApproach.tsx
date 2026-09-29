@@ -49,7 +49,7 @@ export const TeachingApproach: React.FC<TeachingApproachProps> = ({ lang }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-40px' }}
               transition={{ duration: 0.45, delay: index * 0.1 }}
-              className="p-8 sm:p-10 rounded-2xl bg-surface border border-border hover:border-primary/40 transition-all flex flex-col justify-between shadow-2xs hover:shadow-xs"
+              className="p-8 sm:p-10 rounded-2xl glass-card border-none hover:border-primary/40 transition-all flex flex-col justify-between shadow-2xs hover:shadow-xs"
             >
               <div>
                 <div className="font-display text-2xl font-light text-primary mb-3">

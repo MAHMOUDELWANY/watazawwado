@@ -25,7 +25,7 @@ import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 const STAGE_CONFIG: Record<LeadStatus, { label: string; color: string }> = {
   visitor: {
     label: 'Visitor',
-    color: 'bg-surface-subtle text-muted-foreground border border-border-subtle'
+    color: 'glass-surface text-muted-foreground border border-border-subtle'
   },
   lead: {
     label: 'New Lead',
@@ -57,7 +57,7 @@ const STAGE_CONFIG: Record<LeadStatus, { label: string; color: string }> = {
   },
   lost: {
     label: 'Lost / Postponed',
-    color: 'bg-surface-subtle text-muted-foreground border border-border-subtle'
+    color: 'glass-surface text-muted-foreground border border-border-subtle'
   }
 };
 
@@ -163,7 +163,7 @@ export default function LeadsPage() {
           <button
             onClick={() => fetchLeads(true)}
             disabled={refreshing || loading}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface border border-border text-xs font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass-card border-none text-xs font-medium text-foreground hover:glass-surface transition-colors cursor-pointer"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
             <span>Refresh</span>
@@ -173,7 +173,7 @@ export default function LeadsPage() {
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className="p-4 sm:p-5 rounded-2xl bg-surface border border-border shadow-2xs">
+        <div className="p-4 sm:p-5 rounded-2xl glass-card border-none shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
               New Inquiries
@@ -188,7 +188,7 @@ export default function LeadsPage() {
           </div>
         </div>
 
-        <div className="p-4 sm:p-5 rounded-2xl bg-surface border border-border shadow-2xs">
+        <div className="p-4 sm:p-5 rounded-2xl glass-card border-none shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
               In Trial Phase
@@ -203,7 +203,7 @@ export default function LeadsPage() {
           </div>
         </div>
 
-        <div className="p-4 sm:p-5 rounded-2xl bg-surface border border-border shadow-2xs">
+        <div className="p-4 sm:p-5 rounded-2xl glass-card border-none shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
               Potential Students
@@ -218,7 +218,7 @@ export default function LeadsPage() {
           </div>
         </div>
 
-        <div className="p-4 sm:p-5 rounded-2xl bg-surface border border-border shadow-2xs">
+        <div className="p-4 sm:p-5 rounded-2xl glass-card border-none shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
               Active Enrolled
@@ -236,12 +236,12 @@ export default function LeadsPage() {
 
       {/* Filter Tabs & Search */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2">
-        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-surface-subtle border border-border-subtle overflow-x-auto max-w-full">
+        <div className="flex items-center gap-1.5 p-1 rounded-xl glass-surface border border-border-subtle overflow-x-auto max-w-full">
           <button
             onClick={() => setFilterCategory('all')}
             className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
               filterCategory === 'all'
-                ? 'bg-surface text-foreground shadow-2xs font-semibold'
+                ? 'glass-card text-foreground shadow-2xs font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -264,7 +264,7 @@ export default function LeadsPage() {
             onClick={() => setFilterCategory('new')}
             className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
               filterCategory === 'new'
-                ? 'bg-surface text-foreground shadow-2xs font-semibold'
+                ? 'glass-card text-foreground shadow-2xs font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -274,7 +274,7 @@ export default function LeadsPage() {
             onClick={() => setFilterCategory('contacted')}
             className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
               filterCategory === 'contacted'
-                ? 'bg-surface text-foreground shadow-2xs font-semibold'
+                ? 'glass-card text-foreground shadow-2xs font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -284,7 +284,7 @@ export default function LeadsPage() {
             onClick={() => setFilterCategory('trials')}
             className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
               filterCategory === 'trials'
-                ? 'bg-surface text-foreground shadow-2xs font-semibold'
+                ? 'glass-card text-foreground shadow-2xs font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -294,7 +294,7 @@ export default function LeadsPage() {
             onClick={() => setFilterCategory('potential')}
             className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
               filterCategory === 'potential'
-                ? 'bg-surface text-foreground shadow-2xs font-semibold'
+                ? 'glass-card text-foreground shadow-2xs font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -304,7 +304,7 @@ export default function LeadsPage() {
             onClick={() => setFilterCategory('active')}
             className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
               filterCategory === 'active'
-                ? 'bg-surface text-foreground shadow-2xs font-semibold'
+                ? 'glass-card text-foreground shadow-2xs font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -319,7 +319,7 @@ export default function LeadsPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search lead, email, phone..."
-            className="w-full pl-9 pr-4 py-1.5 rounded-xl border border-border bg-surface text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full pl-9 pr-4 py-1.5 rounded-xl border border-border glass-card text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
       </div>
@@ -338,7 +338,7 @@ export default function LeadsPage() {
           Loading leads pipeline...
         </div>
       ) : filteredLeads.length === 0 ? (
-        <div className="p-12 text-center rounded-2xl bg-surface border border-border">
+        <div className="p-12 text-center rounded-2xl glass-card border-none">
           <Users className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
           <h3 className="font-display font-medium text-base text-foreground">
             No Leads in This Stage
@@ -362,12 +362,12 @@ export default function LeadsPage() {
               <div
                 key={lead.id}
                 onClick={() => setSelectedLead(lead)}
-                className="p-4 sm:p-5 rounded-2xl bg-surface border border-border hover:border-accent/40 shadow-2xs hover:shadow-xs transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                className="p-4 sm:p-5 rounded-2xl glass-card border-none hover:border-accent/40 shadow-2xs hover:shadow-xs transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4"
               >
                 <div className="space-y-1.5 flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className={`text-[11px] font-semibold px-2 py-0.5 rounded ${
-                      STAGE_CONFIG[lead.status]?.label ? STAGE_CONFIG[lead.status]?.color : 'bg-surface-subtle text-foreground'
+                      STAGE_CONFIG[lead.status]?.label ? STAGE_CONFIG[lead.status]?.color : 'glass-surface text-foreground'
                     }`}>
                       {STAGE_CONFIG[lead.status]?.label || lead.status}
                     </span>
@@ -386,7 +386,7 @@ export default function LeadsPage() {
                     )}
 
                     {lead.source && (
-                      <span className="text-[10px] font-mono text-muted-foreground px-1.5 py-0.5 rounded bg-surface-subtle border border-border-subtle">
+                      <span className="text-[10px] font-mono text-muted-foreground px-1.5 py-0.5 rounded glass-surface border border-border-subtle">
                         {lead.source}
                       </span>
                     )}
@@ -440,7 +440,7 @@ export default function LeadsPage() {
                     {lead.email && (
                       <a
                         href={`mailto:${lead.email}`}
-                        className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors"
+                        className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:glass-surface transition-colors"
                         title="Send Email"
                       >
                         <Mail className="w-4 h-4" />

@@ -220,8 +220,8 @@ export default function SettingsPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors whitespace-nowrap cursor-pointer min-h-[44px] ${
                   activeTab === tab.id
-                    ? 'bg-surface text-foreground shadow-2xs border border-border'
-                    : 'text-muted-foreground hover:bg-surface-subtle hover:text-foreground'
+                    ? 'glass-card text-foreground shadow-2xs border border-border'
+                    : 'text-muted-foreground hover:glass-surface hover:text-foreground'
                 }`}
               >
                 <tab.icon className={`w-4 h-4 ${activeTab === tab.id ? 'text-accent' : 'opacity-70'}`} />
@@ -235,7 +235,7 @@ export default function SettingsPage() {
         <div className="flex-1 space-y-6">
           {/* 1. Profile & Contact */}
           {activeTab === 'Profile' && (
-            <div className="bg-surface rounded-2xl border border-border p-6 space-y-6 shadow-2xs">
+            <div className="glass-card rounded-2xl border border-border p-6 space-y-6 shadow-2xs">
               <h2 className="text-lg font-display font-semibold text-foreground">Profile & Contact Info</h2>
               
               <div className="space-y-4">
@@ -245,7 +245,7 @@ export default function SettingsPage() {
                     type="text"
                     value={getSetting('teacher_name')}
                     onChange={(e) => updateSetting('teacher_name', e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-border bg-surface-subtle text-foreground text-sm focus:border-primary focus:ring-2 focus:ring-primary/40 outline-none transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:border-primary focus:ring-2 focus:ring-primary/40 outline-none transition-colors"
                   />
                 </div>
                 <div>
@@ -254,7 +254,7 @@ export default function SettingsPage() {
                     value={getSetting('bio')}
                     onChange={(e) => updateSetting('bio', e.target.value)}
                     rows={4}
-                    className="w-full px-4 py-2.5 rounded-xl border border-border bg-surface-subtle text-foreground text-sm focus:border-primary focus:ring-2 focus:ring-primary/40 outline-none transition-colors resize-none placeholder:text-muted-foreground"
+                    className="w-full px-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:border-primary focus:ring-2 focus:ring-primary/40 outline-none transition-colors resize-none placeholder:text-muted-foreground"
                     placeholder="Brief teacher biography..."
                   />
                 </div>
@@ -265,7 +265,7 @@ export default function SettingsPage() {
                       type="tel"
                       value={getSetting('contact_whatsapp')}
                       onChange={(e) => updateSetting('contact_whatsapp', e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl border border-border bg-surface-subtle text-foreground text-sm focus:border-primary focus:ring-2 focus:ring-primary/40 outline-none transition-colors placeholder:text-muted-foreground"
+                      className="w-full px-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:border-primary focus:ring-2 focus:ring-primary/40 outline-none transition-colors placeholder:text-muted-foreground"
                       placeholder="+20123456789"
                     />
                   </div>
@@ -275,7 +275,7 @@ export default function SettingsPage() {
                       type="email"
                       value={getSetting('contact_email')}
                       onChange={(e) => updateSetting('contact_email', e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl border border-border bg-surface-subtle text-foreground text-sm focus:border-primary focus:ring-2 focus:ring-primary/40 outline-none transition-colors placeholder:text-muted-foreground"
+                      className="w-full px-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:border-primary focus:ring-2 focus:ring-primary/40 outline-none transition-colors placeholder:text-muted-foreground"
                       placeholder="teacher@example.com"
                     />
                   </div>
@@ -286,7 +286,7 @@ export default function SettingsPage() {
 
           {/* 2. Services & Pricing */}
           {activeTab === 'Services' && (
-            <div className="bg-surface rounded-2xl border border-border p-6 space-y-6 shadow-2xs">
+            <div className="glass-card rounded-2xl border border-border p-6 space-y-6 shadow-2xs">
               <div>
                 <h2 className="text-lg font-display font-semibold text-foreground">Curriculum Services & Hourly Rates</h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
@@ -326,7 +326,7 @@ export default function SettingsPage() {
                               step="0.5"
                               value={service.hourly_rate_usd}
                               onChange={(e) => updateServiceField(service.id, 'hourly_rate_usd', parseFloat(e.target.value) || 0)}
-                              className="w-full ps-7 pe-3 py-2 rounded-xl border border-border bg-surface-subtle text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-primary/40"
+                              className="w-full ps-7 pe-3 py-2 rounded-xl border border-border glass-surface text-sm text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-primary/40"
                             />
                           </div>
                         </div>
@@ -366,7 +366,7 @@ export default function SettingsPage() {
 
           {/* 3. Policies & Timezone */}
           {activeTab === 'Policy' && (
-            <div className="bg-surface rounded-2xl border border-border p-6 space-y-6 shadow-2xs">
+            <div className="glass-card rounded-2xl border border-border p-6 space-y-6 shadow-2xs">
               <h2 className="text-lg font-display font-semibold text-foreground">Policies & Base Timezone</h2>
               
               <div className="space-y-6">
@@ -375,7 +375,7 @@ export default function SettingsPage() {
                   <select
                     value={getSetting('timezone')}
                     onChange={(e) => updateSetting('timezone', e.target.value)}
-                    className="w-full sm:w-1/2 px-4 py-2.5 rounded-xl border border-border bg-surface-subtle text-foreground text-sm focus:border-primary focus:ring-2 focus:ring-primary/40 outline-none"
+                    className="w-full sm:w-1/2 px-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:border-primary focus:ring-2 focus:ring-primary/40 outline-none"
                   >
                     <option value="Africa/Cairo">Africa/Cairo (Egypt - GMT+2/3)</option>
                     <option value="UTC">UTC (Coordinated Universal Time)</option>
@@ -413,7 +413,7 @@ export default function SettingsPage() {
                       step={15}
                       value={getSetting('trial_duration')}
                       onChange={(e) => updateSetting('trial_duration', parseInt(e.target.value, 10))}
-                      className="w-full sm:w-1/3 px-4 py-2.5 rounded-xl border border-border bg-surface-subtle text-foreground text-sm focus:border-primary focus:ring-2 focus:ring-primary/40 outline-none transition-colors"
+                      className="w-full sm:w-1/3 px-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:border-primary focus:ring-2 focus:ring-primary/40 outline-none transition-colors"
                     />
                     <p className="mt-1 text-[11px] text-muted-foreground">Must be between 15 and 45 minutes.</p>
                   </div>
@@ -429,7 +429,7 @@ export default function SettingsPage() {
                     max={72}
                     value={getSetting('cancellation_hours')}
                     onChange={(e) => updateSetting('cancellation_hours', parseInt(e.target.value, 10))}
-                    className="w-full sm:w-1/3 px-4 py-2.5 rounded-xl border border-border bg-surface-subtle text-foreground text-sm focus:border-primary focus:ring-2 focus:ring-primary/40 outline-none transition-colors"
+                    className="w-full sm:w-1/3 px-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:border-primary focus:ring-2 focus:ring-primary/40 outline-none transition-colors"
                   />
                   <p className="mt-1 text-[11px] text-muted-foreground">Students may self-service cancel or reschedule up to {getSetting('cancellation_hours')} hours before start.</p>
                 </div>
@@ -439,7 +439,7 @@ export default function SettingsPage() {
 
           {/* 4. Payment Methods & Instructions */}
           {activeTab === 'Payment' && (
-            <div className="bg-surface rounded-2xl border border-border p-6 space-y-6 shadow-2xs">
+            <div className="glass-card rounded-2xl border border-border p-6 space-y-6 shadow-2xs">
               <h2 className="text-lg font-display font-semibold text-foreground">Accepted Payment Methods & Offline Instructions</h2>
               <p className="text-xs text-muted-foreground">
                 Select allowed payment channels and configure instructions shown during payment claim submission.
@@ -457,7 +457,7 @@ export default function SettingsPage() {
                   const isChecked = methods.includes(method.id);
                   
                   return (
-                    <label key={method.id} className="flex items-center gap-3 p-3 rounded-xl border border-border cursor-pointer hover:bg-surface-subtle transition-colors min-h-[44px]">
+                    <label key={method.id} className="flex items-center gap-3 p-3 rounded-xl border border-border cursor-pointer hover:glass-surface transition-colors min-h-[44px]">
                       <input
                         type="checkbox"
                         checked={isChecked}
@@ -482,7 +482,7 @@ export default function SettingsPage() {
                   value={getSetting('payment_instructions')}
                   onChange={(e) => updateSetting('payment_instructions', e.target.value)}
                   rows={4}
-                  className="w-full px-4 py-2.5 rounded-xl border border-border bg-surface-subtle text-foreground text-sm focus:border-primary focus:ring-2 focus:ring-primary/40 outline-none transition-colors resize-none placeholder:text-muted-foreground"
+                  className="w-full px-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:border-primary focus:ring-2 focus:ring-primary/40 outline-none transition-colors resize-none placeholder:text-muted-foreground"
                   placeholder="Provide details or routing numbers for manual payment submission..."
                 />
               </div>
@@ -491,14 +491,14 @@ export default function SettingsPage() {
 
           {/* 5. Integrations & Sync */}
           {activeTab === 'Integrations' && (
-            <div className="bg-surface rounded-2xl border border-border p-6 shadow-2xs">
+            <div className="glass-card rounded-2xl border border-border p-6 shadow-2xs">
               <IntegrationsManager lang={(getSetting('language') as any) || 'en'} />
             </div>
           )}
 
           {/* 6. Preferences */}
           {activeTab === 'Preferences' && (
-            <div className="bg-surface rounded-2xl border border-border p-6 space-y-6 shadow-2xs">
+            <div className="glass-card rounded-2xl border border-border p-6 space-y-6 shadow-2xs">
               <h2 className="text-lg font-display font-semibold text-foreground">Dashboard Preferences</h2>
               
               <div className="space-y-4">
@@ -507,7 +507,7 @@ export default function SettingsPage() {
                   <select
                     value={getSetting('language')}
                     onChange={(e) => updateSetting('language', e.target.value)}
-                    className="w-full sm:w-1/2 px-4 py-2.5 rounded-xl border border-border bg-surface-subtle text-foreground text-sm focus:border-primary focus:ring-2 focus:ring-primary/40 outline-none"
+                    className="w-full sm:w-1/2 px-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:border-primary focus:ring-2 focus:ring-primary/40 outline-none"
                   >
                     <option value="en">English</option>
                     <option value="ar">العربية (Arabic)</option>
@@ -519,7 +519,7 @@ export default function SettingsPage() {
                   <select
                     value={getSetting('theme')}
                     onChange={(e) => updateSetting('theme', e.target.value)}
-                    className="w-full sm:w-1/2 px-4 py-2.5 rounded-xl border border-border bg-surface-subtle text-foreground text-sm focus:border-primary focus:ring-2 focus:ring-primary/40 outline-none"
+                    className="w-full sm:w-1/2 px-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:border-primary focus:ring-2 focus:ring-primary/40 outline-none"
                   >
                     <option value="light">Luxury Light (Warm Ivory × Sage)</option>
                     <option value="dark">Dark Twilight</option>

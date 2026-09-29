@@ -18,7 +18,7 @@ export function Alert({
 }: AlertProps) {
   // Semantic design system variants
   const variants = {
-    info: 'bg-surface-subtle text-foreground border-border',
+    info: 'glass-surface text-foreground border-border',
     success: 'bg-success/15 text-success border-success/30',
     warning: 'bg-warning/15 text-warning-foreground border-warning/30',
     destructive: 'bg-destructive/15 text-destructive border-destructive/30',

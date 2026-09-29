@@ -147,14 +147,14 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="inline-flex p-1.5 rounded-2xl bg-surface-subtle border border-border shadow-xs gap-1.5"
+            className="inline-flex p-1.5 rounded-2xl glass-surface border border-border shadow-xs gap-1.5"
           >
             <button
               onClick={() => setActiveTab('quran')}
               className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all cursor-pointer ${
                 activeTab === 'quran'
                   ? 'bg-primary text-white shadow-xs'
-                  : 'text-foreground/80 dark:text-foreground/80 hover:bg-foreground/60 dark:hover:bg-surface-subtle'
+                  : 'text-foreground/80 dark:text-foreground/80 hover:bg-foreground/60 dark:hover:glass-surface'
               }`}
             >
               {isEn ? 'Quran & Tajweed' : 'القرآن والتجويد'}
@@ -164,7 +164,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
               className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all cursor-pointer ${
                 activeTab === 'arabic'
                   ? 'bg-primary text-white shadow-xs'
-                  : 'text-foreground/80 dark:text-foreground/80 hover:bg-foreground/60 dark:hover:bg-surface-subtle'
+                  : 'text-foreground/80 dark:text-foreground/80 hover:bg-foreground/60 dark:hover:glass-surface'
               }`}
             >
               {isEn ? 'Arabic Language' : 'اللغة العربية'}
@@ -174,7 +174,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
               className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all cursor-pointer ${
                 activeTab === 'studies'
                   ? 'bg-primary text-white shadow-xs'
-                  : 'text-foreground/80 dark:text-foreground/80 hover:bg-foreground/60 dark:hover:bg-surface-subtle'
+                  : 'text-foreground/80 dark:text-foreground/80 hover:bg-foreground/60 dark:hover:glass-surface'
               }`}
             >
               {isEn ? 'Islamic Studies' : 'الدراسات الإسلامية'}
@@ -203,7 +203,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
             className={`absolute top-6 sm:top-10 ${
               isRtl ? 'right-1 sm:right-4 lg:-right-6' : 'left-1 sm:left-4 lg:-left-6'
-            } z-20 w-[260px] sm:w-[310px] lg:w-[350px] rounded-2xl bg-surface-subtle dark:bg-background text-white p-4 sm:p-6 shadow-2xl shadow-black/40 border border-secondary/60 backdrop-blur-md cursor-grab active:cursor-grabbing select-none`}
+            } z-20 w-[260px] sm:w-[310px] lg:w-[350px] rounded-2xl glass-surface dark:bg-background text-white p-4 sm:p-6 shadow-2xl shadow-black/40 border border-secondary/60 backdrop-blur-md cursor-grab active:cursor-grabbing select-none`}
           >
             {/* Terminal Header */}
             <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-3.5">
@@ -276,7 +276,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
             className={`absolute bottom-4 sm:bottom-8 ${
               isRtl ? 'left-1 sm:left-4 lg:-left-6' : 'right-1 sm:right-4 lg:-right-6'
-            } z-20 w-[260px] sm:w-[310px] lg:w-[350px] rounded-2xl bg-surface-subtle text-foreground p-4 sm:p-6 shadow-2xl shadow-black/15 border border-border cursor-grab active:cursor-grabbing select-none`}
+            } z-20 w-[260px] sm:w-[310px] lg:w-[350px] rounded-2xl glass-surface text-foreground p-4 sm:p-6 shadow-2xl shadow-black/15 border border-border cursor-grab active:cursor-grabbing select-none`}
           >
             {/* Header: Student Profile Info */}
             <div className="flex items-center gap-3 border-b border-border pb-3 mb-3.5">
@@ -351,7 +351,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
               y: centerY,
               transformStyle: 'preserve-3d',
             }}
-            className="w-full max-w-4xl bg-surface rounded-2xl sm:rounded-3xl shadow-2xl shadow-black/20 dark:shadow-black/60 border border-border overflow-hidden z-10 transition-shadow hover:shadow-3xl"
+            className="w-full max-w-4xl glass-card rounded-2xl sm:rounded-3xl shadow-2xl shadow-black/20 dark:shadow-black/60 border border-border overflow-hidden z-10 transition-shadow hover:shadow-3xl"
           >
             {/* Window Title Bar */}
             <div className="bg-surface-warm dark:bg-background px-4 sm:px-6 py-3 border-b border-border flex items-center justify-between">
@@ -378,7 +378,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
             </div>
 
             {/* Studio Workspace Content */}
-            <div className="p-4 sm:p-7 grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 bg-surface">
+            <div className="p-4 sm:p-7 grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 glass-card">
               
               {/* Left Column: Illuminated Subject Canvas (7 cols) */}
               <div className="lg:col-span-7 bg-surface-warm dark:bg-background rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-border flex flex-col justify-between">
@@ -508,7 +508,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
                         </div>
 
                         <div className="space-y-3 font-sans text-sm">
-                          <div className="p-3 rounded-xl bg-surface-subtle border border-border">
+                          <div className="p-3 rounded-xl glass-surface border border-border">
                             <div className="text-xs text-primary font-semibold mb-1">
                               {isEn ? 'Teacher (Mahmoud):' : 'المعلم (أستاذ محمود):'}
                             </div>
@@ -551,7 +551,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
                         </div>
 
                         <div className="space-y-2.5 text-xs text-foreground/85 dark:text-border">
-                          <div className="p-3 rounded-xl bg-surface-subtle border border-border">
+                          <div className="p-3 rounded-xl glass-surface border border-border">
                             <div className="font-semibold text-xs text-primary mb-1">
                               {isEn ? 'Core Concept: Khushu in Daily Salah' : 'المفهوم الأساسي: الخشوع في الصلاة'}
                             </div>
@@ -591,7 +591,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
               <div className="lg:col-span-5 flex flex-col justify-between space-y-4">
                 
                 {/* Teacher Video Stream Mockup */}
-                <div className="relative rounded-xl sm:rounded-2xl overflow-hidden bg-surface-subtle border border-border aspect-4/3 shadow-md group">
+                <div className="relative rounded-xl sm:rounded-2xl overflow-hidden glass-surface border border-border aspect-4/3 shadow-md group">
                   <img
                     src="https://raw.githubusercontent.com/StackBlitz/stackblitz-images/main/teacher-mahmoud-portrait.jpg"
                     onError={(e) => {
@@ -658,19 +658,19 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
                   </div>
 
                   <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="flex items-center gap-2 p-2 rounded-lg bg-surface border border-border">
+                    <div className="flex items-center gap-2 p-2 rounded-lg glass-card border-none">
                       <Volume2 className="w-3.5 h-3.5 text-accent" />
                       <span className="text-[11px] font-medium">{isEn ? 'Slow Recitation' : 'تكرار متأنٍ'}</span>
                     </div>
-                    <div className="flex items-center gap-2 p-2 rounded-lg bg-surface border border-border">
+                    <div className="flex items-center gap-2 p-2 rounded-lg glass-card border-none">
                       <Mic className="w-3.5 h-3.5 text-accent" />
                       <span className="text-[11px] font-medium">{isEn ? 'Makharij Guide' : 'مخارج الحروف'}</span>
                     </div>
-                    <div className="flex items-center gap-2 p-2 rounded-lg bg-surface border border-border">
+                    <div className="flex items-center gap-2 p-2 rounded-lg glass-card border-none">
                       <MessageSquare className="w-3.5 h-3.5 text-accent" />
                       <span className="text-[11px] font-medium">{isEn ? 'Bilingual Chat' : 'حوار بالإنجليزية'}</span>
                     </div>
-                    <div className="flex items-center gap-2 p-2 rounded-lg bg-surface border border-border">
+                    <div className="flex items-center gap-2 p-2 rounded-lg glass-card border-none">
                       <Calendar className="w-3.5 h-3.5 text-accent" />
                       <span className="text-[11px] font-medium">{isEn ? 'Flexible Times' : 'مواعيد مرنة'}</span>
                     </div>
@@ -710,19 +710,19 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
 
               {/* Badges Dock */}
               <div className="flex items-center gap-1.5 sm:gap-2">
-                <span className="px-2.5 py-1 rounded-md bg-surface-subtle border border-border text-foreground text-[11px] font-medium shadow-xs">
+                <span className="px-2.5 py-1 rounded-md glass-surface border border-border text-foreground text-[11px] font-medium shadow-xs">
                   Quran
                 </span>
-                <span className="px-2.5 py-1 rounded-md bg-surface-subtle border border-border text-foreground text-[11px] font-medium shadow-xs">
+                <span className="px-2.5 py-1 rounded-md glass-surface border border-border text-foreground text-[11px] font-medium shadow-xs">
                   Tajweed
                 </span>
-                <span className="px-2.5 py-1 rounded-md bg-surface-subtle border border-border text-foreground text-[11px] font-medium shadow-xs">
+                <span className="px-2.5 py-1 rounded-md glass-surface border border-border text-foreground text-[11px] font-medium shadow-xs">
                   Islamic Studies
                 </span>
-                <span className="px-2.5 py-1 rounded-md bg-surface-subtle border border-border text-foreground text-[11px] font-medium shadow-xs">
+                <span className="px-2.5 py-1 rounded-md glass-surface border border-border text-foreground text-[11px] font-medium shadow-xs">
                   Arabic
                 </span>
-                <span className="px-2.5 py-1 rounded-md bg-surface-subtle border border-border text-foreground text-[11px] font-medium shadow-xs">
+                <span className="px-2.5 py-1 rounded-md glass-surface border border-border text-foreground text-[11px] font-medium shadow-xs">
                   English
                 </span>
               </div>
@@ -755,7 +755,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left sm:text-center max-w-2xl mx-auto">
-            <div className="p-4 rounded-xl bg-surface-subtle border border-border">
+            <div className="p-4 rounded-xl glass-surface border border-border">
               <div className="font-display text-xl font-bold text-primary dark:text-primary mb-1">
                 {isEn ? '30–60 Min' : '٣٠–٦٠ دقيقة'}
               </div>
@@ -764,7 +764,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-surface-subtle border border-border">
+            <div className="p-4 rounded-xl glass-surface border border-border">
               <div className="font-display text-xl font-bold text-primary dark:text-primary mb-1">
                 {isEn ? 'One Free Trial' : 'جلسة مجانية أولى'}
               </div>
@@ -773,7 +773,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-surface-subtle border border-border">
+            <div className="p-4 rounded-xl glass-surface border border-border">
               <div className="font-display text-xl font-bold text-primary dark:text-primary mb-1">
                 {isEn ? '3h Cancel Policy' : 'إلغاء قبل ٣ ساعات'}
               </div>

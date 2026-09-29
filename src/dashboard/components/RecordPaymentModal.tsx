@@ -118,11 +118,11 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
       aria-labelledby="record-payment-title"
     >
       <div 
-        className="bg-surface border border-border rounded-2xl w-full max-w-lg shadow-xl overflow-hidden flex flex-col max-h-[90vh]"
+        className="glass-card border-none rounded-2xl w-full max-w-lg shadow-xl overflow-hidden flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-6 py-5 border-b border-border flex items-center justify-between bg-surface-subtle/50">
+        <div className="px-6 py-5 border-b border-border flex items-center justify-between glass-surface/50">
           <div>
             <h2 id="record-payment-title" className="text-lg font-display font-semibold text-foreground flex items-center gap-2">
               <DollarSign className="w-5 h-5 text-accent" />
@@ -136,7 +136,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           <button 
             onClick={onClose}
             disabled={submitting}
-            className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center disabled:opacity-50"
+            className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:glass-surface transition-colors cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center disabled:opacity-50"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
@@ -167,7 +167,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                   placeholder="e.g. 25.00"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
-                  className="w-full px-3 py-2 text-sm bg-surface-subtle border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+                  className="w-full px-3 py-2 text-sm glass-surface border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
                   autoFocus
                 />
               </div>
@@ -181,7 +181,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
                 required
-                className="w-full px-3 py-2 text-sm bg-surface-subtle border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+                className="w-full px-3 py-2 text-sm glass-surface border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
               >
                 {!currency && <option value="">Select currency...</option>}
                 <option value="USD">USD ($)</option>
@@ -202,7 +202,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
             <select
               value={paymentMethod}
               onChange={(e) => setPaymentMethod(e.target.value as PaymentMethodType)}
-              className="w-full px-3 py-2 text-sm bg-surface-subtle border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+              className="w-full px-3 py-2 text-sm glass-surface border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
             >
               <option value="paypal">PayPal</option>
               <option value="international_bank_iban">International Bank / IBAN</option>
@@ -223,7 +223,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                 className={`flex items-center gap-2 p-2.5 rounded-xl border text-xs font-medium cursor-pointer transition-colors ${
                   status === 'confirmed' 
                     ? 'bg-success/15 border-success/40 text-success' 
-                    : 'bg-surface-subtle border-border text-foreground hover:bg-surface'
+                    : 'glass-surface border-border text-foreground hover:glass-card'
                 }`}
               >
                 <input 
@@ -244,7 +244,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                 className={`flex items-center gap-2 p-2.5 rounded-xl border text-xs font-medium cursor-pointer transition-colors ${
                   status === 'pending' 
                     ? 'bg-warning/15 border-warning/40 text-warning' 
-                    : 'bg-surface-subtle border-border text-foreground hover:bg-surface'
+                    : 'glass-surface border-border text-foreground hover:glass-card'
                 }`}
               >
                 <input 
@@ -273,7 +273,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
               placeholder="e.g. PayPal TXN-987654 or Bank Transfer Ref"
               value={paymentReference}
               onChange={(e) => setPaymentReference(e.target.value)}
-              className="w-full px-3 py-2 text-sm bg-surface-subtle border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+              className="w-full px-3 py-2 text-sm glass-surface border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
             />
           </div>
 
@@ -287,7 +287,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
               placeholder="e.g. Sent from student's father account, verified via Wise receipt"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full px-3 py-2 text-sm bg-surface-subtle border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+              className="w-full px-3 py-2 text-sm glass-surface border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
             />
           </div>
 
@@ -297,7 +297,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
               type="button"
               onClick={onClose}
               disabled={submitting}
-              className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-surface-subtle rounded-xl transition-colors cursor-pointer min-h-[40px]"
+              className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:glass-surface rounded-xl transition-colors cursor-pointer min-h-[40px]"
             >
               Cancel
             </button>

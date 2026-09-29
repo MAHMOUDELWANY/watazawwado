@@ -233,21 +233,21 @@ export default function BookingsPage() {
 
       {/* Operational Summary Metrics */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-        <div className="p-4 bg-surface rounded-2xl border border-border shadow-2xs">
+        <div className="p-4 glass-card rounded-2xl border border-border shadow-2xs">
           <span className="text-xs text-muted-foreground font-medium block">Total Bookings</span>
           <span className="text-xl font-bold text-foreground mt-1 block">
             {summary.total_bookings}
           </span>
         </div>
 
-        <div className="p-4 bg-surface rounded-2xl border border-border shadow-2xs">
+        <div className="p-4 glass-card rounded-2xl border border-border shadow-2xs">
           <span className="text-xs text-muted-foreground font-medium block">Upcoming Lessons</span>
           <span className="text-xl font-bold text-foreground mt-1 block">
             {summary.upcoming_count}
           </span>
         </div>
 
-        <div className="p-4 bg-surface rounded-2xl border border-border shadow-2xs">
+        <div className="p-4 glass-card rounded-2xl border border-border shadow-2xs">
           <span className="text-xs text-warning font-medium block">Unpaid Upcoming</span>
           <div className="flex items-center justify-between mt-1">
             <span className="text-xl font-bold text-warning">
@@ -261,7 +261,7 @@ export default function BookingsPage() {
           </div>
         </div>
 
-        <div className="p-4 bg-surface rounded-2xl border border-border shadow-2xs">
+        <div className="p-4 glass-card rounded-2xl border border-border shadow-2xs">
           <span className="text-xs text-warning font-medium block">Payments to Verify</span>
           <div className="flex items-center justify-between mt-1">
             <span className="text-xl font-bold text-warning">
@@ -275,7 +275,7 @@ export default function BookingsPage() {
           </div>
         </div>
 
-        <div className="p-4 bg-surface rounded-2xl border border-border shadow-2xs col-span-2 sm:col-span-1">
+        <div className="p-4 glass-card rounded-2xl border border-border shadow-2xs col-span-2 sm:col-span-1">
           <span className="text-xs text-success font-medium block">Completed Lessons</span>
           <span className="text-xl font-bold text-success mt-1 block">
             {summary.completed_count}
@@ -289,8 +289,8 @@ export default function BookingsPage() {
           onClick={() => setActiveTab('bookings')}
           className={`px-4 py-2.5 text-xs font-semibold rounded-t-xl transition-colors cursor-pointer ${
             activeTab === 'bookings'
-              ? 'bg-surface text-foreground border-t border-x border-border shadow-2xs'
-              : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle/50'
+              ? 'glass-card text-foreground border-t border-x border-border shadow-2xs'
+              : 'text-muted-foreground hover:text-foreground hover:glass-surface/50'
           }`}
         >
           Bookings & Lessons ({summary.total_bookings})
@@ -299,8 +299,8 @@ export default function BookingsPage() {
           onClick={() => setActiveTab('payments')}
           className={`px-4 py-2.5 text-xs font-semibold rounded-t-xl transition-colors flex items-center gap-1.5 cursor-pointer ${
             activeTab === 'payments'
-              ? 'bg-surface text-foreground border-t border-x border-border shadow-2xs'
-              : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle/50'
+              ? 'glass-card text-foreground border-t border-x border-border shadow-2xs'
+              : 'text-muted-foreground hover:text-foreground hover:glass-surface/50'
           }`}
         >
           <DollarSign className="w-3.5 h-3.5" />
@@ -317,7 +317,7 @@ export default function BookingsPage() {
       {activeTab === 'bookings' && (
         <div className="space-y-4">
           {/* Filters Bar */}
-          <div className="bg-surface p-3.5 rounded-2xl border border-border shadow-2xs flex flex-wrap items-center gap-3">
+          <div className="glass-card p-3.5 rounded-2xl border border-border shadow-2xs flex flex-wrap items-center gap-3">
             {/* Search */}
             <div className="relative flex-1 min-w-[200px]">
               <Search className="w-3.5 h-3.5 absolute start-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
@@ -326,7 +326,7 @@ export default function BookingsPage() {
                 placeholder="Search by student, parent, email, or reference..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full ps-8 pe-3 py-1.5 text-xs bg-surface-subtle border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+                className="w-full ps-8 pe-3 py-1.5 text-xs glass-surface border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
               />
             </div>
 
@@ -336,7 +336,7 @@ export default function BookingsPage() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-2.5 py-1.5 bg-surface-subtle border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary cursor-pointer"
+                className="px-2.5 py-1.5 glass-surface border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary cursor-pointer"
               >
                 <option value="all">All Statuses</option>
                 <option value="confirmed">Confirmed</option>
@@ -353,7 +353,7 @@ export default function BookingsPage() {
               <select
                 value={paymentFilter}
                 onChange={(e) => setPaymentFilter(e.target.value)}
-                className="px-2.5 py-1.5 bg-surface-subtle border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary cursor-pointer"
+                className="px-2.5 py-1.5 glass-surface border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary cursor-pointer"
               >
                 <option value="all">All Payments</option>
                 <option value="unpaid">Unpaid</option>
@@ -370,7 +370,7 @@ export default function BookingsPage() {
               <select
                 value={dateFilter}
                 onChange={(e) => setDateFilter(e.target.value)}
-                className="px-2.5 py-1.5 bg-surface-subtle border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary cursor-pointer"
+                className="px-2.5 py-1.5 glass-surface border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary cursor-pointer"
               >
                 <option value="all">All Dates</option>
                 <option value="upcoming">Upcoming</option>
@@ -382,7 +382,7 @@ export default function BookingsPage() {
             {/* Refresh */}
             <button
               onClick={fetchBookings}
-              className="p-2 text-muted-foreground hover:text-foreground rounded-lg hover:bg-surface-subtle transition-colors cursor-pointer"
+              className="p-2 text-muted-foreground hover:text-foreground rounded-lg hover:glass-surface transition-colors cursor-pointer"
               title="Refresh bookings"
               aria-label="Refresh bookings"
             >
@@ -394,7 +394,7 @@ export default function BookingsPage() {
           {loading ? (
             <div className="space-y-3 animate-pulse">
               {[1, 2, 3, 4].map(i => (
-                <div key={i} className="bg-surface rounded-2xl h-24 border border-border"></div>
+                <div key={i} className="glass-card rounded-2xl h-24 border border-border"></div>
               ))}
             </div>
           ) : error ? (
@@ -434,7 +434,7 @@ export default function BookingsPage() {
                   <div
                     key={b.id}
                     onClick={() => setSelectedBookingId(b.id)}
-                    className="bg-surface hover:bg-surface-subtle/80 p-4 sm:p-5 rounded-2xl border border-border shadow-2xs cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group"
+                    className="glass-card hover:glass-surface/80 p-4 sm:p-5 rounded-2xl border border-border shadow-2xs cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group"
                   >
                     {/* Left: Learner & Lesson Details */}
                     <div className="space-y-1.5 flex-1">
@@ -525,7 +525,7 @@ export default function BookingsPage() {
                               contactName: b.contact_name,
                               expectedAmount: b.expected_amount
                             })}
-                            className="px-3 py-1.5 text-xs font-medium text-foreground bg-surface hover:bg-surface-subtle border border-border rounded-xl transition-colors cursor-pointer min-h-[36px]"
+                            className="px-3 py-1.5 text-xs font-medium text-foreground glass-card hover:glass-surface border border-border rounded-xl transition-colors cursor-pointer min-h-[36px]"
                           >
                             Record Payment
                           </button>
@@ -533,7 +533,7 @@ export default function BookingsPage() {
 
                         <button
                           onClick={() => setSelectedBookingId(b.id)}
-                          className="p-2 rounded-xl text-muted-foreground group-hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center"
+                          className="p-2 rounded-xl text-muted-foreground group-hover:text-foreground hover:glass-surface transition-colors cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center"
                           title="Open Booking Details"
                           aria-label={`Open details for booking ${b.reference_code}`}
                         >
@@ -552,13 +552,13 @@ export default function BookingsPage() {
       {/* TAB 2: ALL PAYMENTS LEDGER */}
       {activeTab === 'payments' && (
         <div className="space-y-4">
-          <div className="bg-surface p-3.5 rounded-2xl border border-border shadow-2xs flex items-center justify-between gap-3">
+          <div className="glass-card p-3.5 rounded-2xl border border-border shadow-2xs flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <span className="text-xs text-muted-foreground font-medium">Status Filter:</span>
               <select
                 value={paymentsStatusFilter}
                 onChange={(e) => setPaymentsStatusFilter(e.target.value)}
-                className="px-2.5 py-1.5 bg-surface-subtle border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary cursor-pointer"
+                className="px-2.5 py-1.5 glass-surface border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary cursor-pointer"
               >
                 <option value="all">All Payments</option>
                 <option value="pending">Pending Review</option>
@@ -570,7 +570,7 @@ export default function BookingsPage() {
             <button
               onClick={fetchPayments}
               disabled={loadingPayments}
-              className="p-2 text-muted-foreground hover:text-foreground rounded-lg hover:bg-surface-subtle transition-colors cursor-pointer disabled:opacity-50"
+              className="p-2 text-muted-foreground hover:text-foreground rounded-lg hover:glass-surface transition-colors cursor-pointer disabled:opacity-50"
               aria-label="Refresh payments ledger"
               title="Refresh payments ledger"
             >
@@ -596,11 +596,11 @@ export default function BookingsPage() {
           ) : loadingPayments ? (
             <div className="space-y-3 animate-pulse">
               {[1, 2, 3].map(i => (
-                <div key={i} className="bg-surface rounded-2xl h-20 border border-border"></div>
+                <div key={i} className="glass-card rounded-2xl h-20 border border-border"></div>
               ))}
             </div>
           ) : paymentsList.length === 0 ? (
-            <div className="bg-surface border border-border rounded-2xl p-8 text-center space-y-2">
+            <div className="glass-card border-none rounded-2xl p-8 text-center space-y-2">
               <DollarSign className="w-8 h-8 text-muted-foreground mx-auto" />
               <h3 className="text-sm font-semibold text-foreground">No payment records found</h3>
               <p className="text-xs text-muted-foreground">Record payments manually or when learners report payment claims.</p>
@@ -610,7 +610,7 @@ export default function BookingsPage() {
               {paymentsList.map((p) => (
                 <div
                   key={p.id}
-                  className="bg-surface p-4 rounded-2xl border border-border shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+                  className="glass-card p-4 rounded-2xl border border-border shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">

@@ -170,7 +170,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
         <button
           type="button"
           onClick={fetchStatus}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-surface text-xs font-medium hover:bg-surface-warm cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border glass-card text-xs font-medium hover:bg-surface-warm cursor-pointer"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-accent' : ''}`} />
           <span>{isEn ? 'Refresh Status' : 'تحديث الحالة'}</span>
@@ -199,7 +199,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
       {/* Integration Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* Google Calendar Card */}
-        <div className="p-5 rounded-3xl bg-surface border border-secondary/60 shadow-xs flex flex-col justify-between">
+        <div className="p-5 rounded-3xl glass-card border-none flex flex-col justify-between">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -294,7 +294,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
         </div>
 
         {/* Zoom Classroom Card */}
-        <div className="p-5 rounded-3xl bg-surface border border-secondary/60 shadow-xs flex flex-col justify-between">
+        <div className="p-5 rounded-3xl glass-card border-none flex flex-col justify-between">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -351,7 +351,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
         </div>
 
         {/* Transactional Email (Brevo) Card */}
-        <div className="p-5 rounded-3xl bg-surface border border-secondary/60 shadow-xs flex flex-col justify-between">
+        <div className="p-5 rounded-3xl glass-card border-none flex flex-col justify-between">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -407,7 +407,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
       </div>
 
       {/* Timezone & DST Live Audit Matrix */}
-      <div className="p-5 sm:p-6 rounded-3xl bg-surface border border-secondary/60 shadow-xs space-y-4">
+      <div className="p-5 sm:p-6 rounded-3xl glass-card border-none space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-3 border-b border-border">
           <div className="flex items-center gap-2">
             <Globe className="w-5 h-5 text-accent" />

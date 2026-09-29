@@ -274,7 +274,7 @@ export function LearningAreaItem({ title, description, areaClass, className, onC
     <Component
       className={cn(
         'text-start group p-5 rounded-lg border border-border-subtle hover:border-border transition-all',
-        'hover:bg-surface-subtle/50',
+        'hover:glass-surface/50',
         onClick && 'cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-focus',
         areaClass,
         className

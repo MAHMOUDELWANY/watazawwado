@@ -232,8 +232,8 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
                 whileHover={{ y: -4 }}
                 className={`p-6 rounded-2xl sm:rounded-3xl border transition-all cursor-pointer flex flex-col justify-between ${
                   isSelected
-                    ? 'bg-background dark:bg-surface-subtle border-primary shadow-lg shadow-primary/15 ring-2 ring-primary/20'
-                    : 'bg-surface border-border hover:border-accent/50 shadow-xs'
+                    ? 'bg-background dark:glass-surface border-primary shadow-lg shadow-primary/15 ring-2 ring-primary/20'
+                    : 'glass-card border-border hover:border-accent/50 shadow-xs'
                 }`}
               >
                 <div>
@@ -281,7 +281,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
         {/* ========================================================================= */}
         <motion.div
           layout
-          className="rounded-2xl sm:rounded-3xl bg-surface-warm dark:bg-surface-subtle text-foreground border border-border p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg shadow-sm mb-8"
+          className="rounded-2xl sm:rounded-3xl bg-surface-warm dark:glass-surface text-foreground border border-border p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg shadow-sm mb-8"
         >
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <span className="w-2.5 h-2.5 rounded-full bg-white animate-pulse" />
@@ -308,7 +308,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
         </motion.div>
 
         {/* Level Selector & Real-Time Connection Diagram (Mirrors 00:07 in video) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-background dark:bg-surface p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-border">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-background dark:glass-card p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-border">
           
           {/* Left: Step Levels (5 cols) */}
           <div className="lg:col-span-5 space-y-3">
@@ -326,7 +326,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
                   className={`w-full text-left sm:text-start p-4 rounded-xl border transition-all cursor-pointer flex items-start gap-3 ${
                     isLvlSelected
                       ? 'bg-background border-primary shadow-sm'
-                      : 'bg-transparent border-transparent hover:bg-white/60 dark:hover:bg-surface-subtle'
+                      : 'bg-transparent border-transparent hover:bg-white/60 dark:hover:glass-surface'
                   }`}
                 >
                   <span className="font-mono text-xs font-bold text-primary dark:text-primary mt-0.5">
@@ -363,7 +363,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
               <div className="py-4 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 my-4">
                 
                 {/* Learner Node */}
-                <div className="w-full sm:w-44 p-4 rounded-xl bg-surface-warm dark:bg-surface-subtle border border-border text-center">
+                <div className="w-full sm:w-44 p-4 rounded-xl bg-surface-warm dark:glass-surface border border-border text-center">
                   <div className="w-8 h-8 rounded-full bg-secondary/30 text-accent mx-auto mb-2 flex items-center justify-center font-bold text-xs">
                     You
                   </div>
@@ -390,7 +390,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
                 </div>
 
                 {/* Teacher Node */}
-                <div className="w-full sm:w-44 p-4 rounded-xl bg-surface-warm dark:bg-surface-subtle border border-border text-center">
+                <div className="w-full sm:w-44 p-4 rounded-xl bg-surface-warm dark:glass-surface border border-border text-center">
                   <div className="w-8 h-8 rounded-full bg-secondary/30 text-accent mx-auto mb-2 flex items-center justify-center font-bold text-xs">
                     M
                   </div>
@@ -406,7 +406,7 @@ export const DisciplineSwitcherShowcase: React.FC<DisciplineSwitcherShowcaseProp
               </div>
 
               {/* Module Description */}
-              <div className="p-4 rounded-xl bg-background dark:bg-surface-subtle border border-border/80 dark:border-border mt-4">
+              <div className="p-4 rounded-xl bg-background dark:glass-surface border border-border/80 dark:border-border mt-4">
                 <div className="text-xs font-semibold text-foreground mb-1">
                   {currentLevel.name}
                 </div>

@@ -102,7 +102,7 @@ export default function TrialsPage() {
           <button
             onClick={() => fetchTrials(true)}
             disabled={refreshing || loading}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface border border-border text-xs font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer shadow-2xs"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass-card border-none text-xs font-medium text-foreground hover:glass-surface transition-colors cursor-pointer shadow-2xs"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-accent' : 'opacity-70'}`} />
             <span>Refresh</span>
@@ -112,7 +112,7 @@ export default function TrialsPage() {
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="p-5 rounded-2xl bg-surface border border-border shadow-2xs">
+        <div className="p-5 rounded-2xl glass-card border-none shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
               Upcoming Trials
@@ -127,7 +127,7 @@ export default function TrialsPage() {
           </div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-surface border border-border shadow-2xs">
+        <div className="p-5 rounded-2xl glass-card border-none shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
               Completed & Evaluated
@@ -142,7 +142,7 @@ export default function TrialsPage() {
           </div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-surface border border-border shadow-2xs">
+        <div className="p-5 rounded-2xl glass-card border-none shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
               Total Inquired Trials
@@ -160,13 +160,13 @@ export default function TrialsPage() {
 
       {/* Tabs & Search */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2">
-        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-surface border border-border w-fit shadow-2xs">
+        <div className="flex items-center gap-1.5 p-1 rounded-xl glass-card border-none w-fit shadow-2xs">
           <button
             onClick={() => setActiveTab('upcoming')}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
               activeTab === 'upcoming'
                 ? 'bg-primary text-primary-foreground font-semibold shadow-2xs'
-                : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
+                : 'text-muted-foreground hover:text-foreground hover:glass-surface'
             }`}
           >
             Upcoming Trials ({upcomingTrials.length})
@@ -176,7 +176,7 @@ export default function TrialsPage() {
             className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
               activeTab === 'recent'
                 ? 'bg-primary text-primary-foreground font-semibold shadow-2xs'
-                : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
+                : 'text-muted-foreground hover:text-foreground hover:glass-surface'
             }`}
           >
             Recent & Completed ({recentTrials.length})
@@ -186,7 +186,7 @@ export default function TrialsPage() {
             className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
               activeTab === 'all'
                 ? 'bg-primary text-primary-foreground font-semibold shadow-2xs'
-                : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
+                : 'text-muted-foreground hover:text-foreground hover:glass-surface'
             }`}
           >
             All Trials ({allTrials.length})
@@ -200,7 +200,7 @@ export default function TrialsPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search student, email, ref..."
-            className="w-full pl-9 pr-4 rtl:pl-4 rtl:pr-9 py-1.5 rounded-xl border border-border bg-surface text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary shadow-2xs"
+            className="w-full pl-9 pr-4 rtl:pl-4 rtl:pr-9 py-1.5 rounded-xl border border-border glass-card text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary shadow-2xs"
           />
         </div>
       </div>
@@ -219,7 +219,7 @@ export default function TrialsPage() {
           Loading trial sessions...
         </div>
       ) : displayedTrials.length === 0 ? (
-        <div className="p-12 text-center rounded-2xl bg-surface border border-border shadow-2xs">
+        <div className="p-12 text-center rounded-2xl glass-card border-none shadow-2xs">
           <Sparkles className="w-8 h-8 mx-auto text-muted-foreground mb-2 opacity-60" />
           <h3 className="font-display font-medium text-base text-foreground">
             {activeTab === 'upcoming' ? 'No Upcoming Trials' : 'No Trial Records Found'}
@@ -250,7 +250,7 @@ export default function TrialsPage() {
               <div
                 key={trial.id}
                 onClick={() => setSelectedTrial(trial)}
-                className="p-4 sm:p-5 rounded-2xl bg-surface border border-border hover:border-accent/50 shadow-2xs hover:shadow-sm transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                className="p-4 sm:p-5 rounded-2xl glass-card border-none hover:border-accent/50 shadow-2xs hover:shadow-sm transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4"
               >
                 <div className="space-y-1.5 flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
@@ -271,7 +271,7 @@ export default function TrialsPage() {
                         {trial.status}
                       </span>
                     ) : (
-                      <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-surface-subtle text-muted-foreground border border-border-subtle">
+                      <span className="text-[11px] font-medium px-2 py-0.5 rounded glass-surface text-muted-foreground border border-border-subtle">
                         Status unavailable
                       </span>
                     )}
@@ -282,7 +282,7 @@ export default function TrialsPage() {
                         <span>Plan Evaluated</span>
                       </span>
                     ) : (
-                      <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-surface-subtle text-muted-foreground border border-border-subtle">
+                      <span className="text-[11px] font-medium px-2 py-0.5 rounded glass-surface text-muted-foreground border border-border-subtle">
                         Assessment Pending
                       </span>
                     )}

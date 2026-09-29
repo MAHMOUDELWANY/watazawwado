@@ -118,7 +118,7 @@ export function DashboardApp() {
   if (!isTeacherAuthenticated) {
     return (
       <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-6">
-        <div className="max-w-md w-full bg-surface border border-border rounded-2xl p-8 shadow-sm text-center">
+        <div className="max-w-md w-full glass-card border-none rounded-2xl p-8 shadow-sm text-center">
           <div className="w-14 h-14 rounded-2xl bg-secondary/30 text-accent flex items-center justify-center mx-auto mb-4">
             <ShieldCheck className="w-7 h-7" />
           </div>
@@ -189,7 +189,7 @@ export function DashboardApp() {
         aria-modal={isMobileMenuOpen ? 'true' : undefined}
         aria-label={lang === 'ar' ? 'شريط التنقل للمعلم' : 'Teacher Navigation Sidebar'}
         className={`
-          fixed inset-y-0 start-0 z-50 w-64 max-w-[85vw] bg-surface border-e border-border
+          fixed inset-y-0 start-0 z-50 w-64 max-w-[85vw] glass-sheet border-r-0
           transform transition-transform duration-300 ease-premium md:hidden
           ${isMobileMenuOpen ? 'translate-x-0' : 'ltr:-translate-x-full rtl:translate-x-full md:ltr:translate-x-0 md:rtl:translate-x-0'}
           flex flex-col shadow-xs
@@ -211,7 +211,7 @@ export function DashboardApp() {
           <button 
             ref={closeButtonRef}
             onClick={toggleMobileMenu} 
-            className="md:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            className="md:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:glass-surface transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             aria-label={lang === 'ar' ? 'إغلاق القائمة' : 'Close menu'}
           >
             <X className="w-5 h-5" />
@@ -238,7 +238,7 @@ export function DashboardApp() {
                   flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-base touch-manipulation min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
                   ${isActive 
                     ? 'bg-secondary/30 text-accent dark:bg-primary/20 font-semibold shadow-2xs' 
-                    : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
+                    : 'text-muted-foreground hover:text-foreground hover:glass-surface'
                   }
                 `}
               >
@@ -252,7 +252,7 @@ export function DashboardApp() {
         {/* Sidebar Footer Controls */}
         <div className="p-3 border-t border-border space-y-2">
           {/* Teacher Profile Card */}
-          <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-surface-subtle border border-border">
+          <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl glass-surface border border-border">
             <div className="w-8 h-8 rounded-full bg-secondary/40 text-accent flex items-center justify-center font-semibold text-xs shrink-0">
               {user?.email?.charAt(0).toUpperCase() || 'M'}
             </div>
@@ -277,7 +277,7 @@ export function DashboardApp() {
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
         {/* Mobile Header Bar */}
-        <header className="h-16 shrink-0 flex items-center justify-between px-4 sm:px-6 lg:px-8 bg-surface border-b border-border z-10">
+        <header className="h-16 shrink-0 flex items-center justify-between px-4 sm:px-6 lg:px-8 glass-nav border-b-0 z-10">
             {/* Left: Mobile Toggle & BrandLogo */}
             <div className="flex items-center gap-4">
               <button 
@@ -305,7 +305,7 @@ export function DashboardApp() {
                   <Link
                     key={item.name}
                     to={item.path}
-                    className={`px-3 py-2 rounded-xl text-xs font-medium transition-colors ${isActive ? "bg-secondary/20 text-accent font-semibold" : "text-muted-foreground hover:text-foreground hover:bg-surface-subtle"}`}
+                    className={`px-3 py-2 rounded-xl text-xs font-medium transition-colors ${isActive ? "bg-secondary/20 text-accent font-semibold" : "text-muted-foreground hover:text-foreground hover:glass-surface"}`}
                   >
                     {item.name}
                   </Link>
@@ -317,7 +317,7 @@ export function DashboardApp() {
             <div className="flex items-center gap-2">
               <button
                 onClick={toggleLanguage}
-                className="hidden md:flex p-2 text-primary hover:bg-surface-subtle rounded-xl text-xs font-semibold"
+                className="hidden md:flex p-2 text-primary hover:glass-surface rounded-xl text-xs font-semibold"
               >
                 {lang === "en" ? '\u0627\u0644\u0639\u0631\u0628\u064A\u0629' : "EN"}
               </button>

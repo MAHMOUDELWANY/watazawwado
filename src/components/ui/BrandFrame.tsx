@@ -26,7 +26,7 @@ export function BrandFrame({
 
   if (variant === 'edge') {
     return (
-      <div className={`bg-surface overflow-hidden ${variantStyles[variant]} ${interactiveClasses} ${className}`} onClick={onClick}>
+      <div className={`glass-card overflow-hidden ${variantStyles[variant]} ${interactiveClasses} ${className}`} onClick={onClick}>
         <div className={`w-full h-full ${innerClassName}`}>
           {children}
         </div>
@@ -36,7 +36,7 @@ export function BrandFrame({
 
   return (
     <div className={`relative shrink-0 overflow-hidden ${variantStyles[variant]} ${interactiveClasses} ${className}`} onClick={onClick}>
-      <div className={`w-full h-full rounded-[inherit] bg-surface-warm dark:bg-surface flex flex-col ${innerClassName}`}>
+      <div className={`w-full h-full rounded-[inherit] bg-surface-warm dark:glass-card flex flex-col ${innerClassName}`}>
         {children}
       </div>
     </div>

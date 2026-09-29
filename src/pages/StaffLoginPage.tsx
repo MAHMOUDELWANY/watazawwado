@@ -69,7 +69,7 @@ export default function StaffLoginPage() {
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-md w-full mx-auto bg-surface border border-border rounded-3xl p-8 sm:p-10 shadow-sm"
+        className="max-w-md w-full mx-auto glass-dialog rounded-3xl p-8 sm:p-10"
       >
         <div className="text-center mb-8">
 <BrandLogo variant="large" className="mx-auto mb-5" />

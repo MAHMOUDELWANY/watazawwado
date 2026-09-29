@@ -29,7 +29,7 @@ export function AboutPage() {
           <div className="grid md:grid-cols-12 gap-12 items-center pt-12">
             <div className="md:col-span-5 relative">
               <PortraitFrame src="/ustadh-mahmoud.jpg" alt="Ustadh Mahmoud" className="w-full max-w-sm mx-auto md:mx-0" />
-              <div className="absolute -bottom-6 -right-6 rtl:-right-auto rtl:-left-6 bg-surface p-4 rounded-lg shadow-sm border border-border-subtle max-w-[200px] hidden sm:block">
+              <div className="absolute -bottom-6 -right-6 rtl:-right-auto rtl:-left-6 glass-card p-4 rounded-lg shadow-sm border border-border-subtle max-w-[200px] hidden sm:block">
                 <StudyLine variant="accent" className="my-2" />
                 <p className="text-xs text-muted-foreground">
                   {isEn ? 'Al-Azhar educated. IELTS C1 Certified.' : 'خريج الأزهر الشريف. معتمد بشهادة IELTS C1.'}

@@ -100,7 +100,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
 
             {/* Interactive Toggle for Direct Visual Comparison */}
             <div className="pt-2">
-              <div className="inline-flex p-1 rounded-xl bg-surface-subtle border border-border shadow-xs gap-1">
+              <div className="inline-flex p-1 rounded-xl glass-surface border border-border shadow-xs gap-1">
                 <button
                   onClick={() => setManualUnified(false)}
                   className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
@@ -178,7 +178,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                 {/* Card 1: Quran Tutor on Marketplace */}
                 <motion.div
                   style={{ x: leftCardX }}
-                  className="p-4 sm:p-5 rounded-2xl bg-surface border border-border shadow-sm flex flex-col justify-between"
+                  className="p-4 sm:p-5 rounded-2xl glass-card border-none flex flex-col justify-between"
                 >
                   <div>
                     <div className="flex items-center justify-between text-[11px] font-mono text-muted-foreground mb-2">
@@ -200,7 +200,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                 </motion.div>
 
                 {/* Card 2: Arabic Group Academy */}
-                <div className="p-4 sm:p-5 rounded-2xl bg-surface border border-border shadow-sm flex flex-col justify-between">
+                <div className="p-4 sm:p-5 rounded-2xl glass-card border-none flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between text-[11px] font-mono text-muted-foreground mb-2">
                       <span>02</span>
@@ -223,7 +223,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                 {/* Card 3: Weekend Islamic School */}
                 <motion.div
                   style={{ x: rightCardX }}
-                  className="p-4 sm:p-5 rounded-2xl bg-surface border border-border shadow-sm flex flex-col justify-between"
+                  className="p-4 sm:p-5 rounded-2xl glass-card border-none flex flex-col justify-between"
                 >
                   <div>
                     <div className="flex items-center justify-between text-[11px] font-mono text-muted-foreground mb-2">
@@ -312,7 +312,7 @@ export const UnifiedMentorshipConvergence: React.FC<UnifiedMentorshipConvergence
                   scale: manualUnified === false ? 0.95 : manualUnified === true ? 1 : unifiedCardScale,
                   y: manualUnified === false ? 20 : manualUnified === true ? 0 : unifiedCardY,
                 }}
-                className="relative rounded-2xl sm:rounded-3xl p-6 sm:p-8 bg-surface-subtle border-2 border-primary shadow-2xl shadow-primary/15 dark:shadow-black/60 transition-all z-20"
+                className="relative rounded-2xl sm:rounded-3xl p-6 sm:p-8 glass-surface border-2 border-primary shadow-2xl shadow-primary/15 dark:shadow-black/60 transition-all z-20"
               >
                 {/* Floating "Direct Teacher Model" Badge */}
                 <div className="absolute -top-3.5 right-6 sm:right-8 px-3.5 py-1 rounded-full bg-primary text-white text-[11px] font-semibold tracking-wide shadow-md flex items-center gap-1.5">

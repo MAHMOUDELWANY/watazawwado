@@ -60,7 +60,7 @@ export function PublicHomepage() {
           <div className="lg:col-span-5 relative animate-fade-in-up mt-8 lg:mt-0" style={{ animationDelay: '150ms' }}>
             <div className="absolute -inset-4 bg-surface-warm/50 rounded-2xl -z-10 transform rotate-3" />
             <PortraitFrame src="/ustadh-mahmoud.jpg" alt="Ustadh Mahmoud" maxWidth={500} className="mx-auto" />
-            <div className="absolute -bottom-6 -left-6 rtl:-left-auto rtl:-right-6 bg-surface p-4 rounded-lg shadow-sm border border-border-subtle max-w-[200px]">
+            <div className="absolute -bottom-6 -left-6 rtl:-left-auto rtl:-right-6 glass-card p-4 rounded-lg shadow-sm border border-border-subtle max-w-[200px]">
               <StudyLine variant="accent" className="my-2" />
               <p className="text-xs text-muted-foreground">
                 {isEn ? '3+ years experience, teaching students across Canada, US, UK, and Australia.' : 'خبرة +٣ سنوات في تدريس الطلاب في أمريكا، كندا، بريطانيا، وأستراليا.'}
@@ -122,7 +122,7 @@ export function PublicHomepage() {
             <div className="hidden md:block absolute top-0 bottom-0 left-1/2 w-px bg-border-subtle" />
 
             <EditorialBlock className="text-center md:text-start md:pe-8">
-              <div className="w-12 h-12 bg-surface rounded-xl flex items-center justify-center mx-auto md:mx-0 mb-6 shadow-sm border border-border-subtle">
+              <div className="w-12 h-12 glass-card rounded-xl flex items-center justify-center mx-auto md:mx-0 mb-6 shadow-sm border border-border-subtle">
                 <User className="w-6 h-6 text-accent" />
               </div>
               <h3 className="text-2xl font-editorial font-medium mb-4 text-foreground">
@@ -136,7 +136,7 @@ export function PublicHomepage() {
             </EditorialBlock>
 
             <EditorialBlock className="text-center md:text-start md:ps-8">
-              <div className="w-12 h-12 bg-surface rounded-xl flex items-center justify-center mx-auto md:mx-0 mb-6 shadow-sm border border-border-subtle">
+              <div className="w-12 h-12 glass-card rounded-xl flex items-center justify-center mx-auto md:mx-0 mb-6 shadow-sm border border-border-subtle">
                 <Users className="w-6 h-6 text-accent" />
               </div>
               <h3 className="text-2xl font-editorial font-medium mb-4 text-foreground">

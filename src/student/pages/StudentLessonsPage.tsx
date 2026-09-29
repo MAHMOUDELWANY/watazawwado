@@ -147,7 +147,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
       </div>
 
       {/* 2. Compact Cancellation / Rescheduling Policy Notice */}
-      <div className="p-3.5 sm:p-4 rounded-xl bg-surface-subtle border border-border-subtle flex items-start gap-3 text-xs leading-relaxed text-muted-foreground">
+      <div className="p-3.5 sm:p-4 rounded-xl glass-surface border border-border-subtle flex items-start gap-3 text-xs leading-relaxed text-muted-foreground">
         <HelpCircle className="w-4 h-4 text-accent shrink-0 mt-0.5" />
         <div>
           <span className="font-semibold text-foreground block mb-0.5">
@@ -182,7 +182,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm transition-all whitespace-nowrap cursor-pointer min-h-[40px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
                 ${isActive
                   ? 'bg-primary text-primary-foreground shadow-xs font-semibold'
-                  : 'bg-surface hover:bg-surface-subtle text-muted-foreground hover:text-foreground border border-border font-medium'
+                  : 'glass-card hover:glass-surface text-muted-foreground hover:text-foreground border border-border font-medium'
                 }
               `}
             >
@@ -205,14 +205,14 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
 
       {/* 4. Main Content Area */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-16 gap-3 bg-surface border border-border rounded-2xl">
+        <div className="flex flex-col items-center justify-center py-16 gap-3 glass-card border-none rounded-2xl">
           <Loader2 className="w-8 h-8 text-accent animate-spin" />
           <p className="text-xs sm:text-sm text-muted-foreground">
             {isAr ? 'جارٍ تحميل الدروس...' : 'Loading your scheduled sessions...'}
           </p>
         </div>
       ) : error ? (
-        <div className="p-6 sm:p-8 bg-surface border border-destructive/20 rounded-2xl text-center space-y-3">
+        <div className="p-6 sm:p-8 glass-card border border-destructive/20 rounded-2xl text-center space-y-3">
           <AlertCircle className="w-8 h-8 text-destructive mx-auto" />
           <h3 className="text-sm font-semibold text-foreground">
             {isAr ? 'تعذر تحميل قائمة الدروس' : 'Could not load your lessons'}
@@ -227,7 +227,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
           </button>
         </div>
       ) : displayedBookings.length === 0 ? (
-        <div className="text-center py-16 px-4 bg-surface border border-border rounded-2xl space-y-4">
+        <div className="text-center py-16 px-4 glass-card border-none rounded-2xl space-y-4">
           <div className="w-12 h-12 rounded-2xl bg-secondary/30 text-accent flex items-center justify-center mx-auto">
             <Calendar className="w-6 h-6" />
           </div>
@@ -295,7 +295,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
             const displayStatus = getLessonDisplayStatus(b, paymentSummary, isAr);
 
             return (
-              <Card key={b.id} className="border-border hover:border-secondary/60 transition-colors bg-surface">
+              <Card key={b.id} className="border-border hover:border-secondary/60 transition-colors glass-card">
                 <CardContent className="p-5 sm:p-6 space-y-4">
                   {/* Top Bar: Service Title + Badges */}
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
@@ -354,7 +354,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                   </div>
 
                   {/* Middle: Details & Reference Bar */}
-                  <div className="p-3 sm:p-3.5 rounded-xl bg-surface-subtle border border-border-subtle flex flex-wrap items-center justify-between gap-3 text-xs">
+                  <div className="p-3 sm:p-3.5 rounded-xl glass-surface border border-border-subtle flex flex-wrap items-center justify-between gap-3 text-xs">
                     <div className="flex items-center gap-2">
                       <span className="text-muted-foreground flex items-center gap-1">
                         <Tag className="w-3 h-3 opacity-70 shrink-0" />
@@ -364,7 +364,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                       <button
                         type="button"
                         onClick={() => handleCopyRef(b.referenceCode)}
-                        className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-surface transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                        className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:glass-card transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                         title={isAr ? 'نسخ الرقم المرجعي' : 'Copy reference code'}
                         aria-label={isAr ? `نسخ الرقم المرجعي ${b.referenceCode}` : `Copy reference code ${b.referenceCode}`}
                       >
@@ -398,7 +398,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                     {/* Zoom State */}
                     <div className="flex-1">
                       {isCancelled ? (
-                        <div className="inline-flex items-center gap-2 text-xs text-muted-foreground p-2 rounded-lg bg-surface-subtle border border-border-subtle">
+                        <div className="inline-flex items-center gap-2 text-xs text-muted-foreground p-2 rounded-lg glass-surface border border-border-subtle">
                           <span>{isAr ? 'تم إلغاء هذا الدرس' : 'This lesson has been cancelled.'}</span>
                         </div>
                       ) : hasValidZoomUrl ? (
@@ -413,7 +413,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                           <ExternalLink className="w-3.5 h-3.5 shrink-0 ms-0.5" />
                         </a>
                       ) : (
-                        <div className="inline-flex items-center gap-2 text-xs text-muted-foreground p-2 rounded-lg bg-surface-subtle border border-border-subtle">
+                        <div className="inline-flex items-center gap-2 text-xs text-muted-foreground p-2 rounded-lg glass-surface border border-border-subtle">
                           <Clock className="w-3.5 h-3.5 text-accent shrink-0" />
                           <span>
                             {isAr
@@ -443,7 +443,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                         <button
                           type="button"
                           onClick={() => setRescheduleModalBooking(b)}
-                          className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-surface hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs font-medium transition-colors cursor-pointer min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                          className="inline-flex items-center justify-center gap-1.5 px-3 py-2 glass-card hover:glass-surface text-foreground border border-border rounded-xl text-xs font-medium transition-colors cursor-pointer min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                         >
                           <MessageCircle className="w-3.5 h-3.5 shrink-0" />
                           <span>{isAr ? 'تنسيق التعديل عبر واتساب' : 'Request Change via WhatsApp'}</span>
@@ -454,7 +454,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                       {(isCompleted || isCancelled || isNoShow) && (
                         <Link
                           to={`/student/book?repeat=true${b.serviceId ? `&service=${b.serviceId}` : ''}`}
-                          className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-surface hover:bg-surface-subtle text-primary border border-border rounded-xl text-xs font-medium transition-colors min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                          className="inline-flex items-center justify-center gap-1.5 px-3 py-2 glass-card hover:glass-surface text-primary border border-border rounded-xl text-xs font-medium transition-colors min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                           title={isAr ? 'حجز درس جديد في نفس الموضوع' : 'Book another session on this topic'}
                         >
                           <RotateCcw className="w-3.5 h-3.5 shrink-0" />
@@ -538,7 +538,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                   <div
                     className={`p-4 rounded-xl border ${
                       isEligible
-                        ? 'bg-surface-subtle border-border-subtle'
+                        ? 'glass-surface border-border-subtle'
                         : 'bg-warning/10 border-warning/25 text-foreground'
                     }`}
                   >
@@ -577,7 +577,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                     <button
                       type="button"
                       onClick={() => setRescheduleModalBooking(null)}
-                      className="w-full px-4 py-2.5 bg-surface hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                      className="w-full px-4 py-2.5 glass-card hover:glass-surface text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                     >
                       {isAr ? 'إغلاق' : 'Close'}
                     </button>

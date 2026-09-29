@@ -81,7 +81,7 @@ export default function UpcomingPage() {
 
         <div className="flex items-center gap-3">
           {/* Timeframe Selector */}
-          <div className="flex items-center rounded-xl bg-surface border border-border p-1 text-xs font-medium shadow-2xs">
+          <div className="flex items-center rounded-xl glass-card border-none p-1 text-xs font-medium shadow-2xs">
             {[
               { label: '7 Days', value: 7 },
               { label: '14 Days', value: 14 },
@@ -93,7 +93,7 @@ export default function UpcomingPage() {
                 className={`px-3 py-1.5 rounded-lg transition-colors ${
                   rangeDays === tab.value 
                     ? 'bg-primary text-primary-foreground font-semibold shadow-2xs' 
-                    : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
+                    : 'text-muted-foreground hover:text-foreground hover:glass-surface'
                 }`}
               >
                 {tab.label}
@@ -104,7 +104,7 @@ export default function UpcomingPage() {
           <button
             onClick={() => fetchUpcomingLessons(true)}
             disabled={refreshing || loading}
-            className="inline-flex items-center gap-2 px-3.5 py-2 bg-surface hover:bg-surface-subtle border border-border text-foreground rounded-xl text-xs font-medium transition-colors shadow-2xs"
+            className="inline-flex items-center gap-2 px-3.5 py-2 glass-card hover:glass-surface border border-border text-foreground rounded-xl text-xs font-medium transition-colors shadow-2xs"
             title="Refresh upcoming schedule"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-accent' : 'opacity-70'}`} />
@@ -118,8 +118,8 @@ export default function UpcomingPage() {
         <div className="space-y-6 animate-pulse">
           {[1, 2, 3].map(group => (
             <div key={group} className="space-y-3">
-              <div className="h-6 w-48 bg-surface rounded-lg" />
-              <div className="h-20 bg-surface rounded-2xl border border-border" />
+              <div className="h-6 w-48 glass-card rounded-lg" />
+              <div className="h-20 glass-card rounded-2xl border border-border" />
             </div>
           ))}
         </div>
@@ -134,13 +134,13 @@ export default function UpcomingPage() {
           </p>
           <button 
             onClick={() => fetchUpcomingLessons(true)}
-            className="px-5 py-2.5 bg-surface hover:bg-surface-subtle border border-border text-foreground rounded-xl text-sm font-medium transition-colors"
+            className="px-5 py-2.5 glass-card hover:glass-surface border border-border text-foreground rounded-xl text-sm font-medium transition-colors"
           >
             Retry Loading
           </button>
         </div>
       ) : sortedDateKeys.length === 0 ? (
-        <div className="bg-surface border border-border rounded-2xl p-12 flex flex-col items-center justify-center text-center shadow-2xs">
+        <div className="glass-card border-none rounded-2xl p-12 flex flex-col items-center justify-center text-center shadow-2xs">
           <div className="w-12 h-12 rounded-2xl bg-secondary/30 text-accent flex items-center justify-center mb-3">
             <CalendarIcon className="w-6 h-6" />
           </div>
@@ -216,7 +216,7 @@ function UpcomingLessonRow({
   const hasStartLink = Boolean(lesson.zoom_host_url || lesson.zoom_meeting_link);
 
   return (
-    <div className="bg-surface border border-border rounded-2xl p-4 sm:p-5 shadow-2xs hover:border-accent/40 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="glass-card border-none rounded-2xl p-4 sm:p-5 shadow-2xs hover:border-accent/40 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       {/* Time & Duration */}
       <div className="flex items-center sm:block gap-3 shrink-0 sm:w-36">
         <div className="font-semibold text-lg tracking-tight text-foreground">
@@ -250,7 +250,7 @@ function UpcomingLessonRow({
           <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
             lesson.status === 'confirmed' ? 'bg-success/15 text-success border border-success/30' :
             lesson.status === 'rescheduled' ? 'bg-secondary/30 text-primary border border-secondary/50' :
-            'bg-surface-subtle text-muted-foreground border border-border-subtle'
+            'glass-surface text-muted-foreground border border-border-subtle'
           }`}>
             {lesson.status || 'Status unavailable'}
           </span>
@@ -278,7 +278,7 @@ function UpcomingLessonRow({
 
         <button
           onClick={onSelect}
-          className="inline-flex items-center gap-1 px-3.5 py-2 bg-surface hover:bg-surface-subtle border border-border text-foreground rounded-xl text-xs font-medium transition-colors"
+          className="inline-flex items-center gap-1 px-3.5 py-2 glass-card hover:glass-surface border border-border text-foreground rounded-xl text-xs font-medium transition-colors"
         >
           <span>Details</span>
           <ChevronRight className="w-3.5 h-3.5 opacity-60 rtl:rotate-180" />

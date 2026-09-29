@@ -72,13 +72,13 @@ const handleOpenSignup = () => {
           role="dialog"
           aria-modal="true"
           aria-labelledby="get-started-title"
-          className="relative w-full max-w-xl bg-surface border border-border rounded-3xl shadow-2xl p-6 sm:p-8 text-foreground z-10"
+          className="relative w-full max-w-xl glass-dialog rounded-3xl p-6 sm:p-8 text-foreground z-10"
         >
           {/* Close button */}
           <button
             onClick={onClose}
             aria-label={isAr ? 'إغلاق' : 'Close modal'}
-            className="absolute top-5 end-5 p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
+            className="absolute top-5 end-5 p-2 rounded-full text-muted-foreground hover:text-foreground hover:glass-surface transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -101,7 +101,7 @@ const handleOpenSignup = () => {
           {/* Primary Pathways Selection: Guest vs Student */}
           <div className="space-y-4">            {/* OPTION 1: Continue as Student (Student Account) */}
             <div 
-              className="p-5 rounded-2xl bg-surface-subtle border border-secondary/60 hover:border-primary hover:shadow-md transition-all group"
+              className="p-5 rounded-2xl glass-surface border border-secondary/60 hover:border-primary hover:shadow-md transition-all group"
             >
               <div className="flex items-start gap-4">
                 <div className="w-11 h-11 rounded-xl bg-secondary/30 text-accent flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -136,7 +136,7 @@ const handleOpenSignup = () => {
                       type="button"
                       onClick={handleOpenLogin}
                       id="get-started-student-login-btn"
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-surface hover:bg-surface-subtle text-foreground text-xs sm:text-sm font-medium transition-colors cursor-pointer border border-border"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl glass-card hover:glass-surface text-foreground text-xs sm:text-sm font-medium transition-colors cursor-pointer border border-border"
                     >
                       <LogIn className="w-3.5 h-3.5 text-accent" />
                       <span>{isAr ? 'تسجيل الدخول' : 'Sign In'}</span>

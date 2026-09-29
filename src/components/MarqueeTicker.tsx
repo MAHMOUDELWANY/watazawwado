@@ -41,7 +41,7 @@ export const MarqueeTicker: React.FC<MarqueeTickerProps> = ({ lang }) => {
   return (
     <div
       id="marquee-ticker"
-      className="relative overflow-hidden bg-surface border-y border-border py-3 select-none transition-colors"
+      className="relative overflow-hidden glass-card border-y border-border py-3 select-none transition-colors"
     >
       {/* Gradient Fades on edges for smooth appearance */}
       <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-r from-surface to-transparent z-10 pointer-events-none" />
@@ -53,7 +53,7 @@ export const MarqueeTicker: React.FC<MarqueeTickerProps> = ({ lang }) => {
           return (
             <div
               key={idx}
-              className="flex items-center gap-2.5 mx-4 sm:mx-6 px-3.5 py-1.5 rounded-full bg-surface-subtle border border-border text-xs sm:text-sm font-medium text-foreground whitespace-nowrap"
+              className="flex items-center gap-2.5 mx-4 sm:mx-6 px-3.5 py-1.5 rounded-full glass-surface border border-border text-xs sm:text-sm font-medium text-foreground whitespace-nowrap"
             >
               <Icon className="w-3.5 h-3.5 text-accent shrink-0" />
               <span>{item.text}</span>

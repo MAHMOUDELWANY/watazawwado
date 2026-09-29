@@ -183,7 +183,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
               /* Multiple authorized children: Explicit selection required */
               <div
                 id="multi-child-selection-context"
-                className="space-y-3 p-4 rounded-2xl bg-surface border border-border"
+                className="space-y-3 p-4 rounded-2xl glass-card border-none"
               >
                 <div className="flex items-center justify-between">
                   <label className="block text-xs font-semibold uppercase tracking-wider text-foreground/80 dark:text-border/80">
@@ -210,7 +210,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                         onClick={() => handleChildSelect(child.id)}
                         className={`p-3 rounded-xl border text-start transition-all cursor-pointer flex items-center justify-between ${
                           isSelected
-                            ? 'bg-foreground dark:bg-surface-subtle border-primary ring-1 ring-primary'
+                            ? 'bg-foreground dark:glass-surface border-primary ring-1 ring-primary'
                             : 'bg-background border-border hover:bg-foreground/30'
                         }`}
                       >
@@ -299,8 +299,8 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
               onClick={() => handleAudienceChange('adult')}
               className={`p-3.5 rounded-2xl border text-start transition-all cursor-pointer flex items-center gap-3.5 ${
                 !isChild
-                  ? 'bg-foreground dark:bg-surface-subtle border-muted-foreground dark:border-muted-foreground ring-1 ring-muted-foreground shadow-xs'
-                  : 'bg-surface border-border hover:bg-foreground/40'
+                  ? 'bg-foreground dark:glass-surface border-muted-foreground dark:border-muted-foreground ring-1 ring-muted-foreground shadow-xs'
+                  : 'glass-card border-border hover:bg-foreground/40'
               }`}
             >
               <div className={`p-2 rounded-xl ${!isChild ? 'bg-muted-foreground text-white' : 'bg-surface-warm dark:bg-background text-foreground dark:text-border'}`}>
@@ -321,8 +321,8 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
               onClick={() => handleAudienceChange('child')}
               className={`p-3.5 rounded-2xl border text-start transition-all cursor-pointer flex items-center gap-3.5 ${
                 isChild
-                  ? 'bg-foreground dark:bg-surface-subtle border-muted-foreground dark:border-muted-foreground ring-1 ring-muted-foreground shadow-xs'
-                  : 'bg-surface border-border hover:bg-foreground/40'
+                  ? 'bg-foreground dark:glass-surface border-muted-foreground dark:border-muted-foreground ring-1 ring-muted-foreground shadow-xs'
+                  : 'glass-card border-border hover:bg-foreground/40'
               }`}
             >
               <div className={`p-2 rounded-xl ${isChild ? 'bg-muted-foreground text-white' : 'bg-surface-warm dark:bg-background text-foreground dark:text-border'}`}>
@@ -416,7 +416,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
       ) : (
         /* CHILD & PARENT FIELDS */
         <div className="space-y-4">
-          <div className="p-4 rounded-2xl bg-surface border border-border space-y-4">
+          <div className="p-4 rounded-2xl glass-card border-none space-y-4">
             <div className="font-display text-sm font-medium text-muted-foreground flex items-center gap-2">
               <User className="w-4 h-4" />
               <span>{isEn ? '1. Learner (Child) Details' : '١. بيانات الطفل (الطالب)'}</span>
@@ -469,7 +469,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-surface border border-border space-y-4">
+          <div className="p-4 rounded-2xl glass-card border-none space-y-4">
             <div className="font-display text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Users className="w-4 h-4" />
               <span>{isEn ? '2. Parent / Guardian Contact' : '٢. بيانات ولي الأمر للتواصل والتنسيق'}</span>
@@ -547,8 +547,8 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                 }
                 className={`p-3 rounded-xl border text-start transition-all cursor-pointer ${
                   isSelected
-                    ? 'bg-foreground dark:bg-surface-subtle border-primary ring-1 ring-primary text-foreground'
-                    : 'bg-surface border-border text-foreground/70 dark:text-border/70 hover:bg-foreground/30'
+                    ? 'bg-foreground dark:glass-surface border-primary ring-1 ring-primary text-foreground'
+                    : 'glass-card border-border text-foreground/70 dark:text-border/70 hover:bg-foreground/30'
                 }`}
               >
                 <div className="font-display text-xs font-medium mb-0.5">
@@ -564,7 +564,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
       </div>
 
       {/* Trust & Privacy Reassurance */}
-      <div className="p-3.5 rounded-xl bg-surface-warm dark:bg-surface-subtle border border-secondary/60 flex items-center gap-3 text-xs text-foreground/80 dark:text-border/80">
+      <div className="p-3.5 rounded-xl bg-surface-warm dark:glass-surface border border-secondary/60 flex items-center gap-3 text-xs text-foreground/80 dark:text-border/80">
         <ShieldCheck className="w-5 h-5 text-accent shrink-0" />
         <span>
           {isEn
@@ -580,7 +580,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
           whileTap={{ scale: 0.97 }}
           onClick={onBack}
           type="button"
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium text-foreground/80 dark:text-border/80 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium text-foreground/80 dark:text-border/80 hover:bg-surface-warm dark:hover:glass-surface transition-colors cursor-pointer"
         >
           <ArrowLeft className={`w-3.5 h-3.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
           <span>{isEn ? 'Back to Goals' : 'الرجوع للأهداف'}</span>

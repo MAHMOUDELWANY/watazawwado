@@ -15,7 +15,7 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ lang, onOpenTrialModal }
   return (
     <section
       id="how-it-works"
-      className="py-20 md:py-28 bg-surface-subtle border-b border-border/80 transition-colors"
+      className="py-20 md:py-28 glass-surface border-b border-border/80 transition-colors"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -51,7 +51,7 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ lang, onOpenTrialModal }
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-40px' }}
               transition={{ duration: 0.45, delay: index * 0.1 }}
-              className="relative p-6 sm:p-7 rounded-2xl bg-surface border border-border flex flex-col justify-between hover:border-primary/40 transition-all shadow-2xs hover:shadow-xs cursor-default"
+              className="relative p-6 sm:p-7 rounded-2xl glass-card border-none flex flex-col justify-between hover:border-primary/40 transition-all shadow-2xs hover:shadow-xs cursor-default"
             >
               <div>
                 {/* Step Number */}
@@ -59,7 +59,7 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ lang, onOpenTrialModal }
                   <span className="font-display text-3xl font-light text-primary">
                     {step.step}
                   </span>
-                  <span className="text-[11px] font-medium tracking-wider uppercase px-2.5 py-0.5 rounded-md bg-surface-subtle text-foreground/80 border border-border/70">
+                  <span className="text-[11px] font-medium tracking-wider uppercase px-2.5 py-0.5 rounded-md glass-surface text-foreground/80 border border-border/70">
                     {step.highlight}
                   </span>
                 </div>
@@ -82,7 +82,7 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ lang, onOpenTrialModal }
         </div>
 
         {/* Bottom Callout Banner */}
-        <div className="mt-12 p-6 sm:p-8 rounded-2xl bg-surface border border-border flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xs">
+        <div className="mt-12 p-6 sm:p-8 rounded-2xl glass-card border-none flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xs">
           <div>
             <h4 className="font-display text-xl font-medium text-foreground">
               {isEn ? 'Ready to experience Mahmoud’s teaching style?' : 'هل ترغب في تجربة أسلوب الشرح والتدريس؟'}

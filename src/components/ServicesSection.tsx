@@ -69,14 +69,14 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ lang, onSelect
                 className={`flex items-center gap-2.5 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all cursor-pointer ${
                   isActive
                     ? 'bg-primary text-primary-foreground shadow-xs'
-                    : 'bg-surface text-foreground/80 hover:bg-surface-subtle border border-border'
+                    : 'glass-card text-foreground/80 hover:glass-surface border border-border'
                 }`}
               >
                 <Icon className={`w-4 h-4 ${isActive ? 'text-accent-foreground' : 'text-primary'}`} />
                 <span>{isEn ? pillar.title : pillar.arabicTitle}</span>
                 <span
                   className={`text-[11px] px-1.5 py-0.5 rounded-md ${
-                    isActive ? 'bg-black/15 text-primary-foreground' : 'bg-surface-subtle text-muted-foreground'
+                    isActive ? 'bg-black/15 text-primary-foreground' : 'glass-surface text-muted-foreground'
                   }`}
                 >
                   {pillar.services.length}
@@ -104,8 +104,8 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ lang, onSelect
                   onClick={() => setSelectedServiceDetail(service)}
                   className={`group p-4.5 rounded-xl border text-start transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-surface-subtle border-primary/70 shadow-xs'
-                      : 'bg-surface border-border hover:border-primary/40 hover:bg-surface-subtle/50'
+                      ? 'glass-surface border-primary/70 shadow-xs'
+                      : 'glass-card border-border hover:border-primary/40 hover:glass-surface/50'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3">
@@ -121,7 +121,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ lang, onSelect
                       className={`p-1.5 rounded-lg transition-colors shrink-0 ${
                         isSelected
                           ? 'bg-primary text-primary-foreground'
-                          : 'bg-surface-subtle text-muted-foreground group-hover:bg-primary/15 group-hover:text-primary'
+                          : 'glass-surface text-muted-foreground group-hover:bg-primary/15 group-hover:text-primary'
                       }`}
                     >
                       <ChevronRight className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5`} />
@@ -151,7 +151,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ lang, onSelect
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.25 }}
-                  className="bg-surface border border-border rounded-2xl p-6 sm:p-8 shadow-xs"
+                  className="glass-card border-none rounded-2xl p-6 sm:p-8 shadow-xs"
                 >
                   {/* Service Header */}
                   <div className="border-b border-border pb-6 mb-6">
@@ -179,7 +179,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ lang, onSelect
                     <h4 className="text-xs font-semibold uppercase tracking-wider text-foreground mb-2">
                       {isEn ? 'Who this is designed for:' : ARABIC_TRANSLATIONS.services.whoLabel}
                     </h4>
-                    <p className="text-sm text-muted-foreground bg-surface-subtle p-3.5 rounded-xl border border-border">
+                    <p className="text-sm text-muted-foreground glass-surface p-3.5 rounded-xl border border-border">
                       {selectedServiceDetail.whoIsItFor}
                     </p>
                   </div>
@@ -212,7 +212,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ lang, onSelect
                         {selectedServiceDetail.durations.map((d) => (
                           <span
                             key={d}
-                            className="px-2.5 py-1 rounded-md text-xs font-medium bg-surface-subtle border border-border text-foreground shadow-2xs"
+                            className="px-2.5 py-1 rounded-md text-xs font-medium glass-surface border border-border text-foreground shadow-2xs"
                           >
                             {d} mins
                           </span>

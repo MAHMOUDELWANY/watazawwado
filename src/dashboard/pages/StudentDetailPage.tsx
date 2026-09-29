@@ -256,10 +256,10 @@ export default function StudentDetailPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-10 w-48 bg-surface rounded-xl animate-pulse" />
+        <div className="h-10 w-48 glass-card rounded-xl animate-pulse" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="md:col-span-2 h-72 bg-surface rounded-2xl border border-border animate-pulse" />
-          <div className="h-72 bg-surface rounded-2xl border border-border animate-pulse" />
+          <div className="md:col-span-2 h-72 glass-card rounded-2xl border border-border animate-pulse" />
+          <div className="h-72 glass-card rounded-2xl border border-border animate-pulse" />
         </div>
       </div>
     );
@@ -267,7 +267,7 @@ export default function StudentDetailPage() {
 
   if (error || !studentDetail) {
     return (
-      <div className="bg-surface rounded-2xl p-8 border border-destructive/30 text-center space-y-4">
+      <div className="glass-card rounded-2xl p-8 border border-destructive/30 text-center space-y-4">
         <AlertCircle className="w-10 h-10 text-destructive mx-auto" />
         <h2 className="text-lg font-display font-bold text-foreground">
           Student Record Not Found
@@ -306,7 +306,7 @@ export default function StudentDetailPage() {
         <div className="flex items-center gap-3">
           <Link
             to="/dashboard/students"
-            className="p-2 rounded-xl bg-surface border border-border text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
+            className="p-2 rounded-xl glass-card border-none text-muted-foreground hover:text-foreground hover:glass-surface transition-colors cursor-pointer"
             title="Back to Students Directory"
           >
             <ChevronLeft className="w-5 h-5" />
@@ -322,7 +322,7 @@ export default function StudentDetailPage() {
                   ? 'bg-success/15 text-success border border-success/30'
                   : student.status === 'paused'
                   ? 'bg-warning/15 text-warning-foreground border border-warning/30'
-                  : 'bg-surface-subtle text-muted-foreground border border-border-subtle'
+                  : 'glass-surface text-muted-foreground border border-border-subtle'
               }`}>
                 {student.status ? (student.status.charAt(0).toUpperCase() + student.status.slice(1)) : 'Active'}
               </span>
@@ -363,7 +363,7 @@ export default function StudentDetailPage() {
           {student.email && (
             <a
               href={`mailto:${student.email}`}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium rounded-xl bg-surface border border-border text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium rounded-xl glass-card border-none text-foreground hover:glass-surface transition-colors cursor-pointer"
             >
               <Mail className="w-3.5 h-3.5 text-accent" />
               <span>Email</span>
@@ -396,7 +396,7 @@ export default function StudentDetailPage() {
           
           {/* AI Brief Section */}
           {(aiBrief || briefError) && (
-            <div className="bg-surface rounded-2xl p-6 border border-accent/30 shadow-2xs space-y-4">
+            <div className="glass-card rounded-2xl p-6 border border-accent/30 shadow-2xs space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-accent">
                   <Sparkles className="w-5 h-5" />
@@ -419,7 +419,7 @@ export default function StudentDetailPage() {
                 </div>
               ) : (
                 <div 
-                  className="p-5 rounded-xl bg-surface-subtle border border-border-subtle text-sm text-foreground whitespace-pre-wrap leading-relaxed" 
+                  className="p-5 rounded-xl glass-surface border border-border-subtle text-sm text-foreground whitespace-pre-wrap leading-relaxed" 
                   dir="rtl"
                 >
                   {aiBrief}
@@ -429,7 +429,7 @@ export default function StudentDetailPage() {
           )}
 
           {/* Identity & Learning Profile Card */}
-          <div className="bg-surface rounded-2xl p-6 border border-border shadow-2xs space-y-5">
+          <div className="glass-card rounded-2xl p-6 border border-border shadow-2xs space-y-5">
             <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
               <User className="w-4 h-4 text-accent" />
               <span>Learner Profile & Contacts</span>
@@ -437,7 +437,7 @@ export default function StudentDetailPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               {/* Email */}
-              <div className="p-3 rounded-xl bg-surface-subtle border border-border-subtle space-y-1">
+              <div className="p-3 rounded-xl glass-surface border border-border-subtle space-y-1">
                 <span className="text-muted-foreground">Student Email</span>
                 <p className="font-medium text-foreground break-all">
                   {student.email || <span className="opacity-50 italic">Not set</span>}
@@ -445,7 +445,7 @@ export default function StudentDetailPage() {
               </div>
 
               {/* WhatsApp */}
-              <div className="p-3 rounded-xl bg-surface-subtle border border-border-subtle space-y-1">
+              <div className="p-3 rounded-xl glass-surface border border-border-subtle space-y-1">
                 <span className="text-muted-foreground">WhatsApp Phone</span>
                 <p className="font-medium text-foreground">
                   {student.whatsapp || <span className="opacity-50 italic">Not set</span>}
@@ -453,7 +453,7 @@ export default function StudentDetailPage() {
               </div>
 
               {/* Parent / Guardian Name & Contact */}
-              <div className="p-3 rounded-xl bg-surface-subtle border border-border-subtle space-y-1">
+              <div className="p-3 rounded-xl glass-surface border border-border-subtle space-y-1">
                 <span className="text-muted-foreground">Parent / Guardian</span>
                 <p className="font-medium text-foreground">
                   {guardian?.parent_name || <span className="opacity-50 italic">Not specified</span>}
@@ -479,7 +479,7 @@ export default function StudentDetailPage() {
               </div>
 
               {/* Country & Location */}
-              <div className="p-3 rounded-xl bg-surface-subtle border border-border-subtle space-y-1">
+              <div className="p-3 rounded-xl glass-surface border border-border-subtle space-y-1">
                 <span className="text-muted-foreground">Country</span>
                 <p className="font-medium text-foreground">
                   {student.country || <span className="opacity-50 italic">Not set</span>}
@@ -487,7 +487,7 @@ export default function StudentDetailPage() {
               </div>
 
               {/* Timezone & Current Time */}
-              <div className="p-3 rounded-xl bg-surface-subtle border border-border-subtle space-y-1 sm:col-span-2">
+              <div className="p-3 rounded-xl glass-surface border border-border-subtle space-y-1 sm:col-span-2">
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Timezone</span>
                   {localTime && (
@@ -508,7 +508,7 @@ export default function StudentDetailPage() {
 
             {/* Academic Focus & Level */}
             <div className="pt-3 border-t border-border-subtle grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-              <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle space-y-1">
+              <div className="p-3.5 rounded-xl glass-surface border border-border-subtle space-y-1">
                 <span className="text-muted-foreground">Assessed Level</span>
                 <p className="font-medium text-foreground capitalize">
                   {student.current_level ? (
@@ -521,7 +521,7 @@ export default function StudentDetailPage() {
                 </p>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle space-y-1">
+              <div className="p-3.5 rounded-xl glass-surface border border-border-subtle space-y-1">
                 <span className="text-muted-foreground">Primary Subject / Service</span>
                 <p className="font-medium text-foreground">
                   {primary_service_name || <span className="opacity-60 italic">Not set</span>}
@@ -531,7 +531,7 @@ export default function StudentDetailPage() {
 
             {/* Profile General Notes */}
             {student.notes && (
-              <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle text-xs">
+              <div className="p-3.5 rounded-xl glass-surface border border-border-subtle text-xs">
                 <span className="text-muted-foreground block mb-1 font-medium">
                   General Profile Notes
                 </span>
@@ -543,7 +543,7 @@ export default function StudentDetailPage() {
           </div>
 
           {/* Next Lesson Card (if any scheduled) */}
-          <div className="bg-surface rounded-2xl p-6 border border-border shadow-2xs space-y-4">
+          <div className="glass-card rounded-2xl p-6 border border-border shadow-2xs space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-accent" />
@@ -557,7 +557,7 @@ export default function StudentDetailPage() {
             </div>
 
             {next_lesson ? (
-              <div className="p-4 rounded-xl bg-surface-subtle border border-border-subtle space-y-3">
+              <div className="p-4 rounded-xl glass-surface border border-border-subtle space-y-3">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div>
                     <h3 className="text-sm font-semibold text-foreground">
@@ -598,7 +598,7 @@ export default function StudentDetailPage() {
                 )}
               </div>
             ) : (
-              <div className="p-6 rounded-xl bg-surface-subtle border border-dashed border-border text-center">
+              <div className="p-6 rounded-xl glass-surface border border-dashed border-border text-center">
                 <Clock className="w-8 h-8 text-muted-foreground mx-auto mb-2 opacity-50" />
                 <p className="text-xs font-medium text-muted-foreground">
                   No upcoming lesson scheduled
@@ -612,7 +612,7 @@ export default function StudentDetailPage() {
 
           {/* Trial & Assessment Context (if available) */}
           {trial_context && (
-            <div className="bg-surface rounded-2xl p-6 border border-secondary/50 shadow-2xs space-y-4">
+            <div className="glass-card rounded-2xl p-6 border border-secondary/50 shadow-2xs space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-accent" />
@@ -621,28 +621,28 @@ export default function StudentDetailPage() {
                   </h2>
                 </div>
                 {trial_context.reference_code && (
-                  <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-muted-foreground">
+                  <span className="text-[11px] font-mono px-2 py-0.5 rounded-md glass-surface border border-border-subtle text-muted-foreground">
                     Ref: {trial_context.reference_code}
                   </span>
                 )}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                <div className="p-3 rounded-xl bg-surface-subtle border border-border-subtle">
+                <div className="p-3 rounded-xl glass-surface border border-border-subtle">
                   <span className="text-muted-foreground block text-[11px]">Assessed Level</span>
                   <p className="font-semibold text-foreground mt-0.5 capitalize">
                     {trial_context.assessed_level || <span className="opacity-50 font-normal">Not recorded</span>}
                   </p>
                 </div>
 
-                <div className="p-3 rounded-xl bg-surface-subtle border border-border-subtle">
+                <div className="p-3 rounded-xl glass-surface border border-border-subtle">
                   <span className="text-muted-foreground block text-[11px]">Recommended Service</span>
                   <p className="font-semibold text-foreground mt-0.5">
                     {trial_context.recommended_service_name || <span className="opacity-50 font-normal">Not recorded</span>}
                   </p>
                 </div>
 
-                <div className="p-3 rounded-xl bg-surface-subtle border border-border-subtle">
+                <div className="p-3 rounded-xl glass-surface border border-border-subtle">
                   <span className="text-muted-foreground block text-[11px]">Duration & Frequency</span>
                   <p className="font-semibold text-foreground mt-0.5">
                     {trial_context.recommended_duration ? `${trial_context.recommended_duration} min` : ''}{' '}
@@ -655,7 +655,7 @@ export default function StudentDetailPage() {
               </div>
 
               {trial_context.learning_plan_summary && (
-                <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle text-xs">
+                <div className="p-3.5 rounded-xl glass-surface border border-border-subtle text-xs">
                   <span className="text-muted-foreground block mb-1 font-medium">
                     Personalized Learning Plan Summary:
                   </span>
@@ -668,7 +668,7 @@ export default function StudentDetailPage() {
           )}
 
           {/* Bookings & Lessons History Table */}
-          <div className="bg-surface rounded-2xl p-6 border border-border shadow-2xs space-y-4">
+          <div className="glass-card rounded-2xl p-6 border border-border shadow-2xs space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
@@ -736,7 +736,7 @@ export default function StudentDetailPage() {
                 ))}
               </div>
             ) : (
-              <div className="p-6 rounded-xl bg-surface-subtle border border-dashed border-border text-center">
+              <div className="p-6 rounded-xl glass-surface border border-dashed border-border text-center">
                 <Calendar className="w-8 h-8 text-muted-foreground mx-auto mb-2 opacity-50" />
                 <p className="text-xs font-medium text-muted-foreground">
                   No lesson records found for this student
@@ -749,7 +749,7 @@ export default function StudentDetailPage() {
         {/* Right 1 Column: Faculty Assignment & Private Notes */}
         <div className="space-y-6">
           {/* Faculty Assignment & Preferences Card */}
-          <div className="bg-surface rounded-2xl p-6 border border-border shadow-2xs space-y-5">
+          <div className="glass-card rounded-2xl p-6 border border-border shadow-2xs space-y-5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <UserCheck className="w-4 h-4 text-accent" />
@@ -765,7 +765,7 @@ export default function StudentDetailPage() {
             </div>
 
             {/* Current Assignment Status */}
-            <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle space-y-2 text-xs">
+            <div className="p-3.5 rounded-xl glass-surface border border-border-subtle space-y-2 text-xs">
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Assigned Teacher:</span>
                 <span className={`font-semibold ${student.assigned_teacher_name ? 'text-primary' : 'text-amber-600 dark:text-amber-400'}`}>
@@ -803,7 +803,7 @@ export default function StudentDetailPage() {
                 <select
                   value={selectedTeacherId}
                   onChange={(e) => setSelectedTeacherId(e.target.value)}
-                  className="w-full px-3 py-2 text-xs rounded-xl border border-border bg-surface text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-border glass-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="">-- Unassigned --</option>
                   {availableTeachers.map((t) => (
@@ -843,7 +843,7 @@ export default function StudentDetailPage() {
             )}
           </div>
 
-          <div className="bg-surface rounded-2xl p-6 border border-border shadow-2xs space-y-5">
+          <div className="glass-card rounded-2xl p-6 border border-border shadow-2xs space-y-5">
             {/* Notes Section Header */}
             <div>
               <div className="flex items-center justify-between">
@@ -863,7 +863,7 @@ export default function StudentDetailPage() {
             </div>
 
             {/* Note Creation Box */}
-            <form onSubmit={handleCreateNote} className="space-y-3 p-4 rounded-xl bg-surface-subtle border border-border-subtle">
+            <form onSubmit={handleCreateNote} className="space-y-3 p-4 rounded-xl glass-surface border border-border-subtle">
               {noteFormError && (
                 <div className="p-2 rounded-lg bg-destructive/15 text-xs text-destructive border border-destructive/30">
                   {noteFormError}
@@ -879,7 +879,7 @@ export default function StudentDetailPage() {
                   onChange={e => setNewNoteContent(e.target.value)}
                   required
                   placeholder="Record lesson observations, Tajweed mastery, pronunciation notes..."
-                  className="w-full px-3 py-2 text-xs rounded-xl border border-border bg-surface text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
 
@@ -889,7 +889,7 @@ export default function StudentDetailPage() {
                   value={newNoteObservations}
                   onChange={e => setNewNoteObservations(e.target.value)}
                   placeholder="Specific observations (e.g. Needs practice on Noon Sakinah)"
-                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-border bg-surface text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
 
@@ -899,7 +899,7 @@ export default function StudentDetailPage() {
                   value={newNoteNextSteps}
                   onChange={e => setNewNoteNextSteps(e.target.value)}
                   placeholder="Next steps / homework assigned"
-                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-border bg-surface text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-1.5 text-xs rounded-lg border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
 
@@ -921,7 +921,7 @@ export default function StudentDetailPage() {
                 notes.map(note => (
                   <div
                     key={note.id}
-                    className="p-3.5 rounded-xl bg-surface border border-border-subtle shadow-2xs space-y-2 text-xs"
+                    className="p-3.5 rounded-xl glass-card border-none-subtle shadow-2xs space-y-2 text-xs"
                   >
                     {editingNoteId === note.id ? (
                       /* Inline Edit Mode */
@@ -930,27 +930,27 @@ export default function StudentDetailPage() {
                           rows={3}
                           value={editNoteContent}
                           onChange={e => setEditNoteContent(e.target.value)}
-                          className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-border bg-surface text-foreground"
+                          className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-border glass-card text-foreground"
                         />
                         <input
                           type="text"
                           value={editNoteObservations}
                           onChange={e => setEditNoteObservations(e.target.value)}
                           placeholder="Observations"
-                          className="w-full px-2.5 py-1 text-xs rounded-lg border border-border bg-surface text-foreground"
+                          className="w-full px-2.5 py-1 text-xs rounded-lg border border-border glass-card text-foreground"
                         />
                         <input
                           type="text"
                           value={editNoteNextSteps}
                           onChange={e => setEditNoteNextSteps(e.target.value)}
                           placeholder="Next steps"
-                          className="w-full px-2.5 py-1 text-xs rounded-lg border border-border bg-surface text-foreground"
+                          className="w-full px-2.5 py-1 text-xs rounded-lg border border-border glass-card text-foreground"
                         />
                         <div className="flex items-center justify-end gap-2 pt-1">
                           <button
                             type="button"
                             onClick={() => setEditingNoteId(null)}
-                            className="px-2.5 py-1 text-[11px] rounded-lg text-muted-foreground hover:bg-surface-subtle cursor-pointer"
+                            className="px-2.5 py-1 text-[11px] rounded-lg text-muted-foreground hover:glass-surface cursor-pointer"
                           >
                             Cancel
                           </button>
@@ -992,13 +992,13 @@ export default function StudentDetailPage() {
                         </p>
 
                         {note.observations && (
-                          <p className="text-[11px] text-muted-foreground bg-surface-subtle p-2 rounded-lg border border-border-subtle">
+                          <p className="text-[11px] text-muted-foreground glass-surface p-2 rounded-lg border border-border-subtle">
                             <strong className="font-semibold text-primary">Observations:</strong> {note.observations}
                           </p>
                         )}
 
                         {note.next_steps && (
-                          <p className="text-[11px] text-muted-foreground bg-surface-subtle p-2 rounded-lg border border-border-subtle">
+                          <p className="text-[11px] text-muted-foreground glass-surface p-2 rounded-lg border border-border-subtle">
                             <strong className="font-semibold text-warning-foreground">Next Steps:</strong> {note.next_steps}
                           </p>
                         )}
@@ -1007,7 +1007,7 @@ export default function StudentDetailPage() {
                   </div>
                 ))
               ) : (
-                <div className="p-6 rounded-xl bg-surface-subtle border border-dashed border-border text-center">
+                <div className="p-6 rounded-xl glass-surface border border-dashed border-border text-center">
                   <FileText className="w-7 h-7 text-muted-foreground mx-auto mb-1.5 opacity-50" />
                   <p className="text-xs font-medium text-muted-foreground">
                     No private notes recorded yet

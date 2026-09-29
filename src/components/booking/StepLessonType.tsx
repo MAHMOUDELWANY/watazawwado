@@ -115,8 +115,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               trialDisabled
                 ? 'opacity-60 cursor-not-allowed bg-gray-50 dark:bg-background/60 border-border'
                 : mode === 'trial'
-                ? 'bg-foreground dark:bg-surface-subtle border-primary ring-2 ring-primary/30 shadow-xs cursor-pointer'
-                : 'bg-surface border-border hover:bg-foreground/40 cursor-pointer'
+                ? 'bg-foreground dark:glass-surface border-primary ring-2 ring-primary/30 shadow-xs cursor-pointer'
+                : 'glass-card border-border hover:bg-foreground/40 cursor-pointer'
             }`}
           >
             <div className="flex items-start justify-between gap-3 mb-2">
@@ -166,8 +166,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
             onClick={() => onChangeMode('regular')}
             className={`p-4 sm:p-5 rounded-2xl border text-start transition-all cursor-pointer relative ${
               mode === 'regular'
-                ? 'bg-foreground dark:bg-surface-subtle border-muted-foreground ring-2 ring-muted-foreground/30 shadow-xs'
-                : 'bg-surface border-border hover:bg-foreground/40'
+                ? 'bg-foreground dark:glass-surface border-muted-foreground ring-2 ring-muted-foreground/30 shadow-xs'
+                : 'glass-card border-border hover:bg-foreground/40'
             }`}
           >
             <div className="flex items-start justify-between gap-3 mb-2">
@@ -250,8 +250,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                   isDisabled
                     ? 'opacity-40 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent'
                     : isSelected
-                    ? 'bg-foreground dark:bg-surface-subtle border-primary ring-1 ring-primary shadow-xs'
-                    : 'bg-surface border-border hover:bg-foreground/30'
+                    ? 'bg-foreground dark:glass-surface border-primary ring-1 ring-primary shadow-xs'
+                    : 'glass-card border-border hover:bg-foreground/30'
                 }`}
               >
                 <div>
@@ -302,8 +302,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                   }}
                   className={`p-4 sm:p-5 rounded-2xl border text-start transition-all cursor-pointer relative ${
                     isSelected
-                      ? 'bg-foreground dark:bg-surface-subtle border-primary ring-2 ring-primary/30 shadow-xs'
-                      : 'bg-surface border-border hover:bg-foreground/30'
+                      ? 'bg-foreground dark:glass-surface border-primary ring-2 ring-primary/30 shadow-xs'
+                      : 'glass-card border-border hover:bg-foreground/30'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3 mb-1.5">
@@ -356,8 +356,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               }}
               className={`p-4 rounded-xl border text-start transition-all cursor-pointer ${
                 !packageEntitlementId
-                  ? 'bg-foreground dark:bg-surface-subtle border-muted-foreground ring-2 ring-muted-foreground/30 shadow-xs'
-                  : 'bg-surface border-border opacity-75'
+                  ? 'bg-foreground dark:glass-surface border-muted-foreground ring-2 ring-muted-foreground/30 shadow-xs'
+                  : 'glass-card border-border opacity-75'
               }`}
             >
               <div className="flex items-start justify-between gap-3">
@@ -395,8 +395,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               onClick={() => onSelectPackage?.(undefined)}
               className={`p-4 rounded-xl border text-start transition-all cursor-pointer ${
                 !selectedPackageId
-                  ? 'bg-foreground dark:bg-surface-subtle border-primary ring-2 ring-primary/30'
-                  : 'bg-surface border-border opacity-75'
+                  ? 'bg-foreground dark:glass-surface border-primary ring-2 ring-primary/30'
+                  : 'glass-card border-border opacity-75'
               }`}
             >
               <h4 className="font-display font-medium text-foreground">
@@ -417,8 +417,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                   onClick={() => onSelectPackage?.(pkg.id)}
                   className={`p-4 rounded-xl border text-start transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-foreground dark:bg-surface-subtle border-primary ring-2 ring-primary/30'
-                      : 'bg-surface border-border opacity-75'
+                      ? 'bg-foreground dark:glass-surface border-primary ring-2 ring-primary/30'
+                      : 'glass-card border-border opacity-75'
                   }`}
                 >
                   <div className="flex justify-between items-start">
@@ -444,7 +444,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
       )}
 
       {/* Manual Request for Sessions > 60 min note */}
-      <div className="p-3.5 rounded-xl bg-surface border border-border text-xs text-foreground/70 dark:text-border/70 flex items-start gap-2.5">
+      <div className="p-3.5 rounded-xl glass-card border-none text-xs text-foreground/70 dark:text-border/70 flex items-start gap-2.5">
         <HelpCircle className="w-4 h-4 text-accent shrink-0 mt-0.5" />
         <div className="leading-relaxed">
           <span>
@@ -471,7 +471,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
           whileTap={{ scale: 0.97 }}
           onClick={onBack}
           type="button"
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium text-foreground/80 dark:text-border/80 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium text-foreground/80 dark:text-border/80 hover:bg-surface-warm dark:hover:glass-surface transition-colors cursor-pointer"
         >
           <ArrowLeft className={`w-3.5 h-3.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
           <span>{isEn ? 'Back to Student Details' : 'الرجوع للبيانات'}</span>

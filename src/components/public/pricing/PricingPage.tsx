@@ -106,7 +106,7 @@ export function PricingPage() {
                   { count: 4, price: 28 },
                   { count: 5, price: 34 }
                 ].map((pkg) => (
-                  <div key={pkg.count} className="bg-background p-4 rounded-xl border border-border-subtle text-center">
+                  <div key={pkg.count} className="glass-surface p-4 rounded-xl border border-none text-center">
                     <div className="text-sm text-muted-foreground mb-1">
                       {pkg.count} {isEn ? (pkg.count === 1 ? 'lesson' : 'lessons') : 'دروس'}
                     </div>

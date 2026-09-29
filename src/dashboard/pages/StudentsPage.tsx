@@ -138,7 +138,7 @@ export default function StudentsPage() {
         <button
           onClick={() => fetchStudents(true)}
           disabled={refreshing}
-          className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl bg-surface border border-border text-foreground hover:bg-surface-subtle transition-colors disabled:opacity-50 cursor-pointer"
+          className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl glass-card border-none text-foreground hover:glass-surface transition-colors disabled:opacity-50 cursor-pointer"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
           <span>Refresh</span>
@@ -148,12 +148,12 @@ export default function StudentsPage() {
       {/* Filter Tabs & Search Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Status Filter Tabs */}
-        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-surface-subtle border border-border-subtle overflow-x-auto">
+        <div className="flex items-center gap-1.5 p-1 rounded-xl glass-surface border border-border-subtle overflow-x-auto">
           <button
             onClick={() => setStatusFilter('all')}
             className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap cursor-pointer ${
               statusFilter === 'all'
-                ? 'bg-surface text-foreground shadow-2xs font-semibold'
+                ? 'glass-card text-foreground shadow-2xs font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -163,7 +163,7 @@ export default function StudentsPage() {
             onClick={() => setStatusFilter('active')}
             className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap cursor-pointer ${
               statusFilter === 'active'
-                ? 'bg-surface text-foreground shadow-2xs font-semibold'
+                ? 'glass-card text-foreground shadow-2xs font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -173,7 +173,7 @@ export default function StudentsPage() {
             onClick={() => setStatusFilter('paused')}
             className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap cursor-pointer ${
               statusFilter === 'paused'
-                ? 'bg-surface text-foreground shadow-2xs font-semibold'
+                ? 'glass-card text-foreground shadow-2xs font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -195,7 +195,7 @@ export default function StudentsPage() {
             onClick={() => setStatusFilter('inactive')}
             className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap cursor-pointer ${
               statusFilter === 'inactive'
-                ? 'bg-surface text-foreground shadow-2xs font-semibold'
+                ? 'glass-card text-foreground shadow-2xs font-semibold'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -212,14 +212,14 @@ export default function StudentsPage() {
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="Search by student, parent, email..."
-              className="w-full pl-9 pr-3.5 py-1.5 text-xs rounded-xl border border-border bg-surface text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full pl-9 pr-3.5 py-1.5 text-xs rounded-xl border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
           <select
             value={sortBy}
             onChange={e => setSortBy(e.target.value as any)}
-            className="px-3 py-1.5 text-xs rounded-xl border border-border bg-surface text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            className="px-3 py-1.5 text-xs rounded-xl border border-border glass-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
           >
             <option value="recent">Recently Added</option>
             <option value="name">Name (A-Z)</option>
@@ -233,7 +233,7 @@ export default function StudentsPage() {
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-pulse">
           {[1, 2, 3, 4].map(i => (
-            <div key={i} className="h-44 bg-surface rounded-2xl border border-border" />
+            <div key={i} className="h-44 glass-card rounded-2xl border border-border" />
           ))}
         </div>
       ) : error ? (
@@ -268,7 +268,7 @@ export default function StudentsPage() {
             return (
               <div
                 key={student.id}
-                className="bg-surface border border-border rounded-2xl p-5 shadow-2xs space-y-4 hover:border-accent/40 transition-all flex flex-col justify-between"
+                className="glass-card border-none rounded-2xl p-5 shadow-2xs space-y-4 hover:border-accent/40 transition-all flex flex-col justify-between"
               >
                 {/* Card Header: Name, Learner Type, Status */}
                 <div className="space-y-2">
@@ -304,7 +304,7 @@ export default function StudentsPage() {
                         ? 'bg-success/15 text-success border border-success/30'
                         : student.status === 'paused'
                         ? 'bg-warning/15 text-warning-foreground border border-warning/30'
-                        : 'bg-surface-subtle text-muted-foreground border border-border-subtle'
+                        : 'glass-surface text-muted-foreground border border-border-subtle'
                     }`}>
                       {student.status ? student.status.charAt(0).toUpperCase() + student.status.slice(1) : 'Active'}
                     </span>
@@ -313,7 +313,7 @@ export default function StudentsPage() {
                   {/* Level & Location Row */}
                   <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
                     {student.current_level ? (
-                      <span className="capitalize px-2 py-0.5 rounded-md bg-surface-subtle border border-border-subtle text-foreground">
+                      <span className="capitalize px-2 py-0.5 rounded-md glass-surface border border-border-subtle text-foreground">
                         {student.current_level}
                       </span>
                     ) : (
@@ -360,7 +360,7 @@ export default function StudentsPage() {
                   </div>
 
                   {student.next_lesson ? (
-                    <div className="p-2.5 rounded-xl bg-surface-subtle border border-border-subtle flex items-center justify-between text-[11px]">
+                    <div className="p-2.5 rounded-xl glass-surface border border-border-subtle flex items-center justify-between text-[11px]">
                       <div className="flex items-center gap-2">
                         <Clock className="w-3.5 h-3.5 text-accent" />
                         <div>

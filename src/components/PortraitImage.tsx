@@ -90,14 +90,14 @@ export const PortraitImage: React.FC<PortraitImageProps> = ({ className = '', pr
       />
 
       {/* Subtle Status Pill */}
-      <div className="absolute -top-3.5 left-6 z-30 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface/90 border border-border shadow-xs text-xs font-medium text-foreground backdrop-blur-md">
+      <div className="absolute -top-3.5 left-6 z-30 flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-card/90 border border-border shadow-xs text-xs font-medium text-foreground backdrop-blur-md">
         <span className="w-2 h-2 rounded-full bg-primary" />
         <span>1-on-1 Online Mentorship</span>
       </div>
 
       {/* Main Portrait Frame */}
       <div
-        className={`relative overflow-hidden rounded-2xl bg-surface border transition-all duration-300 ${
+        className={`relative overflow-hidden rounded-2xl glass-card border transition-all duration-300 ${
           isDragging
             ? 'border-primary ring-4 ring-primary/20 scale-[1.01]'
             : 'border-border shadow-md'

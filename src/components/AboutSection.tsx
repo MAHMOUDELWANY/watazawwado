@@ -14,7 +14,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
   return (
     <section
       id="about"
-      className="py-20 md:py-28 bg-surface-subtle border-b border-border/80 transition-colors"
+      className="py-20 md:py-28 glass-surface border-b border-border/80 transition-colors"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -84,7 +84,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
 
             {/* Clear Standards: What You Can Count On vs Teaching Commitments */}
             <div className="pt-6 grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div className="p-6 rounded-xl bg-surface border border-border shadow-2xs">
+              <div className="p-6 rounded-xl glass-card border-none shadow-2xs">
                 <div className="flex items-center gap-2 text-primary font-semibold text-xs uppercase tracking-wider mb-3">
                   <Check className="w-4 h-4 text-accent" />
                   <span>{isEn ? 'What You Can Count On' : ARABIC_TRANSLATIONS.about.whatIAm}</span>
@@ -105,7 +105,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
                 </ul>
               </div>
 
-              <div className="p-6 rounded-xl bg-surface border border-border shadow-2xs">
+              <div className="p-6 rounded-xl glass-card border-none shadow-2xs">
                 <div className="flex items-center gap-2 text-primary font-semibold text-xs uppercase tracking-wider mb-3">
                   <Shield className="w-4 h-4 text-accent" />
                   <span>{isEn ? 'My Teaching Commitments' : 'ثوابت التدريس المعتمدة'}</span>
@@ -131,7 +131,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
 
           {/* Verified Proof Metrics Column (5 cols on lg) */}
           <div className="lg:col-span-5 space-y-4">
-            <div className="p-6 rounded-2xl bg-surface border border-border shadow-2xs">
+            <div className="p-6 rounded-2xl glass-card border-none shadow-2xs">
               <h3 className="font-display text-lg font-medium text-foreground mb-4 pb-3 border-b border-border">
                 {isEn ? 'Verified Teaching Background' : 'المؤهلات والخبرات المعتمدة'}
               </h3>
@@ -142,7 +142,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
                     key={index}
                     className="flex items-start gap-3 pb-3 border-b border-border/60 last:border-b-0 last:pb-0"
                   >
-                    <div className="p-2 rounded-xl bg-surface-subtle text-primary shrink-0 border border-border/60">
+                    <div className="p-2 rounded-xl glass-surface text-primary shrink-0 border border-border/60">
                       <GraduationCap className="w-5 h-5" />
                     </div>
                     <div>
@@ -168,7 +168,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
             </div>
 
             {/* Timezone Note */}
-            <div className="p-4 rounded-xl bg-surface border border-border flex items-center gap-3 text-xs text-muted-foreground shadow-2xs">
+            <div className="p-4 rounded-xl glass-card border-none flex items-center gap-3 text-xs text-muted-foreground shadow-2xs">
               <Clock className="w-4 h-4 text-accent shrink-0" />
               <span>
                 {isEn

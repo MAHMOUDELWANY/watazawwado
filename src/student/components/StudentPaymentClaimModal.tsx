@@ -170,7 +170,7 @@ export function StudentPaymentClaimModal({
     >
       <div className="space-y-6 text-foreground text-start">
         {/* Policy Notice */}
-        <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle flex items-start gap-3 text-xs leading-relaxed text-muted-foreground">
+        <div className="p-3.5 rounded-xl glass-surface border border-border-subtle flex items-start gap-3 text-xs leading-relaxed text-muted-foreground">
           <HelpCircle className="w-4 h-4 text-accent shrink-0 mt-0.5" />
           <div>
             <span className="font-semibold text-foreground block mb-0.5">
@@ -212,7 +212,7 @@ export function StudentPaymentClaimModal({
               </a>
               <button
                 onClick={handleClose}
-                className="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 bg-surface hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer"
+                className="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 glass-card hover:glass-surface text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer"
               >
                 {isAr ? 'إغلاق' : 'Close'}
               </button>
@@ -238,7 +238,7 @@ export function StudentPaymentClaimModal({
                         p-3 rounded-xl border text-start transition-all cursor-pointer min-h-[56px] flex flex-col justify-between
                         ${isSelected
                           ? 'border-primary bg-secondary/30 text-primary ring-1 ring-primary/30'
-                          : 'border-border bg-surface hover:bg-surface-subtle text-foreground'
+                          : 'border-border glass-card hover:glass-surface text-foreground'
                         }
                       `}
                     >
@@ -253,7 +253,7 @@ export function StudentPaymentClaimModal({
             </div>
 
             {/* Official Account Details */}
-            <div className="p-4 sm:p-5 rounded-2xl bg-surface-subtle border border-border-subtle space-y-3">
+            <div className="p-4 sm:p-5 rounded-2xl glass-surface border border-border-subtle space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-foreground">
                   {isAr ? activeOption.nameArabic : activeOption.name}
@@ -271,7 +271,7 @@ export function StudentPaymentClaimModal({
                 {Object.entries(activeOption.details).map(([key, val]) => (
                   <div
                     key={key}
-                    className="p-2.5 rounded-xl bg-surface border border-border flex items-center justify-between gap-3 text-xs"
+                    className="p-2.5 rounded-xl glass-card border-none flex items-center justify-between gap-3 text-xs"
                   >
                     <div className="min-w-0 flex-1">
                       <span className="text-[10px] uppercase tracking-wider text-muted-foreground block">
@@ -284,7 +284,7 @@ export function StudentPaymentClaimModal({
                     <button
                       type="button"
                       onClick={() => handleCopy(key, val)}
-                      className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors shrink-0 cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
+                      className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:glass-surface transition-colors shrink-0 cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
                       title={isAr ? 'نسخ' : 'Copy to clipboard'}
                     >
                       {copiedKey === key ? (
@@ -331,7 +331,7 @@ export function StudentPaymentClaimModal({
                         ? 'مثال: رقم العملية، أو اسم صاحب الحساب المحول منه'
                         : 'e.g. Transaction ID, PayPal email, or bank sender name'
                     }
-                    className="w-full px-3.5 py-2.5 bg-surface border border-border rounded-xl text-xs sm:text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px]"
+                    className="w-full px-3.5 py-2.5 glass-card border-none rounded-xl text-xs sm:text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px]"
                   />
                 </div>
 
@@ -346,7 +346,7 @@ export function StudentPaymentClaimModal({
                       value={claimAmount}
                       onChange={(e) => setClaimAmount(e.target.value)}
                       placeholder={amount ? String(amount) : '0.00'}
-                      className="w-full px-3.5 py-2.5 bg-surface border border-border rounded-xl text-xs sm:text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px]"
+                      className="w-full px-3.5 py-2.5 glass-card border-none rounded-xl text-xs sm:text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px]"
                     />
                   </div>
                   <div>
@@ -357,7 +357,7 @@ export function StudentPaymentClaimModal({
                       type="text"
                       disabled
                       value={currency}
-                      className="w-full px-3.5 py-2.5 bg-surface-subtle border border-border rounded-xl text-xs sm:text-sm text-muted-foreground min-h-[44px]"
+                      className="w-full px-3.5 py-2.5 glass-surface border border-border rounded-xl text-xs sm:text-sm text-muted-foreground min-h-[44px]"
                     />
                   </div>
                 </div>
@@ -375,7 +375,7 @@ export function StudentPaymentClaimModal({
                         ? 'أي تفاصيل أخرى تسهل مطابقة الحوالة'
                         : 'Any notes to help identify your transfer'
                     }
-                    className="w-full px-3.5 py-2.5 bg-surface border border-border rounded-xl text-xs sm:text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px]"
+                    className="w-full px-3.5 py-2.5 glass-card border-none rounded-xl text-xs sm:text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px]"
                   />
                 </div>
               </div>
@@ -384,7 +384,7 @@ export function StudentPaymentClaimModal({
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="w-full sm:w-auto px-4 py-2.5 bg-surface hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
+                  className="w-full sm:w-auto px-4 py-2.5 glass-card hover:glass-surface text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
                 >
                   {isAr ? 'إلغاء' : 'Cancel'}
                 </button>

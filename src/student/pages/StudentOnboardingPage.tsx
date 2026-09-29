@@ -144,7 +144,7 @@ export default function StudentOnboardingPage({
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-surface border border-border rounded-3xl p-8 sm:p-12 shadow-sm"
+          className="glass-card border-none rounded-3xl p-8 sm:p-12 shadow-sm"
         >
           <div className="w-16 h-16 rounded-full bg-secondary/30 text-accent flex items-center justify-center mx-auto mb-5">
             <CheckCircle2 className="w-9 h-9" />
@@ -174,7 +174,7 @@ export default function StudentOnboardingPage({
 
             <button
               onClick={() => navigate('/student')}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-surface border border-border hover:bg-surface-subtle text-foreground font-medium text-sm transition-all cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl glass-card border-none hover:glass-surface text-foreground font-medium text-sm transition-all cursor-pointer"
             >
               <span>Enter Dashboard</span>
               <ArrowRight className="w-4 h-4" />
@@ -224,7 +224,7 @@ export default function StudentOnboardingPage({
       )}
 
       {/* Form Container */}
-      <div className="bg-surface border border-border rounded-3xl p-6 sm:p-8 shadow-sm">
+      <div className="glass-card border-none rounded-3xl p-6 sm:p-8 shadow-sm">
         {step === 1 && (
           <motion.div
             initial={{ opacity: 0, x: isRTL ? -10 : 10 }}
@@ -280,12 +280,12 @@ export default function StudentOnboardingPage({
                 value={studentName}
                 onChange={(e) => setStudentName(e.target.value)}
                 placeholder="e.g. Zayd Rahman"
-                className="w-full px-4 py-3 rounded-xl border border-border bg-surface-subtle text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 text-sm"
+                className="w-full px-4 py-3 rounded-xl border border-border glass-surface text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 text-sm"
               />
             </div>
 
             {learnerType === 'child' && (
-              <div className="p-4 rounded-2xl bg-surface-subtle border border-border space-y-4">
+              <div className="p-4 rounded-2xl glass-surface border border-border space-y-4">
                 <div className="text-xs font-semibold uppercase tracking-wider text-primary">
                   Parent / Guardian Information
                 </div>
@@ -298,7 +298,7 @@ export default function StudentOnboardingPage({
                     value={parentName}
                     onChange={(e) => setParentName(e.target.value)}
                     placeholder="e.g. Tariq Rahman"
-                    className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-sm"
+                    className="w-full px-3.5 py-2.5 rounded-lg border border-border glass-card text-sm"
                   />
                 </div>
                 <div>
@@ -310,7 +310,7 @@ export default function StudentOnboardingPage({
                     value={parentWhatsapp}
                     onChange={(e) => setParentWhatsapp(e.target.value)}
                     placeholder="+1 (555) 000-0000"
-                    className="w-full px-3.5 py-2.5 rounded-lg border border-border bg-surface text-sm"
+                    className="w-full px-3.5 py-2.5 rounded-lg border border-border glass-card text-sm"
                   />
                 </div>
               </div>
@@ -350,7 +350,7 @@ export default function StudentOnboardingPage({
               <select
                 value={learningInterest}
                 onChange={(e) => setLearningInterest(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-border bg-surface-subtle text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 text-sm"
+                className="w-full px-4 py-3 rounded-xl border border-border glass-surface text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 text-sm"
               >
                 {SERVICES_OPTIONS.map((opt) => (
                   <option key={opt.id} value={opt.id}>
@@ -425,7 +425,7 @@ export default function StudentOnboardingPage({
                 value={learningGoal}
                 onChange={(e) => setLearningGoal(e.target.value)}
                 placeholder="e.g. Read Surah Al-Baqarah fluently with Tajweed, or memorize Juz Amma"
-                className="w-full px-4 py-3 rounded-xl border border-border bg-surface-subtle text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 text-sm"
+                className="w-full px-4 py-3 rounded-xl border border-border glass-surface text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 text-sm"
               />
             </div>
 
@@ -440,7 +440,7 @@ export default function StudentOnboardingPage({
                     type="text"
                     value={timezone}
                     onChange={(e) => setTimezone(e.target.value)}
-                    className="w-full ps-10 pe-3 py-2.5 rounded-xl border border-border bg-surface-subtle text-foreground text-sm"
+                    className="w-full ps-10 pe-3 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm"
                   />
                 </div>
               </div>
@@ -456,7 +456,7 @@ export default function StudentOnboardingPage({
                     value={whatsapp}
                     onChange={(e) => setWhatsapp(e.target.value)}
                     placeholder="+1 (555) 000-0000"
-                    className="w-full ps-10 pe-3 py-2.5 rounded-xl border border-border bg-surface-subtle text-foreground text-sm"
+                    className="w-full ps-10 pe-3 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm"
                   />
                 </div>
               </div>
@@ -471,7 +471,7 @@ export default function StudentOnboardingPage({
                 value={learningNeeds}
                 onChange={(e) => setLearningNeeds(e.target.value)}
                 placeholder="e.g. Prefers visual mnemonics, needs patience with pronunciation, scheduling preferences..."
-                className="w-full px-4 py-2.5 rounded-xl border border-border bg-surface-subtle text-foreground text-sm"
+                className="w-full px-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm"
               />
             </div>
 

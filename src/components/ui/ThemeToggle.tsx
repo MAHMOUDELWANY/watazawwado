@@ -13,7 +13,7 @@ export function ThemeToggle({ className = '' }: { className?: string }) {
 
   if (!mounted) {
     return (
-      <div className={`w-[60px] h-[32px] rounded-full bg-surface-subtle border border-border/50 shadow-sm ${className}`} />
+      <div className={`w-[60px] h-[32px] rounded-full glass-surface border border-border/50 shadow-sm ${className}`} />
     );
   }
 
@@ -30,7 +30,7 @@ export function ThemeToggle({ className = '' }: { className?: string }) {
         relative inline-flex items-center justify-between
         w-[64px] h-[32px] p-1
         rounded-full
-        bg-surface-subtle dark:bg-surface-warm
+        glass-surface dark:bg-surface-warm
         border border-border/50 dark:border-border/20
         shadow-inner focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background
         transition-colors duration-300 ease-in-out
@@ -42,7 +42,7 @@ export function ThemeToggle({ className = '' }: { className?: string }) {
         className={`
           absolute left-1 top-1
           w-[24px] h-[24px]
-          bg-surface dark:bg-[#423E39]
+          glass-card dark:bg-[#423E39]
           rounded-full shadow-sm
           border border-border/20
           transform transition-transform duration-300 cubic-bezier(0.2, 0.8, 0.2, 1)

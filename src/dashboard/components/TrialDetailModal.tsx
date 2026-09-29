@@ -287,11 +287,11 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
       aria-modal="true"
     >
       <div
-        className="bg-surface text-foreground rounded-2xl w-full max-w-2xl shadow-xl border border-border overflow-hidden flex flex-col max-h-[92vh]"
+        className="glass-card text-foreground rounded-2xl w-full max-w-2xl shadow-xl border border-border overflow-hidden flex flex-col max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="p-5 sm:p-6 border-b border-border-subtle flex items-start justify-between gap-4 bg-surface-subtle">
+        <div className="p-5 sm:p-6 border-b border-border-subtle flex items-start justify-between gap-4 glass-surface">
           <div>
             <div className="flex items-center gap-2 mb-1 flex-wrap">
               <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-secondary/40 text-accent">
@@ -311,7 +311,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                   {trial.status}
                 </span>
               ) : (
-                <span className="text-xs font-medium px-2 py-0.5 rounded bg-surface-subtle text-muted-foreground border border-border-subtle">
+                <span className="text-xs font-medium px-2 py-0.5 rounded glass-surface text-muted-foreground border border-border-subtle">
                   Status unavailable
                 </span>
               )}
@@ -327,7 +327,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface transition-colors"
+            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:glass-card transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -350,7 +350,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
           )}
 
           {/* Section 1: Trial Time & Zoom */}
-          <div className="bg-surface-subtle p-4 rounded-xl border border-border-subtle space-y-3">
+          <div className="glass-surface p-4 rounded-xl border border-border-subtle space-y-3">
             <div className="flex items-center justify-between flex-wrap gap-2">
               <div className="flex items-center gap-2 text-primary font-semibold text-xs uppercase tracking-wider">
                 <Clock className="w-4 h-4" />
@@ -362,7 +362,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              <div className="p-3 rounded-lg bg-surface border border-border">
+              <div className="p-3 rounded-lg glass-card border-none">
                 <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">
                   Mahmoud's Time (Cairo)
                 </div>
@@ -371,7 +371,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 </div>
               </div>
 
-              <div className="p-3 rounded-lg bg-surface border border-border">
+              <div className="p-3 rounded-lg glass-card border-none">
                 <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">
                   Student's Local Time
                 </div>
@@ -409,7 +409,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 <button
                   type="button"
                   onClick={() => copyToClipboard(joinUrl, 'join')}
-                  className="inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-surface border border-border text-xs font-medium text-foreground hover:bg-surface-subtle transition-colors"
+                  className="inline-flex items-center gap-1 px-3 py-2 rounded-lg glass-card border-none text-xs font-medium text-foreground hover:glass-surface transition-colors"
                 >
                   {copiedLink === 'join' ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5 text-muted-foreground" />}
                   <span>{copiedLink === 'join' ? 'Student Link Copied!' : 'Copy Student Link'}</span>
@@ -427,7 +427,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                   <span>Send Zoom on WhatsApp</span>
                 </a>
               ) : (
-                <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface-subtle text-muted-foreground border border-border-subtle text-xs font-medium cursor-not-allowed">
+                <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg glass-surface text-muted-foreground border border-border-subtle text-xs font-medium cursor-not-allowed">
                   <MessageCircle className="w-3.5 h-3.5" />
                   <span>No WhatsApp Number</span>
                 </span>
@@ -437,7 +437,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
 
           {/* Section 2: Student Learning Need & Goal */}
           {(trial.goal || trial.notes) && (
-            <div className="bg-surface-subtle p-4 rounded-xl border border-border-subtle">
+            <div className="glass-surface p-4 rounded-xl border border-border-subtle">
               <div className="flex items-center gap-2 text-muted-foreground font-semibold text-xs uppercase tracking-wider mb-1.5">
                 <FileText className="w-4 h-4" />
                 <span>Learner Goal & Inquired Needs</span>
@@ -483,7 +483,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                       className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1 cursor-pointer ${
                         isSelected
                           ? 'bg-primary text-primary-foreground shadow-2xs font-semibold'
-                          : 'bg-surface text-foreground border border-border hover:border-accent/40'
+                          : 'glass-card text-foreground border border-border hover:border-accent/40'
                       }`}
                     >
                       {isSelected && <Check className="w-3 h-3" />}
@@ -503,7 +503,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 <select
                   value={currentLevel}
                   onChange={(e) => setCurrentLevel(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 rounded-lg border border-border glass-card text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="">-- Unassessed / Not Evaluated Yet --</option>
                   <option value="beginner">Beginner (Starting from basics)</option>
@@ -520,7 +520,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 <select
                   value={followUpStatus}
                   onChange={(e) => setFollowUpStatus(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 rounded-lg border border-border glass-card text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="needs_follow_up">Needs Follow-Up</option>
                   <option value="awaiting_response">Awaiting Student Response</option>
@@ -541,7 +541,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 value={strengths}
                 onChange={(e) => setStrengths(e.target.value)}
                 placeholder="e.g. Attentive, knows Arabic alphabet, good pronunciation of standard sounds"
-                className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 rounded-lg border border-border glass-card text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
 
@@ -554,7 +554,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 value={areasNeedingWork}
                 onChange={(e) => setAreasNeedingWork(e.target.value)}
                 placeholder="e.g. Heavy letters (Taa, Saad), Noon Sakinah rules, reading confidence"
-                className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 rounded-lg border border-border glass-card text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
 
@@ -567,7 +567,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 value={assessmentNotes}
                 onChange={(e) => setAssessmentNotes(e.target.value)}
                 placeholder="Observations on pace, focus, parent expectations, preferred timings..."
-                className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 rounded-lg border border-border glass-card text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
           </div>
@@ -582,7 +582,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               <button
                 type="button"
                 onClick={() => copyToClipboard(studentPlanMessage, 'plan')}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface text-xs font-medium text-foreground border border-border hover:bg-surface-subtle transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg glass-card text-xs font-medium text-foreground border border-border hover:glass-surface transition-colors cursor-pointer"
               >
                 {copiedLink === 'plan' ? <Check className="w-3 h-3 text-success" /> : <Copy className="w-3 h-3 opacity-70" />}
                 <span>{copiedLink === 'plan' ? 'Plan Copied!' : 'Copy Plan for Student'}</span>
@@ -597,7 +597,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 <select
                   value={recommendedServiceId}
                   onChange={(e) => setRecommendedServiceId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 rounded-lg border border-border glass-card text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   {AVAILABLE_SERVICES.map(s => (
                     <option key={s.id} value={s.id}>{s.name}</option>
@@ -612,7 +612,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 <select
                   value={recommendedDuration}
                   onChange={(e) => setRecommendedDuration(Number(e.target.value))}
-                  className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 rounded-lg border border-border glass-card text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value={30}>30 minutes (Best for kids)</option>
                   <option value={45}>45 minutes (Standard focus)</option>
@@ -627,7 +627,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 <select
                   value={recommendedFrequency}
                   onChange={(e) => setRecommendedFrequency(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 rounded-lg border border-border glass-card text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="1x weekly">1× weekly</option>
                   <option value="2x weekly">2× weekly (Recommended)</option>
@@ -646,20 +646,20 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 value={learningPlanSummary}
                 onChange={(e) => setLearningPlanSummary(e.target.value)}
                 placeholder="e.g. Master Noon Sakinah rules in 4 weeks, then progress to Surah Al-Mulk recitation..."
-                className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 rounded-lg border border-border glass-card text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
           </div>
         </div>
 
         {/* Modal Footer / Pipeline Actions */}
-        <div className="p-4 sm:p-5 border-t border-border-subtle bg-surface-subtle flex flex-wrap items-center justify-between gap-3">
+        <div className="p-4 sm:p-5 border-t border-border-subtle glass-surface flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <button
               type="button"
               disabled={saving}
               onClick={() => handleSaveAssessment(false)}
-              className="px-4 py-2 rounded-xl bg-surface border border-border text-xs font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
+              className="px-4 py-2 rounded-xl glass-card border-none text-xs font-medium text-foreground hover:glass-surface transition-colors cursor-pointer"
             >
               {saving ? 'Saving...' : 'Save Assessment'}
             </button>

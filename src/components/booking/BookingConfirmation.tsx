@@ -131,7 +131,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           <CheckCircle2 className="w-10 h-10" />
         </motion.div>
 
-        <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-surface-warm dark:bg-surface-subtle text-muted-foreground border border-secondary/60">
+        <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-surface-warm dark:glass-surface text-muted-foreground border border-secondary/60">
           {isEn ? `Booking Reference: ${confirmation.bookingReference}` : `رقم الحجز المرجعي: ${confirmation.bookingReference}`}
         </span>
 
@@ -154,7 +154,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
       </div>
 
       {/* Appointment Detail Card */}
-      <div className="p-5 sm:p-6 rounded-3xl bg-surface border border-secondary/60 shadow-xs space-y-4">
+      <div className="p-5 sm:p-6 rounded-3xl glass-card border-none space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-4 border-b border-border">
           <div className="flex items-start gap-3">
             <div className="p-2.5 rounded-xl bg-surface-warm dark:bg-background text-primary">
@@ -280,7 +280,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
       )}
 
       {/* Philosophy Reassurance / Post-Trial Human Expectation */}
-      <div className="p-5 rounded-3xl bg-surface-warm dark:bg-surface border border-secondary/60 space-y-2">
+      <div className="p-5 rounded-3xl bg-surface-warm dark:glass-card border-none space-y-2">
         <div className="flex items-center gap-2 font-display text-sm font-medium text-foreground">
           <Sparkles className="w-4 h-4 text-accent" />
           <span>
@@ -317,7 +317,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           href={getGoogleCalendarUrl()}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-surface border border-border text-xs font-semibold text-foreground hover:bg-surface-warm dark:hover:bg-background transition-colors"
+          className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl glass-card border-none text-xs font-semibold text-foreground hover:bg-surface-warm dark:hover:bg-background transition-colors"
         >
           <Calendar className="w-4 h-4 text-blue-600" />
           <span>{isEn ? 'Google Calendar' : 'تقويم جوجل'}</span>
@@ -326,7 +326,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         <button
           type="button"
           onClick={handleDownloadIcs}
-          className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-surface border border-border text-xs font-semibold text-foreground hover:bg-surface-warm dark:hover:bg-background transition-colors cursor-pointer"
+          className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl glass-card border-none text-xs font-semibold text-foreground hover:bg-surface-warm dark:hover:bg-background transition-colors cursor-pointer"
         >
           <Download className="w-4 h-4 text-accent" />
           <span>{downloadedIcs ? (isEn ? 'Downloaded' : 'تم التنزيل') : (isEn ? 'Apple/Outlook (.ics)' : 'تنزيل .ics')}</span>
@@ -351,7 +351,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         <button
           type="button"
           onClick={onDone}
-          className="px-6 py-2.5 rounded-xl text-xs font-medium text-foreground/70 dark:text-border/70 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
+          className="px-6 py-2.5 rounded-xl text-xs font-medium text-foreground/70 dark:text-border/70 hover:bg-surface-warm dark:hover:glass-surface transition-colors cursor-pointer"
         >
           {doneLabel || (isEn ? 'Done & Return to Homepage' : 'تم والعودة للموقع')}
         </button>

@@ -196,11 +196,11 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
     >
       <FocusTrap isActive={true}>
         <div 
-          className="bg-surface text-foreground rounded-2xl w-full max-w-lg shadow-xl border border-border overflow-hidden flex flex-col max-h-[90vh]"
+          className="glass-card text-foreground rounded-2xl w-full max-w-lg shadow-xl border border-border overflow-hidden flex flex-col max-h-[90vh]"
           onClick={(e) => e.stopPropagation()}
         >
         {/* Header */}
-        <div className="p-6 border-b border-border-subtle flex items-start justify-between gap-4 bg-surface-subtle">
+        <div className="p-6 border-b border-border-subtle flex items-start justify-between gap-4 glass-surface">
           <div>
             <div className="flex items-center gap-2 mb-1 flex-wrap">
               <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-secondary/30 text-accent">
@@ -217,11 +217,11 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
               )}
               <span className={`text-xs font-medium px-2 py-0.5 rounded-full capitalize ${
                 currentStatus === 'confirmed' ? 'bg-success/15 text-success border border-success/30' :
-                currentStatus === 'completed' ? 'bg-surface-subtle text-muted-foreground border border-border-subtle' :
+                currentStatus === 'completed' ? 'glass-surface text-muted-foreground border border-border-subtle' :
                 currentStatus === 'no_show' ? 'bg-warning/15 text-warning-foreground border border-warning/30' :
                 currentStatus === 'cancelled' ? 'bg-destructive/15 text-destructive border border-destructive/20' :
                 currentStatus === 'rescheduled' ? 'bg-secondary/30 text-primary border border-secondary/50' :
-                'bg-surface-subtle text-muted-foreground border border-border-subtle'
+                'glass-surface text-muted-foreground border border-border-subtle'
               }`}>
                 {currentStatus === 'no_show' ? 'No-Show' : (currentStatus || 'Status unavailable')}
               </span>
@@ -237,7 +237,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
           </div>
           <button 
             onClick={onClose}
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface transition-colors"
+            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:glass-card transition-colors"
             aria-label="Close details"
           >
             <X className="w-5 h-5" />
@@ -248,7 +248,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
         <div className="p-6 space-y-5 overflow-y-auto">
           {/* Time and Service Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="p-4 rounded-xl bg-surface-subtle border border-border-subtle">
+            <div className="p-4 rounded-xl glass-surface border border-border-subtle">
               <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-1">
                 <Clock className="w-3.5 h-3.5" />
                 <span>Cairo Time (Teacher)</span>
@@ -261,7 +261,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-surface-subtle border border-border-subtle">
+            <div className="p-4 rounded-xl glass-surface border border-border-subtle">
               <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-1">
                 <Globe className="w-3.5 h-3.5" />
                 <span>Student Timezone</span>
@@ -304,7 +304,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
           </div>
 
           {/* Lesson Fee Context */}
-          <div className="flex items-center justify-between text-xs py-2.5 px-3.5 rounded-xl bg-surface-subtle border border-border-subtle">
+          <div className="flex items-center justify-between text-xs py-2.5 px-3.5 rounded-xl glass-surface border border-border-subtle">
             <span className="text-muted-foreground flex items-center gap-1.5 font-medium">
               <DollarSign className="w-3.5 h-3.5" />
               Lesson Fee
@@ -340,7 +340,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                   </a>
                   <button 
                     onClick={() => copyToClipboard(joinUrl || hostUrl, 'join')}
-                    className="px-3.5 py-2.5 bg-surface hover:bg-surface-subtle border border-border text-foreground rounded-xl text-sm font-medium transition-colors flex items-center gap-1.5"
+                    className="px-3.5 py-2.5 glass-card hover:glass-surface border border-border text-foreground rounded-xl text-sm font-medium transition-colors flex items-center gap-1.5"
                     title="Copy Student Join Link"
                   >
                     {copiedLink === 'join' ? <Check className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4 opacity-70" />}
@@ -380,7 +380,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
             </h3>
             
             {(aiBrief || briefError) && (
-              <div className="p-4 rounded-xl bg-surface-subtle border border-accent/20 text-sm">
+              <div className="p-4 rounded-xl glass-surface border border-accent/20 text-sm">
                 <div className="flex justify-end mb-2">
                   <button
                     onClick={() => { setAiBrief(null); setBriefError(null); }}
@@ -430,7 +430,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
               {lesson.contact_email && (
                 <a 
                   href={`mailto:${lesson.contact_email}?subject=${encodeURIComponent(`Ustadh Mahmoud — ${lesson.service_name} Lesson`)}`}
-                  className="inline-flex items-center gap-2 px-3.5 py-2 bg-surface hover:bg-surface-subtle border border-border text-foreground rounded-xl text-xs font-medium transition-colors"
+                  className="inline-flex items-center gap-2 px-3.5 py-2 glass-card hover:glass-surface border border-border text-foreground rounded-xl text-xs font-medium transition-colors"
                 >
                   <Mail className="w-3.5 h-3.5 opacity-70" />
                   {lesson.contact_email}
@@ -440,7 +440,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
           </div>
 
           {/* Calendar Sync Status */}
-          <div className="flex items-center justify-between text-xs py-2 px-3.5 rounded-xl bg-surface-subtle border border-border-subtle">
+          <div className="flex items-center justify-between text-xs py-2 px-3.5 rounded-xl glass-surface border border-border-subtle">
             <span className="text-muted-foreground flex items-center gap-1.5 font-medium">
               <CalendarIcon className="w-3.5 h-3.5" />
               Google Calendar Sync
@@ -452,7 +452,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
 
           {/* Student Notes */}
           {lesson.notes && lesson.notes.trim().length > 0 && (
-            <div className="space-y-1.5 p-3.5 rounded-xl bg-surface-subtle border border-border-subtle">
+            <div className="space-y-1.5 p-3.5 rounded-xl glass-surface border border-border-subtle">
               <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
                 <FileText className="w-3.5 h-3.5" />
                 <span>Student Learning Goal & Notes</span>
@@ -487,7 +487,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                   placeholder="e.g. Surah Al-Baqarah Ayahs 1–25, Tajweed rules of Meem Sakinah"
                   value={coveredMaterial}
                   onChange={(e) => setCoveredMaterial(e.target.value)}
-                  className="w-full p-2 text-xs bg-surface border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+                  className="w-full p-2 text-xs glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                 />
               </div>
               <div>
@@ -499,7 +499,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                   placeholder="e.g. Student demonstrated good Tajweed, review Ayah 15 next session"
                   value={completionNotes}
                   onChange={(e) => setCompletionNotes(e.target.value)}
-                  className="w-full p-2 text-xs bg-surface border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+                  className="w-full p-2 text-xs glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
                 />
               </div>
               <button
@@ -536,8 +536,8 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                     onClick={() => setNoShowCreditDecision('returned')}
                     className={`p-2.5 rounded-xl border text-start transition-all cursor-pointer ${
                       noShowCreditDecision === 'returned'
-                        ? 'bg-surface border-primary ring-1 ring-primary text-foreground'
-                        : 'bg-surface/60 border-border text-muted-foreground hover:bg-surface'
+                        ? 'glass-card border-primary ring-1 ring-primary text-foreground'
+                        : 'glass-card/60 border-border text-muted-foreground hover:glass-card'
                     }`}
                   >
                     <span className="font-semibold text-xs block text-foreground">
@@ -553,8 +553,8 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                     onClick={() => setNoShowCreditDecision('used')}
                     className={`p-2.5 rounded-xl border text-start transition-all cursor-pointer ${
                       noShowCreditDecision === 'used'
-                        ? 'bg-surface border-warning ring-1 ring-warning text-foreground'
-                        : 'bg-surface/60 border-border text-muted-foreground hover:bg-surface'
+                        ? 'glass-card border-warning ring-1 ring-warning text-foreground'
+                        : 'glass-card/60 border-border text-muted-foreground hover:glass-card'
                     }`}
                   >
                     <span className="font-semibold text-xs block text-foreground">
@@ -576,7 +576,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                   placeholder="Optional note (e.g. Student did not attend, waited 15 mins)"
                   value={noShowReason}
                   onChange={(e) => setNoShowReason(e.target.value)}
-                  className="w-full p-2 text-xs bg-surface border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-warning/40"
+                  className="w-full p-2 text-xs glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-warning/40"
                 />
               </div>
               <button
@@ -591,7 +591,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-border-subtle bg-surface-subtle flex flex-wrap items-center justify-between gap-3">
+        <div className="p-4 border-t border-border-subtle glass-surface flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
             {statusMessage && (
               <span className={`text-xs font-medium px-2.5 py-1 rounded-lg ${
@@ -637,7 +637,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
 
           <button 
             onClick={onClose}
-            className="px-4 py-2 bg-surface hover:bg-surface-subtle border border-border text-foreground rounded-xl text-sm font-medium transition-colors ms-auto"
+            className="px-4 py-2 glass-card hover:glass-surface border border-border text-foreground rounded-xl text-sm font-medium transition-colors ms-auto"
           >
             Close
           </button>

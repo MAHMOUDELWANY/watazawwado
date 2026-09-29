@@ -166,11 +166,11 @@ export function AssignTeacherModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
       <div
-        className="relative w-full max-w-xl bg-surface rounded-2xl shadow-2xl border border-border overflow-hidden my-8 animate-in fade-in zoom-in-95 duration-200"
+        className="relative w-full max-w-xl glass-card rounded-2xl shadow-2xl border border-border overflow-hidden my-8 animate-in fade-in zoom-in-95 duration-200"
         onClick={e => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-surface-subtle">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border glass-surface">
           <div>
             <div className="flex items-center gap-2">
               <UserCheck className="w-5 h-5 text-accent" />
@@ -184,7 +184,7 @@ export function AssignTeacherModal({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface transition-colors cursor-pointer"
+            className="p-1.5 rounded-xl text-muted-foreground hover:text-foreground hover:glass-card transition-colors cursor-pointer"
             title="Close"
           >
             <X className="w-5 h-5" />
@@ -201,7 +201,7 @@ export function AssignTeacherModal({
           )}
 
           {/* 1. Student Identity Header */}
-          <div className="p-4 rounded-xl bg-surface-subtle border border-border-subtle flex items-center justify-between gap-3">
+          <div className="p-4 rounded-xl glass-surface border border-border-subtle flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-secondary/30 text-accent flex items-center justify-center font-display font-bold text-sm border border-secondary/50">
                 {student.name.charAt(0).toUpperCase()}
@@ -238,7 +238,7 @@ export function AssignTeacherModal({
           {/* 2. Current Teacher & Assignment Status Row */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Current Teacher Display */}
-            <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle space-y-1">
+            <div className="p-3.5 rounded-xl glass-surface border border-border-subtle space-y-1">
               <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider block">
                 Current Teacher
               </span>
@@ -256,7 +256,7 @@ export function AssignTeacherModal({
             </div>
 
             {/* Assignment Status Display */}
-            <div className="p-3.5 rounded-xl bg-surface-subtle border border-border-subtle space-y-1">
+            <div className="p-3.5 rounded-xl glass-surface border border-border-subtle space-y-1">
               <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider block">
                 Assignment Status
               </span>
@@ -309,7 +309,7 @@ export function AssignTeacherModal({
                 className={`p-3 rounded-xl border text-xs font-medium transition-all flex flex-col items-center gap-1 cursor-pointer ${
                   preferredGender === 'male'
                     ? 'border-primary bg-secondary/30 text-primary font-semibold shadow-2xs'
-                    : 'border-border bg-surface hover:bg-surface-subtle text-muted-foreground'
+                    : 'border-border glass-card hover:glass-surface text-muted-foreground'
                 }`}
               >
                 <span className="text-base">👔</span>
@@ -322,7 +322,7 @@ export function AssignTeacherModal({
                 className={`p-3 rounded-xl border text-xs font-medium transition-all flex flex-col items-center gap-1 cursor-pointer ${
                   preferredGender === 'female'
                     ? 'border-accent bg-accent/15 text-accent font-semibold shadow-2xs'
-                    : 'border-border bg-surface hover:bg-surface-subtle text-muted-foreground'
+                    : 'border-border glass-card hover:glass-surface text-muted-foreground'
                 }`}
               >
                 <span className="text-base">🧕</span>
@@ -334,8 +334,8 @@ export function AssignTeacherModal({
                 onClick={() => setPreferredGender('any')}
                 className={`p-3 rounded-xl border text-xs font-medium transition-all flex flex-col items-center gap-1 cursor-pointer ${
                   preferredGender === 'any'
-                    ? 'border-primary/50 bg-surface-subtle text-foreground font-semibold shadow-2xs'
-                    : 'border-border bg-surface hover:bg-surface-subtle text-muted-foreground'
+                    ? 'border-primary/50 glass-surface text-foreground font-semibold shadow-2xs'
+                    : 'border-border glass-card hover:glass-surface text-muted-foreground'
                 }`}
               >
                 <span className="text-base">⚖️</span>
@@ -365,7 +365,7 @@ export function AssignTeacherModal({
                 className={`p-3 rounded-xl border flex items-center justify-between text-xs cursor-pointer transition-all ${
                   !selectedTeacherEmail
                     ? 'border-warning/60 bg-warning/5 text-foreground shadow-2xs'
-                    : 'border-border bg-surface hover:bg-surface-subtle text-muted-foreground'
+                    : 'border-border glass-card hover:glass-surface text-muted-foreground'
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -401,7 +401,7 @@ export function AssignTeacherModal({
                     className={`p-3 rounded-xl border flex items-center justify-between text-xs cursor-pointer transition-all ${
                       isSelected
                         ? 'border-primary bg-secondary/30 text-foreground shadow-2xs'
-                        : 'border-border bg-surface hover:bg-surface-subtle text-muted-foreground'
+                        : 'border-border glass-card hover:glass-surface text-muted-foreground'
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -417,7 +417,7 @@ export function AssignTeacherModal({
                           <span className="font-semibold text-foreground">
                             {teacher.display_name}
                           </span>
-                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-surface-subtle border border-border-subtle text-muted-foreground">
+                          <span className="text-[10px] px-1.5 py-0.5 rounded glass-surface border border-border-subtle text-muted-foreground">
                             {teacher.role === 'super_admin' ? 'Super Admin' : 'Teacher'}
                           </span>
                           <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary/30 text-primary border border-secondary/50">
@@ -466,7 +466,7 @@ export function AssignTeacherModal({
               type="button"
               onClick={onClose}
               disabled={saving}
-              className="px-4 py-2 text-xs font-medium rounded-xl border border-border text-foreground hover:bg-surface-subtle transition-colors cursor-pointer disabled:opacity-50"
+              className="px-4 py-2 text-xs font-medium rounded-xl border border-border text-foreground hover:glass-surface transition-colors cursor-pointer disabled:opacity-50"
             >
               Cancel
             </button>

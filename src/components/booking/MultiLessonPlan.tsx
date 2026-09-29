@@ -114,7 +114,7 @@ export const MultiLessonPlan: React.FC<Props> = ({ catalog, serviceId, duration,
       </header>
 
       {/* 1. What was selected — the actual lesson times, grouped cleanly */}
-      <div className="rounded-2xl border border-border bg-surface p-4 space-y-2">
+      <div className="rounded-2xl border border-border glass-card p-4 space-y-2">
         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
           Your selected times
         </p>
@@ -131,7 +131,7 @@ export const MultiLessonPlan: React.FC<Props> = ({ catalog, serviceId, duration,
 
       {/* 2. Price — total first, then per-lesson, then savings (never inflate the regular price) */}
       {price && (
-        <div className="rounded-2xl border border-border bg-surface-subtle p-4 space-y-1">
+        <div className="rounded-2xl border border-border glass-surface p-4 space-y-1">
           <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Price</p>
           <p className="font-display text-2xl font-bold text-foreground">
             {money(price.total, price.currency)}{' '}
@@ -158,7 +158,7 @@ export const MultiLessonPlan: React.FC<Props> = ({ catalog, serviceId, duration,
         <button
           type="button"
           onClick={onBack}
-          className="rounded-xl border border-border px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-surface-subtle"
+          className="rounded-xl border border-border px-4 py-3 text-sm font-medium text-foreground transition-colors hover:glass-surface"
         >
           Edit times
         </button>
@@ -182,7 +182,7 @@ export const MultiLessonPlan: React.FC<Props> = ({ catalog, serviceId, duration,
     {error && <p role="alert">{error}</p>}
     {!loading && !error && <>
       <label htmlFor="lesson-period">Choose your period</label>
-      <select id="lesson-period" value={period} onChange={e => { setPeriod(e.target.value); onSelected([]); }} className="block rounded-xl border border-border bg-surface p-3">
+      <select id="lesson-period" value={period} onChange={e => { setPeriod(e.target.value); onSelected([]); }} className="block rounded-xl border border-border glass-card p-3">
         <option value="">Select a month</option>
         {periods.map(month => <option key={month} value={month}>{new Date(`${month}-01T12:00:00Z`).toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })}</option>)}
       </select>

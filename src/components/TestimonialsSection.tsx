@@ -14,7 +14,7 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ lang }
   return (
     <section
       id="testimonials"
-      className="py-20 md:py-28 bg-surface-subtle border-b border-border/80 transition-colors"
+      className="py-20 md:py-28 glass-surface border-b border-border/80 transition-colors"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -48,7 +48,7 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ lang }
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-40px' }}
               transition={{ duration: 0.45, delay: index * 0.1 }}
-              className="p-8 sm:p-10 rounded-2xl bg-surface border border-border flex flex-col justify-between shadow-2xs hover:shadow-xs transition-all cursor-default"
+              className="p-8 sm:p-10 rounded-2xl glass-card border-none flex flex-col justify-between shadow-2xs hover:shadow-xs transition-all cursor-default"
             >
               <div>
                 <Quote className="w-8 h-8 text-accent/40 mb-4" />

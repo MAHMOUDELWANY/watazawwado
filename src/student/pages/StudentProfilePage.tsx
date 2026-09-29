@@ -297,7 +297,7 @@ export default function StudentProfilePage({
         className="-mb-2"
       />
       {/* 1. Page Header & Identity Summary */}
-      <div className="p-5 sm:p-6 rounded-2xl bg-surface border border-border shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 sm:p-6 rounded-2xl glass-card border-none shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4 min-w-0">
           <BrandFrame variant="subtle" className="w-14 h-14 sm:w-16 sm:h-16 shrink-0" innerClassName="items-center justify-center text-accent text-xl sm:text-2xl font-display font-bold select-none">
                 {profile?.full_name?.charAt(0) || user?.email?.charAt(0)?.toUpperCase() || "S"}
@@ -326,7 +326,7 @@ export default function StudentProfilePage({
         </div>
 
         <div className="flex items-center gap-2 self-start md:self-center flex-wrap">
-          <Badge variant="outline" className="text-xs py-1.5 px-3 border-border bg-surface-subtle">
+          <Badge variant="outline" className="text-xs py-1.5 px-3 border-border glass-surface">
             {profile?.learnerType === 'child' ? (isAr ? 'ناشئ' : 'Child') : (isAr ? 'بالغ' : 'Adult')} • {profile?.currentLevel || (isAr ? 'مبتدئ' : 'Beginner')}
           </Badge>
         </div>
@@ -368,7 +368,7 @@ export default function StudentProfilePage({
                 flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap cursor-pointer min-h-[44px]
                 ${isActive
                   ? 'bg-primary text-primary-foreground shadow-xs font-semibold'
-                  : 'bg-surface hover:bg-surface-subtle text-muted-foreground hover:text-foreground border border-border'
+                  : 'glass-card hover:glass-surface text-muted-foreground hover:text-foreground border border-border'
                 }
               `}
             >
@@ -385,7 +385,7 @@ export default function StudentProfilePage({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left Side: Category Navigation (Desktop lg: 4 columns) */}
         <div className="hidden lg:block lg:col-span-4 space-y-4">
-          <div className="rounded-2xl border border-border bg-surface p-2 space-y-1 shadow-2xs">
+          <div className="rounded-2xl border border-border glass-card p-2 space-y-1 shadow-2xs">
             {categories.map((cat) => {
               const isActive = activeCategory === cat.id;
               const Icon = cat.icon;
@@ -397,11 +397,11 @@ export default function StudentProfilePage({
                     w-full flex items-start gap-3 p-3.5 rounded-xl text-start transition-all cursor-pointer min-h-[44px]
                     ${isActive
                       ? 'bg-secondary/30 border border-primary/25 text-foreground font-semibold ring-1 ring-primary/20'
-                      : 'text-muted-foreground hover:bg-surface-subtle hover:text-foreground border border-transparent'
+                      : 'text-muted-foreground hover:glass-surface hover:text-foreground border border-transparent'
                     }
                   `}
                 >
-                  <div className={`p-2 rounded-lg shrink-0 mt-0.5 ${isActive ? 'bg-primary text-primary-foreground' : 'bg-surface-subtle text-muted-foreground'}`}>
+                  <div className={`p-2 rounded-lg shrink-0 mt-0.5 ${isActive ? 'bg-primary text-primary-foreground' : 'glass-surface text-muted-foreground'}`}>
                     <Icon className="w-4 h-4" />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -418,7 +418,7 @@ export default function StudentProfilePage({
           </div>
 
           {/* Ustadh Mahmoud Trust Badge */}
-          <div className="p-4 rounded-2xl bg-surface border border-border/80 text-xs space-y-2">
+          <div className="p-4 rounded-2xl glass-card border-none/80 text-xs space-y-2">
             <div className="flex items-center gap-2 text-foreground font-semibold">
               <span className="w-6 h-6 rounded-lg bg-secondary/30 text-accent flex items-center justify-center font-display font-bold text-xs">
                 م
@@ -437,7 +437,7 @@ export default function StudentProfilePage({
         <div className="lg:col-span-8">
           {/* PANEL 1: Personal Details */}
           {activeCategory === 'profile' && (
-            <div className="rounded-2xl border border-border bg-surface p-5 sm:p-7 shadow-2xs space-y-6">
+            <div className="rounded-2xl border border-border glass-card p-5 sm:p-7 shadow-2xs space-y-6">
               <div className="border-b border-border pb-4">
                 <h2 className="text-lg sm:text-xl font-display font-bold text-foreground">
                   {isAr ? 'البيانات الشخصية' : 'Personal Details'}
@@ -461,7 +461,7 @@ export default function StudentProfilePage({
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-border bg-surface-subtle text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px] transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px] transition-colors"
                   />
                 </div>
 
@@ -481,7 +481,7 @@ export default function StudentProfilePage({
                     type="email"
                     disabled
                     value={profile?.email || user?.email || ''}
-                    className="w-full px-4 py-2.5 rounded-xl border border-border bg-surface-subtle/50 text-muted-foreground font-mono text-xs sm:text-sm opacity-80 cursor-not-allowed min-h-[44px]"
+                    className="w-full px-4 py-2.5 rounded-xl border border-border glass-surface/50 text-muted-foreground font-mono text-xs sm:text-sm opacity-80 cursor-not-allowed min-h-[44px]"
                   />
                   <p className="text-[11px] text-muted-foreground mt-1.5 leading-relaxed">
                     {isAr
@@ -505,7 +505,7 @@ export default function StudentProfilePage({
                         required
                         value={timezone}
                         onChange={(e) => setTimezone(e.target.value)}
-                        className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border bg-surface-subtle text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px] font-mono text-xs sm:text-sm"
+                        className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px] font-mono text-xs sm:text-sm"
                       />
                     </div>
                     <div className="mt-1.5 flex items-center justify-between gap-2">
@@ -535,7 +535,7 @@ export default function StudentProfilePage({
                         value={whatsapp}
                         onChange={(e) => setWhatsapp(e.target.value)}
                         placeholder="+1 (555) 000-0000"
-                        className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border bg-surface-subtle text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px] font-mono text-xs sm:text-sm"
+                        className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px] font-mono text-xs sm:text-sm"
                       />
                     </div>
                     <p className="text-[11px] text-muted-foreground mt-1.5">
@@ -557,7 +557,7 @@ export default function StudentProfilePage({
                       value={country}
                       onChange={(e) => setCountry(e.target.value)}
                       placeholder={isAr ? 'مثال: كندا، الولايات المتحدة، بريطانيا' : 'e.g. Canada, United States, United Kingdom'}
-                      className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border bg-surface-subtle text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px]"
+                      className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px]"
                     />
                   </div>
                 </div>
@@ -581,7 +581,7 @@ export default function StudentProfilePage({
                           className={`flex-1 py-2 px-2.5 rounded-xl text-xs font-medium border transition-colors ${
                             gender === opt.value
                               ? 'bg-secondary/30 border-primary text-primary font-semibold'
-                              : 'border-border bg-surface-subtle text-muted-foreground hover:bg-surface hover:text-foreground'
+                              : 'border-border glass-surface text-muted-foreground hover:glass-card hover:text-foreground'
                           }`}
                         >
                           {isAr ? opt.labelAr : opt.labelEn}
@@ -607,7 +607,7 @@ export default function StudentProfilePage({
                           className={`flex-1 py-2 px-2.5 rounded-xl text-xs font-medium border transition-colors ${
                             teacherGenderPreference === opt.value
                               ? 'bg-secondary/30 border-primary text-primary font-semibold'
-                              : 'border-border bg-surface-subtle text-muted-foreground hover:bg-surface hover:text-foreground'
+                              : 'border-border glass-surface text-muted-foreground hover:glass-card hover:text-foreground'
                           }`}
                         >
                           {isAr ? opt.labelAr : opt.labelEn}
@@ -636,7 +636,7 @@ export default function StudentProfilePage({
 
           {/* PANEL 2: Learning Track & Teacher */}
           {activeCategory === 'learning' && (
-            <div className="rounded-2xl border border-border bg-surface p-5 sm:p-7 shadow-2xs space-y-6">
+            <div className="rounded-2xl border border-border glass-card p-5 sm:p-7 shadow-2xs space-y-6">
               <div className="border-b border-border pb-4">
                 <h2 className="text-lg sm:text-xl font-display font-bold text-foreground">
                   {isAr ? 'المسار التعليمي والمعلم' : 'Learning Track & Teacher'}
@@ -649,7 +649,7 @@ export default function StudentProfilePage({
               </div>
 
               {/* Teacher Relationship Banner */}
-              <div className="p-4 rounded-2xl bg-surface-subtle border border-border flex items-start gap-4">
+              <div className="p-4 rounded-2xl glass-surface border border-border flex items-start gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-secondary/40 border border-secondary/60 text-accent flex items-center justify-center font-display font-bold text-lg shrink-0 mt-0.5 select-none">
                   {profile?.assignedTeacherName ? profile.assignedTeacherName.charAt(0) : 'م'}
                 </div>
@@ -709,7 +709,7 @@ export default function StudentProfilePage({
                   <span className="text-xs text-muted-foreground block mb-2">
                     {isAr ? 'الهدف التعليمي المسجل' : 'Target Learning Goal'}
                   </span>
-                  <div className="text-xs sm:text-sm text-foreground italic leading-relaxed bg-surface-subtle p-3.5 rounded-xl border border-border">
+                  <div className="text-xs sm:text-sm text-foreground italic leading-relaxed glass-surface p-3.5 rounded-xl border border-border">
                     "{profile?.learningGoal || (isAr ? 'إتقان التلاوة وضبط أحكام التجويد مع الأستاذ محمود' : 'Mastery of Quran recitation and Tajweed rules with Ustadh Mahmoud')}"
                   </div>
                 </div>
@@ -719,7 +719,7 @@ export default function StudentProfilePage({
                     <span className="text-xs text-muted-foreground block mb-2">
                       {isAr ? 'ملاحظات وتفضيلات التعلم' : 'Special Notes & Context'}
                     </span>
-                    <div className="text-xs text-muted-foreground bg-surface-subtle/50 p-3 rounded-xl border border-border">
+                    <div className="text-xs text-muted-foreground glass-surface/50 p-3 rounded-xl border border-border">
                       {profile.learningNeeds}
                     </div>
                   </div>
@@ -737,7 +737,7 @@ export default function StudentProfilePage({
                     {linkedChildren.map((child: any) => (
                       <div
                         key={child.id}
-                        className="p-3.5 rounded-xl bg-surface-subtle border border-border text-xs space-y-1"
+                        className="p-3.5 rounded-xl glass-surface border border-border text-xs space-y-1"
                       >
                         <div className="flex items-center justify-between gap-2">
                           <span className="font-semibold text-foreground text-sm">
@@ -766,7 +766,7 @@ export default function StudentProfilePage({
                     <Users className="w-4 h-4 text-accent" />
                     <span>{isAr ? 'بيانات ولي الأمر المسؤول' : 'Parent / Guardian Responsible'}</span>
                   </h3>
-                  <div className="p-3.5 rounded-xl bg-surface-subtle border border-border text-xs space-y-2">
+                  <div className="p-3.5 rounded-xl glass-surface border border-border text-xs space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-muted-foreground">{isAr ? 'اسم ولي الأمر' : 'Parent Name'}</span>
                       <span className="font-semibold text-foreground">{profile.guardian.parentName}</span>
@@ -791,7 +791,7 @@ export default function StudentProfilePage({
 
           {/* PANEL 3: Booking Preferences & Interface */}
           {activeCategory === 'preferences' && (
-            <div className="rounded-2xl border border-border bg-surface p-5 sm:p-7 shadow-2xs space-y-6">
+            <div className="rounded-2xl border border-border glass-card p-5 sm:p-7 shadow-2xs space-y-6">
               <div className="border-b border-border pb-4">
                 <h2 className="text-lg sm:text-xl font-display font-bold text-foreground">
                   {isAr ? 'تفضيلات الحجز والمظهر' : 'Booking & Preferences'}
@@ -822,7 +822,7 @@ export default function StudentProfilePage({
                     className={`flex items-start gap-3.5 p-4 rounded-xl border cursor-pointer transition-all ${
                       bookingPreference === 'self'
                         ? 'border-primary bg-secondary/30 text-foreground ring-1 ring-primary/20'
-                        : 'border-border bg-surface-subtle text-muted-foreground hover:border-border'
+                        : 'border-border glass-surface text-muted-foreground hover:border-border'
                     }`}
                   >
                     <input
@@ -849,10 +849,10 @@ export default function StudentProfilePage({
                   <label
                     className={`flex items-start gap-3.5 p-4 rounded-xl border transition-all ${
                       !canBookForChild
-                        ? 'opacity-60 cursor-not-allowed border-border bg-surface-subtle/50'
+                        ? 'opacity-60 cursor-not-allowed border-border glass-surface/50'
                         : bookingPreference === 'child'
                         ? 'border-primary bg-secondary/30 text-foreground ring-1 ring-primary/20 cursor-pointer'
-                        : 'border-border bg-surface-subtle text-muted-foreground hover:border-border cursor-pointer'
+                        : 'border-border glass-surface text-muted-foreground hover:border-border cursor-pointer'
                     }`}
                   >
                     <input
@@ -881,7 +881,7 @@ export default function StudentProfilePage({
               </div>
 
               {/* Interface Language */}
-              <div className="flex items-center justify-between p-4 rounded-xl bg-surface-subtle border border-border">
+              <div className="flex items-center justify-between p-4 rounded-xl glass-surface border border-border">
                 <div>
                   <span className="font-semibold text-foreground text-xs sm:text-sm block">
                     {isAr ? 'لغة الواجهة' : 'Interface Language'}
@@ -895,7 +895,7 @@ export default function StudentProfilePage({
                   variant="outline"
                   size="sm"
                   onClick={handleToggleLang}
-                  className="min-h-[44px] px-4 rounded-xl text-xs font-semibold cursor-pointer border-border hover:bg-surface bg-surface"
+                  className="min-h-[44px] px-4 rounded-xl text-xs font-semibold cursor-pointer border-border hover:glass-card glass-card"
                   aria-label={isAr ? 'التبديل إلى الإنجليزية' : 'Switch to Arabic'}
                 >
                   <Globe className="w-3.5 h-3.5 me-1.5 text-accent" />
@@ -904,7 +904,7 @@ export default function StudentProfilePage({
               </div>
 
               {/* Theme Preference */}
-              <div className="flex items-center justify-between p-4 rounded-xl bg-surface-subtle border border-border">
+              <div className="flex items-center justify-between p-4 rounded-xl glass-surface border border-border">
                 <div>
                   <span className="font-semibold text-foreground text-xs sm:text-sm block">
                     {isAr ? 'مظهر المنصة' : 'Appearance Theme'}
@@ -920,7 +920,7 @@ export default function StudentProfilePage({
                   variant="outline"
                   size="sm"
                   onClick={toggleTheme}
-                  className="min-h-[44px] px-4 rounded-xl text-xs font-semibold cursor-pointer border-border hover:bg-surface bg-surface"
+                  className="min-h-[44px] px-4 rounded-xl text-xs font-semibold cursor-pointer border-border hover:glass-card glass-card"
                   aria-label={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
                 >
                   {theme === 'light' ? (
@@ -956,7 +956,7 @@ export default function StudentProfilePage({
 
           {/* PANEL 4: Security & Account */}
           {activeCategory === 'security' && (
-            <div className="rounded-2xl border border-border bg-surface p-5 sm:p-7 shadow-2xs space-y-6">
+            <div className="rounded-2xl border border-border glass-card p-5 sm:p-7 shadow-2xs space-y-6">
               <div className="border-b border-border pb-4">
                 <h2 className="text-lg sm:text-xl font-display font-bold text-foreground">
                   {isAr ? 'أمان الحساب والجلسة' : 'Security & Account'}
@@ -969,7 +969,7 @@ export default function StudentProfilePage({
               </div>
 
               {/* Auth Verification Banner */}
-              <div className="p-4 rounded-xl bg-surface-subtle border border-border space-y-2">
+              <div className="p-4 rounded-xl glass-surface border border-border space-y-2">
                 <div className="flex items-center gap-2 text-foreground font-semibold text-xs sm:text-sm">
                   <ShieldCheck className="w-4 h-4 text-accent shrink-0" />
                   <span>{isAr ? 'جلسة الطالب مؤمنة' : 'Authenticated Student Session'}</span>
@@ -985,7 +985,7 @@ export default function StudentProfilePage({
               </div>
 
               {/* Diagnostic Tools */}
-              <div className="p-4 rounded-xl bg-surface-subtle border border-border space-y-3">
+              <div className="p-4 rounded-xl glass-surface border border-border space-y-3">
                 <div>
                   <span className="block text-xs font-semibold text-foreground">
                     {isAr ? 'أدوات الفحص والتحقق الأمني' : 'Security Diagnostics & Connectivity Probe'}
@@ -1000,14 +1000,14 @@ export default function StudentProfilePage({
                   <button
                     type="button"
                     onClick={probeStudentMe}
-                    className="px-3.5 py-2 rounded-xl bg-surface border border-border text-xs text-foreground font-medium hover:bg-surface-subtle transition-colors cursor-pointer min-h-[44px]"
+                    className="px-3.5 py-2 rounded-xl glass-card border-none text-xs text-foreground font-medium hover:glass-surface transition-colors cursor-pointer min-h-[44px]"
                   >
                     <span>{isAr ? 'فحص /api/student/me' : 'Probe /api/student/me'}</span>
                   </button>
                   <button
                     type="button"
                     onClick={runDiagnosticProbe}
-                    className="px-3.5 py-2 rounded-xl bg-surface border border-border text-xs text-foreground font-medium hover:bg-surface-subtle transition-colors cursor-pointer min-h-[44px]"
+                    className="px-3.5 py-2 rounded-xl glass-card border-none text-xs text-foreground font-medium hover:glass-surface transition-colors cursor-pointer min-h-[44px]"
                   >
                     <span>{isAr ? 'فحص /api/student-auth-diagnostic' : 'Probe /api/student-auth-diagnostic'}</span>
                   </button>

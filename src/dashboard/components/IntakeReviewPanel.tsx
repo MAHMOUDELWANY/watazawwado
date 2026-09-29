@@ -196,7 +196,7 @@ export default function IntakeReviewPanel({ lang, apiFetch }: IntakeReviewPanelP
           <Loader2 className="w-5 h-5 animate-spin" />
         </div>
       ) : intakes.length === 0 ? (
-        <div className="bg-surface border border-border rounded-xl p-8 text-center text-muted-foreground">
+        <div className="glass-card border-none rounded-xl p-8 text-center text-muted-foreground">
           {c.empty}
         </div>
       ) : (
@@ -211,7 +211,7 @@ export default function IntakeReviewPanel({ lang, apiFetch }: IntakeReviewPanelP
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   onClick={() => { setSelected(i); setNotes(''); setAdjustedPrice(''); setMessage(null); }}
-                  className={`w-full text-start bg-surface border rounded-xl p-4 transition-colors ${
+                  className={`w-full text-start glass-card border rounded-xl p-4 transition-colors ${
                     selected?.id === i.id ? 'border-primary' : 'border-border hover:border-accent/40'
                   }`}
                 >
@@ -237,7 +237,7 @@ export default function IntakeReviewPanel({ lang, apiFetch }: IntakeReviewPanelP
             })}
           </div>
 
-          <div className="bg-surface border border-border rounded-xl p-5">
+          <div className="glass-card border-none rounded-xl p-5">
             {!selected ? (
               <div className="text-muted-foreground text-sm flex items-center gap-2">
                 <Info className="w-4 h-4" /> {lang === 'ar' ? 'اختر طلبًا للمراجعة.' : 'Select an intake to review.'}

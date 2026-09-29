@@ -137,7 +137,7 @@ export default function StudentOffersPage({ session, lang = 'en' }: StudentOffer
       )}
 
       {offers.length === 0 && !error && (
-        <div className="bg-surface border border-border rounded-xl p-8 text-center text-muted-foreground">
+        <div className="glass-card border-none rounded-xl p-8 text-center text-muted-foreground">
           {isAr ? 'لسه مفيش عروض جاهزة.' : 'No offers yet.'}
         </div>
       )}
@@ -171,7 +171,7 @@ export default function StudentOffersPage({ session, lang = 'en' }: StudentOffer
               key={o.id}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-surface border border-border rounded-xl p-5"
+              className="glass-card border-none rounded-xl p-5"
             >
               <div className="flex items-start justify-between gap-3 flex-wrap">
                 <div>

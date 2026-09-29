@@ -56,7 +56,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
               whileTap={{ scale: 0.95 }}
               onClick={onBack}
               type="button"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-foreground bg-surface-warm dark:bg-surface-subtle hover:bg-border dark:hover:bg-surface-subtle transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-foreground bg-surface-warm dark:glass-surface hover:bg-border dark:hover:glass-surface transition-colors cursor-pointer"
             >
               <ArrowLeft className={`w-3.5 h-3.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
               <span>{isEn ? 'Back' : 'رجوع'}</span>
@@ -103,7 +103,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
               whileTap={{ scale: 0.9 }}
               onClick={onClose}
               type="button"
-              className="p-1.5 rounded-full text-foreground/60 dark:text-border/60 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
+              className="p-1.5 rounded-full text-foreground/60 dark:text-border/60 hover:bg-surface-warm dark:hover:glass-surface transition-colors cursor-pointer"
               aria-label="Close"
             >
               <X className="w-5 h-5" />

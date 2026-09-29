@@ -179,7 +179,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
   if (coreError) {
     return (
-      <div className="max-w-xl mx-auto my-8 p-6 bg-surface border border-destructive/20 rounded-2xl shadow-xs text-center">
+      <div className="max-w-xl mx-auto my-8 p-6 glass-card border border-destructive/20 rounded-2xl shadow-xs text-center">
         <AlertCircle className="w-8 h-8 text-destructive mx-auto mb-3" />
         <h3 className="text-base font-semibold text-foreground mb-1">
           {isAr ? 'حدث خطأ أثناء تحميل البيانات' : 'Could not load your student dashboard'}
@@ -352,7 +352,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
         <Link
           to="/student/lessons"
-          className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-surface border border-border hover:border-primary/40 text-foreground hover:text-primary transition-all shadow-2xs group cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl glass-card hover:border-primary/40 text-foreground hover:text-primary transition-all shadow-2xs group cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
           <div className="flex items-center gap-2.5 min-w-0">
             <BookOpen className="w-4 h-4 text-accent shrink-0" />
@@ -365,7 +365,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
         <Link
           to="/student/payments"
-          className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-surface border border-border hover:border-primary/40 text-foreground hover:text-primary transition-all shadow-2xs group cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl glass-card hover:border-primary/40 text-foreground hover:text-primary transition-all shadow-2xs group cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
           <div className="flex items-center gap-2.5 min-w-0">
             <CreditCard className="w-4 h-4 text-accent shrink-0" />
@@ -428,7 +428,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                 </div>
 
                 {/* Time & Duration Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-xl bg-surface-subtle border border-border/60 text-xs sm:text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-xl glass-surface border border-border/60 text-xs sm:text-sm">
                   <div className="flex items-center gap-2.5 text-foreground">
                     <Clock className="w-4 h-4 text-accent shrink-0" />
                     <span>
@@ -441,7 +441,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   <div className="flex items-center gap-2.5 text-muted-foreground sm:justify-end">
                     <span>{nextBooking.durationMinutes || nextBooking.duration || 45} {isAr ? 'دقيقة' : 'minutes'}</span>
                     {nextBooking.referenceCode && (
-                      <span className="font-mono text-[11px] px-2 py-0.5 rounded bg-surface border border-border">
+                      <span className="font-mono text-[11px] px-2 py-0.5 rounded glass-card">
                         {nextBooking.referenceCode}
                       </span>
                     )}
@@ -491,7 +491,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                       <ExternalLink className="w-3.5 h-3.5 opacity-80" />
                     </a>
                   ) : (
-                    <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface-subtle border border-border text-muted-foreground text-xs min-h-[44px]">
+                    <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl glass-surface border border-border text-muted-foreground text-xs min-h-[44px]">
                       <Video className="w-4 h-4 text-muted-foreground/70" />
                       <span>
                         {isAr ? 'رابط زووم سيتوفر قبل موعد الدرس' : 'Meeting link will appear soon'}
@@ -502,7 +502,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   <Link
                     id="link-home-repeat-lesson"
                     to="/student/book?repeat=true"
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-surface hover:bg-surface-subtle border border-border text-foreground text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
+                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl glass-card hover:glass-surface border border-border text-foreground text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
                   >
                     <RotateCcw className="w-3.5 h-3.5 text-accent" />
                     <span>{isAr ? 'حجز درس مماثل' : 'Repeat Lesson'}</span>
@@ -510,14 +510,14 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
                   <Link
                     to="/student/lessons"
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-surface hover:bg-surface-subtle border border-border text-foreground text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
+                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl glass-card hover:glass-surface border border-border text-foreground text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
                   >
                     <span>{isAr ? 'عرض تفاصيل الدرس' : 'View Lesson Details'}</span>
                   </Link>
                 </div>
               </div>
             ) : lastEligibleBooking && lastBookingSummary ? (
-              <div className="rounded-2xl border border-secondary/50 bg-surface p-6 sm:p-7 space-y-4">
+              <div className="rounded-2xl border border-secondary/50 glass-card p-6 sm:p-7 space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
@@ -546,7 +546,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                     </Link>
                     <Link
                       to="/student/book"
-                      className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-surface hover:bg-surface-subtle border border-border text-foreground rounded-xl text-xs sm:text-sm font-medium transition-colors min-h-[44px]"
+                      className="inline-flex items-center justify-center gap-2 px-4 py-2.5 glass-card hover:glass-surface border border-border text-foreground rounded-xl text-xs sm:text-sm font-medium transition-colors min-h-[44px]"
                     >
                       <span>{isAr ? 'استكشاف المواد' : 'Explore Topics'}</span>
                     </Link>
@@ -555,7 +555,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
               </div>
             ) : (
               /* Compact purposeful empty state (NO giant empty rectangle!) */
-              <div className="rounded-2xl border border-border bg-surface p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="rounded-2xl border border-border glass-card p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="space-y-1">
                   <h3 className="text-base sm:text-lg font-display font-bold text-foreground">
                     {isAr ? 'لا يوجد درس مجدول حالياً' : 'No lesson scheduled yet'}
@@ -594,7 +594,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
             </div>
 
             {recentLessons.length === 0 ? (
-              <div className="p-6 rounded-2xl border border-border bg-surface text-center">
+              <div className="p-6 rounded-2xl border border-border glass-card text-center">
                 <p className="text-xs sm:text-sm text-muted-foreground">
                   {isAr
                     ? 'لم تكتمل أي دروس بعد. ستظهر جلساتك السابقة وملاحظات الأستاذ محمود هنا.'
@@ -602,7 +602,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                 </p>
               </div>
             ) : (
-              <div className="divide-y divide-border border border-border rounded-2xl bg-surface overflow-hidden">
+              <div className="divide-y divide-border border border-border rounded-2xl glass-card overflow-hidden">
                 {recentLessons.map((b: any) => {
                   const dateStr = b.scheduledStart || b.scheduled_start || b.lesson_date;
                   const dt = dateStr ? DateTime.fromISO(dateStr) : null;
@@ -612,7 +612,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   return (
                     <div
                       key={b.id || b.referenceCode}
-                      className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-surface-subtle/50 transition-colors"
+                      className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:glass-surface/50 transition-colors"
                     >
                       <div className="space-y-1 min-w-0">
                         <div className="flex items-center gap-2">
@@ -642,7 +642,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                       <div className="flex items-center gap-2 self-start sm:self-center shrink-0">
                         <Link
                           to="/student/lessons"
-                          className="px-3 py-1.5 rounded-lg border border-border hover:bg-surface text-foreground text-xs font-medium transition-colors"
+                          className="px-3 py-1.5 rounded-lg border border-border hover:glass-card text-foreground text-xs font-medium transition-colors"
                         >
                           {isAr ? 'التفاصيل' : 'Details'}
                         </Link>
@@ -753,7 +753,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                 </div>
 
                 {packagesData?.creditSummary && (
-                  <div className="grid grid-cols-2 gap-2 text-xs p-2.5 rounded-lg bg-surface-subtle border border-border text-muted-foreground">
+                  <div className="grid grid-cols-2 gap-2 text-xs p-2.5 rounded-lg glass-surface border border-border text-muted-foreground">
                     <div>
                       <span>{isAr ? 'المستخدم:' : 'Used:'} </span>
                       <span className="font-semibold text-foreground">
@@ -886,7 +886,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                 </p>
                 <Link
                   to="/student/payments"
-                  className="w-full inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-surface hover:bg-surface-subtle border border-border text-foreground hover:text-primary text-xs font-medium transition-all shadow-2xs"
+                  className="w-full inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl glass-card hover:glass-surface border border-border text-foreground hover:text-primary text-xs font-medium transition-all shadow-2xs"
                 >
                   <span>{isAr ? 'عرض صفحة المدفوعات' : 'View Payments'}</span>
                   <ArrowRight className={`w-3.5 h-3.5 ${isAr ? 'rotate-180' : ''}`} />

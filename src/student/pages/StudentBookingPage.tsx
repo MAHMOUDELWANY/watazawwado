@@ -62,7 +62,7 @@ export class BookingErrorBoundary extends Component<BookingErrorBoundaryProps, B
           <div className="pt-2 flex justify-center gap-3">
             <Link
               to="/student"
-              className="px-4 py-2 rounded-xl text-xs font-semibold bg-surface-subtle text-foreground hover:bg-border/40 transition-colors"
+              className="px-4 py-2 rounded-xl text-xs font-semibold glass-surface text-foreground hover:bg-border/40 transition-colors"
             >
               ← Return to Student Portal
             </Link>
@@ -722,7 +722,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
         <div className="pt-2 flex justify-center gap-3">
           <Link
             to="/student"
-            className="px-4 py-2 rounded-xl text-xs font-semibold bg-surface-subtle text-foreground hover:bg-border/40 transition-colors"
+            className="px-4 py-2 rounded-xl text-xs font-semibold glass-surface text-foreground hover:bg-border/40 transition-colors"
           >
             ← Return to Dashboard
           </Link>
@@ -764,7 +764,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
         <div className="pt-2 flex justify-center gap-3">
           <Link
             to="/student"
-            className="px-4 py-2 rounded-xl text-xs font-semibold bg-surface-subtle text-foreground hover:bg-border/40 transition-colors"
+            className="px-4 py-2 rounded-xl text-xs font-semibold glass-surface text-foreground hover:bg-border/40 transition-colors"
           >
             ← Return to Dashboard
           </Link>
@@ -815,7 +815,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
           </p>
         </div>
 
-        <div className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl bg-surface border border-border shadow-xs self-start sm:self-auto">
+        <div className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl glass-card border-none shadow-xs self-start sm:self-auto">
           <div className="p-1 rounded-full bg-secondary/30 text-primary">
             <ShieldCheck className="w-4 h-4" />
           </div>
@@ -831,7 +831,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
       </div>
 
       {lastEligibleBooking && lastBookingSummary && !reuseDismissed && !isReusing && !requestedServiceId && (
-        <div className="rounded-2xl border border-border/60 bg-surface-subtle p-4 shadow-xs">
+        <div className="rounded-2xl border border-border/60 glass-surface p-4 shadow-xs">
           <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.14em] text-muted-foreground font-semibold">
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Booking context</span>
@@ -875,7 +875,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
       {lastEligibleBooking && lastBookingSummary && !reuseDismissed && !isReusing && !requestedServiceId ? (
         <div
           id="repeat-last-booking-card"
-          className="max-w-xl mx-auto p-6 sm:p-8 rounded-3xl bg-surface border border-border shadow-sm space-y-6"
+          className="max-w-xl mx-auto p-6 sm:p-8 rounded-3xl glass-card border-none space-y-6"
         >
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-2xl bg-secondary/30 text-primary">
@@ -891,7 +891,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-surface-subtle border border-border space-y-1.5 text-xs">
+          <div className="p-4 rounded-2xl glass-surface border border-border space-y-1.5 text-xs">
             <div className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
               Previous lesson details
             </div>
@@ -923,7 +923,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
               type="button"
               id="btn-dismiss-reuse-booking"
               onClick={handleDismissReuse}
-              className="w-full p-4 rounded-2xl bg-surface border border-border text-foreground hover:bg-surface-subtle font-medium text-xs transition-all shadow-xs flex flex-col items-start gap-1 cursor-pointer text-start"
+              className="w-full p-4 rounded-2xl glass-card border-none text-foreground hover:glass-surface font-medium text-xs transition-all shadow-xs flex flex-col items-start gap-1 cursor-pointer text-start"
             >
               <div className="flex items-center gap-1.5 font-semibold text-sm">
                 <Sparkles className="w-4 h-4 text-accent" />

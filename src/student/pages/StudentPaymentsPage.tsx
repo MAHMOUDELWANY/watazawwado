@@ -197,7 +197,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
       </div>
 
       {/* 2. Verification Policy & WhatsApp Card */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-surface-subtle border border-border-subtle flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs leading-relaxed text-muted-foreground">
+      <div className="p-4 sm:p-5 rounded-2xl glass-surface border border-border-subtle flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs leading-relaxed text-muted-foreground">
         <div className="flex items-start gap-3">
           <ShieldCheck className="w-5 h-5 text-accent shrink-0 mt-0.5" />
           <div className="space-y-1">
@@ -226,7 +226,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
 
       {/* 3. Summary Counters */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Card className="border-border bg-surface">
+        <Card className="border-border glass-card">
           <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">
@@ -245,7 +245,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
           </CardContent>
         </Card>
 
-        <Card className="border-border bg-surface">
+        <Card className="border-border glass-card">
           <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">
@@ -289,7 +289,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
                   setSelectedBookingForClaim(b);
                   setIsClaimModalOpen(true);
                 }}
-                className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-surface border border-warning/40 text-foreground hover:border-warning rounded-xl text-xs font-medium transition-colors cursor-pointer"
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 glass-card border border-warning/40 text-foreground hover:border-warning rounded-xl text-xs font-medium transition-colors cursor-pointer"
               >
                 <span>{b.serviceTitle} ({b.referenceCode})</span>
                 <span className="text-primary font-bold">{isAr ? 'إرسال الإثبات' : 'Claim'} →</span>
@@ -332,7 +332,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
             </p>
           </div>
         ) : authError ? (
-          <div className="p-6 bg-surface border border-warning/30 rounded-2xl text-center space-y-3">
+          <div className="p-6 glass-card border border-warning/30 rounded-2xl text-center space-y-3">
             <AlertCircle className="w-6 h-6 text-warning mx-auto" />
             <p className="text-sm font-medium text-foreground">
               {isAr ? 'جلسة الدخول غير متاحة أو منتهية' : 'Your session is unavailable or has expired'}
@@ -352,14 +352,14 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
               <button
                 type="button"
                 onClick={fetchData}
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-surface hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 glass-card hover:glass-surface text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
               >
                 <span>{isAr ? 'إعادة المحاولة' : 'Try Again'}</span>
               </button>
             </div>
           </div>
         ) : error ? (
-          <div className="p-6 bg-surface border border-destructive/20 rounded-2xl text-center space-y-3">
+          <div className="p-6 glass-card border border-destructive/20 rounded-2xl text-center space-y-3">
             <AlertCircle className="w-6 h-6 text-destructive mx-auto" />
             <p className="text-xs text-muted-foreground">{error}</p>
             <button
@@ -371,7 +371,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
             </button>
           </div>
         ) : payments.length === 0 ? (
-          <div className="text-center py-16 px-4 bg-surface border border-border rounded-3xl space-y-4">
+          <div className="text-center py-16 px-4 glass-card border-none rounded-3xl space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-secondary/30 text-accent flex items-center justify-center mx-auto">
               <CreditCard className="w-6 h-6" />
             </div>
@@ -403,7 +403,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
               const dateObj = DateTime.fromISO(p.createdAt || p.created_at);
 
               return (
-                <Card key={p.id} className="border-border bg-surface hover:border-secondary/60 transition-colors">
+                <Card key={p.id} className="border-border glass-card hover:border-secondary/60 transition-colors">
                   <CardContent className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2">
@@ -423,7 +423,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
                           </span>
                         </div>
                         {p.paymentMethod && (
-                          <span className="uppercase font-mono text-[11px] px-2 py-0.5 rounded bg-surface-subtle border border-border">
+                          <span className="uppercase font-mono text-[11px] px-2 py-0.5 rounded glass-surface border border-border">
                             {p.paymentMethod.replace(/_/g, ' ')}
                           </span>
                         )}

@@ -233,7 +233,7 @@ export default function IntakeConversation({ session, lang = 'en', onCompleted }
 
       <div
         ref={scrollRef}
-        className="bg-surface border border-border rounded-xl p-4 space-y-4 max-h-[55vh] overflow-y-auto"
+        className="glass-card border-none rounded-xl p-4 space-y-4 max-h-[55vh] overflow-y-auto"
         aria-live="polite"
       >
         {opening && (
@@ -258,7 +258,7 @@ export default function IntakeConversation({ session, lang = 'en', onCompleted }
       {aiUnavailable && (
         <div
           role="status"
-          className="mt-3 flex items-start gap-2.5 text-sm text-muted-foreground bg-surface-subtle border border-border rounded-lg p-3.5"
+          className="mt-3 flex items-start gap-2.5 text-sm text-muted-foreground glass-surface border border-border rounded-lg p-3.5"
         >
           <Info className="w-4 h-4 mt-0.5 shrink-0 text-foreground/60" aria-hidden="true" />
           <div className="space-y-0.5">
@@ -284,7 +284,7 @@ export default function IntakeConversation({ session, lang = 'en', onCompleted }
             placeholder={t.placeholder}
             rows={1}
             disabled={loading}
-            className="flex-1 resize-none bg-surface border border-border rounded-lg px-3 py-3 text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+            className="flex-1 resize-none glass-card border-none rounded-lg px-3 py-3 text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-focus"
             aria-label={t.placeholder}
           />
           <button
@@ -302,7 +302,7 @@ export default function IntakeConversation({ session, lang = 'en', onCompleted }
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-6 bg-surface border border-border rounded-xl p-5"
+          className="mt-6 glass-card border-none rounded-xl p-5"
         >
           <h2 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
             <CheckCircle2 className="w-5 h-5 text-success" aria-hidden="true" />

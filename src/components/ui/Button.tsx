@@ -15,9 +15,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const variants = {
       primary: "bg-primary text-white hover:bg-primary/90 shadow-sm",
       secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-      ghost: "hover:bg-surface-subtle text-foreground",
-      outline: "border border-border bg-transparent hover:bg-surface-subtle text-foreground",
-      glass: "glass-panel text-foreground hover:bg-surface-warm/80 dark:hover:bg-surface-subtle/80 shadow-sm border border-brand/20",
+      ghost: "hover:glass-surface text-foreground",
+      outline: "border border-border bg-transparent hover:glass-surface text-foreground",
+      glass: "glass-surface text-foreground hover:bg-surface-warm/80 dark:hover:glass-surface/80 border border-brand/20 glass-hover",
     };
 
     const sizes = {

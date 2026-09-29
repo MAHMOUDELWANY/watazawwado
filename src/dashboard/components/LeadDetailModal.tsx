@@ -45,7 +45,7 @@ const AVAILABLE_SERVICES = [
 const STAGE_CONFIG: Record<LeadStatus, { label: string; color: string; description: string }> = {
   visitor: {
     label: 'Visitor',
-    color: 'bg-surface-subtle text-muted-foreground border border-border-subtle',
+    color: 'glass-surface text-muted-foreground border border-border-subtle',
     description: 'Initial touchpoint or browsing inquiry'
   },
   lead: {
@@ -85,7 +85,7 @@ const STAGE_CONFIG: Record<LeadStatus, { label: string; color: string; descripti
   },
   lost: {
     label: 'Lost / Postponed',
-    color: 'bg-surface-subtle text-muted-foreground border border-border-subtle',
+    color: 'glass-surface text-muted-foreground border border-border-subtle',
     description: 'Decided not to proceed or uncontactable'
   }
 };
@@ -176,17 +176,17 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
       aria-modal="true"
     >
       <div
-        className="bg-surface text-foreground rounded-2xl w-full max-w-2xl shadow-xl border border-border overflow-hidden flex flex-col max-h-[92vh]"
+        className="glass-card text-foreground rounded-2xl w-full max-w-2xl shadow-xl border border-border overflow-hidden flex flex-col max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="p-5 sm:p-6 border-b border-border flex items-start justify-between gap-4 bg-surface-subtle">
+        <div className="p-5 sm:p-6 border-b border-border flex items-start justify-between gap-4 glass-surface">
           <div>
             <div className="flex items-center gap-2 mb-1 flex-wrap">
-              <span className={`text-xs font-semibold px-2.5 py-0.5 rounded ${STAGE_CONFIG[currentStatus]?.color || 'bg-surface-subtle text-foreground'}`}>
+              <span className={`text-xs font-semibold px-2.5 py-0.5 rounded ${STAGE_CONFIG[currentStatus]?.color || 'glass-surface text-foreground'}`}>
                 {STAGE_CONFIG[currentStatus]?.label || currentStatus}
               </span>
-              <span className="text-xs font-medium px-2 py-0.5 rounded bg-surface border border-border-subtle text-muted-foreground">
+              <span className="text-xs font-medium px-2 py-0.5 rounded glass-card border-none-subtle text-muted-foreground">
                 {lead.learner_type === 'child' ? 'Child Learner' : 'Adult Learner'}
               </span>
               {lead.source && (
@@ -206,7 +206,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:glass-card transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -243,7 +243,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
           )}
 
           {/* Quick Communication Bar */}
-          <div className="p-4 rounded-xl bg-surface-subtle border border-border flex flex-wrap items-center justify-between gap-3">
+          <div className="p-4 rounded-xl glass-surface border border-border flex flex-wrap items-center justify-between gap-3">
             <div className="space-y-0.5 text-xs">
               <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
                 Contact Information
@@ -270,7 +270,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                   <span>WhatsApp</span>
                 </a>
               ) : (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface text-muted-foreground border border-border text-xs font-medium cursor-not-allowed opacity-60">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg glass-card text-muted-foreground border border-border text-xs font-medium cursor-not-allowed opacity-60">
                   <MessageCircle className="w-3.5 h-3.5" />
                   <span>No WhatsApp</span>
                 </span>
@@ -278,7 +278,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
               {lead.email && (
                 <a
                   href={`mailto:${lead.email}`}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface border border-border text-xs font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg glass-card border-none text-xs font-medium text-foreground hover:glass-surface transition-colors cursor-pointer"
                 >
                   <Mail className="w-3.5 h-3.5" />
                   <span>Email</span>
@@ -309,7 +309,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                     className={`p-2 rounded-xl text-xs text-left border transition-all cursor-pointer ${
                       isSelected
                         ? 'border-primary bg-secondary/30 text-primary font-semibold shadow-2xs'
-                        : 'border-border bg-surface text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
+                        : 'border-border glass-card text-muted-foreground hover:text-foreground hover:glass-surface'
                     }`}
                   >
                     <div>{STAGE_CONFIG[statusKey].label}</div>
@@ -327,7 +327,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                   <Sparkles className="w-4 h-4" />
                   <span>Associated Free Trial</span>
                 </div>
-                <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-surface text-warning-foreground border border-warning/30">
+                <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded glass-card text-warning-foreground border border-warning/30">
                   {lead.trial_booking.reference_code}
                 </span>
               </div>
@@ -357,7 +357,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
               </div>
             </div>
           ) : (
-            <div className="p-3.5 rounded-xl bg-surface-subtle border border-border text-xs text-muted-foreground flex items-center justify-between">
+            <div className="p-3.5 rounded-xl glass-surface border border-border text-xs text-muted-foreground flex items-center justify-between">
               <span>No trial booked yet by this lead.</span>
               {lead.status !== 'trial_booked' && (
                 <button
@@ -381,7 +381,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                 <select
                   value={serviceInterest}
                   onChange={(e) => setServiceInterest(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 rounded-lg border border-border glass-card text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="">General / Undecided</option>
                   {AVAILABLE_SERVICES.map(s => (
@@ -399,7 +399,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                   value={goal}
                   onChange={(e) => setGoal(e.target.value)}
                   placeholder="e.g. Reading fluency, Hifz Surah Al-Baqarah, speaking Egyptian Arabic"
-                  className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3 py-2 rounded-lg border border-border glass-card text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
             </div>
@@ -413,14 +413,14 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Log notes from WhatsApp chats, student background, budget, preferred lesson days, parent requests..."
-                className="w-full px-3 py-2 rounded-lg border border-border bg-surface text-xs font-sans text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-3 py-2 rounded-lg border border-border glass-card text-xs font-sans text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
           </div>
         </div>
 
         {/* Modal Footer */}
-        <div className="p-4 sm:p-5 border-t border-border bg-surface-subtle flex flex-wrap items-center justify-between gap-3">
+        <div className="p-4 sm:p-5 border-t border-border glass-surface flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             {currentStatus !== 'active_student' && (
               <button
@@ -450,7 +450,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
             <button
               type="button"
               onClick={onClose}
-              className="px-3.5 py-2 rounded-xl border border-border text-xs font-medium text-foreground hover:bg-surface transition-colors cursor-pointer"
+              className="px-3.5 py-2 rounded-xl border border-border text-xs font-medium text-foreground hover:glass-card transition-colors cursor-pointer"
             >
               Cancel
             </button>

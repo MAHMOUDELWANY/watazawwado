@@ -229,7 +229,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
           className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
             filter === 'all'
               ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
-              : 'bg-surface text-muted-foreground hover:text-foreground border border-border'
+              : 'glass-card text-muted-foreground hover:text-foreground border border-border'
           }`}
         >
           {isAr ? 'الكل' : 'All'} ({notifications.length})
@@ -240,7 +240,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
           className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
             filter === 'unread'
               ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
-              : 'bg-surface text-muted-foreground hover:text-foreground border border-border'
+              : 'glass-card text-muted-foreground hover:text-foreground border border-border'
           }`}
         >
           {isAr ? 'غير المقروء' : 'Unread'} ({unreadCount})
@@ -256,7 +256,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
           </p>
         </div>
       ) : authError ? (
-        <div className="p-6 bg-surface border border-warning/30 rounded-2xl text-center max-w-md mx-auto space-y-3">
+        <div className="p-6 glass-card border border-warning/30 rounded-2xl text-center max-w-md mx-auto space-y-3">
           <AlertCircle className="w-7 h-7 text-warning mx-auto" />
           <p className="text-sm font-semibold text-foreground">
             {isAr ? 'جلسة الدخول غير متاحة أو منتهية' : 'Your session is unavailable or has expired'}
@@ -276,14 +276,14 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
             <button
               type="button"
               onClick={fetchNotificationData}
-              className="px-4 py-2 bg-surface border border-border text-foreground rounded-xl text-xs font-medium min-h-[44px]"
+              className="px-4 py-2 glass-card border-none text-foreground rounded-xl text-xs font-medium min-h-[44px]"
             >
               {isAr ? 'إعادة المحاولة' : 'Try Again'}
             </button>
           </div>
         </div>
       ) : error ? (
-        <div className="p-6 bg-surface border border-destructive/20 rounded-2xl text-center max-w-md mx-auto">
+        <div className="p-6 glass-card border border-destructive/20 rounded-2xl text-center max-w-md mx-auto">
           <AlertCircle className="w-7 h-7 text-destructive mx-auto mb-2" />
           <p className="text-sm font-semibold text-foreground mb-3">{error}</p>
           <button
@@ -295,7 +295,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
           </button>
         </div>
       ) : filteredItems.length === 0 ? (
-        <div className="p-10 bg-surface border border-border rounded-2xl text-center space-y-3">
+        <div className="p-10 glass-card border-none rounded-2xl text-center space-y-3">
           <div className="w-12 h-12 rounded-2xl bg-secondary/30 text-accent flex items-center justify-center mx-auto">
             <Bell className="w-6 h-6" />
           </div>
@@ -309,16 +309,16 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
           </p>
         </div>
       ) : (
-        <div className="divide-y divide-border border border-border rounded-2xl bg-surface overflow-hidden">
+        <div className="divide-y divide-border border border-border rounded-2xl glass-card overflow-hidden">
           {filteredItems.map(item => (
             <div
               key={item.id}
               className={`p-4 sm:p-5 flex flex-col sm:flex-row sm:items-start justify-between gap-4 transition-colors ${
-                item.read ? 'opacity-85 hover:bg-surface-subtle/50' : 'bg-secondary/20 hover:bg-secondary/30'
+                item.read ? 'opacity-85 hover:glass-surface/50' : 'bg-secondary/20 hover:bg-secondary/30'
               }`}
             >
               <div className="flex items-start gap-3 sm:gap-4 min-w-0">
-                <div className="p-2.5 rounded-xl bg-surface border border-border shrink-0 mt-0.5">
+                <div className="p-2.5 rounded-xl glass-card border-none shrink-0 mt-0.5">
                   {getIcon(item.type)}
                 </div>
                 <div className="space-y-1 min-w-0">
@@ -356,7 +356,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
                   ) : (
                     <Link
                       to={item.actionUrl}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-surface hover:bg-surface-subtle border border-border text-foreground hover:text-primary rounded-xl text-xs font-semibold transition-colors shadow-2xs"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 glass-card hover:glass-surface border border-border text-foreground hover:text-primary rounded-xl text-xs font-semibold transition-colors shadow-2xs"
                     >
                       <span>{isAr ? (item.actionLabelAr || 'عرض') : (item.actionLabel || 'View')}</span>
                       <ArrowRight className={`w-3.5 h-3.5 ${isAr ? 'rotate-180' : ''}`} />
@@ -368,7 +368,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
                   <button
                     type="button"
                     onClick={() => markAsRead(item.id)}
-                    className="p-2 text-muted-foreground hover:text-foreground rounded-lg hover:bg-surface transition-colors cursor-pointer"
+                    className="p-2 text-muted-foreground hover:text-foreground rounded-lg hover:glass-card transition-colors cursor-pointer"
                     title={isAr ? 'تحديد كمقروء' : 'Mark as read'}
                     aria-label={isAr ? 'تحديد كمقروء' : 'Mark as read'}
                   >

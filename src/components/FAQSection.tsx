@@ -56,8 +56,8 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ lang }) => {
                 key={index}
                 className={`rounded-xl border transition-all overflow-hidden ${
                   isOpen
-                    ? 'bg-surface border-primary/50 shadow-2xs'
-                    : 'bg-surface border-border hover:border-secondary/60'
+                    ? 'glass-card border-primary/50 shadow-2xs'
+                    : 'glass-card border-border hover:border-secondary/60'
                 }`}
               >
                 <button
@@ -72,7 +72,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ lang }) => {
                   </span>
                   <span
                     className={`p-1.5 rounded-lg shrink-0 transition-transform duration-200 ${
-                      isOpen ? 'rotate-180 bg-secondary/30 text-accent' : 'bg-surface-subtle text-muted-foreground'
+                      isOpen ? 'rotate-180 bg-secondary/30 text-accent' : 'glass-surface text-muted-foreground'
                     }`}
                   >
                     <ChevronDown className="w-4 h-4" />

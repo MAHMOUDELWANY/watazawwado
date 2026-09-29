@@ -609,4 +609,151 @@ body {
   .transition-reveal {
     transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   }
+
+  /* ================== LIQUID GLASS SYSTEM ================== */
+  /* Hierarchy: Surface < Panel < Card < Nav < Sheet < Dialog */
+  
+  .glass-surface {
+    background: rgba(248, 246, 240, 0.55);
+    backdrop-filter: blur(8px) saturate(120%);
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
+    border: 1px solid rgba(216, 198, 174, 0.15);
+  }
+  .dark .glass-surface {
+    background: rgba(36, 34, 32, 0.6);
+    border: 1px solid rgba(216, 198, 174, 0.08);
+  }
+
+  .glass-card {
+    background: rgba(248, 246, 240, 0.72);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border: 1px solid rgba(216, 198, 174, 0.25);
+    box-shadow:
+      0 0 0 0.5px rgba(255, 255, 255, 0.1) inset,
+      0 4px 24px rgba(0, 0, 0, 0.03),
+      0 1px 2px rgba(0, 0, 0, 0.02);
+  }
+  .dark .glass-card {
+    background: rgba(44, 42, 39, 0.72);
+    border: 1px solid rgba(216, 198, 174, 0.12);
+    box-shadow:
+      0 0 0 0.5px rgba(255, 255, 255, 0.05) inset,
+      0 4px 24px rgba(0, 0, 0, 0.15),
+      0 1px 2px rgba(0, 0, 0, 0.08);
+  }
+
+  .glass-nav {
+    background: rgba(248, 246, 240, 0.8);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    border: 1px solid rgba(216, 198, 174, 0.2);
+    box-shadow:
+      0 0 0 0.5px rgba(255, 255, 255, 0.15) inset,
+      0 8px 32px rgba(0, 0, 0, 0.04);
+  }
+  .dark .glass-nav {
+    background: rgba(36, 34, 32, 0.82);
+    border: 1px solid rgba(216, 198, 174, 0.1);
+    box-shadow:
+      0 0 0 0.5px rgba(255, 255, 255, 0.06) inset,
+      0 8px 32px rgba(0, 0, 0, 0.2);
+  }
+
+  .glass-sheet {
+    background: rgba(248, 246, 240, 0.88);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid rgba(216, 198, 174, 0.2);
+    box-shadow:
+      0 0 0 0.5px rgba(255, 255, 255, 0.2) inset,
+      0 16px 48px rgba(0, 0, 0, 0.06),
+      0 2px 8px rgba(0, 0, 0, 0.03);
+  }
+  .dark .glass-sheet {
+    background: rgba(44, 42, 39, 0.88);
+    border: 1px solid rgba(216, 198, 174, 0.12);
+    box-shadow:
+      0 0 0 0.5px rgba(255, 255, 255, 0.06) inset,
+      0 16px 48px rgba(0, 0, 0, 0.25),
+      0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .glass-dialog {
+    background: rgba(248, 246, 240, 0.92);
+    backdrop-filter: blur(32px) saturate(170%);
+    -webkit-backdrop-filter: blur(32px) saturate(170%);
+    border: 1px solid rgba(216, 198, 174, 0.25);
+    box-shadow:
+      0 0 0 0.5px rgba(255, 255, 255, 0.25) inset,
+      0 24px 64px rgba(0, 0, 0, 0.08),
+      0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+  .dark .glass-dialog {
+    background: rgba(44, 42, 39, 0.92);
+    border: 1px solid rgba(216, 198, 174, 0.15);
+    box-shadow:
+      0 0 0 0.5px rgba(255, 255, 255, 0.08) inset,
+      0 24px 64px rgba(0, 0, 0, 0.3),
+      0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Glass hover elevation modifier */
+  .glass-hover {
+    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+                box-shadow 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .glass-hover:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      0 0 0 0.5px rgba(255, 255, 255, 0.15) inset,
+      0 12px 40px rgba(0, 0, 0, 0.06),
+      0 2px 6px rgba(0, 0, 0, 0.03);
+  }
+  .dark .glass-hover:hover {
+    box-shadow:
+      0 0 0 0.5px rgba(255, 255, 255, 0.08) inset,
+      0 12px 40px rgba(0, 0, 0, 0.2),
+      0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .glass-hover:hover {
+      transform: none;
+    }
+  }
+
+  /* Glass specular edge — luminous top edge highlight */
+  .glass-specular::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.12) 0%,
+      transparent 40%
+    );
+  }
+  .dark .glass-specular::before {
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.06) 0%,
+      transparent 40%
+    );
+  }
+
+  /* Glass brand tint — subtle warm brand glow edge */
+  .glass-brand-edge {
+    box-shadow:
+      0 0 0 0.5px rgba(255, 255, 255, 0.15) inset,
+      0 0 24px -8px rgba(197, 31, 36, 0.08),
+      0 0 24px -8px rgba(8, 125, 145, 0.06);
+  }
+  .dark .glass-brand-edge {
+    box-shadow:
+      0 0 0 0.5px rgba(255, 255, 255, 0.06) inset,
+      0 0 24px -8px rgba(197, 31, 36, 0.12),
+      0 0 24px -8px rgba(8, 125, 145, 0.08);
+  }
 }

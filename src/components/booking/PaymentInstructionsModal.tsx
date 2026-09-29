@@ -50,7 +50,7 @@ export const PaymentInstructionsModal: React.FC<PaymentInstructionsModalProps> =
           initial={{ opacity: 0, scale: 0.95, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
-          className="relative w-full max-w-2xl bg-surface rounded-3xl shadow-2xl z-10 overflow-hidden my-8 max-h-[90vh] overflow-y-auto"
+          className="relative w-full max-w-2xl glass-card rounded-3xl shadow-2xl z-10 overflow-hidden my-8 max-h-[90vh] overflow-y-auto"
         >
           {/* Close button */}
           <button

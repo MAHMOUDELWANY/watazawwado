@@ -57,7 +57,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
   return (
     <section
       id="contact"
-      className="py-20 md:py-28 bg-surface-subtle border-b border-border/80 transition-colors"
+      className="py-20 md:py-28 glass-surface border-b border-border/80 transition-colors"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -89,7 +89,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
           <div className="lg:col-span-5 space-y-5">
             
             {/* Primary WhatsApp Card */}
-            <div className="p-7 rounded-2xl bg-surface border border-border shadow-2xs hover:border-primary/40 transition-all">
+            <div className="p-7 rounded-2xl glass-card border-none shadow-2xs hover:border-primary/40 transition-all">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-11 h-11 rounded-xl bg-secondary/30 text-accent flex items-center justify-center">
                   <MessageCircle className="w-5 h-5" />
@@ -122,7 +122,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
             </div>
 
             {/* Email Card */}
-            <div className="p-6 rounded-2xl bg-surface border border-border shadow-2xs">
+            <div className="p-6 rounded-2xl glass-card border-none shadow-2xs">
               <div className="flex items-center gap-3 mb-2">
                 <Mail className="w-5 h-5 text-accent" />
                 <h4 className="font-display text-base font-medium text-foreground">
@@ -143,7 +143,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
             </div>
 
             {/* Policy Recap */}
-            <div className="p-5 rounded-xl bg-surface border border-border text-xs text-muted-foreground space-y-2">
+            <div className="p-5 rounded-xl glass-card border-none text-xs text-muted-foreground space-y-2">
               <div className="flex items-center gap-2 font-semibold text-foreground">
                 <Clock className="w-4 h-4 text-accent" />
                 <span>{isEn ? 'Core Scheduling Policy' : 'سياسة المواعيد الأساسية'}</span>
@@ -158,7 +158,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
           </div>
 
           {/* Direct Message Form (7 cols on lg) */}
-          <div className="lg:col-span-7 bg-surface border border-border rounded-2xl p-7 sm:p-9 shadow-xs">
+          <div className="lg:col-span-7 glass-card border-none rounded-2xl p-7 sm:p-9 shadow-xs">
             {formSubmitted ? (
               <div className="py-12 text-center space-y-4">
                 <div className="w-14 h-14 rounded-full bg-secondary/30 text-accent flex items-center justify-center mx-auto">

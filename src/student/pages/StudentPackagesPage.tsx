@@ -272,7 +272,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
     return (
       <div className="space-y-8 max-w-5xl mx-auto pb-12">
         <StudentPageBack to="/student" label={isAr ? 'العودة للرئيسية' : 'Back to Dashboard'} />
-        <div className="p-6 bg-surface border border-warning/30 rounded-2xl text-center space-y-3">
+        <div className="p-6 glass-card border border-warning/30 rounded-2xl text-center space-y-3">
           <AlertCircle className="w-6 h-6 text-warning mx-auto" />
           <p className="text-sm font-medium text-foreground">
             {isAr ? 'جلسة الدخول غير متاحة أو منتهية' : 'Your session is unavailable or has expired'}
@@ -292,7 +292,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
             <button
               type="button"
               onClick={fetchPackages}
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-surface hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 glass-card hover:glass-surface text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
             >
               <span>{isAr ? 'إعادة المحاولة' : 'Try Again'}</span>
             </button>
@@ -332,7 +332,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
       {/* 2. Top Metric Cards (Credit Summary) */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Remaining Credits */}
-        <Card className="border-border bg-surface">
+        <Card className="border-border glass-card">
           <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
               <span className="text-xs font-medium text-muted-foreground block">
@@ -352,7 +352,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
         </Card>
 
         {/* Total Used */}
-        <Card className="border-border bg-surface">
+        <Card className="border-border glass-card">
           <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
               <span className="text-xs font-medium text-muted-foreground block">
@@ -365,14 +365,14 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                 {isAr ? 'دروس تم إتمامها واستهلاكها' : 'Consumed from active packages'}
               </span>
             </div>
-            <div className="p-3.5 rounded-2xl bg-surface-subtle text-muted-foreground">
+            <div className="p-3.5 rounded-2xl glass-surface text-muted-foreground">
               <Clock className="w-6 h-6" />
             </div>
           </CardContent>
         </Card>
 
         {/* Total Purchased */}
-        <Card className="border-border bg-surface">
+        <Card className="border-border glass-card">
           <CardContent className="p-5 flex items-center justify-between">
             <div className="space-y-1">
               <span className="text-xs font-medium text-muted-foreground block">
@@ -385,7 +385,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                 {isAr ? 'رصيد تراكمي منذ بدء التعلم' : 'Cumulative lessons granted'}
               </span>
             </div>
-            <div className="p-3.5 rounded-2xl bg-surface-subtle text-muted-foreground">
+            <div className="p-3.5 rounded-2xl glass-surface text-muted-foreground">
               <Sparkles className="w-6 h-6" />
             </div>
           </CardContent>
@@ -393,7 +393,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
       </div>
 
       {/* 3. Package Policy & Rules Card */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-surface-subtle border border-border-subtle flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs leading-relaxed text-muted-foreground">
+      <div className="p-4 sm:p-5 rounded-2xl glass-surface border border-border-subtle flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs leading-relaxed text-muted-foreground">
         <div className="flex items-start gap-3">
           <ShieldCheck className="w-5 h-5 text-accent shrink-0 mt-0.5" />
           <div className="space-y-1">
@@ -424,7 +424,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
           href="https://wa.me/201026042456?text=Assalamu%20Alaikum%20Ustadh%20Mahmoud%2C%20I%20have%20a%20question%20regarding%20lesson%20packages."
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 px-4 py-2 bg-surface hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs font-medium transition-colors shrink-0 self-start md:self-auto min-h-[38px]"
+          className="inline-flex items-center gap-1.5 px-4 py-2 glass-card hover:glass-surface text-foreground border border-border rounded-xl text-xs font-medium transition-colors shrink-0 self-start md:self-auto min-h-[38px]"
         >
           <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />
           <span>{isAr ? 'استفسار عبر واتساب' : 'Inquire on WhatsApp'}</span>
@@ -444,7 +444,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
         </div>
 
         {entitlements.length === 0 ? (
-          <div className="p-6 rounded-2xl bg-surface border border-border text-center space-y-2">
+          <div className="p-6 rounded-2xl glass-card border-none text-center space-y-2">
             <Package className="w-8 h-8 text-muted-foreground mx-auto" />
             <p className="text-xs sm:text-sm text-foreground font-medium">
               {isAr ? 'ليس لديك باقات نشطة حالياً' : 'No active packages yet'}
@@ -465,7 +465,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                   : 0;
 
               return (
-                <Card key={ent.id} className="border-border bg-surface">
+                <Card key={ent.id} className="border-border glass-card">
                   <CardContent className="p-5 sm:p-6 space-y-4">
                     <div className="flex items-start justify-between gap-3">
                       <div>
@@ -499,7 +499,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                           {ent.remainingCredits} / {ent.purchasedQuantity}
                         </span>
                       </div>
-                      <div className="w-full h-2 rounded-full bg-surface-subtle overflow-hidden">
+                      <div className="w-full h-2 rounded-full glass-surface overflow-hidden">
                         <div
                           className="h-full bg-primary transition-all duration-500 rounded-full"
                           style={{ width: `${progressPct}%` }}
@@ -521,7 +521,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                       ) : ent.remainingCredits > 0 ? (
                         <Link
                           to={`/student/book?entitlementId=${ent.id}`}
-                          className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-surface hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs font-semibold transition-colors min-h-[40px]"
+                          className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 glass-card hover:glass-surface text-foreground border border-border rounded-xl text-xs font-semibold transition-colors min-h-[40px]"
                         >
                           <Plus className="w-3.5 h-3.5 text-accent" />
                           <span>{isAr ? 'حجز درس من هذا الرصيد' : 'Book a Session'}</span>
@@ -555,7 +555,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
 
         {/* Multi-Child Learner Selector (Only shown if account has multiple learners) */}
         {hasMultipleLearners && (
-          <div className="p-4 rounded-2xl bg-surface border border-border space-y-2">
+          <div className="p-4 rounded-2xl glass-card border-none space-y-2">
             <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
               <Users className="w-3.5 h-3.5 text-accent" />
               <span>{isAr ? 'شراء الباقة لحساب المتعلم:' : 'Assign Package To Learner:'}</span>
@@ -571,7 +571,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                     className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer min-h-[38px] ${
                       isSelected
                         ? 'bg-primary text-primary-foreground shadow-xs'
-                        : 'bg-surface-subtle hover:bg-surface text-muted-foreground hover:text-foreground border border-border'
+                        : 'glass-surface hover:glass-card text-muted-foreground hover:text-foreground border border-border'
                     }`}
                   >
                     <User className="w-3.5 h-3.5" />
@@ -598,7 +598,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
         {catalogItems.length === 0 ? (
           <div
             data-testid="packages-unavailable"
-            className="p-6 rounded-2xl bg-surface border border-border text-center text-xs sm:text-sm text-muted-foreground"
+            className="p-6 rounded-2xl glass-card border-none text-center text-xs sm:text-sm text-muted-foreground"
           >
             <AlertCircle className="w-5 h-5 mx-auto mb-2 text-muted-foreground" />
             <p>
@@ -651,7 +651,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
         </div>
 
         {ledgerLoading ? (
-          <div className="p-6 rounded-2xl bg-surface border border-border flex items-center justify-center gap-2 text-muted-foreground text-xs">
+          <div className="p-6 rounded-2xl glass-card border-none flex items-center justify-center gap-2 text-muted-foreground text-xs">
             <Loader2 className="w-4 h-4 animate-spin text-accent" />
             <span>{isAr ? 'جارٍ تحميل سجل النشاط...' : 'Loading credit activity...'}</span>
           </div>
@@ -667,7 +667,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
             </button>
           </div>
         ) : ledger.length === 0 ? (
-          <div className="p-6 rounded-2xl bg-surface border border-border text-center space-y-1.5">
+          <div className="p-6 rounded-2xl glass-card border-none text-center space-y-1.5">
             <History className="w-7 h-7 text-muted-foreground mx-auto" />
             <p className="text-xs sm:text-sm text-foreground font-medium">
               {isAr ? 'لا يوجد نشاط رصيد مسجل بعد' : 'No credit activity yet'}
@@ -679,7 +679,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
             </p>
           </div>
         ) : (
-          <div className="rounded-2xl border border-border bg-surface divide-y divide-border overflow-hidden">
+          <div className="rounded-2xl border border-border glass-card divide-y divide-border overflow-hidden">
             {ledger.map((item: any) => {
               const isPositive = item.deltaCredits > 0;
               const isNegative = item.deltaCredits < 0;
@@ -688,7 +688,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                 : null;
 
               return (
-                <div key={item.id} className="p-4 sm:p-5 flex items-center justify-between gap-4 hover:bg-surface-subtle/50 transition-colors">
+                <div key={item.id} className="p-4 sm:p-5 flex items-center justify-between gap-4 hover:glass-surface/50 transition-colors">
                   <div className="flex items-center gap-3.5">
                     <div
                       className={`p-2.5 rounded-xl shrink-0 ${
@@ -712,7 +712,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                           {formatActivityLabel(item.activityType)}
                         </span>
                         {item.bookingReference && (
-                          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-surface-subtle border border-border text-muted-foreground">
+                          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded glass-surface border border-border text-muted-foreground">
                             {item.bookingReference}
                           </span>
                         )}
@@ -740,7 +740,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                         isPositive
                           ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
                           : isNegative
-                          ? 'bg-surface-subtle text-foreground border border-border'
+                          ? 'glass-surface text-foreground border border-border'
                           : 'bg-muted text-muted-foreground'
                       }`}
                     >
@@ -808,7 +808,7 @@ function PackageCard({
   const saving = hasRef ? Math.round((singleRef * lessonCount - price) * 100) / 100 : 0;
 
   return (
-    <Card className="border-border hover:border-primary/40 transition-all flex flex-col justify-between bg-surface">
+    <Card className="border-border hover:border-primary/40 transition-all flex flex-col justify-between glass-card">
       <CardContent className="p-6 space-y-5 flex-1 flex flex-col justify-between">
         <div className="space-y-3">
           <div className="flex items-center justify-between">

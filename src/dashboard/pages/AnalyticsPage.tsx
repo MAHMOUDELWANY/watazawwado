@@ -133,7 +133,7 @@ export default function AnalyticsPage() {
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value as DateRange)}
-              className="px-3 py-1.5 rounded-xl border border-border bg-surface text-xs font-medium text-foreground focus:ring-2 focus:ring-primary/30 outline-none"
+              className="px-3 py-1.5 rounded-xl border border-border glass-card text-xs font-medium text-foreground focus:ring-2 focus:ring-primary/30 outline-none"
             >
               <option value="all_time">All Time</option>
               <option value="today">Today</option>
@@ -146,7 +146,7 @@ export default function AnalyticsPage() {
             <button
               onClick={() => fetchAnalytics(true)}
               disabled={refreshing}
-              className="px-3 py-1.5 rounded-xl border border-border bg-surface text-xs font-medium text-foreground hover:bg-stone-50 dark:hover:bg-border/40 transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              className="px-3 py-1.5 rounded-xl border border-border glass-card text-xs font-medium text-foreground hover:bg-stone-50 dark:hover:bg-border/40 transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
               <span className="hidden sm:inline">Refresh</span>
@@ -161,7 +161,7 @@ export default function AnalyticsPage() {
       </div>
 
       {dateRange === 'custom' && (
-        <div className="flex flex-wrap items-center gap-3 p-3 rounded-xl bg-surface border border-border/30 dark:border-border/30">
+        <div className="flex flex-wrap items-center gap-3 p-3 rounded-xl glass-card border-none/30 dark:border-border/30">
           <div className="flex flex-col">
             <label className="text-[10px] uppercase tracking-wider text-stone-500 mb-1 font-medium">Start Date</label>
             <input 
@@ -192,7 +192,7 @@ export default function AnalyticsPage() {
 
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-5 rounded-2xl bg-surface border border-border/30 dark:border-border/30 shadow-xs space-y-2">
+        <div className="p-5 rounded-2xl glass-card border-none/30 dark:border-border/30 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase tracking-wider text-foreground/60 dark:text-border/60 font-medium">
               Lead → Trial
@@ -211,7 +211,7 @@ export default function AnalyticsPage() {
           </p>
         </div>
 
-        <div className="p-5 rounded-2xl bg-surface border border-border/30 dark:border-border/30 shadow-xs space-y-2">
+        <div className="p-5 rounded-2xl glass-card border-none/30 dark:border-border/30 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase tracking-wider text-foreground/60 dark:text-border/60 font-medium">
               Trial → Student
@@ -230,7 +230,7 @@ export default function AnalyticsPage() {
           </p>
         </div>
 
-        <div className="p-5 rounded-2xl bg-surface border border-border/30 dark:border-border/30 shadow-xs space-y-2">
+        <div className="p-5 rounded-2xl glass-card border-none/30 dark:border-border/30 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase tracking-wider text-foreground/60 dark:text-border/60 font-medium">
               Total Active
@@ -249,7 +249,7 @@ export default function AnalyticsPage() {
           </p>
         </div>
         
-        <div className="p-5 rounded-2xl bg-surface border border-border/30 dark:border-border/30 shadow-xs space-y-2">
+        <div className="p-5 rounded-2xl glass-card border-none/30 dark:border-border/30 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase tracking-wider text-foreground/60 dark:text-border/60 font-medium">
               Bookings
@@ -271,7 +271,7 @@ export default function AnalyticsPage() {
 
       {/* Visual Pipeline Funnel & Payments */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="p-6 rounded-2xl bg-surface border border-border/30 dark:border-border/30 shadow-xs space-y-6">
+        <div className="p-6 rounded-2xl glass-card border-none/30 dark:border-border/30 shadow-xs space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-base font-display font-semibold text-foreground">
@@ -320,7 +320,7 @@ export default function AnalyticsPage() {
 
         <div className="space-y-6">
           {/* Payment Operational Status */}
-          <div className="p-6 rounded-2xl bg-surface border border-border/30 dark:border-border/30 shadow-xs space-y-4">
+          <div className="p-6 rounded-2xl glass-card border-none/30 dark:border-border/30 shadow-xs space-y-4">
             <div className="flex items-center gap-2">
               <DollarSign className="w-4 h-4 text-accent dark:text-primary" />
               <h2 className="text-base font-display font-semibold text-foreground">
@@ -348,7 +348,7 @@ export default function AnalyticsPage() {
           </div>
           
           {/* Service Demand Breakdown */}
-          <div className="p-6 rounded-2xl bg-surface border border-border/30 dark:border-border/30 shadow-xs space-y-4">
+          <div className="p-6 rounded-2xl glass-card border-none/30 dark:border-border/30 shadow-xs space-y-4">
             <div className="flex items-center gap-2">
               <BookOpen className="w-4 h-4 text-accent dark:text-primary" />
               <h2 className="text-base font-display font-semibold text-foreground">

@@ -76,7 +76,7 @@ export function LearningPage() {
 
           <StudyLine className="my-16" />
 
-          <div className="bg-surface p-8 sm:p-12 rounded-2xl border border-border-subtle text-center">
+          <div className="glass-card p-8 sm:p-12 rounded-2xl border border-border-subtle text-center">
             <h3 className="font-editorial text-2xl text-foreground mb-4">
               {isEn ? 'Not sure where to start?' : 'متردد من أين تبدأ؟'}
             </h3>

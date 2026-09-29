@@ -99,11 +99,11 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
       aria-modal="true"
       aria-labelledby="auth-modal-title"
     >
-      <div className="bg-surface border border-border rounded-3xl shadow-2xl w-full max-w-md overflow-hidden relative">
+      <div className="glass-dialog rounded-3xl w-full max-w-md overflow-hidden relative">
         <button
           onClick={onClose}
           aria-label="Close dialog"
-          className="absolute top-4 end-4 p-2 text-muted-foreground hover:text-foreground hover:bg-surface-subtle rounded-full transition-colors cursor-pointer"
+          className="absolute top-4 end-4 p-2 text-muted-foreground hover:text-foreground hover:glass-surface rounded-full transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
@@ -138,7 +138,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border bg-surface-subtle focus:bg-surface focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all"
+                    className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border glass-surface focus:glass-card focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all"
                     placeholder="John Doe"
                   />
                 </div></div>
@@ -156,7 +156,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border bg-surface-subtle focus:bg-surface focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all"
+                    className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border glass-surface focus:glass-card focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all"
                     placeholder="you@example.com"
                   />
                 </div></div>
@@ -175,7 +175,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
                     minLength={6}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border bg-surface-subtle focus:bg-surface focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all"
+                    className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border glass-surface focus:glass-card focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all"
                     placeholder="••••••••"
                   />
                 </div>
