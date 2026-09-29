@@ -552,6 +552,7 @@ export default function StudentApp() {
                 <span className="absolute top-2 end-2 w-2 h-2 rounded-full bg-primary ring-2 ring-surface animate-pulse" />
               )}
             </Link>
+            <AccountDropdown />
           </div>
         </header>
 
@@ -599,51 +600,52 @@ export default function StudentApp() {
           </div>
         </main>
 
-        {/* Mobile Bottom Navigation Bar (Fast 1-thumb switching for mobile users) */}
-        <nav 
-          className="lg:hidden fixed bottom-0 inset-x-0 glass-nav border-t-0 flex items-center justify-around px-1 z-50 pb-[env(safe-area-inset-bottom)]"
-          aria-label={isAr ? 'التنقل السفلي' : 'Bottom mobile navigation'}
-        >
-          {navItems.map((item) => {
-            const isActive = location.pathname === item.path || (item.path !== '/student' && location.pathname.startsWith(item.path));
-            const isBook = item.path === '/student/book';
-            const Icon = item.icon;
+        {/* Mobile Bottom Navigation Bar (Floating Pill Design) */}
+        <div className="lg:hidden fixed bottom-6 inset-x-4 z-50">
+          <nav 
+            className="relative w-full h-[68px] glass-nav rounded-full flex items-center justify-between px-2 shadow-2xl border border-border/30"
+            aria-label={isAr ? 'التنقل السفلي' : 'Bottom mobile navigation'}
+          >
+            {navItems.map((item) => {
+              const isActive = location.pathname === item.path || (item.path !== '/student' && location.pathname.startsWith(item.path));
+              const isBook = item.path === '/student/book';
+              const Icon = item.icon;
 
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                id={isBook ? 'nav-book-link' : item.path === '/student/account' ? 'nav-account-link' : undefined}
-                className={`relative flex flex-col items-center justify-center py-2 px-1 text-[13px] sm:text-sm min-h-[64px] transition-all group flex-1`}
-              >
-                {isBook ? (
-                  <div className={`relative flex items-center justify-center w-12 h-9 rounded-[14px] shadow-sm transition-transform active:scale-95 mb-1 group-hover:bg-primary-hover ${
-                    isActive ? 'bg-primary-hover text-primary-foreground' : 'bg-primary text-primary-foreground'
-                  }`}>
-                    <Icon className="w-5 h-5" />
+              if (isBook) {
+                return (
+                  <div key={item.path} className="relative flex-1 flex justify-center">
+                    <Link
+                      to={item.path}
+                      id="nav-book-link"
+                      className="absolute -top-7 w-[60px] h-[60px] rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-[0_8px_16px_rgba(197,31,36,0.3)] hover:bg-primary-hover active:scale-95 transition-all border-[4px] border-background"
+                    >
+                      <Icon className="w-7 h-7" />
+                    </Link>
                   </div>
-                ) : (
-                  <div className={`relative flex items-center justify-center w-8 h-8 rounded-full mb-0.5 transition-colors ${
-                    isActive ? 'text-interactive' : 'text-muted-foreground group-hover:text-foreground group-hover:bg-surface-subtle'
-                  }`}>
-                    <Icon className={`w-[18px] h-[18px] transition-all duration-300 ${isActive ? '-translate-y-0.5' : ''}`} />
-                  </div>
-                )}
-                
-                <span className={`transition-all font-medium text-center truncate w-full ${
-                  isBook ? 'text-foreground font-bold' :
-                  isActive ? 'text-interactive font-bold' : 'text-muted-foreground'
-                }`}>
-                  {item.name}
-                </span>
+                );
+              }
 
-                {!isBook && isActive && (
-                  <div className="absolute top-2 right-1/4 w-1.5 h-1.5 rounded-full bg-interactive opacity-90 animate-in fade-in zoom-in duration-300" />
-                )}
-              </Link>
-            );
-          })}
-        </nav>
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  id={item.path === '/student/account' ? 'nav-account-link' : undefined}
+                  className="relative flex flex-col items-center justify-center py-2 flex-1 group h-full"
+                >
+                  <div className={`relative flex items-center justify-center w-12 h-12 rounded-full transition-colors ${
+                    isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'
+                  }`}>
+                    <Icon className={`w-6 h-6 transition-transform duration-300 ${isActive ? 'translate-y-1' : ''}`} />
+                    {/* Active Dot Indicator */}
+                    {isActive && (
+                      <span className="absolute top-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(197,31,36,0.8)]" />
+                    )}
+                  </div>
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
       </div>
 
       <StudentAuthModal
@@ -654,3 +656,5 @@ export default function StudentApp() {
     </div>
   );
 }
+
+
