@@ -352,7 +352,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
               <button
                 type="button"
                 onClick={fetchData}
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 glass-card hover:glass-surface text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
               >
                 <span>{isAr ? 'إعادة المحاولة' : 'Try Again'}</span>
               </button>

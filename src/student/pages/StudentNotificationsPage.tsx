@@ -314,7 +314,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
             <div
               key={item.id}
               className={`p-4 sm:p-5 flex flex-col sm:flex-row sm:items-start justify-between gap-4 transition-colors ${
-                item.read ? 'opacity-85 hover:glass-surface/50' : 'bg-secondary/20 hover:bg-secondary/30'
+                item.read ? 'opacity-85 hover:bg-surface-subtle/50' : 'bg-secondary/20 hover:bg-secondary/30'
               }`}
             >
               <div className="flex items-start gap-3 sm:gap-4 min-w-0">
@@ -356,7 +356,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
                   ) : (
                     <Link
                       to={item.actionUrl}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 glass-card hover:glass-surface border border-border text-foreground hover:text-primary rounded-xl text-xs font-semibold transition-colors shadow-2xs"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 glass-card hover:bg-surface-subtle border border-border text-foreground hover:text-primary rounded-xl text-xs font-semibold transition-colors shadow-2xs"
                     >
                       <span>{isAr ? (item.actionLabelAr || 'عرض') : (item.actionLabel || 'View')}</span>
                       <ArrowRight className={`w-3.5 h-3.5 ${isAr ? 'rotate-180' : ''}`} />
@@ -368,7 +368,7 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
                   <button
                     type="button"
                     onClick={() => markAsRead(item.id)}
-                    className="p-2 text-muted-foreground hover:text-foreground rounded-lg hover:glass-card transition-colors cursor-pointer"
+                    className="p-2 text-muted-foreground hover:text-foreground rounded-lg glass-hover hover:bg-surface transition-colors cursor-pointer"
                     title={isAr ? 'تحديد كمقروء' : 'Mark as read'}
                     aria-label={isAr ? 'تحديد كمقروء' : 'Mark as read'}
                   >

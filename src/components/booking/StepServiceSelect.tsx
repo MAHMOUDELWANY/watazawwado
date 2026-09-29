@@ -56,7 +56,7 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
               className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                 isActive
                   ? 'bg-muted-foreground text-white shadow-xs'
-                  : 'bg-white/80 dark:glass-card text-foreground/70 dark:text-border/70 border border-border hover:bg-surface-warm dark:hover:glass-surface'
+                  : 'bg-white/80 glass-card text-foreground/70 dark:text-border/70 border border-border hover:bg-surface-warm dark:hover:bg-surface-subtle'
               }`}
             >
               {grp.icon}
@@ -78,7 +78,7 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
               onClick={() => onSelectService(service.id)}
               className={`group p-4 sm:p-5 rounded-2xl border text-start transition-all cursor-pointer relative flex flex-col justify-between ${
                 isSelected
-                  ? 'bg-foreground dark:glass-surface border-primary ring-2 ring-primary/30 shadow-sm'
+                  ? 'bg-foreground glass-surface border-primary ring-2 ring-primary/30 shadow-sm'
                   : 'glass-card border-border hover:border-accent/50 hover:bg-foreground/40 shadow-xs'
               }`}
             >

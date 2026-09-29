@@ -87,7 +87,7 @@ export default function OverviewPage() {
         <button
           onClick={() => fetchOverview(true)}
           disabled={refreshing}
-          className="self-start sm:self-auto flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold glass-card hover:glass-surface border border-border text-foreground transition-colors cursor-pointer"
+          className="self-start sm:self-auto flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold glass-card hover:bg-surface-subtle border border-border text-foreground transition-colors cursor-pointer"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
           <span>Refresh</span>
@@ -246,7 +246,7 @@ export default function OverviewPage() {
             </thead>
             <tbody className="divide-y divide-border">
               {metrics.teacher_capacity.map((t) => (
-                <tr key={t.email} className="hover:glass-surface transition-colors">
+                <tr key={t.email} className="hover:bg-surface-subtle transition-colors">
                   <td className="py-3 px-3">
                     <div className="font-semibold text-foreground">{t.name}</div>
                     <div className="text-[11px] text-muted-foreground">{t.email}</div>

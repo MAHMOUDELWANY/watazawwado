@@ -138,7 +138,7 @@ export default function StudentsPage() {
         <button
           onClick={() => fetchStudents(true)}
           disabled={refreshing}
-          className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl glass-card border-none text-foreground hover:glass-surface transition-colors disabled:opacity-50 cursor-pointer"
+          className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl glass-card border-none text-foreground hover:bg-surface-subtle transition-colors disabled:opacity-50 cursor-pointer"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
           <span>Refresh</span>

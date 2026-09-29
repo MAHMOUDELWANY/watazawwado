@@ -163,7 +163,7 @@ export default function LeadsPage() {
           <button
             onClick={() => fetchLeads(true)}
             disabled={refreshing || loading}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass-card border-none text-xs font-medium text-foreground hover:glass-surface transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass-card border-none text-xs font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
             <span>Refresh</span>
@@ -440,7 +440,7 @@ export default function LeadsPage() {
                     {lead.email && (
                       <a
                         href={`mailto:${lead.email}`}
-                        className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:glass-surface transition-colors"
+                        className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors"
                         title="Send Email"
                       >
                         <Mail className="w-4 h-4" />

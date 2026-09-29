@@ -99,7 +99,7 @@ export default function TeachersPage() {
         <button
           onClick={() => fetchTeachers(true)}
           disabled={refreshing}
-          className="self-start sm:self-auto flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold glass-card hover:glass-surface border border-border text-foreground transition-colors cursor-pointer"
+          className="self-start sm:self-auto flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold glass-card hover:bg-surface-subtle border border-border text-foreground transition-colors cursor-pointer"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
           <span>Refresh</span>
@@ -194,7 +194,7 @@ export default function TeachersPage() {
             <div className="flex items-center justify-between gap-2 pt-1">
               <Link
                 to={`/dashboard/students?teacher=${encodeURIComponent(t.email)}`}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold glass-surface hover:glass-card border-none text-foreground transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold glass-surface glass-hover hover:bg-surface border-none text-foreground transition-colors"
               >
                 <Users className="w-3.5 h-3.5 text-accent" />
                 <span>View Assigned Students</span>

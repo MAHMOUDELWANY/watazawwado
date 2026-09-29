@@ -115,7 +115,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               trialDisabled
                 ? 'opacity-60 cursor-not-allowed bg-gray-50 dark:bg-background/60 border-border'
                 : mode === 'trial'
-                ? 'bg-foreground dark:glass-surface border-primary ring-2 ring-primary/30 shadow-xs cursor-pointer'
+                ? 'bg-foreground glass-surface border-primary ring-2 ring-primary/30 shadow-xs cursor-pointer'
                 : 'glass-card border-border hover:bg-foreground/40 cursor-pointer'
             }`}
           >
@@ -166,7 +166,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
             onClick={() => onChangeMode('regular')}
             className={`p-4 sm:p-5 rounded-2xl border text-start transition-all cursor-pointer relative ${
               mode === 'regular'
-                ? 'bg-foreground dark:glass-surface border-muted-foreground ring-2 ring-muted-foreground/30 shadow-xs'
+                ? 'bg-foreground glass-surface border-muted-foreground ring-2 ring-muted-foreground/30 shadow-xs'
                 : 'glass-card border-border hover:bg-foreground/40'
             }`}
           >
@@ -250,7 +250,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                   isDisabled
                     ? 'opacity-40 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent'
                     : isSelected
-                    ? 'bg-foreground dark:glass-surface border-primary ring-1 ring-primary shadow-xs'
+                    ? 'bg-foreground glass-surface border-primary ring-1 ring-primary shadow-xs'
                     : 'glass-card border-border hover:bg-foreground/30'
                 }`}
               >
@@ -302,7 +302,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                   }}
                   className={`p-4 sm:p-5 rounded-2xl border text-start transition-all cursor-pointer relative ${
                     isSelected
-                      ? 'bg-foreground dark:glass-surface border-primary ring-2 ring-primary/30 shadow-xs'
+                      ? 'bg-foreground glass-surface border-primary ring-2 ring-primary/30 shadow-xs'
                       : 'glass-card border-border hover:bg-foreground/30'
                   }`}
                 >
@@ -356,7 +356,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               }}
               className={`p-4 rounded-xl border text-start transition-all cursor-pointer ${
                 !packageEntitlementId
-                  ? 'bg-foreground dark:glass-surface border-muted-foreground ring-2 ring-muted-foreground/30 shadow-xs'
+                  ? 'bg-foreground glass-surface border-muted-foreground ring-2 ring-muted-foreground/30 shadow-xs'
                   : 'glass-card border-border opacity-75'
               }`}
             >
@@ -395,7 +395,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               onClick={() => onSelectPackage?.(undefined)}
               className={`p-4 rounded-xl border text-start transition-all cursor-pointer ${
                 !selectedPackageId
-                  ? 'bg-foreground dark:glass-surface border-primary ring-2 ring-primary/30'
+                  ? 'bg-foreground glass-surface border-primary ring-2 ring-primary/30'
                   : 'glass-card border-border opacity-75'
               }`}
             >
@@ -417,7 +417,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                   onClick={() => onSelectPackage?.(pkg.id)}
                   className={`p-4 rounded-xl border text-start transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-foreground dark:glass-surface border-primary ring-2 ring-primary/30'
+                      ? 'bg-foreground glass-surface border-primary ring-2 ring-primary/30'
                       : 'glass-card border-border opacity-75'
                   }`}
                 >
@@ -471,7 +471,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
           whileTap={{ scale: 0.97 }}
           onClick={onBack}
           type="button"
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium text-foreground/80 dark:text-border/80 hover:bg-surface-warm dark:hover:glass-surface transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium text-foreground/80 dark:text-border/80 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
         >
           <ArrowLeft className={`w-3.5 h-3.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
           <span>{isEn ? 'Back to Student Details' : 'الرجوع للبيانات'}</span>

@@ -102,7 +102,7 @@ export default function TrialsPage() {
           <button
             onClick={() => fetchTrials(true)}
             disabled={refreshing || loading}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass-card border-none text-xs font-medium text-foreground hover:glass-surface transition-colors cursor-pointer shadow-2xs"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass-card border-none text-xs font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer shadow-2xs"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-accent' : 'opacity-70'}`} />
             <span>Refresh</span>
@@ -166,7 +166,7 @@ export default function TrialsPage() {
             className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
               activeTab === 'upcoming'
                 ? 'bg-primary text-primary-foreground font-semibold shadow-2xs'
-                : 'text-muted-foreground hover:text-foreground hover:glass-surface'
+                : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
             }`}
           >
             Upcoming Trials ({upcomingTrials.length})
@@ -176,7 +176,7 @@ export default function TrialsPage() {
             className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
               activeTab === 'recent'
                 ? 'bg-primary text-primary-foreground font-semibold shadow-2xs'
-                : 'text-muted-foreground hover:text-foreground hover:glass-surface'
+                : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
             }`}
           >
             Recent & Completed ({recentTrials.length})
@@ -186,7 +186,7 @@ export default function TrialsPage() {
             className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
               activeTab === 'all'
                 ? 'bg-primary text-primary-foreground font-semibold shadow-2xs'
-                : 'text-muted-foreground hover:text-foreground hover:glass-surface'
+                : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
             }`}
           >
             All Trials ({allTrials.length})

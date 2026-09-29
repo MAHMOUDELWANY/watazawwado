@@ -125,7 +125,7 @@ export const Footer: React.FC<FooterProps> = ({
               href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I am visiting your website and have a question.')}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-border text-xs text-foreground hover:glass-surface transition-colors"
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-border text-xs text-foreground hover:bg-surface-subtle transition-colors"
             >
               <MessageCircle className="w-3.5 h-3.5 text-accent" />
               <span>WhatsApp: {MAHMOUD_OFFICIAL_PHONE_INTL}</span>
@@ -164,7 +164,7 @@ export const Footer: React.FC<FooterProps> = ({
             <span>•</span>
             <button
               onClick={scrollToTop}
-              className="p-1.5 rounded-lg hover:glass-surface text-muted-foreground transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg hover:bg-surface-subtle text-muted-foreground transition-colors cursor-pointer"
               aria-label="Scroll to top"
             >
               <ArrowUp className="w-4 h-4" />

@@ -22,7 +22,7 @@ export function AccountDropdown({ initials, isAr }: { initials: string; isAr?: b
     <div className="relative" ref={ref}>
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 p-1.5 pe-3 rounded-full glass-surface hover:glass-card border-none transition-colors cursor-pointer"
+        className="flex items-center gap-2 p-1.5 pe-3 rounded-full glass-surface glass-hover hover:bg-surface border-none transition-colors cursor-pointer"
       >
         <div className="w-7 h-7 rounded-full bg-secondary/40 text-accent font-bold text-xs flex items-center justify-center">
           {initials}
@@ -33,11 +33,11 @@ export function AccountDropdown({ initials, isAr }: { initials: string; isAr?: b
       {isOpen && (
         <div className={`absolute top-full mt-2 w-48 glass-card border-none rounded-xl shadow-lg overflow-hidden z-50 ${isAr ? "left-0" : "right-0"}`}>
           <div className="p-1">
-            <Link to="/student/account" onClick={() => setIsOpen(false)} className="flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:glass-surface rounded-lg transition-colors">
+            <Link to="/student/account" onClick={() => setIsOpen(false)} className="flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-surface-subtle rounded-lg transition-colors">
               <User className="w-4 h-4 text-muted-foreground" />
               <span>{isAr ? '\u0627\u0644\u0645\u0644\u0641 \u0627\u0644\u0634\u062E\u0635\u064A' : 'Profile'}</span>
             </Link>
-            <Link to="/student/account/preferences" onClick={() => setIsOpen(false)} className="flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:glass-surface rounded-lg transition-colors">
+            <Link to="/student/account/preferences" onClick={() => setIsOpen(false)} className="flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-surface-subtle rounded-lg transition-colors">
               <Settings className="w-4 h-4 text-muted-foreground" />
               <span>{isAr ? '\u0627\u0644\u0625\u0639\u062F\u0627\u062F\u0627\u062A' : 'Preferences'}</span>
             </Link>

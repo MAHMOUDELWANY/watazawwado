@@ -174,7 +174,7 @@ export default function StudentOnboardingPage({
 
             <button
               onClick={() => navigate('/student')}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl glass-card border-none hover:glass-surface text-foreground font-medium text-sm transition-all cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl glass-card border-none hover:bg-surface-subtle text-foreground font-medium text-sm transition-all cursor-pointer"
             >
               <span>Enter Dashboard</span>
               <ArrowRight className="w-4 h-4" />

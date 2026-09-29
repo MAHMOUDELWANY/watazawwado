@@ -206,7 +206,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:glass-card transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground glass-hover hover:bg-surface transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -278,7 +278,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
               {lead.email && (
                 <a
                   href={`mailto:${lead.email}`}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg glass-card border-none text-xs font-medium text-foreground hover:glass-surface transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg glass-card border-none text-xs font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
                 >
                   <Mail className="w-3.5 h-3.5" />
                   <span>Email</span>
@@ -309,7 +309,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                     className={`p-2 rounded-xl text-xs text-left border transition-all cursor-pointer ${
                       isSelected
                         ? 'border-primary bg-secondary/30 text-primary font-semibold shadow-2xs'
-                        : 'border-border glass-card text-muted-foreground hover:text-foreground hover:glass-surface'
+                        : 'border-border glass-card text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
                     }`}
                   >
                     <div>{STAGE_CONFIG[statusKey].label}</div>
@@ -450,7 +450,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
             <button
               type="button"
               onClick={onClose}
-              className="px-3.5 py-2 rounded-xl border border-border text-xs font-medium text-foreground hover:glass-card transition-colors cursor-pointer"
+              className="px-3.5 py-2 rounded-xl border border-border text-xs font-medium text-foreground glass-hover hover:bg-surface transition-colors cursor-pointer"
             >
               Cancel
             </button>

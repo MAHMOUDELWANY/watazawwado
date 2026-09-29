@@ -69,7 +69,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ lang, onSelect
                 className={`flex items-center gap-2.5 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all cursor-pointer ${
                   isActive
                     ? 'bg-primary text-primary-foreground shadow-xs'
-                    : 'glass-card text-foreground/80 hover:glass-surface border border-border'
+                    : 'glass-card text-foreground/80 hover:bg-surface-subtle border border-border'
                 }`}
               >
                 <Icon className={`w-4 h-4 ${isActive ? 'text-accent-foreground' : 'text-primary'}`} />
@@ -105,7 +105,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ lang, onSelect
                   className={`group p-4.5 rounded-xl border text-start transition-all cursor-pointer ${
                     isSelected
                       ? 'glass-surface border-primary/70 shadow-xs'
-                      : 'glass-card border-border hover:border-primary/40 hover:glass-surface/50'
+                      : 'glass-card border-border hover:border-primary/40 hover:bg-surface-subtle/50'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3">

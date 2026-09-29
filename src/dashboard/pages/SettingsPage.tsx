@@ -221,7 +221,7 @@ export default function SettingsPage() {
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors whitespace-nowrap cursor-pointer min-h-[44px] ${
                   activeTab === tab.id
                     ? 'glass-card text-foreground shadow-2xs border border-border'
-                    : 'text-muted-foreground hover:glass-surface hover:text-foreground'
+                    : 'text-muted-foreground hover:bg-surface-subtle hover:text-foreground'
                 }`}
               >
                 <tab.icon className={`w-4 h-4 ${activeTab === tab.id ? 'text-accent' : 'opacity-70'}`} />
@@ -457,7 +457,7 @@ export default function SettingsPage() {
                   const isChecked = methods.includes(method.id);
                   
                   return (
-                    <label key={method.id} className="flex items-center gap-3 p-3 rounded-xl border border-border cursor-pointer hover:glass-surface transition-colors min-h-[44px]">
+                    <label key={method.id} className="flex items-center gap-3 p-3 rounded-xl border border-border cursor-pointer hover:bg-surface-subtle transition-colors min-h-[44px]">
                       <input
                         type="checkbox"
                         checked={isChecked}

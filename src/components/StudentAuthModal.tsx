@@ -1,5 +1,6 @@
 import { BrandLogo } from './ui/BrandLogo';
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Mail, Lock, Loader2, User, X } from 'lucide-react';
 import { useTeacherAuth } from '../lib/auth'; // it's now AuthProvider
 import { useNavigate } from 'react-router-dom';
@@ -93,17 +94,33 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
   };
 
   return (
-    <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="auth-modal-title"
-    >
-      <div className="glass-dialog rounded-3xl w-full max-w-md overflow-hidden relative">
-        <button
-          onClick={onClose}
+    <AnimatePresence>
+      {isOpen && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="auth-modal-title"
+        >
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/40 backdrop-blur-md"
+            onClick={onClose}
+          />
+          
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="glass-dialog rounded-3xl w-full max-w-md overflow-hidden relative shadow-2xl"
+          >
+            <button
+              onClick={onClose}
           aria-label="Close dialog"
-          className="absolute top-4 end-4 p-2 text-muted-foreground hover:text-foreground hover:glass-surface rounded-full transition-colors cursor-pointer"
+          className="absolute top-4 end-4 p-2 text-muted-foreground hover:text-foreground hover:bg-surface-subtle rounded-full transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
@@ -246,7 +263,9 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
             )}
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
+      )}
+    </AnimatePresence>
   );
 }

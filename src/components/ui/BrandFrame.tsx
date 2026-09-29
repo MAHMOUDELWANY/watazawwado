@@ -36,7 +36,7 @@ export function BrandFrame({
 
   return (
     <div className={`relative shrink-0 overflow-hidden ${variantStyles[variant]} ${interactiveClasses} ${className}`} onClick={onClick}>
-      <div className={`w-full h-full rounded-[inherit] bg-surface-warm dark:glass-card flex flex-col ${innerClassName}`}>
+      <div className={`w-full h-full rounded-[inherit] bg-surface-warm glass-card flex flex-col ${innerClassName}`}>
         {children}
       </div>
     </div>

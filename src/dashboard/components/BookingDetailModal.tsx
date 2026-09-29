@@ -382,7 +382,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                 {booking && (
                   <button
                     onClick={() => copyToClipboard(booking.reference_code, 'ref')}
-                    className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:glass-surface transition-colors cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
+                    className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
                     title="Copy reference code"
                     aria-label="Copy reference code"
                   >
@@ -409,7 +409,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
             )}
             <button 
               onClick={onClose}
-              className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:glass-surface transition-colors ms-2 cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center"
+              className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors ms-2 cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center"
               aria-label="Close modal"
             >
               <X className="w-5 h-5" />
@@ -616,7 +616,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     {booking.zoom_meeting_link && (
                       <button
                         onClick={() => copyToClipboard(booking.zoom_meeting_link || '', 'zoom')}
-                        className="px-3.5 py-2 text-xs font-medium text-foreground glass-surface hover:glass-card border-none rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer min-h-[36px]"
+                        className="px-3.5 py-2 text-xs font-medium text-foreground glass-surface glass-hover hover:bg-surface border-none rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer min-h-[36px]"
                       >
                         {copiedField === 'zoom' ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5" />}
                         Copy Link
@@ -777,7 +777,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                   <button
                     onClick={handleSaveNotes}
                     disabled={savingNotes}
-                    className="px-3.5 py-1.5 text-xs font-medium text-foreground hover:glass-surface rounded-xl border border-border transition-colors disabled:opacity-50 cursor-pointer min-h-[36px]"
+                    className="px-3.5 py-1.5 text-xs font-medium text-foreground hover:bg-surface-subtle rounded-xl border border-border transition-colors disabled:opacity-50 cursor-pointer min-h-[36px]"
                   >
                     {savingNotes ? 'Saving...' : 'Save Notes'}
                   </button>
@@ -942,7 +942,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                         className={`p-2.5 rounded-xl border text-start transition-all cursor-pointer ${
                           noShowCreditDecision === 'returned'
                             ? 'glass-card border-primary ring-1 ring-primary text-foreground'
-                            : 'glass-card/60 border-border text-muted-foreground hover:glass-card'
+                            : 'glass-card/60 border-border text-muted-foreground glass-hover hover:bg-surface'
                         }`}
                       >
                         <span className="font-semibold text-xs block text-foreground">
@@ -959,7 +959,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                         className={`p-2.5 rounded-xl border text-start transition-all cursor-pointer ${
                           noShowCreditDecision === 'used'
                             ? 'glass-card border-warning ring-1 ring-warning text-foreground'
-                            : 'glass-card/60 border-border text-muted-foreground hover:glass-card'
+                            : 'glass-card/60 border-border text-muted-foreground glass-hover hover:bg-surface'
                         }`}
                       >
                         <span className="font-semibold text-xs block text-foreground">
@@ -1052,7 +1052,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                   {booking.status !== 'cancelled' && !isRescheduling && (
                     <button
                       onClick={() => setIsRescheduling(true)}
-                      className="px-3.5 py-2 text-xs font-medium text-foreground hover:glass-surface rounded-xl border border-border transition-colors flex items-center gap-1.5 cursor-pointer min-h-[40px]"
+                      className="px-3.5 py-2 text-xs font-medium text-foreground hover:bg-surface-subtle rounded-xl border border-border transition-colors flex items-center gap-1.5 cursor-pointer min-h-[40px]"
                     >
                       <RotateCcw className="w-3.5 h-3.5" />
                       Reschedule
@@ -1072,7 +1072,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
                 <button
                   onClick={onClose}
-                  className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:glass-surface rounded-xl transition-colors cursor-pointer min-h-[40px]"
+                  className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-surface-subtle rounded-xl transition-colors cursor-pointer min-h-[40px]"
                 >
                   Close
                 </button>

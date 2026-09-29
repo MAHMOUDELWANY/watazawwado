@@ -154,7 +154,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
               className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all cursor-pointer ${
                 activeTab === 'quran'
                   ? 'bg-primary text-white shadow-xs'
-                  : 'text-foreground/80 dark:text-foreground/80 hover:bg-foreground/60 dark:hover:glass-surface'
+                  : 'text-foreground/80 dark:text-foreground/80 hover:bg-foreground/60 dark:hover:bg-surface-subtle'
               }`}
             >
               {isEn ? 'Quran & Tajweed' : 'القرآن والتجويد'}
@@ -164,7 +164,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
               className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all cursor-pointer ${
                 activeTab === 'arabic'
                   ? 'bg-primary text-white shadow-xs'
-                  : 'text-foreground/80 dark:text-foreground/80 hover:bg-foreground/60 dark:hover:glass-surface'
+                  : 'text-foreground/80 dark:text-foreground/80 hover:bg-foreground/60 dark:hover:bg-surface-subtle'
               }`}
             >
               {isEn ? 'Arabic Language' : 'اللغة العربية'}
@@ -174,7 +174,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
               className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all cursor-pointer ${
                 activeTab === 'studies'
                   ? 'bg-primary text-white shadow-xs'
-                  : 'text-foreground/80 dark:text-foreground/80 hover:bg-foreground/60 dark:hover:glass-surface'
+                  : 'text-foreground/80 dark:text-foreground/80 hover:bg-foreground/60 dark:hover:bg-surface-subtle'
               }`}
             >
               {isEn ? 'Islamic Studies' : 'الدراسات الإسلامية'}

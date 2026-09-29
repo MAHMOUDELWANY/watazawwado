@@ -155,7 +155,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
             initial={{ scale: 0.95, opacity: 0, y: 15 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 15 }}
-            className="w-full max-w-xl bg-foreground dark:glass-card rounded-3xl border border-secondary/60 shadow-2xl p-6 sm:p-7 text-foreground max-h-[90vh] overflow-y-auto"
+            className="w-full max-w-xl bg-foreground glass-card rounded-3xl border border-secondary/60 shadow-2xl p-6 sm:p-7 text-foreground max-h-[90vh] overflow-y-auto"
           >
             {/* Header */}
             <div className="flex items-center justify-between pb-4 border-b border-border">
@@ -168,7 +168,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="p-1 rounded-full text-foreground/60 dark:text-border/60 hover:bg-surface-warm dark:hover:glass-surface cursor-pointer"
+                className="p-1 rounded-full text-foreground/60 dark:text-border/60 hover:bg-surface-warm dark:hover:bg-surface-subtle cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -277,14 +277,14 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                       {booking.status.toUpperCase()}
                     </span>
 
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-surface-warm dark:glass-surface text-muted-foreground font-medium">
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-surface-warm glass-surface text-muted-foreground font-medium">
                       ✓ Cal & Zoom Synced
                     </span>
                   </div>
                 </div>
 
                 {/* Dual-Timezone Box */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs bg-foreground/40 dark:glass-surface p-3 rounded-xl border border-border/50">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs bg-foreground/40 glass-surface p-3 rounded-xl border border-border/50">
                   <div>
                     <div className="flex items-center gap-1.5 text-[10px] uppercase font-semibold text-muted-foreground mb-0.5">
                       <Globe className="w-3.5 h-3.5" />
@@ -379,7 +379,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
 
                 {/* Reschedule View if Active */}
                 {isRescheduling && (
-                  <div className="p-3.5 rounded-xl bg-surface-warm dark:glass-surface border border-secondary/60 space-y-3">
+                  <div className="p-3.5 rounded-xl bg-surface-warm glass-surface border border-secondary/60 space-y-3">
                     <h5 className="font-display text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       {isEn ? 'Choose New Date & Starting Time' : 'اختر التاريخ والموعد الجديد'}
                     </h5>

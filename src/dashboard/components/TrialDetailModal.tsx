@@ -327,7 +327,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:glass-card transition-colors"
+            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground glass-hover hover:bg-surface transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -409,7 +409,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 <button
                   type="button"
                   onClick={() => copyToClipboard(joinUrl, 'join')}
-                  className="inline-flex items-center gap-1 px-3 py-2 rounded-lg glass-card border-none text-xs font-medium text-foreground hover:glass-surface transition-colors"
+                  className="inline-flex items-center gap-1 px-3 py-2 rounded-lg glass-card border-none text-xs font-medium text-foreground hover:bg-surface-subtle transition-colors"
                 >
                   {copiedLink === 'join' ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5 text-muted-foreground" />}
                   <span>{copiedLink === 'join' ? 'Student Link Copied!' : 'Copy Student Link'}</span>
@@ -582,7 +582,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               <button
                 type="button"
                 onClick={() => copyToClipboard(studentPlanMessage, 'plan')}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg glass-card text-xs font-medium text-foreground border border-border hover:glass-surface transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg glass-card text-xs font-medium text-foreground border border-border hover:bg-surface-subtle transition-colors cursor-pointer"
               >
                 {copiedLink === 'plan' ? <Check className="w-3 h-3 text-success" /> : <Copy className="w-3 h-3 opacity-70" />}
                 <span>{copiedLink === 'plan' ? 'Plan Copied!' : 'Copy Plan for Student'}</span>
@@ -659,7 +659,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               type="button"
               disabled={saving}
               onClick={() => handleSaveAssessment(false)}
-              className="px-4 py-2 rounded-xl glass-card border-none text-xs font-medium text-foreground hover:glass-surface transition-colors cursor-pointer"
+              className="px-4 py-2 rounded-xl glass-card border-none text-xs font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
             >
               {saving ? 'Saving...' : 'Save Assessment'}
             </button>

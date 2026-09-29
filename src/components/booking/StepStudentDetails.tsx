@@ -210,7 +210,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                         onClick={() => handleChildSelect(child.id)}
                         className={`p-3 rounded-xl border text-start transition-all cursor-pointer flex items-center justify-between ${
                           isSelected
-                            ? 'bg-foreground dark:glass-surface border-primary ring-1 ring-primary'
+                            ? 'bg-foreground glass-surface border-primary ring-1 ring-primary'
                             : 'bg-background border-border hover:bg-foreground/30'
                         }`}
                       >
@@ -299,7 +299,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
               onClick={() => handleAudienceChange('adult')}
               className={`p-3.5 rounded-2xl border text-start transition-all cursor-pointer flex items-center gap-3.5 ${
                 !isChild
-                  ? 'bg-foreground dark:glass-surface border-muted-foreground dark:border-muted-foreground ring-1 ring-muted-foreground shadow-xs'
+                  ? 'bg-foreground glass-surface border-muted-foreground dark:border-muted-foreground ring-1 ring-muted-foreground shadow-xs'
                   : 'glass-card border-border hover:bg-foreground/40'
               }`}
             >
@@ -321,7 +321,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
               onClick={() => handleAudienceChange('child')}
               className={`p-3.5 rounded-2xl border text-start transition-all cursor-pointer flex items-center gap-3.5 ${
                 isChild
-                  ? 'bg-foreground dark:glass-surface border-muted-foreground dark:border-muted-foreground ring-1 ring-muted-foreground shadow-xs'
+                  ? 'bg-foreground glass-surface border-muted-foreground dark:border-muted-foreground ring-1 ring-muted-foreground shadow-xs'
                   : 'glass-card border-border hover:bg-foreground/40'
               }`}
             >
@@ -547,7 +547,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                 }
                 className={`p-3 rounded-xl border text-start transition-all cursor-pointer ${
                   isSelected
-                    ? 'bg-foreground dark:glass-surface border-primary ring-1 ring-primary text-foreground'
+                    ? 'bg-foreground glass-surface border-primary ring-1 ring-primary text-foreground'
                     : 'glass-card border-border text-foreground/70 dark:text-border/70 hover:bg-foreground/30'
                 }`}
               >
@@ -564,7 +564,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
       </div>
 
       {/* Trust & Privacy Reassurance */}
-      <div className="p-3.5 rounded-xl bg-surface-warm dark:glass-surface border border-secondary/60 flex items-center gap-3 text-xs text-foreground/80 dark:text-border/80">
+      <div className="p-3.5 rounded-xl bg-surface-warm glass-surface border border-secondary/60 flex items-center gap-3 text-xs text-foreground/80 dark:text-border/80">
         <ShieldCheck className="w-5 h-5 text-accent shrink-0" />
         <span>
           {isEn
@@ -580,7 +580,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
           whileTap={{ scale: 0.97 }}
           onClick={onBack}
           type="button"
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium text-foreground/80 dark:text-border/80 hover:bg-surface-warm dark:hover:glass-surface transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium text-foreground/80 dark:text-border/80 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
         >
           <ArrowLeft className={`w-3.5 h-3.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
           <span>{isEn ? 'Back to Goals' : 'الرجوع للأهداف'}</span>

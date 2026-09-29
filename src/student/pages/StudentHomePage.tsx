@@ -502,7 +502,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   <Link
                     id="link-home-repeat-lesson"
                     to="/student/book?repeat=true"
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl glass-card hover:glass-surface border border-border text-foreground text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
+                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl glass-card hover:bg-surface-subtle border border-border text-foreground text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
                   >
                     <RotateCcw className="w-3.5 h-3.5 text-accent" />
                     <span>{isAr ? 'حجز درس مماثل' : 'Repeat Lesson'}</span>
@@ -510,7 +510,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
                   <Link
                     to="/student/lessons"
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl glass-card hover:glass-surface border border-border text-foreground text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
+                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl glass-card hover:bg-surface-subtle border border-border text-foreground text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
                   >
                     <span>{isAr ? 'عرض تفاصيل الدرس' : 'View Lesson Details'}</span>
                   </Link>
@@ -546,7 +546,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                     </Link>
                     <Link
                       to="/student/book"
-                      className="inline-flex items-center justify-center gap-2 px-4 py-2.5 glass-card hover:glass-surface border border-border text-foreground rounded-xl text-xs sm:text-sm font-medium transition-colors min-h-[44px]"
+                      className="inline-flex items-center justify-center gap-2 px-4 py-2.5 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-xs sm:text-sm font-medium transition-colors min-h-[44px]"
                     >
                       <span>{isAr ? 'استكشاف المواد' : 'Explore Topics'}</span>
                     </Link>
@@ -612,7 +612,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   return (
                     <div
                       key={b.id || b.referenceCode}
-                      className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:glass-surface/50 transition-colors"
+                      className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-surface-subtle/50 transition-colors"
                     >
                       <div className="space-y-1 min-w-0">
                         <div className="flex items-center gap-2">
@@ -642,7 +642,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                       <div className="flex items-center gap-2 self-start sm:self-center shrink-0">
                         <Link
                           to="/student/lessons"
-                          className="px-3 py-1.5 rounded-lg border border-border hover:glass-card text-foreground text-xs font-medium transition-colors"
+                          className="px-3 py-1.5 rounded-lg border border-border glass-hover hover:bg-surface text-foreground text-xs font-medium transition-colors"
                         >
                           {isAr ? 'التفاصيل' : 'Details'}
                         </Link>
@@ -886,7 +886,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                 </p>
                 <Link
                   to="/student/payments"
-                  className="w-full inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl glass-card hover:glass-surface border border-border text-foreground hover:text-primary text-xs font-medium transition-all shadow-2xs"
+                  className="w-full inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl glass-card hover:bg-surface-subtle border border-border text-foreground hover:text-primary text-xs font-medium transition-all shadow-2xs"
                 >
                   <span>{isAr ? 'عرض صفحة المدفوعات' : 'View Payments'}</span>
                   <ArrowRight className={`w-3.5 h-3.5 ${isAr ? 'rotate-180' : ''}`} />

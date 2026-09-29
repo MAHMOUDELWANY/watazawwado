@@ -182,7 +182,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm transition-all whitespace-nowrap cursor-pointer min-h-[40px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-1
                 ${isActive
                   ? 'bg-primary text-primary-foreground shadow-xs font-semibold'
-                  : 'glass-card hover:glass-surface text-muted-foreground hover:text-foreground border border-border font-medium'
+                  : 'glass-card hover:bg-surface-subtle text-muted-foreground hover:text-foreground border border-border font-medium'
                 }
               `}
             >
@@ -364,7 +364,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                       <button
                         type="button"
                         onClick={() => handleCopyRef(b.referenceCode)}
-                        className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:glass-card transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                        className="p-1 rounded-md text-muted-foreground hover:text-foreground glass-hover hover:bg-surface transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                         title={isAr ? 'نسخ الرقم المرجعي' : 'Copy reference code'}
                         aria-label={isAr ? `نسخ الرقم المرجعي ${b.referenceCode}` : `Copy reference code ${b.referenceCode}`}
                       >
@@ -443,7 +443,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                         <button
                           type="button"
                           onClick={() => setRescheduleModalBooking(b)}
-                          className="inline-flex items-center justify-center gap-1.5 px-3 py-2 glass-card hover:glass-surface text-foreground border border-border rounded-xl text-xs font-medium transition-colors cursor-pointer min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                          className="inline-flex items-center justify-center gap-1.5 px-3 py-2 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs font-medium transition-colors cursor-pointer min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                         >
                           <MessageCircle className="w-3.5 h-3.5 shrink-0" />
                           <span>{isAr ? 'تنسيق التعديل عبر واتساب' : 'Request Change via WhatsApp'}</span>
@@ -454,7 +454,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                       {(isCompleted || isCancelled || isNoShow) && (
                         <Link
                           to={`/student/book?repeat=true${b.serviceId ? `&service=${b.serviceId}` : ''}`}
-                          className="inline-flex items-center justify-center gap-1.5 px-3 py-2 glass-card hover:glass-surface text-primary border border-border rounded-xl text-xs font-medium transition-colors min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                          className="inline-flex items-center justify-center gap-1.5 px-3 py-2 glass-card hover:bg-surface-subtle text-primary border border-border rounded-xl text-xs font-medium transition-colors min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                           title={isAr ? 'حجز درس جديد في نفس الموضوع' : 'Book another session on this topic'}
                         >
                           <RotateCcw className="w-3.5 h-3.5 shrink-0" />
@@ -577,7 +577,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                     <button
                       type="button"
                       onClick={() => setRescheduleModalBooking(null)}
-                      className="w-full px-4 py-2.5 glass-card hover:glass-surface text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                      className="w-full px-4 py-2.5 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                     >
                       {isAr ? 'إغلاق' : 'Close'}
                     </button>

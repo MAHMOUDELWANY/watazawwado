@@ -212,7 +212,7 @@ export function StudentPaymentClaimModal({
               </a>
               <button
                 onClick={handleClose}
-                className="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 glass-card hover:glass-surface text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer"
+                className="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer"
               >
                 {isAr ? 'إغلاق' : 'Close'}
               </button>
@@ -238,7 +238,7 @@ export function StudentPaymentClaimModal({
                         p-3 rounded-xl border text-start transition-all cursor-pointer min-h-[56px] flex flex-col justify-between
                         ${isSelected
                           ? 'border-primary bg-secondary/30 text-primary ring-1 ring-primary/30'
-                          : 'border-border glass-card hover:glass-surface text-foreground'
+                          : 'border-border glass-card hover:bg-surface-subtle text-foreground'
                         }
                       `}
                     >
@@ -284,7 +284,7 @@ export function StudentPaymentClaimModal({
                     <button
                       type="button"
                       onClick={() => handleCopy(key, val)}
-                      className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:glass-surface transition-colors shrink-0 cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
+                      className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors shrink-0 cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
                       title={isAr ? 'نسخ' : 'Copy to clipboard'}
                     >
                       {copiedKey === key ? (
@@ -384,7 +384,7 @@ export function StudentPaymentClaimModal({
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="w-full sm:w-auto px-4 py-2.5 glass-card hover:glass-surface text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
+                  className="w-full sm:w-auto px-4 py-2.5 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
                 >
                   {isAr ? 'إلغاء' : 'Cancel'}
                 </button>

@@ -139,7 +139,7 @@ export default function TodayPage() {
           <button
             onClick={() => fetchTodayLessons(true)}
             disabled={refreshing || loading}
-            className="inline-flex items-center gap-2 px-3.5 py-2 glass-card hover:glass-surface border border-border text-foreground rounded-xl text-xs font-medium transition-colors shadow-2xs"
+            className="inline-flex items-center gap-2 px-3.5 py-2 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-xs font-medium transition-colors shadow-2xs"
             title="Refresh schedule"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-accent' : 'opacity-70'}`} />
@@ -174,7 +174,7 @@ export default function TodayPage() {
           </p>
           <button 
             onClick={() => fetchTodayLessons(true)}
-            className="px-5 py-2.5 glass-card hover:glass-surface border border-border text-foreground rounded-xl text-sm font-medium transition-colors"
+            className="px-5 py-2.5 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-sm font-medium transition-colors"
           >
             Retry Loading
           </button>
@@ -431,7 +431,7 @@ function NextLessonSpotlight({
 
           <button
             onClick={onSelect}
-            className="px-4 py-2.5 glass-card hover:glass-surface text-foreground border border-border rounded-xl text-sm font-medium transition-colors"
+            className="px-4 py-2.5 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-sm font-medium transition-colors"
           >
             View Details
           </button>
@@ -586,7 +586,7 @@ function TodayLessonRow({
 
         <button
           onClick={onSelect}
-          className="inline-flex items-center gap-1 px-3.5 py-2 glass-card hover:glass-surface border border-border text-foreground rounded-xl text-xs font-medium transition-colors"
+          className="inline-flex items-center gap-1 px-3.5 py-2 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-xs font-medium transition-colors"
         >
           <span>Details</span>
           <ChevronRight className="w-3.5 h-3.5 opacity-60 rtl:rotate-180" />

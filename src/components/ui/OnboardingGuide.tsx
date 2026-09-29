@@ -127,7 +127,7 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
           <div className="p-5 flex flex-col gap-3 relative">
             <button 
               onClick={onClose}
-              className="absolute top-3 end-3 p-1 rounded-full hover:glass-surface text-muted-foreground transition-colors cursor-pointer"
+              className="absolute top-3 end-3 p-1 rounded-full hover:bg-surface-subtle text-muted-foreground transition-colors cursor-pointer"
               aria-label={isAr ? 'إغلاق' : 'Close'}
             >
               <X className="w-4 h-4" />

@@ -416,7 +416,7 @@ export default function StudentApp() {
           <button
             ref={closeButtonRef}
             onClick={toggleSidebar}
-            className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:glass-surface transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             aria-label={isAr ? 'إغلاق القائمة' : 'Close menu'}
           >
             <X className="w-5 h-5" />
@@ -427,7 +427,7 @@ export default function StudentApp() {
         <Link
           to="/student/account"
           onClick={() => setSidebarOpen(false)}
-          className="p-3.5 m-3 rounded-xl border border-border/80 glass-surface/40 hover:glass-surface transition-colors flex items-center gap-3 text-start group"
+          className="p-3.5 m-3 rounded-xl border border-border/80 bg-surface-subtle/40 hover:bg-surface-subtle transition-colors flex items-center gap-3 text-start group"
         >
           <div className="w-9 h-9 rounded-full bg-secondary/40 border border-secondary/60 text-accent flex items-center justify-center font-bold text-sm shrink-0">
             {studentInitial}
@@ -483,7 +483,7 @@ export default function StudentApp() {
                   flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors touch-manipulation min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
                   ${isActive
                     ? 'bg-secondary/30 text-accent font-semibold ring-1 ring-primary/20'
-                    : 'text-muted-foreground hover:glass-surface hover:text-foreground'
+                    : 'text-muted-foreground hover:bg-surface-subtle hover:text-foreground'
                   }
                 `}
               >
@@ -518,7 +518,7 @@ export default function StudentApp() {
             <button
               ref={menuTriggerRef}
               onClick={toggleSidebar}
-              className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:glass-surface touch-manipulation cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle touch-manipulation cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               aria-label={isAr ? 'فتح القائمة الرئيسية' : 'Open menu'}
               aria-expanded={sidebarOpen}
               aria-controls="student-sidebar"
@@ -544,7 +544,7 @@ export default function StudentApp() {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-colors ${isActive ? "bg-secondary/20 text-accent" : "text-muted-foreground hover:text-foreground hover:glass-surface"}`}
+                  className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-colors ${isActive ? "bg-secondary/20 text-accent" : "text-muted-foreground hover:text-foreground hover:bg-surface-subtle"}`}
                 >
                   {item.name}
                 </Link>
@@ -557,7 +557,7 @@ export default function StudentApp() {
             {/* Notification Bell */}
             <Link
               to="/student/notifications"
-              className="relative min-h-[40px] min-w-[40px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:glass-surface transition-colors cursor-pointer"
+              className="relative min-h-[40px] min-w-[40px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
               aria-label={isAr ? 'التنبيهات' : 'Notifications'}
             >
               <Bell className="w-4 h-4" />
@@ -569,7 +569,7 @@ export default function StudentApp() {
             {/* Language Switch */}
             <button
               onClick={toggleLang}
-              className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-primary hover:glass-surface border border-border transition-colors cursor-pointer"
+              className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-primary hover:bg-surface-subtle border border-border transition-colors cursor-pointer"
             >
               {isAr ? 'EN' : 'عربي'}
             </button>
@@ -653,7 +653,7 @@ export default function StudentApp() {
                   </div>
                 ) : (
                   <div className={`relative flex items-center justify-center w-8 h-8 rounded-full mb-0.5 transition-colors ${
-                    isActive ? 'text-interactive' : 'text-muted-foreground group-hover:text-foreground group-hover:glass-surface'
+                    isActive ? 'text-interactive' : 'text-muted-foreground group-hover:text-foreground group-hover:bg-surface-subtle'
                   }`}>
                     <Icon className={`w-[18px] h-[18px] transition-all duration-300 ${isActive ? '-translate-y-0.5' : ''}`} />
                   </div>

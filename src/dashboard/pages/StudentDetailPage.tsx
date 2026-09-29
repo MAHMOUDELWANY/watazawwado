@@ -306,7 +306,7 @@ export default function StudentDetailPage() {
         <div className="flex items-center gap-3">
           <Link
             to="/dashboard/students"
-            className="p-2 rounded-xl glass-card border-none text-muted-foreground hover:text-foreground hover:glass-surface transition-colors cursor-pointer"
+            className="p-2 rounded-xl glass-card border-none text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
             title="Back to Students Directory"
           >
             <ChevronLeft className="w-5 h-5" />
@@ -363,7 +363,7 @@ export default function StudentDetailPage() {
           {student.email && (
             <a
               href={`mailto:${student.email}`}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium rounded-xl glass-card border-none text-foreground hover:glass-surface transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium rounded-xl glass-card border-none text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
             >
               <Mail className="w-3.5 h-3.5 text-accent" />
               <span>Email</span>
@@ -950,7 +950,7 @@ export default function StudentDetailPage() {
                           <button
                             type="button"
                             onClick={() => setEditingNoteId(null)}
-                            className="px-2.5 py-1 text-[11px] rounded-lg text-muted-foreground hover:glass-surface cursor-pointer"
+                            className="px-2.5 py-1 text-[11px] rounded-lg text-muted-foreground hover:bg-surface-subtle cursor-pointer"
                           >
                             Cancel
                           </button>

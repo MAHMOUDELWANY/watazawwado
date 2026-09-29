@@ -184,7 +184,7 @@ export function AssignTeacherModal({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-xl text-muted-foreground hover:text-foreground hover:glass-card transition-colors cursor-pointer"
+            className="p-1.5 rounded-xl text-muted-foreground hover:text-foreground glass-hover hover:bg-surface transition-colors cursor-pointer"
             title="Close"
           >
             <X className="w-5 h-5" />
@@ -309,7 +309,7 @@ export function AssignTeacherModal({
                 className={`p-3 rounded-xl border text-xs font-medium transition-all flex flex-col items-center gap-1 cursor-pointer ${
                   preferredGender === 'male'
                     ? 'border-primary bg-secondary/30 text-primary font-semibold shadow-2xs'
-                    : 'border-border glass-card hover:glass-surface text-muted-foreground'
+                    : 'border-border glass-card hover:bg-surface-subtle text-muted-foreground'
                 }`}
               >
                 <span className="text-base">👔</span>
@@ -322,7 +322,7 @@ export function AssignTeacherModal({
                 className={`p-3 rounded-xl border text-xs font-medium transition-all flex flex-col items-center gap-1 cursor-pointer ${
                   preferredGender === 'female'
                     ? 'border-accent bg-accent/15 text-accent font-semibold shadow-2xs'
-                    : 'border-border glass-card hover:glass-surface text-muted-foreground'
+                    : 'border-border glass-card hover:bg-surface-subtle text-muted-foreground'
                 }`}
               >
                 <span className="text-base">🧕</span>
@@ -335,7 +335,7 @@ export function AssignTeacherModal({
                 className={`p-3 rounded-xl border text-xs font-medium transition-all flex flex-col items-center gap-1 cursor-pointer ${
                   preferredGender === 'any'
                     ? 'border-primary/50 glass-surface text-foreground font-semibold shadow-2xs'
-                    : 'border-border glass-card hover:glass-surface text-muted-foreground'
+                    : 'border-border glass-card hover:bg-surface-subtle text-muted-foreground'
                 }`}
               >
                 <span className="text-base">⚖️</span>
@@ -365,7 +365,7 @@ export function AssignTeacherModal({
                 className={`p-3 rounded-xl border flex items-center justify-between text-xs cursor-pointer transition-all ${
                   !selectedTeacherEmail
                     ? 'border-warning/60 bg-warning/5 text-foreground shadow-2xs'
-                    : 'border-border glass-card hover:glass-surface text-muted-foreground'
+                    : 'border-border glass-card hover:bg-surface-subtle text-muted-foreground'
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -401,7 +401,7 @@ export function AssignTeacherModal({
                     className={`p-3 rounded-xl border flex items-center justify-between text-xs cursor-pointer transition-all ${
                       isSelected
                         ? 'border-primary bg-secondary/30 text-foreground shadow-2xs'
-                        : 'border-border glass-card hover:glass-surface text-muted-foreground'
+                        : 'border-border glass-card hover:bg-surface-subtle text-muted-foreground'
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -466,7 +466,7 @@ export function AssignTeacherModal({
               type="button"
               onClick={onClose}
               disabled={saving}
-              className="px-4 py-2 text-xs font-medium rounded-xl border border-border text-foreground hover:glass-surface transition-colors cursor-pointer disabled:opacity-50"
+              className="px-4 py-2 text-xs font-medium rounded-xl border border-border text-foreground hover:bg-surface-subtle transition-colors cursor-pointer disabled:opacity-50"
             >
               Cancel
             </button>

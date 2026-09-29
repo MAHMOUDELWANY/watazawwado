@@ -923,7 +923,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
               type="button"
               id="btn-dismiss-reuse-booking"
               onClick={handleDismissReuse}
-              className="w-full p-4 rounded-2xl glass-card border-none text-foreground hover:glass-surface font-medium text-xs transition-all shadow-xs flex flex-col items-start gap-1 cursor-pointer text-start"
+              className="w-full p-4 rounded-2xl glass-card border-none text-foreground hover:bg-surface-subtle font-medium text-xs transition-all shadow-xs flex flex-col items-start gap-1 cursor-pointer text-start"
             >
               <div className="flex items-center gap-1.5 font-semibold text-sm">
                 <Sparkles className="w-4 h-4 text-accent" />

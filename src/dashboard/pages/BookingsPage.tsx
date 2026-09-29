@@ -290,7 +290,7 @@ export default function BookingsPage() {
           className={`px-4 py-2.5 text-xs font-semibold rounded-t-xl transition-colors cursor-pointer ${
             activeTab === 'bookings'
               ? 'glass-card text-foreground border-t border-x border-border shadow-2xs'
-              : 'text-muted-foreground hover:text-foreground hover:glass-surface/50'
+              : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle/50'
           }`}
         >
           Bookings & Lessons ({summary.total_bookings})
@@ -300,7 +300,7 @@ export default function BookingsPage() {
           className={`px-4 py-2.5 text-xs font-semibold rounded-t-xl transition-colors flex items-center gap-1.5 cursor-pointer ${
             activeTab === 'payments'
               ? 'glass-card text-foreground border-t border-x border-border shadow-2xs'
-              : 'text-muted-foreground hover:text-foreground hover:glass-surface/50'
+              : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle/50'
           }`}
         >
           <DollarSign className="w-3.5 h-3.5" />
@@ -382,7 +382,7 @@ export default function BookingsPage() {
             {/* Refresh */}
             <button
               onClick={fetchBookings}
-              className="p-2 text-muted-foreground hover:text-foreground rounded-lg hover:glass-surface transition-colors cursor-pointer"
+              className="p-2 text-muted-foreground hover:text-foreground rounded-lg hover:bg-surface-subtle transition-colors cursor-pointer"
               title="Refresh bookings"
               aria-label="Refresh bookings"
             >
@@ -434,7 +434,7 @@ export default function BookingsPage() {
                   <div
                     key={b.id}
                     onClick={() => setSelectedBookingId(b.id)}
-                    className="glass-card hover:glass-surface/80 p-4 sm:p-5 rounded-2xl border border-border shadow-2xs cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group"
+                    className="glass-card hover:bg-surface-subtle/80 p-4 sm:p-5 rounded-2xl border border-border shadow-2xs cursor-pointer transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group"
                   >
                     {/* Left: Learner & Lesson Details */}
                     <div className="space-y-1.5 flex-1">
@@ -525,7 +525,7 @@ export default function BookingsPage() {
                               contactName: b.contact_name,
                               expectedAmount: b.expected_amount
                             })}
-                            className="px-3 py-1.5 text-xs font-medium text-foreground glass-card hover:glass-surface border border-border rounded-xl transition-colors cursor-pointer min-h-[36px]"
+                            className="px-3 py-1.5 text-xs font-medium text-foreground glass-card hover:bg-surface-subtle border border-border rounded-xl transition-colors cursor-pointer min-h-[36px]"
                           >
                             Record Payment
                           </button>
@@ -533,7 +533,7 @@ export default function BookingsPage() {
 
                         <button
                           onClick={() => setSelectedBookingId(b.id)}
-                          className="p-2 rounded-xl text-muted-foreground group-hover:text-foreground hover:glass-surface transition-colors cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center"
+                          className="p-2 rounded-xl text-muted-foreground group-hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center"
                           title="Open Booking Details"
                           aria-label={`Open details for booking ${b.reference_code}`}
                         >
@@ -570,7 +570,7 @@ export default function BookingsPage() {
             <button
               onClick={fetchPayments}
               disabled={loadingPayments}
-              className="p-2 text-muted-foreground hover:text-foreground rounded-lg hover:glass-surface transition-colors cursor-pointer disabled:opacity-50"
+              className="p-2 text-muted-foreground hover:text-foreground rounded-lg hover:bg-surface-subtle transition-colors cursor-pointer disabled:opacity-50"
               aria-label="Refresh payments ledger"
               title="Refresh payments ledger"
             >

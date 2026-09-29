@@ -131,7 +131,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           <CheckCircle2 className="w-10 h-10" />
         </motion.div>
 
-        <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-surface-warm dark:glass-surface text-muted-foreground border border-secondary/60">
+        <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-surface-warm glass-surface text-muted-foreground border border-secondary/60">
           {isEn ? `Booking Reference: ${confirmation.bookingReference}` : `رقم الحجز المرجعي: ${confirmation.bookingReference}`}
         </span>
 
@@ -280,7 +280,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
       )}
 
       {/* Philosophy Reassurance / Post-Trial Human Expectation */}
-      <div className="p-5 rounded-3xl bg-surface-warm dark:glass-card border-none space-y-2">
+      <div className="p-5 rounded-3xl bg-surface-warm glass-card border-none space-y-2">
         <div className="flex items-center gap-2 font-display text-sm font-medium text-foreground">
           <Sparkles className="w-4 h-4 text-accent" />
           <span>
@@ -351,7 +351,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         <button
           type="button"
           onClick={onDone}
-          className="px-6 py-2.5 rounded-xl text-xs font-medium text-foreground/70 dark:text-border/70 hover:bg-surface-warm dark:hover:glass-surface transition-colors cursor-pointer"
+          className="px-6 py-2.5 rounded-xl text-xs font-medium text-foreground/70 dark:text-border/70 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
         >
           {doneLabel || (isEn ? 'Done & Return to Homepage' : 'تم والعودة للموقع')}
         </button>

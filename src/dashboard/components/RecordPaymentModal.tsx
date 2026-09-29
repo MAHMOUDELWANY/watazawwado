@@ -136,7 +136,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           <button 
             onClick={onClose}
             disabled={submitting}
-            className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:glass-surface transition-colors cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center disabled:opacity-50"
+            className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center disabled:opacity-50"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
@@ -223,7 +223,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                 className={`flex items-center gap-2 p-2.5 rounded-xl border text-xs font-medium cursor-pointer transition-colors ${
                   status === 'confirmed' 
                     ? 'bg-success/15 border-success/40 text-success' 
-                    : 'glass-surface border-border text-foreground hover:glass-card'
+                    : 'glass-surface border-border text-foreground glass-hover hover:bg-surface'
                 }`}
               >
                 <input 
@@ -244,7 +244,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
                 className={`flex items-center gap-2 p-2.5 rounded-xl border text-xs font-medium cursor-pointer transition-colors ${
                   status === 'pending' 
                     ? 'bg-warning/15 border-warning/40 text-warning' 
-                    : 'glass-surface border-border text-foreground hover:glass-card'
+                    : 'glass-surface border-border text-foreground glass-hover hover:bg-surface'
                 }`}
               >
                 <input 
@@ -297,7 +297,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
               type="button"
               onClick={onClose}
               disabled={submitting}
-              className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:glass-surface rounded-xl transition-colors cursor-pointer min-h-[40px]"
+              className="px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-surface-subtle rounded-xl transition-colors cursor-pointer min-h-[40px]"
             >
               Cancel
             </button>

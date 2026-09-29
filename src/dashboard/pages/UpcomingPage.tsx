@@ -93,7 +93,7 @@ export default function UpcomingPage() {
                 className={`px-3 py-1.5 rounded-lg transition-colors ${
                   rangeDays === tab.value 
                     ? 'bg-primary text-primary-foreground font-semibold shadow-2xs' 
-                    : 'text-muted-foreground hover:text-foreground hover:glass-surface'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
                 }`}
               >
                 {tab.label}
@@ -104,7 +104,7 @@ export default function UpcomingPage() {
           <button
             onClick={() => fetchUpcomingLessons(true)}
             disabled={refreshing || loading}
-            className="inline-flex items-center gap-2 px-3.5 py-2 glass-card hover:glass-surface border border-border text-foreground rounded-xl text-xs font-medium transition-colors shadow-2xs"
+            className="inline-flex items-center gap-2 px-3.5 py-2 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-xs font-medium transition-colors shadow-2xs"
             title="Refresh upcoming schedule"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-accent' : 'opacity-70'}`} />
@@ -134,7 +134,7 @@ export default function UpcomingPage() {
           </p>
           <button 
             onClick={() => fetchUpcomingLessons(true)}
-            className="px-5 py-2.5 glass-card hover:glass-surface border border-border text-foreground rounded-xl text-sm font-medium transition-colors"
+            className="px-5 py-2.5 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-sm font-medium transition-colors"
           >
             Retry Loading
           </button>
@@ -278,7 +278,7 @@ function UpcomingLessonRow({
 
         <button
           onClick={onSelect}
-          className="inline-flex items-center gap-1 px-3.5 py-2 glass-card hover:glass-surface border border-border text-foreground rounded-xl text-xs font-medium transition-colors"
+          className="inline-flex items-center gap-1 px-3.5 py-2 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-xs font-medium transition-colors"
         >
           <span>Details</span>
           <ChevronRight className="w-3.5 h-3.5 opacity-60 rtl:rotate-180" />

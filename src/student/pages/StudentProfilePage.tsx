@@ -368,7 +368,7 @@ export default function StudentProfilePage({
                 flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all whitespace-nowrap cursor-pointer min-h-[44px]
                 ${isActive
                   ? 'bg-primary text-primary-foreground shadow-xs font-semibold'
-                  : 'glass-card hover:glass-surface text-muted-foreground hover:text-foreground border border-border'
+                  : 'glass-card hover:bg-surface-subtle text-muted-foreground hover:text-foreground border border-border'
                 }
               `}
             >
@@ -397,7 +397,7 @@ export default function StudentProfilePage({
                     w-full flex items-start gap-3 p-3.5 rounded-xl text-start transition-all cursor-pointer min-h-[44px]
                     ${isActive
                       ? 'bg-secondary/30 border border-primary/25 text-foreground font-semibold ring-1 ring-primary/20'
-                      : 'text-muted-foreground hover:glass-surface hover:text-foreground border border-transparent'
+                      : 'text-muted-foreground hover:bg-surface-subtle hover:text-foreground border border-transparent'
                     }
                   `}
                 >
@@ -581,7 +581,7 @@ export default function StudentProfilePage({
                           className={`flex-1 py-2 px-2.5 rounded-xl text-xs font-medium border transition-colors ${
                             gender === opt.value
                               ? 'bg-secondary/30 border-primary text-primary font-semibold'
-                              : 'border-border glass-surface text-muted-foreground hover:glass-card hover:text-foreground'
+                              : 'border-border glass-surface text-muted-foreground glass-hover hover:bg-surface hover:text-foreground'
                           }`}
                         >
                           {isAr ? opt.labelAr : opt.labelEn}
@@ -607,7 +607,7 @@ export default function StudentProfilePage({
                           className={`flex-1 py-2 px-2.5 rounded-xl text-xs font-medium border transition-colors ${
                             teacherGenderPreference === opt.value
                               ? 'bg-secondary/30 border-primary text-primary font-semibold'
-                              : 'border-border glass-surface text-muted-foreground hover:glass-card hover:text-foreground'
+                              : 'border-border glass-surface text-muted-foreground glass-hover hover:bg-surface hover:text-foreground'
                           }`}
                         >
                           {isAr ? opt.labelAr : opt.labelEn}
@@ -895,7 +895,7 @@ export default function StudentProfilePage({
                   variant="outline"
                   size="sm"
                   onClick={handleToggleLang}
-                  className="min-h-[44px] px-4 rounded-xl text-xs font-semibold cursor-pointer border-border hover:glass-card glass-card"
+                  className="min-h-[44px] px-4 rounded-xl text-xs font-semibold cursor-pointer border-border glass-hover hover:bg-surface glass-card"
                   aria-label={isAr ? 'التبديل إلى الإنجليزية' : 'Switch to Arabic'}
                 >
                   <Globe className="w-3.5 h-3.5 me-1.5 text-accent" />
@@ -920,7 +920,7 @@ export default function StudentProfilePage({
                   variant="outline"
                   size="sm"
                   onClick={toggleTheme}
-                  className="min-h-[44px] px-4 rounded-xl text-xs font-semibold cursor-pointer border-border hover:glass-card glass-card"
+                  className="min-h-[44px] px-4 rounded-xl text-xs font-semibold cursor-pointer border-border glass-hover hover:bg-surface glass-card"
                   aria-label={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
                 >
                   {theme === 'light' ? (
@@ -1000,14 +1000,14 @@ export default function StudentProfilePage({
                   <button
                     type="button"
                     onClick={probeStudentMe}
-                    className="px-3.5 py-2 rounded-xl glass-card border-none text-xs text-foreground font-medium hover:glass-surface transition-colors cursor-pointer min-h-[44px]"
+                    className="px-3.5 py-2 rounded-xl glass-card border-none text-xs text-foreground font-medium hover:bg-surface-subtle transition-colors cursor-pointer min-h-[44px]"
                   >
                     <span>{isAr ? 'فحص /api/student/me' : 'Probe /api/student/me'}</span>
                   </button>
                   <button
                     type="button"
                     onClick={runDiagnosticProbe}
-                    className="px-3.5 py-2 rounded-xl glass-card border-none text-xs text-foreground font-medium hover:glass-surface transition-colors cursor-pointer min-h-[44px]"
+                    className="px-3.5 py-2 rounded-xl glass-card border-none text-xs text-foreground font-medium hover:bg-surface-subtle transition-colors cursor-pointer min-h-[44px]"
                   >
                     <span>{isAr ? 'فحص /api/student-auth-diagnostic' : 'Probe /api/student-auth-diagnostic'}</span>
                   </button>

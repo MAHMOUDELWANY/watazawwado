@@ -292,7 +292,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
             <button
               type="button"
               onClick={fetchPackages}
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 glass-card hover:glass-surface text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs sm:text-sm font-medium transition-colors cursor-pointer min-h-[44px]"
             >
               <span>{isAr ? 'إعادة المحاولة' : 'Try Again'}</span>
             </button>
@@ -424,7 +424,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
           href="https://wa.me/201026042456?text=Assalamu%20Alaikum%20Ustadh%20Mahmoud%2C%20I%20have%20a%20question%20regarding%20lesson%20packages."
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 px-4 py-2 glass-card hover:glass-surface text-foreground border border-border rounded-xl text-xs font-medium transition-colors shrink-0 self-start md:self-auto min-h-[38px]"
+          className="inline-flex items-center gap-1.5 px-4 py-2 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs font-medium transition-colors shrink-0 self-start md:self-auto min-h-[38px]"
         >
           <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />
           <span>{isAr ? 'استفسار عبر واتساب' : 'Inquire on WhatsApp'}</span>
@@ -521,7 +521,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                       ) : ent.remainingCredits > 0 ? (
                         <Link
                           to={`/student/book?entitlementId=${ent.id}`}
-                          className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 glass-card hover:glass-surface text-foreground border border-border rounded-xl text-xs font-semibold transition-colors min-h-[40px]"
+                          className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-xs font-semibold transition-colors min-h-[40px]"
                         >
                           <Plus className="w-3.5 h-3.5 text-accent" />
                           <span>{isAr ? 'حجز درس من هذا الرصيد' : 'Book a Session'}</span>
@@ -571,7 +571,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                     className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer min-h-[38px] ${
                       isSelected
                         ? 'bg-primary text-primary-foreground shadow-xs'
-                        : 'glass-surface hover:glass-card text-muted-foreground hover:text-foreground border border-border'
+                        : 'glass-surface glass-hover hover:bg-surface text-muted-foreground hover:text-foreground border border-border'
                     }`}
                   >
                     <User className="w-3.5 h-3.5" />
@@ -688,7 +688,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                 : null;
 
               return (
-                <div key={item.id} className="p-4 sm:p-5 flex items-center justify-between gap-4 hover:glass-surface/50 transition-colors">
+                <div key={item.id} className="p-4 sm:p-5 flex items-center justify-between gap-4 hover:bg-surface-subtle/50 transition-colors">
                   <div className="flex items-center gap-3.5">
                     <div
                       className={`p-2.5 rounded-xl shrink-0 ${

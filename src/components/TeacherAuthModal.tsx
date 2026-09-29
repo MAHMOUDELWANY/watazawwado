@@ -171,7 +171,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
               )}
               <button
                 onClick={onClose}
-                className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:bg-surface-warm dark:hover:glass-card transition-colors cursor-pointer"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground hover:bg-surface-warm dark:hover:bg-surface transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -285,7 +285,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                   <button
                     onClick={loadTeacherData}
                     disabled={isLoadingData}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border text-xs font-medium text-foreground hover:glass-surface dark:hover:glass-card cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border text-xs font-medium text-foreground hover:bg-surface-subtle dark:hover:bg-surface cursor-pointer"
                   >
                     <RefreshCw className={`w-3.5 h-3.5 ${isLoadingData ? 'animate-spin' : ''}`} />
                     <span>Refresh</span>

@@ -165,7 +165,7 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
               }}
               className={`p-3 rounded-2xl text-left border transition-all cursor-pointer flex flex-col justify-between ${
                 isSelected
-                  ? 'bg-surface-warm dark:glass-surface border-primary-hover text-foreground shadow-xs'
+                  ? 'bg-surface-warm glass-surface border-primary-hover text-foreground shadow-xs'
                   : 'glass-surface dark:bg-background border-border/60 dark:border-border text-foreground/70 dark:text-border/70 hover:border-accent/40'
               }`}
             >
@@ -266,7 +266,7 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-background border border-border text-xs font-semibold text-foreground hover:glass-surface transition-colors"
+              className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-background border border-border text-xs font-semibold text-foreground hover:bg-surface-subtle transition-colors"
             >
               <MessageCircle className="w-4 h-4 text-accent" />
               <span>{isEn ? 'Ask Mahmoud on WhatsApp' : 'استفسار عبر واتساب'}</span>

@@ -115,7 +115,7 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-full hover:glass-card text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                className="p-1.5 rounded-full glass-hover hover:bg-surface text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>

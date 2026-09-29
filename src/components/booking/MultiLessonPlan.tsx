@@ -158,7 +158,7 @@ export const MultiLessonPlan: React.FC<Props> = ({ catalog, serviceId, duration,
         <button
           type="button"
           onClick={onBack}
-          className="rounded-xl border border-border px-4 py-3 text-sm font-medium text-foreground transition-colors hover:glass-surface"
+          className="rounded-xl border border-border px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-surface-subtle"
         >
           Edit times
         </button>

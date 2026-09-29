@@ -78,7 +78,7 @@ const handleOpenSignup = () => {
           <button
             onClick={onClose}
             aria-label={isAr ? 'إغلاق' : 'Close modal'}
-            className="absolute top-5 end-5 p-2 rounded-full text-muted-foreground hover:text-foreground hover:glass-surface transition-colors cursor-pointer"
+            className="absolute top-5 end-5 p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -136,7 +136,7 @@ const handleOpenSignup = () => {
                       type="button"
                       onClick={handleOpenLogin}
                       id="get-started-student-login-btn"
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl glass-card hover:glass-surface text-foreground text-xs sm:text-sm font-medium transition-colors cursor-pointer border border-border"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl glass-card hover:bg-surface-subtle text-foreground text-xs sm:text-sm font-medium transition-colors cursor-pointer border border-border"
                     >
                       <LogIn className="w-3.5 h-3.5 text-accent" />
                       <span>{isAr ? 'تسجيل الدخول' : 'Sign In'}</span>

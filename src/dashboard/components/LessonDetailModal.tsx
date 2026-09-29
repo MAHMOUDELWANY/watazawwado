@@ -237,7 +237,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
           </div>
           <button 
             onClick={onClose}
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:glass-card transition-colors"
+            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground glass-hover hover:bg-surface transition-colors"
             aria-label="Close details"
           >
             <X className="w-5 h-5" />
@@ -340,7 +340,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                   </a>
                   <button 
                     onClick={() => copyToClipboard(joinUrl || hostUrl, 'join')}
-                    className="px-3.5 py-2.5 glass-card hover:glass-surface border border-border text-foreground rounded-xl text-sm font-medium transition-colors flex items-center gap-1.5"
+                    className="px-3.5 py-2.5 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-sm font-medium transition-colors flex items-center gap-1.5"
                     title="Copy Student Join Link"
                   >
                     {copiedLink === 'join' ? <Check className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4 opacity-70" />}
@@ -430,7 +430,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
               {lesson.contact_email && (
                 <a 
                   href={`mailto:${lesson.contact_email}?subject=${encodeURIComponent(`Ustadh Mahmoud — ${lesson.service_name} Lesson`)}`}
-                  className="inline-flex items-center gap-2 px-3.5 py-2 glass-card hover:glass-surface border border-border text-foreground rounded-xl text-xs font-medium transition-colors"
+                  className="inline-flex items-center gap-2 px-3.5 py-2 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-xs font-medium transition-colors"
                 >
                   <Mail className="w-3.5 h-3.5 opacity-70" />
                   {lesson.contact_email}
@@ -537,7 +537,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                     className={`p-2.5 rounded-xl border text-start transition-all cursor-pointer ${
                       noShowCreditDecision === 'returned'
                         ? 'glass-card border-primary ring-1 ring-primary text-foreground'
-                        : 'glass-card/60 border-border text-muted-foreground hover:glass-card'
+                        : 'glass-card/60 border-border text-muted-foreground glass-hover hover:bg-surface'
                     }`}
                   >
                     <span className="font-semibold text-xs block text-foreground">
@@ -554,7 +554,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                     className={`p-2.5 rounded-xl border text-start transition-all cursor-pointer ${
                       noShowCreditDecision === 'used'
                         ? 'glass-card border-warning ring-1 ring-warning text-foreground'
-                        : 'glass-card/60 border-border text-muted-foreground hover:glass-card'
+                        : 'glass-card/60 border-border text-muted-foreground glass-hover hover:bg-surface'
                     }`}
                   >
                     <span className="font-semibold text-xs block text-foreground">
@@ -637,7 +637,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
 
           <button 
             onClick={onClose}
-            className="px-4 py-2 glass-card hover:glass-surface border border-border text-foreground rounded-xl text-sm font-medium transition-colors ms-auto"
+            className="px-4 py-2 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-sm font-medium transition-colors ms-auto"
           >
             Close
           </button>
