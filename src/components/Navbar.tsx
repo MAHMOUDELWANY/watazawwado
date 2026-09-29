@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   Menu,
@@ -74,8 +74,27 @@ export const Navbar: React.FC<NavbarProps> = ({
     { href: '/faq', label: isEn ? 'FAQ' : 'الأسئلة الشائعة', icon: HelpCircle },
   ];
 
+  const { scrollYProgress } = useScroll();
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 300,
+    damping: 35,
+    restDelta: 0.001
+  });
+
   return (
     <>
+      {/* ─── 4-COLOR HERITAGE SCROLL PROGRESS BAR AT TOP OF SCREEN ────────────── */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-[3.5px] z-50 pointer-events-none origin-left rtl:origin-right"
+        style={{
+          scaleX: smoothProgress,
+          background: isRtl
+            ? 'linear-gradient(to left, #087D91 0%, #C51F24 35%, #8B4935 70%, #E5A93C 100%)'
+            : 'linear-gradient(to right, #087D91 0%, #C51F24 35%, #8B4935 70%, #E5A93C 100%)',
+          boxShadow: '0 1px 8px rgba(197, 31, 36, 0.35), 0 1px 6px rgba(8, 125, 145, 0.3)',
+        }}
+      />
+
       {/* ─── SLEEK, UNCLUTTERED TOP NAVIGATION BAR (Desktop & Mobile) ─────────── */}
       <header
         id="main-navigation"

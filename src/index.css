@@ -293,21 +293,27 @@ body {
   position: relative;
 }
 
-/* Subtle scrollbar — uses primary teal, thin and unobtrusive */
+/* Subtle, neutral scrollbar — eliminates intrusive red bar on the side */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  opacity: 0.4;
+  background: rgba(140, 130, 120, 0.25);
   border-radius: 9999px;
+  transition: background 0.2s ease;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-hover);
+  background: rgba(140, 130, 120, 0.45);
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(200, 190, 180, 0.2);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(200, 190, 180, 0.4);
 }
 
 /* Typography baseline */
