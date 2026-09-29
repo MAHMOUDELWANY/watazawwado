@@ -181,7 +181,6 @@ export function DashboardApp() {
         />
       )}
 
-      {/* Sidebar */}
       <aside 
         ref={drawerRef}
         id="teacher-sidebar"
@@ -189,21 +188,26 @@ export function DashboardApp() {
         aria-modal={isMobileMenuOpen ? 'true' : undefined}
         aria-label={lang === 'ar' ? 'شريط التنقل للمعلم' : 'Teacher Navigation Sidebar'}
         className={`
-          fixed inset-y-0 start-0 z-50 w-64 max-w-[85vw] glass-sheet border-r-0
-          transform transition-transform duration-300 ease-premium md:hidden
-          ${isMobileMenuOpen ? 'translate-x-0' : 'ltr:-translate-x-full rtl:translate-x-full md:ltr:translate-x-0 md:rtl:translate-x-0'}
-          flex flex-col shadow-xs
+          fixed inset-y-0 z-50 flex flex-col transition-transform duration-300 ease-premium shrink-0
+          /* Mobile styling */
+          max-md:glass-sheet max-md:w-64 max-md:max-w-[85vw] max-md:inset-inline-start-0
+          ${isMobileMenuOpen 
+            ? 'max-md:translate-x-0' 
+            : 'max-md:ltr:-translate-x-full max-md:rtl:translate-x-full'
+          }
+          /* Desktop styling */
+          md:static md:translate-x-0 md:w-[280px] md:m-4 md:rounded-3xl md:glass-nav md:shadow-xl md:border md:border-border/50
         `}
       >
         {/* Workspace Brand Header */}
-        <div className="h-16 flex items-center justify-between px-5 border-b border-border">
-          <Link to="/" className="flex items-center gap-2.5 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg p-1">
+        <div className="h-20 flex items-center justify-between px-6 border-b border-border/50">
+          <Link to="/" className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg p-1">
             <BrandLogo variant="compact" />
             <div>
-              <span className="text-sm font-display font-semibold  text-foreground block">
-                {lang === 'ar' ? 'وتزودوا — المعلم' : 'Watazawwado'}
+              <span className="text-lg font-display font-bold text-foreground block leading-none">
+                {lang === 'ar' ? 'وتزودوا' : 'Watazawwado'}
               </span>
-              <span className="text-[13px] text-muted-foreground uppercase tracking-wider block">
+              <span className="text-[11px] text-muted-foreground uppercase tracking-wider block mt-1">
                 {isSuperAdmin ? (lang === 'ar' ? 'الإدارة العامة' : 'Super Admin') : (lang === 'ar' ? 'مساحة المعلم' : 'Teacher Workspace')}
               </span>
             </div>
@@ -220,7 +224,7 @@ export function DashboardApp() {
 
         {/* Navigation Links */}
         <nav 
-          className="flex-1 overflow-y-auto py-5 px-3 space-y-1"
+          className="flex-1 overflow-y-auto py-4 px-4 space-y-1.5"
           aria-label={lang === 'ar' ? 'روابط التنقل الرئيسية للمعلم' : 'Teacher Primary Navigation'}
         >
           {navigation.map((item) => {
@@ -235,98 +239,79 @@ export function DashboardApp() {
                 onClick={() => setIsMobileMenuOpen(false)}
                 aria-current={isActive ? 'page' : undefined}
                 className={`
-                  flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-base touch-manipulation min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
+                  flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-base touch-manipulation min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary group
                   ${isActive 
                     ? 'bg-secondary/30 text-accent dark:bg-primary/20 font-semibold shadow-2xs' 
                     : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
                   }
                 `}
               >
-                <item.icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-accent' : 'opacity-70'}`} />
-                <span>{item.name}</span>
+                <item.icon className={`w-4.5 h-4.5 shrink-0 ${isActive ? 'text-accent' : 'opacity-70 group-hover:opacity-100 transition-opacity'}`} />
+                <span className="truncate">{item.name}</span>
               </Link>
             );
           })}
         </nav>
 
         {/* Sidebar Footer Controls */}
-        <div className="p-3 border-t border-border space-y-2">
+        <div className="p-4 border-t border-border/50 space-y-3">
           {/* Teacher Profile Card */}
-          <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl glass-surface border border-border">
-            <div className="w-8 h-8 rounded-full bg-secondary/40 text-accent flex items-center justify-center font-semibold text-sm shrink-0">
+          <div className="flex items-center gap-3 px-3 py-3 rounded-2xl bg-surface-subtle/30 border border-border/50">
+            <div className="w-10 h-10 rounded-full bg-secondary/30 text-accent flex items-center justify-center font-bold text-sm shrink-0 shadow-sm border border-secondary/50">
               {user?.email?.charAt(0).toUpperCase() || 'M'}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-foreground truncate">
                 {lang === 'ar' ? (isSuperAdmin ? 'أستاذ محمود (إدارة)' : 'الأستاذ') : (user?.user_metadata?.name || (isSuperAdmin ? 'Ustadh Mahmoud (Admin)' : 'Ustadh Mahmoud'))}
               </p>
-              <p className="text-[13px] text-muted-foreground truncate">{user?.email}</p>
+              <p className="text-[11px] text-muted-foreground truncate mt-0.5">{user?.email}</p>
             </div>
-            <span className={`text-[13px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0 ${
-              isSuperAdmin ? 'bg-secondary/30 text-accent font-bold' : 'bg-secondary/30 text-primary'
-            }`}>
-              {isSuperAdmin ? 'Admin' : 'Teacher'}
-            </span>
           </div>
-
           
+          <div className="flex items-center justify-between px-2 pt-2">
+            <span className="text-xs text-muted-foreground">{lang === 'ar' ? 'السمة' : 'Theme'}</span>
+            <button
+              onClick={toggleTheme}
+              className="p-1.5 text-muted-foreground hover:text-foreground rounded-lg transition-colors cursor-pointer"
+            >
+              {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+            </button>
+          </div>
+          <div className="flex items-center justify-between px-2 pb-1">
+            <span className="text-xs text-muted-foreground">{lang === 'ar' ? 'اللغة' : 'Language'}</span>
+            <button
+              onClick={toggleLanguage}
+              className="px-2 py-1 text-accent hover:bg-surface-subtle rounded-lg text-xs font-semibold cursor-pointer"
+            >
+              {lang === "en" ? 'العربية' : "EN"}
+            </button>
+          </div>
         </div>
-      
-          </aside>
+      </aside>
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
         {/* Mobile Header Bar */}
-        <header className="h-16 shrink-0 flex items-center justify-between px-4 sm:px-6 lg:px-8 glass-nav border-b-0 z-10">
+        <header className="h-20 shrink-0 flex items-center justify-between px-6 lg:px-10 border-b border-border/10 bg-background/50 backdrop-blur-md z-10">
             {/* Left: Mobile Toggle & BrandLogo */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 min-w-0">
               <button 
                 ref={menuTriggerRef}
                 onClick={toggleMobileMenu} 
-                className="md:hidden p-2 -ms-1 text-muted-foreground hover:text-foreground rounded-xl transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
+                className="md:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle touch-manipulation cursor-pointer"
               >
-                <Menu className="w-5 h-5" />
+                <Menu className="w-6 h-6" />
               </button>
-              <Link to="/" className="flex items-center gap-2">
-                <BrandLogo variant="compact" />
-                <span className="font-display font-semibold text-foreground text-sm hidden md:inline-block">
-                  {lang === "ar" ? '\u0645\u0633\u0627\u062D\u0629 \u0639\u0645\u0644 \u0648\u062A\u0632\u0648\u062F\u0648\u0627' : "Watazawwado Workspace"}
+              
+              <div className="flex flex-col text-start min-w-0 md:hidden">
+                <span className="text-xl sm:text-2xl font-display font-bold text-foreground leading-tight truncate">
+                  {lang === "ar" ? 'مساحة العمل' : "Workspace"}
                 </span>
-              </Link>
+              </div>
             </div>
 
-            {/* Center: Desktop Navigation */}
-            <nav className="hidden md:flex flex-1 items-center justify-center gap-1.5 px-4">
-              {navigation.map((item) => {
-                const isExactMatch = location.pathname === item.path;
-                const isSubPath = item.path !== "/dashboard" && location.pathname.startsWith(item.path);
-                const isActive = isExactMatch || isSubPath;
-                return (
-                  <Link
-                    key={item.name}
-                    to={item.path}
-                    className={`px-3 py-2 rounded-xl text-sm font-medium transition-colors ${isActive ? "bg-secondary/20 text-accent font-semibold" : "text-muted-foreground hover:text-foreground hover:bg-surface-subtle"}`}
-                  >
-                    {item.name}
-                  </Link>
-                );
-              })}
-            </nav>
-
             {/* Right: Actions */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={toggleLanguage}
-                className="hidden md:flex p-2 text-primary hover:bg-surface-subtle rounded-xl text-sm font-semibold"
-              >
-                {lang === "en" ? '\u0627\u0644\u0639\u0631\u0628\u064A\u0629' : "EN"}
-              </button>
-              <button
-                onClick={toggleTheme}
-                className="p-2 text-muted-foreground hover:text-foreground rounded-xl transition-colors cursor-pointer"
-              >
-                {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-              </button>
+            <div className="flex items-center gap-3">
               <AccountDropdown initials={user?.email?.charAt(0)?.toUpperCase() || "M"} isAr={lang === "ar"} />
             </div>
           </header>

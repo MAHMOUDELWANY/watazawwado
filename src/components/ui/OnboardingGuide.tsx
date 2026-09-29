@@ -25,21 +25,25 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
     if (!isOpen || steps.length === 0) return;
     const currentTargetId = steps[currentStepIndex].targetId;
     const targetIds = Array.isArray(currentTargetId) ? currentTargetId : [currentTargetId];
-    // Find first visible target
+    
+    // Find first visible target using data-tour attribute first, fallback to id
     const currentTarget = targetIds.reduce((found, id) => {
       if (found) return found;
-      const el = document.getElementById(id);
+      const el = (document.querySelector(`[data-tour="${id}"]`) || document.getElementById(id)) as HTMLElement;
       if (el && el.getBoundingClientRect().width > 0) return el;
       return null;
     }, null as HTMLElement | null);
+
     if (currentTarget) {
-      // Add a tiny bit of padding around the target
-      const rect = currentTarget.getBoundingClientRect();
-      setTargetRect(new DOMRect(rect.x - 8, rect.y - 8, rect.width + 16, rect.height + 16));
-      // Scroll into view if needed
+      setTargetRect(null); // Clear position to prevent jitter/glitch
       currentTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+      // Delay measurement slightly to allow scroll/layout to settle
+      setTimeout(() => {
+        const rect = currentTarget.getBoundingClientRect();
+        setTargetRect(new DOMRect(rect.x - 8, rect.y - 8, rect.width + 16, rect.height + 16));
+      }, 400); // Wait for scroll animation to finish
     } else {
-      // If target not found, fall back to center modal
       setTargetRect(null);
     }
   }, [isOpen, steps, currentStepIndex]);
@@ -78,22 +82,36 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
   let popoverStyle: React.CSSProperties = { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' };
   
   if (targetRect) {
-    const position = currentStep.position || 'bottom';
+    let position = currentStep.position || 'bottom';
     const margin = 16;
+    const estPopoverWidth = 320;
+    const estPopoverHeight = 220; // Estimated height for the card
     
+    // Collision detection
+    if (position === 'bottom' && targetRect.bottom + margin + estPopoverHeight > window.innerHeight) {
+      position = 'top';
+    }
+    if (position === 'top' && targetRect.top - margin - estPopoverHeight < 0) {
+      position = 'bottom';
+    }
+    // Simple edge clamping for horizontal
+    let leftPos = targetRect.left + targetRect.width / 2;
+    if (leftPos - estPopoverWidth / 2 < 16) {
+      leftPos = 16 + estPopoverWidth / 2;
+    } else if (leftPos + estPopoverWidth / 2 > window.innerWidth - 16) {
+      leftPos = window.innerWidth - 16 - estPopoverWidth / 2;
+    }
+
     if (position === 'bottom') {
-      popoverStyle = { top: targetRect.bottom + margin, left: targetRect.left + targetRect.width / 2, transform: 'translateX(-50%)' };
+      popoverStyle = { top: targetRect.bottom + margin, left: leftPos, transform: 'translateX(-50%)' };
     } else if (position === 'top') {
-      popoverStyle = { top: targetRect.top - margin, left: targetRect.left + targetRect.width / 2, transform: 'translate(-50%, -100%)' };
+      popoverStyle = { top: targetRect.top - margin, left: leftPos, transform: 'translate(-50%, -100%)' };
     } else if (position === 'left') {
       popoverStyle = { top: targetRect.top + targetRect.height / 2, left: targetRect.left - margin, transform: 'translate(-100%, -50%)' };
     } else if (position === 'right') {
       popoverStyle = { top: targetRect.top + targetRect.height / 2, left: targetRect.right + margin, transform: 'translate(0, -50%)' };
     }
   }
-
-  // Fallback to center if it would overflow (simplified clamp)
-  // In a real robust implementation, we'd use floating-ui, but this is a solid lightweight approach.
 
   const overlayContent = (
     <div className="fixed inset-0 z-[9999] pointer-events-auto" dir={isAr ? 'rtl' : 'ltr'}>
@@ -127,10 +145,10 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
           <div className="p-5 flex flex-col gap-3 relative">
             <button 
               onClick={onClose}
-              className="absolute top-3 end-3 p-1 rounded-full hover:bg-surface-subtle text-muted-foreground transition-colors cursor-pointer"
+              className="absolute top-2 end-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full hover:bg-surface-subtle text-muted-foreground transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               aria-label={isAr ? 'إغلاق' : 'Close'}
             >
-              <X className="w-4 h-4" />
+              <X className="w-5 h-5" />
             </button>
             
             <div className="pt-2">
@@ -151,17 +169,17 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
               
               <div className="flex items-center gap-2">
                 {!isFirst && (
-                  <button onClick={prevStep} className="px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground cursor-pointer transition-colors">
+                  <button onClick={prevStep} className="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground cursor-pointer transition-colors">
                     {isAr ? 'السابق' : 'Back'}
                   </button>
                 )}
                 {isLast ? (
-                  <button onClick={onClose} className="px-4 py-1.5 text-sm font-bold bg-primary text-primary-foreground rounded-lg hover:bg-primary-hover cursor-pointer transition-colors shadow-sm">
+                  <button onClick={onClose} className="inline-flex items-center justify-center px-4 py-1.5 text-sm font-bold bg-primary text-primary-foreground rounded-lg hover:bg-primary-hover cursor-pointer transition-colors shadow-sm">
                     {isAr ? 'إنهاء' : 'Finish'}
                   </button>
                 ) : (
-                  <button onClick={nextStep} className="flex items-center gap-1 px-4 py-1.5 text-sm font-bold bg-foreground text-background rounded-lg hover:opacity-90 cursor-pointer transition-colors shadow-sm">
-                    {isAr ? 'التالي' : 'Next'}
+                  <button onClick={nextStep} className="inline-flex items-center justify-center gap-1.5 px-4 py-1.5 text-sm font-bold bg-foreground text-background rounded-lg hover:opacity-90 cursor-pointer transition-colors shadow-sm">
+                    <span>{isAr ? 'التالي' : 'Next'}</span>
                     <ChevronRight className={`w-3.5 h-3.5 ${isAr ? 'rotate-180' : ''}`} />
                   </button>
                 )}

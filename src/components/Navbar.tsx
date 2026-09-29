@@ -45,15 +45,11 @@ export const Navbar: React.FC<NavbarProps> = ({
       id="main-navigation"
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'glass-nav border-b-0 py-3'
-          : 'glass-nav py-4 sm:py-5 border-b-0 shadow-sm'
+          ? 'bg-background/80 backdrop-blur-lg shadow-sm border-b border-border/50'
+          : 'bg-transparent border-b border-transparent'
       }`}
     >
-      <div className={`w-full transition-all duration-300 flex items-center justify-between ${
-        isScrolled 
-          ? 'max-w-6xl px-4 sm:px-6 lg:px-8 py-2.5 glass-nav rounded-full shadow-sm'
-          : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5'
-      }`}>
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 sm:h-20 transition-all duration-300">
         {/* Brand identity */}
         <Link
           to="/"

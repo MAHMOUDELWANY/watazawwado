@@ -388,28 +388,30 @@ export default function StudentApp() {
         aria-modal={sidebarOpen ? 'true' : undefined}
         aria-label={isAr ? 'شريط التنقل الجانبي للطالب' : 'Student Navigation Sidebar'}
         className={`
-          fixed lg:hidden inset-y-0 start-0 z-50 w-64 max-w-[85vw] glass-sheet border-r-0
-          flex flex-col transition-transform duration-250 ease-out shadow-xs shrink-0
+          fixed inset-y-0 z-50 flex flex-col transition-transform duration-250 ease-out shrink-0
+          /* Mobile styling: glass drawer attached to the edge */
+          max-lg:glass-sheet max-lg:w-64 max-lg:max-w-[85vw] max-lg:inset-inline-start-0
           ${sidebarOpen 
             ? 'max-lg:translate-x-0' 
             : (isAr ? 'max-lg:translate-x-full' : 'max-lg:-translate-x-full')
           }
-          lg:translate-x-0
+          /* Desktop styling: floating glass sidebar */
+          lg:static lg:translate-x-0 lg:w-[280px] lg:m-4 lg:rounded-3xl lg:glass-nav lg:shadow-xl lg:border lg:border-border/50
         `}
       >
         {/* Brand & Portal Header */}
-        <div className="h-16 flex items-center justify-between px-4 sm:px-5 border-b border-border">
+        <div className="h-20 flex items-center justify-between px-6 border-b border-border/50">
           <Link 
             to="/student" 
-            className="flex items-center gap-2.5 text-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg p-1"
+            className="flex items-center gap-3 text-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg p-1"
           >
             <BrandLogo variant="compact" />
             <div className="flex flex-col text-start">
-              <span className="font-display font-bold text-base  leading-none text-foreground">
+              <span className="font-display font-bold text-lg leading-none text-foreground">
                 Watazawwado
               </span>
-              <span className="text-[13px] text-muted-foreground tracking-wider uppercase mt-0.5">
-                {isAr ? 'الرئيسية' : 'Learning Home'}
+              <span className="text-xs text-muted-foreground tracking-wider uppercase mt-1">
+                {isAr ? 'مساحة الطالب' : 'Student Space'}
               </span>
             </div>
           </Link>
@@ -427,72 +429,58 @@ export default function StudentApp() {
         <Link
           to="/student/account"
           onClick={() => setSidebarOpen(false)}
-          className="p-3.5 m-3 rounded-xl border border-border/80 bg-surface-subtle/40 hover:bg-surface-subtle transition-colors flex items-center gap-3 text-start group"
+          className="p-4 m-4 rounded-2xl border border-border/50 bg-surface-subtle/30 hover:bg-surface-subtle transition-colors flex items-center gap-3 text-start group"
+          data-tour="student-account"
         >
-          <div className="w-9 h-9 rounded-full bg-secondary/40 border border-secondary/60 text-interactive flex items-center justify-center font-bold text-sm shrink-0">
+          <div className="w-10 h-10 rounded-full bg-secondary/30 border border-secondary/50 text-interactive flex items-center justify-center font-bold text-sm shrink-0 shadow-sm">
             {studentInitial}
           </div>
           <div className="flex-1 min-w-0">
             <div className="text-sm font-semibold truncate text-foreground group-hover:text-primary transition-colors">
               {profile?.name || user?.email?.split('@')[0] || (isAr ? 'طالب' : 'Student')}
             </div>
-            <div className="text-[11px] text-muted-foreground truncate capitalize">
+            <div className="text-[11px] text-muted-foreground truncate capitalize mt-0.5">
               {profile?.learnerType || (isAr ? 'طالب منتظم' : 'Active Learner')}
             </div>
           </div>
-          <ChevronRight className={`w-3.5 h-3.5 text-muted-foreground group-hover:text-foreground transition-transform ${isAr ? 'rotate-180' : ''}`} />
+          <ChevronRight className={`w-4 h-4 text-muted-foreground group-hover:text-foreground transition-transform ${isAr ? 'rotate-180' : ''}`} />
         </Link>
-
-        {/* Primary Action Button: Book New Lesson (Prominent, tested invariant) */}
-        <div className="px-3 pb-3">
-          <Link
-            to="/student/book"
-            onClick={() => setSidebarOpen(false)}
-            aria-current={location.pathname === '/student/book' ? 'page' : undefined}
-            className={`
-              flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl text-sm sm:text-sm font-semibold transition-all touch-manipulation min-h-[44px] shadow-xs cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
-              ${location.pathname === '/student/book'
-                ? 'bg-secondary/40 text-interactive ring-1 ring-primary/30'
-                : 'btn-primary-material text-primary-foreground hover:shadow-sm'
-              }
-            `}
-          >
-            <Calendar className="w-4 h-4 shrink-0" />
-            <span>Book New Lesson</span>
-          </Link>
-        </div>
 
         {/* Navigation Links */}
         <nav 
-          className="flex-1 overflow-y-auto px-3 space-y-1"
+          className="flex-1 overflow-y-auto px-3 space-y-1.5"
           aria-label={isAr ? 'روابط التنقل الرئيسية' : 'Primary Navigation Links'}
         >
           {navItems.map(item => {
             const isActive = location.pathname === item.path || 
               (item.path === '/student/account' && location.pathname === '/student/profile');
             const Icon = item.icon;
+            
+            // Generate robust data-tour target from path (e.g. '/student/lessons' -> 'student-lessons')
+            const tourTarget = item.path === '/student' ? 'student-home' : item.path.replace(/^\//, '').replace(/\//g, '-');
 
             return (
               <Link
                 key={item.path}
-                  to={item.path}
-                  id={item.path === '/student/book' ? 'nav-book-link-desktop' : item.path === '/student/account' ? 'nav-account-link-desktop' : undefined}
-                  onClick={() => setSidebarOpen(false)}
+                to={item.path}
+                id={item.path === '/student/book' ? 'nav-book-link-desktop' : item.path === '/student/account' ? 'nav-account-link-desktop' : undefined}
+                onClick={() => setSidebarOpen(false)}
                 aria-current={isActive ? 'page' : undefined}
+                data-tour={tourTarget}
                 className={`
-                  flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm sm:text-sm font-medium transition-colors touch-manipulation min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary
+                  flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all touch-manipulation min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary group
                   ${isActive
-                    ? 'bg-secondary/30 text-interactive font-semibold ring-1 ring-primary/20'
+                    ? 'bg-primary text-primary-foreground font-semibold shadow-md'
                     : 'text-muted-foreground hover:bg-surface-subtle hover:text-foreground'
                   }
                 `}
               >
-                <div className="flex items-center gap-3 min-w-0">
-                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-interactive' : 'opacity-70'}`} />
+                <div className="flex items-center gap-3.5 min-w-0">
+                  <Icon className={`w-4.5 h-4.5 shrink-0 ${isActive ? 'text-primary-foreground' : 'opacity-70 group-hover:opacity-100 transition-opacity'}`} />
                   <span className="truncate">{item.name}</span>
                 </div>
                 {item.badge !== null && item.badge > 0 && (
-                  <span className="px-1.5 py-0.5 text-[13px] font-bold rounded-full bg-primary text-primary-foreground">
+                  <span className={`px-2 py-0.5 text-[11px] font-bold rounded-full ${isActive ? 'bg-primary-foreground text-primary' : 'bg-primary text-primary-foreground'}`}>
                     {item.badge}
                   </span>
                 )}
@@ -501,8 +489,23 @@ export default function StudentApp() {
           })}
         </nav>
 
-        
-          </aside>
+        {/* Sidebar Footer Controls */}
+        <div className="p-4 border-t border-border/50 flex flex-col gap-2">
+          <div className="flex items-center justify-between px-2 py-1">
+            <span className="text-xs text-muted-foreground">{isAr ? 'المظهر' : 'Theme'}</span>
+            <ThemeToggle />
+          </div>
+          <div className="flex items-center justify-between px-2 py-1">
+            <span className="text-xs text-muted-foreground">{isAr ? 'اللغة' : 'Language'}</span>
+            <button
+              onClick={toggleLang}
+              className="px-3 py-1 rounded-lg text-xs font-semibold hover:bg-surface-subtle transition-colors cursor-pointer"
+            >
+              {isAr ? 'English' : 'عربي'}
+            </button>
+          </div>
+        </div>
+      </aside>
 
       {/* ========================================================================= */}
       {/* MAIN APPLICATION VIEWPORT & HEADER */}
@@ -512,9 +515,9 @@ export default function StudentApp() {
         aria-hidden={sidebarOpen ? true : undefined}
       >
         {/* TOP APPLICATION HEADER (Responsive for Desktop and Mobile) */}
-        <header className="h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8 glass-nav border-b-0 shrink-0 z-10">
+        <header className="h-20 flex items-center justify-between px-6 lg:px-10 shrink-0 z-10 border-b border-border/10 bg-background/50 backdrop-blur-md">
           {/* Left Side: Mobile Menu Button + Dynamic Page Title */}
-          <div className="flex items-center gap-3 min-w-0">
+          <div className="flex items-center gap-4 min-w-0">
             <button
               ref={menuTriggerRef}
               onClick={toggleSidebar}
@@ -527,60 +530,28 @@ export default function StudentApp() {
             </button>
 
             <div className="flex flex-col text-start min-w-0">
-              <h2 className="text-base sm:text-lg font-display font-bold text-foreground leading-tight truncate">
+              <h2 className="text-xl sm:text-2xl font-display font-bold text-foreground leading-tight truncate">
                 {currentHeader.title}
               </h2>
-              <span className="text-[11px] text-muted-foreground hidden sm:inline-block truncate">
+              <span className="text-xs sm:text-sm text-muted-foreground truncate">
                 {currentHeader.subtitle}
               </span>
             </div>
           </div>
 
-          {/* Center: Desktop Navigation */}
-          <nav className="hidden lg:flex flex-1 items-center justify-center gap-1.5 px-4">
-            {navItems.map((item) => {
-              const isActive = location.pathname === item.path || (item.path !== "/student" && location.pathname.startsWith(item.path));
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-colors ${isActive ? "bg-secondary/20 text-interactive" : "text-muted-foreground hover:text-foreground hover:bg-surface-subtle"}`}
-                >
-                  {item.name}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* Right Side: Quick Action Utilities (Notifications, Lang, Theme, User Pill) */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Notification Bell */}
+          {/* Right Side: Quick Action Utilities (Notifications) */}
+          <div className="flex items-center gap-3">
             <Link
               to="/student/notifications"
-              className="relative min-h-[40px] min-w-[40px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
+              data-tour="student-notifications"
+              className="relative w-10 h-10 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer glass-surface"
               aria-label={isAr ? 'التنبيهات' : 'Notifications'}
             >
-              <Bell className="w-4 h-4" />
+              <Bell className="w-5 h-5" />
               {unreadNotificationsCount > 0 && (
                 <span className="absolute top-2 end-2 w-2 h-2 rounded-full bg-primary ring-2 ring-surface animate-pulse" />
               )}
             </Link>
-
-            {/* Language Switch */}
-            <button
-              onClick={toggleLang}
-              className="px-2.5 py-1.5 rounded-lg text-sm font-semibold text-primary hover:bg-surface-subtle border border-border transition-colors cursor-pointer"
-            >
-              {isAr ? 'EN' : 'عربي'}
-            </button>
-
-            {/* Theme Switch */}
-            <div className="hidden sm:flex items-center"><ThemeToggle /></div>
-
-            {/* User Profile Avatar Pill */}
-            <AccountDropdown initials={studentInitial} isAr={isAr} />
-
-              
           </div>
         </header>
 

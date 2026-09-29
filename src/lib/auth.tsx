@@ -76,6 +76,8 @@ interface AuthContextType {
   teacherRole: 'teacher' | 'super_admin' | null;
   signIn: (email: string, password: string, requiredRole?: 'teacher' | 'student') => Promise<{ success: boolean; role?: 'teacher' | 'super_admin' | 'student' | null; error?: string }>;
   signUp: (email: string, password: string, name: string) => Promise<{ success: boolean; error?: string }>;
+  verifyOtp: (email: string, token: string, type?: 'signup' | 'recovery' | 'magiclink' | 'email') => Promise<{ success: boolean; error?: string }>;
+  resendOtp: (email: string, type?: 'signup' | 'magiclink' | 'recovery' | 'email') => Promise<{ success: boolean; error?: string }>;
   resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
   updatePassword: (newPassword: string) => Promise<{ success: boolean; error?: string }>;
   signOut: () => Promise<void>;
@@ -391,6 +393,31 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   };
 
+  const verifyOtp = async (email: string, token: string, type: 'signup' | 'recovery' | 'magiclink' | 'email' = 'signup'): Promise<{ success: boolean; error?: string }> => {
+    if (!isConfigured) return { success: false, error: 'Authentication is unavailable.' };
+    try {
+      const { error } = await supabase.auth.verifyOtp({ email, token, type });
+      if (error) return { success: false, error: error.message };
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message };
+    }
+  };
+
+  const resendOtp = async (email: string, type: 'signup' | 'magiclink' | 'recovery' | 'email' = 'signup'): Promise<{ success: boolean; error?: string }> => {
+    if (!isConfigured) return { success: false, error: 'Authentication is unavailable.' };
+    try {
+      const { error } = await supabase.auth.resend({
+        type,
+        email: email.toLowerCase().trim()
+      });
+      if (error) return { success: false, error: error.message };
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message };
+    }
+  };
+
   const signOut = async () => {
     if (isConfigured) {
       await supabase.auth.signOut();
@@ -413,6 +440,8 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
         teacherRole,
         signIn,
         signUp,
+        verifyOtp,
+        resendOtp,
         resetPassword,
         updatePassword,
         signOut,

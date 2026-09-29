@@ -283,7 +283,11 @@ body {
 }
 
 /* 4. Button RTL Optical Correction */
-[dir="rtl"] button {
+[dir="rtl"] button,
+[dir="rtl"] .btn-primary-material,
+[dir="rtl"] .btn-secondary-material,
+[dir="rtl"] a.btn-primary-material,
+[dir="rtl"] a.btn-secondary-material {
   padding-bottom: calc(0.25rem * 1.25);
 }
 
@@ -612,6 +616,10 @@ body {
 
   /* ================== BUTTON MATERIAL ================== */
   .btn-primary-material {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
     background: linear-gradient(180deg, rgba(197, 31, 36, 0.8) 0%, rgba(170, 24, 28, 0.9) 100%);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -651,6 +659,10 @@ body {
   }
 
   .btn-secondary-material {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
     background: rgba(255, 255, 255, 0.6);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);

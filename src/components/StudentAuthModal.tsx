@@ -12,14 +12,15 @@ interface StudentAuthModalProps {
 }
 
 export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthModalProps) {
-  const [view, setView] = useState<'login' | 'signup' | 'forgot' | 'update-password'>('login');
+  const [view, setView] = useState<'login' | 'signup' | 'verify' | 'forgot' | 'update-password'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { signIn, signUp, resetPassword, updatePassword, signOut } = useTeacherAuth();
+  const { signIn, signUp, verifyOtp, resendOtp, resetPassword, updatePassword, signOut } = useTeacherAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -60,11 +61,27 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
       } else if (view === 'signup') {
         const { success, error: authError } = await signUp(email, password, name);
         if (success) {
-          setSuccess('Account created successfully. You can now log in.');
-          setView('login');
-          setPassword('');
+          setSuccess('Verification email sent! Please check your inbox.');
+          setView('verify');
         } else {
           setError(authError || 'Failed to create account.');
+        }
+      } else if (view === 'verify') {
+        const { success, error: authError } = await verifyOtp(email, otp, 'signup');
+        if (success) {
+          setSuccess('Email verified successfully. Logging you in...');
+          const { success: loginSuccess, error: loginError } = await signIn(email, password, 'student');
+          if (loginSuccess) {
+            setTimeout(() => {
+              onClose();
+              navigate('/student');
+            }, 1000);
+          } else {
+            setError(loginError || 'Failed to log in after verification. Please log in manually.');
+            setView('login');
+          }
+        } else {
+          setError(authError || 'Invalid verification code.');
         }
       } else if (view === 'forgot') {
         const { success, error: authError } = await resetPassword(email);
@@ -129,13 +146,15 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
           <div className="text-center mb-8">
 <BrandLogo variant="large" className="mx-auto mb-5" />
             <h2 id="auth-modal-title" className="text-2xl sm:text-3xl font-display font-bold text-foreground">
-              {view === 'login' ? 'Student Login' : view === 'signup' ? 'Create Account' : view === 'forgot' ? 'Reset Password' : 'Set New Password'}
+              {view === 'login' ? 'Student Login' : view === 'signup' ? 'Create Account' : view === 'verify' ? 'Verify Email' : view === 'forgot' ? 'Reset Password' : 'Set New Password'}
             </h2>
             <p className="text-muted-foreground mt-2 text-sm">
               {view === 'login' 
                 ? 'Welcome back to your learning journey.' 
                 : view === 'signup' 
                 ? 'Join to manage your lessons and progress.' 
+                : view === 'verify'
+                ? 'Enter the 6-digit code sent to your email.'
                 : view === 'forgot'
                 ? 'Enter your email to receive a reset link.'
                 : 'Enter your new password below.'}
@@ -161,7 +180,54 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
                 </div></div>
             )}
 
-            {view !== 'update-password' && (
+            {view === 'verify' && (
+              <div>
+                <label className="block text-sm font-semibold text-foreground mb-1.5">
+                  Verification Code
+                </label>
+                <div className="relative">
+                  <Lock className="absolute start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-accent" />
+                  <input
+                    type="text"
+                    required
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border glass-surface focus:glass-card focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-foreground text-sm transition-all tracking-widest text-center"
+                    placeholder="000000"
+                    maxLength={6}
+                  />
+                </div>
+                <div className="flex justify-end mt-2">
+                  <button
+                    type="button"
+                    disabled={isSubmitting}
+                    onClick={async () => {
+                      if (isSubmitting) return;
+                      try {
+                        setIsSubmitting(true);
+                        setError('');
+                        setSuccess('');
+                        const { success: resendSuccess, error: resendError } = await resendOtp(email, 'signup');
+                        if (resendSuccess) {
+                          setSuccess('A new verification code has been sent to your email.');
+                        } else {
+                          setError(resendError || 'Failed to resend code.');
+                        }
+                      } catch (err: any) {
+                        setError(err.message || 'An unexpected error occurred.');
+                      } finally {
+                        setIsSubmitting(false);
+                      }
+                    }}
+                    className="text-xs text-primary hover:underline disabled:opacity-50"
+                  >
+                    Resend Code
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {view !== 'update-password' && view !== 'verify' && (
               <div>
                 <label className="block text-sm font-semibold text-foreground mb-1.5">
                   Email Address
@@ -179,7 +245,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
                 </div></div>
             )}
 
-            {view !== 'forgot' && (
+            {view !== 'forgot' && view !== 'verify' && (
               <div>
                 <label className="block text-sm font-semibold text-foreground mb-1.5">
                   {view === 'update-password' ? 'New Password' : 'Password'}
@@ -230,6 +296,8 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
                 'Sign In'
               ) : view === 'signup' ? (
                 'Create Account'
+              ) : view === 'verify' ? (
+                'Verify Email'
               ) : view === 'forgot' ? (
                 'Send Reset Link'
               ) : (
@@ -246,7 +314,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
                   Sign up
                 </button>
               </p>
-            ) : view === 'signup' ? (
+            ) : view === 'signup' || view === 'verify' ? (
               <p>
                 Already have an account?{' '}
                 <button onClick={() => setView('login')} className="text-primary font-medium hover:underline">

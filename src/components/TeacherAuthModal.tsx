@@ -138,9 +138,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-border glass-card">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-secondary/30 dark:bg-primary/25 text-accent-hover dark:text-primary flex items-center justify-center">
-                <ShieldCheck className="w-5 h-5" />
-</div>
+              <BrandLogo variant="compact" />
               <div>
                 <h3 className="font-display text-lg font-bold text-foreground">
                   {isTeacherAuthenticated ? 'Teacher Backend Foundation' : 'Ustadh Mahmoud — Teacher Access'}
@@ -184,9 +182,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
               /* LOGIN VIEW */
               <div className="max-w-md mx-auto py-6">
                 <div className="text-center mb-6">
-                  <div className="w-12 h-12 rounded-2xl bg-secondary/30 text-accent-hover dark:text-primary mx-auto flex items-center justify-center mb-3">
-                    <Lock className="w-6 h-6" />
-                  </div>
+                  <BrandLogo variant="large" className="mx-auto mb-5" />
                   <h4 className="font-display text-xl font-bold text-foreground">
                     Private Teacher Login
                   </h4>
