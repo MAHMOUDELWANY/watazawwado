@@ -244,6 +244,8 @@ export default function StudentApp() {
 
         {/* Global Onboarding Guide */}
       <OnboardingGuide steps={globalTourSteps} isOpen={showGlobalTour} onClose={() => setShowGlobalTour(false)} isAr={isAr} />
+      {/* Global Onboarding Guide */}
+      <OnboardingGuide steps={globalTourSteps} isOpen={showGlobalTour} onClose={() => setShowGlobalTour(false)} isAr={isAr} />
       <StudentAuthModal
           isOpen={authModalOpen}
           onClose={() => setAuthModalOpen(false)}
@@ -525,7 +527,7 @@ export default function StudentApp() {
           <div className="flex items-center justify-between px-2 py-1">
             <span className="text-xs text-muted-foreground">{isAr ? 'اللغة' : 'Language'}</span>
             <button
-              onClick={toggleLang}
+              onClick={toggleLang} data-tour="language-toggle"
               className="px-3 py-1 rounded-lg text-xs font-semibold hover:bg-surface-subtle transition-colors cursor-pointer"
             >
               {isAr ? 'English' : 'عربي'}

@@ -379,9 +379,9 @@ export function DashboardApp() {
             </ErrorBoundary>
           </div>
         </div>
-      </main>
+            </main>
+      {/* Global Onboarding Guide */}
+      <OnboardingGuide steps={globalTourSteps} isOpen={showGlobalTour} onClose={() => setShowGlobalTour(false)} isAr={lang === 'ar'} />
     </div>
   );
 }
-
-
