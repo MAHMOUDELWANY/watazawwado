@@ -22,6 +22,7 @@ import {
   ArrowUpRight
 } from 'lucide-react';
 import { useTeacherAuth } from '../../lib/auth';
+import { BrandSpinner } from '../../components/ui/BrandLoader';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal';
@@ -651,8 +652,8 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
         </div>
 
         {ledgerLoading ? (
-          <div className="p-6 rounded-2xl glass-card border-none flex items-center justify-center gap-2 text-muted-foreground text-sm">
-            <Loader2 className="w-4 h-4 animate-spin text-accent" />
+          <div className="p-6 rounded-2xl glass-card border-none flex items-center justify-center gap-2.5 text-muted-foreground text-sm">
+            <BrandSpinner size={18} />
             <span>{isAr ? 'جارٍ تحميل سجل النشاط...' : 'Loading credit activity...'}</span>
           </div>
         ) : ledgerError ? (
@@ -850,7 +851,7 @@ function PackageCard({
           >
             {isPurchasing ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <BrandSpinner size={16} />
                 <span>{isAr ? 'جارٍ المعالجة...' : 'Processing...'}</span>
               </>
             ) : (

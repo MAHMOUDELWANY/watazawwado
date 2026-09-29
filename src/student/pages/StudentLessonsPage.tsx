@@ -19,6 +19,7 @@ import {
   Tag
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { BrandLoader } from '../../components/ui/BrandLoader';
 import { useTeacherAuth } from '../../lib/auth';
 import { Card, CardContent } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
@@ -206,16 +207,13 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
 
       {/* 4. Main Content Area */}
       {loading ? (
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="flex flex-col items-center justify-center py-16 gap-3 glass-card border-none rounded-2xl"
-        >
-          <Loader2 className="w-8 h-8 text-accent animate-spin" />
-          <p className="text-sm sm:text-sm text-muted-foreground">
-            {isAr ? 'جارٍ تحميل الدروس...' : 'Loading your scheduled sessions...'}
-          </p>
-        </motion.div>
+        <div className="glass-card border-none rounded-2xl overflow-hidden shadow-xs">
+          <BrandLoader 
+            size="lg" 
+            text={isAr ? 'جارٍ تحضير قائمة الدروس والمواعيد...' : 'Loading your scheduled sessions...'} 
+            subtext={isAr ? 'لحظات وسيكون جدولك وروابط الحصص جاهزة' : 'Retrieving your lesson calendar and classroom links'}
+          />
+        </div>
       ) : error ? (
         <motion.div 
           initial={{ opacity: 0, scale: 0.98 }}

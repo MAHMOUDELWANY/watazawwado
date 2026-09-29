@@ -23,6 +23,7 @@ import { useTeacherAuth } from '../../lib/auth';
 import { findLastEligibleBooking, formatLastBookingSummary } from './StudentBookingPage';
 import { Badge } from '../../components/ui/Badge';
 import { BrandLogo } from '../../components/ui/BrandLogo';
+import { BrandLoader, BrandSpinner } from '../../components/ui/BrandLoader';
 import { OnboardingGuide } from '../../components/ui/OnboardingGuide';
 import type { OnboardingStep } from '../../components/ui/OnboardingGuide';
 import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal';
@@ -181,12 +182,11 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
   if (coreLoading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh] gap-3">
-        <Loader2 className="w-8 h-8 text-accent animate-spin" />
-        <p className="text-sm sm:text-[15px] text-muted-foreground">
-          {isAr ? 'جارٍ تحميل جدول دروسك...' : 'Loading your lesson schedule...'}
-        </p>
-      </div>
+      <BrandLoader 
+        size="page" 
+        text={isAr ? 'جارٍ تحميل جدول دروسك ومساحتك...' : 'Loading your lesson schedule...'}
+        subtext={isAr ? 'نستحضر بيانات الحصص القادمة وحالة الاشتراكات' : 'Preparing your upcoming classes and subscription status'}
+      />
     );
   }
 
@@ -722,8 +722,8 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
             </div>
 
             {packagesLoading ? (
-              <div className="py-4 flex items-center justify-center gap-2 text-muted-foreground text-sm">
-                <Loader2 className="w-4 h-4 animate-spin text-accent" />
+              <div className="py-4 flex items-center justify-center gap-2.5 text-muted-foreground text-sm">
+                <BrandSpinner size={18} />
                 <span>{isAr ? 'جاري تحميل الباقات...' : 'Loading packages...'}</span>
               </div>
             ) : packagesError ? (
@@ -806,8 +806,8 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
             </div>
 
             {paymentsLoading ? (
-              <div className="py-4 flex items-center justify-center gap-2 text-muted-foreground text-sm">
-                <Loader2 className="w-4 h-4 animate-spin text-accent" />
+              <div className="py-4 flex items-center justify-center gap-2.5 text-muted-foreground text-sm">
+                <BrandSpinner size={18} />
                 <span>{isAr ? 'جاري تحميل المدفوعات...' : 'Loading payments...'}</span>
               </div>
             ) : paymentsError ? (

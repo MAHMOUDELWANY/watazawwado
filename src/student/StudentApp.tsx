@@ -239,9 +239,11 @@ export default function StudentApp() {
   // Profile is loading
   if (loadingProfile && !profile) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center">
-        <BrandLoader size="page" text={isAr ? 'جارٍ تحميل مساحتك التعليمية...' : 'Loading your learning home...'} />
-      </div>
+        <BrandLoader 
+          size="page" 
+          text={isAr ? 'جارٍ تحميل مساحتك التعليمية...' : 'Loading your learning home...'} 
+          subtext={isAr ? 'أهلاً بك في منصة وتزودوا للقرآن واللغة العربية' : 'Welcome to Watazawwado for Quran & Arabic Studies'}
+        />
     );
   }
 

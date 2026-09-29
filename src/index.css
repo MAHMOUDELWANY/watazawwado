@@ -1083,3 +1083,66 @@ body {
     box-shadow: 0 2px 8px rgba(37, 211, 102, 0.45);
   }
 
+  /* ============================================================
+     BRAND 4-COLOR LOADER & MOTION GRAPHIC UTILITIES
+     ============================================================ */
+
+  @keyframes brandSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  @keyframes brandSpinReverse {
+    0% { transform: rotate(360deg); }
+    100% { transform: rotate(0deg); }
+  }
+
+  @keyframes brandPulseBreath {
+    0%, 100% { transform: scale(1); opacity: 0.95; }
+    50% { transform: scale(1.045); opacity: 1; }
+  }
+
+  @keyframes brandShimmerSweep {
+    0% { transform: translateX(-150%) skewX(-20deg); }
+    50%, 100% { transform: translateX(250%) skewX(-20deg); }
+  }
+
+  @keyframes brandAuraBreathe {
+    0%, 100% { transform: scale(0.92); opacity: 0.35; filter: blur(24px); }
+    50% { transform: scale(1.15); opacity: 0.65; filter: blur(32px); }
+  }
+
+  @keyframes brandDotBounce {
+    0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+    40% { transform: translateY(-6px); opacity: 1; }
+  }
+
+  .animate-brand-spin {
+    animation: brandSpin 6s linear infinite;
+  }
+
+  .animate-brand-spin-fast {
+    animation: brandSpin 1.4s linear infinite;
+  }
+
+  .animate-brand-spin-reverse {
+    animation: brandSpinReverse 8s linear infinite;
+  }
+
+  .animate-brand-breathe {
+    animation: brandPulseBreath 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+
+  .animate-brand-shimmer {
+    animation: brandShimmerSweep 2.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+
+  .animate-brand-aura {
+    animation: brandAuraBreathe 4s ease-in-out infinite;
+  }
+
+  .animate-brand-dot-1 { animation: brandDotBounce 1.4s infinite ease-in-out; animation-delay: 0s; }
+  .animate-brand-dot-2 { animation: brandDotBounce 1.4s infinite ease-in-out; animation-delay: 0.18s; }
+  .animate-brand-dot-3 { animation: brandDotBounce 1.4s infinite ease-in-out; animation-delay: 0.36s; }
+  .animate-brand-dot-4 { animation: brandDotBounce 1.4s infinite ease-in-out; animation-delay: 0.54s; }
+

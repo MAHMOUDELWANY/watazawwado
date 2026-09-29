@@ -14,6 +14,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { Modal } from '../../components/ui/Modal';
+import { BrandSpinner } from '../../components/ui/BrandLoader';
 import { OFFICIAL_PAYMENT_DETAILS, PaymentOption } from '../../lib/paymentDetails';
 import { buildPaymentWhatsAppUrl } from '../../lib/whatsapp';
 
@@ -395,7 +396,7 @@ export function StudentPaymentClaimModal({
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <BrandSpinner size={16} />
                       <span>{isAr ? 'جارٍ الإرسال...' : 'Submitting...'}</span>
                     </>
                   ) : (

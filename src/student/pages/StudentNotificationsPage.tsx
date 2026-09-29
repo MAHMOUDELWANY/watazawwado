@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useTeacherAuth } from '../../lib/auth';
 import { Badge } from '../../components/ui/Badge';
+import { BrandLoader } from '../../components/ui/BrandLoader';
 import { StudentPageBack } from '../components/StudentPageBack';
 import {
   buildStudentNotifications,
@@ -249,11 +250,12 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
 
       {/* 3. Notifications List */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center min-h-[35vh] gap-3">
-          <Loader2 className="w-7 h-7 text-accent animate-spin" />
-          <p className="text-sm text-muted-foreground">
-            {isAr ? 'جارٍ تحميل التنبيهات...' : 'Loading notifications...'}
-          </p>
+        <div className="glass-card rounded-2xl border-none p-4 shadow-2xs">
+          <BrandLoader 
+            size="md" 
+            text={isAr ? 'جارٍ تحميل صندوق التنبيهات...' : 'Loading notifications...'}
+            subtext={isAr ? 'نستحضر تنبيهات الدروس وحالات الدفع الجديدة' : 'Checking for new updates and lesson alerts'}
+          />
         </div>
       ) : authError ? (
         <div className="p-6 glass-card border border-warning/30 rounded-2xl text-center max-w-md mx-auto space-y-3">

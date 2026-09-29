@@ -2,6 +2,7 @@ import React, { Component, useState, useEffect, useCallback, useRef } from 'reac
 import { useNavigate, useLocation, useSearchParams, Link } from 'react-router-dom';
 import { ArrowLeft, Loader2, AlertCircle, ShieldCheck, RefreshCw, RotateCcw, Check, Sparkles } from 'lucide-react';
 import { BookingFlow } from '../../components/booking/BookingFlow';
+import { BrandLoader, BrandSpinner } from '../../components/ui/BrandLoader';
 import { BOOKING_SERVICES } from '../../booking/mockData';
 import { BookingFormData, BookingMode, ProficiencyLevel, LessonDuration, PackageCatalogEntry } from '../../booking/types';
 import { useTeacherAuth } from '../../lib/auth';
@@ -697,12 +698,11 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
   // Conditional early renders AFTER ALL HOOKS ARE CALLED
   if (auth.loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
-        <Loader2 className="w-8 h-8 animate-spin text-accent" />
-        <p className="text-sm font-medium text-muted-foreground">
-          Checking your student session…
-        </p>
-      </div>
+      <BrandLoader 
+        size="page" 
+        text="Checking your student session…" 
+        subtext="Verifying your account security & permissions"
+      />
     );
   }
 
@@ -740,12 +740,11 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
 
   if (profileLoading || (bookingsLoading && bookings === null)) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
-        <Loader2 className="w-8 h-8 animate-spin text-accent" />
-        <p className="text-sm font-medium text-muted-foreground">
-          Loading your lesson options…
-        </p>
-      </div>
+      <BrandLoader 
+        size="page" 
+        text="Loading your lesson options…" 
+        subtext="Preparing available disciplines and scheduling slots"
+      />
     );
   }
 
@@ -860,7 +859,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
             disabled={bookingsLoading}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-warning hover:bg-warning/90 text-primary-foreground font-medium self-start sm:self-auto transition-colors cursor-pointer disabled:opacity-50"
           >
-            {bookingsLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
+            {bookingsLoading ? <BrandSpinner size={14} /> : <RefreshCw className="w-3.5 h-3.5" />}
             <span>Retry Verification</span>
           </button>
         </div>

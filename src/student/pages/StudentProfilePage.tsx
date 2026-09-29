@@ -22,6 +22,7 @@ import { useTheme } from '../../components/ThemeProvider';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
+import { BrandLoader } from '../../components/ui/BrandLoader';
 import { StudentPageBack } from '../components/StudentPageBack';
 import { BrandFrame } from '../../components/ui/BrandFrame';
 
@@ -283,12 +284,11 @@ export default function StudentProfilePage({
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh] gap-3 text-primary">
-        <Loader2 className="w-8 h-8 animate-spin" />
-        <p className="text-sm sm:text-sm text-muted-foreground">
-          {isAr ? 'جارٍ تحميل بيانات الطالب...' : 'Loading student profile...'}
-        </p>
-      </div>
+      <BrandLoader 
+        size="page" 
+        text={isAr ? 'جارٍ تحميل بيانات الطالب والإعدادات...' : 'Loading student profile...'}
+        subtext={isAr ? 'نستحضر معلومات الحساب والتفضيلات الشخصية' : 'Retrieving your account details and learning preferences'}
+      />
     );
   }
 

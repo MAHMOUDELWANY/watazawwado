@@ -17,6 +17,7 @@ import {
 import { useTeacherAuth } from '../../lib/auth';
 import { Card, CardContent } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
+import { BrandLoader } from '../../components/ui/BrandLoader';
 import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal';
 import { StudentPageBack } from '../components/StudentPageBack';
 import { getBookingPaymentSummary } from '../../lib/paymentStatus';
@@ -325,11 +326,12 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
         </h2>
 
         {authLoading || loading ? (
-          <div className="flex flex-col items-center justify-center py-16 gap-3">
-            <Loader2 className="w-8 h-8 text-accent animate-spin" />
-            <p className="text-sm sm:text-sm text-muted-foreground">
-              {isAr ? 'جارٍ تحميل سجل المدفوعات...' : 'Loading payments history...'}
-            </p>
+          <div className="glass-card rounded-2xl border-none p-4 shadow-2xs">
+            <BrandLoader 
+              size="lg" 
+              text={isAr ? 'جارٍ مراجعة سجل المدفوعات والفواتير...' : 'Loading payments history...'} 
+              subtext={isAr ? 'نستحضر بيانات الإيصالات والحسابات المالية' : 'Fetching receipt confirmations and transaction records'}
+            />
           </div>
         ) : authError ? (
           <div className="p-6 glass-card border border-warning/30 rounded-2xl text-center space-y-3">
