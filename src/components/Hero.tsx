@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+﻿import React, { useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'motion/react';
 import { Calendar, ArrowRight, Sparkles, GraduationCap, Languages, UserCheck, Clock } from 'lucide-react';
 import { PortraitImage } from './PortraitImage';
@@ -112,7 +112,7 @@ export const Hero: React.FC<HeroProps> = ({ lang, onOpenTrialModal }) => {
                 hidden: { opacity: 0, y: 10 },
                 visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
               }}
-              className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto mb-10"
+              className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 w-full sm:w-auto mb-10"
             >
               <button
                 onClick={onOpenTrialModal}
