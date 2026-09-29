@@ -1,4 +1,5 @@
 import { BrandLogo } from '../components/ui/BrandLogo';
+import { ThemeToggle } from '../components/ui/ThemeToggle';
 import { AccountDropdown } from '../components/ui/AccountDropdown';
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
@@ -270,12 +271,7 @@ export function DashboardApp() {
           
           <div className="flex items-center justify-between px-2 pt-2">
             <span className="text-xs text-muted-foreground">{lang === 'ar' ? 'السمة' : 'Theme'}</span>
-            <button
-              onClick={toggleTheme}
-              className="p-1.5 text-muted-foreground hover:text-foreground rounded-lg transition-colors cursor-pointer"
-            >
-              {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-            </button>
+            <ThemeToggle />
           </div>
           <div className="flex items-center justify-between px-2 pb-1">
             <span className="text-xs text-muted-foreground">{lang === 'ar' ? 'اللغة' : 'Language'}</span>
@@ -345,4 +341,5 @@ export function DashboardApp() {
     </div>
   );
 }
+
 

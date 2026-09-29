@@ -837,3 +837,17 @@ body {
     box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 12px 32px rgba(0,0,0,0.35);
   }
 }
+
+@layer utilities {
+  .loading-gradient-flow {
+    animation: gradientFlow 2s linear infinite, loadingScale 2s ease-in-out infinite;
+  }
+}
+@keyframes gradientFlow {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+@keyframes loadingScale {
+  0%, 100% { transform: scaleX(0.7); }
+  50% { transform: scaleX(1); }
+}

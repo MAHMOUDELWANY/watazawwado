@@ -1,7 +1,8 @@
 import { BrandLogo } from '../components/ui/BrandLogo';
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Mail, Lock, Loader2, ShieldCheck, ArrowRight, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Mail, Lock, ShieldCheck, ArrowRight, AlertCircle, ArrowLeft } from 'lucide-react';
+import { BrandLoader } from '../components/ui/BrandLoader';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTeacherAuth } from '../lib/auth';
 
@@ -133,7 +134,7 @@ export default function StaffLoginPage() {
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <BrandLoader size="inline" className="scale-75" />
                 <span>Authenticating...</span>
               </>
             ) : (
@@ -158,3 +159,4 @@ export default function StaffLoginPage() {
     </div>
   );
 }
+

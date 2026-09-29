@@ -17,9 +17,9 @@ export function BrandLogo({ variant = 'standard', className = '' }: BrandLogoPro
   };
   
   const imgClasses = {
-    compact: 'p-1.5',
-    standard: 'p-3',
-    large: 'p-4',
+    compact: 'p-0.5',
+    standard: 'p-1.5',
+    large: 'p-2',
   };
 
   return (
@@ -39,3 +39,4 @@ export function BrandLogo({ variant = 'standard', className = '' }: BrandLogoPro
     </div>
   );
 }
+

@@ -1,7 +1,8 @@
 import { BrandLogo } from './ui/BrandLogo';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Mail, Lock, Loader2, User, X } from 'lucide-react';
+import { Mail, Lock, User, X } from 'lucide-react';
+import { BrandLoader } from './ui/BrandLoader';
 import { useTeacherAuth } from '../lib/auth'; // it's now AuthProvider
 import { useNavigate } from 'react-router-dom';
 
@@ -291,7 +292,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
               className="w-full py-3 btn-primary-material text-primary-foreground rounded-xl font-medium text-sm transition-all flex items-center justify-center gap-2 mt-6 cursor-pointer disabled:opacity-50 shadow-xs"
             >
               {isSubmitting ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <BrandLoader size="inline" className="scale-75" />
               ) : view === 'login' ? (
                 'Sign In'
               ) : view === 'signup' ? (
@@ -337,3 +338,5 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
     </AnimatePresence>
   );
 }
+
+
