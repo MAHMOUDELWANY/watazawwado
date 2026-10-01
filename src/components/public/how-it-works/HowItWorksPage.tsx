@@ -5,6 +5,7 @@ import { Calendar, MessageCircle, CheckCircle2, Clock, ShieldCheck, HeartHandsha
 import { PublicLayoutContextType } from '../layout/PublicLayout';
 import { PublicSection, MarginNote, PublicButton, StudyLine } from '../PublicDesignSystem';
 import { HOW_IT_WORKS_STEPS, TEACHING_PILLARS } from '../../../data/content';
+import { WhatsAppIcon } from '../../ui/WhatsAppIcon';
 import { buildWhatsAppUrl } from '../../../lib/whatsapp';
 
 export function HowItWorksPage() {
@@ -180,9 +181,9 @@ export function HowItWorksPage() {
                 href={buildWhatsAppUrl(isEn ? 'Assalamu Alaikum Ustadh Mahmoud, I read How It Works and would like to ask a question.' : 'السلام عليكم أستاذ محمود، اطلعت على صفحة كيف نعمل وأود الاستفسار عن الدروس.')}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-whatsapp-solid py-3 px-6 rounded-xl text-sm font-bold shadow-md hover:scale-105 transition-all"
+                className="btn-whatsapp-solid py-3 px-6 rounded-xl text-sm font-bold shadow-xs hover:scale-105 transition-all"
               >
-                <MessageCircle className="w-4 h-4 fill-current shrink-0" />
+                <WhatsAppIcon className="w-4 h-4 shrink-0" />
                 <span>{isEn ? 'Ask on WhatsApp' : 'تواصل معنا على واتساب'}</span>
               </a>
             </div>

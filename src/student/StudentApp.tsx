@@ -46,9 +46,16 @@ export default function StudentApp() {
   const [showGlobalTour, setShowGlobalTour] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const [loadingProfile, setLoadingProfile] = useState<boolean>(true);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [unreadNotificationsCount, setUnreadNotificationsCount] = useState<number>(0);
   const location = useLocation();
+  const shouldAutoOpenAuth = location.search.includes('auth=login') || location.pathname.includes('/login');
+  const [authModalOpen, setAuthModalOpen] = useState(shouldAutoOpenAuth);
+  const [unreadNotificationsCount, setUnreadNotificationsCount] = useState<number>(0);
+
+  useEffect(() => {
+    if (location.search.includes('auth=login') || location.pathname.includes('/login')) {
+      setAuthModalOpen(true);
+    }
+  }, [location.search, location.pathname]);
 
   const menuTriggerRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);

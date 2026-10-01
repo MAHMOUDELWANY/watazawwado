@@ -21,6 +21,7 @@ import {
   HelpCircle,
   ArrowRight
 } from 'lucide-react';
+import { WhatsAppIcon } from '../../ui/WhatsAppIcon';
 import { buildWhatsAppUrl } from '../../../lib/whatsapp';
 
 export function PublicHomepage() {
@@ -32,10 +33,6 @@ export function PublicHomepage() {
       
       {/* ─── 1. HERO SECTION ─────────────────────────────────────────────────── */}
       <PublicSection className="relative overflow-hidden pb-12 lg:pb-20">
-        {/* Subtle architectural ambient background glow */}
-        <div className="absolute top-12 left-1/4 w-96 h-96 bg-teal-500/10 dark:bg-teal-500/15 rounded-full blur-3xl pointer-events-none -z-10" />
-        <div className="absolute top-28 right-10 w-80 h-80 bg-primary/10 dark:bg-primary/15 rounded-full blur-3xl pointer-events-none -z-10" />
-
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           <div className="lg:col-span-7 space-y-6 animate-fade-in-up">
             
@@ -60,7 +57,7 @@ export function PublicHomepage() {
               }
             </p>
             
-            {/* Direct CTAs */}
+            {/* Direct Primary CTA */}
             <div className="pt-2 flex flex-col sm:flex-row gap-3.5 items-stretch sm:items-center">
               <PublicButton 
                 variant="primary" 
@@ -73,16 +70,6 @@ export function PublicHomepage() {
                 <span>{isEn ? 'Book Free 30-Min Trial' : 'احجز جلستك الأولى (مجانًا)'}</span>
                 <span className="rtl:rotate-180 text-sm">→</span>
               </PublicButton>
-
-              <a
-                href={buildWhatsAppUrl(isEn ? 'Assalamu Alaikum Ustadh Mahmoud, I visited your website and would like to ask a question.' : 'السلام عليكم أستاذ محمود، زرت موقعكم الكريم وأود الاستفسار عن الدروس')}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-whatsapp-solid py-3 px-5 rounded-xl text-sm font-semibold shadow-md flex items-center justify-center gap-2"
-              >
-                <MessageSquare className="w-4 h-4 fill-current shrink-0" />
-                <span>{isEn ? 'Chat on WhatsApp' : 'تواصل عبر واتساب'}</span>
-              </a>
             </div>
 
             {/* Proof Points */}
@@ -99,23 +86,26 @@ export function PublicHomepage() {
             </div>
           </div>
           
-          {/* Portrait with 4-Color Architectural Edge */}
-          <div className="lg:col-span-5 relative animate-fade-in-up mt-8 lg:mt-0" style={{ animationDelay: '150ms' }}>
-            <div className="absolute -inset-4 bg-gradient-to-tr from-teal-500/20 via-primary/15 to-terracotta/20 rounded-3xl -z-10 blur-xl transform rotate-2" />
-            <PortraitFrame src="/ustadh-mahmoud.jpg" alt="Ustadh Mahmoud" maxWidth={500} className="mx-auto shadow-2xl" />
-            
-            {/* Floating Credential Card */}
-            <div className="hidden sm:block absolute -bottom-6 -left-6 rtl:-left-auto rtl:-right-6 bg-surface p-4 rounded-2xl shadow-xl border border-border max-w-[240px]">
-              <div className="flex items-center gap-2 mb-1.5">
-                <Award className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-                <span className="text-xs font-bold text-teal-700 dark:text-teal-300">
-                  {isEn ? 'Al-Azhar Grounding' : 'تأصيل أزهري'}
-                </span>
+          {/* Portrait with strictly contained glow behind picture frame only */}
+          <div className="lg:col-span-5 relative animate-fade-in-up mt-8 lg:mt-0 flex justify-center" style={{ animationDelay: '150ms' }}>
+            <div className="relative w-full max-w-[360px] sm:max-w-[420px] mx-auto">
+              {/* Contained glow strictly behind the portrait frame */}
+              <div className="absolute inset-1 bg-gradient-to-tr from-teal-500/20 via-primary/20 to-terracotta/25 rounded-3xl blur-md -z-10" />
+              <PortraitFrame src="/ustadh-mahmoud.jpg" alt="Ustadh Mahmoud" maxWidth={420} className="w-full shadow-2xl mx-auto" />
+              
+              {/* Floating Credential Card */}
+              <div className="hidden sm:block absolute -bottom-6 -left-6 rtl:-left-auto rtl:-right-6 bg-surface p-4 rounded-2xl shadow-xl border border-border max-w-[240px]">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Award className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                  <span className="text-xs font-bold text-teal-700 dark:text-teal-300">
+                    {isEn ? 'Al-Azhar Grounding' : 'تأصيل أزهري'}
+                  </span>
+                </div>
+                <StudyLine variant="teal" className="my-1.5" />
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  {isEn ? '3+ years experience, teaching students across Canada, US, UK, and Australia.' : 'خبرة +٣ سنوات في تدريس الطلاب في أمريكا، كندا، بريطانيا، وأستراليا.'}
+                </p>
               </div>
-              <StudyLine variant="teal" className="my-1.5" />
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                {isEn ? '3+ years experience, teaching students across Canada, US, UK, and Australia.' : 'خبرة +٣ سنوات في تدريس الطلاب في أمريكا، كندا، بريطانيا، وأستراليا.'}
-              </p>
             </div>
           </div>
         </div>
@@ -369,9 +359,9 @@ export function PublicHomepage() {
               href={buildWhatsAppUrl(isEn ? 'Assalamu Alaikum Ustadh Mahmoud, I visited your website and would like to ask a question.' : 'السلام عليكم أستاذ محمود، زرت موقعكم الكريم وأود الاستفسار عن الدروس')}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-whatsapp-solid py-3 px-6 rounded-xl text-sm font-semibold shadow-md flex items-center justify-center gap-2"
+              className="btn-whatsapp-solid py-3 px-6 rounded-xl text-sm font-semibold shadow-xs flex items-center justify-center gap-2"
             >
-              <MessageSquare className="w-4 h-4 fill-current shrink-0" />
+              <WhatsAppIcon className="w-4 h-4 shrink-0" />
               <span>{isEn ? 'Message on WhatsApp' : 'تواصل عبر واتساب'}</span>
             </a>
           </div>

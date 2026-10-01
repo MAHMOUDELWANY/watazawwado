@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useOutletContext, Link } from 'react-router-dom';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
 import { PublicSection, MarginNote, PublicButton } from '../PublicDesignSystem';
@@ -9,8 +9,36 @@ export function PricingPage() {
   const { lang, onOpenTrialModal } = useOutletContext<PublicLayoutContextType>();
   const isEn = lang === 'en';
 
-  // Initially closed so all numbers are tucked inside the envelopes (as requested)
+  // Initially closed on desktop; auto-revealed on scroll for touch devices
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
+
+  // Auto-expand card on mobile as the user scrolls to it
+  useEffect(() => {
+    if (typeof window === 'undefined' || window.innerWidth >= 768) return;
+
+    const cards = document.querySelectorAll('[data-pricing-plan-id]');
+    if (!cards.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const planId = entry.target.getAttribute('data-pricing-plan-id');
+            if (planId) {
+              setExpandedCardId(planId);
+            }
+          }
+        });
+      },
+      {
+        rootMargin: '-20% 0px -20% 0px',
+        threshold: 0.35,
+      }
+    );
+
+    cards.forEach((card) => observer.observe(card));
+    return () => observer.disconnect();
+  }, []);
 
   // Exactly 3 clean plans with expert psychological pricing framing
   const monthlyPlans: PricingPlan[] = [
@@ -129,15 +157,15 @@ export function PricingPage() {
             </p>
 
             {/* Interactive hint */}
-            <p className="text-xs text-muted-foreground font-medium pt-2">
+            <p className="text-xs text-muted-foreground font-medium pt-2 pb-4">
               {isEn 
                 ? '👆 Tap or hover on any package envelope to reveal pricing breakdown.' 
                 : '👆 اسحب أو مرر الفأرة فوق أي ظرف لكشف تفاصيل السعر ومزايا الباقة.'}
             </p>
           </div>
 
-          {/* Interactive Pocket Cards (Exactly 3 cards) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-2 pb-10">
+          {/* Interactive Pocket Cards (Uniform Height & Clear Spacing) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-6 lg:gap-8 pt-2 pb-14">
             {monthlyPlans.map((plan) => {
               const isCardExpanded = expandedCardId === plan.id;
               return (

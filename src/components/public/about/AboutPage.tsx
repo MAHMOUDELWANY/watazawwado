@@ -2,7 +2,7 @@ import React from 'react';
 import { useOutletContext, Link } from 'react-router-dom';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
 import { PublicSection, EditorialHeading, StudyLine, MarginNote, PortraitFrame, PublicButton } from '../PublicDesignSystem';
-import { MessageCircle } from 'lucide-react';
+import { WhatsAppIcon } from '../../ui/WhatsAppIcon';
 import { buildWhatsAppUrl } from '../../../lib/whatsapp';
 
 export function AboutPage() {
@@ -152,9 +152,9 @@ export function AboutPage() {
                 href={buildWhatsAppUrl(isEn ? 'Assalamu Alaikum Ustadh Mahmoud, I would like to introduce myself and ask about starting lessons.' : 'السلام عليكم أستاذ محمود، أود التعرف أكثر على الدروس والبدء معك.')}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-whatsapp-solid py-3 px-6 rounded-xl text-sm font-bold shadow-md hover:scale-105 transition-all"
+                className="btn-whatsapp-solid py-3 px-6 rounded-xl text-sm font-bold shadow-xs hover:scale-105 transition-all"
               >
-                <MessageCircle className="w-4 h-4 fill-current shrink-0" />
+                <WhatsAppIcon className="w-4 h-4 shrink-0" />
                 <span>{isEn ? 'Message Mahmoud directly' : 'تحدث مع محمود مباشرة'}</span>
               </a>
             </div>

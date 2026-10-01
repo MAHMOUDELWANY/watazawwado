@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Check, ChevronUp, Sparkles, Star, ArrowUpRight, ShieldCheck, Flame } from 'lucide-react';
+import { Check, ChevronUp, Sparkles, Star, ArrowUpRight, Flame } from 'lucide-react';
 import { Language } from '../../../types';
 
 export interface PricingPlan {
@@ -56,30 +56,31 @@ export function InteractivePocketCard({
 
   return (
     <div
-      className="relative pt-44 pb-6 select-none group/pocket"
+      data-pricing-plan-id={plan.id}
+      className="relative pt-[285px] pb-6 select-none group/pocket w-full max-w-[340px] mx-auto"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Outer Envelope Wrapper */}
+      {/* Outer Envelope Wrapper (Identical height for all cards) */}
       <div
         onClick={onToggle}
-        className={`relative w-full max-w-[340px] mx-auto h-[260px] rounded-3xl cursor-pointer transition-transform duration-300 ${
+        className={`relative w-full h-[260px] rounded-3xl cursor-pointer transition-transform duration-300 ${
           active ? 'scale-[1.01]' : 'hover:scale-[1.005]'
         }`}
       >
         {/* ========================================================= */}
-        {/* 1. SLIDING TICKET (COMPLETELY HIDDEN INSIDE WHEN CLOSED)  */}
-        {/* Only slides UP when active (tapped or hovered)            */}
+        {/* 1. SLIDING TICKET (EMERGES OUT WITH SPRING ANIMATION)     */}
+        {/* Slides UP when active (tapped or hovered)                 */}
         {/* ========================================================= */}
         <motion.div
           animate={{
-            // When closed: y is 90px down, tucked behind the solid front flap (0 numbers visible outside!)
-            // When active: y is -155px up, smoothly sliding out to reveal full pricing & perks
+            // When closed: tucked 90px down inside front envelope flap
+            // When active: smoothly slides -155px UP, revealing full pricing & perks
             y: active ? -155 : 90,
             scale: active ? 1 : 0.96,
             opacity: active ? 1 : 0,
             boxShadow: active
-              ? '0 24px 38px -10px rgba(0, 0, 0, 0.22)'
+              ? '0 24px 38px -10px rgba(0, 0, 0, 0.28)'
               : '0 4px 10px -2px rgba(0, 0, 0, 0.05)'
           }}
           transition={{
@@ -93,11 +94,11 @@ export function InteractivePocketCard({
           }`}
         >
           {/* Top Heritage Accent Bar */}
-          <div className="h-1.5 -mx-5 -mt-5 mb-3 bg-[linear-gradient(135deg,#C51F24_0%,#8B4935_45%,#D8C6AE_85%,#087D91_100%)]" />
+          <div className="h-1.5 -mx-5 -mt-5 mb-2 bg-[linear-gradient(135deg,#C51F24_0%,#8B4935_45%,#D8C6AE_85%,#087D91_100%)]" />
 
           {/* Ticket Header & Psychological Anchors */}
           <div>
-            <div className="flex items-center justify-between gap-2 mb-2">
+            <div className="flex items-center justify-between gap-2 mb-2 h-6">
               <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold ${
                 plan.isPopular 
                   ? 'bg-teal-600 text-white shadow-xs' 
@@ -107,11 +108,11 @@ export function InteractivePocketCard({
                 <span>{badgeText || (isEn ? 'Private Package' : 'باقة دراسية خاصة')}</span>
               </span>
 
-              {savingText && (
+              {savingText ? (
                 <span className="text-[11px] font-bold text-amber-800 dark:text-amber-200 bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 rounded-md">
                   {savingText}
                 </span>
-              )}
+              ) : <span />}
             </div>
 
             {/* Plan Title */}
@@ -120,14 +121,14 @@ export function InteractivePocketCard({
             </h4>
 
             {/* Psychological Framing: Per-lesson price large, monthly total small */}
-            <div className="mt-3 p-2.5 rounded-xl bg-surface-subtle border border-border/70">
+            <div className="mt-2.5 p-2.5 rounded-xl bg-surface-subtle border border-border/70">
               <div className="flex items-baseline justify-between">
                 <div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
                     {isEn ? 'Per lesson rate' : 'تكلفة الحصة الواحدة'}
                   </span>
                   <div className="flex items-baseline gap-1 mt-0.5">
-                    <span className="font-editorial text-3xl font-extrabold text-foreground">
+                    <span className="font-editorial text-2xl sm:text-3xl font-extrabold text-foreground">
                       ${plan.perLessonPrice}
                     </span>
                     <span className="text-xs text-muted-foreground font-medium">
@@ -137,7 +138,7 @@ export function InteractivePocketCard({
                 </div>
 
                 <div className="text-end">
-                  <span className="text-[11px] text-muted-foreground block">
+                  <span className="text-[10px] text-muted-foreground block">
                     {isEn ? 'Monthly Total' : 'الإجمالي الشهري'}
                   </span>
                   <span className="font-editorial text-xl font-bold text-foreground">
@@ -149,21 +150,21 @@ export function InteractivePocketCard({
                 </div>
               </div>
 
-              {/* Psychological micro-anchor (e.g. "less than coffee") */}
-              <div className="mt-2 pt-1.5 border-t border-border/40 text-[11px] text-teal-800 dark:text-teal-300 font-medium flex items-center gap-1">
+              {/* Psychological micro-anchor */}
+              <div className="mt-2 pt-1.5 border-t border-border/40 text-[10px] sm:text-[11px] text-teal-800 dark:text-teal-300 font-medium flex items-center gap-1">
                 <Sparkles className="w-3 h-3 shrink-0" />
                 <span>{unitText}</span>
               </div>
             </div>
 
             {/* 3 Clean Features */}
-            <div className="space-y-2 pt-2.5 mt-2.5 border-t border-border/60">
+            <div className="space-y-1.5 pt-2.5 mt-2 border-t border-border/60">
               {features.slice(0, 3).map((feat, idx) => (
                 <div key={idx} className="flex items-start gap-2 text-xs leading-relaxed text-foreground/90">
                   <span className="p-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5">
                     <Check className="w-3 h-3" />
                   </span>
-                  <span>{feat}</span>
+                  <span className="line-clamp-1">{feat}</span>
                 </div>
               ))}
             </div>
@@ -188,9 +189,7 @@ export function InteractivePocketCard({
         </motion.div>
 
         {/* ========================================================= */}
-        {/* 2. FRONT ENVELOPE / SLEEVE (WRAPPED IN BRAND GRADIENT BORDER) */}
-        {/* EXACTLY LIKE THE LOGO FRAME: p-[2px] bg-brand-gradient    */}
-        {/* SOLID BG-SURFACE MASKS THE SLIDING TICKET COMPLETELY      */}
+        {/* 2. FRONT ENVELOPE / SLEEVE (UNIFORM IDENTICAL HEIGHT: 260px) */}
         {/* ========================================================= */}
         <div
           className={`relative z-20 w-full h-full rounded-3xl p-[2px] transition-all duration-300 ${
@@ -200,7 +199,7 @@ export function InteractivePocketCard({
           }`}
         >
           {/* Inner Clean Solid Surface (Covers inner ticket 100%) */}
-          <div className="w-full h-full rounded-[inherit] bg-surface p-6 flex flex-col justify-between overflow-hidden">
+          <div className="w-full h-full rounded-[inherit] bg-surface p-5 sm:p-6 flex flex-col justify-between overflow-hidden">
             {/* Top Grip Tab on Envelope */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-3 bg-surface-subtle border-b border-x border-border/70 rounded-b-xl flex items-center justify-center">
               <span className="w-8 h-1 rounded-full bg-[linear-gradient(135deg,#C51F24_0%,#087D91_100%)] opacity-80" />
@@ -208,17 +207,24 @@ export function InteractivePocketCard({
 
             {/* Front Card Header & Hook */}
             <div className="pt-2 space-y-2">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between h-6">
                 <span className="text-xs font-mono font-bold text-muted-foreground px-2 py-0.5 rounded-md bg-surface-subtle border border-border/50">
                   {isEn ? `${plan.lessonsCount} Private Sessions` : `${plan.lessonsCount} حصص شهرية`}
                 </span>
 
-                {plan.isPopular && (
-                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-teal-800 dark:text-teal-200 bg-teal-500/15 border border-teal-500/30 px-2 py-0.5 rounded-full">
-                    <Star className="w-3 h-3 fill-current text-teal-600 dark:text-teal-400" />
-                    <span>{isEn ? 'Most Chosen' : 'الأكثر طلباً'}</span>
-                  </span>
-                )}
+                <div className="flex items-center gap-1">
+                  {savingText && !plan.isPopular && (
+                    <span className="text-[10px] font-bold text-amber-800 dark:text-amber-200 bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 rounded-md">
+                      {savingText}
+                    </span>
+                  )}
+                  {plan.isPopular && (
+                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-teal-800 dark:text-teal-200 bg-teal-500/15 border border-teal-500/30 px-2 py-0.5 rounded-full">
+                      <Star className="w-3 h-3 fill-current text-teal-600 dark:text-teal-400" />
+                      <span>{isEn ? 'Most Chosen' : 'الأكثر طلباً'}</span>
+                    </span>
+                  )}
+                </div>
               </div>
 
               {/* Title */}
@@ -227,12 +233,12 @@ export function InteractivePocketCard({
               </h3>
 
               {/* Psychological Subtitle / Value Hook */}
-              <p className="text-xs text-muted-foreground leading-relaxed">
+              <p className="text-xs text-muted-foreground leading-relaxed h-8 line-clamp-2">
                 {isEn ? plan.subtitle : plan.arabicSubtitle}
               </p>
 
               {/* Psychological outcome teaser */}
-              <div className="text-[11px] text-teal-800 dark:text-teal-300 font-semibold pt-1">
+              <div className="text-[11px] text-teal-800 dark:text-teal-300 font-semibold pt-1 truncate">
                 {hookText}
               </div>
             </div>

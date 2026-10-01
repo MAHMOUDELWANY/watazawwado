@@ -100,10 +100,12 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-6 end-6 z-50 w-[350px] max-w-[calc(100vw-2rem)] h-[500px] max-h-[calc(100vh-6rem)] glass-card rounded-2xl shadow-2xl border border-border overflow-hidden flex flex-col"
+            initial={{ opacity: 0, scale: 0.92, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.92, y: 16 }}
+            transition={{ type: 'spring', damping: 26, stiffness: 320 }}
+            className="fixed bottom-6 end-4 sm:end-6 z-50 w-[calc(100vw-2rem)] sm:w-[360px] h-[520px] max-h-[calc(100dvh-5rem)] rounded-2xl shadow-2xl border border-border overflow-hidden flex flex-col origin-bottom-right rtl:origin-bottom-left"
+            style={{ backgroundColor: 'var(--surface)', opacity: 1 }}
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 glass-surface border-b border-border">

@@ -19,6 +19,7 @@ import {
 import { BrandLogo } from './ui/BrandLogo';
 import { ThemeToggle } from './ui/ThemeToggle';
 import { Language, ThemeMode } from '../types';
+import { useScrollPaletteTransition } from '../lib/useScrollPaletteTransition';
 
 interface NavbarProps {
   lang: Language;
@@ -81,17 +82,19 @@ export const Navbar: React.FC<NavbarProps> = ({
     restDelta: 0.001
   });
 
+  const { currentColor } = useScrollPaletteTransition();
+
   return (
     <>
       {/* ─── 4-COLOR HERITAGE SCROLL PROGRESS BAR AT TOP OF SCREEN ────────────── */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-[3.5px] z-50 pointer-events-none origin-left rtl:origin-right"
+        className="fixed top-0 left-0 right-0 h-[3.5px] z-50 pointer-events-none origin-left rtl:origin-right transition-shadow duration-300"
         style={{
           scaleX: smoothProgress,
           background: isRtl
             ? 'linear-gradient(to left, #087D91 0%, #C51F24 35%, #8B4935 70%, #E5A93C 100%)'
             : 'linear-gradient(to right, #087D91 0%, #C51F24 35%, #8B4935 70%, #E5A93C 100%)',
-          boxShadow: '0 1px 8px rgba(197, 31, 36, 0.35), 0 1px 6px rgba(8, 125, 145, 0.3)',
+          boxShadow: `0 1px 12px ${currentColor.hex}70, 0 1px 4px rgba(8, 125, 145, 0.4)`,
         }}
       />
 
@@ -269,7 +272,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </span>
 
                   <Link
-                    to="/student"
+                    to="/student?auth=login"
                     onClick={() => setSideDrawerOpen(false)}
                     className="flex items-center justify-between px-3.5 py-2.5 rounded-xl border border-border/80 bg-surface-subtle/50 hover:bg-surface-subtle text-foreground text-sm font-semibold transition-colors"
                   >
@@ -281,7 +284,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </Link>
 
                   <Link
-                    to="/staff"
+                    to="/staff/login"
                     onClick={() => setSideDrawerOpen(false)}
                     className="flex items-center justify-between px-3.5 py-2.5 rounded-xl border border-border/80 bg-surface-subtle/50 hover:bg-surface-subtle text-foreground text-sm font-semibold transition-colors"
                   >

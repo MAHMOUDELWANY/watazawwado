@@ -293,27 +293,36 @@ body {
   position: relative;
 }
 
-/* Subtle, neutral scrollbar — eliminates intrusive red bar on the side */
+/* ============================================================
+   CLEAN VIEWPORT: HIDE SIDE SCROLLBAR COMPLETELY
+   The top 4-color heritage progress bar acts as the sole indicator
+   ============================================================ */
+:root {
+  --scrollbar-current-rgb: 8, 125, 145;
+  --scrollbar-current-hex: #087D91;
+  --scrollbar-scroll-ratio: 0;
+}
+
+html, body {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE and Edge */
+}
+
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  display: none !important;
+  width: 0px !important;
+  height: 0px !important;
 }
-::-webkit-scrollbar-track {
-  background: transparent;
+
+* {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
-::-webkit-scrollbar-thumb {
-  background: rgba(140, 130, 120, 0.25);
-  border-radius: 9999px;
-  transition: background 0.2s ease;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(140, 130, 120, 0.45);
-}
-.dark ::-webkit-scrollbar-thumb {
-  background: rgba(200, 190, 180, 0.2);
-}
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: rgba(200, 190, 180, 0.4);
+
+*::-webkit-scrollbar {
+  display: none !important;
+  width: 0px !important;
+  height: 0px !important;
 }
 
 /* Typography baseline */
@@ -1050,13 +1059,13 @@ body {
     background-color: #25D366;
     color: #ffffff !important;
     font-weight: 700;
-    box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     transition: all 0.2s ease-in-out;
   }
   .btn-whatsapp-solid:hover {
     background-color: #1fbe58;
     color: #ffffff !important;
-    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+    box-shadow: 0 4px 10px rgba(37, 211, 102, 0.2);
     transform: translateY(-1px);
   }
 

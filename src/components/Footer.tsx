@@ -2,9 +2,8 @@ import { BrandLogo } from './ui/BrandLogo';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Globe, MessageCircle, ArrowUp } from 'lucide-react';
+import { Globe, ArrowUp } from 'lucide-react';
 import { Language } from '../types';
-import { buildWhatsAppUrl } from '../lib/whatsapp';
 
 interface FooterProps {
   lang: Language;
@@ -127,15 +126,6 @@ export const Footer: React.FC<FooterProps> = ({
             >
               {isEn ? 'Book Free 30-Min Trial' : 'احجز جلسة تجريبية مجانية'}
             </button>
-            <a
-              href={buildWhatsAppUrl(isEn ? 'Assalamu Alaikum Ustadh Mahmoud, I am visiting your website and have a question.' : 'السلام عليكم أستاذ محمود، زرت موقعكم الكريم وأود الاستفسار عن الدروس')}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl btn-whatsapp-solid text-sm font-bold shadow-sm"
-            >
-              <MessageCircle className="w-4 h-4 fill-current shrink-0" />
-              <span>{isEn ? 'Message on WhatsApp' : 'تواصل عبر واتساب'}</span>
-            </a>
           </div>
 
         </div>

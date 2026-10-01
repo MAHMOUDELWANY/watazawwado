@@ -14,8 +14,11 @@ import StudentApp from './student/StudentApp';
 import StaffLoginPage from './pages/StaffLoginPage';
 import SEOProtection from './components/SEOProtection';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { useScrollPaletteTransition } from './lib/useScrollPaletteTransition';
 
 export default function App() {
+  useScrollPaletteTransition();
+
   return (
     <ThemeProvider>
       <TeacherAuthProvider>
@@ -36,8 +39,11 @@ export default function App() {
 
               {/* Authenticated and Special Routes */}
               <Route path="/staff/login" element={<StaffLoginPage />} />
+              <Route path="/staff" element={<Navigate to="/staff/login" replace />} />
+              <Route path="/teacher/login" element={<Navigate to="/staff/login" replace />} />
               <Route path="/teacher/*" element={<DashboardApp />} />
               <Route path="/dashboard/*" element={<DashboardApp />} />
+              <Route path="/student/login" element={<Navigate to="/student?auth=login" replace />} />
               <Route path="/student/*" element={<StudentApp />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

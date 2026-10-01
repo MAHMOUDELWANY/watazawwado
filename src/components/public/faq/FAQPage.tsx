@@ -3,7 +3,7 @@ import { useOutletContext, Link } from 'react-router-dom';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
 import { PublicSection, EditorialHeading, MarginNote, PublicButton } from '../PublicDesignSystem';
 import { FAQS } from '../../../data/content';
-import { MessageCircle } from 'lucide-react';
+import { WhatsAppIcon } from '../../ui/WhatsAppIcon';
 import { buildWhatsAppUrl } from '../../../lib/whatsapp';
 
 export function FAQPage() {
@@ -63,9 +63,9 @@ export function FAQPage() {
                 href={buildWhatsAppUrl(isEn ? 'Assalamu Alaikum Ustadh Mahmoud, I have a question after reading the FAQ page.' : 'السلام عليكم أستاذ محمود، لدي استفسار بعد قراءة صفحة الأسئلة الشائعة.')}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-whatsapp-solid py-3 px-6 rounded-xl text-sm font-bold shadow-md hover:scale-105 transition-all"
+                className="btn-whatsapp-solid py-3 px-6 rounded-xl text-sm font-bold shadow-xs hover:scale-105 transition-all"
               >
-                <MessageCircle className="w-4 h-4 fill-current shrink-0" />
+                <WhatsAppIcon className="w-4 h-4 shrink-0" />
                 <span>{isEn ? 'Ask Mahmoud on WhatsApp' : 'اسأل محمود على واتساب'}</span>
               </a>
             </div>
