@@ -232,10 +232,10 @@ export function DashboardApp() {
           <Link to="/" className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg p-1">
             <BrandLogo variant="compact" />
             <div>
-              <span className="text-lg font-display font-bold text-foreground block leading-none">
+              <span className="text-xl sm:text-2xl font-display font-bold text-foreground block leading-none">
                 {lang === 'ar' ? 'وتزودوا' : 'Watazawwado'}
               </span>
-              <span className="text-[11px] text-muted-foreground uppercase tracking-wider block mt-1">
+              <span className="text-[12px] text-muted-foreground uppercase tracking-wider block mt-1.5">
                 {isSuperAdmin ? (lang === 'ar' ? 'الإدارة العامة' : 'Super Admin') : (lang === 'ar' ? 'مساحة المعلم' : 'Teacher Workspace')}
               </span>
             </div>

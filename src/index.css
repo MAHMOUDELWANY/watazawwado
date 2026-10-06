@@ -44,6 +44,78 @@
   font-display: swap;
 }
 
+/* ============================================================
+   THMANYAH SERIF DISPLAY (خط ثمانية للعناوين والهيدلاينز والشعار)
+   The iconic display typeface for Brand Titles & Platform Headlines
+   ============================================================ */
+@font-face {
+  font-family: 'Thmanyah Serif Display';
+  src: url('/fonts/thmanyah/thmanyahserifdisplay-Light.woff2') format('woff2'),
+       url('/fonts/thmanyah/thmanyahserifdisplay-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Thmanyah Serif Display';
+  src: url('/fonts/thmanyah/thmanyahserifdisplay-Regular.woff2') format('woff2'),
+       url('/fonts/thmanyah/thmanyahserifdisplay-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Thmanyah Serif Display';
+  src: url('/fonts/thmanyah/thmanyahserifdisplay-Medium.woff2') format('woff2'),
+       url('/fonts/thmanyah/thmanyahserifdisplay-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Thmanyah Serif Display';
+  src: url('/fonts/thmanyah/thmanyahserifdisplay-Bold.woff2') format('woff2'),
+       url('/fonts/thmanyah/thmanyahserifdisplay-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Thmanyah Serif Display';
+  src: url('/fonts/thmanyah/thmanyahserifdisplay-Black.woff2') format('woff2'),
+       url('/fonts/thmanyah/thmanyahserifdisplay-Black.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Fallback / Alias family name */
+@font-face {
+  font-family: 'Thmanyah Display';
+  src: url('/fonts/thmanyah/thmanyahserifdisplay-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Thmanyah Display';
+  src: url('/fonts/thmanyah/thmanyahserifdisplay-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Thmanyah Display';
+  src: url('/fonts/thmanyah/thmanyahserifdisplay-Black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @font-face {
   font-family: 'Thmanyah Serif';
   src: url('/fonts/thmanyah/thmanyahseriftext-Regular.woff2') format('woff2');
@@ -63,17 +135,17 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* Fonts — Genuine Thmanyah Sans (خط ثمانية) as Primary Global Typeface */
-  --font-brand-ar: 'Thmanyah Sans', 'IBM Plex Sans Arabic', sans-serif;
-  --font-display-ar: 'Thmanyah Sans', 'IBM Plex Sans Arabic', sans-serif;
+  /* Fonts — Thmanyah Serif Display (خط ثمانية للعناوين والشعار) & Thmanyah Sans (للقراءة والمتن) */
+  --font-brand-ar: 'Thmanyah Serif Display', 'Thmanyah Display', 'Thmanyah Sans', 'IBM Plex Sans Arabic', serif;
+  --font-display-ar: 'Thmanyah Serif Display', 'Thmanyah Display', 'Thmanyah Sans', 'IBM Plex Sans Arabic', serif;
   --font-body-ar: 'Thmanyah Sans', 'IBM Plex Sans Arabic', sans-serif;
 
-  --font-brand-en: 'Thmanyah Sans', 'Manrope', sans-serif;
-  --font-display-en: 'Thmanyah Sans', 'Manrope', sans-serif;
+  --font-brand-en: 'Thmanyah Serif Display', 'Thmanyah Display', 'Thmanyah Sans', 'Manrope', serif;
+  --font-display-en: 'Thmanyah Serif Display', 'Thmanyah Display', 'Thmanyah Sans', 'Manrope', serif;
   --font-body-en: 'Thmanyah Sans', 'Manrope', sans-serif;
 
-  --font-editorial: 'Thmanyah Serif', 'Thmanyah Sans', serif;
-  --font-serif: 'Thmanyah Serif', 'Thmanyah Sans', serif;
+  --font-editorial: 'Thmanyah Serif Display', 'Thmanyah Display', 'Thmanyah Serif', serif;
+  --font-serif: 'Thmanyah Serif Display', 'Thmanyah Display', 'Thmanyah Serif', serif;
   --font-sans: 'Thmanyah Sans', 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-arabic: 'Thmanyah Sans', 'IBM Plex Sans Arabic', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Arial, sans-serif;
 
@@ -430,6 +502,48 @@ body {
   line-height: 1.6 !important;
   letter-spacing: normal !important;
   text-transform: none !important;
+}
+
+/* ============================================================
+   GLOBAL HEADINGS & BRAND TITLES — THMANYAH SERIF DISPLAY
+   The iconic display typeface for Platform Headlines & Brand Identity
+   ============================================================ */
+h1, h2, h3, h4,
+.font-display,
+.font-brand,
+.brand-title,
+.text-display-xl,
+.text-display-lg,
+.text-heading-xl,
+.text-heading-lg {
+  font-family: 'Thmanyah Serif Display', 'Thmanyah Display', 'Thmanyah Sans', serif !important;
+}
+
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] .font-display,
+[dir="rtl"] .font-brand,
+[dir="rtl"] .brand-title,
+[dir="rtl"] .text-display-xl,
+[dir="rtl"] .text-display-lg,
+[dir="rtl"] .text-heading-xl,
+[dir="rtl"] .text-heading-lg {
+  font-family: 'Thmanyah Serif Display', 'Thmanyah Display', 'Thmanyah Sans', serif !important;
+  letter-spacing: normal !important;
+}
+
+h1, .text-display-xl {
+  font-weight: 800;
+}
+
+h2, .text-display-lg, .text-heading-xl {
+  font-weight: 700;
+}
+
+h3, .text-heading-lg {
+  font-weight: 700;
 }
 
 /* ============================================================

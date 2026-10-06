@@ -441,10 +441,10 @@ export default function StudentApp() {
           >
             <BrandLogo variant="compact" />
             <div className="flex flex-col text-start">
-              <span className="font-display font-bold text-lg leading-none text-foreground">
-                Watazawwado
+              <span className="font-display font-bold text-xl sm:text-2xl leading-none text-foreground">
+                {isAr ? 'وتزودوا' : 'Watazawwado'}
               </span>
-              <span className="text-xs text-muted-foreground tracking-wider uppercase mt-1">
+              <span className="text-xs text-muted-foreground tracking-wider uppercase mt-1.5">
                 {isAr ? 'مساحة الطالب' : 'Student Space'}
               </span>
             </div>

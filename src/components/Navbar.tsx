@@ -115,10 +115,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             to="/"
             id="nav-brand"
             data-tour="nav-brand"
-            className="group flex items-center gap-2 sm:gap-2.5 text-foreground focus:outline-none rounded-lg shrink-0 min-w-0"
+            className="group flex items-center gap-2.5 sm:gap-3 text-foreground focus:outline-none rounded-lg shrink-0 min-w-0"
           >
             <BrandLogo variant="compact" />
-            <span className="font-display text-lg sm:text-xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors truncate">
+            <span className="font-display text-xl sm:text-2xl font-bold text-foreground group-hover:text-primary transition-colors truncate">
               {isEn ? 'Watazawwado' : 'وتزودوا'}
             </span>
           </Link>
@@ -193,10 +193,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <div className="flex items-center gap-2.5">
                   <BrandLogo variant="compact" />
                   <div className="flex flex-col text-start">
-                    <span className="font-display font-bold text-base sm:text-lg text-foreground leading-none">
+                    <span className="font-display font-bold text-lg sm:text-xl text-foreground leading-none">
                       {isEn ? 'Watazawwado' : 'وتزودوا'}
                     </span>
-                    <span className="text-[11px] text-muted-foreground mt-0.5">
+                    <span className="text-[12px] text-muted-foreground mt-1">
                       {isEn ? 'Main Navigation' : 'قائمة المنصة'}
                     </span>
                   </div>

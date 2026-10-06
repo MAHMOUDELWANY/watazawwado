@@ -32,8 +32,9 @@ export const Footer: React.FC<FooterProps> = ({
           
           {/* Brand & Purpose (5 cols on md) */}
           <div className="md:col-span-5 space-y-4">
-            <div className="font-display text-2xl font-medium text-foreground flex items-center gap-2.5"><BrandLogo variant="compact" />
-              Watazawwado <span className="text-muted-foreground font-light text-xl">/ وتزودوا</span>
+            <div className="font-display text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-3">
+              <BrandLogo variant="compact" />
+              <span>Watazawwado</span> <span className="text-muted-foreground font-normal text-xl sm:text-2xl">/ وتزودوا</span>
             </div>
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-sm">
               {isEn
