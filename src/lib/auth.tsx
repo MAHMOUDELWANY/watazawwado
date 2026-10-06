@@ -14,6 +14,31 @@ export interface TeacherAuthVerificationResult {
   error?: string;
 }
 
+/**
+ * Authoritative token helper that verifies and auto-refreshes expired Supabase session tokens
+ * before critical authenticated API requests (e.g. /api/student/me, /api/student/bookings).
+ */
+export async function getFreshAccessToken(): Promise<string | null> {
+  if (!isSupabaseConfigured()) return null;
+  try {
+    const { data: { session }, error } = await supabase.auth.getSession();
+    if (error || !session) return null;
+
+    const expiresAt = session.expires_at;
+    const now = Math.floor(Date.now() / 1000);
+    if (expiresAt && (expiresAt - now < 120)) {
+      const { data: refreshed, error: refreshErr } = await supabase.auth.refreshSession();
+      if (!refreshErr && refreshed?.session?.access_token) {
+        return refreshed.session.access_token;
+      }
+    }
+    return session.access_token;
+  } catch (err) {
+    console.warn('[auth] Failed to retrieve fresh access token:', err);
+    return null;
+  }
+}
+
 export async function verifyServerTeacherStatus(token?: string | null): Promise<boolean> {
   if (!token) return false;
   try {

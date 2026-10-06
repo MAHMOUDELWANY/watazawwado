@@ -21,22 +21,8 @@ END $$;
 CREATE INDEX IF NOT EXISTS idx_students_teacher_assignment_status
 ON public.students(teacher_assignment_status);
 
--- 2. Register Teacher Afnan into public.teacher_accounts
-INSERT INTO public.teacher_accounts (email, role, is_active, display_name, gender, updated_at)
-VALUES (
-    'afnan@watazawwado.academy',
-    'teacher',
-    true,
-    'المعلمة أفنان',
-    'female',
-    timezone('utc'::text, now())
-)
-ON CONFLICT (email) DO UPDATE
-SET display_name = 'المعلمة أفنان',
-    gender = 'female',
-    role = 'teacher',
-    is_active = true,
-    updated_at = timezone('utc'::text, now());
+-- 2. Female teacher registration placeholder (Pending official email from administration)
+-- Female teacher will be registered dynamically via teacher_accounts when credentials are provided.
 
 -- 3. Ensure Mahmoud is properly set with gender = 'male'
 UPDATE public.teacher_accounts

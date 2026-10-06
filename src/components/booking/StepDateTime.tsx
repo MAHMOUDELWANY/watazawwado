@@ -199,19 +199,19 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                     onClick={() => handleDaySelect(d)}
                     className={`min-w-[76px] py-3 px-2 rounded-2xl border text-center transition-all cursor-pointer shrink-0 flex flex-col items-center justify-center ${
                       isSelected
-                        ? 'bg-muted-foreground text-white border-muted-foreground shadow-xs'
+                        ? 'btn-primary-material text-white border-primary shadow-md'
                         : d.isAvailable
-                        ? 'glass-card border-border text-foreground hover:border-accent/50'
+                        ? 'glass-card border-border text-foreground hover:border-primary/50'
                         : 'bg-black/5 dark:bg-white/5 border-transparent text-foreground/40 dark:text-accent/90/40'
                     }`}
                   >
-                    <span className="text-[13px] uppercase font-semibold tracking-wider opacity-80">
+                    <span className="text-[13px] uppercase font-semibold tracking-wider opacity-85">
                       {d.dayOfWeek}
                     </span>
                     <span className="text-base sm:text-lg font-display font-bold my-0.5">
                       {d.dayOfMonth}
                     </span>
-                    <span className="text-[13px] opacity-75">
+                    <span className="text-[13px] opacity-80">
                       {d.monthName}
                     </span>
 
@@ -220,7 +220,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                       {d.isAvailable ? (
                         <div
                           className={`w-1.5 h-1.5 rounded-full ${
-                            isSelected ? 'bg-primary' : 'bg-primary/70'
+                            isSelected ? 'bg-white' : 'bg-primary'
                           }`}
                         />
                       ) : (
@@ -312,11 +312,11 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                               !slot.available
                                 ? 'opacity-35 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent text-foreground/40'
                                 : isSelected
-                                ? 'bg-primary text-white border-primary font-medium shadow-xs'
-                                : 'bg-background border-border text-foreground hover:border-primary'
+                                ? 'btn-primary-material text-white font-medium shadow-sm'
+                                : 'glass-surface border-border text-foreground hover:border-primary/50 hover:bg-surface-warm/40'
                             }`}
                           >
-                            <span className="text-sm">{slot.timeDisplay}</span>
+                            <span className="text-sm font-medium">{slot.timeDisplay}</span>
                             {isSelected ? (
                               <Check className="w-3.5 h-3.5 text-white" />
                             ) : (
@@ -351,11 +351,11 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                               !slot.available
                                 ? 'opacity-35 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent text-foreground/40'
                                 : isSelected
-                                ? 'bg-primary text-white border-primary font-medium shadow-xs'
-                                : 'bg-background border-border text-foreground hover:border-primary'
+                                ? 'btn-primary-material text-white font-medium shadow-sm'
+                                : 'glass-surface border-border text-foreground hover:border-primary/50 hover:bg-surface-warm/40'
                             }`}
                           >
-                            <span className="text-sm">{slot.timeDisplay}</span>
+                            <span className="text-sm font-medium">{slot.timeDisplay}</span>
                             {isSelected ? (
                               <Check className="w-3.5 h-3.5 text-white" />
                             ) : (
@@ -390,11 +390,11 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                               !slot.available
                                 ? 'opacity-35 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent text-foreground/40'
                                 : isSelected
-                                ? 'bg-primary text-white border-primary font-medium shadow-xs'
-                                : 'bg-background border-border text-foreground hover:border-primary'
+                                ? 'btn-primary-material text-white font-medium shadow-sm'
+                                : 'glass-surface border-border text-foreground hover:border-primary/50 hover:bg-surface-warm/40'
                             }`}
                           >
-                            <span className="text-sm">{slot.timeDisplay}</span>
+                            <span className="text-sm font-medium">{slot.timeDisplay}</span>
                             {isSelected ? (
                               <Check className="w-3.5 h-3.5 text-white" />
                             ) : (

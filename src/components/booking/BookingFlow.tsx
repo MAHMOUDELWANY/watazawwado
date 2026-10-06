@@ -14,6 +14,7 @@ import { StepReviewSummary } from './StepReviewSummary';
 import { BookingConfirmation } from './BookingConfirmation';
 import { ManageBookingModal } from './ManageBookingModal';
 import { MultiLessonPlan, SelectedLesson } from './MultiLessonPlan';
+import { getFreshAccessToken } from '../../lib/auth';
 
 interface BookingFlowProps {
   initialServiceId?: string;
@@ -212,8 +213,13 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
 
   const handleConfirmMultiLesson = async () => {
     if (multiPlanCreated || formData.mode !== 'regular') return;
+    let freshToken = accessToken;
+    try {
+      freshToken = (await getFreshAccessToken()) || accessToken;
+    } catch {}
+
     // A genuinely missing session must be clear and actionable — never a silent dead button.
-    if (!isAuthenticatedStudent || !accessToken) {
+    if (!isAuthenticatedStudent || !freshToken) {
       setValidationError(isEn
         ? 'Your session has expired. Please sign in again to create this lesson plan.'
         : 'انتهت جلسة تسجيل الدخول. يرجى تسجيل الدخول مرة أخرى لإنشاء خطة الدروس.');
@@ -232,7 +238,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     try {
       const result = await fetch('/api/student/multi-lesson-plan', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${freshToken}` },
         body: JSON.stringify({
           serviceId: formData.serviceId,
           durationMinutes: formData.duration,

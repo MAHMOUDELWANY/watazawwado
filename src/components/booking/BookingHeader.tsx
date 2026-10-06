@@ -115,7 +115,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
       {/* Step Title & Progress Track */}
       <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-3">
         <div>
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground block mb-0.5">
+          <span className="text-xs sm:text-sm font-semibold uppercase text-muted-foreground block mb-0.5">
             {isEn ? `Step ${step} of ${totalSteps}` : `الخطوة ${step} من ${totalSteps}`}
           </span>
           <h2 className="font-display text-2xl sm:text-3xl font-medium text-foreground">

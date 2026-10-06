@@ -17,7 +17,7 @@ import {
   Check
 } from 'lucide-react';
 import { DateTime } from 'luxon';
-import { useTeacherAuth } from '../../lib/auth';
+import { useTeacherAuth, getFreshAccessToken } from '../../lib/auth';
 import { useTheme } from '../../components/ThemeProvider';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
@@ -81,40 +81,48 @@ export default function StudentProfilePage({
   // Diagnostic helper for student auth probe
   const probeStudentMe = async () => {
     try {
-      const token = effectiveSession?.access_token;
-      // Explicit session state — a missing session must not silently no-op.
+      const token = effectiveSession?.access_token || await getFreshAccessToken();
       if (!token) {
         setError(isAr ? 'جلسة الدخول غير متاحة أو منتهية' : 'Your session is unavailable or has expired');
         return;
       }
-      await fetch('/api/student/me', {
+      const res = await fetch('/api/student/me', {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-    } catch {
-      // Diagnostic safe fallback
+      if (res.ok) {
+        setSuccess(isAr ? 'الاتصال بنقطة النهاية سليم بنجاح (200 OK)' : 'API endpoint probe succeeded (200 OK)');
+      } else {
+        setError(isAr ? `فشل الاتصال: رمز الاستجابة ${res.status}` : `Probe failed with status ${res.status}`);
+      }
+    } catch (err: any) {
+      setError(err?.message || 'Probe error');
     }
   };
 
   // Diagnostic probe for student auth verification
   const runDiagnosticProbe = async () => {
     try {
-      const token = effectiveSession?.access_token;
-      // Explicit session state — a missing session must not silently no-op.
+      const token = effectiveSession?.access_token || await getFreshAccessToken();
       if (!token) {
         setError(isAr ? 'جلسة الدخول غير متاحة أو منتهية' : 'Your session is unavailable or has expired');
         return;
       }
-      await fetch('/api/student-auth-diagnostic', {
+      const res = await fetch('/api/student-auth-diagnostic', {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-    } catch {
-      // Diagnostic safe fallback
+      if (res.ok) {
+        setSuccess(isAr ? 'تم التحقق من تشخيص الهوية بنجاح' : 'Auth diagnostic succeeded');
+      } else {
+        setError(isAr ? `فشل فحص التشخيص: رمز ${res.status}` : `Diagnostic failed with status ${res.status}`);
+      }
+    } catch (err: any) {
+      setError(err?.message || 'Diagnostic error');
     }
   };
 
@@ -123,7 +131,10 @@ export default function StudentProfilePage({
       setLoading(true);
       setError(null);
 
-      const token = effectiveSession?.access_token;
+      let token = effectiveSession?.access_token;
+      if (!token) {
+        token = await getFreshAccessToken();
+      }
       if (!token) {
         throw new Error(isAr ? 'جلسة تسجيل الدخول منتهية' : 'Authentication required. Session token missing.');
       }
@@ -190,9 +201,12 @@ export default function StudentProfilePage({
     setSaving(true);
 
     try {
-      const token = effectiveSession?.access_token;
+      let token = effectiveSession?.access_token;
       if (!token) {
-        throw new Error(isAr ? 'جلسة تسجيل الدخول منتهية' : 'Authentication required. Session token missing.');
+        token = await getFreshAccessToken();
+      }
+      if (!token) {
+        throw new Error(isAr ? 'جلسة تسجيل الدخول منتهية، يرجى تسجيل الدخول مجدداً' : 'Authentication required. Session token missing.');
       }
 
       const res = await fetch('/api/student/me', {

@@ -5,7 +5,7 @@ import { BookingFlow } from '../../components/booking/BookingFlow';
 import { BrandLoader, BrandSpinner } from '../../components/ui/BrandLoader';
 import { BOOKING_SERVICES } from '../../booking/mockData';
 import { BookingFormData, BookingMode, ProficiencyLevel, LessonDuration, PackageCatalogEntry } from '../../booking/types';
-import { useTeacherAuth } from '../../lib/auth';
+import { useTeacherAuth, getFreshAccessToken } from '../../lib/auth';
 import { StudentPageBack } from '../components/StudentPageBack';
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 
@@ -548,7 +548,10 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
   const autoTriggeredRepeatRef = useRef(false);
 
   const fetchBookings = useCallback(async (token?: string | null) => {
-    const effectiveToken = token !== undefined ? token : accessToken;
+    let effectiveToken = token !== undefined ? token : accessToken;
+    if (!effectiveToken) {
+      effectiveToken = await getFreshAccessToken();
+    }
     if (!effectiveToken) {
       setBookings(null);
       setBookingsLoading(false);
@@ -564,6 +567,23 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
 
       const bookRes = await fetch('/api/student/bookings', { headers });
       if (!bookRes.ok) {
+        if (bookRes.status === 401) {
+          // Attempt retry with fresh token if session had expired
+          const refreshedToken = await getFreshAccessToken();
+          if (refreshedToken && refreshedToken !== effectiveToken) {
+            const retryRes = await fetch('/api/student/bookings', {
+              headers: { Authorization: `Bearer ${refreshedToken}` }
+            });
+            if (retryRes.ok) {
+              const retryData = await retryRes.json();
+              if (Array.isArray(retryData)) {
+                setBookings(retryData);
+                setBookingsError(null);
+                return;
+              }
+            }
+          }
+        }
         throw new Error(`Failed to load booking history (${bookRes.status})`);
       }
       const bookData = await bookRes.json();
@@ -631,7 +651,11 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
     let isMounted = true;
 
     async function loadStudentData() {
-      if (!accessToken) {
+      let activeToken = accessToken;
+      if (!activeToken) {
+        activeToken = await getFreshAccessToken();
+      }
+      if (!activeToken) {
         // Do not attempt authenticated Student API calls without an authenticated session
         if (isMounted) {
           setProfileLoading(false);
@@ -641,7 +665,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
       }
 
       const headers: Record<string, string> = {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${activeToken}`,
       };
 
       // 1. Load Profile if not provided
@@ -852,17 +876,22 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
           <div className="flex items-center gap-2.5">
             <AlertCircle className="w-4 h-4 text-warning shrink-0" />
             <span>
-              {bookingsError} Free trial booking is unavailable until history is verified.
+              {bookingsError.toLowerCase().includes('auth') || bookingsError.includes('401')
+                ? 'يرجى تسجيل الدخول أو تحديث الجلسة لتأكيد سجل الدروس والاستفادة من الجلسة المجانية.'
+                : `${bookingsError} Free trial booking is unavailable until history is verified.`}
             </span>
           </div>
           <button
             type="button"
-            onClick={() => fetchBookings(accessToken)}
+            onClick={async () => {
+              const fresh = await getFreshAccessToken();
+              fetchBookings(fresh || accessToken);
+            }}
             disabled={bookingsLoading}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-warning hover:bg-warning/90 text-primary-foreground font-medium self-start sm:self-auto transition-colors cursor-pointer disabled:opacity-50"
           >
             {bookingsLoading ? <BrandSpinner size={14} /> : <RefreshCw className="w-3.5 h-3.5" />}
-            <span>Retry Verification</span>
+            <span>تحديث الجلسة / Retry</span>
           </button>
         </div>
       )}

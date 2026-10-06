@@ -9,6 +9,7 @@ import {
   getSampleExistingBookings
 } from './mockData';
 import { bookingRepository } from '../lib/bookingRepository';
+import { getFreshAccessToken } from '../lib/auth';
 
 /**
  * BookingService represents the clean architecture boundary.
@@ -31,16 +32,12 @@ export const bookingService = {
 
       const headers: Record<string, string> = {};
       try {
-        const token = localStorage.getItem('supabase_auth_token') || localStorage.getItem('sb-fmwxqyroyxgigvpahpri-auth-token');
+        const token = await getFreshAccessToken();
         if (token) {
-          const parsed = JSON.parse(token);
-          const accessToken = parsed.access_token || parsed?.currentSession?.access_token;
-          if (accessToken) {
-            headers['Authorization'] = `Bearer ${accessToken}`;
-          }
+          headers['Authorization'] = `Bearer ${token}`;
         }
       } catch {
-        // Ignore token parse errors
+        // Ignore token errors for public availability query
       }
 
       const res = await fetch(url, { headers });

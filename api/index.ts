@@ -988,7 +988,7 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
         .eq('email', userEmail)
         .maybeSingle();
 
-      if (teacherRecord) {
+      if (teacherRecord && teacherRecord.role !== 'super_admin') {
         return res.status(403).json({ error: 'Forbidden. Teachers cannot access student portal APIs.' });
       }
 
@@ -1309,12 +1309,12 @@ export async function resolveSmartTeacherRouting(
 ): Promise<{ id: string | null; name: string; email: string }> {
   const isFemale = gender === 'female';
   const targetGender = isFemale ? 'female' : 'male';
-  const defaultName = isFemale ? 'المعلمة أفنان' : 'الأستاذ محمود';
-  const defaultEmail = isFemale ? 'afnan@watazawwado.academy' : 'mahmoudelwany98@gmail.com';
+  const defaultName = isFemale ? 'المعلمة (بانتظار التعيين)' : 'الأستاذ محمود';
+  const defaultEmail = isFemale ? '' : 'mahmoudelwany98@gmail.com';
 
   if (!supabaseAdmin) {
     return {
-      id: isFemale ? 'afnan-teacher-id' : 'd7d1e5b4-f2e6-41f8-ac40-3b3b8e862b76',
+      id: isFemale ? null : 'd7d1e5b4-f2e6-41f8-ac40-3b3b8e862b76',
       name: defaultName,
       email: defaultEmail
     };
@@ -5731,7 +5731,7 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       const [studentRes, guardianRes, goalsRes, linkedChildrenRes] = await Promise.all([
         supabaseAdmin
           .from('students')
-          .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, booking_preference, created_at, onboarding_completed, learning_interest, learning_goal, learning_needs, assigned_teacher_id, gender, teacher_gender_preference, teacher_assignment_status')
+          .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, booking_preference, created_at, onboarding_completed, learning_interest, learning_goal, learning_needs, assigned_teacher_id, gender, teacher_gender_preference')
           .eq('id', studentId)
           .single(),
         supabaseAdmin
@@ -6044,7 +6044,6 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
       timezone: resolvedTimezone,
       gender: resolvedGender,
       teacher_gender_preference: resolvedTeacherPref,
-      teacher_assignment_status: 'pending_review',
       onboarding_completed: true,
       updated_at: new Date().toISOString()
     };
@@ -6233,38 +6232,12 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
     // Booking preference validation & persistence
     const rawBookingPref = booking_preference !== undefined ? booking_preference : bookingPreference;
     if (rawBookingPref !== undefined) {
-        if (rawBookingPref !== 'self' && rawBookingPref !== 'child') {
-          return res.status(422).json({ error: "Invalid booking preference. Must be 'self' or 'child'." });
-        }
-
-        // Check if student has an authoritative child/guardian relationship
-        let studentCanBookChild = false;
-        if (!supabaseAdmin || (!isProd && req.studentUser?.studentProfile)) {
-          const mp = req.studentUser?.studentProfile;
-          studentCanBookChild = mp?.canBookForChild ?? (
-            mp?.learner_type === 'child' ||
-            Boolean(mp?.guardian) ||
-            Boolean(mp?.linkedChildren && mp?.linkedChildren.length > 0)
-          );
-        } else {
-          const [studentCheck, guardianCheck, parentCheck] = await Promise.all([
-            supabaseAdmin.from('students').select('learner_type').eq('id', studentId).single(),
-            supabaseAdmin.from('guardians').select('id').eq('student_id', studentId).maybeSingle(),
-            supabaseAdmin.from('guardians').select('id').ilike('parent_email', (req.studentUser?.email || '').trim()).limit(1)
-          ]);
-          const isChildWithGuardian = studentCheck.data?.learner_type === 'child' && Boolean(guardianCheck.data);
-          const isParentOfChild = Boolean(parentCheck.data && parentCheck.data.length > 0);
-          studentCanBookChild = isChildWithGuardian || isParentOfChild;
-        }
-
-        if (rawBookingPref === 'child' && !studentCanBookChild) {
-          return res.status(422).json({
-            error: 'Account has no linked child relationship. Booking preference cannot be set to child.'
-          });
-        }
-
-        updatePayload.booking_preference = rawBookingPref;
+      if (rawBookingPref !== 'self' && rawBookingPref !== 'child') {
+        return res.status(422).json({ error: "Invalid booking preference. Must be 'self' or 'child'." });
       }
+      updatePayload.booking_preference = rawBookingPref;
+    }
+
     if (!supabaseAdmin || (!isProd && req.studentUser?.studentProfile)) {
       if (req.studentUser?.studentProfile) {
         if (updatePayload.name) req.studentUser.studentProfile.name = updatePayload.name;
@@ -6310,7 +6283,7 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       .from('students')
       .update(updatePayload)
       .eq('id', studentId)
-      .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, booking_preference, created_at, updated_at, gender, teacher_gender_preference, assigned_teacher_id, teacher_assignment_status')
+      .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, booking_preference, created_at, updated_at, gender, teacher_gender_preference, assigned_teacher_id')
       .single();
 
     if (updateError || !updatedStudent) {

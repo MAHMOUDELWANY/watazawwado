@@ -1,21 +1,81 @@
 @import "tailwindcss";
 
+/* ============================================================
+   GENUINE THMANYAH FONT FAMILY (ARABIC & ENGLISH)
+   Extracted from official Thmanyah Typeface package
+   ============================================================ */
+@font-face {
+  font-family: 'Thmanyah Sans';
+  src: url('/fonts/thmanyah/thmanyahsans-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Thmanyah Sans';
+  src: url('/fonts/thmanyah/thmanyahsans-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Thmanyah Sans';
+  src: url('/fonts/thmanyah/thmanyahsans-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Thmanyah Sans';
+  src: url('/fonts/thmanyah/thmanyahsans-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Thmanyah Sans';
+  src: url('/fonts/thmanyah/thmanyahsans-Black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Thmanyah Serif';
+  src: url('/fonts/thmanyah/thmanyahseriftext-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Thmanyah Serif';
+  src: url('/fonts/thmanyah/thmanyahseriftext-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* Fonts — IBM Plex Sans Arabic (خط ثمانية) as Primary Arabic Font */
-  --font-brand-ar: 'IBM Plex Sans Arabic', sans-serif;
-  --font-display-ar: 'IBM Plex Sans Arabic', sans-serif;
-  --font-body-ar: 'IBM Plex Sans Arabic', sans-serif;
+  /* Fonts — Genuine Thmanyah Sans (خط ثمانية) as Primary Global Typeface */
+  --font-brand-ar: 'Thmanyah Sans', 'IBM Plex Sans Arabic', sans-serif;
+  --font-display-ar: 'Thmanyah Sans', 'IBM Plex Sans Arabic', sans-serif;
+  --font-body-ar: 'Thmanyah Sans', 'IBM Plex Sans Arabic', sans-serif;
 
-  --font-brand-en: 'Manrope', sans-serif;
-  --font-display-en: 'Manrope', sans-serif;
-  --font-body-en: 'Manrope', sans-serif;
+  --font-brand-en: 'Thmanyah Sans', 'Manrope', sans-serif;
+  --font-display-en: 'Thmanyah Sans', 'Manrope', sans-serif;
+  --font-body-en: 'Thmanyah Sans', 'Manrope', sans-serif;
 
-  --font-editorial: 'IBM Plex Sans Arabic', serif;
-  --font-serif: 'IBM Plex Sans Arabic', serif;
-  --font-sans: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --font-arabic: 'IBM Plex Sans Arabic', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Arial, sans-serif;
+  --font-editorial: 'Thmanyah Serif', 'Thmanyah Sans', serif;
+  --font-serif: 'Thmanyah Serif', 'Thmanyah Sans', serif;
+  --font-sans: 'Thmanyah Sans', 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-arabic: 'Thmanyah Sans', 'IBM Plex Sans Arabic', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Arial, sans-serif;
 
   /* Semantic Colors — mapped from CSS custom properties for Tailwind */
   --color-background: var(--background);
@@ -343,29 +403,29 @@ body {
    TYPOGRAPHY UTILITY CLASSES
    ============================================================ */
 
-/* Editorial serif & Arabic fonts — Thmanyah (IBM Plex Sans Arabic) Foundation */
+/* Editorial serif & Arabic fonts — Genuine Thmanyah Sans Foundation */
 .font-editorial { font-family: var(--font-serif); }
-.font-arabic-display { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+.font-arabic-display { font-family: 'Thmanyah Sans', 'IBM Plex Sans Arabic', sans-serif; }
 .font-arabic-calligraphic {
   font-family: 'Amiri', serif;
 }
 .font-arabic-modern {
-  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  font-family: 'Thmanyah Sans', 'IBM Plex Sans Arabic', sans-serif;
 }
 
 [dir="rtl"] {
   font-family: var(--font-arabic);
 }
-[dir="rtl"] .font-editorial, [dir="rtl"] .font-serif { font-family: 'IBM Plex Sans Arabic', sans-serif !important; }
+[dir="rtl"] .font-editorial, [dir="rtl"] .font-serif { font-family: 'Thmanyah Sans', 'IBM Plex Sans Arabic', sans-serif !important; }
 
-/* Small Arabic Text Legibility Overhaul (Fixes unreadable small writing) */
+/* Small Arabic Text Legibility Overhaul (Clean, sharp Thmanyah Sans rendering) */
 [dir="rtl"] .text-caption,
 [dir="rtl"] .text-xs,
 [dir="rtl"] small,
 [dir="rtl"] .text-\[10px\],
 [dir="rtl"] .text-\[11px\],
 [dir="rtl"] .text-\[12px\] {
-  font-family: 'IBM Plex Sans Arabic', sans-serif !important;
+  font-family: 'Thmanyah Sans', 'IBM Plex Sans Arabic', sans-serif !important;
   font-size: 0.8125rem !important; /* Minimum 13px */
   line-height: 1.6 !important;
   letter-spacing: normal !important;
