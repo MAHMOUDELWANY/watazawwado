@@ -9,6 +9,8 @@ import { LearningPage } from './components/public/learning/LearningPage';
 import { HowItWorksPage } from './components/public/how-it-works/HowItWorksPage';
 import { PricingPage } from './components/public/pricing/PricingPage';
 import { FAQPage } from './components/public/faq/FAQPage';
+import { PrivacyPolicyPage } from './components/public/privacy/PrivacyPolicyPage';
+import { TermsPage } from './components/public/terms/TermsPage';
 import { DashboardApp } from './dashboard/DashboardApp';
 import StudentApp from './student/StudentApp';
 import StaffLoginPage from './pages/StaffLoginPage';
@@ -35,6 +37,8 @@ export default function App() {
                 <Route path="/learning" element={<LearningPage />} />
                 <Route path="/pricing" element={<PricingPage />} />
                 <Route path="/faq" element={<FAQPage />} />
+                <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                <Route path="/terms" element={<TermsPage />} />
               </Route>
 
               {/* Authenticated and Special Routes */}

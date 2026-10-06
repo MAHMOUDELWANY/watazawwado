@@ -111,6 +111,16 @@ export const Footer: React.FC<FooterProps> = ({
                     {isEn ? 'FAQ' : 'الأسئلة الشائعة'}
                   </Link>
                 </li>
+                <li>
+                  <Link to="/privacy" className="hover:text-accent transition-colors">
+                    {isEn ? 'Privacy Policy' : 'سياسة الخصوصية'}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/terms" className="hover:text-accent transition-colors">
+                    {isEn ? 'Terms of Service' : 'شروط الخدمة'}
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>
@@ -137,7 +147,15 @@ export const Footer: React.FC<FooterProps> = ({
           </div>
 
           <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-            <span>{isEn ? '3-Hour Reschedule Policy' : 'إعادة الجدولة حتى ٣ ساعات قبل الدرس'}</span>
+                        <Link to="/privacy" className="hover:text-foreground hover:underline transition-colors">
+              {isEn ? 'Privacy Policy' : 'سياسة الخصوصية'}
+            </Link>
+            <span>•</span>
+            <Link to="/terms" className="hover:text-foreground hover:underline transition-colors">
+              {isEn ? 'Terms of Service' : 'شروط الخدمة'}
+            </Link>
+            <span>•</span>
+<span>{isEn ? '3-Hour Reschedule Policy' : 'إعادة الجدولة حتى ٣ ساعات قبل الدرس'}</span>
             <span>•</span>
             <span>{isEn ? 'Flexible Booking' : 'حجز مرن ومباشر'}</span>
             <span>•</span>
