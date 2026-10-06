@@ -8,17 +8,16 @@
  */
 
 export const DEFAULT_TEACHER_EMAIL = 'mahmoudelwany98@gmail.com';
-export const DEFAULT_SENDER_NAME = 'Mahmoud Elwany';
+export const DEFAULT_SENDER_EMAIL = 'noreply@watazawwado.academy';
+export const DEFAULT_SENDER_NAME = 'وتزودوا | Watazawwado';
 
-export const OFFICIAL_TEACHER_EMAIL =
-  process.env.NOTIFICATION_TEACHER_EMAIL ||
-  process.env.NOTIFICATION_FROM_EMAIL ||
-  DEFAULT_TEACHER_EMAIL;
+export const OFFICIAL_TEACHER_EMAIL = process.env.NOTIFICATION_TEACHER_EMAIL || DEFAULT_TEACHER_EMAIL;
+export const OFFICIAL_SENDER_EMAIL = process.env.NOTIFICATION_FROM_EMAIL || DEFAULT_SENDER_EMAIL;
 
 export const OFFICIAL_SENDER_NAME =
   process.env.NOTIFICATION_FROM_NAME || DEFAULT_SENDER_NAME;
 
-export const OFFICIAL_SENDER_HEADER = `"${OFFICIAL_SENDER_NAME}" <${OFFICIAL_TEACHER_EMAIL}>`;
+export const OFFICIAL_SENDER_HEADER = `"${OFFICIAL_SENDER_NAME}" <${OFFICIAL_SENDER_EMAIL}>`;
 
 export interface SendEmailOptions {
   to: string;
@@ -55,7 +54,7 @@ export function getEmailConfigStatus(): EmailConfigStatus {
   const apiKey = process.env.BREVO_API_KEY;
   const isConfigured = Boolean(apiKey && apiKey.trim().length > 0);
 
-  const senderEmail = process.env.NOTIFICATION_FROM_EMAIL || DEFAULT_TEACHER_EMAIL;
+  const senderEmail = process.env.NOTIFICATION_FROM_EMAIL || DEFAULT_SENDER_EMAIL;
   const senderName = process.env.NOTIFICATION_FROM_NAME || DEFAULT_SENDER_NAME;
   const replyToEmail =
     process.env.NOTIFICATION_REPLY_TO_EMAIL || senderEmail;
@@ -136,7 +135,7 @@ Note: Set BREVO_API_KEY to enable live email delivery.`);
 
   // 3. Brevo Transactional API Dispatch
   try {
-    const senderEmail = process.env.NOTIFICATION_FROM_EMAIL || DEFAULT_TEACHER_EMAIL;
+    const senderEmail = process.env.NOTIFICATION_FROM_EMAIL || DEFAULT_SENDER_EMAIL;
     const senderName = process.env.NOTIFICATION_FROM_NAME || DEFAULT_SENDER_NAME;
     const replyToEmail =
       options.replyTo ||

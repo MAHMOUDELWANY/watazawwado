@@ -80,6 +80,7 @@ interface AuthContextType {
   resendOtp: (email: string, type?: 'signup' | 'magiclink' | 'recovery' | 'email') => Promise<{ success: boolean; error?: string }>;
   resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
   updatePassword: (newPassword: string) => Promise<{ success: boolean; error?: string }>;
+  signInWithGoogle: () => Promise<{ success: boolean; error?: string }>;
   signOut: () => Promise<void>;
   isConfigured: boolean;
 }
@@ -418,6 +419,31 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   };
 
+  
+  const signInWithGoogle = async (): Promise<{ success: boolean; error?: string }> => {
+    if (!isConfigured) return { success: false, error: 'Authentication is unavailable.' };
+    try {
+      const redirectUrl = typeof window !== 'undefined'
+        ? `${window.location.origin}/student`
+        : undefined;
+
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: redirectUrl,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        },
+      });
+      if (error) return { success: false, error: error.message };
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message || 'Failed to initiate Google sign in.' };
+    }
+  };
+
   const signOut = async () => {
     if (isConfigured) {
       await supabase.auth.signOut();
@@ -444,6 +470,7 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
         resendOtp,
         resetPassword,
         updatePassword,
+        signInWithGoogle,
         signOut,
         isConfigured,
       }}
