@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { IntegrationsManager } from '../../components/dashboard/IntegrationsManager';
+import { CountryTimezonePicker } from '../../components/ui/CountryTimezonePicker';
+import { setActiveWorkingTimezone, getActiveWorkingTimezone } from '../../lib/countryTimezones';
 
 interface Setting {
   key: string;
@@ -106,6 +108,9 @@ export default function SettingsPage() {
         method: 'PATCH',
         body: JSON.stringify({ settings })
       });
+
+      const currentTz = getSetting('timezone') || 'Africa/Cairo';
+      setActiveWorkingTimezone(currentTz);
 
       setSuccess('Settings saved successfully.');
       setTimeout(() => setSuccess(null), 3000);
@@ -524,6 +529,27 @@ export default function SettingsPage() {
                     <option value="light">Luxury Light (Warm Ivory × Sage)</option>
                     <option value="dark">Dark Twilight</option>
                   </select>
+                </div>
+
+                {/* Active Working Timezone */}
+                <div className="pt-4 border-t border-border">
+                  <h3 className="text-sm font-semibold text-foreground mb-1">
+                    Active Working Timezone (المنطقة الزمنية للعمل والمواعيد)
+                  </h3>
+                  <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
+                    All schedule views, upcoming lessons, and calendars will automatically format according to this timezone. If traveling to another country, change this here to see all appointments in your current local time without needing assistance.
+                  </p>
+                  <div className="p-4 rounded-xl glass-surface border border-border">
+                    <CountryTimezonePicker
+                      timezone={getSetting('timezone') || 'Africa/Cairo'}
+                      onTimezoneChange={(newTz) => {
+                        updateSetting('timezone', newTz);
+                        setActiveWorkingTimezone(newTz);
+                      }}
+                      isAr={getSetting('language') === 'ar'}
+                      showTimePreview={true}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

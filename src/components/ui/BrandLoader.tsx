@@ -344,45 +344,22 @@ export function BrandLoader({
 
       </div>
 
-      {/* ─── 4-COLOR ANIMATED FLOWING PROGRESS BAR ─────────────────────── */}
-      {showProgressBar && (
-        <div className="w-48 sm:w-56 h-1.5 bg-secondary/20 dark:bg-surface-subtle rounded-full overflow-hidden mb-3 relative shadow-inner">
-          <div
-            className={`absolute inset-y-0 start-0 h-full rounded-full w-full origin-left ${
-              !isReducedMotion ? 'loading-gradient-flow' : ''
-            }`}
-            style={{
-              background: 'linear-gradient(90deg, #C51F24, #8B4935, #D8C6AE, #087D91, #C51F24)',
-              backgroundSize: '200% 100%',
-            }}
-          />
+      {/* ─── OPTIONAL STATUS MESSAGE ──────────────────────────────────── */}
+      {(text || subtext) && (
+        <div className="flex flex-col items-center gap-1.5 text-center max-w-sm px-4">
+          {text && (
+            <h3 className="font-display font-semibold text-base sm:text-lg text-foreground tracking-tight">
+              {text}
+            </h3>
+          )}
+
+          {subtext && (
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+              {subtext}
+            </p>
+          )}
         </div>
       )}
-
-      {/* ─── STATUS MESSAGE & FOUR COLOR BOUNCING DOTS ──────────────────── */}
-      <div className="flex flex-col items-center gap-1.5 text-center max-w-sm px-4">
-        {text && (
-          <h3 className="font-display font-semibold text-base sm:text-lg text-foreground tracking-tight">
-            {text}
-          </h3>
-        )}
-
-        {subtext && (
-          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-            {subtext}
-          </p>
-        )}
-
-        {/* 4 Bouncing Jewel Beads Indicator (Crimson, Terracotta, Sand, Teal) */}
-        {!isReducedMotion && (
-          <div className="flex items-center justify-center gap-2 pt-1" aria-hidden="true">
-            <span className="w-2 h-2 rounded-full bg-[#C51F24] animate-brand-dot-1 shadow-2xs" />
-            <span className="w-2 h-2 rounded-full bg-[#8B4935] animate-brand-dot-2 shadow-2xs" />
-            <span className="w-2 h-2 rounded-full bg-[#D8C6AE] animate-brand-dot-3 shadow-2xs" />
-            <span className="w-2 h-2 rounded-full bg-[#087D91] animate-brand-dot-4 shadow-2xs" />
-          </div>
-        )}
-      </div>
 
     </div>
   );

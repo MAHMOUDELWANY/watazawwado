@@ -25,6 +25,8 @@ import { Button } from '../../components/ui/Button';
 import { BrandLoader } from '../../components/ui/BrandLoader';
 import { StudentPageBack } from '../components/StudentPageBack';
 import { BrandFrame } from '../../components/ui/BrandFrame';
+import { CountryTimezonePicker } from '../../components/ui/CountryTimezonePicker';
+import { setActiveWorkingTimezone } from '../../lib/countryTimezones';
 
 export interface StudentProfilePageProps {
   profile?: any;
@@ -216,6 +218,7 @@ export default function StudentProfilePage({
       }
 
       setSuccess(isAr ? 'تم حفظ التعديلات وتفضيلات الحجز بنجاح.' : 'Profile and booking preferences updated successfully.');
+      setActiveWorkingTimezone(timezone.trim());
       const updated = { ...profile, ...data, bookingPreference: data.bookingPreference || bookingPreference };
       setProfile(updated);
       onProfileUpdated?.(updated);
@@ -494,76 +497,37 @@ export default function StudentProfilePage({
                   </p>
                 </div>
 
-                {/* Timezone & WhatsApp Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {/* Timezone */}
-                  <div>
-                    <label htmlFor="student-timezone" className="block text-sm font-semibold text-foreground mb-1.5">
-                      {isAr ? 'المنطقة الزمنية (IANA)' : 'Timezone (IANA)'}
-                    </label>
-                    <div className="relative">
-                      <Clock className="w-4 h-4 text-accent absolute start-3.5 top-3.5 pointer-events-none" />
-                      <input
-                        id="student-timezone"
-                        type="text"
-                        required
-                        value={timezone}
-                        onChange={(e) => setTimezone(e.target.value)}
-                        className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px] font-mono text-sm sm:text-sm"
-                      />
-                    </div>
-                    <div className="mt-1.5 flex items-center justify-between gap-2">
-                      <button
-                        type="button"
-                        onClick={handleUseDeviceTimezone}
-                        className="text-[11px] text-primary hover:underline cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary rounded"
-                      >
-                        {isAr ? 'استخدام توقيت جهازي' : 'Use device timezone'}
-                      </button>
-                      <span className="text-[11px] text-muted-foreground truncate">
-                        {isAr ? 'مثال: America/Toronto' : 'e.g. America/Toronto'}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* WhatsApp */}
-                  <div>
-                    <label htmlFor="student-whatsapp" className="block text-sm font-semibold text-foreground mb-1.5">
-                      {isAr ? 'رقم الواتساب للتنسيق' : 'WhatsApp Number'}
-                    </label>
-                    <div className="relative">
-                      <Phone className="w-4 h-4 text-accent absolute start-3.5 top-3.5 pointer-events-none" />
-                      <input
-                        id="student-whatsapp"
-                        type="tel"
-                        value={whatsapp}
-                        onChange={(e) => setWhatsapp(e.target.value)}
-                        placeholder="+1 (555) 000-0000"
-                        className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px] font-mono text-sm sm:text-sm"
-                      />
-                    </div>
-                    <p className="text-[11px] text-muted-foreground mt-1.5">
-                      {isAr ? 'يُستخدم لتأكيد المواعيد ورسائل التذكير المباشرة' : 'Used for appointment confirmations and direct reminders'}
-                    </p>
-                  </div>
+                {/* Country & Timezone Selection */}
+                <div className="p-4 sm:p-5 rounded-2xl glass-surface border border-border">
+                  <CountryTimezonePicker
+                    country={country}
+                    timezone={timezone}
+                    onCountryChange={(newCountry) => setCountry(newCountry)}
+                    onTimezoneChange={(newTz) => setTimezone(newTz)}
+                    isAr={isAr}
+                    showTimePreview={true}
+                  />
                 </div>
 
-                {/* Country */}
+                {/* WhatsApp */}
                 <div>
-                  <label htmlFor="student-country" className="block text-sm font-semibold text-foreground mb-1.5">
-                    {isAr ? 'بلد الإقامة' : 'Country / Location'}
+                  <label htmlFor="student-whatsapp" className="block text-sm font-semibold text-foreground mb-1.5">
+                    {isAr ? 'رقم الواتساب للتنسيق' : 'WhatsApp Number'}
                   </label>
                   <div className="relative">
-                    <Globe className="w-4 h-4 text-accent absolute start-3.5 top-3.5 pointer-events-none" />
+                    <Phone className="w-4 h-4 text-accent absolute start-3.5 top-3.5 pointer-events-none" />
                     <input
-                      id="student-country"
-                      type="text"
-                      value={country}
-                      onChange={(e) => setCountry(e.target.value)}
-                      placeholder={isAr ? 'مثال: كندا، الولايات المتحدة، بريطانيا' : 'e.g. Canada, United States, United Kingdom'}
-                      className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px]"
+                      id="student-whatsapp"
+                      type="tel"
+                      value={whatsapp}
+                      onChange={(e) => setWhatsapp(e.target.value)}
+                      placeholder="+1 (555) 000-0000"
+                      className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary min-h-[44px] font-mono text-sm sm:text-sm"
                     />
                   </div>
+                  <p className="text-[11px] text-muted-foreground mt-1.5">
+                    {isAr ? 'يُستخدم لتأكيد المواعيد ورسائل التذكير المباشرة' : 'Used for appointment confirmations and direct reminders'}
+                  </p>
                 </div>
 
                 {/* Gender & Teacher Preference (Matching Metadata) */}

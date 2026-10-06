@@ -14,15 +14,27 @@ import { useTeacherAuth } from '../../lib/auth';
 import { DashboardLesson } from '../types';
 import { LessonDetailModal } from '../components/LessonDetailModal';
 import { dashboardFetch } from '../lib/dashboardApi';
+import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 
 export default function UpcomingPage() {
   const { session } = useTeacherAuth();
+  const [activeTz, setActiveTz] = useState<string>(() => getActiveWorkingTimezone('Africa/Cairo'));
   const [lessons, setLessons] = useState<DashboardLesson[]>([]);
   const [rangeDays, setRangeDays] = useState<number>(7);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedLesson, setSelectedLesson] = useState<DashboardLesson | null>(null);
+
+  // Sync with timezone changes from settings
+  useEffect(() => {
+    const handleTz = (e: any) => {
+      const tz = e?.detail?.timezone || getActiveWorkingTimezone('Africa/Cairo');
+      setActiveTz(tz);
+    };
+    window.addEventListener('watazawwado_timezone_change', handleTz);
+    return () => window.removeEventListener('watazawwado_timezone_change', handleTz);
+  }, []);
 
   const fetchUpcomingLessons = useCallback(async (isManual = false) => {
     if (isManual) {
@@ -47,15 +59,15 @@ export default function UpcomingPage() {
     fetchUpcomingLessons();
   }, [fetchUpcomingLessons]);
 
-  const nowCairo = DateTime.now().setZone('Africa/Cairo');
+  const nowActive = DateTime.now().setZone(activeTz);
 
-  // Group lessons by Cairo Date
+  // Group lessons by active working timezone date
   const groupedLessons = lessons.reduce((acc, lesson) => {
-    const startCairo = DateTime.fromISO(lesson.scheduled_start).setZone('Africa/Cairo');
-    const dateKey = startCairo.toFormat('yyyy-MM-dd');
+    const startLesson = DateTime.fromISO(lesson.scheduled_start).setZone(activeTz);
+    const dateKey = startLesson.toFormat('yyyy-MM-dd');
     if (!acc[dateKey]) {
       acc[dateKey] = {
-        date: startCairo,
+        date: startLesson,
         lessons: []
       };
     }
@@ -71,9 +83,15 @@ export default function UpcomingPage() {
       {/* Header */}
       <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border-subtle pb-5">
         <div>
-          <h1 className="text-2xl font-display font-semibold  text-foreground">
-            Upcoming Schedule
-          </h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-display font-semibold text-foreground">
+              Upcoming Schedule
+            </h1>
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-secondary text-secondary-foreground border border-border/60">
+              <Clock className="w-3 h-3 text-secondary-foreground" />
+              <span>{activeTz}</span>
+            </span>
+          </div>
           <p className="text-sm text-muted-foreground mt-1">
             Confirmed and scheduled 1-on-1 teaching sessions for upcoming days.
           </p>
@@ -155,7 +173,7 @@ export default function UpcomingPage() {
         <div className="space-y-8">
           {sortedDateKeys.map(dateKey => {
             const group = groupedLessons[dateKey];
-            const isTomorrow = group.date.hasSame(nowCairo.plus({ days: 1 }), 'day');
+            const isTomorrow = group.date.hasSame(nowActive.plus({ days: 1 }), 'day');
             
             return (
               <section key={dateKey} className="space-y-3">
@@ -183,6 +201,7 @@ export default function UpcomingPage() {
                       key={lesson.id} 
                       lesson={lesson} 
                       onSelect={() => setSelectedLesson(lesson)}
+                      activeTz={activeTz}
                     />
                   ))}
                 </div>
@@ -206,13 +225,15 @@ export default function UpcomingPage() {
 
 function UpcomingLessonRow({ 
   lesson, 
-  onSelect 
+  onSelect,
+  activeTz = 'Africa/Cairo'
 }: { 
   key?: React.Key;
   lesson: DashboardLesson; 
   onSelect: () => void;
+  activeTz?: string;
 }) {
-  const startCairo = DateTime.fromISO(lesson.scheduled_start).setZone('Africa/Cairo');
+  const startLesson = DateTime.fromISO(lesson.scheduled_start).setZone(activeTz);
   const hasStartLink = Boolean(lesson.zoom_host_url || lesson.zoom_meeting_link);
 
   return (
@@ -220,7 +241,7 @@ function UpcomingLessonRow({
       {/* Time & Duration */}
       <div className="flex items-center sm:block gap-3 shrink-0 sm:w-36">
         <div className="font-semibold text-lg  text-foreground">
-          {startCairo.toFormat('hh:mm a')}
+          {startLesson.toFormat('hh:mm a')}
         </div>
         <div className="text-sm text-muted-foreground flex items-center gap-1.5 mt-0.5">
           <Clock className="w-3.5 h-3.5" />

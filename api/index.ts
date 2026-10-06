@@ -1303,6 +1303,71 @@ export async function resolveTeacherMetadata(
   return null;
 }
 
+export async function resolveSmartTeacherRouting(
+  gender: string,
+  supabaseAdmin: any
+): Promise<{ id: string | null; name: string; email: string }> {
+  const isFemale = gender === 'female';
+  const targetGender = isFemale ? 'female' : 'male';
+  const defaultName = isFemale ? 'المعلمة أفنان' : 'الأستاذ محمود';
+  const defaultEmail = isFemale ? 'afnan@watazawwado.academy' : 'mahmoudelwany98@gmail.com';
+
+  if (!supabaseAdmin) {
+    return {
+      id: isFemale ? 'afnan-teacher-id' : 'd7d1e5b4-f2e6-41f8-ac40-3b3b8e862b76',
+      name: defaultName,
+      email: defaultEmail
+    };
+  }
+
+  try {
+    // 1. Query active teacher with matching gender from teacher_accounts
+    const { data: matchedAccount } = await supabaseAdmin
+      .from('teacher_accounts')
+      .select('email, display_name, gender')
+      .eq('gender', targetGender)
+      .eq('is_active', true)
+      .limit(1)
+      .maybeSingle();
+
+    const teacherEmail = matchedAccount?.email || defaultEmail;
+    const teacherDisplayName = matchedAccount?.display_name || defaultName;
+
+    // 2. Resolve auth user ID for this email
+    const teacherMeta = await resolveTeacherMetadata(teacherEmail, supabaseAdmin);
+    if (teacherMeta?.id) {
+      return { id: teacherMeta.id, name: teacherDisplayName, email: teacherEmail };
+    }
+
+    // 3. Fallback: query auth.users
+    try {
+      const { data: usersData } = await supabaseAdmin.auth.admin.listUsers();
+      const matchedUser = usersData?.users?.find(
+        (u: any) => u.email?.toLowerCase().trim() === teacherEmail.toLowerCase().trim()
+      );
+      if (matchedUser?.id) {
+        return { id: matchedUser.id, name: teacherDisplayName, email: teacherEmail };
+      }
+    } catch {}
+
+    // 4. Fallback: query profiles where email = teacherEmail
+    const { data: prof } = await supabaseAdmin
+      .from('profiles')
+      .select('id')
+      .eq('email', teacherEmail)
+      .maybeSingle();
+
+    if (prof?.id) {
+      return { id: prof.id, name: teacherDisplayName, email: teacherEmail };
+    }
+
+    return { id: null, name: teacherDisplayName, email: teacherEmail };
+  } catch (err) {
+    console.warn('[resolveSmartTeacherRouting Error]', err);
+    return { id: null, name: defaultName, email: defaultEmail };
+  }
+}
+
 // Middleware: Strict Super Admin Authorization
 export const requireSuperAdmin = (req: any, res: any, next: any) => {
   const role = req.teacherUser?.appRole || req.teacherUser?.role;
@@ -5666,7 +5731,7 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       const [studentRes, guardianRes, goalsRes, linkedChildrenRes] = await Promise.all([
         supabaseAdmin
           .from('students')
-          .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, booking_preference, created_at, onboarding_completed, learning_interest, learning_goal, learning_needs, assigned_teacher_id, gender, teacher_gender_preference')
+          .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, booking_preference, created_at, onboarding_completed, learning_interest, learning_goal, learning_needs, assigned_teacher_id, gender, teacher_gender_preference, teacher_assignment_status')
           .eq('id', studentId)
           .single(),
         supabaseAdmin
@@ -5769,6 +5834,7 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
         status: profile.status || 'active',
         assignedTeacherId: profile.assigned_teacher_id || null,
         assignedTeacherName,
+        teacherAssignmentStatus: (profile as any).teacher_assignment_status || 'pending_review',
         gender: profile.gender || 'undisclosed',
         teacherGenderPreference: profile.teacher_gender_preference || 'no_preference',
         bookingPreference,
@@ -5814,6 +5880,10 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
           currentLevel: mp.current_level || 'beginner',
           status: mp.status || 'active',
           assignedTeacherId: mp.assigned_teacher_id || mp.assignedTeacherId || null,
+          assignedTeacherName: mp.assigned_teacher_name || mp.assignedTeacherName || null,
+          teacherAssignmentStatus: mp.teacher_assignment_status || 'pending_review',
+          gender: mp.gender || 'undisclosed',
+          teacherGenderPreference: mp.teacher_gender_preference || 'no_preference',
           bookingPreference: safePref,
           canBookForChild: mockCanBookForChild,
           linkedChildren: mp.linkedChildren || [],
@@ -5892,6 +5962,7 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
       timezone,
       whatsapp,
       gender,
+      country,
       teacherGenderPreference,
       teacher_gender_preference
     } = req.body || {};
@@ -5917,6 +5988,9 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
     const isProd = process.env.NODE_ENV === 'production';
     const supabaseAdmin = getSupabaseAdminClient();
 
+    // Smart Routing: Male -> Ustadh Mahmoud, Female -> Teacher Afnan (pending admin review)
+    const routedTeacher = await resolveSmartTeacherRouting(resolvedGender, supabaseAdmin);
+
     if (!supabaseAdmin || (!isProd && req.studentUser?.studentProfile)) {
       if (req.studentUser?.studentProfile) {
         req.studentUser.studentProfile.name = name.trim();
@@ -5925,7 +5999,11 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
         req.studentUser.studentProfile.timezone = resolvedTimezone;
         req.studentUser.studentProfile.gender = resolvedGender;
         req.studentUser.studentProfile.teacher_gender_preference = resolvedTeacherPref;
+        req.studentUser.studentProfile.assigned_teacher_id = routedTeacher.id;
+        req.studentUser.studentProfile.assigned_teacher_name = routedTeacher.name;
+        req.studentUser.studentProfile.teacher_assignment_status = 'pending_review';
         req.studentUser.studentProfile.onboarding_completed = true;
+        if (country) req.studentUser.studentProfile.country = String(country).trim();
         if (whatsapp) req.studentUser.studentProfile.whatsapp = String(whatsapp).trim();
         if (learningInterest) req.studentUser.studentProfile.learning_interest = String(learningInterest).trim();
         if (learningGoal) req.studentUser.studentProfile.learning_goal = String(learningGoal).trim();
@@ -5934,15 +6012,22 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
       return res.json({
         success: true,
         onboardingCompleted: true,
+        assignedTeacherId: routedTeacher.id,
+        assignedTeacherName: routedTeacher.name,
+        teacherAssignmentStatus: 'pending_review',
         profile: {
           id: studentId,
           name: name.trim(),
           email: req.studentUser?.email || 'student@example.com',
           timezone: resolvedTimezone,
+          country: country || null,
           learnerType: resolvedLearnerType,
           currentLevel: resolvedLevel,
           gender: resolvedGender,
           teacherGenderPreference: resolvedTeacherPref,
+          assignedTeacherId: routedTeacher.id,
+          assignedTeacherName: routedTeacher.name,
+          teacherAssignmentStatus: 'pending_review',
           onboardingCompleted: true,
           learningInterest: learningInterest || null,
           learningGoal: learningGoal || null,
@@ -5951,7 +6036,7 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
       });
     }
 
-    // 1. Update students row
+    // 1. Update students row with smart teacher routing assignment
     const studentUpdate: Record<string, any> = {
       name: name.trim(),
       learner_type: resolvedLearnerType,
@@ -5959,9 +6044,14 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
       timezone: resolvedTimezone,
       gender: resolvedGender,
       teacher_gender_preference: resolvedTeacherPref,
+      teacher_assignment_status: 'pending_review',
       onboarding_completed: true,
       updated_at: new Date().toISOString()
     };
+    if (routedTeacher.id) {
+      studentUpdate.assigned_teacher_id = routedTeacher.id;
+    }
+    if (country) studentUpdate.country = String(country).trim();
     if (whatsapp) studentUpdate.whatsapp = String(whatsapp).trim();
     if (learningInterest) studentUpdate.learning_interest = String(learningInterest).trim();
     if (learningGoal) studentUpdate.learning_goal = String(learningGoal).trim();
@@ -6037,16 +6127,31 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
       }
     }
 
+    let assignedTeacherName = null;
+    if (updatedStudent.assigned_teacher_id) {
+      const teacherMeta = await resolveTeacherMetadata(updatedStudent.assigned_teacher_id, supabaseAdmin);
+      assignedTeacherName = teacherMeta ? teacherMeta.display_name : null;
+    }
+
     return res.json({
       success: true,
       onboardingCompleted: true,
+      assignedTeacherId: updatedStudent.assigned_teacher_id || routedTeacher.id,
+      assignedTeacherName: assignedTeacherName || routedTeacher.name,
+      teacherAssignmentStatus: (updatedStudent as any).teacher_assignment_status || 'pending_review',
       profile: {
         id: updatedStudent.id,
         name: updatedStudent.name,
         email: updatedStudent.email,
         timezone: updatedStudent.timezone,
+        country: updatedStudent.country || null,
         learnerType: updatedStudent.learner_type,
         currentLevel: updatedStudent.current_level,
+        gender: (updatedStudent as any).gender || resolvedGender,
+        teacherGenderPreference: (updatedStudent as any).teacher_gender_preference || resolvedTeacherPref,
+        assignedTeacherId: updatedStudent.assigned_teacher_id || routedTeacher.id,
+        assignedTeacherName: assignedTeacherName || routedTeacher.name,
+        teacherAssignmentStatus: (updatedStudent as any).teacher_assignment_status || 'pending_review',
         onboardingCompleted: true,
         learningInterest: updatedStudent.learning_interest,
         learningGoal: updatedStudent.learning_goal,
@@ -6166,6 +6271,10 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
         if (updatePayload.timezone) req.studentUser.studentProfile.timezone = updatePayload.timezone;
         if (updatePayload.whatsapp !== undefined) req.studentUser.studentProfile.whatsapp = updatePayload.whatsapp;
         if (updatePayload.country !== undefined) req.studentUser.studentProfile.country = updatePayload.country;
+        if (updatePayload.gender !== undefined) req.studentUser.studentProfile.gender = updatePayload.gender;
+        if (updatePayload.teacher_gender_preference !== undefined) {
+          req.studentUser.studentProfile.teacher_gender_preference = updatePayload.teacher_gender_preference;
+        }
         if (updatePayload.booking_preference !== undefined) {
           req.studentUser.studentProfile.booking_preference = updatePayload.booking_preference;
           req.studentUser.studentProfile.bookingPreference = updatePayload.booking_preference;
@@ -6186,6 +6295,11 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
         timezone: updatePayload.timezone || req.studentUser?.studentProfile?.timezone || 'UTC',
         learnerType: req.studentUser?.studentProfile?.learner_type || 'adult',
         currentLevel: req.studentUser?.studentProfile?.current_level || 'beginner',
+        gender: updatePayload.gender || req.studentUser?.studentProfile?.gender || 'undisclosed',
+        teacherGenderPreference: updatePayload.teacher_gender_preference || req.studentUser?.studentProfile?.teacher_gender_preference || 'no_preference',
+        assignedTeacherId: req.studentUser?.studentProfile?.assigned_teacher_id || null,
+        assignedTeacherName: req.studentUser?.studentProfile?.assigned_teacher_name || null,
+        teacherAssignmentStatus: req.studentUser?.studentProfile?.teacher_assignment_status || 'pending_review',
         bookingPreference: updatePayload.booking_preference || req.studentUser?.studentProfile?.booking_preference || 'self',
         status: req.studentUser?.studentProfile?.status || 'active',
         updatedAt: new Date().toISOString()
@@ -6196,7 +6310,7 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       .from('students')
       .update(updatePayload)
       .eq('id', studentId)
-      .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, booking_preference, created_at, updated_at, gender, teacher_gender_preference, assigned_teacher_id')
+      .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, booking_preference, created_at, updated_at, gender, teacher_gender_preference, assigned_teacher_id, teacher_assignment_status')
       .single();
 
     if (updateError || !updatedStudent) {
@@ -6244,6 +6358,7 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       teacherGenderPreference: updatedStudent.teacher_gender_preference || 'no_preference',
       assignedTeacherId: updatedStudent.assigned_teacher_id || null,
       assignedTeacherName,
+      teacherAssignmentStatus: (updatedStudent as any).teacher_assignment_status || 'pending_review',
       updatedAt: updatedStudent.updated_at
     });
   } catch (err: any) {

@@ -3,17 +3,17 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* Fonts */
-  --font-brand-ar: 'Changa', sans-serif;
-  --font-display-ar: 'Changa', sans-serif;
+  /* Fonts — IBM Plex Sans Arabic (خط ثمانية) as Primary Arabic Font */
+  --font-brand-ar: 'IBM Plex Sans Arabic', sans-serif;
+  --font-display-ar: 'IBM Plex Sans Arabic', sans-serif;
   --font-body-ar: 'IBM Plex Sans Arabic', sans-serif;
 
-  --font-brand-en: 'Changa', sans-serif;
-  --font-display-en: 'Changa', sans-serif;
+  --font-brand-en: 'Manrope', sans-serif;
+  --font-display-en: 'Manrope', sans-serif;
   --font-body-en: 'Manrope', sans-serif;
 
-  --font-editorial: 'Changa', sans-serif;
-  --font-serif: 'Changa', sans-serif;
+  --font-editorial: 'IBM Plex Sans Arabic', serif;
+  --font-serif: 'IBM Plex Sans Arabic', serif;
   --font-sans: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-arabic: 'IBM Plex Sans Arabic', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Arial, sans-serif;
 
@@ -343,9 +343,9 @@ body {
    TYPOGRAPHY UTILITY CLASSES
    ============================================================ */
 
-/* Editorial serif — Fraunces (EN) / Amiri (AR) */
+/* Editorial serif & Arabic fonts — Thmanyah (IBM Plex Sans Arabic) Foundation */
 .font-editorial { font-family: var(--font-serif); }
-.font-arabic-display { font-family: 'Changa', sans-serif; }
+.font-arabic-display { font-family: 'IBM Plex Sans Arabic', sans-serif; }
 .font-arabic-calligraphic {
   font-family: 'Amiri', serif;
 }
@@ -356,7 +356,21 @@ body {
 [dir="rtl"] {
   font-family: var(--font-arabic);
 }
-[dir="rtl"] .font-editorial, [dir="rtl"] .font-serif { font-family: 'Changa', sans-serif !important; }
+[dir="rtl"] .font-editorial, [dir="rtl"] .font-serif { font-family: 'IBM Plex Sans Arabic', sans-serif !important; }
+
+/* Small Arabic Text Legibility Overhaul (Fixes unreadable small writing) */
+[dir="rtl"] .text-caption,
+[dir="rtl"] .text-xs,
+[dir="rtl"] small,
+[dir="rtl"] .text-\[10px\],
+[dir="rtl"] .text-\[11px\],
+[dir="rtl"] .text-\[12px\] {
+  font-family: 'IBM Plex Sans Arabic', sans-serif !important;
+  font-size: 0.8125rem !important; /* Minimum 13px */
+  line-height: 1.6 !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+}
 
 /* ============================================================
    WATAZAWWADO RTL TYPOGRAPHY & LAYOUT FOUNDATION

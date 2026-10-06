@@ -21,6 +21,7 @@ import { Link } from 'react-router-dom';
 import { dashboardFetch } from '../lib/dashboardApi';
 
 import { Language } from '../../booking/types';
+import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 
 interface TodayPageProps {
   lang?: Language;
@@ -29,13 +30,24 @@ interface TodayPageProps {
 export default function TodayPage({ lang = 'en' }: TodayPageProps) {
   const isAr = lang === 'ar';
   const { session } = useTeacherAuth();
+  const [activeTz, setActiveTz] = useState<string>(() => getActiveWorkingTimezone('Africa/Cairo'));
   const [lessons, setLessons] = useState<DashboardLesson[]>([]);
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedLesson, setSelectedLesson] = useState<DashboardLesson | null>(null);
-  const [lastRefreshed, setLastRefreshed] = useState<DateTime>(DateTime.now().setZone('Africa/Cairo'));
+  const [lastRefreshed, setLastRefreshed] = useState<DateTime>(() => DateTime.now().setZone(getActiveWorkingTimezone('Africa/Cairo')));
+
+  // Listen to timezone change event from settings
+  useEffect(() => {
+    const handleTzChange = (e: any) => {
+      const newTz = e?.detail?.timezone || getActiveWorkingTimezone('Africa/Cairo');
+      setActiveTz(newTz);
+    };
+    window.addEventListener('watazawwado_timezone_change', handleTzChange);
+    return () => window.removeEventListener('watazawwado_timezone_change', handleTzChange);
+  }, []);
 
   const fetchTodayLessons = useCallback(async (isManualRefresh = false) => {
     if (isManualRefresh) {
@@ -49,14 +61,14 @@ export default function TodayPage({ lang = 'en' }: TodayPageProps) {
       const data = await dashboardFetch('/api/dashboard/today');
       setLessons(data.lessons || []);
       setSummary(data.summary || null);
-      setLastRefreshed(DateTime.now().setZone('Africa/Cairo'));
+      setLastRefreshed(DateTime.now().setZone(activeTz));
     } catch (err: any) {
       setError(err.message || "Your lessons couldn't be loaded right now.");
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [activeTz]);
 
   useEffect(() => {
     fetchTodayLessons();
@@ -72,14 +84,14 @@ export default function TodayPage({ lang = 'en' }: TodayPageProps) {
     return () => clearInterval(interval);
   }, [fetchTodayLessons]);
 
-  const nowCairo = DateTime.now().setZone('Africa/Cairo');
+  const nowActive = DateTime.now().setZone(activeTz);
 
   // Helper to determine time context for a lesson
   const getLessonTimeContext = (lesson: DashboardLesson) => {
-    const startCairo = DateTime.fromISO(lesson.scheduled_start).setZone('Africa/Cairo');
-    const endCairo = lesson.scheduled_end 
-      ? DateTime.fromISO(lesson.scheduled_end).setZone('Africa/Cairo')
-      : startCairo.plus({ minutes: lesson.duration_minutes });
+    const startLesson = DateTime.fromISO(lesson.scheduled_start).setZone(activeTz);
+    const endLesson = lesson.scheduled_end 
+      ? DateTime.fromISO(lesson.scheduled_end).setZone(activeTz)
+      : startLesson.plus({ minutes: lesson.duration_minutes });
 
     if (lesson.status === 'cancelled') {
       return { type: 'cancelled', label: 'Cancelled' };
@@ -93,20 +105,20 @@ export default function TodayPage({ lang = 'en' }: TodayPageProps) {
       return { type: 'no_show', label: 'No-Show' };
     }
 
-    if (nowCairo > endCairo) {
+    if (nowActive > endLesson) {
       return { type: 'needs_outcome', label: 'Needs Outcome' };
     }
 
-    if (nowCairo >= startCairo && nowCairo <= endCairo) {
+    if (nowActive >= startLesson && nowActive <= endLesson) {
       return { type: 'in_progress', label: 'In Progress' };
     }
 
-    const diffMinutes = Math.round(startCairo.diff(nowCairo, 'minutes').minutes);
+    const diffMinutes = Math.round(startLesson.diff(nowActive, 'minutes').minutes);
     if (diffMinutes <= 30 && diffMinutes > 0) {
       return { type: 'starting_soon', label: `Starts in ${diffMinutes} min` };
     }
 
-    return { type: 'upcoming', label: startCairo.toFormat('hh:mm a') };
+    return { type: 'upcoming', label: startLesson.toFormat('hh:mm a') };
   };
 
   // Find attention items: failed integrations, upcoming missing zoom, or past lessons awaiting outcome
@@ -114,12 +126,12 @@ export default function TodayPage({ lang = 'en' }: TodayPageProps) {
     if (l.status === 'cancelled' || l.status === 'completed' || l.status === 'no_show') return false;
     const isFailed = l.integration_status === 'failed' || l.integration_status === 'manual_action_required';
     const isMissingZoom = !l.zoom_host_url && !l.zoom_join_url;
-    const startCairo = DateTime.fromISO(l.scheduled_start).setZone('Africa/Cairo');
-    const endCairo = l.scheduled_end 
-      ? DateTime.fromISO(l.scheduled_end).setZone('Africa/Cairo')
-      : startCairo.plus({ minutes: l.duration_minutes });
-    const isSoon = startCairo.diff(nowCairo, 'hours').hours < 2 && startCairo > nowCairo;
-    const isPastUnresolved = endCairo < nowCairo && l.status === 'confirmed';
+    const startLesson = DateTime.fromISO(l.scheduled_start).setZone(activeTz);
+    const endLesson = l.scheduled_end 
+      ? DateTime.fromISO(l.scheduled_end).setZone(activeTz)
+      : startLesson.plus({ minutes: l.duration_minutes });
+    const isSoon = startLesson.diff(nowActive, 'hours').hours < 2 && startLesson > nowActive;
+    const isPastUnresolved = endLesson < nowActive && l.status === 'confirmed';
     return isFailed || (isMissingZoom && isSoon) || isPastUnresolved;
   });
 
@@ -134,11 +146,11 @@ export default function TodayPage({ lang = 'en' }: TodayPageProps) {
             </h1>
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-secondary text-secondary-foreground border border-border/60">
               <Clock className="w-3 h-3 text-secondary-foreground" />
-              <span>{isAr ? 'توقيت القاهرة' : 'Cairo Time (UTC+2/3)'}</span>
+              <span>{activeTz}</span>
             </span>
           </div>
           <p className="text-sm text-muted-foreground mt-1">
-            {nowCairo.toFormat('EEEE, MMMM d, yyyy')} • {nowCairo.toFormat('hh:mm a')} • {isAr ? 'جدول التدريس والمواعيد المقررة لليوم.' : "Ustadh Mahmoud's teaching schedule for today."}
+            {nowActive.toFormat('EEEE, MMMM d, yyyy')} • {nowActive.toFormat('hh:mm a')} • {isAr ? 'جدول التدريس والمواعيد المقررة لليوم.' : "Teaching schedule for today."}
           </p>
         </div>
 
@@ -231,7 +243,7 @@ export default function TodayPage({ lang = 'en' }: TodayPageProps) {
                   <div className="mt-1 space-y-1">
                     {attentionLessons.map(l => (
                       <p key={l.id} className="text-sm text-muted-foreground">
-                        • <span className="font-medium text-foreground">{l.learner_name || 'Learner'}</span> ({l.service_name} at {DateTime.fromISO(l.scheduled_start).setZone('Africa/Cairo').toFormat('hh:mm a')}): Zoom link missing or integration sync pending.
+                        • <span className="font-medium text-foreground">{l.learner_name || 'Learner'}</span> ({l.service_name} at {DateTime.fromISO(l.scheduled_start).setZone(activeTz).toFormat('hh:mm a')}): Zoom link missing or integration sync pending.
                       </p>
                     ))}
                   </div>
@@ -245,6 +257,7 @@ export default function TodayPage({ lang = 'en' }: TodayPageProps) {
             <NextLessonSpotlight 
               lesson={summary.next_lesson} 
               onSelect={() => setSelectedLesson(summary.next_lesson)}
+              activeTz={activeTz}
             />
           )}
 
@@ -286,6 +299,7 @@ export default function TodayPage({ lang = 'en' }: TodayPageProps) {
                     lesson={lesson} 
                     timeContext={getLessonTimeContext(lesson)}
                     onSelect={() => setSelectedLesson(lesson)}
+                    activeTz={activeTz}
                   />
                 ))}
               </div>
@@ -352,19 +366,21 @@ export default function TodayPage({ lang = 'en' }: TodayPageProps) {
 // Next Lesson Spotlight Card
 function NextLessonSpotlight({ 
   lesson, 
-  onSelect 
+  onSelect,
+  activeTz = 'Africa/Cairo'
 }: { 
   lesson: DashboardLesson; 
   onSelect: () => void;
+  activeTz?: string;
 }) {
-  const startCairo = DateTime.fromISO(lesson.scheduled_start).setZone('Africa/Cairo');
-  const nowCairo = DateTime.now().setZone('Africa/Cairo');
-  const endCairo = lesson.scheduled_end 
-    ? DateTime.fromISO(lesson.scheduled_end).setZone('Africa/Cairo')
-    : startCairo.plus({ minutes: lesson.duration_minutes });
+  const startLesson = DateTime.fromISO(lesson.scheduled_start).setZone(activeTz);
+  const nowLesson = DateTime.now().setZone(activeTz);
+  const endLesson = lesson.scheduled_end 
+    ? DateTime.fromISO(lesson.scheduled_end).setZone(activeTz)
+    : startLesson.plus({ minutes: lesson.duration_minutes });
 
-  const isInProgress = nowCairo >= startCairo && nowCairo <= endCairo;
-  const diffMinutes = Math.round(startCairo.diff(nowCairo, 'minutes').minutes);
+  const isInProgress = nowLesson >= startLesson && nowLesson <= endLesson;
+  const diffMinutes = Math.round(startLesson.diff(nowLesson, 'minutes').minutes);
 
   const hasStartLink = Boolean(lesson.zoom_host_url || lesson.zoom_meeting_link);
   const startLink = lesson.zoom_host_url || lesson.zoom_meeting_link || '';
@@ -390,7 +406,7 @@ function NextLessonSpotlight({
               </span>
             ) : (
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium glass-surface border border-border-subtle text-foreground">
-                {startCairo.toFormat('hh:mm a')}
+                {startLesson.toFormat('hh:mm a')}
               </span>
             )}
 
@@ -452,14 +468,16 @@ function NextLessonSpotlight({
 function TodayLessonRow({ 
   lesson, 
   timeContext, 
-  onSelect 
+  onSelect,
+  activeTz = 'Africa/Cairo'
 }: { 
   key?: React.Key;
   lesson: DashboardLesson; 
   timeContext: { type: string; label: string };
   onSelect: () => void;
+  activeTz?: string;
 }) {
-  const startCairo = DateTime.fromISO(lesson.scheduled_start).setZone('Africa/Cairo');
+  const startLesson = DateTime.fromISO(lesson.scheduled_start).setZone(activeTz);
   const hasStartLink = Boolean(lesson.zoom_host_url || lesson.zoom_meeting_link);
   const startLink = lesson.zoom_host_url || lesson.zoom_meeting_link || '';
 
@@ -496,7 +514,7 @@ function TodayLessonRow({
       {/* Time & Badge Column */}
       <div className="flex items-center sm:block gap-3 shrink-0 sm:w-36">
         <div className="font-semibold text-lg  text-foreground">
-          {startCairo.toFormat('hh:mm a')}
+          {startLesson.toFormat('hh:mm a')}
         </div>
         <div className="text-sm text-muted-foreground flex items-center gap-1.5 mt-0.5">
           <Clock className="w-3.5 h-3.5" />

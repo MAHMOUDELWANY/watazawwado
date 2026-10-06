@@ -34,9 +34,21 @@ import {
 import { BookingDetailModal } from '../components/BookingDetailModal';
 import { RecordPaymentModal } from '../components/RecordPaymentModal';
 import { EmptyState } from '../../components/EmptyState';
+import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 
 export default function BookingsPage() {
   const { session } = useTeacherAuth();
+  const [activeTz, setActiveTz] = useState<string>(() => getActiveWorkingTimezone('Africa/Cairo'));
+
+  // Sync with timezone changes from settings
+  useEffect(() => {
+    const handleTz = (e: any) => {
+      const tz = e?.detail?.timezone || getActiveWorkingTimezone('Africa/Cairo');
+      setActiveTz(tz);
+    };
+    window.addEventListener('watazawwado_timezone_change', handleTz);
+    return () => window.removeEventListener('watazawwado_timezone_change', handleTz);
+  }, []);
   
   // Tabs
   const [activeTab, setActiveTab] = useState<'bookings' | 'payments'>('bookings');
@@ -418,7 +430,7 @@ export default function BookingsPage() {
             <div className="space-y-3">
               {bookings.map((b) => {
                 const startUtc = DateTime.fromISO(b.scheduled_start);
-                const startCairo = startUtc.setZone('Africa/Cairo');
+                const startTeacher = startUtc.setZone(activeTz);
                 let startStudent: DateTime | null = null;
                 try {
                   if (b.student_timezone) {
@@ -474,7 +486,7 @@ export default function BookingsPage() {
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1 font-medium text-foreground">
                           <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-                          Cairo: {startCairo.toFormat('EEE, LLL dd • hh:mm a')}
+                          {activeTz.includes('Cairo') ? 'Cairo' : activeTz}: {startTeacher.toFormat('EEE, LLL dd • hh:mm a')}
                         </span>
                         {startStudent && (
                           <span className="flex items-center gap-1">

@@ -34,6 +34,7 @@ import {
   isCoordinationAllowed,
   type LessonFilter
 } from '../lessonsPresentation';
+import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 
 export interface StudentLessonsPageProps {
   lang?: 'en' | 'ar';
@@ -289,7 +290,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
               const hasValidZoomUrl = Boolean(rawZoom && (rawZoom.startsWith('https://') || rawZoom.startsWith('http://')));
               
               const rawStart = b.scheduledStart || b.scheduled_start || b.lesson_date;
-              const studentTz = b.studentTimezone || 'UTC';
+              const studentTz = getActiveWorkingTimezone(b.studentTimezone || 'UTC');
               
               // Format time accurately in student's timezone using Luxon
               const dateObj = rawStart
@@ -353,10 +354,10 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                         {(b.durationMinutes || b.duration) && (
                           <span>• {b.durationMinutes || b.duration} {isAr ? 'دقيقة' : 'min'}</span>
                         )}
-                        {b.studentTimezone && (
+                        {studentTz && (
                           <span className="flex items-center gap-1">
                             • <Globe className="w-3 h-3 opacity-70 shrink-0" />
-                            <span>{b.studentTimezone}</span>
+                            <span>{studentTz}</span>
                           </span>
                         )}
                       </div>

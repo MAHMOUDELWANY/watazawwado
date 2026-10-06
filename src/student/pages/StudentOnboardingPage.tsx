@@ -12,9 +12,12 @@ import {
   Loader2, 
   Sparkles, 
   HelpCircle,
-  Calendar
+  Calendar,
+  ShieldCheck,
+  GraduationCap
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { CountryTimezonePicker } from '../../components/ui/CountryTimezonePicker';
 
 interface StudentOnboardingPageProps {
   currentProfile?: any;
@@ -56,6 +59,29 @@ export default function StudentOnboardingPage({
   const [studentName, setStudentName] = useState(currentProfile?.name || '');
   const [parentName, setParentName] = useState(currentProfile?.guardian?.parentName || '');
   const [parentWhatsapp, setParentWhatsapp] = useState(currentProfile?.guardian?.parentWhatsapp || '');
+
+  // Smart Routing & Teacher Assignment State
+  const [gender, setGender] = useState<'male' | 'female'>(
+    currentProfile?.gender === 'female' ? 'female' : 'male'
+  );
+  const [teacherGenderPreference, setTeacherGenderPreference] = useState<'no_preference' | 'male_teacher' | 'female_teacher'>(
+    currentProfile?.teacherGenderPreference || (currentProfile?.gender === 'female' ? 'female_teacher' : 'male_teacher')
+  );
+  const [country, setCountry] = useState(currentProfile?.country || 'EG');
+  const [assignedTeacherName, setAssignedTeacherName] = useState<string>(
+    currentProfile?.gender === 'female' ? (isRTL ? 'المعلمة أفنان' : 'Teacher Afnan') : (isRTL ? 'الأستاذ محمود' : 'Ustadh Mahmoud')
+  );
+
+  const handleGenderSelect = (selectedGender: 'male' | 'female') => {
+    setGender(selectedGender);
+    if (selectedGender === 'male') {
+      setTeacherGenderPreference('male_teacher');
+      setAssignedTeacherName(isRTL ? 'الأستاذ محمود' : 'Ustadh Mahmoud');
+    } else {
+      setTeacherGenderPreference('female_teacher');
+      setAssignedTeacherName(isRTL ? 'المعلمة أفنان' : 'Teacher Afnan');
+    }
+  };
   
   const [learningInterest, setLearningInterest] = useState(currentProfile?.learningInterest || 'quran-reading');
   const [currentLevel, setCurrentLevel] = useState(currentProfile?.currentLevel || 'beginner');
@@ -111,6 +137,9 @@ export default function StudentOnboardingPage({
         body: JSON.stringify({
           name: studentName.trim(),
           learnerType,
+          gender,
+          teacherGenderPreference,
+          country,
           parentName: learnerType === 'child' ? parentName.trim() : null,
           parentWhatsapp: learnerType === 'child' ? parentWhatsapp.trim() : null,
           learningInterest,
@@ -125,6 +154,10 @@ export default function StudentOnboardingPage({
       const data = await res.json();
       if (!res.ok) {
         throw new Error(data.error || 'Failed to complete onboarding. Please try again.');
+      }
+
+      if (data.assignedTeacherName) {
+        setAssignedTeacherName(data.assignedTeacherName);
       }
 
       setCompletedSuccess(true);
@@ -151,10 +184,12 @@ export default function StudentOnboardingPage({
           </div>
 
           <h2 className="text-2xl sm:text-3xl font-display font-bold text-foreground">
-            Welcome, {studentName}!
+            {isRTL ? `مرحباً بك، ${studentName}!` : `Welcome, ${studentName}!`}
           </h2>
           <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-lg mx-auto leading-relaxed">
-            Your personalized learning profile is set up. Ustadh Mahmoud has received your background and goals to prepare your curriculum.
+            {isRTL 
+              ? `تم إعداد ملفك التعليمي بنجاح وتوجيهك تلقائياً إلى (${assignedTeacherName}) بناءً على بيانات التسجيل، وهو الآن قيد اعتماد الإدارة. يمكنك دائماً تغيير تفضيلاتك من صفحة الإعدادات.`
+              : `Your learning profile is set up and automatically routed to ${assignedTeacherName} (pending admin review). You can also update your teacher preference anytime from Settings.`}
           </p>
 
           <div className="mt-8 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -315,6 +350,112 @@ export default function StudentOnboardingPage({
                 </div>
               </div>
             )}
+            {/* Gender Selection & Smart Routing */}
+            <div className="space-y-3 pt-1">
+              <label className="block text-sm font-semibold text-foreground">
+                {learnerType === 'child' 
+                  ? (isRTL ? 'جنس الطفل / الدارس' : "Child's Gender") 
+                  : (isRTL ? 'الجنس' : 'Gender')}
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => handleGenderSelect('male')}
+                  className={`p-3.5 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-1.5 ${
+                    gender === 'male'
+                      ? 'border-primary bg-secondary/30 text-foreground ring-2 ring-primary/30 font-semibold'
+                      : 'border-border hover:border-accent/40 text-muted-foreground'
+                  }`}
+                >
+                  <span className="text-base">👦 {isRTL ? 'ذكر (طالب / ولد)' : 'Male'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleGenderSelect('female')}
+                  className={`p-3.5 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-1.5 ${
+                    gender === 'female'
+                      ? 'border-primary bg-secondary/30 text-foreground ring-2 ring-primary/30 font-semibold'
+                      : 'border-border hover:border-accent/40 text-muted-foreground'
+                  }`}
+                >
+                  <span className="text-base">👧 {isRTL ? 'أنثى (طالبة / بنت)' : 'Female'}</span>
+                </button>
+              </div>
+
+              {/* Smart Routing Real-time Notification Banner */}
+              <div className="p-3 rounded-2xl bg-secondary/20 border border-secondary/40 text-xs sm:text-sm text-foreground flex items-start gap-2.5">
+                <ShieldCheck className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+                <div className="leading-relaxed">
+                  <span className="font-semibold text-primary">
+                    {isRTL ? 'التوجيه الذكي التلقائي: ' : 'Smart Routing: '}
+                  </span>
+                  {gender === 'male' ? (
+                    isRTL 
+                      ? 'سيتم تسجيل الطالب تلقائياً مع الأستاذ محمود (بانتظار اعتماد الإدارة).'
+                      : 'Learner is automatically routed to Ustadh Mahmoud (pending admin review).'
+                  ) : (
+                    isRTL
+                      ? 'سيتم تسجيل الطالبة تلقائياً مع المعلمة أفنان (بانتظار اعتماد الإدارة).'
+                      : 'Learner is automatically routed to Teacher Afnan (pending admin review).'
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Teacher Preference Extra Step / Question */}
+            <div className="space-y-2 pt-1 border-t border-border/60">
+              <div className="flex items-center justify-between">
+                <label className="block text-sm font-semibold text-foreground">
+                  {isRTL ? 'تفضيل المعلم / المعلمة' : 'Teacher Gender Preference'}
+                </label>
+                <span className="text-[11px] text-muted-foreground">
+                  {isRTL ? '(خطوة إضافية لجمع تفضيلاتكم)' : '(Additional preference step)'}
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {isRTL 
+                  ? 'بناءً على اختيار الجنس تم التوجيه تلقائياً، ويمكنك هنا تحديد تفضيلك أو تغييره لاحقاً من الإعدادات:'
+                  : 'Based on gender, smart routing assigns your teacher. You can also specify your exact preference below:'}
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setTeacherGenderPreference('male_teacher')}
+                  className={`p-2.5 rounded-xl border text-xs sm:text-sm transition-all cursor-pointer text-center ${
+                    teacherGenderPreference === 'male_teacher'
+                      ? 'border-primary bg-secondary/30 text-foreground font-semibold ring-1 ring-primary/40'
+                      : 'border-border text-muted-foreground hover:bg-surface-subtle'
+                  }`}
+                >
+                  {isRTL ? 'أستاذ (معلم رجل)' : 'Male Teacher'}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setTeacherGenderPreference('female_teacher')}
+                  className={`p-2.5 rounded-xl border text-xs sm:text-sm transition-all cursor-pointer text-center ${
+                    teacherGenderPreference === 'female_teacher'
+                      ? 'border-primary bg-secondary/30 text-foreground font-semibold ring-1 ring-primary/40'
+                      : 'border-border text-muted-foreground hover:bg-surface-subtle'
+                  }`}
+                >
+                  {isRTL ? 'أستاذة (معلمة سيدة)' : 'Female Teacher'}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setTeacherGenderPreference('no_preference')}
+                  className={`p-2.5 rounded-xl border text-xs sm:text-sm transition-all cursor-pointer text-center ${
+                    teacherGenderPreference === 'no_preference'
+                      ? 'border-primary bg-secondary/30 text-foreground font-semibold ring-1 ring-primary/40'
+                      : 'border-border text-muted-foreground hover:bg-surface-subtle'
+                  }`}
+                >
+                  {isRTL ? 'لا يوجد تفضيل معين' : 'No Preference'}
+                </button>
+              </div>
+            </div>
 
             <div className="pt-4 flex justify-end">
               <button
@@ -429,48 +570,45 @@ export default function StudentOnboardingPage({
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-semibold text-foreground mb-1.5">
-                  Your Timezone (IANA)
-                </label>
-                <div className="relative">
-                  <Clock className="w-4 h-4 text-accent absolute start-3.5 top-3.5 pointer-events-none" />
-                  <input
-                    type="text"
-                    value={timezone}
-                    onChange={(e) => setTimezone(e.target.value)}
-                    className="w-full ps-10 pe-3 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm"
-                  />
-                </div>
-              </div>
+            {/* Country & Timezone Selection */}
+            <div className="p-4 sm:p-5 rounded-2xl glass-surface border border-border">
+              <CountryTimezonePicker
+                country={country}
+                timezone={timezone}
+                onCountryChange={(newCountry) => setCountry(newCountry)}
+                onTimezoneChange={(newTz) => setTimezone(newTz)}
+                isAr={isRTL}
+                showTimePreview={true}
+              />
+            </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-foreground mb-1.5">
-                  WhatsApp / Phone Number
-                </label>
-                <div className="relative">
-                  <Phone className="w-4 h-4 text-accent absolute start-3.5 top-3.5 pointer-events-none" />
-                  <input
-                    type="tel"
-                    value={whatsapp}
-                    onChange={(e) => setWhatsapp(e.target.value)}
-                    placeholder="+1 (555) 000-0000"
-                    className="w-full ps-10 pe-3 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm"
-                  />
-                </div>
+            <div>
+              <label className="block text-sm font-semibold text-foreground mb-1.5">
+                {isRTL ? 'رقم الواتساب / الهاتف للتواصل' : 'WhatsApp / Phone Number'}
+              </label>
+              <div className="relative">
+                <Phone className="w-4 h-4 text-accent absolute start-3.5 top-3.5 pointer-events-none" />
+                <input
+                  type="tel"
+                  value={whatsapp}
+                  onChange={(e) => setWhatsapp(e.target.value)}
+                  placeholder="+1 (555) 000-0000"
+                  className="w-full ps-10 pe-3 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm"
+                />
               </div>
             </div>
 
             <div>
               <label className="block text-sm font-semibold text-foreground mb-1.5">
-                Any specific notes or learning needs for Ustadh Mahmoud? (Optional)
+                {isRTL 
+                  ? `هل توجد أي ملاحظات أو احتياجات دراسية تود مشاركتها مع (${assignedTeacherName})؟ (اختياري)`
+                  : `Any specific notes or learning needs for ${assignedTeacherName}? (Optional)`}
               </label>
               <textarea
                 rows={2}
                 value={learningNeeds}
                 onChange={(e) => setLearningNeeds(e.target.value)}
-                placeholder="e.g. Prefers visual mnemonics, needs patience with pronunciation, scheduling preferences..."
+                placeholder={isRTL ? 'مثال: يفضل الشرح المرئي، يحتاج تأنياً في مخارج الحروف، التفضيلات الزمنية...' : 'e.g. Prefers visual mnemonics, needs patience with pronunciation, scheduling preferences...'}
                 className="w-full px-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm"
               />
             </div>

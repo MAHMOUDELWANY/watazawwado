@@ -7,6 +7,7 @@ import { BOOKING_SERVICES } from '../../booking/mockData';
 import { BookingFormData, BookingMode, ProficiencyLevel, LessonDuration, PackageCatalogEntry } from '../../booking/types';
 import { useTeacherAuth } from '../../lib/auth';
 import { StudentPageBack } from '../components/StudentPageBack';
+import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 
 export interface StudentBookingPageProps {
   profile?: any;
@@ -344,11 +345,12 @@ export function mapLastBookingToBookingFormData(
     profile?.learningGoal ||
     'Personalized study with Ustadh Mahmoud';
 
-  const timezone =
+  const timezone = getActiveWorkingTimezone(
     lastBooking.studentTimezone ||
     lastBooking.student_timezone ||
     profile?.timezone ||
-    'America/New_York';
+    'America/New_York'
+  );
 
   const initialData: Partial<BookingFormData> = {
     serviceId: matchedServiceId,
@@ -502,7 +504,7 @@ export function mapStudentProfileToBookingInitialData(
     parentEmail,
     parentWhatsapp,
     parentNotes,
-    timezone: profile.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/New_York',
+    timezone: getActiveWorkingTimezone(profile.timezone) || Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/New_York',
     studentId: (isBookingForChild && defaultChild) ? defaultChild.id : ((isBookingForChild && hasLinkedChildren && profile.linkedChildren.length > 1) ? '' : profile.id)
   };
 
