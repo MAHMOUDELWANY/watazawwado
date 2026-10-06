@@ -88,7 +88,7 @@ export const LessonStudioShowcase: React.FC<LessonStudioShowcaseProps> = ({
     <section
       ref={containerRef}
       id="live-studio-showcase"
-      className="relative overflow-x-clip bg-gradient-to-b from-white via-surface-warm to-foreground dark:from-background dark:via-background dark:to-background py-20 lg:py-32 transition-colors border-b border-border/70 dark:border-border"
+      className="relative overflow-hidden bg-gradient-to-b from-white via-surface-warm to-foreground dark:from-background dark:via-background dark:to-background py-20 lg:py-32 transition-colors border-b border-border/70 dark:border-border"
     >
       {/* Subtle Background Atmosphere */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[450px] bg-secondary/30 dark:bg-secondary/20 rounded-full blur-3xl pointer-events-none -z-0" />

@@ -114,9 +114,9 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ lang }) => {
                 href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I would like to ask about your 1-on-1 lessons.')}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl btn-primary-material text-primary-foreground font-medium text-sm shadow-xs hover:shadow-md transition-all"
+                className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl btn-whatsapp-solid text-white font-bold text-sm shadow-md transition-all"
               >
-                <MessageCircle className="w-4 h-4" />
+                <MessageCircle className="w-4 h-4 fill-current shrink-0" />
                 <span>{isEn ? 'Open WhatsApp Chat' : 'فتح محادثة واتساب'}</span>
               </a>
             </div>

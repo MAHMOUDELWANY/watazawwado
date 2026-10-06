@@ -545,16 +545,16 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                     ? updateForm({ childLevel: lvl.key })
                     : updateForm({ currentLevel: lvl.key })
                 }
-                className={`p-3 rounded-xl border text-start transition-all cursor-pointer ${
+                className={`p-3.5 rounded-xl border text-start transition-all cursor-pointer ${
                   isSelected
-                    ? 'bg-foreground glass-surface border-primary ring-1 ring-primary text-foreground'
-                    : 'glass-card border-border text-foreground/80 dark:text-accent/90 hover:bg-foreground/30'
+                    ? 'glass-card bg-teal-500/10 border-teal-500 ring-2 ring-teal-500/30 text-foreground font-semibold shadow-xs'
+                    : 'glass-card border-border/80 text-foreground/80 hover:border-teal-500/40 hover:bg-surface-subtle'
                 }`}
               >
-                <div className="font-display text-sm font-medium mb-0.5">
+                <div className="font-display text-sm font-bold mb-0.5">
                   {isEn ? lvl.label : lvl.arabicLabel}
                 </div>
-                <div className="text-[13px] text-foreground/55 dark:text-accent/50 line-clamp-2">
+                <div className="text-xs text-muted-foreground line-clamp-2">
                   {lvl.desc}
                 </div>
               </button>
@@ -564,9 +564,9 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
       </div>
 
       {/* Trust & Privacy Reassurance */}
-      <div className="p-3.5 rounded-xl bg-surface-warm glass-surface border border-secondary/60 flex items-center gap-3 text-sm text-foreground/80 dark:text-accent/80">
-        <ShieldCheck className="w-5 h-5 text-accent shrink-0" />
-        <span>
+      <div className="p-3.5 rounded-xl glass-card border border-teal-500/30 bg-teal-500/5 flex items-center gap-3 text-sm text-foreground">
+        <ShieldCheck className="w-5 h-5 text-teal-600 dark:text-teal-400 shrink-0" />
+        <span className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
           {isEn
             ? 'We respect your privacy. No passwords, payment cards, or sensitive documents are requested. Your information is used strictly to coordinate your lesson with Mahmoud.'
             : 'نحترم خصوصيتكم التامة. لا نطلب أي بيانات بطاقات بنكية أو مستندات حساسة. تُستخدم بياناتكم حصراً للتنسيق الشخصي مع محمود.'}
@@ -580,7 +580,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
           whileTap={{ scale: 0.97 }}
           onClick={onBack}
           type="button"
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium text-foreground/80 dark:text-accent/80 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium text-foreground hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
         >
           <ArrowLeft className={`w-3.5 h-3.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
           <span>{isEn ? 'Back to Goals' : 'الرجوع للأهداف'}</span>
@@ -591,7 +591,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
           whileTap={{ scale: 0.97 }}
           onClick={onNext}
           disabled={!isFormValid}
-          className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-muted-foreground hover:bg-muted text-white text-sm font-medium shadow-xs disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
+          className="inline-flex items-center gap-2 px-7 py-3 rounded-xl btn-primary-material text-white text-sm font-semibold shadow-md disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
         >
           <span>{isEn ? 'Next: Lesson Length & Type' : 'التالي: مدة ونوع الدرس'}</span>
           <ArrowRight className={`w-4 h-4 ${lang === 'ar' ? 'rotate-180' : ''}`} />

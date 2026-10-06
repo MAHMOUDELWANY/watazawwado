@@ -282,9 +282,9 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                     href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I would like to request a specific lesson time that is not open on the schedule.')}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-background border border-border text-sm font-medium text-foreground dark:text-accent/90 hover:bg-surface-warm"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl btn-whatsapp-outline text-sm font-bold shadow-xs"
                   >
-                    <MessageCircle className="w-3.5 h-3.5 text-accent" />
+                    <MessageCircle className="w-3.5 h-3.5 fill-current shrink-0" />
                     <span>{isEn ? 'Request Custom Time on WhatsApp' : 'طلب موعد خاص على واتساب'}</span>
                   </a>
                 </div>
@@ -432,7 +432,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
           whileTap={{ scale: 0.97 }}
           onClick={onNext}
           disabled={!selectedDate || !selectedSlot}
-          className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-muted-foreground hover:bg-muted text-white text-sm font-medium shadow-xs disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
+          className="inline-flex items-center gap-2 px-7 py-3 rounded-xl btn-primary-material text-white text-sm font-semibold shadow-md disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
         >
           <span>{isEn ? 'Next: Review Booking' : 'التالي: مراجعة الحجز'}</span>
           <ArrowRight className={`w-4 h-4 ${lang === 'ar' ? 'rotate-180' : ''}`} />

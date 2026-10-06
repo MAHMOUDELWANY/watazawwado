@@ -16,7 +16,7 @@ export const FreeTrialSection: React.FC<FreeTrialSectionProps> = ({ lang, onOpen
   return (
     <section
       id="free-trial"
-      className="py-20 md:py-28 bg-background border-b border-border/80 transition-colors"
+      className="py-20 md:py-28 bg-background border-b border-border/80 transition-colors overflow-hidden"
     >
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -96,9 +96,9 @@ export const FreeTrialSection: React.FC<FreeTrialSectionProps> = ({ lang, onOpen
                 href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I have a question before booking a free trial.')}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl glass-card hover:bg-surface-subtle text-foreground border border-border text-sm font-medium transition-all shadow-2xs hover:shadow-xs group"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl btn-whatsapp-outline text-sm font-bold transition-all shadow-xs group"
               >
-                <MessageCircle className="w-4 h-4 text-accent" />
+                <MessageCircle className="w-4 h-4 fill-current shrink-0" />
                 <span>{isEn ? 'Message on WhatsApp First' : 'تحدث معي على واتساب أولاً'}</span>
               </a>
             </div>

@@ -14,7 +14,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ lang }) => {
   return (
     <section
       id="about"
-      className="py-20 md:py-28 glass-surface border-b border-border/80 transition-colors"
+      className="py-20 md:py-28 glass-surface border-b border-border/80 transition-colors overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         

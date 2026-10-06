@@ -1,20 +1,28 @@
 import React from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, Link } from 'react-router-dom';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
-import { Language } from '../../../types';
-import { ARABIC_TRANSLATIONS, AUTHENTIC_TESTIMONIALS, FAQS, VERIFIED_PROOF_POINTS } from '../../../data/content';
 import { 
   PublicSection, 
-  EditorialHeading, 
   StudyLine, 
-  MarginNote, 
   PortraitFrame, 
-  PublicButton, 
-  EditorialBlock, 
-  TestimonialQuote, 
-  LearningAreaItem 
+  PublicButton 
 } from '../PublicDesignSystem';
-import { Check, ArrowRight, ArrowLeft, Clock, BookOpen, User, Users, GraduationCap, Sparkles } from 'lucide-react';
+import { 
+  Check, 
+  Sparkles, 
+  Award,
+  BookOpen,
+  User,
+  Users,
+  MessageSquare,
+  ShieldCheck,
+  CalendarCheck,
+  CreditCard,
+  HelpCircle,
+  ArrowRight
+} from 'lucide-react';
+import { WhatsAppIcon } from '../../ui/WhatsAppIcon';
+import { buildWhatsAppUrl } from '../../../lib/whatsapp';
 
 export function PublicHomepage() {
   const { lang, onOpenTrialModal } = useOutletContext<PublicLayoutContextType>();
@@ -23,281 +31,339 @@ export function PublicHomepage() {
   return (
     <main id="main-content" className="pt-20 lg:pt-24">
       
-      {/* 1. HERO SECTION */}
+      {/* ─── 1. HERO SECTION ─────────────────────────────────────────────────── */}
       <PublicSection className="relative overflow-hidden pb-12 lg:pb-20">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           <div className="lg:col-span-7 space-y-6 animate-fade-in-up">
-            <MarginNote className="mb-4 inline-block">
-              {isEn ? 'Private 1-on-1 Learning' : 'تعليم فردي مباشر'}
-            </MarginNote>
+            
+            {/* Islamic Heritage Jewel Badge in Vibrant Teal */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-500/10 dark:bg-teal-500/20 text-teal-800 dark:text-teal-200 border border-teal-500/35 text-xs sm:text-sm font-semibold tracking-wide shadow-2xs">
+              <Sparkles className="w-4 h-4 text-teal-600 dark:text-teal-400 animate-pulse" />
+              <span>{isEn ? 'Private 1-on-1 Instruction • Authentic Heritage' : 'تعليم فردي مباشر • تأصيل علمي راسخ'}</span>
+            </div>
             
             <h1 className={`font-editorial text-4xl sm:text-5xl lg:text-6xl text-foreground font-medium leading-tight ${isEn ? '' : 'font-bold'}`}>
               {isEn ? (
-                <>Learn for yourself.<br />Learn for your family.</>
+                <>Learn for <span className="text-brand-gradient">yourself</span>.<br />Learn for your <span className="text-brand-gradient">family</span>.</>
               ) : (
-                <>تعلّم لك.<br />وتعلّم لعائلتك.</>
+                <>تعلّم <span className="text-brand-gradient">لنفسك</span>.<br />وتعلّم <span className="text-brand-gradient">لعائلتك</span>.</>
               )}
             </h1>
             
             <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-2xl font-light">
               {isEn 
-                ? 'Your private space for learning and growth. Direct 1-on-1 lessons in Quran, Arabic, and Islamic Studies with Ustadh Mahmoud.'
-                : 'مساحتك الخاصة للتعلّم والنمو. دروس فردية مباشرة في القرآن الكريم، واللغة العربية، والعلوم الإسلامية مع الأستاذ محمود.'
+                ? 'Your private space for learning and spiritual growth. Direct 1-on-1 lessons in Quran recitation, Tajweed, Arabic language, and Islamic Studies.'
+                : 'مساحتك الخاصة للتعلّم والارتقاء. دروس فردية مباشرة في تلاوة القرآن الكريم وأحكام التجويد، واللغة العربية، والعلوم الإسلامية.'
               }
             </p>
             
-            <div className="pt-4 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-              <PublicButton size="lg" onClick={() => onOpenTrialModal()} className="w-full sm:w-auto">
-                {isEn ? 'Book Free 30-Min Trial' : 'احجز جلستك الأولى (مجانًا)'}
+            {/* Direct Primary CTA */}
+            <div className="pt-2 flex flex-col sm:flex-row gap-3.5 items-stretch sm:items-center">
+              <PublicButton 
+                variant="primary" 
+                size="lg" 
+                id="hero-get-started-btn"
+                data-tour="header-get-started-cta"
+                onClick={() => onOpenTrialModal()} 
+                className="w-full sm:w-auto shadow-lg shadow-primary/20"
+              >
+                <span>{isEn ? 'Book Free 30-Min Trial' : 'احجز جلستك الأولى (مجانًا)'}</span>
+                <span className="rtl:rotate-180 text-sm">→</span>
               </PublicButton>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Check className="w-4 h-4 text-accent" />
+            </div>
+
+            {/* Proof Points */}
+            <div className="flex flex-wrap items-center gap-4 pt-1 text-sm text-muted-foreground">
+              <div className="flex items-center gap-1.5 font-medium">
+                <Check className="w-4 h-4 text-teal-600 dark:text-teal-400 shrink-0" />
                 <span>{isEn ? 'No credit card required' : 'بدون بطاقة بنكية'}</span>
               </div>
+              <span className="hidden sm:inline text-border">•</span>
+              <div className="flex items-center gap-1.5 font-medium">
+                <Check className="w-4 h-4 text-teal-600 dark:text-teal-400 shrink-0" />
+                <span>{isEn ? 'Personal diagnostic assessment' : 'تقييم فردي وتحديد للمستوى'}</span>
+              </div>
             </div>
           </div>
           
-          <div className="lg:col-span-5 relative animate-fade-in-up mt-8 lg:mt-0" style={{ animationDelay: '150ms' }}>
-            <div className="absolute -inset-4 bg-surface-warm/50 rounded-2xl -z-10 transform rotate-3" />
-            <PortraitFrame src="/ustadh-mahmoud.jpg" alt="Ustadh Mahmoud" maxWidth={500} className="mx-auto" />
-            <div className="absolute -bottom-6 -left-6 rtl:-left-auto rtl:-right-6 glass-card p-4 rounded-lg shadow-sm border border-border-subtle max-w-[200px]">
-              <StudyLine variant="accent" className="my-2" />
-              <p className="text-sm text-muted-foreground">
-                {isEn ? '3+ years experience, teaching students across Canada, US, UK, and Australia.' : 'خبرة +٣ سنوات في تدريس الطلاب في أمريكا، كندا، بريطانيا، وأستراليا.'}
-              </p>
+          {/* Portrait with strictly contained glow behind picture frame only */}
+          <div className="lg:col-span-5 relative animate-fade-in-up mt-8 lg:mt-0 flex justify-center" style={{ animationDelay: '150ms' }}>
+            <div className="relative w-full max-w-[360px] sm:max-w-[420px] mx-auto">
+              {/* Contained glow strictly behind the portrait frame */}
+              <div className="absolute inset-1 bg-gradient-to-tr from-teal-500/20 via-primary/20 to-terracotta/25 rounded-3xl blur-md -z-10" />
+              <PortraitFrame src="/ustadh-mahmoud.jpg" alt="Ustadh Mahmoud" maxWidth={420} className="w-full shadow-2xl mx-auto" />
+              
+              {/* Floating Credential Card */}
+              <div className="hidden sm:block absolute -bottom-6 -left-6 rtl:-left-auto rtl:-right-6 bg-surface p-4 rounded-2xl shadow-xl border border-border max-w-[240px]">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Award className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                  <span className="text-xs font-bold text-teal-700 dark:text-teal-300">
+                    {isEn ? 'Al-Azhar Grounding' : 'تأصيل أزهري'}
+                  </span>
+                </div>
+                <StudyLine variant="teal" className="my-1.5" />
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  {isEn ? '3+ years experience, teaching students across Canada, US, UK, and Australia.' : 'خبرة +٣ سنوات في تدريس الطلاب في أمريكا، كندا، بريطانيا، وأستراليا.'}
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </PublicSection>
 
-      {/* 2. WHAT CAN I LEARN? */}
-      <PublicSection id="services" variant="transition-warm">
-        <EditorialHeading eyebrow={isEn ? 'Areas of Study' : 'مسارات التعلم'} className="text-center lg:text-start">
-          {isEn ? 'What do you want to learn?' : 'ماذا تريد أن تتعلم؟'}
-        </EditorialHeading>
-        
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-12">
-          <LearningAreaItem 
-            areaClass="learning-area-quran"
-            title={isEn ? 'Quran & Tajweed' : 'القرآن الكريم والتجويد'}
-            description={isEn ? 'From learning the alphabet to fluent recitation and structured memorization.' : 'من الحروف الأولى إلى التلاوة الصحيحة والحفظ المتقن.'}
-            onClick={() => onOpenTrialModal('quran')}
-          />
-          <LearningAreaItem 
-            areaClass="learning-area-islamic"
-            title={isEn ? 'Islamic Studies' : 'العلوم الإسلامية'}
-            description={isEn ? 'Clear, authentic grounding in Aqeedah, Fiqh, and the Seerah of the Prophet ﷺ.' : 'تأصيل علمي واضح في العقيدة، الفقه، والسيرة النبوية.'}
-            onClick={() => onOpenTrialModal('islamic_studies')}
-          />
-          <LearningAreaItem 
-            areaClass="learning-area-msa"
-            title={isEn ? 'Modern Standard Arabic' : 'العربية الفصحى'}
-            description={isEn ? 'Master reading, writing, and formal grammar (Nahw and Sarf).' : 'إتقان القراءة والكتابة والنحو والصرف بشكل هيكلي.'}
-            onClick={() => onOpenTrialModal('modern-standard-arabic')}
-          />
-          <LearningAreaItem 
-            areaClass="learning-area-egyptian"
-            title={isEn ? 'Egyptian Arabic' : 'العربية المصرية'}
-            description={isEn ? 'Learn the warm, expressive dialect for travel and conversation.' : 'تحدث اللهجة المصرية بطلاقة وثقة في الحياة اليومية.'}
-            onClick={() => onOpenTrialModal('egyptian-arabic')}
-          />
-          <LearningAreaItem 
-            areaClass="learning-area-english"
-            title={isEn ? 'English Language' : 'اللغة الإنجليزية'}
-            description={isEn ? 'Coaching for Arabic speakers seeking fluency and professional confidence.' : 'تطوير المحادثة واللغة الإنجليزية للناطقين بالعربية.'}
-            onClick={() => onOpenTrialModal('english')}
-          />
-        </div>
-      </PublicSection>
-
-      {/* 3. FOR YOU / FOR YOUR FAMILY */}
+      {/* ─── 2. CORE PLATFORM ADVANTAGE: FOR YOU / FOR YOUR FAMILY ────────────── */}
       <PublicSection variant="warm">
         <div className="max-w-4xl mx-auto">
-          <EditorialHeading className="text-center mb-16">
-            {isEn ? 'One space. Two paths.' : 'مساحة واحدة. مساران للتعلّم.'}
-          </EditorialHeading>
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary/15 text-teal-800 dark:text-teal-200 border border-teal-500/25 text-xs font-bold uppercase tracking-wider mb-2">
+              <Users className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
+              <span>{isEn ? 'Flexible Account' : 'مرونة الحساب'}</span>
+            </div>
+            <h2 className="font-editorial text-3xl sm:text-4xl text-foreground font-semibold">
+              {isEn ? 'One space. Two paths.' : 'مساحة واحدة. مساران للتعلّم.'}
+            </h2>
+            <p className="text-muted-foreground text-sm sm:text-base max-w-xl mx-auto mt-2">
+              {isEn 
+                ? 'Whether you are learning individually or managing lessons for your children, everything is organized in one dedicated space.'
+                : 'سواء كنت تتعلم بشكل فردي ومستقل، أو تدير تعليم أبنائك وبناتك، فكل شيء ميسر وموثق في مكان واحد.'}
+            </p>
+          </div>
 
-          <div className="grid md:grid-cols-2 gap-12 relative">
-            {/* Divider line for desktop */}
-            <div className="hidden md:block absolute top-0 bottom-0 left-1/2 w-px bg-border-subtle" />
-
-            <EditorialBlock className="text-center md:text-start md:pe-8">
-              <div className="w-12 h-12 glass-card rounded-xl flex items-center justify-center mx-auto md:mx-0 mb-6 shadow-sm border border-border-subtle">
-                <User className="w-6 h-6 text-accent" />
+          <div className="grid md:grid-cols-2 gap-8 relative">
+            {/* Card 1: For Yourself */}
+            <div className="bg-surface p-8 rounded-2xl border border-teal-500/30 hover:border-teal-500/60 shadow-xs hover:shadow-md transition-all relative overflow-hidden text-center md:text-start">
+              <div className="w-14 h-14 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center mx-auto md:mx-0 mb-6 shadow-xs border border-teal-500/25">
+                <User className="w-7 h-7" />
               </div>
-              <h3 className="text-2xl font-editorial font-medium mb-4 text-foreground">
+              <h3 className="text-2xl font-editorial font-bold mb-3 text-foreground">
                 {isEn ? 'Learn for yourself' : 'تعلّم لنفسك'}
               </h3>
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
                 {isEn 
-                  ? 'Your personal account. Manage your lessons, schedule, and progress all in one place with direct access to your teacher.'
-                  : 'حساب شخصي، دروسك، مواعيدك، وتقدمك في مكان واحد.'}
+                  ? 'Your personal student sanctuary. Manage your lessons, schedule, and learning milestones all in one place with direct teacher access.'
+                  : 'حسابك الشخصي المستقل. جدول دروسك، وتابع تقدمك مع خطة تعليمية فردية مصممة خصيصاً لمستواك وأوقاتك.'}
               </p>
-            </EditorialBlock>
-
-            <EditorialBlock className="text-center md:text-start md:ps-8">
-              <div className="w-12 h-12 glass-card rounded-xl flex items-center justify-center mx-auto md:mx-0 mb-6 shadow-sm border border-border-subtle">
-                <Users className="w-6 h-6 text-accent" />
+              <div className="mt-6 pt-4 border-t border-border/60 flex items-center justify-center md:justify-start gap-2 text-xs font-bold text-teal-700 dark:text-teal-300">
+                <Check className="w-4 h-4" />
+                <span>{isEn ? 'Direct teacher feedback' : 'متابعة مباشرة من المعلم'}</span>
               </div>
-              <h3 className="text-2xl font-editorial font-medium mb-4 text-foreground">
+            </div>
+
+            {/* Card 2: For Your Family */}
+            <div className="bg-surface p-8 rounded-2xl border border-terracotta/30 hover:border-terracotta/60 shadow-xs hover:shadow-md transition-all relative overflow-hidden text-center md:text-start">
+              <div className="w-14 h-14 rounded-2xl bg-terracotta/10 text-accent flex items-center justify-center mx-auto md:mx-0 mb-6 shadow-xs border border-terracotta/25">
+                <Users className="w-7 h-7" />
+              </div>
+              <h3 className="text-2xl font-editorial font-bold mb-3 text-foreground">
                 {isEn ? 'Learn for your family' : 'تعلّم لعائلتك'}
               </h3>
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
                 {isEn 
-                  ? 'Manage your children’s education from your account. Book for them or for yourself whenever you need, with complete visibility.'
-                  : 'أدِر تعلّم أبنائك من حسابك، واحجز لهم أو لنفسك عندما تريد.'}
+                  ? 'Manage your children’s Islamic and Arabic education from your unified account. Book for them or for yourself whenever you need, with complete visibility.'
+                  : 'أدِر تعلّم أبنائك وبناتك من حساب موحد. احجز لهم أو لنفسك بمرونة تامة مع متابعة دورية وتقارير مستمرة.'}
               </p>
-            </EditorialBlock>
-          </div>
-        </div>
-      </PublicSection>
-
-      {/* 4. HOW IT WORKS */}
-      <PublicSection id="approach" variant="transition-neutral">
-        <div className="max-w-3xl mx-auto">
-          <div>
-            <EditorialHeading eyebrow={isEn ? 'The Journey' : 'رحلة التعلم'}>
-              {isEn ? 'How learning works' : 'كيف تبدأ رحلتك'}
-            </EditorialHeading>
-            <StudyLine />
-            <div className="space-y-8 mt-10">
-              <div className="flex gap-4">
-                <span className="text-sm font-bold text-accent font-editorial pt-1">01</span>
-                <div>
-                  <h4 className="text-lg font-medium text-foreground mb-1">{isEn ? 'Book a Free Trial' : 'احجز جلسة تجريبية'}</h4>
-                  <p className="text-muted-foreground text-sm leading-relaxed">{isEn ? 'Choose a time in your local timezone. No payment required.' : 'اختر الوقت المناسب لك. بدون أي التزامات مالية.'}</p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <span className="text-sm font-bold text-accent font-editorial pt-1">02</span>
-                <div>
-                  <h4 className="text-lg font-medium text-foreground mb-1">{isEn ? 'Meet & Discover' : 'التقِ وحدد مستواك'}</h4>
-                  <p className="text-muted-foreground text-sm leading-relaxed">{isEn ? 'Discuss your goals and experience a real mini-lesson to see the teaching style.' : 'نتعرف على أهدافك ونحدد مستواك من خلال درس مصغر.'}</p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <span className="text-sm font-bold text-accent font-editorial pt-1">03</span>
-                <div>
-                  <h4 className="text-lg font-medium text-foreground mb-1">{isEn ? 'Learn 1-on-1' : 'تعلم بمرونة تامة'}</h4>
-                  <p className="text-muted-foreground text-sm leading-relaxed">{isEn ? 'Receive a custom plan and attend private Zoom lessons with flexible rescheduling.' : 'استلم خطتك الخاصة وابدأ دروسك المباشرة عبر زووم بمرونة عالية.'}</p>
-                </div>
+              <div className="mt-6 pt-4 border-t border-border/60 flex items-center justify-center md:justify-start gap-2 text-xs font-bold text-accent">
+                <Check className="w-4 h-4" />
+                <span>{isEn ? 'Shared packages across family' : 'باقات مشتركة بين أفراد العائلة'}</span>
               </div>
             </div>
           </div>
         </div>
       </PublicSection>
 
-      {/* 5. MEET USTADH MAHMOUD */}
-      <PublicSection id="about">
+      {/* ─── 3. PLATFORM DIRECTORY: DEDICATED SECTIONS HUB ────────────────────── */}
+      <PublicSection variant="transition-neutral">
         <div className="max-w-5xl mx-auto">
-          <div className="grid md:grid-cols-12 gap-10 items-start">
-            <div className="md:col-span-4">
-              <PortraitFrame src="/ustadh-mahmoud.jpg" alt="Ustadh Mahmoud" className="w-full max-w-sm mx-auto" />
-            </div>
-            <div className="md:col-span-8 space-y-6">
-              <EditorialHeading eyebrow={isEn ? 'Your Teacher' : 'المعلم'} noAccent>
-                {isEn ? 'Ustadh Mahmoud' : 'الأستاذ محمود'}
-              </EditorialHeading>
-              
-              <div className="prose prose-p:text-muted-foreground prose-p:leading-relaxed max-w-none">
-                <p>
-                  {isEn 
-                    ? 'Peace be upon you. I am Mahmoud, an independent teacher of the Quran, Arabic, and Islamic Studies. I am dedicated to providing direct, patient, and personalized 1-on-1 education for international students and families.'
-                    : 'السلام عليكم ورحمة الله وبركاته. أنا محمود، أعمل كمعلم مستقل للقرآن الكريم، وأحكام التجويد، واللغة العربية، والدراسات الإسلامية للطلاب الدوليين والعائلات المسلمة.'}
-                </p>
-                <p>
-                  {isEn
-                    ? 'My education at Al-Azhar in Egypt provided me with a deep, classical grounding in Islamic sciences and the Arabic language. My proficiency in English (IELTS C1) allows me to explain complex grammar and precise pronunciation naturally to English speakers.'
-                    : 'دراستي في الأزهر الشريف منحتني تأصيلاً علمياً عميقاً، وإتقاني للغة الإنجليزية بمستوى (IELTS C1) يمكنني من شرح أدق المسائل اللغوية بأسلوب سهل وطبيعي للمسلمين الناطقين بالإنجليزية.'}
-                </p>
-              </div>
-
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 pt-6 border-t border-border-subtle mt-8">
-                <div>
-                  <p className="text-2xl font-editorial text-foreground">3+</p>
-                  <p className="text-sm text-muted-foreground mt-1">{isEn ? 'Years Teaching' : 'سنوات خبرة'}</p>
-                </div>
-                <div>
-                  <p className="text-2xl font-editorial text-foreground">Al-Azhar</p>
-                  <p className="text-sm text-muted-foreground mt-1">{isEn ? 'Background' : 'خريج الأزهر'}</p>
-                </div>
-                <div>
-                  <p className="text-2xl font-editorial text-foreground">IELTS C1</p>
-                  <p className="text-sm text-muted-foreground mt-1">{isEn ? 'English Fluency' : 'إتقان الإنجليزية'}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </PublicSection>
-
-      {/* 6. WHAT STUDENTS SAY */}
-      <PublicSection id="testimonials" variant="warm">
-        <EditorialHeading className="text-center mb-16">
-          {isEn ? 'What students say' : 'آراء الطلاب'}
-        </EditorialHeading>
-        <div className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
-          {AUTHENTIC_TESTIMONIALS.slice(0, 4).map((testimonial) => (
-            <TestimonialQuote 
-              key={testimonial.id}
-              quote={testimonial.quote}
-              name={testimonial.author}
-              detail={`${testimonial.role} • ${testimonial.subject}`}
-            />
-          ))}
-        </div>
-      </PublicSection>
-
-      {/* 7. PRICING PREVIEW */}
-      <PublicSection>
-        <div className="max-w-3xl mx-auto text-center space-y-6">
-          <EditorialHeading eyebrow={isEn ? 'Clear Pricing' : 'أسعار واضحة'} noAccent className="mx-auto flex flex-col items-center">
-            {isEn ? 'Simple, transparent packages' : 'باقات بسيطة وشفافة'}
-          </EditorialHeading>
-          <p className="text-lg text-muted-foreground">
-            {isEn 
-              ? 'Lessons start from $4 per 30-minute session. Choose 30, 45, or 60-minute durations based on your stamina and schedule. No subscription traps, just prepaid packages you can use flexibly.'
-              : 'تبدأ الدروس من ٤ دولارات للجلسة (٣٠ دقيقة). يمكنك اختيار ٣٠، ٤٥، أو ٦٠ دقيقة للدرس حسب ما يناسب وقتك وقدرتك.'}
-          </p>
-          <div className="pt-4">
-            <PublicButton variant="secondary" onClick={() => onOpenTrialModal()}>
-              {isEn ? 'View Pricing & Book Trial' : 'احجز جلسة تجريبية الآن'}
-            </PublicButton>
-          </div>
-        </div>
-      </PublicSection>
-
-      {/* 8. FAQ & FINAL CTA */}
-      <PublicSection id="contact" variant="transition-warm" className="border-t border-border-subtle">
-        <div className="grid lg:grid-cols-12 gap-16">
-          <div className="lg:col-span-5 space-y-6">
-            <EditorialHeading noAccent>
-              {isEn ? 'Ready to begin?' : 'هل أنت مستعد للبدء؟'}
-            </EditorialHeading>
-            <p className="text-muted-foreground leading-relaxed">
+          <div className="text-center mb-10">
+            <h2 className="font-editorial text-2xl sm:text-3xl text-foreground font-semibold">
+              {isEn ? 'Explore Dedicated Sections' : 'استكشف صفحات وأقسام المنصة'}
+            </h2>
+            <p className="text-muted-foreground text-sm max-w-lg mx-auto mt-2">
               {isEn 
-                ? 'Take the first step with a free, no-obligation 30-minute trial. We’ll discuss your goals and create a plan.'
-                : 'ابدأ بجلسة تجريبية مجانية للتعارف وتحديد المستوى بدون أي التزامات.'}
+                ? 'Each area of our platform has its own dedicated page with comprehensive details.' 
+                : 'لكل قسم في منصتنا صفحته المستقلة بكافة التفاصيل والمعلومات.'}
             </p>
-            <PublicButton size="lg" onClick={() => onOpenTrialModal()} className="mt-4 w-full sm:w-auto">
-              {isEn ? 'Book Free Trial' : 'احجز جلستك المجانية'}
-            </PublicButton>
-            <StudyLine className="my-8" />
-            <MarginNote>
-              {isEn ? 'Have questions? Contact directly on WhatsApp.' : 'لديك استفسار؟ تواصل مباشرة عبر واتساب.'}
-            </MarginNote>
           </div>
-          
-          <div className="lg:col-span-7 space-y-8">
-            <h3 className="font-editorial text-2xl text-foreground mb-6">
-              {isEn ? 'Common Questions' : 'أسئلة شائعة'}
-            </h3>
-            {FAQS.slice(0, 4).map((faq, i) => (
-              <div key={i} className="space-y-2">
-                <h4 className="font-medium text-foreground">{faq.question}</h4>
-                <p className="text-sm text-muted-foreground leading-relaxed">{faq.answer}</p>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch">
+            {/* Link 1: Lessons */}
+            <Link
+              to="/learning"
+              className="p-5 rounded-2xl bg-surface border border-border/80 hover:border-teal-500/60 shadow-xs hover:shadow-md transition-all group flex flex-col justify-between h-full"
+            >
+              <div>
+                <div className="w-10 h-10 rounded-xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center mb-3">
+                  <BookOpen className="w-5 h-5" />
+                </div>
+                <h3 className="font-bold text-base text-foreground group-hover:text-primary transition-colors">
+                  {isEn ? 'Lessons & Syllabus' : 'الدروس والمناهج'}
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                  {isEn 
+                    ? 'Explore 13 specialized tracks in Quran, Tajweed, Arabic, and Islamic Studies.' 
+                    : 'استكشف ١٣ مساراً تعليمياً في القرآن، التجويد، الفصحى، والعامية المصرية.'}
+                </p>
               </div>
-            ))}
+              <div className="pt-3 mt-3 border-t border-border/40 flex items-center gap-1 text-xs font-bold text-teal-700 dark:text-teal-300">
+                <span>{isEn ? 'View Syllabus' : 'استعراض المناهج'}</span>
+                <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
+              </div>
+            </Link>
+
+            {/* Link 2: How It Works */}
+            <Link
+              to="/how-it-works"
+              className="p-5 rounded-2xl bg-surface border border-border/80 hover:border-teal-500/60 shadow-xs hover:shadow-md transition-all group flex flex-col justify-between h-full"
+            >
+              <div>
+                <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-3">
+                  <CalendarCheck className="w-5 h-5" />
+                </div>
+                <h3 className="font-bold text-base text-foreground group-hover:text-primary transition-colors">
+                  {isEn ? 'How Learning Works' : 'كيف نعمل والمنهجية'}
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                  {isEn 
+                    ? 'Our patient 4-step methodology from trial assessment to live Zoom sessions.' 
+                    : 'منهجيتنا التعليمية الهادئة من الجلسة التجريبية حتى الدروس الفردية عبر زووم.'}
+                </p>
+              </div>
+              <div className="pt-3 mt-3 border-t border-border/40 flex items-center gap-1 text-xs font-bold text-primary">
+                <span>{isEn ? 'Explore Methodology' : 'تعرف على الطريقة'}</span>
+                <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
+              </div>
+            </Link>
+
+            {/* Link 3: About Ustadh Mahmoud */}
+            <Link
+              to="/about"
+              className="p-5 rounded-2xl bg-surface border border-border/80 hover:border-teal-500/60 shadow-xs hover:shadow-md transition-all group flex flex-col justify-between h-full"
+            >
+              <div>
+                <div className="w-10 h-10 rounded-xl bg-terracotta/10 text-accent flex items-center justify-center mb-3">
+                  <ShieldCheck className="w-5 h-5" />
+                </div>
+                <h3 className="font-bold text-base text-foreground group-hover:text-primary transition-colors">
+                  {isEn ? 'About Ustadh Mahmoud' : 'عن المعلم والمنصة'}
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                  {isEn 
+                    ? 'Al-Azhar grounding, IELTS C1 English fluency, and 3+ years teaching international students.' 
+                    : 'التأصيل الأزهري وإتقان الإنجليزية C1 وخبرة ٣+ سنوات مع طلاب المهجر.'}
+                </p>
+              </div>
+              <div className="pt-3 mt-3 border-t border-border/40 flex items-center gap-1 text-xs font-bold text-accent">
+                <span>{isEn ? 'Read Teacher Bio' : 'سيرة المعلم'}</span>
+                <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
+              </div>
+            </Link>
+
+            {/* Link 4: Pricing */}
+            <Link
+              to="/pricing"
+              className="p-5 rounded-2xl bg-surface border border-border/80 hover:border-teal-500/60 shadow-xs hover:shadow-md transition-all group flex flex-col justify-between h-full"
+            >
+              <div>
+                <div className="w-10 h-10 rounded-xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center mb-3">
+                  <CreditCard className="w-5 h-5" />
+                </div>
+                <h3 className="font-bold text-base text-foreground group-hover:text-primary transition-colors">
+                  {isEn ? 'Pricing & Packages' : 'الأسعار والباقات'}
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                  {isEn 
+                    ? 'Transparent pricing starting at $4 per session. Choose 30, 45, or 60 min durations.' 
+                    : 'أسعار واضحة تبدأ من ٤$ للجلسة مع حاسبة باقات تفاعلية وخيارات مرنة.'}
+                </p>
+              </div>
+              <div className="pt-3 mt-3 border-t border-border/40 flex items-center gap-1 text-xs font-bold text-teal-700 dark:text-teal-300">
+                <span>{isEn ? 'Calculate Pricing' : 'استعراض الأسعار'}</span>
+                <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
+              </div>
+            </Link>
+
+            {/* Link 5: FAQ */}
+            <Link
+              to="/faq"
+              className="p-5 rounded-2xl bg-surface border border-border/80 hover:border-teal-500/60 shadow-xs hover:shadow-md transition-all group flex flex-col justify-between h-full"
+            >
+              <div>
+                <div className="w-10 h-10 rounded-xl bg-terracotta/10 text-accent flex items-center justify-center mb-3">
+                  <HelpCircle className="w-5 h-5" />
+                </div>
+                <h3 className="font-bold text-base text-foreground group-hover:text-primary transition-colors">
+                  {isEn ? 'Frequently Asked Questions' : 'الأسئلة الشائعة'}
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                  {isEn 
+                    ? 'Clear answers regarding scheduling, cancellation policy, Zoom setup, and payment options.' 
+                    : 'إجابات شاملة ومفصلة حول المواعيد، سياسة الإلغاء، طريقة الدفع، واستخدام برنامج زووم.'}
+                </p>
+              </div>
+              <div className="pt-3 mt-3 border-t border-border/40 flex items-center gap-1 text-xs font-bold text-accent">
+                <span>{isEn ? 'Browse All FAQs' : 'تصفح كل الأسئلة'}</span>
+                <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
+              </div>
+            </Link>
+
+            {/* Link 6: Student Portal */}
+            <Link
+              to="/student"
+              className="p-5 rounded-2xl bg-surface border border-border/80 hover:border-teal-500/60 shadow-xs hover:shadow-md transition-all group flex flex-col justify-between h-full"
+            >
+              <div>
+                <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-3">
+                  <User className="w-5 h-5" />
+                </div>
+                <h3 className="font-bold text-base text-foreground group-hover:text-primary transition-colors">
+                  {isEn ? 'Student Portal' : 'بوابة ومساحة الطالب'}
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                  {isEn 
+                    ? 'Your private sanctuary to manage lessons, schedule sessions, and track milestones with the teacher.' 
+                    : 'مساحتك الخاصة لمتابعة الدروس، إدارة جدول المواعيد، وتقارير التقدم مع المعلم.'}
+                </p>
+              </div>
+              <div className="pt-3 mt-3 border-t border-border/40 flex items-center gap-1 text-xs font-bold text-primary">
+                <span>{isEn ? 'Enter Portal' : 'دخول البوابة'}</span>
+                <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
+              </div>
+            </Link>
+          </div>
+        </div>
+      </PublicSection>
+
+      {/* ─── 4. FINAL CALL TO ACTION ─────────────────────────────────────────── */}
+      <PublicSection id="contact" variant="transition-warm" className="border-t border-border">
+        <div className="max-w-3xl mx-auto text-center space-y-6">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-500/10 text-teal-800 dark:text-teal-200 border border-teal-500/25 text-xs font-bold uppercase tracking-wider">
+            <span>{isEn ? 'Get Started' : 'ابدأ اليوم'}</span>
+          </div>
+
+          <h3 className="font-editorial text-3xl sm:text-4xl text-foreground font-bold leading-tight">
+            {isEn ? 'Ready to begin your journey?' : 'هل أنت مستعد لبدء رحلتك؟'}
+          </h3>
+          
+          <p className="text-muted-foreground leading-relaxed text-base max-w-xl mx-auto">
+            {isEn 
+              ? 'Take the first step with a free, no-obligation 30-minute trial. We’ll assess your level and build a tailored study roadmap.'
+              : 'ابدأ جلستك الأولى مجاناً للتعارف وتحديد المستوى وبناء خطتك المناسبة بدون أي التزام مالي.'}
+          </p>
+          
+          <div className="pt-2 flex flex-col sm:flex-row justify-center gap-3.5">
+            <PublicButton variant="primary" size="lg" onClick={() => onOpenTrialModal()} className="w-full sm:w-auto">
+              {isEn ? 'Book Free Trial Now' : 'احجز جلستك المجانية الآن'}
+            </PublicButton>
+
+            <a
+              href={buildWhatsAppUrl(isEn ? 'Assalamu Alaikum Ustadh Mahmoud, I visited your website and would like to ask a question.' : 'السلام عليكم أستاذ محمود، زرت موقعكم الكريم وأود الاستفسار عن الدروس')}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-whatsapp-solid py-3 px-6 rounded-xl text-sm font-semibold shadow-xs flex items-center justify-center gap-2"
+            >
+              <WhatsAppIcon className="w-4 h-4 shrink-0" />
+              <span>{isEn ? 'Message on WhatsApp' : 'تواصل عبر واتساب'}</span>
+            </a>
           </div>
         </div>
       </PublicSection>

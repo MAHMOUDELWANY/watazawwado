@@ -18,6 +18,8 @@ import {
   Globe,
   Tag
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { BrandLoader } from '../../components/ui/BrandLoader';
 import { useTeacherAuth } from '../../lib/auth';
 import { Card, CardContent } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
@@ -205,14 +207,19 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
 
       {/* 4. Main Content Area */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-16 gap-3 glass-card border-none rounded-2xl">
-          <Loader2 className="w-8 h-8 text-accent animate-spin" />
-          <p className="text-sm sm:text-sm text-muted-foreground">
-            {isAr ? 'جارٍ تحميل الدروس...' : 'Loading your scheduled sessions...'}
-          </p>
+        <div className="glass-card border-none rounded-2xl overflow-hidden shadow-xs">
+          <BrandLoader 
+            size="lg" 
+            text={isAr ? 'جارٍ تحضير قائمة الدروس والمواعيد...' : 'Loading your scheduled sessions...'} 
+            subtext={isAr ? 'لحظات وسيكون جدولك وروابط الحصص جاهزة' : 'Retrieving your lesson calendar and classroom links'}
+          />
         </div>
       ) : error ? (
-        <div className="p-6 sm:p-8 glass-card border border-destructive/20 rounded-2xl text-center space-y-3">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="p-6 sm:p-8 glass-card border border-destructive/20 rounded-2xl text-center space-y-3"
+        >
           <AlertCircle className="w-8 h-8 text-destructive mx-auto" />
           <h3 className="text-sm font-semibold text-foreground">
             {isAr ? 'تعذر تحميل قائمة الدروس' : 'Could not load your lessons'}
@@ -225,9 +232,14 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
           >
             {isAr ? 'إعادة المحاولة' : 'Try Again'}
           </button>
-        </div>
+        </motion.div>
       ) : displayedBookings.length === 0 ? (
-        <div className="text-center py-16 px-4 glass-card border-none rounded-2xl space-y-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          className="text-center py-16 px-4 glass-card border-none rounded-2xl space-y-4"
+        >
           <div className="w-12 h-12 rounded-2xl bg-secondary/30 text-accent flex items-center justify-center mx-auto">
             <Calendar className="w-6 h-6" />
           </div>
@@ -268,35 +280,48 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
               <span>{isAr ? 'حجز موعد الآن' : 'Schedule a Lesson'}</span>
             </Link>
           )}
-        </div>
+        </motion.div>
       ) : (
         <div className="space-y-4">
-          {displayedBookings.map(b => {
-            const rawZoom = (b.zoomMeetingLink || b.zoom_join_url || '').trim();
-            const hasValidZoomUrl = Boolean(rawZoom && (rawZoom.startsWith('https://') || rawZoom.startsWith('http://')));
-            
-            const rawStart = b.scheduledStart || b.scheduled_start || b.lesson_date;
-            const studentTz = b.studentTimezone || 'UTC';
-            
-            // Format time accurately in student's timezone using Luxon
-            const dateObj = rawStart
-              ? DateTime.fromISO(rawStart, { setZone: true }).setZone(studentTz)
-              : null;
+          <AnimatePresence mode="popLayout">
+            {displayedBookings.map((b, index) => {
+              const rawZoom = (b.zoomMeetingLink || b.zoom_join_url || '').trim();
+              const hasValidZoomUrl = Boolean(rawZoom && (rawZoom.startsWith('https://') || rawZoom.startsWith('http://')));
+              
+              const rawStart = b.scheduledStart || b.scheduled_start || b.lesson_date;
+              const studentTz = b.studentTimezone || 'UTC';
+              
+              // Format time accurately in student's timezone using Luxon
+              const dateObj = rawStart
+                ? DateTime.fromISO(rawStart, { setZone: true }).setZone(studentTz)
+                : null;
 
-            // Reconcile payment status authoritatively using payments list
-            const paymentSummary = getBookingPaymentSummary(b, payments);
-            const isPendingPayment = paymentSummary.isPendingPayment;
-            const isCancelled = b.status === 'cancelled';
-            const isCompleted = b.status === 'completed';
-            const isNoShow = b.status === 'no_show';
-            // WhatsApp-only coordination entry point: eligible only for genuinely
-            // changeable, not-yet-started lessons. No mutation is performed here.
-            const canCoordinate = isCoordinationAllowed(b);
-            const displayStatus = getLessonDisplayStatus(b, paymentSummary, isAr);
+              // Reconcile payment status authoritatively using payments list
+              const paymentSummary = getBookingPaymentSummary(b, payments);
+              const isPendingPayment = paymentSummary.isPendingPayment;
+              const isCancelled = b.status === 'cancelled';
+              const isCompleted = b.status === 'completed';
+              const isNoShow = b.status === 'no_show';
+              // WhatsApp-only coordination entry point: eligible only for genuinely
+              // changeable, not-yet-started lessons. No mutation is performed here.
+              const canCoordinate = isCoordinationAllowed(b);
+              const displayStatus = getLessonDisplayStatus(b, paymentSummary, isAr);
 
-            return (
-              <Card key={b.id} className="border-border hover:border-secondary/60 transition-colors glass-card">
-                <CardContent className="p-5 sm:p-6 space-y-4">
+              return (
+                <motion.div
+                  key={b.id}
+                  initial={{ opacity: 0, y: 18 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{
+                    duration: 0.38,
+                    delay: Math.min(index * 0.05, 0.3),
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  whileHover={{ y: -2, transition: { duration: 0.2 } }}
+                >
+                  <Card className="border-border hover:border-secondary/60 transition-all duration-300 glass-card shadow-2xs hover:shadow-md">
+                    <CardContent className="p-5 sm:p-6 space-y-4">
                   {/* Top Bar: Service Title + Badges */}
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                     <div className="space-y-1.5">
@@ -465,10 +490,12 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                   </div>
                 </CardContent>
               </Card>
-            );
-          })}
-        </div>
-      )}
+            </motion.div>
+          );
+        })}
+      </AnimatePresence>
+    </div>
+  )}
 
       {/* 5. Payment Claim Modal (reusing production component) */}
       {paymentModalBooking && (
@@ -563,9 +590,9 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                       href={waUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 btn-primary-material text-primary-foreground rounded-xl text-sm sm:text-sm font-semibold transition-colors shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
+                      className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 btn-whatsapp-solid rounded-xl text-sm font-bold shadow-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
                     >
-                      <MessageCircle className="w-4 h-4 shrink-0" />
+                      <MessageCircle className="w-4 h-4 fill-current shrink-0" />
                       <span>
                         {isAr
                           ? 'التواصل عبر واتساب للتنسيق'

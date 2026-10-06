@@ -17,6 +17,7 @@ import {
 import { useTeacherAuth } from '../../lib/auth';
 import { Card, CardContent } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
+import { BrandLoader } from '../../components/ui/BrandLoader';
 import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal';
 import { StudentPageBack } from '../components/StudentPageBack';
 import { getBookingPaymentSummary } from '../../lib/paymentStatus';
@@ -216,11 +217,11 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
           href="https://wa.me/201026042456?text=Assalamu%20Alaikum%20Ustadh%20Mahmoud%2C%20I%20have%20sent%20a%20payment%20transfer%20and%20would%20like%20to%20confirm%20it."
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold transition-colors shrink-0 self-start md:self-auto min-h-[38px] shadow-xs"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 btn-whatsapp-solid rounded-xl text-sm font-bold shadow-md shrink-0 self-start md:self-auto min-h-[38px]"
         >
-          <MessageCircle className="w-3.5 h-3.5" />
+          <MessageCircle className="w-4 h-4 fill-current shrink-0" />
           <span>{isAr ? 'إرسال الإيصال عبر واتساب' : 'Send Receipt on WhatsApp'}</span>
-          <ExternalLink className="w-3 h-3" />
+          <ExternalLink className="w-3.5 h-3.5" />
         </a>
       </div>
 
@@ -325,11 +326,12 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
         </h2>
 
         {authLoading || loading ? (
-          <div className="flex flex-col items-center justify-center py-16 gap-3">
-            <Loader2 className="w-8 h-8 text-accent animate-spin" />
-            <p className="text-sm sm:text-sm text-muted-foreground">
-              {isAr ? 'جارٍ تحميل سجل المدفوعات...' : 'Loading payments history...'}
-            </p>
+          <div className="glass-card rounded-2xl border-none p-4 shadow-2xs">
+            <BrandLoader 
+              size="lg" 
+              text={isAr ? 'جارٍ مراجعة سجل المدفوعات والفواتير...' : 'Loading payments history...'} 
+              subtext={isAr ? 'نستحضر بيانات الإيصالات والحسابات المالية' : 'Fetching receipt confirmations and transaction records'}
+            />
           </div>
         ) : authError ? (
           <div className="p-6 glass-card border border-warning/30 rounded-2xl text-center space-y-3">

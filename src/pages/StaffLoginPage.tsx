@@ -2,7 +2,7 @@ import { BrandLogo } from '../components/ui/BrandLogo';
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Mail, Lock, ShieldCheck, ArrowRight, AlertCircle, ArrowLeft } from 'lucide-react';
-import { BrandLoader } from '../components/ui/BrandLoader';
+import { BrandLoader, BrandSpinner } from '../components/ui/BrandLoader';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTeacherAuth } from '../lib/auth';
 
@@ -134,7 +134,7 @@ export default function StaffLoginPage() {
           >
             {isSubmitting ? (
               <>
-                <BrandLoader size="inline" className="scale-75" />
+                <BrandSpinner size={18} />
                 <span>Authenticating...</span>
               </>
             ) : (

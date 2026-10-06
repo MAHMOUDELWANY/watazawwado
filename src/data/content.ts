@@ -6,12 +6,15 @@ export const SERVICES_DATA: ServicePillar[] = [
     title: 'Quran & Tajweed',
     arabicTitle: 'القرآن والتجويد',
     description: 'Structured, patient guidance from letter phonetics and articulation to fluent recitation and memorization.',
+    arabicDescription: 'توجيه فردي منظم من مخارج الحروف والتهجي إلى التلاوة السليمة والحفظ المتقن.',
     services: [
       {
         id: 'quran-reading',
         name: 'Quran Reading',
+        arabicName: 'قراءة القرآن الكريم',
         category: 'quran',
         tagline: 'From recognizing letters and vowels to fluent recitation directly from the Mushaf.',
+        arabicTagline: 'من معرفة الحروف والحركات إلى التلاوة السلسة مباشرة من المصحف الشريف.',
         description: 'For adults and children who want to read the Quran independently. We start with letter shapes, vocal points of articulation (Makharij), and short vowels, building slowly and patiently until full verses flow naturally.',
         whoIsItFor: 'Beginners of any age, adults returning to the Quran, or children starting their first Noorani / Qaida lessons.',
         whatYouWillLearn: [
@@ -26,8 +29,10 @@ export const SERVICES_DATA: ServicePillar[] = [
       {
         id: 'tajweed',
         name: 'Tajweed Rules & Application',
+        arabicName: 'أحكام التجويد وتطبيقاته',
         category: 'quran',
         tagline: 'Learn why and how every letter is pronounced according to authentic rules.',
+        arabicTagline: 'إتقان مخارج الحروف وصفاتها وتطبيق أحكام النون والميم والمدود عملياً.',
         description: 'Tajweed is not just theory—it is hearing and practicing the exact acoustic characteristics of each letter. We study rules like Noon Sakinah, Meem Sakinah, Madd, and stopping rules, applying them immediately in your recitation.',
         whoIsItFor: 'Students who can already read Arabic text but want to recite with beauty, accuracy, and traditional correctness.',
         whatYouWillLearn: [
@@ -42,8 +47,10 @@ export const SERVICES_DATA: ServicePillar[] = [
       {
         id: 'quran-memorization',
         name: 'Quran Memorization (Hifz)',
+        arabicName: 'حفظ القرآن الكريم (تحفيظ)',
         category: 'quran',
         tagline: 'A sustainable, steady memorization system built around your daily life.',
+        arabicTagline: 'منهجية حفظ مستدامة وتثبيت متقن يناسب وقتك وجدولك اليومي.',
         description: 'Memorizing the Quran requires consistency over speed. We design a realistic weekly target—whether it is three verses or a full page—with live recitation to catch mistakes before they set into memory.',
         whoIsItFor: 'Committed learners and youth striving to memorize Surahs or complete sections of the Quran.',
         whatYouWillLearn: [
@@ -58,8 +65,10 @@ export const SERVICES_DATA: ServicePillar[] = [
       {
         id: 'quran-revision',
         name: 'Quran Revision & Retention',
+        arabicName: 'مراجعة القرآن وتثبيت الحفظ',
         category: 'quran',
         tagline: 'Protect what you have memorized and solidify weak portions.',
+        arabicTagline: 'متابعة دورية للحفاظ وأصحاب الحفظ الجزئي لضبط المتشابهات وإتقان التلاوة.',
         description: 'For students who have previously memorized parts of the Quran or the entire Quran and need a disciplined, supportive partner to recite to regularly and eliminate doubts.',
         whoIsItFor: 'Huffadh, students with partial memorization who have lost fluency, or those preparing for tests or revision goals.',
         whatYouWillLearn: [
@@ -76,14 +85,17 @@ export const SERVICES_DATA: ServicePillar[] = [
   {
     id: 'islamic_studies',
     title: 'Islamic Studies',
-    arabicTitle: 'الدراسات الإسلامية',
+    arabicTitle: 'العلوم الإسلامية',
     description: 'Authentic understanding of faith, daily practice, and the Prophet’s life, grounded in classical clarity and delivered in clear English.',
+    arabicDescription: 'تأصيل علمي ميسر في العقيدة، وفقه العبادات، والسيرة النبوية بأسلوب واضح وودود.',
     services: [
       {
         id: 'aqeedah',
         name: 'Aqeedah (Islamic Creed)',
+        arabicName: 'العقيدة الإسلامية',
         category: 'islamic_studies',
         tagline: 'Understanding the fundamentals of belief with conviction and clarity.',
+        arabicTagline: 'فهم أركان الإيمان وأصول التوحيد بوضوح وتأصيل علمي سليم.',
         description: 'A study of the core pillars of Iman—Belief in Allah, His Angels, His Books, His Messengers, the Last Day, and Divine Decree. Taught from sound classical sources with open dialogue for contemporary questions.',
         whoIsItFor: 'Adults seeking firm intellectual and spiritual grounding, and youth growing up in Western environments.',
         whatYouWillLearn: [
@@ -98,8 +110,10 @@ export const SERVICES_DATA: ServicePillar[] = [
       {
         id: 'fiqh',
         name: 'Fiqh (Daily Practical Worship)',
+        arabicName: 'فقه العبادات اليومية',
         category: 'islamic_studies',
         tagline: 'How to perform your Salah, Wudu, fasting, and daily duties with certainty.',
+        arabicTagline: 'أحكام الطهارة والصلاة والصيام والمعاملات بأسلوب ميسر وعملي.',
         description: 'Clear, practical jurisprudence focused on what a Muslim needs in everyday life: Taharah (purification), Salah (prayer conditions and rulings), Sawm (fasting), and everyday ethics.',
         whoIsItFor: 'New Muslims, teens building independent habits, or adults wanting to verify their prayer and worship is correct.',
         whatYouWillLearn: [
@@ -114,8 +128,10 @@ export const SERVICES_DATA: ServicePillar[] = [
       {
         id: 'seerah',
         name: 'Seerah (Prophetic Biography)',
+        arabicName: 'السيرة النبوية العطرة',
         category: 'islamic_studies',
         tagline: 'Walking through the life, character, and decisions of the Prophet Muhammad ﷺ.',
+        arabicTagline: 'رحلة ملهمة في حياة النبي ﷺ ومواقفه وأخلاقه للقدوة والاهتداء.',
         description: 'More than dates and events—a journey into the character, mercy, leadership, and emotional warmth of the Prophet ﷺ. We examine how he responded to hardship, family life, community building, and companionship.',
         whoIsItFor: 'Anyone wishing to develop a personal love and connection with the Prophet ﷺ through his living example.',
         whatYouWillLearn: [
@@ -130,8 +146,10 @@ export const SERVICES_DATA: ServicePillar[] = [
       {
         id: 'islamic-studies',
         name: 'Foundations of Islamic Studies',
+        arabicName: 'أساسيات الدراسات الإسلامية',
         category: 'islamic_studies',
         tagline: 'A comprehensive starter curriculum designed for young learners and busy adults.',
+        arabicTagline: 'منهاج تأسيسي متكامل يجمع الآداب والأدعية وقصص الأنبياء لليافعين والكبار.',
         description: 'An integrated curriculum combining basic Aqeedah, everyday manners (Adab), essential Duas, and moral stories from the Quran and companions.',
         whoIsItFor: 'Children aged 7+, youth, and adults starting their learning from square one.',
         whatYouWillLearn: [
@@ -150,12 +168,15 @@ export const SERVICES_DATA: ServicePillar[] = [
     title: 'Arabic Language',
     arabicTitle: 'اللغة العربية',
     description: 'Learn Arabic that actually unlocks understanding—whether for Quran comprehension, formal reading, or natural everyday conversation.',
+    arabicDescription: 'تعلّم العربية بأسلوب يفتح لك أبواب الفهم والتواصل الحقيقي.',
     services: [
       {
         id: 'modern-standard-arabic',
         name: 'Modern Standard Arabic (Fusha)',
+        arabicName: 'العربية الفصحى (نحو وصرف)',
         category: 'arabic',
         tagline: 'The universal written language of books, media, and scholarship across the Arab world.',
+        arabicTagline: 'إتقان لغة الكتب والتراث والقواعد الهيكلية بيسر وسلاسة.',
         description: 'Learn to read, write, and comprehend standard Arabic grammar (Nahw) and morphology (Sarf) using interactive texts, structured dialogues, and real-world reading material.',
         whoIsItFor: 'University students, Quran students wanting deep grammatical insight, and professionals.',
         whatYouWillLearn: [
@@ -170,8 +191,10 @@ export const SERVICES_DATA: ServicePillar[] = [
       {
         id: 'arabic-conversation',
         name: 'Spoken Arabic Conversation',
+        arabicName: 'المحادثة والتحدث بالعربية',
         category: 'arabic',
         tagline: 'Overcome the fear of speaking through real, guided 1-on-1 dialogues.',
+        arabicTagline: 'كسر حاجز الخوف والانطلاق في التحدث بطلاقة عبر حوارات يومية حية.',
         description: 'A conversation-focused space where you talk from minute one. We simulate everyday scenarios—introductions, ordering food, asking directions, discussing family and work—gently correcting pronunciation and sentence cadence as you go.',
         whoIsItFor: 'Intermediate learners who understand grammar on paper but freeze when trying to speak aloud.',
         whatYouWillLearn: [
@@ -186,8 +209,10 @@ export const SERVICES_DATA: ServicePillar[] = [
       {
         id: 'egyptian-arabic',
         name: 'Egyptian Spoken Arabic (Aammiyya)',
+        arabicName: 'اللهجة المصرية الحية',
         category: 'arabic',
         tagline: 'The most widely understood dialect in the Arab world through cinema, music, and daily life.',
+        arabicTagline: 'تحدث اللهجة الأكثر انتشاراً وفهماً في العالم العربي بثقة وعفوية.',
         description: 'Learn the warm, humorous, and expressive dialect of Egypt. Ideal for travel, speaking with Egyptian friends and family, or understanding Arab media effortlessly.',
         whoIsItFor: 'Spouses of Egyptians, travelers, diaspora youth, or students wanting a lively practical dialect.',
         whatYouWillLearn: [
@@ -202,8 +227,10 @@ export const SERVICES_DATA: ServicePillar[] = [
       {
         id: 'arabic-foundations',
         name: 'Arabic Foundations for Non-Arabs',
+        arabicName: 'تأسيس العربية للناطقين بغيرها',
         category: 'arabic',
         tagline: 'Gentle, structured entry into Arabic reading, writing, and core vocabulary.',
+        arabicTagline: 'مدخل تدريجي ممتع لتعلم الحروف والمفردات الأساسية للجدد.',
         description: 'Designed specifically for non-Arabic speakers. We strip away academic intimidation and focus on practical letter recognition, basic vocabulary, and everyday Quranic terms.',
         whoIsItFor: 'Adults with zero prior background in the Arabic script.',
         whatYouWillLearn: [
@@ -222,12 +249,15 @@ export const SERVICES_DATA: ServicePillar[] = [
     title: 'English Language Support',
     arabicTitle: 'اللغة الإنجليزية',
     description: 'Personalized English coaching for Arabic speakers and international learners seeking fluency, exam readiness, or workplace confidence.',
+    arabicDescription: 'تدريب مخصص للناطقين بالعربية لتطوير المحادثة واجتياز اختبارات الطلاقة بثقة.',
     services: [
       {
         id: 'english',
         name: '1-on-1 English Language Coaching',
+        arabicName: 'تدريب اللغة الإنجليزية الفردي',
         category: 'english',
         tagline: 'Build conversational fluency, clean grammar, and confident professional English.',
+        arabicTagline: 'تطوير الطلاقة والمحادثة وتجاوز أخطاء الترجمة للناطقين بالعربية.',
         description: 'Taught with IELTS C1 certified proficiency. Mahmoud understands the exact phonetic and grammatical pitfalls Arabic speakers face when learning English, providing precise, sympathetic correction.',
         whoIsItFor: 'Arabic speakers seeking fluent spoken English, immigrants to English-speaking countries, or learners preparing for study abroad.',
         whatYouWillLearn: [
@@ -282,28 +312,36 @@ export const HOW_IT_WORKS_STEPS = [
     title: 'Book a Free 30-Min Trial',
     arabicTitle: 'احجز جلسة تجريبية مجانية',
     description: 'Choose a time that suits your local timezone. No payment or credit card is required. Tell Mahmoud a little about what you hope to learn.',
-    highlight: 'Zero obligation'
+    arabicDescription: 'اختر الموعد الأنسب لمنطقتك الزمنية بكل سهولة. لا يلزم أي دفع أو بطاقة بنكية. أخبر محمود بما ترغب في تعلمه وإتقانه.',
+    highlight: 'Zero obligation',
+    arabicHighlight: 'بدون أي التزام مالي'
   },
   {
     step: '02',
     title: 'Meet & Discover Your Level',
     arabicTitle: 'التقِ بمحمود وحدد مستواك',
     description: 'In your trial, Mahmoud listens to your goals, diagnoses your current level with gentle exercises, and gives you a real mini-lesson so you feel his teaching style directly.',
-    highlight: 'Personal assessment'
+    arabicDescription: 'في جلستك التجريبية، يستمع محمود لأهدافك، ويحدد مستواك عبر تمارين ميسرة، ويقدم لك درساً تطبيقياً مصغراً لتتعرف على أسلوبه التعليمي المباشر.',
+    highlight: 'Personal assessment',
+    arabicHighlight: 'تقييم شخصي دقيق'
   },
   {
     step: '03',
     title: 'Receive Your Custom Plan',
     arabicTitle: 'استلم خطتك التعليمية المناسبة',
     description: 'Mahmoud outlines a clear learning roadmap: recommended lesson duration (30, 45, or 60 min), weekly frequency, and material tailored to your lifestyle.',
-    highlight: 'No generic templates'
+    arabicDescription: 'يحدد لك محمود خارطة طريق تعليمية واضحة تشمل مدة الدرس المناسبة (٣٠ أو ٤٥ أو ٦٠ دقيقة)، وعدد الحصص الأسبوعية، والمحتوى المخصص لظروفك.',
+    highlight: 'No generic templates',
+    arabicHighlight: 'خطة مخصصة تماماً'
   },
   {
     step: '04',
     title: 'Learn 1-on-1 with Flexibility',
     arabicTitle: 'تعلم مباشرة عبر زووم بمرونة تامة',
     description: 'Attend private Zoom lessons with direct WhatsApp support between sessions. Need to reschedule? Self-service rescheduling is available up to 3 hours before class.',
-    highlight: '3-hour flexible reschedule'
+    arabicDescription: 'احضر حصصك الفردية الخاصة عبر زووم مع دعم مباشر ومستمر عبر واتساب. هل طرأ لك ظرف؟ يمكنك إعادة الجدولة ذاتياً بكل سهولة حتى ٣ ساعات قبل الدرس.',
+    highlight: '3-hour flexible reschedule',
+    arabicHighlight: 'مرونة حتى ٣ ساعات'
   }
 ];
 
@@ -311,22 +349,26 @@ export const TEACHING_PILLARS = [
   {
     title: 'Start From Where You Actually Are',
     arabicTitle: 'البداية من مستواك الفعلي',
-    description: 'No student is behind. Whether you cannot read a single Arabic letter or you have partial memorization that feels rusty, we begin without judgment and build a solid foundation.'
+    description: 'No student is behind. Whether you cannot read a single Arabic letter or you have partial memorization that feels rusty, we begin without judgment and build a solid foundation.',
+    arabicDescription: 'لا يوجد طالب متأخر. سواء كنت لا تقرأ حرفاً واحداً، أو لديك حفظ قديم ترغب في مراجعته وتثبيته، نبدأ معاً بدون أي أحكام أو حرج لبناء أساس متين.'
   },
   {
     title: 'A Safe Space to Make Mistakes',
     arabicTitle: 'بيئة آمنة تخلو من الحرج',
-    description: 'Reciting Quran or speaking a new language can provoke anxiety. Mahmoud’s lessons are calm, encouraging, and patient. Every correction is delivered with kindness and clarity.'
+    description: 'Reciting Quran or speaking a new language can provoke anxiety. Mahmoud’s lessons are calm, encouraging, and patient. Every correction is delivered with kindness and clarity.',
+    arabicDescription: 'تلاوة القرآن أو التحدث بلغة جديدة قد يسبب التردد أو التوتر. دروس محمود هادئة وصبورة ومشجعة، وكل تصحيح يُقدّم بلطف ومحبة وتدرج.'
   },
   {
     title: 'Pacing Built for Real Life',
     arabicTitle: 'وتيرة تناسب التزاماتك اليومية',
-    description: 'Adults have demanding jobs and families; children have school schedules. We calibrate the lesson duration (30, 45, or 60 minutes) and homework load so you make consistent, stress-free progress.'
+    description: 'Adults have demanding jobs and families; children have school schedules. We calibrate the lesson duration (30, 45, or 60 minutes) and homework load so you make consistent, stress-free progress.',
+    arabicDescription: 'للكبار مسؤوليات عمل وعائلة، وللأطفال جداول مدرسية. نضبط مدة الدرس (٣٠ أو ٤٥ أو ٦٠ دقيقة) والواجبات المنزلية لتستمر في التقدم بدون أي ضغوط.'
   },
   {
     title: 'Direct Teacher Relationship',
     arabicTitle: 'علاقة مباشرة بدون وسطاء',
-    description: 'You are not a ticket number in a marketplace. You message Mahmoud directly on WhatsApp when you have a question between lessons or need to adjust your schedule.'
+    description: 'You are not a ticket number in a marketplace. You message Mahmoud directly on WhatsApp when you have a question between lessons or need to adjust your schedule.',
+    arabicDescription: 'أنت لست مجرد رقم في متجر إلكتروني. تتواصل مع محمود مباشرة على واتساب متى كان لديك سؤال بين الدروس أو احتجت لتنسيق جدولك.'
   }
 ];
 
@@ -334,75 +376,113 @@ export const AUTHENTIC_TESTIMONIALS: TestimonialItem[] = [
   {
     id: 't1',
     quote: "Mahmoud’s patience with my 9-year-old son is exceptional. My son used to dread reading Arabic letters, but now he actually looks forward to his lessons. Mahmoud makes pronunciation games out of difficult Tajweed rules.",
+    arabicQuote: "صبر الأستاذ محمود مع ابني البالغ من العمر ٩ سنوات رائع واستثنائي. كان ابني يتردد ويخاف من نطق الحروف، لكنه الآن ينتظر درسه بشوق وحماس. المعلم يحوّل قواعد التجويد الصعبة إلى أنشطة ممتعة ومبسطة.",
     author: 'S. Tariq',
+    arabicAuthor: 'س. طارق',
     role: 'Parent of 9-year-old student',
+    arabicRole: 'ولي أمر طالب (٩ سنوات)',
     location: 'Toronto, Canada',
+    arabicLocation: 'تورونتو، كندا',
     subject: 'Quran Reading & Tajweed',
-    durationWithMahmoud: '10 months of learning'
+    arabicSubject: 'تلاوة القرآن والتجويد',
+    durationWithMahmoud: '10 months of learning',
+    arabicDurationWithMahmoud: '١٠ أشهر من التعلم المستمر'
   },
   {
     id: 't2',
     quote: "As an adult working in finance in London, I was embarrassed that I couldn't read the Quran smoothly. Mahmoud never made me feel awkward. His English explanations of Arabic grammatical roots and articulation points are razor-sharp.",
+    arabicQuote: "كمهني أعمل في مجال التمويل بلندن، كنت أشعر بالحرج من عدم قدرتي على تلاوة القرآن بسلاسة. الأستاذ محمود أزال هذا الإحراج تماماً بأسلوبه الراقي وشرحه الدقيق لقواعد النحو ومخارج الحروف بصبر عظيم.",
     author: 'K. Rahman',
+    arabicAuthor: 'ك. رحمن',
     role: 'Adult professional learner',
+    arabicRole: 'متعلم مهني',
     location: 'London, United Kingdom',
+    arabicLocation: 'لندن، المملكة المتحدة',
     subject: 'Quran Recitation & Modern Standard Arabic',
-    durationWithMahmoud: '14 months of learning'
+    arabicSubject: 'تلاوة القرآن والعربية الفصحى',
+    durationWithMahmoud: '14 months of learning',
+    arabicDurationWithMahmoud: '١٤ شهراً من التعلم'
   },
   {
     id: 't3',
     quote: "The 30-minute lesson option is perfect for our routine. Having a teacher who lives in Egypt but speaks English so fluently makes all the difference when explaining Aqeedah and Fiqh questions to young teens.",
+    arabicQuote: "خيار الدروس لمدة ٣٠ دقيقة مثالي جداً لجدولنا العائلي. وجود معلم متخرج من الأزهر الشريف ومتقن للإنجليزية بطلاقة يصنع فارقاً هائلاً عند شرح مسائل العقيدة والفقه لأبنائي اليافعين.",
     author: 'A. Mansour',
+    arabicAuthor: 'أ. منصور',
     role: 'Parent of two teenage students',
+    arabicRole: 'ولي أمر لطالبين يافعين',
     location: 'Texas, United States',
+    arabicLocation: 'تكساس، الولايات المتحدة',
     subject: 'Islamic Studies & Tajweed',
-    durationWithMahmoud: '8 months of learning'
+    arabicSubject: 'العلوم الإسلامية والتجويد',
+    durationWithMahmoud: '8 months of learning',
+    arabicDurationWithMahmoud: '٨ أشهر من التعلم'
   },
   {
     id: 't4',
     quote: "Learning Egyptian Arabic conversation with Mahmoud feels like talking with a knowledgeable friend. He explains everyday slang, cultural expressions, and grammar shortcuts that you will never find in formal textbooks.",
+    arabicQuote: "تعلم المحادثة باللهجة المصرية مع الأستاذ محمود يشبه التحدث مع صديق واسع المعرفة. يشرح التعبيرات اليومية والثقافية واختصارات القواعد التي لا توجد في الكتب الأكاديمية الجافة.",
     author: 'D. Miller',
+    arabicAuthor: 'د. ميلر',
     role: 'Language enthusiast & traveler',
+    arabicRole: 'شغوف بتعلم اللغات',
     location: 'Melbourne, Australia',
+    arabicLocation: 'ملبورن، أستراليا',
     subject: 'Egyptian Spoken Arabic',
-    durationWithMahmoud: '6 months of learning'
+    arabicSubject: 'المحادثة باللهجة المصرية',
+    durationWithMahmoud: '6 months of learning',
+    arabicDurationWithMahmoud: '٦ أشهر من التعلم'
   }
 ];
 
 export const FAQS: FAQItem[] = [
   {
     question: 'Is every lesson truly 1-on-1 with Mahmoud?',
+    arabicQuestion: 'هل كل درس فردي ومباشر ١ لـ ١ مع الأستاذ محمود؟',
     answer: 'Yes, 100%. This is Mahmoud’s direct personal teaching practice, not a marketplace or agency. You will never be handed off to another teacher or placed in a group class without your consent.',
+    arabicAnswer: 'نعم، ١٠٠٪. هذه مساحة تعليمية وتدريسية شخصية مباشرة وليست منصة وسيطة أو شركة تسويق. لن يتم تحويلك إلى أي معلم آخر أو وضعك في فصول جماعية، فكل درس مخصص لك وحدك.',
     category: 'general'
   },
   {
     question: 'How does the Free Trial work?',
+    arabicQuestion: 'كيف تعمل الجلسة التجريبية المجانية؟',
     answer: 'The trial is a 30-minute private Zoom lesson (with up to 45 minutes if needed). We get to know your goals, evaluate your current level through simple diagnostic exercises, and conduct a brief mini-lesson. Afterward, Mahmoud shares his recommended learning plan. There is zero pressure and no credit card required.',
+    arabicAnswer: 'الجلسة عبارة عن درس مباشر وخاص عبر زووم لمدة ٣٠ دقيقة (تمتد إلى ٤٥ دقيقة عند الحاجة). نتعرف فيها على أهدافك ونحدد مستواك عبر تمارين بسيطة ومريحة، ونخوض درساً مصغراً لتتعرف على طريقة التدريس والشرح، ثم يقترح المعلم خطتك التعليمية المناسبة. الجلسة مجانية تماماً وبدون أي التزام أو بطاقة بنكية.',
     category: 'trial'
   },
   {
     question: 'What is the cancellation and rescheduling policy?',
+    arabicQuestion: 'ما هي سياسة الإلغاء وإعادة الجدولة؟',
     answer: 'You may cancel or reschedule any lesson free of charge up to 3 hours before the scheduled start time. Inside the 3-hour window, self-service changes are closed and you should message Mahmoud directly on WhatsApp to coordinate.',
+    arabicAnswer: 'يمكنك إلغاء أو إعادة جدولة أي درس مجاناً وبكل مرونة حتى ٣ ساعات قبل موعد الدرس مباشرة من حسابك أو رابط الحجز. وإذا طرأ ظرف طارئ داخل الساعات الثلاث، يمكنك مراسلة المعلم مباشرة عبر واتساب لترتيب موعد بديل.',
     category: 'booking'
   },
   {
     question: 'I cannot read any Arabic at all. Can I still start?',
+    arabicQuestion: 'لا أعرف قراءة الحروف العربية مطلقاً، هل يمكنني البدء؟',
     answer: 'Absolutely. Many of Mahmoud’s students started with zero knowledge of the Arabic script. We begin from the very first letter (Alif), teaching the exact shape, sound, and vowel combinations patiently step by step.',
+    arabicAnswer: 'بالتأكيد وبكل سرور! الكثير من طلابنا بدأوا من الصفر تماماً. نبدأ من الحرف الأول (الألف) خطوة بخطوة، مع التركيز على مخارج الحروف، والحركات، وربط الكلمات بصبر وهدوء تام حتى تنطلق في القراءة بسلاسة.',
     category: 'teaching'
   },
   {
     question: 'What lesson lengths are available?',
+    arabicQuestion: 'ما هي مدد الدروس المتاحة؟',
     answer: 'Standard paid lessons are 30 minutes, 45 minutes, or 60 minutes. Shorter 30-minute sessions are especially popular for young children or busy working professionals, while 60-minute sessions work well for in-depth Arabic grammar or Quran revision.',
+    arabicAnswer: 'نوفر مدد ٣٠ دقيقة، أو ٤٥ دقيقة، أو ٦٠ دقيقة. الجلسات القصيرة (٣٠ دقيقة) ممتازة ومحبوبة جداً للأطفال وأصحاب الجداول المزدحمة لضمان كامل التركيز، بينما تناسب جلسات ٦٠ دقيقة مراجعة القرآن المكثفة وقواعد اللغة العربية المتقدمة.',
     category: 'booking'
   },
   {
     question: 'How do timezones work since Mahmoud is based in Egypt?',
+    arabicQuestion: 'كيف يتم التعامل مع فروق التوقيت حول العالم؟',
     answer: 'All booking times are calculated and shown automatically in your local timezone (e.g., EST, PST, GMT, AEST). Mahmoud handles time in Egypt time so you never have to do mental timezone math.',
+    arabicAnswer: 'يحسب نظام الحجز مواعيدك ويظهرها تلقائياً حسب توقيت مدينتك ومنطقتك الزمنية المحلية (في أمريكا، كندا، بريطانيا، أستراليا، أو الخليج). لن تحتاج أبداً لحساب فارق الساعات ذهنياً.',
     category: 'general'
   },
   {
     question: 'Do I need to create an account to book?',
+    arabicQuestion: 'هل أحتاج لإنشاء حساب مسبق لحجز جلسة؟',
     answer: 'No. The platform supports guest booking. All you need is your name, email, and preferred contact method (such as WhatsApp) so Mahmoud can send your Zoom link and confirmation.',
+    arabicAnswer: 'لا تشترط المنصة أي تعقيدات. يمكنك الحجز كزائر مباشرة عبر إدخال اسمك وبريدك الإلكتروني ورقم واتساب لإرسال رابط زووم وموعد جلستك، ويمكنك في أي وقت تفعيل حسابك لمتابعة كل دروسك وباقاتك بسهولة.',
     category: 'booking'
   }
 ];

@@ -16,7 +16,7 @@ export function BrandGlassCard({
   
   if (intensity === 'none') {
     return (
-      <div className={`glass-card ${interactive ? 'glass-hover cursor-pointer' : ''} ${className}`}>
+      <div className={`glass-card bg-surface ${interactive ? 'glass-hover cursor-pointer' : ''} ${className}`}>
         {children}
       </div>
     );
@@ -24,7 +24,7 @@ export function BrandGlassCard({
 
   // Use the new glass-brand-edge and glass-specular classes
   return (
-    <div className={`glass-card glass-brand-edge glass-specular ${interactive ? 'glass-hover cursor-pointer' : ''} ${className}`}>
+    <div className={`glass-card bg-surface glass-brand-edge glass-specular ${interactive ? 'glass-hover cursor-pointer' : ''} ${className}`}>
       {children}
     </div>
   );

@@ -266,9 +266,9 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-background border border-border text-sm font-semibold text-foreground hover:bg-surface-subtle transition-colors"
+              className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl btn-whatsapp-solid text-sm font-bold shadow-md"
             >
-              <MessageCircle className="w-4 h-4 text-accent" />
+              <MessageCircle className="w-4 h-4 fill-current shrink-0" />
               <span>{isEn ? 'Ask Mahmoud on WhatsApp' : 'استفسار عبر واتساب'}</span>
             </a>
           </div>

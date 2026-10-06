@@ -3,7 +3,7 @@ import { LogOut, User, Settings, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useTeacherAuth } from '../../lib/auth';
 
-export function AccountDropdown({ initials, isAr }: { initials: string; isAr?: boolean }) {
+export function AccountDropdown({ initials = 'S', isAr }: { initials?: string; isAr?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const { signOut } = useTeacherAuth();

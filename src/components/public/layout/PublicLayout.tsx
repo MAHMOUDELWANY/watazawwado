@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { Navbar } from '../../Navbar';
 import { Footer } from '../../Footer';
 import { TrialBookingModal } from '../../TrialBookingModal';
@@ -11,6 +11,8 @@ import { Language } from '../../../types';
 import { BookingMode } from '../../../booking/types';
 import { LearningGuide } from '../../LearningGuide';
 import { useTheme } from '../../ThemeProvider';
+import { OnboardingGuide, OnboardingStep } from '../../ui/OnboardingGuide';
+import { useAppLanguage } from '../../../lib/language';
 
 export interface PublicLayoutContextType {
   lang: Language;
@@ -22,8 +24,9 @@ interface PublicLayoutProps {
 }
 
 export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProps) {
-  const [lang, setLang] = useState<Language>('en');
+  const { lang, toggleLanguage: handleToggleLang } = useAppLanguage();
   const { theme, toggleTheme } = useTheme();
+  const location = useLocation();
 
   const [getStartedModalOpen, setGetStartedModalOpen] = useState<boolean>(Boolean(initialGetStartedOpen));
   const [bookingModalOpen, setBookingModalOpen] = useState<boolean>(false);
@@ -32,6 +35,55 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
   const [manageModalOpen, setManageModalOpen] = useState<boolean>(false);
   const [teacherModalOpen, setTeacherModalOpen] = useState<boolean>(false);
   const [studentModalOpen, setStudentModalOpen] = useState<boolean>(false);
+  const [publicTourOpen, setPublicTourOpen] = useState<boolean>(false);
+
+  // Automatically scroll to top whenever the page route changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [location.pathname]);
+
+  const publicTourSteps: OnboardingStep[] = [
+    {
+      targetId: 'nav-brand',
+      title: lang === 'ar' ? 'منصة وتزودوا' : 'Watazawwado Platform',
+      description: lang === 'ar'
+        ? 'مساحتك الخاصة للتعلم الفردي المباشر في القرآن الكريم واللغة العربية والعلوم الإسلامية.'
+        : 'Your private space for 1-on-1 personalized learning in Quran, Arabic, and Islamic Studies.',
+      position: 'bottom',
+    },
+    {
+      targetId: ['nav-links-desktop', 'mobile-menu-toggle', 'hero-learn-more-btn'],
+      title: lang === 'ar' ? 'أقسام الموقع' : 'Explore Sections',
+      description: lang === 'ar'
+        ? 'تصفح مسارات التعلم، وتعرف على نهج التدريس، والأسعار الشفافة، والأسئلة الشائعة.'
+        : 'Explore study tracks, teaching approach, transparent pricing, and frequently asked questions.',
+      position: 'bottom',
+    },
+    {
+      targetId: 'hero-get-started-btn',
+      title: lang === 'ar' ? 'جلسة تجريبية مجانية' : 'Free 30-Min Trial',
+      description: lang === 'ar'
+        ? 'احجز جلستك التجريبية الأولى مجاناً لتحديد مستواك ومناقشة أهدافك مباشرة بدون أي التزام مالي.'
+        : 'Book your first trial lesson for free to assess your level and discuss your learning goals.',
+      position: 'bottom',
+    },
+    {
+      targetId: 'lang-switch-btn',
+      title: lang === 'ar' ? 'تغيير اللغة' : 'Language Switcher',
+      description: lang === 'ar'
+        ? 'يمكنك التبديل بين الواجهة العربية والإنجليزية بلمسة واحدة في أي وقت.'
+        : 'Switch between English and Arabic interfaces with a single tap at any time.',
+      position: 'bottom',
+    },
+    {
+      targetId: 'theme-toggle-btn',
+      title: lang === 'ar' ? 'الوضع الليلي والنهاري' : 'Day & Night Mode',
+      description: lang === 'ar'
+        ? 'بدّل بين السمة النهارية الهادئة والسمة الليلية المريحة للعينين.'
+        : 'Toggle between warm daytime light mode and comfortable nighttime dark mode.',
+      position: 'bottom',
+    },
+  ];
 
   // Manage RTL / LTR layout and HTML lang attribute
   useEffect(() => {
@@ -60,10 +112,6 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
     return () => window.removeEventListener('hashchange', handleHashCheck);
   }, []);
 
-  const handleToggleLang = () => {
-    setLang((prev) => (prev === 'en' ? 'ar' : 'en'));
-  };
-
   const handleOpenGetStarted = (serviceId?: string) => {
     setPreselectedService(serviceId);
     setGetStartedModalOpen(true);
@@ -85,6 +133,7 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
           onToggleTheme={toggleTheme}
           onOpenTrialModal={(serviceId) => handleOpenGetStarted(serviceId)}
           onOpenManageModal={() => setManageModalOpen(true)}
+          onStartTour={() => setPublicTourOpen(true)}
         />
 
         <Outlet context={{ lang, onOpenTrialModal: handleOpenGetStarted } as PublicLayoutContextType} />
@@ -139,6 +188,14 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
 
         {/* AI Learning Guide */}
         <LearningGuide lang={lang} />
+
+        {/* Interactive Site Tour Guide */}
+        <OnboardingGuide
+          steps={publicTourSteps}
+          isOpen={publicTourOpen}
+          onClose={() => setPublicTourOpen(false)}
+          isAr={lang === 'ar'}
+        />
       </div>
   );
 }

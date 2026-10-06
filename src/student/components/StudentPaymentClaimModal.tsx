@@ -14,6 +14,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { Modal } from '../../components/ui/Modal';
+import { BrandSpinner } from '../../components/ui/BrandLoader';
 import { OFFICIAL_PAYMENT_DETAILS, PaymentOption } from '../../lib/paymentDetails';
 import { buildPaymentWhatsAppUrl } from '../../lib/whatsapp';
 
@@ -205,7 +206,7 @@ export function StudentPaymentClaimModal({
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm sm:text-sm font-semibold transition-colors shadow-xs"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-whatsapp-solid rounded-xl text-sm font-bold shadow-md"
               >
                 <span>{isAr ? 'إرسال الإشعار عبر واتساب' : 'Notify on WhatsApp'}</span>
                 <ExternalLink className="w-3.5 h-3.5" />
@@ -395,7 +396,7 @@ export function StudentPaymentClaimModal({
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <BrandSpinner size={16} />
                       <span>{isAr ? 'جارٍ الإرسال...' : 'Submitting...'}</span>
                     </>
                   ) : (

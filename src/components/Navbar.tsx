@@ -1,11 +1,25 @@
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
+import { Link, useLocation } from 'react-router-dom';
+import {
+  Menu,
+  X,
+  Globe,
+  Compass,
+  BookOpen,
+  HelpCircle,
+  Sparkles,
+  Info,
+  Calendar,
+  CreditCard,
+  User,
+  Shield,
+  ArrowRight
+} from 'lucide-react';
 import { BrandLogo } from './ui/BrandLogo';
 import { ThemeToggle } from './ui/ThemeToggle';
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Link } from 'react-router-dom';
-import { Menu, X, Globe } from 'lucide-react';
 import { Language, ThemeMode } from '../types';
-import { ARABIC_TRANSLATIONS } from '../data/content';
+import { useScrollPaletteTransition } from '../lib/useScrollPaletteTransition';
 
 interface NavbarProps {
   lang: Language;
@@ -14,170 +28,297 @@ interface NavbarProps {
   onToggleTheme: () => void;
   onOpenTrialModal: (serviceId?: string) => void;
   onOpenManageModal?: () => void;
+  onStartTour?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   lang,
   onToggleLang,
   onOpenTrialModal,
-  onOpenManageModal
+  onStartTour,
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [sideDrawerOpen, setSideDrawerOpen] = useState(false);
+  const location = useLocation();
+  const isEn = lang === 'en';
+  const isRtl = lang === 'ar';
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Lock body scroll safely when drawer is open
+  useEffect(() => {
+    if (sideDrawerOpen) {
+      const prevOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = prevOverflow;
+      };
+    }
+  }, [sideDrawerOpen]);
+
+  // Close drawer on route change
+  useEffect(() => {
+    setSideDrawerOpen(false);
+  }, [location.pathname]);
+
   const navLinks = [
-    { href: '/about', label: lang === 'en' ? 'About' : ARABIC_TRANSLATIONS.nav.about },
-    { href: '/learning', label: lang === 'en' ? 'Lessons' : ARABIC_TRANSLATIONS.nav.services },
-    { href: '/pricing', label: lang === 'en' ? 'Pricing' : 'الأسعار' },
-    { href: '/faq', label: lang === 'en' ? 'FAQ' : ARABIC_TRANSLATIONS.nav.faqs },
+    { href: '/learning', label: isEn ? 'Lessons & Syllabus' : 'الدروس والبرامج', icon: BookOpen },
+    { href: '/how-it-works', label: isEn ? 'How It Works' : 'كيف نعمل', icon: Sparkles },
+    { href: '/about', label: isEn ? 'About Ustadh Mahmoud' : 'عن المعلم والمنصة', icon: Info },
+    { href: '/pricing', label: isEn ? 'Pricing & Packages' : 'الأسعار والباقات', icon: CreditCard },
+    { href: '/faq', label: isEn ? 'FAQ' : 'الأسئلة الشائعة', icon: HelpCircle },
   ];
 
+  const { scrollYProgress } = useScroll();
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 300,
+    damping: 35,
+    restDelta: 0.001
+  });
+
+  const { currentColor } = useScrollPaletteTransition();
+
   return (
-    <header
-      id="main-navigation"
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-background/80 backdrop-blur-lg shadow-sm border-b border-border/50'
-          : 'bg-transparent border-b border-transparent'
-      }`}
-    >
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 sm:h-20 transition-all duration-300">
-        {/* Brand identity */}
-        <Link
-          to="/"
-          className="group flex items-center gap-3 text-foreground focus:outline-none rounded-md"
-        >
-          <BrandLogo variant="compact" />
+    <>
+      {/* ─── 4-COLOR HERITAGE SCROLL PROGRESS BAR AT TOP OF SCREEN ────────────── */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-[3.5px] z-50 pointer-events-none origin-left rtl:origin-right transition-shadow duration-300"
+        style={{
+          scaleX: smoothProgress,
+          background: isRtl
+            ? 'linear-gradient(to left, #087D91 0%, #C51F24 35%, #8B4935 70%, #E5A93C 100%)'
+            : 'linear-gradient(to right, #087D91 0%, #C51F24 35%, #8B4935 70%, #E5A93C 100%)',
+          boxShadow: `0 1px 12px ${currentColor.hex}70, 0 1px 4px rgba(8, 125, 145, 0.4)`,
+        }}
+      />
+
+      {/* ─── SLEEK, UNCLUTTERED TOP NAVIGATION BAR (Desktop & Mobile) ─────────── */}
+      <header
+        id="main-navigation"
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 w-full ${
+          isScrolled
+            ? 'shadow-xs border-b border-border/80'
+            : 'border-b border-border/40'
+        }`}
+        style={{ backgroundColor: 'var(--surface)', opacity: 1 }}
+      >
+        <div className="w-full max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 flex items-center justify-between h-16 sm:h-20 transition-all duration-300">
           
-          <div className="flex flex-col">
-            <span className="font-display text-lg font-semibold  text-foreground group-hover:text-interactive transition-colors">
-              Watazawwado
+          {/* Brand Identity */}
+          <Link
+            to="/"
+            id="nav-brand"
+            data-tour="nav-brand"
+            className="group flex items-center gap-2 sm:gap-2.5 text-foreground focus:outline-none rounded-lg shrink-0 min-w-0"
+          >
+            <BrandLogo variant="compact" />
+            <span className="font-display text-lg sm:text-xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors truncate">
+              {isEn ? 'Watazawwado' : 'وتزودوا'}
             </span>
-            <span className="text-[13px] text-muted-foreground tracking-wider uppercase">
-              Ustadh Mahmoud
-            </span>
-          </div>
-        </Link>
+          </Link>
 
-        {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-6" aria-label="Main Navigation">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              to={link.href}
-              className="text-sm font-medium text-muted-foreground hover:text-interactive transition-colors py-1"
+          {/* ─── RIGHT CONTROLS: Clean, Spacious, and Accessible on Both Desktop & Mobile ─── */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* Theme Toggle */}
+            <div className="flex items-center">
+              <ThemeToggle />
+            </div>
+
+            {/* Language Switcher */}
+            <button
+              onClick={onToggleLang}
+              id="lang-switch-btn"
+              data-tour="lang-switch-btn"
+              aria-label="Toggle language between English and Arabic"
+              className="flex items-center gap-1 sm:gap-1.5 px-2.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold text-foreground hover:bg-surface-subtle border border-border/80 transition-colors cursor-pointer shadow-2xs"
             >
-              {link.label}
-            </Link>
-          ))}
+              <Globe className="w-3.5 h-3.5 text-accent transition-colors" />
+              <span>{isEn ? 'العربية' : 'EN'}</span>
+            </button>
 
-          {onOpenManageModal && (
+            {/* ─── SIDEBAR TOGGLE BUTTON (Opens the side menu on Desktop and Mobile) ─── */}
             <button
               type="button"
-              onClick={onOpenManageModal}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer border-l border-border pl-4"
+              onClick={() => setSideDrawerOpen(true)}
+              id="mobile-menu-toggle"
+              data-tour="mobile-menu-toggle"
+              aria-label={isEn ? 'Open side navigation menu' : 'فتح القائمة الجانبية'}
+              aria-expanded={sideDrawerOpen}
+              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-surface hover:bg-surface-subtle text-foreground border border-border/80 shadow-2xs active:scale-95 transition-all cursor-pointer touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
-              {lang === 'en' ? 'Manage Booking' : 'إدارة الحجز'}
+              <Menu className="w-5 h-5 text-foreground" />
+              <span className="hidden md:inline text-xs sm:text-sm font-bold">
+                {isEn ? 'Menu' : 'القائمة'}
+              </span>
             </button>
-          )}
-        </nav>
+          </div>
 
-        {/* Right Controls: Theme, Language, and CTA */}
-        <div className="flex items-center gap-2 sm:gap-2.5">
-          {/* Language Switcher */}
-          <button
-            onClick={onToggleLang}
-            id="lang-switch-btn"
-            aria-label="Toggle language between English and Arabic"
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium text-foreground hover:bg-surface-subtle border border-border transition-colors cursor-pointer"
-          >
-            <Globe className="w-4 h-4 text-interactive transition-colors" />
-            <span>{lang === 'en' ? 'العربية' : 'EN'}</span>
-          </button>
-
-          {/* Theme Switcher */}
-          <div className="flex items-center"><ThemeToggle /></div>
-
-          {/* Primary CTA */}
-          <button
-            onClick={() => onOpenTrialModal()}
-            id="header-get-started-cta"
-            className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl btn-primary-material text-sm font-medium transition-all shadow-xs cursor-pointer"
-          >
-            <span>{lang === 'en' ? 'Free 30-Min Trial' : 'ابدأ جلستك الأولى'}</span>
-          </button>
-
-          {/* Mobile Hamburger Menu */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            id="mobile-menu-toggle"
-            aria-label="Open mobile menu"
-            className="md:hidden p-2 rounded-lg text-foreground hover:bg-surface-subtle border border-border"
-          >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
         </div>
-      </div>
+      </header>
 
-      {/* Mobile Drawer Navigation */}
+      {/* ─── DEDICATED SIDE DRAWER NAVIGATION (Desktop & Mobile) ─────────────── */}
       <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25, ease: 'easeInOut' }}
-            className="md:hidden bg-background border-b border-border px-6 py-6 shadow-lg overflow-hidden"
-          >
-            <nav className="flex flex-col gap-3.5">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-base font-medium text-foreground hover:text-interactive transition-colors py-1"
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <div className="pt-4 border-t border-border space-y-2.5">
+        {sideDrawerOpen && (
+          <div className="fixed inset-0 z-50 overflow-hidden">
+            {/* Backdrop Overlay */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setSideDrawerOpen(false)}
+              className="fixed inset-0 bg-black/75 backdrop-blur-xs"
+              aria-hidden="true"
+            />
+
+            {/* Drawer Panel: Fully Opaque, No Transparency, Smooth Touch Pan */}
+            <motion.div
+              initial={{ x: isRtl ? '100%' : '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: isRtl ? '100%' : '-100%' }}
+              transition={{ type: 'spring', damping: 28, stiffness: 280 }}
+              className={`fixed top-0 bottom-0 ${
+                isRtl ? 'right-0' : 'left-0'
+              } w-full max-w-[320px] sm:max-w-[360px] md:max-w-[380px] text-foreground border-inline-end border-border shadow-2xl flex flex-col justify-between z-10 overscroll-contain overflow-y-auto touch-pan-y`}
+              style={{ backgroundColor: 'var(--surface)', opacity: 1 }}
+            >
+              {/* Drawer Top Bar */}
+              <div className="h-16 sm:h-20 px-5 border-b border-border/80 flex items-center justify-between shrink-0 bg-surface">
+                <div className="flex items-center gap-2.5">
+                  <BrandLogo variant="compact" />
+                  <div className="flex flex-col text-start">
+                    <span className="font-display font-bold text-base sm:text-lg text-foreground leading-none">
+                      {isEn ? 'Watazawwado' : 'وتزودوا'}
+                    </span>
+                    <span className="text-[11px] text-muted-foreground mt-0.5">
+                      {isEn ? 'Main Navigation' : 'قائمة المنصة'}
+                    </span>
+                  </div>
+                </div>
 
                 <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    onOpenTrialModal();
-                  }}
-                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl btn-primary-material font-medium text-sm shadow-xs"
+                  type="button"
+                  onClick={() => setSideDrawerOpen(false)}
+                  aria-label={isEn ? 'Close menu' : 'إغلاق القائمة'}
+                  className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle border border-border/60 transition-colors cursor-pointer"
                 >
-                  <span>{lang === 'en' ? 'Book Free 30-Min Trial' : 'احجز جلستك المجانية (٣٠ دقيقة)'}</span>
+                  <X className="w-5 h-5" />
                 </button>
+              </div>
 
-                {onOpenManageModal && (
+              {/* Drawer Scrollable Content Area */}
+              <div className="flex-1 px-4 py-5 space-y-6 overflow-y-auto touch-pan-y overscroll-contain">
+                
+                {/* 1. BOOKINGS & TRIALS FIRST */}
+                <div className="p-4 bg-primary/10 rounded-2xl border border-primary/25 space-y-2.5">
+                  <div className="flex items-center gap-2 text-primary font-bold text-sm">
+                    <Calendar className="w-4 h-4 shrink-0" />
+                    <span>{isEn ? 'Book Free Trial Lesson' : 'احجز جلستك التجريبية مجاناً'}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {isEn
+                      ? '30-minute private trial with Ustadh Mahmoud.'
+                      : 'جلسة خاصة ٣٠ دقيقة مع الأستاذ محمود للتعرف على مستواك وتحديد أهدافك.'}
+                  </p>
                   <button
                     type="button"
                     onClick={() => {
-                      setMobileMenuOpen(false);
-                      onOpenManageModal();
+                      setSideDrawerOpen(false);
+                      onOpenTrialModal();
                     }}
-                    className="w-full py-2.5 rounded-xl border border-border text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                    className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl btn-primary-material text-white font-bold text-xs shadow-xs active:scale-95 transition-all cursor-pointer"
                   >
-                    {lang === 'en' ? 'Manage or Reschedule Booking' : 'إدارة أو تعديل موعد الحجز'}
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>{isEn ? 'Claim Free Trial Now' : 'احجز جلستك المجانية'}</span>
+                  </button>
+                </div>
+
+                {/* 2. PAGES & SYLLABUS NAVIGATION LINKS */}
+                <div className="space-y-1">
+                  <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider px-3 pb-1 block">
+                    {isEn ? 'Pages & Syllabus' : 'صفحات وأقسام المنصة'}
+                  </span>
+                  {navLinks.map((link) => {
+                    const Icon = link.icon;
+                    const isActive = location.pathname === link.href;
+                    return (
+                      <Link
+                        key={link.href}
+                        to={link.href}
+                        onClick={() => setSideDrawerOpen(false)}
+                        className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                          isActive
+                            ? 'bg-primary/10 text-primary border border-primary/25'
+                            : 'text-foreground hover:bg-surface-subtle hover:text-primary'
+                        }`}
+                      >
+                        <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-primary' : 'text-accent'}`} />
+                        <span>{link.label}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+
+                {/* 3. PORTAL DIRECT ACCESS (Student & Teacher) */}
+                <div className="pt-3 border-t border-border/60 space-y-2">
+                  <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider px-3 pb-1 block">
+                    {isEn ? 'Platform Portals' : 'بوابات المنصة'}
+                  </span>
+
+                  <Link
+                    to="/student?auth=login"
+                    onClick={() => setSideDrawerOpen(false)}
+                    className="flex items-center justify-between px-3.5 py-2.5 rounded-xl border border-border/80 bg-surface-subtle/50 hover:bg-surface-subtle text-foreground text-sm font-semibold transition-colors"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <User className="w-4 h-4 text-primary shrink-0" />
+                      <span>{isEn ? 'Student Portal' : 'بوابة الطالب (تسجيل الدخول)'}</span>
+                    </div>
+                    <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180 text-muted-foreground" />
+                  </Link>
+
+                  <Link
+                    to="/staff/login"
+                    onClick={() => setSideDrawerOpen(false)}
+                    className="flex items-center justify-between px-3.5 py-2.5 rounded-xl border border-border/80 bg-surface-subtle/50 hover:bg-surface-subtle text-foreground text-sm font-semibold transition-colors"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <Shield className="w-4 h-4 text-accent shrink-0" />
+                      <span>{isEn ? 'Teacher Workspace' : 'بوابة المعلم والإدارة'}</span>
+                    </div>
+                    <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180 text-muted-foreground" />
+                  </Link>
+                </div>
+
+              </div>
+
+              {/* Drawer Bottom Footer (Tour guide button) */}
+              <div className="p-4 border-t border-border/80 bg-surface shrink-0 space-y-2">
+                {onStartTour && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSideDrawerOpen(false);
+                      onStartTour();
+                    }}
+                    className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border border-teal-500/30 bg-teal-500/10 text-teal-800 dark:text-teal-200 text-xs sm:text-sm font-bold hover:bg-teal-500/20 transition-colors cursor-pointer shadow-2xs"
+                  >
+                    <Compass className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                    <span>{isEn ? 'Start Interactive Site Tour' : 'الجولة الاستكشافية للموقع'}</span>
                   </button>
                 )}
               </div>
-            </nav>
-          </motion.div>
+
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
-    </header>
+    </>
   );
 };
-

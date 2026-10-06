@@ -86,10 +86,10 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-6 end-6 z-50 p-4 rounded-full shadow-xl bg-primary text-primary-foreground hover:bg-primary-hover transition-colors cursor-pointer flex items-center justify-center group"
+            className="fixed bottom-6 end-6 z-50 p-4 rounded-full shadow-xl bg-gradient-to-r from-teal-600 via-primary to-accent text-white hover:opacity-95 transition-all cursor-pointer flex items-center justify-center group shadow-teal-500/20"
           >
-            <Sparkles className="w-6 h-6" />
-            <span className="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs group-hover:ms-2 transition-all duration-300 ease-in-out text-sm font-medium">
+            <Sparkles className="w-6 h-6 animate-pulse" />
+            <span className="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs group-hover:ms-2 transition-all duration-300 ease-in-out text-sm font-bold">
               {isEn ? 'Learning Guide' : 'مرشد التعلم'}
             </span>
           </motion.button>
@@ -100,10 +100,12 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-6 end-6 z-50 w-[350px] max-w-[calc(100vw-2rem)] h-[500px] max-h-[calc(100vh-6rem)] glass-card rounded-2xl shadow-2xl border border-border overflow-hidden flex flex-col"
+            initial={{ opacity: 0, scale: 0.92, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.92, y: 16 }}
+            transition={{ type: 'spring', damping: 26, stiffness: 320 }}
+            className="fixed bottom-6 end-4 sm:end-6 z-50 w-[calc(100vw-2rem)] sm:w-[360px] h-[520px] max-h-[calc(100dvh-5rem)] rounded-2xl shadow-2xl border border-border overflow-hidden flex flex-col origin-bottom-right rtl:origin-bottom-left"
+            style={{ backgroundColor: 'var(--surface)', opacity: 1 }}
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 glass-surface border-b border-border">

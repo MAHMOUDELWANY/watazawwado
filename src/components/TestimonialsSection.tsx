@@ -51,9 +51,9 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ lang }
               className="p-8 sm:p-10 rounded-2xl glass-card border-none flex flex-col justify-between shadow-2xs hover:shadow-xs transition-all cursor-default"
             >
               <div>
-                <Quote className="w-8 h-8 text-accent/40 mb-4" />
+                <Quote className="w-8 h-8 text-teal-600/40 dark:text-teal-400/40 mb-4" />
                 <p className="font-display text-base sm:text-lg text-foreground leading-relaxed italic">
-                  “{testimonial.quote}”
+                  “{isEn ? testimonial.quote : (testimonial.arabicQuote || testimonial.quote)}”
                 </p>
               </div>
 
@@ -61,27 +61,27 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ lang }
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <h3 className="font-display text-base font-semibold text-foreground">
-                      {testimonial.author}
+                      {isEn ? testimonial.author : (testimonial.arabicAuthor || testimonial.author)}
                     </h3>
-                    <p className="text-sm text-primary font-medium">
-                      {testimonial.role}
+                    <p className="text-sm text-teal-700 dark:text-teal-300 font-medium">
+                      {isEn ? testimonial.role : (testimonial.arabicRole || testimonial.role)}
                     </p>
                   </div>
                   <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                     <MapPin className="w-3.5 h-3.5 text-accent" />
-                    <span>{testimonial.location}</span>
+                    <span>{isEn ? testimonial.location : (testimonial.arabicLocation || testimonial.location)}</span>
                   </div>
                 </div>
 
                 <div className="mt-3 flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
                   <span className="flex items-center gap-1">
                     <BookOpen className="w-3 h-3 text-accent" />
-                    {testimonial.subject}
+                    {isEn ? testimonial.subject : (testimonial.arabicSubject || testimonial.subject)}
                   </span>
                   <span>•</span>
                   <span className="flex items-center gap-1">
                     <Clock className="w-3 h-3 text-accent" />
-                    {testimonial.durationWithMahmoud}
+                    {isEn ? testimonial.durationWithMahmoud : (testimonial.arabicDurationWithMahmoud || testimonial.durationWithMahmoud)}
                   </span>
                 </div>
               </div>

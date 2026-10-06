@@ -409,7 +409,7 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
     if (!isConfigured) return { success: false, error: 'Authentication is unavailable.' };
     try {
       const { error } = await supabase.auth.resend({
-        type,
+        type: type as any,
         email: email.toLowerCase().trim()
       });
       if (error) return { success: false, error: error.message };

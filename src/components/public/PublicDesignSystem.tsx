@@ -94,17 +94,20 @@ export function EditorialHeading({
 
 interface StudyLineProps {
   className?: string;
-  variant?: 'default' | 'accent';
+  variant?: 'default' | 'accent' | 'gradient' | 'teal';
 }
 
 export function StudyLine({ className, variant = 'default' }: StudyLineProps) {
+  const variantClass = {
+    default: 'study-line',
+    accent: 'study-line--accent',
+    gradient: 'h-[1px] border-none bg-gradient-to-r from-transparent via-teal-500/30 via-crimson/25 to-transparent',
+    teal: 'h-[1px] border-none bg-gradient-to-r from-transparent via-teal-500/40 to-transparent',
+  }[variant];
+
   return (
     <hr
-      className={cn(
-        variant === 'accent' ? 'study-line--accent' : 'study-line',
-        'my-8',
-        className
-      )}
+      className={cn(variantClass, 'my-8', className)}
       aria-hidden="true"
     />
   );
@@ -160,12 +163,10 @@ export function PortraitFrame({ src, alt, className, maxWidth = 400 }: PortraitF
 }
 
 // ─── PUBLIC BUTTON ──────────────────────────────────────────────────────────
-// Button variants for public pages using the new brand palette.
-// These use teal as primary action, NOT sage-green.
-// Separate from the shared ui/Button to avoid impacting authenticated areas.
+// Button variants for public pages using the 4-color Islamic architectural heritage palette.
 
 interface PublicButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'text';
+  variant?: 'primary' | 'secondary' | 'teal' | 'terracotta' | 'islamic-gradient' | 'outline-teal' | 'ghost' | 'text';
   size?: 'sm' | 'md' | 'lg';
   children: React.ReactNode;
 }
@@ -178,13 +179,17 @@ export function PublicButton({
   disabled,
   ...props 
 }: PublicButtonProps) {
-  const base = "inline-flex items-center justify-center font-medium transition-all ease-premium active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
+  const base = "inline-flex items-center justify-center font-medium transition-all ease-premium active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none cursor-pointer";
   
   const variants = {
-    primary: "bg-primary text-primary-foreground hover:bg-primary-hover rounded-md shadow-sm",
-    secondary: "bg-secondary/40 text-foreground hover:bg-secondary/60 rounded-md border border-border-subtle",
-    ghost: "text-foreground hover:bg-muted rounded-md",
-    text: "text-primary hover:text-primary-hover underline-offset-4 hover:underline",
+    primary: "btn-primary-material rounded-xl text-white font-bold shadow-md",
+    teal: "btn-teal-material rounded-xl text-white font-bold shadow-md",
+    terracotta: "btn-terracotta-material rounded-xl text-white font-bold shadow-md",
+    'islamic-gradient': "bg-islamic-gradient text-white hover:opacity-95 rounded-xl font-bold shadow-md",
+    secondary: "bg-teal-500/10 text-teal-800 dark:text-teal-200 border border-teal-500/30 hover:bg-teal-500/20 rounded-xl font-semibold",
+    'outline-teal': "border border-teal-600/40 text-teal-800 dark:text-teal-200 hover:bg-teal-500/10 rounded-xl font-semibold",
+    ghost: "text-foreground hover:bg-surface-subtle rounded-xl",
+    text: "text-teal-700 dark:text-teal-300 hover:text-teal-800 underline-offset-4 hover:underline",
   };
 
   const sizes = {
@@ -237,16 +242,16 @@ export function TestimonialQuote({ quote, name, detail, className }: Testimonial
     <blockquote className={cn('relative', className)}>
       {/* Subtle opening quote mark */}
       <span 
-        className="absolute -top-4 -left-2 rtl:-right-2 rtl:left-auto text-5xl font-editorial text-accent/20 select-none leading-none"
+        className="absolute -top-4 -left-2 rtl:-right-2 rtl:left-auto text-5xl font-editorial text-secondary/30 select-none leading-none"
         aria-hidden="true"
       >
         "
       </span>
-      <p className="text-lg sm:text-xl text-foreground leading-relaxed font-light ps-4 border-s-2 border-accent/30">
+      <p className="text-lg sm:text-xl text-foreground leading-relaxed font-light ps-4 border-s-2 border-secondary/40">
         {quote}
       </p>
       <footer className="mt-4 ps-4">
-        <cite className="not-italic text-sm font-medium text-foreground">{name}</cite>
+        <cite className="not-italic text-sm font-semibold text-foreground">{name}</cite>
         {detail && (
           <span className="block text-sm text-muted-foreground mt-0.5">{detail}</span>
         )}
@@ -257,24 +262,37 @@ export function TestimonialQuote({ quote, name, detail, className }: Testimonial
 
 // ─── LEARNING AREA ITEM ─────────────────────────────────────────────────────
 // A learning area entry for the taxonomy grid.
-// Editorial layout, not a card. Uses accent color coding per area.
+// Editorial layout with vibrant heritage color accents.
 
 interface LearningAreaItemProps {
   title: string;
   description: string;
   areaClass?: string;
+  icon?: React.ReactNode;
+  badge?: string;
+  actionLabel?: string;
   className?: string;
   onClick?: () => void;
 }
 
-export function LearningAreaItem({ title, description, areaClass, className, onClick }: LearningAreaItemProps) {
+export function LearningAreaItem({ 
+  title, 
+  description, 
+  areaClass, 
+  icon, 
+  badge, 
+  actionLabel,
+  className, 
+  onClick 
+}: LearningAreaItemProps) {
   const Component = onClick ? 'button' : 'div';
+  const isArabic = typeof document !== 'undefined' && document.documentElement.lang === 'ar';
   
   return (
     <Component
       className={cn(
-        'text-start group p-5 rounded-lg border border-border-subtle hover:border-border transition-all',
-        'hover:bg-surface-subtle/50',
+        'text-start group p-6 rounded-2xl border border-border/80 hover:border-border transition-all duration-300',
+        'bg-surface/80 hover:bg-surface shadow-xs hover:shadow-md hover:-translate-y-0.5 relative overflow-hidden',
         onClick && 'cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-focus',
         areaClass,
         className
@@ -282,18 +300,54 @@ export function LearningAreaItem({ title, description, areaClass, className, onC
       onClick={onClick}
       type={onClick ? 'button' : undefined}
     >
-      {/* Accent bar */}
+      {/* Subtle color glow accent top line */}
       <div 
-        className="w-8 h-0.5 mb-3 rounded-full transition-all group-hover:w-12"
-        style={{ backgroundColor: 'var(--area-accent, var(--accent))' }}
+        className="absolute top-0 inset-x-0 h-1 transition-all group-hover:h-1.5"
+        style={{ backgroundColor: 'var(--area-accent, var(--teal))' }}
         aria-hidden="true"
       />
-      <h3 className="text-lg font-semibold text-foreground mb-1.5 font-editorial">
+
+      <div className="flex items-center justify-between gap-3 mb-3">
+        {icon && (
+          <div 
+            className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105"
+            style={{ 
+              backgroundColor: 'color-mix(in srgb, var(--area-accent, var(--teal)) 14%, transparent)',
+              color: 'var(--area-accent, var(--teal))'
+            }}
+          >
+            {icon}
+          </div>
+        )}
+        {badge && (
+          <span 
+            className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"
+            style={{
+              backgroundColor: 'color-mix(in srgb, var(--area-accent, var(--teal)) 12%, transparent)',
+              color: 'var(--area-accent, var(--teal))'
+            }}
+          >
+            {badge}
+          </span>
+        )}
+      </div>
+
+      <h3 className="text-xl font-bold text-foreground mb-2 font-editorial group-hover:text-primary transition-colors">
         {title}
       </h3>
       <p className="text-sm text-muted-foreground leading-relaxed">
         {description}
       </p>
+
+      {onClick && (
+        <div 
+          className="mt-4 flex items-center gap-1.5 text-xs font-bold transition-all group-hover:gap-2.5"
+          style={{ color: 'var(--area-accent, var(--teal))' }}
+        >
+          <span>{actionLabel || (isArabic ? 'استكشف المسار' : 'Explore Track')}</span>
+          <span className="rtl:rotate-180">→</span>
+        </div>
+      )}
     </Component>
   );
 }

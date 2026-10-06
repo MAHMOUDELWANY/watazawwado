@@ -19,7 +19,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ lang }) => {
   return (
     <section
       id="faq"
-      className="py-20 md:py-28 bg-background border-b border-border/80 transition-colors"
+      className="py-20 md:py-28 bg-background border-b border-border/80 transition-colors overflow-hidden"
     >
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -68,11 +68,11 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ lang }) => {
                   aria-expanded={isOpen}
                 >
                   <span className="font-display text-base sm:text-lg font-medium text-foreground">
-                    {faq.question}
+                    {isEn ? faq.question : (faq.arabicQuestion || faq.question)}
                   </span>
                   <span
                     className={`p-1.5 rounded-lg shrink-0 transition-transform duration-200 ${
-                      isOpen ? 'rotate-180 bg-secondary/30 text-accent' : 'glass-surface text-muted-foreground'
+                      isOpen ? 'rotate-180 bg-teal-500/20 text-teal-700 dark:text-teal-300' : 'glass-surface text-muted-foreground'
                     }`}
                   >
                     <ChevronDown className="w-4 h-4" />
@@ -93,7 +93,7 @@ export const FAQSection: React.FC<FAQSectionProps> = ({ lang }) => {
                       className="overflow-hidden"
                     >
                       <div className="px-6 pb-6 pt-1 text-sm text-muted-foreground leading-relaxed border-t border-border">
-                        {faq.answer}
+                        {isEn ? faq.answer : (faq.arabicAnswer || faq.answer)}
                       </div>
                     </motion.div>
                   )}
