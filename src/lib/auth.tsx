@@ -371,7 +371,7 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
         ? `${window.location.origin}/student`
         : undefined;
 
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email: normalizedEmail,
         password,
         options: {
@@ -382,6 +382,15 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
         }
       });
       if (error) return { success: false, error: error.message };
+
+      // In Supabase, when an email is already registered, data.user is returned with empty identities [] and no error
+      if (data?.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+        return {
+          success: false,
+          error: 'هذا البريد الإلكتروني مسجل بالفعل في المنصة. يرجى تسجيل الدخول مباشرة أو استعادة كلمة المرور.'
+        };
+      }
+
       return { success: true };
     } catch (err: any) {
       return { success: false, error: err.message };
