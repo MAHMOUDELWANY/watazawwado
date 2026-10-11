@@ -1361,3 +1361,78 @@ h3, .text-heading-lg {
   .animate-brand-dot-3 { animation: brandDotBounce 1.4s infinite ease-in-out; animation-delay: 0.36s; }
   .animate-brand-dot-4 { animation: brandDotBounce 1.4s infinite ease-in-out; animation-delay: 0.54s; }
 
+  /* ============================================================
+     ORBITAL RINGS ANIMATION ("بتلف حوالين بعضها")
+     Multi-axis celestial orbital rings revolving around each other
+     ============================================================ */
+  @keyframes orbitSpinZ {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  @keyframes orbitSpinZReverse {
+    0% { transform: rotate(360deg); }
+    100% { transform: rotate(0deg); }
+  }
+
+  @keyframes orbit3DAngle1 {
+    0% {
+      transform: rotateX(65deg) rotateY(25deg) rotateZ(0deg);
+    }
+    100% {
+      transform: rotateX(65deg) rotateY(25deg) rotateZ(360deg);
+    }
+  }
+
+  @keyframes orbit3DAngle2 {
+    0% {
+      transform: rotateX(65deg) rotateY(-35deg) rotateZ(360deg);
+    }
+    100% {
+      transform: rotateX(65deg) rotateY(-35deg) rotateZ(0deg);
+    }
+  }
+
+  @keyframes orbit3DAngle3 {
+    0% {
+      transform: rotateX(25deg) rotateY(65deg) rotateZ(0deg);
+    }
+    100% {
+      transform: rotateX(25deg) rotateY(65deg) rotateZ(360deg);
+    }
+  }
+
+  @keyframes pulseGlowRing {
+    0%, 100% { opacity: 0.65; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.06); }
+  }
+
+  .animate-orbit-z {
+    animation: orbitSpinZ 10s linear infinite;
+  }
+  .animate-orbit-z-fast {
+    animation: orbitSpinZ 4.5s linear infinite;
+  }
+  .animate-orbit-z-reverse {
+    animation: orbitSpinZReverse 12s linear infinite;
+  }
+  .animate-orbit-3d-1 {
+    animation: orbit3DAngle1 9s linear infinite;
+  }
+  .animate-orbit-3d-2 {
+    animation: orbit3DAngle2 7s linear infinite;
+  }
+  .animate-orbit-3d-3 {
+    animation: orbit3DAngle3 11s linear infinite;
+  }
+  .animate-pulse-glow {
+    animation: pulseGlowRing 3s ease-in-out infinite;
+  }
+
+  .font-thmanyah-serif {
+    font-family: 'Thmanyah Serif Display', 'Thmanyah Display', serif !important;
+  }
+  .font-thmanyah-sans {
+    font-family: 'Thmanyah Sans', sans-serif !important;
+  }
+

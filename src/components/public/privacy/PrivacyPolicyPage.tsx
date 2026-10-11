@@ -1,7 +1,7 @@
 import React from 'react';
 import { useOutletContext, Link } from 'react-router-dom';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
-import { PublicSection, EditorialHeading, MarginNote, BrandGlassCard } from '../PublicDesignSystem';
+import { PublicSection, EditorialHeading, MarginNote } from '../PublicDesignSystem';
 import { ShieldCheck, Lock, Eye, FileText, Mail, Globe, CheckCircle2 } from 'lucide-react';
 
 export function PrivacyPolicyPage() {

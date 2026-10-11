@@ -5,6 +5,7 @@ import { Mail, Lock, User, X } from 'lucide-react';
 import { BrandLoader, BrandSpinner } from './ui/BrandLoader';
 import { useTeacherAuth } from '../lib/auth'; // it's now AuthProvider
 import { useNavigate } from 'react-router-dom';
+import { OtpVerificationCard } from './auth/OtpVerificationCard';
 
 interface StudentAuthModalProps {
   isOpen: boolean;
@@ -47,6 +48,8 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
       const hash = window.location.hash.toLowerCase();
       if (hash.includes('type=recovery') || hash === '#reset-password') {
         setView('update-password');
+      } else if (window.location.search.includes('auth=verify') || hash.includes('verify')) {
+        setView('verify');
       }
     }
   }, [isOpen]);
@@ -157,17 +160,44 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="glass-dialog rounded-3xl w-full max-w-md overflow-hidden relative shadow-2xl"
+            className={`glass-dialog rounded-3xl w-full ${view === 'verify' ? 'max-w-lg' : 'max-w-md'} overflow-hidden relative shadow-2xl`}
           >
             <button
               onClick={onClose}
-          aria-label="Close dialog"
-          className="absolute top-4 end-4 p-2 text-muted-foreground hover:text-foreground hover:bg-surface-subtle rounded-full transition-colors cursor-pointer"
-        >
-          <X className="w-5 h-5" />
-        </button>
+              aria-label="Close dialog"
+              className="absolute top-4 end-4 p-2 text-muted-foreground hover:text-foreground hover:bg-surface-subtle rounded-full transition-colors cursor-pointer z-20"
+            >
+              <X className="w-5 h-5" />
+            </button>
 
-          <div className="p-7 sm:p-8">
+            {view === 'verify' ? (
+              <div className="p-6 sm:p-8">
+                <OtpVerificationCard
+                  initialEmail={email}
+                  onVerify={async (code, targetEmail) => {
+                    const res = await verifyOtp(targetEmail, code, 'signup');
+                    if (res.success) {
+                      if (password) {
+                        await signIn(targetEmail, password, 'student');
+                      }
+                      return { success: true };
+                    }
+                    return { success: false, error: res.error };
+                  }}
+                  onResend={async (targetEmail) => {
+                    return await resendOtp(targetEmail, 'signup');
+                  }}
+                  onSuccess={() => {
+                    onClose();
+                    navigate('/student');
+                  }}
+                  onBack={() => setView('login')}
+                  lang={lang}
+                  variant="modal"
+                />
+              </div>
+            ) : (
+              <div className="p-7 sm:p-8">
             <div className="text-center mb-8">
               <BrandLogo variant="large" className="mx-auto mb-5" />
               <h2 id="auth-modal-title" className="text-2xl sm:text-3xl font-display font-bold text-foreground">
@@ -175,8 +205,6 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
                   ? (isAr ? 'تسجيل دخول الطالب' : 'Student Login')
                   : view === 'signup' 
                   ? (isAr ? 'إنشاء حساب جديد' : 'Create Account')
-                  : view === 'verify' 
-                  ? (isAr ? 'تأكيد البريد الإلكتروني' : 'Verify Email')
                   : view === 'forgot' 
                   ? (isAr ? 'استعادة كلمة المرور' : 'Reset Password')
                   : (isAr ? 'تعيين كلمة مرور جديدة' : 'Set New Password')}
@@ -186,7 +214,6 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
                   ? (isAr ? 'مرحباً بك مجدداً في مساحتك التعليمية الخاصة.' : 'Welcome back to your learning journey.') 
                   : view === 'signup' 
                   ? (isAr ? 'انضم لإدارة دروسك ومتابعة تقدمك وجداولك.' : 'Join to manage your lessons and progress.') 
-                  : view === 'verify' ? (isAr ? 'أدخل رمز التحقق (6 أرقام) أو اضغط على رابط التأكيد في إيميلك.' : 'Enter the 6-digit code or click the confirmation link in your email.')
                   : view === 'forgot'
                   ? (isAr ? 'أدخل بريدك الإلكتروني لاستلام رابط تعيين كلمة المرور.' : 'Enter your email to receive a reset link.')
                   : (isAr ? 'أدخل كلمة المرور الجديدة في الحقل أدناه.' : 'Enter your new password below.')}
@@ -213,54 +240,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
                 </div>
               )}
 
-              {view === 'verify' && (
-                <div>
-                  <label className="block text-sm font-semibold text-foreground mb-1.5">
-                    {isAr ? 'رمز التحقق' : 'Verification Code'}
-                  </label>
-                  <div className="relative">
-                    <Lock className="absolute start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-teal-600 dark:text-teal-400" />
-                    <input
-                      type="text"
-                      required
-                      value={otp}
-                      onChange={(e) => setOtp(e.target.value)}
-                      className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border glass-surface focus:glass-card focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none text-foreground text-sm transition-all tracking-widest text-center font-mono"
-                      placeholder="000000"
-                      maxLength={6}
-                    />
-                  </div>
-                  <div className="flex justify-end mt-2">
-                    <button
-                      type="button"
-                      disabled={isSubmitting}
-                      onClick={async () => {
-                        if (isSubmitting) return;
-                        try {
-                          setIsSubmitting(true);
-                          setError('');
-                          setSuccess('');
-                          const { success: resendSuccess, error: resendError } = await resendOtp(email, 'signup');
-                          if (resendSuccess) {
-                            setSuccess(isAr ? 'تم إرسال رمز تحقق جديد إلى بريدك.' : 'A new verification code has been sent to your email.');
-                          } else {
-                            setError(resendError || (isAr ? 'تعذر إعادة إرسال الرمز.' : 'Failed to resend code.'));
-                          }
-                        } catch (err: any) {
-                          setError(err.message || (isAr ? 'حدث خطأ أثناء الإرسال.' : 'An unexpected error occurred.'));
-                        } finally {
-                          setIsSubmitting(false);
-                        }
-                      }}
-                      className="text-xs text-teal-700 dark:text-teal-300 hover:underline disabled:opacity-50"
-                    >
-                      {isAr ? 'إعادة إرسال الرمز' : 'Resend Code'}
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {view !== 'update-password' && view !== 'verify' && (
+              {view !== 'update-password' && (
                 <div>
                   <label className="block text-sm font-semibold text-foreground mb-1.5">
                     {isAr ? 'البريد الإلكتروني' : 'Email Address'}
@@ -280,7 +260,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
                 </div>
               )}
 
-              {view !== 'forgot' && view !== 'verify' && (
+              {view !== 'forgot' && (
                 <div>
                   <label className="block text-sm font-semibold text-foreground mb-1.5">
                     {view === 'update-password' 
@@ -336,8 +316,6 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
                   isAr ? 'تسجيل الدخول' : 'Sign In'
                 ) : view === 'signup' ? (
                   isAr ? 'إنشاء الحساب' : 'Create Account'
-                ) : view === 'verify' ? (
-                  isAr ? 'تأكيد الرمز' : 'Verify Email'
                 ) : view === 'forgot' ? (
                   isAr ? 'إرسال رابط الاستعادة' : 'Send Reset Link'
                 ) : (
@@ -397,7 +375,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
                     {isAr ? 'أنشئ حسابك الآن' : 'Sign up'}
                   </button>
                 </p>
-              ) : view === 'signup' || view === 'verify' ? (
+              ) : view === 'signup' ? (
                 <p>
                   {isAr ? 'لديك حساب بالفعل؟' : 'Already have an account?'}{' '}
                   <button onClick={() => setView('login')} className="text-teal-700 dark:text-teal-300 font-semibold hover:underline">
@@ -414,6 +392,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
               )}
             </div>
           </div>
+            )}
       </motion.div>
     </div>
       )}

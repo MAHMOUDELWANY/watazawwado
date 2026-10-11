@@ -14,6 +14,7 @@ import { TermsPage } from './components/public/terms/TermsPage';
 import { DashboardApp } from './dashboard/DashboardApp';
 import StudentApp from './student/StudentApp';
 import StaffLoginPage from './pages/StaffLoginPage';
+import OtpVerificationPage from './pages/OtpVerificationPage';
 import SEOProtection from './components/SEOProtection';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { useScrollPaletteTransition } from './lib/useScrollPaletteTransition';
@@ -48,6 +49,10 @@ export default function App() {
               <Route path="/teacher/*" element={<DashboardApp />} />
               <Route path="/dashboard/*" element={<DashboardApp />} />
               <Route path="/student/login" element={<Navigate to="/student?auth=login" replace />} />
+              <Route path="/student/verify" element={<OtpVerificationPage />} />
+              <Route path="/otp" element={<OtpVerificationPage />} />
+              <Route path="/verify-otp" element={<OtpVerificationPage />} />
+              <Route path="/verify" element={<OtpVerificationPage />} />
               <Route path="/student/*" element={<StudentApp />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
