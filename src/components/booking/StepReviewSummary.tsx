@@ -14,7 +14,8 @@ import {
   ShieldCheck,
   Edit2,
   Lock,
-  Sparkles
+  Sparkles,
+  AlertCircle
 } from 'lucide-react';
 import { BookingFormData, Language } from '../../booking/types';
 import { BOOKING_SERVICES, calculateLessonFee, MAJOR_TIMEZONES } from '../../booking/mockData';
@@ -27,6 +28,8 @@ interface StepReviewSummaryProps {
   isSubmitting: boolean;
   lang: Language;
   scheduleStep?: number;
+  pendingBookingReference?: string;
+  onOpenCheckout?: () => void;
 }
 
 export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
@@ -36,7 +39,9 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
   onBack,
   isSubmitting,
   lang,
-  scheduleStep = 5
+  scheduleStep = 5,
+  pendingBookingReference,
+  onOpenCheckout
 }) => {
   const isEn = lang === 'en';
   const service = BOOKING_SERVICES.find((s) => s.id === formData.serviceId) || BOOKING_SERVICES[0];
@@ -268,6 +273,23 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
         </div>
       </div>
 
+      {/* Pending Booking Reservation Banner */}
+      {pendingBookingReference && (
+        <div className="p-4 rounded-2xl glass-card border border-amber-500/40 bg-amber-500/10 flex items-start gap-3 text-sm text-foreground">
+          <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+          <div className="leading-relaxed">
+            <strong className="text-foreground block mb-0.5 font-bold">
+              {isEn ? `Reservation Created: ${pendingBookingReference}` : `تم تسجيل حجزك مبدئياً: ${pendingBookingReference}`}
+            </strong>
+            <span className="text-muted-foreground text-xs sm:text-sm">
+              {isEn
+                ? 'Your selected time is on hold. Please complete payment to confirm your booking and receive classroom access.'
+                : 'تم حجز موعدك مؤقتاً. يرجى إتمام عملية الدفع لتأكيد الموعد واستلام رابط الفصل الدراسي عبر زووم.'}
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Controls */}
       <div className="pt-4 border-t border-border flex items-center justify-between gap-4">
         <motion.button
@@ -285,7 +307,7 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
         <motion.button
           whileHover={{ scale: 1.03, y: -1 }}
           whileTap={{ scale: 0.97 }}
-          onClick={onSubmit}
+          onClick={pendingBookingReference && onOpenCheckout ? onOpenCheckout : onSubmit}
           disabled={isSubmitting}
           className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl btn-primary-material text-white text-sm sm:text-base font-bold shadow-lg shadow-primary/20 transition-all cursor-pointer"
         >
@@ -302,6 +324,8 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
                   ? isEn ? 'Confirm Free Trial' : 'تأكيد حجز الجلسة المجانية'
                   : isPackageCredit
                   ? isEn ? 'Confirm with Package Credit' : 'تأكيد الحجز برصيد الباقة'
+                  : pendingBookingReference
+                  ? isEn ? `Proceed to Payment ($${fee.toFixed(2)})` : `المتابعة إلى الدفع والتأكيد (${fee.toFixed(2)}$)`
                   : isEn ? `Confirm & Pay ($${fee.toFixed(2)})` : `تأكيد وحجز الدرس (${fee.toFixed(2)}$)`}
               </span>
             </>

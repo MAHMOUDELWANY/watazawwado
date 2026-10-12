@@ -230,6 +230,8 @@ export function InstantCheckoutModal({
       currentUrl.searchParams.set('session_id', '{CHECKOUT_SESSION_ID}');
       currentUrl.searchParams.set('gateway', 'stripe');
       currentUrl.searchParams.set('payment_status', 'success');
+      currentUrl.searchParams.set('target_id', targetId);
+      currentUrl.searchParams.set('target_type', targetType);
 
       const successUrl = currentUrl.toString();
       currentUrl.searchParams.delete('session_id');

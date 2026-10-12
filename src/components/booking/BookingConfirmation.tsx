@@ -250,16 +250,35 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         </div>
       </div>
 
-      {/* Payment Instructions & 1-Click Copy (For Regular Standalone Paid Lessons) */}
+      {/* Payment Verified & Confirmed Badge (For Paid Standalone Lessons) */}
       {!confirmation.isFreeTrial && !confirmation.packageEntitlementId && (
-        <PaymentInstructionsCard
-          bookingReference={confirmation.bookingReference}
-          serviceName={confirmation.serviceName}
-          amount={confirmation.feeAmountUsd || undefined}
-          currency="USD"
-          learnerName={confirmation.learnerName}
-          lang={lang}
-        />
+        <div className="p-4 sm:p-5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm text-emerald-800 dark:text-emerald-300">
+          <div className="flex items-start sm:items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+              <CheckCircle2 className="w-5 h-5" />
+            </div>
+            <div className="leading-relaxed">
+              <strong className="block text-emerald-900 dark:text-emerald-200 font-bold mb-0.5">
+                {isEn ? 'Payment Confirmed & Verified' : 'تم سداد الرسوم وتأكيد الحجز بنجاح'}
+              </strong>
+              <span className="text-xs sm:text-sm text-emerald-700/80 dark:text-emerald-300/80">
+                {isEn
+                  ? 'Your payment has been received and verified. Your classroom link and calendar invite are active.'
+                  : 'تم استلام وتأكيد سداد الرسوم بنجاح. رابط الفصل الدراسي وموعد التقويم نشط الآن.'}
+              </span>
+            </div>
+          </div>
+          {confirmation.feeAmountUsd && (
+            <div className="shrink-0 text-start sm:text-end bg-emerald-500/15 px-3 py-1.5 rounded-xl border border-emerald-500/30">
+              <span className="text-[10px] uppercase font-bold text-emerald-800 dark:text-emerald-300 block">
+                {isEn ? 'Amount Paid' : 'المبلغ المدفوع'}
+              </span>
+              <span className="text-base font-extrabold text-emerald-900 dark:text-emerald-100 font-display">
+                ${confirmation.feeAmountUsd.toFixed(2)} USD
+              </span>
+            </div>
+          )}
+        </div>
       )}
 
       {/* Package Credit Confirmed Banner (For Lessons Booked via Package) */}

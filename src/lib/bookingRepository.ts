@@ -151,104 +151,106 @@ export const bookingRepository = {
     let serviceName = '1-on-1 Lesson';
     let feeAmountUsd = calculateLessonFee(data.serviceId, data.duration, isTrial);
     let studentIdToLink: string | null = (data as any).studentId || null;
-
-    if (isSupabaseConfigured()) {
-      try {
-        if (!studentIdToLink) {
-          const { data: sessionData } = await supabase.auth.getSession();
-          if (sessionData?.session?.user?.id) {
-            const { data: stud } = await supabase
-              .from('students')
-              .select('id')
-              .eq('auth_user_id', sessionData.session.user.id)
-              .maybeSingle();
-            if (stud?.id) {
-              studentIdToLink = stud.id;
-            }
-          }
-        }
-
-        const { data: atomicResult, error: atomicError } = await supabase.rpc('create_booking_atomic', {
-          p_booking: {
-            contact_name: learnerName,
-            contact_email: contactEmail,
-            contact_whatsapp: contactWhatsapp,
-            parent_name: parentName || null,
-            audience: data.audience,
-            service_id: data.serviceId,
-            booking_type: isTrial ? 'trial' : 'regular',
-            duration_minutes: data.duration,
-            scheduled_start: scheduledStartUtc,
-            scheduled_end: scheduledEndUtc,
-            student_timezone: data.timezone,
-            cairo_time_display: cairoTimeDisplay,
-            goal: data.goal === 'custom' ? data.customGoalText : data.goal,
-            notes: data.audience === 'child' ? data.parentNotes : data.notes,
-            student_id: studentIdToLink,
-            package_entitlement_id: data.packageEntitlementId || null,
-          },
-        });
-
-        if (atomicError) {
-          return { success: false, error: atomicError.message || 'Booking failed due to server error.' };
-        }
-
-        if (atomicResult) {
-          referenceCode = atomicResult.referenceCode;
-          managementToken = atomicResult.managementToken;
-          serviceName = atomicResult.serviceName || serviceName;
-          feeAmountUsd = atomicResult.feeAmountUsd || feeAmountUsd;
-          zoomMeetingLink = atomicResult.zoomMeetingLink || zoomMeetingLink;
-        }
-      } catch (err: any) {
-        console.error('Supabase atomic booking error:', err);
-        return { success: false, error: 'Database service is currently unavailable. Please try again later or contact Mahmoud directly.' };
-      }
-    } else if (isProduction) {
-      return { success: false, error: 'Database service is currently unavailable in production. Please try again later.' };
-    }
-
-    // Trigger Server-Side Integrations (Google Calendar & Zoom) asynchronously
-    let googleCalendarEventId: string | null = null;
-    let integrationStatus: 'synced' | 'pending' = 'pending';
+    let bookingStatus: 'confirmed' | 'pending' = isTrial || Boolean(data.packageEntitlementId) ? 'confirmed' : 'pending';
 
     try {
-      const syncRes = await fetch('/api/integrations/sync-booking', {
+      let token: string | null = null;
+      try {
+        const { getFreshAccessToken } = await import('./auth');
+        token = await getFreshAccessToken();
+      } catch {}
+
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const res = await fetch('/api/bookings/create', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
-          booking: {
-            referenceCode,
-            managementToken,
-            learnerName,
-            parentName,
-            serviceName,
-            mode: isTrial ? 'trial' : 'regular',
-            scheduledStart: scheduledStartUtc,
-            scheduledEnd: scheduledEndUtc,
-            studentTimezone: data.timezone,
-            cairoTimeDisplay,
-            durationMinutes: data.duration,
-            zoomMeetingLink,
-            contactEmail,
-            contactWhatsapp,
-            notes: data.audience === 'child' ? data.parentNotes : data.notes
-          }
+          serviceId: data.serviceId,
+          duration: data.duration,
+          date: data.date,
+          timeSlot: data.timeSlot,
+          timezone: data.timezone,
+          contactName: learnerName,
+          contactEmail,
+          contactWhatsapp,
+          parentName: parentName || null,
+          audience: data.audience,
+          goal: data.goal === 'custom' ? data.customGoalText : data.goal,
+          notes: data.audience === 'child' ? data.parentNotes : data.notes,
+          teacherId: (data as any).teacherId,
+          packageEntitlementId: data.packageEntitlementId || null,
+          package_entitlement_id: data.packageEntitlementId || null,
+          studentId: studentIdToLink,
+          mode: data.mode
         })
       });
 
-      if (syncRes.ok) {
-        const syncData = await syncRes.json();
-        if (syncData.zoomMeetingLink) {
-          zoomMeetingLink = syncData.zoomMeetingLink;
-        }
-        if (syncData.googleEventId) {
-          googleCalendarEventId = syncData.googleEventId;
-        }
-        integrationStatus = syncData.integrationStatus || 'synced';
+      const resData = await res.json().catch(() => ({}));
+      if (!res.ok || !resData.success) {
+        return {
+          success: false,
+          error: resData.error || 'Booking failed due to server error. Please try again.'
+        };
       }
-    } catch (syncErr) {
-      console.warn('[Sync API Client Warning]', syncErr);
+
+      referenceCode = resData.referenceCode;
+      managementToken = resData.managementToken;
+      serviceName = resData.serviceName || serviceName;
+      feeAmountUsd = resData.feeAmountUsd !== undefined ? resData.feeAmountUsd : feeAmountUsd;
+      zoomMeetingLink = resData.zoomMeetingLink || zoomMeetingLink;
+      bookingStatus = resData.status || bookingStatus;
+    } catch (err: any) {
+      console.error('Server booking error:', err);
+      return { success: false, error: 'Database service is currently unavailable. Please try again later or contact Mahmoud directly.' };
+    }
+
+    // Trigger Server-Side Integrations (Google Calendar & Zoom) only for confirmed bookings
+    let googleCalendarEventId: string | null = null;
+    let integrationStatus: 'synced' | 'pending' = 'pending';
+
+    if (bookingStatus === 'confirmed') {
+      try {
+        const syncRes = await fetch('/api/integrations/sync-booking', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            booking: {
+              referenceCode,
+              managementToken,
+              learnerName,
+              parentName,
+              serviceName,
+              mode: isTrial ? 'trial' : 'regular',
+              scheduledStart: scheduledStartUtc,
+              scheduledEnd: scheduledEndUtc,
+              studentTimezone: data.timezone,
+              cairoTimeDisplay,
+              durationMinutes: data.duration,
+              zoomMeetingLink,
+              contactEmail,
+              contactWhatsapp,
+              notes: data.audience === 'child' ? data.parentNotes : data.notes
+            }
+          })
+        });
+
+        if (syncRes.ok) {
+          const syncData = await syncRes.json();
+          if (syncData.zoomMeetingLink) {
+            zoomMeetingLink = syncData.zoomMeetingLink;
+          }
+          if (syncData.googleEventId) {
+            googleCalendarEventId = syncData.googleEventId;
+          }
+          integrationStatus = syncData.integrationStatus || 'synced';
+        }
+      } catch (syncErr) {
+        console.warn('[Sync API Client Warning]', syncErr);
+      }
     }
 
     const bookingResult: MockBookingRecord = {
@@ -267,14 +269,11 @@ export const bookingRepository = {
       durationMinutes: data.duration,
       timezone: data.timezone,
       cairoTimeDisplay,
-      status: 'confirmed',
+      status: bookingStatus,
       email: contactEmail,
       whatsapp: contactWhatsapp
     };
 
-    // Real Supabase persistence is authoritative. Only store in in-memory mockBookingStore
-    // when running in unconfigured / offline fallback mode. This prevents real Production
-    // bookings from leaking into local test data or serving as an unauthorized second source of truth.
     if (!isSupabaseConfigured()) {
       this.mockBookingStore.push(bookingResult);
     }
@@ -283,7 +282,7 @@ export const bookingRepository = {
       success: true,
       referenceCode,
       managementToken,
-      message: 'Your booking has been successfully secured.',
+      message: bookingStatus === 'confirmed' ? 'Your booking has been successfully secured.' : 'Your booking reservation has been created.',
       bookingDetails: bookingResult as any
     };
   },

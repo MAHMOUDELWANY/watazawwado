@@ -5,7 +5,9 @@ import fs from 'fs';
 import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
+  const rootDir = fs.existsSync(process.cwd()) ? fs.realpathSync(process.cwd()) : path.resolve(__dirname);
   return {
+    root: rootDir,
     plugins: [
       react(),
       tailwindcss(),

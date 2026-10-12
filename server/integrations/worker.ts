@@ -358,7 +358,7 @@ export async function processIntegrationJobs(batchSize = 5, clientOverride?: any
           attempts: isPermanent ? Math.max(newAttempts, 5) : newAttempts,
           last_error: sanitizedErrMsg,
           locked_at: null,
-          next_attempt_at: isDead ? null : DateTime.utc().plus({ minutes: backoffMinutes }).toISO(),
+          next_attempt_at: isDead ? DateTime.utc().plus({ years: 10 }).toISO() : DateTime.utc().plus({ minutes: backoffMinutes }).toISO(),
           updated_at: new Date().toISOString()
         })
         .eq('id', job.id);

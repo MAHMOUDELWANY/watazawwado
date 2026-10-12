@@ -11,7 +11,7 @@ import {
   PackageEntitlementEntry,
   PackageCatalogEntry
 } from '../../booking/types';
-import { BOOKING_SERVICES } from '../../booking/mockData';
+import { BOOKING_SERVICES, calculateLessonFee } from '../../booking/mockData';
 import { bookingService } from '../../booking/bookingService';
 import { validateStep } from '../../booking/validation';
 import { BookingHeader } from './BookingHeader';
@@ -26,6 +26,7 @@ import { BookingConfirmation } from './BookingConfirmation';
 import { ManageBookingModal } from './ManageBookingModal';
 import { MultiLessonPlan, SelectedLesson } from './MultiLessonPlan';
 import { PaymentInstructionsCard } from './PaymentInstructionsCard';
+import { InstantCheckoutModal } from '../payment/InstantCheckoutModal';
 import { getFreshAccessToken } from '../../lib/auth';
 
 interface BookingFlowProps {
@@ -91,6 +92,9 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   const [multiConfirming, setMultiConfirming] = useState(false);
   const [multiPlanCreated, setMultiPlanCreated] = useState(false);
   const [multiPlanData, setMultiPlanData] = useState<any>(null);
+  const [pendingBooking, setPendingBooking] = useState<BookingConfirmationData | null>(null);
+  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState<boolean>(false);
+  const [isVerifyingPayment, setIsVerifyingPayment] = useState<boolean>(false);
 
   // Progressive Form State
   const [formData, setFormData] = useState<BookingFormData>(() => {
@@ -160,6 +164,121 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   // Determines whether this is a 7-step regular package flow or 6-step trial/credit flow
   const isMultiStepFlow = formData.mode === 'regular' && !formData.packageEntitlementId;
   const totalSteps = isMultiStepFlow ? 7 : 6;
+
+  // Handle returning from Stripe Checkout (session_id + gateway=stripe in URL)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get('session_id');
+    const gateway = params.get('gateway');
+    const targetId = params.get('target_id') || params.get('booking_reference');
+    const paymentCancelled = params.get('payment_cancelled');
+
+    if (paymentCancelled) {
+      setValidationError(isAr ? 'تم إلغاء عملية الدفع، يمكنك المحاولة مرة أخرى.' : 'Payment was cancelled. You can try again.');
+      const cleanUrl = new URL(window.location.href);
+      cleanUrl.searchParams.delete('payment_cancelled');
+      window.history.replaceState({}, document.title, cleanUrl.pathname + (cleanUrl.search ? cleanUrl.search : ''));
+      return;
+    }
+
+    if (sessionId && gateway === 'stripe') {
+      setIsVerifyingPayment(true);
+      setValidationError(null);
+
+      fetch('/api/payments/stripe/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId })
+      })
+        .then(res => res.json())
+        .then(async (data) => {
+          if (data.success && data.status === 'confirmed') {
+            const refCode = data.referenceCode || targetId;
+            let confirmedRecord: any = null;
+            if (refCode) {
+              try {
+                confirmedRecord = await bookingService.lookupBooking(refCode);
+              } catch {}
+            }
+
+            const cleanUrl = new URL(window.location.href);
+            cleanUrl.searchParams.delete('session_id');
+            cleanUrl.searchParams.delete('gateway');
+            cleanUrl.searchParams.delete('payment_status');
+            cleanUrl.searchParams.delete('target_id');
+            cleanUrl.searchParams.delete('target_type');
+            cleanUrl.searchParams.delete('booking_reference');
+            window.history.replaceState({}, document.title, cleanUrl.pathname + (cleanUrl.search ? cleanUrl.search : ''));
+
+            if (confirmedRecord) {
+              setConfirmation({
+                bookingReference: confirmedRecord.reference,
+                managementToken: confirmedRecord.managementToken,
+                createdAt: new Date().toISOString(),
+                mode: confirmedRecord.mode,
+                serviceName: confirmedRecord.serviceName,
+                learnerName: confirmedRecord.learnerName,
+                parentName: confirmedRecord.parentName,
+                contactEmail: confirmedRecord.email || '',
+                contactWhatsapp: confirmedRecord.whatsapp || '',
+                date: (confirmedRecord.scheduledIsoDatetime || '').split('T')[0] || formData.date,
+                timeDisplay: confirmedRecord.cairoTimeDisplay || '',
+                timezone: confirmedRecord.timezone || 'UTC',
+                durationMinutes: confirmedRecord.durationMinutes || formData.duration,
+                cairoTimeDisplay: confirmedRecord.cairoTimeDisplay || '',
+                feeAmountUsd: confirmedRecord.feeAmountUsd || 0,
+                isFreeTrial: false,
+                integrationStatus: confirmedRecord.integrationStatus || 'synced',
+                zoomDetails: {
+                  platform: 'Zoom',
+                  meetingLinkPlaceholder: confirmedRecord.zoomMeetingLink || '',
+                  instructions: [
+                    'Please ensure your microphone and camera are working before joining.',
+                    'Try to join a few minutes early to settle in.',
+                    'Find a quiet, well-lit place if possible.'
+                  ]
+                }
+              });
+            } else {
+              setConfirmation({
+                bookingReference: refCode || 'CONFIRMED',
+                createdAt: new Date().toISOString(),
+                mode: 'regular',
+                serviceName: data.serviceName || '1-on-1 Lesson',
+                learnerName: formData.studentName || 'Learner',
+                contactEmail: formData.email,
+                contactWhatsapp: formData.whatsapp,
+                date: formData.date,
+                timeDisplay: formData.timeSlot?.timeDisplay || '',
+                timezone: formData.timezone,
+                durationMinutes: formData.duration,
+                cairoTimeDisplay: '',
+                feeAmountUsd: calculateLessonFee(formData.serviceId, formData.duration, false),
+                isFreeTrial: false,
+                integrationStatus: 'synced',
+                zoomDetails: {
+                  platform: 'Zoom',
+                  meetingLinkPlaceholder: '',
+                  instructions: [
+                    'Please ensure your microphone and camera are working before joining.',
+                    'Try to join a few minutes early to settle in.'
+                  ]
+                }
+              });
+            }
+          } else {
+            setValidationError(data.error || (isAr ? 'تعذر التحقق من نجاح الدفع عبر Stripe.' : 'Failed to verify Stripe payment.'));
+          }
+        })
+        .catch(err => {
+          console.error('[Stripe verify client error]', err);
+          setValidationError(isAr ? 'حدث خطأ أثناء تأكيد الدفع عبر Stripe.' : 'Error verifying Stripe payment.');
+        })
+        .finally(() => {
+          setIsVerifyingPayment(false);
+        });
+    }
+  }, [isAr, formData]);
 
   useEffect(() => {
     if (initialStep && initialStep >= 1 && initialStep <= 7) {
@@ -324,7 +443,15 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     setValidationError(null);
     try {
       const result = await bookingService.submitBooking(formData);
-      setConfirmation(result);
+      const isFree = formData.mode === 'trial' || Boolean(formData.packageEntitlementId);
+      if (isFree) {
+        // Free trial or package entitlement -> directly confirmed
+        setConfirmation(result);
+      } else {
+        // Regular paid lesson -> hold as pending, gate with instant checkout!
+        setPendingBooking(result);
+        setIsCheckoutModalOpen(true);
+      }
     } catch (err: any) {
       setValidationError(
         err?.message ||
@@ -337,6 +464,27 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     }
   };
 
+  const handlePaymentSuccess = async () => {
+    setIsCheckoutModalOpen(false);
+    if (pendingBooking) {
+      try {
+        await fetch('/api/integrations/sync-booking', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            booking: {
+              referenceCode: pendingBooking.bookingReference,
+              managementToken: pendingBooking.managementToken
+            }
+          })
+        });
+      } catch {}
+
+      setConfirmation(pendingBooking);
+      setPendingBooking(null);
+    }
+  };
+
   const handleOpenManageModal = (refCode: string) => {
     setManageRefCode(refCode);
     setManageModalOpen(true);
@@ -344,6 +492,8 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
 
   const handleResetForNewBooking = () => {
     setConfirmation(null);
+    setPendingBooking(null);
+    setIsCheckoutModalOpen(false);
     setMultiPlanCreated(false);
     setMultiPlanData(null);
     setStep(1);
@@ -362,8 +512,18 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
           : 'glass-card text-foreground py-8 sm:py-12 px-4 sm:px-6 rounded-3xl max-w-3xl mx-auto shadow-xl border border-border/70')
       }`}
     >
-      {/* 1. Multi-Lesson Plan Created -> Instant Checkout Screen */}
-      {multiPlanCreated && multiPlanData ? (
+      {/* 0. Payment Verification In Progress (Stripe Return) */}
+      {isVerifyingPayment ? (
+        <div className="py-16 text-center space-y-4">
+          <div className="w-12 h-12 border-3 border-primary/30 border-t-primary rounded-full animate-spin mx-auto" />
+          <h3 className="font-display text-xl font-bold text-foreground">
+            {isAr ? 'جارٍ التحقق من نجاح الدفع وتأكيد الحجز...' : 'Verifying your payment and securing booking...'}
+          </h3>
+          <p className="text-sm text-muted-foreground">
+            {isAr ? 'لحظات ونقوم بتجهيز تفاصيل الحجز وتفعيل رابط الفصل الدراسي.' : 'Please wait while we finalize your lesson details and classroom link.'}
+          </p>
+        </div>
+      ) : multiPlanCreated && multiPlanData ? (
         <div className="space-y-6 max-w-2xl mx-auto py-2 text-foreground">
           <div className="text-center space-y-3 pb-2">
             <div className="w-16 h-16 rounded-full bg-teal-500/20 text-teal-600 dark:text-teal-400 flex items-center justify-center mx-auto shadow-inner">
@@ -638,6 +798,8 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                     isSubmitting={isSubmitting}
                     lang={lang}
                     scheduleStep={6}
+                    pendingBookingReference={pendingBooking?.bookingReference}
+                    onOpenCheckout={() => setIsCheckoutModalOpen(true)}
                   />
                 )}
               </motion.div>
@@ -685,11 +847,28 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                   isSubmitting={isSubmitting}
                   lang={lang}
                   scheduleStep={5}
+                  pendingBookingReference={pendingBooking?.bookingReference}
+                  onOpenCheckout={() => setIsCheckoutModalOpen(true)}
                 />
               </motion.div>
             )}
           </AnimatePresence>
         </div>
+      )}
+
+      {/* Instant Checkout Modal for Pending Bookings */}
+      {pendingBooking && (
+        <InstantCheckoutModal
+          isOpen={isCheckoutModalOpen}
+          onClose={() => setIsCheckoutModalOpen(false)}
+          targetType="booking"
+          targetId={pendingBooking.bookingReference}
+          itemTitle={pendingBooking.serviceName}
+          amount={pendingBooking.feeAmountUsd}
+          currency="USD"
+          lang={isAr ? 'ar' : 'en'}
+          onSuccess={handlePaymentSuccess}
+        />
       )}
 
       {/* Cancellation / Rescheduling Policy Modal */}

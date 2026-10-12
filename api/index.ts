@@ -636,6 +636,352 @@ app.get('/api/packages', async (req, res) => {
   }
 });
 
+// ====================================================================
+// AUTHORITATIVE BOOKING RESERVATION & CREATION ENDPOINT
+// ====================================================================
+app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
+  try {
+    const supabaseAdmin = getSupabaseAdminClient();
+    if (!supabaseAdmin) {
+      return res.status(503).json({ error: 'Database service unavailable.' });
+    }
+
+    const {
+      serviceId,
+      duration,
+      date,
+      timeSlot,
+      timezone,
+      contactName,
+      contactEmail,
+      contactWhatsapp,
+      parentName,
+      audience,
+      goal,
+      notes,
+      teacherId,
+      packageEntitlementId,
+      studentId,
+      mode
+    } = req.body || {};
+
+    const cleanEmail = String(contactEmail || '').trim().toLowerCase();
+    const cleanName = String(contactName || '').trim();
+    const cleanParentName = String(parentName || '').trim();
+    const cleanWhatsapp = String(contactWhatsapp || '').trim();
+    const cleanTimezone = String(timezone || 'Africa/Cairo').trim();
+    const cleanServiceId = String(serviceId || 'quran-reading').trim();
+    const cleanMode = mode === 'trial' ? 'trial' : 'regular';
+    const isTrial = cleanMode === 'trial';
+    const isChild = audience === 'child';
+    const durationMins = Number(duration) || 60;
+
+    if (!cleanEmail || !cleanEmail.includes('@')) {
+      return res.status(400).json({ error: 'A valid email address is required.' });
+    }
+    if (!cleanName || cleanName.length < 2) {
+      return res.status(400).json({ error: 'Student name is required (minimum 2 characters).' });
+    }
+    if (isChild && (!cleanParentName || cleanParentName.length < 2)) {
+      return res.status(400).json({ error: 'Parent or guardian name is required for child learners.' });
+    }
+    if (!date || !timeSlot || (!timeSlot.time24 && !timeSlot.utcStartIso)) {
+      return res.status(400).json({ error: 'A valid lesson date and time slot must be selected.' });
+    }
+
+    // Resolve Auth User / Student profile if token provided
+    let linkedStudentId: string | null = null;
+    let authUserId: string | null = null;
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.substring(7);
+      try {
+        const { data: uData } = await supabaseAdmin.auth.getUser(token);
+        if (uData?.user?.id) {
+          authUserId = uData.user.id;
+          const { data: st } = await supabaseAdmin
+            .from('students')
+            .select('id, assigned_teacher_id')
+            .eq('auth_user_id', authUserId)
+            .maybeSingle();
+          if (st?.id) {
+            linkedStudentId = st.id;
+          }
+        }
+      } catch (authErr) {
+        // Non-blocking
+      }
+    }
+
+    if (!linkedStudentId && studentId) {
+      linkedStudentId = String(studentId).trim();
+    }
+
+    // Check One Free Trial limit
+    if (isTrial) {
+      const { data: priorTrials } = await supabaseAdmin
+        .from('bookings')
+        .select('id')
+        .eq('booking_type', 'trial')
+        .neq('status', 'cancelled')
+        .or(`contact_email.eq.${cleanEmail}${cleanWhatsapp ? `,contact_whatsapp.eq.${cleanWhatsapp}` : ''}`)
+        .limit(1);
+
+      if (priorTrials && priorTrials.length > 0) {
+        return res.status(400).json({
+          error: 'Our records indicate a free trial session has already been booked with this contact information. Each student is eligible for one complimentary trial. You may book a regular lesson or message Mahmoud on WhatsApp.'
+        });
+      }
+    }
+
+    // Calculate Timestamps
+    let scheduledStartUtc: string;
+    let scheduledEndUtc: string;
+    let cairoTimeDisplay: string;
+
+    if (timeSlot.utcStartIso && timeSlot.utcEndIso) {
+      scheduledStartUtc = timeSlot.utcStartIso;
+      scheduledEndUtc = timeSlot.utcEndIso;
+      const dt = DateTime.fromISO(scheduledStartUtc);
+      cairoTimeDisplay = dt.setZone('Africa/Cairo').toFormat('dd LLL yyyy, hh:mm a');
+    } else {
+      const time24 = timeSlot.time24;
+      const dt = DateTime.fromISO(`${date}T${time24}`, { zone: cleanTimezone });
+      if (!dt.isValid) {
+        return res.status(400).json({ error: 'Invalid scheduling date or time.' });
+      }
+      scheduledStartUtc = dt.toUTC().toISO()!;
+      scheduledEndUtc = dt.plus({ minutes: durationMins }).toUTC().toISO()!;
+      cairoTimeDisplay = dt.setZone('Africa/Cairo').toFormat('dd LLL yyyy, hh:mm a');
+    }
+
+    // Validate slot availability
+    const slotValidation = await validateSlotAvailability(scheduledStartUtc, scheduledEndUtc, teacherId);
+    if (slotValidation.isAvailable === false) {
+      return res.status(409).json({ error: slotValidation.conflictReason || 'This time slot is no longer available. Please select another slot.' });
+    }
+
+    // Resolve teacher
+    let resolvedTeacherId: string | null = null;
+    if (teacherId && typeof teacherId === 'string' && teacherId.trim().length > 10) {
+      resolvedTeacherId = teacherId.trim();
+    } else {
+      const { data: conn } = await supabaseAdmin
+        .from('calendar_connections')
+        .select('teacher_id')
+        .eq('is_active', true)
+        .eq('provider', 'google_calendar')
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .maybeSingle();
+      resolvedTeacherId = conn?.teacher_id || null;
+    }
+
+    // Resolve service rate and calculate authoritative fee
+    const { data: srv } = await supabaseAdmin
+      .from('services')
+      .select('title, arabic_title, hourly_rate_usd')
+      .eq('id', cleanServiceId)
+      .maybeSingle();
+
+    const hourlyRate = Number(srv?.hourly_rate_usd || 9.00);
+    const serviceTitle = srv?.title || '1-on-1 Lesson';
+
+    let calculatedFee = 0;
+    let bookingStatus = 'confirmed';
+    let resolvedPackageEntitlementId: string | null = null;
+
+    if (packageEntitlementId) {
+      const { data: entitlement } = await supabaseAdmin
+        .from('package_entitlements')
+        .select('id, remaining_credits, status')
+        .eq('id', packageEntitlementId)
+        .maybeSingle();
+
+      if (!entitlement || entitlement.status !== 'active' || entitlement.remaining_credits <= 0) {
+        return res.status(400).json({ error: 'Package entitlement is inactive or has no remaining credits.' });
+      }
+
+      await supabaseAdmin
+        .from('package_entitlements')
+        .update({
+          remaining_credits: entitlement.remaining_credits - 1,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', entitlement.id);
+
+      resolvedPackageEntitlementId = entitlement.id;
+      calculatedFee = 0;
+      bookingStatus = 'confirmed';
+    } else if (isTrial) {
+      calculatedFee = 0;
+      bookingStatus = 'confirmed';
+    } else {
+      // Regular paid lesson: status must be PENDING payment!
+      if (durationMins === 30) {
+        calculatedFee = hourlyRate === 13 ? 7.00 : 5.00;
+      } else if (durationMins === 45) {
+        calculatedFee = hourlyRate === 13 ? 10.00 : 7.00;
+      } else {
+        calculatedFee = hourlyRate === 13 ? 13.00 : 9.00;
+      }
+      bookingStatus = 'pending';
+    }
+
+    // Unique reference code
+    let referenceCode = '';
+    for (let attempts = 0; attempts < 5; attempts++) {
+      const candidate = `MHM-${Math.floor(10000 + Math.random() * 90000)}`;
+      const { data: existing } = await supabaseAdmin.from('bookings').select('id').eq('reference_code', candidate).maybeSingle();
+      if (!existing) {
+        referenceCode = candidate;
+        break;
+      }
+    }
+    if (!referenceCode) {
+      referenceCode = `MHM-${Date.now().toString(36).toUpperCase().slice(-5)}`;
+    }
+
+    const managementToken = crypto.randomUUID ? crypto.randomUUID() : `tok_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+    const managementTokenHash = crypto.createHash('sha256').update(managementToken).digest('hex');
+
+    // Upsert Lead
+    let leadId: string | null = null;
+    try {
+      const { data: leadData } = await supabaseAdmin
+        .from('leads')
+        .upsert(
+          {
+            name: cleanName,
+            email: cleanEmail,
+            whatsapp: cleanWhatsapp || null,
+            learner_type: audience || 'adult',
+            service_interest_id: cleanServiceId,
+            goal: goal || '',
+            source: 'web_booking_modal',
+            status: isTrial ? 'trial_booked' : 'lead',
+            notes: isChild ? `Parent: ${cleanParentName}. ${notes || ''}` : (notes || ''),
+            updated_at: new Date().toISOString()
+          },
+          { onConflict: 'email' }
+        )
+        .select('id')
+        .maybeSingle();
+
+      leadId = leadData?.id || null;
+    } catch (leadErr) {
+      console.warn('[Create Booking] Lead upsert non-critical warning:', leadErr);
+    }
+
+    // Insert Booking
+    const { data: newBooking, error: bErr } = await supabaseAdmin
+      .from('bookings')
+      .insert({
+        reference_code: referenceCode,
+        management_token: managementToken,
+        management_token_hash: managementTokenHash,
+        student_id: linkedStudentId,
+        teacher_id: resolvedTeacherId,
+        lead_id: leadId,
+        service_id: cleanServiceId,
+        booking_type: isTrial ? 'trial' : 'regular',
+        duration_minutes: durationMins,
+        scheduled_start: scheduledStartUtc,
+        scheduled_end: scheduledEndUtc,
+        student_timezone: cleanTimezone,
+        cairo_time_display: cairoTimeDisplay,
+        status: bookingStatus,
+        contact_name: cleanName,
+        contact_email: cleanEmail,
+        contact_whatsapp: cleanWhatsapp || null,
+        parent_name: isChild ? cleanParentName : null,
+        fee_amount_usd: calculatedFee,
+        zoom_meeting_link: 'pending',
+        notes: isChild ? `Parent: ${cleanParentName}. ${notes || ''}` : (notes || ''),
+        integration_status: 'pending',
+        sync_metadata: {},
+        package_entitlement_id: resolvedPackageEntitlementId
+      })
+      .select('*')
+      .single();
+
+    if (bErr || !newBooking) {
+      console.error('[Create Booking Insert Error]', bErr);
+      return res.status(500).json({ error: `Failed to create booking reservation: ${bErr?.message || 'Database error'}` });
+    }
+
+    // If already confirmed (trial or package credit), trigger calendar integration & reminders
+    if (bookingStatus === 'confirmed') {
+      try {
+        await supabaseAdmin.from('outbox_integration_jobs').insert({
+          booking_id: newBooking.id,
+          job_type: 'create_booking',
+          payload: {
+            bookingId: newBooking.id,
+            referenceCode: newBooking.reference_code,
+            learnerName: cleanName,
+            parentName: isChild ? cleanParentName : null,
+            serviceName: serviceTitle,
+            mode: isTrial ? 'trial' : 'regular',
+            scheduledStart: scheduledStartUtc,
+            scheduledEnd: scheduledEndUtc,
+            studentTimezone: cleanTimezone,
+            cairoTimeDisplay,
+            durationMinutes: durationMins,
+            contactEmail: cleanEmail,
+            contactWhatsapp: cleanWhatsapp,
+            notes
+          },
+          status: 'pending'
+        });
+
+        processIntegrationJobs(1, undefined, newBooking.id).catch(console.error);
+
+        const startMillis = new Date(scheduledStartUtc).getTime();
+        const rem24 = new Date(startMillis - 24 * 60 * 60 * 1000).toISOString();
+        const rem1 = new Date(startMillis - 60 * 60 * 1000).toISOString();
+        if (new Date(rem24) > new Date()) {
+          await supabaseAdmin.from('reminders').insert({
+            booking_id: newBooking.id,
+            reminder_type: '24h_before',
+            scheduled_for: rem24,
+            status: 'pending'
+          }).catch(() => {});
+        }
+        if (new Date(rem1) > new Date()) {
+          await supabaseAdmin.from('reminders').insert({
+            booking_id: newBooking.id,
+            reminder_type: '1h_before',
+            scheduled_for: rem1,
+            status: 'pending'
+          }).catch(() => {});
+        }
+      } catch (syncErr) {
+        console.warn('[Create Booking Sync Warning]', syncErr);
+      }
+    }
+
+    return res.status(201).json({
+      success: true,
+      bookingId: newBooking.id,
+      referenceCode: newBooking.reference_code,
+      managementToken: newBooking.management_token,
+      status: newBooking.status,
+      feeAmountUsd: Number(newBooking.fee_amount_usd),
+      serviceName: serviceTitle,
+      cairoTimeDisplay: newBooking.cairo_time_display,
+      scheduledStart: newBooking.scheduled_start,
+      scheduledEnd: newBooking.scheduled_end,
+      zoomMeetingLink: newBooking.zoom_meeting_link,
+      isTrial,
+      packageEntitlementId: resolvedPackageEntitlementId
+    });
+  } catch (err: any) {
+    console.error('[Create Booking Fatal Error]', err);
+    return res.status(500).json({ error: err?.message || 'Failed to process booking.' });
+  }
+});
+
 
 app.post('/api/integrations/sync-booking', async (req, res) => {
   try {
@@ -4043,12 +4389,30 @@ async function fulfillAutomatedPayment(params: {
   }
 
   // 4. Atomic fulfillment via Postgres RPC (confirms booking, activates entitlement, allocates credits)
-  const { error: rpcErr } = await supabaseAdmin.rpc('verify_payment_atomic', {
-    p_payment_id: newPayment.id
-  });
+  try {
+    const { error: rpcErr } = await supabaseAdmin.rpc('verify_payment_atomic', {
+      p_payment_id: newPayment.id
+    });
+    if (rpcErr) {
+      console.warn('[Automated Payment verify_payment_atomic RPC Warning, applying direct fallback]', rpcErr);
+    }
+  } catch (rpcCatch) {
+    console.warn('[Automated Payment verify_payment_atomic RPC Exception, applying direct fallback]', rpcCatch);
+  }
 
-  if (rpcErr) {
-    console.error('[Automated Payment verify_payment_atomic Error]', rpcErr);
+  // Authoritative direct updates to guarantee persistence
+  try {
+    if (bookingId) {
+      await supabaseAdmin.from('bookings').update({ status: 'confirmed' }).eq('id', bookingId);
+      // Fast path integration job for calendar/zoom
+      processIntegrationJobs(1, undefined, bookingId).catch(err => console.warn('[Fast path integration warning]', err));
+    }
+    if (entitlementId) {
+      await supabaseAdmin.from('package_entitlements').update({ status: 'active' }).eq('id', entitlementId);
+    }
+    await supabaseAdmin.from('payments').update({ status: 'confirmed', verified_at: new Date().toISOString() }).eq('id', newPayment.id);
+  } catch (directUpdErr) {
+    console.error('[Automated Payment direct fallback error]', directUpdErr);
   }
 
   // 5. Asynchronously dispatch Brevo confirmation emails (Both to Student and to Ustadh Mahmoud)
@@ -4114,6 +4478,9 @@ async function fulfillAutomatedPayment(params: {
   return {
     success: true,
     paymentId: newPayment.id,
+    referenceCode,
+    bookingId,
+    serviceName,
     status: 'confirmed'
   };
 }
@@ -4123,9 +4490,9 @@ app.get('/api/payments/config', rateLimit, (req, res) => {
   const paypal = getPayPalConfig();
   const stripe = getStripeConfig();
   res.json({
-    paypalClientId: paypal.clientId,
-    paypalMode: paypal.mode,
-    stripePublishableKey: stripe.publishableKey
+    paypalClientId: paypal.clientId || process.env.PAYPAL_CLIENT_ID || process.env.VITE_PAYPAL_CLIENT_ID || '',
+    paypalMode: paypal.mode || process.env.PAYPAL_MODE || 'live',
+    stripePublishableKey: stripe.publishableKey || process.env.STRIPE_PUBLISHABLE_KEY || process.env.VITE_STRIPE_PUBLISHABLE_KEY || ''
   });
 });
 
@@ -4171,11 +4538,28 @@ app.post('/api/payments/create-intent', rateLimit, async (req: any, res: any) =>
         return res.status(404).json({ error: 'Booking not found.' });
       }
 
-      if (booking.status === 'confirmed') {
+      // Check if an actual completed payment already exists for this booking
+      const { data: existingPayment } = await supabaseAdmin
+        .from('payments')
+        .select('id, status')
+        .eq('booking_id', booking.id)
+        .eq('status', 'confirmed')
+        .maybeSingle();
+
+      if (existingPayment) {
         return res.status(400).json({ error: 'This booking has already been paid and confirmed.' });
       }
 
-      authoritativeAmount = Number(booking.fee_amount_usd || 9.00);
+      if (!booking.fee_amount_usd || Number(booking.fee_amount_usd) <= 0) {
+        if (booking.service_id) {
+          const { data: srvRow } = await supabaseAdmin.from('services').select('hourly_rate_usd').eq('id', booking.service_id).maybeSingle();
+          authoritativeAmount = Number(srvRow?.hourly_rate_usd || 9.00);
+        } else {
+          authoritativeAmount = 9.00;
+        }
+      } else {
+        authoritativeAmount = Number(booking.fee_amount_usd);
+      }
       authoritativeCurrency = 'USD';
 
       if (booking.service_id) {
@@ -4198,9 +4582,9 @@ app.post('/api/payments/create-intent', rateLimit, async (req: any, res: any) =>
         if (entitlement.status === 'active') {
           return res.status(400).json({ error: 'This package has already been paid and activated.' });
         }
-        authoritativeAmount = Number(entitlement.price_paid || 0);
-        authoritativeCurrency = entitlement.currency || 'USD';
         const cat: any = Array.isArray(entitlement.package_catalog) ? entitlement.package_catalog[0] : entitlement.package_catalog;
+        authoritativeAmount = Number(entitlement.price_paid || cat?.price_amount || 0);
+        authoritativeCurrency = entitlement.currency || cat?.currency || 'USD';
         itemTitle = cat?.name || 'Lesson Package';
       } else {
         // Fallback: targetId might be a package_catalog ID
