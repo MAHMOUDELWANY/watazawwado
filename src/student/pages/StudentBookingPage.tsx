@@ -52,30 +52,31 @@ export class BookingErrorBoundary extends Component<BookingErrorBoundaryProps, B
 
   override render() {
     if (this.state.hasError) {
+      const isAr = typeof document !== 'undefined' && document.documentElement.lang !== 'en';
       return (
         <div className="max-w-xl mx-auto py-12 px-4 text-center space-y-4">
           <div className="w-12 h-12 rounded-2xl bg-warning/10 text-warning mx-auto flex items-center justify-center">
             <AlertCircle className="w-6 h-6" />
           </div>
           <h2 className="text-lg font-semibold text-foreground">
-            Unable to display booking form
+            {isAr ? 'تعذر عرض نموذج الحجز' : 'Unable to display booking form'}
           </h2>
           <p className="text-sm text-muted-foreground">
-            {this.state.error?.message || 'An unexpected error occurred while preparing your booking form.'}
+            {this.state.error?.message || (isAr ? 'حدث خطأ غير متوقع أثناء إعداد نموذج الحجز.' : 'An unexpected error occurred while preparing your booking form.')}
           </p>
           <div className="pt-2 flex justify-center gap-3">
             <Link
               to="/student"
               className="px-4 py-2 rounded-xl text-sm font-semibold glass-surface text-foreground hover:bg-border/40 transition-colors"
             >
-              ← Return to Student Portal
+              {isAr ? '← العودة لبوابة الطالب' : '← Return to Student Portal'}
             </Link>
             <button
               type="button"
               onClick={this.reset}
               className="px-4 py-2 rounded-xl text-sm font-semibold btn-primary-material text-primary-foreground transition-colors cursor-pointer"
             >
-              Retry Booking Form
+              {isAr ? 'إعادة المحاولة' : 'Retry Booking Form'}
             </button>
           </div>
         </div>

@@ -61,10 +61,15 @@ export function InstantCheckoutModal({
   const [errorMessage, setError] = useState<string | null>(null);
 
   const paypalContainerRef = useRef<HTMLDivElement>(null);
+  const paypalButtonsRenderedRef = useRef(false);
 
   // 1. Fetch public payment gateway configuration
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      paypalButtonsRenderedRef.current = false;
+      setPaypalLoaded(false);
+      return;
+    }
 
     let mounted = true;
     setLoadingConfig(true);
@@ -103,89 +108,104 @@ export function InstantCheckoutModal({
     const scriptId = 'paypal-js-sdk-live';
 
     const renderPayPalButtons = () => {
-      if (!window.paypal || !paypalContainerRef.current) return;
-      paypalContainerRef.current.innerHTML = '';
+      if (!window.paypal || !paypalContainerRef.current || !isMounted) return;
+      if (paypalButtonsRenderedRef.current) return;
 
-      window.paypal.Buttons({
-        style: {
-          layout: 'vertical',
-          color: 'gold',
-          shape: 'pill',
-          label: 'pay',
-          height: 48
-        },
-        createOrder: async () => {
-          setIsProcessingPayPal(true);
-          setError(null);
-          try {
-            const res = await fetch('/api/payments/create-intent', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                gateway: 'paypal',
-                targetType,
-                targetId
-              })
-            });
-            const data = await res.json();
-            if (!res.ok || !data.orderId) {
-              throw new Error(data.error || 'Failed to initialize PayPal order.');
-            }
-            return data.orderId;
-          } catch (err: any) {
-            console.error('[PayPal createOrder error]', err);
-            setError(err.message || (isAr ? 'فشل إنشاء طلب باي بال' : 'Failed to create PayPal order.'));
-            setIsProcessingPayPal(false);
-            throw err;
-          }
-        },
-        onApprove: async (data: any) => {
-          try {
-            const res = await fetch('/api/payments/paypal/capture', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                orderId: data.orderID,
-                targetType,
-                targetId
-              })
-            });
-            const captureData = await res.json();
-            if (!res.ok || !captureData.success) {
-              throw new Error(captureData.error || 'Payment capture failed.');
-            }
+      try {
+        paypalContainerRef.current.innerHTML = '';
 
-            if (isMounted) {
-              setPaymentSuccess(true);
+        window.paypal.Buttons({
+          style: {
+            layout: 'vertical',
+            color: 'gold',
+            shape: 'pill',
+            label: 'pay',
+            height: 48
+          },
+          createOrder: async () => {
+            setIsProcessingPayPal(true);
+            setError(null);
+            try {
+              const res = await fetch('/api/payments/create-intent', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  gateway: 'paypal',
+                  targetType,
+                  targetId
+                })
+              });
+              const data = await res.json();
+              if (!res.ok || !data.orderId) {
+                throw new Error(data.error || 'Failed to initialize PayPal order.');
+              }
+              return data.orderId;
+            } catch (err: any) {
+              console.error('[PayPal createOrder error]', err);
+              setError(err.message || (isAr ? 'فشل إنشاء طلب باي بال' : 'Failed to create PayPal order.'));
               setIsProcessingPayPal(false);
-              if (onSuccess) {
-                setTimeout(() => onSuccess(), 1500);
+              throw err;
+            }
+          },
+          onApprove: async (data: any) => {
+            try {
+              const res = await fetch('/api/payments/paypal/capture', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  orderId: data.orderID,
+                  targetType,
+                  targetId
+                })
+              });
+              const captureData = await res.json();
+              if (!res.ok || !captureData.success) {
+                throw new Error(captureData.error || 'Payment capture failed.');
+              }
+
+              if (isMounted) {
+                setPaymentSuccess(true);
+                setIsProcessingPayPal(false);
+                if (onSuccess) {
+                  setTimeout(() => onSuccess(), 1500);
+                }
+              }
+            } catch (err: any) {
+              console.error('[PayPal onApprove error]', err);
+              if (isMounted) {
+                setError(err.message || (isAr ? 'حدث خطأ أثناء تأكيد الدفع.' : 'Payment capture failed.'));
+                setIsProcessingPayPal(false);
               }
             }
-          } catch (err: any) {
-            console.error('[PayPal onApprove error]', err);
+          },
+          onError: (err: any) => {
+            console.error('[PayPal SDK onError]', err);
             if (isMounted) {
-              setError(err.message || (isAr ? 'حدث خطأ أثناء تأكيد الدفع.' : 'Payment capture failed.'));
+              setError(isAr ? 'حدث خطأ من جانب باي بال. يرجى إعادة المحاولة.' : 'A PayPal error occurred. Please try again.');
+              setIsProcessingPayPal(false);
+            }
+          },
+          onCancel: () => {
+            if (isMounted) {
               setIsProcessingPayPal(false);
             }
           }
-        },
-        onError: (err: any) => {
-          console.error('[PayPal SDK onError]', err);
-          if (isMounted) {
-            setError(isAr ? 'حدث خطأ من جانب باي بال. يرجى إعادة المحاولة.' : 'A PayPal error occurred. Please try again.');
-            setIsProcessingPayPal(false);
-          }
-        },
-        onCancel: () => {
-          if (isMounted) {
-            setIsProcessingPayPal(false);
-          }
+        }).render(paypalContainerRef.current)
+          .then(() => {
+            if (isMounted) {
+              paypalButtonsRenderedRef.current = true;
+              setPaypalLoaded(true);
+            }
+          })
+          .catch((renderErr: any) => {
+            console.warn('[PayPal render buttons warning]', renderErr);
+            paypalButtonsRenderedRef.current = false;
+          });
+      } catch (sdkErr: any) {
+        console.error('[PayPal Buttons SDK init error]', sdkErr);
+        if (isMounted) {
+          setError(isAr ? 'تعذر تشغيل نافذة باي بال.' : 'Failed to initialize PayPal.');
         }
-      }).render(paypalContainerRef.current);
-
-      if (isMounted) {
-        setPaypalLoaded(true);
       }
     };
 
@@ -214,9 +234,6 @@ export function InstantCheckoutModal({
 
     return () => {
       isMounted = false;
-      if (paypalContainerRef.current) {
-        paypalContainerRef.current.innerHTML = '';
-      }
     };
   }, [isOpen, selectedGateway, config?.paypalClientId, targetType, targetId, paymentSuccess, isAr, onSuccess]);
 
@@ -439,58 +456,59 @@ export function InstantCheckoutModal({
 
               {/* Gateway Action Area */}
               <div className="pt-2">
-                {selectedGateway === 'stripe' ? (
-                  /* Stripe Action */
-                  <div className="space-y-3">
-                    <button
-                      type="button"
-                      disabled={isProcessingStripe || loadingConfig}
-                      onClick={handleStripeCheckout}
-                      className="w-full py-3.5 px-5 rounded-2xl btn-primary-material font-bold text-base shadow-lg flex items-center justify-center gap-2 transition-transform active:scale-[0.99] disabled:opacity-50 cursor-pointer"
-                    >
-                      {isProcessingStripe ? (
-                        <>
-                          <BrandSpinner size="sm" />
-                          <span>{isAr ? 'جارِ التحويل إلى Stripe...' : 'Redirecting to Stripe...'}</span>
-                        </>
-                      ) : (
-                        <>
-                          <CreditCard className="w-5 h-5" />
-                          <span>
-                            {isAr
-                              ? `ادفع الآن (${formattedAmount} $)`
-                              : `Pay with Card / Apple Pay ($${formattedAmount})`}
-                          </span>
-                        </>
-                      )}
-                    </button>
-                    <p className="text-center text-[11px] text-muted-foreground">
-                      {isAr
-                        ? 'سيتم تحويلك إلى نافذة الدفع المشفرة التابعة لـ Stripe لإتمام المعاملة بأمان'
-                        : 'You will be redirected to Stripe’s secure encrypted checkout page.'}
-                    </p>
-                  </div>
-                ) : (
-                  /* PayPal Action */
-                  <div className="space-y-3">
-                    <div
-                      ref={paypalContainerRef}
-                      className="min-h-[48px] flex items-center justify-center"
-                    >
-                      {(!paypalLoaded || isProcessingPayPal) && (
-                        <div className="py-4 flex items-center gap-2 text-sm text-muted-foreground">
-                          <BrandSpinner size="sm" />
-                          <span>{isAr ? 'جارِ تهيئة بوابة باي بال...' : 'Loading PayPal gateway...'}</span>
-                        </div>
-                      )}
+                {/* Stripe Action */}
+                <div className={selectedGateway === 'stripe' ? 'space-y-3' : 'hidden'}>
+                  <button
+                    type="button"
+                    disabled={isProcessingStripe || loadingConfig}
+                    onClick={handleStripeCheckout}
+                    className="w-full py-3.5 px-5 rounded-2xl btn-primary-material font-bold text-base shadow-lg flex items-center justify-center gap-2 transition-transform active:scale-[0.99] disabled:opacity-50 cursor-pointer"
+                  >
+                    {isProcessingStripe ? (
+                      <>
+                        <BrandSpinner size="sm" />
+                        <span>{isAr ? 'جارِ التحويل إلى Stripe...' : 'Redirecting to Stripe...'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <CreditCard className="w-5 h-5" />
+                        <span>
+                          {isAr
+                            ? `ادفع الآن (${formattedAmount} $)`
+                            : `Pay with Card / Apple Pay ($${formattedAmount})`}
+                        </span>
+                      </>
+                    )}
+                  </button>
+                  <p className="text-center text-[11px] text-muted-foreground">
+                    {isAr
+                      ? 'سيتم تحويلك إلى نافذة الدفع المشفرة التابعة لـ Stripe لإتمام المعاملة بأمان'
+                      : 'You will be redirected to Stripe’s secure encrypted checkout page.'}
+                  </p>
+                </div>
+
+                {/* PayPal Action */}
+                <div className={selectedGateway === 'paypal' ? 'space-y-3' : 'hidden'}>
+                  {(!paypalLoaded || isProcessingPayPal) && (
+                    <div className="py-4 flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                      <BrandSpinner size="sm" />
+                      <span>
+                        {isProcessingPayPal
+                          ? (isAr ? 'جارِ تأكيد الدفع عبر باي بال...' : 'Processing PayPal payment...')
+                          : (isAr ? 'جارِ تهيئة بوابة باي بال...' : 'Loading PayPal gateway...')}
+                      </span>
                     </div>
-                    <p className="text-center text-[11px] text-muted-foreground">
-                      {isAr
-                        ? 'معاملة رسمية ومباشرة عبر حساب باي بال التجاري الرسمي'
-                        : 'Official live transaction with verified PayPal Business account.'}
-                    </p>
-                  </div>
-                )}
+                  )}
+                  <div
+                    ref={paypalContainerRef}
+                    className={`w-full min-h-[48px] ${!paypalLoaded || isProcessingPayPal ? 'opacity-0 h-0 overflow-hidden' : 'opacity-100'}`}
+                  />
+                  <p className="text-center text-[11px] text-muted-foreground">
+                    {isAr
+                      ? 'معاملة رسمية ومباشرة عبر حساب باي بال التجاري الرسمي'
+                      : 'Official live transaction with verified PayPal Business account.'}
+                  </p>
+                </div>
               </div>
 
               {/* Trust & Guarantee Footer */}
