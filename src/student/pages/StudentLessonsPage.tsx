@@ -452,15 +452,15 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
 
                     {/* Secondary Actions */}
                     <div className="flex flex-wrap items-center gap-2 shrink-0">
-                      {/* Submit Payment Claim */}
+                      {/* Pay & Confirm Lesson */}
                       {isPendingPayment && (
                         <button
                           type="button"
                           onClick={() => setPaymentModalBooking(b)}
-                          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-secondary/30 hover:bg-secondary/40 text-accent border border-secondary/50 rounded-xl text-sm font-semibold transition-colors cursor-pointer min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 btn-primary-material rounded-xl text-sm font-semibold transition-colors cursor-pointer min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus shadow-xs"
                         >
                           <CreditCard className="w-3.5 h-3.5 shrink-0" />
-                          <span>{isAr ? 'إرسال إثبات الدفع' : 'Submit Payment Claim'}</span>
+                          <span>{isAr ? 'الدفع وتأكيد الحجز' : 'Pay & Confirm Booking'}</span>
                         </button>
                       )}
 

@@ -98,6 +98,30 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
 
   useEffect(() => {
     fetchData();
+
+    // Check for Stripe Checkout return
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get('session_id');
+    const gateway = params.get('gateway');
+
+    if (sessionId && gateway === 'stripe') {
+      fetch('/api/payments/stripe/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            const cleanUrl = window.location.pathname;
+            window.history.replaceState({}, '', cleanUrl);
+            fetchData();
+          }
+        })
+        .catch(err => {
+          console.error('[Stripe return verification error]', err);
+        });
+    }
   }, [session, isAr]);
 
   const handleCopy = (id: string, text: string) => {
@@ -174,13 +198,13 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
             labelAr="العودة لبوابة الطالب"
             className="mb-1.5"
           />
-          <h1 className="text-2xl sm:text-3xl font-display font-bold  text-foreground">
-            {isAr ? 'المدفوعات وسجل التحويلات' : 'Payments & Billing'}
+          <h1 className="text-2xl sm:text-3xl font-display font-bold text-foreground">
+            {isAr ? 'المدفوعات الإلكترونية وبوابات الدفع' : 'Automated Payments & Billing'}
           </h1>
           <p className="text-sm sm:text-sm text-muted-foreground mt-1 leading-relaxed">
             {isAr
-              ? 'متابعة سجل إثباتات الدفع، الحوالات البنكية، وتأكيدات الأستاذ محمود.'
-              : 'Track payment confirmations, bank transfers, and manual verification status with Ustadh Mahmoud.'}
+              ? 'دفع فوري وتأكيد تلقائي للدروس والباقات عبر PayPal Live و Stripe (بطاقات بنكية / Apple Pay).'
+              : 'Instant checkout & automated fulfillment via PayPal Live and Stripe (Cards / Apple Pay).'}
           </p>
         </div>
 
@@ -192,35 +216,35 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
           }}
           className="inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm sm:text-sm font-semibold transition-colors shadow-xs shrink-0 cursor-pointer min-h-[44px]"
         >
-          <Plus className="w-4 h-4" />
-          <span>{isAr ? 'إرسال إثبات دفع جديد' : 'Submit Payment Claim'}</span>
+          <CreditCard className="w-4 h-4" />
+          <span>{isAr ? 'الدفع الفوري (PayPal / فيزا)' : 'Instant Checkout (PayPal / Cards)'}</span>
         </button>
       </div>
 
-      {/* 2. Verification Policy & WhatsApp Card */}
+      {/* 2. Automated Gateways Verification Policy */}
       <div className="p-4 sm:p-5 rounded-2xl glass-surface border border-border-subtle flex flex-col md:flex-row md:items-center justify-between gap-4 text-sm leading-relaxed text-muted-foreground">
         <div className="flex items-start gap-3">
-          <ShieldCheck className="w-5 h-5 text-accent shrink-0 mt-0.5" />
+          <ShieldCheck className="w-5 h-5 text-secondary shrink-0 mt-0.5" />
           <div className="space-y-1">
             <span className="font-semibold text-foreground text-sm block">
-              {isAr ? 'كيف يتم التحقق وتأكيد الدفع؟' : 'How Payments Are Verified'}
+              {isAr ? 'بوابات دفع إلكترونية مؤتمتة وموثقة' : 'Automated & Secure Payment Gateways'}
             </span>
             <span>
               {isAr
-                ? 'يتم التحقق من الحوالات يدوياً وبشكل مباشر من قِبل الأستاذ محمود. بمجرد إرسال الرقم المرجعي أو إيصال التحويل، يقوم الأستاذ بمطابقته وتفعيل الدرس أو باقة الرصيد فوراً.'
-                : 'All payments are verified directly and personally by Ustadh Mahmoud. Once you submit your bank or transfer reference, he reviews it and activates your lesson or package credits immediately.'}
+                ? 'تتم جميع المعاملات عبر بوابات مشفرة ومعتمدة عالمياً (PayPal Live و Stripe). يتم تأكيد المواعيد وشحن رصيد الباقات لحظياً وفورياً بعد إتمام الدفع دون الحاجة لانتظار المراجعة اليدوية.'
+                : 'All transactions are processed through encrypted global gateways (PayPal Live & Stripe). Lessons and package credits are activated immediately with zero wait time.'}
             </span>
           </div>
         </div>
 
         <a
-          href="https://wa.me/201026042456?text=Assalamu%20Alaikum%20Ustadh%20Mahmoud%2C%20I%20have%20sent%20a%20payment%20transfer%20and%20would%20like%20to%20confirm%20it."
+          href="https://wa.me/201026042456?text=Assalamu%20Alaikum%20Ustadh%20Mahmoud%2C%20I%20have%20a%20question%20about%20payment."
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 px-4 py-2.5 btn-whatsapp-solid rounded-xl text-sm font-bold shadow-md shrink-0 self-start md:self-auto min-h-[38px]"
         >
           <MessageCircle className="w-4 h-4 fill-current shrink-0" />
-          <span>{isAr ? 'إرسال الإيصال عبر واتساب' : 'Send Receipt on WhatsApp'}</span>
+          <span>{isAr ? 'استفسار عبر واتساب' : 'Ask on WhatsApp'}</span>
           <ExternalLink className="w-3.5 h-3.5" />
         </a>
       </div>
@@ -279,8 +303,8 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
           </div>
           <p className="text-sm text-muted-foreground leading-relaxed">
             {isAr
-              ? 'لم يتم إرسال إثبات دفع لهذه الدروس بعد. يرجى إرسال الرقم المرجعي للتحويل لتأكيد حجز موعدك.'
-              : 'No payment claim has been submitted for these lessons yet. Please submit your transfer reference to confirm your scheduled lesson slot.'}
+              ? 'هذه المواعيد في انتظار إتمام الدفع الإلكتروني لتأكيدها رسمياً في جدول المواعيد.'
+              : 'These scheduled slots require online payment completion to be officially confirmed.'}
           </p>
           <div className="flex flex-wrap gap-2 pt-1">
             {awaitingClaim.map(b => (
@@ -290,10 +314,10 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
                   setSelectedBookingForClaim(b);
                   setIsClaimModalOpen(true);
                 }}
-                className="inline-flex items-center gap-2 px-3.5 py-1.5 glass-card border border-warning/40 text-foreground hover:border-warning rounded-xl text-sm font-medium transition-colors cursor-pointer"
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 glass-card border border-primary/40 text-foreground hover:border-primary rounded-xl text-sm font-medium transition-colors cursor-pointer"
               >
                 <span>{b.serviceTitle} ({b.referenceCode})</span>
-                <span className="text-primary font-bold">{isAr ? 'إرسال الإثبات' : 'Claim'} →</span>
+                <span className="text-primary font-bold">{isAr ? 'الدفع الآن' : 'Pay Now'} →</span>
               </button>
             ))}
           </div>

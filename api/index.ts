@@ -62,6 +62,16 @@ import {
   CUSTOM_OFFER_PURCHASE_UNAVAILABLE,
   type CatalogEntry
 } from '../server/pricing/offerPurchasability.js';
+import {
+  createPayPalOrder,
+  capturePayPalOrder,
+  getPayPalConfig
+} from '../server/payment/paypalService.js';
+import {
+  createStripeCheckoutSession,
+  retrieveStripeCheckoutSession,
+  getStripeConfig
+} from '../server/payment/stripeService.js';
 
 dotenv.config();
 
@@ -3888,6 +3898,398 @@ app.delete('/api/dashboard/payments/:id', verifyTeacherAuth, requireSuperAdmin, 
     res.json({ success: true, message: 'Payment removed.' });
   } catch (err) {
     res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// ====================================================================
+// AUTOMATED PAYMENT ENGINE (PAYPAL LIVE & STRIPE CHECKOUT)
+// ====================================================================
+
+/**
+ * Fulfills an automated payment atomically and dispatches confirmation notifications.
+ */
+async function fulfillAutomatedPayment(params: {
+  paymentMethod: 'paypal' | 'stripe';
+  paymentReference: string;
+  amount: number;
+  currency: string;
+  notes?: string;
+  targetType: 'booking' | 'package';
+  targetId: string;
+  customerEmail?: string;
+  customerName?: string;
+}) {
+  const supabaseAdmin = getSupabaseAdminClient();
+  if (!supabaseAdmin) {
+    throw new Error('Database service unavailable.');
+  }
+
+  const cleanReference = String(params.paymentReference).trim();
+
+  // 1. Idempotency Check: prevent duplicate capture/credit
+  const { data: existingPayment } = await supabaseAdmin
+    .from('payments')
+    .select('id, status, booking_id, entitlement_id')
+    .eq('payment_reference', cleanReference)
+    .maybeSingle();
+
+  if (existingPayment) {
+    if (existingPayment.status === 'confirmed') {
+      return { success: true, paymentId: existingPayment.id, isIdempotent: true };
+    }
+    // If pending, run atomic confirmation
+    await supabaseAdmin.rpc('verify_payment_atomic', { p_payment_id: existingPayment.id });
+    return { success: true, paymentId: existingPayment.id, isIdempotent: true };
+  }
+
+  // 2. Resolve target booking or package entitlement
+  let bookingId: string | null = null;
+  let entitlementId: string | null = null;
+  let studentId: string | null = null;
+  let serviceName = 'Educational Service';
+  let learnerName = params.customerName || 'Student';
+  let contactEmail = params.customerEmail || '';
+  let contactWhatsapp: string | null = null;
+  let referenceCode = cleanReference;
+
+  if (params.targetType === 'booking') {
+    const { data: booking } = await supabaseAdmin
+      .from('bookings')
+      .select('id, reference_code, student_id, student_name, contact_name, contact_email, contact_whatsapp, service_name, fee_amount_usd')
+      .or(`id.eq.${params.targetId},reference_code.eq.${params.targetId}`)
+      .maybeSingle();
+
+    if (!booking) {
+      throw new Error(`Booking ${params.targetId} not found.`);
+    }
+
+    bookingId = booking.id;
+    studentId = booking.student_id;
+    learnerName = booking.student_name || booking.contact_name || learnerName;
+    contactEmail = booking.contact_email || contactEmail;
+    contactWhatsapp = booking.contact_whatsapp;
+    referenceCode = booking.reference_code;
+    serviceName = booking.service_name || '1-on-1 Lesson';
+  } else if (params.targetType === 'package') {
+    const { data: entitlement } = await supabaseAdmin
+      .from('package_entitlements')
+      .select('id, learner_student_id, package_catalog_id, package_catalog:package_catalog_id(name)')
+      .eq('id', params.targetId)
+      .maybeSingle();
+
+    if (!entitlement) {
+      throw new Error(`Package entitlement ${params.targetId} not found.`);
+    }
+
+    entitlementId = entitlement.id;
+    studentId = entitlement.learner_student_id;
+    const cat: any = Array.isArray(entitlement.package_catalog) ? entitlement.package_catalog[0] : entitlement.package_catalog;
+    serviceName = cat?.name || 'Lesson Package';
+    referenceCode = entitlement.id;
+
+    if (studentId) {
+      const { data: st } = await supabaseAdmin
+        .from('students')
+        .select('name, email, whatsapp')
+        .eq('id', studentId)
+        .maybeSingle();
+      if (st) {
+        learnerName = st.name || learnerName;
+        contactEmail = st.email || contactEmail;
+        contactWhatsapp = st.whatsapp;
+      }
+    }
+  }
+
+  // 3. Create initial payment row
+  const { data: newPayment, error: pInsertErr } = await supabaseAdmin
+    .from('payments')
+    .insert({
+      booking_id: bookingId,
+      entitlement_id: entitlementId,
+      student_id: studentId,
+      amount: Number(params.amount),
+      currency: (params.currency || 'USD').toUpperCase(),
+      payment_method: params.paymentMethod,
+      payment_reference: cleanReference,
+      status: 'pending',
+      notes: params.notes || `Automated ${params.paymentMethod} verified payment`
+    })
+    .select('*')
+    .single();
+
+  if (pInsertErr || !newPayment) {
+    console.error('[Insert Automated Payment Error]', pInsertErr);
+    throw new Error(`Failed to record payment: ${pInsertErr?.message || 'Database error'}`);
+  }
+
+  // 4. Atomic fulfillment via Postgres RPC (confirms booking, activates entitlement, allocates credits)
+  const { error: rpcErr } = await supabaseAdmin.rpc('verify_payment_atomic', {
+    p_payment_id: newPayment.id
+  });
+
+  if (rpcErr) {
+    console.error('[Automated Payment verify_payment_atomic Error]', rpcErr);
+  }
+
+  // 5. Asynchronously dispatch Brevo confirmation email
+  try {
+    await dispatchNotification({
+      eventType: 'PAYMENT_CONFIRMED',
+      payment: {
+        id: newPayment.id,
+        amount: Number(newPayment.amount),
+        currency: newPayment.currency || 'USD',
+        paymentMethod: params.paymentMethod,
+        paymentReference: cleanReference,
+        notes: newPayment.notes
+      },
+      booking: {
+        referenceCode,
+        serviceName,
+        learnerName,
+        contactEmail,
+        contactWhatsapp,
+        date: '',
+        timeDisplay: '',
+        timezone: 'Africa/Cairo',
+        durationMinutes: 60
+      }
+    });
+  } catch (notifErr) {
+    console.warn('[Notification Dispatch Warning]', notifErr);
+  }
+
+  return {
+    success: true,
+    paymentId: newPayment.id,
+    status: 'confirmed'
+  };
+}
+
+// 1. Config endpoint for client-side gateway initialization
+app.get('/api/payments/config', rateLimit, (req, res) => {
+  const paypal = getPayPalConfig();
+  const stripe = getStripeConfig();
+  res.json({
+    paypalClientId: paypal.clientId,
+    paypalMode: paypal.mode,
+    stripePublishableKey: stripe.publishableKey
+  });
+});
+
+// 2. Zero-Trust Payment Intent Creation (server authoritative pricing)
+app.post('/api/payments/create-intent', rateLimit, async (req: any, res: any) => {
+  try {
+    const supabaseAdmin = getSupabaseAdminClient();
+    if (!supabaseAdmin) {
+      return res.status(503).json({ error: 'Database service unavailable.' });
+    }
+
+    const { gateway, targetType, targetId, successUrl, cancelUrl } = req.body;
+
+    if (!gateway || !['paypal', 'stripe'].includes(gateway)) {
+      return res.status(400).json({ error: 'Invalid payment gateway. Must be "paypal" or "stripe".' });
+    }
+
+    if (!targetType || !['booking', 'package'].includes(targetType) || !targetId) {
+      return res.status(400).json({ error: 'Valid targetType and targetId are required.' });
+    }
+
+    let authoritativeAmount = 0;
+    let authoritativeCurrency = 'USD';
+    let itemTitle = 'Watazawwado Academy Lesson';
+    let customerEmail: string | undefined = undefined;
+
+    if (targetType === 'booking') {
+      const { data: booking, error: bErr } = await supabaseAdmin
+        .from('bookings')
+        .select('id, reference_code, fee_amount_usd, service_name, contact_email, status')
+        .or(`id.eq.${targetId},reference_code.eq.${targetId}`)
+        .maybeSingle();
+
+      if (bErr || !booking) {
+        return res.status(404).json({ error: 'Booking not found.' });
+      }
+
+      if (booking.status === 'confirmed') {
+        return res.status(400).json({ error: 'This booking has already been paid and confirmed.' });
+      }
+
+      authoritativeAmount = Number(booking.fee_amount_usd || 7.00);
+      authoritativeCurrency = 'USD';
+      itemTitle = `Lesson: ${booking.service_name || 'Arabic & Quran'}`;
+      customerEmail = booking.contact_email;
+    } else if (targetType === 'package') {
+      // Check if targetId is an existing entitlement
+      const { data: entitlement } = await supabaseAdmin
+        .from('package_entitlements')
+        .select('id, price_paid, currency, status, package_catalog_id, package_catalog:package_catalog_id(name, price_amount, currency)')
+        .eq('id', targetId)
+        .maybeSingle();
+
+      if (entitlement) {
+        if (entitlement.status === 'active') {
+          return res.status(400).json({ error: 'This package has already been paid and activated.' });
+        }
+        authoritativeAmount = Number(entitlement.price_paid || 0);
+        authoritativeCurrency = entitlement.currency || 'USD';
+        const cat: any = Array.isArray(entitlement.package_catalog) ? entitlement.package_catalog[0] : entitlement.package_catalog;
+        itemTitle = cat?.name || 'Lesson Package';
+      } else {
+        // Fallback: targetId might be a package_catalog ID
+        const { data: catItem } = await supabaseAdmin
+          .from('package_catalog')
+          .select('id, name, price_amount, currency')
+          .eq('id', targetId)
+          .maybeSingle();
+
+        if (!catItem) {
+          return res.status(404).json({ error: 'Package entitlement or catalog item not found.' });
+        }
+
+        authoritativeAmount = Number(catItem.price_amount);
+        authoritativeCurrency = catItem.currency || 'USD';
+        itemTitle = catItem.name;
+      }
+    }
+
+    if (authoritativeAmount <= 0) {
+      return res.status(400).json({ error: 'No payment is required for this item.' });
+    }
+
+    const hostOrigin = (req.headers.origin as string) || 'https://watazawwado.academy';
+
+    if (gateway === 'paypal') {
+      const order = await createPayPalOrder({
+        amount: authoritativeAmount,
+        currency: authoritativeCurrency,
+        description: itemTitle,
+        customId: JSON.stringify({ targetType, targetId })
+      });
+
+      return res.json({
+        success: true,
+        gateway: 'paypal',
+        orderId: order.id,
+        amount: authoritativeAmount,
+        currency: authoritativeCurrency
+      });
+    } else if (gateway === 'stripe') {
+      const defaultSuccessUrl = `${hostOrigin}/student/payments?session_id={CHECKOUT_SESSION_ID}&gateway=stripe`;
+      const defaultCancelUrl = `${hostOrigin}/student/payments?payment_cancelled=true`;
+
+      const session = await createStripeCheckoutSession({
+        amount: authoritativeAmount,
+        currency: authoritativeCurrency,
+        title: itemTitle,
+        customerEmail,
+        metadata: {
+          targetType,
+          targetId: String(targetId)
+        },
+        successUrl: successUrl || defaultSuccessUrl,
+        cancelUrl: cancelUrl || defaultCancelUrl
+      });
+
+      return res.json({
+        success: true,
+        gateway: 'stripe',
+        sessionId: session.id,
+        sessionUrl: session.url,
+        amount: authoritativeAmount,
+        currency: authoritativeCurrency
+      });
+    }
+  } catch (err: any) {
+    console.error('[Create Payment Intent Error]', err);
+    return res.status(500).json({ error: err.message || 'Failed to initialize payment gateway.' });
+  }
+});
+
+// 3. Automated PayPal Order Capture
+app.post('/api/payments/paypal/capture', rateLimit, async (req: any, res: any) => {
+  try {
+    const { orderId, targetType, targetId } = req.body;
+
+    if (!orderId || !targetType || !targetId) {
+      return res.status(400).json({ error: 'orderId, targetType, and targetId are required.' });
+    }
+
+    const captureResult = await capturePayPalOrder(orderId);
+
+    if (captureResult.status !== 'COMPLETED') {
+      return res.status(400).json({ error: `PayPal order not completed. Status: ${captureResult.status}` });
+    }
+
+    const fulfillment = await fulfillAutomatedPayment({
+      paymentMethod: 'paypal',
+      paymentReference: captureResult.captureId || orderId,
+      amount: captureResult.amount || 0,
+      currency: captureResult.currency || 'USD',
+      notes: `Automated PayPal live payment captured (${captureResult.payerEmail || ''})`,
+      targetType,
+      targetId,
+      customerEmail: captureResult.payerEmail,
+      customerName: captureResult.payerName
+    });
+
+    return res.json({
+      success: true,
+      status: 'confirmed',
+      paymentId: fulfillment.paymentId,
+      isIdempotent: fulfillment.isIdempotent
+    });
+  } catch (err: any) {
+    console.error('[PayPal Capture Error]', err);
+    return res.status(500).json({ error: err.message || 'Failed to process PayPal payment.' });
+  }
+});
+
+// 4. Automated Stripe Session Verification
+app.post('/api/payments/stripe/verify', rateLimit, async (req: any, res: any) => {
+  try {
+    const { sessionId } = req.body;
+
+    if (!sessionId) {
+      return res.status(400).json({ error: 'sessionId is required.' });
+    }
+
+    const session = await retrieveStripeCheckoutSession(sessionId);
+
+    if (session.paymentStatus !== 'paid') {
+      return res.status(400).json({
+        error: `Stripe payment not completed. Status: ${session.paymentStatus}`,
+        paymentStatus: session.paymentStatus
+      });
+    }
+
+    const targetType = (session.metadata?.targetType as 'booking' | 'package') || 'booking';
+    const targetId = session.metadata?.targetId || sessionId;
+
+    const fulfillment = await fulfillAutomatedPayment({
+      paymentMethod: 'stripe',
+      paymentReference: session.paymentIntent || sessionId,
+      amount: session.amountTotal || 0,
+      currency: session.currency || 'USD',
+      notes: `Automated Stripe checkout payment verified (${session.customerEmail || ''})`,
+      targetType,
+      targetId,
+      customerEmail: session.customerEmail,
+      customerName: session.customerName
+    });
+
+    return res.json({
+      success: true,
+      status: 'confirmed',
+      paymentId: fulfillment.paymentId,
+      isIdempotent: fulfillment.isIdempotent,
+      targetType,
+      targetId
+    });
+  } catch (err: any) {
+    console.error('[Stripe Verify Error]', err);
+    return res.status(500).json({ error: err.message || 'Failed to verify Stripe payment.' });
   }
 });
 

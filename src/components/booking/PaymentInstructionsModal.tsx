@@ -1,15 +1,13 @@
 /**
  * ====================================================================
- * MAHMOUD TEACHING PLATFORM — PAYMENT INSTRUCTIONS MODAL
+ * WATAZAWWADO ACADEMY — AUTOMATED PAYMENT MODAL
  * File: src/components/booking/PaymentInstructionsModal.tsx
- * Role: Modal dialog for viewing payment instructions & claiming payment
+ * Role: Modern 4-color liquid glass checkout modal (PayPal Live & Stripe)
  * ====================================================================
  */
 
 import React from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { X } from 'lucide-react';
-import { PaymentInstructionsCard } from './PaymentInstructionsCard';
+import { InstantCheckoutModal } from '../payment/InstantCheckoutModal';
 import { Language } from '../../booking/types';
 
 interface PaymentInstructionsModalProps {
@@ -28,50 +26,21 @@ export const PaymentInstructionsModal: React.FC<PaymentInstructionsModalProps> =
   onClose,
   bookingReference,
   serviceName,
-  amount,
-  currency,
-  learnerName,
-  lang = 'en'
+  amount = 7,
+  currency = 'USD',
+  lang = 'ar'
 }) => {
-  if (!isOpen) return null;
-
   return (
-    <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-          className="fixed inset-0 bg-black/50 backdrop-blur-xs"
-        />
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 10 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 10 }}
-          className="relative w-full max-w-2xl glass-card rounded-3xl shadow-2xl z-10 overflow-hidden my-8 max-h-[90vh] overflow-y-auto"
-        >
-          {/* Close button */}
-          <button
-            type="button"
-            onClick={onClose}
-            className="absolute top-4 right-4 z-20 p-2 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-200 transition-colors cursor-pointer"
-          >
-            <X className="w-4 h-4" />
-          </button>
-
-          <PaymentInstructionsCard
-            bookingReference={bookingReference}
-            serviceName={serviceName}
-            amount={amount}
-            currency={currency}
-            learnerName={learnerName}
-            lang={lang}
-            onPaymentClaimSubmitted={onClose}
-          />
-        </motion.div>
-      </div>
-    </AnimatePresence>
+    <InstantCheckoutModal
+      isOpen={isOpen}
+      onClose={onClose}
+      targetType="booking"
+      targetId={bookingReference || ''}
+      itemTitle={serviceName || '1-on-1 Lesson'}
+      amount={amount}
+      currency={currency}
+      lang={lang === 'ar' ? 'ar' : 'en'}
+      onSuccess={onClose}
+    />
   );
 };

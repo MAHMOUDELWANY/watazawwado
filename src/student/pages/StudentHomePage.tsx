@@ -469,9 +469,9 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                       <button
                         type="button"
                         onClick={() => setPaymentClaimBooking(nextBooking)}
-                        className="px-3 py-1.5 bg-warning hover:bg-warning/90 text-warning-foreground rounded-lg font-semibold transition-colors shrink-0 cursor-pointer self-start sm:self-center"
+                        className="px-3 py-1.5 btn-primary-material rounded-xl font-semibold transition-colors shrink-0 cursor-pointer self-start sm:self-center text-sm shadow-xs"
                       >
-                        {isAr ? 'إرسال إثبات الدفع' : 'Submit Claim'}
+                        {isAr ? 'الدفع وتأكيد الحجز' : 'Pay & Confirm'}
                       </button>
                     </div>
                   );

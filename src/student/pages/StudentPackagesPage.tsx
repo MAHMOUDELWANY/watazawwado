@@ -517,7 +517,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                           className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm font-semibold transition-colors cursor-pointer min-h-[40px]"
                         >
                           <CreditCard className="w-3.5 h-3.5" />
-                          <span>{isAr ? 'إرسال إثبات الدفع لتفعيل الرصيد' : 'Submit Payment Claim'}</span>
+                          <span>{isAr ? 'إتمام الدفع الفوري لتفعيل الباقة' : 'Pay Now to Activate Package'}</span>
                         </button>
                       ) : ent.remainingCredits > 0 ? (
                         <Link
