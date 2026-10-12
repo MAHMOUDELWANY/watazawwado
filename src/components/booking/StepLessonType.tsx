@@ -146,16 +146,16 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               </div>
             </div>
 
-            <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+            <p className="text-xs text-muted-foreground leading-relaxed mb-2">
               {isEn
-                ? 'A 30-minute introductory meeting to get to know each other, evaluate current ability, experience Mahmoud’s teaching style, and receive an honest learning plan.'
-                : 'لقاء تعريفي مدته ٣٠ دقيقة للتعارف وتقييم المستوى وتجربة أسلوب الشرح والحصول على خطة تعليمية مقترحة.'}
+                ? '30-minute introductory meeting to evaluate level and agree on a personalized plan.'
+                : 'لقاء تعريفي مدته ٣٠ دقيقة لتحديد المستوى ومناقشة الخطة التعليمية المناسبة.'}
             </p>
 
-            <div className="text-xs text-muted-foreground font-medium">
+            <div className="text-[11px] text-muted-foreground font-medium">
               {trialDisabled
-                ? (trialDisabledReason || (isEn ? '• One free trial per student (already used)' : '• جلسة تجريبية واحدة لكل طالب (تم حجزها)'))
-                : (isEn ? '• One free trial per new student' : '• جلسة تجريبية واحدة لكل طالب جديد')}
+                ? (trialDisabledReason || (isEn ? '• Already booked' : '• تم استخدام الجلسة مسبقاً'))
+                : (isEn ? '• 1 free trial per new student' : '• جلسة واحدة مجانية لكل طالب جديد')}
             </div>
           </motion.div>
 
@@ -199,16 +199,16 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               </div>
             </div>
 
-            <p className="text-sm text-foreground/80 dark:text-accent/80 leading-relaxed mb-3">
+            <p className="text-xs text-foreground/80 dark:text-accent/80 leading-relaxed mb-2">
               {isEn
-                ? 'Dedicated curriculum lesson for continuing students or those who wish to start scheduled instruction right away. Simple pay-per-lesson or monthly continuity.'
-                : 'درس منهجي متكامل للطلاب الراغبين في بدء الخطة المباشرة. دفع بالدرس أو باقات شهرية ميسرة.'}
+                ? 'Dedicated 1-on-1 curriculum instruction at your preferred schedule.'
+                : 'درس منهجي مباشر خاص بك مع المعلم وفق جدولك المفضل.'}
             </p>
 
             <div className="text-[11px] text-primary font-medium">
               {hasActiveCredits
-                ? (isEn ? '• Redeemable using your active lesson package credits' : '• قابل للحجز باستخدام رصيد باقاتك النشطة')
-                : (isEn ? '• Standard 1-on-1 personalized pace' : '• تدريس فردي مخصص بالكامل')}
+                ? (isEn ? '• Uses your active package credits' : '• يخصم من رصيد باقاتك المتاحة')
+                : (isEn ? '• Standalone lesson or multi-lesson bundles' : '• حجز درس مستقل أو باقات شهرية')}
             </div>
           </motion.div>
         </div>
@@ -382,67 +382,6 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
         </div>
       )}
 
-      {/* Package Catalog Selection (When No Active Entitlements Exist) */}
-      {!hidePackagePurchase && !hasActiveCredits && !loadingPackages && packages.length > 0 && mode === 'regular' && (
-        <div className="pt-4 border-t border-border">
-          <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/90 mb-2.5">
-            {isEn ? 'Purchase Option (Optional)' : 'خيار الشراء (اختياري)'}
-          </label>
-          <div className="grid grid-cols-1 gap-3">
-            <motion.div
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.99 }}
-              onClick={() => onSelectPackage?.(undefined)}
-              className={`p-4 rounded-xl border text-start transition-all cursor-pointer ${
-                !selectedPackageId
-                  ? 'glass-card border-primary ring-2 ring-primary/40 bg-primary/10 shadow-xs'
-                  : 'glass-surface border-border opacity-75'
-              }`}
-            >
-              <h4 className="font-display font-medium text-foreground">
-                {isEn ? 'Single Lesson (Pay as you go)' : 'درس واحد (دفع عند الحجز)'}
-              </h4>
-              <p className="text-sm text-foreground/80 dark:text-accent/90 mt-1">
-                {isEn ? 'Standard booking for one session.' : 'حجز قياسي لجلسة واحدة.'}
-              </p>
-            </motion.div>
-
-            {packages.map((pkg) => {
-              const isSelected = selectedPackageId === pkg.id;
-              return (
-                <motion.div
-                  key={pkg.id}
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
-                  onClick={() => onSelectPackage?.(pkg.id)}
-                  className={`p-4 rounded-xl border text-start transition-all cursor-pointer ${
-                    isSelected
-                      ? 'glass-card border-primary ring-2 ring-primary/40 bg-primary/10 shadow-xs'
-                      : 'glass-surface border-border opacity-75'
-                  }`}
-                >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h4 className="font-display font-medium text-foreground">
-                        {pkg.name}
-                      </h4>
-                      <p className="text-sm text-foreground/80 dark:text-accent/90 mt-1">
-                        {isEn
-                          ? `${pkg.lesson_count} lessons • Prepaid ${pkg.package_type} package`
-                          : `${pkg.lesson_count} دروس • باقة ${pkg.package_type} مدفوعة مسبقاً`}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <span className="font-medium text-primary">${pkg.price_amount}</span>
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
       {/* Manual Request for Sessions > 60 min note */}
       <div className="p-3.5 rounded-xl glass-card border-none text-sm text-foreground/80 dark:text-accent/90 flex items-start gap-2.5">
         <HelpCircle className="w-4 h-4 text-accent shrink-0 mt-0.5" />
@@ -483,7 +422,13 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
           onClick={onNext}
           className="inline-flex items-center gap-2 px-7 py-3 rounded-xl btn-primary-material text-white text-sm font-semibold shadow-md transition-all cursor-pointer"
         >
-          <span>{isEn ? 'Next: Pick Date & Time' : 'التالي: اختيار التاريخ والوقت'}</span>
+          <span>
+            {mode === 'trial'
+              ? (isEn ? 'Next: Pick Date & Time' : 'التالي: اختيار موعد الجلسة')
+              : packageEntitlementId
+              ? (isEn ? 'Next: Pick Date & Time' : 'التالي: اختيار موعد الحصة')
+              : (isEn ? 'Next: Choose Plan & Lessons' : 'التالي: اختيار عدد الدروس والباقة')}
+          </span>
           <ArrowRight className={`w-4 h-4 ${lang === 'ar' ? 'rotate-180' : ''}`} />
         </motion.button>
       </div>

@@ -381,9 +381,9 @@ export function InstantCheckoutModal({
                         : 'border-border/60 glass-surface hover:border-border'
                     }`}
                   >
-                    <div className="flex items-center justify-between w-full">
-                      <CreditCard className={`w-5 h-5 ${selectedGateway === 'stripe' ? 'text-primary' : 'text-muted-foreground'}`} />
-                      <div className="flex items-center gap-1">
+                    <div className="flex items-center justify-between w-full gap-1">
+                      <CreditCard className={`w-5 h-5 shrink-0 ${selectedGateway === 'stripe' ? 'text-primary' : 'text-muted-foreground'}`} />
+                      <div className="flex flex-wrap items-center justify-end gap-1 shrink-0">
                         <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-surface border border-border/40 text-foreground/80">
                           Apple Pay
                         </span>

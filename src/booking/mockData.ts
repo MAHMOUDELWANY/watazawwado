@@ -220,7 +220,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
       'زيادة الحصيلة اللغوية للمحادثات اليومية'
     ],
     defaultDurations: [30, 45, 60],
-    hourlyRateUsd: 11
+    hourlyRateUsd: 13
   },
   {
     id: 'modern-standard-arabic',

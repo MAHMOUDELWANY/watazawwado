@@ -217,8 +217,8 @@ export function DashboardApp() {
         aria-label={lang === 'ar' ? 'شريط التنقل للمعلم' : 'Teacher Navigation Sidebar'}
         className={`
           fixed inset-y-0 z-50 flex flex-col transition-transform duration-300 ease-premium shrink-0
-          /* Mobile styling */
-          max-md:glass-sheet max-md:w-64 max-md:max-w-[85vw] max-md:inset-inline-start-0
+          /* Mobile styling: solid opaque surface drawer with shadow */
+          max-md:bg-surface max-md:text-foreground max-md:border-e max-md:border-border max-md:shadow-2xl max-md:w-72 max-md:max-w-[85vw] max-md:inset-inline-start-0
           ${isMobileMenuOpen 
             ? 'max-md:translate-x-0' 
             : 'max-md:ltr:-translate-x-full max-md:rtl:translate-x-full'
@@ -418,7 +418,7 @@ export function DashboardApp() {
         </div>
 
         {/* Mobile Bottom Quick Navigation Bar (Navigation Tabs V5) */}
-        <div className="md:hidden fixed bottom-4 inset-x-3 sm:inset-x-6 max-w-sm mx-auto z-40 pb-[env(safe-area-inset-bottom)] pointer-events-none">
+        <div className={`md:hidden fixed bottom-4 inset-x-3 sm:inset-x-6 max-w-sm mx-auto z-40 pb-[env(safe-area-inset-bottom)] pointer-events-none transition-opacity duration-200 ${isMobileMenuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
           <nav 
             className="pointer-events-auto relative w-full h-[60px] bg-surface/92 dark:bg-surface/90 backdrop-blur-xl rounded-full flex items-center justify-around px-2 shadow-2xl border border-border/80"
             aria-label={lang === 'ar' ? 'التنقل السريع' : 'Quick mobile navigation'}

@@ -85,9 +85,21 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
       }
 
       if (el) {
+        const style = window.getComputedStyle(el);
+        if (style.display === 'none' || style.visibility === 'hidden' || parseFloat(style.opacity || '1') === 0) {
+          continue;
+        }
         const b = el.getBoundingClientRect();
-        // Check if element has visible dimensions and is within layout
-        if (b.width > 0 && b.height > 0) {
+        // Element must have visible dimensions and be within current viewport boundaries
+        const isInViewport = (
+          b.width > 0 &&
+          b.height > 0 &&
+          b.right > 20 &&
+          b.left < window.innerWidth - 20 &&
+          b.bottom > 20 &&
+          b.top < window.innerHeight - 20
+        );
+        if (isInViewport) {
           return el;
         }
       }

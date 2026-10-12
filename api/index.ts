@@ -3952,24 +3952,43 @@ async function fulfillAutomatedPayment(params: {
   let contactWhatsapp: string | null = null;
   let referenceCode = cleanReference;
 
-  if (params.targetType === 'booking') {
-    const { data: booking } = await supabaseAdmin
-      .from('bookings')
-      .select('id, reference_code, student_id, student_name, contact_name, contact_email, contact_whatsapp, service_name, fee_amount_usd')
-      .or(`id.eq.${params.targetId},reference_code.eq.${params.targetId}`)
-      .maybeSingle();
+  let bookingDetailsForNotif: any = null;
 
-    if (!booking) {
+  if (params.targetType === 'booking') {
+    const isTargetUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(params.targetId).trim());
+    let bQuery = supabaseAdmin
+      .from('bookings')
+      .select('id, reference_code, student_id, contact_name, contact_email, contact_whatsapp, service_id, fee_amount_usd, status, scheduled_start, duration_minutes, student_timezone, cairo_time_display, zoom_meeting_link');
+
+    if (isTargetUuid) {
+      bQuery = bQuery.or(`id.eq.${params.targetId},reference_code.eq.${params.targetId}`);
+    } else {
+      bQuery = bQuery.eq('reference_code', String(params.targetId).trim());
+    }
+
+    const { data: booking, error: bErr } = await bQuery.maybeSingle();
+
+    if (bErr || !booking) {
+      console.error('[fulfillAutomatedPayment] booking not found:', bErr, 'targetId:', params.targetId);
       throw new Error(`Booking ${params.targetId} not found.`);
     }
 
     bookingId = booking.id;
     studentId = booking.student_id;
-    learnerName = booking.student_name || booking.contact_name || learnerName;
+    learnerName = booking.contact_name || learnerName;
     contactEmail = booking.contact_email || contactEmail;
     contactWhatsapp = booking.contact_whatsapp;
     referenceCode = booking.reference_code;
-    serviceName = booking.service_name || '1-on-1 Lesson';
+
+    // Fetch service title from services table
+    if (booking.service_id) {
+      const { data: srv } = await supabaseAdmin.from('services').select('title').eq('id', booking.service_id).maybeSingle();
+      serviceName = srv?.title || '1-on-1 Lesson';
+    } else {
+      serviceName = '1-on-1 Lesson';
+    }
+
+    bookingDetailsForNotif = booking;
   } else if (params.targetType === 'package') {
     const { data: entitlement } = await supabaseAdmin
       .from('package_entitlements')
@@ -4032,8 +4051,16 @@ async function fulfillAutomatedPayment(params: {
     console.error('[Automated Payment verify_payment_atomic Error]', rpcErr);
   }
 
-  // 5. Asynchronously dispatch Brevo confirmation email
+  // 5. Asynchronously dispatch Brevo confirmation emails (Both to Student and to Ustadh Mahmoud)
   try {
+    const scheduledDateStr = bookingDetailsForNotif?.scheduled_start
+      ? new Date(bookingDetailsForNotif.scheduled_start).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+      : '';
+    const scheduledTimeStr = bookingDetailsForNotif?.scheduled_start
+      ? new Date(bookingDetailsForNotif.scheduled_start).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+      : '';
+
+    // First: dispatch PAYMENT_CONFIRMED
     await dispatchNotification({
       eventType: 'PAYMENT_CONFIRMED',
       payment: {
@@ -4050,12 +4077,36 @@ async function fulfillAutomatedPayment(params: {
         learnerName,
         contactEmail,
         contactWhatsapp,
-        date: '',
-        timeDisplay: '',
-        timezone: 'Africa/Cairo',
-        durationMinutes: 60
+        date: scheduledDateStr,
+        timeDisplay: scheduledTimeStr,
+        timezone: bookingDetailsForNotif?.student_timezone || 'Africa/Cairo',
+        durationMinutes: bookingDetailsForNotif?.duration_minutes || 60,
+        cairoTimeDisplay: bookingDetailsForNotif?.cairo_time_display
       }
     });
+
+    // Second: If booking was confirmed, dispatch BOOKING_CONFIRMED so teacher gets new booking alert with Zoom link
+    if (bookingId && bookingDetailsForNotif) {
+      await dispatchNotification({
+        eventType: 'BOOKING_CONFIRMED',
+        booking: {
+          id: bookingId,
+          referenceCode,
+          serviceName,
+          learnerName,
+          contactEmail,
+          contactWhatsapp,
+          date: scheduledDateStr,
+          timeDisplay: scheduledTimeStr,
+          timezone: bookingDetailsForNotif.student_timezone || 'UTC',
+          durationMinutes: bookingDetailsForNotif.duration_minutes || 60,
+          zoomLink: bookingDetailsForNotif.zoom_meeting_link,
+          cairoTimeDisplay: bookingDetailsForNotif.cairo_time_display,
+          feeAmount: Number(newPayment.amount),
+          currency: newPayment.currency || 'USD'
+        }
+      });
+    }
   } catch (notifErr) {
     console.warn('[Notification Dispatch Warning]', notifErr);
   }
@@ -4102,13 +4153,21 @@ app.post('/api/payments/create-intent', rateLimit, async (req: any, res: any) =>
     let customerEmail: string | undefined = undefined;
 
     if (targetType === 'booking') {
-      const { data: booking, error: bErr } = await supabaseAdmin
+      const isTargetUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(targetId).trim());
+      let bQuery = supabaseAdmin
         .from('bookings')
-        .select('id, reference_code, fee_amount_usd, service_name, contact_email, status')
-        .or(`id.eq.${targetId},reference_code.eq.${targetId}`)
-        .maybeSingle();
+        .select('id, reference_code, fee_amount_usd, service_id, contact_email, status');
+
+      if (isTargetUuid) {
+        bQuery = bQuery.or(`id.eq.${targetId},reference_code.eq.${targetId}`);
+      } else {
+        bQuery = bQuery.eq('reference_code', String(targetId).trim());
+      }
+
+      const { data: booking, error: bErr } = await bQuery.maybeSingle();
 
       if (bErr || !booking) {
+        console.error('[create-intent] booking not found:', bErr, 'targetId:', targetId);
         return res.status(404).json({ error: 'Booking not found.' });
       }
 
@@ -4116,9 +4175,16 @@ app.post('/api/payments/create-intent', rateLimit, async (req: any, res: any) =>
         return res.status(400).json({ error: 'This booking has already been paid and confirmed.' });
       }
 
-      authoritativeAmount = Number(booking.fee_amount_usd || 7.00);
+      authoritativeAmount = Number(booking.fee_amount_usd || 9.00);
       authoritativeCurrency = 'USD';
-      itemTitle = `Lesson: ${booking.service_name || 'Arabic & Quran'}`;
+
+      if (booking.service_id) {
+        const { data: srv } = await supabaseAdmin.from('services').select('title').eq('id', booking.service_id).maybeSingle();
+        itemTitle = `Lesson: ${srv?.title || 'Arabic & Quran'}`;
+      } else {
+        itemTitle = 'Lesson: Arabic & Quran';
+      }
+
       customerEmail = booking.contact_email;
     } else if (targetType === 'package') {
       // Check if targetId is an existing entitlement

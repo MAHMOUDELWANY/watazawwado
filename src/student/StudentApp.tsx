@@ -310,19 +310,19 @@ export default function StudentApp() {
       targetId: ['nav-book-link', 'nav-book-link-desktop', 'student-book'],
       title: isAr ? 'حجز الدروس' : 'Book Lessons',
       description: isAr ? 'من هنا يمكنك حجز مواعيد حصصك الفردية المباشرة بكل سهولة.' : 'Schedule your personalized 1-on-1 sessions at your preferred times.',
-      position: 'bottom' as const,
+      position: 'top' as const,
     },
     {
       targetId: ['nav-lessons-link', 'nav-lessons-link-desktop', 'student-lessons'],
       title: isAr ? 'جدول الدروس' : 'My Lessons',
       description: isAr ? 'متابعة جميع حصصك القادمة والسابقة وروابط زووم المباشرة.' : 'Review your upcoming schedule, past sessions, and direct Zoom links.',
-      position: 'bottom' as const,
+      position: 'top' as const,
     },
     {
       targetId: ['nav-account-link', 'nav-account-link-desktop', 'student-account'],
       title: isAr ? 'إدارة الحساب' : 'Account & Profile',
       description: isAr ? 'تعديل بياناتك، متابعة رصيدك، وضبط أهدافك التعليمية.' : 'Manage your profile, track active credits, and adjust preferences.',
-      position: 'bottom' as const,
+      position: 'top' as const,
     },
     {
       targetId: ['student-notifications', 'header-notification-btn'],
@@ -423,8 +423,8 @@ export default function StudentApp() {
         aria-label={isAr ? 'شريط التنقل الجانبي للطالب' : 'Student Navigation Sidebar'}
         className={`
           fixed inset-y-0 z-50 flex flex-col transition-transform duration-250 ease-out shrink-0
-          /* Mobile styling: glass drawer attached to the edge */
-          max-lg:glass-sheet max-lg:w-64 max-lg:max-w-[85vw] max-lg:inset-inline-start-0
+          /* Mobile styling: solid opaque surface drawer with shadow */
+          max-lg:bg-surface max-lg:text-foreground max-lg:border-e max-lg:border-border max-lg:shadow-2xl max-lg:w-72 max-lg:max-w-[85vw] max-lg:inset-inline-start-0
           ${sidebarOpen 
             ? 'max-lg:translate-x-0' 
             : (isAr ? 'max-lg:translate-x-full' : 'max-lg:-translate-x-full')
@@ -654,7 +654,7 @@ export default function StudentApp() {
               <Route path="/notifications" element={<StudentNotificationsPage lang={lang} session={session} />} />
               <Route path="/guide" element={<IntakeConversation session={session} lang={lang} />} />
               <Route path="/offers" element={<StudentOffersPage session={session} lang={lang} />} />
-              <Route path="/book" element={<StudentBookingPage profile={profile} session={session} />} />
+              <Route path="/book" element={<StudentBookingPage profile={profile} session={session} lang={lang} />} />
               <Route path="/account" element={
                 <StudentProfilePage
                   profile={profile}
@@ -683,7 +683,7 @@ export default function StudentApp() {
         </main>
 
         {/* Mobile Bottom Navigation Bar (Floating Pill Design V5) */}
-        <div className="lg:hidden fixed bottom-4 inset-x-3 sm:inset-x-6 max-w-sm mx-auto z-40 pb-[env(safe-area-inset-bottom)] pointer-events-none">
+        <div className={`lg:hidden fixed bottom-4 inset-x-3 sm:inset-x-6 max-w-sm mx-auto z-30 pb-[env(safe-area-inset-bottom)] pointer-events-none transition-opacity duration-200 ${sidebarOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
           <nav 
             className="pointer-events-auto relative w-full h-[62px] bg-surface/95 dark:bg-surface/90 backdrop-blur-xl rounded-full flex items-center justify-around px-2 shadow-2xl border border-border/80"
             aria-label={isAr ? 'التنقل السفلي' : 'Bottom mobile navigation'}

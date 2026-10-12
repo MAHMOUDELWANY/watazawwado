@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BookingFormData, BookingConfirmationData, BookingMode, Language, LearnerAudience, ProficiencyLevel, PackageEntitlementEntry, PackageCatalogEntry } from '../../booking/types';
+import { CheckCircle2 } from 'lucide-react';
+import {
+  BookingFormData,
+  BookingConfirmationData,
+  BookingMode,
+  Language,
+  LearnerAudience,
+  ProficiencyLevel,
+  PackageEntitlementEntry,
+  PackageCatalogEntry
+} from '../../booking/types';
 import { BOOKING_SERVICES } from '../../booking/mockData';
 import { bookingService } from '../../booking/bookingService';
 import { validateStep } from '../../booking/validation';
@@ -9,11 +19,13 @@ import { StepServiceSelect } from './StepServiceSelect';
 import { StepGoalSelect } from './StepGoalSelect';
 import { StepStudentDetails } from './StepStudentDetails';
 import { StepLessonType } from './StepLessonType';
+import { StepPackageQuantity } from './StepPackageQuantity';
 import { StepDateTime } from './StepDateTime';
 import { StepReviewSummary } from './StepReviewSummary';
 import { BookingConfirmation } from './BookingConfirmation';
 import { ManageBookingModal } from './ManageBookingModal';
 import { MultiLessonPlan, SelectedLesson } from './MultiLessonPlan';
+import { PaymentInstructionsCard } from './PaymentInstructionsCard';
 import { getFreshAccessToken } from '../../lib/auth';
 
 interface BookingFlowProps {
@@ -66,8 +78,9 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   accessToken
 }) => {
   const isEn = lang === 'en';
+  const isAr = lang === 'ar';
 
-  const [step, setStep] = useState<number>(initialStep && initialStep >= 1 && initialStep <= 6 ? initialStep : 1);
+  const [step, setStep] = useState<number>(initialStep && initialStep >= 1 && initialStep <= 7 ? initialStep : 1);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [confirmation, setConfirmation] = useState<BookingConfirmationData | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -77,6 +90,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   const [manageRefCode, setManageRefCode] = useState<string>('');
   const [multiConfirming, setMultiConfirming] = useState(false);
   const [multiPlanCreated, setMultiPlanCreated] = useState(false);
+  const [multiPlanData, setMultiPlanData] = useState<any>(null);
 
   // Progressive Form State
   const [formData, setFormData] = useState<BookingFormData>(() => {
@@ -108,7 +122,6 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
         resolvedChildName = resolvedChildName || singleChild.name || '';
         resolvedChildLevel = (singleChild.current_level || singleChild.currentLevel || resolvedChildLevel) as ProficiencyLevel;
       } else if (isChildAuthorized && linkedChildren && linkedChildren.length > 1 && !resolvedStudentId) {
-        // Multiple children: explicit selection required, don't default to child 0
         resolvedStudentId = '';
         resolvedChildName = '';
       }
@@ -144,8 +157,12 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     };
   });
 
+  // Determines whether this is a 7-step regular package flow or 6-step trial/credit flow
+  const isMultiStepFlow = formData.mode === 'regular' && !formData.packageEntitlementId;
+  const totalSteps = isMultiStepFlow ? 7 : 6;
+
   useEffect(() => {
-    if (initialStep && initialStep >= 1 && initialStep <= 6) {
+    if (initialStep && initialStep >= 1 && initialStep <= 7) {
       setStep(initialStep);
     }
   }, [initialStep]);
@@ -178,21 +195,46 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   const currentService = BOOKING_SERVICES.find((s) => s.id === formData.serviceId);
 
   const handleNext = () => {
-    if (isAuthenticatedStudent && formData.mode === 'regular' && lessonCount > 1 && step === 5) {
-      // Multi-lesson selection is gated inside MultiLessonPlan. Never submit these
-      // slots through the single-booking RPC.
-      setStep(6);
-      return;
-    }
-    const check = validateStep(step, formData, lang === 'ar');
-    if (!check.isValid) {
-      const firstError = Object.values(check.errors)[0];
-      setValidationError(firstError);
-      return;
+    setValidationError(null);
+
+    // Validate standard step 1 to 4 fields
+    if (step === 1 || step === 2 || step === 3 || step === 4) {
+      const check = validateStep(step, formData, lang === 'ar');
+      if (!check.isValid) {
+        const firstError = Object.values(check.errors)[0];
+        setValidationError(firstError);
+        return;
+      }
+    } else if (isMultiStepFlow) {
+      if (step === 5) {
+        // Step 5: PackageQuantity — lessonCount is always valid (>= 1).
+      } else if (step === 6) {
+        if (lessonCount === 1) {
+          const check = validateStep(5, formData, lang === 'ar');
+          if (!check.isValid) {
+            const firstError = Object.values(check.errors)[0];
+            setValidationError(firstError);
+            return;
+          }
+        } else {
+          // multi-lesson schedule Next is handled inside MultiLessonPlan
+          setStep(7);
+          return;
+        }
+      }
+    } else {
+      // 6-step flow (Trial or Credit redemption)
+      if (step === 5) {
+        const check = validateStep(5, formData, lang === 'ar');
+        if (!check.isValid) {
+          const firstError = Object.values(check.errors)[0];
+          setValidationError(firstError);
+          return;
+        }
+      }
     }
 
-    setValidationError(null);
-    if (step < 6) {
+    if (step < totalSteps) {
       setStep((prev) => prev + 1);
     }
   };
@@ -206,7 +248,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
 
   const handleGoToStep = (targetStep: number) => {
     setValidationError(null);
-    if (targetStep >= 1 && targetStep <= 6) {
+    if (targetStep >= 1 && targetStep <= totalSteps) {
       setStep(targetStep);
     }
   };
@@ -218,22 +260,26 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
       freshToken = (await getFreshAccessToken()) || accessToken;
     } catch {}
 
-    // A genuinely missing session must be clear and actionable — never a silent dead button.
     if (!isAuthenticatedStudent || !accessToken) {
       setValidationError(isEn
         ? 'Your session has expired. Please sign in again to create this lesson plan.'
         : 'انتهت جلسة تسجيل الدخول. يرجى تسجيل الدخول مرة أخرى لإنشاء خطة الدروس.');
       return;
     }
-    const tokenToUse = freshToken || accessToken;
-    if (lessonCount <= 1 || selectedLessons.length !== lessonCount ||
-        new Set(selectedLessons.map(lesson => lesson.date)).size !== lessonCount ||
-        selectedLessons.some(({ slot }) => !slot.utcStartIso || !slot.utcEndIso)) return;
+
+    if (
+      lessonCount <= 1 ||
+      selectedLessons.length !== lessonCount ||
+      new Set(selectedLessons.map(lesson => lesson.date)).size !== lessonCount ||
+      selectedLessons.some(({ slot }) => !slot.utcStartIso || !slot.utcEndIso)
+    ) return;
+
     const selectedCatalog = catalog.find(c => c.package_type === 'weekly' && c.lesson_count === lessonCount && c.is_active);
     if (!selectedCatalog) {
       setValidationError('This lesson plan is temporarily unavailable.');
       return;
     }
+
     setMultiConfirming(true);
     setValidationError(null);
     try {
@@ -262,10 +308,11 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
       if (!result.ok || !data.success) {
         throw new Error(data.error || 'The selected times could not be secured. Please choose again.');
       }
+      setMultiPlanData(data);
       setMultiPlanCreated(true);
       setValidationError(null);
     } catch (err: any) {
-      setValidationError(err?.message || 'The selected lesson times could not be secured.');
+      setValidationError(err?.message || (isAr ? 'تعذر تأكيد مواعيد الدروس في الوقت الحالي.' : 'The selected lesson times could not be secured.'));
     } finally {
       setMultiConfirming(false);
     }
@@ -297,6 +344,8 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
 
   const handleResetForNewBooking = () => {
     setConfirmation(null);
+    setMultiPlanCreated(false);
+    setMultiPlanData(null);
     setStep(1);
     if (onDone) {
       onDone();
@@ -313,14 +362,44 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
           : 'glass-card text-foreground py-8 sm:py-12 px-4 sm:px-6 rounded-3xl max-w-3xl mx-auto shadow-xl border border-border/70')
       }`}
     >
-      {/* Confirmation State */}
-      {multiPlanCreated ? (
-        <section role="status" className="space-y-4">
-          <h2 className="font-display text-xl">Lesson plan request created</h2>
-          <p>Your selected times were submitted to the server. Payment is not confirmed by this screen; check your Payments and My Lessons pages for the current status.</p>
-          <button type="button" onClick={handleResetForNewBooking} className="rounded-xl bg-primary p-3 text-primary-foreground">Return to student portal</button>
-        </section>
+      {/* 1. Multi-Lesson Plan Created -> Instant Checkout Screen */}
+      {multiPlanCreated && multiPlanData ? (
+        <div className="space-y-6 max-w-2xl mx-auto py-2 text-foreground">
+          <div className="text-center space-y-3 pb-2">
+            <div className="w-16 h-16 rounded-full bg-teal-500/20 text-teal-600 dark:text-teal-400 flex items-center justify-center mx-auto shadow-inner">
+              <CheckCircle2 className="w-10 h-10" />
+            </div>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground">
+              {isAr ? 'تم تجهيز باقة دروسك بنجاح' : 'Lesson plan request created'}
+            </h2>
+            <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
+              {isAr
+                ? `تم حجز مواعيد الـ ${multiPlanData.lessonCount || lessonCount} حصص بنجاح. أتمم الدفع الفوري لتأكيد الجلسات وتفعيل روابط الفصول.`
+                : `Your selected times were submitted. Payment is not confirmed by this screen; complete instant payment below to activate your package and classroom links.`}
+            </p>
+          </div>
+
+          <PaymentInstructionsCard
+            bookingReference={multiPlanData.entitlementId}
+            serviceName={`${isAr ? currentService?.arabicName : currentService?.name} (${multiPlanData.lessonCount || lessonCount} ${isAr ? 'حصص' : 'lessons'})`}
+            amount={multiPlanData.totalAmount || (lessonCount === 4 ? 34 : lessonCount === 8 ? 64 : 92)}
+            currency={multiPlanData.currency || 'USD'}
+            learnerName={studentName || formData.studentName}
+            lang={lang}
+          />
+
+          <div className="text-center pt-2">
+            <button
+              type="button"
+              onClick={handleResetForNewBooking}
+              className="px-6 py-2.5 rounded-xl border border-border text-xs sm:text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-all cursor-pointer"
+            >
+              {isAr ? 'العودة إلى لوحة تحكم الطالب' : 'Return to Student Dashboard'}
+            </button>
+          </div>
+        </div>
       ) : confirmation ? (
+        /* 2. Single Booking Confirmation State */
         <BookingConfirmation
           confirmation={confirmation}
           onOpenManageModal={handleOpenManageModal}
@@ -329,11 +408,11 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
           doneLabel={doneLabel}
         />
       ) : (
-        /* Multi-Step Flow */
+        /* 3. Progressive Multi-Step Booking Flow */
         <div>
           <BookingHeader
             step={step}
-            totalSteps={6}
+            totalSteps={totalSteps}
             mode={formData.mode}
             lang={lang}
             onBack={step > 1 ? handleBack : undefined}
@@ -360,7 +439,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
           )}
 
           {/* Steps Presentation */}
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="wait" initial={false}>
             {step === 1 && (
               <motion.div
                 key="step1"
@@ -449,29 +528,131 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                   trialDisabled={trialDisabled}
                   trialDisabledReason={trialDisabledReason}
                 />
-                {isAuthenticatedStudent && formData.mode === 'regular' && (
-                  <MultiLessonPlan catalog={catalog} serviceId={formData.serviceId} duration={formData.duration}
-                    timezone={formData.timezone} teacherId={formData.teacherId} count={lessonCount}
-                    onCount={(count) => { setLessonCount(count); setSelectedLessons([]); if (count > 1) updateFormData({ packageEntitlementId: undefined, selectedPackageId: undefined }); }}
-                    selected={selectedLessons} onSelected={setSelectedLessons} phase="quantity" />
-                )}
               </motion.div>
             )}
 
-            {step === 5 && (
+            {/* FLOW A: Dedicated Step 5 for Regular Packages / Lesson Quantity */}
+            {isMultiStepFlow && step === 5 && (
               <motion.div
-                key="step5"
+                key="step5-packages"
                 initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.2 }}
               >
-                {isAuthenticatedStudent && formData.mode === 'regular' && lessonCount > 1 ? (
-                  <MultiLessonPlan catalog={catalog} serviceId={formData.serviceId} duration={formData.duration}
-                    timezone={formData.timezone} teacherId={formData.teacherId} count={lessonCount}
-                    onCount={setLessonCount} selected={selectedLessons} onSelected={setSelectedLessons}
-                    phase="schedule" onNext={handleNext} onBack={handleBack} />
-                ) : <StepDateTime
+                <StepPackageQuantity
+                  serviceId={formData.serviceId}
+                  duration={formData.duration}
+                  lessonCount={lessonCount}
+                  onChangeCount={(count) => {
+                    setLessonCount(count);
+                    setSelectedLessons([]);
+                    if (count > 1) {
+                      updateFormData({ packageEntitlementId: undefined, selectedPackageId: undefined });
+                    }
+                  }}
+                  catalog={catalog}
+                  lang={lang}
+                  onNext={handleNext}
+                  onBack={handleBack}
+                />
+              </motion.div>
+            )}
+
+            {/* FLOW A: Step 6 Date & Time / Multi-Lesson Schedule */}
+            {isMultiStepFlow && step === 6 && (
+              <motion.div
+                key="step6-schedule"
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10 }}
+                transition={{ duration: 0.2 }}
+              >
+                {lessonCount > 1 ? (
+                  <MultiLessonPlan
+                    catalog={catalog}
+                    serviceId={formData.serviceId}
+                    duration={formData.duration}
+                    timezone={formData.timezone}
+                    teacherId={formData.teacherId}
+                    count={lessonCount}
+                    onCount={setLessonCount}
+                    selected={selectedLessons}
+                    onSelected={setSelectedLessons}
+                    phase="schedule"
+                    lang={lang}
+                    onNext={() => setStep(7)}
+                    onBack={handleBack}
+                  />
+                ) : (
+                  <StepDateTime
+                    mode={formData.mode}
+                    duration={formData.duration}
+                    teacherId={formData.teacherId}
+                    selectedDate={formData.date}
+                    selectedSlot={formData.timeSlot}
+                    timezone={formData.timezone}
+                    onSelectDate={(date) => updateFormData({ date })}
+                    onSelectSlot={(timeSlot) => updateFormData({ timeSlot })}
+                    onSelectTimezone={(timezone) => updateFormData({ timezone })}
+                    onNext={handleNext}
+                    onBack={handleBack}
+                    lang={lang}
+                  />
+                )}
+              </motion.div>
+            )}
+
+            {/* FLOW A: Step 7 Review & Confirmation */}
+            {isMultiStepFlow && step === 7 && (
+              <motion.div
+                key="step7-review"
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10 }}
+                transition={{ duration: 0.2 }}
+              >
+                {lessonCount > 1 ? (
+                  <MultiLessonPlan
+                    catalog={catalog}
+                    serviceId={formData.serviceId}
+                    duration={formData.duration}
+                    timezone={formData.timezone}
+                    teacherId={formData.teacherId}
+                    count={lessonCount}
+                    onCount={setLessonCount}
+                    selected={selectedLessons}
+                    onSelected={setSelectedLessons}
+                    phase="review"
+                    lang={lang}
+                    onBack={handleBack}
+                    onConfirm={handleConfirmMultiLesson}
+                    confirming={multiConfirming}
+                  />
+                ) : (
+                  <StepReviewSummary
+                    formData={formData}
+                    onGoToStep={handleGoToStep}
+                    onSubmit={handleSubmitBooking}
+                    onBack={handleBack}
+                    isSubmitting={isSubmitting}
+                    lang={lang}
+                    scheduleStep={6}
+                  />
+                )}
+              </motion.div>
+            )}
+
+            {/* FLOW B: 6-step flow (Trial or Package Credit Redemption) */}
+            {!isMultiStepFlow && step === 5 && (
+              <motion.div
+                key="step5-datetime-single"
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10 }}
+                transition={{ duration: 0.2 }}
+              >
+                <StepDateTime
                   mode={formData.mode}
                   duration={formData.duration}
                   teacherId={formData.teacherId}
@@ -484,31 +665,27 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                   onNext={handleNext}
                   onBack={handleBack}
                   lang={lang}
-                />}
+                />
               </motion.div>
             )}
 
-            {step === 6 && (
+            {!isMultiStepFlow && step === 6 && (
               <motion.div
-                key="step6"
+                key="step6-review-single"
                 initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.2 }}
               >
-                {isAuthenticatedStudent && formData.mode === 'regular' && lessonCount > 1 ? (
-                  <MultiLessonPlan catalog={catalog} serviceId={formData.serviceId} duration={formData.duration}
-                    timezone={formData.timezone} teacherId={formData.teacherId} count={lessonCount}
-                    onCount={setLessonCount} selected={selectedLessons} onSelected={setSelectedLessons}
-                    phase="review" onBack={handleBack} onConfirm={handleConfirmMultiLesson} confirming={multiConfirming} />
-                ) : <StepReviewSummary
+                <StepReviewSummary
                   formData={formData}
                   onGoToStep={handleGoToStep}
                   onSubmit={handleSubmitBooking}
                   onBack={handleBack}
                   isSubmitting={isSubmitting}
                   lang={lang}
-                />}
+                  scheduleStep={5}
+                />
               </motion.div>
             )}
           </AnimatePresence>

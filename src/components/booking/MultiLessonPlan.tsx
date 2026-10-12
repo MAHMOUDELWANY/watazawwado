@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { bookingService } from '../../booking/bookingService';
 import { BOOKING_SERVICES } from '../../booking/mockData';
-import { DayAvailability, PackageCatalogEntry, TimeSlot } from '../../booking/types';
+import { DayAvailability, PackageCatalogEntry, TimeSlot, Language } from '../../booking/types';
 
 export type SelectedLesson = { date: string; slot: TimeSlot };
 
@@ -47,13 +47,31 @@ interface Props {
   selected: SelectedLesson[];
   onSelected: (selected: SelectedLesson[]) => void;
   phase: 'quantity' | 'schedule' | 'review';
+  lang?: Language;
   onNext?: () => void;
   onBack?: () => void;
   onConfirm?: () => void;
   confirming?: boolean;
 }
 
-export const MultiLessonPlan: React.FC<Props> = ({ catalog, serviceId, duration, timezone, teacherId, count, onCount, selected, onSelected, phase, onNext, onBack, onConfirm, confirming }) => {
+export const MultiLessonPlan: React.FC<Props> = ({
+  catalog,
+  serviceId,
+  duration,
+  timezone,
+  teacherId,
+  count,
+  onCount,
+  selected,
+  onSelected,
+  phase,
+  lang = 'ar',
+  onNext,
+  onBack,
+  onConfirm,
+  confirming
+}) => {
+  const isAr = lang === 'ar';
   const [days, setDays] = useState<DayAvailability[]>([]);
   const [period, setPeriod] = useState('');
   const [loading, setLoading] = useState(false);
@@ -76,7 +94,8 @@ export const MultiLessonPlan: React.FC<Props> = ({ catalog, serviceId, duration,
     bookingService.getAvailability(timezone, duration, teacherId, 60).then(result => {
       if (!active) return;
       setDays(result);
-      setPeriod('');
+      const uniquePeriods = [...new Set(result.map(d => d.dateString.slice(0, 7)))];
+      setPeriod(uniquePeriods[0] || '');
       onSelected([]);
     }).catch(() => { if (active) { setDays([]); setError('Availability could not be verified. Please try again later.'); } })
       .finally(() => { if (active) setLoading(false); });
@@ -107,7 +126,7 @@ export const MultiLessonPlan: React.FC<Props> = ({ catalog, serviceId, duration,
   if (phase === 'review') return (
     <section className="space-y-5" aria-label="Multi-lesson review">
       <header className="space-y-1">
-        <h2 className="font-display text-xl font-medium text-foreground">Review your lessons</h2>
+        <h2 className="font-display text-xl font-medium text-foreground">{isAr ? 'مراجعة مواعيد الدروس' : 'Review your lessons'}</h2>
         <p className="text-sm text-muted-foreground">
           {BOOKING_SERVICES.find(s => s.id === serviceId)?.name} · {duration} min · {count} lessons
         </p>
@@ -175,28 +194,30 @@ export const MultiLessonPlan: React.FC<Props> = ({ catalog, serviceId, duration,
   );
 
   return <section className="space-y-4" aria-label="Select lesson times">
-    <h2 className="font-display text-xl">Choose your period and actual lesson times</h2>
+    <h2 className="font-display text-xl">{isAr ? 'اختر مواعيد دروس الباقة' : 'Choose your period and actual lesson times'}</h2>
     <p className="text-sm">{count} lessons · {duration} minutes · times in {timezone}</p>
     {price && <p className="text-sm">Regular total: {money(price.regular, price.currency)} · {price.saving > 0 && <>Save {money(price.saving, price.currency)} · </>}Total: {money(price.total, price.currency)} · {money(price.perLesson, price.currency)} / lesson</p>}
-    {loading && <p>Checking live availability…</p>}
+    {loading && <p>{isAr ? 'جارٍ التحقق من المواعيد المتاحة…' : 'Checking live availability…'}</p>}
     {error && <p role="alert">{error}</p>}
     {!loading && !error && <>
-      <label htmlFor="lesson-period">Choose your period</label>
+      <label htmlFor="lesson-period">{isAr ? 'اختر الشهر' : 'Choose your period'}</label>
       <select id="lesson-period" value={period} onChange={e => { setPeriod(e.target.value); onSelected([]); }} className="block rounded-xl border border-border glass-card p-3">
-        <option value="">Select a month</option>
-        {periods.map(month => <option key={month} value={month}>{new Date(`${month}-01T12:00:00Z`).toLocaleString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })}</option>)}
+        <option value="">{isAr ? 'اختر شهراً' : 'Select a month'}</option>
+        {periods.map(month => <option key={month} value={month}>{new Date(`${month}-01T12:00:00Z`).toLocaleString(isAr ? 'ar-EG' : 'en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })}</option>)}
       </select>
       {period && availableDays.length < count && <p role="alert">We found {availableDays.length} available lesson days in this period. Choose fewer lessons or another period.</p>}
       {period && <p aria-live="polite">{selectedInPeriod.length} of {count} lessons selected</p>}
-      {availableDays.map(day => <div key={day.dateString} className="rounded-xl border border-border p-3"><h3>{day.dayOfWeek}, {day.monthName} {day.dayOfMonth}</h3><div className="flex flex-wrap gap-2 mt-2">{day.slots.filter(slot => slot.available).map(slot => {
-        const chosen = selectedInPeriod.some(item => item.date === day.dateString && item.slot.id === slot.id);
-        return <button key={slot.id} type="button" aria-pressed={chosen} className={`rounded-lg border p-2 ${chosen ? 'border-primary bg-secondary/30' : 'border-border'}`} onClick={() => {
-          const remaining = selectedInPeriod.filter(item => item.date !== day.dateString);
-          onSelected(chosen ? remaining : remaining.length < count ? [...remaining, { date: day.dateString, slot }] : selectedInPeriod);
-        }}>{slot.timeDisplay}</button>;
-      })}</div></div>)}
+      <div className="space-y-3 max-h-[50vh] overflow-y-auto pe-1">
+        {availableDays.map(day => <div key={day.dateString} className="rounded-xl border border-border glass-surface p-3"><h3>{day.dayOfWeek}, {day.monthName} {day.dayOfMonth}</h3><div className="flex flex-wrap gap-2 mt-2">{day.slots.filter(slot => slot.available).map(slot => {
+          const chosen = selectedInPeriod.some(item => item.date === day.dateString && item.slot.id === slot.id);
+          return <button key={slot.id} type="button" aria-pressed={chosen} className={`rounded-lg border p-2 ${chosen ? 'border-primary bg-secondary/30' : 'border-border'}`} onClick={() => {
+            const remaining = selectedInPeriod.filter(item => item.date !== day.dateString);
+            onSelected(chosen ? remaining : remaining.length < count ? [...remaining, { date: day.dateString, slot }] : selectedInPeriod);
+          }}>{slot.timeDisplay}</button>;
+        })}</div></div>)}
+      </div>
       {selectedInPeriod.length > 0 && <ol className="list-decimal pl-6">{selectedInPeriod.map(({ date, slot }) => <li key={`${date}-${slot.id}`}>{date} — {slot.timeDisplay}</li>)}</ol>}
-      <div className="flex gap-3"><button type="button" onClick={onBack} className="rounded-xl border border-border p-3">Back to lesson count</button><button type="button" disabled={!price || !canReviewLessons(count, availableDays.length, selectedInPeriod)} onClick={onNext} className="rounded-xl bg-primary text-primary-foreground p-3 disabled:opacity-40">Review selected lessons</button></div>
+      <div className="flex gap-3 pt-2"><button type="button" onClick={onBack} className="rounded-xl border border-border p-3">{isAr ? 'رجوع لاختيار الباقة' : 'Back to lesson count'}</button><button type="button" disabled={!price || !canReviewLessons(count, availableDays.length, selectedInPeriod)} onClick={onNext} className="rounded-xl bg-primary text-primary-foreground p-3 disabled:opacity-40">{isAr ? 'مراجعة المواعيد المحددة' : 'Review selected lessons'}</button></div>
     </>}
   </section>;
 };

@@ -8,10 +8,12 @@ import { BookingFormData, BookingMode, ProficiencyLevel, LessonDuration, Package
 import { useTeacherAuth, getFreshAccessToken } from '../../lib/auth';
 import { StudentPageBack } from '../components/StudentPageBack';
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
+import { useAppLanguage } from '../../lib/language';
 
 export interface StudentBookingPageProps {
   profile?: any;
   session?: any;
+  lang?: 'ar' | 'en';
 }
 
 export interface TrialEligibilityResult {
@@ -515,7 +517,10 @@ export function mapStudentProfileToBookingInitialData(
   };
 }
 
-export default function StudentBookingPage({ profile: initialProfile, session: propSession }: StudentBookingPageProps) {
+export default function StudentBookingPage({ profile: initialProfile, session: propSession, lang: propLang }: StudentBookingPageProps) {
+  const { lang: appLang } = useAppLanguage();
+  const currentLang: 'ar' | 'en' = propLang || appLang || 'ar';
+  const isAr = currentLang === 'ar';
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -832,11 +837,11 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
             labelAr="العودة لبوابة الطالب"
             className="mb-1.5"
           />
-          <h1 className="text-2xl font-display font-bold  text-foreground">
-            Book a Lesson
+          <h1 className="text-2xl font-display font-bold text-foreground">
+            {isAr ? 'حجز درس جديد' : 'Book a Lesson'}
           </h1>
           <p className="text-sm sm:text-sm text-muted-foreground mt-0.5">
-            Choose your lesson, confirm your preferences, and schedule your next 1-on-1 session.
+            {isAr ? 'اختر المادة والموعد المناسب لجلستك التعليمية المباشرة.' : 'Choose your lesson, confirm your preferences, and schedule your next 1-on-1 session.'}
           </p>
         </div>
 
@@ -844,12 +849,14 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
           <div className="p-1 rounded-full bg-secondary/30 text-primary">
             <ShieldCheck className="w-4 h-4" />
           </div>
-          <div className="text-left">
+          <div className="text-start">
             <div className="text-[11px] font-semibold text-foreground leading-tight truncate max-w-[160px] sm:max-w-[200px]">
               {profile.name || profile.email}
             </div>
             <div className="text-[13px] text-muted-foreground leading-tight">
-              {profile.bookingPreference === 'child' ? 'Booking for Child' : 'Linked Student Account'}
+              {profile.bookingPreference === 'child' 
+                ? (isAr ? 'حجز لطفل' : 'Booking for Child') 
+                : (isAr ? 'حساب طالب مرتبط' : 'Linked Student Account')}
             </div>
           </div>
         </div>
@@ -1013,10 +1020,10 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
               trialDisabled={!canBookTrial}
               trialDisabledReason={trialDisabledReason}
               cardClassName="w-full py-6"
-              doneLabel="Done & Return to Student Portal"
+              doneLabel={isAr ? 'تم، العودة لبوابة الطالب' : 'Done & Return to Student Portal'}
               onDone={() => navigate('/student')}
               onClose={() => navigate('/student')}
-              lang="en"
+              lang={currentLang}
               isModalView={false}
               linkedChildren={profile?.linkedChildren || []}
               isAuthenticatedStudent={true}

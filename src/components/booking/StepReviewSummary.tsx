@@ -26,6 +26,7 @@ interface StepReviewSummaryProps {
   onBack: () => void;
   isSubmitting: boolean;
   lang: Language;
+  scheduleStep?: number;
 }
 
 export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
@@ -34,7 +35,8 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
   onSubmit,
   onBack,
   isSubmitting,
-  lang
+  lang,
+  scheduleStep = 5
 }) => {
   const isEn = lang === 'en';
   const service = BOOKING_SERVICES.find((s) => s.id === formData.serviceId) || BOOKING_SERVICES[0];
@@ -132,7 +134,7 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
 
           <button
             type="button"
-            onClick={() => onGoToStep(5)}
+            onClick={() => onGoToStep(scheduleStep)}
             className="p-1.5 rounded-lg text-foreground/60 dark:text-accent/90/60 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer shrink-0"
             title={isEn ? 'Edit Schedule' : 'تعديل الموعد'}
           >
