@@ -27,12 +27,6 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
   const { user, signIn, signUp, signInWithGoogle, verifyOtp, resendOtp, resetPassword, updatePassword, signOut } = useTeacherAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (user && isOpen && view === 'verify') {
-      onClose();
-      navigate('/student');
-    }
-  }, [user, isOpen, view, navigate, onClose]);
 
   const handleGoogleSignIn = async () => {
     setError('');

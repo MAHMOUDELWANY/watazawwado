@@ -39,7 +39,7 @@ import {  buildStudentNotifications,
 } from './notificationsPresentation';
 
 export default function StudentApp() {
-  const { user, session, isTeacherAuthenticated, userRole, signOut } = useTeacherAuth();
+  const { user, session, loading, isTeacherAuthenticated, userRole, signOut } = useTeacherAuth();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
@@ -139,13 +139,19 @@ export default function StudentApp() {
   useEffect(() => {
     let isMounted = true;
     const loadProfile = async () => {
-      if (
-        isTeacherAuthenticated ||
-        !user ||
-        userRole !== 'student' ||
-        !session?.access_token
-      ) {
+      if (isTeacherAuthenticated) {
         if (isMounted) setLoadingProfile(false);
+        return;
+      }
+
+      if (!user) {
+        if (isMounted) setLoadingProfile(false);
+        return;
+      }
+
+      if (userRole !== 'student' || !session?.access_token) {
+        // Authenticated user whose role or session token is still resolving.
+        // Keep loading active until role and token are ready.
         return;
       }
 
@@ -155,24 +161,31 @@ export default function StudentApp() {
           Authorization: `Bearer ${session.access_token}`,
         };
 
-        // Compute the unread badge from the SAME notification projection used by
-        // StudentNotificationsPage, so the badge and the list never diverge.
-        // Read state is the current per-user storage contract.
-        const readIds: Set<string> = getSavedNotificationReadIds(user?.id);
+        // 1. Fetch profile immediately so onboarding state is resolved with zero delay
+        const profileRes = await fetch('/api/student/me', { headers });
+        if (profileRes.ok) {
+          const data = await profileRes.json();
+          if (isMounted) setProfile(data);
+        } else if (profileRes.status === 404) {
+          // Brand new student record in auth without DB profile row yet -> requires onboarding
+          if (isMounted) {
+            setProfile({
+              id: null,
+              name: user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Student',
+              email: user?.email,
+              onboardingCompleted: false,
+            });
+          }
+        }
 
-        const [profileRes, bookingsRes, paymentsRes, packagesRes] = await Promise.all([
-          fetch('/api/student/me', { headers }),
+        // 2. Compute the unread badge in parallel without blocking profile resolution
+        const readIds: Set<string> = getSavedNotificationReadIds(user?.id);
+        const [bookingsRes, paymentsRes, packagesRes] = await Promise.all([
           fetch('/api/student/bookings', { headers }),
           fetch('/api/student/payments', { headers }),
           fetch('/api/student/packages', { headers })
         ]);
 
-        if (profileRes.ok) {
-          const data = await profileRes.json();
-          if (isMounted) setProfile(data);
-        }
-
-        // Only compute a truthful badge when the authoritative inputs loaded.
         if (bookingsRes.ok && paymentsRes.ok) {
           const bookings = await bookingsRes.json();
           const paymentsJson = await paymentsRes.json();
@@ -205,6 +218,17 @@ export default function StudentApp() {
   // If a teacher lands here, redirect to the teacher dashboard
   if (isTeacherAuthenticated) {
     return <Navigate to="/dashboard" replace />;
+  }
+
+  // Auth Hydration Gate: Show BrandLoader while auth session or user role is resolving
+  if (loading || (user && (!userRole || !session?.access_token))) {
+    return (
+      <BrandLoader 
+        size="page" 
+        text={isAr ? 'جارٍ التحقق من الحساب...' : 'Verifying your account...'} 
+        subtext={isAr ? 'أهلاً بك في منصة وتزودوا للقرآن واللغة العربية' : 'Welcome to Watazawwado for Quran & Arabic Studies'}
+      />
+    );
   }
 
   // If not authenticated, provide choices: Sign In, Create Account
@@ -251,14 +275,15 @@ export default function StudentApp() {
     );
   }
 
-  // Profile is loading
-  if (loadingProfile && !profile) {
+  // Authenticated Student: Show BrandLoader until profile is definitively loaded.
+  // This guarantees that newly verified students NEVER see the dashboard before onboarding!
+  if (loadingProfile || !profile) {
     return (
-        <BrandLoader 
-          size="page" 
-          text={isAr ? 'جارٍ تحميل مساحتك التعليمية...' : 'Loading your learning home...'} 
-          subtext={isAr ? 'أهلاً بك في منصة وتزودوا للقرآن واللغة العربية' : 'Welcome to Watazawwado for Quran & Arabic Studies'}
-        />
+      <BrandLoader 
+        size="page" 
+        text={isAr ? 'جارٍ تحميل مساحتك التعليمية...' : 'Loading your learning home...'} 
+        subtext={isAr ? 'أهلاً بك في منصة وتزودوا للقرآن واللغة العربية' : 'Welcome to Watazawwado for Quran & Arabic Studies'}
+      />
     );
   }
 
