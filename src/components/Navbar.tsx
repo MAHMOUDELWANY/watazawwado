@@ -62,10 +62,10 @@ export const Navbar: React.FC<NavbarProps> = ({
     }
   }, [sideDrawerOpen]);
 
-  // Close drawer on route change
+  // Close drawer on route or language change
   useEffect(() => {
     setSideDrawerOpen(false);
-  }, [location.pathname]);
+  }, [location.pathname, lang]);
 
   const navLinks = [
     { href: '/learning', label: isEn ? 'Lessons & Syllabus' : 'الدروس والبرامج', icon: BookOpen },
@@ -108,38 +108,43 @@ export const Navbar: React.FC<NavbarProps> = ({
         }`}
         style={{ backgroundColor: 'var(--surface)', opacity: 1 }}
       >
-        <div className="w-full max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 flex items-center justify-between h-16 sm:h-20 transition-all duration-300">
+        <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex items-center justify-between h-16 sm:h-20 transition-all duration-300">
           
           {/* Brand Identity */}
           <Link
             to="/"
             id="nav-brand"
             data-tour="nav-brand"
-            className="group flex items-center gap-2.5 sm:gap-3 text-foreground focus:outline-none rounded-lg shrink-0 min-w-0"
+            className="group flex items-center gap-2 sm:gap-3 text-foreground focus:outline-none rounded-lg shrink min-w-0"
           >
             <BrandLogo variant="compact" />
-            <span className="font-display text-xl sm:text-2xl font-bold text-foreground group-hover:text-primary transition-colors truncate">
+            <span className="font-display text-base sm:text-xl lg:text-2xl font-bold text-foreground group-hover:text-primary transition-colors truncate">
               {isEn ? 'Watazawwado' : 'وتزودوا'}
             </span>
           </Link>
 
           {/* ─── RIGHT CONTROLS: Clean, Spacious, and Accessible on Both Desktop & Mobile ─── */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            {/* Theme Toggle */}
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+            {/* Theme Toggle: Compact icon button on mobile, sliding switch on desktop */}
             <div className="flex items-center">
-              <ThemeToggle />
+              <div className="sm:hidden">
+                <ThemeToggle compact={true} />
+              </div>
+              <div className="hidden sm:inline-flex">
+                <ThemeToggle />
+              </div>
             </div>
 
-            {/* Language Switcher */}
+            {/* Language Switcher: Compact 'عربي' / 'EN' to ensure zero overflow on mobile */}
             <button
               onClick={onToggleLang}
               id="lang-switch-btn"
               data-tour="lang-switch-btn"
               aria-label="Toggle language between English and Arabic"
-              className="flex items-center gap-1 sm:gap-1.5 px-2.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold text-foreground hover:bg-surface-subtle border border-border/80 transition-colors cursor-pointer shadow-2xs"
+              className="flex items-center gap-1 sm:gap-1.5 px-2 py-1.5 sm:px-2.5 rounded-xl text-xs sm:text-sm font-semibold text-foreground hover:bg-surface-subtle border border-border/80 transition-colors cursor-pointer shadow-2xs shrink-0"
             >
-              <Globe className="w-3.5 h-3.5 text-accent transition-colors" />
-              <span>{isEn ? 'العربية' : 'EN'}</span>
+              <Globe className="w-3.5 h-3.5 text-accent transition-colors shrink-0" />
+              <span>{isEn ? 'عربي' : 'EN'}</span>
             </button>
 
             {/* ─── SIDEBAR TOGGLE BUTTON (Opens the side menu on Desktop and Mobile) ─── */}
@@ -150,9 +155,9 @@ export const Navbar: React.FC<NavbarProps> = ({
               data-tour="mobile-menu-toggle"
               aria-label={isEn ? 'Open side navigation menu' : 'فتح القائمة الجانبية'}
               aria-expanded={sideDrawerOpen}
-              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-surface hover:bg-surface-subtle text-foreground border border-border/80 shadow-2xs active:scale-95 transition-all cursor-pointer touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-surface hover:bg-surface-subtle text-foreground border border-border/80 shadow-2xs active:scale-95 transition-all cursor-pointer touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary shrink-0"
             >
-              <Menu className="w-5 h-5 text-foreground" />
+              <Menu className="w-5 h-5 text-foreground shrink-0" />
               <span className="hidden md:inline text-xs sm:text-sm font-bold">
                 {isEn ? 'Menu' : 'القائمة'}
               </span>
@@ -177,15 +182,13 @@ export const Navbar: React.FC<NavbarProps> = ({
               aria-hidden="true"
             />
 
-            {/* Drawer Panel: Fully Opaque, No Transparency, Smooth Touch Pan */}
+            {/* Drawer Panel: Fully Opaque, Anchored cleanly on the side with smooth slide */}
             <motion.div
-              initial={{ x: isRtl ? '100%' : '-100%' }}
+              initial={{ x: '100%' }}
               animate={{ x: 0 }}
-              exit={{ x: isRtl ? '100%' : '-100%' }}
+              exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-              className={`fixed top-0 bottom-0 ${
-                isRtl ? 'right-0' : 'left-0'
-              } w-full max-w-[320px] sm:max-w-[360px] md:max-w-[380px] text-foreground border-inline-end border-border shadow-2xl flex flex-col justify-between z-10 overscroll-contain overflow-y-auto touch-pan-y`}
+              className="fixed top-0 bottom-0 right-0 w-full max-w-[320px] sm:max-w-[360px] md:max-w-[380px] text-foreground border-s border-border shadow-2xl flex flex-col justify-between z-10 overscroll-contain overflow-y-auto touch-pan-y"
               style={{ backgroundColor: 'var(--surface)', opacity: 1 }}
             >
               {/* Drawer Top Bar */}
@@ -298,8 +301,31 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               </div>
 
-              {/* Drawer Bottom Footer (Tour guide button) */}
-              <div className="p-4 border-t border-border/80 bg-surface shrink-0 space-y-2">
+              {/* Drawer Bottom Footer (Quick settings & Tour guide) */}
+              <div className="p-4 border-t border-border/80 bg-surface shrink-0 space-y-3">
+                <div className="flex items-center justify-between px-1">
+                  <span className="text-xs font-semibold text-muted-foreground">
+                    {isEn ? 'Appearance & Theme' : 'المظهر والسمة'}
+                  </span>
+                  <ThemeToggle />
+                </div>
+
+                <div className="flex items-center justify-between px-1">
+                  <div className="flex items-center gap-1.5">
+                    <Globe className="w-3.5 h-3.5 text-accent" />
+                    <span className="text-xs font-semibold text-muted-foreground">
+                      {isEn ? 'Language' : 'اللغة'}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={onToggleLang}
+                    className="flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold text-foreground bg-surface-subtle hover:bg-surface border border-border/80 transition-colors cursor-pointer"
+                  >
+                    <span>{isEn ? 'العربية' : 'English'}</span>
+                  </button>
+                </div>
+
                 {onStartTour && (
                   <button
                     type="button"

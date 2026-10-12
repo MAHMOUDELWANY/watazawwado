@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Sun, Moon } from 'lucide-react';
 import { useTheme } from '../ThemeProvider';
 
-export function ThemeToggle({ className = '' }: { className?: string }) {
+export function ThemeToggle({ className = '', compact = false }: { className?: string; compact?: boolean }) {
   const { theme, toggleTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -12,12 +12,44 @@ export function ThemeToggle({ className = '' }: { className?: string }) {
   }, []);
 
   if (!mounted) {
-    return (
+    return compact ? (
+      <div className={`w-8 h-8 rounded-xl glass-surface border border-border/50 ${className}`} />
+    ) : (
       <div className={`w-[60px] h-[32px] rounded-full glass-surface border border-border/50 shadow-sm ${className}`} />
     );
   }
 
   const isDark = theme === 'dark';
+
+  if (compact) {
+    return (
+      <button
+        id="theme-toggle-btn"
+        data-tour="theme-toggle-btn"
+        type="button"
+        role="switch"
+        aria-checked={isDark}
+        aria-label={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+        onClick={toggleTheme}
+        className={`
+          relative inline-flex items-center justify-center
+          w-8 h-8 rounded-xl
+          bg-surface hover:bg-surface-subtle
+          border border-border/80 text-foreground
+          shadow-2xs active:scale-95
+          transition-all duration-200 cursor-pointer
+          focus:outline-none focus-visible:ring-2 focus-visible:ring-primary
+          ${className}
+        `}
+      >
+        {isDark ? (
+          <Sun className="w-4 h-4 text-accent transition-colors" />
+        ) : (
+          <Moon className="w-4 h-4 text-foreground transition-colors" />
+        )}
+      </button>
+    );
+  }
 
   return (
     <button
