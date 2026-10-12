@@ -17,7 +17,8 @@ import {
   ExternalLink,
   MessageCircle,
   Award,
-  RefreshCw
+  RefreshCw,
+  Users
 } from 'lucide-react';
 import { useTeacherAuth } from '../../lib/auth';
 import { findLastEligibleBooking, formatLastBookingSummary } from './StudentBookingPage';
@@ -376,6 +377,101 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
           <ArrowRight className={`w-3.5 h-3.5 text-muted-foreground group-hover:text-accent group-hover:translate-x-0.5 transition-all shrink-0 ${isAr ? 'rotate-180 group-hover:-translate-x-0.5' : ''}`} />
         </Link>
       </div>
+
+      {/* ========================================================================= */}
+      {/* 2.5 FAMILY & CHILDREN OVERVIEW (For Parent Accounts) */}
+      {/* ========================================================================= */}
+      {(profile?.learnerType === 'child' || (Array.isArray(profile?.linkedChildren) && profile.linkedChildren.length > 0)) && (
+        <section className="space-y-3" aria-labelledby="family-overview-heading">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Users className="w-5 h-5 text-primary" />
+              <h2 id="family-overview-heading" className="text-base sm:text-lg font-display font-bold text-foreground">
+                {isAr ? 'لوحة متابعة الأبناء والمسار العائلي' : 'Children Progress & Family Workspace'}
+              </h2>
+            </div>
+            <Link
+              to="/student/profile"
+              className="text-xs text-primary hover:underline font-semibold inline-flex items-center gap-1"
+            >
+              <span>{isAr ? 'إدارة بيانات الأبناء' : 'Manage Children'}</span>
+              <ArrowRight className={`w-3 h-3 ${isAr ? 'rotate-180' : ''}`} />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+            {(profile?.linkedChildren && profile.linkedChildren.length > 0) ? (
+              profile.linkedChildren.map((child: any) => {
+                const childBookings = bookings.filter(b => b.student_id === child.id || b.studentId === child.id);
+                const teacherName = child.assignedTeacherName || (child.gender === 'female' ? (isAr ? 'المعلمة أفنان' : 'Teacher Afnan') : (isAr ? 'الأستاذ محمود' : 'Ustadh Mahmoud'));
+
+                return (
+                  <div
+                    key={child.id}
+                    className="p-4 sm:p-5 rounded-2xl glass-card border border-border/70 hover:border-primary/40 transition-all space-y-3 flex flex-col justify-between"
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="text-xl shrink-0">{child.gender === 'female' ? '👧' : '👦'}</span>
+                          <h3 className="font-bold text-sm sm:text-base text-foreground truncate">
+                            {child.name}
+                          </h3>
+                        </div>
+                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 shrink-0 capitalize">
+                          {child.currentLevel || (isAr ? 'مبتدئ' : 'Beginner')}
+                        </span>
+                      </div>
+
+                      <div className="p-2.5 rounded-xl glass-surface border border-border/50 text-xs space-y-1">
+                        <div className="flex items-center justify-between text-muted-foreground">
+                          <span>{isAr ? 'المعلم المعتمد:' : 'Instructor:'}</span>
+                          <span className="font-bold text-primary">{teacherName}</span>
+                        </div>
+                        {child.learningInterest && (
+                          <div className="flex items-center justify-between text-muted-foreground">
+                            <span>{isAr ? 'المسار:' : 'Track:'}</span>
+                            <span className="font-medium text-foreground truncate max-w-[130px]">{child.learningInterest}</span>
+                          </div>
+                        )}
+                        <div className="flex items-center justify-between text-muted-foreground pt-0.5 border-t border-border/40">
+                          <span>{isAr ? 'الدروس المكتملة:' : 'Completed:'}</span>
+                          <span className="font-semibold text-foreground">
+                            {childBookings.filter(b => b.status === 'completed').length} {isAr ? 'حصص' : 'lessons'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="pt-1 flex items-center gap-2">
+                      <Link
+                        to={`/student/book?studentId=${child.id}&forChild=true`}
+                        className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl btn-primary-material text-primary-foreground font-semibold text-xs transition-all shadow-xs"
+                      >
+                        <Calendar className="w-3.5 h-3.5" />
+                        <span>{isAr ? `حجز حصة لـ ${child.name.split(' ')[0]}` : `Book for ${child.name.split(' ')[0]}`}</span>
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="sm:col-span-2 lg:col-span-3 p-5 rounded-2xl glass-surface border border-border text-center space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  {isAr ? 'لم تتم إضافة أي أبناء بعد في ملفك العائلي.' : 'No children added to your family profile yet.'}
+                </p>
+                <Link
+                  to="/student/profile"
+                  className="inline-flex items-center gap-1.5 text-xs text-primary font-bold hover:underline"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>{isAr ? 'إضافة بيانات طفل الآن' : 'Add Child Details Now'}</span>
+                </Link>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* ========================================================================= */}
       {/* 3. COMMAND CENTER: TWO-COLUMN BALANCED DESKTOP LAYOUT */}

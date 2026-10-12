@@ -6214,7 +6214,7 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
           .eq('status', 'in_progress'),
         supabaseAdmin
           .from('guardians')
-          .select('student_id, parent_name, parent_email, students:student_id(id, name, current_level)')
+          .select('student_id, parent_name, parent_email, students:student_id(id, name, current_level, gender, assigned_teacher_id, learner_type, learning_interest, notes, status)')
           .ilike('parent_email', (req.studentUser?.email || '').trim())
       ]);
 
@@ -6277,11 +6277,36 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
 
       // Determine child booking eligibility authoritatively
       const isChildStudentWithGuardian = profile.learner_type === 'child' && Boolean(guardian);
-      const linkedChildrenFromGuardians = (linkedChildrenRes?.data || [])
+      const rawChildren = (linkedChildrenRes?.data || [])
         .map((g: any) => g.students)
         .filter(Boolean);
+
+      const linkedChildrenFromGuardians = await Promise.all(
+        rawChildren.map(async (child: any) => {
+          let teacherName = null;
+          if (child.assigned_teacher_id) {
+            const meta = await resolveTeacherMetadata(child.assigned_teacher_id, supabaseAdmin);
+            teacherName = meta ? meta.display_name : null;
+          }
+          if (!teacherName) {
+            teacherName = child.gender === 'female' ? 'المعلمة أفنان' : 'الأستاذ محمود';
+          }
+          return {
+            id: child.id,
+            name: child.name,
+            currentLevel: child.current_level || 'beginner',
+            gender: child.gender || 'undisclosed',
+            learnerType: child.learner_type || 'child',
+            learningInterest: child.learning_interest || null,
+            notes: child.notes || null,
+            assignedTeacherId: child.assigned_teacher_id || null,
+            assignedTeacherName: teacherName,
+            status: child.status || 'active'
+          };
+        })
+      );
       const canBookForChild = isChildStudentWithGuardian || linkedChildrenFromGuardians.length > 0;
-      const rawPref = (profile as any).booking_preference || 'self';
+      const rawPref = (profile as any).booking_preference || (canBookForChild ? 'child' : 'self');
       const bookingPreference = canBookForChild ? rawPref : 'self';
 
       let assignedTeacherName = null;
@@ -6432,7 +6457,8 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
       gender,
       country,
       teacherGenderPreference,
-      teacher_gender_preference
+      teacher_gender_preference,
+      children
     } = req.body || {};
 
     if (!name || typeof name !== 'string' || name.trim().length < 2) {
@@ -6477,6 +6503,22 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
         if (learningInterest) req.studentUser.studentProfile.learning_interest = String(learningInterest).trim();
         if (learningGoal) req.studentUser.studentProfile.learning_goal = String(learningGoal).trim();
         if (learningNeeds) req.studentUser.studentProfile.learning_needs = String(learningNeeds).trim();
+
+        if (resolvedLearnerType === 'child' && Array.isArray(children) && children.length > 0) {
+          req.studentUser.studentProfile.linkedChildren = children.map((c: any, idx: number) => ({
+            id: c.id || `child-${idx + 1}`,
+            name: (c.name || '').trim(),
+            gender: c.gender === 'female' ? 'female' : 'male',
+            currentLevel: c.currentLevel || 'beginner',
+            learningInterest: c.learningInterest || 'quran-reading',
+            notes: c.notes || c.learningNeeds || null,
+            assignedTeacherId: c.gender === 'female' ? 'afnan-id' : 'mahmoud-id',
+            assignedTeacherName: c.gender === 'female' ? 'المعلمة أفنان' : 'الأستاذ محمود',
+            status: 'active'
+          }));
+          req.studentUser.studentProfile.canBookForChild = true;
+          req.studentUser.studentProfile.bookingPreference = 'child';
+        }
       }
       return res.json({
         success: true,
@@ -6500,14 +6542,17 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
           onboardingCompleted: true,
           learningInterest: learningInterest || null,
           learningGoal: learningGoal || null,
-          learningNeeds: learningNeeds || null
+          learningNeeds: learningNeeds || null,
+          canBookForChild: resolvedLearnerType === 'child',
+          bookingPreference: resolvedLearnerType === 'child' ? 'child' : 'self',
+          linkedChildren: req.studentUser?.studentProfile?.linkedChildren || []
         }
       });
     }
 
     // 1. Update students row with smart teacher routing assignment
     const studentUpdate: Record<string, any> = {
-      name: name.trim(),
+      name: (resolvedLearnerType === 'child' && parentName ? parentName.trim() : name.trim()),
       learner_type: resolvedLearnerType,
       current_level: resolvedLevel,
       timezone: resolvedTimezone,
@@ -6516,11 +6561,15 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
       onboarding_completed: true,
       updated_at: new Date().toISOString()
     };
+    if (resolvedLearnerType === 'child') {
+      studentUpdate.booking_preference = 'child';
+    }
     if (routedTeacher.id) {
       studentUpdate.assigned_teacher_id = routedTeacher.id;
     }
     if (country) studentUpdate.country = String(country).trim();
     if (whatsapp) studentUpdate.whatsapp = String(whatsapp).trim();
+    if (parentWhatsapp && resolvedLearnerType === 'child') studentUpdate.whatsapp = String(parentWhatsapp).trim();
     if (learningInterest) studentUpdate.learning_interest = String(learningInterest).trim();
     if (learningGoal) studentUpdate.learning_goal = String(learningGoal).trim();
     if (learningNeeds) studentUpdate.learning_needs = String(learningNeeds).trim();
@@ -6537,35 +6586,108 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
       return res.status(500).json({ error: 'Failed to save onboarding information.' });
     }
 
-    // 2. Handle child guardian if provided
-    if (resolvedLearnerType === 'child' && parentName && typeof parentName === 'string' && parentName.trim().length > 1) {
-      const parentNameClean = parentName.trim();
-      const parentPhoneClean = parentWhatsapp ? String(parentWhatsapp).trim() : null;
+    // 2. Handle child guardian and multiple children if provided
+    const effectiveParentName = (parentName || name).trim();
+    const effectiveParentPhone = parentWhatsapp ? String(parentWhatsapp).trim() : (whatsapp ? String(whatsapp).trim() : null);
+    const parentEmail = (updatedStudent?.email || req.studentUser?.email || '').toLowerCase().trim();
 
-      const { data: existingG } = await supabaseAdmin
-        .from('guardians')
-        .select('id')
-        .eq('student_id', studentId)
-        .maybeSingle();
+    if (resolvedLearnerType === 'child') {
+      if (Array.isArray(children) && children.length > 0) {
+        for (const child of children) {
+          const childName = (child.name || '').trim();
+          if (!childName) continue;
 
-      if (existingG) {
-        await supabaseAdmin
+          const childGender = child.gender === 'female' ? 'female' : 'male';
+          const childTeacherPref = child.teacherGenderPreference === 'female_teacher' 
+            ? 'female_teacher' 
+            : (child.teacherGenderPreference === 'male_teacher' ? 'male_teacher' : 'no_preference');
+          const childTargetGender = childTeacherPref === 'female_teacher' ? 'female' : (childTeacherPref === 'male_teacher' ? 'male' : (childGender === 'female' ? 'female' : 'male'));
+          const childRoutedTeacher = await resolveSmartTeacherRouting(childTargetGender, supabaseAdmin);
+
+          let childStudentId = child.id;
+          if (!childStudentId) {
+            const { data: newChild, error: newChildErr } = await supabaseAdmin
+              .from('students')
+              .insert({
+                name: childName,
+                learner_type: 'child',
+                gender: childGender,
+                teacher_gender_preference: childTeacherPref,
+                assigned_teacher_id: childRoutedTeacher.id,
+                current_level: ['beginner', 'elementary', 'intermediate', 'advanced'].includes(child.currentLevel) ? child.currentLevel : 'beginner',
+                learning_interest: child.learningInterest ? String(child.learningInterest).trim() : 'quran-reading',
+                country: country ? String(country).trim() : null,
+                timezone: resolvedTimezone,
+                whatsapp: effectiveParentPhone,
+                notes: child.notes ? String(child.notes).trim() : (child.learningNeeds ? String(child.learningNeeds).trim() : null),
+                learning_goal: child.learningGoal ? String(child.learningGoal).trim() : null,
+                status: 'active',
+                onboarding_completed: true
+              })
+              .select('id')
+              .single();
+
+            if (!newChildErr && newChild?.id) {
+              childStudentId = newChild.id;
+            }
+          }
+
+          if (childStudentId && parentEmail) {
+            const { data: existingG } = await supabaseAdmin
+              .from('guardians')
+              .select('id')
+              .eq('student_id', childStudentId)
+              .ilike('parent_email', parentEmail)
+              .maybeSingle();
+
+            if (!existingG) {
+              await supabaseAdmin
+                .from('guardians')
+                .insert({
+                  student_id: childStudentId,
+                  parent_name: effectiveParentName,
+                  parent_email: parentEmail,
+                  parent_whatsapp: effectiveParentPhone,
+                  relationship_type: 'parent'
+                });
+            } else {
+              await supabaseAdmin
+                .from('guardians')
+                .update({
+                  parent_name: effectiveParentName,
+                  parent_whatsapp: effectiveParentPhone
+                })
+                .eq('id', existingG.id);
+            }
+          }
+        }
+      } else if (parentName && typeof parentName === 'string' && parentName.trim().length > 1) {
+        // Fallback for single child legacy flow
+        const { data: existingG } = await supabaseAdmin
           .from('guardians')
-          .update({
-            parent_name: parentNameClean,
-            parent_whatsapp: parentPhoneClean
-          })
-          .eq('student_id', studentId);
-      } else {
-        await supabaseAdmin
-          .from('guardians')
-          .insert({
-            student_id: studentId,
-            parent_name: parentNameClean,
-            parent_email: updatedStudent?.email || req.studentUser?.email,
-            parent_whatsapp: parentPhoneClean,
-            relationship_type: 'parent'
-          });
+          .select('id')
+          .eq('student_id', studentId)
+          .maybeSingle();
+
+        if (existingG) {
+          await supabaseAdmin
+            .from('guardians')
+            .update({
+              parent_name: effectiveParentName,
+              parent_whatsapp: effectiveParentPhone
+            })
+            .eq('student_id', studentId);
+        } else {
+          await supabaseAdmin
+            .from('guardians')
+            .insert({
+              student_id: studentId,
+              parent_name: effectiveParentName,
+              parent_email: parentEmail,
+              parent_whatsapp: effectiveParentPhone,
+              relationship_type: 'parent'
+            });
+        }
       }
     }
 
@@ -6582,7 +6704,6 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
     }
 
     // 4. Safe deterministic legacy guest booking linking during onboarding:
-    // Claim unlinked guest bookings strictly matching verified student email and with student_id IS NULL
     if (updatedStudent?.email) {
       try {
         await supabaseAdmin
@@ -6599,6 +6720,41 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
     if (updatedStudent.assigned_teacher_id) {
       const teacherMeta = await resolveTeacherMetadata(updatedStudent.assigned_teacher_id, supabaseAdmin);
       assignedTeacherName = teacherMeta ? teacherMeta.display_name : null;
+    }
+
+    // 5. Query updated linked children for response
+    let finalLinkedChildren: any[] = [];
+    if (parentEmail) {
+      const { data: guardiansData } = await supabaseAdmin
+        .from('guardians')
+        .select('student_id, parent_name, parent_email, students:student_id(id, name, current_level, gender, assigned_teacher_id, learner_type, learning_interest, notes, status)')
+        .ilike('parent_email', parentEmail);
+
+      const rawC = (guardiansData || []).map((g: any) => g.students).filter(Boolean);
+      finalLinkedChildren = await Promise.all(
+        rawC.map(async (c: any) => {
+          let teacherName = null;
+          if (c.assigned_teacher_id) {
+            const meta = await resolveTeacherMetadata(c.assigned_teacher_id, supabaseAdmin);
+            teacherName = meta ? meta.display_name : null;
+          }
+          if (!teacherName) {
+            teacherName = c.gender === 'female' ? 'المعلمة أفنان' : 'الأستاذ محمود';
+          }
+          return {
+            id: c.id,
+            name: c.name,
+            currentLevel: c.current_level || 'beginner',
+            gender: c.gender || 'undisclosed',
+            learnerType: c.learner_type || 'child',
+            learningInterest: c.learning_interest || null,
+            notes: c.notes || null,
+            assignedTeacherId: c.assigned_teacher_id || null,
+            assignedTeacherName: teacherName,
+            status: c.status || 'active'
+          };
+        })
+      );
     }
 
     return res.json({
@@ -6623,7 +6779,10 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
         onboardingCompleted: true,
         learningInterest: updatedStudent.learning_interest,
         learningGoal: updatedStudent.learning_goal,
-        learningNeeds: updatedStudent.learning_needs
+        learningNeeds: updatedStudent.learning_needs,
+        canBookForChild: resolvedLearnerType === 'child' || finalLinkedChildren.length > 0,
+        bookingPreference: (resolvedLearnerType === 'child' || finalLinkedChildren.length > 0) ? 'child' : 'self',
+        linkedChildren: finalLinkedChildren
       }
     });
   } catch (err: any) {
