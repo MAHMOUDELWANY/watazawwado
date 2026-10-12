@@ -11,7 +11,8 @@ import {  X,
   AlertCircle,
   LogOut,
   RefreshCw,
-
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { useTeacherAuth } from '../lib/auth';
 import { teacherRepository, TeacherStats, DbBooking, DbLead } from '../lib/teacherRepository';
@@ -32,6 +33,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -241,14 +243,28 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                     <label className="block text-sm font-semibold text-foreground mb-1.5">
                       {isEn ? 'Password' : 'كلمة المرور'}
                     </label>
-                    <input
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••••••"
-                      required
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-border glass-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-teal-500"
-                    />
+                    <div className="relative">
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="••••••••••••"
+                        required
+                        className="w-full ps-3.5 pe-10 py-2.5 rounded-xl border border-border glass-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        aria-label={showPassword ? (isEn ? 'Hide password' : 'إخفاء كلمة المرور') : (isEn ? 'Show password' : 'إظهار كلمة المرور')}
+                        className="absolute end-2.5 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground transition-colors cursor-pointer rounded-lg hover:bg-surface-subtle"
+                      >
+                        {showPassword ? (
+                          <EyeOff className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                        ) : (
+                          <Eye className="w-4 h-4 opacity-70" />
+                        )}
+                      </button>
+                    </div>
                   </div>
 
                   <button

@@ -12,7 +12,9 @@ import {
   ShieldCheck,
   Sun,
   Moon,
-  Globe
+  Globe,
+  Clipboard,
+  Check
 } from 'lucide-react';
 import { OtpOrbitalGraphic } from './OtpOrbitalGraphic';
 import { BrandSpinner } from '../ui/BrandLoader';
@@ -35,6 +37,18 @@ export interface OtpVerificationCardProps {
   onToggleLang?: () => void;
   /** Whether this is rendered in a full page or inside a modal dialog */
   variant?: 'modal' | 'page';
+}
+
+/**
+ * Normalizes Eastern Arabic (٠-٩) and Persian (۰-۹) numerals into standard ASCII digits (0-9)
+ * and strips any non-numeric characters.
+ */
+function normalizeDigits(text: string): string {
+  if (!text) return '';
+  return text
+    .replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 1632))
+    .replace(/[۰-۹]/g, (d) => String(d.charCodeAt(0) - 1776))
+    .replace(/\D/g, '');
 }
 
 export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
@@ -62,6 +76,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [justPasted, setJustPasted] = useState<boolean>(false);
 
   // Resend Countdown Timer (starts at 60 seconds)
   const RESEND_COOLDOWN = 60;
@@ -112,10 +127,35 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
+  // Robust code distributor when pasting or entering multiple digits
+  const handlePastedCode = (rawText: string) => {
+    const cleanNumbers = normalizeDigits(rawText).slice(0, 6);
+    if (!cleanNumbers) return;
+
+    const next = ['', '', '', '', '', ''];
+    for (let i = 0; i < 6; i++) {
+      next[i] = cleanNumbers[i] || '';
+    }
+    setDigits(next);
+    setErrorMessage(null);
+    setJustPasted(true);
+    setTimeout(() => setJustPasted(false), 2000);
+
+    // Focus target
+    const targetIdx = Math.min(5, Math.max(0, cleanNumbers.length - 1));
+    setTimeout(() => {
+      inputRefs.current[targetIdx]?.focus();
+    }, 60);
+
+    // If full 6 digits were pasted, automatically trigger verification
+    if (cleanNumbers.length === 6) {
+      triggerVerification(cleanNumbers);
+    }
+  };
+
   // Handle single digit input change
   const handleDigitChange = (index: number, value: string) => {
-    // Only accept numeric digits
-    const cleaned = value.replace(/\D/g, '');
+    const cleaned = normalizeDigits(value);
     if (!cleaned) {
       const next = [...digits];
       next[index] = '';
@@ -123,7 +163,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
       return;
     }
 
-    // If multiple characters pasted into single field
+    // If multiple characters entered at once (paste or browser autofill)
     if (cleaned.length > 1) {
       handlePastedCode(cleaned);
       return;
@@ -176,34 +216,39 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
     }
   };
 
-  // Handle clipboard paste
+  // Handle clipboard paste from event
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
-    const pasted = e.clipboardData.getData('text');
+    const pasted = e.clipboardData?.getData('text') || '';
     handlePastedCode(pasted);
   };
 
-  const handlePastedCode = (rawText: string) => {
-    const numericOnly = rawText.replace(/\D/g, '').slice(0, 6);
-    if (!numericOnly) return;
-
-    const next = [...digits];
-    for (let i = 0; i < 6; i++) {
-      next[i] = numericOnly[i] || '';
+  // Direct 1-click clipboard paste button handler
+  const handleClipboardButtonClick = async () => {
+    try {
+      if (navigator.clipboard?.readText) {
+        const clipText = await navigator.clipboard.readText();
+        if (clipText && normalizeDigits(clipText).length > 0) {
+          handlePastedCode(clipText);
+          return;
+        }
+      }
+    } catch {
+      // Clipboard permission denied or not supported in this iframe context
     }
-    setDigits(next);
-    setErrorMessage(null);
 
-    // Focus last filled or 6th input
-    const focusTarget = Math.min(5, numericOnly.length);
-    inputRefs.current[focusTarget]?.focus();
-
-    if (numericOnly.length === 6) {
-      triggerVerification(numericOnly);
+    // Graceful fallback: Prompt user
+    const manualPaste = window.prompt(
+      isAr ? 'الصق رمز التحقق المكون من 6 أرقام هنا:' : 'Paste the 6-digit verification code here:'
+    );
+    if (manualPaste) {
+      handlePastedCode(manualPaste);
+    } else {
+      inputRefs.current[0]?.focus();
     }
   };
 
-  // Trigger verification
+  // Trigger verification with guaranteed cinematic orbital animation window
   const triggerVerification = async (codeToVerify?: string) => {
     const finalCode = codeToVerify || digits.join('');
     if (finalCode.length < 6) {
@@ -226,12 +271,17 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
     setSuccessMessage(null);
 
     try {
-      const res = await onVerify(finalCode, email);
+      // Guarantee a minimum of ~1900ms so the user sees the gyroscopic 3D rings revolving fast around each other
+      const [res] = await Promise.all([
+        onVerify(finalCode, email),
+        new Promise((resolve) => setTimeout(resolve, 1900))
+      ]);
+
       if (res.success) {
         setIsSuccess(true);
         setSuccessMessage(
           isAr
-            ? 'تم تأكيد الرمز بنجاح! جاري تحويلك إلى مساحتك الخاصة...'
+            ? 'تم تأكيد الرمز بنجاح! جاري تحويلك إلى مساحتك التعليمية...'
             : 'Code verified successfully! Redirecting to your learning home...'
         );
         setTimeout(() => {
@@ -283,7 +333,6 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
             ? 'تم إرسال رمز تحقق جديد إلى بريدك الإلكتروني.'
             : 'A fresh verification code has been dispatched to your inbox.'
         );
-        // Clear current digits and refocus
         setDigits(['', '', '', '', '', '']);
         inputRefs.current[0]?.focus();
       } else {
@@ -318,22 +367,22 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
       }`}
     >
       {/* ── TOP UTILITIES (Theme & Language Toggle + Back) ── */}
-      <div className="flex items-center justify-between gap-3 mb-6">
+      <div className="flex items-center justify-between mb-6 pb-4 border-b border-border/60">
         {onBack ? (
           <button
             type="button"
             onClick={onBack}
-            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-surface-subtle px-3 py-1.5 rounded-xl transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
           >
             {isAr ? (
               <>
-                <ArrowRight className="w-4 h-4" />
-                <span>العودة</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+                <span>العودة لتسجيل الدخول</span>
               </>
             ) : (
               <>
-                <ArrowLeft className="w-4 h-4" />
-                <span>Back</span>
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Back to Login</span>
               </>
             )}
           </button>
@@ -370,17 +419,36 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
       </div>
 
       {/* ── 3D CELESTIAL ORBITAL GRAPHIC CENTERPIECE ("بتلف حوالين بعضها") ── */}
-      <div className="flex justify-center mb-6">
+      <div className="flex flex-col items-center justify-center mb-5">
         <OtpOrbitalGraphic
           digitCount={filledCount}
           isVerifying={isSubmitting}
           isSuccess={isSuccess}
           size={variant === 'modal' ? 'sm' : 'md'}
         />
+
+        {/* Verification Status Feedback beneath the rotating orbits */}
+        <AnimatePresence>
+          {isSubmitting && (
+            <motion.div
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 6 }}
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-700 dark:text-teal-300 text-xs font-thmanyah-sans font-semibold mt-4 shadow-sm"
+            >
+              <RefreshCw className="w-3.5 h-3.5 animate-spin text-teal-600 dark:text-teal-400" />
+              <span>
+                {isAr
+                  ? 'جاري فك تشفير الرمز الأمني والتحقق...'
+                  : 'Decrypting & validating security code...'}
+              </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* ── TITLE & BRAND TYPOGRAPHY (خط ثمانية) ── */}
-      <div className="text-center mb-6">
+      <div className="text-center mb-5">
         <h2 className="text-2xl sm:text-3xl font-thmanyah-serif font-bold text-foreground tracking-tight mb-2">
           {isAr ? 'التحقق من رمز الدخول' : 'Verify Your Security Code'}
         </h2>
@@ -392,7 +460,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
       </div>
 
       {/* ── EMAIL RECIPIENT CHIP / EDIT BAR ── */}
-      <div className="mb-6">
+      <div className="mb-5">
         {isEditingEmail ? (
           <div className="flex items-center gap-2 p-1.5 rounded-2xl border border-border bg-surface-warm/40 dark:bg-surface-warm/20">
             <Mail className="w-4 h-4 text-teal-600 dark:text-teal-400 ms-3 shrink-0" />
@@ -411,7 +479,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
                   setIsEditingEmail(false);
                 }
               }}
-              className="shrink-0 px-3 py-1 bg-teal-600 text-white rounded-xl text-xs font-semibold hover:bg-teal-700 transition-colors"
+              className="shrink-0 px-3 py-1 bg-teal-600 text-white rounded-xl text-xs font-semibold hover:bg-teal-700 transition-colors cursor-pointer"
             >
               {isAr ? 'حفظ' : 'Save'}
             </button>
@@ -434,11 +502,36 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
         )}
       </div>
 
-      {/* ── 6 DISCRETE OTP INPUT DIGITS ── */}
-      <div className="mb-6">
-        <label className="block text-center text-xs font-thmanyah-sans font-medium text-muted-foreground mb-3">
-          {isAr ? 'رمز التحقق (6 أرقام)' : 'Verification Code (6 Digits)'}
-        </label>
+      {/* ── 6 DISCRETE OTP INPUT DIGITS WITH PASTING SUPPORT ── */}
+      <div className="mb-5">
+        <div className="flex items-center justify-between mb-2 px-1">
+          <label className="text-xs font-thmanyah-sans font-medium text-muted-foreground">
+            {isAr ? 'رمز التحقق (6 أرقام):' : 'Verification Code (6 Digits):'}
+          </label>
+
+          {/* Quick 1-click Paste from Clipboard button */}
+          <button
+            type="button"
+            onClick={handleClipboardButtonClick}
+            disabled={isSubmitting || isSuccess}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-teal-500/30 hover:border-teal-500/60 bg-teal-500/5 hover:bg-teal-500/15 text-teal-700 dark:text-teal-300 text-xs font-thmanyah-sans font-semibold transition-all cursor-pointer shadow-xs disabled:opacity-50"
+            title={isAr ? 'لصق الرمز المنسوخ من الحافظة' : 'Paste code from clipboard'}
+          >
+            {justPasted ? (
+              <>
+                <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                <span className="text-emerald-700 dark:text-emerald-300">
+                  {isAr ? 'تم اللصق' : 'Pasted'}
+                </span>
+              </>
+            ) : (
+              <>
+                <Clipboard className="w-3.5 h-3.5" />
+                <span>{isAr ? 'لصق الرمز' : 'Paste Code'}</span>
+              </>
+            )}
+          </button>
+        </div>
 
         <div
           className="flex items-center justify-center gap-2 sm:gap-3 direction-ltr"
@@ -460,11 +553,11 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
                   inputMode="numeric"
                   autoComplete="one-time-code"
                   pattern="[0-9]*"
-                  maxLength={1}
                   value={digit}
                   disabled={isSubmitting || isSuccess}
                   onChange={(e) => handleDigitChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
+                  onPaste={handlePaste}
                   className={`w-11 h-13 sm:w-13 sm:h-16 text-center text-xl sm:text-2xl font-thmanyah-sans font-bold rounded-xl sm:rounded-2xl transition-all duration-200 outline-none select-all ${
                     isFilled
                       ? 'border-2 border-teal-600 dark:border-teal-400 bg-surface shadow-md text-foreground'
@@ -524,7 +617,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
           {isSubmitting ? (
             <>
               <BrandSpinner size="sm" />
-              <span>{isAr ? 'جارٍ التحقق من الرمز...' : 'Verifying Code...'}</span>
+              <span>{isAr ? 'جارٍ فك تشفير وتأكيد الرمز...' : 'Verifying Security Code...'}</span>
             </>
           ) : isSuccess ? (
             <>

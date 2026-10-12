@@ -1363,7 +1363,7 @@ h3, .text-heading-lg {
 
   /* ============================================================
      ORBITAL RINGS ANIMATION ("بتلف حوالين بعضها")
-     Multi-axis celestial orbital rings revolving around each other
+     Multi-axis celestial gyroscopic orbital rings revolving around each other in 3D
      ============================================================ */
   @keyframes orbitSpinZ {
     0% { transform: rotate(0deg); }
@@ -1402,31 +1402,88 @@ h3, .text-heading-lg {
     }
   }
 
+  /* True 3D Gyroscopic tumbling around each other ("بتلف حوالين بعضها") */
+  @keyframes orbitGyroscope1 {
+    0% {
+      transform: rotateX(70deg) rotateY(0deg) rotateZ(0deg);
+    }
+    50% {
+      transform: rotateX(20deg) rotateY(180deg) rotateZ(180deg);
+    }
+    100% {
+      transform: rotateX(70deg) rotateY(360deg) rotateZ(360deg);
+    }
+  }
+
+  @keyframes orbitGyroscope2 {
+    0% {
+      transform: rotateX(20deg) rotateY(70deg) rotateZ(360deg);
+    }
+    50% {
+      transform: rotateX(70deg) rotateY(20deg) rotateZ(180deg);
+    }
+    100% {
+      transform: rotateX(20deg) rotateY(70deg) rotateZ(0deg);
+    }
+  }
+
+  @keyframes orbitGyroscope3 {
+    0% {
+      transform: rotateX(-50deg) rotateY(-40deg) rotateZ(0deg);
+    }
+    50% {
+      transform: rotateX(-10deg) rotateY(140deg) rotateZ(180deg);
+    }
+    100% {
+      transform: rotateX(-50deg) rotateY(320deg) rotateZ(360deg);
+    }
+  }
+
   @keyframes pulseGlowRing {
-    0%, 100% { opacity: 0.65; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.06); }
+    0%, 100% { opacity: 0.65; transform: scale(1); filter: drop-shadow(0 0 10px rgba(8,125,145,0.4)); }
+    50% { opacity: 1; transform: scale(1.08); filter: drop-shadow(0 0 22px rgba(197,31,36,0.5)); }
+  }
+
+  @keyframes verificationEnergySurge {
+    0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
+    50% { transform: scale(1.15) rotate(180deg); opacity: 1; filter: drop-shadow(0 0 28px rgba(8,125,145,0.8)); }
   }
 
   .animate-orbit-z {
-    animation: orbitSpinZ 10s linear infinite;
+    animation: orbitSpinZ 8s linear infinite;
   }
   .animate-orbit-z-fast {
-    animation: orbitSpinZ 4.5s linear infinite;
+    animation: orbitSpinZ 1.8s linear infinite;
   }
   .animate-orbit-z-reverse {
-    animation: orbitSpinZReverse 12s linear infinite;
+    animation: orbitSpinZReverse 10s linear infinite;
+  }
+  .animate-orbit-z-reverse-fast {
+    animation: orbitSpinZReverse 2s linear infinite;
   }
   .animate-orbit-3d-1 {
-    animation: orbit3DAngle1 9s linear infinite;
+    animation: orbitGyroscope1 7s ease-in-out infinite;
+  }
+  .animate-orbit-3d-1-fast {
+    animation: orbitGyroscope1 1.6s ease-in-out infinite;
   }
   .animate-orbit-3d-2 {
-    animation: orbit3DAngle2 7s linear infinite;
+    animation: orbitGyroscope2 6s ease-in-out infinite;
+  }
+  .animate-orbit-3d-2-fast {
+    animation: orbitGyroscope2 1.4s ease-in-out infinite;
   }
   .animate-orbit-3d-3 {
-    animation: orbit3DAngle3 11s linear infinite;
+    animation: orbitGyroscope3 8.5s ease-in-out infinite;
+  }
+  .animate-orbit-3d-3-fast {
+    animation: orbitGyroscope3 1.9s ease-in-out infinite;
   }
   .animate-pulse-glow {
-    animation: pulseGlowRing 3s ease-in-out infinite;
+    animation: pulseGlowRing 2.6s ease-in-out infinite;
+  }
+  .animate-verification-surge {
+    animation: verificationEnergySurge 1.4s ease-in-out infinite;
   }
 
   .font-thmanyah-serif {

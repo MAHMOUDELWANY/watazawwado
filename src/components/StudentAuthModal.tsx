@@ -1,7 +1,7 @@
 import { BrandLogo } from './ui/BrandLogo';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Mail, Lock, User, X } from 'lucide-react';
+import { Mail, Lock, User, X, Eye, EyeOff } from 'lucide-react';
 import { BrandLoader, BrandSpinner } from './ui/BrandLoader';
 import { useTeacherAuth } from '../lib/auth'; // it's now AuthProvider
 import { useNavigate } from 'react-router-dom';
@@ -17,6 +17,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
   const [view, setView] = useState<'login' | 'signup' | 'verify' | 'forgot' | 'update-password'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState('');
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
@@ -270,14 +271,26 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
                   <div className="relative">
                     <Lock className="absolute start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-teal-600 dark:text-teal-400" />
                     <input
-                      type="password"
+                      type={showPassword ? 'text' : 'password'}
                       required
                       minLength={6}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border glass-surface focus:glass-card focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none text-foreground text-sm transition-all"
-                      placeholder="••••••••"
+                      className="w-full ps-10 pe-11 py-2.5 rounded-xl border border-border glass-surface focus:glass-card focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none text-foreground text-sm transition-all"
+                      placeholder={showPassword ? (isAr ? 'اكتب كلمة المرور' : 'Enter password') : '••••••••'}
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? (isAr ? 'إخفاء كلمة المرور' : 'Hide password') : (isAr ? 'إظهار كلمة المرور' : 'Show password')}
+                      className="absolute end-3 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground transition-colors cursor-pointer rounded-lg hover:bg-surface-subtle"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                      ) : (
+                        <Eye className="w-4 h-4 opacity-70" />
+                      )}
+                    </button>
                   </div>
                   {view === 'login' && (
                     <div className="flex justify-end mt-1.5">

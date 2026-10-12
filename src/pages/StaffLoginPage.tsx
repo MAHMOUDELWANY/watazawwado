@@ -1,7 +1,7 @@
 import { BrandLogo } from '../components/ui/BrandLogo';
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Mail, Lock, ShieldCheck, ArrowRight, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Mail, Lock, ShieldCheck, ArrowRight, AlertCircle, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { BrandLoader, BrandSpinner } from '../components/ui/BrandLoader';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTeacherAuth } from '../lib/auth';
@@ -9,6 +9,7 @@ import { useTeacherAuth } from '../lib/auth';
 export default function StaffLoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
@@ -117,13 +118,25 @@ export default function StaffLoginPage() {
             <div className="relative">
               <Lock className="w-4 h-4 text-accent absolute left-3.5 top-3.5 pointer-events-none" />
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-border bg-surface-subtle text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full pl-10 pr-11 py-3 rounded-xl border border-border bg-surface-subtle text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground transition-colors cursor-pointer rounded-lg hover:bg-surface-warm"
+              >
+                {showPassword ? (
+                  <EyeOff className="w-4 h-4 text-primary" />
+                ) : (
+                  <Eye className="w-4 h-4 opacity-70" />
+                )}
+              </button>
             </div>
           </div>
 
