@@ -39,15 +39,15 @@ function base(over: Partial<ServiceAssessment> = {}): ServiceAssessment {
 
 describe('Phase 05 — Deterministic Pricing Engine', () => {
   describe('1. Approved baselines', () => {
-    it('religious 60/45/30 = 8/6/4', () => {
-      assert.equal(baselinePrice('religious', 60), 8);
-      assert.equal(baselinePrice('religious', 45), 6);
-      assert.equal(baselinePrice('religious', 30), 4);
+    it('religious 60/45/30 = 9/7/5', () => {
+      assert.equal(baselinePrice('religious', 60), 9);
+      assert.equal(baselinePrice('religious', 45), 7);
+      assert.equal(baselinePrice('religious', 30), 5);
     });
-    it('language 60/45/30 = 12/9/6', () => {
-      assert.equal(baselinePrice('language', 60), 12);
-      assert.equal(baselinePrice('language', 45), 9);
-      assert.equal(baselinePrice('language', 30), 6);
+    it('language 60/45/30 = 13/10/7', () => {
+      assert.equal(baselinePrice('language', 60), 13);
+      assert.equal(baselinePrice('language', 45), 10);
+      assert.equal(baselinePrice('language', 30), 7);
     });
     it('maps categories to bands correctly', () => {
       assert.equal(resolveBand('quran'), 'religious');
@@ -58,20 +58,20 @@ describe('Phase 05 — Deterministic Pricing Engine', () => {
   });
 
   describe('2. Standard band produces approved price', () => {
-    it('religious standard 60min → $8, no review', () => {
+    it('religious standard 60min → $9, no review', () => {
       const r = evaluateAssessment(base({ preferred_duration: 60 }));
-      assert.equal(r.recommended_price_usd, 8);
+      assert.equal(r.recommended_price_usd, 9);
       assert.equal(r.teacher_review_required, false);
       assert.equal(r.tier, 'STANDARD');
     });
-    it('language standard 45min → $9, no review', () => {
+    it('language standard 45min → $10, no review', () => {
       const r = evaluateAssessment(base({ service_category: 'english', preferred_duration: 45 }));
-      assert.equal(r.recommended_price_usd, 9);
+      assert.equal(r.recommended_price_usd, 10);
       assert.equal(r.teacher_review_required, false);
     });
-    it('religious standard 30min → $4', () => {
+    it('religious standard 30min → $5', () => {
       const r = evaluateAssessment(base({ preferred_duration: 30 }));
-      assert.equal(r.recommended_price_usd, 4);
+      assert.equal(r.recommended_price_usd, 5);
     });
   });
 
@@ -80,7 +80,7 @@ describe('Phase 05 — Deterministic Pricing Engine', () => {
       const a = evaluateAssessment(base({ current_level: 'advanced', preferred_duration: 60 }));
       const b = evaluateAssessment(base({ current_level: 'beginner', preferred_duration: 60 }));
       assert.equal(a.recommended_price_usd, b.recommended_price_usd);
-      assert.equal(a.recommended_price_usd, 8);
+      assert.equal(a.recommended_price_usd, 9);
     });
   });
 
@@ -159,7 +159,7 @@ describe('Phase 05 — Deterministic Pricing Engine', () => {
       withDemographics.country = 'wealthy-country';
       withDemographics.willingness_to_pay = 999;
       const r = evaluateAssessment(withDemographics);
-      assert.equal(r.recommended_price_usd, 8);
+      assert.equal(r.recommended_price_usd, 9);
       assert.equal(r.teacher_review_required, false);
     });
   });

@@ -1,8 +1,9 @@
-﻿import { supabase, isSupabaseConfigured } from './supabase';
+import { supabase, isSupabaseConfigured } from './supabase';
 import {
   BookingFormData,
   MockBookingRecord,
 } from '../booking/types';
+import { calculateLessonFee } from '../booking/mockData';
 import {
   calculateUtcTimes,
   check3HourPolicyEligibility,
@@ -148,7 +149,7 @@ export const bookingRepository = {
     let managementToken = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `tok_${Date.now()}`;
     let zoomMeetingLink = '';
     let serviceName = '1-on-1 Lesson';
-    let feeAmountUsd = isTrial ? 0 : 7.00;
+    let feeAmountUsd = calculateLessonFee(data.serviceId, data.duration, isTrial);
     let studentIdToLink: string | null = (data as any).studentId || null;
 
     if (isSupabaseConfigured()) {

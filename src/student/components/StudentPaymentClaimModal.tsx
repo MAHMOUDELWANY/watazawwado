@@ -24,7 +24,7 @@ export function StudentPaymentClaimModal({
   bookingReference,
   entitlementId,
   itemTitle = '1-on-1 Lesson',
-  amount = 7,
+  amount = 9,
   currency = 'USD',
   lang = 'ar',
   onClaimSuccess,

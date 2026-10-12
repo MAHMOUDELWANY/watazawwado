@@ -272,8 +272,8 @@ export function PublicHomepage() {
                 </h3>
                 <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
                   {isEn 
-                    ? 'Transparent pricing starting at $4 per session. Choose 30, 45, or 60 min durations.' 
-                    : 'أسعار واضحة تبدأ من ٤$ للجلسة مع حاسبة باقات تفاعلية وخيارات مرنة.'}
+                    ? 'Transparent pricing starting at $9 per session with flexible monthly bundles and automated checkout.' 
+                    : 'أسعار واضحة وميسرة تبدأ من ٩$ للجلسة مع باقات شهرية مرنة ودفع إلكتروني مباشر.'}
                 </p>
               </div>
               <div className="pt-3 mt-3 border-t border-border/40 flex items-center gap-1 text-xs font-bold text-teal-700 dark:text-teal-300">

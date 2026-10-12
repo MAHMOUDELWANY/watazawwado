@@ -215,7 +215,41 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
             </span>
           </div>
         </div>
+
+        {/* Transparent Pricing Explanation for Paid Sessions */}
+        {!isTrial && !isPackageCredit && (
+          <div className="pt-3 border-t border-border/60">
+            <div className="p-3.5 rounded-2xl glass-surface border border-secondary/40 text-xs sm:text-sm space-y-1">
+              <div className="flex items-center gap-2 font-semibold text-primary">
+                <Sparkles className="w-4 h-4 text-accent" />
+                <span>{isEn ? 'Transparent Rate Policy ($9 - $13/hr)' : 'شفافية تسعير الدروس الفردية (٩$ - ١٣$ / ساعة)'}</span>
+              </div>
+              <p className="leading-relaxed text-muted-foreground text-xs sm:text-sm">
+                {isEn
+                  ? 'Base lessons start from $9/hr for foundational tracks and up to $13/hr for specialized tracks (Modern Standard Arabic, English IELTS, Egyptian Dialect, and Advanced Fiqh). Rates may be adjusted by Super Admin if your specific requested curriculum requires custom specialized materials.'
+                  : 'يبدأ سعر الساعة من ٩$ للمسارات الأساسية ويصل إلى ١٣$ للمسارات المتقدمة والتخصصية (كالفصحى وقواعد النحو، والإنجليزية، واللهجة المصرية، والفقه التخصصي). قد يتم ضبط السعر من الإدارة حسب المواصفات والمتطلبات الخاصة التي تطلبها.'}
+              </p>
+            </div>
+          </div>
+        )}
       </div>
+
+      {/* Automated Payment Integration Notice for Paid Lessons */}
+      {!isTrial && !isPackageCredit && (
+        <div className="p-4 rounded-2xl glass-card border border-border/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs sm:text-sm">
+          <div className="flex items-center gap-2.5">
+            <Lock className="w-4 h-4 text-secondary shrink-0" />
+            <span className="font-semibold text-foreground">
+              {isEn ? 'Automated Checkout via PayPal Live & Stripe' : 'دفع إلكتروني آمن ومؤتمت عبر PayPal Live و Stripe'}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-secondary/30 text-accent">
+              Cards • Apple Pay • PayPal
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Cancellation / Rescheduling Policy Notice (Master Spec Section 21) */}
       <div className="p-4 rounded-2xl glass-card border border-teal-500/30 bg-teal-500/5 flex items-start gap-3 text-sm text-foreground">
@@ -256,7 +290,7 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
           {isSubmitting ? (
             <>
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              <span>{isEn ? 'Finalizing Your Booking...' : 'جارٍ تأكيد حجزك...'}</span>
+              <span>{isEn ? 'Securing Your Booking...' : 'جارٍ حجز موعدك...'}</span>
             </>
           ) : (
             <>
@@ -266,7 +300,7 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
                   ? isEn ? 'Confirm Free Trial' : 'تأكيد حجز الجلسة المجانية'
                   : isPackageCredit
                   ? isEn ? 'Confirm with Package Credit' : 'تأكيد الحجز برصيد الباقة'
-                  : isEn ? 'Confirm 1-on-1 Lesson' : 'تأكيد حجز الدرس الفردي'}
+                  : isEn ? `Confirm & Pay ($${fee.toFixed(2)})` : `تأكيد وحجز الدرس (${fee.toFixed(2)}$)`}
               </span>
             </>
           )}

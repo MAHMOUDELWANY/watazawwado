@@ -33,7 +33,7 @@ interface PaymentInstructionsCardProps {
 export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = ({
   bookingReference,
   serviceName = '1-on-1 Lesson',
-  amount = 7,
+  amount = 9,
   currency = 'USD',
   learnerName,
   lang = 'en',

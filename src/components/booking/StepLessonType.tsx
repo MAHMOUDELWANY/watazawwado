@@ -250,8 +250,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                   isDisabled
                     ? 'opacity-40 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent'
                     : isSelected
-                    ? 'bg-foreground glass-surface border-primary ring-1 ring-primary shadow-xs'
-                    : 'glass-card border-border hover:bg-foreground/30'
+                    ? 'glass-card border-primary ring-2 ring-primary/40 bg-primary/10 shadow-xs'
+                    : 'glass-surface border-border hover:border-primary/40'
                 }`}
               >
                 <div>
@@ -302,8 +302,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                   }}
                   className={`p-4 sm:p-5 rounded-2xl border text-start transition-all cursor-pointer relative ${
                     isSelected
-                      ? 'bg-foreground glass-surface border-primary ring-2 ring-primary/30 shadow-xs'
-                      : 'glass-card border-border hover:bg-foreground/30'
+                      ? 'glass-card border-primary ring-2 ring-primary/40 bg-primary/10 shadow-xs'
+                      : 'glass-surface border-border hover:border-primary/40'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3 mb-1.5">
@@ -356,8 +356,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               }}
               className={`p-4 rounded-xl border text-start transition-all cursor-pointer ${
                 !packageEntitlementId
-                  ? 'bg-foreground glass-surface border-muted-foreground ring-2 ring-muted-foreground/30 shadow-xs'
-                  : 'glass-card border-border opacity-75'
+                  ? 'glass-card border-primary ring-2 ring-primary/40 bg-primary/10 shadow-xs'
+                  : 'glass-surface border-border opacity-75'
               }`}
             >
               <div className="flex items-start justify-between gap-3">
@@ -372,7 +372,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                   </p>
                 </div>
                 <div className="text-end">
-                  <span className="font-medium text-muted-foreground">
+                  <span className="font-medium text-primary font-bold">
                     ${calculateLessonFee(serviceId, duration, false)}
                   </span>
                 </div>
@@ -395,8 +395,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               onClick={() => onSelectPackage?.(undefined)}
               className={`p-4 rounded-xl border text-start transition-all cursor-pointer ${
                 !selectedPackageId
-                  ? 'bg-foreground glass-surface border-primary ring-2 ring-primary/30'
-                  : 'glass-card border-border opacity-75'
+                  ? 'glass-card border-primary ring-2 ring-primary/40 bg-primary/10 shadow-xs'
+                  : 'glass-surface border-border opacity-75'
               }`}
             >
               <h4 className="font-display font-medium text-foreground">
@@ -417,8 +417,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                   onClick={() => onSelectPackage?.(pkg.id)}
                   className={`p-4 rounded-xl border text-start transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-foreground glass-surface border-primary ring-2 ring-primary/30'
-                      : 'glass-card border-border opacity-75'
+                      ? 'glass-card border-primary ring-2 ring-primary/40 bg-primary/10 shadow-xs'
+                      : 'glass-surface border-border opacity-75'
                   }`}
                 >
                   <div className="flex justify-between items-start">

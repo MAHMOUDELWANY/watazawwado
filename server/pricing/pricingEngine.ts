@@ -70,8 +70,8 @@ export interface PricingRecommendation {
 
 /** Approved business baselines (NON-NEGOTIABLE). */
 export const APPROVED_BASELINES: Record<ServiceBand, Record<DurationMinutes, number>> = {
-  religious: { 60: 8, 45: 6, 30: 4 },
-  language: { 60: 12, 45: 9, 30: 6 },
+  religious: { 60: 9, 45: 7, 30: 5 },
+  language: { 60: 13, 45: 10, 30: 7 },
 };
 
 export const SUPPORTED_DURATIONS: DurationMinutes[] = [30, 45, 60];
@@ -91,13 +91,11 @@ export function resolveBand(category: ServiceCategory): ServiceBand | null {
 }
 
 /**
- * Exact proportional baseline pricing for the approved anchor (60 min).
- * religious 60=$8 → 45=$6, 30=$4 ; language 60=$12 → 45=$9, 30=$6.
+ * Exact baseline pricing for the approved anchor and durations.
+ * religious: 60=$9, 45=$7, 30=$5 ; language: 60=$13, 45=$10, 30=$7.
  */
 export function baselinePrice(band: ServiceBand, duration: DurationMinutes): number {
-  const anchor = APPROVED_BASELINES[band][60];
-  const raw = (anchor * duration) / 60;
-  return round2(raw);
+  return APPROVED_BASELINES[band]?.[duration] ?? round2((APPROVED_BASELINES[band]?.[60] * duration) / 60);
 }
 
 export function round2(n: number): number {

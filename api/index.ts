@@ -6390,8 +6390,9 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
     const isProd = process.env.NODE_ENV === 'production';
     const supabaseAdmin = getSupabaseAdminClient();
 
-    // Smart Routing: Male -> Ustadh Mahmoud, Female -> Teacher Afnan (pending admin review)
-    const routedTeacher = await resolveSmartTeacherRouting(resolvedGender, supabaseAdmin);
+    // Smart Routing: Priority to explicit teacherGenderPreference, fallback to learner gender
+    const routingTargetGender = resolvedTeacherPref === 'female_teacher' ? 'female' : (resolvedTeacherPref === 'male_teacher' ? 'male' : (resolvedGender === 'female' ? 'female' : 'male'));
+    const routedTeacher = await resolveSmartTeacherRouting(routingTargetGender, supabaseAdmin);
 
     if (!supabaseAdmin || (!isProd && req.studentUser?.studentProfile)) {
       if (req.studentUser?.studentProfile) {

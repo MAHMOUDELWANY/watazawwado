@@ -36,13 +36,13 @@ export const TimezoneSelectorModal: React.FC<TimezoneSelectorModalProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-foreground/70 backdrop-blur-xs"
+          className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/50 backdrop-blur-md"
         >
           <motion.div
             initial={{ scale: 0.95, opacity: 0, y: 10 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 10 }}
-            className="w-full max-w-md bg-foreground glass-card rounded-3xl border border-secondary/60 shadow-2xl p-6 text-foreground max-h-[85vh] flex flex-col"
+            className="w-full max-w-md glass-dialog rounded-3xl border border-border/70 shadow-2xl p-6 text-foreground max-h-[85vh] flex flex-col"
           >
             <div className="flex items-center justify-between pb-3 border-b border-border">
               <div className="flex items-center gap-2">

@@ -210,8 +210,8 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                         onClick={() => handleChildSelect(child.id)}
                         className={`p-3 rounded-xl border text-start transition-all cursor-pointer flex items-center justify-between ${
                           isSelected
-                            ? 'bg-foreground glass-surface border-primary ring-1 ring-primary'
-                            : 'bg-background border-border hover:bg-foreground/30'
+                            ? 'glass-card border-primary ring-2 ring-primary/40 bg-primary/5 shadow-xs'
+                            : 'glass-surface border-border hover:border-primary/40'
                         }`}
                       >
                         <div>
@@ -299,11 +299,11 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
               onClick={() => handleAudienceChange('adult')}
               className={`p-3.5 rounded-2xl border text-start transition-all cursor-pointer flex items-center gap-3.5 ${
                 !isChild
-                  ? 'bg-foreground glass-surface border-muted-foreground dark:border-muted-foreground ring-1 ring-muted-foreground shadow-xs'
-                  : 'glass-card border-border hover:bg-foreground/40'
+                  ? 'glass-card border-primary ring-2 ring-primary/40 bg-primary/10 shadow-xs'
+                  : 'glass-surface border-border hover:border-primary/40 hover:bg-surface-warm'
               }`}
             >
-              <div className={`p-2 rounded-xl ${!isChild ? 'bg-muted-foreground text-white' : 'bg-surface-warm dark:bg-background text-foreground dark:text-accent/90'}`}>
+              <div className={`p-2 rounded-xl ${!isChild ? 'bg-primary text-white' : 'bg-surface-warm dark:bg-background text-foreground dark:text-accent/90'}`}>
                 <User className="w-5 h-5" />
               </div>
               <div>
@@ -321,11 +321,11 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
               onClick={() => handleAudienceChange('child')}
               className={`p-3.5 rounded-2xl border text-start transition-all cursor-pointer flex items-center gap-3.5 ${
                 isChild
-                  ? 'bg-foreground glass-surface border-muted-foreground dark:border-muted-foreground ring-1 ring-muted-foreground shadow-xs'
-                  : 'glass-card border-border hover:bg-foreground/40'
+                  ? 'glass-card border-primary ring-2 ring-primary/40 bg-primary/10 shadow-xs'
+                  : 'glass-surface border-border hover:border-primary/40 hover:bg-surface-warm'
               }`}
             >
-              <div className={`p-2 rounded-xl ${isChild ? 'bg-muted-foreground text-white' : 'bg-surface-warm dark:bg-background text-foreground dark:text-accent/90'}`}>
+              <div className={`p-2 rounded-xl ${isChild ? 'bg-primary text-white' : 'bg-surface-warm dark:bg-background text-foreground dark:text-accent/90'}`}>
                 <Users className="w-5 h-5" />
               </div>
               <div>
@@ -432,7 +432,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                     value={formData.studentId || ''}
                     onChange={(e) => handleChildSelect(e.target.value)}
                     required
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-foreground/30 dark:bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-border glass-surface text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   >
                     <option value="" disabled>{isEn ? 'Select a child' : 'اختر طفلاً'}</option>
                     {linkedChildren.map((child: any) => (
@@ -446,7 +446,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                     value={formData.childName}
                     onChange={(e) => updateForm({ childName: e.target.value })}
                     placeholder={isEn ? 'e.g. Yusuf' : 'مثال: يوسف'}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-foreground/30 dark:bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-border glass-surface text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 )}
               </div>
@@ -458,7 +458,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                 <select
                   value={formData.childAge || '8-11'}
                   onChange={(e) => updateForm({ childAge: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-foreground/30 dark:bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-border glass-surface text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
                   <option value="5-7">5 – 7 {isEn ? 'years old' : 'سنوات'}</option>
                   <option value="8-11">8 – 11 {isEn ? 'years old' : 'سنوات'}</option>
@@ -486,7 +486,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                   value={formData.parentName}
                   onChange={(e) => updateForm({ parentName: e.target.value })}
                   placeholder={isEn ? 'e.g. Maryam Khan' : 'مثال: مريم خان'}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-foreground/30 dark:bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-border glass-surface text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
 
@@ -500,7 +500,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                   value={formData.parentEmail}
                   onChange={(e) => updateForm({ parentEmail: e.target.value })}
                   placeholder="parent@example.com"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-foreground/30 dark:bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-border glass-surface text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
 
@@ -513,7 +513,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                   value={formData.parentWhatsapp}
                   onChange={(e) => updateForm({ parentWhatsapp: e.target.value })}
                   placeholder="+1 (555) 000-0000"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-foreground/30 dark:bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-border glass-surface text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
             </div>

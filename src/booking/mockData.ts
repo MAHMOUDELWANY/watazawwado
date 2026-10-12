@@ -24,7 +24,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
       'إتقان علامات الوقف والابتداء'
     ],
     defaultDurations: [30, 45, 60],
-    hourlyRateUsd: 7
+    hourlyRateUsd: 9
   },
   {
     id: 'tajweed',
@@ -48,7 +48,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
       'التأسيس لمنهج الإجازة القرآنية'
     ],
     defaultDurations: [30, 45, 60],
-    hourlyRateUsd: 7
+    hourlyRateUsd: 9
   },
   {
     id: 'quran-memorization',
@@ -72,7 +72,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
       'السير في خطة ختم القرآن الكريم كاملاً'
     ],
     defaultDurations: [30, 45, 60],
-    hourlyRateUsd: 7
+    hourlyRateUsd: 9
   },
   {
     id: 'quran-revision',
@@ -96,7 +96,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
       'المحافظة على ورد مراجعة أسبوعي مستمر'
     ],
     defaultDurations: [30, 45, 60],
-    hourlyRateUsd: 7
+    hourlyRateUsd: 9
   },
 
   // --- ISLAMIC STUDIES PILLAR ---
@@ -122,15 +122,15 @@ export const BOOKING_SERVICES: ServiceOption[] = [
       'مساحة آمنة للنقاش والإجابة عن تساؤلات الهوية'
     ],
     defaultDurations: [30, 45, 60],
-    hourlyRateUsd: 7
+    hourlyRateUsd: 9
   },
   {
     id: 'fiqh',
     name: 'Practical Fiqh (Worship & Daily Life)',
-    arabicName: 'الفقه العملي الميسر',
+    arabicName: 'الفقه الميسر والعلوم الشرعية',
     group: 'islamic_studies',
-    tagline: 'Clear, step-by-step guidance on Taharah, Salah, Sawm, and everyday halal.',
-    arabicTagline: 'بيان أحكام الطهارة والصلاة والصيام والمعاملات اليومية.',
+    tagline: 'Clear, step-by-step guidance on Taharah, Salah, Sawm, and everyday halal ($9/hr base, up to $13/hr for advanced Fiqh).',
+    arabicTagline: 'بيان أحكام الطهارة والصلاة والصيام والمعاملات (تبدأ من 9$ للميسر وحتى 13$ للمستويات المتقدمة).',
     description: 'Accessible learning on how to perform acts of worship accurately according to established mainstream Islamic jurisprudence, without sectarian division.',
     arabicDescription: 'شرح ميسر لأحكام العبادات والمعاملات وفق المنهج المعتدل دون تعقيد.',
     suggestedGoals: [
@@ -146,7 +146,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
       'معرفة الحلال والحرام في شؤون الحياة اليومية'
     ],
     defaultDurations: [30, 45, 60],
-    hourlyRateUsd: 7
+    hourlyRateUsd: 9
   },
   {
     id: 'aqeedah',
@@ -170,7 +170,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
       'تعليم التوحيد للأطفال بصورة ميسرة'
     ],
     defaultDurations: [30, 45, 60],
-    hourlyRateUsd: 7
+    hourlyRateUsd: 9
   },
   {
     id: 'seerah',
@@ -194,7 +194,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
       'تطبيق الأخلاق والرحمة المحمدية في المعاملات'
     ],
     defaultDurations: [30, 45, 60],
-    hourlyRateUsd: 7
+    hourlyRateUsd: 9
   },
 
   // --- ARABIC PILLAR ---
@@ -220,17 +220,17 @@ export const BOOKING_SERVICES: ServiceOption[] = [
       'زيادة الحصيلة اللغوية للمحادثات اليومية'
     ],
     defaultDurations: [30, 45, 60],
-    hourlyRateUsd: 7
+    hourlyRateUsd: 11
   },
   {
     id: 'modern-standard-arabic',
     name: 'Modern Standard Arabic (Fusha - Grammar & Texts)',
-    arabicName: 'العربية الفصحى وقواعد النحو',
+    arabicName: 'العربية الفصحى وقواعد النحو المتقدمة',
     group: 'arabic',
-    tagline: 'The timeless language of literature, media, and classical texts.',
-    arabicTagline: 'لغة القرآن والإعلام والأدب مع فهم النحو والصرف.',
+    tagline: 'The timeless language of literature, Quran, and classical grammar texts ($13/hr).',
+    arabicTagline: 'لغة القرآن والإعلام والأدب مع فهم متعمق للنحو والصرف (13$ للساعة).',
     description: 'Comprehensive instruction in reading, grammar (Nahw), morphology (Sarf), and writing for students, academics, and serious learners.',
-    arabicDescription: 'تعليم متدرج في قواعد النحو والصرف وفهم النصوص العربية الفصيحة.',
+    arabicDescription: 'تعليم متدرج في قواعد النحو والصرف وفهم النصوص العربية الفصيحة والمستويات المتقدمة.',
     suggestedGoals: [
       'Understand classical Arabic grammar (Nahw & Sarf)',
       'Read Arabic articles, books, and Islamic literature',
@@ -244,15 +244,15 @@ export const BOOKING_SERVICES: ServiceOption[] = [
       'تطوير مهارات الكتابة والقراءة الأكاديمية'
     ],
     defaultDurations: [30, 45, 60],
-    hourlyRateUsd: 7
+    hourlyRateUsd: 13
   },
   {
     id: 'egyptian-arabic',
     name: 'Egyptian Colloquial Arabic (Ammiyya)',
     arabicName: 'اللهجة المصرية العامية',
     group: 'arabic',
-    tagline: 'The most widely understood dialect across the entire Arab world.',
-    arabicTagline: 'اللهجة الأكثر انتشاراً وفهماً في العالم العربي.',
+    tagline: 'The most widely understood dialect across the entire Arab world ($13/hr).',
+    arabicTagline: 'اللهجة الأكثر انتشاراً وفهماً في العالم العربي (13$ للساعة).',
     description: 'Learn authentic Egyptian Ammiyya for real-life conversations, travel, films, and connecting effortlessly with native Arabic speakers worldwide.',
     arabicDescription: 'تعلم اللهجة المصرية المحبوبة للمحادثات اليومية والسفر والتواصل الممتع.',
     suggestedGoals: [
@@ -268,7 +268,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
       'الربط الذكي بين الفصحى واللهجة الدارجة'
     ],
     defaultDurations: [30, 45, 60],
-    hourlyRateUsd: 7
+    hourlyRateUsd: 13
   },
   {
     id: 'arabic-foundations',
@@ -292,7 +292,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
       'اكتساب نطق عربي سليم وواثق'
     ],
     defaultDurations: [30, 45, 60],
-    hourlyRateUsd: 7
+    hourlyRateUsd: 9
   },
 
   // --- ENGLISH PILLAR ---
@@ -301,8 +301,8 @@ export const BOOKING_SERVICES: ServiceOption[] = [
     name: 'English Language (Conversation, IELTS & Academic)',
     arabicName: 'اللغة الإنجليزية (المحادثة والتأهيل الدولي)',
     group: 'english',
-    tagline: 'Taught by Mahmoud with C1 IELTS certified proficiency.',
-    arabicTagline: 'تدريس شخصي بمستوى معتمد C1 في الآيلتس.',
+    tagline: 'Taught by Mahmoud with C1 IELTS certified proficiency ($13/hr).',
+    arabicTagline: 'تدريس شخصي بمستوى معتمد C1 في الآيلتس (13$ للساعة).',
     description: 'Personalized English training focusing on professional speaking confidence, IELTS exam preparation, accent clarity, and academic writing.',
     arabicDescription: 'تطوير الطلاقة الإنجليزية، التحضير لاختبارات الآيلتس، وتحسين النطق والقواعد.',
     suggestedGoals: [
@@ -318,7 +318,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
       'تحسين النطق ومخارج الأصوات الإنجليزية'
     ],
     defaultDurations: [30, 45, 60],
-    hourlyRateUsd: 10
+    hourlyRateUsd: 13
   }
 ];
 
@@ -340,15 +340,21 @@ export const MAJOR_TIMEZONES: TimezoneOption[] = [
 export function calculateLessonFee(serviceId: string, duration: LessonDuration, isTrial: boolean): number {
   if (isTrial) return 0;
   const service = BOOKING_SERVICES.find((s) => s.id === serviceId);
-  const hourlyRate = service?.hourlyRateUsd || 7;
+  const hourlyRate = service?.hourlyRateUsd || 9;
   
   if (duration === 30) {
-    return Math.round((hourlyRate * 0.55) * 100) / 100; // e.g. $4.00 or $5.50
+    if (hourlyRate === 9) return 5.00;
+    if (hourlyRate === 13) return 7.00;
+    if (hourlyRate === 11) return 6.00;
+    return Math.round((hourlyRate * 0.56) * 100) / 100;
   }
   if (duration === 45) {
-    return Math.round((hourlyRate * 0.8) * 100) / 100; // e.g. $6.00 or $8.00
+    if (hourlyRate === 9) return 7.00;
+    if (hourlyRate === 13) return 10.00;
+    if (hourlyRate === 11) return 8.50;
+    return Math.round((hourlyRate * 0.78) * 100) / 100;
   }
-  return hourlyRate; // 60 min = baseline hourly rate (approx $7 or $10)
+  return hourlyRate; // 60 min = baseline hourly rate ($9 or $13)
 }
 
 import { calculateCairoEquivalent } from '../lib/timezone';

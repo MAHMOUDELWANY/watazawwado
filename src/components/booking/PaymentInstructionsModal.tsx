@@ -26,7 +26,7 @@ export const PaymentInstructionsModal: React.FC<PaymentInstructionsModalProps> =
   onClose,
   bookingReference,
   serviceName,
-  amount = 7,
+  amount = 9,
   currency = 'USD',
   lang = 'ar'
 }) => {

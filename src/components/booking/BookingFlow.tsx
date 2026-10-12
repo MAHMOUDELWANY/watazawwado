@@ -219,12 +219,13 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     } catch {}
 
     // A genuinely missing session must be clear and actionable — never a silent dead button.
-    if (!isAuthenticatedStudent || !freshToken) {
+    if (!isAuthenticatedStudent || !accessToken) {
       setValidationError(isEn
         ? 'Your session has expired. Please sign in again to create this lesson plan.'
         : 'انتهت جلسة تسجيل الدخول. يرجى تسجيل الدخول مرة أخرى لإنشاء خطة الدروس.');
       return;
     }
+    const tokenToUse = freshToken || accessToken;
     if (lessonCount <= 1 || selectedLessons.length !== lessonCount ||
         new Set(selectedLessons.map(lesson => lesson.date)).size !== lessonCount ||
         selectedLessons.some(({ slot }) => !slot.utcStartIso || !slot.utcEndIso)) return;
@@ -238,7 +239,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     try {
       const result = await fetch('/api/student/multi-lesson-plan', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${freshToken}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
         body: JSON.stringify({
           serviceId: formData.serviceId,
           durationMinutes: formData.duration,
@@ -308,8 +309,8 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     <div
       className={`w-full ${
         cardClassName || (isModalView
-          ? 'bg-foreground glass-card text-foreground dark:text-muted-foreground p-5 sm:p-8 rounded-3xl max-w-3xl mx-auto shadow-2xl border border-secondary/60 max-h-[92vh] overflow-y-auto'
-          : 'bg-foreground dark:bg-background text-foreground dark:text-muted-foreground py-8 sm:py-12 px-4 sm:px-6')
+          ? 'glass-dialog text-foreground p-5 sm:p-8 rounded-3xl max-w-3xl mx-auto shadow-2xl border border-border/70 max-h-[92vh] overflow-y-auto'
+          : 'glass-card text-foreground py-8 sm:py-12 px-4 sm:px-6 rounded-3xl max-w-3xl mx-auto shadow-xl border border-border/70')
       }`}
     >
       {/* Confirmation State */}
