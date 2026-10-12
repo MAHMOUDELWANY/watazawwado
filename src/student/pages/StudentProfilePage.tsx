@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import {
   User,
   Globe,
@@ -75,7 +76,12 @@ export default function StudentProfilePage({
     initialProfile?.bookingPreference || initialProfile?.booking_preference || 'self'
   );
 
-  const canBookForChild = Boolean(profile?.canBookForChild);
+  const canBookForChild = Boolean(
+    profile?.canBookForChild ||
+    profile?.learnerType === 'child' ||
+    (Array.isArray(profile?.linkedChildren) && profile.linkedChildren.length > 0) ||
+    profile?.bookingPreference === 'child'
+  );
   const linkedChildren = Array.isArray(profile?.linkedChildren) ? profile.linkedChildren : [];
 
   // Diagnostic helper for student auth probe
@@ -638,10 +644,10 @@ export default function StudentProfilePage({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-display font-bold text-foreground text-base">
-                      {profile?.assignedTeacherName || (profile?.assignedTeacherId ? 'Ustadh Mahmoud' : (isAr ? 'الأستاذ محمود (المعلم الرئيسي)' : 'Ustadh Mahmoud (Primary Teacher)'))}
+                      {profile?.assignedTeacherName || (profile?.assignedTeacherId ? (isAr ? 'الأستاذ محمود علواني' : 'Ustadh Mahmoud Elwany') : (isAr ? 'الأستاذ محمود علواني' : 'Ustadh Mahmoud Elwany'))}
                     </span>
                     <Badge variant="secondary" className="text-[13px]">
-                      {profile?.assignedTeacherId ? (isAr ? 'معلم مخصص' : 'Assigned Teacher') : (isAr ? 'المعلم الافتراضي' : 'Default Teacher')}
+                      {isAr ? 'المعلم المعتمد' : 'Assigned Teacher'}
                     </Badge>
                   </div>
                   <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">
@@ -716,27 +722,72 @@ export default function StudentProfilePage({
                     <span>{isAr ? `الأبناء المسجلون (${linkedChildren.length})` : `Registered Children (${linkedChildren.length})`}</span>
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {linkedChildren.map((child: any) => (
-                      <div
-                        key={child.id}
-                        className="p-3.5 rounded-xl glass-surface border border-border text-sm space-y-1"
-                      >
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="font-semibold text-foreground text-sm">
-                            {child.name}
-                          </span>
-                          <Badge variant="secondary" className="text-[13px] capitalize">
-                            {child.learnerType || (isAr ? 'طالب' : 'Child')}
-                          </Badge>
+                    {linkedChildren.map((child: any) => {
+                      const childTeacherName = child.teacherGenderPreference === 'female_teacher'
+                        ? (isAr ? 'الأستاذة أفنان' : 'Teacher Afnan')
+                        : child.teacherGenderPreference === 'male_teacher'
+                        ? (isAr ? 'الأستاذ محمود علواني' : 'Ustadh Mahmoud')
+                        : (child.gender === 'female' ? (isAr ? 'الأستاذة أفنان' : 'Teacher Afnan') : (isAr ? 'الأستاذ محمود علواني' : 'Ustadh Mahmoud'));
+                      
+                      const subjectLabel = child.learningInterest
+                        ? (child.learningInterest === 'quran-reading' || child.learningInterest === 'quran'
+                            ? (isAr ? 'تلاوة القرآن' : 'Quran Recitation')
+                            : child.learningInterest === 'tajweed'
+                            ? (isAr ? 'أحكام التجويد' : 'Tajweed')
+                            : child.learningInterest === 'quran-memorization' || child.learningInterest === 'hifz'
+                            ? (isAr ? 'حفظ القرآن' : 'Quran Memorization')
+                            : child.learningInterest === 'islamic-studies'
+                            ? (isAr ? 'دراسات إسلامية' : 'Islamic Studies')
+                            : child.learningInterest === 'arabic'
+                            ? (isAr ? 'اللغة العربية' : 'Arabic Language')
+                            : child.learningInterest)
+                        : (isAr ? 'تلاوة القرآن وتجويده' : 'Quran Reading & Tajweed');
+
+                      return (
+                        <div
+                          key={child.id}
+                          className="p-3.5 rounded-xl glass-surface border border-border text-sm space-y-2 flex flex-col justify-between"
+                        >
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="font-semibold text-foreground text-sm flex items-center gap-1.5">
+                                <span>{child.gender === 'female' ? '👧' : '👦'}</span>
+                                <span>{child.name}</span>
+                              </span>
+                              <Badge variant="secondary" className="text-[12px] capitalize">
+                                {child.learnerType || (isAr ? 'طالب' : 'Child')}
+                              </Badge>
+                            </div>
+
+                            <div className="flex items-center justify-between text-xs text-muted-foreground pt-1 border-t border-border/40">
+                              <span>{isAr ? 'المادة:' : 'Subject:'}</span>
+                              <span className="font-medium text-foreground">{subjectLabel}</span>
+                            </div>
+
+                            <div className="flex items-center justify-between text-xs text-muted-foreground">
+                              <span>{isAr ? 'المستوى:' : 'Level:'}</span>
+                              <span className="capitalize text-primary font-medium">
+                                {child.currentLevel || (isAr ? 'مبتدئ' : 'Beginner')}
+                              </span>
+                            </div>
+
+                            <div className="flex items-center justify-between text-xs text-muted-foreground">
+                              <span>{isAr ? 'المعلم:' : 'Teacher:'}</span>
+                              <span className="font-medium text-primary">
+                                {childTeacherName}
+                              </span>
+                            </div>
+                          </div>
+
+                          <Link
+                            to={`/student/book?studentId=${child.id}&forChild=true`}
+                            className="mt-2 w-full py-1.5 px-3 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary font-medium text-xs text-center transition-colors"
+                          >
+                            {isAr ? `احجز لـ ${child.name}` : `Book for ${child.name}`}
+                          </Link>
                         </div>
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <span>{isAr ? 'المستوى:' : 'Level:'}</span>
-                          <span className="capitalize text-primary font-medium">
-                            {child.currentLevel || (isAr ? 'مبتدئ' : 'Beginner')}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               )}

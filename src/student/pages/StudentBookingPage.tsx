@@ -393,7 +393,8 @@ export function mapLastBookingToBookingFormData(
  */
 export function mapStudentProfileToBookingInitialData(
   profile: any,
-  canBookTrial: boolean
+  canBookTrial: boolean,
+  targetChildId?: string
 ): {
   initialData: Partial<BookingFormData>;
   matchedServiceId: string;
@@ -407,9 +408,24 @@ export function mapStudentProfileToBookingInitialData(
     };
   }
 
+  const hasLinkedChildren = Array.isArray(profile.linkedChildren) && profile.linkedChildren.length > 0;
+  
+  // Target child resolution: either explicitly passed ID or the single child if only 1 exists
+  const targetChild = targetChildId && hasLinkedChildren
+    ? profile.linkedChildren.find((c: any) => c.id === targetChildId)
+    : (hasLinkedChildren && profile.linkedChildren.length === 1 ? profile.linkedChildren[0] : null);
+
+  const isChildAccount = Boolean(
+    targetChild ||
+    profile.bookingPreference === 'child' ||
+    profile.learnerType === 'child' ||
+    (profile.guardian && (profile.guardian.parentName || profile.guardian.relationship || profile.guardian.parentEmail))
+  );
+
+  let rawInterest = targetChild?.learningInterest || profile.learningInterest || '';
   let matchedServiceId = 'quran-reading';
-  if (profile.learningInterest) {
-    const interest = String(profile.learningInterest).toLowerCase();
+  if (rawInterest) {
+    const interest = String(rawInterest).toLowerCase();
     const found = BOOKING_SERVICES.find(
       (s) =>
         s.id === interest ||
@@ -428,11 +444,6 @@ export function mapStudentProfileToBookingInitialData(
     }
   }
 
-  const isChildAccount = Boolean(
-    profile.guardian &&
-    (profile.guardian.parentName || profile.guardian.relationship || profile.guardian.parentEmail)
-  );
-
   const mappedLevel: ProficiencyLevel =
     profile.currentLevel === 'beginner' ||
     profile.currentLevel === 'elementary' ||
@@ -442,15 +453,7 @@ export function mapStudentProfileToBookingInitialData(
       : 'beginner';
 
   const initialMode: BookingMode = canBookTrial ? 'trial' : 'regular';
-
-  const pref = profile.bookingPreference || profile.booking_preference;
-  const isBookingForChild = pref === 'child' || (isChildAccount && pref !== 'self');
-  const audience = isBookingForChild ? 'child' : 'adult';
-
-  const hasLinkedChildren = Array.isArray(profile.linkedChildren) && profile.linkedChildren.length > 0;
-  
-  // Only default to a child if there is exactly one
-  const defaultChild = (hasLinkedChildren && profile.linkedChildren.length === 1) ? profile.linkedChildren[0] : null;
+  const audience = isChildAccount ? 'child' : 'adult';
 
   let childName = '';
   let childLevel: ProficiencyLevel = mappedLevel;
@@ -458,29 +461,35 @@ export function mapStudentProfileToBookingInitialData(
   let parentEmail = '';
   let parentWhatsapp = '';
   let parentNotes = '';
+  let resolvedTeacherId = profile.assignedTeacherId || profile.assigned_teacher_id;
 
-  if (isBookingForChild) {
-    if (defaultChild) {
-      childName = defaultChild.name || '';
+  if (isChildAccount) {
+    if (targetChild) {
+      childName = targetChild.name || '';
       childLevel =
-        defaultChild.currentLevel === 'beginner' ||
-        defaultChild.currentLevel === 'elementary' ||
-        defaultChild.currentLevel === 'intermediate' ||
-        defaultChild.currentLevel === 'advanced'
-          ? defaultChild.currentLevel
-          : 'beginner';
+        targetChild.currentLevel === 'beginner' ||
+        targetChild.currentLevel === 'elementary' ||
+        targetChild.currentLevel === 'intermediate' ||
+        targetChild.currentLevel === 'advanced'
+          ? targetChild.currentLevel
+          : (targetChild.current_level || 'beginner');
       parentName = profile.name || '';
       parentEmail = profile.email || '';
       parentWhatsapp = profile.whatsapp || '';
-      parentNotes = profile.learningNeeds || '';
+      parentNotes = profile.learningNeeds || targetChild.notes || '';
+      if (targetChild.teacherGenderPreference === 'female_teacher') {
+        resolvedTeacherId = 'female_teacher';
+      } else if (targetChild.teacherGenderPreference === 'male_teacher') {
+        resolvedTeacherId = 'male_teacher';
+      }
     } else if (hasLinkedChildren && profile.linkedChildren.length > 1) {
-      // Multiple linked children: Do not pre-fill child identity, force selection
+      // Multiple linked children and none selected yet
       childName = '';
       parentName = profile.name || '';
       parentEmail = profile.email || '';
       parentWhatsapp = profile.whatsapp || '';
       parentNotes = profile.learningNeeds || '';
-    } else if (isChildAccount) {
+    } else {
       childName = profile.name || '';
       childLevel = mappedLevel;
       parentName = profile.guardian?.parentName || '';
@@ -507,8 +516,9 @@ export function mapStudentProfileToBookingInitialData(
     parentEmail,
     parentWhatsapp,
     parentNotes,
+    teacherId: resolvedTeacherId,
     timezone: getActiveWorkingTimezone(profile.timezone) || Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/New_York',
-    studentId: (isBookingForChild && defaultChild) ? defaultChild.id : ((isBookingForChild && hasLinkedChildren && profile.linkedChildren.length > 1) ? '' : profile.id)
+    studentId: targetChild ? targetChild.id : (isChildAccount && hasLinkedChildren && profile.linkedChildren.length > 1 ? '' : profile.id)
   };
 
   return {
@@ -609,9 +619,10 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
 
   // Derived computations safe with null/empty states
   const { canBookTrial, trialDisabledReason } = calculateTrialEligibility(bookings, bookingsError);
+  const queryChildId = searchParams.get('studentId') || searchParams.get('childId') || undefined;
   const { initialData: standardInitialData, matchedServiceId: standardServiceId, initialMode: standardMode } =
     profile
-      ? mapStudentProfileToBookingInitialData(profile, canBookTrial)
+      ? mapStudentProfileToBookingInitialData(profile, canBookTrial, queryChildId)
       : { initialData: {}, matchedServiceId: 'quran-reading', initialMode: (canBookTrial ? 'trial' : 'regular') as BookingMode };
 
   const lastEligibleBooking = findLastEligibleBooking(bookings);

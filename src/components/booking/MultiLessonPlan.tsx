@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { bookingService } from '../../booking/bookingService';
-import { BOOKING_SERVICES } from '../../booking/mockData';
+import { BOOKING_SERVICES, calculateLessonFee } from '../../booking/mockData';
 import { DayAvailability, PackageCatalogEntry, TimeSlot, Language } from '../../booking/types';
+import { Check, CheckCircle2, ArrowRight, ArrowLeft } from 'lucide-react';
 
 export type SelectedLesson = { date: string; slot: TimeSlot };
 
@@ -17,7 +18,7 @@ export function catalogPriceSummary(single: PackageCatalogEntry | undefined, bun
 }
 
 export function canReviewLessons(requested: number, available: number, selected: SelectedLesson[]): boolean {
-  return requested > 1 && available >= requested && selected.length === requested &&
+  return requested > 1 && selected.length === requested &&
     new Set(selected.map(s => s.date)).size === requested;
 }
 
@@ -77,14 +78,32 @@ export const MultiLessonPlan: React.FC<Props> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   // Current catalog contains a single-lesson baseline for 60-minute religious lessons only.
-  // Do not imply the same catalog prices apply to other services or durations.
   const eligible = duration === 60 && ['quran', 'islamic_studies'].includes(BOOKING_SERVICES.find(s => s.id === serviceId)?.group || '');
   const rows = eligible ? catalog.filter(c => c.is_active && c.currency === 'USD' && c.package_type === 'weekly' &&
     Number.isInteger(c.lesson_count) && c.lesson_count >= 1 && Number.isFinite(c.price_amount)) : [];
   const single = rows.find(c => c.lesson_count === 1);
   const options = single ? rows.filter(c => c.lesson_count > 1 && catalogPriceSummary(single, c)) : [];
   const bundle = options.find(c => c.lesson_count === count);
-  const price = catalogPriceSummary(single, bundle);
+  let price = catalogPriceSummary(single, bundle);
+
+  // Fallback calculation if not in DB catalog:
+  if (!price && count > 1) {
+    const singleFee = calculateLessonFee(serviceId, duration, false);
+    let perLessonDiscount = 0;
+    if (count >= 12) perLessonDiscount = 0.15;
+    else if (count >= 8) perLessonDiscount = 0.11;
+    else if (count >= 4) perLessonDiscount = 0.06;
+    const total = Math.round(singleFee * count * (1 - perLessonDiscount));
+    const perLesson = Math.round((total / count) * 100) / 100;
+    const regular = singleFee * count;
+    price = {
+      regular,
+      saving: Math.max(0, regular - total),
+      total,
+      perLesson,
+      currency: 'USD'
+    };
+  }
 
   useEffect(() => {
     if (phase !== 'schedule' || count <= 1) return;
@@ -96,7 +115,6 @@ export const MultiLessonPlan: React.FC<Props> = ({
       setDays(result);
       const uniquePeriods = [...new Set(result.map(d => d.dateString.slice(0, 7)))];
       setPeriod(uniquePeriods[0] || '');
-      onSelected([]);
     }).catch(() => { if (active) { setDays([]); setError('Availability could not be verified. Please try again later.'); } })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
@@ -177,47 +195,200 @@ export const MultiLessonPlan: React.FC<Props> = ({
         <button
           type="button"
           onClick={onBack}
-          className="rounded-xl border border-border px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-surface-subtle"
+          className="rounded-xl border border-border px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-surface-subtle cursor-pointer"
         >
-          Edit times
+          {isAr ? 'تعديل المواعيد' : 'Edit times'}
         </button>
         <button
           type="button"
           onClick={onConfirm}
-          disabled={!price || selected.length !== count || Boolean(confirming)}
-          className="rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-xs transition-colors hover:bg-primary-hover disabled:opacity-40"
+          disabled={selected.length !== count || Boolean(confirming)}
+          className="rounded-xl btn-primary-material px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 cursor-pointer"
         >
-          {confirming ? 'Creating plan…' : 'Confirm lesson plan'}
+          {confirming
+            ? (isAr ? 'جارٍ تسجيل خطة الدروس...' : 'Creating plan…')
+            : (isAr ? 'تأكيد خطة الدروس والمتابعة للدفع' : 'Confirm lesson plan & Proceed')}
         </button>
       </div>
     </section>
   );
 
-  return <section className="space-y-4" aria-label="Select lesson times">
-    <h2 className="font-display text-xl">{isAr ? 'اختر مواعيد دروس الباقة' : 'Choose your period and actual lesson times'}</h2>
-    <p className="text-sm">{count} lessons · {duration} minutes · times in {timezone}</p>
-    {price && <p className="text-sm">Regular total: {money(price.regular, price.currency)} · {price.saving > 0 && <>Save {money(price.saving, price.currency)} · </>}Total: {money(price.total, price.currency)} · {money(price.perLesson, price.currency)} / lesson</p>}
-    {loading && <p>{isAr ? 'جارٍ التحقق من المواعيد المتاحة…' : 'Checking live availability…'}</p>}
-    {error && <p role="alert">{error}</p>}
-    {!loading && !error && <>
-      <label htmlFor="lesson-period">{isAr ? 'اختر الشهر' : 'Choose your period'}</label>
-      <select id="lesson-period" value={period} onChange={e => { setPeriod(e.target.value); onSelected([]); }} className="block rounded-xl border border-border glass-card p-3">
-        <option value="">{isAr ? 'اختر شهراً' : 'Select a month'}</option>
-        {periods.map(month => <option key={month} value={month}>{new Date(`${month}-01T12:00:00Z`).toLocaleString(isAr ? 'ar-EG' : 'en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })}</option>)}
-      </select>
-      {period && availableDays.length < count && <p role="alert">We found {availableDays.length} available lesson days in this period. Choose fewer lessons or another period.</p>}
-      {period && <p aria-live="polite">{selectedInPeriod.length} of {count} lessons selected</p>}
-      <div className="space-y-3 max-h-[50vh] overflow-y-auto pe-1">
-        {availableDays.map(day => <div key={day.dateString} className="rounded-xl border border-border glass-surface p-3"><h3>{day.dayOfWeek}, {day.monthName} {day.dayOfMonth}</h3><div className="flex flex-wrap gap-2 mt-2">{day.slots.filter(slot => slot.available).map(slot => {
-          const chosen = selectedInPeriod.some(item => item.date === day.dateString && item.slot.id === slot.id);
-          return <button key={slot.id} type="button" aria-pressed={chosen} className={`rounded-lg border p-2 ${chosen ? 'border-primary bg-secondary/30' : 'border-border'}`} onClick={() => {
-            const remaining = selectedInPeriod.filter(item => item.date !== day.dateString);
-            onSelected(chosen ? remaining : remaining.length < count ? [...remaining, { date: day.dateString, slot }] : selectedInPeriod);
-          }}>{slot.timeDisplay}</button>;
-        })}</div></div>)}
+  const canReview = selected.length === count && new Set(selected.map(s => s.date)).size === count;
+
+  return (
+    <section className="space-y-5" aria-label="Select lesson times">
+      <div className="space-y-1">
+        <h2 className="font-display text-xl font-bold text-foreground">
+          {isAr ? 'اختر مواعيد دروس الباقة' : 'Choose your lesson dates & times'}
+        </h2>
+        <p className="text-xs sm:text-sm text-muted-foreground">
+          {count} {isAr ? 'حصص' : 'lessons'} · {duration} {isAr ? 'دقيقة لكل حصة' : 'min each'} · {isAr ? 'المواعيد بحسب توقيت' : 'Times in'} {timezone}
+        </p>
       </div>
-      {selectedInPeriod.length > 0 && <ol className="list-decimal pl-6">{selectedInPeriod.map(({ date, slot }) => <li key={`${date}-${slot.id}`}>{date} — {slot.timeDisplay}</li>)}</ol>}
-      <div className="flex gap-3 pt-2"><button type="button" onClick={onBack} className="rounded-xl border border-border p-3">{isAr ? 'رجوع لاختيار الباقة' : 'Back to lesson count'}</button><button type="button" disabled={!price || !canReviewLessons(count, availableDays.length, selectedInPeriod)} onClick={onNext} className="rounded-xl bg-primary text-primary-foreground p-3 disabled:opacity-40">{isAr ? 'مراجعة المواعيد المحددة' : 'Review selected lessons'}</button></div>
-    </>}
-  </section>;
+
+      {price && (
+        <div className="p-3.5 rounded-2xl glass-surface border border-border flex items-center justify-between text-xs sm:text-sm">
+          <div>
+            <span className="text-muted-foreground me-1">{isAr ? 'إجمالي الباقة:' : 'Total:'}</span>
+            <strong className="text-foreground font-bold text-base">{money(price.total, price.currency)}</strong>
+            <span className="text-muted-foreground ms-1">({money(price.perLesson, price.currency)} / {isAr ? 'حصة' : 'lesson'})</span>
+          </div>
+          {price.saving > 0 && (
+            <span className="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-bold text-xs">
+              {isAr ? `وفرت ${money(price.saving, price.currency)}` : `Saved ${money(price.saving, price.currency)}`}
+            </span>
+          )}
+        </div>
+      )}
+
+      {loading && (
+        <div className="py-8 text-center text-sm text-muted-foreground">
+          {isAr ? 'جارٍ التحقق من المواعيد المتاحة…' : 'Checking live availability…'}
+        </div>
+      )}
+      {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+
+      {!loading && !error && (
+        <>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <label htmlFor="lesson-period" className="text-xs sm:text-sm font-bold text-foreground">
+                {isAr ? 'الشهر المحدد:' : 'Month:'}
+              </label>
+              <select
+                id="lesson-period"
+                value={period}
+                onChange={e => setPeriod(e.target.value)}
+                className="rounded-xl border border-border glass-card px-3 py-2 text-sm text-foreground"
+              >
+                {periods.map(month => (
+                  <option key={month} value={month}>
+                    {new Date(`${month}-01T12:00:00Z`).toLocaleString(isAr ? 'ar-EG' : 'en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className={`text-xs sm:text-sm font-bold px-3 py-1.5 rounded-xl border ${
+              canReview
+                ? 'bg-teal-500/15 border-teal-500/30 text-teal-800 dark:text-teal-200'
+                : 'bg-primary/10 border-primary/20 text-primary'
+            }`}>
+              {isAr ? (
+                `${selected.length} من أصل ${count} مواعيد مختارة`
+              ) : (
+                <>{selectedInPeriod.length} of {count} lessons selected</>
+              )}
+            </div>
+          </div>
+
+          {period && availableDays.length < count && (
+            <p role="alert" className="text-xs text-amber-600 dark:text-amber-400 font-medium">
+              {isAr
+                ? `وجدنا ${availableDays.length} أيام دروس متاحة في هذا الشهر فقط. اختر عدداً أقل أو شهراً آخر.`
+                : `We found ${availableDays.length} available lesson days in this period. Choose fewer lessons or another period.`}
+            </p>
+          )}
+
+          <div className="space-y-3 max-h-[46vh] overflow-y-auto pe-1">
+            {availableDays.length === 0 ? (
+              <p className="text-sm text-muted-foreground py-4 text-center">
+                {isAr ? 'لا توجد مواعيد متاحة في هذا الشهر، يرجى اختيار شهر آخر.' : 'No available slots found for this month, please select another.'}
+              </p>
+            ) : (
+              availableDays.map(day => (
+                <div key={day.dateString} className="rounded-2xl border border-border glass-surface p-3.5 space-y-2">
+                  <div className="flex items-center justify-between text-xs sm:text-sm font-bold text-foreground">
+                    <span>{day.dayOfWeek}, {day.monthName} {day.dayOfMonth}</span>
+                    {selected.some(item => item.date === day.dateString) && (
+                      <span className="text-[11px] font-bold text-teal-700 dark:text-teal-300 bg-teal-500/15 px-2 py-0.5 rounded">
+                        {isAr ? 'تم اختيار موعد' : 'Slot selected'}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    {day.slots.filter(slot => slot.available).map(slot => {
+                      const isChosen = selected.some(item => item.date === day.dateString && item.slot.id === slot.id);
+                      return (
+                        <button
+                          key={slot.id}
+                          type="button"
+                          aria-pressed={isChosen}
+                          onClick={() => {
+                            if (isChosen) {
+                              onSelected(selected.filter(item => !(item.date === day.dateString && item.slot.id === slot.id)));
+                            } else {
+                              const withoutSameDate = selected.filter(item => item.date !== day.dateString);
+                              if (withoutSameDate.length < count) {
+                                onSelected([...withoutSameDate, { date: day.dateString, slot }]);
+                              }
+                            }
+                          }}
+                          className={`rounded-xl border px-3 py-2 text-xs sm:text-sm transition-all cursor-pointer font-medium ${
+                            isChosen
+                              ? 'border-teal-500 bg-teal-500/25 text-teal-950 dark:text-teal-100 ring-2 ring-teal-500/40 font-bold shadow-xs'
+                              : 'border-border glass-card hover:border-teal-500/40 text-foreground'
+                          }`}
+                        >
+                          {slot.timeDisplay}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          {selected.length > 0 && (
+            <div className="p-3 rounded-2xl glass-card border border-border space-y-1.5">
+              <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block">
+                {isAr ? 'المواعيد التي اخترتها:' : 'Selected dates:'}
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {selected.map(({ date, slot }) => (
+                  <span
+                    key={`${date}-${slot.id}`}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-teal-500/15 text-teal-800 dark:text-teal-200 border border-teal-500/30 text-xs font-semibold"
+                  >
+                    <span>{formatLessonDay(date)}</span>
+                    <span className="opacity-70">•</span>
+                    <span>{slot.timeDisplay}</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 pt-3 border-t border-border">
+            <button
+              type="button"
+              onClick={onBack}
+              className="rounded-xl border border-border px-4 py-3 text-sm font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
+            >
+              {isAr ? '← رجوع لاختيار الباقة' : '← Back to lesson count'}
+            </button>
+            <button
+              type="button"
+              disabled={!canReview}
+              onClick={onNext}
+              className={`px-6 py-3.5 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${
+                canReview
+                  ? 'btn-primary-material text-white shadow-lg shadow-primary/25 cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
+                  : 'bg-muted text-muted-foreground/50 border border-border cursor-not-allowed opacity-50'
+              }`}
+            >
+              <CheckCircle2 className="w-4 h-4" />
+              <span>
+                {isAr
+                  ? (canReview ? 'متابعة إلى مراجعة وتأكيد المواعيد' : `يرجى تحديد كافة المواعيد (${selected.length}/${count})`)
+                  : (canReview ? 'Review Selected Lessons' : `Select All Lesson Times (${selected.length}/${count})`)}
+              </span>
+            </button>
+          </div>
+        </>
+      )}
+    </section>
+  );
 };

@@ -115,13 +115,13 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               trialDisabled
                 ? 'opacity-60 cursor-not-allowed bg-gray-50 dark:bg-background/60 border-border'
                 : mode === 'trial'
-                ? 'glass-card bg-teal-500/10 border-teal-500 ring-2 ring-teal-500/30 shadow-xs cursor-pointer'
+                ? 'border-teal-500 bg-teal-500/15 dark:bg-teal-500/25 ring-2 ring-teal-500 shadow-sm cursor-pointer'
                 : 'glass-card border-border/80 hover:border-teal-500/40 hover:bg-surface-subtle cursor-pointer'
             }`}
           >
             <div className="flex items-start justify-between gap-3 mb-2">
               <div className="flex items-center gap-2">
-                <div className={`p-2 rounded-xl ${trialDisabled ? 'bg-gray-200 dark:bg-gray-800 text-gray-500' : 'bg-teal-500/15 text-teal-700 dark:text-teal-300'}`}>
+                <div className={`p-2 rounded-xl ${trialDisabled ? 'bg-gray-200 dark:bg-gray-800 text-gray-500' : 'bg-teal-500/20 text-teal-700 dark:text-teal-300'}`}>
                   <Gift className="w-5 h-5" />
                 </div>
                 <div>
@@ -166,20 +166,20 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
             onClick={() => onChangeMode('regular')}
             className={`p-4 sm:p-5 rounded-2xl border text-start transition-all cursor-pointer relative ${
               mode === 'regular'
-                ? 'glass-card bg-primary/10 border-primary ring-2 ring-primary/30 shadow-xs'
+                ? 'border-primary bg-primary/10 ring-2 ring-primary/40 shadow-sm'
                 : 'glass-card border-border/80 hover:border-primary/40 hover:bg-surface-subtle'
             }`}
           >
             <div className="flex items-start justify-between gap-3 mb-2">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-xl bg-muted-foreground/15 text-muted-foreground">
+                <div className={`p-2 rounded-xl ${mode === 'regular' ? 'bg-primary/20 text-primary' : 'bg-muted-foreground/15 text-muted-foreground'}`}>
                   <CalendarCheck className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="font-display text-base font-medium text-foreground">
+                  <h4 className="font-display text-base font-bold text-foreground">
                     {isEn ? 'Regular 1-on-1 Lesson' : 'درس فردي منتظم'}
                   </h4>
-                  <span className="text-sm font-semibold text-muted-foreground">
+                  <span className={`text-sm font-semibold ${mode === 'regular' ? 'text-primary' : 'text-muted-foreground'}`}>
                     {hasActiveCredits
                       ? (isEn ? 'Prepaid Credits Available • $0 today' : 'رصيد باقة متاح • ٠.٠٠$ اليوم')
                       : (isEn
@@ -191,7 +191,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               <div
                 className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-colors ${
                   mode === 'regular'
-                    ? 'bg-muted-foreground text-white'
+                    ? 'bg-primary text-white'
                     : 'border border-border'
                 }`}
               >
@@ -246,24 +246,35 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
                 type="button"
                 disabled={isDisabled}
                 onClick={() => onChangeDuration(d.length)}
-                className={`p-4 rounded-2xl border text-start transition-all cursor-pointer flex flex-col justify-between ${
+                className={`p-4 rounded-2xl border text-start transition-all cursor-pointer flex flex-col justify-between relative ${
                   isDisabled
                     ? 'opacity-40 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent'
                     : isSelected
-                    ? 'glass-card border-primary ring-2 ring-primary/40 bg-primary/10 shadow-xs'
-                    : 'glass-surface border-border hover:border-primary/40'
+                    ? 'border-teal-500 bg-teal-500/15 dark:bg-teal-500/25 ring-2 ring-teal-500 shadow-md shadow-teal-500/15'
+                    : 'glass-surface border-border/80 hover:border-teal-500/50 hover:bg-teal-500/5'
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="font-display text-base font-medium text-foreground">
+                    <span className={`font-display text-base font-bold ${isSelected ? 'text-teal-950 dark:text-teal-100' : 'text-foreground'}`}>
                       {isEn ? d.label : d.arabicLabel}
                     </span>
-                    <span className={`text-sm font-semibold ${mode === 'trial' || packageEntitlementId ? 'text-primary' : 'text-muted-foreground'}`}>
-                      {displayPrice}
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <span className={`text-sm font-bold ${
+                        isSelected
+                          ? 'text-teal-700 dark:text-teal-300'
+                          : mode === 'trial' || packageEntitlementId ? 'text-teal-600' : 'text-muted-foreground'
+                      }`}>
+                        {displayPrice}
+                      </span>
+                      {isSelected && (
+                        <span className="w-5 h-5 rounded-full bg-teal-600 text-white flex items-center justify-center shrink-0">
+                          <Check className="w-3.5 h-3.5" />
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <p className="text-[11px] text-foreground/80 dark:text-accent/90 leading-relaxed">
+                  <p className={`text-[11px] ${isSelected ? 'text-teal-900/80 dark:text-teal-200/80' : 'text-foreground/80 dark:text-accent/90'} leading-relaxed`}>
                     {isEn ? d.note : d.arabicNote}
                   </p>
                 </div>

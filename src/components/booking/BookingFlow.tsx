@@ -81,23 +81,80 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   const isEn = lang === 'en';
   const isAr = lang === 'ar';
 
-  const [step, setStep] = useState<number>(initialStep && initialStep >= 1 && initialStep <= 7 ? initialStep : 1);
+  const [step, setStep] = useState<number>(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const isCancelled = params.get('payment_cancelled');
+      const saved = sessionStorage.getItem('watazawwado_pending_booking_state');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (isCancelled && parsed?.step) {
+          return parsed.step;
+        }
+        if (parsed?.pendingBooking && parsed?.step) {
+          return parsed.step;
+        }
+      }
+    } catch {}
+    return initialStep && initialStep >= 1 && initialStep <= 7 ? initialStep : 1;
+  });
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [confirmation, setConfirmation] = useState<BookingConfirmationData | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
-  const [lessonCount, setLessonCount] = useState(1);
-  const [selectedLessons, setSelectedLessons] = useState<SelectedLesson[]>([]);
+  const [lessonCount, setLessonCount] = useState<number>(() => {
+    try {
+      const saved = sessionStorage.getItem('watazawwado_pending_booking_state');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed?.lessonCount) return parsed.lessonCount;
+      }
+    } catch {}
+    return 1;
+  });
+  const [selectedLessons, setSelectedLessons] = useState<SelectedLesson[]>(() => {
+    try {
+      const saved = sessionStorage.getItem('watazawwado_pending_booking_state');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed?.selectedLessons)) return parsed.selectedLessons;
+      }
+    } catch {}
+    return [];
+  });
   const [manageModalOpen, setManageModalOpen] = useState<boolean>(false);
   const [manageRefCode, setManageRefCode] = useState<string>('');
   const [multiConfirming, setMultiConfirming] = useState(false);
   const [multiPlanCreated, setMultiPlanCreated] = useState(false);
   const [multiPlanData, setMultiPlanData] = useState<any>(null);
-  const [pendingBooking, setPendingBooking] = useState<BookingConfirmationData | null>(null);
+  const [pendingBooking, setPendingBooking] = useState<BookingConfirmationData | null>(() => {
+    try {
+      const saved = sessionStorage.getItem('watazawwado_pending_booking_state');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed?.pendingBooking) return parsed.pendingBooking;
+      }
+    } catch {}
+    return null;
+  });
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState<boolean>(false);
   const [isVerifyingPayment, setIsVerifyingPayment] = useState<boolean>(false);
 
   // Progressive Form State
   const [formData, setFormData] = useState<BookingFormData>(() => {
+    try {
+      const saved = sessionStorage.getItem('watazawwado_pending_booking_state');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed?.formData && typeof parsed.formData === 'object') {
+          return {
+            ...parsed.formData,
+            ...(studentEmail && !parsed.formData.email ? { email: studentEmail } : {}),
+            ...(studentName && !parsed.formData.studentName ? { studentName } : {})
+          };
+        }
+      }
+    } catch {}
+
     let userTz = 'America/New_York';
     try {
       const detected = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -165,6 +222,24 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   const isMultiStepFlow = formData.mode === 'regular' && !formData.packageEntitlementId;
   const totalSteps = isMultiStepFlow ? 7 : 6;
 
+  // Persist draft to sessionStorage whenever user makes changes or holds a pending booking
+  useEffect(() => {
+    try {
+      if (step > 1 || pendingBooking) {
+        sessionStorage.setItem(
+          'watazawwado_pending_booking_state',
+          JSON.stringify({
+            formData,
+            step,
+            pendingBooking,
+            lessonCount,
+            selectedLessons
+          })
+        );
+      }
+    } catch {}
+  }, [formData, step, pendingBooking, lessonCount, selectedLessons]);
+
   // Handle returning from Stripe Checkout (session_id + gateway=stripe in URL)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -174,10 +249,15 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     const paymentCancelled = params.get('payment_cancelled');
 
     if (paymentCancelled) {
-      setValidationError(isAr ? 'تم إلغاء عملية الدفع، يمكنك المحاولة مرة أخرى.' : 'Payment was cancelled. You can try again.');
+      setValidationError(
+        isAr
+          ? 'تم إلغاء عملية الدفع، وبيانات حجزك محفوظة بالكامل. يمكنك استكمال الدفع الآن لتأكيد الموعد.'
+          : 'Payment was cancelled. Your booking details are preserved. You can resume payment to confirm your booking.'
+      );
       const cleanUrl = new URL(window.location.href);
       cleanUrl.searchParams.delete('payment_cancelled');
       window.history.replaceState({}, document.title, cleanUrl.pathname + (cleanUrl.search ? cleanUrl.search : ''));
+      setStep(isMultiStepFlow ? 7 : 6);
       return;
     }
 
@@ -209,6 +289,10 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
             cleanUrl.searchParams.delete('target_type');
             cleanUrl.searchParams.delete('booking_reference');
             window.history.replaceState({}, document.title, cleanUrl.pathname + (cleanUrl.search ? cleanUrl.search : ''));
+
+            try {
+              sessionStorage.removeItem('watazawwado_pending_booking_state');
+            } catch {}
 
             if (confirmedRecord) {
               setConfirmation({
@@ -465,6 +549,9 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   };
 
   const handlePaymentSuccess = async () => {
+    try {
+      sessionStorage.removeItem('watazawwado_pending_booking_state');
+    } catch {}
     setIsCheckoutModalOpen(false);
     if (pendingBooking) {
       try {
@@ -491,6 +578,9 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   };
 
   const handleResetForNewBooking = () => {
+    try {
+      sessionStorage.removeItem('watazawwado_pending_booking_state');
+    } catch {}
     setConfirmation(null);
     setPendingBooking(null);
     setIsCheckoutModalOpen(false);

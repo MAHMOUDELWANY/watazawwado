@@ -154,7 +154,7 @@ export const StepPackageQuantity: React.FC<StepPackageQuantityProps> = ({
       </div>
 
       {/* Package Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {packageCards.map((pkg) => {
           const isSelected = lessonCount === pkg.count;
           return (
@@ -163,65 +163,92 @@ export const StepPackageQuantity: React.FC<StepPackageQuantityProps> = ({
               whileHover={{ scale: 1.015, y: -2 }}
               whileTap={{ scale: 0.985 }}
               onClick={() => onChangeCount(pkg.count)}
-              className={`p-4 sm:p-5 rounded-2xl border text-start transition-all cursor-pointer relative flex flex-col justify-between ${
+              className={`rounded-3xl border text-start transition-all cursor-pointer relative flex flex-col justify-between overflow-hidden shadow-sm ${
                 isSelected
-                  ? 'glass-card bg-primary/10 border-primary ring-2 ring-primary/40 shadow-md'
+                  ? 'border-teal-500 bg-teal-500/15 dark:bg-teal-500/25 ring-2 ring-teal-500 shadow-xl shadow-teal-500/15'
                   : pkg.isPopular
-                  ? 'glass-card border-secondary/50 hover:border-secondary hover:bg-surface-subtle'
-                  : 'glass-surface border-border hover:border-primary/40'
+                  ? 'glass-card border-secondary/60 hover:border-secondary hover:shadow-md'
+                  : 'glass-surface border-border/80 hover:border-primary/40'
               }`}
             >
-              {/* Card Header & Badge */}
-              <div>
-                <div className="flex items-start justify-between gap-2 mb-2">
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
-                        pkg.isPopular
-                          ? 'bg-teal-500/20 text-teal-800 dark:text-teal-200 border border-teal-500/30'
-                          : 'bg-surface-warm glass-surface text-muted-foreground border border-border/60'
+              {/* 4-Color Gradient Top Edge Accent */}
+              <div
+                className={`h-1.5 w-full ${
+                  isSelected
+                    ? 'bg-[linear-gradient(135deg,#087D91_0%,#D8C6AE_40%,#8B4935_75%,#C51F24_100%)]'
+                    : pkg.isPopular
+                    ? 'bg-[linear-gradient(135deg,#087D91_0%,#D8C6AE_50%,#C51F24_100%)]'
+                    : 'bg-[linear-gradient(135deg,rgba(8,125,145,0.4)_0%,rgba(197,31,36,0.4)_100%)]'
+                }`}
+              />
+
+              <div className="p-5 sm:p-6 flex flex-col justify-between flex-1 space-y-4">
+                {/* Card Header & Badges */}
+                <div>
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span
+                        className={`inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full ${
+                          pkg.isPopular
+                            ? 'bg-teal-500/20 text-teal-800 dark:text-teal-200 border border-teal-500/30'
+                            : 'bg-primary/10 text-primary border border-primary/20'
+                        }`}
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span>{pkg.badge}</span>
+                      </span>
+
+                      {pkg.rate.savings > 0 && (
+                        <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30">
+                          {isEn ? `Save $${pkg.rate.savings}` : `وفر $${pkg.rate.savings}`}
+                        </span>
+                      )}
+                    </div>
+
+                    <div
+                      className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-colors ${
+                        isSelected ? 'bg-teal-600 text-white shadow-xs' : 'border border-border/80'
                       }`}
                     >
-                      {pkg.badge}
+                      {isSelected && <Check className="w-4 h-4" />}
+                    </div>
+                  </div>
+
+                  {/* Title & Subtitle */}
+                  <h4 className={`font-display text-lg font-bold mb-1 ${isSelected ? 'text-teal-950 dark:text-teal-100' : 'text-foreground'}`}>
+                    {pkg.title}
+                  </h4>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {pkg.subtitle}
+                  </p>
+                </div>
+
+                {/* Crystal-Clear Pricing Box */}
+                <div className="p-3.5 rounded-2xl glass-surface border border-border/70 flex items-baseline justify-between">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
+                      {isEn ? 'Total Package' : 'إجمالي الباقة'}
                     </span>
-                    {pkg.rate.savings > 0 && (
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-700 dark:text-emerald-300">
-                        {isEn ? `Save $${pkg.rate.savings}` : `وفر $${pkg.rate.savings}`}
+                    <div className="flex items-baseline gap-1 mt-0.5">
+                      <span className={`text-2xl sm:text-3xl font-black font-display ${isSelected ? 'text-teal-700 dark:text-teal-300' : 'text-primary'}`}>
+                        ${pkg.rate.total}
                       </span>
-                    )}
+                      <span className="text-xs font-semibold text-muted-foreground">
+                        USD
+                      </span>
+                    </div>
                   </div>
-
-                  <div
-                    className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 transition-colors ${
-                      isSelected ? 'bg-primary text-white' : 'border border-border'
-                    }`}
-                  >
-                    {isSelected && <Check className="w-3.5 h-3.5" />}
+                  <div className="text-end">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
+                      {isEn ? 'Per Lesson' : 'سعر الحصة'}
+                    </span>
+                    <div className="text-sm font-bold text-foreground mt-0.5">
+                      ${pkg.rate.perLesson.toFixed(2)}
+                      <span className="text-[10px] text-muted-foreground font-normal ms-1">
+                        {isEn ? '/ lesson' : '/ للحصة'}
+                      </span>
+                    </div>
                   </div>
-                </div>
-
-                {/* Title & Price */}
-                <h4 className="font-display text-base font-bold text-foreground mb-1">
-                  {pkg.title}
-                </h4>
-                <p className="text-xs text-muted-foreground leading-relaxed mb-3">
-                  {pkg.subtitle}
-                </p>
-              </div>
-
-              {/* Price Details */}
-              <div className="pt-2 border-t border-border/40 flex items-baseline justify-between">
-                <div>
-                  <span className="text-xl sm:text-2xl font-black font-display text-primary">
-                    ${pkg.rate.total}
-                  </span>
-                  <span className="text-xs font-semibold text-muted-foreground ms-1">
-                    USD
-                  </span>
-                </div>
-                <div className="text-end text-xs text-muted-foreground">
-                  <span>${pkg.rate.perLesson.toFixed(2)}</span>
-                  <span className="text-[10px] ms-0.5">{isEn ? '/ lesson' : '/ للحصة'}</span>
                 </div>
               </div>
             </motion.div>

@@ -336,18 +336,60 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
       </div>
 
       {/* ========================================================================= */}
-      {/* 2. QUICK ACTIONS (Hierarchy: Primary 'Book a Lesson', Secondary others) */}
+      {/* 2. QUICK ACTIONS (Role-aware: individualized for children of parents) */}
       {/* ========================================================================= */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <Link to="/student/book" className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-brand text-white hover:bg-brand/90 transition-all shadow-xs group cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <Calendar className="w-4 h-4 shrink-0" />
-            <span className="text-sm sm:text-[15px] font-semibold truncate">
-              {isAr ? 'حجز درس جديد' : 'Book a Lesson'}
-            </span>
-          </div>
-          <ArrowRight className={`w-3.5 h-3.5 opacity-80 group-hover:translate-x-0.5 transition-transform shrink-0 ${isAr ? 'rotate-180 group-hover:-translate-x-0.5' : ''}`} />
-        </Link>
+      {(() => {
+        const isParent = profile?.learnerType === 'child' || profile?.bookingPreference === 'child' || (Array.isArray(profile?.linkedChildren) && profile.linkedChildren.length > 0);
+        const children = Array.isArray(profile?.linkedChildren) ? profile.linkedChildren : [];
+
+        return (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {isParent && children.length > 1 ? (
+              // Case: Parent with multiple children — show dedicated button for each child
+              children.map((child: any) => (
+                <Link
+                  key={child.id}
+                  to={`/student/book?studentId=${child.id}&forChild=true`}
+                  className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl btn-primary-material text-white transition-all shadow-xs group cursor-pointer"
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <Calendar className="w-4 h-4 shrink-0" />
+                    <span className="text-sm sm:text-[15px] font-bold truncate">
+                      {isAr ? `احجز لـ ${child.name}` : `Book for ${child.name}`}
+                    </span>
+                  </div>
+                  <ArrowRight className={`w-3.5 h-3.5 opacity-80 group-hover:translate-x-0.5 transition-transform shrink-0 ${isAr ? 'rotate-180 group-hover:-translate-x-0.5' : ''}`} />
+                </Link>
+              ))
+            ) : isParent && children.length === 1 ? (
+              // Case: Parent with single child — show named booking button
+              <Link
+                to={`/student/book?studentId=${children[0].id}&forChild=true`}
+                className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl btn-primary-material text-white transition-all shadow-xs group cursor-pointer"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <Calendar className="w-4 h-4 shrink-0" />
+                  <span className="text-sm sm:text-[15px] font-bold truncate">
+                    {isAr ? `احجز درس لـ ${children[0].name}` : `Book for ${children[0].name}`}
+                  </span>
+                </div>
+                <ArrowRight className={`w-3.5 h-3.5 opacity-80 group-hover:translate-x-0.5 transition-transform shrink-0 ${isAr ? 'rotate-180 group-hover:-translate-x-0.5' : ''}`} />
+              </Link>
+            ) : (
+              // Case: Adult student — standard self booking
+              <Link
+                to="/student/book"
+                className="flex items-center justify-between p-3.5 sm:p-4 rounded-xl btn-primary-material text-white transition-all shadow-xs group cursor-pointer"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <Calendar className="w-4 h-4 shrink-0" />
+                  <span className="text-sm sm:text-[15px] font-bold truncate">
+                    {isAr ? 'حجز درس جديد' : 'Book a Lesson'}
+                  </span>
+                </div>
+                <ArrowRight className={`w-3.5 h-3.5 opacity-80 group-hover:translate-x-0.5 transition-transform shrink-0 ${isAr ? 'rotate-180 group-hover:-translate-x-0.5' : ''}`} />
+              </Link>
+            )}
 
         
 
@@ -377,6 +419,8 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
           <ArrowRight className={`w-3.5 h-3.5 text-muted-foreground group-hover:text-accent group-hover:translate-x-0.5 transition-all shrink-0 ${isAr ? 'rotate-180 group-hover:-translate-x-0.5' : ''}`} />
         </Link>
       </div>
+    );
+  })()}
 
       {/* ========================================================================= */}
       {/* 2.5 FAMILY & CHILDREN OVERVIEW (For Parent Accounts) */}
@@ -449,7 +493,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                         className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl btn-primary-material text-primary-foreground font-semibold text-xs transition-all shadow-xs"
                       >
                         <Calendar className="w-3.5 h-3.5" />
-                        <span>{isAr ? `حجز حصة لـ ${child.name.split(' ')[0]}` : `Book for ${child.name.split(' ')[0]}`}</span>
+                        <span>{isAr ? `احجز لـ ${child.name}` : `Book for ${child.name}`}</span>
                       </Link>
                     </div>
                   </div>

@@ -545,16 +545,23 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                     ? updateForm({ childLevel: lvl.key })
                     : updateForm({ currentLevel: lvl.key })
                 }
-                className={`p-3.5 rounded-xl border text-start transition-all cursor-pointer ${
+                className={`p-3.5 rounded-xl border text-start transition-all cursor-pointer relative ${
                   isSelected
-                    ? 'glass-card bg-teal-500/10 border-teal-500 ring-2 ring-teal-500/30 text-foreground font-semibold shadow-xs'
-                    : 'glass-card border-border/80 text-foreground/80 hover:border-teal-500/40 hover:bg-surface-subtle'
+                    ? 'border-teal-500 bg-teal-500/15 dark:bg-teal-500/25 ring-2 ring-teal-500 shadow-md shadow-teal-500/15 text-foreground font-semibold'
+                    : 'glass-card border-border/80 text-foreground/80 hover:border-teal-500/50 hover:bg-teal-500/5'
                 }`}
               >
-                <div className="font-display text-sm font-bold mb-0.5">
-                  {isEn ? lvl.label : lvl.arabicLabel}
+                <div className="flex items-center justify-between mb-0.5">
+                  <div className={`font-display text-sm font-bold ${isSelected ? 'text-teal-700 dark:text-teal-300' : 'text-foreground'}`}>
+                    {isEn ? lvl.label : lvl.arabicLabel}
+                  </div>
+                  {isSelected && (
+                    <span className="w-5 h-5 rounded-full bg-teal-600 text-white flex items-center justify-center shrink-0">
+                      <Check className="w-3.5 h-3.5" />
+                    </span>
+                  )}
                 </div>
-                <div className="text-xs text-muted-foreground line-clamp-2">
+                <div className={`text-xs ${isSelected ? 'text-teal-900/80 dark:text-teal-200/80 font-medium' : 'text-muted-foreground'} line-clamp-2`}>
                   {lvl.desc}
                 </div>
               </button>

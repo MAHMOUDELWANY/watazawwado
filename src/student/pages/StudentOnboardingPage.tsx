@@ -666,9 +666,6 @@ export default function StudentOnboardingPage({
                                   <h4 className="font-bold text-sm text-foreground">
                                     {isRTL ? teacher.nameAr : teacher.nameEn}
                                   </h4>
-                                  <p className="text-[11px] text-muted-foreground">
-                                    {isRTL ? teacher.titleAr : teacher.titleEn}
-                                  </p>
                                 </div>
                               </div>
 
@@ -679,10 +676,6 @@ export default function StudentOnboardingPage({
                                 </span>
                               )}
                             </div>
-
-                            <p className="text-xs text-muted-foreground leading-relaxed">
-                              {isRTL ? teacher.descriptionAr : teacher.descriptionEn}
-                            </p>
                           </div>
                         </div>
                       );
@@ -886,7 +879,6 @@ export default function StudentOnboardingPage({
                                 <span className="text-lg">👨‍🏫</span>
                                 <div className="text-xs">
                                   <span className="font-bold text-foreground block">{isRTL ? 'الأستاذ محمود علواني' : 'Ustadh Mahmoud'}</span>
-                                  <span className="text-[10px] text-muted-foreground">{isRTL ? 'مشرف تعليمي ومعلم قرآن' : 'Lead Instructor'}</span>
                                 </div>
                               </div>
                               {currentTeacherPreference === 'male_teacher' && <Check className="w-3.5 h-3.5 text-primary" />}
@@ -905,7 +897,6 @@ export default function StudentOnboardingPage({
                                 <span className="text-lg">👩‍🏫</span>
                                 <div className="text-xs">
                                   <span className="font-bold text-foreground block">{isRTL ? 'الأستاذة أفنان' : 'Teacher Afnan'}</span>
-                                  <span className="text-[10px] text-muted-foreground">{isRTL ? 'متخصصة بتأسيس البراعم' : 'Youth & Girls Specialist'}</span>
                                 </div>
                               </div>
                               {currentTeacherPreference === 'female_teacher' && <Check className="w-3.5 h-3.5 text-primary" />}
