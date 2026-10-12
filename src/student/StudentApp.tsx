@@ -47,12 +47,19 @@ export default function StudentApp() {
   const [profile, setProfile] = useState<any>(null);
   const [loadingProfile, setLoadingProfile] = useState<boolean>(true);
   const location = useLocation();
-  const shouldAutoOpenAuth = location.search.includes('auth=login') || location.pathname.includes('/login');
+  const isSignupParam = location.search.includes('auth=signup') || location.pathname.includes('/signup');
+  const isLoginParam = location.search.includes('auth=login') || location.pathname.includes('/login');
+  const shouldAutoOpenAuth = isLoginParam || isSignupParam;
   const [authModalOpen, setAuthModalOpen] = useState(shouldAutoOpenAuth);
+  const [authInitialView, setAuthInitialView] = useState<'login' | 'signup'>(isSignupParam ? 'signup' : 'login');
   const [unreadNotificationsCount, setUnreadNotificationsCount] = useState<number>(0);
 
   useEffect(() => {
-    if (location.search.includes('auth=login') || location.pathname.includes('/login')) {
+    if (location.search.includes('auth=signup') || location.pathname.includes('/signup')) {
+      setAuthInitialView('signup');
+      setAuthModalOpen(true);
+    } else if (location.search.includes('auth=login') || location.pathname.includes('/login')) {
+      setAuthInitialView('login');
       setAuthModalOpen(true);
     }
   }, [location.search, location.pathname]);
@@ -238,6 +245,7 @@ export default function StudentApp() {
           isOpen={authModalOpen}
           onClose={() => setAuthModalOpen(false)}
           lang={lang}
+          initialView={authInitialView}
         />
       </div>
     );
@@ -750,6 +758,7 @@ export default function StudentApp() {
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
         lang={lang}
+        initialView={authInitialView}
       />
     </div>
   );

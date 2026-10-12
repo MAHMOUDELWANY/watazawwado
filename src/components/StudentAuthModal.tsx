@@ -11,10 +11,11 @@ interface StudentAuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   lang?: 'en' | 'ar';
+  initialView?: 'login' | 'signup' | 'verify' | 'forgot' | 'update-password';
 }
 
-export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthModalProps) {
-  const [view, setView] = useState<'login' | 'signup' | 'verify' | 'forgot' | 'update-password'>('login');
+export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = 'login' }: StudentAuthModalProps) {
+  const [view, setView] = useState<'login' | 'signup' | 'verify' | 'forgot' | 'update-password'>(initialView);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -45,15 +46,22 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en' }: StudentAuthMo
 
 
   useEffect(() => {
-    if (isOpen && typeof window !== 'undefined') {
-      const hash = window.location.hash.toLowerCase();
-      if (hash.includes('type=recovery') || hash === '#reset-password') {
-        setView('update-password');
-      } else if (window.location.search.includes('auth=verify') || hash.includes('verify')) {
-        setView('verify');
+    if (isOpen) {
+      if (typeof window !== 'undefined') {
+        const hash = window.location.hash.toLowerCase();
+        if (hash.includes('type=recovery') || hash === '#reset-password') {
+          setView('update-password');
+          return;
+        } else if (window.location.search.includes('auth=verify') || hash.includes('verify')) {
+          setView('verify');
+          return;
+        }
       }
+      setView(initialView);
+      setError('');
+      setSuccess('');
     }
-  }, [isOpen]);
+  }, [isOpen, initialView]);
 
   if (!isOpen) return null;
 

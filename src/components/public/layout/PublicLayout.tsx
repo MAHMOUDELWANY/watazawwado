@@ -35,6 +35,7 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
   const [manageModalOpen, setManageModalOpen] = useState<boolean>(false);
   const [teacherModalOpen, setTeacherModalOpen] = useState<boolean>(false);
   const [studentModalOpen, setStudentModalOpen] = useState<boolean>(false);
+  const [studentModalInitialView, setStudentModalInitialView] = useState<'login' | 'signup'>('login');
   const [publicTourOpen, setPublicTourOpen] = useState<boolean>(false);
 
   // Automatically scroll to top whenever the page route changes
@@ -174,8 +175,14 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
         <GetStartedModal
           isOpen={getStartedModalOpen}
           onClose={() => setGetStartedModalOpen(false)}
-          onOpenStudentSignup={() => setStudentModalOpen(true)}
-          onOpenStudentLogin={() => setStudentModalOpen(true)}
+          onOpenStudentSignup={() => {
+            setStudentModalInitialView('signup');
+            setStudentModalOpen(true);
+          }}
+          onOpenStudentLogin={() => {
+            setStudentModalInitialView('login');
+            setStudentModalOpen(true);
+          }}
           lang={lang}
         />
 
@@ -184,6 +191,7 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
           isOpen={studentModalOpen}
           onClose={() => setStudentModalOpen(false)}
           lang={lang}
+          initialView={studentModalInitialView}
         />
 
         {/* AI Learning Guide */}
