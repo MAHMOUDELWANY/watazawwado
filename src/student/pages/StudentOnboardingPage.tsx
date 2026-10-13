@@ -111,26 +111,14 @@ const TEACHERS_CATALOG = [
     gender: 'male',
     nameAr: 'الأستاذ محمود علواني',
     nameEn: 'Ustadh Mahmoud Elwany',
-    titleAr: 'المشرف التعليمي ومعلم القرآن واللغات',
-    titleEn: 'Lead Instructor — Quran, Tajweed & Arabic',
-    avatar: '👨‍🏫',
-    tagsAr: ['إجازة في القرآن الكريم', 'تجويد وقراءات', 'العربية الفصحى', 'إتقان الإنجليزية'],
-    tagsEn: ['Quran Ijazah', 'Tajweed Mastery', 'Fusha Arabic', 'Fluent English'],
-    descriptionAr: 'خريج أزهري معتمد، متمرس في التدريس الفردي الهادئ للمبتدئين والمتقدمين بأسلوب تفاعلي رصين.',
-    descriptionEn: 'Azhar-grounded certified educator with 3+ years teaching Quran & Arabic worldwide.'
+    avatar: '👨‍🏫'
   },
   {
     id: 'female_teacher',
     gender: 'female',
     nameAr: 'الأستاذة أفنان',
     nameEn: 'Teacher Afnan',
-    titleAr: 'معلمة معتمدة للقرآن الكريم وتأسيس البراعم والإناث',
-    titleEn: 'Certified Teacher — Quran, Tajweed & Youth Specialist',
-    avatar: '👩‍🏫',
-    tagsAr: ['تأسيس الأطفال والناشئة', 'تجويد القرآن', 'إناث وأطفال', 'أسلوب تربوي مشجع'],
-    tagsEn: ['Kids & Youth Specialist', 'Tajweed & Hifz', 'Female Learners', 'Gentle Pedagogy'],
-    descriptionAr: 'معلمة مؤهلة متخصصة في تأسيس الأطفال وبناء حب التلاوة لدى الطالبات والبراعم بصبر وإتقان.',
-    descriptionEn: 'Specialized in gentle foundations for young learners and female students.'
+    avatar: '👩‍🏫'
   }
 ];
 
