@@ -570,7 +570,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                         'lesson_notes (Private Teacher-Only Notes)',
                         'student_progress (Cross-Discipline Milestones)',
                         'availability (Weekly Teaching Windows)',
-                        'payments (Manual IBAN/ACH/PayPal Confirmations)',
+                        'payments (Stripe Payments, Refunds & Admin Records)',
                         'reminders (24h & 1h Automated Schedule)',
                         'calendar_connections (Google Calendar Config)',
                         'testimonials (Curated Real Feedback)',

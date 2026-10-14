@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Mail, Lock, User, X, Eye, EyeOff } from 'lucide-react';
 import { BrandLoader, BrandSpinner } from './ui/BrandLoader';
 import { useTeacherAuth } from '../lib/auth'; // it's now AuthProvider
+import { LEAKED_PASSWORD_MESSAGE } from '../lib/pwnedPassword';
 import { useNavigate } from 'react-router-dom';
 import { OtpVerificationCard } from './auth/OtpVerificationCard';
 
@@ -60,6 +61,8 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
   if (!isOpen) return null;
 
   const isAr = lang === 'ar';
+  // The leaked-password message is bilingual ("English / Arabic"); show only the UI language's half.
+  const leakedPasswordText = LEAKED_PASSWORD_MESSAGE.split(' / ')[isAr ? 1 : 0];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,7 +98,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
           setSuccess(isAr ? 'تم إرسال رمز التحقق إلى بريدك الإلكتروني! تفقد صندوق الوارد.' : 'Verification email sent! Please check your inbox.');
           setView('verify');
         } else {
-          setError(authError ? (isAr ? 'تعذر إنشاء الحساب، قد يكون البريد مستخدماً بالفعل.' : authError) : (isAr ? 'تعذر إنشاء الحساب.' : 'Failed to create account.'));
+          setError(authError === LEAKED_PASSWORD_MESSAGE ? leakedPasswordText : authError ? (isAr ? 'تعذر إنشاء الحساب، قد يكون البريد مستخدماً بالفعل.' : authError) : (isAr ? 'تعذر إنشاء الحساب.' : 'Failed to create account.'));
         }
       } else if (view === 'verify') {
         const { success, error: authError } = await verifyOtp(email, otp, 'signup');
@@ -131,7 +134,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
             navigate('/student');
           }, 1500);
         } else {
-          setError(isAr ? 'تعذر تحديث كلمة المرور.' : (authError || 'Failed to update password.'));
+          setError(authError === LEAKED_PASSWORD_MESSAGE ? leakedPasswordText : isAr ? 'تعذر تحديث كلمة المرور.' : (authError || 'Failed to update password.'));
         }
       }
     } catch (err: any) {

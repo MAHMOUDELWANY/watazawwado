@@ -260,7 +260,7 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
           <div className="flex items-center gap-2.5">
             <Lock className="w-4 h-4 text-secondary shrink-0" />
             <span className="font-semibold text-foreground">
-              {isEn ? 'Automated Checkout via PayPal Live & Stripe' : 'دفع إلكتروني آمن ومؤتمت عبر PayPal Live و Stripe'}
+              {isEn ? 'Secure checkout via Stripe' : 'دفع إلكتروني آمن عبر Stripe'}
             </span>
           </div>
           <div className="flex items-center gap-2">

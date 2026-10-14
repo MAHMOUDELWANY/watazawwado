@@ -34,7 +34,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
       : ''
   );
   const [currency, setCurrency] = useState<string>(defaultCurrency || '');
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>('paypal');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>('other');
   const [status, setStatus] = useState<PaymentRecordStatus>('confirmed');
   const [paymentReference, setPaymentReference] = useState<string>('');
   const [notes, setNotes] = useState<string>('');
@@ -49,7 +49,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           : ''
       );
       setCurrency(defaultCurrency || '');
-      setPaymentMethod('paypal');
+      setPaymentMethod('other');
       setStatus('confirmed');
       setPaymentReference('');
       setNotes('');
@@ -209,7 +209,6 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
               onChange={(e) => setPaymentMethod(e.target.value as PaymentMethodType)}
               className="w-full px-3 py-2 text-sm glass-surface border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
             >
-              <option value="paypal">PayPal</option>
               <option value="international_bank_iban">{t('Bank transfer (IBAN)', 'تحويل بنكي (IBAN)')}</option>
               <option value="ach_routing">{t('ACH (US bank)', 'ACH (بنك أمريكي)')}</option>
               <option value="payoneer">Payoneer</option>

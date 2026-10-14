@@ -143,8 +143,8 @@ export function PrivacyPolicyPage() {
                   <li>
                     <strong>{isEn ? 'Payment & Transaction Records:' : 'سجلات الدفع والتحويلات:'}</strong>{' '}
                     {isEn
-                      ? 'Payment method used (Stripe or PayPal), the amount, and the provider’s transaction reference. Card details are handled by Stripe or PayPal; we never see or store card numbers.'
-                      : 'طريقة الدفع المستخدمة (Stripe أو PayPal)، والمبلغ، والرقم المرجعي للمعاملة لدى مزود الدفع. بيانات البطاقة تتعامل معها Stripe أو PayPal، ولا نراها ولا نخزنها.'}
+                      ? 'Payment method used on Stripe’s checkout (card, Apple Pay, Google Pay or PayPal), the amount, and the transaction reference. Card details are handled by Stripe (or PayPal if you choose it); we never see or store card numbers.'
+                      : 'طريقة الدفع المستخدمة في صفحة دفع Stripe (بطاقة، أو Apple Pay، أو Google Pay، أو PayPal)، والمبلغ، والرقم المرجعي للمعاملة. بيانات البطاقة تتعامل معها Stripe (أو PayPal لو اخترته)، ولا نراها ولا نخزنها.'}
                   </li>
                 </ul>
               </div>

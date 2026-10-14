@@ -134,7 +134,7 @@ export function PricingPage() {
             
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
               {isEn 
-                ? 'Prepaid monthly lesson bundles with full schedule flexibility, automated PayPal & Stripe checkout, and zero surprise auto-debits.'
+                ? 'Prepaid monthly lesson bundles with full schedule flexibility, secure Stripe checkout, and zero surprise auto-debits.'
                 : 'باقات شهرية مسبقة الدفع تحدد مواعيدها بحرية كاملة، مع دفع إلكتروني مباشر وتأكيد فوري دون أي سحب آلي متكرر.'}
             </p>
           </div>
@@ -192,7 +192,7 @@ export function PricingPage() {
                   {isEn ? 'Automated & Encrypted' : 'دفع مشفر وتأكيد فوري'}
                 </h5>
                 <p className="text-muted-foreground text-xs">
-                  {isEn ? 'Direct Stripe & PayPal Live integration' : 'بوابات رسمية معتمدة عبر Stripe و PayPal'}
+                  {isEn ? 'Secure Stripe checkout (cards, Apple Pay, PayPal)' : 'دفع آمن عبر Stripe (بطاقات، Apple Pay، PayPal)'}
                 </p>
               </div>
             </div>

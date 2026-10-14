@@ -2,7 +2,7 @@
  * ====================================================================
  * WATAZAWWADO ACADEMY — AUTOMATED PAYMENT MODAL
  * File: src/components/booking/PaymentInstructionsModal.tsx
- * Role: Modern 4-color liquid glass checkout modal (PayPal Live & Stripe)
+ * Role: Modern 4-color liquid glass checkout modal (Stripe)
  * ====================================================================
  */
 

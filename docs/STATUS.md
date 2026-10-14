@@ -43,6 +43,9 @@ Read this first in a new session, then `RULES.md` (binding owner decisions) and 
 
 - Privacy policy payment line now says Stripe/PayPal only. Lawyer brief: docs/legal-review-brief.md. Owner test checklist (Arabic): docs/owner-test-checklist.md. Old GitHub branches deleted; unmerged ones kept as archive/* tags.
 
+- PayPal removed as a separate gateway (button, SDK, /api/payments/paypal/capture, /api/payments/config, server/payment/paypalService.ts). PayPal is offered inside Stripe Checkout. Old payments with method paypal stay readable. The dead Payment-methods tab in dashboard settings is hidden (API still accepts the stored legacy value).
+- Sign-up/password change in Arabic now shows the leaked-password message instead of "email may be in use".
+
 ## Next (in order)
 
 1. Owner runs docs/owner-test-checklist.md on production (Claude cannot create accounts on the live site).

@@ -67,11 +67,6 @@ import {
   type CatalogEntry
 } from '../server/pricing/offerPurchasability.js';
 import {
-  createPayPalOrder,
-  capturePayPalOrder,
-  getPayPalConfig
-} from '../server/payment/paypalService.js';
-import {
   createStripeCheckoutSession,
   retrieveStripeCheckoutSession,
   getStripeConfig,
@@ -4286,7 +4281,7 @@ app.post('/api/dashboard/payments', verifyTeacherAuth, requireSuperAdmin, async 
       return res.status(400).json({ error: 'Currency is required for manual payments without a booking.' });
     }
 
-    const validMethods = ['international_bank_iban', 'ach_routing', 'payoneer', 'paypal', 'stripe', 'wise', 'other'];
+    const validMethods = ['international_bank_iban', 'ach_routing', 'payoneer', 'stripe', 'wise', 'other'];
     if (!payment_method || !validMethods.includes(payment_method)) {
       return res.status(400).json({ error: `Payment method must be one of: ${validMethods.join(', ')}` });
     }
@@ -4552,14 +4547,14 @@ app.delete('/api/dashboard/payments/:id', verifyTeacherAuth, requireSuperAdmin, 
 });
 
 // ====================================================================
-// AUTOMATED PAYMENT ENGINE (PAYPAL LIVE & STRIPE CHECKOUT)
+// AUTOMATED PAYMENT ENGINE (STRIPE CHECKOUT)
 // ====================================================================
 
 /**
  * Fulfills an automated payment atomically and dispatches confirmation notifications.
  */
 async function fulfillAutomatedPayment(params: {
-  paymentMethod: 'paypal' | 'stripe';
+  paymentMethod: 'stripe';
   paymentReference: string;
   amount: number;
   currency: string;
@@ -4782,17 +4777,6 @@ async function fulfillAutomatedPayment(params: {
   };
 }
 
-// 1. Config endpoint for client-side gateway initialization
-app.get('/api/payments/config', rateLimit, (req, res) => {
-  const paypal = getPayPalConfig();
-  const stripe = getStripeConfig();
-  res.json({
-    paypalClientId: paypal.clientId || process.env.PAYPAL_CLIENT_ID || process.env.VITE_PAYPAL_CLIENT_ID || '',
-    paypalMode: paypal.mode || process.env.PAYPAL_MODE || 'live',
-    stripePublishableKey: stripe.publishableKey || process.env.STRIPE_PUBLISHABLE_KEY || process.env.VITE_STRIPE_PUBLISHABLE_KEY || ''
-  });
-});
-
 // 2. Zero-Trust Payment Intent Creation (server authoritative pricing)
 app.post('/api/payments/create-intent', rateLimit, async (req: any, res: any) => {
   try {
@@ -4803,8 +4787,8 @@ app.post('/api/payments/create-intent', rateLimit, async (req: any, res: any) =>
 
     const { gateway, targetType, targetId, successUrl, cancelUrl } = req.body;
 
-    if (!gateway || !['paypal', 'stripe'].includes(gateway)) {
-      return res.status(400).json({ error: 'Invalid payment gateway. Must be "paypal" or "stripe".' });
+    if (gateway !== 'stripe') {
+      return res.status(400).json({ error: 'Invalid payment gateway. Must be "stripe".' });
     }
 
     if (!targetType || !['booking', 'package'].includes(targetType) || !targetId) {
@@ -4902,105 +4886,33 @@ app.post('/api/payments/create-intent', rateLimit, async (req: any, res: any) =>
       }
     };
 
-    if (gateway === 'paypal') {
-      const order = await createPayPalOrder({
-        amount: authoritativeAmount,
-        currency: authoritativeCurrency,
-        description: itemTitle,
-        customId: JSON.stringify({ targetType, targetId })
-      });
+    const defaultSuccessUrl = `${hostOrigin}/student/payments?session_id={CHECKOUT_SESSION_ID}&gateway=stripe`;
+    const defaultCancelUrl = `${hostOrigin}/student/payments?payment_cancelled=true`;
 
-      return res.json({
-        success: true,
-        gateway: 'paypal',
-        orderId: order.id,
-        amount: authoritativeAmount,
-        currency: authoritativeCurrency
-      });
-    } else if (gateway === 'stripe') {
-      const defaultSuccessUrl = `${hostOrigin}/student/payments?session_id={CHECKOUT_SESSION_ID}&gateway=stripe`;
-      const defaultCancelUrl = `${hostOrigin}/student/payments?payment_cancelled=true`;
-
-      const session = await createStripeCheckoutSession({
-        amount: authoritativeAmount,
-        currency: authoritativeCurrency,
-        title: itemTitle,
-        customerEmail,
-        metadata: {
-          targetType,
-          targetId: String(targetId)
-        },
-        successUrl: sameSiteUrl(successUrl) || defaultSuccessUrl,
-        cancelUrl: sameSiteUrl(cancelUrl) || defaultCancelUrl
-      });
-
-      return res.json({
-        success: true,
-        gateway: 'stripe',
-        sessionId: session.id,
-        sessionUrl: session.url,
-        amount: authoritativeAmount,
-        currency: authoritativeCurrency
-      });
-    }
-  } catch (err: any) {
-    console.error('[Create Payment Intent Error]', err);
-    return res.status(500).json({ error: clientErrorMessage(err, 'Failed to initialize payment gateway.') });
-  }
-});
-
-// 3. Automated PayPal Order Capture
-app.post('/api/payments/paypal/capture', rateLimit, async (req: any, res: any) => {
-  try {
-    const { orderId } = req.body;
-
-    if (!orderId || typeof orderId !== 'string') {
-      return res.status(400).json({ error: 'orderId is required.' });
-    }
-
-    const captureResult = await capturePayPalOrder(orderId);
-
-    if (captureResult.status !== 'COMPLETED') {
-      return res.status(400).json({ error: `PayPal order not completed. Status: ${captureResult.status}` });
-    }
-
-    // The target comes only from the custom_id the server wrote at order creation,
-    // so an order paid for one item can't be redeemed against another.
-    let targetType: 'booking' | 'package' | undefined;
-    let targetId: string | undefined;
-    try {
-      const parsed = JSON.parse(captureResult.customId || '');
-      if ((parsed?.targetType === 'booking' || parsed?.targetType === 'package') && parsed?.targetId) {
-        targetType = parsed.targetType;
-        targetId = String(parsed.targetId);
-      }
-    } catch { /* handled below */ }
-    if (!targetType || !targetId) {
-      console.error('[PayPal Capture] order has no server-issued target', { orderId });
-      return res.status(400).json({ error: 'This PayPal order was not created by this site.' });
-    }
-
-    const fulfillment = await fulfillAutomatedPayment({
-      paymentMethod: 'paypal',
-      paymentReference: captureResult.captureId || orderId,
-      amount: captureResult.amount || 0,
-      currency: captureResult.currency || 'USD',
-      notes: `Automated PayPal live payment captured (${captureResult.payerEmail || ''})`,
-      targetType,
-      targetId,
-      customerEmail: captureResult.payerEmail,
-      customerName: captureResult.payerName
+    const session = await createStripeCheckoutSession({
+      amount: authoritativeAmount,
+      currency: authoritativeCurrency,
+      title: itemTitle,
+      customerEmail,
+      metadata: {
+        targetType,
+        targetId: String(targetId)
+      },
+      successUrl: sameSiteUrl(successUrl) || defaultSuccessUrl,
+      cancelUrl: sameSiteUrl(cancelUrl) || defaultCancelUrl
     });
 
     return res.json({
       success: true,
-      status: 'confirmed',
-      paymentId: fulfillment.paymentId,
-      isIdempotent: fulfillment.isIdempotent
+      gateway: 'stripe',
+      sessionId: session.id,
+      sessionUrl: session.url,
+      amount: authoritativeAmount,
+      currency: authoritativeCurrency
     });
   } catch (err: any) {
-    console.error('[PayPal Capture Error]', err);
-    return res.status(500).json({ error: clientErrorMessage(err, 'Failed to process PayPal payment.') });
+    console.error('[Create Payment Intent Error]', err);
+    return res.status(500).json({ error: clientErrorMessage(err, 'Failed to initialize payment gateway.') });
   }
 });
 
@@ -6640,6 +6552,7 @@ const SETTINGS_ALLOWLIST: Record<string, { category: string; validate: (v: any) 
   payment_methods: {
     category: 'Payment',
     validate: (val) => {
+      // Legacy manual-payment setting (no longer shown); stored values may include 'paypal', so it stays valid.
       const allowed = ['bank_transfer', 'ach', 'payoneer', 'paypal', 'wise', 'international_bank_iban', 'ach_routing'];
       if (!Array.isArray(val) || !val.every(m => typeof m === 'string' && allowed.includes(m))) {
         return { valid: false, message: `payment_methods must be an array of valid identifiers: ${allowed.join(', ')}` };

@@ -55,7 +55,7 @@ describe('Phase 5G - Final Last-Mile Closure', () => {
     const res = await originalFetch(`${baseUrl}/api/dashboard/payments`, {
       method: 'POST',
       headers: { 'Authorization': 'Bearer dev-teacher-token', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: 10, currency: 'USD', payment_method: 'paypal', status: 'pending' })
+      body: JSON.stringify({ amount: 10, currency: 'USD', payment_method: 'wise', status: 'pending' })
     });
     const body = await res.json();
     assert.strictEqual(res.status, 500);

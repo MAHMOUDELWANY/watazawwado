@@ -40,7 +40,7 @@ const DEFAULT_SETTINGS: Setting[] = [
   { key: 'contact_whatsapp', value: '', category: 'Contact' },
   { key: 'contact_email', value: '', category: 'Contact' },
   { key: 'timezone', value: 'Africa/Cairo', category: 'Timezone' },
-  { key: 'payment_methods', value: ['bank_transfer', 'paypal'], category: 'Payment' },
+  { key: 'payment_methods', value: [], category: 'Payment' },
   { key: 'payment_instructions', value: '', category: 'Payment' },
   { key: 'theme', value: 'light', category: 'Preferences' }
 ];
@@ -138,8 +138,7 @@ export default function SettingsPage() {
   const tabs = [
     ...(isSuperAdmin ? [
       { id: 'Profile', icon: User, label: t('Profile & contact', 'البيانات والتواصل') },
-      { id: 'Services', icon: BookOpen, label: t('Subjects & prices', 'المواد والأسعار') },
-      { id: 'Payment', icon: CreditCard, label: t('Payment methods', 'طرق الدفع') }
+      { id: 'Services', icon: BookOpen, label: t('Subjects & prices', 'المواد والأسعار') }
     ] : []),
     { id: 'Policy', icon: Calendar, label: t('Booking rules', 'قواعد الحجز') },
     { id: 'Integrations', icon: Link, label: t('Google Calendar & Zoom', 'تقويم جوجل وZoom') },
@@ -305,41 +304,6 @@ export default function SettingsPage() {
                 <li>{t('Inside the last hour nothing changes; emergencies go to the admin on WhatsApp.', 'في آخر ساعة مفيش تغيير؛ الظروف الطارئة بتروح للمدير على واتساب.')}</li>
                 <li>{t('Teachers ask the student to reschedule from the lesson window; only the admin moves or cancels lessons directly.', 'المعلم يطلب من الطالب يغيّر الميعاد من شاشة الحصة؛ المدير بس هو اللي يغيّر أو يلغي الحصص مباشرة.')}</li>
               </ul>
-            </div>
-          )}
-
-          {isSuperAdmin && activeTab === 'Payment' && (
-            <div className="glass-card rounded-2xl border border-border p-6 space-y-6 shadow-2xs">
-              <div>
-                <h2 className="text-lg font-display font-semibold text-foreground">{t('Payment methods', 'طرق الدفع')}</h2>
-                <p className="text-sm text-muted-foreground">{t('Manual methods students can use besides card and PayPal checkout.', 'طرق الدفع اليدوية المتاحة للطلاب غير الدفع بالكارت وPayPal.')}</p>
-              </div>
-              <div className="space-y-3">
-                {[
-                  { id: 'bank_transfer', label: t('Bank transfer (IBAN)', 'تحويل بنكي (IBAN)') },
-                  { id: 'ach', label: t('ACH (US bank)', 'ACH (بنك أمريكي)') },
-                  { id: 'payoneer', label: 'Payoneer' },
-                  { id: 'paypal', label: 'PayPal' },
-                  { id: 'wise', label: 'Wise' }
-                ].map(method => {
-                  const methods = (Array.isArray(getSetting('payment_methods')) ? getSetting('payment_methods') : []) as string[];
-                  return (
-                    <label key={method.id} className="flex items-center gap-3 p-3 rounded-xl border border-border cursor-pointer hover:bg-surface-subtle transition-colors min-h-[44px]">
-                      <input
-                        type="checkbox"
-                        checked={methods.includes(method.id)}
-                        onChange={(e) => updateSetting('payment_methods', e.target.checked ? [...methods, method.id] : methods.filter(m => m !== method.id))}
-                        className="w-4 h-4 accent-primary rounded border-border"
-                      />
-                      <span className="text-sm font-medium text-foreground">{method.label}</span>
-                    </label>
-                  );
-                })}
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-muted-foreground mb-1" htmlFor="sp-instr">{t('Payment instructions for students', 'تعليمات الدفع للطلاب')}</label>
-                <textarea id="sp-instr" value={getSetting('payment_instructions')} onChange={(e) => updateSetting('payment_instructions', e.target.value)} rows={4} className={`${inputClass} resize-none`} />
-              </div>
             </div>
           )}
 

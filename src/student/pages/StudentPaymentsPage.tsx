@@ -203,8 +203,8 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
           </h1>
           <p className="text-sm sm:text-sm text-muted-foreground mt-1 leading-relaxed">
             {isAr
-              ? 'دفع فوري وتأكيد تلقائي للدروس والباقات عبر PayPal Live و Stripe (بطاقات بنكية / Apple Pay).'
-              : 'Instant checkout & automated fulfillment via PayPal Live and Stripe (Cards / Apple Pay).'}
+              ? 'دفع فوري وتأكيد تلقائي للدروس والباقات عبر Stripe (بطاقات، Apple Pay، PayPal).'
+              : 'Instant checkout & automated confirmation via Stripe (cards, Apple Pay, PayPal).'}
           </p>
         </div>
 
@@ -217,7 +217,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
           className="inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm sm:text-sm font-semibold transition-colors shadow-xs shrink-0 cursor-pointer min-h-[44px]"
         >
           <CreditCard className="w-4 h-4" />
-          <span>{isAr ? 'الدفع الفوري (PayPal / فيزا)' : 'Instant Checkout (PayPal / Cards)'}</span>
+          <span>{isAr ? 'الدفع الفوري عبر Stripe' : 'Instant Checkout (Stripe)'}</span>
         </button>
       </div>
 
@@ -231,8 +231,8 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
             </span>
             <span>
               {isAr
-                ? 'تتم جميع المعاملات عبر بوابات مشفرة ومعتمدة عالمياً (PayPal Live و Stripe). يتم تأكيد المواعيد وشحن رصيد الباقات لحظياً وفورياً بعد إتمام الدفع دون الحاجة لانتظار المراجعة اليدوية.'
-                : 'All transactions are processed through encrypted global gateways (PayPal Live & Stripe). Lessons and package credits are activated immediately with zero wait time.'}
+                ? 'تتم جميع المعاملات عبر بوابات مشفرة ومعتمدة عالمياً (Stripe). يتم تأكيد المواعيد وشحن رصيد الباقات لحظياً وفورياً بعد إتمام الدفع دون الحاجة لانتظار المراجعة اليدوية.'
+                : 'All transactions are processed through encrypted global gateways (Stripe). Lessons and package credits are activated immediately with zero wait time.'}
             </span>
           </div>
         </div>

@@ -157,7 +157,7 @@ describe('Phase 5F — Final Closure Verification Tests', () => {
         body: JSON.stringify({
           amount: 50,
           currency: '',
-          payment_method: 'paypal'
+          payment_method: 'wise'
         })
       });
       assert.strictEqual(res.status, 400);
@@ -175,7 +175,7 @@ describe('Phase 5F — Final Closure Verification Tests', () => {
         body: JSON.stringify({
           amount: 50,
           currency: 'US',
-          payment_method: 'paypal'
+          payment_method: 'wise'
         })
       });
       assert.strictEqual(res.status, 400);

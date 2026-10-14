@@ -16,7 +16,7 @@ export interface StudentPaymentClaimModalProps {
 
 /**
  * Student Automated Payment Modal
- * Upgraded from legacy manual bank claim to automated instant PayPal Live and Stripe Checkout.
+ * Upgraded from legacy manual bank claim to Stripe Checkout.
  */
 export function StudentPaymentClaimModal({
   isOpen,
