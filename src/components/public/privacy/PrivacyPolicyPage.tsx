@@ -12,18 +12,18 @@ export function PrivacyPolicyPage() {
     <main id="main-content" className="pt-24 lg:pt-32 pb-20">
       <PublicSection>
         <div className="max-w-4xl mx-auto space-y-12">
-          
+
           {/* Header */}
           <div className="text-center space-y-4">
             <MarginNote className="mx-auto flex items-center justify-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-teal-600 dark:text-teal-400" />
               <span>{isEn ? 'Legal & Transparency' : 'الشفافية والالتزام القانوني'}</span>
             </MarginNote>
-            
+
             <h1 className="font-editorial text-4xl sm:text-5xl text-foreground font-bold">
               {isEn ? 'Privacy Policy' : 'سياسة الخصوصية'}
             </h1>
-            
+
             <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
               {isEn
                 ? 'Your privacy and trust are paramount. Learn how Watazawwado Academy collects, uses, protects, and handles your personal information.'
@@ -47,8 +47,8 @@ export function PrivacyPolicyPage() {
                 {isEn ? 'No Data Selling' : 'لا نبيع بياناتك أبداً'}
               </h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                {isEn 
-                  ? 'We never sell, rent, or trade your personal data to advertisers or third parties.' 
+                {isEn
+                  ? 'We never sell, rent, or trade your personal data to advertisers or third parties.'
                   : 'لا نقوم ببيع أو تأجير أو مشاركة بياناتك الشخصية لأي معلنين أو جهات تجارية.'}
               </p>
             </div>
@@ -61,8 +61,8 @@ export function PrivacyPolicyPage() {
                 {isEn ? 'Google Compliance' : 'متوافق مع معايير Google'}
               </h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                {isEn 
-                  ? 'Strict adherence to Google API Services User Data Policy, including Limited Use.' 
+                {isEn
+                  ? 'Strict adherence to Google API Services User Data Policy, including Limited Use.'
                   : 'التزام تام بسياسة بيانات مستخدمي Google وسياسة الاستخدام المحدود.'}
               </p>
             </div>
@@ -75,8 +75,8 @@ export function PrivacyPolicyPage() {
                 {isEn ? 'Full Control & Deletion' : 'تحكم وحذف كامل للبيانات'}
               </h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                {isEn 
-                  ? 'Request deletion or export of your account and educational records at any time.' 
+                {isEn
+                  ? 'Request deletion or export of your account and educational records at any time.'
                   : 'يمكنك طلب حذف أو تصدير حسابك وبياناتك التعليمية بالكامل في أي وقت.'}
               </p>
             </div>
@@ -84,7 +84,7 @@ export function PrivacyPolicyPage() {
 
           {/* Policy Detailed Sections */}
           <div className="space-y-10 text-foreground leading-relaxed">
-            
+
             {/* Section 1: Introduction */}
             <section className="space-y-4">
               <EditorialHeading eyebrow={isEn ? 'Section 1' : 'القسم الأول'} noAccent>
@@ -194,7 +194,7 @@ export function PrivacyPolicyPage() {
               <EditorialHeading eyebrow={isEn ? 'Section 4' : 'القسم الرابع'} noAccent>
                 {isEn ? '4. Google User Data & Limited Use Disclosure' : '4. بيان التزام بيانات مستخدمي Google (الاستخدام المحدود)'}
               </EditorialHeading>
-              
+
               <div className="p-6 rounded-2xl border border-teal-500/30 bg-teal-500/5 space-y-3 text-sm sm:text-base">
                 <div className="flex items-center gap-2 font-bold text-teal-800 dark:text-teal-200">
                   <ShieldCheck className="w-5 h-5 text-teal-600 dark:text-teal-400 shrink-0" />
@@ -202,7 +202,7 @@ export function PrivacyPolicyPage() {
                     {isEn ? 'Google API Services User Data Policy Compliance' : 'الامتثال الكامل لسياسة بيانات مستخدمي Google'}
                   </span>
                 </div>
-                
+
                 <p className="text-muted-foreground leading-relaxed">
                   {isEn ? (
                     <>
@@ -217,23 +217,23 @@ export function PrivacyPolicyPage() {
 
                 <ul className="list-disc ps-5 text-xs sm:text-sm text-muted-foreground space-y-1.5 pt-1">
                   <li>
-                    {isEn 
-                      ? 'We do not transfer or disclose Google user data to third parties, unless necessary to provide or improve the core educational capabilities, comply with applicable law, or as part of a merger/acquisition with explicit user consent.' 
+                    {isEn
+                      ? 'We do not transfer or disclose Google user data to third parties, unless necessary to provide or improve the core educational capabilities, comply with applicable law, or as part of a merger/acquisition with explicit user consent.'
                       : 'لا ننقل أو نفصح عن بيانات مستخدمي Google لأي طرف ثالث إلا لتقديم الخدمة التعليمية الأساسية أو الامتثال للقوانين المعمول بها.'}
                   </li>
                   <li>
-                    {isEn 
-                      ? 'We do not use Google user data to serve advertisements, including personalized, re-targeted, or interest-based advertising.' 
+                    {isEn
+                      ? 'We do not use Google user data to serve advertisements, including personalized, re-targeted, or interest-based advertising.'
                       : 'لا نستخدم بيانات مستخدمي Google لتقديم أي نوع من الإعلانات التجارية أو الموجهة.'}
                   </li>
                   <li>
-                    {isEn 
-                      ? 'We do not allow humans to read Google user data, unless we have obtained your affirmative agreement for specific messages, or as necessary for security reasons.' 
+                    {isEn
+                      ? 'We do not allow humans to read Google user data, unless we have obtained your affirmative agreement for specific messages, or as necessary for security reasons.'
                       : 'لا نسمح لأي موظفين بالاطلاع على بيانات Google الخاصة بك إلا بموافقتك الصريحة أو لأغراض أمنية وفنية بحتة.'}
                   </li>
                   <li>
-                    {isEn 
-                      ? 'We do not use Google user data to train generalized AI/ML models.' 
+                    {isEn
+                      ? 'We do not use Google user data to train generalized AI/ML models.'
                       : 'لا تُستخدم بيانات مستخدمي Google في تدريب أي نماذج ذكاء اصطناعي عامة.'}
                   </li>
                 </ul>
@@ -277,6 +277,20 @@ export function PrivacyPolicyPage() {
                     <strong>Vercel Inc.</strong> — {isEn ? 'Global edge application deployment and SSL/TLS encryption in transit.' : 'استضافة واجهة الويب والتشفير الكامل للبيانات أثناء النقل (SSL/TLS).'}
                   </li>
                 </ul>
+              </div>
+            </section>
+
+            {/* Cookies & language preference (RULES.md §6) */}
+            <section className="space-y-4">
+              <div className="prose dark:prose-invert max-w-none text-muted-foreground space-y-3 text-sm sm:text-base">
+                <h3 className="text-base font-semibold text-foreground">
+                  {isEn ? 'Cookies and your language choice' : 'ملفات تعريف الارتباط (Cookies) واختيار اللغة'}
+                </h3>
+                <p>
+                  {isEn
+                    ? 'We use only necessary cookies and browser storage: to keep you signed in and to remember the language you chose. If you are signed in and pick a language, we save it on your account so our emails reach you in that language (English by default). We do not use advertising or tracking cookies.'
+                    : 'نستخدم فقط ملفات الارتباط وتخزين المتصفح الضرورية: لإبقائك مسجلاً للدخول ولتذكّر اللغة التي اخترتها. وإذا كنت مسجلاً واخترت لغة، نحفظها في حسابك لتصلك رسائلنا بها (الإنجليزية افتراضياً). لا نستخدم ملفات ارتباط إعلانية أو للتتبع.'}
+                </p>
               </div>
             </section>
 
@@ -329,7 +343,7 @@ export function PrivacyPolicyPage() {
               <EditorialHeading eyebrow={isEn ? 'Section 8' : 'القسم الثامن'} noAccent>
                 {isEn ? '8. Contact Information & Data Controller' : '8. بيانات التواصل والمسؤول عن حماية البيانات'}
               </EditorialHeading>
-              
+
               <div className="glass-card p-6 rounded-2xl border border-border/80 space-y-4 text-sm sm:text-base">
                 <p className="text-muted-foreground">
                   {isEn

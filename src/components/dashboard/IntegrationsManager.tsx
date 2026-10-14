@@ -236,7 +236,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
 
             <p className="text-sm text-foreground/80 dark:text-muted-foreground/80 leading-relaxed">
               {isEn
-                ? 'Syncs all trial and regular bookings to Mahmoud’s official Google Calendar. Prevents double bookings automatically.'
+                ? 'Adds your lessons to your own Google Calendar and hides your busy times from booking.'
                 : 'مزامنة تلقائية للحجوزات على تقويم جوجل لمنع التعارض في المواعيد.'}
             </p>
 

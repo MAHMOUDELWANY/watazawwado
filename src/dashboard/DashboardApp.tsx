@@ -27,7 +27,9 @@ import {
   Compass,
   Globe,
   HelpCircle,
-  LogOut
+  LogOut,
+  Bell,
+  Wallet
 } from 'lucide-react';
 import { useTheme } from "../components/ThemeProvider";
 import OverviewPage from './pages/OverviewPage';
@@ -43,8 +45,10 @@ import SettingsPage from './pages/SettingsPage';
 import IntakeReviewPage from './pages/IntakeReviewPage';
 import TeachersPage from './pages/TeachersPage';
 import AvailabilityPage from './pages/AvailabilityPage';
+import NotificationsPage, { useUnreadDashboardNotifications } from './pages/NotificationsPage';
+import PayLaterPage from './pages/PayLaterPage';
 import { TeacherAuthDiagnosticPanel } from './components/TeacherAuthDiagnosticPanel';
-import { Language } from '../booking/types';
+import { useAppLanguage } from '../lib/language';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 
 export function DashboardApp() {
@@ -54,7 +58,9 @@ export function DashboardApp() {
   const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
   const [showGlobalTour, setShowGlobalTour] = useState(false);
   const location = useLocation();
-  const [lang, setLang] = useState<Language>('en');
+  // Same language as the rest of the site (cookie + account preference), RULES.md §6.
+  const { lang, toggleLanguage } = useAppLanguage();
+  const unreadNotifications = useUnreadDashboardNotifications(isTeacherAuthenticated);
 
   const isSuperAdmin = teacherRole === 'super_admin';
 
@@ -131,15 +137,15 @@ export function DashboardApp() {
           <div className="w-14 h-14 rounded-2xl bg-secondary/30 text-accent flex items-center justify-center mx-auto mb-4">
             <ShieldCheck className="w-7 h-7" />
           </div>
-          <h1 className="text-xl font-display font-semibold text-foreground mb-2">Teacher Workspace</h1>
+          <h1 className="text-xl font-display font-semibold text-foreground mb-2">{lang === 'ar' ? 'مساحة المعلم' : 'Teacher Workspace'}</h1>
           <p className="text-sm text-muted-foreground mb-6">
-            You must be logged in as an authorized teacher to access the workspace.
+            {lang === 'ar' ? 'سجّل دخولك بحساب معلم علشان تفتح مساحة العمل.' : 'Please sign in with a teacher account to open the workspace.'}
           </p>
           <Link 
             to="/staff/login" 
             className="inline-flex items-center justify-center px-6 py-2.5 btn-primary-material text-primary-foreground rounded-xl transition-all duration-base font-medium shadow-xs min-h-[44px]"
           >
-            Go to Teacher Login
+            {lang === 'ar' ? 'دخول المعلمين' : 'Go to Teacher Login'}
           </Link>
         </div>
       </div>
@@ -154,6 +160,8 @@ export function DashboardApp() {
     { name: lang === 'ar' ? 'المعلمون' : 'Faculty', path: '/dashboard/teachers', icon: Shield },
     { name: lang === 'ar' ? 'الطلاب' : 'Students', path: '/dashboard/students', icon: Users },
     { name: lang === 'ar' ? 'الحجوزات' : 'Bookings', path: '/dashboard/bookings', icon: BookOpen },
+    { name: lang === 'ar' ? 'ادفع لاحقاً' : 'Pay later', path: '/dashboard/pay-later', icon: Wallet },
+    { name: lang === 'ar' ? 'الإشعارات' : 'Notifications', path: '/dashboard/notifications', icon: Bell },
     { name: lang === 'ar' ? 'التجريبية' : 'Trials', path: '/dashboard/trials', icon: Sparkles },
     { name: lang === 'ar' ? 'المهتمون' : 'Leads', path: '/dashboard/leads', icon: UserPlus },
     { name: lang === 'ar' ? 'الطلبات' : 'Requests', path: '/dashboard/intakes', icon: ClipboardCheck },
@@ -167,6 +175,7 @@ export function DashboardApp() {
     { name: lang === 'ar' ? 'الجدول' : 'Schedule', path: '/dashboard/upcoming', icon: Calendar },
     { name: lang === 'ar' ? 'التجريبية' : 'Trials', path: '/dashboard/trials', icon: Sparkles },
     { name: lang === 'ar' ? 'طلابي' : 'Students', path: '/dashboard/students', icon: Users },
+    { name: lang === 'ar' ? 'الإشعارات' : 'Notifications', path: '/dashboard/notifications', icon: Bell },
     { name: lang === 'ar' ? 'الحجوزات' : 'Bookings', path: '/dashboard/bookings', icon: BookOpen },
     { name: lang === 'ar' ? 'التقارير' : 'Reports', path: '/dashboard/analytics', icon: TrendingUp },
     { name: lang === 'ar' ? 'مواعيدي' : 'My hours', path: '/dashboard/availability', icon: Clock },
@@ -196,7 +205,6 @@ export function DashboardApp() {
       position: 'bottom' as const,
     }
   ];
-  const toggleLanguage = () => setLang(prev => prev === 'en' ? 'ar' : 'en');
 
   return (
     <div 
@@ -279,6 +287,11 @@ export function DashboardApp() {
               >
                 <item.icon className={`w-4.5 h-4.5 shrink-0 ${isActive ? 'text-primary-foreground' : 'opacity-70 group-hover:opacity-100 transition-opacity'}`} />
                 <span className="truncate">{item.name}</span>
+                {item.path === '/dashboard/notifications' && unreadNotifications > 0 && (
+                  <span className="ms-auto min-w-[20px] h-5 px-1.5 rounded-full bg-destructive text-destructive-foreground text-[11px] font-bold flex items-center justify-center" aria-label={lang === 'ar' ? `${unreadNotifications} إشعار جديد` : `${unreadNotifications} new`}>
+                    {unreadNotifications}
+                  </span>
+                )}
               </Link>
             );
           })}
@@ -293,7 +306,7 @@ export function DashboardApp() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-foreground truncate">
-                {lang === 'ar' ? (isSuperAdmin ? 'أستاذ محمود (إدارة)' : 'الأستاذ') : (user?.user_metadata?.name || (isSuperAdmin ? 'Ustadh Mahmoud (Admin)' : 'Ustadh Mahmoud'))}
+                {user?.user_metadata?.full_name || user?.user_metadata?.name || (isSuperAdmin ? (lang === 'ar' ? 'المدير' : 'Admin') : (lang === 'ar' ? 'المعلم' : 'Teacher'))}
               </p>
               <p className="text-[11px] text-muted-foreground truncate mt-0.5">{user?.email}</p>
             </div>
@@ -376,6 +389,19 @@ export function DashboardApp() {
                 <Compass className="w-4.5 h-4.5 text-teal-600 dark:text-teal-400" />
               </button>
 
+              <Link
+                to="/dashboard/notifications"
+                aria-label={lang === 'ar' ? 'الإشعارات' : 'Notifications'}
+                className="relative w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-foreground hover:bg-surface-subtle border border-border/80"
+              >
+                <Bell className="w-4.5 h-4.5" />
+                {unreadNotifications > 0 && (
+                  <span className="absolute -top-1 -end-1 min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold flex items-center justify-center">
+                    {unreadNotifications}
+                  </span>
+                )}
+              </Link>
+
               {/* Language Switcher */}
               <button
                 type="button"
@@ -414,6 +440,8 @@ export function DashboardApp() {
                 <Route path="/bookings" element={<BookingsPage />} />
                 <Route path="/analytics" element={<AnalyticsPage />} />
                 <Route path="/availability" element={<AvailabilityPage />} />
+                <Route path="/notifications" element={<NotificationsPage />} />
+                <Route path="/pay-later" element={isSuperAdmin ? <PayLaterPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>

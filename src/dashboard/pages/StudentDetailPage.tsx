@@ -32,12 +32,15 @@ import { DashboardStudentDetail, StudentNote } from '../types';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 import { StudentEditModal } from '../components/StudentEditModal';
+import { useT } from '../../lib/language';
 
 export default function StudentDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { teacherRole } = useTeacherAuth();
   const isSuperAdmin = teacherRole === 'super_admin';
+  const { t, isAr } = useT();
+  const locale = isAr ? 'ar' : 'en';
 
   const [studentDetail, setStudentDetail] = useState<DashboardStudentDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -83,7 +86,7 @@ export default function StudentDetailPage() {
       });
       setAiBrief(res.brief);
     } catch (err: any) {
-      setBriefError(err.message || 'Failed to generate AI Brief.');
+      setBriefError(err.message || t("Couldn't prepare the brief.", 'تعذر تجهيز الملخص.'));
     } finally {
       setIsGeneratingBrief(false);
     }
@@ -98,7 +101,7 @@ export default function StudentDetailPage() {
       setStudentDetail(data);
       setSelectedTeacherId(data.student.assigned_teacher_id || '');
     } catch (err: any) {
-      setError(err.message || 'Could not load student record.');
+      setError(err.message || t("Couldn't load this student.", 'تعذر تحميل بيانات الطالب.'));
     } finally {
       setLoading(false);
     }
@@ -110,7 +113,7 @@ export default function StudentDetailPage() {
       dashboardFetch('/api/dashboard/admin/teachers')
         .then((data) => {
           if (data && Array.isArray(data.teachers)) {
-            setAvailableTeachers(data.teachers.filter((t: any) => t.is_active));
+            setAvailableTeachers(data.teachers.filter((tc: any) => tc.is_active));
           }
         })
         .catch(() => {});
@@ -134,7 +137,7 @@ export default function StudentDetailPage() {
         })
       });
 
-      setAssignSuccessMessage(res.message || 'Faculty assignment updated successfully.');
+      setAssignSuccessMessage(isAr ? 'المعلم اتغيّر. الحجوزات الجديدة هتروح للمعلم الجديد، والحصص المحجوزة قبل كده بتفضل مع المعلم القديم لحد ما تغيّرها.' : (res.message || 'Teacher updated.'));
       setStudentDetail(prev => {
         if (!prev) return null;
         return {
@@ -147,7 +150,7 @@ export default function StudentDetailPage() {
         };
       });
     } catch (err: any) {
-      setAssignErrorMessage(err.message || 'Failed to update teacher assignment.');
+      setAssignErrorMessage(err.message || t("Couldn't change the teacher.", 'تعذر تغيير المعلم.'));
     } finally {
       setIsAssigningTeacher(false);
     }
@@ -184,7 +187,7 @@ export default function StudentDetailPage() {
         setNewNoteNextSteps('');
       }
     } catch (err: any) {
-      setNoteFormError(err.message || 'Failed to save note.');
+      setNoteFormError(err.message || t("Couldn't save the note.", 'تعذر حفظ الملاحظة.'));
     } finally {
       setIsSubmittingNote(false);
     }
@@ -224,7 +227,7 @@ export default function StudentDetailPage() {
         setEditingNoteId(null);
       }
     } catch (err: any) {
-      alert(err.message || 'Failed to update note.');
+      alert(err.message || t("Couldn't update the note.", 'تعذر تعديل الملاحظة.'));
     } finally {
       setIsUpdatingNote(false);
     }
@@ -233,7 +236,7 @@ export default function StudentDetailPage() {
   // Handle Delete Note
   const handleDeleteNote = async (noteId: string) => {
     if (!id) return;
-    const confirmDelete = window.confirm('Are you sure you want to delete this private note?');
+    const confirmDelete = window.confirm(t('Delete this private note?', 'تمسح الملاحظة دي؟'));
     if (!confirmDelete) return;
 
     try {
@@ -249,7 +252,7 @@ export default function StudentDetailPage() {
         };
       });
     } catch (err: any) {
-      alert(err.message || 'Failed to delete note.');
+      alert(err.message || t("Couldn't delete the note.", 'تعذر مسح الملاحظة.'));
     }
   };
 
@@ -270,17 +273,17 @@ export default function StudentDetailPage() {
       <div className="glass-card rounded-2xl p-8 border border-destructive/30 text-center space-y-4">
         <AlertCircle className="w-10 h-10 text-destructive mx-auto" />
         <h2 className="text-lg font-display font-bold text-foreground">
-          Student Record Not Found
+          {t('Student not found', 'الطالب مش موجود')}
         </h2>
         <p className="text-sm text-muted-foreground max-w-md mx-auto">
-          {error || "The requested student record could not be located or you don't have authorization to view it."}
+          {error || t("This student doesn't exist or isn't assigned to you.", 'الطالب ده مش موجود أو مش معاك.')}
         </p>
         <Link
           to="/dashboard/students"
           className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors cursor-pointer"
         >
-          <ChevronLeft className="w-4 h-4" />
-          <span>Back to Students</span>
+          <ChevronLeft className="w-4 h-4 rtl:rotate-180" />
+          <span>{t('Back to students', 'رجوع للطلاب')}</span>
         </Link>
       </div>
     );
@@ -289,13 +292,13 @@ export default function StudentDetailPage() {
   const { student, guardian, goals, primary_service_name, total_completed_lessons, next_lesson, last_lesson, bookings, trial_context, lead_context, notes } = studentDetail;
 
   // Local Timezone calculation
-  const localTime = student.timezone ? DateTime.now().setZone(student.timezone) : null;
+  const localTime = student.timezone ? DateTime.now().setZone(student.timezone).setLocale(locale) : null;
 
   // WhatsApp helper
   const waUrl = student.whatsapp
     ? buildContextualWhatsAppUrl(
         student.whatsapp,
-        `As-salamu alaykum ${student.name},\n\nThis is Ustadh Mahmoud. I am checking in regarding our upcoming Quran & Arabic studies.`
+        `As-salamu alaykum ${student.name},`
       )
     : null;
 
@@ -307,9 +310,10 @@ export default function StudentDetailPage() {
           <Link
             to="/dashboard/students"
             className="p-2 rounded-xl glass-card border-none text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
-            title="Back to Students Directory"
+            title={t('Back to students', 'رجوع للطلاب')}
+            aria-label={t('Back to students', 'رجوع للطلاب')}
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-5 h-5 rtl:rotate-180" />
           </Link>
           <div>
             <div className="flex items-center gap-2.5 flex-wrap">
@@ -324,24 +328,24 @@ export default function StudentDetailPage() {
                   ? 'bg-warning/15 text-warning-foreground border border-warning/30'
                   : 'glass-surface text-muted-foreground border border-border-subtle'
               }`}>
-                {student.status ? (student.status.charAt(0).toUpperCase() + student.status.slice(1)) : 'Active'}
+                {({ active: t('Active', 'نشط'), paused: t('Paused', 'متوقف مؤقتاً'), inactive: t('Inactive', 'غير نشط') } as Record<string, string>)[student.status || 'active'] || student.status}
               </span>
 
               {/* Learner Type Badge */}
               {student.learner_type === 'child' ? (
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-sm font-medium bg-accent/15 text-accent border border-accent/25">
                   <Users className="w-3 h-3" />
-                  <span>Child {guardian?.parent_name ? `(Parent: ${guardian.parent_name})` : ''}</span>
+                  <span>{t('Child', 'طفل')} {guardian?.parent_name ? `(${t('Parent', 'ولي الأمر')}: ${guardian.parent_name})` : ''}</span>
                 </span>
               ) : student.learner_type === 'adult' ? (
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-sm font-medium bg-secondary/30 text-primary border border-secondary/50">
                   <User className="w-3 h-3" />
-                  <span>Adult Learner</span>
+                  <span>{t('Adult', 'بالغ')}</span>
                 </span>
               ) : null}
             </div>
             <p className="text-sm text-muted-foreground mt-0.5">
-              Enrolled: {DateTime.fromISO(student.created_at).toFormat('MMMM d, yyyy')}
+              {t('Joined', 'انضم')}: {DateTime.fromISO(student.created_at).setLocale(locale).toFormat('MMMM d, yyyy')}
             </p>
           </div>
         </div>
@@ -356,7 +360,7 @@ export default function StudentDetailPage() {
               className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl bg-success text-white hover:bg-success/90 shadow-2xs transition-colors cursor-pointer"
             >
               <MessageCircle className="w-3.5 h-3.5" />
-              <span>WhatsApp</span>
+              <span>{t('WhatsApp', 'واتساب')}</span>
             </a>
           )}
 
@@ -366,7 +370,7 @@ export default function StudentDetailPage() {
               className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium rounded-xl glass-card border-none text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
             >
               <Mail className="w-3.5 h-3.5 text-accent" />
-              <span>Email</span>
+              <span>{t('Email', 'إيميل')}</span>
             </a>
           )}
 
@@ -376,15 +380,15 @@ export default function StudentDetailPage() {
             className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl bg-accent text-white hover:bg-accent/90 shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>{isGeneratingBrief ? 'Generating...' : 'AI Brief'}</span>
+            <span>{isGeneratingBrief ? t('Preparing…', 'جارٍ التحضير…') : t('AI brief', 'ملخص بالذكاء الاصطناعي')}</span>
           </button>
-          
+
           <button
             onClick={() => setIsEditModalOpen(true)}
             className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-2xs transition-colors cursor-pointer"
           >
             <Edit3 className="w-3.5 h-3.5" />
-            <span>Edit Profile</span>
+            <span>{t('Edit profile', 'عدّل البيانات')}</span>
           </button>
         </div>
       </div>
@@ -393,7 +397,7 @@ export default function StudentDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left 2 Columns: Identity, Next Lesson, History, Trial Context */}
         <div className="lg:col-span-2 space-y-6">
-          
+
           {/* AI Brief Section */}
           {(aiBrief || briefError) && (
             <div className="glass-card rounded-2xl p-6 border border-accent/30 shadow-2xs space-y-4">
@@ -401,13 +405,14 @@ export default function StudentDetailPage() {
                 <div className="flex items-center gap-2 text-accent">
                   <Sparkles className="w-5 h-5" />
                   <h2 className="text-sm font-semibold uppercase tracking-wider">
-                    AI Lesson Preparation Brief
+                    {t('AI lesson prep', 'تحضير الحصة بالذكاء الاصطناعي')}
                   </h2>
                 </div>
                 <button
                   onClick={() => { setAiBrief(null); setBriefError(null); }}
                   className="text-xl leading-none text-muted-foreground hover:text-foreground p-1 transition-colors"
-                  title="Dismiss"
+                  title={t('Dismiss', 'إخفاء')}
+                  aria-label={t('Dismiss', 'إخفاء')}
                 >
                   &times;
                 </button>
@@ -418,9 +423,9 @@ export default function StudentDetailPage() {
                   {briefError}
                 </div>
               ) : (
-                <div 
-                  className="p-5 rounded-xl glass-surface border border-border-subtle text-sm text-foreground whitespace-pre-wrap leading-relaxed" 
-                  dir="rtl"
+                <div
+                  className="p-5 rounded-xl glass-surface border border-border-subtle text-sm text-foreground whitespace-pre-wrap leading-relaxed"
+                  dir="auto"
                 >
                   {aiBrief}
                 </div>
@@ -432,45 +437,45 @@ export default function StudentDetailPage() {
           <div className="glass-card rounded-2xl p-6 border border-border shadow-2xs space-y-5">
             <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
               <User className="w-4 h-4 text-accent" />
-              <span>Learner Profile & Contacts</span>
+              <span>{t('Profile & contact', 'البيانات والتواصل')}</span>
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
               {/* Email */}
               <div className="p-3 rounded-xl glass-surface border border-border-subtle space-y-1">
-                <span className="text-muted-foreground">Student Email</span>
-                <p className="font-medium text-foreground break-all">
-                  {student.email || <span className="opacity-50 italic">Not set</span>}
+                <span className="text-muted-foreground">{t("Student's email", 'إيميل الطالب')}</span>
+                <p className="font-medium text-foreground break-all" dir="ltr">
+                  {student.email || <span className="opacity-50 italic">{t('Not set', 'مش محدد')}</span>}
                 </p>
               </div>
 
               {/* WhatsApp */}
               <div className="p-3 rounded-xl glass-surface border border-border-subtle space-y-1">
-                <span className="text-muted-foreground">WhatsApp Phone</span>
-                <p className="font-medium text-foreground">
-                  {student.whatsapp || <span className="opacity-50 italic">Not set</span>}
+                <span className="text-muted-foreground">{t('WhatsApp', 'واتساب')}</span>
+                <p className="font-medium text-foreground" dir="ltr">
+                  {student.whatsapp || <span className="opacity-50 italic">{t('Not set', 'مش محدد')}</span>}
                 </p>
               </div>
 
               {/* Parent / Guardian Name & Contact */}
               <div className="p-3 rounded-xl glass-surface border border-border-subtle space-y-1">
-                <span className="text-muted-foreground">Parent / Guardian</span>
+                <span className="text-muted-foreground">{t('Parent / guardian', 'ولي الأمر')}</span>
                 <p className="font-medium text-foreground">
-                  {guardian?.parent_name || <span className="opacity-50 italic">Not specified</span>}
+                  {guardian?.parent_name || <span className="opacity-50 italic">{t('Not set', 'مش محدد')}</span>}
                 </p>
                 {(student.learner_type === 'child' || guardian?.parent_name) && (
                   <div className="pt-1 text-[11px] text-muted-foreground space-y-0.5 border-t border-border-subtle mt-1.5">
                     <div>
-                      <span className="opacity-60">Email: </span>
+                      <span className="opacity-60">{t('Email', 'الإيميل')}: </span>
                       {guardian?.parent_email ? (
                         <span className="font-mono text-foreground">{guardian.parent_email}</span>
                       ) : (
-                        <span className="italic opacity-50">Not provided</span>
+                        <span className="italic opacity-50">{t('Not set', 'مش محدد')}</span>
                       )}
                     </div>
                     {guardian?.parent_whatsapp && (
                       <div>
-                        <span className="opacity-60">WhatsApp: </span>
+                        <span className="opacity-60">{t('WhatsApp', 'واتساب')}: </span>
                         <span className="font-mono text-foreground">{guardian.parent_whatsapp}</span>
                       </div>
                     )}
@@ -480,27 +485,27 @@ export default function StudentDetailPage() {
 
               {/* Country & Location */}
               <div className="p-3 rounded-xl glass-surface border border-border-subtle space-y-1">
-                <span className="text-muted-foreground">Country</span>
+                <span className="text-muted-foreground">{t('Country', 'الدولة')}</span>
                 <p className="font-medium text-foreground">
-                  {student.country || <span className="opacity-50 italic">Not set</span>}
+                  {student.country || <span className="opacity-50 italic">{t('Not set', 'مش محدد')}</span>}
                 </p>
               </div>
 
               {/* Timezone & Current Time */}
               <div className="p-3 rounded-xl glass-surface border border-border-subtle space-y-1 sm:col-span-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Timezone</span>
+                  <span className="text-muted-foreground">{t('Time zone', 'المنطقة الزمنية')}</span>
                   {localTime && (
                     <span className="text-[11px] px-2 py-0.5 rounded-full bg-success/15 text-success font-medium border border-success/30">
-                      Student Local: {localTime.toFormat('hh:mm a')}
+                      {t("Student's time now", 'الساعة عند الطالب')}: {localTime.toFormat('hh:mm a')}
                     </span>
                   )}
                 </div>
                 <p className="font-medium text-foreground">
                   {student.timezone ? (
-                    <span>{student.timezone}</span>
+                    <span dir="ltr">{student.timezone}</span>
                   ) : (
-                    <span className="opacity-50 italic">Not set</span>
+                    <span className="opacity-50 italic">{t('Not set', 'مش محدد')}</span>
                   )}
                 </p>
               </div>
@@ -509,22 +514,22 @@ export default function StudentDetailPage() {
             {/* Academic Focus & Level */}
             <div className="pt-3 border-t border-border-subtle grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
               <div className="p-3.5 rounded-xl glass-surface border border-border-subtle space-y-1">
-                <span className="text-muted-foreground">Assessed Level</span>
+                <span className="text-muted-foreground">{t('Level', 'المستوى')}</span>
                 <p className="font-medium text-foreground capitalize">
                   {student.current_level ? (
                     <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-accent/15 text-accent border border-accent/25">
                       {student.current_level}
                     </span>
                   ) : (
-                    <span className="opacity-60 italic">Not assessed yet</span>
+                    <span className="opacity-60 italic">{t('Not assessed yet', 'لسه ما اتحددش')}</span>
                   )}
                 </p>
               </div>
 
               <div className="p-3.5 rounded-xl glass-surface border border-border-subtle space-y-1">
-                <span className="text-muted-foreground">Primary Subject / Service</span>
+                <span className="text-muted-foreground">{t('Main subject', 'المادة الأساسية')}</span>
                 <p className="font-medium text-foreground">
-                  {primary_service_name || <span className="opacity-60 italic">Not set</span>}
+                  {primary_service_name || <span className="opacity-60 italic">{t('Not set', 'مش محدد')}</span>}
                 </p>
               </div>
             </div>
@@ -533,7 +538,7 @@ export default function StudentDetailPage() {
             {student.notes && (
               <div className="p-3.5 rounded-xl glass-surface border border-border-subtle text-sm">
                 <span className="text-muted-foreground block mb-1 font-medium">
-                  General Profile Notes
+                  {t('General notes', 'ملاحظات عامة')}
                 </span>
                 <p className="text-foreground whitespace-pre-line">
                   {student.notes}
@@ -547,11 +552,11 @@ export default function StudentDetailPage() {
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-accent" />
-                <span>Next Scheduled Lesson</span>
+                <span>{t('Next lesson', 'الحصة الجاية')}</span>
               </h2>
               {next_lesson && (
                 <span className="text-sm px-2.5 py-0.5 rounded-full bg-secondary/30 text-primary border border-secondary/50 font-medium">
-                  Upcoming
+                  {t('Upcoming', 'جاية')}
                 </span>
               )}
             </div>
@@ -561,20 +566,20 @@ export default function StudentDetailPage() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div>
                     <h3 className="text-sm font-semibold text-foreground">
-                      {next_lesson.service_name || '1-on-1 Teaching Session'}
+                      {next_lesson.service_name || t('Private lesson', 'حصة فردية')}
                     </h3>
                     <p className="text-sm text-muted-foreground mt-0.5">
-                      Duration: {next_lesson.duration_minutes} minutes
+                      {t('Length', 'المدة')}: {next_lesson.duration_minutes} {t('minutes', 'دقيقة')}
                     </p>
                   </div>
                   <div className="text-end">
                     <p className="text-sm font-semibold text-primary">
-                      {student.timezone 
-                        ? DateTime.fromISO(next_lesson.scheduled_start).setZone(student.timezone).toFormat('EEE, MMM d, yyyy • hh:mm a')
-                        : DateTime.fromISO(next_lesson.scheduled_start).toFormat('EEE, MMM d, yyyy • hh:mm a')}
+                      {student.timezone
+                        ? DateTime.fromISO(next_lesson.scheduled_start).setZone(student.timezone).setLocale(locale).toFormat('EEE, MMM d, yyyy • hh:mm a')
+                        : DateTime.fromISO(next_lesson.scheduled_start).setLocale(locale).toFormat('EEE, MMM d, yyyy • hh:mm a')}
                     </p>
                     <p className="text-[11px] text-muted-foreground">
-                      Cairo: {DateTime.fromISO(next_lesson.scheduled_start).setZone('Africa/Cairo').toFormat('hh:mm a')}
+                      {t('Cairo', 'القاهرة')}: {DateTime.fromISO(next_lesson.scheduled_start).setZone('Africa/Cairo').setLocale(locale).toFormat('hh:mm a')}
                     </p>
                   </div>
                 </div>
@@ -583,7 +588,7 @@ export default function StudentDetailPage() {
                   <div className="pt-2 border-t border-border-subtle flex items-center justify-between">
                     <span className="text-sm text-muted-foreground flex items-center gap-1.5">
                       <Video className="w-3.5 h-3.5 text-accent" />
-                      <span>Zoom classroom is active</span>
+                      <span>{t('Zoom room is ready', 'غرفة Zoom جاهزة')}</span>
                     </span>
                     <a
                       href={next_lesson.zoom_join_url}
@@ -591,7 +596,7 @@ export default function StudentDetailPage() {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors cursor-pointer"
                     >
-                      <span>Join Zoom</span>
+                      <span>{t('Open Zoom', 'افتح Zoom')}</span>
                       <ExternalLink className="w-3 h-3" />
                     </a>
                   </div>
@@ -601,10 +606,10 @@ export default function StudentDetailPage() {
               <div className="p-6 rounded-xl glass-surface border border-dashed border-border text-center">
                 <Clock className="w-8 h-8 text-muted-foreground mx-auto mb-2 opacity-50" />
                 <p className="text-sm font-medium text-muted-foreground">
-                  No upcoming lesson scheduled
+                  {t('No upcoming lesson', 'مفيش حصة جاية')}
                 </p>
                 <p className="text-[11px] text-muted-foreground/80 mt-0.5">
-                  Bookings scheduled for this student will appear here automatically.
+                  {t('New bookings for this student show up here.', 'الحجوزات الجديدة للطالب هتظهر هنا.')}
                 </p>
               </div>
             )}
@@ -617,38 +622,38 @@ export default function StudentDetailPage() {
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-accent" />
                   <h2 className="text-sm font-semibold uppercase tracking-wider text-foreground">
-                    Free Trial Assessment & Recommendation
+                    {t('Free trial assessment', 'تقييم الحصة التجريبية')}
                   </h2>
                 </div>
                 {trial_context.reference_code && (
                   <span className="text-[11px] font-mono px-2 py-0.5 rounded-md glass-surface border border-border-subtle text-muted-foreground">
-                    Ref: {trial_context.reference_code}
+                    {t('Ref', 'رقم')}: {trial_context.reference_code}
                   </span>
                 )}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
                 <div className="p-3 rounded-xl glass-surface border border-border-subtle">
-                  <span className="text-muted-foreground block text-[11px]">Assessed Level</span>
+                  <span className="text-muted-foreground block text-[11px]">{t('Level', 'المستوى')}</span>
                   <p className="font-semibold text-foreground mt-0.5 capitalize">
-                    {trial_context.assessed_level || <span className="opacity-50 font-normal">Not recorded</span>}
+                    {trial_context.assessed_level || <span className="opacity-50 font-normal">{t('Not recorded', 'مش متسجل')}</span>}
                   </p>
                 </div>
 
                 <div className="p-3 rounded-xl glass-surface border border-border-subtle">
-                  <span className="text-muted-foreground block text-[11px]">Recommended Service</span>
+                  <span className="text-muted-foreground block text-[11px]">{t('Suggested subject', 'المادة المقترحة')}</span>
                   <p className="font-semibold text-foreground mt-0.5">
-                    {trial_context.recommended_service_name || <span className="opacity-50 font-normal">Not recorded</span>}
+                    {trial_context.recommended_service_name || <span className="opacity-50 font-normal">{t('Not recorded', 'مش متسجل')}</span>}
                   </p>
                 </div>
 
                 <div className="p-3 rounded-xl glass-surface border border-border-subtle">
-                  <span className="text-muted-foreground block text-[11px]">Duration & Frequency</span>
+                  <span className="text-muted-foreground block text-[11px]">{t('Length & frequency', 'المدة وعدد المرات')}</span>
                   <p className="font-semibold text-foreground mt-0.5">
                     {trial_context.recommended_duration ? `${trial_context.recommended_duration} min` : ''}{' '}
                     {trial_context.recommended_frequency ? `• ${trial_context.recommended_frequency}` : ''}
                     {!trial_context.recommended_duration && !trial_context.recommended_frequency && (
-                      <span className="opacity-50 font-normal">Standard 30-45 min</span>
+                      <span className="opacity-50 font-normal">{t('Not recorded', 'مش متسجل')}</span>
                     )}
                   </p>
                 </div>
@@ -657,7 +662,7 @@ export default function StudentDetailPage() {
               {trial_context.learning_plan_summary && (
                 <div className="p-3.5 rounded-xl glass-surface border border-border-subtle text-sm">
                   <span className="text-muted-foreground block mb-1 font-medium">
-                    Personalized Learning Plan Summary:
+                    {t('Learning plan', 'خطة التعلم')}:
                   </span>
                   <p className="text-foreground whitespace-pre-line">
                     {trial_context.learning_plan_summary}
@@ -673,14 +678,14 @@ export default function StudentDetailPage() {
               <div>
                 <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
                   <BookOpen className="w-4 h-4 text-accent" />
-                  <span>Lesson History & Attendance</span>
+                  <span>{t('Lesson history', 'سجل الحصص')}</span>
                 </h2>
                 <p className="text-sm text-muted-foreground mt-0.5">
-                  Factual records of completed, pending, and scheduled lessons.
+                  {t('Done, upcoming and cancelled lessons.', 'الحصص اللي تمت والجاية والملغاة.')}
                 </p>
               </div>
               <span className="text-sm px-2.5 py-0.5 rounded-full bg-success/15 text-success border border-success/30 font-medium">
-                {total_completed_lessons} Completed
+                {t(`${total_completed_lessons} done`, `${total_completed_lessons} تمت`)}
               </span>
             </div>
 
@@ -691,11 +696,11 @@ export default function StudentDetailPage() {
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-foreground">
-                          {b.service_name || 'Teaching Lesson'}
+                          {b.service_name || t('Lesson', 'حصة')}
                         </span>
                         {b.booking_type === 'trial' && (
                           <span className="text-[13px] px-2 py-0.5 rounded-full bg-accent/15 text-accent border border-accent/25 font-medium">
-                            Free Trial
+                            {t('Free trial', 'تجربة مجانية')}
                           </span>
                         )}
                         <span className={`text-[13px] px-2 py-0.5 rounded-full font-medium ${
@@ -707,16 +712,16 @@ export default function StudentDetailPage() {
                             ? 'bg-warning/15 text-warning-foreground border border-warning/30'
                             : 'bg-secondary/30 text-primary border border-secondary/50'
                         }`}>
-                          {b.status ? b.status.charAt(0).toUpperCase() + b.status.slice(1) : 'Scheduled'}
+                          {({ completed: t('Done', 'تمت'), cancelled: t('Cancelled', 'ملغاة'), rescheduled: t('Moved', 'اتغيّر ميعادها'), confirmed: t('Confirmed', 'مؤكدة'), pending: t('Waiting', 'في الانتظار'), no_show: t('No-show', 'غياب') } as Record<string, string>)[b.status || ''] || t('Booked', 'محجوزة')}
                         </span>
                       </div>
                       <p className="text-muted-foreground mt-0.5">
-                        {DateTime.fromISO(b.scheduled_start).toFormat('EEE, MMM d, yyyy • hh:mm a')} ({b.duration_minutes} min)
-                        {b.reference_code && ` • Ref: ${b.reference_code}`}
+                        {DateTime.fromISO(b.scheduled_start).setLocale(locale).toFormat('EEE, MMM d, yyyy • hh:mm a')} ({b.duration_minutes} {t('min', 'دقيقة')})
+                        {b.reference_code && ` • ${b.reference_code}`}
                       </p>
                       {b.cancellation_reason && (
                         <p className="text-destructive text-[11px] mt-0.5">
-                          Reason: {b.cancellation_reason}
+                          {t('Reason', 'السبب')}: {b.cancellation_reason}
                         </p>
                       )}
                     </div>
@@ -728,7 +733,7 @@ export default function StudentDetailPage() {
                         rel="noopener noreferrer"
                         className="self-start sm:self-auto inline-flex items-center gap-1 text-[11px] text-primary hover:underline font-medium cursor-pointer"
                       >
-                        <span>Zoom Meeting</span>
+                        <span>{t('Zoom', 'Zoom')}</span>
                         <ExternalLink className="w-3 h-3" />
                       </a>
                     )}
@@ -739,7 +744,7 @@ export default function StudentDetailPage() {
               <div className="p-6 rounded-xl glass-surface border border-dashed border-border text-center">
                 <Calendar className="w-8 h-8 text-muted-foreground mx-auto mb-2 opacity-50" />
                 <p className="text-sm font-medium text-muted-foreground">
-                  No lesson records found for this student
+                  {t('No lessons yet', 'لسه مفيش حصص')}
                 </p>
               </div>
             )}
@@ -754,12 +759,12 @@ export default function StudentDetailPage() {
               <div className="flex items-center gap-2">
                 <UserCheck className="w-4 h-4 text-accent" />
                 <h2 className="text-sm font-semibold uppercase tracking-wider text-foreground">
-                  Faculty Assignment
+                  {t('Teacher', 'المعلم')}
                 </h2>
               </div>
               {isSuperAdmin && (
                 <span className="text-[13px] px-2 py-0.5 rounded bg-secondary/30 text-accent border border-primary/25 font-bold uppercase tracking-wider">
-                  Admin Control
+                  {t('Admin', 'المدير')}
                 </span>
               )}
             </div>
@@ -767,29 +772,29 @@ export default function StudentDetailPage() {
             {/* Current Assignment Status */}
             <div className="p-3.5 rounded-xl glass-surface border border-border-subtle space-y-2 text-sm">
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Assigned Teacher:</span>
+                <span className="text-muted-foreground">{t('Teacher', 'المعلم')}:</span>
                 <span className={`font-semibold ${student.assigned_teacher_name ? 'text-primary' : 'text-amber-600 dark:text-amber-400'}`}>
-                  {student.assigned_teacher_name || 'Unassigned'}
+                  {student.assigned_teacher_name || t('No teacher yet', 'لسه من غير معلم')}
                 </span>
               </div>
 
               {/* Student Gender */}
               <div className="flex items-center justify-between pt-1.5 border-t border-border-subtle">
-                <span className="text-muted-foreground">Student Gender:</span>
+                <span className="text-muted-foreground">{t("Student's gender", 'نوع الطالب')}:</span>
                 <span className="capitalize font-medium text-foreground">
-                  {student.gender === 'male' ? 'Male' : student.gender === 'female' ? 'Female' : 'Prefer not to say'}
+                  {student.gender === 'male' ? t('Male', 'ذكر') : student.gender === 'female' ? t('Female', 'أنثى') : t('Not said', 'مش محدد')}
                 </span>
               </div>
 
               {/* Teacher Gender Preference */}
               <div className="flex items-center justify-between pt-1.5 border-t border-border-subtle">
-                <span className="text-muted-foreground">Teacher Preference:</span>
+                <span className="text-muted-foreground">{t('Prefers', 'بيفضّل')}:</span>
                 <span className="capitalize font-medium text-foreground">
                   {student.teacher_gender_preference === 'female_teacher'
-                    ? 'Female Teacher'
+                    ? t('A female teacher', 'معلمة')
                     : student.teacher_gender_preference === 'male_teacher'
-                    ? 'Male Teacher'
-                    : 'No Preference'}
+                    ? t('A male teacher', 'معلم')
+                    : t('No preference', 'مفيش تفضيل')}
                 </span>
               </div>
             </div>
@@ -797,18 +802,19 @@ export default function StudentDetailPage() {
             {/* Super Admin Assignment Action Form */}
             {isSuperAdmin && (
               <form onSubmit={handleAssignTeacher} className="space-y-3 pt-2">
-                <label className="block text-sm font-semibold text-foreground">
-                  Change Faculty Assignment:
+                <label className="block text-sm font-semibold text-foreground" htmlFor="sdp-teacher">
+                  {t('Move to another teacher', 'انقله لمعلم تاني')}:
                 </label>
                 <select
+                  id="sdp-teacher"
                   value={selectedTeacherId}
                   onChange={(e) => setSelectedTeacherId(e.target.value)}
                   className="w-full px-3 py-2 text-sm rounded-xl border border-border glass-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
-                  <option value="">-- Unassigned --</option>
-                  {availableTeachers.map((t) => (
-                    <option key={t.id || t.email} value={t.id || t.email}>
-                      {t.display_name} ({t.role === 'super_admin' ? 'Super Admin' : 'Teacher'})
+                  <option value="">{t('— No teacher —', '— من غير معلم —')}</option>
+                  {availableTeachers.map((tc) => (
+                    <option key={tc.id || tc.email} value={tc.id || tc.email}>
+                      {tc.display_name} ({tc.role === 'super_admin' ? t('Admin', 'مدير') : t('Teacher', 'معلم')})
                     </option>
                   ))}
                 </select>
@@ -837,7 +843,7 @@ export default function StudentDetailPage() {
                   ) : (
                     <ShieldCheck className="w-3.5 h-3.5" />
                   )}
-                  <span>{isAssigningTeacher ? 'Saving...' : 'Save Assignment'}</span>
+                  <span>{isAssigningTeacher ? t('Saving…', 'جارٍ الحفظ…') : t('Save', 'احفظ')}</span>
                 </button>
               </form>
             )}
@@ -850,15 +856,15 @@ export default function StudentDetailPage() {
                 <div className="flex items-center gap-2">
                   <Lock className="w-4 h-4 text-warning" />
                   <h2 className="text-sm font-semibold uppercase tracking-wider text-foreground">
-                    Teacher Private Notes
+                    {t('Private notes', 'ملاحظات خاصة')}
                   </h2>
                 </div>
                 <span className="text-[13px] px-2 py-0.5 rounded bg-warning/15 text-warning-foreground border border-warning/25 font-medium">
-                  Mahmoud Only
+                  {t('Teachers only', 'للمعلمين بس')}
                 </span>
               </div>
               <p className="text-[11px] text-muted-foreground mt-1">
-                Strictly confidential private observations, progress tracking, and lesson notes. Never visible to students.
+                {t('Your observations and progress notes. Students never see them.', 'ملاحظاتك عن الطالب وتقدمه. الطلاب مش بيشوفوها أبداً.')}
               </p>
             </div>
 
@@ -870,15 +876,16 @@ export default function StudentDetailPage() {
                 </div>
               )}
               <div>
-                <label className="block text-[11px] font-medium text-muted-foreground mb-1">
-                  New Private Observation / Note <span className="text-destructive">*</span>
+                <label className="block text-[11px] font-medium text-muted-foreground mb-1" htmlFor="sdp-note">
+                  {t('New note', 'ملاحظة جديدة')} <span className="text-destructive">*</span>
                 </label>
                 <textarea
+                  id="sdp-note"
                   rows={3}
                   value={newNoteContent}
                   onChange={e => setNewNoteContent(e.target.value)}
                   required
-                  placeholder="Record lesson observations, Tajweed mastery, pronunciation notes..."
+                  placeholder={t('Lesson observations, Tajweed, pronunciation…', 'ملاحظات الحصة، التجويد، النطق…')}
                   className="w-full px-3 py-2 text-sm rounded-xl border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
@@ -888,7 +895,8 @@ export default function StudentDetailPage() {
                   type="text"
                   value={newNoteObservations}
                   onChange={e => setNewNoteObservations(e.target.value)}
-                  placeholder="Specific observations (e.g. Needs practice on Noon Sakinah)"
+                  aria-label={t('Observations', 'ملاحظات تفصيلية')}
+                  placeholder={t('Details (e.g. needs practice on Noon Sakinah)', 'تفاصيل (مثلاً: محتاج يتدرب على النون الساكنة)')}
                   className="w-full px-3 py-1.5 text-sm rounded-lg border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
@@ -898,7 +906,8 @@ export default function StudentDetailPage() {
                   type="text"
                   value={newNoteNextSteps}
                   onChange={e => setNewNoteNextSteps(e.target.value)}
-                  placeholder="Next steps / homework assigned"
+                  aria-label={t('Next steps', 'الخطوة الجاية')}
+                  placeholder={t('Next steps / homework', 'الخطوة الجاية / الواجب')}
                   className="w-full px-3 py-1.5 text-sm rounded-lg border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
@@ -910,7 +919,7 @@ export default function StudentDetailPage() {
                   className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5" />
-                  <span>{isSubmittingNote ? 'Saving...' : 'Save Private Note'}</span>
+                  <span>{isSubmittingNote ? t('Saving…', 'جارٍ الحفظ…') : t('Save note', 'احفظ الملاحظة')}</span>
                 </button>
               </div>
             </form>
@@ -936,14 +945,14 @@ export default function StudentDetailPage() {
                           type="text"
                           value={editNoteObservations}
                           onChange={e => setEditNoteObservations(e.target.value)}
-                          placeholder="Observations"
+                          placeholder={t('Details', 'تفاصيل')}
                           className="w-full px-2.5 py-1 text-sm rounded-lg border border-border glass-card text-foreground"
                         />
                         <input
                           type="text"
                           value={editNoteNextSteps}
                           onChange={e => setEditNoteNextSteps(e.target.value)}
-                          placeholder="Next steps"
+                          placeholder={t('Next steps', 'الخطوة الجاية')}
                           className="w-full px-2.5 py-1 text-sm rounded-lg border border-border glass-card text-foreground"
                         />
                         <div className="flex items-center justify-end gap-2 pt-1">
@@ -952,7 +961,7 @@ export default function StudentDetailPage() {
                             onClick={() => setEditingNoteId(null)}
                             className="px-2.5 py-1 text-[11px] rounded-lg text-muted-foreground hover:bg-surface-subtle cursor-pointer"
                           >
-                            Cancel
+                            {t('Cancel', 'إلغاء')}
                           </button>
                           <button
                             type="button"
@@ -960,7 +969,7 @@ export default function StudentDetailPage() {
                             disabled={isUpdatingNote || !editNoteContent.trim()}
                             className="px-3 py-1 text-[11px] font-semibold rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
                           >
-                            {isUpdatingNote ? 'Saving...' : 'Save'}
+                            {isUpdatingNote ? t('Saving…', 'جارٍ الحفظ…') : t('Save', 'احفظ')}
                           </button>
                         </div>
                       </div>
@@ -968,19 +977,21 @@ export default function StudentDetailPage() {
                       /* Display Mode */
                       <>
                         <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-                          <span>{DateTime.fromISO(note.created_at).toFormat('MMM d, yyyy • hh:mm a')}</span>
+                          <span>{DateTime.fromISO(note.created_at).setLocale(locale).toFormat('MMM d, yyyy • hh:mm a')}</span>
                           <div className="flex items-center gap-1.5">
                             <button
                               onClick={() => handleStartEditNote(note)}
                               className="p-1 hover:text-primary transition-colors cursor-pointer"
-                              title="Edit note"
+                              title={t('Edit note', 'عدّل الملاحظة')}
+                              aria-label={t('Edit note', 'عدّل الملاحظة')}
                             >
                               <Edit3 className="w-3.5 h-3.5" />
                             </button>
                             <button
                               onClick={() => handleDeleteNote(note.id)}
                               className="p-1 hover:text-destructive transition-colors cursor-pointer"
-                              title="Delete note"
+                              title={t('Delete note', 'امسح الملاحظة')}
+                              aria-label={t('Delete note', 'امسح الملاحظة')}
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>
@@ -993,13 +1004,13 @@ export default function StudentDetailPage() {
 
                         {note.observations && (
                           <p className="text-[11px] text-muted-foreground glass-surface p-2 rounded-lg border border-border-subtle">
-                            <strong className="font-semibold text-primary">Observations:</strong> {note.observations}
+                            <strong className="font-semibold text-primary">{t('Details', 'تفاصيل')}:</strong> {note.observations}
                           </p>
                         )}
 
                         {note.next_steps && (
                           <p className="text-[11px] text-muted-foreground glass-surface p-2 rounded-lg border border-border-subtle">
-                            <strong className="font-semibold text-warning-foreground">Next Steps:</strong> {note.next_steps}
+                            <strong className="font-semibold text-warning-foreground">{t('Next steps', 'الخطوة الجاية')}:</strong> {note.next_steps}
                           </p>
                         )}
                       </>
@@ -1010,10 +1021,10 @@ export default function StudentDetailPage() {
                 <div className="p-6 rounded-xl glass-surface border border-dashed border-border text-center">
                   <FileText className="w-7 h-7 text-muted-foreground mx-auto mb-1.5 opacity-50" />
                   <p className="text-sm font-medium text-muted-foreground">
-                    No private notes recorded yet
+                    {t('No notes yet', 'لسه مفيش ملاحظات')}
                   </p>
                   <p className="text-[11px] text-muted-foreground/80 mt-0.5">
-                    Use the box above to record confidential observations.
+                    {t('Write your first note in the box above.', 'اكتب أول ملاحظة في الخانة اللي فوق.')}
                   </p>
                 </div>
               )}

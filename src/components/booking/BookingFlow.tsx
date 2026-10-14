@@ -24,7 +24,6 @@ import { StepDateTime } from './StepDateTime';
 import { StepReviewSummary } from './StepReviewSummary';
 import { BookingConfirmation } from './BookingConfirmation';
 import { ManageBookingModal } from './ManageBookingModal';
-import { MultiLessonPlan, SelectedLesson } from './MultiLessonPlan';
 import { PaymentInstructionsCard } from './PaymentInstructionsCard';
 import { InstantCheckoutModal } from '../payment/InstantCheckoutModal';
 import { getFreshAccessToken } from '../../lib/auth';
@@ -101,23 +100,8 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [confirmation, setConfirmation] = useState<BookingConfirmationData | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
-  // Packages are bought on the packages page now (RULES.md §4), so the flow books one lesson at a time.
-  const [lessonCount, setLessonCount] = useState<number>(1);
-  const [selectedLessons, setSelectedLessons] = useState<SelectedLesson[]>(() => {
-    try {
-      const saved = sessionStorage.getItem('watazawwado_pending_booking_state');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed?.selectedLessons)) return parsed.selectedLessons;
-      }
-    } catch {}
-    return [];
-  });
   const [manageModalOpen, setManageModalOpen] = useState<boolean>(false);
   const [manageRefCode, setManageRefCode] = useState<string>('');
-  const [multiConfirming, setMultiConfirming] = useState(false);
-  const [multiPlanCreated, setMultiPlanCreated] = useState(false);
-  const [multiPlanData, setMultiPlanData] = useState<any>(null);
   const [pendingBooking, setPendingBooking] = useState<BookingConfirmationData | null>(() => {
     try {
       const saved = sessionStorage.getItem('watazawwado_pending_booking_state');
@@ -225,14 +209,12 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
           JSON.stringify({
             formData,
             step,
-            pendingBooking,
-            lessonCount,
-            selectedLessons
+            pendingBooking
           })
         );
       }
     } catch {}
-  }, [formData, step, pendingBooking, lessonCount, selectedLessons]);
+  }, [formData, step, pendingBooking]);
 
   // Handle returning from Stripe Checkout (session_id + gateway=stripe in URL).
   // Guarded so the verify call runs once per return, even when formData changes or StrictMode re-runs effects.
@@ -386,10 +368,6 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   }, [initialMode]);
 
   const updateFormData = (fields: Partial<BookingFormData>) => {
-    if ('duration' in fields || 'serviceId' in fields || 'mode' in fields || 'timezone' in fields || 'teacherId' in fields) {
-      setLessonCount(1);
-      setSelectedLessons([]);
-    }
     setFormData((prev) => ({ ...prev, ...fields }));
     setValidationError(null);
   };
@@ -408,19 +386,12 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
         return;
       }
     } else if (isMultiStepFlow) {
-      if (step === 5) {
-        // Step 5: PackageQuantity — lessonCount is always valid (>= 1).
-      } else if (step === 6) {
-        if (lessonCount === 1) {
-          const check = validateStep(5, formData, lang === 'ar');
-          if (!check.isValid) {
-            const firstError = Object.values(check.errors)[0];
-            setValidationError(firstError);
-            return;
-          }
-        } else {
-          // multi-lesson schedule Next is handled inside MultiLessonPlan
-          setStep(7);
+      // Step 5 is "one lesson or a package" (packages are bought on the packages page, RULES.md §4).
+      if (step === 6) {
+        const check = validateStep(5, formData, lang === 'ar');
+        if (!check.isValid) {
+          const firstError = Object.values(check.errors)[0];
+          setValidationError(firstError);
           return;
         }
       }
@@ -455,73 +426,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     }
   };
 
-  const handleConfirmMultiLesson = async () => {
-    if (multiPlanCreated || formData.mode !== 'regular') return;
-    let freshToken = accessToken;
-    try {
-      freshToken = (await getFreshAccessToken()) || accessToken;
-    } catch {}
-
-    if (!isAuthenticatedStudent || !freshToken) {
-      setValidationError(isEn
-        ? 'Your session has expired. Please sign in again to create this lesson plan.'
-        : 'انتهت جلسة تسجيل الدخول. يرجى تسجيل الدخول مرة أخرى لإنشاء خطة الدروس.');
-      return;
-    }
-
-    if (
-      lessonCount <= 1 ||
-      selectedLessons.length !== lessonCount ||
-      new Set(selectedLessons.map(lesson => lesson.date)).size !== lessonCount ||
-      selectedLessons.some(({ slot }) => !slot.utcStartIso || !slot.utcEndIso)
-    ) return;
-
-    const selectedCatalog = catalog.find(c => c.package_type === 'weekly' && c.lesson_count === lessonCount && c.is_active);
-    if (!selectedCatalog) {
-      setValidationError('This lesson plan is temporarily unavailable.');
-      return;
-    }
-
-    setMultiConfirming(true);
-    setValidationError(null);
-    try {
-      const result = await fetch('/api/student/multi-lesson-plan', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${freshToken}` },
-        body: JSON.stringify({
-          serviceId: formData.serviceId,
-          durationMinutes: formData.duration,
-          studentTimezone: formData.timezone,
-          catalogId: selectedCatalog.id,
-          lessonCount,
-          expectedTotalUsd: selectedCatalog.price_amount,
-          currency: selectedCatalog.currency,
-          lessons: selectedLessons.map(({ slot }) => ({
-            scheduledStart: slot.utcStartIso,
-            scheduledEnd: slot.utcEndIso
-          })),
-          contactName: studentName || formData.studentName || formData.childName || '',
-          contactEmail: studentEmail || '',
-          contactWhatsapp: formData.whatsapp || '',
-          notes: formData.notes || ''
-        })
-      });
-      const data = await result.json().catch(() => ({}));
-      if (!result.ok || !data.success) {
-        throw new Error(data.error || 'The selected times could not be secured. Please choose again.');
-      }
-      setMultiPlanData(data);
-      setMultiPlanCreated(true);
-      setValidationError(null);
-    } catch (err: any) {
-      setValidationError(err?.message || (isAr ? 'تعذر تأكيد مواعيد الدروس في الوقت الحالي.' : 'The selected lesson times could not be secured.'));
-    } finally {
-      setMultiConfirming(false);
-    }
-  };
-
   const handleSubmitBooking = async () => {
-    if (lessonCount !== 1) return; // single-lesson persistence contract only
     setIsSubmitting(true);
     setValidationError(null);
     try {
@@ -632,8 +537,6 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     setConfirmation(null);
     setPendingBooking(null);
     setIsCheckoutModalOpen(false);
-    setMultiPlanCreated(false);
-    setMultiPlanData(null);
     setStep(1);
     if (onDone) {
       onDone();
@@ -660,42 +563,6 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
           <p className="text-sm text-muted-foreground">
             {isAr ? 'لحظات ونقوم بتجهيز تفاصيل الحجز وتفعيل رابط الفصل الدراسي.' : 'Please wait while we finalize your lesson details and classroom link.'}
           </p>
-        </div>
-      ) : multiPlanCreated && multiPlanData ? (
-        <div className="space-y-6 max-w-2xl mx-auto py-2 text-foreground">
-          <div className="text-center space-y-3 pb-2">
-            <div className="w-16 h-16 rounded-full bg-teal-500/20 text-teal-600 dark:text-teal-400 flex items-center justify-center mx-auto shadow-inner">
-              <CheckCircle2 className="w-10 h-10" />
-            </div>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground">
-              {isAr ? 'تم تجهيز باقة دروسك بنجاح' : 'Lesson plan request created'}
-            </h2>
-            <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
-              {isAr
-                ? `تم حجز مواعيد الـ ${multiPlanData.lessonCount || lessonCount} حصص بنجاح. أتمم الدفع الفوري لتأكيد الجلسات وتفعيل روابط الفصول.`
-                : `Your selected times were submitted. Payment is not confirmed by this screen; complete instant payment below to activate your package and classroom links.`}
-            </p>
-          </div>
-
-          <PaymentInstructionsCard
-            bookingReference={multiPlanData.entitlementId}
-            targetType="package"
-            serviceName={`${isAr ? currentService?.arabicName : currentService?.name} (${multiPlanData.lessonCount || lessonCount} ${isAr ? 'حصص' : 'lessons'})`}
-            amount={multiPlanData.totalAmount || (lessonCount === 4 ? 34 : lessonCount === 8 ? 64 : 92)}
-            currency={multiPlanData.currency || 'USD'}
-            learnerName={studentName || formData.studentName}
-            lang={lang}
-          />
-
-          <div className="text-center pt-2">
-            <button
-              type="button"
-              onClick={handleResetForNewBooking}
-              className="px-6 py-2.5 rounded-xl border border-border text-xs sm:text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-all cursor-pointer"
-            >
-              {isAr ? 'العودة إلى لوحة تحكم الطالب' : 'Return to Student Dashboard'}
-            </button>
-          </div>
         </div>
       ) : confirmation ? (
         /* 2. Single Booking Confirmation State */
@@ -842,14 +709,6 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                 <StepPackageQuantity
                   serviceId={formData.serviceId}
                   duration={formData.duration}
-                  lessonCount={lessonCount}
-                  onChangeCount={(count) => {
-                    setLessonCount(count);
-                    setSelectedLessons([]);
-                    if (count > 1) {
-                      updateFormData({ packageEntitlementId: undefined, selectedPackageId: undefined });
-                    }
-                  }}
                   catalog={catalog}
                   lang={lang}
                   onNext={handleNext}
@@ -867,23 +726,6 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                 exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.2 }}
               >
-                {lessonCount > 1 ? (
-                  <MultiLessonPlan
-                    catalog={catalog}
-                    serviceId={formData.serviceId}
-                    duration={formData.duration}
-                    timezone={formData.timezone}
-                    teacherId={formData.teacherId}
-                    count={lessonCount}
-                    onCount={setLessonCount}
-                    selected={selectedLessons}
-                    onSelected={setSelectedLessons}
-                    phase="schedule"
-                    lang={lang}
-                    onNext={() => setStep(7)}
-                    onBack={handleBack}
-                  />
-                ) : (
                   <StepDateTime
                     mode={formData.mode}
                     duration={formData.duration}
@@ -898,7 +740,6 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                     onBack={handleBack}
                     lang={lang}
                   />
-                )}
               </motion.div>
             )}
 
@@ -911,24 +752,6 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                 exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.2 }}
               >
-                {lessonCount > 1 ? (
-                  <MultiLessonPlan
-                    catalog={catalog}
-                    serviceId={formData.serviceId}
-                    duration={formData.duration}
-                    timezone={formData.timezone}
-                    teacherId={formData.teacherId}
-                    count={lessonCount}
-                    onCount={setLessonCount}
-                    selected={selectedLessons}
-                    onSelected={setSelectedLessons}
-                    phase="review"
-                    lang={lang}
-                    onBack={handleBack}
-                    onConfirm={handleConfirmMultiLesson}
-                    confirming={multiConfirming}
-                  />
-                ) : (
                   <StepReviewSummary
                     formData={formData}
                     onGoToStep={handleGoToStep}
@@ -945,7 +768,6 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                     onPayLater={payLaterEligible ? handlePayLater : undefined}
                     payLaterBusy={payLaterBusy}
                   />
-                )}
               </motion.div>
             )}
 

@@ -177,6 +177,8 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
         return <Package className="w-5 h-5 text-accent" />;
       case 'lesson_cancelled':
         return <AlertCircle className="w-5 h-5 text-destructive" />;
+      case 'reschedule_request':
+        return <Calendar className="w-5 h-5 text-amber-600 dark:text-amber-400" />;
       default:
         return <Bell className="w-5 h-5 text-accent" />;
     }

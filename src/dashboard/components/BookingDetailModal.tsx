@@ -1,34 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { DateTime } from 'luxon';
-import { 
-  X, 
-  Video, 
-  Calendar as CalendarIcon, 
-  Clock, 
-  Globe, 
-  Mail, 
-  MessageSquare, 
-  Copy, 
-  Check, 
-  AlertCircle, 
-  User, 
-  DollarSign, 
-  FileText, 
-  ExternalLink,
-  ShieldCheck,
+import {
+  X,
+  Video,
+  Calendar as CalendarIcon,
+  Clock,
+  Globe,
+  Mail,
+  MessageSquare,
+  Copy,
+  Check,
+  AlertCircle,
+  User,
+  DollarSign,
+  FileText,
   CheckCircle2,
   XCircle,
   RotateCcw,
   CalendarCheck2,
-  ChevronRight,
   Plus,
   BookOpen,
-  UserX
+  UserX,
+  Send
 } from 'lucide-react';
-import { DashboardBookingDetail, DashboardPayment, BookingPaymentStatus } from '../types';
+import { DashboardBookingDetail, BookingPaymentStatus } from '../types';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 import { RecordPaymentModal } from './RecordPaymentModal';
+import { useTeacherAuth } from '../../lib/auth';
+import { useT } from '../../lib/language';
 
 interface BookingDetailModalProps {
   bookingId: string | null;
@@ -37,50 +37,58 @@ interface BookingDetailModalProps {
   onBookingUpdated?: () => void;
 }
 
+/**
+ * One lesson in the dashboard. RULES.md §1/§2: teachers see no payment information and
+ * don't move or cancel lessons; they ask the student to reschedule. The super admin sees
+ * payments and can move, cancel, refund and approve pay-later requests.
+ */
 export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
   bookingId,
   isOpen,
   onClose,
   onBookingUpdated
 }) => {
+  const { t, isAr } = useT();
+  const { teacherRole } = useTeacherAuth();
+  const isSuperAdmin = teacherRole === 'super_admin';
+  const locale = isAr ? 'ar' : 'en';
+
   const [booking, setBooking] = useState<DashboardBookingDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
-  // Note editing state
   const [notes, setNotes] = useState('');
   const [savingNotes, setSavingNotes] = useState(false);
 
-  // Reschedule state
   const [isRescheduling, setIsRescheduling] = useState(false);
   const [newStartDate, setNewStartDate] = useState('');
   const [newStartTime, setNewStartTime] = useState('');
   const [rescheduling, setRescheduling] = useState(false);
 
-  // Cancellation state
+  // Teacher: ask the student to pick a new time.
+  const [isRequestingMove, setIsRequestingMove] = useState(false);
+  const [moveNote, setMoveNote] = useState('');
+  const [requestingMove, setRequestingMove] = useState(false);
+
   const [isCancelling, setIsCancelling] = useState(false);
   const [cancellationReason, setCancellationReason] = useState('');
   const [cancelling, setCancelling] = useState(false);
 
-  // No-Show state
   const [isMarkingNoShow, setIsMarkingNoShow] = useState(false);
   const [noShowReason, setNoShowReason] = useState('');
   const [noShowCreditDecision, setNoShowCreditDecision] = useState<'returned' | 'used'>('returned');
   const [markingNoShow, setMarkingNoShow] = useState(false);
 
-  // Completed Lesson state
   const [isMarkingCompleted, setIsMarkingCompleted] = useState(false);
   const [coveredMaterial, setCoveredMaterial] = useState('');
   const [completionNotes, setCompletionNotes] = useState('');
   const [markingCompleted, setMarkingCompleted] = useState(false);
   const [lessonSession, setLessonSession] = useState<any>(null);
 
-  // Record payment modal state
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
-  // Load single booking
   const loadBooking = async () => {
     if (!bookingId) return;
     setLoading(true);
@@ -92,10 +100,10 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
         setNotes(data.booking.notes || '');
         setLessonSession(data?.context?.lesson_session || null);
       } else {
-        setError('Booking details could not be found.');
+        setError(t('Lesson details could not be found.', 'مش لاقيين تفاصيل الحصة.'));
       }
     } catch (err: any) {
-      setError(err?.data?.error || err?.message || 'Failed to load booking details.');
+      setError(err?.data?.error || err?.message || t('Could not load the lesson.', 'تعذر تحميل الحصة.'));
     } finally {
       setLoading(false);
     }
@@ -105,6 +113,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
     if (isOpen && bookingId) {
       loadBooking();
       setIsRescheduling(false);
+      setIsRequestingMove(false);
       setIsCancelling(false);
       setIsMarkingNoShow(false);
       setIsMarkingCompleted(false);
@@ -114,9 +123,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && !showPaymentModal) {
-        onClose();
-      }
+      if (e.key === 'Escape' && !showPaymentModal) onClose();
     };
     if (isOpen) {
       window.addEventListener('keydown', handleKeyDown);
@@ -132,19 +139,20 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
     setTimeout(() => setCopiedField(null), 2000);
   };
 
-  // Actions
+  const refresh = () => {
+    loadBooking();
+    if (onBookingUpdated) onBookingUpdated();
+  };
+
   const handleSaveNotes = async () => {
     if (!booking) return;
     setSavingNotes(true);
     try {
-      await dashboardFetch(`/api/dashboard/bookings/${booking.id}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ notes })
-      });
-      setActionMessage({ type: 'success', text: 'Internal notes saved.' });
+      await dashboardFetch(`/api/dashboard/bookings/${booking.id}`, { method: 'PATCH', body: JSON.stringify({ notes }) });
+      setActionMessage({ type: 'success', text: t('Notes saved.', 'الملاحظات اتحفظت.') });
       if (onBookingUpdated) onBookingUpdated();
-    } catch (err: any) {
-      setActionMessage({ type: 'error', text: 'Failed to save notes.' });
+    } catch {
+      setActionMessage({ type: 'error', text: t("Couldn't save the notes.", 'تعذر حفظ الملاحظات.') });
     } finally {
       setSavingNotes(false);
     }
@@ -164,14 +172,13 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
             : undefined
         })
       });
-      setActionMessage({ type: 'success', text: 'Lesson recorded as completed.' });
+      setActionMessage({ type: 'success', text: t('Lesson recorded as completed.', 'الحصة اتسجلت إنها تمت.') });
       setIsMarkingCompleted(false);
       setCoveredMaterial('');
       setCompletionNotes('');
-      loadBooking();
-      if (onBookingUpdated) onBookingUpdated();
+      refresh();
     } catch (err: any) {
-      setActionMessage({ type: 'error', text: err?.message || 'Failed to update booking status.' });
+      setActionMessage({ type: 'error', text: err?.message || t("Couldn't update the lesson.", 'تعذر تحديث الحصة.') });
     } finally {
       setMarkingCompleted(false);
     }
@@ -192,13 +199,12 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
             : undefined
         })
       });
-      setActionMessage({ type: 'success', text: 'Booking recorded as No-Show.' });
+      setActionMessage({ type: 'success', text: t('Recorded as a no-show.', 'اتسجل إن الطالب ما حضرش.') });
       setIsMarkingNoShow(false);
       setNoShowReason('');
-      loadBooking();
-      if (onBookingUpdated) onBookingUpdated();
+      refresh();
     } catch (err: any) {
-      setActionMessage({ type: 'error', text: err?.message || 'Failed to mark booking as no-show.' });
+      setActionMessage({ type: 'error', text: err?.message || t("Couldn't record the no-show.", 'تعذر تسجيل الغياب.') });
     } finally {
       setMarkingNoShow(false);
     }
@@ -210,17 +216,13 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
     try {
       await dashboardFetch(`/api/dashboard/bookings/${booking.id}`, {
         method: 'PATCH',
-        body: JSON.stringify({
-          status: 'cancelled',
-          cancellation_reason: cancellationReason.trim() || 'Cancelled by teacher'
-        })
+        body: JSON.stringify({ status: 'cancelled', cancellation_reason: cancellationReason.trim() || 'Cancelled by admin' })
       });
-      setActionMessage({ type: 'success', text: 'Booking cancelled safely.' });
+      setActionMessage({ type: 'success', text: t('Lesson cancelled.', 'الحصة اتلغت.') });
       setIsCancelling(false);
-      loadBooking();
-      if (onBookingUpdated) onBookingUpdated();
+      refresh();
     } catch (err: any) {
-      setActionMessage({ type: 'error', text: 'Failed to cancel booking.' });
+      setActionMessage({ type: 'error', text: err?.message || t("Couldn't cancel the lesson.", 'تعذر إلغاء الحصة.') });
     } finally {
       setCancelling(false);
     }
@@ -230,242 +232,227 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
     if (!booking || !newStartDate || !newStartTime) return;
     setRescheduling(true);
     try {
-      // Build ISO UTC timestamps
       const dtLocal = DateTime.fromISO(`${newStartDate}T${newStartTime}`, { zone: booking.student_timezone || 'Africa/Cairo' });
       if (!dtLocal.isValid) {
-        setActionMessage({ type: 'error', text: 'Invalid date or time.' });
-        setRescheduling(false);
+        setActionMessage({ type: 'error', text: t('Invalid date or time.', 'التاريخ أو الوقت مش صحيح.') });
         return;
       }
-      const newStartUtc = dtLocal.toUTC().toISO();
-      const newEndUtc = dtLocal.plus({ minutes: booking.duration_minutes || 30 }).toUTC().toISO();
-      const cairoDisplay = dtLocal.setZone('Africa/Cairo').toFormat('yyyy-MM-dd HH:mm');
-
       await dashboardFetch(`/api/dashboard/bookings/${booking.id}`, {
         method: 'PATCH',
         body: JSON.stringify({
           status: 'rescheduled',
-          scheduled_start: newStartUtc,
-          scheduled_end: newEndUtc,
-          cairo_time_display: cairoDisplay
+          scheduled_start: dtLocal.toUTC().toISO(),
+          scheduled_end: dtLocal.plus({ minutes: booking.duration_minutes || 30 }).toUTC().toISO(),
+          cairo_time_display: dtLocal.setZone('Africa/Cairo').toFormat('yyyy-MM-dd HH:mm')
         })
       });
-
-      setActionMessage({ type: 'success', text: 'Booking rescheduled successfully.' });
+      setActionMessage({ type: 'success', text: t('Lesson moved.', 'ميعاد الحصة اتغيّر.') });
       setIsRescheduling(false);
-      loadBooking();
-      if (onBookingUpdated) onBookingUpdated();
+      refresh();
     } catch (err: any) {
-      setActionMessage({ type: 'error', text: 'Failed to reschedule booking.' });
+      setActionMessage({ type: 'error', text: err?.message || t("Couldn't move the lesson.", 'تعذر تغيير الميعاد.') });
     } finally {
       setRescheduling(false);
     }
   };
 
+  const handleRequestMove = async () => {
+    if (!booking) return;
+    setRequestingMove(true);
+    try {
+      await dashboardFetch(`/api/dashboard/bookings/${booking.id}/reschedule-request`, {
+        method: 'POST',
+        body: JSON.stringify({ note: moveNote.trim() })
+      });
+      setActionMessage({ type: 'success', text: t('Sent. The student will see your request on the site and pick a new time.', 'اتبعت. الطالب هيشوف طلبك على الموقع ويختار ميعاد جديد.') });
+      setIsRequestingMove(false);
+      setMoveNote('');
+      refresh();
+    } catch (err: any) {
+      setActionMessage({ type: 'error', text: err?.message || t("Couldn't send the request.", 'تعذر إرسال الطلب.') });
+    } finally {
+      setRequestingMove(false);
+    }
+  };
+
   const handleConfirmPayment = async (paymentId: string) => {
     try {
-      await dashboardFetch(`/api/dashboard/payments/${paymentId}/confirm`, {
-        method: 'POST'
-      });
-      setActionMessage({ type: 'success', text: 'Payment confirmed successfully.' });
-      loadBooking();
-      if (onBookingUpdated) onBookingUpdated();
-    } catch (err: any) {
-      setActionMessage({ type: 'error', text: 'Failed to confirm payment.' });
+      await dashboardFetch(`/api/dashboard/payments/${paymentId}/confirm`, { method: 'POST' });
+      setActionMessage({ type: 'success', text: t('Payment confirmed.', 'الدفع اتأكد.') });
+      refresh();
+    } catch {
+      setActionMessage({ type: 'error', text: t("Couldn't confirm the payment.", 'تعذر تأكيد الدفع.') });
     }
   };
 
   const handleRejectPayment = async (paymentId: string) => {
-    const reason = window.prompt('Please enter the reason for rejection (optional):');
-    if (reason === null) return; // User cancelled prompt
-
-    try {
-      await dashboardFetch(`/api/dashboard/payments/${paymentId}/reject`, {
-        method: 'POST',
-        body: JSON.stringify({ reason })
-      });
-      setActionMessage({ type: 'success', text: 'Payment marked as rejected.' });
-      loadBooking();
-      if (onBookingUpdated) onBookingUpdated();
-    } catch (err: any) {
-      setActionMessage({ type: 'error', text: 'Failed to reject payment.' });
-    }
-  };
-
-  // RULES.md §5: confirmed payments are refunded (never deleted); the lesson or package is reversed.
-  const handleRefundPayment = async (paymentId: string) => {
-    const reason = window.prompt('Refund reason (shown in the payment notes):');
+    const reason = window.prompt(t('Reason for rejecting (optional):', 'سبب الرفض (اختياري):'));
     if (reason === null) return;
     try {
-      await dashboardFetch(`/api/dashboard/payments/${paymentId}/refund`, {
-        method: 'POST',
-        body: JSON.stringify({ reason })
-      });
-      setActionMessage({ type: 'success', text: 'Payment refunded. The lesson was cancelled. Remember to send the money back in PayPal/Stripe/bank.' });
-      loadBooking();
-      if (onBookingUpdated) onBookingUpdated();
-    } catch (err: any) {
-      setActionMessage({ type: 'error', text: err?.message || 'Failed to refund payment.' });
+      await dashboardFetch(`/api/dashboard/payments/${paymentId}/reject`, { method: 'POST', body: JSON.stringify({ reason }) });
+      setActionMessage({ type: 'success', text: t('Payment marked as rejected.', 'الدفع اترفض.') });
+      refresh();
+    } catch {
+      setActionMessage({ type: 'error', text: t("Couldn't reject the payment.", 'تعذر رفض الدفع.') });
     }
   };
 
-  // RULES.md §5: pay-later bookings wait for the super admin's decision.
+  // RULES.md §5: confirmed payments are refunded (never deleted); the lesson or credit is reversed.
+  const handleRefundPayment = async (paymentId: string) => {
+    const reason = window.prompt(t('Refund reason (saved with the payment):', 'سبب الاسترداد (بيتحفظ مع الدفع):'));
+    if (reason === null) return;
+    try {
+      await dashboardFetch(`/api/dashboard/payments/${paymentId}/refund`, { method: 'POST', body: JSON.stringify({ reason }) });
+      setActionMessage({ type: 'success', text: t('Refund recorded and the lesson cancelled. Remember to send the money back.', 'الاسترداد اتسجل والحصة اتلغت. متنساش تبعت الفلوس.') });
+      refresh();
+    } catch (err: any) {
+      setActionMessage({ type: 'error', text: err?.message || t("Couldn't record the refund.", 'تعذر تسجيل الاسترداد.') });
+    }
+  };
+
   const handlePayLaterDecision = async (decision: 'approve' | 'reject') => {
     if (!booking) return;
     try {
       await dashboardFetch(`/api/dashboard/bookings/${booking.id}/pay-later/${decision}`, { method: 'POST' });
-      setActionMessage({ type: 'success', text: decision === 'approve' ? 'Pay-later booking approved and confirmed.' : 'Pay-later request declined; the slot is free again.' });
-      loadBooking();
-      if (onBookingUpdated) onBookingUpdated();
+      setActionMessage({
+        type: 'success',
+        text: decision === 'approve'
+          ? t('Approved. The lesson is confirmed.', 'اتوافق عليه والحصة اتأكدت.')
+          : t('Declined. The time is free again.', 'اترفض والميعاد بقى متاح.')
+      });
+      refresh();
     } catch (err: any) {
-      setActionMessage({ type: 'error', text: err?.message || 'Failed to update the pay-later request.' });
+      setActionMessage({ type: 'error', text: err?.message || t("Couldn't update the request.", 'تعذر تحديث الطلب.') });
     }
   };
 
-  // Helper formatting
   const startUtc = booking ? DateTime.fromISO(booking.scheduled_start) : null;
-  const startCairo = startUtc ? startUtc.setZone('Africa/Cairo') : null;
+  const startCairo = startUtc ? startUtc.setZone('Africa/Cairo').setLocale(locale) : null;
   let startStudent: DateTime | null = null;
   try {
-    if (booking?.student_timezone && startUtc) {
-      startStudent = startUtc.setZone(booking.student_timezone);
-    }
+    if (booking?.student_timezone && startUtc) startStudent = startUtc.setZone(booking.student_timezone).setLocale(locale);
   } catch {
     startStudent = null;
   }
+  const notStartedYet = Boolean(startUtc && startUtc > DateTime.now().plus({ minutes: 15 }));
+  const isActive = booking && !['completed', 'no_show', 'cancelled'].includes(booking.status);
+  const isUpcoming = Boolean(isActive && startUtc && startUtc > DateTime.now());
+  const rescheduleRequestedAt = (booking as any)?.reschedule_requested_at as string | undefined;
+
+  const statusLabel = (status: string) => ({
+    confirmed: t('Confirmed', 'مؤكدة'),
+    completed: t('Completed', 'تمت'),
+    pending: t('Waiting for payment', 'في انتظار الدفع'),
+    cancelled: t('Cancelled', 'ملغاة'),
+    no_show: t('No-show', 'غياب'),
+    rescheduled: t('Moved', 'اتغيّر ميعادها')
+  } as Record<string, string>)[status.toLowerCase()] || status;
 
   const getBookingStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
-      case 'confirmed':
-        return 'bg-success/15 text-success border-success/30';
-      case 'completed':
-        return 'bg-secondary/30 text-accent border-secondary/60';
-      case 'pending':
-        return 'bg-warning/15 text-warning border-warning/30';
-      case 'cancelled':
-        return 'bg-destructive/15 text-destructive border-destructive/30';
-      case 'no_show':
-        return 'bg-destructive/10 text-destructive border-destructive/20';
-      case 'rescheduled':
-        return 'bg-secondary/25 text-secondary-foreground border-secondary/40';
-      default:
-        return 'bg-muted text-muted-foreground border-border';
+      case 'confirmed': return 'bg-success/15 text-success border-success/30';
+      case 'completed': return 'bg-secondary/30 text-accent border-secondary/60';
+      case 'pending': return 'bg-warning/15 text-warning border-warning/30';
+      case 'cancelled': return 'bg-destructive/15 text-destructive border-destructive/30';
+      case 'no_show': return 'bg-destructive/10 text-destructive border-destructive/20';
+      case 'rescheduled': return 'bg-secondary/25 text-secondary-foreground border-secondary/40';
+      default: return 'bg-muted text-muted-foreground border-border';
     }
   };
 
   const getPaymentBadge = (status: BookingPaymentStatus) => {
     switch (status) {
-      case 'paid':
-        return {
-          text: 'Payment Confirmed',
-          classes: 'bg-success/15 text-success border-success/30'
-        };
-      case 'pending_review':
-        return {
-          text: 'Payment Pending Review',
-          classes: 'bg-warning/15 text-warning border-warning/30'
-        };
-      case 'unpaid':
-        return {
-          text: 'Payment Unpaid',
-          classes: 'bg-muted text-muted-foreground border-border'
-        };
-      case 'partially_paid':
-        return {
-          text: 'Partially Paid',
-          classes: 'bg-warning/15 text-warning border-warning/30'
-        };
-      case 'payment_rejected':
-        return {
-          text: 'Payment Rejected',
-          classes: 'bg-destructive/15 text-destructive border-destructive/30'
-        };
+      case 'paid': return { text: t('Paid', 'مدفوعة'), classes: 'bg-success/15 text-success border-success/30' };
+      case 'pending_review': return { text: t('Payment to review', 'دفع محتاج مراجعة'), classes: 'bg-warning/15 text-warning border-warning/30' };
+      case 'unpaid': return { text: t('Not paid', 'مش مدفوعة'), classes: 'bg-muted text-muted-foreground border-border' };
+      case 'partially_paid': return { text: t('Partly paid', 'مدفوعة جزئياً'), classes: 'bg-warning/15 text-warning border-warning/30' };
+      case 'payment_rejected': return { text: t('Payment rejected', 'الدفع اترفض'), classes: 'bg-destructive/15 text-destructive border-destructive/30' };
       case 'free_trial':
-      default:
-        return {
-          text: 'Free Trial ($0)',
-          classes: 'bg-secondary/30 text-accent border-secondary/60'
-        };
+      default: return { text: t('Free trial', 'تجربة مجانية'), classes: 'bg-secondary/30 text-accent border-secondary/60' };
     }
   };
 
+  const closeOtherPanels = () => {
+    setIsMarkingCompleted(false);
+    setIsMarkingNoShow(false);
+    setIsRescheduling(false);
+    setIsRequestingMove(false);
+    setIsCancelling(false);
+  };
+
+  const fieldClass = 'w-full p-2 text-sm glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40';
+
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/40 backdrop-blur-xs animate-in fade-in duration-150"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="booking-detail-title"
     >
-      <div 
+      <div
         className="glass-card border-none rounded-2xl w-full max-w-3xl shadow-xl overflow-hidden flex flex-col max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="px-6 py-4 border-b border-border flex items-center justify-between glass-surface/50">
-          <div className="flex items-center gap-3">
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 id="booking-detail-title" className="text-lg font-display font-semibold text-foreground">
-                  Booking {booking?.reference_code}
-                </h2>
-                {booking && (
-                  <button
-                    onClick={() => copyToClipboard(booking.reference_code, 'ref')}
-                    className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
-                    title="Copy reference code"
-                    aria-label="Copy reference code"
-                  >
-                    {copiedField === 'ref' ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5" />}
-                  </button>
-                )}
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Created on {booking ? DateTime.fromISO(booking.created_at).toFormat('LLL dd, yyyy') : '...'}
-              </p>
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 id="booking-detail-title" className="text-lg font-display font-semibold text-foreground">
+                {t('Lesson', 'حصة')} {booking?.reference_code}
+              </h2>
+              {booking && (
+                <button
+                  onClick={() => copyToClipboard(booking.reference_code, 'ref')}
+                  className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
+                  title={t('Copy reference', 'انسخ رقم الحجز')}
+                  aria-label={t('Copy reference', 'انسخ رقم الحجز')}
+                >
+                  {copiedField === 'ref' ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5" />}
+                </button>
+              )}
             </div>
+            <p className="text-sm text-muted-foreground">
+              {t('Booked on', 'اتحجزت يوم')} {booking ? DateTime.fromISO(booking.created_at).setLocale(locale).toFormat('LLL dd, yyyy') : '...'}
+            </p>
           </div>
 
           <div className="flex items-center gap-2">
             {booking && (
               <>
                 <span className={`px-2.5 py-1 text-sm font-semibold rounded-full border ${getBookingStatusBadge(booking.status)}`}>
-                  {booking.status.toUpperCase()}
+                  {statusLabel(booking.status)}
                 </span>
-                <span className={`px-2.5 py-1 text-sm font-semibold rounded-full border ${getPaymentBadge(booking.payment_status).classes}`}>
-                  {getPaymentBadge(booking.payment_status).text}
-                </span>
+                {isSuperAdmin && (
+                  <span className={`px-2.5 py-1 text-sm font-semibold rounded-full border ${getPaymentBadge(booking.payment_status).classes}`}>
+                    {getPaymentBadge(booking.payment_status).text}
+                  </span>
+                )}
               </>
             )}
-            <button 
+            <button
               onClick={onClose}
               className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors ms-2 cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center"
-              aria-label="Close modal"
+              aria-label={t('Close', 'إغلاق')}
             >
               <X className="w-5 h-5" />
             </button>
           </div>
         </div>
 
-        {/* Action alert if any */}
         {actionMessage && (
           <div className={`px-6 py-2 text-sm flex items-center justify-between border-b ${
-            actionMessage.type === 'success' 
-              ? 'bg-success/15 text-success border-success/30' 
+            actionMessage.type === 'success'
+              ? 'bg-success/15 text-success border-success/30'
               : 'bg-destructive/15 text-destructive border-destructive/30'
           }`}>
             <span>{actionMessage.text}</span>
-            <button 
-              onClick={() => setActionMessage(null)} 
-              className="opacity-70 hover:opacity-100 p-1 cursor-pointer"
-              aria-label="Dismiss alert"
-            >
+            <button onClick={() => setActionMessage(null)} className="opacity-70 hover:opacity-100 p-1 cursor-pointer" aria-label={t('Dismiss', 'إخفاء')}>
               <X className="w-3.5 h-3.5" />
             </button>
           </div>
         )}
 
-        {/* Content */}
         <div className="p-6 overflow-y-auto space-y-6">
           {loading ? (
             <div className="space-y-4 animate-pulse">
@@ -476,171 +463,126 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
           ) : error || !booking ? (
             <div className="p-6 bg-destructive/10 border border-destructive/20 rounded-xl text-center">
               <AlertCircle className="w-8 h-8 text-destructive mx-auto mb-2" />
-              <p className="text-sm font-medium text-destructive">{error || 'Booking not found'}</p>
+              <p className="text-sm font-medium text-destructive">{error || t('Lesson not found', 'الحصة مش موجودة')}</p>
             </div>
           ) : (
             <>
-              {/* Top Details Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Learner & Contact Card */}
+                {/* Learner & contact */}
                 <div className="glass-card p-4 rounded-xl border border-border shadow-2xs space-y-3">
                   <div className="flex items-center justify-between border-b border-border pb-2">
-                    <span className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                    <span className="text-sm font-semibold tracking-wider text-muted-foreground flex items-center gap-1.5">
                       <User className="w-3.5 h-3.5 text-accent" />
-                      Learner & Contact
+                      {t('Student & contact', 'الطالب والتواصل')}
                     </span>
                     {booking.student_id ? (
-                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-success/15 text-success font-semibold">
-                        Active Student
-                      </span>
+                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-success/15 text-success font-semibold">{t('Student account', 'حساب طالب')}</span>
                     ) : (
-                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-medium">
-                        Guest Learner
-                      </span>
+                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-medium">{t('Guest', 'زائر')}</span>
                     )}
                   </div>
 
                   <div>
-                    <h3 className="text-base font-semibold text-foreground">
-                      {booking.contact_name}
-                    </h3>
+                    <h3 className="text-base font-semibold text-foreground">{booking.contact_name}</h3>
                     {booking.parent_name && (
                       <p className="text-sm text-muted-foreground mt-0.5">
-                        Parent / Guardian: <span className="font-medium text-foreground">{booking.parent_name}</span>
+                        {t('Parent / guardian', 'ولي الأمر')}: <span className="font-medium text-foreground">{booking.parent_name}</span>
                       </p>
                     )}
                   </div>
 
                   <div className="space-y-1.5 text-sm text-foreground">
-                    <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-1.5 text-muted-foreground">
-                        <Mail className="w-3.5 h-3.5" /> Email:
-                      </span>
-                      <a 
-                        href={`mailto:${booking.contact_email}`} 
-                        className="font-mono text-[11px] hover:underline text-primary font-medium"
-                      >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="flex items-center gap-1.5 text-muted-foreground"><Mail className="w-3.5 h-3.5" /> {t('Email', 'الإيميل')}:</span>
+                      <a href={`mailto:${booking.contact_email}`} className="font-mono text-[11px] hover:underline text-primary font-medium" dir="ltr">
                         {booking.contact_email}
                       </a>
                     </div>
-
                     {booking.contact_whatsapp && (
-                      <div className="flex items-center justify-between">
-                        <span className="flex items-center gap-1.5 text-muted-foreground">
-                          <MessageSquare className="w-3.5 h-3.5" /> WhatsApp:
-                        </span>
-                        <a 
-                          href={buildContextualWhatsAppUrl(
-                            booking.contact_whatsapp,
-                            `As-salamu alaykum ${booking.contact_name},\nThis is Ustadh Mahmoud regarding booking ${booking.reference_code}.`
-                          )} 
-                          target="_blank" 
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="flex items-center gap-1.5 text-muted-foreground"><MessageSquare className="w-3.5 h-3.5" /> {t('WhatsApp', 'واتساب')}:</span>
+                        <a
+                          href={buildContextualWhatsAppUrl(booking.contact_whatsapp, `As-salamu alaykum ${booking.contact_name}, about lesson ${booking.reference_code}.`)}
+                          target="_blank"
                           rel="noreferrer"
                           className="hover:underline text-success font-medium"
+                          dir="ltr"
                         >
                           {booking.contact_whatsapp}
                         </a>
                       </div>
                     )}
-
-                    <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-1.5 text-muted-foreground">
-                        <Globe className="w-3.5 h-3.5" /> Timezone:
-                      </span>
-                      <span className="font-medium text-foreground">
-                        {booking.student_timezone || 'Not specified'}
-                      </span>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="flex items-center gap-1.5 text-muted-foreground"><Globe className="w-3.5 h-3.5" /> {t('Time zone', 'المنطقة الزمنية')}:</span>
+                      <span className="font-medium text-foreground" dir="ltr">{booking.student_timezone || t('Not set', 'مش محددة')}</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Lesson & Scheduling Card */}
+                {/* Lesson */}
                 <div className="glass-card p-4 rounded-xl border border-border shadow-2xs space-y-3">
                   <div className="flex items-center justify-between border-b border-border pb-2">
-                    <span className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                    <span className="text-sm font-semibold tracking-wider text-muted-foreground flex items-center gap-1.5">
                       <CalendarIcon className="w-3.5 h-3.5 text-accent" />
-                      Lesson Details
+                      {t('Lesson details', 'تفاصيل الحصة')}
                     </span>
                     <span className="text-[11px] px-2 py-0.5 rounded-full glass-surface text-muted-foreground border border-border font-medium">
-                      {booking.booking_type === 'trial' ? 'Free Trial' : 'Regular 1-on-1'}
+                      {booking.booking_type === 'trial' ? t('Free trial', 'تجربة مجانية') : t('Regular lesson', 'حصة عادية')}
                     </span>
                   </div>
-
                   <div>
-                    <h3 className="text-base font-semibold text-foreground">
-                      {booking.service_name}
-                    </h3>
+                    <h3 className="text-base font-semibold text-foreground">{booking.service_name}</h3>
                     <p className="text-sm text-muted-foreground mt-0.5">
-                      Duration: <span className="font-medium text-foreground">{booking.duration_minutes} Minutes</span>
+                      {t('Length', 'المدة')}: <span className="font-medium text-foreground">{booking.duration_minutes} {t('min', 'دقيقة')}</span>
                     </p>
                   </div>
-
                   <div className="space-y-1.5 text-sm text-foreground">
-                    <div className="flex items-start justify-between">
-                      <span className="text-muted-foreground flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5" /> Cairo Time:
-                      </span>
-                      <span className="font-medium text-foreground text-end">
-                        {startCairo ? startCairo.toFormat('EEE, LLL dd, yyyy • hh:mm a') : '...'}
-                      </span>
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="text-muted-foreground flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> {t('Cairo time', 'بتوقيت القاهرة')}:</span>
+                      <span className="font-medium text-foreground text-end">{startCairo ? startCairo.toFormat('EEE, LLL dd, yyyy • hh:mm a') : '...'}</span>
                     </div>
-
                     {startStudent && (
-                      <div className="flex items-start justify-between">
-                        <span className="text-muted-foreground flex items-center gap-1.5">
-                          <Globe className="w-3.5 h-3.5" /> Student Time:
-                        </span>
-                        <span className="font-medium text-foreground text-end">
-                          {startStudent.toFormat('EEE, LLL dd, yyyy • hh:mm a')}
-                        </span>
+                      <div className="flex items-start justify-between gap-2">
+                        <span className="text-muted-foreground flex items-center gap-1.5"><Globe className="w-3.5 h-3.5" /> {t("Student's time", 'بتوقيت الطالب')}:</span>
+                        <span className="font-medium text-foreground text-end">{startStudent.toFormat('EEE, LLL dd, yyyy • hh:mm a')}</span>
                       </div>
                     )}
                   </div>
+                  {rescheduleRequestedAt && isActive && (
+                    <p className="text-xs p-2 rounded-lg bg-warning/10 text-foreground">
+                      {t('You asked the student to move this lesson. Waiting for their new time.', 'طلبت من الطالب يغيّر ميعاد الحصة. مستنيين يختار ميعاد جديد.')}
+                    </p>
+                  )}
                 </div>
               </div>
 
-              {/* Integrations Bar: Zoom & Google Calendar */}
+              {/* Zoom & calendar */}
               <div className="glass-card p-4 rounded-xl border border-border shadow-2xs space-y-3">
                 <div className="flex items-center justify-between border-b border-border pb-2">
-                  <span className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                  <span className="text-sm font-semibold tracking-wider text-muted-foreground flex items-center gap-1.5">
                     <Video className="w-3.5 h-3.5 text-accent" />
-                    Online Classroom & Calendar Sync
+                    {t('Online classroom & calendar', 'الفصل الأونلاين والتقويم')}
                   </span>
                   <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${
-                    booking.google_calendar_event_id 
-                      ? 'bg-success/15 text-success border border-success/30' 
-                      : 'bg-muted text-muted-foreground border border-border'
+                    booking.google_calendar_event_id ? 'bg-success/15 text-success border border-success/30' : 'bg-muted text-muted-foreground border border-border'
                   }`}>
-                    {booking.google_calendar_event_id ? 'Google Calendar Synced' : 'Calendar Local'}
+                    {booking.google_calendar_event_id ? t('In Google Calendar', 'في تقويم جوجل') : t('Not in Google Calendar', 'مش في تقويم جوجل')}
                   </span>
                 </div>
-
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium text-foreground">
-                      Zoom Meeting Room:
-                    </p>
+                  <div className="space-y-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground">{t('Zoom room', 'غرفة Zoom')}:</p>
                     {booking.zoom_meeting_link ? (
-                      <span className="font-mono text-sm text-muted-foreground truncate max-w-sm block">
-                        {booking.zoom_meeting_link}
-                      </span>
+                      <span className="font-mono text-sm text-muted-foreground truncate max-w-sm block" dir="ltr">{booking.zoom_meeting_link}</span>
                     ) : (
-                      <span className="text-sm text-muted-foreground italic">
-                        No meeting link assigned yet
-                      </span>
+                      <span className="text-sm text-muted-foreground italic">{t('No link yet', 'لسه مفيش رابط')}</span>
                     )}
                   </div>
-
                   <div className="flex items-center gap-2">
                     {booking.zoom_host_url && (
-                      <a
-                        href={booking.zoom_host_url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="px-3.5 py-2 text-sm font-semibold text-primary-foreground btn-primary-material rounded-xl transition-colors flex items-center gap-1.5 min-h-[36px]"
-                      >
+                      <a href={booking.zoom_host_url} target="_blank" rel="noreferrer" className="px-3.5 py-2 text-sm font-semibold text-primary-foreground btn-primary-material rounded-xl transition-colors flex items-center gap-1.5 min-h-[36px]">
                         <Video className="w-3.5 h-3.5" />
-                        Launch as Host
+                        {t('Start as host', 'ابدأ كمضيف')}
                       </a>
                     )}
                     {booking.zoom_meeting_link && (
@@ -649,184 +591,157 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                         className="px-3.5 py-2 text-sm font-medium text-foreground glass-surface glass-hover hover:bg-surface border-none rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer min-h-[36px]"
                       >
                         {copiedField === 'zoom' ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5" />}
-                        Copy Link
+                        {t('Copy link', 'انسخ الرابط')}
                       </button>
                     )}
                   </div>
                 </div>
               </div>
 
-              {/* PAYMENT RECONCILIATION SECTION */}
-              <div className="glass-card p-5 rounded-xl border border-border shadow-2xs space-y-4">
-                <div className="flex items-center justify-between border-b border-border pb-3">
-                  <div>
-                    <span className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                      <DollarSign className="w-4 h-4 text-accent" />
-                      Payment Tracking & Reconciliation
-                    </span>
-                    <p className="text-sm text-muted-foreground mt-0.5">
-                      Manual ledger verification and financial settlement
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => setShowPaymentModal(true)}
-                    className="px-3 py-1.5 text-sm font-semibold text-primary-foreground btn-primary-material rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
-                  >
-                    <Plus className="w-3.5 h-3.5" />
-                    Record Payment
-                  </button>
-                </div>
-
-                {/* Amounts Breakdown */}
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="p-3 glass-surface rounded-xl border border-border">
-                    <span className="text-[11px] text-muted-foreground block">Expected Fee</span>
-                    <span className="text-base font-semibold text-foreground">
-                      {booking.booking_type === 'trial' 
-                        ? 'Free Trial ($0.00)' 
-                        : booking.expected_amount !== null 
-                          ? `$${booking.expected_amount.toFixed(2)}${booking.currency ? ` ${booking.currency}` : ''}` 
-                          : 'Not set'}
-                    </span>
-                  </div>
-
-                  <div className="p-3 glass-surface rounded-xl border border-border">
-                    <span className="text-[11px] text-muted-foreground block">Confirmed Received</span>
-                    <span className="text-base font-semibold text-success">
-                      ${booking.confirmed_amount.toFixed(2)} {booking.currency}
-                    </span>
-                  </div>
-
-                  <div className="p-3 glass-surface rounded-xl border border-border">
-                    <span className="text-[11px] text-muted-foreground block">Reconciliation State</span>
-                    <span className="text-sm font-semibold mt-1 block">
-                      <span className={`px-2 py-0.5 rounded-md border ${getPaymentBadge(booking.payment_status).classes}`}>
-                        {getPaymentBadge(booking.payment_status).text}
+              {/* Payments: super admin only (RULES.md §1) */}
+              {isSuperAdmin && (
+                <div className="glass-card p-5 rounded-xl border border-border shadow-2xs space-y-4">
+                  <div className="flex items-center justify-between border-b border-border pb-3">
+                    <div>
+                      <span className="text-sm font-semibold tracking-wider text-muted-foreground flex items-center gap-1.5">
+                        <DollarSign className="w-4 h-4 text-accent" />
+                        {t('Payments', 'المدفوعات')}
                       </span>
-                    </span>
-                  </div>
-                </div>
-
-                {/* Payment Records List */}
-                <div className="space-y-2">
-                  <h4 className="text-sm font-semibold text-foreground">
-                    Payment History ({booking.payments?.length || 0} record{booking.payments?.length === 1 ? '' : 's'})
-                  </h4>
-
-                  {(!booking.payments || booking.payments.length === 0) ? (
-                    <div className="p-4 rounded-xl border border-dashed border-border text-center text-sm text-muted-foreground">
-                      {booking.booking_type === 'trial' 
-                        ? 'No payments needed for this trial lesson.' 
-                        : 'No payment records submitted or logged for this booking yet.'}
+                      <p className="text-sm text-muted-foreground mt-0.5">{t('Only you (admin) can see this.', 'أنت بس (المدير) اللي شايف الجزء ده.')}</p>
                     </div>
-                  ) : (
-                    <div className="space-y-2">
-                      {booking.payments.map((p) => (
-                        <div 
-                          key={p.id} 
-                          className="p-3 glass-surface rounded-xl border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm"
-                        >
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-2">
-                              <span className="font-semibold text-foreground">
-                                ${Number(p.amount).toFixed(2)} {p.currency}
-                              </span>
-                              <span className="text-border">•</span>
-                              <span className="capitalize text-muted-foreground font-medium">
-                                {p.payment_method.replace(/_/g, ' ')}
-                              </span>
-                              <span className="text-border">•</span>
-                              <span className={`px-2 py-0.5 rounded-full text-[13px] font-semibold border ${
-                                p.status === 'confirmed' 
-                                  ? 'bg-success/15 text-success border-success/30' 
-                                  : p.status === 'pending'
-                                  ? 'bg-warning/15 text-warning border-warning/30' 
-                                  : 'bg-destructive/15 text-destructive border-destructive/30'
-                              }`}>
-                                {p.status.toUpperCase()}
-                              </span>
+                    <button
+                      onClick={() => setShowPaymentModal(true)}
+                      className="px-3 py-1.5 text-sm font-semibold text-primary-foreground btn-primary-material rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      {t('Record payment', 'سجّل دفع')}
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="p-3 glass-surface rounded-xl border border-border">
+                      <span className="text-[11px] text-muted-foreground block">{t('Lesson price', 'سعر الحصة')}</span>
+                      <span className="text-base font-semibold text-foreground">
+                        {booking.booking_type === 'trial'
+                          ? t('Free', 'مجانية')
+                          : booking.expected_amount !== null && booking.expected_amount !== undefined
+                            ? `$${Number(booking.expected_amount).toFixed(2)}${booking.currency ? ` ${booking.currency}` : ''}`
+                            : t('Not set', 'مش محدد')}
+                      </span>
+                    </div>
+                    <div className="p-3 glass-surface rounded-xl border border-border">
+                      <span className="text-[11px] text-muted-foreground block">{t('Received', 'اتستلم')}</span>
+                      <span className="text-base font-semibold text-success">${Number(booking.confirmed_amount || 0).toFixed(2)} {booking.currency}</span>
+                    </div>
+                    <div className="p-3 glass-surface rounded-xl border border-border">
+                      <span className="text-[11px] text-muted-foreground block">{t('Status', 'الحالة')}</span>
+                      <span className="text-sm font-semibold mt-1 block">
+                        <span className={`px-2 py-0.5 rounded-md border ${getPaymentBadge(booking.payment_status).classes}`}>
+                          {getPaymentBadge(booking.payment_status).text}
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-semibold text-foreground">
+                      {t('Payment history', 'سجل الدفع')} ({booking.payments?.length || 0})
+                    </h4>
+                    {(!booking.payments || booking.payments.length === 0) ? (
+                      <div className="p-4 rounded-xl border border-dashed border-border text-center text-sm text-muted-foreground">
+                        {booking.booking_type === 'trial' ? t('No payment needed for a free trial.', 'التجربة المجانية مش محتاجة دفع.') : t('No payments yet.', 'لسه مفيش مدفوعات.')}
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        {booking.payments.map((p) => (
+                          <div key={p.id} className="p-3 glass-surface rounded-xl border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm">
+                            <div className="space-y-1">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span className="font-semibold text-foreground">${Number(p.amount).toFixed(2)} {p.currency}</span>
+                                <span className="text-border">•</span>
+                                <span className="capitalize text-muted-foreground font-medium">{p.payment_method.replace(/_/g, ' ')}</span>
+                                <span className="text-border">•</span>
+                                <span className={`px-2 py-0.5 rounded-full text-[13px] font-semibold border ${
+                                  p.status === 'confirmed' ? 'bg-success/15 text-success border-success/30'
+                                    : p.status === 'pending' ? 'bg-warning/15 text-warning border-warning/30'
+                                    : 'bg-destructive/15 text-destructive border-destructive/30'
+                                }`}>
+                                  {({ confirmed: t('Confirmed', 'مؤكد'), pending: t('Pending', 'معلق'), rejected: t('Rejected', 'مرفوض'), refunded: t('Refunded', 'اتسدد') } as Record<string, string>)[p.status] || p.status}
+                                </span>
+                              </div>
+                              <div className="text-[11px] text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-0.5">
+                                {p.payment_reference && <span>{t('Ref', 'المرجع')}: <span className="font-mono text-foreground">{p.payment_reference}</span></span>}
+                                <span>{t('Logged', 'اتسجل')}: {DateTime.fromISO(p.created_at).setLocale(locale).toFormat('LLL dd, hh:mm a')}</span>
+                                {p.confirmed_at && <span className="text-success font-medium">{t('Confirmed', 'اتأكد')}: {DateTime.fromISO(p.confirmed_at).setLocale(locale).toFormat('LLL dd')}</span>}
+                              </div>
+                              {p.notes && <p className="text-[11px] text-muted-foreground italic">{t('Note', 'ملاحظة')}: {p.notes}</p>}
                             </div>
 
-                            <div className="text-[11px] text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-0.5">
-                              {p.payment_reference && (
-                                <span>Ref: <span className="font-mono text-foreground">{p.payment_reference}</span></span>
-                              )}
-                              <span>Logged: {DateTime.fromISO(p.created_at).toFormat('LLL dd, hh:mm a')}</span>
-                              {p.confirmed_at && (
-                                <span className="text-success font-medium">Confirmed: {DateTime.fromISO(p.confirmed_at).toFormat('LLL dd')}</span>
-                              )}
-                            </div>
-
-                            {p.notes && (
-                              <p className="text-[11px] text-muted-foreground italic">
-                                Note: {p.notes}
-                              </p>
+                            {p.status === 'confirmed' && (
+                              <button
+                                onClick={() => handleRefundPayment(p.id)}
+                                className="shrink-0 px-3 py-1.5 text-sm font-semibold text-destructive hover:bg-destructive/15 border border-destructive/30 rounded-xl transition-colors cursor-pointer min-h-[36px]"
+                              >
+                                {t('Refund', 'استرداد')}
+                              </button>
+                            )}
+                            {p.status === 'pending' && (
+                              <div className="flex items-center gap-2 shrink-0">
+                                <button
+                                  onClick={() => handleConfirmPayment(p.id)}
+                                  className="px-3 py-1.5 text-sm font-semibold text-success-foreground bg-success hover:bg-success/90 rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
+                                >
+                                  <CheckCircle2 className="w-3.5 h-3.5" />
+                                  {t('Confirm', 'تأكيد')}
+                                </button>
+                                <button
+                                  onClick={() => handleRejectPayment(p.id)}
+                                  className="px-3 py-1.5 text-sm font-semibold text-destructive hover:bg-destructive/15 border border-destructive/30 rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
+                                >
+                                  <XCircle className="w-3.5 h-3.5" />
+                                  {t('Reject', 'رفض')}
+                                </button>
+                              </div>
                             )}
                           </div>
-
-                          {p.status === 'confirmed' && (
-                            <button
-                              onClick={() => handleRefundPayment(p.id)}
-                              className="shrink-0 px-3 py-1.5 text-sm font-semibold text-destructive hover:bg-destructive/15 border border-destructive/30 rounded-xl transition-colors cursor-pointer min-h-[36px]"
-                            >
-                              Refund
-                            </button>
-                          )}
-
-                          {/* Action buttons for pending payments */}
-                          {p.status === 'pending' && (
-                            <div className="flex items-center gap-2 shrink-0">
-                              <button
-                                onClick={() => handleConfirmPayment(p.id)}
-                                className="px-3 py-1.5 text-sm font-semibold text-success-foreground bg-success hover:bg-success/90 rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
-                              >
-                                <CheckCircle2 className="w-3.5 h-3.5" />
-                                Confirm
-                              </button>
-                              <button
-                                onClick={() => handleRejectPayment(p.id)}
-                                className="px-3 py-1.5 text-sm font-semibold text-destructive hover:bg-destructive/15 border border-destructive/30 rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
-                              >
-                                <XCircle className="w-3.5 h-3.5" />
-                                Reject
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
 
-              {(booking as any).payment_plan === 'pay_later' && booking.status === 'pending' && (
+              {isSuperAdmin && (booking as any).payment_plan === 'pay_later' && booking.status === 'pending' && (
                 <div className="glass-card p-4 rounded-xl border border-warning/40 bg-warning/10 space-y-3">
                   <div className="text-sm text-foreground">
-                    <strong className="block">Pay-later request</strong>
-                    This trusted student booked now and will pay later. Approve to confirm the lesson (Zoom, calendar and reminders are sent), or decline to free the slot.
+                    <strong className="block">{t('Pay-later request', 'طلب ادفع لاحقاً')}</strong>
+                    {t(
+                      'This regular student booked now and will pay later. Approve to confirm the lesson, or decline to free the time.',
+                      'الطالب المنتظم ده حجز دلوقتي وهيدفع بعدين. وافق علشان الحصة تتأكد، أو ارفض علشان الميعاد يفضى.'
+                    )}
                   </div>
                   <div className="flex gap-2">
                     <button onClick={() => handlePayLaterDecision('approve')} className="px-3 py-1.5 text-sm font-semibold text-success-foreground bg-success hover:bg-success/90 rounded-xl cursor-pointer min-h-[36px]">
-                      Approve
+                      {t('Approve', 'موافقة')}
                     </button>
                     <button onClick={() => handlePayLaterDecision('reject')} className="px-3 py-1.5 text-sm font-semibold text-destructive hover:bg-destructive/15 border border-destructive/30 rounded-xl cursor-pointer min-h-[36px]">
-                      Decline
+                      {t('Decline', 'رفض')}
                     </button>
                   </div>
                 </div>
               )}
 
-              {/* Teacher Internal Notes Card */}
+              {/* Private notes */}
               <div className="glass-card p-4 rounded-xl border border-border shadow-2xs space-y-2">
-                <span className="text-sm font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                <span className="text-sm font-semibold tracking-wider text-muted-foreground flex items-center gap-1.5">
                   <FileText className="w-3.5 h-3.5 text-accent" />
-                  Internal Teacher Notes
+                  {t('Private notes', 'ملاحظات خاصة')}
                 </span>
                 <textarea
                   rows={3}
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Private lesson observation, payment agreements, or pedagogical notes..."
+                  placeholder={t('Lesson observations or teaching notes (the student does not see these)…', 'ملاحظات عن الحصة أو التدريس (الطالب مش بيشوفها)…')}
                   className="w-full p-2.5 text-sm glass-surface border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
                 />
                 <div className="flex justify-end">
@@ -835,54 +750,74 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     disabled={savingNotes}
                     className="px-3.5 py-1.5 text-sm font-medium text-foreground hover:bg-surface-subtle rounded-xl border border-border transition-colors disabled:opacity-50 cursor-pointer min-h-[36px]"
                   >
-                    {savingNotes ? 'Saving...' : 'Save Notes'}
+                    {savingNotes ? t('Saving…', 'جارٍ الحفظ…') : t('Save notes', 'احفظ الملاحظات')}
                   </button>
                 </div>
               </div>
 
-              {/* Recorded Covered Material Card (if session already has covered material) */}
               {lessonSession?.covered_material && (
                 <div className="bg-secondary/20 p-4 rounded-xl border border-secondary/50 shadow-2xs space-y-1.5">
-                  <span className="text-sm font-semibold uppercase tracking-wider text-primary flex items-center gap-1.5">
+                  <span className="text-sm font-semibold tracking-wider text-primary flex items-center gap-1.5">
                     <BookOpen className="w-3.5 h-3.5" />
-                    Covered Material Recorded
+                    {t('What was covered', 'اللي اتشرح في الحصة')}
                   </span>
-                  <p className="text-sm text-foreground font-medium leading-relaxed">
-                    {lessonSession.covered_material}
-                  </p>
+                  <p className="text-sm text-foreground font-medium leading-relaxed">{lessonSession.covered_material}</p>
                 </div>
               )}
 
-              {/* Reschedule Drawer/Box */}
+              {/* Teacher: ask the student to move the lesson */}
+              {isRequestingMove && (
+                <div className="p-4 bg-secondary/15 border border-secondary/30 rounded-xl space-y-3 animate-in fade-in">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-sm font-semibold text-secondary-foreground flex items-center gap-1.5">
+                      <Send className="w-3.5 h-3.5" />
+                      {t('Ask the student to reschedule', 'اطلب من الطالب يغيّر الميعاد')}
+                    </h4>
+                    <button onClick={() => setIsRequestingMove(false)} className="text-sm text-muted-foreground hover:text-foreground cursor-pointer">
+                      {t('Cancel', 'إلغاء')}
+                    </button>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {t('The student gets a notification on the site and picks a new time that suits you both.', 'الطالب هيوصله إشعار على الموقع ويختار ميعاد جديد يناسبكم.')}
+                  </p>
+                  <input
+                    type="text"
+                    placeholder={t('Short note for the student (optional)', 'ملاحظة قصيرة للطالب (اختياري)')}
+                    value={moveNote}
+                    onChange={(e) => setMoveNote(e.target.value)}
+                    maxLength={500}
+                    className={fieldClass}
+                  />
+                  <button
+                    onClick={handleRequestMove}
+                    disabled={requestingMove}
+                    className="w-full py-2 text-sm font-semibold text-secondary-foreground bg-secondary hover:bg-secondary/80 rounded-xl transition-colors disabled:opacity-50 cursor-pointer min-h-[40px]"
+                  >
+                    {requestingMove ? t('Sending…', 'جارٍ الإرسال…') : t('Send request', 'ابعت الطلب')}
+                  </button>
+                </div>
+              )}
+
+              {/* Admin: move the lesson directly */}
               {isRescheduling && (
                 <div className="p-4 bg-secondary/15 border border-secondary/30 rounded-xl space-y-3 animate-in fade-in">
                   <div className="flex items-center justify-between">
                     <h4 className="text-sm font-semibold text-secondary-foreground flex items-center gap-1.5">
                       <RotateCcw className="w-3.5 h-3.5" />
-                      Reschedule Lesson Time
+                      {t('Move the lesson', 'غيّر ميعاد الحصة')}
                     </h4>
                     <button onClick={() => setIsRescheduling(false)} className="text-sm text-muted-foreground hover:text-foreground cursor-pointer">
-                      Cancel
+                      {t('Cancel', 'إلغاء')}
                     </button>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-[11px] text-muted-foreground mb-1">New Date</label>
-                      <input 
-                        type="date" 
-                        value={newStartDate} 
-                        onChange={(e) => setNewStartDate(e.target.value)}
-                        className="w-full p-2 text-sm glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
-                      />
+                      <label className="block text-[11px] text-muted-foreground mb-1" htmlFor="bdm-new-date">{t('New date', 'التاريخ الجديد')}</label>
+                      <input id="bdm-new-date" type="date" value={newStartDate} onChange={(e) => setNewStartDate(e.target.value)} className={fieldClass} />
                     </div>
                     <div>
-                      <label className="block text-[11px] text-muted-foreground mb-1">New Time ({booking.student_timezone || 'Local'})</label>
-                      <input 
-                        type="time" 
-                        value={newStartTime} 
-                        onChange={(e) => setNewStartTime(e.target.value)}
-                        className="w-full p-2 text-sm glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
-                      />
+                      <label className="block text-[11px] text-muted-foreground mb-1" htmlFor="bdm-new-time">{t('New time', 'الوقت الجديد')} ({booking.student_timezone || t('local', 'محلي')})</label>
+                      <input id="bdm-new-time" type="time" value={newStartTime} onChange={(e) => setNewStartTime(e.target.value)} className={fieldClass} />
                     </div>
                   </div>
                   <button
@@ -890,26 +825,25 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     disabled={rescheduling || !newStartDate || !newStartTime}
                     className="w-full py-2 text-sm font-semibold text-secondary-foreground bg-secondary hover:bg-secondary/80 rounded-xl transition-colors disabled:opacity-50 cursor-pointer min-h-[40px]"
                   >
-                    {rescheduling ? 'Rescheduling & Syncing Calendar...' : 'Confirm Rescheduled Time'}
+                    {rescheduling ? t('Moving and updating the calendar…', 'جارٍ التغيير وتحديث التقويم…') : t('Confirm new time', 'أكّد الميعاد الجديد')}
                   </button>
                 </div>
               )}
 
-              {/* Cancellation Box */}
               {isCancelling && (
                 <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-xl space-y-3 animate-in fade-in">
                   <div className="flex items-center justify-between">
                     <h4 className="text-sm font-semibold text-destructive flex items-center gap-1.5">
                       <XCircle className="w-3.5 h-3.5" />
-                      Cancel Booking
+                      {t('Cancel the lesson', 'إلغاء الحصة')}
                     </h4>
                     <button onClick={() => setIsCancelling(false)} className="text-sm text-muted-foreground hover:text-foreground cursor-pointer">
-                      Dismiss
+                      {t('Back', 'رجوع')}
                     </button>
                   </div>
                   <input
                     type="text"
-                    placeholder="Reason for cancellation (e.g. Requested by student, emergency)"
+                    placeholder={t('Reason (e.g. requested by the student, emergency)', 'السبب (مثلاً بطلب الطالب، ظرف طارئ)')}
                     value={cancellationReason}
                     onChange={(e) => setCancellationReason(e.target.value)}
                     className="w-full p-2 text-sm glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-destructive/40"
@@ -919,48 +853,46 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     disabled={cancelling}
                     className="w-full py-2 text-sm font-semibold text-destructive-foreground bg-destructive hover:bg-destructive/90 rounded-xl transition-colors disabled:opacity-50 cursor-pointer min-h-[40px]"
                   >
-                    {cancelling ? 'Cancelling & Syncing Calendar...' : 'Confirm Cancellation'}
+                    {cancelling ? t('Cancelling…', 'جارٍ الإلغاء…') : t('Confirm cancellation', 'أكّد الإلغاء')}
                   </button>
                 </div>
               )}
 
-              {/* Completed Lesson Box */}
               {isMarkingCompleted && (
                 <div className="p-4 bg-secondary/30 border border-secondary/50 rounded-xl space-y-3 animate-in fade-in">
                   <div className="flex items-center justify-between">
                     <h4 className="text-sm font-semibold text-primary flex items-center gap-1.5">
                       <CalendarCheck2 className="w-3.5 h-3.5" />
-                      Record Completed Lesson
+                      {t('Record a completed lesson', 'سجّل إن الحصة تمت')}
                     </h4>
-                    <button 
-                      onClick={() => setIsMarkingCompleted(false)} 
-                      className="text-sm text-muted-foreground hover:text-foreground cursor-pointer"
-                    >
-                      Dismiss
+                    <button onClick={() => setIsMarkingCompleted(false)} className="text-sm text-muted-foreground hover:text-foreground cursor-pointer">
+                      {t('Back', 'رجوع')}
                     </button>
                   </div>
                   <div>
-                    <label className="block text-[11px] font-medium text-foreground mb-1">
-                      Covered Material <span className="text-muted-foreground font-normal">(Surah / Ayahs, Page, Topics taught)</span>
+                    <label className="block text-[11px] font-medium text-foreground mb-1" htmlFor="bdm-covered">
+                      {t('What was covered', 'اللي اتشرح')} <span className="text-muted-foreground font-normal">({t('surah / ayahs, page, topics', 'سورة / آيات، صفحة، موضوعات')})</span>
                     </label>
                     <input
+                      id="bdm-covered"
                       type="text"
-                      placeholder="e.g. Surah Al-Baqarah Ayahs 1–25, Tajweed rules of Meem Sakinah"
+                      placeholder={t('e.g. Al-Baqarah 1–25, rules of Meem Sakinah', 'مثلاً: البقرة 1–25، أحكام الميم الساكنة')}
                       value={coveredMaterial}
                       onChange={(e) => setCoveredMaterial(e.target.value)}
-                      className="w-full p-2 text-sm glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+                      className={fieldClass}
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-medium text-foreground mb-1">
-                      Observations & Notes <span className="text-muted-foreground font-normal">(optional)</span>
+                    <label className="block text-[11px] font-medium text-foreground mb-1" htmlFor="bdm-observations">
+                      {t('Notes', 'ملاحظات')} <span className="text-muted-foreground font-normal">({t('optional', 'اختياري')})</span>
                     </label>
                     <input
+                      id="bdm-observations"
                       type="text"
-                      placeholder="e.g. Student demonstrated good Tajweed, review Ayah 15 next session"
+                      placeholder={t('e.g. Good Tajweed, review ayah 15 next time', 'مثلاً: تجويد كويس، نراجع آية 15 المرة الجاية')}
                       value={completionNotes}
                       onChange={(e) => setCompletionNotes(e.target.value)}
-                      className="w-full p-2 text-sm glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+                      className={fieldClass}
                     />
                   </div>
                   <button
@@ -968,73 +900,59 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     disabled={markingCompleted}
                     className="w-full py-2 text-sm font-semibold text-primary-foreground btn-primary-material rounded-xl transition-colors disabled:opacity-50 cursor-pointer min-h-[40px]"
                   >
-                    {markingCompleted ? 'Recording Completion...' : 'Confirm Lesson Completed'}
+                    {markingCompleted ? t('Saving…', 'جارٍ الحفظ…') : t('Confirm lesson completed', 'أكّد إن الحصة تمت')}
                   </button>
                 </div>
               )}
 
-              {/* No-Show Box */}
               {isMarkingNoShow && (
                 <div className="p-4 bg-warning/10 border border-warning/20 rounded-xl space-y-3 animate-in fade-in">
                   <div className="flex items-center justify-between">
                     <h4 className="text-sm font-semibold text-warning flex items-center gap-1.5">
                       <UserX className="w-3.5 h-3.5" />
-                      Record Student No-Show
+                      {t('Record a no-show', 'سجّل غياب الطالب')}
                     </h4>
                     <button onClick={() => setIsMarkingNoShow(false)} className="text-sm text-muted-foreground hover:text-foreground cursor-pointer">
-                      Dismiss
+                      {t('Back', 'رجوع')}
                     </button>
                   </div>
 
-                  {/* Explicit Credit Decision Selector */}
                   <div className="space-y-1.5">
-                    <label className="block text-[11px] font-semibold text-foreground">
-                      Package Credit Decision:
-                    </label>
+                    <span className="block text-[11px] font-semibold text-foreground">{t('Package credit', 'رصيد الباقة')}:</span>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       <button
                         type="button"
                         onClick={() => setNoShowCreditDecision('returned')}
+                        aria-pressed={noShowCreditDecision === 'returned'}
                         className={`p-2.5 rounded-xl border text-start transition-all cursor-pointer ${
-                          noShowCreditDecision === 'returned'
-                            ? 'glass-card border-primary ring-1 ring-primary text-foreground'
-                            : 'glass-card/60 border-border text-muted-foreground glass-hover hover:bg-surface'
+                          noShowCreditDecision === 'returned' ? 'glass-card border-primary ring-1 ring-primary text-foreground' : 'glass-card/60 border-border text-muted-foreground glass-hover hover:bg-surface'
                         }`}
                       >
-                        <span className="font-semibold text-sm block text-foreground">
-                          Return Credit
-                        </span>
-                        <span className="text-[13px] text-muted-foreground block mt-0.5">
-                          Refund / keep credit in student's package.
-                        </span>
+                        <span className="font-semibold text-sm block text-foreground">{t('Keep the credit', 'خلّي الرصيد')}</span>
+                        <span className="text-[13px] text-muted-foreground block mt-0.5">{t('The lesson stays in the package.', 'الحصة تفضل في الباقة.')}</span>
                       </button>
-
                       <button
                         type="button"
                         onClick={() => setNoShowCreditDecision('used')}
+                        aria-pressed={noShowCreditDecision === 'used'}
                         className={`p-2.5 rounded-xl border text-start transition-all cursor-pointer ${
-                          noShowCreditDecision === 'used'
-                            ? 'glass-card border-warning ring-1 ring-warning text-foreground'
-                            : 'glass-card/60 border-border text-muted-foreground glass-hover hover:bg-surface'
+                          noShowCreditDecision === 'used' ? 'glass-card border-warning ring-1 ring-warning text-foreground' : 'glass-card/60 border-border text-muted-foreground glass-hover hover:bg-surface'
                         }`}
                       >
-                        <span className="font-semibold text-sm block text-foreground">
-                          Deduct 1 Credit
-                        </span>
-                        <span className="text-[13px] text-muted-foreground block mt-0.5">
-                          Forfeit / mark 1 credit as used for missed lesson.
-                        </span>
+                        <span className="font-semibold text-sm block text-foreground">{t('Use 1 credit', 'اخصم حصة')}</span>
+                        <span className="text-[13px] text-muted-foreground block mt-0.5">{t('The missed lesson counts as taken.', 'الحصة اللي اتفوتت تتحسب.')}</span>
                       </button>
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-medium text-foreground mb-1">
-                      Reason / Note <span className="text-muted-foreground font-normal">(optional)</span>
+                    <label className="block text-[11px] font-medium text-foreground mb-1" htmlFor="bdm-noshow">
+                      {t('Note', 'ملاحظة')} <span className="text-muted-foreground font-normal">({t('optional', 'اختياري')})</span>
                     </label>
                     <input
+                      id="bdm-noshow"
                       type="text"
-                      placeholder="Optional note (e.g. Student did not attend, waited 15 mins)"
+                      placeholder={t('e.g. Did not join, waited 15 minutes', 'مثلاً: ما دخلش، استنيت 15 دقيقة')}
                       value={noShowReason}
                       onChange={(e) => setNoShowReason(e.target.value)}
                       className="w-full p-2 text-sm glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-warning/40"
@@ -1045,83 +963,81 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     disabled={markingNoShow}
                     className="w-full py-2 text-sm font-semibold text-warning-foreground bg-warning hover:bg-warning/90 rounded-xl transition-colors disabled:opacity-50 cursor-pointer min-h-[40px]"
                   >
-                    {markingNoShow ? 'Recording No-Show...' : 'Confirm Student No-Show'}
+                    {markingNoShow ? t('Saving…', 'جارٍ الحفظ…') : t('Confirm no-show', 'أكّد الغياب')}
                   </button>
                 </div>
               )}
 
-              {/* Master Booking Controls Footer */}
+              {/* Actions */}
               <div className="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-border">
                 <div className="flex flex-wrap items-center gap-2">
                   {booking.status === 'completed' && (
                     <span className="px-3.5 py-2 text-sm font-semibold text-primary bg-primary/15 rounded-xl border border-secondary/60 flex items-center gap-1.5">
                       <Check className="w-4 h-4" />
-                      Completed
+                      {t('Completed', 'تمت')}
                     </span>
                   )}
-
                   {booking.status === 'no_show' && (
                     <span className="px-3.5 py-2 text-sm font-semibold text-destructive bg-destructive/10 rounded-xl border border-destructive/20 flex items-center gap-1.5">
                       <UserX className="w-4 h-4" />
-                      Marked No-Show
+                      {t('No-show', 'غياب')}
                     </span>
                   )}
 
-                  {booking.status !== 'completed' && booking.status !== 'no_show' && booking.status !== 'cancelled' && (
+                  {isActive && (
                     <>
                       {!isMarkingCompleted && (
                         <button
-                          onClick={() => {
-                            setIsMarkingCompleted(true);
-                            setIsMarkingNoShow(false);
-                            setIsRescheduling(false);
-                            setIsCancelling(false);
-                          }}
-                          disabled={markingCompleted || Boolean(startUtc && startUtc > DateTime.now().plus({ minutes: 15 }))}
-                          title={startUtc && startUtc > DateTime.now().plus({ minutes: 15 }) ? 'Cannot mark completed before lesson start time' : 'Mark lesson completed'}
+                          onClick={() => { closeOtherPanels(); setIsMarkingCompleted(true); }}
+                          disabled={markingCompleted || notStartedYet}
+                          title={notStartedYet ? t('Available once the lesson starts', 'متاح لما الحصة تبدأ') : undefined}
                           className="px-3.5 py-2 text-sm font-semibold text-primary-foreground btn-primary-material rounded-xl shadow-xs transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer min-h-[40px]"
                         >
                           <CalendarCheck2 className="w-4 h-4" />
-                          Mark Completed
+                          {t('Mark completed', 'الحصة تمت')}
                         </button>
                       )}
-
                       {!isMarkingNoShow && (
                         <button
-                          onClick={() => {
-                            setIsMarkingNoShow(true);
-                            setIsMarkingCompleted(false);
-                            setIsRescheduling(false);
-                            setIsCancelling(false);
-                          }}
-                          disabled={Boolean(startUtc && startUtc > DateTime.now().plus({ minutes: 15 }))}
-                          title={startUtc && startUtc > DateTime.now().plus({ minutes: 15 }) ? 'Cannot record no-show before lesson start time' : 'Record student no-show'}
+                          onClick={() => { closeOtherPanels(); setIsMarkingNoShow(true); }}
+                          disabled={notStartedYet}
+                          title={notStartedYet ? t('Available once the lesson starts', 'متاح لما الحصة تبدأ') : undefined}
                           className="px-3.5 py-2 text-sm font-medium text-warning bg-warning/15 hover:bg-warning/25 rounded-xl border border-warning/30 transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer min-h-[40px]"
                         >
                           <UserX className="w-3.5 h-3.5" />
-                          No-Show
+                          {t('No-show', 'غياب')}
                         </button>
                       )}
                     </>
                   )}
 
-                  {booking.status !== 'cancelled' && !isRescheduling && (
+                  {isUpcoming && !isRequestingMove && (
                     <button
-                      onClick={() => setIsRescheduling(true)}
+                      onClick={() => { closeOtherPanels(); setIsRequestingMove(true); }}
                       className="px-3.5 py-2 text-sm font-medium text-foreground hover:bg-surface-subtle rounded-xl border border-border transition-colors flex items-center gap-1.5 cursor-pointer min-h-[40px]"
                     >
-                      <RotateCcw className="w-3.5 h-3.5" />
-                      Reschedule
+                      <Send className="w-3.5 h-3.5" />
+                      {t('Ask to reschedule', 'اطلب تغيير الميعاد')}
                     </button>
                   )}
 
-                  {booking.status !== 'cancelled' && !isCancelling && (
+                  {isSuperAdmin && booking.status !== 'cancelled' && !isRescheduling && (
                     <button
-                      onClick={() => setIsCancelling(true)}
+                      onClick={() => { closeOtherPanels(); setIsRescheduling(true); }}
+                      className="px-3.5 py-2 text-sm font-medium text-foreground hover:bg-surface-subtle rounded-xl border border-border transition-colors flex items-center gap-1.5 cursor-pointer min-h-[40px]"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      {t('Move lesson', 'غيّر الميعاد')}
+                    </button>
+                  )}
+
+                  {isSuperAdmin && booking.status !== 'cancelled' && !isCancelling && (
+                    <button
+                      onClick={() => { closeOtherPanels(); setIsCancelling(true); }}
                       className="px-3.5 py-2 text-sm font-medium text-destructive hover:bg-destructive/15 rounded-xl border border-destructive/30 transition-colors flex items-center gap-1.5 cursor-pointer min-h-[40px]"
                     >
                       <XCircle className="w-3.5 h-3.5" />
-                      Cancel Booking
+                      {t('Cancel lesson', 'ألغِ الحصة')}
                     </button>
                   )}
                 </div>
@@ -1130,7 +1046,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                   onClick={onClose}
                   className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-surface-subtle rounded-xl transition-colors cursor-pointer min-h-[40px]"
                 >
-                  Close
+                  {t('Close', 'إغلاق')}
                 </button>
               </div>
             </>
@@ -1138,8 +1054,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
         </div>
       </div>
 
-      {/* Record Payment Sub-Modal */}
-      {booking && (
+      {booking && isSuperAdmin && (
         <RecordPaymentModal
           isOpen={showPaymentModal}
           onClose={() => setShowPaymentModal(false)}
@@ -1149,10 +1064,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
           contactName={booking.contact_name}
           expectedAmount={booking.expected_amount}
           defaultCurrency={booking.currency || ''}
-          onPaymentRecorded={() => {
-            loadBooking();
-            if (onBookingUpdated) onBookingUpdated();
-          }}
+          onPaymentRecorded={refresh}
         />
       )}
     </div>

@@ -14,6 +14,11 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
   - can only be double-booked against their own lessons (one teacher's lesson never blocks another teacher's slot);
   - receives notifications for their own lessons. The super admin sees everything.
 - **[Decided 2026-10-14] Changing teacher.** The super admin can move a student to another teacher at any time (Students → student → Assigned teacher). New bookings go to the new teacher; lessons already booked stay with the teacher they were booked with until the admin moves or cancels them.
+- **[Decided 2026-10-15] Teachers never see money.** A teacher's dashboard shows no prices, fees, payments, refunds or pay-later data (the API strips them for non-admins). Payment alerts go only to the super admin.
+- **[Decided 2026-10-15] Teachers don't move or cancel lessons directly.** They "Ask the student to reschedule"; the student gets an on-site notification and picks a new time. Only the super admin moves or cancels lessons directly.
+- **[Decided 2026-10-15] Teacher notifications:** a teacher gets an email and an on-site notification (dashboard bell) when one of their lessons is booked (trial or paid), moved or cancelled.
+- **[Decided 2026-10-15] Adding teachers:** the super admin adds a teacher (email, name, gender) on the Teachers page; the teacher receives an invitation email to set a password and signs in at /staff/login. Each teacher's emails go to the email of their teacher account, so no Vercel setting is needed per teacher.
+- **[Decided 2026-10-15] Teacher time zones:** each teacher enters weekly hours in their own time zone on "My hours"; students always see times in theirs.
 - Roles: `student` (adult learner), `parent` (guardian account managing children), `teacher`, `super_admin`.
 
 ## 2. Accounts & booking
@@ -63,7 +68,9 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 - **[Decided 2026-10-14] Arabic style: a 50/50 mix** — simple standard Arabic with a warm Egyptian touch (e.g. "احجز حصتك", "بتوفّر", "عايز"), the way a friendly Egyptian teacher writes. Legal pages (terms, privacy) stay in clear simple standard Arabic so they are unambiguous.
 - Arabic is right-to-left: use logical CSS (`ms-`/`me-`/`ps-`/`pe-`/`start`/`end`), never `left`/`right`.
 
-- **[Decided 2026-10-14] Emails** are sent through Brevo (free plan) in both languages in one message: Arabic first, then English, with logo, brand colours, light/dark mode and a legal footer (why you got it, terms, privacy, contact). Templates: `server/notifications/emailTemplates.ts`. Sign-up/password emails are Supabase Auth templates, edited in the Supabase dashboard.
+- **[Decided 2026-10-15] Emails** are sent through Brevo (free plan) in ONE language: English by default, Arabic only for people who chose Arabic on the site (saved in a cookie and, when signed in, on their account in `user_language_preferences`). Logo, brand colours, Thmanyah font, light/dark mode and a legal footer. Templates: `server/notifications/emailTemplates.ts`.
+- **[Decided 2026-10-15] Email senders:** booking/schedule emails come from support@watazawwado.academy (Vercel `NOTIFICATION_FROM_EMAIL`); sign-up and password emails come from noreply@watazawwado.academy through Supabase Auth's own SMTP settings. Super admin alerts go to `NOTIFICATION_ADMIN_EMAIL` (falls back to `NOTIFICATION_TEACHER_EMAIL`).
+- **[Decided 2026-10-15] About page wording:** no degree claims and few Azhar mentions; describe the teaching as balanced and moderate, without extremism, with an Azhari foundation in Aqeedah, following Ahl al-Sunnah wal-Jama'ah.
 - **[Decided 2026-10-14] Official contact number:** WhatsApp +48 508 157 886 (Poland). No other number may appear anywhere in the project.
 
 ## 7. Engineering rules (always)
@@ -74,13 +81,15 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 - Supabase query builders have no `.catch()`; use `const { error } = await ...`.
 - Errors shown to users must not leak database or provider messages.
 
-## 8. Open decisions (do not implement until decided)
+- **[Decided 2026-10-15] Governing law:** the terms are governed by Polish law and Polish courts (the owner lives in Poland), while consumers keep the mandatory protection of their own country. Have a lawyer review the terms once.
+- **[Decided 2026-10-15] Release process:** no preview environment (Vercel variables are Production-only). Every release: type check + offline tests + build, then push to `main` (= production), then a production smoke test. The previous production deployment stays as the Vercel rollback.
 
-- Governing law / jurisdiction clause for the terms (e.g. Egypt) — not in the terms yet.
-- Teachers outside Egypt: availability is entered in Cairo time for now.
+## 8. Open items
 
-- AI intake: trust the browser's assessment vs. re-run server-side.
-- Wording of credentials on the About page ("Azhar graduate").
+Owner decisions: none open right now.
+
+Engineering backlog (no owner decision needed, do when there is time):
+- AI intake: re-run the assessment on the server instead of trusting the browser's result.
 - Design system: standardize on `src/components/ui/*` components.
-- Repository clean-up (root one-off scripts, hardcoded bank details).
-- Release process (branches, staging, who approves deploys), Stripe webhook, Vercel firewall rate limiting.
+- Repository clean-up: root one-off scripts; bank details hard-coded in `server/payment/paymentDetails.ts` should move to admin settings.
+- Stripe webhook (payments are verified on return today), Vercel firewall rate limiting.

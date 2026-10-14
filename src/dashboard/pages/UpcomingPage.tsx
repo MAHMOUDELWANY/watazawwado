@@ -1,23 +1,26 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { DateTime } from 'luxon';
-import { 
-  Calendar as CalendarIcon, 
-  Clock, 
-  AlertCircle, 
-  RefreshCw, 
-  Video, 
-  ChevronRight, 
+import {
+  Calendar as CalendarIcon,
+  Clock,
+  AlertCircle,
+  RefreshCw,
+  Video,
+  ChevronRight,
   Globe,
   ExternalLink
 } from 'lucide-react';
-import { useTeacherAuth } from '../../lib/auth';
 import { DashboardLesson } from '../types';
 import { LessonDetailModal } from '../components/LessonDetailModal';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
+import { useT } from '../../lib/language';
+
+type T = (en: string, ar: string) => string;
 
 export default function UpcomingPage() {
-  const { session } = useTeacherAuth();
+  const { t, isAr } = useT();
+  const locale = isAr ? 'ar' : 'en';
   const [activeTz, setActiveTz] = useState<string>(() => getActiveWorkingTimezone('Africa/Cairo'));
   const [lessons, setLessons] = useState<DashboardLesson[]>([]);
   const [rangeDays, setRangeDays] = useState<number>(7);
@@ -48,7 +51,7 @@ export default function UpcomingPage() {
       const data = await dashboardFetch(`/api/dashboard/upcoming?days=${rangeDays}`);
       setLessons(data.lessons || []);
     } catch (err: any) {
-      setError(err.message || "Upcoming schedule couldn't be loaded right now.");
+      setError(err.message || t("The schedule couldn't be loaded right now.", 'تعذر تحميل الجدول دلوقتي.'));
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -63,7 +66,7 @@ export default function UpcomingPage() {
 
   // Group lessons by active working timezone date
   const groupedLessons = lessons.reduce((acc, lesson) => {
-    const startLesson = DateTime.fromISO(lesson.scheduled_start).setZone(activeTz);
+    const startLesson = DateTime.fromISO(lesson.scheduled_start).setZone(activeTz).setLocale(locale);
     const dateKey = startLesson.toFormat('yyyy-MM-dd');
     if (!acc[dateKey]) {
       acc[dateKey] = {
@@ -85,7 +88,7 @@ export default function UpcomingPage() {
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-display font-semibold text-foreground">
-              Upcoming Schedule
+              {t('Upcoming lessons', 'الحصص الجاية')}
             </h1>
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-secondary text-secondary-foreground border border-border/60">
               <Clock className="w-3 h-3 text-secondary-foreground" />
@@ -93,7 +96,7 @@ export default function UpcomingPage() {
             </span>
           </div>
           <p className="text-sm text-muted-foreground mt-1">
-            Confirmed and scheduled 1-on-1 teaching sessions for upcoming days.
+            {t('Your confirmed lessons for the coming days.', 'حصصك المؤكدة في الأيام الجاية.')}
           </p>
         </div>
 
@@ -101,16 +104,16 @@ export default function UpcomingPage() {
           {/* Timeframe Selector */}
           <div className="flex items-center rounded-xl glass-card border-none p-1 text-sm font-medium shadow-2xs">
             {[
-              { label: '7 Days', value: 7 },
-              { label: '14 Days', value: 14 },
-              { label: '30 Days', value: 30 }
+              { label: t('7 days', '7 أيام'), value: 7 },
+              { label: t('14 days', '14 يوم'), value: 14 },
+              { label: t('30 days', '30 يوم'), value: 30 }
             ].map(tab => (
               <button
                 key={tab.value}
                 onClick={() => setRangeDays(tab.value)}
                 className={`px-3 py-1.5 rounded-lg transition-colors ${
-                  rangeDays === tab.value 
-                    ? 'bg-primary text-primary-foreground font-semibold shadow-2xs' 
+                  rangeDays === tab.value
+                    ? 'bg-primary text-primary-foreground font-semibold shadow-2xs'
                     : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
                 }`}
               >
@@ -123,10 +126,10 @@ export default function UpcomingPage() {
             onClick={() => fetchUpcomingLessons(true)}
             disabled={refreshing || loading}
             className="inline-flex items-center gap-2 px-3.5 py-2 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-sm font-medium transition-colors shadow-2xs"
-            title="Refresh upcoming schedule"
+            title={t('Refresh', 'تحديث')}
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-accent' : 'opacity-70'}`} />
-            <span>{refreshing ? 'Refreshing...' : 'Refresh'}</span>
+            <span>{refreshing ? t('Refreshing…', 'جارٍ التحديث…') : t('Refresh', 'تحديث')}</span>
           </button>
         </div>
       </header>
@@ -145,16 +148,16 @@ export default function UpcomingPage() {
         <div className="bg-destructive/10 border border-destructive/20 rounded-2xl p-8 flex flex-col items-center justify-center text-center">
           <AlertCircle className="w-10 h-10 text-destructive mb-3" />
           <h2 className="text-base font-semibold text-foreground mb-1">
-            Upcoming schedule couldn't be loaded
+            {t("The schedule couldn't be loaded", 'تعذر تحميل الجدول')}
           </h2>
           <p className="text-sm text-muted-foreground mb-4 max-w-md">
             {error}
           </p>
-          <button 
+          <button
             onClick={() => fetchUpcomingLessons(true)}
             className="px-5 py-2.5 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-sm font-medium transition-colors"
           >
-            Retry Loading
+            {t('Try again', 'حاول تاني')}
           </button>
         </div>
       ) : sortedDateKeys.length === 0 ? (
@@ -163,10 +166,10 @@ export default function UpcomingPage() {
             <CalendarIcon className="w-6 h-6" />
           </div>
           <h3 className="text-base font-display font-semibold mb-1 text-foreground">
-            No upcoming lessons scheduled
+            {t('No upcoming lessons', 'مفيش حصص جاية')}
           </h3>
           <p className="text-sm text-muted-foreground max-w-sm">
-            You currently have no bookings scheduled for the next {rangeDays} days. Future bookings from students will appear here automatically.
+            {t(`Nothing is booked in the next ${rangeDays} days. New bookings show up here automatically.`, `مفيش حجوزات في الـ ${rangeDays} يوم الجايين. الحجوزات الجديدة هتظهر هنا تلقائياً.`)}
           </p>
         </div>
       ) : (
@@ -174,14 +177,14 @@ export default function UpcomingPage() {
           {sortedDateKeys.map(dateKey => {
             const group = groupedLessons[dateKey];
             const isTomorrow = group.date.hasSame(nowActive.plus({ days: 1 }), 'day');
-            
+
             return (
               <section key={dateKey} className="space-y-3">
                 {/* Date Group Header */}
                 <div className="flex items-center justify-between px-1">
                   <div className="flex items-center gap-2">
                     <h2 className="text-sm font-display font-semibold  text-foreground">
-                      {isTomorrow ? 'Tomorrow' : group.date.toFormat('EEEE, MMMM d, yyyy')}
+                      {isTomorrow ? t('Tomorrow', 'بكرة') : group.date.toFormat('EEEE, MMMM d, yyyy')}
                     </h2>
                     {isTomorrow && (
                       <span className="text-sm text-muted-foreground">
@@ -190,18 +193,20 @@ export default function UpcomingPage() {
                     )}
                   </div>
                   <span className="text-sm text-muted-foreground font-medium">
-                    {group.lessons.length} {group.lessons.length === 1 ? 'lesson' : 'lessons'}
+                    {group.lessons.length} {t(group.lessons.length === 1 ? 'lesson' : 'lessons', 'حصة')}
                   </span>
                 </div>
 
                 {/* Lessons in this date */}
                 <div className="space-y-2.5">
                   {group.lessons.map(lesson => (
-                    <UpcomingLessonRow 
-                      key={lesson.id} 
-                      lesson={lesson} 
+                    <UpcomingLessonRow
+                      key={lesson.id}
+                      lesson={lesson}
                       onSelect={() => setSelectedLesson(lesson)}
                       activeTz={activeTz}
+                      t={t}
+                      locale={locale}
                     />
                   ))}
                 </div>
@@ -213,9 +218,9 @@ export default function UpcomingPage() {
 
       {/* Detail Modal */}
       {selectedLesson && (
-        <LessonDetailModal 
-          lesson={selectedLesson} 
-          onClose={() => setSelectedLesson(null)} 
+        <LessonDetailModal
+          lesson={selectedLesson}
+          onClose={() => setSelectedLesson(null)}
           onBookingUpdated={() => fetchUpcomingLessons(true)}
         />
       )}
@@ -223,17 +228,21 @@ export default function UpcomingPage() {
   );
 }
 
-function UpcomingLessonRow({ 
-  lesson, 
+function UpcomingLessonRow({
+  lesson,
   onSelect,
-  activeTz = 'Africa/Cairo'
-}: { 
+  activeTz = 'Africa/Cairo',
+  t,
+  locale
+}: {
   key?: React.Key;
-  lesson: DashboardLesson; 
+  lesson: DashboardLesson;
   onSelect: () => void;
   activeTz?: string;
+  t: T;
+  locale: string;
 }) {
-  const startLesson = DateTime.fromISO(lesson.scheduled_start).setZone(activeTz);
+  const startLesson = DateTime.fromISO(lesson.scheduled_start).setZone(activeTz).setLocale(locale);
   const hasStartLink = Boolean(lesson.zoom_host_url || lesson.zoom_meeting_link);
 
   return (
@@ -245,7 +254,7 @@ function UpcomingLessonRow({
         </div>
         <div className="text-sm text-muted-foreground flex items-center gap-1.5 mt-0.5">
           <Clock className="w-3.5 h-3.5" />
-          <span>{lesson.duration_minutes} min duration</span>
+          <span>{lesson.duration_minutes} {t('min', 'دقيقة')}</span>
         </div>
       </div>
 
@@ -253,18 +262,18 @@ function UpcomingLessonRow({
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1 flex-wrap">
           <h4 className="text-base font-semibold text-foreground truncate">
-            {lesson.learner_name || 'Learner name not recorded'}
+            {lesson.learner_name || t('Name not recorded', 'الاسم مش متسجل')}
           </h4>
 
           {lesson.parent_name && (
             <span className="text-sm text-muted-foreground font-medium">
-              (Parent: {lesson.parent_name})
+              ({t('Parent', 'ولي الأمر')}: {lesson.parent_name})
             </span>
           )}
 
           {lesson.is_free_trial && (
             <span className="inline-flex items-center px-2 py-0.5 rounded text-[13px] font-bold uppercase tracking-wider bg-secondary/30 text-accent">
-              Trial
+              {t('Trial', 'تجربة')}
             </span>
           )}
 
@@ -273,13 +282,13 @@ function UpcomingLessonRow({
             lesson.status === 'rescheduled' ? 'bg-secondary/30 text-primary border border-secondary/50' :
             'glass-surface text-muted-foreground border border-border-subtle'
           }`}>
-            {lesson.status || 'Status unavailable'}
+            {lesson.status === 'confirmed' ? t('Confirmed', 'مؤكدة') : lesson.status === 'rescheduled' ? t('Moved', 'اتغيّر ميعادها') : (lesson.status || '—')}
           </span>
         </div>
 
         <p className="text-sm text-muted-foreground truncate">
           {lesson.service_name}
-          {lesson.student_timezone ? ` • Student in ${lesson.student_timezone}` : ''}
+          {lesson.student_timezone ? ` • ${t('Student in', 'الطالب في')} ${lesson.student_timezone}` : ''}
         </p>
       </div>
 
@@ -288,12 +297,12 @@ function UpcomingLessonRow({
         {hasStartLink ? (
           <span className="text-sm font-medium text-success bg-success/10 px-2.5 py-1 rounded-lg border border-success/30 hidden sm:inline-flex items-center gap-1">
             <Video className="w-3 h-3" />
-            Zoom Ready
+            {t('Zoom ready', 'Zoom جاهز')}
           </span>
         ) : (
           <span className="text-sm text-warning bg-warning/10 px-2.5 py-1 rounded-lg border border-warning/30 hidden sm:inline-flex items-center gap-1">
             <Clock className="w-3 h-3" />
-            Link Pending
+            {t('Link on the way', 'الرابط بيتجهز')}
           </span>
         )}
 
@@ -301,7 +310,7 @@ function UpcomingLessonRow({
           onClick={onSelect}
           className="inline-flex items-center gap-1 px-3.5 py-2 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-sm font-medium transition-colors"
         >
-          <span>Details</span>
+          <span>{t('Details', 'التفاصيل')}</span>
           <ChevronRight className="w-3.5 h-3.5 opacity-60 rtl:rotate-180" />
         </button>
       </div>

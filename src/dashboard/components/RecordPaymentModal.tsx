@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, DollarSign, Check, AlertCircle, Calendar, Hash, FileText } from 'lucide-react';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { PaymentMethodType, PaymentRecordStatus } from '../types';
+import { useT } from '../../lib/language';
 
 interface RecordPaymentModalProps {
   isOpen: boolean;
@@ -26,9 +27,10 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
   defaultCurrency = '',
   onPaymentRecorded
 }) => {
+  const { t } = useT();
   const [amount, setAmount] = useState<string>(
-    expectedAmount !== null && expectedAmount !== undefined && expectedAmount > 0 
-      ? String(expectedAmount) 
+    expectedAmount !== null && expectedAmount !== undefined && expectedAmount > 0
+      ? String(expectedAmount)
       : ''
   );
   const [currency, setCurrency] = useState<string>(defaultCurrency || '');
@@ -42,8 +44,8 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
   useEffect(() => {
     if (isOpen) {
       setAmount(
-        expectedAmount !== null && expectedAmount !== undefined && expectedAmount > 0 
-          ? String(expectedAmount) 
+        expectedAmount !== null && expectedAmount !== undefined && expectedAmount > 0
+          ? String(expectedAmount)
           : ''
       );
       setCurrency(defaultCurrency || '');
@@ -75,12 +77,12 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
 
     const parsedAmount = parseFloat(amount);
     if (isNaN(parsedAmount) || parsedAmount <= 0) {
-      setError('Please enter a valid positive payment amount.');
+      setError(t('Please enter an amount above zero.', 'اكتب مبلغ أكبر من صفر.'));
       return;
     }
 
     if (!currency || !currency.trim()) {
-      setError('Please select or configure a valid payment currency.');
+      setError(t('Please choose a currency.', 'اختار العملة.'));
       return;
     }
 
@@ -103,21 +105,21 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
       onPaymentRecorded();
       onClose();
     } catch (err: any) {
-      setError(err?.data?.error || err?.message || 'Failed to record payment. Please check details and try again.');
+      setError(err?.data?.error || err?.message || t("Couldn't save the payment. Check the details and try again.", 'تعذر حفظ الدفع. راجع البيانات وحاول تاني.'));
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/40 backdrop-blur-xs animate-in fade-in duration-150"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="record-payment-title"
     >
-      <div 
+      <div
         className="glass-card border-none rounded-2xl w-full max-w-lg shadow-xl overflow-hidden flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
@@ -126,18 +128,18 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           <div>
             <h2 id="record-payment-title" className="text-lg font-display font-semibold text-foreground flex items-center gap-2">
               <DollarSign className="w-5 h-5 text-accent" />
-              Record Manual Payment
+              {t('Record a payment', 'سجّل دفع')}
             </h2>
             <p className="text-sm text-muted-foreground mt-0.5">
-              {bookingReference ? `Linked to Booking ${bookingReference}` : 'Record manual receipt or claim'}
+              {bookingReference ? t(`For lesson ${bookingReference}`, `للحصة ${bookingReference}`) : t('A payment you received outside the site', 'دفع وصلك برّه الموقع')}
               {contactName ? ` (${contactName})` : ''}
             </p>
           </div>
-          <button 
+          <button
             onClick={onClose}
             disabled={submitting}
             className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center disabled:opacity-50"
-            aria-label="Close modal"
+            aria-label={t('Close', 'إغلاق')}
           >
             <X className="w-5 h-5" />
           </button>
@@ -155,16 +157,17 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           {/* Amount & Currency */}
           <div className="grid grid-cols-3 gap-3">
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-foreground mb-1">
-                Amount Received *
+              <label className="block text-sm font-medium text-foreground mb-1" htmlFor="rpm-amount">
+                {t('Amount received', 'المبلغ اللي وصل')} *
               </label>
               <div className="relative">
                 <input
+                  id="rpm-amount"
                   type="number"
                   step="0.01"
                   min="0.01"
                   required
-                  placeholder="e.g. 25.00"
+                  placeholder="25.00"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   className="w-full px-3 py-2 text-sm glass-surface border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
@@ -174,16 +177,17 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1">
-                Currency *
+              <label className="block text-sm font-medium text-foreground mb-1" htmlFor="rpm-currency">
+                {t('Currency', 'العملة')} *
               </label>
               <select
+                id="rpm-currency"
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
                 required
                 className="w-full px-3 py-2 text-sm glass-surface border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
               >
-                {!currency && <option value="">Select currency...</option>}
+                {!currency && <option value="">{t('Choose…', 'اختار…')}</option>}
                 <option value="USD">USD ($)</option>
                 <option value="CAD">CAD (C$)</option>
                 <option value="GBP">GBP (£)</option>
@@ -196,68 +200,69 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
 
           {/* Payment Method */}
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
-              Payment Method *
+            <label className="block text-sm font-medium text-foreground mb-1" htmlFor="rpm-method">
+              {t('Method', 'طريقة الدفع')} *
             </label>
             <select
+              id="rpm-method"
               value={paymentMethod}
               onChange={(e) => setPaymentMethod(e.target.value as PaymentMethodType)}
               className="w-full px-3 py-2 text-sm glass-surface border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
             >
               <option value="paypal">PayPal</option>
-              <option value="international_bank_iban">International Bank / IBAN</option>
-              <option value="ach_routing">ACH / US Routing</option>
+              <option value="international_bank_iban">{t('Bank transfer (IBAN)', 'تحويل بنكي (IBAN)')}</option>
+              <option value="ach_routing">{t('ACH (US bank)', 'ACH (بنك أمريكي)')}</option>
               <option value="payoneer">Payoneer</option>
               <option value="wise">Wise</option>
-              <option value="other">Other</option>
+              <option value="other">{t('Other', 'غير ذلك')}</option>
             </select>
           </div>
 
           {/* Status Selection */}
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
-              Initial Verification Status *
-            </label>
+            <span className="block text-sm font-medium text-foreground mb-1">
+              {t('Status', 'الحالة')} *
+            </span>
             <div className="grid grid-cols-2 gap-2">
-              <label 
+              <label
                 className={`flex items-center gap-2 p-2.5 rounded-xl border text-sm font-medium cursor-pointer transition-colors ${
-                  status === 'confirmed' 
-                    ? 'bg-success/15 border-success/40 text-success' 
+                  status === 'confirmed'
+                    ? 'bg-success/15 border-success/40 text-success'
                     : 'glass-surface border-border text-foreground glass-hover hover:bg-surface'
                 }`}
               >
-                <input 
-                  type="radio" 
-                  name="payment_status" 
-                  value="confirmed" 
-                  checked={status === 'confirmed'} 
+                <input
+                  type="radio"
+                  name="payment_status"
+                  value="confirmed"
+                  checked={status === 'confirmed'}
                   onChange={() => setStatus('confirmed')}
-                  className="accent-primary focus:ring-primary/40" 
+                  className="accent-primary focus:ring-primary/40"
                 />
                 <div>
-                  <span className="block font-semibold">Confirmed</span>
-                  <span className="block text-[13px] opacity-75">Funds already received & verified</span>
+                  <span className="block font-semibold">{t('Confirmed', 'مؤكد')}</span>
+                  <span className="block text-[13px] opacity-75">{t('The money arrived', 'الفلوس وصلت')}</span>
                 </div>
               </label>
 
-              <label 
+              <label
                 className={`flex items-center gap-2 p-2.5 rounded-xl border text-sm font-medium cursor-pointer transition-colors ${
-                  status === 'pending' 
-                    ? 'bg-warning/15 border-warning/40 text-warning' 
+                  status === 'pending'
+                    ? 'bg-warning/15 border-warning/40 text-warning'
                     : 'glass-surface border-border text-foreground glass-hover hover:bg-surface'
                 }`}
               >
-                <input 
-                  type="radio" 
-                  name="payment_status" 
-                  value="pending" 
-                  checked={status === 'pending'} 
+                <input
+                  type="radio"
+                  name="payment_status"
+                  value="pending"
+                  checked={status === 'pending'}
                   onChange={() => setStatus('pending')}
-                  className="accent-primary focus:ring-primary/40" 
+                  className="accent-primary focus:ring-primary/40"
                 />
                 <div>
-                  <span className="block font-semibold">Pending Review</span>
-                  <span className="block text-[13px] opacity-75">To be verified by Mahmoud</span>
+                  <span className="block font-semibold">{t('To check', 'محتاج مراجعة')}</span>
+                  <span className="block text-[13px] opacity-75">{t('Confirm it later', 'أكّده بعدين')}</span>
                 </div>
               </label>
             </div>
@@ -265,12 +270,14 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
 
           {/* Reference / Transaction ID */}
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
-              Payment Reference / Transaction ID (Optional)
+            <label className="block text-sm font-medium text-foreground mb-1" htmlFor="rpm-ref">
+              {t('Payment reference (optional)', 'رقم العملية (اختياري)')}
             </label>
             <input
+              id="rpm-ref"
+              dir="ltr"
               type="text"
-              placeholder="e.g. PayPal TXN-987654 or Bank Transfer Ref"
+              placeholder="TXN-987654"
               value={paymentReference}
               onChange={(e) => setPaymentReference(e.target.value)}
               className="w-full px-3 py-2 text-sm glass-surface border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
@@ -279,12 +286,13 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
 
           {/* Notes */}
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
-              Private Teacher Notes (Optional)
+            <label className="block text-sm font-medium text-foreground mb-1" htmlFor="rpm-notes">
+              {t('Private notes (optional)', 'ملاحظات خاصة (اختياري)')}
             </label>
             <textarea
+              id="rpm-notes"
               rows={2}
-              placeholder="e.g. Sent from student's father account, verified via Wise receipt"
+              placeholder={t("e.g. sent from the father's account, checked on Wise", 'مثلاً: اتبعت من حساب الأب، واتأكدت على Wise')}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               className="w-full px-3 py-2 text-sm glass-surface border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
@@ -299,7 +307,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
               disabled={submitting}
               className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-surface-subtle rounded-xl transition-colors cursor-pointer min-h-[40px]"
             >
-              Cancel
+              {t('Cancel', 'إلغاء')}
             </button>
             <button
               type="submit"
@@ -307,11 +315,11 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
               className="px-5 py-2 text-sm font-semibold text-primary-foreground btn-primary-material rounded-xl shadow-xs transition-colors flex items-center gap-1.5 disabled:opacity-50 cursor-pointer min-h-[40px]"
             >
               {submitting ? (
-                <span>Recording...</span>
+                <span>{t('Saving…', 'جارٍ الحفظ…')}</span>
               ) : (
                 <>
                   <Check className="w-4 h-4" />
-                  <span>Save Payment Record</span>
+                  <span>{t('Save payment', 'احفظ الدفع')}</span>
                 </>
               )}
             </button>

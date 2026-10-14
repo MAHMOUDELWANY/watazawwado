@@ -25,9 +25,12 @@ import { DashboardStudentListItem } from '../types';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 import { EmptyState } from '../../components/EmptyState';
+import { useT } from '../../lib/language';
 
 export default function StudentsPage() {
-  const { session, teacherRole } = useTeacherAuth();
+  const { teacherRole } = useTeacherAuth();
+  const { t, isAr } = useT();
+  const locale = isAr ? 'ar' : 'en';
   const isSuperAdmin = teacherRole === 'super_admin';
   const [students, setStudents] = useState<DashboardStudentListItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,7 +51,7 @@ export default function StudentsPage() {
       const data = await dashboardFetch('/api/dashboard/students');
       setStudents(data.students || []);
     } catch (err: any) {
-      setError(err.message || 'Student directory could not be loaded.');
+      setError(err.message || t("Students couldn't be loaded.", 'تعذر تحميل الطلاب.'));
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -122,16 +125,16 @@ export default function StudentsPage() {
         <div>
           <div className="flex items-center gap-2.5">
             <h1 className="text-2xl font-display font-bold text-foreground">
-              {isSuperAdmin ? 'Students Directory' : 'My Students'}
+              {isSuperAdmin ? t('All students', 'كل الطلاب') : t('My students', 'طلابي')}
             </h1>
             <span className="text-sm px-2.5 py-0.5 rounded-full bg-secondary/30 text-primary border border-secondary/50 font-medium">
-              {counts.active} Active Learners
+              {t(`${counts.active} active`, `${counts.active} نشط`)}
             </span>
           </div>
           <p className="text-sm sm:text-sm text-muted-foreground mt-1">
-            {isSuperAdmin 
-              ? 'Platform-wide student records, faculty assignments, learning goals, and lesson histories.'
-              : 'Students assigned to your teaching schedule, progress tracking, and private lesson notes.'}
+            {isSuperAdmin
+              ? t('Every student, their teacher, goals and lesson history.', 'كل الطلاب ومعلميهم وأهدافهم وسجل حصصهم.')
+              : t('Your students, their progress and your private notes.', 'طلابك وتقدمهم وملاحظاتك الخاصة.')}
           </p>
         </div>
 
@@ -141,7 +144,7 @@ export default function StudentsPage() {
           className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-xl glass-card border-none text-foreground hover:bg-surface-subtle transition-colors disabled:opacity-50 cursor-pointer"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
-          <span>Refresh</span>
+          <span>{t('Refresh', 'تحديث')}</span>
         </button>
       </div>
 
@@ -157,7 +160,7 @@ export default function StudentsPage() {
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            All ({counts.all})
+            {t('All', 'الكل')} ({counts.all})
           </button>
           <button
             onClick={() => setStatusFilter('active')}
@@ -167,7 +170,7 @@ export default function StudentsPage() {
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            Active ({counts.active})
+            {t('Active', 'نشط')} ({counts.active})
           </button>
           <button
             onClick={() => setStatusFilter('paused')}
@@ -177,7 +180,7 @@ export default function StudentsPage() {
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            Paused ({counts.paused})
+            {t('Paused', 'متوقف مؤقتاً')} ({counts.paused})
           </button>
           {isSuperAdmin && counts.unassigned > 0 && (
             <button
@@ -188,7 +191,7 @@ export default function StudentsPage() {
                   : 'text-amber-700 dark:text-amber-300 hover:text-foreground'
               }`}
             >
-              Unassigned ({counts.unassigned})
+              {t('No teacher', 'من غير معلم')} ({counts.unassigned})
             </button>
           )}
           <button
@@ -199,32 +202,34 @@ export default function StudentsPage() {
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            Inactive ({counts.inactive})
+            {t('Inactive', 'غير نشط')} ({counts.inactive})
           </button>
         </div>
 
         {/* Search & Sort Controls */}
         <div className="flex items-center gap-3 w-full md:w-auto">
           <div className="relative flex-1 md:w-64">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Search className="w-4 h-4 absolute start-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
+              aria-label={t('Search', 'بحث')}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              placeholder="Search by student, parent, email..."
-              className="w-full pl-9 pr-3.5 py-1.5 text-sm rounded-xl border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+              placeholder={t('Search student, parent, email…', 'دوّر بالطالب أو ولي الأمر أو الإيميل…')}
+              className="w-full ps-9 pe-3.5 py-1.5 text-sm rounded-xl border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
 
           <select
+            aria-label={t('Sort', 'ترتيب')}
             value={sortBy}
             onChange={e => setSortBy(e.target.value as any)}
             className="px-3 py-1.5 text-sm rounded-xl border border-border glass-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
           >
-            <option value="recent">Recently Added</option>
-            <option value="name">Name (A-Z)</option>
-            <option value="completed">Most Lessons</option>
-            <option value="next">Next Lesson</option>
+            <option value="recent">{t('Newest', 'الأحدث')}</option>
+            <option value="name">{t('Name', 'الاسم')}</option>
+            <option value="completed">{t('Most lessons', 'الأكثر حصص')}</option>
+            <option value="next">{t('Next lesson', 'الحصة الجاية')}</option>
           </select>
         </div>
       </div>
@@ -244,16 +249,16 @@ export default function StudentsPage() {
             onClick={() => fetchStudents()}
             className="px-4 py-1.5 text-sm font-medium rounded-xl bg-destructive/20 text-destructive hover:bg-destructive/30 transition-colors cursor-pointer"
           >
-            Retry Loading
+            {t('Try again', 'حاول تاني')}
           </button>
         </div>
       ) : displayedStudents.length === 0 ? (
         <EmptyState
           icon={Users}
-          title={searchQuery || statusFilter !== 'all' ? 'No matching students found' : 'No registered students yet'}
+          title={searchQuery || statusFilter !== 'all' ? t('No matching students', 'مفيش طلاب مطابقين') : t('No students yet', 'لسه مفيش طلاب')}
           description={searchQuery || statusFilter !== 'all'
-            ? 'Try adjusting your search criteria or resetting the status filter.'
-            : 'Students converted from trial bookings or enrolled directly will be listed here with complete profiles and private notes.'}
+            ? t('Try another search or filter.', 'جرّب بحث أو فلتر تاني.')
+            : t('Students show up here once they book with you.', 'الطلاب هيظهروا هنا أول ما يحجزوا معاك.')}
         />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -261,7 +266,7 @@ export default function StudentsPage() {
             const waUrl = student.whatsapp
               ? buildContextualWhatsAppUrl(
                   student.whatsapp,
-                  `As-salamu alaykum ${student.name},\n\nThis is Ustadh Mahmoud checking in regarding our upcoming Quran & Arabic studies.`
+                  `As-salamu alaykum ${student.name},`
                 )
               : null;
 
@@ -283,11 +288,11 @@ export default function StudentsPage() {
                         </Link>
                         {student.learner_type === 'child' ? (
                           <span className="text-[13px] px-2 py-0.5 rounded-full bg-accent/15 text-accent border border-accent/25 font-medium">
-                            Child {student.parent_name ? `(${student.parent_name})` : ''}
+                            {t('Child', 'طفل')} {student.parent_name ? `(${student.parent_name})` : ''}
                           </span>
                         ) : student.learner_type === 'adult' ? (
                           <span className="text-[13px] px-2 py-0.5 rounded-full bg-secondary/30 text-primary border border-secondary/50 font-medium">
-                            Adult
+                            {t('Adult', 'بالغ')}
                           </span>
                         ) : null}
                       </div>
@@ -306,7 +311,7 @@ export default function StudentsPage() {
                         ? 'bg-warning/15 text-warning-foreground border border-warning/30'
                         : 'glass-surface text-muted-foreground border border-border-subtle'
                     }`}>
-                      {student.status ? student.status.charAt(0).toUpperCase() + student.status.slice(1) : 'Active'}
+                      {({ active: t('Active', 'نشط'), paused: t('Paused', 'متوقف مؤقتاً'), inactive: t('Inactive', 'غير نشط') } as Record<string, string>)[student.status || 'active'] || student.status}
                     </span>
                   </div>
 
@@ -317,7 +322,7 @@ export default function StudentsPage() {
                         {student.current_level}
                       </span>
                     ) : (
-                      <span className="italic opacity-60">Level not assessed</span>
+                      <span className="italic opacity-60">{t('Level not assessed', 'المستوى لسه ما اتحددش')}</span>
                     )}
 
                     {student.country && (
@@ -337,7 +342,7 @@ export default function StudentsPage() {
                       <span className={`px-2 py-0.5 rounded text-[13px] font-semibold tracking-wider uppercase ${
                         student.assigned_teacher_name ? 'bg-secondary/30 text-primary' : 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30'
                       }`}>
-                        {student.assigned_teacher_name ? `Teacher: ${student.assigned_teacher_name}` : 'Unassigned'}
+                        {student.assigned_teacher_name ? `${t('Teacher', 'المعلم')}: ${student.assigned_teacher_name}` : t('No teacher', 'من غير معلم')}
                       </span>
                     )}
                   </div>
@@ -348,13 +353,13 @@ export default function StudentsPage() {
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground flex items-center gap-1.5">
                       <BookOpen className="w-3.5 h-3.5 text-accent" />
-                      <span>{student.total_completed_lessons} Completed Lessons</span>
+                      <span>{t(`${student.total_completed_lessons} lessons done`, `${student.total_completed_lessons} حصة تمت`)}</span>
                     </span>
 
                     {student.notes_count > 0 && (
                       <span className="text-muted-foreground flex items-center gap-1">
                         <Lock className="w-3 h-3 text-warning" />
-                        <span>{student.notes_count} Notes</span>
+                        <span>{t(`${student.notes_count} notes`, `${student.notes_count} ملاحظة`)}</span>
                       </span>
                     )}
                   </div>
@@ -365,17 +370,17 @@ export default function StudentsPage() {
                         <Clock className="w-3.5 h-3.5 text-accent" />
                         <div>
                           <span className="font-semibold text-foreground">
-                            Next: {DateTime.fromISO(student.next_lesson.scheduled_start).toFormat('EEE, MMM d • hh:mm a')}
+                            {t('Next', 'الجاية')}: {DateTime.fromISO(student.next_lesson.scheduled_start).setLocale(locale).toFormat('EEE, MMM d • hh:mm a')}
                           </span>
                         </div>
                       </div>
                       <span className="text-[13px] px-1.5 py-0.5 rounded bg-secondary/30 text-primary border border-secondary/50 font-medium">
-                        Upcoming
+                        {t('Upcoming', 'جاية')}
                       </span>
                     </div>
                   ) : (
                     <p className="text-[11px] text-muted-foreground italic">
-                      No upcoming lesson scheduled
+                      {t('No upcoming lesson', 'مفيش حصة جاية')}
                     </p>
                   )}
                 </div>
@@ -389,10 +394,10 @@ export default function StudentsPage() {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 text-sm text-success font-medium hover:underline cursor-pointer"
-                        title="Message student on WhatsApp"
+                        title={t('Message on WhatsApp', 'راسله على واتساب')}
                       >
                         <MessageCircle className="w-3.5 h-3.5" />
-                        <span>WhatsApp</span>
+                        <span>{t('WhatsApp', 'واتساب')}</span>
                       </a>
                     )}
                   </div>
@@ -401,8 +406,8 @@ export default function StudentsPage() {
                     to={`/dashboard/students/${student.id}`}
                     className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-semibold rounded-xl bg-secondary/30 text-primary hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
                   >
-                    <span>View Record</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
+                    <span>{t('Open', 'افتح')}</span>
+                    <ChevronRight className="w-3.5 h-3.5 rtl:rotate-180" />
                   </Link>
                 </div>
               </div>

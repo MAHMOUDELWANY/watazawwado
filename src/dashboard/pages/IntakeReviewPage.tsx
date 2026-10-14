@@ -1,6 +1,7 @@
 import React from 'react';
 import IntakeReviewPanel from '../components/IntakeReviewPanel';
 import { dashboardFetch } from '../lib/dashboardApi';
+import { useAppLanguage } from '../../lib/language';
 
 /**
  * ====================================================================
@@ -13,7 +14,7 @@ import { dashboardFetch } from '../lib/dashboardApi';
  */
 
 export default function IntakeReviewPage() {
-  const lang: 'en' | 'ar' = (typeof document !== 'undefined' && document.documentElement.lang === 'ar') ? 'ar' : 'en';
+  const { lang } = useAppLanguage();
 
   const apiFetch = React.useCallback(
     (path: string, init?: RequestInit) =>

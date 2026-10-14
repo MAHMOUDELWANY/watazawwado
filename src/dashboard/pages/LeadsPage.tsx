@@ -16,47 +16,56 @@ import {
   ArrowRight,
   GraduationCap
 } from 'lucide-react';
-import { useTeacherAuth } from '../../lib/auth';
 import { DashboardLead, LeadStatus } from '../types';
 import { LeadDetailModal } from '../components/LeadDetailModal';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
+import { useT } from '../../lib/language';
 
-const STAGE_CONFIG: Record<LeadStatus, { label: string; color: string }> = {
+const STAGE_CONFIG: Record<LeadStatus, { label: string; labelAr: string; color: string }> = {
   visitor: {
     label: 'Visitor',
+    labelAr: 'زائر',
     color: 'glass-surface text-muted-foreground border border-border-subtle'
   },
   lead: {
     label: 'New Lead',
+    labelAr: 'مهتم جديد',
     color: 'bg-secondary/30 text-primary border border-secondary/50'
   },
   contacted: {
     label: 'Contacted',
+    labelAr: 'اتواصلنا معاه',
     color: 'bg-accent/15 text-accent border border-accent/25'
   },
   trial_booked: {
     label: 'Trial Booked',
+    labelAr: 'حجز تجربة',
     color: 'bg-warning/15 text-warning-foreground border border-warning/30'
   },
   trial_completed: {
     label: 'Trial Completed',
+    labelAr: 'التجربة تمت',
     color: 'bg-secondary/30 text-accent border border-secondary/60'
   },
   potential_student: {
     label: 'Potential Student',
+    labelAr: 'ممكن يكمل',
     color: 'bg-accent/10 text-accent border border-accent/25'
   },
   active_student: {
     label: 'Active Student',
+    labelAr: 'طالب نشط',
     color: 'bg-success/15 text-success border border-success/30'
   },
   returning_student: {
     label: 'Returning Student',
+    labelAr: 'طالب راجع',
     color: 'bg-secondary/30 text-primary border border-primary/25'
   },
   lost: {
     label: 'Lost / Postponed',
+    labelAr: 'مش مكمل / أجّل',
     color: 'glass-surface text-muted-foreground border border-border-subtle'
   }
 };
@@ -64,7 +73,8 @@ const STAGE_CONFIG: Record<LeadStatus, { label: string; color: string }> = {
 type FilterCategory = 'all' | 'followup' | 'new' | 'contacted' | 'trials' | 'potential' | 'active' | 'lost';
 
 export default function LeadsPage() {
-  const { session } = useTeacherAuth();
+  const { t, isAr } = useT();
+  const locale = isAr ? 'ar' : 'en';
   const [leads, setLeads] = useState<DashboardLead[]>([]);
   const [pipelineSummary, setPipelineSummary] = useState<Record<string, number>>({});
   const [filterCategory, setFilterCategory] = useState<FilterCategory>('all');
@@ -86,7 +96,7 @@ export default function LeadsPage() {
       setPipelineSummary(data.pipeline_summary || {});
       setLastRefreshed(DateTime.now().setZone('Africa/Cairo'));
     } catch (err: any) {
-      setError(err.message || 'Error loading leads.');
+      setError(err.message || t("Interested students couldn't be loaded.", 'تعذر تحميل المهتمين.'));
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -143,21 +153,18 @@ export default function LeadsPage() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-display font-bold text-foreground">
-              Leads Pipeline
+              {t('Interested students', 'المهتمين')}
             </h1>
-            <span className="text-sm px-2.5 py-0.5 rounded-full bg-secondary/30 text-primary font-medium border border-secondary/50">
-              Student Acquisition
-            </span>
           </div>
           <p className="text-sm sm:text-sm text-muted-foreground mt-1">
-            Track inquiries from initial contact through trial booking and long-term student enrollment.
+            {t('Follow people from their first question to their trial and regular lessons.', 'تابع المهتمين من أول سؤال لحد التجربة والحصص المنتظمة.')}
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           {lastRefreshed && (
             <span className="text-[11px] text-muted-foreground">
-              Cairo: {lastRefreshed.toFormat('hh:mm a')}
+              {t('Cairo', 'القاهرة')}: {lastRefreshed.setLocale(locale).toFormat('hh:mm a')}
             </span>
           )}
           <button
@@ -166,7 +173,7 @@ export default function LeadsPage() {
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass-card border-none text-sm font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
-            <span>Refresh</span>
+            <span>{t('Refresh', 'تحديث')}</span>
           </button>
         </div>
       </div>
@@ -176,7 +183,7 @@ export default function LeadsPage() {
         <div className="p-4 sm:p-5 rounded-2xl glass-card border-none shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-sm uppercase tracking-wider text-muted-foreground font-medium">
-              New Inquiries
+              {t('New', 'جداد')}
             </span>
             <UserPlus className="w-4 h-4 text-accent" />
           </div>
@@ -184,14 +191,14 @@ export default function LeadsPage() {
             <span className="text-2xl font-semibold text-foreground">
               {newLeadsCount}
             </span>
-            <span className="text-sm text-muted-foreground">needs outreach</span>
+            <span className="text-sm text-muted-foreground">{t('to contact', 'محتاجين تواصل')}</span>
           </div>
         </div>
 
         <div className="p-4 sm:p-5 rounded-2xl glass-card border-none shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-sm uppercase tracking-wider text-muted-foreground font-medium">
-              In Trial Phase
+              {t('In trial', 'في التجربة')}
             </span>
             <Sparkles className="w-4 h-4 text-warning" />
           </div>
@@ -199,14 +206,14 @@ export default function LeadsPage() {
             <span className="text-2xl font-semibold text-foreground">
               {trialCount}
             </span>
-            <span className="text-sm text-muted-foreground">trial booked/done</span>
+            <span className="text-sm text-muted-foreground">{t('booked or done', 'محجوزة أو تمت')}</span>
           </div>
         </div>
 
         <div className="p-4 sm:p-5 rounded-2xl glass-card border-none shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-sm uppercase tracking-wider text-muted-foreground font-medium">
-              Potential Students
+              {t('Might continue', 'ممكن يكملوا')}
             </span>
             <Clock className="w-4 h-4 text-accent" />
           </div>
@@ -214,14 +221,14 @@ export default function LeadsPage() {
             <span className="text-2xl font-semibold text-foreground">
               {pipelineSummary.potential_student || 0}
             </span>
-            <span className="text-sm text-muted-foreground">plan proposed</span>
+            <span className="text-sm text-muted-foreground">{t('plan sent', 'اتبعت لهم خطة')}</span>
           </div>
         </div>
 
         <div className="p-4 sm:p-5 rounded-2xl glass-card border-none shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-sm uppercase tracking-wider text-muted-foreground font-medium">
-              Active Enrolled
+              {t('Studying', 'بيدرسوا')}
             </span>
             <CheckCircle2 className="w-4 h-4 text-success" />
           </div>
@@ -229,7 +236,7 @@ export default function LeadsPage() {
             <span className="text-2xl font-semibold text-foreground">
               {activeCount}
             </span>
-            <span className="text-sm text-muted-foreground">regular learners</span>
+            <span className="text-sm text-muted-foreground">{t('regular students', 'طلاب منتظمين')}</span>
           </div>
         </div>
       </div>
@@ -245,7 +252,7 @@ export default function LeadsPage() {
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            All ({leads.length})
+            {t('All', 'الكل')} ({leads.length})
           </button>
           {followupCount > 0 && (
             <button
@@ -257,7 +264,7 @@ export default function LeadsPage() {
               }`}
             >
               <Clock className="w-3 h-3" />
-              Follow-up ({followupCount})
+              {t('Follow up', 'متابعة')} ({followupCount})
             </button>
           )}
           <button
@@ -268,7 +275,7 @@ export default function LeadsPage() {
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            New ({newLeadsCount})
+            {t('New', 'جداد')} ({newLeadsCount})
           </button>
           <button
             onClick={() => setFilterCategory('contacted')}
@@ -278,7 +285,7 @@ export default function LeadsPage() {
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            Contacted ({pipelineSummary.contacted || 0})
+            {t('Contacted', 'اتواصلنا')} ({pipelineSummary.contacted || 0})
           </button>
           <button
             onClick={() => setFilterCategory('trials')}
@@ -288,7 +295,7 @@ export default function LeadsPage() {
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            Trials ({trialCount})
+            {t('Trials', 'تجارب')} ({trialCount})
           </button>
           <button
             onClick={() => setFilterCategory('potential')}
@@ -298,7 +305,7 @@ export default function LeadsPage() {
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            Potential ({pipelineSummary.potential_student || 0})
+            {t('Might continue', 'ممكن يكملوا')} ({pipelineSummary.potential_student || 0})
           </button>
           <button
             onClick={() => setFilterCategory('active')}
@@ -308,18 +315,19 @@ export default function LeadsPage() {
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            Active ({activeCount})
+            {t('Studying', 'بيدرسوا')} ({activeCount})
           </button>
         </div>
 
         <div className="relative w-full sm:w-64">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Search className="w-4 h-4 absolute start-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
+            aria-label={t('Search', 'بحث')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search lead, email, phone..."
-            className="w-full pl-9 pr-4 py-1.5 rounded-xl border border-border glass-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder={t('Search name, email, phone…', 'دوّر بالاسم أو الإيميل أو الرقم…')}
+            className="w-full ps-9 pe-4 py-1.5 rounded-xl border border-border glass-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
       </div>
@@ -335,16 +343,16 @@ export default function LeadsPage() {
       {/* Leads List */}
       {loading ? (
         <div className="p-12 text-center text-sm text-muted-foreground animate-pulse">
-          Loading leads pipeline...
+          {t('Loading…', 'جارٍ التحميل…')}
         </div>
       ) : filteredLeads.length === 0 ? (
         <div className="p-12 text-center rounded-2xl glass-card border-none">
           <Users className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
           <h3 className="font-display font-medium text-base text-foreground">
-            No Leads in This Stage
+            {t('Nobody here yet', 'مفيش حد هنا لسه')}
           </h3>
           <p className="text-sm text-muted-foreground max-w-sm mx-auto mt-1">
-            New contact submissions and website booking inquiries will appear here automatically.
+            {t('New questions and sign-ups from the website show up here automatically.', 'الأسئلة والتسجيلات الجديدة من الموقع بتظهر هنا تلقائياً.')}
           </p>
         </div>
       ) : (
@@ -352,10 +360,10 @@ export default function LeadsPage() {
           {filteredLeads.map((lead) => {
             const leadWhatsappUrl = buildContextualWhatsAppUrl(
               lead.whatsapp,
-              `As-salamu alaykum ${lead.name},\n\nThis is Ustadh Mahmoud following up on your inquiry regarding ${lead.service_interest_name || 'lessons'}. How can I assist you?`
+              `As-salamu alaykum ${lead.name},\n\nFollowing up on your question about ${lead.service_interest_name || 'lessons'}. How can we help?`
             );
             const cairoCreated = lead.created_at
-              ? DateTime.fromISO(lead.created_at).setZone('Africa/Cairo').toFormat('MMM d, yyyy')
+              ? DateTime.fromISO(lead.created_at).setZone('Africa/Cairo').setLocale(locale).toFormat('MMM d, yyyy')
               : null;
 
             return (
@@ -369,19 +377,19 @@ export default function LeadsPage() {
                     <span className={`text-[11px] font-semibold px-2 py-0.5 rounded ${
                       STAGE_CONFIG[lead.status]?.label ? STAGE_CONFIG[lead.status]?.color : 'glass-surface text-foreground'
                     }`}>
-                      {STAGE_CONFIG[lead.status]?.label || lead.status}
+                      {(isAr ? STAGE_CONFIG[lead.status]?.labelAr : STAGE_CONFIG[lead.status]?.label) || lead.status}
                     </span>
 
                     {lead.needs_followup && (
                       <span className="text-[13px] font-semibold px-2 py-0.5 rounded-full bg-warning/15 text-warning-foreground border border-warning/30 flex items-center gap-1">
                         <Clock className="w-3 h-3" />
-                        <span>Follow-up: {lead.followup_reason}</span>
+                        <span>{t('Follow up', 'متابعة')}: {lead.followup_reason}</span>
                       </span>
                     )}
 
                     {lead.learner_type === 'child' && (
                       <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-warning/10 text-warning-foreground border border-warning/20">
-                        Child Learner
+                        {t('Child', 'طفل')}
                       </span>
                     )}
 
@@ -397,12 +405,12 @@ export default function LeadsPage() {
                       {lead.name}
                       {lead.parent_name && (
                         <span className="text-sm font-normal text-muted-foreground ms-2">
-                          (Parent: <span className="text-foreground">{lead.parent_name}</span>)
+                          ({t('Parent', 'ولي الأمر')}: <span className="text-foreground">{lead.parent_name}</span>)
                         </span>
                       )}
                     </h4>
                     <p className="text-sm text-muted-foreground truncate">
-                      Interest: <span className="font-medium text-foreground">{lead.service_interest_name || 'General Inquiry'}</span>
+                      {t('Interested in', 'مهتم بـ')}: <span className="font-medium text-foreground">{lead.service_interest_name || t('General question', 'سؤال عام')}</span>
                       {lead.email && <span> • {lead.email}</span>}
                     </p>
                   </div>
@@ -410,15 +418,15 @@ export default function LeadsPage() {
                   {/* Goal & Trial summary */}
                   <div className="flex items-center gap-3 text-sm text-muted-foreground flex-wrap">
                     {cairoCreated && (
-                      <span>Inquired: {cairoCreated}</span>
+                      <span>{t('Asked on', 'سأل يوم')}: {cairoCreated}</span>
                     )}
                     {lead.trial_booking ? (
                       <span className="text-primary font-medium flex items-center gap-1">
                         <Sparkles className="w-3 h-3" />
-                        <span>Trial: {lead.trial_booking.status || 'Booked'} ({lead.trial_booking.reference_code})</span>
+                        <span>{t('Trial', 'تجربة')}: {lead.trial_booking.status || t('booked', 'محجوزة')} ({lead.trial_booking.reference_code})</span>
                       </span>
                     ) : (
-                      <span className="opacity-60">No trial booked yet</span>
+                      <span className="opacity-60">{t('No trial yet', 'لسه ما حجزش تجربة')}</span>
                     )}
                   </div>
                 </div>
@@ -432,7 +440,8 @@ export default function LeadsPage() {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-1.5 rounded-lg text-success hover:bg-success/10 transition-colors"
-                        title="Chat on WhatsApp"
+                        title={t('WhatsApp', 'واتساب')}
+                        aria-label={t('WhatsApp', 'واتساب')}
                       >
                         <MessageCircle className="w-4 h-4" />
                       </a>
@@ -441,7 +450,8 @@ export default function LeadsPage() {
                       <a
                         href={`mailto:${lead.email}`}
                         className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors"
-                        title="Send Email"
+                        title={t('Email', 'إيميل')}
+                        aria-label={t('Email', 'إيميل')}
                       >
                         <Mail className="w-4 h-4" />
                       </a>
@@ -456,8 +466,8 @@ export default function LeadsPage() {
                     }}
                     className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-secondary/30 hover:bg-secondary/40 text-accent text-sm font-semibold transition-colors cursor-pointer"
                   >
-                    <span>Manage Lead</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
+                    <span>{t('Open', 'افتح')}</span>
+                    <ChevronRight className="w-3.5 h-3.5 rtl:rotate-180" />
                   </button>
                 </div>
               </div>

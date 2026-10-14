@@ -12,8 +12,6 @@ import { BOOKING_SERVICES, calculateLessonFee } from '../../booking/mockData';
 interface StepPackageQuantityProps {
   serviceId: string;
   duration: LessonDuration;
-  lessonCount: number;
-  onChangeCount: (count: number) => void;
   catalog?: PackageCatalogEntry[];
   lang: Language;
   onNext: () => void;

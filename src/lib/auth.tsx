@@ -2,6 +2,7 @@ import { isPasswordLeaked, LEAKED_PASSWORD_MESSAGE } from './pwnedPassword';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase, isSupabaseConfigured } from './supabase';
+import { syncChosenLanguage } from './language';
 
 export const APPROVED_TEACHER_EMAILS = [
   'mhmwdlwany4222@gmail.com',
@@ -194,6 +195,7 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (_event === 'SIGNED_IN') void syncChosenLanguage();
       setSession(session);
       setUser(session?.user ?? null);
       if (session) {

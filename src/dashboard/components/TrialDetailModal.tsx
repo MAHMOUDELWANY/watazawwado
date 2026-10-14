@@ -23,6 +23,7 @@ import {
 import { DashboardTrial, TrialAssessment, LeadStatus } from '../types';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
+import { useT } from '../../lib/language';
 
 interface TrialDetailModalProps {
   trial: DashboardTrial | null;
@@ -134,6 +135,8 @@ const LEARNING_PLAN_TEMPLATES: LearningPlanTemplate[] = [
 ];
 
 export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDetailModalProps) {
+  const { t, isAr } = useT();
+  const locale = isAr ? 'ar' : 'en';
   const [copiedLink, setCopiedLink] = useState<'host' | 'join' | 'plan' | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
@@ -198,12 +201,12 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
   if (!trial) return null;
 
   const startUtc = trial.scheduled_start ? DateTime.fromISO(trial.scheduled_start) : null;
-  const startCairo = startUtc ? startUtc.setZone('Africa/Cairo') : null;
+  const startCairo = startUtc ? startUtc.setZone('Africa/Cairo').setLocale(locale) : null;
 
   let startStudent: DateTime | null = null;
   try {
     if (startUtc && trial.student_timezone && trial.student_timezone !== 'Africa/Cairo') {
-      startStudent = startUtc.setZone(trial.student_timezone);
+      startStudent = startUtc.setZone(trial.student_timezone).setLocale(locale);
     }
   } catch (e) {
     startStudent = null;
@@ -220,7 +223,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
 
   // Contextual WhatsApp link preparation - truthful target
   const learnerGreetingName = trial.learner_name || 'there';
-  const cairoTimeStr = startCairo ? startCairo.toFormat('EEEE, MMMM d at hh:mm a') : 'our scheduled time';
+  const cairoTimeStr = startCairo ? startCairo.setLocale('en').toFormat('EEEE, MMMM d at hh:mm a') : 'our scheduled time';
   const defaultTrialMessage = `As-salamu alaykum ${learnerGreetingName},\n\nThis is Ustadh Mahmoud regarding our scheduled Free Trial Session for ${trial.service_name} on ${cairoTimeStr} (Cairo time).\n\nHere is our Zoom meeting link: ${joinUrl || '[Link]'}\n\nI look forward to meeting you and helping you achieve your learning goals!`;
   const whatsappUrl = buildContextualWhatsAppUrl(trial.contact_whatsapp, defaultTrialMessage);
 
@@ -268,12 +271,12 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
         body: JSON.stringify(payload)
       });
 
-      setSaveMessage('Trial assessment and learning plan saved successfully.');
+      setSaveMessage(t('Assessment and learning plan saved.', 'التقييم وخطة التعلم اتحفظوا.'));
       if (onAssessmentSaved) {
         onAssessmentSaved();
       }
     } catch (err: any) {
-      setErrorMessage(err.message || 'Error saving assessment.');
+      setErrorMessage(err.message || t("Couldn't save the assessment.", 'تعذر حفظ التقييم.'));
     } finally {
       setSaving(false);
     }
@@ -298,7 +301,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 {trial.reference_code}
               </span>
               <span className="text-sm font-semibold px-2 py-0.5 rounded bg-warning/15 text-warning-foreground border border-warning/30">
-                Free Trial (30 min)
+                {t('Free trial', 'تجربة مجانية')}
               </span>
               {trial.status ? (
                 <span className={`text-sm font-bold uppercase tracking-wider px-2 py-0.5 rounded ${
@@ -308,25 +311,25 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                     ? 'bg-destructive/15 text-destructive border border-destructive/20'
                     : 'bg-secondary/30 text-primary border border-secondary/50'
                 }`}>
-                  {trial.status}
+                  {({ completed: t('Done', 'تمت'), cancelled: t('Cancelled', 'ملغاة'), confirmed: t('Confirmed', 'مؤكدة'), rescheduled: t('Moved', 'اتغيّر ميعادها'), no_show: t('No-show', 'غياب') } as Record<string, string>)[trial.status] || trial.status}
                 </span>
               ) : (
                 <span className="text-sm font-medium px-2 py-0.5 rounded glass-surface text-muted-foreground border border-border-subtle">
-                  Status unavailable
+                  —
                 </span>
               )}
             </div>
             <h2 className="text-xl sm:text-2xl font-display font-bold text-foreground">
-              {trial.learner_name || 'Anonymous Student'}
+              {trial.learner_name || t('Student', 'طالب')}
             </h2>
             {trial.parent_name && (
               <p className="text-sm text-muted-foreground font-medium mt-0.5">
-                Parent / Guardian: <span className="text-foreground">{trial.parent_name}</span>
+                {t('Parent / guardian', 'ولي الأمر')}: <span className="text-foreground">{trial.parent_name}</span>
               </p>
             )}
           </div>
           <button
-            aria-label="Close"
+            aria-label={t('Close', 'إغلاق')}
             onClick={onClose}
             className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground glass-hover hover:bg-surface transition-colors"
           >
@@ -355,32 +358,32 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
             <div className="flex items-center justify-between flex-wrap gap-2">
               <div className="flex items-center gap-2 text-primary font-semibold text-sm uppercase tracking-wider">
                 <Clock className="w-4 h-4" />
-                <span>Session Timing & Room</span>
+                <span>{t('Time & room', 'الميعاد والغرفة')}</span>
               </div>
               <span className="text-sm text-muted-foreground font-mono">
-                Requested: {trial.service_name}
+                {t('Subject', 'المادة')}: {trial.service_name}
               </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
               <div className="p-3 rounded-lg glass-card border-none">
                 <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">
-                  Mahmoud's Time (Cairo)
+                  {t('Cairo time', 'بتوقيت القاهرة')}
                 </div>
                 <div className="font-semibold text-sm text-foreground">
-                  {startCairo ? startCairo.toFormat('EEE, MMM d • hh:mm a') : (trial.cairo_time_display || 'Time not set')}
+                  {startCairo ? startCairo.toFormat('EEE, MMM d • hh:mm a') : (trial.cairo_time_display || t('Time not set', 'الوقت مش محدد'))}
                 </div>
               </div>
 
               <div className="p-3 rounded-lg glass-card border-none">
                 <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-0.5">
-                  Student's Local Time
+                  {t("Student's time", 'بتوقيت الطالب')}
                 </div>
                 <div className="font-semibold text-sm text-foreground">
                   {startStudent ? (
                     `${startStudent.toFormat('hh:mm a')} (${trial.student_timezone})`
                   ) : (
-                    trial.student_timezone || 'Timezone unavailable'
+                    trial.student_timezone || t('Not set', 'مش محدد')
                   )}
                 </div>
               </div>
@@ -396,13 +399,13 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                   className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg btn-primary-material text-primary-foreground text-sm font-semibold shadow-2xs transition-colors"
                 >
                   <Video className="w-3.5 h-3.5" />
-                  <span>Start as Host</span>
+                  <span>{t('Start as host', 'ابدأ كمضيف')}</span>
                   <ExternalLink className="w-3 h-3 ms-0.5 opacity-80" />
                 </a>
               ) : (
                 <div className="text-sm text-warning font-medium flex items-center gap-1.5">
                   <AlertCircle className="w-3.5 h-3.5" />
-                  <span>Zoom host link not generated yet</span>
+                  <span>{t('The Zoom link is not ready yet', 'رابط Zoom لسه مش جاهز')}</span>
                 </div>
               )}
 
@@ -413,7 +416,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                   className="inline-flex items-center gap-1 px-3 py-2 rounded-lg glass-card border-none text-sm font-medium text-foreground hover:bg-surface-subtle transition-colors"
                 >
                   {copiedLink === 'join' ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5 text-muted-foreground" />}
-                  <span>{copiedLink === 'join' ? 'Student Link Copied!' : 'Copy Student Link'}</span>
+                  <span>{copiedLink === 'join' ? t('Copied!', 'اتنسخ!') : t("Copy the student's link", 'انسخ رابط الطالب')}</span>
                 </button>
               )}
 
@@ -425,12 +428,12 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                   className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-success/10 text-success border border-success/30 text-sm font-medium hover:bg-success/20 transition-colors"
                 >
                   <MessageCircle className="w-3.5 h-3.5" />
-                  <span>Send Zoom on WhatsApp</span>
+                  <span>{t('Send the link on WhatsApp', 'ابعت الرابط على واتساب')}</span>
                 </a>
               ) : (
                 <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg glass-surface text-muted-foreground border border-border-subtle text-sm font-medium cursor-not-allowed">
                   <MessageCircle className="w-3.5 h-3.5" />
-                  <span>No WhatsApp Number</span>
+                  <span>{t('No WhatsApp number', 'مفيش رقم واتساب')}</span>
                 </span>
               )}
             </div>
@@ -441,7 +444,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
             <div className="glass-surface p-4 rounded-xl border border-border-subtle">
               <div className="flex items-center gap-2 text-muted-foreground font-semibold text-sm uppercase tracking-wider mb-1.5">
                 <FileText className="w-4 h-4" />
-                <span>Learner Goal & Inquired Needs</span>
+                <span>{t("Student's goal & needs", 'هدف الطالب واحتياجاته')}</span>
               </div>
               <p className="text-sm sm:text-sm text-foreground leading-relaxed whitespace-pre-wrap">
                 {trial.goal || trial.notes}
@@ -454,10 +457,10 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-primary font-semibold text-sm uppercase tracking-wider">
                 <Sparkles className="w-4 h-4" />
-                <span>Mini-Lesson Assessment</span>
+                <span>{t('Assessment', 'التقييم')}</span>
               </div>
               <span className="text-[11px] text-muted-foreground">
-                Teacher Observation
+                {t('Your observations', 'ملاحظاتك')}
               </span>
             </div>
 
@@ -466,12 +469,12 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5 text-sm font-semibold text-primary">
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>Dynamic Learning Plan Templates</span>
+                  <span>{t('Ready-made plans', 'خطط جاهزة')}</span>
                 </div>
-                <span className="text-[13px] text-muted-foreground">1-click pedagogical assessment</span>
+                <span className="text-[13px] text-muted-foreground">{t('one click', 'بضغطة واحدة')}</span>
               </div>
               <p className="text-[11px] text-muted-foreground">
-                Choose a pre-defined curriculum baseline to quickly populate assessment goals, strengths, and recommended plan:
+                {t('Pick a starting plan to fill the form, then adjust it:', 'اختار خطة جاهزة علشان تملا الفورم، وبعدين عدّلها:')}
               </p>
               <div className="flex flex-wrap gap-1.5 pt-1">
                 {LEARNING_PLAN_TEMPLATES.map((tmpl) => {
@@ -489,7 +492,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                     >
                       {isSelected && <Check className="w-3 h-3" />}
                       <span>{tmpl.title}</span>
-                      <span className="text-[13px] opacity-70">({tmpl.duration}m)</span>
+                      <span className="text-[13px] opacity-70">({tmpl.duration} {t('min', 'د')})</span>
                     </button>
                   );
                 })}
@@ -498,76 +501,81 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">
-                  Current Assessed Level
+                <label className="block text-sm font-medium text-foreground mb-1" htmlFor="tdm-level">
+                  {t('Current level', 'المستوى الحالي')}
                 </label>
                 <select
+                  id="tdm-level"
                   value={currentLevel}
                   onChange={(e) => setCurrentLevel(e.target.value)}
                   className="w-full px-3 py-2 rounded-lg border border-border glass-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
-                  <option value="">-- Unassessed / Not Evaluated Yet --</option>
-                  <option value="beginner">Beginner (Starting from basics)</option>
-                  <option value="elementary">Elementary (Recognizes letters/basics)</option>
-                  <option value="intermediate">Intermediate (Reads with basic rules)</option>
-                  <option value="advanced">Advanced (Fluent / Polishing Tajweed)</option>
+                  <option value="">{t('— Not assessed yet —', '— لسه ما اتقيّمش —')}</option>
+                  <option value="beginner">{t('Beginner (from the basics)', 'مبتدئ (من الأساسيات)')}</option>
+                  <option value="elementary">{t('Elementary (knows the letters)', 'أساسي (يعرف الحروف)')}</option>
+                  <option value="intermediate">{t('Intermediate (reads with basic rules)', 'متوسط (بيقرا بالأحكام الأساسية)')}</option>
+                  <option value="advanced">{t('Advanced (fluent, polishing)', 'متقدم (متمكن، بيحسّن)')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">
-                  Follow-Up Status
+                <label className="block text-sm font-medium text-foreground mb-1" htmlFor="tdm-follow">
+                  {t('Follow-up', 'المتابعة')}
                 </label>
                 <select
+                  id="tdm-follow"
                   value={followUpStatus}
                   onChange={(e) => setFollowUpStatus(e.target.value)}
                   className="w-full px-3 py-2 rounded-lg border border-border glass-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
-                  <option value="needs_follow_up">Needs Follow-Up</option>
-                  <option value="awaiting_response">Awaiting Student Response</option>
-                  <option value="student_deciding">Student Deciding Schedule</option>
-                  <option value="ready_to_continue">Ready to Continue (Send Plan)</option>
-                  <option value="enrolled">Enrolled in Lessons</option>
-                  <option value="not_now">Not Continuing / Postponed</option>
+                  <option value="needs_follow_up">{t('Needs follow-up', 'محتاج متابعة')}</option>
+                  <option value="awaiting_response">{t('Waiting for the student', 'مستنيين رد الطالب')}</option>
+                  <option value="student_deciding">{t('Student is choosing times', 'الطالب بيختار مواعيد')}</option>
+                  <option value="ready_to_continue">{t('Ready to continue (send plan)', 'جاهز يكمل (ابعت الخطة)')}</option>
+                  <option value="enrolled">{t('Booked lessons', 'حجز حصص')}</option>
+                  <option value="not_now">{t('Not continuing for now', 'مش هيكمل دلوقتي')}</option>
                 </select>
               </div>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-foreground mb-1">
-                Observed Strengths
+                {t('Strengths', 'نقاط القوة')}
               </label>
               <input
+                aria-label={t('Strengths', 'نقاط القوة')}
                 type="text"
                 value={strengths}
                 onChange={(e) => setStrengths(e.target.value)}
-                placeholder="e.g. Attentive, knows Arabic alphabet, good pronunciation of standard sounds"
+                placeholder={t('e.g. attentive, knows the alphabet, good pronunciation', 'مثلاً: مركز، يعرف الحروف، نطقه كويس')}
                 className="w-full px-3 py-2 rounded-lg border border-border glass-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-foreground mb-1">
-                Areas Needing Work & Gaps
+                {t('What to work on', 'محتاج يشتغل على')}
               </label>
               <input
+                aria-label={t('What to work on', 'محتاج يشتغل على')}
                 type="text"
                 value={areasNeedingWork}
                 onChange={(e) => setAreasNeedingWork(e.target.value)}
-                placeholder="e.g. Heavy letters (Taa, Saad), Noon Sakinah rules, reading confidence"
+                placeholder={t('e.g. heavy letters, Noon Sakinah rules, reading confidence', 'مثلاً: الحروف المفخمة، أحكام النون الساكنة، الثقة في القراءة')}
                 className="w-full px-3 py-2 rounded-lg border border-border glass-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-foreground mb-1">
-                Private Teacher Notes
+                {t('Private notes', 'ملاحظات خاصة')}
               </label>
               <textarea
+                aria-label={t('Private notes', 'ملاحظات خاصة')}
                 rows={2}
                 value={assessmentNotes}
                 onChange={(e) => setAssessmentNotes(e.target.value)}
-                placeholder="Observations on pace, focus, parent expectations, preferred timings..."
+                placeholder={t('Pace, focus, parent expectations, preferred times…', 'السرعة، التركيز، توقعات ولي الأمر، المواعيد المفضلة…')}
                 className="w-full px-3 py-2 rounded-lg border border-border glass-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
@@ -578,7 +586,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-primary font-semibold text-sm uppercase tracking-wider">
                 <GraduationCap className="w-4 h-4" />
-                <span>Your Recommended Learning Plan</span>
+                <span>{t('Recommended learning plan', 'خطة التعلم المقترحة')}</span>
               </div>
               <button
                 type="button"
@@ -586,16 +594,17 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg glass-card text-sm font-medium text-foreground border border-border hover:bg-surface-subtle transition-colors cursor-pointer"
               >
                 {copiedLink === 'plan' ? <Check className="w-3 h-3 text-success" /> : <Copy className="w-3 h-3 opacity-70" />}
-                <span>{copiedLink === 'plan' ? 'Plan Copied!' : 'Copy Plan for Student'}</span>
+                <span>{copiedLink === 'plan' ? t('Copied!', 'اتنسخت!') : t('Copy plan for the student', 'انسخ الخطة للطالب')}</span>
               </button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">
-                  Recommended Service
+                <label className="block text-sm font-medium text-foreground mb-1" htmlFor="tdm-service">
+                  {t('Subject', 'المادة')}
                 </label>
                 <select
+                  id="tdm-service"
                   value={recommendedServiceId}
                   onChange={(e) => setRecommendedServiceId(e.target.value)}
                   className="w-full px-3 py-2 rounded-lg border border-border glass-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
@@ -607,46 +616,49 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">
-                  Lesson Length
+                <label className="block text-sm font-medium text-foreground mb-1" htmlFor="tdm-length">
+                  {t('Lesson length', 'مدة الحصة')}
                 </label>
                 <select
+                  id="tdm-length"
                   value={recommendedDuration}
                   onChange={(e) => setRecommendedDuration(Number(e.target.value))}
                   className="w-full px-3 py-2 rounded-lg border border-border glass-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
-                  <option value={30}>30 minutes (Best for kids)</option>
-                  <option value={45}>45 minutes (Standard focus)</option>
-                  <option value={60}>60 minutes (Comprehensive)</option>
+                  <option value={30}>{t('30 minutes (great for kids)', '30 دقيقة (مناسبة للأطفال)')}</option>
+                  <option value={45}>{t('45 minutes', '45 دقيقة')}</option>
+                  <option value={60}>{t('60 minutes', '60 دقيقة')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">
-                  Weekly Frequency
+                <label className="block text-sm font-medium text-foreground mb-1" htmlFor="tdm-freq">
+                  {t('Lessons per week', 'عدد الحصص في الأسبوع')}
                 </label>
                 <select
+                  id="tdm-freq"
                   value={recommendedFrequency}
                   onChange={(e) => setRecommendedFrequency(e.target.value)}
                   className="w-full px-3 py-2 rounded-lg border border-border glass-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
-                  <option value="1x weekly">1× weekly</option>
-                  <option value="2x weekly">2× weekly (Recommended)</option>
-                  <option value="3x weekly">3× weekly (Intensive)</option>
-                  <option value="Flexible">Flexible / Custom</option>
+                  <option value="1x weekly">{t('Once a week', 'مرة في الأسبوع')}</option>
+                  <option value="2x weekly">{t('Twice a week (recommended)', 'مرتين في الأسبوع (مقترح)')}</option>
+                  <option value="3x weekly">{t('3 times a week (intensive)', '3 مرات في الأسبوع (مكثف)')}</option>
+                  <option value="Flexible">{t('Flexible', 'مرن')}</option>
                 </select>
               </div>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-foreground mb-1">
-                Learning Plan Summary / Core Milestone
+                {t('Plan summary / main goal', 'ملخص الخطة / الهدف الأساسي')}
               </label>
               <textarea
+                aria-label={t('Plan summary', 'ملخص الخطة')}
                 rows={2}
                 value={learningPlanSummary}
                 onChange={(e) => setLearningPlanSummary(e.target.value)}
-                placeholder="e.g. Master Noon Sakinah rules in 4 weeks, then progress to Surah Al-Mulk recitation..."
+                placeholder={t('e.g. master Noon Sakinah in 4 weeks, then recite Surah Al-Mulk…', 'مثلاً: إتقان أحكام النون الساكنة في 4 أسابيع، وبعدها تلاوة سورة الملك…')}
                 className="w-full px-3 py-2 rounded-lg border border-border glass-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
@@ -662,7 +674,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               onClick={() => handleSaveAssessment(false)}
               className="px-4 py-2 rounded-xl glass-card border-none text-sm font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
             >
-              {saving ? 'Saving...' : 'Save Assessment'}
+              {saving ? t('Saving…', 'جارٍ الحفظ…') : t('Save assessment', 'احفظ التقييم')}
             </button>
 
             {trial.status !== 'completed' && (
@@ -672,7 +684,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
                 onClick={() => handleSaveAssessment(true, 'trial_completed')}
                 className="px-4 py-2 rounded-xl btn-primary-material text-primary-foreground text-sm font-semibold transition-colors cursor-pointer"
               >
-                Mark Attended & Completed
+                {t('Attended & done', 'حضر والحصة تمت')}
               </button>
             )}
           </div>
@@ -684,7 +696,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               onClick={() => handleSaveAssessment(true, 'potential_student')}
               className="px-3.5 py-2 rounded-xl bg-warning/10 hover:bg-warning/20 text-warning-foreground border border-warning/30 text-sm font-medium transition-colors cursor-pointer"
             >
-              Mark Potential Student
+              {t('Might continue', 'ممكن يكمل')}
             </button>
 
             <button
@@ -694,7 +706,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               className="px-3.5 py-2 rounded-xl bg-success hover:bg-success/90 text-white text-sm font-semibold transition-colors shadow-2xs cursor-pointer flex items-center gap-1.5"
             >
               <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>Enroll as Active Student</span>
+              <span>{t('Continuing student', 'هيكمل معانا')}</span>
             </button>
           </div>
         </div>

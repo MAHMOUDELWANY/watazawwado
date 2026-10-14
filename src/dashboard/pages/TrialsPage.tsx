@@ -15,13 +15,14 @@ import {
   ExternalLink,
   MessageCircle
 } from 'lucide-react';
-import { useTeacherAuth } from '../../lib/auth';
 import { DashboardTrial } from '../types';
+import { useT } from '../../lib/language';
 import { TrialDetailModal } from '../components/TrialDetailModal';
 import { dashboardFetch } from '../lib/dashboardApi';
 
 export default function TrialsPage() {
-  const { session } = useTeacherAuth();
+  const { t, isAr } = useT();
+  const locale = isAr ? 'ar' : 'en';
   const [upcomingTrials, setUpcomingTrials] = useState<DashboardTrial[]>([]);
   const [recentTrials, setRecentTrials] = useState<DashboardTrial[]>([]);
   const [activeTab, setActiveTab] = useState<'upcoming' | 'recent' | 'all'>('upcoming');
@@ -43,7 +44,7 @@ export default function TrialsPage() {
       setRecentTrials(data.recent_trials || []);
       setLastRefreshed(DateTime.now().setZone('Africa/Cairo'));
     } catch (err: any) {
-      setError(err.message || 'Error loading trials.');
+      setError(err.message || t("Trials couldn't be loaded.", 'تعذر تحميل الحصص التجريبية.'));
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -64,16 +65,16 @@ export default function TrialsPage() {
 
     if (!searchQuery.trim()) return list;
     const q = searchQuery.toLowerCase().trim();
-    return list.filter(t =>
-      (t.learner_name && t.learner_name.toLowerCase().includes(q)) ||
-      (t.parent_name && t.parent_name.toLowerCase().includes(q)) ||
-      (t.contact_email && t.contact_email.toLowerCase().includes(q)) ||
-      (t.reference_code && t.reference_code.toLowerCase().includes(q)) ||
-      (t.service_name && t.service_name.toLowerCase().includes(q))
+    return list.filter(tr =>
+      (tr.learner_name && tr.learner_name.toLowerCase().includes(q)) ||
+      (tr.parent_name && tr.parent_name.toLowerCase().includes(q)) ||
+      (tr.contact_email && tr.contact_email.toLowerCase().includes(q)) ||
+      (tr.reference_code && tr.reference_code.toLowerCase().includes(q)) ||
+      (tr.service_name && tr.service_name.toLowerCase().includes(q))
     );
   })();
 
-  const completedCount = allTrials.filter(t => t.status === 'completed' || Boolean(t.assessment)).length;
+  const completedCount = allTrials.filter(tr => tr.status === 'completed' || Boolean(tr.assessment)).length;
 
   return (
     <div className="space-y-6">
@@ -82,21 +83,18 @@ export default function TrialsPage() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-display font-bold text-foreground">
-              Trial Sessions
+              {t('Free trials', 'الحصص التجريبية')}
             </h1>
-            <span className="text-sm px-2.5 py-0.5 rounded-full bg-secondary/30 text-accent font-medium">
-              Free Trial Engine
-            </span>
           </div>
           <p className="text-sm sm:text-sm text-muted-foreground mt-1">
-            Evaluate prospective learners, record mini-lesson observations, and recommend personalized learning plans.
+            {t('Get to know new students, note what you saw and suggest a learning plan.', 'اتعرّف على الطلاب الجداد، سجّل ملاحظاتك واقترح خطة تعلم.')}
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           {lastRefreshed && (
             <span className="text-[11px] text-muted-foreground">
-              Cairo: {lastRefreshed.toFormat('hh:mm a')}
+              {t('Cairo', 'القاهرة')}: {lastRefreshed.setLocale(locale).toFormat('hh:mm a')}
             </span>
           )}
           <button
@@ -105,7 +103,7 @@ export default function TrialsPage() {
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass-card border-none text-sm font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer shadow-2xs"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-accent' : 'opacity-70'}`} />
-            <span>Refresh</span>
+            <span>{t('Refresh', 'تحديث')}</span>
           </button>
         </div>
       </div>
@@ -115,7 +113,7 @@ export default function TrialsPage() {
         <div className="p-5 rounded-2xl glass-card border-none shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-sm uppercase tracking-wider text-muted-foreground font-medium">
-              Upcoming Trials
+              {t('Upcoming', 'الجاية')}
             </span>
             <Sparkles className="w-4 h-4 text-warning" />
           </div>
@@ -123,14 +121,14 @@ export default function TrialsPage() {
             <span className="text-2xl font-semibold text-foreground">
               {upcomingTrials.length}
             </span>
-            <span className="text-sm text-muted-foreground">scheduled</span>
+            <span className="text-sm text-muted-foreground">{t('booked', 'محجوزة')}</span>
           </div>
         </div>
 
         <div className="p-5 rounded-2xl glass-card border-none shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-sm uppercase tracking-wider text-muted-foreground font-medium">
-              Completed & Evaluated
+              {t('Done & assessed', 'تمت واتقيّمت')}
             </span>
             <CheckCircle2 className="w-4 h-4 text-success" />
           </div>
@@ -138,14 +136,14 @@ export default function TrialsPage() {
             <span className="text-2xl font-semibold text-foreground">
               {completedCount}
             </span>
-            <span className="text-sm text-muted-foreground">attended</span>
+            <span className="text-sm text-muted-foreground">{t('attended', 'حضروا')}</span>
           </div>
         </div>
 
         <div className="p-5 rounded-2xl glass-card border-none shadow-2xs">
           <div className="flex items-center justify-between">
             <span className="text-sm uppercase tracking-wider text-muted-foreground font-medium">
-              Total Inquired Trials
+              {t('All trials', 'كل التجارب')}
             </span>
             <Calendar className="w-4 h-4 text-accent" />
           </div>
@@ -153,7 +151,7 @@ export default function TrialsPage() {
             <span className="text-2xl font-semibold text-foreground">
               {allTrials.length}
             </span>
-            <span className="text-sm text-muted-foreground">all-time</span>
+            <span className="text-sm text-muted-foreground">{t('all time', 'من البداية')}</span>
           </div>
         </div>
       </div>
@@ -169,7 +167,7 @@ export default function TrialsPage() {
                 : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
             }`}
           >
-            Upcoming Trials ({upcomingTrials.length})
+            {t('Upcoming', 'الجاية')} ({upcomingTrials.length})
           </button>
           <button
             onClick={() => setActiveTab('recent')}
@@ -179,7 +177,7 @@ export default function TrialsPage() {
                 : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
             }`}
           >
-            Recent & Completed ({recentTrials.length})
+            {t('Recent & done', 'الأخيرة واللي تمت')} ({recentTrials.length})
           </button>
           <button
             onClick={() => setActiveTab('all')}
@@ -189,18 +187,19 @@ export default function TrialsPage() {
                 : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
             }`}
           >
-            All Trials ({allTrials.length})
+            {t('All', 'الكل')} ({allTrials.length})
           </button>
         </div>
 
         <div className="relative w-full sm:w-64">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground rtl:left-auto rtl:right-3" />
+          <Search className="w-4 h-4 absolute start-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
+            aria-label={t('Search', 'بحث')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search student, email, ref..."
-            className="w-full pl-9 pr-4 rtl:pl-4 rtl:pr-9 py-1.5 rounded-xl border border-border glass-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary shadow-2xs"
+            placeholder={t('Search student, email, reference…', 'دوّر بالطالب أو الإيميل أو رقم الحجز…')}
+            className="w-full ps-9 pe-4 py-1.5 rounded-xl border border-border glass-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary shadow-2xs"
           />
         </div>
       </div>
@@ -216,29 +215,29 @@ export default function TrialsPage() {
       {/* Trials List */}
       {loading ? (
         <div className="p-12 text-center text-sm text-muted-foreground animate-pulse">
-          Loading trial sessions...
+          {t('Loading…', 'جارٍ التحميل…')}
         </div>
       ) : displayedTrials.length === 0 ? (
         <div className="p-12 text-center rounded-2xl glass-card border-none shadow-2xs">
           <Sparkles className="w-8 h-8 mx-auto text-muted-foreground mb-2 opacity-60" />
           <h3 className="font-display font-medium text-base text-foreground">
-            {activeTab === 'upcoming' ? 'No Upcoming Trials' : 'No Trial Records Found'}
+            {activeTab === 'upcoming' ? t('No upcoming trials', 'مفيش تجارب جاية') : t('No trials yet', 'لسه مفيش تجارب')}
           </h3>
           <p className="text-sm text-muted-foreground max-w-sm mx-auto mt-1">
             {activeTab === 'upcoming'
-              ? 'When international students request a free trial lesson, they will appear here with Zoom readiness and assessment tools.'
-              : 'Trial sessions and evaluations will appear here.'}
+              ? t('When a student books a free trial, it shows up here with its Zoom link and the assessment form.', 'لما طالب يحجز تجربة مجانية هتظهر هنا مع رابط Zoom وفورم التقييم.')
+              : t('Trials and assessments will show up here.', 'التجارب والتقييمات هتظهر هنا.')}
           </p>
         </div>
       ) : (
         <div className="space-y-3">
           {displayedTrials.map((trial) => {
             const startUtc = trial.scheduled_start ? DateTime.fromISO(trial.scheduled_start) : null;
-            const startCairo = startUtc ? startUtc.setZone('Africa/Cairo') : null;
+            const startCairo = startUtc ? startUtc.setZone('Africa/Cairo').setLocale(locale) : null;
             let startStudent: DateTime | null = null;
             try {
               if (startUtc && trial.student_timezone && trial.student_timezone !== 'Africa/Cairo') {
-                startStudent = startUtc.setZone(trial.student_timezone);
+                startStudent = startUtc.setZone(trial.student_timezone).setLocale(locale);
               }
             } catch (e) {
               startStudent = null;
@@ -258,7 +257,7 @@ export default function TrialsPage() {
                       {trial.reference_code}
                     </span>
                     <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-warning/15 text-warning-foreground border border-warning/30">
-                      Free Trial (30m)
+                      {t('Free trial', 'تجربة مجانية')}
                     </span>
                     {trial.status ? (
                       <span className={`text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${
@@ -268,37 +267,37 @@ export default function TrialsPage() {
                           ? 'bg-destructive/15 text-destructive border border-destructive/20'
                           : 'bg-secondary/30 text-primary border border-secondary/50'
                       }`}>
-                        {trial.status}
+                        {({ completed: t('Done', 'تمت'), cancelled: t('Cancelled', 'ملغاة'), confirmed: t('Confirmed', 'مؤكدة'), rescheduled: t('Moved', 'اتغيّر ميعادها'), no_show: t('No-show', 'غياب') } as Record<string, string>)[trial.status] || trial.status}
                       </span>
                     ) : (
                       <span className="text-[11px] font-medium px-2 py-0.5 rounded glass-surface text-muted-foreground border border-border-subtle">
-                        Status unavailable
+                        —
                       </span>
                     )}
 
                     {isAssessed ? (
                       <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-success/10 text-success border border-success/30 flex items-center gap-1">
                         <CheckCircle2 className="w-3 h-3" />
-                        <span>Plan Evaluated</span>
+                        <span>{t('Assessed', 'اتقيّمت')}</span>
                       </span>
                     ) : (
                       <span className="text-[11px] font-medium px-2 py-0.5 rounded glass-surface text-muted-foreground border border-border-subtle">
-                        Assessment Pending
+                        {t('Not assessed yet', 'لسه ما اتقيّمتش')}
                       </span>
                     )}
                   </div>
 
                   <div>
                     <h4 className="font-display font-medium text-base text-foreground truncate">
-                      {trial.learner_name || 'Anonymous Student'}
+                      {trial.learner_name || t('Student', 'طالب')}
                       {trial.parent_name && (
                         <span className="text-sm font-normal text-muted-foreground ms-2">
-                          (Parent: {trial.parent_name})
+                          ({t('Parent', 'ولي الأمر')}: {trial.parent_name})
                         </span>
                       )}
                     </h4>
                     <p className="text-sm text-muted-foreground truncate">
-                      Service: <span className="font-medium text-foreground">{trial.service_name}</span>
+                      {t('Subject', 'المادة')}: <span className="font-medium text-foreground">{trial.service_name}</span>
                       {trial.contact_email && <span> • {trial.contact_email}</span>}
                     </p>
                   </div>
@@ -308,13 +307,13 @@ export default function TrialsPage() {
                     <div className="flex items-center gap-1.5 font-medium text-foreground">
                       <Clock className="w-3.5 h-3.5 text-accent" />
                       <span>
-                        Cairo: {startCairo ? startCairo.toFormat('EEE, MMM d • hh:mm a') : (trial.cairo_time_display || 'Time not set')}
+                        {t('Cairo', 'القاهرة')}: {startCairo ? startCairo.toFormat('EEE, MMM d • hh:mm a') : (trial.cairo_time_display || t('Time not set', 'الوقت مش محدد'))}
                       </span>
                     </div>
 
                     {startStudent && (
                       <span className="text-muted-foreground">
-                        (Student: {startStudent.toFormat('hh:mm a')} • {trial.student_timezone})
+                        ({t('Student', 'الطالب')}: {startStudent.toFormat('hh:mm a')} • {trial.student_timezone})
                       </span>
                     )}
                   </div>
@@ -326,12 +325,12 @@ export default function TrialsPage() {
                     {trial.zoom_host_url ? (
                       <span className="inline-flex items-center gap-1 text-sm text-success font-medium">
                         <Video className="w-3.5 h-3.5" />
-                        <span>Zoom Ready</span>
+                        <span>{t('Zoom ready', 'Zoom جاهز')}</span>
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-1 text-sm text-muted-foreground">
                         <Video className="w-3.5 h-3.5" />
-                        <span>No Zoom Link</span>
+                        <span>{t('No Zoom link yet', 'لسه مفيش رابط Zoom')}</span>
                       </span>
                     )}
                   </div>
@@ -344,7 +343,7 @@ export default function TrialsPage() {
                     }}
                     className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-secondary/30 hover:bg-secondary/40 text-accent text-sm font-medium transition-colors cursor-pointer border border-secondary/50"
                   >
-                    <span>{isAssessed ? 'View & Edit Plan' : 'Assess & Plan'}</span>
+                    <span>{isAssessed ? t('View / edit plan', 'شوف / عدّل الخطة') : t('Assess & plan', 'قيّم واعمل خطة')}</span>
                     <ChevronRight className="w-3.5 h-3.5 rtl:rotate-180" />
                   </button>
                 </div>

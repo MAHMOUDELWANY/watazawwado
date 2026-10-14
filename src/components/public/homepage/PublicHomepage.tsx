@@ -1,15 +1,15 @@
 import React from 'react';
 import { useOutletContext, Link } from 'react-router-dom';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
-import { 
-  PublicSection, 
-  StudyLine, 
-  PortraitFrame, 
-  PublicButton 
+import {
+  PublicSection,
+  StudyLine,
+  PortraitFrame,
+  PublicButton
 } from '../PublicDesignSystem';
-import { 
-  Check, 
-  Sparkles, 
+import {
+  Check,
+  Sparkles,
   Award,
   BookOpen,
   User,
@@ -30,18 +30,18 @@ export function PublicHomepage() {
 
   return (
     <main id="main-content" className="pt-20 lg:pt-24">
-      
+
       {/* ─── 1. HERO SECTION ─────────────────────────────────────────────────── */}
       <PublicSection className="relative overflow-hidden pb-12 lg:pb-20">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           <div className="lg:col-span-7 space-y-6 animate-fade-in-up">
-            
+
             {/* Islamic Heritage Jewel Badge in Vibrant Teal */}
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-500/10 dark:bg-teal-500/20 text-teal-800 dark:text-teal-200 border border-teal-500/35 text-xs sm:text-sm font-semibold tracking-wide shadow-2xs">
               <Sparkles className="w-4 h-4 text-teal-600 dark:text-teal-400 animate-pulse" />
               <span>{isEn ? 'Private 1-on-1 Instruction • Authentic Heritage' : 'تعليم فردي مباشر • تأصيل علمي راسخ'}</span>
             </div>
-            
+
             <h1 className={`font-editorial text-4xl sm:text-5xl lg:text-6xl text-foreground font-medium leading-tight ${isEn ? '' : 'font-bold'}`}>
               {isEn ? (
                 <>Learn for <span className="text-brand-gradient">yourself</span>.<br />Learn for your <span className="text-brand-gradient">family</span>.</>
@@ -49,22 +49,22 @@ export function PublicHomepage() {
                 <>تعلّم <span className="text-brand-gradient">لنفسك</span>.<br />وتعلّم <span className="text-brand-gradient">لعائلتك</span>.</>
               )}
             </h1>
-            
+
             <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-2xl font-light">
-              {isEn 
+              {isEn
                 ? 'Your private space for learning and spiritual growth. Direct 1-on-1 lessons in Quran recitation, Tajweed, Arabic language, and Islamic Studies.'
                 : 'مساحتك الخاصة للتعلّم والارتقاء. دروس فردية مباشرة في تلاوة القرآن الكريم وأحكام التجويد، واللغة العربية، والعلوم الإسلامية.'
               }
             </p>
-            
+
             {/* Direct Primary CTA */}
             <div className="pt-2 flex flex-col sm:flex-row gap-3.5 items-stretch sm:items-center">
-              <PublicButton 
-                variant="primary" 
-                size="lg" 
+              <PublicButton
+                variant="primary"
+                size="lg"
                 id="hero-get-started-btn"
                 data-tour="header-get-started-cta"
-                onClick={() => onOpenTrialModal()} 
+                onClick={() => onOpenTrialModal()}
                 className="w-full sm:w-auto shadow-lg shadow-primary/20"
               >
                 <span>{isEn ? 'Book Free 30-Min Trial' : 'احجز جلستك الأولى (مجانًا)'}</span>
@@ -85,20 +85,20 @@ export function PublicHomepage() {
               </div>
             </div>
           </div>
-          
+
           {/* Portrait with strictly contained glow behind picture frame only */}
           <div className="lg:col-span-5 relative animate-fade-in-up mt-8 lg:mt-0 flex justify-center" style={{ animationDelay: '150ms' }}>
             <div className="relative w-full max-w-[360px] sm:max-w-[420px] mx-auto">
               {/* Contained glow strictly behind the portrait frame */}
               <div className="absolute inset-1 bg-gradient-to-tr from-teal-500/20 via-primary/20 to-terracotta/25 rounded-3xl blur-md -z-10" />
               <PortraitFrame src="/ustadh-mahmoud.jpg" alt="Ustadh Mahmoud" maxWidth={420} className="w-full shadow-2xl mx-auto" />
-              
+
               {/* Floating Credential Card */}
               <div className="hidden sm:block absolute -bottom-6 -left-6 rtl:-left-auto rtl:-right-6 bg-surface p-4 rounded-2xl shadow-xl border border-border max-w-[240px]">
                 <div className="flex items-center gap-2 mb-1.5">
                   <Award className="w-4 h-4 text-teal-600 dark:text-teal-400" />
                   <span className="text-xs font-bold text-teal-700 dark:text-teal-300">
-                    {isEn ? 'Al-Azhar Grounding' : 'تأصيل أزهري'}
+                    {isEn ? 'Balanced & moderate' : 'وسطية واعتدال'}
                   </span>
                 </div>
                 <StudyLine variant="teal" className="my-1.5" />
@@ -123,7 +123,7 @@ export function PublicHomepage() {
               {isEn ? 'One space. Two paths.' : 'مساحة واحدة. مساران للتعلّم.'}
             </h2>
             <p className="text-muted-foreground text-sm sm:text-base max-w-xl mx-auto mt-2">
-              {isEn 
+              {isEn
                 ? 'Whether you are learning individually or managing lessons for your children, everything is organized in one dedicated space.'
                 : 'سواء كنت تتعلم بشكل فردي ومستقل، أو تدير تعليم أبنائك وبناتك، فكل شيء ميسر وموثق في مكان واحد.'}
             </p>
@@ -139,7 +139,7 @@ export function PublicHomepage() {
                 {isEn ? 'Learn for yourself' : 'تعلّم لنفسك'}
               </h3>
               <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
-                {isEn 
+                {isEn
                   ? 'Your personal student sanctuary. Manage your lessons, schedule, and learning milestones all in one place with direct teacher access.'
                   : 'حسابك الشخصي المستقل. جدول دروسك، وتابع تقدمك مع خطة تعليمية فردية مصممة خصيصاً لمستواك وأوقاتك.'}
               </p>
@@ -158,7 +158,7 @@ export function PublicHomepage() {
                 {isEn ? 'Learn for your family' : 'تعلّم لعائلتك'}
               </h3>
               <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
-                {isEn 
+                {isEn
                   ? 'Manage your children’s Islamic and Arabic education from your unified account. Book for them or for yourself whenever you need, with complete visibility.'
                   : 'أدِر تعلّم أبنائك وبناتك من حساب موحد. احجز لهم أو لنفسك بمرونة تامة مع متابعة دورية وتقارير مستمرة.'}
               </p>
@@ -179,8 +179,8 @@ export function PublicHomepage() {
               {isEn ? 'Explore Dedicated Sections' : 'استكشف صفحات وأقسام المنصة'}
             </h2>
             <p className="text-muted-foreground text-sm max-w-lg mx-auto mt-2">
-              {isEn 
-                ? 'Each area of our platform has its own dedicated page with comprehensive details.' 
+              {isEn
+                ? 'Each area of our platform has its own dedicated page with comprehensive details.'
                 : 'لكل قسم في منصتنا صفحته المستقلة بكافة التفاصيل والمعلومات.'}
             </p>
           </div>
@@ -199,8 +199,8 @@ export function PublicHomepage() {
                   {isEn ? 'Lessons & Syllabus' : 'الدروس والمناهج'}
                 </h3>
                 <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
-                  {isEn 
-                    ? 'Explore 13 specialized tracks in Quran, Tajweed, Arabic, and Islamic Studies.' 
+                  {isEn
+                    ? 'Explore 13 specialized tracks in Quran, Tajweed, Arabic, and Islamic Studies.'
                     : 'استكشف ١٣ مساراً تعليمياً في القرآن، التجويد، الفصحى، والعامية المصرية.'}
                 </p>
               </div>
@@ -223,8 +223,8 @@ export function PublicHomepage() {
                   {isEn ? 'How Learning Works' : 'كيف نعمل والمنهجية'}
                 </h3>
                 <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
-                  {isEn 
-                    ? 'Our patient 4-step methodology from trial assessment to live Zoom sessions.' 
+                  {isEn
+                    ? 'Our patient 4-step methodology from trial assessment to live Zoom sessions.'
                     : 'منهجيتنا التعليمية الهادئة من الجلسة التجريبية حتى الدروس الفردية عبر زووم.'}
                 </p>
               </div>
@@ -247,9 +247,9 @@ export function PublicHomepage() {
                   {isEn ? 'About Ustadh Mahmoud' : 'عن المعلم والمنصة'}
                 </h3>
                 <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
-                  {isEn 
-                    ? 'Al-Azhar grounding, IELTS C1 English fluency, and 3+ years teaching international students.' 
-                    : 'التأصيل الأزهري وإتقان الإنجليزية C1 وخبرة ٣+ سنوات مع طلاب المهجر.'}
+                  {isEn
+                    ? "Balanced, moderate teaching on the way of Ahl al-Sunnah, IELTS C1 English, and 3+ years teaching students abroad."
+                    : 'تعليم وسطي معتدل على منهج أهل السنة، وإنجليزية C1، وخبرة +3 سنوات مع طلاب المهجر.'}
                 </p>
               </div>
               <div className="pt-3 mt-3 border-t border-border/40 flex items-center gap-1 text-xs font-bold text-accent">
@@ -271,8 +271,8 @@ export function PublicHomepage() {
                   {isEn ? 'Pricing & Packages' : 'الأسعار والباقات'}
                 </h3>
                 <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
-                  {isEn 
-                    ? 'Clear prices from $9 per hour (Quran & Islamic studies) and from $13 per hour (Arabic & English), with money-saving packages.' 
+                  {isEn
+                    ? 'Clear prices from $9 per hour (Quran & Islamic studies) and from $13 per hour (Arabic & English), with money-saving packages.'
                     : 'أسعار واضحة: من 9$ للساعة (القرآن والعلوم الشرعية) ومن 13$ للساعة (العربية والإنجليزية)، مع باقات بتوفّر لك.'}
                 </p>
               </div>
@@ -295,8 +295,8 @@ export function PublicHomepage() {
                   {isEn ? 'Frequently Asked Questions' : 'الأسئلة الشائعة'}
                 </h3>
                 <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
-                  {isEn 
-                    ? 'Clear answers regarding scheduling, cancellation policy, Zoom setup, and payment options.' 
+                  {isEn
+                    ? 'Clear answers regarding scheduling, cancellation policy, Zoom setup, and payment options.'
                     : 'إجابات شاملة ومفصلة حول المواعيد، سياسة الإلغاء، طريقة الدفع، واستخدام برنامج زووم.'}
                 </p>
               </div>
@@ -319,8 +319,8 @@ export function PublicHomepage() {
                   {isEn ? 'Student Portal' : 'بوابة ومساحة الطالب'}
                 </h3>
                 <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
-                  {isEn 
-                    ? 'Your private sanctuary to manage lessons, schedule sessions, and track milestones with the teacher.' 
+                  {isEn
+                    ? 'Your private sanctuary to manage lessons, schedule sessions, and track milestones with the teacher.'
                     : 'مساحتك الخاصة لمتابعة الدروس، إدارة جدول المواعيد، وتقارير التقدم مع المعلم.'}
                 </p>
               </div>
@@ -343,13 +343,13 @@ export function PublicHomepage() {
           <h3 className="font-editorial text-3xl sm:text-4xl text-foreground font-bold leading-tight">
             {isEn ? 'Ready to begin your journey?' : 'هل أنت مستعد لبدء رحلتك؟'}
           </h3>
-          
+
           <p className="text-muted-foreground leading-relaxed text-base max-w-xl mx-auto">
-            {isEn 
+            {isEn
               ? 'Take the first step with a free, no-obligation 30-minute trial. We’ll assess your level and build a tailored study roadmap.'
               : 'ابدأ جلستك الأولى مجاناً للتعارف وتحديد المستوى وبناء خطتك المناسبة بدون أي التزام مالي.'}
           </p>
-          
+
           <div className="pt-2 flex flex-col sm:flex-row justify-center gap-3.5">
             <PublicButton variant="primary" size="lg" onClick={() => onOpenTrialModal()} className="w-full sm:w-auto">
               {isEn ? 'Book Free Trial Now' : 'احجز جلستك المجانية الآن'}

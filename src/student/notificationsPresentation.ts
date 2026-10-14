@@ -30,7 +30,8 @@ export type StudentNotificationType =
   | 'payment_review'
   | 'payment_partial'
   | 'package_active'
-  | 'lesson_cancelled';
+  | 'lesson_cancelled'
+  | 'reschedule_request';
 
 export interface StudentNotificationItem {
   id: string;
@@ -205,6 +206,23 @@ export function buildStudentNotifications(
           // Free trials and any non-actionable state produce no payment notice.
           break;
       }
+    }
+
+    // 1b2. The teacher asked to move this lesson (RULES.md §2); clears once the student moves it.
+    if (b.rescheduleRequestedAt && (b.status === 'confirmed' || b.status === 'rescheduled')) {
+      const note = b.rescheduleRequestNote ? ` "${b.rescheduleRequestNote}"` : '';
+      push({
+        id: `reschedule_request_${bookingKey}_${b.rescheduleRequestedAt}`,
+        type: 'reschedule_request',
+        title: `Your teacher asked to move: ${titleEn}`,
+        titleAr: `المعلم طلب تغيير ميعاد: ${titleAr}`,
+        description: `Please pick a new time for this lesson from My lessons.${note}`,
+        descriptionAr: `من فضلك اختار ميعاد جديد للحصة دي من صفحة حصصي.${note}`,
+        timestamp: b.rescheduleRequestedAt,
+        actionUrl: '/student/lessons',
+        actionLabel: 'Pick a new time',
+        actionLabelAr: 'اختار ميعاد جديد'
+      });
     }
 
     // 1c. Cancelled booking — authoritative status only, WhatsApp coordination.

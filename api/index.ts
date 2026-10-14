@@ -86,7 +86,7 @@ export function getSupabaseAdminClient() {
   const serviceKey = (process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
   if (!cleanUrl || !serviceKey) return null;
   try {
-    return createClient(cleanUrl, serviceKey, { 
+    return createClient(cleanUrl, serviceKey, {
       auth: { persistSession: false },
       global: { fetch: (input: any, init?: any) => globalThis.fetch(input, init) }
     });
@@ -164,7 +164,7 @@ const PAYMENT_HOLD_MINUTES = 35;
 const MAX_LOST_TRIALS = 5;
 const MAX_STUDENT_REFUNDED_LESSONS = 3;
 // Bump when the terms page changes in substance; stored with each booking/package as proof of consent.
-const TERMS_VERSION = '2026-10-14';
+const TERMS_VERSION = '2026-10-15';
 
 /** Cancels unpaid bookings whose payment hold expired, freeing their slots. Never throws. */
 async function releaseExpiredPaymentHolds(client: any): Promise<void> {
@@ -224,14 +224,14 @@ function rateLimit(req: express.Request, res: express.Response, next: express.Ne
   if (!record || now > record.resetTime) {
     record = { count: 0, resetTime: now + RATE_LIMIT_WINDOW };
   }
-  
+
   record.count++;
   rateLimitStore.set(ip, record);
-  
+
   if (record.count > MAX_REQUESTS) {
     return res.status(429).json({ error: 'Too many requests. Please try again later.' });
   }
-  
+
   next();
 }
 
@@ -244,7 +244,7 @@ app.get('/api/health', (req, res) => {
 app.post('/api/learning-guide', rateLimit, async (req, res) => {
   try {
     const { messages } = req.body;
-    
+
     if (!messages || !Array.isArray(messages) || messages.length === 0 || messages.length > 20) {
       return res.status(400).json({ error: 'Invalid or missing messages payload.' });
     }
@@ -269,7 +269,7 @@ app.post('/api/learning-guide', rateLimit, async (req, res) => {
     }
 
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-    
+
     const systemInstruction = `You are the AI Learning Guide for Mahmoud Teaching Platform.
 Your role is to guide visitors, not replace Mahmoud.
 Speak in a calm, human, knowledgeable, trustworthy, premium, and approachable tone.
@@ -363,7 +363,7 @@ app.get('/api/integrations/google-calendar/auth-url', verifyTeacherAuth, (req: a
 app.get('/api/integrations/google-calendar/callback', async (req: any, res: any) => {
   const isProduction = process.env.NODE_ENV === 'production';
   let trustedOrigin: string | null = null;
-  
+
   if (process.env.APP_URL) {
     try {
       const parsedUrl = new URL(process.env.APP_URL);
@@ -509,14 +509,14 @@ app.get('/api/integrations/google-calendar/callback', async (req: any, res: any)
 
     const code = sanitizeGoogleAuthCode(rawCode);
     const tokenData = await exchangeGoogleCodeForTokens(code, embeddedRedirectUri);
-    
+
     // Store securely in DB using service role
     const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    
+
     if (supabaseUrl && serviceKey) {
       const supabase = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
-      
+
       // Invalidate old connections FOR THIS TEACHER ONLY
       const { error: updateError } = await supabase
         .from('calendar_connections')
@@ -555,10 +555,10 @@ app.get('/api/integrations/google-calendar/callback', async (req: any, res: any)
       console.error('[OAuth Callback] Trusted origin could not be determined. APP_URL is missing or invalid.');
       return renderError(500, 'Authentication Failed: Google Calendar connection failed. Please try again.');
     }
-    
-    const safePayload = JSON.stringify({ 
-      type: 'GOOGLE_CALENDAR_CONNECTED', 
-      email: tokenData.accountEmail || 'Connected' 
+
+    const safePayload = JSON.stringify({
+      type: 'GOOGLE_CALENDAR_CONNECTED',
+      email: tokenData.accountEmail || 'Connected'
     }).replace(/</g, '\\u003c').replace(/>/g, '\\u003e');
 
     // Clear oauth_state cookie to prevent replay attacks
@@ -603,10 +603,10 @@ app.post('/api/integrations/google-calendar/disconnect', verifyTeacherAuth, asyn
 
     const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    
+
     if (supabaseUrl && serviceKey) {
       const supabase = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
-      
+
       await supabase
         .from('calendar_connections')
         .update({ is_active: false, updated_at: new Date().toISOString() })
@@ -629,13 +629,13 @@ async function getVerifiedBookingManagement(referenceCode: string, managementTok
     console.error('[Configuration Error] SUPABASE_SERVICE_ROLE_KEY missing for management auth check.');
     return null; // Fail closed
   }
-  
+
   const supabase = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
   const { data, error } = await supabase.rpc('get_booking_management', {
     p_reference_code: referenceCode,
     p_management_token: managementToken
   });
-    
+
   if (error || !data || !data.reference) {
     return null;
   }
@@ -667,80 +667,6 @@ async function verifyManagementToken(referenceCode: string, managementToken: str
 // Phase 3A: Package Catalog Integration
 // ==========================================
 
-
-/**
- * Authenticated multi-lesson purchase plan.
- * Server is the only authority for learner, catalog, price, availability,
- * entitlement ownership, and booking creation.
- */
-app.post('/api/student/multi-lesson-plan', verifyStudentAuth, async (req: any, res: any) => {
-  try {
-    const supabaseAdmin = getSupabaseAdminClient();
-    if (!supabaseAdmin) {
-      return res.status(503).json({ error: 'Database integration is not properly configured.' });
-    }
-
-    const authUserId = req.studentUser?.auth_id;
-    const studentId = req.studentUser?.student_id;
-    if (!authUserId || !studentId) {
-      return res.status(401).json({ error: 'Authenticated student profile required.' });
-    }
-
-    const {
-      serviceId, durationMinutes, studentTimezone, catalogId, lessonCount,
-      expectedTotalUsd, currency, lessons, contactName, contactEmail,
-      contactWhatsapp, notes
-    } = req.body || {};
-
-    if (!Array.isArray(lessons) || lessons.length < 2 || lessons.length !== Number(lessonCount)) {
-      return res.status(400).json({ error: 'Invalid lesson plan.' });
-    }
-
-    const { data: result, error: rpcErr } = await supabaseAdmin.rpc('create_multi_lesson_booking_plan', {
-      p_payload: {
-        student_id: studentId,
-        service_id: String(serviceId || ''),
-        duration_minutes: Number(durationMinutes),
-        student_timezone: String(studentTimezone || ''),
-        catalog_id: String(catalogId || ''),
-        lesson_count: Number(lessonCount),
-        expected_total_usd: Number(expectedTotalUsd),
-        currency: String(currency || 'USD').toUpperCase(),
-        lessons: lessons.map((l: any) => ({
-          scheduled_start: l.scheduledStart || l.scheduled_start,
-          scheduled_end: l.scheduledEnd || l.scheduled_end
-        })),
-        contact_name: String(contactName || ''),
-        contact_email: String(contactEmail || ''),
-        contact_whatsapp: contactWhatsapp ? String(contactWhatsapp) : '',
-        notes: notes ? String(notes) : ''
-      }
-    });
-
-    if (rpcErr) {
-      console.error('[Multi-lesson plan RPC]', rpcErr);
-      return res.status(409).json({ error: clientErrorMessage(rpcErr, 'The selected lesson times are no longer available.') });
-    }
-
-    if (!result?.success || !result.entitlementId) {
-      return res.status(500).json({ error: 'Could not create the lesson plan.' });
-    }
-
-    return res.status(201).json({
-      success: true,
-      status: result.status,
-      entitlementId: result.entitlementId,
-      paymentId: result.paymentId,
-      lessonCount: result.lessonCount,
-      totalAmount: result.totalAmount,
-      currency: result.currency,
-      bookings: result.bookings
-    });
-  } catch (err: any) {
-    console.error('[Multi-lesson plan]', err);
-    return res.status(500).json({ error: 'Failed to create the lesson plan.' });
-  }
-});
 
 app.get('/api/packages', async (req, res) => {
   try {
@@ -1341,7 +1267,7 @@ app.get('/api/integrations/availability', async (req, res) => {
 
     const parseStrictInt = (str: string | undefined, defaultVal: number): number | null => {
       if (str === undefined) return defaultVal;
-      if (!/^([1-9]\d*|0)$/.test(str)) return null; 
+      if (!/^([1-9]\d*|0)$/.test(str)) return null;
       return parseInt(str, 10);
     };
 
@@ -1572,7 +1498,7 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
     if (!token) {
       return res.status(401).json({ error: 'Authentication required. Expected Bearer token format.' });
     }
-    
+
     // Strict production security
     if (isProd && (token === 'dev-student-token' || token === 'dev-student-b-token' || token === 'dev-teacher-token' || token === 'dev-super-admin-token')) {
       return res.status(401).json({ error: 'Unauthorized. Development tokens are strictly forbidden in production.' });
@@ -1678,7 +1604,7 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
 
       res.setHeader('x-student-user-attached', 'true');
       res.setHeader('x-student-has-student-id', studentRecord?.id ? 'true' : 'false');
-      
+
       return next();
     }
 
@@ -1795,7 +1721,7 @@ async function verifyTeacherAuth(req: any, res: any, next: any) {
     }
 
     const email = (user.email || '').toLowerCase().trim();
-    
+
     // Authoritative role lookup in teacher_accounts allowlist
     const { data: teacherRecord, error: teacherError } = await supabaseAdmin
       .from('teacher_accounts')
@@ -2047,8 +1973,8 @@ app.get('/api/runtime-supabase-diagnostic', (req, res) => {
 
 function transformBookingToDashboardLesson(b: any) {
   const scheduledStart = b.scheduled_start;
-  const scheduledEnd = b.scheduled_end || (scheduledStart && b.duration_minutes 
-    ? DateTime.fromISO(scheduledStart).plus({ minutes: b.duration_minutes }).toISO() 
+  const scheduledEnd = b.scheduled_end || (scheduledStart && b.duration_minutes
+    ? DateTime.fromISO(scheduledStart).plus({ minutes: b.duration_minutes }).toISO()
     : null);
 
   // Learner/parent semantics: do not collapse parent into learner_name
@@ -2105,6 +2031,106 @@ function transformBookingToDashboardLesson(b: any) {
 }
 
 // 12b. DASHBOARD: Teacher identity / workspace role verification
+// RULES.md §1: a teacher's dashboard knows nothing about payments. Every /api/dashboard response
+// is filtered for non-super-admins, so a new endpoint can't leak money fields by accident.
+const PAYMENT_FIELD = /fee|payment|price|amount|revenue|refund|paid|currency|pay_?later|hold_expires|entitlement/i;
+export function stripPaymentFields(value: any): any {
+  if (Array.isArray(value)) return value.map(stripPaymentFields);
+  if (!value || typeof value !== 'object' || value instanceof Date) return value;
+  const out: any = {};
+  for (const [key, v] of Object.entries(value)) {
+    if (!PAYMENT_FIELD.test(key)) out[key] = stripPaymentFields(v);
+  }
+  return out;
+}
+app.use('/api/dashboard', (req: any, res: any, next: any) => {
+  const json = res.json.bind(res);
+  res.json = (body: any) => json(req.teacherUser && req.teacherUser.role !== 'super_admin' ? stripPaymentFields(body) : body);
+  next();
+});
+
+// Teacher on-site notifications: their lessons booked, moved or cancelled in the last 14 days (no payment data).
+app.get('/api/dashboard/notifications', verifyTeacherAuth, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database service unavailable.' });
+    let query = supabase
+      .from('bookings')
+      .select('id, reference_code, booking_type, status, contact_name, service_id, scheduled_start, created_at, updated_at')
+      .in('status', ['confirmed', 'rescheduled', 'cancelled'])
+      .gte('updated_at', DateTime.utc().minus({ days: 14 }).toISO()!)
+      .order('updated_at', { ascending: false })
+      .limit(50);
+    if (req.teacherUser?.role !== 'super_admin') query = query.eq('teacher_id', req.teacherUser.id);
+    const { data, error } = await query;
+    if (error) throw error;
+    res.json({
+      notifications: (data || []).map((b: any) => ({
+        id: `${b.id}:${b.status}:${b.updated_at}`,
+        bookingId: b.id,
+        kind: b.status === 'cancelled' ? 'cancelled' : b.status === 'rescheduled' ? 'rescheduled' : b.booking_type === 'trial' ? 'new_trial' : 'new_booking',
+        learnerName: b.contact_name,
+        serviceId: b.service_id,
+        referenceCode: b.reference_code,
+        scheduledStart: b.scheduled_start,
+        at: b.updated_at
+      }))
+    });
+  } catch (err) {
+    console.error('[GET /api/dashboard/notifications]', err);
+    res.status(500).json({ error: 'Could not load notifications.' });
+  }
+});
+
+// Teacher asks the student to move a lesson (RULES.md §2). The student sees it on the site and moves it
+// themselves; teachers don't move or cancel lessons directly (the super admin can).
+app.post('/api/dashboard/bookings/:id/reschedule-request', verifyTeacherAuth, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database service unavailable.' });
+    const { data: booking } = await supabase.from('bookings').select('id, teacher_id, status, scheduled_start').eq('id', req.params.id).maybeSingle();
+    if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
+    if (req.teacherUser?.role !== 'super_admin' && booking.teacher_id !== req.teacherUser?.id) {
+      return res.status(403).json({ error: 'This lesson is not yours.' });
+    }
+    if (!['confirmed', 'rescheduled'].includes(booking.status) || new Date(booking.scheduled_start).getTime() <= Date.now()) {
+      return res.status(400).json({ error: 'Only upcoming lessons can be moved.' });
+    }
+    const note = typeof req.body?.note === 'string' ? req.body.note.trim().slice(0, 500) : '';
+    const { error } = await supabase
+      .from('bookings')
+      .update({ reschedule_requested_at: new Date().toISOString(), reschedule_request_note: note || null, updated_at: new Date().toISOString() })
+      .eq('id', booking.id);
+    if (error) throw error;
+    res.json({ success: true });
+  } catch (err) {
+    console.error('[POST /api/dashboard/bookings/:id/reschedule-request]', err);
+    res.status(500).json({ error: 'Could not send the request. Please try again.' });
+  }
+});
+
+// Any signed-in user saves the language they chose on the site; emails use it (RULES.md §6).
+app.put('/api/me/language', rateLimit, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database service unavailable.' });
+    const language = req.body?.language;
+    if (language !== 'en' && language !== 'ar') return res.status(400).json({ error: 'Language must be en or ar.' });
+    const token = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '');
+    const { data } = token ? await supabase.auth.getUser(token) : { data: null as any };
+    const user = data?.user;
+    if (!user?.id || !user.email) return res.status(401).json({ error: 'Please sign in.' });
+    const { error } = await supabase
+      .from('user_language_preferences')
+      .upsert({ user_id: user.id, email: user.email.toLowerCase(), language, updated_at: new Date().toISOString() });
+    if (error) throw error;
+    res.json({ success: true, language });
+  } catch (err) {
+    console.error('[PUT /api/me/language]', err);
+    res.status(500).json({ error: 'Could not save your language.' });
+  }
+});
+
 app.get('/api/dashboard/me', verifyTeacherAuth, async (req: any, res: any) => {
   return res.json({
     success: true,
@@ -2127,7 +2153,7 @@ app.get('/api/dashboard/today', verifyTeacherAuth, async (req: any, res: any) =>
       console.error('[Dashboard Error] Database configuration missing or invalid.');
       return res.status(503).json({ error: 'Database integration is not properly configured.' });
     }
-    
+
     // Teacher's timezone is Africa/Cairo
     const nowCairo = DateTime.now().setZone('Africa/Cairo');
     const startOfDayUtc = nowCairo.startOf('day').toUTC().toISO();
@@ -2156,7 +2182,7 @@ app.get('/api/dashboard/today', verifyTeacherAuth, async (req: any, res: any) =>
     const nowUtc = nowCairo.toUTC();
     const activeLessons = lessons.filter(l => l.status !== 'cancelled');
     const trialsCount = activeLessons.filter(l => l.is_free_trial).length;
-    
+
     // Check completed: strictly count lessons where teacher explicitly recorded status === 'completed'
     const completedCount = lessons.filter(l => l.status === 'completed').length;
 
@@ -2168,8 +2194,8 @@ app.get('/api/dashboard/today', verifyTeacherAuth, async (req: any, res: any) =>
       if (!l.scheduled_start) return isFailed;
       const startDt = DateTime.fromISO(l.scheduled_start);
       if (!startDt.isValid) return isFailed;
-      const endDt = l.scheduled_end 
-        ? DateTime.fromISO(l.scheduled_end) 
+      const endDt = l.scheduled_end
+        ? DateTime.fromISO(l.scheduled_end)
         : startDt.plus({ minutes: l.duration_minutes || 30 });
       // Attention if failed, starting in < 2 hours with no zoom, or scheduled end passed without outcome
       const isSoon = startDt.diff(nowUtc, 'hours').hours < 2 && startDt > nowUtc;
@@ -2182,8 +2208,8 @@ app.get('/api/dashboard/today', verifyTeacherAuth, async (req: any, res: any) =>
       if (l.status === 'cancelled' || l.status === 'completed' || l.status === 'no_show') return false;
       const startDt = DateTime.fromISO(l.scheduled_start);
       if (!startDt.isValid) return false;
-      const endDt = l.scheduled_end 
-        ? DateTime.fromISO(l.scheduled_end) 
+      const endDt = l.scheduled_end
+        ? DateTime.fromISO(l.scheduled_end)
         : startDt.plus({ minutes: l.duration_minutes || 30 });
       return endDt > nowUtc;
     });
@@ -2191,8 +2217,8 @@ app.get('/api/dashboard/today', verifyTeacherAuth, async (req: any, res: any) =>
     const inProgressLesson = validCandidates
       .filter(l => {
         const startDt = DateTime.fromISO(l.scheduled_start);
-        const endDt = l.scheduled_end 
-          ? DateTime.fromISO(l.scheduled_end) 
+        const endDt = l.scheduled_end
+          ? DateTime.fromISO(l.scheduled_end)
           : startDt.plus({ minutes: l.duration_minutes || 30 });
         return nowUtc >= startDt && nowUtc <= endDt;
       })
@@ -2229,7 +2255,7 @@ app.get('/api/dashboard/upcoming', verifyTeacherAuth, async (req: any, res: any)
       console.error('[Dashboard Error] Database configuration missing or invalid.');
       return res.status(503).json({ error: 'Database integration is not properly configured.' });
     }
-    
+
     const nowCairo = DateTime.now().setZone('Africa/Cairo');
     const endOfDayUtc = nowCairo.endOf('day').toUTC().toISO();
 
@@ -2369,7 +2395,7 @@ app.get('/api/dashboard/students', verifyTeacherAuth, async (req: any, res: any)
 
     const enrichedStudents = students.map(st => {
       const emailLower = st.email?.toLowerCase().trim();
-      const stBookings = allBookings.filter(b => 
+      const stBookings = allBookings.filter(b =>
         (b.student_id && b.student_id === st.id) ||
         (emailLower && b.contact_email && b.contact_email.toLowerCase().trim() === emailLower) ||
         (st.lead_id && b.lead_id && b.lead_id === st.lead_id)
@@ -2542,7 +2568,7 @@ app.get('/api/dashboard/students/:id', verifyTeacherAuth, async (req: any, res: 
         .eq('student_id', id)
         .order('created_at', { ascending: false }),
       supabase.from('services').select('id, title, arabic_title'),
-      leadId 
+      leadId
         ? supabase.from('leads').select('*').eq('id', leadId).maybeSingle()
         : (emailLower ? supabase.from('leads').select('*').ilike('email', escapeLike(emailLower)).maybeSingle() : Promise.resolve({ data: null, error: null }))
     ]);
@@ -2625,8 +2651,8 @@ app.get('/api/dashboard/students/:id', verifyTeacherAuth, async (req: any, res: 
         status: trialBooking.status,
         assessed_level: assessment?.current_level || null,
         recommended_service_id: assessment?.recommended_service_id || null,
-        recommended_service_name: assessment?.recommended_service_id 
-          ? (serviceMap.get(assessment.recommended_service_id) || assessment.recommended_service_id) 
+        recommended_service_name: assessment?.recommended_service_id
+          ? (serviceMap.get(assessment.recommended_service_id) || assessment.recommended_service_id)
           : null,
         recommended_duration: assessment?.recommended_duration || null,
         recommended_frequency: assessment?.recommended_frequency || null,
@@ -3556,7 +3582,7 @@ function reconcileBookingPayments(
 
   // Filter payments linked to this booking ONLY via explicit booking_id (No auto-matching by student_id)
   const bPayments = payments.filter(p => p.booking_id === booking.id);
-  
+
   // Confirmed sum
   const confirmedPayments = bPayments.filter(p => p.status === 'confirmed');
   const confirmedAmount = confirmedPayments.reduce((acc, p) => acc + Number(p.amount || 0), 0);
@@ -3608,12 +3634,12 @@ app.get('/api/dashboard/bookings', verifyTeacherAuth, async (req, res) => {
       return res.status(503).json({ error: 'Database integration is not properly configured.' });
     }
 
-    const { 
-      status, 
-      service, 
-      type, 
-      payment_status, 
-      date_range, 
+    const {
+      status,
+      service,
+      type,
+      payment_status,
+      date_range,
       search,
       page = '1',
       limit = '100'
@@ -3717,7 +3743,7 @@ app.get('/api/dashboard/bookings', verifyTeacherAuth, async (req, res) => {
           (upPayments || []).forEach(p => {
             if (p.booking_id && p.status === 'confirmed') {
               confirmedPaymentsByBooking.set(
-                p.booking_id, 
+                p.booking_id,
                 (confirmedPaymentsByBooking.get(p.booking_id) || 0) + Number(p.amount || 0)
               );
             }
@@ -3763,7 +3789,7 @@ app.get('/api/dashboard/bookings', verifyTeacherAuth, async (req, res) => {
       const candidateBookings = candidateData || [];
       const candidateIds = candidateBookings.map(b => b.id);
 
-      const { data: candidatePayments } = candidateIds.length > 0 
+      const { data: candidatePayments } = candidateIds.length > 0
         ? await supabase.from('payments').select('*').in('booking_id', candidateIds)
         : { data: [] };
 
@@ -3827,7 +3853,7 @@ app.get('/api/dashboard/bookings', verifyTeacherAuth, async (req, res) => {
       const bookingIds = bookings.map(b => b.id);
       totalCount = count || 0;
 
-      const { data: pagePayments } = bookingIds.length > 0 
+      const { data: pagePayments } = bookingIds.length > 0
         ? await supabase.from('payments').select('*').in('booking_id', bookingIds)
         : { data: [] };
 
@@ -3969,12 +3995,12 @@ export function validateTeacherLifecycleTransition(
   teacherUserId: string | undefined,
   nowUtcIso: string,
   isSuperAdmin = false
-): { 
-  valid: boolean; 
-  statusCode?: number; 
-  error?: string; 
-  isIdempotent?: boolean; 
-  message?: string 
+): {
+  valid: boolean;
+  statusCode?: number;
+  error?: string;
+  isIdempotent?: boolean;
+  message?: string
 } {
   // 1. Authorization check (unassigned bookings are super-admin only)
   if (!isSuperAdmin && existingBooking.teacher_id !== teacherUserId) {
@@ -4031,12 +4057,12 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
     }
 
     const { id } = req.params;
-    const { 
-      status, 
-      cancellation_reason, 
-      notes, 
-      scheduled_start, 
-      scheduled_end, 
+    const {
+      status,
+      cancellation_reason,
+      notes,
+      scheduled_start,
+      scheduled_end,
       cairo_time_display,
       covered_material
     } = req.body;
@@ -4066,6 +4092,11 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
 
     if (transitionValidation.isIdempotent) {
       return res.json({ success: true, booking: existingBooking, message: transitionValidation.message });
+    }
+
+    // RULES.md §2: only the super admin cancels or moves lessons; a teacher asks the student to move it.
+    if ((req as any).teacherUser?.role !== 'super_admin' && (status === 'cancelled' || scheduled_start || scheduled_end)) {
+      return res.status(403).json({ error: 'Teachers can ask the student to move a lesson (Ask to reschedule). To cancel, contact the admin.', code: 'ADMIN_ONLY' });
     }
 
     // Moving a lesson that is over or cancelled would revive it (the reschedule RPC sets status='rescheduled').
@@ -4213,7 +4244,7 @@ app.get('/api/dashboard/payments', verifyTeacherAuth, requireSuperAdmin, async (
 
     // Fetch matching bookings and students in batch for display context
     const [bookingsRes, studentsRes] = await Promise.all([
-      bookingIds.length > 0 
+      bookingIds.length > 0
         ? supabase.from('bookings').select('id, reference_code, contact_name, contact_email, service_id, scheduled_start').in('id', bookingIds)
         : Promise.resolve({ data: [] }),
       studentIds.length > 0
@@ -5204,6 +5235,40 @@ app.post('/api/dashboard/bookings/:id/pay-later/:decision', verifyTeacherAuth, r
 });
 
 // Super admin: refund a confirmed payment (never delete it) — RULES.md §5.
+// Super admin: lesson credits whose owners asked for a refund instead (RULES.md §5).
+app.get('/api/dashboard/refund-requests', verifyTeacherAuth, requireSuperAdmin, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database service unavailable.' });
+    const { data, error } = await supabase
+      .from('package_entitlements')
+      .select('id, learner_student_id, price_paid, currency, metadata, created_at, students:learner_student_id(name, email, whatsapp)')
+      .eq('status', 'active')
+      .eq('metadata->>source', 'cancellation_credit')
+      .not('metadata->>refund_requested_at', 'is', null)
+      .order('updated_at', { ascending: true });
+    if (error) throw error;
+    res.json({
+      requests: (data || []).map((c: any) => {
+        const st: any = Array.isArray(c.students) ? c.students[0] : c.students;
+        return {
+          creditId: c.id,
+          paymentId: c.metadata?.source_payment_id || null,
+          amount: c.price_paid,
+          currency: c.currency || 'USD',
+          requestedAt: c.metadata?.refund_requested_at,
+          learnerName: st?.name || null,
+          email: st?.email || null,
+          whatsapp: st?.whatsapp || null
+        };
+      })
+    });
+  } catch (err) {
+    console.error('[GET /api/dashboard/refund-requests]', err);
+    res.status(500).json({ error: 'Could not load refund requests.' });
+  }
+});
+
 app.post('/api/dashboard/payments/:id/refund', verifyTeacherAuth, requireSuperAdmin, async (req: any, res: any) => {
   try {
     const supabase = getSupabaseAdminClient();
@@ -5269,6 +5334,8 @@ app.post('/api/student/bookings/:id/reschedule', rateLimit, verifyStudentAuth, a
         cairo_time_display: newStart.setZone('Africa/Cairo').toFormat('dd LLL yyyy, hh:mm a'),
         status: 'rescheduled',
         reschedule_count: (booking.reschedule_count || 0) + 1,
+        reschedule_requested_at: null,
+        reschedule_request_note: null,
         updated_at: new Date().toISOString()
       })
       .eq('id', booking.id)
@@ -5612,8 +5679,8 @@ app.post('/api/bookings/:referenceCode/payment-claim', rateLimit, verifyStudentA
       console.error('[Payment Claim Notification Error]', notifErr);
     }
 
-    res.status(201).json({ 
-      success: true, 
+    res.status(201).json({
+      success: true,
       message: 'Payment reported successfully. Ustadh Mahmoud will verify and confirm receipt.',
       payment_id: newPayment.id
     });
@@ -5878,14 +5945,14 @@ app.get('/api/dashboard/stats', verifyTeacherAuth, async (req, res) => {
 
 function transformBookingToDashboardTrial(b: any, leadMap?: Map<string, any>, serviceMap?: Map<string, any>) {
   const scheduledStart = b.scheduled_start;
-  const scheduledEnd = b.scheduled_end || (scheduledStart && b.duration_minutes 
-    ? DateTime.fromISO(scheduledStart).plus({ minutes: b.duration_minutes }).toISO() 
+  const scheduledEnd = b.scheduled_end || (scheduledStart && b.duration_minutes
+    ? DateTime.fromISO(scheduledStart).plus({ minutes: b.duration_minutes }).toISO()
     : null);
 
   const learnerName = b.student_name || b.contact_name || null;
   const parentName = b.parent_name || null;
 
-  const lead = (b.lead_id && leadMap?.get(b.lead_id)) || 
+  const lead = (b.lead_id && leadMap?.get(b.lead_id)) ||
                (b.contact_email && leadMap?.get(b.contact_email.toLowerCase())) || null;
   const service = (b.service_id && serviceMap?.get(b.service_id)) || null;
 
@@ -6252,8 +6319,8 @@ app.get('/api/dashboard/leads', verifyTeacherAuth, requireSuperAdmin, async (req
 
     const leads = (leadsRes.data || []).map(lead => {
       // Find associated booking (prioritizing trial)
-      const leadBookings = allBookings.filter(b => 
-        (b.lead_id && b.lead_id === lead.id) || 
+      const leadBookings = allBookings.filter(b =>
+        (b.lead_id && b.lead_id === lead.id) ||
         (b.contact_email && b.contact_email.toLowerCase() === lead.email.toLowerCase())
       );
       const trialBooking = leadBookings.find(b => b.booking_type === 'trial') || leadBookings[0] || null;
@@ -6379,16 +6446,16 @@ app.get('/api/dashboard/leads', verifyTeacherAuth, requireSuperAdmin, async (req
     let filteredLeads = leads;
     if (search && typeof search === 'string' && search.trim()) {
       const q = search.trim().toLowerCase();
-      filteredLeads = leads.filter(l => 
-        l.name.toLowerCase().includes(q) || 
+      filteredLeads = leads.filter(l =>
+        l.name.toLowerCase().includes(q) ||
         l.email.toLowerCase().includes(q) ||
         (l.whatsapp && l.whatsapp.includes(q)) ||
         (l.parent_name && l.parent_name.toLowerCase().includes(q))
       );
     }
 
-    res.json({ 
-      leads: filteredLeads, 
+    res.json({
+      leads: filteredLeads,
       total: filteredLeads.length,
       pipeline_summary: pipelineSummary,
       followup_required_count: followupRequiredCount
@@ -6543,7 +6610,7 @@ app.get('/api/dashboard/analytics', verifyTeacherAuth, async (req, res) => {
     if (cohortLeads.length > 0) {
       const leadIdsWithTrial = new Set<string>();
       for (const l of cohortLeads) {
-        const hasTrialBookingByFk = periodBookings.some(b => 
+        const hasTrialBookingByFk = periodBookings.some(b =>
           b.booking_type === 'trial' && (b.lead_id === l.id || (b.student_id && allStudents.some(s => s.id === b.student_id && s.lead_id === l.id)))
         );
         if (hasTrialBookingByFk) {
@@ -6558,7 +6625,7 @@ app.get('/api/dashboard/analytics', verifyTeacherAuth, async (req, res) => {
     // Denominator: Unique leads with completed trials in period cohort linked via explicit lead_id / student_id FKs
     const completedTrialBookings = periodBookings.filter(b => b.booking_type === 'trial' && b.status === 'completed');
     const trialLeadIds = new Set<string>();
-    
+
     for (const b of completedTrialBookings) {
       if (b.lead_id) {
         trialLeadIds.add(b.lead_id);
@@ -6619,10 +6686,10 @@ app.get('/api/dashboard/analytics', verifyTeacherAuth, async (req, res) => {
           trial_to_student_rate: trialToStudentRate,
           overall_conversion_rate: overallConversionRate
         },
-        cohort_explanation: cohortLeads.length === 0 
-          ? 'No leads registered in selected date range' 
-          : trialLeadIds.size === 0 
-            ? 'No completed trials in selected date range' 
+        cohort_explanation: cohortLeads.length === 0
+          ? 'No leads registered in selected date range'
+          : trialLeadIds.size === 0
+            ? 'No completed trials in selected date range'
             : null
       },
       current_pipeline: currentPipeline,
@@ -6687,6 +6754,11 @@ app.put('/api/dashboard/availability', verifyTeacherAuth, async (req: any, res: 
     if (!Array.isArray(schedule)) {
       return res.status(400).json({ error: 'Schedule must be an array of intervals.' });
     }
+    // RULES.md §1: each teacher enters hours in their own time zone.
+    const timezone = typeof req.body?.timezone === 'string' ? req.body.timezone.trim() : '';
+    if (timezone && !DateTime.local().setZone(timezone).isValid) {
+      return res.status(400).json({ error: 'Unknown time zone.' });
+    }
 
     const validatedIntervals: any[] = [];
     const timeRegex = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
@@ -6722,11 +6794,10 @@ app.put('/api/dashboard/availability', verifyTeacherAuth, async (req: any, res: 
       });
     }
 
-    // Atomic update via RPC
-    // Timezone is enforced server-side inside the RPC based on canonical teacher profile
     const { error: rpcError } = await supabase.rpc('update_teacher_availability', {
       p_teacher_id: teacherId,
-      p_schedule: validatedIntervals
+      p_schedule: validatedIntervals,
+      p_timezone: timezone || null
     });
 
     if (rpcError) {
@@ -7005,8 +7076,8 @@ app.patch('/api/dashboard/leads/:id', verifyTeacherAuth, requireSuperAdmin, asyn
       const isTeacherCorrection = req.body.is_correction === true || req.body.force_correction === true;
 
       if (!isAllowedTransition && !isTeacherCorrection) {
-        return res.status(400).json({ 
-          error: `Invalid lead status transition from '${currentLead.status}' to '${status}'. If this is a teacher correction, set is_correction: true.` 
+        return res.status(400).json({
+          error: `Invalid lead status transition from '${currentLead.status}' to '${status}'. If this is a teacher correction, set is_correction: true.`
         });
       }
     }
@@ -7073,8 +7144,8 @@ app.patch('/api/dashboard/leads/:id', verifyTeacherAuth, requireSuperAdmin, asyn
         determinedLearnerType = updatedLead.learner_type;
       }
 
-      const genuineNotes = updatedLead.notes 
-        ? `Enrolled from lead pipeline. ${updatedLead.notes}`.trim() 
+      const genuineNotes = updatedLead.notes
+        ? `Enrolled from lead pipeline. ${updatedLead.notes}`.trim()
         : 'Enrolled from lead pipeline.';
 
       if (!existingStudent) {
@@ -7106,9 +7177,9 @@ app.patch('/api/dashboard/leads/:id', verifyTeacherAuth, requireSuperAdmin, asyn
           console.error('[Lead Conversion] Student record could not be created', insertErr.message);
         }
       } else {
-        const studentUpdates: any = { 
-          status: 'active', 
-          updated_at: new Date().toISOString() 
+        const studentUpdates: any = {
+          status: 'active',
+          updated_at: new Date().toISOString()
         };
         if (determinedTimezone) studentUpdates.timezone = determinedTimezone;
         if (determinedLevel) studentUpdates.current_level = determinedLevel;
@@ -7722,8 +7793,8 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
           if (!childName) continue;
 
           const childGender = child.gender === 'female' ? 'female' : 'male';
-          const childTeacherPref = child.teacherGenderPreference === 'female_teacher' 
-            ? 'female_teacher' 
+          const childTeacherPref = child.teacherGenderPreference === 'female_teacher'
+            ? 'female_teacher'
             : (child.teacherGenderPreference === 'male_teacher' ? 'male_teacher' : 'no_preference');
           const childTargetGender = childTeacherPref === 'female_teacher' ? 'female' : (childTeacherPref === 'male_teacher' ? 'male' : (childGender === 'female' ? 'female' : 'male'));
           const childRoutedTeacher = await resolveSmartTeacherRouting(childTargetGender, supabaseAdmin);
@@ -8126,7 +8197,7 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
     // Fetch bookings belonging strictly to this authenticated student (idempotent read)
     const { data: bookingsData, error: bookingsError } = await supabaseAdmin
       .from('bookings')
-      .select('id, reference_code, service_id, package_entitlement_id, booking_type, duration_minutes, scheduled_start, scheduled_end, student_timezone, status, contact_name, contact_email, contact_whatsapp, parent_name, notes, fee_amount_usd, zoom_meeting_link, created_at, teacher_id, reschedule_count, payment_plan')
+      .select('id, reference_code, service_id, package_entitlement_id, booking_type, duration_minutes, scheduled_start, scheduled_end, student_timezone, status, contact_name, contact_email, contact_whatsapp, parent_name, notes, fee_amount_usd, zoom_meeting_link, created_at, teacher_id, reschedule_count, payment_plan, reschedule_requested_at, reschedule_request_note')
       .eq('student_id', studentId)
       .order('scheduled_start', { ascending: true });
 
@@ -8205,6 +8276,8 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
         packageEntitlementId: b.package_entitlement_id || null,
         teacherId: b.teacher_id || null,
         rescheduleCount: b.reschedule_count || 0,
+        rescheduleRequestedAt: b.reschedule_requested_at || null,
+        rescheduleRequestNote: b.reschedule_request_note || null,
         paymentPlan: b.payment_plan || 'pay_now',
         packageName: pkgInfo?.packageName || (b.package_entitlement_id ? 'Lesson Package' : null),
         packageType: pkgInfo?.packageType || (b.package_entitlement_id ? 'monthly' : null),
@@ -8354,7 +8427,7 @@ app.get('/api/student/packages', verifyStudentAuth, async (req: any, res: any) =
     // 2. Build entitlement filter for purchaser account and all authorized learners
     const authorizedStudentIds = authorizedLearners.map(l => l.id).filter(Boolean);
     const learnerFilterParts = authorizedStudentIds.map(id => `learner_student_id.eq.${id}`);
-    
+
     let entitlementFilter = '';
     if (authUserId) {
       entitlementFilter = `purchaser_account_id.eq.${authUserId}`;
@@ -8627,7 +8700,7 @@ app.get('/api/student/packages/ledger', verifyStudentAuth, async (req: any, res:
     // 1. Resolve authorized entitlement IDs
     const authorizedStudentIds = authorizedLearners.map(l => l.id).filter(Boolean);
     const learnerFilterParts = authorizedStudentIds.map(id => `learner_student_id.eq.${id}`);
-    
+
     let entitlementFilter = '';
     if (authUserId) {
       entitlementFilter = `purchaser_account_id.eq.${authUserId}`;
@@ -9481,7 +9554,7 @@ app.post('/api/dashboard/intakes/:id/review', verifyTeacherAuth, requireSuperAdm
 
 app.post('/api/dashboard/admin/teachers', verifyTeacherAuth, requireSuperAdmin, async (req: any, res: any) => {
   try {
-    const { email, role = 'teacher', is_active = true } = req.body || {};
+    const { email, role = 'teacher', is_active = true, display_name, gender } = req.body || {};
     if (!email || typeof email !== 'string') {
       return res.status(400).json({ error: 'Valid email is required.' });
     }
@@ -9506,6 +9579,8 @@ app.post('/api/dashboard/admin/teachers', verifyTeacherAuth, requireSuperAdmin, 
         email: cleanEmail,
         role,
         is_active: Boolean(is_active),
+        ...(typeof display_name === 'string' && display_name.trim() ? { display_name: display_name.trim().slice(0, 120) } : {}),
+        ...(gender === 'male' || gender === 'female' ? { gender } : {}),
         updated_at: new Date().toISOString()
       }, { onConflict: 'email' })
       .select()
@@ -9515,7 +9590,16 @@ app.post('/api/dashboard/admin/teachers', verifyTeacherAuth, requireSuperAdmin, 
       return res.status(500).json({ error: clientErrorMessage(error, 'Failed to provision teacher account.') });
     }
 
-    return res.status(201).json({ success: true, teacher: data });
+    // New teachers get Supabase's invite email to set a password, then use the staff login.
+    // An existing account (the email already signed up) just keeps its password.
+    let invited = false;
+    const { error: inviteErr } = await supabase.auth.admin.inviteUserByEmail(cleanEmail, {
+      redirectTo: `${resolveTrustedAppOrigin(req.headers.origin as string | undefined)}/staff/login`
+    });
+    if (!inviteErr) invited = true;
+    else if (!/already|registered|exists/i.test(inviteErr.message)) console.warn('[Add teacher] invite failed:', inviteErr.message);
+
+    return res.status(201).json({ success: true, teacher: data, invited });
   } catch (err: any) {
     return res.status(500).json({ error: clientErrorMessage(err, 'Internal server error.') });
   }

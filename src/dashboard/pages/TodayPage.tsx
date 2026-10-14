@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { DateTime } from 'luxon';
-import { 
-  Video, 
-  Calendar as CalendarIcon, 
-  Clock, 
-  AlertCircle, 
-  RefreshCw, 
-  ArrowRight, 
-  CheckCircle2, 
+import {
+  Video,
+  Calendar as CalendarIcon,
+  Clock,
+  AlertCircle,
+  RefreshCw,
+  ArrowRight,
+  CheckCircle2,
   Info,
   ExternalLink,
   ChevronRight,
@@ -20,16 +20,16 @@ import { LessonDetailModal } from '../components/LessonDetailModal';
 import { Link } from 'react-router-dom';
 import { dashboardFetch } from '../lib/dashboardApi';
 
-import { Language } from '../../booking/types';
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
+import { useT } from '../../lib/language';
 
-interface TodayPageProps {
-  lang?: Language;
-}
+type T = (en: string, ar: string) => string;
 
-export default function TodayPage({ lang = 'en' }: TodayPageProps) {
-  const isAr = lang === 'ar';
-  const { session } = useTeacherAuth();
+export default function TodayPage() {
+  const { t, isAr } = useT();
+  const locale = isAr ? 'ar' : 'en';
+  const { teacherRole } = useTeacherAuth();
+  const isSuperAdmin = teacherRole === 'super_admin';
   const [activeTz, setActiveTz] = useState<string>(() => getActiveWorkingTimezone('Africa/Cairo'));
   const [lessons, setLessons] = useState<DashboardLesson[]>([]);
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
@@ -63,7 +63,7 @@ export default function TodayPage({ lang = 'en' }: TodayPageProps) {
       setSummary(data.summary || null);
       setLastRefreshed(DateTime.now().setZone(activeTz));
     } catch (err: any) {
-      setError(err.message || "Your lessons couldn't be loaded right now.");
+      setError(err.message || t("Your lessons couldn't be loaded right now.", 'تعذر تحميل حصصك دلوقتي.'));
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -84,41 +84,41 @@ export default function TodayPage({ lang = 'en' }: TodayPageProps) {
     return () => clearInterval(interval);
   }, [fetchTodayLessons]);
 
-  const nowActive = DateTime.now().setZone(activeTz);
+  const nowActive = DateTime.now().setZone(activeTz).setLocale(locale);
 
   // Helper to determine time context for a lesson
   const getLessonTimeContext = (lesson: DashboardLesson) => {
     const startLesson = DateTime.fromISO(lesson.scheduled_start).setZone(activeTz);
-    const endLesson = lesson.scheduled_end 
+    const endLesson = lesson.scheduled_end
       ? DateTime.fromISO(lesson.scheduled_end).setZone(activeTz)
       : startLesson.plus({ minutes: lesson.duration_minutes });
 
     if (lesson.status === 'cancelled') {
-      return { type: 'cancelled', label: 'Cancelled' };
+      return { type: 'cancelled', label: t('Cancelled', 'ملغاة') };
     }
 
     if (lesson.status === 'completed') {
-      return { type: 'completed', label: 'Completed' };
+      return { type: 'completed', label: t('Completed', 'تمت') };
     }
 
     if (lesson.status === 'no_show') {
-      return { type: 'no_show', label: 'No-Show' };
+      return { type: 'no_show', label: t('No-show', 'غياب') };
     }
 
     if (nowActive > endLesson) {
-      return { type: 'needs_outcome', label: 'Needs Outcome' };
+      return { type: 'needs_outcome', label: t('Needs outcome', 'محتاجة تسجيل نتيجة') };
     }
 
     if (nowActive >= startLesson && nowActive <= endLesson) {
-      return { type: 'in_progress', label: 'In Progress' };
+      return { type: 'in_progress', label: t('In progress', 'شغالة دلوقتي') };
     }
 
     const diffMinutes = Math.round(startLesson.diff(nowActive, 'minutes').minutes);
     if (diffMinutes <= 30 && diffMinutes > 0) {
-      return { type: 'starting_soon', label: `Starts in ${diffMinutes} min` };
+      return { type: 'starting_soon', label: t(`Starts in ${diffMinutes} min`, `تبدأ بعد ${diffMinutes} دقيقة`) };
     }
 
-    return { type: 'upcoming', label: startLesson.toFormat('hh:mm a') };
+    return { type: 'upcoming', label: startLesson.setLocale(locale).toFormat('hh:mm a') };
   };
 
   // Find attention items: failed integrations, upcoming missing zoom, or past lessons awaiting outcome
@@ -127,7 +127,7 @@ export default function TodayPage({ lang = 'en' }: TodayPageProps) {
     const isFailed = l.integration_status === 'failed' || l.integration_status === 'manual_action_required';
     const isMissingZoom = !l.zoom_host_url && !l.zoom_join_url;
     const startLesson = DateTime.fromISO(l.scheduled_start).setZone(activeTz);
-    const endLesson = l.scheduled_end 
+    const endLesson = l.scheduled_end
       ? DateTime.fromISO(l.scheduled_end).setZone(activeTz)
       : startLesson.plus({ minutes: l.duration_minutes });
     const isSoon = startLesson.diff(nowActive, 'hours').hours < 2 && startLesson > nowActive;
@@ -150,7 +150,7 @@ export default function TodayPage({ lang = 'en' }: TodayPageProps) {
             </span>
           </div>
           <p className="text-sm text-muted-foreground mt-1">
-            {nowActive.toFormat('EEEE, MMMM d, yyyy')} • {nowActive.toFormat('hh:mm a')} • {isAr ? 'جدول التدريس والمواعيد المقررة لليوم.' : "Teaching schedule for today."}
+            {nowActive.toFormat('EEEE, MMMM d, yyyy')} • {nowActive.toFormat('hh:mm a')} • {t('Your teaching schedule for today.', 'جدول حصصك النهارده.')}
           </p>
         </div>
 
@@ -186,12 +186,12 @@ export default function TodayPage({ lang = 'en' }: TodayPageProps) {
         <div className="bg-destructive/10 border border-destructive/20 rounded-2xl p-8 flex flex-col items-center justify-center text-center">
           <AlertCircle className="w-10 h-10 text-destructive mb-3" />
           <h2 className="text-base font-semibold text-foreground mb-1">
-            {isAr ? 'تعذر تحميل جدول اليوم' : "Your schedule couldn't be loaded"}
+            {t("Your schedule couldn't be loaded", 'تعذر تحميل جدول اليوم')}
           </h2>
           <p className="text-sm text-muted-foreground mb-4 max-w-md">
             {error}
           </p>
-          <button 
+          <button
             onClick={() => fetchTodayLessons(true)}
             className="px-5 py-2.5 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-sm font-medium transition-colors"
           >
@@ -238,12 +238,12 @@ export default function TodayPage({ lang = 'en' }: TodayPageProps) {
                 <AlertCircle className="w-5 h-5 text-warning shrink-0 mt-0.5" />
                 <div className="flex-1 min-w-0">
                   <h3 className="text-sm font-semibold">
-                    {attentionLessons.length === 1 ? '1 lesson requires your attention' : `${attentionLessons.length} lessons require attention`}
+                    {t(`${attentionLessons.length} lesson(s) need your attention`, `${attentionLessons.length} حصة محتاجة متابعة`)}
                   </h3>
                   <div className="mt-1 space-y-1">
                     {attentionLessons.map(l => (
                       <p key={l.id} className="text-sm text-muted-foreground">
-                        • <span className="font-medium text-foreground">{l.learner_name || 'Learner'}</span> ({l.service_name} at {DateTime.fromISO(l.scheduled_start).setZone(activeTz).toFormat('hh:mm a')}): Zoom link missing or integration sync pending.
+                        • <span className="font-medium text-foreground">{l.learner_name || t('Student', 'طالب')}</span> ({l.service_name} · {DateTime.fromISO(l.scheduled_start).setZone(activeTz).setLocale(locale).toFormat('hh:mm a')}): {t('the Zoom link is missing, or the lesson ended and needs an outcome.', 'رابط Zoom ناقص، أو الحصة خلصت ومحتاجة تسجيل نتيجة.')}
                       </p>
                     ))}
                   </div>
@@ -254,10 +254,12 @@ export default function TodayPage({ lang = 'en' }: TodayPageProps) {
 
           {/* Next Lesson Spotlight */}
           {summary?.next_lesson && (
-            <NextLessonSpotlight 
-              lesson={summary.next_lesson} 
+            <NextLessonSpotlight
+              lesson={summary.next_lesson}
               onSelect={() => setSelectedLesson(summary.next_lesson)}
               activeTz={activeTz}
+              t={t}
+              locale={locale}
             />
           )}
 
@@ -265,10 +267,10 @@ export default function TodayPage({ lang = 'en' }: TodayPageProps) {
           <div className="pt-2">
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-lg font-display font-semibold  text-foreground">
-                Schedule Timeline
+                {t("Today's lessons", 'حصص النهارده')}
               </h2>
               <span className="text-sm text-muted-foreground">
-                {lessons.length} {lessons.length === 1 ? 'session' : 'sessions'} total
+                {t(`${lessons.length} in total`, `${lessons.length} إجمالي`)}
               </span>
             </div>
 
@@ -278,28 +280,30 @@ export default function TodayPage({ lang = 'en' }: TodayPageProps) {
                   <CalendarIcon className="w-6 h-6" />
                 </div>
                 <h3 className="text-base font-display font-semibold mb-1 text-foreground">
-                  Your schedule is clear today
+                  {t('No lessons today', 'مفيش حصص النهارده')}
                 </h3>
                 <p className="text-sm text-muted-foreground mb-5 max-w-sm">
-                  No lessons are booked for today. You can review your upcoming teaching schedule for the coming days.
+                  {t('Nothing is booked for today. Have a look at the coming days.', 'مفيش حجوزات النهارده. ممكن تبص على الأيام الجاية.')}
                 </p>
                 <Link
                   to="/dashboard/upcoming"
                   className="inline-flex items-center gap-2 px-4 py-2 btn-primary-material text-primary-foreground rounded-xl text-sm font-medium transition-colors"
                 >
-                  <span>View Upcoming Schedule</span>
+                  <span>{t('See upcoming lessons', 'شوف الحصص الجاية')}</span>
                   <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
                 </Link>
               </div>
             ) : (
               <div className="space-y-3">
                 {lessons.map(lesson => (
-                  <TodayLessonRow 
-                    key={lesson.id} 
-                    lesson={lesson} 
+                  <TodayLessonRow
+                    key={lesson.id}
+                    lesson={lesson}
                     timeContext={getLessonTimeContext(lesson)}
                     onSelect={() => setSelectedLesson(lesson)}
                     activeTz={activeTz}
+                    t={t}
+                    locale={locale}
                   />
                 ))}
               </div>
@@ -318,17 +322,17 @@ export default function TodayPage({ lang = 'en' }: TodayPageProps) {
                     <Sparkles className="w-4 h-4" />
                   </div>
                   <h3 className="font-display font-medium text-sm text-foreground">
-                    Free Trial Sessions
+                    {t('Free trials', 'الحصص التجريبية')}
                   </h3>
                 </div>
                 <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform" />
               </div>
               <p className="text-sm text-muted-foreground">
-                Evaluate prospective learners, record mini-lesson observations, and generate recommended learning plans.
+                {t('Assess new students, note what you saw and suggest a learning plan.', 'قيّم الطلاب الجداد، سجّل ملاحظاتك واقترح خطة تعلم.')}
               </p>
             </Link>
 
-            <Link
+            {isSuperAdmin && <Link
               to="/dashboard/leads"
               className="p-5 rounded-2xl glass-card border-none hover:border-accent/40 shadow-2xs hover:shadow-xs transition-all group block"
             >
@@ -338,24 +342,24 @@ export default function TodayPage({ lang = 'en' }: TodayPageProps) {
                     <UserPlus className="w-4 h-4" />
                   </div>
                   <h3 className="font-display font-medium text-sm text-foreground">
-                    Leads & Inquiries Pipeline
+                    {t('Interested students', 'الطلاب المهتمين')}
                   </h3>
                 </div>
                 <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform" />
               </div>
               <p className="text-sm text-muted-foreground">
-                Track prospective students from initial inquiry through trial booking and active enrollment.
+                {t('Follow people from their first question to their trial and first lessons.', 'تابع المهتمين من أول سؤال لحد التجربة وأول حصص.')}
               </p>
-            </Link>
+            </Link>}
           </div>
         </>
       )}
 
       {/* Lesson Details Modal */}
       {selectedLesson && (
-        <LessonDetailModal 
-          lesson={selectedLesson} 
-          onClose={() => setSelectedLesson(null)} 
+        <LessonDetailModal
+          lesson={selectedLesson}
+          onClose={() => setSelectedLesson(null)}
           onBookingUpdated={() => fetchTodayLessons(true)}
         />
       )}
@@ -364,18 +368,22 @@ export default function TodayPage({ lang = 'en' }: TodayPageProps) {
 }
 
 // Next Lesson Spotlight Card
-function NextLessonSpotlight({ 
-  lesson, 
+function NextLessonSpotlight({
+  lesson,
   onSelect,
-  activeTz = 'Africa/Cairo'
-}: { 
-  lesson: DashboardLesson; 
+  activeTz = 'Africa/Cairo',
+  t,
+  locale
+}: {
+  lesson: DashboardLesson;
   onSelect: () => void;
   activeTz?: string;
+  t: T;
+  locale: string;
 }) {
-  const startLesson = DateTime.fromISO(lesson.scheduled_start).setZone(activeTz);
+  const startLesson = DateTime.fromISO(lesson.scheduled_start).setZone(activeTz).setLocale(locale);
   const nowLesson = DateTime.now().setZone(activeTz);
-  const endLesson = lesson.scheduled_end 
+  const endLesson = lesson.scheduled_end
     ? DateTime.fromISO(lesson.scheduled_end).setZone(activeTz)
     : startLesson.plus({ minutes: lesson.duration_minutes });
 
@@ -392,17 +400,17 @@ function NextLessonSpotlight({
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-sm uppercase tracking-wider font-semibold text-primary flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5" />
-              Next Up
+              {t('Next up', 'الحصة الجاية')}
             </span>
 
             {isInProgress ? (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-sm font-bold bg-success text-success-foreground animate-pulse">
                 <span className="w-1.5 h-1.5 rounded-full bg-white" />
-                In Progress
+                {t('In progress', 'شغالة دلوقتي')}
               </span>
             ) : diffMinutes <= 45 && diffMinutes > 0 ? (
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-semibold bg-warning/15 text-warning-foreground border border-warning/30">
-                Starts in {diffMinutes} min
+                {t(`Starts in ${diffMinutes} min`, `تبدأ بعد ${diffMinutes} دقيقة`)}
               </span>
             ) : (
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium glass-surface border border-border-subtle text-foreground">
@@ -412,22 +420,22 @@ function NextLessonSpotlight({
 
             {lesson.is_free_trial && (
               <span className="inline-flex items-center px-2 py-0.5 rounded text-[13px] font-bold uppercase tracking-wider bg-secondary text-secondary-foreground">
-                Free Trial
+                {t('Free trial', 'تجربة مجانية')}
               </span>
             )}
           </div>
 
           <div>
             <h3 className="text-xl font-display font-semibold  text-foreground truncate">
-              {lesson.learner_name || 'Learner name not recorded'}
+              {lesson.learner_name || t('Name not recorded', 'الاسم مش متسجل')}
             </h3>
             {lesson.parent_name && (
               <p className="text-sm text-muted-foreground font-medium">
-                Parent/Guardian: {lesson.parent_name}
+                {t('Parent / guardian', 'ولي الأمر')}: {lesson.parent_name}
               </p>
             )}
             <p className="text-sm text-muted-foreground mt-0.5">
-              {lesson.service_name} • {lesson.duration_minutes} minutes
+              {lesson.service_name} • {lesson.duration_minutes} {t('minutes', 'دقيقة')}
             </p>
           </div>
         </div>
@@ -442,13 +450,13 @@ function NextLessonSpotlight({
               className="inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm font-semibold transition-all duration-base shadow-xs"
             >
               <Video className="w-4 h-4" />
-              <span>Start Lesson</span>
+              <span>{t('Start lesson', 'ابدأ الحصة')}</span>
               <ExternalLink className="w-3.5 h-3.5 opacity-70" />
             </a>
           ) : (
             <div className="inline-flex items-center justify-center gap-2 px-4 py-2.5 glass-surface text-muted-foreground rounded-xl text-sm font-medium border border-border-subtle">
               <Clock className="w-3.5 h-3.5" />
-              <span>Preparing Link</span>
+              <span>{t('Link on the way', 'الرابط بيتجهز')}</span>
             </div>
           )}
 
@@ -456,7 +464,7 @@ function NextLessonSpotlight({
             onClick={onSelect}
             className="px-4 py-2.5 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-sm font-medium transition-colors"
           >
-            View Details
+            {t('Details', 'التفاصيل')}
           </button>
         </div>
       </div>
@@ -465,19 +473,23 @@ function NextLessonSpotlight({
 }
 
 // Today Individual Lesson Row
-function TodayLessonRow({ 
-  lesson, 
-  timeContext, 
+function TodayLessonRow({
+  lesson,
+  timeContext,
   onSelect,
-  activeTz = 'Africa/Cairo'
-}: { 
+  activeTz = 'Africa/Cairo',
+  t,
+  locale
+}: {
   key?: React.Key;
-  lesson: DashboardLesson; 
+  lesson: DashboardLesson;
   timeContext: { type: string; label: string };
   onSelect: () => void;
   activeTz?: string;
+  t: T;
+  locale: string;
 }) {
-  const startLesson = DateTime.fromISO(lesson.scheduled_start).setZone(activeTz);
+  const startLesson = DateTime.fromISO(lesson.scheduled_start).setZone(activeTz).setLocale(locale);
   const hasStartLink = Boolean(lesson.zoom_host_url || lesson.zoom_meeting_link);
   const startLink = lesson.zoom_host_url || lesson.zoom_meeting_link || '';
 
@@ -490,7 +502,7 @@ function TodayLessonRow({
   const isStartingSoon = timeContext.type === 'starting_soon';
 
   return (
-    <div 
+    <div
       className={`
         rounded-2xl p-4 sm:p-5 border transition-all duration-base flex flex-col sm:flex-row sm:items-center justify-between gap-4
         ${isCompleted
@@ -499,8 +511,8 @@ function TodayLessonRow({
           ? 'bg-warning/5 border-warning/30 opacity-80'
           : isNeedsOutcome
           ? 'bg-warning/10 border-warning/40 shadow-2xs'
-          : isPast 
-          ? 'glass-card/50 border-border-subtle opacity-60' 
+          : isPast
+          ? 'glass-card/50 border-border-subtle opacity-60'
           : isCancelled
           ? 'bg-destructive/5 border-destructive/20 opacity-70'
           : isInProgress
@@ -518,7 +530,7 @@ function TodayLessonRow({
         </div>
         <div className="text-sm text-muted-foreground flex items-center gap-1.5 mt-0.5">
           <Clock className="w-3.5 h-3.5" />
-          <span>{lesson.duration_minutes} min</span>
+          <span>{lesson.duration_minutes} {t('min', 'دقيقة')}</span>
         </div>
       </div>
 
@@ -526,24 +538,24 @@ function TodayLessonRow({
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1 flex-wrap">
           <h4 className={`text-base font-semibold truncate ${isCancelled ? 'line-through text-muted-foreground' : 'text-foreground'}`}>
-            {lesson.learner_name || 'Learner name not recorded'}
+            {lesson.learner_name || t('Name not recorded', 'الاسم مش متسجل')}
           </h4>
 
           {lesson.parent_name && (
             <span className="text-sm text-muted-foreground font-medium">
-              (Parent: {lesson.parent_name})
+              ({t('Parent', 'ولي الأمر')}: {lesson.parent_name})
             </span>
           )}
 
           {lesson.is_free_trial && (
             <span className="inline-flex items-center px-2 py-0.5 rounded text-[13px] font-bold uppercase tracking-wider bg-secondary/30 text-accent">
-              Trial
+              {t('Trial', 'تجربة')}
             </span>
           )}
 
           {isInProgress && (
             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[13px] font-bold uppercase bg-success text-success-foreground">
-              In Progress
+              {t('In progress', 'شغالة دلوقتي')}
             </span>
           )}
 
@@ -555,25 +567,25 @@ function TodayLessonRow({
 
           {isCompleted && (
             <span className="inline-flex items-center px-2 py-0.5 rounded text-[13px] font-bold uppercase tracking-wider glass-surface text-muted-foreground border border-border-subtle">
-              Completed
+              {t('Completed', 'تمت')}
             </span>
           )}
 
           {isNoShow && (
             <span className="inline-flex items-center px-2 py-0.5 rounded text-[13px] font-bold uppercase tracking-wider bg-warning/10 text-warning-foreground border border-warning/30">
-              No-Show
+              {t('No-show', 'غياب')}
             </span>
           )}
 
           {isNeedsOutcome && (
             <span className="inline-flex items-center px-2 py-0.5 rounded text-[13px] font-bold uppercase tracking-wider bg-warning/15 text-warning-foreground border border-warning/40">
-              Needs Outcome
+              {t('Needs outcome', 'محتاجة تسجيل نتيجة')}
             </span>
           )}
 
           {isCancelled && (
             <span className="inline-flex items-center px-2 py-0.5 rounded text-[13px] font-bold uppercase bg-destructive/15 text-destructive border border-destructive/20">
-              Cancelled
+              {t('Cancelled', 'ملغاة')}
             </span>
           )}
 
@@ -583,14 +595,14 @@ function TodayLessonRow({
               lesson.status === 'rescheduled' ? 'bg-secondary/30 text-primary border border-secondary/50' :
               'glass-surface text-muted-foreground border border-border-subtle'
             }`}>
-              {lesson.status || 'Status unavailable'}
+              {lesson.status === 'confirmed' ? t('Confirmed', 'مؤكدة') : lesson.status === 'rescheduled' ? t('Moved', 'اتغيّر ميعادها') : (lesson.status || '—')}
             </span>
           )}
         </div>
 
         <p className="text-sm text-muted-foreground truncate">
           {lesson.service_name}
-          {lesson.student_timezone ? ` • Student in ${lesson.student_timezone}` : ''}
+          {lesson.student_timezone ? ` • ${t('Student in', 'الطالب في')} ${lesson.student_timezone}` : ''}
         </p>
       </div>
 
@@ -602,10 +614,10 @@ function TodayLessonRow({
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 px-3.5 py-2 btn-primary-material text-primary-foreground rounded-xl text-sm font-medium transition-colors shadow-2xs"
-            title="Start lesson as host"
+            title={t('Start lesson as host', 'ابدأ الحصة كمضيف')}
           >
             <Video className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Start</span>
+            <span className="hidden sm:inline">{t('Start', 'ابدأ')}</span>
           </a>
         )}
 
@@ -613,7 +625,7 @@ function TodayLessonRow({
           onClick={onSelect}
           className="inline-flex items-center gap-1 px-3.5 py-2 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-sm font-medium transition-colors"
         >
-          <span>Details</span>
+          <span>{t('Details', 'التفاصيل')}</span>
           <ChevronRight className="w-3.5 h-3.5 opacity-60 rtl:rotate-180" />
         </button>
       </div>

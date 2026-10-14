@@ -20,6 +20,7 @@ import {
 import { DashboardLead, LeadStatus } from '../types';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
+import { useT } from '../../lib/language';
 
 interface LeadDetailModalProps {
   lead: DashboardLead | null;
@@ -42,55 +43,76 @@ const AVAILABLE_SERVICES = [
   { id: 'english', name: 'English Coaching' }
 ];
 
-const STAGE_CONFIG: Record<LeadStatus, { label: string; color: string; description: string }> = {
+const STAGE_CONFIG: Record<LeadStatus, { label: string; labelAr: string; color: string; description: string; descriptionAr: string }> = {
   visitor: {
     label: 'Visitor',
+    labelAr: 'زائر',
+    descriptionAr: 'أول تواصل أو تصفح',
     color: 'glass-surface text-muted-foreground border border-border-subtle',
     description: 'Initial touchpoint or browsing inquiry'
   },
   lead: {
     label: 'New Lead',
+    labelAr: 'مهتم جديد',
+    descriptionAr: 'وصل سؤال من الموقع أو رسالة',
     color: 'bg-secondary/30 text-primary border border-secondary/50',
     description: 'Inquiry received via website form or initial message'
   },
   contacted: {
     label: 'Contacted',
+    labelAr: 'اتواصلنا معاه',
+    descriptionAr: 'اتكلمنا معاه على واتساب أو إيميل',
     color: 'bg-accent/15 text-accent border border-accent/25',
     description: 'Mahmoud has reached out via WhatsApp or email'
   },
   trial_booked: {
     label: 'Trial Booked',
+    labelAr: 'حجز تجربة',
+    descriptionAr: 'عنده تجربة مجانية جاية',
     color: 'bg-warning/15 text-warning-foreground border border-warning/30',
     description: 'Scheduled for an upcoming 30-minute free trial session'
   },
   trial_completed: {
     label: 'Trial Completed',
+    labelAr: 'التجربة تمت',
+    descriptionAr: 'حضر التجربة واتحدد مستواه',
     color: 'bg-secondary/30 text-accent border border-secondary/60',
     description: 'Attended free trial mini-lesson and level evaluated'
   },
   potential_student: {
     label: 'Potential Student',
+    labelAr: 'ممكن يكمل',
+    descriptionAr: 'وصلته الخطة وبيفكر في المواعيد أو الباقة',
     color: 'bg-accent/10 text-accent border border-accent/25',
     description: 'Received Recommended Learning Plan; discussing schedule or package'
   },
   active_student: {
     label: 'Active Student',
+    labelAr: 'طالب نشط',
+    descriptionAr: 'بيحضر حصص منتظمة',
     color: 'bg-success/15 text-success border border-success/30',
     description: 'Enrolled in regular lessons with reserved weekly slots'
   },
   returning_student: {
     label: 'Returning Student',
+    labelAr: 'طالب راجع',
+    descriptionAr: 'رجع بعد فترة توقف',
     color: 'bg-secondary/30 text-primary border border-primary/25',
     description: 'Re-enrolled after a break or completing a previous cycle'
   },
   lost: {
     label: 'Lost / Postponed',
+    labelAr: 'مش مكمل / أجّل',
+    descriptionAr: 'قرر ما يكملش أو مش بيرد',
     color: 'glass-surface text-muted-foreground border border-border-subtle',
     description: 'Decided not to proceed or uncontactable'
   }
 };
 
 export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModalProps) {
+  const { t, isAr } = useT();
+  const locale = isAr ? 'ar' : 'en';
+  const stageLabel = (s: LeadStatus) => (isAr ? STAGE_CONFIG[s]?.labelAr : STAGE_CONFIG[s]?.label) || s;
   const [currentStatus, setCurrentStatus] = useState<LeadStatus>('lead');
   const [notes, setNotes] = useState<string>('');
   const [serviceInterest, setServiceInterest] = useState<string>('');
@@ -144,10 +166,10 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
       if (newStatus) {
         setCurrentStatus(newStatus);
       }
-      setSuccessMessage(`Lead updated successfully to ${STAGE_CONFIG[targetStatus]?.label || targetStatus}.`);
+      setSuccessMessage(t(`Saved: ${stageLabel(targetStatus)}.`, `اتحفظ: ${stageLabel(targetStatus)}.`));
       if (onLeadUpdated) onLeadUpdated();
     } catch (err: any) {
-      setErrorMessage(err.message || 'Error updating lead.');
+      setErrorMessage(err.message || t("Couldn't save.", 'تعذر الحفظ.'));
     } finally {
       setSaving(false);
     }
@@ -165,7 +187,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
   const whatsappUrl = buildContextualWhatsAppUrl(lead.whatsapp, whatsappMsg);
 
   const createdDateCairo = lead.created_at
-    ? DateTime.fromISO(lead.created_at).setZone('Africa/Cairo').toFormat('EEE, MMM d, yyyy • hh:mm a')
+    ? DateTime.fromISO(lead.created_at).setZone('Africa/Cairo').setLocale(locale).toFormat('EEE, MMM d, yyyy • hh:mm a')
     : null;
 
   return (
@@ -184,14 +206,14 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
           <div>
             <div className="flex items-center gap-2 mb-1 flex-wrap">
               <span className={`text-sm font-semibold px-2.5 py-0.5 rounded ${STAGE_CONFIG[currentStatus]?.color || 'glass-surface text-foreground'}`}>
-                {STAGE_CONFIG[currentStatus]?.label || currentStatus}
+                {stageLabel(currentStatus)}
               </span>
               <span className="text-sm font-medium px-2 py-0.5 rounded glass-card border-none-subtle text-muted-foreground">
-                {lead.learner_type === 'child' ? 'Child Learner' : 'Adult Learner'}
+                {lead.learner_type === 'child' ? t('Child', 'طفل') : t('Adult', 'بالغ')}
               </span>
               {lead.source && (
                 <span className="text-sm text-primary font-mono px-2 py-0.5 rounded bg-secondary/30 border border-secondary/50">
-                  Source: {lead.source}
+                  {t('Source', 'المصدر')}: {lead.source}
                 </span>
               )}
             </div>
@@ -200,12 +222,12 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
             </h2>
             {lead.parent_name && (
               <p className="text-sm text-muted-foreground font-medium mt-0.5">
-                Parent / Guardian: <span className="text-foreground">{lead.parent_name}</span>
+                {t('Parent / guardian', 'ولي الأمر')}: <span className="text-foreground">{lead.parent_name}</span>
               </p>
             )}
           </div>
           <button
-            aria-label="Close"
+            aria-label={t('Close', 'إغلاق')}
             onClick={onClose}
             className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground glass-hover hover:bg-surface transition-colors cursor-pointer"
           >
@@ -237,7 +259,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                   className="rounded border-border text-primary focus:ring-primary"
                 />
                 <label htmlFor="teacher-override" className="text-sm text-foreground cursor-pointer">
-                  Allow manual stage correction / teacher override
+                  {t('Let me set the stage manually', 'خليني أحدد المرحلة بنفسي')}
                 </label>
               </div>
             </div>
@@ -247,14 +269,14 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
           <div className="p-4 rounded-xl glass-surface border border-border flex flex-wrap items-center justify-between gap-3">
             <div className="space-y-0.5 text-sm">
               <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
-                Contact Information
+                {t('Contact', 'التواصل')}
               </div>
-              <div className="font-medium text-foreground">
+              <div className="font-medium text-foreground" dir="ltr">
                 {lead.email} {lead.whatsapp && `• ${lead.whatsapp}`}
               </div>
               {createdDateCairo && (
                 <div className="text-[11px] text-muted-foreground">
-                  First Inquired: {createdDateCairo} (Cairo)
+                  {t('First asked', 'أول سؤال')}: {createdDateCairo} ({t('Cairo', 'القاهرة')})
                 </div>
               )}
             </div>
@@ -268,12 +290,12 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-success hover:bg-success/90 text-white text-sm font-semibold transition-colors shadow-2xs cursor-pointer"
                 >
                   <MessageCircle className="w-3.5 h-3.5" />
-                  <span>WhatsApp</span>
+                  <span>{t('WhatsApp', 'واتساب')}</span>
                 </a>
               ) : (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg glass-card text-muted-foreground border border-border text-sm font-medium cursor-not-allowed opacity-60">
                   <MessageCircle className="w-3.5 h-3.5" />
-                  <span>No WhatsApp</span>
+                  <span>{t('No WhatsApp', 'مفيش واتساب')}</span>
                 </span>
               )}
               {lead.email && (
@@ -282,7 +304,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg glass-card border-none text-sm font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
                 >
                   <Mail className="w-3.5 h-3.5" />
-                  <span>Email</span>
+                  <span>{t('Email', 'إيميل')}</span>
                 </a>
               )}
             </div>
@@ -291,11 +313,11 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
           {/* Pipeline Stage Transition Selector */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="block text-sm font-semibold uppercase tracking-wider text-foreground">
-                Pipeline Lifecycle Stage
-              </label>
+              <span className="block text-sm font-semibold uppercase tracking-wider text-foreground">
+                {t('Stage', 'المرحلة')}
+              </span>
               <span className="text-[11px] text-muted-foreground">
-                {STAGE_CONFIG[currentStatus]?.description}
+                {isAr ? STAGE_CONFIG[currentStatus]?.descriptionAr : STAGE_CONFIG[currentStatus]?.description}
               </span>
             </div>
 
@@ -307,13 +329,14 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                     key={statusKey}
                     type="button"
                     onClick={() => setCurrentStatus(statusKey)}
+                    aria-pressed={isSelected}
                     className={`p-2 rounded-xl text-sm text-start border transition-all cursor-pointer ${
                       isSelected
                         ? 'border-primary bg-secondary/30 text-primary font-semibold shadow-2xs'
                         : 'border-border glass-card text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
                     }`}
                   >
-                    <div>{STAGE_CONFIG[statusKey].label}</div>
+                    <div>{stageLabel(statusKey)}</div>
                   </button>
                 );
               })}
@@ -326,7 +349,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-warning-foreground font-semibold text-sm uppercase tracking-wider">
                   <Sparkles className="w-4 h-4" />
-                  <span>Associated Free Trial</span>
+                  <span>{t('Free trial', 'التجربة المجانية')}</span>
                 </div>
                 <span className="text-sm font-mono font-semibold px-2 py-0.5 rounded glass-card text-warning-foreground border border-warning/30">
                   {lead.trial_booking.reference_code}
@@ -334,12 +357,12 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
               </div>
 
               <div className="text-sm text-foreground">
-                <span className="text-muted-foreground">Status: </span>
-                <span className="font-semibold uppercase">{lead.trial_booking.status || 'Scheduled'}</span>
+                <span className="text-muted-foreground">{t('Status', 'الحالة')}: </span>
+                <span className="font-semibold uppercase">{lead.trial_booking.status || t('booked', 'محجوزة')}</span>
                 {lead.trial_booking.scheduled_start && (
                   <span>
                     {' • '}
-                    {DateTime.fromISO(lead.trial_booking.scheduled_start).setZone('Africa/Cairo').toFormat('EEE, MMM d • hh:mm a (Cairo)')}
+                    {DateTime.fromISO(lead.trial_booking.scheduled_start).setZone('Africa/Cairo').setLocale(locale).toFormat('EEE, MMM d • hh:mm a')} ({t('Cairo', 'القاهرة')})
                   </span>
                 )}
               </div>
@@ -348,25 +371,25 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                 {lead.trial_booking.has_assessment ? (
                   <span className="text-success font-medium flex items-center gap-1">
                     <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>Evaluation & Learning Plan Saved</span>
+                    <span>{t('Assessment and plan saved', 'التقييم والخطة اتحفظوا')}</span>
                   </span>
                 ) : (
                   <span className="text-muted-foreground">
-                    Awaiting assessment after mini-lesson
+                    {t('Waiting for the assessment', 'مستنيين التقييم')}
                   </span>
                 )}
               </div>
             </div>
           ) : (
             <div className="p-3.5 rounded-xl glass-surface border border-border text-sm text-muted-foreground flex items-center justify-between">
-              <span>No trial booked yet by this lead.</span>
+              <span>{t('No trial booked yet.', 'لسه ما حجزش تجربة.')}</span>
               {lead.status !== 'trial_booked' && (
                 <button
                   type="button"
                   onClick={() => setCurrentStatus('trial_booked')}
                   className="text-sm text-primary font-semibold hover:underline cursor-pointer"
                 >
-                  Mark as Booked
+                  {t('Mark as booked', 'اعتبره حجز')}
                 </button>
               )}
             </div>
@@ -376,15 +399,16 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
           <div className="space-y-3">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">
-                  Service Interest
+                <label className="block text-sm font-medium text-foreground mb-1" htmlFor="ldm-interest">
+                  {t('Interested in', 'مهتم بـ')}
                 </label>
                 <select
+                  id="ldm-interest"
                   value={serviceInterest}
                   onChange={(e) => setServiceInterest(e.target.value)}
                   className="w-full px-3 py-2 rounded-lg border border-border glass-card text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 >
-                  <option value="">General / Undecided</option>
+                  <option value="">{t('Not decided', 'لسه ما قررش')}</option>
                   {AVAILABLE_SERVICES.map(s => (
                     <option key={s.id} value={s.id}>{s.name}</option>
                   ))}
@@ -392,28 +416,30 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1">
-                  Learning Goal Summary
+                <label className="block text-sm font-medium text-foreground mb-1" htmlFor="ldm-goal">
+                  {t('Goal', 'الهدف')}
                 </label>
                 <input
+                  id="ldm-goal"
                   type="text"
                   value={goal}
                   onChange={(e) => setGoal(e.target.value)}
-                  placeholder="e.g. Reading fluency, Hifz Surah Al-Baqarah, speaking Egyptian Arabic"
+                  placeholder={t('e.g. fluent reading, memorize Al-Baqarah, speak Egyptian Arabic', 'مثلاً: قراءة سليمة، حفظ البقرة، الكلام بالمصري')}
                   className="w-full px-3 py-2 rounded-lg border border-border glass-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1">
-                Private Teacher Notes & Conversation History
+              <label className="block text-sm font-medium text-foreground mb-1" htmlFor="ldm-notes">
+                {t('Private notes', 'ملاحظات خاصة')}
               </label>
               <textarea
+                id="ldm-notes"
                 rows={3}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="Log notes from WhatsApp chats, student background, budget, preferred lesson days, parent requests..."
+                placeholder={t('Notes from chats, background, preferred days, parent requests…', 'ملاحظات من المحادثات، الخلفية، الأيام المفضلة، طلبات ولي الأمر…')}
                 className="w-full px-3 py-2 rounded-lg border border-border glass-card text-sm font-sans text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
@@ -431,7 +457,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                 className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-success hover:bg-success/90 text-white text-sm font-semibold transition-colors shadow-2xs cursor-pointer"
               >
                 <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>Enroll as Active Student</span>
+                <span>{t('Mark as studying', 'اعتبره بيدرس')}</span>
               </button>
             )}
 
@@ -442,7 +468,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                 onClick={() => handleUpdate('lost')}
                 className="px-3 py-2 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
-                Mark Lost
+                {t('Not continuing', 'مش مكمل')}
               </button>
             )}
           </div>
@@ -453,7 +479,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
               onClick={onClose}
               className="px-3.5 py-2 rounded-xl border border-border text-sm font-medium text-foreground glass-hover hover:bg-surface transition-colors cursor-pointer"
             >
-              Cancel
+              {t('Cancel', 'إلغاء')}
             </button>
 
             <button
@@ -463,7 +489,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl btn-primary-material text-primary-foreground text-sm font-semibold transition-colors shadow-2xs cursor-pointer"
             >
               <Save className="w-3.5 h-3.5" />
-              <span>{saving ? 'Saving...' : 'Save Lead'}</span>
+              <span>{saving ? t('Saving…', 'جارٍ الحفظ…') : t('Save', 'احفظ')}</span>
             </button>
           </div>
         </div>

@@ -15,9 +15,10 @@ import {
   renderStudentReschedule,
   renderStudent24hReminder,
   renderStudent1hReminder,
-  renderTeacherNotification
+  renderTeacherNotification,
+  type EmailLang
 } from './emailTemplates.js';
-import { sendEmail, OFFICIAL_TEACHER_EMAIL } from './emailService.js';
+import { sendEmail, OFFICIAL_ADMIN_EMAIL } from './emailService.js';
 
 export type NotificationEventType =
   | 'BOOKING_CONFIRMED'
@@ -244,7 +245,29 @@ export function clearIdempotencyCache(): void {
 }
 
 /**
+ * The language a recipient chose on the site (user_language_preferences); English otherwise.
+ */
+export async function resolveEmailLanguage(email: string | null | undefined): Promise<EmailLang> {
+  const supabase = getServerSupabase();
+  if (!supabase || !email) return 'en';
+  try {
+    const { data } = await supabase
+      .from('user_language_preferences')
+      .select('language')
+      .ilike('email', email.trim().replace(/[\\%_]/g, '\\$&'))
+      .order('updated_at', { ascending: false })
+      .limit(1);
+    return data?.[0]?.language === 'ar' ? 'ar' : 'en';
+  } catch {
+    return 'en';
+  }
+}
+
+/**
  * Centralized Dispatcher for all Platform Events.
+ * Routing (RULES.md §1, §5): students get their lesson emails; the lesson's teacher gets
+ * bookings, cancellations and moves with NO payment details; every payment alert and new
+ * lead goes to the super admin only.
  */
 export async function dispatchNotification(payload: NotificationPayload): Promise<DispatchResult> {
   const baseKey = buildIdempotencyKey(payload);
@@ -256,499 +279,175 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
 
   const { eventType, booking, payment, lead } = payload;
 
+  // Claims the idempotency key, renders in the recipient's language and sends once.
+  const sendOnce = async (
+    role: 'student' | 'teacher' | 'admin',
+    to: string,
+    toName: string,
+    build: (lang: EmailLang) => { subject: string; html: string; text: string }
+  ) => {
+    const key = `${baseKey}:${role}`;
+    const claim = await claimNotification(key, eventType);
+    if (!claim.claimed || !claim.claimToken) {
+      idempotentSkipped = true;
+      return;
+    }
+    attemptedSends++;
+    const email = build(await resolveEmailLanguage(to));
+    const res = await sendEmail({ to, toName, subject: email.subject, html: email.html, text: email.text });
+    if (role === 'student') studentEmailSent = res.success; else teacherEmailSent = teacherEmailSent || res.success;
+    await finalizeNotification(key, claim.claimToken, res.success, res.error ? [res.error] : undefined, res.messageId);
+    if (!res.success && res.error) errors.push(`${role} email: ${sanitizeErrorSummary([res.error])}`);
+  };
+
+  const teacherTo = booking?.teacherEmail || OFFICIAL_ADMIN_EMAIL;
+  const teacherName = booking?.teacherName || 'Teacher';
+  const lessonRows = (b: NonNullable<NotificationPayload['booking']>): Array<[string, string, unknown]> => [
+    ['Student', 'الطالب', b.learnerName],
+    ['Subject', 'المادة', b.serviceName],
+    ['When', 'الموعد', `${b.date} · ${b.timeDisplay} (${b.timezone})`],
+    ['Cairo time', 'بتوقيت القاهرة', b.cairoTimeDisplay || ''],
+    ['Length', 'المدة', `${b.durationMinutes} min`],
+    ['Booking ref', 'رقم الحجز', b.referenceCode],
+    ['Zoom link', 'رابط Zoom', b.zoomLink || '']
+  ];
+
   try {
     switch (eventType) {
-      // 1. Regular Booking Confirmation
-      case 'BOOKING_CONFIRMED': {
-        if (booking && booking.contactEmail) {
-          const studentKey = `${baseKey}:student`;
-          const claimRes = await claimNotification(studentKey, eventType);
-          if (claimRes.claimed && claimRes.claimToken) {
-            attemptedSends++;
-            const studentEmail = renderStudentBookingConfirmation({
-              learnerName: booking.learnerName,
-              serviceName: booking.serviceName,
-              date: booking.date,
-              timeDisplay: booking.timeDisplay,
-              timezone: booking.timezone,
-              durationMinutes: booking.durationMinutes,
-              bookingRef: booking.referenceCode,
-              zoomLink: booking.zoomLink,
-              cairoTimeDisplay: booking.cairoTimeDisplay,
-              feeAmount: booking.feeAmount,
-              currency: booking.currency
-            });
-
-            const studentRes = await sendEmail({
-              to: booking.contactEmail,
-              toName: booking.learnerName,
-              subject: studentEmail.subject,
-              html: studentEmail.html,
-              text: studentEmail.text
-            });
-            studentEmailSent = studentRes.success;
-            await finalizeNotification(studentKey, claimRes.claimToken, studentRes.success, studentRes.error ? [studentRes.error] : undefined, studentRes.messageId);
-            if (!studentRes.success && studentRes.error) {
-              errors.push(`Student email: ${sanitizeErrorSummary([studentRes.error])}`);
-            }
-          } else {
-            idempotentSkipped = true;
-          }
-        }
-
-        // Notify Teacher
-        if (booking) {
-          const teacherKey = `${baseKey}:teacher`;
-          const claimRes = await claimNotification(teacherKey, eventType);
-          if (claimRes.claimed && claimRes.claimToken) {
-            attemptedSends++;
-            const teacherEmail = renderTeacherNotification({
-              eventType: 'new_booking',
-              title: `New Booking: ${booking.serviceName} (${booking.durationMinutes} min)`,
-              summary: `A new 1-on-1 lesson has been scheduled by ${booking.learnerName}.`,
-              details: {
-                'Student': booking.learnerName,
-                'Email': booking.contactEmail,
-                'WhatsApp': booking.contactWhatsapp || 'None provided',
-                'Service': booking.serviceName,
-                'Date & Time': `${booking.date} at ${booking.timeDisplay} (${booking.timezone})`,
-                'Cairo Time': booking.cairoTimeDisplay || 'N/A',
-                'Reference Code': booking.referenceCode,
-                'Zoom Link': booking.zoomLink || 'Generating...'
-              }
-            });
-
-            const teacherRes = await sendEmail({
-              to: payload.booking?.teacherEmail || OFFICIAL_TEACHER_EMAIL,
-              toName: payload.booking?.teacherName || 'Mahmoud Elwany',
-              subject: teacherEmail.subject,
-              html: teacherEmail.html,
-              text: teacherEmail.text
-            });
-            teacherEmailSent = teacherRes.success;
-            await finalizeNotification(teacherKey, claimRes.claimToken, teacherRes.success, teacherRes.error ? [teacherRes.error] : undefined, teacherRes.messageId);
-            if (!teacherRes.success && teacherRes.error) {
-              errors.push(`Teacher alert: ${sanitizeErrorSummary([teacherRes.error])}`);
-            }
-          } else {
-            idempotentSkipped = true;
-          }
-        }
-        break;
-      }
-
-      // 2. Free Trial Booked
+      case 'BOOKING_CONFIRMED':
       case 'TRIAL_BOOKED': {
-        if (booking && booking.contactEmail) {
-          const studentKey = `${baseKey}:student`;
-          const claimRes = await claimNotification(studentKey, eventType);
-          if (claimRes.claimed && claimRes.claimToken) {
-            attemptedSends++;
-            const studentEmail = renderStudentTrialConfirmation({
-              learnerName: booking.learnerName,
-              serviceName: booking.serviceName,
-              date: booking.date,
-              timeDisplay: booking.timeDisplay,
-              timezone: booking.timezone,
-              durationMinutes: booking.durationMinutes,
-              bookingRef: booking.referenceCode,
-              zoomLink: booking.zoomLink,
-              cairoTimeDisplay: booking.cairoTimeDisplay
-            });
-
-            const studentRes = await sendEmail({
-              to: booking.contactEmail,
-              toName: booking.learnerName,
-              subject: studentEmail.subject,
-              html: studentEmail.html,
-              text: studentEmail.text
-            });
-            studentEmailSent = studentRes.success;
-            await finalizeNotification(studentKey, claimRes.claimToken, studentRes.success, studentRes.error ? [studentRes.error] : undefined, studentRes.messageId);
-            if (!studentRes.success && studentRes.error) {
-              errors.push(`Student trial email: ${sanitizeErrorSummary([studentRes.error])}`);
-            }
-          } else {
-            idempotentSkipped = true;
-          }
+        if (!booking) break;
+        const isTrial = eventType === 'TRIAL_BOOKED';
+        if (booking.contactEmail) {
+          await sendOnce('student', booking.contactEmail, booking.learnerName, lang => isTrial
+            ? renderStudentTrialConfirmation({ ...booking, bookingRef: booking.referenceCode, lang })
+            : renderStudentBookingConfirmation({ ...booking, bookingRef: booking.referenceCode, lang }));
         }
-
-        // Notify Teacher
-        if (booking) {
-          const teacherKey = `${baseKey}:teacher`;
-          const claimRes = await claimNotification(teacherKey, eventType);
-          if (claimRes.claimed && claimRes.claimToken) {
-            attemptedSends++;
-            const teacherEmail = renderTeacherNotification({
-              eventType: 'new_trial',
-              title: `New Free Trial Booked: ${booking.serviceName}`,
-              summary: `A complimentary 1-on-1 trial has been scheduled by ${booking.learnerName}.`,
-              details: {
-                'Learner': booking.learnerName,
-                'Email': booking.contactEmail,
-                'WhatsApp': booking.contactWhatsapp || 'None provided',
-                'Service': booking.serviceName,
-                'Date & Time': `${booking.date} at ${booking.timeDisplay} (${booking.timezone})`,
-                'Duration': `${booking.durationMinutes} minutes (Complimentary Trial)`,
-                'Reference': booking.referenceCode,
-                'Zoom Link': booking.zoomLink || 'Generating...'
-              }
-            });
-
-            const teacherRes = await sendEmail({
-              to: payload.booking?.teacherEmail || OFFICIAL_TEACHER_EMAIL,
-              toName: payload.booking?.teacherName || 'Mahmoud Elwany',
-              subject: teacherEmail.subject,
-              html: teacherEmail.html,
-              text: teacherEmail.text
-            });
-            teacherEmailSent = teacherRes.success;
-            await finalizeNotification(teacherKey, claimRes.claimToken, teacherRes.success, teacherRes.error ? [teacherRes.error] : undefined, teacherRes.messageId);
-            if (!teacherRes.success && teacherRes.error) {
-              errors.push(`Teacher alert: ${sanitizeErrorSummary([teacherRes.error])}`);
-            }
-          } else {
-            idempotentSkipped = true;
-          }
-        }
+        await sendOnce('teacher', teacherTo, teacherName, lang => renderTeacherNotification({
+          eventType: isTrial ? 'new_trial' : 'new_booking',
+          summary: `${booking.learnerName} booked ${isTrial ? 'a free trial' : 'a lesson'} in ${booking.serviceName}.`,
+          summaryAr: `${booking.learnerName} حجز ${isTrial ? 'حصة تجريبية' : 'حصة'} في ${booking.serviceName}.`,
+          details: lessonRows(booking),
+          lang
+        }));
         break;
       }
 
-      // 3. Payment Claimed by Student (Pending Teacher Verification)
       case 'PAYMENT_CLAIMED': {
-        if (booking && payment) {
-          const teacherKey = `${baseKey}:teacher`;
-          const claimRes = await claimNotification(teacherKey, eventType);
-          if (claimRes.claimed && claimRes.claimToken) {
-            attemptedSends++;
-            const teacherEmail = renderTeacherNotification({
-              eventType: 'payment_claimed',
-              title: `Payment Claimed: ${payment.amount} ${payment.currency} [Ref: ${booking.referenceCode}]`,
-              summary: `${booking.learnerName} has submitted payment details for verification.`,
-              details: {
-                'Student': booking.learnerName,
-                'Booking Ref': booking.referenceCode,
-                'Service': booking.serviceName,
-                'Amount': `${payment.amount} ${payment.currency}`,
-                'Payment Method': payment.paymentMethod,
-                'Transaction Reference': payment.paymentReference || 'None provided',
-                'Student Notes': payment.notes || 'None'
-              }
-            });
-
-            const teacherRes = await sendEmail({
-              to: payload.booking?.teacherEmail || OFFICIAL_TEACHER_EMAIL,
-              toName: payload.booking?.teacherName || 'Mahmoud Elwany',
-              subject: teacherEmail.subject,
-              html: teacherEmail.html,
-              text: teacherEmail.text
-            });
-            teacherEmailSent = teacherRes.success;
-            await finalizeNotification(teacherKey, claimRes.claimToken, teacherRes.success, teacherRes.error ? [teacherRes.error] : undefined, teacherRes.messageId);
-            if (!teacherRes.success && teacherRes.error) {
-              errors.push(`Teacher payment claim alert: ${sanitizeErrorSummary([teacherRes.error])}`);
-            }
-          } else {
-            idempotentSkipped = true;
-          }
-        }
+        if (!booking || !payment) break;
+        await sendOnce('admin', OFFICIAL_ADMIN_EMAIL, 'Super admin', lang => renderTeacherNotification({
+          eventType: 'payment_claimed',
+          summary: `${booking.learnerName} reported a payment of ${payment.amount} ${payment.currency}. Please check and confirm it.`,
+          summaryAr: `${booking.learnerName} بلّغ إنه دفع ${payment.amount} ${payment.currency}. راجعه وأكّده.`,
+          details: [
+            ['Student', 'الطالب', booking.learnerName],
+            ['Item', 'الخدمة', booking.serviceName],
+            ['Amount', 'المبلغ', `${payment.amount} ${payment.currency}`],
+            ['Method', 'طريقة الدفع', payment.paymentMethod],
+            ['Payment ref', 'مرجع الدفع', payment.paymentReference || ''],
+            ['Booking ref', 'رقم الحجز', booking.referenceCode],
+            ['Notes', 'ملاحظات', payment.notes || '']
+          ],
+          lang
+        }));
         break;
       }
 
-      // 4. Payment Confirmed by Teacher
       case 'PAYMENT_CONFIRMED': {
-        if (booking && booking.contactEmail && payment) {
-          const studentKey = `${baseKey}:student`;
-          const claimRes = await claimNotification(studentKey, eventType);
-          if (claimRes.claimed && claimRes.claimToken) {
-            attemptedSends++;
-            const studentEmail = renderStudentPaymentConfirmed({
-              learnerName: booking.learnerName,
-              serviceName: booking.serviceName,
-              amount: payment.amount,
-              currency: payment.currency,
-              paymentMethod: payment.paymentMethod,
-              paymentReference: payment.paymentReference,
-              bookingRef: booking.referenceCode,
-              date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
-            });
-
-            const studentRes = await sendEmail({
-              to: booking.contactEmail,
-              toName: booking.learnerName,
-              subject: studentEmail.subject,
-              html: studentEmail.html,
-              text: studentEmail.text
-            });
-            studentEmailSent = studentRes.success;
-            await finalizeNotification(studentKey, claimRes.claimToken, studentRes.success, studentRes.error ? [studentRes.error] : undefined, studentRes.messageId);
-            if (!studentRes.success && studentRes.error) {
-              errors.push(`Student payment confirmation: ${sanitizeErrorSummary([studentRes.error])}`);
-            }
-          } else {
-            idempotentSkipped = true;
-          }
+        if (!booking || !payment) break;
+        if (booking.contactEmail) {
+          await sendOnce('student', booking.contactEmail, booking.learnerName, lang => renderStudentPaymentConfirmed({
+            learnerName: booking.learnerName,
+            serviceName: booking.serviceName,
+            amount: payment.amount,
+            currency: payment.currency,
+            paymentMethod: payment.paymentMethod,
+            paymentReference: payment.paymentReference,
+            bookingRef: booking.referenceCode,
+            date: new Date().toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+            lang
+          }));
         }
+        await sendOnce('admin', OFFICIAL_ADMIN_EMAIL, 'Super admin', lang => renderTeacherNotification({
+          eventType: 'payment_confirmed',
+          summary: `Payment of ${payment.amount} ${payment.currency} from ${booking.learnerName} is confirmed.`,
+          summaryAr: `تم تأكيد دفع ${payment.amount} ${payment.currency} من ${booking.learnerName}.`,
+          details: [
+            ['Student', 'الطالب', booking.learnerName],
+            ['Item', 'الخدمة', booking.serviceName],
+            ['Amount', 'المبلغ', `${payment.amount} ${payment.currency}`],
+            ['Method', 'طريقة الدفع', payment.paymentMethod],
+            ['Payment ref', 'مرجع الدفع', payment.paymentReference || ''],
+            ['Booking ref', 'رقم الحجز', booking.referenceCode]
+          ],
+          lang
+        }));
         break;
       }
 
-      // 5. Booking Cancelled
-      case 'BOOKING_CANCELLED': {
-        if (booking && booking.contactEmail) {
-          const studentKey = `${baseKey}:student`;
-          const claimRes = await claimNotification(studentKey, eventType);
-          if (claimRes.claimed && claimRes.claimToken) {
-            attemptedSends++;
-            const studentEmail = renderStudentCancellation({
-              learnerName: booking.learnerName,
-              serviceName: booking.serviceName,
-              date: booking.date,
-              timeDisplay: booking.timeDisplay,
-              timezone: booking.timezone,
-              bookingRef: booking.referenceCode
-            });
-
-            const studentRes = await sendEmail({
-              to: booking.contactEmail,
-              toName: booking.learnerName,
-              subject: studentEmail.subject,
-              html: studentEmail.html,
-              text: studentEmail.text
-            });
-            studentEmailSent = studentRes.success;
-            await finalizeNotification(studentKey, claimRes.claimToken, studentRes.success, studentRes.error ? [studentRes.error] : undefined, studentRes.messageId);
-            if (!studentRes.success && studentRes.error) {
-              errors.push(`Student cancellation: ${sanitizeErrorSummary([studentRes.error])}`);
-            }
-          } else {
-            idempotentSkipped = true;
-          }
-        }
-
-        // Notify Teacher
-        if (booking) {
-          const teacherKey = `${baseKey}:teacher`;
-          const claimRes = await claimNotification(teacherKey, eventType);
-          if (claimRes.claimed && claimRes.claimToken) {
-            attemptedSends++;
-            const teacherEmail = renderTeacherNotification({
-              eventType: 'cancelled',
-              title: `Lesson Cancelled: ${booking.serviceName} [Ref: ${booking.referenceCode}]`,
-              summary: `A scheduled lesson with ${booking.learnerName} has been cancelled.`,
-              details: {
-                'Student': booking.learnerName,
-                'Email': booking.contactEmail,
-                'Service': booking.serviceName,
-                'Was Scheduled For': `${booking.date} at ${booking.timeDisplay} (${booking.timezone})`,
-                'Booking Ref': booking.referenceCode
-              }
-            });
-
-            const teacherRes = await sendEmail({
-              to: payload.booking?.teacherEmail || OFFICIAL_TEACHER_EMAIL,
-              toName: payload.booking?.teacherName || 'Mahmoud Elwany',
-              subject: teacherEmail.subject,
-              html: teacherEmail.html,
-              text: teacherEmail.text
-            });
-            teacherEmailSent = teacherRes.success;
-            await finalizeNotification(teacherKey, claimRes.claimToken, teacherRes.success, teacherRes.error ? [teacherRes.error] : undefined, teacherRes.messageId);
-            if (!teacherRes.success && teacherRes.error) {
-              errors.push(`Teacher cancellation alert: ${sanitizeErrorSummary([teacherRes.error])}`);
-            }
-          } else {
-            idempotentSkipped = true;
-          }
-        }
-        break;
-      }
-
-      // 6. Booking Rescheduled
+      case 'BOOKING_CANCELLED':
       case 'BOOKING_RESCHEDULED': {
-        if (booking && booking.contactEmail) {
-          const studentKey = `${baseKey}:student`;
-          const claimRes = await claimNotification(studentKey, eventType);
-          if (claimRes.claimed && claimRes.claimToken) {
-            attemptedSends++;
-            const studentEmail = renderStudentReschedule({
+        if (!booking) break;
+        const moved = eventType === 'BOOKING_RESCHEDULED';
+        if (booking.contactEmail) {
+          await sendOnce('student', booking.contactEmail, booking.learnerName, lang => moved
+            ? renderStudentReschedule({
               learnerName: booking.learnerName,
               serviceName: booking.serviceName,
-              oldDate: booking.oldDate || 'Previous Date',
-              oldTimeDisplay: booking.oldTimeDisplay || 'Previous Time',
+              oldDate: booking.oldDate || '—',
+              oldTimeDisplay: booking.oldTimeDisplay || '',
               newDate: booking.date,
               newTimeDisplay: booking.timeDisplay,
               timezone: booking.timezone,
               durationMinutes: booking.durationMinutes,
               bookingRef: booking.referenceCode,
-              zoomLink: booking.zoomLink
-            });
-
-            const studentRes = await sendEmail({
-              to: booking.contactEmail,
-              toName: booking.learnerName,
-              subject: studentEmail.subject,
-              html: studentEmail.html,
-              text: studentEmail.text
-            });
-            studentEmailSent = studentRes.success;
-            await finalizeNotification(studentKey, claimRes.claimToken, studentRes.success, studentRes.error ? [studentRes.error] : undefined, studentRes.messageId);
-            if (!studentRes.success && studentRes.error) {
-              errors.push(`Student reschedule: ${sanitizeErrorSummary([studentRes.error])}`);
-            }
-          } else {
-            idempotentSkipped = true;
-          }
-        }
-
-        // Notify Teacher
-        if (booking) {
-          const teacherKey = `${baseKey}:teacher`;
-          const claimRes = await claimNotification(teacherKey, eventType);
-          if (claimRes.claimed && claimRes.claimToken) {
-            attemptedSends++;
-            const teacherEmail = renderTeacherNotification({
-              eventType: 'rescheduled',
-              title: `Lesson Rescheduled: ${booking.serviceName} [Ref: ${booking.referenceCode}]`,
-              summary: `${booking.learnerName} has rescheduled their lesson.`,
-              details: {
-                'Student': booking.learnerName,
-                'Service': booking.serviceName,
-                'New Date & Time': `${booking.date} at ${booking.timeDisplay} (${booking.timezone})`,
-                'Previous Time': `${booking.oldDate || 'N/A'} at ${booking.oldTimeDisplay || 'N/A'}`,
-                'Booking Ref': booking.referenceCode,
-                'Zoom Link': booking.zoomLink || 'Same room'
-              }
-            });
-
-            const teacherRes = await sendEmail({
-              to: payload.booking?.teacherEmail || OFFICIAL_TEACHER_EMAIL,
-              toName: payload.booking?.teacherName || 'Mahmoud Elwany',
-              subject: teacherEmail.subject,
-              html: teacherEmail.html,
-              text: teacherEmail.text
-            });
-            teacherEmailSent = teacherRes.success;
-            await finalizeNotification(teacherKey, claimRes.claimToken, teacherRes.success, teacherRes.error ? [teacherRes.error] : undefined, teacherRes.messageId);
-            if (!teacherRes.success && teacherRes.error) {
-              errors.push(`Teacher reschedule alert: ${sanitizeErrorSummary([teacherRes.error])}`);
-            }
-          } else {
-            idempotentSkipped = true;
-          }
-        }
-        break;
-      }
-
-      // 7. Lead Created (Contact / Inquiry)
-      case 'LEAD_CREATED': {
-        if (lead) {
-          const teacherKey = `${baseKey}:teacher`;
-          const claimRes = await claimNotification(teacherKey, eventType);
-          if (claimRes.claimed && claimRes.claimToken) {
-            attemptedSends++;
-            const teacherEmail = renderTeacherNotification({
-              eventType: 'new_lead',
-              title: `New Inquiry / Lead: ${lead.name}`,
-              summary: `A prospective student has reached out via the contact form.`,
-              details: {
-                'Name': lead.name,
-                'Email': lead.email || 'None provided',
-                'WhatsApp': lead.whatsapp || 'None provided',
-                'Service Interest': lead.serviceInterest || 'General Inquiry',
-                'Learning Goal': lead.goal || 'None specified',
-                'Free Trial Requested': lead.isTrial ? 'Yes' : 'No'
-              }
-            });
-
-            const teacherRes = await sendEmail({
-              to: payload.booking?.teacherEmail || OFFICIAL_TEACHER_EMAIL,
-              toName: payload.booking?.teacherName || 'Mahmoud Elwany',
-              subject: teacherEmail.subject,
-              html: teacherEmail.html,
-              text: teacherEmail.text
-            });
-            teacherEmailSent = teacherRes.success;
-            await finalizeNotification(teacherKey, claimRes.claimToken, teacherRes.success, teacherRes.error ? [teacherRes.error] : undefined, teacherRes.messageId);
-            if (!teacherRes.success && teacherRes.error) {
-              errors.push(`Teacher lead alert: ${sanitizeErrorSummary([teacherRes.error])}`);
-            }
-          } else {
-            idempotentSkipped = true;
-          }
-        }
-        break;
-      }
-
-      // 8. 24-Hour Reminder
-      case 'LESSON_24H_REMINDER': {
-        if (booking && booking.contactEmail) {
-          const studentKey = `${baseKey}:student`;
-          const claimRes = await claimNotification(studentKey, eventType);
-          if (claimRes.claimed && claimRes.claimToken) {
-            attemptedSends++;
-            const studentEmail = renderStudent24hReminder({
-              learnerName: booking.learnerName,
-              serviceName: booking.serviceName,
-              date: booking.date,
-              timeDisplay: booking.timeDisplay,
-              timezone: booking.timezone,
-              durationMinutes: booking.durationMinutes,
-              bookingRef: booking.referenceCode,
               zoomLink: booking.zoomLink,
-              isTrial: booking.isTrial
-            });
-
-            const studentRes = await sendEmail({
-              to: booking.contactEmail,
-              toName: booking.learnerName,
-              subject: studentEmail.subject,
-              html: studentEmail.html,
-              text: studentEmail.text
-            });
-            studentEmailSent = studentRes.success;
-            await finalizeNotification(studentKey, claimRes.claimToken, studentRes.success, studentRes.error ? [studentRes.error] : undefined, studentRes.messageId);
-            if (!studentRes.success && studentRes.error) {
-              errors.push(`24h reminder email: ${sanitizeErrorSummary([studentRes.error])}`);
-            }
-          } else {
-            idempotentSkipped = true;
-          }
+              lang
+            })
+            : renderStudentCancellation({ ...booking, bookingRef: booking.referenceCode, lang }));
         }
+        await sendOnce('teacher', teacherTo, teacherName, lang => renderTeacherNotification({
+          eventType: moved ? 'rescheduled' : 'cancelled',
+          summary: moved
+            ? `The lesson with ${booking.learnerName} moved to ${booking.date} · ${booking.timeDisplay}.`
+            : `The lesson with ${booking.learnerName} on ${booking.date} was cancelled.`,
+          summaryAr: moved
+            ? `حصة ${booking.learnerName} اتنقلت لـ ${booking.date} · ${booking.timeDisplay}.`
+            : `حصة ${booking.learnerName} يوم ${booking.date} اتلغت.`,
+          details: [
+            ...lessonRows(booking),
+            ...(moved ? [['Previous time', 'الميعاد القديم', `${booking.oldDate || ''} ${booking.oldTimeDisplay || ''}`.trim()] as [string, string, unknown]] : [])
+          ],
+          lang
+        }));
         break;
       }
 
-      // 9. 1-Hour Reminder
-      case 'LESSON_1H_REMINDER': {
-        if (booking && booking.contactEmail) {
-          const studentKey = `${baseKey}:student`;
-          const claimRes = await claimNotification(studentKey, eventType);
-          if (claimRes.claimed && claimRes.claimToken) {
-            attemptedSends++;
-            const studentEmail = renderStudent1hReminder({
-              learnerName: booking.learnerName,
-              serviceName: booking.serviceName,
-              timeDisplay: booking.timeDisplay,
-              timezone: booking.timezone,
-              bookingRef: booking.referenceCode,
-              zoomLink: booking.zoomLink
-            });
+      case 'LEAD_CREATED': {
+        if (!lead) break;
+        await sendOnce('admin', OFFICIAL_ADMIN_EMAIL, 'Super admin', lang => renderTeacherNotification({
+          eventType: 'new_lead',
+          summary: `${lead.name} is interested in learning with us.`,
+          summaryAr: `${lead.name} مهتم يتعلم معانا.`,
+          details: [
+            ['Name', 'الاسم', lead.name],
+            ['Email', 'الإيميل', lead.email || ''],
+            ['WhatsApp', 'واتساب', lead.whatsapp || ''],
+            ['Interest', 'الاهتمام', lead.serviceInterest || ''],
+            ['Goal', 'الهدف', lead.goal || ''],
+            ['Wants a free trial', 'عايز تجربة مجانية', lead.isTrial ? 'Yes / أيوه' : 'No / لأ']
+          ],
+          lang
+        }));
+        break;
+      }
 
-            const studentRes = await sendEmail({
-              to: booking.contactEmail,
-              toName: booking.learnerName,
-              subject: studentEmail.subject,
-              html: studentEmail.html,
-              text: studentEmail.text
-            });
-            studentEmailSent = studentRes.success;
-            await finalizeNotification(studentKey, claimRes.claimToken, studentRes.success, studentRes.error ? [studentRes.error] : undefined, studentRes.messageId);
-            if (!studentRes.success && studentRes.error) {
-              errors.push(`1h reminder email: ${sanitizeErrorSummary([studentRes.error])}`);
-            }
-          } else {
-            idempotentSkipped = true;
-          }
-        }
+      case 'LESSON_24H_REMINDER':
+      case 'LESSON_1H_REMINDER': {
+        if (!booking?.contactEmail) break;
+        await sendOnce('student', booking.contactEmail, booking.learnerName, lang => eventType === 'LESSON_24H_REMINDER'
+          ? renderStudent24hReminder({ ...booking, bookingRef: booking.referenceCode, lang })
+          : renderStudent1hReminder({ ...booking, bookingRef: booking.referenceCode, lang }));
         break;
       }
     }
@@ -765,7 +464,7 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
     };
   } catch (err: any) {
     console.warn('[Dispatch Notification Warning]', err);
-    
+
     return {
       success: false,
       errors: [sanitizeDispatcherError(err)]

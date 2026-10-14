@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { 
-  TrendingUp, 
-  Users, 
-  Sparkles, 
-  ArrowRight, 
-  CheckCircle2, 
-  Clock, 
-  AlertCircle, 
-  BookOpen, 
-  RefreshCw, 
+import {
+  TrendingUp,
+  Users,
+  Sparkles,
+  ArrowRight,
+  CheckCircle2,
+  Clock,
+  AlertCircle,
+  BookOpen,
+  RefreshCw,
   MessageSquare,
   ShieldAlert,
   Compass,
@@ -19,16 +19,21 @@ import {
 import { DateTime } from 'luxon';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { DashboardAnalytics } from '../types';
+import { useT } from '../../lib/language';
+import { useTeacherAuth } from '../../lib/auth';
 
 type DateRange = 'all_time' | 'today' | 'last_7_days' | 'last_30_days' | 'this_month' | 'custom';
 
 export default function AnalyticsPage() {
+  const { t } = useT();
+  const { teacherRole } = useTeacherAuth();
+  const isSuperAdmin = teacherRole === 'super_admin';
   const [data, setData] = useState<DashboardAnalytics & { payments?: any } | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastRefreshed, setLastRefreshed] = useState<DateTime | null>(null);
-  
+
   const [dateRange, setDateRange] = useState<DateRange>('all_time');
   const [customStart, setCustomStart] = useState('');
   const [customEnd, setCustomEnd] = useState('');
@@ -50,7 +55,7 @@ export default function AnalyticsPage() {
       setData(res);
       setLastRefreshed(DateTime.now().setZone('Africa/Cairo'));
     } catch (err: any) {
-      setError(err.message || 'Failed to load analytics.');
+      setError(err.message || t("Reports couldn't be loaded.", 'تعذر تحميل التقارير.'));
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -68,7 +73,7 @@ export default function AnalyticsPage() {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin mb-4" />
-        <p className="text-sm font-medium text-foreground/70 dark:text-muted-foreground">Calculating metrics...</p>
+        <p className="text-sm font-medium text-foreground/70 dark:text-muted-foreground">{t('Loading…', 'جارٍ التحميل…')}</p>
       </div>
     );
   }
@@ -79,30 +84,30 @@ export default function AnalyticsPage() {
 
   const funnelStages = [
     {
-      label: 'New Inquiries',
+      label: t('New inquiries', 'استفسارات جديدة'),
       count: funnel?.new_inquiries || 0,
-      description: 'Website visitors & forms submitted',
+      description: '',
       color: 'bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300',
       barColor: 'bg-stone-400'
     },
     {
-      label: 'Trial Booked',
+      label: t('Trial booked', 'حجزوا تجربة'),
       count: funnel?.trials_booked || 0,
-      description: 'Scheduled 30-min evaluation sessions',
+      description: '',
       color: 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300',
       barColor: 'bg-indigo-500'
     },
     {
-      label: 'Trial Completed',
+      label: t('Trial done', 'التجربة تمت'),
       count: funnel?.trials_completed || 0,
-      description: 'Completed level assessment & sample lesson',
+      description: '',
       color: 'bg-teal-50 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300',
       barColor: 'bg-teal-600'
     },
     {
-      label: 'Active Students',
+      label: t('Active students', 'طلاب نشطين'),
       count: funnel?.active_students || 0,
-      description: 'Enrolled in ongoing 1-on-1 teaching cycles',
+      description: '',
       color: 'bg-emerald-50 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',
       barColor: 'bg-emerald-600'
     }
@@ -117,44 +122,42 @@ export default function AnalyticsPage() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-display font-bold text-foreground">
-              Operational Analytics
+              {t('Reports', 'التقارير')}
             </h1>
-            <span className="text-sm px-2.5 py-0.5 rounded-full bg-secondary/40 text-accent dark:text-primary font-medium">
-              Real-time
-            </span>
           </div>
           <p className="text-sm text-foreground/70 dark:text-muted-foreground mt-1">
-            Tracking learner progression, engagement, and operational metrics.
+            {t('How students move from first question to regular lessons.', 'الطلاب ماشيين إزاي من أول سؤال لحد الحصص المنتظمة.')}
           </p>
         </div>
 
         <div className="flex flex-col items-end gap-3">
           <div className="flex items-center gap-2">
             <select
+              aria-label={t('Period', 'الفترة')}
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value as DateRange)}
               className="px-3 py-1.5 rounded-xl border border-border glass-card text-sm font-medium text-foreground focus:ring-2 focus:ring-primary/30 outline-none"
             >
-              <option value="all_time">All Time</option>
-              <option value="today">Today</option>
-              <option value="last_7_days">Last 7 Days</option>
-              <option value="last_30_days">Last 30 Days</option>
-              <option value="this_month">This Month</option>
-              <option value="custom">Custom Range</option>
+              <option value="all_time">{t('All time', 'من البداية')}</option>
+              <option value="today">{t('Today', 'النهارده')}</option>
+              <option value="last_7_days">{t('Last 7 days', 'آخر 7 أيام')}</option>
+              <option value="last_30_days">{t('Last 30 days', 'آخر 30 يوم')}</option>
+              <option value="this_month">{t('This month', 'الشهر ده')}</option>
+              <option value="custom">{t('Custom', 'فترة مخصصة')}</option>
             </select>
-            
+
             <button
               onClick={() => fetchAnalytics(true)}
               disabled={refreshing}
               className="px-3 py-1.5 rounded-xl border border-border glass-card text-sm font-medium text-foreground hover:bg-stone-50 dark:hover:bg-border/40 transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
-              <span className="hidden sm:inline">Refresh</span>
+              <span className="hidden sm:inline">{t('Refresh', 'تحديث')}</span>
             </button>
           </div>
           {lastRefreshed && (
             <span className="text-[11px] text-foreground/50 dark:text-muted-foreground/50 font-mono">
-              Updated {lastRefreshed.toFormat('HH:mm:ss')} Cairo
+              {t('Updated', 'اتحدث')} {lastRefreshed.toFormat('HH:mm')} {t('Cairo', 'القاهرة')}
             </span>
           )}
         </div>
@@ -163,18 +166,20 @@ export default function AnalyticsPage() {
       {dateRange === 'custom' && (
         <div className="flex flex-wrap items-center gap-3 p-3 rounded-xl glass-card border-none/30 dark:border-border/30">
           <div className="flex flex-col">
-            <label className="text-[13px] uppercase tracking-wider text-stone-500 mb-1 font-medium">Start Date</label>
-            <input 
-              type="date" 
+            <label className="text-[13px] uppercase tracking-wider text-stone-500 mb-1 font-medium" htmlFor="ap-start">{t('From', 'من')}</label>
+            <input
+              id="ap-start"
+              type="date"
               value={customStart}
               onChange={(e) => setCustomStart(e.target.value)}
               className="px-3 py-1.5 rounded-lg border border-border bg-transparent text-sm outline-none focus:border-primary"
             />
           </div>
           <div className="flex flex-col">
-            <label className="text-[13px] uppercase tracking-wider text-stone-500 mb-1 font-medium">End Date</label>
-            <input 
-              type="date" 
+            <label className="text-[13px] uppercase tracking-wider text-stone-500 mb-1 font-medium" htmlFor="ap-end">{t('To', 'إلى')}</label>
+            <input
+              id="ap-end"
+              type="date"
               value={customEnd}
               onChange={(e) => setCustomEnd(e.target.value)}
               className="px-3 py-1.5 rounded-lg border border-border bg-transparent text-sm outline-none focus:border-primary"
@@ -195,7 +200,7 @@ export default function AnalyticsPage() {
         <div className="p-5 rounded-2xl glass-card border-none/30 dark:border-border/30 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-sm uppercase tracking-wider text-foreground/60 dark:text-muted-foreground/60 font-medium">
-              Lead → Trial
+              {t('Inquiry → trial', 'استفسار ← تجربة')}
             </span>
             <div className="w-8 h-8 rounded-full bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
               <Compass className="w-4 h-4" />
@@ -203,18 +208,18 @@ export default function AnalyticsPage() {
           </div>
           <div className="flex items-baseline gap-2">
             <span className="text-3xl font-display font-bold text-foreground">
-              {rates?.lead_to_trial_rate !== null && rates?.lead_to_trial_rate !== undefined ? `${rates.lead_to_trial_rate}%` : 'N/A'}
+              {rates?.lead_to_trial_rate !== null && rates?.lead_to_trial_rate !== undefined ? `${rates.lead_to_trial_rate}%` : '—'}
             </span>
           </div>
           <p className="text-[11px] text-foreground/70 dark:text-muted-foreground/70">
-            {rates?.lead_to_trial_rate === null ? 'No leads in date range' : 'Leads booking a trial'}
+            {rates?.lead_to_trial_rate === null ? t('No inquiries in this period', 'مفيش استفسارات في الفترة دي') : t('Inquiries that booked a trial', 'استفسارات حجزت تجربة')}
           </p>
         </div>
 
         <div className="p-5 rounded-2xl glass-card border-none/30 dark:border-border/30 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-sm uppercase tracking-wider text-foreground/60 dark:text-muted-foreground/60 font-medium">
-              Trial → Student
+              {t('Trial → student', 'تجربة ← طالب')}
             </span>
             <div className="w-8 h-8 rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
               <Award className="w-4 h-4" />
@@ -222,18 +227,18 @@ export default function AnalyticsPage() {
           </div>
           <div className="flex items-baseline gap-2">
             <span className="text-3xl font-display font-bold text-emerald-700 dark:text-emerald-400">
-              {rates?.trial_to_student_rate !== null && rates?.trial_to_student_rate !== undefined ? `${rates.trial_to_student_rate}%` : 'N/A'}
+              {rates?.trial_to_student_rate !== null && rates?.trial_to_student_rate !== undefined ? `${rates.trial_to_student_rate}%` : '—'}
             </span>
           </div>
           <p className="text-[11px] text-foreground/70 dark:text-muted-foreground/70">
-            {rates?.trial_to_student_rate === null ? 'No completed trials in date range' : 'Trials converting to active'}
+            {rates?.trial_to_student_rate === null ? t('No finished trials in this period', 'مفيش تجارب خلصت في الفترة دي') : t('Trials that became students', 'تجارب بقت طلاب')}
           </p>
         </div>
 
         <div className="p-5 rounded-2xl glass-card border-none/30 dark:border-border/30 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-sm uppercase tracking-wider text-foreground/60 dark:text-muted-foreground/60 font-medium">
-              Total Active
+              {t('Active', 'نشطين')}
             </span>
             <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-accent dark:text-primary">
               <Users className="w-4 h-4" />
@@ -245,14 +250,14 @@ export default function AnalyticsPage() {
             </span>
           </div>
           <p className="text-[11px] text-foreground/70 dark:text-muted-foreground/70">
-            Current active students
+            {t('Active students now', 'الطلاب النشطين دلوقتي')}
           </p>
         </div>
-        
+
         <div className="p-5 rounded-2xl glass-card border-none/30 dark:border-border/30 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-sm uppercase tracking-wider text-foreground/60 dark:text-muted-foreground/60 font-medium">
-              Bookings
+              {t('Lessons', 'الحصص')}
             </span>
             <div className="w-8 h-8 rounded-full bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400">
               <CalendarIcon className="w-4 h-4" />
@@ -264,7 +269,7 @@ export default function AnalyticsPage() {
             </span>
           </div>
           <p className="text-[11px] text-foreground/70 dark:text-muted-foreground/70">
-            Lessons in period
+            {t('Lessons in this period', 'حصص في الفترة دي')}
           </p>
         </div>
       </div>
@@ -275,14 +280,14 @@ export default function AnalyticsPage() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-base font-display font-semibold text-foreground">
-                Learner Lifecycle Stages
+                {t('Student journey', 'رحلة الطالب')}
               </h2>
               <p className="text-sm text-foreground/70 dark:text-muted-foreground">
-                Volume distribution across the lifecycle transition states.
+                {t('How many people reached each step.', 'عدد اللي وصلوا لكل خطوة.')}
               </p>
             </div>
             <span className="text-sm font-medium px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">
-              {funnel?.total_leads || 0} Leads
+              {t(`${funnel?.total_leads || 0} inquiries`, `${funnel?.total_leads || 0} استفسار`)}
             </span>
           </div>
 
@@ -307,7 +312,7 @@ export default function AnalyticsPage() {
                   </div>
 
                   <div className="h-3 w-full rounded-full bg-stone-100 dark:bg-stone-800/80 overflow-hidden">
-                    <div 
+                    <div
                       className={`h-full rounded-full transition-all duration-500 ${stage.barColor}`}
                       style={{ width: `${barWidth}%` }}
                     />
@@ -319,46 +324,46 @@ export default function AnalyticsPage() {
         </div>
 
         <div className="space-y-6">
-          {/* Payment Operational Status */}
-          <div className="p-6 rounded-2xl glass-card border-none/30 dark:border-border/30 shadow-xs space-y-4">
+          {/* Payments: super admin only (RULES.md §1) */}
+          {isSuperAdmin && <div className="p-6 rounded-2xl glass-card border-none/30 dark:border-border/30 shadow-xs space-y-4">
             <div className="flex items-center gap-2">
               <DollarSign className="w-4 h-4 text-accent dark:text-primary" />
               <h2 className="text-base font-display font-semibold text-foreground">
-                Payment Operational Status
+                {t('Payments', 'المدفوعات')}
               </h2>
             </div>
             <p className="text-sm text-foreground/70 dark:text-muted-foreground">
-              Activity overview of payment records created in the selected period.
+              {t('Payments recorded in this period.', 'المدفوعات المسجلة في الفترة دي.')}
             </p>
 
             <div className="grid grid-cols-3 gap-4 pt-2">
               <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/40 text-center">
                 <span className="block text-2xl font-display font-bold text-emerald-700 dark:text-emerald-400">{payments?.confirmed_count || 0}</span>
-                <span className="text-[13px] uppercase tracking-wider text-emerald-600 dark:text-emerald-500 font-medium">Confirmed</span>
+                <span className="text-[13px] uppercase tracking-wider text-emerald-600 dark:text-emerald-500 font-medium">{t('Confirmed', 'مؤكدة')}</span>
               </div>
               <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800/40 text-center">
                 <span className="block text-2xl font-display font-bold text-amber-700 dark:text-amber-400">{payments?.pending_count || 0}</span>
-                <span className="text-[13px] uppercase tracking-wider text-amber-600 dark:text-amber-500 font-medium">Pending</span>
+                <span className="text-[13px] uppercase tracking-wider text-amber-600 dark:text-amber-500 font-medium">{t('To review', 'للمراجعة')}</span>
               </div>
               <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-800/40 text-center">
                 <span className="block text-2xl font-display font-bold text-rose-700 dark:text-rose-400">{payments?.rejected_count || 0}</span>
-                <span className="text-[13px] uppercase tracking-wider text-rose-600 dark:text-rose-500 font-medium">Rejected</span>
+                <span className="text-[13px] uppercase tracking-wider text-rose-600 dark:text-rose-500 font-medium">{t('Rejected', 'مرفوضة')}</span>
               </div>
             </div>
-          </div>
-          
+          </div>}
+
           {/* Service Demand Breakdown */}
           <div className="p-6 rounded-2xl glass-card border-none/30 dark:border-border/30 shadow-xs space-y-4">
             <div className="flex items-center gap-2">
               <BookOpen className="w-4 h-4 text-accent dark:text-primary" />
               <h2 className="text-base font-display font-semibold text-foreground">
-                Service Demand
+                {t('Most requested subjects', 'المواد الأكثر طلباً')}
               </h2>
             </div>
-            
+
             <div className="space-y-3 pt-2">
               {Object.entries(data?.services_distribution || {}).length === 0 ? (
-                <p className="text-sm text-stone-400 py-4 text-center">No service inquiries in period.</p>
+                <p className="text-sm text-stone-400 py-4 text-center">{t('Nothing in this period.', 'مفيش حاجة في الفترة دي.')}</p>
               ) : (
                 Object.entries(data?.services_distribution || {}).map(([serviceName, countVal]) => {
                   const count = Number(countVal) || 0;
@@ -371,7 +376,7 @@ export default function AnalyticsPage() {
                         <span className="text-stone-500 font-mono">{count} ({pct}%)</span>
                       </div>
                       <div className="h-2 w-full rounded-full bg-stone-100 dark:bg-stone-800 overflow-hidden">
-                        <div 
+                        <div
                           className="h-full rounded-full bg-primary"
                           style={{ width: `${pct}%` }}
                         />

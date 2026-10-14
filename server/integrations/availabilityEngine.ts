@@ -204,7 +204,8 @@ export async function computeAvailableSlots(
   durationMinutes: number,
   teacherId?: string
 ): Promise<DayAvailabilityDto[]> {
-  const nowCairo = DateTime.now().setZone('Africa/Cairo');
+  // Hours are stored in the teacher's own time zone (RULES.md §1); Cairo until we know the teacher.
+  let nowCairo = DateTime.now().setZone('Africa/Cairo');
   const days: DayAvailabilityDto[] = [];
 
   // Define window for checking external calendar
@@ -241,6 +242,8 @@ export async function computeAvailableSlots(
   if (cleanTeacherId) {
     dbAvailability = await getTeacherDbAvailability(cleanTeacherId);
   }
+  const teacherZone = dbAvailability[0]?.timezone;
+  if (teacherZone && DateTime.now().setZone(teacherZone).isValid) nowCairo = DateTime.now().setZone(teacherZone);
 
   // Fallback for tests ONLY - test framework expects hardcoded array if no DB slots exist.
   if (dbAvailability.length === 0 && process.env.NODE_ENV !== 'production' && typeof (globalThis as any).__TEST_RESOLVE_AUTHORITATIVE_TEACHER === 'function') {
@@ -381,13 +384,13 @@ export async function validateSlotAvailability(
   const reqInterval = Interval.fromDateTimes(reqStart, reqEnd);
 
   // 0. Check DB Availability
-  const reqStartCairo = reqStart.setZone('Africa/Cairo');
-  const reqEndCairo = reqEnd.setZone('Africa/Cairo');
+  let reqStartCairo = reqStart.setZone('Africa/Cairo');
+  let reqEndCairo = reqEnd.setZone('Africa/Cairo');
 
   const currentDayOfWeekMap: Record<string, number> = {
     'Mon': 1, 'Tue': 2, 'Wed': 3, 'Thu': 4, 'Fri': 5, 'Sat': 6, 'Sun': 0
   };
-  const currentDayIndex = currentDayOfWeekMap[reqStartCairo.toFormat('ccc')];
+  let currentDayIndex = currentDayOfWeekMap[reqStartCairo.toFormat('ccc')];
 
   const cleanTeacherId = await resolveAuthoritativeTeacherForAvailability(teacherId);
   if (teacherId && !cleanTeacherId) {
@@ -422,6 +425,14 @@ export async function validateSlotAvailability(
               }
           })
         );
+    }
+
+    // Compare against the hours in the teacher's own time zone (RULES.md §1).
+    const teacherZone = dbAvailability[0]?.timezone;
+    if (teacherZone && DateTime.now().setZone(teacherZone).isValid) {
+      reqStartCairo = reqStart.setZone(teacherZone);
+      reqEndCairo = reqEnd.setZone(teacherZone);
+      currentDayIndex = currentDayOfWeekMap[reqStartCairo.toFormat('ccc')];
     }
 
     const dayBlocks = dbAvailability.filter((a: any) => a.weekday === currentDayIndex);

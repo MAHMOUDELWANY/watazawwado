@@ -8,10 +8,12 @@
  */
 
 export const DEFAULT_TEACHER_EMAIL = 'mahmoudelwany98@gmail.com';
-export const DEFAULT_SENDER_EMAIL = 'noreply@watazawwado.academy';
-export const DEFAULT_SENDER_NAME = 'وتزودوا | Watazawwado';
+export const DEFAULT_SENDER_EMAIL = 'support@watazawwado.academy'; // Supabase Auth sends sign-up emails from noreply@ (its own SMTP settings).
+export const DEFAULT_SENDER_NAME = 'Watazawwado';
 
 export const OFFICIAL_TEACHER_EMAIL = process.env.NOTIFICATION_TEACHER_EMAIL || DEFAULT_TEACHER_EMAIL;
+// Super admin inbox: payment alerts, new leads, and lessons without a known teacher (RULES.md §1, §5).
+export const OFFICIAL_ADMIN_EMAIL = process.env.NOTIFICATION_ADMIN_EMAIL || OFFICIAL_TEACHER_EMAIL;
 export const OFFICIAL_SENDER_EMAIL = process.env.NOTIFICATION_FROM_EMAIL || DEFAULT_SENDER_EMAIL;
 
 export const OFFICIAL_SENDER_NAME =

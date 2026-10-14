@@ -1,24 +1,26 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  Users, 
-  UserCheck, 
-  Calendar, 
-  Sparkles, 
-  TrendingUp, 
-  AlertCircle, 
-  Clock, 
-  ShieldCheck, 
-  UserPlus, 
-  CreditCard, 
-  ArrowRight, 
+import {
+  Users,
+  UserCheck,
+  Calendar,
+  Sparkles,
+  TrendingUp,
+  AlertCircle,
+  Clock,
+  ShieldCheck,
+  UserPlus,
+  CreditCard,
+  ArrowRight,
   RefreshCw,
   BookOpen
 } from 'lucide-react';
 import { SuperAdminOverviewMetrics } from '../types';
 import { dashboardFetch } from '../lib/dashboardApi';
+import { useT } from '../../lib/language';
 
 export default function OverviewPage() {
+  const { t } = useT();
   const [metrics, setMetrics] = useState<SuperAdminOverviewMetrics | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -33,7 +35,7 @@ export default function OverviewPage() {
       const data = await dashboardFetch('/api/dashboard/overview-metrics');
       setMetrics(data);
     } catch (err: any) {
-      setError(err.message || 'Failed to load platform overview metrics.');
+      setError(err.message || t("The overview couldn't be loaded.", 'تعذر تحميل النظرة العامة.'));
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -56,12 +58,12 @@ export default function OverviewPage() {
     return (
       <div className="bg-destructive/10 border border-destructive/20 rounded-2xl p-6 text-center text-destructive">
         <AlertCircle className="w-8 h-8 mx-auto mb-2" />
-        <p className="font-medium text-sm">{error || 'Unable to load platform snapshot.'}</p>
+        <p className="font-medium text-sm">{error || t("The overview couldn't be loaded.", 'تعذر تحميل النظرة العامة.')}</p>
         <button
           onClick={() => fetchOverview(true)}
           className="mt-4 px-4 py-2 bg-destructive/20 hover:bg-destructive/30 rounded-xl text-sm font-semibold transition-colors"
         >
-          Retry
+          {t('Try again', 'حاول تاني')}
         </button>
       </div>
     );
@@ -74,14 +76,14 @@ export default function OverviewPage() {
         <div>
           <div className="flex items-center gap-2">
             <span className="px-2 py-0.5 rounded text-[13px] font-bold uppercase tracking-wider bg-secondary/30 text-primary border border-secondary/50">
-              Super Admin
+              {t('Admin', 'المدير')}
             </span>
             <h1 className="text-2xl sm:text-3xl font-display font-bold  text-foreground">
-              Platform Overview
+              {t('Overview', 'نظرة عامة')}
             </h1>
           </div>
           <p className="text-sm sm:text-sm text-muted-foreground mt-1">
-            Authoritative snapshot of students, teachers, teaching operations, and assignments.
+            {t('Students, teachers and lessons at a glance.', 'الطلاب والمعلمين والحصص في نظرة واحدة.')}
           </p>
         </div>
         <button
@@ -90,7 +92,7 @@ export default function OverviewPage() {
           className="self-start sm:self-auto flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold glass-card hover:bg-surface-subtle border border-border text-foreground transition-colors cursor-pointer"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
-          <span>Refresh</span>
+          <span>{t('Refresh', 'تحديث')}</span>
         </button>
       </div>
 
@@ -102,16 +104,16 @@ export default function OverviewPage() {
               <UserPlus className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-amber-900 dark:text-amber-200">
-                  {metrics.unassigned_students} Unassigned Student{metrics.unassigned_students > 1 ? 's' : ''}
+                  {t(`${metrics.unassigned_students} student(s) without a teacher`, `${metrics.unassigned_students} طالب من غير معلم`)}
                 </p>
                 <p className="text-[11px] text-amber-700/80 dark:text-amber-300/80 mt-0.5">
-                  Students enrolled without an assigned teacher.
+                  {t('Give them a teacher so they can book.', 'اختار لهم معلم علشان يقدروا يحجزوا.')}
                 </p>
                 <Link
                   to="/dashboard/students"
                   className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-800 dark:text-amber-300 hover:underline mt-2"
                 >
-                  Assign teachers <ArrowRight className="w-3 h-3" />
+                  {t('Assign teachers', 'اختار معلمين')} <ArrowRight className="w-3 h-3 rtl:rotate-180" />
                 </Link>
               </div>
             </div>
@@ -122,16 +124,16 @@ export default function OverviewPage() {
               <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-red-900 dark:text-red-200">
-                  {metrics.students_needing_attention} Attention Item{metrics.students_needing_attention > 1 ? 's' : ''}
+                  {t(`${metrics.students_needing_attention} item(s) need attention`, `${metrics.students_needing_attention} حاجة محتاجة متابعة`)}
                 </p>
                 <p className="text-[11px] text-red-700/80 dark:text-red-300/80 mt-0.5">
-                  Pending outcomes or unverified integration states.
+                  {t('Lessons without an outcome or a missing Zoom link.', 'حصص من غير نتيجة أو من غير رابط Zoom.')}
                 </p>
                 <Link
                   to="/dashboard/today"
                   className="inline-flex items-center gap-1 text-[11px] font-semibold text-red-800 dark:text-red-300 hover:underline mt-2"
                 >
-                  Review items <ArrowRight className="w-3 h-3" />
+                  {t('Review', 'راجع')} <ArrowRight className="w-3 h-3 rtl:rotate-180" />
                 </Link>
               </div>
             </div>
@@ -142,16 +144,16 @@ export default function OverviewPage() {
               <CreditCard className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-blue-900 dark:text-blue-200">
-                  {metrics.pending_payments} Pending Payment{metrics.pending_payments > 1 ? 's' : ''}
+                  {t(`${metrics.pending_payments} payment(s) to check`, `${metrics.pending_payments} دفع محتاج مراجعة`)}
                 </p>
                 <p className="text-[11px] text-blue-700/80 dark:text-blue-300/80 mt-0.5">
-                  Reported payment claims awaiting verification.
+                  {t('Students reported a payment; please confirm it.', 'طلاب بلّغوا إنهم دفعوا؛ أكّد الدفع.')}
                 </p>
                 <Link
                   to="/dashboard/bookings"
                   className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-800 dark:text-blue-300 hover:underline mt-2"
                 >
-                  Reconcile payments <ArrowRight className="w-3 h-3" />
+                  {t('Check payments', 'راجع المدفوعات')} <ArrowRight className="w-3 h-3 rtl:rotate-180" />
                 </Link>
               </div>
             </div>
@@ -163,7 +165,7 @@ export default function OverviewPage() {
       <div className="glass-card border-none rounded-2xl shadow-sm grid grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x rtl:sm:divide-x-reverse divide-border overflow-hidden">
         <div className="p-6">
           <div className="flex items-center justify-between text-muted-foreground mb-3">
-            <span className="text-sm font-semibold uppercase tracking-wider">Active Students</span>
+            <span className="text-sm font-semibold uppercase tracking-wider">{t('Active students', 'طلاب نشطين')}</span>
             <Users className="w-4 h-4 text-accent" />
           </div>
           <p className="text-2xl sm:text-3xl font-display font-bold text-foreground">
@@ -171,12 +173,12 @@ export default function OverviewPage() {
           </p>
           <div className="flex items-center gap-1.5 mt-2 text-[11px] text-muted-foreground">
             <span className="font-medium text-foreground">+{metrics.new_students_30d}</span>
-            <span>new in last 30d</span>
+            <span>{t('new in the last 30 days', 'جداد في آخر 30 يوم')}</span>
           </div>
         </div>
         <div className="p-6">
           <div className="flex items-center justify-between text-muted-foreground mb-3">
-            <span className="text-sm font-semibold uppercase tracking-wider">Active Teachers</span>
+            <span className="text-sm font-semibold uppercase tracking-wider">{t('Active teachers', 'معلمين نشطين')}</span>
             <ShieldCheck className="w-4 h-4 text-accent" />
           </div>
           <p className="text-2xl sm:text-3xl font-display font-bold text-foreground">
@@ -184,32 +186,32 @@ export default function OverviewPage() {
           </p>
           <div className="flex items-center gap-1.5 mt-2 text-[11px] text-muted-foreground">
             <Link to="/dashboard/teachers" className="text-primary hover:underline font-medium">
-              Manage faculty →
+              {t('Manage teachers', 'إدارة المعلمين')} →
             </Link>
           </div>
         </div>
         <div className="p-6">
           <div className="flex items-center justify-between text-muted-foreground mb-3">
-            <span className="text-sm font-semibold uppercase tracking-wider">Lessons Today</span>
+            <span className="text-sm font-semibold uppercase tracking-wider">{t('Lessons today', 'حصص النهارده')}</span>
             <Clock className="w-4 h-4 text-accent" />
           </div>
           <p className="text-2xl sm:text-3xl font-display font-bold text-foreground">
             {metrics.lessons_today}
           </p>
           <div className="flex items-center gap-1.5 mt-2 text-[11px] text-muted-foreground">
-            <span>{metrics.lessons_this_week} this week</span>
+            <span>{t(`${metrics.lessons_this_week} this week`, `${metrics.lessons_this_week} الأسبوع ده`)}</span>
           </div>
         </div>
         <div className="p-6">
           <div className="flex items-center justify-between text-muted-foreground mb-3">
-            <span className="text-sm font-semibold uppercase tracking-wider">Upcoming Trials</span>
+            <span className="text-sm font-semibold uppercase tracking-wider">{t('Upcoming trials', 'تجارب جاية')}</span>
             <Sparkles className="w-4 h-4 text-accent" />
           </div>
           <p className="text-2xl sm:text-3xl font-display font-bold text-foreground">
             {metrics.trials_upcoming}
           </p>
           <div className="flex items-center gap-1.5 mt-2 text-[11px] text-muted-foreground">
-            <span>{metrics.trials_total} total trials recorded</span>
+            <span>{t(`${metrics.trials_total} trials in total`, `${metrics.trials_total} تجربة إجمالي`)}</span>
           </div>
       </div>
       </div>
@@ -219,17 +221,17 @@ export default function OverviewPage() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-base font-display font-semibold text-foreground">
-              Faculty Workload & Assignment Distribution
+              {t('Teachers & their students', 'المعلمين وطلابهم')}
             </h2>
             <p className="text-sm text-muted-foreground mt-0.5">
-              Current teaching allocation per authorized faculty member.
+              {t('How many students and lessons each teacher has.', 'كل معلم معاه كام طالب وكام حصة.')}
             </p>
           </div>
           <Link
             to="/dashboard/teachers"
             className="text-sm font-semibold text-primary hover:underline"
           >
-            View all teachers →
+            {t('All teachers', 'كل المعلمين')} →
           </Link>
         </div>
 
@@ -237,39 +239,39 @@ export default function OverviewPage() {
           <table className="w-full text-start text-sm border-collapse">
             <thead>
               <tr className="border-b border-border text-muted-foreground uppercase tracking-wider text-[13px]">
-                <th className="py-2.5 px-3">Teacher</th>
-                <th className="py-2.5 px-3">Role</th>
-                <th className="py-2.5 px-3 text-center">Active Students</th>
-                <th className="py-2.5 px-3 text-center">Lessons This Week</th>
-                <th className="py-2.5 px-3 text-end">Actions</th>
+                <th className="py-2.5 px-3">{t('Teacher', 'المعلم')}</th>
+                <th className="py-2.5 px-3">{t('Role', 'الدور')}</th>
+                <th className="py-2.5 px-3 text-center">{t('Active students', 'طلاب نشطين')}</th>
+                <th className="py-2.5 px-3 text-center">{t('Lessons this week', 'حصص الأسبوع ده')}</th>
+                <th className="py-2.5 px-3 text-end"><span className="sr-only">{t('Actions', 'إجراءات')}</span></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {metrics.teacher_capacity.map((t) => (
-                <tr key={t.email} className="hover:bg-surface-subtle transition-colors">
+              {metrics.teacher_capacity.map((tc) => (
+                <tr key={tc.email} className="hover:bg-surface-subtle transition-colors">
                   <td className="py-3 px-3">
-                    <div className="font-semibold text-foreground">{t.name}</div>
-                    <div className="text-[11px] text-muted-foreground">{t.email}</div>
+                    <div className="font-semibold text-foreground">{tc.name}</div>
+                    <div className="text-[11px] text-muted-foreground" dir="ltr">{tc.email}</div>
                   </td>
                   <td className="py-3 px-3">
                     <span className={`px-2 py-0.5 rounded text-[13px] font-semibold uppercase tracking-wider ${
-                      t.role === 'super_admin' ? 'bg-secondary/30 text-primary' : 'bg-muted text-muted-foreground'
+                      tc.role === 'super_admin' ? 'bg-secondary/30 text-primary' : 'bg-muted text-muted-foreground'
                     }`}>
-                      {t.role === 'super_admin' ? 'Super Admin' : 'Teacher'}
+                      {tc.role === 'super_admin' ? t('Admin', 'مدير') : t('Teacher', 'معلم')}
                     </span>
                   </td>
                   <td className="py-3 px-3 text-center font-semibold text-foreground">
-                    {t.active_students}
+                    {tc.active_students}
                   </td>
                   <td className="py-3 px-3 text-center font-semibold text-foreground">
-                    {t.lessons_this_week}
+                    {tc.lessons_this_week}
                   </td>
                   <td className="py-3 px-3 text-end">
                     <Link
-                      to={`/dashboard/students?teacher=${encodeURIComponent(t.email)}`}
+                      to={`/dashboard/students?teacher=${encodeURIComponent(tc.email)}`}
                       className="text-sm font-semibold text-primary hover:underline"
                     >
-                      View students
+                      {t('Students', 'الطلاب')}
                     </Link>
                   </td>
                 </tr>
@@ -277,7 +279,7 @@ export default function OverviewPage() {
               {metrics.teacher_capacity.length === 0 && (
                 <tr>
                   <td colSpan={5} className="py-6 text-center text-muted-foreground">
-                    No active teacher accounts found.
+                    {t('No active teachers yet.', 'لسه مفيش معلمين نشطين.')}
                   </td>
                 </tr>
               )}

@@ -5,7 +5,7 @@ import { PublicSection, EditorialHeading, MarginNote } from '../PublicDesignSyst
 import { FileText, CalendarClock, RotateCcw, Wallet } from 'lucide-react';
 
 // Keep in sync with TERMS_VERSION in api/index.ts: bookings store the version the student accepted.
-const TERMS_VERSION_LABEL = { en: 'Version 2026-10-14 · Last updated 14 October 2026', ar: 'إصدار 2026-10-14 · آخر تحديث 14 أكتوبر 2026' };
+const TERMS_VERSION_LABEL = { en: 'Version 2026-10-15 · Last updated 15 October 2026', ar: 'إصدار 2026-10-15 · آخر تحديث 15 أكتوبر 2026' };
 
 type Section = { id: string; en: { title: string; items: string[] }; ar: { title: string; items: string[] } };
 
@@ -142,6 +142,19 @@ const SECTIONS: Section[] = [
       'يتعامل المعلمون والطلاب باحترام متبادل، ويحق للمعلم إنهاء الدرس عند الإساءة، ويُحتسب الدرس كدرس تم.',
       'نتائج التعلم تعتمد على الممارسة والالتزام، لذلك لا نضمن نتيجة محددة في مدة محددة.',
       'مسؤوليتنا عن أي درس محدودة بالمبلغ المدفوع لهذا الدرس، إلا إذا كان القانون لا يسمح بهذا الحد.',
+    ] },
+  },
+  {
+    id: 'law',
+    en: { title: 'Disputes and governing law', items: [
+      'If something goes wrong, please contact us first; we will always try to find a fair solution quickly.',
+      'These terms are governed by the laws of Poland, and the courts of Poland have jurisdiction.',
+      'If you are a consumer, you keep the protection of the mandatory laws of the country where you live, and you may also bring a claim before the courts there. EU residents can also use the European Online Dispute Resolution platform.',
+    ] },
+    ar: { title: 'النزاعات والقانون المطبّق', items: [
+      'لو حصلت أي مشكلة، تواصل معنا الأول؛ دايماً هنحاول نوصل لحل عادل بسرعة.',
+      'تخضع هذه الشروط لقوانين جمهورية بولندا، وتختص محاكم بولندا بنظر أي نزاع.',
+      'إذا كنت مستهلكاً، تظل محتفظاً بالحماية التي تمنحها لك القوانين الإلزامية في بلد إقامتك، ويحق لك أيضاً رفع دعواك أمام محاكمه. ويمكن لسكان الاتحاد الأوروبي كذلك استخدام منصة الاتحاد الأوروبي لتسوية النزاعات عبر الإنترنت.',
     ] },
   },
   {

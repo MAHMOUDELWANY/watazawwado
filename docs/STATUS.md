@@ -25,13 +25,19 @@ Read this first in a new session, then `RULES.md` (binding owner decisions) and 
 - Emails (Brevo, free plan) redesigned: Arabic + English, logo, brand colours, light/dark, legal footer. Samples in docs/email-previews/. Brevo delivery verified from notification_events (sent OK).
 - Production smoke test 2026-10-14: pages 200, 18 packages served, auth required on protected APIs, dev tokens rejected, security headers present.
 
+### Added 2026-10-15
+- Emails in one language: English by default, Arabic for people who chose Arabic (cookie + ). Sender support@watazawwado.academy; Thmanyah font.
+- Teachers see no money (API strips payment fields for non-admins; UI hides payment parts). Payment alerts go to the super admin only.
+- Teacher 'Ask to reschedule' → student on-site notification; only the admin moves/cancels lessons directly. Dashboard bell + Notifications page for teachers.
+- Whole teacher/admin dashboard and staff login bilingual (language shared with the rest of the site). Admin page for pay-later and refund requests.
+- Admin can add teachers (invitation email to set a password). Each teacher sets hours in their own time zone.
+- Multi-lesson booking code and its RPC removed. Terms: governing law Poland (consumers keep local protection), version 2026-10-15. About page wording per owner.
+
 ## Next (in order)
 
 1. Owner tests signed-in flows on production (sign-up, trial, paid booking, cancel → credit, refund request, packages, teacher hours, admin refund/pay-later). Claude cannot create accounts on the live site.
-2. Make the whole site bilingual with the 50/50 friendly tone, starting with the teacher/admin dashboard (English-only today; its language toggle is broken: local state in `DashboardApp`).
-3. Clean-up: remove the dead multi-lesson plan code (`MultiLessonPlan.tsx`, `/api/student/multi-lesson-plan`, its RPC) now that packages are bought on the packages page.
-4. Admin list for pay-later requests and refund requests (API for pay-later exists; refund requests are marked in `package_entitlements.metadata.refund_requested_at`).
-5. Open questions in RULES.md §8 (governing law in terms, trial-limit confirmation, teachers outside Egypt, emails language, AI intake trust, etc.).
+2. Owner tests the teacher dashboard with a real teacher account (add a teacher from the Teachers page).
+3. Engineering backlog in RULES.md §8 (AI intake server-side, design system, repo clean-up, Stripe webhook, firewall). Have a lawyer review the terms once.
 
 ## Owner actions outside the code
 

@@ -2,6 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Plus, Trash2, Save, Loader2 } from 'lucide-react';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { useAppLanguage } from '../../lib/language';
+import { CountryTimezonePicker } from '../../components/ui/CountryTimezonePicker';
+
+const browserZone = (() => {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || 'Africa/Cairo';
+  } catch {
+    return 'Africa/Cairo';
+  }
+})();
 
 interface Interval {
   weekday: number;
@@ -28,6 +37,8 @@ export default function AvailabilityPage() {
   const { lang } = useAppLanguage();
   const isAr = lang === 'ar';
   const [intervals, setIntervals] = useState<Interval[]>([]);
+  // RULES.md §1: hours are entered in the teacher's own time zone.
+  const [timezone, setTimezone] = useState(browserZone);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ kind: 'ok' | 'error'; text: string } | null>(null);
@@ -35,6 +46,8 @@ export default function AvailabilityPage() {
   useEffect(() => {
     dashboardFetch('/api/dashboard/availability')
       .then((res: any) => {
+        const saved = (res.availability || []).find((a: any) => a.timezone)?.timezone;
+        if (saved) setTimezone(saved);
         setIntervals(
           (res.availability || [])
             .filter((a: any) => a.is_active !== false)
@@ -54,7 +67,7 @@ export default function AvailabilityPage() {
     try {
       await dashboardFetch('/api/dashboard/availability', {
         method: 'PUT',
-        body: JSON.stringify({ schedule: intervals.map(iv => ({ ...iv, is_active: true })) })
+        body: JSON.stringify({ timezone, schedule: intervals.map(iv => ({ ...iv, is_active: true })) })
       });
       setMessage({ kind: 'ok', text: isAr ? 'تم حفظ مواعيدك. يمكن للطلاب الآن الحجز فيها.' : 'Saved! Students can now book in these hours.' });
     } catch (err: any) {
@@ -79,8 +92,16 @@ export default function AvailabilityPage() {
         <h1 className="text-2xl font-display font-bold text-foreground">{isAr ? 'مواعيد التدريس' : 'My teaching hours'}</h1>
         <p className="text-sm text-muted-foreground mt-1">
           {isAr
-            ? 'حدّد الأوقات التي يمكن للطلاب الحجز فيها كل أسبوع (بتوقيت القاهرة). إذا ربطت تقويم جوجل، نخفي تلقائياً الأوقات المشغولة فيه.'
-            : "Set the times students can book each week (Cairo time). If you've connected Google Calendar, busy times there are hidden automatically."}
+            ? 'حدّد الأوقات اللي الطلاب يقدروا يحجزوا فيها كل أسبوع، بالتوقيت اللي إنت فيه. لو ربطت تقويم جوجل، الأوقات المشغولة فيه بتختفي تلقائياً.'
+            : "Set the times students can book each week, in your own time zone. If you've connected Google Calendar, busy times there are hidden automatically."}
+        </p>
+      </div>
+
+      <div className="glass-card p-4 rounded-xl border border-border space-y-2">
+        <span className="block text-sm font-semibold text-foreground">{isAr ? 'التوقيت اللي بتكتب بيه مواعيدك' : 'Time zone for these hours'}</span>
+        <CountryTimezonePicker timezone={timezone} onTimezoneChange={setTimezone} isAr={isAr} showTimePreview={true} />
+        <p className="text-xs text-muted-foreground">
+          {isAr ? 'الطلاب بيشوفوا المواعيد بتوقيتهم هم تلقائياً.' : 'Students see these hours in their own time zone automatically.'}
         </p>
       </div>
 
