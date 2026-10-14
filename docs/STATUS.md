@@ -26,7 +26,7 @@ Read this first in a new session, then `RULES.md` (binding owner decisions) and 
 - Production smoke test 2026-10-14: pages 200, 18 packages served, auth required on protected APIs, dev tokens rejected, security headers present.
 
 ### Added 2026-10-15
-- Emails in one language: English by default, Arabic for people who chose Arabic (cookie + ). Sender support@watazawwado.academy; Thmanyah font.
+- Emails in one language: English by default, Arabic for people who chose Arabic (cookie + user_language_preferences table). Sender support@watazawwado.academy; Thmanyah font.
 - Teachers see no money (API strips payment fields for non-admins; UI hides payment parts). Payment alerts go to the super admin only.
 - Teacher 'Ask to reschedule' → student on-site notification; only the admin moves/cancels lessons directly. Dashboard bell + Notifications page for teachers.
 - Whole teacher/admin dashboard and staff login bilingual (language shared with the rest of the site). Admin page for pay-later and refund requests.
