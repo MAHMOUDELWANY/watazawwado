@@ -1058,7 +1058,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
             </p>
 
             <a
-              href="https://wa.me/201021464424"
+              href="https://wa.me/48508157886"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl btn-whatsapp-solid text-sm font-bold shadow-sm"

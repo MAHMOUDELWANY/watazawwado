@@ -20,7 +20,7 @@ Read this first in a new session, then `RULES.md` (binding owner decisions) and 
 - Terms page rewritten; privacy policy lists Stripe/PayPal, Gemini, HIBP, WhatsApp.
 - Free leaked-password check (HIBP k-anonymity) on sign-up and password change (`src/lib/pwnedPassword.ts`).
 - Teacher "My hours" page, pay later (12+ paid lessons, admin approval), refunds, teacher reassignment (already existed; now reports lessons still with the old teacher).
-- Pricing page and homepage show the approved prices; fake "85% of students" claim removed; WhatsApp number unified to +201552425799.
+- Pricing page and homepage show the approved prices; fake "85% of students" claim removed; WhatsApp number unified to +48508157886.
 
 ## Next (in order)
 

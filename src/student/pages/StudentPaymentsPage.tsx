@@ -238,7 +238,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
         </div>
 
         <a
-          href="https://wa.me/201552425799?text=Assalamu%20Alaikum%20Ustadh%20Mahmoud%2C%20I%20have%20a%20question%20about%20payment."
+          href="https://wa.me/48508157886?text=Assalamu%20Alaikum%20Ustadh%20Mahmoud%2C%20I%20have%20a%20question%20about%20payment."
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 px-4 py-2.5 btn-whatsapp-solid rounded-xl text-sm font-bold shadow-md shrink-0 self-start md:self-auto min-h-[38px]"

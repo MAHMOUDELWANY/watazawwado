@@ -352,7 +352,7 @@ export function PrivacyPolicyPage() {
                   </div>
                   <div className="flex items-center gap-2 text-foreground font-medium">
                     <FileText className="w-4 h-4 text-accent shrink-0" />
-                    <span>WhatsApp: +201552425799</span>
+                    <span>WhatsApp: +48508157886</span>
                   </div>
                 </div>
               </div>

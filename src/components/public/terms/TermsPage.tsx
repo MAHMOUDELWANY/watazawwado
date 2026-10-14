@@ -229,7 +229,7 @@ export function TermsPage() {
               <div className="glass-card p-6 rounded-2xl border border-border/80 text-sm sm:text-base space-y-2 text-muted-foreground">
                 <p>{isEn ? 'Questions about these terms? We are happy to help:' : 'عندك سؤال عن الشروط؟ يسعدنا نساعدك:'}</p>
                 <p className="font-semibold text-foreground">Email: support@watazawwado.academy / mahmoudelwany98@gmail.com</p>
-                <p className="font-semibold text-foreground" dir="ltr">WhatsApp: +201552425799</p>
+                <p className="font-semibold text-foreground" dir="ltr">WhatsApp: +48508157886</p>
                 <p>
                   {isEn ? 'See also our ' : 'اطلع أيضاً على '}
                   <Link to="/privacy" className="underline text-primary font-semibold">{isEn ? 'Privacy Policy' : 'سياسة الخصوصية'}</Link>.

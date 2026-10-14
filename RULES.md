@@ -22,7 +22,7 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 - **[Decided] Pay first.** A paid booking is not confirmed — and no confirmation/reference is shown — until payment is verified server-side. While the student is paying, the slot is held for a short time (payment hold); an unpaid hold expires automatically and frees the slot.
 - **[Decided] Free trial — one per new student.** Default 30 minutes, maximum 45 minutes (master spec §9).
 - **[Decided] Free trial rescheduling.** A trial can be rescheduled **once**, and only **at least 1 hour before** the lesson. Missing the trial (no-show), or cancelling it, means the student must wait **48 hours** before booking again.
-- **[Decided 2026-10-14] Free-trial limit.** After **5** cancelled or missed trials, the account can no longer book free trials; paid lessons stay open. (The owner first proposed deleting the account automatically; replaced by this block because deletion would destroy payment/lesson records that must be kept, and a new sign-up resets it anyway. Owner to confirm.)
+- **[Decided 2026-10-14] Free-trial limit.** After **5** cancelled or missed trials, the account can no longer book free trials; paid lessons stay open. Accounts are never deleted automatically (confirmed by the owner 2026-10-14).
 - **[Decided 2026-10-14] Cancelling and rescheduling (all lessons):**
   - cancel up to **3 hours** before (a free trial: up to 1 hour before);
   - reschedule up to **1 hour** before, self-service;
@@ -63,6 +63,9 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 - **[Decided 2026-10-14] Arabic style: a 50/50 mix** — simple standard Arabic with a warm Egyptian touch (e.g. "احجز حصتك", "بتوفّر", "عايز"), the way a friendly Egyptian teacher writes. Legal pages (terms, privacy) stay in clear simple standard Arabic so they are unambiguous.
 - Arabic is right-to-left: use logical CSS (`ms-`/`me-`/`ps-`/`pe-`/`start`/`end`), never `left`/`right`.
 
+- **[Decided 2026-10-14] Emails** are sent through Brevo (free plan) in both languages in one message: Arabic first, then English, with logo, brand colours, light/dark mode and a legal footer (why you got it, terms, privacy, contact). Templates: `server/notifications/emailTemplates.ts`. Sign-up/password emails are Supabase Auth templates, edited in the Supabase dashboard.
+- **[Decided 2026-10-14] Official contact number:** WhatsApp +48 508 157 886 (Poland). No other number may appear anywhere in the project.
+
 ## 7. Engineering rules (always)
 
 - Migrations are append-only (`supabase/migrations/`); use the `new-migration` skill.
@@ -74,10 +77,8 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 ## 8. Open decisions (do not implement until decided)
 
 - Governing law / jurisdiction clause for the terms (e.g. Egypt) — not in the terms yet.
-- Free-trial limit: confirm "block free trials" instead of auto-deleting the account (see §2).
 - Teachers outside Egypt: availability is entered in Cairo time for now.
 
-- Emails: Arabic-first, English-first, or both in one message.
 - AI intake: trust the browser's assessment vs. re-run server-side.
 - Wording of credentials on the About page ("Azhar graduate").
 - Design system: standardize on `src/components/ui/*` components.

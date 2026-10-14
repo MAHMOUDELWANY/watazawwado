@@ -1,10 +1,9 @@
-﻿/**
- * ====================================================================
- * MAHMOUD TEACHING PLATFORM — EMAIL TEMPLATES
- * File: server/notifications/emailTemplates.ts
- * Role: Art-directed, responsive, brand-aligned HTML & text emails
- *       with strict HTML escaping on all dynamic learner/booking values.
- * ====================================================================
+/**
+ * Transactional email templates (sent through Brevo by dispatcher.ts).
+ * Every email is bilingual (Arabic first, right-to-left, then English), uses the brand
+ * colours and logo, supports light and dark mode, and ends with a legal footer
+ * (why you got it, terms, privacy, contact). All dynamic values are HTML-escaped.
+ * RULES.md §6: friendly tone in both languages.
  */
 
 export interface EmailRenderResult {
@@ -13,15 +12,17 @@ export interface EmailRenderResult {
   text: string;
 }
 
-// Brand Styles & Colors
-const BRAND_BG = '#F8F6F0';
-const CARD_BG = '#FFFFFF';
-const TEXT_MAIN = '#2C2A27';
-const TEXT_MUTED = '#6B706A';
-const ACCENT_SAGE = '#087D91';
-const ACCENT_LIGHT_SAGE = '#087D91';
-const ACCENT_BG = '#EAF0EB';
-const BORDER_COLOR = '#E5DFD5';
+const SITE_URL = 'https://watazawwado.academy';
+const LOGO_URL = `${SITE_URL}/logo.png`;
+const WHATSAPP_DISPLAY = '+48 508 157 886';
+const WHATSAPP_URL = 'https://wa.me/48508157886';
+const SUPPORT_EMAIL = 'support@watazawwado.academy';
+
+// Brand palette (same as the website).
+const TEAL = '#087D91';
+const SAND = '#D8C6AE';
+const BROWN = '#8B4935';
+const RED = '#C51F24';
 
 /**
  * Escapes unsafe characters for HTML context to prevent XSS and layout breaking.
@@ -48,55 +49,152 @@ export function sanitizeUrl(url: unknown): string {
   return '';
 }
 
-function baseEmailWrapper(title: string, contentHtml: string): string {
-  const safeTitle = escapeHtml(title);
+/** One row of the details card: Arabic label, English label, value (already escaped). */
+type Row = [ar: string, en: string, value: string];
+
+interface Section {
+  title: string;
+  greeting?: string;
+  paragraphs: string[];
+  rows?: Row[];
+  note?: string;
+}
+
+interface EmailContent {
+  preheader: string;
+  ar: Section;
+  en: Section;
+  button?: { url: string; ar: string; en: string };
+  /** Why the recipient gets this email (legal footer). */
+  reason: { ar: string; en: string };
+}
+
+function detailsTable(rows: Row[] | undefined, lang: 'ar' | 'en'): string {
+  if (!rows || rows.length === 0) return '';
+  const body = rows
+    .filter(([, , value]) => value)
+    .map(([ar, en, value]) => `<tr>
+        <td class="muted" style="padding:6px 0;width:42%;vertical-align:top;font-size:13px;color:#6B706A;">${lang === 'ar' ? ar : en}</td>
+        <td class="text" style="padding:6px 0;font-size:14px;font-weight:600;color:#2C2A27;" dir="auto">${value}</td>
+      </tr>`)
+    .join('');
+  return `<table role="presentation" class="card" width="100%" cellspacing="0" cellpadding="0" style="margin:18px 0;padding:16px 18px;background:#F3F7F6;border:1px solid #DCE7E4;border-radius:12px;">${body}</table>`;
+}
+
+function sectionHtml(section: Section, lang: 'ar' | 'en'): string {
+  const dir = lang === 'ar' ? 'rtl' : 'ltr';
+  const align = lang === 'ar' ? 'right' : 'left';
+  const font = lang === 'ar'
+    ? "Tahoma, 'Segoe UI', Arial, sans-serif"
+    : "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
+  return `<div dir="${dir}" lang="${lang}" style="text-align:${align};font-family:${font};">
+    <h1 class="text" style="margin:0 0 12px;font-size:20px;line-height:1.4;color:#2C2A27;">${section.title}</h1>
+    ${section.greeting ? `<p class="text" style="margin:0 0 10px;font-size:15px;line-height:1.7;color:#2C2A27;">${section.greeting}</p>` : ''}
+    ${section.paragraphs.map(p => `<p class="text" style="margin:0 0 10px;font-size:15px;line-height:1.7;color:#2C2A27;">${p}</p>`).join('')}
+    ${detailsTable(section.rows, lang)}
+    ${section.note ? `<p class="muted" style="margin:0 0 6px;font-size:13px;line-height:1.6;color:#6B706A;">${section.note}</p>` : ''}
+  </div>`;
+}
+
+function buttonHtml(url: string, label: string): string {
+  return `<table role="presentation" cellspacing="0" cellpadding="0" align="center" style="margin:6px auto 18px;">
+    <tr><td style="border-radius:10px;background:${TEAL};">
+      <a href="${url}" style="display:inline-block;padding:12px 26px;font-family:Tahoma,Arial,sans-serif;font-size:15px;font-weight:700;color:#FFFFFF;text-decoration:none;border-radius:10px;">${label}</a>
+    </td></tr>
+  </table>`;
+}
+
+function renderLayout(content: EmailContent): string {
+  const safeButtonUrl = content.button ? sanitizeUrl(content.button.url) : '';
+  const year = new Date().getFullYear();
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${safeTitle}</title>
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <title>${content.en.title}</title>
   <style>
-    body { margin: 0; padding: 0; background-color: ${BRAND_BG}; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: ${TEXT_MAIN}; -webkit-font-smoothing: antialiased; }
-    .wrapper { width: 100%; table-layout: fixed; background-color: ${BRAND_BG}; padding: 32px 16px; }
-    .container { max-width: 580px; margin: 0 auto; background-color: ${CARD_BG}; border-radius: 16px; border: 1px solid ${BORDER_COLOR}; overflow: hidden; }
-    .header { padding: 32px 32px 24px; text-align: center; border-bottom: 1px solid ${BORDER_COLOR}; }
-    .header h1 { margin: 0; font-size: 22px; font-weight: 600; color: ${TEXT_MAIN}; letter-spacing: -0.3px; }
-    .header p { margin: 4px 0 0; font-size: 13px; color: ${TEXT_MUTED}; }
-    .body { padding: 32px; font-size: 15px; line-height: 1.6; color: ${TEXT_MAIN}; }
-    .card { background-color: ${ACCENT_BG}; border-radius: 12px; padding: 20px; margin: 24px 0; border: 1px solid #DDE8E0; }
-    .btn { display: inline-block; background-color: ${ACCENT_SAGE}; color: #FFFFFF !important; text-decoration: none; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 600; text-align: center; margin: 16px 0; }
-    .footer { padding: 24px 32px; text-align: center; font-size: 12px; color: ${TEXT_MUTED}; border-top: 1px solid ${BORDER_COLOR}; }
-    .footer a { color: ${ACCENT_SAGE}; text-decoration: none; }
+    @media (prefers-color-scheme: dark) {
+      .page { background:#121416 !important; }
+      .shell { background:#1C1F22 !important; border-color:#2E3338 !important; }
+      .text { color:#ECEAE6 !important; }
+      .muted { color:#A7ACA6 !important; }
+      .card { background:#20292B !important; border-color:#2F4044 !important; }
+      .divider { border-color:#2E3338 !important; }
+    }
+    [data-ogsc] .shell { background:#1C1F22 !important; }
+    [data-ogsc] .text { color:#ECEAE6 !important; }
+    @media (max-width: 600px) { .pad { padding:22px 18px !important; } }
   </style>
 </head>
-<body>
-  <div class="wrapper">
-    <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
-      <tr>
-        <td align="center">
-          <div class="container">
-            <div class="header">
-              <h1>Mahmoud Elwany</h1>
-              <p>Personalized 1-on-1 Quran, Arabic &amp; Islamic Studies</p>
-            </div>
-            <div class="body">
-              ${contentHtml}
-            </div>
-            <div class="footer">
-              <p style="margin: 0 0 8px;">Direct 1-on-1 Mentorship &bull; WhatsApp: +20 155 242 5799</p>
-              <p style="margin: 0;">&copy; ${new Date().getFullYear()} Mahmoud Elwany. All rights reserved.</p>
-            </div>
-          </div>
-        </td>
-      </tr>
-    </table>
-  </div>
+<body class="page" style="margin:0;padding:0;background:#F8F6F0;">
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">${content.preheader}</div>
+  <table role="presentation" class="page" width="100%" cellspacing="0" cellpadding="0" style="background:#F8F6F0;">
+    <tr><td align="center" style="padding:28px 12px;">
+      <table role="presentation" class="shell" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;background:#FFFFFF;border:1px solid #E5DFD5;border-radius:18px;overflow:hidden;">
+        <tr><td style="height:6px;background:${TEAL};background-image:linear-gradient(135deg,${TEAL} 0%,${SAND} 40%,${BROWN} 75%,${RED} 100%);font-size:0;line-height:0;">&nbsp;</td></tr>
+        <tr><td align="center" class="pad" style="padding:26px 32px 8px;">
+          <img src="${LOGO_URL}" width="150" alt="وتزودوا | Watazawwado" style="display:block;width:150px;max-width:60%;height:auto;border:0;">
+        </td></tr>
+        <tr><td class="pad" style="padding:18px 32px 6px;">
+          ${sectionHtml(content.ar, 'ar')}
+          ${safeButtonUrl && content.button ? buttonHtml(safeButtonUrl, content.button.ar) : ''}
+        </td></tr>
+        <tr><td style="padding:0 32px;"><div class="divider" style="border-top:1px solid #E5DFD5;"></div></td></tr>
+        <tr><td class="pad" style="padding:18px 32px 6px;">
+          ${sectionHtml(content.en, 'en')}
+          ${safeButtonUrl && content.button ? buttonHtml(safeButtonUrl, content.button.en) : ''}
+        </td></tr>
+        <tr><td class="pad divider" style="padding:20px 32px 26px;border-top:1px solid #E5DFD5;text-align:center;font-family:Tahoma,Arial,sans-serif;">
+          <p class="muted" dir="rtl" style="margin:0 0 6px;font-size:12px;line-height:1.6;color:#6B706A;">${content.reason.ar}</p>
+          <p class="muted" style="margin:0 0 12px;font-size:12px;line-height:1.6;color:#6B706A;">${content.reason.en}</p>
+          <p style="margin:0 0 8px;font-size:12px;">
+            <a href="${SITE_URL}/terms" style="color:${TEAL};text-decoration:none;">الشروط · Terms</a> &nbsp;|&nbsp;
+            <a href="${SITE_URL}/privacy" style="color:${TEAL};text-decoration:none;">الخصوصية · Privacy</a> &nbsp;|&nbsp;
+            <a href="${WHATSAPP_URL}" style="color:${TEAL};text-decoration:none;">WhatsApp ${WHATSAPP_DISPLAY}</a>
+          </p>
+          <p class="muted" style="margin:0;font-size:11px;color:#6B706A;">${SUPPORT_EMAIL} · © ${year} وتزودوا | Watazawwado</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
 </body>
 </html>`;
 }
 
-// 1. Student Booking Confirmation (Regular Paid Lesson)
+/** Plain-text version (both languages) for clients that block HTML. */
+function renderText(content: EmailContent, rawRows?: Array<[string, string]>): string {
+  const strip = (s: string) => s.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+  const block = (s: Section) => [s.title, s.greeting, ...s.paragraphs, s.note].filter(Boolean).map(x => strip(x!)).join('\n');
+  const rows = (rawRows || []).filter(([, v]) => v).map(([k, v]) => `- ${k}: ${v}`).join('\n');
+  return [
+    block(content.ar),
+    '',
+    block(content.en),
+    rows ? `\n${rows}` : '',
+    content.button ? `\n${content.button.en}: ${content.button.url}` : '',
+    '',
+    `Terms: ${SITE_URL}/terms · Privacy: ${SITE_URL}/privacy · WhatsApp: ${WHATSAPP_DISPLAY}`
+  ].join('\n');
+}
+
+const STUDENT_REASON = {
+  ar: 'وصلتك الرسالة دي لأن عندك حساب أو حجز على منصة وتزودوا.',
+  en: 'You are receiving this email because you have an account or a booking on Watazawwado.'
+};
+
+function zoomParts(zoomLink?: string | null) {
+  const url = sanitizeUrl(zoomLink);
+  return {
+    url,
+    noteAr: url ? '' : 'رابط الحصة بيتجهز وهيوصلك قبل ميعاد الدرس.',
+    noteEn: url ? '' : 'Your lesson link is being prepared and will reach you before the lesson.'
+  };
+}
+
+// 1. Student booking confirmation (paid or package lesson)
 export function renderStudentBookingConfirmation(params: {
   learnerName: string;
   serviceName: string;
@@ -110,71 +208,47 @@ export function renderStudentBookingConfirmation(params: {
   feeAmount?: number | null;
   currency?: string | null;
 }): EmailRenderResult {
-  const safeLearnerName = escapeHtml(params.learnerName);
-  const safeServiceName = escapeHtml(params.serviceName);
-  const safeDate = escapeHtml(params.date);
-  const safeTimeDisplay = escapeHtml(params.timeDisplay);
-  const safeTimezone = escapeHtml(params.timezone);
-  const safeDuration = Number(params.durationMinutes) || 60;
-  const safeRef = escapeHtml(params.bookingRef);
-  const safeCairoTime = params.cairoTimeDisplay ? escapeHtml(params.cairoTimeDisplay) : null;
-  const safeZoomUrl = sanitizeUrl(params.zoomLink);
-
-  const subject = `Lesson Confirmed: ${params.serviceName} with Mahmoud [Ref: ${params.bookingRef}]`;
-  const zoomSection = safeZoomUrl
-    ? `<div style="margin: 16px 0;">
-        <a href="${safeZoomUrl}" class="btn" style="display: block;">Join Zoom Classroom</a>
-        <p style="font-size: 12px; color: ${TEXT_MUTED}; text-align: center; margin-top: 4px;">Meeting Link: ${safeZoomUrl}</p>
-       </div>`
-    : `<p style="font-size: 13px; color: ${TEXT_MUTED};">Your classroom link is being prepared and will be sent shortly prior to your lesson.</p>`;
-
-  const html = baseEmailWrapper(
-    'Lesson Confirmation',
-    `<h2 style="font-size: 18px; margin-top: 0; color: ${TEXT_MAIN};">Assalamu Alaikum ${safeLearnerName},</h2>
-     <p>Your 1-on-1 lesson for <strong>${safeServiceName}</strong> has been successfully scheduled.</p>
-     
-     <div class="card">
-       <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: ${ACCENT_SAGE}; margin-bottom: 12px; letter-spacing: 0.5px;">Appointment Details</div>
-       <table width="100%" border="0" cellspacing="0" cellpadding="4" style="font-size: 14px;">
-         <tr><td style="color: ${TEXT_MUTED}; width: 120px;">Service:</td><td><strong>${safeServiceName}</strong></td></tr>
-         <tr><td style="color: ${TEXT_MUTED};">Date:</td><td><strong>${safeDate}</strong></td></tr>
-         <tr><td style="color: ${TEXT_MUTED};">Time:</td><td><strong>${safeTimeDisplay}</strong> (${safeTimezone})</td></tr>
-         ${safeCairoTime ? `<tr><td style="color: ${TEXT_MUTED};">Teacher Time:</td><td>${safeCairoTime}</td></tr>` : ''}
-         <tr><td style="color: ${TEXT_MUTED};">Duration:</td><td>${safeDuration} minutes</td></tr>
-         <tr><td style="color: ${TEXT_MUTED};">Reference:</td><td><code style="background: #E5DFD5; padding: 2px 6px; border-radius: 4px;">${safeRef}</code></td></tr>
-       </table>
-     </div>
-
-     ${zoomSection}
-
-     <div style="background-color: #FAF8F5; border-radius: 10px; padding: 16px; margin-top: 20px; font-size: 13px; color: ${TEXT_MUTED}; border-left: 3px solid ${ACCENT_LIGHT_SAGE};">
-       <strong>Cancellation Policy:</strong> You may reschedule or cancel up to 3 hours prior to the scheduled lesson time directly through your booking link.
-     </div>
-
-     <p style="margin-top: 24px; font-size: 14px;">If you have any questions or need preparation guidance, feel free to reach out to Mahmoud on WhatsApp at <strong>+20 155 242 5799</strong>.</p>`
-  );
-
-  const text = `Assalamu Alaikum ${params.learnerName},
-
-Your 1-on-1 lesson for ${params.serviceName} is confirmed.
-
-Appointment Details:
-- Service: ${params.serviceName}
-- Date: ${params.date}
-- Time: ${params.timeDisplay} (${params.timezone})
-- Duration: ${params.durationMinutes} minutes
-- Booking Reference: ${params.bookingRef}
-${params.zoomLink ? `- Zoom Link: ${params.zoomLink}` : ''}
-
-Cancellation Policy: You may reschedule or cancel up to 3 hours before start.
-
-WhatsApp: +20 155 242 5799
-Mahmoud Elwany`;
-
-  return { subject, html, text };
+  const name = escapeHtml(params.learnerName);
+  const service = escapeHtml(params.serviceName);
+  const when = `${escapeHtml(params.date)} · ${escapeHtml(params.timeDisplay)} (${escapeHtml(params.timezone)})`;
+  const duration = Number(params.durationMinutes) || 60;
+  const ref = escapeHtml(params.bookingRef);
+  const fee = params.feeAmount ? `${Number(params.feeAmount).toFixed(2)} ${escapeHtml(params.currency || 'USD')}` : '';
+  const zoom = zoomParts(params.zoomLink);
+  const rows: Row[] = [
+    ['المادة', 'Subject', service],
+    ['الموعد', 'When', when],
+    ['المدة', 'Length', `${duration} min`],
+    ['رقم الحجز', 'Booking ref', ref],
+    ['المبلغ', 'Amount', fee]
+  ];
+  const content: EmailContent = {
+    preheader: `Your lesson is confirmed · ${params.date}`,
+    ar: {
+      title: 'حصتك اتأكدت ✅',
+      greeting: `السلام عليكم ${name}،`,
+      paragraphs: [`حصتك في <strong>${service}</strong> اتحجزت واتأكدت. مستنيينك إن شاء الله!`],
+      rows,
+      note: zoom.noteAr || 'تقدر تلغي لحد 3 ساعات قبل الحصة (وترجع لك كرصيد)، أو تغيّر الميعاد لحد ساعة قبلها من حسابك.'
+    },
+    en: {
+      title: 'Your lesson is confirmed ✅',
+      greeting: `Assalamu alaikum ${name},`,
+      paragraphs: [`Your <strong>${service}</strong> lesson is booked and confirmed. We look forward to seeing you!`],
+      rows,
+      note: zoom.noteEn || 'You can cancel up to 3 hours before (you get a lesson credit) or move it up to 1 hour before, from your account.'
+    },
+    button: zoom.url ? { url: params.zoomLink!, ar: 'ادخل الحصة على Zoom', en: 'Join on Zoom' } : { url: `${SITE_URL}/student`, ar: 'افتح حسابي', en: 'Open my account' },
+    reason: STUDENT_REASON
+  };
+  return {
+    subject: `تم تأكيد حصتك · Lesson confirmed: ${params.serviceName} [${params.bookingRef}]`,
+    html: renderLayout(content),
+    text: renderText(content, [['Subject', params.serviceName], ['When', `${params.date} ${params.timeDisplay} (${params.timezone})`], ['Booking ref', params.bookingRef]])
+  };
 }
 
-// 2. Student Free Trial Confirmation
+// 2. Free trial confirmation
 export function renderStudentTrialConfirmation(params: {
   learnerName: string;
   serviceName: string;
@@ -186,81 +260,50 @@ export function renderStudentTrialConfirmation(params: {
   zoomLink?: string | null;
   cairoTimeDisplay?: string | null;
 }): EmailRenderResult {
-  const safeLearnerName = escapeHtml(params.learnerName);
-  const safeServiceName = escapeHtml(params.serviceName);
-  const safeDate = escapeHtml(params.date);
-  const safeTimeDisplay = escapeHtml(params.timeDisplay);
-  const safeTimezone = escapeHtml(params.timezone);
-  const safeDuration = Number(params.durationMinutes) || 30;
-  const safeRef = escapeHtml(params.bookingRef);
-  const safeCairoTime = params.cairoTimeDisplay ? escapeHtml(params.cairoTimeDisplay) : null;
-  const safeZoomUrl = sanitizeUrl(params.zoomLink);
-
-  const subject = `Free Trial Confirmed: ${params.serviceName} with Mahmoud [Ref: ${params.bookingRef}]`;
-  const zoomSection = safeZoomUrl
-    ? `<div style="margin: 16px 0;">
-        <a href="${safeZoomUrl}" class="btn" style="display: block;">Join Trial Classroom</a>
-        <p style="font-size: 12px; color: ${TEXT_MUTED}; text-align: center; margin-top: 4px;">Meeting Link: ${safeZoomUrl}</p>
-       </div>`
-    : `<p style="font-size: 13px; color: ${TEXT_MUTED};">Your classroom room link is being prepared and will be sent shortly prior to your trial.</p>`;
-
-  const html = baseEmailWrapper(
-    'Free Trial Confirmation',
-    `<h2 style="font-size: 18px; margin-top: 0; color: ${TEXT_MAIN};">Assalamu Alaikum ${safeLearnerName},</h2>
-     <p>Your complimentary <strong>Free Trial Lesson (${safeDuration} min)</strong> for <strong>${safeServiceName}</strong> has been booked.</p>
-     
-     <div class="card">
-       <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: ${ACCENT_SAGE}; margin-bottom: 12px; letter-spacing: 0.5px;">Trial Session Details</div>
-       <table width="100%" border="0" cellspacing="0" cellpadding="4" style="font-size: 14px;">
-         <tr><td style="color: ${TEXT_MUTED}; width: 120px;">Service:</td><td><strong>${safeServiceName}</strong> (Complimentary)</td></tr>
-         <tr><td style="color: ${TEXT_MUTED};">Date:</td><td><strong>${safeDate}</strong></td></tr>
-         <tr><td style="color: ${TEXT_MUTED};">Time:</td><td><strong>${safeTimeDisplay}</strong> (${safeTimezone})</td></tr>
-         ${safeCairoTime ? `<tr><td style="color: ${TEXT_MUTED};">Teacher Time:</td><td>${safeCairoTime}</td></tr>` : ''}
-         <tr><td style="color: ${TEXT_MUTED};">Duration:</td><td>${safeDuration} minutes</td></tr>
-         <tr><td style="color: ${TEXT_MUTED};">Reference:</td><td><code style="background: #E5DFD5; padding: 2px 6px; border-radius: 4px;">${safeRef}</code></td></tr>
-       </table>
-     </div>
-
-     ${zoomSection}
-
-     <div style="background-color: #FAF8F5; border-radius: 10px; padding: 16px; margin: 20px 0; font-size: 13px; color: ${TEXT_MAIN}; border-left: 3px solid ${ACCENT_SAGE};">
-       <strong style="color: ${ACCENT_SAGE}; display: block; margin-bottom: 6px;">What to Expect in Your Free Trial:</strong>
-       <ul style="margin: 0; padding-left: 18px; line-height: 1.5;">
-         <li>Warm introduction &amp; discussing your personal learning goals.</li>
-         <li>Accurate, friendly level assessment without pressure.</li>
-         <li>A brief sample mini-lesson to experience the teaching style.</li>
-         <li>A customized, honest learning roadmap with zero obligation.</li>
-       </ul>
-     </div>
-
-     <p style="font-size: 14px;">Mahmoud is looking forward to meeting you! WhatsApp: <strong>+20 155 242 5799</strong>.</p>`
-  );
-
-  const text = `Assalamu Alaikum ${params.learnerName},
-
-Your Free Trial Lesson for ${params.serviceName} is confirmed!
-
-Trial Details:
-- Service: ${params.serviceName} (Free Trial)
-- Date: ${params.date}
-- Time: ${params.timeDisplay} (${params.timezone})
-- Duration: ${params.durationMinutes} minutes
-- Booking Ref: ${params.bookingRef}
-${params.zoomLink ? `- Zoom Link: ${params.zoomLink}` : ''}
-
-What to Expect:
-1. Warm introduction and discussing your learning goals.
-2. Accurate, gentle level assessment.
-3. A sample mini-lesson.
-4. An honest learning recommendation.
-
-WhatsApp: +20 155 242 5799
-Mahmoud Elwany`;
-
-  return { subject, html, text };
+  const name = escapeHtml(params.learnerName);
+  const service = escapeHtml(params.serviceName);
+  const when = `${escapeHtml(params.date)} · ${escapeHtml(params.timeDisplay)} (${escapeHtml(params.timezone)})`;
+  const duration = Number(params.durationMinutes) || 30;
+  const zoom = zoomParts(params.zoomLink);
+  const rows: Row[] = [
+    ['المادة', 'Subject', service],
+    ['الموعد', 'When', when],
+    ['المدة', 'Length', `${duration} min`],
+    ['رقم الحجز', 'Booking ref', escapeHtml(params.bookingRef)]
+  ];
+  const content: EmailContent = {
+    preheader: `Your free trial is booked · ${params.date}`,
+    ar: {
+      title: 'حصتك التجريبية المجانية جاهزة 🌱',
+      greeting: `أهلاً ${name}،`,
+      paragraphs: [
+        `حجزت حصة تجريبية مجانية في <strong>${service}</strong>. هنتعرف على مستواك وهدفك ونعمل خطة على مقاسك.`,
+        'جهّز مكان هادي وسماعة، وادخل قبل الميعاد بدقيقتين.'
+      ],
+      rows,
+      note: zoom.noteAr || 'تقدر تغيّر ميعاد التجربة مرة واحدة لحد ساعة قبلها.'
+    },
+    en: {
+      title: 'Your free trial is booked 🌱',
+      greeting: `Welcome ${name},`,
+      paragraphs: [
+        `You booked a free trial lesson in <strong>${service}</strong>. We will get to know your level and goal and build a plan that fits you.`,
+        'Find a quiet spot with headphones and join a couple of minutes early.'
+      ],
+      rows,
+      note: zoom.noteEn || 'You can move your trial once, up to 1 hour before it starts.'
+    },
+    button: zoom.url ? { url: params.zoomLink!, ar: 'ادخل الحصة على Zoom', en: 'Join on Zoom' } : { url: `${SITE_URL}/student`, ar: 'افتح حسابي', en: 'Open my account' },
+    reason: STUDENT_REASON
+  };
+  return {
+    subject: `حصتك التجريبية اتحجزت · Free trial booked [${params.bookingRef}]`,
+    html: renderLayout(content),
+    text: renderText(content, [['Subject', params.serviceName], ['When', `${params.date} ${params.timeDisplay} (${params.timezone})`], ['Booking ref', params.bookingRef]])
+  };
 }
 
-// 3. Student Payment Confirmed (Receipt / Acknowledgment)
+// 3. Payment confirmed (receipt)
 export function renderStudentPaymentConfirmed(params: {
   learnerName: string;
   serviceName: string;
@@ -271,56 +314,43 @@ export function renderStudentPaymentConfirmed(params: {
   bookingRef?: string | null;
   date: string;
 }): EmailRenderResult {
-  const safeLearnerName = escapeHtml(params.learnerName);
-  const safeServiceName = escapeHtml(params.serviceName);
-  const safeAmount = Number(params.amount).toFixed(2);
-  const safeCurrency = escapeHtml(params.currency);
-  const safeMethod = escapeHtml(params.paymentMethod);
-  const safePaymentRef = params.paymentReference ? escapeHtml(params.paymentReference) : null;
-  const safeBookingRef = params.bookingRef ? escapeHtml(params.bookingRef) : null;
-  const safeDate = escapeHtml(params.date);
-
-  const subject = `Payment Confirmed: ${params.amount} ${params.currency} for ${params.serviceName}`;
-  const html = baseEmailWrapper(
-    'Payment Confirmed',
-    `<h2 style="font-size: 18px; margin-top: 0; color: ${TEXT_MAIN};">Assalamu Alaikum ${safeLearnerName},</h2>
-     <p>Your payment for <strong>${safeServiceName}</strong> has been confirmed by Ustadh Mahmoud. Jazakum Allahu Khairan.</p>
-     
-     <div class="card">
-       <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: ${ACCENT_SAGE}; margin-bottom: 12px; letter-spacing: 0.5px;">Receipt Information</div>
-       <table width="100%" border="0" cellspacing="0" cellpadding="4" style="font-size: 14px;">
-         <tr><td style="color: ${TEXT_MUTED}; width: 130px;">Amount Paid:</td><td><strong style="color: ${ACCENT_SAGE}; font-size: 16px;">${safeAmount} ${safeCurrency}</strong></td></tr>
-         <tr><td style="color: ${TEXT_MUTED};">Payment Method:</td><td>${safeMethod}</td></tr>
-         ${safePaymentRef ? `<tr><td style="color: ${TEXT_MUTED};">Transaction Ref:</td><td>${safePaymentRef}</td></tr>` : ''}
-         ${safeBookingRef ? `<tr><td style="color: ${TEXT_MUTED};">Booking Ref:</td><td>${safeBookingRef}</td></tr>` : ''}
-         <tr><td style="color: ${TEXT_MUTED};">Confirmation Date:</td><td>${safeDate}</td></tr>
-         <tr><td style="color: ${TEXT_MUTED};">Status:</td><td><span style="background: #DDE8E0; color: ${ACCENT_SAGE}; padding: 2px 8px; border-radius: 12px; font-weight: 600; font-size: 12px;">Confirmed</span></td></tr>
-       </table>
-     </div>
-
-     <p style="font-size: 14px;">Your lesson is confirmed and ready. If you have any questions, feel free to message Mahmoud anytime on WhatsApp at <strong>+20 155 242 5799</strong>.</p>`
-  );
-
-  const text = `Assalamu Alaikum ${params.learnerName},
-
-Your payment has been received and confirmed by Ustadh Mahmoud.
-
-Payment Details:
-- Service: ${params.serviceName}
-- Amount: ${params.amount.toFixed(2)} ${params.currency}
-- Method: ${params.paymentMethod}
-${params.paymentReference ? `- Ref: ${params.paymentReference}` : ''}
-${params.bookingRef ? `- Booking Ref: ${params.bookingRef}` : ''}
-- Date: ${params.date}
-- Status: Confirmed
-
-Jazakum Allahu Khairan.
-Mahmoud Elwany`;
-
-  return { subject, html, text };
+  const name = escapeHtml(params.learnerName);
+  const amount = `${Number(params.amount).toFixed(2)} ${escapeHtml(params.currency)}`;
+  const rows: Row[] = [
+    ['الخدمة', 'Item', escapeHtml(params.serviceName)],
+    ['المبلغ', 'Amount', amount],
+    ['طريقة الدفع', 'Method', escapeHtml(params.paymentMethod)],
+    ['مرجع الدفع', 'Payment ref', escapeHtml(params.paymentReference || '')],
+    ['رقم الحجز', 'Booking ref', escapeHtml(params.bookingRef || '')],
+    ['التاريخ', 'Date', escapeHtml(params.date)]
+  ];
+  const content: EmailContent = {
+    preheader: `Payment received · ${Number(params.amount).toFixed(2)} ${params.currency}`,
+    ar: {
+      title: 'وصلنا الدفع، شكراً لك 🤍',
+      greeting: `السلام عليكم ${name}،`,
+      paragraphs: ['استلمنا دفعتك بنجاح. احتفظ بالرسالة دي كإيصال.'],
+      rows,
+      note: 'لو ألغيت حصة مدفوعة قبلها بـ 3 ساعات بترجع لك كرصيد، وتقدر تطلب الاسترداد بدل الرصيد حسب الشروط.'
+    },
+    en: {
+      title: 'Payment received — thank you 🤍',
+      greeting: `Assalamu alaikum ${name},`,
+      paragraphs: ['We received your payment. Please keep this email as your receipt.'],
+      rows,
+      note: 'If you cancel a paid lesson 3 hours or more before it starts, you get a lesson credit, and you can ask for a refund instead as described in the terms.'
+    },
+    button: { url: `${SITE_URL}/student`, ar: 'افتح حسابي', en: 'Open my account' },
+    reason: STUDENT_REASON
+  };
+  return {
+    subject: `إيصال الدفع · Payment receipt: ${params.serviceName}`,
+    html: renderLayout(content),
+    text: renderText(content, [['Item', params.serviceName], ['Amount', `${Number(params.amount).toFixed(2)} ${params.currency}`], ['Payment ref', params.paymentReference || ''], ['Date', params.date]])
+  };
 }
 
-// 4. Student Cancellation Confirmation
+// 4. Lesson cancelled
 export function renderStudentCancellation(params: {
   learnerName: string;
   serviceName: string;
@@ -328,47 +358,42 @@ export function renderStudentCancellation(params: {
   timeDisplay: string;
   timezone: string;
   bookingRef: string;
+  reason?: string | null;
 }): EmailRenderResult {
-  const safeLearnerName = escapeHtml(params.learnerName);
-  const safeServiceName = escapeHtml(params.serviceName);
-  const safeDate = escapeHtml(params.date);
-  const safeTimeDisplay = escapeHtml(params.timeDisplay);
-  const safeTimezone = escapeHtml(params.timezone);
-  const safeRef = escapeHtml(params.bookingRef);
-
-  const subject = `Lesson Cancelled: ${params.serviceName} [Ref: ${params.bookingRef}]`;
-  const html = baseEmailWrapper(
-    'Lesson Cancelled',
-    `<h2 style="font-size: 18px; margin-top: 0; color: ${TEXT_MAIN};">Assalamu Alaikum ${safeLearnerName},</h2>
-     <p>Your booking for <strong>${safeServiceName}</strong> has been cancelled as requested.</p>
-     
-     <div class="card" style="background-color: #F8F6F0; border-color: ${BORDER_COLOR};">
-       <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: ${TEXT_MUTED}; margin-bottom: 12px; letter-spacing: 0.5px;">Cancelled Lesson Details</div>
-       <table width="100%" border="0" cellspacing="0" cellpadding="4" style="font-size: 14px;">
-         <tr><td style="color: ${TEXT_MUTED}; width: 120px;">Service:</td><td>${safeServiceName}</td></tr>
-         <tr><td style="color: ${TEXT_MUTED};">Scheduled Date:</td><td>${safeDate}</td></tr>
-         <tr><td style="color: ${TEXT_MUTED};">Scheduled Time:</td><td>${safeTimeDisplay} (${safeTimezone})</td></tr>
-         <tr><td style="color: ${TEXT_MUTED};">Booking Ref:</td><td>${safeRef}</td></tr>
-         <tr><td style="color: ${TEXT_MUTED};">Status:</td><td><strong style="color: #A33A3A;">Cancelled</strong></td></tr>
-       </table>
-     </div>
-
-     <p style="font-size: 14px;">If you would like to book a new lesson time in the future, you are always welcome to schedule anytime at your convenience.</p>`
-  );
-
-  const text = `Assalamu Alaikum ${params.learnerName},
-
-Your lesson for ${params.serviceName} on ${params.date} at ${params.timeDisplay} (${params.timezone}) has been cancelled.
-
-Booking Reference: ${params.bookingRef}
-
-You are welcome to schedule a new time whenever you are ready.
-Mahmoud Elwany`;
-
-  return { subject, html, text };
+  const name = escapeHtml(params.learnerName);
+  const rows: Row[] = [
+    ['المادة', 'Subject', escapeHtml(params.serviceName)],
+    ['الموعد', 'When', `${escapeHtml(params.date)} · ${escapeHtml(params.timeDisplay)} (${escapeHtml(params.timezone)})`],
+    ['رقم الحجز', 'Booking ref', escapeHtml(params.bookingRef)],
+    ['السبب', 'Reason', escapeHtml(params.reason || '')]
+  ];
+  const content: EmailContent = {
+    preheader: `Lesson cancelled · ${params.date}`,
+    ar: {
+      title: 'تم إلغاء الحصة',
+      greeting: `السلام عليكم ${name}،`,
+      paragraphs: ['الحصة دي اتلغت. لو كانت مدفوعة واتلغت في الوقت المسموح، رصيدها رجع لحسابك وتقدر تحجز بيه في أي وقت.'],
+      rows,
+      note: 'لو عندك أي سؤال كلمنا على واتساب.'
+    },
+    en: {
+      title: 'Your lesson was cancelled',
+      greeting: `Assalamu alaikum ${name},`,
+      paragraphs: ['This lesson has been cancelled. If it was paid and cancelled in time, its credit is back in your account to book any time.'],
+      rows,
+      note: 'Questions? Message us on WhatsApp.'
+    },
+    button: { url: `${SITE_URL}/student`, ar: 'احجز ميعاد جديد', en: 'Book a new time' },
+    reason: STUDENT_REASON
+  };
+  return {
+    subject: `تم إلغاء الحصة · Lesson cancelled [${params.bookingRef}]`,
+    html: renderLayout(content),
+    text: renderText(content, [['Subject', params.serviceName], ['When', `${params.date} ${params.timeDisplay} (${params.timezone})`], ['Booking ref', params.bookingRef]])
+  };
 }
 
-// 5. Student Reschedule Confirmation
+// 5. Lesson moved
 export function renderStudentReschedule(params: {
   learnerName: string;
   serviceName: string;
@@ -381,66 +406,31 @@ export function renderStudentReschedule(params: {
   bookingRef: string;
   zoomLink?: string | null;
 }): EmailRenderResult {
-  const safeLearnerName = escapeHtml(params.learnerName);
-  const safeServiceName = escapeHtml(params.serviceName);
-  const safeOldDate = escapeHtml(params.oldDate);
-  const safeOldTime = escapeHtml(params.oldTimeDisplay);
-  const safeNewDate = escapeHtml(params.newDate);
-  const safeNewTime = escapeHtml(params.newTimeDisplay);
-  const safeTimezone = escapeHtml(params.timezone);
-  const safeDuration = Number(params.durationMinutes) || 60;
-  const safeRef = escapeHtml(params.bookingRef);
-  const safeZoomUrl = sanitizeUrl(params.zoomLink);
-
-  const subject = `Lesson Rescheduled: ${params.serviceName} with Mahmoud [Ref: ${params.bookingRef}]`;
-  const zoomSection = safeZoomUrl
-    ? `<div style="margin: 16px 0;">
-        <a href="${safeZoomUrl}" class="btn" style="display: block;">Join Zoom Classroom</a>
-        <p style="font-size: 12px; color: ${TEXT_MUTED}; text-align: center; margin-top: 4px;">Meeting Link: ${safeZoomUrl}</p>
-       </div>`
-    : '';
-
-  const html = baseEmailWrapper(
-    'Lesson Rescheduled',
-    `<h2 style="font-size: 18px; margin-top: 0; color: ${TEXT_MAIN};">Assalamu Alaikum ${safeLearnerName},</h2>
-     <p>Your lesson for <strong>${safeServiceName}</strong> has been successfully rescheduled to a new time.</p>
-     
-     <div class="card">
-       <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: ${ACCENT_SAGE}; margin-bottom: 12px; letter-spacing: 0.5px;">Updated Appointment Details</div>
-       <table width="100%" border="0" cellspacing="0" cellpadding="4" style="font-size: 14px;">
-         <tr><td style="color: ${TEXT_MUTED}; width: 130px;">Service:</td><td><strong>${safeServiceName}</strong></td></tr>
-         <tr><td style="color: ${TEXT_MUTED};">New Date:</td><td><strong style="color: ${ACCENT_SAGE}; font-size: 15px;">${safeNewDate}</strong></td></tr>
-         <tr><td style="color: ${TEXT_MUTED};">New Time:</td><td><strong style="color: ${ACCENT_SAGE}; font-size: 15px;">${safeNewTime}</strong> (${safeTimezone})</td></tr>
-         <tr><td style="color: ${TEXT_MUTED};">Previous Time:</td><td style="color: ${TEXT_MUTED}; text-decoration: line-through;">${safeOldDate} at ${safeOldTime}</td></tr>
-         <tr><td style="color: ${TEXT_MUTED};">Duration:</td><td>${safeDuration} minutes</td></tr>
-         <tr><td style="color: ${TEXT_MUTED};">Booking Ref:</td><td>${safeRef}</td></tr>
-       </table>
-     </div>
-
-     ${zoomSection}
-
-     <p style="font-size: 14px;">Your calendar and reminders have been updated accordingly. Looking forward to our session!</p>`
-  );
-
-  const text = `Assalamu Alaikum ${params.learnerName},
-
-Your lesson for ${params.serviceName} has been rescheduled.
-
-New Appointment Time:
-- Date: ${params.newDate}
-- Time: ${params.newTimeDisplay} (${params.timezone})
-- Duration: ${params.durationMinutes} minutes
-- Booking Ref: ${params.bookingRef}
-${params.zoomLink ? `- Zoom Link: ${params.zoomLink}` : ''}
-
-Previous Time: ${params.oldDate} at ${params.oldTimeDisplay}
-
-Mahmoud Elwany`;
-
-  return { subject, html, text };
+  const name = escapeHtml(params.learnerName);
+  const tz = escapeHtml(params.timezone);
+  const zoom = zoomParts(params.zoomLink);
+  const rows: Row[] = [
+    ['المادة', 'Subject', escapeHtml(params.serviceName)],
+    ['الميعاد القديم', 'Old time', `<s>${escapeHtml(params.oldDate)} · ${escapeHtml(params.oldTimeDisplay)}</s>`],
+    ['الميعاد الجديد', 'New time', `${escapeHtml(params.newDate)} · ${escapeHtml(params.newTimeDisplay)} (${tz})`],
+    ['المدة', 'Length', `${Number(params.durationMinutes) || 60} min`],
+    ['رقم الحجز', 'Booking ref', escapeHtml(params.bookingRef)]
+  ];
+  const content: EmailContent = {
+    preheader: `New time · ${params.newDate} ${params.newTimeDisplay}`,
+    ar: { title: 'ميعاد حصتك اتغيّر 🗓️', greeting: `السلام عليكم ${name}،`, paragraphs: ['غيّرنا ميعاد حصتك. التفاصيل الجديدة تحت:'], rows, note: zoom.noteAr },
+    en: { title: 'Your lesson has a new time 🗓️', greeting: `Assalamu alaikum ${name},`, paragraphs: ['Your lesson has moved. Here are the new details:'], rows, note: zoom.noteEn },
+    button: zoom.url ? { url: params.zoomLink!, ar: 'ادخل الحصة على Zoom', en: 'Join on Zoom' } : { url: `${SITE_URL}/student`, ar: 'افتح حسابي', en: 'Open my account' },
+    reason: STUDENT_REASON
+  };
+  return {
+    subject: `ميعاد جديد لحصتك · Lesson rescheduled [${params.bookingRef}]`,
+    html: renderLayout(content),
+    text: renderText(content, [['Subject', params.serviceName], ['New time', `${params.newDate} ${params.newTimeDisplay} (${params.timezone})`], ['Booking ref', params.bookingRef]])
+  };
 }
 
-// 6. Student 24-Hour Reminder
+// 6. Reminder 24 hours before
 export function renderStudent24hReminder(params: {
   learnerName: string;
   serviceName: string;
@@ -452,60 +442,40 @@ export function renderStudent24hReminder(params: {
   zoomLink?: string | null;
   isTrial?: boolean;
 }): EmailRenderResult {
-  const safeLearnerName = escapeHtml(params.learnerName);
-  const safeServiceName = escapeHtml(params.serviceName);
-  const safeDate = escapeHtml(params.date);
-  const safeTimeDisplay = escapeHtml(params.timeDisplay);
-  const safeTimezone = escapeHtml(params.timezone);
-  const safeDuration = Number(params.durationMinutes) || 60;
-  const safeRef = escapeHtml(params.bookingRef);
-  const safeZoomUrl = sanitizeUrl(params.zoomLink);
-
-  const subject = `Reminder: Lesson tomorrow with Mahmoud [${params.timeDisplay}]`;
-  const zoomSection = safeZoomUrl
-    ? `<div style="margin: 16px 0;">
-        <a href="${safeZoomUrl}" class="btn" style="display: block;">Join Zoom Classroom</a>
-        <p style="font-size: 12px; color: ${TEXT_MUTED}; text-align: center; margin-top: 4px;">Link: ${safeZoomUrl}</p>
-       </div>`
-    : '';
-
-  const html = baseEmailWrapper(
-    '24-Hour Lesson Reminder',
-    `<h2 style="font-size: 18px; margin-top: 0; color: ${TEXT_MAIN};">Assalamu Alaikum ${safeLearnerName},</h2>
-     <p>This is a gentle reminder that your 1-on-1 session for <strong>${safeServiceName}</strong> is scheduled for tomorrow.</p>
-     
-     <div class="card">
-       <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: ${ACCENT_SAGE}; margin-bottom: 12px; letter-spacing: 0.5px;">Tomorrow's Session</div>
-       <table width="100%" border="0" cellspacing="0" cellpadding="4" style="font-size: 14px;">
-         <tr><td style="color: ${TEXT_MUTED}; width: 120px;">Date:</td><td><strong>${safeDate}</strong></td></tr>
-         <tr><td style="color: ${TEXT_MUTED};">Time:</td><td><strong>${safeTimeDisplay}</strong> (${safeTimezone})</td></tr>
-         <tr><td style="color: ${TEXT_MUTED};">Duration:</td><td>${safeDuration} minutes</td></tr>
-         <tr><td style="color: ${TEXT_MUTED};">Reference:</td><td>${safeRef}</td></tr>
-       </table>
-     </div>
-
-     ${zoomSection}
-
-     <p style="font-size: 13px; color: ${TEXT_MUTED};">Please have a quiet space and your learning materials or Mushaf ready. If you need any assistance beforehand, you can message Mahmoud on WhatsApp at <strong>+20 155 242 5799</strong>.</p>`
-  );
-
-  const text = `Assalamu Alaikum ${params.learnerName},
-
-Gentle reminder: Your lesson for ${params.serviceName} is scheduled for tomorrow.
-
-- Date: ${params.date}
-- Time: ${params.timeDisplay} (${params.timezone})
-- Duration: ${params.durationMinutes} min
-- Booking Ref: ${params.bookingRef}
-${params.zoomLink ? `- Zoom Link: ${params.zoomLink}` : ''}
-
-See you tomorrow insha'Allah!
-Mahmoud Elwany`;
-
-  return { subject, html, text };
+  const name = escapeHtml(params.learnerName);
+  const zoom = zoomParts(params.zoomLink);
+  const rows: Row[] = [
+    ['المادة', 'Subject', escapeHtml(params.serviceName)],
+    ['الموعد', 'When', `${escapeHtml(params.date)} · ${escapeHtml(params.timeDisplay)} (${escapeHtml(params.timezone)})`],
+    ['المدة', 'Length', `${Number(params.durationMinutes) || 60} min`]
+  ];
+  const content: EmailContent = {
+    preheader: `Tomorrow: ${params.serviceName} at ${params.timeDisplay}`,
+    ar: {
+      title: params.isTrial ? 'حصتك التجريبية بكرة ⏰' : 'حصتك بكرة ⏰',
+      greeting: `أهلاً ${name}،`,
+      paragraphs: ['تذكير صغير بحصتك بكرة إن شاء الله.'],
+      rows,
+      note: 'لسه تقدر تلغي لحد 3 ساعات قبلها أو تغيّر الميعاد لحد ساعة قبلها.'
+    },
+    en: {
+      title: params.isTrial ? 'Your free trial is tomorrow ⏰' : 'Your lesson is tomorrow ⏰',
+      greeting: `Hi ${name},`,
+      paragraphs: ['A friendly reminder about your lesson tomorrow.'],
+      rows,
+      note: 'You can still cancel up to 3 hours before or move it up to 1 hour before.'
+    },
+    button: zoom.url ? { url: params.zoomLink!, ar: 'رابط الحصة', en: 'Lesson link' } : { url: `${SITE_URL}/student`, ar: 'افتح حسابي', en: 'Open my account' },
+    reason: STUDENT_REASON
+  };
+  return {
+    subject: `تذكير: حصتك بكرة · Reminder: your lesson is tomorrow`,
+    html: renderLayout(content),
+    text: renderText(content, [['Subject', params.serviceName], ['When', `${params.date} ${params.timeDisplay} (${params.timezone})`]])
+  };
 }
 
-// 7. Student 1-Hour Reminder
+// 7. Reminder 1 hour before
 export function renderStudent1hReminder(params: {
   learnerName: string;
   serviceName: string;
@@ -514,44 +484,27 @@ export function renderStudent1hReminder(params: {
   bookingRef: string;
   zoomLink?: string | null;
 }): EmailRenderResult {
-  const safeLearnerName = escapeHtml(params.learnerName);
-  const safeServiceName = escapeHtml(params.serviceName);
-  const safeTimeDisplay = escapeHtml(params.timeDisplay);
-  const safeTimezone = escapeHtml(params.timezone);
-  const safeRef = escapeHtml(params.bookingRef);
-  const safeZoomUrl = sanitizeUrl(params.zoomLink);
-
-  const subject = `Lesson starting in 1 hour: ${params.serviceName} with Mahmoud`;
-  const zoomSection = safeZoomUrl
-    ? `<div style="margin: 16px 0;">
-        <a href="${safeZoomUrl}" class="btn" style="display: block; font-size: 16px; padding: 14px 28px;">Enter Zoom Classroom</a>
-        <p style="font-size: 12px; color: ${TEXT_MUTED}; text-align: center; margin-top: 4px;">${safeZoomUrl}</p>
-       </div>`
-    : '';
-
-  const html = baseEmailWrapper(
-    'Lesson Starting Soon',
-    `<h2 style="font-size: 18px; margin-top: 0; color: ${TEXT_MAIN};">Assalamu Alaikum ${safeLearnerName},</h2>
-     <p>Your 1-on-1 session for <strong>${safeServiceName}</strong> begins in <strong>1 hour</strong> at <strong>${safeTimeDisplay} (${safeTimezone})</strong>.</p>
-     
-     ${zoomSection}
-
-     <p style="font-size: 13px; color: ${TEXT_MUTED};">Please ensure your audio and video are ready. Ustadh Mahmoud will be waiting in the classroom.</p>`
-  );
-
-  const text = `Assalamu Alaikum ${params.learnerName},
-
-Your lesson for ${params.serviceName} begins in 1 hour at ${params.timeDisplay} (${params.timezone}).
-
-${params.zoomLink ? `Classroom Link: ${params.zoomLink}` : ''}
-
-Ustadh Mahmoud will be waiting for you.
-Ref: ${params.bookingRef}`;
-
-  return { subject, html, text };
+  const name = escapeHtml(params.learnerName);
+  const zoom = zoomParts(params.zoomLink);
+  const rows: Row[] = [
+    ['المادة', 'Subject', escapeHtml(params.serviceName)],
+    ['الساعة', 'Time', `${escapeHtml(params.timeDisplay)} (${escapeHtml(params.timezone)})`]
+  ];
+  const content: EmailContent = {
+    preheader: `Starting in 1 hour · ${params.timeDisplay}`,
+    ar: { title: 'حصتك كمان ساعة 🔔', greeting: `أهلاً ${name}،`, paragraphs: ['حصتك هتبدأ كمان ساعة. جهّز نفسك وادخل في الميعاد.'], rows, note: zoom.noteAr },
+    en: { title: 'Your lesson starts in 1 hour 🔔', greeting: `Hi ${name},`, paragraphs: ['Your lesson starts in one hour. Get ready and join on time.'], rows, note: zoom.noteEn },
+    button: zoom.url ? { url: params.zoomLink!, ar: 'ادخل الحصة على Zoom', en: 'Join on Zoom' } : undefined,
+    reason: STUDENT_REASON
+  };
+  return {
+    subject: `حصتك كمان ساعة · Your lesson starts in 1 hour`,
+    html: renderLayout(content),
+    text: renderText(content, [['Subject', params.serviceName], ['Time', `${params.timeDisplay} (${params.timezone})`]])
+  };
 }
 
-// 8. Teacher Notification (Internal Alerts for Mahmoud)
+// 8. Teacher / super admin notification
 export function renderTeacherNotification(params: {
   eventType: 'new_booking' | 'new_trial' | 'new_lead' | 'payment_claimed' | 'payment_confirmed' | 'cancelled' | 'rescheduled' | 'alert';
   title: string;
@@ -559,43 +512,32 @@ export function renderTeacherNotification(params: {
   details: Record<string, any>;
   actionUrl?: string;
 }): EmailRenderResult {
-  const safeTitle = escapeHtml(params.title);
-  const safeSummary = escapeHtml(params.summary);
-  const safeActionUrl = sanitizeUrl(params.actionUrl);
-  const subject = `[Watazawwado Alert] ${params.title}`;
-  
-  const detailRows = Object.entries(params.details)
-    .filter(([_, v]) => v !== undefined && v !== null && v !== '')
-    .map(([k, v]) => `<tr><td style="color: ${TEXT_MUTED}; width: 140px; font-weight: 500;">${escapeHtml(k)}:</td><td><strong>${escapeHtml(String(v))}</strong></td></tr>`)
-    .join('');
-
-  const html = baseEmailWrapper(
-    params.title,
-    `<h2 style="font-size: 18px; margin-top: 0; color: ${TEXT_MAIN};">${safeTitle}</h2>
-     <p style="font-size: 15px; color: ${TEXT_MAIN};">${safeSummary}</p>
-     
-     <div class="card" style="background-color: #FAF8F5;">
-       <table width="100%" border="0" cellspacing="0" cellpadding="6" style="font-size: 14px;">
-         ${detailRows}
-       </table>
-     </div>
-
-     ${safeActionUrl ? `<div style="text-align: center; margin: 20px 0;"><a href="${safeActionUrl}" class="btn">Open Teacher Dashboard</a></div>` : ''}
-
-     <p style="font-size: 12px; color: ${TEXT_MUTED};">Automated teacher notification &bull; Sent to mahmoudelwany98@gmail.com</p>`
-  );
-
-  const textDetails = Object.entries(params.details)
-    .map(([k, v]) => `- ${k}: ${String(v)}`)
-    .join('\n');
-
-  const text = `${params.title}
-${params.summary}
-
-Details:
-${textDetails}
-
-${params.actionUrl ? `Dashboard: ${params.actionUrl}` : ''}`;
-
-  return { subject, html, text };
+  const titlesAr: Record<string, string> = {
+    new_booking: 'حجز جديد',
+    new_trial: 'حصة تجريبية جديدة',
+    new_lead: 'طالب مهتم جديد',
+    payment_claimed: 'طالب بلّغ عن دفع',
+    payment_confirmed: 'تم تأكيد دفع',
+    cancelled: 'حصة اتلغت',
+    rescheduled: 'حصة اتغيّر ميعادها',
+    alert: 'تنبيه'
+  };
+  const rows: Row[] = Object.entries(params.details)
+    .filter(([, v]) => v !== undefined && v !== null && v !== '')
+    .map(([k, v]) => [escapeHtml(k), escapeHtml(k), escapeHtml(String(v))]);
+  const content: EmailContent = {
+    preheader: params.summary,
+    ar: { title: titlesAr[params.eventType] || 'تنبيه', paragraphs: [escapeHtml(params.summary)], rows },
+    en: { title: escapeHtml(params.title), paragraphs: [escapeHtml(params.summary)] },
+    button: params.actionUrl ? { url: params.actionUrl, ar: 'افتح لوحة التحكم', en: 'Open the dashboard' } : undefined,
+    reason: {
+      ar: 'وصلتك الرسالة دي لأنك معلم أو مدير على منصة وتزودوا.',
+      en: 'You are receiving this email because you are a teacher or admin on Watazawwado.'
+    }
+  };
+  return {
+    subject: `[وتزودوا · Watazawwado] ${params.title}`,
+    html: renderLayout(content),
+    text: renderText(content, Object.entries(params.details).map(([k, v]) => [k, String(v ?? '')]))
+  };
 }

@@ -6,9 +6,9 @@
  * ====================================================================
  */
 
-export const MAHMOUD_OFFICIAL_PHONE_DISPLAY = '01552425799';
-export const MAHMOUD_OFFICIAL_PHONE_INTL = '+201552425799';
-export const MAHMOUD_OFFICIAL_PHONE_DIGITS = '201552425799';
+export const MAHMOUD_OFFICIAL_PHONE_DISPLAY = '+48 508 157 886';
+export const MAHMOUD_OFFICIAL_PHONE_INTL = '+48508157886';
+export const MAHMOUD_OFFICIAL_PHONE_DIGITS = '48508157886';
 
 export function isValidPhoneNumber(phone?: string | null): boolean {
   if (!phone || typeof phone !== 'string') return false;

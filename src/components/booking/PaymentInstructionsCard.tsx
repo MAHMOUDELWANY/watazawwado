@@ -126,7 +126,7 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
       {/* WhatsApp Support fallback */}
       <div className="pt-2 text-center">
         <a
-          href="https://wa.me/201552425799?text=Assalamu%20Alaikum%20Ustadh%20Mahmoud%2C%20I%20have%20a%20question%20regarding%20payment."
+          href="https://wa.me/48508157886?text=Assalamu%20Alaikum%20Ustadh%20Mahmoud%2C%20I%20have%20a%20question%20regarding%20payment."
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
