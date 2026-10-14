@@ -35,6 +35,8 @@ Read this first in a new session, then `RULES.md` (binding owner decisions) and 
 
 ### Added 2026-10-16
 - Stripe webhook `POST /api/payments/stripe/webhook` (checkout.session.completed / async_payment_succeeded): signature checked with `STRIPE_WEBHOOK_SECRET`, session re-read from Stripe, same fulfilment as the return-page verify. Until the secret is set it answers 503 and nothing changes.
+- Stripe webhook endpoint created in the live Stripe account and STRIPE_WEBHOOK_SECRET set in Vercel; verified live (unsigned requests get 400).
+- Vercel Firewall (set in the dashboard): "Block exploit probes" (deny /.env, /.git, wp-admin, ...) and "Rate limit AI and contact" (POST to /api/intake/turn, /api/intake/complete, /api/learning-guide, /api/contact: 30/min per IP → 429). Both verified live. Each path must be its own list entry in the dashboard.
 - Fix: a wrong-amount payment can no longer be confirmed by a page reload or a retry; it stays for manual review.
 
 ## Next (in order)
@@ -45,7 +47,6 @@ Read this first in a new session, then `RULES.md` (binding owner decisions) and 
 
 ## Owner actions outside the code
 
-- **Stripe webhook (to switch it on):** Stripe Dashboard → Developers → Webhooks → Add endpoint → URL `https://watazawwado.academy/api/payments/stripe/webhook`, events `checkout.session.completed` and `checkout.session.async_payment_succeeded` → copy the signing secret (`whsec_…`) → Vercel → Settings → Environment Variables → `STRIPE_WEBHOOK_SECRET` (Production) → redeploy.
 
 - **Preview has no database:** in Vercel, the Supabase, Stripe, PayPal, Brevo and Gemini variables are set for Production only, so the preview answers "Database integration is not properly configured". To test the preview, tick **Preview** on SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY (and Stripe/PayPal, ideally test-mode keys for Preview), then redeploy the preview. Note: there is only one Supabase project, so the preview uses the real database. APP_URL also points previews to the production domain after payment.
 
