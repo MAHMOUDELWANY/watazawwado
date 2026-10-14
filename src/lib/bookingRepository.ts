@@ -183,6 +183,7 @@ export const bookingRepository = {
           notes: data.audience === 'child' ? data.parentNotes : data.notes,
           teacherId: (data as any).teacherId,
           packageEntitlementId: data.packageEntitlementId || null,
+          acceptedTerms: data.acceptedTerms === true,
           package_entitlement_id: data.packageEntitlementId || null,
           studentId: studentIdToLink,
           mode: data.mode
@@ -340,6 +341,10 @@ export const bookingRepository = {
   },
 
   async cancelBooking(cleanRef: string, token: string, reason?: string) {
+    if (isSupabaseConfigured() && !token) {
+      return { success: false, message: 'Your booking management link is missing or invalid. Please use the link from your confirmation email.' };
+    }
+
     // 1. Pre-check 3-hour policy eligibility if booking details can be resolved
     const existing = await this.lookupBooking(cleanRef, token);
     if (existing?.scheduledIsoDatetime) {
@@ -394,6 +399,10 @@ export const bookingRepository = {
   },
 
   async rescheduleBooking(cleanRef: string, token: string, newDate: string, newTime24: string, timezone: string, durationMinutes: number) {
+    if (isSupabaseConfigured() && !token) {
+      return { success: false, message: 'Your booking management link is missing or invalid. Please use the link from your confirmation email.' };
+    }
+
     // 1. Pre-check 3-hour policy eligibility on current lesson time
     const existing = await this.lookupBooking(cleanRef, token);
     if (existing?.scheduledIsoDatetime) {

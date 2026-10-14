@@ -26,6 +26,8 @@ interface ManageBookingModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialRefCode?: string;
+  /** Management token from the booking confirmation; required to look up or change a booking. */
+  initialManagementToken?: string;
   lang: Language;
 }
 
@@ -33,6 +35,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
   isOpen,
   onClose,
   initialRefCode = '',
+  initialManagementToken,
   lang
 }) => {
   const isEn = lang === 'en';
@@ -47,11 +50,11 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
 
   // Reschedule state
   const [isRescheduling, setIsRescheduling] = useState(false);
-  const [newDate, setNewDate] = useState('2026-09-08');
+  const [newDate, setNewDate] = useState(() => new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]);
   const [newTime, setNewTime] = useState('11:45 AM');
 
-  // Test bookings available
-  const sampleBookings = bookingService.getTestBookings();
+  // Demo bookings are only offered in local development builds
+  const sampleBookings = (import.meta as any).env?.PROD ? [] : bookingService.getTestBookings();
 
   useEffect(() => {
     if (initialRefCode) {
@@ -68,7 +71,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
     setIsRescheduling(false);
 
     try {
-      const found = await bookingService.lookupBooking(codeToSearch);
+      const found = await bookingService.lookupBooking(codeToSearch, initialManagementToken);
       if (found) {
         setBooking(found);
       } else {
@@ -102,9 +105,13 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
   const handleReschedule = async () => {
     if (!booking) return;
     setLoading(true);
+    // Convert the selected "hh:mm AM/PM" option to 24h time in the learner's timezone
+    const [, hh, mm, ampm] = newTime.match(/^(\d{1,2}):(\d{2}) (AM|PM)$/) || [];
+    const hour24 = (Number(hh) % 12) + (ampm === 'PM' ? 12 : 0);
+    const time24 = `${String(hour24).padStart(2, '0')}:${mm}`;
     const mockSlot: TimeSlot = {
       id: `${newDate}-resched`,
-      time24: '11:45',
+      time24,
       timeDisplay: newTime,
       period: 'morning',
       available: true,
@@ -117,7 +124,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
       setIsRescheduling(false);
       setBooking({
         ...booking,
-        scheduledIsoDatetime: `${newDate}T11:45:00.000Z`,
+        scheduledIsoDatetime: new Date(`${newDate}T${time24}:00`).toISOString(),
         status: 'rescheduled'
       });
     } else {
@@ -166,6 +173,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                 </h3>
               </div>
               <button
+                aria-label={isEn ? 'Close' : 'إغلاق'}
                 type="button"
                 onClick={onClose}
                 className="p-1 rounded-full text-foreground/60 dark:text-muted-foreground/60 hover:bg-surface-warm dark:hover:bg-surface-subtle cursor-pointer"
@@ -184,7 +192,8 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                 : 'يمكنك تعديل الموعد أو الإلغاء ذاتياً حتى ٣ ساعات قبل الدرس. خلال الساعات الثلاث السابقة، يُرجى التواصل مع محمود مباشرة على واتساب.'}
             </div>
 
-            {/* Quick Demo Selector */}
+            {/* Quick Demo Selector (development only) */}
+            {sampleBookings.length > 0 && (
             <div className="mb-4">
               <span className="text-[11px] uppercase font-semibold text-foreground/60 dark:text-muted-foreground/60 block mb-1.5">
                 {isEn ? 'Test Bookings (Click to Inspect Sync & Policy):' : 'حجوزات تجريبية (انقر للمعاينة):'}
@@ -211,6 +220,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                 })}
               </div>
             </div>
+            )}
 
             {/* Search Input */}
             <div className="flex gap-2 mb-4">

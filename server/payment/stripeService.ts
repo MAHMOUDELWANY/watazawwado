@@ -54,6 +54,8 @@ export async function createStripeCheckoutSession(
 
   const formParams = new URLSearchParams();
   formParams.append('mode', 'payment');
+  // Expire before the booking's 35-minute payment hold ends (Stripe's minimum is 30 minutes).
+  formParams.append('expires_at', String(Math.floor(Date.now() / 1000) + 31 * 60));
   formParams.append('success_url', params.successUrl);
   formParams.append('cancel_url', params.cancelUrl);
   
@@ -80,6 +82,7 @@ export async function createStripeCheckoutSession(
   }
 
   const response = await fetch(`${baseUrl}/checkout/sessions`, {
+    signal: AbortSignal.timeout(15000),
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${secretKey}`,
@@ -129,6 +132,7 @@ export async function retrieveStripeCheckoutSession(sessionId: string): Promise<
   }
 
   const response = await fetch(`${baseUrl}/checkout/sessions/${encodeURIComponent(sessionId)}`, {
+    signal: AbortSignal.timeout(15000),
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${secretKey}`,

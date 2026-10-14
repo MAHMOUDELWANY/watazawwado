@@ -24,7 +24,8 @@ import {
 } from '../server/integrations/syncEngine.js';
 import {
   computeAvailableSlots,
-  validateSlotAvailability
+  validateSlotAvailability,
+  resolveAuthoritativeTeacherForAvailability
 } from '../server/integrations/availabilityEngine.js';
 import {
   ALLOWED_LEAD_TRANSITIONS,
@@ -32,6 +33,7 @@ import {
   isAllowedLeadTransition
 } from '../server/leadTransitions.js';
 import { dispatchNotification } from '../server/notifications/dispatcher.js';
+import { MAHMOUD_OFFICIAL_PHONE_DIGITS } from '../server/notifications/whatsapp.js';
 import {
   scheduleBookingReminders,
   rescheduleBookingReminders,
@@ -47,6 +49,7 @@ import {
   type ServiceAssessment
 } from '../server/pricing/pricingEngine.js';
 import { computeOffer, isLegitimateOffer } from '../server/pricing/offers.js';
+import { lessonFeeUsd } from '../server/pricing/pricingEngine.js';
 import {
   runIntakeTurn,
   parseModelJson,
@@ -92,14 +95,131 @@ export function getSupabaseAdminClient() {
   }
 }
 
+const EMAIL_PATTERN = /^[^\s@,()"'%*\\;:<>]+@[^\s@,()"'%*\\;:<>]+\.[^\s@,()"'%*\\;:<>]+$/;
+
+/** Basic email shape check that also rejects characters with meaning in PostgREST filters. */
+export function isValidEmail(email: string): boolean {
+  return email.length <= 254 && EMAIL_PATTERN.test(email);
+}
+
+/** Quotes a value for use inside a PostgREST .or() filter so commas/parens can't inject conditions. */
+export function pgrstValue(value: string): string {
+  return '"' + String(value).replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"';
+}
+
+/** Escapes LIKE wildcards so the value is matched literally by ilike. */
+export function escapeLike(value: string): string {
+  return String(value).replace(/[\\%_*]/g, m => '\\' + m);
+}
+
+/** auth.admin.listUsers() returns one page (50 users by default); walk every page. */
+async function listAllAuthUsers(client: any): Promise<any[]> {
+  const users: any[] = [];
+  for (let page = 1; page <= 100; page++) {
+    const { data, error } = await client.auth.admin.listUsers({ page, perPage: 1000 });
+    if (error) throw error;
+    const batch = data?.users || [];
+    users.push(...batch);
+    if (batch.length < 1000) break;
+  }
+  return users;
+}
+
+/**
+ * Queues the calendar/Zoom/reminder/confirmation job for a confirmed booking and runs it now.
+ * Awaited on purpose: work started after the response can be frozen by the serverless runtime.
+ */
+async function enqueueAndRunBookingSync(client: any, bookingId: string): Promise<void> {
+  const { error } = await client.from('integration_jobs').insert({ booking_id: bookingId, job_type: 'booking_sync', status: 'pending' });
+  // 23505: an open job for this booking already exists (partial unique index); just run it.
+  if (error && error.code !== '23505') {
+    console.warn('[Booking Sync] enqueue failed:', error.message);
+    return;
+  }
+  try {
+    await processIntegrationJobs(1, undefined, bookingId);
+  } catch (err) {
+    // The cron worker retries pending/failed jobs.
+    console.warn('[Booking Sync] immediate run failed, left for the cron worker', err);
+  }
+}
+
+/** An error whose message was written for end users and may be returned as-is. */
+class PublicError extends Error {}
+
+/**
+ * Message safe to send to a client: our own PublicError text, or a message raised on purpose
+ * by our SQL functions (RAISE EXCEPTION ... ERRCODE 'P0xxx'). Anything else (PostgREST, provider
+ * or driver errors) is replaced by the fallback; the caller logs the detail.
+ */
+function clientErrorMessage(err: any, fallback: string): string {
+  if (err instanceof PublicError) return err.message;
+  if (err && typeof err.code === 'string' && err.code.startsWith('P0') && err.message) return err.message;
+  return fallback;
+}
+
+/** How long an unpaid booking holds its slot (RULES.md §2). Longer than Stripe's 30-minute session. */
+const PAYMENT_HOLD_MINUTES = 35;
+// RULES.md §2/§5 (decided 2026-10-14).
+const MAX_LOST_TRIALS = 5;
+const MAX_STUDENT_REFUNDED_LESSONS = 3;
+// Bump when the terms page changes in substance; stored with each booking/package as proof of consent.
+const TERMS_VERSION = '2026-10-14';
+
+/** Cancels unpaid bookings whose payment hold expired, freeing their slots. Never throws. */
+async function releaseExpiredPaymentHolds(client: any): Promise<void> {
+  try {
+    const { error } = await client.rpc('release_expired_payment_holds');
+    if (error) console.warn('[Payment Holds] release failed:', error.message);
+  } catch (err) {
+    console.warn('[Payment Holds] release failed:', err);
+  }
+}
+
+function devAuthDisabled(): boolean {
+  return process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV === 'production' || process.env.ALLOW_DEV_AUTH !== 'true';
+}
+
+const PRODUCTION_APP_ORIGIN = 'https://watazawwado.academy';
+
+/** Returns the request origin only if it is one of this site's own origins; otherwise the canonical app origin. */
+function resolveTrustedAppOrigin(requestOrigin?: string): string {
+  const trusted = new Set<string>([PRODUCTION_APP_ORIGIN, 'https://www.watazawwado.academy']);
+  let appOrigin = PRODUCTION_APP_ORIGIN;
+  if (process.env.APP_URL) {
+    try {
+      appOrigin = new URL(process.env.APP_URL).origin;
+      trusted.add(appOrigin);
+    } catch { /* keep default */ }
+  }
+  if (process.env.NODE_ENV !== 'production') trusted.add('http://localhost:3000');
+  return requestOrigin && trusted.has(requestOrigin) ? requestOrigin : appOrigin;
+}
+
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 const RATE_LIMIT_WINDOW = 60 * 1000;
 const MAX_REQUESTS = 10;
 
+// Note: this store is per serverless instance, so it only slows abuse down. A shared
+// store (e.g. Vercel WAF rate limiting or Upstash) is needed for a hard limit.
+function getClientIp(req: express.Request): string {
+  const realIp = req.headers['x-real-ip'];
+  if (typeof realIp === 'string' && realIp) return realIp.trim();
+  const forwarded = req.headers['x-forwarded-for'];
+  const first = (Array.isArray(forwarded) ? forwarded[0] : forwarded)?.split(',')[0]?.trim();
+  return first || req.socket.remoteAddress || 'unknown';
+}
+
 function rateLimit(req: express.Request, res: express.Response, next: express.NextFunction) {
-  const ip = (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress || 'unknown';
+  const ip = getClientIp(req);
   const now = Date.now();
-  
+
+  if (rateLimitStore.size > 10000) {
+    for (const [key, entry] of rateLimitStore) {
+      if (now > entry.resetTime) rateLimitStore.delete(key);
+    }
+  }
+
   let record = rateLimitStore.get(ip);
   if (!record || now > record.resetTime) {
     record = { count: 0, resetTime: now + RATE_LIMIT_WINDOW };
@@ -128,8 +248,18 @@ app.post('/api/learning-guide', rateLimit, async (req, res) => {
     if (!messages || !Array.isArray(messages) || messages.length === 0 || messages.length > 20) {
       return res.status(400).json({ error: 'Invalid or missing messages payload.' });
     }
-    
-    const totalLength = messages.reduce((acc, msg) => acc + (msg?.parts?.[0]?.text?.length || 0), 0);
+
+    // Rebuild the conversation server-side: only user/model turns with a single text part,
+    // so callers can't smuggle extra parts, files or other roles to the model.
+    const contents = messages.map((msg: any) => ({
+      role: msg?.role === 'model' ? 'model' : 'user',
+      parts: [{ text: typeof msg?.parts?.[0]?.text === 'string' ? msg.parts[0].text : '' }]
+    }));
+    if (contents[contents.length - 1].role !== 'user' || contents.some(c => !c.parts[0].text)) {
+      return res.status(400).json({ error: 'Invalid or missing messages payload.' });
+    }
+
+    const totalLength = contents.reduce((acc, c) => acc + c.parts[0].text.length, 0);
     if (totalLength > 10000) {
       return res.status(400).json({ error: 'Payload too large.' });
     }
@@ -152,7 +282,7 @@ ${MASTER_SPEC}
 
     const response = await ai.models.generateContent({
       model: 'gemini-3.1-flash-lite',
-      contents: messages,
+      contents,
       config: {
         systemInstruction,
         temperature: 0.7,
@@ -225,7 +355,7 @@ app.get('/api/integrations/google-calendar/auth-url', verifyTeacherAuth, (req: a
     const authUrl = generateGoogleAuthUrl(state, redirectUri);
     res.json({ authUrl });
   } catch (error: any) {
-    console.error("AUTH_URL_ERROR:", error); res.status(500).json({ error: String(error.stack || error) });
+    console.error("AUTH_URL_ERROR:", error); res.status(500).json({ error: 'Failed to start Google Calendar connection.' });
   }
 });
 
@@ -340,7 +470,9 @@ app.get('/api/integrations/google-calendar/callback', async (req: any, res: any)
     hmac.update(payload);
     const expectedSignature = hmac.digest('hex');
 
-    if (signature !== expectedSignature) {
+    const sigBuf = Buffer.from(String(signature), 'utf8');
+    const expectedBuf = Buffer.from(expectedSignature, 'utf8');
+    if (sigBuf.length !== expectedBuf.length || !crypto.timingSafeEqual(sigBuf, expectedBuf)) {
       return renderError(403, 'Invalid OAuth state signature.');
     }
 
@@ -587,7 +719,7 @@ app.post('/api/student/multi-lesson-plan', verifyStudentAuth, async (req: any, r
 
     if (rpcErr) {
       console.error('[Multi-lesson plan RPC]', rpcErr);
-      return res.status(409).json({ error: rpcErr.message || 'The selected lesson times are no longer available.' });
+      return res.status(409).json({ error: clientErrorMessage(rpcErr, 'The selected lesson times are no longer available.') });
     }
 
     if (!result?.success || !result.entitlementId) {
@@ -665,7 +797,7 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
       mode
     } = req.body || {};
 
-    const cleanEmail = String(contactEmail || '').trim().toLowerCase();
+    let cleanEmail = String(contactEmail || '').trim().toLowerCase();
     const cleanName = String(contactName || '').trim();
     const cleanParentName = String(parentName || '').trim();
     const cleanWhatsapp = String(contactWhatsapp || '').trim();
@@ -676,7 +808,16 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
     const isChild = audience === 'child';
     const durationMins = Number(duration) || 60;
 
-    if (!cleanEmail || !cleanEmail.includes('@')) {
+    if (![30, 45, 60].includes(durationMins)) {
+      return res.status(400).json({ error: 'Lesson duration must be 30, 45 or 60 minutes.' });
+    }
+    if (isTrial && durationMins > 45) {
+      return res.status(400).json({ error: 'A free trial can be at most 45 minutes.' });
+    }
+    if (!DateTime.local().setZone(cleanTimezone).isValid) {
+      return res.status(400).json({ error: 'Invalid timezone.' });
+    }
+    if (!cleanEmail || !isValidEmail(cleanEmail)) {
       return res.status(400).json({ error: 'A valid email address is required.' });
     }
     if (!cleanName || cleanName.length < 2) {
@@ -692,6 +833,8 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
     // Resolve Auth User / Student profile if token provided
     let linkedStudentId: string | null = null;
     let authUserId: string | null = null;
+    let authUserEmail = '';
+    let assignedTeacherId: string | null = null;
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.substring(7);
@@ -699,6 +842,7 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
         const { data: uData } = await supabaseAdmin.auth.getUser(token);
         if (uData?.user?.id) {
           authUserId = uData.user.id;
+          authUserEmail = (uData.user.email || '').toLowerCase();
           const { data: st } = await supabaseAdmin
             .from('students')
             .select('id, assigned_teacher_id')
@@ -706,6 +850,7 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
             .maybeSingle();
           if (st?.id) {
             linkedStudentId = st.id;
+            assignedTeacherId = st.assigned_teacher_id || null;
           }
         }
       } catch (authErr) {
@@ -713,25 +858,88 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
       }
     }
 
-    if (!linkedStudentId && studentId) {
-      linkedStudentId = String(studentId).trim();
+    // Booking for a specific learner or with package credits requires a signed-in account
+    // that is authorized for that learner (self or a guardian's child).
+    let authorizedLearnerIds: string[] = [];
+    if (authUserId) {
+      const learners = await getAuthorizedLearnersForStudent(supabaseAdmin, {
+        studentUser: { student_id: linkedStudentId, email: authUserEmail }
+      });
+      authorizedLearnerIds = learners.map(l => l.id);
     }
+    if (studentId) {
+      const requestedStudentId = String(studentId).trim();
+      if (!authorizedLearnerIds.includes(requestedStudentId)) {
+        return res.status(403).json({ error: 'You are not allowed to book for this learner.' });
+      }
+      linkedStudentId = requestedStudentId;
+    }
+    // RULES.md §2: no guest bookings. Every booking belongs to a signed-in account,
+    // and the booking's contact email is always that account's email.
+    if (!authUserId || !authUserEmail) {
+      return res.status(401).json({ error: 'Please sign in or create an account to book a lesson.', code: 'AUTH_REQUIRED' });
+    }
+    cleanEmail = authUserEmail;
 
-    // Check One Free Trial limit
     if (isTrial) {
-      const { data: priorTrials } = await supabaseAdmin
+      const trialOwnerFilter = [
+        `contact_email.eq.${pgrstValue(cleanEmail)}`,
+        ...(cleanWhatsapp ? [`contact_whatsapp.eq.${pgrstValue(cleanWhatsapp)}`] : []),
+        ...(authorizedLearnerIds.length ? [`student_id.in.(${authorizedLearnerIds.map(pgrstValue).join(',')})`] : [])
+      ].join(',');
+
+      // One free trial per student: a trial that is booked, confirmed or completed uses it.
+      const { data: activeTrials } = await supabaseAdmin
         .from('bookings')
         .select('id')
         .eq('booking_type', 'trial')
-        .neq('status', 'cancelled')
-        .or(`contact_email.eq.${cleanEmail}${cleanWhatsapp ? `,contact_whatsapp.eq.${cleanWhatsapp}` : ''}`)
+        .in('status', ['pending', 'confirmed', 'rescheduled', 'completed'])
+        .or(trialOwnerFilter)
         .limit(1);
-
-      if (priorTrials && priorTrials.length > 0) {
+      if (activeTrials && activeTrials.length > 0) {
         return res.status(400).json({
-          error: 'Our records indicate a free trial session has already been booked with this contact information. Each student is eligible for one complimentary trial. You may book a regular lesson or message Mahmoud on WhatsApp.'
+          error: 'You already have a free trial on this account. Each student gets one free trial, but you can book a regular lesson any time.'
         });
       }
+
+      // RULES.md §2: after a cancelled or missed trial, wait 48 hours before booking again.
+      const cooldownStart = DateTime.utc().minus({ hours: 48 }).toISO();
+      const { data: recentLostTrial } = await supabaseAdmin
+        .from('bookings')
+        .select('updated_at')
+        .eq('booking_type', 'trial')
+        .in('status', ['cancelled', 'no_show'])
+        .gte('updated_at', cooldownStart)
+        .or(trialOwnerFilter)
+        .order('updated_at', { ascending: false })
+        .limit(1);
+      if (recentLostTrial && recentLostTrial.length > 0) {
+        const availableAt = DateTime.fromISO(recentLostTrial[0].updated_at).plus({ hours: 48 });
+        return res.status(400).json({
+          error: `Your last free trial was cancelled or missed, so you can book a new one after ${availableAt.toUTC().toFormat('dd LLL yyyy, HH:mm')} (UTC).`,
+          code: 'TRIAL_COOLDOWN',
+          availableAt: availableAt.toUTC().toISO()
+        });
+      }
+
+      // RULES.md §2: after 5 cancelled or missed trials, no more free trials (paid lessons stay open).
+      const { count: lostTrials } = await supabaseAdmin
+        .from('bookings')
+        .select('id', { count: 'exact', head: true })
+        .eq('booking_type', 'trial')
+        .in('status', ['cancelled', 'no_show'])
+        .or(trialOwnerFilter);
+      if ((lostTrials || 0) >= MAX_LOST_TRIALS) {
+        return res.status(400).json({
+          error: 'This account has used up its free trials. You are always welcome to book a regular lesson.',
+          code: 'TRIAL_LIMIT'
+        });
+      }
+    }
+
+    // RULES.md §5: the student accepts the current terms (cancellation & refund policy) before booking.
+    if (req.body?.acceptedTerms !== true) {
+      return res.status(400).json({ error: 'Please read and accept the terms and the cancellation & refund policy first.', code: 'TERMS_REQUIRED' });
     }
 
     // Calculate Timestamps
@@ -739,10 +947,14 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
     let scheduledEndUtc: string;
     let cairoTimeDisplay: string;
 
-    if (timeSlot.utcStartIso && timeSlot.utcEndIso) {
-      scheduledStartUtc = timeSlot.utcStartIso;
-      scheduledEndUtc = timeSlot.utcEndIso;
-      const dt = DateTime.fromISO(scheduledStartUtc);
+    if (timeSlot.utcStartIso) {
+      // The end is always derived from the validated duration, never taken from the client.
+      const dt = DateTime.fromISO(String(timeSlot.utcStartIso), { zone: 'utc' });
+      if (!dt.isValid) {
+        return res.status(400).json({ error: 'Invalid scheduling date or time.' });
+      }
+      scheduledStartUtc = dt.toISO()!;
+      scheduledEndUtc = dt.plus({ minutes: durationMins }).toISO()!;
       cairoTimeDisplay = dt.setZone('Africa/Cairo').toFormat('dd LLL yyyy, hh:mm a');
     } else {
       const time24 = timeSlot.time24;
@@ -755,36 +967,54 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
       cairoTimeDisplay = dt.setZone('Africa/Cairo').toFormat('dd LLL yyyy, hh:mm a');
     }
 
-    // Validate slot availability
-    const slotValidation = await validateSlotAvailability(scheduledStartUtc, scheduledEndUtc, teacherId);
-    if (slotValidation.isAvailable === false) {
-      return res.status(409).json({ error: slotValidation.conflictReason || 'This time slot is no longer available. Please select another slot.' });
+    if (new Date(scheduledStartUtc).getTime() <= Date.now()) {
+      return res.status(400).json({ error: 'Please choose a lesson time in the future.' });
     }
 
-    // Resolve teacher
+    // Resolve teacher (RULES.md §1): the learner's assigned teacher by default. A client-supplied teacher
+    // is honored only if it is that teacher or a bookable teacher (working hours in the site or Google connected).
+    let learnerTeacherId: string | null = assignedTeacherId;
+    if (linkedStudentId) {
+      const { data: learnerRow } = await supabaseAdmin.from('students').select('assigned_teacher_id').eq('id', linkedStudentId).maybeSingle();
+      learnerTeacherId = learnerRow?.assigned_teacher_id || learnerTeacherId;
+    }
+    const requestedTeacherId = typeof teacherId === 'string' ? teacherId.trim() : '';
     let resolvedTeacherId: string | null = null;
-    if (teacherId && typeof teacherId === 'string' && teacherId.trim().length > 10) {
-      resolvedTeacherId = teacherId.trim();
+    if (requestedTeacherId && requestedTeacherId !== learnerTeacherId) {
+      resolvedTeacherId = await resolveAuthoritativeTeacherForAvailability(requestedTeacherId);
+      if (!resolvedTeacherId) {
+        return res.status(400).json({ error: 'The selected teacher is not available for booking.' });
+      }
     } else {
-      const { data: conn } = await supabaseAdmin
-        .from('calendar_connections')
-        .select('teacher_id')
-        .eq('is_active', true)
-        .eq('provider', 'google_calendar')
-        .order('created_at', { ascending: true })
-        .limit(1)
-        .maybeSingle();
-      resolvedTeacherId = conn?.teacher_id || null;
+      resolvedTeacherId = learnerTeacherId || await resolveAuthoritativeTeacherForAvailability(undefined);
+    }
+
+    await releaseExpiredPaymentHolds(supabaseAdmin);
+
+    // Validate slot availability against the resolved (trusted) teacher
+    const slotValidation = await validateSlotAvailability(scheduledStartUtc, scheduledEndUtc, resolvedTeacherId || undefined);
+    if (slotValidation.isAvailable === false) {
+      return res.status(409).json({ error: slotValidation.conflictReason || 'This time slot is no longer available. Please select another slot.' });
     }
 
     // Resolve service rate and calculate authoritative fee
     const { data: srv } = await supabaseAdmin
       .from('services')
-      .select('title, arabic_title, hourly_rate_usd')
+      .select('title, arabic_title, hourly_rate_usd, is_active, supported_durations, trial_allowed')
       .eq('id', cleanServiceId)
       .maybeSingle();
 
-    const hourlyRate = Number(srv?.hourly_rate_usd || 9.00);
+    if (!srv || !srv.is_active) {
+      return res.status(400).json({ error: 'This service is not available for booking.' });
+    }
+    if (Array.isArray(srv.supported_durations) && !srv.supported_durations.includes(durationMins)) {
+      return res.status(400).json({ error: 'This lesson length is not offered for this service.' });
+    }
+    if (isTrial && srv.trial_allowed === false) {
+      return res.status(400).json({ error: 'Free trials are not offered for this service.' });
+    }
+
+    const hourlyRate = Number(srv.hourly_rate_usd);
     const serviceTitle = srv?.title || '1-on-1 Lesson';
 
     let calculatedFee = 0;
@@ -794,7 +1024,7 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
     if (packageEntitlementId) {
       const { data: entitlement } = await supabaseAdmin
         .from('package_entitlements')
-        .select('id, remaining_credits, status')
+        .select('id, remaining_credits, status, purchaser_account_id, learner_student_id, metadata, package_catalog:package_catalog_id(eligibility_rules)')
         .eq('id', packageEntitlementId)
         .maybeSingle();
 
@@ -802,13 +1032,34 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
         return res.status(400).json({ error: 'Package entitlement is inactive or has no remaining credits.' });
       }
 
-      await supabaseAdmin
-        .from('package_entitlements')
-        .update({
-          remaining_credits: entitlement.remaining_credits - 1,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', entitlement.id);
+      const ownsEntitlement =
+        entitlement.purchaser_account_id === authUserId ||
+        (entitlement.learner_student_id && authorizedLearnerIds.includes(entitlement.learner_student_id));
+      if (!ownsEntitlement) {
+        return res.status(403).json({ error: 'This package does not belong to your account.' });
+      }
+
+      // RULES.md §4: credits are for the same price band and lesson length they were bought for.
+      const cat: any = Array.isArray((entitlement as any).package_catalog) ? (entitlement as any).package_catalog[0] : (entitlement as any).package_catalog;
+      const rules: any = (entitlement as any).metadata?.hourly_rate ? (entitlement as any).metadata : cat?.eligibility_rules || {};
+      if (rules.hourly_rate && Number(rules.hourly_rate) !== hourlyRate) {
+        return res.status(400).json({ error: 'This package is for a different subject group. Please pick a matching subject.', code: 'PACKAGE_GROUP_MISMATCH' });
+      }
+      if (rules.duration_minutes && Number(rules.duration_minutes) !== durationMins) {
+        return res.status(400).json({ error: `This package is for ${rules.duration_minutes}-minute lessons. Please choose that length.`, code: 'PACKAGE_DURATION_MISMATCH' });
+      }
+
+      // Credits are consumed when the teacher records the lesson as completed
+      // (teacher_record_lesson_outcome), so booking only checks that upcoming
+      // lessons don't exceed the remaining credits.
+      const { count: upcomingOnPackage } = await supabaseAdmin
+        .from('bookings')
+        .select('id', { count: 'exact', head: true })
+        .eq('package_entitlement_id', entitlement.id)
+        .in('status', ['pending', 'confirmed', 'rescheduled']);
+      if ((upcomingOnPackage || 0) >= entitlement.remaining_credits) {
+        return res.status(400).json({ error: 'All remaining package credits are already booked.' });
+      }
 
       resolvedPackageEntitlementId = entitlement.id;
       calculatedFee = 0;
@@ -818,20 +1069,14 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
       bookingStatus = 'confirmed';
     } else {
       // Regular paid lesson: status must be PENDING payment!
-      if (durationMins === 30) {
-        calculatedFee = hourlyRate === 13 ? 7.00 : 5.00;
-      } else if (durationMins === 45) {
-        calculatedFee = hourlyRate === 13 ? 10.00 : 7.00;
-      } else {
-        calculatedFee = hourlyRate === 13 ? 13.00 : 9.00;
-      }
+      calculatedFee = lessonFeeUsd(hourlyRate, durationMins);
       bookingStatus = 'pending';
     }
 
     // Unique reference code
     let referenceCode = '';
     for (let attempts = 0; attempts < 5; attempts++) {
-      const candidate = `MHM-${Math.floor(10000 + Math.random() * 90000)}`;
+      const candidate = `MHM-${crypto.randomInt(0, 0xffffff).toString(16).toUpperCase().padStart(6, '0')}`;
       const { data: existing } = await supabaseAdmin.from('bookings').select('id').eq('reference_code', candidate).maybeSingle();
       if (!existing) {
         referenceCode = candidate;
@@ -839,38 +1084,57 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
       }
     }
     if (!referenceCode) {
-      referenceCode = `MHM-${Date.now().toString(36).toUpperCase().slice(-5)}`;
+      referenceCode = `MHM-${crypto.randomBytes(4).toString('hex').toUpperCase()}`;
     }
 
-    const managementToken = crypto.randomUUID ? crypto.randomUUID() : `tok_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-    const managementTokenHash = crypto.createHash('sha256').update(managementToken).digest('hex');
+    // The DB verifies management tokens with bcrypt (pgcrypto crypt), so hash them the same way.
+    // The plaintext token is only returned once to the booker and never stored.
+    const managementToken = crypto.randomBytes(24).toString('base64url');
+    const { data: bcryptHash, error: hashErr } = await supabaseAdmin.rpc('hash_management_token', { p_token: managementToken });
+    if (hashErr || !bcryptHash) {
+      // Until migration 20261013000000 is applied; such bookings can't be self-managed (pre-existing behavior).
+      console.error('[Create Booking] hash_management_token unavailable, falling back to sha256', hashErr?.message);
+    }
+    const managementTokenHash: string = bcryptHash || crypto.createHash('sha256').update(managementToken).digest('hex');
 
-    // Upsert Lead
+    // Link or create the CRM lead. leads is unique on lower(email) (an expression index, so
+    // upsert onConflict:'email' can't target it). An existing lead is never overwritten by
+    // unauthenticated input; its status only moves forward through the allowed transitions.
     let leadId: string | null = null;
     try {
-      const { data: leadData } = await supabaseAdmin
+      const { data: existingLead } = await supabaseAdmin
         .from('leads')
-        .upsert(
-          {
+        .select('id, status')
+        .ilike('email', escapeLike(cleanEmail))
+        .maybeSingle();
+
+      if (existingLead) {
+        leadId = existingLead.id;
+        const nextStatus = isTrial ? 'trial_booked' : null;
+        if (nextStatus && nextStatus !== existingLead.status && isAllowedLeadTransition(existingLead.status, nextStatus)) {
+          await supabaseAdmin.from('leads').update({ status: nextStatus, updated_at: new Date().toISOString() }).eq('id', existingLead.id);
+        }
+      } else {
+        const { data: newLead, error: leadInsertErr } = await supabaseAdmin
+          .from('leads')
+          .insert({
             name: cleanName,
             email: cleanEmail,
             whatsapp: cleanWhatsapp || null,
-            learner_type: audience || 'adult',
+            learner_type: isChild ? 'child' : 'adult',
             service_interest_id: cleanServiceId,
             goal: goal || '',
             source: 'web_booking_modal',
             status: isTrial ? 'trial_booked' : 'lead',
-            notes: isChild ? `Parent: ${cleanParentName}. ${notes || ''}` : (notes || ''),
-            updated_at: new Date().toISOString()
-          },
-          { onConflict: 'email' }
-        )
-        .select('id')
-        .maybeSingle();
-
-      leadId = leadData?.id || null;
+            notes: isChild ? `Parent: ${cleanParentName}. ${notes || ''}` : (notes || '')
+          })
+          .select('id')
+          .single();
+        if (leadInsertErr) console.warn('[Create Booking] Lead insert failed:', leadInsertErr.message);
+        leadId = newLead?.id || null;
+      }
     } catch (leadErr) {
-      console.warn('[Create Booking] Lead upsert non-critical warning:', leadErr);
+      console.warn('[Create Booking] Lead link non-critical warning:', leadErr);
     }
 
     // Insert Booking
@@ -878,7 +1142,6 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
       .from('bookings')
       .insert({
         reference_code: referenceCode,
-        management_token: managementToken,
         management_token_hash: managementTokenHash,
         student_id: linkedStudentId,
         teacher_id: resolvedTeacherId,
@@ -891,6 +1154,10 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
         student_timezone: cleanTimezone,
         cairo_time_display: cairoTimeDisplay,
         status: bookingStatus,
+        // RULES.md §2: an unpaid booking only holds its slot briefly (Stripe sessions expire after 30 min).
+        hold_expires_at: bookingStatus === 'pending' ? DateTime.utc().plus({ minutes: PAYMENT_HOLD_MINUTES }).toISO() : null,
+        terms_version: TERMS_VERSION,
+        terms_accepted_at: new Date().toISOString(),
         contact_name: cleanName,
         contact_email: cleanEmail,
         contact_whatsapp: cleanWhatsapp || null,
@@ -907,54 +1174,34 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
 
     if (bErr || !newBooking) {
       console.error('[Create Booking Insert Error]', bErr);
-      return res.status(500).json({ error: `Failed to create booking reservation: ${bErr?.message || 'Database error'}` });
+      return res.status(500).json({ error: 'Failed to create booking reservation. Please try again.' });
     }
 
     // If already confirmed (trial or package credit), trigger calendar integration & reminders
     if (bookingStatus === 'confirmed') {
       try {
-        await supabaseAdmin.from('outbox_integration_jobs').insert({
-          booking_id: newBooking.id,
-          job_type: 'create_booking',
-          payload: {
-            bookingId: newBooking.id,
-            referenceCode: newBooking.reference_code,
-            learnerName: cleanName,
-            parentName: isChild ? cleanParentName : null,
-            serviceName: serviceTitle,
-            mode: isTrial ? 'trial' : 'regular',
-            scheduledStart: scheduledStartUtc,
-            scheduledEnd: scheduledEndUtc,
-            studentTimezone: cleanTimezone,
-            cairoTimeDisplay,
-            durationMinutes: durationMins,
-            contactEmail: cleanEmail,
-            contactWhatsapp: cleanWhatsapp,
-            notes
-          },
-          status: 'pending'
-        });
-
-        processIntegrationJobs(1, undefined, newBooking.id).catch(console.error);
+        await enqueueAndRunBookingSync(supabaseAdmin, newBooking.id);
 
         const startMillis = new Date(scheduledStartUtc).getTime();
         const rem24 = new Date(startMillis - 24 * 60 * 60 * 1000).toISOString();
         const rem1 = new Date(startMillis - 60 * 60 * 1000).toISOString();
         if (new Date(rem24) > new Date()) {
-          await supabaseAdmin.from('reminders').insert({
+          const { error: rem24Err } = await supabaseAdmin.from('reminders').insert({
             booking_id: newBooking.id,
             reminder_type: '24h_before',
             scheduled_for: rem24,
             status: 'pending'
-          }).catch(() => {});
+          });
+          if (rem24Err) console.warn('[Create Booking] 24h reminder insert failed:', rem24Err.message);
         }
         if (new Date(rem1) > new Date()) {
-          await supabaseAdmin.from('reminders').insert({
+          const { error: rem1Err } = await supabaseAdmin.from('reminders').insert({
             booking_id: newBooking.id,
             reminder_type: '1h_before',
             scheduled_for: rem1,
             status: 'pending'
-          }).catch(() => {});
+          });
+          if (rem1Err) console.warn('[Create Booking] 1h reminder insert failed:', rem1Err.message);
         }
       } catch (syncErr) {
         console.warn('[Create Booking Sync Warning]', syncErr);
@@ -965,7 +1212,7 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
       success: true,
       bookingId: newBooking.id,
       referenceCode: newBooking.reference_code,
-      managementToken: newBooking.management_token,
+      managementToken,
       status: newBooking.status,
       feeAmountUsd: Number(newBooking.fee_amount_usd),
       serviceName: serviceTitle,
@@ -978,7 +1225,7 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
     });
   } catch (err: any) {
     console.error('[Create Booking Fatal Error]', err);
-    return res.status(500).json({ error: err?.message || 'Failed to process booking.' });
+    return res.status(500).json({ error: clientErrorMessage(err, 'Failed to process booking.') });
   }
 });
 
@@ -1078,6 +1325,9 @@ app.post('/api/integrations/cancel', async (req, res) => {
 // 10. INTEGRATIONS: REAL AVAILABILITY LOOKUP
 app.get('/api/integrations/availability', async (req, res) => {
   try {
+    const holdClient = getSupabaseAdminClient();
+    if (holdClient) await releaseExpiredPaymentHolds(holdClient);
+
     const timezone = req.query.timezone as string;
     if (!timezone) {
       return res.status(400).json({ error: 'Timezone is required.', code: 'INVALID_AVAILABILITY_REQUEST' });
@@ -1144,6 +1394,9 @@ app.get('/api/integrations/availability', async (req, res) => {
 // 11. INTEGRATIONS: VALIDATE SLOT AVAILABILITY (SERVER-SIDE AUTHORITATIVE CHECK)
 app.post('/api/integrations/validate-slot', async (req, res) => {
   try {
+    const holdClient = getSupabaseAdminClient();
+    if (holdClient) await releaseExpiredPaymentHolds(holdClient);
+
     const { scheduledStartUtc, scheduledEndUtc, teacherId, teacher_id } = req.body;
     if (!scheduledStartUtc || !scheduledEndUtc) {
       return res.status(400).json({ isAvailable: false, conflictReason: 'Missing slot timestamps.' });
@@ -1189,9 +1442,18 @@ app.post('/api/integrations/retry-sync', verifyTeacherAuth, async (req, res) => 
       return res.status(404).json({ error: 'Booking not found.' });
     }
 
+    const teacherUser = (req as any).teacherUser;
+    if (teacherUser?.role !== 'super_admin' && booking.teacher_id !== teacherUser?.id) {
+      return res.status(403).json({ error: 'Forbidden: this booking is not assigned to you.' });
+    }
+    if (!['confirmed', 'rescheduled'].includes(booking.status)) {
+      return res.status(400).json({ error: 'Only confirmed bookings can be synced.' });
+    }
+
+    // Always sync into the booking's own teacher's calendar, never the caller's.
     const syncResult = await syncBookingIntegrations({
       referenceCode: booking.reference_code,
-      teacherId: (req as any).teacherUser?.id || booking.teacher_id,
+      teacherId: booking.teacher_id,
       learnerName: booking.contact_name,
       parentName: booking.parent_name,
       serviceName: '1-on-1 Lesson',
@@ -1291,7 +1553,8 @@ const devStudentProfiles: Record<string, any> = {
 async function verifyStudentAuth(req: any, res: any, next: any) {
   try {
     const authHeader = req.headers.authorization;
-    const isProd = process.env.NODE_ENV === 'production';
+    // Dev tokens/headers are honored only with an explicit opt-in, never on a production deployment.
+    const isProd = devAuthDisabled();
 
     // Safe project consistency diagnosis (never exposes credentials or ref strings)
     const clientProjectRef = typeof req.headers['x-client-project-ref'] === 'string' ? req.headers['x-client-project-ref'].trim() : null;
@@ -1365,7 +1628,7 @@ async function verifyStudentAuth(req: any, res: any, next: any) {
         const { data: matchingStudents, error: matchError } = await supabaseAdmin
           .from('students')
           .select('id, name, email, timezone, learner_type, current_level, status, auth_user_id, assigned_teacher_id')
-          .ilike('email', userEmail);
+          .ilike('email', escapeLike(userEmail));
 
         if (!matchError && matchingStudents) {
           const unlinked = matchingStudents.filter((s: any) => !s.auth_user_id);
@@ -1440,7 +1703,8 @@ async function verifyTeacherAuth(req: any, res: any, next: any) {
   try {
     const authHeader = req.headers.authorization;
     const devHeader = req.headers['x-dev-teacher-auth'];
-    const isProd = process.env.NODE_ENV === 'production';
+    // Dev tokens/headers are honored only with an explicit opt-in, never on a production deployment.
+    const isProd = devAuthDisabled();
 
     // Safe project consistency diagnosis (never exposes credentials or ref strings)
     const clientProjectRef = typeof req.headers['x-client-project-ref'] === 'string' ? req.headers['x-client-project-ref'].trim() : null;
@@ -1638,8 +1902,7 @@ export async function resolveTeacherMetadata(
     if (teacherAccount) {
       if (!authUserId) {
         try {
-          const { data: usersData } = await supabaseAdmin.auth.admin.listUsers();
-          const matched = usersData?.users?.find((u: any) => u.email?.toLowerCase().trim() === teacherEmail);
+          const matched = (await listAllAuthUsers(supabaseAdmin)).find((u: any) => u.email?.toLowerCase().trim() === teacherEmail);
           if (matched) authUserId = matched.id;
         } catch {}
       }
@@ -1697,8 +1960,7 @@ export async function resolveSmartTeacherRouting(
 
     // 3. Fallback: query auth.users
     try {
-      const { data: usersData } = await supabaseAdmin.auth.admin.listUsers();
-      const matchedUser = usersData?.users?.find(
+      const matchedUser = (await listAllAuthUsers(supabaseAdmin)).find(
         (u: any) => u.email?.toLowerCase().trim() === teacherEmail.toLowerCase().trim()
       );
       if (matchedUser?.id) {
@@ -2282,7 +2544,7 @@ app.get('/api/dashboard/students/:id', verifyTeacherAuth, async (req: any, res: 
       supabase.from('services').select('id, title, arabic_title'),
       leadId 
         ? supabase.from('leads').select('*').eq('id', leadId).maybeSingle()
-        : (emailLower ? supabase.from('leads').select('*').ilike('email', emailLower).maybeSingle() : Promise.resolve({ data: null, error: null }))
+        : (emailLower ? supabase.from('leads').select('*').ilike('email', escapeLike(emailLower)).maybeSingle() : Promise.resolve({ data: null, error: null }))
     ]);
 
     const serviceMap = new Map<string, string>();
@@ -2505,8 +2767,8 @@ app.post('/api/dashboard/students/:id/ai-brief', verifyTeacherAuth, async (req: 
     // 3. Gather Context (Minimizing PII)
     const [goalsRes, lessonsRes, intakesRes] = await Promise.all([
       supabase.from('student_goals').select('goal_text, service_id, is_primary').eq('student_id', id).order('created_at', { ascending: false }).limit(3),
-      supabase.from('lesson_notes').select('covered_material, next_steps, observations, private_notes, created_at').eq('student_id', id).order('created_at', { ascending: false }).limit(3),
-      supabase.from('student_intakes').select('content').eq('student_id', id).order('created_at', { ascending: false }).limit(1)
+      supabase.from('lesson_notes').select('next_steps, observations, private_notes, created_at').eq('student_id', id).order('created_at', { ascending: false }).limit(3),
+      supabase.from('student_intakes').select('learning_profile, assessment').eq('learner_student_id', id).order('created_at', { ascending: false }).limit(1)
     ]);
 
     const context = {
@@ -2519,12 +2781,11 @@ app.post('/api/dashboard/students/:id/ai-brief', verifyTeacherAuth, async (req: 
       goals: goalsRes.data || [],
       recent_lessons: (lessonsRes.data || []).map(l => ({
         date: l.created_at,
-        covered_material: l.covered_material,
         next_steps: l.next_steps,
         observations: l.observations,
         private_notes: l.private_notes
       })),
-      intake: intakesRes.data?.[0]?.content || null
+      intake: intakesRes.data?.[0] || null
     };
 
     if (!process.env.GEMINI_API_KEY) {
@@ -2867,11 +3128,23 @@ app.patch('/api/dashboard/admin/students/:id/assign-teacher', verifyTeacherAuth,
 
     if (updateErr) {
       console.error('[Assign Teacher Error]', updateErr);
-      return res.status(500).json({ error: 'Failed to update student teacher assignment: ' + updateErr.message });
+      return res.status(500).json({ error: clientErrorMessage(updateErr, 'Failed to update student teacher assignment.') });
     }
+
+    // Lessons already booked stay with the teacher they were booked with; new bookings use the new teacher.
+    const { count: upcomingWithPrevious } = await supabase
+      .from('bookings')
+      .select('id', { count: 'exact', head: true })
+      .eq('student_id', id)
+      .in('status', ['pending', 'confirmed', 'rescheduled'])
+      .gt('scheduled_start', new Date().toISOString())
+      .or(newAssignedTeacherId ? `teacher_id.is.null,teacher_id.neq.${newAssignedTeacherId}` : 'teacher_id.not.is.null');
 
     res.json({
       success: true,
+      message: upcomingWithPrevious
+        ? `Teacher updated. New bookings go to the new teacher. ${upcomingWithPrevious} upcoming lesson(s) are still with the previous teacher: reschedule or cancel them from Bookings if needed.`
+        : 'Teacher updated. New bookings go to the new teacher.',
       student_id: updated.id,
       assigned_teacher_id: updated.assigned_teacher_id,
       assigned_teacher: targetTeacher ? {
@@ -2911,8 +3184,7 @@ app.get('/api/dashboard/admin/teachers', verifyTeacherAuth, requireSuperAdmin, a
 
     let authUsers: any[] = [];
     try {
-      const { data: usersData } = await supabase.auth.admin.listUsers();
-      authUsers = usersData?.users || [];
+      authUsers = await listAllAuthUsers(supabase);
     } catch {}
 
     const authUserByEmail = new Map<string, string>();
@@ -2992,15 +3264,21 @@ app.patch('/api/dashboard/admin/teachers/:email/toggle-active', verifyTeacherAut
       return res.status(400).json({ error: 'Invalid is_active boolean value.' });
     }
 
-    // Protect primary super admin account from accidental deactivation
-    if (email.toLowerCase().includes('mahmoudelwany98') && !is_active) {
-      return res.status(403).json({ error: 'The primary Super Admin account cannot be deactivated.' });
+    // Express already URL-decodes route params; normalize the same way teacher_accounts stores emails.
+    const targetEmail = String(email).trim().toLowerCase();
+
+    // Super admin accounts can't be deactivated from the dashboard (prevents locking everyone out).
+    if (!is_active) {
+      const { data: target } = await supabase.from('teacher_accounts').select('role').ilike('email', escapeLike(targetEmail)).maybeSingle();
+      if (target?.role === 'super_admin') {
+        return res.status(403).json({ error: 'Super Admin accounts cannot be deactivated.' });
+      }
     }
 
     const { data: updated, error: updateErr } = await supabase
       .from('teacher_accounts')
       .update({ is_active, updated_at: new Date().toISOString() })
-      .eq('email', decodeURIComponent(email))
+      .ilike('email', escapeLike(targetEmail))
       .select()
       .single();
 
@@ -3216,6 +3494,13 @@ app.delete('/api/dashboard/students/:id/notes/:noteId', verifyTeacherAuth, async
 
     const { id, noteId } = req.params;
 
+    if ((req as any).teacherUser?.role !== 'super_admin') {
+      const { data: student } = await supabase.from('students').select('assigned_teacher_id').eq('id', id).maybeSingle();
+      if (!student || student.assigned_teacher_id !== (req as any).teacherUser?.id) {
+        return res.status(403).json({ error: 'Forbidden: You do not have authorization to modify notes for this student.' });
+      }
+    }
+
     const { data: existing, error: findErr } = await supabase
       .from('lesson_notes')
       .select('id')
@@ -3374,7 +3659,8 @@ app.get('/api/dashboard/bookings', verifyTeacherAuth, async (req, res) => {
       // Search filter (name, email, parent, reference_code)
       if (search && typeof search === 'string' && search.trim()) {
         const cleanSearch = search.trim();
-        q = q.or(`contact_name.ilike.%${cleanSearch}%,contact_email.ilike.%${cleanSearch}%,reference_code.ilike.%${cleanSearch}%,parent_name.ilike.%${cleanSearch}%`);
+        const pattern = pgrstValue(`%${escapeLike(cleanSearch)}%`);
+        q = q.or(`contact_name.ilike.${pattern},contact_email.ilike.${pattern},reference_code.ilike.${pattern},parent_name.ilike.${pattern}`);
       }
 
       // Teacher scope enforcement
@@ -3681,7 +3967,8 @@ export function validateTeacherLifecycleTransition(
   existingBooking: any,
   newStatus: string | undefined,
   teacherUserId: string | undefined,
-  nowUtcIso: string
+  nowUtcIso: string,
+  isSuperAdmin = false
 ): { 
   valid: boolean; 
   statusCode?: number; 
@@ -3689,8 +3976,8 @@ export function validateTeacherLifecycleTransition(
   isIdempotent?: boolean; 
   message?: string 
 } {
-  // 1. Authorization check
-  if (existingBooking.teacher_id && existingBooking.teacher_id !== teacherUserId) {
+  // 1. Authorization check (unassigned bookings are super-admin only)
+  if (!isSuperAdmin && existingBooking.teacher_id !== teacherUserId) {
     return { valid: false, statusCode: 403, error: 'Not authorized to manage this booking.' };
   }
 
@@ -3769,7 +4056,8 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
       existingBooking,
       status,
       (req as any).teacherUser?.id,
-      nowUtc.toISO()!
+      nowUtc.toISO()!,
+      (req as any).teacherUser?.role === 'super_admin'
     );
 
     if (!transitionValidation.valid) {
@@ -3778,6 +4066,11 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
 
     if (transitionValidation.isIdempotent) {
       return res.json({ success: true, booking: existingBooking, message: transitionValidation.message });
+    }
+
+    // Moving a lesson that is over or cancelled would revive it (the reschedule RPC sets status='rescheduled').
+    if (scheduled_start && ['cancelled', 'completed', 'no_show'].includes(existingBooking.status)) {
+      return res.status(400).json({ error: `Cannot reschedule a ${String(existingBooking.status).replace('_', '-')} booking.` });
     }
 
     // 1. Transactional Cancellation Path
@@ -3790,7 +4083,7 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
 
       if (rpcErr) {
         console.error('[Teacher Cancel RPC Error]', rpcErr);
-        return res.status(500).json({ error: rpcErr.message || 'Failed to cancel booking.' });
+        return res.status(500).json({ error: clientErrorMessage(rpcErr, 'Failed to cancel booking.') });
       }
 
       // Best-effort fast path worker trigger AFTER commit
@@ -3812,7 +4105,7 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
 
       if (rpcErr) {
         console.error('[Teacher Reschedule RPC Error]', rpcErr);
-        return res.status(500).json({ error: rpcErr.message || 'Failed to reschedule booking.' });
+        return res.status(500).json({ error: clientErrorMessage(rpcErr, 'Failed to reschedule booking.') });
       }
 
       // Best-effort fast path worker trigger AFTER commit
@@ -3871,7 +4164,7 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
 
     if (updateErr) {
       console.error('[Update Booking Error]', updateErr);
-      return res.status(500).json({ error: updateErr.message || 'Failed to update booking notes.' });
+      return res.status(500).json({ error: 'Failed to update booking notes.' });
     }
 
     res.json({ success: true, booking: updatedBooking });
@@ -3951,7 +4244,7 @@ app.get('/api/dashboard/payments', verifyTeacherAuth, requireSuperAdmin, async (
 });
 
 // 16e. DASHBOARD: Record manual payment directly
-app.post('/api/dashboard/payments', verifyTeacherAuth, async (req, res) => {
+app.post('/api/dashboard/payments', verifyTeacherAuth, requireSuperAdmin, async (req, res) => {
   try {
     const {
       booking_id,
@@ -3982,7 +4275,7 @@ app.post('/api/dashboard/payments', verifyTeacherAuth, async (req, res) => {
       return res.status(400).json({ error: 'Currency is required for manual payments without a booking.' });
     }
 
-    const validMethods = ['international_bank_iban', 'ach_routing', 'payoneer', 'paypal', 'wise', 'other'];
+    const validMethods = ['international_bank_iban', 'ach_routing', 'payoneer', 'paypal', 'stripe', 'wise', 'other'];
     if (!payment_method || !validMethods.includes(payment_method)) {
       return res.status(400).json({ error: `Payment method must be one of: ${validMethods.join(', ')}` });
     }
@@ -4067,13 +4360,17 @@ app.post('/api/dashboard/payments/:id/confirm', verifyTeacherAuth, requireSuperA
 
     if (rpcErr) {
       console.error('[Confirm Payment Error]', rpcErr);
-      return res.status(500).json({ error: 'Failed to confirm payment: ' + rpcErr.message, code: 'PAYMENT_CONFIRM_FAILED' });
+      return res.status(500).json({ error: 'Failed to confirm payment. The booking or package may no longer be awaiting payment.', code: 'PAYMENT_CONFIRM_FAILED' });
     }
 
     // We still need to fetch the updated payment to trigger notifications
     const { data: updated } = await supabase.from('payments').select('*').eq('id', id).single();
     if (!updated) {
        return res.status(404).json({ error: 'Payment not found.' });
+    }
+
+    if (updated.booking_id) {
+      await enqueueAndRunBookingSync(supabase, updated.booking_id);
     }
 
     // Dispatch payment confirmed notification asynchronously
@@ -4084,27 +4381,26 @@ app.post('/api/dashboard/payments/:id/confirm', verifyTeacherAuth, requireSuperA
       let reference = updated.payment_reference || id;
       let serviceName = '1-on-1 Teaching';
 
-      const supabaseAdmin = getSupabaseAdminClient();
-      if (!supabaseAdmin) {
-        return res.status(503).json({ error: 'Database integration is not properly configured.' });
-      }
-
+      // The payment is already confirmed at this point; nothing below may turn that into an error response.
       if (updated.booking_id) {
-        const { data: b } = await supabaseAdmin
+        const { data: b } = await supabase
           .from('bookings')
-          .select('reference_code, student_name, contact_name, contact_email, contact_whatsapp, service_name')
+          .select('reference_code, contact_name, contact_email, contact_whatsapp, service_id')
           .eq('id', updated.booking_id)
           .maybeSingle();
 
         if (b) {
-          learnerName = b.student_name || b.contact_name || learnerName;
+          learnerName = b.contact_name || learnerName;
           contactEmail = b.contact_email;
           contactWhatsapp = b.contact_whatsapp;
           reference = b.reference_code || reference;
-          serviceName = b.service_name || serviceName;
+          if (b.service_id) {
+            const { data: srv } = await supabase.from('services').select('title').eq('id', b.service_id).maybeSingle();
+            serviceName = srv?.title || serviceName;
+          }
         }
       } else if (updated.student_id) {
-        const { data: st } = await supabaseAdmin
+        const { data: st } = await supabase
           .from('students')
           .select('name, email, whatsapp')
           .eq('id', updated.student_id)
@@ -4179,11 +4475,16 @@ app.post('/api/dashboard/payments/:id/reject', verifyTeacherAuth, requireSuperAd
       });
     }
 
-    const rejectionNote = reason ? `[REJECTED: ${reason.trim()}]` : '[REJECTED by teacher]';
+    // Only unconfirmed claims can be rejected; a confirmed payment has already
+    // confirmed the booking / granted credits and needs a refund flow instead.
+    if (payment.status !== 'pending') {
+      return res.status(409).json({ error: `Only pending payments can be rejected (this one is ${payment.status}).` });
+    }
+
+    const rejectionNote = reason ? `[REJECTED: ${String(reason).trim()}]` : '[REJECTED by teacher]';
     const updatedNotes = payment.notes ? `${rejectionNote} ${payment.notes}` : rejectionNote;
 
-    // Try status: 'rejected'
-    let { data: updated, error: uErr } = await supabase
+    const { data: updated, error: uErr } = await supabase
       .from('payments')
       .update({
         status: 'rejected',
@@ -4191,23 +4492,9 @@ app.post('/api/dashboard/payments/:id/reject', verifyTeacherAuth, requireSuperAd
         updated_at: new Date().toISOString()
       })
       .eq('id', id)
+      .eq('status', 'pending')
       .select()
       .single();
-
-    // Resilient fallback if cloud DB check constraint not yet migrated
-    if (uErr && uErr.message?.includes('payments_status_check')) {
-      const fallbackRes = await supabase
-        .from('payments')
-        .update({
-          notes: updatedNotes,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', id)
-        .select()
-        .single();
-      updated = fallbackRes.data;
-      uErr = fallbackRes.error;
-    }
 
     if (uErr) {
       console.error('[Reject Payment Error]', uErr);
@@ -4231,14 +4518,20 @@ app.delete('/api/dashboard/payments/:id', verifyTeacherAuth, requireSuperAdmin, 
 
     const { id } = req.params;
 
-    const { error } = await supabase
+    // RULES.md §5: confirmed or refunded payments are records of real money and are never deleted.
+    const { data: deleted, error } = await supabase
       .from('payments')
       .delete()
-      .eq('id', id);
+      .eq('id', id)
+      .in('status', ['pending', 'rejected'])
+      .select('id');
 
     if (error) {
       console.error('[Delete Payment Error]', error);
       return res.status(500).json({ error: 'Failed to delete payment.', code: 'PAYMENT_DELETE_FAILED' });
+    }
+    if (!deleted || deleted.length === 0) {
+      return res.status(409).json({ error: 'Only pending or rejected payments can be deleted. Use "Refund" for confirmed payments.' });
     }
 
     res.json({ success: true, message: 'Payment removed.' });
@@ -4272,23 +4565,9 @@ async function fulfillAutomatedPayment(params: {
 
   const cleanReference = String(params.paymentReference).trim();
 
-  // 1. Idempotency Check: prevent duplicate capture/credit
-  const { data: existingPayment } = await supabaseAdmin
-    .from('payments')
-    .select('id, status, booking_id, entitlement_id')
-    .eq('payment_reference', cleanReference)
-    .maybeSingle();
-
-  if (existingPayment) {
-    if (existingPayment.status === 'confirmed') {
-      return { success: true, paymentId: existingPayment.id, isIdempotent: true };
-    }
-    // If pending, run atomic confirmation
-    await supabaseAdmin.rpc('verify_payment_atomic', { p_payment_id: existingPayment.id });
-    return { success: true, paymentId: existingPayment.id, isIdempotent: true };
-  }
-
-  // 2. Resolve target booking or package entitlement
+  // 1. Resolve target booking or package entitlement
+  let expectedAmount = 0;
+  let expectedCurrency = 'USD';
   let bookingId: string | null = null;
   let entitlementId: string | null = null;
   let studentId: string | null = null;
@@ -4320,6 +4599,7 @@ async function fulfillAutomatedPayment(params: {
     }
 
     bookingId = booking.id;
+    expectedAmount = Number(booking.fee_amount_usd || 0);
     studentId = booking.student_id;
     learnerName = booking.contact_name || learnerName;
     contactEmail = booking.contact_email || contactEmail;
@@ -4338,7 +4618,7 @@ async function fulfillAutomatedPayment(params: {
   } else if (params.targetType === 'package') {
     const { data: entitlement } = await supabaseAdmin
       .from('package_entitlements')
-      .select('id, learner_student_id, package_catalog_id, package_catalog:package_catalog_id(name)')
+      .select('id, learner_student_id, price_paid, currency, package_catalog_id, package_catalog:package_catalog_id(name, price_amount, currency)')
       .eq('id', params.targetId)
       .maybeSingle();
 
@@ -4349,6 +4629,8 @@ async function fulfillAutomatedPayment(params: {
     entitlementId = entitlement.id;
     studentId = entitlement.learner_student_id;
     const cat: any = Array.isArray(entitlement.package_catalog) ? entitlement.package_catalog[0] : entitlement.package_catalog;
+    expectedAmount = Number(entitlement.price_paid || cat?.price_amount || 0);
+    expectedCurrency = entitlement.currency || cat?.currency || 'USD';
     serviceName = cat?.name || 'Lesson Package';
     referenceCode = entitlement.id;
 
@@ -4366,7 +4648,34 @@ async function fulfillAutomatedPayment(params: {
     }
   }
 
-  // 3. Create initial payment row
+  // 2. Idempotency: the same gateway reference may only ever confirm the same target.
+  const { data: existingPayment } = await supabaseAdmin
+    .from('payments')
+    .select('id, status, booking_id, entitlement_id')
+    .eq('payment_reference', cleanReference)
+    .maybeSingle();
+
+  if (existingPayment) {
+    if (existingPayment.booking_id !== bookingId || existingPayment.entitlement_id !== entitlementId) {
+      console.error('[fulfillAutomatedPayment] reference reused for a different target', { cleanReference, bookingId, entitlementId });
+      throw new PublicError('This payment reference belongs to a different order.');
+    }
+    if (existingPayment.status !== 'confirmed') {
+      const { error: retryErr } = await supabaseAdmin.rpc('verify_payment_atomic', { p_payment_id: existingPayment.id });
+      if (retryErr) {
+        console.error('[fulfillAutomatedPayment] verify_payment_atomic failed on retry', retryErr);
+        throw new PublicError('Payment received but could not be confirmed automatically. It is pending manual review.');
+      }
+    }
+    return { success: true, paymentId: existingPayment.id, isIdempotent: true };
+  }
+
+  // 3. The gateway must have collected exactly the price of this target.
+  const paidCents = Math.round(Number(params.amount) * 100);
+  const expectedCents = Math.round(expectedAmount * 100);
+  const paidCurrency = (params.currency || 'USD').toUpperCase();
+  const amountMatches = expectedCents > 0 && paidCents === expectedCents && paidCurrency === expectedCurrency.toUpperCase();
+
   const { data: newPayment, error: pInsertErr } = await supabaseAdmin
     .from('payments')
     .insert({
@@ -4374,55 +4683,50 @@ async function fulfillAutomatedPayment(params: {
       entitlement_id: entitlementId,
       student_id: studentId,
       amount: Number(params.amount),
-      currency: (params.currency || 'USD').toUpperCase(),
+      currency: paidCurrency,
       payment_method: params.paymentMethod,
       payment_reference: cleanReference,
       status: 'pending',
-      notes: params.notes || `Automated ${params.paymentMethod} verified payment`
+      notes: amountMatches
+        ? (params.notes || `Automated ${params.paymentMethod} verified payment`)
+        : `AMOUNT MISMATCH — manual review required. Paid ${paidCurrency} ${Number(params.amount).toFixed(2)}, expected ${expectedCurrency} ${expectedAmount.toFixed(2)}. ${params.notes || ''}`.trim()
     })
     .select('*')
     .single();
 
   if (pInsertErr || !newPayment) {
     console.error('[Insert Automated Payment Error]', pInsertErr);
-    throw new Error(`Failed to record payment: ${pInsertErr?.message || 'Database error'}`);
+    throw new PublicError('Failed to record payment.');
   }
 
-  // 4. Atomic fulfillment via Postgres RPC (confirms booking, activates entitlement, allocates credits)
-  try {
-    const { error: rpcErr } = await supabaseAdmin.rpc('verify_payment_atomic', {
-      p_payment_id: newPayment.id
-    });
-    if (rpcErr) {
-      console.warn('[Automated Payment verify_payment_atomic RPC Warning, applying direct fallback]', rpcErr);
-    }
-  } catch (rpcCatch) {
-    console.warn('[Automated Payment verify_payment_atomic RPC Exception, applying direct fallback]', rpcCatch);
+  if (!amountMatches) {
+    console.error('[fulfillAutomatedPayment] amount mismatch', { paymentId: newPayment.id, paidCents, expectedCents, paidCurrency, expectedCurrency });
+    throw new PublicError('Payment amount does not match the order. It has been recorded for manual review.');
   }
 
-  // Authoritative direct updates to guarantee persistence
-  try {
-    if (bookingId) {
-      await supabaseAdmin.from('bookings').update({ status: 'confirmed' }).eq('id', bookingId);
-      // Fast path integration job for calendar/zoom
-      processIntegrationJobs(1, undefined, bookingId).catch(err => console.warn('[Fast path integration warning]', err));
-    }
-    if (entitlementId) {
-      await supabaseAdmin.from('package_entitlements').update({ status: 'active' }).eq('id', entitlementId);
-    }
-    await supabaseAdmin.from('payments').update({ status: 'confirmed', verified_at: new Date().toISOString() }).eq('id', newPayment.id);
-  } catch (directUpdErr) {
-    console.error('[Automated Payment direct fallback error]', directUpdErr);
+  // 4. Atomic fulfillment via Postgres RPC (confirms booking, activates entitlement, allocates credits).
+  // If the RPC refuses (e.g. booking no longer pending), the payment stays pending for manual review —
+  // never force the status, or cancelled bookings and expired packages get revived.
+  const { error: rpcErr } = await supabaseAdmin.rpc('verify_payment_atomic', {
+    p_payment_id: newPayment.id
+  });
+  if (rpcErr) {
+    console.error('[fulfillAutomatedPayment] verify_payment_atomic failed', { paymentId: newPayment.id, rpcErr });
+    throw new PublicError('Payment received but could not be confirmed automatically. It is pending manual review.');
+  }
+
+  if (bookingId) {
+    await enqueueAndRunBookingSync(supabaseAdmin, bookingId);
   }
 
   // 5. Asynchronously dispatch Brevo confirmation emails (Both to Student and to Ustadh Mahmoud)
   try {
-    const scheduledDateStr = bookingDetailsForNotif?.scheduled_start
-      ? new Date(bookingDetailsForNotif.scheduled_start).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
-      : '';
-    const scheduledTimeStr = bookingDetailsForNotif?.scheduled_start
-      ? new Date(bookingDetailsForNotif.scheduled_start).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
-      : '';
+    // Format in the student's timezone; the server runs in UTC.
+    const studentStart = bookingDetailsForNotif?.scheduled_start
+      ? DateTime.fromISO(bookingDetailsForNotif.scheduled_start).setZone(bookingDetailsForNotif.student_timezone || 'Africa/Cairo')
+      : null;
+    const scheduledDateStr = studentStart?.isValid ? studentStart.toFormat('LLL d, yyyy') : '';
+    const scheduledTimeStr = studentStart?.isValid ? studentStart.toFormat('hh:mm a') : '';
 
     // First: dispatch PAYMENT_CONFIRMED
     await dispatchNotification({
@@ -4449,28 +4753,6 @@ async function fulfillAutomatedPayment(params: {
       }
     });
 
-    // Second: If booking was confirmed, dispatch BOOKING_CONFIRMED so teacher gets new booking alert with Zoom link
-    if (bookingId && bookingDetailsForNotif) {
-      await dispatchNotification({
-        eventType: 'BOOKING_CONFIRMED',
-        booking: {
-          id: bookingId,
-          referenceCode,
-          serviceName,
-          learnerName,
-          contactEmail,
-          contactWhatsapp,
-          date: scheduledDateStr,
-          timeDisplay: scheduledTimeStr,
-          timezone: bookingDetailsForNotif.student_timezone || 'UTC',
-          durationMinutes: bookingDetailsForNotif.duration_minutes || 60,
-          zoomLink: bookingDetailsForNotif.zoom_meeting_link,
-          cairoTimeDisplay: bookingDetailsForNotif.cairo_time_display,
-          feeAmount: Number(newPayment.amount),
-          currency: newPayment.currency || 'USD'
-        }
-      });
-    }
   } catch (notifErr) {
     console.warn('[Notification Dispatch Warning]', notifErr);
   }
@@ -4523,7 +4805,7 @@ app.post('/api/payments/create-intent', rateLimit, async (req: any, res: any) =>
       const isTargetUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(targetId).trim());
       let bQuery = supabaseAdmin
         .from('bookings')
-        .select('id, reference_code, fee_amount_usd, service_id, contact_email, status');
+        .select('id, reference_code, fee_amount_usd, service_id, contact_email, status, hold_expires_at, payment_plan');
 
       if (isTargetUuid) {
         bQuery = bQuery.or(`id.eq.${targetId},reference_code.eq.${targetId}`);
@@ -4550,16 +4832,15 @@ app.post('/api/payments/create-intent', rateLimit, async (req: any, res: any) =>
         return res.status(400).json({ error: 'This booking has already been paid and confirmed.' });
       }
 
-      if (!booking.fee_amount_usd || Number(booking.fee_amount_usd) <= 0) {
-        if (booking.service_id) {
-          const { data: srvRow } = await supabaseAdmin.from('services').select('hourly_rate_usd').eq('id', booking.service_id).maybeSingle();
-          authoritativeAmount = Number(srvRow?.hourly_rate_usd || 9.00);
-        } else {
-          authoritativeAmount = 9.00;
-        }
-      } else {
-        authoritativeAmount = Number(booking.fee_amount_usd);
+      // Only unpaid bookings with a server-computed fee are payable. Trials and
+      // package-credit bookings have fee 0 and must never be charged.
+      if (booking.status !== 'pending') {
+        return res.status(400).json({ error: 'This booking is not awaiting payment.' });
       }
+      if (booking.payment_plan === 'pay_now' && booking.hold_expires_at && new Date(booking.hold_expires_at).getTime() <= Date.now()) {
+        return res.status(410).json({ error: 'Your reserved time has expired. Please choose a time again.', code: 'HOLD_EXPIRED' });
+      }
+      authoritativeAmount = Number(booking.fee_amount_usd || 0);
       authoritativeCurrency = 'USD';
 
       if (booking.service_id) {
@@ -4578,37 +4859,33 @@ app.post('/api/payments/create-intent', rateLimit, async (req: any, res: any) =>
         .eq('id', targetId)
         .maybeSingle();
 
-      if (entitlement) {
-        if (entitlement.status === 'active') {
-          return res.status(400).json({ error: 'This package has already been paid and activated.' });
-        }
-        const cat: any = Array.isArray(entitlement.package_catalog) ? entitlement.package_catalog[0] : entitlement.package_catalog;
-        authoritativeAmount = Number(entitlement.price_paid || cat?.price_amount || 0);
-        authoritativeCurrency = entitlement.currency || cat?.currency || 'USD';
-        itemTitle = cat?.name || 'Lesson Package';
-      } else {
-        // Fallback: targetId might be a package_catalog ID
-        const { data: catItem } = await supabaseAdmin
-          .from('package_catalog')
-          .select('id, name, price_amount, currency')
-          .eq('id', targetId)
-          .maybeSingle();
-
-        if (!catItem) {
-          return res.status(404).json({ error: 'Package entitlement or catalog item not found.' });
-        }
-
-        authoritativeAmount = Number(catItem.price_amount);
-        authoritativeCurrency = catItem.currency || 'USD';
-        itemTitle = catItem.name;
+      // Only an existing entitlement awaiting payment can be paid for: payment confirmation
+      // activates an entitlement, so charging for a bare catalog id could never be fulfilled.
+      if (!entitlement) {
+        return res.status(404).json({ error: 'Package not found. Please select the package from your student portal.' });
       }
+      if (entitlement.status !== 'pending_payment') {
+        return res.status(400).json({ error: 'This package is not awaiting payment.' });
+      }
+      const cat: any = Array.isArray(entitlement.package_catalog) ? entitlement.package_catalog[0] : entitlement.package_catalog;
+      authoritativeAmount = Number(entitlement.price_paid || cat?.price_amount || 0);
+      authoritativeCurrency = entitlement.currency || cat?.currency || 'USD';
+      itemTitle = cat?.name || 'Lesson Package';
     }
 
     if (authoritativeAmount <= 0) {
       return res.status(400).json({ error: 'No payment is required for this item.' });
     }
 
-    const hostOrigin = (req.headers.origin as string) || 'https://watazawwado.academy';
+    // Redirects after checkout may only point back at this site.
+    const hostOrigin = resolveTrustedAppOrigin(req.headers.origin as string | undefined);
+    const sameSiteUrl = (url: unknown) => {
+      try {
+        return typeof url === 'string' && new URL(url).origin === hostOrigin ? url : undefined;
+      } catch {
+        return undefined;
+      }
+    };
 
     if (gateway === 'paypal') {
       const order = await createPayPalOrder({
@@ -4638,8 +4915,8 @@ app.post('/api/payments/create-intent', rateLimit, async (req: any, res: any) =>
           targetType,
           targetId: String(targetId)
         },
-        successUrl: successUrl || defaultSuccessUrl,
-        cancelUrl: cancelUrl || defaultCancelUrl
+        successUrl: sameSiteUrl(successUrl) || defaultSuccessUrl,
+        cancelUrl: sameSiteUrl(cancelUrl) || defaultCancelUrl
       });
 
       return res.json({
@@ -4653,23 +4930,39 @@ app.post('/api/payments/create-intent', rateLimit, async (req: any, res: any) =>
     }
   } catch (err: any) {
     console.error('[Create Payment Intent Error]', err);
-    return res.status(500).json({ error: err.message || 'Failed to initialize payment gateway.' });
+    return res.status(500).json({ error: clientErrorMessage(err, 'Failed to initialize payment gateway.') });
   }
 });
 
 // 3. Automated PayPal Order Capture
 app.post('/api/payments/paypal/capture', rateLimit, async (req: any, res: any) => {
   try {
-    const { orderId, targetType, targetId } = req.body;
+    const { orderId } = req.body;
 
-    if (!orderId || !targetType || !targetId) {
-      return res.status(400).json({ error: 'orderId, targetType, and targetId are required.' });
+    if (!orderId || typeof orderId !== 'string') {
+      return res.status(400).json({ error: 'orderId is required.' });
     }
 
     const captureResult = await capturePayPalOrder(orderId);
 
     if (captureResult.status !== 'COMPLETED') {
       return res.status(400).json({ error: `PayPal order not completed. Status: ${captureResult.status}` });
+    }
+
+    // The target comes only from the custom_id the server wrote at order creation,
+    // so an order paid for one item can't be redeemed against another.
+    let targetType: 'booking' | 'package' | undefined;
+    let targetId: string | undefined;
+    try {
+      const parsed = JSON.parse(captureResult.customId || '');
+      if ((parsed?.targetType === 'booking' || parsed?.targetType === 'package') && parsed?.targetId) {
+        targetType = parsed.targetType;
+        targetId = String(parsed.targetId);
+      }
+    } catch { /* handled below */ }
+    if (!targetType || !targetId) {
+      console.error('[PayPal Capture] order has no server-issued target', { orderId });
+      return res.status(400).json({ error: 'This PayPal order was not created by this site.' });
     }
 
     const fulfillment = await fulfillAutomatedPayment({
@@ -4692,7 +4985,7 @@ app.post('/api/payments/paypal/capture', rateLimit, async (req: any, res: any) =
     });
   } catch (err: any) {
     console.error('[PayPal Capture Error]', err);
-    return res.status(500).json({ error: err.message || 'Failed to process PayPal payment.' });
+    return res.status(500).json({ error: clientErrorMessage(err, 'Failed to process PayPal payment.') });
   }
 });
 
@@ -4714,8 +5007,11 @@ app.post('/api/payments/stripe/verify', rateLimit, async (req: any, res: any) =>
       });
     }
 
-    const targetType = (session.metadata?.targetType as 'booking' | 'package') || 'booking';
-    const targetId = session.metadata?.targetId || sessionId;
+    const targetType = session.metadata?.targetType as 'booking' | 'package' | undefined;
+    const targetId = session.metadata?.targetId;
+    if ((targetType !== 'booking' && targetType !== 'package') || !targetId) {
+      return res.status(400).json({ error: 'This checkout session was not created by this site.' });
+    }
 
     const fulfillment = await fulfillAutomatedPayment({
       paymentMethod: 'stripe',
@@ -4739,7 +5035,436 @@ app.post('/api/payments/stripe/verify', rateLimit, async (req: any, res: any) =>
     });
   } catch (err: any) {
     console.error('[Stripe Verify Error]', err);
-    return res.status(500).json({ error: err.message || 'Failed to verify Stripe payment.' });
+    return res.status(500).json({ error: clientErrorMessage(err, 'Failed to verify Stripe payment.') });
+  }
+});
+
+// ============================================================================
+// RULES.md §2 / §5: pay later, refunds, and student self-service changes
+// ============================================================================
+
+/** Minimum paid lessons before a student may use "pay later" (RULES.md §5). */
+const PAY_LATER_MIN_PAID_LESSONS = 12;
+
+/** Completed, non-trial lessons that were actually paid (confirmed payment or package credit). */
+async function countPaidLessons(supabase: any, learnerIds: string[]): Promise<number> {
+  if (learnerIds.length === 0) return 0;
+  const { data: completed } = await supabase
+    .from('bookings')
+    .select('id, package_entitlement_id')
+    .in('student_id', learnerIds)
+    .eq('booking_type', 'regular')
+    .eq('status', 'completed');
+  const rows: any[] = completed || [];
+  const viaPackage = rows.filter(b => b.package_entitlement_id).length;
+  const singleIds = rows.filter(b => !b.package_entitlement_id).map(b => b.id);
+  if (singleIds.length === 0) return viaPackage;
+  const { data: paid } = await supabase
+    .from('payments')
+    .select('booking_id')
+    .in('booking_id', singleIds)
+    .eq('status', 'confirmed');
+  return viaPackage + new Set((paid || []).map((p: any) => p.booking_id)).size;
+}
+
+async function resolveStudentBooking(supabase: any, req: any, bookingId: string) {
+  const { data: booking } = await supabase
+    .from('bookings')
+    .select('*')
+    .eq('id', bookingId)
+    .maybeSingle();
+  if (!booking) return { booking: null, error: { status: 404, message: 'Lesson not found.' } };
+  const learners = await getAuthorizedLearnersForStudent(supabase, req);
+  if (!learners.some(l => l.id === booking.student_id)) {
+    return { booking: null, error: { status: 403, message: 'This lesson does not belong to your account.' } };
+  }
+  return { booking, error: null };
+}
+
+// Student: can this account use "pay later"?
+app.get('/api/student/pay-later', verifyStudentAuth, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database service unavailable.' });
+    const learners = await getAuthorizedLearnersForStudent(supabase, req);
+    const paidLessons = await countPaidLessons(supabase, learners.map(l => l.id));
+    res.json({ eligible: paidLessons >= PAY_LATER_MIN_PAID_LESSONS, paidLessons, required: PAY_LATER_MIN_PAID_LESSONS });
+  } catch (err) {
+    console.error('[GET /api/student/pay-later]', err);
+    res.status(500).json({ error: 'Could not check pay-later eligibility.' });
+  }
+});
+
+// Student: book now, pay later (trusted students only). The booking waits for super-admin approval.
+app.post('/api/bookings/:referenceCode/pay-later', rateLimit, verifyStudentAuth, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database service unavailable.' });
+
+    const { data: booking } = await supabase
+      .from('bookings')
+      .select('id, reference_code, student_id, status, booking_type, payment_plan, package_entitlement_id, fee_amount_usd, scheduled_start, hold_expires_at, contact_name')
+      .eq('reference_code', String(req.params.referenceCode || '').trim())
+      .maybeSingle();
+    if (!booking) return res.status(404).json({ error: 'Booking not found.' });
+
+    const learners = await getAuthorizedLearnersForStudent(supabase, req);
+    if (!learners.some(l => l.id === booking.student_id)) {
+      return res.status(403).json({ error: 'This booking does not belong to your account.' });
+    }
+    if (booking.status !== 'pending' || booking.booking_type !== 'regular' || booking.package_entitlement_id || booking.payment_plan !== 'pay_now') {
+      return res.status(400).json({ error: 'This booking cannot be switched to pay later.' });
+    }
+    if (booking.hold_expires_at && new Date(booking.hold_expires_at).getTime() <= Date.now()) {
+      return res.status(410).json({ error: 'Your reserved time has expired. Please choose a time again.', code: 'HOLD_EXPIRED' });
+    }
+
+    const paidLessons = await countPaidLessons(supabase, learners.map(l => l.id));
+    if (paidLessons < PAY_LATER_MIN_PAID_LESSONS) {
+      return res.status(403).json({ error: `Pay later is available after ${PAY_LATER_MIN_PAID_LESSONS} paid lessons.`, paidLessons });
+    }
+
+    const { error: updErr } = await supabase
+      .from('bookings')
+      .update({ payment_plan: 'pay_later', hold_expires_at: null, updated_at: new Date().toISOString() })
+      .eq('id', booking.id)
+      .eq('status', 'pending')
+      .eq('payment_plan', 'pay_now');
+    if (updErr) {
+      console.error('[pay-later] update failed', updErr.message);
+      return res.status(500).json({ error: 'Could not reserve your lesson. Please try again.' });
+    }
+
+    const isAr = req.body?.lang === 'ar';
+    const when = DateTime.fromISO(booking.scheduled_start).setZone('Africa/Cairo').toFormat('dd LLL yyyy, hh:mm a');
+    const text = isAr
+      ? `السلام عليكم، حجزت درس (${booking.reference_code}) يوم ${when} بتوقيت القاهرة واخترت "ادفع لاحقاً" بقيمة $${Number(booking.fee_amount_usd).toFixed(2)}. أرجو الموافقة على الحجز.`
+      : `Assalamu alaikum! I booked lesson ${booking.reference_code} on ${when} (Cairo time) and chose "pay later" ($${Number(booking.fee_amount_usd).toFixed(2)}). Could you approve my booking, please?`;
+    const whatsappUrl = `https://wa.me/${MAHMOUD_OFFICIAL_PHONE_DIGITS}?text=${encodeURIComponent(text)}`;
+
+    res.json({ success: true, status: 'awaiting_approval', whatsappUrl });
+  } catch (err) {
+    console.error('[POST /api/bookings/:ref/pay-later]', err);
+    res.status(500).json({ error: 'Could not reserve your lesson. Please try again.' });
+  }
+});
+
+// Super admin: pay-later bookings waiting for a decision.
+app.get('/api/dashboard/pay-later', verifyTeacherAuth, requireSuperAdmin, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database service unavailable.' });
+    const { data, error } = await supabase
+      .from('bookings')
+      .select('id, reference_code, student_id, contact_name, contact_email, contact_whatsapp, service_id, duration_minutes, scheduled_start, fee_amount_usd, created_at')
+      .eq('status', 'pending')
+      .eq('payment_plan', 'pay_later')
+      .order('scheduled_start', { ascending: true });
+    if (error) throw error;
+    res.json({ bookings: data || [] });
+  } catch (err) {
+    console.error('[GET /api/dashboard/pay-later]', err);
+    res.status(500).json({ error: 'Could not load pay-later requests.' });
+  }
+});
+
+// Super admin: approve or reject a pay-later booking.
+app.post('/api/dashboard/bookings/:id/pay-later/:decision', verifyTeacherAuth, requireSuperAdmin, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database service unavailable.' });
+    const { id, decision } = req.params;
+    if (decision !== 'approve' && decision !== 'reject') {
+      return res.status(400).json({ error: 'Decision must be approve or reject.' });
+    }
+
+    const approve = decision === 'approve';
+    const { data: updated, error } = await supabase
+      .from('bookings')
+      .update({
+        status: approve ? 'confirmed' : 'cancelled',
+        cancellation_reason: approve ? null : 'Pay-later request declined',
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id)
+      .eq('status', 'pending')
+      .eq('payment_plan', 'pay_later')
+      .select('id')
+      .maybeSingle();
+    if (error) throw error;
+    if (!updated) return res.status(409).json({ error: 'This request was already handled.' });
+
+    // Approved: Zoom, calendar, reminders and confirmation email, exactly like a paid booking.
+    if (approve) await enqueueAndRunBookingSync(supabase, id);
+    res.json({ success: true, status: approve ? 'confirmed' : 'cancelled' });
+  } catch (err) {
+    console.error('[POST /api/dashboard/bookings/:id/pay-later]', err);
+    res.status(500).json({ error: 'Could not update this request.' });
+  }
+});
+
+// Super admin: refund a confirmed payment (never delete it) — RULES.md §5.
+app.post('/api/dashboard/payments/:id/refund', verifyTeacherAuth, requireSuperAdmin, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database service unavailable.' });
+    const reason = typeof req.body?.reason === 'string' ? req.body.reason.trim().slice(0, 500) : null;
+    const { data, error } = await supabase.rpc('refund_payment_atomic', { p_payment_id: req.params.id, p_reason: reason });
+    if (error) {
+      console.error('[Refund Payment Error]', error);
+      return res.status(400).json({ error: clientErrorMessage(error, 'Could not refund this payment.') });
+    }
+    // Cancel the Zoom meeting / calendar event of any lesson the refund cancelled.
+    try {
+      await processIntegrationJobs();
+    } catch (jobErr) {
+      console.warn('[Refund] integration jobs left for the cron worker', jobErr);
+    }
+    res.json({ success: true, ...((data as any) || {}) });
+  } catch (err) {
+    console.error('[POST /api/dashboard/payments/:id/refund]', err);
+    res.status(500).json({ error: 'Could not refund this payment.' });
+  }
+});
+
+// Student: reschedule a lesson. Trials: once, at least 1 hour before. Regular: at least 3 hours before.
+app.post('/api/student/bookings/:id/reschedule', rateLimit, verifyStudentAuth, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database service unavailable.' });
+
+    const { booking, error: ownErr } = await resolveStudentBooking(supabase, req, req.params.id);
+    if (ownErr) return res.status(ownErr.status).json({ error: ownErr.message });
+
+    if (!['confirmed', 'rescheduled'].includes(booking.status)) {
+      return res.status(400).json({ error: 'Only confirmed lessons can be rescheduled.' });
+    }
+    const isTrial = booking.booking_type === 'trial';
+    const hoursLeft = DateTime.fromISO(booking.scheduled_start).diffNow('hours').hours;
+    if (isTrial && (booking.reschedule_count || 0) >= 1) {
+      return res.status(400).json({ error: 'A free trial can be rescheduled only once. You can cancel it and book again after 48 hours.', code: 'TRIAL_RESCHEDULE_USED' });
+    }
+    // RULES.md §2: any lesson can be moved up to 1 hour before it starts.
+    if (hoursLeft < 1) {
+      return res.status(400).json({ error: 'Lessons can be moved up to 1 hour before they start. For a real emergency, please message us on WhatsApp.', code: 'TOO_LATE' });
+    }
+
+    const newStart = DateTime.fromISO(String(req.body?.utcStartIso || ''), { zone: 'utc' });
+    if (!newStart.isValid || newStart < DateTime.utc().plus({ minutes: 10 })) {
+      return res.status(400).json({ error: 'Please choose a new time in the future.' });
+    }
+    const newEnd = newStart.plus({ minutes: booking.duration_minutes });
+
+    // shortcut: a new time overlapping this lesson's own old slot may be reported busy; pick another slot.
+    const slot = await validateSlotAvailability(newStart.toISO()!, newEnd.toISO()!, booking.teacher_id || undefined);
+    if (slot.isAvailable === false) {
+      return res.status(409).json({ error: slot.conflictReason || 'This time is no longer available. Please choose another one.' });
+    }
+
+    const { data: moved, error: moveErr } = await supabase
+      .from('bookings')
+      .update({
+        scheduled_start: newStart.toISO(),
+        scheduled_end: newEnd.toISO(),
+        cairo_time_display: newStart.setZone('Africa/Cairo').toFormat('dd LLL yyyy, hh:mm a'),
+        status: 'rescheduled',
+        reschedule_count: (booking.reschedule_count || 0) + 1,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', booking.id)
+      .eq('reschedule_count', booking.reschedule_count || 0) // a concurrent reschedule loses
+      .select('id')
+      .maybeSingle();
+    if (moveErr) {
+      // 23P01: exclusion constraint — someone took the slot in the meantime.
+      if ((moveErr as any).code === '23P01') return res.status(409).json({ error: 'This time was just taken. Please choose another one.' });
+      console.error('[student reschedule] update failed', moveErr.message);
+      return res.status(500).json({ error: 'Could not move your lesson. Please try again.' });
+    }
+    if (!moved) return res.status(409).json({ error: 'This lesson was just changed. Please refresh and try again.' });
+
+    // Re-arm reminders for the new time.
+    const reminderRows = [
+      { type: '24h_before', at: newStart.minus({ hours: 24 }) },
+      { type: '1h_before', at: newStart.minus({ hours: 1 }) }
+    ].filter(r => r.at > DateTime.utc()).map(r => ({
+      booking_id: booking.id,
+      reminder_type: r.type,
+      scheduled_for: r.at.toISO(),
+      status: 'pending',
+      sent_at: null,
+      error_info: null,
+      claim_token: null,
+      processing_at: null,
+      updated_at: new Date().toISOString()
+    }));
+    await supabase.from('reminders').update({ status: 'cancelled', updated_at: new Date().toISOString() }).eq('booking_id', booking.id).eq('status', 'pending');
+    if (reminderRows.length) {
+      const { error: remErr } = await supabase.from('reminders').upsert(reminderRows, { onConflict: 'booking_id,reminder_type' });
+      if (remErr) console.warn('[student reschedule] reminders not re-armed:', remErr.message);
+    }
+
+    // Move the Zoom meeting and calendar event.
+    const { error: jobErr } = await supabase.from('integration_jobs').insert({ booking_id: booking.id, job_type: 'booking_reschedule', status: 'pending' });
+    if (jobErr && jobErr.code !== '23505') console.warn('[student reschedule] job enqueue failed:', jobErr.message);
+    try {
+      await processIntegrationJobs(1, undefined, booking.id);
+    } catch (err) {
+      console.warn('[student reschedule] integration left for the cron worker', err);
+    }
+
+    res.json({ success: true, scheduledStart: newStart.toISO(), rescheduleCount: (booking.reschedule_count || 0) + 1 });
+  } catch (err) {
+    console.error('[POST /api/student/bookings/:id/reschedule]', err);
+    res.status(500).json({ error: 'Could not move your lesson. Please try again.' });
+  }
+});
+
+// Student cancellation (RULES.md §2/§5): a free trial up to 1 hour before; any other lesson up to 3 hours before.
+// A paid single lesson cancelled in time comes back as a lesson credit; a package lesson keeps its credit.
+app.post('/api/student/bookings/:id/cancel', rateLimit, verifyStudentAuth, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database service unavailable.' });
+
+    const { booking, error: ownErr } = await resolveStudentBooking(supabase, req, req.params.id);
+    if (ownErr) return res.status(ownErr.status).json({ error: ownErr.message });
+
+    if (!['confirmed', 'rescheduled'].includes(booking.status)) {
+      return res.status(400).json({ error: 'This lesson cannot be cancelled.' });
+    }
+    const isTrial = booking.booking_type === 'trial';
+    const minHours = isTrial ? 1 : 3;
+    if (DateTime.fromISO(booking.scheduled_start).diffNow('hours').hours < minHours) {
+      return res.status(400).json({
+        error: isTrial
+          ? 'A free trial can be cancelled up to 1 hour before it starts.'
+          : 'Lessons can be cancelled up to 3 hours before they start. You can still move it up to 1 hour before.',
+        code: 'TOO_LATE'
+      });
+    }
+    const reason = typeof req.body?.reason === 'string' && req.body.reason.trim() ? req.body.reason.trim().slice(0, 500) : 'Cancelled by student';
+
+    const isPaidSingle = !isTrial && !booking.package_entitlement_id && booking.payment_plan !== 'pay_later';
+    if (isPaidSingle) {
+      const { data: result, error: rpcErr } = await supabase.rpc('student_cancel_paid_lesson_to_credit', {
+        p_booking_id: booking.id,
+        p_purchaser_account_id: req.studentUser?.auth_id,
+        p_reason: reason
+      });
+      if (rpcErr) {
+        console.error('[student cancel -> credit]', rpcErr.message);
+        return res.status(400).json({ error: clientErrorMessage(rpcErr, 'Could not cancel your lesson. Please try again.') });
+      }
+      try {
+        await processIntegrationJobs(1, undefined, booking.id);
+      } catch (err) {
+        console.warn('[student cancel] integration left for the cron worker', err);
+      }
+      return res.json({ success: true, creditId: result?.creditId || null });
+    }
+
+    const { data: cancelled, error } = await supabase
+      .from('bookings')
+      .update({ status: 'cancelled', cancellation_reason: reason, updated_at: new Date().toISOString() })
+      .eq('id', booking.id)
+      .in('status', ['confirmed', 'rescheduled'])
+      .select('id')
+      .maybeSingle();
+    if (error) throw error;
+    if (!cancelled) return res.status(409).json({ error: 'This lesson was just changed. Please refresh.' });
+
+    await supabase.from('reminders').update({ status: 'cancelled', updated_at: new Date().toISOString() }).eq('booking_id', booking.id).eq('status', 'pending');
+    const { error: jobErr } = await supabase.from('integration_jobs').insert({ booking_id: booking.id, job_type: 'booking_cancel', status: 'pending' });
+    if (jobErr && jobErr.code !== '23505') console.warn('[student cancel] job enqueue failed:', jobErr.message);
+    try {
+      await processIntegrationJobs(1, undefined, booking.id);
+    } catch (err) {
+      console.warn('[student cancel] integration left for the cron worker', err);
+    }
+
+    res.json({
+      success: true,
+      // RULES.md §2: a cancelled trial means a 48-hour wait before booking a new one.
+      ...(isTrial ? { nextTrialAvailableAt: DateTime.utc().plus({ hours: 48 }).toISO() } : {})
+    });
+  } catch (err) {
+    console.error('[POST /api/student/bookings/:id/cancel]', err);
+    res.status(500).json({ error: 'Could not cancel your lesson. Please try again.' });
+  }
+});
+
+// Student: ask for a refund of an unused lesson credit instead of rebooking (RULES.md §5).
+// At most MAX_STUDENT_REFUNDED_LESSONS per account; the owner pays within 14 days and records it with the Refund button.
+app.post('/api/student/credits/:id/refund-request', rateLimit, verifyStudentAuth, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database service unavailable.' });
+    const authUserId = req.studentUser?.auth_id;
+
+    const { data: credit } = await supabase
+      .from('package_entitlements')
+      .select('id, purchaser_account_id, learner_student_id, status, used_credits, price_paid, currency, metadata')
+      .eq('id', req.params.id)
+      .maybeSingle();
+    const learners = await getAuthorizedLearnersForStudent(supabase, req);
+    const owns = credit && (credit.purchaser_account_id === authUserId || learners.some(l => l.id === credit.learner_student_id));
+    if (!credit || !owns || credit.metadata?.source !== 'cancellation_credit') {
+      return res.status(404).json({ error: 'Lesson credit not found.' });
+    }
+    if (credit.status !== 'active' || credit.used_credits > 0) {
+      return res.status(400).json({ error: 'This credit was already used or refunded.' });
+    }
+    const { count: upcoming } = await supabase
+      .from('bookings')
+      .select('id', { count: 'exact', head: true })
+      .eq('package_entitlement_id', credit.id)
+      .in('status', ['pending', 'confirmed', 'rescheduled']);
+    if ((upcoming || 0) > 0) {
+      return res.status(400).json({ error: 'This credit is already booked for a lesson. Cancel that lesson first.' });
+    }
+
+    const { data: accountCredits } = await supabase
+      .from('package_entitlements')
+      .select('id, metadata')
+      .eq('purchaser_account_id', credit.purchaser_account_id);
+    const refundedSoFar = (accountCredits || []).filter((c: any) => c.metadata?.source === 'cancellation_credit' && c.metadata?.refunded === true).length;
+    if (refundedSoFar >= MAX_STUDENT_REFUNDED_LESSONS) {
+      return res.status(400).json({
+        error: `Refunds are limited to ${MAX_STUDENT_REFUNDED_LESSONS} lessons per account, and this account has reached that limit. Your credit stays valid for a future lesson.`,
+        code: 'REFUND_LIMIT'
+      });
+    }
+
+    const { error: updErr } = await supabase
+      .from('package_entitlements')
+      .update({ metadata: { ...credit.metadata, refund_requested_at: new Date().toISOString() }, updated_at: new Date().toISOString() })
+      .eq('id', credit.id);
+    if (updErr) console.warn('[refund request] could not record the request:', updErr.message);
+
+    const termsUrl = `${resolveTrustedAppOrigin(req.headers.origin as string | undefined)}/terms#refunds`;
+    const amount = `${Number(credit.price_paid).toFixed(2)} ${credit.currency || 'USD'}`;
+    const text = [
+      'Assalamu alaikum,',
+      `I would like a refund for my cancelled lesson instead of a lesson credit (credit ID: ${credit.id}, amount: ${amount}).`,
+      'I have read the refund policy and I agree to wait up to 14 days to receive the money.',
+      'Account / payment method to receive the refund: ',
+      '',
+      'السلام عليكم،',
+      `أريد استرداد مبلغ حصتي الملغاة بدل رصيد الحصة (رقم الرصيد: ${credit.id}، المبلغ: ${amount}).`,
+      'قرأت سياسة الاسترداد وموافق أنتظر لحد 14 يوم لحد ما يوصلني المبلغ.',
+      'الحساب / وسيلة الدفع اللي عايز أستلم عليها: ',
+      '',
+      `Terms / الشروط: ${termsUrl}`
+    ].join('\n');
+    res.json({
+      success: true,
+      whatsappUrl: `https://wa.me/${MAHMOUD_OFFICIAL_PHONE_DIGITS}?text=${encodeURIComponent(text)}`,
+      refundsLeft: MAX_STUDENT_REFUNDED_LESSONS - refundedSoFar - 1
+    });
+  } catch (err) {
+    console.error('[POST /api/student/credits/:id/refund-request]', err);
+    res.status(500).json({ error: 'Could not start your refund request. Please try again.' });
   }
 });
 
@@ -4770,7 +5495,7 @@ app.post('/api/bookings/:referenceCode/payment-claim', rateLimit, verifyStudentA
 
     const { data: booking, error: bErr } = await supabase
       .from('bookings')
-      .select('id, student_id, service_id, duration_minutes, booking_type, fee_amount_usd, status')
+      .select('id, student_id, service_id, duration_minutes, booking_type, fee_amount_usd, status, package_entitlement_id')
       .eq('reference_code', referenceCode)
       .maybeSingle();
 
@@ -4778,30 +5503,27 @@ app.post('/api/bookings/:referenceCode/payment-claim', rateLimit, verifyStudentA
       return res.status(404).json({ error: 'Booking reference not found.' });
     }
 
-    if (booking.student_id !== studentId) {
+    // The learner may be the student or a child this account is guardian of.
+    const authorizedLearners = await getAuthorizedLearnersForStudent(supabase, req);
+    if (!authorizedLearners.some(l => l.id === booking.student_id)) {
       return res.status(403).json({ error: 'You are not authorized to claim payment for this booking.' });
     }
 
     if (booking.booking_type === 'trial') {
       return res.status(400).json({ error: 'Free trials do not require payment.' });
     }
-
-    let finalAmount: number | null = null;
-    let finalCurrency: string | null = null;
-
-    if (booking.fee_amount_usd !== null && booking.fee_amount_usd !== undefined && Number(booking.fee_amount_usd) > 0) {
-      finalAmount = Number(Number(booking.fee_amount_usd).toFixed(2));
-      finalCurrency = 'USD';
-    } else if (booking.service_id) {
-      const { data: srv } = await supabase.from('services').select('hourly_rate_usd').eq('id', booking.service_id).maybeSingle();
-      if (srv?.hourly_rate_usd && Number(srv.hourly_rate_usd) > 0) {
-        const duration = Number(booking.duration_minutes) || 60;
-        finalAmount = Number(((Number(srv.hourly_rate_usd) * duration) / 60).toFixed(2));
-        finalCurrency = 'USD';
-      }
+    if (booking.package_entitlement_id) {
+      return res.status(400).json({ error: 'This lesson is covered by your package credits.' });
+    }
+    if (booking.status !== 'pending') {
+      return res.status(400).json({ error: 'This booking is not awaiting payment.' });
     }
 
-    if (!finalAmount || finalAmount <= 0 || !finalCurrency) {
+    // The fee is fixed when the booking is created; never recompute it here.
+    const finalAmount = Number(Number(booking.fee_amount_usd || 0).toFixed(2));
+    const finalCurrency = 'USD';
+
+    if (finalAmount <= 0) {
       return res.status(400).json({ error: 'Authoritative payment amount/currency could not be determined from booking. Cannot process claim.' });
     }
 
@@ -4850,15 +5572,18 @@ app.post('/api/bookings/:referenceCode/payment-claim', rateLimit, verifyStudentA
 
       const { data: b } = await supabase
         .from('bookings')
-        .select('student_name, contact_name, contact_email, contact_whatsapp, service_name')
+        .select('contact_name, contact_email, contact_whatsapp, service_id')
         .eq('reference_code', referenceCode)
         .maybeSingle();
 
       if (b) {
-        learnerName = b.student_name || b.contact_name || learnerName;
+        learnerName = b.contact_name || learnerName;
         contactEmail = b.contact_email;
         contactWhatsapp = b.contact_whatsapp;
-        serviceName = b.service_name || serviceName;
+        if (b.service_id) {
+          const { data: srv } = await supabase.from('services').select('title').eq('id', b.service_id).maybeSingle();
+          serviceName = srv?.title || serviceName;
+        }
       }
 
       await dispatchNotification({
@@ -5311,8 +6036,13 @@ app.post('/api/dashboard/trials/:id/assessment', verifyTeacherAuth, async (req, 
       .eq('id', id)
       .maybeSingle();
 
-    if (fetchError || !booking) {
+    if (fetchError || !booking || booking.booking_type !== 'trial') {
       return res.status(404).json({ error: 'Trial booking not found.' });
+    }
+
+    const assessingTeacher = (req as any).teacherUser;
+    if (assessingTeacher?.role !== 'super_admin' && booking.teacher_id !== assessingTeacher?.id) {
+      return res.status(403).json({ error: 'Forbidden: this trial is not assigned to you.' });
     }
 
     // If update_lead_status is requested, load associated lead and validate transition BEFORE any mutations
@@ -5327,7 +6057,7 @@ app.post('/api/dashboard/trials/:id/assessment', verifyTeacherAuth, async (req, 
         const { data } = await supabase.from('leads').select('*').eq('id', targetLeadId).maybeSingle();
         leadRecord = data;
       } else if (booking.contact_email) {
-        const { data } = await supabase.from('leads').select('*').ilike('email', booking.contact_email.trim()).maybeSingle();
+        const { data } = await supabase.from('leads').select('*').ilike('email', escapeLike(booking.contact_email.trim())).maybeSingle();
         leadRecord = data;
       }
 
@@ -5396,7 +6126,7 @@ app.post('/api/dashboard/trials/:id/assessment', verifyTeacherAuth, async (req, 
           const { data: existingStudent } = await supabase
             .from('students')
             .select('id')
-            .or(`lead_id.eq.${leadRecord.id},email.ilike.${booking.contact_email}`)
+            .or(`lead_id.eq.${pgrstValue(leadRecord.id)},email.ilike.${pgrstValue(escapeLike(booking.contact_email))}`)
             .maybeSingle();
 
           // Timezone determination rule:
@@ -5453,7 +6183,10 @@ app.post('/api/dashboard/trials/:id/assessment', verifyTeacherAuth, async (req, 
               if (insertErr.message.includes('learner_type') && !studentInsert.learner_type) {
                 delete studentInsert.learner_type;
               }
-              await supabase.from('students').insert(studentInsert);
+              insertErr = (await supabase.from('students').insert(studentInsert)).error;
+            }
+            if (insertErr) {
+              console.error('[Trial Assessment] Student record could not be created', insertErr.message);
             }
           } else {
             const studentUpdates: any = {
@@ -6141,7 +6874,7 @@ const SETTINGS_ALLOWLIST: Record<string, { category: string; validate: (v: any) 
 };
 
 // 20d. DASHBOARD: Upsert teacher settings with strict server-side validation (Blocker #2)
-app.patch('/api/dashboard/settings', verifyTeacherAuth, async (req, res) => {
+app.patch('/api/dashboard/settings', verifyTeacherAuth, requireSuperAdmin, async (req, res) => {
   try {
     const { settings } = req.body;
     if (!Array.isArray(settings)) return res.status(400).json({ error: 'Settings array is required' });
@@ -6191,7 +6924,7 @@ app.patch('/api/dashboard/settings', verifyTeacherAuth, async (req, res) => {
 });
 
 // 20e. DASHBOARD: Update service hourly rate / options safely
-app.patch('/api/dashboard/services/:id', verifyTeacherAuth, async (req, res) => {
+app.patch('/api/dashboard/services/:id', verifyTeacherAuth, requireSuperAdmin, async (req, res) => {
   try {
     const supabase = getSupabaseAdminClient();
     if (!supabase) return res.status(503).json({ error: 'Database integration is not properly configured.' });
@@ -6301,14 +7034,14 @@ app.patch('/api/dashboard/leads/:id', verifyTeacherAuth, requireSuperAdmin, asyn
       const { data: existingStudent } = await supabase
         .from('students')
         .select('id')
-        .or(`lead_id.eq.${updatedLead.id},email.ilike.${updatedLead.email}`)
+        .or(`lead_id.eq.${pgrstValue(updatedLead.id)},email.ilike.${pgrstValue(escapeLike(updatedLead.email))}`)
         .maybeSingle();
 
       // Look for any existing booking for this lead to recover verified timezone and assessment
       const { data: leadBookings } = await supabase
         .from('bookings')
-        .select('student_timezone, student_name, parent_name, sync_metadata')
-        .or(`lead_id.eq.${updatedLead.id},contact_email.ilike.${updatedLead.email}`)
+        .select('student_timezone, parent_name, sync_metadata')
+        .or(`lead_id.eq.${pgrstValue(updatedLead.id)},contact_email.ilike.${pgrstValue(escapeLike(updatedLead.email))}`)
         .order('created_at', { ascending: false })
         .limit(1);
 
@@ -6347,7 +7080,7 @@ app.patch('/api/dashboard/leads/:id', verifyTeacherAuth, requireSuperAdmin, asyn
       if (!existingStudent) {
         const studentInsert: any = {
           lead_id: updatedLead.id,
-          name: matchedBooking?.student_name || updatedLead.name,
+          name: updatedLead.name,
           email: updatedLead.email,
           whatsapp: updatedLead.whatsapp,
           learner_type: determinedLearnerType,
@@ -6367,7 +7100,10 @@ app.patch('/api/dashboard/leads/:id', verifyTeacherAuth, requireSuperAdmin, asyn
           if (insertErr.message.includes('learner_type') && !studentInsert.learner_type) {
             delete studentInsert.learner_type;
           }
-          await supabase.from('students').insert(studentInsert);
+          insertErr = (await supabase.from('students').insert(studentInsert)).error;
+        }
+        if (insertErr) {
+          console.error('[Lead Conversion] Student record could not be created', insertErr.message);
         }
       } else {
         const studentUpdates: any = { 
@@ -6405,34 +7141,33 @@ app.post('/api/contact', rateLimit, async (req, res) => {
     if (!name || typeof name !== 'string' || !name.trim()) {
       return res.status(400).json({ error: 'Name is required.' });
     }
-    if (!email || typeof email !== 'string' || !email.includes('@')) {
+    if (!email || typeof email !== 'string' || !isValidEmail(email.trim().toLowerCase())) {
       return res.status(400).json({ error: 'A valid email address is required.' });
     }
 
     const cleanEmail = email.toLowerCase().trim();
     const cleanName = name.trim();
-    const cleanWhatsapp = whatsapp ? String(whatsapp).trim() : null;
-    const cleanMessage = message ? String(message).trim() : null;
-    const cleanSource = source || 'website_contact';
+    const cleanWhatsapp = whatsapp ? String(whatsapp).trim().slice(0, 40) : null;
+    const cleanMessage = message ? String(message).trim().slice(0, 2000) : null;
+    const cleanSource = typeof source === 'string' && /^[a-z_]{1,40}$/.test(source) ? source : 'website_contact';
 
     // Check if lead already exists by lower(email)
     const { data: existingLead } = await supabase
       .from('leads')
       .select('id, notes, status')
-      .ilike('email', cleanEmail)
+      .ilike('email', escapeLike(cleanEmail))
       .maybeSingle();
 
     if (existingLead) {
-      const appendNotes = cleanMessage 
-        ? `${existingLead.notes || ''}\n[${DateTime.now().setZone('Africa/Cairo').toFormat('yyyy-MM-dd HH:mm')}] Inquiry: ${cleanMessage}`.trim()
-        : existingLead.notes;
+      // Anyone can submit this form with any email, so an existing lead's contact
+      // fields are never overwritten; the new details are recorded in the note instead.
+      const stamp = DateTime.now().setZone('Africa/Cairo').toFormat('yyyy-MM-dd HH:mm');
+      const details = [`name: ${cleanName}`, cleanWhatsapp ? `whatsapp: ${cleanWhatsapp}` : null].filter(Boolean).join(', ');
+      const appendNotes = `${existingLead.notes || ''}\n[${stamp}] Inquiry (${details})${cleanMessage ? `: ${cleanMessage}` : ''}`.trim();
 
       await supabase
         .from('leads')
         .update({
-          name: cleanName,
-          whatsapp: cleanWhatsapp || undefined,
-          service_interest_id: serviceInterest || undefined,
           notes: appendNotes,
           updated_at: new Date().toISOString()
         })
@@ -6486,12 +7221,13 @@ app.all('/api/cron/process-reminders', async (req, res) => {
     const cronSecret = process.env.CRON_SECRET;
     const authHeader = req.headers.authorization;
 
-    if (process.env.NODE_ENV === 'production' && !cronSecret) {
+    // Fail closed: without a configured secret the endpoint is disabled in every environment.
+    if (!cronSecret) {
       return res.status(503).json({ error: 'CRON_SECRET is not configured on the server.' });
     }
 
     // Require Authorization: Bearer <CRON_SECRET> header; query-string secrets are strictly rejected
-    if (cronSecret) {
+    {
       if (!authHeader || !/^Bearer\s+\S+/i.test(authHeader)) {
         return res.status(401).json({ error: 'Unauthorized cron request.' });
       }
@@ -6504,6 +7240,9 @@ app.all('/api/cron/process-reminders', async (req, res) => {
         return res.status(401).json({ error: 'Unauthorized cron request.' });
       }
     }
+
+    const cronClient = getSupabaseAdminClient();
+    if (cronClient) await releaseExpiredPaymentHolds(cronClient);
 
     const integrationsProcessed = await processIntegrationJobs();
 
@@ -6599,7 +7338,7 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
         supabaseAdmin
           .from('guardians')
           .select('student_id, parent_name, parent_email, students:student_id(id, name, current_level, gender, assigned_teacher_id, learner_type, learning_interest, notes, status)')
-          .ilike('parent_email', (req.studentUser?.email || '').trim())
+          .ilike('parent_email', escapeLike((req.studentUser?.email || '').trim()))
       ]);
 
       if (studentRes.error || !studentRes.data) {
@@ -6948,7 +7687,8 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
     if (resolvedLearnerType === 'child') {
       studentUpdate.booking_preference = 'child';
     }
-    if (routedTeacher.id) {
+    // Auto-route only on first assignment; never override a teacher an admin already assigned.
+    if (routedTeacher.id && !req.studentUser?.studentProfile?.assigned_teacher_id) {
       studentUpdate.assigned_teacher_id = routedTeacher.id;
     }
     if (country) studentUpdate.country = String(country).trim();
@@ -6988,7 +7728,19 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
           const childTargetGender = childTeacherPref === 'female_teacher' ? 'female' : (childTeacherPref === 'male_teacher' ? 'male' : (childGender === 'female' ? 'female' : 'male'));
           const childRoutedTeacher = await resolveSmartTeacherRouting(childTargetGender, supabaseAdmin);
 
-          let childStudentId = child.id;
+          // A client-supplied child id is only honored if this parent is already its guardian;
+          // otherwise any student could attach themselves to someone else's child.
+          let childStudentId: string | null = null;
+          if (child.id && parentEmail) {
+            const { data: ownedChild } = await supabaseAdmin
+              .from('guardians')
+              .select('student_id')
+              .eq('student_id', String(child.id))
+              .ilike('parent_email', escapeLike(parentEmail))
+              .maybeSingle();
+            if (!ownedChild) continue;
+            childStudentId = ownedChild.student_id;
+          }
           if (!childStudentId) {
             const { data: newChild, error: newChildErr } = await supabaseAdmin
               .from('students')
@@ -7011,9 +7763,11 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
               .select('id')
               .single();
 
-            if (!newChildErr && newChild?.id) {
-              childStudentId = newChild.id;
+            if (newChildErr || !newChild?.id) {
+              console.error('[POST /api/student/onboarding] child insert failed', newChildErr?.message);
+              return res.status(500).json({ error: `We could not save ${childName}'s profile. Please try again.` });
             }
+            childStudentId = newChild.id;
           }
 
           if (childStudentId && parentEmail) {
@@ -7021,7 +7775,7 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
               .from('guardians')
               .select('id')
               .eq('student_id', childStudentId)
-              .ilike('parent_email', parentEmail)
+              .ilike('parent_email', escapeLike(parentEmail))
               .maybeSingle();
 
             if (!existingG) {
@@ -7112,7 +7866,7 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
       const { data: guardiansData } = await supabaseAdmin
         .from('guardians')
         .select('student_id, parent_name, parent_email, students:student_id(id, name, current_level, gender, assigned_teacher_id, learner_type, learning_interest, notes, status)')
-        .ilike('parent_email', parentEmail);
+        .ilike('parent_email', escapeLike(parentEmail));
 
       const rawC = (guardiansData || []).map((g: any) => g.students).filter(Boolean);
       finalLinkedChildren = await Promise.all(
@@ -7372,7 +8126,7 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
     // Fetch bookings belonging strictly to this authenticated student (idempotent read)
     const { data: bookingsData, error: bookingsError } = await supabaseAdmin
       .from('bookings')
-      .select('id, reference_code, service_id, package_entitlement_id, booking_type, duration_minutes, scheduled_start, scheduled_end, student_timezone, status, contact_name, contact_email, contact_whatsapp, parent_name, notes, fee_amount_usd, zoom_meeting_link, created_at')
+      .select('id, reference_code, service_id, package_entitlement_id, booking_type, duration_minutes, scheduled_start, scheduled_end, student_timezone, status, contact_name, contact_email, contact_whatsapp, parent_name, notes, fee_amount_usd, zoom_meeting_link, created_at, teacher_id, reschedule_count, payment_plan')
       .eq('student_id', studentId)
       .order('scheduled_start', { ascending: true });
 
@@ -7449,6 +8203,9 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
         feeAmountUsd: b.fee_amount_usd,
         zoomMeetingLink: zoomUrl,
         packageEntitlementId: b.package_entitlement_id || null,
+        teacherId: b.teacher_id || null,
+        rescheduleCount: b.reschedule_count || 0,
+        paymentPlan: b.payment_plan || 'pay_now',
         packageName: pkgInfo?.packageName || (b.package_entitlement_id ? 'Lesson Package' : null),
         packageType: pkgInfo?.packageType || (b.package_entitlement_id ? 'monthly' : null),
         isPackageBooking: Boolean(b.package_entitlement_id),
@@ -7519,7 +8276,7 @@ async function getAuthorizedLearnersForStudent(supabaseAdmin: any, req: any) {
       const { data: guardianRows } = await supabaseAdmin
         .from('guardians')
         .select('student_id, parent_name, parent_email, students:student_id(id, name, learner_type, current_level)')
-        .ilike('parent_email', userEmail);
+        .ilike('parent_email', escapeLike(userEmail));
 
       if (guardianRows) {
         for (const g of guardianRows) {
@@ -7610,7 +8367,7 @@ app.get('/api/student/packages', verifyStudentAuth, async (req: any, res: any) =
 
     const { data: entitlementsData, error: entErr } = await supabaseAdmin
       .from('package_entitlements')
-      .select('id, package_catalog_id, purchaser_account_id, learner_student_id, status, purchased_quantity, remaining_credits, price_paid, currency, payment_reference, created_at, updated_at')
+      .select('id, package_catalog_id, purchaser_account_id, learner_student_id, status, purchased_quantity, remaining_credits, price_paid, currency, payment_reference, metadata, created_at, updated_at')
       .or(entitlementFilter)
       .order('created_at', { ascending: false });
 
@@ -7651,10 +8408,16 @@ app.get('/api/student/packages', verifyStudentAuth, async (req: any, res: any) =
 
     const formattedEntitlements = (entitlementsData || []).map((ent: any) => {
       const cat = catalogMap.get(ent.package_catalog_id);
+      const isCredit = ent.metadata?.source === 'cancellation_credit';
       return {
         id: ent.id,
         packageCatalogId: ent.package_catalog_id,
-        packageName: cat?.name || 'Lesson Package',
+        packageName: isCredit ? 'Lesson credit (cancelled lesson)' : (cat?.name || 'Lesson Package'),
+        packageNameAr: isCredit ? 'رصيد حصة (من حصة ملغاة)' : (cat?.eligibility_rules?.name_ar || null),
+        isCredit,
+        refundRequestedAt: ent.metadata?.refund_requested_at || null,
+        durationMinutes: ent.metadata?.duration_minutes ?? cat?.eligibility_rules?.duration_minutes ?? null,
+        hourlyRate: ent.metadata?.hourly_rate ?? cat?.eligibility_rules?.hourly_rate ?? null,
         packageType: cat?.package_type || 'monthly',
         status: ent.status, // 'pending_payment' | 'active' | 'exhausted' | 'cancelled'
         purchasedQuantity: ent.purchased_quantity || 0,
@@ -7714,6 +8477,9 @@ app.post('/api/student/packages/select', verifyStudentAuth, async (req: any, res
     if (!packageCatalogId || typeof packageCatalogId !== 'string') {
       return res.status(400).json({ error: 'Valid packageCatalogId is required.' });
     }
+    if (req.body?.acceptedTerms !== true) {
+      return res.status(400).json({ error: 'Please read and accept the terms and the cancellation & refund policy first.', code: 'TERMS_REQUIRED' });
+    }
 
     const supabaseAdmin = getSupabaseAdminClient();
     const authorizedLearners = await getAuthorizedLearnersForStudent(supabaseAdmin, req);
@@ -7750,7 +8516,7 @@ app.post('/api/student/packages/select', verifyStudentAuth, async (req: any, res
     // 1. Fetch package from catalog
     const { data: catalogItem, error: catErr } = await supabaseAdmin
       .from('package_catalog')
-      .select('id, name, package_type, lesson_count, price_amount, currency, is_active')
+      .select('id, name, package_type, lesson_count, price_amount, currency, is_active, eligibility_rules')
       .eq('id', packageCatalogId)
       .eq('is_active', true)
       .maybeSingle();
@@ -7758,6 +8524,20 @@ app.post('/api/student/packages/select', verifyStudentAuth, async (req: any, res
     if (catErr || !catalogItem) {
       return res.status(404).json({ error: 'Package not found or currently inactive.' });
     }
+
+    // RULES.md §4 family care: 5% off a package for a second (third, ...) child of the same account,
+    // i.e. when this account already has an active paid package for a different learner.
+    const { data: siblingPackages } = await supabaseAdmin
+      .from('package_entitlements')
+      .select('id, learner_student_id, metadata')
+      .eq('purchaser_account_id', authUserId)
+      .eq('status', 'active')
+      .gt('price_paid', 0);
+    const familyDiscount = (siblingPackages || []).some((e: any) =>
+      e.learner_student_id && e.learner_student_id !== targetLearnerId && e.metadata?.source !== 'cancellation_credit');
+    const pricePaid = familyDiscount
+      ? Math.round(Number(catalogItem.price_amount) * 0.95 * 100) / 100
+      : Number(catalogItem.price_amount);
 
     // 2. Create pending entitlement row
     const { data: newEntitlement, error: insertErr } = await supabaseAdmin
@@ -7769,8 +8549,15 @@ app.post('/api/student/packages/select', verifyStudentAuth, async (req: any, res
         status: 'pending_payment',
         purchased_quantity: catalogItem.lesson_count,
         remaining_credits: 0, // Credits are 0 until payment is confirmed by teacher
-        price_paid: catalogItem.price_amount,
-        currency: catalogItem.currency || 'USD'
+        price_paid: pricePaid,
+        currency: catalogItem.currency || 'USD',
+        metadata: {
+          hourly_rate: catalogItem.eligibility_rules?.hourly_rate ?? null,
+          duration_minutes: catalogItem.eligibility_rules?.duration_minutes ?? null,
+          family_discount: familyDiscount,
+          terms_version: TERMS_VERSION,
+          terms_accepted_at: new Date().toISOString()
+        }
       })
       .select('id, package_catalog_id, learner_student_id, status, purchased_quantity, remaining_credits, price_paid, currency, created_at')
       .single();
@@ -7784,6 +8571,7 @@ app.post('/api/student/packages/select', verifyStudentAuth, async (req: any, res
       success: true,
       entitlement: newEntitlement,
       package: catalogItem,
+      familyDiscount,
       message: 'Package entitlement created. Please submit your payment reference to activate your credits.'
     });
   } catch (err: any) {
@@ -7952,9 +8740,9 @@ app.get('/api/student/packages/ledger', verifyStudentAuth, async (req: any, res:
 app.get('/api/student/payments', verifyStudentAuth, async (req: any, res: any) => {
   try {
     const studentId = req.studentUser?.student_id;
-    const authUserId = req.studentUser?.auth_id;
 
-    if (!studentId && !authUserId) {
+    // Without a student record there is nothing to scope the query to; never run it unfiltered.
+    if (!studentId) {
       return res.json({ payments: [] });
     }
 
@@ -7964,7 +8752,7 @@ app.get('/api/student/payments', verifyStudentAuth, async (req: any, res: any) =
     }
 
     // Fetch payments associated with student or their bookings
-    let query = supabaseAdmin
+    const query = supabaseAdmin
       .from('payments')
       .select(`
         id,
@@ -7979,11 +8767,8 @@ app.get('/api/student/payments', verifyStudentAuth, async (req: any, res: any) =
         notes,
         created_at,
         updated_at
-      `);
-
-    if (studentId) {
-      query = query.eq('student_id', studentId);
-    }
+      `)
+      .eq('student_id', studentId);
 
     const { data: paymentsData, error: paymentsErr } = await query.order('created_at', { ascending: false });
 
@@ -8611,6 +9396,13 @@ app.post('/api/dashboard/intakes/:id/review', verifyTeacherAuth, requireSuperAdm
           code: 'REVIEW_REQUIRED_MANUAL_PRICE',
         });
       }
+      // The recommended price was computed for one lesson length; approving another length needs an explicit price.
+      if (recommendation.duration_minutes && Number(recommendation.duration_minutes) !== duration) {
+        return res.status(409).json({
+          error: `The recommended price is for ${recommendation.duration_minutes}-minute lessons. Use "adjust" to set the price for ${duration} minutes.`,
+          code: 'REVIEW_REQUIRED_MANUAL_PRICE',
+        });
+      }
       approvedPrice = recommendation.recommended_price_usd;
       teacherAdjusted = false;
     }
@@ -8720,12 +9512,12 @@ app.post('/api/dashboard/admin/teachers', verifyTeacherAuth, requireSuperAdmin, 
       .single();
 
     if (error) {
-      return res.status(500).json({ error: error.message || 'Failed to provision teacher account.' });
+      return res.status(500).json({ error: clientErrorMessage(error, 'Failed to provision teacher account.') });
     }
 
     return res.status(201).json({ success: true, teacher: data });
   } catch (err: any) {
-    return res.status(500).json({ error: err.message || 'Internal server error.' });
+    return res.status(500).json({ error: clientErrorMessage(err, 'Internal server error.') });
   }
 });
 

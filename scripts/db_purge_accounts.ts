@@ -30,12 +30,13 @@ async function purgeAccounts() {
     return;
   }
 
-  const usersToDelete = usersData.users.filter(u => {
+  const allUsers: any[] = usersData.users;
+  const usersToDelete = allUsers.filter(u => {
     const email = (u.email || '').toLowerCase().trim();
     return !WHITELIST_EMAILS.includes(email);
   });
 
-  const usersToKeep = usersData.users.filter(u => {
+  const usersToKeep = allUsers.filter(u => {
     const email = (u.email || '').toLowerCase().trim();
     return WHITELIST_EMAILS.includes(email);
   });

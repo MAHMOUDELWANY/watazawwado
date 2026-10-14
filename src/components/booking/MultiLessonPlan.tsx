@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { bookingService } from '../../booking/bookingService';
-import { BOOKING_SERVICES, calculateLessonFee } from '../../booking/mockData';
+import { BOOKING_SERVICES } from '../../booking/mockData';
 import { DayAvailability, PackageCatalogEntry, TimeSlot, Language } from '../../booking/types';
 import { Check, CheckCircle2, ArrowRight, ArrowLeft } from 'lucide-react';
 
@@ -84,26 +84,8 @@ export const MultiLessonPlan: React.FC<Props> = ({
   const single = rows.find(c => c.lesson_count === 1);
   const options = single ? rows.filter(c => c.lesson_count > 1 && catalogPriceSummary(single, c)) : [];
   const bundle = options.find(c => c.lesson_count === count);
-  let price = catalogPriceSummary(single, bundle);
-
-  // Fallback calculation if not in DB catalog:
-  if (!price && count > 1) {
-    const singleFee = calculateLessonFee(serviceId, duration, false);
-    let perLessonDiscount = 0;
-    if (count >= 12) perLessonDiscount = 0.15;
-    else if (count >= 8) perLessonDiscount = 0.11;
-    else if (count >= 4) perLessonDiscount = 0.06;
-    const total = Math.round(singleFee * count * (1 - perLessonDiscount));
-    const perLesson = Math.round((total / count) * 100) / 100;
-    const regular = singleFee * count;
-    price = {
-      regular,
-      saving: Math.max(0, regular - total),
-      total,
-      perLesson,
-      currency: 'USD'
-    };
-  }
+  // Prices come only from the server catalog; with no catalog entry nothing is shown or submitted.
+  const price = catalogPriceSummary(single, bundle);
 
   useEffect(() => {
     if (phase !== 'schedule' || count <= 1) return;
@@ -131,7 +113,7 @@ export const MultiLessonPlan: React.FC<Props> = ({
       <button type="button" aria-pressed={count === 1} onClick={() => onCount(1)} className="rounded-xl border border-border p-3 mr-2">1 lesson — book a single time</button>
       {options.map(row => {
         const details = catalogPriceSummary(single, row)!;
-        return <button key={row.id} type="button" aria-pressed={count === row.lesson_count} onClick={() => onCount(row.lesson_count)} className={`block w-full text-left rounded-xl border p-3 ${count === row.lesson_count ? 'border-primary bg-secondary/30' : 'border-border'}`}>
+        return <button key={row.id} type="button" aria-pressed={count === row.lesson_count} onClick={() => onCount(row.lesson_count)} className={`block w-full text-start rounded-xl border p-3 ${count === row.lesson_count ? 'border-primary bg-secondary/30' : 'border-border'}`}>
           <strong>{row.lesson_count} lessons</strong> · Regular total: {money(details.regular, details.currency)} · {details.saving > 0 && <strong>Save {money(details.saving, details.currency)} · </strong>}Total: {money(details.total, details.currency)} · {money(details.perLesson, details.currency)} / lesson
         </button>;
       })}

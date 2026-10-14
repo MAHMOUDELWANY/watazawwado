@@ -86,6 +86,8 @@ export interface BookingFormData {
   teacherId?: string;
   selectedPackageId?: string;
   packageEntitlementId?: string;
+  /** Student ticked "I accept the terms and the cancellation & refund policy" (RULES.md §5). */
+  acceptedTerms?: boolean;
 }
 
 export interface BookingConfirmationData {
@@ -112,7 +114,7 @@ export interface BookingConfirmationData {
     meetingLinkPlaceholder: string;
     instructions: string[];
   };
-  preparationTips: string[];
+  preparationTips?: string[];
 }
 
 export interface MockBookingRecord {
@@ -129,7 +131,7 @@ export interface MockBookingRecord {
   durationMinutes: number;
   timezone: string;
   mode: BookingMode;
-  status: 'confirmed' | 'cancelled' | 'rescheduled';
+  status: 'pending' | 'confirmed' | 'cancelled' | 'rescheduled';
   feeAmountUsd?: number;
   zoomMeetingLink?: string | null;
   googleCalendarEventId?: string | null;

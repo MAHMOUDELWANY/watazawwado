@@ -2,13 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Navbar } from '../../Navbar';
 import { Footer } from '../../Footer';
-import { TrialBookingModal } from '../../TrialBookingModal';
 import { ManageBookingModal } from '../../booking/ManageBookingModal';
 import { TeacherAuthModal } from '../../TeacherAuthModal';
 import { StudentAuthModal } from '../../StudentAuthModal';
 import { GetStartedModal } from '../../GetStartedModal';
 import { Language } from '../../../types';
-import { BookingMode } from '../../../booking/types';
 import { LearningGuide } from '../../LearningGuide';
 import { useTheme } from '../../ThemeProvider';
 import { OnboardingGuide, OnboardingStep } from '../../ui/OnboardingGuide';
@@ -29,8 +27,6 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
   const location = useLocation();
 
   const [getStartedModalOpen, setGetStartedModalOpen] = useState<boolean>(Boolean(initialGetStartedOpen));
-  const [bookingModalOpen, setBookingModalOpen] = useState<boolean>(false);
-  const [bookingMode, setBookingMode] = useState<BookingMode>('trial');
   const [preselectedService, setPreselectedService] = useState<string | undefined>();
   const [manageModalOpen, setManageModalOpen] = useState<boolean>(false);
   const [teacherModalOpen, setTeacherModalOpen] = useState<boolean>(false);
@@ -99,8 +95,8 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
       if (hash === '#get-started' || hash === '#start') {
         setGetStartedModalOpen(true);
       } else if (hash === '#book' || hash === '#trial' || hash === '#free-trial') {
-        setBookingMode('trial');
-        setBookingModalOpen(true);
+        // No guest bookings (RULES.md §2): booking starts by signing in or creating an account.
+        setGetStartedModalOpen(true);
       } else if (hash === '#manage' || hash === '#reschedule') {
         setManageModalOpen(true);
       } else if (hash === '#reset-password' || hash.includes('type=recovery')) {
@@ -118,11 +114,6 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
     setGetStartedModalOpen(true);
   };
 
-  const handleOpenBooking = (serviceId?: string, mode: BookingMode = 'trial') => {
-    setPreselectedService(serviceId);
-    setBookingMode(mode);
-    setBookingModalOpen(true);
-  };
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300 font-sans">
@@ -148,14 +139,6 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
           onOpenTeacherModal={() => setTeacherModalOpen(true)}
         />
 
-        {/* 6-Step Guided Booking Engine Modal */}
-        <TrialBookingModal
-          isOpen={bookingModalOpen}
-          onClose={() => setBookingModalOpen(false)}
-          lang={lang}
-          preselectedServiceId={preselectedService}
-          initialMode={bookingMode}
-        />
 
         {/* Manage / Reschedule Booking Modal (3-hour rule policy foundation) */}
         <ManageBookingModal

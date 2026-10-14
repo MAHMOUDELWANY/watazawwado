@@ -4,6 +4,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { processIntegrationJobs } from '../server/integrations/worker.js';
 
+// Update mocks resolve like a query builder and also accept further .eq() filters.
+const chainableEq = (result: any) => () => { const p: any = Promise.resolve(result); p.eq = () => p; return p; };
+
 describe('Task 0.55.4-J: Outbox & Worker Database Hardening Verification', () => {
 
   const migration000016Path = path.join(process.cwd(), 'supabase/migrations/20260908000016_outbox_security_closure.sql');
@@ -206,7 +209,7 @@ describe('Task 0.55.4-J: Outbox & Worker Database Hardening Verification', () =>
                 })
               }),
               update: () => ({
-                eq: async () => ({ data: null, error: null })
+                eq: chainableEq({ data: null, error: null })
               })
             };
           }
@@ -287,7 +290,7 @@ describe('Task 0.55.4-J: Outbox & Worker Database Hardening Verification', () =>
                 })
               }),
               update: () => ({
-                eq: async () => ({ data: null, error: null })
+                eq: chainableEq({ data: null, error: null })
               })
             };
           }
@@ -311,7 +314,7 @@ describe('Task 0.55.4-J: Outbox & Worker Database Hardening Verification', () =>
                 failureRecoverySaved = true;
                 failureRecoveryPayload = payload;
                 return {
-                  eq: async () => ({ error: null })
+                  eq: chainableEq({ error: null })
                 };
               }
             };
@@ -372,7 +375,7 @@ describe('Task 0.55.4-J: Outbox & Worker Database Hardening Verification', () =>
               update: (payload: any) => {
                 failurePayload = payload;
                 return {
-                  eq: async () => ({ error: null })
+                  eq: chainableEq({ error: null })
                 };
               }
             };
@@ -423,7 +426,7 @@ describe('Task 0.55.4-J: Outbox & Worker Database Hardening Verification', () =>
               update: (payload: any) => {
                 failurePayload = payload;
                 return {
-                  eq: async () => ({ error: null })
+                  eq: chainableEq({ error: null })
                 };
               }
             };
@@ -470,7 +473,7 @@ describe('Task 0.55.4-J: Outbox & Worker Database Hardening Verification', () =>
             return {
               update: () => ({
                 // Database write failure when persisting failure state
-                eq: async () => ({ error: { message: 'disk full / read only database' } })
+                eq: chainableEq({ error: { message: 'disk full / read only database' } })
               })
             };
           }
@@ -523,7 +526,7 @@ describe('Task 0.55.4-J: Outbox & Worker Database Hardening Verification', () =>
               update: (payload: any) => {
                 savedError = payload.last_error;
                 return {
-                  eq: async () => ({ error: null })
+                  eq: chainableEq({ error: null })
                 };
               }
             };
@@ -601,7 +604,7 @@ describe('Task 0.55.4-J: Outbox & Worker Database Hardening Verification', () =>
                 })
               }),
               update: () => ({
-                eq: async () => ({ data: null, error: null })
+                eq: chainableEq({ data: null, error: null })
               })
             };
           }
@@ -619,7 +622,7 @@ describe('Task 0.55.4-J: Outbox & Worker Database Hardening Verification', () =>
                   };
                 }
                 return {
-                  eq: async () => ({ error: null })
+                  eq: chainableEq({ error: null })
                 };
               }
             };
@@ -691,7 +694,7 @@ describe('Task 0.55.4-J: Outbox & Worker Database Hardening Verification', () =>
                   };
                 }
                 return {
-                  eq: async () => ({ error: null })
+                  eq: chainableEq({ error: null })
                 };
               }
             };

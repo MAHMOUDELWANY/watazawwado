@@ -1,0 +1,71 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__3e9096ca-19ad-4d64-aba4-0c99ef363235__apply_migration",
+      "mcp__3e9096ca-19ad-4d64-aba4-0c99ef363235__execute_sql"
+    ]
+  },
+  "enabledPlugins": {
+    "oh-my-claudecode@omc": false,
+    "ponytail@ponytail": true
+  },
+  "extraKnownMarketplaces": {
+    "omc": {
+      "source": {
+        "source": "github",
+        "repo": "Yeachan-Heo/oh-my-claudecode"
+      }
+    },
+    "ponytail": {
+      "source": {
+        "source": "github",
+        "repo": "DietrichGebert/ponytail"
+      }
+    }
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "graphify hook-guard search",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Glob",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "graphify hook-guard read",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard-files.mjs\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/typecheck-changed.mjs\"",
+            "timeout": 90
+          }
+        ]
+      }
+    ]
+  }
+}

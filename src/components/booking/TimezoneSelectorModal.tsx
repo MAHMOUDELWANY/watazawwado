@@ -52,6 +52,7 @@ export const TimezoneSelectorModal: React.FC<TimezoneSelectorModalProps> = ({
                 </h3>
               </div>
               <button
+                aria-label={isEn ? 'Close' : 'إغلاق'}
                 type="button"
                 onClick={onClose}
                 className="p-1 rounded-full text-foreground/60 dark:text-muted-foreground/60 hover:bg-surface-warm dark:hover:bg-surface-subtle cursor-pointer"

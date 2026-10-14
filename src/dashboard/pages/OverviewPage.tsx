@@ -234,14 +234,14 @@ export default function OverviewPage() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm border-collapse">
+          <table className="w-full text-start text-sm border-collapse">
             <thead>
               <tr className="border-b border-border text-muted-foreground uppercase tracking-wider text-[13px]">
                 <th className="py-2.5 px-3">Teacher</th>
                 <th className="py-2.5 px-3">Role</th>
                 <th className="py-2.5 px-3 text-center">Active Students</th>
                 <th className="py-2.5 px-3 text-center">Lessons This Week</th>
-                <th className="py-2.5 px-3 text-right">Actions</th>
+                <th className="py-2.5 px-3 text-end">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -264,7 +264,7 @@ export default function OverviewPage() {
                   <td className="py-3 px-3 text-center font-semibold text-foreground">
                     {t.lessons_this_week}
                   </td>
-                  <td className="py-3 px-3 text-right">
+                  <td className="py-3 px-3 text-end">
                     <Link
                       to={`/dashboard/students?teacher=${encodeURIComponent(t.email)}`}
                       className="text-sm font-semibold text-primary hover:underline"

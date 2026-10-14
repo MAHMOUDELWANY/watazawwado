@@ -30,6 +30,14 @@ interface StepReviewSummaryProps {
   scheduleStep?: number;
   pendingBookingReference?: string;
   onOpenCheckout?: () => void;
+  /** When the payment hold on the pending booking ends (ISO). */
+  holdExpiresAt?: string;
+  /** Drop the pending hold and pick another time. */
+  onChooseAnotherTime?: () => void;
+  /** Shown only to students eligible for pay later (12+ paid lessons). */
+  onPayLater?: () => void;
+  payLaterBusy?: boolean;
+  onAcceptTerms?: (accepted: boolean) => void;
 }
 
 export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
@@ -41,7 +49,12 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
   lang,
   scheduleStep = 5,
   pendingBookingReference,
-  onOpenCheckout
+  onOpenCheckout,
+  holdExpiresAt,
+  onChooseAnotherTime,
+  onPayLater,
+  payLaterBusy,
+  onAcceptTerms
 }) => {
   const isEn = lang === 'en';
   const service = BOOKING_SERVICES.find((s) => s.id === formData.serviceId) || BOOKING_SERVICES[0];
@@ -274,20 +287,66 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
       </div>
 
       {/* Pending Booking Reservation Banner */}
+      {/* RULES.md §2: no reference/confirmation before payment; the time is only held briefly. */}
       {pendingBookingReference && (
         <div className="p-4 rounded-2xl glass-card border border-amber-500/40 bg-amber-500/10 flex items-start gap-3 text-sm text-foreground">
           <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-          <div className="leading-relaxed">
-            <strong className="text-foreground block mb-0.5 font-bold">
-              {isEn ? `Reservation Created: ${pendingBookingReference}` : `تم تسجيل حجزك مبدئياً: ${pendingBookingReference}`}
+          <div className="leading-relaxed space-y-2">
+            <strong className="text-foreground block font-bold">
+              {isEn ? "We're holding this time for you" : 'حجزنا لك هذا الموعد مؤقتاً'}
             </strong>
-            <span className="text-muted-foreground text-xs sm:text-sm">
+            <span className="text-muted-foreground text-xs sm:text-sm block">
               {isEn
-                ? 'Your selected time is on hold. Please complete payment to confirm your booking and receive classroom access.'
-                : 'تم حجز موعدك مؤقتاً. يرجى إتمام عملية الدفع لتأكيد الموعد واستلام رابط الفصل الدراسي عبر زووم.'}
+                ? `Finish the payment${holdExpiresAt ? ` before ${new Date(holdExpiresAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : ''} and your lesson is confirmed right away, with your Zoom link on its way.`
+                : `أكمل الدفع${holdExpiresAt ? ` قبل الساعة ${new Date(holdExpiresAt).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}` : ''} وسيتأكد درسك فوراً ويصلك رابط زووم.`}
             </span>
+            {onChooseAnotherTime && (
+              <button
+                type="button"
+                onClick={onChooseAnotherTime}
+                className="text-xs sm:text-sm font-semibold text-primary underline underline-offset-2 cursor-pointer"
+              >
+                {isEn ? 'Choose another time instead' : 'اختر موعداً آخر'}
+              </button>
+            )}
           </div>
         </div>
+      )}
+
+      {pendingBookingReference && onPayLater && (
+        <div className="p-4 rounded-2xl glass-card border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm">
+          <span className="text-muted-foreground">
+            {isEn
+              ? "You're one of our regular students, so you can book now and pay later. We'll confirm it with you on WhatsApp."
+              : 'أنت من طلابنا المنتظمين، لذلك يمكنك الحجز الآن والدفع لاحقاً، وسنؤكد معك عبر واتساب.'}
+          </span>
+          <button
+            type="button"
+            onClick={onPayLater}
+            disabled={payLaterBusy}
+            className="shrink-0 px-4 py-2 rounded-xl border border-border font-semibold text-foreground hover:bg-surface-warm transition-colors cursor-pointer disabled:opacity-60"
+          >
+            {payLaterBusy ? (isEn ? 'One moment…' : 'لحظة…') : (isEn ? 'Book now, pay later' : 'احجز الآن وادفع لاحقاً')}
+          </button>
+        </div>
+      )}
+
+      {!pendingBookingReference && (
+        <label className="flex items-start gap-2.5 text-sm text-foreground cursor-pointer">
+          <input
+            type="checkbox"
+            checked={formData.acceptedTerms === true}
+            onChange={e => onAcceptTerms?.(e.target.checked)}
+            className="mt-1 w-4 h-4 accent-teal-600"
+          />
+          <span>
+            {isEn ? 'I have read and accept the ' : 'قرأت ووافقت على '}
+            <a href="/terms" target="_blank" rel="noopener noreferrer" className="underline font-semibold text-primary">
+              {isEn ? 'terms and the cancellation & refund policy' : 'الشروط وسياسة الإلغاء والاسترداد'}
+            </a>
+            .
+          </span>
+        </label>
       )}
 
       {/* Controls */}
@@ -308,8 +367,8 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
           whileHover={{ scale: 1.03, y: -1 }}
           whileTap={{ scale: 0.97 }}
           onClick={pendingBookingReference && onOpenCheckout ? onOpenCheckout : onSubmit}
-          disabled={isSubmitting}
-          className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl btn-primary-material text-white text-sm sm:text-base font-bold shadow-lg shadow-primary/20 transition-all cursor-pointer"
+          disabled={isSubmitting || (!pendingBookingReference && formData.acceptedTerms !== true)}
+          className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl btn-primary-material text-white text-sm sm:text-base font-bold shadow-lg shadow-primary/20 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting ? (
             <>

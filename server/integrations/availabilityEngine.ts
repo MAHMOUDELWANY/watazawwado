@@ -82,17 +82,19 @@ async function getTeacherDbAvailability(teacherId: string): Promise<any[]> {
   }
 }
 
-async function getSupabaseBookedIntervals(startUtcIso: string, endUtcIso: string): Promise<{ start: string; end: string }[]> {
+async function getSupabaseBookedIntervals(startUtcIso: string, endUtcIso: string, teacherId?: string | null): Promise<{ start: string; end: string }[]> {
   const supabase = getServerSupabase();
   if (!supabase) return [];
 
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from('bookings')
       .select('scheduled_start, scheduled_end, status')
       .in('status', ['confirmed', 'rescheduled', 'pending'])
       .gte('scheduled_end', startUtcIso)
       .lte('scheduled_start', endUtcIso);
+    if (teacherId) query = query.eq('teacher_id', teacherId);
+    const { data, error } = await query;
 
     if (error || !data) return [];
     return data.map((b: any) => ({
@@ -126,6 +128,16 @@ export async function resolveAuthoritativeTeacherForAvailability(
   if (!supabase) return null;
 
   try {
+    const cleanSuppliedId = suppliedTeacherId && typeof suppliedTeacherId === 'string' ? suppliedTeacherId.trim() : null;
+    if (cleanSuppliedId) {
+      // RULES.md §1: each teacher sets availability in the site; Google Calendar is optional extra busy time.
+      const [{ data: ownHours }, { data: ownConn }] = await Promise.all([
+        supabase.from('availability').select('teacher_id').eq('teacher_id', cleanSuppliedId).eq('is_active', true).limit(1),
+        supabase.from('calendar_connections').select('teacher_id').eq('teacher_id', cleanSuppliedId).eq('provider', 'google_calendar').eq('is_active', true).limit(1)
+      ]);
+      return (ownHours && ownHours.length) || (ownConn && ownConn.length) ? cleanSuppliedId : null;
+    }
+
     const { data: conns, error } = await supabase
       .from('calendar_connections')
       .select('teacher_id')
@@ -214,7 +226,7 @@ export async function computeAvailableSlots(
   }
 
   // 2. Fetch Supabase booked intervals
-  const dbBusyIntervals = await getSupabaseBookedIntervals(startWindowUtc, endWindowUtc);
+  const dbBusyIntervals = await getSupabaseBookedIntervals(startWindowUtc, endWindowUtc, cleanTeacherId);
 
   // Combine busy intervals with 10-min buffer
   const allBusy = [...googleBusyIntervals, ...dbBusyIntervals].map((interval) => {
@@ -378,6 +390,9 @@ export async function validateSlotAvailability(
   const currentDayIndex = currentDayOfWeekMap[reqStartCairo.toFormat('ccc')];
 
   const cleanTeacherId = await resolveAuthoritativeTeacherForAvailability(teacherId);
+  if (teacherId && !cleanTeacherId) {
+    return { isAvailable: false, conflictReason: 'This teacher is not taking bookings at the moment.' };
+  }
 
   if (cleanTeacherId) {
     let dbAvailability = await getTeacherDbAvailability(cleanTeacherId);
@@ -480,12 +495,14 @@ export async function validateSlotAvailability(
   const supabase = getServerSupabase();
   if (supabase) {
     try {
-      const { data: conflicts, error } = await supabase
+      let conflictQuery = supabase
         .from('bookings')
         .select('id, scheduled_start, scheduled_end')
         .in('status', ['confirmed', 'rescheduled', 'pending'])
         .lt('scheduled_start', reqEnd.toISO()!)
         .gt('scheduled_end', reqStart.toISO()!);
+      if (cleanTeacherId) conflictQuery = conflictQuery.eq('teacher_id', cleanTeacherId);
+      const { data: conflicts, error } = await conflictQuery;
 
       if (error) {
         console.error('[Supabase booking conflict check error]', error);

@@ -16,7 +16,12 @@ export interface PayPalConfig {
 export function getPayPalConfig(): PayPalConfig {
   const clientId = (process.env.PAYPAL_CLIENT_ID || '').trim();
   const clientSecret = (process.env.PAYPAL_CLIENT_SECRET || '').trim();
-  const mode = (process.env.PAYPAL_MODE || 'live').toLowerCase() === 'sandbox' ? 'sandbox' : 'live';
+  // Fail closed on typos: anything other than an explicit live/sandbox value is a config error.
+  const rawMode = (process.env.PAYPAL_MODE || 'live').trim().toLowerCase();
+  if (rawMode !== 'live' && rawMode !== 'sandbox') {
+    throw new Error(`Invalid PAYPAL_MODE "${rawMode}": must be "live" or "sandbox".`);
+  }
+  const mode: 'live' | 'sandbox' = rawMode;
   const baseUrl = mode === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com';
 
   return { clientId, clientSecret, mode, baseUrl };
@@ -43,6 +48,7 @@ export async function getPayPalAccessToken(): Promise<string> {
   const basicAuth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
 
   const response = await fetch(`${baseUrl}/v1/oauth2/token`, {
+    signal: AbortSignal.timeout(15000),
     method: 'POST',
     headers: {
       'Authorization': `Basic ${basicAuth}`,
@@ -116,6 +122,7 @@ export async function createPayPalOrder(params: CreateOrderParams): Promise<PayP
   };
 
   const response = await fetch(`${baseUrl}/v2/checkout/orders`, {
+    signal: AbortSignal.timeout(15000),
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -161,6 +168,7 @@ export async function capturePayPalOrder(orderId: string): Promise<PayPalCapture
   const { baseUrl } = getPayPalConfig();
 
   const response = await fetch(`${baseUrl}/v2/checkout/orders/${encodeURIComponent(orderId)}/capture`, {
+    signal: AbortSignal.timeout(15000),
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -199,6 +207,7 @@ export async function getPayPalOrderDetails(orderId: string): Promise<any> {
   const { baseUrl } = getPayPalConfig();
 
   const response = await fetch(`${baseUrl}/v2/checkout/orders/${encodeURIComponent(orderId)}`, {
+    signal: AbortSignal.timeout(15000),
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${token}`,

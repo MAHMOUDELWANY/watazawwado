@@ -1,109 +1,109 @@
-import React, { useState } from 'react';
-import { useOutletContext, Link } from 'react-router-dom';
+import React from 'react';
+import { useOutletContext, Link, useNavigate } from 'react-router-dom';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
 import { PublicSection, MarginNote, PublicButton } from '../PublicDesignSystem';
 import { InteractivePocketCard, PricingPlan } from './InteractivePocketCard';
-import { InstantCheckoutModal } from '../../payment/InstantCheckoutModal';
 import { Clock, ShieldCheck, HeartHandshake, Sparkles, CheckCircle2, Info, CreditCard } from 'lucide-react';
 
 export function PricingPage() {
   const { lang, onOpenTrialModal } = useOutletContext<PublicLayoutContextType>();
   const isEn = lang === 'en';
 
-  const [checkoutPlan, setCheckoutPlan] = useState<PricingPlan | null>(null);
+  const navigate = useNavigate();
 
-  // Exactly 3 clean plans with updated rate baseline ($9 - $8/lesson)
+  // Approved $9/hour group packages (RULES.md §4, docs/pricing/packages.md). Display only:
+  // the server catalog charges the real price. Honest wording only, no invented social proof.
   const monthlyPlans: PricingPlan[] = [
     {
       id: 'pkg-4',
-      name: 'Starter Pace',
-      arabicName: 'باقة التأسيس والبداية',
-      subtitle: '1 private session per week for a calm, sustainable habit.',
-      arabicSubtitle: 'حصة واحدة أسبوعياً لتأسيس سليم وثابت دون أي ضغط على جدولك.',
+      name: 'Steady Start',
+      arabicName: 'بداية ثابتة',
+      subtitle: '1 lesson a week: a calm, steady habit.',
+      arabicSubtitle: 'حصة كل أسبوع: عادة هادية وثابتة.',
       lessonsCount: 4,
       durationMin: 60,
-      price: 36,
-      perLessonPrice: 9.0,
+      price: 34,
+      perLessonPrice: 8.5,
       badge: 'Starter',
-      arabicBadge: 'بداية ميسرة',
-      psychologicalHook: '✨ Ideal for beginners & busy schedules',
-      arabicPsychologicalHook: '✨ الأنسب للمبتدئين وأصحاب الجداول المزدحمة',
-      unitComparison: 'Equivalent to $9.00 / session',
-      arabicUnitComparison: 'استثمار ميسر يعادل $9.00 فقط للحصة',
+      arabicBadge: 'بداية',
+      psychologicalHook: 'You save $2 compared with single lessons',
+      arabicPsychologicalHook: 'بتوفّر 2$ مقارنة بالحصص الفردية',
+      unitComparison: '$8.50 per 60-minute lesson',
+      arabicUnitComparison: '8.50$ للحصة (60 دقيقة)',
       features: [
-        '4 private 1-on-1 Zoom sessions (60 min)',
-        'Direct WhatsApp voice notes & recitation checks',
-        'Free rescheduling up to 3 hours before session',
-        'Personalized pace adapted to your level'
+        '4 private 1-on-1 lessons (60 min)',
+        'Book each lesson whenever it suits you',
+        'Cancel up to 3 hours before, move up to 1 hour before',
+        'A plan that fits your level and pace'
       ],
       arabicFeatures: [
-        '٤ حصص فردية خاصة عبر زووم (٦٠ دقيقة)',
-        'متابعة وتصحيح صوتي مباشر بين الحصص',
-        'إمكانية إعادة الجدولة مجاناً حتى ٣ ساعات قبل الدرس',
-        'منهج مخصص بالكامل يناسب سرعتك وهدفك'
+        '4 حصص فردية خاصة (60 دقيقة)',
+        'احجز كل حصة في الوقت اللي يناسبك',
+        'إلغاء حتى 3 ساعات قبل الحصة، وتغيير الموعد حتى ساعة قبلها',
+        'خطة على قد مستواك وسرعتك'
       ]
     },
     {
       id: 'pkg-8',
-      name: 'Consistent Growth',
-      arabicName: 'باقة الاستمرار والانتظام',
-      subtitle: '2 private sessions per week — the proven rhythm for Quran fluency.',
-      arabicSubtitle: 'حصتان أسبوعياً — الوتيرة الذهبية المعتمدة للتقدم الملموس في التلاوة والتجويد.',
+      name: 'Committed Learner',
+      arabicName: 'طالب ملتزم',
+      subtitle: '2 lessons a week: steady progress you can feel.',
+      arabicSubtitle: 'حصتين كل أسبوع: تقدّم ثابت تحس بيه.',
       lessonsCount: 8,
       durationMin: 60,
-      price: 68,
-      perLessonPrice: 8.5,
-      badge: 'Most Popular',
-      arabicBadge: 'الأكثر طلباً واختياراً',
+      price: 66,
+      perLessonPrice: 8.25,
+      badge: 'Balanced',
+      arabicBadge: 'متوازنة',
       isPopular: true,
-      savingBadge: 'Best Value',
-      arabicSavingBadge: 'الخيار الذهبي الموصى به',
-      psychologicalHook: '⭐️ Chosen by 85% of active students for true retention',
-      arabicPsychologicalHook: '⭐️ يختارها ٨٥٪ من الطلاب لضمان رسوخ الحفظ وعدم النسيان',
-      unitComparison: 'Just $8.50 per full 60-min private lesson',
-      arabicUnitComparison: 'فقط $8.50 للحصة الخاصة الكاملة (وفر مميز)',
+      savingBadge: 'You save $6',
+      arabicSavingBadge: 'بتوفّر 6$',
+      psychologicalHook: 'A good rhythm for memorization and revision',
+      arabicPsychologicalHook: 'وتيرة مناسبة للحفظ والمراجعة',
+      unitComparison: '$8.25 per 60-minute lesson',
+      arabicUnitComparison: '8.25$ للحصة (60 دقيقة)',
       features: [
-        '8 private 1-on-1 Zoom sessions (60 min)',
-        'Priority daily WhatsApp homework feedback',
-        'Shareable with 1 child under the same family account',
-        'Continuous Tajweed & Hifz progress tracking'
+        '8 private 1-on-1 lessons (60 min)',
+        'Book each lesson whenever it suits you',
+        'Cancel up to 3 hours before, move up to 1 hour before',
+        'Family care: 5% off for a second child'
       ],
       arabicFeatures: [
-        '٨ حصص فردية خاصة عبر زووم (٦٠ دقيقة)',
-        'أولوية المتابعة اليومية وتصحيح الحفظ والتجويد',
-        'إمكانية مشاركة رصيد الحصص مع أحد الأبناء',
-        'تقارير دورية لمتابعة الإتقان ورسوخ الحفظ'
+        '8 حصص فردية خاصة (60 دقيقة)',
+        'احجز كل حصة في الوقت اللي يناسبك',
+        'إلغاء حتى 3 ساعات قبل الحصة، وتغيير الموعد حتى ساعة قبلها',
+        'رعاية الأسرة: خصم 5% للطفل التاني'
       ]
     },
     {
       id: 'pkg-12',
-      name: 'Intensive Track',
-      arabicName: 'باقة الإتقان والتثبيت',
-      subtitle: '3 private sessions per week for rapid memorization or Arabic grammar.',
-      arabicSubtitle: '٣ حصص أسبوعياً للحفظ المتقن السريع ودراسة قواعد النحو العربي.',
+      name: 'Fast Progress',
+      arabicName: 'تقدّم أسرع',
+      subtitle: '3 lessons a week for faster memorization or study.',
+      arabicSubtitle: '3 حصص كل أسبوع لحفظ أو دراسة أسرع.',
       lessonsCount: 12,
       durationMin: 60,
       price: 96,
       perLessonPrice: 8.0,
-      badge: 'Maximum Progress',
-      arabicBadge: 'أعلى وتيرة إنجاز',
-      savingBadge: 'Lowest Per-Lesson Rate',
-      arabicSavingBadge: 'أقل سعر للحصة ($8.00)',
-      psychologicalHook: '🚀 Maximum results with lowest cost per lesson',
-      arabicPsychologicalHook: '🚀 أقصى سرعة إنجاز مع أعلى وفر في تكلفة الحصة',
-      unitComparison: 'Lowest rate: only $8.00 per hour',
-      arabicUnitComparison: 'أقل سعر للحصة: فقط $8.00 للساعة الكاملة',
+      badge: 'Best price per lesson',
+      arabicBadge: 'أقل سعر للحصة',
+      savingBadge: 'You save $12',
+      arabicSavingBadge: 'بتوفّر 12$',
+      psychologicalHook: 'The lowest price per lesson',
+      arabicPsychologicalHook: 'أقل سعر للحصة',
+      unitComparison: '$8.00 per 60-minute lesson',
+      arabicUnitComparison: '8$ للحصة (60 دقيقة)',
       features: [
-        '12 private 1-on-1 Zoom sessions (60 min)',
-        'Deep grammar & Tajweed drills with progress reports',
-        'Allocatable between 2 siblings in family profile',
-        'Direct priority messaging with Ustadh Mahmoud'
+        '12 private 1-on-1 lessons (60 min)',
+        'Book each lesson whenever it suits you',
+        'Cancel up to 3 hours before, move up to 1 hour before',
+        'Family care: 5% off for a second child'
       ],
       arabicFeatures: [
-        '١٢ حصة فردية مكثفة عبر زووم (٦٠ دقيقة)',
-        'تدريبات لغوية وتجويدية متقدمة وتقارير إنجاز دورية',
-        'إمكانية توزيع الرصيد بين طالبين من العائلة',
-        'أولوية التواصل المباشر وتثبيت المراجعة'
+        '12 حصة فردية خاصة (60 دقيقة)',
+        'احجز كل حصة في الوقت اللي يناسبك',
+        'إلغاء حتى 3 ساعات قبل الحصة، وتغيير الموعد حتى ساعة قبلها',
+        'رعاية الأسرة: خصم 5% للطفل التاني'
       ]
     }
   ];
@@ -112,8 +112,9 @@ export function PricingPage() {
     onOpenTrialModal();
   };
 
-  const handleInstantCheckout = (plan: PricingPlan) => {
-    setCheckoutPlan(plan);
+  // Packages are bought from the student portal, which creates a real entitlement to pay for.
+  const handleInstantCheckout = (_plan: PricingPlan) => {
+    navigate('/student/packages');
   };
 
   return (
@@ -160,8 +161,8 @@ export function PricingPage() {
               </strong>
               <p className="text-muted-foreground">
                 {isEn 
-                  ? 'Standard Quran recitation, Noorani Qaida, and Islamic foundations start at $9/hour. Advanced specialized subjects—such as Modern Standard Arabic (Fusha grammar), Egyptian Colloquial Arabic, Advanced Fiqh, and Academic English—range up to $13/hour depending on specific curriculum requirements and custom teacher preparation.'
-                  : 'المسارات التأسيسية وتلاوة القرآن والقاعدة النورانية تبدأ من ٩$ للساعة. المواد التخصصية المتقدمة — مثل قواعد النحو العربي والفصحى، اللهجة المصرية، الفقه المقارن المتقدم، واللغة الإنجليزية — تتراوح حتى ١٣$ للساعة بحسب الاحتياج الأكاديمي والتحضير الخاص المطلوب من المعلم.'}
+                  ? 'Quran, Tajweed and all Islamic studies are $9 per hour. Arabic (MSA and Egyptian) and English start from $13 per hour. Shorter lessons cost the same rate per minute (30 minutes = half). Advanced, specialized or intensive learning, including advanced Fiqh, can cost more: your teacher sets that price after an assessment, and you always see it before you pay. The packages above are for the $9 group; Arabic and English packages are on the packages page after you sign in.'
+                  : 'القرآن والتجويد وكل العلوم الشرعية بـ 9$ للساعة. العربية (الفصحى والمصرية) والإنجليزية تبدأ من 13$ للساعة. الحصص الأقصر بنفس السعر للدقيقة (30 دقيقة = النص). التعليم المتقدم أو المتخصص أو المكثف، ومنه الفقه المتقدم، ممكن يكون سعره أعلى: المعلم بيحدده بعد تقييم المستوى، ودايماً بتشوفه قبل ما تدفع. الباقات اللي فوق لمجموعة 9$، وباقات العربي والإنجليزي موجودة في صفحة الباقات بعد تسجيل الدخول.'}
               </p>
             </div>
           </div>
@@ -244,20 +245,6 @@ export function PricingPage() {
         </div>
       </PublicSection>
 
-      {/* Instant Checkout Modal for Direct Package Purchase */}
-      {checkoutPlan && (
-        <InstantCheckoutModal
-          isOpen={!!checkoutPlan}
-          onClose={() => setCheckoutPlan(null)}
-          targetType="package"
-          targetId={checkoutPlan.id}
-          itemTitle={isEn ? checkoutPlan.name : checkoutPlan.arabicName}
-          amount={checkoutPlan.price}
-          currency="USD"
-          lang={isEn ? 'en' : 'ar'}
-          onSuccess={() => setCheckoutPlan(null)}
-        />
-      )}
     </main>
   );
 }

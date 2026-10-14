@@ -262,6 +262,18 @@ export function PrivacyPolicyPage() {
                     <strong>Google Calendar & Zoom Video Communications</strong> — {isEn ? 'Scheduling lesson events and hosting secure virtual classroom sessions.' : 'مزامنة مواعيد الدروس واستضافة الفصول الافتراضية المباشرة.'}
                   </li>
                   <li>
+                    <strong>Stripe & PayPal</strong> — {isEn ? 'Processing lesson and package payments. Card details go straight to them; we never see or store them.' : 'معالجة مدفوعات الدروس والباقات. بيانات البطاقة تذهب إليهم مباشرة، ولا نراها ولا نخزنها.'}
+                  </li>
+                  <li>
+                    <strong>Google Gemini</strong> — {isEn ? 'Powers the learning assistant that reads the answers you type in the placement chat, to suggest a learning plan.' : 'يشغّل المساعد التعليمي الذي يقرأ إجاباتك في محادثة تحديد المستوى ليقترح خطة تعلم مناسبة.'}
+                  </li>
+                  <li>
+                    <strong>Have I Been Pwned</strong> — {isEn ? 'When you choose a password, your browser checks it against known data leaks. Only the first 5 characters of a one-way hash are sent; your password never leaves your device.' : 'عند اختيار كلمة المرور، يفحصها متصفحك مقابل التسريبات المعروفة. يُرسل فقط أول 5 أحرف من بصمة مشفرة باتجاه واحد، وكلمة مرورك لا تغادر جهازك أبداً.'}
+                  </li>
+                  <li>
+                    <strong>WhatsApp (Meta)</strong> — {isEn ? 'Only when you choose to message us, for example for support, pay-later or refund requests.' : 'فقط عندما تختار مراسلتنا، مثل الدعم أو طلبات الدفع لاحقاً أو الاسترداد.'}
+                  </li>
+                  <li>
                     <strong>Vercel Inc.</strong> — {isEn ? 'Global edge application deployment and SSL/TLS encryption in transit.' : 'استضافة واجهة الويب والتشفير الكامل للبيانات أثناء النقل (SSL/TLS).'}
                   </li>
                 </ul>

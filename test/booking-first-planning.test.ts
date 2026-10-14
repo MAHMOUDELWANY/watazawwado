@@ -58,7 +58,7 @@ describe('multi-lesson atomic confirmation contract', () => {
     assert.match(flow, /fetch\('\/api\/student\/multi-lesson-plan'/);
     assert.match(flow, /catalogId: selectedCatalog\.id/);
     assert.match(flow, /lessons: selectedLessons\.map/);
-    assert.match(flow, /Authorization: `Bearer \$\{accessToken\}`/);
+    assert.match(flow, /Authorization: `Bearer \$\{freshToken\}`/);
     assert.match(read('student/pages/StudentBookingPage.tsx'), /accessToken=\{accessToken\}/);
     assert.match(flow, /scheduledStart: slot\.utcStartIso/);
     assert.match(flow, /scheduledEnd: slot\.utcEndIso/);
@@ -73,7 +73,7 @@ describe('multi-lesson atomic confirmation contract', () => {
     const flow = read('components/booking/BookingFlow.tsx');
     assert.match(flow, /if \(!selectedCatalog\)/);
     assert.match(flow, /This lesson plan is temporarily unavailable/);
-    assert.match(flow, /!accessToken/);
+    assert.match(flow, /!freshToken/);
     assert.match(flow, /!slot\.utcStartIso \|\| !slot\.utcEndIso/);
   });
 
@@ -121,10 +121,10 @@ describe('booking review UX hierarchy', () => {
 
   it('makes a genuinely missing session actionable instead of a silent dead button', () => {
     const flow = read('components/booking/BookingFlow.tsx');
-    assert.match(flow, /!isAuthenticatedStudent \|\| !accessToken/);
+    assert.match(flow, /!isAuthenticatedStudent \|\| !freshToken/);
     assert.match(flow, /Your session has expired\. Please sign in again/);
     // the guard must surface an error rather than returning silently for the auth case
-    assert.match(flow, /if \(!isAuthenticatedStudent \|\| !accessToken\) \{\s*setValidationError/);
+    assert.match(flow, /if \(!isAuthenticatedStudent \|\| !freshToken\) \{\s*setValidationError/);
   });
 
   it('marks the request-created state distinct from payment and never claims payment success', () => {

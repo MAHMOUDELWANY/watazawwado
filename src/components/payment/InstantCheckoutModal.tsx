@@ -97,6 +97,13 @@ export function InstantCheckoutModal({
     };
   }, [isOpen, isAr]);
 
+  // The PayPal buttons render once and keep their first callbacks, so they read the
+  // latest onSuccess / mounted state through refs instead of the effect closure.
+  const onSuccessRef = useRef(onSuccess);
+  onSuccessRef.current = onSuccess;
+  const componentMountedRef = useRef(true);
+  useEffect(() => () => { componentMountedRef.current = false; }, []);
+
   // 2. Load and render PayPal SDK when PayPal tab is active
   useEffect(() => {
     if (!isOpen || selectedGateway !== 'paypal' || !config?.paypalClientId || paymentSuccess) {
@@ -163,16 +170,14 @@ export function InstantCheckoutModal({
                 throw new Error(captureData.error || 'Payment capture failed.');
               }
 
-              if (isMounted) {
+              if (componentMountedRef.current) {
                 setPaymentSuccess(true);
                 setIsProcessingPayPal(false);
-                if (onSuccess) {
-                  setTimeout(() => onSuccess(), 1500);
-                }
+                setTimeout(() => onSuccessRef.current?.(), 1500);
               }
             } catch (err: any) {
               console.error('[PayPal onApprove error]', err);
-              if (isMounted) {
+              if (componentMountedRef.current) {
                 setError(err.message || (isAr ? 'حدث خطأ أثناء تأكيد الدفع.' : 'Payment capture failed.'));
                 setIsProcessingPayPal(false);
               }
@@ -235,7 +240,7 @@ export function InstantCheckoutModal({
     return () => {
       isMounted = false;
     };
-  }, [isOpen, selectedGateway, config?.paypalClientId, targetType, targetId, paymentSuccess, isAr, onSuccess]);
+  }, [isOpen, selectedGateway, config?.paypalClientId, targetType, targetId, paymentSuccess, isAr]);
 
   // 3. Handle Stripe Checkout Redirect
   const handleStripeCheckout = async () => {
@@ -244,14 +249,13 @@ export function InstantCheckoutModal({
 
     try {
       const currentUrl = new URL(window.location.href);
-      currentUrl.searchParams.set('session_id', '{CHECKOUT_SESSION_ID}');
       currentUrl.searchParams.set('gateway', 'stripe');
       currentUrl.searchParams.set('payment_status', 'success');
       currentUrl.searchParams.set('target_id', targetId);
       currentUrl.searchParams.set('target_type', targetType);
 
-      const successUrl = currentUrl.toString();
-      currentUrl.searchParams.delete('session_id');
+      // Stripe only substitutes the literal {CHECKOUT_SESSION_ID}; searchParams would percent-encode the braces.
+      const successUrl = `${currentUrl.toString()}&session_id={CHECKOUT_SESSION_ID}`;
       currentUrl.searchParams.set('payment_cancelled', 'true');
       const cancelUrl = currentUrl.toString();
 
@@ -284,7 +288,7 @@ export function InstantCheckoutModal({
   const formattedAmount = Number(amount || 0).toFixed(2);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="lg">
+    <Modal isOpen={isOpen} onClose={onClose} maxWidth="lg">
       <div
         className={`relative w-full max-w-lg mx-auto p-6 sm:p-8 rounded-3xl glass-dialog text-foreground overflow-hidden ${
           isAr ? 'rtl' : 'ltr'

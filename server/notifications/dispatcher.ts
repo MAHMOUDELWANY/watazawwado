@@ -50,6 +50,9 @@ export interface NotificationPayload {
     currency?: string | null;
     oldDate?: string;
     oldTimeDisplay?: string;
+    /** The lesson's own teacher (RULES.md §1); teacher emails fall back to the official address. */
+    teacherEmail?: string | null;
+    teacherName?: string | null;
   };
   payment?: {
     id: string;
@@ -98,8 +101,12 @@ function getServerSupabase() {
 export function buildIdempotencyKey(payload: NotificationPayload): string {
   const { eventType, booking, payment, lead } = payload;
   if (booking?.referenceCode) {
+    // Time-bound events include the lesson time, so a rescheduled lesson gets fresh reminders.
     if (eventType === 'BOOKING_RESCHEDULED') {
       return `booking:${booking.referenceCode}:rescheduled:${booking.date}:${booking.timeDisplay}`;
+    }
+    if (eventType === 'LESSON_24H_REMINDER' || eventType === 'LESSON_1H_REMINDER') {
+      return `booking:${booking.referenceCode}:${eventType}:${booking.date}:${booking.timeDisplay}`;
     }
     return `booking:${booking.referenceCode}:${eventType}`;
   }
@@ -312,8 +319,8 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
             });
 
             const teacherRes = await sendEmail({
-              to: OFFICIAL_TEACHER_EMAIL,
-              toName: 'Mahmoud Elwany',
+              to: payload.booking?.teacherEmail || OFFICIAL_TEACHER_EMAIL,
+              toName: payload.booking?.teacherName || 'Mahmoud Elwany',
               subject: teacherEmail.subject,
               html: teacherEmail.html,
               text: teacherEmail.text
@@ -389,8 +396,8 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
             });
 
             const teacherRes = await sendEmail({
-              to: OFFICIAL_TEACHER_EMAIL,
-              toName: 'Mahmoud Elwany',
+              to: payload.booking?.teacherEmail || OFFICIAL_TEACHER_EMAIL,
+              toName: payload.booking?.teacherName || 'Mahmoud Elwany',
               subject: teacherEmail.subject,
               html: teacherEmail.html,
               text: teacherEmail.text
@@ -430,8 +437,8 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
             });
 
             const teacherRes = await sendEmail({
-              to: OFFICIAL_TEACHER_EMAIL,
-              toName: 'Mahmoud Elwany',
+              to: payload.booking?.teacherEmail || OFFICIAL_TEACHER_EMAIL,
+              toName: payload.booking?.teacherName || 'Mahmoud Elwany',
               subject: teacherEmail.subject,
               html: teacherEmail.html,
               text: teacherEmail.text
@@ -538,8 +545,8 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
             });
 
             const teacherRes = await sendEmail({
-              to: OFFICIAL_TEACHER_EMAIL,
-              toName: 'Mahmoud Elwany',
+              to: payload.booking?.teacherEmail || OFFICIAL_TEACHER_EMAIL,
+              toName: payload.booking?.teacherName || 'Mahmoud Elwany',
               subject: teacherEmail.subject,
               html: teacherEmail.html,
               text: teacherEmail.text
@@ -614,8 +621,8 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
             });
 
             const teacherRes = await sendEmail({
-              to: OFFICIAL_TEACHER_EMAIL,
-              toName: 'Mahmoud Elwany',
+              to: payload.booking?.teacherEmail || OFFICIAL_TEACHER_EMAIL,
+              toName: payload.booking?.teacherName || 'Mahmoud Elwany',
               subject: teacherEmail.subject,
               html: teacherEmail.html,
               text: teacherEmail.text
@@ -654,8 +661,8 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
             });
 
             const teacherRes = await sendEmail({
-              to: OFFICIAL_TEACHER_EMAIL,
-              toName: 'Mahmoud Elwany',
+              to: payload.booking?.teacherEmail || OFFICIAL_TEACHER_EMAIL,
+              toName: payload.booking?.teacherName || 'Mahmoud Elwany',
               subject: teacherEmail.subject,
               html: teacherEmail.html,
               text: teacherEmail.text

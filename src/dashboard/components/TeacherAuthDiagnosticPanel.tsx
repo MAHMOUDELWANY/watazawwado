@@ -124,12 +124,12 @@ export function TeacherAuthDiagnosticPanel() {
         id="teacher-auth-diagnostic-header" 
         className="px-4 py-3 bg-slate-800/80 border-b border-slate-700/60 flex items-center justify-between"
       >
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center gap-3">
           <div className="p-1.5 bg-emerald-500/20 text-emerald-400 rounded-lg border border-emerald-500/30">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-2">
               <span className="font-semibold text-sm tracking-wide text-white">Teacher Auth Observability</span>
               <span className="text-sm px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 font-mono">Task 0.55.4-A</span>
             </div>
@@ -137,13 +137,13 @@ export function TeacherAuthDiagnosticPanel() {
           </div>
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2">
           <button
             id="diagnostic-run-btn"
             type="button"
             onClick={handleRunCheck}
             disabled={running}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium transition-colors disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium transition-colors disabled:opacity-50"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${running ? 'animate-spin' : ''}`} />
             <span>{running ? 'Checking...' : 'Run Check'}</span>
@@ -153,7 +153,7 @@ export function TeacherAuthDiagnosticPanel() {
             id="diagnostic-copy-btn"
             type="button"
             onClick={handleCopySummary}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200 text-sm font-medium transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200 text-sm font-medium transition-colors"
           >
             {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
             <span>{copied ? 'Copied' : 'Copy'}</span>
@@ -269,7 +269,7 @@ export function TeacherAuthDiagnosticPanel() {
                 return (
                   <div key={ep} className="px-3 py-2 flex items-center justify-between hover:bg-slate-700/20">
                     <span className="text-slate-300">{ep}</span>
-                    <div className="flex items-center space-x-3">
+                    <div className="flex items-center gap-3">
                       <span className={`px-2 py-0.5 rounded text-[13px] ${
                         res?.httpStatus === 200 
                           ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
@@ -281,7 +281,7 @@ export function TeacherAuthDiagnosticPanel() {
                       }`}>
                         {res?.httpStatus ? `HTTP ${res.httpStatus}` : 'PENDING'}
                       </span>
-                      <span className="text-slate-400 min-w-[120px] text-right">
+                      <span className="text-slate-400 min-w-[120px] text-end">
                         {res?.diagnosticStage || '—'}
                       </span>
                     </div>
@@ -293,7 +293,7 @@ export function TeacherAuthDiagnosticPanel() {
 
           {/* Root-cause interpretation */}
           <div id="diagnostic-interpretation-box" className="p-3 bg-slate-800/70 border border-slate-700/60 rounded-lg">
-            <div className="flex items-start space-x-2">
+            <div className="flex items-start gap-2">
               <Activity className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
               <div>
                 <span className="font-semibold text-slate-200 block mb-0.5">Root Cause Diagnosis</span>

@@ -293,7 +293,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                 {lesson.service_name}
               </p>
             </div>
-            <div className="text-right">
+            <div className="text-end">
               <span className="text-[11px] uppercase tracking-wider font-semibold text-primary block">
                 Duration
               </span>

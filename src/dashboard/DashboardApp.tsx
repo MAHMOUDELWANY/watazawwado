@@ -42,6 +42,7 @@ import AnalyticsPage from './pages/AnalyticsPage';
 import SettingsPage from './pages/SettingsPage';
 import IntakeReviewPage from './pages/IntakeReviewPage';
 import TeachersPage from './pages/TeachersPage';
+import AvailabilityPage from './pages/AvailabilityPage';
 import { TeacherAuthDiagnosticPanel } from './components/TeacherAuthDiagnosticPanel';
 import { Language } from '../booking/types';
 import { ErrorBoundary } from '../components/ErrorBoundary';
@@ -157,6 +158,7 @@ export function DashboardApp() {
     { name: lang === 'ar' ? 'المهتمون' : 'Leads', path: '/dashboard/leads', icon: UserPlus },
     { name: lang === 'ar' ? 'الطلبات' : 'Requests', path: '/dashboard/intakes', icon: ClipboardCheck },
     { name: lang === 'ar' ? 'التقارير' : 'Reports', path: '/dashboard/analytics', icon: TrendingUp },
+    { name: lang === 'ar' ? 'مواعيدي' : 'My hours', path: '/dashboard/availability', icon: Clock },
     { name: lang === 'ar' ? 'الإعدادات' : 'Settings', path: '/dashboard/settings', icon: Settings },
   ];
 
@@ -167,6 +169,7 @@ export function DashboardApp() {
     { name: lang === 'ar' ? 'طلابي' : 'Students', path: '/dashboard/students', icon: Users },
     { name: lang === 'ar' ? 'الحجوزات' : 'Bookings', path: '/dashboard/bookings', icon: BookOpen },
     { name: lang === 'ar' ? 'التقارير' : 'Reports', path: '/dashboard/analytics', icon: TrendingUp },
+    { name: lang === 'ar' ? 'مواعيدي' : 'My hours', path: '/dashboard/availability', icon: Clock },
     { name: lang === 'ar' ? 'الإعدادات' : 'Settings', path: '/dashboard/settings', icon: Settings },
   ];
 
@@ -410,6 +413,7 @@ export function DashboardApp() {
                 <Route path="/students/:id" element={<StudentDetailPage />} />
                 <Route path="/bookings" element={<BookingsPage />} />
                 <Route path="/analytics" element={<AnalyticsPage />} />
+                <Route path="/availability" element={<AvailabilityPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>

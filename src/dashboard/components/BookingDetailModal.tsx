@@ -292,6 +292,36 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
     }
   };
 
+  // RULES.md §5: confirmed payments are refunded (never deleted); the lesson or package is reversed.
+  const handleRefundPayment = async (paymentId: string) => {
+    const reason = window.prompt('Refund reason (shown in the payment notes):');
+    if (reason === null) return;
+    try {
+      await dashboardFetch(`/api/dashboard/payments/${paymentId}/refund`, {
+        method: 'POST',
+        body: JSON.stringify({ reason })
+      });
+      setActionMessage({ type: 'success', text: 'Payment refunded. The lesson was cancelled. Remember to send the money back in PayPal/Stripe/bank.' });
+      loadBooking();
+      if (onBookingUpdated) onBookingUpdated();
+    } catch (err: any) {
+      setActionMessage({ type: 'error', text: err?.message || 'Failed to refund payment.' });
+    }
+  };
+
+  // RULES.md §5: pay-later bookings wait for the super admin's decision.
+  const handlePayLaterDecision = async (decision: 'approve' | 'reject') => {
+    if (!booking) return;
+    try {
+      await dashboardFetch(`/api/dashboard/bookings/${booking.id}/pay-later/${decision}`, { method: 'POST' });
+      setActionMessage({ type: 'success', text: decision === 'approve' ? 'Pay-later booking approved and confirmed.' : 'Pay-later request declined; the slot is free again.' });
+      loadBooking();
+      if (onBookingUpdated) onBookingUpdated();
+    } catch (err: any) {
+      setActionMessage({ type: 'error', text: err?.message || 'Failed to update the pay-later request.' });
+    }
+  };
+
   // Helper formatting
   const startUtc = booking ? DateTime.fromISO(booking.scheduled_start) : null;
   const startCairo = startUtc ? startUtc.setZone('Africa/Cairo') : null;
@@ -734,6 +764,15 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                             )}
                           </div>
 
+                          {p.status === 'confirmed' && (
+                            <button
+                              onClick={() => handleRefundPayment(p.id)}
+                              className="shrink-0 px-3 py-1.5 text-sm font-semibold text-destructive hover:bg-destructive/15 border border-destructive/30 rounded-xl transition-colors cursor-pointer min-h-[36px]"
+                            >
+                              Refund
+                            </button>
+                          )}
+
                           {/* Action buttons for pending payments */}
                           {p.status === 'pending' && (
                             <div className="flex items-center gap-2 shrink-0">
@@ -759,6 +798,23 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                   )}
                 </div>
               </div>
+
+              {(booking as any).payment_plan === 'pay_later' && booking.status === 'pending' && (
+                <div className="glass-card p-4 rounded-xl border border-warning/40 bg-warning/10 space-y-3">
+                  <div className="text-sm text-foreground">
+                    <strong className="block">Pay-later request</strong>
+                    This trusted student booked now and will pay later. Approve to confirm the lesson (Zoom, calendar and reminders are sent), or decline to free the slot.
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={() => handlePayLaterDecision('approve')} className="px-3 py-1.5 text-sm font-semibold text-success-foreground bg-success hover:bg-success/90 rounded-xl cursor-pointer min-h-[36px]">
+                      Approve
+                    </button>
+                    <button onClick={() => handlePayLaterDecision('reject')} className="px-3 py-1.5 text-sm font-semibold text-destructive hover:bg-destructive/15 border border-destructive/30 rounded-xl cursor-pointer min-h-[36px]">
+                      Decline
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Teacher Internal Notes Card */}
               <div className="glass-card p-4 rounded-xl border border-border shadow-2xs space-y-2">

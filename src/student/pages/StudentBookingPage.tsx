@@ -477,11 +477,9 @@ export function mapStudentProfileToBookingInitialData(
       parentEmail = profile.email || '';
       parentWhatsapp = profile.whatsapp || '';
       parentNotes = profile.learningNeeds || targetChild.notes || '';
-      if (targetChild.teacherGenderPreference === 'female_teacher') {
-        resolvedTeacherId = 'female_teacher';
-      } else if (targetChild.teacherGenderPreference === 'male_teacher') {
-        resolvedTeacherId = 'male_teacher';
-      }
+      // A child is taught by their own assigned teacher (routed by gender preference at onboarding);
+      // the preference string itself is not a teacher id.
+      resolvedTeacherId = targetChild.assignedTeacherId || targetChild.assigned_teacher_id || undefined;
     } else if (hasLinkedChildren && profile.linkedChildren.length > 1) {
       // Multiple linked children and none selected yet
       childName = '';

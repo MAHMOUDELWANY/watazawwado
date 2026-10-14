@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { activateOnKey } from '../../lib/a11y';
 import { motion } from 'motion/react';
 import { Check, ArrowRight, ArrowLeft, Clock, Gift, CalendarCheck, HelpCircle, Sparkles, Package } from 'lucide-react';
 import { BookingMode, Language, LessonDuration, PackageCatalogEntry, PackageEntitlementEntry } from '../../booking/types';
@@ -102,6 +103,9 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           {/* Free Trial Card */}
           <motion.div
+            role="button"
+            tabIndex={0}
+            onKeyDown={activateOnKey}
             whileHover={trialDisabled ? {} : { scale: 1.015, y: -1 }}
             whileTap={trialDisabled ? {} : { scale: 0.985 }}
             onClick={() => {
@@ -161,6 +165,9 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
 
           {/* Regular Lesson Card */}
           <motion.div
+            role="button"
+            tabIndex={0}
+            onKeyDown={activateOnKey}
             whileHover={{ scale: 1.015, y: -1 }}
             whileTap={{ scale: 0.985 }}
             onClick={() => onChangeMode('regular')}
@@ -304,6 +311,9 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
 
               return (
                 <motion.div
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={activateOnKey}
                   key={ent.id}
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.99 }}
@@ -359,6 +369,9 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
 
             {/* Standalone Pay per lesson option */}
             <motion.div
+              role="button"
+              tabIndex={0}
+              onKeyDown={activateOnKey}
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
               onClick={() => {

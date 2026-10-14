@@ -8,3 +8,11 @@ coverage/
 !.env.example
 
 .agents/
+
+# Local tool artifacts
+.playwright-mcp/
+
+# Local knowledge graph and Claude Code backups (rebuilt locally, not shipped)
+graphify-out/
+.claude/settings.json.graphify-bak
+.claude/settings.local.json

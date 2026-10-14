@@ -139,8 +139,8 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
                   </div>
                   <div className={`px-4 py-2.5 rounded-2xl max-w-[75%] text-sm leading-relaxed ${
                     msg.role === 'user'
-                      ? 'bg-foreground text-background rounded-tr-sm'
-                      : 'glass-card text-foreground border border-border rounded-tl-sm shadow-sm'
+                      ? 'bg-foreground text-background rounded-se-sm'
+                      : 'glass-card text-foreground border border-border rounded-ss-sm shadow-sm'
                   }`}>
                     {msg.content}
                   </div>
@@ -151,7 +151,7 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
                   <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-primary text-accent-foreground">
                     <Bot className="w-4 h-4" />
                   </div>
-                  <div className="px-4 py-2.5 rounded-2xl glass-card border-none rounded-tl-sm shadow-sm">
+                  <div className="px-4 py-2.5 rounded-2xl glass-card border-none rounded-ss-sm shadow-sm">
                     <div className="flex gap-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" />
                       <span className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce [animation-delay:0.2s]" />
@@ -174,6 +174,7 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
                   className="flex-1 glass-surface border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 text-foreground placeholder-muted-foreground"
                 />
                 <button
+                  aria-label={isEn ? 'Send message' : 'إرسال الرسالة'}
                   type="submit"
                   disabled={!input.trim() || isLoading}
                   className="p-2.5 bg-primary text-primary-foreground rounded-xl hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer shrink-0 flex items-center justify-center"

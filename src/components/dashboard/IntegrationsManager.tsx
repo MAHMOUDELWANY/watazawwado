@@ -72,6 +72,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
 
     // Listen for OAuth callback popup window message
     const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
       if (event.data?.type === 'GOOGLE_CALENDAR_CONNECTED') {
         setActionMessage({
           text: `Google Calendar (${event.data.email}) connected successfully!`,

@@ -1,3 +1,4 @@
+import { isPasswordLeaked, LEAKED_PASSWORD_MESSAGE } from './pwnedPassword';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase, isSupabaseConfigured } from './supabase';
@@ -365,6 +366,9 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
     if (APPROVED_TEACHER_EMAILS.includes(normalizedEmail)) {
       return { success: false, error: 'Teacher registration is not permitted.' };
     }
+    if (await isPasswordLeaked(password)) {
+      return { success: false, error: LEAKED_PASSWORD_MESSAGE };
+    }
 
     try {
       const redirectUrl = typeof window !== 'undefined'
@@ -418,6 +422,7 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const updatePassword = async (newPassword: string): Promise<{ success: boolean; error?: string }> => {
     if (!newPassword || newPassword.length < 6) return { success: false, error: 'Password must be at least 6 characters.' };
     if (!isConfigured) return { success: false, error: 'Authentication is unavailable.' };
+    if (await isPasswordLeaked(newPassword)) return { success: false, error: LEAKED_PASSWORD_MESSAGE };
 
     try {
       const { error } = await supabase.auth.updateUser({ password: newPassword });
@@ -487,6 +492,11 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
     setSession(null);
     setUserRole(null);
     setTeacherRole(null);
+
+    // Drop any in-progress booking (contact details, management token) so the next user on this tab can't see it.
+    try {
+      sessionStorage.removeItem('watazawwado_pending_booking_state');
+    } catch {}
   };
 
   return (

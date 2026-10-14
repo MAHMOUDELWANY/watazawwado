@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { activateOnKey } from '../../lib/a11y';
 import { motion } from 'motion/react';
 import { Check, BookOpen, Compass, Languages, GraduationCap, ArrowRight } from 'lucide-react';
 import { BOOKING_SERVICES } from '../../booking/mockData';
@@ -72,6 +73,9 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
           const isSelected = selectedServiceId === service.id;
           return (
             <motion.div
+              role="button"
+              tabIndex={0}
+              onKeyDown={activateOnKey}
               key={service.id}
               whileHover={{ scale: 1.015, y: -2 }}
               whileTap={{ scale: 0.985 }}

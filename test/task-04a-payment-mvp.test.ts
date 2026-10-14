@@ -75,7 +75,7 @@ describe('Task 04-A — Payment MVP Manual Verification Tests', () => {
 
     it('enforces server-authoritative price', () => {
       const apiCode = fs.readFileSync('api/index.ts', 'utf8');
-      assert.ok(apiCode.includes("finalAmount = Number(Number(booking.fee_amount_usd).toFixed(2));"), 'booking fee is fetched server side');
+      assert.ok(apiCode.includes("const finalAmount = Number(Number(booking.fee_amount_usd || 0).toFixed(2));"), 'booking fee is fetched server side');
       assert.ok(apiCode.includes("finalAmount = Number(Number(entitlement.price_paid).toFixed(2));"), 'entitlement amount is fetched server side');
     });
   });

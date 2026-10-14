@@ -26,6 +26,7 @@ import { Badge } from '../../components/ui/Badge';
 import { Modal } from '../../components/ui/Modal';
 import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal';
 import { StudentPageBack } from '../components/StudentPageBack';
+import { LessonSelfServicePanel } from '../components/LessonSelfServicePanel';
 import { buildWhatsAppUrl } from '../../lib/whatsapp';
 import { getBookingPaymentSummary } from '../../lib/paymentStatus';
 import {
@@ -563,6 +564,13 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
 
               return (
                 <>
+                  <LessonSelfServicePanel
+                    booking={rescheduleModalBooking}
+                    lang={lang}
+                    timezone={getActiveWorkingTimezone(rescheduleModalBooking.studentTimezone || 'UTC')}
+                    onChanged={fetchData}
+                  />
+
                   <div
                     className={`p-4 rounded-xl border ${
                       isEligible

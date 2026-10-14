@@ -342,19 +342,8 @@ export function calculateLessonFee(serviceId: string, duration: LessonDuration, 
   const service = BOOKING_SERVICES.find((s) => s.id === serviceId);
   const hourlyRate = service?.hourlyRateUsd || 9;
   
-  if (duration === 30) {
-    if (hourlyRate === 9) return 5.00;
-    if (hourlyRate === 13) return 7.00;
-    if (hourlyRate === 11) return 6.00;
-    return Math.round((hourlyRate * 0.56) * 100) / 100;
-  }
-  if (duration === 45) {
-    if (hourlyRate === 9) return 7.00;
-    if (hourlyRate === 13) return 10.00;
-    if (hourlyRate === 11) return 8.50;
-    return Math.round((hourlyRate * 0.78) * 100) / 100;
-  }
-  return hourlyRate; // 60 min = baseline hourly rate ($9 or $13)
+  // Display only; the server computes the charged fee with the same rule (server/pricing lessonFeeUsd).
+  return Math.round(((hourlyRate * duration) / 60) * 100) / 100;
 }
 
 import { calculateCairoEquivalent } from '../lib/timezone';

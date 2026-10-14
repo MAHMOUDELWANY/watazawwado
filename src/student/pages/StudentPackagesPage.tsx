@@ -58,6 +58,9 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
   // Purchasing & Claiming State
   const [purchasingCatalogId, setPurchasingCatalogId] = useState<string | null>(null);
   const [activeClaimEntitlement, setActiveClaimEntitlement] = useState<any | null>(null);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [packageMinutes, setPackageMinutes] = useState(60);
+  const [refundBusyId, setRefundBusyId] = useState<string | null>(null);
 
   const isAr = lang === 'ar';
 
@@ -153,7 +156,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
       setError(null);
       const token = session?.access_token;
 
-      const payload: any = { packageCatalogId: catalogItem.id };
+      const payload: any = { packageCatalogId: catalogItem.id, acceptedTerms };
       if (selectedLearnerId) {
         payload.learnerStudentId = selectedLearnerId;
       }
@@ -179,7 +182,8 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
       setActiveClaimEntitlement({
         id: json.entitlement?.id,
         packageName: catalogItem.name,
-        pricePaid: catalogItem.price_amount,
+        // The server may apply the family discount, so show what it actually charges.
+        pricePaid: json.entitlement?.price_paid ?? catalogItem.price_amount,
         currency: catalogItem.currency || 'USD'
       });
     } catch (err: any) {
@@ -187,6 +191,26 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
       setError(err.message || (isAr ? 'فشل إتمام اختيار الباقة' : 'Could not initialize package selection'));
     } finally {
       setPurchasingCatalogId(null);
+    }
+  };
+
+  // RULES.md §5: a lesson credit from a cancelled paid lesson can be refunded instead (max 3 per account).
+  const handleRefundRequest = async (credit: any) => {
+    try {
+      setRefundBusyId(credit.id);
+      setError(null);
+      const res = await fetch(`/api/student/credits/${credit.id}/refund-request`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token}` }
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || !json.whatsappUrl) throw new Error(json.error || (isAr ? 'تعذر بدء طلب الاسترداد.' : 'Could not start the refund request.'));
+      window.open(json.whatsappUrl, '_blank', 'noopener,noreferrer');
+      fetchPackages();
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setRefundBusyId(null);
     }
   };
 
@@ -245,18 +269,22 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
 
   // Group the SERVER-provided catalog by its real package_type (weekly / monthly).
   // No price is ever computed here — grouping is display-only.
-  const groupedCatalog = catalogItems.reduce((acc: Record<string, any[]>, cat: any) => {
-    const key = String(cat?.package_type || 'other').toLowerCase();
-    (acc[key] = acc[key] || []).push(cat);
-    return acc;
-  }, {});
-  const catalogGroupOrder = ['weekly', 'monthly'];
+  const groupedCatalog = catalogItems
+    .filter((cat: any) => Number(cat?.eligibility_rules?.duration_minutes ?? 60) === packageMinutes)
+    .reduce((acc: Record<string, any[]>, cat: any) => {
+      const key = String(cat?.eligibility_rules?.hourly_rate ?? cat?.package_type ?? 'other');
+      (acc[key] = acc[key] || []).push(cat);
+      return acc;
+    }, {});
+  const catalogGroupOrder = ['9', '13'];
   const catalogGroupKeys = [
     ...catalogGroupOrder.filter((k) => groupedCatalog[k]?.length),
     ...Object.keys(groupedCatalog).filter((k) => !catalogGroupOrder.includes(k)),
   ];
   const packageTypeLabel = (type: string): string => {
     const map: Record<string, [string, string]> = {
+      '9': ['Quran, Tajweed & Islamic studies ($9 / hour)', 'القرآن والتجويد والعلوم الشرعية (9$ للساعة)'],
+      '13': ['Arabic & English (from $13 / hour)', 'العربية والإنجليزية (من 13$ للساعة)'],
       weekly: ['Weekly', 'أسبوعية'],
       monthly: ['Monthly', 'شهرية'],
     };
@@ -422,7 +450,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
         </div>
 
         <a
-          href="https://wa.me/201026042456?text=Assalamu%20Alaikum%20Ustadh%20Mahmoud%2C%20I%20have%20a%20question%20regarding%20lesson%20packages."
+          href="https://wa.me/201552425799?text=Assalamu%20Alaikum%20Ustadh%20Mahmoud%2C%20I%20have%20a%20question%20regarding%20lesson%20packages."
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 px-4 py-2.5 btn-whatsapp-solid rounded-xl text-sm font-bold shadow-sm shrink-0 self-start md:self-auto min-h-[38px]"
@@ -472,7 +500,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                       <div>
                         <div className="flex items-center gap-2">
                           <h3 className="font-display font-bold text-base text-foreground">
-                            {ent.packageName}
+                            {isAr && ent.packageNameAr ? ent.packageNameAr : ent.packageName}
                           </h3>
                         </div>
                         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground mt-0.5">
@@ -519,6 +547,29 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                           <CreditCard className="w-3.5 h-3.5" />
                           <span>{isAr ? 'إتمام الدفع الفوري لتفعيل الباقة' : 'Pay Now to Activate Package'}</span>
                         </button>
+                      ) : ent.remainingCredits > 0 && ent.isCredit ? (
+                        <div className="w-full flex flex-col sm:flex-row gap-2">
+                          <Link
+                            to={`/student/book?entitlementId=${ent.id}`}
+                            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-sm font-semibold transition-colors min-h-[40px]"
+                          >
+                            <Plus className="w-3.5 h-3.5 text-accent" />
+                            <span>{isAr ? 'احجز حصة بالرصيد ده' : 'Book a lesson with it'}</span>
+                          </Link>
+                          <button
+                            type="button"
+                            disabled={refundBusyId === ent.id}
+                            onClick={() => handleRefundRequest(ent)}
+                            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-border text-sm font-semibold text-muted-foreground hover:text-foreground cursor-pointer disabled:opacity-50 min-h-[40px]"
+                          >
+                            <MessageCircle className="w-3.5 h-3.5" />
+                            <span>
+                              {ent.refundRequestedAt
+                                ? (isAr ? 'تم طلب الاسترداد، افتح واتساب تاني' : 'Refund requested — open WhatsApp again')
+                                : (isAr ? 'عايز استرداد بدل الرصيد' : 'I prefer a refund')}
+                            </span>
+                          </button>
+                        </div>
                       ) : ent.remainingCredits > 0 ? (
                         <Link
                           to={`/student/book?entitlementId=${ent.id}`}
@@ -596,6 +647,43 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
           </div>
         )}
 
+        <div className="p-4 rounded-2xl glass-card border-none space-y-3">
+          <div className="flex flex-wrap items-center gap-2 text-sm">
+            <span className="font-semibold text-foreground">{isAr ? 'مدة الحصة:' : 'Lesson length:'}</span>
+            {[30, 45, 60].map(m => (
+              <button
+                key={m}
+                type="button"
+                onClick={() => setPackageMinutes(m)}
+                aria-pressed={packageMinutes === m}
+                className={`px-3 py-1.5 rounded-xl border text-sm font-medium cursor-pointer ${packageMinutes === m ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-muted-foreground hover:text-foreground'}`}
+              >
+                {isAr ? `${m} دقيقة` : `${m} min`}
+              </button>
+            ))}
+          </div>
+          <p className="text-sm text-muted-foreground">
+            {isAr
+              ? 'رعاية الأسرة: لو اشتريت باقة لابن أو بنت تانية في نفس الحساب، بتاخد خصم 5% زيادة تلقائياً.'
+              : 'Family care: buying a package for a second (or third) child on the same account takes an extra 5% off, automatically.'}
+          </p>
+          <label className="flex items-start gap-2.5 text-sm text-foreground cursor-pointer">
+            <input
+              type="checkbox"
+              checked={acceptedTerms}
+              onChange={e => setAcceptedTerms(e.target.checked)}
+              className="mt-1 w-4 h-4 accent-teal-600"
+            />
+            <span>
+              {isAr ? 'قرأت ووافقت على ' : 'I have read and accept the '}
+              <a href="/terms" target="_blank" rel="noopener noreferrer" className="underline font-semibold text-primary">
+                {isAr ? 'الشروط وسياسة الإلغاء والاسترداد' : 'terms and the cancellation & refund policy'}
+              </a>
+              .
+            </span>
+          </label>
+        </div>
+
         {catalogItems.length === 0 ? (
           <div
             data-testid="packages-unavailable"
@@ -622,6 +710,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                       cat={cat}
                       isAr={isAr}
                       isPurchasing={purchasingCatalogId === cat.id}
+                      canSelect={acceptedTerms}
                       onSelect={handleSelectPackage}
                     />
                   ))}
@@ -735,7 +824,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                     </div>
                   </div>
 
-                  <div className="text-right shrink-0">
+                  <div className="text-end shrink-0">
                     <span
                       className={`inline-block text-sm sm:text-sm font-mono font-bold px-2 py-0.5 rounded-md ${
                         isPositive
@@ -789,11 +878,13 @@ function PackageCard({
   cat,
   isAr,
   isPurchasing,
+  canSelect,
   onSelect,
 }: {
   cat: any;
   isAr: boolean;
   isPurchasing: boolean;
+  canSelect: boolean;
   onSelect: (cat: any) => void;
 }) {
   const lessonCount = Number(cat?.lesson_count) || 0;
@@ -819,12 +910,13 @@ function PackageCard({
           </div>
 
           <div>
-            <h3 className="text-lg font-display font-bold text-foreground">{cat.name}</h3>
+            <h3 className="text-lg font-display font-bold text-foreground">
+              {isAr && cat.eligibility_rules?.name_ar ? cat.eligibility_rules.name_ar : cat.name}
+            </h3>
             <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-              {cat.description ||
-                (isAr
-                  ? 'جلسات فردية مباشرة لتصحيح التلاوة، التجويد، والحفظ المستمر.'
-                  : 'Personalized private lessons for recitation, Tajweed, and retention.')}
+              {isAr
+                ? 'حصص فردية مباشرة، تحجز كل حصة في الوقت اللي يناسبك.'
+                : 'Private 1-on-1 lessons; book each one when it suits you.'}
             </p>
           </div>
 
@@ -832,7 +924,7 @@ function PackageCard({
             <span className="text-3xl font-display font-bold text-foreground">${price}</span>
             <span className="text-sm text-muted-foreground ml-1">{currency}</span>
             <div className="text-[11px] text-muted-foreground mt-0.5">
-              ${Math.round(perLesson)} / {isAr ? 'درس' : 'lesson'}
+              ${perLesson.toFixed(2)} / {isAr ? 'درس' : 'lesson'}
             </div>
             {hasRef && saving > 0 && (
               <div className="text-[11px] font-medium text-success mt-1">
@@ -845,7 +937,8 @@ function PackageCard({
         <div className="pt-4 border-t border-border">
           <button
             type="button"
-            disabled={isPurchasing}
+            disabled={isPurchasing || !canSelect}
+            title={canSelect ? undefined : (isAr ? 'وافق على الشروط الأول' : 'Please accept the terms first')}
             onClick={() => onSelect(cat)}
             className="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm sm:text-sm font-semibold transition-colors shadow-xs cursor-pointer disabled:opacity-50 min-h-[44px]"
           >

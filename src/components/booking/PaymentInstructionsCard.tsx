@@ -21,6 +21,8 @@ import { Language } from '../../booking/types';
 
 interface PaymentInstructionsCardProps {
   bookingReference?: string;
+  /** 'package' when bookingReference is a package entitlement id (multi-lesson plans). */
+  targetType?: 'booking' | 'package';
   serviceName?: string;
   amount?: number;
   currency?: string;
@@ -32,6 +34,7 @@ interface PaymentInstructionsCardProps {
 
 export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = ({
   bookingReference,
+  targetType = 'booking',
   serviceName = '1-on-1 Lesson',
   amount = 9,
   currency = 'USD',
@@ -123,7 +126,7 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
       {/* WhatsApp Support fallback */}
       <div className="pt-2 text-center">
         <a
-          href="https://wa.me/201026042456?text=Assalamu%20Alaikum%20Ustadh%20Mahmoud%2C%20I%20have%20a%20question%20regarding%20payment."
+          href="https://wa.me/201552425799?text=Assalamu%20Alaikum%20Ustadh%20Mahmoud%2C%20I%20have%20a%20question%20regarding%20payment."
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
@@ -139,7 +142,7 @@ export const PaymentInstructionsCard: React.FC<PaymentInstructionsCardProps> = (
         <InstantCheckoutModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          targetType="booking"
+          targetType={targetType}
           targetId={bookingReference || ''}
           itemTitle={serviceName}
           amount={amount}

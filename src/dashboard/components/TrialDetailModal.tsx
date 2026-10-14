@@ -326,6 +326,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
             )}
           </div>
           <button
+            aria-label="Close"
             onClick={onClose}
             className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground glass-hover hover:bg-surface transition-colors"
           >

@@ -30,8 +30,10 @@ export function decryptToken(text: string): string {
     if (parts.length !== 4) return text;
     const iv = Buffer.from(parts[1], 'hex');
     const authTag = Buffer.from(parts[2], 'hex');
+    // A truncated tag would weaken GCM's integrity check.
+    if (authTag.length !== 16) throw new Error('Invalid auth tag length');
     const encrypted = parts[3];
-    const decipher = crypto.createDecipheriv('aes-256-gcm', getEncryptionKey(), iv);
+    const decipher = crypto.createDecipheriv('aes-256-gcm', getEncryptionKey(), iv, { authTagLength: 16 });
     decipher.setAuthTag(authTag);
     let decrypted = decipher.update(encrypted, 'hex', 'utf8');
     decrypted += decipher.final('utf8');

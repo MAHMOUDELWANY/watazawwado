@@ -12,7 +12,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
       interactive: "glass-card border-border shadow-sm hover:shadow-md hover:border-accent/40 transition-all cursor-pointer",
       highlighted: "bg-secondary/20 dark:bg-secondary/30 border-secondary/50 shadow-sm",
       muted: "glass-surface border-border-subtle shadow-none",
-      status: "glass-card border-border-subtle border-l-4 border-l-primary shadow-sm",
+      status: "glass-card border-border-subtle border-s-4 border-s-primary shadow-sm",
     };
 
     return (

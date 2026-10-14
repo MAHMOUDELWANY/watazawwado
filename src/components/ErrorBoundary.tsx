@@ -57,7 +57,7 @@ export class ErrorBoundary extends Component<Props, State> {
           </button>
           
           {this.state.error && (
-            <div className="mt-8 p-4 glass-surface border border-border-subtle rounded-lg text-left overflow-auto max-w-2xl w-full">
+            <div className="mt-8 p-4 glass-surface border border-border-subtle rounded-lg text-start overflow-auto max-w-2xl w-full">
               <p className="font-mono text-sm text-destructive font-semibold mb-2">{this.state.error.message}</p>
               <pre className="font-mono text-sm text-muted-foreground whitespace-pre-wrap">
                 {this.state.error.stack}

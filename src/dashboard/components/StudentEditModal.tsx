@@ -140,6 +140,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
             </p>
           </div>
           <button
+            aria-label="Close"
             onClick={onClose}
             className="p-1.5 rounded-lg text-foreground/60 dark:text-muted-foreground/60 hover:text-foreground dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
           >

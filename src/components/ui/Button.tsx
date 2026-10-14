@@ -34,7 +34,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(baseStyles, variants[variant], sizes[size], className)}
         {...props}
       >
-        {isLoading && <BrandSpinner size={size === 'sm' ? 16 : 18} className="mr-2 rtl:ml-2 rtl:mr-0 shrink-0" />}
+        {isLoading && <BrandSpinner size={size === 'sm' ? 16 : 18} className="me-2 shrink-0" />}
         {children}
       </button>
     );

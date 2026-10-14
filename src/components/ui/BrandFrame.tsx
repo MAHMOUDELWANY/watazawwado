@@ -19,7 +19,7 @@ export function BrandFrame({
   const variantStyles = {
     full: 'p-[2px] bg-brand-gradient shadow-md rounded-2xl',
     subtle: 'p-[1.5px] bg-brand-gradient shadow-sm rounded-xl',
-    edge: 'border-l-[3px] border-l-brand rounded-r-xl border-t border-r border-b border-border shadow-sm'
+    edge: 'border-s-[3px] border-s-brand rounded-e-xl border-t border-e border-b border-border shadow-sm'
   };
 
   const interactiveClasses = onClick ? 'cursor-pointer hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5' : '';

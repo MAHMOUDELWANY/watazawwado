@@ -42,7 +42,7 @@ export function AssignTeacherModal({
   const [teachers, setTeachers] = useState<TeacherOption[]>([]);
   const [loadingTeachers, setLoadingTeachers] = useState(true);
   const [selectedTeacherEmail, setSelectedTeacherEmail] = useState<string>(
-    student.assigned_teacher_email || (student.assigned_teacher_id ? 'mahmoudelwany98@gmail.com' : '')
+    student.assigned_teacher_email || ''
   );
   const [preferredGender, setPreferredGender] = useState<'male' | 'female' | 'any'>(
     student.preferred_teacher_gender || 'any'
@@ -53,7 +53,7 @@ export function AssignTeacherModal({
   // Sync state when modal opens or student changes
   useEffect(() => {
     if (isOpen) {
-      setSelectedTeacherEmail(student.assigned_teacher_email || (student.assigned_teacher_id ? 'mahmoudelwany98@gmail.com' : ''));
+      setSelectedTeacherEmail(student.assigned_teacher_email || '');
       setPreferredGender(student.preferred_teacher_gender || 'any');
       setError(null);
     }
@@ -72,27 +72,11 @@ export function AssignTeacherModal({
           setTeachers(res.teachers || []);
         }
       })
-      .catch(err => {
+      .catch(() => {
+        // Never fall back to invented teacher ids: assigning one would corrupt the student record.
         if (isMounted) {
-          // Graceful fallback to canonical teachers
-          setTeachers([
-            {
-              id: 'teacher-admin-001',
-              email: 'mahmoudelwany98@gmail.com',
-              display_name: 'Ustadh Mahmoud (Super Admin)',
-              role: 'super_admin',
-              gender: 'male',
-              is_active: true
-            },
-            {
-              id: 'teacher-mahmoud-001',
-              email: 'mhmwdlwany4222@gmail.com',
-              display_name: 'Ustadh Mahmoud',
-              role: 'teacher',
-              gender: 'male',
-              is_active: true
-            }
-          ]);
+          setTeachers([]);
+          setError('Could not load the teacher list. Please try again.');
         }
       })
       .finally(() => {
@@ -227,7 +211,7 @@ export function AssignTeacherModal({
               </div>
             </div>
 
-            <div className="text-right">
+            <div className="text-end">
               <span className="text-[11px] text-muted-foreground block">Student ID</span>
               <span className="font-mono text-[11px] text-foreground font-medium">
                 {student.id.slice(0, 8)}...
@@ -430,7 +414,7 @@ export function AssignTeacherModal({
                       </div>
                     </div>
 
-                    <div className="text-right">
+                    <div className="text-end">
                       {preferredGender !== 'any' && (
                         <span className={`text-[13px] px-2 py-0.5 rounded-full font-medium ${
                           isGenderMatch

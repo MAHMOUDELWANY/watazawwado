@@ -274,7 +274,7 @@ export async function syncBookingIntegrations(
   if (typeof (globalThis as any).__TEST_GET_BOOKING_DB_STATE === 'function') {
     dbBooking = await (globalThis as any).__TEST_GET_BOOKING_DB_STATE(booking.referenceCode);
   } else if (supabase) {
-    const { data } = await supabase.from('bookings').select('zoom_meeting_id, zoom_meeting_link, google_calendar_event_id, sync_metadata').eq('reference_code', booking.referenceCode).maybeSingle();
+    const { data } = await supabase.from('bookings').select('zoom_meeting_id, zoom_meeting_link, google_calendar_event_id, sync_metadata, status').eq('reference_code', booking.referenceCode).maybeSingle();
     dbBooking = data;
   }
 
@@ -343,7 +343,9 @@ export async function syncBookingIntegrations(
       zoom_meeting_id: zoomMeetingId,
       google_calendar_event_id: googleEventId,
       integration_status: integrationStatus,
+      // Merge: sync_metadata also carries data owned by other flows (e.g. trial_assessment).
       sync_metadata: {
+        ...(dbBooking?.sync_metadata || {}),
         synced_at: new Date().toISOString(),
         google_event_link: googleEventLink,
         errors: errors.length > 0 ? errors : undefined
@@ -358,7 +360,8 @@ export async function syncBookingIntegrations(
         const { error: dbErr } = await supabase
           .from('bookings')
           .update(updatePayload)
-          .eq('reference_code', booking.referenceCode);
+          .eq('reference_code', booking.referenceCode)
+          .neq('status', 'cancelled'); // a cancellation that landed mid-sync wins
         
         if (dbErr) throw dbErr;
       }

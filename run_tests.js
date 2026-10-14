@@ -22,6 +22,7 @@ async function run() {
   const env = {
     ...process.env,
     PORT: '3000',
+    ALLOW_DEV_AUTH: 'true',
     APP_URL: 'http://localhost:3000'
   };
 

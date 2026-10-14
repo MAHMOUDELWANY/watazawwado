@@ -212,6 +212,7 @@ export async function exchangeGoogleCodeForTokens(code: string, customRedirectUr
       const currentRedirectUri = candidates[i];
       try {
         const response = await fetch('https://oauth2.googleapis.com/token', {
+          signal: AbortSignal.timeout(15000),
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: new URLSearchParams({
@@ -245,6 +246,7 @@ export async function exchangeGoogleCodeForTokens(code: string, customRedirectUr
         let accountEmail = 'teacher@mahmoudteaching.com';
         try {
           const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+            signal: AbortSignal.timeout(15000),
             headers: { Authorization: `Bearer ${accessToken}` }
           });
           if (userInfoRes.ok) {
@@ -292,6 +294,7 @@ export async function refreshGoogleAccessToken(refreshToken: string): Promise<{ 
   const { clientId, clientSecret } = getGoogleOAuthCredentials();
 
   const response = await fetch('https://oauth2.googleapis.com/token', {
+    signal: AbortSignal.timeout(15000),
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({
@@ -325,6 +328,7 @@ export async function queryGoogleFreeBusy(
   calendarId = 'primary'
 ): Promise<GoogleFreeBusyInterval[]> {
   const response = await fetch('https://www.googleapis.com/calendar/v3/freeBusy', {
+    signal: AbortSignal.timeout(15000),
     method: 'POST',
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -394,6 +398,7 @@ export async function getGoogleCalendarEvent(
   const response = await fetch(
     `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events/${encodeURIComponent(eventId)}`,
     {
+      signal: AbortSignal.timeout(15000),
       headers: { Authorization: `Bearer ${accessToken}` }
     }
   );
@@ -434,6 +439,7 @@ export async function findExistingGoogleCalendarEvent(
     const response = await fetch(
       `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?q=${query}&maxResults=5`,
       {
+        signal: AbortSignal.timeout(15000),
         headers: { Authorization: `Bearer ${accessToken}` }
       }
     );
@@ -586,6 +592,7 @@ export async function createGoogleCalendarEvent(
   };
 
   const response = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events`, {
+    signal: AbortSignal.timeout(15000),
     method: 'POST',
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -606,7 +613,8 @@ export async function createGoogleCalendarEvent(
         booking.scheduledStart,
         booking.scheduledEnd,
         booking.cairoTimeDisplay,
-        calendarId
+        calendarId,
+        existing.status === 'cancelled' // same deterministic id as a deleted event: bring it back
       );
       return existing;
     }
@@ -638,7 +646,8 @@ export async function updateGoogleCalendarEvent(
   newStartUtc: string,
   newEndUtc: string,
   cairoTimeDisplay?: string | null,
-  calendarId = 'primary'
+  calendarId = 'primary',
+  reactivate = false
 ): Promise<boolean> {
   const patchBody = {
     start: {
@@ -648,12 +657,14 @@ export async function updateGoogleCalendarEvent(
     end: {
       dateTime: newEndUtc,
       timeZone: 'UTC'
-    }
+    },
+    ...(reactivate ? { status: 'confirmed' } : {})
   };
 
   const response = await fetch(
     `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events/${encodeURIComponent(eventId)}`,
     {
+      signal: AbortSignal.timeout(15000),
       method: 'PATCH',
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -686,6 +697,7 @@ export async function deleteGoogleCalendarEvent(
   const response = await fetch(
     `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events/${encodeURIComponent(eventId)}`,
     {
+      signal: AbortSignal.timeout(15000),
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${accessToken}`

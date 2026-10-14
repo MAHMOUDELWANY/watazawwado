@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { CheckCircle2 } from 'lucide-react';
 import {
@@ -101,16 +101,8 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [confirmation, setConfirmation] = useState<BookingConfirmationData | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
-  const [lessonCount, setLessonCount] = useState<number>(() => {
-    try {
-      const saved = sessionStorage.getItem('watazawwado_pending_booking_state');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed?.lessonCount) return parsed.lessonCount;
-      }
-    } catch {}
-    return 1;
-  });
+  // Packages are bought on the packages page now (RULES.md §4), so the flow books one lesson at a time.
+  const [lessonCount, setLessonCount] = useState<number>(1);
   const [selectedLessons, setSelectedLessons] = useState<SelectedLesson[]>(() => {
     try {
       const saved = sessionStorage.getItem('watazawwado_pending_booking_state');
@@ -137,6 +129,8 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     return null;
   });
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState<boolean>(false);
+  const [payLaterEligible, setPayLaterEligible] = useState(false);
+  const [payLaterBusy, setPayLaterBusy] = useState(false);
   const [isVerifyingPayment, setIsVerifyingPayment] = useState<boolean>(false);
 
   // Progressive Form State
@@ -240,8 +234,11 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     } catch {}
   }, [formData, step, pendingBooking, lessonCount, selectedLessons]);
 
-  // Handle returning from Stripe Checkout (session_id + gateway=stripe in URL)
+  // Handle returning from Stripe Checkout (session_id + gateway=stripe in URL).
+  // Guarded so the verify call runs once per return, even when formData changes or StrictMode re-runs effects.
+  const stripeReturnHandledRef = useRef(false);
   useEffect(() => {
+    if (stripeReturnHandledRef.current) return;
     const params = new URLSearchParams(window.location.search);
     const sessionId = params.get('session_id');
     const gateway = params.get('gateway');
@@ -262,6 +259,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     }
 
     if (sessionId && gateway === 'stripe') {
+      stripeReturnHandledRef.current = true;
       setIsVerifyingPayment(true);
       setValidationError(null);
 
@@ -277,7 +275,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
             let confirmedRecord: any = null;
             if (refCode) {
               try {
-                confirmedRecord = await bookingService.lookupBooking(refCode);
+                confirmedRecord = await bookingService.lookupBooking(refCode, pendingBooking?.managementToken);
               } catch {}
             }
 
@@ -297,7 +295,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
             if (confirmedRecord) {
               setConfirmation({
                 bookingReference: confirmedRecord.reference,
-                managementToken: confirmedRecord.managementToken,
+                managementToken: confirmedRecord.managementToken || pendingBooking?.managementToken,
                 createdAt: new Date().toISOString(),
                 mode: confirmedRecord.mode,
                 serviceName: confirmedRecord.serviceName,
@@ -326,6 +324,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
             } else {
               setConfirmation({
                 bookingReference: refCode || 'CONFIRMED',
+                managementToken: pendingBooking?.managementToken,
                 createdAt: new Date().toISOString(),
                 mode: 'regular',
                 serviceName: data.serviceName || '1-on-1 Lesson',
@@ -463,7 +462,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
       freshToken = (await getFreshAccessToken()) || accessToken;
     } catch {}
 
-    if (!isAuthenticatedStudent || !accessToken) {
+    if (!isAuthenticatedStudent || !freshToken) {
       setValidationError(isEn
         ? 'Your session has expired. Please sign in again to create this lesson plan.'
         : 'انتهت جلسة تسجيل الدخول. يرجى تسجيل الدخول مرة أخرى لإنشاء خطة الدروس.');
@@ -488,7 +487,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     try {
       const result = await fetch('/api/student/multi-lesson-plan', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${freshToken}` },
         body: JSON.stringify({
           serviceId: formData.serviceId,
           durationMinutes: formData.duration,
@@ -572,6 +571,55 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     }
   };
 
+  // Must match PAYMENT_HOLD_MINUTES on the server (api/index.ts).
+  const holdExpiresAt = pendingBooking?.createdAt
+    ? new Date(new Date(pendingBooking.createdAt).getTime() + 35 * 60 * 1000).toISOString()
+    : undefined;
+
+  // Pay later is only offered to students with 12+ paid lessons (RULES.md §5); the server re-checks.
+  useEffect(() => {
+    if (!pendingBooking || !accessToken) {
+      setPayLaterEligible(false);
+      return;
+    }
+    let active = true;
+    fetch('/api/student/pay-later', { headers: { Authorization: `Bearer ${accessToken}` } })
+      .then(res => (res.ok ? res.json() : null))
+      .then(data => { if (active) setPayLaterEligible(Boolean(data?.eligible)); })
+      .catch(() => {});
+    return () => { active = false; };
+  }, [pendingBooking?.bookingReference, accessToken]);
+
+  const handlePayLater = async () => {
+    if (!pendingBooking) return;
+    setPayLaterBusy(true);
+    setValidationError(null);
+    try {
+      const token = (await getFreshAccessToken()) || accessToken;
+      const res = await fetch(`/api/bookings/${encodeURIComponent(pendingBooking.bookingReference)}/pay-later`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ lang })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.whatsappUrl) throw new Error(data.error);
+      try { sessionStorage.removeItem('watazawwado_pending_booking_state'); } catch {}
+      setPendingBooking(null);
+      // RULES.md §5: the student must message the admin on WhatsApp to get the booking approved.
+      window.location.href = data.whatsappUrl;
+    } catch (err: any) {
+      setValidationError(err?.message || (isEn ? 'Pay later is not available right now.' : 'الدفع لاحقاً غير متاح الآن.'));
+    } finally {
+      setPayLaterBusy(false);
+    }
+  };
+
+  const handleChooseAnotherTime = () => {
+    setPendingBooking(null);
+    setIsCheckoutModalOpen(false);
+    setStep(isMultiStepFlow ? 6 : 5);
+  };
+
   const handleOpenManageModal = (refCode: string) => {
     setManageRefCode(refCode);
     setManageModalOpen(true);
@@ -631,6 +679,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
 
           <PaymentInstructionsCard
             bookingReference={multiPlanData.entitlementId}
+            targetType="package"
             serviceName={`${isAr ? currentService?.arabicName : currentService?.name} (${multiPlanData.lessonCount || lessonCount} ${isAr ? 'حصص' : 'lessons'})`}
             amount={multiPlanData.totalAmount || (lessonCount === 4 ? 34 : lessonCount === 8 ? 64 : 92)}
             currency={multiPlanData.currency || 'USD'}
@@ -884,12 +933,17 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                     formData={formData}
                     onGoToStep={handleGoToStep}
                     onSubmit={handleSubmitBooking}
+                    onAcceptTerms={(acceptedTerms) => updateFormData({ acceptedTerms })}
                     onBack={handleBack}
                     isSubmitting={isSubmitting}
                     lang={lang}
                     scheduleStep={6}
                     pendingBookingReference={pendingBooking?.bookingReference}
                     onOpenCheckout={() => setIsCheckoutModalOpen(true)}
+                    holdExpiresAt={holdExpiresAt}
+                    onChooseAnotherTime={handleChooseAnotherTime}
+                    onPayLater={payLaterEligible ? handlePayLater : undefined}
+                    payLaterBusy={payLaterBusy}
                   />
                 )}
               </motion.div>
@@ -933,12 +987,17 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                   formData={formData}
                   onGoToStep={handleGoToStep}
                   onSubmit={handleSubmitBooking}
+                  onAcceptTerms={(acceptedTerms) => updateFormData({ acceptedTerms })}
                   onBack={handleBack}
                   isSubmitting={isSubmitting}
                   lang={lang}
                   scheduleStep={5}
                   pendingBookingReference={pendingBooking?.bookingReference}
                   onOpenCheckout={() => setIsCheckoutModalOpen(true)}
+                  holdExpiresAt={holdExpiresAt}
+                  onChooseAnotherTime={handleChooseAnotherTime}
+                  onPayLater={payLaterEligible ? handlePayLater : undefined}
+                  payLaterBusy={payLaterBusy}
                 />
               </motion.div>
             )}
@@ -966,6 +1025,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
         isOpen={manageModalOpen}
         onClose={() => setManageModalOpen(false)}
         initialRefCode={manageRefCode}
+        initialManagementToken={confirmation?.managementToken}
         lang={lang}
       />
     </div>

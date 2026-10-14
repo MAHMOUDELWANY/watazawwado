@@ -272,8 +272,8 @@ export function PublicHomepage() {
                 </h3>
                 <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
                   {isEn 
-                    ? 'Transparent pricing starting at $9 per session with flexible monthly bundles and automated checkout.' 
-                    : 'أسعار واضحة وميسرة تبدأ من ٩$ للجلسة مع باقات شهرية مرنة ودفع إلكتروني مباشر.'}
+                    ? 'Clear prices from $9 per hour (Quran & Islamic studies) and from $13 per hour (Arabic & English), with money-saving packages.' 
+                    : 'أسعار واضحة: من 9$ للساعة (القرآن والعلوم الشرعية) ومن 13$ للساعة (العربية والإنجليزية)، مع باقات بتوفّر لك.'}
                 </p>
               </div>
               <div className="pt-3 mt-3 border-t border-border/40 flex items-center gap-1 text-xs font-bold text-teal-700 dark:text-teal-300">

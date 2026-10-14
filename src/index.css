@@ -229,11 +229,12 @@
   --ease-exit: cubic-bezier(0.4, 0, 1, 1);
 
   /* Radius Scale */
-  --radius-sm: calc(var(--radius) - 2px);
+  --radius-sm: 8px;
   --radius-md: 16px;
   --radius-lg: 20px;
   --radius-xl: 24px;
   --radius-2xl: 32px;
+  --radius-3xl: 40px;
 }
 
 /* ============================================================

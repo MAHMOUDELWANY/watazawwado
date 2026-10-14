@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { TeacherAuthProvider } from './lib/auth';
 import { ThemeProvider } from './components/ThemeProvider';
@@ -11,13 +11,16 @@ import { PricingPage } from './components/public/pricing/PricingPage';
 import { FAQPage } from './components/public/faq/FAQPage';
 import { PrivacyPolicyPage } from './components/public/privacy/PrivacyPolicyPage';
 import { TermsPage } from './components/public/terms/TermsPage';
-import { DashboardApp } from './dashboard/DashboardApp';
-import StudentApp from './student/StudentApp';
-import StaffLoginPage from './pages/StaffLoginPage';
-import OtpVerificationPage from './pages/OtpVerificationPage';
 import SEOProtection from './components/SEOProtection';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { useScrollPaletteTransition } from './lib/useScrollPaletteTransition';
+import { BrandLoader } from './components/ui/BrandLoader';
+
+// The dashboard, student portal and auth pages load on demand so public visitors don't download them.
+const DashboardApp = lazy(() => import('./dashboard/DashboardApp').then(m => ({ default: m.DashboardApp })));
+const StudentApp = lazy(() => import('./student/StudentApp'));
+const StaffLoginPage = lazy(() => import('./pages/StaffLoginPage'));
+const OtpVerificationPage = lazy(() => import('./pages/OtpVerificationPage'));
 
 export default function App() {
   useScrollPaletteTransition();
@@ -28,6 +31,7 @@ export default function App() {
         <BrowserRouter>
           <SEOProtection />
           <ErrorBoundary>
+            <Suspense fallback={<BrandLoader size="page" />}>
             <Routes>
               {/* Public Routes with Shared Layout */}
               <Route element={<PublicLayout />}>
@@ -56,6 +60,7 @@ export default function App() {
               <Route path="/student/*" element={<StudentApp />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
+            </Suspense>
           </ErrorBoundary>
         </BrowserRouter>
       </TeacherAuthProvider>

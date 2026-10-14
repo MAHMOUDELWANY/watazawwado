@@ -205,6 +205,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
             )}
           </div>
           <button
+            aria-label="Close"
             onClick={onClose}
             className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground glass-hover hover:bg-surface transition-colors cursor-pointer"
           >
@@ -306,7 +307,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                     key={statusKey}
                     type="button"
                     onClick={() => setCurrentStatus(statusKey)}
-                    className={`p-2 rounded-xl text-sm text-left border transition-all cursor-pointer ${
+                    className={`p-2 rounded-xl text-sm text-start border transition-all cursor-pointer ${
                       isSelected
                         ? 'border-primary bg-secondary/30 text-primary font-semibold shadow-2xs'
                         : 'border-border glass-card text-muted-foreground hover:text-foreground hover:bg-surface-subtle'

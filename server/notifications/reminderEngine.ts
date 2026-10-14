@@ -288,7 +288,14 @@ export async function processDueReminders(): Promise<{
       }
 
       // 2. Skip and cancel if booking was cancelled, completed, or deleted
-      if (!b || b.status !== 'confirmed') {
+      if (!b || !['confirmed', 'rescheduled'].includes(b.status)) {
+        await finalizeReminderState(item.id, claimToken, 'cancelled');
+        skipped++;
+        continue;
+      }
+
+      // A late cron run must not send "starts in 1 hour" after the lesson has begun.
+      if (b.scheduled_start && DateTime.fromISO(b.scheduled_start) <= now) {
         await finalizeReminderState(item.id, claimToken, 'cancelled');
         skipped++;
         continue;

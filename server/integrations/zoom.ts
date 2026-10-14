@@ -57,6 +57,7 @@ async function getZoomAccessToken(): Promise<string> {
   const tokenUrl = `https://zoom.us/oauth/token?grant_type=account_credentials&account_id=${encodeURIComponent(accountId)}`;
 
   const response = await fetch(tokenUrl, {
+    signal: AbortSignal.timeout(15000),
     method: 'POST',
     headers: {
       Authorization: `Basic ${authHeader}`,
@@ -106,6 +107,7 @@ export async function createOrProvisionZoomMeeting(
     // 1. Reconcile: Check if a meeting was already created for this booking (in case local DB save failed previously)
     try {
       const searchRes = await fetch('https://api.zoom.us/v2/users/me/meetings?type=scheduled&page_size=300', {
+        signal: AbortSignal.timeout(15000),
         headers: { Authorization: `Bearer ${token}` }
       });
       if (searchRes.ok) {
@@ -146,6 +148,7 @@ export async function createOrProvisionZoomMeeting(
     };
 
     const res = await fetch('https://api.zoom.us/v2/users/me/meetings', {
+      signal: AbortSignal.timeout(15000),
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -199,6 +202,7 @@ export async function updateZoomMeeting(
     };
     
     const res = await fetch(`https://api.zoom.us/v2/meetings/${encodeURIComponent(meetingId)}`, {
+      signal: AbortSignal.timeout(15000),
       method: 'PATCH',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -242,6 +246,7 @@ export async function deleteZoomMeeting(meetingId: string): Promise<void> {
     const token = await getZoomAccessToken();
     
     const res = await fetch(`https://api.zoom.us/v2/meetings/${encodeURIComponent(meetingId)}`, {
+      signal: AbortSignal.timeout(15000),
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${token}`

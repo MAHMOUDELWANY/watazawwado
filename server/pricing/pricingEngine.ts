@@ -68,10 +68,21 @@ export interface PricingRecommendation {
   reasons: string[];
 }
 
-/** Approved business baselines (NON-NEGOTIABLE). */
+/**
+ * Approved hourly rates (owner decision 2026-10-14): Quran, Tajweed and Islamic studies $9/hour;
+ * Arabic (MSA, Egyptian) and English from $13/hour. Shorter lessons are strictly proportional.
+ * Advanced, specialized or intensive teaching is priced individually by the teacher (review path).
+ */
+export const APPROVED_HOURLY_RATES: Record<ServiceBand, number> = { religious: 9, language: 13 };
+
+/** The single lesson-fee rule: hourly rate × minutes / 60, rounded to cents. */
+export function lessonFeeUsd(hourlyRate: number, durationMinutes: number): number {
+  return round2((hourlyRate * durationMinutes) / 60);
+}
+
 export const APPROVED_BASELINES: Record<ServiceBand, Record<DurationMinutes, number>> = {
-  religious: { 60: 9, 45: 7, 30: 5 },
-  language: { 60: 13, 45: 10, 30: 7 },
+  religious: { 60: 9, 45: 6.75, 30: 4.5 },
+  language: { 60: 13, 45: 9.75, 30: 6.5 },
 };
 
 export const SUPPORTED_DURATIONS: DurationMinutes[] = [30, 45, 60];
@@ -91,8 +102,8 @@ export function resolveBand(category: ServiceCategory): ServiceBand | null {
 }
 
 /**
- * Exact baseline pricing for the approved anchor and durations.
- * religious: 60=$9, 45=$7, 30=$5 ; language: 60=$13, 45=$10, 30=$7.
+ * Exact baseline pricing for the approved hourly rates.
+ * religious: 60=$9, 45=$6.75, 30=$4.50 ; language: 60=$13, 45=$9.75, 30=$6.50.
  */
 export function baselinePrice(band: ServiceBand, duration: DurationMinutes): number {
   return APPROVED_BASELINES[band]?.[duration] ?? round2((APPROVED_BASELINES[band]?.[60] * duration) / 60);

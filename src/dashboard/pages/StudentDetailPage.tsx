@@ -567,7 +567,7 @@ export default function StudentDetailPage() {
                       Duration: {next_lesson.duration_minutes} minutes
                     </p>
                   </div>
-                  <div className="text-right sm:text-right">
+                  <div className="text-end">
                     <p className="text-sm font-semibold text-primary">
                       {student.timezone 
                         ? DateTime.fromISO(next_lesson.scheduled_start).setZone(student.timezone).toFormat('EEE, MMM d, yyyy • hh:mm a')

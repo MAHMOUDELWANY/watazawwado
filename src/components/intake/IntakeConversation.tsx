@@ -365,8 +365,8 @@ function Bubble({ role, children }: { role: 'user' | 'assistant'; children: Reac
       <div
         className={
           isUser
-            ? 'bg-primary text-primary-foreground rounded-2xl rounded-br-sm px-4 py-2.5 max-w-[85%] whitespace-pre-line'
-            : 'bg-muted text-foreground rounded-2xl rounded-bl-sm px-4 py-2.5 max-w-[85%] whitespace-pre-line'
+            ? 'bg-primary text-primary-foreground rounded-2xl rounded-ee-sm px-4 py-2.5 max-w-[85%] whitespace-pre-line'
+            : 'bg-muted text-foreground rounded-2xl rounded-es-sm px-4 py-2.5 max-w-[85%] whitespace-pre-line'
         }
       >
         {children}

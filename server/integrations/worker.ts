@@ -26,6 +26,21 @@ function getAdminSupabase() {
   return createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
 }
 
+/** Email and name of the lesson's own teacher, for teacher notifications (RULES.md §1). */
+async function getTeacherContact(teacherId: string | null | undefined): Promise<{ teacherEmail: string | null; teacherName: string | null }> {
+  const supabase = getAdminSupabase();
+  if (!teacherId || !supabase) return { teacherEmail: null, teacherName: null };
+  try {
+    const { data } = await supabase.auth.admin.getUserById(teacherId);
+    const email = data?.user?.email?.toLowerCase() || null;
+    if (!email) return { teacherEmail: null, teacherName: null };
+    const { data: account } = await supabase.from('teacher_accounts').select('display_name, is_active').ilike('email', email).maybeSingle();
+    return account?.is_active ? { teacherEmail: email, teacherName: account.display_name || null } : { teacherEmail: null, teacherName: null };
+  } catch {
+    return { teacherEmail: null, teacherName: null };
+  }
+}
+
 export async function processIntegrationJobs(batchSize = 5, clientOverride?: any, targetBookingId?: string): Promise<number> {
   const supabase = clientOverride || getAdminSupabase();
   if (!supabase) {
@@ -119,40 +134,7 @@ export async function processIntegrationJobs(batchSize = 5, clientOverride?: any
           throw new Error(errMsg);
         }
 
-        // Notifications
-        try {
-          const isTrial = booking.booking_type === 'trial';
-          const scheduledStartIso = booking.scheduled_start;
-          const studentTz = booking.student_timezone || 'Africa/Cairo';
-          const startLuxon = DateTime.fromISO(scheduledStartIso).setZone(studentTz);
-          
-          await scheduleBookingReminders({
-            id: booking.id,
-            scheduledStartUtc: scheduledStartIso,
-            referenceCode: booking.reference_code
-          });
-          
-          await dispatchNotification({
-            eventType: isTrial ? 'TRIAL_BOOKED' : 'BOOKING_CONFIRMED',
-            booking: {
-              id: booking.id,
-              referenceCode: booking.reference_code,
-              serviceName: booking.service_name || (isTrial ? 'Free Trial Lesson' : '1-on-1 Lesson'),
-              learnerName: booking.student_name || booking.contact_name || 'Student',
-              contactEmail: booking.contact_email,
-              contactWhatsapp: booking.contact_whatsapp || null,
-              date: startLuxon.toFormat('cccc, MMMM d, yyyy'),
-              timeDisplay: startLuxon.toFormat('hh:mm a'),
-              timezone: studentTz,
-              durationMinutes: booking.duration_minutes || (isTrial ? 30 : 60),
-              zoomLink: syncResult.zoomMeetingLink || booking.zoom_meeting_link || null,
-              cairoTimeDisplay: booking.cairo_time_display || null,
-              isTrial
-            }
-          });
-        } catch (notifErr) {
-          console.error('[Integration Worker] Notification Dispatch Error', notifErr);
-        }
+        await notifyBookingConfirmed(booking, syncResult.zoomMeetingLink || booking.zoom_meeting_link || null);
 
         // Mark Success: Fail-safe persistence check with lost-update protection
         const { error: updateErr, data: updatedJobs } = await supabase
@@ -180,7 +162,7 @@ export async function processIntegrationJobs(batchSize = 5, clientOverride?: any
       } else if (job.job_type === 'booking_cancel') {
         const { data: booking, error: bError } = await supabase
           .from('bookings')
-          .select('id, reference_code, teacher_id, status, scheduled_start, student_timezone, service_name, student_name, contact_name, contact_email, contact_whatsapp')
+          .select('id, reference_code, teacher_id, status, scheduled_start, student_timezone, contact_name, contact_email, contact_whatsapp, duration_minutes, booking_type, zoom_meeting_link')
           .eq('id', job.booking_id)
           .maybeSingle();
           
@@ -209,6 +191,7 @@ export async function processIntegrationJobs(batchSize = 5, clientOverride?: any
                   await dispatchNotification({
                     eventType: 'BOOKING_CANCELLED',
                     booking: {
+                      ...(await getTeacherContact(booking.teacher_id)),
                       id: booking.id,
                       referenceCode: booking.reference_code,
                       serviceName: booking.service_name || '1-on-1 Lesson',
@@ -218,8 +201,8 @@ export async function processIntegrationJobs(batchSize = 5, clientOverride?: any
                       date: startLuxon.toFormat('cccc, MMMM d, yyyy'),
                       timeDisplay: startLuxon.toFormat('hh:mm a'),
                       timezone: studentTz,
-                      durationMinutes: 60,
-                      isTrial: false,
+                      durationMinutes: booking.duration_minutes || 60,
+                      isTrial: booking.booking_type === 'trial',
                       cairoTimeDisplay: null,
                       zoomLink: null
                     }
@@ -256,7 +239,7 @@ export async function processIntegrationJobs(batchSize = 5, clientOverride?: any
       } else if (job.job_type === 'booking_reschedule') {
         const { data: booking, error: bError } = await supabase
           .from('bookings')
-          .select('id, reference_code, teacher_id, status, scheduled_start, scheduled_end, student_timezone, service_name, student_name, contact_name, contact_email, contact_whatsapp, cairo_time_display')
+          .select('id, reference_code, teacher_id, status, scheduled_start, scheduled_end, student_timezone, contact_name, contact_email, contact_whatsapp, cairo_time_display, duration_minutes, booking_type, zoom_meeting_link')
           .eq('id', job.booking_id)
           .maybeSingle();
           
@@ -285,6 +268,7 @@ export async function processIntegrationJobs(batchSize = 5, clientOverride?: any
                   await dispatchNotification({
                     eventType: 'BOOKING_RESCHEDULED',
                     booking: {
+                      ...(await getTeacherContact(booking.teacher_id)),
                       id: booking.id,
                       referenceCode: booking.reference_code,
                       serviceName: booking.service_name || '1-on-1 Lesson',
@@ -294,10 +278,10 @@ export async function processIntegrationJobs(batchSize = 5, clientOverride?: any
                       date: newStartLuxon.toFormat('cccc, MMMM d, yyyy'),
                       timeDisplay: newStartLuxon.toFormat('hh:mm a'),
                       timezone: studentTz,
-                      durationMinutes: 60,
-                      isTrial: false,
+                      durationMinutes: booking.duration_minutes || 60,
+                      isTrial: booking.booking_type === 'trial',
                       cairoTimeDisplay: booking.cairo_time_display || null,
-                      zoomLink: null
+                      zoomLink: booking.zoom_meeting_link?.startsWith('http') ? booking.zoom_meeting_link : null
                     }
                   });
               }
@@ -361,7 +345,17 @@ export async function processIntegrationJobs(batchSize = 5, clientOverride?: any
           next_attempt_at: isDead ? DateTime.utc().plus({ years: 10 }).toISO() : DateTime.utc().plus({ minutes: backoffMinutes }).toISO(),
           updated_at: new Date().toISOString()
         })
-        .eq('id', job.id);
+        .eq('id', job.id)
+        .eq('status', 'processing');
+
+      // A sync that will never succeed (e.g. revoked Google access) must not leave the student
+      // without a confirmation and reminders; they go out without the Zoom link.
+      if (isDead && job.job_type === 'booking_sync') {
+        const { data: deadBooking } = await supabase.from('bookings').select('*').eq('id', job.booking_id).maybeSingle();
+        if (deadBooking && deadBooking.status !== 'cancelled') {
+          await notifyBookingConfirmed(deadBooking, deadBooking.zoom_meeting_link?.startsWith('http') ? deadBooking.zoom_meeting_link : null);
+        }
+      }
 
       if (failPersistErr) {
         console.error(`[Integration Worker] CRITICAL: Failed to persist failure state for job ${job.id}:`, failPersistErr);
@@ -371,4 +365,42 @@ export async function processIntegrationJobs(batchSize = 5, clientOverride?: any
   }
 
   return processedCount;
+}
+
+/** Schedules reminders and sends the trial/booking confirmation. Never throws. */
+async function notifyBookingConfirmed(booking: any, zoomLink: string | null) {
+  try {
+    const isTrial = booking.booking_type === 'trial';
+    const scheduledStartIso = booking.scheduled_start;
+    const studentTz = booking.student_timezone || 'Africa/Cairo';
+    const startLuxon = DateTime.fromISO(scheduledStartIso).setZone(studentTz);
+
+    await scheduleBookingReminders({
+      id: booking.id,
+      scheduledStartUtc: scheduledStartIso,
+      referenceCode: booking.reference_code
+    });
+
+    await dispatchNotification({
+      eventType: isTrial ? 'TRIAL_BOOKED' : 'BOOKING_CONFIRMED',
+      booking: {
+        ...(await getTeacherContact(booking.teacher_id)),
+        id: booking.id,
+        referenceCode: booking.reference_code,
+        serviceName: isTrial ? 'Free Trial Lesson' : '1-on-1 Lesson',
+        learnerName: booking.contact_name || 'Student',
+        contactEmail: booking.contact_email,
+        contactWhatsapp: booking.contact_whatsapp || null,
+        date: startLuxon.toFormat('cccc, MMMM d, yyyy'),
+        timeDisplay: startLuxon.toFormat('hh:mm a'),
+        timezone: studentTz,
+        durationMinutes: booking.duration_minutes || (isTrial ? 30 : 60),
+        zoomLink,
+        cairoTimeDisplay: booking.cairo_time_display || null,
+        isTrial
+      }
+    });
+  } catch (notifErr) {
+    console.error('[Integration Worker] Notification Dispatch Error', notifErr);
+  }
 }
