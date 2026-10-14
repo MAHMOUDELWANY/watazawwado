@@ -73,7 +73,9 @@ import {
 import {
   createStripeCheckoutSession,
   retrieveStripeCheckoutSession,
-  getStripeConfig
+  getStripeConfig,
+  isValidStripeWebhookSignature,
+  type StripeSessionVerification
 } from '../server/payment/stripeService.js';
 
 dotenv.config();
@@ -235,7 +237,8 @@ function rateLimit(req: express.Request, res: express.Response, next: express.Ne
   next();
 }
 
-app.use(express.json({ limit: '1mb' }));
+// rawBody is kept for the Stripe webhook signature check.
+app.use(express.json({ limit: '1mb', verify: (req: any, _res, buf) => { req.rawBody = buf; } }));
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
@@ -4682,7 +4685,7 @@ async function fulfillAutomatedPayment(params: {
   // 2. Idempotency: the same gateway reference may only ever confirm the same target.
   const { data: existingPayment } = await supabaseAdmin
     .from('payments')
-    .select('id, status, booking_id, entitlement_id')
+    .select('id, status, booking_id, entitlement_id, notes')
     .eq('payment_reference', cleanReference)
     .maybeSingle();
 
@@ -4690,6 +4693,10 @@ async function fulfillAutomatedPayment(params: {
     if (existingPayment.booking_id !== bookingId || existingPayment.entitlement_id !== entitlementId) {
       console.error('[fulfillAutomatedPayment] reference reused for a different target', { cleanReference, bookingId, entitlementId });
       throw new PublicError('This payment reference belongs to a different order.');
+    }
+    // A wrong-amount payment stays for manual review; a page reload or webhook retry must not confirm it.
+    if (existingPayment.status !== 'confirmed' && String(existingPayment.notes || '').startsWith('AMOUNT MISMATCH')) {
+      throw new PublicError('Payment amount does not match the order. It has been recorded for manual review.');
     }
     if (existingPayment.status !== 'confirmed') {
       const { error: retryErr } = await supabaseAdmin.rpc('verify_payment_atomic', { p_payment_id: existingPayment.id });
@@ -5020,7 +5027,30 @@ app.post('/api/payments/paypal/capture', rateLimit, async (req: any, res: any) =
   }
 });
 
-// 4. Automated Stripe Session Verification
+/** Confirms a paid Checkout Session; shared by the return-page verify route and the Stripe webhook. */
+async function confirmStripeSession(session: StripeSessionVerification) {
+  // The target comes only from the metadata the server wrote when it created the session.
+  const targetType = session.metadata?.targetType as 'booking' | 'package' | undefined;
+  const targetId = session.metadata?.targetId;
+  if ((targetType !== 'booking' && targetType !== 'package') || !targetId) {
+    throw new PublicError('This checkout session was not created by this site.');
+  }
+
+  const fulfillment = await fulfillAutomatedPayment({
+    paymentMethod: 'stripe',
+    paymentReference: session.paymentIntent || session.id,
+    amount: session.amountTotal || 0,
+    currency: session.currency || 'USD',
+    notes: `Automated Stripe checkout payment verified (${session.customerEmail || ''})`,
+    targetType,
+    targetId,
+    customerEmail: session.customerEmail,
+    customerName: session.customerName
+  });
+  return { ...fulfillment, targetType, targetId };
+}
+
+// 4. Automated Stripe Session Verification (student returns from Stripe)
 app.post('/api/payments/stripe/verify', rateLimit, async (req: any, res: any) => {
   try {
     const { sessionId } = req.body;
@@ -5038,35 +5068,49 @@ app.post('/api/payments/stripe/verify', rateLimit, async (req: any, res: any) =>
       });
     }
 
-    const targetType = session.metadata?.targetType as 'booking' | 'package' | undefined;
-    const targetId = session.metadata?.targetId;
-    if ((targetType !== 'booking' && targetType !== 'package') || !targetId) {
-      return res.status(400).json({ error: 'This checkout session was not created by this site.' });
-    }
-
-    const fulfillment = await fulfillAutomatedPayment({
-      paymentMethod: 'stripe',
-      paymentReference: session.paymentIntent || sessionId,
-      amount: session.amountTotal || 0,
-      currency: session.currency || 'USD',
-      notes: `Automated Stripe checkout payment verified (${session.customerEmail || ''})`,
-      targetType,
-      targetId,
-      customerEmail: session.customerEmail,
-      customerName: session.customerName
-    });
+    const fulfillment = await confirmStripeSession(session);
 
     return res.json({
       success: true,
       status: 'confirmed',
       paymentId: fulfillment.paymentId,
       isIdempotent: fulfillment.isIdempotent,
-      targetType,
-      targetId
+      targetType: fulfillment.targetType,
+      targetId: fulfillment.targetId
     });
   } catch (err: any) {
     console.error('[Stripe Verify Error]', err);
     return res.status(500).json({ error: clientErrorMessage(err, 'Failed to verify Stripe payment.') });
+  }
+});
+
+// 5. Stripe webhook: confirms the payment even if the student closes the page after paying.
+app.post('/api/payments/stripe/webhook', async (req: any, res: any) => {
+  const secret = (process.env.STRIPE_WEBHOOK_SECRET || '').trim();
+  if (!secret) {
+    return res.status(503).json({ error: 'Webhook not configured.' });
+  }
+  if (!req.rawBody || !isValidStripeWebhookSignature(req.rawBody, req.headers['stripe-signature'], secret)) {
+    return res.status(400).json({ error: 'Invalid signature.' });
+  }
+
+  const event = req.body;
+  if (event?.type !== 'checkout.session.completed' && event?.type !== 'checkout.session.async_payment_succeeded') {
+    return res.json({ received: true });
+  }
+
+  try {
+    // Re-read the session from Stripe so the amount and status are authoritative.
+    const session = await retrieveStripeCheckoutSession(String(event.data?.object?.id || ''));
+    if (session.paymentStatus === 'paid') {
+      await confirmStripeSession(session);
+    }
+    return res.json({ received: true });
+  } catch (err: any) {
+    console.error('[Stripe Webhook Error]', { eventId: event?.id, err });
+    // PublicError = recorded for manual review or not ours; a retry would not change it.
+    if (err instanceof PublicError) return res.json({ received: true });
+    return res.status(500).json({ error: 'Webhook processing failed.' });
   }
 });
 

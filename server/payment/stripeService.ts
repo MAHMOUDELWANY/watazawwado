@@ -6,6 +6,8 @@
  * ====================================================================
  */
 
+import { createHmac, timingSafeEqual } from 'crypto';
+
 export interface StripeConfig {
   publishableKey: string;
   secretKey: string;
@@ -159,4 +161,28 @@ export async function retrieveStripeCheckoutSession(sessionId: string): Promise<
     metadata: session.metadata || {},
     paymentIntent: typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent?.id
   };
+}
+
+/**
+ * Checks a webhook's Stripe-Signature header (HMAC-SHA256 of "timestamp.rawBody" with the
+ * endpoint's whsec_ secret) and rejects events older than 5 minutes to stop replays.
+ */
+export function isValidStripeWebhookSignature(
+  rawBody: Buffer | string,
+  signatureHeader: string | undefined,
+  secret: string,
+  nowSeconds = Math.floor(Date.now() / 1000)
+): boolean {
+  if (!signatureHeader || !secret) return false;
+  const parts = signatureHeader.split(',').map(p => p.split('='));
+  const timestamp = Number(parts.find(([k]) => k === 't')?.[1]);
+  if (!Number.isFinite(timestamp) || Math.abs(nowSeconds - timestamp) > 300) return false;
+
+  const expected = createHmac('sha256', secret).update(`${timestamp}.`).update(rawBody).digest();
+  return parts
+    .filter(([k]) => k === 'v1')
+    .some(([, v]) => {
+      const given = Buffer.from(v || '', 'hex');
+      return given.length === expected.length && timingSafeEqual(given, expected);
+    });
 }
