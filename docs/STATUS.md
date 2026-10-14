@@ -41,11 +41,13 @@ Read this first in a new session, then `RULES.md` (binding owner decisions) and 
 - AI intake: /api/intake/turn returns a server-signed intakeToken (HMAC with the service key, bound to the account, 24h); /api/intake/complete accepts only that token, never a browser-supplied profile/assessment. This also fixes saving the brief, which always failed before (the client sent an empty assessment).
 - Removed the old manual payment system: student payment-claim routes, hard-coded bank details (server/payment/paymentDetails.ts), the unused PaymentInstructionsCard, the public runtime-supabase-diagnostic route, and the root one-off scripts / Task_*.md reports. Admin record/verify/reject payment in the dashboard stays.
 
+- Privacy policy payment line now says Stripe/PayPal only. Lawyer brief: docs/legal-review-brief.md. Owner test checklist (Arabic): docs/owner-test-checklist.md. Old GitHub branches deleted; unmerged ones kept as archive/* tags.
+
 ## Next (in order)
 
-1. Owner tests signed-in flows on production (sign-up, trial, paid booking, cancel → credit, refund request, packages, teacher hours, admin refund/pay-later). Claude cannot create accounts on the live site.
+1. Owner runs docs/owner-test-checklist.md on production (Claude cannot create accounts on the live site).
 2. Owner tests the teacher dashboard with a real teacher account (add a teacher from the Teachers page).
-3. Engineering backlog in RULES.md §8 (design system). Have a lawyer review the terms once.
+3. Send docs/legal-review-brief.md to a lawyer; apply the answers to the terms/privacy pages (bump TERMS_VERSION). Design system moves gradually (CLAUDE.md rule).
 
 ## Owner actions outside the code
 

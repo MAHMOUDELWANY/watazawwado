@@ -143,8 +143,8 @@ export function PrivacyPolicyPage() {
                   <li>
                     <strong>{isEn ? 'Payment & Transaction Records:' : 'سجلات الدفع والتحويلات:'}</strong>{' '}
                     {isEn
-                      ? 'Payment method chosen (e.g. PayPal, Payoneer, Bank Transfer, ACH), transaction reference number, and payment proof submitted for verification. We do not process or store credit card numbers directly on our servers.'
-                      : 'طريقة الدفع المختارة (مثل PayPal أو Payoneer أو التحويل البنكي)، ورقم المعاملة المرجعي لتأكيد الحجز. لا نخزن أو نعالج أي أرقام بطاقات ائتمانية على خوادمنا.'}
+                      ? 'Payment method used (Stripe or PayPal), the amount, and the provider’s transaction reference. Card details are handled by Stripe or PayPal; we never see or store card numbers.'
+                      : 'طريقة الدفع المستخدمة (Stripe أو PayPal)، والمبلغ، والرقم المرجعي للمعاملة لدى مزود الدفع. بيانات البطاقة تتعامل معها Stripe أو PayPal، ولا نراها ولا نخزنها.'}
                   </li>
                 </ul>
               </div>

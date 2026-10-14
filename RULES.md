@@ -89,4 +89,4 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 Owner decisions: none open right now.
 
 Engineering backlog (no owner decision needed, do when there is time):
-- Design system: standardize on `src/components/ui/*` components.
+- Design system: pages move to `src/components/ui/*` gradually, when they are changed (rule in CLAUDE.md).

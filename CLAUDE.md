@@ -27,6 +27,7 @@ Personal teaching platform for Mahmoud: 1-on-1 online lessons in Quran (reading,
 - **Server-side authority.** Prices, availability, and ownership are computed on the server (`server/pricing`, `availabilityEngine.ts`, `verifyTeacherAuth` / `verifyStudentAuth`). Don't trust amounts or IDs from the request body.
 - **Migrations are append-only.** Existing files in `supabase/migrations/` may be applied in production; a hook blocks edits. Use the `new-migration` skill for any schema change.
 - **Secrets.** Never read, print, or edit `.env*` (a hook blocks edits). `.env.example` lists the variable names.
+- **UI components.** New or edited UI uses `src/components/ui/*` (Button, Input, Select, Textarea, Card, Badge, Modal). Move a page to them when you change it; no mass rewrite.
 - **Supabase query builders have no `.catch()`.** Use `const { error } = await ...` instead.
 
 ## graphify
