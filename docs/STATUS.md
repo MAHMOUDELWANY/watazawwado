@@ -4,9 +4,9 @@ Read this first in a new session, then `RULES.md` (binding owner decisions) and 
 
 ## Where the code is
 
-- Branch `release/2026-10-14-owner-rules` (commit 25b6b56 and later) holds all work. Pushed to GitHub; Vercel builds a **preview** from it.
-- `main` and production are still the **old code**. Do not merge to `main` (= production deploy) until the owner tests the preview and says go.
-- All database migrations up to `20261014000004` are **already applied to production Supabase** and are compatible with the old live code.
+- Everything is on `main` and **live in production** (watazawwado.academy) since 2026-10-14. Rollback candidate in Vercel: the previous production deployment (commit 35381f0).
+- All database migrations up to `20261014000004` are applied to production Supabase.
+- No preview environment: Vercel variables are Production-only by owner choice.
 
 ## Done
 
@@ -20,11 +20,14 @@ Read this first in a new session, then `RULES.md` (binding owner decisions) and 
 - Terms page rewritten; privacy policy lists Stripe/PayPal, Gemini, HIBP, WhatsApp.
 - Free leaked-password check (HIBP k-anonymity) on sign-up and password change (`src/lib/pwnedPassword.ts`).
 - Teacher "My hours" page, pay later (12+ paid lessons, admin approval), refunds, teacher reassignment (already existed; now reports lessons still with the old teacher).
-- Pricing page and homepage show the approved prices; fake "85% of students" claim removed; WhatsApp number unified to +48508157886.
+- Pricing page and homepage show the approved prices; fake "85% of students" claim removed.
+- Only contact number everywhere: WhatsApp +48 508 157 886.
+- Emails (Brevo, free plan) redesigned: Arabic + English, logo, brand colours, light/dark, legal footer. Samples in docs/email-previews/. Brevo delivery verified from notification_events (sent OK).
+- Production smoke test 2026-10-14: pages 200, 18 packages served, auth required on protected APIs, dev tokens rejected, security headers present.
 
 ## Next (in order)
 
-1. Owner tests the Vercel preview (sign-up, trial, paid booking with Stripe test, cancel → credit, refund request, packages). Fix what they find, then merge to `main`.
+1. Owner tests signed-in flows on production (sign-up, trial, paid booking, cancel → credit, refund request, packages, teacher hours, admin refund/pay-later). Claude cannot create accounts on the live site.
 2. Make the whole site bilingual with the 50/50 friendly tone, starting with the teacher/admin dashboard (English-only today; its language toggle is broken: local state in `DashboardApp`).
 3. Clean-up: remove the dead multi-lesson plan code (`MultiLessonPlan.tsx`, `/api/student/multi-lesson-plan`, its RPC) now that packages are bought on the packages page.
 4. Admin list for pay-later requests and refund requests (API for pay-later exists; refund requests are marked in `package_entitlements.metadata.refund_requested_at`).

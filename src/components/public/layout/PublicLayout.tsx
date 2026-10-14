@@ -34,9 +34,11 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
   const [studentModalInitialView, setStudentModalInitialView] = useState<'login' | 'signup'>('login');
   const [publicTourOpen, setPublicTourOpen] = useState<boolean>(false);
 
-  // Automatically scroll to top whenever the page route changes
+  // Scroll to top on every page change, or to the linked section (e.g. /terms#refunds).
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    const target = location.hash ? document.getElementById(location.hash.slice(1)) : null;
+    if (target) target.scrollIntoView();
+    else window.scrollTo({ top: 0, behavior: 'instant' });
   }, [location.pathname]);
 
   const publicTourSteps: OnboardingStep[] = [
