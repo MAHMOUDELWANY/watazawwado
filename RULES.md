@@ -89,7 +89,4 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 Owner decisions: none open right now.
 
 Engineering backlog (no owner decision needed, do when there is time):
-- AI intake: re-run the assessment on the server instead of trusting the browser's result.
 - Design system: standardize on `src/components/ui/*` components.
-- Repository clean-up: root one-off scripts; bank details hard-coded in `server/payment/paymentDetails.ts` should move to admin settings.
-- Stripe webhook (payments are verified on return today), Vercel firewall rate limiting.

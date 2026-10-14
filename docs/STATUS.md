@@ -38,12 +38,14 @@ Read this first in a new session, then `RULES.md` (binding owner decisions) and 
 - Stripe webhook endpoint created in the live Stripe account and STRIPE_WEBHOOK_SECRET set in Vercel; verified live (unsigned requests get 400).
 - Vercel Firewall (set in the dashboard): "Block exploit probes" (deny /.env, /.git, wp-admin, ...) and "Rate limit AI and contact" (POST to /api/intake/turn, /api/intake/complete, /api/learning-guide, /api/contact: 30/min per IP → 429). Both verified live. Each path must be its own list entry in the dashboard.
 - Fix: a wrong-amount payment can no longer be confirmed by a page reload or a retry; it stays for manual review.
+- AI intake: /api/intake/turn returns a server-signed intakeToken (HMAC with the service key, bound to the account, 24h); /api/intake/complete accepts only that token, never a browser-supplied profile/assessment. This also fixes saving the brief, which always failed before (the client sent an empty assessment).
+- Removed the old manual payment system: student payment-claim routes, hard-coded bank details (server/payment/paymentDetails.ts), the unused PaymentInstructionsCard, the public runtime-supabase-diagnostic route, and the root one-off scripts / Task_*.md reports. Admin record/verify/reject payment in the dashboard stays.
 
 ## Next (in order)
 
 1. Owner tests signed-in flows on production (sign-up, trial, paid booking, cancel → credit, refund request, packages, teacher hours, admin refund/pay-later). Claude cannot create accounts on the live site.
 2. Owner tests the teacher dashboard with a real teacher account (add a teacher from the Teachers page).
-3. Engineering backlog in RULES.md §8 (AI intake server-side, design system, repo clean-up, Stripe webhook, firewall). Have a lawyer review the terms once.
+3. Engineering backlog in RULES.md §8 (design system). Have a lawyer review the terms once.
 
 ## Owner actions outside the code
 

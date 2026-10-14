@@ -57,6 +57,7 @@ import {
   INTAKE_OPENING_EN,
   type IntakeTurnMessage
 } from '../server/intake/intakeService.js';
+import { createIntakeToken, readIntakeToken } from '../server/intake/intakeToken.js';
 import {
   validateIntakeOutput
 } from '../server/intake/intakeSchema.js';
@@ -1947,30 +1948,6 @@ app.get('/api/teacher-auth-diagnostic', verifyTeacherAuth, (req: any, res: any) 
     supabaseConfig: 'present',
     projectConsistency,
     stage: 'AUTHORIZED'
-  });
-});
-
-// ----------------------------------------------------------------------------
-// Task 0.55.4-B: Public-Safe Vercel Runtime Supabase Configuration Diagnostic
-// Purpose: Allows pre-authentication diagnosis of Vercel serverless environment variables.
-// Absolutely NEVER exposes secret values, prefixes, suffixes, lengths, or hashes.
-// ----------------------------------------------------------------------------
-app.get('/api/runtime-supabase-diagnostic', (req, res) => {
-  const hasUrl = Boolean(
-    (process.env.SUPABASE_URL && process.env.SUPABASE_URL.trim()) ||
-    (process.env.VITE_SUPABASE_URL && process.env.VITE_SUPABASE_URL.trim())
-  );
-  const hasServiceRoleKey = Boolean(
-    process.env.SUPABASE_SERVICE_ROLE_KEY && process.env.SUPABASE_SERVICE_ROLE_KEY.trim()
-  );
-  const adminClient = getSupabaseAdminClient();
-
-  res.json({
-    diagnostic: true,
-    runtime: "vercel",
-    supabaseUrl: hasUrl ? "PRESENT" : "MISSING",
-    supabaseServiceRoleKey: hasServiceRoleKey ? "PRESENT" : "MISSING",
-    adminClient: adminClient ? "AVAILABLE" : "UNAVAILABLE"
   });
 });
 
@@ -5579,295 +5556,6 @@ app.post('/api/student/credits/:id/refund-request', rateLimit, verifyStudentAuth
   }
 });
 
-// 16i. PUBLIC/STUDENT: Report payment confirmation reference safely
-app.post('/api/bookings/:referenceCode/payment-claim', rateLimit, verifyStudentAuth, async (req: any, res: any) => {
-  try {
-    const supabase = getSupabaseAdminClient();
-    if (!supabase) {
-      return res.status(503).json({ error: 'Database service unavailable.' });
-    }
-
-    const { referenceCode } = req.params;
-    const { payment_method, payment_reference, amount, currency, notes } = req.body;
-
-    if (!payment_reference || typeof payment_reference !== 'string' || !payment_reference.trim()) {
-      return res.status(400).json({ error: 'Payment reference code is required.' });
-    }
-
-    const validMethods = ['international_bank_iban', 'ach_routing', 'payoneer', 'paypal', 'wise', 'other'];
-    if (!payment_method || !validMethods.includes(payment_method)) {
-      return res.status(400).json({ error: `Payment method must be one of: ${validMethods.join(', ')}` });
-    }
-
-    const studentId = req.studentUser?.student_id;
-    if (!studentId) {
-      return res.status(403).json({ error: 'Student authentication required.' });
-    }
-
-    const { data: booking, error: bErr } = await supabase
-      .from('bookings')
-      .select('id, student_id, service_id, duration_minutes, booking_type, fee_amount_usd, status, package_entitlement_id')
-      .eq('reference_code', referenceCode)
-      .maybeSingle();
-
-    if (bErr || !booking) {
-      return res.status(404).json({ error: 'Booking reference not found.' });
-    }
-
-    // The learner may be the student or a child this account is guardian of.
-    const authorizedLearners = await getAuthorizedLearnersForStudent(supabase, req);
-    if (!authorizedLearners.some(l => l.id === booking.student_id)) {
-      return res.status(403).json({ error: 'You are not authorized to claim payment for this booking.' });
-    }
-
-    if (booking.booking_type === 'trial') {
-      return res.status(400).json({ error: 'Free trials do not require payment.' });
-    }
-    if (booking.package_entitlement_id) {
-      return res.status(400).json({ error: 'This lesson is covered by your package credits.' });
-    }
-    if (booking.status !== 'pending') {
-      return res.status(400).json({ error: 'This booking is not awaiting payment.' });
-    }
-
-    // The fee is fixed when the booking is created; never recompute it here.
-    const finalAmount = Number(Number(booking.fee_amount_usd || 0).toFixed(2));
-    const finalCurrency = 'USD';
-
-    if (finalAmount <= 0) {
-      return res.status(400).json({ error: 'Authoritative payment amount/currency could not be determined from booking. Cannot process claim.' });
-    }
-
-    // Idempotency: Check if a payment with this reference already exists for this booking
-    const { data: existingPayment } = await supabase
-      .from('payments')
-      .select('id, status')
-      .eq('booking_id', booking.id)
-      .eq('payment_reference', String(payment_reference).trim())
-      .maybeSingle();
-
-    if (existingPayment) {
-      return res.status(200).json({
-        success: true,
-        message: 'Payment reference already recorded. Awaiting verification.',
-        payment_id: existingPayment.id
-      });
-    }
-
-    const { data: newPayment, error: pErr } = await supabase
-      .from('payments')
-      .insert({
-        booking_id: booking.id,
-        student_id: booking.student_id || null,
-        amount: finalAmount,
-        currency: finalCurrency,
-        payment_method,
-        payment_reference: String(payment_reference).trim(),
-        status: 'pending',
-        notes: notes ? `Student claim: ${String(notes).trim()}` : 'Student reported payment'
-      })
-      .select()
-      .single();
-
-    if (pErr) {
-      console.error('[Payment Claim Error]', pErr);
-      return res.status(500).json({ error: 'Could not record payment reference.' });
-    }
-
-    // Dispatch PAYMENT_CLAIMED notification asynchronously
-    try {
-      let learnerName = 'Student';
-      let contactEmail: string | undefined = undefined;
-      let contactWhatsapp: string | undefined = undefined;
-      let serviceName = '1-on-1 Lesson';
-
-      const { data: b } = await supabase
-        .from('bookings')
-        .select('contact_name, contact_email, contact_whatsapp, service_id')
-        .eq('reference_code', referenceCode)
-        .maybeSingle();
-
-      if (b) {
-        learnerName = b.contact_name || learnerName;
-        contactEmail = b.contact_email;
-        contactWhatsapp = b.contact_whatsapp;
-        if (b.service_id) {
-          const { data: srv } = await supabase.from('services').select('title').eq('id', b.service_id).maybeSingle();
-          serviceName = srv?.title || serviceName;
-        }
-      }
-
-      await dispatchNotification({
-        eventType: 'PAYMENT_CLAIMED',
-        payment: {
-          id: newPayment.id,
-          amount: finalAmount,
-          currency: finalCurrency,
-          paymentMethod: payment_method,
-          paymentReference: String(payment_reference).trim(),
-          notes: notes ? String(notes).trim() : undefined
-        },
-        booking: {
-          referenceCode,
-          serviceName,
-          learnerName,
-          contactEmail: contactEmail || '',
-          contactWhatsapp: contactWhatsapp || null,
-          date: '',
-          timeDisplay: '',
-          timezone: 'Africa/Cairo',
-          durationMinutes: 60
-        }
-      });
-    } catch (notifErr) {
-      console.error('[Payment Claim Notification Error]', notifErr);
-    }
-
-    res.status(201).json({
-      success: true,
-      message: 'Payment reported successfully. Ustadh Mahmoud will verify and confirm receipt.',
-      payment_id: newPayment.id
-    });
-  } catch (err) {
-    console.error('[Payment Claim Server Error]', err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-
-// 16j. PUBLIC/STUDENT: Report package payment confirmation reference safely
-app.post('/api/packages/:entitlementId/payment-claim', rateLimit, verifyStudentAuth, async (req: any, res: any) => {
-  try {
-    const supabase = getSupabaseAdminClient();
-    if (!supabase) {
-      return res.status(503).json({ error: 'Database service unavailable.' });
-    }
-
-    const { entitlementId } = req.params;
-    const { payment_method, payment_reference, amount, currency, notes } = req.body;
-
-    if (!payment_reference || typeof payment_reference !== 'string' || !payment_reference.trim()) {
-      return res.status(400).json({ error: 'Payment reference code is required.' });
-    }
-
-    const validMethods = ['international_bank_iban', 'ach_routing', 'payoneer', 'paypal', 'wise', 'other'];
-    if (!payment_method || !validMethods.includes(payment_method)) {
-      return res.status(400).json({ error: `Payment method must be one of: ${validMethods.join(', ')}` });
-    }
-
-    const authUserId = req.studentUser?.auth_id;
-    if (!authUserId) {
-      return res.status(403).json({ error: 'Student authentication required.' });
-    }
-
-    const { data: entitlement, error: eErr } = await supabase
-      .from('package_entitlements')
-      .select('id, purchaser_account_id, price_paid, currency, status, learner_student_id')
-      .eq('id', entitlementId)
-      .maybeSingle();
-
-    if (eErr || !entitlement) {
-      return res.status(404).json({ error: 'Package entitlement not found.' });
-    }
-
-    if (entitlement.purchaser_account_id !== authUserId) {
-      return res.status(403).json({ error: 'You are not authorized to claim payment for this package.' });
-    }
-
-    if (entitlement.status !== 'pending_payment') {
-      return res.status(400).json({ error: 'Package is not pending payment.' });
-    }
-
-    let finalAmount: number | null = null;
-    let finalCurrency: string | null = null;
-
-    if (entitlement.price_paid !== null && Number(entitlement.price_paid) > 0) {
-      finalAmount = Number(Number(entitlement.price_paid).toFixed(2));
-      finalCurrency = entitlement.currency || 'USD';
-    }
-
-    if (!finalAmount || finalAmount <= 0 || !finalCurrency) {
-      return res.status(400).json({ error: 'Authoritative payment amount/currency could not be determined from package. Cannot process claim.' });
-    }
-
-    // Idempotency check
-    const { data: existingPayment } = await supabase
-      .from('payments')
-      .select('id, status')
-      .eq('entitlement_id', entitlement.id)
-      .eq('payment_reference', String(payment_reference).trim())
-      .maybeSingle();
-
-    if (existingPayment) {
-      return res.status(200).json({
-        success: true,
-        message: 'Payment reference already recorded. Awaiting verification.',
-        payment_id: existingPayment.id
-      });
-    }
-
-    const { data: newPayment, error: pErr } = await supabase
-      .from('payments')
-      .insert({
-        entitlement_id: entitlement.id,
-        booking_id: null,
-        student_id: entitlement.learner_student_id || req.studentUser?.student_id || null,
-        amount: finalAmount,
-        currency: finalCurrency,
-        payment_method,
-        payment_reference: String(payment_reference).trim(),
-        status: 'pending',
-        notes: notes ? `Student package claim: ${String(notes).trim()}` : 'Student reported package payment'
-      })
-      .select()
-      .single();
-
-    if (pErr) {
-      console.error('[Package Payment Claim Error]', pErr);
-      return res.status(500).json({ error: 'Could not record package payment reference.' });
-    }
-
-    // Attempt to update package_entitlements payment_reference (for legacy UI or tracking)
-    await supabase.from('package_entitlements').update({ payment_reference: String(payment_reference).trim() }).eq('id', entitlement.id);
-
-    try {
-      await dispatchNotification({
-        eventType: 'PAYMENT_CLAIMED',
-        payment: {
-          id: newPayment.id,
-          amount: finalAmount,
-          currency: finalCurrency,
-          paymentMethod: payment_method,
-          paymentReference: String(payment_reference).trim(),
-          notes: notes ? String(notes).trim() : undefined
-        },
-        booking: {
-          referenceCode: entitlement.id.substring(0, 8),
-          serviceName: 'Package Purchase',
-          learnerName: 'Student',
-          contactEmail: '',
-          contactWhatsapp: null,
-          date: '',
-          timeDisplay: '',
-          timezone: 'Africa/Cairo',
-          durationMinutes: 0
-        }
-      });
-    } catch (notifErr) {
-      console.error('[Package Payment Claim Notification Error]', notifErr);
-    }
-
-    res.status(201).json({
-      success: true,
-      message: 'Package payment reported successfully. Ustadh Mahmoud will verify and activate your package.',
-      payment_id: newPayment.id
-    });
-  } catch (err) {
-    console.error('[Package Payment Claim Server Error]', err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
 // 16d. DASHBOARD: Fetch super admin overview metrics
 app.get('/api/dashboard/overview-metrics', verifyTeacherAuth, requireSuperAdmin, async (req, res) => {
   try {
@@ -9020,6 +8708,11 @@ app.post('/api/intake/turn', rateLimit, verifyStudentAuth, async (req: any, res:
       recommendation = evaluateAssessment(output.assessment as ServiceAssessment);
     }
 
+    // The final result is signed so /api/intake/complete saves exactly what the AI produced.
+    const intakeToken = output.is_complete && output.assessment && req.studentUser?.auth_id
+      ? createIntakeToken(req.studentUser.auth_id, output.profile, output.assessment, (process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim())
+      : null;
+
     return res.json({
       reply: output.reply,
       isComplete: output.is_complete,
@@ -9027,6 +8720,7 @@ app.post('/api/intake/turn', rateLimit, verifyStudentAuth, async (req: any, res:
       profile: output.profile,
       assessment: output.assessment,
       recommendation,
+      intakeToken,
     });
   } catch (err: any) {
     console.error('Intake error:', err);
@@ -9044,19 +8738,16 @@ app.post('/api/intake/complete', rateLimit, verifyStudentAuth, async (req: any, 
       return res.status(401).json({ error: 'Authenticated student identity is required.' });
     }
 
-    const rawProfile = req.body?.profile;
-    const rawAssessment = req.body?.assessment;
+    // Only the server-signed result of /api/intake/turn is accepted, never a profile or assessment typed by the browser.
+    const signed = readIntakeToken(req.body?.intakeToken, authUserId, (process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim());
     const conversation = coerceTurnMessages(req.body?.conversation);
 
-    if (!rawProfile || typeof rawProfile !== 'object') {
-      return res.status(400).json({ error: 'A structured learning profile is required.' });
-    }
-    if (!rawAssessment || typeof rawAssessment !== 'object') {
-      return res.status(400).json({ error: 'A structured service assessment is required.' });
+    if (!signed) {
+      return res.status(400).json({ error: 'The assessment is missing or expired. Please finish the conversation again.' });
     }
 
     // Re-validate through the same strict schema used for the model output.
-    const synthetic = { reply: 'ok', is_complete: true, profile: rawProfile, assessment: rawAssessment };
+    const synthetic = { reply: 'ok', is_complete: true, profile: signed.profile, assessment: signed.assessment };
     const validated = validateIntakeOutput(synthetic);
     if (!validated.ok || !validated.value?.assessment) {
       return res.status(400).json({ error: 'Invalid intake payload.', details: validated.errors });

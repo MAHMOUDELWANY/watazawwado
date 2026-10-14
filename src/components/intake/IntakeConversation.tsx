@@ -102,6 +102,7 @@ export default function IntakeConversation({ session, lang = 'en', onCompleted }
   const [profile, setProfile] = useState<any>(null);
   const [recommendation, setRecommendation] = useState<PricingRecommendationView | null>(null);
   const [isComplete, setIsComplete] = useState(false);
+  const [intakeToken, setIntakeToken] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const startedRef = useRef(false);
@@ -165,6 +166,7 @@ export default function IntakeConversation({ session, lang = 'en', onCompleted }
       setMessages((prev) => [...prev, { role: 'assistant', content: data.reply }]);
       if (data.profile) setProfile(data.profile);
       if (data.recommendation) setRecommendation(data.recommendation);
+      if (data.intakeToken) setIntakeToken(data.intakeToken);
       if (data.isComplete && data.recommendation) {
         setIsComplete(true);
         analyticsRepository.logEvent('learning_goal_identified', {
@@ -192,7 +194,7 @@ export default function IntakeConversation({ session, lang = 'en', onCompleted }
       const r = await fetch('/api/intake/complete', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...authHeaders() },
-        body: JSON.stringify({ profile, assessment: recommendationAssessment(), conversation: messages }),
+        body: JSON.stringify({ intakeToken, conversation: messages }),
       });
       const data = await r.json();
       if (!r.ok) {
@@ -210,8 +212,6 @@ export default function IntakeConversation({ session, lang = 'en', onCompleted }
     }
   };
 
-  // The assessment is re-derived server-side; we only forward the profile here.
-  const recommendationAssessment = () => (profile?.assessment || (profile as any)).assessment || null;
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {

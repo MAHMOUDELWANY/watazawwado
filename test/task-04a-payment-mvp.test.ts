@@ -38,13 +38,6 @@ describe('Task 04-A — Payment MVP Manual Verification Tests', () => {
     assert.ok(sql.includes('GRANT EXECUTE ON FUNCTION public.verify_payment_atomic(UUID) TO service_role;'), 'Must grant to service_role only');
   });
 
-  describe('3. Idempotency on Payment Claim Submission', () => {
-    it('returns 200 when submitting a duplicate payment claim for a booking', () => {
-      const apiCode = fs.readFileSync('api/index.ts', 'utf8');
-      assert.ok(apiCode.includes('Idempotency: Check if a payment with this reference already exists'), 'Idempotency check exists in payment claim');
-    });
-  });
-
   describe('4. Exactly-One-Target Constraint', () => {
     it('DB schema constraint payments_exactly_one_target_check prevents a payment from targeting both or neither', () => {
       const migrationCode = fs.readFileSync('supabase/migrations/20261002000000_phase04_payment_mvp_idempotency.sql', 'utf8');
@@ -73,10 +66,5 @@ describe('Task 04-A — Payment MVP Manual Verification Tests', () => {
       assert.ok(apiCode.includes("req.studentUser?.auth_id"), 'auth_id is retrieved');
     });
 
-    it('enforces server-authoritative price', () => {
-      const apiCode = fs.readFileSync('api/index.ts', 'utf8');
-      assert.ok(apiCode.includes("const finalAmount = Number(Number(booking.fee_amount_usd || 0).toFixed(2));"), 'booking fee is fetched server side');
-      assert.ok(apiCode.includes("finalAmount = Number(Number(entitlement.price_paid).toFixed(2));"), 'entitlement amount is fetched server side');
-    });
   });
 });

@@ -24,7 +24,6 @@ import { StepDateTime } from './StepDateTime';
 import { StepReviewSummary } from './StepReviewSummary';
 import { BookingConfirmation } from './BookingConfirmation';
 import { ManageBookingModal } from './ManageBookingModal';
-import { PaymentInstructionsCard } from './PaymentInstructionsCard';
 import { InstantCheckoutModal } from '../payment/InstantCheckoutModal';
 import { getFreshAccessToken } from '../../lib/auth';
 

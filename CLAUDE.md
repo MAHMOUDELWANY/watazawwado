@@ -28,7 +28,6 @@ Personal teaching platform for Mahmoud: 1-on-1 online lessons in Quran (reading,
 - **Migrations are append-only.** Existing files in `supabase/migrations/` may be applied in production; a hook blocks edits. Use the `new-migration` skill for any schema change.
 - **Secrets.** Never read, print, or edit `.env*` (a hook blocks edits). `.env.example` lists the variable names.
 - **Supabase query builders have no `.catch()`.** Use `const { error } = await ...` instead.
-- Root-level `fix-*.js`, `patch_*.js`, `rewrite_*.cjs`, `Task_*.md` files are one-off scripts and audit reports from earlier work, not part of the app.
 
 ## graphify
 

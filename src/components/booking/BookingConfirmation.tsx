@@ -21,7 +21,6 @@ import {
 } from 'lucide-react';
 import { BookingConfirmationData, Language } from '../../booking/types';
 import { buildBookingWhatsAppUrl } from '../../lib/whatsapp';
-import { PaymentInstructionsCard } from './PaymentInstructionsCard';
 
 interface BookingConfirmationProps {
   confirmation: BookingConfirmationData;
