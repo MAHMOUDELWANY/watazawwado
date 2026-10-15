@@ -7,7 +7,7 @@ import { useT } from '../lib/language';
 import { dashboardFetch } from '../dashboard/lib/dashboardApi';
 
 // Keep in sync with TEACHER_AGREEMENT_VERSION in api/index.ts.
-const AGREEMENT_VERSION = '2026-10-15';
+const AGREEMENT_VERSION = '2026-10-15.2';
 
 type Clause = { en: { title: string; items: string[] }; ar: { title: string; items: string[] } };
 
@@ -28,14 +28,16 @@ const CLAUSES: Clause[] = [
     en: { title: 'Lessons and quality', items: [
       'Keep your weekly hours on “My hours” up to date. Students book from those hours, so only open times you can really teach.',
       'Prepare each lesson, start on time as the Zoom host from the dashboard, and teach the full booked time.',
-      'If you cannot teach a booked lesson, use “Ask the student to reschedule” as early as possible and tell the platform owner. Only the platform owner moves or cancels lessons directly.',
+      'If you cannot teach a booked lesson, move it yourself from the dashboard, as early as possible, to tomorrow or a later day, and write the reason; the student gets an email and a notice, and the platform owner is told on the site. You cannot cancel lessons; only the platform owner can.',
+      'Moving a lesson less than 3 hours before it starts is still possible, but then you also send the platform owner the ready WhatsApp message that opens, so we can apologise to the family properly.',
       'Write a short note after each lesson so the student, the parent and the next lesson benefit from it.',
       'Teach in a balanced and moderate way, in line with the values described on the website, and treat every student and parent with respect.',
     ] },
     ar: { title: 'الدروس والجودة', items: [
       'حدّث ساعاتك الأسبوعية في صفحة "ساعاتي" باستمرار. الطلاب يحجزون من هذه الساعات، فافتح فقط الأوقات التي تستطيع التدريس فيها فعلاً.',
       'حضّر كل درس، وابدأ في موعده كمضيف Zoom من لوحة التحكم، ودرّس الوقت المحجوز كاملاً.',
-      'إذا لم تستطع تقديم درس محجوز، استخدم "اطلب من الطالب تغيير الموعد" في أقرب وقت وأخبر صاحب المنصة. وصاحب المنصة وحده هو من يغيّر موعد الدروس أو يلغيها مباشرة.',
+      'إذا لم تستطع تقديم درس محجوز، غيّر موعده بنفسك من لوحة التحكم في أقرب وقت، إلى الغد أو يوم بعده، واكتب السبب؛ فيصل للطالب بريد وإشعار، ويُبلَّغ صاحب المنصة على الموقع. ولا يمكنك إلغاء الدروس؛ الإلغاء لصاحب المنصة وحده.',
+      'تغيير موعد الدرس قبل أقل من ٣ ساعات من بدايته ممكن، لكن عليك حينها أيضاً إرسال رسالة واتساب الجاهزة التي تُفتح لصاحب المنصة، حتى نعتذر للأسرة كما يليق.',
       'اكتب ملاحظة قصيرة بعد كل درس، ليستفيد منها الطالب وولي الأمر والدرس التالي.',
       'درّس بأسلوب متوازن ومعتدل يتفق مع القيم الموضحة على الموقع، وتعامل مع كل طالب وولي أمر باحترام.',
     ] },

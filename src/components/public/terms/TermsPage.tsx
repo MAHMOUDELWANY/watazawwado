@@ -5,7 +5,7 @@ import { PublicSection, EditorialHeading, MarginNote, PageHero } from '../Public
 import { FileText, CalendarClock, RotateCcw, Wallet } from 'lucide-react';
 
 // Keep in sync with TERMS_VERSION in api/index.ts: bookings store the version the student accepted.
-const TERMS_VERSION_LABEL = { en: 'Version 2026-10-15.2 · Last updated 15 October 2026', ar: 'إصدار 2026-10-15.2 · آخر تحديث 15 أكتوبر 2026' };
+const TERMS_VERSION_LABEL = { en: 'Version 2026-10-15.3, last updated 15 October 2026', ar: 'الإصدار 2026-10-15.3، آخر تحديث 15 أكتوبر 2026' };
 
 // Trader identity (consumer law). The block shows once name and address are filled in.
 // Not a registered business: leave ceidg/nip empty. Never publish a PESEL here.
@@ -124,14 +124,18 @@ const SECTIONS: Section[] = [
     id: 'cancellation',
     en: { title: 'Cancelling and rescheduling', items: [
       'Cancel up to 3 hours before the lesson: a paid lesson comes back to you as a lesson credit you can book any time; a package lesson keeps its credit.',
-      'Reschedule up to 1 hour before the lesson, by yourself, from your student account.',
+      'Lessons are booked from tomorrow onwards, never for the same day.',
+      'Reschedule up to 1 hour before the lesson, by yourself, from your student account. The new time is on another day, from tomorrow onwards.',
+      'If your teacher has to move a lesson, you get an email and a notice on the site with the reason. If the new time does not suit you, move it or cancel it under the same rules.',
       'Inside the last hour before the lesson nothing can be changed. A lesson cancelled less than 3 hours before, or missed without notice, counts as taken (no refund or credit) when the teacher was available and ready to teach. Technical problems and exceptional situations are looked at fairly, case by case.',
       'Real emergencies: message us on WhatsApp. The platform owner may, as a goodwill gesture and at their sole discretion, move the lesson. This is not a right and does not change the rules above.',
       'If we cancel, the teacher misses the lesson, or a technical problem on our side stops it, you choose: a free new time, a lesson credit, or a refund. This never counts toward the refund limit below.',
     ] },
     ar: { title: 'الإلغاء وتغيير الموعد', items: [
       'الإلغاء حتى 3 ساعات قبل الدرس: الدرس المدفوع يعود لك كرصيد حصة تحجزه في أي وقت، ودرس الباقة يحتفظ برصيده.',
-      'تغيير الموعد حتى ساعة قبل الدرس، بنفسك من حساب الطالب.',
+      'الحجز يكون من الغد فصاعداً، ولا يكون لنفس اليوم.',
+      'تغيير الموعد حتى ساعة قبل الدرس، بنفسك من حساب الطالب، والموعد الجديد يكون في يوم آخر من الغد فصاعداً.',
+      'إذا اضطر معلمك لتغيير موعد درس، يصلك بريد إلكتروني وإشعار على الموقع بالسبب. وإذا لم يناسبك الموعد الجديد، يمكنك تغييره أو إلغاؤه بنفس القواعد.',
       'خلال الساعة الأخيرة قبل الدرس لا يمكن تغيير أي شيء. الدرس الذي يُلغى قبل أقل من 3 ساعات من موعده، أو الذي لم تحضره دون إبلاغ، يُحتسب كدرس تم (بدون استرداد أو رصيد) متى كان المعلم متاحاً ومستعداً للتدريس. والمشكلات التقنية والظروف الاستثنائية تُراجع بعدل حسب كل حالة.',
       'الظروف الطارئة فعلاً: تواصل معنا عبر واتساب. يجوز لصاحب المنصة، كمراعاة وحسب تقديره وحده، تغيير موعد الدرس. هذا ليس حقاً مكتسباً ولا يغير القواعد السابقة.',
       'إذا ألغينا نحن، أو غاب المعلم، أو منعت مشكلة تقنية من جهتنا الدرس، تختار أنت: موعداً جديداً مجاناً، أو رصيد حصة، أو استرداد المبلغ، ولا يُحتسب ذلك أبداً من حد الاسترداد التالي.',

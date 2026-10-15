@@ -195,6 +195,15 @@ export async function resolveAuthoritativeTeacherForAvailability(
 }
 
 /**
+ * RULES.md §2 (2026-10-15): a booking or a new time for a lesson starts on a later calendar day
+ * than today, in the student's time zone. No same-day bookings or moves.
+ */
+export function isOnLaterDay(startUtc: DateTime, timezone: string | null | undefined): boolean {
+  const zone = timezone && DateTime.now().setZone(timezone).isValid ? timezone : 'UTC';
+  return startUtc.setZone(zone).startOf('day') > DateTime.now().setZone(zone).startOf('day');
+}
+
+/**
  * Computes available booking days and slots for a given timezone and date range.
  * Merges Cairo teaching hours + Google Calendar Busy + Supabase Bookings.
  */
@@ -324,7 +333,8 @@ export async function computeAvailableSlots(
         const isConflicted = allBusy.some((busy) => busy.overlaps(slotInterval));
 
         // Also check if slot is in the past
-        const isPast = slotStartUtc < DateTime.now().toUTC();
+        // Today (student's time zone) and earlier are closed: bookings start tomorrow at the earliest.
+        const isPast = !isOnLaterDay(slotStartUtc, studentTimezone);
         const isUnavailable = isConflicted || isPast;
 
       // Project into student timezone

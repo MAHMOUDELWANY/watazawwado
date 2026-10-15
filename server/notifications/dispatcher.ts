@@ -11,6 +11,7 @@ import {
   renderStudentBookingConfirmation,
   renderStudentTrialConfirmation,
   renderStudentPaymentConfirmed,
+  renderStudent3hReminder,
   renderStudentCancellation,
   renderStudentReschedule,
   renderStudent24hReminder,
@@ -29,7 +30,8 @@ export type NotificationEventType =
   | 'BOOKING_RESCHEDULED'
   | 'LEAD_CREATED'
   | 'LESSON_24H_REMINDER'
-  | 'LESSON_1H_REMINDER';
+  | 'LESSON_1H_REMINDER'
+  | 'LESSON_3H_REMINDER';
 
 export interface NotificationPayload {
   eventType: NotificationEventType;
@@ -110,7 +112,7 @@ export function buildIdempotencyKey(payload: NotificationPayload): string {
     if (eventType === 'BOOKING_RESCHEDULED') {
       return `booking:${booking.referenceCode}:rescheduled:${booking.date}:${booking.timeDisplay}`;
     }
-    if (eventType === 'LESSON_24H_REMINDER' || eventType === 'LESSON_1H_REMINDER') {
+    if (eventType === 'LESSON_24H_REMINDER' || eventType === 'LESSON_1H_REMINDER' || eventType === 'LESSON_3H_REMINDER') {
       return `booking:${booking.referenceCode}:${eventType}:${booking.date}:${booking.timeDisplay}`;
     }
     return `booking:${booking.referenceCode}:${eventType}`;
@@ -444,6 +446,12 @@ export async function dispatchNotification(payload: NotificationPayload): Promis
           ],
           lang
         }));
+        break;
+      }
+
+      case 'LESSON_3H_REMINDER': {
+        if (!booking?.contactEmail) break;
+        await sendOnce('student', booking.contactEmail, booking.learnerName, lang => renderStudent3hReminder({ ...booking, bookingRef: booking.referenceCode, lang }));
         break;
       }
 

@@ -34,7 +34,7 @@ export type AttendanceStatus = 'attended' | 'student_no_show' | 'teacher_resched
 export type SessionCompletionStatus = 'completed' | 'partial' | 'cancelled';
 export type PaymentMethod = 'international_bank_iban' | 'ach_routing' | 'payoneer' | 'paypal' | 'wise' | 'other';
 export type PaymentStatus = 'pending' | 'confirmed' | 'rejected' | 'refunded';
-export type ReminderType = '24h_before' | '1h_before';
+export type ReminderType = '24h_before' | '1h_before' | 'email_3h' | 'site_12h' | 'site_2h';
 export type ReminderStatus = 'pending' | 'sent' | 'failed' | 'cancelled';
 export type BlogPostStatus = 'draft' | 'published' | 'archived';
 

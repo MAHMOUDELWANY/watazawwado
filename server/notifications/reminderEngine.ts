@@ -2,7 +2,9 @@
  * ====================================================================
  * MAHMOUD TEACHING PLATFORM — REMINDER SCHEDULER ENGINE
  * File: server/notifications/reminderEngine.ts
- * Role: Timezone-aware, idempotent 24h & 1h lesson reminder processor
+ * Role: Timezone-aware, idempotent lesson reminder processor. RULES.md §2 (2026-10-15):
+ *       email 3h before (the booking email is sent on confirmation), on-site notices 12h and 2h before.
+ *       Legacy '24h_before' / '1h_before' rows still send their emails.
  *       with durable claim ownership and complete Supabase error inspection.
  * ====================================================================
  */
@@ -10,6 +12,7 @@
 import { DateTime } from 'luxon';
 import { createClient } from '@supabase/supabase-js';
 import { dispatchNotification } from './dispatcher.js';
+import { notifyUser, resolveLearnerAccount } from './inbox.js';
 import { isServerSupabaseConfigured } from '../integrations/availabilityEngine.js';
 
 function getServerSupabase() {
@@ -20,9 +23,14 @@ function getServerSupabase() {
 }
 
 export interface ReminderScheduleResult {
+  /** Legacy flags, always false now (kept for callers and tests). */
   scheduled24h: boolean;
   scheduled1h: boolean;
+  scheduled: ReminderKind[];
 }
+
+export type ReminderKind = 'email_3h' | 'site_12h' | 'site_2h';
+const REMINDER_OFFSETS_HOURS: Record<ReminderKind, number> = { site_12h: 12, email_3h: 3, site_2h: 2 };
 
 /**
  * Sanitizes any reminder error before persisting into database.
@@ -56,72 +64,50 @@ export async function scheduleBookingReminders(booking: {
   scheduledStartUtc: string;
   referenceCode: string;
 }): Promise<ReminderScheduleResult> {
+  const none: ReminderScheduleResult = { scheduled24h: false, scheduled1h: false, scheduled: [] };
   const supabase = getServerSupabase();
   const now = DateTime.utc();
   const start = DateTime.fromISO(booking.scheduledStartUtc, { zone: 'utc' });
+  if (!start.isValid) return none;
 
-  if (!start.isValid) {
-    return { scheduled24h: false, scheduled1h: false };
-  }
+  // Only reminders whose moment is still ahead (a lesson booked 5 hours ahead gets email_3h and site_2h).
+  const due = (Object.keys(REMINDER_OFFSETS_HOURS) as ReminderKind[])
+    .map((kind) => ({ kind, at: start.minus({ hours: REMINDER_OFFSETS_HOURS[kind] }) }))
+    .filter(({ at }) => at > now);
 
-  const diffHours = start.diff(now, 'hours').hours;
-  const time24h = start.minus({ hours: 24 });
-  const time1h = start.minus({ hours: 1 });
-
-  let scheduled24h = false;
-  let scheduled1h = false;
-
-  if (supabase) {
-    const rowsToInsert: any[] = [];
-
-    // Schedule 24h reminder only if lesson is more than 24h away
-    if (diffHours >= 24) {
-      rowsToInsert.push({
-        booking_id: booking.id,
-        reminder_type: '24h_before',
-        scheduled_for: time24h.toISO(),
-        status: 'pending'
-      });
-      scheduled24h = true;
-    }
-
-    // Schedule 1h reminder only if lesson is more than 1h away
-    if (diffHours >= 1) {
-      rowsToInsert.push({
-        booking_id: booking.id,
-        reminder_type: '1h_before',
-        scheduled_for: time1h.toISO(),
-        status: 'pending'
-      });
-      scheduled1h = true;
-    }
-
-    if (rowsToInsert.length > 0) {
-      try {
-        const { error: dbErr } = await supabase
-          .from('reminders')
-          .upsert(rowsToInsert, { onConflict: 'booking_id, reminder_type' });
-
-        if (dbErr) {
-          console.warn('[Reminders DB Upsert Error]', dbErr);
-          return { scheduled24h: false, scheduled1h: false };
-        }
-      } catch (dbErr) {
-        console.warn('[Reminders DB Upsert Warning]', dbErr);
-        return { scheduled24h: false, scheduled1h: false };
-      }
-    }
-  } else {
+  if (!supabase) {
     // Fail-closed in production if database is unavailable
     if (process.env.NODE_ENV === 'production') {
       console.error('[Reminder Scheduling Error] Database client unavailable in production.');
-      return { scheduled24h: false, scheduled1h: false };
+      return none;
     }
-    scheduled24h = diffHours >= 24;
-    scheduled1h = diffHours >= 1;
+    return { ...none, scheduled: due.map((d) => d.kind) };
   }
+  if (due.length === 0) return none;
 
-  return { scheduled24h, scheduled1h };
+  try {
+    const { error: dbErr } = await supabase
+      .from('reminders')
+      .upsert(due.map(({ kind, at }) => ({
+        booking_id: booking.id,
+        reminder_type: kind,
+        scheduled_for: at.toISO(),
+        status: 'pending',
+        sent_at: null,
+        error_info: null,
+        claim_token: null,
+        processing_at: null,
+        updated_at: new Date().toISOString()
+      })), { onConflict: 'booking_id, reminder_type' });
+    if (dbErr) {
+      console.warn('[Reminders DB Upsert Error]', dbErr);
+      return none;
+    }
+  } catch (dbErr) {
+    console.warn('[Reminders DB Upsert Warning]', dbErr);
+    return none;
+  }
+  return { ...none, scheduled: due.map((d) => d.kind) };
 }
 
 /**
@@ -210,6 +196,8 @@ export async function processDueReminders(): Promise<{
   processed: number;
   sent24h: number;
   sent1h: number;
+  sentEmail3h?: number;
+  sentSite?: number;
   skipped: number;
 }> {
   const supabase = getServerSupabase();
@@ -232,6 +220,7 @@ export async function processDueReminders(): Promise<{
         status,
         bookings (
           id,
+          student_id,
           reference_code,
           contact_name,
           contact_email,
@@ -260,6 +249,8 @@ export async function processDueReminders(): Promise<{
 
     let sent24h = 0;
     let sent1h = 0;
+    let sentEmail3h = 0;
+    let sentSite = 0;
     let skipped = 0;
 
     for (const item of dueReminders) {
@@ -329,7 +320,32 @@ export async function processDueReminders(): Promise<{
       const cairoDt = DateTime.fromISO(b.scheduled_start, { zone: 'Africa/Cairo' });
       const cairoTimeDisplay = `${cairoDt.toFormat('h:mm a')} Egypt`;
 
-      const eventType = item.reminder_type === '24h_before' ? 'LESSON_24H_REMINDER' : 'LESSON_1H_REMINDER';
+      // On-site notices (12h, 2h): the account that owns the lesson sees them in its notifications.
+      if (item.reminder_type === 'site_12h' || item.reminder_type === 'site_2h') {
+        const account = await resolveLearnerAccount(supabase, b.student_id);
+        if (!account.userId) {
+          await finalizeReminderState(item.id, claimToken, 'cancelled');
+          skipped++;
+          continue;
+        }
+        const soon = item.reminder_type === 'site_2h';
+        await notifyUser(supabase, { userId: account.userId }, {
+          kind: soon ? 'lesson_in_2h' : 'lesson_in_12h',
+          title: soon
+            ? { en: 'Your lesson is in 2 hours', ar: 'حصتك كمان ساعتين' }
+            : { en: 'Your lesson is coming up', ar: 'حصتك قرّبت' },
+          body: {
+            en: `${b.contact_name || 'Your lesson'}: ${dateStr}, ${timeStr} (${studentTz}).${soon ? ' Get your things ready and join a minute early.' : ''}`,
+            ar: `${b.contact_name || 'حصتك'}: ${dateStr}، ${timeStr} (${studentTz}).${soon ? ' جهّز حاجتك وادخل قبل الميعاد بدقيقة.' : ''}`
+          },
+          link: '/student/lessons'
+        });
+        await finalizeReminderState(item.id, claimToken, 'sent');
+        sentSite++;
+        continue;
+      }
+
+      const eventType = item.reminder_type === 'email_3h' ? 'LESSON_3H_REMINDER' : item.reminder_type === '24h_before' ? 'LESSON_24H_REMINDER' : 'LESSON_1H_REMINDER';
       const serviceName = b.service_id ? b.service_id.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) : '1-on-1 Lesson';
 
       // 4. Dispatch notification
@@ -355,7 +371,8 @@ export async function processDueReminders(): Promise<{
       if (dispatchRes.success) {
         const finalized = await finalizeReminderState(item.id, claimToken, 'sent');
         if (finalized) {
-          if (item.reminder_type === '24h_before') sent24h++;
+          if (item.reminder_type === 'email_3h') sentEmail3h++;
+          else if (item.reminder_type === '24h_before') sent24h++;
           else sent1h++;
         }
       } else {
@@ -368,6 +385,8 @@ export async function processDueReminders(): Promise<{
       processed: dueReminders.length,
       sent24h,
       sent1h,
+      sentEmail3h,
+      sentSite,
       skipped
     };
   } catch (err) {

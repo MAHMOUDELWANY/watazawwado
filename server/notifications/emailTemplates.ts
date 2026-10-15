@@ -464,6 +464,40 @@ export function renderStudent24hReminder(params: {
 }
 
 // 7. Reminder 1 hour before
+// 8. Reminder 3 hours before (RULES.md §2, 2026-10-15: email at booking and 3 hours before)
+export function renderStudent3hReminder(params: {
+  learnerName: string;
+  serviceName: string;
+  timeDisplay: string;
+  timezone: string;
+  bookingRef: string;
+  zoomLink?: string | null;
+  lang?: EmailLang;
+}): EmailRenderResult {
+  const name = escapeHtml(params.learnerName);
+  const zoom = zoomParts(params.zoomLink);
+  return render({
+    preheader: { en: `In 3 hours · ${params.timeDisplay}`, ar: `كمان ٣ ساعات · ${params.timeDisplay}` },
+    title: { en: 'Your lesson is in 3 hours 🌿', ar: 'حصتك كمان ٣ ساعات 🌿' },
+    greeting: { en: `Assalamu alaikum ${name},`, ar: `السلام عليكم ${name}،` },
+    paragraphs: [{
+      en: 'A gentle reminder: your lesson is today, in about three hours. Find a quiet corner, and your teacher will be waiting for you.',
+      ar: 'تذكير لطيف: حصتك النهارده كمان حوالي ٣ ساعات. جهّز ركن هادي، ومعلمك هيكون في انتظارك.'
+    }],
+    rows: [
+      [LBL.subject, escapeHtml(params.serviceName)],
+      [{ en: 'Time', ar: 'الساعة' }, `${escapeHtml(params.timeDisplay)} (${escapeHtml(params.timezone)})`],
+      [LBL.ref, escapeHtml(params.bookingRef)]
+    ],
+    note: zoom.note,
+    button: zoom.url ? { url: params.zoomLink!, label: { en: 'Join on Zoom', ar: 'ادخل الحصة على Zoom' } } : ACCOUNT_BUTTON(),
+    reason: STUDENT_REASON
+  }, {
+    en: 'Your lesson is in 3 hours',
+    ar: 'حصتك كمان ٣ ساعات'
+  }, params.lang);
+}
+
 export function renderStudent1hReminder(params: {
   learnerName: string;
   serviceName: string;

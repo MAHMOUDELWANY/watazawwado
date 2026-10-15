@@ -9,6 +9,32 @@ import { resolveEmailLanguage } from './dispatcher.js';
 
 type L = { en: string; ar: string };
 
+/** The account that owns a learner's lessons: the learner's own, or the parent's for a child. */
+export async function resolveLearnerAccount(
+  client: any,
+  studentId: string | null | undefined
+): Promise<{ userId: string | null; email: string | null; name: string | null; viaParent: boolean }> {
+  if (!studentId) return { userId: null, email: null, name: null, viaParent: false };
+  const { data: st } = await client.from('students').select('auth_user_id, email, name').eq('id', studentId).maybeSingle();
+  let userId: string | null = st?.auth_user_id || null;
+  let email: string | null = st?.email || null;
+  const name: string | null = st?.name || null;
+  let viaParent = false;
+  if (!userId) {
+    const { data: g } = await client.from('guardians').select('parent_email').eq('student_id', studentId).limit(1);
+    const parentEmail = g?.[0]?.parent_email;
+    if (parentEmail) {
+      // Escape LIKE wildcards so the email matches literally.
+      const safe = String(parentEmail).replace(/[\\%_]/g, (c: string) => '\\' + c);
+      const { data: parent } = await client.from('students').select('auth_user_id').ilike('email', safe).not('auth_user_id', 'is', null).limit(1);
+      userId = parent?.[0]?.auth_user_id || null;
+      email = parentEmail;
+      viaParent = true;
+    }
+  }
+  return { userId, email, name, viaParent };
+}
+
 export interface InboxNotice {
   kind: string;
   title: L;

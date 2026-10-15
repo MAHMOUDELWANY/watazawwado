@@ -15,7 +15,7 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
   - receives notifications for their own lessons. The super admin sees everything.
 - **[Decided 2026-10-14] Changing teacher.** The super admin can move a student to another teacher at any time (Students → student → Assigned teacher). New bookings go to the new teacher; lessons already booked stay with the teacher they were booked with until the admin moves or cancels them.
 - **[Decided 2026-10-15] Teachers never see money.** A teacher's dashboard shows no prices, fees, payments, refunds or pay-later data (the API strips them for non-admins). Payment alerts go only to the super admin.
-- **[Decided 2026-10-15] Teachers don't move or cancel lessons directly.** They "Ask the student to reschedule"; the student gets an on-site notification and picks a new time. Only the super admin moves or cancels lessons directly.
+- **[Decided 2026-10-15, changed same day] Teachers move their own lessons, never cancel them.** From the dashboard a teacher moves one of their lessons to tomorrow or a later day (student's time zone), with a **required reason**. The student gets an email (the reschedule email) and an on-site notice with the reason; the super admin gets an on-site notice. Moving **less than 3 hours** before the lesson is still allowed, but the dashboard then opens WhatsApp to the admin with a ready message (student, booking ref, old/new time, reason) so the admin can follow up and apologise to the family. Only the super admin cancels. "Ask the student to reschedule" stays available. The teacher agreement says this (version 2026-10-15.2).
 - **[Decided 2026-10-15] Teacher notifications:** a teacher gets an email and an on-site notification (dashboard bell) when one of their lessons is booked (trial or paid), moved or cancelled.
 - **[Decided 2026-10-15] Adding teachers:** the super admin adds a teacher (email, name, gender) on the Teachers page; the teacher receives an invitation email to set a password and signs in at /staff/login. Each teacher's emails go to the email of their teacher account, so no Vercel setting is needed per teacher.
 - **[Decided 2026-10-15] Teacher time zones:** each teacher enters weekly hours in their own time zone on "My hours"; students always see times in theirs.
@@ -31,10 +31,12 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 - **[Decided 2026-10-14] Free-trial limit.** After **5** cancelled or missed trials, the account can no longer book free trials; paid lessons stay open. Accounts are never deleted automatically (confirmed by the owner 2026-10-14).
 - **[Decided 2026-10-14] Cancelling and rescheduling (all lessons):**
   - cancel up to **3 hours** before (a free trial: up to 1 hour before);
-  - reschedule up to **1 hour** before, self-service;
+  - reschedule up to **1 hour** before, self-service; the new time is on **another day, tomorrow or later** (student's time zone), never the same day;
   - inside the last hour nothing can be changed; a missed lesson counts as taken (no refund, no credit);
   - real emergencies: the student messages WhatsApp; the super admin may move the lesson as goodwill, at their sole discretion (not a right);
   - if the platform/teacher cancels or fails, the student chooses a free new time, a credit or a refund, and it never counts toward the refund limit.
+- **[Decided 2026-10-15] No same-day bookings.** Every booking (trial, paid, package) starts tomorrow at the earliest in the student's time zone; today's times are not shown and the server refuses them (`isOnLaterDay`).
+- **[Decided 2026-10-15] Lesson reminders.** Email to the student when the booking is confirmed and **3 hours** before; on-site notices **12 hours** and **2 hours** before. A cancelled lesson gets no more reminders; a moved lesson gets new ones for the new time only.
 - **[Decided 2026-10-14] Terms consent.** Before every booking and package purchase the student ticks "I accept the terms and the cancellation & refund policy". The server refuses without it and stores the accepted terms version (`TERMS_VERSION` in `api/index.ts`, `bookings.terms_version/terms_accepted_at`, package `metadata`). Any substantive change to the terms page bumps the version.
 
 - **[Decided 2026-10-16] Learner age.** Onboarding asks for the exact age (not an age range) of the student, or of each child when a parent signs up.
@@ -84,6 +86,14 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 - **[Decided 2026-10-15] Team mailboxes:** support@ (bookings, lessons, complaints, withdrawals), finance@ (payments, refunds), hr@ (teachers), info@ (general, welcome), privacy@ (personal data). Emails are sent from the mailbox that matches them.
 - **[Decided 2026-10-15] Welcome recitation:** plays on the first homepage visit when the browser allows; otherwise a one-time animated hint asks to tap the sound button. It can be replayed any time from the menu.
 - **[Decided 2026-10-14] Official contact number:** WhatsApp +48 508 157 886 (Poland). No other number may appear anywhere in the project.
+
+## 6b. Voice, writing and mission
+
+- **[Decided 2026-10-15] Mission.** The academy is built on two verses: ﴿وتزودوا فإن خير الزاد التقوى﴾ (its name) and ﴿وأما ما ينفع الناس فيمكث في الأرض﴾. It exists to benefit people and leave a lasting mark on a life, not only to earn money or share information. Deeds over words. The user should feel this on the site.
+- **[Decided 2026-10-15] Writing tone.** Warm, wise and deep, with a family feeling (this is the student's home), and still professional. Engaging, never salesy, no hype.
+- **[Decided 2026-10-15] Write little.** Short headlines and short paragraphs everywhere; every sentence earns its place.
+- **[Decided 2026-10-15] We teach more than Quran and Arabic** (Tajweed, Islamic studies, English too). Headlines must not reduce the academy to one or two subjects.
+- **[Decided 2026-10-15] Design ambition.** Every design request aims for the best, most memorable result, in the brand palette (crimson, teal, copper, gold) and in both light and dark mode; use the design skills.
 
 ## 7. Engineering rules (always)
 

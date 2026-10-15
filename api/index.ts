@@ -28,7 +28,8 @@ import {
 import {
   computeAvailableSlots,
   validateSlotAvailability,
-  resolveAuthoritativeTeacherForAvailability
+  resolveAuthoritativeTeacherForAvailability,
+  isOnLaterDay
 } from '../server/integrations/availabilityEngine.js';
 import {
   ALLOWED_LEAD_TRANSITIONS,
@@ -64,7 +65,7 @@ import {
 } from '../server/intake/intakeService.js';
 import { createIntakeToken, readIntakeToken } from '../server/intake/intakeToken.js';
 import { registerCommunityRoutes } from '../server/routes/community.js';
-import { notifyUser, notifySuperAdmins } from '../server/notifications/inbox.js';
+import { notifyUser, notifySuperAdmins, resolveLearnerAccount } from '../server/notifications/inbox.js';
 import {
   validateIntakeOutput
 } from '../server/intake/intakeSchema.js';
@@ -169,9 +170,9 @@ const PAYMENT_HOLD_MINUTES = 35;
 const MAX_LOST_TRIALS = 5;
 const MAX_STUDENT_REFUNDED_LESSONS = 3;
 // Bump when the terms page changes in substance; stored with each booking/package as proof of consent.
-const TERMS_VERSION = '2026-10-15.2';
+const TERMS_VERSION = '2026-10-15.3';
 // Keep in sync with AGREEMENT_VERSION in src/pages/StaffAgreementPage.tsx; bump to make every teacher accept again.
-const TEACHER_AGREEMENT_VERSION = '2026-10-15';
+const TEACHER_AGREEMENT_VERSION = '2026-10-15.2';
 
 /** Cancels unpaid bookings whose payment hold expired, freeing their slots. Never throws. */
 async function releaseExpiredPaymentHolds(client: any): Promise<void> {
@@ -922,6 +923,10 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
 
     if (new Date(scheduledStartUtc).getTime() <= Date.now()) {
       return res.status(400).json({ error: 'Please choose a lesson time in the future.' });
+    }
+    // RULES.md §2: no same-day bookings; the lesson starts tomorrow at the earliest.
+    if (!isOnLaterDay(DateTime.fromISO(scheduledStartUtc), cleanTimezone)) {
+      return res.status(400).json({ error: 'Lessons can be booked from tomorrow onwards. Please choose another day.', code: 'SAME_DAY' });
     }
 
     // Resolve teacher (RULES.md §1): the learner's assigned teacher by default. A client-supplied teacher
@@ -4148,10 +4153,12 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
       return res.json({ success: true, booking: existingBooking, message: transitionValidation.message });
     }
 
-    // RULES.md §2: only the super admin cancels or moves lessons; a teacher asks the student to move it.
-    if ((req as any).teacherUser?.role !== 'super_admin' && (status === 'cancelled' || scheduled_start || scheduled_end)) {
-      return res.status(403).json({ error: 'Teachers can ask the student to move a lesson (Ask to reschedule). To cancel, contact the admin.', code: 'ADMIN_ONLY' });
+    const isAdminActor = (req as any).teacherUser?.role === 'super_admin';
+    // RULES.md §1 (2026-10-15): a teacher moves their own lessons, with a reason; only the super admin cancels.
+    if (!isAdminActor && status === 'cancelled') {
+      return res.status(403).json({ error: 'Teachers can move a lesson but not cancel it. To cancel, please contact the admin.', code: 'ADMIN_ONLY' });
     }
+    const rescheduleReason = typeof req.body?.reschedule_reason === 'string' ? req.body.reschedule_reason.trim().slice(0, 500) : '';
 
     // Moving a lesson that is over or cancelled would revive it (the reschedule RPC sets status='rescheduled').
     if (scheduled_start && ['cancelled', 'completed', 'no_show'].includes(existingBooking.status)) {
@@ -4179,25 +4186,84 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
     }
 
     // 2. Transactional Reschedule Path
-    if (scheduled_start && scheduled_end) {
-      const { data: rpcData, error: rpcErr } = await supabase.rpc('teacher_reschedule_booking', {
+    if (scheduled_start) {
+      const newStart = DateTime.fromISO(String(scheduled_start), { zone: 'utc' });
+      if (!newStart.isValid || newStart <= DateTime.utc()) {
+        return res.status(400).json({ error: 'Please choose a new time in the future.' });
+      }
+      // The end always follows the lesson's own length, never the request.
+      const newEnd = newStart.plus({ minutes: Number(existingBooking.duration_minutes) || 60 });
+      const oldStart = DateTime.fromISO(existingBooking.scheduled_start);
+      if (!isAdminActor) {
+        if (rescheduleReason.length < 3) {
+          return res.status(400).json({ error: 'Please write the reason for moving the lesson. The student will see it.', code: 'REASON_REQUIRED' });
+        }
+        if (oldStart <= DateTime.utc()) {
+          return res.status(400).json({ error: 'Only upcoming lessons can be moved.' });
+        }
+        if (!isOnLaterDay(newStart, existingBooking.student_timezone)) {
+          return res.status(400).json({ error: 'A lesson can be moved to tomorrow or a later day (student time).', code: 'SAME_DAY' });
+        }
+        const slot = await validateSlotAvailability(newStart.toISO()!, newEnd.toISO()!, existingBooking.teacher_id || undefined);
+        if (slot.isAvailable === false) {
+          return res.status(409).json({ error: slot.conflictReason || 'This time is not free. Please choose another one.' });
+        }
+      }
+
+      const { error: rpcErr } = await supabase.rpc('teacher_reschedule_booking', {
         p_booking_id: id,
-        p_new_start: scheduled_start,
-        p_new_end: scheduled_end,
-        p_cairo_time_display: cairo_time_display || null,
+        p_new_start: newStart.toISO(),
+        p_new_end: newEnd.toISO(),
+        p_cairo_time_display: newStart.setZone('Africa/Cairo').toFormat('dd LLL yyyy, hh:mm a'),
         p_notes: notes || null
       });
 
       if (rpcErr) {
+        if ((rpcErr as any).code === '23P01') return res.status(409).json({ error: 'This time was just taken. Please choose another one.' });
         console.error('[Teacher Reschedule RPC Error]', rpcErr);
         return res.status(500).json({ error: clientErrorMessage(rpcErr, 'Failed to reschedule booking.') });
       }
 
-      // Best-effort fast path worker trigger AFTER commit
+      // Best-effort fast path worker trigger AFTER commit (moves Zoom/calendar, re-arms reminders, emails the student).
       processIntegrationJobs().catch(err => console.error('[Teacher Reschedule job process error]', err));
 
+      let whatsappUrl: string | null = null;
+      if (!isAdminActor) {
+        const tz = existingBooking.student_timezone || 'UTC';
+        const fmt = (d: DateTime) => d.setZone(tz).toFormat('ccc d LLL, HH:mm');
+        const teacherName = (req as any).teacherUser?.display_name || 'Teacher';
+        const learner = existingBooking.contact_name || 'Student';
+        // On-site notice for the admin, and for the student with the teacher's reason.
+        await notifySuperAdmins(supabase, {
+          kind: 'teacher_rescheduled',
+          title: { en: `${teacherName} moved a lesson`, ar: `${teacherName} غيّر ميعاد حصة` },
+          body: {
+            en: `${learner}: ${fmt(oldStart)} → ${fmt(newStart)} (${tz}). Reason: ${rescheduleReason}`,
+            ar: `${learner}: ${fmt(oldStart)} ← ${fmt(newStart)} (${tz}). السبب: ${rescheduleReason}`
+          },
+          link: '/dashboard/bookings'
+        });
+        const account = await resolveLearnerAccount(supabase, existingBooking.student_id);
+        if (account.userId) {
+          await notifyUser(supabase, { userId: account.userId }, {
+            kind: 'lesson_moved_by_teacher',
+            title: { en: 'Your teacher moved your lesson', ar: 'معلمك غيّر ميعاد حصتك' },
+            body: {
+              en: `New time: ${fmt(newStart)} (${tz}). ${teacherName}: “${rescheduleReason}”. We are sorry for the change.`,
+              ar: `الميعاد الجديد: ${fmt(newStart)} (${tz}). ${teacherName}: «${rescheduleReason}». نعتذر لك عن التغيير.`
+            },
+            link: '/student/lessons'
+          });
+        }
+        // Less than 3 hours before the lesson: the teacher also tells the admin on WhatsApp.
+        if (oldStart.diffNow('hours').hours < 3) {
+          const text = `السلام عليكم، أنا ${teacherName}. غيّرت ميعاد حصة ${learner} (رقم الحجز ${existingBooking.reference_code}) قبل أقل من 3 ساعات من موعدها.\nالميعاد القديم: ${fmt(oldStart)}\nالميعاد الجديد: ${fmt(newStart)} (${tz})\nالسبب: ${rescheduleReason}`;
+          whatsappUrl = `https://wa.me/${MAHMOUD_OFFICIAL_PHONE_DIGITS}?text=${encodeURIComponent(text)}`;
+        }
+      }
+
       const { data: updatedBooking } = await supabase.from('bookings').select('*').eq('id', id).single();
-      return res.json({ success: true, booking: updatedBooking });
+      return res.json({ success: true, booking: updatedBooking, whatsappUrl });
     }
 
     // 3. Transactional Outcome Path
@@ -5295,23 +5361,11 @@ async function notifyRefund(supabase: any, paymentId: string): Promise<void> {
       email = b?.contact_email || null;
       name = b?.contact_name || null;
     }
-    let userId: string | null = null;
-    if (studentId) {
-      const { data: st } = await supabase.from('students').select('auth_user_id, email, name').eq('id', studentId).maybeSingle();
-      userId = st?.auth_user_id || null;
-      email = email || st?.email || null;
-      name = name || st?.name || null;
-      if (!userId) {
-        // A child's lessons belong to the parent's account.
-        const { data: g } = await supabase.from('guardians').select('parent_email').eq('student_id', studentId).limit(1);
-        const parentEmail = g?.[0]?.parent_email;
-        if (parentEmail) {
-          const { data: parent } = await supabase.from('students').select('auth_user_id').ilike('email', escapeLike(parentEmail)).not('auth_user_id', 'is', null).limit(1);
-          userId = parent?.[0]?.auth_user_id || null;
-          email = parentEmail;
-        }
-      }
-    }
+    // A child's lessons belong to the parent's account.
+    const account = await resolveLearnerAccount(supabase, studentId);
+    const userId = account.userId;
+    email = account.viaParent ? account.email : (email || account.email);
+    name = name || account.name;
     const amount = Number(payment.amount).toFixed(2) + ' ' + String(payment.currency || 'USD').toUpperCase();
     await notifyUser(supabase, { userId, email, name }, {
       kind: 'refund_sent',
@@ -5377,6 +5431,10 @@ app.post('/api/student/bookings/:id/reschedule', rateLimit, verifyStudentAuth, a
     if (!newStart.isValid || newStart < DateTime.utc().plus({ minutes: 10 })) {
       return res.status(400).json({ error: 'Please choose a new time in the future.' });
     }
+    // RULES.md §2: the new time is on a later day than today, never the same day.
+    if (!isOnLaterDay(newStart, booking.student_timezone)) {
+      return res.status(400).json({ error: 'A lesson can be moved to tomorrow or a later day. Please choose another day.', code: 'SAME_DAY' });
+    }
     const newEnd = newStart.plus({ minutes: booking.duration_minutes });
 
     // shortcut: a new time overlapping this lesson's own old slot may be reported busy; pick another slot.
@@ -5409,26 +5467,8 @@ app.post('/api/student/bookings/:id/reschedule', rateLimit, verifyStudentAuth, a
     }
     if (!moved) return res.status(409).json({ error: 'This lesson was just changed. Please refresh and try again.' });
 
-    // Re-arm reminders for the new time.
-    const reminderRows = [
-      { type: '24h_before', at: newStart.minus({ hours: 24 }) },
-      { type: '1h_before', at: newStart.minus({ hours: 1 }) }
-    ].filter(r => r.at > DateTime.utc()).map(r => ({
-      booking_id: booking.id,
-      reminder_type: r.type,
-      scheduled_for: r.at.toISO(),
-      status: 'pending',
-      sent_at: null,
-      error_info: null,
-      claim_token: null,
-      processing_at: null,
-      updated_at: new Date().toISOString()
-    }));
-    await supabase.from('reminders').update({ status: 'cancelled', updated_at: new Date().toISOString() }).eq('booking_id', booking.id).eq('status', 'pending');
-    if (reminderRows.length) {
-      const { error: remErr } = await supabase.from('reminders').upsert(reminderRows, { onConflict: 'booking_id,reminder_type' });
-      if (remErr) console.warn('[student reschedule] reminders not re-armed:', remErr.message);
-    }
+    // The old time's reminders are cancelled; the new time gets its own (RULES.md §2 reminders).
+    await rescheduleBookingReminders(booking.id, newStart.toISO()!, booking.reference_code);
 
     // Move the Zoom meeting and calendar event.
     const { error: jobErr } = await supabase.from('integration_jobs').insert({ booking_id: booking.id, job_type: 'booking_reschedule', status: 'pending' });

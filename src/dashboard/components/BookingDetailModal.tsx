@@ -65,6 +65,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
   const [isRescheduling, setIsRescheduling] = useState(false);
   const [newStartDate, setNewStartDate] = useState('');
   const [newStartTime, setNewStartTime] = useState('');
+  const [rescheduleReason, setRescheduleReason] = useState('');
   const [rescheduling, setRescheduling] = useState(false);
 
   // Teacher: ask the student to pick a new time.
@@ -230,6 +231,10 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
   const handleConfirmReschedule = async () => {
     if (!booking || !newStartDate || !newStartTime) return;
+    if (!isSuperAdmin && rescheduleReason.trim().length < 3) {
+      setActionMessage({ type: 'error', text: t('Please write the reason. The student will see it.', 'اكتب السبب من فضلك، الطالب هيشوفه.') });
+      return;
+    }
     setRescheduling(true);
     try {
       const dtLocal = DateTime.fromISO(`${newStartDate}T${newStartTime}`, { zone: booking.student_timezone || 'Africa/Cairo' });
@@ -237,16 +242,23 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
         setActionMessage({ type: 'error', text: t('Invalid date or time.', 'التاريخ أو الوقت مش صحيح.') });
         return;
       }
-      await dashboardFetch(`/api/dashboard/bookings/${booking.id}`, {
+      const res: any = await dashboardFetch(`/api/dashboard/bookings/${booking.id}`, {
         method: 'PATCH',
         body: JSON.stringify({
           status: 'rescheduled',
           scheduled_start: dtLocal.toUTC().toISO(),
-          scheduled_end: dtLocal.plus({ minutes: booking.duration_minutes || 30 }).toUTC().toISO(),
-          cairo_time_display: dtLocal.setZone('Africa/Cairo').toFormat('yyyy-MM-dd HH:mm')
+          reschedule_reason: rescheduleReason.trim()
         })
       });
-      setActionMessage({ type: 'success', text: t('Lesson moved.', 'ميعاد الحصة اتغيّر.') });
+      // Less than 3 hours before the lesson: the teacher also tells the admin on WhatsApp (RULES.md §1).
+      if (res?.whatsappUrl) window.open(res.whatsappUrl, '_blank', 'noopener,noreferrer');
+      setActionMessage({
+        type: 'success',
+        text: res?.whatsappUrl
+          ? t('Lesson moved. The student got an email. Please send the WhatsApp message to the admin that just opened.', 'ميعاد الحصة اتغيّر ووصل للطالب إيميل. ابعت رسالة الواتساب اللي اتفتحت للإدارة من فضلك.')
+          : t('Lesson moved. The student got an email and a notice on the site.', 'ميعاد الحصة اتغيّر، ووصل للطالب إيميل وإشعار على الموقع.')
+      });
+      setRescheduleReason('');
       setIsRescheduling(false);
       refresh();
     } catch (err: any) {
@@ -798,7 +810,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                 </div>
               )}
 
-              {/* Admin: move the lesson directly */}
+              {/* Move the lesson: the admin, or the lesson's own teacher with a reason (RULES.md §1) */}
               {isRescheduling && (
                 <div className="p-4 bg-secondary/15 border border-secondary/30 rounded-xl space-y-3 animate-in fade-in">
                   <div className="flex items-center justify-between">
@@ -820,9 +832,20 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                       <input id="bdm-new-time" type="time" value={newStartTime} onChange={(e) => setNewStartTime(e.target.value)} className={fieldClass} />
                     </div>
                   </div>
+                  <div>
+                    <label className="block text-[11px] text-muted-foreground mb-1" htmlFor="bdm-reason">
+                      {isSuperAdmin ? t('Reason (optional)', 'السبب (اختياري)') : t('Reason (required, the student sees it)', 'السبب (إجباري، الطالب هيشوفه)')}
+                    </label>
+                    <input id="bdm-reason" type="text" value={rescheduleReason} onChange={(e) => setRescheduleReason(e.target.value)} maxLength={500} className={fieldClass} />
+                  </div>
+                  {!isSuperAdmin && (
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {t('The new time must be tomorrow or later. If the lesson is less than 3 hours away, WhatsApp opens with a message to the admin after you confirm.', 'الميعاد الجديد لازم يكون من بكرة أو بعده. ولو فاضل على الحصة أقل من ٣ ساعات، هيفتحلك واتساب برسالة للإدارة بعد التأكيد.')}
+                    </p>
+                  )}
                   <button
                     onClick={handleConfirmReschedule}
-                    disabled={rescheduling || !newStartDate || !newStartTime}
+                    disabled={rescheduling || !newStartDate || !newStartTime || (!isSuperAdmin && rescheduleReason.trim().length < 3)}
                     className="w-full py-2 text-sm font-semibold text-secondary-foreground bg-secondary hover:bg-secondary/80 rounded-xl transition-colors disabled:opacity-50 cursor-pointer min-h-[40px]"
                   >
                     {rescheduling ? t('Moving and updating the calendar…', 'جارٍ التغيير وتحديث التقويم…') : t('Confirm new time', 'أكّد الميعاد الجديد')}
@@ -1021,7 +1044,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     </button>
                   )}
 
-                  {isSuperAdmin && booking.status !== 'cancelled' && !isRescheduling && (
+                  {(isSuperAdmin ? booking.status !== 'cancelled' : isUpcoming) && !isRescheduling && (
                     <button
                       onClick={() => { closeOtherPanels(); setIsRescheduling(true); }}
                       className="px-3.5 py-2 text-sm font-medium text-foreground hover:bg-surface-subtle rounded-xl border border-border transition-colors flex items-center gap-1.5 cursor-pointer min-h-[40px]"
