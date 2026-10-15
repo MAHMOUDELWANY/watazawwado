@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowRight, ArrowLeft, Check, Clock, Package, ShieldCheck } from 'lucide-react';
 import { Language, LessonDuration, PackageCatalogEntry } from '../../booking/types';
 import { BOOKING_SERVICES, calculateLessonFee } from '../../booking/mockData';
@@ -92,13 +93,14 @@ export const StepPackageQuantity: React.FC<StepPackageQuantityProps> = ({
               );
             })}
           </div>
-          <a
-            href="/student/packages"
+          {/* In-app link: the booking draft is kept, and the packages page leads back to it. */}
+          <Link
+            to="/student/packages?from=booking"
             className="inline-flex items-center gap-2 text-sm font-semibold text-primary underline"
           >
             <Package className="w-4 h-4" />
-            {isAr ? 'شوف الباقات' : 'See packages'}
-          </a>
+            {isAr ? 'شوف الباقات (حجزك هيفضل محفوظ)' : 'See packages (your booking stays saved)'}
+          </Link>
         </div>
       )}
 
@@ -108,7 +110,7 @@ export const StepPackageQuantity: React.FC<StepPackageQuantityProps> = ({
           {isAr
             ? 'تقدر تلغي الحصة قبلها بـ 3 ساعات وترجع لك كرصيد، أو تغيّر موعدها لحد ساعة قبل بدايتها.'
             : 'You can cancel up to 3 hours before a lesson and get it back as a credit, or move it up to 1 hour before it starts.'}{' '}
-          <a href="/terms#cancellation" className="underline font-semibold">
+          <a href="/terms#cancellation" target="_blank" rel="noopener noreferrer" className="underline font-semibold">
             {isAr ? 'السياسة كاملة' : 'Full policy'}
           </a>
         </span>

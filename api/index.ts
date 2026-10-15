@@ -1,6 +1,9 @@
 import crypto from 'crypto';
 import { MASTER_SPEC } from '../src/data/master_spec.js';
+import { FAQS, HOW_IT_WORKS_STEPS } from '../src/data/content.js';
+import { SITE_FACTS } from '../server/siteFacts.js';
 import express from 'express';
+import { waitUntil } from '@vercel/functions';
 import { DateTime } from 'luxon';
 import { GoogleGenAI } from '@google/genai';
 import { createClient } from '@supabase/supabase-js';
@@ -10,7 +13,7 @@ import {
   getActiveGoogleConnection,
   isTeacherCurrentlyAuthorized
 } from '../server/integrations/syncEngine.js';
-import { getZoomCredentials } from '../server/integrations/zoom.js';
+import { getZoomCredentials, getZoomStartUrl } from '../server/integrations/zoom.js';
 import {
   generateGoogleAuthUrl,
   exchangeGoogleCodeForTokens,
@@ -58,6 +61,8 @@ import {
   type IntakeTurnMessage
 } from '../server/intake/intakeService.js';
 import { createIntakeToken, readIntakeToken } from '../server/intake/intakeToken.js';
+import { registerCommunityRoutes } from '../server/routes/community.js';
+import { notifyUser, notifySuperAdmins } from '../server/notifications/inbox.js';
 import {
   validateIntakeOutput
 } from '../server/intake/intakeSchema.js';
@@ -124,8 +129,9 @@ async function listAllAuthUsers(client: any): Promise<any[]> {
 }
 
 /**
- * Queues the calendar/Zoom/reminder/confirmation job for a confirmed booking and runs it now.
- * Awaited on purpose: work started after the response can be frozen by the serverless runtime.
+ * Queues the calendar/Zoom/reminder/confirmation job for a confirmed booking and starts it without
+ * holding up the response (Google + Zoom + emails take several seconds). waitUntil keeps the Vercel
+ * function alive until it finishes; the cron worker retries anything left pending.
  */
 async function enqueueAndRunBookingSync(client: any, bookingId: string): Promise<void> {
   const { error } = await client.from('integration_jobs').insert({ booking_id: bookingId, job_type: 'booking_sync', status: 'pending' });
@@ -134,12 +140,11 @@ async function enqueueAndRunBookingSync(client: any, bookingId: string): Promise
     console.warn('[Booking Sync] enqueue failed:', error.message);
     return;
   }
-  try {
-    await processIntegrationJobs(1, undefined, bookingId);
-  } catch (err) {
-    // The cron worker retries pending/failed jobs.
-    console.warn('[Booking Sync] immediate run failed, left for the cron worker', err);
-  }
+  waitUntil(
+    processIntegrationJobs(1, undefined, bookingId).catch(err => {
+      console.warn('[Booking Sync] immediate run failed, left for the cron worker', err);
+    })
+  );
 }
 
 /** An error whose message was written for end users and may be returned as-is. */
@@ -269,15 +274,29 @@ app.post('/api/learning-guide', rateLimit, async (req, res) => {
 
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-    const systemInstruction = `You are the AI Learning Guide for Mahmoud Teaching Platform.
-Your role is to guide visitors, not replace Mahmoud.
-Speak in a calm, human, knowledgeable, trustworthy, premium, and approachable tone.
-Keep responses concise and helpful. Use English unless the user speaks Arabic.
-Below is the Master Project Spec which defines the product, services, rules, and business logic.
-You must adhere strictly to these rules, services, prices, and policies. Do not invent information that is not in the spec.
-<master_spec>
+    // Homepage guide (owner request 2026-10-16): answers "who are you / how does it work / prices"
+    // from the site's own content, summarizes it for people who don't want to read, and when a
+    // visitor sounds interested, warmly invites them to book the free trial.
+    const faqText = FAQS.map((f: any) => `Q: ${f.question}\nA: ${f.answer}`).join('\n\n');
+    const stepsText = (HOW_IT_WORKS_STEPS as any[]).map((s: any, i: number) => `${i + 1}. ${s.title || s.titleEn || ''}: ${s.description || s.descriptionEn || ''}`).join('\n');
+    const systemInstruction = `You are the friendly guide on the Watazawwado homepage (online 1-on-1 Quran, Islamic studies, Arabic and English lessons).
+Your job:
+1. Answer visitors' questions about who we are, how it works, subjects, teachers, prices, the free trial, payments and policies, using ONLY the facts below. If something is not covered, say you'll let the team answer and suggest WhatsApp or the website chat. Never invent prices, names, degrees or promises.
+2. If someone doesn't want to read the pages, give a short, clear summary (a few lines or bullets).
+3. Whenever the visitor shows any interest in trying, starting, prices, their child, or their level, warmly encourage them to book the free trial lesson: explain it's free, 30 minutes, no card needed, and the steps (free account → short profile → short placement test → pick a time). Invite them with a short call to action like "Book your free trial from the button at the top of the page." Be encouraging, never pushy, no fake urgency.
+Tone: warm, human, short answers (usually under 120 words). Reply in the visitor's language: English, or Arabic (simple Arabic with a friendly Egyptian touch) if they write in Arabic.
+<current_facts priority="highest">
+${SITE_FACTS}
+</current_facts>
+<how_it_works>
+${stepsText}
+</how_it_works>
+<faq note="older wording; current_facts wins on any difference">
+${faqText}
+</faq>
+<background_spec note="older product vision; current_facts wins on any difference">
 ${MASTER_SPEC}
-</master_spec>`.trim();
+</background_spec>`.trim();
 
     const response = await ai.models.generateContent({
       model: 'gemini-3.1-flash-lite',
@@ -2054,6 +2073,30 @@ app.get('/api/dashboard/notifications', verifyTeacherAuth, async (req: any, res:
   } catch (err) {
     console.error('[GET /api/dashboard/notifications]', err);
     res.status(500).json({ error: 'Could not load notifications.' });
+  }
+});
+
+// Teacher starts the lesson as the Zoom host (fresh start_url). Students only get the join link
+// and wait in the waiting room, so a student who joins first never becomes the host.
+app.get('/api/dashboard/bookings/:id/zoom-host-url', verifyTeacherAuth, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database service unavailable.' });
+    const { data: booking } = await supabase.from('bookings').select('id, teacher_id, zoom_meeting_id').eq('id', req.params.id).maybeSingle();
+    if (!booking) return res.status(404).json({ error: 'Lesson not found.' });
+    if (req.teacherUser?.role !== 'super_admin' && booking.teacher_id !== req.teacherUser?.id) {
+      return res.status(403).json({ error: 'This lesson is not yours.' });
+    }
+    const meetingId = String(booking.zoom_meeting_id || '');
+    if (!meetingId || meetingId.startsWith('fallback-') || meetingId.startsWith('room-')) {
+      return res.status(409).json({ error: 'The Zoom meeting for this lesson is still being prepared.' });
+    }
+    const url = await getZoomStartUrl(meetingId);
+    if (!url) return res.status(502).json({ error: 'Zoom did not return a host link. Please try again.' });
+    res.json({ url });
+  } catch (err) {
+    console.error('[GET /api/dashboard/bookings/:id/zoom-host-url]', err);
+    res.status(500).json({ error: 'Could not open Zoom. Please try again.' });
   }
 });
 
@@ -5202,6 +5245,52 @@ app.get('/api/dashboard/refund-requests', verifyTeacherAuth, requireSuperAdmin, 
   }
 });
 
+/** Tells the student (on the site and by email) that a refund was sent (RULES.md §5: up to 14 days). */
+async function notifyRefund(supabase: any, paymentId: string): Promise<void> {
+  try {
+    const { data: payment } = await supabase.from('payments').select('amount, currency, student_id, booking_id').eq('id', paymentId).maybeSingle();
+    if (!payment) return;
+    let studentId = payment.student_id;
+    let email: string | null = null;
+    let name: string | null = null;
+    if (payment.booking_id) {
+      const { data: b } = await supabase.from('bookings').select('student_id, contact_email, contact_name').eq('id', payment.booking_id).maybeSingle();
+      studentId = studentId || b?.student_id;
+      email = b?.contact_email || null;
+      name = b?.contact_name || null;
+    }
+    let userId: string | null = null;
+    if (studentId) {
+      const { data: st } = await supabase.from('students').select('auth_user_id, email, name').eq('id', studentId).maybeSingle();
+      userId = st?.auth_user_id || null;
+      email = email || st?.email || null;
+      name = name || st?.name || null;
+      if (!userId) {
+        // A child's lessons belong to the parent's account.
+        const { data: g } = await supabase.from('guardians').select('parent_email').eq('student_id', studentId).limit(1);
+        const parentEmail = g?.[0]?.parent_email;
+        if (parentEmail) {
+          const { data: parent } = await supabase.from('students').select('auth_user_id').ilike('email', escapeLike(parentEmail)).not('auth_user_id', 'is', null).limit(1);
+          userId = parent?.[0]?.auth_user_id || null;
+          email = parentEmail;
+        }
+      }
+    }
+    const amount = Number(payment.amount).toFixed(2) + ' ' + String(payment.currency || 'USD').toUpperCase();
+    await notifyUser(supabase, { userId, email, name }, {
+      kind: 'refund_sent',
+      title: { en: 'Your refund is on its way', ar: 'تم إرسال المبلغ المسترد' },
+      body: {
+        en: 'We have refunded ' + amount + '. It can take up to 14 days to reach your account, depending on your bank or payment method.',
+        ar: 'رجّعنالك ' + amount + '. ممكن ياخد لحد 14 يوم لحد ما يوصل حسابك، حسب البنك أو وسيلة الدفع.'
+      },
+      link: '/student/payments'
+    }, { email: true });
+  } catch (err) {
+    console.warn('[Refund] notify failed', err);
+  }
+}
+
 app.post('/api/dashboard/payments/:id/refund', verifyTeacherAuth, requireSuperAdmin, async (req: any, res: any) => {
   try {
     const supabase = getSupabaseAdminClient();
@@ -5218,6 +5307,7 @@ app.post('/api/dashboard/payments/:id/refund', verifyTeacherAuth, requireSuperAd
     } catch (jobErr) {
       console.warn('[Refund] integration jobs left for the cron worker', jobErr);
     }
+    await notifyRefund(supabase, req.params.id);
     res.json({ success: true, ...((data as any) || {}) });
   } catch (err) {
     console.error('[POST /api/dashboard/payments/:id/refund]', err);
@@ -7038,7 +7128,7 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       const [studentRes, guardianRes, goalsRes, linkedChildrenRes] = await Promise.all([
         supabaseAdmin
           .from('students')
-          .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, booking_preference, created_at, onboarding_completed, learning_interest, learning_goal, learning_needs, assigned_teacher_id, gender, teacher_gender_preference')
+          .select('id, name, email, whatsapp, country, timezone, learner_type, current_level, status, booking_preference, created_at, onboarding_completed, learning_interest, learning_goal, learning_needs, assigned_teacher_id, gender, teacher_gender_preference, age')
           .eq('id', studentId)
           .single(),
         supabaseAdmin
@@ -7053,7 +7143,7 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
           .eq('status', 'in_progress'),
         supabaseAdmin
           .from('guardians')
-          .select('student_id, parent_name, parent_email, students:student_id(id, name, current_level, gender, assigned_teacher_id, learner_type, learning_interest, notes, status)')
+          .select('student_id, parent_name, parent_email, students:student_id(id, name, current_level, gender, assigned_teacher_id, learner_type, learning_interest, notes, status, age)')
           .ilike('parent_email', escapeLike((req.studentUser?.email || '').trim()))
       ]);
 
@@ -7134,6 +7224,7 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
             id: child.id,
             name: child.name,
             currentLevel: child.current_level || 'beginner',
+            age: child.age ?? null,
             gender: child.gender || 'undisclosed',
             learnerType: child.learner_type || 'child',
             learningInterest: child.learning_interest || null,
@@ -7162,6 +7253,7 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
         country: profile.country || null,
         timezone: profile.timezone || 'UTC',
         learnerType: profile.learner_type || 'adult',
+        age: (profile as any).age ?? null,
         currentLevel: profile.current_level || 'beginner',
         status: profile.status || 'active',
         assignedTeacherId: profile.assigned_teacher_id || null,
@@ -7297,11 +7389,21 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
       country,
       teacherGenderPreference,
       teacher_gender_preference,
-      children
+      children,
+      age
     } = req.body || {};
 
     if (!name || typeof name !== 'string' || name.trim().length < 2) {
       return res.status(422).json({ error: 'Please provide a valid name (at least 2 characters).' });
+    }
+    // Exact age is required for every learner (owner decision 2026-10-16).
+    const validAge = (v: any) => Number.isInteger(Number(v)) && Number(v) >= 3 && Number(v) <= 100;
+    if (learnerType === 'child') {
+      if (Array.isArray(children) && children.some((c: any) => c?.name && !validAge(c?.age))) {
+        return res.status(422).json({ error: "Please enter each child's age." });
+      }
+    } else if (!validAge(age)) {
+      return res.status(422).json({ error: 'Please enter your age.' });
     }
 
     const validLevels = ['beginner', 'elementary', 'intermediate', 'advanced'];
@@ -7402,6 +7504,8 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
     };
     if (resolvedLearnerType === 'child') {
       studentUpdate.booking_preference = 'child';
+    } else {
+      studentUpdate.age = Number(age);
     }
     // Auto-route only on first assignment; never override a teacher an admin already assigned.
     if (routedTeacher.id && !req.studentUser?.studentProfile?.assigned_teacher_id) {
@@ -7474,6 +7578,7 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
                 notes: child.notes ? String(child.notes).trim() : (child.learningNeeds ? String(child.learningNeeds).trim() : null),
                 learning_goal: child.learningGoal ? String(child.learningGoal).trim() : null,
                 status: 'active',
+                age: Number(child.age),
                 onboarding_completed: true
               })
               .select('id')
@@ -7581,7 +7686,7 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
     if (parentEmail) {
       const { data: guardiansData } = await supabaseAdmin
         .from('guardians')
-        .select('student_id, parent_name, parent_email, students:student_id(id, name, current_level, gender, assigned_teacher_id, learner_type, learning_interest, notes, status)')
+        .select('student_id, parent_name, parent_email, students:student_id(id, name, current_level, gender, assigned_teacher_id, learner_type, learning_interest, notes, status, age)')
         .ilike('parent_email', escapeLike(parentEmail));
 
       const rawC = (guardiansData || []).map((g: any) => g.students).filter(Boolean);
@@ -7599,6 +7704,7 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
             id: c.id,
             name: c.name,
             currentLevel: c.current_level || 'beginner',
+            age: c.age ?? null,
             gender: c.gender || 'undisclosed',
             learnerType: c.learner_type || 'child',
             learningInterest: c.learning_interest || null,
@@ -8698,6 +8804,16 @@ app.post('/api/intake/complete', rateLimit, verifyStudentAuth, async (req: any, 
       return res.status(500).json({ error: 'Could not save the intake.' });
     }
 
+    // On-site only (owner decision 2026-10-16: admin alerts stay on the website, no emails).
+    if (inserted.status === 'awaiting_teacher_review') {
+      await notifySuperAdmins(supabaseAdmin, {
+        kind: 'intake_submitted',
+        title: { en: 'New learning request from the AI guide', ar: 'طلب جديد من المرشد الذكي' },
+        body: { en: 'A student finished the AI guide chat. Review the request and reply in the chat.', ar: 'طالب خلّص محادثة المرشد. راجع الطلب ورد عليه في الشات.' },
+        link: '/dashboard/intakes'
+      });
+    }
+
     return res.json({
       intakeId: inserted.id,
       status: inserted.status,
@@ -9057,15 +9173,16 @@ app.get('/api/dashboard/intakes/:id', verifyTeacherAuth, requireSuperAdmin, asyn
   }
 });
 
-// POST /api/dashboard/intakes/:id/review — approve | adjust | request_more_info
+// POST /api/dashboard/intakes/:id/review — approve | adjust
 app.post('/api/dashboard/intakes/:id/review', verifyTeacherAuth, requireSuperAdmin, async (req: any, res: any) => {
   try {
     const teacherId = req.teacherUser?.id;
     if (!teacherId) return res.status(401).json({ error: 'Unauthorized: missing teacher identity' });
 
     const action = req.body?.action;
-    if (!['approve', 'adjust', 'request_more_info'].includes(action)) {
-      return res.status(400).json({ error: 'Invalid action. Must be approve, adjust, or request_more_info.' });
+    // "Request more info" was replaced by the on-site chat with the student (owner decision 2026-10-16).
+    if (!['approve', 'adjust'].includes(action)) {
+      return res.status(400).json({ error: 'Invalid action. Must be approve or adjust.' });
     }
     const notes = typeof req.body?.notes === 'string' ? req.body.notes.slice(0, 2000) : null;
 
@@ -9082,17 +9199,6 @@ app.post('/api/dashboard/intakes/:id/review', verifyTeacherAuth, requireSuperAdm
     const recommendation = intake.pricing_recommendation || {};
     const assessment = intake.assessment || {};
 
-    // ---- request_more_info: no offer created; audit event only ----
-    if (action === 'request_more_info') {
-      await supabaseAdmin.from('intake_review_events').insert({
-        intake_id: intake.id, teacher_id: teacherId, action, notes,
-      });
-      await supabaseAdmin
-        .from('student_intakes')
-        .update({ status: 'draft', teacher_review_required: true })
-        .eq('id', intake.id);
-      return res.json({ success: true, action, status: 'draft' });
-    }
 
     // ---- approve / adjust: create the authoritative offer ----
     const duration = [30, 45, 60].includes(Number(req.body?.duration_minutes))
@@ -9242,7 +9348,7 @@ app.post('/api/dashboard/admin/teachers', verifyTeacherAuth, requireSuperAdmin, 
     // An existing account (the email already signed up) just keeps its password.
     let invited = false;
     const { error: inviteErr } = await supabase.auth.admin.inviteUserByEmail(cleanEmail, {
-      redirectTo: `${resolveTrustedAppOrigin(req.headers.origin as string | undefined)}/staff/login`
+      redirectTo: `${resolveTrustedAppOrigin(req.headers.origin as string | undefined)}/staff/set-password`
     });
     if (!inviteErr) invited = true;
     else if (!/already|registered|exists/i.test(inviteErr.message)) console.warn('[Add teacher] invite failed:', inviteErr.message);
@@ -9251,6 +9357,15 @@ app.post('/api/dashboard/admin/teachers', verifyTeacherAuth, requireSuperAdmin, 
   } catch (err: any) {
     return res.status(500).json({ error: clientErrorMessage(err, 'Internal server error.') });
   }
+});
+
+registerCommunityRoutes(app, {
+  getClient: getSupabaseAdminClient,
+  rateLimit,
+  verifyStudentAuth,
+  verifyTeacherAuth,
+  requireSuperAdmin,
+  getLearners: getAuthorizedLearnersForStudent
 });
 
 export {

@@ -269,3 +269,20 @@ export async function runTeacherAuthDiagnosticCheck(): Promise<TeacherAuthDiagno
 
   return getTeacherAuthDiagnosticState();
 }
+
+/**
+ * Opens the lesson's Zoom meeting as host (fresh host link from the server), so the teacher is the
+ * host even if the student joins first. Falls back to the plain join link if Zoom can't be reached.
+ * Bound to a click: the tab opens immediately (no pop-up blocker) and is pointed at the link after.
+ */
+export function openZoomAsHost(event: { preventDefault: () => void }, bookingId: string, fallbackUrl: string) {
+  event.preventDefault();
+  const tab = window.open('about:blank', '_blank');
+  dashboardFetch<{ url?: string }>(`/api/dashboard/bookings/${encodeURIComponent(bookingId)}/zoom-host-url`)
+    .then(r => r?.url || fallbackUrl)
+    .catch(() => fallbackUrl)
+    .then(url => {
+      if (tab) tab.location.href = url;
+      else window.location.href = url;
+    });
+}

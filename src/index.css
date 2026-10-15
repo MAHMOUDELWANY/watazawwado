@@ -945,6 +945,28 @@ h3, .text-heading-lg {
   }
 
   /* ================== HERITAGE BUTTON MATERIALS ================== */
+  /* Join-Zoom button: brand crimson blending into Zoom blue (#0B5CFF); white text passes contrast on both ends. */
+  .btn-zoom {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: #fff;
+    background: linear-gradient(115deg, #C51F24 0%, #7A2E8E 48%, #0B5CFF 100%);
+    background-size: 160% 100%;
+    background-position: 0% 50%;
+    border: 1px solid rgba(11, 92, 255, 0.35);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.25), 0 4px 14px rgba(11, 92, 255, 0.25), 0 2px 8px rgba(197, 31, 36, 0.2);
+    transition: background-position 0.4s ease, box-shadow 0.2s ease, transform 0.15s ease;
+  }
+  .btn-zoom:hover {
+    background-position: 100% 50%;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3), 0 6px 18px rgba(11, 92, 255, 0.35);
+  }
+  .btn-zoom:active {
+    transform: scale(0.98);
+  }
+
   .btn-primary-material {
     display: inline-flex;
     align-items: center;

@@ -1,4 +1,7 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { RequestCard, objectRows } from './RequestCard';
+import { adminChatLink } from '../../lib/authedJson';
 import { motion } from 'motion/react';
 import { Loader2, CheckCircle2, Save, MessageCircleQuestion, AlertTriangle, Sparkles, Info } from 'lucide-react';
 import { analyticsRepository } from '../../lib/analyticsRepository';
@@ -28,6 +31,7 @@ interface IntakeRow {
   assessment: any;
   pricing_recommendation: any;
   teacher_review_required: boolean;
+  auth_user_id?: string | null;
   created_at: string;
   offer?: any;
 }
@@ -44,14 +48,13 @@ const t = {
     review: 'Teacher review required',
     approve: 'Approve',
     adjust: 'Adjust price',
-    more: 'Request more info',
     price: 'Approved price (USD)',
     notes: 'Notes (private)',
     submit: 'Record decision',
     saving: 'Saving…',
     approved: 'Approved',
     adjusted: 'Adjusted — final price is authoritative',
-    requested: 'More information requested',
+    chat: 'Message the student',
     err: 'Something went wrong.',
     reload: 'Refresh',
     noPrice: 'No deterministic price — adjust to set an explicit approved amount.',
@@ -79,14 +82,13 @@ const t = {
     review: 'مطلوب مراجعة المعلم',
     approve: 'اعتماد',
     adjust: 'تعديل السعر',
-    more: 'طلب معلومات إضافية',
     price: 'السعر المعتمد (دولار)',
     notes: 'ملاحظات (خاصة)',
     submit: 'تسجيل القرار',
     saving: 'جارٍ الحفظ…',
     approved: 'تم الاعتماد',
     adjusted: 'تم التعديل — السعر النهائي معتمد',
-    requested: 'تم طلب معلومات إضافية',
+    chat: 'كلّم الطالب في الشات',
     err: 'حدث خطأ.',
     reload: 'تحديث',
     noPrice: 'لا يوجد سعر حتمي — عدّل لتحديد سعر معتمد.',
@@ -107,6 +109,7 @@ const t = {
 
 export default function IntakeReviewPanel({ lang, apiFetch }: IntakeReviewPanelProps) {
   const c = t[lang] || t.en;
+  const navigate = useNavigate();
   const [intakes, setIntakes] = React.useState<IntakeRow[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [selected, setSelected] = React.useState<IntakeRow | null>(null);
@@ -134,7 +137,7 @@ export default function IntakeReviewPanel({ lang, apiFetch }: IntakeReviewPanelP
   // guard remains authoritative; this purely prevents a misleading UI action.
   const canApprove = selected?.pricing_recommendation?.recommended_price_usd != null;
 
-  const submitReview = async (action: 'approve' | 'adjust' | 'request_more_info') => {
+  const submitReview = async (action: 'approve' | 'adjust') => {
     if (!selected) return;
     setBusy(action);
     setMessage(null);
@@ -160,16 +163,10 @@ export default function IntakeReviewPanel({ lang, apiFetch }: IntakeReviewPanelP
         return;
       }
       analyticsRepository.logEvent(
-        action === 'approve' ? 'teacher_offer_approved'
-          : action === 'adjust' ? 'teacher_offer_adjusted'
-          : 'teacher_review_required',
+        action === 'approve' ? 'teacher_offer_approved' : 'teacher_offer_adjusted',
         { band: selected.service_category }
       );
-      setMessage(
-        action === 'approve' ? c.approved
-          : action === 'adjust' ? c.adjusted
-          : c.requested
-      );
+      setMessage(action === 'approve' ? c.approved : c.adjusted);
       setSelected(null);
       setAdjustedPrice('');
       setNotes('');
@@ -244,18 +241,37 @@ export default function IntakeReviewPanel({ lang, apiFetch }: IntakeReviewPanelP
               </div>
             ) : (
               <div>
-                <h3 className="font-semibold text-foreground mb-3">{c.brief}</h3>
-                <Brief profile={selected.learning_profile || {}} c={c} />
-
-                <h3 className="font-semibold text-foreground mt-4 mb-2">{c.assessment}</h3>
-                <pre className="text-sm bg-muted rounded-lg p-3 overflow-auto whitespace-pre-wrap">
-{JSON.stringify(selected.assessment || {}, null, 2)}
-                </pre>
-
-                <h3 className="font-semibold text-foreground mt-4 mb-2">{c.recommendation}</h3>
-                <pre className="text-sm bg-muted rounded-lg p-3 overflow-auto whitespace-pre-wrap">
-{JSON.stringify(selected.pricing_recommendation || {}, null, 2)}
-                </pre>
+                <RequestCard
+                  title={c.brief}
+                  subtitle={new Date(selected.created_at).toLocaleString(lang === 'ar' ? 'ar-EG' : 'en-GB', { dateStyle: 'medium', timeStyle: 'short' })}
+                  badge={selected.service_category || undefined}
+                  actions={selected.auth_user_id ? (
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          navigate(await adminChatLink(selected.auth_user_id!));
+                        } catch (err: any) {
+                          setMessage(err.message);
+                        }
+                      }}
+                      className="h-10 px-4 rounded-lg btn-primary-material text-sm font-medium inline-flex items-center gap-2 cursor-pointer"
+                    >
+                      <MessageCircleQuestion className="w-4 h-4" />
+                      {c.chat}
+                    </button>
+                  ) : undefined}
+                >
+                  <Brief profile={selected.learning_profile || {}} c={c} />
+                  <details className="mt-4 text-sm">
+                    <summary className="cursor-pointer font-semibold text-foreground">{c.assessment}</summary>
+                    <dl className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {objectRows(selected.assessment).concat(objectRows(selected.pricing_recommendation)).map(([k, v]) => (
+                        <div key={k}><dt className="text-xs text-muted-foreground capitalize">{k}</dt><dd className="text-foreground">{v}</dd></div>
+                      ))}
+                    </dl>
+                  </details>
+                </RequestCard>
 
                 {/* Approved vs purchasable — kept distinct. Approval never creates
                     an entitlement; a custom price may be approved but not purchasable. */}
@@ -337,14 +353,6 @@ export default function IntakeReviewPanel({ lang, apiFetch }: IntakeReviewPanelP
                   >
                     {busy === 'adjust' ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                     {c.adjust}
-                  </button>
-                  <button
-                    onClick={() => submitReview('request_more_info')}
-                    disabled={!!busy}
-                    className="h-10 px-4 rounded-lg border border-border text-foreground hover:bg-muted text-sm font-medium inline-flex items-center gap-2 disabled:opacity-50"
-                  >
-                    {busy === 'request_more_info' ? <Loader2 className="w-4 h-4 animate-spin" /> : <MessageCircleQuestion className="w-4 h-4" />}
-                    {c.more}
                   </button>
                 </div>
 

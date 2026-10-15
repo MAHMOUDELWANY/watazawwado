@@ -18,7 +18,7 @@ import { useTeacherAuth } from '../../lib/auth';
 import { DashboardLesson, DashboardSummary } from '../types';
 import { LessonDetailModal } from '../components/LessonDetailModal';
 import { Link } from 'react-router-dom';
-import { dashboardFetch } from '../lib/dashboardApi';
+import { dashboardFetch, openZoomAsHost } from '../lib/dashboardApi';
 
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { useT } from '../../lib/language';
@@ -445,6 +445,7 @@ function NextLessonSpotlight({
           {hasStartLink ? (
             <a
               href={startLink}
+              onClick={(e) => openZoomAsHost(e, lesson.id, startLink)}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm font-semibold transition-all duration-base shadow-xs"
@@ -611,6 +612,7 @@ function TodayLessonRow({
         {!isPast && !isCancelled && hasStartLink && (
           <a
             href={startLink}
+            onClick={(e) => openZoomAsHost(e, lesson.id, startLink)}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 px-3.5 py-2 btn-primary-material text-primary-foreground rounded-xl text-sm font-medium transition-colors shadow-2xs"

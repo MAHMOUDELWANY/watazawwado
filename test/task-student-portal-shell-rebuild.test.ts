@@ -75,7 +75,7 @@ describe('Task: Student Portal Information Architecture & Application Shell Rebu
     it('verifies Next Lesson section handles valid Zoom links and pending states correctly', () => {
       assert.ok(studentHomeSource.includes('hasValidZoomUrl'), 'Must validate Zoom meeting URL format');
       assert.ok(studentHomeSource.includes('Join Zoom Classroom') || studentHomeSource.includes('دخول فصل زووم'), 'Must provide direct Zoom join when valid');
-      assert.ok(studentHomeSource.includes('Zoom link will activate prior to lesson') || studentHomeSource.includes('رابط زووم سيتوفر قبل موعد الدرس'), 'Must show pending explanation when link not yet available');
+      assert.ok(studentHomeSource.includes('Zoom link is being prepared') || studentHomeSource.includes('رابط زووم بيتجهز'), 'Must show pending explanation when link not yet available');
     });
 
     it('verifies recent lessons list uses clean flat structure with natural page scrolling', () => {

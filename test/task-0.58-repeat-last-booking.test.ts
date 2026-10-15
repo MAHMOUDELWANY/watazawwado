@@ -224,7 +224,8 @@ describe('Task 0.58 — Repeat Last Booking Workflow Tests', () => {
         false // trial not allowed
       );
 
-      assert.strictEqual(initialStep, 5, 'Must jump directly to Step 5 (Schedule/Date & Time)');
+      // Paid flow: step 5 is single-lesson-or-package, so date & time is step 6.
+      assert.strictEqual(initialStep, 6, 'Must jump directly to the Date & Time step');
       assert.strictEqual(matchedServiceId, 'tajweed');
       assert.strictEqual(initialMode, 'regular');
       assert.strictEqual(initialData.serviceId, 'tajweed');
@@ -260,7 +261,7 @@ describe('Task 0.58 — Repeat Last Booking Workflow Tests', () => {
         false
       );
 
-      assert.strictEqual(initialStep, 5);
+      assert.strictEqual(initialStep, 6);
       assert.strictEqual(matchedServiceId, 'quran-reading');
       assert.strictEqual(initialMode, 'regular');
       assert.strictEqual(initialData.audience, 'child');
@@ -347,7 +348,7 @@ describe('Task 0.58 — Repeat Last Booking Workflow Tests', () => {
       assert.strictEqual(summary.summaryText, 'Quran Reading (Noorani Qaidah & Fluency) · Intermediate · 45 mins');
 
       const formData = mapLastBookingToBookingFormData(eligible, sampleProfile, trial.canBookTrial);
-      assert.strictEqual(formData.initialStep, 5);
+      assert.strictEqual(formData.initialStep, 6);
       assert.strictEqual(formData.initialMode, 'regular');
       assert.strictEqual(formData.initialData.duration, 45);
     });

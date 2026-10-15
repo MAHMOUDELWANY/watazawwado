@@ -16,6 +16,7 @@ import { HelpCircle, Globe, LogOut, BookOpen,
   Compass,
   Bell,
   ChevronRight,
+  MessageCircle,
 } from 'lucide-react';
 import { useTeacherAuth } from '../lib/auth';
 import { useAppLanguage } from '../lib/language';
@@ -30,6 +31,8 @@ import StudentPackagesPage from './pages/StudentPackagesPage';
 import StudentPaymentsPage from './pages/StudentPaymentsPage';
 import StudentNotificationsPage from './pages/StudentNotificationsPage';
 import StudentOffersPage from './pages/StudentOffersPage';
+import StudentPlacementPage from './pages/StudentPlacementPage';
+import { ChatPanel } from '../components/chat/ChatPanel';
 import IntakeConversation from '../components/intake/IntakeConversation';
 import { StudentAuthModal } from '../components/StudentAuthModal';
 import {  buildStudentNotifications,
@@ -53,6 +56,7 @@ export default function StudentApp() {
   const [authModalOpen, setAuthModalOpen] = useState(shouldAutoOpenAuth);
   const [authInitialView, setAuthInitialView] = useState<'login' | 'signup'>(isSignupParam ? 'signup' : 'login');
   const [unreadNotificationsCount, setUnreadNotificationsCount] = useState<number>(0);
+  const [unreadChats, setUnreadChats] = useState<number>(0);
 
   useEffect(() => {
     if (location.search.includes('auth=signup') || location.pathname.includes('/signup')) {
@@ -133,36 +137,22 @@ export default function StudentApp() {
     };
   }, []);
 
-  // Load student profile & notification count when authenticated.
-  // Rules of Hooks compliance: Hook is called unconditionally before any early returns.
-  // Single auth source: Uses strictly session.access_token from the auth architecture (no storage fallback).
+  // Load the student profile once per signed-in user. Page changes and token refreshes must not
+  // bring back the full-page loader: that remounted every page and threw away what the user was doing.
+  const accessToken = session?.access_token || null;
+  const userId = user?.id || null;
   useEffect(() => {
     let isMounted = true;
     const loadProfile = async () => {
-      if (isTeacherAuthenticated) {
+      if (isTeacherAuthenticated || !userId) {
         if (isMounted) setLoadingProfile(false);
         return;
       }
-
-      if (!user) {
-        if (isMounted) setLoadingProfile(false);
-        return;
-      }
-
-      if (userRole !== 'student' || !session?.access_token) {
-        // Authenticated user whose role or session token is still resolving.
-        // Keep loading active until role and token are ready.
-        return;
-      }
+      // Role or token still resolving: keep the loader until they are ready.
+      if (userRole !== 'student' || !accessToken) return;
 
       try {
-        setLoadingProfile(true);
-        const headers: Record<string, string> = {
-          Authorization: `Bearer ${session.access_token}`,
-        };
-
-        // 1. Fetch profile immediately so onboarding state is resolved with zero delay
-        const profileRes = await fetch('/api/student/me', { headers });
+        const profileRes = await fetch('/api/student/me', { headers: { Authorization: `Bearer ${accessToken}` } });
         if (profileRes.ok) {
           const data = await profileRes.json();
           if (isMounted) setProfile(data);
@@ -177,32 +167,8 @@ export default function StudentApp() {
             });
           }
         }
-
-        // 2. Compute the unread badge in parallel without blocking profile resolution
-        const readIds: Set<string> = getSavedNotificationReadIds(user?.id);
-        const [bookingsRes, paymentsRes, packagesRes] = await Promise.all([
-          fetch('/api/student/bookings', { headers }),
-          fetch('/api/student/payments', { headers }),
-          fetch('/api/student/packages', { headers })
-        ]);
-
-        if (bookingsRes.ok && paymentsRes.ok) {
-          const bookings = await bookingsRes.json();
-          const paymentsJson = await paymentsRes.json();
-          const packagesData = packagesRes.ok ? await packagesRes.json() : null;
-
-          const items = buildStudentNotifications(
-            Array.isArray(bookings) ? bookings : [],
-            Array.isArray(paymentsJson?.payments) ? paymentsJson.payments : [],
-            packagesData,
-            readIds
-          );
-          const count = countUnread(items);
-
-          if (isMounted) setUnreadNotificationsCount(count);
-        }
       } catch (err) {
-        console.error('Error fetching student profile & notification count:', err);
+        console.error('Error fetching student profile:', err);
       } finally {
         if (isMounted) setLoadingProfile(false);
       }
@@ -212,7 +178,44 @@ export default function StudentApp() {
     return () => {
       isMounted = false;
     };
-  }, [user, userRole, session, isTeacherAuthenticated, location.pathname]);
+    // accessToken is read at call time; a refreshed token for the same user must not reload the profile.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, userRole, Boolean(accessToken), isTeacherAuthenticated]);
+
+  // Unread badge: refreshed in the background on page changes, never blocks the page.
+  useEffect(() => {
+    if (!userId || userRole !== 'student' || !accessToken || isTeacherAuthenticated) return;
+    let isMounted = true;
+    const headers = { Authorization: `Bearer ${accessToken}` };
+    Promise.all([
+      fetch('/api/student/bookings', { headers }),
+      fetch('/api/student/payments', { headers }),
+      fetch('/api/student/packages', { headers }),
+      fetch('/api/me/notifications', { headers })
+    ])
+      .then(async ([bookingsRes, paymentsRes, packagesRes, inboxRes]) => {
+        if (!bookingsRes.ok || !paymentsRes.ok) return;
+        const bookings = await bookingsRes.json();
+        const paymentsJson = await paymentsRes.json();
+        const packagesData = packagesRes.ok ? await packagesRes.json() : null;
+        const inbox = inboxRes.ok ? await inboxRes.json() : null;
+        const items = buildStudentNotifications(
+          Array.isArray(bookings) ? bookings : [],
+          Array.isArray(paymentsJson?.payments) ? paymentsJson.payments : [],
+          packagesData,
+          getSavedNotificationReadIds(userId)
+        );
+        if (isMounted) {
+          setUnreadNotificationsCount(countUnread(items) + Number(inbox?.unreadCount || 0));
+          setUnreadChats(Number(inbox?.unreadChats || 0));
+        }
+      })
+      .catch(() => {});
+    return () => {
+      isMounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, userRole, Boolean(accessToken), isTeacherAuthenticated, location.pathname]);
 
 
   // If a teacher lands here, redirect to the teacher dashboard
@@ -323,6 +326,12 @@ export default function StudentApp() {
       icon: Plus,
       badge: null
     },
+    {
+      name: isAr ? 'الرسائل' : 'Messages',
+      path: '/student/messages',
+      icon: MessageCircle,
+      badge: unreadChats || null
+    },
     { 
       name: isAr ? 'المرشد' : 'Guide', 
       path: '/student/guide', 
@@ -413,6 +422,18 @@ export default function StudentApp() {
       return {
         title: isAr ? 'التنبيهات' : 'Notifications',
         subtitle: isAr ? 'آخر التحديثات والإشعارات' : 'Recent updates and alerts'
+      };
+    }
+    if (pathname.startsWith('/student/messages')) {
+      return {
+        title: isAr ? 'الرسائل' : 'Messages',
+        subtitle: isAr ? 'كلّم فريقنا ومعلمك' : 'Chat with our team and your teacher'
+      };
+    }
+    if (pathname.startsWith('/student/placement')) {
+      return {
+        title: isAr ? 'اختبار تحديد المستوى' : 'Placement test',
+        subtitle: isAr ? 'أسئلة قصيرة على حسب مادتك' : 'Short questions for your subject'
       };
     }
     if (pathname.startsWith('/student/payments')) {
@@ -653,6 +674,16 @@ export default function StudentApp() {
             </button>
 
             <Link
+              to="/student/messages"
+              className="relative w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer border border-border/60 shrink-0"
+              aria-label={isAr ? 'الرسائل' : 'Messages'}
+            >
+              <MessageCircle className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+              {unreadChats > 0 && (
+                <span className="absolute top-1 end-1 w-2 h-2 rounded-full bg-primary ring-2 ring-surface" />
+              )}
+            </Link>
+            <Link
               to="/student/notifications"
               id="student-notifications"
               data-tour="student-notifications"
@@ -687,6 +718,8 @@ export default function StudentApp() {
               <Route path="/notifications" element={<StudentNotificationsPage lang={lang} session={session} />} />
               <Route path="/guide" element={<IntakeConversation session={session} lang={lang} />} />
               <Route path="/offers" element={<StudentOffersPage session={session} lang={lang} />} />
+              <Route path="/messages" element={<ChatPanel lang={lang} />} />
+              <Route path="/placement" element={<StudentPlacementPage lang={lang} />} />
               <Route path="/book" element={<StudentBookingPage profile={profile} session={session} lang={lang} />} />
               <Route path="/account" element={
                 <StudentProfilePage
@@ -721,7 +754,7 @@ export default function StudentApp() {
             className="pointer-events-auto relative w-full h-[62px] bg-surface/95 dark:bg-surface/90 backdrop-blur-xl rounded-full flex items-center justify-around px-2 shadow-2xl border border-border/80"
             aria-label={isAr ? 'التنقل السفلي' : 'Bottom mobile navigation'}
           >
-            {navItems.map((item) => {
+            {navItems.filter((item) => item.path !== '/student/guide').map((item) => {
               const isActive = location.pathname === item.path || (item.path !== '/student' && location.pathname.startsWith(item.path));
               const isBook = item.path === '/student/book';
               const Icon = item.icon;

@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { DashboardLesson } from '../types';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
-import { dashboardFetch } from '../lib/dashboardApi';
+import { dashboardFetch, openZoomAsHost } from '../lib/dashboardApi';
 import FocusTrap from '../../components/FocusTrap';
 import { useTeacherAuth } from '../../lib/auth';
 import { useT } from '../../lib/language';
@@ -305,6 +305,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                   <div className="flex items-center gap-2">
                     <a
                       href={hostUrl}
+                      onClick={(e) => openZoomAsHost(e, lesson.id, hostUrl)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm font-semibold transition-colors shadow-2xs"

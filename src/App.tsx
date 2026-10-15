@@ -1,5 +1,6 @@
 import React, { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { getAuthLinkType } from './lib/supabase';
 import { TeacherAuthProvider } from './lib/auth';
 import { ThemeProvider } from './components/ThemeProvider';
 import { PublicLayout } from './components/public/layout/PublicLayout';
@@ -21,6 +22,16 @@ const DashboardApp = lazy(() => import('./dashboard/DashboardApp').then(m => ({ 
 const StudentApp = lazy(() => import('./student/StudentApp'));
 const StaffLoginPage = lazy(() => import('./pages/StaffLoginPage'));
 const OtpVerificationPage = lazy(() => import('./pages/OtpVerificationPage'));
+const StaffSetPasswordPage = lazy(() => import('./pages/StaffSetPasswordPage'));
+
+/** An invitation link signs the teacher in; send them to choose a password wherever they landed. */
+function InviteRedirect() {
+  const { pathname } = useLocation();
+  if (getAuthLinkType() === 'invite' && pathname !== '/staff/set-password') {
+    return <Navigate to="/staff/set-password" replace />;
+  }
+  return null;
+}
 
 export default function App() {
   useScrollPaletteTransition();
@@ -30,6 +41,7 @@ export default function App() {
       <TeacherAuthProvider>
         <BrowserRouter>
           <SEOProtection />
+          <InviteRedirect />
           <ErrorBoundary>
             <Suspense fallback={<BrandLoader size="page" />}>
             <Routes>
@@ -48,6 +60,7 @@ export default function App() {
 
               {/* Authenticated and Special Routes */}
               <Route path="/staff/login" element={<StaffLoginPage />} />
+              <Route path="/staff/set-password" element={<StaffSetPasswordPage />} />
               <Route path="/staff" element={<Navigate to="/staff/login" replace />} />
               <Route path="/teacher/login" element={<Navigate to="/staff/login" replace />} />
               <Route path="/teacher/*" element={<DashboardApp />} />

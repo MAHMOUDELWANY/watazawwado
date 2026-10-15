@@ -6,13 +6,25 @@ import { BOOKING_SERVICES } from '../../booking/mockData';
 import { Language, ServiceGroupKey } from '../../booking/types';
 
 interface StepServiceSelectProps {
+  /** Subject from onboarding: ask to confirm it before showing every subject. */
+  suggestedServiceId?: string;
+  suggestedLevel?: string;
   selectedServiceId: string;
   onSelectService: (serviceId: string) => void;
   onNext: () => void;
   lang: Language;
 }
 
+const LEVEL_LABELS: Record<string, { en: string; ar: string }> = {
+  beginner: { en: 'Beginner', ar: 'مبتدئ' },
+  elementary: { en: 'Elementary', ar: 'أساسي' },
+  intermediate: { en: 'Intermediate', ar: 'متوسط' },
+  advanced: { en: 'Advanced', ar: 'متقدم' }
+};
+
 export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
+  suggestedServiceId,
+  suggestedLevel,
   selectedServiceId,
   onSelectService,
   onNext,
@@ -20,6 +32,51 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
 }) => {
   const isEn = lang === 'en';
   const [activeTab, setActiveTab] = useState<ServiceGroupKey | 'all'>('all');
+  const suggested = BOOKING_SERVICES.find((s) => s.id === suggestedServiceId);
+  const [showAll, setShowAll] = useState(!suggested);
+
+  if (suggested && !showAll) {
+    const level = suggestedLevel ? LEVEL_LABELS[suggestedLevel] : undefined;
+    return (
+      <div className="space-y-5">
+        <div className="p-5 sm:p-6 rounded-2xl glass-card border border-teal-500/40 bg-teal-500/5 space-y-2">
+          <p className="text-sm text-muted-foreground">
+            {isEn ? 'From your profile' : 'من بيانات حسابك'}
+          </p>
+          <h3 className="font-display text-xl font-bold text-foreground">
+            {isEn ? suggested.name : suggested.arabicName}
+            {level && <span className="text-base font-semibold text-teal-700 dark:text-teal-300"> · {isEn ? level.en : level.ar}</span>}
+          </h3>
+          <p className="text-sm text-foreground/80">
+            {isEn ? 'Continue with this subject and level?' : 'نكمّل بنفس المادة والمستوى؟'}
+          </p>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <button
+            type="button"
+            onClick={() => {
+              onSelectService(suggested.id);
+              onNext();
+            }}
+            className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl btn-primary-material text-white text-sm font-semibold shadow-md cursor-pointer"
+          >
+            <span>{isEn ? 'Yes, continue' : 'أيوه، كمّل'}</span>
+            <ArrowRight className={`w-4 h-4 ${lang === 'ar' ? 'rotate-180' : ''}`} />
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowAll(true)}
+            className="flex-1 px-6 py-3 rounded-xl glass-card border border-border text-sm font-semibold text-foreground hover:bg-surface-subtle cursor-pointer"
+          >
+            {isEn ? 'Choose another subject or level' : 'اختار مادة أو مستوى تاني'}
+          </button>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          {isEn ? 'You can change the level in the learner details step.' : 'تقدر تغيّر المستوى في خطوة بيانات الطالب.'}
+        </p>
+      </div>
+    );
+  }
 
   const groups: { key: ServiceGroupKey | 'all'; label: string; arabicLabel: string; icon: React.ReactNode }[] = [
     { key: 'all', label: 'All Disciplines', arabicLabel: 'جميع المواد', icon: <GraduationCap className="w-4 h-4" /> },

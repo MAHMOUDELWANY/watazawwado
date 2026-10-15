@@ -21,7 +21,8 @@ describe('booking flow: one lesson at a time, packages on the packages page (RUL
     const step = read('components/booking/StepPackageQuantity.tsx');
     assert.match(step, /eligibility_rules\?\.hourly_rate/);
     assert.match(step, /eligibility_rules\?\.duration_minutes/);
-    assert.match(step, /href="\/student\/packages"/);
+    // In-app link keeps the booking draft; the packages page leads back to it.
+    assert.match(step, /to="\/student\/packages\?from=booking"/);
     assert.doesNotMatch(step, /fetch\(/);
   });
 

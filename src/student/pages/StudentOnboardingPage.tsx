@@ -23,6 +23,8 @@ import {
   UserCheck
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Input } from '../../components/ui/Input';
+import { Label } from '../../components/ui/Label';
 import { CountryTimezonePicker } from '../../components/ui/CountryTimezonePicker';
 import { WhatsAppPhoneInput } from '../../components/ui/WhatsAppPhoneInput';
 import { getCountryByCode } from '../../lib/countryTimezones';
@@ -130,6 +132,8 @@ export interface ChildOnboardingForm {
   learningInterest: string;
   currentLevel: string;
   notes: string;
+  /** Exact age in years, as typed (required). */
+  age: string;
 }
 
 export default function StudentOnboardingPage({
@@ -159,6 +163,7 @@ export default function StudentOnboardingPage({
   const [learningInterest, setLearningInterest] = useState(currentProfile?.learningInterest || 'quran-reading');
   const [currentLevel, setCurrentLevel] = useState(currentProfile?.currentLevel || 'beginner');
   const [learningGoal, setLearningGoal] = useState(currentProfile?.learningGoal || '');
+  const [age, setAge] = useState<string>(currentProfile?.age ? String(currentProfile.age) : '');
   const [learningNeeds, setLearningNeeds] = useState(currentProfile?.learningNeeds || '');
 
   // Parent / Family details
@@ -172,7 +177,8 @@ export default function StudentOnboardingPage({
         teacherGenderPreference: c.gender === 'female' ? 'female_teacher' : 'male_teacher',
         learningInterest: c.learningInterest || 'quran-reading',
         currentLevel: c.currentLevel || 'beginner',
-        notes: c.notes || ''
+        notes: c.notes || '',
+        age: c.age ? String(c.age) : ''
       }));
     }
     return [
@@ -183,7 +189,8 @@ export default function StudentOnboardingPage({
         teacherGenderPreference: 'auto',
         learningInterest: 'quran-reading',
         currentLevel: 'beginner',
-        notes: ''
+        notes: '',
+        age: ''
       }
     ];
   });
@@ -240,7 +247,8 @@ export default function StudentOnboardingPage({
         teacherGenderPreference: 'auto',
         learningInterest: 'quran-reading',
         currentLevel: 'beginner',
-        notes: ''
+        notes: '',
+        age: ''
       }
     ]);
   };
@@ -264,9 +272,15 @@ export default function StudentOnboardingPage({
     setError(null);
 
     // Validation
+    const ageOk = (v: string) => /^d{1,3}$/.test(v.trim()) && Number(v) >= 3 && Number(v) <= 100;
     if (learnerType === 'adult') {
       if (!studentName.trim() || studentName.trim().length < 2) {
         setError(isRTL ? 'يرجى إدخال اسم الدارس بالكامل (حرفان على الأقل).' : 'Please enter your full name (at least 2 characters).');
+        setStep(1);
+        return;
+      }
+      if (!ageOk(age)) {
+        setError(isRTL ? 'اكتب سنك بالأرقام (مثال: 24).' : 'Please enter your age in numbers (e.g. 24).');
         setStep(1);
         return;
       }
@@ -280,6 +294,11 @@ export default function StudentOnboardingPage({
         const c = children[i];
         if (!c.name.trim() || c.name.trim().length < 2) {
           setError(isRTL ? `يرجى إدخال اسم الطفل رقم (${i + 1}) بالكامل.` : `Please enter full name for child #${i + 1}.`);
+          setStep(2);
+          return;
+        }
+        if (!ageOk(c.age)) {
+          setError(isRTL ? `اكتب سن الطفل رقم (${i + 1}) بالأرقام.` : `Please enter the age of child #${i + 1}.`);
           setStep(2);
           return;
         }
@@ -320,6 +339,7 @@ export default function StudentOnboardingPage({
         payload.currentLevel = currentLevel;
         payload.learningGoal = learningGoal.trim();
         payload.learningNeeds = learningNeeds.trim();
+        payload.age = Number(age);
       } else {
         payload.name = parentName.trim();
         payload.parentName = parentName.trim();
@@ -330,7 +350,8 @@ export default function StudentOnboardingPage({
           teacherGenderPreference: c.teacherGenderPreference,
           learningInterest: c.learningInterest,
           currentLevel: c.currentLevel,
-          notes: c.notes.trim()
+          notes: c.notes.trim(),
+          age: Number(c.age)
         }));
       }
 
@@ -380,12 +401,12 @@ export default function StudentOnboardingPage({
             <p className="mt-2 text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
               {learnerType === 'child' ? (
                 isRTL 
-                  ? `تم تسجيل بيانات ${children.length} من الأبناء وربطهم بالمعلمين المعتمدين. خطوتكم القادمة هي حجز جلسة التعارف وتحديد المستوى الأولى لكل طفل.`
-                  : `Successfully registered ${children.length} learner(s) with dedicated instructors. Next, book their first 1-on-1 trial session.`
+                  ? `تم تسجيل بيانات ${children.length} من الأبناء وربطهم بالمعلمين المعتمدين. الخطوة الجاية: احجزوا الحصة التجريبية، وبعدها اختبار تحديد مستوى قصير لكل طفل.`
+                  : `Successfully registered ${children.length} learner(s) with dedicated instructors. Next: book the free trial, then a short placement test for each child.`
               ) : (
                 isRTL 
-                  ? `مرحباً بك في منصة وتزودوا. تم توجيه ملفك بنجاح إلى (${assignedTeacherName}). خطوتك القادمة هي حجز جلستك الأولى للتعارف وتحديد المستوى.`
-                  : `Welcome to Watazawwado. Your profile has been assigned to ${assignedTeacherName}. Next, schedule your first 1-on-1 session.`
+                  ? `مرحباً بك في منصة وتزودوا. تم توجيه ملفك بنجاح إلى (${assignedTeacherName}). الخطوة الجاية: احجز حصتك التجريبية المجانية، وبعدها اختبار تحديد مستوى قصير (حوالي 5 دقايق).`
+                  : `Welcome to Watazawwado. Your profile has been assigned to ${assignedTeacherName}. Next: book your free trial, then take a short placement test (about 5 minutes).`
               )}
             </p>
           </div>
@@ -436,16 +457,12 @@ export default function StudentOnboardingPage({
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
             <button
               onClick={() => {
-                if (onOpenBookingModal) {
-                  onOpenBookingModal();
-                } else {
-                  navigate('/student/book');
-                }
+                navigate('/student/book');
               }}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl btn-primary-material text-primary-foreground font-medium text-sm transition-all shadow-md cursor-pointer"
             >
               <Calendar className="w-4 h-4" />
-              <span>{isRTL ? 'احجز الجلسة الفردية الأولى (مجانًا)' : 'Book Free Trial Lesson'}</span>
+              <span>{isRTL ? 'احجز الحصة التجريبية (مجانًا)' : 'Book the free trial'}</span>
             </button>
 
             <button
@@ -582,6 +599,25 @@ export default function StudentOnboardingPage({
                 className="w-full px-4 py-3 rounded-xl border border-border glass-surface text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 text-sm"
               />
             </div>
+
+            {learnerType === 'adult' && (
+              <div className="max-w-[200px]">
+                <Label htmlFor="onboarding-age" className="block text-sm font-semibold text-foreground mb-1.5">
+                  {isRTL ? 'سنك' : 'Your age'}
+                </Label>
+                <Input
+                  id="onboarding-age"
+                  type="number"
+                  inputMode="numeric"
+                  min={3}
+                  max={100}
+                  required
+                  value={age}
+                  onChange={(e) => setAge(e.target.value)}
+                  placeholder={isRTL ? 'مثال: 24' : 'e.g. 24'}
+                />
+              </div>
+            )}
 
             {/* 3. If Adult: Gender & Teacher Preferences */}
             {learnerType === 'adult' && (
@@ -791,7 +827,7 @@ export default function StudentOnboardingPage({
 
                         {/* Child Name & Gender */}
                         <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5">
-                          <div className="sm:col-span-7">
+                          <div className="sm:col-span-5">
                             <label className="block text-xs font-semibold text-foreground mb-1">
                               {isRTL ? 'اسم الابن / الابنة بالكامل' : "Child's Full Name"}
                             </label>
@@ -801,6 +837,24 @@ export default function StudentOnboardingPage({
                               onChange={(e) => handleUpdateChild(index, { name: e.target.value })}
                               placeholder={isRTL ? 'مثال: يوسف، فاطمة...' : 'e.g. Yusuf, Fatima...'}
                               className="w-full px-3.5 py-2.5 rounded-xl border border-border glass-card text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                            />
+                          </div>
+
+                          <div className="sm:col-span-2">
+                            <Label htmlFor={`child-age-${index}`} className="block text-xs font-semibold text-foreground mb-1">
+                              {isRTL ? 'السن' : 'Age'}
+                            </Label>
+                            <Input
+                              id={`child-age-${index}`}
+                              type="number"
+                              inputMode="numeric"
+                              min={3}
+                              max={100}
+                              required
+                              value={child.age}
+                              onChange={(e) => handleUpdateChild(index, { age: e.target.value })}
+                              placeholder={isRTL ? 'مثال: 9' : 'e.g. 9'}
+                              className="h-[42px] rounded-xl"
                             />
                           </div>
 

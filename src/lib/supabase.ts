@@ -25,6 +25,26 @@ export const isSupabaseConfigured = (): boolean => {
   );
 };
 
+// Remember what kind of email link opened the site (invite / recovery) before the client reads
+// and clears the URL hash, so an invited teacher is sent to choose a password first.
+const AUTH_LINK_KEY = 'wz_auth_link_type';
+try {
+  const linkType = new URLSearchParams(window.location.hash.replace(/^#/, '')).get('type');
+  if (linkType === 'invite') sessionStorage.setItem(AUTH_LINK_KEY, linkType);
+} catch {}
+export const getAuthLinkType = (): string | null => {
+  try {
+    return sessionStorage.getItem(AUTH_LINK_KEY);
+  } catch {
+    return null;
+  }
+};
+export const clearAuthLinkType = (): void => {
+  try {
+    sessionStorage.removeItem(AUTH_LINK_KEY);
+  } catch {}
+};
+
 // Create the client with standard options (auth persistence, auto refresh)
 export const supabase: SupabaseClient = createClient(
   isSupabaseConfigured() ? supabaseUrl! : 'https://placeholder.supabase.co',

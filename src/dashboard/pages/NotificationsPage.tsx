@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { InboxList } from '../../components/InboxList';
 import { DateTime } from 'luxon';
 import { Bell, CalendarPlus, CalendarX, CalendarClock, Sparkles, Loader2 } from 'lucide-react';
 import { dashboardFetch } from '../lib/dashboardApi';
@@ -83,6 +84,7 @@ export default function NotificationsPage() {
 
   return (
     <div className="space-y-6">
+      <InboxList lang={isAr ? 'ar' : 'en'} />
       <div>
         <h1 className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
           <Bell className="w-6 h-6 text-accent" />

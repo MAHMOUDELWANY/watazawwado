@@ -1,5 +1,5 @@
 import { isPasswordLeaked, LEAKED_PASSWORD_MESSAGE } from './pwnedPassword';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase, isSupabaseConfigured } from './supabase';
 import { syncChosenLanguage } from './language';
@@ -120,6 +120,7 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [userRole, setUserRole] = useState<'teacher' | 'student' | null>(null);
   const [teacherRole, setTeacherRole] = useState<'teacher' | 'super_admin' | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const resolvedUserIdRef = useRef<string | null>(null);
   const isConfigured = isSupabaseConfigured();
   const isProduction = Boolean((import.meta as any).env?.PROD);
 
@@ -175,6 +176,7 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
+      resolvedUserIdRef.current = session?.user?.id ?? null;
       setUser(session?.user ?? null);
       if (session) {
         const role = await resolveRole(session);
@@ -197,6 +199,13 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (_event === 'SIGNED_IN') void syncChosenLanguage();
       setSession(session);
+      // Supabase fires SIGNED_IN / TOKEN_REFRESHED again when the tab regains focus. Same user:
+      // keep the user object and role as they are, or every page remounts and loses its state.
+      const sameUser = Boolean(session?.user?.id && session.user.id === resolvedUserIdRef.current);
+      if (sameUser && _event !== 'USER_UPDATED') {
+        return;
+      }
+      resolvedUserIdRef.current = session?.user?.id ?? null;
       setUser(session?.user ?? null);
       if (session) {
         const role = await resolveRole(session);

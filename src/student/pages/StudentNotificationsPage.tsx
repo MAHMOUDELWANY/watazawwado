@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { InboxList } from '../../components/InboxList';
 import { DateTime } from 'luxon';
 import {
   Bell,
@@ -186,6 +187,8 @@ export default function StudentNotificationsPage({ lang = 'en', session }: Stude
 
   return (
     <div className="space-y-6 animate-fade-in text-start">
+      <InboxList lang={isAr ? 'ar' : 'en'} />
+
       {/* 1. Page Header & Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
         <div>

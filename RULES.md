@@ -36,6 +36,13 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
   - if the platform/teacher cancels or fails, the student chooses a free new time, a credit or a refund, and it never counts toward the refund limit.
 - **[Decided 2026-10-14] Terms consent.** Before every booking and package purchase the student ticks "I accept the terms and the cancellation & refund policy". The server refuses without it and stores the accepted terms version (`TERMS_VERSION` in `api/index.ts`, `bookings.terms_version/terms_accepted_at`, package `metadata`). Any substantive change to the terms page bumps the version.
 
+- **[Decided 2026-10-16] Learner age.** Onboarding asks for the exact age (not an age range) of the student, or of each child when a parent signs up.
+- **[Decided 2026-10-16, changed same day] Placement test after booking.** Every learner takes a short AI placement test (different for each learner, based on the subject and level chosen at onboarding). Students are told before booking that the test follows, and are invited to take it right after booking; it never blocks a booking. The super admin sees the result on the website only (no email), replies, and can continue with the student in the chat. Temporary until an official test per subject is written.
+- **[Decided 2026-10-16] Admin alerts on the website only.** New AI-guide requests and placement results reach the super admin as on-site notifications in the site's design (no emails). "Request more info" was removed; the admin continues with the student in the chat instead.
+- **[Decided 2026-10-16] Teacher AI assistant is named Jalila (جليلة).**
+- **[Decided 2026-10-16] Chat.** Text only. Every account (student, parent, teacher) has a pinned conversation with the super admin; after booking, a student also has a conversation with their teacher (the super admin can read and write in all of them).
+- **[Decided 2026-10-16] Zoom host.** The teacher starts every lesson as the Zoom host (fresh host link from the dashboard); students join through the waiting room, so a student who arrives first never becomes the host.
+
 ## 3. Pricing
 
 - **[Decided 2026-10-14] Hourly rates (60 minutes):**

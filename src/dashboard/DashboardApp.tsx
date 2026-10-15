@@ -29,7 +29,9 @@ import {
   HelpCircle,
   LogOut,
   Bell,
-  Wallet
+  Wallet,
+  MessageCircle,
+  GraduationCap
 } from 'lucide-react';
 import { useTheme } from "../components/ThemeProvider";
 import OverviewPage from './pages/OverviewPage';
@@ -47,6 +49,9 @@ import TeachersPage from './pages/TeachersPage';
 import AvailabilityPage from './pages/AvailabilityPage';
 import NotificationsPage, { useUnreadDashboardNotifications } from './pages/NotificationsPage';
 import PayLaterPage from './pages/PayLaterPage';
+import PlacementTestsPage from './pages/PlacementTestsPage';
+import AssistantPage from './pages/AssistantPage';
+import { ChatPanel } from '../components/chat/ChatPanel';
 import { TeacherAuthDiagnosticPanel } from './components/TeacherAuthDiagnosticPanel';
 import { useAppLanguage } from '../lib/language';
 import { ErrorBoundary } from '../components/ErrorBoundary';
@@ -161,10 +166,13 @@ export function DashboardApp() {
     { name: lang === 'ar' ? 'الطلاب' : 'Students', path: '/dashboard/students', icon: Users },
     { name: lang === 'ar' ? 'الحجوزات' : 'Bookings', path: '/dashboard/bookings', icon: BookOpen },
     { name: lang === 'ar' ? 'ادفع لاحقاً' : 'Pay later', path: '/dashboard/pay-later', icon: Wallet },
+    { name: lang === 'ar' ? 'الرسائل' : 'Messages', path: '/dashboard/messages', icon: MessageCircle },
     { name: lang === 'ar' ? 'الإشعارات' : 'Notifications', path: '/dashboard/notifications', icon: Bell },
     { name: lang === 'ar' ? 'التجريبية' : 'Trials', path: '/dashboard/trials', icon: Sparkles },
+    { name: lang === 'ar' ? 'اختبارات المستوى' : 'Placement tests', path: '/dashboard/placement', icon: GraduationCap },
     { name: lang === 'ar' ? 'المهتمون' : 'Leads', path: '/dashboard/leads', icon: UserPlus },
     { name: lang === 'ar' ? 'الطلبات' : 'Requests', path: '/dashboard/intakes', icon: ClipboardCheck },
+    { name: lang === 'ar' ? 'جليلة (المساعدة)' : 'Jalila (assistant)', path: '/dashboard/assistant', icon: Compass },
     { name: lang === 'ar' ? 'التقارير' : 'Reports', path: '/dashboard/analytics', icon: TrendingUp },
     { name: lang === 'ar' ? 'مواعيدي' : 'My hours', path: '/dashboard/availability', icon: Clock },
     { name: lang === 'ar' ? 'الإعدادات' : 'Settings', path: '/dashboard/settings', icon: Settings },
@@ -175,6 +183,8 @@ export function DashboardApp() {
     { name: lang === 'ar' ? 'الجدول' : 'Schedule', path: '/dashboard/upcoming', icon: Calendar },
     { name: lang === 'ar' ? 'التجريبية' : 'Trials', path: '/dashboard/trials', icon: Sparkles },
     { name: lang === 'ar' ? 'طلابي' : 'Students', path: '/dashboard/students', icon: Users },
+    { name: lang === 'ar' ? 'الرسائل' : 'Messages', path: '/dashboard/messages', icon: MessageCircle },
+    { name: lang === 'ar' ? 'جليلة (المساعدة)' : 'Jalila (assistant)', path: '/dashboard/assistant', icon: Compass },
     { name: lang === 'ar' ? 'الإشعارات' : 'Notifications', path: '/dashboard/notifications', icon: Bell },
     { name: lang === 'ar' ? 'الحجوزات' : 'Bookings', path: '/dashboard/bookings', icon: BookOpen },
     { name: lang === 'ar' ? 'التقارير' : 'Reports', path: '/dashboard/analytics', icon: TrendingUp },
@@ -443,6 +453,9 @@ export function DashboardApp() {
                 <Route path="/notifications" element={<NotificationsPage />} />
                 <Route path="/pay-later" element={isSuperAdmin ? <PayLaterPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/settings" element={<SettingsPage />} />
+                <Route path="/messages" element={<ChatPanel lang={lang === 'ar' ? 'ar' : 'en'} />} />
+                <Route path="/assistant" element={<AssistantPage />} />
+                <Route path="/placement" element={isSuperAdmin ? <PlacementTestsPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>
             </ErrorBoundary>

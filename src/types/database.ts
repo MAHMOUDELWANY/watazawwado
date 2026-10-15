@@ -187,6 +187,7 @@ export interface Database {
           current_level: StudentProficiency;
           notes: string | null;
           booking_preference?: 'self' | 'child';
+          age?: number | null;
           status: StudentStatus;
           created_at: string;
           updated_at: string;
@@ -204,6 +205,7 @@ export interface Database {
           current_level?: StudentProficiency;
           notes?: string | null;
           booking_preference?: 'self' | 'child';
+          age?: number | null;
           status?: StudentStatus;
           created_at?: string;
           updated_at?: string;
@@ -221,6 +223,7 @@ export interface Database {
           current_level?: StudentProficiency;
           notes?: string | null;
           booking_preference?: 'self' | 'child';
+          age?: number | null;
           status?: StudentStatus;
           created_at?: string;
           updated_at?: string;

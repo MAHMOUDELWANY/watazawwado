@@ -27,6 +27,45 @@ import { ManageBookingModal } from './ManageBookingModal';
 import { InstantCheckoutModal } from '../payment/InstantCheckoutModal';
 import { getFreshAccessToken } from '../../lib/auth';
 
+const DRAFT_KEY = 'watazawwado_pending_booking_state';
+// A draft older than this starts fresh (its time slot is likely gone anyway).
+const DRAFT_MAX_AGE_MS = 3 * 60 * 60 * 1000;
+
+/** The booking in progress, kept in this tab so leaving (terms, packages, Stripe) never loses it. */
+function readBookingDraft(): { formData?: BookingFormData; step?: number; pendingBooking?: BookingConfirmationData | null; savedAt?: number } | null {
+  try {
+    const raw = sessionStorage.getItem(DRAFT_KEY);
+    if (!raw) return null;
+    const draft = JSON.parse(raw);
+    if (!draft || typeof draft.savedAt !== 'number' || Date.now() - draft.savedAt > DRAFT_MAX_AGE_MS) return null;
+    return draft;
+  } catch {
+    return null;
+  }
+}
+
+export function hasBookingDraft(): boolean {
+  const draft = readBookingDraft();
+  return Boolean(draft && ((draft.step || 0) > 1 || draft.pendingBooking));
+}
+
+export function clearBookingDraft(): void {
+  try {
+    sessionStorage.removeItem(DRAFT_KEY);
+  } catch {}
+}
+
+/** Runs fn when value changes after mount (not on mount, so a restored draft isn't overwritten). */
+function useOnPropChange<T>(value: T, fn: (value: T) => void) {
+  const prev = useRef(value);
+  useEffect(() => {
+    if (prev.current === value) return;
+    prev.current = value;
+    fn(value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
+}
+
 interface BookingFlowProps {
   initialServiceId?: string;
   initialMode?: BookingMode;
@@ -50,6 +89,10 @@ interface BookingFlowProps {
   activeEntitlements?: PackageEntitlementEntry[];
   catalog?: PackageCatalogEntry[];
   accessToken?: string;
+  /** Subject chosen at onboarding: step 1 asks to confirm it instead of showing every subject. */
+  profileServiceId?: string;
+  /** Shown under the confirmation (e.g. the placement-test step). */
+  confirmationExtra?: React.ReactNode;
 }
 
 export const BookingFlow: React.FC<BookingFlowProps> = ({
@@ -74,26 +117,20 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   teacherId,
   activeEntitlements = [],
   catalog = [],
-  accessToken
+  accessToken,
+  profileServiceId,
+  confirmationExtra
 }) => {
   const isEn = lang === 'en';
   const isAr = lang === 'ar';
 
+  const [draft] = useState(readBookingDraft);
+  // Coming back from the packages page with a new package: keep the draft and use the credit.
+  const entitlementFromProps = initialData?.packageEntitlementId;
   const [step, setStep] = useState<number>(() => {
-    try {
-      const params = new URLSearchParams(window.location.search);
-      const isCancelled = params.get('payment_cancelled');
-      const saved = sessionStorage.getItem('watazawwado_pending_booking_state');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (isCancelled && parsed?.step) {
-          return parsed.step;
-        }
-        if (parsed?.pendingBooking && parsed?.step) {
-          return parsed.step;
-        }
-      }
-    } catch {}
+    if (draft?.step && draft.step >= 1 && draft.step <= 7) {
+      return entitlementFromProps && !draft.pendingBooking ? Math.min(draft.step, 4) : draft.step;
+    }
     return initialStep && initialStep >= 1 && initialStep <= 7 ? initialStep : 1;
   });
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -101,16 +138,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   const [validationError, setValidationError] = useState<string | null>(null);
   const [manageModalOpen, setManageModalOpen] = useState<boolean>(false);
   const [manageRefCode, setManageRefCode] = useState<string>('');
-  const [pendingBooking, setPendingBooking] = useState<BookingConfirmationData | null>(() => {
-    try {
-      const saved = sessionStorage.getItem('watazawwado_pending_booking_state');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed?.pendingBooking) return parsed.pendingBooking;
-      }
-    } catch {}
-    return null;
-  });
+  const [pendingBooking, setPendingBooking] = useState<BookingConfirmationData | null>(() => draft?.pendingBooking || null);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState<boolean>(false);
   const [payLaterEligible, setPayLaterEligible] = useState(false);
   const [payLaterBusy, setPayLaterBusy] = useState(false);
@@ -118,19 +146,14 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
 
   // Progressive Form State
   const [formData, setFormData] = useState<BookingFormData>(() => {
-    try {
-      const saved = sessionStorage.getItem('watazawwado_pending_booking_state');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed?.formData && typeof parsed.formData === 'object') {
-          return {
-            ...parsed.formData,
-            ...(studentEmail && !parsed.formData.email ? { email: studentEmail } : {}),
-            ...(studentName && !parsed.formData.studentName ? { studentName } : {})
-          };
-        }
-      }
-    } catch {}
+    if (draft?.formData && typeof draft.formData === 'object') {
+      return {
+        ...draft.formData,
+        ...(studentEmail && !draft.formData.email ? { email: studentEmail } : {}),
+        ...(studentName && !draft.formData.studentName ? { studentName } : {}),
+        ...(entitlementFromProps && !draft.pendingBooking ? { packageEntitlementId: entitlementFromProps, mode: 'regular' as BookingMode } : {})
+      };
+    }
 
     let userTz = 'America/New_York';
     try {
@@ -201,19 +224,16 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
 
   // Persist draft to sessionStorage whenever user makes changes or holds a pending booking
   useEffect(() => {
+    if (confirmation) {
+      clearBookingDraft();
+      return;
+    }
     try {
       if (step > 1 || pendingBooking) {
-        sessionStorage.setItem(
-          'watazawwado_pending_booking_state',
-          JSON.stringify({
-            formData,
-            step,
-            pendingBooking
-          })
-        );
+        sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ formData, step, pendingBooking, savedAt: Date.now() }));
       }
     } catch {}
-  }, [formData, step, pendingBooking]);
+  }, [formData, step, pendingBooking, confirmation]);
 
   // Handle returning from Stripe Checkout (session_id + gateway=stripe in URL).
   // Guarded so the verify call runs once per return, even when formData changes or StrictMode re-runs effects.
@@ -284,9 +304,9 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                 parentName: confirmedRecord.parentName,
                 contactEmail: confirmedRecord.email || '',
                 contactWhatsapp: confirmedRecord.whatsapp || '',
-                date: (confirmedRecord.scheduledIsoDatetime || '').split('T')[0] || formData.date,
-                timeDisplay: confirmedRecord.cairoTimeDisplay || '',
-                timezone: confirmedRecord.timezone || 'UTC',
+                date: formData.date || (confirmedRecord.scheduledIsoDatetime || '').split('T')[0],
+                timeDisplay: formData.timeSlot?.timeDisplay || '',
+                timezone: formData.timezone || confirmedRecord.timezone || 'UTC',
                 durationMinutes: confirmedRecord.durationMinutes || formData.duration,
                 cairoTimeDisplay: confirmedRecord.cairoTimeDisplay || '',
                 feeAmountUsd: confirmedRecord.feeAmountUsd || 0,
@@ -344,27 +364,23 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     }
   }, [isAr, formData]);
 
-  useEffect(() => {
-    if (initialStep && initialStep >= 1 && initialStep <= 7) {
-      setStep(initialStep);
-    }
-  }, [initialStep]);
+  useOnPropChange(initialStep, (next) => {
+    if (next && next >= 1 && next <= 7) setStep(next);
+  });
 
-  useEffect(() => {
-    if (initialServiceId) {
-      setFormData((prev) => ({ ...prev, serviceId: initialServiceId }));
-    }
-  }, [initialServiceId]);
+  useOnPropChange(initialServiceId, (next) => {
+    if (next) setFormData((prev) => ({ ...prev, serviceId: next }));
+  });
 
-  useEffect(() => {
-    if (initialMode) {
+  useOnPropChange(initialMode, (next) => {
+    if (next) {
       setFormData((prev) => ({
         ...prev,
-        mode: initialMode,
-        duration: initialMode === 'trial' ? 30 : (prev.duration || 45)
+        mode: next,
+        duration: next === 'trial' ? 30 : (prev.duration || 45)
       }));
     }
-  }, [initialMode]);
+  });
 
   const updateFormData = (fields: Partial<BookingFormData>) => {
     setFormData((prev) => ({ ...prev, ...fields }));
@@ -432,6 +448,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
       const result = await bookingService.submitBooking(formData);
       const isFree = formData.mode === 'trial' || Boolean(formData.packageEntitlementId);
       if (isFree) {
+        clearBookingDraft();
         // Free trial or package entitlement -> directly confirmed
         setConfirmation(result);
       } else {
@@ -565,13 +582,16 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
         </div>
       ) : confirmation ? (
         /* 2. Single Booking Confirmation State */
-        <BookingConfirmation
-          confirmation={confirmation}
-          onOpenManageModal={handleOpenManageModal}
-          onDone={handleResetForNewBooking}
-          lang={lang}
-          doneLabel={doneLabel}
-        />
+        <>
+          <BookingConfirmation
+            confirmation={confirmation}
+            onOpenManageModal={handleOpenManageModal}
+            onDone={handleResetForNewBooking}
+            lang={lang}
+            doneLabel={doneLabel}
+          />
+          {confirmationExtra}
+        </>
       ) : (
         /* 3. Progressive Multi-Step Booking Flow */
         <div>
@@ -614,6 +634,8 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                 transition={{ duration: 0.2 }}
               >
                 <StepServiceSelect
+                  suggestedServiceId={profileServiceId}
+                  suggestedLevel={formData.audience === 'child' ? formData.childLevel : formData.currentLevel}
                   selectedServiceId={formData.serviceId}
                   onSelectService={(serviceId) => updateFormData({ serviceId })}
                   onNext={handleNext}

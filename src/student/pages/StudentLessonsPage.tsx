@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import {
+  CalendarClock,
   Calendar,
   Clock,
   Video,
@@ -54,6 +55,18 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
   // Modals state
   const [paymentModalBooking, setPaymentModalBooking] = useState<any | null>(null);
   const [rescheduleModalBooking, setRescheduleModalBooking] = useState<any | null>(null);
+  // ?manage=<bookingId> (from the home page) opens the reschedule/cancel window for that lesson.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const manageId = searchParams.get('manage');
+  useEffect(() => {
+    if (!manageId || bookings.length === 0) return;
+    const target = bookings.find((b) => b.id === manageId);
+    if (target) setRescheduleModalBooking(target);
+    setSearchParams((prev) => {
+      prev.delete('manage');
+      return prev;
+    }, { replace: true });
+  }, [manageId, bookings, setSearchParams]);
 
   const isAr = lang === 'ar';
 
@@ -433,7 +446,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                           href={rawZoom}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm sm:text-sm font-semibold transition-all shadow-xs min-h-[42px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
+                          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-zoom rounded-xl text-sm font-semibold min-h-[42px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
                         >
                           <Video className="w-4 h-4 shrink-0" />
                           <span>{isAr ? 'دخول الفصل الافتراضي (زووم)' : 'Join Zoom Classroom'}</span>
@@ -444,8 +457,8 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                           <Clock className="w-3.5 h-3.5 text-accent shrink-0" />
                           <span>
                             {isAr
-                              ? 'رابط زووم سيتوفر هنا مباشرة قبل موعد الجلسة.'
-                              : 'Zoom meeting room activates prior to the lesson.'}
+                              ? 'رابط زووم بيتجهز، وهيوصلك على الإيميل ويظهر هنا. المعلم بيفتح الفصل وانت بتستنى لحظات في غرفة الانتظار.'
+                              : 'Your Zoom link is being prepared; it will be emailed and shown here. Your teacher opens the class; you wait a moment in the waiting room.'}
                           </span>
                         </div>
                       )}
@@ -465,22 +478,22 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                         </button>
                       )}
 
-                      {/* Reschedule / Cancel coordination (WhatsApp only — no in-app mutation) */}
+                      {/* Reschedule / cancel on the site (LessonSelfServicePanel) */}
                       {canCoordinate && (
                         <button
                           type="button"
                           onClick={() => setRescheduleModalBooking(b)}
                           className="inline-flex items-center justify-center gap-1.5 px-3 py-2 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-sm font-medium transition-colors cursor-pointer min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                         >
-                          <MessageCircle className="w-3.5 h-3.5 shrink-0" />
-                          <span>{isAr ? 'تنسيق التعديل عبر واتساب' : 'Request Change via WhatsApp'}</span>
+                          <CalendarClock className="w-3.5 h-3.5 shrink-0" />
+                          <span>{isAr ? 'تغيير الميعاد أو إلغاء' : 'Reschedule or cancel'}</span>
                         </button>
                       )}
 
                       {/* Rebook / Repeat Topic for completed or cancelled lessons */}
                       {(isCompleted || isCancelled || isNoShow) && (
                         <Link
-                          to={`/student/book?repeat=true${b.serviceId ? `&service=${b.serviceId}` : ''}`}
+                          to={`/student/book?repeat=${b.id}`}
                           className="inline-flex items-center justify-center gap-1.5 px-3 py-2 glass-card hover:bg-surface-subtle text-primary border border-border rounded-xl text-sm font-medium transition-colors min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                           title={isAr ? 'حجز درس جديد في نفس الموضوع' : 'Book another session on this topic'}
                         >
@@ -527,7 +540,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
               </div>
               <div>
                 <h3 className="text-base font-display font-bold text-foreground">
-                  {isAr ? 'طلب تعديل أو إلغاء الدرس' : 'Request a Lesson Change'}
+                  {isAr ? 'تغيير الميعاد أو إلغاء الحصة' : 'Reschedule or cancel'}
                 </h3>
                 <p className="text-sm text-muted-foreground font-mono">
                   Ref: {rescheduleModalBooking.referenceCode}
@@ -536,91 +549,34 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
             </div>
           }
         >
-          <div className="space-y-4 text-start text-sm sm:text-sm text-foreground">
-            {(() => {
-              const startObj = DateTime.fromISO(
-                rescheduleModalBooking.scheduledStart || rescheduleModalBooking.scheduled_start || rescheduleModalBooking.lesson_date || ''
-              );
-              const hrs = startObj.isValid ? startObj.diffNow().as('hours') : 0;
-              const isEligible = hrs >= 3;
-
-              const serviceTitle = isAr && rescheduleModalBooking.serviceArabicTitle
-                ? rescheduleModalBooking.serviceArabicTitle
-                : (rescheduleModalBooking.serviceTitle || 'Lesson');
-
-              const scheduledDateFormatted = startObj.isValid
-                ? (isAr ? startObj.setLocale('ar').toFormat('dd MMMM yyyy - hh:mm a') : startObj.setLocale('en').toFormat('dd LLL yyyy, h:mm a'))
-                : '';
-
-              const waMessage = isAr
-                ? (isEligible
-                    ? `السلام عليكم أستاذ محمود،\nأود طلب إعادة جدولة أو إلغاء لموعد درسي (${serviceTitle}) برمز الحجز [${rescheduleModalBooking.referenceCode}] المقرر في (${scheduledDateFormatted}).`
-                    : `السلام عليكم أستاذ محمود،\nبخصوص درسي (${serviceTitle}) برمز الحجز [${rescheduleModalBooking.referenceCode}] المقرر في (${scheduledDateFormatted})، متبقي أقل من ٣ ساعات وأود التنسيق معكم بخصوص هذا التعديل.`)
-                : (isEligible
-                    ? `Assalamu Alaikum Ustadh Mahmoud,\nRegarding my booking [${rescheduleModalBooking.referenceCode}] (${serviceTitle}) scheduled for ${scheduledDateFormatted}, I would like to request a reschedule/cancellation.`
-                    : `Assalamu Alaikum Ustadh Mahmoud,\nRegarding booking [${rescheduleModalBooking.referenceCode}] (${serviceTitle}) scheduled for ${scheduledDateFormatted}, my lesson starts in less than 3 hours and I would like to coordinate regarding this short-notice adjustment.`);
-
-              const waUrl = buildWhatsAppUrl(waMessage);
-
-              return (
-                <>
-                  <LessonSelfServicePanel
-                    booking={rescheduleModalBooking}
-                    lang={lang}
-                    timezone={getActiveWorkingTimezone(rescheduleModalBooking.studentTimezone || 'UTC')}
-                    onChanged={fetchData}
-                  />
-
-                  <div
-                    className={`p-4 rounded-xl border ${
-                      isEligible
-                        ? 'glass-surface border-border-subtle'
-                        : 'bg-warning/10 border-warning/25 text-foreground'
-                    }`}
-                  >
-                    <div className="font-semibold text-foreground mb-1">
-                      {isEligible
-                        ? (isAr ? 'يمكنك طلب التعديل الآن' : 'You can request a change now')
-                        : (isAr ? 'تنبيه: متبقي أقل من ٣ ساعات' : 'Notice: Less than 3 hours remaining')}
-                    </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {isEligible
-                        ? (isAr
-                            ? 'موعد درسك يبدأ بعد أكثر من ٣ ساعات. لطلب إعادة الجدولة أو الإلغاء، يرجى التنسيق مباشرة مع الأستاذ محمود عبر واتساب. لن يتم تعديل الموعد من داخل التطبيق.'
-                            : 'Your lesson is scheduled more than 3 hours from now. To request a reschedule or cancellation, coordinate directly with Ustadh Mahmoud on WhatsApp. The booking is not changed by the app itself.')
-                        : (isAr
-                            ? 'نظراً لأن موعد الدرس خلال أقل من ٣ ساعات، يتطلب طلب الإلغاء أو التعديل تواصلاً مباشراً مع الأستاذ محمود عبر واتساب. لن يتم تعديل الموعد من داخل التطبيق.'
-                            : 'Because your session starts in less than 3 hours, requesting an adjustment requires direct coordination with Ustadh Mahmoud on WhatsApp. The booking is not changed by the app itself.')}
-                    </p>
-                  </div>
-
-                  <div className="space-y-2.5 pt-2">
-                    <a
-                      href={waUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 btn-whatsapp-solid rounded-xl text-sm font-bold shadow-md transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
-                    >
-                      <MessageCircle className="w-4 h-4 fill-current shrink-0" />
-                      <span>
-                        {isAr
-                          ? 'التواصل عبر واتساب للتنسيق'
-                          : 'Message Ustadh Mahmoud on WhatsApp'}
-                      </span>
-                      <ExternalLink className="w-3.5 h-3.5 shrink-0 ms-0.5" />
-                    </a>
-
-                    <button
-                      type="button"
-                      onClick={() => setRescheduleModalBooking(null)}
-                      className="w-full px-4 py-2.5 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-sm sm:text-sm font-medium transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
-                    >
-                      {isAr ? 'إغلاق' : 'Close'}
-                    </button>
-                  </div>
-                </>
-              );
-            })()}
+          <div className="space-y-4 text-start text-sm text-foreground">
+            {/* Self-service move/cancel (RULES.md §2); the server enforces every time limit. */}
+            <LessonSelfServicePanel
+              booking={rescheduleModalBooking}
+              lang={lang}
+              timezone={getActiveWorkingTimezone(rescheduleModalBooking.studentTimezone || 'UTC')}
+              onChanged={() => {
+                fetchData();
+              }}
+            />
+            <p className="text-xs text-muted-foreground">
+              {isAr ? 'ظرف طارئ في آخر لحظة؟ ' : 'A real emergency at the last minute? '}
+              <a
+                href={buildWhatsAppUrl(`${isAr ? 'ظرف طارئ بخصوص حصتي' : 'Emergency about my lesson'} [${rescheduleModalBooking.referenceCode}]`)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline font-semibold text-primary"
+              >
+                {isAr ? 'كلّمنا على واتساب' : 'Message us on WhatsApp'}
+              </a>
+            </p>
+            <button
+              type="button"
+              onClick={() => setRescheduleModalBooking(null)}
+              className="w-full px-4 py-2.5 glass-card hover:bg-surface-subtle text-foreground border border-border rounded-xl text-sm font-medium transition-colors cursor-pointer"
+            >
+              {isAr ? 'إغلاق' : 'Close'}
+            </button>
           </div>
         </Modal>
       )}

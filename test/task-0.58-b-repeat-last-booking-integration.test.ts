@@ -68,8 +68,8 @@ test('Task 0.58-B: Repeat Last Booking Dashboard Integration & Deep-Linking Work
       'Learning History must provide repeat button per repeatable booking'
     );
     assert(
-      homeCode.includes('to={`/student/book?repeat=true${bServiceId ? `&service=${bServiceId}` : \'\'}`}'),
-      'Learning History repeat link must pass repeat=true and service ID'
+      homeCode.includes('to={`/student/book?repeat=${b.id}`}'),
+      'Learning History repeat link must pass the lesson id so that exact lesson is reused'
     );
   });
 
@@ -85,7 +85,7 @@ test('Task 0.58-B: Repeat Last Booking Dashboard Integration & Deep-Linking Work
       'StudentHomePage must validate that Zoom URL strictly starts with https:// or http://'
     );
     assert(
-      homeCode.includes('Meeting link will appear soon'),
+      homeCode.includes('Zoom link is being prepared'),
       'StudentHomePage must display placeholder text when Zoom link is pending or invalid'
     );
   });

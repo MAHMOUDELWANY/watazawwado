@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { isCoordinationAllowed } from '../lessonsPresentation';
+import { authedJson } from '../../lib/authedJson';
 import { DateTime } from 'luxon';
 import {
   Calendar,
@@ -18,7 +20,8 @@ import {
   MessageCircle,
   Award,
   RefreshCw,
-  Users
+  Users,
+  CalendarClock,
 } from 'lucide-react';
 import { useTeacherAuth } from '../../lib/auth';
 import { findLastEligibleBooking, formatLastBookingSummary } from './StudentBookingPage';
@@ -167,6 +170,14 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
     fetchPackagesData();
     fetchPaymentsData();
   }, [fetchCoreData, fetchPackagesData, fetchPaymentsData]);
+
+  // Placement test reminder (taken after booking; never blocks anything).
+  const [placementTodo, setPlacementTodo] = useState(false);
+  useEffect(() => {
+    authedJson<{ gates: Record<string, string | null> }>('/api/placement/mine')
+      .then((d) => setPlacementTodo(Object.values(d.gates || {}).includes('PLACEMENT_REQUIRED')))
+      .catch(() => {});
+  }, []);
 
   // Onboarding state
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -334,6 +345,22 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
           </div>
         </div>
       </div>
+
+      {placementTodo && bookings.length > 0 && (
+        <Link
+          to="/student/placement"
+          className="flex items-center justify-between gap-3 p-4 rounded-2xl border border-primary/30 bg-primary/5 hover:bg-primary/10 transition-colors"
+        >
+          <span className="text-sm text-foreground">
+            <strong className="font-semibold">{isAr ? 'اختبار تحديد المستوى' : 'Placement test'}</strong>
+            {' · '}
+            {isAr ? '5 دقايق بتساعد معلمك يجهّزلك الحصة على قد مستواك.' : '5 minutes that help your teacher prepare lessons for your level.'}
+          </span>
+          <span className="shrink-0 px-4 py-2 rounded-xl btn-primary-material text-primary-foreground text-sm font-semibold">
+            {isAr ? 'ابدأ' : 'Start'}
+          </span>
+        </Link>
+      )}
 
       {/* ========================================================================= */}
       {/* 2. QUICK ACTIONS (Role-aware: individualized for children of parents) */}
@@ -624,7 +651,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                       href={rawZoom}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm sm:text-[15px] font-semibold transition-all shadow-xs cursor-pointer min-h-[44px]"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-zoom rounded-xl text-sm sm:text-[15px] font-semibold cursor-pointer min-h-[44px]"
                     >
                       <Video className="w-4 h-4" />
                       <span>{isAr ? 'دخول فصل زووم' : 'Join Zoom Classroom'}</span>
@@ -634,14 +661,24 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                     <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl glass-surface border border-border text-muted-foreground text-sm min-h-[44px]">
                       <Video className="w-4 h-4 text-muted-foreground/70" />
                       <span>
-                        {isAr ? 'رابط زووم سيتوفر قبل موعد الدرس' : 'Meeting link will appear soon'}
+                        {isAr ? 'رابط زووم بيتجهز، وهيوصلك على الإيميل ويظهر هنا' : 'Zoom link is being prepared; it will be emailed and shown here'}
                       </span>
                     </div>
                   )}
 
+                  {isCoordinationAllowed(nextBooking) && (
+                    <Link
+                      to={`/student/lessons?manage=${nextBooking.id}`}
+                      className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl glass-card hover:bg-surface-subtle border border-border text-foreground text-sm sm:text-[15px] font-medium transition-colors cursor-pointer min-h-[44px]"
+                    >
+                      <CalendarClock className="w-3.5 h-3.5 text-accent" />
+                      <span>{isAr ? 'تغيير الميعاد أو إلغاء' : 'Reschedule or cancel'}</span>
+                    </Link>
+                  )}
+
                   <Link
                     id="link-home-repeat-lesson"
-                    to="/student/book?repeat=true"
+                    to={`/student/book?repeat=${nextBooking.id}`}
                     className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl glass-card hover:bg-surface-subtle border border-border text-foreground text-sm sm:text-[15px] font-medium transition-colors cursor-pointer min-h-[44px]"
                   >
                     <RotateCcw className="w-3.5 h-3.5 text-accent" />
@@ -789,7 +826,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
                         <Link
                           id={`btn-repeat-history-${b.id}`}
-                          to={`/student/book?repeat=true${bServiceId ? `&service=${bServiceId}` : ''}`}
+                          to={`/student/book?repeat=${b.id}`}
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary/30 hover:bg-primary text-primary hover:text-primary-foreground text-sm font-semibold transition-all cursor-pointer"
                         >
                           <RotateCcw className="w-3 h-3" />

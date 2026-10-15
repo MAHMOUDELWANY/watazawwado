@@ -518,3 +518,23 @@ export function renderTeacherNotification(params: {
     ar: `[وتزودوا] ${title.ar}`
   }, params.lang);
 }
+
+// Short notice that mirrors an on-site notification (refunds, admin replies, placement results).
+export function renderSimpleNotice(params: {
+  name?: string | null;
+  title: L;
+  body: L;
+  buttonPath?: string;
+  staff?: boolean;
+  lang?: EmailLang;
+}): EmailRenderResult {
+  const name = escapeHtml(params.name || '');
+  return render({
+    preheader: params.title,
+    title: params.title,
+    greeting: name ? { en: `Assalamu alaikum ${name},`, ar: `السلام عليكم ${name}،` } : undefined,
+    paragraphs: [{ en: escapeHtml(params.body.en), ar: escapeHtml(params.body.ar) }],
+    button: params.buttonPath ? { url: `${SITE_URL}${params.buttonPath}`, label: { en: 'Open the website', ar: 'افتح الموقع' } } : undefined,
+    reason: params.staff ? STAFF_REASON : STUDENT_REASON
+  }, params.title, params.lang);
+}

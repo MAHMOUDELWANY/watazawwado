@@ -21,7 +21,7 @@ import {
   GraduationCap
 } from 'lucide-react';
 import { DashboardTrial, TrialAssessment, LeadStatus } from '../types';
-import { dashboardFetch } from '../lib/dashboardApi';
+import { dashboardFetch, openZoomAsHost } from '../lib/dashboardApi';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 import { useT } from '../../lib/language';
 
@@ -394,6 +394,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               {hostUrl ? (
                 <a
                   href={hostUrl}
+                  onClick={(e) => openZoomAsHost(e, trial.id, hostUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg btn-primary-material text-primary-foreground text-sm font-semibold shadow-2xs transition-colors"

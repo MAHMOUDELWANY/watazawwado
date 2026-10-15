@@ -271,3 +271,19 @@ export async function deleteZoomMeeting(meetingId: string): Promise<void> {
     throw new Error(error?.message || 'Failed to delete Zoom meeting');
   }
 }
+
+/**
+ * Fresh host link for a meeting. Zoom's start_url expires after about 2 hours, so it is fetched
+ * when the teacher presses "Start", never stored or sent to students. The host link is what makes
+ * the teacher the host; students join through the waiting room (join_before_host is off).
+ */
+export async function getZoomStartUrl(meetingId: string): Promise<string | null> {
+  const token = await getZoomAccessToken();
+  const res = await fetch(`https://api.zoom.us/v2/meetings/${encodeURIComponent(meetingId)}`, {
+    signal: AbortSignal.timeout(15000),
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (!res.ok) return null;
+  const meeting = await res.json();
+  return typeof meeting?.start_url === 'string' ? meeting.start_url : null;
+}

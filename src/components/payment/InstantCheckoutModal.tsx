@@ -36,6 +36,11 @@ export function InstantCheckoutModal({
     setError(null);
 
     try {
+      // Cancel returns to this exact page with only a flag, so the booking draft is restored.
+      const cancelTarget = new URL(window.location.href);
+      cancelTarget.searchParams.set('payment_cancelled', 'true');
+      const cancelUrl = cancelTarget.toString();
+
       const currentUrl = new URL(window.location.href);
       currentUrl.searchParams.set('gateway', 'stripe');
       currentUrl.searchParams.set('payment_status', 'success');
@@ -44,8 +49,6 @@ export function InstantCheckoutModal({
 
       // Stripe only substitutes the literal {CHECKOUT_SESSION_ID}; searchParams would percent-encode the braces.
       const successUrl = `${currentUrl.toString()}&session_id={CHECKOUT_SESSION_ID}`;
-      currentUrl.searchParams.set('payment_cancelled', 'true');
-      const cancelUrl = currentUrl.toString();
 
       const res = await fetch('/api/payments/create-intent', {
         method: 'POST',

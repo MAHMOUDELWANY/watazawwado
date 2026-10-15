@@ -166,9 +166,6 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
               <span className="text-sm font-medium text-foreground">
                 {confirmation.date}
               </span>
-              <span className="text-[11px] text-primary block">
-                {confirmation.cairoTimeDisplay ? `(${confirmation.cairoTimeDisplay})` : ''}
-              </span>
             </div>
           </div>
 
@@ -208,7 +205,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
               </button>
             ) : (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[13px] font-medium bg-amber-100 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40">
-                {isEn ? 'Link Pending' : 'قيد التجهيز'}
+                {isEn ? 'Being prepared' : 'بيتجهز'}
               </span>
             )}
           </div>
@@ -222,7 +219,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
                   href={zoomUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm shadow-xs"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl btn-zoom font-medium text-sm"
                 >
                   <span>{isEn ? 'Join Classroom' : 'دخول الدرس'}</span>
                   <ExternalLink className="w-3 h-3" />
@@ -231,8 +228,8 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
             ) : (
               <p className="text-[11px] text-blue-900/70 dark:text-blue-200/70 leading-relaxed">
                 {isEn
-                  ? 'Your personalized lesson link is being finalized and will be delivered to your email and WhatsApp before class.'
-                  : 'جاري تجهيز رابط الدرس المخصص وسيرسل إلى بريدك الإلكتروني والواتساب قبل موعد الجلسة.'}
+                  ? 'Your Zoom link is being prepared. It will be emailed to you, and you can open it any time from My Lessons. Your teacher opens the class; if you arrive first, you wait a moment in the waiting room.'
+                  : 'رابط زووم بيتجهز دلوقتي. هيوصلك على الإيميل، وتقدر تفتحه في أي وقت من صفحة "الدروس". المعلم هو اللي بيفتح الفصل، ولو دخلت قبله هتستنى لحظات في غرفة الانتظار.'}
               </p>
             )}
           </div>

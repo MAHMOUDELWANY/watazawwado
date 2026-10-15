@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { hasBookingDraft } from '../../components/booking/BookingFlow';
 import { DateTime } from 'luxon';
 import {
   Package,
@@ -333,6 +334,20 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto pb-12">
+      {/* Came here from the booking flow: the booking is saved, offer the way back. */}
+      {hasBookingDraft() && (
+        <div className="p-4 rounded-2xl border border-teal-500/40 bg-teal-500/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <span className="text-sm text-foreground">
+            {isAr
+              ? 'حجزك لسه محفوظ. لو اشتريت باقة، ارجع للحجز وهتلاقي الرصيد جاهز.'
+              : 'Your booking is saved. If you buy a package, go back and your credit will be ready to use.'}
+          </span>
+          <Link to="/student/book" className="inline-flex items-center justify-center px-4 py-2 rounded-xl btn-primary-material text-primary-foreground text-sm font-semibold shrink-0">
+            {isAr ? 'ارجع لحجزك' : 'Back to my booking'}
+          </Link>
+        </div>
+      )}
+
       {/* 1. Header & Back Navigation */}
       <div className="space-y-3">
         <StudentPageBack to="/student" label={isAr ? 'العودة للرئيسية' : 'Back to Dashboard'} />

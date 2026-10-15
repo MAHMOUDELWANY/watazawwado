@@ -1,12 +1,11 @@
 import React, { Component, useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useLocation, useSearchParams, Link } from 'react-router-dom';
-import { ArrowLeft, Loader2, AlertCircle, ShieldCheck, RefreshCw, RotateCcw, Check, Sparkles } from 'lucide-react';
-import { BookingFlow } from '../../components/booking/BookingFlow';
+import { AlertCircle, RefreshCw, RotateCcw, Check, Sparkles } from 'lucide-react';
+import { BookingFlow, hasBookingDraft, clearBookingDraft } from '../../components/booking/BookingFlow';
 import { BrandLoader, BrandSpinner } from '../../components/ui/BrandLoader';
 import { BOOKING_SERVICES } from '../../booking/mockData';
 import { BookingFormData, BookingMode, ProficiencyLevel, LessonDuration, PackageCatalogEntry } from '../../booking/types';
 import { useTeacherAuth, getFreshAccessToken } from '../../lib/auth';
-import { StudentPageBack } from '../components/StudentPageBack';
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { useAppLanguage } from '../../lib/language';
 
@@ -383,7 +382,8 @@ export function mapLastBookingToBookingFormData(
     initialData,
     matchedServiceId,
     initialMode,
-    initialStep: 5 // Step 5 is StepDateTime (schedule/time-selection)
+    // Date & time is step 5 in the trial/credit flow and step 6 in the paid flow (step 5 = single lesson or package).
+    initialStep: initialMode === 'trial' ? 5 : 6
   };
 }
 
@@ -547,6 +547,9 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
   const [bookingsError, setBookingsError] = useState<string | null>(null);
 
   const [packagesData, setPackagesData] = useState<{ entitlements: any[]; catalog: PackageCatalogEntry[]; creditSummary: any } | null>(null);
+  // A booking left half-way (terms page, packages, Stripe) continues where it stopped.
+  const [resumingDraft, setResumingDraft] = useState<boolean>(hasBookingDraft);
+  const [placement, setPlacement] = useState<{ gates: Record<string, string | null> } | null>(null);
 
   // Local state for reuse interaction - ALL HOOKS UNCONDITIONALLY DECLARED AT TOP LEVEL
   const [reuseDismissed, setReuseDismissed] = useState<boolean>(false);
@@ -628,20 +631,39 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
     ? formatLastBookingSummary(lastEligibleBooking, profile)
     : null;
 
-  const handleReuseLastBooking = useCallback(() => {
-    if (!lastEligibleBooking) return;
-    const reused = mapLastBookingToBookingFormData(lastEligibleBooking, profile, canBookTrial);
+  // "Book again" on a specific lesson passes its id (?repeat=<id>); ?repeat=true means the last completed one.
+  const repeatParam = searchParams.get('repeat');
+  const repeatTarget = repeatParam && repeatParam !== 'true' && Array.isArray(bookings)
+    ? bookings.find((b) => b?.id === repeatParam) || null
+    : null;
+
+  const handleReuseLastBooking = useCallback((target?: any) => {
+    const source = target && target.id ? target : lastEligibleBooking;
+    if (!source) return;
+    clearBookingDraft();
+    setResumingDraft(false);
+    const reused = mapLastBookingToBookingFormData(source, profile, canBookTrial);
     setActiveConfig({
       initialData: reused.initialData,
       matchedServiceId: reused.matchedServiceId,
       initialMode: reused.initialMode
     });
-    setFlowStep(5);
+    setFlowStep(reused.initialStep);
     setIsReusing(true);
     setFlowKey((k) => k + 1);
   }, [lastEligibleBooking, profile, canBookTrial]);
 
+  const handleStartOver = useCallback(() => {
+    clearBookingDraft();
+    setResumingDraft(false);
+    setIsReusing(false);
+    setActiveConfig(null);
+    setFlowStep(1);
+    setFlowKey((k) => k + 1);
+  }, []);
+
   const handleDismissReuse = useCallback(() => {
+    clearBookingDraft();
     setReuseDismissed(true);
     setIsReusing(false);
     setActiveConfig(null);
@@ -653,6 +675,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
   }, [navigate, searchParams]);
 
   const handleResetToNewBooking = useCallback(() => {
+    clearBookingDraft();
     setIsReusing(false);
     setActiveConfig(null);
     setFlowStep(1);
@@ -707,6 +730,12 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
         await fetchBookings(accessToken);
       }
 
+      // Placement test status per learner (owner decision 2026-10-16); a failure never blocks the page.
+      fetch('/api/placement/mine', { headers })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => { if (isMounted && d) setPlacement({ gates: d.gates || {} }); })
+        .catch(() => {});
+
       // 3. Load Student Packages for credit redemption
       try {
         const pkgRes = await fetch('/api/student/packages', { headers });
@@ -729,20 +758,25 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
   // Deep-linking: auto-trigger repeat workflow if requested via query param (?repeat=true) or location state ({ repeat: true })
   useEffect(() => {
     if (autoTriggeredRepeatRef.current) return;
-    const wantsRepeat = searchParams.get('repeat') === 'true' || (location.state as any)?.repeat === true;
+    if (repeatTarget) {
+      autoTriggeredRepeatRef.current = true;
+      handleReuseLastBooking(repeatTarget);
+      return;
+    }
+    const wantsRepeat = repeatParam === 'true' || (location.state as any)?.repeat === true;
     if (wantsRepeat && lastEligibleBooking && !reuseDismissed && !isReusing) {
       autoTriggeredRepeatRef.current = true;
       handleReuseLastBooking();
     }
-  }, [searchParams, location.state, lastEligibleBooking, reuseDismissed, isReusing, handleReuseLastBooking]);
+  }, [repeatParam, repeatTarget, location.state, lastEligibleBooking, reuseDismissed, isReusing, handleReuseLastBooking]);
 
   // Conditional early renders AFTER ALL HOOKS ARE CALLED
   if (auth.loading) {
     return (
       <BrandLoader 
         size="page" 
-        text="Checking your student session…" 
-        subtext="Verifying your account security & permissions"
+        text={isAr ? 'لحظة واحدة…' : 'One moment…'} 
+        
       />
     );
   }
@@ -783,8 +817,8 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
     return (
       <BrandLoader 
         size="page" 
-        text="Loading your lesson options…" 
-        subtext="Preparing available disciplines and scheduling slots"
+        text={isAr ? 'بنجهّز الحجز…' : 'Getting your booking ready…'} 
+        
       />
     );
   }
@@ -834,56 +868,25 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
         ...(requestedEntitlementId ? { packageEntitlementId: requestedEntitlementId } : {})
       };
   const currentServiceId = activeConfig ? activeConfig.matchedServiceId : matchedQueryServiceId;
+  const profileInterestKnown = Boolean(
+    profile?.learningInterest ||
+    (Array.isArray(profile?.linkedChildren) && profile.linkedChildren.length === 1 && profile.linkedChildren[0]?.learningInterest)
+  );
+  // Placement test comes after booking (owner decision 2026-10-16): say so up front, offer it after.
+  const needsPlacement = placement ? Object.values(placement.gates).includes('PLACEMENT_REQUIRED') : false;
   const currentMode = activeConfig ? activeConfig.initialMode : (requestedEntitlementId ? 'regular' : standardMode);
 
   return (
     <div className="space-y-6">
-      {/* Top Header & Context Breadcrumb */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border/60">
-        <div>
-          <StudentPageBack
-            to="/student"
-            label="Return to Student Portal"
-            labelAr="العودة لبوابة الطالب"
-            className="mb-1.5"
-          />
-          <h1 className="text-2xl font-display font-bold text-foreground">
-            {isAr ? 'حجز درس جديد' : 'Book a Lesson'}
-          </h1>
-          <p className="text-sm sm:text-sm text-muted-foreground mt-0.5">
-            {isAr ? 'اختر المادة والموعد المناسب لجلستك التعليمية المباشرة.' : 'Choose your lesson, confirm your preferences, and schedule your next 1-on-1 session.'}
-          </p>
-        </div>
-
-        <div className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-2xl glass-card border-none shadow-xs self-start sm:self-auto">
-          <div className="p-1 rounded-full bg-secondary/30 text-primary">
-            <ShieldCheck className="w-4 h-4" />
-          </div>
-          <div className="text-start">
-            <div className="text-[11px] font-semibold text-foreground leading-tight truncate max-w-[160px] sm:max-w-[200px]">
-              {profile.name || profile.email}
-            </div>
-            <div className="text-[13px] text-muted-foreground leading-tight">
-              {profile.bookingPreference === 'child' 
-                ? (isAr ? 'حجز لطفل' : 'Booking for Child') 
-                : (isAr ? 'حساب طالب مرتبط' : 'Linked Student Account')}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {lastEligibleBooking && lastBookingSummary && !reuseDismissed && !isReusing && !requestedServiceId && (
-        <div className="rounded-2xl border border-border/60 glass-surface p-4 shadow-xs">
-          <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.14em] text-muted-foreground font-semibold">
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span>Booking context</span>
-          </div>
-          <div className="mt-2 text-sm font-medium text-foreground">
-            {lastBookingSummary.summaryText}
-          </div>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Reuse this recent lesson as a starting point or choose a fresh lesson from the form below.
-          </p>
+      {resumingDraft && !isReusing && (
+        <div className="p-3.5 rounded-2xl bg-secondary/30 border border-secondary/50 text-sm text-foreground flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <span className="flex items-center gap-2">
+            <Check className="w-4 h-4 text-accent shrink-0" />
+            {isAr ? 'كمّلنا حجزك من المكان اللي وقفت عنده.' : 'We kept your booking. Carry on where you left off.'}
+          </span>
+          <button type="button" onClick={handleStartOver} className="text-sm font-medium underline hover:text-primary cursor-pointer self-start sm:self-auto">
+            {isAr ? 'ابدأ حجز جديد' : 'Start over'}
+          </button>
         </div>
       )}
 
@@ -919,7 +922,18 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
         Case B: Repeat booking when an eligible completed lesson exists -> Show the "Book another lesson"
                 choice first BEFORE the detailed form.
       */}
-      {lastEligibleBooking && lastBookingSummary && !reuseDismissed && !isReusing && !requestedServiceId ? (
+      {needsPlacement && !resumingDraft && (
+        <div className="p-3.5 rounded-2xl glass-surface border border-border text-sm text-foreground flex items-start gap-2.5">
+          <Sparkles className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+          <span>
+            {isAr
+              ? 'بعد الحجز هتاخد اختبار تحديد مستوى قصير (حوالي 5 دقايق) عشان معلمك يجهّزلك الحصة على قد مستواك بالظبط.'
+              : 'After booking you will take a short placement test (about 5 minutes) so your teacher can prepare the lesson for your exact level.'}
+          </span>
+        </div>
+      )}
+
+      { lastEligibleBooking && lastBookingSummary && !reuseDismissed && !isReusing && !requestedServiceId && !repeatParam && !resumingDraft ? (
         <div
           id="repeat-last-booking-card"
           className="max-w-xl mx-auto p-6 sm:p-8 rounded-3xl glass-card border-none space-y-6"
@@ -930,23 +944,23 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
             </div>
             <div>
               <h2 className="text-lg font-display font-bold text-foreground">
-                Book another lesson
+                {isAr ? 'احجز حصة جديدة' : 'Book another lesson'}
               </h2>
               <p className="text-sm text-muted-foreground">
-                Continue from your last completed lesson?
+                {isAr ? 'تكمّل بنفس تفاصيل آخر حصة؟' : 'Continue from your last lesson?'}
               </p>
             </div>
           </div>
 
           <div className="p-4 rounded-2xl glass-surface border border-border space-y-1.5 text-sm">
             <div className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
-              Previous lesson details
+              {isAr ? 'آخر حصة' : 'Previous lesson'}
             </div>
             <div className="font-semibold text-sm text-foreground">
               {lastBookingSummary.summaryText}
             </div>
             <div className="text-[11px] text-muted-foreground">
-              Subject, level, and learner preferences will be carried forward automatically.
+              {isAr ? 'هنكمّل بنفس المادة والمستوى، وانت تختار الميعاد بس.' : 'Subject, level and learner details are carried over; you only pick the time.'}
             </div>
           </div>
 
@@ -954,15 +968,15 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
             <button
               type="button"
               id="btn-reuse-last-booking"
-              onClick={handleReuseLastBooking}
+              onClick={() => handleReuseLastBooking()}
               className="w-full p-4 rounded-2xl btn-primary-material text-primary-foreground font-medium text-sm transition-all shadow-xs flex flex-col items-start gap-1 cursor-pointer text-start"
             >
               <div className="flex items-center gap-1.5 font-semibold text-sm">
                 <RotateCcw className="w-4 h-4" />
-                <span>Book with the same details</span>
+                <span>{isAr ? 'نفس التفاصيل' : 'Same details'}</span>
               </div>
               <span className="text-[11px] opacity-90 leading-tight">
-                Uses your last lesson’s subject, level, and preferences. You will choose a new date and time.
+                {isAr ? 'اختار ميعاد جديد بس.' : 'Just choose a new date and time.'}
               </span>
             </button>
 
@@ -974,10 +988,10 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
             >
               <div className="flex items-center gap-1.5 font-semibold text-sm">
                 <Sparkles className="w-4 h-4 text-accent" />
-                <span>Make a new booking</span>
+                <span>{isAr ? 'حجز جديد' : 'New booking'}</span>
               </div>
               <span className="text-[11px] text-muted-foreground leading-tight">
-                Start fresh and choose lesson details again.
+                {isAr ? 'اختار المادة والتفاصيل من الأول.' : 'Choose the lesson details again.'}
               </span>
             </button>
           </div>
@@ -987,12 +1001,12 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
         <BookingErrorBoundary>
           <div className="space-y-4">
             {/* Active reuse feedback banner */}
-            {isReusing && lastBookingSummary && (
+            {isReusing && (lastBookingSummary || repeatTarget) && (
               <div className="p-3.5 rounded-2xl bg-secondary/30 border border-secondary/50 text-sm text-primary flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-accent shrink-0" />
                   <span>
-                    Reusing details from your last lesson: <strong>{lastBookingSummary.summaryText}</strong>. Choose your date &amp; time below, or edit any details.
+                    {isAr ? 'بنفس تفاصيل حصتك: ' : 'Same details as your lesson: '}<strong>{(repeatTarget ? formatLastBookingSummary(repeatTarget, profile) : lastBookingSummary)?.summaryText}</strong>
                   </span>
                 </div>
                 <button
@@ -1001,7 +1015,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
                   onClick={handleResetToNewBooking}
                   className="text-sm font-medium underline hover:text-foreground cursor-pointer self-start sm:self-auto"
                 >
-                  Start fresh instead
+                  {isAr ? 'ابدأ من الأول' : 'Start fresh'}
                 </button>
               </div>
             )}
@@ -1012,11 +1026,11 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
                 <button
                   type="button"
                   id="btn-reopen-reuse-booking"
-                  onClick={handleReuseLastBooking}
+                  onClick={() => handleReuseLastBooking()}
                   className="inline-flex items-center gap-1.5 font-medium text-primary hover:underline cursor-pointer"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
-                  <span>Reuse last lesson details ({lastBookingSummary.summaryText})</span>
+                  <span>{isAr ? 'استخدم تفاصيل آخر حصة' : 'Use last lesson details'} ({lastBookingSummary.summaryText})</span>
                 </button>
               </div>
             )}
@@ -1045,6 +1059,19 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
               activeEntitlements={packagesData?.entitlements || []}
               catalog={packagesData?.catalog || []}
               accessToken={accessToken}
+              confirmationExtra={needsPlacement ? (
+                <div className="mt-5 p-5 rounded-2xl border border-primary/30 bg-primary/5 text-center space-y-3">
+                  <p className="text-sm text-foreground">
+                    {isAr
+                      ? 'خطوة أخيرة: اختبار تحديد مستوى قصير عشان معلمك يجهّزلك الحصة.'
+                      : 'One last step: a short placement test so your teacher can prepare your lesson.'}
+                  </p>
+                  <Link to="/student/placement" className="inline-flex px-5 py-2.5 rounded-xl btn-primary-material text-primary-foreground text-sm font-semibold">
+                    {isAr ? 'ابدأ الاختبار' : 'Start the test'}
+                  </Link>
+                </div>
+              ) : undefined}
+              profileServiceId={!activeConfig && !requestedServiceId && profileInterestKnown ? standardServiceId : undefined}
             />
           </div>
         </BookingErrorBoundary>
