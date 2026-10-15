@@ -1,7 +1,7 @@
 import React from 'react';
 import { useOutletContext, Link, useNavigate } from 'react-router-dom';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
-import { PublicSection, MarginNote, PublicButton } from '../PublicDesignSystem';
+import { PublicSection, MarginNote, PublicButton, PageHero } from '../PublicDesignSystem';
 import { InteractivePocketCard, PricingPlan } from './InteractivePocketCard';
 import { Clock, ShieldCheck, HeartHandshake, Sparkles, CheckCircle2, Info, CreditCard } from 'lucide-react';
 
@@ -122,22 +122,12 @@ export function PricingPage() {
       <PublicSection>
         <div className="max-w-5xl mx-auto space-y-12">
           
-          {/* Header */}
-          <div className="text-center space-y-4 max-w-2xl mx-auto">
-            <MarginNote className="mx-auto">
-              {isEn ? 'Transparent Prepaid Packages' : 'باقات مسبقة الدفع • أسعار شفافة وبسيطة'}
-            </MarginNote>
-            
-            <h1 className="font-editorial text-3xl sm:text-4xl lg:text-5xl text-foreground font-bold tracking-tight">
-              {isEn ? 'Choose the pace that fits your goal' : 'اختر الوتيرة المناسبة لهدفك ووقتك'}
-            </h1>
-            
-            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-              {isEn 
-                ? 'Prepaid monthly lesson bundles with full schedule flexibility, secure Stripe checkout, and zero surprise auto-debits.'
-                : 'باقات شهرية مسبقة الدفع تحدد مواعيدها بحرية كاملة، مع دفع إلكتروني مباشر وتأكيد فوري دون أي سحب آلي متكرر.'}
-            </p>
-          </div>
+          <PageHero
+            title={isEn ? <>Clear prices, <span className="text-ribbon">at your own pace.</span></> : <>أسعار واضحة، <span className="text-ribbon">وبالوتيرة اللي تناسبك.</span></>}
+            intro={isEn
+              ? 'Packages of 4, 8 or 12 lessons at a lower price per lesson. Book the times yourself and pay once, securely, with Stripe. No subscription and nothing renews automatically.'
+              : 'باقات من ٤ أو ٨ أو ١٢ حصة بسعر أقل للحصة. تحجز مواعيدك بنفسك وتدفع مرة واحدة بأمان عبر Stripe. مفيش اشتراك ولا تجديد تلقائي.'}
+          />
 
           {/* Pricing Cards Grid (Always Visible, Responsive, No Envelope Jumping) */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 lg:gap-8 pt-2 pb-6">

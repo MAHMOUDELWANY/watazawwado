@@ -353,3 +353,43 @@ export function LearningAreaItem({
     </Component>
   );
 }
+
+// ─── PAGE HERO ──────────────────────────────────────────────────────────────
+// Shared header for the inner public pages: the khatam field and brand lights bleed to the
+// screen edges, a small mihrab arch drawn in the brand ribbon, the title, and a gradient rule.
+
+interface PageHeroProps {
+  title: React.ReactNode;
+  intro?: React.ReactNode;
+  /** Small line under the intro, e.g. a version or "last updated". */
+  meta?: React.ReactNode;
+  children?: React.ReactNode;
+  className?: string;
+}
+
+export function PageHero({ title, intro, meta, children, className }: PageHeroProps) {
+  return (
+    <header className={cn('page-hero khatam-field brand-lights relative text-center pt-4 pb-10 sm:pb-14', className)}>
+      <svg aria-hidden="true" viewBox="0 0 48 56" className="mx-auto mb-5 w-10 h-12">
+        <defs>
+          <linearGradient id="page-hero-arch" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#C51F24" />
+            <stop offset="55%" stopColor="#E5A93C" />
+            <stop offset="100%" stopColor="#087D91" />
+          </linearGradient>
+        </defs>
+        <path d="M6 54 V24 A18 18 0 0 1 42 24 V54" fill="none" stroke="url(#page-hero-arch)" strokeWidth="3" strokeLinecap="round" />
+        <path d="M15 54 V27 A9 9 0 0 1 33 27 V54" fill="none" stroke="url(#page-hero-arch)" strokeWidth="1.5" strokeOpacity="0.6" />
+      </svg>
+      <h1 className="font-editorial font-bold text-4xl sm:text-5xl lg:text-6xl leading-[1.15] text-foreground max-w-4xl mx-auto">
+        {title}
+      </h1>
+      <span aria-hidden="true" className="block mx-auto mt-5 h-[3px] w-16 rounded-full bg-gradient-to-r from-[#087D91] via-[#C51F24] to-[#E5A93C]" />
+      {intro && (
+        <p className="mt-5 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">{intro}</p>
+      )}
+      {meta && <p className="mt-4 text-xs sm:text-sm font-semibold text-[#087D91] dark:text-[#12A4BC]">{meta}</p>}
+      {children}
+    </header>
+  );
+}

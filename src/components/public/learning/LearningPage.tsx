@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useOutletContext, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
-import { PublicSection, StudyLine, MarginNote, PublicButton } from '../PublicDesignSystem';
+import { PublicSection, StudyLine, MarginNote, PublicButton, PageHero } from '../PublicDesignSystem';
 import { SERVICES_DATA } from '../../../data/content';
 import { ServiceItem } from '../../../types';
 import { 
@@ -298,39 +298,12 @@ export function LearningPage() {
       <PublicSection className="pb-8">
         <div className="max-w-4xl mx-auto text-center space-y-6">
           
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-500/10 dark:bg-teal-500/20 text-teal-800 dark:text-teal-200 border border-teal-500/30 text-xs sm:text-sm font-semibold shadow-2xs"
-          >
-            <Sparkles className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-            <span>{isEn ? 'Personalized 1-on-1 Syllabi • Authentic Heritage' : 'مناهج فردية متكاملة • تأصيل علمي راسخ'}</span>
-          </motion.div>
-
-          <motion.h1 
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="font-editorial text-4xl sm:text-5xl lg:text-6xl text-foreground font-bold leading-tight"
-          >
-            {isEn ? (
-              <>What you can <span className="text-brand-gradient">learn</span>.</>
-            ) : (
-              <>ماذا يمكنك أن <span className="text-brand-gradient">تتعلم</span>.</>
-            )}
-          </motion.h1>
-
-          <motion.p 
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto font-light"
-          >
-            {isEn 
-              ? 'Structured, personalized 1-on-1 education tailored to your goals. We focus on depth, correct understanding, and building a foundation that lasts across Quran, Arabic, and Islamic Studies.'
-              : 'تعليم فردي منظم ومخصص لأهدافك. نركز على الفهم الصحيح، التأسيس العميق، وبناء علاقة مستدامة مع العلم في القرآن الكريم واللغة العربية والعلوم الإسلامية.'}
-          </motion.p>
+          <PageHero
+            title={isEn ? <>What you can <span className="text-ribbon">learn with us.</span></> : <>ماذا تتعلم <span className="text-ribbon">معنا؟</span></>}
+            intro={isEn
+              ? 'One-on-one lessons shaped around your goal: Quran and Tajweed, Arabic, Islamic studies and English, from the very first letter to advanced study.'
+              : 'دروس فردية على مقاس هدفك: القرآن والتجويد، والعربية، والعلوم الشرعية، والإنجليزية، من أول حرف لحد المستوى المتقدم.'}
+          />
 
           {/* Key Value Guarantees Banner */}
           <motion.div 

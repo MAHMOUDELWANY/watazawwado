@@ -1,7 +1,7 @@
 import React from 'react';
 import { useOutletContext, Link } from 'react-router-dom';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
-import { PublicSection, EditorialHeading, MarginNote } from '../PublicDesignSystem';
+import { PublicSection, EditorialHeading, MarginNote, PageHero } from '../PublicDesignSystem';
 import { ShieldCheck, Lock, Eye, FileText, Mail, Globe, CheckCircle2 } from 'lucide-react';
 
 export function PrivacyPolicyPage() {
@@ -13,29 +13,13 @@ export function PrivacyPolicyPage() {
       <PublicSection>
         <div className="max-w-4xl mx-auto space-y-12">
 
-          {/* Header */}
-          <div className="text-center space-y-4">
-            <MarginNote className="mx-auto flex items-center justify-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-              <span>{isEn ? 'Legal & Transparency' : 'الشفافية والالتزام القانوني'}</span>
-            </MarginNote>
-
-            <h1 className="font-editorial text-4xl sm:text-5xl text-foreground font-bold">
-              {isEn ? 'Privacy Policy' : 'سياسة الخصوصية'}
-            </h1>
-
-            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-              {isEn
-                ? 'Your privacy and trust are paramount. Learn how Watazawwado Academy collects, uses, protects, and handles your personal information.'
-                : 'خصوصيتك وثقتك هما أولويتنا القصوى. توضح هذه الوثيقة كيف تجمع منصة وتزودوا التعليمية بياناتك وتحميها وتتعامل معها بكل أمان.'}
-            </p>
-
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 text-xs font-semibold">
-              <span>{isEn ? 'Last Updated: October 2026' : 'آخر تحديث: أكتوبر 2026'}</span>
-              <span>•</span>
-              <span>watazawwado.academy</span>
-            </div>
-          </div>
+          <PageHero
+            title={isEn ? <>Privacy <span className="text-ribbon">Policy</span></> : <>سياسة <span className="text-ribbon">الخصوصية</span></>}
+            intro={isEn
+              ? 'What we collect, why, how long we keep it, and the rights you have over your data and your children’s.'
+              : 'إيه البيانات اللي بنجمعها، وليه، وبنحتفظ بيها قد إيه، وإيه حقوقك على بياناتك وبيانات أولادك.'}
+            meta={isEn ? 'Last updated: October 2026' : 'آخر تحديث: أكتوبر 2026'}
+          />
 
           {/* Quick Summary Highlights */}
           <div className="grid sm:grid-cols-3 gap-4">

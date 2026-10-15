@@ -3,7 +3,7 @@ import { useOutletContext, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Calendar, MessageCircle, CheckCircle2, Clock, ShieldCheck, HeartHandshake, ArrowRight, ArrowLeft } from 'lucide-react';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
-import { PublicSection, MarginNote, PublicButton, StudyLine } from '../PublicDesignSystem';
+import { PublicSection, MarginNote, PublicButton, StudyLine, PageHero } from '../PublicDesignSystem';
 import { HOW_IT_WORKS_STEPS, TEACHING_PILLARS } from '../../../data/content';
 import { WhatsAppIcon } from '../../ui/WhatsAppIcon';
 import { buildWhatsAppUrl } from '../../../lib/whatsapp';
@@ -24,20 +24,12 @@ export function HowItWorksPage() {
       <PublicSection>
         <div className="max-w-5xl mx-auto space-y-16">
           
-          {/* Header */}
-          <div className="text-center space-y-6 max-w-3xl mx-auto">
-            <MarginNote className="mx-auto">
-              {isEn ? 'The Student Journey' : 'كيف نعمل • رحلة الطالب'}
-            </MarginNote>
-            <h1 className="font-editorial text-4xl sm:text-5xl lg:text-6xl text-foreground font-bold tracking-tight leading-tight">
-              {isEn ? 'From your first trial to confident mastery.' : 'من جلستك الأولى إلى إتقان حقيقي ومستمر.'}
-            </h1>
-            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-              {isEn
-                ? 'A transparent 4-stage process designed to respect your time, remove all friction from starting, and build a lasting foundation.'
-                : 'أربع خطوات واضحة وميسرة لبدء رحلتك التعليمية بدون أي تعقيد أو التزامات مسبقة، تركز على الفهم والتأسيس الرصين.'}
-            </p>
-          </div>
+          <PageHero
+            title={isEn ? <>From your first lesson <span className="text-ribbon">to real, lasting progress.</span></> : <>من حصتك الأولى <span className="text-ribbon">لحد تقدّم حقيقي ومستمر.</span></>}
+            intro={isEn
+              ? 'Four clear steps, from a free trial to weekly lessons with your own teacher.'
+              : 'أربع خطوات واضحة، من الحصة التجريبية المجانية لحد دروسك الأسبوعية مع معلمك.'}
+          />
 
           {/* 4 Sequential Stages Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 pt-6">

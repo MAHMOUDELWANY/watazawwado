@@ -438,7 +438,7 @@ export const AUTHENTIC_TESTIMONIALS: TestimonialItem[] = [
 export const FAQS: FAQItem[] = [
   {
     question: 'Is every lesson truly 1-on-1?',
-    arabicQuestion: 'هل كل درس فردي ومباشر ١ لـ ١؟',
+    arabicQuestion: 'هل كل درس فردي ومباشر مع معلم واحد؟',
     answer: 'Yes, 100%. Watazawwado is a small personal teaching practice with two teachers, Ustadh Mahmoud and Ustadha Afnan, not a marketplace or agency. Each student has one assigned teacher, and you are never moved to another teacher or placed in a group class without your consent.',
     arabicAnswer: 'نعم، ١٠٠٪. هذه مساحة تعليمية وتدريسية شخصية مباشرة وليست منصة وسيطة أو شركة تسويق. يدرّس فيها الأستاذ محمود والأستاذة أفنان، ولكل طالب معلم واحد مخصص، ولن يتم تحويلك إلى معلم آخر أو وضعك في فصول جماعية دون موافقتك، فكل درس مخصص لك وحدك.',
     category: 'general'

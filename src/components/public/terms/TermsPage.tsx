@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useOutletContext, Link } from 'react-router-dom';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
-import { PublicSection, EditorialHeading, MarginNote } from '../PublicDesignSystem';
+import { PublicSection, EditorialHeading, MarginNote, PageHero } from '../PublicDesignSystem';
 import { FileText, CalendarClock, RotateCcw, Wallet } from 'lucide-react';
 
 // Keep in sync with TERMS_VERSION in api/index.ts: bookings store the version the student accepted.
@@ -260,23 +260,13 @@ export function TermsPage() {
     <main id="main-content" className="pt-24 lg:pt-32 pb-20">
       <PublicSection>
         <div className="max-w-4xl mx-auto space-y-12">
-          <div className="text-center space-y-4">
-            <MarginNote className="mx-auto flex items-center justify-center gap-1.5">
-              <FileText className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-              <span>{isEn ? 'Terms & Conditions' : 'الشروط والأحكام'}</span>
-            </MarginNote>
-            <h1 className="font-editorial text-4xl sm:text-5xl text-foreground font-bold">
-              {isEn ? 'Terms of Service' : 'شروط الخدمة والاستخدام'}
-            </h1>
-            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-              {isEn
-                ? 'Clear, fair rules for bookings, payments, cancellations and refunds, so you always know where you stand.'
-                : 'قواعد واضحة وعادلة للحجز والدفع والإلغاء والاسترداد، علشان تكون دايماً عارف حقوقك.'}
-            </p>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 text-xs font-semibold">
-              {isEn ? TERMS_VERSION_LABEL.en : TERMS_VERSION_LABEL.ar}
-            </div>
-          </div>
+          <PageHero
+            title={isEn ? <>Terms of <span className="text-ribbon">Service</span></> : <>شروط الخدمة <span className="text-ribbon">والاستخدام</span></>}
+            intro={isEn
+              ? 'Clear, fair rules for bookings, payments, cancellations and refunds, so you always know where you stand.'
+              : 'قواعد واضحة وعادلة للحجز والدفع والإلغاء والاسترداد، علشان تكون دايماً عارف حقوقك.'}
+            meta={isEn ? TERMS_VERSION_LABEL.en : TERMS_VERSION_LABEL.ar}
+          />
 
           <div className="grid sm:grid-cols-3 gap-4">
             {glance.map(({ icon: Icon, en, ar }) => (

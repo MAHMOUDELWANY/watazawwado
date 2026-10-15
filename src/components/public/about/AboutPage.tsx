@@ -1,7 +1,7 @@
 import React from 'react';
 import { useOutletContext, Link } from 'react-router-dom';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
-import { PublicSection, EditorialHeading, StudyLine, MarginNote, PortraitFrame, PublicButton } from '../PublicDesignSystem';
+import { PublicSection, EditorialHeading, StudyLine, MarginNote, PortraitFrame, PublicButton, PageHero } from '../PublicDesignSystem';
 import { WhatsAppIcon } from '../../ui/WhatsAppIcon';
 import { buildWhatsAppUrl } from '../../../lib/whatsapp';
 
@@ -14,19 +14,12 @@ export function AboutPage() {
       <PublicSection>
         <div className="max-w-4xl mx-auto space-y-12">
 
-          <div className="text-center space-y-6">
-            <MarginNote className="mx-auto">
-              {isEn ? 'About the Teachers' : 'عن المعلمين'}
-            </MarginNote>
-            <h1 className="font-editorial text-4xl sm:text-5xl text-foreground">
-              {isEn ? 'A human connection to learning.' : 'علاقة إنسانية مع التعلم.'}
-            </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-              {isEn
-                ? 'Watazawwado is not a marketplace or an agency. It is a dedicated, personal teaching practice where every lesson is a direct relationship between student and teacher.'
-                : 'وتزودوا ليس منصة تجارية أو وسيطاً تعليمياً. إنها مساحة تعليمية شخصية حيث كل درس يمثل علاقة مباشرة بين المعلم والطالب.'}
-            </p>
-          </div>
+          <PageHero
+            title={isEn ? <>A human connection <span className="text-ribbon">to learning.</span></> : <>علاقة إنسانية <span className="text-ribbon">مع التعلّم.</span></>}
+            intro={isEn
+              ? 'Watazawwado is not a marketplace or an agency. It is a small, personal teaching practice where every lesson is a direct relationship between a student and their teacher.'
+              : 'وتزودوا مش منصة تجارية ولا وسيط. هي مساحة تعليمية صغيرة وشخصية، كل درس فيها علاقة مباشرة بين الطالب ومعلمه.'}
+          />
 
           <div className="grid md:grid-cols-12 gap-12 items-center pt-12">
             <div className="md:col-span-5 relative">

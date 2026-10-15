@@ -48,6 +48,32 @@ export function TeacherDuo({ isEn }: { isEn: boolean }) {
         style={{ background: 'radial-gradient(closest-side, rgba(8,125,145,0.28), rgba(229,169,60,0.18), transparent)' }}
       />
 
+      {/* The logo's ribbon (crimson → copper → gold → teal) draws once behind both teachers, linking them. */}
+      <svg aria-hidden="true" viewBox="0 0 520 460" className="absolute inset-0 w-full h-full overflow-visible" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="duo-ribbon" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#C51F24" />
+            <stop offset="38%" stopColor="#B4552F" />
+            <stop offset="62%" stopColor="#E5A93C" />
+            <stop offset="100%" stopColor="#087D91" />
+          </linearGradient>
+        </defs>
+        {[{ w: 14, o: 0.18 }, { w: 3, o: 0.9 }].map(({ w, o }) => (
+          <motion.path
+            key={w}
+            d="M-20 260 C 70 330, 170 200, 260 215 S 430 70, 545 130"
+            fill="none"
+            stroke="url(#duo-ribbon)"
+            strokeWidth={w}
+            strokeLinecap="round"
+            strokeOpacity={o}
+            initial={reduce ? false : { pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.8, delay: 0.3, ease: [0.65, 0, 0.35, 1] }}
+          />
+        ))}
+      </svg>
+
       <div className="relative grid grid-cols-2 gap-4 sm:gap-6 items-start">
         {TEACHERS.map((t, i) => (
           <motion.div
