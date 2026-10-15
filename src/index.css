@@ -1585,3 +1585,10 @@ h3, .text-heading-lg {
   -webkit-mask-image: radial-gradient(ellipse 55% 50% at 50% 58%, #000 10%, transparent 72%);
   mask-image: radial-gradient(ellipse 55% 50% at 50% 58%, #000 10%, transparent 72%);
 }
+/* Khatam pattern in white, inside coloured arch windows (subject cards, envelopes). */
+.khatam-window::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cg fill='none' stroke='%23FFFFFF' stroke-opacity='0.22' stroke-width='1'%3E%3Crect x='12' y='12' width='24' height='24'/%3E%3Crect x='12' y='12' width='24' height='24' transform='rotate(45 24 24)'/%3E%3Ccircle cx='24' cy='24' r='4'/%3E%3C/g%3E%3C/svg%3E");
+}
+/* Doors on the homepage: a semicircle-ish top for ~160px-wide doors, straight sides. */
+.door-arch { border-radius: 50% 50% 0.9rem 0.9rem / 4.75rem 4.75rem 0.9rem 0.9rem; }

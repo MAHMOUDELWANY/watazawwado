@@ -258,7 +258,7 @@ export const SERVICES_DATA: ServicePillar[] = [
         category: 'english',
         tagline: 'Build conversational fluency, clean grammar, and confident professional English.',
         arabicTagline: 'تطوير الطلاقة والمحادثة وتجاوز أخطاء الترجمة للناطقين بالعربية.',
-        description: 'Taught with IELTS C1 certified proficiency. Mahmoud understands the exact phonetic and grammatical pitfalls Arabic speakers face when learning English, providing precise, sympathetic correction.',
+        description: 'Both our teachers teach English at C1 level. They know the exact sounds and grammar that trip up Arabic speakers, and correct them precisely and patiently.',
         whoIsItFor: 'Arabic speakers seeking fluent spoken English, immigrants to English-speaking countries, or learners preparing for study abroad.',
         whatYouWillLearn: [
           'Targeted pronunciation and accent clarity training',

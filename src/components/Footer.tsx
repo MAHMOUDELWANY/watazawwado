@@ -39,8 +39,8 @@ export const Footer: React.FC<FooterProps> = ({
             </div>
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-sm">
               {isEn
-                ? 'Dedicated space for direct 1-on-1 instruction in Quran reading, Tajweed, Arabic language, and Islamic Studies for international students and families.'
-                : 'مساحة مخصصة للتعليم الفردي المباشر في القرآن الكريم وأحكام التجويد واللغة العربية والدراسات الإسلامية للطلاب والعائلات المسلمة حول العالم.'}
+                ? 'Provision that lasts, for you and your family. One-on-one lessons with a teacher who knows you by name.'
+                : 'زادٌ يبقى، لك ولأهل بيتك. حصص فردية مع معلّم يعرفك باسمك.'}
             </p>
             <div className="flex items-center gap-3 pt-1">
               <button

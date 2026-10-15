@@ -166,7 +166,7 @@ const ARABIC_SERVICE_DETAILS: Record<string, {
     recommendedFrequency: '٢ إلى ٣ جلسات أسبوعياً'
   },
   'english': {
-    description: 'تدريب احترافي بقيادة معتمدة بشهادة IELTS C1. نفهم تماماً الصعوبات الصوتية والنحوية التي تواجه الناطقين بالعربية عند تعلم الإنجليزية، ونعالجها بتصحيح دقيق وصبور.',
+    description: 'معلمانا يدرّسان الإنجليزية بمستوى C1. نعرف تماماً الأصوات والقواعد التي تُتعب الناطقين بالعربية، ونصححها بدقة وصبر.',
     whoIsItFor: 'الناطقون بالعربية الراغبون في الطلاقة والمحادثة، المهاجرون، أو الطلاب المستعدون للدراسة بالخارج واجتياز الاختبارات.',
     whatYouWillLearn: [
       'تدريب مركز على النطق الصحيح وتصفية مخارج الحروف الإنجليزية',
@@ -208,46 +208,41 @@ export function LearningPage() {
     setExpandedServices({});
   };
 
-  // Distinct styling configurations for each pillar
+  // One brand colour per family of subjects (window gradient, chip, ring).
   const pillarConfigs: Record<string, {
     icon: React.ComponentType<{ className?: string }>;
-    accentColor: string;
-    badgeBg: string;
-    borderHover: string;
-    borderActive: string;
-    glow: string;
+    window: string;
+    chip: string;
+    ring: string;
+    text: string;
   }> = {
     quran: {
       icon: BookOpen,
-      accentColor: 'text-primary',
-      badgeBg: 'bg-primary/10 text-primary border-primary/25',
-      borderHover: 'hover:border-primary/50',
-      borderActive: 'border-primary/40',
-      glow: 'shadow-primary/5'
+      window: 'from-[#C51F24] via-[#A3271F] to-[#8B4935]',
+      chip: 'bg-[#C51F24]/10 text-[#C51F24] dark:text-[#E82C32] border-[#C51F24]/25',
+      ring: 'hover:border-[#C51F24]/50 focus-within:border-[#C51F24]/50',
+      text: 'text-[#C51F24] dark:text-[#E82C32]'
     },
     islamic_studies: {
       icon: Library,
-      accentColor: 'text-teal-600 dark:text-teal-400',
-      badgeBg: 'bg-teal-500/10 text-teal-800 dark:text-teal-200 border-teal-500/30',
-      borderHover: 'hover:border-teal-500/50',
-      borderActive: 'border-teal-500/40',
-      glow: 'shadow-teal-500/5'
+      window: 'from-[#087D91] via-[#0A6B7C] to-[#05434E]',
+      chip: 'bg-[#087D91]/10 text-[#087D91] dark:text-[#12A4BC] border-[#087D91]/25',
+      ring: 'hover:border-[#087D91]/50 focus-within:border-[#087D91]/50',
+      text: 'text-[#087D91] dark:text-[#12A4BC]'
     },
     arabic: {
       icon: Languages,
-      accentColor: 'text-accent',
-      badgeBg: 'bg-terracotta/10 text-terracotta dark:text-terracotta-light border-terracotta/30',
-      borderHover: 'hover:border-terracotta/50',
-      borderActive: 'border-terracotta/40',
-      glow: 'shadow-terracotta/5'
+      window: 'from-[#8B4935] via-[#9C5A33] to-[#B4552F]',
+      chip: 'bg-[#8B4935]/10 text-[#8B4935] dark:text-[#DA7960] border-[#8B4935]/25',
+      ring: 'hover:border-[#8B4935]/50 focus-within:border-[#8B4935]/50',
+      text: 'text-[#8B4935] dark:text-[#DA7960]'
     },
     english: {
       icon: Globe2,
-      accentColor: 'text-teal-600 dark:text-teal-400',
-      badgeBg: 'bg-teal-500/10 text-teal-800 dark:text-teal-200 border-teal-500/30',
-      borderHover: 'hover:border-teal-500/50',
-      borderActive: 'border-teal-500/40',
-      glow: 'shadow-teal-500/5'
+      window: 'from-[#E5A93C] via-[#C98A2A] to-[#8B4935]',
+      chip: 'bg-[#E5A93C]/15 text-[#8A5A12] dark:text-[#E5A93C] border-[#E5A93C]/35',
+      ring: 'hover:border-[#E5A93C]/60 focus-within:border-[#E5A93C]/60',
+      text: 'text-[#8A5A12] dark:text-[#E5A93C]'
     }
   };
 
@@ -305,56 +300,6 @@ export function LearningPage() {
               : 'دروس فردية على مقاس هدفك: القرآن والتجويد، والعربية، والعلوم الشرعية، والإنجليزية، من أول حرف لحد المستوى المتقدم.'}
           />
 
-          {/* Key Value Guarantees Banner */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="pt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 text-start max-w-3xl mx-auto"
-          >
-            <div className="glass-card p-3.5 rounded-2xl border border-border/80 flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center shrink-0">
-                <Users className="w-4.5 h-4.5" />
-              </div>
-              <div>
-                <p className="text-xs font-bold text-foreground">
-                  {isEn ? '1-on-1 Private' : 'تعليم فردي مباشر'}
-                </p>
-                <p className="text-[11px] text-muted-foreground">
-                  {isEn ? 'Full focus on your pace' : 'خصوصية وتركيز تام'}
-                </p>
-              </div>
-            </div>
-
-            <div className="glass-card p-3.5 rounded-2xl border border-border/80 flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                <Clock className="w-4.5 h-4.5" />
-              </div>
-              <div>
-                <p className="text-xs font-bold text-foreground">
-                  {isEn ? 'Flexible Times' : 'مرونة تامة في المواعيد'}
-                </p>
-                <p className="text-[11px] text-muted-foreground">
-                  {isEn ? 'All global timezones' : 'تناسب جميع المناطق الزمنية'}
-                </p>
-              </div>
-            </div>
-
-            <div className="glass-card p-3.5 rounded-2xl border border-border/80 flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-terracotta/10 text-accent flex items-center justify-center shrink-0">
-                <ShieldCheck className="w-4.5 h-4.5" />
-              </div>
-              <div>
-                <p className="text-xs font-bold text-foreground">
-                  {isEn ? 'Free 30-Min Trial' : 'جلسة أولى مجانية'}
-                </p>
-                <p className="text-[11px] text-muted-foreground">
-                  {isEn ? 'Diagnostic assessment' : 'تقييم وبناء خطة دون إلزام'}
-                </p>
-              </div>
-            </div>
-          </motion.div>
-
         </div>
       </PublicSection>
 
@@ -362,86 +307,58 @@ export function LearningPage() {
       <PublicSection className="pt-2 pb-8">
         <div className="max-w-5xl mx-auto space-y-6">
           
-          {/* Interactive Discipline Tabs */}
-          <div className="flex flex-wrap items-center justify-center gap-2">
+          {/* Families of subjects */}
+          <div className="flex flex-wrap items-center justify-center gap-2" role="tablist" aria-label={isEn ? 'Subject families' : 'مجموعات المواد'}>
             <button
+              role="tab"
+              aria-selected={selectedPillarId === 'all'}
               onClick={() => setSelectedPillarId('all')}
-              className={`relative px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
-                selectedPillarId === 'all'
-                  ? 'bg-foreground text-background shadow-sm'
-                  : 'glass-card text-muted-foreground hover:text-foreground border border-border/70 hover:bg-surface-subtle'
+              className={`px-4 py-2 rounded-full text-sm font-semibold border transition-colors cursor-pointer ${
+                selectedPillarId === 'all' ? 'bg-foreground text-background border-foreground' : 'bg-surface text-muted-foreground border-border hover:text-foreground'
               }`}
             >
-              <span>{isEn ? 'All Tracks (13)' : 'جميع المسارات (١٣)'}</span>
+              {isEn ? 'All subjects' : 'كل المواد'}
             </button>
-
             {SERVICES_DATA.map((pillar) => {
               const config = pillarConfigs[pillar.id] || pillarConfigs.quran;
               const Icon = config.icon;
               const isSelected = selectedPillarId === pillar.id;
-
               return (
                 <button
                   key={pillar.id}
+                  role="tab"
+                  aria-selected={isSelected}
                   onClick={() => setSelectedPillarId(pillar.id)}
-                  className={`relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
-                    isSelected
-                      ? 'bg-primary text-primary-foreground shadow-sm'
-                      : 'glass-card text-muted-foreground hover:text-foreground border border-border/70 hover:bg-surface-subtle'
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold border transition-colors cursor-pointer ${
+                    isSelected ? `bg-gradient-to-br ${config.window} text-white border-transparent` : `bg-surface border-border text-muted-foreground hover:text-foreground`
                   }`}
                 >
-                  <Icon className="w-3.5 h-3.5" />
+                  <Icon className="w-4 h-4" />
                   <span>{isEn ? pillar.title : pillar.arabicTitle}</span>
-                  <span className={`text-[11px] px-1.5 py-0.5 rounded-md ${
-                    isSelected ? 'bg-black/20 text-white' : 'bg-surface-subtle text-muted-foreground'
-                  }`}>
-                    {pillar.services.length}
-                  </span>
                 </button>
               );
             })}
           </div>
 
-          {/* Search Bar & Quick Toggles */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2">
-            
-            {/* Live Search Input */}
-            <div className="relative flex-1 max-w-md">
-              <Search className="w-4 h-4 text-muted-foreground absolute start-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={isEn ? 'Search subjects (e.g., Tajweed, Grammar, Fiqh)...' : 'ابحث في المواد (مثل: تجويد، نحو، محادثة، حفظ، عقيدة)...'}
-                className="w-full ps-10 pe-10 py-2.5 rounded-xl glass-card border border-border text-sm text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  aria-label={isEn ? 'Clear search' : 'مسح البحث'}
-                  className="absolute end-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              )}
-            </div>
-
-            {/* Expand / Collapse Controls */}
-            <div className="flex items-center gap-2 self-end sm:self-center">
+          <div className="relative max-w-md mx-auto">
+            <Search className="w-4 h-4 text-muted-foreground absolute start-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={isEn ? 'Search: Tajweed, grammar, Fiqh…' : 'ابحث: تجويد، نحو، فقه…'}
+              aria-label={isEn ? 'Search subjects' : 'ابحث في المواد'}
+              className="w-full ps-11 pe-10 py-3 rounded-full bg-surface border border-border text-sm text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-[#087D91]/50"
+            />
+            {searchQuery && (
               <button
-                onClick={expandAll}
-                className="text-xs font-semibold text-muted-foreground hover:text-foreground px-3 py-1.5 rounded-lg glass-card border border-border/70 hover:bg-surface-subtle transition-all cursor-pointer"
+                onClick={() => setSearchQuery('')}
+                aria-label={isEn ? 'Clear search' : 'مسح البحث'}
+                className="absolute end-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1"
               >
-                {isEn ? 'Expand All Details' : 'عرض تفاصيل الكل'}
+                <X className="w-4 h-4" />
               </button>
-              <button
-                onClick={collapseAll}
-                className="text-xs font-semibold text-muted-foreground hover:text-foreground px-3 py-1.5 rounded-lg glass-card border border-border/70 hover:bg-surface-subtle transition-all cursor-pointer"
-              >
-                {isEn ? 'Collapse All' : 'طي الكل'}
-              </button>
-            </div>
-
+            )}
           </div>
 
           {/* Active Search Filter Badge */}
@@ -492,181 +409,106 @@ export function LearningPage() {
               return (
                 <section key={pillar.id} className="space-y-6">
                   
-                  {/* Clean, Non-Clipping Pillar Header */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/80">
-                    <div className="flex items-center gap-3.5">
-                      <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border ${config.badgeBg}`}>
-                        <PillarIcon className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <h2 className="font-editorial text-2xl sm:text-3xl text-foreground font-bold">
-                          {isEn ? pillar.title : pillar.arabicTitle}
-                        </h2>
-                        <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 leading-relaxed">
-                          {isEn ? pillar.description : (pillar.arabicDescription || pillar.description)}
-                        </p>
-                      </div>
-                    </div>
-
-                    <span className="text-xs font-semibold px-3 py-1 rounded-full bg-surface-subtle text-muted-foreground border border-border/80 self-start sm:self-center">
-                      {isEn ? `${pillar.services.length} Subjects` : `${pillar.services.length} مواد تدريسية`}
+                  <header className="flex items-center gap-3">
+                    <span className={`arch-tile w-10 h-11 flex items-center justify-center bg-gradient-to-b ${config.window} text-white shrink-0`}>
+                      <PillarIcon className="w-5 h-5" />
                     </span>
-                  </div>
+                    <div>
+                      <h2 className="font-editorial text-2xl sm:text-3xl text-foreground font-bold">
+                        {isEn ? pillar.title : pillar.arabicTitle}
+                      </h2>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {isEn ? pillar.description : (pillar.arabicDescription || pillar.description)}
+                      </p>
+                    </div>
+                  </header>
 
-                  {/* High-Fidelity Service Cards Grid */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                    {pillar.services.map((service: ServiceItem, sIndex: number) => {
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {pillar.services.map((service: ServiceItem) => {
                       const arDetails = ARABIC_SERVICE_DETAILS[service.id];
                       const isExpanded = Boolean(expandedServices[service.id]);
-
-                      const displayDescription = isEn 
-                        ? service.description 
-                        : (arDetails?.description || service.arabicTagline || service.tagline);
-
-                      const displayWhoIsItFor = isEn 
-                        ? service.whoIsItFor 
-                        : (arDetails?.whoIsItFor || service.whoIsItFor);
-
-                      const displayWhatYouWillLearn = isEn 
-                        ? (service.whatYouWillLearn || []) 
-                        : (arDetails?.whatYouWillLearn || service.whatYouWillLearn || []);
-
-                      const displayFrequency = isEn 
-                        ? service.recommendedFrequency 
-                        : (arDetails?.recommendedFrequency || service.recommendedFrequency);
+                      const whoFor = isEn ? service.whoIsItFor : (arDetails?.whoIsItFor || service.whoIsItFor);
+                      const learn = isEn ? (service.whatYouWillLearn || []) : (arDetails?.whatYouWillLearn || service.whatYouWillLearn || []);
+                      const frequency = isEn ? service.recommendedFrequency : (arDetails?.recommendedFrequency || service.recommendedFrequency);
+                      const detailsId = `details-${service.id}`;
 
                       return (
-                        <motion.div
+                        <article
                           key={service.id}
-                          initial={{ opacity: 0, y: 22 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true, margin: '-20px' }}
-                          transition={{
-                            duration: 0.45,
-                            delay: Math.min(sIndex * 0.08, 0.4),
-                            ease: [0.22, 1, 0.36, 1]
-                          }}
-                          whileHover={{ y: -4, transition: { duration: 0.25 } }}
-                          className={`glass-card rounded-2xl border border-border/90 ${config.borderHover} transition-colors duration-300 flex flex-col justify-between overflow-hidden shadow-2xs hover:shadow-lg`}
+                          className={`group flex flex-col rounded-[1.75rem] border border-border bg-surface overflow-hidden transition-[border-color,box-shadow] duration-300 hover:shadow-[0_24px_48px_-28px_rgba(18,16,14,0.45)] ${config.ring}`}
                         >
-                          {/* Card Content Top */}
-                          <div className="p-6 space-y-4">
-                            
-                            {/* Card Badges Row */}
-                            <div className="flex items-center justify-between gap-2">
-                              <span className={`text-[11px] font-bold px-2.5 py-1 rounded-lg border ${config.badgeBg}`}>
-                                {isEn ? pillar.title : pillar.arabicTitle}
-                              </span>
-
-                              {/* Duration Tag */}
-                              <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
-                                <Clock className="w-3.5 h-3.5 text-accent" />
-                                <span>
-                                  {isEn 
-                                    ? `${service.durations.join(' / ')} mins`
-                                    : `${service.durations.join(' / ')} دقيقة`}
-                                </span>
-                              </div>
+                          {/* Arch window in the family colour */}
+                          <div className="px-5 pt-5">
+                            <div className={`door-arch khatam-window relative mx-auto w-32 h-36 bg-gradient-to-b ${config.window} flex items-end justify-center pb-4 overflow-hidden`}>
+                              <PillarIcon className="relative w-8 h-8 text-white/95 transition-transform duration-500 group-hover:-translate-y-1" />
                             </div>
-
-                            {/* Service Name & Tagline */}
-                            <div>
-                              <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
-                                {isEn ? service.name : (service.arabicName || service.name)}
-                              </h3>
-                              <p className="text-sm text-muted-foreground leading-relaxed mt-1.5">
-                                {isEn ? service.tagline : (service.arabicTagline || service.tagline)}
-                              </p>
-                            </div>
-
-                            {/* Recommended Frequency Badge */}
-                            <div className="flex items-center gap-2 text-xs text-muted-foreground bg-surface-subtle/80 p-2.5 rounded-xl border border-border/60">
-                              <Calendar className="w-4 h-4 text-teal-600 dark:text-teal-400 shrink-0" />
-                              <span className="font-medium">
-                                {isEn ? `Recommended: ${service.recommendedFrequency}` : `المعدل المقترح: ${displayFrequency}`}
-                              </span>
-                            </div>
-
-                            {/* Expandable Syllabus & Outcomes with Framer Motion */}
-                            <AnimatePresence initial={false}>
-                              {isExpanded && (
-                                <motion.div
-                                  key="content"
-                                  initial={{ opacity: 0, height: 0 }}
-                                  animate={{ opacity: 1, height: 'auto' }}
-                                  exit={{ opacity: 0, height: 0 }}
-                                  transition={{ duration: 0.3, ease: 'easeInOut' }}
-                                  className="space-y-4 pt-3 border-t border-border/80 overflow-hidden"
-                                >
-                                  {/* Detailed Description */}
-                                  <div>
-                                    <h4 className="text-xs font-bold uppercase tracking-wider text-foreground mb-1.5 flex items-center gap-1.5">
-                                      <GraduationCap className="w-3.5 h-3.5 text-primary" />
-                                      <span>{isEn ? 'Curriculum Overview:' : 'عن المنهج وأسلوب الشرح:'}</span>
-                                    </h4>
-                                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                                      {displayDescription}
-                                    </p>
-                                  </div>
-
-                                  {/* Target Learner */}
-                                  <div>
-                                    <h4 className="text-xs font-bold uppercase tracking-wider text-foreground mb-1.5 flex items-center gap-1.5">
-                                      <Users className="w-3.5 h-3.5 text-accent" />
-                                      <span>{isEn ? 'Who this is designed for:' : 'لمن هذا المسار؟'}</span>
-                                    </h4>
-                                    <p className="text-xs sm:text-sm text-foreground/80 bg-surface-subtle p-2.5 rounded-xl border border-border/50">
-                                      {displayWhoIsItFor}
-                                    </p>
-                                  </div>
-
-                                  {/* What You Will Learn (Checklist) */}
-                                  <div>
-                                    <h4 className="text-xs font-bold uppercase tracking-wider text-foreground mb-2 flex items-center gap-1.5">
-                                      <CheckCircle2 className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
-                                      <span>{isEn ? 'What you will master:' : 'محاور التعلم والمخرجات التطبيقية:'}</span>
-                                    </h4>
-                                    <div className="space-y-2">
-                                      {displayWhatYouWillLearn.map((item, idx) => (
-                                        <div key={idx} className="flex items-start gap-2 text-xs sm:text-sm text-foreground/90">
-                                          <Check className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 shrink-0 mt-0.5" />
-                                          <span>{item}</span>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  </div>
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-
                           </div>
 
-                          {/* Card Footer Actions */}
-                          <div className="px-6 py-4 bg-surface-subtle/50 border-t border-border/80 flex items-center justify-between gap-3">
-                            
-                            {/* Toggle Details Accordion */}
+                          <div className="flex-1 px-6 pt-5 pb-4 space-y-2 text-center">
+                            <h3 className="font-editorial text-xl font-bold text-foreground leading-snug">
+                              {isEn ? service.name : (service.arabicName || service.name)}
+                            </h3>
+                            <p className="text-sm text-muted-foreground leading-relaxed">
+                              {isEn ? service.tagline : (service.arabicTagline || service.tagline)}
+                            </p>
+                            <ul className="flex flex-wrap justify-center gap-1.5 pt-2" aria-label={isEn ? 'Lesson lengths' : 'مدد الحصة'}>
+                              {service.durations.map((d) => (
+                                <li key={d} className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${config.chip}`}>
+                                  {isEn ? `${d} min` : `${d} دقيقة`}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+
+                          <AnimatePresence initial={false}>
+                            {isExpanded && (
+                              <motion.div
+                                id={detailsId}
+                                key="details"
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                                className="overflow-hidden"
+                              >
+                                <div className="mx-6 mb-4 pt-4 border-t border-border space-y-3 text-sm text-start">
+                                  <p className="text-foreground/85 leading-relaxed">{whoFor}</p>
+                                  <ul className="space-y-1.5">
+                                    {learn.map((item, idx) => (
+                                      <li key={idx} className="flex items-start gap-2 text-muted-foreground">
+                                        <Check className={`w-4 h-4 shrink-0 mt-0.5 ${config.text}`} />
+                                        <span>{item}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                  <p className={`text-xs font-semibold ${config.text}`}>
+                                    {isEn ? `Suggested: ${frequency}` : `المقترح: ${frequency}`}
+                                  </p>
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+
+                          <div className="px-5 pb-5 flex items-center gap-2">
                             <button
                               type="button"
                               onClick={() => toggleExpand(service.id)}
-                              className="text-xs sm:text-sm font-semibold text-muted-foreground hover:text-foreground flex items-center gap-1.5 transition-colors cursor-pointer"
+                              aria-expanded={isExpanded}
+                              aria-controls={detailsId}
+                              className="flex-1 inline-flex items-center justify-center gap-1 px-3 py-2.5 rounded-xl text-sm font-semibold text-foreground border border-border hover:bg-surface-subtle transition-colors cursor-pointer"
                             >
-                              <span>{isExpanded ? (isEn ? 'Hide Details' : 'إخفاء التفاصيل') : (isEn ? 'View Syllabus' : 'استكشف الخطة والمحتوى')}</span>
-                              <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? 'rotate-180 text-primary' : ''}`} />
+                              <span>{isExpanded ? (isEn ? 'Less' : 'أقل') : (isEn ? 'Details' : 'التفاصيل')}</span>
+                              <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
                             </button>
-
-                            {/* Book Free Trial Button */}
                             <button
                               type="button"
                               onClick={() => onOpenTrialModal(service.id)}
-                              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-xs sm:text-sm font-bold shadow-xs hover:bg-primary-hover active:scale-95 transition-all cursor-pointer"
+                              className="flex-1 px-3 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-bold hover:bg-primary-hover active:scale-[0.98] transition-all cursor-pointer"
                             >
-                              <span>{isEn ? 'Book Free Trial' : 'احجز جلستك مجاناً'}</span>
-                              <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
+                              {isEn ? 'Free trial' : 'حصة مجانية'}
                             </button>
-
                           </div>
-
-                        </motion.div>
+                        </article>
                       );
                     })}
                   </div>
@@ -679,63 +521,27 @@ export function LearningPage() {
         </div>
       </PublicSection>
 
-      {/* ─── 4. BOTTOM LUXURY CALL-TO-ACTION CARD ──────────────────────────── */}
-      <PublicSection className="pt-8 pb-0">
-        <div className="max-w-4xl mx-auto">
-          <div className="relative overflow-hidden glass-card p-8 sm:p-12 rounded-3xl border border-border shadow-xl text-center space-y-6">
-            
-            {/* Ambient decorative glow */}
-            <div className="absolute -top-24 -left-24 w-72 h-72 bg-teal-500/10 dark:bg-teal-500/20 rounded-full blur-3xl pointer-events-none -z-10" />
-            <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-primary/10 dark:bg-primary/20 rounded-full blur-3xl pointer-events-none -z-10" />
-
-            <div className="w-12 h-12 rounded-2xl bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/25 flex items-center justify-center mx-auto">
-              <Sparkles className="w-6 h-6" />
-            </div>
-
-            <div className="space-y-2">
-              <h3 className="font-editorial text-2xl sm:text-3xl text-foreground font-bold">
-                {isEn ? 'Not sure which track is best for you?' : 'متردد في اختيار المسار الأنسب لك أو لأبنائك؟'}
-              </h3>
-              <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
-                {isEn 
-                  ? 'Book a free 30-minute diagnostic session. We will evaluate your current level, understand your personal learning aspirations, and design a customized study blueprint.'
-                  : 'احجز جلسة استكشافية مجانية مدتها ٣٠ دقيقة. سنقوم بتقييم مستواك الحالي، والتعرف على أهدافك الشخصية، وبناء خطة تدريسية مخصصة تناسب وقتك تماماً.'}
-              </p>
-            </div>
-
-            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3.5">
-              <button
-                type="button"
-                onClick={() => onOpenTrialModal()}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl btn-primary-material text-white font-bold text-sm shadow-md transition-all cursor-pointer active:scale-95"
-              >
-                <span>{isEn ? 'Book Free 30-Min Trial' : 'احجز جلستك الاستكشافية مجاناً'}</span>
-                <ArrowRight className="w-4 h-4 rtl:rotate-180" />
-              </button>
-            </div>
-
-            {/* Quick Cross-Links */}
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-4 text-xs sm:text-sm text-muted-foreground">
-              <Link 
-                to="/how-it-works" 
-                className="inline-flex items-center gap-1.5 text-teal-700 dark:text-teal-300 font-bold hover:underline"
-              >
-                <span>{isEn ? 'See How Lessons Work (4 Stages)' : 'تعرف على خطوات التعلم (كيف نعمل)'}</span>
-                <span className="rtl:rotate-180">←</span>
-              </Link>
-              <span>•</span>
-              <Link 
-                to="/pricing" 
-                className="inline-flex items-center gap-1.5 text-primary font-bold hover:underline"
-              >
-                <span>{isEn ? 'View Pricing & Packages' : 'شاهد باقات وأسعار الدروس'}</span>
-                <span className="rtl:rotate-180">←</span>
-              </Link>
-            </div>
-
+      {/* ─── 4. CLOSING ─── */}
+      <section className="public-container pt-16 pb-0">
+        <div className="band-deep relative overflow-hidden rounded-[2rem] px-6 py-12 sm:px-12 lg:py-16 text-center">
+          <h2 className="font-editorial text-3xl sm:text-4xl font-bold leading-tight">
+            {isEn ? 'Not sure where to start?' : 'محتار تبدأ منين؟'}
+          </h2>
+          <p className="mt-3 text-base sm:text-lg leading-relaxed max-w-xl mx-auto text-[#FAF7F2]/80">
+            {isEn
+              ? 'That is what the free trial is for. Your teacher listens first, then suggests the path.'
+              : 'الحصة التجريبية لده بالظبط. معلمك يسمعك الأول، وبعدين يقترح الطريق.'}
+          </p>
+          <div className="mt-7 flex flex-col sm:flex-row justify-center gap-3">
+            <PublicButton variant="primary" size="lg" onClick={() => onOpenTrialModal()} className="w-full sm:w-auto">
+              {isEn ? 'Book your free trial lesson' : 'احجز حصتك التجريبية المجانية'}
+            </PublicButton>
+            <Link to="/pricing" className="inline-flex items-center justify-center px-6 py-3 rounded-xl text-sm font-semibold border border-[#FAF7F2]/30 text-[#FAF7F2] hover:bg-[#FAF7F2]/10 transition-colors">
+              {isEn ? 'See prices' : 'شوف الأسعار'}
+            </Link>
           </div>
         </div>
-      </PublicSection>
+      </section>
 
     </main>
   );

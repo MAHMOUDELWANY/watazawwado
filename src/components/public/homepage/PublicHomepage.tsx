@@ -11,8 +11,6 @@ import {
   CalendarCheck,
   CreditCard,
   HelpCircle,
-  ChevronLeft,
-  ChevronRight,
   Volume2,
   VolumeX
 } from 'lucide-react';
@@ -25,6 +23,7 @@ import { useWelcomeAudio } from '../../../lib/welcomeAudio';
 type L = { en: string; ar: string };
 
 const VERSE = '﴿ وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ ﴾';
+const MISSION_VERSE = '﴿ وَأَمَّا مَا يَنفَعُ النَّاسَ فَيَمْكُثُ فِي الْأَرْضِ ﴾';
 // Thmanyah has no ornate Quranic brackets, so the verse uses Amiri Quran, loaded for these letters only.
 function useVerseFont() {
   React.useEffect(() => {
@@ -32,7 +31,7 @@ function useVerseFont() {
     const link = document.createElement('link');
     link.id = 'verse-font';
     link.rel = 'stylesheet';
-    link.href = 'https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap&text=' + encodeURIComponent(Array.from(new Set(VERSE)).join(''));
+    link.href = 'https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap&text=' + encodeURIComponent(Array.from(new Set(VERSE + MISSION_VERSE)).join(''));
     document.head.appendChild(link);
   }, []);
 }
@@ -60,36 +59,45 @@ const PATHS: Array<{ icon: typeof User; tone: string; title: L; body: L; note: L
   }
 ];
 
+const DOOR_TONES = [
+  'from-[#087D91] to-[#05434E]',
+  'from-[#C51F24] to-[#8B4935]',
+  'from-[#8B4935] to-[#B4552F]',
+  'from-[#E5A93C] to-[#8B4935]',
+  'from-[#0A6B7C] to-[#087D91]',
+  'from-[#A3271F] to-[#C51F24]'
+];
+
 const EXPLORE: Array<{ to: string; icon: typeof User; title: L; body: L }> = [
   {
     to: '/learning', icon: BookOpen,
     title: { en: 'Lessons and subjects', ar: 'الدروس والمواد' },
-    body: { en: '13 tracks in Quran, Tajweed, Arabic, Islamic studies and English.', ar: '١٣ مساراً في القرآن والتجويد والعربية والعلوم الشرعية والإنجليزية.' }
+    body: { en: '13 subjects, one teacher.', ar: '١٣ مادة، ومعلم واحد ليك.' }
   },
   {
     to: '/how-it-works', icon: CalendarCheck,
     title: { en: 'How it works', ar: 'كيف نعمل' },
-    body: { en: 'From the free trial to your weekly lessons on Zoom.', ar: 'من الحصة التجريبية المجانية لحد دروسك الأسبوعية على Zoom.' }
+    body: { en: 'Four calm steps.', ar: 'أربع خطوات هادية.' }
   },
   {
     to: '/about', icon: ShieldCheck,
     title: { en: 'About the teachers', ar: 'عن المعلمين' },
-    body: { en: 'Balanced, moderate teaching on the way of Ahl al-Sunnah.', ar: 'تعليم وسطي معتدل على منهج أهل السنة والجماعة.' }
+    body: { en: 'Who will sit with you.', ar: 'مين هيقعد معاك.' }
   },
   {
     to: '/pricing', icon: CreditCard,
     title: { en: 'Prices and packages', ar: 'الأسعار والباقات' },
-    body: { en: 'From $9 an hour for Quran and Islamic studies, from $13 for Arabic and English.', ar: 'من 9$ للساعة للقرآن والعلوم الشرعية، ومن 13$ للعربية والإنجليزية.' }
+    body: { en: 'From $9 an hour.', ar: 'من 9$ للساعة.' }
   },
   {
     to: '/faq', icon: HelpCircle,
     title: { en: 'Questions and answers', ar: 'الأسئلة الشائعة' },
-    body: { en: 'Times, cancelling, payment and Zoom, answered simply.', ar: 'المواعيد والإلغاء والدفع وZoom، بإجابات بسيطة.' }
+    body: { en: 'Short, honest answers.', ar: 'إجابات قصيرة وصادقة.' }
   },
   {
     to: '/student', icon: User,
     title: { en: 'Your account', ar: 'حسابك' },
-    body: { en: 'Your lessons, Zoom links, packages and chat with your teacher.', ar: 'دروسك وروابط Zoom وباقاتك والمحادثة مع معلمك.' }
+    body: { en: 'Your corner of the academy.', ar: 'ركنك في الأكاديمية.' }
   }
 ];
 
@@ -99,7 +107,6 @@ export function PublicHomepage() {
   const t = (l: L) => (isEn ? l.en : l.ar);
   const audio = useWelcomeAudio();
   useVerseFont();
-  const Chevron = isEn ? ChevronRight : ChevronLeft;
 
   return (
     <main id="main-content" className="pt-20 lg:pt-24">
@@ -114,9 +121,9 @@ export function PublicHomepage() {
               className={`[grid-area:title] self-end font-editorial text-[2.6rem] leading-[1.12] sm:text-6xl lg:text-[4rem] text-foreground ${isEn ? 'font-medium tracking-tight' : 'font-bold'}`}
             >
               {isEn ? (
-                <>Quran and Arabic, one-on-one, <span className="text-ribbon">with a teacher who knows you by name.</span></>
+                <>Provision that lasts,<br /><span className="text-ribbon">for you and your family.</span></>
               ) : (
-                <>القرآن والعربية، حصة فردية <span className="text-ribbon">مع معلّم يعرفك باسمك.</span></>
+                <>زادٌ يبقى،<br /><span className="text-ribbon whitespace-nowrap">لك ولأهل بيتك.</span></>
               )}
             </h1>
 
@@ -127,8 +134,8 @@ export function PublicHomepage() {
             <div className="[grid-area:body] self-start space-y-6 animate-fade-in-up">
               <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-xl">
                 {isEn
-                  ? 'Live Zoom lessons in Quran, Tajweed, Arabic, Islamic studies and English, for adults and children, with Ustadh Mahmoud or Ustadha Afnan.'
-                  : 'دروس مباشرة على Zoom في القرآن والتجويد والعربية والعلوم الشرعية والإنجليزية، للكبار والصغار، مع الأستاذ محمود أو الأستاذة أفنان.'}
+                  ? 'Quran, Tajweed, Arabic, Islamic studies and English. One-on-one on Zoom, with a teacher who knows you by name.'
+                  : 'القرآن والتجويد، والعربية، والعلوم الشرعية، والإنجليزية. حصص فردية على Zoom، مع معلّم يعرفك باسمك.'}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
@@ -181,7 +188,7 @@ export function PublicHomepage() {
           <p className="mt-4 text-sm sm:text-base text-muted-foreground">
             {isEn
               ? '“And take provisions, but indeed the best provision is God-consciousness.” Al-Baqarah 2:197'
-              : 'سورة البقرة، الآية ١٩٧. ومنها جاء اسم الأكاديمية: نتزوّد بالعلم، وخير الزاد التقوى.'}
+              : 'البقرة ١٩٧. ومنها اسمنا: نتزوّد بالعلم، وخير الزاد التقوى.'}
           </p>
           <button
             type="button"
@@ -200,12 +207,12 @@ export function PublicHomepage() {
         <div className="max-w-5xl mx-auto">
           <div className="max-w-2xl mb-10 lg:mb-14">
             <h2 className="editorial-heading font-editorial text-3xl sm:text-4xl text-foreground">
-              {isEn ? 'One account, for you or your whole family.' : 'حساب واحد، ليك أو لعيلتك كلها.'}
+              {isEn ? 'One home, for you and everyone you love.' : 'بيت واحد، ليك ولكل اللي بتحبهم.'}
             </h2>
             <p className="text-muted-foreground text-base sm:text-lg leading-relaxed mt-4">
               {isEn
-                ? 'Learn on your own, or manage your children’s lessons from the same place.'
-                : 'اتعلّم لوحدك، أو تابع دروس أولادك من نفس المكان.'}
+                ? 'Learn on your own, or walk alongside your children, from the same place.'
+                : 'اتعلّم لوحدك، أو امشِ جنب أولادك في رحلتهم، من نفس المكان.'}
             </p>
           </div>
 
@@ -227,31 +234,43 @@ export function PublicHomepage() {
         </div>
       </PublicSection>
 
-      {/* ─── 4. WHERE TO GO NEXT ─── */}
-      <PublicSection className="pt-0 md:pt-0 lg:pt-0">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="editorial-heading font-editorial text-2xl sm:text-3xl text-foreground mb-8">
-            {isEn ? 'Find what you need' : 'لاقي اللي محتاجه'}
+      {/* ─── 4. WHY WE EXIST ─── */}
+      <section className="khatam-field relative">
+        <div className="public-container py-16 lg:py-24 text-center">
+          <p
+            lang="ar"
+            dir="rtl"
+            className="text-[2.1rem] leading-[1.9] sm:text-5xl sm:leading-[1.8] text-foreground mx-auto max-w-4xl"
+            style={{ fontFamily: "'Amiri Quran', var(--font-serif)" }}
+          >
+            {MISSION_VERSE}
+          </p>
+          <p className="mt-2 text-sm text-muted-foreground">{isEn ? 'Ar-Ra‘d 13:17' : 'الرعد ١٧'}</p>
+          <p className="mt-6 font-editorial text-xl sm:text-2xl text-foreground max-w-2xl mx-auto leading-relaxed">
+            {isEn
+              ? 'We measure our work by what stays: a word said right, a verse kept, a good habit that lives on at home.'
+              : 'بنقيس شغلنا باللي بيفضل: كلمة اتقالت صح، وآية اتحفظت، وعادة طيبة فضلت في البيت.'}
+          </p>
+        </div>
+      </section>
+
+      {/* ─── 5. DOORS INTO THE SITE ─── */}
+      <PublicSection className="pt-4 md:pt-6 lg:pt-8">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="editorial-heading font-editorial text-2xl sm:text-3xl text-foreground mb-10">
+            {isEn ? 'Come in through any door' : 'ادخل من أي باب'}
           </h2>
-          <nav aria-label={isEn ? 'Site sections' : 'أقسام الموقع'} className="rounded-3xl border border-border bg-surface overflow-hidden">
-            <ul className="grid sm:grid-cols-2">
+          <nav aria-label={isEn ? 'Site sections' : 'أقسام الموقع'}>
+            <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-4 gap-y-8">
               {EXPLORE.map(({ to, icon: Icon, title, body }, i) => (
-                <li
-                  key={to}
-                  className={`border-border ${i < EXPLORE.length - 1 ? 'border-b' : ''} ${i === EXPLORE.length - 2 ? 'sm:border-b-0' : ''} ${i % 2 === 0 ? 'sm:border-e' : ''}`}
-                >
-                  <Link
-                    to={to}
-                    className="group flex items-center gap-4 px-5 py-5 sm:px-6 hover:bg-surface-subtle transition-colors focus-visible:outline-none focus-visible:bg-surface-subtle"
-                  >
-                    <span className="arch-tile shrink-0 w-11 h-12 flex items-center justify-center bg-[#087D91]/10 text-[#087D91] dark:text-[#12A4BC] group-hover:bg-[#C51F24]/10 group-hover:text-[#C51F24] transition-colors">
-                      <Icon className="w-5 h-5" aria-hidden="true" />
+                <li key={to}>
+                  <Link to={to} className="group block text-center focus-visible:outline-none">
+                    <span className={`door-arch khatam-window relative block h-40 sm:h-44 bg-gradient-to-b ${DOOR_TONES[i % DOOR_TONES.length]} overflow-hidden ring-offset-4 ring-offset-background group-focus-visible:ring-2 group-focus-visible:ring-primary transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-1.5 motion-reduce:transition-none`}>
+                      <span className="absolute inset-x-3 bottom-0 top-8 door-arch bg-white/10 border border-white/20 transition-colors duration-500 group-hover:bg-white/15" aria-hidden="true" />
+                      <Icon className="absolute left-1/2 -translate-x-1/2 bottom-6 w-7 h-7 text-white" aria-hidden="true" />
                     </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block font-bold text-foreground">{t(title)}</span>
-                      <span className="block text-sm text-muted-foreground leading-relaxed">{t(body)}</span>
-                    </span>
-                    <Chevron className="w-4 h-4 shrink-0 text-muted-foreground group-hover:text-foreground transition-colors" aria-hidden="true" />
+                    <span className="block mt-3 font-bold text-foreground group-hover:text-primary transition-colors">{t(title)}</span>
+                    <span className="block text-sm text-muted-foreground">{t(body)}</span>
                   </Link>
                 </li>
               ))}
@@ -267,12 +286,12 @@ export function PublicHomepage() {
             <path d="M0 170 C 160 90, 300 210, 420 130 S 660 40, 800 90" fill="none" stroke="#E5A93C" strokeWidth="2" />
           </svg>
           <h2 className="relative font-editorial text-3xl sm:text-5xl font-bold leading-tight">
-            {isEn ? 'Start with one free lesson.' : 'ابدأ بحصة واحدة مجاناً.'}
+            {isEn ? 'Every journey starts with one lesson.' : 'كل رحلة بتبدأ بحصة.'}
           </h2>
           <p className="relative mt-4 text-base sm:text-lg leading-relaxed max-w-xl mx-auto text-[#FAF7F2]/80">
             {isEn
-              ? 'Thirty minutes on Zoom. Your teacher gets to know your level and goal, then suggests a plan that fits your week.'
-              : '٣٠ دقيقة على Zoom. معلمك يتعرّف على مستواك وهدفك، ويقترح خطة تناسب أسبوعك.'}
+              ? 'The first one is free: thirty minutes to meet, listen, and find your way.'
+              : 'والأولى مجاناً: ٣٠ دقيقة نتعرّف فيها، ونسمعك، ونلاقي طريقك.'}
           </p>
           <div className="relative mt-8 flex flex-col sm:flex-row justify-center gap-3">
             <PublicButton variant="primary" size="lg" onClick={() => onOpenTrialModal()} className="w-full sm:w-auto">
@@ -282,7 +301,7 @@ export function PublicHomepage() {
               href={buildWhatsAppUrl(isEn ? 'Assalamu Alaikum, I visited the Watazawwado website and would like to ask about lessons.' : 'السلام عليكم، زرت موقع وتزودوا وحابب أستفسر عن الدروس.')}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 py-3 px-6 rounded-xl text-sm font-semibold border border-[#FAF7F2]/30 text-[#FAF7F2] hover:bg-[#FAF7F2]/10 transition-colors"
+              className="inline-flex items-center justify-center gap-2 py-3 px-6 rounded-xl text-sm font-bold bg-[#25D366] text-[#07361F] hover:bg-[#20BD5A] shadow-[0_10px_24px_-12px_rgba(37,211,102,0.9)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05363F] focus-visible:ring-[#25D366]"
             >
               <WhatsAppIcon className="w-4 h-4 shrink-0" />
               <span>{isEn ? 'Ask us on WhatsApp' : 'اسألنا على واتساب'}</span>
