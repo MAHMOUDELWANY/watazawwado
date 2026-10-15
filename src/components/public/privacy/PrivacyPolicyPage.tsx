@@ -408,7 +408,7 @@ export function PrivacyPolicyPage() {
                   </div>
                   <div className="flex items-center gap-2 text-foreground font-medium">
                     <Mail className="w-4 h-4 text-primary shrink-0" />
-                    <span>mahmoudelwany98@gmail.com</span>
+                    <span>info@watazawwado.academy</span>
                   </div>
                   <div className="flex items-center gap-2 text-foreground font-medium">
                     <Globe className="w-4 h-4 text-teal-600 dark:text-teal-400 shrink-0" />

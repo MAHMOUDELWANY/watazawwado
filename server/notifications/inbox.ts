@@ -39,7 +39,8 @@ export async function notifyUser(
     if (options.email && recipient.email) {
       const lang: EmailLang = await resolveEmailLanguage(recipient.email);
       const mail = renderSimpleNotice({ name: recipient.name, title: notice.title, body: notice.body, buttonPath: notice.link, staff: recipient.staff, lang });
-      await sendEmail({ to: recipient.email, toName: recipient.name || undefined, ...mail });
+      // Refund notices come from finance@; everything else from support@.
+      await sendEmail({ to: recipient.email, toName: recipient.name || undefined, ...mail, from: notice.kind.startsWith('refund') ? 'finance' : 'support' });
     }
   } catch (err) {
     console.warn('[Inbox] notify failed:', err);

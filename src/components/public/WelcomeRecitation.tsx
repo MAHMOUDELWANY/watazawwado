@@ -1,175 +1,146 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { VolumeX } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Volume2, VolumeX, X } from 'lucide-react';
+import { playWelcome, useWelcomeAudio } from '../../lib/welcomeAudio';
 
 /**
- * Plays the site's welcome recitation (﴿وتزودوا فإن خير الزاد التقوى﴾, public/welcome.mp3) once per
- * browser session, on the visitor's first interaction with the homepage, fading in from silence to
- * 50% over 1.5s. A small "stop" button shows while it plays.
- *
- * Mobile notes:
- * - Browsers only allow sound from "activation" events. A finger touch activates on release
- *   (touchend / pointerup / click), not on touchstart / pointerdown, so we listen to those.
- *   If play() is refused we keep listening and try again on the next interaction.
- * - iOS ignores audio.volume, so the fade goes through a Web Audio gain node there (where
- *   available). Like all Web Audio on iOS, that follows the phone's silent switch.
- *
- * Client-only: everything runs inside useEffect. Mounted once on the homepage.
+ * Homepage, first visit of the session: tries to start the welcome recitation by itself.
+ * Browsers usually block sound until the visitor taps, so the first time ever we also show an
+ * animated hint with a sound button; any tap on the page starts it too. After that, the
+ * recitation can be played again any time from the menu (Navbar).
+ * Client-only: everything runs inside useEffect.
  */
 
-const SRC = '/welcome.mp3';
 const SESSION_KEY = 'wz_welcome_recitation_played';
-const TARGET_VOLUME = 0.5;
-const FADE_S = 1.5;
+const HINT_KEY = 'wz_sound_hint_seen';
 const EVENTS = ['touchend', 'pointerup', 'click', 'keydown'] as const;
 
+const read = (store: () => Storage, key: string) => { try { return store().getItem(key); } catch { return null; } };
+const write = (store: () => Storage, key: string) => { try { store().setItem(key, '1'); } catch { /* storage blocked */ } };
+
 export function WelcomeRecitation({ isAr }: { isAr: boolean }) {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const gainRef = useRef<GainNode | null>(null);
-  const ctxRef = useRef<AudioContext | null>(null);
-  const rafRef = useRef<number | null>(null);
-  const [playing, setPlaying] = useState(false);
+  const [showHint, setShowHint] = useState(false);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    try {
-      if (sessionStorage.getItem(SESSION_KEY)) return;
-    } catch {
-      /* storage blocked: still play once for this page view */
-    }
-
-    const audio = new Audio(SRC);
-    audio.preload = 'auto';
-    audio.setAttribute('playsinline', '');
-    audioRef.current = audio;
-    audio.addEventListener('ended', () => setPlaying(false));
-
-    // iOS: the volume property is read-only (always 1), so a volume fade does nothing there.
-    audio.volume = 0.5;
-    const volumeWorks = audio.volume === 0.5;
-    audio.volume = 0;
-
-    let busy = false;
+    if (typeof window === 'undefined' || read(() => sessionStorage, SESSION_KEY)) return;
     let done = false;
+    let busy = false;
 
-    const fadeWithVolume = () => {
-      const start = performance.now();
-      const step = (now: number) => {
-        const t = Math.min(1, (now - start) / (FADE_S * 1000));
-        audio.volume = TARGET_VOLUME * t;
-        if (t < 1) rafRef.current = requestAnimationFrame(step);
-      };
-      rafRef.current = requestAnimationFrame(step);
-    };
-
-    /** Routes the element through a gain node (created inside the user gesture, as iOS requires). */
-    const setUpGain = (): boolean => {
-      if (gainRef.current) return true;
-      const Ctx = window.AudioContext || (window as any).webkitAudioContext;
-      if (!Ctx) return false;
-      try {
-        const ctx: AudioContext = new Ctx();
-        const gain = ctx.createGain();
-        gain.gain.value = 0;
-        ctx.createMediaElementSource(audio).connect(gain).connect(ctx.destination);
-        audio.volume = 1;
-        ctxRef.current = ctx;
-        gainRef.current = gain;
-        void ctx.resume();
-        return true;
-      } catch {
-        return false;
-      }
-    };
-
-    const onInteraction = () => {
-      if (busy || done) return;
-      busy = true;
-      const useGain = !volumeWorks && setUpGain();
-      audio
-        .play()
-        .then(() => {
-          done = true;
-          removeListeners();
-          try {
-            sessionStorage.setItem(SESSION_KEY, '1');
-          } catch {}
-          setPlaying(true);
-          const gain = gainRef.current;
-          const ctx = ctxRef.current;
-          if (useGain && gain && ctx) {
-            gain.gain.setValueAtTime(0, ctx.currentTime);
-            gain.gain.linearRampToValueAtTime(TARGET_VOLUME, ctx.currentTime + FADE_S);
-          } else {
-            fadeWithVolume();
-          }
-        })
-        .catch(() => {
-          // Refused (not an activation event yet) or failed to load: stay silent, try on the next tap.
-          busy = false;
-        });
-    };
-
-    const removeListeners = () => {
-      EVENTS.forEach((e) => window.removeEventListener(e, onInteraction, true));
-    };
-    EVENTS.forEach((e) => window.addEventListener(e, onInteraction, { capture: true, passive: true }));
-
-    return () => {
+    const started = () => {
+      done = true;
       removeListeners();
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      // Leaving the homepage takes the stop button away, so fade the recitation out with it.
-      if (!audio.paused) {
-        const gain = gainRef.current;
-        const ctx = ctxRef.current;
-        if (gain && ctx) {
-          gain.gain.cancelScheduledValues(ctx.currentTime);
-          gain.gain.setValueAtTime(gain.gain.value, ctx.currentTime);
-          gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.5);
-          setTimeout(() => {
-            audio.pause();
-            void ctx.close();
-          }, 550);
-        } else {
-          const from = audio.volume;
-          const start = performance.now();
-          const out = (now: number) => {
-            const t = Math.min(1, (now - start) / 500);
-            audio.volume = from * (1 - t);
-            if (t < 1) requestAnimationFrame(out);
-            else audio.pause();
-          };
-          requestAnimationFrame(out);
-        }
-      }
+      write(() => sessionStorage, SESSION_KEY);
+      write(() => localStorage, HINT_KEY);
+      setShowHint(false);
     };
+
+    const onInteraction = (e: Event) => {
+      if (busy || done) return;
+      // Closing the hint must not start the sound.
+      if ((e.target as Element | null)?.closest?.('[data-sound-dismiss]')) return;
+      busy = true;
+      playWelcome().then((ok) => { busy = false; if (ok) started(); });
+    };
+    const removeListeners = () => EVENTS.forEach((ev) => window.removeEventListener(ev, onInteraction, true));
+    EVENTS.forEach((ev) => window.addEventListener(ev, onInteraction, { capture: true, passive: true }));
+
+    playWelcome(false).then((ok) => {
+      if (ok) started();
+      else if (!done && !read(() => localStorage, HINT_KEY)) setShowHint(true);
+    });
+
+    return removeListeners;
   }, []);
 
-  const stop = () => {
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    const audio = audioRef.current;
-    if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
-    }
-    setPlaying(false);
+  const dismiss = () => {
+    write(() => localStorage, HINT_KEY);
+    setShowHint(false);
   };
 
-  if (!playing) return null;
-
   return (
-    <button
-      type="button"
-      onClick={stop}
-      className="fixed bottom-5 start-5 z-50 inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#087D91] text-white text-sm font-semibold shadow-lg shadow-[#087D91]/30 hover:bg-[#06697A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#087D91] cursor-pointer"
-      aria-label={isAr ? 'إيقاف التلاوة' : 'Stop the recitation'}
-    >
-      <span className="flex items-end gap-0.5 h-3" aria-hidden="true">
-        <span className="w-0.5 bg-white/90 rounded-full animate-[recitation_0.9s_ease-in-out_infinite] h-full" />
-        <span className="w-0.5 bg-white/90 rounded-full animate-[recitation_0.9s_ease-in-out_0.2s_infinite] h-2/3" />
-        <span className="w-0.5 bg-white/90 rounded-full animate-[recitation_0.9s_ease-in-out_0.4s_infinite] h-1/2" />
-      </span>
-      <VolumeX className="w-4 h-4" aria-hidden="true" />
-      {isAr ? 'إيقاف التلاوة' : 'Stop recitation'}
-    </button>
+    <AnimatePresence>
+      {showHint && (
+        <motion.div
+          role="status"
+          initial={{ opacity: 0, y: 40, scale: 0.92 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 24, scale: 0.95 }}
+          transition={{ type: 'spring', damping: 22, stiffness: 260, delay: 0.8 }}
+          className="fixed bottom-24 sm:bottom-5 inset-x-4 sm:inset-x-auto sm:start-5 z-50 sm:max-w-sm"
+          dir={isAr ? 'rtl' : 'ltr'}
+        >
+          <div className="relative overflow-hidden rounded-2xl border border-[#087D91]/30 bg-surface/95 backdrop-blur-md shadow-2xl shadow-[#087D91]/20 p-4 flex items-center gap-4">
+            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#087D91] via-[#E5A93C] to-[#C51F24]" aria-hidden="true" />
+            {/* No onClick: the page-wide tap listener above starts the sound and hides this hint. */}
+            <button
+              type="button"
+              className="relative shrink-0 w-14 h-14 rounded-full bg-[#087D91] text-white flex items-center justify-center cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#087D91]"
+              aria-label={isAr ? 'تشغيل تلاوة الترحيب' : 'Play the welcome recitation'}
+            >
+              {[0, 0.6].map((delay) => (
+                <motion.span
+                  key={delay}
+                  className="absolute inset-0 rounded-full border-2 border-[#087D91]"
+                  initial={{ scale: 1, opacity: 0.7 }}
+                  animate={{ scale: 1.8, opacity: 0 }}
+                  transition={{ duration: 1.6, repeat: Infinity, delay, ease: 'easeOut' }}
+                  aria-hidden="true"
+                />
+              ))}
+              <motion.span animate={{ rotate: [0, -10, 10, -6, 0] }} transition={{ duration: 1.2, repeat: Infinity, repeatDelay: 1.4 }}>
+                <Volume2 className="w-6 h-6" aria-hidden="true" />
+              </motion.span>
+            </button>
+            <div className="min-w-0 flex-1">
+              <p className="font-bold text-foreground text-sm">
+                {isAr ? 'اضغط على زر الصوت 🎧' : 'Tap the sound button 🎧'}
+              </p>
+              <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">
+                {isAr
+                  ? 'لتسمع تلاوة الترحيب ﴿وتزودوا فإن خير الزاد التقوى﴾. وتقدر تشغّلها تاني في أي وقت من القائمة.'
+                  : 'to hear our welcome recitation. You can play it again any time from the menu.'}
+              </p>
+            </div>
+            <button
+              type="button"
+              data-sound-dismiss
+              onClick={dismiss}
+              className="self-start shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-surface-subtle cursor-pointer"
+              aria-label={isAr ? 'إغلاق' : 'Close'}
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/** Floating "stop" button while the recitation plays, on every public page (PublicLayout). */
+export function WelcomeStopButton({ isAr }: { isAr: boolean }) {
+  const { playing, stop } = useWelcomeAudio();
+  return (
+    <AnimatePresence>
+      {playing && (
+        <motion.button
+          type="button"
+          onClick={stop}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          className="fixed bottom-5 start-5 z-40 inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#087D91] text-white text-sm font-semibold shadow-lg shadow-[#087D91]/30 hover:bg-[#06697A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#087D91] cursor-pointer"
+          aria-label={isAr ? 'إيقاف التلاوة' : 'Stop the recitation'}
+        >
+          <span className="flex items-end gap-0.5 h-3" aria-hidden="true">
+            <span className="w-0.5 bg-white/90 rounded-full animate-[recitation_0.9s_ease-in-out_infinite] h-full" />
+            <span className="w-0.5 bg-white/90 rounded-full animate-[recitation_0.9s_ease-in-out_0.2s_infinite] h-2/3" />
+            <span className="w-0.5 bg-white/90 rounded-full animate-[recitation_0.9s_ease-in-out_0.4s_infinite] h-1/2" />
+          </span>
+          <VolumeX className="w-4 h-4" aria-hidden="true" />
+          {isAr ? 'إيقاف التلاوة' : 'Stop recitation'}
+        </motion.button>
+      )}
+    </AnimatePresence>
   );
 }

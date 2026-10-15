@@ -29,7 +29,19 @@ export interface SendEmailOptions {
   text: string;
   replyTo?: string;
   replyToName?: string;
+  /** Which team mailbox sends it (MAILBOXES). Default: NOTIFICATION_FROM_EMAIL / support@. */
+  from?: Mailbox;
 }
+
+// Each mailbox sends the emails its name describes; replies go back to the same mailbox.
+export const MAILBOXES = {
+  support: 'support@watazawwado.academy',  // bookings, lessons, reminders, complaints, withdrawals
+  finance: 'finance@watazawwado.academy',  // payment receipts, refunds
+  hr: 'hr@watazawwado.academy',            // emails to teachers
+  info: 'info@watazawwado.academy',        // welcome and general information
+  privacy: 'privacy@watazawwado.academy'   // data protection requests
+} as const;
+export type Mailbox = keyof typeof MAILBOXES;
 
 export interface SendEmailResult {
   success: boolean;
@@ -137,10 +149,12 @@ Note: Set BREVO_API_KEY to enable live email delivery.`);
 
   // 3. Brevo Transactional API Dispatch
   try {
-    const senderEmail = process.env.NOTIFICATION_FROM_EMAIL || DEFAULT_SENDER_EMAIL;
+    const mailbox = options.from && options.from !== 'support' ? MAILBOXES[options.from] : null;
+    const senderEmail = mailbox || process.env.NOTIFICATION_FROM_EMAIL || DEFAULT_SENDER_EMAIL;
     const senderName = process.env.NOTIFICATION_FROM_NAME || DEFAULT_SENDER_NAME;
     const replyToEmail =
       options.replyTo ||
+      mailbox ||
       process.env.NOTIFICATION_REPLY_TO_EMAIL ||
       senderEmail;
     const replyToName =
@@ -212,6 +226,13 @@ Note: Set BREVO_API_KEY to enable live email delivery.`);
         provider: 'brevo',
         messageId: messageId ? String(messageId) : `brevo-${Date.now()}`
       };
+    }
+
+    // A team mailbox Brevo does not accept as sender must never cost the email:
+    // resend once from the default sender, with replies still going to that mailbox.
+    if (mailbox && response.status === 400) {
+      console.warn('[Brevo] sender rejected, resending from the default sender', { mailbox });
+      return sendEmail({ ...options, from: undefined, replyTo: options.replyTo || mailbox });
     }
 
     // Handle provider error without exposing secrets or raw internal error payloads

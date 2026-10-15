@@ -66,7 +66,11 @@ Read this first in a new session, then `RULES.md` (binding owner decisions) and 
 - Jalila sends Gemini the student's first name only.
 - Teacher agreement (version 2026-10-15) at /staff/agreement: shown right after a new teacher sets a password; every teacher must accept the current version before any dashboard API works (verifyTeacherAuth → 403 AGREEMENT_REQUIRED; super admin exempt). Stored in teacher_accounts.agreement_version/agreement_accepted_at (migration 20261016000002, applied). Teachers page shows who accepted.
 - Booking confirmation email repeats the accepted terms version/date + link and, for paid single lessons, the early-start / 14-day withdrawal notice.
-- **Waiting for the owner:** trader name + postal address (not a registered business, so no CEIDG/NIP; never publish the PESEL). Fill `TRADER` in src/components/public/terms/TermsPage.tsx. Create the privacy@watazawwado.academy mailbox.
+- Trader block in the terms: Mahmoud Said Elwany Abdelaal, ul. Stefana Czarnieckiego, Wrocław (not a registered business: no CEIDG/NIP; never publish the PESEL). Owner may add the house number and postal code in `TRADER`.
+- Team mailboxes (server/notifications/emailService.ts MAILBOXES): support@ bookings/lessons/reminders/complaints, finance@ payment receipts + refund notices, hr@ emails to teachers, info@ welcome email + general contact, privacy@ data requests. If Brevo rejects a mailbox as sender, the email is resent from support@ with Reply-To that mailbox.
+- check_trial_eligibility RPC no longer callable by anon/authenticated (migration 20261016000003, applied). The *_by_management RPCs stay: token-checked and used by the payment-return and manage-booking pages.
+- Welcome recitation: shared player (src/lib/welcomeAudio.ts). Homepage tries to play on the first visit of a session; if the browser blocks it, the first time ever an animated hint asks to tap the sound button (any tap starts it). Menu has "Play the welcome recitation" (unlimited); floating stop button on all public pages; site tour step explains it.
+- scripts/db_wipe_students.ts moved out of the repo to ../watazawwado-archive/.
 
 ## Next (in order)
 

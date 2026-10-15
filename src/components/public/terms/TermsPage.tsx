@@ -9,7 +9,7 @@ const TERMS_VERSION_LABEL = { en: 'Version 2026-10-15.2 · Last updated 15 Octob
 
 // Trader identity (consumer law). The block shows once name and address are filled in.
 // Not a registered business: leave ceidg/nip empty. Never publish a PESEL here.
-const TRADER = { name: '', address: '', ceidg: '', nip: '' };
+const TRADER = { name: 'Mahmoud Said Elwany Abdelaal', address: 'ul. Stefana Czarnieckiego, Wrocław', ceidg: '', nip: '' };
 
 type Section = { id: string; en: { title: string; items: string[] }; ar: { title: string; items: string[] } };
 
@@ -319,7 +319,12 @@ export function TermsPage() {
                   </div>
                 )}
                 <p>{isEn ? 'Questions about these terms? We are happy to help:' : 'عندك سؤال عن الشروط؟ يسعدنا نساعدك:'}</p>
-                <p className="font-semibold text-foreground">Email: support@watazawwado.academy / mahmoudelwany98@gmail.com</p>
+                <ul className="space-y-1">
+                  <li><span className="font-semibold text-foreground" dir="ltr">info@watazawwado.academy</span> — {isEn ? 'general questions' : 'الأسئلة العامة'}</li>
+                  <li><span className="font-semibold text-foreground" dir="ltr">support@watazawwado.academy</span> — {isEn ? 'bookings, lessons, complaints and withdrawals' : 'الحجوزات والدروس والشكاوى والانسحاب'}</li>
+                  <li><span className="font-semibold text-foreground" dir="ltr">finance@watazawwado.academy</span> — {isEn ? 'payments and refunds' : 'المدفوعات والاسترداد'}</li>
+                  <li><span className="font-semibold text-foreground" dir="ltr">privacy@watazawwado.academy</span> — {isEn ? 'your personal data' : 'بياناتك الشخصية'}</li>
+                </ul>
                 <p className="font-semibold text-foreground" dir="ltr">WhatsApp: +48508157886</p>
                 <p>
                   {isEn ? 'See also our ' : 'اطلع أيضاً على '}

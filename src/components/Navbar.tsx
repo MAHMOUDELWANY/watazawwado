@@ -14,8 +14,11 @@ import {
   CreditCard,
   User,
   Shield,
-  ArrowRight
+  ArrowRight,
+  Volume2,
+  VolumeX
 } from 'lucide-react';
+import { useWelcomeAudio } from '../lib/welcomeAudio';
 import { BrandLogo } from './ui/BrandLogo';
 import { ThemeToggle } from './ui/ThemeToggle';
 import { Language, ThemeMode } from '../types';
@@ -39,6 +42,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [sideDrawerOpen, setSideDrawerOpen] = useState(false);
+  const welcomeAudio = useWelcomeAudio();
   const location = useLocation();
   const isEn = lang === 'en';
   const isRtl = lang === 'ar';
@@ -218,6 +222,36 @@ export const Navbar: React.FC<NavbarProps> = ({
               {/* Drawer Scrollable Content Area */}
               <div className="flex-1 px-4 py-5 space-y-6 overflow-y-auto touch-pan-y overscroll-contain">
                 
+                {/* Welcome recitation: play again any time, as often as the visitor likes */}
+                <button
+                  type="button"
+                  id="menu-sound-btn"
+                  onClick={() => (welcomeAudio.playing ? welcomeAudio.stop() : void welcomeAudio.play())}
+                  aria-pressed={welcomeAudio.playing}
+                  className="w-full flex items-center gap-3 p-3 rounded-2xl border border-[#087D91]/30 bg-[#087D91]/8 hover:bg-[#087D91]/15 text-start transition-colors cursor-pointer"
+                >
+                  <span className={`relative shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-white ${welcomeAudio.playing ? 'bg-[#C51F24]' : 'bg-[#087D91]'}`}>
+                    {welcomeAudio.playing && (
+                      <motion.span
+                        className="absolute inset-0 rounded-full border-2 border-[#C51F24]"
+                        initial={{ scale: 1, opacity: 0.6 }}
+                        animate={{ scale: 1.6, opacity: 0 }}
+                        transition={{ duration: 1.4, repeat: Infinity, ease: 'easeOut' }}
+                        aria-hidden="true"
+                      />
+                    )}
+                    {welcomeAudio.playing ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-sm font-bold text-foreground">
+                      {welcomeAudio.playing
+                        ? (isEn ? 'Stop the welcome recitation' : 'إيقاف تلاوة الترحيب')
+                        : (isEn ? 'Play the welcome recitation' : 'تشغيل تلاوة الترحيب')}
+                    </span>
+                    <span className="block text-xs text-muted-foreground">﴿وتزودوا فإن خير الزاد التقوى﴾</span>
+                  </span>
+                </button>
+
                 {/* 1. BOOKINGS & TRIALS FIRST */}
                 <div className="p-4 bg-primary/10 rounded-2xl border border-primary/25 space-y-2.5">
                   <div className="flex items-center gap-2 text-primary font-bold text-sm">

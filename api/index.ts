@@ -7733,7 +7733,7 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
             childNames,
             lang
           });
-          await sendEmail({ to: welcomeTo, ...mail });
+          await sendEmail({ to: welcomeTo, ...mail, from: 'info' });
         } catch (err) {
           console.warn('[Onboarding] welcome email failed', err);
         }

@@ -43,3 +43,31 @@ test('booking confirmation states the accepted terms and the withdrawal notice',
   const old = renderStudentBookingConfirmation({ ...base, termsVersion: '2026-10-15', feeAmount: 9 });
   assert.ok(!/withdraw within 14 days/.test(old.html), 'older bookings had no early-start request');
 });
+
+// Each team mailbox sends its own emails; if Brevo rejects that sender, the email still goes out from the default one.
+test('team mailbox sender falls back to the default sender on a 400', async () => {
+  const { sendEmail } = await import('../server/notifications/emailService');
+  const env = { ...process.env };
+  const realFetch = globalThis.fetch;
+  process.env.BREVO_API_KEY = 'xkeysib-test';
+  delete process.env.NOTIFICATION_FROM_EMAIL;
+  const bodies: any[] = [];
+  globalThis.fetch = (async (_url: string, opts: any) => {
+    const body = JSON.parse(opts.body);
+    bodies.push(body);
+    return body.sender.email === 'finance@watazawwado.academy'
+      ? new Response(JSON.stringify({ code: 'invalid_parameter' }), { status: 400 })
+      : new Response(JSON.stringify({ messageId: 'm1' }), { status: 201 });
+  }) as any;
+  try {
+    const res = await sendEmail({ to: 'a@example.com', subject: 's', html: '<p>x</p>', text: 'x', from: 'finance' });
+    assert.strictEqual(res.success, true);
+    assert.strictEqual(bodies.length, 2);
+    assert.strictEqual(bodies[0].replyTo.email, 'finance@watazawwado.academy');
+    assert.strictEqual(bodies[1].sender.email, 'support@watazawwado.academy');
+    assert.strictEqual(bodies[1].replyTo.email, 'finance@watazawwado.academy');
+  } finally {
+    globalThis.fetch = realFetch;
+    process.env = env;
+  }
+});

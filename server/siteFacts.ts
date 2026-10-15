@@ -12,5 +12,5 @@ export const SITE_FACTS = `
 - Paid lessons are confirmed after secure online payment (card, Apple/Google Pay, PayPal through Stripe).
 - Cancel up to 3 hours before (free trial: 1 hour) and get a lesson credit; reschedule up to 1 hour before, on the website. Missed lessons count as taken.
 - Times always show in the student's own time zone. Each student has an on-site chat with the team and their teacher.
-- Contact: WhatsApp +48 508 157 886, email support@watazawwado.academy.
+- Contact: WhatsApp +48 508 157 886. Email: info@watazawwado.academy (general questions), support@watazawwado.academy (bookings, lessons, complaints), finance@watazawwado.academy (payments and refunds), privacy@watazawwado.academy (personal data).
 `.trim();

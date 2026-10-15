@@ -88,13 +88,13 @@ const CLAUSES: Clause[] = [
   },
   {
     en: { title: 'Ending the agreement and changes', items: [
-      'Either side may end this agreement at any time with 14 days’ notice by message or email. Lessons already booked in that time are taught or moved to another teacher.',
+      'Either side may end this agreement at any time with 14 days’ notice by message or by email to hr@watazawwado.academy. Lessons already booked in that time are taught or moved to another teacher.',
       'Watazawwado may pause or end your access immediately for a serious breach, especially of the safeguarding or data rules.',
       'If this agreement changes, you will be asked to read and accept the new version before you continue.',
       'This agreement is governed by the laws of Poland. Mandatory rules of the country where you live still apply where the law says so.',
     ] },
     ar: { title: 'إنهاء الاتفاق وتعديله', items: [
-      'يحق لأي طرف إنهاء هذا الاتفاق في أي وقت بإخطار قبل 14 يوماً برسالة أو بريد إلكتروني. والدروس المحجوزة خلال هذه المدة إما أن تقدمها أو تُنقل إلى معلم آخر.',
+      'يحق لأي طرف إنهاء هذا الاتفاق في أي وقت بإخطار قبل 14 يوماً برسالة أو ببريد إلكتروني إلى hr@watazawwado.academy. والدروس المحجوزة خلال هذه المدة إما أن تقدمها أو تُنقل إلى معلم آخر.',
       'يحق لوتزودوا إيقاف وصولك أو إنهاؤه فوراً عند مخالفة جسيمة، خاصة لقواعد حماية الأطفال أو البيانات.',
       'إذا تغيّر هذا الاتفاق، سيُطلب منك قراءة النسخة الجديدة والموافقة عليها قبل المتابعة.',
       'يخضع هذا الاتفاق لقوانين بولندا، مع بقاء القواعد الإلزامية في بلد إقامتك سارية حيث ينص القانون على ذلك.',

@@ -12,6 +12,7 @@ import { LearningGuide } from '../../LearningGuide';
 import { useTheme } from '../../ThemeProvider';
 import { OnboardingGuide, OnboardingStep } from '../../ui/OnboardingGuide';
 import { useAppLanguage } from '../../../lib/language';
+import { WelcomeStopButton } from '../WelcomeRecitation';
 
 export interface PublicLayoutContextType {
   lang: Language;
@@ -65,6 +66,14 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
       description: lang === 'ar'
         ? 'احجز جلستك التجريبية الأولى مجاناً لتحديد مستواك ومناقشة أهدافك مباشرة بدون أي التزام مالي.'
         : 'Book your first trial lesson for free to assess your level and discuss your learning goals.',
+      position: 'bottom',
+    },
+    {
+      targetId: 'mobile-menu-toggle',
+      title: lang === 'ar' ? 'تلاوة الترحيب 🎧' : 'Welcome recitation 🎧',
+      description: lang === 'ar'
+        ? 'افتح القائمة واضغط "تشغيل تلاوة الترحيب" لتسمع ﴿وتزودوا فإن خير الزاد التقوى﴾ في أي وقت، وكل ما تحب.'
+        : 'Open the menu and tap “Play the welcome recitation” to hear it again any time, as often as you like.',
       position: 'bottom',
     },
     {
@@ -184,6 +193,9 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
 
         {/* AI Learning Guide */}
         <LearningGuide lang={lang} />
+
+        {/* Stop button while the welcome recitation plays (started from the homepage or the menu) */}
+        <WelcomeStopButton isAr={lang === 'ar'} />
 
         {/* Interactive Site Tour Guide */}
         <OnboardingGuide
