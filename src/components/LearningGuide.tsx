@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { RichText } from './ui/RichText';
 import { motion, AnimatePresence } from 'motion/react';
 import { MessageCircle, X, Send, Sparkles, User, Bot } from 'lucide-react';
 import { Language } from '../booking/types';
@@ -142,7 +143,7 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
                       ? 'bg-foreground text-background rounded-se-sm'
                       : 'glass-card text-foreground border border-border rounded-ss-sm shadow-sm'
                   }`}>
-                    {msg.content}
+                    {msg.role === 'user' ? msg.content : <RichText text={msg.content} />}
                   </div>
                 </div>
               ))}

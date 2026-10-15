@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { RichText } from '../../components/ui/RichText';
 import { Sparkles, Copy, Check } from 'lucide-react';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { useT } from '../../lib/language';
@@ -123,7 +124,7 @@ export default function AssistantPage() {
                 <span className="ms-1.5">{copied ? t('Copied', 'اتنسخ') : t('Copy', 'انسخ')}</span>
               </Button>
             </div>
-            <div className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">{reply}</div>
+            <RichText text={reply} className="text-sm text-foreground leading-relaxed" />
           </CardContent>
         </Card>
       )}

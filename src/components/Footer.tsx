@@ -44,10 +44,10 @@ export const Footer: React.FC<FooterProps> = ({
             <div className="flex items-center gap-3 pt-1">
               <button
                 onClick={onToggleLang}
-                className="inline-flex items-center gap-1.5 text-sm text-interactive hover:underline cursor-pointer"
+                className="inline-flex items-center gap-1.5 min-h-[40px] text-sm text-interactive hover:underline cursor-pointer"
               >
                 <Globe className="w-3.5 h-3.5" />
-                <span>{isEn ? 'Switch to العربية' : 'Switch to English'}</span>
+                <span>{isEn ? 'العربية' : 'English'}</span>
               </button>
             </div>
           </div>
@@ -58,29 +58,29 @@ export const Footer: React.FC<FooterProps> = ({
               <div className="font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300 text-xs mb-3">
                 {isEn ? 'Teaching' : 'الدروس والبرامج'}
               </div>
-              <ul className="space-y-2 text-muted-foreground font-medium">
+              <ul className="space-y-0.5 text-muted-foreground font-medium">
                 <li>
-                  <Link to="/learning" className="hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
+                  <Link to="/learning" className="inline-block py-1.5 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
                     {isEn ? 'Quran & Tajweed' : 'القرآن والتجويد'}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/learning" className="hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
+                  <Link to="/learning" className="inline-block py-1.5 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
                     {isEn ? 'Islamic Studies' : 'الدراسات الإسلامية'}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/learning" className="hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
+                  <Link to="/learning" className="inline-block py-1.5 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
                     {isEn ? 'Arabic Language' : 'اللغة العربية'}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/learning" className="hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
+                  <Link to="/learning" className="inline-block py-1.5 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
                     {isEn ? 'English Coaching' : 'اللغة الإنجليزية'}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/pricing" className="hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
+                  <Link to="/pricing" className="inline-block py-1.5 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
                     {isEn ? 'Pricing & Packages' : 'باقات الأسعار'}
                   </Link>
                 </li>
@@ -91,34 +91,34 @@ export const Footer: React.FC<FooterProps> = ({
               <div className="font-bold uppercase tracking-wider text-accent text-xs mb-3">
                 {isEn ? 'Experience' : 'التجربة'}
               </div>
-              <ul className="space-y-2 text-muted-foreground font-medium">
+              <ul className="space-y-0.5 text-muted-foreground font-medium">
                 <li>
-                  <Link to="/about" className="hover:text-accent transition-colors">
+                  <Link to="/about" className="inline-block py-1.5 hover:text-accent transition-colors">
                     {isEn ? 'About Mahmoud' : 'عن المعلم'}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/how-it-works" className="hover:text-accent font-semibold transition-colors">
+                  <Link to="/how-it-works" className="inline-block py-1.5 hover:text-accent font-semibold transition-colors">
                     {isEn ? 'How It Works' : 'كيف نعمل'}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/pricing" className="hover:text-accent transition-colors">
+                  <Link to="/pricing" className="inline-block py-1.5 hover:text-accent transition-colors">
                     {isEn ? 'Pricing' : 'الأسعار'}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/faq" className="hover:text-accent transition-colors">
+                  <Link to="/faq" className="inline-block py-1.5 hover:text-accent transition-colors">
                     {isEn ? 'FAQ' : 'الأسئلة الشائعة'}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/privacy" className="hover:text-accent transition-colors">
+                  <Link to="/privacy" className="inline-block py-1.5 hover:text-accent transition-colors">
                     {isEn ? 'Privacy Policy' : 'سياسة الخصوصية'}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/terms" className="hover:text-accent transition-colors">
+                  <Link to="/terms" className="inline-block py-1.5 hover:text-accent transition-colors">
                     {isEn ? 'Terms of Service' : 'شروط الخدمة'}
                   </Link>
                 </li>

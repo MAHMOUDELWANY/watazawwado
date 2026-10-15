@@ -17,12 +17,32 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { useScrollPaletteTransition } from './lib/useScrollPaletteTransition';
 import { BrandLoader } from './components/ui/BrandLoader';
 
+/**
+ * After a new deployment the old page's lazy files no longer exist, so the next page change failed
+ * with "Something went wrong". Reload once to pick up the new version (guarded against loops).
+ */
+const RELOAD_KEY = 'wz_chunk_reload_at';
+function lazyWithReload<T extends React.ComponentType<any>>(load: () => Promise<{ default: T }>) {
+  return lazy(() =>
+    load().catch((err) => {
+      let last = 0;
+      try { last = Number(sessionStorage.getItem(RELOAD_KEY) || 0); } catch {}
+      if (Date.now() - last > 30000) {
+        try { sessionStorage.setItem(RELOAD_KEY, String(Date.now())); } catch {}
+        window.location.reload();
+        return new Promise<{ default: T }>(() => {});
+      }
+      throw err;
+    })
+  );
+}
+
 // The dashboard, student portal and auth pages load on demand so public visitors don't download them.
-const DashboardApp = lazy(() => import('./dashboard/DashboardApp').then(m => ({ default: m.DashboardApp })));
-const StudentApp = lazy(() => import('./student/StudentApp'));
-const StaffLoginPage = lazy(() => import('./pages/StaffLoginPage'));
-const OtpVerificationPage = lazy(() => import('./pages/OtpVerificationPage'));
-const StaffSetPasswordPage = lazy(() => import('./pages/StaffSetPasswordPage'));
+const DashboardApp = lazyWithReload(() => import('./dashboard/DashboardApp').then(m => ({ default: m.DashboardApp })));
+const StudentApp = lazyWithReload(() => import('./student/StudentApp'));
+const StaffLoginPage = lazyWithReload(() => import('./pages/StaffLoginPage'));
+const OtpVerificationPage = lazyWithReload(() => import('./pages/OtpVerificationPage'));
+const StaffSetPasswordPage = lazyWithReload(() => import('./pages/StaffSetPasswordPage'));
 
 /** An invitation link signs the teacher in; send them to choose a password wherever they landed. */
 function InviteRedirect() {
