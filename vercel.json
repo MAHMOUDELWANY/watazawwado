@@ -54,7 +54,7 @@
     },
     {
       "source": "/(.*)",
-      "destination": "/spa.html"
+      "destination": "/spa"
     }
   ]
 }
