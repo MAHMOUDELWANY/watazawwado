@@ -100,7 +100,7 @@ export function BrandSpinner({
           style={{ width: dimension * 0.65, height: dimension * 0.65 }}
         >
           <img
-            src="/logo.png"
+            src="/logo-256.png"
             alt="Watazawwado"
             className="w-full h-full object-contain p-[1px]"
           />
@@ -321,7 +321,7 @@ export function BrandLoader({
                 
                 {/* Logo Image */}
                 <img
-                  src="/logo.png"
+                  src="/logo-256.png"
                   alt="Watazawwado Logo"
                   className="w-full h-full object-contain drop-shadow-sm select-none"
                 />

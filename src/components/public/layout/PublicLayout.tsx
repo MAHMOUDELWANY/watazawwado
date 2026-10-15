@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Navbar } from '../../Navbar';
 import { Footer } from '../../Footer';
-import { ManageBookingModal } from '../../booking/ManageBookingModal';
-import { TeacherAuthModal } from '../../TeacherAuthModal';
-import { StudentAuthModal } from '../../StudentAuthModal';
-import { GetStartedModal } from '../../GetStartedModal';
+// Dialogs load on first open: they pull in booking, auth and country data the first paint doesn't need.
+const ManageBookingModal = lazy(() => import('../../booking/ManageBookingModal').then((m) => ({ default: m.ManageBookingModal })));
+const TeacherAuthModal = lazy(() => import('../../TeacherAuthModal').then((m) => ({ default: m.TeacherAuthModal })));
+const StudentAuthModal = lazy(() => import('../../StudentAuthModal').then((m) => ({ default: m.StudentAuthModal })));
+const GetStartedModal = lazy(() => import('../../GetStartedModal').then((m) => ({ default: m.GetStartedModal })));
 import { Language } from '../../../types';
 import { LearningGuide } from '../../LearningGuide';
 import { useTheme } from '../../ThemeProvider';
@@ -143,21 +144,22 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
 
 
         {/* Manage / Reschedule Booking Modal (3-hour rule policy foundation) */}
-        <ManageBookingModal
+        <Suspense fallback={null}>
+        {manageModalOpen && <ManageBookingModal
           isOpen={manageModalOpen}
           onClose={() => setManageModalOpen(false)}
           lang={lang}
-        />
+        />}
 
         {/* Teacher Auth & Diagnostics Modal (Phase 3 Backend Foundation) */}
-        <TeacherAuthModal
+        {teacherModalOpen && <TeacherAuthModal
           isOpen={teacherModalOpen}
           onClose={() => setTeacherModalOpen(false)}
           lang={lang}
-        />
+        />}
 
         {/* Get Started Choice Modal (Guest Demo, Account Creation, Login) */}
-        <GetStartedModal
+        {getStartedModalOpen && <GetStartedModal
           isOpen={getStartedModalOpen}
           onClose={() => setGetStartedModalOpen(false)}
           onOpenStudentSignup={() => {
@@ -169,15 +171,16 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
             setStudentModalOpen(true);
           }}
           lang={lang}
-        />
+        />}
 
         {/* Student Auth Modal */}
-        <StudentAuthModal
+        {studentModalOpen && <StudentAuthModal
           isOpen={studentModalOpen}
           onClose={() => setStudentModalOpen(false)}
           lang={lang}
           initialView={studentModalInitialView}
-        />
+        />}
+        </Suspense>
 
         {/* AI Learning Guide */}
         <LearningGuide lang={lang} />

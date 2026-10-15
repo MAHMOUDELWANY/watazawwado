@@ -94,7 +94,7 @@ export function PublicHomepage() {
             <div className="relative w-full max-w-[360px] sm:max-w-[420px] mx-auto">
               {/* Contained glow strictly behind the portrait frame */}
               <div className="absolute inset-1 bg-gradient-to-tr from-teal-500/20 via-primary/20 to-terracotta/25 rounded-3xl blur-md -z-10" />
-              <PortraitFrame src="/ustadh-mahmoud.jpg" alt="Ustadh Mahmoud" maxWidth={420} className="w-full shadow-2xl mx-auto" />
+              <PortraitFrame src="/ustadh-mahmoud.jpg" alt="Ustadh Mahmoud" maxWidth={420} priority className="w-full shadow-2xl mx-auto" />
 
               {/* Floating Credential Card */}
               <div className="hidden sm:block absolute -bottom-6 -left-6 rtl:-left-auto rtl:-right-6 bg-surface p-4 rounded-2xl shadow-xl border border-border max-w-[240px]">

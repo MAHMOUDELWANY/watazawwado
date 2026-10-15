@@ -32,6 +32,10 @@ function render(page: (typeof PUBLIC_PAGES)[number]): string {
     /<div id="root"><\/div>/,
     `<div id="root"><div style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)"><h1>${esc(page.h1En)}</h1><p>${esc(page.descEn)}</p><p>${esc(page.descAr)}</p><nav>${PUBLIC_PAGES.map((p) => `<a href="${p.path}">${esc(p.h1En)}</a>`).join(' · ')}</nav></div></div>`
   );
+  // The teacher photo is the largest element on these pages: fetch it first.
+  if (page.path === '/' || page.path === '/about') {
+    html = html.replace('</title>', '</title><link rel="preload" as="image" href="/ustadh-mahmoud.jpg" fetchpriority="high" />');
+  }
   return html;
 }
 

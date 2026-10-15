@@ -31,7 +31,7 @@ export function AboutPage() {
           <div className="grid md:grid-cols-12 gap-12 items-center pt-12">
             <div className="md:col-span-5 relative">
               <div className="absolute -inset-4 bg-gradient-to-tr from-teal-500/20 via-primary/10 to-terracotta/20 rounded-3xl -z-10 blur-xl transform rotate-2" />
-              <PortraitFrame src="/ustadh-mahmoud.jpg" alt="Ustadh Mahmoud" className="w-full max-w-sm mx-auto md:mx-0 shadow-xl" />
+              <PortraitFrame src="/ustadh-mahmoud.jpg" alt="Ustadh Mahmoud" priority className="w-full max-w-sm mx-auto md:mx-0 shadow-xl" />
               <div className="absolute -bottom-6 -right-6 rtl:-right-auto rtl:-left-6 glass-card p-4 rounded-xl shadow-lg border border-teal-500/30 max-w-[220px] hidden sm:block">
                 <div className="flex items-center gap-1.5 text-xs font-bold text-teal-700 dark:text-teal-300">
                   <span className="w-2 h-2 rounded-full bg-teal-500" />

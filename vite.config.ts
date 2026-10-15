@@ -17,6 +17,18 @@ export default defineConfig(() => {
         '@': path.resolve(__dirname, '.'),
       },
     },
+    build: {
+      rollupOptions: {
+        output: {
+          // Big libraries in their own files: downloaded in parallel and cached across deploys.
+          manualChunks: {
+            react: ['react', 'react-dom', 'react-router-dom'],
+            supabase: ['@supabase/supabase-js'],
+            motion: ['motion']
+          }
+        }
+      }
+    },
     server: {
       host: '0.0.0.0',
       port: 3000,

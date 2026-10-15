@@ -5,13 +5,6 @@ import { TeacherAuthProvider } from './lib/auth';
 import { ThemeProvider } from './components/ThemeProvider';
 import { PublicLayout } from './components/public/layout/PublicLayout';
 import { PublicHomepage } from './components/public/homepage/PublicHomepage';
-import { AboutPage } from './components/public/about/AboutPage';
-import { LearningPage } from './components/public/learning/LearningPage';
-import { HowItWorksPage } from './components/public/how-it-works/HowItWorksPage';
-import { PricingPage } from './components/public/pricing/PricingPage';
-import { FAQPage } from './components/public/faq/FAQPage';
-import { PrivacyPolicyPage } from './components/public/privacy/PrivacyPolicyPage';
-import { TermsPage } from './components/public/terms/TermsPage';
 import SEOProtection from './components/SEOProtection';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { useScrollPaletteTransition } from './lib/useScrollPaletteTransition';
@@ -36,6 +29,15 @@ function lazyWithReload<T extends React.ComponentType<any>>(load: () => Promise<
     })
   );
 }
+
+// Public pages other than the homepage load on demand, so the first visit downloads less.
+const AboutPage = lazyWithReload(() => import('./components/public/about/AboutPage').then((m) => ({ default: m.AboutPage })));
+const LearningPage = lazyWithReload(() => import('./components/public/learning/LearningPage').then((m) => ({ default: m.LearningPage })));
+const HowItWorksPage = lazyWithReload(() => import('./components/public/how-it-works/HowItWorksPage').then((m) => ({ default: m.HowItWorksPage })));
+const PricingPage = lazyWithReload(() => import('./components/public/pricing/PricingPage').then((m) => ({ default: m.PricingPage })));
+const FAQPage = lazyWithReload(() => import('./components/public/faq/FAQPage').then((m) => ({ default: m.FAQPage })));
+const PrivacyPolicyPage = lazyWithReload(() => import('./components/public/privacy/PrivacyPolicyPage').then((m) => ({ default: m.PrivacyPolicyPage })));
+const TermsPage = lazyWithReload(() => import('./components/public/terms/TermsPage').then((m) => ({ default: m.TermsPage })));
 
 // The dashboard, student portal and auth pages load on demand so public visitors don't download them.
 const DashboardApp = lazyWithReload(() => import('./dashboard/DashboardApp').then(m => ({ default: m.DashboardApp })));

@@ -31,7 +31,7 @@ export function BrandLogo({ variant = 'standard', className = '' }: BrandLogoPro
       */}
       <div className={`w-full h-full rounded-[inherit] bg-[#F9F7F1] dark:bg-[#EDE7DC] flex items-center justify-center overflow-hidden`}>
         <img 
-          src="/logo.png" 
+          src="/logo-256.png" 
           alt="Watazawwado Logo" 
           className={`w-full h-full object-contain drop-shadow-sm ${imgClasses[variant]}`} 
         />
