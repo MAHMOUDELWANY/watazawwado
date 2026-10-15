@@ -51,7 +51,7 @@ test('placement grading: passing levels in order gives the highest passed level'
   assert.equal(suggestLevel(qs, allWrong), 'beginner');
 });
 
-test('placement status: opens only after a trial booking, once per subject', async () => {
+test('placement status: opens after the learner first booking, once per subject', async () => {
   assert.equal((await placementStatus(fakeClient({ bookings: { count: 0 }, tests: { data: [] } }), learner)).status, 'not_yet');
   assert.equal((await placementStatus(fakeClient({ bookings: { count: 1 }, tests: { data: [] } }), learner)).status, 'take_now');
   assert.equal((await placementStatus(fakeClient({ bookings: { count: 1 }, tests: { data: [{ id: 't', status: 'submitted' }] } }), learner)).status, 'submitted');

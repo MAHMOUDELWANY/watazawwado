@@ -172,10 +172,10 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
   }, [fetchCoreData, fetchPackagesData, fetchPaymentsData]);
 
   // Placement test reminder (taken after booking; never blocks anything).
-  const [placementTodo, setPlacementTodo] = useState(false);
+  const [placementTodo, setPlacementTodo] = useState<string[]>([]);
   useEffect(() => {
-    authedJson<{ learners: Array<{ status: string }> }>('/api/placement/mine')
-      .then((d) => setPlacementTodo((d.learners || []).some((l) => l.status === 'take_now' || l.status === 'in_progress')))
+    authedJson<{ learners: Array<{ status: string; name: string }> }>('/api/placement/mine')
+      .then((d) => setPlacementTodo((d.learners || []).filter((l: any) => l.status === 'take_now' || l.status === 'in_progress').map((l: any) => l.name)))
       .catch(() => {});
   }, []);
 
@@ -346,13 +346,13 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
         </div>
       </div>
 
-      {placementTodo && (
+      {placementTodo.length > 0 && (
         <Link
           to="/student/placement"
           className="flex items-center justify-between gap-3 p-4 rounded-2xl border border-primary/30 bg-primary/5 hover:bg-primary/10 transition-colors"
         >
           <span className="text-sm text-foreground">
-            <strong className="font-semibold">{isAr ? 'اختبار تحديد المستوى' : 'Placement test'}</strong>
+            <strong className="font-semibold">{isAr ? 'اختبار تحديد المستوى' : 'Placement test'}{placementTodo.length > 1 ? ` (${placementTodo.join(isAr ? '، ' : ', ')})` : ''}</strong>
             {' · '}
             {isAr ? '5 دقايق بتساعد معلمك يجهّزلك الحصة على قد مستواك.' : '5 minutes that help your teacher prepare lessons for your level.'}
           </span>

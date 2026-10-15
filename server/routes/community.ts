@@ -184,7 +184,9 @@ export type PlacementStatus = 'not_yet' | 'take_now' | 'in_progress' | 'submitte
 
 /**
  * Owner decision 2026-10-16: the test is for the subject and level chosen at onboarding, shown
- * after the learner's free trial is booked, and taken once per subject. It never blocks booking.
+ * after the learner's first booking (the free trial; for a parent's other children, whatever lesson
+ * they book first, since the trial is one per account), taken once per subject by each learner.
+ * It never blocks booking.
  * shortcut: an unreadable table (migration missing) reports 'not_yet' so nothing is asked.
  */
 export async function placementStatus(client: any, learner: { id: string; learning_interest: string | null }): Promise<{ status: PlacementStatus; serviceId: string; testId?: string }> {
@@ -204,7 +206,6 @@ export async function placementStatus(client: any, learner: { id: string; learni
     .from('bookings')
     .select('id', { count: 'exact', head: true })
     .eq('student_id', learner.id)
-    .eq('booking_type', 'trial')
     .in('status', ['pending', 'confirmed', 'rescheduled', 'completed']);
   if (!(count || 0)) return { status: 'not_yet', serviceId };
   return open ? { status: 'in_progress', serviceId, testId: open.id } : { status: 'take_now', serviceId };

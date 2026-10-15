@@ -144,9 +144,14 @@ export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
               role="radio"
               aria-checked={l.id === learnerId}
               onClick={() => setLearnerId(l.id)}
-              className={`px-4 py-2 rounded-xl text-sm font-semibold border cursor-pointer ${l.id === learnerId ? 'border-primary bg-primary/10' : 'border-border hover:bg-surface-subtle'}`}
+              className={`px-4 py-2 rounded-xl text-sm font-semibold border cursor-pointer text-start ${l.id === learnerId ? 'border-primary bg-primary/10' : 'border-border hover:bg-surface-subtle'}`}
             >
-              {l.name}
+              <span className="block">{l.name}</span>
+              <span className="block text-[11px] font-normal text-muted-foreground">
+                {l.status === 'reviewed' || l.status === 'submitted' ? (isAr ? 'خلّص الاختبار' : 'Test done')
+                  : l.status === 'not_yet' ? (isAr ? 'بعد أول حجز' : 'After first booking')
+                  : (isAr ? 'جاهز للاختبار' : 'Ready for the test')}
+              </span>
             </button>
           ))}
         </div>
@@ -172,7 +177,7 @@ export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
           ) : learner.status === 'not_yet' ? (
             <>
               <CalendarPlus className="w-10 h-10 text-primary mx-auto" />
-              <h2 className="text-lg font-display font-bold text-foreground">{isAr ? 'الاختبار بيفتح بعد حجز الحصة التجريبية' : 'The test opens after you book your free trial'}</h2>
+              <h2 className="text-lg font-display font-bold text-foreground">{learners.length > 1 ? (isAr ? `اختبار ${learner.name} بيفتح بعد أول حجز له` : `${learner.name}'s test opens after their first booking`) : (isAr ? 'الاختبار بيفتح بعد حجز الحصة التجريبية' : 'The test opens after you book your free trial')}</h2>
               <p className="text-sm text-muted-foreground">
                 {isAr ? 'احجز حصتك التجريبية المجانية، وبعدها خد الاختبار القصير عشان معلمك يجهّزلك الحصة.' : 'Book your free trial, then take the short test so your teacher can prepare your lesson.'}
               </p>
@@ -185,7 +190,7 @@ export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
               <Sparkles className="w-10 h-10 text-primary mx-auto" />
               <h2 className="text-lg font-display font-bold text-foreground">{isAr ? 'اختبار تحديد المستوى' : 'Placement test'}</h2>
               <p className="text-sm text-foreground font-semibold">
-                {service ? (isAr ? service.arabicName : service.name) : learner.serviceId}
+                {learners.length > 1 ? `${learner.name} · ` : ''}{service ? (isAr ? service.arabicName : service.name) : learner.serviceId}
               </p>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 {isAr

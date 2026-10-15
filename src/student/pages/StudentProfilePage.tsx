@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { subjectLabel as subjectName } from '../../components/onboarding/SubjectPicker';
 import { Link } from 'react-router-dom';
 import {
   User,
@@ -689,7 +690,7 @@ export default function StudentProfilePage({
                     {isAr ? 'المادة الأساسية' : 'Primary Subject'}
                   </span>
                   <span className="text-sm sm:text-sm font-semibold text-foreground">
-                    {profile?.learningInterest || (isAr ? 'تلاوة القرآن وتجويده' : 'Quran Reading & Tajweed')}
+                    {profile?.learningInterest ? subjectName(profile.learningInterest, isAr) : (isAr ? 'لسه ما اتحددتش' : 'Not set yet')}
                   </span>
                 </div>
 
@@ -729,19 +730,7 @@ export default function StudentProfilePage({
                         ? (isAr ? 'الأستاذ محمود علواني' : 'Ustadh Mahmoud')
                         : (child.gender === 'female' ? (isAr ? 'الأستاذة أفنان' : 'Teacher Afnan') : (isAr ? 'الأستاذ محمود علواني' : 'Ustadh Mahmoud'));
                       
-                      const subjectLabel = child.learningInterest
-                        ? (child.learningInterest === 'quran-reading' || child.learningInterest === 'quran'
-                            ? (isAr ? 'تلاوة القرآن' : 'Quran Recitation')
-                            : child.learningInterest === 'tajweed'
-                            ? (isAr ? 'أحكام التجويد' : 'Tajweed')
-                            : child.learningInterest === 'quran-memorization' || child.learningInterest === 'hifz'
-                            ? (isAr ? 'حفظ القرآن' : 'Quran Memorization')
-                            : child.learningInterest === 'islamic-studies'
-                            ? (isAr ? 'دراسات إسلامية' : 'Islamic Studies')
-                            : child.learningInterest === 'arabic'
-                            ? (isAr ? 'اللغة العربية' : 'Arabic Language')
-                            : child.learningInterest)
-                        : (isAr ? 'تلاوة القرآن وتجويده' : 'Quran Reading & Tajweed');
+                      const subjectLabel = child.learningInterest ? subjectName(child.learningInterest, isAr) : (isAr ? 'لسه ما اتحددتش' : 'Not set yet');
 
                       return (
                         <div

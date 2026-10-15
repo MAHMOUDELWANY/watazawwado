@@ -1059,7 +1059,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
               activeEntitlements={packagesData?.entitlements || []}
               catalog={packagesData?.catalog || []}
               accessToken={accessToken}
-              renderConfirmationExtra={(c) => needsPlacement && c.isFreeTrial ? (
+              renderConfirmationExtra={() => needsPlacement ? (
                 <div className="mt-5 p-5 rounded-2xl border border-primary/30 bg-primary/5 text-center space-y-3">
                   <p className="text-sm text-foreground">
                     {isAr

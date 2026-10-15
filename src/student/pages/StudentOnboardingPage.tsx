@@ -24,6 +24,8 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '../../components/ui/Input';
+import { SubjectPicker, subjectLabel } from '../../components/onboarding/SubjectPicker';
+import { LevelLadder } from '../../components/onboarding/LevelLadder';
 import { Label } from '../../components/ui/Label';
 import { CountryTimezonePicker } from '../../components/ui/CountryTimezonePicker';
 import { WhatsAppPhoneInput } from '../../components/ui/WhatsAppPhoneInput';
@@ -37,75 +39,6 @@ interface StudentOnboardingPageProps {
   onCompleted?: (profile: any) => void;
   onOpenBookingModal?: () => void;
 }
-
-const SERVICES_OPTIONS = [
-  { 
-    id: 'quran-reading', 
-    labelEn: 'Quran Reading (Noorani Qaida / Foundation)',
-    labelAr: 'تلاوة القرآن وتأسيس القراءة (القاعدة النورانية)' 
-  },
-  { 
-    id: 'quran-memorization', 
-    labelEn: 'Quran Memorization (Hifz)',
-    labelAr: 'حفظ القرآن الكريم ومراجعته (الحفظ المتقن)' 
-  },
-  { 
-    id: 'tajweed', 
-    labelEn: 'Tajweed Rules & Accurate Pronunciation',
-    labelAr: 'أحكام التجويد ومخارج الحروف والإتقان' 
-  },
-  { 
-    id: 'islamic-studies', 
-    labelEn: 'Islamic Studies & Daily Fiqh',
-    labelAr: 'العلوم الشرعية والفقه اليومي الميسر' 
-  },
-  { 
-    id: 'modern-standard-arabic', 
-    labelEn: 'Modern Standard Arabic (Fusha)',
-    labelAr: 'اللغة العربية الفصحى وقواعد النحو' 
-  },
-  { 
-    id: 'egyptian-arabic', 
-    labelEn: 'Egyptian Colloquial Arabic (Ammiya)',
-    labelAr: 'اللهجة المصرية العامية للمحادثة والتواصل' 
-  },
-  { 
-    id: 'english', 
-    labelEn: 'English Language Support',
-    labelAr: 'اللغة الإنجليزية والمحادثة الأكاديمية' 
-  },
-];
-
-const LEVEL_OPTIONS = [
-  { 
-    id: 'beginner', 
-    titleEn: 'Complete Beginner', 
-    titleAr: 'مبتدئ تماماً',
-    descEn: 'Starting from alphabet, basic sounds, or no prior background',
-    descAr: 'البدء من الحروف الهجائية، الأصوات الأولية، أو بدون خلفية مسبقة' 
-  },
-  { 
-    id: 'elementary', 
-    titleEn: 'Elementary / Foundations', 
-    titleAr: 'تأسيسي / مبتدئ متقدم',
-    descEn: 'Can identify letters/words; developing basic fluency',
-    descAr: 'يميز الحروف والكلمات البسيطة؛ في مرحلة بناء الطلاقة الأولية' 
-  },
-  { 
-    id: 'intermediate', 
-    titleEn: 'Intermediate', 
-    titleAr: 'متوسط',
-    descEn: 'Can read Quran or converse with some hesitation',
-    descAr: 'يستطيع القراءة من المصحف أو التحدث مع بعض التردد وبحاجة لضبط' 
-  },
-  { 
-    id: 'advanced', 
-    titleEn: 'Advanced', 
-    titleAr: 'متقدم / متقن',
-    descEn: 'Fluent; polishing Tajweed rules, memorization, or advanced Arabic',
-    descAr: 'طلاقة عالية؛ تثبيت الحفظ، دقائق التجويد، أو التعمق اللغوي' 
-  },
-];
 
 const TEACHERS_CATALOG = [
   {
@@ -431,7 +364,7 @@ export default function StudentOnboardingPage({
                           <span>{c.name}</span>
                         </div>
                         <div className="text-xs text-muted-foreground mt-0.5">
-                          {c.currentLevel} • {SERVICES_OPTIONS.find(s => s.id === c.learningInterest)?.labelAr?.split(' ')[0] || ''}
+                          {c.currentLevel} • {subjectLabel(c.learningInterest, isRTL)}
                         </div>
                       </div>
                       <span className="text-xs font-bold text-primary px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20">
@@ -947,39 +880,28 @@ export default function StudentOnboardingPage({
                         </div>
 
                         {/* Subject & Level for this child */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        <div className="space-y-4 pt-1">
                           <div>
-                            <label className="block text-xs font-semibold text-foreground mb-1">
-                              {isRTL ? 'المادة المراد دراستها' : 'Subject of Study'}
-                            </label>
-                            <select
+                            <p className="text-xs font-semibold text-foreground mb-2">
+                              {isRTL ? `المادة اللي ${child.name.trim() || 'الطفل'} هيدرسها` : `What ${child.name.trim() || 'this child'} will study`}
+                            </p>
+                            <SubjectPicker
+                              name={`child-${index}-subject`}
                               value={child.learningInterest}
-                              onChange={(e) => handleUpdateChild(index, { learningInterest: e.target.value })}
-                              className="w-full px-3 py-2 rounded-xl border border-border glass-card text-foreground text-xs"
-                            >
-                              {SERVICES_OPTIONS.map((opt) => (
-                                <option key={opt.id} value={opt.id} className="bg-surface text-foreground">
-                                  {isRTL ? opt.labelAr : opt.labelEn}
-                                </option>
-                              ))}
-                            </select>
+                              onChange={(id) => handleUpdateChild(index, { learningInterest: id })}
+                              isAr={isRTL}
+                            />
                           </div>
-
                           <div>
-                            <label className="block text-xs font-semibold text-foreground mb-1">
-                              {isRTL ? 'المستوى الحالي للطفل' : 'Current Level'}
-                            </label>
-                            <select
+                            <p className="text-xs font-semibold text-foreground mb-2">
+                              {isRTL ? 'مستواه الحالي' : 'Current level'}
+                            </p>
+                            <LevelLadder
+                              name={`child-${index}-level`}
                               value={child.currentLevel}
-                              onChange={(e) => handleUpdateChild(index, { currentLevel: e.target.value })}
-                              className="w-full px-3 py-2 rounded-xl border border-border glass-card text-foreground text-xs"
-                            >
-                              {LEVEL_OPTIONS.map((lvl) => (
-                                <option key={lvl.id} value={lvl.id} className="bg-surface text-foreground">
-                                  {isRTL ? lvl.titleAr : lvl.titleEn}
-                                </option>
-                              ))}
-                            </select>
+                              onChange={(id) => handleUpdateChild(index, { currentLevel: id })}
+                              isAr={isRTL}
+                            />
                           </div>
                         </div>
 
@@ -1014,55 +936,17 @@ export default function StudentOnboardingPage({
               /* ADULT WORKFLOW: SUBJECT & LEVEL */
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-semibold text-foreground mb-2">
-                    {isRTL ? 'المادة أو المسار الدراسي الأساسي' : 'Primary Subject of Interest'}
-                  </label>
-                  <select
-                    value={learningInterest}
-                    onChange={(e) => setLearningInterest(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-border glass-surface text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 text-sm"
-                  >
-                    {SERVICES_OPTIONS.map((opt) => (
-                      <option key={opt.id} value={opt.id} className="bg-surface text-foreground">
-                        {isRTL ? opt.labelAr : opt.labelEn}
-                      </option>
-                    ))}
-                  </select>
+                  <p className="block text-sm font-semibold text-foreground mb-3">
+                    {isRTL ? 'عايز تدرس إيه؟' : 'What would you like to study?'}
+                  </p>
+                  <SubjectPicker name="adult-subject" value={learningInterest} onChange={setLearningInterest} isAr={isRTL} />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-foreground mb-2.5">
-                    {isRTL ? 'تحديد المستوى الحالي التقريبي' : 'Current Level Assessment'}
-                  </label>
-                  <div className="space-y-2.5">
-                    {LEVEL_OPTIONS.map((lvl) => {
-                      const isSelected = currentLevel === lvl.id;
-                      return (
-                        <button
-                          key={lvl.id}
-                          type="button"
-                          onClick={() => setCurrentLevel(lvl.id)}
-                          className={`w-full p-3.5 rounded-2xl border text-start transition-all cursor-pointer flex items-start justify-between gap-3 ${
-                            isSelected
-                              ? 'border-primary bg-primary/10 text-foreground ring-2 ring-primary/30 font-medium'
-                              : 'border-border/70 hover:border-border glass-surface text-muted-foreground'
-                          }`}
-                        >
-                          <div>
-                            <div className="font-semibold text-sm text-foreground">
-                              {isRTL ? lvl.titleAr : lvl.titleEn}
-                            </div>
-                            <div className="text-xs text-muted-foreground mt-0.5">
-                              {isRTL ? lvl.descAr : lvl.descEn}
-                            </div>
-                          </div>
-                          {isSelected && (
-                            <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
+                  <p className="block text-sm font-semibold text-foreground mb-3">
+                    {isRTL ? 'مستواك الحالي تقريبًا' : 'Your current level, roughly'}
+                  </p>
+                  <LevelLadder name="adult-level" value={currentLevel} onChange={setCurrentLevel} isAr={isRTL} />
                 </div>
 
                 <div>
@@ -1201,7 +1085,7 @@ export default function StudentOnboardingPage({
                         : (c.teacherGenderPreference === 'male_teacher' 
                           ? (isRTL ? 'الأستاذ محمود علواني' : 'Ustadh Mahmoud')
                           : (c.gender === 'female' ? (isRTL ? 'المعلمة أفنان' : 'Teacher Afnan') : (isRTL ? 'الأستاذ محمود علواني' : 'Ustadh Mahmoud')));
-                      const subject = SERVICES_OPTIONS.find(s => s.id === c.learningInterest)?.labelAr || c.learningInterest;
+                      const subject = subjectLabel(c.learningInterest, isRTL);
 
                       return (
                         <div key={i} className="p-3 rounded-xl glass-card border border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
@@ -1228,7 +1112,7 @@ export default function StudentOnboardingPage({
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">{isRTL ? 'المسار الدراسي:' : 'Subject:'}</span>
                     <span className="font-semibold text-foreground">
-                      {SERVICES_OPTIONS.find(s => s.id === learningInterest)?.labelAr || learningInterest}
+                      {subjectLabel(learningInterest, isRTL)}
                     </span>
                   </div>
                 </div>
