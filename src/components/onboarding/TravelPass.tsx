@@ -123,9 +123,80 @@ export function SealChoice<T extends string>({ options, value, onChange, label }
   );
 }
 
-/** "Your guide on the journey": the teacher choice, with an initial medallion per teacher. */
+/** Teacher photo in a ring of their colour, or their initial when there is no photo yet. */
+export function TeacherAvatar({ name, photo, color, size = 44 }: { name: string; photo?: string | null; color: string; size?: number }) {
+  const style = { width: size, height: size };
+  if (photo) {
+    return (
+      <span className="shrink-0 rounded-full p-[2px]" style={{ ...style, background: color }} aria-hidden="true">
+        <img src={photo} alt="" width={size - 4} height={size - 4} loading="lazy" decoding="async" className="w-full h-full rounded-full object-cover object-top bg-[#D8C6AE]" />
+      </span>
+    );
+  }
+  return (
+    <span className="grid place-items-center shrink-0 rounded-full text-white font-display" style={{ ...style, background: color, fontSize: size * 0.42 }} aria-hidden="true">
+      {name.replace(/^(أستاذة?|الأستاذة?|Ustadha?|Teacher)\s+/, '').charAt(0)}
+    </span>
+  );
+}
+
+/**
+ * A finished child's ticket, folded into a compact boarding pass so long families stay short:
+ * seal with the initial, name, then age, subject, level and guide, and an edit tear-off.
+ */
+export function FoldedPass({ name, age, subjectGlyph, subjectName, subjectColor, levelName, guideName, guidePhoto, guideColor, onEdit, onRemove, isAr }: {
+  name: string; age: string; subjectGlyph: string; subjectName: string; subjectColor: string; levelName: string;
+  guideName: string; guidePhoto?: string | null; guideColor: string; onEdit: () => void; onRemove?: () => void; isAr: boolean;
+}) {
+  const reduce = useReducedMotion();
+  return (
+    <motion.div
+      initial={reduce ? false : { opacity: 0, scaleY: 0.5 }}
+      animate={{ opacity: 1, scaleY: 1 }}
+      style={{ originY: 0 }}
+      transition={{ type: 'spring', stiffness: 260, damping: 26 }}
+      className="relative flex items-stretch rounded-2xl border border-[#D8C6AE]/70 bg-[#FFFDF8] dark:bg-[#1E2224] shadow-[0_14px_30px_-20px_rgba(139,73,53,.6)]"
+    >
+      <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0 p-3 sm:p-4">
+        <span className="grid place-items-center shrink-0 w-12 h-12 rounded-full border-[3px] border-double border-[#C51F24] text-[#C51F24] font-display text-xl -rotate-6" aria-hidden="true">
+          {name.trim().charAt(0).toUpperCase() || 'و'}
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="font-display text-lg font-bold text-[#1F1A17] dark:text-[#F3EFE6] truncate">{name}</p>
+          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-[#6B5E55] dark:text-[#C9BFB3]">
+            <span>{isAr ? `${age} سنة` : `Age ${age}`}</span>
+            <span className="inline-flex items-center gap-1">
+              <span className="grid place-items-center w-5 h-5 rounded-md text-white font-display text-[11px]" style={{ background: subjectColor }} aria-hidden="true">{subjectGlyph}</span>
+              {subjectName}
+            </span>
+            <span>{levelName}</span>
+            <span className="inline-flex items-center gap-1">
+              <TeacherAvatar name={guideName} photo={guidePhoto} color={guideColor} size={20} />
+              {guideName}
+            </span>
+          </div>
+        </div>
+      </div>
+      {/* tear-off stub with the edit action */}
+      <div className="relative flex flex-col items-center justify-center gap-0.5 px-3 sm:px-4 border-s-2 border-dashed border-[#D8C6AE]/80">
+        <span className="absolute -top-2.5 -start-2.5 w-5 h-5 rounded-full bg-background" aria-hidden="true" />
+        <span className="absolute -bottom-2.5 -start-2.5 w-5 h-5 rounded-full bg-background" aria-hidden="true" />
+        <button type="button" onClick={onEdit} className="text-xs font-bold text-[#087D91] dark:text-[#5FC3D3] hover:underline cursor-pointer px-2 py-2">
+          {isAr ? 'تعديل' : 'Edit'}
+        </button>
+        {onRemove && (
+          <button type="button" onClick={onRemove} className="text-xs text-destructive hover:underline cursor-pointer px-2 py-1.5">
+            {isAr ? 'شيل' : 'Remove'}
+          </button>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
+/** "Your guide on the journey": the teacher choice, with a photo (or initial) per teacher. */
 export function GuideChoice({ teachers, value, onChange, isAr }: {
-  teachers: { id: string; nameAr: string; nameEn: string }[];
+  teachers: { id: string; nameAr: string; nameEn: string; photo?: string | null }[];
   value: string;
   onChange: (id: string) => void;
   isAr: boolean;
@@ -148,9 +219,7 @@ export function GuideChoice({ teachers, value, onChange, isAr }: {
             }`}
             style={selected ? { borderColor: color } : undefined}
           >
-            <span className="grid place-items-center shrink-0 w-11 h-11 rounded-full text-white font-display text-lg" style={{ background: color }} aria-hidden="true">
-              {name.replace(/^(الأستاذة?|Ustadh|Teacher)\s+/, '').charAt(0)}
-            </span>
+            <TeacherAvatar name={name} photo={t.photo} color={color} />
             <span className="flex-1 min-w-0 font-bold text-sm text-foreground">{name}</span>
             {selected && <Check className="w-4 h-4 shrink-0" style={{ color }} aria-hidden="true" />}
           </button>

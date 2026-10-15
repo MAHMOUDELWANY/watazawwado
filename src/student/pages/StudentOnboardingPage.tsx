@@ -25,10 +25,10 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { Input } from '../../components/ui/Input';
 import { BookShelf } from '../../components/onboarding/BookShelf';
-import { TravelModeChoice, PassCard, PassField, passInputClass, SealChoice, GuideChoice } from '../../components/onboarding/TravelPass';
-import { JourneyPath } from '../../components/onboarding/JourneyPath';
+import { TravelModeChoice, PassCard, PassField, passInputClass, SealChoice, GuideChoice, FoldedPass } from '../../components/onboarding/TravelPass';
+import { JourneyPath, LEVELS } from '../../components/onboarding/JourneyPath';
 import { JourneyBackdrop, JourneyTrail } from '../../components/onboarding/JourneyChrome';
-import { subjectLabel } from '../../components/onboarding/subjects';
+import { subjectLabel, findSubject } from '../../components/onboarding/subjects';
 import { Label } from '../../components/ui/Label';
 import { CountryTimezonePicker } from '../../components/ui/CountryTimezonePicker';
 import { WhatsAppPhoneInput } from '../../components/ui/WhatsAppPhoneInput';
@@ -47,16 +47,16 @@ const TEACHERS_CATALOG = [
   {
     id: 'male_teacher',
     gender: 'male',
-    nameAr: 'الأستاذ محمود علواني',
-    nameEn: 'Ustadh Mahmoud Elwany',
-    avatar: '👨‍🏫'
+    nameAr: 'أستاذ محمود',
+    nameEn: 'Ustadh Mahmoud',
+    photo: '/teacher-mahmoud-avatar.jpg'
   },
   {
     id: 'female_teacher',
     gender: 'female',
-    nameAr: 'الأستاذة أفنان',
-    nameEn: 'Teacher Afnan',
-    avatar: '👩‍🏫'
+    nameAr: 'أستاذة أفنان',
+    nameEn: 'Ustadha Afnan',
+    photo: null as string | null
   }
 ];
 
@@ -143,12 +143,31 @@ export default function StudentOnboardingPage({
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Family accounts: only one child's ticket is open at a time; finished ones fold into a pass.
+  const childComplete = (c: ChildOnboardingForm) =>
+    c.name.trim().length >= 2 && /^[0-9]{1,3}$/.test(c.age.trim()) && Number(c.age) >= 3 && Number(c.age) <= 100;
+  const [openChild, setOpenChild] = useState<number>(() => {
+    const firstIncomplete = children.findIndex((c) => !childComplete(c));
+    return firstIncomplete;
+  });
+  const finishChild = (index: number): boolean => {
+    const c = children[index];
+    if (!c || childComplete(c)) {
+      setError(null);
+      setOpenChild(-1);
+      return true;
+    }
+    setError(isRTL
+      ? `كمّل اسم وسن الطفل رقم (${index + 1}) الأول.`
+      : `Please add the name and age of child #${index + 1} first.`);
+    return false;
+  };
   const [completedSuccess, setCompletedSuccess] = useState(false);
   const [assignedTeacherName, setAssignedTeacherName] = useState<string>(() => {
     const isFemale = currentProfile?.gender === 'female' || currentProfile?.teacherGenderPreference === 'female_teacher';
     return isFemale
-      ? (isRTL ? 'الأستاذة أفنان' : 'Teacher Afnan')
-      : (isRTL ? 'الأستاذ محمود علواني' : 'Ustadh Mahmoud Elwany');
+      ? (isRTL ? 'أستاذة أفنان' : 'Ustadha Afnan')
+      : (isRTL ? 'أستاذ محمود' : 'Ustadh Mahmoud');
   });
 
   // Handle adult gender switch -> auto routes teacher
@@ -156,24 +175,26 @@ export default function StudentOnboardingPage({
     setGender(selectedGender);
     if (selectedGender === 'male') {
       setTeacherGenderPreference('male_teacher');
-      setAssignedTeacherName(isRTL ? 'الأستاذ محمود علواني' : 'Ustadh Mahmoud Elwany');
+      setAssignedTeacherName(isRTL ? 'أستاذ محمود' : 'Ustadh Mahmoud');
     } else {
       setTeacherGenderPreference('female_teacher');
-      setAssignedTeacherName(isRTL ? 'الأستاذة أفنان' : 'Teacher Afnan');
+      setAssignedTeacherName(isRTL ? 'أستاذة أفنان' : 'Ustadha Afnan');
     }
   };
 
   const handleTeacherSelect = (teacherId: 'male_teacher' | 'female_teacher') => {
     setTeacherGenderPreference(teacherId);
     if (teacherId === 'male_teacher') {
-      setAssignedTeacherName(isRTL ? 'الأستاذ محمود علواني' : 'Ustadh Mahmoud Elwany');
+      setAssignedTeacherName(isRTL ? 'أستاذ محمود' : 'Ustadh Mahmoud');
     } else {
-      setAssignedTeacherName(isRTL ? 'الأستاذة أفنان' : 'Teacher Afnan');
+      setAssignedTeacherName(isRTL ? 'أستاذة أفنان' : 'Ustadha Afnan');
     }
   };
 
   // Children helpers
   const handleAddChild = () => {
+    if (openChild >= 0 && !finishChild(openChild)) return;
+    setOpenChild(children.length);
     setChildren(prev => [
       ...prev,
       {
@@ -191,6 +212,7 @@ export default function StudentOnboardingPage({
 
   const handleRemoveChild = (index: number) => {
     if (children.length <= 1) return;
+    setOpenChild((cur) => (cur === index ? -1 : cur > index ? cur - 1 : cur));
     setChildren(prev => prev.filter((_, i) => i !== index));
   };
 
@@ -376,10 +398,10 @@ export default function StudentOnboardingPage({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {children.map((c, idx) => {
                   const teacher = c.teacherGenderPreference === 'female_teacher' 
-                    ? (isRTL ? 'المعلمة أفنان' : 'Teacher Afnan')
+                    ? (isRTL ? 'أستاذة أفنان' : 'Ustadha Afnan')
                     : (c.teacherGenderPreference === 'male_teacher' 
-                      ? (isRTL ? 'الأستاذ محمود' : 'Ustadh Mahmoud')
-                      : (c.gender === 'female' ? (isRTL ? 'المعلمة أفنان' : 'Teacher Afnan') : (isRTL ? 'الأستاذ محمود' : 'Ustadh Mahmoud')));
+                      ? (isRTL ? 'أستاذ محمود' : 'Ustadh Mahmoud')
+                      : (c.gender === 'female' ? (isRTL ? 'أستاذة أفنان' : 'Ustadha Afnan') : (isRTL ? 'أستاذ محمود' : 'Ustadh Mahmoud')));
                   return (
                     <div key={idx} className="p-3.5 rounded-2xl glass-surface border border-border/60 flex items-center justify-between gap-3">
                       <div>
@@ -635,6 +657,32 @@ export default function StudentOnboardingPage({
                       ? (child.gender === 'female' ? 'female_teacher' : 'male_teacher')
                       : child.teacherGenderPreference;
 
+                    if (index !== openChild) {
+                      const found = findSubject(child.learningInterest);
+                      const guide = TEACHERS_CATALOG.find((t) => t.id === currentTeacherPreference) || TEACHERS_CATALOG[0];
+                      const level = LEVELS.find((l) => l.id === child.currentLevel) || LEVELS[0];
+                      return (
+                        <FoldedPass
+                          key={child.id}
+                          isAr={isRTL}
+                          name={child.name || (isRTL ? `الطفل رقم ${index + 1}` : `Child #${index + 1}`)}
+                          age={child.age}
+                          subjectGlyph={found?.subject.glyph || '؟'}
+                          subjectName={subjectLabel(child.learningInterest, isRTL)}
+                          subjectColor={found?.family.color || '#087D91'}
+                          levelName={isRTL ? level.ar : level.en}
+                          guideName={isRTL ? guide.nameAr : guide.nameEn}
+                          guidePhoto={guide.photo}
+                          guideColor={guide.id === 'male_teacher' ? '#087D91' : '#8B4935'}
+                          onEdit={() => {
+                            if (openChild >= 0 && !finishChild(openChild)) return;
+                            setOpenChild(index);
+                          }}
+                          onRemove={children.length > 1 ? () => handleRemoveChild(index) : undefined}
+                        />
+                      );
+                    }
+
                     return (
                       <PassCard key={child.id} name={child.name} isAr={isRTL}>
                         <div className="flex items-center justify-between -mt-2">
@@ -740,6 +788,15 @@ export default function StudentOnboardingPage({
                             className={`${passInputClass} !text-sm !font-normal`}
                           />
                         </div>
+
+                        <button
+                          type="button"
+                          onClick={() => finishChild(index)}
+                          className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-2xl bg-[#087D91] hover:bg-[#06697A] text-white font-bold text-sm cursor-pointer transition-colors"
+                        >
+                          <Check className="w-4 h-4" />
+                          {isRTL ? `تمام، احفظ تذكرة ${child.name.trim() || 'الطفل'}` : `Done — save ${child.name.trim() || 'this'} ticket`}
+                        </button>
                       </PassCard>
                     );
                   })}
@@ -753,7 +810,7 @@ export default function StudentOnboardingPage({
                     className="w-full py-3.5 px-4 rounded-2xl border-2 border-dashed border-primary/40 hover:border-primary bg-primary/5 hover:bg-primary/10 text-primary font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <Plus className="w-4 h-4" />
-                    <span>{isRTL ? '+ إضافة طفل آخر للحساب العائلي' : '+ Add Another Child to Family'}</span>
+                    <span>{isRTL ? 'ضيف طفل للقافلة' : 'Add another child to the caravan'}</span>
                   </button>
                 </div>
               </div>
@@ -818,12 +875,13 @@ export default function StudentOnboardingPage({
                 type="button"
                 onClick={() => {
                   if (learnerType === 'child') {
-                    for (let i = 0; i < children.length; i++) {
-                      if (!children[i].name.trim()) {
-                        setError(isRTL ? `يرجى إدخال اسم الطفل (${i + 1}) للمتابعة.` : `Please enter name for child #${i + 1}.`);
-                        return;
-                      }
+                    const incomplete = children.findIndex((c) => !childComplete(c));
+                    if (incomplete >= 0) {
+                      setOpenChild(incomplete);
+                      setError(isRTL ? `كمّل اسم وسن الطفل رقم (${incomplete + 1}) الأول.` : `Please add the name and age of child #${incomplete + 1} first.`);
+                      return;
                     }
+                    setOpenChild(-1);
                   }
                   setError(null);
                   setStep(3);
@@ -906,10 +964,10 @@ export default function StudentOnboardingPage({
                   <div className="space-y-2">
                     {children.map((c, i) => {
                       const teacher = c.teacherGenderPreference === 'female_teacher' 
-                        ? (isRTL ? 'المعلمة أفنان' : 'Teacher Afnan')
+                        ? (isRTL ? 'أستاذة أفنان' : 'Ustadha Afnan')
                         : (c.teacherGenderPreference === 'male_teacher' 
-                          ? (isRTL ? 'الأستاذ محمود علواني' : 'Ustadh Mahmoud')
-                          : (c.gender === 'female' ? (isRTL ? 'المعلمة أفنان' : 'Teacher Afnan') : (isRTL ? 'الأستاذ محمود علواني' : 'Ustadh Mahmoud')));
+                          ? (isRTL ? 'أستاذ محمود' : 'Ustadh Mahmoud')
+                          : (c.gender === 'female' ? (isRTL ? 'أستاذة أفنان' : 'Ustadha Afnan') : (isRTL ? 'أستاذ محمود' : 'Ustadh Mahmoud')));
                       const subject = subjectLabel(c.learningInterest, isRTL);
 
                       return (
