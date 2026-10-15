@@ -156,7 +156,7 @@ export function PortraitFrame({ src, alt, className, maxWidth = 400, priority = 
         alt={alt}
         loading={priority ? 'eager' : 'lazy'}
         decoding="async"
-        {...{ fetchpriority: priority ? 'high' : 'auto' }}
+        fetchPriority={priority ? 'high' : 'auto'}
         width={maxWidth}
         height={maxWidth}
         className="w-full h-auto object-cover aspect-[4/5]"

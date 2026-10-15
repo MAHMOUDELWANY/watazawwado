@@ -55,50 +55,65 @@ function InviteRedirect() {
   return null;
 }
 
+/** All routes; wrapped in BrowserRouter in the browser and StaticRouter when prerendering. */
+export function AppRoutes() {
+  return (
+    <>
+      <SEOProtection />
+      <InviteRedirect />
+      <ErrorBoundary>
+        <Suspense fallback={<BrandLoader size="page" />}>
+        <Routes>
+          {/* Public Routes with Shared Layout */}
+          <Route element={<PublicLayout />}>
+            <Route path="/" element={<PublicHomepage />} />
+            <Route path="/get-started" element={<PublicHomepage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/how-it-works" element={<HowItWorksPage />} />
+            <Route path="/learning" element={<LearningPage />} />
+            <Route path="/pricing" element={<PricingPage />} />
+            <Route path="/faq" element={<FAQPage />} />
+            <Route path="/privacy" element={<PrivacyPolicyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+          </Route>
+
+          {/* Authenticated and Special Routes */}
+          <Route path="/staff/login" element={<StaffLoginPage />} />
+          <Route path="/staff/set-password" element={<StaffSetPasswordPage />} />
+          <Route path="/staff" element={<Navigate to="/staff/login" replace />} />
+          <Route path="/teacher/login" element={<Navigate to="/staff/login" replace />} />
+          <Route path="/teacher/*" element={<DashboardApp />} />
+          <Route path="/dashboard/*" element={<DashboardApp />} />
+          <Route path="/student/login" element={<Navigate to="/student?auth=login" replace />} />
+          <Route path="/student/verify" element={<OtpVerificationPage />} />
+          <Route path="/otp" element={<OtpVerificationPage />} />
+          <Route path="/verify-otp" element={<OtpVerificationPage />} />
+          <Route path="/verify" element={<OtpVerificationPage />} />
+          <Route path="/student/*" element={<StudentApp />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+        </Suspense>
+      </ErrorBoundary>
+    </>
+  );
+}
+
+export function AppProviders({ children }: { children: React.ReactNode }) {
+  return (
+    <ThemeProvider>
+      <TeacherAuthProvider>{children}</TeacherAuthProvider>
+    </ThemeProvider>
+  );
+}
+
 export default function App() {
   useScrollPaletteTransition();
 
   return (
-    <ThemeProvider>
-      <TeacherAuthProvider>
-        <BrowserRouter>
-          <SEOProtection />
-          <InviteRedirect />
-          <ErrorBoundary>
-            <Suspense fallback={<BrandLoader size="page" />}>
-            <Routes>
-              {/* Public Routes with Shared Layout */}
-              <Route element={<PublicLayout />}>
-                <Route path="/" element={<PublicHomepage />} />
-                <Route path="/get-started" element={<PublicHomepage />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/how-it-works" element={<HowItWorksPage />} />
-                <Route path="/learning" element={<LearningPage />} />
-                <Route path="/pricing" element={<PricingPage />} />
-                <Route path="/faq" element={<FAQPage />} />
-                <Route path="/privacy" element={<PrivacyPolicyPage />} />
-                <Route path="/terms" element={<TermsPage />} />
-              </Route>
-
-              {/* Authenticated and Special Routes */}
-              <Route path="/staff/login" element={<StaffLoginPage />} />
-              <Route path="/staff/set-password" element={<StaffSetPasswordPage />} />
-              <Route path="/staff" element={<Navigate to="/staff/login" replace />} />
-              <Route path="/teacher/login" element={<Navigate to="/staff/login" replace />} />
-              <Route path="/teacher/*" element={<DashboardApp />} />
-              <Route path="/dashboard/*" element={<DashboardApp />} />
-              <Route path="/student/login" element={<Navigate to="/student?auth=login" replace />} />
-              <Route path="/student/verify" element={<OtpVerificationPage />} />
-              <Route path="/otp" element={<OtpVerificationPage />} />
-              <Route path="/verify-otp" element={<OtpVerificationPage />} />
-              <Route path="/verify" element={<OtpVerificationPage />} />
-              <Route path="/student/*" element={<StudentApp />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-            </Suspense>
-          </ErrorBoundary>
-        </BrowserRouter>
-      </TeacherAuthProvider>
-    </ThemeProvider>
+    <AppProviders>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </AppProviders>
   );
 }

@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import {defineConfig} from 'vite';
 
-export default defineConfig(() => {
+export default defineConfig(({ isSsrBuild }) => {
   const rootDir = fs.existsSync(process.cwd()) ? fs.realpathSync(process.cwd()) : path.resolve(__dirname);
   return {
     root: rootDir,
@@ -17,7 +17,7 @@ export default defineConfig(() => {
         '@': path.resolve(__dirname, '.'),
       },
     },
-    build: {
+    build: isSsrBuild ? { copyPublicDir: false } : {
       rollupOptions: {
         output: {
           // Big libraries in their own files: downloaded in parallel and cached across deploys.
