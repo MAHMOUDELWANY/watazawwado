@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { subjectLabel as subjectName } from '../../components/onboarding/SubjectPicker';
+import { subjectLabel as subjectName } from '../../components/onboarding/subjects';
 import { Link } from 'react-router-dom';
 import {
   User,

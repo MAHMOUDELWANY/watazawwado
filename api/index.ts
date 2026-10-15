@@ -44,7 +44,9 @@ import {
   processDueReminders
 } from '../server/notifications/reminderEngine.js';
 import { processIntegrationJobs } from '../server/integrations/worker.js';
-import { getEmailConfigStatus } from '../server/notifications/emailService.js';
+import { getEmailConfigStatus, sendEmail } from '../server/notifications/emailService.js';
+import { renderWelcomeEmail } from '../server/notifications/emailTemplates.js';
+import { resolveEmailLanguage } from '../server/notifications/dispatcher.js';
 import {
   evaluateAssessment,
   findForbiddenPricingFields,
@@ -7679,6 +7681,29 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
     if (updatedStudent.assigned_teacher_id) {
       const teacherMeta = await resolveTeacherMetadata(updatedStudent.assigned_teacher_id, supabaseAdmin);
       assignedTeacherName = teacherMeta ? teacherMeta.display_name : null;
+    }
+
+    // Welcome email, only the first time onboarding is completed (owner request 2026-10-16).
+    if (!req.studentUser?.studentProfile?.onboarding_completed && parentEmail) {
+      const welcomeTo = parentEmail;
+      const childNames = resolvedLearnerType === 'child' && Array.isArray(children)
+        ? children.map((c: any) => String(c?.name || '').trim()).filter(Boolean)
+        : [];
+      waitUntil((async () => {
+        try {
+          const lang = await resolveEmailLanguage(welcomeTo);
+          const mail = renderWelcomeEmail({
+            name: String(resolvedLearnerType === 'child' ? (parentName || name) : name).trim(),
+            teacherName: assignedTeacherName || routedTeacher.name || null,
+            isFamily: resolvedLearnerType === 'child',
+            childNames,
+            lang
+          });
+          await sendEmail({ to: welcomeTo, ...mail });
+        } catch (err) {
+          console.warn('[Onboarding] welcome email failed', err);
+        }
+      })());
     }
 
     // 5. Query updated linked children for response

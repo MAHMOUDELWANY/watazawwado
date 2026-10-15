@@ -1525,3 +1525,8 @@ h3, .text-heading-lg {
   #placement-report, #placement-report * { visibility: visible; }
   #placement-report { position: absolute; inset: 0; margin: 0; box-shadow: none; }
 }
+
+/* Onboarding backdrop: the star lattice drifts very slowly. */
+@keyframes journey-drift { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(72px, 72px, 0); } }
+.journey-lattice { animation: journey-drift 60s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .journey-lattice { animation: none; } }

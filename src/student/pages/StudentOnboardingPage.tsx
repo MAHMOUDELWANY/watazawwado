@@ -24,8 +24,10 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '../../components/ui/Input';
-import { SubjectPicker, subjectLabel } from '../../components/onboarding/SubjectPicker';
-import { LevelLadder } from '../../components/onboarding/LevelLadder';
+import { BookShelf } from '../../components/onboarding/BookShelf';
+import { JourneyPath } from '../../components/onboarding/JourneyPath';
+import { JourneyBackdrop, JourneyTrail } from '../../components/onboarding/JourneyChrome';
+import { subjectLabel } from '../../components/onboarding/subjects';
 import { Label } from '../../components/ui/Label';
 import { CountryTimezonePicker } from '../../components/ui/CountryTimezonePicker';
 import { WhatsAppPhoneInput } from '../../components/ui/WhatsAppPhoneInput';
@@ -317,19 +319,40 @@ export default function StudentOnboardingPage({
   // Success view
   if (completedSuccess) {
     return (
-      <div className="max-w-2xl mx-auto py-12 px-4 text-center">
+      <div className="relative isolate max-w-2xl mx-auto py-10 sm:py-14 px-4 text-center">
+        <JourneyBackdrop />
+        {/* The closing moment: the verse the site is named after, revealed word by word. */}
+        <div className="mb-8" dir="rtl" lang="ar">
+          <p className="font-display text-3xl sm:text-5xl leading-[1.7] text-[#087D91] dark:text-[#5FC3D3]">
+            {'﴿وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ﴾'.split(' ').map((w, i) => (
+              <motion.span
+                key={i}
+                className="inline-block mx-1.5"
+                initial={{ opacity: 0, y: 14, filter: 'blur(6px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                transition={{ delay: 0.25 + i * 0.28, duration: 0.6 }}
+              >
+                {w}
+              </motion.span>
+            ))}
+          </p>
+          <motion.div
+            className="mx-auto mt-3 h-[3px] w-24 rounded-full bg-[#C51F24]"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ delay: 1.8, duration: 0.6 }}
+          />
+        </div>
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="glass-card border border-border/60 rounded-3xl p-8 sm:p-12 shadow-xl space-y-6"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 2, duration: 0.6 }}
+          className="rounded-[28px] border border-border/60 bg-surface/85 backdrop-blur-xl p-6 sm:p-10 shadow-[0_40px_80px_-40px_rgba(8,125,145,.45)] space-y-6"
         >
-          <div className="w-16 h-16 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto">
-            <CheckCircle2 className="w-9 h-9" />
-          </div>
 
           <div>
             <h2 className="text-2xl sm:text-3xl font-display font-bold text-foreground">
-              {isRTL ? 'تم إعداد حسابك وملفك العائلي بنجاح!' : 'Your Learning Account is Ready!'}
+              {isRTL ? 'أهلًا بيك في عائلة وتزودوا' : 'Welcome to the Watazawwado family'}
             </h2>
             <p className="mt-2 text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
               {learnerType === 'child' ? (
@@ -412,38 +435,29 @@ export default function StudentOnboardingPage({
   }
 
   return (
-    <div className="max-w-3xl mx-auto py-8 sm:py-12 px-4">
-      {/* Header */}
-      <div className="text-center mb-8">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20 mb-3">
-          <Sparkles className="w-3.5 h-3.5" />
-          {isRTL ? 'إعداد الحساب والمسار التعليمي' : 'Personalized Onboarding'}
-        </span>
-        <h1 className="text-2xl sm:text-3xl font-display font-bold text-foreground">
-          {learnerType === 'child'
-            ? (isRTL ? 'إعداد حساب العائلة والأبناء' : 'Set Up Family & Children Profile')
-            : (isRTL ? 'تخصيص ملفك ومسارك الدراسي' : 'Set Up Your Learning Profile')}
-        </h1>
-        <p className="mt-2 text-xs sm:text-sm text-muted-foreground max-w-lg mx-auto leading-relaxed">
-          {isRTL 
-            ? 'خطوات يسيرة ومحكمة لمساعدتنا على مواءمة خطتك واختيار المعلم المعتمد الأنسب لأهدافك.'
-            : 'Quick, tailored setup ensuring you get the most suited teacher and optimal learning pace.'}
-        </p>
-
-        {/* Step Progress Indicators */}
-        <div className="flex items-center justify-center gap-2 mt-6">
-          {[1, 2, 3].map((s) => (
-            <div
-              key={s}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                s === step
-                  ? 'w-10 bg-primary'
-                  : s < step
-                  ? 'w-6 bg-primary/50'
-                  : 'w-6 bg-border'
-              }`}
-            />
-          ))}
+    <div className="relative isolate max-w-3xl mx-auto py-8 sm:py-12 px-4">
+      <JourneyBackdrop />
+      {/* Journey header: the trail, then the question of this step */}
+      <div className="text-center mb-8 space-y-6">
+        <JourneyTrail
+          step={step}
+          labels={isRTL ? ['مين هيتعلم', 'الزاد', 'الانطلاق'] : ['Who', 'Provision', 'Set off']}
+        />
+        <div>
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-foreground leading-tight">
+            {step === 1
+              ? (isRTL ? 'مين اللي هيبدأ الرحلة؟' : 'Who is starting the journey?')
+              : step === 2
+              ? (isRTL ? 'اختار زادك من العلم' : 'Choose your provision of knowledge')
+              : (isRTL ? 'كل حاجة جاهزة للانطلاق' : 'Everything is ready to set off')}
+          </h1>
+          <p className="mt-2 text-sm sm:text-base text-muted-foreground max-w-md mx-auto leading-relaxed">
+            {step === 1
+              ? (isRTL ? 'شوية بيانات بسيطة عشان نختارلك المعلم المناسب.' : 'A few details so we can match you with the right teacher.')
+              : step === 2
+              ? (isRTL ? 'اسحب كتابك من الرف، وقولنا انت فين في الطريق.' : 'Pull your book from the shelf, and tell us where you are on the road.')
+              : (isRTL ? 'راجع بياناتك، وبعدها نبدأ.' : 'Check your details, then we begin.')}
+          </p>
         </div>
       </div>
 
@@ -454,7 +468,7 @@ export default function StudentOnboardingPage({
       )}
 
       {/* Form Container */}
-      <div className="glass-card border border-border/60 rounded-3xl p-6 sm:p-8 shadow-xl">
+      <div className="rounded-[28px] border border-border/60 bg-surface/85 backdrop-blur-xl p-5 sm:p-10 shadow-[0_40px_80px_-40px_rgba(8,125,145,.45)]">
         {/* ================= STEP 1: ACCOUNT TYPE & PRIMARY CONTACT ================= */}
         {step === 1 && (
           <motion.div
@@ -885,7 +899,7 @@ export default function StudentOnboardingPage({
                             <p className="text-xs font-semibold text-foreground mb-2">
                               {isRTL ? `المادة اللي ${child.name.trim() || 'الطفل'} هيدرسها` : `What ${child.name.trim() || 'this child'} will study`}
                             </p>
-                            <SubjectPicker
+                            <BookShelf
                               name={`child-${index}-subject`}
                               value={child.learningInterest}
                               onChange={(id) => handleUpdateChild(index, { learningInterest: id })}
@@ -896,7 +910,7 @@ export default function StudentOnboardingPage({
                             <p className="text-xs font-semibold text-foreground mb-2">
                               {isRTL ? 'مستواه الحالي' : 'Current level'}
                             </p>
-                            <LevelLadder
+                            <JourneyPath
                               name={`child-${index}-level`}
                               value={child.currentLevel}
                               onChange={(id) => handleUpdateChild(index, { currentLevel: id })}
@@ -939,14 +953,14 @@ export default function StudentOnboardingPage({
                   <p className="block text-sm font-semibold text-foreground mb-3">
                     {isRTL ? 'عايز تدرس إيه؟' : 'What would you like to study?'}
                   </p>
-                  <SubjectPicker name="adult-subject" value={learningInterest} onChange={setLearningInterest} isAr={isRTL} />
+                  <BookShelf name="adult-subject" value={learningInterest} onChange={setLearningInterest} isAr={isRTL} />
                 </div>
 
                 <div>
                   <p className="block text-sm font-semibold text-foreground mb-3">
                     {isRTL ? 'مستواك الحالي تقريبًا' : 'Your current level, roughly'}
                   </p>
-                  <LevelLadder name="adult-level" value={currentLevel} onChange={setCurrentLevel} isAr={isRTL} />
+                  <JourneyPath name="adult-level" value={currentLevel} onChange={setCurrentLevel} isAr={isRTL} />
                 </div>
 
                 <div>

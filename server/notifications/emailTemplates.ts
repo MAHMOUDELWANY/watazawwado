@@ -538,3 +538,124 @@ export function renderSimpleNotice(params: {
     reason: params.staff ? STAFF_REASON : STUDENT_REASON
   }, params.title, params.lang);
 }
+
+/**
+ * Welcome email after onboarding ("welcome to the Watazawwado family"). Its own richer layout:
+ * a deep-teal hero carrying the verse the site is named after, then the three steps ahead.
+ * Table-based and inline-styled for email clients; same brand colours, font and legal footer.
+ */
+export function renderWelcomeEmail(params: {
+  name: string;
+  teacherName?: string | null;
+  isFamily?: boolean;
+  childNames?: string[];
+  lang?: EmailLang;
+}): EmailRenderResult {
+  const lang: EmailLang = params.lang || 'en';
+  const ar = lang === 'ar';
+  const dir = ar ? 'rtl' : 'ltr';
+  const align = ar ? 'right' : 'left';
+  const name = escapeHtml(params.name);
+  const kids = (params.childNames || []).map(escapeHtml).join(ar ? '، ' : ', ');
+  const t = (en: string, arText: string) => (ar ? arText : en);
+  const subject = t('Welcome to the Watazawwado family', 'أهلًا بيك في عائلة وتزودوا');
+  const steps: [string, string][] = [
+    [t('Book your free trial', 'احجز حصتك التجريبية المجانية'), t('30 minutes on Zoom, at a time that suits you. No card needed.', '30 دقيقة على زووم في الوقت اللي يناسبك، من غير أي دفع.')],
+    [t('A short placement test', 'اختبار تحديد مستوى قصير'), t('About 5 minutes after booking, so your teacher prepares the lesson for your exact level.', 'حوالي 5 دقايق بعد الحجز، عشان معلمك يجهّز الحصة على قد مستواك بالظبط.')],
+    [t('Your first lesson', 'أول حصة ليك'), t('Your teacher opens the class; you join from your account or the email we send.', 'المعلم بيفتح الفصل، وانت بتدخل من حسابك أو من الإيميل اللي بيوصلك.')]
+  ];
+  const intro = params.isFamily
+    ? t(`We are honoured that you chose us for your family's learning${kids ? ` — a warm welcome to ${kids}` : ''}. From today, every lesson is one-to-one, with a teacher who knows each child by name.`,
+        `يشرفنا إنك اخترتنا لرحلة تعلّم عائلتك${kids ? ` — وأهلًا وسهلًا بـ ${kids}` : ''}. من النهارده كل حصة فردية، مع معلم بيعرف كل طفل باسمه.`)
+    : t('We are honoured that you chose to begin this journey with us. From today, every lesson is one-to-one, shaped around you and your goals.',
+        'يشرفنا إنك اخترت تبدأ الرحلة دي معانا. من النهارده كل حصة فردية، ومتفصّلة على قدك وعلى أهدافك.');
+  const stepRows = steps.map(([title, body], i) => `
+          <tr>
+            <td width="44" valign="top" style="padding:0 0 18px;">
+              <div style="width:34px;height:34px;border-radius:17px;background:${i === 0 ? RED : TEAL};color:#FFFFFF;font-size:15px;font-weight:700;line-height:34px;text-align:center;">${i + 1}</div>
+            </td>
+            <td valign="top" dir="${dir}" style="padding:2px 0 18px;text-align:${align};">
+              <p class="text" style="margin:0 0 3px;font-size:16px;font-weight:700;color:#2C2A27;">${title}</p>
+              <p class="muted" style="margin:0;font-size:14px;line-height:1.6;color:#6B706A;">${body}</p>
+            </td>
+          </tr>`).join('');
+  const footerLinks = ar
+    ? `<a href="${SITE_URL}/terms" style="color:${TEAL};text-decoration:none;">الشروط</a> &nbsp;|&nbsp; <a href="${SITE_URL}/privacy" style="color:${TEAL};text-decoration:none;">الخصوصية</a> &nbsp;|&nbsp; <a href="${WHATSAPP_URL}" style="color:${TEAL};text-decoration:none;">واتساب <span dir="ltr">${WHATSAPP_DISPLAY}</span></a>`
+    : `<a href="${SITE_URL}/terms" style="color:${TEAL};text-decoration:none;">Terms</a> &nbsp;|&nbsp; <a href="${SITE_URL}/privacy" style="color:${TEAL};text-decoration:none;">Privacy</a> &nbsp;|&nbsp; <a href="${WHATSAPP_URL}" style="color:${TEAL};text-decoration:none;">WhatsApp ${WHATSAPP_DISPLAY}</a>`;
+
+  const html = `<!DOCTYPE html>
+<html lang="${lang}" dir="${dir}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <title>${subject}</title>
+  <style>
+    @font-face { font-family: 'Thmanyah Sans'; font-weight: 400; src: url('${FONT_URL}/thmanyahsans-Regular.woff2') format('woff2'); }
+    @font-face { font-family: 'Thmanyah Sans'; font-weight: 700; src: url('${FONT_URL}/thmanyahsans-Bold.woff2') format('woff2'); }
+    @font-face { font-family: 'Thmanyah Serif'; font-weight: 700; src: url('${FONT_URL}/thmanyahserifdisplay-Bold.woff2') format('woff2'); }
+    body, table, td, p, a, h1 { font-family: ${FONT_STACK}; }
+    @media (prefers-color-scheme: dark) {
+      .page { background:#0F1213 !important; }
+      .shell { background:#1A1D1F !important; border-color:#2E3338 !important; }
+      .text { color:#ECEAE6 !important; }
+      .muted { color:#A7ACA6 !important; }
+      .teacher { background:#20292B !important; border-color:#2F4044 !important; }
+    }
+    @media (max-width: 600px) { .pad { padding-left:20px !important; padding-right:20px !important; } .verse { font-size:24px !important; } }
+  </style>
+</head>
+<body class="page" style="margin:0;padding:0;background:#F3EFE6;">
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">${t('Your learning journey starts here — your free trial is one click away.', 'رحلتك في التعلّم بتبدأ من هنا — حصتك التجريبية على بعد ضغطة.')}</div>
+  <table role="presentation" class="page" width="100%" cellspacing="0" cellpadding="0" style="background:#F3EFE6;">
+    <tr><td align="center" style="padding:28px 12px;">
+      <table role="presentation" class="shell" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;background:#FFFFFF;border:1px solid #E5DFD5;border-radius:22px;overflow:hidden;">
+        <tr><td align="center" style="background:#06505D;background-image:radial-gradient(circle at 20% 0%,#0A8DA3 0%,#06505D 55%,#04343D 100%);padding:34px 28px 30px;">
+          <img src="${LOGO_URL}" width="120" alt="Watazawwado" style="display:block;width:120px;max-width:45%;height:auto;border:0;margin:0 auto 22px;background:#FFFFFF;border-radius:16px;padding:8px;">
+          <p class="verse" dir="rtl" style="margin:0;font-family:'Thmanyah Serif',${FONT_STACK};font-size:28px;line-height:1.6;color:#F3E7D3;">﴿وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ﴾</p>
+          <p style="margin:6px 0 0;font-size:12px;letter-spacing:1px;color:#BFD9DD;">${t('Al-Baqarah 197 — the verse our name comes from', 'البقرة: 197 — الآية اللي اسمنا منها')}</p>
+          <div style="width:64px;height:3px;background:${RED};margin:20px auto 0;border-radius:2px;"></div>
+        </td></tr>
+        <tr><td class="pad" dir="${dir}" style="padding:30px 36px 8px;text-align:${align};">
+          <h1 class="text" style="margin:0 0 6px;font-size:24px;line-height:1.35;color:#2C2A27;">${t(`Welcome to the family, ${name}`, `أهلًا بيك في العيلة يا ${name}`)}</h1>
+          <p class="text" style="margin:0 0 22px;font-size:15px;line-height:1.8;color:#2C2A27;">${intro}</p>
+          ${params.teacherName ? `<table role="presentation" class="teacher" width="100%" cellspacing="0" cellpadding="0" style="background:#F2F8F9;border:1px solid #CFE3E6;border-radius:14px;margin:0 0 24px;">
+            <tr><td dir="${dir}" style="padding:14px 18px;text-align:${align};">
+              <p class="muted" style="margin:0;font-size:12px;color:#5D7A7F;">${t('Your teacher', params.isFamily ? 'المعلم المسؤول' : 'معلمك')}</p>
+              <p class="text" style="margin:2px 0 0;font-size:17px;font-weight:700;color:${TEAL};">${escapeHtml(params.teacherName)}</p>
+            </td></tr>
+          </table>` : ''}
+          <p class="text" style="margin:0 0 14px;font-size:13px;font-weight:700;color:${BROWN};">${t('What happens next', 'اللي جاي')}</p>
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0">${stepRows}</table>
+          <table role="presentation" cellspacing="0" cellpadding="0" align="center" style="margin:8px auto 26px;">
+            <tr><td style="border-radius:12px;background:${RED};">
+              <a href="${SITE_URL}/student/book" style="display:inline-block;padding:14px 32px;font-size:16px;font-weight:700;color:#FFFFFF;text-decoration:none;border-radius:12px;">${t('Book my free trial', 'احجز حصتي التجريبية')}</a>
+            </td></tr>
+          </table>
+          <p class="muted" style="margin:0 0 26px;font-size:13px;line-height:1.7;color:#6B706A;text-align:center;">${t('Questions? Write to us in the Messages section of your account, or on WhatsApp', 'عندك سؤال؟ اكتبلنا في "الرسائل" في حسابك، أو على واتساب')} <a href="${WHATSAPP_URL}" style="color:${TEAL};text-decoration:none;" dir="ltr">${WHATSAPP_DISPLAY}</a></p>
+        </td></tr>
+        <tr><td class="pad" dir="${dir}" style="padding:20px 32px 26px;border-top:1px solid #E5DFD5;text-align:center;">
+          <p class="muted" style="margin:0 0 12px;font-size:12px;line-height:1.6;color:#6B706A;">${STUDENT_REASON[lang]}</p>
+          <p style="margin:0 0 8px;font-size:12px;">${footerLinks}</p>
+          <p class="muted" style="margin:0;font-size:11px;color:#6B706A;">${SUPPORT_EMAIL} · © ${new Date().getFullYear()} Watazawwado</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+  const text = [
+    subject,
+    'وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ (2:197)',
+    t(`Welcome to the family, ${params.name}`, `أهلًا بيك في العيلة يا ${params.name}`),
+    intro,
+    params.teacherName ? `${t('Your teacher', 'معلمك')}: ${params.teacherName}` : '',
+    ...steps.map(([title, body], i) => `${i + 1}. ${title} — ${body}`),
+    `${t('Book my free trial', 'احجز حصتي التجريبية')}: ${SITE_URL}/student/book`,
+    `WhatsApp: ${WHATSAPP_DISPLAY}`
+  ].filter((l) => l !== '').join('\n\n');
+
+  return { subject, html, text };
+}
