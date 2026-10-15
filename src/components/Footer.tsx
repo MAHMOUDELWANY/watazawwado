@@ -1,5 +1,6 @@
 import { BrandLogo } from './ui/BrandLogo';
 import React from 'react';
+import { SocialLinks } from './ui/SocialLinks';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Globe, ArrowUp } from 'lucide-react';
@@ -137,6 +138,12 @@ export const Footer: React.FC<FooterProps> = ({
             >
               {isEn ? 'Book Free 30-Min Trial' : 'احجز جلسة تجريبية مجانية'}
             </button>
+            <div className="pt-4">
+              <div className="font-bold text-sm text-foreground mb-3">
+                {isEn ? 'Follow us' : 'تابعنا'}
+              </div>
+              <SocialLinks isAr={!isEn} />
+            </div>
           </div>
 
         </div>
@@ -144,7 +151,7 @@ export const Footer: React.FC<FooterProps> = ({
         {/* Bottom Credits & Policies */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
           <div>
-            © {new Date().getFullYear()} Watazawwado • Ustadh Mahmoud. {isEn ? 'Personal Teaching Practice. All rights reserved.' : 'جميع الحقوق محفوظة للأستاذ محمود.'}
+            © {new Date().getFullYear()} Watazawwado Academy. {isEn ? 'All rights reserved.' : 'جميع الحقوق محفوظة لأكاديمية وتزودوا.'}
           </div>
 
           <div className="flex flex-wrap items-center gap-4 sm:gap-6">
