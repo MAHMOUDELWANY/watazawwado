@@ -48,9 +48,10 @@ function render(page: (typeof PUBLIC_PAGES)[number], body: string | null): strin
     `</nav></div>`;
   swap(/<div id="root"><\/div>/, `<div id="root">${body || summary}</div>`);
   if (cssLink && inlineCss) html = html.replace(cssLink[0], () => `<style>${inlineCss}</style>`);
-  // The teacher photo is the largest element on these pages: fetch it first.
+  // On wide screens the teacher photo is the largest element above the fold: fetch it first.
+  // On phones it sits below the fold, so preloading it would only compete with the page itself.
   if (page.path === '/' || page.path === '/about') {
-    html = html.replace('</title>', () => '</title><link rel="preload" as="image" href="/ustadh-mahmoud.jpg" fetchpriority="high" />');
+    html = html.replace('</title>', () => '</title><link rel="preload" as="image" href="/ustadh-mahmoud.jpg" fetchpriority="high" media="(min-width: 1024px)" />');
   }
   return html;
 }

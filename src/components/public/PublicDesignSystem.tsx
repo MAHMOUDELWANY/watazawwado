@@ -141,11 +141,9 @@ interface PortraitFrameProps {
   className?: string;
   /** Maximum display width in pixels. Prevents upscaling beyond source resolution. */
   maxWidth?: number;
-  /** Above-the-fold image (the page's largest element): load immediately with high priority. */
-  priority?: boolean;
 }
 
-export function PortraitFrame({ src, alt, className, maxWidth = 400, priority = false }: PortraitFrameProps) {
+export function PortraitFrame({ src, alt, className, maxWidth = 400 }: PortraitFrameProps) {
   return (
     <div 
       className={cn('portrait-frame', className)}
@@ -154,9 +152,10 @@ export function PortraitFrame({ src, alt, className, maxWidth = 400, priority = 
       <img
         src={src}
         alt={alt}
-        loading={priority ? 'eager' : 'lazy'}
+        // Lazy on purpose: on phones the portrait is below the fold. Wide screens get a
+        // media-scoped preload from scripts/prerender-seo.ts instead.
+        loading="lazy"
         decoding="async"
-        fetchPriority={priority ? 'high' : 'auto'}
         width={maxWidth}
         height={maxWidth}
         className="w-full h-auto object-cover aspect-[4/5]"
