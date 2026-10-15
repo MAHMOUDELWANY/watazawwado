@@ -42,7 +42,7 @@ export default function StaffSetPasswordPage() {
       return;
     }
     clearAuthLinkType();
-    navigate('/dashboard', { replace: true });
+    navigate('/staff/agreement', { replace: true });
   };
 
   return (
@@ -107,7 +107,7 @@ export default function StaffSetPasswordPage() {
             </div>
             {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
             <Button type="submit" isLoading={busy || loading} className="w-full">
-              {t('Save and open my dashboard', 'احفظ وافتح لوحة التحكم')}
+              {t('Save and continue', 'احفظ وكمّل')}
             </Button>
           </form>
         )}

@@ -170,6 +170,8 @@ const MAX_LOST_TRIALS = 5;
 const MAX_STUDENT_REFUNDED_LESSONS = 3;
 // Bump when the terms page changes in substance; stored with each booking/package as proof of consent.
 const TERMS_VERSION = '2026-10-15.2';
+// Keep in sync with AGREEMENT_VERSION in src/pages/StaffAgreementPage.tsx; bump to make every teacher accept again.
+const TEACHER_AGREEMENT_VERSION = '2026-10-15';
 
 /** Cancels unpaid bookings whose payment hold expired, freeing their slots. Never throws. */
 async function releaseExpiredPaymentHolds(client: any): Promise<void> {
@@ -1750,7 +1752,7 @@ async function verifyTeacherAuth(req: any, res: any, next: any) {
     // Authoritative role lookup in teacher_accounts allowlist
     const { data: teacherRecord, error: teacherError } = await supabaseAdmin
       .from('teacher_accounts')
-      .select('role, is_active, display_name, gender')
+      .select('role, is_active, display_name, gender, agreement_version')
       .eq('email', email)
       .maybeSingle();
 
@@ -1796,8 +1798,15 @@ async function verifyTeacherAuth(req: any, res: any, next: any) {
       role: teacherRecord.role,
       appRole: teacherRecord.role,
       display_name: teacherRecord.display_name || 'Ustadh Mahmoud',
-      gender: teacherRecord.gender || 'male'
+      gender: teacherRecord.gender || 'male',
+      agreementRequired: teacherRecord.role !== 'super_admin' && teacherRecord.agreement_version !== TEACHER_AGREEMENT_VERSION
     };
+    // A teacher must accept the current teacher agreement before using the dashboard.
+    const reqPath = String(req.originalUrl || req.url || '').split('?')[0];
+    if (req.teacherUser.agreementRequired && !reqPath.endsWith('/api/dashboard/me') && !reqPath.endsWith('/api/dashboard/agreement/accept')) {
+      res.setHeader('x-auth-diagnostic-stage', 'AGREEMENT_REQUIRED');
+      return res.status(403).json({ error: 'Please read and accept the teacher agreement first.', code: 'AGREEMENT_REQUIRED', diagnosticStage: 'AGREEMENT_REQUIRED' });
+    }
     return next();
   } catch (err) {
     console.error('[verifyTeacherAuth] Unexpected error during authentication verification:', err);
@@ -2165,9 +2174,28 @@ app.get('/api/dashboard/me', verifyTeacherAuth, async (req: any, res: any) => {
       name: req.teacherUser?.name || req.teacherUser?.user_metadata?.name || 'Ustadh Mahmoud',
       role: req.teacherUser?.appRole || 'teacher',
       appRole: req.teacherUser?.appRole || 'teacher',
-      isTeacher: true
+      isTeacher: true,
+      agreementRequired: req.teacherUser?.agreementRequired === true
     }
   });
+});
+
+// Teacher accepts the current teacher agreement (/staff/agreement). Stored as proof with the version.
+app.post('/api/dashboard/agreement/accept', verifyTeacherAuth, async (req: any, res: any) => {
+  if (req.body?.version !== TEACHER_AGREEMENT_VERSION || req.body?.accepted !== true) {
+    return res.status(400).json({ error: 'Please tick the box to accept the current agreement.', code: 'AGREEMENT_VERSION' });
+  }
+  const supabase = getSupabaseAdminClient();
+  if (!supabase || !req.teacherUser?.email) return res.json({ success: true }); // dev tokens have no row
+  const { error } = await supabase
+    .from('teacher_accounts')
+    .update({ agreement_version: TEACHER_AGREEMENT_VERSION, agreement_accepted_at: new Date().toISOString() })
+    .eq('email', String(req.teacherUser.email).toLowerCase().trim());
+  if (error) {
+    console.error('[Teacher agreement accept]', error.message);
+    return res.status(500).json({ error: 'Could not save your acceptance. Please try again.' });
+  }
+  return res.json({ success: true });
 });
 
 // 13. DASHBOARD: Fetch today's lessons
@@ -3289,6 +3317,7 @@ app.get('/api/dashboard/admin/teachers', verifyTeacherAuth, requireSuperAdmin, a
         assigned_students_count: (assignedCountByTeacher.get(countKey) || 0) + (assignedCountByTeacher.get(emailLower) || 0),
         upcoming_lessons_count: (upcomingCountByTeacher.get(countKey) || 0) + (upcomingCountByTeacher.get(emailLower) || 0),
         completed_lessons_count: (completedCountByTeacher.get(countKey) || 0) + (completedCountByTeacher.get(emailLower) || 0),
+        agreement_accepted_at: t.agreement_version === TEACHER_AGREEMENT_VERSION ? t.agreement_accepted_at : null,
         created_at: t.created_at
       };
     });

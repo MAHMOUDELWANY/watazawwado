@@ -49,6 +49,10 @@ export interface NotificationPayload {
     isTrial?: boolean;
     feeAmount?: number | null;
     currency?: string | null;
+    /** Terms the student accepted for this booking; repeated in the confirmation email (durable medium). */
+    termsVersion?: string | null;
+    termsAcceptedAt?: string | null;
+    isPackageLesson?: boolean;
     oldDate?: string;
     oldTimeDisplay?: string;
     /** The lesson's own teacher (RULES.md §1); teacher emails fall back to the official address. */

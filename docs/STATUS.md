@@ -64,7 +64,9 @@ Read this first in a new session, then `RULES.md` (binding owner decisions) and 
 - Separate early-start checkbox on paid single bookings and package purchases; server refuses without it (EARLY_START_REQUIRED). Package metadata stores early_start_accepted_at; for bookings the terms_version proves it.
 - Privacy: controller, legal basis per purpose, retention periods, all GDPR rights + UODO, transfers outside the EEA, children, deletion "within one month" instead of 48 hours.
 - Jalila sends Gemini the student's first name only.
-- **Waiting for the owner:** trader details (legal name, address, CEIDG, NIP) — fill `TRADER` in src/components/public/terms/TermsPage.tsx; the block shows once the name is set. Must be done before taking regular payments.
+- Teacher agreement (version 2026-10-15) at /staff/agreement: shown right after a new teacher sets a password; every teacher must accept the current version before any dashboard API works (verifyTeacherAuth → 403 AGREEMENT_REQUIRED; super admin exempt). Stored in teacher_accounts.agreement_version/agreement_accepted_at (migration 20261016000002, applied). Teachers page shows who accepted.
+- Booking confirmation email repeats the accepted terms version/date + link and, for paid single lessons, the early-start / 14-day withdrawal notice.
+- **Waiting for the owner:** trader name + postal address (not a registered business, so no CEIDG/NIP; never publish the PESEL). Fill `TRADER` in src/components/public/terms/TermsPage.tsx. Create the privacy@watazawwado.academy mailbox.
 
 ## Next (in order)
 

@@ -19,6 +19,7 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 - **[Decided 2026-10-15] Teacher notifications:** a teacher gets an email and an on-site notification (dashboard bell) when one of their lessons is booked (trial or paid), moved or cancelled.
 - **[Decided 2026-10-15] Adding teachers:** the super admin adds a teacher (email, name, gender) on the Teachers page; the teacher receives an invitation email to set a password and signs in at /staff/login. Each teacher's emails go to the email of their teacher account, so no Vercel setting is needed per teacher.
 - **[Decided 2026-10-15] Teacher time zones:** each teacher enters weekly hours in their own time zone on "My hours"; students always see times in theirs.
+- **[Decided 2026-10-15] Teacher agreement.** Every teacher reads and accepts the teacher agreement (/staff/agreement) after setting a password and again whenever its version changes; the dashboard is blocked until then. Pay is agreed separately in writing.
 - Roles: `student` (adult learner), `parent` (guardian account managing children), `teacher`, `super_admin`.
 
 ## 2. Accounts & booking

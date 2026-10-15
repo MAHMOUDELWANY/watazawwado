@@ -45,6 +45,7 @@ const StudentApp = lazyWithReload(() => import('./student/StudentApp'));
 const StaffLoginPage = lazyWithReload(() => import('./pages/StaffLoginPage'));
 const OtpVerificationPage = lazyWithReload(() => import('./pages/OtpVerificationPage'));
 const StaffSetPasswordPage = lazyWithReload(() => import('./pages/StaffSetPasswordPage'));
+const StaffAgreementPage = lazyWithReload(() => import('./pages/StaffAgreementPage'));
 
 /** An invitation link signs the teacher in; send them to choose a password wherever they landed. */
 function InviteRedirect() {
@@ -80,6 +81,7 @@ export function AppRoutes() {
           {/* Authenticated and Special Routes */}
           <Route path="/staff/login" element={<StaffLoginPage />} />
           <Route path="/staff/set-password" element={<StaffSetPasswordPage />} />
+          <Route path="/staff/agreement" element={<StaffAgreementPage />} />
           <Route path="/staff" element={<Navigate to="/staff/login" replace />} />
           <Route path="/teacher/login" element={<Navigate to="/staff/login" replace />} />
           <Route path="/teacher/*" element={<DashboardApp />} />

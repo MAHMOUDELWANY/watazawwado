@@ -30,3 +30,16 @@ test('emails render in a single language, English by default', () => {
   const staff = renderTeacherNotification({ eventType: 'new_booking', summary: 'Yusuf booked a lesson.', details: [['Student', 'الطالب', 'Yusuf']] });
   assert.match(staff.subject, /New lesson booked/);
 });
+
+// Legal review 2026-10-15: the confirmation repeats the accepted terms and, for a paid single lesson, the 14-day withdrawal notice.
+test('booking confirmation states the accepted terms and the withdrawal notice', () => {
+  const base = { learnerName: 'Yusuf', serviceName: 'Tajweed', date: 'Mon', timeDisplay: '5 PM', timezone: 'Europe/London', durationMinutes: 60, bookingRef: 'MHM-1', termsVersion: '2026-10-15.2', termsAcceptedAt: '2026-10-15T10:00:00Z' };
+  const paid = renderStudentBookingConfirmation({ ...base, feeAmount: 9 });
+  assert.match(paid.html, /terms version 2026-10-15\.2, which you accepted on 2026-10-15/);
+  assert.match(paid.html, /withdraw within 14 days/);
+  const pkg = renderStudentBookingConfirmation({ ...base, feeAmount: 9, isPackageLesson: true });
+  assert.match(pkg.html, /terms version 2026-10-15\.2/);
+  assert.ok(!/withdraw within 14 days/.test(pkg.html), 'package lessons were covered at purchase');
+  const old = renderStudentBookingConfirmation({ ...base, termsVersion: '2026-10-15', feeAmount: 9 });
+  assert.ok(!/withdraw within 14 days/.test(old.html), 'older bookings had no early-start request');
+});

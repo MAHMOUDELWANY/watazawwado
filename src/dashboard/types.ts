@@ -302,6 +302,8 @@ export interface TeacherAccountItem {
   assigned_students_count: number;
   upcoming_lessons_count: number;
   completed_lessons_count: number;
+  /** When the teacher accepted the current teacher agreement; null if not yet. */
+  agreement_accepted_at?: string | null;
   created_at?: string;
 }
 

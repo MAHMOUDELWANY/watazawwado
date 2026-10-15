@@ -246,6 +246,13 @@ export default function TeachersPage() {
                 }`}>
                   {tc.is_active ? t('Active', 'نشط') : t('Stopped', 'متوقف')}
                 </span>
+                {tc.role !== 'super_admin' && (
+                  <span className="text-[12px] text-muted-foreground">
+                    {tc.agreement_accepted_at
+                      ? t(`Agreement accepted ${String(tc.agreement_accepted_at).slice(0, 10)}`, `وافق على العقد ${String(tc.agreement_accepted_at).slice(0, 10)}`)
+                      : t('Agreement not accepted yet', 'لم يوافق على العقد بعد')}
+                  </span>
+                )}
               </div>
             </div>
 

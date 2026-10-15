@@ -7,7 +7,8 @@ import { FileText, CalendarClock, RotateCcw, Wallet } from 'lucide-react';
 // Keep in sync with TERMS_VERSION in api/index.ts: bookings store the version the student accepted.
 const TERMS_VERSION_LABEL = { en: 'Version 2026-10-15.2 · Last updated 15 October 2026', ar: 'إصدار 2026-10-15.2 · آخر تحديث 15 أكتوبر 2026' };
 
-// Trader identity (consumer law). The owner sends these; the block shows only once the name is filled in.
+// Trader identity (consumer law). The block shows once name and address are filled in.
+// Not a registered business: leave ceidg/nip empty. Never publish a PESEL here.
 const TRADER = { name: '', address: '', ceidg: '', nip: '' };
 
 type Section = { id: string; en: { title: string; items: string[] }; ar: { title: string; items: string[] } };
@@ -309,11 +310,11 @@ export function TermsPage() {
                 {isEn ? `${SECTIONS.length + 1}. Contact us` : `${SECTIONS.length + 1}. تواصل معنا`}
               </EditorialHeading>
               <div className="glass-card p-6 rounded-2xl border border-border/80 text-sm sm:text-base space-y-2 text-muted-foreground">
-                {TRADER.name && (
+                {TRADER.name && TRADER.address && (
                   <div className="pb-3 mb-1 border-b border-border/60 space-y-1">
                     <p className="font-semibold text-foreground">{isEn ? 'Who you contract with' : 'الطرف المتعاقد معك'}</p>
                     <p>{isEn ? `Watazawwado Academy is run by ${TRADER.name}, ${TRADER.address}, Poland.` : `تدير منصة وتزودوا ${TRADER.name}، ${TRADER.address}، بولندا.`}</p>
-                    <p dir="ltr">CEIDG: {TRADER.ceidg} · NIP: {TRADER.nip}</p>
+                    {TRADER.nip && <p dir="ltr">{TRADER.ceidg && `CEIDG: ${TRADER.ceidg} · `}NIP: {TRADER.nip}</p>}
                     <p>{isEn ? 'Customer service and complaints: support@watazawwado.academy' : 'خدمة العملاء والشكاوى: support@watazawwado.academy'}</p>
                   </div>
                 )}

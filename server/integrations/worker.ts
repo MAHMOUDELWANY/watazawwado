@@ -397,7 +397,11 @@ async function notifyBookingConfirmed(booking: any, zoomLink: string | null) {
         durationMinutes: booking.duration_minutes || (isTrial ? 30 : 60),
         zoomLink,
         cairoTimeDisplay: booking.cairo_time_display || null,
-        isTrial
+        isTrial,
+        feeAmount: booking.fee_amount_usd ?? null,
+        termsVersion: booking.terms_version || null,
+        termsAcceptedAt: booking.terms_accepted_at || null,
+        isPackageLesson: Boolean(booking.package_entitlement_id)
       }
     });
   } catch (notifErr) {

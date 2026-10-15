@@ -5,6 +5,7 @@ import { AccountDropdown } from '../components/ui/AccountDropdown';
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import { useTeacherAuth } from '../lib/auth';
+import { dashboardFetch } from './lib/dashboardApi';
 import { 
   LayoutDashboard, 
   Calendar, 
@@ -74,6 +75,15 @@ export function DashboardApp() {
   const closeButtonRef = React.useRef<HTMLButtonElement>(null);
   const prevMobileMenuOpenRef = React.useRef(isMobileMenuOpen);
 
+  // A teacher who has not accepted the current teacher agreement goes to read it first (server enforces it too).
+  const [agreementRequired, setAgreementRequired] = useState(false);
+  useEffect(() => {
+    if (!isTeacherAuthenticated) return;
+    dashboardFetch('/api/dashboard/me')
+      .then((data: any) => setAgreementRequired(data?.user?.agreementRequired === true))
+      .catch(() => {});
+  }, [isTeacherAuthenticated]);
+
   // Manage body scroll lock and focus when mobile drawer opens/closes
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -133,6 +143,10 @@ export function DashboardApp() {
       document.body.style.overflow = '';
     };
   }, []);
+
+  if (isTeacherAuthenticated && agreementRequired) {
+    return <Navigate to="/staff/agreement" replace />;
+  }
 
   // Handle unauthorized state
   if (!isTeacherAuthenticated) {

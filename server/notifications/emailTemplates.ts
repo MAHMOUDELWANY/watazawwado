@@ -222,11 +222,32 @@ export function renderStudentBookingConfirmation(params: {
   cairoTimeDisplay?: string | null;
   feeAmount?: number | null;
   currency?: string | null;
+  termsVersion?: string | null;
+  termsAcceptedAt?: string | null;
+  isPackageLesson?: boolean;
   lang?: EmailLang;
 }): EmailRenderResult {
   const name = escapeHtml(params.learnerName);
   const service = escapeHtml(params.serviceName);
   const zoom = zoomParts(params.zoomLink);
+  const version = escapeHtml(params.termsVersion || '');
+  const acceptedOn = escapeHtml(String(params.termsAcceptedAt || '').slice(0, 10));
+  const termsLink = `<a href="${SITE_URL}/terms" style="color:${TEAL};">${SITE_URL.replace(/^https?:\/\//, '')}/terms</a>`;
+  const legal: L[] = [];
+  if (version) {
+    legal.push({
+      en: `This booking follows our terms version ${version}${acceptedOn ? `, which you accepted on ${acceptedOn}` : ''}: ${termsLink}`,
+      ar: `يخضع هذا الحجز لشروطنا (إصدار ${version})${acceptedOn ? ` التي وافقت عليها بتاريخ ${acceptedOn}` : ''}: ${termsLink}`
+    });
+  }
+  // Paid single lessons: confirm the early-start request and the 14-day withdrawal right on a durable medium.
+  // The early-start checkbox exists from terms 2026-10-15.2 (string order works for these versions).
+  if (version >= '2026-10-15.2' && !params.isPackageLesson && params.feeAmount) {
+    legal.push({
+      en: `You asked for this lesson to take place before your 14-day withdrawal period ends. You may still withdraw within 14 days of booking by writing to ${SUPPORT_EMAIL}; you would pay only for what was already provided, and the right ends once the lesson has been fully delivered.`,
+      ar: `طلبت أن يتم هذا الدرس قبل انتهاء مدة الانسحاب (14 يوماً). ويظل من حقك الانسحاب خلال 14 يوماً من الحجز بمراسلتنا على ${SUPPORT_EMAIL}، وتدفع فقط مقابل ما تم تقديمه فعلاً، وينتهي هذا الحق بعد تقديم الدرس بالكامل.`
+    });
+  }
   return render({
     preheader: { en: `Your lesson is confirmed · ${params.date}`, ar: `حصتك اتأكدت · ${params.date}` },
     title: { en: 'Your lesson is confirmed ✅', ar: 'حصتك اتأكدت ✅' },
@@ -234,7 +255,7 @@ export function renderStudentBookingConfirmation(params: {
     paragraphs: [{
       en: `Your <strong>${service}</strong> lesson is booked and confirmed. We look forward to seeing you!`,
       ar: `حصتك في <strong>${service}</strong> اتحجزت واتأكدت. مستنيينك إن شاء الله!`
-    }],
+    }, ...legal],
     rows: [
       [LBL.subject, service],
       [LBL.when, whenValue(params.date, params.timeDisplay, params.timezone)],
