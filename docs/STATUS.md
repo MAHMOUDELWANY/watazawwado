@@ -46,8 +46,8 @@ Read this first in a new session, then `RULES.md` (binding owner decisions) and 
 - PayPal removed as a separate gateway (button, SDK, /api/payments/paypal/capture, /api/payments/config, server/payment/paypalService.ts). PayPal is offered inside Stripe Checkout. Old payments with method paypal stay readable. The dead Payment-methods tab in dashboard settings is hidden (API still accepts the stored legacy value).
 - Sign-up/password change in Arabic now shows the leaked-password message instead of "email may be in use".
 
-### Added 2026-10-16 (owner test feedback, 17 items) — NOT deployed yet
-- Needs migrations 20261016000000 + 20261016000001 applied BEFORE the code is deployed (/api/student/me reads students.age).
+### Added 2026-10-16 (owner test feedback, 17 items) — deployed, migrations applied
+- Migrations 20261016000000 + 20261016000001 are applied in production.
 - Speed: booking sync (Calendar/Zoom/emails) runs after the reply via waitUntil (@vercel/functions); the portal no longer reloads the whole page on every click or when the tab regains focus (auth keeps the same user; profile loads once).
 - Booking: draft kept in the tab (terms tab, packages page, Stripe cancel all come back to the same step, "Start over" banner); step 1 asks to confirm the onboarding subject/level; "Book again" uses that exact lesson; Cairo time removed from the summary; Zoom-link-pending text explains email + My Lessons + waiting room.
 - Lessons: "Reschedule or cancel" opens the self-service panel (was WhatsApp-only text); Join Zoom button in crimson→Zoom-blue (.btn-zoom).
@@ -58,6 +58,13 @@ Read this first in a new session, then `RULES.md` (binding owner decisions) and 
 - Teacher invite lands on /staff/set-password to choose a password. Supabase Auth → URL configuration must allow https://watazawwado.academy/staff/set-password (or /**).
 - Teacher dashboard: "Start as host" fetches a fresh Zoom host link (/api/dashboard/bookings/:id/zoom-host-url). AI assistant page (/dashboard/assistant, first version).
 - Homepage AI guide answers from current site facts (server/siteFacts.ts + FAQ) and invites interested visitors to the free trial.
+
+### Added 2026-10-15 (legal review applied)
+- Terms version 2026-10-15.2: 14-day withdrawal section with model form, packages refundable within 14 days, 3-refund limit only for the optional credit refund, fairer late-cancel/no-show wording, softer liability clause, no exclusive Polish courts, ODR link removed (platform closed 20 July 2025), new Children & safeguarding, AI assistant and Complaints sections.
+- Separate early-start checkbox on paid single bookings and package purchases; server refuses without it (EARLY_START_REQUIRED). Package metadata stores early_start_accepted_at; for bookings the terms_version proves it.
+- Privacy: controller, legal basis per purpose, retention periods, all GDPR rights + UODO, transfers outside the EEA, children, deletion "within one month" instead of 48 hours.
+- Jalila sends Gemini the student's first name only.
+- **Waiting for the owner:** trader details (legal name, address, CEIDG, NIP) — fill `TRADER` in src/components/public/terms/TermsPage.tsx; the block shows once the name is set. Must be done before taking regular payments.
 
 ## Next (in order)
 

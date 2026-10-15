@@ -778,6 +778,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                     onGoToStep={handleGoToStep}
                     onSubmit={handleSubmitBooking}
                     onAcceptTerms={(acceptedTerms) => updateFormData({ acceptedTerms })}
+                    onAcceptEarlyStart={(acceptedEarlyStart) => updateFormData({ acceptedEarlyStart })}
                     onBack={handleBack}
                     isSubmitting={isSubmitting}
                     lang={lang}
@@ -831,6 +832,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                   onGoToStep={handleGoToStep}
                   onSubmit={handleSubmitBooking}
                   onAcceptTerms={(acceptedTerms) => updateFormData({ acceptedTerms })}
+                  onAcceptEarlyStart={(acceptedEarlyStart) => updateFormData({ acceptedEarlyStart })}
                   onBack={handleBack}
                   isSubmitting={isSubmitting}
                   lang={lang}

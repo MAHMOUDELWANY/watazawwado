@@ -88,6 +88,8 @@ export interface BookingFormData {
   packageEntitlementId?: string;
   /** Student ticked "I accept the terms and the cancellation & refund policy" (RULES.md §5). */
   acceptedTerms?: boolean;
+  /** Student asked a paid lesson to take place inside the 14-day withdrawal period. */
+  acceptedEarlyStart?: boolean;
 }
 
 export interface BookingConfirmationData {

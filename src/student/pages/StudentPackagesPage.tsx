@@ -60,6 +60,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
   const [purchasingCatalogId, setPurchasingCatalogId] = useState<string | null>(null);
   const [activeClaimEntitlement, setActiveClaimEntitlement] = useState<any | null>(null);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [acceptedEarlyStart, setAcceptedEarlyStart] = useState(false);
   const [packageMinutes, setPackageMinutes] = useState(60);
   const [refundBusyId, setRefundBusyId] = useState<string | null>(null);
 
@@ -157,7 +158,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
       setError(null);
       const token = session?.access_token;
 
-      const payload: any = { packageCatalogId: catalogItem.id, acceptedTerms };
+      const payload: any = { packageCatalogId: catalogItem.id, acceptedTerms, acceptedEarlyStart };
       if (selectedLearnerId) {
         payload.learnerStudentId = selectedLearnerId;
       }
@@ -697,6 +698,22 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
               .
             </span>
           </label>
+          <label className="flex items-start gap-2.5 text-sm text-foreground cursor-pointer">
+            <input
+              type="checkbox"
+              checked={acceptedEarlyStart}
+              onChange={e => setAcceptedEarlyStart(e.target.checked)}
+              className="mt-1 w-4 h-4 accent-teal-600"
+            />
+            <span>
+              {isAr
+                ? 'أطلب أن تبدأ دروس الباقة قبل انتهاء مدة الانسحاب (14 يوماً). وأفهم أنني إذا انسحبت خلالها أسترد ثمن الدروس غير المستخدمة، وتُحتسب الدروس التي تمت بسعرها في الباقة.'
+                : 'I ask for my package lessons to start before my 14-day withdrawal period ends. I understand that if I withdraw within it, I get back the price of unused lessons, and lessons already taken are charged at the package price per lesson.'}{' '}
+              <a href="/terms#withdrawal" target="_blank" rel="noopener noreferrer" className="underline font-semibold text-primary">
+                {isAr ? 'التفاصيل' : 'Details'}
+              </a>
+            </span>
+          </label>
         </div>
 
         {catalogItems.length === 0 ? (
@@ -725,7 +742,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                       cat={cat}
                       isAr={isAr}
                       isPurchasing={purchasingCatalogId === cat.id}
-                      canSelect={acceptedTerms}
+                      canSelect={acceptedTerms && acceptedEarlyStart}
                       onSelect={handleSelectPackage}
                     />
                   ))}

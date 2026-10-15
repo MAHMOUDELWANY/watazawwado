@@ -169,7 +169,7 @@ const PAYMENT_HOLD_MINUTES = 35;
 const MAX_LOST_TRIALS = 5;
 const MAX_STUDENT_REFUNDED_LESSONS = 3;
 // Bump when the terms page changes in substance; stored with each booking/package as proof of consent.
-const TERMS_VERSION = '2026-10-15';
+const TERMS_VERSION = '2026-10-15.2';
 
 /** Cancels unpaid bookings whose payment hold expired, freeing their slots. Never throws. */
 async function releaseExpiredPaymentHolds(client: any): Promise<void> {
@@ -886,6 +886,11 @@ app.post('/api/bookings/create', rateLimit, async (req: any, res: any) => {
     // RULES.md §5: the student accepts the current terms (cancellation & refund policy) before booking.
     if (req.body?.acceptedTerms !== true) {
       return res.status(400).json({ error: 'Please read and accept the terms and the cancellation & refund policy first.', code: 'TERMS_REQUIRED' });
+    }
+    // Consumer withdrawal right: a paid single lesson needs the separate early-start request.
+    // shortcut: no own column; a paid booking with terms_version >= 2026-10-15.2 proves it (the server refuses without it).
+    if (!isTrial && !packageEntitlementId && req.body?.acceptedEarlyStart !== true) {
+      return res.status(400).json({ error: 'Please confirm that you want the lesson to take place before the 14-day withdrawal period ends.', code: 'EARLY_START_REQUIRED' });
     }
 
     // Calculate Timestamps
@@ -8329,6 +8334,9 @@ app.post('/api/student/packages/select', verifyStudentAuth, async (req: any, res
     if (req.body?.acceptedTerms !== true) {
       return res.status(400).json({ error: 'Please read and accept the terms and the cancellation & refund policy first.', code: 'TERMS_REQUIRED' });
     }
+    if (req.body?.acceptedEarlyStart !== true) {
+      return res.status(400).json({ error: 'Please confirm that you want lessons to start before the 14-day withdrawal period ends.', code: 'EARLY_START_REQUIRED' });
+    }
 
     const supabaseAdmin = getSupabaseAdminClient();
     const authorizedLearners = await getAuthorizedLearnersForStudent(supabaseAdmin, req);
@@ -8405,7 +8413,8 @@ app.post('/api/student/packages/select', verifyStudentAuth, async (req: any, res
           duration_minutes: catalogItem.eligibility_rules?.duration_minutes ?? null,
           family_discount: familyDiscount,
           terms_version: TERMS_VERSION,
-          terms_accepted_at: new Date().toISOString()
+          terms_accepted_at: new Date().toISOString(),
+          early_start_accepted_at: new Date().toISOString()
         }
       })
       .select('id, package_catalog_id, learner_student_id, status, purchased_quantity, remaining_credits, price_paid, currency, created_at')

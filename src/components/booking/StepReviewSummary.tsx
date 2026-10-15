@@ -38,6 +38,7 @@ interface StepReviewSummaryProps {
   onPayLater?: () => void;
   payLaterBusy?: boolean;
   onAcceptTerms?: (accepted: boolean) => void;
+  onAcceptEarlyStart?: (accepted: boolean) => void;
 }
 
 export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
@@ -54,13 +55,15 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
   onChooseAnotherTime,
   onPayLater,
   payLaterBusy,
-  onAcceptTerms
+  onAcceptTerms,
+  onAcceptEarlyStart
 }) => {
   const isEn = lang === 'en';
   const service = BOOKING_SERVICES.find((s) => s.id === formData.serviceId) || BOOKING_SERVICES[0];
   const isChild = formData.audience === 'child';
   const isTrial = formData.mode === 'trial';
   const isPackageCredit = Boolean(formData.packageEntitlementId);
+  const needsEarlyStart = !isTrial && !isPackageCredit;
   const fee = isTrial || isPackageCredit ? 0 : calculateLessonFee(formData.serviceId, formData.duration, false);
 
   const [packageDetails, setPackageDetails] = React.useState<any>(null);
@@ -349,6 +352,25 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
         </label>
       )}
 
+      {!pendingBookingReference && needsEarlyStart && (
+        <label className="flex items-start gap-2.5 text-sm text-foreground cursor-pointer">
+          <input
+            type="checkbox"
+            checked={formData.acceptedEarlyStart === true}
+            onChange={e => onAcceptEarlyStart?.(e.target.checked)}
+            className="mt-1 w-4 h-4 accent-teal-600"
+          />
+          <span>
+            {isEn
+              ? 'I ask for this lesson to take place before my 14-day withdrawal period ends. I understand that if I withdraw before it is delivered I may pay for any part already provided, and that I lose the right of withdrawal once the lesson has been fully delivered.'
+              : 'أطلب أن يتم هذا الدرس قبل انتهاء مدة الانسحاب (14 يوماً). وأفهم أنني إذا انسحبت قبل تقديمه قد أدفع مقابل ما تم تقديمه فعلاً، وأن حق الانسحاب ينتهي بعد تقديم الدرس بالكامل.'}{' '}
+            <a href="/terms#withdrawal" target="_blank" rel="noopener noreferrer" className="underline font-semibold text-primary">
+              {isEn ? 'Details' : 'التفاصيل'}
+            </a>
+          </span>
+        </label>
+      )}
+
       {/* Controls */}
       <div className="pt-4 border-t border-border flex items-center justify-between gap-4">
         <motion.button
@@ -367,7 +389,7 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
           whileHover={{ scale: 1.03, y: -1 }}
           whileTap={{ scale: 0.97 }}
           onClick={pendingBookingReference && onOpenCheckout ? onOpenCheckout : onSubmit}
-          disabled={isSubmitting || (!pendingBookingReference && formData.acceptedTerms !== true)}
+          disabled={isSubmitting || (!pendingBookingReference && (formData.acceptedTerms !== true || (needsEarlyStart && formData.acceptedEarlyStart !== true)))}
           className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl btn-primary-material text-white text-sm sm:text-base font-bold shadow-lg shadow-primary/20 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting ? (

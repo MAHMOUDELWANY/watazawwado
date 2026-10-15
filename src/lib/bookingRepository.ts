@@ -184,6 +184,7 @@ export const bookingRepository = {
           teacherId: (data as any).teacherId,
           packageEntitlementId: data.packageEntitlementId || null,
           acceptedTerms: data.acceptedTerms === true,
+          acceptedEarlyStart: data.acceptedEarlyStart === true,
           package_entitlement_id: data.packageEntitlementId || null,
           studentId: studentIdToLink,
           mode: data.mode

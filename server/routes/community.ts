@@ -515,7 +515,8 @@ export function registerCommunityRoutes(app: express.Express, deps: CommunityDep
         if (st && (req.teacherUser.role === 'super_admin' || st.assigned_teacher_id === req.teacherUser.id)) {
           const { data: notes } = await client.from('lesson_notes').select('observations, next_steps, created_at').eq('student_id', st.id).order('created_at', { ascending: false }).limit(5);
           const { data: lessons } = await client.from('bookings').select('service_id, scheduled_start, status, duration_minutes').eq('student_id', st.id).order('scheduled_start', { ascending: false }).limit(8);
-          context = `Student: ${st.name}; age ${st.age ?? 'unknown'}; level ${st.current_level}; subject ${st.learning_interest}; goal ${st.learning_goal || '-'}; needs ${st.learning_needs || '-'}.
+          // Data minimisation: Gemini gets the first name only, never the full name or contact details.
+          context = `Student: ${String(st.name || 'Student').split(' ')[0]}; age ${st.age ?? 'unknown'}; level ${st.current_level}; subject ${st.learning_interest}; goal ${st.learning_goal || '-'}; needs ${st.learning_needs || '-'}.
 Recent lessons: ${(lessons || []).map((l: any) => `${l.scheduled_start?.slice(0, 10)} ${l.service_id} ${l.duration_minutes}min ${l.status}`).join('; ') || 'none'}.
 Teacher notes: ${(notes || []).map((n: any) => String([n.observations, n.next_steps].filter(Boolean).join(' — ')).slice(0, 300)).join(' | ') || 'none'}.`;
         }

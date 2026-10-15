@@ -109,7 +109,7 @@ describe('Package pricing closure — UI is server-catalog authoritative', () =>
 
 describe('Package pricing closure — purchase identity only, no client price', () => {
   it('select submits only packageCatalogId (+ learner), never a price', () => {
-    assert.match(page, /payload[^=]*=\s*\{\s*packageCatalogId:\s*catalogItem\.id,\s*acceptedTerms\s*\}/, 'select payload must be identity-only (plus the terms consent)');
+    assert.match(page, /payload[^=]*=\s*\{\s*packageCatalogId:\s*catalogItem\.id,\s*acceptedTerms,\s*acceptedEarlyStart\s*\}/, 'select payload must be identity-only (plus the terms and early-start consents)');
     // Isolate the request payload object and prove it carries no price fields.
     const fnIdx = page.indexOf('handleSelectPackage');
     const bodyIdx = page.indexOf('JSON.stringify(payload)', fnIdx);

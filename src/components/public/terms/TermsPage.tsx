@@ -5,7 +5,10 @@ import { PublicSection, EditorialHeading, MarginNote } from '../PublicDesignSyst
 import { FileText, CalendarClock, RotateCcw, Wallet } from 'lucide-react';
 
 // Keep in sync with TERMS_VERSION in api/index.ts: bookings store the version the student accepted.
-const TERMS_VERSION_LABEL = { en: 'Version 2026-10-15 · Last updated 15 October 2026', ar: 'إصدار 2026-10-15 · آخر تحديث 15 أكتوبر 2026' };
+const TERMS_VERSION_LABEL = { en: 'Version 2026-10-15.2 · Last updated 15 October 2026', ar: 'إصدار 2026-10-15.2 · آخر تحديث 15 أكتوبر 2026' };
+
+// Trader identity (consumer law). The owner sends these; the block shows only once the name is filled in.
+const TRADER = { name: '', address: '', ceidg: '', nip: '' };
 
 type Section = { id: string; en: { title: string; items: string[] }; ar: { title: string; items: string[] } };
 
@@ -85,14 +88,35 @@ const SECTIONS: Section[] = [
       'A package is for one subject group ($9 group or $13 group) and one lesson length (30, 45 or 60 minutes). Its lessons can be booked any time.',
       'A package credit is used when a lesson is completed (or missed without cancelling in time), not when it is booked.',
       'Family care: a package for a second (or third…) child on the same account gets an extra 5% off.',
-      'Unused package lessons are not refunded automatically. If your situation changes, contact us and the platform owner will review it fairly, case by case.',
+      'Within 14 days of buying a package you may withdraw (see “Your 14-day right of withdrawal”): we refund the unused lessons, and lessons already taken are charged at the package price per lesson.',
+      'After those 14 days, unused package lessons stay valid and are not refunded automatically. If your situation changes, contact us and the platform owner will review it fairly, case by case. This never limits your rights under consumer law.',
+      'If we cancel a lesson and cannot offer a suitable new time, you get a replacement lesson or a refund for that lesson, as you choose.',
     ] },
     ar: { title: 'الباقات ورعاية الأسرة', items: [
       'الباقات دروس مدفوعة مقدماً بسعر أقل للدرس، وليست اشتراكاً، ولا يتجدد أي شيء تلقائياً.',
       'كل باقة لمجموعة مواد واحدة (مجموعة 9 دولار أو مجموعة 13 دولار) ولمدة حصة واحدة (30 أو 45 أو 60 دقيقة)، ويمكن حجز دروسها في أي وقت.',
       'يُخصم رصيد الباقة عند إتمام الدرس (أو عند عدم الحضور بدون إلغاء في الوقت المسموح)، وليس عند الحجز.',
       'رعاية الأسرة: الباقة للطفل الثاني (أو الثالث…) في نفس الحساب عليها خصم إضافي 5%.',
-      'لا تُسترد دروس الباقة غير المستخدمة تلقائياً. إذا تغيرت ظروفك، تواصل معنا وسيراجع صاحب المنصة طلبك بعدل حسب كل حالة.',
+      'خلال 14 يوماً من شراء الباقة يحق لك الانسحاب (انظر "حقك في الانسحاب خلال 14 يوماً"): نرد لك ثمن الدروس غير المستخدمة، وتُحتسب الدروس التي تمت بسعر الدرس في الباقة.',
+      'بعد هذه الأيام الـ 14 تظل دروس الباقة غير المستخدمة صالحة ولا تُسترد تلقائياً. إذا تغيرت ظروفك، تواصل معنا وسيراجع صاحب المنصة طلبك بعدل حسب كل حالة، ولا يقيّد ذلك حقوقك بموجب قوانين حماية المستهلك.',
+      'إذا ألغينا نحن درساً ولم نستطع تقديم موعد بديل مناسب، تحصل على درس بديل أو استرداد ثمن هذا الدرس، حسب اختيارك.',
+    ] },
+  },
+  {
+    id: 'withdrawal',
+    en: { title: 'Your 14-day right of withdrawal', items: [
+      'If you are a consumer, you may withdraw from a lesson booking or a package within 14 days of buying it, without giving a reason.',
+      'Because lessons often take place within those 14 days, before paying you ask us to start early by ticking a separate box. If you then withdraw, you pay only for what was already provided (for a package: lessons taken at the package price per lesson), and we refund the rest.',
+      'Once a single lesson has been fully delivered at your request, the right of withdrawal for that lesson ends.',
+      'To withdraw, send us a clear statement by email to support@watazawwado.academy (or on WhatsApp). You may use this model form: “I hereby give notice that I withdraw from my contract for the following service: [lesson or package], bought on [date]. Name: [ ]. Account email: [ ]. Date: [ ].”',
+      'We refund within 14 days of receiving your withdrawal, using the same payment method unless you agree otherwise. A withdrawal never counts toward the refund limit below.',
+    ] },
+    ar: { title: 'حقك في الانسحاب خلال 14 يوماً', items: [
+      'إذا كنت مستهلكاً، يحق لك الانسحاب من حجز درس أو من باقة خلال 14 يوماً من الشراء، دون ذكر السبب.',
+      'لأن الدروس غالباً تتم خلال هذه الأيام الـ 14، تطلب منا قبل الدفع البدء مبكراً بوضع علامة في مربع مستقل. وإذا انسحبت بعد ذلك، تدفع فقط مقابل ما تم تقديمه فعلاً (في الباقة: الدروس التي تمت بسعر الدرس في الباقة)، ونرد لك الباقي.',
+      'بعد تقديم الدرس الفردي بالكامل بناءً على طلبك، ينتهي حق الانسحاب بالنسبة لهذا الدرس.',
+      'للانسحاب، أرسل لنا إقراراً واضحاً بالبريد الإلكتروني إلى support@watazawwado.academy (أو عبر واتساب). ويمكنك استخدام هذا النموذج: "أُخطركم بانسحابي من عقد الخدمة التالية: [درس أو باقة]، تم شراؤها بتاريخ [ ]. الاسم: [ ]. بريد الحساب: [ ]. التاريخ: [ ]."',
+      'نرد المبلغ خلال 14 يوماً من استلام طلب الانسحاب، بنفس وسيلة الدفع ما لم تتفق معنا على غير ذلك. والانسحاب لا يُحتسب أبداً من حد الاسترداد التالي.',
     ] },
   },
   {
@@ -100,14 +124,14 @@ const SECTIONS: Section[] = [
     en: { title: 'Cancelling and rescheduling', items: [
       'Cancel up to 3 hours before the lesson: a paid lesson comes back to you as a lesson credit you can book any time; a package lesson keeps its credit.',
       'Reschedule up to 1 hour before the lesson, by yourself, from your student account.',
-      'Inside the last hour before the lesson nothing can be changed. A lesson that is missed, or not changed in time, counts as taken and is not refunded or credited.',
+      'Inside the last hour before the lesson nothing can be changed. A lesson cancelled less than 3 hours before, or missed without notice, counts as taken (no refund or credit) when the teacher was available and ready to teach. Technical problems and exceptional situations are looked at fairly, case by case.',
       'Real emergencies: message us on WhatsApp. The platform owner may, as a goodwill gesture and at their sole discretion, move the lesson. This is not a right and does not change the rules above.',
       'If we cancel, the teacher misses the lesson, or a technical problem on our side stops it, you choose: a free new time, a lesson credit, or a refund. This never counts toward the refund limit below.',
     ] },
     ar: { title: 'الإلغاء وتغيير الموعد', items: [
       'الإلغاء حتى 3 ساعات قبل الدرس: الدرس المدفوع يعود لك كرصيد حصة تحجزه في أي وقت، ودرس الباقة يحتفظ برصيده.',
       'تغيير الموعد حتى ساعة قبل الدرس، بنفسك من حساب الطالب.',
-      'خلال الساعة الأخيرة قبل الدرس لا يمكن تغيير أي شيء. الدرس الذي لم تحضره أو لم تغيّره في الوقت المسموح يُحتسب كدرس تم، ولا يُسترد ولا يعود كرصيد.',
+      'خلال الساعة الأخيرة قبل الدرس لا يمكن تغيير أي شيء. الدرس الذي يُلغى قبل أقل من 3 ساعات من موعده، أو الذي لم تحضره دون إبلاغ، يُحتسب كدرس تم (بدون استرداد أو رصيد) متى كان المعلم متاحاً ومستعداً للتدريس. والمشكلات التقنية والظروف الاستثنائية تُراجع بعدل حسب كل حالة.',
       'الظروف الطارئة فعلاً: تواصل معنا عبر واتساب. يجوز لصاحب المنصة، كمراعاة وحسب تقديره وحده، تغيير موعد الدرس. هذا ليس حقاً مكتسباً ولا يغير القواعد السابقة.',
       'إذا ألغينا نحن، أو غاب المعلم، أو منعت مشكلة تقنية من جهتنا الدرس، تختار أنت: موعداً جديداً مجاناً، أو رصيد حصة، أو استرداد المبلغ، ولا يُحتسب ذلك أبداً من حد الاسترداد التالي.',
     ] },
@@ -116,18 +140,18 @@ const SECTIONS: Section[] = [
     id: 'refunds',
     en: { title: 'Refunds', items: [
       'Instead of keeping a lesson credit from a lesson you cancelled in time, you can ask for your money back with the “I prefer a refund” button on the Packages page. It opens WhatsApp with a ready message.',
-      'Refunds are limited to 3 lessons per account. After that, cancelled lessons still come back as lesson credits, but they are not refundable.',
+      'Turning a lesson credit into money this way is a courtesy limited to 3 lessons per account. After that, cancelled lessons still come back as lesson credits, but they are not refundable. This limit never applies to a withdrawal within 14 days, to lessons we cancel or fail to deliver, or to any refund the law requires.',
       'We send the refund within 14 days of your request. Please send us the account or payment method where you want to receive it; we can’t send it before we have it.',
       'A refund is for the amount you paid for that lesson. Your bank or payment provider may charge its own fees.',
-      'Lessons that were taken, missed, or cancelled too late are not refundable.',
+      'Lessons that were taken, or missed or cancelled too late while the teacher was ready, are not refundable.',
       'Nothing in these terms limits any rights you have under the consumer laws that apply to you.',
     ] },
     ar: { title: 'الاسترداد', items: [
       'بدلاً من الاحتفاظ برصيد حصة ألغيتها في الوقت المسموح، يمكنك طلب استرداد المبلغ من زر "عايز استرداد بدل الرصيد" في صفحة الباقات، فيفتح لك واتساب برسالة جاهزة.',
-      'الاسترداد محدود بـ 3 دروس لكل حساب. بعد ذلك تعود الدروس الملغاة كرصيد حصة، لكنها غير قابلة للاسترداد.',
+      'تحويل رصيد الحصة إلى مبلغ بهذه الطريقة ميزة نقدمها لحد 3 دروس لكل حساب. بعد ذلك تعود الدروس الملغاة كرصيد حصة، لكنها غير قابلة للاسترداد. ولا ينطبق هذا الحد أبداً على الانسحاب خلال 14 يوماً، ولا على الدروس التي نلغيها نحن أو لا نقدمها، ولا على أي استرداد يفرضه القانون.',
       'نرسل المبلغ خلال 14 يوماً من طلبك. يرجى إرسال الحساب أو وسيلة الدفع التي تريد الاستلام عليها، ولا نستطيع الإرسال قبل وصولها.',
       'المبلغ المسترد هو ما دفعته لهذا الدرس، وقد يخصم البنك أو مزود الدفع رسومه الخاصة.',
-      'الدروس التي تمت أو لم تحضرها أو أُلغيت متأخراً غير قابلة للاسترداد.',
+      'الدروس التي تمت، أو التي لم تحضرها أو ألغيتها متأخراً بينما كان المعلم مستعداً، غير قابلة للاسترداد.',
       'لا يوجد في هذه الشروط ما يقيّد أي حقوق تمنحها لك قوانين حماية المستهلك المطبقة عليك.',
     ] },
   },
@@ -136,25 +160,70 @@ const SECTIONS: Section[] = [
     en: { title: 'Respect and safety', items: [
       'Teachers and students treat each other with respect. A teacher may end a lesson if a student is abusive; that lesson counts as taken.',
       'Learning results depend on practice and commitment, so we can’t guarantee a specific result in a specific time.',
-      'Our responsibility for any lesson is limited to the amount paid for that lesson, except where the law does not allow this limit.',
+      'For ordinary problems with a lesson, our responsibility is normally the price paid for that lesson. Nothing in these terms excludes or limits liability where the law does not allow it, or removes any refund or other remedy that consumer law gives you.',
     ] },
     ar: { title: 'الاحترام والأمان', items: [
       'يتعامل المعلمون والطلاب باحترام متبادل، ويحق للمعلم إنهاء الدرس عند الإساءة، ويُحتسب الدرس كدرس تم.',
       'نتائج التعلم تعتمد على الممارسة والالتزام، لذلك لا نضمن نتيجة محددة في مدة محددة.',
-      'مسؤوليتنا عن أي درس محدودة بالمبلغ المدفوع لهذا الدرس، إلا إذا كان القانون لا يسمح بهذا الحد.',
+      'في المشكلات العادية المتعلقة بدرس ما، تكون مسؤوليتنا عادةً في حدود ثمن هذا الدرس. ولا يوجد في هذه الشروط ما يستبعد المسؤولية أو يحدّها حيث لا يسمح القانون بذلك، أو يُسقط أي استرداد أو تعويض تمنحه لك قوانين حماية المستهلك.',
+    ] },
+  },
+  {
+    id: 'children',
+    en: { title: 'Children and safeguarding', items: [
+      'A parent or legal guardian books and pays for a child and is the contracting party. The child is the learner.',
+      'Parents may sit in on any lesson and may ask for a different teacher at any time.',
+      'Teachers talk to students only through the platform: Zoom lessons and the on-site chat, which the platform owner can read. Teachers must not move contact to private accounts or ask for personal information that the lesson does not need.',
+      'Lessons are not recorded by us. Teachers may not record, photograph or screenshot a student without the parent’s permission.',
+      'If anything in a lesson worries you, tell us straight away on WhatsApp or by email. We look into every report, may pause the teacher’s access while we do, and remove a teacher’s access to student data when they stop teaching here.',
+    ] },
+    ar: { title: 'الأطفال وحمايتهم', items: [
+      'ولي الأمر أو الوصي القانوني هو من يحجز ويدفع للطفل وهو الطرف المتعاقد، والطفل هو المتعلم.',
+      'يحق لولي الأمر حضور أي درس، وطلب تغيير المعلم في أي وقت.',
+      'يتواصل المعلمون مع الطلاب عبر المنصة فقط: دروس Zoom والمحادثة داخل الموقع التي يستطيع صاحب المنصة الاطلاع عليها. ولا يجوز للمعلم نقل التواصل إلى حسابات خاصة أو طلب معلومات شخصية لا يحتاجها الدرس.',
+      'نحن لا نسجّل الدروس، ولا يجوز للمعلم تسجيل الطالب أو تصويره أو أخذ لقطة شاشة له دون إذن ولي الأمر.',
+      'إذا أقلقك أي شيء في درس، أخبرنا فوراً عبر واتساب أو البريد الإلكتروني. نراجع كل بلاغ، وقد نوقف وصول المعلم أثناء المراجعة، ونلغي وصول المعلم لبيانات الطلاب عند توقفه عن التدريس معنا.',
+    ] },
+  },
+  {
+    id: 'ai',
+    en: { title: 'AI learning assistant', items: [
+      'Some parts of the site use an AI assistant (Google Gemini): the learning guide on the homepage, the chat that suggests a learning plan, and help for teachers. You are always told when you are talking to the AI.',
+      'AI answers can contain mistakes. They are suggestions only and never replace the judgment of your teacher. Prices and placement decisions are made or reviewed by people, not by the AI alone.',
+      'Please do not type sensitive personal information into AI chats.',
+    ] },
+    ar: { title: 'المساعد التعليمي بالذكاء الاصطناعي', items: [
+      'بعض أجزاء الموقع تستخدم مساعداً بالذكاء الاصطناعي (Google Gemini): المرشد التعليمي في الصفحة الرئيسية، والمحادثة التي تقترح خطة تعلم، ومساعدة المعلمين. ونوضح لك دائماً متى تتحدث مع الذكاء الاصطناعي.',
+      'قد تحتوي إجابات الذكاء الاصطناعي على أخطاء، وهي اقتراحات فقط ولا تحل محل تقدير معلمك. والأسعار وقرارات تحديد المستوى يتخذها أو يراجعها أشخاص، وليس الذكاء الاصطناعي وحده.',
+      'يرجى عدم كتابة معلومات شخصية حساسة في محادثات الذكاء الاصطناعي.',
+    ] },
+  },
+  {
+    id: 'complaints',
+    en: { title: 'Complaints', items: [
+      'Send complaints to support@watazawwado.academy (or WhatsApp), with your account email, the lesson or payment concerned, and what went wrong.',
+      'We answer within the time the law requires and, where no deadline applies, within 14 days. If we need more information we will tell you what and keep you informed.',
+      'This procedure does not limit any of your consumer rights.',
+    ] },
+    ar: { title: 'الشكاوى', items: [
+      'أرسل شكواك إلى support@watazawwado.academy (أو عبر واتساب)، مع بريد حسابك، والدرس أو الدفعة المعنية، ووصف المشكلة.',
+      'نرد خلال المدة التي يفرضها القانون، وإذا لم تكن هناك مدة محددة فخلال 14 يوماً. وإذا احتجنا معلومات إضافية نخبرك بما نحتاجه ونطلعك على سير الشكوى.',
+      'هذا الإجراء لا يقيّد أياً من حقوقك كمستهلك.',
     ] },
   },
   {
     id: 'law',
     en: { title: 'Disputes and governing law', items: [
       'If something goes wrong, please contact us first; we will always try to find a fair solution quickly.',
-      'These terms are governed by the laws of Poland, and the courts of Poland have jurisdiction.',
-      'If you are a consumer, you keep the protection of the mandatory laws of the country where you live, and you may also bring a claim before the courts there. EU residents can also use the European Online Dispute Resolution platform.',
+      'These terms are governed by the laws of Poland, without prejudice to the mandatory consumer protection rules that apply to you.',
+      'If you are a consumer, nothing in these terms takes away the mandatory rights and remedies of the country where you live, or your right to bring a claim before the courts the law allows you to use, including the courts where you live.',
+      'You may also use an out-of-court dispute resolution body where one is available to you. A list of these bodies is published by the European Commission at consumer-redress.ec.europa.eu.',
     ] },
     ar: { title: 'النزاعات والقانون المطبّق', items: [
       'لو حصلت أي مشكلة، تواصل معنا الأول؛ دايماً هنحاول نوصل لحل عادل بسرعة.',
-      'تخضع هذه الشروط لقوانين جمهورية بولندا، وتختص محاكم بولندا بنظر أي نزاع.',
-      'إذا كنت مستهلكاً، تظل محتفظاً بالحماية التي تمنحها لك القوانين الإلزامية في بلد إقامتك، ويحق لك أيضاً رفع دعواك أمام محاكمه. ويمكن لسكان الاتحاد الأوروبي كذلك استخدام منصة الاتحاد الأوروبي لتسوية النزاعات عبر الإنترنت.',
+      'تخضع هذه الشروط لقوانين جمهورية بولندا، دون المساس بقواعد حماية المستهلك الإلزامية المطبقة عليك.',
+      'إذا كنت مستهلكاً، لا يوجد في هذه الشروط ما يسلبك الحقوق والوسائل الإلزامية في بلد إقامتك، أو حقك في رفع دعواك أمام المحاكم التي يسمح لك القانون باللجوء إليها، بما فيها محاكم بلد إقامتك.',
+      'ويمكنك أيضاً اللجوء إلى جهة لتسوية النزاعات خارج المحاكم إذا كانت متاحة لك. وتنشر المفوضية الأوروبية قائمة بهذه الجهات على consumer-redress.ec.europa.eu.',
     ] },
   },
   {
@@ -183,7 +252,7 @@ export function TermsPage() {
   const glance = [
     { icon: RotateCcw, en: ['Cancel up to 3 hours before', 'Your paid lesson comes back as a lesson credit.'], ar: ['الإلغاء حتى 3 ساعات قبل الدرس', 'الدرس المدفوع يرجع لك كرصيد حصة.'] },
     { icon: CalendarClock, en: ['Move up to 1 hour before', 'Change the time yourself from your account.'], ar: ['تغيير الموعد حتى ساعة قبل الدرس', 'غيّر الموعد بنفسك من حسابك.'] },
-    { icon: Wallet, en: ['Refund within 14 days', 'For up to 3 cancelled lessons per account.'], ar: ['استرداد خلال 14 يوماً', 'لحد 3 دروس ملغاة لكل حساب.'] },
+    { icon: Wallet, en: ['14 days to change your mind', 'Withdraw within 14 days of buying; you pay only for what was delivered.'], ar: ['14 يوماً لتغيير رأيك', 'انسحب خلال 14 يوماً من الشراء، وتدفع فقط مقابل ما تم تقديمه.'] },
   ];
 
   return (
@@ -240,6 +309,14 @@ export function TermsPage() {
                 {isEn ? `${SECTIONS.length + 1}. Contact us` : `${SECTIONS.length + 1}. تواصل معنا`}
               </EditorialHeading>
               <div className="glass-card p-6 rounded-2xl border border-border/80 text-sm sm:text-base space-y-2 text-muted-foreground">
+                {TRADER.name && (
+                  <div className="pb-3 mb-1 border-b border-border/60 space-y-1">
+                    <p className="font-semibold text-foreground">{isEn ? 'Who you contract with' : 'الطرف المتعاقد معك'}</p>
+                    <p>{isEn ? `Watazawwado Academy is run by ${TRADER.name}, ${TRADER.address}, Poland.` : `تدير منصة وتزودوا ${TRADER.name}، ${TRADER.address}، بولندا.`}</p>
+                    <p dir="ltr">CEIDG: {TRADER.ceidg} · NIP: {TRADER.nip}</p>
+                    <p>{isEn ? 'Customer service and complaints: support@watazawwado.academy' : 'خدمة العملاء والشكاوى: support@watazawwado.academy'}</p>
+                  </div>
+                )}
                 <p>{isEn ? 'Questions about these terms? We are happy to help:' : 'عندك سؤال عن الشروط؟ يسعدنا نساعدك:'}</p>
                 <p className="font-semibold text-foreground">Email: support@watazawwado.academy / mahmoudelwany98@gmail.com</p>
                 <p className="font-semibold text-foreground" dir="ltr">WhatsApp: +48508157886</p>
