@@ -26,10 +26,11 @@ function render(page: (typeof PUBLIC_PAGES)[number]): string {
   swap(/<meta property="og:description" content="[^"]*" \/>/, `<meta property="og:description" content="${esc(page.descEn)}" />`);
   swap(/<link rel="canonical" href="[^"]*" \/>/, `<link rel="canonical" href="${url}" />`);
   swap(/<meta property="og:url" content="[^"]*" \/>/, `<meta property="og:url" content="${url}" />`);
-  // Readable summary for crawlers that do not run JavaScript (browsers with JS never show it).
-  html = html.replace(
-    '<div id="root"></div>',
-    `<div id="root"></div>\n    <noscript><h1>${esc(page.h1En)}</h1><p>${esc(page.descEn)}</p><p>${esc(page.descAr)}</p><nav>${PUBLIC_PAGES.map((p) => `<a href="${p.path}">${esc(p.h1En)}</a>`).join(' · ')}</nav></noscript>`
+  // Readable summary inside #root for crawlers that do not run JavaScript (Bing ignores <noscript>).
+  // createRoot().render replaces it once the app loads; visually hidden so it never flashes.
+  swap(
+    /<div id="root"><\/div>/,
+    `<div id="root"><div style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)"><h1>${esc(page.h1En)}</h1><p>${esc(page.descEn)}</p><p>${esc(page.descAr)}</p><nav>${PUBLIC_PAGES.map((p) => `<a href="${p.path}">${esc(p.h1En)}</a>`).join(' · ')}</nav></div></div>`
   );
   return html;
 }
