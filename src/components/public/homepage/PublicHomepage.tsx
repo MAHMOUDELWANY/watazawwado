@@ -22,6 +22,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { WhatsAppIcon } from '../../ui/WhatsAppIcon';
+import { WelcomeRecitation } from '../WelcomeRecitation';
 import { buildWhatsAppUrl } from '../../../lib/whatsapp';
 
 export function PublicHomepage() {
@@ -30,6 +31,8 @@ export function PublicHomepage() {
 
   return (
     <main id="main-content" className="pt-20 lg:pt-24">
+      {/* Welcome recitation: plays once per session on the first click or tap (homepage only). */}
+      <WelcomeRecitation isAr={!isEn} />
 
       {/* ─── 1. HERO SECTION ─────────────────────────────────────────────────── */}
       <PublicSection className="relative overflow-hidden pb-12 lg:pb-20">

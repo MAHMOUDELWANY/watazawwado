@@ -25,6 +25,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { Input } from '../../components/ui/Input';
 import { BookShelf } from '../../components/onboarding/BookShelf';
+import { TravelModeChoice, PassCard, PassField, passInputClass, SealChoice, GuideChoice } from '../../components/onboarding/TravelPass';
 import { JourneyPath } from '../../components/onboarding/JourneyPath';
 import { JourneyBackdrop, JourneyTrail } from '../../components/onboarding/JourneyChrome';
 import { subjectLabel } from '../../components/onboarding/subjects';
@@ -477,210 +478,96 @@ export default function StudentOnboardingPage({
             exit={{ opacity: 0, x: -10 }}
             className="space-y-6"
           >
-            {/* 1. Learner Type Selector */}
-            <div>
-              <label className="block text-sm font-semibold text-foreground mb-3">
-                {isRTL ? 'نوع الحساب وطبيعة الدارسين:' : 'Who will be taking the lessons?'}
-              </label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                <button
-                  type="button"
-                  onClick={() => setLearnerType('adult')}
-                  className={`p-4 rounded-2xl border text-start transition-all cursor-pointer flex items-start gap-3.5 ${
-                    learnerType === 'adult'
-                      ? 'border-primary bg-primary/10 text-foreground ring-2 ring-primary/30 font-medium'
-                      : 'border-border/70 hover:border-border glass-surface text-muted-foreground'
-                  }`}
-                >
-                  <User className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                  <div>
-                    <div className="font-semibold text-sm text-foreground">
-                      {isRTL ? 'طالب بنفسي (بالغ / راشد)' : 'Adult Learner (For Myself)'}
-                    </div>
-                    <div className="text-xs text-muted-foreground mt-0.5">
-                      {isRTL ? 'سأدرس بنفسي في جلسات فردية خاصة' : 'I am enrolling for my own individual lessons'}
-                    </div>
-                  </div>
-                </button>
+            {/* How you travel: alone or as a family caravan */}
+            <TravelModeChoice value={learnerType} onChange={setLearnerType} isAr={isRTL} />
 
-                <button
-                  type="button"
-                  onClick={() => setLearnerType('child')}
-                  className={`p-4 rounded-2xl border text-start transition-all cursor-pointer flex items-start gap-3.5 ${
-                    learnerType === 'child'
-                      ? 'border-primary bg-primary/10 text-foreground ring-2 ring-primary/30 font-medium'
-                      : 'border-border/70 hover:border-border glass-surface text-muted-foreground'
-                  }`}
+            {/* The traveller's ticket */}
+            <PassCard name={learnerType === 'child' ? parentName : studentName} isAr={isRTL}>
+              <div className={`grid gap-5 ${learnerType === 'adult' ? 'sm:grid-cols-[1fr_120px]' : ''}`}>
+                <PassField
+                  htmlFor="onboarding-name"
+                  label={learnerType === 'child' ? (isRTL ? 'اسم ولي الأمر' : 'Parent / guardian name') : (isRTL ? 'اسمك بالكامل' : 'Your full name')}
                 >
-                  <Users className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                  <div>
-                    <div className="font-semibold text-sm text-foreground flex items-center gap-1.5">
-                      <span>{isRTL ? 'ولي أمر (حساب عائلي للأبناء)' : 'Parent / Family Account'}</span>
-                    </div>
-                    <div className="text-xs text-muted-foreground mt-0.5">
-                      {isRTL ? 'تسجيل وإدارة دروس أطفالي واختيار معلم لكل طفل' : 'Enrolling one or multiple children with teacher preferences'}
-                    </div>
-                  </div>
-                </button>
+                  <input
+                    id="onboarding-name"
+                    type="text"
+                    autoComplete="name"
+                    value={learnerType === 'child' ? parentName : studentName}
+                    onChange={(e) => (learnerType === 'child' ? setParentName(e.target.value) : setStudentName(e.target.value))}
+                    placeholder={isRTL ? 'مثال: عبد الرحمن طارق' : 'e.g. Tariq Rahman'}
+                    className={passInputClass}
+                  />
+                </PassField>
+                {learnerType === 'adult' && (
+                  <PassField htmlFor="onboarding-age" label={isRTL ? 'السن' : 'Age'}>
+                    <input
+                      id="onboarding-age"
+                      type="number"
+                      inputMode="numeric"
+                      min={3}
+                      max={100}
+                      required
+                      value={age}
+                      onChange={(e) => setAge(e.target.value)}
+                      placeholder={isRTL ? 'مثال: 24' : 'e.g. 24'}
+                      className={passInputClass}
+                    />
+                  </PassField>
+                )}
               </div>
-            </div>
 
-            {/* 2. Primary Account Holder Name */}
-            <div>
-              <label className="block text-sm font-semibold text-foreground mb-1.5">
-                {learnerType === 'child'
-                  ? (isRTL ? 'اسم ولي الأمر (الأب / الأم)' : "Parent / Guardian Full Name")
-                  : (isRTL ? 'الاسم بالكامل' : 'Your Full Name')}
-              </label>
-              <input
-                type="text"
-                value={learnerType === 'child' ? parentName : studentName}
-                onChange={(e) => {
-                  if (learnerType === 'child') {
-                    setParentName(e.target.value);
-                  } else {
-                    setStudentName(e.target.value);
-                  }
-                }}
-                placeholder={isRTL ? 'مثال: عبد الرحمن طارق' : 'e.g. Tariq Rahman'}
-                className="w-full px-4 py-3 rounded-xl border border-border glass-surface text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 text-sm"
-              />
-            </div>
+              {learnerType === 'adult' && (
+                <>
+                  <PassField label={isRTL ? 'الجنس' : 'Gender'}>
+                    <SealChoice
+                      label={isRTL ? 'الجنس' : 'Gender'}
+                      value={gender}
+                      onChange={(g) => handleGenderSelect(g)}
+                      options={[
+                        { id: 'male' as const, text: isRTL ? 'ذكر' : 'Male' },
+                        { id: 'female' as const, text: isRTL ? 'أنثى' : 'Female' }
+                      ]}
+                    />
+                  </PassField>
 
-            {learnerType === 'adult' && (
-              <div className="max-w-[200px]">
-                <Label htmlFor="onboarding-age" className="block text-sm font-semibold text-foreground mb-1.5">
-                  {isRTL ? 'سنك' : 'Your age'}
-                </Label>
-                <Input
-                  id="onboarding-age"
-                  type="number"
-                  inputMode="numeric"
-                  min={3}
-                  max={100}
-                  required
-                  value={age}
-                  onChange={(e) => setAge(e.target.value)}
-                  placeholder={isRTL ? 'مثال: 24' : 'e.g. 24'}
+                  <PassField label={isRTL ? 'مرشدك في الرحلة' : 'Your guide on the journey'}>
+                    <p className="text-xs text-muted-foreground mb-2.5">
+                      {isRTL ? 'اخترناه لك حسب الجنس، وتقدر تغيّره بضغطة.' : 'Chosen for you by gender; change it with one tap.'}
+                    </p>
+                    <GuideChoice
+                      teachers={TEACHERS_CATALOG}
+                      value={teacherGenderPreference}
+                      onChange={(id) => handleTeacherSelect(id as 'male_teacher' | 'female_teacher')}
+                      isAr={isRTL}
+                    />
+                  </PassField>
+                </>
+              )}
+
+              <PassField label={isRTL ? 'نقطة الانطلاق' : 'Starting point'}>
+                <CountryTimezonePicker
+                  country={country}
+                  timezone={timezone}
+                  onCountryChange={(newCountry) => setCountry(newCountry)}
+                  onTimezoneChange={(newTz) => setTimezone(newTz)}
+                  isAr={isRTL}
+                  showTimePreview={true}
                 />
-              </div>
-            )}
+              </PassField>
 
-            {/* 3. If Adult: Gender & Teacher Preferences */}
-            {learnerType === 'adult' && (
-              <>
-                <div className="space-y-3 pt-1">
-                  <label className="block text-sm font-semibold text-foreground">
-                    {isRTL ? 'الجنس' : 'Gender'}
-                  </label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      type="button"
-                      onClick={() => handleGenderSelect('male')}
-                      className={`p-3.5 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-1.5 ${
-                        gender === 'male'
-                          ? 'border-primary bg-primary/10 text-foreground ring-2 ring-primary/40 font-semibold'
-                          : 'border-border/70 hover:border-border glass-surface text-muted-foreground'
-                      }`}
-                    >
-                      <span className="text-base">👦 {isRTL ? 'ذكر (طالب)' : 'Male'}</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => handleGenderSelect('female')}
-                      className={`p-3.5 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-1.5 ${
-                        gender === 'female'
-                          ? 'border-primary bg-primary/10 text-foreground ring-2 ring-primary/40 font-semibold'
-                          : 'border-border/70 hover:border-border glass-surface text-muted-foreground'
-                      }`}
-                    >
-                      <span className="text-base">👧 {isRTL ? 'أنثى (طالبة)' : 'Female'}</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Teacher Selection for Adult */}
-                <div className="space-y-3 pt-2 border-t border-border/60">
-                  <div className="flex items-center justify-between">
-                    <label className="block text-sm font-semibold text-foreground">
-                      {isRTL ? 'المعلم المعين لرحلتك التعليمية' : 'Assigned Instructor'}
-                    </label>
-                    <span className="text-xs text-primary font-medium">
-                      {isRTL ? 'انقر لتغيير المعلم' : 'Tap to switch instructor'}
-                    </span>
-                  </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    {isRTL 
-                      ? 'تم التعيين تلقائياً بحسب الجنس لتوفير البيئة الأنسب، ويمكنك التبديل بين الأستاذ محمود والأستاذة أفنان بنقرة واحدة:'
-                      : 'Automatically assigned based on gender. You can freely switch between instructors:'}
-                  </p>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                    {TEACHERS_CATALOG.map((teacher) => {
-                      const isSelected = teacherGenderPreference === teacher.id;
-                      return (
-                        <div
-                          key={teacher.id}
-                          onClick={() => handleTeacherSelect(teacher.id as 'male_teacher' | 'female_teacher')}
-                          className={`relative p-4 rounded-2xl border text-start transition-all cursor-pointer flex flex-col justify-between gap-3 ${
-                            isSelected
-                              ? 'border-primary bg-primary/10 ring-2 ring-primary/40 shadow-md'
-                              : 'border-border/70 hover:border-primary/40 glass-surface opacity-85 hover:opacity-100'
-                          }`}
-                        >
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2.5">
-                                <span className="text-2xl">{teacher.avatar}</span>
-                                <div>
-                                  <h4 className="font-bold text-sm text-foreground">
-                                    {isRTL ? teacher.nameAr : teacher.nameEn}
-                                  </h4>
-                                </div>
-                              </div>
-
-                              {isSelected && (
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-primary text-primary-foreground shadow-xs">
-                                  <Check className="w-3 h-3" />
-                                  <span>{isRTL ? 'مختار' : 'Selected'}</span>
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </>
-            )}
-
-            {/* 4. Automated Country & Timezone (Locked Timezone per selection) */}
-            <div className="p-4 sm:p-5 rounded-2xl glass-surface border border-border/70 space-y-4">
-              <CountryTimezonePicker
-                country={country}
-                timezone={timezone}
-                onCountryChange={(newCountry) => setCountry(newCountry)}
-                onTimezoneChange={(newTz) => setTimezone(newTz)}
-                isAr={isRTL}
-                showTimePreview={true}
-              />
-            </div>
-
-            {/* 5. WhatsApp Phone Input with Country Code & Validation */}
-            <div>
-              <WhatsAppPhoneInput
-                countryCode={country}
-                value={whatsapp}
-                onChange={(formatted, valid) => {
-                  setWhatsapp(formatted);
-                  setIsPhoneValid(valid);
-                }}
-                isAr={isRTL}
-                required={true}
-              />
-            </div>
+              <PassField label={isRTL ? 'للتواصل في الطريق' : 'To reach you on the way'}>
+                <WhatsAppPhoneInput
+                  countryCode={country}
+                  value={whatsapp}
+                  onChange={(formatted, valid) => {
+                    setWhatsapp(formatted);
+                    setIsPhoneValid(valid);
+                  }}
+                  isAr={isRTL}
+                  required={true}
+                />
+              </PassField>
+            </PassCard>
 
             {/* Next Button */}
             <div className="pt-4 flex justify-end">
@@ -749,49 +636,36 @@ export default function StudentOnboardingPage({
                       : child.teacherGenderPreference;
 
                     return (
-                      <div
-                        key={child.id}
-                        className="p-5 sm:p-6 rounded-2xl glass-surface border border-border/80 shadow-xs space-y-4 relative"
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full bg-secondary/15 text-foreground border border-border/60">
-                            <span>{child.gender === 'female' ? '👧' : '👦'}</span>
-                            <span>{isRTL ? `الطفل (${index + 1})` : `Child #${index + 1}`}</span>
+                      <PassCard key={child.id} name={child.name} isAr={isRTL}>
+                        <div className="flex items-center justify-between -mt-2">
+                          <span className="text-xs font-bold text-[#8B4935] dark:text-[#D8C6AE]">
+                            {isRTL ? `المسافر رقم ${index + 1} في القافلة` : `Traveller ${index + 1} in the caravan`}
                           </span>
-
                           {children.length > 1 && (
                             <button
                               type="button"
                               onClick={() => handleRemoveChild(index)}
                               className="text-destructive hover:bg-destructive/10 p-1.5 rounded-lg text-xs font-medium inline-flex items-center gap-1 transition-colors cursor-pointer"
-                              title={isRTL ? 'حذف هذا الطفل' : 'Remove child'}
                             >
                               <Trash2 className="w-3.5 h-3.5" />
-                              <span>{isRTL ? 'حذف' : 'Remove'}</span>
+                              <span>{isRTL ? 'شيل' : 'Remove'}</span>
                             </button>
                           )}
                         </div>
 
-                        {/* Child Name & Gender */}
-                        <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5">
-                          <div className="sm:col-span-5">
-                            <label className="block text-xs font-semibold text-foreground mb-1">
-                              {isRTL ? 'اسم الابن / الابنة بالكامل' : "Child's Full Name"}
-                            </label>
+                        <div className="grid gap-5 sm:grid-cols-[1fr_120px]">
+                          <PassField htmlFor={`child-name-${index}`} label={isRTL ? 'اسم الابن / الابنة' : "Child's name"}>
                             <input
+                              id={`child-name-${index}`}
                               type="text"
                               value={child.name}
                               onChange={(e) => handleUpdateChild(index, { name: e.target.value })}
-                              placeholder={isRTL ? 'مثال: يوسف، فاطمة...' : 'e.g. Yusuf, Fatima...'}
-                              className="w-full px-3.5 py-2.5 rounded-xl border border-border glass-card text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                              placeholder={isRTL ? 'مثال: يوسف' : 'e.g. Yusuf'}
+                              className={passInputClass}
                             />
-                          </div>
-
-                          <div className="sm:col-span-2">
-                            <Label htmlFor={`child-age-${index}`} className="block text-xs font-semibold text-foreground mb-1">
-                              {isRTL ? 'السن' : 'Age'}
-                            </Label>
-                            <Input
+                          </PassField>
+                          <PassField htmlFor={`child-age-${index}`} label={isRTL ? 'السن' : 'Age'}>
+                            <input
                               id={`child-age-${index}`}
                               type="number"
                               inputMode="numeric"
@@ -801,97 +675,34 @@ export default function StudentOnboardingPage({
                               value={child.age}
                               onChange={(e) => handleUpdateChild(index, { age: e.target.value })}
                               placeholder={isRTL ? 'مثال: 9' : 'e.g. 9'}
-                              className="h-[42px] rounded-xl"
+                              className={passInputClass}
                             />
-                          </div>
-
-                          <div className="sm:col-span-5">
-                            <label className="block text-xs font-semibold text-foreground mb-1">
-                              {isRTL ? 'الجنس' : 'Gender'}
-                            </label>
-                            <div className="grid grid-cols-2 gap-2">
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  handleUpdateChild(index, { 
-                                    gender: 'male',
-                                    teacherGenderPreference: child.teacherGenderPreference === 'auto' ? 'auto' : 'male_teacher'
-                                  });
-                                }}
-                                className={`py-2 px-2.5 rounded-xl border text-xs font-medium transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                                  child.gender === 'male'
-                                    ? 'border-primary bg-primary/10 text-foreground ring-1 ring-primary/40 font-bold'
-                                    : 'border-border/70 glass-card text-muted-foreground'
-                                }`}
-                              >
-                                <span>👦</span>
-                                <span>{isRTL ? 'ولد' : 'Boy'}</span>
-                              </button>
-
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  handleUpdateChild(index, { 
-                                    gender: 'female',
-                                    teacherGenderPreference: child.teacherGenderPreference === 'auto' ? 'auto' : 'female_teacher'
-                                  });
-                                }}
-                                className={`py-2 px-2.5 rounded-xl border text-xs font-medium transition-all cursor-pointer flex items-center justify-center gap-1 ${
-                                  child.gender === 'female'
-                                    ? 'border-primary bg-primary/10 text-foreground ring-1 ring-primary/40 font-bold'
-                                    : 'border-border/70 glass-card text-muted-foreground'
-                                }`}
-                              >
-                                <span>👧</span>
-                                <span>{isRTL ? 'بنت' : 'Girl'}</span>
-                              </button>
-                            </div>
-                          </div>
+                          </PassField>
                         </div>
 
-                        {/* Teacher Assignment for this child */}
-                        <div className="space-y-1.5 pt-1">
-                          <label className="block text-xs font-semibold text-foreground">
-                            {isRTL ? 'المعلم المعين للطفل:' : 'Assigned Teacher for Child:'}
-                          </label>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            <button
-                              type="button"
-                              onClick={() => handleUpdateChild(index, { teacherGenderPreference: 'male_teacher' })}
-                              className={`p-2.5 rounded-xl border text-start transition-all cursor-pointer flex items-center justify-between ${
-                                currentTeacherPreference === 'male_teacher'
-                                  ? 'border-primary bg-primary/10 ring-1 ring-primary/30 font-medium'
-                                  : 'border-border/70 glass-card text-muted-foreground hover:border-border'
-                              }`}
-                            >
-                              <div className="flex items-center gap-2">
-                                <span className="text-lg">👨‍🏫</span>
-                                <div className="text-xs">
-                                  <span className="font-bold text-foreground block">{isRTL ? 'الأستاذ محمود علواني' : 'Ustadh Mahmoud'}</span>
-                                </div>
-                              </div>
-                              {currentTeacherPreference === 'male_teacher' && <Check className="w-3.5 h-3.5 text-primary" />}
-                            </button>
+                        <PassField label={isRTL ? 'ولد ولا بنت' : 'Boy or girl'}>
+                          <SealChoice
+                            label={isRTL ? 'ولد ولا بنت' : 'Boy or girl'}
+                            value={child.gender}
+                            onChange={(g) => handleUpdateChild(index, {
+                              gender: g,
+                              teacherGenderPreference: child.teacherGenderPreference === 'auto' ? 'auto' : (g === 'female' ? 'female_teacher' : 'male_teacher')
+                            })}
+                            options={[
+                              { id: 'male' as const, text: isRTL ? 'ولد' : 'Boy' },
+                              { id: 'female' as const, text: isRTL ? 'بنت' : 'Girl' }
+                            ]}
+                          />
+                        </PassField>
 
-                            <button
-                              type="button"
-                              onClick={() => handleUpdateChild(index, { teacherGenderPreference: 'female_teacher' })}
-                              className={`p-2.5 rounded-xl border text-start transition-all cursor-pointer flex items-center justify-between ${
-                                currentTeacherPreference === 'female_teacher'
-                                  ? 'border-primary bg-primary/10 ring-1 ring-primary/30 font-medium'
-                                  : 'border-border/70 glass-card text-muted-foreground hover:border-border'
-                              }`}
-                            >
-                              <div className="flex items-center gap-2">
-                                <span className="text-lg">👩‍🏫</span>
-                                <div className="text-xs">
-                                  <span className="font-bold text-foreground block">{isRTL ? 'الأستاذة أفنان' : 'Teacher Afnan'}</span>
-                                </div>
-                              </div>
-                              {currentTeacherPreference === 'female_teacher' && <Check className="w-3.5 h-3.5 text-primary" />}
-                            </button>
-                          </div>
-                        </div>
+                        <PassField label={isRTL ? 'مرشده في الرحلة' : 'Their guide on the journey'}>
+                          <GuideChoice
+                            teachers={TEACHERS_CATALOG}
+                            value={currentTeacherPreference}
+                            onChange={(id) => handleUpdateChild(index, { teacherGenderPreference: id as 'male_teacher' | 'female_teacher' })}
+                            isAr={isRTL}
+                          />
+                        </PassField>
 
                         {/* Subject & Level for this child */}
                         <div className="space-y-4 pt-1">
@@ -926,10 +737,10 @@ export default function StudentOnboardingPage({
                             value={child.notes}
                             onChange={(e) => handleUpdateChild(index, { notes: e.target.value })}
                             placeholder={isRTL ? 'ملاحظات خاصة بالطفل (اختياري: العمر، تفضيلات معينة...)' : 'Notes for this child (Optional: age, preferences...)'}
-                            className="w-full px-3 py-1.5 rounded-lg border border-border/70 glass-card text-foreground text-xs placeholder:text-muted-foreground/60"
+                            className={`${passInputClass} !text-sm !font-normal`}
                           />
                         </div>
-                      </div>
+                      </PassCard>
                     );
                   })}
                 </div>

@@ -1530,3 +1530,7 @@ h3, .text-heading-lg {
 @keyframes journey-drift { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(72px, 72px, 0); } }
 .journey-lattice { animation: journey-drift 60s linear infinite; }
 @media (prefers-reduced-motion: reduce) { .journey-lattice { animation: none; } }
+
+/* Welcome recitation "now playing" bars. */
+@keyframes recitation { 0%, 100% { transform: scaleY(0.35); } 50% { transform: scaleY(1); } }
+@media (prefers-reduced-motion: reduce) { [class*="animate-[recitation"] { animation: none !important; } }
