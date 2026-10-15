@@ -5,9 +5,13 @@ import path from 'node:path';
 
 test('Phase D Remediation: SEO Protection Hook', () => {
   const code = fs.readFileSync(path.join(process.cwd(), 'src/components/SEOProtection.tsx'), 'utf8');
-  assert.ok(code.includes('setAttribute(\'name\', \'robots\')'), 'Should create meta robots tag');
-  assert.ok(code.includes('content\', \'noindex, nofollow\''), 'Should set noindex for private routes');
-  assert.ok(code.includes('content\', \'index, follow\''), 'Should set index for public routes');
+  assert.ok(code.includes("setMeta('name', 'robots', 'noindex, nofollow')"), 'Should set noindex for private routes');
+  assert.ok(code.includes("setMeta('name', 'robots', 'index, follow"), 'Should set index for public routes');
+  // Every public page must be indexable (it used to be the homepage only).
+  const seo = fs.readFileSync(path.join(process.cwd(), 'src/data/seo.ts'), 'utf8');
+  for (const p of ['/about', '/how-it-works', '/learning', '/pricing', '/faq', '/privacy', '/terms']) {
+    assert.ok(seo.includes(`path: '${p}'`), `${p} should be an indexable public page`);
+  }
   
   const appCode = fs.readFileSync(path.join(process.cwd(), 'src/App.tsx'), 'utf8');
   assert.ok(appCode.includes('<SEOProtection />'), 'Should be injected in App.tsx');
