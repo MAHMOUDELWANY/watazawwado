@@ -13,6 +13,17 @@ import { PUBLIC_PAGES, SITE_URL } from '../src/data/seo';
 const dist = path.resolve('dist');
 const template = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
 
+// Account areas and unknown paths get the plain app shell (vercel.json rewrites to /spa.html):
+// they must not flash the homepage's prerendered content, and are not for search engines.
+fs.writeFileSync(
+  path.join(dist, 'spa.html'),
+  template.replace(/<meta name="robots" content="[^"]*" \/>/, () => '<meta name="robots" content="noindex, nofollow" />')
+);
+
+// Public pages inline the stylesheet: one less round trip before the first paint on phones.
+const cssLink = template.match(/<link rel="stylesheet"[^>]*href="(\/assets\/[^"]+\.css)"[^>]*>/);
+const inlineCss = cssLink ? fs.readFileSync(path.join(dist, cssLink[1]), 'utf8') : null;
+
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 function render(page: (typeof PUBLIC_PAGES)[number], body: string | null): string {
@@ -36,6 +47,7 @@ function render(page: (typeof PUBLIC_PAGES)[number], body: string | null): strin
     PUBLIC_PAGES.map((p) => `<a href="${p.path}">${esc(p.h1En)}</a>`).join(' · ') +
     `</nav></div>`;
   swap(/<div id="root"><\/div>/, `<div id="root">${body || summary}</div>`);
+  if (cssLink && inlineCss) html = html.replace(cssLink[0], () => `<style>${inlineCss}</style>`);
   // The teacher photo is the largest element on these pages: fetch it first.
   if (page.path === '/' || page.path === '/about') {
     html = html.replace('</title>', () => '</title><link rel="preload" as="image" href="/ustadh-mahmoud.jpg" fetchpriority="high" />');

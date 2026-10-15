@@ -3,6 +3,7 @@ dotenv.config();
 
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
 import { createServer as createViteServer } from 'vite';
 import apiRouter from './api/index.js'; // Use .js for TSX/Node resolution
 
@@ -24,7 +25,7 @@ async function startServer() {
     const distPath = path.join(process.cwd(), 'dist');
     app.use(express.static(distPath));
     app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
+      res.sendFile(path.join(distPath, fs.existsSync(path.join(distPath, 'spa.html')) ? 'spa.html' : 'index.html'));
     });
   }
 
