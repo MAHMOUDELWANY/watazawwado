@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /student
+Disallow: /dashboard
+Disallow: /teacher
+Disallow: /staff
+Disallow: /api/
+Disallow: /otp
+Disallow: /verify
+
+Sitemap: https://watazawwado.academy/sitemap.xml
