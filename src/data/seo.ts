@@ -23,9 +23,9 @@ export interface PageSeo {
 export const PUBLIC_PAGES: PageSeo[] = [
   {
     path: '/',
-    titleEn: 'Watazawwado Academy (وتزودوا) | Online 1-on-1 Quran, Arabic & Islamic Studies',
-    titleAr: 'أكاديمية وتزودوا Watazawwado Academy | دروس قرآن وعربي ودراسات إسلامية أونلاين',
-    descEn: 'Watazawwado Academy (watazawwado.academy): live 1-on-1 Zoom lessons in Quran, Tajweed, Islamic studies, Arabic and English for Muslim families and adults worldwide. Free 30-minute trial.',
+    titleEn: 'Watazawwado Academy | Online Quran, Arabic & Islamic Studies',
+    titleAr: 'أكاديمية وتزودوا Watazawwado | قرآن وعربي ودراسات إسلامية',
+    descEn: 'Watazawwado Academy: live 1-on-1 Zoom lessons in Quran, Tajweed, Islamic studies, Arabic and English for families and adults. Free 30-minute trial.',
     descAr: 'أكاديمية وتزودوا: حصص فردية مباشرة على زووم في القرآن والتجويد والدراسات الإسلامية والعربية والإنجليزية للأطفال والكبار حول العالم. حصة تجريبية مجانية 30 دقيقة.',
     h1En: 'Watazawwado Academy — online 1-on-1 Quran, Arabic & Islamic studies'
   },
@@ -33,23 +33,23 @@ export const PUBLIC_PAGES: PageSeo[] = [
     path: '/about',
     titleEn: 'About Watazawwado Academy & our teachers | وتزودوا',
     titleAr: 'عن أكاديمية وتزودوا ومعلمينا | Watazawwado',
-    descEn: 'Meet the teachers of Watazawwado Academy: balanced, moderate teaching with an Azhari foundation in Aqeedah, following Ahl al-Sunnah wal-Jama‘ah, for children and adults.',
+    descEn: 'Meet the teachers of Watazawwado Academy: balanced, moderate teaching with an Azhari foundation, following Ahl al-Sunnah wal-Jama‘ah.',
     descAr: 'تعرّف على معلمي أكاديمية وتزودوا: تعليم وسطي معتدل بتأسيس أزهري في العقيدة على منهج أهل السنة والجماعة، للأطفال والكبار.',
     h1En: 'About Watazawwado Academy'
   },
   {
     path: '/how-it-works',
-    titleEn: 'How it works — free trial, placement test & lessons | Watazawwado Academy',
-    titleAr: 'إزاي بنشتغل — الحصة التجريبية واختبار المستوى والحصص | وتزودوا Watazawwado',
-    descEn: 'Create a free account, book a free 30-minute trial, take a short placement test, then learn 1-on-1 on Zoom at times that suit you. See how Watazawwado Academy works.',
+    titleEn: 'How it works: free trial & lessons | Watazawwado Academy',
+    titleAr: 'إزاي بنشتغل: الحصة التجريبية والحصص | وتزودوا Watazawwado',
+    descEn: 'Create a free account, book a free 30-minute trial, take a short placement test, then learn 1-on-1 on Zoom at times that suit you.',
     descAr: 'اعمل حساب مجاني، احجز حصة تجريبية مجانية 30 دقيقة، خد اختبار تحديد مستوى قصير، وبعدها اتعلم حصص فردية على زووم في الوقت اللي يناسبك.',
     h1En: 'How Watazawwado Academy works'
   },
   {
     path: '/learning',
-    titleEn: 'Subjects — Quran, Tajweed, Hifz, Islamic studies, Arabic & English | Watazawwado',
-    titleAr: 'المواد — القرآن والتجويد والحفظ والعلوم الشرعية والعربية والإنجليزية | وتزودوا Watazawwado',
-    descEn: 'Quran reading (Noorani Qaida), Tajweed, memorization and revision, Aqeedah, Fiqh, Seerah, Modern Standard Arabic, Egyptian Arabic, Arabic conversation and English — 1-on-1 online.',
+    titleEn: 'Quran, Tajweed, Arabic & English Classes | Watazawwado',
+    titleAr: 'المواد: القرآن والتجويد والعربية والإنجليزية | وتزودوا',
+    descEn: 'Quran reading, Tajweed, Hifz, Aqeedah, Fiqh, Seerah, Fusha and Egyptian Arabic, Arabic conversation and English, taught 1-on-1 online.',
     descAr: 'القراءة والقاعدة النورانية، التجويد، الحفظ والمراجعة، العقيدة والفقه والسيرة، العربية الفصحى والمصرية والمحادثة، والإنجليزية — حصص فردية أونلاين.',
     h1En: 'Subjects at Watazawwado Academy'
   },
@@ -57,7 +57,7 @@ export const PUBLIC_PAGES: PageSeo[] = [
     path: '/pricing',
     titleEn: 'Prices & packages — from $9/hour | Watazawwado Academy',
     titleAr: 'الأسعار والباقات — من 9 دولار للساعة | وتزودوا Watazawwado',
-    descEn: 'Quran, Tajweed and Islamic studies from $9 an hour; Arabic and English from $13 an hour. Packages of 4, 8 or 12 lessons and a family discount. Free trial lesson.',
+    descEn: 'Quran, Tajweed and Islamic studies from $9 an hour; Arabic and English from $13. Packages of 4, 8 or 12 lessons, family discount, free trial.',
     descAr: 'القرآن والتجويد والعلوم الشرعية من 9 دولار للساعة، والعربية والإنجليزية من 13 دولار. باقات 4 و8 و12 حصة وخصم عائلي، وحصة تجريبية مجانية.',
     h1En: 'Prices and packages'
   },
