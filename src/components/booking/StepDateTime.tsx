@@ -265,7 +265,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                 <p className="text-sm text-foreground/80 dark:text-accent/90 max-w-md mx-auto leading-relaxed">
                   {currentDay?.reasonUnavailable ||
                     (isEn
-                      ? 'Mahmoud has scheduled prior teaching or revision on this date.'
+                      ? 'All times on this date are already booked.'
                       : 'تم حجز كافة فترات هذا اليوم مسبقاً.')}
                 </p>
 

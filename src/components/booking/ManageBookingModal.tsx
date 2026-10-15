@@ -188,8 +188,8 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                 {isEn ? 'Cancellation & Rescheduling Rule: ' : 'سياسة التعديل والإلغاء: '}
               </strong>
               {isEn
-                ? 'Students may cancel or reschedule up to 3 hours before the lesson. Within 3 hours, self-service changes are closed and you must contact Mahmoud directly.'
-                : 'يمكنك تعديل الموعد أو الإلغاء ذاتياً حتى ٣ ساعات قبل الدرس. خلال الساعات الثلاث السابقة، يُرجى التواصل مع محمود مباشرة على واتساب.'}
+                ? 'Students may cancel or reschedule up to 3 hours before the lesson. Within 3 hours, self-service changes are closed and you must contact us directly.'
+                : 'يمكنك تعديل الموعد أو الإلغاء ذاتياً حتى ٣ ساعات قبل الدرس. خلال الساعات الثلاث السابقة، يُرجى التواصل معنا مباشرة على واتساب.'}
             </div>
 
             {/* Quick Demo Selector (development only) */}
@@ -311,7 +311,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                   <div>
                     <div className="flex items-center gap-1.5 text-[13px] uppercase font-semibold text-primary mb-0.5">
                       <Clock className="w-3.5 h-3.5" />
-                      <span>{isEn ? "Mahmoud's Calendar (Cairo)" : 'توقيت القاهرة (محمود)'}</span>
+                      <span>{isEn ? "Cairo time" : 'توقيت القاهرة'}</span>
                     </div>
                     <div className="font-semibold text-sm text-foreground dark:text-white">
                       {dualTimes.cairoTime} (Cairo)
@@ -485,7 +485,7 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                       className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl btn-primary-material text-white text-sm font-semibold shadow-xs transition-colors"
                     >
                       <MessageCircle className="w-4 h-4" />
-                      <span>{isEn ? 'Contact Mahmoud Directly on WhatsApp' : 'مراسلة محمود مباشرة على واتساب'}</span>
+                      <span>{isEn ? 'Contact us on WhatsApp' : 'مراسلتنا مباشرة على واتساب'}</span>
                     </a>
                     {booking.mode !== 'trial' && (
                       <button

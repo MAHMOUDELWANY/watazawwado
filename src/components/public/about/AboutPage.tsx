@@ -16,7 +16,7 @@ export function AboutPage() {
 
           <div className="text-center space-y-6">
             <MarginNote className="mx-auto">
-              {isEn ? 'About the Teacher' : 'عن المعلم'}
+              {isEn ? 'About the Teachers' : 'عن المعلمين'}
             </MarginNote>
             <h1 className="font-editorial text-4xl sm:text-5xl text-foreground">
               {isEn ? 'A human connection to learning.' : 'علاقة إنسانية مع التعلم.'}
@@ -59,6 +59,43 @@ export function AboutPage() {
                   {isEn
                     ? "Teaching is a trust. I teach Islam the balanced, moderate way, far from any extremism, with an Azhari foundation in Aqeedah and following Ahl al-Sunnah wal-Jama'ah. My English (IELTS C1) helps me explain pronunciation and grammar clearly to students who grew up abroad."
                     : 'التعليم أمانة. بعلّم الدين بوسطية واعتدال وبعيد عن أي تطرف، بتأسيس أزهري في العقيدة وعلى منهج أهل السنة والجماعة. وإنجليزيتي (IELTS C1) بتساعدني أشرح النطق والقواعد بوضوح للطلاب اللي اتربوا برّه.'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Ustadha Afnan: mirrored layout. Her full introduction comes from the owner later (no invented credentials). */}
+          <div className="grid md:grid-cols-12 gap-12 items-center pt-12">
+            <div className="md:col-span-5 md:order-2 relative">
+              <div className="absolute -inset-4 bg-gradient-to-tl from-sand/25 via-primary/10 to-teal-500/20 rounded-3xl -z-10 blur-xl transform -rotate-2" />
+              <PortraitFrame src="/ustadha-afnan.jpg" alt={isEn ? 'Ustadha Afnan' : 'الأستاذة أفنان'} className="w-full max-w-sm mx-auto md:mx-0 shadow-xl" />
+              <div className="absolute -bottom-6 -left-6 rtl:-left-auto rtl:-right-6 glass-card p-4 rounded-xl shadow-lg border border-teal-500/30 max-w-[220px] hidden sm:block">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-teal-700 dark:text-teal-300">
+                  <span className="w-2 h-2 rounded-full bg-teal-500" />
+                  <span>{isEn ? 'A female teacher' : 'معلمة للأخوات والبنات'}</span>
+                </div>
+                <StudyLine variant="teal" className="my-2" />
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  {isEn ? 'For sisters and girls who prefer a female teacher.' : 'لمن تفضّل التعلم مع معلمة.'}
+                </p>
+              </div>
+            </div>
+
+            <div className="md:col-span-7 md:order-1 space-y-6">
+              <EditorialHeading eyebrow={isEn ? 'Background' : 'خلفية المعلمة'} noAccent>
+                {isEn ? 'Ustadha Afnan' : 'الأستاذة أفنان'}
+              </EditorialHeading>
+
+              <div className="prose prose-p:text-muted-foreground prose-p:leading-relaxed max-w-none">
+                <p>
+                  {isEn
+                    ? 'Ustadha Afnan teaches with Watazawwado. Sisters, girls and families who prefer a female teacher can choose her when they create their learning profile.'
+                    : 'الأستاذة أفنان تدرّس مع وتزودوا. والأخوات والبنات والعائلات اللي بتفضّل معلمة يقدروا يختاروها وهم بيعملوا ملفهم التعليمي.'}
+                </p>
+                <p>
+                  {isEn
+                    ? 'She teaches in the same spirit as the whole academy: patient, encouraging lessons, starting from where each student really is. A fuller introduction to her experience is coming soon.'
+                    : 'وبتدرّس بنفس روح الأكاديمية كلها: دروس صبورة ومشجّعة، بتبدأ من مستوى كل طالبة الحقيقي. وقريباً هنضيف تعريف أوفى بخبرتها.'}
                 </p>
               </div>
             </div>

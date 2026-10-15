@@ -149,8 +149,8 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
           </h1>
           <p className="text-sm sm:text-sm text-muted-foreground mt-1 leading-relaxed">
             {isAr
-              ? 'متابعة كافة جلساتك التعليمية المباشرة مع الأستاذ محمود، الروابط، وحالة التأكيد.'
-              : 'Direct 1-on-1 scheduled sessions with Ustadh Mahmoud, room access, and lesson history.'}
+              ? 'متابعة كافة جلساتك التعليمية المباشرة مع معلمك، الروابط، وحالة التأكيد.'
+              : 'Your 1-on-1 sessions with your teacher, room access, and lesson history.'}
           </p>
         </div>
 
@@ -172,8 +172,8 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
           </span>
           <span>
             {isAr
-              ? 'يمكنك إعادة جدولة أو إلغاء موعدك قبل موعد الدرس بـ ٣ ساعات على الأقل. في حال كان المتبقي أقل من ٣ ساعات، يرجى التنسيق المباشر مع الأستاذ محمود عبر واتساب.'
-              : 'You may reschedule or cancel any session at least 3 hours in advance. For changes within 3 hours of start time, please message Ustadh Mahmoud directly on WhatsApp.'}
+              ? 'يمكنك إعادة جدولة أو إلغاء موعدك قبل موعد الدرس بـ ٣ ساعات على الأقل. في حال كان المتبقي أقل من ٣ ساعات، يرجى التنسيق معنا مباشرة عبر واتساب.'
+              : 'You may reschedule or cancel any session at least 3 hours in advance. For changes within 3 hours of start time, please message us directly on WhatsApp.'}
           </span>
         </div>
       </div>
@@ -271,7 +271,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
             <p className="text-sm sm:text-sm text-muted-foreground max-w-md mx-auto mt-1 leading-relaxed">
               {activeFilter === 'upcoming'
                 ? (isAr
-                    ? 'ليس لديك أي مواعيد قادمة مجدولة حالياً. يمكنك اختيار موضوع وجلسة مع الأستاذ محمود الآن.'
+                    ? 'ليس لديك أي مواعيد قادمة مجدولة حالياً. يمكنك اختيار موضوع وجلسة مع معلمك الآن.'
                     : 'You do not have any upcoming sessions on your calendar. Ready to book your next lesson?')
                 : activeFilter === 'completed'
                 ? (isAr
@@ -282,8 +282,8 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                     ? 'لا توجد أي جلسات ملغاة في سجلك التعليمي.'
                     : 'There are no cancelled sessions in your lesson history.')
                 : (isAr
-                    ? 'ابدأ رحلتك التعليمية بحجز أول موعد مع الأستاذ محمود.'
-                    : 'Start your learning journey by booking your first session with Ustadh Mahmoud.')}
+                    ? 'ابدأ رحلتك التعليمية بحجز أول موعد مع معلمك.'
+                    : 'Start your learning journey by booking your first session with your teacher.')}
             </p>
           </div>
           {(activeFilter === 'upcoming' || activeFilter === 'all') && (

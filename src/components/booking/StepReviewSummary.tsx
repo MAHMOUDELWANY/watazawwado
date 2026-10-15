@@ -283,8 +283,8 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
           </strong>
           <span className="text-muted-foreground text-xs sm:text-sm">
             {isEn
-              ? 'You can easily reschedule or cancel anytime up to 3 hours before your lesson. For requests within the 3-hour window, please contact Mahmoud directly on WhatsApp.'
-              : 'يمكنك تعديل الموعد أو الإلغاء بكل سهولة حتى ٣ ساعات قبل بدء الدرس. في حال رغبتك بالتعديل خلال الساعات الثلاث السابقة للدرس، يُرجى مراسلة محمود مباشرة على واتساب.'}
+              ? 'You can easily reschedule or cancel anytime up to 3 hours before your lesson. For requests within the 3-hour window, please message us directly on WhatsApp.'
+              : 'يمكنك تعديل الموعد أو الإلغاء بكل سهولة حتى ٣ ساعات قبل بدء الدرس. في حال رغبتك بالتعديل خلال الساعات الثلاث السابقة للدرس، يُرجى مراسلتنا مباشرة على واتساب.'}
           </span>
         </div>
       </div>

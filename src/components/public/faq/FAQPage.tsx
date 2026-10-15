@@ -51,8 +51,8 @@ export function FAQPage() {
             </EditorialHeading>
             <p className="text-muted-foreground mb-8 max-w-md mx-auto mt-4">
               {isEn 
-                ? 'The best way to get answers is to book a free trial, or contact Ustadh Mahmoud directly on WhatsApp.'
-                : 'أفضل طريقة للحصول على إجابات هي حجز جلسة تجريبية مجانية، أو التواصل مع الأستاذ محمود مباشرة عبر واتساب.'}
+                ? 'The best way to get answers is to book a free trial, or message us directly on WhatsApp.'
+                : 'أفضل طريقة للحصول على إجابات هي حجز جلسة تجريبية مجانية، أو مراسلتنا مباشرة عبر واتساب.'}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <PublicButton size="lg" onClick={() => onOpenTrialModal()}>
@@ -66,7 +66,7 @@ export function FAQPage() {
                 className="btn-whatsapp-solid py-3 px-6 rounded-xl text-sm font-bold shadow-xs hover:scale-105 transition-all"
               >
                 <WhatsAppIcon className="w-4 h-4 shrink-0" />
-                <span>{isEn ? 'Ask Mahmoud on WhatsApp' : 'اسأل محمود على واتساب'}</span>
+                <span>{isEn ? 'Ask us on WhatsApp' : 'اسألنا على واتساب'}</span>
               </a>
             </div>
 

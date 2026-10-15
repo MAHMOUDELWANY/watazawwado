@@ -95,7 +95,7 @@ export const Footer: React.FC<FooterProps> = ({
               <ul className="space-y-0.5 text-muted-foreground font-medium">
                 <li>
                   <Link to="/about" className="inline-block py-1.5 hover:text-accent transition-colors">
-                    {isEn ? 'About Mahmoud' : 'عن المعلم'}
+                    {isEn ? 'About our teachers' : 'عن المعلمين'}
                   </Link>
                 </li>
                 <li>
@@ -163,7 +163,7 @@ export const Footer: React.FC<FooterProps> = ({
               {isEn ? 'Terms of Service' : 'شروط الخدمة'}
             </Link>
             <span>•</span>
-<span>{isEn ? '3-Hour Reschedule Policy' : 'إعادة الجدولة حتى ٣ ساعات قبل الدرس'}</span>
+<span>{isEn ? 'Reschedule up to 1 hour before' : 'تغيير الموعد حتى ساعة قبل الدرس'}</span>
             <span>•</span>
             <span>{isEn ? 'Flexible Booking' : 'حجز مرن ومباشر'}</span>
             <span>•</span>

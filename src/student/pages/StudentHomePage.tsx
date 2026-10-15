@@ -271,7 +271,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
     
   const welcomeSubtitle = isReturning
     ? (isAr ? '\u0646\u0643\u0645\u0644 \u0631\u062d\u0644\u062a\u0643 \u0627\u0644\u062a\u0639\u0644\u064a\u0645\u064a\u0629 \u0645\u0646 \u062d\u064a\u062b \u062a\u0648\u0642\u0641\u0646\u0627.' : 'Let\'s continue where you left off.')
-    : (isAr ? '\u0643\u0644 \u0645\u0627 \u062a\u062d\u062a\u0627\u062c\u0647 \u0644\u062f\u0631\u0648\u0633\u0643 \u0645\u0639 \u0627\u0644\u0623\u0633\u062a\u0627\u0630 \u0645\u062d\u0645\u0648\u062f \u0641\u064a \u0645\u0643\u0627\u0646 \u0648\u0627\u062d\u062f.' : 'Everything you need for your lessons with Ustadh Mahmoud, in one place.');
+    : (isAr ? 'كل ما تحتاجه لدروسك في مكان واحد.' : 'Everything you need for your lessons, in one place.');
 
   const creditsRemaining = packagesData?.creditSummary?.totalRemaining ?? 0;
   const completedLessonsCount = bookings.filter(b => b.status === 'completed').length;
@@ -295,7 +295,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
     {
       targetId: 'onboarding-welcome',
       title: isAr ? 'مساحتك التعليمية' : 'Your Learning Home',
-      description: isAr ? 'هنا تجد كل ما يخص دروسك مع الأستاذ محمود، من حجوزات ومتابعة وتفاصيل.' : 'This is your central hub for all your lessons with Ustadh Mahmoud.',
+      description: isAr ? 'هنا تجد كل ما يخص دروسك مع معلمك، من حجوزات ومتابعة وتفاصيل.' : 'This is your central hub for all your lessons with your teacher.',
       position: 'bottom'
     },
     {
@@ -578,7 +578,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                       </span>
                       <span className="text-muted-foreground">•</span>
                       <span className="text-sm text-muted-foreground">
-                        {isAr ? 'مع الأستاذ محمود' : 'with Ustadh Mahmoud'}
+                        {isAr ? 'مع معلمك' : 'with your teacher'}
                       </span>
                     </div>
 
@@ -739,8 +739,8 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   </h3>
                   <p className="text-sm sm:text-[15px] text-muted-foreground leading-relaxed max-w-md">
                     {isAr
-                      ? 'احجز موعد جلستك الفردية القادمة مع الأستاذ محمود عندما تكون مستعداً.'
-                      : 'Book your next private 1-on-1 lesson with Ustadh Mahmoud when you are ready.'}
+                      ? 'احجز موعد جلستك الفردية القادمة مع معلمك عندما تكون مستعداً.'
+                      : 'Book your next private 1-on-1 lesson with your teacher when you are ready.'}
                   </p>
                 </div>
 
@@ -774,7 +774,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
               <div className="p-6 rounded-2xl border border-border glass-card text-center">
                 <p className="text-sm sm:text-[15px] text-muted-foreground">
                   {isAr
-                    ? 'لم تكتمل أي دروس بعد. ستظهر جلساتك السابقة وملاحظات الأستاذ محمود هنا.'
+                    ? 'لم تكتمل أي دروس بعد. ستظهر جلساتك السابقة وملاحظات معلمك هنا.'
                     : 'No past lessons recorded yet. Completed sessions and teacher feedback will appear here.'}
                 </p>
               </div>
@@ -948,7 +948,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {isAr 
-                    ? 'لديك حصص مدفوعة مسبقاً جاهزة للحجز مع الأستاذ محمود.' 
+                    ? 'لديك حصص مدفوعة مسبقاً جاهزة للحجز مع معلمك.' 
                     : 'You have active prepaid credits ready to use for upcoming lessons.'}
                 </p>
 
@@ -964,7 +964,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     {isAr 
                       ? 'الباقات المدفوعة مسبقاً توفر تعليماً منظماً أسبوعياً أو شهرياً بأسعار مخفضة.' 
-                      : 'Choose what to learn and find an available time with Ustadh Mahmoud.'}
+                      : 'Choose what to learn and find an available time with your teacher.'}
                   </p>
                 </div>
 
@@ -1011,7 +1011,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                 <p className="text-muted-foreground text-sm leading-relaxed">
                   {isAr
                     ? 'أرسل تفاصيل الحوالة البنكية لتأكيد الحجز ومتابعة الدرس.'
-                    : 'Submit your transfer reference so Ustadh Mahmoud can verify your slot.'}
+                    : 'Submit your transfer reference so we can verify your slot.'}
                 </p>
                 <Link
                   to="/student/payments"
@@ -1045,7 +1045,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                 </div>
                 <p className="text-muted-foreground text-sm leading-relaxed">
                   {isAr
-                    ? 'يرجى التحقق من تفاصيل الإيصال أو التواصل مع الأستاذ محمود.'
+                    ? 'يرجى التحقق من تفاصيل الإيصال أو التواصل معنا.'
                     : 'Please review your transfer details or submit a corrected claim.'}
                 </p>
                 <Link
@@ -1091,7 +1091,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
             <p className="text-sm text-muted-foreground leading-relaxed">
               {isAr
                 ? 'هل لديك استفسار حول خطتك التعليمية أو تحتاج لمراجعة تقدمك؟ تواصل مباشرة عبر واتساب.'
-                : 'Need to coordinate your lesson plan or have questions about what to prepare? You can message Ustadh Mahmoud directly on WhatsApp.'}
+                : 'Need to coordinate your lesson plan or have questions about what to prepare? You can message us directly on WhatsApp.'}
             </p>
 
             <a

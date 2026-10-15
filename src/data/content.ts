@@ -311,17 +311,17 @@ export const HOW_IT_WORKS_STEPS = [
     step: '01',
     title: 'Book a Free 30-Min Trial',
     arabicTitle: 'احجز جلسة تجريبية مجانية',
-    description: 'Choose a time that suits your local timezone. No payment or credit card is required. Tell Mahmoud a little about what you hope to learn.',
-    arabicDescription: 'اختر الموعد الأنسب لمنطقتك الزمنية بكل سهولة. لا يلزم أي دفع أو بطاقة بنكية. أخبر محمود بما ترغب في تعلمه وإتقانه.',
+    description: 'Choose a time that suits your local timezone. No payment or credit card is required. Tell your teacher a little about what you hope to learn.',
+    arabicDescription: 'اختر الموعد الأنسب لمنطقتك الزمنية بكل سهولة. لا يلزم أي دفع أو بطاقة بنكية. أخبر معلمك بما ترغب في تعلمه وإتقانه.',
     highlight: 'Zero obligation',
     arabicHighlight: 'بدون أي التزام مالي'
   },
   {
     step: '02',
     title: 'Meet & Discover Your Level',
-    arabicTitle: 'التقِ بمحمود وحدد مستواك',
-    description: 'In your trial, Mahmoud listens to your goals, diagnoses your current level with gentle exercises, and gives you a real mini-lesson so you feel his teaching style directly.',
-    arabicDescription: 'في جلستك التجريبية، يستمع محمود لأهدافك، ويحدد مستواك عبر تمارين ميسرة، ويقدم لك درساً تطبيقياً مصغراً لتتعرف على أسلوبه التعليمي المباشر.',
+    arabicTitle: 'التقِ بمعلمك وحدد مستواك',
+    description: 'In your trial, your teacher (Ustadh Mahmoud or Ustadha Afnan) listens to your goals, finds your current level with gentle exercises, and gives you a real mini-lesson so you feel the teaching style directly.',
+    arabicDescription: 'في جلستك التجريبية، يستمع معلمك (الأستاذ محمود أو الأستاذة أفنان) لأهدافك، ويحدد مستواك عبر تمارين ميسرة، ويقدم لك درساً تطبيقياً مصغراً لتتعرف على أسلوب التدريس مباشرة.',
     highlight: 'Personal assessment',
     arabicHighlight: 'تقييم شخصي دقيق'
   },
@@ -329,8 +329,8 @@ export const HOW_IT_WORKS_STEPS = [
     step: '03',
     title: 'Receive Your Custom Plan',
     arabicTitle: 'استلم خطتك التعليمية المناسبة',
-    description: 'Mahmoud outlines a clear learning roadmap: recommended lesson duration (30, 45, or 60 min), weekly frequency, and material tailored to your lifestyle.',
-    arabicDescription: 'يحدد لك محمود خارطة طريق تعليمية واضحة تشمل مدة الدرس المناسبة (٣٠ أو ٤٥ أو ٦٠ دقيقة)، وعدد الحصص الأسبوعية، والمحتوى المخصص لظروفك.',
+    description: 'Your teacher outlines a clear learning roadmap: recommended lesson duration (30, 45, or 60 min), weekly frequency, and material tailored to your lifestyle.',
+    arabicDescription: 'يحدد لك معلمك خارطة طريق تعليمية واضحة تشمل مدة الدرس المناسبة (٣٠ أو ٤٥ أو ٦٠ دقيقة)، وعدد الحصص الأسبوعية، والمحتوى المخصص لظروفك.',
     highlight: 'No generic templates',
     arabicHighlight: 'خطة مخصصة تماماً'
   },
@@ -338,10 +338,10 @@ export const HOW_IT_WORKS_STEPS = [
     step: '04',
     title: 'Learn 1-on-1 with Flexibility',
     arabicTitle: 'تعلم مباشرة عبر زووم بمرونة تامة',
-    description: 'Attend private Zoom lessons with direct WhatsApp support between sessions. Need to reschedule? Self-service rescheduling is available up to 3 hours before class.',
-    arabicDescription: 'احضر حصصك الفردية الخاصة عبر زووم مع دعم مباشر ومستمر عبر واتساب. هل طرأ لك ظرف؟ يمكنك إعادة الجدولة ذاتياً بكل سهولة حتى ٣ ساعات قبل الدرس.',
-    highlight: '3-hour flexible reschedule',
-    arabicHighlight: 'مرونة حتى ٣ ساعات'
+    description: 'Attend private Zoom lessons with direct WhatsApp support between sessions. Need to reschedule? You can reschedule yourself up to 1 hour before class, or cancel up to 3 hours before.',
+    arabicDescription: 'احضر حصصك الفردية الخاصة عبر زووم مع دعم مباشر ومستمر عبر واتساب. هل طرأ لك ظرف؟ يمكنك تغيير الموعد بنفسك حتى ساعة قبل الدرس، أو الإلغاء حتى ٣ ساعات قبله.',
+    highlight: 'Flexible rescheduling',
+    arabicHighlight: 'مرونة في تغيير الموعد'
   }
 ];
 
@@ -355,8 +355,8 @@ export const TEACHING_PILLARS = [
   {
     title: 'A Safe Space to Make Mistakes',
     arabicTitle: 'بيئة آمنة تخلو من الحرج',
-    description: 'Reciting Quran or speaking a new language can provoke anxiety. Mahmoud’s lessons are calm, encouraging, and patient. Every correction is delivered with kindness and clarity.',
-    arabicDescription: 'تلاوة القرآن أو التحدث بلغة جديدة قد يسبب التردد أو التوتر. دروس محمود هادئة وصبورة ومشجعة، وكل تصحيح يُقدّم بلطف ومحبة وتدرج.'
+    description: 'Reciting Quran or speaking a new language can provoke anxiety. Our lessons are calm, encouraging, and patient. Every correction is delivered with kindness and clarity.',
+    arabicDescription: 'تلاوة القرآن أو التحدث بلغة جديدة قد يسبب التردد أو التوتر. دروسنا هادئة وصبورة ومشجعة، وكل تصحيح يُقدّم بلطف ومحبة وتدرج.'
   },
   {
     title: 'Pacing Built for Real Life',
@@ -367,8 +367,8 @@ export const TEACHING_PILLARS = [
   {
     title: 'Direct Teacher Relationship',
     arabicTitle: 'علاقة مباشرة بدون وسطاء',
-    description: 'You are not a ticket number in a marketplace. You message Mahmoud directly on WhatsApp when you have a question between lessons or need to adjust your schedule.',
-    arabicDescription: 'أنت لست مجرد رقم في متجر إلكتروني. تتواصل مع محمود مباشرة على واتساب متى كان لديك سؤال بين الدروس أو احتجت لتنسيق جدولك.'
+    description: 'You are not a ticket number in a marketplace. You message your teacher in the on-site chat, or us on WhatsApp, when you have a question between lessons or need to adjust your schedule.',
+    arabicDescription: 'أنت لست مجرد رقم في متجر إلكتروني. تتواصل مع معلمك في المحادثة داخل الموقع، أو معنا على واتساب، متى كان لديك سؤال بين الدروس أو احتجت لتنسيق جدولك.'
   }
 ];
 
@@ -437,30 +437,30 @@ export const AUTHENTIC_TESTIMONIALS: TestimonialItem[] = [
 
 export const FAQS: FAQItem[] = [
   {
-    question: 'Is every lesson truly 1-on-1 with Mahmoud?',
-    arabicQuestion: 'هل كل درس فردي ومباشر ١ لـ ١ مع الأستاذ محمود؟',
-    answer: 'Yes, 100%. This is Mahmoud’s direct personal teaching practice, not a marketplace or agency. You will never be handed off to another teacher or placed in a group class without your consent.',
-    arabicAnswer: 'نعم، ١٠٠٪. هذه مساحة تعليمية وتدريسية شخصية مباشرة وليست منصة وسيطة أو شركة تسويق. لن يتم تحويلك إلى أي معلم آخر أو وضعك في فصول جماعية، فكل درس مخصص لك وحدك.',
+    question: 'Is every lesson truly 1-on-1?',
+    arabicQuestion: 'هل كل درس فردي ومباشر ١ لـ ١؟',
+    answer: 'Yes, 100%. Watazawwado is a small personal teaching practice with two teachers, Ustadh Mahmoud and Ustadha Afnan, not a marketplace or agency. Each student has one assigned teacher, and you are never moved to another teacher or placed in a group class without your consent.',
+    arabicAnswer: 'نعم، ١٠٠٪. هذه مساحة تعليمية وتدريسية شخصية مباشرة وليست منصة وسيطة أو شركة تسويق. يدرّس فيها الأستاذ محمود والأستاذة أفنان، ولكل طالب معلم واحد مخصص، ولن يتم تحويلك إلى معلم آخر أو وضعك في فصول جماعية دون موافقتك، فكل درس مخصص لك وحدك.',
     category: 'general'
   },
   {
     question: 'How does the Free Trial work?',
     arabicQuestion: 'كيف تعمل الجلسة التجريبية المجانية؟',
-    answer: 'The trial is a 30-minute private Zoom lesson (with up to 45 minutes if needed). We get to know your goals, evaluate your current level through simple diagnostic exercises, and conduct a brief mini-lesson. Afterward, Mahmoud shares his recommended learning plan. There is zero pressure and no credit card required.',
+    answer: 'The trial is a 30-minute private Zoom lesson (with up to 45 minutes if needed). We get to know your goals, evaluate your current level through simple diagnostic exercises, and conduct a brief mini-lesson. Afterward, your teacher shares a recommended learning plan. There is zero pressure and no credit card required.',
     arabicAnswer: 'الجلسة عبارة عن درس مباشر وخاص عبر زووم لمدة ٣٠ دقيقة (تمتد إلى ٤٥ دقيقة عند الحاجة). نتعرف فيها على أهدافك ونحدد مستواك عبر تمارين بسيطة ومريحة، ونخوض درساً مصغراً لتتعرف على طريقة التدريس والشرح، ثم يقترح المعلم خطتك التعليمية المناسبة. الجلسة مجانية تماماً وبدون أي التزام أو بطاقة بنكية.',
     category: 'trial'
   },
   {
     question: 'What is the cancellation and rescheduling policy?',
     arabicQuestion: 'ما هي سياسة الإلغاء وإعادة الجدولة؟',
-    answer: 'You may cancel or reschedule any lesson free of charge up to 3 hours before the scheduled start time. Inside the 3-hour window, self-service changes are closed and you should message Mahmoud directly on WhatsApp to coordinate.',
-    arabicAnswer: 'يمكنك إلغاء أو إعادة جدولة أي درس مجاناً وبكل مرونة حتى ٣ ساعات قبل موعد الدرس مباشرة من حسابك أو رابط الحجز. وإذا طرأ ظرف طارئ داخل الساعات الثلاث، يمكنك مراسلة المعلم مباشرة عبر واتساب لترتيب موعد بديل.',
+    answer: 'You may cancel a lesson up to 3 hours before it starts (a paid lesson comes back as a lesson credit) and reschedule it yourself up to 1 hour before. Inside the last hour nothing can be changed; for a real emergency, message us on WhatsApp.',
+    arabicAnswer: 'يمكنك إلغاء الدرس حتى ٣ ساعات قبل موعده (ويعود الدرس المدفوع كرصيد حصة)، وتغيير موعده بنفسك من حسابك حتى ساعة قبله. وخلال الساعة الأخيرة لا يمكن تغيير شيء؛ وفي الظروف الطارئة فعلاً راسلنا على واتساب.',
     category: 'booking'
   },
   {
     question: 'I cannot read any Arabic at all. Can I still start?',
     arabicQuestion: 'لا أعرف قراءة الحروف العربية مطلقاً، هل يمكنني البدء؟',
-    answer: 'Absolutely. Many of Mahmoud’s students started with zero knowledge of the Arabic script. We begin from the very first letter (Alif), teaching the exact shape, sound, and vowel combinations patiently step by step.',
+    answer: 'Absolutely. Many of our students started with zero knowledge of the Arabic script. We begin from the very first letter (Alif), teaching the exact shape, sound, and vowel combinations patiently step by step.',
     arabicAnswer: 'بالتأكيد وبكل سرور! الكثير من طلابنا بدأوا من الصفر تماماً. نبدأ من الحرف الأول (الألف) خطوة بخطوة، مع التركيز على مخارج الحروف، والحركات، وربط الكلمات بصبر وهدوء تام حتى تنطلق في القراءة بسلاسة.',
     category: 'teaching'
   },
@@ -472,17 +472,17 @@ export const FAQS: FAQItem[] = [
     category: 'booking'
   },
   {
-    question: 'How do timezones work since Mahmoud is based in Egypt?',
+    question: 'How do timezones work?',
     arabicQuestion: 'كيف يتم التعامل مع فروق التوقيت حول العالم؟',
-    answer: 'All booking times are calculated and shown automatically in your local timezone (e.g., EST, PST, GMT, AEST). Mahmoud handles time in Egypt time so you never have to do mental timezone math.',
+    answer: 'All booking times are calculated and shown automatically in your local timezone (e.g., EST, PST, GMT, AEST). You never have to do mental timezone math.',
     arabicAnswer: 'يحسب نظام الحجز مواعيدك ويظهرها تلقائياً حسب توقيت مدينتك ومنطقتك الزمنية المحلية (في أمريكا، كندا، بريطانيا، أستراليا، أو الخليج). لن تحتاج أبداً لحساب فارق الساعات ذهنياً.',
     category: 'general'
   },
   {
     question: 'Do I need to create an account to book?',
     arabicQuestion: 'هل أحتاج لإنشاء حساب مسبق لحجز جلسة؟',
-    answer: 'No. The platform supports guest booking. All you need is your name, email, and preferred contact method (such as WhatsApp) so Mahmoud can send your Zoom link and confirmation.',
-    arabicAnswer: 'لا تشترط المنصة أي تعقيدات. يمكنك الحجز كزائر مباشرة عبر إدخال اسمك وبريدك الإلكتروني ورقم واتساب لإرسال رابط زووم وموعد جلستك، ويمكنك في أي وقت تفعيل حسابك لمتابعة كل دروسك وباقاتك بسهولة.',
+    answer: 'Yes, a free account is needed for every booking, including the free trial. It takes a minute, and it is where you see your lessons, Zoom links, packages and chat with your teacher.',
+    arabicAnswer: 'نعم، كل حجز يحتاج حساباً مجانياً، حتى الدرس التجريبي. إنشاؤه يأخذ دقيقة، ومنه تتابع دروسك وروابط زووم وباقاتك والمحادثة مع معلمك.',
     category: 'booking'
   }
 ];
@@ -531,7 +531,7 @@ export const ARABIC_TRANSLATIONS = {
       'تعليم فردي مباشر ١ لـ ١ مبني على حاجتك',
       'صبر كامل وبيئة مريحة تشجع على التعلم دون خجل',
       'تواصل مباشر وسريع عبر واتساب بين الدروس',
-      'مرونة في إعادة الجدولة حتى ٣ ساعات قبل الدرس'
+      'مرونة في تغيير الموعد حتى ساعة قبل الدرس'
     ],
     whatIAmNot: 'ما لا أقوم به:',
     whatIAmNotPoints: [

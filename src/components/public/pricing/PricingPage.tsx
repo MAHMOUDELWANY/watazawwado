@@ -178,7 +178,7 @@ export function PricingPage() {
                   {isEn ? 'Flexible 3-Hour Notice' : 'مرونة الإلغاء والتعديل'}
                 </h5>
                 <p className="text-muted-foreground text-xs">
-                  {isEn ? 'Reschedule anytime up to 3h before session' : 'إعادة جدولة مجاناً حتى ٣ ساعات قبل الدرس'}
+                  {isEn ? 'Reschedule free up to 1 hour before' : 'تغيير الموعد مجاناً حتى ساعة قبل الدرس'}
                 </p>
               </div>
             </div>

@@ -97,8 +97,8 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
       <div>
         <p className="text-sm sm:text-base text-foreground/80 dark:text-accent/90 leading-relaxed max-w-2xl">
           {isEn
-            ? 'Choose the primary subject you would like to work on with Mahmoud. In a 1-on-1 setting, every lesson is adapted directly to your current level, whether you are starting from the alphabet or seeking advanced mastery.'
-            : 'اختر المادة الأساسية التي ترغب في تعلمها مع محمود. في الدروس الفردية ١-على-١، تُصمم كل جلسة لتناسب مستواك وتطلعاتك الشخصية بدقة.'}
+            ? 'Choose the primary subject you would like to work on with your teacher. In a 1-on-1 setting, every lesson is adapted directly to your current level, whether you are starting from the alphabet or seeking advanced mastery.'
+            : 'اختر المادة الأساسية التي ترغب في تعلمها مع معلمك. في الدروس الفردية ١-على-١، تُصمم كل جلسة لتناسب مستواك وتطلعاتك الشخصية بدقة.'}
         </p>
       </div>
 

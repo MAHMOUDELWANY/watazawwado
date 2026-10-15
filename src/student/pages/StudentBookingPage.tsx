@@ -345,7 +345,7 @@ export function mapLastBookingToBookingFormData(
     lastBooking.goal ||
     (srv?.suggestedGoals && srv.suggestedGoals[0]) ||
     profile?.learningGoal ||
-    'Personalized study with Ustadh Mahmoud';
+    'Personalized 1-on-1 study';
 
   const timezone = getActiveWorkingTimezone(
     lastBooking.studentTimezone ||

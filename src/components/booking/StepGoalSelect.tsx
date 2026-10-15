@@ -49,8 +49,8 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
         </div>
         <p className="text-sm sm:text-base text-foreground/80 dark:text-accent/90 leading-relaxed max-w-2xl">
           {isEn
-            ? `What are you hoping to accomplish in ${service.name}? Selecting a suggested goal helps Mahmoud prepare relevant texts, verses, or diagnostic exercises for your first session.`
-            : `ما الذي تأمل تحقيقه في ${service.arabicName}؟ تحديد هدفك يساعد محمود في تجهيز المواد والنصوص المناسبة لجلستك الأولى.`}
+            ? `What are you hoping to accomplish in ${service.name}? Selecting a suggested goal helps your teacher prepare relevant texts, verses, or diagnostic exercises for your first session.`
+            : `ما الذي تأمل تحقيقه في ${service.arabicName}؟ تحديد هدفك يساعد معلمك في تجهيز المواد والنصوص المناسبة لجلستك الأولى.`}
         </p>
       </div>
 
@@ -97,8 +97,8 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
           <Sparkles className="w-3.5 h-3.5 text-accent" />
           <span>
             {isEn
-              ? 'Tell Mahmoud in Your Own Words (Optional)'
-              : 'أخبر محمود بكلماتك عن وضعك الحالي أو أي تفاصيل خاصة (اختياري)'}
+              ? 'Tell Your Teacher in Your Own Words (Optional)'
+              : 'أخبر معلمك بكلماتك عن وضعك الحالي أو أي تفاصيل خاصة (اختياري)'}
           </span>
         </label>
         <textarea

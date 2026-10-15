@@ -20,8 +20,8 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
     {
       role: 'model',
       content: isEn
-        ? "Assalamu Alaikum! I'm the Learning Guide. How can I help you discover the right learning path with Mahmoud?"
-        : "السلام عليكم! أنا مرشد التعلم. كيف يمكنني مساعدتك في اكتشاف المسار التعليمي المناسب مع أستاذ محمود؟"
+        ? "Assalamu Alaikum! I'm the Learning Guide. How can I help you discover the right learning path with our teachers?"
+        : "السلام عليكم! أنا مرشد التعلم. كيف يمكنني مساعدتك في اكتشاف المسار التعليمي المناسب مع معلمينا؟"
     }
   ]);
   const [input, setInput] = useState('');
@@ -68,8 +68,8 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
         {
           role: 'model',
           content: isEn
-            ? "I'm currently unable to respond. Please try again later, or contact Mahmoud directly on WhatsApp."
-            : "عذراً، لا يمكنني الرد حالياً. يرجى المحاولة لاحقاً أو التواصل مع الأستاذ محمود مباشرة عبر واتساب."
+            ? "I'm currently unable to respond. Please try again later, or message us directly on WhatsApp."
+            : "عذراً، لا يمكنني الرد حالياً. يرجى المحاولة لاحقاً أو مراسلتنا مباشرة عبر واتساب."
         }
       ]);
     } finally {

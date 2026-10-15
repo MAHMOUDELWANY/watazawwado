@@ -56,7 +56,7 @@ const TEACHERS_CATALOG = [
     gender: 'female',
     nameAr: 'أستاذة أفنان',
     nameEn: 'Ustadha Afnan',
-    photo: null as string | null
+    photo: '/teacher-afnan-avatar.jpg' as string | null
   }
 ];
 

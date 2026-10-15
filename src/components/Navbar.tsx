@@ -74,7 +74,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const navLinks = [
     { href: '/learning', label: isEn ? 'Lessons & Syllabus' : 'الدروس والبرامج', icon: BookOpen },
     { href: '/how-it-works', label: isEn ? 'How It Works' : 'كيف نعمل', icon: Sparkles },
-    { href: '/about', label: isEn ? 'About Ustadh Mahmoud' : 'عن المعلم والمنصة', icon: Info },
+    { href: '/about', label: isEn ? 'About our teachers' : 'عن المعلمين والمنصة', icon: Info },
     { href: '/pricing', label: isEn ? 'Pricing & Packages' : 'الأسعار والباقات', icon: CreditCard },
     { href: '/faq', label: isEn ? 'FAQ' : 'الأسئلة الشائعة', icon: HelpCircle },
   ];
@@ -260,8 +260,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </div>
                   <p className="text-xs text-muted-foreground leading-relaxed">
                     {isEn
-                      ? '30-minute private trial with Ustadh Mahmoud.'
-                      : 'جلسة خاصة ٣٠ دقيقة مع الأستاذ محمود للتعرف على مستواك وتحديد أهدافك.'}
+                      ? '30-minute private trial with Ustadh Mahmoud or Ustadha Afnan.'
+                      : 'جلسة خاصة ٣٠ دقيقة مع الأستاذ محمود أو الأستاذة أفنان للتعرف على مستواك وتحديد أهدافك.'}
                   </p>
                   <button
                     type="button"

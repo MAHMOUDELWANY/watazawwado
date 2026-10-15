@@ -114,7 +114,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
             title={isEn ? 'Ask a quick question first' : 'اسأل سؤالاً سريعاً على واتساب'}
           >
             <MessageCircle className="w-3.5 h-3.5 fill-current shrink-0" />
-            <span>{isEn ? 'Ask Mahmoud on WhatsApp' : 'تواصل مع محمود على واتساب'}</span>
+            <span>{isEn ? 'Ask us on WhatsApp' : 'تواصل معنا على واتساب'}</span>
           </a>
 
           {onClose && (

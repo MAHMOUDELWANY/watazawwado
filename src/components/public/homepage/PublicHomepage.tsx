@@ -96,6 +96,23 @@ export function PublicHomepage() {
               <div className="absolute inset-1 bg-gradient-to-tr from-teal-500/20 via-primary/20 to-terracotta/25 rounded-3xl blur-md -z-10" />
               <PortraitFrame src="/ustadh-mahmoud.jpg" alt="Ustadh Mahmoud" maxWidth={420} className="w-full shadow-2xl mx-auto" />
 
+              {/* Second teacher: small framed portrait on the top corner, links to the About page */}
+              <Link
+                to="/about"
+                className="absolute -top-5 -end-3 sm:-top-6 sm:-end-6 flex flex-col items-center gap-1.5 bg-surface p-2 pb-2.5 rounded-2xl shadow-xl border border-border hover:border-teal-500/50 transition-colors"
+              >
+                <img
+                  src="/ustadha-afnan.jpg"
+                  alt={isEn ? 'Ustadha Afnan' : 'الأستاذة أفنان'}
+                  width={112}
+                  height={112}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-20 h-20 sm:w-28 sm:h-28 rounded-xl object-cover"
+                />
+                <span className="text-[11px] sm:text-xs font-bold text-foreground">{isEn ? 'Ustadha Afnan' : 'الأستاذة أفنان'}</span>
+              </Link>
+
               {/* Floating Credential Card */}
               <div className="hidden sm:block absolute -bottom-6 -left-6 rtl:-left-auto rtl:-right-6 bg-surface p-4 rounded-2xl shadow-xl border border-border max-w-[240px]">
                 <div className="flex items-center gap-2 mb-1.5">
@@ -247,7 +264,7 @@ export function PublicHomepage() {
                   <ShieldCheck className="w-5 h-5" />
                 </div>
                 <h3 className="font-bold text-base text-foreground group-hover:text-primary transition-colors">
-                  {isEn ? 'About Ustadh Mahmoud' : 'عن المعلم والمنصة'}
+                  {isEn ? 'About our teachers' : 'عن المعلمين والمنصة'}
                 </h3>
                 <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
                   {isEn

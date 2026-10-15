@@ -460,8 +460,8 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
       setValidationError(
         err?.message ||
         (isEn
-          ? 'Unable to finalize your booking right now. Please try again or contact Mahmoud on WhatsApp.'
-          : 'تعذر استكمال الحجز في الوقت الحالي، يرجى إعادة المحاولة أو مراسلة محمود مباشرة.')
+          ? 'Unable to finalize your booking right now. Please try again or message us on WhatsApp.'
+          : 'تعذر استكمال الحجز في الوقت الحالي، يرجى إعادة المحاولة أو مراسلتنا مباشرة.')
       );
     } finally {
       setIsSubmitting(false);

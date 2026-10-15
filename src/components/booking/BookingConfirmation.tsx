@@ -65,8 +65,8 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         'METHOD:PUBLISH',
         'BEGIN:VEVENT',
         `UID:${confirmation.bookingReference}@mahmoud-teaching.com`,
-        `SUMMARY:1-on-1 Lesson with Mahmoud - ${confirmation.serviceName}`,
-        `DESCRIPTION:1-on-1 personalized teaching session with Mahmoud.\\nLearner: ${confirmation.learnerName}\\nDuration: ${confirmation.durationMinutes} min\\nReference: ${confirmation.bookingReference}\\nZoom Classroom: ${zoomUrl}`,
+        `SUMMARY:Watazawwado 1-on-1 Lesson - ${confirmation.serviceName}`,
+        `DESCRIPTION:1-on-1 personalized teaching session with Watazawwado.\\nLearner: ${confirmation.learnerName}\\nDuration: ${confirmation.durationMinutes} min\\nReference: ${confirmation.bookingReference}\\nZoom Classroom: ${zoomUrl}`,
         `LOCATION:Zoom Online Classroom: ${zoomUrl}`,
         `STATUS:CONFIRMED`,
         'END:VEVENT',
@@ -88,7 +88,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
 
   // Generate Google Calendar Add URL
   const getGoogleCalendarUrl = () => {
-    const title = encodeURIComponent(`1-on-1 Lesson with Mahmoud: ${confirmation.serviceName}`);
+    const title = encodeURIComponent(`Watazawwado 1-on-1 Lesson: ${confirmation.serviceName}`);
     const details = encodeURIComponent(
       `Learner: ${confirmation.learnerName}\nBooking Ref: ${confirmation.bookingReference}\nDuration: ${confirmation.durationMinutes} minutes\nZoom Link: ${zoomUrl}\n\nAutomated reminders will be delivered 24h and 1h prior.`
     );
@@ -142,11 +142,11 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
 
         <p className="text-sm text-foreground/80 dark:text-muted-foreground max-w-lg mx-auto leading-relaxed">
           {isEn
-            ? `Assalamu Alaikum ${confirmation.learnerName}. Mahmoud is looking forward to meeting you. A confirmation summary has been logged for your local schedule.`
-            : `السلام عليكم ${confirmation.learnerName}. يتطلع الأستاذ محمود للقائك في الموعد المحدد.`}
+            ? `Assalamu Alaikum ${confirmation.learnerName}. Your teacher is looking forward to meeting you. A confirmation summary has been logged for your local schedule.`
+            : `السلام عليكم ${confirmation.learnerName}. يتطلع معلمك للقائك في الموعد المحدد.`}
           {confirmation.integrationStatus === 'failed' && (
             <span className="block mt-2 text-amber-700 dark:text-amber-500 font-medium text-sm">
-              {isEn ? 'Your booking is secured, but the lesson link is not ready yet. Please try again later or contact Mahmoud.' : 'حجزك مؤكد، ولكن رابط الدرس لم يتم تجهيزه بعد. يرجى المحاولة لاحقاً أو التواصل مع الأستاذ محمود.'}
+              {isEn ? 'Your booking is secured, but the lesson link is not ready yet. Please try again later or message us.' : 'حجزك مؤكد، ولكن رابط الدرس لم يتم تجهيزه بعد. يرجى المحاولة لاحقاً أو مراسلتنا.'}
             </span>
           )}
         </p>
@@ -308,10 +308,10 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         <p className="text-sm text-foreground/80 dark:text-muted-foreground/80 leading-relaxed">
           {confirmation.isFreeTrial
             ? isEn
-              ? 'The trial is a relaxed chance for us to meet, assess where you or your child currently stand, and demonstrate the teaching method through a brief sample lesson. If it feels like a natural fit, Mahmoud will share an honest learning roadmap. There is zero obligation to commit.'
-              : 'الجلسة التجريبية فرصة هادئة للتعارف وتحديد المستوى الفعلي وتجربة أسلوب التدريس في درس مصغر. إذا شعرت بالارتياح، سيقترح محمود خطة دراسية مناسبة دون أي إلزام مسبق.'
+              ? 'The trial is a relaxed chance for us to meet, assess where you or your child currently stand, and demonstrate the teaching method through a brief sample lesson. If it feels like a natural fit, your teacher will share an honest learning roadmap. There is zero obligation to commit.'
+              : 'الجلسة التجريبية فرصة هادئة للتعارف وتحديد المستوى الفعلي وتجربة أسلوب التدريس في درس مصغر. إذا شعرت بالارتياح، سيقترح معلمك خطة دراسية مناسبة دون أي إلزام مسبق.'
             : isEn
-              ? 'Please have your Mushaf or learning materials ready. Mahmoud will send a polite reminder 24 hours and 1 hour before your scheduled lesson.'
+              ? 'Please have your Mushaf or learning materials ready. We will send you a reminder 24 hours and 1 hour before your scheduled lesson.'
               : 'يرجى تحضير المصحف أو كراس الملاحظات. سيصلك تذكير قبل موعد الدرس بـ ٢٤ ساعة وساعة واحدة.'}
         </p>
       </div>
@@ -325,7 +325,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
           className="btn-whatsapp-solid px-4 py-3 rounded-2xl text-sm font-bold shadow-md"
         >
           <MessageCircle className="w-4 h-4 fill-current shrink-0" />
-          <span>{isEn ? 'WhatsApp Mahmoud' : 'مراسلة واتساب'}</span>
+          <span>{isEn ? 'WhatsApp us' : 'مراسلة واتساب'}</span>
         </a>
 
         <a

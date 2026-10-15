@@ -421,7 +421,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
             rel="noopener noreferrer"
             className="text-[#25D366] dark:text-[#25D366] font-bold underline hover:opacity-80 transition-opacity"
           >
-            {isEn ? 'request an extended session directly with Mahmoud' : 'مراسلة محمود مباشرة لترتيبها'}
+            {isEn ? 'request an extended session from us' : 'مراسلتنا مباشرة لترتيبها'}
           </a>
           .
         </div>

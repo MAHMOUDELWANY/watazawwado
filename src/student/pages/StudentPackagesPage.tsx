@@ -359,7 +359,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
             </h1>
             <p className="text-sm sm:text-sm text-muted-foreground mt-1">
               {isAr
-                ? 'إدارة باقاتك التعليمية، رصيد الدروس الفردية، وسجل النشاط الموثق مع الأستاذ محمود'
+                ? 'إدارة باقاتك التعليمية، رصيد الدروس الفردية، وسجل النشاط الموثق'
                 : 'Manage your prepaid lesson bundles, active credits, and verified learning activity'}
             </p>
           </div>
@@ -497,7 +497,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
             <p className="text-sm text-muted-foreground max-w-sm mx-auto">
               {isAr
                 ? 'اختر من الباقات المتاحة أدناه لبدء التعلم برصيد مسبق الدفع وحفظ الجلسات بمرونة.'
-                : 'Choose one of Ustadh Mahmoud’s lesson packages below to start learning with bundled credits.'}
+                : 'Choose one of our lesson packages below to start learning with bundled credits.'}
             </p>
           </div>
         ) : (
@@ -616,7 +616,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
           </h2>
           <p className="text-sm text-muted-foreground mt-0.5">
             {isAr
-              ? 'اختر الباقة المناسبة لخطة تعلمك الفردية مع الأستاذ محمود'
+              ? 'اختر الباقة المناسبة لخطة تعلمك الفردية'
               : 'Choose the package that aligns with your individual learning goals'}
           </p>
         </div>

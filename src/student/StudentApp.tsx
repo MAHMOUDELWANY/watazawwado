@@ -248,7 +248,7 @@ export default function StudentApp() {
           </h1>
           <p className="text-sm sm:text-sm text-muted-foreground mb-6 leading-relaxed">
             {isAr
-              ? 'سجّل الدخول للوصول إلى مواعيد دروسك الفردية المباشرة مع الأستاذ محمود ورابط فصل زووم.'
+              ? 'سجّل الدخول للوصول إلى مواعيد دروسك الفردية المباشرة مع معلمك ورابط فصل زووم.'
               : 'Sign in to view your scheduled 1-on-1 lessons, join your Zoom classroom, or review teacher feedback.'}
           </p>
 
@@ -263,7 +263,7 @@ export default function StudentApp() {
 
             <div className="pt-4 border-t border-border text-sm text-muted-foreground">
               <Link to="/" className="hover:text-foreground transition-colors hover:underline">
-                {isAr ? '← العودة إلى الصفحة الرئيسية' : '← Back to Ustadh Mahmoud Homepage'}
+                {isAr ? '← العودة إلى الصفحة الرئيسية' : '← Back to the homepage'}
               </Link>
             </div>
           </div>

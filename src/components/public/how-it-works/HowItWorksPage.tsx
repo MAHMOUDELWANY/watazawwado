@@ -143,7 +143,7 @@ export function HowItWorksPage() {
                   {isEn ? '3-Hour Reschedule Window' : 'إلغاء وتعديل حتى ٣ ساعات'}
                 </div>
                 <p className="leading-relaxed">
-                  {isEn ? 'Self-service rescheduling available anytime up to 3 hours prior to session start.' : 'يمكنك تعديل موعدك ذاتياً بكل سهولة حتى ٣ ساعات قبل موعد الحصة.'}
+                  {isEn ? 'Reschedule yourself up to 1 hour before the lesson, or cancel up to 3 hours before.' : 'يمكنك تغيير موعدك بنفسك حتى ساعة قبل الحصة، أو الإلغاء حتى ٣ ساعات قبلها.'}
                 </p>
               </div>
 
@@ -152,7 +152,7 @@ export function HowItWorksPage() {
                   {isEn ? 'Direct WhatsApp Coordination' : 'تواصل مباشر عبر واتساب'}
                 </div>
                 <p className="leading-relaxed">
-                  {isEn ? 'Reach Mahmoud directly for questions, feedback, or custom requests between classes.' : 'محادثة مباشرة مع المعلم لأي استفسارات أو متابعة مستمرة بين الدروس.'}
+                  {isEn ? 'Reach your teacher directly for questions, feedback, or custom requests between classes.' : 'محادثة مباشرة مع المعلم لأي استفسارات أو متابعة مستمرة بين الدروس.'}
                 </p>
               </div>
             </div>
@@ -165,8 +165,8 @@ export function HowItWorksPage() {
             </h2>
             <p className="text-muted-foreground max-w-lg mx-auto text-sm sm:text-base leading-relaxed">
               {isEn
-                ? 'Select a time that suits your timezone. Mahmoud will meet you on Zoom to discuss your goals and provide a gentle initial assessment.'
-                : 'اختر الموعد الأنسب لجدولك اليومي. سيلتقي بك الأستاذ محمود عبر زووم لتحديد مستواك ووضع خطة دراسية تناسبك.'}
+                ? 'Select a time that suits your timezone. Your teacher will meet you on Zoom to discuss your goals and provide a gentle initial assessment.'
+                : 'اختر الموعد الأنسب لجدولك اليومي. سيلتقي بك معلمك أو معلمتك عبر زووم لتحديد مستواك ووضع خطة دراسية تناسبك.'}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
@@ -198,7 +198,7 @@ export function HowItWorksPage() {
               </Link>
               <span>•</span>
               <Link to="/about" className="hover:text-foreground underline transition-colors">
-                {isEn ? 'About Ustadh Mahmoud' : 'عن الأستاذ محمود'}
+                {isEn ? 'About our teachers' : 'عن المعلمين'}
               </Link>
             </div>
           </div>

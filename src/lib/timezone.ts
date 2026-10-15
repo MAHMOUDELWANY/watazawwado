@@ -169,7 +169,7 @@ export function check3HourPolicyEligibility(scheduledIsoString: string): PolicyC
     return {
       eligible: false,
       hoursRemaining: roundedHours,
-      explanation: `Only ${roundedHours} hours remain before your session (less than the 3-hour self-service window). Please contact Mahmoud directly on WhatsApp so he can assist you personally.`,
+      explanation: `Only ${roundedHours} hours remain before your session (less than the 3-hour self-service window). Please message us on WhatsApp and we will help you personally.`,
     };
   } else {
     return {

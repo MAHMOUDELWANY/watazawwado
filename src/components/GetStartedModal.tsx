@@ -93,8 +93,8 @@ const handleOpenSignup = () => {
             </h2>
             <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
               {isAr 
-                ? 'اختر كيف ترغب في جدولة دروسك المباشرة 1-على-1 مع الأستاذ محمود.'
-                : 'Choose how you would like to schedule your direct 1-on-1 sessions with Ustadh Mahmoud.'}
+                ? 'اختر كيف ترغب في جدولة دروسك المباشرة 1-على-1 مع معلمك أو معلمتك.'
+                : 'Choose how you would like to schedule your direct 1-on-1 sessions with your teacher.'}
             </p>
           </div>
 

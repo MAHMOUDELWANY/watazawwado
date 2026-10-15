@@ -501,8 +501,8 @@ export function LearningPage() {
               </h3>
               <p className="text-sm text-muted-foreground">
                 {isEn 
-                  ? 'Try searching with different keywords, or book a free trial to discuss your unique goals directly with Mahmoud.'
-                  : 'جرب البحث بكلمة أخرى، أو احجز جلستك التجريبية لمناقشة أهدافك الخاصة مع الأستاذ محمود مباشرة.'}
+                  ? 'Try searching with different keywords, or book a free trial to discuss your unique goals directly with your teacher.'
+                  : 'جرب البحث بكلمة أخرى، أو احجز جلستك التجريبية لمناقشة أهدافك الخاصة مع معلمك مباشرة.'}
               </p>
               <button
                 onClick={() => { setSearchQuery(''); setSelectedPillarId('all'); }}

@@ -575,8 +575,8 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
         <ShieldCheck className="w-5 h-5 text-teal-600 dark:text-teal-400 shrink-0" />
         <span className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
           {isEn
-            ? 'We respect your privacy. No passwords, payment cards, or sensitive documents are requested. Your information is used strictly to coordinate your lesson with Mahmoud.'
-            : 'نحترم خصوصيتكم التامة. لا نطلب أي بيانات بطاقات بنكية أو مستندات حساسة. تُستخدم بياناتكم حصراً للتنسيق الشخصي مع محمود.'}
+            ? 'We respect your privacy. No passwords, payment cards, or sensitive documents are requested. Your information is used strictly to coordinate your lesson with your teacher.'
+            : 'نحترم خصوصيتكم التامة. لا نطلب أي بيانات بطاقات بنكية أو مستندات حساسة. تُستخدم بياناتكم حصراً للتنسيق الشخصي مع معلمك.'}
         </span>
       </div>
 

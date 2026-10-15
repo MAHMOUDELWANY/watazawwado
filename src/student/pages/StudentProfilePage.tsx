@@ -289,7 +289,7 @@ export default function StudentProfilePage({
     {
       id: 'learning' as const,
       name: isAr ? 'المسار التعليمي والأستاذ' : 'Learning Track & Teacher',
-      description: isAr ? 'الإشراف المباشر مع الأستاذ محمود والتقييم' : '1-on-1 teaching with Ustadh Mahmoud',
+      description: isAr ? 'الإشراف المباشر من معلمك والتقييم' : '1-on-1 teaching with your teacher',
       icon: Target
     },
     {
@@ -451,7 +451,7 @@ export default function StudentProfilePage({
               <span className="w-6 h-6 rounded-lg bg-secondary/30 text-accent flex items-center justify-center font-display font-bold text-sm">
                 م
               </span>
-              <span>{isAr ? 'الأستاذ محمود — إشراف مباشر' : 'Ustadh Mahmoud — 1-on-1 Teaching'}</span>
+              <span>{isAr ? 'إشراف مباشر من معلمك' : '1-on-1 Teaching'}</span>
             </div>
             <p className="text-muted-foreground leading-relaxed">
               {isAr
@@ -645,7 +645,7 @@ export default function StudentProfilePage({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-display font-bold text-foreground text-base">
-                      {profile?.assignedTeacherName || (profile?.assignedTeacherId ? (isAr ? 'الأستاذ محمود علواني' : 'Ustadh Mahmoud Elwany') : (isAr ? 'الأستاذ محمود علواني' : 'Ustadh Mahmoud Elwany'))}
+                      {profile?.assignedTeacherName || (isAr ? 'سيتم تحديد معلمك قريباً' : 'Your teacher will be assigned soon')}
                     </span>
                     <Badge variant="secondary" className="text-[13px]">
                       {isAr ? 'المعلم المعتمد' : 'Assigned Teacher'}
@@ -699,7 +699,7 @@ export default function StudentProfilePage({
                     {isAr ? 'الهدف التعليمي المسجل' : 'Target Learning Goal'}
                   </span>
                   <div className="text-sm sm:text-sm text-foreground italic leading-relaxed glass-surface p-3.5 rounded-xl border border-border">
-                    "{profile?.learningGoal || (isAr ? 'إتقان التلاوة وضبط أحكام التجويد مع الأستاذ محمود' : 'Mastery of Quran recitation and Tajweed rules with Ustadh Mahmoud')}"
+                    "{profile?.learningGoal || (isAr ? 'إتقان التلاوة وضبط أحكام التجويد' : 'Mastery of Quran recitation and Tajweed rules')}"
                   </div>
                 </div>
 
@@ -728,7 +728,7 @@ export default function StudentProfilePage({
                         ? (isAr ? 'الأستاذة أفنان' : 'Teacher Afnan')
                         : child.teacherGenderPreference === 'male_teacher'
                         ? (isAr ? 'الأستاذ محمود علواني' : 'Ustadh Mahmoud')
-                        : (child.gender === 'female' ? (isAr ? 'الأستاذة أفنان' : 'Teacher Afnan') : (isAr ? 'الأستاذ محمود علواني' : 'Ustadh Mahmoud'));
+                        : (child.gender === 'female' ? (isAr ? 'الأستاذة أفنان' : 'Ustadha Afnan') : (isAr ? 'الأستاذ محمود علواني' : 'Ustadh Mahmoud'));
                       
                       const subjectLabel = child.learningInterest ? subjectName(child.learningInterest, isAr) : (isAr ? 'لسه ما اتحددتش' : 'Not set yet');
 
