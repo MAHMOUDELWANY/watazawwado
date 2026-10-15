@@ -29,7 +29,7 @@ interface AdminTest {
   aiSummary: string | null;
   adminReply: string | null;
   submittedAt: string | null;
-  questions: { q: string; options: string[]; answer: number; skill?: string }[];
+  questions: { q: { en: string; ar: string }; options: { en: string[]; ar: string[] }; answer: number; level: string }[];
   answers: number[] | null;
 }
 
@@ -147,11 +147,11 @@ export default function PlacementTestsPage() {
                       const right = chosen === q.answer;
                       return (
                         <li key={i} className="p-3 rounded-xl glass-surface">
-                          <div className="font-medium text-foreground">{i + 1}. {q.q}</div>
+                          <div className="font-medium text-foreground">{i + 1}. {isAr ? q.q.ar : q.q.en} <span className="text-xs text-muted-foreground">({q.level})</span></div>
                           <div className="mt-1 flex items-center gap-1.5">
                             {right ? <CheckCircle2 className="w-4 h-4 text-success" /> : <XCircle className="w-4 h-4 text-destructive" />}
-                            <span>{t('Answer', 'الإجابة')}: {chosen != null && chosen >= 0 ? q.options[chosen] : '-'}</span>
-                            {!right && <span className="text-muted-foreground">· {t('correct', 'الصحيحة')}: {q.options[q.answer]}</span>}
+                            <span>{t('Answer', 'الإجابة')}: {chosen != null && chosen >= 0 ? (isAr ? q.options.ar : q.options.en)[chosen] : '-'}</span>
+                            {!right && <span className="text-muted-foreground">· {t('correct', 'الصحيحة')}: {(isAr ? q.options.ar : q.options.en)[q.answer]}</span>}
                           </div>
                         </li>
                       );

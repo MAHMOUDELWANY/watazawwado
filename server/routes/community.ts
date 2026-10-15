@@ -5,8 +5,9 @@
  * - Chat (text only): every account has a pinned 'support' thread with the super admin;
  *   a student account gets a 'lesson' thread with each teacher they have booked with.
  *   The super admin can read and write in every thread.
- * - Placement test: Gemini writes a short, different test per learner from the subject and level
- *   chosen at onboarding; the server keeps the answers, grades it, and the super admin replies.
+ * - Placement test: built from fixed bilingual question banks (server/placement) for the subject and
+ *   level chosen at onboarding, shuffled per learner; the server keeps the answers, grades it, and
+ *   the super admin replies.
  *   It is taken after booking (owner decision 2026-10-16); it never blocks a booking.
  * - Teacher assistant: first version of the AI helper in the teacher workspace.
  * All tables are server-only; every route checks who is asking.
@@ -15,6 +16,7 @@ import type express from 'express';
 import { GoogleGenAI } from '@google/genai';
 import { parseModelJson } from '../intake/intakeService.js';
 import { notifyUser, notifySuperAdmins } from '../notifications/inbox.js';
+import { BANKS, LEVELS, buildPlacementTest, suggestLevel, skillSummary, type Level, type TestQuestion } from '../placement/index.js';
 
 type Mw = (req: any, res: any, next: any) => any;
 
@@ -168,42 +170,47 @@ export async function sendAdminSupportMessage(client: any, ownerUserId: string, 
 
 // ---------------------------------------------------------------- placement helpers
 
-const SUBJECT_NAMES: Record<string, string> = {
-  'quran-reading': 'Quran reading (Arabic letters, vowels, joining letters, reading words and short verses)',
-  'tajweed': 'Tajweed rules',
-  'quran-memorization': 'Quran memorization (Hifz) and reading accuracy',
-  'quran-revision': 'Quran revision of memorized surahs',
-  'islamic-studies': 'Islamic studies basics',
-  'fiqh': 'Fiqh (Islamic jurisprudence, worship basics)',
-  'aqeedah': 'Aqeedah (Islamic creed, Ahl al-Sunnah wal-Jama\'ah)',
-  'seerah': 'Seerah (life of the Prophet ﷺ)',
-  'arabic-conversation': 'Arabic conversation',
-  'modern-standard-arabic': 'Modern Standard Arabic (grammar, vocabulary, reading)',
-  'egyptian-arabic': 'Egyptian colloquial Arabic',
-  'arabic-foundations': 'Arabic foundations (alphabet, reading, basic vocabulary)',
-  'english': 'English language (grammar, vocabulary, reading)'
-};
-const LEVELS = ['beginner', 'elementary', 'intermediate', 'advanced'];
-
-export function levelFromScore(score: number, max: number): string {
-  const pct = max ? score / max : 0;
-  return pct < 0.35 ? 'beginner' : pct < 0.6 ? 'elementary' : pct < 0.85 ? 'intermediate' : 'advanced';
-}
-
-/** The learner the test is for: self for an adult account, the chosen child for a parent account. */
-async function resolveTestLearner(client: any, req: any, deps: CommunityDeps, requested?: string) {
+/** The learners of this account: self for an adult account, the children for a parent account. */
+async function accountLearners(client: any, req: any, deps: CommunityDeps) {
   const learners = await deps.getLearners(client, req);
   const isParent = req.studentUser?.studentProfile?.learner_type === 'child' && learners.some(l => !l.isPrimary);
   const pool = isParent ? learners.filter(l => !l.isPrimary) : learners;
-  const learner = requested ? pool.find(l => l.id === requested) : pool[0];
-  if (!learner) return null;
-  const { data: row } = await client.from('students').select('id, name, learning_interest, current_level, age').eq('id', learner.id).maybeSingle();
-  return row ? { ...row, choices: pool } : null;
+  if (!pool.length) return [];
+  const { data } = await client.from('students').select('id, name, learning_interest, current_level').in('id', pool.map(l => l.id));
+  return (data || []) as Array<{ id: string; name: string; learning_interest: string | null; current_level: string | null }>;
 }
 
-/** Strips the answers before a test goes to the browser. */
-const publicQuestions = (questions: any[]) => questions.map((q: any) => ({ q: q.q, options: q.options }));
+export type PlacementStatus = 'not_yet' | 'take_now' | 'in_progress' | 'submitted' | 'reviewed';
 
+/**
+ * Owner decision 2026-10-16: the test is for the subject and level chosen at onboarding, shown
+ * after the learner's free trial is booked, and taken once per subject. It never blocks booking.
+ * shortcut: an unreadable table (migration missing) reports 'not_yet' so nothing is asked.
+ */
+export async function placementStatus(client: any, learner: { id: string; learning_interest: string | null }): Promise<{ status: PlacementStatus; serviceId: string; testId?: string }> {
+  const serviceId = learner.learning_interest && BANKS[learner.learning_interest] ? learner.learning_interest : 'quran-reading';
+  const { data: tests, error } = await client
+    .from('placement_tests')
+    .select('id, status')
+    .eq('learner_student_id', learner.id)
+    .eq('service_id', serviceId)
+    .order('created_at', { ascending: false })
+    .limit(5);
+  if (error) return { status: 'not_yet', serviceId };
+  const done = (tests || []).find((t: any) => t.status === 'reviewed') || (tests || []).find((t: any) => t.status === 'submitted');
+  if (done) return { status: done.status, serviceId, testId: done.id };
+  const open = (tests || []).find((t: any) => t.status === 'in_progress');
+  const { count } = await client
+    .from('bookings')
+    .select('id', { count: 'exact', head: true })
+    .eq('student_id', learner.id)
+    .eq('booking_type', 'trial')
+    .in('status', ['pending', 'confirmed', 'rescheduled', 'completed']);
+  if (!(count || 0)) return { status: 'not_yet', serviceId };
+  return open ? { status: 'in_progress', serviceId, testId: open.id } : { status: 'take_now', serviceId };
+}
+
+/** Questions for the browser: both languages (the page follows the site language), never the answers. */
 function publicTest(t: any) {
   return {
     id: t.id,
@@ -212,7 +219,7 @@ function publicTest(t: any) {
     serviceId: t.service_id,
     statedLevel: t.stated_level,
     status: t.status,
-    questions: t.status === 'in_progress' ? publicQuestions(t.questions || []) : undefined,
+    questions: t.status === 'in_progress' ? (t.questions || []).map((x: TestQuestion) => ({ q: x.q, options: x.options })) : undefined,
     score: t.score,
     maxScore: t.max_score,
     suggestedLevel: t.suggested_level,
@@ -222,25 +229,6 @@ function publicTest(t: any) {
     reviewedAt: t.reviewed_at,
     createdAt: t.created_at
   };
-}
-
-/**
- * Placement status of a learner: null once the admin reviewed a test, otherwise whether the test is
- * still to take or waiting for the admin.
- * Used only to prompt the student; booking is never blocked by it.
- */
-export async function placementGate(client: any, learnerStudentId: string | null): Promise<string | null> {
-  if (!learnerStudentId) return null;
-  const { data, error } = await client
-    .from('placement_tests')
-    .select('status')
-    .eq('learner_student_id', learnerStudentId)
-    .order('created_at', { ascending: false })
-    .limit(5);
-  // shortcut: an unreadable table (migration not applied) asks nothing of the student.
-  if (error) return null;
-  if ((data || []).some((t: any) => t.status === 'reviewed')) return null;
-  return (data || []).some((t: any) => t.status === 'submitted') ? 'PLACEMENT_PENDING_REVIEW' : 'PLACEMENT_REQUIRED';
 }
 
 // ---------------------------------------------------------------- routes
@@ -342,18 +330,10 @@ export function registerCommunityRoutes(app: express.Express, deps: CommunityDep
     try {
       const client = deps.getClient();
       if (!client) return res.status(503).json({ error: 'Database service unavailable.' });
-      const learner = await resolveTestLearner(client, req, deps);
-      const learners = learner?.choices || [];
-      const { data, error } = await client
-        .from('placement_tests')
-        .select('*')
-        .eq('auth_user_id', req.studentUser.auth_id)
-        .order('created_at', { ascending: false })
-        .limit(20);
-      if (error) return res.json({ tests: [], learners: [], gates: {} });
-      const gates: Record<string, string | null> = {};
-      for (const l of learners) gates[l.id] = await placementGate(client, l.id);
-      res.json({ tests: (data || []).map(publicTest), learners: learners.map((l: any) => ({ id: l.id, name: l.name })), gates });
+      const learners = await accountLearners(client, req, deps);
+      const out = [];
+      for (const l of learners) out.push({ id: l.id, name: l.name, level: l.current_level, ...(await placementStatus(client, l)) });
+      res.json({ learners: out });
     } catch (err) {
       console.error('[GET /api/placement/mine]', err);
       res.status(500).json({ error: 'Could not load your placement test.' });
@@ -364,43 +344,36 @@ export function registerCommunityRoutes(app: express.Express, deps: CommunityDep
     try {
       const client = deps.getClient();
       if (!client) return res.status(503).json({ error: 'Database service unavailable.' });
-      const learner = await resolveTestLearner(client, req, deps, typeof req.body?.learnerStudentId === 'string' ? req.body.learnerStudentId : undefined);
-      if (!learner) return res.status(400).json({ error: 'Finish your profile first, then take the placement test.' });
+      const learners = await accountLearners(client, req, deps);
+      const requested = typeof req.body?.learnerStudentId === 'string' ? req.body.learnerStudentId : '';
+      const learner = learners.find(l => l.id === requested) || learners[0];
+      if (!learner) return res.status(400).json({ error: 'Finish your profile first.' });
 
-      // An unfinished test from the last day is reused, so reloading the page doesn't change the questions.
-      const { data: open } = await client
-        .from('placement_tests')
-        .select('*')
-        .eq('learner_student_id', learner.id)
-        .eq('status', 'in_progress')
-        .gte('created_at', new Date(Date.now() - 24 * 3600 * 1000).toISOString())
-        .order('created_at', { ascending: false })
-        .limit(1);
-      if (open?.[0]) return res.json({ test: publicTest(open[0]) });
+      const state = await placementStatus(client, learner);
+      if (state.status === 'not_yet') {
+        return res.status(409).json({ error: 'The placement test opens after you book your free trial.', code: 'BOOK_TRIAL_FIRST' });
+      }
+      if (state.status === 'submitted' || state.status === 'reviewed') {
+        return res.status(409).json({ error: 'You already took the placement test for this subject.', code: 'ALREADY_TAKEN', testId: state.testId });
+      }
+      if (state.status === 'in_progress' && state.testId) {
+        const { data: open } = await client.from('placement_tests').select('*').eq('id', state.testId).maybeSingle();
+        if (open) return res.json({ test: publicTest(open) });
+      }
 
-      if (!process.env.GEMINI_API_KEY) return res.status(503).json({ error: 'The placement test is not available right now.' });
-      const lang = req.body?.lang === 'ar' ? 'ar' : 'en';
-      const serviceId = SUBJECT_NAMES[learner.learning_interest] ? learner.learning_interest : 'quran-reading';
-      const level = LEVELS.includes(learner.current_level) ? learner.current_level : 'beginner';
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const prompt = `Write a short placement test for a new student of an online 1-on-1 academy.
-Subject: ${SUBJECT_NAMES[serviceId]}.
-The student says their level is: ${level}. Age: ${learner.age || 'unknown'}.
-Make 8 multiple-choice questions that go from easy to harder (2 easy, 3 around the stated level, 3 above it), so the result shows the real level.
-Each question has exactly 4 options and one correct answer. Vary the questions: this test must differ from other students' tests (variation seed ${Math.random().toString(36).slice(2, 8)}).
-Write instructions and options in ${lang === 'ar' ? 'Arabic' : 'English'}; quote Arabic text where the subject needs it (Quran, Arabic). Keep wording suitable for the age. Islamic content follows Ahl al-Sunnah wal-Jama'ah, balanced and moderate.
-Return ONLY JSON: {"questions":[{"q":"...","options":["...","...","...","..."],"answer":0,"skill":"short skill name"}]}`;
-      const response = await ai.models.generateContent({ model: GEMINI_MODEL, contents: prompt, config: { temperature: 1, responseMimeType: 'application/json' } });
-      const parsed = parseModelJson(response.text || '');
-      const questions = (Array.isArray(parsed?.questions) ? parsed.questions : [])
-        .filter((q: any) => typeof q?.q === 'string' && Array.isArray(q.options) && q.options.length === 4 && q.options.every((o: any) => typeof o === 'string') && Number.isInteger(q.answer) && q.answer >= 0 && q.answer < 4)
-        .slice(0, 10)
-        .map((q: any) => ({ q: q.q.slice(0, 600), options: q.options.map((o: string) => o.slice(0, 300)), answer: q.answer, skill: String(q.skill || '').slice(0, 80) }));
-      if (questions.length < 5) return res.status(502).json({ error: 'Could not prepare the test. Please try again.' });
-
+      const level = LEVELS.includes(learner.current_level as Level) ? learner.current_level! : 'beginner';
+      const questions = buildPlacementTest(state.serviceId, level);
       const { data: row, error } = await client
         .from('placement_tests')
-        .insert({ auth_user_id: req.studentUser.auth_id, learner_student_id: learner.id, learner_name: learner.name, service_id: serviceId, stated_level: level, language: lang, questions })
+        .insert({
+          auth_user_id: req.studentUser.auth_id,
+          learner_student_id: learner.id,
+          learner_name: learner.name,
+          service_id: state.serviceId,
+          stated_level: level,
+          language: req.body?.lang === 'ar' ? 'ar' : 'en',
+          questions
+        })
         .select('*')
         .single();
       if (error) throw error;
@@ -417,32 +390,62 @@ Return ONLY JSON: {"questions":[{"q":"...","options":["...","...","...","..."],"
       if (!client) return res.status(503).json({ error: 'Database service unavailable.' });
       const { data: test } = await client.from('placement_tests').select('*').eq('id', req.params.id).maybeSingle();
       if (!test || test.auth_user_id !== req.studentUser.auth_id) return res.status(404).json({ error: 'Test not found.' });
-      if (test.status !== 'in_progress') return res.status(400).json({ error: 'This test was already sent.' });
+      if (test.status !== 'in_progress') return res.status(409).json({ error: 'This test was already sent.', testId: test.id });
+      const questions: TestQuestion[] = test.questions || [];
       const answers: any[] = Array.isArray(req.body?.answers) ? req.body.answers : [];
-      const questions: any[] = test.questions || [];
       if (answers.length !== questions.length) return res.status(400).json({ error: 'Please answer every question.' });
-      const clean = answers.map(a => (Number.isInteger(a) && a >= 0 && a < 4 ? a : -1));
+      const clean = answers.map((a, i) => (Number.isInteger(a) && a >= 0 && a < (questions[i]?.options?.en?.length || 4) ? a : -1));
       const score = questions.reduce((s, q, i) => s + (clean[i] === q.answer ? 1 : 0), 0);
-      const missed = [...new Set(questions.filter((q, i) => clean[i] !== q.answer).map(q => q.skill).filter(Boolean))];
-      const suggested = levelFromScore(score, questions.length);
-      const summary = `${score}/${questions.length} correct. Stated level: ${test.stated_level || '-'}; result suggests: ${suggested}.${missed.length ? ` Needs work on: ${missed.join(', ')}.` : ''}`;
-      const now = new Date().toISOString();
+      const suggested = suggestLevel(questions, clean);
+      const skills = skillSummary(questions, clean);
+      const summary = `${score}/${questions.length} correct. Chosen level: ${test.stated_level || '-'}; result suggests: ${suggested}.${skills.toImprove.length ? ` To improve: ${skills.toImprove.map(s => s.en).join(', ')}.` : ''}`;
       const { error } = await client
         .from('placement_tests')
-        .update({ answers: clean, score, max_score: questions.length, suggested_level: suggested, ai_summary: summary, status: 'submitted', submitted_at: now })
+        .update({ answers: clean, score, max_score: questions.length, suggested_level: suggested, ai_summary: summary, status: 'submitted', submitted_at: new Date().toISOString() })
         .eq('id', test.id)
         .eq('status', 'in_progress');
       if (error) throw error;
+      // On-site only (owner decision 2026-10-16).
       await notifySuperAdmins(client, {
         kind: 'placement_submitted',
         title: { en: `Placement test: ${test.learner_name || 'student'}`, ar: `اختبار تحديد مستوى: ${test.learner_name || 'طالب'}` },
         body: { en: summary, ar: `${score}/${questions.length} إجابة صحيحة. المستوى المقترح: ${suggested}.` },
         link: '/dashboard/placement'
       });
-      res.json({ success: true, score, maxScore: questions.length, suggestedLevel: suggested });
+      res.json({ success: true, testId: test.id });
     } catch (err) {
       console.error('[POST /api/placement/:id/submit]', err);
       res.status(500).json({ error: 'Could not send the test. Please try again.' });
+    }
+  });
+
+  // The result report (shown in the site's design, printable). Owner of the test only.
+  app.get('/api/placement/:id/report', verifyStudentAuth, async (req: any, res: any) => {
+    try {
+      const client = deps.getClient();
+      if (!client) return res.status(503).json({ error: 'Database service unavailable.' });
+      const { data: t } = await client.from('placement_tests').select('*').eq('id', req.params.id).maybeSingle();
+      if (!t || t.auth_user_id !== req.studentUser.auth_id || t.status === 'in_progress') return res.status(404).json({ error: 'Report not found.' });
+      const skills = skillSummary(t.questions || [], t.answers || []);
+      res.json({
+        report: {
+          id: t.id,
+          learnerName: t.learner_name,
+          serviceId: t.service_id,
+          statedLevel: t.stated_level,
+          suggestedLevel: t.admin_level || t.suggested_level,
+          score: t.score,
+          maxScore: t.max_score,
+          status: t.status,
+          adminReply: t.admin_reply,
+          submittedAt: t.submitted_at,
+          reviewedAt: t.reviewed_at,
+          ...skills
+        }
+      });
+    } catch (err) {
+      console.error('[GET /api/placement/:id/report]', err);
+      res.status(500).json({ error: 'Could not load the report.' });
     }
   });
 
@@ -465,7 +468,7 @@ Return ONLY JSON: {"questions":[{"q":"...","options":["...","...","...","..."],"
     try {
       const client = deps.getClient();
       const reply = typeof req.body?.reply === 'string' ? req.body.reply.trim().slice(0, 2000) : '';
-      const level = LEVELS.includes(req.body?.level) ? req.body.level : null;
+      const level = LEVELS.includes(req.body?.level) ? (req.body.level as Level) : null;
       if (!reply) return res.status(400).json({ error: 'Write a reply to the student.' });
       const { data: test } = await client.from('placement_tests').select('*').eq('id', req.params.id).maybeSingle();
       if (!test) return res.status(404).json({ error: 'Test not found.' });
@@ -483,7 +486,7 @@ Return ONLY JSON: {"questions":[{"q":"...","options":["...","...","...","..."],"
         kind: 'placement_reviewed',
         title: { en: 'Your placement test result is ready', ar: 'نتيجة اختبار تحديد المستوى جاهزة' },
         body: { en: reply, ar: reply },
-        link: '/student/messages'
+        link: `/student/placement/report/${test.id}`
       }, { email: true });
       await sendAdminSupportMessage(client, test.auth_user_id, req.teacherUser.id, reply).catch(() => {});
       res.json({ success: true });

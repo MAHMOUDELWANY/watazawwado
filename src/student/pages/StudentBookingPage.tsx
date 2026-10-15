@@ -549,7 +549,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
   const [packagesData, setPackagesData] = useState<{ entitlements: any[]; catalog: PackageCatalogEntry[]; creditSummary: any } | null>(null);
   // A booking left half-way (terms page, packages, Stripe) continues where it stopped.
   const [resumingDraft, setResumingDraft] = useState<boolean>(hasBookingDraft);
-  const [placement, setPlacement] = useState<{ gates: Record<string, string | null> } | null>(null);
+  const [placement, setPlacement] = useState<Array<{ id: string; status: string }> | null>(null);
 
   // Local state for reuse interaction - ALL HOOKS UNCONDITIONALLY DECLARED AT TOP LEVEL
   const [reuseDismissed, setReuseDismissed] = useState<boolean>(false);
@@ -733,7 +733,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
       // Placement test status per learner (owner decision 2026-10-16); a failure never blocks the page.
       fetch('/api/placement/mine', { headers })
         .then((r) => (r.ok ? r.json() : null))
-        .then((d) => { if (isMounted && d) setPlacement({ gates: d.gates || {} }); })
+        .then((d) => { if (isMounted && d) setPlacement(Array.isArray(d.learners) ? d.learners : []); })
         .catch(() => {});
 
       // 3. Load Student Packages for credit redemption
@@ -872,8 +872,8 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
     profile?.learningInterest ||
     (Array.isArray(profile?.linkedChildren) && profile.linkedChildren.length === 1 && profile.linkedChildren[0]?.learningInterest)
   );
-  // Placement test comes after booking (owner decision 2026-10-16): say so up front, offer it after.
-  const needsPlacement = placement ? Object.values(placement.gates).includes('PLACEMENT_REQUIRED') : false;
+  // Placement test comes after the free trial is booked (owner decision 2026-10-16): say so up front, offer it after.
+  const needsPlacement = placement ? placement.some((l) => l.status === 'not_yet' || l.status === 'take_now') : false;
   const currentMode = activeConfig ? activeConfig.initialMode : (requestedEntitlementId ? 'regular' : standardMode);
 
   return (
@@ -927,8 +927,8 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
           <Sparkles className="w-4 h-4 text-primary shrink-0 mt-0.5" />
           <span>
             {isAr
-              ? 'بعد الحجز هتاخد اختبار تحديد مستوى قصير (حوالي 5 دقايق) عشان معلمك يجهّزلك الحصة على قد مستواك بالظبط.'
-              : 'After booking you will take a short placement test (about 5 minutes) so your teacher can prepare the lesson for your exact level.'}
+              ? 'بعد حجز الحصة التجريبية هتاخد اختبار تحديد مستوى قصير (حوالي 5 دقايق) في المادة اللي اخترتها، عشان معلمك يجهّزلك الحصة على قد مستواك بالظبط.'
+              : 'After booking your free trial you will take a short placement test (about 5 minutes) in your subject, so your teacher can prepare the lesson for your exact level.'}
           </span>
         </div>
       )}
@@ -1059,7 +1059,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
               activeEntitlements={packagesData?.entitlements || []}
               catalog={packagesData?.catalog || []}
               accessToken={accessToken}
-              confirmationExtra={needsPlacement ? (
+              renderConfirmationExtra={(c) => needsPlacement && c.isFreeTrial ? (
                 <div className="mt-5 p-5 rounded-2xl border border-primary/30 bg-primary/5 text-center space-y-3">
                   <p className="text-sm text-foreground">
                     {isAr

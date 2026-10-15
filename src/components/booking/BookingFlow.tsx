@@ -91,8 +91,8 @@ interface BookingFlowProps {
   accessToken?: string;
   /** Subject chosen at onboarding: step 1 asks to confirm it instead of showing every subject. */
   profileServiceId?: string;
-  /** Shown under the confirmation (e.g. the placement-test step). */
-  confirmationExtra?: React.ReactNode;
+  /** Shown under the confirmation (e.g. the placement test after a free trial). */
+  renderConfirmationExtra?: (confirmation: BookingConfirmationData) => React.ReactNode;
 }
 
 export const BookingFlow: React.FC<BookingFlowProps> = ({
@@ -119,7 +119,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   catalog = [],
   accessToken,
   profileServiceId,
-  confirmationExtra
+  renderConfirmationExtra
 }) => {
   const isEn = lang === 'en';
   const isAr = lang === 'ar';
@@ -590,7 +590,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
             lang={lang}
             doneLabel={doneLabel}
           />
-          {confirmationExtra}
+          {renderConfirmationExtra?.(confirmation)}
         </>
       ) : (
         /* 3. Progressive Multi-Step Booking Flow */

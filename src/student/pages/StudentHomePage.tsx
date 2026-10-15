@@ -174,8 +174,8 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
   // Placement test reminder (taken after booking; never blocks anything).
   const [placementTodo, setPlacementTodo] = useState(false);
   useEffect(() => {
-    authedJson<{ gates: Record<string, string | null> }>('/api/placement/mine')
-      .then((d) => setPlacementTodo(Object.values(d.gates || {}).includes('PLACEMENT_REQUIRED')))
+    authedJson<{ learners: Array<{ status: string }> }>('/api/placement/mine')
+      .then((d) => setPlacementTodo((d.learners || []).some((l) => l.status === 'take_now' || l.status === 'in_progress')))
       .catch(() => {});
   }, []);
 
@@ -346,7 +346,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
         </div>
       </div>
 
-      {placementTodo && bookings.length > 0 && (
+      {placementTodo && (
         <Link
           to="/student/placement"
           className="flex items-center justify-between gap-3 p-4 rounded-2xl border border-primary/30 bg-primary/5 hover:bg-primary/10 transition-colors"

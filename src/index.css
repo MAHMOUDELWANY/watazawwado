@@ -1516,3 +1516,12 @@ h3, .text-heading-lg {
     font-family: 'Thmanyah Sans', sans-serif !important;
   }
 
+
+/* Placement report: only the report prints, in colour. */
+@media print {
+  body * { visibility: hidden; }
+  html, body, body * { overflow: visible !important; }
+  body .h-screen { height: auto !important; }
+  #placement-report, #placement-report * { visibility: visible; }
+  #placement-report { position: absolute; inset: 0; margin: 0; box-shadow: none; }
+}

@@ -32,6 +32,7 @@ import StudentPaymentsPage from './pages/StudentPaymentsPage';
 import StudentNotificationsPage from './pages/StudentNotificationsPage';
 import StudentOffersPage from './pages/StudentOffersPage';
 import StudentPlacementPage from './pages/StudentPlacementPage';
+import StudentPlacementReportPage from './pages/StudentPlacementReportPage';
 import { ChatPanel } from '../components/chat/ChatPanel';
 import IntakeConversation from '../components/intake/IntakeConversation';
 import { StudentAuthModal } from '../components/StudentAuthModal';
@@ -720,6 +721,7 @@ export default function StudentApp() {
               <Route path="/offers" element={<StudentOffersPage session={session} lang={lang} />} />
               <Route path="/messages" element={<ChatPanel lang={lang} />} />
               <Route path="/placement" element={<StudentPlacementPage lang={lang} />} />
+              <Route path="/placement/report/:id" element={<StudentPlacementReportPage lang={lang} />} />
               <Route path="/book" element={<StudentBookingPage profile={profile} session={session} lang={lang} />} />
               <Route path="/account" element={
                 <StudentProfilePage
