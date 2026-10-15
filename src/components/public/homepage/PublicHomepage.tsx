@@ -42,8 +42,8 @@ export function PublicHomepage() {
 
             <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-xl">
               {isEn
-                ? 'Live Zoom lessons in Quran, Tajweed, Arabic, Islamic studies and English, for adults and children. Ustadh Mahmoud teaches students and families; Ustadha Afnan teaches sisters and girls.'
-                : 'دروس مباشرة على Zoom في القرآن والتجويد والعربية والعلوم الشرعية والإنجليزية، للكبار والصغار. الأستاذ محمود للطلاب والعائلات، والأستاذة أفنان للأخوات والبنات.'}
+                ? 'Live Zoom lessons in Quran, Tajweed, Arabic, Islamic studies and English, for adults and children, with Ustadh Mahmoud or Ustadha Afnan.'
+                : 'دروس مباشرة على Zoom في القرآن والتجويد والعربية والعلوم الشرعية والإنجليزية، للكبار والصغار، مع الأستاذ محمود أو الأستاذة أفنان.'}
             </p>
 
             <div className="pt-2 flex flex-col sm:flex-row gap-3.5 items-stretch sm:items-center">

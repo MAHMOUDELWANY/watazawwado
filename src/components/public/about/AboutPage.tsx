@@ -64,7 +64,7 @@ export function AboutPage() {
             </div>
           </div>
 
-          {/* Ustadha Afnan: mirrored layout. Her full introduction comes from the owner later (no invented credentials). */}
+          {/* Ustadha Afnan: mirrored layout. Facts from the owner (2026-10-15): same subjects, wide teaching experience, C1 English. */}
           <div className="grid md:grid-cols-12 gap-12 items-center pt-12">
             <div className="md:col-span-5 md:order-2 relative">
               <div className="absolute -inset-4 bg-gradient-to-tl from-sand/25 via-primary/10 to-teal-500/20 rounded-3xl -z-10 blur-xl transform -rotate-2" />
@@ -72,11 +72,11 @@ export function AboutPage() {
               <div className="absolute -bottom-6 -left-6 rtl:-left-auto rtl:-right-6 glass-card p-4 rounded-xl shadow-lg border border-teal-500/30 max-w-[220px] hidden sm:block">
                 <div className="flex items-center gap-1.5 text-xs font-bold text-teal-700 dark:text-teal-300">
                   <span className="w-2 h-2 rounded-full bg-teal-500" />
-                  <span>{isEn ? 'A female teacher' : 'معلمة للأخوات والبنات'}</span>
+                  <span>{isEn ? 'Experienced teacher' : 'خبرة كبيرة في التدريس'}</span>
                 </div>
                 <StudyLine variant="teal" className="my-2" />
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  {isEn ? 'For sisters and girls who prefer a female teacher.' : 'لمن تفضّل التعلم مع معلمة.'}
+                  {isEn ? 'IELTS C1 English for clear explanations.' : 'إنجليزية بمستوى C1 لشرح واضح.'}
                 </p>
               </div>
             </div>
@@ -89,13 +89,13 @@ export function AboutPage() {
               <div className="prose prose-p:text-muted-foreground prose-p:leading-relaxed max-w-none">
                 <p>
                   {isEn
-                    ? 'Ustadha Afnan teaches with Watazawwado. Sisters, girls and families who prefer a female teacher can choose her when they create their learning profile.'
-                    : 'الأستاذة أفنان تدرّس مع وتزودوا. والأخوات والبنات والعائلات اللي بتفضّل معلمة يقدروا يختاروها وهم بيعملوا ملفهم التعليمي.'}
+                    ? 'Ustadha Afnan teaches the Quran, Tajweed, Arabic, Islamic Studies and English with Watazawwado, and brings wide experience in teaching. Her English (C1) helps her explain clearly to students who grew up abroad.'
+                    : 'الأستاذة أفنان بتدرّس القرآن والتجويد والعربية والعلوم الشرعية والإنجليزية مع وتزودوا، وعندها خبرة كبيرة في التدريس. وإنجليزيتها (C1) بتساعدها تشرح بوضوح للطلاب اللي اتربوا برّه.'}
                 </p>
                 <p>
                   {isEn
-                    ? 'She teaches in the same spirit as the whole academy: patient, encouraging lessons, starting from where each student really is. A fuller introduction to her experience is coming soon.'
-                    : 'وبتدرّس بنفس روح الأكاديمية كلها: دروس صبورة ومشجّعة، بتبدأ من مستوى كل طالبة الحقيقي. وقريباً هنضيف تعريف أوفى بخبرتها.'}
+                    ? 'She teaches in the same spirit as the whole academy: patient, encouraging lessons that start from where each student really is. Families who prefer a female teacher can choose her when they create their learning profile.'
+                    : 'وبتدرّس بنفس روح الأكاديمية كلها: دروس صبورة ومشجّعة، بتبدأ من مستوى كل طالب الحقيقي. واللي بيفضّلوا معلمة يقدروا يختاروها وهم بيعملوا ملفهم التعليمي.'}
                 </p>
               </div>
             </div>

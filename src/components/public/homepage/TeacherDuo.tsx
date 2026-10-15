@@ -13,7 +13,6 @@ type Teacher = {
   glow: string;
   ring: string;
   name: { en: string; ar: string };
-  line: { en: string; ar: string };
 };
 
 const TEACHERS: Teacher[] = [
@@ -23,7 +22,6 @@ const TEACHERS: Teacher[] = [
     glow: 'rgba(8,125,145,0.55)',
     ring: 'linear-gradient(160deg,#087D91 0%,#E5A93C 55%,#8B4935 100%)',
     name: { en: 'Ustadh Mahmoud', ar: 'الأستاذ محمود' },
-    line: { en: 'Quran, Arabic, Islamic studies and English', ar: 'القرآن والعربية والعلوم الشرعية والإنجليزية' },
   },
   {
     src: '/ustadha-afnan.jpg',
@@ -31,7 +29,6 @@ const TEACHERS: Teacher[] = [
     glow: 'rgba(229,169,60,0.55)',
     ring: 'linear-gradient(160deg,#E5A93C 0%,#C51F24 60%,#8B4935 100%)',
     name: { en: 'Ustadha Afnan', ar: 'الأستاذة أفنان' },
-    line: { en: 'For sisters and girls', ar: 'للأخوات والبنات' },
   },
 ];
 
@@ -97,7 +94,6 @@ export function TeacherDuo({ isEn }: { isEn: boolean }) {
 
             <div className="mt-4 text-center">
               <p className="font-editorial text-lg sm:text-xl font-bold text-foreground">{isEn ? t.name.en : t.name.ar}</p>
-              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{isEn ? t.line.en : t.line.ar}</p>
             </div>
           </motion.div>
         ))}
