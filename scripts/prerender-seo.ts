@@ -51,7 +51,7 @@ function render(page: (typeof PUBLIC_PAGES)[number], body: string | null): strin
   // On wide screens the teacher photo is the largest element above the fold: fetch it first.
   // On phones it sits below the fold, so preloading it would only compete with the page itself.
   if (page.path === '/' || page.path === '/about') {
-    html = html.replace('</title>', () => '</title><link rel="preload" as="image" href="/ustadh-mahmoud.jpg" fetchpriority="high" media="(min-width: 1024px)" />');
+    html = html.replace('</title>', () => '</title><link rel="preload" as="image" href="/ustadh-mahmoud.jpg" fetchpriority="high" media="(min-width: 1024px)" /><link rel="preload" as="image" href="/ustadha-afnan.jpg" media="(min-width: 1024px)" />');
   }
   return html;
 }

@@ -3,18 +3,13 @@ import { useOutletContext, Link } from 'react-router-dom';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
 import {
   PublicSection,
-  StudyLine,
-  PortraitFrame,
   PublicButton
 } from '../PublicDesignSystem';
 import {
   Check,
-  Sparkles,
-  Award,
   BookOpen,
   User,
   Users,
-  MessageSquare,
   ShieldCheck,
   CalendarCheck,
   CreditCard,
@@ -23,6 +18,7 @@ import {
 } from 'lucide-react';
 import { WhatsAppIcon } from '../../ui/WhatsAppIcon';
 import { WelcomeRecitation } from '../WelcomeRecitation';
+import { TeacherDuo } from './TeacherDuo';
 import { buildWhatsAppUrl } from '../../../lib/whatsapp';
 
 export function PublicHomepage() {
@@ -34,33 +30,22 @@ export function PublicHomepage() {
       {/* Welcome recitation: plays once per session on the first click or tap (homepage only). */}
       <WelcomeRecitation isAr={!isEn} />
 
-      {/* ─── 1. HERO SECTION ─────────────────────────────────────────────────── */}
+      {/* ─── 1. HERO: who teaches, what, and the free trial ──────────────────── */}
       <PublicSection className="relative overflow-hidden pb-12 lg:pb-20">
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-          <div className="lg:col-span-7 space-y-6 animate-fade-in-up">
-
-            {/* Islamic Heritage Jewel Badge in Vibrant Teal */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-500/10 dark:bg-teal-500/20 text-teal-800 dark:text-teal-200 border border-teal-500/35 text-xs sm:text-sm font-semibold tracking-wide shadow-2xs">
-              <Sparkles className="w-4 h-4 text-teal-600 dark:text-teal-400 animate-pulse" />
-              <span>{isEn ? 'Private 1-on-1 Instruction • Authentic Heritage' : 'تعليم فردي مباشر • تأصيل علمي راسخ'}</span>
-            </div>
-
-            <h1 className={`font-editorial text-4xl sm:text-5xl lg:text-6xl text-foreground font-medium leading-tight ${isEn ? '' : 'font-bold'}`}>
-              {isEn ? (
-                <>Learn for <span className="text-brand-gradient">yourself</span>.<br />Learn for your <span className="text-brand-gradient">family</span>.</>
-              ) : (
-                <>تعلّم <span className="text-brand-gradient">لنفسك</span>.<br />وتعلّم <span className="text-brand-gradient">لعائلتك</span>.</>
-              )}
+        <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+          <div className="lg:col-span-6 space-y-6 animate-fade-in-up">
+            <h1 className={`font-editorial text-4xl sm:text-5xl lg:text-[3.6rem] text-foreground leading-[1.15] ${isEn ? 'font-medium' : 'font-bold'}`}>
+              {isEn
+                ? 'Quran and Arabic, one-on-one, with a teacher who knows you by name.'
+                : 'القرآن والعربية، حصة فردية مع معلّم يعرفك باسمك.'}
             </h1>
 
-            <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-2xl font-light">
+            <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-xl">
               {isEn
-                ? 'Your private space for learning and spiritual growth. Direct 1-on-1 lessons in Quran recitation, Tajweed, Arabic language, and Islamic Studies.'
-                : 'مساحتك الخاصة للتعلّم والارتقاء. دروس فردية مباشرة في تلاوة القرآن الكريم وأحكام التجويد، واللغة العربية، والعلوم الإسلامية.'
-              }
+                ? 'Live Zoom lessons in Quran, Tajweed, Arabic, Islamic studies and English, for adults and children. Ustadh Mahmoud teaches students and families; Ustadha Afnan teaches sisters and girls.'
+                : 'دروس مباشرة على Zoom في القرآن والتجويد والعربية والعلوم الشرعية والإنجليزية، للكبار والصغار. الأستاذ محمود للطلاب والعائلات، والأستاذة أفنان للأخوات والبنات.'}
             </p>
 
-            {/* Direct Primary CTA */}
             <div className="pt-2 flex flex-col sm:flex-row gap-3.5 items-stretch sm:items-center">
               <PublicButton
                 variant="primary"
@@ -70,63 +55,32 @@ export function PublicHomepage() {
                 onClick={() => onOpenTrialModal()}
                 className="w-full sm:w-auto shadow-lg shadow-primary/20"
               >
-                <span>{isEn ? 'Book Free 30-Min Trial' : 'احجز جلستك الأولى (مجانًا)'}</span>
-                <span className="rtl:rotate-180 text-sm">→</span>
+                {isEn ? 'Book your free trial lesson' : 'احجز حصتك التجريبية المجانية'}
               </PublicButton>
-            </div>
-
-            {/* Proof Points */}
-            <div className="flex flex-wrap items-center gap-4 pt-1 text-sm text-muted-foreground">
-              <div className="flex items-center gap-1.5 font-medium">
-                <Check className="w-4 h-4 text-teal-600 dark:text-teal-400 shrink-0" />
-                <span>{isEn ? 'No credit card required' : 'بدون بطاقة بنكية'}</span>
-              </div>
-              <span className="hidden sm:inline text-border">•</span>
-              <div className="flex items-center gap-1.5 font-medium">
-                <Check className="w-4 h-4 text-teal-600 dark:text-teal-400 shrink-0" />
-                <span>{isEn ? 'Personal diagnostic assessment' : 'تقييم فردي وتحديد للمستوى'}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Portrait with strictly contained glow behind picture frame only */}
-          <div className="lg:col-span-5 relative animate-fade-in-up mt-8 lg:mt-0 flex justify-center" style={{ animationDelay: '150ms' }}>
-            <div className="relative w-full max-w-[360px] sm:max-w-[420px] mx-auto">
-              {/* Contained glow strictly behind the portrait frame */}
-              <div className="absolute inset-1 bg-gradient-to-tr from-teal-500/20 via-primary/20 to-terracotta/25 rounded-3xl blur-md -z-10" />
-              <PortraitFrame src="/ustadh-mahmoud.jpg" alt="Ustadh Mahmoud" maxWidth={420} className="w-full shadow-2xl mx-auto" />
-
-              {/* Second teacher: small framed portrait on the top corner, links to the About page */}
               <Link
                 to="/about"
-                className="absolute -top-5 -end-3 sm:-top-6 sm:-end-6 flex flex-col items-center gap-1.5 bg-surface p-2 pb-2.5 rounded-2xl shadow-xl border border-border hover:border-teal-500/50 transition-colors"
+                className="inline-flex items-center justify-center px-5 py-3 rounded-xl text-sm font-semibold text-foreground border border-border hover:border-teal-500/60 hover:bg-surface-subtle transition-colors"
               >
-                <img
-                  src="/ustadha-afnan.jpg"
-                  alt={isEn ? 'Ustadha Afnan' : 'الأستاذة أفنان'}
-                  width={112}
-                  height={112}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-20 h-20 sm:w-28 sm:h-28 rounded-xl object-cover"
-                />
-                <span className="text-[11px] sm:text-xs font-bold text-foreground">{isEn ? 'Ustadha Afnan' : 'الأستاذة أفنان'}</span>
+                {isEn ? 'Meet the teachers' : 'تعرّف على المعلمين'}
               </Link>
-
-              {/* Floating Credential Card */}
-              <div className="hidden sm:block absolute -bottom-6 -left-6 rtl:-left-auto rtl:-right-6 bg-surface p-4 rounded-2xl shadow-xl border border-border max-w-[240px]">
-                <div className="flex items-center gap-2 mb-1.5">
-                  <Award className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-                  <span className="text-xs font-bold text-teal-700 dark:text-teal-300">
-                    {isEn ? 'Balanced & moderate' : 'وسطية واعتدال'}
-                  </span>
-                </div>
-                <StudyLine variant="teal" className="my-1.5" />
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  {isEn ? '3+ years experience, teaching students across Canada, US, UK, and Australia.' : 'خبرة +٣ سنوات في تدريس الطلاب في أمريكا، كندا، بريطانيا، وأستراليا.'}
-                </p>
-              </div>
             </div>
+
+            <ul className="flex flex-wrap items-center gap-x-5 gap-y-2 pt-1 text-sm text-muted-foreground">
+              {[
+                isEn ? '30 minutes, free' : '٣٠ دقيقة مجاناً',
+                isEn ? 'No card needed' : 'بدون بطاقة بنكية',
+                isEn ? 'Choose a male or female teacher' : 'تختار معلّم أو معلّمة',
+              ].map((point) => (
+                <li key={point} className="flex items-center gap-1.5 font-medium">
+                  <Check className="w-4 h-4 text-teal-600 dark:text-teal-400 shrink-0" aria-hidden="true" />
+                  <span>{point}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="lg:col-span-6 order-first lg:order-none">
+            <TeacherDuo isEn={isEn} />
           </div>
         </div>
       </PublicSection>
@@ -160,8 +114,8 @@ export function PublicHomepage() {
               </h3>
               <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
                 {isEn
-                  ? 'Your personal student sanctuary. Manage your lessons, schedule, and learning milestones all in one place with direct teacher access.'
-                  : 'حسابك الشخصي المستقل. جدول دروسك، وتابع تقدمك مع خطة تعليمية فردية مصممة خصيصاً لمستواك وأوقاتك.'}
+                  ? 'Your own account: book lessons at times that suit you, follow your progress, and talk to your teacher in the on-site chat.'
+                  : 'حسابك الخاص: احجز دروسك في المواعيد اللي تناسبك، وتابع تقدمك، وكلّم معلمك في المحادثة داخل الموقع.'}
               </p>
               <div className="mt-6 pt-4 border-t border-border/60 flex items-center justify-center md:justify-start gap-2 text-xs font-bold text-teal-700 dark:text-teal-300">
                 <Check className="w-4 h-4" />
@@ -179,12 +133,12 @@ export function PublicHomepage() {
               </h3>
               <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
                 {isEn
-                  ? 'Manage your children’s Islamic and Arabic education from your unified account. Book for them or for yourself whenever you need, with complete visibility.'
-                  : 'أدِر تعلّم أبنائك وبناتك من حساب موحد. احجز لهم أو لنفسك بمرونة تامة مع متابعة دورية وتقارير مستمرة.'}
+                  ? 'One parent account for every child. Each child gets their own teacher, and girls can learn with Ustadha Afnan. A second child’s package is 5% off.'
+                  : 'حساب واحد لولي الأمر لكل الأولاد. لكل طفل معلمه، والبنات يقدروا يتعلموا مع الأستاذة أفنان، وباقة الطفل التاني عليها خصم 5%.'}
               </p>
               <div className="mt-6 pt-4 border-t border-border/60 flex items-center justify-center md:justify-start gap-2 text-xs font-bold text-accent">
                 <Check className="w-4 h-4" />
-                <span>{isEn ? 'Shared packages across family' : 'باقات مشتركة بين أفراد العائلة'}</span>
+                <span>{isEn ? 'Family discount on packages' : 'خصم العائلة على الباقات'}</span>
               </div>
             </div>
           </div>
@@ -254,7 +208,7 @@ export function PublicHomepage() {
               </div>
             </Link>
 
-            {/* Link 3: About Ustadh Mahmoud */}
+            {/* Link 3: About the teachers */}
             <Link
               to="/about"
               className="p-5 rounded-2xl bg-surface border border-border/80 hover:border-teal-500/60 shadow-xs hover:shadow-md transition-all group flex flex-col justify-between h-full"
@@ -268,12 +222,12 @@ export function PublicHomepage() {
                 </h3>
                 <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
                   {isEn
-                    ? "Balanced, moderate teaching on the way of Ahl al-Sunnah, IELTS C1 English, and 3+ years teaching students abroad."
-                    : 'تعليم وسطي معتدل على منهج أهل السنة، وإنجليزية C1، وخبرة +3 سنوات مع طلاب المهجر.'}
+                    ? "Meet Ustadh Mahmoud and Ustadha Afnan: balanced, moderate teaching on the way of Ahl al-Sunnah, for students who grew up abroad."
+                    : 'تعرّف على الأستاذ محمود والأستاذة أفنان: تعليم وسطي معتدل على منهج أهل السنة، لطلاب المهجر.'}
                 </p>
               </div>
               <div className="pt-3 mt-3 border-t border-border/40 flex items-center gap-1 text-xs font-bold text-accent">
-                <span>{isEn ? 'Read Teacher Bio' : 'سيرة المعلم'}</span>
+                <span>{isEn ? 'Meet the teachers' : 'تعرّف على المعلمين'}</span>
                 <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
               </div>
             </Link>
@@ -340,8 +294,8 @@ export function PublicHomepage() {
                 </h3>
                 <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
                   {isEn
-                    ? 'Your private sanctuary to manage lessons, schedule sessions, and track milestones with the teacher.'
-                    : 'مساحتك الخاصة لمتابعة الدروس، إدارة جدول المواعيد، وتقارير التقدم مع المعلم.'}
+                    ? 'Your lessons, Zoom links, packages and chat with your teacher, in one place.'
+                    : 'دروسك وروابط Zoom وباقاتك والمحادثة مع معلمك، في مكان واحد.'}
                 </p>
               </div>
               <div className="pt-3 mt-3 border-t border-border/40 flex items-center gap-1 text-xs font-bold text-primary">
@@ -366,8 +320,8 @@ export function PublicHomepage() {
 
           <p className="text-muted-foreground leading-relaxed text-base max-w-xl mx-auto">
             {isEn
-              ? 'Take the first step with a free, no-obligation 30-minute trial. We’ll assess your level and build a tailored study roadmap.'
-              : 'ابدأ جلستك الأولى مجاناً للتعارف وتحديد المستوى وبناء خطتك المناسبة بدون أي التزام مالي.'}
+              ? 'Start with a free 30-minute trial. Your teacher gets to know your level and goal, then suggests a plan that fits your week.'
+              : 'ابدأ بحصة تجريبية مجانية ٣٠ دقيقة. معلمك يتعرّف على مستواك وهدفك، ويقترح خطة تناسب أسبوعك.'}
           </p>
 
           <div className="pt-2 flex flex-col sm:flex-row justify-center gap-3.5">
@@ -376,7 +330,7 @@ export function PublicHomepage() {
             </PublicButton>
 
             <a
-              href={buildWhatsAppUrl(isEn ? 'Assalamu Alaikum Ustadh Mahmoud, I visited your website and would like to ask a question.' : 'السلام عليكم أستاذ محمود، زرت موقعكم الكريم وأود الاستفسار عن الدروس')}
+              href={buildWhatsAppUrl(isEn ? 'Assalamu Alaikum, I visited the Watazawwado website and would like to ask about lessons.' : 'السلام عليكم، زرت موقع وتزودوا وحابب أستفسر عن الدروس.')}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-whatsapp-solid py-3 px-6 rounded-xl text-sm font-semibold shadow-xs flex items-center justify-center gap-2"
