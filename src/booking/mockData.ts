@@ -1,4 +1,4 @@
-import { ServiceOption, TimezoneOption, MockBookingRecord, DayAvailability, TimeSlot, LessonDuration } from './types';
+import { ServiceOption, TimezoneOption, DayAvailability, TimeSlot, LessonDuration } from './types';
 
 export const BOOKING_SERVICES: ServiceOption[] = [
   // --- QURAN PILLAR ---
@@ -418,45 +418,4 @@ export function generateMockAvailability(baseDate = new Date(), timezone = 'Amer
   }
 
   return days;
-}
-
-// Sample mock bookings to demonstrate both states of Cancellation / Rescheduling Policy
-// Rule from Master Spec: Students can cancel or reschedule up to 3 hours before lesson.
-// Within 3 hours: self-service is disabled; student must contact Mahmoud.
-export function getSampleExistingBookings(): MockBookingRecord[] {
-  const now = new Date();
-
-  // Booking 1: 24 hours from now -> ELIGIBLE to cancel or reschedule self-service
-  const futureEligible = new Date(now.getTime() + 26 * 60 * 60 * 1000);
-
-  // Booking 2: 75 minutes from now -> INELIGIBLE (< 3 hours), must contact Mahmoud
-  const soonIneligible = new Date(now.getTime() + 75 * 60 * 1000);
-
-  return [
-    {
-      reference: 'MHM-84291',
-      serviceName: 'Quran Reading (Noorani Qaidah & Fluency)',
-      learnerName: 'Zayd Al-Hassan',
-      email: 'zayd.alhassan@example.com',
-      whatsapp: '+1 (416) 555-0182',
-      scheduledIsoDatetime: futureEligible.toISOString(),
-      durationMinutes: 30,
-      timezone: 'America/Toronto',
-      mode: 'trial',
-      status: 'confirmed'
-    },
-    {
-      reference: 'MHM-39042',
-      serviceName: 'Tajweed Rules & Applied Articulation',
-      learnerName: 'Yusuf Rahman',
-      parentName: 'Ibrahim Rahman',
-      email: 'ibrahim.rahman@example.com',
-      whatsapp: '+44 7700 900341',
-      scheduledIsoDatetime: soonIneligible.toISOString(),
-      durationMinutes: 45,
-      timezone: 'Europe/London',
-      mode: 'regular',
-      status: 'confirmed'
-    }
-  ];
 }

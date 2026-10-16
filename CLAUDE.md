@@ -4,6 +4,16 @@ Personal teaching platform for Mahmoud: 1-on-1 online lessons in Quran (reading,
 
 **Binding owner decisions live in [RULES.md](RULES.md). Read it before any change to booking, pricing, payments, packages, teachers, language or tone; it overrides older docs (including `src/data/master_spec.ts`) where they disagree.** Background product vision: `src/data/master_spec.ts`.
 
+**Curriculum (المنهج) work: read [docs/curriculum/PLAN.md](docs/curriculum/PLAN.md) first** — its rules, decisions and progress log are binding.
+
+## Skills (use these first)
+
+Owner's priority skills in `.claude/skills`. Reach for them before generic approaches, and always in curriculum work:
+- Thinking/planning: `brainstorming` (before any new feature, page or lesson), `writing-plans`, `executing-plans`, `verification-before-completion`.
+- Writing: `humanizer` on all user-facing copy (site, emails, curriculum); `writing-skills` when making skills.
+- Design: `taste-skill`, `soft-skill`, `redesign-skill`, `minimalist-skill`, `output-skill`.
+- SEO: the `seo` hub and `seo-*` leaves (bilingual site, so `seo-hreflang` matters). Their Python helpers live in `.claude/skills/seo/scripts` and need Python plus its requirements; the guidance works without them.
+
 ## Stack
 
 - **Frontend**: React 19, Vite 6, Tailwind 4, React Router 7, Motion, lucide-react. Bilingual Arabic/English (`src/lib/language.ts`, default `ar`, so RTL matters).

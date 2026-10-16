@@ -6,7 +6,6 @@ import {
 import { calculateLessonFee } from '../booking/mockData';
 import {
   calculateUtcTimes,
-  check3HourPolicyEligibility,
 } from './timezone';
 
 const isProduction = Boolean((import.meta as any).env?.PROD);
@@ -289,10 +288,6 @@ export const bookingRepository = {
     };
   },
 
-  checkPolicyEligibility(scheduledIsoDatetime: string) {
-    return check3HourPolicyEligibility(scheduledIsoDatetime);
-  },
-
   async lookupBooking(cleanRef: string, managementToken?: string): Promise<MockBookingRecord | null> {
     if (isSupabaseConfigured() && managementToken) {
       try {
@@ -339,165 +334,5 @@ export const bookingRepository = {
       (b) => b.reference.toUpperCase() === cleanRef.toUpperCase() && (!managementToken || b.managementToken === managementToken)
     );
     return found || null;
-  },
-
-  async cancelBooking(cleanRef: string, token: string, reason?: string) {
-    if (isSupabaseConfigured() && !token) {
-      return { success: false, message: 'Your booking management link is missing or invalid. Please use the link from your confirmation email.' };
-    }
-
-    // 1. Pre-check 3-hour policy eligibility if booking details can be resolved
-    const existing = await this.lookupBooking(cleanRef, token);
-    if (existing?.scheduledIsoDatetime) {
-      const eligibility = this.checkPolicyEligibility(existing.scheduledIsoDatetime);
-      if (!eligibility.eligible) {
-        return {
-          success: false,
-          message: eligibility.explanation || 'Cancellation is closed within 3 hours of the lesson. Please message us on WhatsApp.'
-        };
-      }
-    }
-
-    if (isSupabaseConfigured() && token) {
-      try {
-        const { error: rpcError } = await supabase.rpc('cancel_booking_by_management', {
-          p_reference_code: cleanRef,
-          p_management_token: token,
-          p_reason: reason || 'Cancelled by student through portal',
-        });
-        
-        if (rpcError) {
-          const msg = rpcError.message.includes('within 3 hours')
-            ? 'Self-service cancellation is closed within 3 hours of the lesson. Please message us on WhatsApp.'
-            : `Cancellation failed: ${rpcError.message}`;
-          return { success: false, message: msg };
-        }
-      } catch (err: any) {
-        return { success: false, message: `Cancellation failed: ${err?.message || 'Database error'}` };
-      }
-    }
-
-    // Update local store only in unconfigured / offline development mode
-    if (!isSupabaseConfigured()) {
-      const local = this.mockBookingStore.find((b) => b.reference.toUpperCase() === cleanRef.toUpperCase());
-      if (local) {
-        local.status = 'cancelled';
-      }
-    }
-
-    // Notify integration cancellation in background
-    try {
-      fetch('/api/integrations/cancel', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ referenceCode: cleanRef, managementToken: token })
-      }).catch(() => {});
-    } catch {
-      // Non-blocking
-    }
-
-    return { success: true, message: `Booking ${cleanRef} has been cancelled.` };
-  },
-
-  async rescheduleBooking(cleanRef: string, token: string, newDate: string, newTime24: string, timezone: string, durationMinutes: number) {
-    if (isSupabaseConfigured() && !token) {
-      return { success: false, message: 'Your booking management link is missing or invalid. Please use the link from your confirmation email.' };
-    }
-
-    // 1. Pre-check 3-hour policy eligibility on current lesson time
-    const existing = await this.lookupBooking(cleanRef, token);
-    if (existing?.scheduledIsoDatetime) {
-      const eligibility = this.checkPolicyEligibility(existing.scheduledIsoDatetime);
-      if (!eligibility.eligible) {
-        return {
-          success: false,
-          message: eligibility.explanation || 'Rescheduling is closed within 3 hours of the lesson. Please message us on WhatsApp.'
-        };
-      }
-    }
-
-    let scheduledStartUtc: string;
-    let scheduledEndUtc: string;
-    let cairoTimeDisplay: string;
-    
-    try {
-      const times = calculateUtcTimes(newDate, newTime24, timezone, durationMinutes);
-      scheduledStartUtc = times.scheduledStartUtc;
-      scheduledEndUtc = times.scheduledEndUtc;
-      cairoTimeDisplay = times.cairoTimeDisplay;
-    } catch (e) {
-      return { success: false, message: 'Invalid new date/time.' };
-    }
-
-    // Pre-validate slot availability for reschedule
-    try {
-      const valRes = await fetch('/api/integrations/validate-slot', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ scheduledStartUtc, scheduledEndUtc })
-      });
-      if (valRes.ok) {
-        const valData = await valRes.json();
-        if (valData.isAvailable === false) {
-          return {
-            success: false,
-            message: valData.conflictReason || 'The selected reschedule time slot is no longer available.'
-          };
-        }
-      }
-    } catch {
-      // Non-blocking fallback
-    }
-
-    if (isSupabaseConfigured() && token) {
-      try {
-        const { error: rpcError } = await supabase.rpc('reschedule_booking_by_management', {
-          p_reference_code: cleanRef,
-          p_management_token: token,
-          p_new_start: scheduledStartUtc,
-          p_new_end: scheduledEndUtc,
-          p_cairo_time_display: cairoTimeDisplay,
-        });
-
-        if (rpcError) {
-          const msg = rpcError.message.includes('within 3 hours')
-            ? 'Self-service rescheduling is closed within 3 hours of the lesson. Please message us on WhatsApp.'
-            : `Reschedule failed: ${rpcError.message}`;
-          return { success: false, message: msg };
-        }
-      } catch (err: any) {
-        return { success: false, message: `Reschedule failed: ${err?.message || 'Database error'}` };
-      }
-    }
-
-    // Update local store only in unconfigured / offline development mode
-    if (!isSupabaseConfigured()) {
-      const local = this.mockBookingStore.find((b) => b.reference.toUpperCase() === cleanRef.toUpperCase());
-      if (local) {
-        local.scheduledIsoDatetime = scheduledStartUtc;
-        local.scheduledEndIsoDatetime = scheduledEndUtc;
-        local.cairoTimeDisplay = cairoTimeDisplay;
-        local.status = 'rescheduled';
-      }
-    }
-
-    // Notify integration reschedule in background
-    try {
-      fetch('/api/integrations/reschedule', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          referenceCode: cleanRef,
-          managementToken: token,
-          newStartUtc: scheduledStartUtc,
-          newEndUtc: scheduledEndUtc,
-          cairoTimeDisplay
-        })
-      }).catch(() => {});
-    } catch {
-      // Non-blocking
-    }
-
-    return { success: true, message: 'Booking successfully rescheduled.' };
   }
 };

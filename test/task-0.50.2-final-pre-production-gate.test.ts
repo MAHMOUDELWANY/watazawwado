@@ -3,7 +3,6 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { bookingRepository } from '../src/lib/bookingRepository';
-import { bookingService } from '../src/booking/bookingService';
 
 describe('Task 0.50.2 — Final Pre-Production Gate: RPC Hardening & Closure', () => {
   const migrationPath = path.resolve(
@@ -268,14 +267,6 @@ describe('Task 0.50.2 — Final Pre-Production Gate: RPC Hardening & Closure', (
       // real bookings are NOT pushed into mockBookingStore.
       // Let's verify that bookingRepository.mockBookingStore remains isolated.
       assert.equal(bookingRepository.mockBookingStore.length, 0);
-
-      // Verify that getTestBookings() does not contain any leaked real bookings
-      const testBookings = bookingService.getTestBookings();
-      assert.ok(testBookings.length > 0, 'Should return sample mock bookings');
-      assert.ok(
-        testBookings.every((b) => ['MHM-84291', 'MHM-39042'].includes(b.reference)),
-        'Test bookings must only consist of sample static demo records when mock store is empty'
-      );
     });
 
     it('verifies bookingRepository.lookupBooking returns null rather than falling back to mock data when Supabase is configured', async () => {

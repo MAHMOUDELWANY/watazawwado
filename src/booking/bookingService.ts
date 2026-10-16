@@ -2,12 +2,8 @@ import {
   BookingFormData,
   BookingConfirmationData,
   DayAvailability,
-  MockBookingRecord,
-  TimeSlot
+  MockBookingRecord
 } from './types';
-import {
-  getSampleExistingBookings
-} from './mockData';
 import { bookingRepository } from '../lib/bookingRepository';
 import { getFreshAccessToken } from '../lib/auth';
 
@@ -105,49 +101,6 @@ export const bookingService = {
       learnerName: (data as any).learnerName || (data as any).studentName || 'Student',
       whatsapp: (data as any).whatsapp || 'hidden'
     } as MockBookingRecord;
-  },
-
-  /**
-   * Checks whether a booking is eligible for self-service cancellation or rescheduling.
-   * Business Rule from Master Spec Section 21 (3-hour rule).
-   */
-  checkPolicyEligibility(scheduledIsoString: string) {
-    return bookingRepository.checkPolicyEligibility(scheduledIsoString);
-  },
-
-  /**
-   * Reschedules an eligible booking.
-   */
-  async rescheduleBooking(
-    refCode: string,
-    newDate: string,
-    newSlot: TimeSlot,
-    managementToken?: string
-  ): Promise<{ success: boolean; message: string }> {
-    const booking = await this.lookupBooking(refCode, managementToken);
-    if (!booking) {
-      return { success: false, message: 'Booking not found or unauthorized.' };
-    }
-    return bookingRepository.rescheduleBooking(
-      refCode,
-      managementToken || '',
-      newDate,
-      newSlot.time24,
-      booking.timezone,
-      booking.durationMinutes
-    );
-  },
-
-  async cancelBooking(refCode: string, reason?: string, managementToken?: string): Promise<{ success: boolean; message: string }> {
-    return bookingRepository.cancelBooking(refCode, managementToken || '', reason);
-  },
-
-  /**
-   * Returns sample bookings for interactive testing in the UI.
-   */
-  getTestBookings(): MockBookingRecord[] {
-    const sessionItems = bookingRepository.mockBookingStore;
-    return [...sessionItems, ...getSampleExistingBookings()];
   }
 };
 

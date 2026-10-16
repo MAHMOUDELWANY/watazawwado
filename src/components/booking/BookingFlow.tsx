@@ -23,7 +23,6 @@ import { StepPackageQuantity } from './StepPackageQuantity';
 import { StepDateTime } from './StepDateTime';
 import { StepReviewSummary } from './StepReviewSummary';
 import { BookingConfirmation } from './BookingConfirmation';
-import { ManageBookingModal } from './ManageBookingModal';
 import { InstantCheckoutModal } from '../payment/InstantCheckoutModal';
 import { getFreshAccessToken } from '../../lib/auth';
 
@@ -136,8 +135,6 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [confirmation, setConfirmation] = useState<BookingConfirmationData | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
-  const [manageModalOpen, setManageModalOpen] = useState<boolean>(false);
-  const [manageRefCode, setManageRefCode] = useState<string>('');
   const [pendingBooking, setPendingBooking] = useState<BookingConfirmationData | null>(() => draft?.pendingBooking || null);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState<boolean>(false);
   const [payLaterEligible, setPayLaterEligible] = useState(false);
@@ -541,11 +538,6 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     setStep(isMultiStepFlow ? 6 : 5);
   };
 
-  const handleOpenManageModal = (refCode: string) => {
-    setManageRefCode(refCode);
-    setManageModalOpen(true);
-  };
-
   const handleResetForNewBooking = () => {
     try {
       sessionStorage.removeItem('watazawwado_pending_booking_state');
@@ -585,7 +577,6 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
         <>
           <BookingConfirmation
             confirmation={confirmation}
-            onOpenManageModal={handleOpenManageModal}
             onDone={handleResetForNewBooking}
             lang={lang}
             doneLabel={doneLabel}
@@ -864,15 +855,6 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
           onSuccess={handlePaymentSuccess}
         />
       )}
-
-      {/* Cancellation / Rescheduling Policy Modal */}
-      <ManageBookingModal
-        isOpen={manageModalOpen}
-        onClose={() => setManageModalOpen(false)}
-        initialRefCode={manageRefCode}
-        initialManagementToken={confirmation?.managementToken}
-        lang={lang}
-      />
     </div>
   );
 };

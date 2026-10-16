@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
+import { Link } from 'react-router-dom';
 import {
   CheckCircle2,
   Calendar,
@@ -24,7 +25,6 @@ import { buildBookingWhatsAppUrl } from '../../lib/whatsapp';
 
 interface BookingConfirmationProps {
   confirmation: BookingConfirmationData;
-  onOpenManageModal?: (refCode: string) => void;
   onDone: () => void;
   lang: Language;
   doneLabel?: string;
@@ -32,7 +32,6 @@ interface BookingConfirmationProps {
 
 export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
   confirmation,
-  onOpenManageModal,
   onDone,
   lang,
   doneLabel
@@ -350,15 +349,14 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
 
       {/* Policy Foundation: Reschedule or Cancel Link */}
       <div className="pt-2 text-center">
-        <button
-          type="button"
-          onClick={() => onOpenManageModal && onOpenManageModal(confirmation.bookingReference)}
-          className="text-sm text-muted-foreground hover:underline font-medium cursor-pointer"
+        <Link
+          to="/student/lessons"
+          className="text-sm text-muted-foreground hover:underline font-medium"
         >
           {isEn
-            ? 'Need to reschedule or check cancellation eligibility? Manage here.'
-            : 'هل تحتاج لتعديل الموعد أو مراجعة الحجز؟ انقر هنا للإدارة.'}
-        </button>
+            ? 'Need to reschedule or cancel? Manage it from My Lessons.'
+            : 'تحتاج تغيير الموعد أو الإلغاء؟ من صفحة دروسي.'}
+        </Link>
       </div>
 
       {/* Return to Site */}
