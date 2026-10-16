@@ -107,7 +107,7 @@ export function StudentCurriculumLessonPage({ lang }: { lang: 'ar' | 'en' }) {
   if (!data) return <div className="flex justify-center py-16"><BrandSpinner size={28} /></div>;
   if (!data.booked || !lesson || !lesson.reviewed || covered.length === 0) return <Navigate to="/student/curriculum" replace />;
 
-  const reviewLesson = { ...lesson, pages: lesson.pages.filter((_, i) => covered.includes(i + 1)) };
+  const reviewLesson = { ...lesson, chapters: [], pages: lesson.pages.filter((_, i) => covered.includes(i + 1)) };
   return (
     <div className="space-y-4">
       <Link to="/student/curriculum" className="inline-flex items-center gap-1.5 text-sm font-semibold text-teal hover:underline">

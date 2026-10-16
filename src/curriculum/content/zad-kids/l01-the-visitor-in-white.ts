@@ -1,16 +1,18 @@
 import type { Lesson } from '../../types';
 
 // Brief and evidence log: docs/curriculum/zad-essentials-kids/L01-the-visitor-in-white.md
-// Arabic text copied unchanged from Sahih Muslim 8 (Dorar, checked 2026-10-16). English meaning is ours.
-const MUSLIM_8 = 'Sahih Muslim 8 · narrated by Umar ibn al-Khattab';
+// Every Arabic line is copied unchanged from Sahih Muslim 8 (Dorar, checked 2026-10-16). English meanings are ours.
+const MUSLIM_8 = 'Sahih Muslim 8, narrated by Umar ibn al-Khattab';
 
 export const lesson01: Lesson = {
   subject: 'zad-kids',
   subjectTitle: 'Zad Essentials · Kids',
   number: 1,
   title: 'The Visitor in White',
+  titleAr: 'الزائر الغامض',
   part: 'Part 1 · Who Am I, and Who Made Me?',
   minutes: 45,
+  goal: 'By the end of this lesson, you will know the three parts of our deen, and the angel who came to teach them.',
   reviewed: false,
   outcomes: [
     'Retells the story in three sentences: a stranger came, asked three questions, and it was Jibril.',
@@ -18,47 +20,84 @@ export const lesson01: Lesson = {
     'Sorts at least 5 of 6 deeds into the right door.',
     'Sits close, listens well and asks good questions when learning.',
   ],
+  chapters: [
+    { label: 'The mystery', page: 0 },
+    { label: 'Three questions', page: 6 },
+    { label: 'Who was he?', page: 10 },
+    { label: 'Game', page: 13 },
+    { label: 'My Zad', page: 14 },
+  ],
   pages: [
     {
-      title: 'A strange question',
-      scene: 'classroom',
-      lines: [
-        'Ms. Clarke writes 7 + 5 on the board.',
-        '"Who knows the answer?" she asks.',
-        'Yusuf leans over to Maryam. "She\'s the teacher. Doesn\'t she know?"',
+      title: 'The Visitor in White',
+      layout: 'cover',
+      scene: 'doorsHero',
+      lines: [],
+      explain: [
+        'Welcome the child warmly and say the title together: The Visitor in White.',
+        'Tell them that today they will hear one of the most famous conversations in Islam. A stranger walks in, asks three questions, and the answers turn out to hold the whole of our religion.',
+        'Ask: "Do you like mysteries? Today we have one. Let\'s find out who this visitor was."',
       ],
+      teacherNote: 'Keep the cover short (1 to 2 minutes). The goal line is for the parent who may be listening too.',
+    },
+    {
+      title: 'A strange question',
+      layout: 'story',
+      scene: 'chalkboard',
+      lines: ['Ms. Clarke writes a sum on the board.', '"Who knows the answer?" she asks.', 'Yusuf whispers to Maryam: "She\'s the teacher. Doesn\'t she know?"'],
       interaction: {
         kind: 'ask',
         prompt: 'Why would a teacher ask something she already knows?',
-        reveal: 'So the whole class learns it. Keep that in mind. You will need it soon.',
+        reveal: 'So the whole class learns it together. Keep this clue. You will need it soon.',
       },
-      teacherNote: 'Let the child guess first. This is the rational step the whole lesson comes back to.',
+      explain: [
+        'Start with something every child knows from school: a teacher asking a question she already knows the answer to.',
+        'Let the child guess why. Many children say "to test us". That is a good answer. Then add the bigger reason: when the teacher asks out loud, everyone in the class hears the answer and learns it together.',
+        'Tell the child to hold on to this idea. A man in today\'s story does the very same thing, and it is the key to the mystery.',
+      ],
+      teacherNote: 'This is the rational step of the lesson. Come back to it on the "You have spoken the truth" page.',
     },
     {
       title: "Jiddo's story",
+      layout: 'story',
       scene: 'jiddo',
-      lines: [
-        'After school, Yusuf tells Jiddo about it.',
-        'Jiddo smiles and puts down his tea. Mishmish the cat climbs onto his lap.',
-        '"Something like that happened long ago, in Madinah," he says. "But the one asking was far more surprising."',
+      lines: ['After school, Yusuf tells Jiddo about it.', 'Jiddo puts down his tea. Mishmish curls up on his lap.', '"Something like that happened long ago, in Madinah. But the one asking was far more surprising."'],
+      explain: [
+        'Introduce the family the child will meet in every lesson: Yusuf (9), his little sister Maryam (7), their grandfather Jiddo, who loves telling stories, and Mishmish the cat.',
+        'Jiddo connects the school question to a real event from the life of the Prophet ﷺ. Make your voice a little slower here, like a storyteller.',
+        'Ask: "When something puzzles you, who do you ask at home?" Let the child answer. Good learners ask.',
       ],
     },
     {
-      title: 'Who is he?',
+      title: 'One day in Madinah',
+      layout: 'story',
       scene: 'madinah',
-      lines: [
-        'The Prophet ﷺ was sitting with his companions.',
-        'Suddenly a man came in. His clothes were bright white and his hair was very black.',
-        'He had no dust on him, as if he lived nearby. Yet nobody there knew him.',
-      ],
+      lines: ['The Prophet ﷺ was sitting with his companions.', 'Suddenly a man appeared.', 'His clothes were very white. His hair was very black.'],
       evidence: {
-        arabic: 'لا يُرى عليه أثرُ السَّفَرِ، ولا يَعرِفُه مِنَّا أحَدٌ',
+        arabic: 'بينَما نَحنُ عِندَ رَسولِ اللهِ صلَّى اللهُ عليه وسلَّم ذاتَ يَومٍ إذ طَلَعَ علينا رَجُلٌ شَديدُ بَياضِ الثِّيابِ، شَديدُ سَوادِ الشَّعَرِ',
+        meaning: 'One day, while we were sitting with the Messenger of Allah ﷺ, a man came to us with very white clothes and very black hair.',
+        reference: MUSLIM_8,
+      },
+      explain: [
+        'The one telling us this story is Umar ibn al-Khattab. He was there and saw it with his own eyes, and the story reached us word by word in Sahih Muslim.',
+        'Paint the picture: the Prophet ﷺ sitting with his companions, a calm day, and then a man the children will want to know more about.',
+        'Point to the two details Umar remembered: very white clothes and very black hair. Ask the child: "Why do you think Umar remembered these details so well?" (Because the man looked so neat and clean, which will matter on the next page.)',
+      ],
+      teacherNote: 'We never draw the Prophet ﷺ or the companions. The scene shows the place and the light only.',
+    },
+    {
+      title: 'Something does not add up',
+      layout: 'evidence',
+      scene: 'stranger',
+      lines: ['He had no dust on him, as if he lived nearby.', 'But nobody there knew who he was.'],
+      evidence: {
+        arabic: 'لا يُرى عليه أثَرُ السَّفَرِ، ولا يَعرِفُه مِنَّا أحَدٌ',
         meaning: 'No sign of travel could be seen on him, and none of us knew him.',
         reference: MUSLIM_8,
       },
       interaction: {
         kind: 'clues',
-        prompt: 'Something does not add up. Tap the two clues.',
+        prompt: 'Be a detective. Tap the two clues that make this a mystery.',
         clues: [
           { label: 'No dust from a journey', correct: true },
           { label: 'He came to the masjid', correct: false },
@@ -66,112 +105,152 @@ export const lesson01: Lesson = {
           { label: 'He wore white clothes', correct: false },
         ],
       },
-      teacherNote: 'A stranger from far away would be dusty. Someone from Madinah would be known. Both clues together make the mystery.',
+      explain: [
+        'In those days people travelled on foot or on camels through the desert. A traveller arrived dusty and tired.',
+        'So if he had no dust, he must live nearby. But everyone in Madinah knew each other, and nobody knew him. Both things cannot be true for a normal person. That is the mystery.',
+        'Let the child find the two clues. Praise good thinking: detectives notice what does not fit.',
+      ],
+      teacherNote: 'Use the pen to circle "no dust" and "nobody knew" on the Arabic line as the child finds them.',
     },
     {
       title: 'How he sat',
+      layout: 'evidence',
       scene: 'sitting',
-      lines: [
-        'He sat right in front of the Prophet ﷺ, knee to knee.',
-        'He rested his hands on his thighs and gave his full attention.',
-        'That is how a serious learner sits.',
+      lines: ['He sat right in front of the Prophet ﷺ, knee to knee.', 'He placed his hands on his thighs, ready to listen.'],
+      evidence: {
+        arabic: 'فأسنَدَ رُكبَتَيه إلى رُكبَتَيه، ووضَعَ كَفَّيه على فخِذَيه',
+        meaning: 'He sat with his knees touching his knees, and placed his hands on his thighs.',
+        reference: MUSLIM_8,
+      },
+      interaction: { kind: 'ask', prompt: 'Show me how you sit when you really want to learn something.' },
+      explain: [
+        'Before he asked anything, the visitor taught a lesson with his body: he came close, sat straight and gave his full attention.',
+        'This is the adab (good manners) of a student. Sitting close, looking at the teacher, and keeping hands still help the heart listen.',
+        'Real life: in class, at the masjid, or when Mum or Dad explains something. Ask the child to show you their "learning seat" right now, and praise it.',
       ],
-      interaction: { kind: 'ask', prompt: 'Show your teacher how you sit when you really want to learn.' },
+      vocab: [{ arabic: 'أدب', translit: 'adab', meaning: 'good manners' }],
     },
     {
       title: 'Question one: Islam',
-      scene: 'islam',
-      lines: ['"O Muhammad, tell me about Islam."', 'The Prophet ﷺ answered with five things a Muslim does.'],
-      items: [
-        'Say the shahadah: there is no god but Allah, and Muhammad is His Messenger',
-        'Pray the salah',
-        'Give zakah',
-        'Fast in Ramadan',
-        'Go on Hajj, if you are able',
+      layout: 'concept',
+      scene: 'pillars',
+      lines: ['"O Muhammad, tell me about Islam."'],
+      items: ['Shahadah', 'Salah', 'Zakah', 'Fasting', 'Hajj'],
+      askFirst: true,
+      interaction: { kind: 'ask', prompt: 'Before we hear the answer: what do you think Islam is made of?', reveal: 'Five things a Muslim does, like five pillars holding up a house.' },
+      explain: [
+        'The visitor asks the first question: what is Islam?',
+        'The Prophet ﷺ answered with five actions: to bear witness that there is no god but Allah and that Muhammad is the Messenger of Allah, to establish the prayer, to give zakah, to fast in Ramadan, and to perform Hajj to the House if you are able.',
+        'Reveal the pillars one by one. For each, ask: "Have you seen someone do this?" Children usually know salah and Ramadan from home.',
+        'Islam is what our body does. We will learn each pillar in later lessons.',
       ],
-      interaction: { kind: 'ask', prompt: 'Before we hear the answer: what do you think Islam is made of?', reveal: 'Here is what the Prophet ﷺ said.' },
+      vocab: [{ arabic: 'إسلام', translit: 'Islam', meaning: 'giving yourself to Allah' }],
     },
     {
       title: '"You have spoken the truth!"',
-      scene: 'islam',
-      lines: [
-        'The man said, "You have spoken the truth."',
-        'The companions were amazed. He asks a question, then says the answer is right?',
-        'Remember Ms. Clarke?',
-      ],
+      layout: 'question',
+      scene: 'pillars',
+      lines: ['The man said: "You have spoken the truth."', 'The companions were amazed.'],
+      evidence: {
+        arabic: 'فعَجِبنا له يَسألُه، ويُصَدِّقُه',
+        meaning: 'We were amazed: he asks him, and then he tells him he is right.',
+        reference: MUSLIM_8,
+      },
       interaction: {
         kind: 'ask',
         prompt: 'Why would someone ask a question he already knows the answer to?',
-        reveal: 'To teach the people listening. Hold on to that clue.',
+        reveal: 'Just like Ms. Clarke: to teach the people listening. The mystery is getting clearer.',
       },
+      explain: [
+        'Umar says the companions were amazed. Normally you ask because you do not know. This man asked, then said "you are right", which means he already knew.',
+        'Go back to Ms. Clarke and the sum on the board. Let the child connect the two by themselves if they can. This "aha" is the heart of the lesson.',
+      ],
+      teacherNote: 'If the child makes the connection alone, use the praise button.',
     },
     {
       title: 'Question two: Iman',
-      scene: 'iman',
-      lines: [
-        '"Now tell me about Iman."',
-        'Iman is what your heart believes. You cannot see it, but it is there, like the roots under a tree.',
-      ],
-      items: [
-        'Allah',
-        'His angels',
-        'His books',
-        'His messengers',
-        'The Last Day',
-        'Qadar: everything Allah decides, the easy and the hard',
-      ],
+      layout: 'concept',
+      scene: 'roots',
+      lines: ['"Now tell me about Iman."'],
+      items: ['Allah', 'His angels', 'His books', 'His messengers', 'The Last Day', 'Qadar'],
       interaction: {
         kind: 'ask',
         prompt: 'Islam is what your body does. Iman is what your heart believes. Which one can your friends see?',
         reveal: 'They can see you pray. Only Allah sees what is in your heart.',
       },
+      explain: [
+        'The second question is about Iman, faith. The Prophet ﷺ said: to believe in Allah, His angels, His books, His messengers, the Last Day, and to believe in Qadar, the good of it and the hard of it.',
+        'Use the tree on the slide: Iman is like the roots. You cannot see roots, but they hold the whole tree up and feed it. A strong heart full of Iman makes strong actions.',
+        'Qadar means that Allah knows everything and decides everything with wisdom, the easy things and the hard things. We will spend a whole lesson on each of these six.',
+      ],
+      vocab: [{ arabic: 'إيمان', translit: 'Iman', meaning: 'faith in the heart' }],
     },
     {
       title: 'Question three: Ihsan',
-      scene: 'ihsan',
-      lines: [
-        '"Tell me about Ihsan."',
-        'Ihsan means doing your very best because Allah sees you.',
-        'Think of a drawing you make for someone you love. You take your time and use your best colours.',
-      ],
+      layout: 'evidence',
+      scene: 'drawing',
+      lines: ['"Tell me about Ihsan."', 'Doing your very best, because Allah sees you.'],
       evidence: {
         arabic: 'أن تَعبُدَ اللهَ كَأنَّك تَراه، فإن لَم تَكُنْ تَراه فإنَّه يَراك',
-        meaning: 'To worship Allah as if you see Him. And if you do not see Him, He sees you.',
+        meaning: 'To worship Allah as if you see Him, and if you do not see Him, He sees you.',
         reference: MUSLIM_8,
       },
-      interaction: {
-        kind: 'ask',
-        prompt: 'When nobody is looking, who still sees you?',
-        reveal: 'Allah does. And He loves it when you try your best.',
-      },
+      interaction: { kind: 'ask', prompt: 'When nobody is looking, who still sees you?', reveal: 'Allah does. And He loves it when you try your best.' },
+      explain: [
+        'The third question is the highest level: Ihsan, excellence.',
+        'Real life: think of a drawing you make for someone you love, like a card for Mum. You take your time, choose your best colours and stay inside the lines. Ihsan is doing everything like that, because Allah is watching with love.',
+        'Ihsan is for prayer and also for everyday things: tidying your room when nobody asked, telling the truth when nobody would find out, doing wudu carefully.',
+      ],
+      vocab: [{ arabic: 'إحسان', translit: 'Ihsan', meaning: 'doing your very best' }],
     },
     {
-      title: 'Who was that?',
+      title: 'Do you know who he was?',
+      layout: 'question',
       scene: 'reveal',
-      lines: [
-        'Then the man stood up and left.',
-        'Later the Prophet ﷺ asked Umar, "Do you know who the questioner was?"',
-        'Umar said, "Allah and His Messenger know best."',
+      lines: ['Then the man stood up and left.', 'The Prophet ﷺ asked Umar: "Do you know who the questioner was?"', 'Umar said: "Allah and His Messenger know best."'],
+      evidence: {
+        arabic: 'يا عُمَرُ أتَدري مَنِ السَّائِلُ؟ قُلتُ: اللهُ ورَسولُه أعلَمُ',
+        meaning: '"O Umar, do you know who the questioner was?" I said: "Allah and His Messenger know best."',
+        reference: MUSLIM_8,
+      },
+      interaction: { kind: 'ask', prompt: 'What do you think? Who was he?' },
+      explain: [
+        'Slow down here. This is the big moment.',
+        'Notice Umar\'s answer: "Allah and His Messenger know best." Even a great companion was happy to say "I don\'t know". That is another manner of a good learner.',
+        'Let the child guess before you go to the next page.',
       ],
-      interaction: { kind: 'ask', prompt: 'Who do you think he was?', reveal: 'It was Jibril, the angel. He came to teach them their religion.' },
+    },
+    {
+      title: 'It was Jibril!',
+      layout: 'evidence',
+      scene: 'reveal',
+      lines: ['He was Jibril, the angel.', 'He came to teach us our religion.'],
       evidence: {
         arabic: 'فإنَّه جِبريلُ أتاكُم يُعَلِّمُكُم دينَكُم',
         meaning: 'He was Jibril. He came to teach you your religion.',
         reference: MUSLIM_8,
       },
-      teacherNote: 'This is the wow moment. Pause before the reveal and let the child guess.',
+      explain: [
+        'Reveal it: the visitor was Jibril, the angel who brought the Quran down to the Prophet ﷺ.',
+        'Now the mystery makes sense: no dust because he did not travel like people do, and nobody knew him because he was an angel in the form of a man.',
+        'And why did he ask questions he knew? Just like Ms. Clarke: so the companions, and all of us today, would learn our religion. Allah sent an angel to give us this lesson.',
+      ],
+      teacherNote: 'Wow moment. Use the praise button after the reveal, then pause.',
     },
     {
       title: 'Three doors',
+      layout: 'concept',
       scene: 'doors',
-      lines: [
-        'Jibril asked three questions. Their answers are three doors.',
-        'Behind them is everything a Muslim needs to know and do.',
-        'In the lessons ahead, we will open them one by one.',
+      lines: ['Three questions. Three doors.', 'Behind them is everything a Muslim needs.'],
+      items: ['Iman: what I believe', 'Islam: what I do', 'Ihsan: my very best'],
+      explain: [
+        'Summarise the whole story in three doors. This is the map of Zad Essentials: in the coming lessons we will open each door and go inside.',
+        'Ask the child to retell the story in three sentences: a stranger came, he asked three questions, it was Jibril. This checks outcome 1.',
       ],
     },
     {
       title: 'Game: The Three Doors',
+      layout: 'game',
       scene: 'doors',
       lines: [],
       interaction: {
@@ -191,31 +270,38 @@ export const lesson01: Lesson = {
           { label: 'Doing wudu carefully, without rushing', bin: 'ihsan' },
         ],
       },
-      teacherNote: 'Checkpoint for outcomes 2 and 3. Do not hint; note which door was hard.',
+      explain: [
+        'Game checkpoint. Let the child play without hints; this tells you what to reinforce next time.',
+        'After "Check my doors", talk about any card that went to the wrong door. "Fasting is something our body does, so which door?"',
+      ],
+      teacherNote: 'The result is added to your lesson report automatically.',
     },
     {
       title: 'My Zad',
+      layout: 'mission',
       scene: 'backpack',
-      lines: [
-        'Jiddo brings out an old travel backpack.',
-        '"Every traveller needs zad, food and supplies for the road. Today you packed your first one: the map of the three doors."',
-        'Your mission this week: ask your mum or dad one good question about Allah.',
-      ],
+      lines: ['Jiddo brings out an old travel backpack.', '"Every traveller needs zad: food and supplies for the road."', 'Today you packed your first one: the map of the three doors.'],
       interaction: {
         kind: 'choose',
-        prompt: 'Pick your question:',
+        prompt: 'Your mission this week: ask your mum or dad one good question about Allah. Pick one:',
         options: ['How do we know Allah loves us?', 'What is your favourite name of Allah?', 'Why do we pray five times a day?', 'I have my own question'],
       },
+      explain: [
+        'Zad means provision for a journey. Our academy is named after the verse "and take provision, and the best provision is taqwa". Every lesson, the child packs something into their backpack.',
+        'The mission turns today\'s lesson into action: asking good questions, like the companions listened to Jibril\'s questions. Ask about it at the start of the next class.',
+      ],
+      vocab: [{ arabic: 'زاد', translit: 'zad', meaning: 'provision for the road' }],
     },
     {
       title: 'Next time…',
+      layout: 'next',
       scene: 'lego',
-      lines: [
-        'The next morning, Maryam opens her eyes.',
-        'On her floor stands a LEGO castle, with towers, a gate and even a tiny flag.',
-        'It was not there last night. Who built it?',
-      ],
+      lines: ['The next morning, Maryam opens her eyes.', 'On her floor stands a LEGO castle, with towers, a gate and even a tiny flag.', 'It was not there last night. Who built it?'],
       interaction: { kind: 'ask', prompt: 'Could a castle build itself?', reveal: 'Find out next time, in Lesson 2: Who Made It All?' },
+      explain: [
+        'End with the cliffhanger and stop. Do not answer it: the child should come back wanting to know.',
+        'If you have a minute, ask the child to tell a parent today\'s story at dinner.',
+      ],
     },
   ],
 };

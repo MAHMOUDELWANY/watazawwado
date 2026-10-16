@@ -19,7 +19,10 @@
   student map + puzzle at **/student/curriculum** (per learner, parents see each child); locked until the family has a
   confirmed/rescheduled/completed booking; covered pages of **reviewed** lessons open for review. Table
   `curriculum_lesson_reports` (server-only) applied to production 2026-10-16.
-- **Now:** owner reviews Lesson 1 and marks it reviewed (then students can open it).
+- **Done (slide system v2, 2026-10-16):** owner rejected v1 (weak visuals, no control, too little to explain). Rebuilt:
+  fixed 1600×900 notebook canvas (`src/curriculum/slides/`), build steps per page, pen/highlighter/laser, page grid,
+  thinking timer, replay, praise, explanation panel with a read-aloud `explain` text on every page, new scene art.
+- **Now:** owner reviews Lesson 1 v2 and marks it reviewed (then students can open it).
 - **Next:** Lesson 2 (Who Made It All?).
 - **Not started:** Lessons 2–37, sound effects, the teacher pen/drawing tool.
 - **Known limit:** lesson text ships in the site bundle, so the lock is a UI lock (content is not secret). Upgrade to
@@ -251,3 +254,6 @@ B3–B5 → continue lesson by lesson.
   /dashboard/curriculum. Verified in the browser (desktop + phone). Lesson content is not committed yet.
 - **2026-10-16** — Built B3–B5: teacher report, student map/puzzle, booked-only access; migration
   20261016000006 applied to production; API checked live (guards + one write/read, test row deleted).
+- **2026-10-16** — Owner: "visuals poor, no control, no way to explain; I read from the lesson and simplify". Rebuilt
+  as slide system v2 (see §0). Lesson 1 rewritten: 16 pages, every page has a teacher read-aloud explanation,
+  more verified Arabic from Muslim 8, vocabulary chips. Rule: each page carries enough detail for the teacher to read.

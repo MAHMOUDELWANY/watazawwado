@@ -1,52 +1,121 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { ChevronLeft, ChevronRight, Maximize2, Minimize2, Star, StickyNote, Check, RotateCcw } from 'lucide-react';
-import type { Interaction, Lesson, LessonPage } from './types';
-import { Scene } from './Scenes';
+import {
+  ChevronLeft, ChevronRight, Maximize2, Minimize2, Star, PenLine, Highlighter, MousePointer2, Eraser, LayoutGrid,
+  Timer, RotateCcw, BookOpenText, X,
+} from 'lucide-react';
+import type { Lesson } from './types';
+import { Slide, stepsFor, CANVAS_W, CANVAS_H, scoreSort, type GameResult } from './slides/Slide';
+import { InkLayer, type InkTool } from './slides/Ink';
+import { P } from './slides/Art';
 
-/** Result of a game checkpoint: correct answers per bin, for the teacher report (PLAN §3a.3b). */
-export type GameResult = Record<string, { correct: number; total: number }>;
+export { scoreSort, type GameResult };
 
 interface Props {
   lesson: Lesson;
   /** Chrome language; lesson content is always English (PLAN §3.11). */
   lang: 'ar' | 'en';
-  /** Teacher mode shows teacher notes and the praise button. */
+  /** Teacher mode: praise, timer and teaching tips. */
   teacher?: boolean;
   onGameResult?: (pageIndex: number, result: GameResult) => void;
   /** Called with the 0-based page index whenever the page changes (the teacher report uses it). */
   onPageChange?: (pageIndex: number) => void;
 }
 
+const INK_COLORS = [P.crimson, P.teal, P.gold, P.ink];
+const TIMER_STEPS = [0, 60, 120, 180, 300];
+
+/** Slide player v2: fixed 16:9 canvas, build steps, pen/marker/laser, page grid, timer, explanation panel. */
 export function LessonPlayer({ lesson, lang, teacher = false, onGameResult, onPageChange }: Props) {
-  const [index, setIndex] = useState(0);
-  const [showNote, setShowNote] = useState(false);
+  const ar = lang === 'ar';
+  const L = (en: string, arText: string) => (ar ? arText : en);
+  const [page, setPage] = useState(0);
+  const [step, setStep] = useState(0);
+  const [tool, setTool] = useState<InkTool>('none');
+  const [inkColor, setInkColor] = useState(INK_COLORS[0]);
+  const [clearSignal, setClearSignal] = useState(0);
+  const [replay, setReplay] = useState(0);
   const [praise, setPraise] = useState(false);
+  const [grid, setGrid] = useState(false);
+  const [notes, setNotes] = useState(true);
+  const [timerLeft, setTimerLeft] = useState(0);
   const [fullscreen, setFullscreen] = useState(false);
+  const [chromeVisible, setChromeVisible] = useState(true);
   const rootRef = useRef<HTMLDivElement>(null);
-  const page = lesson.pages[index];
+  const stageRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(0.5);
+  const current = lesson.pages[page];
+  const total = stepsFor(current);
   const last = lesson.pages.length - 1;
-  const L = (en: string, ar: string) => (lang === 'ar' ? ar : en);
 
-  useEffect(() => onPageChange?.(index), [index, onPageChange]);
+  useEffect(() => onPageChange?.(page), [page, onPageChange]);
 
-  const go = useCallback((delta: number) => setIndex((i) => Math.min(last, Math.max(0, i + delta))), [last]);
+  useLayoutEffect(() => {
+    const el = stageRef.current;
+    if (!el) return;
+    const fit = () => {
+      const r = el.getBoundingClientRect();
+      setScale(Math.min(r.width / CANVAS_W, (r.height || Infinity) / CANVAS_H));
+    };
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [fullscreen, notes]);
+
+  const goPage = useCallback((p: number, atEnd = false) => {
+    const next = Math.min(last, Math.max(0, p));
+    setPage(next);
+    setStep(atEnd ? stepsFor(lesson.pages[next]) : 0);
+    setGrid(false);
+  }, [last, lesson.pages]);
+
+  /** Next = reveal the next build step; when the page is fully built, go to the next page. */
+  const forward = useCallback(() => {
+    if (step < total) setStep((s) => s + 1);
+    else if (page < last) goPage(page + 1);
+  }, [step, total, page, last, goPage]);
+  const backward = useCallback(() => {
+    if (step > 0) setStep((s) => s - 1);
+    else if (page > 0) goPage(page - 1, true);
+  }, [step, page, goPage]);
+
   const cheer = useCallback(() => {
     setPraise(true);
-    window.setTimeout(() => setPraise(false), 1800);
+    window.setTimeout(() => setPraise(false), 1900);
+  }, []);
+
+  useEffect(() => {
+    if (!timerLeft) return;
+    const id = window.setTimeout(() => setTimerLeft((t) => t - 1), 1000);
+    return () => window.clearTimeout(id);
+  }, [timerLeft]);
+
+  const toggleFullscreen = useCallback(() => {
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    else rootRef.current?.requestFullscreen?.().catch(() => {});
   }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.target instanceof Element && e.target.closest('input, textarea, select, [contenteditable]')) return;
-      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
-      else if (e.key === 'ArrowLeft') go(-1);
-      else if (teacher && (e.key === 'p' || e.key === 'P')) cheer();
-      else if (teacher && (e.key === 'n' || e.key === 'N')) setShowNote((s) => !s);
+      const k = e.key.toLowerCase();
+      if (k === 'arrowright' || k === ' ' || k === 'pagedown') { e.preventDefault(); forward(); }
+      else if (k === 'arrowleft' || k === 'pageup') { e.preventDefault(); backward(); }
+      else if (k === 'escape') { setTool('none'); setGrid(false); }
+      else if (k === 'd') setTool((t) => (t === 'pen' ? 'none' : 'pen'));
+      else if (k === 'h') setTool((t) => (t === 'marker' ? 'none' : 'marker'));
+      else if (k === 'l') setTool((t) => (t === 'laser' ? 'none' : 'laser'));
+      else if (k === 'e') setClearSignal((c) => c + 1);
+      else if (k === 'g') setGrid((g) => !g);
+      else if (k === 'n') setNotes((n) => !n);
+      else if (k === 'r') setReplay((r) => r + 1);
+      else if (k === 'f') toggleFullscreen();
+      else if (teacher && k === 'p') cheer();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [go, cheer, teacher]);
+  }, [forward, backward, cheer, teacher, toggleFullscreen]);
 
   useEffect(() => {
     const sync = () => setFullscreen(Boolean(document.fullscreenElement));
@@ -54,318 +123,199 @@ export function LessonPlayer({ lesson, lang, teacher = false, onGameResult, onPa
     return () => document.removeEventListener('fullscreenchange', sync);
   }, []);
 
-  const toggleFullscreen = () => {
-    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
-    else rootRef.current?.requestFullscreen?.().catch(() => {});
-  };
+  // In full screen the controls hide while the teacher talks and come back when the mouse moves.
+  useEffect(() => {
+    if (!fullscreen) { setChromeVisible(true); return; }
+    let t = window.setTimeout(() => setChromeVisible(false), 2500);
+    const wake = () => { setChromeVisible(true); window.clearTimeout(t); t = window.setTimeout(() => setChromeVisible(false), 2500); };
+    window.addEventListener('mousemove', wake);
+    return () => { window.clearTimeout(t); window.removeEventListener('mousemove', wake); };
+  }, [fullscreen]);
 
-  const toolBtn = 'h-10 min-w-10 px-2.5 inline-flex items-center justify-center gap-1.5 rounded-full text-sm font-semibold text-foreground hover:bg-surface-subtle transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-40';
+  const btn = (active = false) =>
+    `h-11 min-w-11 px-2.5 inline-flex items-center justify-center gap-1.5 rounded-full text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C] disabled:opacity-35 ${
+      active ? 'bg-[#E5A93C] text-[#0A3D45]' : 'text-white/90 hover:bg-white/10'
+    }`;
 
-  return (
-    <div ref={rootRef} className={`flex flex-col gap-3 ${fullscreen ? 'bg-background p-4 h-full justify-center' : ''}`}>
-      <div dir="ltr" lang="en" className="relative w-full overflow-hidden rounded-[var(--r-4,28px)] glass-2 lg:aspect-video">
-        <div className="absolute top-0 inset-x-0 h-1 bg-surface-subtle z-10" aria-hidden="true">
-          <motion.div className="h-full bg-gold" animate={{ width: `${((index + 1) / lesson.pages.length) * 100}%` }} transition={{ duration: 0.4 }} />
-        </div>
-        {/* Keyed enter animation only: exit animations can stall on fast page flips and leave the stage blank. */}
-        <motion.section
-            key={index}
-            initial={{ opacity: 0, x: 24 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="grid lg:grid-cols-[1.15fr_1fr] h-full"
-            aria-label={`${page.title}, ${index + 1} / ${lesson.pages.length}`}
-          >
-            <div className="relative overflow-hidden aspect-[16/10] lg:aspect-auto lg:h-full bg-surface-warm">
-              <Scene id={page.scene} label={page.title} />
-            </div>
-            <PageText page={page} pageIndex={index} onCorrect={cheer} onGameResult={onGameResult} />
-          </motion.section>
-        <AnimatePresence>{praise && <Praise />}</AnimatePresence>
-      </div>
-
-      {teacher && showNote && page.teacherNote && (
-        <p className="glass-1 rounded-2xl px-4 py-3 text-sm text-foreground" role="note">
-          <span className="font-bold">{L('Teacher note: ', 'ملاحظة للمعلم: ')}</span>
-          <span dir="ltr">{page.teacherNote}</span>
-        </p>
-      )}
-
-      <nav aria-label={L('Lesson controls', 'التحكم في الدرس')} className="flex items-center justify-between gap-2 glass-1 rounded-full p-1.5">
-        <button type="button" className={toolBtn} onClick={() => go(-1)} disabled={index === 0} aria-label={L('Previous page', 'الصفحة السابقة')}>
-          <ChevronLeft className="w-5 h-5 rtl:rotate-180" />
-        </button>
-        <span className="text-sm font-semibold tabular-nums text-muted-foreground" aria-live="polite">
-          {L('Page', 'صفحة')} {index + 1} / {lesson.pages.length}
+  const toolbar = (
+    <nav
+      aria-label={L('Lesson controls', 'التحكم في الدرس')}
+      className={`flex flex-wrap items-center gap-1 rounded-[22px] bg-[#0A3D45]/95 px-2 py-1.5 shadow-[0_18px_40px_-20px_rgba(10,61,69,0.8)] backdrop-blur transition-opacity ${fullscreen && !chromeVisible ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+    >
+      <button type="button" className={btn()} onClick={backward} disabled={page === 0 && step === 0} aria-label={L('Back', 'رجوع')} title={L('Back (←)', 'رجوع (←)')}>
+        <ChevronLeft className="w-5 h-5 rtl:rotate-180" />
+      </button>
+      <button type="button" className={`${btn()} bg-[#C51F24] hover:bg-[#A9191E] px-4`} onClick={forward} disabled={page === last && step >= total} aria-label={L('Next', 'التالي')} title={L('Next (→ or Space)', 'التالي (→ أو مسافة)')}>
+        <span className="flex gap-1" aria-hidden="true">
+          {Array.from({ length: total }).map((_, i) => (
+            <span key={i} className={`h-1.5 w-1.5 rounded-full ${i < step ? 'bg-white' : 'bg-white/35'}`} />
+          ))}
         </span>
-        <div className="flex items-center gap-1">
-          {teacher && (
-            <>
-              <button type="button" className={toolBtn} onClick={cheer} title={L('Praise (P)', 'تشجيع (P)')} aria-label={L('Praise', 'تشجيع')}>
-                <Star className="w-[18px] h-[18px] text-gold" />
-              </button>
-              <button
-                type="button"
-                className={toolBtn}
-                onClick={() => setShowNote((s) => !s)}
-                disabled={!page.teacherNote}
-                aria-pressed={showNote}
-                title={L('Teacher note (N)', 'ملاحظة المعلم (N)')}
-                aria-label={L('Teacher note', 'ملاحظة المعلم')}
-              >
-                <StickyNote className="w-[18px] h-[18px]" />
-              </button>
-            </>
-          )}
-          <button type="button" className={toolBtn} onClick={toggleFullscreen} aria-label={fullscreen ? L('Exit full screen', 'خروج من ملء الشاشة') : L('Full screen', 'ملء الشاشة')}>
-            {fullscreen ? <Minimize2 className="w-[18px] h-[18px]" /> : <Maximize2 className="w-[18px] h-[18px]" />}
+        <ChevronRight className="w-5 h-5 rtl:rotate-180" />
+      </button>
+      <span className="mx-1 h-6 w-px bg-white/15" aria-hidden="true" />
+      <button type="button" className={btn(grid)} onClick={() => setGrid((g) => !g)} aria-pressed={grid} title={L('All pages (G)', 'كل الصفحات (G)')} aria-label={L('All pages', 'كل الصفحات')}>
+        <LayoutGrid className="w-[18px] h-[18px]" />
+      </button>
+      <button type="button" className={btn(tool === 'pen')} onClick={() => setTool((t) => (t === 'pen' ? 'none' : 'pen'))} aria-pressed={tool === 'pen'} title={L('Pen (D)', 'قلم (D)')} aria-label={L('Pen', 'قلم')}>
+        <PenLine className="w-[18px] h-[18px]" />
+      </button>
+      <button type="button" className={btn(tool === 'marker')} onClick={() => setTool((t) => (t === 'marker' ? 'none' : 'marker'))} aria-pressed={tool === 'marker'} title={L('Highlighter (H)', 'تظليل (H)')} aria-label={L('Highlighter', 'تظليل')}>
+        <Highlighter className="w-[18px] h-[18px]" />
+      </button>
+      <button type="button" className={btn(tool === 'laser')} onClick={() => setTool((t) => (t === 'laser' ? 'none' : 'laser'))} aria-pressed={tool === 'laser'} title={L('Laser pointer (L)', 'مؤشر ليزر (L)')} aria-label={L('Laser pointer', 'مؤشر ليزر')}>
+        <MousePointer2 className="w-[18px] h-[18px]" />
+      </button>
+      {(tool === 'pen' || tool === 'marker') &&
+        INK_COLORS.map((c) => (
+          <button key={c} type="button" onClick={() => setInkColor(c)} aria-label={L('Ink colour', 'لون الحبر')} aria-pressed={inkColor === c} className="h-11 w-8 inline-flex items-center justify-center">
+            <span className={`block h-6 w-6 rounded-full ring-2 ${inkColor === c ? 'ring-white' : 'ring-transparent'}`} style={{ background: c }} />
           </button>
-          <button type="button" className={`${toolBtn} bg-primary text-primary-foreground hover:bg-primary-hover`} onClick={() => go(1)} disabled={index === last} aria-label={L('Next page', 'الصفحة التالية')}>
-            <ChevronRight className="w-5 h-5 rtl:rotate-180" />
+        ))}
+      <button type="button" className={btn()} onClick={() => setClearSignal((c) => c + 1)} title={L('Clear drawing (E)', 'امسح الرسم (E)')} aria-label={L('Clear drawing', 'امسح الرسم')}>
+        <Eraser className="w-[18px] h-[18px]" />
+      </button>
+      <span className="mx-1 h-6 w-px bg-white/15" aria-hidden="true" />
+      <button type="button" className={btn()} onClick={() => setReplay((r) => r + 1)} title={L('Replay animation (R)', 'أعد الحركة (R)')} aria-label={L('Replay animation', 'أعد الحركة')}>
+        <RotateCcw className="w-[18px] h-[18px]" />
+      </button>
+      {teacher && (
+        <>
+          <button
+            type="button"
+            className={btn(timerLeft > 0)}
+            onClick={() => setTimerLeft((t) => TIMER_STEPS[(TIMER_STEPS.findIndex((s) => s >= t) + 1) % TIMER_STEPS.length])}
+            title={L('Thinking timer: tap for 1, 2, 3, 5 minutes', 'مؤقت التفكير: دوس لـ 1 أو 2 أو 3 أو 5 دقايق')}
+            aria-label={L('Timer', 'مؤقت')}
+          >
+            <Timer className="w-[18px] h-[18px]" />
+            {timerLeft > 0 && <span className="tabular-nums">{Math.floor(timerLeft / 60)}:{String(timerLeft % 60).padStart(2, '0')}</span>}
           </button>
-        </div>
-      </nav>
-    </div>
+          <button type="button" className={btn()} onClick={cheer} title={L('Praise (P)', 'تشجيع (P)')} aria-label={L('Praise', 'تشجيع')}>
+            <Star className="w-[18px] h-[18px] text-[#E5A93C]" />
+          </button>
+        </>
+      )}
+      <button type="button" className={btn(notes)} onClick={() => setNotes((n) => !n)} aria-pressed={notes} title={L('Explanation (N)', 'الشرح (N)')} aria-label={L('Explanation', 'الشرح')}>
+        <BookOpenText className="w-[18px] h-[18px]" />
+      </button>
+      <button type="button" className={btn()} onClick={toggleFullscreen} title={L('Full screen (F)', 'ملء الشاشة (F)')} aria-label={fullscreen ? L('Exit full screen', 'خروج من ملء الشاشة') : L('Full screen', 'ملء الشاشة')}>
+        {fullscreen ? <Minimize2 className="w-[18px] h-[18px]" /> : <Maximize2 className="w-[18px] h-[18px]" />}
+      </button>
+      <span className="ms-auto pe-2 text-xs font-bold text-white/70 tabular-nums">
+        {L('Page', 'صفحة')} {page + 1}/{lesson.pages.length}
+      </span>
+    </nav>
   );
-}
 
-function PageText({ page, pageIndex, onCorrect, onGameResult }: { page: LessonPage; pageIndex: number; onCorrect: () => void; onGameResult?: Props['onGameResult'] }) {
-  const [revealed, setRevealed] = useState(false);
-  const itemsHidden = Boolean(page.items && page.interaction?.kind === 'ask' && page.interaction.reveal && !revealed);
-  return (
-    <div className="flex flex-col gap-4 p-5 sm:p-7 overflow-y-auto">
-      <h2 className="font-display text-2xl sm:text-3xl font-bold text-foreground leading-tight">{page.title}</h2>
-      {page.lines.map((line, i) => (
-        <motion.p key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 + i * 0.25 }} className="text-lg leading-relaxed text-foreground">
-          {line}
-        </motion.p>
-      ))}
-      {page.items && !itemsHidden && (
-        <ul className="grid gap-2">
-          {page.items.map((item, i) => (
-            <motion.li key={item} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 + i * 0.15 }} className="flex gap-3 items-start glass-1 rounded-2xl px-4 py-2.5 text-base">
-              <span className="shrink-0 w-6 h-6 rounded-full bg-teal text-white text-xs font-bold flex items-center justify-center">{i + 1}</span>
-              <span>{item}</span>
-            </motion.li>
+  const notesPanel = notes && (
+    <aside dir="ltr" lang="en" className={`flex flex-col gap-4 overflow-y-auto rounded-[24px] bg-[#FFFDF7] p-5 text-[#0A3D45] ring-1 ring-black/5 shadow-[0_18px_40px_-28px_rgba(91,58,30,0.5)] lg:w-[360px] lg:shrink-0 ${fullscreen ? 'lg:max-h-full' : 'lg:max-h-[min(78vh,720px)]'}`} aria-label={L('Explanation', 'الشرح')}>
+      <div className="flex items-start justify-between gap-2">
+        <h3 className="font-serif text-2xl font-bold leading-tight">{current.title}</h3>
+        <button type="button" onClick={() => setNotes(false)} className="rounded-full p-1.5 hover:bg-black/5" aria-label={L('Close explanation', 'اقفل الشرح')}>
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+      <div className="space-y-3 text-[17px] leading-relaxed">
+        {current.explain.map((p, i) => <p key={i}>{p}</p>)}
+      </div>
+      {current.vocab?.length ? (
+        <ul className="space-y-1.5 border-t border-black/10 pt-3">
+          {current.vocab.map((w) => (
+            <li key={w.translit} className="flex items-baseline gap-2 text-[16px]">
+              <span lang="ar" dir="rtl" className="font-serif text-xl">{w.arabic}</span>
+              <b>{w.translit}</b>
+              <span className="text-[#14555F]">{w.meaning}</span>
+            </li>
           ))}
         </ul>
+      ) : null}
+      {teacher && current.teacherNote && (
+        <p className="rounded-2xl bg-[#FCEFD2] px-4 py-3 text-[15px] leading-relaxed">
+          <b>{L('Teaching tip: ', 'نصيحة للشرح: ')}</b>
+          {current.teacherNote}
+        </p>
       )}
-      {page.evidence && (
-        <figure className="rounded-2xl border border-gold/50 bg-surface/70 px-4 py-3">
-          <blockquote lang="ar" dir="rtl" className="font-arabic text-xl leading-loose text-foreground">
-            «{page.evidence.arabic}»
-          </blockquote>
-          <figcaption className="mt-1 text-sm text-muted-foreground">
-            “{page.evidence.meaning}” · {page.evidence.reference}
-          </figcaption>
-        </figure>
-      )}
-      {page.interaction && (
-        <InteractionView interaction={page.interaction} revealed={revealed} onReveal={() => setRevealed(true)} onCorrect={onCorrect} onGameResult={(r) => onGameResult?.(pageIndex, r)} />
-      )}
-    </div>
+    </aside>
   );
-}
 
-function InteractionView({ interaction, revealed, onReveal, onCorrect, onGameResult }: { interaction: Interaction; revealed: boolean; onReveal: () => void; onCorrect: () => void; onGameResult: (r: GameResult) => void }) {
-  switch (interaction.kind) {
-    case 'ask':
-      return (
-        <div className="rounded-2xl bg-teal/10 border border-teal/30 px-4 py-3 space-y-2">
-          <p className="font-semibold text-foreground">💬 {interaction.prompt}</p>
-          {interaction.reveal &&
-            (revealed ? (
-              <motion.p initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className="text-foreground">
-                {interaction.reveal}
-              </motion.p>
-            ) : (
-              <button type="button" onClick={onReveal} className="text-sm font-bold text-teal hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded">
-                Show the answer
-              </button>
-            ))}
-        </div>
-      );
-    case 'clues':
-      return <Clues interaction={interaction} onCorrect={onCorrect} />;
-    case 'choose':
-      return <Choose interaction={interaction} />;
-    case 'sort':
-      return <SortGame interaction={interaction} onCorrect={onCorrect} onResult={onGameResult} />;
-  }
-}
-
-function Clues({ interaction, onCorrect }: { interaction: Extract<Interaction, { kind: 'clues' }>; onCorrect: () => void }) {
-  const [picked, setPicked] = useState<number[]>([]);
-  const needed = interaction.clues.filter((c) => c.correct).length;
-  const found = picked.filter((i) => interaction.clues[i].correct).length;
-  const pick = (i: number) => {
-    if (picked.includes(i)) return;
-    const next = [...picked, i];
-    setPicked(next);
-    if (interaction.clues[i].correct && next.filter((j) => interaction.clues[j].correct).length === needed) onCorrect();
-  };
   return (
-    <div className="space-y-2">
-      <p className="font-semibold text-foreground">🔍 {interaction.prompt}</p>
-      <div className="grid sm:grid-cols-2 gap-2">
-        {interaction.clues.map((clue, i) => {
-          const state = picked.includes(i) ? (clue.correct ? 'right' : 'wrong') : 'idle';
-          return (
-            <motion.button
-              key={clue.label}
-              type="button"
-              onClick={() => pick(i)}
-              animate={state === 'wrong' ? { x: [0, -6, 6, -3, 0] } : {}}
-              aria-pressed={picked.includes(i)}
-              className={`min-h-[44px] rounded-2xl px-3 py-2 text-start text-sm font-semibold border-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
-                state === 'right' ? 'border-teal bg-teal/15' : state === 'wrong' ? 'border-crimson/40 bg-crimson/5 opacity-70' : 'border-border bg-surface hover:border-gold'
-              }`}
-            >
-              {clue.label}
-            </motion.button>
-          );
-        })}
-      </div>
-      <p className="text-sm text-muted-foreground" aria-live="polite">
-        {found === needed ? 'You found both clues!' : `Clues found: ${found} of ${needed}`}
-      </p>
-    </div>
-  );
-}
-
-function Choose({ interaction }: { interaction: Extract<Interaction, { kind: 'choose' }> }) {
-  const [choice, setChoice] = useState<number | null>(null);
-  return (
-    <div className="space-y-2">
-      <p className="font-semibold text-foreground">⭐ {interaction.prompt}</p>
-      <div className="grid gap-2">
-        {interaction.options.map((option, i) => (
-          <button
-            key={option}
-            type="button"
-            onClick={() => setChoice(i)}
-            aria-pressed={choice === i}
-            className={`min-h-[44px] rounded-2xl px-4 py-2 text-start font-semibold border-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${choice === i ? 'border-gold bg-gold/15' : 'border-border bg-surface hover:border-gold'}`}
+    <div ref={rootRef} className={`flex flex-col gap-3 ${fullscreen ? 'h-full bg-[#0A2E35] p-4' : ''}`}>
+      <div className={`flex flex-col gap-3 lg:flex-row ${fullscreen ? 'min-h-0 flex-1' : ''}`}>
+        <div ref={stageRef} className={`relative min-w-0 flex-1 ${fullscreen ? 'h-full' : 'aspect-video'}`}>
+          <div
+            className="absolute left-1/2 top-1/2 overflow-hidden rounded-[22px] shadow-[0_30px_70px_-35px_rgba(10,61,69,0.7)]"
+            style={{ width: CANVAS_W, height: CANVAS_H, transform: `translate(-50%, -50%) scale(${scale})` }}
           >
-            {option}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/** Tap a card, then tap a door. Works by touch, mouse and keyboard (no drag needed). */
-function SortGame({ interaction, onCorrect, onResult }: { interaction: Extract<Interaction, { kind: 'sort' }>; onCorrect: () => void; onResult: (r: GameResult) => void }) {
-  const [selected, setSelected] = useState<number | null>(null);
-  const [placed, setPlaced] = useState<Record<number, string>>({});
-  const [checked, setChecked] = useState(false);
-  const done = Object.keys(placed).length === interaction.cards.length;
-
-  const place = (bin: string) => {
-    if (selected === null || checked) return;
-    setPlaced((p) => ({ ...p, [selected]: bin }));
-    setSelected(null);
-  };
-
-  const check = () => {
-    const result = scoreSort(interaction, placed);
-    setChecked(true);
-    onResult(result);
-    if (Object.values(result).every((r) => r.correct === r.total)) onCorrect();
-  };
-
-  const reset = () => {
-    setPlaced({});
-    setChecked(false);
-    setSelected(null);
-  };
-
-  return (
-    <div className="space-y-3">
-      <p className="font-semibold text-foreground">🎮 {interaction.prompt}</p>
-      <div className="flex flex-wrap gap-2">
-        {interaction.cards.map((card, i) =>
-          placed[i] ? null : (
-            <button
-              key={card.label}
-              type="button"
-              onClick={() => setSelected(i)}
-              aria-pressed={selected === i}
-              className={`min-h-[44px] rounded-2xl px-3 py-2 text-sm font-semibold border-2 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${selected === i ? 'border-gold bg-gold/20 -translate-y-0.5 shadow-md' : 'border-border bg-surface hover:border-gold'}`}
-            >
-              {card.label}
-            </button>
-          ),
-        )}
-      </div>
-      <div className="grid grid-cols-3 gap-2">
-        {interaction.bins.map((bin) => (
-          <button
-            key={bin.id}
-            type="button"
-            onClick={() => place(bin.id)}
-            disabled={selected === null || checked}
-            aria-label={`${bin.label}: ${bin.hint}`}
-            className="rounded-t-[999px] rounded-b-2xl border-2 border-teal/40 bg-teal/10 px-2 pt-5 pb-2 min-h-[120px] flex flex-col items-center gap-1 text-center enabled:hover:bg-teal/20 enabled:cursor-pointer disabled:cursor-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-          >
-            <span className="font-display font-bold text-foreground">{bin.label}</span>
-            <span className="text-[11px] leading-tight text-muted-foreground">{bin.hint}</span>
-            {interaction.cards.map((card, i) =>
-              placed[i] === bin.id ? (
-                <span key={card.label} className={`w-full rounded-lg px-1.5 py-1 text-[11px] font-semibold ${checked ? (card.bin === bin.id ? 'bg-teal text-white' : 'bg-crimson/80 text-white') : 'bg-surface'}`}>
-                  {checked && (card.bin === bin.id ? '✓ ' : '✗ ')}
-                  {card.label}
-                </span>
-              ) : null,
+            <div key={`${page}-${replay}`} className="absolute inset-0">
+              <Slide lesson={lesson} pageIndex={page} step={step} onCorrect={cheer} onGameResult={(r) => onGameResult?.(page, r)} />
+            </div>
+            <InkLayer tool={tool} color={inkColor} pageKey={String(page)} clearSignal={clearSignal} width={CANVAS_W} height={CANVAS_H} />
+            {timerLeft > 0 && (
+              <div className="absolute right-[90px] top-[130px] rounded-full bg-white px-6 py-2 font-sans text-[34px] font-bold tabular-nums shadow-lg" style={{ color: timerLeft <= 10 ? P.crimson : P.ink }}>
+                {Math.floor(timerLeft / 60)}:{String(timerLeft % 60).padStart(2, '0')}
+              </div>
             )}
-          </button>
-        ))}
+            <AnimatePresence>{praise && <Praise />}</AnimatePresence>
+            <AnimatePresence>
+              {grid && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-30 bg-[#0A3D45]/95 p-16">
+                  <p className="mb-8 font-serif text-[48px] font-bold text-white">{lesson.title}</p>
+                  <ol className="grid grid-cols-4 gap-5">
+                    {lesson.pages.map((p, i) => (
+                      <li key={i}>
+                        <button
+                          type="button"
+                          onClick={() => goPage(i)}
+                          className={`w-full rounded-[20px] px-6 py-5 text-left font-sans text-[24px] font-bold transition-colors ${i === page ? 'bg-[#E5A93C] text-[#0A3D45]' : 'bg-white/10 text-white hover:bg-white/20'}`}
+                        >
+                          <span className="block text-[18px] opacity-70">{i + 1}</span>
+                          {p.title}
+                        </button>
+                      </li>
+                    ))}
+                  </ol>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+        {notesPanel}
       </div>
-      <div className="flex gap-2">
-        {done && !checked && (
-          <button type="button" onClick={check} className="h-11 px-5 rounded-full bg-primary text-primary-foreground font-bold inline-flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
-            <Check className="w-4 h-4" /> Check my doors
-          </button>
-        )}
-        {Object.keys(placed).length > 0 && (
-          <button type="button" onClick={reset} className="h-11 px-4 rounded-full border border-border font-semibold inline-flex items-center gap-2 hover:bg-surface-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
-            <RotateCcw className="w-4 h-4" /> Try again
-          </button>
-        )}
-      </div>
+      {toolbar}
     </div>
   );
-}
-
-export function scoreSort(interaction: Extract<Interaction, { kind: 'sort' }>, placed: Record<number, string>): GameResult {
-  const result: GameResult = {};
-  for (const bin of interaction.bins) result[bin.id] = { correct: 0, total: 0 };
-  interaction.cards.forEach((card, i) => {
-    result[card.bin].total += 1;
-    if (placed[i] === card.bin) result[card.bin].correct += 1;
-  });
-  return result;
 }
 
 function Praise() {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="absolute inset-0 z-20 flex items-center justify-center bg-black/10 pointer-events-none"
-      role="status"
-      aria-live="assertive"
-    >
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="pointer-events-none absolute inset-0 z-40 flex items-center justify-center" role="status" aria-live="assertive">
       <motion.div
-        initial={{ scale: 0.6, rotate: -4 }}
+        className="absolute h-[1400px] w-[1400px] rounded-full"
+        style={{ background: 'repeating-conic-gradient(from 0deg, rgba(246,213,142,0.45) 0deg 8deg, transparent 8deg 22deg)' }}
+        initial={{ rotate: 0, scale: 0.6 }}
+        animate={{ rotate: 40, scale: 1 }}
+        transition={{ duration: 1.9, ease: 'easeOut' }}
+      />
+      {Array.from({ length: 26 }).map((_, i) => (
+        <motion.span
+          key={i}
+          className="absolute h-4 w-2.5 rounded-sm"
+          style={{ background: [P.gold, P.teal, P.crimson, '#ffffff'][i % 4] }}
+          initial={{ x: 0, y: 0, rotate: 0, opacity: 1 }}
+          animate={{ x: Math.cos(i * 0.9) * (300 + (i % 5) * 70), y: Math.sin(i * 0.9) * (220 + (i % 3) * 60), rotate: 220, opacity: 0 }}
+          transition={{ duration: 1.6, ease: 'easeOut' }}
+        />
+      ))}
+      <motion.div
+        initial={{ scale: 0.5, rotate: -6 }}
         animate={{ scale: 1, rotate: 0 }}
-        transition={{ type: 'spring', stiffness: 320, damping: 16 }}
-        className="rounded-[28px] bg-[#05363F] px-10 py-6 text-center shadow-2xl ring-4 ring-gold/70"
+        transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+        className="relative rounded-[36px] px-16 py-10 text-center shadow-2xl ring-8 ring-[#E5A93C]/60"
+        style={{ background: P.ink }}
       >
-        <p className="font-display text-3xl sm:text-4xl font-bold text-gold">MashaAllah!</p>
-        <p className="mt-2 text-2xl tracking-[0.4em] text-gold" aria-hidden="true">★★★</p>
+        <p className="font-serif text-[88px] font-bold leading-none text-[#E5A93C]">MashaAllah!</p>
+        <p className="mt-4 text-[54px] tracking-[0.35em] text-[#E5A93C]" aria-hidden="true">★★★</p>
       </motion.div>
     </motion.div>
   );
