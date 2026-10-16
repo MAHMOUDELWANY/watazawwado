@@ -11,7 +11,7 @@ Personal teaching platform for Mahmoud: 1-on-1 online lessons in Quran (reading,
 Owner's priority skills in `.claude/skills`. Reach for them before generic approaches, and always in curriculum work:
 - Thinking/planning: `brainstorming` (before any new feature, page or lesson), `writing-plans`, `executing-plans`, `verification-before-completion`.
 - Writing: `humanizer` on all user-facing copy (site, emails, curriculum); `writing-skills` when making skills.
-- Design: `taste-skill`, `soft-skill`, `redesign-skill`, `minimalist-skill`, `output-skill`.
+- Design: `taste-skill`, `soft-skill`, `redesign-skill`, `minimalist-skill`, `output-skill`, `impeccable` (design/audit/polish commands for any UI).
 - SEO: the `seo` hub and `seo-*` leaves (bilingual site, so `seo-hreflang` matters). Their Python helpers live in `.claude/skills/seo/scripts` and need Python plus its requirements; the guidance works without them.
 
 ## Stack
