@@ -1667,3 +1667,100 @@ html.dark {
   .rotator-static { position: static; width: auto; height: auto; margin: 0; overflow: visible; clip: auto; white-space: normal; }
   .rotator-live { display: none; }
 }
+
+/* ============================================================
+   SUBJECTS PAGE 2026-10-16 — subject cards, family headers, study scenes
+   ============================================================ */
+/* Family header: title beside an illustrated scene (scene on top on phones). */
+.family-head {
+  display: grid; gap: 1rem; align-items: center; padding: 1.25rem 1.25rem 1.5rem;
+  border-radius: var(--r-5); border: 1px solid var(--glass-hairline);
+  background:
+    radial-gradient(28rem 16rem at 85% 50%, color-mix(in srgb, var(--fam, #087D91) 14%, transparent), transparent 70%),
+    linear-gradient(180deg, color-mix(in srgb, var(--fam, #087D91) 6%, var(--surface)) 0%, var(--surface) 100%);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--shadow-1);
+}
+[dir="rtl"] .family-head {
+  background:
+    radial-gradient(28rem 16rem at 15% 50%, color-mix(in srgb, var(--fam, #087D91) 14%, transparent), transparent 70%),
+    linear-gradient(180deg, color-mix(in srgb, var(--fam, #087D91) 6%, var(--surface)) 0%, var(--surface) 100%);
+}
+@media (min-width: 640px) {
+  .family-head { grid-template-columns: minmax(0, 1fr) auto; gap: 2rem; padding: 1.5rem 2rem; }
+}
+.family-scene { display: block; width: 100%; max-width: 17rem; height: auto; margin-inline: auto; }
+@media (min-width: 640px) { .family-scene { width: 16rem; margin-inline: 0; } }
+@media (min-width: 1024px) { .family-scene { width: 19rem; max-width: none; } }
+.scene-blob { opacity: 0.14; }
+.dark .scene-blob { opacity: 0.26; }
+
+/* Subject card: deep portal (family colour, khatam, glow, emblem) over an opaque body. */
+.subject-card {
+  display: flex; flex-direction: column; overflow: hidden; color: var(--foreground);
+  border-radius: var(--r-3); background-color: var(--surface); border: 1px solid var(--glass-hairline);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--shadow-2);
+  transition: box-shadow var(--dur-move) var(--ease-out-soft), border-color var(--dur-ui) ease;
+}
+.subject-portal {
+  position: relative; overflow: hidden; aspect-ratio: 16 / 10; margin: 0.5rem 0.5rem 0;
+  border-radius: calc(var(--r-3) - 0.5rem);
+  background:
+    radial-gradient(closest-side at 50% 52%, rgba(255, 255, 255, 0.12), transparent 75%),
+    linear-gradient(165deg, var(--door-a) 0%, var(--door-b) 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.25), inset 0 -24px 40px -16px rgba(0, 0, 0, 0.35);
+}
+.subject-portal.khatam-window::before {
+  opacity: 0.5;
+  -webkit-mask-image: radial-gradient(ellipse 75% 80% at 50% 50%, transparent 25%, #000 90%);
+  mask-image: radial-gradient(ellipse 75% 80% at 50% 50%, transparent 25%, #000 90%);
+}
+/* A thin gold mihrab framing the emblem. */
+.subject-arch {
+  position: absolute; inset-inline: 28%; top: 9%; bottom: -1px; pointer-events: none;
+  border: 1px solid rgba(246, 213, 142, 0.32); border-bottom: 0;
+  border-radius: 50% 50% 0 0 / 34% 34% 0 0;
+}
+.subject-portal .door-glow { inset: 10% 18% 8%; }
+.subject-emblem {
+  position: absolute; inset-inline: 0; margin-inline: auto; top: 16%; width: 42%; aspect-ratio: 1; height: auto;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.3)) drop-shadow(0 0 14px rgba(229, 169, 60, 0.28));
+  transition: transform var(--dur-move) var(--ease-out-soft);
+}
+@media (hover: hover) {
+  .subject-card:hover { box-shadow: inset 0 1px 0 var(--glass-highlight), var(--shadow-3); border-color: rgba(229, 169, 60, 0.4); }
+  .subject-card:hover .subject-emblem { transform: translateY(-3px) scale(1.04); }
+  .subject-card:hover .door-glow { filter: brightness(1.2); }
+}
+.subject-details-btn, .subject-trial-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;
+  min-height: 2.75rem; padding: 0.5rem 1.1rem; border-radius: var(--r-pill);
+  font-size: 0.875rem; font-weight: 700; cursor: pointer;
+  transition: background-color var(--dur-ui) ease, color var(--dur-ui) ease, border-color var(--dur-ui) ease, transform var(--dur-tap) ease;
+}
+.subject-details-btn { color: var(--foreground); border: 1px solid var(--border); background: transparent; }
+.subject-details-btn:hover { border-color: var(--teal); color: var(--teal); }
+.subject-trial-btn {
+  margin-inline-start: auto; color: var(--primary); border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent);
+  background-color: color-mix(in srgb, var(--primary) 9%, transparent);
+}
+.subject-trial-btn:hover { background-color: var(--primary); border-color: var(--primary); color: var(--primary-foreground); }
+.subject-details-btn:active, .subject-trial-btn:active { transform: scale(0.98); }
+.subject-details-btn:focus-visible, .subject-trial-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+
+/* Study scenes: slow idle life. Each class keeps its rest pose when motion is off. */
+@keyframes sc-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes sc-flutter { 0%, 70%, 100% { transform: scaleX(1); } 82% { transform: scaleX(0.82) skewY(-3deg); } }
+@keyframes sc-drift {
+  0% { transform: translateY(14px); opacity: 0; }
+  20%, 70% { opacity: 1; }
+  100% { transform: translateY(-22px); opacity: 0; }
+}
+@keyframes sc-swing { 0%, 100% { transform: rotate(-2.5deg); } 50% { transform: rotate(2.5deg); } }
+.scene-bob, .scene-flutter, .scene-drift, .scene-swing { transform-box: fill-box; }
+.scene-bob { transform-origin: 50% 50%; animation: sc-bob 6s var(--ease-in-out-soft) infinite; }
+.scene-flutter { animation: sc-flutter 5.5s var(--ease-in-out-soft) infinite; }
+.scene-drift { transform-origin: 50% 50%; animation: sc-drift 7s ease-in-out infinite both; }
+.scene-swing { animation: sc-swing 5s var(--ease-in-out-soft) infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .scene-bob, .scene-flutter, .scene-drift, .scene-swing { animation: none !important; opacity: 1; transform: none; }
+}

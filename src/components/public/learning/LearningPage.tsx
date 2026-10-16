@@ -1,30 +1,64 @@
 import React, { useState, useMemo } from 'react';
 import { useOutletContext, Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'motion/react';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
-import { PublicSection, StudyLine, MarginNote, PublicButton, PageHero } from '../PublicDesignSystem';
+import { PublicSection, PublicButton, PageHero } from '../PublicDesignSystem';
 import { SERVICES_DATA } from '../../../data/content';
-import { ServiceItem } from '../../../types';
-import { 
-  BookOpen, 
-  Globe2, 
-  Languages, 
-  Library, 
-  Sparkles, 
-  Clock, 
-  Calendar, 
-  Check, 
-  ChevronDown, 
-  Search, 
-  X, 
-  Users, 
-  GraduationCap, 
-  ShieldCheck, 
-  ArrowRight,
-  Flame,
-  CheckCircle2,
-  SlidersHorizontal
-} from 'lucide-react';
+import { BookOpen, Globe2, Languages, Library, Search, X } from 'lucide-react';
+import { SubjectCard, FamilyStyle } from './SubjectCard';
+import { FAMILY_SCENES } from '../illustrations/StudyScenes';
+
+// One short line per subject, in the academy's voice (RULES.md 6b): [English, Arabic].
+const SUBJECT_TAGLINES: Record<string, [string, string]> = {
+  'quran-reading': ['Read it the way it was revealed.', 'اقرأه كما نزل.'],
+  'tajweed': ['Give every letter its right.', 'أعطِ كل حرف حقّه.'],
+  'quran-memorization': ["Carry the Qur'an in your heart.", 'احمل القرآن في قلبك.'],
+  'quran-revision': ['Keep what you memorized, for life.', 'اللي حفظته يفضل معاك.'],
+  'aqeedah': ['A faith you understand, and feel.', 'إيمان تفهمه وتطمئن بيه.'],
+  'fiqh': ['Pray and worship with certainty.', 'صلِّ واعبد ربك على يقين.'],
+  'seerah': ['Walk with the Prophet ﷺ, step by step.', 'امشِ مع النبي ﷺ خطوة بخطوة.'],
+  'islamic-studies': ['Live the deen, not just learn it.', 'عِش الدين، مش بس تتعلمه.'],
+  'modern-standard-arabic': ['Understand what you recite.', 'افهم اللي بتقراه.'],
+  'arabic-conversation': ['Speak from the very first lesson.', 'اتكلم من أول حصة.'],
+  'egyptian-arabic': ['Talk like you grew up by the Nile.', 'اتكلم كأنك من أهل البلد.'],
+  'arabic-foundations': ['Every journey starts with a letter.', 'كل رحلة بتبدأ بحرف.'],
+  'english': ['Speak English with confidence.', 'اتكلم إنجليزي بثقة.'],
+};
+
+// One brand colour per family of subjects: tab gradient, deep card portal, chips, accents.
+const FAMILY_CONFIGS: Record<string, FamilyStyle & { icon: React.ComponentType<{ className?: string }>; window: string; tint: string }> = {
+  quran: {
+    icon: BookOpen,
+    window: 'from-[#C51F24] via-[#A3271F] to-[#8B4935]',
+    portal: ['#A3201F', '#4E2219'],
+    tint: '#C51F24',
+    chip: 'bg-[#C51F24]/10 text-[#C51F24] dark:text-[#E82C32] border-[#C51F24]/25',
+    text: 'text-[#C51F24] dark:text-[#E82C32]'
+  },
+  islamic_studies: {
+    icon: Library,
+    window: 'from-[#087D91] via-[#0A6B7C] to-[#05434E]',
+    portal: ['#0B7183', '#05363F'],
+    tint: '#087D91',
+    chip: 'bg-[#087D91]/10 text-[#087D91] dark:text-[#12A4BC] border-[#087D91]/25',
+    text: 'text-[#087D91] dark:text-[#12A4BC]'
+  },
+  arabic: {
+    icon: Languages,
+    window: 'from-[#8B4935] via-[#9C5A33] to-[#B4552F]',
+    portal: ['#9C5A33', '#4A2619'],
+    tint: '#8B4935',
+    chip: 'bg-[#8B4935]/10 text-[#8B4935] dark:text-[#DA7960] border-[#8B4935]/25',
+    text: 'text-[#8B4935] dark:text-[#DA7960]'
+  },
+  english: {
+    icon: Globe2,
+    window: 'from-[#E5A93C] via-[#C98A2A] to-[#8B4935]',
+    portal: ['#C98A2A', '#5E321F'],
+    tint: '#E5A93C',
+    chip: 'bg-[#E5A93C]/15 text-[#8A5A12] dark:text-[#E5A93C] border-[#E5A93C]/35',
+    text: 'text-[#8A5A12] dark:text-[#E5A93C]'
+  }
+};
 
 // Comprehensive authentic Arabic details map for all 13 services
 const ARABIC_SERVICE_DETAILS: Record<string, {
@@ -194,58 +228,6 @@ export function LearningPage() {
     }));
   };
 
-  const expandAll = () => {
-    const allExpanded: Record<string, boolean> = {};
-    SERVICES_DATA.forEach((pillar) => {
-      pillar.services.forEach((s) => {
-        allExpanded[s.id] = true;
-      });
-    });
-    setExpandedServices(allExpanded);
-  };
-
-  const collapseAll = () => {
-    setExpandedServices({});
-  };
-
-  // One brand colour per family of subjects (window gradient, chip, ring).
-  const pillarConfigs: Record<string, {
-    icon: React.ComponentType<{ className?: string }>;
-    window: string;
-    chip: string;
-    ring: string;
-    text: string;
-  }> = {
-    quran: {
-      icon: BookOpen,
-      window: 'from-[#C51F24] via-[#A3271F] to-[#8B4935]',
-      chip: 'bg-[#C51F24]/10 text-[#C51F24] dark:text-[#E82C32] border-[#C51F24]/25',
-      ring: 'hover:border-[#C51F24]/50 focus-within:border-[#C51F24]/50',
-      text: 'text-[#C51F24] dark:text-[#E82C32]'
-    },
-    islamic_studies: {
-      icon: Library,
-      window: 'from-[#087D91] via-[#0A6B7C] to-[#05434E]',
-      chip: 'bg-[#087D91]/10 text-[#087D91] dark:text-[#12A4BC] border-[#087D91]/25',
-      ring: 'hover:border-[#087D91]/50 focus-within:border-[#087D91]/50',
-      text: 'text-[#087D91] dark:text-[#12A4BC]'
-    },
-    arabic: {
-      icon: Languages,
-      window: 'from-[#8B4935] via-[#9C5A33] to-[#B4552F]',
-      chip: 'bg-[#8B4935]/10 text-[#8B4935] dark:text-[#DA7960] border-[#8B4935]/25',
-      ring: 'hover:border-[#8B4935]/50 focus-within:border-[#8B4935]/50',
-      text: 'text-[#8B4935] dark:text-[#DA7960]'
-    },
-    english: {
-      icon: Globe2,
-      window: 'from-[#E5A93C] via-[#C98A2A] to-[#8B4935]',
-      chip: 'bg-[#E5A93C]/15 text-[#8A5A12] dark:text-[#E5A93C] border-[#E5A93C]/35',
-      ring: 'hover:border-[#E5A93C]/60 focus-within:border-[#E5A93C]/60',
-      text: 'text-[#8A5A12] dark:text-[#E5A93C]'
-    }
-  };
-
   // Filtered pillars based on active tab and search query
   const filteredPillars = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -262,6 +244,7 @@ export function LearningPage() {
             service.arabicName,
             service.tagline,
             service.arabicTagline,
+            ...(SUBJECT_TAGLINES[service.id] || []),
             service.description,
             service.whoIsItFor,
             ...(service.whatYouWillLearn || []),
@@ -313,14 +296,14 @@ export function LearningPage() {
               role="tab"
               aria-selected={selectedPillarId === 'all'}
               onClick={() => setSelectedPillarId('all')}
-              className={`px-4 py-2 rounded-full text-sm font-semibold border transition-colors cursor-pointer ${
+              className={`focus-ring min-h-11 px-4 py-2 rounded-full text-sm font-semibold border transition-colors cursor-pointer ${
                 selectedPillarId === 'all' ? 'bg-foreground text-background border-foreground' : 'bg-surface text-muted-foreground border-border hover:text-foreground'
               }`}
             >
               {isEn ? 'All subjects' : 'كل المواد'}
             </button>
             {SERVICES_DATA.map((pillar) => {
-              const config = pillarConfigs[pillar.id] || pillarConfigs.quran;
+              const config = FAMILY_CONFIGS[pillar.id] || FAMILY_CONFIGS.quran;
               const Icon = config.icon;
               const isSelected = selectedPillarId === pillar.id;
               return (
@@ -329,11 +312,11 @@ export function LearningPage() {
                   role="tab"
                   aria-selected={isSelected}
                   onClick={() => setSelectedPillarId(pillar.id)}
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold border transition-colors cursor-pointer ${
+                  className={`focus-ring min-h-11 inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold border transition-colors cursor-pointer ${
                     isSelected ? `bg-gradient-to-br ${config.window} text-white border-transparent` : `bg-surface border-border text-muted-foreground hover:text-foreground`
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
+                  <Icon className="w-4 h-4" aria-hidden="true" />
                   <span>{isEn ? pillar.title : pillar.arabicTitle}</span>
                 </button>
               );
@@ -391,8 +374,8 @@ export function LearningPage() {
               </h3>
               <p className="text-sm text-muted-foreground">
                 {isEn 
-                  ? 'Try searching with different keywords, or book a free trial to discuss your unique goals directly with your teacher.'
-                  : 'جرب البحث بكلمة أخرى، أو احجز جلستك التجريبية لمناقشة أهدافك الخاصة مع معلمك مباشرة.'}
+                  ? 'Try another word, or book a free trial and tell your teacher what you want to learn.'
+                  : 'جرّب كلمة تانية، أو احجز حصة مجانية وقول لمعلمك عايز تتعلم إيه.'}
               </p>
               <button
                 onClick={() => { setSearchQuery(''); setSelectedPillarId('all'); }}
@@ -403,112 +386,43 @@ export function LearningPage() {
             </div>
           ) : (
             filteredPillars.map((pillar) => {
-              const config = pillarConfigs[pillar.id] || pillarConfigs.quran;
-              const PillarIcon = config.icon;
+              const config = FAMILY_CONFIGS[pillar.id] || FAMILY_CONFIGS.quran;
+              const FamilyScene = FAMILY_SCENES[pillar.id];
 
               return (
-                <section key={pillar.id} className="space-y-6">
-                  
-                  <header className="flex items-center gap-3">
-                    <span className={`arch-tile w-10 h-11 flex items-center justify-center bg-gradient-to-b ${config.window} text-white shrink-0`}>
-                      <PillarIcon className="w-5 h-5" />
-                    </span>
-                    <div>
-                      <h2 className="font-editorial text-2xl sm:text-3xl text-foreground font-bold">
+                <section key={pillar.id} aria-labelledby={`family-${pillar.id}`} className="space-y-6">
+
+                  <header className="family-head" style={{ "--fam": config.tint } as React.CSSProperties}>
+                    <div className="order-2 sm:order-1 space-y-2 text-center sm:text-start">
+                      <h2 id={`family-${pillar.id}`} className="font-editorial text-[1.75rem] sm:text-4xl text-foreground font-bold leading-tight">
                         {isEn ? pillar.title : pillar.arabicTitle}
                       </h2>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
+                      <p className="text-base text-muted-foreground leading-relaxed max-w-xl sm:mx-0 mx-auto">
                         {isEn ? pillar.description : (pillar.arabicDescription || pillar.description)}
                       </p>
                     </div>
+                    {FamilyScene && <FamilyScene className="family-scene order-1 sm:order-2" />}
                   </header>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                    {pillar.services.map((service: ServiceItem) => {
+                    {pillar.services.map((service) => {
                       const arDetails = ARABIC_SERVICE_DETAILS[service.id];
-                      const isExpanded = Boolean(expandedServices[service.id]);
-                      const whoFor = isEn ? service.whoIsItFor : (arDetails?.whoIsItFor || service.whoIsItFor);
-                      const learn = isEn ? (service.whatYouWillLearn || []) : (arDetails?.whatYouWillLearn || service.whatYouWillLearn || []);
-                      const frequency = isEn ? service.recommendedFrequency : (arDetails?.recommendedFrequency || service.recommendedFrequency);
-                      const detailsId = `details-${service.id}`;
-
+                      const line = SUBJECT_TAGLINES[service.id];
                       return (
-                        <article
+                        <SubjectCard
                           key={service.id}
-                          className={`group flex flex-col rounded-[1.75rem] border border-border bg-surface overflow-hidden transition-[border-color,box-shadow] duration-300 hover:shadow-[0_24px_48px_-28px_rgba(18,16,14,0.45)] ${config.ring}`}
-                        >
-                          {/* Arch window in the family colour */}
-                          <div className="px-5 pt-5">
-                            <div className={`door-arch khatam-window relative mx-auto w-32 h-36 bg-gradient-to-b ${config.window} flex items-end justify-center pb-4 overflow-hidden`}>
-                              <PillarIcon className="relative w-8 h-8 text-white/95 transition-transform duration-500 group-hover:-translate-y-1" />
-                            </div>
-                          </div>
-
-                          <div className="flex-1 px-6 pt-5 pb-4 space-y-2 text-center">
-                            <h3 className="font-editorial text-xl font-bold text-foreground leading-snug">
-                              {isEn ? service.name : (service.arabicName || service.name)}
-                            </h3>
-                            <p className="text-sm text-muted-foreground leading-relaxed">
-                              {isEn ? service.tagline : (service.arabicTagline || service.tagline)}
-                            </p>
-                            <ul className="flex flex-wrap justify-center gap-1.5 pt-2" aria-label={isEn ? 'Lesson lengths' : 'مدد الحصة'}>
-                              {service.durations.map((d) => (
-                                <li key={d} className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${config.chip}`}>
-                                  {isEn ? `${d} min` : `${d} دقيقة`}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-
-                          <AnimatePresence initial={false}>
-                            {isExpanded && (
-                              <motion.div
-                                id={detailsId}
-                                key="details"
-                                initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: 'auto' }}
-                                exit={{ opacity: 0, height: 0 }}
-                                transition={{ duration: 0.3, ease: 'easeInOut' }}
-                                className="overflow-hidden"
-                              >
-                                <div className="mx-6 mb-4 pt-4 border-t border-border space-y-3 text-sm text-start">
-                                  <p className="text-foreground/85 leading-relaxed">{whoFor}</p>
-                                  <ul className="space-y-1.5">
-                                    {learn.map((item, idx) => (
-                                      <li key={idx} className="flex items-start gap-2 text-muted-foreground">
-                                        <Check className={`w-4 h-4 shrink-0 mt-0.5 ${config.text}`} />
-                                        <span>{item}</span>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                  <p className={`text-xs font-semibold ${config.text}`}>
-                                    {isEn ? `Suggested: ${frequency}` : `المقترح: ${frequency}`}
-                                  </p>
-                                </div>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-
-                          <div className="px-5 pb-5 flex items-center gap-2">
-                            <button
-                              type="button"
-                              onClick={() => toggleExpand(service.id)}
-                              aria-expanded={isExpanded}
-                              aria-controls={detailsId}
-                              className="flex-1 inline-flex items-center justify-center gap-1 px-3 py-2.5 rounded-xl text-sm font-semibold text-foreground border border-border hover:bg-surface-subtle transition-colors cursor-pointer"
-                            >
-                              <span>{isExpanded ? (isEn ? 'Less' : 'أقل') : (isEn ? 'Details' : 'التفاصيل')}</span>
-                              <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => onOpenTrialModal(service.id)}
-                              className="flex-1 px-3 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-bold hover:bg-primary-hover active:scale-[0.98] transition-all cursor-pointer"
-                            >
-                              {isEn ? 'Free trial' : 'حصة مجانية'}
-                            </button>
-                          </div>
-                        </article>
+                          service={service}
+                          family={config}
+                          isEn={isEn}
+                          title={isEn ? service.name : (service.arabicName || service.name)}
+                          tagline={line ? line[isEn ? 0 : 1] : (isEn ? service.tagline : (service.arabicTagline || service.tagline))}
+                          whoFor={isEn ? service.whoIsItFor : (arDetails?.whoIsItFor || service.whoIsItFor)}
+                          learn={isEn ? (service.whatYouWillLearn || []) : (arDetails?.whatYouWillLearn || service.whatYouWillLearn || [])}
+                          frequency={isEn ? service.recommendedFrequency : (arDetails?.recommendedFrequency || service.recommendedFrequency)}
+                          expanded={Boolean(expandedServices[service.id])}
+                          onToggle={() => toggleExpand(service.id)}
+                          onTrial={() => onOpenTrialModal(service.id)}
+                        />
                       );
                     })}
                   </div>

@@ -35,11 +35,12 @@ export function HeroSubjects({ isEn, className }: { isEn: boolean; className?: s
       {/* The rotating word ends its line, so swapping it never reflows the rest of the sentence. */}
       <span className="rotator-live" aria-hidden="true">
         {isEn ? 'One-on-one lessons in ' : 'حصص فردية في '}
-        <span className="relative inline-block font-semibold text-foreground">
+        <span className="relative inline-block font-bold">
           <AnimatePresence mode="wait" initial={false}>
             <motion.span
               key={words[index]}
-              className="inline-block"
+              // The rotating subject wears the brand ribbon (crimson, copper, gold, teal).
+              className="inline-block text-ribbon"
               initial={{ opacity: 0, filter: 'blur(10px)', y: 6 }}
               animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
               exit={{ opacity: 0, filter: 'blur(10px)', y: -6 }}

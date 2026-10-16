@@ -221,7 +221,7 @@ export function PublicHomepage() {
           <p
             lang="ar"
             dir="rtl"
-            className="text-[2.1rem] leading-[1.9] sm:text-5xl sm:leading-[1.8] text-foreground mx-auto max-w-4xl"
+            className="text-[2.1rem] leading-[1.9] sm:text-5xl sm:leading-[1.8] text-ribbon mx-auto max-w-4xl"
             style={{ fontFamily: "'Amiri Quran', var(--font-serif)" }}
           >
             {MISSION_VERSE}

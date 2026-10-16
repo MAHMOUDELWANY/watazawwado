@@ -16,6 +16,7 @@ import {
   type OtpEvent,
   type OtpPhase,
 } from './otpLogic';
+import { beginOtpCelebration, endOtpCelebration } from './otpCelebration';
 
 export interface OtpVerificationCardProps {
   initialEmail?: string;
@@ -118,6 +119,7 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
     const id = setTimeout(() => inputRefs.current[0]?.focus(), 120);
     return () => {
       mounted.current = false;
+      endOtpCelebration();
       clearTimeout(id);
       spinCtrl.current?.stop();
     };
@@ -160,6 +162,8 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
     setError(null);
     setNotice(null);
     dispatch('submit');
+    // The session appears as soon as the code is accepted; hold page swaps until the sequence ends.
+    beginOtpCelebration();
 
     const request = onVerify(code, email).catch((err: unknown) => ({
       success: false,
@@ -185,10 +189,12 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
       if (!mounted.current) return;
       dispatch('converged');
       await wait(SUCCESS_HOLD_MS);
+      endOtpCelebration();
       if (mounted.current) onSuccess?.();
       return;
     }
 
+    endOtpCelebration();
     dispatch('rejected');
     setShakeKey((k) => k + 1);
     setError(

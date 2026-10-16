@@ -85,3 +85,13 @@ test('rejection goes to error, then editing or resubmitting recovers', () => {
 test('success is terminal', () => {
   assert.equal(run(['rejected', 'edit', 'submit'], 'success'), 'success');
 });
+
+// The account page must not swap away while the verified sequence plays (owner report 2026-10-16).
+test('OTP celebration flag holds page swaps until the sequence ends', async () => {
+  const { beginOtpCelebration, endOtpCelebration, isOtpCelebrating } = await import('../src/components/auth/otpCelebration');
+  assert.strictEqual(isOtpCelebrating(), false);
+  beginOtpCelebration();
+  assert.strictEqual(isOtpCelebrating(), true);
+  endOtpCelebration();
+  assert.strictEqual(isOtpCelebrating(), false);
+});

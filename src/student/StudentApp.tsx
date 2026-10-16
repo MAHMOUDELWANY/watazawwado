@@ -38,6 +38,7 @@ import StudentPlacementReportPage from './pages/StudentPlacementReportPage';
 import { ChatPanel } from '../components/chat/ChatPanel';
 import IntakeConversation from '../components/intake/IntakeConversation';
 import { StudentAuthModal } from '../components/StudentAuthModal';
+import { useOtpCelebrating } from '../components/auth/otpCelebration';
 import {  buildStudentNotifications,
   countUnread,
   notificationReadStateKey,
@@ -234,13 +235,15 @@ export default function StudentApp() {
   const studentLoading = !isTeacherAuthenticated && Boolean(user) &&
     (loading || !userRole || !session?.access_token || (userRole === 'student' && (loadingProfile || !profile)));
   const showWelcome = useWelcomeGate(studentLoading);
+  // Keep the sign-up modal on screen while its OTP card plays the verified sequence.
+  const otpCelebrating = useOtpCelebrating();
 
   // If a teacher lands here, redirect to the teacher dashboard
   if (isTeacherAuthenticated) {
     return <Navigate to="/dashboard" replace />;
   }
 
-  if (showWelcome && user) {
+  if (showWelcome && user && !otpCelebrating) {
     return (
       <WelcomeLoader
         role="student"
@@ -251,7 +254,7 @@ export default function StudentApp() {
   }
 
   // Auth Hydration Gate: Show BrandLoader while auth session or user role is resolving
-  if (loading || (user && (!userRole || !session?.access_token))) {
+  if (!otpCelebrating && (loading || (user && (!userRole || !session?.access_token)))) {
     return (
       <BrandLoader 
         size="page" 
@@ -262,7 +265,7 @@ export default function StudentApp() {
   }
 
   // If not authenticated, provide choices: Sign In, Create Account
-  if (!user || userRole !== 'student') {
+  if (otpCelebrating || !user || userRole !== 'student') {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-6 text-foreground">
         <div className="max-w-md w-full glass-card border-none rounded-3xl p-8 sm:p-10 shadow-xs text-center">
