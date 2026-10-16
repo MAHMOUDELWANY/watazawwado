@@ -133,10 +133,30 @@ function ArtCard({ page, className = '' }: { page: LessonPage; className?: strin
       className={`absolute overflow-hidden border-[6px] border-white bg-white shadow-[0_34px_64px_-30px_rgba(139,73,53,0.55)] ${className}`}
       style={{ borderRadius: '50% 50% 34px 34px / 30% 30% 34px 34px', outline: `2px solid ${P.goldSoft}`, outlineOffset: 6 }}
     >
-      <SceneArt id={page.scene} label={page.title} />
+      {SCENE_IMAGES[page.scene] ? (
+        // Slow camera move over the painting (Ken Burns), restarts with each page.
+        <motion.img
+          src={`/curriculum/zad-kids/l01/${SCENE_IMAGES[page.scene]}.webp`}
+          alt={page.title}
+          className="h-full w-full object-cover"
+          initial={{ scale: 1.14, x: -18, y: 8 }}
+          animate={{ scale: 1.02, x: 0, y: 0 }}
+          transition={{ duration: 14, ease: 'easeOut' }}
+          draggable={false}
+        />
+      ) : (
+        <SceneArt id={page.scene} label={page.title} />
+      )}
+      <div className="pointer-events-none absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(255,243,201,0.18), transparent 40%, rgba(59,34,25,0.18))' }} />
     </div>
   );
 }
+
+/** Painted scenes (owner, ChatGPT, 2026-10-17) in public/curriculum/zad-kids/l01; scenes not listed fall back to SVG art. */
+const SCENE_IMAGES: Partial<Record<LessonPage['scene'], string>> = {
+  doorsHero: 'cover', doors: 'cover', chalkboard: 'classroom', jiddo: 'jiddo', madinah: 'madinah', stranger: 'stranger',
+  sitting: 'sitting', pillars: 'pillars', roots: 'roots', drawing: 'drawing', reveal: 'reveal', backpack: 'backpack', lego: 'lego',
+};
 
 function Title({ children, size = 84 }: { children: React.ReactNode; size?: number }) {
   return (

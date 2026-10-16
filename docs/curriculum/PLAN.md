@@ -262,3 +262,11 @@ B3–B5 → continue lesson by lesson.
   Fixed: pen crash (state updater read a cleared ref), full screen fills with floating controls, brand applied
   (paper, crimson mihrab lesson tab, arch-framed art, khatam pattern, Thmanyah, sentence case). **[Open]** source of
   professional illustrations (AI image test via Canva looked generic and showed a face; options sent to the owner).
+- **2026-10-17** — **[Decided]** illustrations: no paid options. (1) Storyset (free, credit required) for general
+  scenes that need motion; (2) owner generates Islamic/historic scenes and the recurring characters in ChatGPT Go from
+  Claude's prompts, one style sheet. Files go in `public/curriculum/zad-kids/l01/`. No faces for prophets, companions
+  or Jibril.
+- **2026-10-17** — Owner delivered 13 ChatGPT paintings for Lesson 1 (cover, classroom, jiddo, madinah, stranger,
+  sitting, pillars, roots, drawing, reveal, backpack, lego, character sheet), compressed to WebP in
+  `public/curriculum/zad-kids/l01/`; slides show them with a slow camera move, SVG kept as fallback. Known: Maryam's
+  hijab is teal in 3 images and gold in the character sheet.

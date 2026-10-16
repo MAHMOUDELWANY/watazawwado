@@ -55,6 +55,8 @@ Decision values: Allowed · With conditions · Needs permission · Research only
 | Wikimedia Commons | https://commons.wikimedia.org/wiki/Commons:REUSE | Per file | Per file | Per file | Check each file |
 | Phosphor / Tabler icons | phosphoricons.com · tabler.io/icons | MIT (to verify) | Expected yes | Keep licence file | To verify |
 | Freesound (CC0 filter only) | https://freesound.org | Per sound | CC0 ones yes | — | To verify per sound |
+| Storyset | https://storyset.com/terms | Free licence with credit (checked 2026-10-17); modify/animate allowed; no resale or redistribution as files | Yes, with credit | Credit required | **With conditions** (add credit on the curriculum page) |
+| ChatGPT image generation (owner's account) | https://openai.com/policies/terms-of-use | Output belongs to the user under OpenAI terms (to verify current text) | Expected yes | Not required | To verify |
 | Our own SVG + Motion animations | — | Ours | Yes | — | **Allowed** (preferred) |
 
 ## F. Files the owner needs to download
