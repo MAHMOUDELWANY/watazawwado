@@ -528,13 +528,14 @@ export function renderStudent1hReminder(params: {
 }
 
 export type StaffEventType =
-  | 'new_booking' | 'new_trial' | 'new_lead' | 'payment_claimed' | 'payment_confirmed'
+  | 'new_booking' | 'new_trial' | 'new_lead' | 'new_student' | 'payment_claimed' | 'payment_confirmed'
   | 'cancelled' | 'rescheduled' | 'alert';
 
 const STAFF_TITLES: Record<StaffEventType, L> = {
   new_booking: { en: 'New lesson booked', ar: 'حجز حصة جديدة' },
   new_trial: { en: 'New free trial booked', ar: 'حصة تجريبية جديدة' },
   new_lead: { en: 'New interested student', ar: 'طالب مهتم جديد' },
+  new_student: { en: 'A new student chose you', ar: 'طالب جديد اختارك' },
   payment_claimed: { en: 'A student reported a payment', ar: 'طالب بلّغ عن دفع' },
   payment_confirmed: { en: 'Payment received', ar: 'وصل دفع' },
   cancelled: { en: 'Lesson cancelled', ar: 'حصة اتلغت' },

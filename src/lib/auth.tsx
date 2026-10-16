@@ -94,6 +94,15 @@ export async function checkServerTeacherAuthDetails(token?: string | null): Prom
   }
 }
 
+/** What the sign-up form records about the account (stored in the auth user's metadata). */
+export interface SignupDetails {
+  accountType: 'self' | 'family';
+  /** Family accounts: the guardian's age (18+, checked before the account is created). */
+  guardianAge?: number;
+  /** Personal accounts: the learner confirmed they are 18 or over. */
+  confirmedAdult?: boolean;
+}
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
@@ -102,7 +111,7 @@ interface AuthContextType {
   userRole: 'teacher' | 'student' | null;
   teacherRole: 'teacher' | 'super_admin' | null;
   signIn: (email: string, password: string, requiredRole?: 'teacher' | 'student') => Promise<{ success: boolean; role?: 'teacher' | 'super_admin' | 'student' | null; error?: string }>;
-  signUp: (email: string, password: string, name: string) => Promise<{ success: boolean; error?: string }>;
+  signUp: (email: string, password: string, name: string, extra?: SignupDetails) => Promise<{ success: boolean; error?: string }>;
   verifyOtp: (email: string, token: string, type?: 'signup' | 'recovery' | 'magiclink' | 'email') => Promise<{ success: boolean; error?: string }>;
   resendOtp: (email: string, type?: 'signup' | 'magiclink' | 'recovery' | 'email') => Promise<{ success: boolean; error?: string }>;
   resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
@@ -365,7 +374,7 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }
   };
 
-  const signUp = async (email: string, password: string, name: string): Promise<{ success: boolean; error?: string }> => {
+  const signUp = async (email: string, password: string, name: string, extra?: SignupDetails): Promise<{ success: boolean; error?: string }> => {
     if (!email || !password || !name) {
       return { success: false, error: 'Please provide name, email, and password.' };
     }
@@ -393,6 +402,10 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
           emailRedirectTo: redirectUrl,
           data: {
             full_name: name,
+            ...(extra ? {
+              account_type: extra.accountType,
+              ...(extra.accountType === 'family' ? { guardian_age: extra.guardianAge } : { confirmed_adult: Boolean(extra.confirmedAdult) })
+            } : {})
           }
         }
       });
