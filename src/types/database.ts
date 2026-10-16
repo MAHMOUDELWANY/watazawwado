@@ -802,6 +802,37 @@ export interface Database {
           updated_at?: string;
         };
       };
+      curriculum_lesson_reports: {
+        Row: {
+          id: string;
+          student_id: string;
+          teacher_id: string | null;
+          subject: string;
+          lesson_number: number;
+          from_page: number;
+          to_page: number;
+          strengths: string[];
+          to_reinforce: string[];
+          note: string | null;
+          game_result: Json | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          student_id: string;
+          teacher_id?: string | null;
+          subject: string;
+          lesson_number: number;
+          from_page: number;
+          to_page: number;
+          strengths?: string[];
+          to_reinforce?: string[];
+          note?: string | null;
+          game_result?: Json | null;
+          created_at?: string;
+        };
+        Update: never;
+      };
     };
     Functions: {
       check_trial_eligibility: {

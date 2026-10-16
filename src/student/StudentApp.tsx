@@ -19,6 +19,7 @@ import { HelpCircle, Globe, LogOut, BookOpen,
   Bell,
   ChevronRight,
   MessageCircle,
+  Library,
 } from 'lucide-react';
 import { useTeacherAuth } from '../lib/auth';
 import { useAppLanguage } from '../lib/language';
@@ -35,6 +36,7 @@ import StudentNotificationsPage from './pages/StudentNotificationsPage';
 import StudentOffersPage from './pages/StudentOffersPage';
 import StudentPlacementPage from './pages/StudentPlacementPage';
 import StudentPlacementReportPage from './pages/StudentPlacementReportPage';
+import StudentCurriculumPage, { StudentCurriculumLessonPage } from './pages/StudentCurriculumPage';
 import { ChatPanel } from '../components/chat/ChatPanel';
 import IntakeConversation from '../components/intake/IntakeConversation';
 import { Button } from '../components/ui/Button';
@@ -344,6 +346,12 @@ export default function StudentApp() {
       name: isAr ? 'حجز جديد' : 'Book', 
       path: '/student/book', 
       icon: Plus,
+      badge: null
+    },
+    {
+      name: isAr ? 'منهجي' : 'My curriculum',
+      path: '/student/curriculum',
+      icon: Library,
       badge: null
     },
     {
@@ -740,6 +748,8 @@ export default function StudentApp() {
               <Route path="/offers" element={<StudentOffersPage session={session} lang={lang} />} />
               <Route path="/messages" element={<ChatPanel lang={lang} />} />
               <Route path="/placement" element={<StudentPlacementPage lang={lang} />} />
+              <Route path="/curriculum" element={<StudentCurriculumPage lang={lang} />} />
+              <Route path="/curriculum/:learner/:subject/:number" element={<StudentCurriculumLessonPage lang={lang} />} />
               <Route path="/placement/report/:id" element={<StudentPlacementReportPage lang={lang} />} />
               <Route path="/book" element={<StudentBookingPage profile={profile} session={session} lang={lang} />} />
               <Route path="/account" element={

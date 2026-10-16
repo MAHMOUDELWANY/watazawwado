@@ -11,10 +11,19 @@
 
 - **Done:** scope, mission, age bands, rules (§3, §3a), source registry (`sources.md`), working plan (§7), subject
   name (§1a), fiqh school, Quran/hadith/translation method (§5).
-- **Now:** A1 — unit map of Zad Essentials · Kids (6–11). Waiting for the owner's "start".
-- **Next:** first lesson brief (A2) → its pages (A3) → player + blocks enough to show it (B1–B2) → owner review →
-  teacher report, student map, lock (B3–B5) → lesson by lesson.
-- **Not started:** any code, migration or UI for the curriculum.
+- **Done (A1):** unit map of Zad Essentials · Kids approved → `zad-essentials-kids/MAP.md` (37 lessons, game
+  checkpoint every lesson, story world proposed).
+- **Done (A2–A3, B1–B2):** Lesson 1 written (`src/curriculum/content/zad-kids/`), lesson player + scenes + game
+  (`src/curriculum/`), teacher page at **/dashboard/curriculum** (draft badge while `reviewed: false`).
+- **Done (B3–B5):** teacher report after class (pages, evaluation per outcome, note, game result) in the lesson page;
+  student map + puzzle at **/student/curriculum** (per learner, parents see each child); locked until the family has a
+  confirmed/rescheduled/completed booking; covered pages of **reviewed** lessons open for review. Table
+  `curriculum_lesson_reports` (server-only) applied to production 2026-10-16.
+- **Now:** owner reviews Lesson 1 and marks it reviewed (then students can open it).
+- **Next:** Lesson 2 (Who Made It All?).
+- **Not started:** Lessons 2–37, sound effects, the teacher pen/drawing tool.
+- **Known limit:** lesson text ships in the site bundle, so the lock is a UI lock (content is not secret). Upgrade to
+  server-served lessons if content must be protected.
 
 ## 1. What we are building
 
@@ -42,6 +51,10 @@
 - **[Decided 2026-10-16] Names:** Arabic **أول الزاد**; English **Zad Essentials** (chosen by Claude at the owner's
   request: short, strong rhythm, clear to parents, carries the brand word "Zad").
 - **[Decided 2026-10-16] Two versions:** **Zad Essentials · Kids** (6–11) and **Zad Essentials · Teens & Adults** (12+).
+- **[Decided 2026-10-16] Goal (Kids):** the child's actions and words change, not only knowledge. Booked lesson by
+  lesson, so every lesson is self-contained; lessons are designed for **45 minutes** on average, paged so the teacher
+  can finish in 30 or stretch to 60. Expected length 3–6 months (~36–40 lessons). The first ~10 lessons give what makes
+  a child a Muslim and a Mu'min with understanding.
 
 ## 2. Mission & lesson philosophy
 
@@ -105,6 +118,9 @@ Every lesson must keep the learner curious and active (owner's request), using l
 3. **Cliffhanger ending ("next time on…"):** every lesson ends with a teaser that links to the next lesson — an open
    question, a half-told story, or a puzzle piece the learner can't place yet — like the end of a series episode, so the
    learner wants to come back (curiosity gap, Zeigarnik effect). The teaser is always answered in the next lesson.
+3b. **Game checkpoint (owner, 2026-10-16):** every lesson ends with a fun game inside the lesson that quietly checks
+   its outcomes (stealth assessment); results feed the teacher report. Every lesson is linked to the one before and
+   after; real-life examples from the learner's age (school, friends, home, screens) in every lesson.
 4. **Story and characters:** recurring original characters and short stories carry the ideas; abstract → concrete
    (dual coding: words + a meaningful visual together).
 5. **Low cognitive load:** one idea per page, few words on screen, the teacher speaks the rest; motion only where it
@@ -115,7 +131,10 @@ Every lesson must keep the learner curious and active (owner's request), using l
    (small wins), relatedness (family, teacher, community) — self-determination theory.
 8. **Peak and end:** each lesson has one memorable "wow" moment and ends on a warm, positive note (peak-end rule).
 9. **Visible progress:** the puzzle/map shows how far the learner has come and what is next (goal-gradient).
-10. **Ethics guard:** no dark patterns — no fake urgency, no streak guilt, no punishment for missing a day, no turning
+10. **Love first, honest always (owner, 2026-10-16):** no fear-based teaching, but Jannah and the Fire are both
+    mentioned honestly (balance of hope and fear, e.g. الحجر 49–50); the goal is that the child loves the deen.
+    No filler: every page adds a new idea or a new action.
+11. **Ethics guard:** no dark patterns — no fake urgency, no streak guilt, no punishment for missing a day, no turning
     worship into points. Motivation serves the heart, not screen time.
 
 ## 4. Product decisions and proposals
@@ -223,3 +242,12 @@ B3–B5 → continue lesson by lesson.
 - **2026-10-16** — English name Zad Essentials chosen. Engagement & psychology rules added (§3a: hooks, questions,
   cliffhanger endings linking to the next lesson). "Where we are" section (§0) added. Skills installed by the owner are
   not yet in a merged pull request.
+- **2026-10-16** — Committed 51bb4bf (plan, skills, old manage-booking modal removed). Map of Zad Essentials · Kids
+  approved with the owner's reorder (37 lessons); owner asked for a game checkpoint at the end of every lesson,
+  storytelling and real-life examples for 6–11, everything connected. Lesson 1 brief written; Muslim 8 verified on
+  Dorar (via the in-app browser — plain web fetch is blocked by Dorar).
+- **2026-10-16** — Owner approved the three L1 points (no signs of the Hour, characters, faceless stranger). Built the
+  lesson player (16:9, keyboard, full screen, praise, teacher notes, game scoring) and Lesson 1 as data; teacher page
+  /dashboard/curriculum. Verified in the browser (desktop + phone). Lesson content is not committed yet.
+- **2026-10-16** — Built B3–B5: teacher report, student map/puzzle, booked-only access; migration
+  20261016000006 applied to production; API checked live (guards + one write/read, test row deleted).

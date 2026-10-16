@@ -65,6 +65,7 @@ import {
 } from '../server/intake/intakeService.js';
 import { createIntakeToken, readIntakeToken } from '../server/intake/intakeToken.js';
 import { registerCommunityRoutes, ensureTeacherThreads } from '../server/routes/community.js';
+import { registerCurriculumRoutes } from '../server/routes/curriculum.js';
 import { announceNewStudent, type NewLearner } from '../server/onboarding/newStudent.js';
 import { isAdultAge, isGuardianAge, isChildAge, parseAge, ADULT_MIN_AGE, GUARDIAN_MIN_AGE, CHILD_MIN_AGE, CHILD_MAX_AGE } from '../src/lib/ageRules.js';
 import { notifyUser, notifySuperAdmins, resolveLearnerAccount } from '../server/notifications/inbox.js';
@@ -9622,6 +9623,14 @@ registerCommunityRoutes(app, {
   verifyStudentAuth,
   verifyTeacherAuth,
   requireSuperAdmin,
+  getLearners: getAuthorizedLearnersForStudent
+});
+
+registerCurriculumRoutes(app, {
+  getClient: getSupabaseAdminClient,
+  rateLimit,
+  verifyStudentAuth,
+  verifyTeacherAuth,
   getLearners: getAuthorizedLearnersForStudent
 });
 

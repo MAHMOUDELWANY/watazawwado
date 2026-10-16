@@ -36,6 +36,7 @@ import {
   GraduationCap,
   Search,
   MoreHorizontal,
+  Library,
 } from 'lucide-react';
 import OverviewPage from './pages/OverviewPage';
 import TodayPage from './pages/TodayPage';
@@ -54,6 +55,7 @@ import NotificationsPage, { useUnreadDashboardNotifications } from './pages/Noti
 import PayLaterPage from './pages/PayLaterPage';
 import PlacementTestsPage from './pages/PlacementTestsPage';
 import AssistantPage from './pages/AssistantPage';
+import CurriculumPage, { CurriculumLessonPage } from './pages/CurriculumPage';
 import { ChatPanel } from '../components/chat/ChatPanel';
 import { TeacherAuthDiagnosticPanel } from './components/TeacherAuthDiagnosticPanel';
 import { useAppLanguage } from '../lib/language';
@@ -222,6 +224,7 @@ export function DashboardApp() {
     { name: L('Jalila (assistant)', 'جليلة (المساعدة)'), path: '/dashboard/assistant', icon: Compass },
     { name: L('Reports', 'التقارير'), path: '/dashboard/analytics', icon: TrendingUp },
     { name: L('My hours', 'مواعيدي'), path: '/dashboard/availability', icon: CalendarClock },
+    { name: L('Curriculum', 'المنهج'), path: '/dashboard/curriculum', icon: Library },
     { name: L('Settings', 'الإعدادات'), path: '/dashboard/settings', icon: Settings },
   ];
 
@@ -236,6 +239,7 @@ export function DashboardApp() {
     { name: L('Bookings', 'الحجوزات'), path: '/dashboard/bookings', icon: BookOpen },
     { name: L('Reports', 'التقارير'), path: '/dashboard/analytics', icon: TrendingUp },
     { name: L('My hours', 'مواعيدي'), path: '/dashboard/availability', icon: CalendarClock },
+    { name: L('Curriculum', 'المنهج'), path: '/dashboard/curriculum', icon: Library },
     { name: L('Settings', 'الإعدادات'), path: '/dashboard/settings', icon: Settings },
   ];
 
@@ -587,6 +591,8 @@ export function DashboardApp() {
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/messages" element={<ChatPanel lang={ar ? 'ar' : 'en'} />} />
                 <Route path="/assistant" element={<AssistantPage />} />
+                <Route path="/curriculum" element={<CurriculumPage />} />
+                <Route path="/curriculum/:subject/:number" element={<CurriculumLessonPage />} />
                 <Route path="/placement" element={isSuperAdmin ? <PlacementTestsPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>
