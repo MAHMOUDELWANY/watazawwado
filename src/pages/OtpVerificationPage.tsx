@@ -4,7 +4,7 @@ import { BrandLogo } from '../components/ui/BrandLogo';
 import { OtpVerificationCard } from '../components/auth/OtpVerificationCard';
 import { useTeacherAuth } from '../lib/auth';
 import { useAppLanguage } from '../lib/language';
-import { ArrowLeft, ArrowRight, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, ShieldCheck } from 'lucide-react';
 
 export default function OtpVerificationPage() {
   const location = useLocation();
@@ -116,9 +116,7 @@ export default function OtpVerificationPage() {
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-border/50 bg-surface-subtle/40 backdrop-blur-sm">
           <ShieldCheck className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
           <span>
-            {isAr
-              ? 'تشفير آمن بنسبة 100٪ • منصة وتزودوا لتعليم القرآن واللغة العربية'
-              : '100% Encrypted & Secure • Watazawwado Platform for Quran & Arabic Studies'}
+            {isAr ? 'بياناتك محفوظة عندنا بأمان' : 'Your details are kept safe with us'}
           </span>
         </div>
       </footer>

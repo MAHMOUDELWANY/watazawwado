@@ -3,6 +3,8 @@ import { AccountDropdown } from '../components/ui/AccountDropdown';
 import { OnboardingGuide } from '../components/ui/OnboardingGuide';
 import { BrandLoader } from '../components/ui/BrandLoader';
 import { ThemeToggle } from '../components/ui/ThemeToggle';
+import { MobileTabBar, isTabActive, MOBILE_TAB_BAR_PADDING } from '../components/ui/MobileTabBar';
+import { WelcomeLoader, useWelcomeGate, markJustSignedIn } from '../components/ui/WelcomeLoader';
 import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import { HelpCircle, Globe, LogOut, BookOpen,
@@ -219,9 +221,33 @@ export default function StudentApp() {
   }, [userId, userRole, Boolean(accessToken), isTeacherAuthenticated, location.pathname]);
 
 
+  // A sign-in made here (the auth modal) after we saw no session earns the short welcome.
+  const sawSignedOut = useRef(false);
+  useEffect(() => {
+    if (!loading && !userId) sawSignedOut.current = true;
+    else if (userId && sawSignedOut.current) {
+      sawSignedOut.current = false;
+      markJustSignedIn();
+    }
+  }, [loading, userId]);
+
+  const studentLoading = !isTeacherAuthenticated && Boolean(user) &&
+    (loading || !userRole || !session?.access_token || (userRole === 'student' && (loadingProfile || !profile)));
+  const showWelcome = useWelcomeGate(studentLoading);
+
   // If a teacher lands here, redirect to the teacher dashboard
   if (isTeacherAuthenticated) {
     return <Navigate to="/dashboard" replace />;
+  }
+
+  if (showWelcome && user) {
+    return (
+      <WelcomeLoader
+        role="student"
+        lang={isAr ? 'ar' : 'en'}
+        name={profile?.name || user.user_metadata?.full_name || user.user_metadata?.name}
+      />
+    );
   }
 
   // Auth Hydration Gate: Show BrandLoader while auth session or user role is resolving
@@ -706,7 +732,7 @@ export default function StudentApp() {
         {/* Scrollable Main Application Content (Using full available viewport width intelligently) */}
         <main 
           id="student-main-content"
-          className="flex-1 overflow-y-auto overflow-x-hidden w-full max-w-full px-3 sm:px-6 lg:px-8 py-5 sm:py-8 focus:outline-none pb-24 md:pb-8"
+          className={`flex-1 overflow-y-auto overflow-x-hidden w-full max-w-full px-3 sm:px-6 lg:px-8 py-5 sm:py-8 focus:outline-none ${MOBILE_TAB_BAR_PADDING}`}
           tabIndex={-1}
         >
           <div className="w-full max-w-7xl mx-auto min-w-0">
@@ -750,60 +776,22 @@ export default function StudentApp() {
           </div>
         </main>
 
-        {/* Mobile Bottom Navigation Bar (Floating Pill Design V5) */}
-        <div className={`lg:hidden fixed bottom-4 inset-x-3 sm:inset-x-6 max-w-sm mx-auto z-30 pb-[env(safe-area-inset-bottom)] pointer-events-none transition-opacity duration-200 ${sidebarOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-          <nav 
-            className="pointer-events-auto relative w-full h-[62px] bg-surface/95 dark:bg-surface/90 backdrop-blur-xl rounded-full flex items-center justify-around px-2 shadow-2xl border border-border/80"
-            aria-label={isAr ? 'التنقل السفلي' : 'Bottom mobile navigation'}
-          >
-            {navItems.filter((item) => item.path !== '/student/guide').map((item) => {
-              const isActive = location.pathname === item.path || (item.path !== '/student' && location.pathname.startsWith(item.path));
-              const isBook = item.path === '/student/book';
-              const Icon = item.icon;
-
-              if (isBook) {
-                return (
-                  <div key={item.path} className="relative flex-1 flex justify-center">
-                    <Link
-                      to={item.path}
-                      id="nav-book-link"
-                      data-tour="student-book"
-                      className="absolute -top-5 w-12 h-12 rounded-full bg-islamic-gradient text-white flex items-center justify-center shadow-lg shadow-teal-900/30 active:scale-90 hover:opacity-95 transition-all border-[3px] border-background"
-                      aria-label={item.name}
-                    >
-                      <Icon className="w-5 h-5 text-white" />
-                    </Link>
-                  </div>
-                );
-              }
-
-              const itemNavId = item.path === '/student' ? 'nav-home-link' : item.path === '/student/lessons' ? 'nav-lessons-link' : item.path === '/student/account' ? 'nav-account-link' : undefined;
-              const itemTourId = item.path === '/student' ? 'student-home' : item.path === '/student/lessons' ? 'student-lessons' : item.path === '/student/account' ? 'student-account' : undefined;
-
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  id={itemNavId}
-                  data-tour={itemTourId}
-                  className="relative flex items-center justify-center flex-1 h-full touch-manipulation group"
-                  aria-label={item.name}
-                  aria-current={isActive ? 'page' : undefined}
-                >
-                  <div className={`relative flex items-center justify-center w-10 h-10 rounded-full transition-all duration-200 ${
-                    isActive ? 'text-teal-700 dark:text-teal-300 bg-teal-500/15 shadow-2xs' : 'text-muted-foreground group-hover:text-foreground'
-                  }`}>
-                    <Icon className="w-5 h-5 transition-transform group-active:scale-90" />
-                    {/* Active Dot Indicator in Teal */}
-                    {isActive && (
-                      <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-teal-600 dark:bg-teal-400" />
-                    )}
-                  </div>
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
+        {/* Mobile bottom tab bar (Navigation Tabs V5, liquid notch) */}
+        <MobileTabBar
+          label={isAr ? 'التنقل السفلي' : 'Bottom mobile navigation'}
+          hidden={sidebarOpen}
+          isAr={isAr}
+          tabs={[
+            { key: 'home', label: isAr ? 'الرئيسية' : 'Home', icon: BookOpen, to: '/student', id: 'nav-home-link', tour: 'student-home' },
+            { key: 'lessons', label: isAr ? 'الدروس' : 'Lessons', icon: Calendar, to: '/student/lessons', id: 'nav-lessons-link', tour: 'student-lessons' },
+            { key: 'book', label: isAr ? 'احجز' : 'Book', icon: Plus, to: '/student/book', id: 'nav-book-link', tour: 'student-book', primary: true },
+            { key: 'messages', label: isAr ? 'الرسائل' : 'Messages', icon: MessageCircle, to: '/student/messages', badge: unreadChats },
+            { key: 'account', label: isAr ? 'حسابي' : 'Profile', icon: User, to: '/student/account', id: 'nav-account-link', tour: 'student-account' },
+          ].map((tab) => ({
+            ...tab,
+            active: isTabActive(tab.to, location.pathname, '/student') || (tab.key === 'account' && isTabActive('/student/profile', location.pathname, '/student')),
+          }))}
+        />
       </div>
 
       {/* Global Onboarding Guide */}

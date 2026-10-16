@@ -18,6 +18,7 @@ import {
 import { SuperAdminOverviewMetrics } from '../types';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { useT } from '../../lib/language';
+import { CompactCalendar, InboxCard, DASH_CARD } from '../components/DashboardCards';
 
 export default function OverviewPage() {
   const { t } = useT();
@@ -72,13 +73,13 @@ export default function OverviewPage() {
   return (
     <div className="space-y-8 animate-fade-in text-start pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
             <span className="px-2 py-0.5 rounded text-[13px] font-bold uppercase tracking-wider bg-secondary/30 text-primary border border-secondary/50">
               {t('Admin', 'المدير')}
             </span>
-            <h1 className="text-2xl sm:text-3xl font-display font-bold  text-foreground">
+            <h1 className="text-3xl sm:text-4xl font-editorial font-bold text-foreground">
               {t('Overview', 'نظرة عامة')}
             </h1>
           </div>
@@ -162,8 +163,8 @@ export default function OverviewPage() {
       )}
 
       {/* Core Platform KPIs Grid */}
-      <div className="glass-card border-none rounded-2xl shadow-sm grid grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x rtl:sm:divide-x-reverse divide-border overflow-hidden">
-        <div className="p-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="bg-teal/10 dark:bg-teal/15 rounded-[1.25rem] p-5">
           <div className="flex items-center justify-between text-muted-foreground mb-3">
             <span className="text-sm font-semibold uppercase tracking-wider">{t('Active students', 'طلاب نشطين')}</span>
             <Users className="w-4 h-4 text-accent" />
@@ -176,7 +177,7 @@ export default function OverviewPage() {
             <span>{t('new in the last 30 days', 'جداد في آخر 30 يوم')}</span>
           </div>
         </div>
-        <div className="p-6">
+        <div className="bg-[#8B4935]/10 dark:bg-[#DA7960]/15 rounded-[1.25rem] p-5">
           <div className="flex items-center justify-between text-muted-foreground mb-3">
             <span className="text-sm font-semibold uppercase tracking-wider">{t('Active teachers', 'معلمين نشطين')}</span>
             <ShieldCheck className="w-4 h-4 text-accent" />
@@ -190,7 +191,7 @@ export default function OverviewPage() {
             </Link>
           </div>
         </div>
-        <div className="p-6">
+        <div className="bg-crimson/10 dark:bg-crimson/15 rounded-[1.25rem] p-5">
           <div className="flex items-center justify-between text-muted-foreground mb-3">
             <span className="text-sm font-semibold uppercase tracking-wider">{t('Lessons today', 'حصص النهارده')}</span>
             <Clock className="w-4 h-4 text-accent" />
@@ -202,7 +203,7 @@ export default function OverviewPage() {
             <span>{t(`${metrics.lessons_this_week} this week`, `${metrics.lessons_this_week} الأسبوع ده`)}</span>
           </div>
         </div>
-        <div className="p-6">
+        <div className="bg-[#E5A93C]/15 rounded-[1.25rem] p-5">
           <div className="flex items-center justify-between text-muted-foreground mb-3">
             <span className="text-sm font-semibold uppercase tracking-wider">{t('Upcoming trials', 'تجارب جاية')}</span>
             <Sparkles className="w-4 h-4 text-accent" />
@@ -216,8 +217,9 @@ export default function OverviewPage() {
       </div>
       </div>
 
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] items-start">
       {/* Teacher Capacity & Assignment Distribution */}
-      <div className="glass-card border-none rounded-2xl p-6 shadow-2xs space-y-4">
+      <div className={`${DASH_CARD} p-6 space-y-4 min-w-0`}>
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-base font-display font-semibold text-foreground">
@@ -286,6 +288,11 @@ export default function OverviewPage() {
             </tbody>
           </table>
         </div>
+      </div>
+      <aside className="space-y-4" aria-label={t('At a glance', 'نظرة سريعة')}>
+        <CompactCalendar />
+        <InboxCard />
+      </aside>
       </div>
     </div>
   );

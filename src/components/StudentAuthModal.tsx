@@ -7,6 +7,7 @@ import { useTeacherAuth } from '../lib/auth'; // it's now AuthProvider
 import { LEAKED_PASSWORD_MESSAGE } from '../lib/pwnedPassword';
 import { useNavigate } from 'react-router-dom';
 import { OtpVerificationCard } from './auth/OtpVerificationCard';
+import { markJustSignedIn } from './ui/WelcomeLoader';
 
 interface StudentAuthModalProps {
   isOpen: boolean;
@@ -83,6 +84,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
             );
             return;
           }
+          markJustSignedIn();
           onClose();
           navigate('/student');
         } else {
@@ -194,6 +196,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                     return await resendOtp(targetEmail, 'signup');
                   }}
                   onSuccess={() => {
+                    markJustSignedIn();
                     onClose();
                     navigate('/student');
                   }}

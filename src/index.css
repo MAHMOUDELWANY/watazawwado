@@ -1386,131 +1386,6 @@ h3, .text-heading-lg {
   .animate-brand-dot-3 { animation: brandDotBounce 1.4s infinite ease-in-out; animation-delay: 0.36s; }
   .animate-brand-dot-4 { animation: brandDotBounce 1.4s infinite ease-in-out; animation-delay: 0.54s; }
 
-  /* ============================================================
-     ORBITAL RINGS ANIMATION ("بتلف حوالين بعضها")
-     Multi-axis celestial gyroscopic orbital rings revolving around each other in 3D
-     ============================================================ */
-  @keyframes orbitSpinZ {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
-  @keyframes orbitSpinZReverse {
-    0% { transform: rotate(360deg); }
-    100% { transform: rotate(0deg); }
-  }
-
-  @keyframes orbit3DAngle1 {
-    0% {
-      transform: rotateX(65deg) rotateY(25deg) rotateZ(0deg);
-    }
-    100% {
-      transform: rotateX(65deg) rotateY(25deg) rotateZ(360deg);
-    }
-  }
-
-  @keyframes orbit3DAngle2 {
-    0% {
-      transform: rotateX(65deg) rotateY(-35deg) rotateZ(360deg);
-    }
-    100% {
-      transform: rotateX(65deg) rotateY(-35deg) rotateZ(0deg);
-    }
-  }
-
-  @keyframes orbit3DAngle3 {
-    0% {
-      transform: rotateX(25deg) rotateY(65deg) rotateZ(0deg);
-    }
-    100% {
-      transform: rotateX(25deg) rotateY(65deg) rotateZ(360deg);
-    }
-  }
-
-  /* True 3D Gyroscopic tumbling around each other ("بتلف حوالين بعضها") */
-  @keyframes orbitGyroscope1 {
-    0% {
-      transform: rotateX(70deg) rotateY(0deg) rotateZ(0deg);
-    }
-    50% {
-      transform: rotateX(20deg) rotateY(180deg) rotateZ(180deg);
-    }
-    100% {
-      transform: rotateX(70deg) rotateY(360deg) rotateZ(360deg);
-    }
-  }
-
-  @keyframes orbitGyroscope2 {
-    0% {
-      transform: rotateX(20deg) rotateY(70deg) rotateZ(360deg);
-    }
-    50% {
-      transform: rotateX(70deg) rotateY(20deg) rotateZ(180deg);
-    }
-    100% {
-      transform: rotateX(20deg) rotateY(70deg) rotateZ(0deg);
-    }
-  }
-
-  @keyframes orbitGyroscope3 {
-    0% {
-      transform: rotateX(-50deg) rotateY(-40deg) rotateZ(0deg);
-    }
-    50% {
-      transform: rotateX(-10deg) rotateY(140deg) rotateZ(180deg);
-    }
-    100% {
-      transform: rotateX(-50deg) rotateY(320deg) rotateZ(360deg);
-    }
-  }
-
-  @keyframes pulseGlowRing {
-    0%, 100% { opacity: 0.65; transform: scale(1); filter: drop-shadow(0 0 10px rgba(8,125,145,0.4)); }
-    50% { opacity: 1; transform: scale(1.08); filter: drop-shadow(0 0 22px rgba(197,31,36,0.5)); }
-  }
-
-  @keyframes verificationEnergySurge {
-    0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
-    50% { transform: scale(1.15) rotate(180deg); opacity: 1; filter: drop-shadow(0 0 28px rgba(8,125,145,0.8)); }
-  }
-
-  .animate-orbit-z {
-    animation: orbitSpinZ 8s linear infinite;
-  }
-  .animate-orbit-z-fast {
-    animation: orbitSpinZ 1.8s linear infinite;
-  }
-  .animate-orbit-z-reverse {
-    animation: orbitSpinZReverse 10s linear infinite;
-  }
-  .animate-orbit-z-reverse-fast {
-    animation: orbitSpinZReverse 2s linear infinite;
-  }
-  .animate-orbit-3d-1 {
-    animation: orbitGyroscope1 7s ease-in-out infinite;
-  }
-  .animate-orbit-3d-1-fast {
-    animation: orbitGyroscope1 1.6s ease-in-out infinite;
-  }
-  .animate-orbit-3d-2 {
-    animation: orbitGyroscope2 6s ease-in-out infinite;
-  }
-  .animate-orbit-3d-2-fast {
-    animation: orbitGyroscope2 1.4s ease-in-out infinite;
-  }
-  .animate-orbit-3d-3 {
-    animation: orbitGyroscope3 8.5s ease-in-out infinite;
-  }
-  .animate-orbit-3d-3-fast {
-    animation: orbitGyroscope3 1.9s ease-in-out infinite;
-  }
-  .animate-pulse-glow {
-    animation: pulseGlowRing 2.6s ease-in-out infinite;
-  }
-  .animate-verification-surge {
-    animation: verificationEnergySurge 1.4s ease-in-out infinite;
-  }
-
   .font-thmanyah-serif {
     font-family: 'Thmanyah Serif Display', 'Thmanyah Display', serif !important;
   }
@@ -1592,3 +1467,203 @@ h3, .text-heading-lg {
 }
 /* Doors on the homepage: a semicircle-ish top for ~160px-wide doors, straight sides. */
 .door-arch { border-radius: 50% 50% 0.9rem 0.9rem / 4.75rem 4.75rem 0.9rem 0.9rem; }
+
+/* ============================================================
+   GLASS DESIGN SYSTEM 2026-10 — see docs/design-system.md
+   Tokens first, then classes in @layer components so Tailwind utilities can still override them.
+   ============================================================ */
+:root {
+  --gold: #E5A93C;
+  --gold-soft: #F6D58E;
+  --gold-deep: #B9782A;
+  --copper: #8B4935;
+  --paper: #FAF7F2;
+
+  /* Glass levels: 1 = chips and quiet tiles, 2 = cards and panels, 3 = bars, sheets and dialogs. */
+  --glass-1: rgba(255, 255, 255, 0.52);
+  --glass-2: rgba(255, 255, 255, 0.66);
+  --glass-3: rgba(255, 253, 249, 0.80);
+  --glass-blur-1: 10px;
+  --glass-blur-2: 18px;
+  --glass-blur-3: 28px;
+  --glass-hairline: rgba(139, 73, 53, 0.14);
+  --glass-highlight: rgba(255, 255, 255, 0.95);
+  --glass-solid: #FFFDF9;
+
+  /* Layered soft shadows, tinted with dark copper rather than grey. */
+  --shadow-1: 0 1px 2px rgba(59, 34, 25, 0.06), 0 4px 10px -4px rgba(59, 34, 25, 0.08);
+  --shadow-2: 0 1px 2px rgba(59, 34, 25, 0.05), 0 10px 24px -10px rgba(59, 34, 25, 0.16), 0 28px 56px -32px rgba(59, 34, 25, 0.18);
+  --shadow-3: 0 2px 4px rgba(59, 34, 25, 0.05), 0 18px 40px -14px rgba(59, 34, 25, 0.24), 0 52px 90px -44px rgba(59, 34, 25, 0.26);
+
+  /* Radius scale (arches: .arch-top, .arch-tile, .door-arch, .door-card, .door-portal). */
+  --r-1: 10px;
+  --r-2: 14px;
+  --r-3: 20px;
+  --r-4: 28px;
+  --r-5: 36px;
+  --r-pill: 999px;
+
+  /* Motion. */
+  --dur-tap: 120ms;
+  --dur-ui: 220ms;
+  --dur-move: 420ms;
+  --dur-scene: 700ms;
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+}
+html.dark {
+  --gold: #F0B54A;
+  --copper: #DA7960;
+  --glass-1: rgba(38, 33, 30, 0.50);
+  --glass-2: rgba(36, 32, 29, 0.64);
+  --glass-3: rgba(30, 27, 24, 0.80);
+  --glass-hairline: rgba(250, 247, 242, 0.10);
+  --glass-highlight: rgba(255, 255, 255, 0.08);
+  --glass-solid: #1E1B18;
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.30), 0 4px 10px -4px rgba(0, 0, 0, 0.35);
+  --shadow-2: 0 1px 2px rgba(0, 0, 0, 0.30), 0 10px 24px -10px rgba(0, 0, 0, 0.50), 0 28px 56px -32px rgba(0, 0, 0, 0.55);
+  --shadow-3: 0 2px 4px rgba(0, 0, 0, 0.30), 0 18px 40px -14px rgba(0, 0, 0, 0.60), 0 52px 90px -44px rgba(0, 0, 0, 0.65);
+}
+
+@layer components {
+  .glass-1, .glass-2, .glass-3 {
+    border: 1px solid var(--glass-hairline);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(170%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(170%);
+  }
+  .glass-1 { --glass-blur: var(--glass-blur-1); background-color: var(--glass-1); box-shadow: inset 0 1px 0 var(--glass-highlight), var(--shadow-1); }
+  .glass-2 { --glass-blur: var(--glass-blur-2); background-color: var(--glass-2); box-shadow: inset 0 1px 0 var(--glass-highlight), var(--shadow-2); }
+  .glass-3 { --glass-blur: var(--glass-blur-3); background-color: var(--glass-3); box-shadow: inset 0 1px 0 var(--glass-highlight), var(--shadow-3); }
+  /* Deep tinted glass for content over a dark band or photo; text on it is paper-coloured. */
+  .glass-deep {
+    background-color: rgba(5, 54, 63, 0.55); color: var(--paper);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    -webkit-backdrop-filter: blur(18px) saturate(160%); backdrop-filter: blur(18px) saturate(160%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 18px 40px -18px rgba(0, 0, 0, 0.5);
+  }
+  /* Gentle hover lift for interactive glass; pair with .focus-ring. */
+  .lift { transition: transform var(--dur-move) var(--ease-out-soft), box-shadow var(--dur-move) var(--ease-out-soft); }
+  @media (hover: hover) { .lift:hover { transform: translateY(-3px); box-shadow: inset 0 1px 0 var(--glass-highlight), var(--shadow-3); } }
+  .lift:active { transform: translateY(0) scale(0.99); transition-duration: var(--dur-tap); }
+  .focus-ring:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+
+  /* Secondary button on glass (primary actions keep PublicButton / ui Button "primary"). */
+  .btn-glass {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    min-height: 2.75rem; padding: 0.625rem 1.25rem; border-radius: var(--r-2);
+    font-size: 0.875rem; font-weight: 600; color: var(--foreground); cursor: pointer;
+    background-color: var(--glass-2); border: 1px solid var(--glass-hairline);
+    -webkit-backdrop-filter: blur(var(--glass-blur-1)) saturate(170%); backdrop-filter: blur(var(--glass-blur-1)) saturate(170%);
+    box-shadow: inset 0 1px 0 var(--glass-highlight), var(--shadow-1);
+    transition: border-color var(--dur-ui) ease, background-color var(--dur-ui) ease, transform var(--dur-tap) ease;
+  }
+  .btn-glass:hover { border-color: var(--teal-border); background-color: var(--glass-3); }
+  .btn-glass:active { transform: scale(0.98); }
+  .btn-glass:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+  .btn-glass.is-pill { border-radius: var(--r-pill); }
+
+  /* Mobile tab bar surface: floating glass pill above the safe area. */
+  .tabbar-glass {
+    border-radius: var(--r-4); background-color: var(--glass-3); border: 1px solid var(--glass-hairline);
+    -webkit-backdrop-filter: blur(var(--glass-blur-3)) saturate(180%); backdrop-filter: blur(var(--glass-blur-3)) saturate(180%);
+    box-shadow: inset 0 1px 0 var(--glass-highlight), var(--shadow-3);
+    margin-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+
+  /* Loading placeholder with a slow paper shimmer. */
+  .skeleton-glass {
+    border-radius: var(--r-2);
+    background: linear-gradient(100deg, var(--surface-subtle) 30%, var(--glass-3) 50%, var(--surface-subtle) 70%) 0 0 / 200% 100%;
+    animation: wz-shimmer 1.6s linear infinite;
+  }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass-1, .glass-2, .glass-3, .btn-glass, .tabbar-glass, .door-card { background-color: var(--glass-solid); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .glass-1, .glass-2, .glass-3, .btn-glass, .tabbar-glass, .door-card { background-color: var(--glass-solid); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+
+/* Idle motion for emblems and loaders: slow, small, and off for reduced motion. */
+@keyframes wz-shimmer { to { background-position: -200% 0; } }
+@keyframes wz-breathe { 0%, 100% { opacity: 0.55; transform: scale(0.96); } 50% { opacity: 0.95; transform: scale(1.04); } }
+@keyframes wz-flicker {
+  0%, 100% { transform: scale(1, 1); opacity: 1; }
+  22% { transform: scale(0.94, 1.06) rotate(-2deg); opacity: 0.92; }
+  48% { transform: scale(1.04, 0.96) rotate(1.5deg); }
+  71% { transform: scale(0.97, 1.04) rotate(-1deg); opacity: 0.96; }
+}
+@keyframes wz-twinkle { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+@keyframes wz-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+.emblem-glow, .emblem-flicker, .emblem-twinkle, .emblem-float { transform-box: fill-box; transform-origin: 50% 50%; }
+.emblem-float { animation: wz-float 5s var(--ease-in-out-soft) infinite; }
+.emblem-glow { animation: wz-breathe 6s var(--ease-in-out-soft) infinite; }
+.emblem-flicker { transform-origin: 50% 100%; animation: wz-flicker 2.6s ease-in-out infinite; }
+.emblem-twinkle { animation: wz-twinkle 3.2s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .emblem-glow, .emblem-flicker, .emblem-twinkle, .emblem-float, .skeleton-glass, .door-glow { animation: none !important; }
+}
+
+/* Homepage doors: a glass door frame (arch top that follows the card width) holding a deep portal. */
+.door-slot { container-type: inline-size; }
+.door-card {
+  position: relative; display: flex; flex-direction: column; height: 100%;
+  padding: 0.5rem 0.5rem 1.1rem; text-align: center; color: var(--foreground);
+  border-radius: 50% 50% var(--r-3) var(--r-3) / 4.75rem 4.75rem var(--r-3) var(--r-3);
+  background-color: var(--glass-2); border: 1px solid var(--glass-hairline);
+  -webkit-backdrop-filter: blur(var(--glass-blur-2)) saturate(170%); backdrop-filter: blur(var(--glass-blur-2)) saturate(170%);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--shadow-2);
+  transition: transform var(--dur-move) var(--ease-out-soft), box-shadow var(--dur-move) var(--ease-out-soft), border-color var(--dur-ui) ease;
+}
+@supports (width: 1cqw) {
+  .door-card { border-radius: 50% 50% var(--r-3) var(--r-3) / 50cqw 50cqw var(--r-3) var(--r-3); }
+}
+.door-card:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+/* Portal keeps a 5:6 ratio, so 41.667% of its height is half its width: a true semicircle. */
+.door-portal {
+  position: relative; display: block; overflow: hidden; aspect-ratio: 5 / 6;
+  border-radius: 50% 50% var(--r-2) var(--r-2) / 41.667% 41.667% var(--r-2) var(--r-2);
+  background: linear-gradient(180deg, var(--door-a) 0%, var(--door-b) 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.28), inset 0 -28px 48px -12px rgba(0, 0, 0, 0.35);
+}
+.door-portal.khatam-window::before { opacity: 0.55; }
+.door-glow {
+  position: absolute; inset: 12% 8% 18%; pointer-events: none; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(246, 213, 142, 0.55), rgba(229, 169, 60, 0.18) 55%, transparent 100%);
+  animation: wz-breathe 7s var(--ease-in-out-soft) infinite;
+  transition: filter var(--dur-move) ease;
+}
+.door-emblem {
+  position: absolute; inset-inline-start: 14%; top: 22%; width: 72%; height: auto;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.28)) drop-shadow(0 0 14px rgba(229, 169, 60, 0.25));
+  transition: transform var(--dur-move) var(--ease-out-soft);
+}
+.door-title { display: block; margin-top: 0.85rem; padding-inline: 0.25rem; font-family: var(--font-editorial); font-weight: 700; font-size: 1.08rem; line-height: 1.3; }
+.door-tagline { display: block; margin-top: 0.2rem; padding-inline: 0.25rem; font-size: 0.82rem; line-height: 1.45; color: var(--muted-foreground); margin-bottom: 0.85rem; }
+.door-enter {
+  margin: auto auto 0; display: inline-flex; align-items: center; gap: 0.35rem;
+  padding: 0.3rem 0.85rem; border-radius: var(--r-pill); font-size: 0.78rem; font-weight: 700;
+  border: 1px solid var(--glass-hairline); background-color: var(--glass-1); color: var(--foreground);
+  transition: background-color var(--dur-ui) ease, color var(--dur-ui) ease, border-color var(--dur-ui) ease;
+}
+.door-enter svg { transition: transform var(--dur-ui) var(--ease-out-soft); }
+[dir="rtl"] .door-enter svg { transform: scaleX(-1); }
+@media (hover: hover) {
+  .door-card:hover { transform: translateY(-5px); box-shadow: inset 0 1px 0 var(--glass-highlight), var(--shadow-3); border-color: rgba(229, 169, 60, 0.45); }
+  .door-card:hover .door-emblem { transform: translateY(-3px) scale(1.05); }
+  .door-card:hover .door-glow { filter: brightness(1.25) saturate(1.2); }
+  .door-card:hover .door-enter { background-color: var(--teal); border-color: var(--teal); color: #fff; }
+  .door-card:hover .door-enter svg { transform: translateX(3px); }
+  [dir="rtl"] .door-card:hover .door-enter svg { transform: scaleX(-1) translateX(3px); }
+}
+.door-card:focus-visible .door-enter { background-color: var(--teal); border-color: var(--teal); color: #fff; }
+
+/* Hero subject word: rotates for motion users; reduced motion shows the static full sentence instead. */
+.rotator-static {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rotator-static { position: static; width: auto; height: auto; margin: 0; overflow: visible; clip: auto; white-space: normal; }
+  .rotator-live { display: none; }
+}

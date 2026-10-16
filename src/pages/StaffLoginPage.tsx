@@ -6,6 +6,7 @@ import { BrandSpinner } from '../components/ui/BrandLoader';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTeacherAuth } from '../lib/auth';
 import { useT } from '../lib/language';
+import { markJustSignedIn } from '../components/ui/WelcomeLoader';
 
 export default function StaffLoginPage() {
   const { t, isAr, toggleLanguage } = useT();
@@ -41,6 +42,7 @@ export default function StaffLoginPage() {
         setIsSubmitting(false);
         return;
       }
+      markJustSignedIn();
       navigate('/dashboard', { replace: true });
     } catch (err: any) {
       setError(err.message || t('Something went wrong. Please try again.', 'حصلت مشكلة، حاول تاني.'));

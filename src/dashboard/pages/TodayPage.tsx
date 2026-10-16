@@ -22,6 +22,7 @@ import { dashboardFetch, openZoomAsHost } from '../lib/dashboardApi';
 
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { useT } from '../../lib/language';
+import { CompactCalendar, InboxCard, DASH_CARD } from '../components/DashboardCards';
 
 type T = (en: string, ar: string) => string;
 
@@ -138,10 +139,10 @@ export default function TodayPage() {
   return (
     <div className="space-y-6 pb-12">
       {/* Operational Header */}
-      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/60 pb-5">
+      <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-display font-bold text-foreground">
+            <h1 className="text-3xl sm:text-4xl font-editorial font-bold text-foreground">
               {isAr ? 'اليوم' : 'Today'}
             </h1>
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-secondary text-secondary-foreground border border-border/60">
@@ -202,28 +203,28 @@ export default function TodayPage() {
         <>
           {/* Summary Row */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="glass-card border border-border/60 rounded-2xl p-4 shadow-2xs">
+            <div className="bg-teal/10 dark:bg-teal/15 rounded-[1.25rem] p-4">
               <span className="text-xs sm:text-sm text-muted-foreground font-semibold">{isAr ? 'دروس اليوم' : 'Lessons Today'}</span>
               <div className="text-2xl font-bold mt-1 text-foreground">
                 {summary?.active_today ?? lessons.filter(l => l.status !== 'cancelled').length}
               </div>
             </div>
 
-            <div className="glass-card border border-border/60 rounded-2xl p-4 shadow-2xs">
+            <div className="bg-[#E5A93C]/15 rounded-[1.25rem] p-4">
               <span className="text-xs sm:text-sm text-muted-foreground font-semibold">{isAr ? 'التجريبية' : 'Free Trials'}</span>
               <div className="text-2xl font-bold mt-1 text-primary">
                 {summary?.trials_today ?? lessons.filter(l => l.is_free_trial && l.status !== 'cancelled').length}
               </div>
             </div>
 
-            <div className="glass-card border border-border/60 rounded-2xl p-4 shadow-2xs">
+            <div className="bg-[#8B4935]/10 dark:bg-[#DA7960]/15 rounded-[1.25rem] p-4">
               <span className="text-xs sm:text-sm text-muted-foreground font-semibold">{isAr ? 'المكتملة' : 'Completed'}</span>
               <div className="text-2xl font-bold mt-1 text-foreground">
                 {summary?.completed_today ?? 0}
               </div>
             </div>
 
-            <div className="glass-card border border-border/60 rounded-2xl p-4 shadow-2xs">
+            <div className="bg-crimson/10 dark:bg-crimson/15 rounded-[1.25rem] p-4">
               <span className="text-xs sm:text-sm text-muted-foreground font-semibold">{isAr ? 'بحاجة لمتابعة' : 'Needs Attention'}</span>
               <div className={`text-2xl font-bold mt-1 ${attentionLessons.length > 0 ? 'text-warning' : 'text-success'}`}>
                 {attentionLessons.length}
@@ -231,6 +232,8 @@ export default function TodayPage() {
             </div>
           </div>
 
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] items-start">
+          <div className="space-y-6 min-w-0">
           {/* Needs Attention Alert */}
           {attentionLessons.length > 0 && (
             <div className="p-4 rounded-2xl bg-warning/10 border border-warning/30 text-foreground">
@@ -275,7 +278,7 @@ export default function TodayPage() {
             </div>
 
             {lessons.length === 0 ? (
-              <div className="glass-card border-none rounded-2xl p-12 flex flex-col items-center justify-center text-center shadow-2xs">
+              <div className={`${DASH_CARD} p-12 flex flex-col items-center justify-center text-center`}>
                 <div className="w-12 h-12 rounded-2xl bg-secondary/30 text-accent flex items-center justify-center mb-3">
                   <CalendarIcon className="w-6 h-6" />
                 </div>
@@ -310,11 +313,16 @@ export default function TodayPage() {
             )}
           </div>
 
+          </div>
+
+          <aside className="space-y-4" aria-label={t('At a glance', 'نظرة سريعة')}>
+          <CompactCalendar timezone={activeTz} />
+          <InboxCard />
           {/* Quick Workspaces Section */}
-          <div className="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
             <Link
               to="/dashboard/trials"
-              className="p-5 rounded-2xl glass-card border-none hover:border-accent/40 shadow-2xs hover:shadow-xs transition-all group block"
+              className={`p-5 ${DASH_CARD} hover:border-accent/40 transition-colors group block`}
             >
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2.5">
@@ -334,7 +342,7 @@ export default function TodayPage() {
 
             {isSuperAdmin && <Link
               to="/dashboard/leads"
-              className="p-5 rounded-2xl glass-card border-none hover:border-accent/40 shadow-2xs hover:shadow-xs transition-all group block"
+              className={`p-5 ${DASH_CARD} hover:border-accent/40 transition-colors group block`}
             >
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2.5">
@@ -351,6 +359,8 @@ export default function TodayPage() {
                 {t('Follow people from their first question to their trial and first lessons.', 'تابع المهتمين من أول سؤال لحد التجربة وأول حصص.')}
               </p>
             </Link>}
+          </div>
+          </aside>
           </div>
         </>
       )}
@@ -394,7 +404,7 @@ function NextLessonSpotlight({
   const startLink = lesson.zoom_host_url || lesson.zoom_meeting_link || '';
 
   return (
-    <div className="relative overflow-hidden bg-secondary/20 dark:bg-secondary/30 border border-secondary/60 rounded-2xl p-6 shadow-xs">
+    <div className="relative overflow-hidden bg-secondary/20 dark:bg-secondary/30 border border-secondary/60 rounded-[1.5rem] p-6 shadow-xs">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-2 flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">

@@ -2,21 +2,12 @@ import React from 'react';
 import { useOutletContext, Link } from 'react-router-dom';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
 import { PublicSection, PublicButton } from '../PublicDesignSystem';
-import {
-  Check,
-  BookOpen,
-  User,
-  Users,
-  ShieldCheck,
-  CalendarCheck,
-  CreditCard,
-  HelpCircle,
-  Volume2,
-  VolumeX
-} from 'lucide-react';
+import { Check, User, Users, Volume2, VolumeX } from 'lucide-react';
 import { WhatsAppIcon } from '../../ui/WhatsAppIcon';
 import { WelcomeRecitation } from '../WelcomeRecitation';
 import { TeacherDuo } from './TeacherDuo';
+import { HeroSubjects } from './HeroSubjects';
+import { MushafEmblem, PathEmblem, TeachersEmblem, EnvelopeEmblem, LanternEmblem, DoorAjarEmblem } from '../emblems/DoorEmblems';
 import { buildWhatsAppUrl } from '../../../lib/whatsapp';
 import { useWelcomeAudio } from '../../../lib/welcomeAudio';
 
@@ -59,43 +50,37 @@ const PATHS: Array<{ icon: typeof User; tone: string; title: L; body: L; note: L
   }
 ];
 
-const DOOR_TONES = [
-  'from-[#087D91] to-[#05434E]',
-  'from-[#C51F24] to-[#8B4935]',
-  'from-[#8B4935] to-[#B4552F]',
-  'from-[#E5A93C] to-[#8B4935]',
-  'from-[#0A6B7C] to-[#087D91]',
-  'from-[#A3271F] to-[#C51F24]'
-];
+// Each door's portal: [top, bottom] of its deep gradient. Teal, copper and crimson take turns.
+type Door = { to: string; emblem: React.ComponentType<{ className?: string }>; tone: [string, string]; title: L; body: L };
 
-const EXPLORE: Array<{ to: string; icon: typeof User; title: L; body: L }> = [
+const EXPLORE: Door[] = [
   {
-    to: '/learning', icon: BookOpen,
+    to: '/learning', emblem: MushafEmblem, tone: ['#0B7486', '#04323A'],
     title: { en: 'Lessons and subjects', ar: 'الدروس والمواد' },
     body: { en: '13 subjects, one teacher.', ar: '١٣ مادة، ومعلم واحد ليك.' }
   },
   {
-    to: '/how-it-works', icon: CalendarCheck,
+    to: '/how-it-works', emblem: PathEmblem, tone: ['#8B4935', '#33190F'],
     title: { en: 'How it works', ar: 'كيف نعمل' },
     body: { en: 'Four calm steps.', ar: 'أربع خطوات هادية.' }
   },
   {
-    to: '/about', icon: ShieldCheck,
+    to: '/about', emblem: TeachersEmblem, tone: ['#A3271F', '#3F0E10'],
     title: { en: 'About the teachers', ar: 'عن المعلمين' },
     body: { en: 'Who will sit with you.', ar: 'مين هيقعد معاك.' }
   },
   {
-    to: '/pricing', icon: CreditCard,
+    to: '/pricing', emblem: EnvelopeEmblem, tone: ['#0A5866', '#05262D'],
     title: { en: 'Prices and packages', ar: 'الأسعار والباقات' },
     body: { en: 'From $9 an hour.', ar: 'من 9$ للساعة.' }
   },
   {
-    to: '/faq', icon: HelpCircle,
+    to: '/faq', emblem: LanternEmblem, tone: ['#6E3324', '#241008'],
     title: { en: 'Questions and answers', ar: 'الأسئلة الشائعة' },
     body: { en: 'Short, honest answers.', ar: 'إجابات قصيرة وصادقة.' }
   },
   {
-    to: '/student', icon: User,
+    to: '/student', emblem: DoorAjarEmblem, tone: ['#8E1F1C', '#2E0B0C'],
     title: { en: 'Your account', ar: 'حسابك' },
     body: { en: 'Your corner of the academy.', ar: 'ركنك في الأكاديمية.' }
   }
@@ -132,11 +117,7 @@ export function PublicHomepage() {
             </div>
 
             <div className="[grid-area:body] self-start space-y-6 animate-fade-in-up">
-              <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-xl">
-                {isEn
-                  ? 'Quran, Tajweed, Arabic, Islamic studies and English. One-on-one on Zoom, with a teacher who knows you by name.'
-                  : 'القرآن والتجويد، والعربية، والعلوم الشرعية، والإنجليزية. حصص فردية على Zoom، مع معلّم يعرفك باسمك.'}
-              </p>
+              <HeroSubjects isEn={isEn} className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-xl" />
 
               <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
                 <PublicButton
@@ -151,7 +132,7 @@ export function PublicHomepage() {
                 </PublicButton>
                 <Link
                   to="/about"
-                  className="inline-flex items-center justify-center px-5 py-3 rounded-xl text-sm font-semibold text-foreground border border-border bg-surface/60 backdrop-blur-sm hover:border-[#087D91]/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  className="btn-glass px-6 py-3 rounded-xl"
                 >
                   {isEn ? 'Meet the teachers' : 'تعرّف على المعلمين'}
                 </Link>
@@ -194,7 +175,7 @@ export function PublicHomepage() {
             type="button"
             onClick={() => (audio.playing ? audio.stop() : void audio.play())}
             aria-pressed={audio.playing}
-            className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#087D91]/40 bg-surface text-sm font-semibold text-foreground hover:bg-[#087D91]/10 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#087D91]"
+            className="btn-glass is-pill mt-6"
           >
             {audio.playing ? <VolumeX className="w-4 h-4 text-[#C51F24]" aria-hidden="true" /> : <Volume2 className="w-4 h-4 text-[#087D91]" aria-hidden="true" />}
             {audio.playing ? (isEn ? 'Stop the recitation' : 'إيقاف التلاوة') : (isEn ? 'Listen to the recitation' : 'استمع للتلاوة')}
@@ -218,7 +199,7 @@ export function PublicHomepage() {
 
           <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
             {PATHS.map(({ icon: Icon, tone, title, body, note }) => (
-              <article key={title.en} className={`arch-top relative overflow-hidden border bg-gradient-to-b ${tone} bg-surface px-7 pt-14 pb-8 sm:px-10 text-center`}>
+              <article key={title.en} className={`arch-top relative overflow-hidden border bg-gradient-to-b ${tone} bg-surface shadow-[var(--shadow-2)] px-7 pt-14 pb-8 sm:px-10 text-center`}>
                 <div className="arch-tile mx-auto mb-6 w-14 h-16 flex items-center justify-center bg-current/10 border border-current/25">
                   <Icon className="w-7 h-7" aria-hidden="true" />
                 </div>
@@ -245,7 +226,14 @@ export function PublicHomepage() {
           >
             {MISSION_VERSE}
           </p>
-          <p className="mt-2 text-sm text-muted-foreground">{isEn ? 'Ar-Ra‘d 13:17' : 'الرعد ١٧'}</p>
+          {isEn ? (
+            <p className="mt-3 text-base sm:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
+              “But as for what benefits the people, it remains on the earth.”
+              <span className="block mt-1 text-sm">Ar-Ra‘d 13:17</span>
+            </p>
+          ) : (
+            <p className="mt-2 text-sm text-muted-foreground">الرعد ١٧</p>
+          )}
           <p className="mt-6 font-editorial text-xl sm:text-2xl text-foreground max-w-2xl mx-auto leading-relaxed">
             {isEn
               ? 'We measure our work by what stays: a word said right, a verse kept, a good habit that lives on at home.'
@@ -255,22 +243,33 @@ export function PublicHomepage() {
       </section>
 
       {/* ─── 5. DOORS INTO THE SITE ─── */}
-      <PublicSection className="pt-4 md:pt-6 lg:pt-8">
+      {/* Six arched glass doors, each holding a deep portal with its own lit emblem. */}
+      <PublicSection className="khatam-field brand-lights pt-4 md:pt-6 lg:pt-8">
         <div className="max-w-6xl mx-auto">
           <h2 className="editorial-heading font-editorial text-2xl sm:text-3xl text-foreground mb-10">
             {isEn ? 'Come in through any door' : 'ادخل من أي باب'}
           </h2>
           <nav aria-label={isEn ? 'Site sections' : 'أقسام الموقع'}>
-            <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-4 gap-y-8">
-              {EXPLORE.map(({ to, icon: Icon, title, body }, i) => (
-                <li key={to}>
-                  <Link to={to} className="group block text-center focus-visible:outline-none">
-                    <span className={`door-arch khatam-window relative block h-40 sm:h-44 bg-gradient-to-b ${DOOR_TONES[i % DOOR_TONES.length]} overflow-hidden ring-offset-4 ring-offset-background group-focus-visible:ring-2 group-focus-visible:ring-primary transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-1.5 motion-reduce:transition-none`}>
-                      <span className="absolute inset-x-3 bottom-0 top-8 door-arch bg-white/10 border border-white/20 transition-colors duration-500 group-hover:bg-white/15" aria-hidden="true" />
-                      <Icon className="absolute left-1/2 -translate-x-1/2 bottom-6 w-7 h-7 text-white" aria-hidden="true" />
+            <ul className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-5">
+              {EXPLORE.map(({ to, emblem: Emblem, tone, title, body }) => (
+                <li key={to} className="door-slot">
+                  <Link
+                    to={to}
+                    className="door-card"
+                    style={{ '--door-a': tone[0], '--door-b': tone[1] } as React.CSSProperties}
+                  >
+                    <span className="door-portal khatam-window" aria-hidden="true">
+                      <span className="door-glow" />
+                      <Emblem className="door-emblem" />
                     </span>
-                    <span className="block mt-3 font-bold text-foreground group-hover:text-primary transition-colors">{t(title)}</span>
-                    <span className="block text-sm text-muted-foreground">{t(body)}</span>
+                    <span className="door-title">{t(title)}</span>
+                    <span className="door-tagline">{t(body)}</span>
+                    <span className="door-enter" aria-hidden="true">
+                      {isEn ? 'Step in' : 'ادخل'}
+                      <svg viewBox="0 0 16 16" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M3 8h9.5M8.5 4l4 4-4 4" />
+                      </svg>
+                    </span>
                   </Link>
                 </li>
               ))}

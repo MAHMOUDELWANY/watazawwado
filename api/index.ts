@@ -2180,6 +2180,9 @@ app.get('/api/dashboard/me', verifyTeacherAuth, async (req: any, res: any) => {
       role: req.teacherUser?.appRole || 'teacher',
       appRole: req.teacherUser?.appRole || 'teacher',
       isTeacher: true,
+      // The welcome screen greets the teacher by name (and أستاذ/أستاذة by gender).
+      displayName: req.teacherUser?.display_name || null,
+      gender: req.teacherUser?.gender || null,
       agreementRequired: req.teacherUser?.agreementRequired === true
     }
   });

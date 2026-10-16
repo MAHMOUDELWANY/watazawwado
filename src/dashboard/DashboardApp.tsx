@@ -2,26 +2,27 @@ import { BrandLogo } from '../components/ui/BrandLogo';
 import { ThemeToggle } from '../components/ui/ThemeToggle';
 import { OnboardingGuide } from '../components/ui/OnboardingGuide';
 import { AccountDropdown } from '../components/ui/AccountDropdown';
+import { MobileTabBar, isTabActive, MOBILE_TAB_BAR_PADDING, type MobileTab } from '../components/ui/MobileTabBar';
+import { BrandLoader } from '../components/ui/BrandLoader';
+import { WelcomeLoader, useWelcomeGate, type WelcomeGender } from '../components/ui/WelcomeLoader';
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, Link, useLocation, useNavigate } from 'react-router-dom';
+import { motion } from 'motion/react';
 import { useTeacherAuth } from '../lib/auth';
 import { dashboardFetch } from './lib/dashboardApi';
-import { 
-  LayoutDashboard, 
-  Calendar, 
-  Users, 
-  BookOpen, 
-  Settings, 
-
+import {
+  LayoutDashboard,
+  Calendar,
+  CalendarClock,
+  Users,
+  BookOpen,
+  Settings,
   Menu,
   X,
   Sparkles,
   UserPlus,
   TrendingUp,
-  Moon,
-  Sun,
   ShieldCheck,
-
   Clock,
   ClipboardCheck,
   Shield,
@@ -32,9 +33,10 @@ import {
   Bell,
   Wallet,
   MessageCircle,
-  GraduationCap
+  GraduationCap,
+  Search,
+  MoreHorizontal,
 } from 'lucide-react';
-import { useTheme } from "../components/ThemeProvider";
 import OverviewPage from './pages/OverviewPage';
 import TodayPage from './pages/TodayPage';
 import UpcomingPage from './pages/UpcomingPage';
@@ -57,13 +59,18 @@ import { TeacherAuthDiagnosticPanel } from './components/TeacherAuthDiagnosticPa
 import { useAppLanguage } from '../lib/language';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 
+type NavItem = { name: string; path: string; icon: typeof Clock };
+
+/** Dark ink glass used by the rail and the active top tab. */
+const INK = 'bg-[#0A2E35]/92 dark:bg-[#0B1C1F]/90';
+
 export function DashboardApp() {
-  const { isTeacherAuthenticated, user, signOut, teacherRole } = useTeacherAuth();
-  const { theme, toggleTheme } = useTheme();
+  const { isTeacherAuthenticated, user, signOut, teacherRole, loading } = useTeacherAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
   const [showGlobalTour, setShowGlobalTour] = useState(false);
+  const [search, setSearch] = useState('');
   const location = useLocation();
+  const navigate = useNavigate();
   // Same language as the rest of the site (cookie + account preference), RULES.md §6.
   const { lang, toggleLanguage } = useAppLanguage();
   const unreadNotifications = useUnreadDashboardNotifications(isTeacherAuthenticated);
@@ -76,13 +83,23 @@ export function DashboardApp() {
   const prevMobileMenuOpenRef = React.useRef(isMobileMenuOpen);
 
   // A teacher who has not accepted the current teacher agreement goes to read it first (server enforces it too).
+  // The same call gives the name for the welcome screen.
   const [agreementRequired, setAgreementRequired] = useState(false);
+  const [me, setMe] = useState<{ displayName?: string; display_name?: string; gender?: WelcomeGender } | null>(null);
+  const [meLoaded, setMeLoaded] = useState(false);
   useEffect(() => {
     if (!isTeacherAuthenticated) return;
     dashboardFetch('/api/dashboard/me')
-      .then((data: any) => setAgreementRequired(data?.user?.agreementRequired === true))
-      .catch(() => {});
+      .then((data: any) => {
+        setAgreementRequired(data?.user?.agreementRequired === true);
+        setMe(data?.user || null);
+      })
+      .catch(() => {})
+      .finally(() => setMeLoaded(true));
   }, [isTeacherAuthenticated]);
+
+  // The welcome greets a signed-in person; a visitor without a session sees the plain brand loader.
+  const showWelcome = useWelcomeGate((loading && Boolean(user)) || (isTeacherAuthenticated && !meLoaded));
 
   // Manage body scroll lock and focus when mobile drawer opens/closes
   useEffect(() => {
@@ -148,6 +165,19 @@ export function DashboardApp() {
     return <Navigate to="/staff/agreement" replace />;
   }
 
+  if (loading && !user) return <BrandLoader size="page" />;
+
+  if (showWelcome) {
+    return (
+      <WelcomeLoader
+        role={isSuperAdmin ? 'admin' : 'teacher'}
+        lang={lang === 'ar' ? 'ar' : 'en'}
+        name={me?.displayName || me?.display_name || user?.user_metadata?.full_name || user?.user_metadata?.name}
+        gender={me?.gender}
+      />
+    );
+  }
+
   // Handle unauthorized state
   if (!isTeacherAuthenticated) {
     return (
@@ -160,8 +190,8 @@ export function DashboardApp() {
           <p className="text-sm text-muted-foreground mb-6">
             {lang === 'ar' ? 'سجّل دخولك بحساب معلم علشان تفتح مساحة العمل.' : 'Please sign in with a teacher account to open the workspace.'}
           </p>
-          <Link 
-            to="/staff/login" 
+          <Link
+            to="/staff/login"
             className="inline-flex items-center justify-center px-6 py-2.5 btn-primary-material text-primary-foreground rounded-xl transition-all duration-base font-medium shadow-xs min-h-[44px]"
           >
             {lang === 'ar' ? 'دخول المعلمين' : 'Go to Teacher Login'}
@@ -171,148 +201,215 @@ export function DashboardApp() {
     );
   }
 
+  const ar = lang === 'ar';
+  const L = (en: string, arText: string) => (ar ? arText : en);
+
   // Role-scoped navigation (Concise, friendly, uncluttered)
-  const superAdminNavigation = [
-    { name: lang === 'ar' ? 'الرئيسية' : 'Overview', path: '/dashboard', icon: LayoutDashboard },
-    { name: lang === 'ar' ? 'اليوم' : 'Today', path: '/dashboard/today', icon: Clock },
-    { name: lang === 'ar' ? 'الجدول' : 'Schedule', path: '/dashboard/upcoming', icon: Calendar },
-    { name: lang === 'ar' ? 'المعلمون' : 'Faculty', path: '/dashboard/teachers', icon: Shield },
-    { name: lang === 'ar' ? 'الطلاب' : 'Students', path: '/dashboard/students', icon: Users },
-    { name: lang === 'ar' ? 'الحجوزات' : 'Bookings', path: '/dashboard/bookings', icon: BookOpen },
-    { name: lang === 'ar' ? 'ادفع لاحقاً' : 'Pay later', path: '/dashboard/pay-later', icon: Wallet },
-    { name: lang === 'ar' ? 'الرسائل' : 'Messages', path: '/dashboard/messages', icon: MessageCircle },
-    { name: lang === 'ar' ? 'الإشعارات' : 'Notifications', path: '/dashboard/notifications', icon: Bell },
-    { name: lang === 'ar' ? 'التجريبية' : 'Trials', path: '/dashboard/trials', icon: Sparkles },
-    { name: lang === 'ar' ? 'اختبارات المستوى' : 'Placement tests', path: '/dashboard/placement', icon: GraduationCap },
-    { name: lang === 'ar' ? 'المهتمون' : 'Leads', path: '/dashboard/leads', icon: UserPlus },
-    { name: lang === 'ar' ? 'الطلبات' : 'Requests', path: '/dashboard/intakes', icon: ClipboardCheck },
-    { name: lang === 'ar' ? 'جليلة (المساعدة)' : 'Jalila (assistant)', path: '/dashboard/assistant', icon: Compass },
-    { name: lang === 'ar' ? 'التقارير' : 'Reports', path: '/dashboard/analytics', icon: TrendingUp },
-    { name: lang === 'ar' ? 'مواعيدي' : 'My hours', path: '/dashboard/availability', icon: Clock },
-    { name: lang === 'ar' ? 'الإعدادات' : 'Settings', path: '/dashboard/settings', icon: Settings },
+  const superAdminNavigation: NavItem[] = [
+    { name: L('Overview', 'الرئيسية'), path: '/dashboard', icon: LayoutDashboard },
+    { name: L('Today', 'اليوم'), path: '/dashboard/today', icon: Clock },
+    { name: L('Schedule', 'الجدول'), path: '/dashboard/upcoming', icon: Calendar },
+    { name: L('Faculty', 'المعلمون'), path: '/dashboard/teachers', icon: Shield },
+    { name: L('Students', 'الطلاب'), path: '/dashboard/students', icon: Users },
+    { name: L('Bookings', 'الحجوزات'), path: '/dashboard/bookings', icon: BookOpen },
+    { name: L('Pay later', 'ادفع لاحقاً'), path: '/dashboard/pay-later', icon: Wallet },
+    { name: L('Messages', 'الرسائل'), path: '/dashboard/messages', icon: MessageCircle },
+    { name: L('Notifications', 'الإشعارات'), path: '/dashboard/notifications', icon: Bell },
+    { name: L('Trials', 'التجريبية'), path: '/dashboard/trials', icon: Sparkles },
+    { name: L('Placement tests', 'اختبارات المستوى'), path: '/dashboard/placement', icon: GraduationCap },
+    { name: L('Leads', 'المهتمون'), path: '/dashboard/leads', icon: UserPlus },
+    { name: L('Requests', 'الطلبات'), path: '/dashboard/intakes', icon: ClipboardCheck },
+    { name: L('Jalila (assistant)', 'جليلة (المساعدة)'), path: '/dashboard/assistant', icon: Compass },
+    { name: L('Reports', 'التقارير'), path: '/dashboard/analytics', icon: TrendingUp },
+    { name: L('My hours', 'مواعيدي'), path: '/dashboard/availability', icon: CalendarClock },
+    { name: L('Settings', 'الإعدادات'), path: '/dashboard/settings', icon: Settings },
   ];
 
-  const teacherNavigation = [
-    { name: lang === 'ar' ? 'اليوم' : 'Today', path: '/dashboard', icon: Clock },
-    { name: lang === 'ar' ? 'الجدول' : 'Schedule', path: '/dashboard/upcoming', icon: Calendar },
-    { name: lang === 'ar' ? 'التجريبية' : 'Trials', path: '/dashboard/trials', icon: Sparkles },
-    { name: lang === 'ar' ? 'طلابي' : 'Students', path: '/dashboard/students', icon: Users },
-    { name: lang === 'ar' ? 'الرسائل' : 'Messages', path: '/dashboard/messages', icon: MessageCircle },
-    { name: lang === 'ar' ? 'جليلة (المساعدة)' : 'Jalila (assistant)', path: '/dashboard/assistant', icon: Compass },
-    { name: lang === 'ar' ? 'الإشعارات' : 'Notifications', path: '/dashboard/notifications', icon: Bell },
-    { name: lang === 'ar' ? 'الحجوزات' : 'Bookings', path: '/dashboard/bookings', icon: BookOpen },
-    { name: lang === 'ar' ? 'التقارير' : 'Reports', path: '/dashboard/analytics', icon: TrendingUp },
-    { name: lang === 'ar' ? 'مواعيدي' : 'My hours', path: '/dashboard/availability', icon: Clock },
-    { name: lang === 'ar' ? 'الإعدادات' : 'Settings', path: '/dashboard/settings', icon: Settings },
+  const teacherNavigation: NavItem[] = [
+    { name: L('Today', 'اليوم'), path: '/dashboard', icon: Clock },
+    { name: L('Schedule', 'الجدول'), path: '/dashboard/upcoming', icon: Calendar },
+    { name: L('Trials', 'التجريبية'), path: '/dashboard/trials', icon: Sparkles },
+    { name: L('Students', 'طلابي'), path: '/dashboard/students', icon: Users },
+    { name: L('Messages', 'الرسائل'), path: '/dashboard/messages', icon: MessageCircle },
+    { name: L('Jalila (assistant)', 'جليلة (المساعدة)'), path: '/dashboard/assistant', icon: Compass },
+    { name: L('Notifications', 'الإشعارات'), path: '/dashboard/notifications', icon: Bell },
+    { name: L('Bookings', 'الحجوزات'), path: '/dashboard/bookings', icon: BookOpen },
+    { name: L('Reports', 'التقارير'), path: '/dashboard/analytics', icon: TrendingUp },
+    { name: L('My hours', 'مواعيدي'), path: '/dashboard/availability', icon: CalendarClock },
+    { name: L('Settings', 'الإعدادات'), path: '/dashboard/settings', icon: Settings },
   ];
 
   const navigation = isSuperAdmin ? superAdminNavigation : teacherNavigation;
+  const isActive = (path: string) => isTabActive(path, location.pathname, '/dashboard')
+    // The root also lives at /overview (admin) and /today (teacher).
+    || (path === '/dashboard' && isTabActive(isSuperAdmin ? '/dashboard/overview' : '/dashboard/today', location.pathname, '/dashboard'));
+
+  // Main sections: pill tabs on desktop, tab bar on phones.
+  const topTabs: NavItem[] = isSuperAdmin
+    ? [superAdminNavigation[0], superAdminNavigation[5], superAdminNavigation[4], superAdminNavigation[7]]
+    : [teacherNavigation[0], teacherNavigation[1], teacherNavigation[3], teacherNavigation[4]];
+
+  const mobileTabs: MobileTab[] = [
+    ...(isSuperAdmin
+      ? [superAdminNavigation[0], superAdminNavigation[5], superAdminNavigation[4], superAdminNavigation[7]]
+      : [
+          teacherNavigation[0],
+          { ...teacherNavigation[1], name: L('Upcoming', 'الحصص الجاية') },
+          teacherNavigation[9],
+          teacherNavigation[4],
+        ]
+    ).map((item) => ({ key: item.path, label: item.name, icon: item.icon, to: item.path, active: isActive(item.path) })),
+    { key: 'more', label: L('More', 'المزيد'), icon: MoreHorizontal, onClick: () => setIsMobileMenuOpen(true) },
+  ];
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
   const globalTourSteps = [
     {
-      targetId: ['teacher-sidebar', 'teacher-mobile-menu-btn'],
-      title: lang === 'ar' ? 'القائمة الرئيسية' : 'Workspace Navigation',
-      description: lang === 'ar' ? 'التنقل بين الدروس، جدول المواعيد، قائمة الطلاب، وإدارة المنصة.' : 'Easily navigate between sessions, schedule, student roster, and workspace controls.',
+      targetId: ['teacher-rail', 'teacher-sidebar', 'teacher-mobile-menu-btn'],
+      title: L('Workspace Navigation', 'القائمة الرئيسية'),
+      description: L('Easily navigate between sessions, schedule, student roster, and workspace controls.', 'التنقل بين الدروس، جدول المواعيد، قائمة الطلاب، وإدارة المنصة.'),
       position: 'bottom' as const,
     },
     {
       targetId: ['teacher-header-tour-btn', 'teacher-lang-btn', 'language-toggle'],
-      title: lang === 'ar' ? 'تغيير اللغة والعرض' : 'Language & Display',
-      description: lang === 'ar' ? 'تبديل واجهة المعلم بين العربية والإنجليزية بلمسة واحدة.' : 'Toggle teacher workspace between Arabic and English with one tap.',
+      title: L('Language & Display', 'تغيير اللغة والعرض'),
+      description: L('Toggle teacher workspace between Arabic and English with one tap.', 'تبديل واجهة المعلم بين العربية والإنجليزية بلمسة واحدة.'),
       position: 'bottom' as const,
     },
     {
       targetId: ['teacher-account-dropdown', 'teacher-logout'],
-      title: lang === 'ar' ? 'الحساب وتسجيل الخروج' : 'Account & Access',
-      description: lang === 'ar' ? 'إدارة تفاصيل الحساب وتسجيل الخروج بأمان عند الانتهاء.' : 'Manage account details and securely sign out when done.',
+      title: L('Account & Access', 'الحساب وتسجيل الخروج'),
+      description: L('Manage account details and securely sign out when done.', 'إدارة تفاصيل الحساب وتسجيل الخروج بأمان عند الانتهاء.'),
       position: 'bottom' as const,
     }
   ];
 
+  // Search jumps to a page by its name.
+  const onSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = search.trim().toLowerCase();
+    const hit = q && navigation.find((item) => item.name.toLowerCase().includes(q));
+    if (hit) {
+      navigate(hit.path);
+      setSearch('');
+    }
+  };
+
+  const displayName = me?.displayName || me?.display_name || user?.user_metadata?.full_name || user?.user_metadata?.name;
+  const roleLabel = isSuperAdmin ? L('Super Admin', 'الإدارة العامة') : L('Teacher Workspace', 'مساحة المعلم');
+  const iconButton = 'relative w-10 h-10 flex items-center justify-center rounded-full text-foreground hover:bg-surface-subtle transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary';
+
   return (
-    <div 
-      className={`min-h-screen bg-background text-foreground font-sans flex overflow-hidden ${lang === 'ar' ? 'font-arabic' : ''}`}
-      dir={lang === 'ar' ? 'rtl' : 'ltr'}
+    <div
+      className={`relative isolate brand-lights h-screen bg-background text-foreground font-sans flex overflow-hidden ${ar ? 'font-arabic' : ''}`}
+      dir={ar ? 'rtl' : 'ltr'}
     >
-      {/* Mobile Sidebar Overlay */}
+      {/* Desktop: floating ink rail with every page */}
+      <aside
+        id="teacher-rail"
+        aria-label={L('Teacher Navigation Sidebar', 'شريط التنقل للمعلم')}
+        className={`hidden md:flex fixed start-4 top-1/2 -translate-y-1/2 z-30 w-[68px] max-h-[calc(100vh-2rem)] flex-col items-center gap-2 rounded-[2.25rem] py-3 ${INK} backdrop-blur-xl text-white/70 ring-1 ring-white/10 shadow-[0_24px_48px_-24px_rgba(5,54,63,0.65)]`}
+      >
+        <Link to="/" aria-label={L('Watazawwado website', 'موقع وتزودوا')} className="rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C]">
+          <BrandLogo variant="compact" />
+        </Link>
+        <span className="w-6 h-px bg-white/15" aria-hidden="true" />
+        <nav
+          aria-label={L('Teacher Primary Navigation', 'روابط التنقل الرئيسية للمعلم')}
+          className="flex-1 min-h-0 overflow-y-auto [scrollbar-width:none] flex flex-col items-center gap-1 px-2"
+        >
+          {navigation.map((item) => {
+            const active = isActive(item.path);
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                title={item.name}
+                aria-label={item.name}
+                aria-current={active ? 'page' : undefined}
+                className={`relative shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C] ${active ? 'text-white' : 'hover:text-white hover:bg-white/10'}`}
+              >
+                {active && <motion.span layoutId="rail-active" className="absolute inset-0 rounded-full bg-crimson shadow-md shadow-black/30" transition={{ type: 'spring', stiffness: 420, damping: 36 }} />}
+                <item.icon className="relative w-[18px] h-[18px]" aria-hidden="true" />
+                {item.path === '/dashboard/notifications' && unreadNotifications > 0 && (
+                  <span className="absolute top-1.5 end-1.5 w-2 h-2 rounded-full bg-[#E5A93C] ring-2 ring-[#0A2E35]" />
+                )}
+              </Link>
+            );
+          })}
+        </nav>
+        <span className="w-6 h-px bg-white/15" aria-hidden="true" />
+        <button
+          type="button"
+          onClick={() => signOut()}
+          data-tour="teacher-logout"
+          title={L('Log Out', 'تسجيل الخروج')}
+          aria-label={L('Log Out', 'تسجيل الخروج')}
+          className="w-11 h-11 rounded-full flex items-center justify-center hover:text-white hover:bg-white/10 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C]"
+        >
+          <LogOut className="w-[18px] h-[18px] rtl:rotate-180" aria-hidden="true" />
+        </button>
+      </aside>
+
+      {/* Phone drawer (opened by the menu button or "More") */}
       {isMobileMenuOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-xs z-40 md:hidden transition-opacity"
           onClick={() => setIsMobileMenuOpen(false)}
           aria-hidden="true"
         />
       )}
 
-      <aside 
+      <aside
         ref={drawerRef}
         id="teacher-sidebar"
         role={isMobileMenuOpen ? 'dialog' : undefined}
         aria-modal={isMobileMenuOpen ? 'true' : undefined}
-        aria-label={lang === 'ar' ? 'شريط التنقل للمعلم' : 'Teacher Navigation Sidebar'}
-        className={`
-          fixed inset-y-0 z-50 flex flex-col transition-transform duration-300 ease-premium shrink-0
-          /* Mobile styling: solid opaque surface drawer with shadow */
-          max-md:bg-surface max-md:text-foreground max-md:border-e max-md:border-border max-md:shadow-2xl max-md:w-72 max-md:max-w-[85vw] max-md:inset-inline-start-0
-          ${isMobileMenuOpen 
-            ? 'max-md:translate-x-0' 
-            : 'max-md:ltr:-translate-x-full max-md:rtl:translate-x-full'
-          }
-          /* Desktop styling */
-          ${desktopSidebarOpen ? 'md:static md:translate-x-0 md:w-[280px] md:m-4 md:rounded-3xl md:glass-nav md:shadow-xl md:border md:border-border/50' : 'md:hidden md:w-0 md:m-0'}
-        `}
+        aria-label={L('Teacher Navigation Sidebar', 'شريط التنقل للمعلم')}
+        className={`md:hidden fixed inset-y-0 start-0 z-50 flex flex-col w-72 max-w-[85vw] bg-surface text-foreground border-e border-border shadow-2xl transition-transform duration-300 ease-premium ${
+          isMobileMenuOpen ? 'translate-x-0' : 'ltr:-translate-x-full rtl:translate-x-full'
+        }`}
       >
-        {/* Workspace Brand Header */}
         <div className="h-20 flex items-center justify-between px-6 border-b border-border/50">
           <Link to="/" className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg p-1">
             <BrandLogo variant="compact" />
             <div>
-              <span className="text-xl sm:text-2xl font-display font-bold text-foreground block leading-none">
-                {lang === 'ar' ? 'وتزودوا' : 'Watazawwado'}
+              <span className="text-xl font-display font-bold text-foreground block leading-none">
+                {L('Watazawwado', 'وتزودوا')}
               </span>
-              <span className="text-[12px] text-muted-foreground uppercase tracking-wider block mt-1.5">
-                {isSuperAdmin ? (lang === 'ar' ? 'الإدارة العامة' : 'Super Admin') : (lang === 'ar' ? 'مساحة المعلم' : 'Teacher Workspace')}
-              </span>
+              <span className="text-[12px] text-muted-foreground block mt-1.5">{roleLabel}</span>
             </div>
           </Link>
-          <button 
+          <button
             ref={closeButtonRef}
-            onClick={toggleMobileMenu} 
-            className="md:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            aria-label={lang === 'ar' ? 'إغلاق القائمة' : 'Close menu'}
+            onClick={toggleMobileMenu}
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            aria-label={L('Close menu', 'إغلاق القائمة')}
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Navigation Links */}
-        <nav 
-          className="flex-1 overflow-y-auto py-4 px-4 space-y-1.5"
-          aria-label={lang === 'ar' ? 'روابط التنقل الرئيسية للمعلم' : 'Teacher Primary Navigation'}
+        <nav
+          className="flex-1 overflow-y-auto py-4 px-4 space-y-1"
+          aria-label={L('Teacher Primary Navigation', 'روابط التنقل الرئيسية للمعلم')}
         >
           {navigation.map((item) => {
-            const isExactMatch = location.pathname === item.path;
-            const isSubPath = item.path !== '/dashboard' && location.pathname.startsWith(item.path);
-            const isActive = isExactMatch || isSubPath;
-
+            const active = isActive(item.path);
             return (
               <Link
-                key={item.name}
+                key={item.path}
                 to={item.path}
                 onClick={() => setIsMobileMenuOpen(false)}
-                aria-current={isActive ? 'page' : undefined}
-                className={`
-                  flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-base touch-manipulation min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary group
-                  ${isActive 
-                    ? 'bg-primary text-primary-foreground font-bold shadow-xs' 
-                    : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
-                  }
-                `}
+                aria-current={active ? 'page' : undefined}
+                className={`flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-medium transition-colors touch-manipulation min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+                  active ? `${INK} text-white font-bold` : 'text-muted-foreground hover:text-foreground hover:bg-surface-subtle'
+                }`}
               >
-                <item.icon className={`w-4.5 h-4.5 shrink-0 ${isActive ? 'text-primary-foreground' : 'opacity-70 group-hover:opacity-100 transition-opacity'}`} />
+                <item.icon className="w-[18px] h-[18px] shrink-0" aria-hidden="true" />
                 <span className="truncate">{item.name}</span>
                 {item.path === '/dashboard/notifications' && unreadNotifications > 0 && (
-                  <span className="ms-auto min-w-[20px] h-5 px-1.5 rounded-full bg-destructive text-destructive-foreground text-[11px] font-bold flex items-center justify-center" aria-label={lang === 'ar' ? `${unreadNotifications} إشعار جديد` : `${unreadNotifications} new`}>
+                  <span className="ms-auto min-w-[20px] h-5 px-1.5 rounded-full bg-crimson text-white text-[11px] font-bold flex items-center justify-center" aria-label={L(`${unreadNotifications} new`, `${unreadNotifications} إشعار جديد`)}>
                     {unreadNotifications}
                   </span>
                 )}
@@ -321,132 +418,153 @@ export function DashboardApp() {
           })}
         </nav>
 
-        {/* Sidebar Footer Controls */}
-        <div className="p-4 border-t border-border/50 space-y-3">
-          {/* Teacher Profile Card */}
-          <div className="flex items-center gap-3 px-3 py-3 rounded-2xl bg-surface-subtle/30 border border-border/50">
-            <div className="w-10 h-10 rounded-full bg-secondary/30 text-accent flex items-center justify-center font-bold text-sm shrink-0 shadow-sm border border-secondary/50">
-              {user?.email?.charAt(0).toUpperCase() || 'M'}
+        <div className="p-4 pb-[max(1rem,env(safe-area-inset-bottom))] border-t border-border/50 space-y-3">
+          <div className="flex items-center gap-3 px-3 py-3 rounded-2xl bg-surface-subtle/40 border border-border/50">
+            <div className="w-10 h-10 rounded-full bg-secondary/30 text-accent flex items-center justify-center font-bold text-sm shrink-0 border border-secondary/50">
+              {(displayName || user?.email || 'M').charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-foreground truncate">
-                {user?.user_metadata?.full_name || user?.user_metadata?.name || (isSuperAdmin ? (lang === 'ar' ? 'المدير' : 'Admin') : (lang === 'ar' ? 'المعلم' : 'Teacher'))}
+                {displayName || (isSuperAdmin ? L('Admin', 'المدير') : L('Teacher', 'المعلم'))}
               </p>
-              <p className="text-[11px] text-muted-foreground truncate mt-0.5">{user?.email}</p>
+              <p className="text-[11px] text-muted-foreground truncate mt-0.5" dir="ltr">{user?.email}</p>
             </div>
           </div>
-          
-          
-            <div className="flex items-center justify-between px-2 pt-2">
-              <span className="text-xs text-muted-foreground">{lang === 'ar' ? 'السمة' : 'Theme'}</span>
-              <ThemeToggle />
-            </div>
-            
-            <div className="flex items-center justify-between px-2 pb-1">
-              <span className="text-xs font-medium text-muted-foreground">{lang === 'ar' ? 'اللغة' : 'Language'}</span>
-              <button
-                onClick={toggleLanguage}
-                data-tour="language-toggle"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all cursor-pointer shadow-sm"
-              >
-                <Globe className="w-3.5 h-3.5" />
-                <span>{lang === "en" ? 'عربي' : 'EN'}</span>
-              </button>
-            </div>
-            
-            <div className="pt-2 flex flex-col gap-2">
-              <button 
-                onClick={() => { setIsMobileMenuOpen(false); setShowGlobalTour(true); }}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all font-semibold text-sm cursor-pointer"
-              >
-                <HelpCircle className="w-4 h-4" />
-                <span>{lang === 'ar' ? 'دليل الاستخدام' : 'Tour Guide'}</span>
-              </button>
-              <button 
-                onClick={() => signOut()}
-                data-tour="teacher-logout"
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-destructive/10 text-destructive hover:bg-destructive hover:text-destructive-foreground transition-all font-semibold text-sm cursor-pointer"
-              >
-                <LogOut className="w-4 h-4" />
-                <span>{lang === 'ar' ? 'تسجيل الخروج' : 'Log Out'}</span>
-              </button>
-            </div>
+          <div className="flex items-center justify-between px-2">
+            <span className="text-xs text-muted-foreground">{L('Theme', 'السمة')}</span>
+            <ThemeToggle />
+          </div>
+          <div className="flex items-center justify-between px-2">
+            <span className="text-xs font-medium text-muted-foreground">{L('Language', 'اللغة')}</span>
+            <button
+              onClick={toggleLanguage}
+              data-tour="language-toggle"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all cursor-pointer"
+            >
+              <Globe className="w-3.5 h-3.5" />
+              <span>{lang === 'en' ? 'عربي' : 'EN'}</span>
+            </button>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              onClick={() => { setIsMobileMenuOpen(false); setShowGlobalTour(true); }}
+              className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all font-semibold text-sm cursor-pointer"
+            >
+              <HelpCircle className="w-4 h-4" />
+              <span>{L('Tour Guide', 'دليل الاستخدام')}</span>
+            </button>
+            <button
+              onClick={() => signOut()}
+              className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-destructive/10 text-destructive hover:bg-destructive hover:text-destructive-foreground transition-all font-semibold text-sm cursor-pointer"
+            >
+              <LogOut className="w-4 h-4 rtl:rotate-180" />
+              <span>{L('Log Out', 'تسجيل الخروج')}</span>
+            </button>
+          </div>
         </div>
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
-        {/* Mobile Header Bar */}
-        <header className="h-16 sm:h-20 shrink-0 flex items-center justify-between px-3 sm:px-6 lg:px-10 border-b border-border/10 bg-background/50 backdrop-blur-md z-10">
-            {/* Left: Mobile Toggle & BrandLogo */}
-            <div className="flex items-center gap-2.5 sm:gap-4 min-w-0 flex-1">
-              <button 
+      <main className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden md:ps-[100px]">
+        <header className="shrink-0 z-20 px-3 sm:px-6 lg:px-8 pt-3 md:pt-4">
+          <div className="max-w-6xl mx-auto flex items-center gap-2 sm:gap-3">
+            {/* Start: menu (phones) and workspace name */}
+            <div className="flex items-center gap-2 min-w-0 flex-1 md:flex-none">
+              <button
                 ref={menuTriggerRef}
                 id="teacher-mobile-menu-btn"
                 data-tour="teacher-mobile-menu-btn"
-                onClick={toggleMobileMenu} 
-                className="md:hidden min-h-[40px] min-w-[40px] sm:min-h-[44px] sm:min-w-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle touch-manipulation cursor-pointer shrink-0"
-                aria-label={lang === 'ar' ? 'القائمة الجانبية' : 'Menu'}
+                onClick={toggleMobileMenu}
+                className={`md:hidden ${iconButton} bg-surface/80 backdrop-blur-xl ring-1 ring-border/60 shrink-0`}
+                aria-label={L('Menu', 'القائمة الجانبية')}
+                aria-expanded={isMobileMenuOpen}
+                aria-controls="teacher-sidebar"
               >
-                <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
+                <Menu className="w-5 h-5" />
               </button>
-              
-              <div className="flex flex-col text-start min-w-0 md:hidden">
-                <span className="text-lg sm:text-2xl font-display font-bold text-foreground leading-tight truncate">
-                  {lang === "ar" ? 'مساحة العمل' : "Workspace"}
-                </span>
+              <div className="min-w-0 text-start">
+                <span className="block font-display font-bold text-lg leading-tight truncate">{L('Watazawwado', 'وتزودوا')}</span>
+                <span className="block text-[11px] text-muted-foreground truncate">{roleLabel}</span>
               </div>
             </div>
 
-            {/* Right: Actions */}
-            <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
-              {/* Tour Guide Button (hidden on phone) */}
+            {/* Centre: main sections as pill tabs */}
+            <nav aria-label={L('Main sections', 'الأقسام الرئيسية')} className="hidden md:flex mx-auto items-center gap-1 p-1 rounded-full bg-surface/80 dark:bg-surface/70 backdrop-blur-xl ring-1 ring-border/60 shadow-xs">
+              {topTabs.map((item) => {
+                const active = isActive(item.path);
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    aria-current={active ? 'page' : undefined}
+                    className={`relative flex items-center gap-2 px-4 h-9 rounded-full text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${active ? 'text-white' : 'text-muted-foreground hover:text-foreground'}`}
+                  >
+                    {active && <motion.span layoutId="top-tab-active" className={`absolute inset-0 rounded-full ${INK}`} transition={{ type: 'spring', stiffness: 420, damping: 36 }} />}
+                    <item.icon className="relative w-4 h-4" aria-hidden="true" />
+                    <span className="relative">{item.name}</span>
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* End: search, bell, language, theme, account */}
+            <div className="flex items-center gap-1 p-1 rounded-full bg-surface/80 dark:bg-surface/70 backdrop-blur-xl ring-1 ring-border/60 shadow-xs shrink-0">
+              <form onSubmit={onSearch} role="search" className="hidden lg:flex items-center gap-2 ps-3 pe-1 h-10 rounded-full bg-surface-subtle/60">
+                <Search className="w-4 h-4 text-muted-foreground shrink-0" aria-hidden="true" />
+                <input
+                  type="search"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  list="dashboard-pages"
+                  placeholder={L('Find a page', 'دوّر على صفحة')}
+                  aria-label={L('Find a page', 'دوّر على صفحة')}
+                  className="w-36 xl:w-44 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
+                />
+                <datalist id="dashboard-pages">
+                  {navigation.map((item) => <option key={item.path} value={item.name} />)}
+                </datalist>
+              </form>
               <button
                 type="button"
                 id="teacher-header-tour-btn"
                 data-tour="teacher-header-tour-btn"
                 onClick={() => setShowGlobalTour(true)}
-                title={lang === 'ar' ? 'دليل الاستخدام' : 'Tour Guide'}
-                aria-label={lang === 'ar' ? 'دليل الاستخدام' : 'Tour Guide'}
-                className="hidden sm:flex w-9 h-9 sm:w-10 sm:h-10 items-center justify-center rounded-full text-teal-800 dark:text-teal-200 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 transition-all cursor-pointer shadow-2xs"
+                title={L('Tour Guide', 'دليل الاستخدام')}
+                aria-label={L('Tour Guide', 'دليل الاستخدام')}
+                className={`hidden sm:flex ${iconButton} text-teal`}
               >
-                <Compass className="w-4.5 h-4.5 text-teal-600 dark:text-teal-400" />
+                <Compass className="w-[18px] h-[18px]" />
               </button>
-
-              <Link
-                to="/dashboard/notifications"
-                aria-label={lang === 'ar' ? 'الإشعارات' : 'Notifications'}
-                className="relative w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-foreground hover:bg-surface-subtle border border-border/80"
-              >
-                <Bell className="w-4.5 h-4.5" />
+              <Link to="/dashboard/notifications" aria-label={L('Notifications', 'الإشعارات')} className={iconButton}>
+                <Bell className="w-[18px] h-[18px]" />
                 {unreadNotifications > 0 && (
-                  <span className="absolute -top-1 -end-1 min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold flex items-center justify-center">
+                  <span className="absolute top-0.5 end-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-crimson text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-surface">
                     {unreadNotifications}
                   </span>
                 )}
               </Link>
-
-              {/* Language Switcher */}
               <button
                 type="button"
                 id="teacher-lang-btn"
                 data-tour="teacher-lang-btn"
                 onClick={toggleLanguage}
-                className="px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold text-foreground hover:bg-surface-subtle border border-border/80 transition-colors cursor-pointer flex items-center gap-1"
+                aria-label={L('Switch to Arabic', 'Switch to English')}
+                className="h-10 px-2.5 rounded-full text-xs font-semibold text-foreground hover:bg-surface-subtle transition-colors cursor-pointer flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               >
                 <Globe className="w-3.5 h-3.5 text-accent" />
-                <span>{lang === "en" ? 'عربي' : 'EN'}</span>
+                <span>{lang === 'en' ? 'عربي' : 'EN'}</span>
               </button>
-
+              <ThemeToggle compact className="hidden sm:flex" />
               <div id="teacher-account-dropdown" data-tour="teacher-account-dropdown">
-                <AccountDropdown initials={user?.email?.charAt(0)?.toUpperCase() || "M"} isAr={lang === "ar"} />
+                <AccountDropdown initials={(displayName || user?.email || 'M').charAt(0).toUpperCase()} isAr={ar} />
               </div>
             </div>
-          </header>
+          </div>
+        </header>
 
         {/* Scrollable Content Container */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-6 lg:p-8 pb-24 md:pb-8 bg-background w-full max-w-full">
-          <div className="max-w-5xl mx-auto space-y-6 min-w-0">
+        <div className={`flex-1 overflow-y-auto overflow-x-hidden px-3 sm:px-6 lg:px-8 pt-5 sm:pt-6 ${MOBILE_TAB_BAR_PADDING} w-full max-w-full`}>
+          <div className="max-w-6xl mx-auto space-y-6 min-w-0">
             <TeacherAuthDiagnosticPanel />
             <ErrorBoundary>
               <Routes>
@@ -467,7 +585,7 @@ export function DashboardApp() {
                 <Route path="/notifications" element={<NotificationsPage />} />
                 <Route path="/pay-later" element={isSuperAdmin ? <PayLaterPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/settings" element={<SettingsPage />} />
-                <Route path="/messages" element={<ChatPanel lang={lang === 'ar' ? 'ar' : 'en'} />} />
+                <Route path="/messages" element={<ChatPanel lang={ar ? 'ar' : 'en'} />} />
                 <Route path="/assistant" element={<AssistantPage />} />
                 <Route path="/placement" element={isSuperAdmin ? <PlacementTestsPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
@@ -476,54 +594,10 @@ export function DashboardApp() {
           </div>
         </div>
 
-        {/* Mobile Bottom Quick Navigation Bar (Navigation Tabs V5) */}
-        <div className={`md:hidden fixed bottom-4 inset-x-3 sm:inset-x-6 max-w-sm mx-auto z-40 pb-[env(safe-area-inset-bottom)] pointer-events-none transition-opacity duration-200 ${isMobileMenuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-          <nav 
-            className="pointer-events-auto relative w-full h-[60px] bg-surface/92 dark:bg-surface/90 backdrop-blur-xl rounded-full flex items-center justify-around px-2 shadow-2xl border border-border/80"
-            aria-label={lang === 'ar' ? 'التنقل السريع' : 'Quick mobile navigation'}
-          >
-            {navigation.slice(0, 4).map((item) => {
-              const isExactMatch = location.pathname === item.path;
-              const isSubPath = item.path !== '/dashboard' && location.pathname.startsWith(item.path);
-              const isActive = isExactMatch || isSubPath;
-              const Icon = item.icon;
-
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className="relative flex items-center justify-center flex-1 h-full touch-manipulation group"
-                  aria-label={item.name}
-                  aria-current={isActive ? 'page' : undefined}
-                >
-                  <div className={`relative flex items-center justify-center w-10 h-10 rounded-full transition-all duration-200 ${
-                    isActive ? 'text-teal-700 dark:text-teal-300 bg-teal-500/15 shadow-2xs' : 'text-muted-foreground group-hover:text-foreground'
-                  }`}>
-                    <Icon className="w-5 h-5 transition-transform group-active:scale-90" />
-                    {isActive && (
-                      <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-teal-600 dark:bg-teal-400" />
-                    )}
-                  </div>
-                </Link>
-              );
-            })}
-
-            {/* Menu button to open full drawer */}
-            <button
-              type="button"
-              onClick={toggleMobileMenu}
-              className="relative flex items-center justify-center flex-1 h-full touch-manipulation group text-muted-foreground hover:text-foreground cursor-pointer"
-              aria-label={lang === 'ar' ? 'القائمة الكاملة' : 'Full menu'}
-            >
-              <div className="w-10 h-10 rounded-full flex items-center justify-center group-hover:bg-surface-subtle transition-colors">
-                <Menu className="w-5 h-5" />
-              </div>
-            </button>
-          </nav>
-        </div>
+        <MobileTabBar tabs={mobileTabs} label={L('Quick mobile navigation', 'التنقل السريع')} hidden={isMobileMenuOpen} isAr={ar} />
       </main>
       {/* Global Onboarding Guide */}
-      <OnboardingGuide steps={globalTourSteps} isOpen={showGlobalTour} onClose={() => setShowGlobalTour(false)} isAr={lang === 'ar'} />
+      <OnboardingGuide steps={globalTourSteps} isOpen={showGlobalTour} onClose={() => setShowGlobalTour(false)} isAr={ar} />
     </div>
   );
 }

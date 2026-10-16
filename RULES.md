@@ -94,6 +94,9 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 - **[Decided 2026-10-15] Write little.** Short headlines and short paragraphs everywhere; every sentence earns its place.
 - **[Decided 2026-10-15] We teach more than Quran and Arabic** (Tajweed, Islamic studies, English too). Headlines must not reduce the academy to one or two subjects.
 - **[Decided 2026-10-15] Design ambition.** Every design request aims for the best, most memorable result, in the brand palette (crimson, teal, copper, gold) and in both light and dark mode; use the design skills.
+- **[Decided 2026-10-16] How design work is done.** Every design task: (1) load the design skills (frontend-design, artifact/design guidance) first; (2) research inspiration on the internet and in free libraries (e.g. Dribbble/Mobbin-style references, unDraw, Storyset, Lottie free, Phosphor/Tabler icons, CodePen) and the references the owner sends; inspiration, never blind copying; (3) prefer our own SVG/CSS over new dependencies, respect licences (no attribution-required assets without the attribution); (4) follow `docs/design-system.md`; (5) video references from the owner are read frame by frame with FFmpeg (installed via winget), not guessed.
+- **[Decided 2026-10-16] Design system.** Glass, calm and precise, inspired by Apple (layered translucent surfaces, soft depth, generous spacing, crisp type), in the brand palette and Islamic geometric motifs (khatam star, mihrab arch, the logo ribbon). The source of truth is `docs/design-system.md`; the site should feel like a masterpiece.
+- **[Decided 2026-10-16] Every change also covers:** SEO (titles, meta, headings, prerendered content, alt text, performance), cyber security (auth, input validation, secrets, RLS, XSS/CSRF, rate limits), bugs and errors (type check, console, edge cases), and tests: a new feature gets tests, a changed feature gets its tests updated.
 
 ## 7. Engineering rules (always)
 

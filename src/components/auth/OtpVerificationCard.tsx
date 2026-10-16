@@ -1,54 +1,68 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Mail, 
-  ArrowRight, 
-  ArrowLeft, 
-  RefreshCw, 
-  AlertCircle, 
-  CheckCircle2, 
-  Edit3, 
-  Sparkles,
-  ShieldCheck,
-  Sun,
-  Moon,
-  Globe,
-  Clipboard,
-  Check
-} from 'lucide-react';
-import { OtpOrbitalGraphic } from './OtpOrbitalGraphic';
-import { BrandSpinner } from '../ui/BrandLoader';
-import { useTheme } from '../ThemeProvider';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence, animate, useMotionValue, useReducedMotion } from 'motion/react';
+import type { AnimationPlaybackControls } from 'motion/react';
+import { ArrowLeft, ArrowRight, Check, Globe, KeyRound, RefreshCw, ShieldCheck } from 'lucide-react';
+import { Button } from '../ui/Button';
+import { Input } from '../ui/Input';
+import { ThemeToggle } from '../ui/ThemeToggle';
+import {
+  OTP_LENGTH,
+  applyBackspace,
+  applyInput,
+  emptyDigits,
+  isBusy,
+  isComplete,
+  otpTransition,
+  type OtpEvent,
+  type OtpPhase,
+} from './otpLogic';
 
 export interface OtpVerificationCardProps {
-  /** The target email to verify */
   initialEmail?: string;
-  /** Verification handler returning success/error */
+  /** Must resolve only after the server has checked the code. */
   onVerify: (code: string, email: string) => Promise<{ success: boolean; error?: string }>;
-  /** Resend OTP handler */
   onResend?: (email: string) => Promise<{ success: boolean; error?: string }>;
-  /** Callback fired after successful verification */
   onSuccess?: () => void;
-  /** Back navigation handler (e.g., return to login) */
   onBack?: () => void;
-  /** Initial language */
   lang?: 'ar' | 'en';
-  /** Optional language toggle handler */
   onToggleLang?: () => void;
-  /** Whether this is rendered in a full page or inside a modal dialog */
   variant?: 'modal' | 'page';
 }
 
-/**
- * Normalizes Eastern Arabic (٠-٩) and Persian (۰-۹) numerals into standard ASCII digits (0-9)
- * and strips any non-numeric characters.
- */
-function normalizeDigits(text: string): string {
-  if (!text) return '';
-  return text
-    .replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 1632))
-    .replace(/[۰-۹]/g, (d) => String(d.charCodeAt(0) - 1776))
-    .replace(/\D/g, '');
+const RESEND_COOLDOWN = 60;
+// Motion timings (ms), from the reference: lift, one orbit turn, converge, success hold.
+const LIFT_MS = 260;
+const ORBIT_MS = 1200;
+const CONVERGE_MS = 800;
+const SUCCESS_HOLD_MS = 1500;
+
+const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
+const GOLD_TEXT = 'text-[#A06E14] dark:text-[#E5A93C]';
+
+/** Eight-point khatam star holding a key: the card's emblem. */
+function KeyEmblem({ done }: { done: boolean }) {
+  return (
+    <div className="relative mx-auto w-16 h-16" aria-hidden="true">
+      <svg viewBox="0 0 64 64" className="absolute inset-0 w-full h-full">
+        <g
+          fill="none"
+          strokeWidth="1.5"
+          className={`transition-colors duration-500 ${done ? 'stroke-emerald-500' : 'stroke-[#C99130] dark:stroke-[#E5A93C]'}`}
+        >
+          <rect x="14" y="14" width="36" height="36" rx="5" />
+          <rect x="14" y="14" width="36" height="36" rx="5" transform="rotate(45 32 32)" />
+        </g>
+      </svg>
+      <span className="absolute inset-0 flex items-center justify-center">
+        {done ? (
+          <ShieldCheck className="w-6 h-6 text-emerald-500" strokeWidth={2} />
+        ) : (
+          <KeyRound className={`w-6 h-6 ${GOLD_TEXT}`} strokeWidth={1.8} />
+        )}
+      </span>
+    </div>
+  );
 }
 
 export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
@@ -62,608 +76,506 @@ export const OtpVerificationCard: React.FC<OtpVerificationCardProps> = ({
   variant = 'page',
 }) => {
   const [lang, setLang] = useState<'ar' | 'en'>(initialLang);
-  const [email, setEmail] = useState<string>(initialEmail);
-  const [isEditingEmail, setIsEditingEmail] = useState<boolean>(!initialEmail);
-  const [tempEmail, setTempEmail] = useState<string>(initialEmail);
-
-  // 6 discrete OTP digits
-  const [digits, setDigits] = useState<string[]>(['', '', '', '', '', '']);
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-
-  // States
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [isResending, setIsResending] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [isSuccess, setIsSuccess] = useState<boolean>(false);
-  const [justPasted, setJustPasted] = useState<boolean>(false);
-
-  // Resend Countdown Timer (starts at 60 seconds)
-  const RESEND_COOLDOWN = 60;
-  const [countdown, setCountdown] = useState<number>(RESEND_COOLDOWN);
-  const [canResend, setCanResend] = useState<boolean>(false);
-
-  const { theme, toggleTheme } = useTheme();
-
   const isAr = lang === 'ar';
-  const filledCount = digits.filter((d) => d !== '').length;
+  const t = (ar: string, en: string) => (isAr ? ar : en);
 
-  // Sync initialEmail if updated
-  useEffect(() => {
-    if (initialEmail && initialEmail !== email) {
-      setEmail(initialEmail);
-      setTempEmail(initialEmail);
-      setIsEditingEmail(false);
-    }
-  }, [initialEmail]);
+  const [email, setEmail] = useState(initialEmail);
+  const [digits, setDigits] = useState<string[]>(emptyDigits);
+  const [phase, setPhaseState] = useState<OtpPhase>('idle');
+  const phaseRef = useRef<OtpPhase>('idle');
+  const [focused, setFocused] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [shakeKey, setShakeKey] = useState(0);
+  const [countdown, setCountdown] = useState(RESEND_COOLDOWN);
+  const [isResending, setIsResending] = useState(false);
 
-  // Focus the first empty digit box on mount
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const mounted = useRef(true);
+  const reduced = !!useReducedMotion();
+  const spin = useMotionValue(0);
+  const spinCtrl = useRef<AnimationPlaybackControls | null>(null);
+
+  const busy = isBusy(phase);
+  const success = phase === 'success';
+  const compact = variant === 'modal';
+  const [stageW, setStageW] = useState(360);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const gap = compact ? 8 : 10;
+  // Boxes shrink to fit narrow phones; the orbit radius follows.
+  const boxW = Math.min(compact ? 44 : 50, Math.floor((stageW + gap) / OTP_LENGTH) - gap);
+  const boxH = Math.round(boxW * 1.2);
+  const step = boxW + gap;
+  const radius = Math.round(boxW * 1.6);
+
+  const dispatch = (ev: OtpEvent) => {
+    phaseRef.current = otpTransition(phaseRef.current, ev);
+    setPhaseState(phaseRef.current);
+  };
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const firstEmptyIndex = digits.findIndex((d) => d === '');
-      const targetIndex = firstEmptyIndex === -1 ? 0 : firstEmptyIndex;
-      inputRefs.current[targetIndex]?.focus();
-    }, 150);
-    return () => clearTimeout(timer);
+    mounted.current = true;
+    const id = setTimeout(() => inputRefs.current[0]?.focus(), 120);
+    return () => {
+      mounted.current = false;
+      clearTimeout(id);
+      spinCtrl.current?.stop();
+    };
   }, []);
 
-  // Countdown timer interval
   useEffect(() => {
-    if (countdown <= 0) {
-      setCanResend(true);
-      return;
-    }
-    setCanResend(false);
-    const interval = setInterval(() => {
-      setCountdown((prev) => Math.max(0, prev - 1));
-    }, 1000);
-    return () => clearInterval(interval);
+    const el = stageRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(([entry]) => setStageW(entry.contentRect.width));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (initialEmail) setEmail(initialEmail);
+  }, [initialEmail]);
+
+  useEffect(() => {
+    if (countdown <= 0) return;
+    const id = setTimeout(() => setCountdown((c) => c - 1), 1000);
+    return () => clearTimeout(id);
   }, [countdown]);
 
-  // Format seconds to MM:SS
-  const formatTime = (secs: number) => {
-    const m = Math.floor(secs / 60);
-    const s = secs % 60;
-    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  const focusBox = (i: number) => setTimeout(() => inputRefs.current[i]?.select(), 0);
+
+  const stopSpin = () => {
+    spinCtrl.current?.stop();
+    spinCtrl.current = null;
+    // Finish on a whole turn so the circle does not jump.
+    const target = Math.ceil(spin.get() / 360) * 360;
+    animate(spin, target, { duration: 0.25, ease: 'easeOut' });
   };
 
-  // Robust code distributor when pasting or entering multiple digits
-  const handlePastedCode = (rawText: string) => {
-    const cleanNumbers = normalizeDigits(rawText).slice(0, 6);
-    if (!cleanNumbers) return;
-
-    const next = ['', '', '', '', '', ''];
-    for (let i = 0; i < 6; i++) {
-      next[i] = cleanNumbers[i] || '';
+  const verify = async (code: string) => {
+    if (isBusy(phaseRef.current)) return;
+    if (!email.includes('@')) {
+      setError(t('اكتب بريدك الإلكتروني أولاً.', 'Enter your email first.'));
+      return;
     }
-    setDigits(next);
-    setErrorMessage(null);
-    setJustPasted(true);
-    setTimeout(() => setJustPasted(false), 2000);
+    setError(null);
+    setNotice(null);
+    dispatch('submit');
 
-    // Focus target
-    const targetIdx = Math.min(5, Math.max(0, cleanNumbers.length - 1));
-    setTimeout(() => {
-      inputRefs.current[targetIdx]?.focus();
-    }, 60);
+    const request = onVerify(code, email).catch((err: unknown) => ({
+      success: false,
+      error: err instanceof Error ? err.message : undefined,
+    }));
 
-    // If full 6 digits were pasted, automatically trigger verification
-    if (cleanNumbers.length === 6) {
-      triggerVerification(cleanNumbers);
+    await wait(reduced ? 0 : LIFT_MS);
+    if (!mounted.current) return;
+    dispatch('lifted');
+    if (!reduced) {
+      spin.set(0);
+      spinCtrl.current = animate(spin, 360, { duration: ORBIT_MS / 1000, ease: 'linear', repeat: Infinity });
     }
-  };
 
-  // Handle single digit input change
-  const handleDigitChange = (index: number, value: string) => {
-    const cleaned = normalizeDigits(value);
-    if (!cleaned) {
-      const next = [...digits];
-      next[index] = '';
-      setDigits(next);
+    // Keep orbiting for at least one turn, and for as long as the server takes.
+    const [res] = await Promise.all([request, wait(reduced ? 0 : ORBIT_MS)]);
+    if (!mounted.current) return;
+    if (!reduced) stopSpin();
+
+    if (res.success) {
+      dispatch('verified');
+      await wait(reduced ? 0 : CONVERGE_MS);
+      if (!mounted.current) return;
+      dispatch('converged');
+      await wait(SUCCESS_HOLD_MS);
+      if (mounted.current) onSuccess?.();
       return;
     }
 
-    // If multiple characters entered at once (paste or browser autofill)
-    if (cleaned.length > 1) {
-      handlePastedCode(cleaned);
-      return;
-    }
-
-    const next = [...digits];
-    next[index] = cleaned[0];
-    setDigits(next);
-    setErrorMessage(null);
-
-    // Auto-advance to next input
-    if (index < 5 && cleaned[0]) {
-      inputRefs.current[index + 1]?.focus();
-    }
-
-    // If this completed the 6th digit, automatically trigger submit
-    const completeCode = next.join('');
-    if (completeCode.length === 6 && next.every((d) => d !== '')) {
-      triggerVerification(completeCode);
-    }
-  };
-
-  // Handle keyboard events (Backspace, Arrow keys)
-  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Backspace') {
-      if (digits[index] === '' && index > 0) {
-        // Move back and clear previous
-        const next = [...digits];
-        next[index - 1] = '';
-        setDigits(next);
-        inputRefs.current[index - 1]?.focus();
-        e.preventDefault();
-      } else {
-        const next = [...digits];
-        next[index] = '';
-        setDigits(next);
-      }
-    } else if (e.key === 'ArrowLeft') {
-      const target = isAr ? index + 1 : index - 1;
-      if (target >= 0 && target <= 5) {
-        inputRefs.current[target]?.focus();
-        e.preventDefault();
-      }
-    } else if (e.key === 'ArrowRight') {
-      const target = isAr ? index - 1 : index + 1;
-      if (target >= 0 && target <= 5) {
-        inputRefs.current[target]?.focus();
-        e.preventDefault();
-      }
-    }
-  };
-
-  // Handle clipboard paste from event
-  const handlePaste = (e: React.ClipboardEvent) => {
-    e.preventDefault();
-    const pasted = e.clipboardData?.getData('text') || '';
-    handlePastedCode(pasted);
-  };
-
-  // Direct 1-click clipboard paste button handler
-  const handleClipboardButtonClick = async () => {
-    try {
-      if (navigator.clipboard?.readText) {
-        const clipText = await navigator.clipboard.readText();
-        if (clipText && normalizeDigits(clipText).length > 0) {
-          handlePastedCode(clipText);
-          return;
-        }
-      }
-    } catch {
-      // Clipboard permission denied or not supported in this iframe context
-    }
-
-    // Graceful fallback: Prompt user
-    const manualPaste = window.prompt(
-      isAr ? 'الصق رمز التحقق المكون من 6 أرقام هنا:' : 'Paste the 6-digit verification code here:'
+    dispatch('rejected');
+    setShakeKey((k) => k + 1);
+    setError(
+      t('الكود غير صحيح أو انتهت صلاحيته. اكتبه مرة أخرى.', 'That code is wrong or has expired. Enter it again.')
     );
-    if (manualPaste) {
-      handlePastedCode(manualPaste);
-    } else {
-      inputRefs.current[0]?.focus();
+    setDigits(emptyDigits());
+    focusBox(0);
+  };
+
+  const commit = (next: string[], focus: number) => {
+    setDigits(next);
+    if (phaseRef.current === 'error') dispatch('edit');
+    setError(null);
+    if (isComplete(next)) verify(next.join(''));
+    else focusBox(focus);
+  };
+
+  const onChange = (i: number, value: string) => {
+    const r = applyInput(digits, i, value);
+    commit(r.digits, r.focus);
+  };
+
+  const onKeyDown = (i: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace') {
+      e.preventDefault();
+      const r = applyBackspace(digits, i);
+      commit(r.digits, r.focus);
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      // Boxes are always laid out left-to-right (digits stay LTR), so arrows map directly.
+      e.preventDefault();
+      const target = i + (e.key === 'ArrowLeft' ? -1 : 1);
+      if (target >= 0 && target < OTP_LENGTH) focusBox(target);
+    } else if (e.key === 'Enter' && isComplete(digits)) {
+      verify(digits.join(''));
     }
   };
 
-  // Trigger verification with guaranteed cinematic orbital animation window
-  const triggerVerification = async (codeToVerify?: string) => {
-    const finalCode = codeToVerify || digits.join('');
-    if (finalCode.length < 6) {
-      setErrorMessage(
-        isAr ? 'يرجى إدخال رمز التحقق كاملاً (6 أرقام).' : 'Please enter the complete 6-digit code.'
-      );
-      return;
-    }
-
-    if (!email || !email.includes('@')) {
-      setErrorMessage(
-        isAr ? 'يرجى إدخال عنوان بريد إلكتروني صحيح.' : 'Please provide a valid email address.'
-      );
-      setIsEditingEmail(true);
-      return;
-    }
-
-    setIsSubmitting(true);
-    setErrorMessage(null);
-    setSuccessMessage(null);
-
-    try {
-      // Guarantee a minimum of ~1900ms so the user sees the gyroscopic 3D rings revolving fast around each other
-      const [res] = await Promise.all([
-        onVerify(finalCode, email),
-        new Promise((resolve) => setTimeout(resolve, 1900))
-      ]);
-
-      if (res.success) {
-        setIsSuccess(true);
-        setSuccessMessage(
-          isAr
-            ? 'تم تأكيد الرمز بنجاح! جاري تحويلك إلى مساحتك التعليمية...'
-            : 'Code verified successfully! Redirecting to your learning home...'
-        );
-        setTimeout(() => {
-          if (onSuccess) onSuccess();
-        }, 1200);
-      } else {
-        setIsSuccess(false);
-        setErrorMessage(
-          res.error ||
-            (isAr
-              ? 'رمز التحقق غير صحيح أو منتهي الصلاحية، يرجى المحاولة مرة أخرى.'
-              : 'Invalid or expired verification code. Please try again.')
-        );
-        // Highlight inputs or focus first
-        inputRefs.current[0]?.focus();
-      }
-    } catch (err: any) {
-      setIsSuccess(false);
-      setErrorMessage(
-        err.message ||
-          (isAr ? 'حدث خطأ أثناء التحقق، يرجى المحاولة لاحقاً.' : 'An error occurred during verification.')
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
+  const onPaste = (i: number, e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const r = applyInput(digits, i, e.clipboardData.getData('text'));
+    commit(r.digits, r.focus);
   };
 
-  // Resend OTP
-  const handleResend = async () => {
-    if (!canResend || isResending || !onResend) return;
-
-    if (!email || !email.includes('@')) {
-      setErrorMessage(isAr ? 'يرجى تحديد البريد الإلكتروني أولاً.' : 'Please enter your email first.');
-      setIsEditingEmail(true);
+  const resend = async () => {
+    if (!onResend || countdown > 0 || isResending || busy) return;
+    if (!email.includes('@')) {
+      setError(t('اكتب بريدك الإلكتروني أولاً.', 'Enter your email first.'));
       return;
     }
-
     setIsResending(true);
-    setErrorMessage(null);
-    setSuccessMessage(null);
+    setError(null);
+    const res = await onResend(email).catch(() => ({ success: false }));
+    if (!mounted.current) return;
+    setIsResending(false);
+    if (res.success) {
+      setCountdown(RESEND_COOLDOWN);
+      setNotice(t('أرسلنا كوداً جديداً إلى بريدك.', 'We sent a new code to your email.'));
+      setDigits(emptyDigits());
+      if (phaseRef.current === 'error') dispatch('edit');
+      focusBox(0);
+    } else {
+      setError(t('تعذّر إرسال الكود، حاول بعد قليل.', 'The code could not be sent. Try again shortly.'));
+    }
+  };
 
-    try {
-      const res = await onResend(email);
-      if (res.success) {
-        setCountdown(RESEND_COOLDOWN);
-        setCanResend(false);
-        setSuccessMessage(
-          isAr
-            ? 'تم إرسال رمز تحقق جديد إلى بريدك الإلكتروني.'
-            : 'A fresh verification code has been dispatched to your inbox.'
-        );
-        setDigits(['', '', '', '', '', '']);
-        inputRefs.current[0]?.focus();
-      } else {
-        setErrorMessage(
-          res.error || (isAr ? 'تعذر إرسال الرمز، يرجى المحاولة مجدداً.' : 'Failed to resend code.')
-        );
+  const toggleLang = () => {
+    onToggleLang?.();
+    setLang((l) => (l === 'ar' ? 'en' : 'ar'));
+  };
+
+  // Where each box sits in every phase.
+  const boxTarget = (i: number) => {
+    const rowX = (i - (OTP_LENGTH - 1) / 2) * step;
+    if (reduced) {
+      return { x: rowX, y: 0, rotate: 0, scale: 1, opacity: phase === 'converge' || success ? 0 : 1 };
+    }
+    switch (phase) {
+      case 'lift':
+        return { x: rowX, y: -14, rotate: i % 2 ? 9 : -9, scale: 1.06, opacity: 1 };
+      case 'orbit': {
+        const a = ((i * 360) / OTP_LENGTH - 90) * (Math.PI / 180);
+        return { x: Math.cos(a) * radius, y: Math.sin(a) * radius, rotate: 0, scale: 0.9, opacity: 1 };
       }
-    } catch (err: any) {
-      setErrorMessage(
-        err.message || (isAr ? 'حدث خطأ أثناء إعادة الإرسال.' : 'Error while requesting new code.')
-      );
-    } finally {
-      setIsResending(false);
+      case 'converge': {
+        // Gather into a tight cluster (as in the reference), then fold into the single centre box.
+        const a = ((i * 360) / OTP_LENGTH - 90) * (Math.PI / 180);
+        const r = boxW * 0.62;
+        return {
+          x: [Math.cos(a) * r, Math.cos(a) * r, 0],
+          y: [Math.sin(a) * r, Math.sin(a) * r, 0],
+          rotate: 0,
+          scale: [0.9, 0.9, 0.7],
+          opacity: [1, 1, 0],
+        };
+      }
+      case 'success':
+        return { x: 0, y: 0, rotate: 0, scale: 0.7, opacity: 0 };
+      default:
+        return { x: rowX, y: 0, rotate: 0, scale: 1, opacity: 1 };
     }
   };
 
-  // Toggle language internally or via prop
-  const handleLangToggle = () => {
-    if (onToggleLang) {
-      onToggleLang();
-    }
-    setLang((prev) => (prev === 'ar' ? 'en' : 'ar'));
-  };
+  const stageH = !reduced && (phase === 'orbit' || phase === 'converge' || success) ? radius * 2 + boxH + 8 : boxH + 24;
+  const status = busy && !success && phase !== 'converge'
+    ? t('نتحقق من الكود…', 'Checking your code…')
+    : success
+    ? t('تم التأكيد بنجاح', 'Verified successfully')
+    : error || notice || '';
+
+  const card =
+    variant === 'page'
+      ? 'rounded-[2rem] border p-6 sm:p-10 backdrop-blur-2xl bg-white/60 border-white/80 shadow-[0_30px_80px_-30px_rgba(5,54,63,0.35),inset_0_1px_0_rgba(255,255,255,0.9)] dark:bg-[#06343C]/55 dark:border-[#E5A93C]/20 dark:shadow-[0_30px_90px_-30px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(229,169,60,0.15)]'
+      : '';
 
   return (
-    <div
-      dir={isAr ? 'rtl' : 'ltr'}
-      className={`w-full max-w-lg mx-auto ${
-        variant === 'page'
-          ? 'glass-card border border-border/60 rounded-3xl sm:rounded-4xl p-6 sm:p-10 shadow-2xl relative overflow-hidden backdrop-blur-xl'
-          : 'relative'
-      }`}
-    >
-      {/* ── TOP UTILITIES (Theme & Language Toggle + Back) ── */}
-      <div className="flex items-center justify-between mb-6 pb-4 border-b border-border/60">
+    <div dir={isAr ? 'rtl' : 'ltr'} className={`relative w-full max-w-md mx-auto overflow-hidden ${card}`}>
+      {/* Soft green wash over the card once the server confirms. */}
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{ background: 'radial-gradient(60% 50% at 50% 40%, rgba(16,185,129,0.22), transparent 70%)' }}
+        initial={false}
+        animate={{ opacity: success ? 1 : 0 }}
+        transition={{ duration: 0.6 }}
+      />
+
+      <div className="relative flex items-center justify-between mb-6">
         {onBack ? (
           <button
             type="button"
             onClick={onBack}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground rounded-lg px-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
           >
-            {isAr ? (
-              <>
-                <ArrowRight className="w-3.5 h-3.5" />
-                <span>العودة لتسجيل الدخول</span>
-              </>
-            ) : (
-              <>
-                <ArrowLeft className="w-3.5 h-3.5" />
-                <span>Back to Login</span>
-              </>
-            )}
+            {isAr ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
+            {t('رجوع', 'Back')}
           </button>
         ) : (
-          <div />
+          <span />
         )}
-
-        <div className="flex items-center gap-2">
-          {/* Language Toggle */}
-          <button
-            type="button"
-            onClick={handleLangToggle}
-            aria-label="Toggle Language"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg border border-border/70 hover:border-teal-500/50 hover:bg-surface-subtle text-foreground/80 transition-all cursor-pointer"
-          >
-            <Globe className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
-            <span>{isAr ? 'English' : 'عربي'}</span>
-          </button>
-
-          {/* Theme Toggle */}
-          <button
-            type="button"
-            onClick={toggleTheme}
-            aria-label="Toggle Theme"
-            className="p-1.5 rounded-lg border border-border/70 hover:border-teal-500/50 hover:bg-surface-subtle text-foreground/80 transition-all cursor-pointer"
-          >
-            {theme === 'dark' ? (
-              <Sun className="w-3.5 h-3.5 text-sand-gold" />
-            ) : (
-              <Moon className="w-3.5 h-3.5 text-teal-700" />
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* ── 3D CELESTIAL ORBITAL GRAPHIC CENTERPIECE ("بتلف حوالين بعضها") ── */}
-      <div className="flex flex-col items-center justify-center mb-5">
-        <OtpOrbitalGraphic
-          digitCount={filledCount}
-          isVerifying={isSubmitting}
-          isSuccess={isSuccess}
-          size={variant === 'modal' ? 'sm' : 'md'}
-        />
-
-        {/* Verification Status Feedback beneath the rotating orbits */}
-        <AnimatePresence>
-          {isSubmitting && (
-            <motion.div
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 6 }}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-700 dark:text-teal-300 text-xs font-thmanyah-sans font-semibold mt-4 shadow-sm"
+        {variant === 'page' && (
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={toggleLang}
+              className="inline-flex items-center gap-1.5 text-sm px-2.5 py-1.5 rounded-lg text-foreground/80 hover:bg-surface-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
             >
-              <RefreshCw className="w-3.5 h-3.5 animate-spin text-teal-600 dark:text-teal-400" />
-              <span>
-                {isAr
-                  ? 'جاري فك تشفير الرمز الأمني والتحقق...'
-                  : 'Decrypting & validating security code...'}
-              </span>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              <Globe className="w-4 h-4" />
+              {isAr ? 'English' : 'عربي'}
+            </button>
+            <ThemeToggle compact />
+          </div>
+        )}
       </div>
 
-      {/* ── TITLE & BRAND TYPOGRAPHY (خط ثمانية) ── */}
-      <div className="text-center mb-5">
-        <h2 className="text-2xl sm:text-3xl font-thmanyah-serif font-bold text-foreground tracking-tight mb-2">
-          {isAr ? 'التحقق من رمز الدخول' : 'Verify Your Security Code'}
-        </h2>
-        <p className="text-xs sm:text-sm font-thmanyah-sans text-muted-foreground leading-relaxed max-w-sm mx-auto">
-          {isAr
-            ? 'أدخل الرمز المكون من 6 أرقام المرسل إلى بريدك لتأكيد هويتك والوصول إلى مساحتك التعليمية.'
-            : 'Enter the 6-digit confirmation code sent to your email to verify your identity and access your dashboard.'}
+      <div className="relative text-center">
+        <KeyEmblem done={success} />
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.h2
+            key={success ? 'ok' : 'ask'}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.3 }}
+            className="mt-4 text-2xl sm:text-3xl font-editorial font-bold text-foreground"
+          >
+            {success ? (
+              isAr ? (
+                <>
+                  تم التأكيد <span className="text-emerald-600 dark:text-emerald-400">بنجاح</span>
+                </>
+              ) : (
+                <>
+                  Verified <span className="text-emerald-600 dark:text-emerald-400">successfully</span>
+                </>
+              )
+            ) : isAr ? (
+              <>
+                تأكيد <span className={GOLD_TEXT}>الكود</span>
+              </>
+            ) : (
+              <>
+                Verify your <span className={GOLD_TEXT}>code</span>
+              </>
+            )}
+          </motion.h2>
+        </AnimatePresence>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {success ? t('تأكّد بريدك، أهلاً بك في بيتك.', 'Your email is confirmed. Welcome home.') : t('أرسلناه إلى', 'We sent it to')}
+          {!success && email && (
+            <>
+              {' '}
+              <bdi dir="ltr" className="font-medium text-foreground">
+                {email}
+              </bdi>
+            </>
+          )}
         </p>
       </div>
 
-      {/* ── EMAIL RECIPIENT CHIP / EDIT BAR ── */}
-      <div className="mb-5">
-        {isEditingEmail ? (
-          <div className="flex items-center gap-2 p-1.5 rounded-2xl border border-border bg-surface-warm/40 dark:bg-surface-warm/20">
-            <Mail className="w-4 h-4 text-teal-600 dark:text-teal-400 ms-3 shrink-0" />
-            <input
-              type="email"
-              value={tempEmail}
-              onChange={(e) => setTempEmail(e.target.value)}
-              placeholder="name@example.com"
-              className="w-full bg-transparent border-none text-xs sm:text-sm font-thmanyah-sans text-foreground focus:outline-none px-2 py-1"
-            />
-            <button
-              type="button"
-              onClick={() => {
-                if (tempEmail.includes('@')) {
-                  setEmail(tempEmail);
-                  setIsEditingEmail(false);
-                }
-              }}
-              className="shrink-0 px-3 py-1 bg-teal-600 text-white rounded-xl text-xs font-semibold hover:bg-teal-700 transition-colors cursor-pointer"
-            >
-              {isAr ? 'حفظ' : 'Save'}
-            </button>
-          </div>
-        ) : (
-          <div className="inline-flex items-center justify-between w-full px-4 py-2 rounded-2xl border border-border/80 bg-surface-subtle/50 text-xs font-thmanyah-sans text-foreground/80">
-            <div className="flex items-center gap-2 truncate">
-              <Mail className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 shrink-0" />
-              <span className="font-mono text-xs font-medium text-foreground truncate">{email || 'example@email.com'}</span>
-            </div>
-            <button
-              type="button"
-              onClick={() => setIsEditingEmail(true)}
-              className="inline-flex items-center gap-1 text-[11px] text-teal-700 dark:text-teal-300 hover:underline ms-2 shrink-0 cursor-pointer"
-            >
-              <Edit3 className="w-3 h-3" />
-              <span>{isAr ? 'تعديل' : 'Change'}</span>
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* ── 6 DISCRETE OTP INPUT DIGITS WITH PASTING SUPPORT ── */}
-      <div className="mb-5">
-        <div className="flex items-center justify-between mb-2 px-1">
-          <label className="text-xs font-thmanyah-sans font-medium text-muted-foreground">
-            {isAr ? 'رمز التحقق (6 أرقام):' : 'Verification Code (6 Digits):'}
+      {!initialEmail && !success && (
+        <div className="relative mt-4">
+          <label htmlFor="otp-email" className="sr-only">
+            {t('البريد الإلكتروني', 'Email')}
           </label>
-
-          {/* Quick 1-click Paste from Clipboard button */}
-          <button
-            type="button"
-            onClick={handleClipboardButtonClick}
-            disabled={isSubmitting || isSuccess}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-teal-500/30 hover:border-teal-500/60 bg-teal-500/5 hover:bg-teal-500/15 text-teal-700 dark:text-teal-300 text-xs font-thmanyah-sans font-semibold transition-all cursor-pointer shadow-xs disabled:opacity-50"
-            title={isAr ? 'لصق الرمز المنسوخ من الحافظة' : 'Paste code from clipboard'}
-          >
-            {justPasted ? (
-              <>
-                <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                <span className="text-emerald-700 dark:text-emerald-300">
-                  {isAr ? 'تم اللصق' : 'Pasted'}
-                </span>
-              </>
-            ) : (
-              <>
-                <Clipboard className="w-3.5 h-3.5" />
-                <span>{isAr ? 'لصق الرمز' : 'Paste Code'}</span>
-              </>
-            )}
-          </button>
+          <Input
+            id="otp-email"
+            type="email"
+            dir="ltr"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value.trim())}
+            placeholder="name@example.com"
+            disabled={busy}
+          />
         </div>
+      )}
 
-        <div
-          className="flex items-center justify-center gap-2 sm:gap-3 direction-ltr"
-          dir="ltr"
-          onPaste={handlePaste}
+      {/* The stage: boxes live here and move through lift → orbit → converge. */}
+      <motion.div
+        ref={stageRef}
+        dir="ltr"
+        role="group"
+        aria-label={t('الكود المكوّن من 6 أرقام', '6-digit code')}
+        className="relative mx-auto mt-6"
+        initial={false}
+        animate={{ height: stageH }}
+        transition={{ duration: reduced ? 0 : 0.35, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <motion.div
+          key={shakeKey}
+          className="absolute inset-0"
+          animate={shakeKey && !reduced ? { x: [0, -12, 12, -8, 8, -3, 0] } : { x: 0 }}
+          transition={{ duration: 0.45 }}
         >
-          {digits.map((digit, index) => {
-            const isFilled = digit !== '';
-            return (
-              <motion.div
-                key={index}
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.98 }}
-                className="relative"
-              >
-                <input
-                  ref={(el) => { inputRefs.current[index] = el; }}
-                  type="text"
-                  inputMode="numeric"
-                  autoComplete="one-time-code"
-                  pattern="[0-9]*"
-                  value={digit}
-                  disabled={isSubmitting || isSuccess}
-                  onChange={(e) => handleDigitChange(index, e.target.value)}
-                  onKeyDown={(e) => handleKeyDown(index, e)}
-                  onPaste={handlePaste}
-                  className={`w-11 h-13 sm:w-13 sm:h-16 text-center text-xl sm:text-2xl font-thmanyah-sans font-bold rounded-xl sm:rounded-2xl transition-all duration-200 outline-none select-all ${
-                    isFilled
-                      ? 'border-2 border-teal-600 dark:border-teal-400 bg-surface shadow-md text-foreground'
-                      : 'border border-border/80 bg-surface-warm/40 dark:bg-surface-subtle text-foreground/80 hover:border-border'
-                  } focus:border-2 focus:border-crimson dark:focus:border-crimson focus:ring-4 focus:ring-crimson/15 focus:bg-surface focus:shadow-lg`}
-                  aria-label={`Digit ${index + 1}`}
-                />
+          <motion.div className="absolute left-1/2 top-1/2" style={{ rotate: spin }}>
+            {digits.map((d, i) => {
+              const active = focused === i && !busy;
+              const target = boxTarget(i);
+              return (
+                <motion.div
+                  key={i}
+                  className="absolute"
+                  style={{ width: boxW, height: boxH, left: -boxW / 2, top: -boxH / 2 }}
+                  initial={false}
+                  animate={target}
+                  transition={
+                    reduced
+                      ? { duration: phase === 'success' || phase === 'converge' ? 0.4 : 0 }
+                      : phase === 'converge'
+                      ? { duration: CONVERGE_MS / 1000, times: [0, 0.55, 1], ease: 'easeInOut' }
+                      : { type: 'spring', stiffness: 260, damping: 24, delay: phase === 'lift' ? i * 0.03 : 0 }
+                  }
+                >
+                  <div className="relative w-full h-full">
+                    <input
+                      ref={(el) => {
+                        inputRefs.current[i] = el;
+                      }}
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete={i === 0 ? 'one-time-code' : 'off'}
+                      pattern="[0-9]*"
+                      maxLength={OTP_LENGTH}
+                      value={d}
+                      disabled={busy}
+                      aria-label={t(`الرقم ${i + 1} من 6`, `Digit ${i + 1} of 6`)}
+                      aria-invalid={!!error}
+                      onFocus={(e) => {
+                        setFocused(i);
+                        e.target.select();
+                      }}
+                      onBlur={() => setFocused((f) => (f === i ? null : f))}
+                      onChange={(e) => onChange(i, e.target.value)}
+                      onKeyDown={(e) => onKeyDown(i, e)}
+                      onPaste={(e) => onPaste(i, e)}
+                      className={`w-full h-full text-center text-2xl font-bold tabular-nums rounded-2xl outline-none caret-transparent backdrop-blur-md transition-[border-color,box-shadow,background-color] duration-200 disabled:opacity-100
+                        bg-white/70 dark:bg-white/[0.06] text-foreground border
+                        ${
+                          busy
+                            ? 'border-[#C99130]/60 dark:border-[#E5A93C]/50 border-t-[#C51F24] dark:border-t-[#E82C32] shadow-[0_-3px_14px_-2px_rgba(197,31,36,0.55)]'
+                            : error
+                            ? 'border-[#C51F24]/60 dark:border-[#E82C32]/60'
+                            : active
+                            ? 'border-[#C99130] dark:border-[#E5A93C] shadow-[0_0_0_4px_rgba(229,169,60,0.18),0_0_24px_rgba(229,169,60,0.35)]'
+                            : d
+                            ? 'border-[#087D91]/50 dark:border-[#12A4BC]/50'
+                            : 'border-[#05363F]/12 dark:border-white/12'
+                        }`}
+                    />
+                    {active && !d && (
+                      <span
+                        aria-hidden="true"
+                        className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-0.5 h-6 rounded bg-[#C99130] dark:bg-[#E5A93C] motion-safe:animate-pulse"
+                      />
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })}
+          </motion.div>
 
-                {/* Micro accent dot below filled input */}
-                {isFilled && (
-                  <span
-                    className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-teal-600 dark:bg-teal-400"
-                    style={{ boxShadow: '0 0 6px rgba(8,125,145,0.6)' }}
+          {/* The single box the six become; it shows the check only after a real success. */}
+          <AnimatePresence>
+            {(phase === 'converge' || success) && (
+              <motion.div
+                className="absolute left-1/2 top-1/2"
+                style={{ width: boxW + 12, height: boxH + 12, marginLeft: -(boxW + 12) / 2, marginTop: -(boxH + 12) / 2 }}
+                initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.6 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={reduced ? { duration: 0.4 } : { delay: 0.25, type: 'spring', stiffness: 300, damping: 20 }}
+              >
+                {success && !reduced && (
+                  <motion.span
+                    aria-hidden="true"
+                    className="absolute inset-0 rounded-2xl border-2 border-emerald-500"
+                    initial={{ scale: 1, opacity: 0.8 }}
+                    animate={{ scale: 3.4, opacity: 0 }}
+                    transition={{ duration: 1.1, ease: 'easeOut', repeat: 1 }}
                   />
                 )}
+                <div
+                  className={`relative w-full h-full rounded-2xl border flex items-center justify-center backdrop-blur-md transition-colors duration-300 ${
+                    success
+                      ? 'border-emerald-500 bg-emerald-500/15 shadow-[0_0_32px_rgba(16,185,129,0.45)]'
+                      : 'border-[#C99130] dark:border-[#E5A93C] bg-white/70 dark:bg-white/[0.06]'
+                  }`}
+                >
+                  {success && (
+                    <motion.span
+                      initial={reduced ? { opacity: 0 } : { scale: 0, rotate: -30 }}
+                      animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                      transition={{ type: 'spring', stiffness: 400, damping: 18 }}
+                    >
+                      <Check className="w-8 h-8 text-emerald-500" strokeWidth={3} />
+                    </motion.span>
+                  )}
+                </div>
               </motion.div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ── ERROR & SUCCESS ALERTS ── */}
-      <AnimatePresence mode="wait">
-        {errorMessage && (
-          <motion.div
-            initial={{ opacity: 0, y: -6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            className="flex items-center gap-2.5 p-3 rounded-2xl bg-destructive/10 border border-destructive/25 text-destructive text-xs sm:text-sm font-thmanyah-sans mb-5"
-          >
-            <AlertCircle className="w-4 h-4 shrink-0" />
-            <p className="flex-1">{errorMessage}</p>
-          </motion.div>
-        )}
-
-        {successMessage && (
-          <motion.div
-            initial={{ opacity: 0, y: -6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            className="flex items-center gap-2.5 p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-700 dark:text-emerald-300 text-xs sm:text-sm font-thmanyah-sans mb-5"
-          >
-            <CheckCircle2 className="w-4 h-4 shrink-0" />
-            <p className="flex-1">{successMessage}</p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ── VERIFY SUBMIT BUTTON ── */}
-      <div className="space-y-4">
-        <button
-          type="button"
-          disabled={isSubmitting || isSuccess || filledCount < 6}
-          onClick={() => triggerVerification()}
-          className="w-full relative group overflow-hidden inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[#087D91] via-[#0B95AC] to-[#C51F24] hover:from-[#066576] hover:to-[#A7181C] text-white font-thmanyah-sans font-bold text-sm sm:text-base shadow-lg shadow-teal-900/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 cursor-pointer"
-        >
-          {isSubmitting ? (
-            <>
-              <BrandSpinner size="sm" />
-              <span>{isAr ? 'جارٍ فك تشفير وتأكيد الرمز...' : 'Verifying Security Code...'}</span>
-            </>
-          ) : isSuccess ? (
-            <>
-              <CheckCircle2 className="w-5 h-5 text-white animate-bounce" />
-              <span>{isAr ? 'تم التحقق بنجاح!' : 'Verified Successfully!'}</span>
-            </>
-          ) : (
-            <>
-              <ShieldCheck className="w-5 h-5" />
-              <span>{isAr ? 'تأكيد الرمز والمتابعة' : 'Verify & Continue'}</span>
-              <Sparkles className="w-4 h-4 opacity-75 group-hover:opacity-100 transition-opacity" />
-            </>
-          )}
-        </button>
-
-        {/* ── RESEND COUNTDOWN & ACTION ── */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-3 border-t border-border/60 text-xs font-thmanyah-sans">
-          <div className="flex items-center gap-1.5 text-muted-foreground">
-            <span>{isAr ? 'لم يصلك الرمز؟' : "Didn't receive the code?"}</span>
-            {!canResend && (
-              <span className="font-mono font-semibold text-foreground">
-                ({formatTime(countdown)})
-              </span>
             )}
-          </div>
+          </AnimatePresence>
+        </motion.div>
+      </motion.div>
 
-          <button
+      <p
+        role={error ? 'alert' : 'status'}
+        aria-live={error ? 'assertive' : 'polite'}
+        className={`relative mt-4 min-h-5 text-center text-sm ${
+          error ? 'text-[#C51F24] dark:text-[#E82C32] font-medium' : success ? 'sr-only' : 'text-muted-foreground'
+        }`}
+      >
+        {status}
+      </p>
+
+      {!success && (
+        <div className="relative mt-4 space-y-4">
+          <Button
             type="button"
-            disabled={!canResend || isResending || isSubmitting}
-            onClick={handleResend}
-            className="inline-flex items-center gap-1.5 font-semibold text-teal-700 dark:text-teal-300 hover:text-teal-800 dark:hover:text-teal-200 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
+            size="lg"
+            className="w-full"
+            isLoading={busy}
+            disabled={!isComplete(digits)}
+            onClick={() => verify(digits.join(''))}
           >
-            {isResending ? (
-              <>
-                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                <span>{isAr ? 'جارٍ الإرسال...' : 'Resending...'}</span>
-              </>
-            ) : (
-              <>
-                <RefreshCw className="w-3.5 h-3.5" />
-                <span>{isAr ? 'إعادة إرسال الرمز' : 'Resend Code'}</span>
-              </>
-            )}
-          </button>
+            {busy ? t('نتحقق…', 'Checking…') : t('تأكيد', 'Verify')}
+          </Button>
+
+          {onResend && (
+            <div className="text-center text-sm text-muted-foreground">
+              {t('لم يصلك الكود؟', "Didn't get it?")}{' '}
+              <button
+                type="button"
+                onClick={resend}
+                disabled={countdown > 0 || isResending || busy}
+                className={`inline-flex items-center gap-1 font-semibold rounded px-1 text-[#087D91] dark:text-[#12A4BC] hover:underline disabled:no-underline disabled:text-muted-foreground disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus`}
+              >
+                {isResending && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
+                {t('أعد الإرسال', 'Resend')}
+                {countdown > 0 && (
+                  <bdi dir="ltr" className="tabular-nums">
+                    ({countdown}s)
+                  </bdi>
+                )}
+              </button>
+            </div>
+          )}
         </div>
-      </div>
+      )}
     </div>
   );
 };
