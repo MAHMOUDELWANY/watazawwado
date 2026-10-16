@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Lock, Eye, EyeOff } from 'lucide-react';
-import { BrandLogo } from '../components/ui/BrandLogo';
+import { AuthPage, AuthCard, AuthPortal } from '../components/auth/AuthFrame';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Label } from '../components/ui/Label';
@@ -46,15 +46,13 @@ export default function StaffSetPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex items-center justify-center py-12 px-4" dir={isAr ? 'rtl' : 'ltr'}>
-      <div className="max-w-md w-full glass-dialog rounded-3xl p-8 sm:p-10 space-y-6">
-        <div className="text-center space-y-2">
-          <BrandLogo variant="large" className="mx-auto mb-3" />
-          <h1 className="text-2xl font-display font-bold">{t('Choose your password', 'اختار كلمة السر بتاعتك')}</h1>
-          <p className="text-sm text-muted-foreground">
-            {t('You will use it with your email to sign in from any device.', 'هتستخدمها مع إيميلك عشان تدخل من أي جهاز.')}
-          </p>
-        </div>
+    <AuthPage isAr={isAr}>
+      <AuthCard>
+        <AuthPortal
+          title={t('Choose your password', 'اختار كلمة السر بتاعتك')}
+          subtitle={t('You will use it with your email to sign in from any device.', 'هتستخدمها مع إيميلك عشان تدخل من أي جهاز.')}
+        />
+        <div className="px-6 sm:px-8 pt-6 pb-7">
 
         {!loading && !user ? (
           <div className="space-y-4 text-center">
@@ -106,12 +104,13 @@ export default function StaffSetPasswordPage() {
               />
             </div>
             {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-            <Button type="submit" isLoading={busy || loading} className="w-full">
+            <Button type="submit" isLoading={busy || loading} className="w-full !rounded-full">
               {t('Save and continue', 'احفظ وكمّل')}
             </Button>
           </form>
         )}
-      </div>
-    </div>
+        </div>
+      </AuthCard>
+    </AuthPage>
   );
 }

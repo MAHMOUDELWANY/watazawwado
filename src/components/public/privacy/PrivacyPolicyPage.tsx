@@ -78,11 +78,11 @@ export function PrivacyPolicyPage() {
                 <p>
                   {isEn ? (
                     <>
-                      Welcome to <strong>Watazawwado Academy</strong> (accessible at <a href="https://watazawwado.academy" className="text-teal-600 dark:text-teal-400 underline">watazawwado.academy</a>). This platform is a dedicated, independent educational practice founded and operated by <strong>Ustadh Mahmoud Said Alwani</strong>, offering personalized 1-on-1 online instruction in the Holy Quran, Tajweed, Arabic Language, and Islamic Studies.
+                      Welcome to <strong>Watazawwado Academy</strong> (accessible at <a href="https://watazawwado.academy" className="text-teal-600 dark:text-teal-400 underline">watazawwado.academy</a>). It is an online academy offering one-on-one lessons in the Quran, Tajweed, Arabic, Islamic studies and English.
                     </>
                   ) : (
                     <>
-                      أهلاً بك في <strong>منصة وتزودوا التعليمية (Watazawwado Academy)</strong> المتاحة عبر الرابط (<a href="https://watazawwado.academy" className="text-teal-600 dark:text-teal-400 underline">watazawwado.academy</a>). تُدار المنصة تحت إشراف <strong>الأستاذ محمود سعيد علواني</strong> لتقديم دروس فردية مباشرة ومخصصة لتعليم القرآن الكريم والتجويد واللغة العربية والدراسات الإسلامية للطلاب في مختلف أنحاء العالم.
+                      أهلاً بك في <strong>أكاديمية وتزودوا (Watazawwado Academy)</strong> المتاحة عبر الرابط (<a href="https://watazawwado.academy" className="text-teal-600 dark:text-teal-400 underline">watazawwado.academy</a>). وهي أكاديمية تعليمية عبر الإنترنت تقدّم دروساً فردية في القرآن الكريم والتجويد واللغة العربية والعلوم الشرعية واللغة الإنجليزية للطلاب في مختلف أنحاء العالم.
                     </>
                   )}
                 </p>
@@ -381,8 +381,8 @@ export function PrivacyPolicyPage() {
               <div className="glass-card p-6 rounded-2xl border border-border/80 space-y-4 text-sm sm:text-base">
                 <p className="text-muted-foreground">
                   {isEn
-                    ? 'If you have questions, concerns, or requests regarding this Privacy Policy or the handling of your data, please contact Ustadh Mahmoud directly:'
-                    : 'إذا كان لديك أي استفسار أو طلب يتعلق بسياسة الخصوصية أو معالجة بياناتك، يمكنك التواصل مباشرة مع الأستاذ محمود علواني عبر الوسائل التالية:'}
+                    ? 'If you have questions, concerns, or requests regarding this Privacy Policy or the handling of your data, please contact us:'
+                    : 'إذا كان لديك أي استفسار أو طلب يتعلق بسياسة الخصوصية أو معالجة بياناتك، يمكنك التواصل معنا عبر الوسائل التالية:'}
                 </p>
 
                 <div className="grid sm:grid-cols-2 gap-3 pt-2 text-sm">

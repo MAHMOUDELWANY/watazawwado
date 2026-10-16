@@ -51,7 +51,7 @@ describe('Teacher/Staff Entry Security & Workspace Separation Regression Suite',
       'StudentAuthModal must detect if teacher role is returned'
     );
     assert.ok(
-      modalSrc.includes('Staff Login') || modalSrc.includes('بوابة المعلم'),
+      modalSrc.includes('teacher sign-in page') && modalSrc.includes('دخول المعلمين'),
       'StudentAuthModal must instruct teacher accounts to use Staff Login portal'
     );
   });

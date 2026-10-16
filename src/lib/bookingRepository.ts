@@ -47,7 +47,7 @@ export const bookingRepository = {
           if (!rpcResult) {
             return {
               eligible: false,
-              reason: 'Our records indicate a free trial session has already been booked with this contact information. Each student is eligible for one complimentary trial. You may book a regular lesson or contact Mahmoud directly on WhatsApp for manual assistance.',
+              reason: 'Our records indicate a free trial session has already been booked with this contact information. Each student is eligible for one complimentary trial. You may book a regular lesson or message us on WhatsApp and we will help.',
             };
           }
           return { eligible: true };
@@ -207,7 +207,7 @@ export const bookingRepository = {
       bookingStatus = resData.status || bookingStatus;
     } catch (err: any) {
       console.error('Server booking error:', err);
-      return { success: false, error: 'Database service is currently unavailable. Please try again later or contact Mahmoud directly.' };
+      return { success: false, error: 'Database service is currently unavailable. Please try again later or message us on WhatsApp.' };
     }
 
     // Trigger Server-Side Integrations (Google Calendar & Zoom) only for confirmed bookings
@@ -353,7 +353,7 @@ export const bookingRepository = {
       if (!eligibility.eligible) {
         return {
           success: false,
-          message: eligibility.explanation || 'Cancellation is closed within 3 hours of the lesson. Please contact Mahmoud directly.'
+          message: eligibility.explanation || 'Cancellation is closed within 3 hours of the lesson. Please message us on WhatsApp.'
         };
       }
     }
@@ -368,7 +368,7 @@ export const bookingRepository = {
         
         if (rpcError) {
           const msg = rpcError.message.includes('within 3 hours')
-            ? 'Self-service cancellation is closed within 3 hours of the lesson. Please contact Mahmoud directly.'
+            ? 'Self-service cancellation is closed within 3 hours of the lesson. Please message us on WhatsApp.'
             : `Cancellation failed: ${rpcError.message}`;
           return { success: false, message: msg };
         }
@@ -411,7 +411,7 @@ export const bookingRepository = {
       if (!eligibility.eligible) {
         return {
           success: false,
-          message: eligibility.explanation || 'Rescheduling is closed within 3 hours of the lesson. Please contact Mahmoud directly.'
+          message: eligibility.explanation || 'Rescheduling is closed within 3 hours of the lesson. Please message us on WhatsApp.'
         };
       }
     }
@@ -461,7 +461,7 @@ export const bookingRepository = {
 
         if (rpcError) {
           const msg = rpcError.message.includes('within 3 hours')
-            ? 'Self-service rescheduling is closed within 3 hours of the lesson. Please contact Mahmoud directly.'
+            ? 'Self-service rescheduling is closed within 3 hours of the lesson. Please message us on WhatsApp.'
             : `Reschedule failed: ${rpcError.message}`;
           return { success: false, message: msg };
         }

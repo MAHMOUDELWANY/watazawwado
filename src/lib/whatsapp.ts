@@ -48,11 +48,11 @@ export function buildBookingWhatsAppUrl(params: {
   learnerName: string;
 }): string {
   const text = params.isTrial
-    ? `Assalamu Alaikum Ustadh Mahmoud, I have just booked my Free Trial lesson for ${params.serviceName}.\n` +
+    ? `Assalamu alaikum Watazawwado team, I have just booked my Free Trial lesson for ${params.serviceName}.\n` +
       `Booking Ref: ${params.bookingRef}\n` +
       `Date: ${params.date} at ${params.timeDisplay} (${params.timezone})\n` +
       `Learner: ${params.learnerName}`
-    : `Assalamu Alaikum Ustadh Mahmoud, I have just booked a 1-on-1 lesson for ${params.serviceName}.\n` +
+    : `Assalamu alaikum Watazawwado team, I have just booked a 1-on-1 lesson for ${params.serviceName}.\n` +
       `Booking Ref: ${params.bookingRef}\n` +
       `Date: ${params.date} at ${params.timeDisplay} (${params.timezone})\n` +
       `Learner: ${params.learnerName}`;
@@ -77,7 +77,7 @@ export function buildPaymentWhatsAppUrl(params: {
     params.paymentMethod ? `Method: ${params.paymentMethod}` : null
   ].filter(Boolean).join('\n');
 
-  const text = `Assalamu Alaikum Ustadh Mahmoud, I have a question regarding lesson payment.\n${details ? `\n${details}` : ''}`;
+  const text = `Assalamu alaikum Watazawwado team, I have a question regarding lesson payment.\n${details ? `\n${details}` : ''}`;
   return buildWhatsAppUrl(text);
 }
 
@@ -90,7 +90,7 @@ export function buildRescheduleWhatsAppUrl(params: {
   date?: string;
   timeDisplay?: string;
 }): string {
-  const text = `Assalamu Alaikum Ustadh Mahmoud, I would like to inquire about rescheduling/managing my lesson.\n` +
+  const text = `Assalamu alaikum Watazawwado team, I would like to inquire about rescheduling/managing my lesson.\n` +
     `Booking Ref: ${params.bookingRef}\n` +
     `Service: ${params.serviceName}` +
     (params.date && params.timeDisplay ? `\nScheduled For: ${params.date} at ${params.timeDisplay}` : '');
@@ -103,7 +103,7 @@ export function buildRescheduleWhatsAppUrl(params: {
  */
 export function buildGeneralInquiryWhatsAppUrl(topic?: string): string {
   const text = topic
-    ? `Assalamu Alaikum Ustadh Mahmoud, I would like to ask about ${topic}.`
-    : `Assalamu Alaikum Ustadh Mahmoud, I would like to ask about your personalized 1-on-1 lessons.`;
+    ? `Assalamu alaikum Watazawwado team, I would like to ask about ${topic}.`
+    : `Assalamu alaikum Watazawwado team, I would like to ask about your personalized 1-on-1 lessons.`;
   return buildWhatsAppUrl(text);
 }

@@ -28,21 +28,6 @@ export interface ServicePillar {
   services: ServiceItem[];
 }
 
-export interface TestimonialItem {
-  id: string;
-  quote: string;
-  arabicQuote?: string;
-  author: string;
-  arabicAuthor?: string;
-  role: string;
-  arabicRole?: string;
-  location: string;
-  arabicLocation?: string;
-  subject: string;
-  arabicSubject?: string;
-  durationWithMahmoud: string;
-  arabicDurationWithMahmoud?: string;
-}
 
 export interface FAQItem {
   question: string;

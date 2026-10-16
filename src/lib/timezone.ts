@@ -206,7 +206,7 @@ export function runTimezoneMatrixAudit(sampleDateTimeIso?: string): TimezoneMatr
     { zone: 'America/Vancouver', region: 'Canada (Vancouver / Pacific)' },
     { zone: 'Europe/London', region: 'United Kingdom (London / GMT/BST)' },
     { zone: 'Australia/Sydney', region: 'Australia (Sydney / Eastern)' },
-    { zone: 'Africa/Cairo', region: 'Egypt (Mahmoud Base / Cairo Time)' }
+    { zone: 'Africa/Cairo', region: 'Egypt (Cairo)' }
   ];
 
   const baseDt = sampleDateTimeIso

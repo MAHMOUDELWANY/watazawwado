@@ -1,199 +1,125 @@
 import React from 'react';
 import { useOutletContext, Link } from 'react-router-dom';
-import { motion } from 'motion/react';
-import { Calendar, MessageCircle, CheckCircle2, Clock, ShieldCheck, HeartHandshake, ArrowRight, ArrowLeft } from 'lucide-react';
+import { CalendarClock, ShieldCheck, MessageCircle } from 'lucide-react';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
-import { PublicSection, MarginNote, PublicButton, StudyLine, PageHero } from '../PublicDesignSystem';
+import { PublicSection, PublicButton, PageHero } from '../PublicDesignSystem';
 import { HOW_IT_WORKS_STEPS, TEACHING_PILLARS } from '../../../data/content';
 import { WhatsAppIcon } from '../../ui/WhatsAppIcon';
 import { buildWhatsAppUrl } from '../../../lib/whatsapp';
+import { ValueCard, PORTALS } from '../ValueCard';
+import {
+  TrialCalendarEmblem, MeetLevelEmblem, PlanScrollEmblem, LessonLaptopEmblem,
+  HourglassEmblem, UnderstandEmblem, WeekHabitEmblem, AdabEmblem,
+} from '../illustrations/ValueEmblems';
+
+const STEP_EMBLEMS = [TrialCalendarEmblem, MeetLevelEmblem, PlanScrollEmblem, LessonLaptopEmblem];
+const PILLAR_EMBLEMS = [HourglassEmblem, UnderstandEmblem, WeekHabitEmblem, AdabEmblem];
+const AR_DIGITS = ['١', '٢', '٣', '٤'];
 
 export function HowItWorksPage() {
   const { lang, onOpenTrialModal } = useOutletContext<PublicLayoutContextType>();
   const isEn = lang === 'en';
 
-  const stageIcons = [
-    <Calendar key="cal" className="w-5 h-5 text-primary" />,
-    <CheckCircle2 key="check" className="w-5 h-5 text-teal-600 dark:text-teal-400" />,
-    <Clock key="clock" className="w-5 h-5 text-accent" />,
-    <HeartHandshake key="shake" className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+  const promises = [
+    { icon: ShieldCheck, en: ['A free first lesson', '30 minutes, no card, nothing renews.'], ar: ['أول حصة مجاناً', '٣٠ دقيقة، من غير بطاقة، ومفيش حاجة بتتجدد.'] },
+    { icon: CalendarClock, en: ['Your time, your pace', 'Move a lesson up to 1 hour before, cancel up to 3 hours before.'], ar: ['وقتك وإيقاعك', 'غيّر الميعاد لحد ساعة قبلها، أو الغي لحد ٣ ساعات قبلها.'] },
+    { icon: MessageCircle, en: ['Your teacher, close by', 'Ask between lessons in the chat on the site.'], ar: ['معلمك قريب منك', 'اسأله بين الحصص في المحادثة على الموقع.'] },
   ];
 
   return (
     <main id="main-content" className="pt-24 lg:pt-32 pb-20">
       <PublicSection>
-        <div className="max-w-5xl mx-auto space-y-16">
-          
+        <div className="max-w-5xl mx-auto space-y-16 lg:space-y-20">
+
           <PageHero
             title={isEn ? <>From your first lesson <span className="text-ribbon">to real, lasting progress.</span></> : <>من حصتك الأولى <span className="text-ribbon">لحد تقدّم حقيقي ومستمر.</span></>}
             intro={isEn
               ? 'Four clear steps, from a free trial to weekly lessons with your own teacher.'
-              : 'أربع خطوات واضحة، من الحصة التجريبية المجانية لحد دروسك الأسبوعية مع معلمك.'}
+              : 'أربع خطوات واضحة، من الحصة التجريبية المجانية لحد حصصك الأسبوعية مع معلمك.'}
           />
 
-          {/* 4 Sequential Stages Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 pt-6">
-            {HOW_IT_WORKS_STEPS.map((step, index) => (
-              <motion.div
-                key={step.step}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                className="glass-card p-6 sm:p-8 rounded-2xl border border-border/80 hover:border-teal-500/50 transition-all flex flex-col justify-between shadow-2xs hover:shadow-xs group"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-5">
-                    <span className="font-editorial text-3xl sm:text-4xl font-bold text-primary group-hover:scale-105 transition-transform">
-                      {step.step}
-                    </span>
-                    <span className="text-xs font-semibold tracking-wider px-3 py-1 rounded-full bg-teal-500/10 text-teal-800 dark:text-teal-200 border border-teal-500/25">
-                      {isEn ? step.highlight : (step.arabicHighlight || step.highlight)}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="p-2 rounded-xl bg-surface-warm dark:bg-surface-subtle shrink-0">
-                      {stageIcons[index] || <CheckCircle2 className="w-5 h-5 text-primary" />}
-                    </div>
-                    <h2 className="font-editorial text-xl sm:text-2xl font-bold text-foreground leading-snug">
-                      {isEn ? step.title : step.arabicTitle}
-                    </h2>
-                  </div>
-
-                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed pt-2">
-                    {isEn ? step.description : (step.arabicDescription || step.description)}
-                  </p>
-                </div>
-
-                <div className="mt-8 pt-4 border-t border-border flex items-center justify-between text-xs sm:text-sm font-semibold text-teal-700 dark:text-teal-300">
-                  <span>{isEn ? `Stage ${index + 1} of 4` : `المرحلة ${index + 1} من ٤`}</span>
-                  <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse" />
-                </div>
-              </motion.div>
+          <ol className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5" aria-label={isEn ? 'The four steps' : 'الخطوات الأربع'}>
+            {HOW_IT_WORKS_STEPS.map((step, i) => (
+              <li key={step.step}>
+                <ValueCard
+                  index={i}
+                  headingLevel={2}
+                  emblem={STEP_EMBLEMS[i]}
+                  portal={PORTALS[i % PORTALS.length]}
+                  label={isEn ? `Step ${i + 1}` : `الخطوة ${AR_DIGITS[i]}`}
+                  title={isEn ? step.title : step.arabicTitle}
+                  text={isEn ? step.description : step.arabicDescription}
+                />
+              </li>
             ))}
-          </div>
+          </ol>
 
-          <StudyLine className="my-12" />
-
-          {/* Educational Pillars */}
-          <div className="space-y-10">
-            <div className="text-center max-w-2xl mx-auto space-y-4">
-              <h2 className="font-editorial text-3xl sm:text-4xl text-foreground font-bold">
-                {isEn ? 'Principles that guide every lesson' : 'مبادئ راسخة في كل درس'}
+          <section aria-labelledby="pillars-title" className="space-y-8">
+            <div className="text-center max-w-2xl mx-auto space-y-3">
+              <h2 id="pillars-title" className="font-editorial text-3xl sm:text-4xl text-foreground font-bold">
+                {isEn ? 'Principles in every lesson' : 'مبادئ راسخة في كل درس'}
               </h2>
-              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                {isEn
-                  ? 'We do not treat teaching as a mechanical transaction. Every session is grounded in pedagogical care and classical ethics.'
-                  : 'التعليم ليس مجرد نقل للمعلومة، بل رعاية تربوية وأمانة علمية مبنية على الصبر والإتقان.'}
+              <p className="text-base text-muted-foreground leading-relaxed">
+                {isEn ? 'Four things we never trade away, whatever the subject.' : 'أربع حاجات مبنتنازلش عنها، أياً كانت المادة.'}
               </p>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {TEACHING_PILLARS.map((pillar, idx) => (
-                <div 
-                  key={idx}
-                  className="glass-card p-6 sm:p-7 rounded-2xl border border-border/80 hover:border-border transition-all"
-                >
-                  <div className="flex items-center gap-2 mb-3 text-xs font-bold text-primary uppercase tracking-wider">
-                    <span>0{idx + 1}</span>
-                    <span>•</span>
-                    <span>{isEn ? 'Core Value' : 'قيمة جوهرية'}</span>
-                  </div>
-                  <h3 className="font-editorial text-xl font-bold text-foreground mb-2">
-                    {isEn ? pillar.title : pillar.arabicTitle}
-                  </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {isEn ? pillar.description : (pillar.arabicDescription || pillar.description)}
-                  </p>
-                </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              {TEACHING_PILLARS.map((pillar, i) => (
+                <ValueCard
+                  key={pillar.title}
+                  index={i}
+                  emblem={PILLAR_EMBLEMS[i]}
+                  portal={PORTALS[(i + 2) % PORTALS.length]}
+                  title={isEn ? pillar.title : pillar.arabicTitle}
+                  text={isEn ? pillar.description : pillar.arabicDescription}
+                />
               ))}
             </div>
-          </div>
+          </section>
 
-          {/* Practical Policies & Reassurance Banner */}
-          <div className="glass-card p-8 sm:p-10 rounded-2xl border border-teal-500/30 bg-teal-500/5 space-y-6">
-            <div className="flex items-center gap-3">
-              <ShieldCheck className="w-6 h-6 text-teal-600 dark:text-teal-400 shrink-0" />
-              <h3 className="font-editorial text-2xl font-bold text-foreground">
-                {isEn ? 'Policies Built on Fairness' : 'سياسات واضحة تضمن راحتك'}
-              </h3>
-            </div>
-
-            <div className="grid sm:grid-cols-3 gap-6 text-sm text-muted-foreground">
-              <div className="space-y-1.5">
-                <div className="font-bold text-foreground">
-                  {isEn ? 'Free Trial with No Strings' : 'جلسة تجريبية مجانية تماماً'}
-                </div>
-                <p className="leading-relaxed">
-                  {isEn ? '٣٠ minutes of actual interaction. No card required, no automatic billing.' : '٣٠ دقيقة لتحديد مستواك وخطة دراستك بدون أي بطاقة بنكية.'}
-                </p>
-              </div>
-
-              <div className="space-y-1.5">
-                <div className="font-bold text-foreground">
-                  {isEn ? '3-Hour Reschedule Window' : 'إلغاء وتعديل حتى ٣ ساعات'}
-                </div>
-                <p className="leading-relaxed">
-                  {isEn ? 'Reschedule yourself up to 1 hour before the lesson, or cancel up to 3 hours before.' : 'يمكنك تغيير موعدك بنفسك حتى ساعة قبل الحصة، أو الإلغاء حتى ٣ ساعات قبلها.'}
-                </p>
-              </div>
-
-              <div className="space-y-1.5">
-                <div className="font-bold text-foreground">
-                  {isEn ? 'Direct WhatsApp Coordination' : 'تواصل مباشر عبر واتساب'}
-                </div>
-                <p className="leading-relaxed">
-                  {isEn ? 'Reach your teacher directly for questions, feedback, or custom requests between classes.' : 'محادثة مباشرة مع المعلم لأي استفسارات أو متابعة مستمرة بين الدروس.'}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Call to action & WhatsApp buttons */}
-          <div className="glass-card p-8 sm:p-12 rounded-2xl border border-border-subtle text-center space-y-6">
-            <h2 className="font-editorial text-2xl sm:text-3xl text-foreground font-bold">
-              {isEn ? 'Ready to begin with a free trial?' : 'هل أنت مستعد لبدء جلستك التجريبية المجانية؟'}
-            </h2>
-            <p className="text-muted-foreground max-w-lg mx-auto text-sm sm:text-base leading-relaxed">
-              {isEn
-                ? 'Select a time that suits your timezone. Your teacher will meet you on Zoom to discuss your goals and provide a gentle initial assessment.'
-                : 'اختر الموعد الأنسب لجدولك اليومي. سيلتقي بك معلمك أو معلمتك عبر زووم لتحديد مستواك ووضع خطة دراسية تناسبك.'}
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-              <PublicButton size="lg" onClick={() => onOpenTrialModal()}>
-                <span className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  <span>{isEn ? 'Book Free 30-Min Trial' : 'احجز جلستك المجانية الآن'}</span>
+          <ul className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {promises.map(({ icon: Icon, en, ar }) => (
+              <li key={en[0]} className="flex items-start gap-3 p-4 rounded-[var(--r-3)] border border-border bg-surface shadow-[var(--shadow-1)]">
+                <span className="arch-tile shrink-0 w-10 h-11 flex items-center justify-center bg-[#087D91]/10 text-[#087D91] dark:text-[#12A4BC]">
+                  <Icon className="w-5 h-5" aria-hidden="true" />
                 </span>
-              </PublicButton>
+                <span>
+                  <span className="block font-bold text-foreground text-sm">{isEn ? en[0] : ar[0]}</span>
+                  <span className="block text-sm text-muted-foreground">{isEn ? en[1] : ar[1]}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
 
+          <section className="band-deep relative overflow-hidden rounded-[2rem] px-6 py-12 sm:px-12 lg:py-16 text-center">
+            <h2 className="font-editorial text-3xl sm:text-4xl font-bold leading-tight">
+              {isEn ? 'The first step is the easiest.' : 'أول خطوة هي الأسهل.'}
+            </h2>
+            <p className="mt-3 text-base sm:text-lg leading-relaxed max-w-xl mx-auto text-[#FAF7F2]/80">
+              {isEn
+                ? 'Pick a time that suits you. Your teacher meets you on Zoom, listens, and suggests the way.'
+                : 'اختار الميعاد اللي يناسبك. معلمك هيقابلك على Zoom، ويسمعك، ويقترح عليك الطريق.'}
+            </p>
+            <div className="mt-7 flex flex-col sm:flex-row justify-center gap-3">
+              <PublicButton variant="primary" size="lg" onClick={() => onOpenTrialModal()} className="w-full sm:w-auto">
+                {isEn ? 'Book your free trial lesson' : 'احجز حصتك التجريبية المجانية'}
+              </PublicButton>
               <a
-                href={buildWhatsAppUrl(isEn ? 'Assalamu Alaikum Ustadh Mahmoud, I read How It Works and would like to ask a question.' : 'السلام عليكم أستاذ محمود، اطلعت على صفحة كيف نعمل وأود الاستفسار عن الدروس.')}
+                href={buildWhatsAppUrl(isEn ? 'Assalamu alaikum, I read How it works on Watazawwado and have a question.' : 'السلام عليكم، قريت صفحة كيف نعمل على وتزودوا وعندي سؤال.')}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-whatsapp-solid py-3 px-6 rounded-xl text-sm font-bold shadow-xs hover:scale-105 transition-all"
+                className="inline-flex items-center justify-center gap-2 py-3 px-6 rounded-xl text-sm font-bold bg-[#25D366] text-[#07361F] hover:bg-[#20BD5A] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05363F] focus-visible:ring-[#25D366]"
               >
                 <WhatsAppIcon className="w-4 h-4 shrink-0" />
-                <span>{isEn ? 'Ask on WhatsApp' : 'تواصل معنا على واتساب'}</span>
+                <span>{isEn ? 'Ask us on WhatsApp' : 'اسألنا على واتساب'}</span>
               </a>
             </div>
-
-            <div className="pt-4 flex items-center justify-center gap-6 text-xs text-muted-foreground">
-              <Link to="/learning" className="hover:text-foreground underline transition-colors">
-                {isEn ? 'Browse Study Tracks' : 'استكشف مسارات التعلم'}
-              </Link>
-              <span>•</span>
-              <Link to="/pricing" className="hover:text-foreground underline transition-colors">
-                {isEn ? 'View Pricing Packages' : 'شاهد باقات الأسعار'}
-              </Link>
-              <span>•</span>
-              <Link to="/about" className="hover:text-foreground underline transition-colors">
-                {isEn ? 'About our teachers' : 'عن المعلمين'}
-              </Link>
-            </div>
-          </div>
+            <p className="mt-6 text-sm text-[#FAF7F2]/75 flex flex-wrap justify-center gap-x-5 gap-y-2">
+              <Link to="/learning" className="underline hover:text-[#FAF7F2]">{isEn ? 'The subjects' : 'المواد'}</Link>
+              <Link to="/pricing" className="underline hover:text-[#FAF7F2]">{isEn ? 'Prices' : 'الأسعار'}</Link>
+              <Link to="/about" className="underline hover:text-[#FAF7F2]">{isEn ? 'About us' : 'من نحن'}</Link>
+            </p>
+          </section>
 
         </div>
       </PublicSection>

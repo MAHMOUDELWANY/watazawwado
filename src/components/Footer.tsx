@@ -3,7 +3,7 @@ import React from 'react';
 import { SocialLinks } from './ui/SocialLinks';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Globe, ArrowUp } from 'lucide-react';
+import { Globe } from 'lucide-react';
 import { Language } from '../types';
 
 interface FooterProps {
@@ -21,10 +21,6 @@ export const Footer: React.FC<FooterProps> = ({
   onOpenManageModal,
 }) => {
   const isEn = lang === 'en';
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
   return (
     <footer className="glass-surface border-t-0 mt-8 rounded-t-3xl mx-2 sm:mx-4 mb-2 sm:mb-4 py-14 transition-colors overflow-hidden">
@@ -57,7 +53,7 @@ export const Footer: React.FC<FooterProps> = ({
           <div className="md:col-span-4 grid grid-cols-2 gap-4 text-sm sm:text-base">
             <div>
               <div className="font-bold uppercase tracking-wider text-teal-700 dark:text-teal-300 text-xs mb-3">
-                {isEn ? 'Teaching' : 'الدروس والبرامج'}
+                {isEn ? 'Subjects' : 'المواد'}
               </div>
               <ul className="space-y-0.5 text-muted-foreground font-medium">
                 <li>
@@ -67,22 +63,22 @@ export const Footer: React.FC<FooterProps> = ({
                 </li>
                 <li>
                   <Link to="/learning" className="inline-block py-1.5 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
-                    {isEn ? 'Islamic Studies' : 'الدراسات الإسلامية'}
+                    {isEn ? 'Islamic studies' : 'العلوم الشرعية'}
                   </Link>
                 </li>
                 <li>
                   <Link to="/learning" className="inline-block py-1.5 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
-                    {isEn ? 'Arabic Language' : 'اللغة العربية'}
+                    {isEn ? 'Arabic' : 'اللغة العربية'}
                   </Link>
                 </li>
                 <li>
                   <Link to="/learning" className="inline-block py-1.5 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
-                    {isEn ? 'English Coaching' : 'اللغة الإنجليزية'}
+                    {isEn ? 'English' : 'اللغة الإنجليزية'}
                   </Link>
                 </li>
                 <li>
                   <Link to="/pricing" className="inline-block py-1.5 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
-                    {isEn ? 'Pricing & Packages' : 'باقات الأسعار'}
+                    {isEn ? 'Prices & packages' : 'الأسعار والباقات'}
                   </Link>
                 </li>
               </ul>
@@ -90,17 +86,17 @@ export const Footer: React.FC<FooterProps> = ({
 
             <div>
               <div className="font-bold uppercase tracking-wider text-accent text-xs mb-3">
-                {isEn ? 'Experience' : 'التجربة'}
+                {isEn ? 'The academy' : 'الأكاديمية'}
               </div>
               <ul className="space-y-0.5 text-muted-foreground font-medium">
                 <li>
                   <Link to="/about" className="inline-block py-1.5 hover:text-accent transition-colors">
-                    {isEn ? 'About our teachers' : 'عن المعلمين'}
+                    {isEn ? 'About us' : 'من نحن'}
                   </Link>
                 </li>
                 <li>
                   <Link to="/how-it-works" className="inline-block py-1.5 hover:text-accent font-semibold transition-colors">
-                    {isEn ? 'How It Works' : 'كيف نعمل'}
+                    {isEn ? 'How it works' : 'كيف نعمل'}
                   </Link>
                 </li>
                 <li>
@@ -115,12 +111,12 @@ export const Footer: React.FC<FooterProps> = ({
                 </li>
                 <li>
                   <Link to="/privacy" className="inline-block py-1.5 hover:text-accent transition-colors">
-                    {isEn ? 'Privacy Policy' : 'سياسة الخصوصية'}
+                    {isEn ? 'Privacy' : 'الخصوصية'}
                   </Link>
                 </li>
                 <li>
                   <Link to="/terms" className="inline-block py-1.5 hover:text-accent transition-colors">
-                    {isEn ? 'Terms of Service' : 'شروط الخدمة'}
+                    {isEn ? 'Terms' : 'الشروط'}
                   </Link>
                 </li>
               </ul>
@@ -130,13 +126,13 @@ export const Footer: React.FC<FooterProps> = ({
           {/* Action & Contact (3 cols on md) */}
           <div className="md:col-span-3 space-y-3">
             <div className="font-bold uppercase tracking-wider text-primary text-xs mb-2">
-              {isEn ? 'Get Started' : 'ابدأ الآن'}
+              {isEn ? 'Start here' : 'ابدأ من هنا'}
             </div>
             <button
               onClick={onOpenTrialModal}
               className="w-full py-2.5 px-4 rounded-xl btn-primary-material text-white text-sm font-bold transition-all shadow-sm cursor-pointer"
             >
-              {isEn ? 'Book Free 30-Min Trial' : 'احجز جلسة تجريبية مجانية'}
+              {isEn ? 'Book your free trial' : 'احجز حصتك المجانية'}
             </button>
             <div className="pt-4">
               <div className="font-bold text-sm text-foreground mb-3">
@@ -151,36 +147,28 @@ export const Footer: React.FC<FooterProps> = ({
         {/* Bottom Credits & Policies */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
           <div>
-            © {new Date().getFullYear()} Watazawwado Academy. {isEn ? 'All rights reserved.' : 'جميع الحقوق محفوظة لأكاديمية وتزودوا.'}
+            © {new Date().getFullYear()} Watazawwado Academy. {isEn ? 'All rights reserved.' : 'جميع الحقوق محفوظة.'}
           </div>
 
           <div className="flex flex-wrap items-center gap-4 sm:gap-6">
                         <Link to="/privacy" className="hover:text-foreground hover:underline transition-colors">
-              {isEn ? 'Privacy Policy' : 'سياسة الخصوصية'}
+              {isEn ? 'Privacy' : 'الخصوصية'}
             </Link>
             <span>•</span>
             <Link to="/terms" className="hover:text-foreground hover:underline transition-colors">
-              {isEn ? 'Terms of Service' : 'شروط الخدمة'}
+              {isEn ? 'Terms' : 'الشروط'}
             </Link>
             <span>•</span>
 <span>{isEn ? 'Reschedule up to 1 hour before' : 'تغيير الموعد حتى ساعة قبل الدرس'}</span>
             <span>•</span>
-            <span>{isEn ? 'Flexible Booking' : 'حجز مرن ومباشر'}</span>
+            <span>{isEn ? 'Cancel up to 3 hours before' : 'إلغاء لحد ٣ ساعات قبل الحصة'}</span>
             <span>•</span>
             <Link
               to="/staff/login"
               className="text-muted-foreground hover:text-foreground hover:underline font-medium flex items-center gap-1"
             >
-              <span>{isEn ? 'Teacher Login' : 'دخول المعلم'}</span>
+              <span>{isEn ? 'Teacher sign-in' : 'دخول المعلمين'}</span>
             </Link>
-            <span>•</span>
-            <button
-              onClick={scrollToTop}
-              className="p-1.5 rounded-lg hover:bg-surface-subtle text-muted-foreground transition-colors cursor-pointer"
-              aria-label="Scroll to top"
-            >
-              <ArrowUp className="w-4 h-4" />
-            </button>
           </div>
         </div>
 

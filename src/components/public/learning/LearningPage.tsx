@@ -60,7 +60,7 @@ const FAMILY_CONFIGS: Record<string, FamilyStyle & { icon: React.ComponentType<{
   }
 };
 
-// Comprehensive authentic Arabic details map for all 13 services
+// Arabic details for all 13 subjects (English ones live in src/data/content.ts).
 const ARABIC_SERVICE_DETAILS: Record<string, {
   description: string;
   whoIsItFor: string;
@@ -76,7 +76,7 @@ const ARABIC_SERVICE_DETAILS: Record<string, {
       'التلاوة المباشرة من المصحف برتم سليم وبدون تعثر',
       'بناء الثقة النفسية والاستمرارية في القراءة بدون إحباط'
     ],
-    recommendedFrequency: '٢ إلى ٣ جلسات أسبوعياً'
+    recommendedFrequency: '٢ لـ ٣ حصص في الأسبوع'
   },
   'tajweed': {
     description: 'التجويد ليس مجرد قواعد نظرية، بل تدريب عملي ومطابقة دقيقة لنطق الحروف. ندرس أحكام النون الساكنة والميم والمدود ومخارج وصفات الحروف مع التطبيق الفوري أثناء التلاوة.',
@@ -87,7 +87,7 @@ const ARABIC_SERVICE_DETAILS: Record<string, {
       'أحكام المدود المتنوعة ومهارات الوقف والابتداء التام والكافي',
       'تدريب الأذن الذاتية لاكتشاف الأخطاء وتصحيحها فوراً'
     ],
-    recommendedFrequency: 'جلستان أسبوعياً'
+    recommendedFrequency: 'حصتين في الأسبوع'
   },
   'quran-memorization': {
     description: 'حفظ القرآن يعتمد على الاستمرارية لا العجلة. نصمم معك مستهدفاً أسبوعياً يناسب وتيرة حياتك مع التسميع المباشر لضبط الحفظ وتصحيح الأخطاء قبل رسوخها في الذاكرة.',
@@ -98,7 +98,7 @@ const ARABIC_SERVICE_DETAILS: Record<string, {
       'فهم المعاني المفتاحية للآيات لترسيخ الحفظ عقلياً وروحياً',
       'استراتيجيات ذكية للتغلب على الآيات المتشابهة في المصحف'
     ],
-    recommendedFrequency: '٢ إلى ٤ جلسات أسبوعياً'
+    recommendedFrequency: '٢ لـ ٤ حصص في الأسبوع'
   },
   'quran-revision': {
     description: 'للطلاب الذين أتموا حفظ أجزاء أو القرآن كاملاً ويحتاجون رفيقاً معلماً للتسميع المنتظم وضبط المتشابهات وإتقان الأداء.',
@@ -109,7 +109,7 @@ const ARABIC_SERVICE_DETAILS: Record<string, {
       'تصحيح فوري للملاحظات الصوتية الدقيقة وأحكام الأداء',
       'اكتساب الثقة والجاهزية للإمامة والصلاة بالقرآن'
     ],
-    recommendedFrequency: '٢ إلى ٣ جلسات أسبوعياً'
+    recommendedFrequency: '٢ لـ ٣ حصص في الأسبوع'
   },
   'aqeedah': {
     description: 'دراسة أركان الإيمان الستة: الإيمان بالله وملائكته وكتبه ورسله واليوم الآخر والقدر خيره وشره. نقوم بالتأصيل من المصادر الأصيلة مع مساحة مفتوحة لنقاش الأسئلة المعاصرة.',
@@ -120,7 +120,7 @@ const ARABIC_SERVICE_DETAILS: Record<string, {
       'إجابات راسخة على تساؤلات الوجود والغاية والقضاء والقدر',
       'بناء هوية إسلامية واعية مستندة إلى الدليل والبرهان'
     ],
-    recommendedFrequency: 'جلسة إلى جلستين أسبوعياً'
+    recommendedFrequency: 'حصة أو اتنين في الأسبوع'
   },
   'fiqh': {
     description: 'فقه عملي يركز على ما يحتاجه المسلم في عباداته اليومية: الطهارة والوضوء، أحكام الصلاة وشروطها وسننها، وسجود السهو، وأحكام الصيام والسفر.',
@@ -131,7 +131,7 @@ const ARABIC_SERVICE_DETAILS: Record<string, {
       'أحكام الصيام ورخص السفر والأعذار الشرعية',
       'التعامل مع المسائل الحياتية العصرية بفهم فقهي متزن'
     ],
-    recommendedFrequency: 'جلسة إلى جلستين أسبوعياً'
+    recommendedFrequency: 'حصة أو اتنين في الأسبوع'
   },
   'seerah': {
     description: 'أكثر من مجرد تواريخ وأحداث، إنها رحلة في شخصية النبي ﷺ ورحمته وأخلاقه وقيادته، وكيف تعامل مع الصعاب والمواقف الأسرية والاجتماعية.',
@@ -142,7 +142,7 @@ const ARABIC_SERVICE_DETAILS: Record<string, {
       'دروس عملية في فن القيادة وحسن المعاشرة والصبر الجميل',
       'ربط وقائع السيرة بمواقفنا وتحدياتنا المعاصرة اليوم'
     ],
-    recommendedFrequency: 'جلسة واحدة أسبوعياً'
+    recommendedFrequency: 'حصة في الأسبوع'
   },
   'islamic-studies': {
     description: 'منهاج تكاملي يجمع بين العقيدة الميسرة، الآداب الإسلامية اليومية، الأدعية والأذكار النبوية، وقصص الأنبياء المؤثرة.',
@@ -153,7 +153,7 @@ const ARABIC_SERVICE_DETAILS: Record<string, {
       'القصص الهادفة للأنبياء والصحابة واستخلاص القيم منها',
       'بناء شخصية مسلمة متوازنة تجمع بين العلم وحسن الخلق'
     ],
-    recommendedFrequency: 'جلستان أسبوعياً'
+    recommendedFrequency: 'حصتين في الأسبوع'
   },
   'modern-standard-arabic': {
     description: 'تعلم القراءة والكتابة وفهم قواعد النحو والصرف من خلال نصوص تفاعلية وحوارات تطبيقية ومواد قراءة حقيقية من التراث والمعاصر.',
@@ -164,7 +164,7 @@ const ARABIC_SERVICE_DETAILS: Record<string, {
       'استيعاب المقروء للنصوص الكلاسيكية والمقالات الحديثة',
       'الكتابة والتعبير بلغة سليمة خالية من الأخطاء الإملائية'
     ],
-    recommendedFrequency: 'جلستان أسبوعياً'
+    recommendedFrequency: 'حصتين في الأسبوع'
   },
   'arabic-conversation': {
     description: 'مساحة مخصصة للمحادثة حيث تتحدث من الدقيقة الأولى. نحاكي مواقف الحياة الواقعية كالتعارف، السفر، العمل، والأسرة، مع توجيه هادئ لمخارج النطق والإيقاع.',
@@ -175,7 +175,7 @@ const ARABIC_SERVICE_DETAILS: Record<string, {
       'كسر حاجز الخوف والارتباك وبناء الثقة في المواقف الاجتماعية',
       'تطوير مهارة الاستماع والفهم بالسرعة الطبيعية للمتحدثين'
     ],
-    recommendedFrequency: '٢ إلى ٣ جلسات أسبوعياً'
+    recommendedFrequency: '٢ لـ ٣ حصص في الأسبوع'
   },
   'egyptian-arabic': {
     description: 'تعلم اللهجة المصرية الودودة والمعبرة، وهي اللهجة الأكثر شهرة وانتشاراً في العالم العربي بفضل الفنون والسينما والتواصل اليومي.',
@@ -186,7 +186,7 @@ const ARABIC_SERVICE_DETAILS: Record<string, {
       'الفروق الجوهرية وطرق التحويل بين الفصحى واللهجة المصرية',
       'أسرار النطق والتنغيم الصوتي لتتحدث وكأنك من أهل البلد'
     ],
-    recommendedFrequency: 'جلسة إلى جلستين أسبوعياً'
+    recommendedFrequency: 'حصة أو اتنين في الأسبوع'
   },
   'arabic-foundations': {
     description: 'مصمم خصيصاً للناطقين بغير العربية. نبتعد عن الصعوبة الأكاديمية ونركز على تمييز الحروف، النطق السليم، وأهم الكلمات القرآنية والحياتية.',
@@ -197,10 +197,10 @@ const ARABIC_SERVICE_DETAILS: Record<string, {
       'أهم ٢٠٠ كلمة شائعة في القرآن الكريم والممارسات اليومية للمسلمين',
       'قراءة الكلمات والتراكيب البسيطة بثقة تامة'
     ],
-    recommendedFrequency: '٢ إلى ٣ جلسات أسبوعياً'
+    recommendedFrequency: '٢ لـ ٣ حصص في الأسبوع'
   },
   'english': {
-    description: 'معلمانا يدرّسان الإنجليزية بمستوى C1. نعرف تماماً الأصوات والقواعد التي تُتعب الناطقين بالعربية، ونصححها بدقة وصبر.',
+    description: 'معلمينا بيدرّسوا الإنجليزية بمستوى C1، وعارفين كويس الأصوات والقواعد اللي بتتعب الناطقين بالعربية، وبيصححوها بدقة وصبر.',
     whoIsItFor: 'الناطقون بالعربية الراغبون في الطلاقة والمحادثة، المهاجرون، أو الطلاب المستعدون للدراسة بالخارج واجتياز الاختبارات.',
     whatYouWillLearn: [
       'تدريب مركز على النطق الصحيح وتصفية مخارج الحروف الإنجليزية',
@@ -208,7 +208,7 @@ const ARABIC_SERVICE_DETAILS: Record<string, {
       'تصحيح الأخطاء النحوية الناجمة عن الترجمة الحرفية من العربية',
       'مهارات القراءة السريعة وكتابة الرسائل والبريد الإلكتروني المهني'
     ],
-    recommendedFrequency: 'جلستان أسبوعياً'
+    recommendedFrequency: 'حصتين في الأسبوع'
   }
 };
 
@@ -277,7 +277,7 @@ export function LearningPage() {
         <div className="max-w-4xl mx-auto text-center space-y-6">
           
           <PageHero
-            title={isEn ? <>What you can <span className="text-ribbon">learn with us.</span></> : <>ماذا تتعلم <span className="text-ribbon">معنا؟</span></>}
+            title={isEn ? <>What you can <span className="text-ribbon">learn with us.</span></> : <>تتعلم إيه <span className="text-ribbon">معانا؟</span></>}
             intro={isEn
               ? 'One-on-one lessons shaped around your goal: Quran and Tajweed, Arabic, Islamic studies and English, from the very first letter to advanced study.'
               : 'دروس فردية على مقاس هدفك: القرآن والتجويد، والعربية، والعلوم الشرعية، والإنجليزية، من أول حرف لحد المستوى المتقدم.'}
@@ -347,12 +347,12 @@ export function LearningPage() {
           {/* Active Search Filter Badge */}
           {searchQuery && (
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <span>{isEn ? `Showing ${totalResultsCount} matching subject(s) for "${searchQuery}"` : `عرض ${totalResultsCount} مادة مطابقة لبحثك: "${searchQuery}"`}</span>
+              <span>{isEn ? `${totalResultsCount} subject(s) for "${searchQuery}"` : `${totalResultsCount} مادة لكلمة "${searchQuery}"`}</span>
               <button 
                 onClick={() => setSearchQuery('')} 
                 className="text-primary hover:underline font-bold"
               >
-                {isEn ? 'Clear filter' : 'إلغاء التصفية'}
+                {isEn ? 'Clear search' : 'امسح البحث'}
               </button>
             </div>
           )}
@@ -370,7 +370,7 @@ export function LearningPage() {
                 <Search className="w-6 h-6" />
               </div>
               <h3 className="text-lg font-bold text-foreground">
-                {isEn ? 'No matching subjects found' : 'لم نجد مواد مطابقة لبحثك'}
+                {isEn ? 'No subject matches that word' : 'ملقيناش مادة بالكلمة دي'}
               </h3>
               <p className="text-sm text-muted-foreground">
                 {isEn 
@@ -381,7 +381,7 @@ export function LearningPage() {
                 onClick={() => { setSearchQuery(''); setSelectedPillarId('all'); }}
                 className="px-4 py-2 rounded-xl bg-primary text-primary-foreground text-xs font-bold shadow-xs hover:opacity-95 cursor-pointer"
               >
-                {isEn ? 'Reset Filters' : 'إعادة ضبط البحث'}
+                {isEn ? 'Show all subjects' : 'اعرض كل المواد'}
               </button>
             </div>
           ) : (

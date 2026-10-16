@@ -107,7 +107,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
         <div className="flex items-center gap-2">
           {/* WhatsApp Assistance Badge */}
           <a
-            href={buildWhatsAppUrl(isEn ? 'Assalamu Alaikum Ustadh Mahmoud, I have a question regarding booking a lesson.' : 'السلام عليكم أستاذ محمود، لدي استفسار بخصوص حجز درس.')}
+            href={buildWhatsAppUrl(isEn ? 'Assalamu alaikum, I have a question about booking a lesson.' : 'السلام عليكم، عندي سؤال عن حجز حصة.')}
             target="_blank"
             rel="noopener noreferrer"
             className="hidden sm:inline-flex items-center gap-1.5 badge-whatsapp hover:scale-105 transition-all cursor-pointer"

@@ -87,7 +87,7 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 - **[Decided 2026-10-15] Email senders:** booking/schedule emails come from support@watazawwado.academy (Vercel `NOTIFICATION_FROM_EMAIL`); sign-up and password emails come from noreply@watazawwado.academy through Supabase Auth's own SMTP settings. Super admin alerts go to `NOTIFICATION_ADMIN_EMAIL` (falls back to `NOTIFICATION_TEACHER_EMAIL`).
 - **[Decided 2026-10-15] About page wording:** no degree claims and few Azhar mentions; describe the teaching as balanced and moderate, without extremism, with an Azhari foundation in Aqeedah, following Ahl al-Sunnah wal-Jama'ah.
 - **[Decided 2026-10-15] Team mailboxes:** support@ (bookings, lessons, complaints, withdrawals), finance@ (payments, refunds), hr@ (teachers), info@ (general, welcome), privacy@ (personal data). Emails are sent from the mailbox that matches them.
-- **[Decided 2026-10-15] Welcome recitation:** plays on the first homepage visit when the browser allows; otherwise a one-time animated hint asks to tap the sound button. It can be replayed any time from the menu.
+- **[Decided 2026-10-15, changed 2026-10-16] Welcome recitation:** plays on the first homepage visit when the browser allows; otherwise a one-time animated hint asks to tap the sound button. It is replayed only from the button under the verse on the homepage (not from the menu).
 - **[Decided 2026-10-14] Official contact number:** WhatsApp +48 508 157 886 (Poland). No other number may appear anywhere in the project.
 
 ## 6b. Voice, writing and mission
@@ -99,6 +99,7 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 - **[Decided 2026-10-15] Design ambition.** Every design request aims for the best, most memorable result, in the brand palette (crimson, teal, copper, gold) and in both light and dark mode; use the design skills.
 - **[Decided 2026-10-16] How design work is done.** Every design task: (1) load the design skills (frontend-design, artifact/design guidance) first; (2) research inspiration on the internet and in free libraries (e.g. Dribbble/Mobbin-style references, unDraw, Storyset, Lottie free, Phosphor/Tabler icons, CodePen) and the references the owner sends; inspiration, never blind copying; (3) prefer our own SVG/CSS over new dependencies, respect licences (no attribution-required assets without the attribution); (4) follow `docs/design-system.md`; (5) video references from the owner are read frame by frame with FFmpeg (installed via winget), not guessed.
 - **[Decided 2026-10-16] Design system.** Glass, calm and precise, inspired by Apple (layered translucent surfaces, soft depth, generous spacing, crisp type), in the brand palette and Islamic geometric motifs (khatam star, mihrab arch, the logo ribbon). The source of truth is `docs/design-system.md`; the site should feel like a masterpiece.
+- **[Decided 2026-10-16] The academy speaks, not one person.** Public pages, emails and messages speak as Watazawwado ("we", "our team"); teachers, Ustadh Mahmoud included, appear as teachers of the academy. The owner stays in the background (legal pages still name the trader where the law requires it). WhatsApp prefills greet the Watazawwado team, not a person.
 - **[Decided 2026-10-16] Every change also covers:** SEO (titles, meta, headings, prerendered content, alt text, performance), cyber security (auth, input validation, secrets, RLS, XSS/CSRF, rate limits), bugs and errors (type check, console, edge cases), and tests: a new feature gets tests, a changed feature gets its tests updated.
 
 ## 7. Engineering rules (always)
@@ -118,3 +119,7 @@ Owner decisions: none open right now.
 
 Engineering backlog (no owner decision needed, do when there is time):
 - Design system: pages move to `src/components/ui/*` gradually, when they are changed (rule in CLAUDE.md).
+
+## 9. Curriculum
+
+- **[Decided 2026-10-16]** All curriculum (المنهج) decisions, rules and progress live in `docs/curriculum/PLAN.md`. Read it before any curriculum work and record new owner decisions there.

@@ -20,8 +20,8 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
     {
       role: 'model',
       content: isEn
-        ? "Assalamu Alaikum! I'm the Learning Guide. How can I help you discover the right learning path with our teachers?"
-        : "السلام عليكم! أنا مرشد التعلم. كيف يمكنني مساعدتك في اكتشاف المسار التعليمي المناسب مع معلمينا؟"
+        ? "Assalamu alaikum! I am the Watazawwado guide. Tell me what you would like to learn, and I will help you find the right path."
+        : "السلام عليكم! أنا مرشد وتزودوا. قولّي عايز تتعلم إيه، وأساعدك تلاقي الطريق المناسب ليك."
     }
   ]);
   const [input, setInput] = useState('');
@@ -68,8 +68,8 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
         {
           role: 'model',
           content: isEn
-            ? "I'm currently unable to respond. Please try again later, or message us directly on WhatsApp."
-            : "عذراً، لا يمكنني الرد حالياً. يرجى المحاولة لاحقاً أو مراسلتنا مباشرة عبر واتساب."
+            ? "Sorry, I cannot answer right now. Please try again in a moment, or message us on WhatsApp."
+            : "معلش، مقدرتش أرد دلوقتي. جرّب تاني بعد شوية، أو كلّمنا على واتساب."
         }
       ]);
     } finally {
@@ -87,7 +87,8 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-6 end-6 z-50 p-4 rounded-full shadow-xl bg-gradient-to-r from-teal-600 via-primary to-accent text-white hover:opacity-95 transition-all cursor-pointer flex items-center justify-center group shadow-teal-500/20"
+            aria-label={isEn ? 'Open the learning guide' : 'افتح مرشد التعلم'}
+            className="fixed bottom-6 end-6 z-50 h-14 min-w-14 px-4 rounded-full shadow-xl bg-gradient-to-r from-teal-600 via-primary to-accent text-white hover:opacity-95 transition-all cursor-pointer flex items-center justify-center group shadow-teal-500/20"
           >
             <Sparkles className="w-6 h-6 animate-pulse" />
             <span className="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs group-hover:ms-2 transition-all duration-300 ease-in-out text-sm font-bold">
@@ -113,11 +114,12 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
               <div className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-accent" />
                 <h3 className="font-display font-medium text-foreground">
-                  {isEn ? 'AI Learning Guide' : 'المرشد الذكي'}
+                  {isEn ? 'Learning guide' : 'مرشد التعلم'}
                 </h3>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
+                aria-label={isEn ? 'Close' : 'إغلاق'}
                 className="p-1.5 rounded-full glass-hover hover:bg-surface text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
@@ -171,7 +173,7 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder={isEn ? "Ask me anything..." : "اسألني أي شيء..."}
+                  placeholder={isEn ? "Ask me anything…" : "اسألني أي حاجة…"}
                   className="flex-1 glass-surface border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 text-foreground placeholder-muted-foreground"
                 />
                 <button

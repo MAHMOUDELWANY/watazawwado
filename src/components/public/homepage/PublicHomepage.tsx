@@ -57,7 +57,7 @@ const EXPLORE: Door[] = [
   {
     to: '/learning', emblem: MushafEmblem, tone: ['#0B7486', '#04323A'],
     title: { en: 'Lessons and subjects', ar: 'الدروس والمواد' },
-    body: { en: '13 subjects, one teacher.', ar: '١٣ مادة، ومعلم واحد ليك.' }
+    body: { en: '13 subjects, your own teacher.', ar: '١٣ مادة، ومعلم ليك إنت.' }
   },
   {
     to: '/how-it-works', emblem: PathEmblem, tone: ['#8B4935', '#33190F'],
@@ -66,8 +66,8 @@ const EXPLORE: Door[] = [
   },
   {
     to: '/about', emblem: TeachersEmblem, tone: ['#A3271F', '#3F0E10'],
-    title: { en: 'About the teachers', ar: 'عن المعلمين' },
-    body: { en: 'Who will sit with you.', ar: 'مين هيقعد معاك.' }
+    title: { en: 'About us', ar: 'من نحن' },
+    body: { en: 'Who we are, who teaches.', ar: 'إحنا مين، ومين هيعلّمك.' }
   },
   {
     to: '/pricing', emblem: EnvelopeEmblem, tone: ['#0A5866', '#05262D'],
@@ -134,7 +134,7 @@ export function PublicHomepage() {
                   to="/about"
                   className="btn-glass px-6 py-3 rounded-xl"
                 >
-                  {isEn ? 'Meet the teachers' : 'تعرّف على المعلمين'}
+                  {isEn ? 'Get to know us' : 'اتعرّف علينا'}
                 </Link>
               </div>
 
@@ -173,6 +173,7 @@ export function PublicHomepage() {
           </p>
           <button
             type="button"
+            id="verse-sound-btn"
             onClick={() => (audio.playing ? audio.stop() : void audio.play())}
             aria-pressed={audio.playing}
             className="btn-glass is-pill mt-6"

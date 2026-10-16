@@ -22,12 +22,20 @@ const WHATSAPP_DISPLAY = '+48 508 157 886';
 const WHATSAPP_URL = 'https://wa.me/48508157886';
 const SUPPORT_EMAIL = 'support@watazawwado.academy';
 
-// Brand palette (same as the website).
+// Brand palette and surfaces (the website's glass design system, docs/design-system.md).
 const TEAL = '#087D91';
-const SAND = '#D8C6AE';
-const BROWN = '#8B4935';
 const RED = '#C51F24';
+const COPPER = '#8B4935';
+const GOLD = '#E5A93C';
+const INK = '#12100E';
+const BODY = '#453D34';
+const MUTED = '#6E6358';
+const PAPER = '#FAF7F2';
+const LINE = '#EADFD0';
 const FONT_STACK = "'Thmanyah Sans', Tahoma, 'Segoe UI', Arial, sans-serif";
+const SERIF_STACK = `'Thmanyah Serif', Georgia, ${FONT_STACK}`;
+/** The logo's ribbon: crimson, copper, gold, teal. */
+const RIBBON = `linear-gradient(90deg,${RED} 0%,#B4552F 35%,${GOLD} 60%,${TEAL} 100%)`;
 
 /**
  * Escapes unsafe characters for HTML context to prevent XSS and layout breaking.
@@ -73,27 +81,21 @@ interface EmailContent {
 
 const pick = (value: L | undefined, lang: EmailLang) => (value ? value[lang] : '');
 
-function detailsTable(rows: Row[] | undefined, lang: EmailLang): string {
-  const visible = (rows || []).filter(([, value]) => value);
-  if (visible.length === 0) return '';
-  const body = visible
-    .map(([label, value]) => `<tr>
-        <td class="muted" style="padding:6px 0;width:42%;vertical-align:top;font-size:13px;color:#6B706A;">${label[lang]}</td>
-        <td class="text" style="padding:6px 0;font-size:14px;font-weight:700;color:#2C2A27;" dir="auto">${value}</td>
-      </tr>`)
-    .join('');
-  return `<table role="presentation" class="card" width="100%" cellspacing="0" cellpadding="0" style="margin:18px 0;padding:16px 18px;background:#F3F7F6;border:1px solid #DCE7E4;border-radius:12px;">${body}</table>`;
-}
+const SIGNATURE: L = { en: 'Watazawwado · Provision that lasts', ar: 'وتزودوا · زادٌ يبقى' };
 
-function renderLayout(content: EmailContent, lang: EmailLang): string {
+/**
+ * The frame every email shares: a deep teal band with the logo in a paper mihrab arch and the
+ * logo ribbon, a white card body, and a warm footer with the signature and the legal lines.
+ * `hero` is extra content inside the band (the welcome email puts the verse there).
+ */
+function renderShell(opts: { lang: EmailLang; title: string; preheader: string; hero?: string; body: string; reason: string; signature?: string }): string {
+  const { lang } = opts;
   const dir = lang === 'ar' ? 'rtl' : 'ltr';
-  const align = lang === 'ar' ? 'right' : 'left';
-  const safeButtonUrl = content.button ? sanitizeUrl(content.button.url) : '';
-  const year = new Date().getFullYear();
-  const p = (html: string) => `<p class="text" style="margin:0 0 10px;font-size:15px;line-height:1.7;color:#2C2A27;">${html}</p>`;
-  const footerLinks = lang === 'ar'
-    ? `<a href="${SITE_URL}/terms" style="color:${TEAL};text-decoration:none;">الشروط</a> &nbsp;|&nbsp; <a href="${SITE_URL}/privacy" style="color:${TEAL};text-decoration:none;">الخصوصية</a> &nbsp;|&nbsp; <a href="${WHATSAPP_URL}" style="color:${TEAL};text-decoration:none;">واتساب <span dir="ltr">${WHATSAPP_DISPLAY}</span></a>`
-    : `<a href="${SITE_URL}/terms" style="color:${TEAL};text-decoration:none;">Terms</a> &nbsp;|&nbsp; <a href="${SITE_URL}/privacy" style="color:${TEAL};text-decoration:none;">Privacy</a> &nbsp;|&nbsp; <a href="${WHATSAPP_URL}" style="color:${TEAL};text-decoration:none;">WhatsApp ${WHATSAPP_DISPLAY}</a>`;
+  const link = (href: string, label: string) => `<a href="${href}" style="color:${TEAL};text-decoration:none;font-weight:700;">${label}</a>`;
+  const footerLinks = (lang === 'ar'
+    ? [link(`${SITE_URL}/terms`, 'الشروط'), link(`${SITE_URL}/privacy`, 'الخصوصية'), link(WHATSAPP_URL, `واتساب <span dir="ltr">${WHATSAPP_DISPLAY}</span>`)]
+    : [link(`${SITE_URL}/terms`, 'Terms'), link(`${SITE_URL}/privacy`, 'Privacy'), link(WHATSAPP_URL, `WhatsApp ${WHATSAPP_DISPLAY}`)]
+  ).join(' &nbsp;·&nbsp; ');
   return `<!DOCTYPE html>
 <html lang="${lang}" dir="${dir}">
 <head>
@@ -101,55 +103,96 @@ function renderLayout(content: EmailContent, lang: EmailLang): string {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
   <meta name="supported-color-schemes" content="light dark">
-  <title>${content.title[lang]}</title>
+  <title>${opts.title}</title>
   <style>
     @font-face { font-family: 'Thmanyah Sans'; font-weight: 400; src: url('${FONT_URL}/thmanyahsans-Regular.woff2') format('woff2'); }
     @font-face { font-family: 'Thmanyah Sans'; font-weight: 700; src: url('${FONT_URL}/thmanyahsans-Bold.woff2') format('woff2'); }
+    @font-face { font-family: 'Thmanyah Serif'; font-weight: 700; src: url('${FONT_URL}/thmanyahserifdisplay-Bold.woff2') format('woff2'); }
     body, table, td, p, a, h1 { font-family: ${FONT_STACK}; }
     @media (prefers-color-scheme: dark) {
-      .page { background:#121416 !important; }
-      .shell { background:#1C1F22 !important; border-color:#2E3338 !important; }
-      .text { color:#ECEAE6 !important; }
-      .muted { color:#A7ACA6 !important; }
-      .card { background:#20292B !important; border-color:#2F4044 !important; }
-      .divider { border-color:#2E3338 !important; }
+      .page { background:#110F0E !important; }
+      .shell { background:#1B1816 !important; border-color:#2E2824 !important; }
+      .text { color:#FAF7F2 !important; }
+      .body-text { color:#E4DACB !important; }
+      .muted { color:#C4B9AA !important; }
+      .card { background:#24201D !important; border-color:#3A322C !important; }
+      .note { background:#2A231C !important; }
+      .foot { background:#161311 !important; border-color:#2E2824 !important; }
     }
-    [data-ogsc] .shell { background:#1C1F22 !important; }
-    [data-ogsc] .text { color:#ECEAE6 !important; }
-    @media (max-width: 600px) { .pad { padding:22px 18px !important; } }
+    [data-ogsc] .shell { background:#1B1816 !important; }
+    [data-ogsc] .text { color:#FAF7F2 !important; }
+    [data-ogsc] .body-text { color:#E4DACB !important; }
+    [data-ogsc] .muted { color:#C4B9AA !important; }
+    [data-ogsc] .card { background:#24201D !important; }
+    @media (max-width: 600px) { .pad { padding-left:20px !important; padding-right:20px !important; } .verse { font-size:24px !important; } }
   </style>
 </head>
-<body class="page" style="margin:0;padding:0;background:#F8F6F0;">
-  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">${content.preheader[lang]}</div>
-  <table role="presentation" class="page" width="100%" cellspacing="0" cellpadding="0" style="background:#F8F6F0;">
-    <tr><td align="center" style="padding:28px 12px;">
-      <table role="presentation" class="shell" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;background:#FFFFFF;border:1px solid #E5DFD5;border-radius:18px;overflow:hidden;">
-        <tr><td style="height:6px;background:${TEAL};background-image:linear-gradient(135deg,${TEAL} 0%,${SAND} 40%,${BROWN} 75%,${RED} 100%);font-size:0;line-height:0;">&nbsp;</td></tr>
-        <tr><td align="center" class="pad" style="padding:26px 32px 8px;">
-          <img src="${LOGO_URL}" width="150" alt="Watazawwado" style="display:block;width:150px;max-width:60%;height:auto;border:0;">
+<body class="page" style="margin:0;padding:0;background:#F1EADF;-webkit-font-smoothing:antialiased;">
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">${opts.preheader}</div>
+  <table role="presentation" class="page" width="100%" cellspacing="0" cellpadding="0" style="background:#F1EADF;">
+    <tr><td align="center" style="padding:28px 12px 36px;">
+      <table role="presentation" class="shell" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;background:#FFFFFF;border:1px solid ${LINE};border-radius:28px;overflow:hidden;box-shadow:0 18px 40px -14px rgba(59,34,25,0.24);">
+        <tr><td align="center" style="background:#05363F;background-image:radial-gradient(circle at 80% 0%,rgba(229,169,60,0.28) 0%,rgba(229,169,60,0) 55%),linear-gradient(135deg,#05363F 0%,#0A5866 55%,#3B2219 100%);padding:30px 24px 26px;">
+          <table role="presentation" cellspacing="0" cellpadding="0" align="center"><tr><td style="background:${PAPER};border-radius:56px 56px 18px 18px;padding:18px 18px 12px;border:1px solid rgba(229,169,60,0.6);">
+            <img src="${LOGO_URL}" width="104" alt="Watazawwado" style="display:block;width:104px;height:auto;border:0;">
+          </td></tr></table>
+          ${opts.hero || ''}
+          <div style="width:96px;height:3px;margin:18px auto 0;border-radius:3px;background:${GOLD};background-image:${RIBBON};font-size:0;line-height:0;">&nbsp;</div>
         </td></tr>
-        <tr><td class="pad" dir="${dir}" style="padding:18px 32px 8px;text-align:${align};">
-          <h1 class="text" style="margin:0 0 12px;font-size:21px;line-height:1.4;color:#2C2A27;">${content.title[lang]}</h1>
-          ${content.greeting ? p(content.greeting[lang]) : ''}
-          ${content.paragraphs.map(par => p(par[lang])).join('')}
-          ${detailsTable(content.rows, lang)}
-          ${pick(content.note, lang) ? `<p class="muted" style="margin:0 0 6px;font-size:13px;line-height:1.6;color:#6B706A;">${pick(content.note, lang)}</p>` : ''}
-          ${safeButtonUrl && content.button ? `<table role="presentation" cellspacing="0" cellpadding="0" align="center" style="margin:10px auto 18px;">
-            <tr><td style="border-radius:10px;background:${TEAL};">
-              <a href="${safeButtonUrl}" style="display:inline-block;padding:12px 26px;font-size:15px;font-weight:700;color:#FFFFFF;text-decoration:none;border-radius:10px;">${content.button.label[lang]}</a>
-            </td></tr>
-          </table>` : ''}
+        <tr><td class="pad" dir="${dir}" style="padding:30px 36px 14px;text-align:${lang === 'ar' ? 'right' : 'left'};">
+          ${opts.body}
         </td></tr>
-        <tr><td class="pad divider" dir="${dir}" style="padding:20px 32px 26px;border-top:1px solid #E5DFD5;text-align:center;">
-          <p class="muted" style="margin:0 0 12px;font-size:12px;line-height:1.6;color:#6B706A;">${content.reason[lang]}</p>
+        <tr><td class="pad foot" dir="${dir}" style="padding:22px 32px 26px;background:${PAPER};border-top:1px solid ${LINE};text-align:center;">
+          <p class="text" style="margin:0 0 10px;font-family:${SERIF_STACK};font-size:15px;font-weight:700;color:${COPPER};">${opts.signature || SIGNATURE[lang]}</p>
+          <p class="muted" style="margin:0 0 10px;font-size:12px;line-height:1.6;color:${MUTED};">${opts.reason}</p>
           <p style="margin:0 0 8px;font-size:12px;">${footerLinks}</p>
-          <p class="muted" style="margin:0;font-size:11px;color:#6B706A;">${SUPPORT_EMAIL} · © ${year} Watazawwado</p>
+          <p class="muted" style="margin:0;font-size:11px;color:${MUTED};">${SUPPORT_EMAIL} · © ${new Date().getFullYear()} Watazawwado</p>
         </td></tr>
       </table>
     </td></tr>
   </table>
 </body>
 </html>`;
+}
+
+/** The one main action of an email: a crimson pill. */
+function ctaButton(url: string, label: string): string {
+  return `<table role="presentation" cellspacing="0" cellpadding="0" align="center" style="margin:14px auto 22px;">
+            <tr><td style="border-radius:999px;background:${RED};box-shadow:0 10px 22px -10px rgba(197,31,36,0.7);">
+              <a href="${url}" style="display:inline-block;padding:14px 32px;font-size:15px;font-weight:700;color:#FFFFFF;text-decoration:none;border-radius:999px;">${label}</a>
+            </td></tr>
+          </table>`;
+}
+
+function detailsTable(rows: Row[] | undefined, lang: EmailLang): string {
+  const visible = (rows || []).filter(([, value]) => value);
+  if (visible.length === 0) return '';
+  const body = visible
+    .map(([label, value], i) => {
+      const rule = i ? `border-top:1px solid ${LINE};` : '';
+      return `<tr>
+        <td class="muted" style="padding:9px 0;${rule}width:40%;vertical-align:top;font-size:13px;color:${MUTED};">${label[lang]}</td>
+        <td class="text" style="padding:9px 0;${rule}font-size:14px;font-weight:700;color:${INK};" dir="auto">${value}</td>
+      </tr>`;
+    })
+    .join('');
+  return `<table role="presentation" class="card" width="100%" cellspacing="0" cellpadding="0" style="margin:18px 0;background:#F6F1EA;border:1px solid ${LINE};border-radius:18px;">
+      <tr><td style="padding:8px 20px;"><table role="presentation" width="100%" cellspacing="0" cellpadding="0">${body}</table></td></tr>
+    </table>`;
+}
+
+function renderLayout(content: EmailContent, lang: EmailLang): string {
+  const safeButtonUrl = content.button ? sanitizeUrl(content.button.url) : '';
+  const side = lang === 'ar' ? 'right' : 'left';
+  const p = (html: string) => `<p class="body-text" style="margin:0 0 12px;font-size:15px;line-height:1.75;color:${BODY};">${html}</p>`;
+  const note = pick(content.note, lang);
+  const body = `<h1 class="text" style="margin:0 0 14px;font-family:${SERIF_STACK};font-size:24px;line-height:1.35;font-weight:700;color:${INK};">${content.title[lang]}</h1>
+          ${content.greeting ? p(content.greeting[lang]) : ''}
+          ${content.paragraphs.map(par => p(par[lang])).join('')}
+          ${detailsTable(content.rows, lang)}
+          ${note ? `<p class="muted note" style="margin:0 0 8px;padding:10px 14px;border-${side}:3px solid ${GOLD};background:#FBF4E6;border-radius:10px;font-size:13px;line-height:1.65;color:${MUTED};">${note}</p>` : ''}
+          ${safeButtonUrl && content.button ? ctaButton(safeButtonUrl, content.button.label[lang]) : ''}`;
+  return renderShell({ lang, title: content.title[lang], preheader: content.preheader[lang], body, reason: content.reason[lang] });
 }
 
 /** Plain-text version for clients that block HTML. */
@@ -625,82 +668,42 @@ export function renderWelcomeEmail(params: {
         `يشرفنا إنك اخترتنا لرحلة تعلّم عائلتك${kids ? ` — وأهلًا وسهلًا بـ ${kids}` : ''}. من النهارده كل حصة فردية، مع معلم بيعرف كل طفل باسمه.`)
     : t('We are honoured that you chose to begin this journey with us. From today, every lesson is one-to-one, shaped around you and your goals.',
         'يشرفنا إنك اخترت تبدأ الرحلة دي معانا. من النهارده كل حصة فردية، ومتفصّلة على قدك وعلى أهدافك.');
+  // Steps sit on a gold thread: numbered medallions (the first in crimson), joined by a thin line.
   const stepRows = steps.map(([title, body], i) => `
           <tr>
-            <td width="44" valign="top" style="padding:0 0 18px;">
-              <div style="width:34px;height:34px;border-radius:17px;background:${i === 0 ? RED : TEAL};color:#FFFFFF;font-size:15px;font-weight:700;line-height:34px;text-align:center;">${i + 1}</div>
+            <td width="48" valign="top" style="padding:0;"><div style="width:40px;">
+              <div style="width:36px;height:36px;border-radius:18px;background:${i === 0 ? RED : TEAL};border:2px solid ${GOLD};color:#FFFFFF;font-size:15px;font-weight:700;line-height:36px;text-align:center;">${i + 1}</div>
+              ${i < steps.length - 1 ? `<div style="width:2px;height:30px;margin:4px auto;background:${GOLD};opacity:0.55;font-size:0;line-height:0;">&nbsp;</div>` : ''}</div>
             </td>
-            <td valign="top" dir="${dir}" style="padding:2px 0 18px;text-align:${align};">
-              <p class="text" style="margin:0 0 3px;font-size:16px;font-weight:700;color:#2C2A27;">${title}</p>
-              <p class="muted" style="margin:0;font-size:14px;line-height:1.6;color:#6B706A;">${body}</p>
+            <td valign="top" dir="${dir}" style="padding:4px 0 16px;text-align:${align};">
+              <p class="text" style="margin:0 0 3px;font-size:16px;font-weight:700;color:${INK};">${title}</p>
+              <p class="muted" style="margin:0;font-size:14px;line-height:1.6;color:${MUTED};">${body}</p>
             </td>
           </tr>`).join('');
-  const footerLinks = ar
-    ? `<a href="${SITE_URL}/terms" style="color:${TEAL};text-decoration:none;">الشروط</a> &nbsp;|&nbsp; <a href="${SITE_URL}/privacy" style="color:${TEAL};text-decoration:none;">الخصوصية</a> &nbsp;|&nbsp; <a href="${WHATSAPP_URL}" style="color:${TEAL};text-decoration:none;">واتساب <span dir="ltr">${WHATSAPP_DISPLAY}</span></a>`
-    : `<a href="${SITE_URL}/terms" style="color:${TEAL};text-decoration:none;">Terms</a> &nbsp;|&nbsp; <a href="${SITE_URL}/privacy" style="color:${TEAL};text-decoration:none;">Privacy</a> &nbsp;|&nbsp; <a href="${WHATSAPP_URL}" style="color:${TEAL};text-decoration:none;">WhatsApp ${WHATSAPP_DISPLAY}</a>`;
 
-  const html = `<!DOCTYPE html>
-<html lang="${lang}" dir="${dir}">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="color-scheme" content="light dark">
-  <meta name="supported-color-schemes" content="light dark">
-  <title>${subject}</title>
-  <style>
-    @font-face { font-family: 'Thmanyah Sans'; font-weight: 400; src: url('${FONT_URL}/thmanyahsans-Regular.woff2') format('woff2'); }
-    @font-face { font-family: 'Thmanyah Sans'; font-weight: 700; src: url('${FONT_URL}/thmanyahsans-Bold.woff2') format('woff2'); }
-    @font-face { font-family: 'Thmanyah Serif'; font-weight: 700; src: url('${FONT_URL}/thmanyahserifdisplay-Bold.woff2') format('woff2'); }
-    body, table, td, p, a, h1 { font-family: ${FONT_STACK}; }
-    @media (prefers-color-scheme: dark) {
-      .page { background:#0F1213 !important; }
-      .shell { background:#1A1D1F !important; border-color:#2E3338 !important; }
-      .text { color:#ECEAE6 !important; }
-      .muted { color:#A7ACA6 !important; }
-      .teacher { background:#20292B !important; border-color:#2F4044 !important; }
-    }
-    @media (max-width: 600px) { .pad { padding-left:20px !important; padding-right:20px !important; } .verse { font-size:24px !important; } }
-  </style>
-</head>
-<body class="page" style="margin:0;padding:0;background:#F3EFE6;">
-  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">${t('Your learning journey starts here — your free trial is one click away.', 'رحلتك في التعلّم بتبدأ من هنا — حصتك التجريبية على بعد ضغطة.')}</div>
-  <table role="presentation" class="page" width="100%" cellspacing="0" cellpadding="0" style="background:#F3EFE6;">
-    <tr><td align="center" style="padding:28px 12px;">
-      <table role="presentation" class="shell" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;background:#FFFFFF;border:1px solid #E5DFD5;border-radius:22px;overflow:hidden;">
-        <tr><td align="center" style="background:#06505D;background-image:radial-gradient(circle at 20% 0%,#0A8DA3 0%,#06505D 55%,#04343D 100%);padding:34px 28px 30px;">
-          <img src="${LOGO_URL}" width="120" alt="Watazawwado" style="display:block;width:120px;max-width:45%;height:auto;border:0;margin:0 auto 22px;background:#FFFFFF;border-radius:16px;padding:8px;">
-          <p class="verse" dir="rtl" style="margin:0;font-family:'Thmanyah Serif',${FONT_STACK};font-size:28px;line-height:1.6;color:#F3E7D3;">﴿وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ﴾</p>
-          <p style="margin:6px 0 0;font-size:12px;letter-spacing:1px;color:#BFD9DD;">${t('Al-Baqarah 197 — the verse our name comes from', 'البقرة: 197 — الآية اللي اسمنا منها')}</p>
-          <div style="width:64px;height:3px;background:${RED};margin:20px auto 0;border-radius:2px;"></div>
-        </td></tr>
-        <tr><td class="pad" dir="${dir}" style="padding:30px 36px 8px;text-align:${align};">
-          <h1 class="text" style="margin:0 0 6px;font-size:24px;line-height:1.35;color:#2C2A27;">${t(`Welcome to the family, ${name}`, `أهلًا بيك في العيلة يا ${name}`)}</h1>
-          <p class="text" style="margin:0 0 22px;font-size:15px;line-height:1.8;color:#2C2A27;">${intro}</p>
-          ${params.teacherName ? `<table role="presentation" class="teacher" width="100%" cellspacing="0" cellpadding="0" style="background:#F2F8F9;border:1px solid #CFE3E6;border-radius:14px;margin:0 0 24px;">
-            <tr><td dir="${dir}" style="padding:14px 18px;text-align:${align};">
-              <p class="muted" style="margin:0;font-size:12px;color:#5D7A7F;">${t('Your teacher', params.isFamily ? 'المعلم المسؤول' : 'معلمك')}</p>
-              <p class="text" style="margin:2px 0 0;font-size:17px;font-weight:700;color:${TEAL};">${escapeHtml(params.teacherName)}</p>
+  const hero = `<p class="verse" dir="rtl" style="margin:20px 0 0;font-family:${SERIF_STACK};font-size:28px;line-height:1.6;color:#F6D58E;">﴿وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ﴾</p>
+          <p style="margin:4px 0 0;font-size:12px;color:#CFE3E6;">${t('Al-Baqarah 197, the verse our name comes from', 'البقرة ١٩٧، ومنها اسمنا')}</p>`;
+  const body = `<h1 class="text" style="margin:0 0 8px;font-family:${SERIF_STACK};font-size:26px;line-height:1.35;font-weight:700;color:${INK};">${t(`Welcome to the family, ${name}`, `أهلًا بيك في العيلة يا ${name}`)}</h1>
+          <p class="body-text" style="margin:0 0 22px;font-size:15px;line-height:1.8;color:${BODY};">${intro}</p>
+          ${params.teacherName ? `<table role="presentation" class="card" width="100%" cellspacing="0" cellpadding="0" style="background:#F6F1EA;border:1px solid ${LINE};border-radius:18px;margin:0 0 24px;">
+            <tr><td dir="${dir}" style="padding:14px 20px;text-align:${align};">
+              <p class="muted" style="margin:0;font-size:12px;color:${MUTED};">${t('Your teacher', params.isFamily ? 'المعلم المسؤول' : 'معلمك')}</p>
+              <p class="text" style="margin:2px 0 0;font-family:${SERIF_STACK};font-size:18px;font-weight:700;color:${TEAL};">${escapeHtml(params.teacherName)}</p>
             </td></tr>
           </table>` : ''}
-          <p class="text" style="margin:0 0 14px;font-size:13px;font-weight:700;color:${BROWN};">${t('What happens next', 'اللي جاي')}</p>
+          <p class="text" style="margin:0 0 14px;font-size:13px;font-weight:700;color:${COPPER};">${t('What happens next', 'اللي جاي')}</p>
           <table role="presentation" width="100%" cellspacing="0" cellpadding="0">${stepRows}</table>
-          <table role="presentation" cellspacing="0" cellpadding="0" align="center" style="margin:8px auto 26px;">
-            <tr><td style="border-radius:12px;background:${RED};">
-              <a href="${SITE_URL}/student/book" style="display:inline-block;padding:14px 32px;font-size:16px;font-weight:700;color:#FFFFFF;text-decoration:none;border-radius:12px;">${t('Book my free trial', 'احجز حصتي التجريبية')}</a>
-            </td></tr>
-          </table>
-          <p class="muted" style="margin:0 0 26px;font-size:13px;line-height:1.7;color:#6B706A;text-align:center;">${t('Questions? Write to us in the Messages section of your account, or on WhatsApp', 'عندك سؤال؟ اكتبلنا في "الرسائل" في حسابك، أو على واتساب')} <a href="${WHATSAPP_URL}" style="color:${TEAL};text-decoration:none;" dir="ltr">${WHATSAPP_DISPLAY}</a></p>
-        </td></tr>
-        <tr><td class="pad" dir="${dir}" style="padding:20px 32px 26px;border-top:1px solid #E5DFD5;text-align:center;">
-          <p class="muted" style="margin:0 0 12px;font-size:12px;line-height:1.6;color:#6B706A;">${STUDENT_REASON[lang]}</p>
-          <p style="margin:0 0 8px;font-size:12px;">${footerLinks}</p>
-          <p class="muted" style="margin:0;font-size:11px;color:#6B706A;">${SUPPORT_EMAIL} · © ${new Date().getFullYear()} Watazawwado</p>
-        </td></tr>
-      </table>
-    </td></tr>
-  </table>
-</body>
-</html>`;
+          ${ctaButton(`${SITE_URL}/student/book`, t('Book my free trial', 'احجز حصتي التجريبية'))}
+          <p class="muted" style="margin:0 0 18px;font-size:13px;line-height:1.7;color:${MUTED};text-align:center;">${t('Questions? Write to us in Messages in your account, or on WhatsApp', 'عندك سؤال؟ اكتبلنا في "الرسائل" في حسابك، أو على واتساب')} <a href="${WHATSAPP_URL}" style="color:${TEAL};text-decoration:none;" dir="ltr">${WHATSAPP_DISPLAY}</a></p>`;
+
+  const html = renderShell({
+    lang,
+    title: subject,
+    preheader: t('Your journey starts here. Your free trial is one click away.', 'رحلتك بتبدأ من هنا، وحصتك التجريبية على بُعد ضغطة.'),
+    hero,
+    body,
+    reason: STUDENT_REASON[lang]
+  });
 
   const text = [
     subject,
@@ -714,4 +717,55 @@ export function renderWelcomeEmail(params: {
   ].filter((l) => l !== '').join('\n\n');
 
   return { subject, html, text };
+}
+
+/**
+ * Templates pasted into Supabase Auth → Email Templates (sign-up code, password reset, teacher invite).
+ * Supabase sends one template to everyone, so these carry Arabic first, then English, in the same frame.
+ * They keep Supabase's own placeholders ({{ .Token }}, {{ .ConfirmationURL }}). Rendered to
+ * docs/email-previews by scripts/render-email-previews.ts.
+ */
+export function renderSupabaseAuthTemplate(kind: 'confirm' | 'reset' | 'invite'): { subject: string; html: string } {
+  const copy = {
+    confirm: {
+      subject: 'رمز تأكيد حسابك · Your Watazawwado code',
+      ar: ['رمز تأكيد حسابك', 'اكتب الرمز ده في صفحة التأكيد عشان نفتح حسابك. صالح لمدة ساعة.'],
+      en: ['Your sign-up code', 'Enter this code on the confirmation page to open your account. It works for one hour.']
+    },
+    reset: {
+      subject: 'كلمة سر جديدة · Reset your Watazawwado password',
+      ar: ['نختار كلمة سر جديدة؟', 'وصلنا طلب تغيير كلمة السر لحسابك. اضغط الزر واختار كلمة جديدة.'],
+      en: ['Choose a new password', 'We received a request to reset your password. Press the button to choose a new one.']
+    },
+    invite: {
+      subject: 'دعوة للانضمام لفريق وتزودوا · Join the Watazawwado teachers',
+      ar: ['أهلاً بيك في فريق المعلمين', 'اتضافت كمعلم في وتزودوا. اضغط الزر عشان تختار كلمة السر وتدخل لوحة المعلم.'],
+      en: ['Welcome to the teaching team', 'You were added as a teacher at Watazawwado. Press the button to choose your password and open the teacher dashboard.']
+    }
+  }[kind];
+  const action = kind === 'confirm'
+    ? `<table role="presentation" cellspacing="0" cellpadding="0" align="center" style="margin:6px auto 22px;"><tr><td class="card" dir="ltr" style="background:#F6F1EA;border:1px solid ${LINE};border-radius:22px;padding:16px 26px;font-family:${SERIF_STACK};font-size:34px;font-weight:700;letter-spacing:10px;color:${INK};">{{ .Token }}</td></tr></table>`
+    : ctaButton('{{ .ConfirmationURL }}', kind === 'reset' ? 'تغيير كلمة السر · Reset password' : 'قبول الدعوة · Accept the invitation');
+  const block = (lang: EmailLang, [title, text]: string[]) => `<div dir="${lang === 'ar' ? 'rtl' : 'ltr'}" style="text-align:${lang === 'ar' ? 'right' : 'left'};">
+            <h1 class="text" style="margin:0 0 8px;font-family:${SERIF_STACK};font-size:${lang === 'ar' ? 24 : 20}px;line-height:1.35;font-weight:700;color:${INK};">${title}</h1>
+            <p class="body-text" style="margin:0 0 14px;font-size:${lang === 'ar' ? 15 : 14}px;line-height:1.75;color:${BODY};">${text}</p>
+          </div>`;
+  const ignore = kind === 'invite'
+    ? 'لو مكنتش مستني الدعوة دي، تجاهل الرسالة.<br><span dir="ltr">If you did not expect this invitation, ignore this email.</span>'
+    : 'لو مش إنت اللي طلبت، تجاهل الرسالة وحسابك هيفضل في أمان.<br><span dir="ltr">If this was not you, ignore this email; your account stays safe.</span>';
+  const body = `${block('ar', copy.ar)}
+          ${kind === 'confirm' ? '' : action}
+          <div style="height:1px;background:${LINE};margin:4px 0 18px;font-size:0;line-height:0;">&nbsp;</div>
+          ${block('en', copy.en)}
+          ${action}
+          <p class="muted" style="margin:0 0 14px;font-size:12px;line-height:1.7;color:${MUTED};text-align:center;">${ignore}</p>`;
+  const html = renderShell({
+    lang: 'ar',
+    title: copy.subject,
+    preheader: copy.subject,
+    body,
+    reason: 'وصلتك الرسالة دي لأن الإيميل <span dir="ltr">{{ .Email }}</span> اتسجل على وتزودوا.<br><span dir="ltr">You received this because {{ .Email }} was used on Watazawwado.</span>',
+    signature: 'وتزودوا · Watazawwado'
+  });
+  return { subject: copy.subject, html };
 }

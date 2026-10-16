@@ -23,18 +23,18 @@ export interface PageSeo {
 export const PUBLIC_PAGES: PageSeo[] = [
   {
     path: '/',
-    titleEn: 'Watazawwado Academy | Online Quran, Arabic & Islamic Studies',
-    titleAr: 'أكاديمية وتزودوا Watazawwado | قرآن وعربي ودراسات إسلامية',
+    titleEn: 'Watazawwado Academy | Online Quran, Arabic, Islamic Studies & English',
+    titleAr: 'أكاديمية وتزودوا Watazawwado | قرآن وتجويد وعربي وعلوم شرعية وإنجليزي',
     descEn: 'Watazawwado Academy: live 1-on-1 Zoom lessons in Quran, Tajweed, Islamic studies, Arabic and English for families and adults. Free 30-minute trial.',
-    descAr: 'أكاديمية وتزودوا: حصص فردية مباشرة على زووم في القرآن والتجويد والدراسات الإسلامية والعربية والإنجليزية للأطفال والكبار حول العالم. حصة تجريبية مجانية 30 دقيقة.',
+    descAr: 'أكاديمية وتزودوا: حصص فردية مباشرة على Zoom في القرآن والتجويد والعلوم الشرعية والعربية والإنجليزية، للأطفال والكبار حول العالم. أول حصة مجاناً ٣٠ دقيقة.',
     h1En: 'Watazawwado Academy — online 1-on-1 Quran, Arabic & Islamic studies'
   },
   {
     path: '/about',
-    titleEn: 'About Watazawwado Academy & our teachers | وتزودوا',
+    titleEn: 'About Watazawwado Academy: our mission and teachers',
     titleAr: 'عن أكاديمية وتزودوا ومعلمينا | Watazawwado',
-    descEn: 'Meet the teachers of Watazawwado Academy: balanced, moderate teaching with an Azhari foundation, following Ahl al-Sunnah wal-Jama‘ah.',
-    descAr: 'تعرّف على معلمي أكاديمية وتزودوا: تعليم وسطي معتدل بتأسيس أزهري في العقيدة على منهج أهل السنة والجماعة، للأطفال والكبار.',
+    descEn: 'Who we are and why we teach: an online academy for one-on-one lessons, balanced and moderate, with an Azhari foundation, following Ahl al-Sunnah wal-Jama‘ah.',
+    descAr: 'إحنا مين وليه بنعلّم: أكاديمية أونلاين لحصص فردية، بتعليم وسطي معتدل وتأسيس أزهري في العقيدة على منهج أهل السنة والجماعة.',
     h1En: 'About Watazawwado Academy'
   },
   {

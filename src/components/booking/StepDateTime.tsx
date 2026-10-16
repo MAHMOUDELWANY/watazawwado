@@ -279,7 +279,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
                   </button>
 
                   <a
-                    href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I would like to request a specific lesson time that is not open on the schedule.')}
+                    href={buildWhatsAppUrl('Assalamu alaikum Watazawwado team, I would like to request a specific lesson time that is not open on the schedule.')}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl btn-whatsapp-outline text-sm font-bold shadow-xs"

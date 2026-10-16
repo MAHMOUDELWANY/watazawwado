@@ -1,12 +1,12 @@
-import { ServicePillar, TestimonialItem, FAQItem } from '../types';
+import { ServicePillar, FAQItem } from '../types';
 
 export const SERVICES_DATA: ServicePillar[] = [
   {
     id: 'quran',
     title: 'Quran & Tajweed',
     arabicTitle: 'القرآن والتجويد',
-    description: 'Structured, patient guidance from letter phonetics and articulation to fluent recitation and memorization.',
-    arabicDescription: 'توجيه فردي منظم من مخارج الحروف والتهجي إلى التلاوة السليمة والحفظ المتقن.',
+    description: 'From the first letter and its sound to fluent recitation and firm memorization.',
+    arabicDescription: 'من أول حرف ومخرجه، لحد التلاوة السليمة والحفظ المتقن.',
     services: [
       {
         id: 'quran-reading',
@@ -24,7 +24,7 @@ export const SERVICES_DATA: ServicePillar[] = [
           'Building reading stamina without frustration'
         ],
         durations: [30, 45, 60],
-        recommendedFrequency: '2 to 3 sessions per week'
+        recommendedFrequency: '2 to 3 lessons a week'
       },
       {
         id: 'tajweed',
@@ -42,7 +42,7 @@ export const SERVICES_DATA: ServicePillar[] = [
           'Practical ear training to catch your own recitation mistakes'
         ],
         durations: [30, 45, 60],
-        recommendedFrequency: '2 sessions per week'
+        recommendedFrequency: '2 lessons a week'
       },
       {
         id: 'quran-memorization',
@@ -60,7 +60,7 @@ export const SERVICES_DATA: ServicePillar[] = [
           'Techniques to overcome difficult verse transitions (Mutashabihat)'
         ],
         durations: [30, 45, 60],
-        recommendedFrequency: '2 to 4 sessions per week'
+        recommendedFrequency: '2 to 4 lessons a week'
       },
       {
         id: 'quran-revision',
@@ -78,7 +78,7 @@ export const SERVICES_DATA: ServicePillar[] = [
           'Confidence building to lead prayers or recite smoothly'
         ],
         durations: [30, 45, 60],
-        recommendedFrequency: '2 to 3 sessions per week'
+        recommendedFrequency: '2 to 3 lessons a week'
       }
     ]
   },
@@ -86,8 +86,8 @@ export const SERVICES_DATA: ServicePillar[] = [
     id: 'islamic_studies',
     title: 'Islamic Studies',
     arabicTitle: 'العلوم الإسلامية',
-    description: 'Authentic understanding of faith, daily practice, and the Prophet’s life, grounded in classical clarity and delivered in clear English.',
-    arabicDescription: 'تأصيل علمي ميسر في العقيدة، وفقه العبادات، والسيرة النبوية بأسلوب واضح وودود.',
+    description: 'Faith, worship and the life of the Prophet ﷺ, taught soundly and clearly.',
+    arabicDescription: 'العقيدة والفقه والسيرة، بفهم سليم وأسلوب واضح وقريب منك.',
     services: [
       {
         id: 'aqeedah',
@@ -105,7 +105,7 @@ export const SERVICES_DATA: ServicePillar[] = [
           'Building a firm identity rooted in sound understanding'
         ],
         durations: [30, 45, 60],
-        recommendedFrequency: '1 to 2 sessions per week'
+        recommendedFrequency: '1 to 2 lessons a week'
       },
       {
         id: 'fiqh',
@@ -123,7 +123,7 @@ export const SERVICES_DATA: ServicePillar[] = [
           'Handling modern daily situations calmly with sound knowledge'
         ],
         durations: [30, 45, 60],
-        recommendedFrequency: '1 to 2 sessions per week'
+        recommendedFrequency: '1 to 2 lessons a week'
       },
       {
         id: 'seerah',
@@ -141,7 +141,7 @@ export const SERVICES_DATA: ServicePillar[] = [
           'Connecting historical incidents to our lives today'
         ],
         durations: [30, 45, 60],
-        recommendedFrequency: '1 session per week'
+        recommendedFrequency: '1 lesson a week'
       },
       {
         id: 'islamic-studies',
@@ -159,7 +159,7 @@ export const SERVICES_DATA: ServicePillar[] = [
           'Building a loving, balanced Muslim character'
         ],
         durations: [30, 45, 60],
-        recommendedFrequency: '2 sessions per week'
+        recommendedFrequency: '2 lessons a week'
       }
     ]
   },
@@ -167,8 +167,8 @@ export const SERVICES_DATA: ServicePillar[] = [
     id: 'arabic',
     title: 'Arabic Language',
     arabicTitle: 'اللغة العربية',
-    description: 'Learn Arabic that actually unlocks understanding—whether for Quran comprehension, formal reading, or natural everyday conversation.',
-    arabicDescription: 'تعلّم العربية بأسلوب يفتح لك أبواب الفهم والتواصل الحقيقي.',
+    description: 'Arabic that opens understanding: for the Quran, for reading, and for real conversation.',
+    arabicDescription: 'عربية تفهم بيها القرآن، وتقرا بيها، وتتكلم بيها بثقة.',
     services: [
       {
         id: 'modern-standard-arabic',
@@ -186,7 +186,7 @@ export const SERVICES_DATA: ServicePillar[] = [
           'Writing coherent sentences with accurate voweling'
         ],
         durations: [45, 60],
-        recommendedFrequency: '2 sessions per week'
+        recommendedFrequency: '2 lessons a week'
       },
       {
         id: 'arabic-conversation',
@@ -204,7 +204,7 @@ export const SERVICES_DATA: ServicePillar[] = [
           'Listening comprehension with authentic native pacing'
         ],
         durations: [30, 45, 60],
-        recommendedFrequency: '2 to 3 sessions per week'
+        recommendedFrequency: '2 to 3 lessons a week'
       },
       {
         id: 'egyptian-arabic',
@@ -222,7 +222,7 @@ export const SERVICES_DATA: ServicePillar[] = [
           'Pronunciation secrets that make you sound natural immediately'
         ],
         durations: [30, 45, 60],
-        recommendedFrequency: '1 to 2 sessions per week'
+        recommendedFrequency: '1 to 2 lessons a week'
       },
       {
         id: 'arabic-foundations',
@@ -240,16 +240,16 @@ export const SERVICES_DATA: ServicePillar[] = [
           'Reading simple signs, phrases, and short passages'
         ],
         durations: [30, 45, 60],
-        recommendedFrequency: '2 sessions per week'
+        recommendedFrequency: '2 lessons a week'
       }
     ]
   },
   {
     id: 'english',
-    title: 'English Language Support',
+    title: 'English',
     arabicTitle: 'اللغة الإنجليزية',
-    description: 'Personalized English coaching for Arabic speakers and international learners seeking fluency, exam readiness, or workplace confidence.',
-    arabicDescription: 'تدريب مخصص للناطقين بالعربية لتطوير المحادثة واجتياز اختبارات الطلاقة بثقة.',
+    description: 'English you speak with confidence, at work, at school and in daily life.',
+    arabicDescription: 'إنجليزي تتكلمه بثقة، في الشغل والدراسة والحياة.',
     services: [
       {
         id: 'english',
@@ -258,7 +258,7 @@ export const SERVICES_DATA: ServicePillar[] = [
         category: 'english',
         tagline: 'Build conversational fluency, clean grammar, and confident professional English.',
         arabicTagline: 'تطوير الطلاقة والمحادثة وتجاوز أخطاء الترجمة للناطقين بالعربية.',
-        description: 'Both our teachers teach English at C1 level. They know the exact sounds and grammar that trip up Arabic speakers, and correct them precisely and patiently.',
+        description: 'Our teachers teach English at C1 level. They know the sounds and grammar that trip up Arabic speakers, and correct them precisely and patiently.',
         whoIsItFor: 'Arabic speakers seeking fluent spoken English, immigrants to English-speaking countries, or learners preparing for study abroad.',
         whatYouWillLearn: [
           'Targeted pronunciation and accent clarity training',
@@ -267,285 +267,143 @@ export const SERVICES_DATA: ServicePillar[] = [
           'Reading comprehension and natural email / text writing'
         ],
         durations: [30, 45, 60],
-        recommendedFrequency: '2 sessions per week'
+        recommendedFrequency: '2 lessons a week'
       }
     ]
   }
 ];
 
-export const VERIFIED_PROOF_POINTS = [
-  {
-    metric: '3+',
-    unit: 'Years',
-    label: 'Dedicated 1-on-1 Teaching',
-    description: 'Focused exclusively on personalized individual lessons tailored to each student’s pace.'
-  },
-  {
-    metric: '~30',
-    unit: 'Students',
-    label: 'Taught Internationally',
-    description: 'Learners across Canada, the United States, the United Kingdom, and Australia.'
-  },
-  {
-    metric: 'Al-Azhar',
-    unit: 'Background',
-    label: 'Grounded Education',
-    description: 'Educated within Egypt’s premier tradition of Islamic scholarship and Arabic language.'
-  },
-  {
-    metric: 'IELTS C1',
-    unit: 'Certified',
-    label: 'Fluent English Instruction',
-    description: 'Explaining complex Tajweed and Arabic concepts effortlessly in native-level English.'
-  },
-  {
-    metric: 'Preply',
-    unit: 'Certified',
-    label: 'Teaching Online Credential',
-    description: 'Formally verified pedagogy for effective, engaging remote learning.'
-  }
-];
 
+// The four steps on /how-it-works (also read by the AI learning guide in api/index.ts).
 export const HOW_IT_WORKS_STEPS = [
   {
     step: '01',
-    title: 'Book a Free 30-Min Trial',
-    arabicTitle: 'احجز جلسة تجريبية مجانية',
-    description: 'Choose a time that suits your local timezone. No payment or credit card is required. Tell your teacher a little about what you hope to learn.',
-    arabicDescription: 'اختر الموعد الأنسب لمنطقتك الزمنية بكل سهولة. لا يلزم أي دفع أو بطاقة بنكية. أخبر معلمك بما ترغب في تعلمه وإتقانه.',
-    highlight: 'Zero obligation',
-    arabicHighlight: 'بدون أي التزام مالي'
+    title: 'Book your free trial',
+    arabicTitle: 'احجز حصتك المجانية',
+    description: 'Pick a time in your own time zone. Thirty minutes on Zoom, no card and nothing to pay.',
+    arabicDescription: 'اختار ميعاد بتوقيتك. ٣٠ دقيقة على Zoom، من غير بطاقة ومن غير ما تدفع حاجة.',
+    highlight: 'No obligation',
+    arabicHighlight: 'من غير أي التزام'
   },
   {
     step: '02',
-    title: 'Meet & Discover Your Level',
-    arabicTitle: 'التقِ بمعلمك وحدد مستواك',
-    description: 'In your trial, your teacher (Ustadh Mahmoud or Ustadha Afnan) listens to your goals, finds your current level with gentle exercises, and gives you a real mini-lesson so you feel the teaching style directly.',
-    arabicDescription: 'في جلستك التجريبية، يستمع معلمك (الأستاذ محمود أو الأستاذة أفنان) لأهدافك، ويحدد مستواك عبر تمارين ميسرة، ويقدم لك درساً تطبيقياً مصغراً لتتعرف على أسلوب التدريس مباشرة.',
-    highlight: 'Personal assessment',
-    arabicHighlight: 'تقييم شخصي دقيق'
+    title: 'Meet your teacher',
+    arabicTitle: 'قابل معلمك',
+    description: 'Your teacher listens to your goal, finds your level gently, and gives you a real mini-lesson.',
+    arabicDescription: 'معلمك بيسمع هدفك، ويعرف مستواك بهدوء، ويديك درس صغير حقيقي تحس فيه بطريقة الشرح.',
+    highlight: 'A gentle assessment',
+    arabicHighlight: 'تقييم هادي'
   },
   {
     step: '03',
-    title: 'Receive Your Custom Plan',
-    arabicTitle: 'استلم خطتك التعليمية المناسبة',
-    description: 'Your teacher outlines a clear learning roadmap: recommended lesson duration (30, 45, or 60 min), weekly frequency, and material tailored to your lifestyle.',
-    arabicDescription: 'يحدد لك معلمك خارطة طريق تعليمية واضحة تشمل مدة الدرس المناسبة (٣٠ أو ٤٥ أو ٦٠ دقيقة)، وعدد الحصص الأسبوعية، والمحتوى المخصص لظروفك.',
-    highlight: 'No generic templates',
-    arabicHighlight: 'خطة مخصصة تماماً'
+    title: 'Get your plan',
+    arabicTitle: 'استلم خطتك',
+    description: 'A clear path: the lesson length (30, 45 or 60 minutes), how often you meet, and what you will study.',
+    arabicDescription: 'طريق واضح: مدة الحصة (٣٠ أو ٤٥ أو ٦٠ دقيقة)، وكام مرة في الأسبوع، وهتدرس إيه بالظبط.',
+    highlight: 'Made for you',
+    arabicHighlight: 'على مقاسك'
   },
   {
     step: '04',
-    title: 'Learn 1-on-1 with Flexibility',
-    arabicTitle: 'تعلم مباشرة عبر زووم بمرونة تامة',
-    description: 'Attend private Zoom lessons with direct WhatsApp support between sessions. Need to reschedule? You can reschedule yourself up to 1 hour before class, or cancel up to 3 hours before.',
-    arabicDescription: 'احضر حصصك الفردية الخاصة عبر زووم مع دعم مباشر ومستمر عبر واتساب. هل طرأ لك ظرف؟ يمكنك تغيير الموعد بنفسك حتى ساعة قبل الدرس، أو الإلغاء حتى ٣ ساعات قبله.',
-    highlight: 'Flexible rescheduling',
-    arabicHighlight: 'مرونة في تغيير الموعد'
+    title: 'Learn, week after week',
+    arabicTitle: 'اتعلّم أسبوع ورا أسبوع',
+    description: 'Private lessons on Zoom, and the on-site chat between them. Move a lesson yourself up to 1 hour before, or cancel up to 3 hours before.',
+    arabicDescription: 'حصص فردية على Zoom، والمحادثة على الموقع بين الحصص. تغيّر ميعاد حصتك بنفسك لحد ساعة قبلها، أو تلغيها لحد ٣ ساعات قبلها.',
+    highlight: 'Flexible',
+    arabicHighlight: 'بمرونة'
   }
 ];
 
+// What every lesson holds to, whatever the subject (/how-it-works).
 export const TEACHING_PILLARS = [
   {
-    title: 'Start From Where You Actually Are',
-    arabicTitle: 'البداية من مستواك الفعلي',
-    description: 'No student is behind. Whether you cannot read a single Arabic letter or you have partial memorization that feels rusty, we begin without judgment and build a solid foundation.',
-    arabicDescription: 'لا يوجد طالب متأخر. سواء كنت لا تقرأ حرفاً واحداً، أو لديك حفظ قديم ترغب في مراجعته وتثبيته، نبدأ معاً بدون أي أحكام أو حرج لبناء أساس متين.'
+    title: 'Mastery before speed',
+    arabicTitle: 'الإتقان قبل السرعة',
+    description: 'We move on when a step is solid, not when the page ends. Slow and sure lasts longer.',
+    arabicDescription: 'بنكمّل لما الخطوة تثبت، مش لما الصفحة تخلص. الخطوة الهادية الثابتة بتعيش أطول.'
   },
   {
-    title: 'A Safe Space to Make Mistakes',
-    arabicTitle: 'بيئة آمنة تخلو من الحرج',
-    description: 'Reciting Quran or speaking a new language can provoke anxiety. Our lessons are calm, encouraging, and patient. Every correction is delivered with kindness and clarity.',
-    arabicDescription: 'تلاوة القرآن أو التحدث بلغة جديدة قد يسبب التردد أو التوتر. دروسنا هادئة وصبورة ومشجعة، وكل تصحيح يُقدّم بلطف ومحبة وتدرج.'
+    title: 'Understand what you learn',
+    arabicTitle: 'نفهم اللي بنتعلمه',
+    description: 'A verse you understand stays with you. Every rule and every new word comes with its meaning.',
+    arabicDescription: 'الآية اللي بتفهمها بتفضل معاك. وكل قاعدة وكل كلمة جديدة بييجي معاها معناها.'
   },
   {
-    title: 'Pacing Built for Real Life',
-    arabicTitle: 'وتيرة تناسب التزاماتك اليومية',
-    description: 'Adults have demanding jobs and families; children have school schedules. We calibrate the lesson duration (30, 45, or 60 minutes) and homework load so you make consistent, stress-free progress.',
-    arabicDescription: 'للكبار مسؤوليات عمل وعائلة، وللأطفال جداول مدرسية. نضبط مدة الدرس (٣٠ أو ٤٥ أو ٦٠ دقيقة) والواجبات المنزلية لتستمر في التقدم بدون أي ضغوط.'
+    title: 'A small habit, every week',
+    arabicTitle: 'عادة صغيرة كل أسبوع',
+    description: 'Half an hour that comes back every week beats a long lesson that never returns. We fit the pace to your life.',
+    arabicDescription: 'نص ساعة بترجع كل أسبوع أحسن من حصة طويلة مبترجعش. وبنظبط الإيقاع على حياتك.'
   },
   {
-    title: 'Direct Teacher Relationship',
-    arabicTitle: 'علاقة مباشرة بدون وسطاء',
-    description: 'You are not a ticket number in a marketplace. You message your teacher in the on-site chat, or us on WhatsApp, when you have a question between lessons or need to adjust your schedule.',
-    arabicDescription: 'أنت لست مجرد رقم في متجر إلكتروني. تتواصل مع معلمك في المحادثة داخل الموقع، أو معنا على واتساب، متى كان لديك سؤال بين الدروس أو احتجت لتنسيق جدولك.'
-  }
-];
-
-export const AUTHENTIC_TESTIMONIALS: TestimonialItem[] = [
-  {
-    id: 't1',
-    quote: "Mahmoud’s patience with my 9-year-old son is exceptional. My son used to dread reading Arabic letters, but now he actually looks forward to his lessons. Mahmoud makes pronunciation games out of difficult Tajweed rules.",
-    arabicQuote: "صبر الأستاذ محمود مع ابني البالغ من العمر ٩ سنوات رائع واستثنائي. كان ابني يتردد ويخاف من نطق الحروف، لكنه الآن ينتظر درسه بشوق وحماس. المعلم يحوّل قواعد التجويد الصعبة إلى أنشطة ممتعة ومبسطة.",
-    author: 'S. Tariq',
-    arabicAuthor: 'س. طارق',
-    role: 'Parent of 9-year-old student',
-    arabicRole: 'ولي أمر طالب (٩ سنوات)',
-    location: 'Toronto, Canada',
-    arabicLocation: 'تورونتو، كندا',
-    subject: 'Quran Reading & Tajweed',
-    arabicSubject: 'تلاوة القرآن والتجويد',
-    durationWithMahmoud: '10 months of learning',
-    arabicDurationWithMahmoud: '١٠ أشهر من التعلم المستمر'
-  },
-  {
-    id: 't2',
-    quote: "As an adult working in finance in London, I was embarrassed that I couldn't read the Quran smoothly. Mahmoud never made me feel awkward. His English explanations of Arabic grammatical roots and articulation points are razor-sharp.",
-    arabicQuote: "كمهني أعمل في مجال التمويل بلندن، كنت أشعر بالحرج من عدم قدرتي على تلاوة القرآن بسلاسة. الأستاذ محمود أزال هذا الإحراج تماماً بأسلوبه الراقي وشرحه الدقيق لقواعد النحو ومخارج الحروف بصبر عظيم.",
-    author: 'K. Rahman',
-    arabicAuthor: 'ك. رحمن',
-    role: 'Adult professional learner',
-    arabicRole: 'متعلم مهني',
-    location: 'London, United Kingdom',
-    arabicLocation: 'لندن، المملكة المتحدة',
-    subject: 'Quran Recitation & Modern Standard Arabic',
-    arabicSubject: 'تلاوة القرآن والعربية الفصحى',
-    durationWithMahmoud: '14 months of learning',
-    arabicDurationWithMahmoud: '١٤ شهراً من التعلم'
-  },
-  {
-    id: 't3',
-    quote: "The 30-minute lesson option is perfect for our routine. Having a teacher who lives in Egypt but speaks English so fluently makes all the difference when explaining Aqeedah and Fiqh questions to young teens.",
-    arabicQuote: "خيار الدروس لمدة ٣٠ دقيقة مثالي جداً لجدولنا العائلي. وجود معلم متخرج من الأزهر الشريف ومتقن للإنجليزية بطلاقة يصنع فارقاً هائلاً عند شرح مسائل العقيدة والفقه لأبنائي اليافعين.",
-    author: 'A. Mansour',
-    arabicAuthor: 'أ. منصور',
-    role: 'Parent of two teenage students',
-    arabicRole: 'ولي أمر لطالبين يافعين',
-    location: 'Texas, United States',
-    arabicLocation: 'تكساس، الولايات المتحدة',
-    subject: 'Islamic Studies & Tajweed',
-    arabicSubject: 'العلوم الإسلامية والتجويد',
-    durationWithMahmoud: '8 months of learning',
-    arabicDurationWithMahmoud: '٨ أشهر من التعلم'
-  },
-  {
-    id: 't4',
-    quote: "Learning Egyptian Arabic conversation with Mahmoud feels like talking with a knowledgeable friend. He explains everyday slang, cultural expressions, and grammar shortcuts that you will never find in formal textbooks.",
-    arabicQuote: "تعلم المحادثة باللهجة المصرية مع الأستاذ محمود يشبه التحدث مع صديق واسع المعرفة. يشرح التعبيرات اليومية والثقافية واختصارات القواعد التي لا توجد في الكتب الأكاديمية الجافة.",
-    author: 'D. Miller',
-    arabicAuthor: 'د. ميلر',
-    role: 'Language enthusiast & traveler',
-    arabicRole: 'شغوف بتعلم اللغات',
-    location: 'Melbourne, Australia',
-    arabicLocation: 'ملبورن، أستراليا',
-    subject: 'Egyptian Spoken Arabic',
-    arabicSubject: 'المحادثة باللهجة المصرية',
-    durationWithMahmoud: '6 months of learning',
-    arabicDurationWithMahmoud: '٦ أشهر من التعلم'
+    title: 'Manners before knowledge',
+    arabicTitle: 'الأدب قبل العلم',
+    description: 'Our scholars learned adab before they learned knowledge. Respect, patience and a kind word are part of every lesson.',
+    arabicDescription: 'علماؤنا اتعلموا الأدب قبل العلم. والاحترام والصبر والكلمة الطيبة جزء من كل حصة.'
   }
 ];
 
 export const FAQS: FAQItem[] = [
   {
-    question: 'Is every lesson truly 1-on-1?',
-    arabicQuestion: 'هل كل درس فردي ومباشر مع معلم واحد؟',
-    answer: 'Yes, 100%. Watazawwado is a small personal teaching practice with two teachers, Ustadh Mahmoud and Ustadha Afnan, not a marketplace or agency. Each student has one assigned teacher, and you are never moved to another teacher or placed in a group class without your consent.',
-    arabicAnswer: 'نعم، ١٠٠٪. هذه مساحة تعليمية وتدريسية شخصية مباشرة وليست منصة وسيطة أو شركة تسويق. يدرّس فيها الأستاذ محمود والأستاذة أفنان، ولكل طالب معلم واحد مخصص، ولن يتم تحويلك إلى معلم آخر أو وضعك في فصول جماعية دون موافقتك، فكل درس مخصص لك وحدك.',
+    question: 'Is every lesson one-on-one?',
+    arabicQuestion: 'هل كل حصة فردية؟',
+    answer: 'Yes. Every lesson is you and your teacher, nobody else. You keep the same teacher, and we never move you to another teacher or into a group without asking you first.',
+    arabicAnswer: 'أيوه. كل حصة إنت ومعلمك وبس. بتفضل مع نفس المعلم، ومش هننقلك لمعلم تاني أو لمجموعة من غير ما نسألك الأول.',
     category: 'general'
   },
   {
-    question: 'How does the Free Trial work?',
-    arabicQuestion: 'كيف تعمل الجلسة التجريبية المجانية؟',
-    answer: 'The trial is a 30-minute private Zoom lesson (with up to 45 minutes if needed). We get to know your goals, evaluate your current level through simple diagnostic exercises, and conduct a brief mini-lesson. Afterward, your teacher shares a recommended learning plan. There is zero pressure and no credit card required.',
-    arabicAnswer: 'الجلسة عبارة عن درس مباشر وخاص عبر زووم لمدة ٣٠ دقيقة (تمتد إلى ٤٥ دقيقة عند الحاجة). نتعرف فيها على أهدافك ونحدد مستواك عبر تمارين بسيطة ومريحة، ونخوض درساً مصغراً لتتعرف على طريقة التدريس والشرح، ثم يقترح المعلم خطتك التعليمية المناسبة. الجلسة مجانية تماماً وبدون أي التزام أو بطاقة بنكية.',
+    question: 'How does the free trial work?',
+    arabicQuestion: 'الحصة التجريبية المجانية بتكون إزاي؟',
+    answer: 'It is a free 30-minute lesson on Zoom (up to 45 if needed). Your teacher gets to know your goal, finds your level with simple exercises and teaches a short real lesson. Then you get a suggested plan. No card, no pressure.',
+    arabicAnswer: 'حصة مجانية على Zoom مدتها ٣٠ دقيقة (وممكن توصل ٤٥ لو احتجنا). معلمك بيتعرف على هدفك، ويعرف مستواك بتمارين بسيطة، ويشرحلك درس صغير حقيقي، وبعدها يقترح عليك خطة. من غير بطاقة ومن غير أي ضغط.',
     category: 'trial'
   },
   {
-    question: 'What is the cancellation and rescheduling policy?',
-    arabicQuestion: 'ما هي سياسة الإلغاء وإعادة الجدولة؟',
-    answer: 'You may cancel a lesson up to 3 hours before it starts (a paid lesson comes back as a lesson credit) and reschedule it yourself up to 1 hour before. Inside the last hour nothing can be changed; for a real emergency, message us on WhatsApp.',
-    arabicAnswer: 'يمكنك إلغاء الدرس حتى ٣ ساعات قبل موعده (ويعود الدرس المدفوع كرصيد حصة)، وتغيير موعده بنفسك من حسابك حتى ساعة قبله. وخلال الساعة الأخيرة لا يمكن تغيير شيء؛ وفي الظروف الطارئة فعلاً راسلنا على واتساب.',
-    category: 'booking'
-  },
-  {
-    question: 'I cannot read any Arabic at all. Can I still start?',
-    arabicQuestion: 'لا أعرف قراءة الحروف العربية مطلقاً، هل يمكنني البدء؟',
-    answer: 'Absolutely. Many of our students started with zero knowledge of the Arabic script. We begin from the very first letter (Alif), teaching the exact shape, sound, and vowel combinations patiently step by step.',
-    arabicAnswer: 'بالتأكيد وبكل سرور! الكثير من طلابنا بدأوا من الصفر تماماً. نبدأ من الحرف الأول (الألف) خطوة بخطوة، مع التركيز على مخارج الحروف، والحركات، وربط الكلمات بصبر وهدوء تام حتى تنطلق في القراءة بسلاسة.',
-    category: 'teaching'
-  },
-  {
-    question: 'What lesson lengths are available?',
-    arabicQuestion: 'ما هي مدد الدروس المتاحة؟',
-    answer: 'Standard paid lessons are 30 minutes, 45 minutes, or 60 minutes. Shorter 30-minute sessions are especially popular for young children or busy working professionals, while 60-minute sessions work well for in-depth Arabic grammar or Quran revision.',
-    arabicAnswer: 'نوفر مدد ٣٠ دقيقة، أو ٤٥ دقيقة، أو ٦٠ دقيقة. الجلسات القصيرة (٣٠ دقيقة) ممتازة ومحبوبة جداً للأطفال وأصحاب الجداول المزدحمة لضمان كامل التركيز، بينما تناسب جلسات ٦٠ دقيقة مراجعة القرآن المكثفة وقواعد اللغة العربية المتقدمة.',
-    category: 'booking'
-  },
-  {
-    question: 'How do timezones work?',
-    arabicQuestion: 'كيف يتم التعامل مع فروق التوقيت حول العالم؟',
-    answer: 'All booking times are calculated and shown automatically in your local timezone (e.g., EST, PST, GMT, AEST). You never have to do mental timezone math.',
-    arabicAnswer: 'يحسب نظام الحجز مواعيدك ويظهرها تلقائياً حسب توقيت مدينتك ومنطقتك الزمنية المحلية (في أمريكا، كندا، بريطانيا، أستراليا، أو الخليج). لن تحتاج أبداً لحساب فارق الساعات ذهنياً.',
+    question: 'Can I choose a female teacher?',
+    arabicQuestion: 'أقدر أختار معلّمة؟',
+    answer: 'Yes. When you set up your learning profile you choose a male or a female teacher, for yourself or for each child.',
+    arabicAnswer: 'أيوه. وإنت بتعمل ملفك التعليمي بتختار معلّم أو معلّمة، ليك أو لكل طفل من أولادك.',
     category: 'general'
   },
   {
-    question: 'Do I need to create an account to book?',
-    arabicQuestion: 'هل أحتاج لإنشاء حساب مسبق لحجز جلسة؟',
-    answer: 'Yes, a free account is needed for every booking, including the free trial. It takes a minute, and it is where you see your lessons, Zoom links, packages and chat with your teacher.',
-    arabicAnswer: 'نعم، كل حجز يحتاج حساباً مجانياً، حتى الدرس التجريبي. إنشاؤه يأخذ دقيقة، ومنه تتابع دروسك وروابط زووم وباقاتك والمحادثة مع معلمك.',
+    question: 'What is the cancellation and rescheduling policy?',
+    arabicQuestion: 'أقدر ألغي أو أغيّر ميعاد الحصة؟',
+    answer: 'You can cancel up to 3 hours before (a paid lesson comes back as a lesson credit) and move it yourself up to 1 hour before, to tomorrow or later. In the last hour nothing can change; for a real emergency, message us on WhatsApp.',
+    arabicAnswer: 'تقدر تلغي الحصة لحد ٣ ساعات قبل ميعادها (والحصة المدفوعة بترجعلك كرصيد)، وتغيّر ميعادها بنفسك من حسابك لحد ساعة قبلها، لأي يوم من بكرة ورايح. في آخر ساعة مفيش تغيير؛ ولو حصل ظرف طارئ فعلاً، كلّمنا على واتساب.',
+    category: 'booking'
+  },
+  {
+    question: 'I cannot read any Arabic. Can I still start?',
+    arabicQuestion: 'مبعرفش أقرا عربي خالص، أقدر أبدأ؟',
+    answer: 'Of course, and you are not alone. We begin with the very first letter, its shape and its sound, step by step and with patience.',
+    arabicAnswer: 'طبعاً، وإنت مش لوحدك. بنبدأ من أول حرف، شكله وصوته، خطوة بخطوة وبصبر.',
+    category: 'teaching'
+  },
+  {
+    question: 'How long is a lesson?',
+    arabicQuestion: 'الحصة مدتها قد إيه؟',
+    answer: '30, 45 or 60 minutes. Thirty minutes suits young children and busy days; sixty suits long revision or grammar. Shorter lessons cost the same per minute.',
+    arabicAnswer: '٣٠ أو ٤٥ أو ٦٠ دقيقة. الـ٣٠ مناسبة للأطفال والأيام المزحومة، والـ٦٠ للمراجعة الطويلة والنحو. والحصة الأقصر بنفس سعر الدقيقة.',
+    category: 'booking'
+  },
+  {
+    question: 'How do I pay?',
+    arabicQuestion: 'بدفع إزاي؟',
+    answer: 'Online through Stripe: card, Apple Pay or PayPal. A paid lesson is confirmed once the payment goes through. The free trial costs nothing.',
+    arabicAnswer: 'أونلاين عن طريق Stripe: بطاقة أو Apple Pay أو PayPal. الحصة المدفوعة بتتأكد أول ما الدفع يتم، والحصة التجريبية ببلاش.',
+    category: 'booking'
+  },
+  {
+    question: 'How do time zones work?',
+    arabicQuestion: 'المواعيد بتوقيت مين؟',
+    answer: 'Every time on the site is shown in your own time zone, automatically. No maths needed.',
+    arabicAnswer: 'كل المواعيد على الموقع بتظهر بتوقيت بلدك تلقائياً. مش محتاج تحسب فرق الساعات.',
+    category: 'general'
+  },
+  {
+    question: 'Do I need an account to book?',
+    arabicQuestion: 'محتاج حساب عشان أحجز؟',
+    answer: 'Yes, every booking needs a free account, the free trial too. It takes a minute, and it is where you see your lessons, Zoom links and packages, and talk to your teacher.',
+    arabicAnswer: 'أيوه، كل حجز محتاج حساب مجاني، حتى الحصة التجريبية. بياخد دقيقة، ومنه تتابع حصصك وروابط Zoom وباقاتك، وتكلّم معلمك.',
     category: 'booking'
   }
 ];
-
-export const ARABIC_TRANSLATIONS = {
-  nav: {
-    home: 'الرئيسية',
-    services: 'الخدمات والدروس',
-    about: 'عن محمود',
-    approach: 'منهجية التدريس',
-    howItWorks: 'كيف نعمل',
-    testimonials: 'آراء الطلاب',
-    faqs: 'الأسئلة الشائعة',
-    contact: 'تواصل معي',
-    bookTrial: 'احجز جلسة تجريبية مجانية'
-  },
-  hero: {
-    eyebrow: 'تعليم فردي مباشر • جلسات خاصة ١ لـ ١',
-    title: 'تعلم القرآن الكريم واللغة العربية والعلوم الإسلامية',
-    subtitle: 'مع الأستاذ محمود مباشرة. تعليم مخصص يناسب مستواك، أهدافك، وسرعة تعلمك، مع مرونة كاملة للمسلمين والدارسين حول العالم.',
-    ctaPrimary: 'احجز جلسة تجريبية مجانية (٣٠ دقيقة)',
-    ctaSecondary: 'استكشف الخدمات والبرامج',
-    trustNote: 'بدون بطاقة بنكية • جلسة فردية خاصة • عبر زووم',
-    proof1: '٣+ سنوات خبرة تدريسية',
-    proof2: '~٣٠ طالباً في كندا وأمريكا وبريطانيا وأستراليا',
-    proof3: 'خريج الأزهر الشريف ومتقن للإنجليزية C1'
-  },
-  services: {
-    sectionTag: 'المسارات والخدمات التعليمية',
-    title: '١٣ خدمة تعليمية متخصصة ومصممة لكل طالب',
-    subtitle: 'لا توجد قوالب جاهزة. كل درس يُبنى حول احتياجك الفعلي وهدفك التعليمي.',
-    exploreBtn: 'تفاصيل المسار والدروس',
-    tryInTrial: 'اختر هذا المسار في جلستك التجريبية',
-    durationsLabel: 'مدد الدروس المتاحة:',
-    whoLabel: 'لمن هذه الخدمة:',
-    learnLabel: 'ماذا ستتعلم:'
-  },
-  about: {
-    sectionTag: 'الأستاذ محمود',
-    title: 'معلم مكرس للتعليم الفردي والصبور',
-    storyP1: 'السلام عليكم ورحمة الله وبركاته، أنا محمود. أعمل كمعلم مستقل للقرآن الكريم، وأحكام التجويد، واللغة العربية، والدراسات الإسلامية للطلاب الدوليين والعائلات المسلمة المقيمة في الدول الغربية.',
-    storyP2: 'دراستي في الأزهر الشريف منحتني تأصيلاً علمياً عميقاً في علوم الشريعة واللسان العربي، بينما مكنني إتقاني للغة الإنجليزية بمستوى (IELTS C1) من شرح أدق المسائل اللغوية ومخارج الحروف بأسلوب سهل وطبيعي للمسلمين الناطقين بالإنجليزية.',
-    storyP3: 'التعليم بالنسبة لي ليس عملاً تجارياً عابراً أو منصة وسيطة، بل هو مسؤولية إنسانية وعلاقة مباشرة تجمعني بطلابي في مسيرتهم التعليمية المباركة.',
-    whatIAm: 'ما أقدمه لك:',
-    whatIAmPoints: [
-      'تعليم فردي مباشر ١ لـ ١ مبني على حاجتك',
-      'صبر كامل وبيئة مريحة تشجع على التعلم دون خجل',
-      'تواصل مباشر وسريع عبر واتساب بين الدروس',
-      'مرونة في تغيير الموعد حتى ساعة قبل الدرس'
-    ],
-    whatIAmNot: 'ما لا أقوم به:',
-    whatIAmNotPoints: [
-      'لست منصة تجارية توزع الطلاب على معلمين عشوائيين',
-      'لا أتبع مناهج جامدة دون مراعاة لظروف الطالب',
-      'لا أفرض التزامات أو شروط دفع معقدة'
-    ]
-  },
-  trial: {
-    title: 'ابدأ بجلسة تجريبية مجانية مدتها ٣٠ دقيقة',
-    subtitle: 'فرصة مثالية لنتعرف على بعضنا، نقيم مستواك الحالي، وتجرب أسلوبي في التدريس قبل أي التزام.',
-    benefit1: 'تقييم فردي دقيق لمستواك بدون أي إحراج',
-    benefit2: 'درس مصغر لتجربة التفاعل والشرح المباشر',
-    benefit3: 'خطة تعليمية مخصصة مقترحة للمتابعة',
-    policy: 'جلسة تجريبية واحدة مجانية لكل طالب جديد • مدة الجلسة ٣٠ دقيقة (بحد أقصى ٤٥ دقيقة)'
-  }
-};

@@ -473,12 +473,12 @@ export const ManageBookingModal: React.FC<ManageBookingModalProps> = ({
                   </div>
                 )}
 
-                {/* Contact Mahmoud Directly Action (If < 3 Hours) */}
+                {/* Contact us directly (under 3 hours) */}
                 {!eligibility.eligible && (
                   <div className="pt-1 flex flex-wrap gap-2">
                     <a
                       href={buildWhatsAppUrl(
-                        `Assalamu Alaikum Ustadh Mahmoud, regarding my booking ${booking.reference} for ${booking.serviceName} scheduled in ${eligibility.hoursRemaining} hours, I need to request an urgent change.`
+                        `Assalamu alaikum Watazawwado team, regarding my booking ${booking.reference} for ${booking.serviceName} scheduled in ${eligibility.hoursRemaining} hours, I need to request an urgent change.`
                       )}
                       target="_blank"
                       rel="noopener noreferrer"

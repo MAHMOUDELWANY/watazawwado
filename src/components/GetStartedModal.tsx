@@ -1,20 +1,10 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Sparkles, 
-  UserCheck, 
-  LogIn, 
-  UserPlus, 
-  X, 
-  Calendar, 
-  ArrowRight, 
-  ShieldCheck, 
-  GraduationCap,
-  Clock,
-  CheckCircle2
-} from 'lucide-react';
-import { useNavigate, Link } from 'react-router-dom';
+import { X, Check } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Language } from '../booking/types';
+import { Button } from './ui/Button';
+import { AuthCard, AuthPortal } from './auth/AuthFrame';
 
 interface GetStartedModalProps {
   isOpen: boolean;
@@ -24,6 +14,7 @@ interface GetStartedModalProps {
   lang?: Language;
 }
 
+/** First step of every booking (no guests, RULES.md §2): open an account or sign in. */
 export const GetStartedModal: React.FC<GetStartedModalProps> = ({
   isOpen,
   onClose,
@@ -31,133 +22,96 @@ export const GetStartedModal: React.FC<GetStartedModalProps> = ({
   onOpenStudentLogin,
   lang = 'en'
 }) => {
-  const navigate = useNavigate();
-
   if (!isOpen) return null;
 
   const isAr = lang === 'ar';
-const handleOpenSignup = () => {
-    onClose();
-    onOpenStudentSignup();
-  };
-
-  const handleOpenLogin = () => {
-    onClose();
-    onOpenStudentLogin();
-  };
+  const points = isAr
+    ? ['٣٠ دقيقة على Zoom، مجاناً', 'بدون بطاقة بنكية', 'تختار معلّم أو معلّمة']
+    : ['30 minutes on Zoom, free', 'No card needed', 'Choose a male or female teacher'];
 
   return (
     <AnimatePresence>
-      <div 
+      <div
         className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
         role="dialog"
         aria-modal="true"
         aria-labelledby="get-started-title"
+        dir={isAr ? 'rtl' : 'ltr'}
       >
-        {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="fixed inset-0 bg-black/45 backdrop-blur-sm"
+          className="fixed inset-0 bg-[#05363F]/45 dark:bg-black/60 backdrop-blur-md"
         />
 
-        {/* Modal Container */}
         <motion.div
           initial={{ opacity: 0, scale: 0.96, y: 12 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.96, y: 12 }}
           transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="get-started-title"
-          className="relative w-full max-w-xl glass-dialog rounded-3xl p-6 sm:p-8 text-foreground z-10"
+          className="relative w-full flex justify-center my-auto"
         >
-          {/* Close button */}
-          <button
-            onClick={onClose}
-            aria-label={isAr ? 'إغلاق' : 'Close modal'}
-            className="absolute top-5 end-5 p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
-          >
-            <X className="w-5 h-5" />
-          </button>
-
-          {/* Header */}
-          <div className="text-center max-w-md mx-auto mb-6">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-[32px] glass-brand-edge glass-specular bg-secondary/30 text-accent mb-3">
-              <GraduationCap className="w-6 h-6" />
-            </div>
-            <h2 id="get-started-title" className="text-2xl sm:text-3xl font-display font-bold  text-foreground">
-              {isAr ? 'ابدأ رحلتك التعليمية' : 'Begin Your Learning Journey'}
-            </h2>
-            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-              {isAr 
-                ? 'اختر كيف ترغب في جدولة دروسك المباشرة 1-على-1 مع معلمك أو معلمتك.'
-                : 'Choose how you would like to schedule your direct 1-on-1 sessions with your teacher.'}
-            </p>
-          </div>
-
-          {/* Primary Pathways Selection: Guest vs Student */}
-          <div className="space-y-4">            {/* OPTION 1: Continue as Student (Student Account) */}
-            <div 
-              className="p-5 rounded-[32px] glass-brand-edge glass-specular glass-surface border border-secondary/60 hover:border-primary hover:shadow-md transition-all group"
-            >
-              <div className="flex items-start gap-4">
-                <div className="w-11 h-11 rounded-xl bg-secondary/30 text-accent flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                  <UserCheck className="w-5 h-5" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-semibold text-base text-foreground group-hover:text-primary transition-colors">
-                      {isAr ? 'المتابعة كطالب مسجل' : 'Continue as Student'}
-                    </span>
-                    <span className="text-sm px-2.5 py-0.5 rounded-full font-medium bg-secondary/30 text-primary whitespace-nowrap">
-                      {isAr ? 'حجز حقيقي' : 'Real Booking'}
-                    </span>
-                  </div>
-                  <p className="text-sm sm:text-sm text-muted-foreground mt-1.5 leading-relaxed">
-                    {isAr
-                      ? 'سجل دخولك أو أنشئ حساباً لحجز درس حقيقي، وربط حجوزاتك، واستلام رابط Zoom الخاص بك.'
-                      : 'Sign in or create an account to book an actual lesson, keep your bookings connected, and receive your Zoom link.'}
-                  </p>
-
-                  <div className="mt-3.5 pt-3 border-t border-border flex flex-wrap items-center justify-between gap-2">
-                    <button
-                      type="button"
-                      onClick={handleOpenSignup}
-                      id="get-started-student-signup-btn"
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl btn-primary-material text-primary-foreground text-sm sm:text-sm font-medium transition-colors shadow-xs cursor-pointer"
-                    >
-                      <UserPlus className="w-3.5 h-3.5" />
-                      <span>{isAr ? 'إنشاء حساب طالب' : 'Create Account'}</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleOpenLogin}
-                      id="get-started-student-login-btn"
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl glass-card hover:bg-surface-subtle text-foreground text-sm sm:text-sm font-medium transition-colors cursor-pointer border border-border"
-                    >
-                      <LogIn className="w-3.5 h-3.5 text-accent" />
-                      <span>{isAr ? 'تسجيل الدخول' : 'Sign In'}</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Secondary Pathways: Staff Entrance */}
-          <div className="mt-5 pt-4 border-t border-border flex items-center justify-center text-sm text-muted-foreground">
-            <Link
-              to="/staff/login"
+          <AuthCard className="relative">
+            <button
+              type="button"
               onClick={onClose}
-              id="get-started-staff-link"
-              className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              aria-label={isAr ? 'إغلاق' : 'Close'}
+              className="absolute top-3 end-3 z-20 w-9 h-9 flex items-center justify-center rounded-full text-white bg-white/10 hover:bg-white/20 border border-white/25 transition-colors cursor-pointer focus-ring"
             >
-              {isAr ? 'دخول المعلم / الإدارة' : 'Staff / Teacher Entrance'}
-            </Link>
-          </div>
+              <X className="w-4 h-4" />
+            </button>
+
+            <AuthPortal
+              titleId="get-started-title"
+              title={isAr ? 'حصتك الأولى علينا' : 'Your first lesson is on us'}
+              subtitle={isAr
+                ? 'عشان نحجزلك ونبعتلك رابط الحصة، محتاجين حساب. بياخد دقيقة.'
+                : 'To book it and send you the lesson link, you need an account. It takes a minute.'}
+            />
+
+            <div className="px-6 sm:px-8 pt-5 pb-7">
+              <ul className="space-y-2 mb-6">
+                {points.map((p) => (
+                  <li key={p} className="flex items-center gap-2 text-sm font-medium text-foreground">
+                    <Check className="w-4 h-4 text-[var(--teal)] shrink-0" aria-hidden="true" />
+                    <span>{p}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="space-y-3">
+                <Button
+                  type="button"
+                  id="get-started-student-signup-btn"
+                  onClick={() => { onClose(); onOpenStudentSignup(); }}
+                  className="w-full !rounded-full"
+                >
+                  {isAr ? 'افتح حساب جديد' : 'Create an account'}
+                </Button>
+                <button
+                  type="button"
+                  id="get-started-student-login-btn"
+                  onClick={() => { onClose(); onOpenStudentLogin(); }}
+                  className="btn-glass is-pill w-full"
+                >
+                  {isAr ? 'عندي حساب، ادخل' : 'I have an account, sign in'}
+                </button>
+              </div>
+
+              <p className="mt-6 pt-4 border-t border-border text-center text-sm">
+                <Link
+                  to="/staff/login"
+                  onClick={onClose}
+                  id="get-started-staff-link"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {isAr ? 'معلم في وتزودوا؟ ادخل من هنا' : 'Teaching with us? Sign in here'}
+                </Link>
+              </p>
+            </div>
+          </AuthCard>
         </motion.div>
       </div>
     </AnimatePresence>

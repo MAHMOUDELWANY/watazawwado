@@ -37,7 +37,9 @@ import StudentPlacementPage from './pages/StudentPlacementPage';
 import StudentPlacementReportPage from './pages/StudentPlacementReportPage';
 import { ChatPanel } from '../components/chat/ChatPanel';
 import IntakeConversation from '../components/intake/IntakeConversation';
+import { Button } from '../components/ui/Button';
 import { StudentAuthModal } from '../components/StudentAuthModal';
+import { AuthPage, AuthCard, AuthPortal } from '../components/auth/AuthFrame';
 import { useOtpCelebrating } from '../components/auth/otpCelebration';
 import {  buildStudentNotifications,
   countUnread,
@@ -258,8 +260,8 @@ export default function StudentApp() {
     return (
       <BrandLoader 
         size="page" 
-        text={isAr ? 'جارٍ التحقق من الحساب...' : 'Verifying your account...'} 
-        subtext={isAr ? 'أهلاً بك في منصة وتزودوا للقرآن واللغة العربية' : 'Welcome to Watazawwado for Quran & Arabic Studies'}
+        text={isAr ? 'لحظة، بنجهّز حسابك…' : 'One moment, getting your account ready…'}
+        subtext={isAr ? 'أهلاً بيك في وتزودوا' : 'Welcome to Watazawwado'}
       />
     );
   }
@@ -267,36 +269,24 @@ export default function StudentApp() {
   // If not authenticated, provide choices: Sign In, Create Account
   if (otpCelebrating || !user || userRole !== 'student') {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-6 text-foreground">
-        <div className="max-w-md w-full glass-card border-none rounded-3xl p-8 sm:p-10 shadow-xs text-center">
-          <div className="flex justify-center mx-auto mb-5">
-            <BrandLogo variant="large" />
-          </div>
-          <h1 className="text-2xl font-display font-bold mb-2 ">
-            {isAr ? 'مساحتك التعليمية — وتزودوا' : 'Learning Home Access'}
-          </h1>
-          <p className="text-sm sm:text-sm text-muted-foreground mb-6 leading-relaxed">
-            {isAr
-              ? 'سجّل الدخول للوصول إلى مواعيد دروسك الفردية المباشرة مع معلمك ورابط فصل زووم.'
-              : 'Sign in to view your scheduled 1-on-1 lessons, join your Zoom classroom, or review teacher feedback.'}
-          </p>
-
-          <div className="space-y-3">
-            <button
-              onClick={() => setAuthModalOpen(true)}
-              className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 btn-primary-material text-primary-foreground rounded-xl transition-all font-medium text-sm shadow-xs cursor-pointer focus-visible:ring-2 focus-visible:ring-primary"
-            >
-              <span>{isAr ? 'تسجيل الدخول / إنشاء حساب' : 'Sign In / Create Account'}</span>
-              <ArrowRight className={`w-4 h-4 ${isAr ? 'rotate-180' : ''}`} />
+      <AuthPage isAr={isAr} onToggleLang={toggleLang}>
+        <AuthCard>
+          <AuthPortal
+            title={isAr ? 'ركنك في وتزودوا' : 'Your corner of Watazawwado'}
+            subtitle={isAr
+              ? 'ادخل حسابك تشوف حصصك ورابط Zoom وملاحظات معلمك، أو افتح حساب جديد في دقيقة.'
+              : 'Sign in to see your lessons, your Zoom link and your teacher’s notes, or open a new account in a minute.'}
+          />
+          <div className="px-6 sm:px-8 pt-6 pb-7 space-y-3">
+            <Button onClick={() => { setAuthInitialView('login'); setAuthModalOpen(true); }} className="w-full !rounded-full gap-2">
+              <span>{isAr ? 'ادخل حسابك' : 'Sign in'}</span>
+              <ArrowRight className="w-4 h-4 rtl:-scale-x-100" aria-hidden="true" />
+            </Button>
+            <button type="button" onClick={() => { setAuthInitialView('signup'); setAuthModalOpen(true); }} className="btn-glass is-pill w-full">
+              {isAr ? 'افتح حساب جديد' : 'Create an account'}
             </button>
-
-            <div className="pt-4 border-t border-border text-sm text-muted-foreground">
-              <Link to="/" className="hover:text-foreground transition-colors hover:underline">
-                {isAr ? '← العودة إلى الصفحة الرئيسية' : '← Back to the homepage'}
-              </Link>
-            </div>
           </div>
-        </div>
+        </AuthCard>
 
         <StudentAuthModal
           isOpen={authModalOpen}
@@ -304,7 +294,7 @@ export default function StudentApp() {
           lang={lang}
           initialView={authInitialView}
         />
-      </div>
+      </AuthPage>
     );
   }
 

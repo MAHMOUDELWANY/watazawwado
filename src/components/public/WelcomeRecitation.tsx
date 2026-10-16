@@ -7,7 +7,7 @@ import { playWelcome, useWelcomeAudio } from '../../lib/welcomeAudio';
  * Homepage, first visit of the session: tries to start the welcome recitation by itself.
  * Browsers usually block sound until the visitor taps, so the first time ever we also show an
  * animated hint with a sound button; any tap on the page starts it too. After that, the
- * recitation can be played again any time from the menu (Navbar).
+ * recitation can be played again any time from the button under the verse (homepage only).
  * Client-only: everything runs inside useEffect.
  */
 
@@ -97,8 +97,8 @@ export function WelcomeRecitation({ isAr }: { isAr: boolean }) {
               </p>
               <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">
                 {isAr
-                  ? 'لتسمع تلاوة الترحيب ﴿وتزودوا فإن خير الزاد التقوى﴾. وتقدر تشغّلها تاني في أي وقت من القائمة.'
-                  : 'to hear our welcome recitation. You can play it again any time from the menu.'}
+                  ? 'عشان تسمع تلاوة الترحيب ﴿وتزودوا فإن خير الزاد التقوى﴾. وتقدر تسمعها تاني من الزر اللي تحت الآية.'
+                  : 'to hear our welcome recitation. You can play it again from the button under the verse.'}
               </p>
             </div>
             <button
@@ -129,7 +129,7 @@ export function WelcomeStopButton({ isAr }: { isAr: boolean }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
-          className="fixed bottom-5 start-5 z-40 inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#087D91] text-white text-sm font-semibold shadow-lg shadow-[#087D91]/30 hover:bg-[#06697A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#087D91] cursor-pointer"
+          className="fixed bottom-24 start-4 sm:start-6 z-40 inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#087D91] text-white text-sm font-semibold shadow-lg shadow-[#087D91]/30 hover:bg-[#06697A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#087D91] cursor-pointer"
           aria-label={isAr ? 'إيقاف التلاوة' : 'Stop the recitation'}
         >
           <span className="flex items-end gap-0.5 h-3" aria-hidden="true">

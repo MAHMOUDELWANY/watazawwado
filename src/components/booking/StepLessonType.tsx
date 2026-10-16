@@ -416,7 +416,7 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
               : '٦٠ دقيقة هي الحد الأقصى للجلسات العادية حفاظاً على جودة التركيز والصوت. إذا كنت بحاجة لجلسات مكثفة أطول أو ترتيب عائلي، يرجى '}
           </span>
           <a
-            href={buildWhatsAppUrl('Assalamu Alaikum Ustadh Mahmoud, I would like to request an extended lesson session (longer than 60 minutes).')}
+            href={buildWhatsAppUrl('Assalamu alaikum Watazawwado team, I would like to request an extended lesson session (longer than 60 minutes).')}
             target="_blank"
             rel="noopener noreferrer"
             className="text-[#25D366] dark:text-[#25D366] font-bold underline hover:opacity-80 transition-opacity"

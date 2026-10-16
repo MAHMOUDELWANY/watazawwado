@@ -14,11 +14,8 @@ import {
   CreditCard,
   User,
   Shield,
-  ArrowRight,
-  Volume2,
-  VolumeX
+  ArrowRight
 } from 'lucide-react';
-import { useWelcomeAudio } from '../lib/welcomeAudio';
 import { BrandLogo } from './ui/BrandLogo';
 import { ThemeToggle } from './ui/ThemeToggle';
 import { Language, ThemeMode } from '../types';
@@ -42,7 +39,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [sideDrawerOpen, setSideDrawerOpen] = useState(false);
-  const welcomeAudio = useWelcomeAudio();
   const location = useLocation();
   const isEn = lang === 'en';
   const isRtl = lang === 'ar';
@@ -72,10 +68,10 @@ export const Navbar: React.FC<NavbarProps> = ({
   }, [location.pathname, lang]);
 
   const navLinks = [
-    { href: '/learning', label: isEn ? 'Lessons & Syllabus' : 'الدروس والبرامج', icon: BookOpen },
-    { href: '/how-it-works', label: isEn ? 'How It Works' : 'كيف نعمل', icon: Sparkles },
-    { href: '/about', label: isEn ? 'About our teachers' : 'عن المعلمين والمنصة', icon: Info },
-    { href: '/pricing', label: isEn ? 'Pricing & Packages' : 'الأسعار والباقات', icon: CreditCard },
+    { href: '/learning', label: isEn ? 'Subjects' : 'المواد', icon: BookOpen },
+    { href: '/how-it-works', label: isEn ? 'How it works' : 'كيف نعمل', icon: Sparkles },
+    { href: '/about', label: isEn ? 'About us' : 'من نحن', icon: Info },
+    { href: '/pricing', label: isEn ? 'Prices & packages' : 'الأسعار والباقات', icon: CreditCard },
     { href: '/faq', label: isEn ? 'FAQ' : 'الأسئلة الشائعة', icon: HelpCircle },
   ];
 
@@ -144,7 +140,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={onToggleLang}
               id="lang-switch-btn"
               data-tour="lang-switch-btn"
-              aria-label="Toggle language between English and Arabic"
+              aria-label={isEn ? 'التبديل إلى العربية' : 'Switch to English'}
               className="flex items-center gap-1 sm:gap-1.5 px-2 py-1.5 sm:px-2.5 rounded-xl text-xs sm:text-sm font-semibold text-foreground hover:bg-surface-subtle border border-border/80 transition-colors cursor-pointer shadow-2xs shrink-0"
             >
               <Globe className="w-3.5 h-3.5 text-accent transition-colors shrink-0" />
@@ -157,7 +153,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => setSideDrawerOpen(true)}
               id="mobile-menu-toggle"
               data-tour="mobile-menu-toggle"
-              aria-label={isEn ? 'Open side navigation menu' : 'فتح القائمة الجانبية'}
+              aria-label={isEn ? 'Open the menu' : 'افتح القائمة'}
               aria-expanded={sideDrawerOpen}
               className="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-surface hover:bg-surface-subtle text-foreground border border-border/80 shadow-2xs active:scale-95 transition-all cursor-pointer touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary shrink-0"
             >
@@ -204,7 +200,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       {isEn ? 'Watazawwado' : 'وتزودوا'}
                     </span>
                     <span className="text-[12px] text-muted-foreground mt-1">
-                      {isEn ? 'Main Navigation' : 'قائمة المنصة'}
+                      {isEn ? 'Menu' : 'القائمة'}
                     </span>
                   </div>
                 </div>
@@ -222,46 +218,16 @@ export const Navbar: React.FC<NavbarProps> = ({
               {/* Drawer Scrollable Content Area */}
               <div className="flex-1 px-4 py-5 space-y-6 overflow-y-auto touch-pan-y overscroll-contain">
                 
-                {/* Welcome recitation: play again any time, as often as the visitor likes */}
-                <button
-                  type="button"
-                  id="menu-sound-btn"
-                  onClick={() => (welcomeAudio.playing ? welcomeAudio.stop() : void welcomeAudio.play())}
-                  aria-pressed={welcomeAudio.playing}
-                  className="w-full flex items-center gap-3 p-3 rounded-2xl border border-[#087D91]/30 bg-[#087D91]/8 hover:bg-[#087D91]/15 text-start transition-colors cursor-pointer"
-                >
-                  <span className={`relative shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-white ${welcomeAudio.playing ? 'bg-[#C51F24]' : 'bg-[#087D91]'}`}>
-                    {welcomeAudio.playing && (
-                      <motion.span
-                        className="absolute inset-0 rounded-full border-2 border-[#C51F24]"
-                        initial={{ scale: 1, opacity: 0.6 }}
-                        animate={{ scale: 1.6, opacity: 0 }}
-                        transition={{ duration: 1.4, repeat: Infinity, ease: 'easeOut' }}
-                        aria-hidden="true"
-                      />
-                    )}
-                    {welcomeAudio.playing ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
-                  </span>
-                  <span className="min-w-0">
-                    <span className="block text-sm font-bold text-foreground">
-                      {welcomeAudio.playing
-                        ? (isEn ? 'Stop the welcome recitation' : 'إيقاف تلاوة الترحيب')
-                        : (isEn ? 'Play the welcome recitation' : 'تشغيل تلاوة الترحيب')}
-                    </span>
-                    <span className="block text-xs text-muted-foreground">﴿وتزودوا فإن خير الزاد التقوى﴾</span>
-                  </span>
-                </button>
-
                 {/* 1. BOOKINGS & TRIALS FIRST */}
                 <div className="p-4 bg-primary/10 rounded-2xl border border-primary/25 space-y-2.5">
                   <div className="flex items-center gap-2 text-primary font-bold text-sm">
                     <Calendar className="w-4 h-4 shrink-0" />
-                    <span>{isEn ? 'Book Free Trial Lesson' : 'احجز جلستك التجريبية مجاناً'}</span>
+                    <span>{isEn ? 'Your first lesson is free' : 'أول حصة مجاناً'}</span>
                   </div>
                   <p className="text-xs text-muted-foreground leading-relaxed">
                     {isEn
-                      ? '30-minute private trial with Ustadh Mahmoud or Ustadha Afnan.'
-                      : 'جلسة خاصة ٣٠ دقيقة مع الأستاذ محمود أو الأستاذة أفنان للتعرف على مستواك وتحديد أهدافك.'}
+                      ? '30 minutes on Zoom with your teacher, to find your level and your goal.'
+                      : '٣٠ دقيقة على Zoom مع معلمك، نعرف فيها مستواك وهدفك.'}
                   </p>
                   <button
                     type="button"
@@ -272,14 +238,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                     className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl btn-primary-material text-white font-bold text-xs shadow-xs active:scale-95 transition-all cursor-pointer"
                   >
                     <Sparkles className="w-3.5 h-3.5" />
-                    <span>{isEn ? 'Claim Free Trial Now' : 'احجز جلستك المجانية'}</span>
+                    <span>{isEn ? 'Book your free trial' : 'احجز حصتك المجانية'}</span>
                   </button>
                 </div>
 
                 {/* 2. PAGES & SYLLABUS NAVIGATION LINKS */}
                 <div className="space-y-1">
                   <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider px-3 pb-1 block">
-                    {isEn ? 'Pages & Syllabus' : 'صفحات وأقسام المنصة'}
+                    {isEn ? 'Pages' : 'الصفحات'}
                   </span>
                   {navLinks.map((link) => {
                     const Icon = link.icon;
@@ -305,7 +271,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 {/* 3. PORTAL DIRECT ACCESS (Student & Teacher) */}
                 <div className="pt-3 border-t border-border/60 space-y-2">
                   <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider px-3 pb-1 block">
-                    {isEn ? 'Platform Portals' : 'بوابات المنصة'}
+                    {isEn ? 'Accounts' : 'الحسابات'}
                   </span>
 
                   <Link
@@ -315,7 +281,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   >
                     <div className="flex items-center gap-2.5">
                       <User className="w-4 h-4 text-primary shrink-0" />
-                      <span>{isEn ? 'Student Portal' : 'بوابة الطالب (تسجيل الدخول)'}</span>
+                      <span>{isEn ? 'Student account' : 'حساب الطالب'}</span>
                     </div>
                     <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180 text-muted-foreground" />
                   </Link>
@@ -327,7 +293,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   >
                     <div className="flex items-center gap-2.5">
                       <Shield className="w-4 h-4 text-accent shrink-0" />
-                      <span>{isEn ? 'Teacher Workspace' : 'بوابة المعلم والإدارة'}</span>
+                      <span>{isEn ? 'Teachers and admins' : 'المعلمين والإدارة'}</span>
                     </div>
                     <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180 text-muted-foreground" />
                   </Link>
@@ -339,7 +305,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="p-4 border-t border-border/80 bg-surface shrink-0 space-y-3">
                 <div className="flex items-center justify-between px-1">
                   <span className="text-xs font-semibold text-muted-foreground">
-                    {isEn ? 'Appearance & Theme' : 'المظهر والسمة'}
+                    {isEn ? 'Day or night' : 'نهاري أو ليلي'}
                   </span>
                   <ThemeToggle />
                 </div>
@@ -370,7 +336,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border border-teal-500/30 bg-teal-500/10 text-teal-800 dark:text-teal-200 text-xs sm:text-sm font-bold hover:bg-teal-500/20 transition-colors cursor-pointer shadow-2xs"
                   >
                     <Compass className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-                    <span>{isEn ? 'Start Interactive Site Tour' : 'الجولة الاستكشافية للموقع'}</span>
+                    <span>{isEn ? 'Take a tour of the site' : 'لفّة سريعة في الموقع'}</span>
                   </button>
                 )}
               </div>

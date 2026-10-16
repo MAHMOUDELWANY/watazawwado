@@ -39,7 +39,7 @@ describe('learning guide unavailable state', () => {
     assert.match(guide, /data\?\.code === 'AI_UNAVAILABLE' \|\| r\.status === 503/);
     assert.match(guide, /setAiUnavailable\(true\)/);
     assert.match(guide, /The learning guide is unavailable right now\./);
-    assert.match(guide, /you can still book a lesson or message Ustadh Mahmoud directly/i);
+    assert.match(guide, /you can still book a lesson or message us directly/i);
     assert.match(guide, /aiUnavailable && \(/);
   });
 

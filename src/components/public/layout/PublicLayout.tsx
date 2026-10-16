@@ -1,9 +1,8 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Navbar } from '../../Navbar';
 import { Footer } from '../../Footer';
 // Dialogs load on first open: they pull in booking, auth and country data the first paint doesn't need.
-const ManageBookingModal = lazy(() => import('../../booking/ManageBookingModal').then((m) => ({ default: m.ManageBookingModal })));
 const TeacherAuthModal = lazy(() => import('../../TeacherAuthModal').then((m) => ({ default: m.TeacherAuthModal })));
 const StudentAuthModal = lazy(() => import('../../StudentAuthModal').then((m) => ({ default: m.StudentAuthModal })));
 const GetStartedModal = lazy(() => import('../../GetStartedModal').then((m) => ({ default: m.GetStartedModal })));
@@ -13,6 +12,7 @@ import { useTheme } from '../../ThemeProvider';
 import { OnboardingGuide, OnboardingStep } from '../../ui/OnboardingGuide';
 import { useAppLanguage } from '../../../lib/language';
 import { WelcomeStopButton } from '../WelcomeRecitation';
+import { BackToTop } from './BackToTop';
 
 export interface PublicLayoutContextType {
   lang: Language;
@@ -27,10 +27,10 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
   const { lang, toggleLanguage: handleToggleLang } = useAppLanguage();
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [getStartedModalOpen, setGetStartedModalOpen] = useState<boolean>(Boolean(initialGetStartedOpen));
   const [preselectedService, setPreselectedService] = useState<string | undefined>();
-  const [manageModalOpen, setManageModalOpen] = useState<boolean>(false);
   const [teacherModalOpen, setTeacherModalOpen] = useState<boolean>(false);
   const [studentModalOpen, setStudentModalOpen] = useState<boolean>(false);
   const [studentModalInitialView, setStudentModalInitialView] = useState<'login' | 'signup'>('login');
@@ -46,50 +46,50 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
   const publicTourSteps: OnboardingStep[] = [
     {
       targetId: 'nav-brand',
-      title: lang === 'ar' ? 'منصة وتزودوا' : 'Watazawwado Platform',
+      title: lang === 'ar' ? 'وتزودوا' : 'Watazawwado',
       description: lang === 'ar'
-        ? 'مساحتك الخاصة للتعلم الفردي المباشر في القرآن الكريم واللغة العربية والعلوم الإسلامية.'
-        : 'Your private space for 1-on-1 personalized learning in Quran, Arabic, and Islamic Studies.',
+        ? 'أكاديمية أونلاين لحصص فردية في القرآن والتجويد والعربية والعلوم الشرعية والإنجليزية.'
+        : 'An online academy for one-on-one lessons in Quran, Tajweed, Arabic, Islamic studies and English.',
       position: 'bottom',
     },
     {
       targetId: ['nav-links-desktop', 'mobile-menu-toggle', 'hero-learn-more-btn'],
-      title: lang === 'ar' ? 'أقسام الموقع' : 'Explore Sections',
+      title: lang === 'ar' ? 'أقسام الموقع' : 'The sections',
       description: lang === 'ar'
-        ? 'تصفح مسارات التعلم، وتعرف على نهج التدريس، والأسعار الشفافة، والأسئلة الشائعة.'
-        : 'Explore study tracks, teaching approach, transparent pricing, and frequently asked questions.',
+        ? 'من القائمة تلاقي المواد، وطريقتنا في التدريس، والأسعار، والأسئلة الشائعة.'
+        : 'The menu has the subjects, how we teach, prices and common questions.',
       position: 'bottom',
     },
     {
       targetId: 'hero-get-started-btn',
-      title: lang === 'ar' ? 'جلسة تجريبية مجانية' : 'Free 30-Min Trial',
+      title: lang === 'ar' ? 'حصة تجريبية مجانية' : 'A free trial lesson',
       description: lang === 'ar'
-        ? 'احجز جلستك التجريبية الأولى مجاناً لتحديد مستواك ومناقشة أهدافك مباشرة بدون أي التزام مالي.'
-        : 'Book your first trial lesson for free to assess your level and discuss your learning goals.',
+        ? 'أول حصة مجاناً: ٣٠ دقيقة نعرف فيها مستواك وهدفك، من غير أي التزام.'
+        : 'Your first lesson is free: 30 minutes to find your level and your goal, with no obligation.',
       position: 'bottom',
     },
     {
-      targetId: 'mobile-menu-toggle',
+      targetId: 'verse-sound-btn',
       title: lang === 'ar' ? 'تلاوة الترحيب 🎧' : 'Welcome recitation 🎧',
       description: lang === 'ar'
-        ? 'افتح القائمة واضغط "تشغيل تلاوة الترحيب" لتسمع ﴿وتزودوا فإن خير الزاد التقوى﴾ في أي وقت، وكل ما تحب.'
-        : 'Open the menu and tap “Play the welcome recitation” to hear it again any time, as often as you like.',
-      position: 'bottom',
+        ? 'تحت آية ﴿وتزودوا فإن خير الزاد التقوى﴾ في الصفحة الرئيسية، اضغط "استمع للتلاوة" وقت ما تحب.'
+        : 'Under the verse on the homepage, tap “Listen to the recitation” whenever you like.',
+      position: 'top',
     },
     {
       targetId: 'lang-switch-btn',
-      title: lang === 'ar' ? 'تغيير اللغة' : 'Language Switcher',
+      title: lang === 'ar' ? 'اللغة' : 'Language',
       description: lang === 'ar'
-        ? 'يمكنك التبديل بين الواجهة العربية والإنجليزية بلمسة واحدة في أي وقت.'
-        : 'Switch between English and Arabic interfaces with a single tap at any time.',
+        ? 'بدّل بين العربي والإنجليزي بلمسة واحدة.'
+        : 'Switch between Arabic and English with one tap.',
       position: 'bottom',
     },
     {
       targetId: 'theme-toggle-btn',
-      title: lang === 'ar' ? 'الوضع الليلي والنهاري' : 'Day & Night Mode',
+      title: lang === 'ar' ? 'نهاري وليلي' : 'Day and night',
       description: lang === 'ar'
-        ? 'بدّل بين السمة النهارية الهادئة والسمة الليلية المريحة للعينين.'
-        : 'Toggle between warm daytime light mode and comfortable nighttime dark mode.',
+        ? 'اختار الإضاءة اللي ترتاح لها عينك.'
+        : 'Choose the light that is easiest on your eyes.',
       position: 'bottom',
     },
   ];
@@ -110,7 +110,8 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
         // No guest bookings (RULES.md §2): booking starts by signing in or creating an account.
         setGetStartedModalOpen(true);
       } else if (hash === '#manage' || hash === '#reschedule') {
-        setManageModalOpen(true);
+        // Lessons are moved or cancelled from the student account (sign-in required).
+        navigate('/student/lessons');
       } else if (hash === '#reset-password' || hash.includes('type=recovery')) {
         setStudentModalOpen(true);
       }
@@ -136,7 +137,6 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
           theme={theme}
           onToggleTheme={toggleTheme}
           onOpenTrialModal={(serviceId) => handleOpenGetStarted(serviceId)}
-          onOpenManageModal={() => setManageModalOpen(true)}
           onStartTour={() => setPublicTourOpen(true)}
         />
 
@@ -147,18 +147,11 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
           lang={lang}
           onToggleLang={handleToggleLang}
           onOpenTrialModal={() => handleOpenGetStarted(undefined)}
-          onOpenManageModal={() => setManageModalOpen(true)}
           onOpenTeacherModal={() => setTeacherModalOpen(true)}
         />
 
 
-        {/* Manage / Reschedule Booking Modal (3-hour rule policy foundation) */}
         <Suspense fallback={null}>
-        {manageModalOpen && <ManageBookingModal
-          isOpen={manageModalOpen}
-          onClose={() => setManageModalOpen(false)}
-          lang={lang}
-        />}
 
         {/* Teacher Auth & Diagnostics Modal (Phase 3 Backend Foundation) */}
         {teacherModalOpen && <TeacherAuthModal
@@ -191,8 +184,9 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
         />}
         </Suspense>
 
-        {/* AI Learning Guide */}
+        {/* AI Learning Guide (end corner) and back to top (the opposite corner) */}
         <LearningGuide lang={lang} />
+        <BackToTop isAr={lang === 'ar'} />
 
         {/* Stop button while the welcome recitation plays (started from the homepage or the menu) */}
         <WelcomeStopButton isAr={lang === 'ar'} />

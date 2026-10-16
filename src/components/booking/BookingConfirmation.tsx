@@ -60,7 +60,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
       const icsContent = [
         'BEGIN:VCALENDAR',
         'VERSION:2.0',
-        'PRODID:-//Mahmoud Teaching Platform//EN',
+        'PRODID:-//Watazawwado//EN',
         'CALSCALE:GREGORIAN',
         'METHOD:PUBLISH',
         'BEGIN:VEVENT',

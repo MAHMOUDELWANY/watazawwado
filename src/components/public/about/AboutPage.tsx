@@ -1,208 +1,199 @@
 import React from 'react';
 import { useOutletContext, Link } from 'react-router-dom';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
-import { PublicSection, EditorialHeading, StudyLine, MarginNote, PortraitFrame, PublicButton, PageHero } from '../PublicDesignSystem';
+import { PublicSection, PortraitFrame, PublicButton, PageHero } from '../PublicDesignSystem';
 import { WhatsAppIcon } from '../../ui/WhatsAppIcon';
 import { buildWhatsAppUrl } from '../../../lib/whatsapp';
+import { ValueCard, PORTALS } from '../ValueCard';
+import { FirstStepEmblem, ShelterEmblem, SameTeacherEmblem, ConversationEmblem } from '../illustrations/ValueEmblems';
+
+type L = { en: string; ar: string };
+
+// The academy speaks as "we"; teachers are introduced as part of it (owner, 2026-10-16).
+const TEACHERS: Array<{ src: string; name: L; badge: L; bio: L[]; mirror?: boolean }> = [
+  {
+    src: '/ustadh-mahmoud.jpg',
+    name: { en: 'Ustadh Mahmoud', ar: 'الأستاذ محمود' },
+    badge: { en: 'Balanced, moderate teaching', ar: 'علم وسطي معتدل' },
+    bio: [
+      {
+        en: 'Ustadh Mahmoud teaches Quran, Tajweed, Arabic and Islamic studies at Watazawwado. For more than three years he has taught students one-on-one in Canada, the US, the UK and Australia.',
+        ar: 'الأستاذ محمود بيدرّس القرآن والتجويد والعربية والعلوم الشرعية في وتزودوا. وبقاله أكتر من ٣ سنين بيدرّس طلاب بشكل فردي في كندا وأمريكا وبريطانيا وأستراليا.'
+      },
+      {
+        en: 'His English (IELTS C1) helps him explain pronunciation and grammar clearly to students who grew up abroad.',
+        ar: 'وإنجليزيته (IELTS C1) بتساعده يشرح النطق والقواعد بوضوح للطلاب اللي اتربوا برّه.'
+      }
+    ]
+  },
+  {
+    src: '/ustadha-afnan.jpg',
+    name: { en: 'Ustadha Afnan', ar: 'الأستاذة أفنان' },
+    badge: { en: 'Wide teaching experience', ar: 'خبرة كبيرة في التدريس' },
+    mirror: true,
+    bio: [
+      {
+        en: 'Ustadha Afnan teaches Quran, Tajweed, Arabic, Islamic studies and English at Watazawwado, with wide experience in teaching. Her English (C1) helps her explain clearly to students who grew up abroad.',
+        ar: 'الأستاذة أفنان بتدرّس القرآن والتجويد والعربية والعلوم الشرعية والإنجليزية في وتزودوا، وعندها خبرة كبيرة في التدريس. وإنجليزيتها (C1) بتساعدها تشرح بوضوح للطلاب اللي اتربوا برّه.'
+      },
+      {
+        en: 'Families who prefer a female teacher can choose her when they set up their learning profile.',
+        ar: 'واللي بيفضّلوا معلّمة يقدروا يختاروها وهم بيعملوا ملفهم التعليمي.'
+      }
+    ]
+  }
+];
+
+const PHILOSOPHY: Array<{ emblem: React.ComponentType<{ className?: string }>; title: L; text: L }> = [
+  {
+    emblem: FirstStepEmblem,
+    title: { en: 'We start where you are', ar: 'نبدأ من مستواك الحقيقي' },
+    text: {
+      en: 'Nobody is behind. Whether you cannot read a letter yet or your memorization has gone rusty, we begin without judgement and build a firm base.',
+      ar: 'مفيش حد متأخر. سواء لسه مبتقراش حرف، أو حفظك القديم محتاج مراجعة، بنبدأ من غير أحكام ونبني أساس متين.'
+    }
+  },
+  {
+    emblem: ShelterEmblem,
+    title: { en: 'A safe place to make mistakes', ar: 'مكان آمن تغلط فيه' },
+    text: {
+      en: 'Reciting or speaking a new language can feel shy. Lessons are calm and patient, and every correction comes with kindness.',
+      ar: 'التلاوة أو الكلام بلغة جديدة ممكن يكسف. الحصص هادية وصبورة، وكل تصحيح بييجي بلطف.'
+    }
+  },
+  {
+    emblem: SameTeacherEmblem,
+    title: { en: 'One teacher, lesson after lesson', ar: 'نفس المعلم، حصة بعد حصة' },
+    text: {
+      en: 'You learn with the same teacher, who knows how you learn, where you struggle and how to encourage you.',
+      ar: 'بتتعلم مع نفس المعلم، اللي فاهم طريقتك، وعارف بتتعب فين، وإزاي يشجعك.'
+    }
+  },
+  {
+    emblem: ConversationEmblem,
+    title: { en: 'Close to you, with nobody in between', ar: 'قريبين منك، من غير وسطاء' },
+    text: {
+      en: 'You are not a ticket number. Ask your teacher in the chat on the site between lessons, or reach us on WhatsApp.',
+      ar: 'إنت مش رقم. اسأل معلمك في المحادثة على الموقع بين الحصص، أو كلّمنا على واتساب.'
+    }
+  }
+];
 
 export function AboutPage() {
   const { lang, onOpenTrialModal } = useOutletContext<PublicLayoutContextType>();
   const isEn = lang === 'en';
+  const t = (l: L) => (isEn ? l.en : l.ar);
 
   return (
     <main id="main-content" className="pt-24 lg:pt-32 pb-16">
       <PublicSection>
-        <div className="max-w-4xl mx-auto space-y-12">
+        <div className="max-w-5xl mx-auto space-y-16 lg:space-y-20">
 
           <PageHero
-            title={isEn ? <>A human connection <span className="text-ribbon">to learning.</span></> : <>علاقة إنسانية <span className="text-ribbon">مع التعلّم.</span></>}
+            title={isEn ? <>An academy built <span className="text-ribbon">to leave a mark.</span></> : <>أكاديمية اتبنت <span className="text-ribbon">عشان تسيب أثر.</span></>}
             intro={isEn
-              ? 'Watazawwado is not a marketplace or an agency. It is a small, personal teaching practice where every lesson is a direct relationship between a student and their teacher.'
-              : 'وتزودوا مش منصة تجارية ولا وسيط. هي مساحة تعليمية صغيرة وشخصية، كل درس فيها علاقة مباشرة بين الطالب ومعلمه.'}
+              ? 'Watazawwado is an online academy for Quran, Tajweed, Islamic studies, Arabic and English. One-on-one lessons, a teacher who knows you by name, and learning that stays with you.'
+              : 'وتزودوا أكاديمية أونلاين للقرآن والتجويد والعلوم الشرعية والعربية والإنجليزية. حصص فردية، ومعلم يعرفك باسمك، وعلم يفضل معاك.'}
           />
 
-          <div className="grid md:grid-cols-12 gap-12 items-center pt-12">
-            <div className="md:col-span-5 relative">
-              <div className="absolute -inset-4 bg-gradient-to-tr from-teal-500/20 via-primary/10 to-terracotta/20 rounded-3xl -z-10 blur-xl transform rotate-2" />
-              <PortraitFrame src="/ustadh-mahmoud.jpg" alt="Ustadh Mahmoud" className="w-full max-w-sm mx-auto md:mx-0 shadow-xl" />
-              <div className="absolute -bottom-6 -right-6 rtl:-right-auto rtl:-left-6 glass-card p-4 rounded-xl shadow-lg border border-teal-500/30 max-w-[220px] hidden sm:block">
-                <div className="flex items-center gap-1.5 text-xs font-bold text-teal-700 dark:text-teal-300">
-                  <span className="w-2 h-2 rounded-full bg-teal-500" />
-                  <span>{isEn ? 'Balanced, moderate teaching' : 'علم وسطي معتدل'}</span>
-                </div>
-                <StudyLine variant="teal" className="my-2" />
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  {isEn ? 'Classical education • IELTS C1 Certified instruction.' : 'تأصيل شرعي عريق • معتمد بشهادة IELTS C1.'}
-                </p>
-              </div>
-            </div>
-
-            <div className="md:col-span-7 space-y-6">
-              <EditorialHeading eyebrow={isEn ? 'Background' : 'خلفية المعلم'} noAccent>
-                {isEn ? 'Ustadh Mahmoud' : 'الأستاذ محمود'}
-              </EditorialHeading>
-
-              <div className="prose prose-p:text-muted-foreground prose-p:leading-relaxed max-w-none">
-                <p>
-                  {isEn
-                    ? 'Peace be upon you. I am Mahmoud, an independent teacher of the Quran, Arabic, and Islamic Studies. For over 3 years, I have taught students 1-on-1 across Canada, the US, the UK, and Australia.'
-                    : 'السلام عليكم ورحمة الله وبركاته. أنا محمود، معلم مستقل للقرآن الكريم واللغة العربية والدراسات الإسلامية. لأكثر من ٣ سنوات، أقوم بتدريس الطلاب بشكل فردي في كندا، أمريكا، بريطانيا، وأستراليا.'}
-                </p>
-                <p>
-                  {isEn
-                    ? "Teaching is a trust. I teach Islam the balanced, moderate way, far from any extremism, with an Azhari foundation in Aqeedah and following Ahl al-Sunnah wal-Jama'ah. My English (IELTS C1) helps me explain pronunciation and grammar clearly to students who grew up abroad."
-                    : 'التعليم أمانة. بعلّم الدين بوسطية واعتدال وبعيد عن أي تطرف، بتأسيس أزهري في العقيدة وعلى منهج أهل السنة والجماعة. وإنجليزيتي (IELTS C1) بتساعدني أشرح النطق والقواعد بوضوح للطلاب اللي اتربوا برّه.'}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Ustadha Afnan: mirrored layout. Facts from the owner (2026-10-15): same subjects, wide teaching experience, C1 English. */}
-          <div className="grid md:grid-cols-12 gap-12 items-center pt-12">
-            <div className="md:col-span-5 md:order-2 relative">
-              <div className="absolute -inset-4 bg-gradient-to-tl from-sand/25 via-primary/10 to-teal-500/20 rounded-3xl -z-10 blur-xl transform -rotate-2" />
-              <PortraitFrame src="/ustadha-afnan.jpg" alt={isEn ? 'Ustadha Afnan' : 'الأستاذة أفنان'} className="w-full max-w-sm mx-auto md:mx-0 shadow-xl" />
-              <div className="absolute -bottom-6 -left-6 rtl:-left-auto rtl:-right-6 glass-card p-4 rounded-xl shadow-lg border border-teal-500/30 max-w-[220px] hidden sm:block">
-                <div className="flex items-center gap-1.5 text-xs font-bold text-teal-700 dark:text-teal-300">
-                  <span className="w-2 h-2 rounded-full bg-teal-500" />
-                  <span>{isEn ? 'Experienced teacher' : 'خبرة كبيرة في التدريس'}</span>
-                </div>
-                <StudyLine variant="teal" className="my-2" />
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  {isEn ? 'IELTS C1 English for clear explanations.' : 'إنجليزية بمستوى C1 لشرح واضح.'}
-                </p>
-              </div>
-            </div>
-
-            <div className="md:col-span-7 md:order-1 space-y-6">
-              <EditorialHeading eyebrow={isEn ? 'Background' : 'خلفية المعلمة'} noAccent>
-                {isEn ? 'Ustadha Afnan' : 'الأستاذة أفنان'}
-              </EditorialHeading>
-
-              <div className="prose prose-p:text-muted-foreground prose-p:leading-relaxed max-w-none">
-                <p>
-                  {isEn
-                    ? 'Ustadha Afnan teaches the Quran, Tajweed, Arabic, Islamic Studies and English with Watazawwado, and brings wide experience in teaching. Her English (C1) helps her explain clearly to students who grew up abroad.'
-                    : 'الأستاذة أفنان بتدرّس القرآن والتجويد والعربية والعلوم الشرعية والإنجليزية مع وتزودوا، وعندها خبرة كبيرة في التدريس. وإنجليزيتها (C1) بتساعدها تشرح بوضوح للطلاب اللي اتربوا برّه.'}
-                </p>
-                <p>
-                  {isEn
-                    ? 'She teaches in the same spirit as the whole academy: patient, encouraging lessons that start from where each student really is. Families who prefer a female teacher can choose her when they create their learning profile.'
-                    : 'وبتدرّس بنفس روح الأكاديمية كلها: دروس صبورة ومشجّعة، بتبدأ من مستوى كل طالب الحقيقي. واللي بيفضّلوا معلمة يقدروا يختاروها وهم بيعملوا ملفهم التعليمي.'}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <StudyLine className="my-16" />
-
-          <div className="space-y-12">
-            <EditorialHeading className="text-center" noAccent>
-              {isEn ? 'Teaching Philosophy' : 'فلسفة التدريس'}
-            </EditorialHeading>
-
-            <div className="grid md:grid-cols-2 gap-8">
-              {/* Card 1: Teal Accent */}
-              <div className="glass-card p-8 rounded-2xl border border-teal-500/30 hover:border-teal-500/60 transition-all shadow-2xs hover:shadow-xs">
-                <div className="w-8 h-8 rounded-lg bg-teal-500/10 text-teal-700 dark:text-teal-300 flex items-center justify-center font-bold text-sm mb-4 border border-teal-500/25">
-                  01
-                </div>
-                <h3 className="font-editorial text-xl font-bold text-foreground mb-3">
-                  {isEn ? 'Start from where you are' : 'نبدأ من مستواك الفعلي'}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">
-                  {isEn
-                    ? 'No student is behind. Whether you cannot read a single Arabic letter or have partial memorization that feels rusty, we begin without judgment and build a solid foundation.'
-                    : 'لا يوجد طالب متأخر. سواء كنت لا تقرأ حرفاً واحداً، أو لديك حفظ قديم تحتاج لمراجعته، نبدأ معاً بدون أي أحكام لبناء أساس متين.'}
-                </p>
-              </div>
-
-              {/* Card 2: Crimson Accent */}
-              <div className="glass-card p-8 rounded-2xl border border-primary/30 hover:border-primary/60 transition-all shadow-2xs hover:shadow-xs">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold text-sm mb-4 border border-primary/25">
-                  02
-                </div>
-                <h3 className="font-editorial text-xl font-bold text-foreground mb-3">
-                  {isEn ? 'A safe space to make mistakes' : 'بيئة آمنة تخلو من الحرج'}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">
-                  {isEn
-                    ? 'Reciting the Quran or speaking a new language can provoke anxiety. Lessons are calm, encouraging, and patient. Every correction is delivered with kindness.'
-                    : 'تعلم لغة جديدة أو تلاوة القرآن قد يسبب التوتر. لذلك نحرص على أن تكون الدروس هادئة ومشجعة، وكل تصحيح يتم بصبر ولطف.'}
-                </p>
-              </div>
-
-              {/* Card 3: Terracotta Accent */}
-              <div className="glass-card p-8 rounded-2xl border border-terracotta/30 hover:border-terracotta/60 transition-all shadow-2xs hover:shadow-xs">
-                <div className="w-8 h-8 rounded-lg bg-terracotta/10 text-accent flex items-center justify-center font-bold text-sm mb-4 border border-terracotta/25">
-                  03
-                </div>
-                <h3 className="font-editorial text-xl font-bold text-foreground mb-3">
-                  {isEn ? 'Continuity & Context' : 'الاستمرارية والفهم الشخصي'}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">
-                  {isEn
-                    ? 'Because you learn with the same teacher every time, your progress is tracked carefully. I understand how you learn, what you struggle with, and how to encourage you.'
-                    : 'لأنك تتعلم مع نفس المعلم في كل مرة، يتم تتبع تقدمك بدقة. المعلم يفهم طريقتك في التعلم، وما تواجهه من صعوبات، وكيف يشجعك.'}
-                </p>
-              </div>
-
-              {/* Card 4: Sand / Dual Gradient Accent */}
-              <div className="glass-card p-8 rounded-2xl border border-sand/40 hover:border-teal-500/40 transition-all shadow-2xs hover:shadow-xs">
-                <div className="w-8 h-8 rounded-lg bg-sand/15 text-sand-dark dark:text-sand flex items-center justify-center font-bold text-sm mb-4 border border-sand/30">
-                  04
-                </div>
-                <h3 className="font-editorial text-xl font-bold text-foreground mb-3">
-                  {isEn ? 'Direct Relationship' : 'تواصل مباشر بدون وسطاء'}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">
-                  {isEn
-                    ? 'You are not a ticket number. You message your teacher directly on WhatsApp when you have a question between lessons or need to adjust your schedule.'
-                    : 'أنت لست مجرد رقم. يمكنك مراسلة معلمك مباشرة عبر واتساب عندما يكون لديك سؤال أو تحتاج لتعديل موعدك.'}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="text-center pt-16">
-            <h3 className="font-editorial text-2xl text-foreground mb-4">
-              {isEn ? 'Ready to meet?' : 'مستعد للبدء؟'}
-            </h3>
-            <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+          {/* Why we exist */}
+          <section aria-labelledby="mission-title" className="glass-2 rounded-[var(--r-5)] px-6 py-10 sm:px-12 text-center max-w-3xl mx-auto">
+            <h2 id="mission-title" className="font-editorial text-3xl sm:text-4xl font-bold text-foreground">
+              {isEn ? 'Why we exist' : 'ليه إحنا هنا'}
+            </h2>
+            <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
               {isEn
-                ? 'Book a free 30-minute trial to experience this teaching philosophy directly.'
-                : 'احجز جلسة تجريبية مجانية لمدة ٣٠ دقيقة لتجربة هذه الفلسفة بشكل مباشر.'}
+                ? 'Our name comes from a verse: “take provision, and the best provision is God-consciousness.” We want every lesson to be provision that stays with you and your family, long after the screen closes.'
+                : 'اسمنا من آية: ﴿وتزودوا فإن خير الزاد التقوى﴾. وعايزين كل حصة تبقى زاد يفضل معاك ومع أهل بيتك، بعد ما الشاشة تتقفل بكتير.'}
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <PublicButton size="lg" onClick={() => onOpenTrialModal()}>
-                {isEn ? 'Book Free Trial' : 'احجز جلستك المجانية'}
-              </PublicButton>
+            <p className="mt-4 text-base text-foreground/85 leading-relaxed">
+              {isEn
+                ? "We teach Islam the balanced, moderate way, far from any extremism, following Ahl al-Sunnah wal-Jama'ah, with an Azhari foundation in Aqeedah."
+                : 'وبنعلّم الدين بوسطية واعتدال، بعيد عن أي تطرف، على منهج أهل السنة والجماعة، وبتأسيس أزهري في العقيدة.'}
+            </p>
+          </section>
 
+          {/* The teachers */}
+          <section aria-labelledby="teachers-title" className="space-y-12">
+            <div className="text-center max-w-2xl mx-auto space-y-3">
+              <h2 id="teachers-title" className="font-editorial text-3xl sm:text-4xl font-bold text-foreground">
+                {isEn ? 'The teachers' : 'المعلمين'}
+              </h2>
+              <p className="text-base text-muted-foreground leading-relaxed">
+                {isEn
+                  ? 'The academy is growing. Every teacher is chosen with care and teaches in the same spirit.'
+                  : 'الأكاديمية بتكبر، وكل معلم بيتختار بعناية وبيدرّس بنفس الروح.'}
+              </p>
+            </div>
+
+            {TEACHERS.map((teacher) => (
+              <article key={teacher.src} className="grid md:grid-cols-12 gap-10 md:gap-12 items-center">
+                <div className={`md:col-span-5 relative ${teacher.mirror ? 'md:order-2' : ''}`}>
+                  <div className="absolute -inset-4 bg-gradient-to-tr from-teal-500/20 via-primary/10 to-terracotta/20 rounded-3xl -z-10 blur-xl" aria-hidden="true" />
+                  <PortraitFrame src={teacher.src} alt={t(teacher.name)} className="w-full max-w-sm mx-auto md:mx-0 shadow-xl" />
+                  <p className={`absolute -bottom-5 ${teacher.mirror ? 'start-4' : 'end-4'} glass-2 rounded-full px-4 py-2 text-xs font-bold text-[var(--teal)] hidden sm:flex items-center gap-1.5`}>
+                    <span className="w-2 h-2 rounded-full bg-[var(--teal)]" aria-hidden="true" />
+                    {t(teacher.badge)}
+                  </p>
+                </div>
+                <div className={`md:col-span-7 space-y-4 ${teacher.mirror ? 'md:order-1' : ''}`}>
+                  <h3 className="font-editorial text-2xl sm:text-3xl font-bold text-foreground">{t(teacher.name)}</h3>
+                  {teacher.bio.map((p) => (
+                    <p key={p.en} className="text-muted-foreground leading-relaxed">{t(p)}</p>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </section>
+
+          {/* How we teach */}
+          <section aria-labelledby="philosophy-title" className="space-y-8">
+            <h2 id="philosophy-title" className="font-editorial text-3xl sm:text-4xl font-bold text-foreground text-center">
+              {isEn ? 'Teaching philosophy' : 'فلسفة التدريس'}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              {PHILOSOPHY.map((item, i) => (
+                <ValueCard
+                  key={item.title.en}
+                  index={i}
+                  emblem={item.emblem}
+                  portal={PORTALS[(i + 1) % PORTALS.length]}
+                  title={t(item.title)}
+                  text={t(item.text)}
+                />
+              ))}
+            </div>
+          </section>
+
+          <section className="band-deep relative overflow-hidden rounded-[2rem] px-6 py-12 sm:px-12 lg:py-16 text-center">
+            <h2 className="font-editorial text-3xl sm:text-4xl font-bold leading-tight">
+              {isEn ? 'Come and meet us.' : 'تعالى نتعرّف.'}
+            </h2>
+            <p className="mt-3 text-base sm:text-lg leading-relaxed max-w-xl mx-auto text-[#FAF7F2]/80">
+              {isEn
+                ? 'A free 30-minute lesson is the best way to feel how we teach.'
+                : 'حصة مجانية ٣٠ دقيقة هي أحسن طريقة تحس بيها بطريقتنا في التدريس.'}
+            </p>
+            <div className="mt-7 flex flex-col sm:flex-row justify-center gap-3">
+              <PublicButton variant="primary" size="lg" onClick={() => onOpenTrialModal()} className="w-full sm:w-auto">
+                {isEn ? 'Book your free trial lesson' : 'احجز حصتك التجريبية المجانية'}
+              </PublicButton>
               <a
-                href={buildWhatsAppUrl(isEn ? 'Assalamu Alaikum Ustadh Mahmoud, I would like to introduce myself and ask about starting lessons.' : 'السلام عليكم أستاذ محمود، أود التعرف أكثر على الدروس والبدء معك.')}
+                href={buildWhatsAppUrl(isEn ? 'Assalamu alaikum, I read about Watazawwado and would like to ask about starting lessons.' : 'السلام عليكم، قريت عن وتزودوا وحابب أسأل عن بداية الحصص.')}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-whatsapp-solid py-3 px-6 rounded-xl text-sm font-bold shadow-xs hover:scale-105 transition-all"
+                className="inline-flex items-center justify-center gap-2 py-3 px-6 rounded-xl text-sm font-bold bg-[#25D366] text-[#07361F] hover:bg-[#20BD5A] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05363F] focus-visible:ring-[#25D366]"
               >
                 <WhatsAppIcon className="w-4 h-4 shrink-0" />
-                <span>{isEn ? 'Message Mahmoud directly' : 'تحدث مع محمود مباشرة'}</span>
+                <span>{isEn ? 'Talk to us on WhatsApp' : 'كلّمنا على واتساب'}</span>
               </a>
             </div>
-
-            <div className="pt-6 flex flex-wrap items-center justify-center gap-3 text-sm text-muted-foreground">
-              <Link to="/how-it-works" className="hover:text-foreground font-semibold underline transition-colors">
-                {isEn ? 'See How We Work (4 Stages)' : 'كيف نعمل (رحلة وتجربة الطالب)'}
-              </Link>
-              <span>•</span>
-              <Link to="/learning" className="hover:text-foreground font-semibold underline transition-colors">
-                {isEn ? 'Explore Curriculum' : 'المناهج والمسارات'}
-              </Link>
-              <span>•</span>
-              <Link to="/pricing" className="hover:text-foreground font-semibold underline transition-colors">
-                {isEn ? 'Transparent Pricing' : 'الأسعار والباقات'}
-              </Link>
-            </div>
-          </div>
+            <p className="mt-6 text-sm text-[#FAF7F2]/75 flex flex-wrap justify-center gap-x-5 gap-y-2">
+              <Link to="/how-it-works" className="underline hover:text-[#FAF7F2]">{isEn ? 'How it works' : 'كيف نعمل'}</Link>
+              <Link to="/learning" className="underline hover:text-[#FAF7F2]">{isEn ? 'The subjects' : 'المواد'}</Link>
+              <Link to="/pricing" className="underline hover:text-[#FAF7F2]">{isEn ? 'Prices' : 'الأسعار'}</Link>
+            </p>
+          </section>
 
         </div>
       </PublicSection>

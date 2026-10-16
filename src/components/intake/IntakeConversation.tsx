@@ -11,7 +11,7 @@ import { analyticsRepository } from '../../lib/analyticsRepository';
  * A calm, human, adaptive conversation — NOT a form and NOT a chatbot.
  * The browser NEVER computes prices; it only renders the server's
  * deterministic recommendation. Nothing here is an authoritative offer
- * until Ustadh Mahmoud reviews it.
+ * until the team reviews it.
  * ====================================================================
  */
 
@@ -39,18 +39,18 @@ interface IntakeConversationProps {
 const copy = {
   en: {
     title: 'Tell me what you want to learn',
-    sub: 'A short, natural conversation. No forms. Nothing is final until Ustadh Mahmoud reviews it.',
+    sub: 'A short, natural conversation. No forms. Nothing is final until our team reviews it.',
     placeholder: 'Type your message…',
     send: 'Send',
     start: 'Begin',
     brief: 'Your learning brief',
-    reviewReq: 'Ustadh Mahmoud will review this personally before any price is confirmed.',
-    reviewNotReq: 'This is a starting recommendation. You can still discuss it with Ustadh Mahmoud.',
+    reviewReq: 'Our team will review this personally before any price is confirmed.',
+    reviewNotReq: 'This is a starting recommendation. You can still talk it over with us.',
     save: 'Save my brief',
     saved: 'Saved — we will take it from here ❤️',
     err: 'Something went wrong. Please try again.',
     unavailableTitle: 'The learning guide is unavailable right now.',
-    unavailable: 'You can still book a lesson or message Ustadh Mahmoud directly — your learning brief stays on this page.',
+    unavailable: 'You can still book a lesson or message us directly. Your learning brief stays on this page.',
     subject: 'Subject',
     goal: 'Goal',
     level: 'Current level',
@@ -65,18 +65,18 @@ const copy = {
   },
   ar: {
     title: 'احكيلي إيه اللي حابب تتعلمه',
-    sub: 'محادثة قصيرة وطبيعية. مفيش استمارات. ومفيش سعر نهائي غير بعد مراجعة الأستاذ محمود.',
+    sub: 'محادثة قصيرة وطبيعية. مفيش استمارات. ومفيش سعر نهائي غير بعد مراجعة فريقنا.',
     placeholder: 'اكتب رسالتك…',
     send: 'إرسال',
     start: 'ابدأ',
     brief: 'ملخص احتياجك',
-    reviewReq: 'الأستاذ محمود هيراجع طلبك بنفسه قبل تأكيد أي سعر.',
-    reviewNotReq: 'ده مجرد ترشيح مبدئي، وتقدر تناقشه مع الأستاذ محمود.',
+    reviewReq: 'فريقنا هيراجع طلبك بنفسه قبل تأكيد أي سعر.',
+    reviewNotReq: 'ده مجرد ترشيح مبدئي، وتقدر تناقشه معانا.',
     save: 'احفظ الملخص',
     saved: 'اتحفظ ❤️ وهنكمل من هنا',
     err: 'حصلت مشكلة، جرب تاني.',
     unavailableTitle: 'مرشد التعلّم مش متاح دلوقتي.',
-    unavailable: 'تقدر تحجز درس أو تكلم الأستاذ محمود مباشرة — وملخص احتياجك هيفضل محفوظ في الصفحة.',
+    unavailable: 'تقدر تحجز درس أو تكلّمنا مباشرة — وملخص احتياجك هيفضل محفوظ في الصفحة.',
     subject: 'المجال',
     goal: 'الهدف',
     level: 'المستوى الحالي',
