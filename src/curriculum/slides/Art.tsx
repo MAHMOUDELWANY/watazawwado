@@ -5,11 +5,12 @@ import type { SceneId } from '../types';
 // Scene art for the slide system v2. Own SVG (RULES §6b). Literal brand hex so art looks the same in light and dark
 // (docs/design-system.md §1). Prophets and companions are never drawn (PLAN §3.9). Canvas: 640 × 560.
 export const P = {
-  ink: '#0A3D45',
-  inkSoft: '#14555F',
+  ink: '#1E1410',
+  inkSoft: '#453D34',
+  deep: '#05363F',
   teal: '#087D91',
   tealSoft: '#BFE3E6',
-  paper: '#FBF4E2',
+  paper: '#FAF7F2',
   card: '#FFFDF7',
   sand: '#EED9B4',
   sandDeep: '#D9B984',
@@ -227,7 +228,7 @@ const SCENES: Record<SceneId, () => React.ReactElement> = {
   doorsHero: () => (
     <>
       <rect width={640} height={560} fill="url(#g-dawn)" />
-      <motion.circle cx={320} cy={250} r={230} fill="url(#g-glow)" animate={{ r: [220, 240, 220] }} transition={{ duration: 6, repeat: Infinity }} />
+      <motion.circle cx={320} cy={250} r={230} fill="url(#g-glow)" initial={{ r: 220 }} animate={{ r: [220, 240, 220] }} transition={{ duration: 6, repeat: Infinity }} />
       <Dunes />
       {[{ x: 160, c: P.teal, l: 'Iman' }, { x: 320, c: P.crimson, l: 'Islam' }, { x: 480, c: P.gold, l: 'Ihsan' }].map((d, i) => (
         <motion.g key={d.l} {...appear(0.2 + i * 0.2)}>

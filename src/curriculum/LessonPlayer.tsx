@@ -118,7 +118,11 @@ export function LessonPlayer({ lesson, lang, teacher = false, onGameResult, onPa
   }, [forward, backward, cheer, teacher, toggleFullscreen]);
 
   useEffect(() => {
-    const sync = () => setFullscreen(Boolean(document.fullscreenElement));
+    const sync = () => {
+      const on = Boolean(document.fullscreenElement);
+      setFullscreen(on);
+      setNotes(!on);
+    };
     document.addEventListener('fullscreenchange', sync);
     return () => document.removeEventListener('fullscreenchange', sync);
   }, []);
@@ -134,18 +138,18 @@ export function LessonPlayer({ lesson, lang, teacher = false, onGameResult, onPa
 
   const btn = (active = false) =>
     `h-11 min-w-11 px-2.5 inline-flex items-center justify-center gap-1.5 rounded-full text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C] disabled:opacity-35 ${
-      active ? 'bg-[#E5A93C] text-[#0A3D45]' : 'text-white/90 hover:bg-white/10'
+      active ? 'bg-[#E5A93C] text-[#1E1410]' : 'text-[#1E1410] hover:bg-[#8B4935]/10'
     }`;
 
   const toolbar = (
     <nav
       aria-label={L('Lesson controls', 'التحكم في الدرس')}
-      className={`flex flex-wrap items-center gap-1 rounded-[22px] bg-[#0A3D45]/95 px-2 py-1.5 shadow-[0_18px_40px_-20px_rgba(10,61,69,0.8)] backdrop-blur transition-opacity ${fullscreen && !chromeVisible ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+      className={`flex flex-wrap items-center gap-1 rounded-[28px] border border-white/70 bg-[#FAF7F2]/90 px-2 py-1.5 shadow-[0_18px_40px_-20px_rgba(139,73,53,0.55)] backdrop-blur-xl transition-opacity ${fullscreen ? 'absolute bottom-5 left-1/2 z-50 -translate-x-1/2' : ''} ${fullscreen && !chromeVisible ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
     >
       <button type="button" className={btn()} onClick={backward} disabled={page === 0 && step === 0} aria-label={L('Back', 'رجوع')} title={L('Back (←)', 'رجوع (←)')}>
         <ChevronLeft className="w-5 h-5 rtl:rotate-180" />
       </button>
-      <button type="button" className={`${btn()} bg-[#C51F24] hover:bg-[#A9191E] px-4`} onClick={forward} disabled={page === last && step >= total} aria-label={L('Next', 'التالي')} title={L('Next (→ or Space)', 'التالي (→ أو مسافة)')}>
+      <button type="button" className={`${btn()} bg-[#C51F24] text-white hover:bg-[#A9191E] px-4`} onClick={forward} disabled={page === last && step >= total} aria-label={L('Next', 'التالي')} title={L('Next (→ or Space)', 'التالي (→ أو مسافة)')}>
         <span className="flex gap-1" aria-hidden="true">
           {Array.from({ length: total }).map((_, i) => (
             <span key={i} className={`h-1.5 w-1.5 rounded-full ${i < step ? 'bg-white' : 'bg-white/35'}`} />
@@ -153,7 +157,7 @@ export function LessonPlayer({ lesson, lang, teacher = false, onGameResult, onPa
         </span>
         <ChevronRight className="w-5 h-5 rtl:rotate-180" />
       </button>
-      <span className="mx-1 h-6 w-px bg-white/15" aria-hidden="true" />
+      <span className="mx-1 h-6 w-px bg-[#8B4935]/20" aria-hidden="true" />
       <button type="button" className={btn(grid)} onClick={() => setGrid((g) => !g)} aria-pressed={grid} title={L('All pages (G)', 'كل الصفحات (G)')} aria-label={L('All pages', 'كل الصفحات')}>
         <LayoutGrid className="w-[18px] h-[18px]" />
       </button>
@@ -169,13 +173,13 @@ export function LessonPlayer({ lesson, lang, teacher = false, onGameResult, onPa
       {(tool === 'pen' || tool === 'marker') &&
         INK_COLORS.map((c) => (
           <button key={c} type="button" onClick={() => setInkColor(c)} aria-label={L('Ink colour', 'لون الحبر')} aria-pressed={inkColor === c} className="h-11 w-8 inline-flex items-center justify-center">
-            <span className={`block h-6 w-6 rounded-full ring-2 ${inkColor === c ? 'ring-white' : 'ring-transparent'}`} style={{ background: c }} />
+            <span className={`block h-6 w-6 rounded-full ring-2 ring-offset-2 ring-offset-[#FAF7F2] ${inkColor === c ? 'ring-[#1E1410]' : 'ring-transparent'}`} style={{ background: c }} />
           </button>
         ))}
       <button type="button" className={btn()} onClick={() => setClearSignal((c) => c + 1)} title={L('Clear drawing (E)', 'امسح الرسم (E)')} aria-label={L('Clear drawing', 'امسح الرسم')}>
         <Eraser className="w-[18px] h-[18px]" />
       </button>
-      <span className="mx-1 h-6 w-px bg-white/15" aria-hidden="true" />
+      <span className="mx-1 h-6 w-px bg-[#8B4935]/20" aria-hidden="true" />
       <button type="button" className={btn()} onClick={() => setReplay((r) => r + 1)} title={L('Replay animation (R)', 'أعد الحركة (R)')} aria-label={L('Replay animation', 'أعد الحركة')}>
         <RotateCcw className="w-[18px] h-[18px]" />
       </button>
@@ -202,14 +206,14 @@ export function LessonPlayer({ lesson, lang, teacher = false, onGameResult, onPa
       <button type="button" className={btn()} onClick={toggleFullscreen} title={L('Full screen (F)', 'ملء الشاشة (F)')} aria-label={fullscreen ? L('Exit full screen', 'خروج من ملء الشاشة') : L('Full screen', 'ملء الشاشة')}>
         {fullscreen ? <Minimize2 className="w-[18px] h-[18px]" /> : <Maximize2 className="w-[18px] h-[18px]" />}
       </button>
-      <span className="ms-auto pe-2 text-xs font-bold text-white/70 tabular-nums">
+      <span className="ms-auto pe-3 ps-2 text-xs font-bold text-[#453D34] tabular-nums">
         {L('Page', 'صفحة')} {page + 1}/{lesson.pages.length}
       </span>
     </nav>
   );
 
   const notesPanel = notes && (
-    <aside dir="ltr" lang="en" className={`flex flex-col gap-4 overflow-y-auto rounded-[24px] bg-[#FFFDF7] p-5 text-[#0A3D45] ring-1 ring-black/5 shadow-[0_18px_40px_-28px_rgba(91,58,30,0.5)] lg:w-[360px] lg:shrink-0 ${fullscreen ? 'lg:max-h-full' : 'lg:max-h-[min(78vh,720px)]'}`} aria-label={L('Explanation', 'الشرح')}>
+    <aside dir="ltr" lang="en" className={`flex flex-col gap-4 overflow-y-auto rounded-[24px] bg-[#FFFDF7] p-5 text-[#0A3D45] ring-1 ring-black/5 shadow-[0_18px_40px_-28px_rgba(91,58,30,0.5)] lg:w-[360px] lg:shrink-0 ${fullscreen ? 'absolute left-5 top-5 bottom-24 z-40 w-[360px]' : 'lg:max-h-[min(78vh,720px)]'}`} aria-label={L('Explanation', 'الشرح')}>
       <div className="flex items-start justify-between gap-2">
         <h3 className="font-serif text-2xl font-bold leading-tight">{current.title}</h3>
         <button type="button" onClick={() => setNotes(false)} className="rounded-full p-1.5 hover:bg-black/5" aria-label={L('Close explanation', 'اقفل الشرح')}>
@@ -240,11 +244,11 @@ export function LessonPlayer({ lesson, lang, teacher = false, onGameResult, onPa
   );
 
   return (
-    <div ref={rootRef} className={`flex flex-col gap-3 ${fullscreen ? 'h-full bg-[#0A2E35] p-4' : ''}`}>
+    <div ref={rootRef} dir="ltr" className={`relative flex flex-col gap-3 ${fullscreen ? 'band-deep h-full p-3' : ''}`}>
       <div className={`flex flex-col gap-3 lg:flex-row ${fullscreen ? 'min-h-0 flex-1' : ''}`}>
-        <div ref={stageRef} className={`relative min-w-0 flex-1 ${fullscreen ? 'h-full' : 'aspect-video'}`}>
+        <div ref={stageRef} className={`relative min-w-0 flex-1 ${fullscreen ? 'h-full min-h-0' : 'aspect-video'}`}>
           <div
-            className="absolute left-1/2 top-1/2 overflow-hidden rounded-[22px] shadow-[0_30px_70px_-35px_rgba(10,61,69,0.7)]"
+            className="absolute left-1/2 top-1/2 overflow-hidden rounded-[22px] shadow-[0_30px_70px_-35px_rgba(59,34,25,0.7)]"
             style={{ width: CANVAS_W, height: CANVAS_H, transform: `translate(-50%, -50%) scale(${scale})` }}
           >
             <div key={`${page}-${replay}`} className="absolute inset-0">
@@ -259,7 +263,7 @@ export function LessonPlayer({ lesson, lang, teacher = false, onGameResult, onPa
             <AnimatePresence>{praise && <Praise />}</AnimatePresence>
             <AnimatePresence>
               {grid && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-30 bg-[#0A3D45]/95 p-16">
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="band-deep absolute inset-0 z-30 p-16">
                   <p className="mb-8 font-serif text-[48px] font-bold text-white">{lesson.title}</p>
                   <ol className="grid grid-cols-4 gap-5">
                     {lesson.pages.map((p, i) => (
@@ -267,7 +271,7 @@ export function LessonPlayer({ lesson, lang, teacher = false, onGameResult, onPa
                         <button
                           type="button"
                           onClick={() => goPage(i)}
-                          className={`w-full rounded-[20px] px-6 py-5 text-left font-sans text-[24px] font-bold transition-colors ${i === page ? 'bg-[#E5A93C] text-[#0A3D45]' : 'bg-white/10 text-white hover:bg-white/20'}`}
+                          className={`w-full rounded-[20px] px-6 py-5 text-left font-sans text-[24px] font-bold transition-colors ${i === page ? 'bg-[#E5A93C] text-[#1E1410]' : 'bg-white/10 text-white hover:bg-white/20'}`}
                         >
                           <span className="block text-[18px] opacity-70">{i + 1}</span>
                           {p.title}

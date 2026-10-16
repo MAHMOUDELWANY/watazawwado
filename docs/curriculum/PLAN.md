@@ -257,3 +257,8 @@ B3–B5 → continue lesson by lesson.
 - **2026-10-16** — Owner: "visuals poor, no control, no way to explain; I read from the lesson and simplify". Rebuilt
   as slide system v2 (see §0). Lesson 1 rewritten: 16 pages, every page has a teacher read-aloud explanation,
   more verified Arabic from Muslim 8, vocabulary chips. Rule: each page carries enough detail for the teacher to read.
+- **2026-10-17** — Owner feedback on v2: storytelling and explanation approved; visuals still too simple; full screen did
+  not fill; pen crashed the page ("something went wrong"); slides used the reference site's colours, not our brand.
+  Fixed: pen crash (state updater read a cleared ref), full screen fills with floating controls, brand applied
+  (paper, crimson mihrab lesson tab, arch-framed art, khatam pattern, Thmanyah, sentence case). **[Open]** source of
+  professional illustrations (AI image test via Canva looked generic and showed a face; options sent to the owner).

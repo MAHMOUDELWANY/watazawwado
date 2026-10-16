@@ -22,7 +22,7 @@ export default function CurriculumPage() {
         </p>
       </header>
       {SUBJECTS.map((subject) => (
-        <section key={subject.id} className="glass-2 rounded-[var(--r-3,20px)] p-5 space-y-4">
+        <section key={subject.id} className="khatam-field glass-2 rounded-[var(--r-3,20px)] p-5 space-y-4">
           <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
             <h2 className="font-display text-xl font-bold text-foreground">{ar ? subject.titleAr : subject.title}</h2>
             <span className="text-sm text-muted-foreground">
@@ -34,7 +34,7 @@ export default function CurriculumPage() {
               const lesson = subject.lessons[i + 1];
               const body = (
                 <>
-                  <span className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${lesson ? 'bg-teal text-white' : 'bg-surface-subtle text-muted-foreground'}`}>{i + 1}</span>
+                  <span className={`arch-tile shrink-0 w-9 h-10 flex items-center justify-center text-sm font-bold ${lesson ? 'bg-crimson text-white' : 'bg-surface-subtle text-muted-foreground'}`}>{i + 1}</span>
                   <span dir="ltr" className="flex-1 min-w-0 truncate text-start">{title}</span>
                   {lesson ? <PlayCircle className="w-5 h-5 text-teal shrink-0" aria-hidden="true" /> : <Lock className="w-4 h-4 text-muted-foreground shrink-0" aria-label={L('Coming soon', 'قريباً')} />}
                 </>

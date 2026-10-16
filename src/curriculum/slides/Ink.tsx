@@ -9,7 +9,7 @@ interface Stroke {
 }
 
 /** Smooth path through points (quadratic midpoints): ink that looks drawn, not jagged. */
-function pathOf(points: [number, number][]) {
+function pathOf(points: [number, number][] = []) {
   if (points.length < 2) return points.length ? `M${points[0][0]} ${points[0][1]} l0.1 0` : '';
   let d = `M${points[0][0]} ${points[0][1]}`;
   for (let i = 1; i < points.length - 1; i++) {
@@ -61,9 +61,10 @@ export function InkLayer({ tool, color, pageKey, clearSignal, width, height }: P
       style={{ pointerEvents: active ? 'auto' : 'none', cursor: tool === 'laser' ? 'none' : active ? 'crosshair' : undefined, touchAction: active ? 'none' : undefined }}
       onPointerDown={(e) => {
         if (tool !== 'pen' && tool !== 'marker') return;
-        (e.target as Element).setPointerCapture?.(e.pointerId);
-        drawing.current = { tool, color, points: [toCanvas(e)] };
-        setStrokes((s) => [...s, drawing.current!]);
+        e.currentTarget.setPointerCapture?.(e.pointerId);
+        const stroke: Stroke = { tool, color, points: [toCanvas(e)] };
+        drawing.current = stroke;
+        setStrokes((s) => [...s, stroke]);
       }}
       onPointerMove={(e) => {
         if (tool === 'laser') {
@@ -71,12 +72,15 @@ export function InkLayer({ tool, color, pageKey, clearSignal, width, height }: P
           setLaser((l) => [...l.slice(-14), { x, y, t: Date.now() }]);
           return;
         }
-        if (!drawing.current) return;
-        drawing.current.points.push(toCanvas(e));
-        setStrokes((s) => [...s.slice(0, -1), { ...drawing.current! }]);
+        const current = drawing.current;
+        if (!current) return;
+        // Updaters may run after pointer-up (React batches them), so they must not read the ref.
+        const next: Stroke = { ...current, points: [...current.points, toCanvas(e)] };
+        drawing.current = next;
+        setStrokes((s) => [...s.slice(0, -1), next]);
       }}
       onPointerUp={() => (drawing.current = null)}
-      onPointerLeave={() => (drawing.current = null)}
+      onPointerCancel={() => (drawing.current = null)}
       aria-hidden="true"
     >
       {strokes.map((s, i) => (

@@ -47,16 +47,19 @@ export function Slide({ lesson, pageIndex, step, onCorrect, onGameResult }: Slid
   return (
     <div className="absolute inset-0 overflow-hidden" style={{ background: P.paper, color: P.ink }} dir="ltr" lang="en">
       <Paper />
-      <header className="absolute left-[120px] right-[230px] top-[44px] flex items-center gap-4">
-        <span className="h-[3px] w-10 rounded-full" style={{ background: P.gold }} />
-        <span className="font-sans font-bold text-[22px] tracking-[0.12em]" style={{ color: P.inkSoft }}>
-          LESSON {lesson.number} · {chapter?.label.toUpperCase()}
-        </span>
-        <span lang="ar" dir="rtl" className="font-serif text-[30px] leading-none" style={{ color: P.inkSoft }}>{lesson.titleAr}</span>
+      <header className="absolute left-[120px] right-[260px] top-[46px] flex items-center gap-4">
+        <KhatamStar size={30} color={P.crimson} />
+        <span className="font-sans text-[24px] font-bold" style={{ color: P.crimson }}>Lesson {lesson.number}</span>
+        <span className="font-sans text-[24px] font-semibold" style={{ color: P.inkSoft }}>{chapter?.label}</span>
+        <span lang="ar" dir="rtl" className="font-serif text-[30px] font-bold leading-none" style={{ color: P.copper }}>{lesson.titleAr}</span>
       </header>
-      <div className="absolute right-[90px] top-0 rounded-b-[22px] px-7 pb-4 pt-3 text-center shadow-[0_14px_30px_-14px_rgba(10,61,69,0.6)]" style={{ background: P.ink }}>
-        <div className="font-sans text-[15px] font-bold tracking-[0.2em]" style={{ color: P.gold }}>LESSON</div>
-        <div className="font-serif text-[52px] font-bold leading-none text-white">{String(lesson.number).padStart(2, '0')}</div>
+      <div
+        className="absolute right-[90px] top-0 w-[136px] pb-4 pt-9 text-center shadow-[0_16px_34px_-16px_rgba(197,31,36,0.7)]"
+        style={{ background: `linear-gradient(180deg, ${P.crimson}, #9E171C)`, borderRadius: '0 0 68px 68px / 0 0 56px 56px' }}
+      >
+        <div className="font-sans text-[17px] font-bold text-white/85">Lesson</div>
+        <div className="font-serif text-[60px] font-bold leading-none text-white">{String(lesson.number).padStart(2, '0')}</div>
+        <div className="mx-auto mt-2 w-fit"><KhatamStar size={22} color={P.goldSoft} /></div>
       </div>
 
       <Body page={page} v={v} lesson={lesson} onCorrect={onCorrect} onGameResult={onGameResult} />
@@ -66,14 +69,29 @@ export function Slide({ lesson, pageIndex, step, onCorrect, onGameResult }: Slid
   );
 }
 
+const KHATAM = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Cg fill='none' stroke='%238B4935' stroke-opacity='0.13' stroke-width='1.4'%3E%3Crect x='24' y='24' width='48' height='48'/%3E%3Crect x='24' y='24' width='48' height='48' transform='rotate(45 48 48)'/%3E%3Ccircle cx='48' cy='48' r='8'/%3E%3C/g%3E%3C/svg%3E\")";
+
+/** The brand's eight-point khatam star. */
+export function KhatamStar({ size, color }: { size: number; color: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 40 40" aria-hidden="true">
+      <rect x="8" y="8" width="24" height="24" fill={color} />
+      <rect x="8" y="8" width="24" height="24" fill={color} transform="rotate(45 20 20)" />
+      <circle cx="20" cy="20" r="5" fill="#FAF7F2" opacity="0.9" />
+    </svg>
+  );
+}
+
 function Paper() {
   return (
     <>
       <div
         className="absolute inset-0"
-        style={{ backgroundImage: 'repeating-linear-gradient(to bottom, transparent 0 59px, rgba(8,125,145,0.10) 59px 60px)', backgroundPosition: '0 30px' }}
+        style={{ backgroundImage: 'repeating-linear-gradient(to bottom, transparent 0 59px, rgba(139,73,53,0.09) 59px 60px)', backgroundPosition: '0 30px' }}
       />
-      <div className="absolute top-0 bottom-0 left-[80px] w-[2px]" style={{ background: 'rgba(197,31,36,0.28)' }} />
+      <div className="absolute inset-0" style={{ backgroundImage: KHATAM, WebkitMaskImage: 'radial-gradient(ellipse 60% 70% at 100% 100%, #000, transparent 70%)', maskImage: 'radial-gradient(ellipse 60% 70% at 100% 100%, #000, transparent 70%)' }} />
+      <div className="absolute inset-0" style={{ background: 'radial-gradient(900px 500px at 92% 8%, rgba(229,169,60,0.14), transparent 70%), radial-gradient(700px 500px at 0% 100%, rgba(8,125,145,0.08), transparent 70%)' }} />
+      <div className="absolute top-0 bottom-0 left-[80px] w-[2px]" style={{ background: 'rgba(197,31,36,0.25)' }} />
     </>
   );
 }
@@ -81,18 +99,18 @@ function Paper() {
 function ChapterTracker({ lesson, pageIndex }: { lesson: Lesson; pageIndex: number }) {
   return (
     <footer className="absolute left-[120px] right-[90px] bottom-[34px] flex items-center gap-8">
-      <span className="font-sans text-[17px] font-bold tracking-[0.14em]" style={{ color: P.inkSoft }}>IN THIS LESSON</span>
+      <span className="font-sans text-[19px] font-bold" style={{ color: P.inkSoft }}>In this lesson</span>
       {lesson.chapters.map((c, i) => {
         const next = lesson.chapters[i + 1]?.page ?? lesson.pages.length;
         const state = pageIndex >= next ? 'done' : pageIndex >= c.page ? 'now' : 'later';
         return (
-          <span key={c.label} className="flex items-center gap-3 font-sans text-[20px] font-bold" style={{ color: state === 'later' ? '#8A9A9C' : P.ink }}>
+          <span key={c.label} className="flex items-center gap-3 font-sans text-[20px] font-bold" style={{ color: state === 'later' ? '#A39686' : P.ink }}>
             <span
               className="flex h-9 w-9 items-center justify-center rounded-full text-[17px]"
               style={{
-                background: state === 'now' ? P.gold : state === 'done' ? P.ink : 'transparent',
-                color: state === 'later' ? '#8A9A9C' : state === 'now' ? P.ink : '#fff',
-                border: state === 'later' ? '2px solid #B7C2C3' : 'none',
+                background: state === 'now' ? P.crimson : state === 'done' ? P.teal : 'transparent',
+                color: state === 'later' ? '#A39686' : '#fff',
+                border: state === 'later' ? '2px solid #D8CBB8' : 'none',
               }}
             >
               {state === 'done' ? '✓' : i + 1}
@@ -101,7 +119,7 @@ function ChapterTracker({ lesson, pageIndex }: { lesson: Lesson; pageIndex: numb
           </span>
         );
       })}
-      <span className="ml-auto font-sans text-[18px] font-bold" style={{ color: '#8A9A9C' }}>
+      <span className="ml-auto font-sans text-[18px] font-bold" style={{ color: '#A39686' }}>
         {pageIndex + 1} / {lesson.pages.length}
       </span>
     </footer>
@@ -110,7 +128,11 @@ function ChapterTracker({ lesson, pageIndex }: { lesson: Lesson; pageIndex: numb
 
 function ArtCard({ page, className = '' }: { page: LessonPage; className?: string }) {
   return (
-    <div className={`absolute overflow-hidden rounded-[36px] bg-white shadow-[0_30px_60px_-30px_rgba(91,58,30,0.45)] ring-1 ring-black/5 ${className}`}>
+    // Mihrab-arch frame: our signature for things that hold a place (docs/design-system.md §3).
+    <div
+      className={`absolute overflow-hidden border-[6px] border-white bg-white shadow-[0_34px_64px_-30px_rgba(139,73,53,0.55)] ${className}`}
+      style={{ borderRadius: '50% 50% 34px 34px / 30% 30% 34px 34px', outline: `2px solid ${P.goldSoft}`, outlineOffset: 6 }}
+    >
       <SceneArt id={page.scene} label={page.title} />
     </div>
   );
@@ -118,7 +140,7 @@ function ArtCard({ page, className = '' }: { page: LessonPage; className?: strin
 
 function Title({ children, size = 84 }: { children: React.ReactNode; size?: number }) {
   return (
-    <h2 className="font-serif font-bold leading-[1.02] tracking-[-0.01em]" style={{ fontSize: size, color: P.ink }}>
+    <h2 className="font-serif font-medium leading-[1.04] tracking-tight" style={{ fontSize: size, color: P.ink }}>
       {children}
     </h2>
   );
@@ -194,7 +216,7 @@ function Body({ page, v, lesson, onCorrect, onGameResult }: { page: LessonPage; 
               {[[String(lesson.pages.length), 'pages'], ['3', 'big questions'], [String(lesson.minutes), 'minutes']].map(([n, l]) => (
                 <span key={l} className="rounded-[22px] border-2 border-dashed px-6 py-3 text-center" style={{ borderColor: '#C9B98F' }}>
                   <b className="block font-serif text-[46px] leading-none">{n}</b>
-                  <span className="font-sans text-[18px] font-bold tracking-[0.1em]" style={{ color: P.inkSoft }}>{l.toUpperCase()}</span>
+                  <span className="font-sans text-[19px] font-semibold" style={{ color: P.inkSoft }}>{l}</span>
                 </span>
               ))}
             </motion.div>
@@ -224,7 +246,6 @@ function Body({ page, v, lesson, onCorrect, onGameResult }: { page: LessonPage; 
             <Title size={62}>{page.title}</Title>
             {!v.interaction && <Lines lines={page.lines} count={v.lines} size={36} />}
             {v.evidence && <EvidenceBlock page={page} big />}
-            <VocabChips page={page} />
             {interaction}
           </div>
         </>
@@ -279,7 +300,6 @@ function Body({ page, v, lesson, onCorrect, onGameResult }: { page: LessonPage; 
           <div className="absolute left-[120px] top-[130px] bottom-[110px] w-[820px] space-y-6 overflow-hidden">
             <Title>{page.title}</Title>
             <Lines lines={page.lines} count={v.lines} size={36} />
-            <VocabChips page={page} />
             {interaction}
           </div>
         </>
@@ -290,7 +310,7 @@ function Body({ page, v, lesson, onCorrect, onGameResult }: { page: LessonPage; 
         <>
           <ArtCard page={page} className="left-[860px] top-[140px] w-[640px] h-[600px]" />
           <div className="absolute left-[120px] top-[130px] bottom-[110px] w-[680px] space-y-6 overflow-hidden">
-            <span className="font-sans text-[26px] font-bold tracking-[0.14em]" style={{ color: P.crimson }}>NEXT TIME ON ZAD ESSENTIALS</span>
+            <span className="font-sans text-[28px] font-bold" style={{ color: P.crimson }}>Next time on Zad Essentials</span>
             <Title>{page.title}</Title>
             <Lines lines={page.lines} count={v.lines} />
             {interaction}
@@ -318,7 +338,7 @@ function InteractionView({ interaction, onCorrect, onGameResult }: { interaction
 function Ask({ prompt, reveal }: { prompt: string; reveal?: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <motion.div {...build} className="rounded-[28px] px-8 py-6 shadow-[0_20px_40px_-26px_rgba(10,61,69,0.7)]" style={{ background: P.ink }}>
+    <motion.div {...build} className="rounded-[28px] px-8 py-6 shadow-[0_20px_40px_-26px_rgba(5,54,63,0.8)]" style={{ background: 'linear-gradient(135deg, #05363F 0%, #0A5866 55%, #3B2219 100%)' }}>
       <p className="font-sans text-[30px] font-bold leading-snug text-white">{prompt}</p>
       {reveal && (
         <AnimatePresence initial={false} mode="wait">
