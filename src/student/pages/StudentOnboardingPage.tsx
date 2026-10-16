@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   BookOpen, 
@@ -25,14 +25,19 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { Input } from '../../components/ui/Input';
 import { BookShelf } from '../../components/onboarding/BookShelf';
-import { TravelModeChoice, PassCard, PassField, passInputClass, SealChoice, GuideChoice, FoldedPass } from '../../components/onboarding/TravelPass';
+import { TravelModeChoice, PassCard, PassField, passInputClass, SealChoice, GuideChoice, FoldedPass, teacherColor } from '../../components/onboarding/TravelPass';
 import { JourneyPath, LEVELS } from '../../components/onboarding/JourneyPath';
 import { JourneyBackdrop, JourneyTrail } from '../../components/onboarding/JourneyChrome';
 import { subjectLabel, findSubject } from '../../components/onboarding/subjects';
 import { Label } from '../../components/ui/Label';
 import { CountryTimezonePicker } from '../../components/ui/CountryTimezonePicker';
 import { WhatsAppPhoneInput } from '../../components/ui/WhatsAppPhoneInput';
-import { getCountryByCode } from '../../lib/countryTimezones';
+import { getCountryByCode, findCountryByTimezone } from '../../lib/countryTimezones';
+import { useTeacherAuth } from '../../lib/auth';
+import {
+  ADULT_MIN_AGE, GUARDIAN_MIN_AGE, CHILD_MIN_AGE, CHILD_MAX_AGE, MAX_AGE,
+  parseAge, isAdultAge, isGuardianAge, isChildAge, SIGNUP_CHOICE_KEY
+} from '../../lib/ageRules';
 
 interface StudentOnboardingPageProps {
   currentProfile?: any;
@@ -43,28 +48,47 @@ interface StudentOnboardingPageProps {
   onOpenBookingModal?: () => void;
 }
 
-const TEACHERS_CATALOG = [
-  {
-    id: 'male_teacher',
-    gender: 'male',
-    nameAr: 'أستاذ محمود',
-    nameEn: 'Ustadh Mahmoud',
-    photo: '/teacher-mahmoud-avatar.jpg'
-  },
-  {
-    id: 'female_teacher',
-    gender: 'female',
-    nameAr: 'أستاذة أفنان',
-    nameEn: 'Ustadha Afnan',
-    photo: '/teacher-afnan-avatar.jpg' as string | null
-  }
+export interface TeacherCard { id: string; gender: 'male' | 'female'; nameAr: string; nameEn: string; photo: string | null }
+
+/**
+ * Shown only until the real list arrives (GET /api/student/teachers). These ids are not teacher
+ * accounts, so they are never sent; the server then routes by the teacher's gender.
+ */
+const FALLBACK_TEACHERS: TeacherCard[] = [
+  { id: 'male_teacher', gender: 'male', nameAr: 'أستاذ محمود', nameEn: 'Ustadh Mahmoud', photo: '/teacher-mahmoud-avatar.jpg' },
+  { id: 'female_teacher', gender: 'female', nameAr: 'أستاذة أفنان', nameEn: 'Ustadha Afnan', photo: '/teacher-afnan-avatar.jpg' }
 ];
+const isFallbackTeacherId = (id: string) => FALLBACK_TEACHERS.some((t) => t.id === id);
+
+/** The chosen teacher, else the first one of the learner's gender, else the first teacher. */
+export function resolveTeacherCard(teachers: TeacherCard[], id: string, gender: 'male' | 'female'): TeacherCard {
+  return teachers.find((t) => t.id === id) || teachers.find((t) => t.gender === gender) || teachers[0] || FALLBACK_TEACHERS[0];
+}
+
+/**
+ * Country and time zone from the browser's own time zone (no network, nothing stored).
+ * Returns null when the zone is not in the served-country list (then /api/geo is asked).
+ */
+function detectCountryFromBrowser(): { country: string; timezone: string } | null {
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (!tz) return null;
+    const found = findCountryByTimezone(tz);
+    if (!found || found.code === 'OTHER') return null;
+    const inList = found.timezones.some((t) => t.value === tz);
+    return { country: found.code, timezone: inList ? tz : found.primaryTimezone };
+  } catch {
+    return null;
+  }
+}
 
 export interface ChildOnboardingForm {
   id: string;
   name: string;
   gender: 'male' | 'female';
   teacherGenderPreference: 'male_teacher' | 'female_teacher' | 'auto';
+  /** The teacher picked for this child ('' = the first teacher of the child's gender). */
+  teacherId: string;
   learningInterest: string;
   currentLevel: string;
   notes: string;
@@ -80,22 +104,58 @@ export default function StudentOnboardingPage({
 }: StudentOnboardingPageProps) {
   const isRTL = document.documentElement.dir === "rtl";
   const navigate = useNavigate();
+  // What the account chose on the sign-up form (personal / family, guardian age).
+  const { user } = useTeacherAuth();
+  const signupMeta = ((): { account_type?: string; guardian_age?: number | string | null } => {
+    const meta = (user?.user_metadata || {}) as { account_type?: string; guardian_age?: number | string };
+    if (meta.account_type) return meta;
+    try {
+      // Google sign-up carries no metadata: use the choice saved by the sign-up form on this device.
+      const saved = JSON.parse(localStorage.getItem(SIGNUP_CHOICE_KEY) || 'null');
+      if (saved?.accountType === 'family') return { account_type: 'family', guardian_age: saved.guardianAge };
+    } catch {}
+    return meta;
+  })();
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [learnerType, setLearnerType] = useState<'adult' | 'child'>(
-    currentProfile?.learnerType === 'child' || currentProfile?.canBookForChild ? 'child' : 'adult'
+    currentProfile?.learnerType === 'child' || currentProfile?.canBookForChild || signupMeta.account_type === 'family' ? 'child' : 'adult'
   );
+  const [guardianAge, setGuardianAge] = useState<string>(() => {
+    const fromSignup = parseAge(signupMeta.guardian_age);
+    if (fromSignup) return String(fromSignup);
+    return currentProfile?.learnerType === 'child' && currentProfile?.age ? String(currentProfile.age) : '';
+  });
+
+  // Teachers to choose from: the real active teachers, so every new teacher appears here.
+  const [teachers, setTeachers] = useState<TeacherCard[]>(FALLBACK_TEACHERS);
+  useEffect(() => {
+    const token = session?.access_token;
+    if (!token) return;
+    let cancelled = false;
+    fetch('/api/student/teachers', { headers: { Authorization: `Bearer ${token}` } })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        const list = Array.isArray(data?.teachers) ? data.teachers.filter((t: any) => t?.id && t?.nameEn) : [];
+        if (!cancelled && list.length) setTeachers(list as TeacherCard[]);
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [session?.access_token]);
 
   // Adult learner details
   const [studentName, setStudentName] = useState(currentProfile?.name || '');
   const [gender, setGender] = useState<'male' | 'female'>(
     currentProfile?.gender === 'female' ? 'female' : 'male'
   );
-  const [teacherGenderPreference, setTeacherGenderPreference] = useState<'male_teacher' | 'female_teacher'>(
-    currentProfile?.teacherGenderPreference === 'female_teacher' || currentProfile?.gender === 'female'
-      ? 'female_teacher'
-      : 'male_teacher'
+  const [teacherId, setTeacherId] = useState<string>(currentProfile?.assignedTeacherId || '');
+  const [teacherGenderPreference, setTeacherGenderPreference] = useState<'male' | 'female'>(
+    currentProfile?.teacherGenderPreference === 'female_teacher' || currentProfile?.gender === 'female' ? 'female' : 'male'
   );
+  const adultTeacher = resolveTeacherCard(teachers, teacherId, teacherGenderPreference);
+  const teacherName = (t: TeacherCard) => (isRTL ? t.nameAr : t.nameEn);
+  const childTeacher = (c: ChildOnboardingForm) =>
+    resolveTeacherCard(teachers, c.teacherId, c.teacherGenderPreference === 'auto' ? c.gender : c.teacherGenderPreference === 'female_teacher' ? 'female' : 'male');
   const [learningInterest, setLearningInterest] = useState(currentProfile?.learningInterest || 'quran-reading');
   const [currentLevel, setCurrentLevel] = useState(currentProfile?.currentLevel || 'beginner');
   const [learningGoal, setLearningGoal] = useState(currentProfile?.learningGoal || '');
@@ -111,6 +171,7 @@ export default function StudentOnboardingPage({
         name: c.name || '',
         gender: c.gender === 'female' ? 'female' : 'male',
         teacherGenderPreference: c.gender === 'female' ? 'female_teacher' : 'male_teacher',
+        teacherId: c.assignedTeacherId || '',
         learningInterest: c.learningInterest || 'quran-reading',
         currentLevel: c.currentLevel || 'beginner',
         notes: c.notes || '',
@@ -123,6 +184,7 @@ export default function StudentOnboardingPage({
         name: '',
         gender: 'male',
         teacherGenderPreference: 'auto',
+        teacherId: '',
         learningInterest: 'quran-reading',
         currentLevel: 'beginner',
         notes: '',
@@ -131,12 +193,37 @@ export default function StudentOnboardingPage({
     ];
   });
 
-  // Country, Timezone & WhatsApp
-  const [country, setCountry] = useState(currentProfile?.country || 'EG');
-  const [timezone, setTimezone] = useState(() => {
-    const meta = getCountryByCode(currentProfile?.country || 'EG');
-    return meta?.primaryTimezone || currentProfile?.timezone || 'Africa/Cairo';
+  // Country, Timezone & WhatsApp: the saved country, else detected from this device's time zone
+  // (previously this always started on Egypt).
+  const [initialPlace] = useState(() => (currentProfile?.country ? null : detectCountryFromBrowser()));
+  const [country, setCountry] = useState<string>(currentProfile?.country || initialPlace?.country || 'OTHER');
+  const [timezone, setTimezone] = useState<string>(() => {
+    if (currentProfile?.country) {
+      return currentProfile?.timezone || getCountryByCode(currentProfile.country)?.primaryTimezone || 'UTC';
+    }
+    if (initialPlace) return initialPlace.timezone;
+    try {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+    } catch {
+      return 'UTC';
+    }
   });
+  // Time zone not in our list: ask the hosting edge for the visitor's country instead.
+  useEffect(() => {
+    if (currentProfile?.country || initialPlace) return;
+    let cancelled = false;
+    fetch('/api/geo')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        const code = typeof data?.country === 'string' ? data.country : '';
+        const match = code ? getCountryByCode(code) : null;
+        if (cancelled || !match || match.code !== code) return;
+        setCountry(match.code);
+        setTimezone((tz) => (match.timezones.some((t) => t.value === tz) ? tz : match.primaryTimezone));
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
 
   const [whatsapp, setWhatsapp] = useState(currentProfile?.whatsapp || '');
   const [isPhoneValid, setIsPhoneValid] = useState(true);
@@ -144,8 +231,38 @@ export default function StudentOnboardingPage({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   // Family accounts: only one child's ticket is open at a time; finished ones fold into a pass.
-  const childComplete = (c: ChildOnboardingForm) =>
-    c.name.trim().length >= 2 && /^[0-9]{1,3}$/.test(c.age.trim()) && Number(c.age) >= 3 && Number(c.age) <= 100;
+  const childComplete = (c: ChildOnboardingForm) => c.name.trim().length >= 2 && isChildAge(c.age);
+  const childAgeMessage = (index: number) => isRTL
+    ? `سن الطفل رقم (${index + 1}) لازم يكون من ${CHILD_MIN_AGE} لـ ${CHILD_MAX_AGE} سنة. لو ${ADULT_MIN_AGE} سنة أو أكبر، يفتح حساب شخصي باسمه.`
+    : `Child #${index + 1} must be ${CHILD_MIN_AGE} to ${CHILD_MAX_AGE} years old. Learners aged ${ADULT_MIN_AGE}+ open their own account.`;
+  const incompleteChildMessage = (index: number) => {
+    const c = children[index];
+    if (c && c.name.trim().length >= 2 && c.age.trim()) return childAgeMessage(index);
+    return isRTL ? `كمّل اسم وسن الطفل رقم (${index + 1}) الأول.` : `Please add the name and age of child #${index + 1} first.`;
+  };
+  const adultAgeMessage = isRTL
+    ? `الحساب الشخصي للي عندهم ${ADULT_MIN_AGE} سنة أو أكتر. لو أقل، ولي أمرك يقدر يفتح حساب عائلة ويسجّلك فيه.`
+    : `A personal account is for learners aged ${ADULT_MIN_AGE} or over. Under ${ADULT_MIN_AGE}? A parent can open a family account for you.`;
+  const guardianAgeMessage = isRTL
+    ? `حساب العائلة بيفتحه ولي أمر عنده ${GUARDIAN_MIN_AGE} سنة أو أكتر.`
+    : `A family account is opened by a parent or guardian aged ${GUARDIAN_MIN_AGE} or over.`;
+  /** Step one: name, ages, WhatsApp. Returns the first problem, or null. */
+  const stepOneProblem = (): string | null => {
+    const nameToCheck = learnerType === 'child' ? parentName : studentName;
+    if (nameToCheck.trim().length < 2) {
+      return isRTL ? 'اكتب الاسم بالكامل (حرفين على الأقل).' : 'Please enter the full name (at least 2 characters).';
+    }
+    if (learnerType === 'adult' && !isAdultAge(age)) {
+      return age.trim() && parseAge(age) !== null && Number(age) < ADULT_MIN_AGE
+        ? adultAgeMessage
+        : (isRTL ? 'اكتب سنك بالأرقام (مثال: 24).' : 'Please enter your age in numbers (e.g. 24).');
+    }
+    if (learnerType === 'child' && !isGuardianAge(guardianAge)) return guardianAgeMessage;
+    if (!whatsapp.trim() || !isPhoneValid) {
+      return isRTL ? 'اكتب رقم واتساب صحيح لدولتك.' : 'Please enter a valid WhatsApp number for your country.';
+    }
+    return null;
+  };
   const [openChild, setOpenChild] = useState<number>(() => {
     const firstIncomplete = children.findIndex((c) => !childComplete(c));
     return firstIncomplete;
@@ -157,38 +274,23 @@ export default function StudentOnboardingPage({
       setOpenChild(-1);
       return true;
     }
-    setError(isRTL
-      ? `كمّل اسم وسن الطفل رقم (${index + 1}) الأول.`
-      : `Please add the name and age of child #${index + 1} first.`);
+    setError(incompleteChildMessage(index));
     return false;
   };
   const [completedSuccess, setCompletedSuccess] = useState(false);
-  const [assignedTeacherName, setAssignedTeacherName] = useState<string>(() => {
-    const isFemale = currentProfile?.gender === 'female' || currentProfile?.teacherGenderPreference === 'female_teacher';
-    return isFemale
-      ? (isRTL ? 'أستاذة أفنان' : 'Ustadha Afnan')
-      : (isRTL ? 'أستاذ محمود' : 'Ustadh Mahmoud');
-  });
+  const assignedTeacherName = teacherName(adultTeacher);
 
-  // Handle adult gender switch -> auto routes teacher
+  // Adult gender switch: suggest the first teacher of the same gender (one tap to change).
   const handleGenderSelect = (selectedGender: 'male' | 'female') => {
     setGender(selectedGender);
-    if (selectedGender === 'male') {
-      setTeacherGenderPreference('male_teacher');
-      setAssignedTeacherName(isRTL ? 'أستاذ محمود' : 'Ustadh Mahmoud');
-    } else {
-      setTeacherGenderPreference('female_teacher');
-      setAssignedTeacherName(isRTL ? 'أستاذة أفنان' : 'Ustadha Afnan');
-    }
+    setTeacherGenderPreference(selectedGender);
+    setTeacherId('');
   };
 
-  const handleTeacherSelect = (teacherId: 'male_teacher' | 'female_teacher') => {
-    setTeacherGenderPreference(teacherId);
-    if (teacherId === 'male_teacher') {
-      setAssignedTeacherName(isRTL ? 'أستاذ محمود' : 'Ustadh Mahmoud');
-    } else {
-      setAssignedTeacherName(isRTL ? 'أستاذة أفنان' : 'Ustadha Afnan');
-    }
+  const handleTeacherSelect = (id: string) => {
+    const t = teachers.find((x) => x.id === id);
+    setTeacherId(id);
+    if (t) setTeacherGenderPreference(t.gender);
   };
 
   // Children helpers
@@ -202,6 +304,7 @@ export default function StudentOnboardingPage({
         name: '',
         gender: 'male',
         teacherGenderPreference: 'auto',
+        teacherId: '',
         learningInterest: 'quran-reading',
         currentLevel: 'beginner',
         notes: '',
@@ -229,44 +332,21 @@ export default function StudentOnboardingPage({
     if (e) e.preventDefault();
     setError(null);
 
-    // Validation
-    const ageOk = (v: string) => /^d{1,3}$/.test(v.trim()) && Number(v) >= 3 && Number(v) <= 100;
-    if (learnerType === 'adult') {
-      if (!studentName.trim() || studentName.trim().length < 2) {
-        setError(isRTL ? 'يرجى إدخال اسم الدارس بالكامل (حرفان على الأقل).' : 'Please enter your full name (at least 2 characters).');
-        setStep(1);
-        return;
-      }
-      if (!ageOk(age)) {
-        setError(isRTL ? 'اكتب سنك بالأرقام (مثال: 24).' : 'Please enter your age in numbers (e.g. 24).');
-        setStep(1);
-        return;
-      }
-    } else {
-      if (!parentName.trim() || parentName.trim().length < 2) {
-        setError(isRTL ? 'يرجى إدخال اسم ولي الأمر بالكامل.' : 'Please enter parent/guardian full name.');
-        setStep(1);
-        return;
-      }
-      for (let i = 0; i < children.length; i++) {
-        const c = children[i];
-        if (!c.name.trim() || c.name.trim().length < 2) {
-          setError(isRTL ? `يرجى إدخال اسم الطفل رقم (${i + 1}) بالكامل.` : `Please enter full name for child #${i + 1}.`);
-          setStep(2);
-          return;
-        }
-        if (!ageOk(c.age)) {
-          setError(isRTL ? `اكتب سن الطفل رقم (${i + 1}) بالأرقام.` : `Please enter the age of child #${i + 1}.`);
-          setStep(2);
-          return;
-        }
-      }
-    }
-
-    if (!whatsapp.trim() || !isPhoneValid) {
-      setError(isRTL ? 'يرجى إدخال رقم هاتف صحيح عليه تطبيق واتساب للتواصل.' : 'Please enter a valid phone number with active WhatsApp.');
+    // Validation (same limits as the server: src/lib/ageRules.ts)
+    const firstProblem = stepOneProblem();
+    if (firstProblem) {
+      setError(firstProblem);
       setStep(1);
       return;
+    }
+    if (learnerType === 'child') {
+      const incomplete = children.findIndex((c) => !childComplete(c));
+      if (incomplete >= 0) {
+        setError(incompleteChildMessage(incomplete));
+        setOpenChild(incomplete);
+        setStep(2);
+        return;
+      }
     }
 
     setIsSubmitting(true);
@@ -292,7 +372,8 @@ export default function StudentOnboardingPage({
       if (learnerType === 'adult') {
         payload.name = studentName.trim();
         payload.gender = gender;
-        payload.teacherGenderPreference = teacherGenderPreference;
+        payload.teacherGenderPreference = adultTeacher.gender === 'female' ? 'female_teacher' : 'male_teacher';
+        if (!isFallbackTeacherId(adultTeacher.id)) payload.teacherId = adultTeacher.id;
         payload.learningInterest = learningInterest;
         payload.currentLevel = currentLevel;
         payload.learningGoal = learningGoal.trim();
@@ -302,15 +383,20 @@ export default function StudentOnboardingPage({
         payload.name = parentName.trim();
         payload.parentName = parentName.trim();
         payload.parentWhatsapp = whatsapp.trim();
-        payload.children = children.map(c => ({
+        payload.guardianAge = Number(guardianAge);
+        payload.children = children.map(c => {
+          const t = childTeacher(c);
+          return {
           name: c.name.trim(),
           gender: c.gender,
-          teacherGenderPreference: c.teacherGenderPreference,
+          teacherGenderPreference: t.gender === 'female' ? 'female_teacher' : 'male_teacher',
+          ...(isFallbackTeacherId(t.id) ? {} : { teacherId: t.id }),
           learningInterest: c.learningInterest,
           currentLevel: c.currentLevel,
           notes: c.notes.trim(),
           age: Number(c.age)
-        }));
+          };
+        });
       }
 
       const res = await fetch('/api/student/onboarding', {
@@ -322,10 +408,6 @@ export default function StudentOnboardingPage({
       const data = await res.json();
       if (!res.ok) {
         throw new Error(data.error || (isRTL ? 'تعذر حفظ بيانات الحساب. يرجى المحاولة لاحقاً.' : 'Failed to complete onboarding. Please try again.'));
-      }
-
-      if (data.assignedTeacherName) {
-        setAssignedTeacherName(data.assignedTeacherName);
       }
 
       setCompletedSuccess(true);
@@ -397,11 +479,7 @@ export default function StudentOnboardingPage({
               </span>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {children.map((c, idx) => {
-                  const teacher = c.teacherGenderPreference === 'female_teacher' 
-                    ? (isRTL ? 'أستاذة أفنان' : 'Ustadha Afnan')
-                    : (c.teacherGenderPreference === 'male_teacher' 
-                      ? (isRTL ? 'أستاذ محمود' : 'Ustadh Mahmoud')
-                      : (c.gender === 'female' ? (isRTL ? 'أستاذة أفنان' : 'Ustadha Afnan') : (isRTL ? 'أستاذ محمود' : 'Ustadh Mahmoud')));
+                  const teacher = teacherName(childTeacher(c));
                   return (
                     <div key={idx} className="p-3.5 rounded-2xl glass-surface border border-border/60 flex items-center justify-between gap-3">
                       <div>
@@ -505,7 +583,7 @@ export default function StudentOnboardingPage({
 
             {/* The traveller's ticket */}
             <PassCard name={learnerType === 'child' ? parentName : studentName} isAr={isRTL}>
-              <div className={`grid gap-5 ${learnerType === 'adult' ? 'sm:grid-cols-[1fr_120px]' : ''}`}>
+              <div className="grid gap-5 sm:grid-cols-[1fr_140px]">
                 <PassField
                   htmlFor="onboarding-name"
                   label={learnerType === 'child' ? (isRTL ? 'اسم ولي الأمر' : 'Parent / guardian name') : (isRTL ? 'اسمك بالكامل' : 'Your full name')}
@@ -520,23 +598,68 @@ export default function StudentOnboardingPage({
                     className={passInputClass}
                   />
                 </PassField>
-                {learnerType === 'adult' && (
+                {learnerType === 'adult' ? (
                   <PassField htmlFor="onboarding-age" label={isRTL ? 'السن' : 'Age'}>
                     <input
                       id="onboarding-age"
                       type="number"
                       inputMode="numeric"
-                      min={3}
-                      max={100}
+                      min={ADULT_MIN_AGE}
+                      max={MAX_AGE}
                       required
                       value={age}
                       onChange={(e) => setAge(e.target.value)}
                       placeholder={isRTL ? 'مثال: 24' : 'e.g. 24'}
+                      aria-invalid={Boolean(age.trim()) && !isAdultAge(age)}
+                      aria-describedby="onboarding-age-hint"
+                      className={passInputClass}
+                    />
+                  </PassField>
+                ) : (
+                  <PassField htmlFor="onboarding-guardian-age" label={isRTL ? 'سن ولي الأمر' : 'Your age'}>
+                    <input
+                      id="onboarding-guardian-age"
+                      type="number"
+                      inputMode="numeric"
+                      min={GUARDIAN_MIN_AGE}
+                      max={MAX_AGE}
+                      required
+                      value={guardianAge}
+                      onChange={(e) => setGuardianAge(e.target.value)}
+                      placeholder={isRTL ? 'مثال: 38' : 'e.g. 38'}
+                      aria-invalid={Boolean(guardianAge.trim()) && !isGuardianAge(guardianAge)}
+                      aria-describedby="onboarding-age-hint"
                       className={passInputClass}
                     />
                   </PassField>
                 )}
               </div>
+              {(() => {
+                const value = learnerType === 'adult' ? age : guardianAge;
+                const tooYoung = parseAge(value) !== null && Number(value) < (learnerType === 'adult' ? ADULT_MIN_AGE : GUARDIAN_MIN_AGE);
+                return (
+                  <p
+                    id="onboarding-age-hint"
+                    className={`-mt-3 text-xs leading-relaxed ${tooYoung ? 'text-destructive font-semibold' : 'text-muted-foreground'}`}
+                    aria-live="polite"
+                  >
+                    {tooYoung
+                      ? (learnerType === 'adult' ? adultAgeMessage : guardianAgeMessage)
+                      : learnerType === 'adult'
+                        ? (isRTL ? `الحساب الشخصي من ${ADULT_MIN_AGE} سنة وطالع.` : `Personal accounts are for ages ${ADULT_MIN_AGE}+.`)
+                        : (isRTL ? `ولي الأمر ${GUARDIAN_MIN_AGE} سنة أو أكتر، والأبناء من ${CHILD_MIN_AGE} لـ ${CHILD_MAX_AGE} سنة.` : `Guardians are ${GUARDIAN_MIN_AGE}+; children are ${CHILD_MIN_AGE} to ${CHILD_MAX_AGE}.`)}
+                    {tooYoung && learnerType === 'adult' && (
+                      <button
+                        type="button"
+                        onClick={() => { setLearnerType('child'); setError(null); }}
+                        className="ms-1.5 underline font-bold cursor-pointer"
+                      >
+                        {isRTL ? 'حوّل لحساب عائلة' : 'Switch to a family account'}
+                      </button>
+                    )}
+                  </p>
+                );
+              })()}
 
               {learnerType === 'adult' && (
                 <>
@@ -554,12 +677,12 @@ export default function StudentOnboardingPage({
 
                   <PassField label={isRTL ? 'مرشدك في الرحلة' : 'Your guide on the journey'}>
                     <p className="text-xs text-muted-foreground mb-2.5">
-                      {isRTL ? 'اخترناه لك حسب الجنس، وتقدر تغيّره بضغطة.' : 'Chosen for you by gender; change it with one tap.'}
+                      {isRTL ? 'اخترناه لك حسب الجنس، وتقدر تغيّره بضغطة. هيوصله تسجيلك وتتفتح بينكم محادثة.' : 'Suggested by gender; change it with one tap. Your teacher gets your sign-up and a chat opens between you.'}
                     </p>
                     <GuideChoice
-                      teachers={TEACHERS_CATALOG}
-                      value={teacherGenderPreference}
-                      onChange={(id) => handleTeacherSelect(id as 'male_teacher' | 'female_teacher')}
+                      teachers={teachers}
+                      value={adultTeacher.id}
+                      onChange={handleTeacherSelect}
                       isAr={isRTL}
                     />
                   </PassField>
@@ -592,23 +715,19 @@ export default function StudentOnboardingPage({
             </PassCard>
 
             {/* Next Button */}
-            <div className="pt-4 flex justify-end">
+            <div className="pt-4 flex sm:justify-end">
               <button
                 type="button"
                 onClick={() => {
-                  const nameToCheck = learnerType === 'child' ? parentName : studentName;
-                  if (!nameToCheck.trim()) {
-                    setError(isRTL ? 'يرجى إدخال الاسم بالكامل للمتابعة.' : 'Please enter the full name to proceed.');
-                    return;
-                  }
-                  if (!whatsapp.trim() || !isPhoneValid) {
-                    setError(isRTL ? 'يرجى التأكد من كتابة رقم الواتساب بالصيغة الصحيحة لدولتك.' : 'Please enter a valid WhatsApp number for your country.');
+                  const problem = stepOneProblem();
+                  if (problem) {
+                    setError(problem);
                     return;
                   }
                   setError(null);
                   setStep(2);
                 }}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl btn-primary-material text-primary-foreground font-medium text-sm transition-all shadow-md cursor-pointer"
+                className="w-full sm:w-auto justify-center inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl btn-primary-material text-primary-foreground font-medium text-sm transition-all shadow-md cursor-pointer"
               >
                 <span>
                   {learnerType === 'child' 
@@ -653,13 +772,11 @@ export default function StudentOnboardingPage({
                 {/* Children Cards List */}
                 <div className="space-y-5">
                   {children.map((child, index) => {
-                    const currentTeacherPreference = child.teacherGenderPreference === 'auto'
-                      ? (child.gender === 'female' ? 'female_teacher' : 'male_teacher')
-                      : child.teacherGenderPreference;
+                    const guideOfChild = childTeacher(child);
 
                     if (index !== openChild) {
                       const found = findSubject(child.learningInterest);
-                      const guide = TEACHERS_CATALOG.find((t) => t.id === currentTeacherPreference) || TEACHERS_CATALOG[0];
+                      const guide = guideOfChild;
                       const level = LEVELS.find((l) => l.id === child.currentLevel) || LEVELS[0];
                       return (
                         <FoldedPass
@@ -667,13 +784,13 @@ export default function StudentOnboardingPage({
                           isAr={isRTL}
                           name={child.name || (isRTL ? `الطفل رقم ${index + 1}` : `Child #${index + 1}`)}
                           age={child.age}
-                          subjectGlyph={found?.subject.glyph || '؟'}
+                          subjectId={child.learningInterest}
                           subjectName={subjectLabel(child.learningInterest, isRTL)}
                           subjectColor={found?.family.color || '#087D91'}
                           levelName={isRTL ? level.ar : level.en}
                           guideName={isRTL ? guide.nameAr : guide.nameEn}
                           guidePhoto={guide.photo}
-                          guideColor={guide.id === 'male_teacher' ? '#087D91' : '#8B4935'}
+                          guideColor={teacherColor(guide.gender)}
                           onEdit={() => {
                             if (openChild >= 0 && !finishChild(openChild)) return;
                             setOpenChild(index);
@@ -701,7 +818,7 @@ export default function StudentOnboardingPage({
                           )}
                         </div>
 
-                        <div className="grid gap-5 sm:grid-cols-[1fr_120px]">
+                        <div className="grid gap-5 sm:grid-cols-[1fr_140px]">
                           <PassField htmlFor={`child-name-${index}`} label={isRTL ? 'اسم الابن / الابنة' : "Child's name"}>
                             <input
                               id={`child-name-${index}`}
@@ -717,16 +834,27 @@ export default function StudentOnboardingPage({
                               id={`child-age-${index}`}
                               type="number"
                               inputMode="numeric"
-                              min={3}
-                              max={100}
+                              min={CHILD_MIN_AGE}
+                              max={CHILD_MAX_AGE}
                               required
                               value={child.age}
                               onChange={(e) => handleUpdateChild(index, { age: e.target.value })}
                               placeholder={isRTL ? 'مثال: 9' : 'e.g. 9'}
+                              aria-invalid={Boolean(child.age.trim()) && !isChildAge(child.age)}
+                              aria-describedby={`child-age-hint-${index}`}
                               className={passInputClass}
                             />
                           </PassField>
                         </div>
+                        <p
+                          id={`child-age-hint-${index}`}
+                          className={`-mt-3 text-xs leading-relaxed ${child.age.trim() && !isChildAge(child.age) ? 'text-destructive font-semibold' : 'text-muted-foreground'}`}
+                          aria-live="polite"
+                        >
+                          {child.age.trim() && !isChildAge(child.age)
+                            ? childAgeMessage(index)
+                            : (isRTL ? `السن من ${CHILD_MIN_AGE} لـ ${CHILD_MAX_AGE} سنة.` : `Ages ${CHILD_MIN_AGE} to ${CHILD_MAX_AGE}.`)}
+                        </p>
 
                         <PassField label={isRTL ? 'ولد ولا بنت' : 'Boy or girl'}>
                           <SealChoice
@@ -734,7 +862,8 @@ export default function StudentOnboardingPage({
                             value={child.gender}
                             onChange={(g) => handleUpdateChild(index, {
                               gender: g,
-                              teacherGenderPreference: child.teacherGenderPreference === 'auto' ? 'auto' : (g === 'female' ? 'female_teacher' : 'male_teacher')
+                              // Re-suggest a teacher of the child's gender unless one was picked by hand.
+                              ...(child.teacherGenderPreference === 'auto' ? { teacherId: '' } : {})
                             })}
                             options={[
                               { id: 'male' as const, text: isRTL ? 'ولد' : 'Boy' },
@@ -745,9 +874,15 @@ export default function StudentOnboardingPage({
 
                         <PassField label={isRTL ? 'مرشده في الرحلة' : 'Their guide on the journey'}>
                           <GuideChoice
-                            teachers={TEACHERS_CATALOG}
-                            value={currentTeacherPreference}
-                            onChange={(id) => handleUpdateChild(index, { teacherGenderPreference: id as 'male_teacher' | 'female_teacher' })}
+                            teachers={teachers}
+                            value={guideOfChild.id}
+                            onChange={(id) => {
+                              const t = teachers.find((x) => x.id === id);
+                              handleUpdateChild(index, {
+                                teacherId: id,
+                                teacherGenderPreference: t?.gender === 'female' ? 'female_teacher' : 'male_teacher'
+                              });
+                            }}
                             isAr={isRTL}
                           />
                         </PassField>
@@ -784,7 +919,7 @@ export default function StudentOnboardingPage({
                             type="text"
                             value={child.notes}
                             onChange={(e) => handleUpdateChild(index, { notes: e.target.value })}
-                            placeholder={isRTL ? 'ملاحظات خاصة بالطفل (اختياري: العمر، تفضيلات معينة...)' : 'Notes for this child (Optional: age, preferences...)'}
+                            placeholder={isRTL ? 'ملاحظات للمعلم عن الطفل (اختياري)' : 'Notes for the teacher about this child (optional)'}
                             className={`${passInputClass} !text-sm !font-normal`}
                           />
                         </div>
@@ -862,11 +997,11 @@ export default function StudentOnboardingPage({
             )}
 
             {/* Back / Continue Buttons */}
-            <div className="pt-4 flex items-center justify-between">
+            <div className="pt-4 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                className="py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 {isRTL ? 'السابق' : 'Back'}
               </button>
@@ -878,7 +1013,7 @@ export default function StudentOnboardingPage({
                     const incomplete = children.findIndex((c) => !childComplete(c));
                     if (incomplete >= 0) {
                       setOpenChild(incomplete);
-                      setError(isRTL ? `كمّل اسم وسن الطفل رقم (${incomplete + 1}) الأول.` : `Please add the name and age of child #${incomplete + 1} first.`);
+                      setError(incompleteChildMessage(incomplete));
                       return;
                     }
                     setOpenChild(-1);
@@ -886,7 +1021,7 @@ export default function StudentOnboardingPage({
                   setError(null);
                   setStep(3);
                 }}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl btn-primary-material text-primary-foreground font-medium text-sm transition-all shadow-md cursor-pointer"
+                className="w-full sm:w-auto justify-center inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl btn-primary-material text-primary-foreground font-medium text-sm transition-all shadow-md cursor-pointer"
               >
                 <span>{isRTL ? 'المتابعة: مراجعة وتأكيد' : 'Continue: Review & Confirm'}</span>
                 <ArrowRight className="w-4 h-4 rtl:rotate-180" />
@@ -941,7 +1076,7 @@ export default function StudentOnboardingPage({
                     {isRTL ? 'الدولة والمنطقة الزمنية:' : 'Country & Timezone:'}
                   </span>
                   <span className="font-semibold text-foreground">
-                    {getCountryByCode(country)?.nameAr || country} ({timezone})
+                    {(isRTL ? getCountryByCode(country)?.nameAr : getCountryByCode(country)?.name) || country} ({timezone})
                   </span>
                 </div>
 
@@ -963,11 +1098,7 @@ export default function StudentOnboardingPage({
                   </span>
                   <div className="space-y-2">
                     {children.map((c, i) => {
-                      const teacher = c.teacherGenderPreference === 'female_teacher' 
-                        ? (isRTL ? 'أستاذة أفنان' : 'Ustadha Afnan')
-                        : (c.teacherGenderPreference === 'male_teacher' 
-                          ? (isRTL ? 'أستاذ محمود' : 'Ustadh Mahmoud')
-                          : (c.gender === 'female' ? (isRTL ? 'أستاذة أفنان' : 'Ustadha Afnan') : (isRTL ? 'أستاذ محمود' : 'Ustadh Mahmoud')));
+                      const teacher = teacherName(childTeacher(c));
                       const subject = subjectLabel(c.learningInterest, isRTL);
 
                       return (
@@ -1003,11 +1134,11 @@ export default function StudentOnboardingPage({
             </div>
 
             {/* Submit and Back */}
-            <div className="pt-4 flex items-center justify-between">
+            <div className="pt-4 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
               <button
                 type="button"
                 onClick={() => setStep(2)}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                className="py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 {isRTL ? 'السابق' : 'Back'}
               </button>
@@ -1016,7 +1147,7 @@ export default function StudentOnboardingPage({
                 type="button"
                 disabled={isSubmitting}
                 onClick={handleSubmit}
-                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl btn-primary-material text-primary-foreground font-bold text-sm transition-all shadow-md cursor-pointer disabled:opacity-50"
+                className="w-full sm:w-auto justify-center inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl btn-primary-material text-primary-foreground font-bold text-sm transition-all shadow-md cursor-pointer disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <>

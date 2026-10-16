@@ -3,7 +3,8 @@
  *
  * - Inbox: on-site notifications for any signed-in account (user_notifications).
  * - Chat (text only): every account has a pinned 'support' thread with the super admin;
- *   a student account gets a 'lesson' thread with each teacher they have booked with.
+ *   a student account gets a 'lesson' thread with its assigned teacher (opened at sign-up) and
+ *   with each teacher they have booked with.
  *   The super admin can read and write in every thread.
  * - Placement test: built from fixed bilingual question banks (server/placement) for the subject and
  *   level chosen at onboarding, shuffled per learner; the server keeps the answers, grades it, and
@@ -81,22 +82,35 @@ async function ensureSupportThread(client: any, ownerUserId: string, ownerRole: 
   return data;
 }
 
-/** Student account: one lesson thread per teacher who has (or had) a lesson with one of its learners. */
+/**
+ * Student account: one lesson thread per teacher of its learners — the teacher each learner is
+ * assigned to (opened at sign-up, owner decision 2026-10-16) and any teacher who has (or had) a lesson with them.
+ */
 async function ensureLessonThreads(client: any, ownerUserId: string, learnerIds: string[]) {
   if (!learnerIds.length) return;
-  const { data: rows } = await client
-    .from('bookings')
-    .select('teacher_id')
-    .in('student_id', learnerIds)
-    .in('status', ['confirmed', 'rescheduled', 'completed'])
-    .not('teacher_id', 'is', null);
-  const teacherIds = [...new Set((rows || []).map((r: any) => r.teacher_id))];
-  if (!teacherIds.length) return;
+  const [{ data: rows }, { data: assigned }] = await Promise.all([
+    client
+      .from('bookings')
+      .select('teacher_id')
+      .in('student_id', learnerIds)
+      .in('status', ['confirmed', 'rescheduled', 'completed'])
+      .not('teacher_id', 'is', null),
+    client.from('students').select('assigned_teacher_id').in('id', learnerIds).not('assigned_teacher_id', 'is', null)
+  ]);
+  const teacherIds = [...new Set([...(rows || []).map((r: any) => r.teacher_id), ...(assigned || []).map((r: any) => r.assigned_teacher_id)])];
+  await ensureTeacherThreads(client, ownerUserId, teacherIds as string[]);
+}
+
+/** Opens the lesson conversation between a student account and each of these teachers (idempotent). */
+export async function ensureTeacherThreads(client: any, ownerUserId: string, teacherIds: string[]) {
+  const ids = [...new Set(teacherIds.filter(Boolean))];
+  if (!ownerUserId || !ids.length) return;
   const { data: have } = await client.from('chat_threads').select('teacher_id').eq('kind', 'lesson').eq('owner_user_id', ownerUserId);
   const known = new Set((have || []).map((t: any) => t.teacher_id));
-  const missing = teacherIds.filter(id => !known.has(id));
+  const missing = ids.filter(id => !known.has(id));
   if (missing.length) {
-    await client.from('chat_threads').insert(missing.map(id => ({ kind: 'lesson', owner_user_id: ownerUserId, owner_role: 'student', teacher_id: id })));
+    const { error } = await client.from('chat_threads').insert(missing.map(id => ({ kind: 'lesson', owner_user_id: ownerUserId, owner_role: 'student', teacher_id: id })));
+    if (error) console.warn('[Chat] lesson thread insert failed:', error.message);
   }
 }
 

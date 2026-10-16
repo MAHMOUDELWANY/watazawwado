@@ -1,13 +1,15 @@
 import { BrandLogo } from './ui/BrandLogo';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Mail, Lock, User, X, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, User, Users, X, Eye, EyeOff, Check, ShieldCheck } from 'lucide-react';
 import { BrandLoader, BrandSpinner } from './ui/BrandLoader';
 import { useTeacherAuth } from '../lib/auth'; // it's now AuthProvider
 import { LEAKED_PASSWORD_MESSAGE } from '../lib/pwnedPassword';
 import { useNavigate } from 'react-router-dom';
 import { OtpVerificationCard } from './auth/OtpVerificationCard';
 import { markJustSignedIn } from './ui/WelcomeLoader';
+import { SubjectMark } from './onboarding/SubjectMark';
+import { ADULT_MIN_AGE, GUARDIAN_MIN_AGE, MAX_AGE, parseAge, signupAgeProblem, SIGNUP_CHOICE_KEY } from '../lib/ageRules';
 
 interface StudentAuthModalProps {
   isOpen: boolean;
@@ -26,12 +28,46 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // Sign-up age gate (owner decision 2026-10-16): checked before the account (and its email) is created.
+  const [accountType, setAccountType] = useState<'self' | 'family'>('self');
+  const [confirmedAdult, setConfirmedAdult] = useState(false);
+  const [guardianAge, setGuardianAge] = useState('');
   const { user, signIn, signUp, signInWithGoogle, verifyOtp, resendOtp, resetPassword, updatePassword, signOut } = useTeacherAuth();
   const navigate = useNavigate();
 
 
+  /** Sign-up only: the age gate's message, or '' when the form may create the account. */
+  const ageGateError = () => {
+    const problem = signupAgeProblem({ accountType, confirmedAdult, guardianAge });
+    if (problem === 'confirm_adult') {
+      return isAr
+        ? `أكّد إن سنك ${ADULT_MIN_AGE} سنة أو أكتر. لو أقل، ولي أمرك يفتح "حساب عائلة" ويسجّلك فيه.`
+        : `Please confirm you are ${ADULT_MIN_AGE} or over. Under ${ADULT_MIN_AGE}? A parent opens a family account for you.`;
+    }
+    if (problem === 'guardian_age') {
+      return isAr
+        ? `حساب العائلة بيفتحه ولي أمر عنده ${GUARDIAN_MIN_AGE} سنة أو أكتر. اكتب سنك بالأرقام.`
+        : `A family account is opened by a parent or guardian aged ${GUARDIAN_MIN_AGE} or over. Enter your age in numbers.`;
+    }
+    return '';
+  };
+
+  const rememberSignupChoice = () => {
+    try {
+      localStorage.setItem(SIGNUP_CHOICE_KEY, JSON.stringify({ accountType, guardianAge: accountType === 'family' ? parseAge(guardianAge) : null }));
+    } catch {}
+  };
+
   const handleGoogleSignIn = async () => {
     setError('');
+    if (view === 'signup') {
+      const gate = ageGateError();
+      if (gate) {
+        setError(gate);
+        return;
+      }
+      rememberSignupChoice();
+    }
     setIsSubmitting(true);
     const res = await signInWithGoogle();
     if (!res.success) {
@@ -69,6 +105,13 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
     e.preventDefault();
     setError('');
     setSuccess('');
+    if (view === 'signup') {
+      const gate = ageGateError();
+      if (gate) {
+        setError(gate);
+        return;
+      }
+    }
     setIsSubmitting(true);
 
     try {
@@ -95,8 +138,13 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
           );
         }
       } else if (view === 'signup') {
-        const { success, error: authError } = await signUp(email, password, name);
+        const { success, error: authError } = await signUp(email, password, name, {
+          accountType,
+          guardianAge: accountType === 'family' ? parseAge(guardianAge) ?? undefined : undefined,
+          confirmedAdult: accountType === 'self' ? confirmedAdult : undefined
+        });
         if (success) {
+          rememberSignupChoice();
           setSuccess(isAr ? 'تم إرسال رمز التحقق إلى بريدك الإلكتروني! تفقد صندوق الوارد.' : 'Verification email sent! Please check your inbox.');
           setView('verify');
         } else {
@@ -150,7 +198,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
     <AnimatePresence>
       {isOpen && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4"
           role="dialog"
           aria-modal="true"
           aria-labelledby="auth-modal-title"
@@ -163,13 +211,17 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
             onClick={onClose}
           />
           
+          {/* Phones: a bottom sheet that scrolls; tablets: a centred card; desktop sign-up: two panes. */}
           <motion.div 
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            initial={{ opacity: 0, scale: 0.97, y: 24 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            exit={{ opacity: 0, scale: 0.97, y: 24 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className={`glass-dialog rounded-3xl w-full ${view === 'verify' ? 'max-w-lg' : 'max-w-md'} overflow-hidden relative shadow-2xl`}
+            className={`glass-dialog rounded-t-[28px] sm:rounded-3xl w-full max-h-[94dvh] overflow-y-auto overscroll-contain relative shadow-2xl ${
+              view === 'verify' ? 'sm:max-w-lg' : view === 'signup' ? 'sm:max-w-md lg:max-w-4xl' : 'sm:max-w-md'
+            }`}
           >
+            <span className="sm:hidden mx-auto mt-2.5 block h-1.5 w-11 rounded-full bg-border" aria-hidden="true" />
             <button
               onClick={onClose}
               aria-label="Close dialog"
@@ -206,9 +258,41 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                 />
               </div>
             ) : (
-              <div className="p-7 sm:p-8">
-            <div className="text-center mb-8">
-              <BrandLogo variant="large" className="mx-auto mb-5" />
+              <div className={view === 'signup' ? 'lg:grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)]' : ''}>
+              {view === 'signup' && (
+                <aside
+                  className="hidden lg:flex flex-col justify-center gap-10 p-9 text-white bg-[linear-gradient(160deg,#0A8EA3_0%,#087D91_45%,#06505E_100%)] relative overflow-hidden"
+                  aria-hidden="true"
+                >
+                  <span className="absolute -top-24 -end-24 w-72 h-72 rounded-full bg-[#E5A93C]/15 blur-2xl" />
+                  <span className="absolute -bottom-28 -start-20 w-72 h-72 rounded-full bg-[#C51F24]/20 blur-2xl" />
+                  <div className="relative">
+                    <p className="font-display text-3xl leading-[1.8]" dir="rtl" lang="ar">﴿وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ﴾</p>
+                    <span className="mt-2 block h-[3px] w-16 rounded-full bg-[#E5A93C]" />
+                  </div>
+                  <div className="relative flex items-end gap-3">
+                    {['quran-reading', 'seerah', 'arabic-foundations'].map((id, i) => (
+                      <span key={id} className={i === 1 ? '-translate-y-4' : ''}>
+                        <SubjectMark subjectId={id} size={i === 1 ? 92 : 76} className="bg-white/10 ring-1 ring-white/20 shadow-[0_18px_30px_-16px_rgba(0,0,0,.6)]" />
+                      </span>
+                    ))}
+                  </div>
+                  <ul className="relative space-y-3 text-sm text-white/90">
+                    {(isAr
+                      ? ['حصص فردية مع معلم بيعرفك باسمك', 'حصة تجريبية مجانية قبل أي دفع', 'حساب عائلة لكل أولادك في مكان واحد']
+                      : ['One-to-one lessons with a teacher who knows you', 'A free trial before any payment', 'One family account for all your children']
+                    ).map((line) => (
+                      <li key={line} className="flex items-start gap-2.5">
+                        <span className="mt-0.5 grid place-items-center w-5 h-5 shrink-0 rounded-full bg-white/15"><Check className="w-3 h-3" /></span>
+                        <span>{line}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </aside>
+              )}
+              <div className="p-6 sm:p-8">
+            <div className={`text-center ${view === 'signup' ? 'mb-6' : 'mb-8'}`}>
+              <BrandLogo variant={view === 'signup' ? 'standard' : 'large'} className="mx-auto mb-4" />
               <h2 id="auth-modal-title" className="text-2xl sm:text-3xl font-display font-bold text-foreground">
                 {view === 'login' 
                   ? (isAr ? 'تسجيل دخول الطالب' : 'Student Login')
@@ -231,12 +315,42 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {view === 'signup' && (
+                <div role="radiogroup" aria-label={isAr ? 'نوع الحساب' : 'Account type'} className="grid grid-cols-2 gap-2.5">
+                  {([
+                    { id: 'self' as const, Icon: User, title: isAr ? 'حساب شخصي' : 'For myself', sub: isAr ? `${ADULT_MIN_AGE} سنة وأكبر` : `Aged ${ADULT_MIN_AGE}+` },
+                    { id: 'family' as const, Icon: Users, title: isAr ? 'حساب عائلة' : 'Family account', sub: isAr ? 'ولي أمر يسجّل أولاده' : 'A parent enrols children' }
+                  ]).map(({ id, Icon, title, sub }) => {
+                    const selected = accountType === id;
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        role="radio"
+                        aria-checked={selected}
+                        onClick={() => { setAccountType(id); setError(''); }}
+                        className={`relative flex flex-col items-center gap-1 rounded-2xl border-2 px-3 py-3.5 text-center transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/40 ${
+                          selected ? 'border-[#087D91] bg-[#087D91]/8 text-foreground' : 'border-border/70 glass-surface text-muted-foreground hover:border-[#087D91]/40'
+                        }`}
+                      >
+                        <span className={`grid place-items-center w-9 h-9 rounded-full ${selected ? 'bg-[#087D91] text-white' : 'bg-surface-subtle text-[#087D91] dark:text-teal-300'}`}>
+                          <Icon className="w-4.5 h-4.5" aria-hidden="true" />
+                        </span>
+                        <span className="text-sm font-bold text-foreground">{title}</span>
+                        <span className="text-[11px] leading-tight">{sub}</span>
+                        {selected && <Check className="absolute top-2 end-2 w-3.5 h-3.5 text-[#087D91]" aria-hidden="true" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              {view === 'signup' && (
                 <div>
                   <label className="block text-sm font-semibold text-foreground mb-1.5">
-                    {isAr ? 'الاسم الكامل' : 'Full Name'}
+                    {accountType === 'family' ? (isAr ? 'اسم ولي الأمر' : 'Parent / guardian name') : (isAr ? 'الاسم الكامل' : 'Full Name')}
                   </label>
                   <div className="relative">
-                    <User className="absolute start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-teal-600 dark:text-teal-400" />
+                    <User className="absolute z-10 pointer-events-none start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-teal-600 dark:text-teal-400" />
                     <input
                       type="text"
                       required
@@ -255,7 +369,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                     {isAr ? 'البريد الإلكتروني' : 'Email Address'}
                   </label>
                   <div className="relative">
-                    <Mail className="absolute start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-teal-600 dark:text-teal-400" />
+                    <Mail className="absolute z-10 pointer-events-none start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-teal-600 dark:text-teal-400" />
                     <input
                       type="email"
                       required
@@ -277,7 +391,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                       : (isAr ? 'كلمة المرور' : 'Password')}
                   </label>
                   <div className="relative">
-                    <Lock className="absolute start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-teal-600 dark:text-teal-400" />
+                    <Lock className="absolute z-10 pointer-events-none start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-teal-600 dark:text-teal-400" />
                     <input
                       type={showPassword ? 'text' : 'password'}
                       required
@@ -314,8 +428,57 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                 </div>
               )}
 
+              {view === 'signup' && (accountType === 'self' ? (
+                <label className="flex items-start gap-3 p-3 rounded-xl border border-border/70 glass-surface cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={confirmedAdult}
+                    onChange={(e) => { setConfirmedAdult(e.target.checked); setError(''); }}
+                    className="mt-0.5 w-4.5 h-4.5 shrink-0 accent-[#087D91] cursor-pointer"
+                  />
+                  <span className="text-sm text-foreground leading-relaxed">
+                    {isAr ? `أؤكد إن سني ${ADULT_MIN_AGE} سنة أو أكتر.` : `I confirm I am ${ADULT_MIN_AGE} or older.`}
+                    <span className="block text-xs text-muted-foreground mt-0.5">
+                      {isAr ? 'أقل من كده؟ ولي أمرك يفتح "حساب عائلة" ويسجّلك.' : 'Younger? A parent opens a family account for you.'}
+                    </span>
+                  </span>
+                </label>
+              ) : (
+                <div>
+                  <label htmlFor="signup-guardian-age" className="block text-sm font-semibold text-foreground mb-1.5">
+                    {isAr ? 'سنك (ولي الأمر)' : 'Your age (parent / guardian)'}
+                  </label>
+                  <div className="relative">
+                    <ShieldCheck className="absolute z-10 pointer-events-none start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-teal-600 dark:text-teal-400" aria-hidden="true" />
+                    <input
+                      id="signup-guardian-age"
+                      type="number"
+                      inputMode="numeric"
+                      min={GUARDIAN_MIN_AGE}
+                      max={MAX_AGE}
+                      value={guardianAge}
+                      onChange={(e) => { setGuardianAge(e.target.value); setError(''); }}
+                      aria-invalid={parseAge(guardianAge) !== null && Number(guardianAge) < GUARDIAN_MIN_AGE}
+                      aria-describedby="signup-guardian-age-hint"
+                      className="w-full ps-10 pe-4 py-2.5 rounded-xl border border-border glass-surface focus:glass-card focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none text-foreground text-sm transition-all"
+                      placeholder={isAr ? 'مثال: 38' : 'e.g. 38'}
+                    />
+                  </div>
+                  {(() => {
+                    const tooYoung = parseAge(guardianAge) !== null && Number(guardianAge) < GUARDIAN_MIN_AGE;
+                    return (
+                      <p id="signup-guardian-age-hint" aria-live="polite" className={`mt-1.5 text-xs ${tooYoung ? 'text-destructive font-semibold' : 'text-muted-foreground'}`}>
+                        {tooYoung
+                          ? (isAr ? `لازم ولي الأمر يكون ${GUARDIAN_MIN_AGE} سنة أو أكتر عشان يفتح حساب عائلة.` : `A guardian must be ${GUARDIAN_MIN_AGE} or over to open a family account.`)
+                          : (isAr ? `ولي الأمر ${GUARDIAN_MIN_AGE} سنة أو أكتر.` : `Guardians must be ${GUARDIAN_MIN_AGE} or over.`)}
+                      </p>
+                    );
+                  })()}
+                </div>
+              ))}
+
               {error && (
-                <div className="p-3 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-xl">
+                <div role="alert" className="p-3 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-xl">
                   {error}
                 </div>
               )}
@@ -412,6 +575,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                 </p>
               )}
             </div>
+          </div>
           </div>
             )}
       </motion.div>

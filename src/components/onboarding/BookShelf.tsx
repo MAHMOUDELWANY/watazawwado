@@ -1,15 +1,17 @@
 import React from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { SUBJECT_FAMILIES, findSubject, subjectTagline } from './subjects';
+import { SubjectMark } from './SubjectMark';
 
 /**
  * "Choose your provision": the 13 subjects are books on three shelves (Quran, Islamic studies,
- * languages), each family bound in one brand colour with the subject's Arabic letter on the spine.
+ * languages), each family bound in one brand colour with the subject's animated emblem (the same
+ * hand-drawn SVGs as the Subjects page) on the spine.
  * The chosen book slides up out of the shelf with a ribbon, and its description opens below.
  * Keyboard: radio group with arrow keys.
  */
 
-const HEIGHTS = [168, 184, 160, 176, 170];
+const HEIGHTS = [180, 196, 172, 188, 182];
 
 export function BookShelf({ value, onChange, isAr, name }: { value: string; onChange: (id: string) => void; isAr: boolean; name: string }) {
   const reduce = useReducedMotion();
@@ -29,7 +31,7 @@ export function BookShelf({ value, onChange, isAr, name }: { value: string; onCh
             <p className="mb-2 text-sm font-bold" style={{ color: family.color }}>
               <span className="dark:brightness-150">{isAr ? family.ar : family.en}</span>
             </p>
-            <div className="flex items-end justify-center gap-1 sm:gap-2.5 px-1 h-[204px]">
+            <div className="flex items-end justify-center gap-1 sm:gap-2.5 px-1 h-[218px]">
               {family.subjects.map((s, i) => {
                 const selected = value === s.id;
                 return (
@@ -63,11 +65,13 @@ export function BookShelf({ value, onChange, isAr, name }: { value: string; onCh
                   >
                     <span className="absolute inset-x-0 top-3 h-[3px] bg-[#D8C6AE]/80" aria-hidden="true" />
                     <span className="absolute inset-x-0 bottom-3 h-[3px] bg-[#D8C6AE]/80" aria-hidden="true" />
-                    <span className="absolute inset-x-0 top-6 flex justify-center" aria-hidden="true">
-                      <span className="grid place-items-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/15 font-display text-xl sm:text-2xl leading-none">{s.glyph}</span>
+                    <span className="absolute inset-x-0 top-5 flex justify-center" aria-hidden="true">
+                      <span className={`block w-11 h-11 sm:w-[60px] sm:h-[60px] transition-transform duration-300 ${selected ? 'scale-110' : ''}`}>
+                        <SubjectMark subjectId={s.id} size={60} rounded="rounded-full" className="!w-full !h-full bg-white/10" />
+                      </span>
                     </span>
                     <span
-                      className="absolute left-1/2 top-[68px] sm:top-[74px] -translate-x-1/2 text-[12px] sm:text-[13px] font-semibold leading-tight whitespace-nowrap overflow-hidden max-h-[calc(100%-92px)]"
+                      className="absolute left-1/2 top-[70px] sm:top-[86px] -translate-x-1/2 text-[12px] sm:text-[13px] font-semibold leading-tight whitespace-nowrap overflow-hidden max-h-[calc(100%-94px)] sm:max-h-[calc(100%-110px)]"
                       style={{ writingMode: 'vertical-rl' }}
                       aria-hidden="true"
                     >
@@ -106,9 +110,7 @@ export function BookShelf({ value, onChange, isAr, name }: { value: string; onCh
             style={{ borderColor: `${chosen.family.color}55`, background: `${chosen.family.color}0F` }}
             aria-live="polite"
           >
-            <span className="grid place-items-center shrink-0 w-14 h-14 rounded-2xl text-white font-display text-3xl" style={{ background: chosen.family.color }} aria-hidden="true">
-              {chosen.subject.glyph}
-            </span>
+            <SubjectMark subjectId={chosen.subject.id} color={chosen.family.color} size={64} />
             <div className="min-w-0">
               <p className="font-display text-lg font-bold text-foreground">{isAr ? chosen.subject.ar : chosen.subject.en}</p>
               <p className="text-sm text-muted-foreground leading-relaxed mt-0.5">{subjectTagline(chosen.subject.id, isAr)}</p>

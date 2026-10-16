@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { User, Users, Check } from 'lucide-react';
+import { SubjectMark } from './SubjectMark';
 
 /**
  * Step one of the onboarding journey as a traveller's ticket: choose how you travel (alone or as a
@@ -144,8 +145,8 @@ export function TeacherAvatar({ name, photo, color, size = 44 }: { name: string;
  * A finished child's ticket, folded into a compact boarding pass so long families stay short:
  * seal with the initial, name, then age, subject, level and guide, and an edit tear-off.
  */
-export function FoldedPass({ name, age, subjectGlyph, subjectName, subjectColor, levelName, guideName, guidePhoto, guideColor, onEdit, onRemove, isAr }: {
-  name: string; age: string; subjectGlyph: string; subjectName: string; subjectColor: string; levelName: string;
+export function FoldedPass({ name, age, subjectId, subjectName, subjectColor, levelName, guideName, guidePhoto, guideColor, onEdit, onRemove, isAr }: {
+  name: string; age: string; subjectId: string; subjectName: string; subjectColor: string; levelName: string;
   guideName: string; guidePhoto?: string | null; guideColor: string; onEdit: () => void; onRemove?: () => void; isAr: boolean;
 }) {
   const reduce = useReducedMotion();
@@ -166,7 +167,7 @@ export function FoldedPass({ name, age, subjectGlyph, subjectName, subjectColor,
           <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-[#6B5E55] dark:text-[#C9BFB3]">
             <span>{isAr ? `${age} سنة` : `Age ${age}`}</span>
             <span className="inline-flex items-center gap-1">
-              <span className="grid place-items-center w-5 h-5 rounded-md text-white font-display text-[11px]" style={{ background: subjectColor }} aria-hidden="true">{subjectGlyph}</span>
+              <SubjectMark subjectId={subjectId} color={subjectColor} size={22} rounded="rounded-md" />
               {subjectName}
             </span>
             <span>{levelName}</span>
@@ -194,9 +195,13 @@ export function FoldedPass({ name, age, subjectGlyph, subjectName, subjectColor,
   );
 }
 
+/** Brand colour of a teacher card: teal for men, copper for women (by position when unknown). */
+export const teacherColor = (gender: 'male' | 'female' | undefined, index = 0) =>
+  gender === 'female' ? '#8B4935' : gender === 'male' ? '#087D91' : index % 2 ? '#8B4935' : '#087D91';
+
 /** "Your guide on the journey": the teacher choice, with a photo (or initial) per teacher. */
 export function GuideChoice({ teachers, value, onChange, isAr }: {
-  teachers: { id: string; nameAr: string; nameEn: string; photo?: string | null }[];
+  teachers: { id: string; nameAr: string; nameEn: string; gender?: 'male' | 'female'; photo?: string | null }[];
   value: string;
   onChange: (id: string) => void;
   isAr: boolean;
@@ -206,7 +211,7 @@ export function GuideChoice({ teachers, value, onChange, isAr }: {
       {teachers.map((t, i) => {
         const selected = value === t.id;
         const name = isAr ? t.nameAr : t.nameEn;
-        const color = i === 0 ? '#087D91' : '#8B4935';
+        const color = teacherColor(t.gender, i);
         return (
           <button
             key={t.id}

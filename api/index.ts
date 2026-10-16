@@ -64,7 +64,9 @@ import {
   type IntakeTurnMessage
 } from '../server/intake/intakeService.js';
 import { createIntakeToken, readIntakeToken } from '../server/intake/intakeToken.js';
-import { registerCommunityRoutes } from '../server/routes/community.js';
+import { registerCommunityRoutes, ensureTeacherThreads } from '../server/routes/community.js';
+import { announceNewStudent, type NewLearner } from '../server/onboarding/newStudent.js';
+import { isAdultAge, isGuardianAge, isChildAge, parseAge, ADULT_MIN_AGE, GUARDIAN_MIN_AGE, CHILD_MIN_AGE, CHILD_MAX_AGE } from '../src/lib/ageRules.js';
 import { notifyUser, notifySuperAdmins, resolveLearnerAccount } from '../server/notifications/inbox.js';
 import {
   validateIntakeOutput
@@ -1951,6 +1953,53 @@ export async function resolveSmartTeacherRouting(
   }
 }
 
+export type PublicTeacher = { id: string; email: string; nameEn: string; nameAr: string; gender: 'male' | 'female'; photo: string | null };
+
+/**
+ * Teachers a new student can choose at onboarding: every active account with the 'teacher' role
+ * (the super admin only when no teacher exists yet). id is the auth user id stored in
+ * students.assigned_teacher_id. email stays on the server (never sent to the browser).
+ */
+export async function listPublicTeachers(supabaseAdmin: any): Promise<PublicTeacher[]> {
+  if (!supabaseAdmin) return [];
+  const { data: accounts, error } = await supabaseAdmin
+    .from('teacher_accounts')
+    .select('*')
+    .eq('is_active', true)
+    .order('created_at', { ascending: true });
+  if (error || !accounts?.length) return [];
+  const teachers = accounts.filter((a: any) => a.role === 'teacher');
+  const pool = teachers.length ? teachers : accounts.filter((a: any) => a.role === 'super_admin');
+  const emails = pool.map((a: any) => String(a.email || '').toLowerCase().trim()).filter(Boolean);
+  const idByEmail = new Map<string, string>();
+  const { data: profiles } = await supabaseAdmin.from('profiles').select('id, email').in('email', emails);
+  (profiles || []).forEach((p: any) => p.email && idByEmail.set(String(p.email).toLowerCase().trim(), p.id));
+  if (emails.some((e: string) => !idByEmail.has(e))) {
+    try {
+      (await listAllAuthUsers(supabaseAdmin)).forEach((u: any) => {
+        const e = String(u.email || '').toLowerCase().trim();
+        if (emails.includes(e) && !idByEmail.has(e)) idByEmail.set(e, u.id);
+      });
+    } catch {}
+  }
+  return pool
+    .map((a: any) => {
+      const email = String(a.email || '').toLowerCase().trim();
+      const gender: 'male' | 'female' = a.gender === 'female' ? 'female' : 'male';
+      // "Ustadh Mahmoud (Super Admin)" -> "Ustadh Mahmoud"
+      const nameEn = String(a.display_name || '').replace(/\s*\(.*\)\s*$/, '').trim() || (gender === 'female' ? 'Ustadha' : 'Ustadh');
+      return {
+        id: idByEmail.get(email) || '',
+        email,
+        nameEn,
+        nameAr: String(a.display_name_ar || '').trim() || nameEn,
+        gender,
+        photo: typeof a.photo_url === 'string' && /^(\/|https:\/\/)/.test(a.photo_url) ? a.photo_url : null
+      };
+    })
+    .filter((t: PublicTeacher) => t.id);
+}
+
 // Middleware: Strict Super Admin Authorization
 export const requireSuperAdmin = (req: any, res: any, next: any) => {
   const role = req.teacherUser?.appRole || req.teacherUser?.role;
@@ -3216,6 +3265,24 @@ app.patch('/api/dashboard/admin/students/:id/assign-teacher', verifyTeacherAuth,
     if (updateErr) {
       console.error('[Assign Teacher Error]', updateErr);
       return res.status(500).json({ error: clientErrorMessage(updateErr, 'Failed to update student teacher assignment.') });
+    }
+
+    // The new teacher gets an on-site notice, and the account gets a chat with them.
+    if (targetTeacher?.id) {
+      waitUntil((async () => {
+        try {
+          const account = await resolveLearnerAccount(supabase, id);
+          if (account.userId) await ensureTeacherThreads(supabase, account.userId, [targetTeacher.id]);
+          await notifyUser(supabase, { userId: targetTeacher.id, staff: true }, {
+            kind: 'student_assigned',
+            title: { en: 'A student was assigned to you', ar: 'اتعيّن ليك طالب' },
+            body: { en: `${student.name} is now your student. The chat with them is open.`, ar: `${student.name} بقى من طلابك. المحادثة معاه مفتوحة.` },
+            link: '/dashboard/students'
+          });
+        } catch (err) {
+          console.warn('[Assign Teacher] notice failed', err);
+        }
+      })());
     }
 
     // Lessons already booked stay with the teacher they were booked with; new bookings use the new teacher.
@@ -7440,6 +7507,24 @@ app.get('/api/student-auth-diagnostic', verifyStudentAuth, (req: any, res: any) 
   });
 });
 
+// GET /api/student/teachers - Teachers a student can choose at onboarding (no emails).
+app.get('/api/student/teachers', verifyStudentAuth, async (_req: any, res: any) => {
+  try {
+    const teachers = await listPublicTeachers(getSupabaseAdminClient());
+    res.json({ teachers: teachers.map(({ email: _email, ...t }) => t) });
+  } catch (err) {
+    console.error('[GET /api/student/teachers Error]', err);
+    res.json({ teachers: [] });
+  }
+});
+
+// GET /api/geo - Country of the visitor from the hosting edge (used only to pre-fill onboarding).
+app.get('/api/geo', (req: any, res: any) => {
+  const raw = String(req.headers['x-vercel-ip-country'] || '').trim().toUpperCase();
+  res.setHeader('Cache-Control', 'private, no-store');
+  res.json({ country: /^[A-Z]{2}$/.test(raw) ? raw : null });
+});
+
 // POST /api/student/onboarding - Complete onboarding for new student
 app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any) => {
   try {
@@ -7469,20 +7554,32 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
       teacherGenderPreference,
       teacher_gender_preference,
       children,
-      age
+      age,
+      guardianAge,
+      teacherId
     } = req.body || {};
 
     if (!name || typeof name !== 'string' || name.trim().length < 2) {
       return res.status(422).json({ error: 'Please provide a valid name (at least 2 characters).' });
     }
-    // Exact age is required for every learner (owner decision 2026-10-16).
-    const validAge = (v: any) => Number.isInteger(Number(v)) && Number(v) >= 3 && Number(v) <= 100;
+    // Exact ages (owner decisions 2026-10-16): a personal account is 18+, a family account is
+    // opened by a guardian aged 18+, and each child is 6-17 (src/lib/ageRules.ts).
     if (learnerType === 'child') {
-      if (Array.isArray(children) && children.some((c: any) => c?.name && !validAge(c?.age))) {
-        return res.status(422).json({ error: "Please enter each child's age." });
+      if (!isGuardianAge(guardianAge)) {
+        return res.status(422).json({ error: `A family account is opened by a parent or guardian aged ${GUARDIAN_MIN_AGE} or over.` });
       }
-    } else if (!validAge(age)) {
-      return res.status(422).json({ error: 'Please enter your age.' });
+      const namedChildren = Array.isArray(children) ? children.filter((c: any) => typeof c?.name === 'string' && c.name.trim()) : [];
+      if (!namedChildren.length) {
+        return res.status(422).json({ error: 'Please add at least one child.' });
+      }
+      if (namedChildren.length > 10) {
+        return res.status(422).json({ error: 'A family account can have up to 10 children.' });
+      }
+      if (namedChildren.some((c: any) => !isChildAge(c?.age))) {
+        return res.status(422).json({ error: `Each child must be ${CHILD_MIN_AGE} to ${CHILD_MAX_AGE} years old. Learners aged ${ADULT_MIN_AGE} or over open their own account.` });
+      }
+    } else if (!isAdultAge(age)) {
+      return res.status(422).json({ error: `A personal account is for learners aged ${ADULT_MIN_AGE} or over. Under ${ADULT_MIN_AGE}? A parent opens a family account.` });
     }
 
     const validLevels = ['beginner', 'elementary', 'intermediate', 'advanced'];
@@ -7502,9 +7599,16 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
     const isProd = process.env.NODE_ENV === 'production';
     const supabaseAdmin = getSupabaseAdminClient();
 
-    // Smart Routing: Priority to explicit teacherGenderPreference, fallback to learner gender
-    const routingTargetGender = resolvedTeacherPref === 'female_teacher' ? 'female' : (resolvedTeacherPref === 'male_teacher' ? 'male' : (resolvedGender === 'female' ? 'female' : 'male'));
-    const routedTeacher = await resolveSmartTeacherRouting(routingTargetGender, supabaseAdmin);
+    // Routing: the teacher the learner picked (must be an active teacher), else by preferred gender.
+    const publicTeachers = await listPublicTeachers(supabaseAdmin);
+    const pickTeacher = (id: unknown) => (typeof id === 'string' ? publicTeachers.find(t => t.id === id) : undefined) || null;
+    const routeTeacher = async (chosenId: unknown, targetGender: 'male' | 'female') => {
+      const chosen = pickTeacher(chosenId) || publicTeachers.find(t => t.gender === targetGender);
+      return chosen ? { id: chosen.id, name: chosen.nameEn, email: chosen.email } : resolveSmartTeacherRouting(targetGender, supabaseAdmin);
+    };
+    const chosenAdultTeacher = pickTeacher(teacherId);
+    const routingTargetGender = chosenAdultTeacher?.gender || (resolvedTeacherPref === 'female_teacher' ? 'female' : (resolvedTeacherPref === 'male_teacher' ? 'male' : (resolvedGender === 'female' ? 'female' : 'male')));
+    const routedTeacher = await routeTeacher(teacherId, routingTargetGender);
 
     if (!supabaseAdmin || (!isProd && req.studentUser?.studentProfile)) {
       if (req.studentUser?.studentProfile) {
@@ -7583,6 +7687,8 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
     };
     if (resolvedLearnerType === 'child') {
       studentUpdate.booking_preference = 'child';
+      // The parent row is not a learner: its age is the guardian's (checked 18+ above).
+      studentUpdate.age = parseAge(guardianAge);
     } else {
       studentUpdate.age = Number(age);
     }
@@ -7614,6 +7720,9 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
     const effectiveParentPhone = parentWhatsapp ? String(parentWhatsapp).trim() : (whatsapp ? String(whatsapp).trim() : null);
     const parentEmail = (updatedStudent?.email || req.studentUser?.email || '').toLowerCase().trim();
 
+    // Learners to announce to their teachers (first onboarding only, below).
+    const newLearners: NewLearner[] = [];
+
     if (resolvedLearnerType === 'child') {
       if (Array.isArray(children) && children.length > 0) {
         for (const child of children) {
@@ -7624,8 +7733,8 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
           const childTeacherPref = child.teacherGenderPreference === 'female_teacher'
             ? 'female_teacher'
             : (child.teacherGenderPreference === 'male_teacher' ? 'male_teacher' : 'no_preference');
-          const childTargetGender = childTeacherPref === 'female_teacher' ? 'female' : (childTeacherPref === 'male_teacher' ? 'male' : (childGender === 'female' ? 'female' : 'male'));
-          const childRoutedTeacher = await resolveSmartTeacherRouting(childTargetGender, supabaseAdmin);
+          const childTargetGender = pickTeacher(child.teacherId)?.gender || (childTeacherPref === 'female_teacher' ? 'female' : (childTeacherPref === 'male_teacher' ? 'male' : (childGender === 'female' ? 'female' : 'male')));
+          const childRoutedTeacher = await routeTeacher(child.teacherId, childTargetGender);
 
           // A client-supplied child id is only honored if this parent is already its guardian;
           // otherwise any student could attach themselves to someone else's child.
@@ -7668,6 +7777,15 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
               return res.status(500).json({ error: `We could not save ${childName}'s profile. Please try again.` });
             }
             childStudentId = newChild.id;
+            newLearners.push({
+              name: childName,
+              age: parseAge(child.age),
+              gender: childGender,
+              subject: child.learningInterest ? String(child.learningInterest).trim() : 'quran-reading',
+              level: child.currentLevel || 'beginner',
+              notes: child.notes ? String(child.notes).trim().slice(0, 500) : null,
+              teacherId: childRoutedTeacher.id
+            });
           }
 
           if (childStudentId && parentEmail) {
@@ -7758,6 +7876,39 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
     if (updatedStudent.assigned_teacher_id) {
       const teacherMeta = await resolveTeacherMetadata(updatedStudent.assigned_teacher_id, supabaseAdmin);
       assignedTeacherName = teacherMeta ? teacherMeta.display_name : null;
+    }
+
+    // New student: their teacher(s) get an email and an on-site notice with the onboarding details,
+    // a lesson chat opens with each teacher, and the super admin is told (owner decision 2026-10-16).
+    if (!req.studentUser?.studentProfile?.onboarding_completed) {
+      if (resolvedLearnerType === 'adult') {
+        newLearners.push({
+          name: String(updatedStudent.name || name).trim(),
+          age: parseAge(age),
+          gender: resolvedGender,
+          subject: updatedStudent.learning_interest || null,
+          level: resolvedLevel,
+          goal: updatedStudent.learning_goal || null,
+          notes: updatedStudent.learning_needs || null,
+          teacherId: updatedStudent.assigned_teacher_id || null
+        });
+      }
+      const teacherContacts = publicTeachers.length ? publicTeachers : await listPublicTeachers(supabaseAdmin);
+      waitUntil(announceNewStudent(
+        supabaseAdmin,
+        {
+          ownerUserId: req.studentUser?.auth_id || null,
+          name: String(updatedStudent.name || name).trim(),
+          email: parentEmail || null,
+          whatsapp: updatedStudent.whatsapp || null,
+          country: updatedStudent.country || null,
+          timezone: updatedStudent.timezone || null,
+          isFamily: resolvedLearnerType === 'child',
+          guardianAge: resolvedLearnerType === 'child' ? parseAge(guardianAge) : null
+        },
+        newLearners,
+        teacherContacts.map(t => ({ id: t.id, email: t.email, name: t.nameEn }))
+      ));
     }
 
     // Welcome email, only the first time onboarding is completed (owner request 2026-10-16).
