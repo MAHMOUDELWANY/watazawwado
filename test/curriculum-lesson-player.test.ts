@@ -2,6 +2,9 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { SUBJECTS, findLesson } from '../src/curriculum/catalog';
 import { scoreSort } from '../src/curriculum/LessonPlayer';
+import { SlideText } from '../src/curriculum/slides/Slide';
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import type { Interaction } from '../src/curriculum/types';
 
 const lessons = SUBJECTS.flatMap((s) => Object.values(s.lessons));
@@ -68,5 +71,24 @@ describe('Arabic teacher notes', () => {
     for (const lesson of lessons) {
       if (lesson.teacherAr) assert.equal(lesson.teacherAr.length, lesson.pages.length, `${lesson.subject} ${lesson.number}`);
     }
+  });
+});
+
+describe('Reading-size slide text (phones)', () => {
+  const lesson = lessons.find((l) => l.subject === 'zad-kids' && l.number === 1)!;
+  const text = (pageIndex: number, step: number) => renderToStaticMarkup(createElement(SlideText, { page: lesson.pages[pageIndex], step }));
+
+  it('keeps the reveal page empty until the veil parts, so the guess is not spoiled', () => {
+    const reveal = lesson.pages.findIndex((p) => p.scene === 'reveal' && p.layout === 'evidence');
+    assert.equal(text(reveal, 0), '');
+    assert.match(text(reveal, 1), /It was Jibril!/);
+  });
+
+  it('never shows more than the build step has revealed', () => {
+    const pillars = lesson.pages.findIndex((p) => p.scene === 'pillars' && p.items);
+    const [first, second] = lesson.pages[pillars].items!;
+    // Steps on that page: the line, the question (asked first), then one pillar each.
+    assert.ok(!text(pillars, 2).includes(first));
+    assert.ok(text(pillars, 3).includes(first) && !text(pillars, 3).includes(second));
   });
 });

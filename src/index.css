@@ -493,6 +493,8 @@ body {
 [dir="rtl"] .font-editorial, [dir="rtl"] .font-serif { font-family: 'Thmanyah Sans', 'IBM Plex Sans Arabic', sans-serif !important; }
 /* English islands inside an Arabic page (the curriculum slide) keep their serif, so the slide looks the same in both UI languages. */
 [dir="rtl"] [dir="ltr"][lang="en"] .font-editorial, [dir="rtl"] [dir="ltr"][lang="en"] .font-serif { font-family: var(--font-serif) !important; }
+/* ...and their headings keep the slide's own line height, not the looser Arabic one below (titles overflowed their column). */
+[dir="rtl"] [dir="ltr"][lang="en"] :is(h1, h2, h3, h4) { line-height: var(--tw-leading, 1.2); }
 
 /* Small Arabic Text Legibility Overhaul (Clean, sharp Thmanyah Sans rendering) */
 [dir="rtl"] .text-caption,

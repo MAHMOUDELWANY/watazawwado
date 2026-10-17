@@ -40,11 +40,13 @@ export function PillarsBuild({ labels, label }: { labels: (string | null)[]; lab
   const reduce = useReducedMotion();
   const standing = labels.filter(Boolean).length;
   const done = standing === COLUMNS.length;
+  const newest = standing - 1;
   return (
     <div className="absolute left-[690px] top-[96px] h-[720px] w-[720px]" role="img" aria-label={`${label}: ${standing} of 5 pillars standing`}>
       <Plate className="inset-0">
-        {/* The whole house as a pencil sketch: it waits for its pillars. */}
-        <Layer name="pillars" filter="grayscale(1) brightness(1.06)" style={{ opacity: 0.38 }} />
+        {/* The roof and the base as a pencil sketch, with nothing between them: the house waits for its pillars. */}
+        <Layer name="pillars" filter="grayscale(1) brightness(1.06)" style={{ opacity: 0.38, clipPath: `inset(0 0 ${100 - SHAFT_TOP}% 0)` }} />
+        <Layer name="pillars" filter="grayscale(1) brightness(1.06)" style={{ opacity: 0.38, clipPath: `inset(${SHAFT_BOTTOM}% 0 0 0)` }} />
         {/* The house in colour, once everything stands. */}
         <Layer
           name="pillars"
@@ -117,7 +119,7 @@ export function PillarsBuild({ labels, label }: { labels: (string | null)[]; lab
                   transition={{ duration: 1.1, delay: 0.45, ease: [0.77, 0, 0.175, 1] }}
                 />
               </span>
-              {[-1, -0.6, -0.25, 0.25, 0.6, 1].map((d, k) => (
+              {[-1, -0.4, 0.4, 1].map((d, k) => (
                 <motion.span
                   key={k}
                   className="pointer-events-none absolute h-[7px] w-[7px] rounded-full"
@@ -143,11 +145,13 @@ export function PillarsBuild({ labels, label }: { labels: (string | null)[]; lab
             >
               {i + 1}
             </motion.span>
+            {/* The pillar just raised wears a dark tag until the next one comes, so the child's eye knows where to look. */}
             <motion.span
-              className="pointer-events-none absolute -translate-x-1/2 whitespace-nowrap rounded-full px-3 py-1 font-sans text-[20px] font-bold shadow-[0_8px_18px_-10px_rgba(30,20,16,0.7)]"
-              style={{ left: `${(l + r) / 2}%`, top: '77%', background: '#FFFDF7', color: P.ink }}
-              initial={{ opacity: 0, transform: 'translateY(10px)' }} animate={{ opacity: 1, transform: 'translateY(0px)' }}
-              transition={{ duration: reduce ? 0.2 : 0.45, delay: reduce ? 0 : 0.85, ease: out }}
+              className="pointer-events-none absolute -translate-x-1/2 whitespace-nowrap rounded-full px-3 py-1 font-sans text-[23px] font-bold shadow-[0_8px_18px_-10px_rgba(30,20,16,0.7)]"
+              style={{ left: `${(l + r) / 2}%`, top: '76.5%' }}
+              initial={{ opacity: 0, transform: 'translateY(10px)', background: P.ink, color: '#FFF3D6' }}
+              animate={{ opacity: 1, transform: 'translateY(0px)', background: i === newest && !done ? P.ink : '#FFFDF7', color: i === newest && !done ? '#FFF3D6' : P.ink }}
+              transition={{ duration: reduce ? 0.2 : 0.45, delay: reduce ? 0 : i === newest ? 0.85 : 0, ease: out }}
             >
               {labels[i]}
             </motion.span>
@@ -166,8 +170,8 @@ export function PillarsBuild({ labels, label }: { labels: (string | null)[]; lab
             transition={{ duration: 0.3 }}
           />
         ))}
-        <span className="ms-2 font-sans text-[20px] font-bold tabular-nums" style={{ color: done ? P.teal : P.inkSoft }}>
-          {done ? 'The house stands' : `${standing} of 5`}
+        <span className="ms-2 font-sans text-[22px] font-bold tabular-nums" style={{ color: done ? P.teal : P.inkSoft }} aria-live="polite">
+          {done ? 'Five pillars: the house stands' : standing ? `Pillar ${standing} of 5: ${labels[newest]}` : '0 of 5 pillars'}
         </span>
       </div>
     </div>
@@ -194,13 +198,16 @@ const SOIL: React.CSSProperties = {
   maskImage: `linear-gradient(180deg, transparent ${SOIL_TOP}%, #000 ${SOIL_TOP + 1.5}%)`,
 };
 
-/** The tree is always in view (what people see). Underground stays dark until each part of Iman lights a root. */
+/** The tree is always in view (what people see); a pencil ground line and two brackets name the halves from the start.
+ *  Underground stays dark until each part of Iman lights its root: a line of light runs from the trunk to the tip and
+ *  stays, so every belief is visibly joined to the tree. At six the soil lifts and the light rises into the tree. */
 export function RootsGrow({ labels, label }: { labels: (string | null)[]; label: string }) {
   const reduce = useReducedMotion();
   const lit = labels.filter(Boolean).length;
   const done = lit === ROOT_TIPS.length;
+  const newest = lit - 1;
   return (
-    <div className="absolute left-[690px] top-[96px] h-[720px] w-[720px]" role="img" aria-label={`${label}: ${lit} of 6 roots lit`}>
+    <div className="absolute left-[690px] top-[64px] h-[720px] w-[720px]" role="img" aria-label={`${label}: ${lit} of 6 roots lit`}>
       <Plate className="inset-0">
         <Layer name="roots" />
         {/* Underground in shadow: you cannot see what the heart believes. */}
@@ -212,14 +219,16 @@ export function RootsGrow({ labels, label }: { labels: (string | null)[]; label:
           animate={{ opacity: done ? 0.15 : 1 }}
           transition={{ duration: 1.2, delay: done && !reduce ? 1.2 : 0, ease: out }}
         />
+        {/* Each lit root: the painting shows through a soft-edged window around the tip. */}
         {ROOT_TIPS.map((t, i) =>
           labels[i] ? (
             <Layer
               key={i}
               name="roots"
-              initial={reduce ? { opacity: 0, clipPath: `circle(${t.r}% at ${t.x}% ${t.y}%)` } : { clipPath: `circle(0% at ${t.x}% ${t.y}%)` }}
-              animate={{ opacity: 1, clipPath: `circle(${t.r}% at ${t.x}% ${t.y}%)` }}
-              transition={{ duration: reduce ? 0.3 : 1.1, delay: reduce ? 0 : 0.55, ease: out }}
+              style={{ WebkitMaskImage: `radial-gradient(circle ${t.r * 7.2}px at ${t.x}% ${t.y}%, #000 35%, transparent 100%)`, maskImage: `radial-gradient(circle ${t.r * 7.2}px at ${t.x}% ${t.y}%, #000 35%, transparent 100%)` }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: reduce ? 0.3 : 0.9, delay: reduce ? 0 : 0.5, ease: out }}
             />
           ) : null,
         )}
@@ -235,42 +244,59 @@ export function RootsGrow({ labels, label }: { labels: (string | null)[]; label:
         )}
       </Plate>
 
-      {/* The light travelling down from the trunk to each root tip. */}
       <svg className="pointer-events-none absolute inset-0 h-full w-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        {/* The ground line: above it is what people see, below it what the heart holds. */}
+        <motion.path
+          d={`M3 ${SOIL_TOP} L97 ${SOIL_TOP}`} fill="none" stroke={P.copper} strokeOpacity={0.7} strokeWidth={2.5} strokeDasharray="9 9" vectorEffect="non-scaling-stroke"
+          initial={{ pathLength: reduce ? 1 : 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.9, ease: out }}
+        />
+        {/* A root of light from the trunk to each belief; it stays, so the tree is visibly joined to all of them. */}
         {ROOT_TIPS.map((t, i) =>
-          labels[i] && !reduce ? (
+          labels[i] ? (
             <motion.path
               key={i}
               d={`M${TRUNK.x} ${TRUNK.y} Q ${(TRUNK.x + t.x) / 2 + (t.x - TRUNK.x) * 0.15} ${t.y - 2} ${t.x} ${t.y}`}
-              fill="none" stroke="#FFE7A3" strokeWidth={4} strokeLinecap="round" vectorEffect="non-scaling-stroke"
-              style={{ filter: 'drop-shadow(0 0 6px rgba(255,210,120,0.9))' }}
-              initial={{ pathLength: 0, opacity: 1 }} animate={{ pathLength: 1, opacity: [1, 1, 0] }}
-              transition={{ pathLength: { duration: 0.6, ease: out }, opacity: { duration: 1.8, times: [0, 0.6, 1] } }}
+              fill="none" stroke="#FFE7A3" strokeWidth={3.5} strokeLinecap="round" vectorEffect="non-scaling-stroke"
+              style={{ filter: 'drop-shadow(0 0 5px rgba(255,210,120,0.85))' }}
+              initial={{ pathLength: reduce ? 1 : 0 }} animate={{ pathLength: 1, opacity: i === newest || done ? 1 : 0.6 }}
+              transition={{ pathLength: { duration: reduce ? 0 : 0.7, ease: out }, opacity: { duration: 0.4 } }}
             />
           ) : null,
         )}
       </svg>
 
+      {/* The belief just named wears gold until the next one comes. */}
       {ROOT_TIPS.map((t, i) =>
         labels[i] ? (
           <motion.span
             key={i}
-            className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full px-4 py-1.5 font-sans text-[21px] font-bold shadow-[0_10px_22px_-10px_rgba(0,0,0,0.8)]"
-            style={{ left: `${t.x}%`, top: `${t.y}%`, background: '#FFFDF7', color: P.copper }}
-            initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: reduce ? 0.2 : 0.4, delay: reduce ? 0 : 0.7, ease: out }}
+            className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full px-4 py-1.5 font-sans text-[23px] font-bold shadow-[0_10px_22px_-10px_rgba(0,0,0,0.8)]"
+            style={{ left: `${t.x}%`, top: `${t.y}%` }}
+            initial={{ opacity: 0, scale: 0.9, background: P.gold, color: P.ink }}
+            animate={{ opacity: 1, scale: 1, background: i === newest && !done ? P.gold : '#FFFDF7', color: i === newest && !done ? P.ink : P.copper }}
+            transition={{ duration: reduce ? 0.2 : 0.4, delay: reduce ? 0 : i === newest ? 0.7 : 0, ease: out }}
           >
             {labels[i]}
           </motion.span>
         ) : null,
       )}
 
-      <span className="absolute left-[7%] top-[59%] font-sans text-[18px] font-bold uppercase tracking-[0.12em]" style={{ color: '#F3E6CC', opacity: done ? 0 : 0.85 }} aria-hidden="true">
-        Hidden in the heart
-      </span>
-      <span className="absolute left-[2%] top-[6%] font-sans text-[18px] font-bold uppercase tracking-[0.12em]" style={{ color: P.teal }} aria-hidden="true">
-        What people see
-      </span>
+      {/* Two brackets beside the picture name its halves before anything is lit. */}
+      {[
+        { top: 20, bottom: 54, text: 'What people see', color: P.teal },
+        { top: 57, bottom: 95, text: 'Hidden in the heart', color: P.copper },
+      ].map((b) => (
+        <div key={b.text} className="pointer-events-none absolute left-[calc(100%+14px)] flex items-center gap-3" style={{ top: `${b.top}%`, height: `${b.bottom - b.top}%` }} aria-hidden="true">
+          <span className="h-full w-3 shrink-0 rounded-r-[10px] border-[3px] border-l-0" style={{ borderColor: b.color }} />
+          <span className="w-[140px] font-sans text-[21px] font-bold leading-tight" style={{ color: b.color }}>{b.text}</span>
+        </div>
+      ))}
+
+      <div className="absolute inset-x-0 -bottom-[40px] flex items-center justify-center gap-3" aria-hidden="true">
+        <span className="font-sans text-[22px] font-bold tabular-nums" style={{ color: done ? P.teal : P.inkSoft }}>
+          {done ? 'Six roots: Iman holds the tree up' : lit ? `Root ${lit} of 6: ${labels[newest]}` : 'Six hidden roots'}
+        </span>
+      </div>
     </div>
   );
 }
@@ -462,6 +488,27 @@ export function SittingStudy({ v, label }: { v: Built; label: string }) {
   );
 }
 
+/* ---------- p8 the "aha": an earlier picture comes back as the answer is revealed ---------- */
+
+/** A print of an earlier page's painting, pinned beside the answer when the teacher opens it, so the child sees the
+ *  link (the visitor asking what he knew = Ms. Clarke asking the class) instead of only hearing it. */
+export function Callback({ name, caption }: { name: string; caption: string }) {
+  const reduce = useReducedMotion();
+  return (
+    <div className="pointer-events-none absolute left-[1170px] top-[290px] h-[255px] w-[340px]" aria-hidden="true">
+      <motion.div
+        className="absolute inset-0 overflow-hidden rounded-[14px] border-[8px] border-[#FFFDF7] shadow-[0_30px_60px_-24px_rgba(0,0,0,0.75)]"
+        initial={reduce ? { opacity: 0, rotate: 3 } : { opacity: 0, y: 40, rotate: 9 }}
+        animate={{ opacity: 1, y: 0, rotate: 3 }}
+        transition={{ duration: reduce ? 0.3 : 0.7, ease: out }}
+      >
+        <img src={src(name)} alt="" draggable={false} className="h-full w-full select-none object-cover" />
+      </motion.div>
+      <Tag style={{ left: '50%', top: 'calc(100% + 34px)' }} color={P.teal} delay={0.6} size={24}>{caption}</Tag>
+    </div>
+  );
+}
+
 /* ---------- p10 Ihsan: her best work, even when the room goes quiet ---------- */
 
 const DRAW: Px = { w: 1400, h: 1050 };
@@ -541,7 +588,7 @@ export function Unveil({ revealed, step, v, name, teach }: {
         />
         {/* Once the veil is gone, the text side keeps a soft shade so the words stay readable on the painting. */}
         <motion.div
-          className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(6,12,28,0.82) 0%, rgba(6,12,28,0.55) 38%, rgba(6,12,28,0) 58%)' }}
+          className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(6,12,28,0.88) 0%, rgba(6,12,28,0.72) 40%, rgba(6,12,28,0) 62%)' }}
           initial={false} animate={{ opacity: open ? 1 : 0 }} transition={{ duration: 1, delay: open && !reduce ? 0.8 : 0 }}
         />
         <motion.div className="absolute inset-y-0" style={panel('l')} initial={false} animate={{ x: open ? -(COL_X + 160) : inset }} transition={slide} />
@@ -563,14 +610,15 @@ export function Unveil({ revealed, step, v, name, teach }: {
               style={{ left: COL_X - 360, top: COL_BASE - 300, width: 720, height: 520, background: 'radial-gradient(ellipse, rgba(255,226,150,0.75), rgba(255,200,100,0) 65%)', mixBlendMode: 'screen' }}
               initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: [0, 1, 0.55], scale: 1 }} transition={{ duration: 2.4, delay: 0.9, ease: out }}
             />
-            {Array.from({ length: 16 }, (_, i) => (
+            {/* One rise of light as the veil parts, then stillness, so it never competes with the words. */}
+            {Array.from({ length: 8 }, (_, i) => (
               <motion.span
                 key={i}
                 className="absolute h-[6px] w-[6px] rounded-full"
                 style={{ left: COL_X + ((i * 37) % 90) - 45, top: COL_BASE - 20, background: '#FFE7A3', boxShadow: '0 0 10px 3px rgba(255,214,120,0.8)' }}
                 initial={{ opacity: 0, y: 0 }}
                 animate={{ opacity: [0, 1, 0], y: -260 - ((i * 53) % 380) }}
-                transition={{ duration: 2.6 + (i % 4) * 0.4, delay: 1 + (i % 8) * 0.18, ease: 'easeOut', repeat: Infinity, repeatDelay: 0.6 }}
+                transition={{ duration: 2.6 + (i % 4) * 0.4, delay: 1 + i * 0.18, ease: 'easeOut' }}
               />
             ))}
           </>
@@ -589,7 +637,7 @@ export function Unveil({ revealed, step, v, name, teach }: {
 
       {open && name && (
         <motion.div
-          className="pointer-events-none absolute -translate-x-1/2 whitespace-nowrap text-center" style={{ left: COL_X + 290, top: 170, textShadow: '0 2px 12px rgba(6,12,28,0.9)' }}
+          className="pointer-events-none absolute -translate-x-1/2 whitespace-nowrap rounded-[40px] px-10 pb-5 text-center" style={{ left: COL_X + 290, top: 170, textShadow: '0 2px 12px rgba(6,12,28,0.9)', background: 'radial-gradient(ellipse at 50% 50%, rgba(6,12,28,0.75), rgba(6,12,28,0) 72%)' }}
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: reduce ? 0 : 1.6, duration: 0.4 }}
         >
           <motion.span
@@ -601,7 +649,7 @@ export function Unveil({ revealed, step, v, name, teach }: {
             {name.arabic}
           </motion.span>
           <span className="block font-sans text-[30px] font-bold" style={{ color: P.goldSoft }}>{name.translit}</span>
-          <span className="block font-sans text-[22px] font-semibold" style={{ color: '#F3E6CC' }}>{name.meaning}</span>
+          <span className="block font-sans text-[24px] font-semibold" style={{ color: '#F3E6CC' }}>{name.meaning}</span>
         </motion.div>
       )}
 
@@ -614,7 +662,7 @@ export function Unveil({ revealed, step, v, name, teach }: {
             ))}
           </svg>
           {teach.map((t, i) => (
-            <Tag key={t.label} style={{ left: 1310, top: 510 + i * 100 }} ar={t.arabic} color={DOOR_INK[i]} delay={0.55 + i * 0.35} size={20}>
+            <Tag key={t.label} style={{ left: 1310, top: 510 + i * 100 }} ar={t.arabic} color={DOOR_INK[i]} delay={0.55 + i * 0.35} size={24}>
               {t.label}
             </Tag>
           ))}

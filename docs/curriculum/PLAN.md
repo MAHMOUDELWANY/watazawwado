@@ -306,3 +306,14 @@ B3–B5 → continue lesson by lesson.
   and the mission the child picks drops in as a note. Added vocab جِبريل (Jibril, "the angel who brought the Quran")
   to p12 — **owner to review**. Not changed: p2–4, p8, p16 (story/question pages where the painting already carries the
   moment). Verified in the in-app browser during playback, plus reduced motion and phone width.
+- **2026-10-17** — Player pass after a visual audit (each change checked in the browser at 1440, 768 and 375 wide,
+  phone landscape, Arabic UI, reduced motion). p7: the ghost house has empty sockets (no grey pillars), the newest
+  pillar's name is marked, progress reads "Pillar 2 of 5: Salah", the finished house says so. p9: a ground line and
+  two brackets ("What people see" / "Hidden in the heart") from step 0, each belief keeps its line of light to the
+  trunk, soft fades instead of spotlight circles, root count caption. p11–12: p12's title waits for the veil (it
+  spoiled the guess), p11's guess step fades the story behind the question, reveal sparkles rise once. p8: opening
+  the answer brings back the classroom painting, "Just like Ms. Clarke". Controls: R now replays only the last build
+  step; a new button (Home) starts the page again from step 0. Phones: notes start closed under 1024px, sticky
+  one-row toolbar, the slide's words at reading size under small slides, "turn sideways" hint, page grid as a list;
+  full screen falls back to filling the window (iPhone, embedded browsers). Fixed: Arabic UI gave slide titles a
+  1.5 line height (overflow) and mirrored the page grid's English titles. Not changed: p2–4, p16.

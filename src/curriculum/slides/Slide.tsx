@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import type { Interaction, Lesson, LessonPage } from '../types';
 import { SceneArt, P } from './Art';
-import { PillarsBuild, RootsGrow, ClueLens, SittingStudy, IhsanLight, Unveil, DoorsLight, PackZad, type Lens } from './Scenes';
+import { PillarsBuild, RootsGrow, ClueLens, SittingStudy, IhsanLight, Unveil, DoorsLight, PackZad, Callback, type Lens } from './Scenes';
 
 /** Correct answers per bin of a game checkpoint, for the teacher report (PLAN §3a.3b). */
 export type GameResult = Record<string, { correct: number; total: number }>;
@@ -47,7 +47,12 @@ export function Slide({ lesson, pageIndex, step, onCorrect, onGameResult }: Slid
   const rootRef = useRef<HTMLDivElement>(null);
   const [found, setFound] = useState<string[]>([]);
   const [chosen, setChosen] = useState<string | null>(null);
+  const [answered, setAnswered] = useState(false);
   const stage = isStage(compositionFor(page));
+  // Stepping back past the question (or replaying it) clears what the child found or chose, so the art matches the question.
+  useEffect(() => {
+    if (!v.interaction) { setFound([]); setChosen(null); setAnswered(false); }
+  }, [v.interaction]);
   // Each new build step lands at the bottom of the text column; bring it into view.
   useEffect(() => {
     if (step === 0) return;
@@ -58,7 +63,7 @@ export function Slide({ lesson, pageIndex, step, onCorrect, onGameResult }: Slid
   return (
     <div ref={rootRef} className="absolute inset-0 overflow-hidden" style={{ background: P.paper, color: P.ink }} dir="ltr" lang="en">
       {!stage && <Paper />}
-      <Body page={page} v={v} step={step} lesson={lesson} found={found} chosen={chosen} onChoose={setChosen} onCorrect={onCorrect} onGameResult={onGameResult} onClue={(l) => setFound((f) => (f.includes(l) ? f : [...f, l]))} />
+      <Body page={page} v={v} step={step} lesson={lesson} found={found} chosen={chosen} answered={answered} onAnswer={() => setAnswered(true)} onChoose={setChosen} onCorrect={onCorrect} onGameResult={onGameResult} onClue={(l) => setFound((f) => (f.includes(l) ? f : [...f, l]))} />
       {stage && (
         <>
           <div className="pointer-events-none absolute inset-x-0 top-0 h-[150px]" style={{ background: 'linear-gradient(180deg, rgba(20,12,8,0.55), transparent)' }} />
@@ -83,6 +88,40 @@ export function Slide({ lesson, pageIndex, step, onCorrect, onGameResult }: Slid
 
       <ChapterTracker lesson={lesson} pageIndex={pageIndex} light={stage} />
     </div>
+  );
+}
+
+/** The slide's words at reading size, for screens where the 16:9 canvas is too small to read (a phone held upright).
+ *  It follows the same build steps as the canvas, so it never shows more than the teacher has revealed. */
+export function SlideText({ page, step }: { page: LessonPage; step: number }) {
+  const v = visibility(page, step);
+  // The answer page of the reveal keeps its title back until the veil parts (see the 'unveil' composition).
+  const hideTitle = compositionFor(page) === 'unveil' && page.layout === 'evidence' && v.lines === 0;
+  if (hideTitle) return null;
+  const e = page.evidence;
+  return (
+    <section lang="en" dir="ltr" aria-label="Slide text" className="space-y-2 rounded-[20px] bg-[#FFFDF7] px-4 py-3 text-[#1E1410] ring-1 ring-black/5">
+      <h3 className="font-serif text-xl font-bold leading-tight">{page.title}</h3>
+      {v.evidence && e ? (
+        <figure className="space-y-1">
+          <blockquote lang="ar" dir="rtl" className="font-serif text-2xl leading-[1.7]">{e.arabic}</blockquote>
+          <figcaption className="text-[15px] leading-snug">
+            <span className="italic">“{e.meaning}”</span>
+            <span className="mt-0.5 block text-[13px] font-bold" style={{ color: P.copper }}>{e.reference}</span>
+          </figcaption>
+        </figure>
+      ) : (
+        page.lines.slice(0, v.lines).map((l, i) => (
+          <p key={i} className={`text-[16px] leading-snug ${i === v.lines - 1 ? 'font-semibold' : 'opacity-70'}`}>{l}</p>
+        ))
+      )}
+      {v.items > 0 && (
+        <ol className="flex flex-wrap gap-1.5">
+          {page.items!.slice(0, v.items).map((it) => <li key={it} className="rounded-full bg-[#FCEFD2] px-2.5 py-0.5 text-[14px] font-bold">{it}</li>)}
+        </ol>
+      )}
+      {v.interaction && page.interaction && <p className="text-[16px] font-bold" style={{ color: P.teal }}>{page.interaction.prompt}</p>}
+    </section>
   );
 }
 
@@ -345,12 +384,12 @@ function threeDoors(lesson: Lesson) {
   return items.map((it) => { const label = it.split(':')[0].trim(); return { label, arabic: vocabOf(lesson, label)?.arabic }; });
 }
 
-function Body({ page, v, step, lesson, found, chosen, onChoose, onCorrect, onGameResult, onClue }: {
-  page: LessonPage; v: ReturnType<typeof visibility>; step: number; lesson: Lesson; found: string[]; chosen: string | null;
-  onChoose: (option: string) => void; onCorrect: () => void; onGameResult: (r: GameResult) => void; onClue: (label: string) => void;
+function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoose, onCorrect, onGameResult, onClue }: {
+  page: LessonPage; v: ReturnType<typeof visibility>; step: number; lesson: Lesson; found: string[]; chosen: string | null; answered: boolean;
+  onAnswer: () => void; onChoose: (option: string) => void; onCorrect: () => void; onGameResult: (r: GameResult) => void; onClue: (label: string) => void;
 }) {
   const c = compositionFor(page);
-  const interaction = page.interaction && v.interaction ? <InteractionView interaction={page.interaction} onCorrect={onCorrect} onGameResult={onGameResult} onClue={onClue} onChoose={onChoose} /> : null;
+  const interaction = page.interaction && v.interaction ? <InteractionView interaction={page.interaction} onCorrect={onCorrect} onGameResult={onGameResult} onClue={onClue} onChoose={onChoose} onAnswer={onAnswer} /> : null;
 
   switch (c) {
     case 'title':
@@ -482,11 +521,13 @@ function Body({ page, v, step, lesson, found, chosen, onChoose, onCorrect, onGam
             style={{ maskImage: 'linear-gradient(90deg, transparent, #000 60%)', WebkitMaskImage: 'linear-gradient(90deg, transparent, #000 60%)' }}
           />
           <div className={`absolute left-[120px] right-[460px] top-[150px] bottom-[120px] space-y-6 ${COL}`}>
-            <Title size={84} light>{page.title}</Title>
+            <Title size={72} light>{page.title}</Title>
             {!v.evidence && <Lines lines={page.lines} count={v.lines} size={36} light />}
-            {v.evidence && <Manuscript page={page} size={50} light align="start" />}
+            {v.evidence && <Manuscript page={page} size={44} light align="start" />}
             {interaction}
           </div>
+          {/* p8: the answer links back to Ms. Clarke's question on the classroom page. */}
+          {page.scene === 'pillars' && answered && <Callback name="classroom" caption="Just like Ms. Clarke" />}
         </>
       );
 
@@ -508,13 +549,22 @@ function Body({ page, v, step, lesson, found, chosen, onChoose, onCorrect, onGam
 
     case 'unveil': {
       const revealed = page.layout === 'evidence';
+      // The answer page keeps its title ("It was Jibril!") back until the first step parts the veil, so the guess
+      // asked at the end of the page before is not spoiled. On the guess itself the story steps back behind the question.
+      const hold = revealed && v.lines === 0;
       return (
         <>
           <Unveil revealed={revealed} step={step} v={v} name={revealed ? page.vocab?.[0] : undefined} teach={threeDoors(lesson)} />
           <div className={`absolute left-[120px] top-[150px] bottom-[120px] w-[640px] space-y-6 ${COL}`}>
-            <Title size={revealed ? 96 : 76} light>{page.title}</Title>
-            {!v.evidence && <Lines lines={page.lines} count={v.lines} size={34} light />}
-            {v.evidence && <Manuscript page={page} size={50} light align="start" />}
+            <motion.div initial={false} animate={{ opacity: v.interaction ? 0.45 : 1 }} transition={{ duration: 0.5 }} className="space-y-6">
+              {!hold && (
+                <motion.div initial={revealed ? { opacity: 0, y: 16 } : false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: revealed ? 1.2 : 0, ease }}>
+                  <Title size={revealed ? 96 : 64} light>{page.title}</Title>
+                </motion.div>
+              )}
+              {!v.evidence && <Lines lines={page.lines} count={v.lines} size={34} light />}
+              {v.evidence && <Manuscript page={page} size={44} light align="start" />}
+            </motion.div>
             {interaction}
           </div>
         </>
@@ -566,10 +616,10 @@ function Body({ page, v, step, lesson, found, chosen, onChoose, onCorrect, onGam
 
 /* ---------- interactions (sized for the canvas) ---------- */
 
-function InteractionView({ interaction, onCorrect, onGameResult, onClue, onChoose }: { interaction: Interaction; onCorrect: () => void; onGameResult: (r: GameResult) => void; onClue?: (label: string) => void; onChoose?: (option: string) => void }) {
+function InteractionView({ interaction, onCorrect, onGameResult, onClue, onChoose, onAnswer }: { interaction: Interaction; onCorrect: () => void; onGameResult: (r: GameResult) => void; onClue?: (label: string) => void; onChoose?: (option: string) => void; onAnswer?: () => void }) {
   switch (interaction.kind) {
     case 'ask':
-      return <Ask prompt={interaction.prompt} reveal={interaction.reveal} />;
+      return <Ask prompt={interaction.prompt} reveal={interaction.reveal} onAnswer={onAnswer} />;
     case 'clues':
       return <Clues interaction={interaction} onCorrect={onCorrect} onClue={onClue} />;
     case 'choose':
@@ -579,7 +629,7 @@ function InteractionView({ interaction, onCorrect, onGameResult, onClue, onChoos
   }
 }
 
-function Ask({ prompt, reveal }: { prompt: string; reveal?: string }) {
+function Ask({ prompt, reveal, onAnswer }: { prompt: string; reveal?: string; onAnswer?: () => void }) {
   const [open, setOpen] = useState(false);
   return (
     <motion.div {...build} className="rounded-[28px] px-8 py-6 shadow-[0_20px_40px_-26px_rgba(5,54,63,0.8)]" style={{ background: 'linear-gradient(135deg, #05363F 0%, #0A5866 55%, #3B2219 100%)' }}>
@@ -591,7 +641,7 @@ function Ask({ prompt, reveal }: { prompt: string; reveal?: string }) {
               {reveal}
             </motion.p>
           ) : (
-            <motion.button key="b" type="button" onClick={() => setOpen(true)} className="mt-4 rounded-full px-6 py-2 font-sans text-[22px] font-bold" style={{ background: P.gold, color: P.ink }}>
+            <motion.button key="b" type="button" onClick={() => { setOpen(true); onAnswer?.(); }} className="mt-4 rounded-full px-6 py-2 font-sans text-[22px] font-bold" style={{ background: P.gold, color: P.ink }}>
               Show the answer
             </motion.button>
           )}
