@@ -110,14 +110,14 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   }, [timerLeft]);
 
   const toggleFullscreen = useCallback(() => {
-    // iPhone Safari has no element full screen: fill the window instead, with the same layout.
-    if (!document.fullscreenEnabled) {
-      setFullscreen(!fullscreen);
-      setNotes(fullscreen && wide());
-      return;
-    }
-    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
-    else rootRef.current?.requestFullscreen?.().catch(() => {});
+    const fill = (on: boolean) => { setFullscreen(on); setNotes(!on && wide()); };
+    if (document.fullscreenElement) { document.exitFullscreen().catch(() => {}); return; }
+    if (fullscreen) { fill(false); return; }
+    // iPhone Safari has no element full screen, and embedded browsers may refuse it or never answer:
+    // then fill the window instead, with the same layout.
+    if (!document.fullscreenEnabled || !rootRef.current?.requestFullscreen) { fill(true); return; }
+    const t = window.setTimeout(() => { if (!document.fullscreenElement) fill(true); }, 800);
+    rootRef.current.requestFullscreen().then(() => window.clearTimeout(t), () => { window.clearTimeout(t); fill(true); });
   }, [fullscreen]);
   const fillWindow = fullscreen && typeof document !== 'undefined' && !document.fullscreenElement;
 
