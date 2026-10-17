@@ -5,7 +5,7 @@ import {
   Timer, RotateCcw, SkipBack, BookOpenText, X, Globe,
 } from 'lucide-react';
 import type { Lesson } from './types';
-import { Slide, stepsFor, CANVAS_W, CANVAS_H, scoreSort, type GameResult } from './slides/Slide';
+import { Slide, SlideText, stepsFor, CANVAS_W, CANVAS_H, scoreSort, type GameResult } from './slides/Slide';
 import { InkLayer, type InkTool } from './slides/Ink';
 import { P } from './slides/Art';
 import { useAppLanguage } from '../lib/language';
@@ -41,7 +41,9 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   const [replay, setReplay] = useState(0);
   const [praise, setPraise] = useState(false);
   const [grid, setGrid] = useState(false);
-  const [notes, setNotes] = useState(true);
+  // Below the lg breakpoint the explanation would sit between the slide and its controls, so it starts closed there.
+  const wide = () => typeof window === 'undefined' || window.innerWidth >= 1024;
+  const [notes, setNotes] = useState(wide);
   const [timerLeft, setTimerLeft] = useState(0);
   const [fullscreen, setFullscreen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -108,9 +110,16 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   }, [timerLeft]);
 
   const toggleFullscreen = useCallback(() => {
+    // iPhone Safari has no element full screen: fill the window instead, with the same layout.
+    if (!document.fullscreenEnabled) {
+      setFullscreen(!fullscreen);
+      setNotes(fullscreen && wide());
+      return;
+    }
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
     else rootRef.current?.requestFullscreen?.().catch(() => {});
-  }, []);
+  }, [fullscreen]);
+  const fillWindow = fullscreen && typeof document !== 'undefined' && !document.fullscreenElement;
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -118,7 +127,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
       const k = e.key.toLowerCase();
       if (k === 'arrowright' || k === ' ' || k === 'pagedown') { e.preventDefault(); forward(); }
       else if (k === 'arrowleft' || k === 'pageup') { e.preventDefault(); backward(); }
-      else if (k === 'escape') { setTool('none'); setGrid(false); }
+      else if (k === 'escape') { setTool('none'); setGrid(false); if (fillWindow) toggleFullscreen(); }
       else if (k === 'd') setTool((t) => (t === 'pen' ? 'none' : 'pen'));
       else if (k === 'h') setTool((t) => (t === 'marker' ? 'none' : 'marker'));
       else if (k === 'l') setTool((t) => (t === 'laser' ? 'none' : 'laser'));
@@ -132,13 +141,13 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [forward, backward, cheer, teacher, toggleFullscreen, replayStep, restartPage]);
+  }, [forward, backward, cheer, teacher, toggleFullscreen, replayStep, restartPage, fillWindow]);
 
   useEffect(() => {
     const sync = () => {
       const on = Boolean(document.fullscreenElement);
       setFullscreen(on);
-      setNotes(!on);
+      setNotes(!on && wide());
     };
     document.addEventListener('fullscreenchange', sync);
     return () => document.removeEventListener('fullscreenchange', sync);
@@ -153,11 +162,12 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
     <nav
       dir={ar ? 'rtl' : 'ltr'}
       aria-label={L('Lesson controls', 'التحكم في الدرس')}
-      className={`flex items-center gap-1 rounded-[28px] border border-white/70 bg-[#FAF7F2]/90 shadow-[0_18px_40px_-20px_rgba(139,73,53,0.55)] backdrop-blur-xl transition-[transform,opacity] duration-300 ${
+      className={`flex items-center gap-1 rounded-[28px] [&>*]:shrink-0 border border-white/70 bg-[#FAF7F2]/90 shadow-[0_18px_40px_-20px_rgba(139,73,53,0.55)] backdrop-blur-xl transition-[transform,opacity] duration-300 ${
         fullscreen
           ? // Full screen: a docked rail beside the slide (right in English, left in Arabic), never on top of it (owner 2026-10-17).
             'max-h-full shrink-0 self-center flex-col overflow-y-auto px-1.5 py-2'
-          : 'flex-wrap px-2 py-1.5'
+          : // Phones: one sticky row that scrolls sideways, so Back and Next never leave the screen.
+            'sticky bottom-2 z-20 flex-nowrap overflow-x-auto px-2 py-1.5 [scrollbar-width:none] sm:flex-wrap sm:overflow-visible'
       }`}
     >
       <button type="button" className={btn()} onClick={backward} disabled={page === 0 && step === 0} aria-label={L('Back', 'رجوع')} title={L('Back (←)', 'رجوع (←)')}>
@@ -266,45 +276,69 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   );
 
   return (
-    <div ref={rootRef} dir="ltr" className={`relative flex gap-3 ${fullscreen ? `band-deep h-full p-3 ${ar ? 'flex-row-reverse' : 'flex-row'}` : 'flex-col'}`}>
+    <div ref={rootRef} dir="ltr" className={`flex gap-3 ${fillWindow ? 'fixed inset-0 z-[100]' : 'relative'} ${fullscreen ? `band-deep h-full p-3 ${ar ? 'flex-row-reverse' : 'flex-row'}` : 'flex-col'}`}>
       <div dir={ar ? 'rtl' : 'ltr'} className={`flex flex-col gap-3 lg:flex-row ${fullscreen ? 'min-h-0 flex-1' : ''}`}>
-        <div ref={stageRef} className={`relative min-w-0 flex-1 ${fullscreen ? 'h-full min-h-0' : 'aspect-video'}`}>
-          <div
-            className="absolute left-1/2 top-1/2 overflow-hidden rounded-[22px] shadow-[0_30px_70px_-35px_rgba(59,34,25,0.7)]"
-            style={{ width: CANVAS_W, height: CANVAS_H, transform: `translate(-50%, -50%) scale(${scale})` }}
-          >
-            <div key={`${page}-${replay}`} className="absolute inset-0">
-              <Slide lesson={lesson} pageIndex={page} step={step} onCorrect={cheer} onGameResult={(r) => onGameResult?.(page, r)} />
-            </div>
-            <InkLayer tool={tool} color={inkColor} pageKey={String(page)} clearSignal={clearSignal} width={CANVAS_W} height={CANVAS_H} />
-            {timerLeft > 0 && (
-              <div className="absolute right-[90px] top-[130px] rounded-full bg-white px-6 py-2 font-sans text-[34px] font-bold tabular-nums shadow-lg" style={{ color: timerLeft <= 10 ? P.crimson : P.ink }}>
-                {Math.floor(timerLeft / 60)}:{String(timerLeft % 60).padStart(2, '0')}
+        <div className={`flex min-w-0 flex-1 flex-col gap-3 ${fullscreen ? 'h-full min-h-0' : ''}`}>
+          <div ref={stageRef} className={`relative min-w-0 ${fullscreen ? 'min-h-0 flex-1' : 'aspect-video'}`}>
+            <div
+              className="absolute left-1/2 top-1/2 overflow-hidden rounded-[22px] shadow-[0_30px_70px_-35px_rgba(59,34,25,0.7)]"
+              style={{ width: CANVAS_W, height: CANVAS_H, transform: `translate(-50%, -50%) scale(${scale})` }}
+            >
+              <div key={`${page}-${replay}`} className="absolute inset-0">
+                <Slide lesson={lesson} pageIndex={page} step={step} onCorrect={cheer} onGameResult={(r) => onGameResult?.(page, r)} />
               </div>
-            )}
-            <AnimatePresence>{praise && <Praise />}</AnimatePresence>
-            <AnimatePresence>
-              {grid && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="band-deep absolute inset-0 z-30 p-16">
-                  <p className="mb-8 font-serif text-[48px] font-bold text-white">{lesson.title}</p>
-                  <ol className="grid grid-cols-4 gap-5">
-                    {lesson.pages.map((p, i) => (
-                      <li key={i}>
-                        <button
-                          type="button"
-                          onClick={() => goPage(i)}
-                          className={`w-full rounded-[20px] px-6 py-5 text-left font-sans text-[24px] font-bold transition-colors ${i === page ? 'bg-[#E5A93C] text-[#1E1410]' : 'bg-white/10 text-white hover:bg-white/20'}`}
-                        >
-                          <span className="block text-[18px] opacity-70">{i + 1}</span>
-                          {p.title}
-                        </button>
-                      </li>
-                    ))}
-                  </ol>
-                </motion.div>
+              <InkLayer tool={tool} color={inkColor} pageKey={String(page)} clearSignal={clearSignal} width={CANVAS_W} height={CANVAS_H} />
+              {timerLeft > 0 && (
+                <div className="absolute right-[90px] top-[130px] rounded-full bg-white px-6 py-2 font-sans text-[34px] font-bold tabular-nums shadow-lg" style={{ color: timerLeft <= 10 ? P.crimson : P.ink }}>
+                  {Math.floor(timerLeft / 60)}:{String(timerLeft % 60).padStart(2, '0')}
+                </div>
               )}
-            </AnimatePresence>
+              <AnimatePresence>{praise && <Praise />}</AnimatePresence>
+              <AnimatePresence>
+                {grid && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} dir="ltr" lang="en" className="band-deep absolute inset-0 z-30 p-16">
+                    <p className="mb-8 font-serif text-[48px] font-bold text-white">{lesson.title}</p>
+                    <ol className="grid grid-cols-4 gap-5">
+                      {lesson.pages.map((p, i) => (
+                        <li key={i}>
+                          <button
+                            type="button"
+                            onClick={() => goPage(i)}
+                            className={`w-full rounded-[20px] px-6 py-5 text-left font-sans text-[24px] font-bold transition-colors ${i === page ? 'bg-[#E5A93C] text-[#1E1410]' : 'bg-white/10 text-white hover:bg-white/20'}`}
+                          >
+                            <span className="block text-[18px] opacity-70">{i + 1}</span>
+                            {p.title}
+                          </button>
+                        </li>
+                      ))}
+                    </ol>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
+          {/* Below ~575px of slide width the canvas text is too small to read; give its words at reading size. */}
+          {!fullscreen && scale < 0.36 && (
+            <>
+              <p className="hidden items-center gap-2 text-sm font-bold text-[#8B4935] portrait:flex">
+                <RotateCcw className="h-4 w-4 rotate-90" aria-hidden="true" />
+                {L('Turn your phone sideways for a bigger slide.', 'لف الموبايل بالعرض عشان الشريحة تكبر.')}
+              </p>
+              {grid ? (
+                <ol className="grid grid-cols-2 gap-2" aria-label={L('All pages', 'كل الصفحات')}>
+                  {lesson.pages.map((p, i) => (
+                    <li key={i}>
+                      <button type="button" dir="ltr" lang="en" onClick={() => goPage(i)} className={`min-h-11 w-full rounded-2xl px-3 py-2 text-start text-sm font-bold ${i === page ? 'bg-[#E5A93C] text-[#1E1410]' : 'bg-[#FFFDF7] text-[#1E1410] ring-1 ring-black/5'}`}>
+                        <span className="me-1.5 opacity-60">{i + 1}</span>{p.title}
+                      </button>
+                    </li>
+                  ))}
+                </ol>
+              ) : (
+                <SlideText page={current} step={step} />
+              )}
+            </>
+          )}
         </div>
         {notesPanel}
       </div>
