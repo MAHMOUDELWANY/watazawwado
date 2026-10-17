@@ -149,7 +149,12 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
     <nav
       dir={ar ? 'rtl' : 'ltr'}
       aria-label={L('Lesson controls', 'التحكم في الدرس')}
-      className={`flex flex-wrap items-center gap-1 rounded-[28px] border border-white/70 bg-[#FAF7F2]/90 px-2 py-1.5 shadow-[0_18px_40px_-20px_rgba(139,73,53,0.55)] backdrop-blur-xl transition-opacity ${fullscreen ? 'absolute bottom-5 left-1/2 z-50 -translate-x-1/2' : ''} ${fullscreen && !chromeVisible ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+      className={`flex items-center gap-1 rounded-[28px] border border-white/70 bg-[#FAF7F2]/90 shadow-[0_18px_40px_-20px_rgba(139,73,53,0.55)] backdrop-blur-xl transition-[transform,opacity] duration-300 ${
+        fullscreen
+          ? // Full screen: a vertical rail that slides in from the side (right in English, left in Arabic, owner 2026-10-17).
+            `absolute top-1/2 z-50 max-h-[calc(100%-2rem)] -translate-y-1/2 flex-col overflow-y-auto px-1.5 py-2 ${ar ? 'left-4' : 'right-4'} ${chromeVisible ? 'translate-x-0 opacity-100' : `${ar ? '-translate-x-24' : 'translate-x-24'} pointer-events-none opacity-0`}`
+          : 'flex-wrap px-2 py-1.5'
+      }`}
     >
       <button type="button" className={btn()} onClick={backward} disabled={page === 0 && step === 0} aria-label={L('Back', 'رجوع')} title={L('Back (←)', 'رجوع (←)')}>
         <ChevronLeft className="w-5 h-5 rtl:rotate-180" />
@@ -162,7 +167,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
         </span>
         <ChevronRight className="w-5 h-5 rtl:rotate-180" />
       </button>
-      <span className="mx-1 h-6 w-px bg-[#8B4935]/20" aria-hidden="true" />
+      <span className={fullscreen ? 'my-1 h-px w-6 bg-[#8B4935]/20' : 'mx-1 h-6 w-px bg-[#8B4935]/20'} aria-hidden="true" />
       <button type="button" className={btn(grid)} onClick={() => setGrid((g) => !g)} aria-pressed={grid} title={L('All pages (G)', 'كل الصفحات (G)')} aria-label={L('All pages', 'كل الصفحات')}>
         <LayoutGrid className="w-[18px] h-[18px]" />
       </button>
@@ -184,7 +189,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
       <button type="button" className={btn()} onClick={() => setClearSignal((c) => c + 1)} title={L('Clear drawing (E)', 'امسح الرسم (E)')} aria-label={L('Clear drawing', 'امسح الرسم')}>
         <Eraser className="w-[18px] h-[18px]" />
       </button>
-      <span className="mx-1 h-6 w-px bg-[#8B4935]/20" aria-hidden="true" />
+      <span className={fullscreen ? 'my-1 h-px w-6 bg-[#8B4935]/20' : 'mx-1 h-6 w-px bg-[#8B4935]/20'} aria-hidden="true" />
       <button type="button" className={btn()} onClick={() => setReplay((r) => r + 1)} title={L('Replay animation (R)', 'أعد الحركة (R)')} aria-label={L('Replay animation', 'أعد الحركة')}>
         <RotateCcw className="w-[18px] h-[18px]" />
       </button>
@@ -215,7 +220,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
         <Globe className="w-[18px] h-[18px]" />
         <span>{ar ? 'EN' : 'عربي'}</span>
       </button>
-      <span className="ms-auto pe-3 ps-2 text-xs font-bold text-[#453D34] tabular-nums">
+      <span className={`text-xs font-bold text-[#453D34] tabular-nums ${fullscreen ? 'py-1' : 'ms-auto pe-3 ps-2'}`}>
         {L('Page', 'صفحة')} {page + 1}/{lesson.pages.length}
       </span>
     </nav>
