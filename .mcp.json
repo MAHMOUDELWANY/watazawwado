@@ -3,6 +3,13 @@
     "magnific": {
       "type": "http",
       "url": "https://mcp.magnific.com"
+    },
+    "heroui-react": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@heroui/react-mcp@latest"
+      ]
     }
   }
 }
