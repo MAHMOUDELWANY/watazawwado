@@ -216,7 +216,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.97, y: 24 }}
             transition={{ type: 'spring', damping: 26, stiffness: 300 }}
-            className={`auth-card glass-3 relative w-full ${width} max-h-[94dvh] !overflow-y-auto overscroll-contain !rounded-b-none sm:!rounded-b-[var(--r-4)]`}
+            className={`auth-card glass-3 relative w-full ${width} max-h-[94dvh] overflow-y-auto overscroll-contain !rounded-b-none sm:!rounded-b-[var(--r-4)]`}
           >
             {/* Day/night switch and close; paper tones while they sit on the deep portal */}
             {view !== 'verify' && (

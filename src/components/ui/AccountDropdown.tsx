@@ -31,7 +31,7 @@ export function AccountDropdown({ initials = 'S', isAr }: { initials?: string; i
       </button>
 
       {isOpen && (
-        <div className={`!absolute top-full mt-2 w-48 glass-card border-none rounded-xl shadow-lg overflow-hidden z-50 ${isAr ? "left-0" : "right-0"}`}>
+        <div className={`absolute top-full mt-2 w-48 glass-card border-none rounded-xl shadow-lg overflow-hidden z-50 ${isAr ? "left-0" : "right-0"}`}>
           <div className="p-1">
             <Link to="/student/account" onClick={() => setIsOpen(false)} className="flex items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-surface-subtle rounded-lg transition-colors">
               <User className="w-4 h-4 text-muted-foreground" />

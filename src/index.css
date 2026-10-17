@@ -974,8 +974,9 @@ h3, .text-heading-lg {
     transform: scale(0.98);
   }
 
+  /* Zero specificity so layout utilities (flex, hidden, ...) on the element win. */
+  :where(.btn-primary-material, .btn-teal-material, .btn-terracotta-material) { display: inline-flex; }
   .btn-primary-material {
-    display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
@@ -1019,7 +1020,6 @@ h3, .text-heading-lg {
 
   /* Glazed Zellij Teal Button Material */
   .btn-teal-material {
-    display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
@@ -1062,7 +1062,6 @@ h3, .text-heading-lg {
 
   /* Terracotta Copper Button Material */
   .btn-terracotta-material {
-    display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
@@ -1128,8 +1127,9 @@ h3, .text-heading-lg {
 
   /* ================== LIQUID GLASS SYSTEM ================== */
   /* Shared Base Material Properties */
+  /* Zero specificity so position utilities (absolute, fixed, sticky) on the element win. */
+  :where(.glass-surface, .glass-card, .glass-nav, .glass-sheet, .glass-dialog, .glass-panel) { position: relative; }
   .glass-surface, .glass-card, .glass-nav, .glass-sheet, .glass-dialog, .glass-panel {
-    position: relative;
     border-radius: var(--radius-lg);
   }
 
@@ -1421,7 +1421,9 @@ h3, .text-heading-lg {
    PUBLIC REDESIGN 2026-10 — khatam field, arches, ribbon
    ============================================================ */
 /* The same eight-point star (khatam) as the onboarding backdrop, faded toward the edges. */
-.khatam-field { position: relative; isolation: isolate; }
+/* Position lives in a layer so utilities like fixed/absolute on the element win. */
+@layer components { .khatam-field, .brand-lights { position: relative; } }
+.khatam-field { isolation: isolate; }
 .khatam-field::before {
   content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Cg fill='none' stroke='%238B4935' stroke-opacity='0.16' stroke-width='1'%3E%3Crect x='18' y='18' width='36' height='36'/%3E%3Crect x='18' y='18' width='36' height='36' transform='rotate(45 36 36)'/%3E%3Ccircle cx='36' cy='36' r='6'/%3E%3C/g%3E%3C/svg%3E");
@@ -1432,7 +1434,6 @@ h3, .text-heading-lg {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Cg fill='none' stroke='%23D8C6AE' stroke-opacity='0.09' stroke-width='1'%3E%3Crect x='18' y='18' width='36' height='36'/%3E%3Crect x='18' y='18' width='36' height='36' transform='rotate(45 36 36)'/%3E%3Ccircle cx='36' cy='36' r='6'/%3E%3C/g%3E%3C/svg%3E");
 }
 /* Two soft brand lights behind a hero. */
-.brand-lights { position: relative; }
 .brand-lights::after {
   content: ''; position: absolute; inset: 0; z-index: -2; pointer-events: none;
   background:
@@ -1773,7 +1774,9 @@ html.dark {
 /* ============================================================
    SIGN-IN SCREENS 2026-10-16 — see src/components/auth/AuthFrame.tsx
    ============================================================ */
-.auth-card { border-radius: var(--r-4); overflow: hidden; }
+/* Overflow in a layer so the modal's overflow-y-auto can scroll it. */
+@layer components { .auth-card { overflow: hidden; } }
+.auth-card { border-radius: var(--r-4); }
 /* Deep portal across the top of the card, with a paper mihrab holding the logo. */
 .auth-portal {
   position: relative; overflow: hidden; height: 8.75rem;
