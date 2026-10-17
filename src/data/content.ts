@@ -144,6 +144,24 @@ export const SERVICES_DATA: ServicePillar[] = [
         recommendedFrequency: '1 lesson a week'
       },
       {
+        id: 'zad-essentials',
+        name: 'Zad Essentials',
+        arabicName: 'أول الزاد',
+        category: 'islamic_studies',
+        tagline: 'The first things every Muslim needs, for learners starting from zero.',
+        arabicTagline: 'ما لا يسع المسلم جهله، لمن يبدأ من الصفر.',
+        description: 'Belief, purity, prayer and manners in animated lessons. Every topic gives the reason first, then the evidence from the Quran and Sunnah, then one small step to live it.',
+        whoIsItFor: 'Children who know nothing yet (Kids version, 6–11), and teens and adults who want a sound start (12+).',
+        whatYouWillLearn: [
+          'Who Allah is, and why we worship Him alone',
+          'Wudu and prayer step by step, with the evidence',
+          'The pillars of Islam and Iman, explained simply',
+          'Manners and daily Sunnahs that change how a child acts and speaks'
+        ],
+        durations: [30, 45, 60],
+        recommendedFrequency: '1–2 lessons a week'
+      },
+      {
         id: 'islamic-studies',
         name: 'Foundations of Islamic Studies',
         arabicName: 'أساسيات الدراسات الإسلامية',

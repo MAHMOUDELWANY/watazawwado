@@ -1,6 +1,6 @@
 import { BOOKING_SERVICES } from '../../booking/mockData';
 
-/** The site's 13 subjects in three families, each with a brand colour and an Arabic-letter mark. */
+/** The site's 14 subjects in three families, each with a brand colour and an Arabic-letter mark. */
 
 export interface Subject { id: string; glyph: string; spineEn: string; spineAr: string; en: string; ar: string }
 export interface Family { key: string; color: string; en: string; ar: string; subjects: Subject[] }
@@ -18,6 +18,7 @@ export const SUBJECT_FAMILIES: Family[] = [
   {
     key: 'islamic', color: '#8B4935', en: 'Islamic studies', ar: 'العلوم الشرعية',
     subjects: [
+      { id: 'zad-essentials', glyph: 'ز', spineEn: 'Zad', spineAr: 'أول الزاد', en: 'Zad Essentials', ar: 'أول الزاد' },
       { id: 'islamic-studies', glyph: 'إ', spineEn: 'Studies', spineAr: 'دراسات', en: 'Islamic studies', ar: 'الدراسات الإسلامية' },
       { id: 'aqeedah', glyph: 'ع', spineEn: 'Aqeedah', spineAr: 'العقيدة', en: 'Aqeedah', ar: 'العقيدة' },
       { id: 'fiqh', glyph: 'ف', spineEn: 'Fiqh', spineAr: 'الفقه', en: 'Fiqh', ar: 'الفقه الميسر' },

@@ -79,11 +79,14 @@ Read this first in a new session, then `RULES.md` (binding owner decisions) and 
 - scripts/db_wipe_students.ts moved out of the repo to ../watazawwado-archive/.
 - 2026-10-17 (tests): `npm test` works on Windows (run_tests.js spawns npm through a shell, kills the whole server tree, refuses to run if :3000 is already taken). Run `npm run test-only` by hand only with `ALLOW_DEV_AUTH=true` in the test process too, otherwise ~60 extra failures. Suite: 988 pass, 0 fail, 5 skipped (2 need the server's signing key in the test env, 3 need `TEST_TEACHER_AUTH_ID`). Restored the 422 on `PATCH /api/student/me` with `bookingPreference: 'child'` for accounts without a linked child (dropped in 2b656bf). Calendar/outbox suites use `test/helpers/zoomStub.ts`, never the real Zoom API. Out-of-date source-text tests updated to the current UI.
 
+- 2026-10-17 (placement): fixed the crash "Cannot read properties of undefined (reading 'map')" on "Continue the test" (tests saved by the old AI version had one-language questions; `normalizeQuestions` reads them in the bilingual shape for the student page, report and dashboard). Advanced tests now have 8 questions (were 7). Content review of all banks: 2 ambiguous "complete the verse" questions fixed (Al-An'am 6:1 also starts الحمد لله الذي خلق), vocabulary options no longer give the answer away in Arabic (picture + English options), one Egyptian distractor replaced. New one-question-per-screen test with motion, keys 1–4, back/next. TEMPORARY test mode (`PLACEMENT_BEFORE_BOOKING`): open before booking, any subject/level, retakes. New subject **Zad Essentials / أول الزاد** (`zad-essentials`, $9 band) in booking catalogue, onboarding shelf, learning page, emblems, dashboard pickers and a placement bank; needs migration `20261017000000_service_zad_essentials.sql` on production before it can be booked.
+
 ## Next (in order)
 
-1. Owner runs docs/owner-test-checklist.md on production (Claude cannot create accounts on the live site).
-2. Owner tests the teacher dashboard with a real teacher account (add a teacher from the Teachers page).
-3. Send docs/legal-review-brief.md to a lawyer; apply the answers to the terms/privacy pages (bump TERMS_VERSION). Design system moves gradually (CLAUDE.md rule).
+1. Owner tries every placement test (test mode), then asks to switch `PLACEMENT_BEFORE_BOOKING` back to false.
+2. Owner runs docs/owner-test-checklist.md on production (Claude cannot create accounts on the live site).
+3. Owner tests the teacher dashboard with a real teacher account (add a teacher from the Teachers page).
+4. Send docs/legal-review-brief.md to a lawyer; apply the answers to the terms/privacy pages (bump TERMS_VERSION). Design system moves gradually (CLAUDE.md rule).
 
 ## Owner actions outside the code
 

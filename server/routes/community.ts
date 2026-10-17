@@ -17,7 +17,7 @@ import type express from 'express';
 import { GoogleGenAI } from '@google/genai';
 import { parseModelJson } from '../intake/intakeService.js';
 import { notifyUser, notifySuperAdmins } from '../notifications/inbox.js';
-import { BANKS, LEVELS, buildPlacementTest, suggestLevel, skillSummary, type Level, type TestQuestion } from '../placement/index.js';
+import { BANKS, LEVELS, buildPlacementTest, suggestLevel, skillSummary, normalizeQuestions, type Level, type TestQuestion } from '../placement/index.js';
 
 type Mw = (req: any, res: any, next: any) => any;
 
@@ -197,6 +197,13 @@ async function accountLearners(client: any, req: any, deps: CommunityDeps) {
 export type PlacementStatus = 'not_yet' | 'take_now' | 'in_progress' | 'submitted' | 'reviewed';
 
 /**
+ * TEMPORARY (owner request 2026-10-17): open the test before booking so the owner can try every
+ * subject and level before launch. While true: no booking needed, the learner may pick any subject
+ * and level, and may retake. Set back to false when the owner asks (RULES.md: test after the trial).
+ */
+export const PLACEMENT_BEFORE_BOOKING = true;
+
+/**
  * Owner decision 2026-10-16: the test is for the subject and level chosen at onboarding, shown
  * after the learner's first booking (the free trial; for a parent's other children, whatever lesson
  * they book first, since the trial is one per account), taken once per subject by each learner.
@@ -221,7 +228,7 @@ export async function placementStatus(client: any, learner: { id: string; learni
     .select('id', { count: 'exact', head: true })
     .eq('student_id', learner.id)
     .in('status', ['pending', 'confirmed', 'rescheduled', 'completed']);
-  if (!(count || 0)) return { status: 'not_yet', serviceId };
+  if (!(count || 0) && !PLACEMENT_BEFORE_BOOKING) return { status: 'not_yet', serviceId };
   return open ? { status: 'in_progress', serviceId, testId: open.id } : { status: 'take_now', serviceId };
 }
 
@@ -234,7 +241,7 @@ function publicTest(t: any) {
     serviceId: t.service_id,
     statedLevel: t.stated_level,
     status: t.status,
-    questions: t.status === 'in_progress' ? (t.questions || []).map((x: TestQuestion) => ({ q: x.q, options: x.options })) : undefined,
+    questions: t.status === 'in_progress' ? normalizeQuestions(t.questions, t.stated_level).map((x) => ({ q: x.q, options: x.options })) : undefined,
     score: t.score,
     maxScore: t.max_score,
     suggestedLevel: t.suggested_level,
@@ -348,7 +355,7 @@ export function registerCommunityRoutes(app: express.Express, deps: CommunityDep
       const learners = await accountLearners(client, req, deps);
       const out = [];
       for (const l of learners) out.push({ id: l.id, name: l.name, level: l.current_level, ...(await placementStatus(client, l)) });
-      res.json({ learners: out });
+      res.json({ learners: out, testMode: PLACEMENT_BEFORE_BOOKING });
     } catch (err) {
       console.error('[GET /api/placement/mine]', err);
       res.status(500).json({ error: 'Could not load your placement test.' });
@@ -365,6 +372,13 @@ export function registerCommunityRoutes(app: express.Express, deps: CommunityDep
       if (!learner) return res.status(400).json({ error: 'Finish your profile first.' });
 
       const state = await placementStatus(client, learner);
+      // Test mode: any subject and level, always a fresh test.
+      const tryService = PLACEMENT_BEFORE_BOOKING && typeof req.body?.serviceId === 'string' && BANKS[req.body.serviceId] ? req.body.serviceId : null;
+      const tryLevel = PLACEMENT_BEFORE_BOOKING && LEVELS.includes(req.body?.level) ? (req.body.level as Level) : null;
+      if (PLACEMENT_BEFORE_BOOKING) {
+        state.status = 'take_now';
+        if (tryService) state.serviceId = tryService;
+      }
       if (state.status === 'not_yet') {
         return res.status(409).json({ error: 'The placement test opens after you book your free trial.', code: 'BOOK_TRIAL_FIRST' });
       }
@@ -376,7 +390,7 @@ export function registerCommunityRoutes(app: express.Express, deps: CommunityDep
         if (open) return res.json({ test: publicTest(open) });
       }
 
-      const level = LEVELS.includes(learner.current_level as Level) ? learner.current_level! : 'beginner';
+      const level = tryLevel || (LEVELS.includes(learner.current_level as Level) ? learner.current_level! : 'beginner');
       const questions = buildPlacementTest(state.serviceId, level);
       const { data: row, error } = await client
         .from('placement_tests')
@@ -406,7 +420,7 @@ export function registerCommunityRoutes(app: express.Express, deps: CommunityDep
       const { data: test } = await client.from('placement_tests').select('*').eq('id', req.params.id).maybeSingle();
       if (!test || test.auth_user_id !== req.studentUser.auth_id) return res.status(404).json({ error: 'Test not found.' });
       if (test.status !== 'in_progress') return res.status(409).json({ error: 'This test was already sent.', testId: test.id });
-      const questions: TestQuestion[] = test.questions || [];
+      const questions: TestQuestion[] = normalizeQuestions(test.questions, test.stated_level);
       const answers: any[] = Array.isArray(req.body?.answers) ? req.body.answers : [];
       if (answers.length !== questions.length) return res.status(400).json({ error: 'Please answer every question.' });
       const clean = answers.map((a, i) => (Number.isInteger(a) && a >= 0 && a < (questions[i]?.options?.en?.length || 4) ? a : -1));
@@ -441,7 +455,7 @@ export function registerCommunityRoutes(app: express.Express, deps: CommunityDep
       if (!client) return res.status(503).json({ error: 'Database service unavailable.' });
       const { data: t } = await client.from('placement_tests').select('*').eq('id', req.params.id).maybeSingle();
       if (!t || t.auth_user_id !== req.studentUser.auth_id || t.status === 'in_progress') return res.status(404).json({ error: 'Report not found.' });
-      const skills = skillSummary(t.questions || [], t.answers || []);
+      const skills = skillSummary(normalizeQuestions(t.questions, t.stated_level), t.answers || []);
       res.json({
         report: {
           id: t.id,
@@ -472,7 +486,7 @@ export function registerCommunityRoutes(app: express.Express, deps: CommunityDep
       const { data, error } = await client.from('placement_tests').select('*').eq('status', status).order('submitted_at', { ascending: false, nullsFirst: false }).limit(100);
       if (error) return res.json({ tests: [] });
       // The admin sees the questions, the right answers and what the student chose.
-      res.json({ tests: (data || []).map((t: any) => ({ ...publicTest(t), authUserId: t.auth_user_id, questions: t.questions, answers: t.answers, aiSummary: t.ai_summary })) });
+      res.json({ tests: (data || []).map((t: any) => ({ ...publicTest(t), authUserId: t.auth_user_id, questions: normalizeQuestions(t.questions, t.stated_level), answers: t.answers, aiSummary: t.ai_summary })) });
     } catch (err) {
       console.error('[GET /api/dashboard/placement-tests]', err);
       res.status(500).json({ error: 'Could not load placement tests.' });

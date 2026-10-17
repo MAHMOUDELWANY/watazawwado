@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { placementStatus } from '../server/routes/community.js';
-import { BANKS, LEVELS, buildPlacementTest, suggestLevel } from '../server/placement/index.js';
+import { placementStatus, PLACEMENT_BEFORE_BOOKING } from '../server/routes/community.js';
+import { BANKS, LEVELS, buildPlacementTest, suggestLevel, normalizeQuestions } from '../server/placement/index.js';
 import { BOOKING_SERVICES } from '../src/booking/mockData.js';
 
 /** Minimal stand-in for the Supabase query builder: every chain resolves to the table's result. */
@@ -52,9 +52,28 @@ test('placement grading: passing levels in order gives the highest passed level'
 });
 
 test('placement status: opens after the learner first booking, once per subject', async () => {
-  assert.equal((await placementStatus(fakeClient({ bookings: { count: 0 }, tests: { data: [] } }), learner)).status, 'not_yet');
+  assert.equal((await placementStatus(fakeClient({ bookings: { count: 0 }, tests: { data: [] } }), learner)).status, PLACEMENT_BEFORE_BOOKING ? 'take_now' : 'not_yet');
   assert.equal((await placementStatus(fakeClient({ bookings: { count: 1 }, tests: { data: [] } }), learner)).status, 'take_now');
   assert.equal((await placementStatus(fakeClient({ bookings: { count: 1 }, tests: { data: [{ id: 't', status: 'submitted' }] } }), learner)).status, 'submitted');
   assert.equal((await placementStatus(fakeClient({ bookings: { count: 1 }, tests: { data: [{ id: 't', status: 'reviewed' }] } }), learner)).status, 'reviewed');
   assert.equal((await placementStatus(fakeClient({ bookings: { count: 1 }, tests: { error: { message: 'no table' } } }), learner)).status, 'not_yet');
+});
+
+test('placement test: always 8 distinct questions, for every subject and every chosen level', () => {
+  for (const id of Object.keys(BANKS)) {
+    for (const level of LEVELS) {
+      const qs = buildPlacementTest(id, level);
+      assert.equal(qs.length, 8, `${id}/${level}`);
+      assert.equal(new Set(qs.map(q => q.q.en + [...q.options.en].sort().join('|'))).size, 8, `${id}/${level} repeats a question`);
+    }
+  }
+});
+
+test('placement: tests saved by the old AI version are read in the bilingual shape', () => {
+  const [q] = normalizeQuestions([{ q: 'Old?', options: ['a', 'b', 'c', 'd'], answer: 2, skill: 'Reading' }], 'elementary');
+  assert.deepEqual(q.q, { en: 'Old?', ar: 'Old?' });
+  assert.deepEqual(q.options.ar, ['a', 'b', 'c', 'd']);
+  assert.equal(q.answer, 2);
+  assert.equal(q.level, 'elementary');
+  assert.equal(q.skill.en, 'Reading');
 });

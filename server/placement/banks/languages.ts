@@ -12,17 +12,17 @@ export const arabicFoundations: SubjectBank = {
   ],
   elementary: [
     q('How is بَابٌ read?', 'كيف تُقرأ بَابٌ ؟', ['baabun', 'bibun', 'babu', 'bubaa'], 'Reading|القراءة'),
-    q('The word كِتَاب means…', 'كلمة كِتَاب معناها…', bi(['Book', 'Pen', 'House', 'Door'], ['كتاب (Book)', 'قلم', 'بيت', 'باب']), 'Vocabulary|المفردات'),
+    q('The word كِتَاب means…', 'كلمة كِتَاب معناها…', ['📖 Book', '✏️ Pen', '🏠 House', '🚪 Door'], 'Vocabulary|المفردات'),
     q('The form of ع at the start of a word looks like…', 'شكل حرف العين في أول الكلمة…', ['عـ', 'ـعـ', 'ـع', 'ع'], 'Letter forms|أشكال الحروف'),
     q('Which word starts with a "sun letter" (the ل is silent)?', 'أي كلمة بتبدأ بحرف شمسي (اللام ما بتتنطقش)؟', ['الشَّمْس', 'الْقَمَر', 'الْكِتَاب', 'الْبَاب'], 'Sun & moon letters|الشمسية والقمرية'),
-    q('The word قَلَم means…', 'كلمة قَلَم معناها…', bi(['Pen', 'Book', 'Door', 'Chair'], ['قلم (Pen)', 'كتاب', 'باب', 'كرسي']), 'Vocabulary|المفردات')
+    q('The word قَلَم means…', 'كلمة قَلَم معناها…', ['✏️ Pen', '📖 Book', '🚪 Door', '🪑 Chair'], 'Vocabulary|المفردات')
   ],
   intermediate: [
     q('Choose the correct sentence:', 'اختار الجملة الصحيحة:', ['هَذَا بَيْتٌ كَبِيرٌ', 'هَذِهِ بَيْتٌ كَبِيرٌ', 'هَذَا بَيْتٌ كَبِيرَةٌ', 'هَذِهِ بَيْتٌ كَبِيرَةٌ'], 'Gender agreement|التذكير والتأنيث'),
     q('The feminine of طَالِب is…', 'مؤنث طَالِب…', ['طَالِبَة', 'طُلَّاب', 'طَالِبُونَ', 'طَلَب'], 'Gender|التذكير والتأنيث'),
     q('The plural of وَلَد is…', 'جمع وَلَد…', ['أَوْلَاد', 'وَلَدَات', 'وُلُود', 'وَلَدُونَ'], 'Plurals|الجمع'),
     q('Complete: أَنَا ___ عَرَبِيًّا (I speak Arabic)', 'أكمل: أَنَا ___ عَرَبِيًّا', ['أَتَكَلَّمُ', 'تَتَكَلَّمُ', 'يَتَكَلَّمُ', 'نَتَكَلَّمُ'], 'Verbs|الأفعال'),
-    q('The word مَدْرَسَة means…', 'كلمة مَدْرَسَة معناها…', bi(['School', 'Teacher', 'Lesson', 'Student'], ['مدرسة (School)', 'مدرس', 'درس', 'طالب']), 'Vocabulary|المفردات')
+    q('The word مَدْرَسَة means…', 'كلمة مَدْرَسَة معناها…', ['🏫 School', '🧑‍🏫 Teacher', '📝 Lesson', '🎒 Student'], 'Vocabulary|المفردات')
   ],
   advanced: [
     q('Choose the correct sentence:', 'اختار الجملة الصحيحة:', ['ذَهَبَتِ الْبِنْتُ إِلَى الْمَدْرَسَةِ', 'ذَهَبَ الْبِنْتُ إِلَى الْمَدْرَسَةِ', 'ذَهَبَتِ الْبِنْتَ إِلَى الْمَدْرَسَةُ', 'ذَهَبْتُ الْبِنْتُ إِلَى الْمَدْرَسَةِ'], 'Sentences|الجمل'),
@@ -35,7 +35,7 @@ export const arabicFoundations: SubjectBank = {
 
 export const modernStandardArabic: SubjectBank = {
   beginner: [
-    q('Choose the correct meaning of بَيْت:', 'معنى كلمة بَيْت:', bi(['House', 'Car', 'Street', 'City'], ['منزل', 'سيارة', 'شارع', 'مدينة']), 'Vocabulary|المفردات'),
+    q('Choose the correct meaning of بَيْت:', 'معنى كلمة بَيْت:', ['🏠 House', '🚗 Car', '🛣️ Street', '🏙️ City'], 'Vocabulary|المفردات'),
     q('Which is a verb?', 'أي كلمة فعل؟', ['كَتَبَ', 'كِتَاب', 'مِنْ', 'هُوَ'], 'Parts of speech|أقسام الكلام'),
     q('The pronoun for "she" is…', 'ضمير "she" هو…', ['هِيَ', 'هُوَ', 'أَنْتَ', 'نَحْنُ'], 'Pronouns|الضمائر'),
     q('Which is a preposition (حرف جر)?', 'أي كلمة حرف جر؟', ['فِي', 'ذَهَبَ', 'وَلَد', 'جَمِيل'], 'Parts of speech|أقسام الكلام'),
@@ -70,7 +70,7 @@ export const arabicConversation: SubjectBank = {
     q('"Thank you" in Arabic is…', '"Thank you" بالعربي…', ['شُكْرًا', 'عَفْوًا', 'مِنْ فَضْلِكَ', 'نَعَمْ'], 'Polite words|كلمات اللطف'),
     q('"What is your name?" is…', '"What is your name?" هي…', ['مَا اسْمُكَ؟', 'مِنْ أَيْنَ أَنْتَ؟', 'كَمْ عُمْرُكَ؟', 'أَيْنَ تَسْكُنُ؟'], 'Introductions|التعارف'),
     q('The reply to "صَبَاحُ الْخَيْرِ" is…', 'الرد على "صَبَاحُ الْخَيْرِ"…', ['صَبَاحُ النُّورِ', 'مَسَاءُ الْخَيْرِ', 'تُصْبِحُ عَلَى خَيْرٍ', 'أَهْلًا'], 'Greetings|التحية'),
-    q('"نَعَمْ" means…', '"نَعَمْ" معناها…', bi(['Yes', 'No', 'Maybe', 'Please'], ['أيوه (Yes)', 'لا', 'ممكن', 'من فضلك']), 'Basics|الأساسيات')
+    q('"نَعَمْ" means…', '"نَعَمْ" معناها…', ['👍 Yes', '👎 No', '🤷 Maybe', '🙏 Please'], 'Basics|الأساسيات')
   ],
   elementary: [
     q('"How much is this?" is…', '"How much is this?" هي…', ['بِكَمْ هَذَا؟', 'مَا هَذَا؟', 'أَيْنَ هَذَا؟', 'لِمَنْ هَذَا؟'], 'Shopping|التسوق'),
@@ -105,7 +105,7 @@ export const egyptianArabic: SubjectBank = {
   ],
   elementary: [
     q('"إمتى" means…', '"إمتى" معناها…', bi(['When', 'Where', 'How', 'What'], ['متى', 'أين', 'كيف', 'ماذا']), 'Question words|أدوات الاستفهام'),
-    q('"I don\'t know" in Egyptian is…', '"I don\'t know" بالمصري…', ['مش عارف', 'لا أعرفُ', 'ما بعرف', 'ما نعرفش'], 'Negation|النفي'),
+    q('"I don\'t know" in Egyptian is…', '"I don\'t know" بالمصري…', ['مش عارف', 'لا أعرفُ', 'ما بعرف', 'ما أدري'], 'Negation|النفي'),
     q('"بكام ده؟" means…', '"بكام ده؟" معناها…', bi(['How much is this?', 'What is this?', 'Where is this?', 'Whose is this?'], ['بكم هذا؟', 'ما هذا؟', 'أين هذا؟', 'لمن هذا؟']), 'Shopping|التسوق'),
     q('"عشان" means…', '"عشان" معناها…', bi(['Because / so that', 'But', 'Then', 'Maybe'], ['لأن / لكي', 'لكن', 'ثم', 'ربما']), 'Connectors|أدوات الربط'),
     q('"كويس" means…', '"كويس" معناها…', bi(['Good', 'Bad', 'Big', 'Far'], ['جيد', 'سيئ', 'كبير', 'بعيد']), 'Vocabulary|المفردات')

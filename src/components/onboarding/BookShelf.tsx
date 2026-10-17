@@ -4,7 +4,7 @@ import { SUBJECT_FAMILIES, findSubject, subjectTagline } from './subjects';
 import { SubjectMark } from './SubjectMark';
 
 /**
- * "Choose your provision": the 13 subjects are books on three shelves (Quran, Islamic studies,
+ * "Choose your provision": the 14 subjects are books on three shelves (Quran, Islamic studies,
  * languages), each family bound in one brand colour with the subject's animated emblem (the same
  * hand-drawn SVGs as the Subjects page) on the spine.
  * The chosen book slides up out of the shelf with a ribbon, and its description opens below.

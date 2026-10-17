@@ -101,6 +101,31 @@ export const BOOKING_SERVICES: ServiceOption[] = [
 
   // --- ISLAMIC STUDIES PILLAR ---
   {
+    // The curriculum's foundations subject (docs/curriculum/PLAN.md §1a): Kids 6–11, Teens & Adults 12+.
+    id: 'zad-essentials',
+    name: 'Zad Essentials (The First Things Every Muslim Needs)',
+    arabicName: 'أول الزاد: ما لا يسع المسلم جهله',
+    group: 'islamic_studies',
+    tagline: 'For learners starting from zero: belief, purity, prayer and good manners, with the reason behind each.',
+    arabicTagline: 'لمن يبدأ من الصفر: العقيدة والطهارة والصلاة والأخلاق، مع الحكمة والدليل.',
+    description: 'Each lesson gives the reason first, then the evidence from the Quran and Sunnah, and ends with one small step to live it this week. Animated lessons, a Kids version (6–11) and a Teens & Adults version (12+).',
+    arabicDescription: 'كل درس يبدأ بالحجة العقلية، ثم الدليل من القرآن والسنة، وينتهي بخطوة عملية صغيرة يطبقها المتعلم في أسبوعه. دروس متحركة بنسختين: للأطفال (٦–١١) وللناشئة والكبار (١٢+).',
+    suggestedGoals: [
+      'My child knows nothing yet and I want a clear start',
+      'Learn how to make wudu and pray correctly, with the evidence',
+      'Understand who Allah is and why we worship Him',
+      'Build good manners and daily Sunnahs at home'
+    ],
+    arabicSuggestedGoals: [
+      'ابني لسه مايعرفش حاجة وعايز بداية واضحة',
+      'تعلم الوضوء والصلاة بطريقة صحيحة مع الدليل',
+      'معرفة الله ولماذا نعبده',
+      'بناء الأخلاق والسنن اليومية في البيت'
+    ],
+    defaultDurations: [30, 45, 60],
+    hourlyRateUsd: 9
+  },
+  {
     id: 'islamic-studies',
     name: 'Islamic Studies for Adults & Youth',
     arabicName: 'الدراسات الإسلامية العامة',

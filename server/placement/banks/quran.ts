@@ -83,7 +83,7 @@ export const quranMemorization: SubjectBank = {
     q('Ayat al-Kursi is in which surah?', 'آية الكرسي في أي سورة؟', bi(['Al-Baqarah', 'Al ‘Imran', 'An-Nisa', 'Al-Kahf'], ['البقرة', 'آل عمران', 'النساء', 'الكهف']), 'Recall|الاستحضار'),
     q('Surat Al-Mulk is in juz…', 'سورة الملك في الجزء…', ['29', '30', '28', '27'], 'Quran structure|تقسيم المصحف'),
     q('Which surah does not begin with Bismillah?', 'أي سورة لا تبدأ بالبسملة؟', bi(['At-Tawbah', 'Al-Anfal', 'Yunus', 'Hud'], ['التوبة', 'الأنفال', 'يونس', 'هود']), 'Quran structure|تقسيم المصحف'),
-    q('Complete: اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ …', 'أكمل: اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ …', ['الْحَيُّ الْقَيُّومُ', 'الْعَزِيزُ الْحَكِيمُ', 'الرَّحْمَٰنُ الرَّحِيمُ', 'السَّمِيعُ الْعَلِيمُ'], 'Recall|الاستحضار'),
+    q('Complete Ayat al-Kursi: اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ …', 'أكمل آية الكرسي: اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ …', ['الْحَيُّ الْقَيُّومُ', 'الْعَزِيزُ الْحَكِيمُ', 'الرَّحْمَٰنُ الرَّحِيمُ', 'السَّمِيعُ الْعَلِيمُ'], 'Recall|الاستحضار'),
     q('The longest surah in the Quran is…', 'أطول سورة في القرآن…', bi(['Al-Baqarah', 'Al ‘Imran', 'An-Nisa', 'Al-A‘raf'], ['البقرة', 'آل عمران', 'النساء', 'الأعراف']), 'Quran structure|تقسيم المصحف')
   ],
   advanced: [
@@ -99,7 +99,7 @@ export const quranRevision: SubjectBank = {
   beginner: [
     q('Muraja‘ah (revision) means…', 'المراجعة معناها…', bi(['Regularly re-reciting what you memorized', 'Learning a new surah', 'Reading the translation', 'Listening only'], ['تكرار ما حفظته بانتظام', 'حفظ سورة جديدة', 'قراءة الترجمة', 'الاستماع فقط']), 'Revision habits|عادات المراجعة'),
     q('Which surah comes right after Al-Ikhlas?', 'أي سورة بعد الإخلاص مباشرة؟', bi(['Al-Falaq', 'An-Nas', 'Al-Masad', 'Al-Kawthar'], ['الفلق', 'الناس', 'المسد', 'الكوثر']), 'Surah order|ترتيب السور'),
-    q('Complete: الْحَمْدُ لِلَّهِ …', 'أكمل: الْحَمْدُ لِلَّهِ …', ['رَبِّ الْعَالَمِينَ', 'الرَّحْمَٰنِ الرَّحِيمِ', 'مَالِكِ يَوْمِ الدِّينِ', 'الَّذِي خَلَقَ'], 'Recall|الاستحضار'),
+    q('Complete from Al-Fatiha: الْحَمْدُ لِلَّهِ …', 'أكمل من سورة الفاتحة: الْحَمْدُ لِلَّهِ …', ['رَبِّ الْعَالَمِينَ', 'الرَّحْمَٰنِ الرَّحِيمِ', 'مَالِكِ يَوْمِ الدِّينِ', 'الَّذِي خَلَقَ'], 'Recall|الاستحضار'),
     q('Which surah comes right before An-Nas?', 'أي سورة قبل الناس مباشرة؟', bi(['Al-Falaq', 'Al-Ikhlas', 'Al-‘Asr', 'Al-Fil'], ['الفلق', 'الإخلاص', 'العصر', 'الفيل']), 'Surah order|ترتيب السور'),
     q('Complete: إِذَا جَاءَ نَصْرُ اللَّهِ …', 'أكمل: إِذَا جَاءَ نَصْرُ اللَّهِ …', ['وَالْفَتْحُ', 'وَالنَّصْرُ', 'وَالْعَصْرُ', 'وَالْفَجْرُ'], 'Recall|الاستحضار')
   ],

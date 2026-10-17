@@ -17,6 +17,7 @@ const SUBJECT_TAGLINES: Record<string, [string, string]> = {
   'fiqh': ['Pray and worship with certainty.', 'صلِّ واعبد ربك على يقين.'],
   'seerah': ['Walk with the Prophet ﷺ, step by step.', 'امشِ مع النبي ﷺ خطوة بخطوة.'],
   'islamic-studies': ['Live the deen, not just learn it.', 'عِش الدين، مش بس تتعلمه.'],
+  'zad-essentials': ['The first provisions for the road.', 'أول زادك في الطريق.'],
   'modern-standard-arabic': ['Understand what you recite.', 'افهم اللي بتقراه.'],
   'arabic-conversation': ['Speak from the very first lesson.', 'اتكلم من أول حصة.'],
   'egyptian-arabic': ['Talk like you grew up by the Nile.', 'اتكلم كأنك من أهل البلد.'],
@@ -60,7 +61,7 @@ const FAMILY_CONFIGS: Record<string, FamilyStyle & { icon: React.ComponentType<{
   }
 };
 
-// Arabic details for all 13 subjects (English ones live in src/data/content.ts).
+// Arabic details for all 14 subjects (English ones live in src/data/content.ts).
 const ARABIC_SERVICE_DETAILS: Record<string, {
   description: string;
   whoIsItFor: string;
@@ -143,6 +144,17 @@ const ARABIC_SERVICE_DETAILS: Record<string, {
       'ربط وقائع السيرة بمواقفنا وتحدياتنا المعاصرة اليوم'
     ],
     recommendedFrequency: 'حصة في الأسبوع'
+  },
+  'zad-essentials': {
+    description: 'دروس متحركة في العقيدة والطهارة والصلاة والأخلاق. كل موضوع يبدأ بالحجة العقلية، ثم الدليل من القرآن والسنة، ثم خطوة عملية صغيرة.',
+    whoIsItFor: 'الأطفال اللي لسه مايعرفوش حاجة (نسخة الأطفال ٦–١١)، والناشئة والكبار اللي عايزين بداية صحيحة (١٢+).',
+    whatYouWillLearn: [
+      'مين هو الله، وليه نعبده وحده',
+      'الوضوء والصلاة خطوة بخطوة مع الدليل',
+      'أركان الإسلام والإيمان بشرح بسيط',
+      'أخلاق وسنن يومية تغيّر أفعال الطفل وكلامه'
+    ],
+    recommendedFrequency: 'حصة أو اتنين في الأسبوع'
   },
   'islamic-studies': {
     description: 'منهاج تكاملي يجمع بين العقيدة الميسرة، الآداب الإسلامية اليومية، الأدعية والأذكار النبوية، وقصص الأنبياء المؤثرة.',

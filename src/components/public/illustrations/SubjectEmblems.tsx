@@ -309,6 +309,7 @@ export const SUBJECT_EMBLEMS: Record<string, React.ComponentType<EmblemProps>> =
   'fiqh': PrayerMatEmblem,
   'seerah': SeerahEmblem,
   'islamic-studies': LanternBookEmblem,
+  'zad-essentials': LanternBookEmblem,
   'modern-standard-arabic': InkwellEmblem,
   'arabic-conversation': ConversationEmblem,
   'egyptian-arabic': NileEmblem,
