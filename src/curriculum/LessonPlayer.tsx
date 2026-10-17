@@ -44,7 +44,6 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   const [notes, setNotes] = useState(true);
   const [timerLeft, setTimerLeft] = useState(0);
   const [fullscreen, setFullscreen] = useState(false);
-  const [chromeVisible, setChromeVisible] = useState(true);
   const rootRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0.5);
@@ -131,15 +130,6 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
     return () => document.removeEventListener('fullscreenchange', sync);
   }, []);
 
-  // In full screen the controls hide while the teacher talks and come back when the mouse moves.
-  useEffect(() => {
-    if (!fullscreen) { setChromeVisible(true); return; }
-    let t = window.setTimeout(() => setChromeVisible(false), 2500);
-    const wake = () => { setChromeVisible(true); window.clearTimeout(t); t = window.setTimeout(() => setChromeVisible(false), 2500); };
-    window.addEventListener('mousemove', wake);
-    return () => { window.clearTimeout(t); window.removeEventListener('mousemove', wake); };
-  }, [fullscreen]);
-
   const btn = (active = false) =>
     `h-11 min-w-11 px-2.5 inline-flex items-center justify-center gap-1.5 rounded-full text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C] disabled:opacity-35 ${
       active ? 'bg-[#E5A93C] text-[#1E1410]' : 'text-[#1E1410] hover:bg-[#8B4935]/10'
@@ -151,8 +141,8 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
       aria-label={L('Lesson controls', 'التحكم في الدرس')}
       className={`flex items-center gap-1 rounded-[28px] border border-white/70 bg-[#FAF7F2]/90 shadow-[0_18px_40px_-20px_rgba(139,73,53,0.55)] backdrop-blur-xl transition-[transform,opacity] duration-300 ${
         fullscreen
-          ? // Full screen: a vertical rail that slides in from the side (right in English, left in Arabic, owner 2026-10-17).
-            `absolute top-1/2 z-50 max-h-[calc(100%-2rem)] -translate-y-1/2 flex-col overflow-y-auto px-1.5 py-2 ${ar ? 'left-4' : 'right-4'} ${chromeVisible ? 'translate-x-0 opacity-100' : `${ar ? '-translate-x-24' : 'translate-x-24'} pointer-events-none opacity-0`}`
+          ? // Full screen: a docked rail beside the slide (right in English, left in Arabic), never on top of it (owner 2026-10-17).
+            'max-h-full shrink-0 self-center flex-col overflow-y-auto px-1.5 py-2'
           : 'flex-wrap px-2 py-1.5'
       }`}
     >
@@ -228,7 +218,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
 
   const notesAr = ar ? lesson.teacherAr?.[page] : undefined;
   const notesPanel = notes && (
-    <aside dir={notesAr ? 'rtl' : 'ltr'} lang={notesAr ? 'ar' : 'en'} className={`flex flex-col gap-4 overflow-y-auto rounded-[24px] bg-[#FFFDF7] p-5 text-[#1E1410] ring-1 ring-black/5 shadow-[0_18px_40px_-28px_rgba(91,58,30,0.5)] lg:w-[360px] lg:shrink-0 ${fullscreen ? `absolute ${ar ? 'right-5' : 'left-5'} top-5 bottom-24 z-40 w-[360px]` : 'lg:max-h-[min(78vh,720px)]'}`} aria-label={L('Explanation', 'الشرح')}>
+    <aside dir={notesAr ? 'rtl' : 'ltr'} lang={notesAr ? 'ar' : 'en'} className={`flex flex-col gap-4 overflow-y-auto rounded-[24px] bg-[#FFFDF7] p-5 text-[#1E1410] ring-1 ring-black/5 shadow-[0_18px_40px_-28px_rgba(91,58,30,0.5)] lg:w-[360px] lg:shrink-0 ${fullscreen ? 'lg:max-h-full' : 'lg:max-h-[min(78vh,720px)]'}`} aria-label={L('Explanation', 'الشرح')}>
       <div className="flex items-start justify-between gap-2">
         <h3 className="font-serif text-2xl font-bold leading-tight">{notesAr?.title ?? current.title}</h3>
         <button type="button" onClick={() => setNotes(false)} className="rounded-full p-1.5 hover:bg-black/5" aria-label={L('Close explanation', 'اقفل الشرح')}>
@@ -259,7 +249,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   );
 
   return (
-    <div ref={rootRef} dir="ltr" className={`relative flex flex-col gap-3 ${fullscreen ? 'band-deep h-full p-3' : ''}`}>
+    <div ref={rootRef} dir="ltr" className={`relative flex gap-3 ${fullscreen ? `band-deep h-full p-3 ${ar ? 'flex-row-reverse' : 'flex-row'}` : 'flex-col'}`}>
       <div dir={ar ? 'rtl' : 'ltr'} className={`flex flex-col gap-3 lg:flex-row ${fullscreen ? 'min-h-0 flex-1' : ''}`}>
         <div ref={stageRef} className={`relative min-w-0 flex-1 ${fullscreen ? 'h-full min-h-0' : 'aspect-video'}`}>
           <div
