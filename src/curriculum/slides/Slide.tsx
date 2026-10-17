@@ -48,6 +48,10 @@ export function Slide({ lesson, pageIndex, step, onCorrect, onGameResult }: Slid
   const [found, setFound] = useState<string[]>([]);
   const [chosen, setChosen] = useState<string | null>(null);
   const stage = isStage(compositionFor(page));
+  // Stepping back past the question (or replaying it) clears what the child found or chose, so the art matches the question.
+  useEffect(() => {
+    if (!v.interaction) { setFound([]); setChosen(null); }
+  }, [v.interaction]);
   // Each new build step lands at the bottom of the text column; bring it into view.
   useEffect(() => {
     if (step === 0) return;

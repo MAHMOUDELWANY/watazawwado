@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from
 import { AnimatePresence, motion } from 'motion/react';
 import {
   ChevronLeft, ChevronRight, Maximize2, Minimize2, Star, PenLine, Highlighter, MousePointer2, Eraser, LayoutGrid,
-  Timer, RotateCcw, BookOpenText, X, Globe,
+  Timer, RotateCcw, SkipBack, BookOpenText, X, Globe,
 } from 'lucide-react';
 import type { Lesson } from './types';
 import { Slide, stepsFor, CANVAS_W, CANVAS_H, scoreSort, type GameResult } from './slides/Slide';
@@ -83,6 +83,19 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
     else if (page > 0) goPage(page - 1, true);
   }, [step, page, goPage]);
 
+  /** Replay = act out the newest build step again (on a page with no steps yet, its entrance). Earlier steps stay put. */
+  const replayStep = useCallback(() => {
+    if (step === 0) { setReplay((r) => r + 1); return; }
+    const s = step;
+    setStep(s - 1);
+    requestAnimationFrame(() => setStep(s));
+  }, [step]);
+  /** Start again = back to this page's first build step, with its entrance and any answers cleared. */
+  const restartPage = useCallback(() => {
+    setStep(0);
+    setReplay((r) => r + 1);
+  }, []);
+
   const cheer = useCallback(() => {
     setPraise(true);
     window.setTimeout(() => setPraise(false), 1900);
@@ -112,13 +125,14 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
       else if (k === 'e') setClearSignal((c) => c + 1);
       else if (k === 'g') setGrid((g) => !g);
       else if (k === 'n') setNotes((n) => !n);
-      else if (k === 'r') setReplay((r) => r + 1);
+      else if (k === 'r') replayStep();
+      else if (k === 'home') { e.preventDefault(); restartPage(); }
       else if (k === 'f') toggleFullscreen();
       else if (teacher && k === 'p') cheer();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [forward, backward, cheer, teacher, toggleFullscreen]);
+  }, [forward, backward, cheer, teacher, toggleFullscreen, replayStep, restartPage]);
 
   useEffect(() => {
     const sync = () => {
@@ -180,8 +194,11 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
         <Eraser className="w-[18px] h-[18px]" />
       </button>
       <span className={fullscreen ? 'my-1 h-px w-6 bg-[#8B4935]/20' : 'mx-1 h-6 w-px bg-[#8B4935]/20'} aria-hidden="true" />
-      <button type="button" className={btn()} onClick={() => setReplay((r) => r + 1)} title={L('Replay animation (R)', 'أعد الحركة (R)')} aria-label={L('Replay animation', 'أعد الحركة')}>
+      <button type="button" className={btn()} onClick={replayStep} title={L('Replay the last step (R)', 'أعد آخر خطوة (R)')} aria-label={L('Replay the last step', 'أعد آخر خطوة')}>
         <RotateCcw className="w-[18px] h-[18px]" />
+      </button>
+      <button type="button" className={btn()} onClick={restartPage} title={L('Start this page again from its first step (Home)', 'ابدأ الصفحة من أول خطوة (Home)')} aria-label={L('Start this page again', 'ابدأ الصفحة من الأول')}>
+        <SkipBack className="w-[18px] h-[18px] rtl:rotate-180" />
       </button>
       {teacher && (
         <>
