@@ -22,27 +22,28 @@ describe('Task: Student Portal Information Architecture & Application Shell Rebu
       assert.ok(studentAppSource.includes("path: '/student'"), 'Must include Overview route in navigation');
       assert.ok(studentAppSource.includes("path: '/student/lessons'"), 'Must include My Lessons route in navigation');
       assert.ok(!studentAppSource.includes("path: '/student/packages'"), 'Packages must not be primary navigation');
-      assert.ok(studentAppSource.includes("path: '/student/payments'"), 'Must include Payments route in navigation');
-      assert.ok(studentAppSource.includes("path: '/student/notifications'"), 'Must include Notifications route in navigation');
+      // Payments and notifications left the sidebar in the 2026-09-29 redesign; they stay one tap away.
+      assert.ok(studentHomeSource.includes('to="/student/payments"'), 'Overview must link to Payments');
+      assert.ok(studentAppSource.includes('to="/student/notifications"'), 'Header must link to Notifications');
       assert.ok(studentAppSource.includes("path: '/student/account'"), 'Must include Account route in navigation');
     });
 
     it('verifies Book New Lesson is prominent and routes to /student/book with zero /#book references', () => {
-      assert.ok(studentAppSource.includes('to="/student/book"'), 'Sidebar must route Book New Lesson to /student/book');
-      assert.ok(studentAppSource.includes('<span>Book New Lesson</span>'), 'Sidebar must display Book New Lesson');
+      assert.ok(studentAppSource.includes("path: '/student/book'"), 'Sidebar must route Book to /student/book');
+      assert.ok(studentAppSource.includes("to: '/student/book'") && studentAppSource.includes('primary: true'), 'Mobile bar must make Book the primary action');
       assert.ok(!studentAppSource.includes('/#book'), 'StudentApp must contain zero /#book links');
       assert.ok(!studentHomeSource.includes('/#book'), 'StudentHomePage must contain zero /#book links');
     });
 
     it('verifies application header with dynamic route titles and action utilities', () => {
       // Header component
-      assert.ok(studentAppSource.includes('<header className="h-16 flex items-center justify-between'), 'Must render dedicated application header');
+      assert.ok(studentAppSource.includes('<header className="h-16 '), 'Must render dedicated application header');
       assert.ok(studentAppSource.includes('getHeaderInfo'), 'Must include dynamic route title helper');
       assert.ok(studentAppSource.includes('currentHeader.title'), 'Must display dynamic page title');
       // Action utilities
       assert.ok(studentAppSource.includes('to="/student/notifications"'), 'Header must include notification trigger');
       assert.ok(studentAppSource.includes('toggleLang'), 'Header must include language toggle');
-      assert.ok(studentAppSource.includes('toggleTheme'), 'Header must include theme toggle');
+      assert.ok(studentAppSource.includes('<ThemeToggle />'), 'Shell must include theme toggle');
       assert.ok(studentAppSource.includes('studentInitial'), 'Header must display student initial avatar');
     });
 
@@ -64,7 +65,7 @@ describe('Task: Student Portal Information Architecture & Application Shell Rebu
   describe('2. Overview Command Center Architecture', () => {
     it('verifies Overview avoids generic metric card clutter and features clean hierarchy', () => {
       // Greeting
-      assert.ok(studentHomeSource.includes('greetingWord'), 'Must include time-aware greeting');
+      assert.ok(studentHomeSource.includes('welcomeTitle'), 'Must include the welcome greeting');
       // Quick actions
       assert.ok(studentHomeSource.includes('to="/student/book"'), 'Quick actions must link to /student/book');
       assert.ok(!studentHomeSource.includes('to="/student/packages"'), 'Quick actions must prioritize booking, not package shopping');

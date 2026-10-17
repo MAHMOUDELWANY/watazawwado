@@ -8077,6 +8077,34 @@ app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
       if (rawBookingPref !== 'self' && rawBookingPref !== 'child') {
         return res.status(422).json({ error: "Invalid booking preference. Must be 'self' or 'child'." });
       }
+
+      // Same eligibility rule as GET /api/student/me: a child with a guardian, or a parent with linked children.
+      if (rawBookingPref === 'child') {
+        let canBookForChild = false;
+        if (!supabaseAdmin || (!isProd && req.studentUser?.studentProfile)) {
+          const mp = req.studentUser?.studentProfile;
+          canBookForChild = mp?.canBookForChild ?? (
+            mp?.learner_type === 'child' ||
+            Boolean(mp?.guardian) ||
+            Boolean(mp?.linkedChildren && mp.linkedChildren.length > 0)
+          );
+        } else {
+          const [studentCheck, guardianCheck, parentCheck] = await Promise.all([
+            supabaseAdmin.from('students').select('learner_type').eq('id', studentId).maybeSingle(),
+            supabaseAdmin.from('guardians').select('student_id').eq('student_id', studentId).maybeSingle(),
+            supabaseAdmin.from('guardians').select('student_id').ilike('parent_email', escapeLike((req.studentUser?.email || '').trim())).limit(1)
+          ]);
+          const isChildWithGuardian = studentCheck.data?.learner_type === 'child' && Boolean(guardianCheck.data);
+          const isParentOfChild = Boolean(parentCheck.data && parentCheck.data.length > 0);
+          canBookForChild = isChildWithGuardian || isParentOfChild;
+        }
+        if (!canBookForChild) {
+          return res.status(422).json({
+            error: 'Account has no linked child relationship. Booking preference cannot be set to child.'
+          });
+        }
+      }
+
       updatePayload.booking_preference = rawBookingPref;
     }
 

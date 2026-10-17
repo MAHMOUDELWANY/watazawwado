@@ -40,8 +40,10 @@ describe('Section 08-B: Student Profile & Account Visual UX Refinement', () => {
   it('4. Accessibility & Touch Targets: Enforces 44px min touch targets and explicit label associations', () => {
     assert.ok(profilePageSource.includes('htmlFor="student-name"'), 'Must have accessible label for student name');
     assert.ok(profilePageSource.includes('id="student-name"'), 'Must have id matching student name label');
-    assert.ok(profilePageSource.includes('htmlFor="student-timezone"'), 'Must have accessible label for timezone');
-    assert.ok(profilePageSource.includes('id="student-timezone"'), 'Must have id matching timezone label');
+    // Since 8816587 the time zone follows the country picker, whose select carries its own label.
+    const pickerSource = fs.readFileSync(path.join(process.cwd(), 'src/components/ui/CountryTimezonePicker.tsx'), 'utf-8');
+    assert.ok(profilePageSource.includes('<CountryTimezonePicker'), 'Profile must use the country/time zone picker');
+    assert.ok(pickerSource.includes('htmlFor={countrySelectId}') && pickerSource.includes('id={countrySelectId}'), 'Country select must have an associated label');
     assert.ok(profilePageSource.includes('htmlFor="student-whatsapp"'), 'Must have accessible label for whatsapp');
     assert.ok(profilePageSource.includes('id="student-whatsapp"'), 'Must have id matching whatsapp label');
     assert.ok(profilePageSource.includes('min-h-[44px]'), 'Must enforce minimum 44px touch targets on form controls and buttons');

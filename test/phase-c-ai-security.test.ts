@@ -36,7 +36,7 @@ test('Phase C: AI Brief Security and Data Minimization Verification', async (t) 
 
   await t.test('3. Generates prompt using minimal PII data', () => {
     const aiBriefSection = code.substring(code.indexOf('app.post(\'/api/dashboard/students/:id/ai-brief\''));
-    const contextObjectStr = aiBriefSection.match(/const context = \{[\s\S]*?intake: .*?\n\s*\};/)?.[0];
+    const contextObjectStr = aiBriefSection.match(/const context = \{[\s\S]*?intake: [^\r\n]*\r?\n\s*\};/)?.[0];
     
     assert.ok(contextObjectStr, 'Context object should be built before calling AI');
     

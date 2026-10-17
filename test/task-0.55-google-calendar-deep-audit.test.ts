@@ -1,3 +1,4 @@
+import './helpers/zoomStub.js';
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
 import crypto from 'crypto';
@@ -24,15 +25,19 @@ import {
 } from '../server/integrations/googleCalendar.js';
 import { processIntegrationJobs } from '../server/integrations/worker.js';
 
+// Tests 1-2 sign OAuth state that the dev server on :3000 must accept, so this process needs the
+// server's signing key in its environment. Without it they cannot pass and are skipped.
+const NEEDS_SERVER_SECRET = process.env.SUPABASE_SERVICE_ROLE_KEY ? false : 'needs SUPABASE_SERVICE_ROLE_KEY in the test environment';
+
 describe('Task 0.55: Google Calendar Deep Audit & Lifecycle Hardening Suite', () => {
 
   // =========================================================================
   // CATEGORY 1: OAUTH LIFECYCLE & SECURITY
   // =========================================================================
   describe('Category 1: OAuth Lifecycle & Security', () => {
-    it('1. Valid authorized teacher callback initiates connection with proper state contract', async () => {
-      // Teacher A signs state
-      const teacherId = '9cd86044-eb13-4547-88e4-567c4f6a57d8';
+    it('1. Valid authorized teacher callback initiates connection with proper state contract', { skip: NEEDS_SERVER_SECRET }, async () => {
+      // Teacher A signs state (the canonical dev teacher, so the test does not depend on rows in the live project)
+      const teacherId = 'teacher-mahmoud-001';
       const nonce = crypto.randomBytes(16).toString('hex');
       const payload = `${teacherId}:${nonce}`;
       const secret = process.env.SUPABASE_SERVICE_ROLE_KEY || 'dev-secret';
@@ -51,7 +56,7 @@ describe('Task 0.55: Google Calendar Deep Audit & Lifecycle Hardening Suite', ()
       assert.notStrictEqual(res.status, 403, 'Authorized teacher with signed state must pass CSRF & Auth checks');
     });
 
-    it('2. Unauthorized / unknown teacher callback is strictly rejected with 403', async () => {
+    it('2. Unauthorized / unknown teacher callback is strictly rejected with 403', { skip: NEEDS_SERVER_SECRET }, async () => {
       const unauthorizedTeacherId = 'unauthorized-intruder-888';
       const nonce = crypto.randomBytes(16).toString('hex');
       const payload = `${unauthorizedTeacherId}:${nonce}`;
@@ -136,11 +141,12 @@ describe('Task 0.55: Google Calendar Deep Audit & Lifecycle Hardening Suite', ()
   // CATEGORY 3: AVAILABILITY & FREEBUSY SCOPING
   // =========================================================================
   describe('Category 3: Availability & FreeBusy Scoping', () => {
-    it('9. Missing teacher does NOT query Google Calendar and returns baseline schedule', async () => {
+    // Multi-teacher (RULES.md §1): hours come only from a teacher's own availability, so no teacher means no slots.
+    it('9. Missing teacher does NOT query Google Calendar and offers no slots', async () => {
       const slots = await computeAvailableSlots('America/Toronto', 3, 30);
       assert.ok(Array.isArray(slots), 'Slots must be an array');
       assert.ok(slots.length === 3, 'Must compute requested number of days');
-      assert.ok(slots[0].slots.length > 0, 'Must have baseline slots');
+      assert.ok(slots.every((d: any) => d.slots.length === 0), 'No teacher means no bookable slots');
     });
 
     it('10. Teacher A uses Teacher A connection without leaking to other teachers', async () => {

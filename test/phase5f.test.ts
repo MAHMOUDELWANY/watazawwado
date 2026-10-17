@@ -104,7 +104,7 @@ describe('Phase 5F — Final Closure Verification Tests', () => {
       const res = await fetch(`${baseUrl}/api/dashboard/settings`, {
         method: 'PATCH',
         headers: {
-          Authorization: 'Bearer dev-teacher-token',
+          Authorization: 'Bearer dev-super-admin-token',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -120,7 +120,7 @@ describe('Phase 5F — Final Closure Verification Tests', () => {
       const res = await fetch(`${baseUrl}/api/dashboard/settings`, {
         method: 'PATCH',
         headers: {
-          Authorization: 'Bearer dev-teacher-token',
+          Authorization: 'Bearer dev-super-admin-token',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -134,7 +134,7 @@ describe('Phase 5F — Final Closure Verification Tests', () => {
       const res = await fetch(`${baseUrl}/api/dashboard/settings`, {
         method: 'PATCH',
         headers: {
-          Authorization: 'Bearer dev-teacher-token',
+          Authorization: 'Bearer dev-super-admin-token',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -151,7 +151,7 @@ describe('Phase 5F — Final Closure Verification Tests', () => {
       const res = await fetch(`${baseUrl}/api/dashboard/payments`, {
         method: 'POST',
         headers: {
-          Authorization: 'Bearer dev-teacher-token',
+          Authorization: 'Bearer dev-super-admin-token',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -169,7 +169,7 @@ describe('Phase 5F — Final Closure Verification Tests', () => {
       const res = await fetch(`${baseUrl}/api/dashboard/payments`, {
         method: 'POST',
         headers: {
-          Authorization: 'Bearer dev-teacher-token',
+          Authorization: 'Bearer dev-super-admin-token',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({

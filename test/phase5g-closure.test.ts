@@ -1,15 +1,26 @@
 import { describe, it, before, after } from 'node:test';
 import * as assert from 'node:assert';
 import http from 'node:http';
+import crypto from 'node:crypto';
 import app from '../api/index.js';
 import { getGoogleOAuthCredentials, generateGoogleAuthUrl } from '../server/integrations/googleCalendar.js';
+
+// Signed the same way as /api/integrations/google-calendar/auth-url, with whatever key this environment uses.
+const OAUTH_STATE_PAYLOAD = Buffer.from('dGVhY2hlci1tYWhtb3VkLTAwMTpkODNlZDg0YzBhNWI1NWRiZTE5ZmEyOTYzMDA4NWVjYg==', 'base64').toString('utf8');
+const OAUTH_STATE = `${Buffer.from(OAUTH_STATE_PAYLOAD).toString('base64')}.${crypto.createHmac('sha256', process.env.SUPABASE_SERVICE_ROLE_KEY || 'dev-secret').update(OAUTH_STATE_PAYLOAD).digest('hex')}`;
 
 describe('Phase 5G - Final Last-Mile Closure', () => {
   let server: http.Server;
   let baseUrl: string;
   let originalFetch: typeof globalThis.fetch;
 
+  const originalGoogleEnv = { id: process.env.GOOGLE_CLIENT_ID, secret: process.env.GOOGLE_CLIENT_SECRET, redirect: process.env.GOOGLE_REDIRECT_URI };
+
   before(async () => {
+    // Google's token/userinfo endpoints are mocked per test; fake client credentials keep the callback past its 503 guard.
+    process.env.GOOGLE_CLIENT_ID = 'test-google-client-id';
+    process.env.GOOGLE_CLIENT_SECRET = 'test-google-client-secret';
+    process.env.GOOGLE_REDIRECT_URI = 'https://example.com/api/integrations/google-calendar/callback';
     originalFetch = globalThis.fetch;
     await new Promise<void>((resolve) => {
       server = app.listen(0, '127.0.0.1', () => {
@@ -21,6 +32,9 @@ describe('Phase 5G - Final Last-Mile Closure', () => {
   });
 
   after(() => {
+    if (originalGoogleEnv.id === undefined) delete process.env.GOOGLE_CLIENT_ID; else process.env.GOOGLE_CLIENT_ID = originalGoogleEnv.id;
+    if (originalGoogleEnv.secret === undefined) delete process.env.GOOGLE_CLIENT_SECRET; else process.env.GOOGLE_CLIENT_SECRET = originalGoogleEnv.secret;
+    if (originalGoogleEnv.redirect === undefined) delete process.env.GOOGLE_REDIRECT_URI; else process.env.GOOGLE_REDIRECT_URI = originalGoogleEnv.redirect;
     globalThis.fetch = originalFetch;
     server.close();
   });
@@ -54,7 +68,7 @@ describe('Phase 5G - Final Last-Mile Closure', () => {
     setupPaymentMock();
     const res = await originalFetch(`${baseUrl}/api/dashboard/payments`, {
       method: 'POST',
-      headers: { 'Authorization': 'Bearer dev-teacher-token', 'Content-Type': 'application/json' },
+      headers: { 'Authorization': 'Bearer dev-super-admin-token', 'Content-Type': 'application/json' },
       body: JSON.stringify({ amount: 10, currency: 'USD', payment_method: 'wise', status: 'pending' })
     });
     const body = await res.json();
@@ -68,7 +82,7 @@ describe('Phase 5G - Final Last-Mile Closure', () => {
     setupPaymentMock();
     const res = await originalFetch(`${baseUrl}/api/dashboard/payments/123/reject`, {
       method: 'POST',
-      headers: { 'Authorization': 'Bearer dev-teacher-token', 'Content-Type': 'application/json' },
+      headers: { 'Authorization': 'Bearer dev-super-admin-token', 'Content-Type': 'application/json' },
       body: JSON.stringify({ notes: 'test' })
     });
     const body = await res.json();
@@ -82,7 +96,7 @@ describe('Phase 5G - Final Last-Mile Closure', () => {
     setupPaymentMock();
     const res = await originalFetch(`${baseUrl}/api/dashboard/payments/123`, {
       method: 'DELETE',
-      headers: { 'Authorization': 'Bearer dev-teacher-token' }
+      headers: { 'Authorization': 'Bearer dev-super-admin-token' }
     });
     const body = await res.json();
     assert.strictEqual(res.status, 500);
@@ -148,8 +162,8 @@ describe('Phase 5G - Final Last-Mile Closure', () => {
       return originalFetch(url, options);
     };
 
-    const res = await originalFetch(`${baseUrl}/api/integrations/google-calendar/callback?code=mock_code&state=dGVhY2hlci1tYWhtb3VkLTAwMTpkODNlZDg0YzBhNWI1NWRiZTE5ZmEyOTYzMDA4NWVjYg==.70a7846618e964561a98937125f9ff326162b2bbb4ca18de9920e0d3dd276a15`, {
-      headers: { 'Cookie': 'oauth_state=dGVhY2hlci1tYWhtb3VkLTAwMTpkODNlZDg0YzBhNWI1NWRiZTE5ZmEyOTYzMDA4NWVjYg==.70a7846618e964561a98937125f9ff326162b2bbb4ca18de9920e0d3dd276a15' }
+    const res = await originalFetch(`${baseUrl}/api/integrations/google-calendar/callback?code=mock_code&state=${OAUTH_STATE}`, {
+      headers: { 'Cookie': `oauth_state=${OAUTH_STATE}` }
     });
     const text = await res.text();
     globalThis.fetch = originalFetch;
@@ -193,8 +207,8 @@ describe('Phase 5G - Final Last-Mile Closure', () => {
       return originalFetch(url, options);
     };
 
-    const res = await originalFetch(`${baseUrl}/api/integrations/google-calendar/callback?code=mock_code&state=dGVhY2hlci1tYWhtb3VkLTAwMTpkODNlZDg0YzBhNWI1NWRiZTE5ZmEyOTYzMDA4NWVjYg==.70a7846618e964561a98937125f9ff326162b2bbb4ca18de9920e0d3dd276a15`, {
-      headers: { 'Cookie': 'oauth_state=dGVhY2hlci1tYWhtb3VkLTAwMTpkODNlZDg0YzBhNWI1NWRiZTE5ZmEyOTYzMDA4NWVjYg==.70a7846618e964561a98937125f9ff326162b2bbb4ca18de9920e0d3dd276a15' }
+    const res = await originalFetch(`${baseUrl}/api/integrations/google-calendar/callback?code=mock_code&state=${OAUTH_STATE}`, {
+      headers: { 'Cookie': `oauth_state=${OAUTH_STATE}` }
     });
     const text = await res.text();
     globalThis.fetch = originalFetch;
@@ -244,8 +258,8 @@ describe('Phase 5G - Final Last-Mile Closure', () => {
       return originalFetch(url, options);
     };
 
-    const res = await originalFetch(`${baseUrl}/api/integrations/google-calendar/callback?code=mock_code&state=dGVhY2hlci1tYWhtb3VkLTAwMTpkODNlZDg0YzBhNWI1NWRiZTE5ZmEyOTYzMDA4NWVjYg==.70a7846618e964561a98937125f9ff326162b2bbb4ca18de9920e0d3dd276a15`, {
-      headers: { 'Cookie': 'oauth_state=dGVhY2hlci1tYWhtb3VkLTAwMTpkODNlZDg0YzBhNWI1NWRiZTE5ZmEyOTYzMDA4NWVjYg==.70a7846618e964561a98937125f9ff326162b2bbb4ca18de9920e0d3dd276a15' }
+    const res = await originalFetch(`${baseUrl}/api/integrations/google-calendar/callback?code=mock_code&state=${OAUTH_STATE}`, {
+      headers: { 'Cookie': `oauth_state=${OAUTH_STATE}` }
     });
     const text = await res.text();
     globalThis.fetch = originalFetch;
@@ -296,8 +310,8 @@ describe('Phase 5G - Final Last-Mile Closure', () => {
       return originalFetch(url, options);
     };
 
-    const res = await originalFetch(`${baseUrl}/api/integrations/google-calendar/callback?code=mock_code&state=dGVhY2hlci1tYWhtb3VkLTAwMTpkODNlZDg0YzBhNWI1NWRiZTE5ZmEyOTYzMDA4NWVjYg==.70a7846618e964561a98937125f9ff326162b2bbb4ca18de9920e0d3dd276a15`, {
-      headers: { 'Cookie': 'oauth_state=dGVhY2hlci1tYWhtb3VkLTAwMTpkODNlZDg0YzBhNWI1NWRiZTE5ZmEyOTYzMDA4NWVjYg==.70a7846618e964561a98937125f9ff326162b2bbb4ca18de9920e0d3dd276a15' }
+    const res = await originalFetch(`${baseUrl}/api/integrations/google-calendar/callback?code=mock_code&state=${OAUTH_STATE}`, {
+      headers: { 'Cookie': `oauth_state=${OAUTH_STATE}` }
     });
     const text = await res.text();
     globalThis.fetch = originalFetch;
@@ -343,8 +357,8 @@ describe('Phase 5G - Final Last-Mile Closure', () => {
       return originalFetch(url, options);
     };
 
-    const res = await originalFetch(`${baseUrl}/api/integrations/google-calendar/callback?code=mock_code&state=dGVhY2hlci1tYWhtb3VkLTAwMTpkODNlZDg0YzBhNWI1NWRiZTE5ZmEyOTYzMDA4NWVjYg==.70a7846618e964561a98937125f9ff326162b2bbb4ca18de9920e0d3dd276a15`, {
-      headers: { 'Cookie': 'oauth_state=dGVhY2hlci1tYWhtb3VkLTAwMTpkODNlZDg0YzBhNWI1NWRiZTE5ZmEyOTYzMDA4NWVjYg==.70a7846618e964561a98937125f9ff326162b2bbb4ca18de9920e0d3dd276a15' }
+    const res = await originalFetch(`${baseUrl}/api/integrations/google-calendar/callback?code=mock_code&state=${OAUTH_STATE}`, {
+      headers: { 'Cookie': `oauth_state=${OAUTH_STATE}` }
     });
     const text = await res.text();
     globalThis.fetch = originalFetch;

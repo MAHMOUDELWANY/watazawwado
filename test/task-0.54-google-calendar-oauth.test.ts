@@ -86,7 +86,7 @@ describe('Task 0.54: Google Calendar Teacher Identity Binding & OAuth Security',
     delete process.env.GOOGLE_CLIENT_ID;
     delete process.env.GOOGLE_CLIENT_SECRET;
 
-    const teacherId = '9cd86044-eb13-4547-88e4-567c4f6a57d8';
+    const teacherId = 'teacher-mahmoud-001'; // canonical dev teacher: this test is about the 503, not teacher lookup
     const nonce = 'randomnonce123';
     const b64Redirect = Buffer.from(`${baseUrl}/api/integrations/google-calendar/callback`).toString('base64');
     const payload = `${teacherId}:${nonce}:${b64Redirect}`;

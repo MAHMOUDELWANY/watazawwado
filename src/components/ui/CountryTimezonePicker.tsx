@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useId } from 'react';
 import { Globe, Clock, ShieldCheck, Check } from 'lucide-react';
 import { DateTime } from 'luxon';
 import {
@@ -40,6 +40,7 @@ export function CountryTimezonePicker({
 
   // Track live clock preview in selected timezone
   const [currentTimePreview, setCurrentTimePreview] = useState<string>('');
+  const countrySelectId = useId();
 
   useEffect(() => {
     if (initialCountryCode) {
@@ -81,13 +82,14 @@ export function CountryTimezonePicker({
     <div className={`space-y-3.5 ${className}`}>
       {/* 1. Country Selection */}
       <div>
-        <label className="block text-xs sm:text-sm font-semibold text-foreground mb-1.5">
+        <label htmlFor={countrySelectId} className="block text-xs sm:text-sm font-semibold text-foreground mb-1.5">
           <span className="flex items-center gap-1.5">
             <Globe className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
             <span>{isAr ? 'دولة الإقامة (يُحدد التوقيت وكود الهاتف تلقائياً)' : 'Country of Residence (Auto-sets timezone & phone code)'}</span>
           </span>
         </label>
         <select
+          id={countrySelectId}
           value={selectedCountry.code}
           onChange={(e) => handleCountrySelect(e.target.value)}
           className="w-full px-3.5 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-colors cursor-pointer"

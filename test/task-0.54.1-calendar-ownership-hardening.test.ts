@@ -160,8 +160,8 @@ describe('Task 0.54.1: Google Calendar Teacher Ownership & Security Hardening Ga
   });
 
   // F. HELPER: isTeacherCurrentlyAuthorized
-  it('F1: isTeacherCurrentlyAuthorized should correctly identify authorized vs unauthorized accounts', async () => {
-    const isMahmoudAuth = await isTeacherCurrentlyAuthorized('9cd86044-eb13-4547-88e4-567c4f6a57d8');
+  it('F1: isTeacherCurrentlyAuthorized should correctly identify authorized vs unauthorized accounts', { skip: process.env.TEST_TEACHER_AUTH_ID ? false : 'set TEST_TEACHER_AUTH_ID to an active teacher auth id in the configured project (mocked coverage: task-0.55.4-c)' }, async () => {
+    const isMahmoudAuth = await isTeacherCurrentlyAuthorized(process.env.TEST_TEACHER_AUTH_ID!);
     assert.strictEqual(isMahmoudAuth, true, '9cd86044-eb13-4547-88e4-567c4f6a57d8 should be authorized');
 
     const isFakeAuth = await isTeacherCurrentlyAuthorized('non-existent-teacher-99999');

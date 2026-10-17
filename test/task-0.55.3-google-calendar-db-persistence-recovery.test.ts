@@ -1,3 +1,4 @@
+import './helpers/zoomStub.js';
 import { describe, it, beforeEach, afterEach } from 'node:test';
 import * as assert from 'node:assert';
 import { syncBookingIntegrations } from '../server/integrations/syncEngine.js';

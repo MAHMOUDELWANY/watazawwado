@@ -395,11 +395,11 @@ describe('Task 0.50.1 — Production RPC Hardening Correction: Cast Safety, Over
   });
 
   it('7. Client Trust Boundary Review: bookingRepository never fakes tokens and respects server errors', () => {
-    // Inspect bookingRepository
-    assert.ok(bookingRepoContent.includes("const { data: atomicResult, error: atomicError } = await supabase.rpc('create_booking_atomic'"));
-    assert.ok(bookingRepoContent.includes('if (atomicError) {'));
-    assert.ok(bookingRepoContent.includes('return { success: false, error: atomicError.message'));
-    assert.ok(bookingRepoContent.includes('referenceCode = atomicResult.referenceCode;'));
-    assert.ok(bookingRepoContent.includes('managementToken = atomicResult.managementToken;'));
+    // Since db013c2 the client books through POST /api/bookings/create, which creates the booking server-side.
+    assert.ok(bookingRepoContent.includes("fetch('/api/bookings/create'"), 'Books through the server endpoint');
+    assert.ok(bookingRepoContent.includes('if (!res.ok || !resData.success) {'), 'Checks the server result');
+    assert.ok(bookingRepoContent.includes('success: false,'), 'Returns the server error without a mock fallback');
+    assert.ok(bookingRepoContent.includes('referenceCode = resData.referenceCode;'), 'referenceCode authoritative from server');
+    assert.ok(bookingRepoContent.includes('managementToken = resData.managementToken;'), 'managementToken authoritative from server');
   });
 });

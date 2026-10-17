@@ -16,7 +16,7 @@ test('Workflow 03-A Package Catalog API exists', async (t) => {
 test('Workflow 03-A UI Integration', async (t) => {
   const stepLesson = fs.readFileSync('src/components/booking/StepLessonType.tsx', 'utf8');
   assert.ok(stepLesson.includes("fetch('/api/packages')"), 'UI fetches packages dynamically');
-  assert.ok(stepLesson.includes("Single Lesson"), 'Displays Single Lesson option');
+  assert.ok(stepLesson.includes('Pay for this single lesson'), 'Displays single-lesson option');
 
   const stepReview = fs.readFileSync('src/components/booking/StepReviewSummary.tsx', 'utf8');
   assert.ok(stepReview.includes('selectedPackageId'), 'Review summary handles selectedPackageId');

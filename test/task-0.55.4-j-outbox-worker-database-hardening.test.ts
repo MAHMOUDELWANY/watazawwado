@@ -1,3 +1,4 @@
+import './helpers/zoomStub.js';
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
 import fs from 'node:fs';
@@ -439,7 +440,8 @@ describe('Task 0.55.4-J: Outbox & Worker Database Hardening Verification', () =>
       assert.strictEqual(processed, 0);
       assert.strictEqual(failurePayload.status, 'dead_letter', 'Permanent error must transition immediately to dead_letter');
       assert.strictEqual(failurePayload.attempts, 5, 'Permanent error sets attempts to 5');
-      assert.strictEqual(failurePayload.next_attempt_at, null, 'No next attempt scheduled for dead-letter');
+      // next_attempt_at is NOT NULL, so dead letters are parked ~10 years out instead of null (db013c2).
+      assert.ok(new Date(failurePayload.next_attempt_at).getTime() > Date.now() + 5 * 365 * 86400000, 'No next attempt scheduled for dead-letter');
       assert.strictEqual(failurePayload.locked_at, null);
     });
 

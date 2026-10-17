@@ -237,8 +237,8 @@ describe('Task 0.54.2: Calendar Connection Ownership Correction & RLS Schema Aud
       assert.ok(typeof id === 'string' && id.length > 0, 'Canonical teacher ID is resolved');
     });
 
-    it('6.2: isTeacherCurrentlyAuthorized accurately validates active teachers', async () => {
-      const isAuth = await isTeacherCurrentlyAuthorized('9cd86044-eb13-4547-88e4-567c4f6a57d8');
+    it('6.2: isTeacherCurrentlyAuthorized accurately validates active teachers', { skip: process.env.TEST_TEACHER_AUTH_ID ? false : 'set TEST_TEACHER_AUTH_ID to an active teacher auth id in the configured project (mocked coverage: task-0.55.4-c)' }, async () => {
+      const isAuth = await isTeacherCurrentlyAuthorized(process.env.TEST_TEACHER_AUTH_ID!);
       assert.strictEqual(isAuth, true, 'Mahmoud teacher ID is authorized');
 
       const isFake = await isTeacherCurrentlyAuthorized('hacker-id-999');

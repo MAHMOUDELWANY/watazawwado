@@ -337,8 +337,8 @@ describe('Task 0.56: Teacher Authentication & Integrations Failure Audit and Rem
   // --------------------------------------------------------------------------
   // 3. isTeacherCurrentlyAuthorized: column verification & allowlist checks
   // --------------------------------------------------------------------------
-  it('11. isTeacherCurrentlyAuthorized: validates canonical test teacher mock', async () => {
-    const isAuth = await isTeacherCurrentlyAuthorized('9cd86044-eb13-4547-88e4-567c4f6a57d8');
+  it('11. isTeacherCurrentlyAuthorized: validates canonical test teacher mock', { skip: process.env.TEST_TEACHER_AUTH_ID ? false : 'set TEST_TEACHER_AUTH_ID to an active teacher auth id in the configured project (mocked coverage: task-0.55.4-c)' }, async () => {
+    const isAuth = await isTeacherCurrentlyAuthorized(process.env.TEST_TEACHER_AUTH_ID!);
     assert.strictEqual(isAuth, true);
   });
 

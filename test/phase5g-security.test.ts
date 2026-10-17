@@ -6,10 +6,13 @@ test('Phase 5G - Final Security Micro-Fix Verification', async (t) => {
   const isProd = true; // We want to test production behavior endpoints
   const BASE_URL = 'http://localhost:3000';
   
-  await t.test('Integration Availability - validates timezone', async () => {
+  // An unknown zone falls back to Africa/Cairo on purpose (b891ab8); only a missing zone is a 400.
+  await t.test('Integration Availability - invalid timezone falls back instead of failing', async () => {
     const res = await fetch(`${BASE_URL}/api/integrations/availability?timezone=Invalid/Zone`);
-    assert.strictEqual(res.status, 400);
-    const body = await res.json();
+    assert.strictEqual(res.status, 200);
+    const missing = await fetch(`${BASE_URL}/api/integrations/availability`);
+    assert.strictEqual(missing.status, 400);
+    const body = await missing.json();
     assert.strictEqual(body.code, 'INVALID_AVAILABILITY_REQUEST');
   });
 
