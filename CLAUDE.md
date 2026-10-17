@@ -12,6 +12,7 @@ Owner's priority skills in `.claude/skills`. Reach for them before generic appro
 - Thinking/planning: `brainstorming` (before any new feature, page or lesson), `writing-plans`, `executing-plans`, `verification-before-completion`.
 - Writing: `humanizer` on all user-facing copy (site, emails, curriculum); `writing-skills` when making skills.
 - Design: `taste-skill`, `soft-skill`, `redesign-skill`, `minimalist-skill`, `output-skill`, `impeccable` (design/audit/polish commands for any UI).
+- Motion and feel (Emil Kowalski's set, MIT), for the whole site and the curriculum alongside the design skills above: `apple-design` (important), `animate`, `review-animations`, `improve-animations`, `find-animation-opportunities`, `animation-performance`, `mobile-native`, `break-ui`, `emil-design-eng`. Also present but off-stack: `animate-expo`, `write-swift`, `ask-sonner`.
 - SEO: the `seo` hub and `seo-*` leaves (bilingual site, so `seo-hreflang` matters). Their Python helpers live in `.claude/skills/seo/scripts` and need Python plus its requirements; the guidance works without them.
 
 ## Stack
