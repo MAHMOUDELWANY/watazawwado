@@ -198,13 +198,16 @@ const SOIL: React.CSSProperties = {
   maskImage: `linear-gradient(180deg, transparent ${SOIL_TOP}%, #000 ${SOIL_TOP + 1.5}%)`,
 };
 
-/** The tree is always in view (what people see). Underground stays dark until each part of Iman lights a root. */
+/** The tree is always in view (what people see); a pencil ground line and two brackets name the halves from the start.
+ *  Underground stays dark until each part of Iman lights its root: a line of light runs from the trunk to the tip and
+ *  stays, so every belief is visibly joined to the tree. At six the soil lifts and the light rises into the tree. */
 export function RootsGrow({ labels, label }: { labels: (string | null)[]; label: string }) {
   const reduce = useReducedMotion();
   const lit = labels.filter(Boolean).length;
   const done = lit === ROOT_TIPS.length;
+  const newest = lit - 1;
   return (
-    <div className="absolute left-[690px] top-[96px] h-[720px] w-[720px]" role="img" aria-label={`${label}: ${lit} of 6 roots lit`}>
+    <div className="absolute left-[690px] top-[64px] h-[720px] w-[720px]" role="img" aria-label={`${label}: ${lit} of 6 roots lit`}>
       <Plate className="inset-0">
         <Layer name="roots" />
         {/* Underground in shadow: you cannot see what the heart believes. */}
@@ -216,14 +219,16 @@ export function RootsGrow({ labels, label }: { labels: (string | null)[]; label:
           animate={{ opacity: done ? 0.15 : 1 }}
           transition={{ duration: 1.2, delay: done && !reduce ? 1.2 : 0, ease: out }}
         />
+        {/* Each lit root: the painting shows through a soft-edged window around the tip. */}
         {ROOT_TIPS.map((t, i) =>
           labels[i] ? (
             <Layer
               key={i}
               name="roots"
-              initial={reduce ? { opacity: 0, clipPath: `circle(${t.r}% at ${t.x}% ${t.y}%)` } : { clipPath: `circle(0% at ${t.x}% ${t.y}%)` }}
-              animate={{ opacity: 1, clipPath: `circle(${t.r}% at ${t.x}% ${t.y}%)` }}
-              transition={{ duration: reduce ? 0.3 : 1.1, delay: reduce ? 0 : 0.55, ease: out }}
+              style={{ WebkitMaskImage: `radial-gradient(circle ${t.r * 7.2}px at ${t.x}% ${t.y}%, #000 35%, transparent 100%)`, maskImage: `radial-gradient(circle ${t.r * 7.2}px at ${t.x}% ${t.y}%, #000 35%, transparent 100%)` }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: reduce ? 0.3 : 0.9, delay: reduce ? 0 : 0.5, ease: out }}
             />
           ) : null,
         )}
@@ -239,42 +244,59 @@ export function RootsGrow({ labels, label }: { labels: (string | null)[]; label:
         )}
       </Plate>
 
-      {/* The light travelling down from the trunk to each root tip. */}
       <svg className="pointer-events-none absolute inset-0 h-full w-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        {/* The ground line: above it is what people see, below it what the heart holds. */}
+        <motion.path
+          d={`M3 ${SOIL_TOP} L97 ${SOIL_TOP}`} fill="none" stroke={P.copper} strokeOpacity={0.7} strokeWidth={2.5} strokeDasharray="9 9" vectorEffect="non-scaling-stroke"
+          initial={{ pathLength: reduce ? 1 : 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.9, ease: out }}
+        />
+        {/* A root of light from the trunk to each belief; it stays, so the tree is visibly joined to all of them. */}
         {ROOT_TIPS.map((t, i) =>
-          labels[i] && !reduce ? (
+          labels[i] ? (
             <motion.path
               key={i}
               d={`M${TRUNK.x} ${TRUNK.y} Q ${(TRUNK.x + t.x) / 2 + (t.x - TRUNK.x) * 0.15} ${t.y - 2} ${t.x} ${t.y}`}
-              fill="none" stroke="#FFE7A3" strokeWidth={4} strokeLinecap="round" vectorEffect="non-scaling-stroke"
-              style={{ filter: 'drop-shadow(0 0 6px rgba(255,210,120,0.9))' }}
-              initial={{ pathLength: 0, opacity: 1 }} animate={{ pathLength: 1, opacity: [1, 1, 0] }}
-              transition={{ pathLength: { duration: 0.6, ease: out }, opacity: { duration: 1.8, times: [0, 0.6, 1] } }}
+              fill="none" stroke="#FFE7A3" strokeWidth={3.5} strokeLinecap="round" vectorEffect="non-scaling-stroke"
+              style={{ filter: 'drop-shadow(0 0 5px rgba(255,210,120,0.85))' }}
+              initial={{ pathLength: reduce ? 1 : 0 }} animate={{ pathLength: 1, opacity: i === newest || done ? 1 : 0.6 }}
+              transition={{ pathLength: { duration: reduce ? 0 : 0.7, ease: out }, opacity: { duration: 0.4 } }}
             />
           ) : null,
         )}
       </svg>
 
+      {/* The belief just named wears gold until the next one comes. */}
       {ROOT_TIPS.map((t, i) =>
         labels[i] ? (
           <motion.span
             key={i}
-            className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full px-4 py-1.5 font-sans text-[21px] font-bold shadow-[0_10px_22px_-10px_rgba(0,0,0,0.8)]"
-            style={{ left: `${t.x}%`, top: `${t.y}%`, background: '#FFFDF7', color: P.copper }}
-            initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: reduce ? 0.2 : 0.4, delay: reduce ? 0 : 0.7, ease: out }}
+            className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full px-4 py-1.5 font-sans text-[23px] font-bold shadow-[0_10px_22px_-10px_rgba(0,0,0,0.8)]"
+            style={{ left: `${t.x}%`, top: `${t.y}%` }}
+            initial={{ opacity: 0, scale: 0.9, background: P.gold, color: P.ink }}
+            animate={{ opacity: 1, scale: 1, background: i === newest && !done ? P.gold : '#FFFDF7', color: i === newest && !done ? P.ink : P.copper }}
+            transition={{ duration: reduce ? 0.2 : 0.4, delay: reduce ? 0 : i === newest ? 0.7 : 0, ease: out }}
           >
             {labels[i]}
           </motion.span>
         ) : null,
       )}
 
-      <span className="absolute left-[7%] top-[59%] font-sans text-[18px] font-bold uppercase tracking-[0.12em]" style={{ color: '#F3E6CC', opacity: done ? 0 : 0.85 }} aria-hidden="true">
-        Hidden in the heart
-      </span>
-      <span className="absolute left-[2%] top-[6%] font-sans text-[18px] font-bold uppercase tracking-[0.12em]" style={{ color: P.teal }} aria-hidden="true">
-        What people see
-      </span>
+      {/* Two brackets beside the picture name its halves before anything is lit. */}
+      {[
+        { top: 20, bottom: 54, text: 'What people see', color: P.teal },
+        { top: 57, bottom: 95, text: 'Hidden in the heart', color: P.copper },
+      ].map((b) => (
+        <div key={b.text} className="pointer-events-none absolute left-[calc(100%+14px)] flex items-center gap-3" style={{ top: `${b.top}%`, height: `${b.bottom - b.top}%` }} aria-hidden="true">
+          <span className="h-full w-3 shrink-0 rounded-r-[10px] border-[3px] border-l-0" style={{ borderColor: b.color }} />
+          <span className="w-[140px] font-sans text-[21px] font-bold leading-tight" style={{ color: b.color }}>{b.text}</span>
+        </div>
+      ))}
+
+      <div className="absolute inset-x-0 -bottom-[40px] flex items-center justify-center gap-3" aria-hidden="true">
+        <span className="font-sans text-[22px] font-bold tabular-nums" style={{ color: done ? P.teal : P.inkSoft }}>
+          {done ? 'Six roots: Iman holds the tree up' : lit ? `Root ${lit} of 6: ${labels[newest]}` : 'Six hidden roots'}
+        </span>
+      </div>
     </div>
   );
 }
