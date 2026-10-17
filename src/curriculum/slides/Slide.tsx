@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import type { Interaction, Lesson, LessonPage } from '../types';
 import { SceneArt, P } from './Art';
@@ -43,9 +43,16 @@ export function Slide({ lesson, pageIndex, step, onCorrect, onGameResult }: Slid
   const page = lesson.pages[pageIndex];
   const v = visibility(page, step);
   const chapter = [...lesson.chapters].reverse().find((c) => c.page <= pageIndex);
+  const rootRef = useRef<HTMLDivElement>(null);
+  // Each new build step lands at the bottom of the text column; bring it into view.
+  useEffect(() => {
+    if (step === 0) return;
+    const t = window.setTimeout(() => rootRef.current?.querySelectorAll('.slide-scroll').forEach((el) => el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })), 120);
+    return () => window.clearTimeout(t);
+  }, [step]);
 
   return (
-    <div className="absolute inset-0 overflow-hidden" style={{ background: P.paper, color: P.ink }} dir="ltr" lang="en">
+    <div ref={rootRef} className="absolute inset-0 overflow-hidden" style={{ background: P.paper, color: P.ink }} dir="ltr" lang="en">
       <Paper />
       <header className="absolute left-[120px] right-[260px] top-[46px] flex items-center gap-4">
         <KhatamStar size={30} color={P.crimson} />
@@ -224,24 +231,20 @@ function Body({ page, v, lesson, onCorrect, onGameResult }: { page: LessonPage; 
     case 'cover':
       return (
         <>
-          <div className="absolute left-[120px] top-[130px] w-[700px] space-y-6">
-            <motion.div {...build}><Title size={104}>{lesson.title}</Title></motion.div>
-            <motion.p {...build} transition={{ ...build.transition, delay: 0.25 }} lang="ar" dir="rtl" className="font-serif text-[64px] leading-none text-right" style={{ color: P.copper }}>
+          <div className="absolute left-[120px] top-[150px] bottom-[130px] w-[720px] flex flex-col">
+            <motion.div {...build}><Title size={88}>{lesson.title}</Title></motion.div>
+            <motion.p {...build} transition={{ ...build.transition, delay: 0.2 }} lang="ar" dir="rtl" className="mt-5 self-start font-serif text-[52px] font-bold leading-tight" style={{ color: P.copper }}>
               {lesson.titleAr}
             </motion.p>
-            <motion.p {...build} transition={{ ...build.transition, delay: 0.5 }} className="font-sans text-[34px] leading-[1.35]" style={{ color: P.inkSoft }}>
+            <motion.p {...build} transition={{ ...build.transition, delay: 0.4 }} className="mt-auto max-w-[640px] font-sans text-[32px] leading-[1.4]" style={{ color: P.inkSoft }}>
               {lesson.goal}
             </motion.p>
-            <motion.div {...build} transition={{ ...build.transition, delay: 0.75 }} className="flex gap-4">
-              {[[String(lesson.pages.length), 'pages'], ['3', 'big questions'], [String(lesson.minutes), 'minutes']].map(([n, l]) => (
-                <span key={l} className="rounded-[22px] border-2 border-dashed px-6 py-3 text-center" style={{ borderColor: '#C9B98F' }}>
-                  <b className="block font-serif text-[46px] leading-none">{n}</b>
-                  <span className="font-sans text-[19px] font-semibold" style={{ color: P.inkSoft }}>{l}</span>
-                </span>
-              ))}
-            </motion.div>
+            <motion.p {...build} transition={{ ...build.transition, delay: 0.6 }} className="mt-6 flex items-center gap-3 font-sans text-[22px] font-semibold" style={{ color: P.copper }}>
+              <KhatamStar size={20} color={P.gold} />
+              {lesson.minutes} minutes, {lesson.pages.length} pages, 3 big questions
+            </motion.p>
           </div>
-          <ArtCard page={page} className="left-[880px] top-[150px] w-[620px] h-[600px]" />
+          <ArtCard page={page} className="left-[900px] top-[150px] w-[600px] h-[600px]" />
         </>
       );
 
@@ -249,7 +252,7 @@ function Body({ page, v, lesson, onCorrect, onGameResult }: { page: LessonPage; 
       return (
         <>
           <ArtCard page={page} className="left-[860px] top-[140px] w-[640px] h-[600px]" />
-          <div className="absolute left-[120px] top-[130px] bottom-[110px] w-[690px] space-y-6 overflow-hidden">
+          <div className="absolute left-[120px] top-[130px] bottom-[120px] w-[690px] slide-scroll space-y-6 overflow-y-auto pb-6 pr-5">
             <Title size={76}>{page.title}</Title>
             {!v.evidence && <Lines lines={page.lines} count={v.lines} size={34} />}
             {v.evidence && <EvidenceBlock page={page} />}
@@ -262,7 +265,7 @@ function Body({ page, v, lesson, onCorrect, onGameResult }: { page: LessonPage; 
       return (
         <>
           <ArtCard page={page} className="left-[1060px] top-[150px] w-[440px] h-[440px]" />
-          <div className="absolute left-[120px] top-[130px] bottom-[110px] w-[900px] space-y-6 overflow-hidden">
+          <div className="absolute left-[120px] top-[130px] bottom-[120px] w-[900px] slide-scroll space-y-6 overflow-y-auto pb-6 pr-5">
             <Title size={62}>{page.title}</Title>
             {!v.interaction && <Lines lines={page.lines} count={v.lines} size={36} />}
             {v.evidence && <EvidenceBlock page={page} big />}
@@ -274,7 +277,7 @@ function Body({ page, v, lesson, onCorrect, onGameResult }: { page: LessonPage; 
     case 'concept':
       return (
         <>
-          <div className="absolute left-[120px] top-[130px] bottom-[110px] w-[560px] space-y-6 overflow-hidden">
+          <div className="absolute left-[120px] top-[130px] bottom-[120px] w-[560px] slide-scroll space-y-6 overflow-y-auto pb-6 pr-5">
             <Title size={76}>{page.title}</Title>
             <Lines lines={page.lines} count={v.lines} size={36} />
             <VocabChips page={page} />
@@ -296,7 +299,7 @@ function Body({ page, v, lesson, onCorrect, onGameResult }: { page: LessonPage; 
       return (
         <>
           <ArtCard page={page} className="left-[1100px] top-[150px] w-[400px] h-[400px]" />
-          <div className="absolute left-[120px] top-[130px] bottom-[110px] w-[940px] space-y-6 overflow-hidden">
+          <div className="absolute left-[120px] top-[130px] bottom-[120px] w-[940px] slide-scroll space-y-6 overflow-y-auto pb-6 pr-5">
             <Title size={72}>{page.title}</Title>
             {!v.evidence && <Lines lines={page.lines} count={v.lines} size={38} />}
             {v.evidence && <EvidenceBlock page={page} />}
@@ -317,7 +320,7 @@ function Body({ page, v, lesson, onCorrect, onGameResult }: { page: LessonPage; 
       return (
         <>
           <ArtCard page={page} className="left-[980px] top-[140px] w-[520px] h-[600px]" />
-          <div className="absolute left-[120px] top-[130px] bottom-[110px] w-[820px] space-y-6 overflow-hidden">
+          <div className="absolute left-[120px] top-[130px] bottom-[120px] w-[820px] slide-scroll space-y-6 overflow-y-auto pb-6 pr-5">
             <Title>{page.title}</Title>
             <Lines lines={page.lines} count={v.lines} size={36} />
             {interaction}
@@ -329,7 +332,7 @@ function Body({ page, v, lesson, onCorrect, onGameResult }: { page: LessonPage; 
       return (
         <>
           <ArtCard page={page} className="left-[860px] top-[140px] w-[640px] h-[600px]" />
-          <div className="absolute left-[120px] top-[130px] bottom-[110px] w-[680px] space-y-6 overflow-hidden">
+          <div className="absolute left-[120px] top-[130px] bottom-[120px] w-[680px] slide-scroll space-y-6 overflow-y-auto pb-6 pr-5">
             <span className="font-sans text-[28px] font-bold" style={{ color: P.crimson }}>Next time on Zad Essentials</span>
             <Title>{page.title}</Title>
             <Lines lines={page.lines} count={v.lines} />

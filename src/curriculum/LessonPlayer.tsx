@@ -2,12 +2,13 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from
 import { AnimatePresence, motion } from 'motion/react';
 import {
   ChevronLeft, ChevronRight, Maximize2, Minimize2, Star, PenLine, Highlighter, MousePointer2, Eraser, LayoutGrid,
-  Timer, RotateCcw, BookOpenText, X,
+  Timer, RotateCcw, BookOpenText, X, Globe,
 } from 'lucide-react';
 import type { Lesson } from './types';
 import { Slide, stepsFor, CANVAS_W, CANVAS_H, scoreSort, type GameResult } from './slides/Slide';
 import { InkLayer, type InkTool } from './slides/Ink';
 import { P } from './slides/Art';
+import { useAppLanguage } from '../lib/language';
 
 export { scoreSort, type GameResult };
 
@@ -26,7 +27,10 @@ const INK_COLORS = [P.crimson, P.teal, P.gold, P.ink];
 const TIMER_STEPS = [0, 60, 120, 180, 300];
 
 /** Slide player v2: fixed 16:9 canvas, build steps, pen/marker/laser, page grid, timer, explanation panel. */
-export function LessonPlayer({ lesson, lang, teacher = false, onGameResult, onPageChange }: Props) {
+export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGameResult, onPageChange }: Props) {
+  // The player switches the site language itself, so the teacher never leaves the lesson to change it.
+  const { lang: appLang, toggleLanguage } = useAppLanguage();
+  const lang = appLang || initialLang;
   const ar = lang === 'ar';
   const L = (en: string, arText: string) => (ar ? arText : en);
   const [page, setPage] = useState(0);
@@ -143,6 +147,7 @@ export function LessonPlayer({ lesson, lang, teacher = false, onGameResult, onPa
 
   const toolbar = (
     <nav
+      dir={ar ? 'rtl' : 'ltr'}
       aria-label={L('Lesson controls', 'التحكم في الدرس')}
       className={`flex flex-wrap items-center gap-1 rounded-[28px] border border-white/70 bg-[#FAF7F2]/90 px-2 py-1.5 shadow-[0_18px_40px_-20px_rgba(139,73,53,0.55)] backdrop-blur-xl transition-opacity ${fullscreen ? 'absolute bottom-5 left-1/2 z-50 -translate-x-1/2' : ''} ${fullscreen && !chromeVisible ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
     >
@@ -206,6 +211,10 @@ export function LessonPlayer({ lesson, lang, teacher = false, onGameResult, onPa
       <button type="button" className={btn()} onClick={toggleFullscreen} title={L('Full screen (F)', 'ملء الشاشة (F)')} aria-label={fullscreen ? L('Exit full screen', 'خروج من ملء الشاشة') : L('Full screen', 'ملء الشاشة')}>
         {fullscreen ? <Minimize2 className="w-[18px] h-[18px]" /> : <Maximize2 className="w-[18px] h-[18px]" />}
       </button>
+      <button type="button" className={btn()} onClick={toggleLanguage} title={L('عربي', 'English')} aria-label={L('Switch to Arabic', 'Switch to English')}>
+        <Globe className="w-[18px] h-[18px]" />
+        <span>{ar ? 'EN' : 'عربي'}</span>
+      </button>
       <span className="ms-auto pe-3 ps-2 text-xs font-bold text-[#453D34] tabular-nums">
         {L('Page', 'صفحة')} {page + 1}/{lesson.pages.length}
       </span>
@@ -213,7 +222,7 @@ export function LessonPlayer({ lesson, lang, teacher = false, onGameResult, onPa
   );
 
   const notesPanel = notes && (
-    <aside dir="ltr" lang="en" className={`flex flex-col gap-4 overflow-y-auto rounded-[24px] bg-[#FFFDF7] p-5 text-[#0A3D45] ring-1 ring-black/5 shadow-[0_18px_40px_-28px_rgba(91,58,30,0.5)] lg:w-[360px] lg:shrink-0 ${fullscreen ? 'absolute left-5 top-5 bottom-24 z-40 w-[360px]' : 'lg:max-h-[min(78vh,720px)]'}`} aria-label={L('Explanation', 'الشرح')}>
+    <aside dir="ltr" lang="en" className={`flex flex-col gap-4 overflow-y-auto rounded-[24px] bg-[#FFFDF7] p-5 text-[#1E1410] ring-1 ring-black/5 shadow-[0_18px_40px_-28px_rgba(91,58,30,0.5)] lg:w-[360px] lg:shrink-0 ${fullscreen ? `absolute ${ar ? 'right-5' : 'left-5'} top-5 bottom-24 z-40 w-[360px]` : 'lg:max-h-[min(78vh,720px)]'}`} aria-label={L('Explanation', 'الشرح')}>
       <div className="flex items-start justify-between gap-2">
         <h3 className="font-serif text-2xl font-bold leading-tight">{current.title}</h3>
         <button type="button" onClick={() => setNotes(false)} className="rounded-full p-1.5 hover:bg-black/5" aria-label={L('Close explanation', 'اقفل الشرح')}>
@@ -245,7 +254,7 @@ export function LessonPlayer({ lesson, lang, teacher = false, onGameResult, onPa
 
   return (
     <div ref={rootRef} dir="ltr" className={`relative flex flex-col gap-3 ${fullscreen ? 'band-deep h-full p-3' : ''}`}>
-      <div className={`flex flex-col gap-3 lg:flex-row ${fullscreen ? 'min-h-0 flex-1' : ''}`}>
+      <div dir={ar ? 'rtl' : 'ltr'} className={`flex flex-col gap-3 lg:flex-row ${fullscreen ? 'min-h-0 flex-1' : ''}`}>
         <div ref={stageRef} className={`relative min-w-0 flex-1 ${fullscreen ? 'h-full min-h-0' : 'aspect-video'}`}>
           <div
             className="absolute left-1/2 top-1/2 overflow-hidden rounded-[22px] shadow-[0_30px_70px_-35px_rgba(59,34,25,0.7)]"
