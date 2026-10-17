@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import type { Interaction, Lesson, LessonPage } from '../types';
 import { SceneArt, P } from './Art';
+import { PillarsBuild, RootsGrow, ClueLens, type Lens } from './Scenes';
 
 /** Correct answers per bin of a game checkpoint, for the teacher report (PLAN §3a.3b). */
 export type GameResult = Record<string, { correct: number; total: number }>;
@@ -155,21 +156,14 @@ const SCENE_IMAGES: Partial<Record<LessonPage['scene'], string>> = {
 /** Where labels point on each painting (% of the image box): x,y = the point, lx,ly = the label. */
 type Pin = { x: number; y: number; lx: number; ly: number };
 const PINS: Partial<Record<LessonPage['scene'], Pin[]>> = {
-  pillars: [
-    { x: 17, y: 70, lx: 12, ly: 93 }, { x: 34, y: 70, lx: 31, ly: 85 }, { x: 50, y: 70, lx: 50, ly: 93 },
-    { x: 66, y: 70, lx: 69, ly: 85 }, { x: 83, y: 70, lx: 88, ly: 93 },
-  ],
-  roots: [
-    { x: 50, y: 62, lx: 50, ly: 50 }, { x: 32, y: 70, lx: 14, ly: 60 }, { x: 68, y: 70, lx: 86, ly: 60 },
-    { x: 24, y: 84, lx: 14, ly: 94 }, { x: 76, y: 84, lx: 86, ly: 94 }, { x: 50, y: 88, lx: 50, ly: 96 },
-  ],
   doors: [{ x: 18, y: 50, lx: 18, ly: 86 }, { x: 50, y: 50, lx: 50, ly: 86 }, { x: 82, y: 50, lx: 82, ly: 86 }],
 };
-/** Clue answers drawn onto the painting when the child finds them. */
-const CLUE_PINS: Record<string, Pin & { label: string }> = {
-  'No dust from a journey': { x: 46, y: 88, lx: 70, ly: 72, label: 'No dust?' },
-  'Nobody knew who he was': { x: 50, y: 20, lx: 30, ly: 8, label: 'Who is he?' },
+/** Clues found on the stranger page: a lens magnifies the detail in stranger.webp (x,y = % of the image). */
+const CLUE_LENSES: Record<string, Lens> = {
+  'No dust from a journey': { x: 31, y: 88, lx: 64, ly: 66, label: 'No dust?' },
+  'Nobody knew who he was': { x: 52, y: 26, lx: 30, ly: 6, label: 'Who is he?', ring: { w: 300, h: 330 } },
 };
+const STRANGER = { w: 1086, h: 1448 };
 
 type Composition = 'title' | 'picturebook' | 'portrait' | 'manuscript' | 'diagram' | 'spotlight' | 'luminous' | 'arena' | 'journal' | 'cliffhanger';
 
@@ -316,7 +310,7 @@ function Vocab({ page, light = false }: { page: LessonPage; light?: boolean }) {
     <div className="flex flex-wrap gap-6">
       {page.vocab.map((w) => (
         <span key={w.translit} className="flex items-baseline gap-3 font-sans text-[22px]" style={{ color: light ? '#FFF8EA' : P.ink }}>
-          <span lang="ar" dir="rtl" className="font-serif text-[40px] leading-none" style={{ color: light ? P.goldSoft : P.crimson }}>{w.arabic}</span>
+          <motion.span lang="ar" dir="rtl" className="font-serif text-[40px] leading-none" style={{ color: light ? P.goldSoft : P.crimson }} initial={{ clipPath: 'inset(0 0 0 100%)' }} animate={{ clipPath: 'inset(0 0 0 0%)' }} transition={{ duration: 0.9, delay: 0.3, ease: 'easeInOut' }}>{w.arabic}</motion.span>
           <b>{w.translit}</b>
           <span style={{ color: light ? '#E9DCC5' : P.inkSoft }}>{w.meaning}</span>
         </span>
@@ -387,12 +381,13 @@ function Body({ page, v, lesson, found, onCorrect, onGameResult, onClue }: {
         </>
       );
 
-    case 'portrait': {
-      const labels = Object.keys(CLUE_PINS);
+    case 'portrait':
       return (
         <>
           <Painting page={page} className="right-0 top-0 bottom-[100px] w-[560px] rounded-bl-[40px]" style={{ maskImage: 'linear-gradient(90deg, transparent 0, #000 90px)', WebkitMaskImage: 'linear-gradient(90deg, transparent 0, #000 90px)' }}>
-            <Pins pins={labels.map((l) => CLUE_PINS[l])} labels={labels.map((l) => (found.includes(l) ? CLUE_PINS[l].label : null))} />
+            {found.filter((l) => CLUE_LENSES[l]).map((l) => (
+              <ClueLens key={l} name="stranger" img={STRANGER} box={{ w: 560, h: 800 }} lens={CLUE_LENSES[l]} />
+            ))}
           </Painting>
           <div className={`absolute left-[120px] right-[620px] top-[140px] bottom-[120px] space-y-5 ${COL}`}>
             <Title size={58}>{page.title}</Title>
@@ -402,7 +397,6 @@ function Body({ page, v, lesson, found, onCorrect, onGameResult, onClue }: {
           </div>
         </>
       );
-    }
 
     case 'manuscript':
       return (
@@ -425,6 +419,9 @@ function Body({ page, v, lesson, found, onCorrect, onGameResult, onClue }: {
     case 'diagram': {
       const pins = PINS[page.scene] || [];
       const labels = pins.map((_, i) => (i < v.items ? page.items?.[i] ?? null : null));
+      // Pages whose painting can act out the idea get a scene build instead of labels on a still picture.
+      const built = (page.items || []).map((it, i) => (i < v.items ? it : null));
+      const Build = page.scene === 'pillars' ? PillarsBuild : page.scene === 'roots' ? RootsGrow : null;
       return (
         <>
           <div className={`absolute left-[120px] top-[140px] bottom-[120px] w-[520px] space-y-6 ${COL}`}>
@@ -433,9 +430,13 @@ function Body({ page, v, lesson, found, onCorrect, onGameResult, onClue }: {
             <Vocab page={page} />
             {interaction}
           </div>
-          <Painting page={page} drift={false} className="left-[700px] top-[120px] h-[640px] w-[800px] rounded-[32px]" style={{ boxShadow: '0 40px 80px -40px rgba(139,73,53,0.55)' }}>
-            <Pins pins={pins} labels={labels} />
-          </Painting>
+          {Build ? (
+            <Build labels={built} label={page.title} />
+          ) : (
+            <Painting page={page} drift={false} className="left-[700px] top-[120px] h-[640px] w-[800px] rounded-[32px]" style={{ boxShadow: '0 40px 80px -40px rgba(139,73,53,0.55)' }}>
+              <Pins pins={pins} labels={labels} />
+            </Painting>
+          )}
         </>
       );
     }

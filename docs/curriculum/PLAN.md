@@ -284,3 +284,15 @@ B3–B5 → continue lesson by lesson.
   manuscript · 7 diagram · 8 spotlight · 9 diagram · 10 manuscript · 11 luminous · 12 luminous · 13 diagram · 14
   arena · 15 journal · 16 cliffhanger. Labels are positioned per painting (PINS, CLUE_PINS); new paintings need
   their own pins.
+- **2026-10-17** — Owner: v3 drifted into "illustrated slides"; the reference (Bilqalam recording 2026-10-16 155908,
+  re-watched frame by frame) explains by **building the picture while the teacher talks** (letter drawn by a pencil,
+  labels with leader lines, sound bubble, steps and tiles one by one). Started "scene builds"
+  (`slides/Scenes.tsx`): the painting itself acts out the idea, keyed to build steps, from stacked copies of the
+  flat image (clip-path reveals, no new art). p7 Islam: the house is a pencil ghost with five empty sockets; each
+  click raises one pillar in colour (gold light up the shaft, dust at its foot, number + name); at five the house
+  lights up. p9 Iman: the tree stays visible ("what people see"), the soil is dark; each item lights a root from the
+  trunk ("hidden in the heart"); at six the light rises into the tree. p5 clues: "No dust?" = magnifying lens on the
+  clean hem against the sand; "Who is he?" = red-pen circle drawn round the figure. Paintings print onto the
+  notebook (multiply, cream lifted to white). Fixed: in Arabic UI the English slide lost its serif. **Next:** same
+  idea per page where it teaches (doors p13, reveal p11–12, sitting p6); a pencil-trace of the Arabic word on vocab
+  pages; owner to judge the motion with the pane open (the agent's browser throttles animation).
