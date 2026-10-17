@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
+import { BrandSpinner } from './BrandLoader';
 
 export type WelcomeRole = 'student' | 'teacher' | 'admin';
 export type WelcomeGender = 'male' | 'female' | null | undefined;
@@ -152,7 +153,7 @@ export function WelcomeLoader({ role, lang, name, gender }: WelcomeLoaderProps) 
       aria-live="polite"
       dir={isAr ? 'rtl' : 'ltr'}
       lang={lang}
-      className="fixed inset-0 z-[70] isolate bg-background text-foreground khatam-field brand-lights flex flex-col items-center justify-center gap-7 px-6 text-center"
+      className="!fixed inset-0 z-[70] isolate bg-background text-foreground khatam-field brand-lights flex flex-col items-center justify-center gap-7 px-6 text-center"
     >
       <motion.div initial={still ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
         {role === 'student' ? <KhatamDrawing still={still} /> : role === 'teacher' ? <MihrabLantern still={still} /> : <LogoRibbon still={still} isAr={isAr} />}
@@ -161,6 +162,7 @@ export function WelcomeLoader({ role, lang, name, gender }: WelcomeLoaderProps) 
         <h1 className="font-editorial text-3xl sm:text-4xl font-bold leading-snug">{title}</h1>
         <p className="text-base text-muted-foreground">{subtitle}</p>
       </motion.div>
+      <BrandSpinner size="md" />
     </div>
   );
 }
