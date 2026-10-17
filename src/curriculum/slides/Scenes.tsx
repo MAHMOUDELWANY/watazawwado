@@ -40,11 +40,13 @@ export function PillarsBuild({ labels, label }: { labels: (string | null)[]; lab
   const reduce = useReducedMotion();
   const standing = labels.filter(Boolean).length;
   const done = standing === COLUMNS.length;
+  const newest = standing - 1;
   return (
     <div className="absolute left-[690px] top-[96px] h-[720px] w-[720px]" role="img" aria-label={`${label}: ${standing} of 5 pillars standing`}>
       <Plate className="inset-0">
-        {/* The whole house as a pencil sketch: it waits for its pillars. */}
-        <Layer name="pillars" filter="grayscale(1) brightness(1.06)" style={{ opacity: 0.38 }} />
+        {/* The roof and the base as a pencil sketch, with nothing between them: the house waits for its pillars. */}
+        <Layer name="pillars" filter="grayscale(1) brightness(1.06)" style={{ opacity: 0.38, clipPath: `inset(0 0 ${100 - SHAFT_TOP}% 0)` }} />
+        <Layer name="pillars" filter="grayscale(1) brightness(1.06)" style={{ opacity: 0.38, clipPath: `inset(${SHAFT_BOTTOM}% 0 0 0)` }} />
         {/* The house in colour, once everything stands. */}
         <Layer
           name="pillars"
@@ -117,7 +119,7 @@ export function PillarsBuild({ labels, label }: { labels: (string | null)[]; lab
                   transition={{ duration: 1.1, delay: 0.45, ease: [0.77, 0, 0.175, 1] }}
                 />
               </span>
-              {[-1, -0.6, -0.25, 0.25, 0.6, 1].map((d, k) => (
+              {[-1, -0.4, 0.4, 1].map((d, k) => (
                 <motion.span
                   key={k}
                   className="pointer-events-none absolute h-[7px] w-[7px] rounded-full"
@@ -143,11 +145,13 @@ export function PillarsBuild({ labels, label }: { labels: (string | null)[]; lab
             >
               {i + 1}
             </motion.span>
+            {/* The pillar just raised wears a dark tag until the next one comes, so the child's eye knows where to look. */}
             <motion.span
-              className="pointer-events-none absolute -translate-x-1/2 whitespace-nowrap rounded-full px-3 py-1 font-sans text-[20px] font-bold shadow-[0_8px_18px_-10px_rgba(30,20,16,0.7)]"
-              style={{ left: `${(l + r) / 2}%`, top: '77%', background: '#FFFDF7', color: P.ink }}
-              initial={{ opacity: 0, transform: 'translateY(10px)' }} animate={{ opacity: 1, transform: 'translateY(0px)' }}
-              transition={{ duration: reduce ? 0.2 : 0.45, delay: reduce ? 0 : 0.85, ease: out }}
+              className="pointer-events-none absolute -translate-x-1/2 whitespace-nowrap rounded-full px-3 py-1 font-sans text-[23px] font-bold shadow-[0_8px_18px_-10px_rgba(30,20,16,0.7)]"
+              style={{ left: `${(l + r) / 2}%`, top: '76.5%' }}
+              initial={{ opacity: 0, transform: 'translateY(10px)', background: P.ink, color: '#FFF3D6' }}
+              animate={{ opacity: 1, transform: 'translateY(0px)', background: i === newest && !done ? P.ink : '#FFFDF7', color: i === newest && !done ? '#FFF3D6' : P.ink }}
+              transition={{ duration: reduce ? 0.2 : 0.45, delay: reduce ? 0 : i === newest ? 0.85 : 0, ease: out }}
             >
               {labels[i]}
             </motion.span>
@@ -166,8 +170,8 @@ export function PillarsBuild({ labels, label }: { labels: (string | null)[]; lab
             transition={{ duration: 0.3 }}
           />
         ))}
-        <span className="ms-2 font-sans text-[20px] font-bold tabular-nums" style={{ color: done ? P.teal : P.inkSoft }}>
-          {done ? 'The house stands' : `${standing} of 5`}
+        <span className="ms-2 font-sans text-[22px] font-bold tabular-nums" style={{ color: done ? P.teal : P.inkSoft }} aria-live="polite">
+          {done ? 'Five pillars: the house stands' : standing ? `Pillar ${standing} of 5: ${labels[newest]}` : '0 of 5 pillars'}
         </span>
       </div>
     </div>
