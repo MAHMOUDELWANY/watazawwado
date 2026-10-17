@@ -270,3 +270,6 @@ B3–B5 → continue lesson by lesson.
   sitting, pillars, roots, drawing, reveal, backpack, lego, character sheet), compressed to WebP in
   `public/curriculum/zad-kids/l01/`; slides show them with a slow camera move, SVG kept as fallback. Known: Maryam's
   hijab is teal in 3 images and gold in the character sheet.
+- **2026-10-17** — **[Decided]** the player's language switch changes the teacher's explanation panel only; the slide
+  stays English for the student. Arabic teacher notes per page in `content/zad-kids/l01-teacher-ar.ts` (owner to
+  review). Full-screen controls are a side rail: right in English, left in Arabic.

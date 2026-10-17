@@ -62,3 +62,11 @@ describe('Game checkpoint scoring', () => {
     assert.deepEqual(scoreSort(game, { 2: 'b' }), { a: { correct: 0, total: 2 }, b: { correct: 1, total: 1 } });
   });
 });
+
+describe('Arabic teacher notes', () => {
+  it('every lesson with Arabic notes has one entry per page', () => {
+    for (const lesson of lessons) {
+      if (lesson.teacherAr) assert.equal(lesson.teacherAr.length, lesson.pages.length, `${lesson.subject} ${lesson.number}`);
+    }
+  });
+});

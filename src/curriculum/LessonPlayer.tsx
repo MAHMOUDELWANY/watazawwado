@@ -226,16 +226,17 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
     </nav>
   );
 
+  const notesAr = ar ? lesson.teacherAr?.[page] : undefined;
   const notesPanel = notes && (
-    <aside dir="ltr" lang="en" className={`flex flex-col gap-4 overflow-y-auto rounded-[24px] bg-[#FFFDF7] p-5 text-[#1E1410] ring-1 ring-black/5 shadow-[0_18px_40px_-28px_rgba(91,58,30,0.5)] lg:w-[360px] lg:shrink-0 ${fullscreen ? `absolute ${ar ? 'right-5' : 'left-5'} top-5 bottom-24 z-40 w-[360px]` : 'lg:max-h-[min(78vh,720px)]'}`} aria-label={L('Explanation', 'الشرح')}>
+    <aside dir={notesAr ? 'rtl' : 'ltr'} lang={notesAr ? 'ar' : 'en'} className={`flex flex-col gap-4 overflow-y-auto rounded-[24px] bg-[#FFFDF7] p-5 text-[#1E1410] ring-1 ring-black/5 shadow-[0_18px_40px_-28px_rgba(91,58,30,0.5)] lg:w-[360px] lg:shrink-0 ${fullscreen ? `absolute ${ar ? 'right-5' : 'left-5'} top-5 bottom-24 z-40 w-[360px]` : 'lg:max-h-[min(78vh,720px)]'}`} aria-label={L('Explanation', 'الشرح')}>
       <div className="flex items-start justify-between gap-2">
-        <h3 className="font-serif text-2xl font-bold leading-tight">{current.title}</h3>
+        <h3 className="font-serif text-2xl font-bold leading-tight">{notesAr?.title ?? current.title}</h3>
         <button type="button" onClick={() => setNotes(false)} className="rounded-full p-1.5 hover:bg-black/5" aria-label={L('Close explanation', 'اقفل الشرح')}>
           <X className="w-4 h-4" />
         </button>
       </div>
       <div className="space-y-3 text-[17px] leading-relaxed">
-        {current.explain.map((p, i) => <p key={i}>{p}</p>)}
+        {(notesAr?.explain ?? current.explain).map((p, i) => <p key={i}>{p}</p>)}
       </div>
       {current.vocab?.length ? (
         <ul className="space-y-1.5 border-t border-black/10 pt-3">
@@ -248,10 +249,10 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
           ))}
         </ul>
       ) : null}
-      {teacher && current.teacherNote && (
+      {teacher && (notesAr?.note ?? current.teacherNote) && (
         <p className="rounded-2xl bg-[#FCEFD2] px-4 py-3 text-[15px] leading-relaxed">
           <b>{L('Teaching tip: ', 'نصيحة للشرح: ')}</b>
-          {current.teacherNote}
+          {notesAr?.note ?? current.teacherNote}
         </p>
       )}
     </aside>

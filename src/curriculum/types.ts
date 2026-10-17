@@ -76,6 +76,13 @@ export interface LessonPage {
   teacherNote?: string;
 }
 
+/** Arabic version of a page's teacher notes (the slide stays English). */
+export interface TeacherNotesAr {
+  title: string;
+  explain: string[];
+  note?: string;
+}
+
 export interface Lesson {
   subject: string;
   subjectTitle: string;
@@ -91,4 +98,6 @@ export interface Lesson {
   /** False until the owner approves the content (PLAN §3.4). Unreviewed lessons are teacher-only drafts. */
   reviewed: boolean;
   pages: LessonPage[];
+  /** Arabic teacher notes, one per page, shown when the interface is Arabic. */
+  teacherAr?: TeacherNotesAr[];
 }

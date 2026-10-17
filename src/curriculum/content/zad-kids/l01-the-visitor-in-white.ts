@@ -1,4 +1,5 @@
 import type { Lesson } from '../../types';
+import { lesson01TeacherAr } from './l01-teacher-ar.js';
 
 // Brief and evidence log: docs/curriculum/zad-essentials-kids/L01-the-visitor-in-white.md
 // Every Arabic line is copied unchanged from Sahih Muslim 8 (Dorar, checked 2026-10-16). English meanings are ours.
@@ -14,6 +15,7 @@ export const lesson01: Lesson = {
   minutes: 45,
   goal: 'By the end of this lesson, you will know the three parts of our deen, and the angel who came to teach them.',
   reviewed: false,
+  teacherAr: lesson01TeacherAr,
   outcomes: [
     'Retells the story in three sentences: a stranger came, asked three questions, and it was Jibril.',
     'Knows the three levels of the deen: Islam, Iman and Ihsan.',
