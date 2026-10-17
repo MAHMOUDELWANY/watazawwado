@@ -508,13 +508,22 @@ function Body({ page, v, step, lesson, found, chosen, onChoose, onCorrect, onGam
 
     case 'unveil': {
       const revealed = page.layout === 'evidence';
+      // The answer page keeps its title ("It was Jibril!") back until the first step parts the veil, so the guess
+      // asked at the end of the page before is not spoiled. On the guess itself the story steps back behind the question.
+      const hold = revealed && v.lines === 0;
       return (
         <>
           <Unveil revealed={revealed} step={step} v={v} name={revealed ? page.vocab?.[0] : undefined} teach={threeDoors(lesson)} />
           <div className={`absolute left-[120px] top-[150px] bottom-[120px] w-[640px] space-y-6 ${COL}`}>
-            <Title size={revealed ? 96 : 76} light>{page.title}</Title>
-            {!v.evidence && <Lines lines={page.lines} count={v.lines} size={34} light />}
-            {v.evidence && <Manuscript page={page} size={50} light align="start" />}
+            <motion.div initial={false} animate={{ opacity: v.interaction ? 0.45 : 1 }} transition={{ duration: 0.5 }} className="space-y-6">
+              {!hold && (
+                <motion.div initial={revealed ? { opacity: 0, y: 16 } : false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: revealed ? 1.2 : 0, ease }}>
+                  <Title size={revealed ? 96 : 64} light>{page.title}</Title>
+                </motion.div>
+              )}
+              {!v.evidence && <Lines lines={page.lines} count={v.lines} size={34} light />}
+              {v.evidence && <Manuscript page={page} size={44} light align="start" />}
+            </motion.div>
             {interaction}
           </div>
         </>

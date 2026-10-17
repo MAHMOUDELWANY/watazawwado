@@ -567,7 +567,7 @@ export function Unveil({ revealed, step, v, name, teach }: {
         />
         {/* Once the veil is gone, the text side keeps a soft shade so the words stay readable on the painting. */}
         <motion.div
-          className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(6,12,28,0.82) 0%, rgba(6,12,28,0.55) 38%, rgba(6,12,28,0) 58%)' }}
+          className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(6,12,28,0.88) 0%, rgba(6,12,28,0.72) 40%, rgba(6,12,28,0) 62%)' }}
           initial={false} animate={{ opacity: open ? 1 : 0 }} transition={{ duration: 1, delay: open && !reduce ? 0.8 : 0 }}
         />
         <motion.div className="absolute inset-y-0" style={panel('l')} initial={false} animate={{ x: open ? -(COL_X + 160) : inset }} transition={slide} />
@@ -589,14 +589,15 @@ export function Unveil({ revealed, step, v, name, teach }: {
               style={{ left: COL_X - 360, top: COL_BASE - 300, width: 720, height: 520, background: 'radial-gradient(ellipse, rgba(255,226,150,0.75), rgba(255,200,100,0) 65%)', mixBlendMode: 'screen' }}
               initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: [0, 1, 0.55], scale: 1 }} transition={{ duration: 2.4, delay: 0.9, ease: out }}
             />
-            {Array.from({ length: 16 }, (_, i) => (
+            {/* One rise of light as the veil parts, then stillness, so it never competes with the words. */}
+            {Array.from({ length: 8 }, (_, i) => (
               <motion.span
                 key={i}
                 className="absolute h-[6px] w-[6px] rounded-full"
                 style={{ left: COL_X + ((i * 37) % 90) - 45, top: COL_BASE - 20, background: '#FFE7A3', boxShadow: '0 0 10px 3px rgba(255,214,120,0.8)' }}
                 initial={{ opacity: 0, y: 0 }}
                 animate={{ opacity: [0, 1, 0], y: -260 - ((i * 53) % 380) }}
-                transition={{ duration: 2.6 + (i % 4) * 0.4, delay: 1 + (i % 8) * 0.18, ease: 'easeOut', repeat: Infinity, repeatDelay: 0.6 }}
+                transition={{ duration: 2.6 + (i % 4) * 0.4, delay: 1 + i * 0.18, ease: 'easeOut' }}
               />
             ))}
           </>
@@ -615,7 +616,7 @@ export function Unveil({ revealed, step, v, name, teach }: {
 
       {open && name && (
         <motion.div
-          className="pointer-events-none absolute -translate-x-1/2 whitespace-nowrap text-center" style={{ left: COL_X + 290, top: 170, textShadow: '0 2px 12px rgba(6,12,28,0.9)' }}
+          className="pointer-events-none absolute -translate-x-1/2 whitespace-nowrap rounded-[40px] px-10 pb-5 text-center" style={{ left: COL_X + 290, top: 170, textShadow: '0 2px 12px rgba(6,12,28,0.9)', background: 'radial-gradient(ellipse at 50% 50%, rgba(6,12,28,0.75), rgba(6,12,28,0) 72%)' }}
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: reduce ? 0 : 1.6, duration: 0.4 }}
         >
           <motion.span
@@ -627,7 +628,7 @@ export function Unveil({ revealed, step, v, name, teach }: {
             {name.arabic}
           </motion.span>
           <span className="block font-sans text-[30px] font-bold" style={{ color: P.goldSoft }}>{name.translit}</span>
-          <span className="block font-sans text-[22px] font-semibold" style={{ color: '#F3E6CC' }}>{name.meaning}</span>
+          <span className="block font-sans text-[24px] font-semibold" style={{ color: '#F3E6CC' }}>{name.meaning}</span>
         </motion.div>
       )}
 
@@ -640,7 +641,7 @@ export function Unveil({ revealed, step, v, name, teach }: {
             ))}
           </svg>
           {teach.map((t, i) => (
-            <Tag key={t.label} style={{ left: 1310, top: 510 + i * 100 }} ar={t.arabic} color={DOOR_INK[i]} delay={0.55 + i * 0.35} size={20}>
+            <Tag key={t.label} style={{ left: 1310, top: 510 + i * 100 }} ar={t.arabic} color={DOOR_INK[i]} delay={0.55 + i * 0.35} size={24}>
               {t.label}
             </Tag>
           ))}
