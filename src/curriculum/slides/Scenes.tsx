@@ -488,6 +488,27 @@ export function SittingStudy({ v, label }: { v: Built; label: string }) {
   );
 }
 
+/* ---------- p8 the "aha": an earlier picture comes back as the answer is revealed ---------- */
+
+/** A print of an earlier page's painting, pinned beside the answer when the teacher opens it, so the child sees the
+ *  link (the visitor asking what he knew = Ms. Clarke asking the class) instead of only hearing it. */
+export function Callback({ name, caption }: { name: string; caption: string }) {
+  const reduce = useReducedMotion();
+  return (
+    <div className="pointer-events-none absolute left-[1170px] top-[290px] h-[255px] w-[340px]" aria-hidden="true">
+      <motion.div
+        className="absolute inset-0 overflow-hidden rounded-[14px] border-[8px] border-[#FFFDF7] shadow-[0_30px_60px_-24px_rgba(0,0,0,0.75)]"
+        initial={reduce ? { opacity: 0, rotate: 3 } : { opacity: 0, y: 40, rotate: 9 }}
+        animate={{ opacity: 1, y: 0, rotate: 3 }}
+        transition={{ duration: reduce ? 0.3 : 0.7, ease: out }}
+      >
+        <img src={src(name)} alt="" draggable={false} className="h-full w-full select-none object-cover" />
+      </motion.div>
+      <Tag style={{ left: '50%', top: 'calc(100% + 34px)' }} color={P.teal} delay={0.6} size={24}>{caption}</Tag>
+    </div>
+  );
+}
+
 /* ---------- p10 Ihsan: her best work, even when the room goes quiet ---------- */
 
 const DRAW: Px = { w: 1400, h: 1050 };
