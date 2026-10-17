@@ -277,10 +277,10 @@ B3–B5 → continue lesson by lesson.
   stays English for the student. Arabic teacher notes per page in `content/zad-kids/l01-teacher-ar.ts` (owner to
   review). Full-screen controls are a side rail: right in English, left in Arabic.
 - **2026-10-17** — Slide system v3, "illuminated storybook". Two surfaces: Stage (painting fills the slide, light chrome)
-  and Paper (notebook). Each page gets a composition from its role ( in ):
+  and Paper (notebook). Each page gets a composition from its role (compositionFor in slides/Slide.tsx):
   title (cover), picturebook spread (story), portrait + clue pins (evidence with clues), manuscript (evidence),
   diagram with leader-line labels (concept), spotlight on the deep band (question), luminous (the reveal), arena
   (game), journal spread (mission), cliffhanger. Lesson 1 storyboard: 1 title · 2–4 spreads · 5 portrait · 6
   manuscript · 7 diagram · 8 spotlight · 9 diagram · 10 manuscript · 11 luminous · 12 luminous · 13 diagram · 14
-  arena · 15 journal · 16 cliffhanger. Labels are positioned per painting (, ); new paintings need
+  arena · 15 journal · 16 cliffhanger. Labels are positioned per painting (PINS, CLUE_PINS); new paintings need
   their own pins.
