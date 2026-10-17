@@ -364,3 +364,416 @@ export function ClueLens({ name, img, box, lens }: { name: string; img: { w: num
     </>
   );
 }
+
+/* ---------- shared pieces for the scenes below ----------
+   These scenes work in the painting's own pixels: the box has the painting's aspect ratio, the SVG uses the painting's
+   size as its viewBox, and labels are placed with `at`, so a coordinate read off the image file goes straight in. */
+
+type Px = { w: number; h: number };
+const at = (img: Px, x: number, y: number): React.CSSProperties => ({ left: `${(x / img.w) * 100}%`, top: `${(y / img.h) * 100}%` });
+const DOOR_INK = [P.teal, P.crimson, '#9A6A12'];
+
+/** A line the teacher's pen draws on the picture. */
+function Pen({ d, color = P.gold, width = 6, delay = 0, duration = 0.8, dash, glow = false }: { d: string; color?: string; width?: number; delay?: number; duration?: number; dash?: string; glow?: boolean }) {
+  const reduce = useReducedMotion();
+  const id = `pen${React.useId().replace(/[^\w-]/g, '')}`;
+  const draw = {
+    initial: { pathLength: reduce ? 1 : 0, opacity: reduce ? 0 : 1 },
+    animate: { pathLength: 1, opacity: 1 },
+    transition: { pathLength: { duration: reduce ? 0 : duration, delay: reduce ? 0 : delay, ease: [0.65, 0, 0.35, 1] as const }, opacity: { duration: 0.3, delay: reduce ? 0 : delay } },
+  };
+  const style = glow ? { filter: 'drop-shadow(0 0 8px rgba(255,214,120,0.85))' } : undefined;
+  // pathLength drives stroke-dasharray itself, so a dashed line is drawn by revealing it through a solid stroke mask.
+  if (dash)
+    return (
+      <g style={style}>
+        <mask id={id} maskUnits="userSpaceOnUse">
+          <motion.path d={d} fill="none" stroke="#fff" strokeWidth={width + 8} strokeLinecap="round" strokeLinejoin="round" {...draw} />
+        </mask>
+        <path d={d} fill="none" stroke={color} strokeWidth={width} strokeLinecap="round" strokeLinejoin="round" strokeDasharray={dash} mask={`url(#${id})`} />
+      </g>
+    );
+  return <motion.path d={d} fill="none" stroke={color} strokeWidth={width} strokeLinecap="round" strokeLinejoin="round" style={style} {...draw} />;
+}
+
+/** A paper label pinned to the picture; `ar` adds the Arabic word above the English. */
+function Tag({ style, children, ar, color = P.crimson, delay = 0, size = 22 }: { style: React.CSSProperties; children: React.ReactNode; ar?: string; color?: string; delay?: number; size?: number }) {
+  const reduce = useReducedMotion();
+  return (
+    <motion.span
+      className="pointer-events-none absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center whitespace-nowrap rounded-[18px] px-4 py-1.5 text-center font-sans font-bold leading-tight shadow-[0_10px_24px_-12px_rgba(30,20,16,0.7)]"
+      style={{ background: '#FFFDF7', color, fontSize: size, ...style }}
+      initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: reduce ? 0.2 : 0.4, delay: reduce ? 0 : delay, ease: out }}
+    >
+      {ar && <span lang="ar" dir="rtl" className="font-serif text-[1.35em] font-bold leading-[1.3]">{ar}</span>}
+      {children}
+    </motion.span>
+  );
+}
+
+/** Build progress handed to a scene: how many lines and items are out, and whether the evidence / question is. */
+export type Built = { lines: number; items: number; evidence: boolean; interaction: boolean };
+
+/** A framed print of a painting on the notebook page, 4:3, right of the text column. */
+function Print({ name, children, label }: { name: string; children?: React.ReactNode; label: string }) {
+  const reduce = useReducedMotion();
+  return (
+    <div className="absolute left-[720px] top-[150px] h-[570px] w-[760px]" role="img" aria-label={label}>
+      <div className="absolute inset-0 overflow-hidden rounded-[28px] shadow-[0_40px_80px_-40px_rgba(139,73,53,0.6)]">
+        <Layer name={name} filter="none" initial={reduce ? false : { scale: 1.06 }} animate={{ scale: 1 }} transition={{ duration: 1.4, ease: out }} />
+      </div>
+      {children}
+    </div>
+  );
+}
+
+/* ---------- p6 How he sat: a posture study, annotated like a teacher's sketch ---------- */
+
+const SIT: Px = { w: 1400, h: 1050 };
+
+/** Each line marks one part of the visitor's adab on the painting; the Arabic words join the marks with the evidence;
+ *  the question dims the room and draws the "learning seat" (straight back, steady base) the child is about to copy. */
+export function SittingStudy({ v, label }: { v: Built; label: string }) {
+  return (
+    <Print name="sitting" label={label}>
+      <motion.div className="absolute inset-0 rounded-[28px]" style={{ background: 'rgba(30,20,16,0.4)' }} initial={false} animate={{ opacity: v.interaction ? 1 : 0 }} transition={{ duration: 0.6 }} />
+      <svg className="pointer-events-none absolute inset-0 h-full w-full overflow-visible" viewBox={`0 0 ${SIT.w} ${SIT.h}`} preserveAspectRatio="none" aria-hidden="true">
+        {v.lines >= 1 && (
+          <>
+            {/* Close: from where he sits, straight on toward the one he came to learn from. */}
+            <Pen d="M640 700 C720 650 800 610 925 585" color={P.crimson} width={9} dash="4 20" duration={0.7} />
+            <Pen d="M892 556 L930 584 L896 618" color={P.crimson} width={9} delay={0.6} duration={0.3} />
+          </>
+        )}
+        {v.lines >= 2 && <Pen d="M792 705 C850 700 868 760 828 790 C790 818 738 790 742 748 C745 718 770 704 805 706" color={P.crimson} width={7} />}
+        {v.interaction && (
+          <>
+            <Pen d="M527 205 L548 470 L560 700" color={P.gold} width={8} glow />
+            <Pen d="M185 905 L960 920" color={P.gold} width={8} delay={0.5} glow />
+            <Pen d="M560 700 L185 905 M560 700 L960 920" color={P.gold} width={4} dash="10 12" delay={0.9} />
+          </>
+        )}
+      </svg>
+      {v.lines >= 1 && <Tag style={at(SIT, 1110, 520)} ar={v.evidence ? 'رُكبَتَيه إلى رُكبَتَيه' : undefined} delay={0.7}>Close, knee to knee</Tag>}
+      {v.lines >= 2 && <Tag style={at(SIT, 1120, 880)} ar={v.evidence ? 'كَفَّيه على فخِذَيه' : undefined} delay={0.6}>Hands still, on his thighs</Tag>}
+      {v.interaction && <Tag style={at(SIT, 290, 150)} color={P.teal} delay={1.2}>A learning seat</Tag>}
+    </Print>
+  );
+}
+
+/* ---------- p10 Ihsan: her best work, even when the room goes quiet ---------- */
+
+const DRAW: Px = { w: 1400, h: 1050 };
+
+/** The card she is making is ringed, then the heart she is colouring is traced; at the question the room goes dark
+ *  ("nobody is looking") and only her work keeps its light. */
+export function IhsanLight({ v, label }: { v: Built; label: string }) {
+  const reduce = useReducedMotion();
+  return (
+    <Print name="drawing" label={label}>
+      <div className="absolute inset-0 overflow-hidden rounded-[28px]">
+        <motion.div
+          className="absolute inset-0"
+          style={{ background: 'radial-gradient(ellipse 30% 34% at 48% 62%, rgba(8,14,20,0) 0%, rgba(8,14,20,0.4) 55%, rgba(8,14,20,0.88) 100%)' }}
+          initial={false} animate={{ opacity: v.interaction ? 1 : 0 }} transition={{ duration: reduce ? 0.3 : 1.6, ease: 'easeInOut' }}
+        />
+        {v.interaction && !reduce && (
+          <motion.span
+            className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full"
+            style={{ ...at(DRAW, 700, 720), width: '40%', height: '36%', background: 'radial-gradient(circle, rgba(255,224,150,0.5), rgba(255,200,110,0) 65%)', mixBlendMode: 'screen' }}
+            initial={{ opacity: 0 }} animate={{ opacity: [0, 1, 0.7, 1] }} transition={{ duration: 3, delay: 1, ease: 'easeInOut' }}
+          />
+        )}
+      </div>
+      <svg className="pointer-events-none absolute inset-0 h-full w-full overflow-visible" viewBox={`0 0 ${DRAW.w} ${DRAW.h}`} preserveAspectRatio="none" aria-hidden="true">
+        {v.lines >= 1 && <Pen d="M470 676 L930 668 L1080 805 L512 862 Z" color="#FFFDF7" width={6} dash="3 14" duration={1.1} />}
+        {v.lines >= 2 && <Pen d="M578 712 C560 680 515 682 520 715 C525 745 560 760 580 772 C600 760 630 740 630 712 C630 685 590 682 578 712" color={P.crimson} width={7} duration={1} />}
+      </svg>
+      {v.lines >= 1 && <Tag style={at(DRAW, 1170, 600)} color={P.inkSoft} delay={1}>A card for Mum</Tag>}
+      {v.lines >= 2 && <Tag style={at(DRAW, 330, 900)} delay={0.9}>Her very best</Tag>}
+      {v.interaction && (
+        <motion.span
+          className="pointer-events-none absolute left-1/2 top-[8%] -translate-x-1/2 whitespace-nowrap font-sans text-[24px] font-bold uppercase tracking-[0.14em]"
+          style={{ color: '#F3E6CC' }}
+          initial={{ opacity: 0 }} animate={{ opacity: 0.9 }} transition={{ duration: 0.8, delay: reduce ? 0 : 1 }}
+        >
+          Nobody is looking
+        </motion.span>
+      )}
+    </Print>
+  );
+}
+
+/* ---------- p11–p12 the reveal: a veil over the courtyard, opened a little at a time ---------- */
+
+/** reveal.webp drawn full-bleed (cover) on the 1600 × 900 canvas: x of the column of light, and where it meets the sand. */
+const COL_X = 994;
+const COL_BASE = 844;
+const VEIL = 'rgba(6,12,28,0.96)';
+const panel = (side: 'l' | 'r'): React.CSSProperties => ({
+  background: `linear-gradient(${side === 'l' ? 90 : 270}deg, ${VEIL} 0%, ${VEIL} calc(100% - 90px), rgba(6,12,28,0) 100%)`,
+  // Each panel reaches 200px past its outer edge, so pushing it toward the slit never uncovers the sides.
+  ...(side === 'l' ? { left: -200, width: COL_X + 200 } : { left: COL_X, right: -200 }),
+});
+
+/**
+ * p11 ("Do you know who he was?") keeps the courtyard behind a dark veil; each step opens the slit a little, and the
+ * Prophet's ﷺ question is drawn as a question mark of light. p12 ("It was Jibril!") parts the veil: the column of light
+ * blooms, his name is written beside it, and the three things he came to teach rise out of it.
+ */
+export function Unveil({ revealed, step, v, name, teach }: {
+  revealed: boolean; step: number; v: Built;
+  name?: { arabic: string; translit: string; meaning: string };
+  teach: { label: string; arabic?: string }[];
+}) {
+  const reduce = useReducedMotion();
+  const open = revealed && v.lines >= 1;
+  const gap = revealed ? 80 : 10 + step * 14;
+  const inset = 60 - gap / 2;
+  const slide = { duration: reduce ? 0.3 : open ? 1.6 : 0.9, ease: [0.65, 0, 0.35, 1] as const };
+  return (
+    <>
+      <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
+        <motion.img
+          src={src('reveal')} alt="" draggable={false} className="absolute inset-0 h-full w-full select-none object-cover"
+          initial={reduce ? false : { scale: 1.08 }} animate={{ scale: 1 }} transition={{ duration: revealed ? 6 : 12, ease: 'easeOut' }}
+        />
+        {/* Once the veil is gone, the text side keeps a soft shade so the words stay readable on the painting. */}
+        <motion.div
+          className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(6,12,28,0.82) 0%, rgba(6,12,28,0.55) 38%, rgba(6,12,28,0) 58%)' }}
+          initial={false} animate={{ opacity: open ? 1 : 0 }} transition={{ duration: 1, delay: open && !reduce ? 0.8 : 0 }}
+        />
+        <motion.div className="absolute inset-y-0" style={panel('l')} initial={false} animate={{ x: open ? -(COL_X + 160) : inset }} transition={slide} />
+        <motion.div className="absolute inset-y-0" style={panel('r')} initial={false} animate={{ x: open ? 1600 - COL_X + 160 : -inset }} transition={slide} />
+        {/* Light leaking through the slit; it breathes while the child guesses. */}
+        {!open && (
+          <motion.span
+            className="absolute top-0 h-full"
+            style={{ left: COL_X - 70, width: 140, background: 'radial-gradient(ellipse 50% 60% at 50% 72%, rgba(255,214,120,0.55), rgba(255,214,120,0) 70%)', mixBlendMode: 'screen' }}
+            initial={false}
+            animate={v.interaction && !reduce ? { opacity: [0.5, 1, 0.5] } : { opacity: 0.45 + step * 0.08 }}
+            transition={v.interaction && !reduce ? { duration: 2.4, repeat: Infinity, ease: 'easeInOut' } : { duration: 0.6 }}
+          />
+        )}
+        {open && !reduce && (
+          <>
+            <motion.span
+              className="absolute rounded-full"
+              style={{ left: COL_X - 360, top: COL_BASE - 300, width: 720, height: 520, background: 'radial-gradient(ellipse, rgba(255,226,150,0.75), rgba(255,200,100,0) 65%)', mixBlendMode: 'screen' }}
+              initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: [0, 1, 0.55], scale: 1 }} transition={{ duration: 2.4, delay: 0.9, ease: out }}
+            />
+            {Array.from({ length: 16 }, (_, i) => (
+              <motion.span
+                key={i}
+                className="absolute h-[6px] w-[6px] rounded-full"
+                style={{ left: COL_X + ((i * 37) % 90) - 45, top: COL_BASE - 20, background: '#FFE7A3', boxShadow: '0 0 10px 3px rgba(255,214,120,0.8)' }}
+                initial={{ opacity: 0, y: 0 }}
+                animate={{ opacity: [0, 1, 0], y: -260 - ((i * 53) % 380) }}
+                transition={{ duration: 2.6 + (i % 4) * 0.4, delay: 1 + (i % 8) * 0.18, ease: 'easeOut', repeat: Infinity, repeatDelay: 0.6 }}
+              />
+            ))}
+          </>
+        )}
+      </div>
+
+      {/* The Prophet's ﷺ question, drawn as a question mark of light beside the slit. */}
+      {!revealed && v.lines >= 2 && (
+        <svg className="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 1600 900" aria-hidden="true">
+          <g transform={`translate(${COL_X + 230} 360)`}>
+            <Pen d="M-62 -60 C-62 -150 62 -150 62 -66 C62 -10 0 0 0 54 L0 78" color={P.goldSoft} width={14} duration={1.1} glow />
+            <motion.circle cx={0} cy={132} r={12} fill={P.goldSoft} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: reduce ? 0 : 1.15, duration: 0.3 }} />
+          </g>
+        </svg>
+      )}
+
+      {open && name && (
+        <motion.div
+          className="pointer-events-none absolute -translate-x-1/2 whitespace-nowrap text-center" style={{ left: COL_X + 290, top: 170, textShadow: '0 2px 12px rgba(6,12,28,0.9)' }}
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: reduce ? 0 : 1.6, duration: 0.4 }}
+        >
+          <motion.span
+            lang="ar" dir="rtl" className="block font-serif text-[96px] font-bold leading-[1.25]"
+            style={{ color: '#FFF3D6', textShadow: '0 0 30px rgba(246,213,142,0.7)' }}
+            initial={{ clipPath: reduce ? 'inset(0 0 0 0%)' : 'inset(0 0 0 100%)' }} animate={{ clipPath: 'inset(0 0 0 0%)' }}
+            transition={{ duration: 1.4, delay: reduce ? 0 : 1.7, ease: 'easeInOut' }}
+          >
+            {name.arabic}
+          </motion.span>
+          <span className="block font-sans text-[30px] font-bold" style={{ color: P.goldSoft }}>{name.translit}</span>
+          <span className="block font-sans text-[22px] font-semibold" style={{ color: '#F3E6CC' }}>{name.meaning}</span>
+        </motion.div>
+      )}
+
+      {/* "He came to teach you your religion": its three parts rise out of the light. */}
+      {revealed && v.lines >= 2 && (
+        <>
+          <svg className="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 1600 900" aria-hidden="true">
+            {teach.map((_, i) => (
+              <Pen key={i} d={`M${COL_X + 10} ${660 + i * 30} Q ${COL_X + 120} ${560 + i * 80} 1230 ${510 + i * 100}`} color="#FFE7A3" width={3} delay={i * 0.35} duration={0.7} glow />
+            ))}
+          </svg>
+          {teach.map((t, i) => (
+            <Tag key={t.label} style={{ left: 1310, top: 510 + i * 100 }} ar={t.arabic} color={DOOR_INK[i]} delay={0.55 + i * 0.35} size={20}>
+              {t.label}
+            </Tag>
+          ))}
+        </>
+      )}
+    </>
+  );
+}
+
+/* ---------- p13 Three doors: traced at dusk, then lit one by one ---------- */
+
+const DOORS_IMG: Px = { w: 1400, h: 1050 };
+/** The three doorways in cover.webp: frame edges, the arch's spring line and apex, the sill, and the foot of the steps. */
+const DOORS = [
+  { l: 118, r: 447, spring: 345, apex: { x: 284, y: 136 }, sill: 700, foot: 790, glow: '#5FD0DB' },
+  { l: 512, r: 868, spring: 345, apex: { x: 690, y: 116 }, sill: 712, foot: 800, glow: '#FF8A6B' },
+  { l: 953, r: 1275, spring: 345, apex: { x: 1113, y: 141 }, sill: 700, foot: 790, glow: '#FFD36E' },
+];
+type Door = (typeof DOORS)[number];
+const archPath = (d: Door) =>
+  `M${d.l} ${d.sill} L${d.l} ${d.spring} C${d.l} ${d.spring - 110} ${d.apex.x - 70} ${d.apex.y + 45} ${d.apex.x} ${d.apex.y} C${d.apex.x + 70} ${d.apex.y + 45} ${d.r} ${d.spring - 110} ${d.r} ${d.spring} L${d.r} ${d.sill}`;
+const archClip = (d: Door) => {
+  const pc = (x: number, y: number) => `${(x / DOORS_IMG.w) * 100}% ${(y / DOORS_IMG.h) * 100}%`;
+  return `polygon(${[pc(d.l - 20, d.foot), pc(d.l, d.spring), pc(d.l + (d.apex.x - d.l) * 0.3, d.spring - 120), pc(d.apex.x, d.apex.y - 6), pc(d.r - (d.r - d.apex.x) * 0.3, d.spring - 120), pc(d.r, d.spring), pc(d.r + 20, d.foot)].join(', ')})`;
+};
+
+/** The painting starts at dusk. The first line traces the three arches, the second makes the doorways breathe with
+ *  light; each item then lights its door, spills light down its steps and hangs its name (Arabic, English, meaning). */
+export function DoorsLight({ items, v, label, arabic }: { items: string[]; v: Built; label: string; arabic: (word: string) => string | undefined }) {
+  const reduce = useReducedMotion();
+  const lit = Math.min(v.items, DOORS.length);
+  return (
+    <div className="absolute left-[680px] top-[132px] h-[630px] w-[840px]" role="img" aria-label={`${label}: ${lit} of 3 doors open`}>
+      <div className="absolute inset-0 overflow-hidden rounded-[28px] shadow-[0_40px_80px_-40px_rgba(139,73,53,0.6)]">
+        <Layer name="cover" filter="brightness(0.42) saturate(0.55) sepia(0.2)" />
+        {DOORS.map((d, i) =>
+          i < lit ? (
+            <Layer
+              key={i} name="cover" filter="brightness(1.05) saturate(1.1)" style={{ clipPath: archClip(d) }}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: reduce ? 0.3 : 1.1, ease: out }}
+            />
+          ) : null,
+        )}
+        {DOORS.map((d, i) => (
+          <motion.span
+            key={i} className="absolute -translate-x-1/2 -translate-y-1/2 rounded-[50%]"
+            style={{ ...at(DOORS_IMG, (d.l + d.r) / 2, (d.spring + d.sill) / 2), width: `${((d.r - d.l) / DOORS_IMG.w) * 100}%`, height: '42%', background: `radial-gradient(ellipse, ${d.glow}AA, ${d.glow}00 65%)`, mixBlendMode: 'screen' }}
+            initial={false}
+            animate={{ opacity: i < lit ? 0.9 : v.lines >= 2 ? (reduce ? 0.35 : [0.15, 0.45, 0.15]) : 0 }}
+            transition={i >= lit && v.lines >= 2 && !reduce ? { duration: 2.6, repeat: Infinity, ease: 'easeInOut' } : { duration: 0.8 }}
+          />
+        ))}
+        {DOORS.map((d, i) =>
+          i < lit ? (
+            <motion.span
+              key={i} className="absolute -translate-x-1/2 -translate-y-1/2 rounded-[50%]"
+              style={{ ...at(DOORS_IMG, (d.l + d.r) / 2, d.foot + 20), width: `${((d.r - d.l) / DOORS_IMG.w) * 130}%`, height: '22%', background: 'radial-gradient(ellipse, rgba(255,226,150,0.7), rgba(255,226,150,0) 65%)', mixBlendMode: 'screen' }}
+              initial={{ opacity: 0, scale: reduce ? 1 : 0.4 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: reduce ? 0.3 : 1.2, delay: reduce ? 0 : 0.5, ease: out }}
+            />
+          ) : null,
+        )}
+      </div>
+      <svg className="pointer-events-none absolute inset-0 h-full w-full overflow-visible" viewBox={`0 0 ${DOORS_IMG.w} ${DOORS_IMG.h}`} preserveAspectRatio="none" aria-hidden="true">
+        {v.lines >= 1 && DOORS.map((d, i) => <Pen key={i} d={archPath(d)} color={P.goldSoft} width={6} delay={i * 0.35} duration={1.2} glow={i < lit} />)}
+      </svg>
+      {items.slice(0, lit).map((it, i) => {
+        const [word, hint] = it.split(':').map((s) => s.trim());
+        const d = DOORS[i];
+        return (
+          <Tag key={it} style={at(DOORS_IMG, (d.l + d.r) / 2, d.foot + 135)} ar={arabic(word)} color={DOOR_INK[i]} delay={0.7}>
+            <span className="text-[24px]">{word}</span>
+            {hint && <span className="text-[18px] font-semibold" style={{ color: P.inkSoft }}>{hint}</span>}
+          </Tag>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ---------- p15 My Zad: packing today's map into Jiddo's bag ---------- */
+
+const BAG: Px = { w: 1254, h: 1254 };
+/** In backpack.webp: the khatam star on the flap, and the three little doors on the map sticking out of the bag (the road runs through them). */
+const BAG_STAR = { x: 722, y: 768, r: 46 };
+const MAP_DOORS = [{ x: 458, y: 505 }, { x: 608, y: 440 }, { x: 757, y: 480 }];
+const STAR_PATH = (() => {
+  const { x, y, r } = BAG_STAR;
+  const pts = Array.from({ length: 16 }, (_, i) => {
+    const a = (Math.PI / 8) * i - Math.PI / 2;
+    const rr = i % 2 ? r * 0.62 : r;
+    return `${(x + rr * Math.cos(a)).toFixed(1)} ${(y + rr * Math.sin(a)).toFixed(1)}`;
+  });
+  return `M${pts.join(' L')} Z`;
+})();
+
+/** Line 1 traces the bag's star, line 2 pins the word "zad" to the bag, line 3 lights the map of the three doors and
+ *  draws its road; the mission the child picks drops in as a note. */
+export function PackZad({ v, word, doors, chosen, label }: {
+  v: Built; label: string; chosen: string | null;
+  word?: { arabic: string; translit: string; meaning: string };
+  doors: { label: string; arabic?: string }[];
+}) {
+  const reduce = useReducedMotion();
+  const mapLit = v.lines >= 3;
+  return (
+    <div
+      className="absolute left-[-5px] top-[110px] h-[690px] w-[690px]" role="img" aria-label={label}
+      style={{ maskImage: 'linear-gradient(270deg, transparent 0, #000 140px)', WebkitMaskImage: 'linear-gradient(270deg, transparent 0, #000 140px)' }}
+    >
+      <div className="absolute inset-0 overflow-hidden rounded-r-[40px]">
+        <Layer name="backpack" filter="none" initial={reduce ? false : { scale: 1.06 }} animate={{ scale: 1 }} transition={{ duration: 1.4, ease: out }} />
+        {/* The map waits in shadow until today's lesson is "packed". */}
+        <motion.div
+          className="absolute" style={{ left: '26%', top: '24%', width: '48%', height: '28%', background: 'radial-gradient(ellipse, rgba(40,24,14,0.62), rgba(40,24,14,0) 70%)' }}
+          initial={false} animate={{ opacity: mapLit ? 0 : 1 }} transition={{ duration: 0.8 }}
+        />
+        {mapLit && !reduce && (
+          <motion.span
+            className="absolute rounded-full" style={{ left: '22%', top: '18%', width: '56%', height: '40%', background: 'radial-gradient(ellipse, rgba(255,226,150,0.65), rgba(255,226,150,0) 65%)', mixBlendMode: 'screen' }}
+            initial={{ opacity: 0 }} animate={{ opacity: [0, 1, 0.5] }} transition={{ duration: 2, ease: out }}
+          />
+        )}
+      </div>
+      <svg className="pointer-events-none absolute inset-0 h-full w-full overflow-visible" viewBox={`0 0 ${BAG.w} ${BAG.h}`} preserveAspectRatio="none" aria-hidden="true">
+        {v.lines >= 1 && <Pen d={STAR_PATH} color={P.goldSoft} width={5} duration={1.2} glow />}
+        {mapLit && (
+          <Pen
+            d={`M405 590 C440 570 430 545 ${MAP_DOORS[0].x} 548 C520 552 560 520 ${MAP_DOORS[1].x} 518 C650 516 700 540 ${MAP_DOORS[2].x} 540 C800 540 830 565 860 560`}
+            color={P.crimson} width={6} dash="10 12" duration={1.6} delay={0.4}
+          />
+        )}
+      </svg>
+      {v.lines >= 1 && <Tag style={at(BAG, 722, 900)} color={P.copper} delay={1} size={20}>Jiddo's travel bag</Tag>}
+      {v.lines >= 2 && word && (
+        <Tag style={at(BAG, 990, 1110)} ar={word.arabic} color={P.copper} delay={0.3} size={20}>
+          <span>{word.translit}</span>
+          <span className="text-[16px] font-semibold" style={{ color: P.inkSoft }}>{word.meaning}</span>
+        </Tag>
+      )}
+      {/* One tag in the gap above the map, so the children's faces stay clear. */}
+      {mapLit && (
+        <Tag style={at(BAG, 640, 262)} color={P.ink} delay={1.2} size={19}>
+          <span className="flex gap-2">
+            {doors.map((d, i) => <span key={d.label} style={{ color: DOOR_INK[i] }}>{d.label}</span>)}
+          </span>
+        </Tag>
+      )}
+      {chosen && (
+        <motion.div
+          key={chosen}
+          className="pointer-events-none absolute max-w-[300px] rounded-[10px] px-4 py-3 font-sans text-[19px] font-bold leading-snug shadow-[0_14px_30px_-14px_rgba(30,20,16,0.8)]"
+          style={{ left: '4%', top: '79%', background: '#FFF6D8', color: P.ink, rotate: '-4deg', borderTop: `6px solid ${P.gold}` }}
+          initial={reduce ? { opacity: 0 } : { opacity: 0, y: -40, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={reduce ? { duration: 0.2 } : { type: 'spring', duration: 0.6, bounce: 0.25 }}
+        >
+          <span className="block text-[15px] uppercase tracking-[0.12em]" style={{ color: P.copper }}>My mission</span>
+          {chosen}
+        </motion.div>
+      )}
+    </div>
+  );
+}

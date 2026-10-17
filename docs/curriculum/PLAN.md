@@ -296,3 +296,13 @@ B3–B5 → continue lesson by lesson.
   notebook (multiply, cream lifted to white). Fixed: in Arabic UI the English slide lost its serif. **Next:** same
   idea per page where it teaches (doors p13, reveal p11–12, sitting p6); a pencil-trace of the Arabic word on vocab
   pages; owner to judge the motion with the pane open (the agent's browser throttles animation).
+- **2026-10-17** — Scene builds extended (`slides/Scenes.tsx`), one treatment per idea: p6 posture study (arrow
+  "close, knee to knee", hand ringed, Arabic words join the labels with the evidence, the question draws the
+  "learning seat"); p10 Ihsan (her card ringed, the heart traced, then the room goes dark, "nobody is looking", and
+  only her work keeps its light); p11–12 one veiled courtyard across two pages (the slit opens a little each step, the
+  question drawn as a "?" of light; p12 parts the veil, the column blooms, جِبريل is written beside it, then Iman /
+  Islam / Ihsan rise out of the light); p13 doors at dusk, arches traced in gold, each item lights its door and hangs
+  its Arabic + English name; p15 the bag's star traced, "zad" pinned, the map of the three doors lit with its road,
+  and the mission the child picks drops in as a note. Added vocab جِبريل (Jibril, "the angel who brought the Quran")
+  to p12 — **owner to review**. Not changed: p2–4, p8, p16 (story/question pages where the painting already carries the
+  moment). Verified in the in-app browser during playback, plus reduced motion and phone width.

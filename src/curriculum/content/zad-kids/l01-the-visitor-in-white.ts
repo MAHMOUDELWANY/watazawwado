@@ -237,6 +237,7 @@ export const lesson01: Lesson = {
         'Now the mystery makes sense: no dust because he did not travel like people do, and nobody knew him because he was an angel in the form of a man.',
         'And why did he ask questions he knew? Just like Ms. Clarke: so the companions, and all of us today, would learn our religion. Allah sent an angel to give us this lesson.',
       ],
+      vocab: [{ arabic: 'جِبريل', translit: 'Jibril', meaning: 'the angel who brought the Quran' }],
       teacherNote: 'Wow moment. Use the praise button after the reveal, then pause.',
     },
     {

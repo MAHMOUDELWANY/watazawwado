@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import type { Interaction, Lesson, LessonPage } from '../types';
 import { SceneArt, P } from './Art';
-import { PillarsBuild, RootsGrow, ClueLens, type Lens } from './Scenes';
+import { PillarsBuild, RootsGrow, ClueLens, SittingStudy, IhsanLight, Unveil, DoorsLight, PackZad, type Lens } from './Scenes';
 
 /** Correct answers per bin of a game checkpoint, for the teacher report (PLAN §3a.3b). */
 export type GameResult = Record<string, { correct: number; total: number }>;
@@ -46,6 +46,7 @@ export function Slide({ lesson, pageIndex, step, onCorrect, onGameResult }: Slid
   const chapter = [...lesson.chapters].reverse().find((c) => c.page <= pageIndex);
   const rootRef = useRef<HTMLDivElement>(null);
   const [found, setFound] = useState<string[]>([]);
+  const [chosen, setChosen] = useState<string | null>(null);
   const stage = isStage(compositionFor(page));
   // Each new build step lands at the bottom of the text column; bring it into view.
   useEffect(() => {
@@ -57,7 +58,7 @@ export function Slide({ lesson, pageIndex, step, onCorrect, onGameResult }: Slid
   return (
     <div ref={rootRef} className="absolute inset-0 overflow-hidden" style={{ background: P.paper, color: P.ink }} dir="ltr" lang="en">
       {!stage && <Paper />}
-      <Body page={page} v={v} lesson={lesson} found={found} onCorrect={onCorrect} onGameResult={onGameResult} onClue={(l) => setFound((f) => (f.includes(l) ? f : [...f, l]))} />
+      <Body page={page} v={v} step={step} lesson={lesson} found={found} chosen={chosen} onChoose={setChosen} onCorrect={onCorrect} onGameResult={onGameResult} onClue={(l) => setFound((f) => (f.includes(l) ? f : [...f, l]))} />
       {stage && (
         <>
           <div className="pointer-events-none absolute inset-x-0 top-0 h-[150px]" style={{ background: 'linear-gradient(180deg, rgba(20,12,8,0.55), transparent)' }} />
@@ -165,9 +166,11 @@ const CLUE_LENSES: Record<string, Lens> = {
 };
 const STRANGER = { w: 1086, h: 1448 };
 
-type Composition = 'title' | 'picturebook' | 'portrait' | 'manuscript' | 'diagram' | 'spotlight' | 'luminous' | 'arena' | 'journal' | 'cliffhanger';
+type Composition = 'title' | 'picturebook' | 'portrait' | 'manuscript' | 'diagram' | 'spotlight' | 'luminous' | 'unveil' | 'arena' | 'journal' | 'cliffhanger';
 
 export function compositionFor(page: LessonPage): Composition {
+  // The two reveal pages share one veiled courtyard that opens across them (Scenes.tsx, Unveil).
+  if (page.scene === 'reveal' && (page.layout === 'question' || page.layout === 'evidence')) return 'unveil';
   switch (page.layout) {
     case 'cover': return 'title';
     case 'story': return 'picturebook';
@@ -182,7 +185,7 @@ export function compositionFor(page: LessonPage): Composition {
   }
 }
 /** Dark compositions put light chrome (header, tracker) over the painting. */
-export const isStage = (c: Composition) => c === 'title' || c === 'spotlight' || c === 'luminous' || c === 'cliffhanger';
+export const isStage = (c: Composition) => c === 'title' || c === 'spotlight' || c === 'luminous' || c === 'unveil' || c === 'cliffhanger';
 
 /** The painting, with one authored entrance: it settles out of a soft blur, then drifts slowly. */
 function Painting({ page, className = '', style, drift = true, children }: { page: LessonPage; className?: string; style?: React.CSSProperties; drift?: boolean; children?: React.ReactNode }) {
@@ -333,12 +336,21 @@ function Scrim({ to }: { to: 'side' | 'sideEnd' | 'bottom' | 'all' }) {
 
 const COL = 'slide-scroll overflow-y-auto pb-4 pr-4';
 
-function Body({ page, v, lesson, found, onCorrect, onGameResult, onClue }: {
-  page: LessonPage; v: ReturnType<typeof visibility>; lesson: Lesson; found: string[];
-  onCorrect: () => void; onGameResult: (r: GameResult) => void; onClue: (label: string) => void;
+/** An Arabic term the lesson teaches somewhere in its vocab, looked up by its transliteration. */
+const vocabOf = (lesson: Lesson, translit: string) => lesson.pages.flatMap((p) => p.vocab ?? []).find((w) => w.translit === translit);
+
+/** The lesson's three answers (Iman, Islam, Ihsan), as the doors page lists them, with their Arabic. */
+function threeDoors(lesson: Lesson) {
+  const items = lesson.pages.find((p) => p.scene === 'doors' && p.items)?.items ?? [];
+  return items.map((it) => { const label = it.split(':')[0].trim(); return { label, arabic: vocabOf(lesson, label)?.arabic }; });
+}
+
+function Body({ page, v, step, lesson, found, chosen, onChoose, onCorrect, onGameResult, onClue }: {
+  page: LessonPage; v: ReturnType<typeof visibility>; step: number; lesson: Lesson; found: string[]; chosen: string | null;
+  onChoose: (option: string) => void; onCorrect: () => void; onGameResult: (r: GameResult) => void; onClue: (label: string) => void;
 }) {
   const c = compositionFor(page);
-  const interaction = page.interaction && v.interaction ? <InteractionView interaction={page.interaction} onCorrect={onCorrect} onGameResult={onGameResult} onClue={onClue} /> : null;
+  const interaction = page.interaction && v.interaction ? <InteractionView interaction={page.interaction} onCorrect={onCorrect} onGameResult={onGameResult} onClue={onClue} onChoose={onChoose} /> : null;
 
   switch (c) {
     case 'title':
@@ -398,7 +410,22 @@ function Body({ page, v, lesson, found, onCorrect, onGameResult, onClue }: {
         </>
       );
 
-    case 'manuscript':
+    case 'manuscript': {
+      // Pages whose painting can show the idea get a large annotated print instead of the small arch.
+      const Study = page.scene === 'sitting' ? SittingStudy : page.scene === 'drawing' ? IhsanLight : null;
+      if (Study)
+        return (
+          <>
+            <div className={`absolute left-[120px] top-[140px] bottom-[120px] w-[560px] space-y-5 ${COL}`}>
+              <Title size={60}>{page.title}</Title>
+              {!v.evidence && <Lines lines={page.lines} count={v.lines} size={32} />}
+              {v.evidence && <Manuscript page={page} size={36} align="start" />}
+              <Vocab page={page} />
+              {interaction}
+            </div>
+            <Study v={v} label={page.title} />
+          </>
+        );
       return (
         <>
           <Painting
@@ -415,6 +442,7 @@ function Body({ page, v, lesson, found, onCorrect, onGameResult, onClue }: {
           </div>
         </>
       );
+    }
 
     case 'diagram': {
       const pins = PINS[page.scene] || [];
@@ -432,6 +460,8 @@ function Body({ page, v, lesson, found, onCorrect, onGameResult, onClue }: {
           </div>
           {Build ? (
             <Build labels={built} label={page.title} />
+          ) : page.scene === 'doors' && page.items ? (
+            <DoorsLight items={page.items} v={v} label={page.title} arabic={(w) => vocabOf(lesson, w)?.arabic} />
           ) : (
             <Painting page={page} drift={false} className="left-[700px] top-[120px] h-[640px] w-[800px] rounded-[32px]" style={{ boxShadow: '0 40px 80px -40px rgba(139,73,53,0.55)' }}>
               <Pins pins={pins} labels={labels} />
@@ -476,6 +506,21 @@ function Body({ page, v, lesson, found, onCorrect, onGameResult, onClue }: {
         </>
       );
 
+    case 'unveil': {
+      const revealed = page.layout === 'evidence';
+      return (
+        <>
+          <Unveil revealed={revealed} step={step} v={v} name={revealed ? page.vocab?.[0] : undefined} teach={threeDoors(lesson)} />
+          <div className={`absolute left-[120px] top-[150px] bottom-[120px] w-[640px] space-y-6 ${COL}`}>
+            <Title size={revealed ? 96 : 76} light>{page.title}</Title>
+            {!v.evidence && <Lines lines={page.lines} count={v.lines} size={34} light />}
+            {v.evidence && <Manuscript page={page} size={50} light align="start" />}
+            {interaction}
+          </div>
+        </>
+      );
+    }
+
     case 'arena':
       return (
         <div className="absolute left-[120px] right-[110px] top-[140px] bottom-[120px] slide-scroll space-y-4 overflow-y-auto pr-4">
@@ -487,7 +532,11 @@ function Body({ page, v, lesson, found, onCorrect, onGameResult, onClue }: {
     case 'journal':
       return (
         <>
-          <Painting page={page} className="left-0 top-[110px] bottom-[100px] w-[680px] rounded-r-[40px]" style={{ maskImage: 'linear-gradient(270deg, transparent 0, #000 140px)', WebkitMaskImage: 'linear-gradient(270deg, transparent 0, #000 140px)' }} />
+          {page.scene === 'backpack' ? (
+            <PackZad v={v} label={page.title} chosen={chosen} word={vocabOf(lesson, 'zad')} doors={threeDoors(lesson)} />
+          ) : (
+            <Painting page={page} className="left-0 top-[110px] bottom-[100px] w-[680px] rounded-r-[40px]" style={{ maskImage: 'linear-gradient(270deg, transparent 0, #000 140px)', WebkitMaskImage: 'linear-gradient(270deg, transparent 0, #000 140px)' }} />
+          )}
           <div className={`absolute left-[760px] right-[110px] top-[140px] bottom-[120px] space-y-6 ${COL}`}>
             <Title size={72}>{page.title}</Title>
             {!v.interaction && <Lines lines={page.lines} count={v.lines} size={30} />}
@@ -517,14 +566,14 @@ function Body({ page, v, lesson, found, onCorrect, onGameResult, onClue }: {
 
 /* ---------- interactions (sized for the canvas) ---------- */
 
-function InteractionView({ interaction, onCorrect, onGameResult, onClue }: { interaction: Interaction; onCorrect: () => void; onGameResult: (r: GameResult) => void; onClue?: (label: string) => void }) {
+function InteractionView({ interaction, onCorrect, onGameResult, onClue, onChoose }: { interaction: Interaction; onCorrect: () => void; onGameResult: (r: GameResult) => void; onClue?: (label: string) => void; onChoose?: (option: string) => void }) {
   switch (interaction.kind) {
     case 'ask':
       return <Ask prompt={interaction.prompt} reveal={interaction.reveal} />;
     case 'clues':
       return <Clues interaction={interaction} onCorrect={onCorrect} onClue={onClue} />;
     case 'choose':
-      return <Choose interaction={interaction} />;
+      return <Choose interaction={interaction} onChoose={onChoose} />;
     case 'sort':
       return <SortGame interaction={interaction} onCorrect={onCorrect} onResult={onGameResult} />;
   }
@@ -595,7 +644,7 @@ function Clues({ interaction, onCorrect, onClue }: { interaction: Extract<Intera
   );
 }
 
-function Choose({ interaction }: { interaction: Extract<Interaction, { kind: 'choose' }> }) {
+function Choose({ interaction, onChoose }: { interaction: Extract<Interaction, { kind: 'choose' }>; onChoose?: (option: string) => void }) {
   const [choice, setChoice] = useState<number | null>(null);
   return (
     <motion.div {...build} className="space-y-4">
@@ -605,7 +654,7 @@ function Choose({ interaction }: { interaction: Extract<Interaction, { kind: 'ch
           <button
             key={o}
             type="button"
-            onClick={() => setChoice(i)}
+            onClick={() => { setChoice(i); onChoose?.(o); }}
             aria-pressed={choice === i}
             className="rounded-[20px] border-[3px] px-5 py-3 text-left font-sans text-[22px] font-bold"
             style={{ borderColor: choice === i ? P.gold : '#E3D6B8', background: choice === i ? '#FCEFD2' : '#FFFDF7' }}
