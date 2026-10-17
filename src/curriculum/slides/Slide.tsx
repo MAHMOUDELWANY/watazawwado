@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import type { Interaction, Lesson, LessonPage } from '../types';
 import { SceneArt, P } from './Art';
 
@@ -44,21 +44,30 @@ export function Slide({ lesson, pageIndex, step, onCorrect, onGameResult }: Slid
   const v = visibility(page, step);
   const chapter = [...lesson.chapters].reverse().find((c) => c.page <= pageIndex);
   const rootRef = useRef<HTMLDivElement>(null);
+  const [found, setFound] = useState<string[]>([]);
+  const stage = isStage(compositionFor(page));
   // Each new build step lands at the bottom of the text column; bring it into view.
   useEffect(() => {
     if (step === 0) return;
-    const t = window.setTimeout(() => rootRef.current?.querySelectorAll('.slide-scroll').forEach((el) => el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })), 120);
+    const t = window.setTimeout(() => rootRef.current?.querySelectorAll('.slide-scroll').forEach((el) => { const last = el.lastElementChild as HTMLElement | null; if (last) el.scrollTo({ top: Math.max(0, last.offsetTop + last.offsetHeight - el.clientHeight + 16), behavior: 'smooth' }); }), 120);
     return () => window.clearTimeout(t);
   }, [step]);
 
   return (
     <div ref={rootRef} className="absolute inset-0 overflow-hidden" style={{ background: P.paper, color: P.ink }} dir="ltr" lang="en">
-      <Paper />
+      {!stage && <Paper />}
+      <Body page={page} v={v} lesson={lesson} found={found} onCorrect={onCorrect} onGameResult={onGameResult} onClue={(l) => setFound((f) => (f.includes(l) ? f : [...f, l]))} />
+      {stage && (
+        <>
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[150px]" style={{ background: 'linear-gradient(180deg, rgba(20,12,8,0.55), transparent)' }} />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[150px]" style={{ background: 'linear-gradient(0deg, rgba(20,12,8,0.6), transparent)' }} />
+        </>
+      )}
       <header className="absolute left-[120px] right-[260px] top-[46px] flex items-center gap-4">
         <KhatamStar size={30} color={P.crimson} />
-        <span className="font-sans text-[24px] font-bold" style={{ color: P.crimson }}>Lesson {lesson.number}</span>
-        <span className="font-sans text-[24px] font-semibold" style={{ color: P.inkSoft }}>{chapter?.label}</span>
-        <span lang="ar" dir="rtl" className="font-serif text-[30px] font-bold leading-none" style={{ color: P.copper }}>{lesson.titleAr}</span>
+        <span className="font-sans text-[24px] font-bold" style={{ color: stage ? '#FFF8EA' : P.crimson }}>Lesson {lesson.number}</span>
+        <span className="font-sans text-[24px] font-semibold" style={{ color: stage ? '#F3E6CC' : P.inkSoft }}>{chapter?.label}</span>
+        <span lang="ar" dir="rtl" className="font-serif text-[30px] font-bold leading-none" style={{ color: stage ? P.goldSoft : P.copper }}>{lesson.titleAr}</span>
       </header>
       <div
         className="absolute right-[90px] top-0 w-[136px] pb-4 pt-9 text-center shadow-[0_16px_34px_-16px_rgba(197,31,36,0.7)]"
@@ -69,9 +78,8 @@ export function Slide({ lesson, pageIndex, step, onCorrect, onGameResult }: Slid
         <div className="mx-auto mt-2 w-fit"><KhatamStar size={22} color={P.goldSoft} /></div>
       </div>
 
-      <Body page={page} v={v} lesson={lesson} onCorrect={onCorrect} onGameResult={onGameResult} />
 
-      <ChapterTracker lesson={lesson} pageIndex={pageIndex} />
+      <ChapterTracker lesson={lesson} pageIndex={pageIndex} light={stage} />
     </div>
   );
 }
@@ -103,15 +111,15 @@ function Paper() {
   );
 }
 
-function ChapterTracker({ lesson, pageIndex }: { lesson: Lesson; pageIndex: number }) {
+function ChapterTracker({ lesson, pageIndex, light = false }: { lesson: Lesson; pageIndex: number; light?: boolean }) {
   return (
     <footer className="absolute left-[120px] right-[90px] bottom-[34px] flex items-center gap-8">
-      <span className="font-sans text-[19px] font-bold" style={{ color: P.inkSoft }}>In this lesson</span>
+      <span className="font-sans text-[19px] font-bold" style={{ color: light ? '#E9DCC5' : P.inkSoft }}>In this lesson</span>
       {lesson.chapters.map((c, i) => {
         const next = lesson.chapters[i + 1]?.page ?? lesson.pages.length;
         const state = pageIndex >= next ? 'done' : pageIndex >= c.page ? 'now' : 'later';
         return (
-          <span key={c.label} className="flex items-center gap-3 font-sans text-[20px] font-bold" style={{ color: state === 'later' ? '#A39686' : P.ink }}>
+          <span key={c.label} className="flex items-center gap-3 font-sans text-[20px] font-bold" style={{ color: state === 'later' ? (light ? 'rgba(255,248,234,0.55)' : '#A39686') : light ? '#FFF8EA' : P.ink }}>
             <span
               className="flex h-9 w-9 items-center justify-center rounded-full text-[17px]"
               style={{
@@ -133,31 +141,10 @@ function ChapterTracker({ lesson, pageIndex }: { lesson: Lesson; pageIndex: numb
   );
 }
 
-function ArtCard({ page, className = '' }: { page: LessonPage; className?: string }) {
-  return (
-    // Mihrab-arch frame: our signature for things that hold a place (docs/design-system.md §3).
-    <div
-      className={`absolute overflow-hidden border-[6px] border-white bg-white shadow-[0_34px_64px_-30px_rgba(139,73,53,0.55)] ${className}`}
-      style={{ borderRadius: '50% 50% 34px 34px / 30% 30% 34px 34px', outline: `2px solid ${P.goldSoft}`, outlineOffset: 6 }}
-    >
-      {SCENE_IMAGES[page.scene] ? (
-        // Slow camera move over the painting (Ken Burns), restarts with each page.
-        <motion.img
-          src={`/curriculum/zad-kids/l01/${SCENE_IMAGES[page.scene]}.webp`}
-          alt={page.title}
-          className="h-full w-full object-cover"
-          initial={{ scale: 1.14, x: -18, y: 8 }}
-          animate={{ scale: 1.02, x: 0, y: 0 }}
-          transition={{ duration: 14, ease: 'easeOut' }}
-          draggable={false}
-        />
-      ) : (
-        <SceneArt id={page.scene} label={page.title} />
-      )}
-      <div className="pointer-events-none absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(255,243,201,0.18), transparent 40%, rgba(59,34,25,0.18))' }} />
-    </div>
-  );
-}
+/* ---------- art direction: "illuminated storybook" ----------
+   Two surfaces. Stage = the painting fills the slide (story moments, questions, the cliffhanger).
+   Paper = the notebook page (evidence, diagrams, the game). Each page gets a composition from its role,
+   so the lesson alternates rhythm instead of repeating one template (docs/curriculum/PLAN.md, slide system v3). */
 
 /** Painted scenes (owner, ChatGPT, 2026-10-17) in public/curriculum/zad-kids/l01; scenes not listed fall back to SVG art. */
 const SCENE_IMAGES: Partial<Record<LessonPage['scene'], string>> = {
@@ -165,19 +152,127 @@ const SCENE_IMAGES: Partial<Record<LessonPage['scene'], string>> = {
   sitting: 'sitting', pillars: 'pillars', roots: 'roots', drawing: 'drawing', reveal: 'reveal', backpack: 'backpack', lego: 'lego',
 };
 
-function Title({ children, size = 84 }: { children: React.ReactNode; size?: number }) {
+/** Where labels point on each painting (% of the image box): x,y = the point, lx,ly = the label. */
+type Pin = { x: number; y: number; lx: number; ly: number };
+const PINS: Partial<Record<LessonPage['scene'], Pin[]>> = {
+  pillars: [
+    { x: 17, y: 70, lx: 12, ly: 93 }, { x: 34, y: 70, lx: 31, ly: 85 }, { x: 50, y: 70, lx: 50, ly: 93 },
+    { x: 66, y: 70, lx: 69, ly: 85 }, { x: 83, y: 70, lx: 88, ly: 93 },
+  ],
+  roots: [
+    { x: 50, y: 62, lx: 50, ly: 50 }, { x: 32, y: 70, lx: 14, ly: 60 }, { x: 68, y: 70, lx: 86, ly: 60 },
+    { x: 24, y: 84, lx: 14, ly: 94 }, { x: 76, y: 84, lx: 86, ly: 94 }, { x: 50, y: 88, lx: 50, ly: 96 },
+  ],
+  doors: [{ x: 18, y: 50, lx: 18, ly: 86 }, { x: 50, y: 50, lx: 50, ly: 86 }, { x: 82, y: 50, lx: 82, ly: 86 }],
+};
+/** Clue answers drawn onto the painting when the child finds them. */
+const CLUE_PINS: Record<string, Pin & { label: string }> = {
+  'No dust from a journey': { x: 46, y: 88, lx: 70, ly: 72, label: 'No dust?' },
+  'Nobody knew who he was': { x: 50, y: 20, lx: 30, ly: 8, label: 'Who is he?' },
+};
+
+type Composition = 'title' | 'picturebook' | 'portrait' | 'manuscript' | 'diagram' | 'spotlight' | 'luminous' | 'arena' | 'journal' | 'cliffhanger';
+
+export function compositionFor(page: LessonPage): Composition {
+  switch (page.layout) {
+    case 'cover': return 'title';
+    case 'story': return 'picturebook';
+    case 'evidence':
+      if (page.interaction?.kind === 'clues') return 'portrait';
+      return page.scene === 'reveal' ? 'luminous' : 'manuscript';
+    case 'concept': return 'diagram';
+    case 'question': return page.scene === 'reveal' ? 'luminous' : 'spotlight';
+    case 'game': return 'arena';
+    case 'mission': return 'journal';
+    case 'next': return 'cliffhanger';
+  }
+}
+/** Dark compositions put light chrome (header, tracker) over the painting. */
+export const isStage = (c: Composition) => c === 'title' || c === 'spotlight' || c === 'luminous' || c === 'cliffhanger';
+
+/** The painting, with one authored entrance: it settles out of a soft blur, then drifts slowly. */
+function Painting({ page, className = '', style, drift = true, children }: { page: LessonPage; className?: string; style?: React.CSSProperties; drift?: boolean; children?: React.ReactNode }) {
+  const reduce = useReducedMotion();
+  const src = SCENE_IMAGES[page.scene];
   return (
-    <h2 className="font-serif font-medium leading-[1.04] tracking-tight" style={{ fontSize: size, color: P.ink }}>
+    <div className={`absolute overflow-hidden ${className}`} style={style}>
+      {src ? (
+        <motion.img
+          src={`/curriculum/zad-kids/l01/${src}.webp`}
+          alt={page.title}
+          draggable={false}
+          className="h-full w-full object-cover"
+          initial={reduce ? false : { scale: 1.1, filter: 'blur(8px) saturate(0.85)' }}
+          animate={reduce ? undefined : { scale: drift ? 1 : 1, filter: 'blur(0px) saturate(1)' }}
+          transition={{ scale: { duration: drift ? 16 : 1.2, ease: 'easeOut' }, filter: { duration: 0.8, ease } }}
+        />
+      ) : (
+        <SceneArt id={page.scene} label={page.title} />
+      )}
+      {children}
+    </div>
+  );
+}
+
+/** A label with a leader line pointing at a spot in the painting (the reference's annotation device). */
+function Pins({ pins, labels }: { pins: Pin[]; labels: (string | null)[] }) {
+  return (
+    <>
+      <svg className="pointer-events-none absolute inset-0 h-full w-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        {pins.map((p, i) =>
+          labels[i] ? (
+            <motion.line
+              key={i}
+              x1={p.x} y1={p.y} x2={p.lx} y2={p.ly}
+              stroke={P.gold} strokeWidth={3} vectorEffect="non-scaling-stroke" strokeLinecap="round"
+              initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.6, ease }}
+            />
+          ) : null,
+        )}
+      </svg>
+      {pins.map((p, i) =>
+        labels[i] ? (
+          <React.Fragment key={i}>
+            <motion.span
+              className="pointer-events-none absolute h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-white"
+              style={{ left: `${p.x}%`, top: `${p.y}%`, background: P.crimson, boxShadow: '0 0 0 6px rgba(229,169,60,0.45)' }}
+              initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 400, damping: 18 }}
+            />
+            <motion.span
+              className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full px-5 py-2 font-sans text-[24px] font-bold shadow-[0_10px_24px_-12px_rgba(30,20,16,0.6)]"
+              style={{ left: `${p.lx}%`, top: `${p.ly}%`, background: '#FFFDF7', color: P.crimson }}
+              initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.35, duration: 0.4, ease }}
+            >
+              {labels[i]}
+            </motion.span>
+          </React.Fragment>
+        ) : null,
+      )}
+    </>
+  );
+}
+
+function Title({ children, size = 84, light = false }: { children: React.ReactNode; size?: number; light?: boolean }) {
+  return (
+    <h2 className="font-serif font-medium leading-[1.02] tracking-[-0.015em] [text-wrap:balance]" style={{ fontSize: size, color: light ? '#FFF8EA' : P.ink }}>
       {children}
     </h2>
   );
 }
 
-function Lines({ lines, count, size = 40 }: { lines: string[]; count: number; size?: number }) {
+/** Narration builds line by line; the newest line is the brightest, earlier ones step back. */
+function Lines({ lines, count, size = 40, light = false }: { lines: string[]; count: number; size?: number; light?: boolean }) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {lines.slice(0, count).map((l, i) => (
-        <motion.p key={i} {...build} className="font-sans font-medium leading-[1.3]" style={{ fontSize: size, color: i === count - 1 ? P.ink : P.inkSoft }}>
+        <motion.p
+          key={i}
+          initial={{ opacity: 0, y: 18, filter: 'blur(4px)' }}
+          animate={{ opacity: i === count - 1 ? 1 : 0.62, y: 0, filter: 'blur(0px)' }}
+          transition={{ duration: 0.55, ease }}
+          className="font-sans font-medium leading-[1.32] [text-wrap:pretty]"
+          style={{ fontSize: size, color: light ? '#FFF8EA' : P.ink }}
+        >
           {l}
         </motion.p>
       ))}
@@ -185,157 +280,233 @@ function Lines({ lines, count, size = 40 }: { lines: string[]; count: number; si
   );
 }
 
-/** Arabic evidence: written in from right to left like a pen, then its meaning and source. */
-function EvidenceBlock({ page, big = false }: { page: LessonPage; big?: boolean }) {
+/** Manuscript treatment: the Arabic is the hero, written in right to left between gold rules. */
+function Manuscript({ page, size = 60, light = false, align = 'center' }: { page: LessonPage; size?: number; light?: boolean; align?: 'center' | 'start' }) {
   const e = page.evidence!;
+  const write = Math.min(4, 1 + e.arabic.length / 40);
   return (
-    <motion.figure initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="rounded-[28px] border-2 bg-white/80 px-10 py-7" style={{ borderColor: P.goldSoft }}>
+    <motion.figure initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={align === 'center' ? 'text-center' : ''}>
+      <div className={`flex items-center gap-4 ${align === 'center' ? 'justify-center' : ''}`} aria-hidden="true">
+        <span className="h-px w-20" style={{ background: P.gold }} />
+        <KhatamStar size={20} color={P.gold} />
+        <span className="h-px w-20" style={{ background: P.gold }} />
+      </div>
       <motion.blockquote
         lang="ar"
         dir="rtl"
-        className="font-serif leading-[1.7]"
-        style={{ fontSize: big ? 52 : 38, color: P.ink }}
+        className="mt-4 font-serif leading-[1.75]"
+        style={{ fontSize: size, color: light ? '#FFF3D6' : P.ink, textShadow: light ? '0 0 30px rgba(246,213,142,0.45)' : undefined }}
         initial={{ clipPath: 'inset(0 0 0 100%)' }}
         animate={{ clipPath: 'inset(0 0 0 0%)' }}
-        transition={{ duration: Math.min(4, 1 + e.arabic.length / 40), ease: 'easeInOut' }}
+        transition={{ duration: write, ease: 'easeInOut' }}
       >
-        «{e.arabic}»
+        {e.arabic}
       </motion.blockquote>
-      <motion.figcaption initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }} className="mt-3 font-sans" style={{ fontSize: big ? 28 : 23, color: P.inkSoft }}>
-        “{e.meaning}”
-        <span className="mt-2 block text-[20px] font-bold" style={{ color: P.copper }}>{e.reference}</span>
+      <motion.figcaption initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(3, write * 0.7), duration: 0.6, ease }} className="mt-3">
+        <span className="block font-serif text-[27px] italic leading-snug" style={{ color: light ? '#F3E6CC' : P.inkSoft }}>“{e.meaning}”</span>
+        <span className="mt-2 block font-sans text-[19px] font-bold" style={{ color: light ? P.goldSoft : P.copper }}>{e.reference}</span>
       </motion.figcaption>
     </motion.figure>
   );
 }
 
-function VocabChips({ page }: { page: LessonPage }) {
+function Vocab({ page, light = false }: { page: LessonPage; light?: boolean }) {
   if (!page.vocab?.length) return null;
   return (
-    <div className="flex flex-wrap gap-3">
+    <div className="flex flex-wrap gap-6">
       {page.vocab.map((w) => (
-        <span key={w.translit} className="inline-flex items-center gap-3 rounded-full border-2 bg-white/70 px-5 py-2 font-sans text-[22px]" style={{ borderColor: P.tealSoft, color: P.ink }}>
-          <span lang="ar" dir="rtl" className="font-serif text-[30px]">{w.arabic}</span>
+        <span key={w.translit} className="flex items-baseline gap-3 font-sans text-[22px]" style={{ color: light ? '#FFF8EA' : P.ink }}>
+          <span lang="ar" dir="rtl" className="font-serif text-[40px] leading-none" style={{ color: light ? P.goldSoft : P.crimson }}>{w.arabic}</span>
           <b>{w.translit}</b>
-          <span style={{ color: P.inkSoft }}>{w.meaning}</span>
+          <span style={{ color: light ? '#E9DCC5' : P.inkSoft }}>{w.meaning}</span>
         </span>
       ))}
     </div>
   );
 }
 
-function Body({ page, v, lesson, onCorrect, onGameResult }: { page: LessonPage; v: ReturnType<typeof visibility>; lesson: Lesson; onCorrect: () => void; onGameResult: (r: GameResult) => void }) {
-  const interaction = page.interaction && v.interaction ? <InteractionView interaction={page.interaction} onCorrect={onCorrect} onGameResult={onGameResult} /> : null;
+function Scrim({ to }: { to: 'side' | 'sideEnd' | 'bottom' | 'all' }) {
+  const bg =
+    to === 'sideEnd'
+      ? 'linear-gradient(270deg, rgba(20,12,8,0.9) 0%, rgba(20,12,8,0.62) 42%, rgba(20,12,8,0) 72%)'
+      : to === 'side'
+      ? 'linear-gradient(90deg, rgba(20,12,8,0.88) 0%, rgba(20,12,8,0.6) 40%, rgba(20,12,8,0) 72%)'
+      : to === 'bottom'
+        ? 'linear-gradient(0deg, rgba(20,12,8,0.9) 0%, rgba(20,12,8,0.45) 40%, rgba(20,12,8,0) 68%)'
+        : 'radial-gradient(ellipse at 50% 45%, rgba(5,30,36,0.3), rgba(5,20,24,0.85) 80%)';
+  return <div className="pointer-events-none absolute inset-0" style={{ background: bg }} />;
+}
 
-  switch (page.layout) {
-    case 'cover':
+const COL = 'slide-scroll overflow-y-auto pb-4 pr-4';
+
+function Body({ page, v, lesson, found, onCorrect, onGameResult, onClue }: {
+  page: LessonPage; v: ReturnType<typeof visibility>; lesson: Lesson; found: string[];
+  onCorrect: () => void; onGameResult: (r: GameResult) => void; onClue: (label: string) => void;
+}) {
+  const c = compositionFor(page);
+  const interaction = page.interaction && v.interaction ? <InteractionView interaction={page.interaction} onCorrect={onCorrect} onGameResult={onGameResult} onClue={onClue} /> : null;
+
+  switch (c) {
+    case 'title':
       return (
         <>
-          <div className="absolute left-[120px] top-[150px] bottom-[130px] w-[720px] flex flex-col">
-            <motion.div {...build}><Title size={88}>{lesson.title}</Title></motion.div>
-            <motion.p {...build} transition={{ ...build.transition, delay: 0.2 }} lang="ar" dir="rtl" className="mt-5 self-start font-serif text-[52px] font-bold leading-tight" style={{ color: P.copper }}>
+          <Painting page={page} className="inset-0" />
+          <Scrim to="side" />
+          <div className="absolute left-[120px] top-[190px] w-[780px]">
+            <motion.p initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.7, ease }} lang="ar" dir="rtl" className="w-fit font-serif text-[48px] font-bold" style={{ color: P.goldSoft }}>
               {lesson.titleAr}
             </motion.p>
-            <motion.p {...build} transition={{ ...build.transition, delay: 0.4 }} className="mt-auto max-w-[640px] font-sans text-[32px] leading-[1.4]" style={{ color: P.inkSoft }}>
+            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.9, ease }} className="mt-1">
+              <Title size={124} light>{lesson.title}</Title>
+            </motion.div>
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1, duration: 0.8 }} className="mt-8 max-w-[620px] font-sans text-[30px] leading-[1.45]" style={{ color: '#F3E6CC' }}>
               {lesson.goal}
             </motion.p>
-            <motion.p {...build} transition={{ ...build.transition, delay: 0.6 }} className="mt-6 flex items-center gap-3 font-sans text-[22px] font-semibold" style={{ color: P.copper }}>
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.3, duration: 0.8 }} className="mt-8 flex items-center gap-3 font-sans text-[22px] font-semibold" style={{ color: P.goldSoft }}>
               <KhatamStar size={20} color={P.gold} />
               {lesson.minutes} minutes, {lesson.pages.length} pages, 3 big questions
             </motion.p>
           </div>
-          <ArtCard page={page} className="left-[900px] top-[150px] w-[600px] h-[600px]" />
         </>
       );
 
-    case 'story':
+    case 'picturebook':
+      // Book spread: the written page on the left, the painting bleeding off the right edge.
       return (
         <>
-          <ArtCard page={page} className="left-[860px] top-[140px] w-[640px] h-[600px]" />
-          <div className="absolute left-[120px] top-[130px] bottom-[120px] w-[690px] slide-scroll space-y-6 overflow-y-auto pb-6 pr-5">
-            <Title size={76}>{page.title}</Title>
+          <Painting
+            page={page}
+            className="left-[600px] right-0 top-0 bottom-[100px] rounded-bl-[40px]"
+            style={{ maskImage: 'linear-gradient(90deg, transparent 0, #000 120px)', WebkitMaskImage: 'linear-gradient(90deg, transparent 0, #000 120px)' }}
+          />
+          <div className={`absolute left-[120px] top-[140px] bottom-[120px] w-[580px] space-y-6 ${COL}`}>
+            <Title size={68}>{page.title}</Title>
+            {v.evidence ? <Manuscript page={page} size={40} align="start" /> : <Lines lines={page.lines} count={v.lines} size={32} />}
+            {interaction}
+          </div>
+        </>
+      );
+
+    case 'portrait': {
+      const labels = Object.keys(CLUE_PINS);
+      return (
+        <>
+          <Painting page={page} className="right-0 top-0 bottom-[100px] w-[560px] rounded-bl-[40px]" style={{ maskImage: 'linear-gradient(90deg, transparent 0, #000 90px)', WebkitMaskImage: 'linear-gradient(90deg, transparent 0, #000 90px)' }}>
+            <Pins pins={labels.map((l) => CLUE_PINS[l])} labels={labels.map((l) => (found.includes(l) ? CLUE_PINS[l].label : null))} />
+          </Painting>
+          <div className={`absolute left-[120px] right-[620px] top-[140px] bottom-[120px] space-y-5 ${COL}`}>
+            <Title size={58}>{page.title}</Title>
+            {!v.interaction && <Lines lines={page.lines} count={v.lines} size={30} />}
+            {v.evidence && <Manuscript page={page} size={40} align="start" />}
+            {interaction}
+          </div>
+        </>
+      );
+    }
+
+    case 'manuscript':
+      return (
+        <>
+          <Painting
+            page={page}
+            className="right-[110px] top-[160px] h-[300px] w-[270px]"
+            style={{ borderRadius: '50% 50% 26px 26px / 34% 34% 26px 26px', boxShadow: '0 30px 60px -30px rgba(139,73,53,0.6)', outline: `2px solid ${P.goldSoft}`, outlineOffset: 8 }}
+          />
+          <div className={`absolute left-[120px] right-[430px] top-[140px] bottom-[120px] space-y-5 ${COL}`}>
+            <Title size={60}>{page.title}</Title>
             {!v.evidence && <Lines lines={page.lines} count={v.lines} size={34} />}
-            {v.evidence && <EvidenceBlock page={page} />}
+            {v.evidence && <Manuscript page={page} size={44} align="start" />}
+            <Vocab page={page} />
             {interaction}
           </div>
         </>
       );
 
-    case 'evidence':
+    case 'diagram': {
+      const pins = PINS[page.scene] || [];
+      const labels = pins.map((_, i) => (i < v.items ? page.items?.[i] ?? null : null));
       return (
         <>
-          <ArtCard page={page} className="left-[1060px] top-[150px] w-[440px] h-[440px]" />
-          <div className="absolute left-[120px] top-[130px] bottom-[120px] w-[900px] slide-scroll space-y-6 overflow-y-auto pb-6 pr-5">
-            <Title size={62}>{page.title}</Title>
-            {!v.interaction && <Lines lines={page.lines} count={v.lines} size={36} />}
-            {v.evidence && <EvidenceBlock page={page} big />}
+          <div className={`absolute left-[120px] top-[140px] bottom-[120px] w-[520px] space-y-6 ${COL}`}>
+            <Title size={68}>{page.title}</Title>
+            <Lines lines={page.lines} count={v.lines} size={32} />
+            <Vocab page={page} />
             {interaction}
           </div>
+          <Painting page={page} drift={false} className="left-[700px] top-[120px] h-[640px] w-[800px] rounded-[32px]" style={{ boxShadow: '0 40px 80px -40px rgba(139,73,53,0.55)' }}>
+            <Pins pins={pins} labels={labels} />
+          </Painting>
         </>
       );
+    }
 
-    case 'concept':
+    case 'spotlight':
       return (
         <>
-          <div className="absolute left-[120px] top-[130px] bottom-[120px] w-[560px] slide-scroll space-y-6 overflow-y-auto pb-6 pr-5">
-            <Title size={76}>{page.title}</Title>
-            <Lines lines={page.lines} count={v.lines} size={36} />
-            <VocabChips page={page} />
+          <div className="band-deep absolute inset-0" />
+          <Painting
+            page={page}
+            drift={false}
+            className="right-0 top-0 bottom-0 w-[640px] opacity-40"
+            style={{ maskImage: 'linear-gradient(90deg, transparent, #000 60%)', WebkitMaskImage: 'linear-gradient(90deg, transparent, #000 60%)' }}
+          />
+          <div className={`absolute left-[120px] right-[460px] top-[150px] bottom-[120px] space-y-6 ${COL}`}>
+            <Title size={84} light>{page.title}</Title>
+            {!v.evidence && <Lines lines={page.lines} count={v.lines} size={36} light />}
+            {v.evidence && <Manuscript page={page} size={50} light align="start" />}
             {interaction}
           </div>
-          <ArtCard page={page} className="left-[740px] top-[150px] w-[520px] h-[600px]" />
-          <ol className="absolute left-[1290px] top-[170px] w-[260px] space-y-4">
-            {(page.items || []).slice(0, v.items).map((item, i) => (
-              <motion.li key={item} initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, ease }} className="flex items-center gap-3">
-                <span className="h-[3px] w-8 shrink-0" style={{ background: P.crimson }} />
-                <span className="font-sans text-[28px] font-bold leading-tight" style={{ color: P.crimson }}>{item}</span>
-              </motion.li>
-            ))}
-          </ol>
         </>
       );
 
-    case 'question':
+    case 'luminous':
       return (
         <>
-          <ArtCard page={page} className="left-[1100px] top-[150px] w-[400px] h-[400px]" />
-          <div className="absolute left-[120px] top-[130px] bottom-[120px] w-[940px] slide-scroll space-y-6 overflow-y-auto pb-6 pr-5">
-            <Title size={72}>{page.title}</Title>
-            {!v.evidence && <Lines lines={page.lines} count={v.lines} size={38} />}
-            {v.evidence && <EvidenceBlock page={page} />}
-            {interaction}
+          <Painting page={page} className="inset-0" />
+          <Scrim to="all" />
+          <div className={`absolute left-[200px] right-[200px] top-[150px] bottom-[120px] text-center ${COL}`}>
+            <Title size={88} light>{page.title}</Title>
+            <div className="mx-auto mt-6 max-w-[1000px] space-y-6">
+              {!v.evidence && <Lines lines={page.lines} count={v.lines} size={36} light />}
+              {v.evidence && <Manuscript page={page} size={64} light />}
+              {interaction && <div className="text-left">{interaction}</div>}
+            </div>
           </div>
         </>
       );
 
-    case 'game':
+    case 'arena':
       return (
-        <div className="absolute left-[120px] right-[90px] top-[130px] space-y-6">
-          <Title size={58}>{page.title}</Title>
+        <div className="absolute left-[120px] right-[110px] top-[140px] bottom-[120px] slide-scroll space-y-4 overflow-y-auto pr-4">
+          <Title size={52}>{page.title}</Title>
           {interaction}
         </div>
       );
 
-    case 'mission':
+    case 'journal':
       return (
         <>
-          <ArtCard page={page} className="left-[980px] top-[140px] w-[520px] h-[600px]" />
-          <div className="absolute left-[120px] top-[130px] bottom-[120px] w-[820px] slide-scroll space-y-6 overflow-y-auto pb-6 pr-5">
-            <Title>{page.title}</Title>
-            <Lines lines={page.lines} count={v.lines} size={36} />
+          <Painting page={page} className="left-0 top-[110px] bottom-[100px] w-[680px] rounded-r-[40px]" style={{ maskImage: 'linear-gradient(270deg, transparent 0, #000 140px)', WebkitMaskImage: 'linear-gradient(270deg, transparent 0, #000 140px)' }} />
+          <div className={`absolute left-[760px] right-[110px] top-[140px] bottom-[120px] space-y-6 ${COL}`}>
+            <Title size={72}>{page.title}</Title>
+            {!v.interaction && <Lines lines={page.lines} count={v.lines} size={30} />}
+            <Vocab page={page} />
             {interaction}
           </div>
         </>
       );
 
-    case 'next':
+    case 'cliffhanger':
       return (
         <>
-          <ArtCard page={page} className="left-[860px] top-[140px] w-[640px] h-[600px]" />
-          <div className="absolute left-[120px] top-[130px] bottom-[120px] w-[680px] slide-scroll space-y-6 overflow-y-auto pb-6 pr-5">
-            <span className="font-sans text-[28px] font-bold" style={{ color: P.crimson }}>Next time on Zad Essentials</span>
-            <Title>{page.title}</Title>
-            <Lines lines={page.lines} count={v.lines} />
+          <Painting page={page} className="inset-0" />
+          <Scrim to="sideEnd" />
+          <div className={`absolute right-[110px] top-[200px] bottom-[120px] w-[720px] space-y-6 ${COL}`}>
+            <motion.span initial={{ opacity: 0, letterSpacing: '0.3em' }} animate={{ opacity: 1, letterSpacing: '0.01em' }} transition={{ duration: 1.2, ease }} className="block font-serif text-[34px] italic" style={{ color: P.goldSoft }}>
+              Next time on Zad Essentials…
+            </motion.span>
+            <Title size={92} light>{page.title}</Title>
+            <Lines lines={page.lines} count={v.lines} size={34} light />
             {interaction}
           </div>
         </>
@@ -345,12 +516,12 @@ function Body({ page, v, lesson, onCorrect, onGameResult }: { page: LessonPage; 
 
 /* ---------- interactions (sized for the canvas) ---------- */
 
-function InteractionView({ interaction, onCorrect, onGameResult }: { interaction: Interaction; onCorrect: () => void; onGameResult: (r: GameResult) => void }) {
+function InteractionView({ interaction, onCorrect, onGameResult, onClue }: { interaction: Interaction; onCorrect: () => void; onGameResult: (r: GameResult) => void; onClue?: (label: string) => void }) {
   switch (interaction.kind) {
     case 'ask':
       return <Ask prompt={interaction.prompt} reveal={interaction.reveal} />;
     case 'clues':
-      return <Clues interaction={interaction} onCorrect={onCorrect} />;
+      return <Clues interaction={interaction} onCorrect={onCorrect} onClue={onClue} />;
     case 'choose':
       return <Choose interaction={interaction} />;
     case 'sort':
@@ -380,7 +551,7 @@ function Ask({ prompt, reveal }: { prompt: string; reveal?: string }) {
   );
 }
 
-function Clues({ interaction, onCorrect }: { interaction: Extract<Interaction, { kind: 'clues' }>; onCorrect: () => void }) {
+function Clues({ interaction, onCorrect, onClue }: { interaction: Extract<Interaction, { kind: 'clues' }>; onCorrect: () => void; onClue?: (label: string) => void }) {
   const [picked, setPicked] = useState<number[]>([]);
   const needed = interaction.clues.filter((c) => c.correct).length;
   const found = picked.filter((i) => interaction.clues[i].correct).length;
@@ -388,6 +559,7 @@ function Clues({ interaction, onCorrect }: { interaction: Extract<Interaction, {
     if (picked.includes(i)) return;
     const next = [...picked, i];
     setPicked(next);
+    if (interaction.clues[i].correct) onClue?.(interaction.clues[i].label);
     if (interaction.clues[i].correct && next.filter((j) => interaction.clues[j].correct).length === needed) onCorrect();
   };
   return (
@@ -434,7 +606,7 @@ function Choose({ interaction }: { interaction: Extract<Interaction, { kind: 'ch
             type="button"
             onClick={() => setChoice(i)}
             aria-pressed={choice === i}
-            className="rounded-[20px] border-[3px] px-5 py-3 text-left font-sans text-[24px] font-bold"
+            className="rounded-[20px] border-[3px] px-5 py-3 text-left font-sans text-[22px] font-bold"
             style={{ borderColor: choice === i ? P.gold : '#E3D6B8', background: choice === i ? '#FCEFD2' : '#FFFDF7' }}
           >
             {choice === i ? '★ ' : ''}{o}
@@ -494,7 +666,7 @@ function SortGame({ interaction, onCorrect, onResult }: { interaction: Extract<I
             onClick={() => place(bin.id)}
             disabled={selected === null || checked}
             aria-label={`${bin.label}: ${bin.hint}`}
-            className="flex min-h-[300px] flex-col items-center gap-2 rounded-t-[999px] rounded-b-[24px] px-4 pb-4 pt-10 text-center enabled:cursor-pointer"
+            className="flex min-h-[250px] flex-col items-center gap-2 rounded-t-[999px] rounded-b-[24px] px-4 pb-4 pt-9 text-center enabled:cursor-pointer"
             style={{ background: DOOR_COLORS[bi] ?? P.teal }}
           >
             <span className="font-serif text-[40px] font-bold text-white">{bin.label}</span>

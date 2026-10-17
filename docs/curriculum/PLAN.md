@@ -109,6 +109,9 @@ Owner's brief of 2026-10-16 (pasted in chat) is the working method. Its binding 
     `humanizer` on every learner- or teacher-facing text before it ships, `taste-skill` / `soft-skill` /
     `redesign-skill` for lesson screens and motion, `verification-before-completion` before calling anything done,
     and the `seo-*` skills for any public curriculum page.
+    **[Owner, 2026-10-17]** Emil Kowalski's skills (`apple-design`, `animate`, `review-animations`,
+    `improve-animations`, `mobile-native`, `break-ui`, ...) are important design skills for the whole site, the
+    curriculum included. `apple-design` is an important one among the design skills, not the lead skill.
 
 ## 3a. Engagement & learning psychology — [Decided 2026-10-16]
 
@@ -273,3 +276,11 @@ B3–B5 → continue lesson by lesson.
 - **2026-10-17** — **[Decided]** the player's language switch changes the teacher's explanation panel only; the slide
   stays English for the student. Arabic teacher notes per page in `content/zad-kids/l01-teacher-ar.ts` (owner to
   review). Full-screen controls are a side rail: right in English, left in Arabic.
+- **2026-10-17** — Slide system v3, "illuminated storybook". Two surfaces: Stage (painting fills the slide, light chrome)
+  and Paper (notebook). Each page gets a composition from its role ( in ):
+  title (cover), picturebook spread (story), portrait + clue pins (evidence with clues), manuscript (evidence),
+  diagram with leader-line labels (concept), spotlight on the deep band (question), luminous (the reveal), arena
+  (game), journal spread (mission), cliffhanger. Lesson 1 storyboard: 1 title · 2–4 spreads · 5 portrait · 6
+  manuscript · 7 diagram · 8 spotlight · 9 diagram · 10 manuscript · 11 luminous · 12 luminous · 13 diagram · 14
+  arena · 15 journal · 16 cliffhanger. Labels are positioned per painting (, ); new paintings need
+  their own pins.
