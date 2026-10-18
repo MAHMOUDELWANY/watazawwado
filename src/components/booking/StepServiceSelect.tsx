@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { activateOnKey } from '../../lib/a11y';
 import { motion } from 'motion/react';
 import { Check, BookOpen, Compass, Languages, GraduationCap, ArrowRight } from 'lucide-react';
-import { BOOKING_SERVICES } from '../../booking/mockData';
+import { BOOKABLE_SERVICES } from '../../booking/mockData';
 import { Language, ServiceGroupKey } from '../../booking/types';
 
 interface StepServiceSelectProps {
@@ -32,7 +32,7 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
 }) => {
   const isEn = lang === 'en';
   const [activeTab, setActiveTab] = useState<ServiceGroupKey | 'all'>('all');
-  const suggested = BOOKING_SERVICES.find((s) => s.id === suggestedServiceId);
+  const suggested = BOOKABLE_SERVICES.find((s) => s.id === suggestedServiceId);
   const [showAll, setShowAll] = useState(!suggested);
 
   if (suggested && !showAll) {
@@ -81,16 +81,16 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
   const groups: { key: ServiceGroupKey | 'all'; label: string; arabicLabel: string; icon: React.ReactNode }[] = [
     { key: 'all', label: 'All Disciplines', arabicLabel: 'جميع المواد', icon: <GraduationCap className="w-4 h-4" /> },
     { key: 'quran', label: 'Quran & Tajweed', arabicLabel: 'القرآن والتجويد', icon: <BookOpen className="w-4 h-4" /> },
-    { key: 'islamic_studies', label: 'Islamic Studies', arabicLabel: 'الدراسات الإسلامية', icon: <Compass className="w-4 h-4" /> },
+    { key: 'islamic_studies', label: 'The Zad Path', arabicLabel: 'مسار الأثر', icon: <Compass className="w-4 h-4" /> },
     { key: 'arabic', label: 'Arabic Language', arabicLabel: 'اللغة العربية', icon: <Languages className="w-4 h-4" /> },
     { key: 'english', label: 'English', arabicLabel: 'اللغة الإنجليزية', icon: <GraduationCap className="w-4 h-4" /> }
   ];
 
   const filteredServices = activeTab === 'all'
-    ? BOOKING_SERVICES
-    : BOOKING_SERVICES.filter((s) => s.group === activeTab);
+    ? BOOKABLE_SERVICES
+    : BOOKABLE_SERVICES.filter((s) => s.group === activeTab);
 
-  const selectedService = BOOKING_SERVICES.find((s) => s.id === selectedServiceId);
+  const selectedService = BOOKABLE_SERVICES.find((s) => s.id === selectedServiceId);
 
   return (
     <div className="space-y-6">

@@ -28,7 +28,7 @@ import { BookShelf } from '../../components/onboarding/BookShelf';
 import { TravelModeChoice, PassCard, PassField, passInputClass, SealChoice, GuideChoice, FoldedPass, teacherColor } from '../../components/onboarding/TravelPass';
 import { JourneyPath, LEVELS } from '../../components/onboarding/JourneyPath';
 import { JourneyBackdrop, JourneyTrail } from '../../components/onboarding/JourneyChrome';
-import { subjectLabel, findSubject } from '../../components/onboarding/subjects';
+import { subjectLabel, findSubject, levelsFor } from '../../components/onboarding/subjects';
 import { Label } from '../../components/ui/Label';
 import { CountryTimezonePicker } from '../../components/ui/CountryTimezonePicker';
 import { WhatsAppPhoneInput } from '../../components/ui/WhatsAppPhoneInput';
@@ -777,7 +777,7 @@ export default function StudentOnboardingPage({
                     if (index !== openChild) {
                       const found = findSubject(child.learningInterest);
                       const guide = guideOfChild;
-                      const level = LEVELS.find((l) => l.id === child.currentLevel) || LEVELS[0];
+                      const level = levelsFor(child.learningInterest).find((l) => l.id === child.currentLevel) || LEVELS.find((l) => l.id === child.currentLevel) || LEVELS[0];
                       return (
                         <FoldedPass
                           key={child.id}
@@ -900,12 +900,16 @@ export default function StudentOnboardingPage({
                               isAr={isRTL}
                             />
                           </div>
+                          {/* Subjects taught by age version (Zad Path) have no level to pick; JourneyPath then only resets it. */}
                           <div>
-                            <p className="text-xs font-semibold text-foreground mb-2">
-                              {isRTL ? 'مستواه الحالي' : 'Current level'}
-                            </p>
+                            {levelsFor(child.learningInterest).length !== 1 && (
+                              <p className="text-xs font-semibold text-foreground mb-2">
+                                {isRTL ? 'مستواه الحالي' : 'Current level'}
+                              </p>
+                            )}
                             <JourneyPath
                               name={`child-${index}-level`}
+                              subject={child.learningInterest}
                               value={child.currentLevel}
                               onChange={(id) => handleUpdateChild(index, { currentLevel: id })}
                               isAr={isRTL}
@@ -960,10 +964,12 @@ export default function StudentOnboardingPage({
                 </div>
 
                 <div>
-                  <p className="block text-sm font-semibold text-foreground mb-3">
-                    {isRTL ? 'مستواك الحالي تقريبًا' : 'Your current level, roughly'}
-                  </p>
-                  <JourneyPath name="adult-level" value={currentLevel} onChange={setCurrentLevel} isAr={isRTL} />
+                  {levelsFor(learningInterest).length !== 1 && (
+                    <p className="block text-sm font-semibold text-foreground mb-3">
+                      {isRTL ? 'مستواك الحالي تقريبًا' : 'Your current level, roughly'}
+                    </p>
+                  )}
+                  <JourneyPath name="adult-level" subject={learningInterest} value={currentLevel} onChange={setCurrentLevel} isAr={isRTL} />
                 </div>
 
                 <div>

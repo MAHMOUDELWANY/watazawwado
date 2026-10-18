@@ -127,8 +127,8 @@ export default function StudentOffersPage({ session, lang = 'en' }: StudentOffer
       </h1>
       <p className="text-muted-foreground text-sm mb-6">
         {isAr
-          ? 'العروض اللي الأستاذ محمود راجعها ووافق عليها بنفسه.'
-          : 'Offers personally reviewed and approved by Ustadh Mahmoud.'}
+          ? 'العروض اللي فريقنا راجعها ووافق عليها.'
+          : 'Offers reviewed and approved by our team.'}
       </p>
 
       {error && (
@@ -264,8 +264,8 @@ export default function StudentOffersPage({ session, lang = 'en' }: StudentOffer
                   <p className="text-muted-foreground mt-1">
                     {(isAr ? customizedNote?.ar : customizedNote?.en) ||
                       (isAr
-                        ? 'الأستاذ محمود وافق على العرض ده، لكن إتمام الدفع أونلاين بالسعر المخصص ده غير متاح حاليًا.'
-                        : 'Ustadh Mahmoud approved this offer, but online purchase for this custom price is not available yet.')}
+                        ? 'فريقنا وافق على العرض ده، لكن إتمام الدفع أونلاين بالسعر المخصص ده غير متاح حاليًا.'
+                        : 'Our team approved this offer, but online purchase for this custom price is not available yet.')}
                   </p>
                   <p className="text-muted-foreground mt-1">
                     {isAr

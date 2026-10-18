@@ -390,7 +390,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                 {isEn ? 'Sender Identity' : 'هوية المرسل'}
               </span>
               <span className="font-mono text-[11px] text-foreground break-all block">
-                {status?.email?.senderName || 'Mahmoud Elwany'} &lt;{status?.email?.senderEmail || 'mahmoudelwany98@gmail.com'}&gt;
+                {status?.email?.senderName || 'Watazawwado'} &lt;{status?.email?.senderEmail || 'support@watazawwado.academy'}&gt;
               </span>
             </div>
           </div>

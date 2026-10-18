@@ -28,9 +28,9 @@ describe('Section 08-B: Student Profile & Account Visual UX Refinement', () => {
     assert.ok(profilePageSource.includes('me-'), 'Must use logical me-* margin for buttons');
   });
 
-  it('3. Teacher Relationship: Respectfully presents Ustadh Mahmoud 1-on-1 teaching relationship', () => {
-    assert.ok(profilePageSource.includes('Ustadh Mahmoud'), 'Must reference Ustadh Mahmoud');
-    assert.ok(profilePageSource.includes('الأستاذ محمود'), 'Must include Arabic name for Ustadh Mahmoud');
+  it('3. Teacher Relationship: presents the 1-on-1 relationship with the assigned teacher, never one hard-coded person (owner, 2026-10-18)', () => {
+    assert.ok(!profilePageSource.includes('Ustadh Mahmoud') && !profilePageSource.includes('الأستاذ محمود'), 'Must not hard-code one teacher');
+    assert.ok(profilePageSource.includes('assignedTeacherName'), 'Must show the assigned teacher');
     assert.ok(profilePageSource.includes('1-on-1') || profilePageSource.includes('1-على-1'), 'Must highlight 1-on-1 teaching model');
     // Does not include fake messaging or imaginary stats
     assert.ok(!profilePageSource.includes('chatWithTeacher'), 'Must not invent fake teacher chat workflow');

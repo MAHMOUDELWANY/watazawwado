@@ -65,7 +65,7 @@ const STAGE_CONFIG: Record<LeadStatus, { label: string; labelAr: string; color: 
     labelAr: 'اتواصلنا معاه',
     descriptionAr: 'اتكلمنا معاه على واتساب أو إيميل',
     color: 'bg-accent/15 text-accent border border-accent/25',
-    description: 'Mahmoud has reached out via WhatsApp or email'
+    description: 'The teacher has reached out via WhatsApp or email'
   },
   trial_booked: {
     label: 'Trial Booked',
@@ -179,11 +179,11 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
 
   // Truthful contextual WhatsApp link preparation
   const learnerName = lead.name || 'there';
-  let whatsappMsg = `As-salamu alaykum ${learnerName},\n\nThis is Ustadh Mahmoud. Thank you for your interest in learning with me! I would be delighted to assist you.`;
+  let whatsappMsg = `As-salamu alaykum ${learnerName},\n\nThis is your teacher at Watazawwado. Thank you for your interest in learning with us! I would be delighted to help.`;
   if (lead.status === 'lead' || lead.status === 'visitor') {
-    whatsappMsg = `As-salamu alaykum ${learnerName},\n\nThis is Ustadh Mahmoud. I received your inquiry regarding ${lead.service_interest_name || 'lessons'}. I would love to answer any questions you have, or we can schedule your complimentary 30-minute free trial session at your convenience.`;
+    whatsappMsg = `As-salamu alaykum ${learnerName},\n\nThis is your teacher at Watazawwado. I received your inquiry regarding ${lead.service_interest_name || 'lessons'}. I would love to answer any questions you have, or we can schedule your complimentary 30-minute free trial session at your convenience.`;
   } else if (lead.status === 'trial_completed') {
-    whatsappMsg = `As-salamu alaykum ${learnerName},\n\nThis is Ustadh Mahmoud following up on our free trial session. How did you feel about the mini-lesson? Whenever you are ready, I can reserve your recurring weekly slots.`;
+    whatsappMsg = `As-salamu alaykum ${learnerName},\n\nThis is your teacher at Watazawwado, following up on our free trial session. How did you feel about the mini-lesson? Whenever you are ready, I can reserve your recurring weekly slots.`;
   }
 
   const whatsappUrl = buildContextualWhatsAppUrl(lead.whatsapp, whatsappMsg);

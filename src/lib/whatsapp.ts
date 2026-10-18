@@ -1,20 +1,20 @@
 /**
  * ====================================================================
- * MAHMOUD TEACHING PLATFORM — WHATSAPP UTILITIES
+ * WATAZAWWADO — WHATSAPP UTILITIES
  * File: src/lib/whatsapp.ts
  * Role: Contextual WhatsApp Link Generator (Free, Smart, No Paid API)
  * ====================================================================
  */
 
-export const MAHMOUD_OFFICIAL_PHONE_DISPLAY = '+48 508 157 886';
-export const MAHMOUD_OFFICIAL_PHONE_INTL = '+48508157886';
-export const MAHMOUD_OFFICIAL_PHONE_DIGITS = '48508157886';
+export const ACADEMY_PHONE_DISPLAY = '+48 508 157 886';
+export const ACADEMY_PHONE_INTL = '+48508157886';
+export const ACADEMY_PHONE_DIGITS = '48508157886';
 
 /**
  * Normalizes phone numbers safely for WhatsApp URL target digits.
  */
 export function normalizeWhatsAppDigits(phone?: string | null): string {
-  if (!phone || typeof phone !== 'string') return MAHMOUD_OFFICIAL_PHONE_DIGITS;
+  if (!phone || typeof phone !== 'string') return ACADEMY_PHONE_DIGITS;
   const digits = phone.replace(/\D/g, '');
   if (digits.startsWith('00')) return digits.slice(2);
   if (digits.startsWith('0') && digits.length === 11) {
@@ -22,7 +22,7 @@ export function normalizeWhatsAppDigits(phone?: string | null): string {
     return `20${digits.slice(1)}`;
   }
   if (digits.length >= 7) return digits;
-  return MAHMOUD_OFFICIAL_PHONE_DIGITS;
+  return ACADEMY_PHONE_DIGITS;
 }
 
 /**

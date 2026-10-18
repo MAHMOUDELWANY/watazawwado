@@ -23,6 +23,8 @@ export interface ServiceOption {
   arabicSuggestedGoals: string[];
   defaultDurations: LessonDuration[];
   hourlyRateUsd: number; // e.g. 7 or 10
+  /** Retired from the catalog (RULES.md "Subjects", 2026-10-18): kept so old bookings still resolve, never offered. */
+  hidden?: boolean;
 }
 
 export interface TimeSlot {

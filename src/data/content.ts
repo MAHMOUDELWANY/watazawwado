@@ -46,8 +46,8 @@ export const SERVICES_DATA: ServicePillar[] = [
       },
       {
         id: 'quran-memorization',
-        name: 'Quran Memorization (Hifz)',
-        arabicName: 'حفظ القرآن الكريم (تحفيظ)',
+        name: 'Quran Memorization & Revision',
+        arabicName: 'الحفظ والمراجعة',
         category: 'quran',
         tagline: 'A sustainable, steady memorization system built around your daily life.',
         arabicTagline: 'منهجية حفظ مستدامة وتثبيت متقن يناسب وقتك وجدولك اليومي.',
@@ -84,10 +84,10 @@ export const SERVICES_DATA: ServicePillar[] = [
   },
   {
     id: 'islamic_studies',
-    title: 'Islamic Studies',
-    arabicTitle: 'العلوم الإسلامية',
-    description: 'Faith, worship and the life of the Prophet ﷺ, taught soundly and clearly.',
-    arabicDescription: 'العقيدة والفقه والسيرة، بفهم سليم وأسلوب واضح وقريب منك.',
+    title: 'The Zad Path',
+    arabicTitle: 'مسار الأثر',
+    description: 'Our own curriculum: faith, worship, character and the life of the Prophet ﷺ, made to change how you live. Three versions by age.',
+    arabicDescription: 'منهجنا إحنا: الإيمان والعبادة والأخلاق وسيرة النبي ﷺ، معمول عشان يغيّر حياتك. تلات نسخ حسب السن.',
     services: [
       {
         id: 'aqeedah',
@@ -190,8 +190,8 @@ export const SERVICES_DATA: ServicePillar[] = [
     services: [
       {
         id: 'modern-standard-arabic',
-        name: 'Modern Standard Arabic (Fusha)',
-        arabicName: 'العربية الفصحى (نحو وصرف)',
+        name: 'Fusha Arabic',
+        arabicName: 'العربية الفصحى',
         category: 'arabic',
         tagline: 'The universal written language of books, media, and scholarship across the Arab world.',
         arabicTagline: 'إتقان لغة الكتب والتراث والقواعد الهيكلية بيسر وسلاسة.',

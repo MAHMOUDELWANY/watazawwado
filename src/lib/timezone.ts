@@ -1,11 +1,11 @@
 import { DateTime } from 'luxon';
 
 /**
- * Timezone & Schedule Foundation for Mahmoud Teaching Platform
+ * Timezone & Schedule Foundation for Watazawwado
  * 
  * Master Spec Rules (Section 18 & 21):
  * - Students see and select times in their local IANA timezone.
- * - Mahmoud manages his teaching calendar in Cairo time (Africa/Cairo).
+ * - Teachers set their weekly hours in their own time zone (RULES.md §1); Cairo is the legacy default.
  * - All internal and database scheduling is stored in timezone-aware UTC ISO-8601.
  * - Daylight-saving transitions across US, UK, Canada, Australia, and Egypt
  *   must be computed accurately from the IANA timezone database.
@@ -88,7 +88,7 @@ export function calculateUtcTimes(
   const startUtc = localDateTime.toUTC();
   const endUtc = startUtc.plus({ minutes: durationMinutes });
 
-  // Calculate equivalent Cairo time (Africa/Cairo) for Mahmoud's teaching schedule
+  // Calculate equivalent Cairo time (Africa/Cairo) for the legacy Cairo schedule
   const cairoDateTime = localDateTime.setZone('Africa/Cairo');
   const cairoTimeDisplay = cairoDateTime.toFormat('hh:mm a') + ' Cairo';
   const localTimeDisplay = localDateTime.toFormat('hh:mm a');

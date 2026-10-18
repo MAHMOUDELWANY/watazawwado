@@ -1,6 +1,6 @@
 /**
  * ====================================================================
- * MAHMOUD TEACHING PLATFORM — EMAIL SERVICE (BREVO TRANSACTIONAL LAYER)
+ * WATAZAWWADO — EMAIL SERVICE (BREVO TRANSACTIONAL LAYER)
  * File: server/notifications/emailService.ts
  * Role: Provider-neutral transactional email service adapter backed by
  *       Brevo HTTP API (https://api.brevo.com/v3/smtp/email).

@@ -1,11 +1,13 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { Footprints, Compass, TreePalm, Mountain } from 'lucide-react';
+import { levelsFor } from './subjects';
 
 /**
  * Current level as a journey: a winding road with four stops, from the start of the road to the
  * summit. The road lights up from the start to the chosen stop and a traveller dot walks there.
  * Mirrored for right-to-left so the road always starts where reading starts.
+ * With a `subject`, the stops are that subject's own levels (subjects.ts); a subject with one level shows nothing.
  */
 
 export const LEVELS = [
@@ -19,30 +21,44 @@ const W = 360;
 const H = 150;
 const ROAD = 'M 26 118 C 80 124, 92 64, 140 72 S 214 128, 254 96 S 312 34, 334 34';
 const STOPS = [0, 0.36, 0.69, 1];
+const ICONS = [Footprints, Compass, TreePalm, Mountain];
+const stopsFor = (n: number) => (n === 4 ? STOPS : Array.from({ length: n }, (_, i) => (n === 1 ? 0 : i / (n - 1))));
 
-export function JourneyPath({ value, onChange, isAr, name }: { value: string; onChange: (id: string) => void; isAr: boolean; name: string }) {
+export function JourneyPath({ value, onChange, isAr, name, subject }: { value: string; onChange: (id: string) => void; isAr: boolean; name: string; subject?: string }) {
   const reduce = useReducedMotion();
   const pathRef = useRef<SVGPathElement>(null);
   const [points, setPoints] = useState<{ x: number; y: number }[]>([]);
-  const at = Math.max(0, LEVELS.findIndex((l) => l.id === value));
+  const own = subject ? levelsFor(subject) : [];
+  const levels = own.length
+    ? own.map((l, i) => ({ id: l.id, en: l.en, ar: l.ar, stopEn: l.en, stopAr: l.ar, descEn: l.descEn, descAr: l.descAr, Icon: ICONS[Math.round((i * 3) / Math.max(1, own.length - 1))] }))
+    : LEVELS;
+  const stops = stopsFor(levels.length);
+  const at = Math.max(0, levels.findIndex((l) => l.id === value));
+
+  // A level that this subject does not offer moves to its first level, so the saved level always fits the subject.
+  React.useEffect(() => {
+    if (!levels.some((l) => l.id === value)) onChange(levels[0].id);
+  }, [subject]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useLayoutEffect(() => {
     const p = pathRef.current;
     if (!p) return;
     const len = p.getTotalLength();
-    setPoints(STOPS.map((f) => {
+    setPoints(stops.map((f) => {
       const pt = p.getPointAtLength(len * f);
       return { x: pt.x, y: pt.y };
     }));
-  }, []);
+  }, [levels.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const pick = (i: number) => {
-    const next = LEVELS[Math.min(LEVELS.length - 1, Math.max(0, i))];
+    const next = levels[Math.min(levels.length - 1, Math.max(0, i))];
     onChange(next.id);
     document.getElementById(`${name}-${next.id}`)?.focus();
   };
   const left = (x: number) => `${((isAr ? W - x : x) / W) * 100}%`;
   const top = (y: number) => `${(y / H) * 100}%`;
+
+  if (levels.length === 1) return null;
 
   return (
     <div>
@@ -57,13 +73,13 @@ export function JourneyPath({ value, onChange, isAr, name }: { value: string; on
             strokeWidth={6}
             strokeLinecap="round"
             initial={false}
-            animate={{ pathLength: Math.max(0.001, STOPS[at]) }}
+            animate={{ pathLength: Math.max(0.001, stops[at]) }}
             transition={reduce ? { duration: 0 } : { duration: 0.7, ease: 'easeInOut' }}
           />
         </svg>
 
         <div role="radiogroup" aria-label={isAr ? 'مستواك الحالي' : 'Your current level'}>
-          {points.length === 4 && LEVELS.map((l, i) => {
+          {points.length === levels.length && levels.map((l, i) => {
             const selected = i === at;
             const reached = i <= at;
             const { Icon } = l;
@@ -104,14 +120,14 @@ export function JourneyPath({ value, onChange, isAr, name }: { value: string; on
       </div>
 
       <motion.div
-        key={LEVELS[at].id}
+        key={levels[at].id}
         initial={reduce ? false : { opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         className="mt-2 text-center"
         aria-live="polite"
       >
-        <p className="font-display text-lg font-bold text-foreground">{isAr ? LEVELS[at].stopAr : LEVELS[at].stopEn}</p>
-        <p className="text-sm text-muted-foreground">{isAr ? LEVELS[at].descAr : LEVELS[at].descEn}</p>
+        <p className="font-display text-lg font-bold text-foreground">{isAr ? levels[at].stopAr : levels[at].stopEn}</p>
+        <p className="text-sm text-muted-foreground">{isAr ? levels[at].descAr : levels[at].descEn}</p>
       </motion.div>
     </div>
   );

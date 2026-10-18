@@ -1,6 +1,6 @@
 /**
  * ====================================================================
- * MAHMOUD TEACHING PLATFORM — SERVER-SIDE AVAILABILITY ENGINE
+ * WATAZAWWADO — SERVER-SIDE AVAILABILITY ENGINE
  * File: server/integrations/availabilityEngine.ts
  * Role: Real Availability Validator & Timezone Projection
  * ====================================================================

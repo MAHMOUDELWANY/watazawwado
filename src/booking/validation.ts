@@ -13,7 +13,7 @@ export function validateStep(step: number, data: BookingFormData, isArabic = fal
       if (!data.serviceId) {
         errors.serviceId = isArabic
           ? 'يرجى اختيار المادة التي ترغب في دراستها أولاً.'
-          : 'Please select what you would like to study with Mahmoud.';
+          : 'Please select what you would like to study.';
       }
       break;
 
@@ -44,7 +44,7 @@ export function validateStep(step: number, data: BookingFormData, isArabic = fal
       } else {
         // Adult
         if (!data.studentName.trim()) {
-          errors.studentName = isArabic ? 'يرجى إدخال اسمك الكريم لنتمكن من مخاطبتك.' : 'Please enter your full name so Mahmoud knows who he is meeting.';
+          errors.studentName = isArabic ? 'يرجى إدخال اسمك الكريم لنتمكن من مخاطبتك.' : 'Please enter your full name so your teacher knows who they are meeting.';
         }
         if (!data.email.trim()) {
           errors.email = isArabic ? 'البريد الإلكتروني مطلوب لإرسال رابط الدرس والتأكيد.' : 'Email is required to send your Zoom lesson link and confirmation.';

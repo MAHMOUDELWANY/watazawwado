@@ -60,7 +60,7 @@ export interface OfferInput {
 /**
  * Business magnitudes are NOT yet approved. Therefore ALL discount
  * magnitudes default to 0 (off). The framework stays in place and can be
- * activated the moment Mahmoud approves explicit numbers — but no
+ * activated the moment the owner approves explicit numbers — but no
  * unapproved discount can ever be applied by default.
  */
 const DEFAULT_CONFIG = {

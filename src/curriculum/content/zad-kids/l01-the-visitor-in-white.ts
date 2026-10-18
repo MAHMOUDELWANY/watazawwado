@@ -7,6 +7,7 @@ const MUSLIM_8 = 'Sahih Muslim 8, narrated by Umar ibn al-Khattab';
 
 export const lesson01: Lesson = {
   subject: 'zad-kids',
+  version: 'kids',
   subjectTitle: 'Zad Essentials · Kids',
   number: 1,
   title: 'The Visitor in White',
@@ -32,6 +33,7 @@ export const lesson01: Lesson = {
   pages: [
     {
       title: 'The Visitor in White',
+      station: 'spark',
       layout: 'cover',
       scene: 'doorsHero',
       lines: [],
@@ -44,6 +46,7 @@ export const lesson01: Lesson = {
     },
     {
       title: 'A strange question',
+      station: 'spark',
       layout: 'story',
       scene: 'chalkboard',
       lines: ['Ms. Clarke writes a sum on the board.', '"Who knows the answer?" she asks.', 'Yusuf whispers to Maryam: "She\'s the teacher. Doesn\'t she know?"'],
@@ -61,6 +64,7 @@ export const lesson01: Lesson = {
     },
     {
       title: "Jiddo's story",
+      station: 'spark',
       layout: 'story',
       scene: 'jiddo',
       lines: ['After school, Yusuf tells Jiddo about it.', 'Jiddo puts down his tea. Mishmish curls up on his lap.', '"Something like that happened long ago, in Madinah. But the one asking was far more surprising."'],
@@ -72,6 +76,7 @@ export const lesson01: Lesson = {
     },
     {
       title: 'One day in Madinah',
+      station: 'zad',
       layout: 'story',
       scene: 'madinah',
       lines: ['The Prophet ﷺ was sitting with his companions.', 'Suddenly a man appeared.', 'His clothes were very white. His hair was very black.'],
@@ -89,6 +94,7 @@ export const lesson01: Lesson = {
     },
     {
       title: 'Something does not add up',
+      station: 'zad',
       layout: 'evidence',
       scene: 'stranger',
       lines: ['He had no dust on him, as if he lived nearby.', 'But nobody there knew who he was.'],
@@ -116,6 +122,7 @@ export const lesson01: Lesson = {
     },
     {
       title: 'How he sat',
+      station: 'zad',
       layout: 'evidence',
       scene: 'sitting',
       lines: ['He sat right in front of the Prophet ﷺ, knee to knee.', 'He placed his hands on his thighs, ready to listen.'],
@@ -134,6 +141,7 @@ export const lesson01: Lesson = {
     },
     {
       title: 'Question one: Islam',
+      station: 'zad',
       layout: 'concept',
       scene: 'pillars',
       lines: ['"O Muhammad, tell me about Islam."'],
@@ -150,6 +158,7 @@ export const lesson01: Lesson = {
     },
     {
       title: '"You have spoken the truth!"',
+      station: 'zad',
       layout: 'question',
       scene: 'pillars',
       lines: ['The man said: "You have spoken the truth."', 'The companions were amazed.'],
@@ -171,6 +180,7 @@ export const lesson01: Lesson = {
     },
     {
       title: 'Question two: Iman',
+      station: 'zad',
       layout: 'concept',
       scene: 'roots',
       lines: ['"Now tell me about Iman."'],
@@ -189,6 +199,7 @@ export const lesson01: Lesson = {
     },
     {
       title: 'Question three: Ihsan',
+      station: 'zad',
       layout: 'evidence',
       scene: 'drawing',
       lines: ['"Tell me about Ihsan."', 'Doing your very best, because Allah sees you.'],
@@ -207,6 +218,7 @@ export const lesson01: Lesson = {
     },
     {
       title: 'Do you know who he was?',
+      station: 'zad',
       layout: 'question',
       scene: 'reveal',
       lines: ['Then the man stood up and left.', 'The Prophet ﷺ asked Umar: "Do you know who the questioner was?"', 'Umar said: "Allah and His Messenger know best."'],
@@ -224,6 +236,7 @@ export const lesson01: Lesson = {
     },
     {
       title: 'It was Jibril!',
+      station: 'zad',
       layout: 'evidence',
       scene: 'reveal',
       lines: ['He was Jibril, the angel.', 'He came to teach us our religion.'],
@@ -242,6 +255,7 @@ export const lesson01: Lesson = {
     },
     {
       title: 'Three doors',
+      station: 'zad',
       layout: 'concept',
       scene: 'doors',
       lines: ['Three questions. Three doors.', 'Behind them is everything a Muslim needs.'],
@@ -253,6 +267,7 @@ export const lesson01: Lesson = {
     },
     {
       title: 'Game: The Three Doors',
+      station: 'athar',
       layout: 'game',
       scene: 'doors',
       lines: [],
@@ -281,6 +296,7 @@ export const lesson01: Lesson = {
     },
     {
       title: 'My Zad',
+      station: 'ahd',
       layout: 'mission',
       scene: 'backpack',
       lines: ['Jiddo brings out an old travel backpack.', '"Every traveller needs zad: food and supplies for the road."', 'Today you packed your first one: the map of the three doors.'],
@@ -297,6 +313,7 @@ export const lesson01: Lesson = {
     },
     {
       title: 'Next time…',
+      station: 'ahd',
       layout: 'next',
       scene: 'lego',
       lines: ['The next morning, Maryam opens her eyes.', 'On her floor stands a LEGO castle, with towers, a gate and even a tiny flag.', 'It was not there last night. Who built it?'],

@@ -239,6 +239,8 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
       </button>
       <span className={`text-xs font-bold text-[#453D34] tabular-nums ${fullscreen ? 'py-1' : 'ms-auto pe-3 ps-2'}`}>
         {L('Page', 'صفحة')} {page + 1}/{lesson.pages.length}
+        {/* Extra page for a 60-minute lesson; skip it in 30 minutes (docs/curriculum/RULES.md §1.7). */}
+        {current.optional && <span className="ms-2 rounded-full bg-[#E5A93C]/20 px-2 py-0.5 text-[#8B4935]">{L('Optional', 'إضافية')}</span>}
       </span>
     </nav>
   );
@@ -306,7 +308,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
                             onClick={() => goPage(i)}
                             className={`w-full rounded-[20px] px-6 py-5 text-left font-sans text-[24px] font-bold transition-colors ${i === page ? 'bg-[#E5A93C] text-[#1E1410]' : 'bg-white/10 text-white hover:bg-white/20'}`}
                           >
-                            <span className="block text-[18px] opacity-70">{i + 1}</span>
+                            <span className="block text-[18px] opacity-70">{i + 1}{p.optional && ` · ${L('Optional', 'إضافية')}`}</span>
                             {p.title}
                           </button>
                         </li>
@@ -329,7 +331,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
                   {lesson.pages.map((p, i) => (
                     <li key={i}>
                       <button type="button" dir="ltr" lang="en" onClick={() => goPage(i)} className={`min-h-11 w-full rounded-2xl px-3 py-2 text-start text-sm font-bold ${i === page ? 'bg-[#E5A93C] text-[#1E1410]' : 'bg-[#FFFDF7] text-[#1E1410] ring-1 ring-black/5'}`}>
-                        <span className="me-1.5 opacity-60">{i + 1}</span>{p.title}
+                        <span className="me-1.5 opacity-60">{i + 1}</span>{p.title}{p.optional && <span className="ms-1.5 opacity-60">· {L('Optional', 'إضافية')}</span>}
                       </button>
                     </li>
                   ))}

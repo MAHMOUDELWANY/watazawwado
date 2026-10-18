@@ -1,6 +1,6 @@
 /**
 -- ====================================================================
--- MAHMOUD TEACHING PLATFORM — DATABASE TYPES
+-- WATAZAWWADO — DATABASE TYPES
 -- File: src/types/database.ts
 -- Master TypeScript Type Definitions for Supabase Database & Data Layer
 -- ====================================================================

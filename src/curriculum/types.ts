@@ -41,6 +41,21 @@ export interface Evidence {
   reference: string;
 }
 
+/** The four mandatory stations of every lesson, in this order (docs/curriculum/RULES.md §1.5). */
+export type Station = 'spark' | 'zad' | 'athar' | 'ahd';
+export const STATIONS: Station[] = ['spark', 'zad', 'athar', 'ahd'];
+
+/** Tadabbur stop required on every page that shows an ayah (RULES.md §1.6). */
+export interface Tadabbur {
+  /** Key word from the ayah, in Arabic. */
+  word: string;
+  root: string;
+  meaning: string;
+  /** "What is this ayah telling me?" phrased for the age band. */
+  question: string;
+  action: string;
+}
+
 export interface Vocab {
   arabic: string;
   translit: string;
@@ -59,6 +74,7 @@ export type Interaction =
 
 export interface LessonPage {
   title: string;
+  station: Station;
   layout: Layout;
   scene: SceneId;
   /** Big, short lines on the slide. Each one is a build step (the teacher reveals them one by one). */
@@ -66,6 +82,7 @@ export interface LessonPage {
   /** Labelled items on a concept slide; each is a build step after the lines. */
   items?: string[];
   evidence?: Evidence;
+  tadabbur?: Tadabbur;
   vocab?: Vocab[];
   interaction?: Interaction;
   /** Ask the question before the items appear (a prediction), instead of after. */
@@ -74,6 +91,8 @@ export interface LessonPage {
   explain: string[];
   /** Short tip on how to teach this page. Only the teacher sees it. */
   teacherNote?: string;
+  /** Extra slide content for a 60-minute lesson; the teacher skips it in a 30-minute one (RULES.md §1.7). */
+  optional?: boolean;
 }
 
 /** Arabic version of a page's teacher notes (the slide stays English). */
@@ -85,6 +104,8 @@ export interface TeacherNotesAr {
 
 export interface Lesson {
   subject: string;
+  /** Age version (RULES.md §3): kids 6–11, teens 12–17, adults 18+. */
+  version: 'kids' | 'teens' | 'adults';
   subjectTitle: string;
   number: number;
   title: string;

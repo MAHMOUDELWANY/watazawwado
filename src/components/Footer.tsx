@@ -63,7 +63,7 @@ export const Footer: React.FC<FooterProps> = ({
                 </li>
                 <li>
                   <Link to="/learning" className="inline-block py-1.5 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
-                    {isEn ? 'Islamic studies' : 'العلوم الشرعية'}
+                    {isEn ? 'The Zad Path' : 'مسار الأثر'}
                   </Link>
                 </li>
                 <li>

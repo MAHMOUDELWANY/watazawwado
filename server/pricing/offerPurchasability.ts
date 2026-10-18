@@ -95,6 +95,6 @@ export function resolveOfferPurchasability(
 
 /** Calm, non-commercial, truthful copy for a deferred custom offer. */
 export const CUSTOM_OFFER_PURCHASE_UNAVAILABLE = {
-  en: 'Ustadh Mahmoud approved this offer, but online purchase for this custom price is not available yet. The custom purchase step will be added once the appropriate purchase structure is approved.',
-  ar: 'الأستاذ محمود وافق على العرض ده، لكن إتمام الدفع أونلاين للسعر المخصص ده غير متاح حاليًا. هنضيف خطوة الشراء المخصصة بعد اعتماد البنية المناسبة.',
+  en: 'Our team approved this offer, but online purchase for this custom price is not available yet. The custom purchase step will be added once the appropriate purchase structure is approved.',
+  ar: 'فريقنا وافق على العرض ده، لكن إتمام الدفع أونلاين للسعر المخصص ده غير متاح حاليًا. هنضيف خطوة الشراء المخصصة بعد اعتماد البنية المناسبة.',
 };

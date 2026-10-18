@@ -1,6 +1,6 @@
 /**
  * ====================================================================
- * MAHMOUD TEACHING PLATFORM — AUTOMATED EMAIL SERVICE TESTS
+ * WATAZAWWADO — AUTOMATED EMAIL SERVICE TESTS
  * File: test/emailService.test.ts
  * Role: Comprehensive unit & integration tests for Brevo Email Service,
  *       Template Escaping, and Notification Dispatcher.

@@ -474,7 +474,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
             {(profile?.linkedChildren && profile.linkedChildren.length > 0) ? (
               profile.linkedChildren.map((child: any) => {
                 const childBookings = bookings.filter(b => b.student_id === child.id || b.studentId === child.id);
-                const teacherName = child.assignedTeacherName || (child.gender === 'female' ? (isAr ? 'المعلمة أفنان' : 'Teacher Afnan') : (isAr ? 'الأستاذ محمود' : 'Ustadh Mahmoud'));
+                const teacherName = child.assignedTeacherName || (isAr ? 'المعلم المختص' : 'Your teacher');
 
                 return (
                   <div
@@ -626,8 +626,8 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                         <span>
                           {summary.isAwaitingVerification
                             ? (isAr
-                                ? 'إثبات الدفع قيد المراجعة والتحقق من الأستاذ محمود.'
-                                : 'Payment proof under review by Ustadh Mahmoud.')
+                                ? 'إثبات الدفع قيد المراجعة من فريقنا.'
+                                : 'Payment proof under review by our team.')
                             : (isAr
                                 ? 'هذا الموعد معلق حتى تأكيد إثبات الدفع.'
                                 : 'This booking is awaiting manual payment claim verification to guarantee your slot.')}

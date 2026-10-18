@@ -226,12 +226,12 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
   // Contextual WhatsApp link preparation - truthful target
   const learnerGreetingName = trial.learner_name || 'there';
   const cairoTimeStr = startCairo ? startCairo.setLocale('en').toFormat('EEEE, MMMM d at hh:mm a') : 'our scheduled time';
-  const defaultTrialMessage = `As-salamu alaykum ${learnerGreetingName},\n\nThis is Ustadh Mahmoud regarding our scheduled Free Trial Session for ${trial.service_name} on ${cairoTimeStr} (Cairo time).\n\nHere is our Zoom meeting link: ${joinUrl || '[Link]'}\n\nI look forward to meeting you and helping you achieve your learning goals!`;
+  const defaultTrialMessage = `As-salamu alaykum ${learnerGreetingName},\n\nThis is your teacher at Watazawwado, about our scheduled Free Trial Session for ${trial.service_name} on ${cairoTimeStr} (Cairo time).\n\nHere is our Zoom meeting link: ${joinUrl || '[Link]'}\n\nI look forward to meeting you and helping you achieve your learning goals!`;
   const whatsappUrl = buildContextualWhatsAppUrl(trial.contact_whatsapp, defaultTrialMessage);
 
   // Formatted Learning Plan for Student
   const selectedServiceName = AVAILABLE_SERVICES.find(s => s.id === recommendedServiceId)?.name || recommendedServiceId;
-  const studentPlanMessage = `As-salamu alaykum ${learnerGreetingName},\n\nIt was a pleasure conducting our free trial lesson today!\n\nHere is **Your Recommended Learning Plan**:\n\n• **Recommended Service:** ${selectedServiceName}\n• **Recommended Lesson Duration:** ${recommendedDuration} minutes\n• **Recommended Frequency:** ${recommendedFrequency}\n• **Key Focus & Goals:** ${learningPlanSummary || 'Structured progress tailored to your current level.'}\n\nWhenever you are ready to continue your lessons, please let me know and we will reserve your recurring weekly slot.\n\nWarm regards,\nUstadh Mahmoud`;
+  const studentPlanMessage = `As-salamu alaykum ${learnerGreetingName},\n\nIt was a pleasure conducting our free trial lesson today!\n\nHere is **Your Recommended Learning Plan**:\n\n• **Recommended Service:** ${selectedServiceName}\n• **Recommended Lesson Duration:** ${recommendedDuration} minutes\n• **Recommended Frequency:** ${recommendedFrequency}\n• **Key Focus & Goals:** ${learningPlanSummary || 'Structured progress tailored to your current level.'}\n\nWhenever you are ready to continue your lessons, please let me know and we will reserve your recurring weekly slot.\n\nWarm regards,\nYour teacher at Watazawwado`;
 
   const handleApplyTemplate = (tmpl: LearningPlanTemplate) => {
     setAppliedTemplateId(tmpl.id);

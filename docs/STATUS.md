@@ -25,6 +25,10 @@ Read this first in a new session, then `RULES.md` (binding owner decisions) and 
 - Emails (Brevo, free plan) redesigned: Arabic + English, logo, brand colours, light/dark, legal footer. Samples in docs/email-previews/. Brevo delivery verified from notification_events (sent OK).
 - Production smoke test 2026-10-14: pages 200, 18 packages served, auth required on protected APIs, dev tokens rejected, security headers present.
 
+### Added 2026-10-18 (not pushed yet)
+- Subject catalog (RULES.md §2b): 8 bookable subjects in three families (Quran, The Zad Path, Languages); levels per subject in `src/components/onboarding/subjects.ts`; Revision, Arabic basics, Conversation, Islamic studies, Fiqh and Aqeedah retired (hidden, rows kept). Migration `20261018000000_subject_catalog_2026_10_18.sql` **must be applied to production together with the push** (otherwise the database still offers the retired subjects to the booking API).
+- Curriculum-building rules `docs/curriculum/RULES.md`, the `curriculum-builder` skill, `test/curriculum-rules.test.ts`, `test/subject-catalog.test.ts`, Kids style guide `docs/curriculum/style/kids.md`.
+
 ### Added 2026-10-15
 - Emails in one language: English by default, Arabic for people who chose Arabic (cookie + user_language_preferences table). Sender support@watazawwado.academy; Thmanyah font.
 - Teachers see no money (API strips payment fields for non-admins; UI hides payment parts). Payment alerts go to the super admin only.

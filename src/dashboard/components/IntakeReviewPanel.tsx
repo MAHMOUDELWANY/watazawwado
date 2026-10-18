@@ -11,7 +11,7 @@ import { analyticsRepository } from '../../lib/analyticsRepository';
  * WATAZAWWADO — TEACHER INTAKE REVIEW
  * File: src/dashboard/components/IntakeReviewPanel.tsx
  *
- * Lets Ustadh Mahmoud review an intake: see the student learning brief,
+ * Lets a teacher review an intake: see the student learning brief,
  * the AI assessment, the deterministic recommendation, then Approve /
  * Adjust / Request More Information. The approved amount is authoritative.
  * ====================================================================

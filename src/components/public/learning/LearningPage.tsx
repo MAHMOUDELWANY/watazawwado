@@ -2,7 +2,11 @@ import React, { useState, useMemo } from 'react';
 import { useOutletContext, Link } from 'react-router-dom';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
 import { PublicSection, PublicButton, PageHero } from '../PublicDesignSystem';
-import { SERVICES_DATA } from '../../../data/content';
+import { SERVICES_DATA as ALL_PILLARS } from '../../../data/content';
+import { BOOKABLE_SERVICES } from '../../../booking/mockData';
+
+// Only subjects on offer today (RULES.md "Subjects"); retired ones keep their copy in content.ts but are not shown.
+const SERVICES_DATA = ALL_PILLARS.map((p) => ({ ...p, services: p.services.filter((s) => BOOKABLE_SERVICES.some((b) => b.id === s.id)) }));
 import { BookOpen, Globe2, Languages, Library, Search, X } from 'lucide-react';
 import { SubjectCard, FamilyStyle } from './SubjectCard';
 import { FAMILY_SCENES } from '../illustrations/StudyScenes';
@@ -291,8 +295,8 @@ export function LearningPage() {
           <PageHero
             title={isEn ? <>What you can <span className="text-ribbon">learn with us.</span></> : <>تتعلم إيه <span className="text-ribbon">معانا؟</span></>}
             intro={isEn
-              ? 'One-on-one lessons shaped around your goal: Quran and Tajweed, Arabic, Islamic studies and English, from the very first letter to advanced study.'
-              : 'دروس فردية على مقاس هدفك: القرآن والتجويد، والعربية، والعلوم الشرعية، والإنجليزية، من أول حرف لحد المستوى المتقدم.'}
+              ? 'One-on-one lessons shaped around your goal: Quran and Tajweed, Zad Essentials and Seerah, Arabic and English, from the very first letter to advanced study.'
+              : 'دروس فردية على مقاس هدفك: القرآن والتجويد، وأول الزاد والسيرة، والعربية والإنجليزية، من أول حرف لحد المستوى المتقدم.'}
           />
 
         </div>

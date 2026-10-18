@@ -1,10 +1,12 @@
 # Watazawwado
 
-Personal teaching platform for Mahmoud: 1-on-1 online lessons in Quran (reading, memorization, revision, Tajweed), Islamic studies (Aqeedah, Fiqh, Seerah), Arabic (MSA, conversation, Egyptian), and English. Audience: English-speaking Muslim families in the West. Not a marketplace — the product is a direct student → teacher relationship, though the dashboard now supports multiple teachers (`teacher`, `super_admin` roles) with teacher routing.
+Watazawwado Academy: an online academy with a team of male and female teachers giving 1-on-1 lessons. Subjects (RULES.md §2b): Quran (reading, Tajweed, memorization & revision), the Zad Path (our own curriculum: Zad Essentials and Seerah, Kids / Teens / Adults), the Scholar's Path (classical-book courses, not defined yet), and languages (Fusha, Egyptian Arabic, English). Audience: English-speaking Muslim families in the West. Not a marketplace: each learner has a direct relationship with their own teacher; roles `student`, `parent`, `teacher`, `super_admin`.
+
+**The project is not centred on one person** (owner, 2026-10-18). The academy speaks as "we"/"our team" (RULES.md §6b); every teacher, Ustadh Mahmoud included, is one teacher of the academy. Never write user-facing text, prompts or docs that make Mahmoud the platform. Legitimate exceptions: his own teacher card, the trader named in the legal pages, account emails and data ids.
 
 **Binding owner decisions live in [RULES.md](RULES.md). Read it before any change to booking, pricing, payments, packages, teachers, language or tone; it overrides older docs (including `src/data/master_spec.ts`) where they disagree.** Background product vision: `src/data/master_spec.ts`.
 
-**Curriculum (المنهج) work: read [docs/curriculum/PLAN.md](docs/curriculum/PLAN.md) first** — its rules, decisions and progress log are binding.
+**Curriculum (المنهج) work, any size, even a vague prompt: use the `curriculum-builder` skill.** Binding rules: [docs/curriculum/RULES.md](docs/curriculum/RULES.md); where we are, decisions and progress log: [docs/curriculum/PLAN.md](docs/curriculum/PLAN.md).
 
 ## Skills (use these first)
 

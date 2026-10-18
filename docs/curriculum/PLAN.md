@@ -6,6 +6,8 @@
 > decision here with its date, and add a line to the Progress log at the end of each session.
 > The discussion with the owner happens in chat, in Arabic. Brainstorm reports are not saved as files; only decisions,
 > rules, proposals, the source registry and progress live in `docs/curriculum/`.
+> **Binding building rules: `RULES.md` (this folder, 2026-10-18). Procedure: the `curriculum-builder` skill.** Where this
+> plan and RULES.md disagree, RULES.md wins. All curriculum documentation is written in English (owner, 2026-10-18).
 
 ## 0. Where we are (update every session)
 
@@ -23,7 +25,8 @@
   fixed 1600×900 notebook canvas (`src/curriculum/slides/`), build steps per page, pen/highlighter/laser, page grid,
   thinking timer, replay, praise, explanation panel with a read-aloud `explain` text on every page, new scene art.
 - **Now:** owner reviews Lesson 1 v2 and marks it reviewed (then students can open it).
-- **Next:** Lesson 2 (Who Made It All?).
+- **Next:** Lesson 2 (Who Made It All?), built with the `curriculum-builder` skill under `RULES.md`; later the Teens and
+  Adults unit maps (same spine, RULES.md §3).
 - **Not started:** Lessons 2–37, sound effects, the teacher pen/drawing tool.
 - **Known limit:** lesson text ships in the site bundle, so the lock is a UI lock (content is not secret). Upgrade to
   server-served lessons if content must be protected.
@@ -53,7 +56,8 @@
   otherwise), then the evidence from Quran/Sunnah; miracles are mentioned where relevant.
 - **[Decided 2026-10-16] Names:** Arabic **أول الزاد**; English **Zad Essentials** (chosen by Claude at the owner's
   request: short, strong rhythm, clear to parents, carries the brand word "Zad").
-- **[Decided 2026-10-16] Two versions:** **Zad Essentials · Kids** (6–11) and **Zad Essentials · Teens & Adults** (12+).
+- **[Decided 2026-10-16, changed 2026-10-18] Three versions:** **Zad Essentials · Kids** (6–11), **· Teens** (12–17) and
+  **· Adults** (18+), picked automatically from the learner's age. Same spine, lessons and style differ (RULES.md §3).
 - **[Decided 2026-10-16] Goal (Kids):** the child's actions and words change, not only knowledge. Booked lesson by
   lesson, so every lesson is self-contained; lessons are designed for **45 minutes** on average, paged so the teacher
   can finish in 30 or stretch to 60. Expected length 3–6 months (~36–40 lessons). The first ~10 lessons give what makes
@@ -317,3 +321,9 @@ B3–B5 → continue lesson by lesson.
   one-row toolbar, the slide's words at reading size under small slides, "turn sideways" hint, page grid as a list;
   full screen falls back to filling the window (iPhone, embedded browsers). Fixed: Arabic UI gave slide titles a
   1.5 line height (overflow) and mirrored the page grid's English titles. Not changed: p2–4, p16.
+- **2026-10-18** — Owner decided the subject catalog (Zad Path with three age versions of Zad Essentials and Seerah;
+  Scholar's Path as courses on classical books, details open) and the curriculum-building rules. Wrote `RULES.md`
+  (general rules, four mandatory stations Spark → Zad → Athar → Ahd, tadabbur stop for every ayah, identity and pride
+  in every band, 45-minute lessons with optional extra pages, mandatory scene builds, per-band rules for Kids / Teens /
+  Adults, agent workflow), the `curriculum-builder` skill, `test/curriculum-rules.test.ts`, and tagged Lesson 1's
+  stations. All curriculum documentation is in English from now on (owner).

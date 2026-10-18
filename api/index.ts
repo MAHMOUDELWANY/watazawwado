@@ -37,7 +37,7 @@ import {
   isAllowedLeadTransition
 } from '../server/leadTransitions.js';
 import { dispatchNotification } from '../server/notifications/dispatcher.js';
-import { MAHMOUD_OFFICIAL_PHONE_DIGITS } from '../server/notifications/whatsapp.js';
+import { ACADEMY_PHONE_DIGITS } from '../server/notifications/whatsapp.js';
 import {
   scheduleBookingReminders,
   rescheduleBookingReminders,
@@ -1790,7 +1790,7 @@ async function verifyTeacherAuth(req: any, res: any, next: any) {
           .upsert({
             id: user.id,
             email: email,
-            display_name: teacherRecord.display_name || user.user_metadata?.full_name || 'Ustadh Mahmoud',
+            display_name: teacherRecord.display_name || user.user_metadata?.full_name || 'Teacher',
             role: teacherRecord.role,
             timezone: 'Africa/Cairo'
           });
@@ -1805,7 +1805,7 @@ async function verifyTeacherAuth(req: any, res: any, next: any) {
       ...user,
       role: teacherRecord.role,
       appRole: teacherRecord.role,
-      display_name: teacherRecord.display_name || 'Ustadh Mahmoud',
+      display_name: teacherRecord.display_name || 'Teacher',
       gender: teacherRecord.gender || 'male',
       agreementRequired: teacherRecord.role !== 'super_admin' && teacherRecord.agreement_version !== TEACHER_AGREEMENT_VERSION
     };
@@ -1878,8 +1878,8 @@ export async function resolveTeacherMetadata(
       return {
         id: authUserId || clean,
         email: teacherAccount.email,
-        name: teacherAccount.display_name || 'Ustadh Mahmoud',
-        display_name: teacherAccount.display_name || 'Ustadh Mahmoud',
+        name: teacherAccount.display_name || 'Teacher',
+        display_name: teacherAccount.display_name || 'Teacher',
         gender: teacherAccount.gender || 'male',
         role: teacherAccount.role || 'teacher',
         is_active: teacherAccount.is_active ?? true
@@ -2226,7 +2226,7 @@ app.get('/api/dashboard/me', verifyTeacherAuth, async (req: any, res: any) => {
     user: {
       id: req.teacherUser?.id,
       email: req.teacherUser?.email,
-      name: req.teacherUser?.name || req.teacherUser?.user_metadata?.name || 'Ustadh Mahmoud',
+      name: req.teacherUser?.name || req.teacherUser?.user_metadata?.name || 'Teacher',
       role: req.teacherUser?.appRole || 'teacher',
       appRole: req.teacherUser?.appRole || 'teacher',
       isTeacher: true,
@@ -2477,7 +2477,7 @@ app.get('/api/dashboard/students', verifyTeacherAuth, async (req: any, res: any)
     // Map teacher display names
     const teacherNameMap = new Map<string, string>();
     (teachersRes.data || []).forEach(t => {
-      teacherNameMap.set(t.email.toLowerCase().trim(), t.display_name || 'Ustadh Mahmoud');
+      teacherNameMap.set(t.email.toLowerCase().trim(), t.display_name || 'Teacher');
     });
 
     // Map guardians by student_id
@@ -2549,7 +2549,7 @@ app.get('/api/dashboard/students', verifyTeacherAuth, async (req: any, res: any)
       }
 
       const assignedTeacherName = st.assigned_teacher_id
-        ? (teacherNameMap.get(String(st.assigned_teacher_id).toLowerCase().trim()) || 'Ustadh Mahmoud')
+        ? (teacherNameMap.get(String(st.assigned_teacher_id).toLowerCase().trim()) || 'Teacher')
         : null;
 
       return {
@@ -3386,7 +3386,7 @@ app.get('/api/dashboard/admin/teachers', verifyTeacherAuth, requireSuperAdmin, a
       return {
         id: authId,
         email: t.email,
-        display_name: t.display_name || (t.role === 'super_admin' ? 'Ustadh Mahmoud (Super Admin)' : 'Ustadh Mahmoud'),
+        display_name: t.display_name || (t.role === 'super_admin' ? 'Super admin' : 'Teacher'),
         role: t.role,
         is_active: t.is_active ?? true,
         gender: t.gender || 'male',
@@ -4329,7 +4329,7 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
         // Less than 3 hours before the lesson: the teacher also tells the admin on WhatsApp.
         if (oldStart.diffNow('hours').hours < 3) {
           const text = `السلام عليكم، أنا ${teacherName}. غيّرت ميعاد حصة ${learner} (رقم الحجز ${existingBooking.reference_code}) قبل أقل من 3 ساعات من موعدها.\nالميعاد القديم: ${fmt(oldStart)}\nالميعاد الجديد: ${fmt(newStart)} (${tz})\nالسبب: ${rescheduleReason}`;
-          whatsappUrl = `https://wa.me/${MAHMOUD_OFFICIAL_PHONE_DIGITS}?text=${encodeURIComponent(text)}`;
+          whatsappUrl = `https://wa.me/${ACADEMY_PHONE_DIGITS}?text=${encodeURIComponent(text)}`;
         }
       }
 
@@ -4945,7 +4945,7 @@ async function fulfillAutomatedPayment(params: {
     await enqueueAndRunBookingSync(supabaseAdmin, bookingId);
   }
 
-  // 5. Asynchronously dispatch Brevo confirmation emails (Both to Student and to Ustadh Mahmoud)
+  // 5. Asynchronously dispatch Brevo confirmation emails (to the student and to the lesson's teacher)
   try {
     // Format in the student's timezone; the server runs in UTC.
     const studentStart = bookingDetailsForNotif?.scheduled_start
@@ -5320,7 +5320,7 @@ app.post('/api/bookings/:referenceCode/pay-later', rateLimit, verifyStudentAuth,
     const text = isAr
       ? `السلام عليكم، حجزت درس (${booking.reference_code}) يوم ${when} بتوقيت القاهرة واخترت "ادفع لاحقاً" بقيمة $${Number(booking.fee_amount_usd).toFixed(2)}. أرجو الموافقة على الحجز.`
       : `Assalamu alaikum! I booked lesson ${booking.reference_code} on ${when} (Cairo time) and chose "pay later" ($${Number(booking.fee_amount_usd).toFixed(2)}). Could you approve my booking, please?`;
-    const whatsappUrl = `https://wa.me/${MAHMOUD_OFFICIAL_PHONE_DIGITS}?text=${encodeURIComponent(text)}`;
+    const whatsappUrl = `https://wa.me/${ACADEMY_PHONE_DIGITS}?text=${encodeURIComponent(text)}`;
 
     res.json({ success: true, status: 'awaiting_approval', whatsappUrl });
   } catch (err) {
@@ -5696,7 +5696,7 @@ app.post('/api/student/credits/:id/refund-request', rateLimit, verifyStudentAuth
     ].join('\n');
     res.json({
       success: true,
-      whatsappUrl: `https://wa.me/${MAHMOUD_OFFICIAL_PHONE_DIGITS}?text=${encodeURIComponent(text)}`,
+      whatsappUrl: `https://wa.me/${ACADEMY_PHONE_DIGITS}?text=${encodeURIComponent(text)}`,
       refundsLeft: MAX_STUDENT_REFUNDED_LESSONS - refundedSoFar - 1
     });
   } catch (err) {
@@ -7160,7 +7160,7 @@ app.post('/api/contact', rateLimit, async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Thank you for reaching out. Ustadh Mahmoud will be in touch with you shortly.'
+      message: 'Thank you for reaching out. Our team will be in touch with you shortly.'
     });
   } catch (err) {
     console.error('[Contact Submission Error]', err);
@@ -7365,7 +7365,7 @@ app.get('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
             teacherName = meta ? meta.display_name : null;
           }
           if (!teacherName) {
-            teacherName = child.gender === 'female' ? 'المعلمة أفنان' : 'الأستاذ محمود';
+            teacherName = 'المعلم المختص'; // no assigned teacher yet: never guess one by gender
           }
           return {
             id: child.id,
@@ -7638,7 +7638,7 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
             learningInterest: c.learningInterest || 'quran-reading',
             notes: c.notes || c.learningNeeds || null,
             assignedTeacherId: c.gender === 'female' ? 'afnan-id' : 'mahmoud-id',
-            assignedTeacherName: c.gender === 'female' ? 'المعلمة أفنان' : 'الأستاذ محمود',
+            assignedTeacherName: 'المعلم المختص',
             status: 'active'
           }));
           req.studentUser.studentProfile.canBookForChild = true;
@@ -7952,7 +7952,7 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
             teacherName = meta ? meta.display_name : null;
           }
           if (!teacherName) {
-            teacherName = c.gender === 'female' ? 'المعلمة أفنان' : 'الأستاذ محمود';
+            teacherName = 'المعلم المختص'; // no assigned teacher yet: never guess one by gender
           }
           return {
             id: c.id,
@@ -9343,7 +9343,7 @@ app.post('/api/student/offers/:id/accept', rateLimit, verifyStudentAuth, async (
 });
 
 // --------------------------------------------------------------------
-// TEACHER REVIEW (authoritative) — Mahmoud only
+// TEACHER REVIEW (authoritative) — staff only
 // --------------------------------------------------------------------
 
 // GET /api/dashboard/intakes — review queue

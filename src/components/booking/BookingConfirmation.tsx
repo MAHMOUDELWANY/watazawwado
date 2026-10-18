@@ -63,7 +63,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
         'CALSCALE:GREGORIAN',
         'METHOD:PUBLISH',
         'BEGIN:VEVENT',
-        `UID:${confirmation.bookingReference}@mahmoud-teaching.com`,
+        `UID:${confirmation.bookingReference}@watazawwado.academy`,
         `SUMMARY:Watazawwado 1-on-1 Lesson - ${confirmation.serviceName}`,
         `DESCRIPTION:1-on-1 personalized teaching session with Watazawwado.\\nLearner: ${confirmation.learnerName}\\nDuration: ${confirmation.durationMinutes} min\\nReference: ${confirmation.bookingReference}\\nZoom Classroom: ${zoomUrl}`,
         `LOCATION:Zoom Online Classroom: ${zoomUrl}`,
@@ -75,7 +75,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
       const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
-      link.setAttribute('download', `lesson-with-mahmoud-${confirmation.bookingReference}.ics`);
+      link.setAttribute('download', `watazawwado-lesson-${confirmation.bookingReference}.ics`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

@@ -1,6 +1,6 @@
 /**
  * ====================================================================
- * MAHMOUD TEACHING PLATFORM — NOTIFICATION DISPATCHER
+ * WATAZAWWADO — NOTIFICATION DISPATCHER
  * File: server/notifications/dispatcher.ts
  * Role: Centralized, Idempotent Event Dispatcher with Durable Claim Ownership
  * ====================================================================

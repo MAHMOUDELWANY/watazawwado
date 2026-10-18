@@ -1,7 +1,7 @@
 # Lesson 1 — The Visitor in White
 
-Zad Essentials · Kids (6–11) · Part 1 · ~45 min (13 pages; short version stops after page 11)
-Status: **A3 done (2026-10-16).** Final copy lives in `src/curriculum/content/zad-kids/l01-the-visitor-in-white.ts` (`reviewed: false` until the owner approves it in the player). The table below is the plan it was written from.
+Zad Essentials · Kids (6–11) · Part 1 · ~45 min
+Status: **A3 done (2026-10-16).** Final copy lives in `src/curriculum/content/zad-kids/l01-the-visitor-in-white.ts` (`reviewed: false` until the owner approves it in the player). Pages, their order and text live only in the code (source of truth, `docs/curriculum/RULES.md` §1.12).
 
 ## Outcomes (what the teacher checks, mostly through the game)
 
@@ -29,24 +29,6 @@ English meaning: written by us, owner-reviewed (PLAN §5.8). Not shown in this l
 
 "Why would a teacher ask a question she already knows the answer to?" → so the whole class learns. That is exactly
 what the Visitor did.
-
-## Pages
-
-| # | Page | What happens | Interaction |
-|---|---|---|---|
-| 1 | Hook | Maths class: the teacher asks "What's 7 + 5?" Yusuf whispers: "Doesn't she know?!" | Kid answers: why does she ask? |
-| 2 | Jiddo's story begins | Jiddo: "A long time ago, in Madinah, something stranger happened…" The masjid, the Sahabah sitting with the Prophet ﷺ (no faces, warm light) | — |
-| 3 | The mystery | A man appears: very white clothes, very black hair, no dust from travel, and nobody knows him | **Spot the clue:** what's strange? (tap the clean clothes / no dust) |
-| 4 | How he sat | He sits close, knees to knees, hands on his thighs, all attention | Real life: "Show me how you sit when someone teaches you" |
-| 5 | Question 1: Islam | Five things the body does appear as icons (shahadah, salah, zakah, fasting, hajj) | Predict: what will the Prophet ﷺ answer? |
-| 6 | "You spoke the truth!" | The Sahabah are amazed: he asks *and* says it's right? | Kid: why is that strange? (links to page 1) |
-| 7 | Question 2: Iman | Six things the heart believes (Allah, angels, books, messengers, Last Day, Qadar) | Inside vs outside: tap what you can *see* someone do |
-| 8 | Question 3: Ihsan | "Worship Allah as if you see Him; if you don't see Him, He sees you" | Real life: you draw your best when the teacher watches; Allah always sees, with love |
-| 9 | The reveal | The man leaves. "Do you know who that was?" … **Jibril**, who came to teach you your religion (the wow moment) | Kid guesses before the reveal |
-| 10 | Three doors | The three answers become three doors on our map: Iman, Islam, Ihsan. This is the whole journey of Zad Essentials | — |
-| 11 | **Game: The Three Doors** | Drag 6 cards to the right door: praying, believing in angels, fasting, being honest when nobody sees, believing in the Last Day, giving to the poor | Stealth checkpoint (outcomes 2–3) |
-| 12 | My Zad | Jiddo gives Yusuf and Maryam an old travel backpack; first provision: **the map of the three doors**. Home deed: ask your parents one good question about Allah this week | Kid chooses the question |
-| 13 | Next time… | "The first thing in the heart is believing in Allah. But how do we *know* Someone made everything?" Maryam wakes up and finds a LEGO castle built in her room overnight… who built it? | Cliffhanger → Lesson 2 |
 
 ## Visual & motion notes
 

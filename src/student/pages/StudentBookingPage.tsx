@@ -3,7 +3,7 @@ import { useNavigate, useLocation, useSearchParams, Link } from 'react-router-do
 import { AlertCircle, RefreshCw, RotateCcw, Check, Sparkles } from 'lucide-react';
 import { BookingFlow, hasBookingDraft, clearBookingDraft } from '../../components/booking/BookingFlow';
 import { BrandLoader, BrandSpinner } from '../../components/ui/BrandLoader';
-import { BOOKING_SERVICES } from '../../booking/mockData';
+import { BOOKING_SERVICES, BOOKABLE_SERVICES } from '../../booking/mockData';
 import { BookingFormData, BookingMode, ProficiencyLevel, LessonDuration, PackageCatalogEntry } from '../../booking/types';
 import { useTeacherAuth, getFreshAccessToken } from '../../lib/auth';
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
@@ -164,7 +164,7 @@ export function findLastEligibleBooking(bookings: any[] | null): any | null {
     const rawServiceId = b.serviceId || b.service_id;
     if (!rawServiceId || typeof rawServiceId !== 'string') return false;
     const cleanServiceId = rawServiceId.toLowerCase().trim();
-    const serviceMatched = BOOKING_SERVICES.some(
+    const serviceMatched = BOOKABLE_SERVICES.some(
       (s) => s.id === cleanServiceId || s.name.toLowerCase() === cleanServiceId
     );
     if (!serviceMatched) return false;
@@ -426,7 +426,8 @@ export function mapStudentProfileToBookingInitialData(
   let matchedServiceId = 'quran-reading';
   if (rawInterest) {
     const interest = String(rawInterest).toLowerCase();
-    const found = BOOKING_SERVICES.find(
+    // Bookable only: a learner whose subject was retired falls back to the default instead of a refused booking.
+    const found = BOOKABLE_SERVICES.find(
       (s) =>
         s.id === interest ||
         s.group.toLowerCase() === interest ||
@@ -857,7 +858,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
   // Support direct service parameter if not in active reuse mode (e.g. /student/book?service=tajweed)
   const requestedServiceId = searchParams.get('service');
   const requestedEntitlementId = searchParams.get('entitlementId') || (location.state as any)?.entitlementId;
-  const matchedQueryServiceId = requestedServiceId && BOOKING_SERVICES.some((s) => s.id === requestedServiceId)
+  const matchedQueryServiceId = requestedServiceId && BOOKABLE_SERVICES.some((s) => s.id === requestedServiceId)
     ? requestedServiceId
     : standardServiceId;
 

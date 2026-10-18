@@ -134,7 +134,7 @@ describe('Task 0.58 — Repeat Last Booking Workflow Tests', () => {
       const bookings = [
         {
           id: 'b-snake',
-          service_id: 'arabic-conversation',
+          service_id: 'egyptian-arabic',
           duration_minutes: 45,
           status: 'completed',
           scheduled_start: '2026-09-01T16:00:00Z',
@@ -146,8 +146,13 @@ describe('Task 0.58 — Repeat Last Booking Workflow Tests', () => {
       const chosen = findLastEligibleBooking(bookings);
       assert.ok(chosen);
       assert.strictEqual(chosen.id, 'b-snake');
-      assert.strictEqual(chosen.service_id, 'arabic-conversation');
+      assert.strictEqual(chosen.service_id, 'egyptian-arabic');
       assert.strictEqual(chosen.duration_minutes, 45);
+    });
+
+    it('never offers to repeat a retired subject (RULES.md "Subjects", 2026-10-18)', () => {
+      const retired = [{ id: 'b-old', service_id: 'arabic-conversation', duration_minutes: 45, status: 'completed', scheduled_start: '2026-09-01T16:00:00Z' }];
+      assert.strictEqual(findLastEligibleBooking(retired), null);
     });
 
     it('fails closed safely on malformed booking objects', () => {
@@ -192,9 +197,9 @@ describe('Task 0.58 — Repeat Last Booking Workflow Tests', () => {
       };
 
       const result = formatLastBookingSummary(booking);
-      assert.strictEqual(result.serviceTitle, 'Quran Memorization (Hifz)');
+      assert.strictEqual(result.serviceTitle, 'Quran Memorization & Revision');
       assert.strictEqual(result.levelText, 'Intermediate');
-      assert.strictEqual(result.summaryText, 'Quran Memorization (Hifz) · Intermediate · 30 mins');
+      assert.strictEqual(result.summaryText, 'Quran Memorization & Revision · Intermediate · 30 mins');
     });
 
     it('falls back to safe default if booking is null', () => {

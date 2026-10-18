@@ -1,7 +1,7 @@
 export const MASTER_SPEC = `
-# MAHMOUD TEACHING PLATFORM — MASTER PROJECT SPEC
+# WATAZAWWADO — MASTER PROJECT SPEC
 
-**File:** \`MAHMOUD_TEACHING_PLATFORM_MASTER_SPEC.md\`  
+**File:** \`src/data/master_spec.ts\` (binding decisions that override this file: RULES.md)  
 **Role:** Product Foundation / Vision / Workflow / Core Architecture  
 **Status:** Living Source of Truth  
 
@@ -16,8 +16,8 @@ It defines:
 - AI Learning Guide purpose and boundaries
 
 # 2. PRODUCT OVERVIEW
-The product is a **personal teaching website + direct booking platform**.
-It is built around one direct relationship: **Student → Mahmoud**.
+The product is **Watazawwado Academy**, an online academy with a team of male and female teachers, and a direct booking platform.
+It is built around a direct relationship between each learner and their own teacher at the academy. The academy speaks as "we"; no single person is the centre of it.
 It is NOT a tutoring marketplace.
 
 # 3. VISION & 4. MISSION
@@ -63,11 +63,11 @@ One free trial per new student.
 - Supported models: Pay per lesson, Monthly packages (4, 8, 12 lessons).
 
 # 21. CANCELLATION AND RESCHEDULING
-Students may cancel or reschedule up to **3 hours before the lesson**. Inside the 3-hour window, self-service is disabled and they must contact Mahmoud directly.
+Students may cancel or reschedule up to **3 hours before the lesson**. Inside the 3-hour window, self-service is disabled and they must contact the academy directly on WhatsApp.
 
 # 30. AI LEARNING GUIDE
 The public website includes an AI assistant called: **Learning Guide**.
-Its role is to guide visitors, not replace Mahmoud.
+Its role is to guide visitors, not replace the teachers.
 It can help with:
 - discovering learner needs
 - explaining services
@@ -78,7 +78,7 @@ It can help with:
 - guiding the learner toward booking
 
 It must NOT:
-- invent Mahmoud's credentials
+- invent any teacher's credentials
 - invent prices
 - invent availability
 - invent policies
@@ -86,10 +86,10 @@ It must NOT:
 - invent services
 - promise learning outcomes
 - expose private data
-- act as a replacement for Mahmoud
+- act as a replacement for a teacher
 - provide unsupported authoritative religious rulings
 
-For religious/educational questions beyond its controlled knowledge, it should be conservative and direct the user to Mahmoud or an appropriate authoritative source.
+For religious/educational questions beyond its controlled knowledge, it should be conservative and direct the user to their teacher or an appropriate authoritative source.
 
 # 42. CONTENT PRINCIPLES
 Never fabricate: testimonials, student numbers, credentials, degrees, pricing, availability.

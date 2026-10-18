@@ -7,13 +7,13 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
  */
 
 const SUBJECTS = {
-  ar: ['القرآن', 'التجويد', 'العربية', 'العلوم الشرعية', 'الإنجليزية'],
-  en: ['Quran', 'Tajweed', 'Arabic', 'Islamic studies', 'English'],
+  ar: ['القرآن', 'التجويد', 'أول الزاد', 'السيرة', 'العربية', 'الإنجليزية'],
+  en: ['Quran', 'Tajweed', 'Zad Essentials', 'Seerah', 'Arabic', 'English'],
 };
 
 const STATIC = {
-  ar: 'القرآن والتجويد، والعربية، والعلوم الشرعية، والإنجليزية. حصص فردية على Zoom، مع معلّم يعرفك باسمك.',
-  en: 'Quran, Tajweed, Arabic, Islamic studies and English. One-on-one on Zoom, with a teacher who knows you by name.',
+  ar: 'القرآن والتجويد، وأول الزاد والسيرة، والعربية، والإنجليزية. حصص فردية على Zoom، مع معلّم يعرفك باسمك.',
+  en: 'Quran, Tajweed, Zad Essentials, Seerah, Arabic and English. One-on-one on Zoom, with a teacher who knows you by name.',
 };
 
 const INTERVAL_MS = 2600;

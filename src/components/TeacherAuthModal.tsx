@@ -146,7 +146,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                 <h3 className="font-display text-lg font-bold text-foreground">
                   {isTeacherAuthenticated 
                     ? (isEn ? 'Teacher Backend Foundation' : 'لوحة تحكم المعلم')
-                    : (isEn ? 'Ustadh Mahmoud — Teacher Access' : 'الأستاذ محمود — بوابة دخول المعلم')}
+                    : (isEn ? 'Watazawwado — Teacher access' : 'وتزودوا — بوابة دخول المعلمين')}
                 </h3>
                 <p className="text-[11px] text-muted-foreground">
                   {isEn ? 'Supabase Database, RLS Security & Teacher Auth' : 'إدارة الحجوزات والطلاب وقاعدة البيانات الآمنة'}
@@ -272,7 +272,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                     disabled={isSubmitting}
                     className="w-full py-3 px-4 rounded-xl btn-primary-material text-white text-sm font-bold tracking-wide transition-all shadow-md cursor-pointer disabled:opacity-50"
                   >
-                    {isSubmitting ? (isEn ? 'Authenticating...' : 'جاري التحقق...') : (isEn ? 'Sign In as Mahmoud' : 'تسجيل الدخول كمعلم')}
+                    {isSubmitting ? (isEn ? 'Authenticating...' : 'جاري التحقق...') : (isEn ? 'Sign in as a teacher' : 'تسجيل الدخول كمعلم')}
                   </button>
                 </form>
               </div>
@@ -284,12 +284,12 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({ isOpen, onCl
                 <div className="p-4 rounded-2xl glass-card border-none flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-secondary/30 text-accent flex items-center justify-center font-bold text-sm">
-                      M
+                      W
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="font-display font-bold text-sm sm:text-base text-foreground">
-                          Ustadh Mahmoud
+                          {isEn ? 'Teacher' : 'المعلم'}
                         </span>
                         <span className="px-2 py-0.5 rounded-full text-[13px] font-mono bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-semibold flex items-center gap-1">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />

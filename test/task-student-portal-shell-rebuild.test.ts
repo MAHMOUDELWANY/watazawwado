@@ -88,7 +88,8 @@ describe('Task: Student Portal Information Architecture & Application Shell Rebu
     it('verifies Learning Snapshot and Package Credits integration', () => {
       assert.ok(studentHomeSource.includes('Learning Snapshot') || studentHomeSource.includes('ملخص التعلم'), 'Must include learning snapshot');
       assert.ok(studentHomeSource.includes('creditsRemaining'), 'Must display package credits remaining');
-      assert.ok(studentHomeSource.includes('Ustadh Mahmoud') || studentHomeSource.includes('الأستاذ محمود'), 'Must preserve direct Ustadh Mahmoud relationship');
+      assert.ok(!studentHomeSource.includes('Ustadh Mahmoud') && !studentHomeSource.includes('الأستاذ محمود'), 'The academy is not centred on one person (owner, 2026-10-18)');
+      assert.ok(studentHomeSource.includes('assignedTeacherName'), 'Must show the assigned teacher');
     });
   });
 

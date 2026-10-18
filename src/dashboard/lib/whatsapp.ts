@@ -1,14 +1,14 @@
 /**
  * ====================================================================
- * MAHMOUD TEACHING PLATFORM — DASHBOARD WHATSAPP UTILITIES
+ * WATAZAWWADO — DASHBOARD WHATSAPP UTILITIES
  * File: src/dashboard/lib/whatsapp.ts
  * Role: WhatsApp utilities for Dashboard actions & Truthful Contact
  * ====================================================================
  */
 
-export const MAHMOUD_OFFICIAL_PHONE_DISPLAY = '+48 508 157 886';
-export const MAHMOUD_OFFICIAL_PHONE_INTL = '+48508157886';
-export const MAHMOUD_OFFICIAL_PHONE_DIGITS = '48508157886';
+export const ACADEMY_PHONE_DISPLAY = '+48 508 157 886';
+export const ACADEMY_PHONE_INTL = '+48508157886';
+export const ACADEMY_PHONE_DIGITS = '48508157886';
 
 export function isValidPhoneNumber(phone?: string | null): boolean {
   if (!phone || typeof phone !== 'string') return false;
@@ -17,14 +17,14 @@ export function isValidPhoneNumber(phone?: string | null): boolean {
 }
 
 export function normalizeWhatsAppDigits(phone?: string | null): string {
-  if (!phone || typeof phone !== 'string') return MAHMOUD_OFFICIAL_PHONE_DIGITS;
+  if (!phone || typeof phone !== 'string') return ACADEMY_PHONE_DIGITS;
   const digits = phone.replace(/\D/g, '');
   if (digits.startsWith('00')) return digits.slice(2);
   if (digits.startsWith('0') && digits.length === 11) {
     return `20${digits.slice(1)}`;
   }
   if (digits.length >= 7) return digits;
-  return MAHMOUD_OFFICIAL_PHONE_DIGITS;
+  return ACADEMY_PHONE_DIGITS;
 }
 
 export function buildContextualWhatsAppUrl(

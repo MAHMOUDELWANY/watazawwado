@@ -1,6 +1,6 @@
 /**
  * ====================================================================
- * MAHMOUD TEACHING PLATFORM — LEAD TRANSITIONS & ATOMICITY TEST SUITE
+ * WATAZAWWADO — LEAD TRANSITIONS & ATOMICITY TEST SUITE
  * File: test/leadTransitions.test.ts
  * Purpose: Validation of canonical lead transition matrix and helper
  *          enforcing zero bypass in trial assessment and lead update.

@@ -52,13 +52,14 @@ export const BOOKING_SERVICES: ServiceOption[] = [
   },
   {
     id: 'quran-memorization',
-    name: 'Quran Memorization (Hifz)',
-    arabicName: 'تحفيظ القرآن الكريم',
+    // Memorization and revision are one subject since 2026-10-18 (quran-revision is retired).
+    name: 'Quran Memorization & Revision',
+    arabicName: 'الحفظ والمراجعة',
     group: 'quran',
-    tagline: 'Sustainable, personalized daily memorization pacing with firm retention.',
-    arabicTagline: 'حفظ متدرج ورصين يراعي ظروف المتعلم مع تثبيت دائم.',
-    description: 'Individualized Hifz plan tailored to your memory pace, accompanied by daily repetition strategies so new memorization remains rock-solid.',
-    arabicDescription: 'خطة حفظ فردية تراعي وقتك وطاقتك الاستيعابية وتعتمد استراتيجيات التثبيت المستمر.',
+    tagline: 'New memorization or keeping what you know, at a pace that fits your life.',
+    arabicTagline: 'حفظ جديد أو تثبيت اللي حفظته، على قد وقتك وطاقتك.',
+    description: 'Tell us your goal and how much you know. We build one plan that adds new pages and keeps the old ones firm, with a daily routine you can keep.',
+    arabicDescription: 'قولنا هدفك وحافظ قد إيه. بنعمل لك خطة واحدة تضيف حفظ جديد وتثبّت القديم، مع ورد يومي تقدر تلتزم بيه.',
     suggestedGoals: [
       'Memorize Juz’ Amma or Juz’ Tabarak',
       'Establish a disciplined daily Hifz routine',
@@ -76,6 +77,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
   },
   {
     id: 'quran-revision',
+    hidden: true,
     name: 'Quran Revision & Retention (Muraja’ah)',
     arabicName: 'المراجعة والتثبيت القرآني',
     group: 'quran',
@@ -108,8 +110,8 @@ export const BOOKING_SERVICES: ServiceOption[] = [
     group: 'islamic_studies',
     tagline: 'For learners starting from zero: belief, purity, prayer and good manners, with the reason behind each.',
     arabicTagline: 'لمن يبدأ من الصفر: العقيدة والطهارة والصلاة والأخلاق، مع الحكمة والدليل.',
-    description: 'Each lesson gives the reason first, then the evidence from the Quran and Sunnah, and ends with one small step to live it this week. Animated lessons, a Kids version (6–11) and a Teens & Adults version (12+).',
-    arabicDescription: 'كل درس يبدأ بالحجة العقلية، ثم الدليل من القرآن والسنة، وينتهي بخطوة عملية صغيرة يطبقها المتعلم في أسبوعه. دروس متحركة بنسختين: للأطفال (٦–١١) وللناشئة والكبار (١٢+).',
+    description: 'Each lesson gives the reason first, then the evidence from the Quran and Sunnah, and ends with one small step to live it this week. Animated lessons in three versions, picked from the learner’s age: Kids (6–11), Teens (12–17) and Adults (18+).',
+    arabicDescription: 'كل درس يبدأ بالحجة العقلية، ثم الدليل من القرآن والسنة، وينتهي بخطوة عملية صغيرة يطبقها المتعلم في أسبوعه. دروس متحركة بتلات نسخ حسب السن: للأطفال (٦–١١)، وللناشئة (١٢–١٧)، وللكبار (١٨+).',
     suggestedGoals: [
       'My child knows nothing yet and I want a clear start',
       'Learn how to make wudu and pray correctly, with the evidence',
@@ -127,6 +129,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
   },
   {
     id: 'islamic-studies',
+    hidden: true,
     name: 'Islamic Studies for Adults & Youth',
     arabicName: 'الدراسات الإسلامية العامة',
     group: 'islamic_studies',
@@ -151,6 +154,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
   },
   {
     id: 'fiqh',
+    hidden: true,
     name: 'Practical Fiqh (Worship & Daily Life)',
     arabicName: 'الفقه الميسر والعلوم الشرعية',
     group: 'islamic_studies',
@@ -175,6 +179,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
   },
   {
     id: 'aqeedah',
+    hidden: true,
     name: 'Aqeedah (Islamic Creed & Core Beliefs)',
     arabicName: 'العقيدة الإسلامية الصافية',
     group: 'islamic_studies',
@@ -204,8 +209,8 @@ export const BOOKING_SERVICES: ServiceOption[] = [
     group: 'islamic_studies',
     tagline: 'The inspiring life, character, and leadership of Prophet Muhammad ﷺ.',
     arabicTagline: 'دراسة سيرة النبي ﷺ وأخلاقه القيادية والإنسانية.',
-    description: 'Chronological exploration of the Prophet’s life ﷺ from Makkah to Madinah, drawing practical wisdom, family ethics, and moral strength.',
-    arabicDescription: 'رحلة إيمانية مع سيرة الحبيب ﷺ لاستلهام الدروس والأخلاق في حياتنا المعاصرة.',
+    description: 'The life of the Prophet ﷺ from Makkah to Madinah, and what it asks of us today. Three versions by age: stories for Kids (6–11), choices and lessons for Teens (12–17), more depth for Adults (18+).',
+    arabicDescription: 'رحلة مع سيرة الحبيب ﷺ من مكة للمدينة، وإيه اللي بتطلبه مننا النهارده. تلات نسخ حسب السن: قصص للأطفال (٦–١١)، ومواقف ودروس للناشئة (١٢–١٧)، وعمق أكتر للكبار (١٨+).',
     suggestedGoals: [
       'Learn the chronological life story of the Prophet ﷺ',
       'Instill love of the Prophet ﷺ in family and children',
@@ -225,6 +230,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
   // --- ARABIC PILLAR ---
   {
     id: 'arabic-conversation',
+    hidden: true,
     name: 'Arabic Conversation & Speaking Fluency',
     arabicName: 'المحادثة والتحدث باللغة العربية',
     group: 'arabic',
@@ -249,13 +255,14 @@ export const BOOKING_SERVICES: ServiceOption[] = [
   },
   {
     id: 'modern-standard-arabic',
-    name: 'Modern Standard Arabic (Fusha - Grammar & Texts)',
-    arabicName: 'العربية الفصحى وقواعد النحو المتقدمة',
+    // Fusha absorbs arabic-foundations and arabic-conversation since 2026-10-18.
+    name: 'Fusha Arabic (Modern Standard Arabic)',
+    arabicName: 'العربية الفصحى',
     group: 'arabic',
-    tagline: 'The timeless language of literature, Quran, and classical grammar texts ($13/hr).',
-    arabicTagline: 'لغة القرآن والإعلام والأدب مع فهم متعمق للنحو والصرف (13$ للساعة).',
-    description: 'Comprehensive instruction in reading, grammar (Nahw), morphology (Sarf), and writing for students, academics, and serious learners.',
-    arabicDescription: 'تعليم متدرج في قواعد النحو والصرف وفهم النصوص العربية الفصيحة والمستويات المتقدمة.',
+    tagline: 'From the alphabet to reading, writing and speaking with confidence ($13/hr).',
+    arabicTagline: 'من الحروف لحد القراءة والكتابة والكلام بثقة (13$ للساعة).',
+    description: 'Start at Foundations (letters, reading, writing), then beginner, intermediate and advanced. Conversation runs through every level. A version for kids and one for 12+.',
+    arabicDescription: 'بنبدأ بالتأسيس (الحروف والقراءة والكتابة)، وبعده مبتدئ ومتوسط ومتقدم، والمحادثة معاك في كل مستوى. نسخة للأطفال ونسخة من ١٢ سنة.',
     suggestedGoals: [
       'Understand classical Arabic grammar (Nahw & Sarf)',
       'Read Arabic articles, books, and Islamic literature',
@@ -297,6 +304,7 @@ export const BOOKING_SERVICES: ServiceOption[] = [
   },
   {
     id: 'arabic-foundations',
+    hidden: true,
     name: 'Arabic for Beginners (Reading, Writing & Phonics)',
     arabicName: 'أساسيات اللغة العربية للمبتدئين',
     group: 'arabic',
@@ -326,8 +334,8 @@ export const BOOKING_SERVICES: ServiceOption[] = [
     name: 'English Language (Conversation, IELTS & Academic)',
     arabicName: 'اللغة الإنجليزية (المحادثة والتأهيل الدولي)',
     group: 'english',
-    tagline: 'Taught by Mahmoud with C1 IELTS certified proficiency ($13/hr).',
-    arabicTagline: 'تدريس شخصي بمستوى معتمد C1 في الآيلتس (13$ للساعة).',
+    tagline: 'Everyday, school and work English with a patient, qualified teacher ($13/hr).',
+    arabicTagline: 'إنجليزي للحياة والمدرسة والشغل، مع معلم صبور ومؤهل (13$ للساعة).',
     description: 'Personalized English training focusing on professional speaking confidence, IELTS exam preparation, accent clarity, and academic writing.',
     arabicDescription: 'تطوير الطلاقة الإنجليزية، التحضير لاختبارات الآيلتس، وتحسين النطق والقواعد.',
     suggestedGoals: [
@@ -347,6 +355,9 @@ export const BOOKING_SERVICES: ServiceOption[] = [
   }
 ];
 
+/** Subjects that can be chosen today; retired ones stay in BOOKING_SERVICES only to label old bookings. */
+export const BOOKABLE_SERVICES = BOOKING_SERVICES.filter((s) => !s.hidden);
+
 export const MAJOR_TIMEZONES: TimezoneOption[] = [
   { value: 'America/New_York', label: 'Eastern Time (US & Canada)', city: 'New York / Toronto', offset: 'UTC-4 / UTC-5' },
   { value: 'America/Chicago', label: 'Central Time (US & Canada)', city: 'Chicago / Dallas', offset: 'UTC-5 / UTC-6' },
@@ -354,7 +365,7 @@ export const MAJOR_TIMEZONES: TimezoneOption[] = [
   { value: 'America/Los_Angeles', label: 'Pacific Time (US & Canada)', city: 'Los Angeles / Vancouver', offset: 'UTC-7 / UTC-8' },
   { value: 'Europe/London', label: 'UK & Ireland Time (GMT / BST)', city: 'London / Dublin', offset: 'UTC+0 / UTC+1' },
   { value: 'Europe/Paris', label: 'Central European Time (CET)', city: 'Paris / Berlin / Amsterdam', offset: 'UTC+1 / UTC+2' },
-  { value: 'Africa/Cairo', label: 'Egypt Time (Mahmoud’s Timezone)', city: 'Cairo / Alexandria', offset: 'UTC+3' },
+  { value: 'Africa/Cairo', label: 'Egypt Time', city: 'Cairo / Alexandria', offset: 'UTC+3' },
   { value: 'Asia/Riyadh', label: 'Arabian Standard Time (AST)', city: 'Riyadh / Makkah / Madinah', offset: 'UTC+3' },
   { value: 'Asia/Dubai', label: 'Gulf Standard Time (GST)', city: 'Dubai / Abu Dhabi', offset: 'UTC+4' },
   { value: 'Australia/Sydney', label: 'Australian Eastern Time (AEST)', city: 'Sydney / Melbourne', offset: 'UTC+10 / UTC+11' },
@@ -404,7 +415,7 @@ export function generateMockAvailability(baseDate = new Date(), timezone = 'Amer
         dayOfMonth,
         monthName,
         isAvailable: false,
-        reasonUnavailable: 'Mahmoud has scheduled dedicated study and revision on this day.',
+        reasonUnavailable: 'No lessons on this day.',
         slots: []
       });
       continue;

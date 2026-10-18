@@ -1,6 +1,6 @@
 /**
  * ====================================================================
- * MAHMOUD TEACHING PLATFORM — REMINDER SCHEDULER ENGINE
+ * WATAZAWWADO — REMINDER SCHEDULER ENGINE
  * File: server/notifications/reminderEngine.ts
  * Role: Timezone-aware, idempotent lesson reminder processor. RULES.md §2 (2026-10-15):
  *       email 3h before (the booking email is sent on confirmation), on-site notices 12h and 2h before.

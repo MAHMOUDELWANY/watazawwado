@@ -445,7 +445,7 @@ export default function StudentProfilePage({
             })}
           </div>
 
-          {/* Ustadh Mahmoud Trust Badge */}
+          {/* Academy trust badge */}
           <div className="p-4 rounded-2xl glass-card border-none/80 text-sm space-y-2">
             <div className="flex items-center gap-2 text-foreground font-semibold">
               <span className="w-6 h-6 rounded-lg bg-secondary/30 text-accent flex items-center justify-center font-display font-bold text-sm">
@@ -724,11 +724,8 @@ export default function StudentProfilePage({
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {linkedChildren.map((child: any) => {
-                      const childTeacherName = child.teacherGenderPreference === 'female_teacher'
-                        ? (isAr ? 'الأستاذة أفنان' : 'Teacher Afnan')
-                        : child.teacherGenderPreference === 'male_teacher'
-                        ? (isAr ? 'الأستاذ محمود علواني' : 'Ustadh Mahmoud')
-                        : (child.gender === 'female' ? (isAr ? 'الأستاذة أفنان' : 'Ustadha Afnan') : (isAr ? 'الأستاذ محمود علواني' : 'Ustadh Mahmoud'));
+                      // The assigned teacher's real name (multi-teacher academy); never a hard-coded teacher.
+                      const childTeacherName = child.assignedTeacherName || (isAr ? 'المعلم المختص' : 'Your teacher');
                       
                       const subjectLabel = child.learningInterest ? subjectName(child.learningInterest, isAr) : (isAr ? 'لسه ما اتحددتش' : 'Not set yet');
 

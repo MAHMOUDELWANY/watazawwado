@@ -1,6 +1,6 @@
 /**
  * ====================================================================
- * MAHMOUD TEACHING PLATFORM — TASK 0.39
+ * WATAZAWWADO — TASK 0.39
  * STUDENT BOOKING OWNERSHIP & STAFF AUTHORIZATION HARDENING TESTS
  * File: test/task-0.39-student-ownership-security.test.ts
  * Role: Strict verification of:

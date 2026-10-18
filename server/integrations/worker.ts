@@ -1,6 +1,6 @@
 /**
  * ====================================================================
- * MAHMOUD TEACHING PLATFORM — INTEGRATION WORKER
+ * WATAZAWWADO — INTEGRATION WORKER
  * File: server/integrations/worker.ts
  * Role: Durable outbox processor for booking integration jobs.
  * ====================================================================

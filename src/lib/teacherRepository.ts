@@ -22,7 +22,7 @@ const allowMocks = !isProduction && isDevMocksEnabled;
 
 export const teacherRepository = {
   /**
-   * Fetches dashboard metric counts for Mahmoud
+   * Fetches dashboard metric counts for the signed-in teacher
    */
   async getStats(): Promise<TeacherStats> {
     if (!isSupabaseConfigured()) {
@@ -73,7 +73,7 @@ export const teacherRepository = {
   },
 
   /**
-   * Retrieves bookings for Mahmoud with optional status filtering
+   * Retrieves the signed-in teacher's bookings with optional status filtering
    */
   async getBookings(statusFilter?: string): Promise<DbBooking[]> {
     if (!isSupabaseConfigured()) {

@@ -50,6 +50,33 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 - **[Decided 2026-10-16, changed same day] Chat.** Text only. Every account (student, parent, teacher) has a pinned conversation with the super admin; from sign-up, a student also has a conversation with their assigned teacher (and any teacher they book with). The super admin can read and write in all of them.
 - **[Decided 2026-10-16] Zoom host.** The teacher starts every lesson as the Zoom host (fresh host link from the dashboard); students join through the waiting room, so a student who arrives first never becomes the host.
 
+## 2b. Subjects
+
+- **[Decided 2026-10-18] The subject catalog.** Single source of truth in code: `src/components/onboarding/subjects.ts`
+  (families, subjects, levels per subject) with `BOOKABLE_SERVICES` in `src/booking/mockData.ts`; the database mirrors it
+  in `services.is_active`.
+  - **Quran ($9):** Quran Reading (two stages: Foundations → Reading the Mushaf), Tajweed (three levels), Memorization &
+    Revision (one subject; the learner states the goal: start, add more, or keep it firm).
+  - **The Zad Path (مسار الأثر, $9):** our own curriculum. Zad Essentials (أول الزاد) and Seerah, each in three versions
+    picked automatically from the learner's age: Kids 6–11, Teens 12–17, Adults 18+. No level to choose.
+  - **The Scholar's Path (مسار طالب العلم):** courses on the recognised classical books (Fiqh, Aqeedah, Hadith, ...),
+    each with a fixed number of sessions, outcomes and a set book, four levels, any age; the matn in Arabic, explanation
+    in Arabic or English. **Books, sessions and prices are not decided yet;** nothing is shown or bookable until the
+    owner defines them.
+  - **Languages ($13):** Fusha Arabic (Foundations → Beginner → Intermediate → Advanced, conversation in every level;
+    kids and 12+ versions), Egyptian Arabic (sounds first, then levels; Franco and Arabic script together; one design for
+    all ages), English (kids: phonics and reading; 12+: CEFR A1–C1).
+- **[Decided 2026-10-18] Levels are decided per subject**, not one scale for all. Paths are entered by level; only the
+  version (Kids / Teens / Adults) follows age. Onboarding shows a subject's own levels; placement banks keep the four
+  generic levels underneath.
+- **[Decided 2026-10-18] Retired subjects** (rows kept, `is_active = false`, never deleted, so old bookings and reports
+  still resolve): Revision (merged into Memorization & Revision), Arabic basics and Conversation (merged into Fusha),
+  Islamic studies, Fiqh and Aqeedah (hidden until the Scholar's Path courses exist).
+- **[Decided 2026-10-18] Books as scope only.** Commercial books (Jannat Al Quran for reading and tajweed, Al-Arabiyya
+  Bayna Yadayk for Fusha, Kallimni 'Arabi for Egyptian) set what a level covers; the sequence, wording, examples and
+  exercises are ours (`docs/curriculum/RULES.md` §1.4).
+- **[Decided 2026-10-18] Tadabbur** is not a subject; it is a pillar of every Zad Path lesson (`docs/curriculum/RULES.md` §1.6).
+
 ## 3. Pricing
 
 - **[Decided 2026-10-14] Hourly rates (60 minutes):**
@@ -124,3 +151,4 @@ Engineering backlog (no owner decision needed, do when there is time):
 ## 9. Curriculum
 
 - **[Decided 2026-10-16]** All curriculum (المنهج) decisions, rules and progress live in `docs/curriculum/PLAN.md`. Read it before any curriculum work and record new owner decisions there.
+- **[Decided 2026-10-18]** The binding curriculum-building rules are `docs/curriculum/RULES.md`; any curriculum work uses the `curriculum-builder` skill. All project documentation is written in English (owner, 2026-10-18); the site itself stays bilingual (§6).

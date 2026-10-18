@@ -11,6 +11,10 @@ export interface SubjectEntry {
   lessons: Record<number, Lesson>;
 }
 
+// Zad Path curricula (docs/curriculum/RULES.md). Zad Essentials and Seerah each get Kids / Teens / Adults entries
+// (ids zad-kids, zad-teens, zad-adults, ...), added when the owner approves that version's MAP.md, so the teacher and
+// student pages never list an empty curriculum. The Scholar's Path has no curriculum here: its courses (book, sessions,
+// price) are defined by the owner first (RULES.md §6).
 export const SUBJECTS: SubjectEntry[] = [
   {
     id: 'zad-kids',

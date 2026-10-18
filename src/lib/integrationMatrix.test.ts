@@ -1,6 +1,6 @@
 /**
  * ====================================================================
- * MAHMOUD TEACHING PLATFORM — INTEGRATION & TIMEZONE TEST SUITE
+ * WATAZAWWADO — INTEGRATION & TIMEZONE TEST SUITE
  * File: src/lib/integrationMatrix.test.ts
  * Purpose: Deterministic validation of Timezone Engine, Policy checks,
  *          and Scheduling calculations.

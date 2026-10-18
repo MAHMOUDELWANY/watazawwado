@@ -238,7 +238,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
         </div>
 
         <a
-          href="https://wa.me/48508157886?text=Assalamu%20Alaikum%20Ustadh%20Mahmoud%2C%20I%20have%20a%20question%20about%20payment."
+          href="https://wa.me/48508157886?text=Assalamu%20Alaikum%20Watazawwado%20team%2C%20I%20have%20a%20question%20about%20payment."
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 px-4 py-2.5 btn-whatsapp-solid rounded-xl text-sm font-bold shadow-md shrink-0 self-start md:self-auto min-h-[38px]"
@@ -280,7 +280,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
                 {pendingCount}
               </div>
               <span className="text-sm text-muted-foreground block">
-                {isAr ? 'في انتظار مراجعة الأستاذ محمود' : 'Awaiting teacher confirmation'}
+                {isAr ? 'في انتظار مراجعة فريقنا' : 'Awaiting confirmation by our team'}
               </span>
             </div>
             <div className="p-3.5 rounded-2xl bg-warning/10 text-warning">
@@ -337,8 +337,8 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
           </div>
           <p className="text-sm text-muted-foreground leading-relaxed">
             {isAr
-              ? 'تم استلام إثباتك وهو بانتظار مراجعة الأستاذ محمود. لا يلزم اتخاذ أي إجراء إضافي.'
-              : 'Your payment claim has been received and is awaiting verification by Ustadh Mahmoud. No further action is required.'}
+              ? 'تم استلام إثباتك وهو بانتظار مراجعة فريقنا. لا يلزم اتخاذ أي إجراء إضافي.'
+              : 'Your payment claim has been received and is awaiting verification by our team. No further action is required.'}
           </p>
         </div>
       )}

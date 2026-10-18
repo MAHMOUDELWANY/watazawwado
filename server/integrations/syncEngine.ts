@@ -1,7 +1,7 @@
 import { updateZoomMeeting, deleteZoomMeeting } from './zoom.js';
 /**
  * ====================================================================
- * MAHMOUD TEACHING PLATFORM — INTEGRATIONS SYNC ENGINE
+ * WATAZAWWADO — INTEGRATIONS SYNC ENGINE
  * File: server/integrations/syncEngine.ts
  * Role: Atomic Sync Orchestrator for Google Calendar & Zoom
  * ====================================================================

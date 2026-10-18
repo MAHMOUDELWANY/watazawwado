@@ -1,6 +1,6 @@
 /**
  * ====================================================================
- * MAHMOUD TEACHING PLATFORM — ZOOM INTEGRATION
+ * WATAZAWWADO — ZOOM INTEGRATION
  * File: server/integrations/zoom.ts
  * Role: Server-Side Zoom Meeting Creation & Classroom Link Management
  * ====================================================================
@@ -87,7 +87,7 @@ async function getZoomAccessToken(): Promise<string> {
  * a dedicated meeting via the official Zoom API.
  * 
  * If credentials are not present or external API is temporarily unreachable,
- * it returns Mahmoud's configured teaching room link with a deterministic session reference.
+ * it returns the teacher's configured teaching room link with a deterministic session reference.
  */
 export async function createOrProvisionZoomMeeting(
   options: ZoomMeetingOptions
@@ -131,7 +131,7 @@ export async function createOrProvisionZoomMeeting(
 
     // 2. Create if not found
     const payload = {
-      topic: `Mahmoud Teaching: ${options.serviceName} (${options.learnerName}) ${expectedTopicSuffix}`,
+      topic: `Watazawwado: ${options.serviceName} (${options.learnerName}) ${expectedTopicSuffix}`,
       type: 2, // Scheduled meeting
       start_time: startTimeFormatted,
       duration: options.durationMinutes,

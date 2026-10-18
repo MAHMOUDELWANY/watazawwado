@@ -1,6 +1,6 @@
 /**
  * ====================================================================
- * MAHMOUD TEACHING PLATFORM — CONCURRENCY & OWNERSHIP LIFECYCLE TESTS
+ * WATAZAWWADO — CONCURRENCY & OWNERSHIP LIFECYCLE TESTS
  * File: test/concurrencyOwnership.test.ts
  * Role: Strict verification of Notification & Reminder Claim Tokens,
  *       Lease Expiration, Stale Reclaim, and Secure Ownership Contracts.

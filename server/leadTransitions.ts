@@ -1,6 +1,6 @@
 /**
  * ====================================================================
- * MAHMOUD TEACHING PLATFORM — CANONICAL LEAD LIFECYCLE TRANSITIONS
+ * WATAZAWWADO — CANONICAL LEAD LIFECYCLE TRANSITIONS
  * File: server/leadTransitions.ts
  * Purpose: Master Spec Lead Lifecycle Transition Map & Validation Helper
  * ====================================================================
