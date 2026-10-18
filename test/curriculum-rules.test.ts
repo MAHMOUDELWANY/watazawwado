@@ -2,6 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { SUBJECTS } from '../src/curriculum/catalog';
 import { STATIONS } from '../src/curriculum/types';
+import { SCENE_IMAGES } from '../src/curriculum/slides/Slide';
 
 // The mechanical part of docs/curriculum/RULES.md. A lesson that fails here is not ready for review.
 const lessons = SUBJECTS.flatMap((s) => Object.values(s.lessons));
@@ -43,6 +44,19 @@ describe('Curriculum lessons follow docs/curriculum/RULES.md', () => {
         const last = lesson.pages[lesson.pages.length - 1];
         assert.equal(last.layout, 'next', 'the last page is the cliffhanger');
         assert.equal(last.station, 'ahd');
+      });
+
+      it('never shows the same painting on two separate pages (§1.10)', () => {
+        // Allowed: consecutive pages continuing one scene, and the series devices (the doors, the backpack).
+        const DEVICES = new Set(['doors', 'doorsHero', 'backpack']);
+        const seen = new Map<string, number>();
+        lesson.pages.forEach((p, i) => {
+          const img = SCENE_IMAGES[p.scene];
+          if (!img || DEVICES.has(p.scene)) return;
+          const last = seen.get(img);
+          assert.ok(last === undefined || last === i - 1, `page ${i + 1} (${p.title}) repeats ${img} from page ${(last ?? 0) + 1}`);
+          seen.set(img, i);
+        });
       });
 
       it('has a goal, outcomes and chapters, and is a draft until the owner approves it (§1.5, §2)', () => {

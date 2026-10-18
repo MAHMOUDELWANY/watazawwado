@@ -140,6 +140,9 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 
 - **[Decided 2026-10-15] Governing law:** the terms are governed by Polish law and Polish courts (the owner lives in Poland), while consumers keep the mandatory protection of their own country. Have a lawyer review the terms once.
 - **[Decided 2026-10-18] Act without asking, except curriculum content.** Any change to code or the database that does not need the owner's review is done without asking: Claude commits it, pushes it to `main` (production) after the type check, tests and build pass, applies database migrations to production Supabase in the same release, and smoke-tests production. Curriculum content (المنهج) still stops for the owner's review (`docs/curriculum/RULES.md` §2). Every change still passes the type check and tests before it is committed.
+- **[Decided 2026-10-18] Project files are written in English.** Every file added to or saved in the project (plans,
+  rules, docs, briefs, notes, curriculum or not) is in English, so every agent reads it the same way. Chat with the owner
+  stays in Arabic; user-facing Arabic text (site copy, Arabic teacher notes) is content, not documentation.
 - **[Decided 2026-10-15] Release process:** no preview environment (Vercel variables are Production-only). Every release: type check + offline tests + build, then push to `main` (= production), then a production smoke test. The previous production deployment stays as the Vercel rollback.
 
 ## 8. Open items

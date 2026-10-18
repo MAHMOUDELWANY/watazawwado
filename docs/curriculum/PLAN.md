@@ -25,10 +25,12 @@
   fixed 1600×900 notebook canvas (`src/curriculum/slides/`), build steps per page, pen/highlighter/laser, page grid,
   thinking timer, replay, praise, explanation panel with a read-aloud `explain` text on every page, new scene art.
 - **Now:** owner reviews Lesson 1 v2 and marks it reviewed (then students can open it).
-- **Now (Lesson 2):** built pages done: the owner's 7 paintings are in, scene builds on every idea page; waiting for
-  the owner to review the look in the player (/dashboard/curriculum, Lesson 2).
-- **Next:** after that review, Lesson 2 is ready for the owner to mark reviewed; later the Teens and Adults unit maps (same spine, RULES.md §3).
-- **Not started:** Lessons 3–37 , sound effects, the teacher pen/drawing tool.
+- **Now (Lesson 2):** motion and sound pass done (castle built in code, camel lens, camera tour, sparks, sound effects
+  in Lessons 1 and 2, mute button). Waiting for the owner's images batch 2 (11 files in the L02 brief) and the
+  character library (14 poses, `style/kids.md`); pages 1, 7, 10 show no picture until they arrive.
+- **Next:** place batch 2 and the library (cover, hand, baby, desert layers, ladybird, magnifier, Yusuf's hand), then the
+  owner reviews Lesson 2 and marks it reviewed.
+- **Not started:** Lessons 3–37.
 - **Known limit:** lesson text ships in the site bundle, so the lock is a UI lock (content is not secret). Upgrade to
   server-served lessons if content must be protected.
 
@@ -347,3 +349,12 @@ B3–B5 → continue lesson by lesson.
   the painting on the left so people stay clear of the text (Lesson 1 too); cover and game wording no longer Lesson 1
   only. Checked in headless Chromium (Playwright) at 1280 wide and with reduced motion; tsc, 1011 tests and the build
   pass. Not checked: the real teacher workspace (needs a teacher login), phone and dark mode.
+- **2026-10-18** — Owner: more striking motion (like the key), no repeated images, sound effects now, all project files in
+  English. Rules written (RULES.md §1.10 images and sound, §1.12 English; project RULES.md §7; CLAUDE.md; style guide;
+  curriculum-builder skill) and a test that fails when a painting repeats. Built `slides/Motion.tsx` (bursts, sandstorm,
+  shooting star, ripples, a toy-brick castle that builds itself and opens its gate, cut-out sprites, lens, depth layers)
+  and `slides/sfx.ts` (synthesised sound effects, no files, no music; mute button, key M). Lesson 2 scenes moved to
+  `slides/lessons/l02.tsx` with a registry (`slides/lessons/index.ts`): three ways (poof / shivering bricks / the castle
+  builds), clues (the gate opens), 52:35 (cards fly in), sky (constellation, shooting star), key (click and sparks), Look!
+  (camera tour of the four signs), camel (lens per part: eyelid, sand on lashes, nostrils, feet), crash (bricks fly and
+  stay), boat (ripples). Lesson 1 scenes got their sounds. Image batch 2 + character library requested.

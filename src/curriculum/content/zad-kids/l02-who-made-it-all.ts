@@ -4,7 +4,8 @@ import { lesson02TeacherAr } from './l02-teacher-ar.js';
 // Brief and evidence log: docs/curriculum/zad-essentials-kids/L02-who-made-it-all.md
 // Ayat copied unchanged from the quran.com connector (2026-10-18); the hadith from Sahih al-Bukhari 1385 on Dorar
 // (first clause only for 6–11, owner 2026-10-18). English meanings are ours, for the owner to review.
-// Paintings: public/curriculum/zad-kids/l02 (owner, ChatGPT, 2026-10-18); the castle pages reuse Lesson 1's lego.webp.
+// Paintings: public/curriculum/zad-kids/l02 (owner, ChatGPT, 2026-10-18). No painting repeats (RULES.md §1.10): the
+// castle on the three-ways, clues and 52:35 pages is drawn in code (slides/lessons/l02.tsx).
 const FITRAH_HADITH = 'Sahih al-Bukhari 1385 and Sahih Muslim 2658, narrated by Abu Hurayrah';
 
 export const lesson02: Lesson = {
@@ -40,7 +41,7 @@ export const lesson02: Lesson = {
       title: 'Who Made It All?',
       station: 'spark',
       layout: 'cover',
-      scene: 'lego',
+      scene: 'window',
       lines: [],
       explain: [
         'Welcome the child back and say the title together: Who Made It All?',
@@ -121,7 +122,7 @@ export const lesson02: Lesson = {
       title: 'Clues of a maker',
       station: 'zad',
       layout: 'concept',
-      scene: 'lego',
+      scene: 'castleClues',
       lines: ['How did Maryam know someone built it?', 'The castle left clues.'],
       items: ['The pieces fit together', 'It works: the gate opens', 'It is made for something: to play in'],
       interaction: {
@@ -140,7 +141,7 @@ export const lesson02: Lesson = {
       title: 'Something bigger',
       station: 'zad',
       layout: 'question',
-      scene: 'jiddo',
+      scene: 'hand',
       lines: ['That evening, Jiddo holds up his hand.', '"Your castle has two hundred bricks. Now look at this."', 'Fingers that bend. A thumb that grips. Skin that heals by itself.'],
       interaction: {
         kind: 'ask',
@@ -219,7 +220,7 @@ export const lesson02: Lesson = {
       title: 'Who told you?',
       station: 'zad',
       layout: 'evidence',
-      scene: 'jiddo',
+      scene: 'baby',
       lines: ['"Jiddo, nobody taught me that castles need builders. I just knew!" says Maryam.', 'Jiddo smiles. "That knowing was put inside you. It has a name."'],
       evidence: {
         arabic: 'كُلُّ مَولودٍ يولَدُ على الفِطرةِ',
@@ -336,7 +337,7 @@ export const lesson02: Lesson = {
       title: 'Game: Who Made It?',
       station: 'athar',
       layout: 'game',
-      scene: 'lego',
+      scene: 'threeWays',
       lines: [],
       interaction: {
         kind: 'sort',

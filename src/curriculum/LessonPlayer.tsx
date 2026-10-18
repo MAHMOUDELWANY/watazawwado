@@ -2,13 +2,14 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from
 import { AnimatePresence, motion } from 'motion/react';
 import {
   ChevronLeft, ChevronRight, Maximize2, Minimize2, Star, PenLine, Highlighter, MousePointer2, Eraser, LayoutGrid,
-  Timer, RotateCcw, SkipBack, BookOpenText, X, Globe,
+  Timer, RotateCcw, SkipBack, BookOpenText, X, Globe, Volume2, VolumeX,
 } from 'lucide-react';
 import type { Lesson } from './types';
 import { Slide, SlideText, stepsFor, CANVAS_W, CANVAS_H, scoreSort, type GameResult } from './slides/Slide';
 import { InkLayer, type InkTool } from './slides/Ink';
 import { P } from './slides/Art';
 import { useAppLanguage } from '../lib/language';
+import { play, isMuted, setMuted } from './slides/sfx';
 
 export { scoreSort, type GameResult };
 
@@ -46,6 +47,8 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   const [notes, setNotes] = useState(wide);
   const [timerLeft, setTimerLeft] = useState(0);
   const [fullscreen, setFullscreen] = useState(false);
+  const [muted, setMutedState] = useState(isMuted);
+  const toggleMute = useCallback(() => setMutedState((m) => { setMuted(!m); return !m; }), []);
   const rootRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0.5);
@@ -70,14 +73,15 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
 
   const goPage = useCallback((p: number, atEnd = false) => {
     const next = Math.min(last, Math.max(0, p));
+    if (next !== page) play('page');
     setPage(next);
     setStep(atEnd ? stepsFor(lesson.pages[next]) : 0);
     setGrid(false);
-  }, [last, lesson.pages]);
+  }, [last, lesson.pages, page]);
 
   /** Next = reveal the next build step; when the page is fully built, go to the next page. */
   const forward = useCallback(() => {
-    if (step < total) setStep((s) => s + 1);
+    if (step < total) { play('step'); setStep((s) => s + 1); }
     else if (page < last) goPage(page + 1);
   }, [step, total, page, last, goPage]);
   const backward = useCallback(() => {
@@ -99,6 +103,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   }, []);
 
   const cheer = useCallback(() => {
+    play('praise');
     setPraise(true);
     window.setTimeout(() => setPraise(false), 1900);
   }, []);
@@ -137,11 +142,12 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
       else if (k === 'r') replayStep();
       else if (k === 'home') { e.preventDefault(); restartPage(); }
       else if (k === 'f') toggleFullscreen();
+      else if (k === 'm') toggleMute();
       else if (teacher && k === 'p') cheer();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [forward, backward, cheer, teacher, toggleFullscreen, replayStep, restartPage, fillWindow]);
+  }, [forward, backward, cheer, teacher, toggleFullscreen, replayStep, restartPage, fillWindow, toggleMute]);
 
   useEffect(() => {
     const sync = () => {
@@ -227,6 +233,9 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
           </button>
         </>
       )}
+      <button type="button" className={btn()} onClick={toggleMute} aria-pressed={muted} title={muted ? L('Sound off (M)', 'الصوت مقفول (M)') : L('Sound on (M)', 'الصوت شغال (M)')} aria-label={muted ? L('Turn sound on', 'شغّل الصوت') : L('Turn sound off', 'اقفل الصوت')}>
+        {muted ? <VolumeX className="w-[18px] h-[18px]" /> : <Volume2 className="w-[18px] h-[18px]" />}
+      </button>
       <button type="button" className={btn(notes)} onClick={() => setNotes((n) => !n)} aria-pressed={notes} title={L('Explanation (N)', 'الشرح (N)')} aria-label={L('Explanation', 'الشرح')}>
         <BookOpenText className="w-[18px] h-[18px]" />
       </button>

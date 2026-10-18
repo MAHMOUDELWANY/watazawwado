@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { P } from './Art';
+import { useCue } from './sfx';
 
 /* ---------- scene builds: the painting itself takes part in the explanation ----------
    The paintings are flat images, so nothing in them can move on its own. Instead we stack copies of the same
@@ -9,9 +10,9 @@ import { P } from './Art';
    spirit of the reference player, where the letter is drawn and labelled while the teacher explains.
    Coordinates are % of the painting (square images, so they map 1:1 onto a square box). */
 
-const out = [0.23, 1, 0.32, 1] as const;
+export const out = [0.23, 1, 0.32, 1] as const;
 /** A painting by name: Lesson 1 names are bare ('lego'), later lessons give their folder ('l02/sky'). */
-const src = (name: string) => `/curriculum/zad-kids/${name.includes('/') ? name : `l01/${name}`}.webp`;
+export const src = (name: string) => `/curriculum/zad-kids/${name.includes('/') ? name : `l01/${name}`}.webp`;
 
 /** The painting on the notebook: the white of the image melts into the paper (multiply), so it reads as printed on the page. */
 function Plate({ children, className = '' }: { children: React.ReactNode; className?: string }) {
@@ -25,7 +26,7 @@ function Plate({ children, className = '' }: { children: React.ReactNode; classN
 /** The paintings' background is cream (253,252,245); lifting it to pure white makes multiply leave the paper untouched. */
 const PAPER_WHITE = 'brightness(1.045)';
 
-function Layer({ name, style, filter, ...rest }: { name: string; style?: React.CSSProperties; filter?: string } & React.ComponentProps<typeof motion.img>) {
+export function Layer({ name, style, filter, ...rest }: { name: string; style?: React.CSSProperties; filter?: string } & React.ComponentProps<typeof motion.img>) {
   return <motion.img src={src(name)} alt="" aria-hidden="true" draggable={false} className="absolute inset-0 h-full w-full select-none object-contain" style={{ filter: filter ?? PAPER_WHITE, ...style }} {...rest} />;
 }
 
@@ -42,6 +43,8 @@ export function PillarsBuild({ labels, label }: { labels: (string | null)[]; lab
   const standing = labels.filter(Boolean).length;
   const done = standing === COLUMNS.length;
   const newest = standing - 1;
+  useCue('thud', standing, 0.35);
+  useCue('reveal', done, 0.9);
   return (
     <div className="absolute left-[690px] top-[96px] h-[720px] w-[720px]" role="img" aria-label={`${label}: ${standing} of 5 pillars standing`}>
       <Plate className="inset-0">
@@ -207,6 +210,8 @@ export function RootsGrow({ labels, label }: { labels: (string | null)[]; label:
   const lit = labels.filter(Boolean).length;
   const done = lit === ROOT_TIPS.length;
   const newest = lit - 1;
+  useCue('sparkle', lit, 0.3);
+  useCue('reveal', done, 0.8);
   return (
     <div className="absolute left-[690px] top-[64px] h-[720px] w-[720px]" role="img" aria-label={`${label}: ${lit} of 6 roots lit`}>
       <Plate className="inset-0">
@@ -396,12 +401,12 @@ export function ClueLens({ name, img, box, lens }: { name: string; img: { w: num
    These scenes work in the painting's own pixels: the box has the painting's aspect ratio, the SVG uses the painting's
    size as its viewBox, and labels are placed with `at`, so a coordinate read off the image file goes straight in. */
 
-type Px = { w: number; h: number };
-const at = (img: Px, x: number, y: number): React.CSSProperties => ({ left: `${(x / img.w) * 100}%`, top: `${(y / img.h) * 100}%` });
+export type Px = { w: number; h: number };
+export const at = (img: Px, x: number, y: number): React.CSSProperties => ({ left: `${(x / img.w) * 100}%`, top: `${(y / img.h) * 100}%` });
 const DOOR_INK = [P.teal, P.crimson, '#9A6A12'];
 
 /** A line the teacher's pen draws on the picture. */
-function Pen({ d, color = P.gold, width = 6, delay = 0, duration = 0.8, dash, glow = false }: { d: string; color?: string; width?: number; delay?: number; duration?: number; dash?: string; glow?: boolean }) {
+export function Pen({ d, color = P.gold, width = 6, delay = 0, duration = 0.8, dash, glow = false }: { d: string; color?: string; width?: number; delay?: number; duration?: number; dash?: string; glow?: boolean }) {
   const reduce = useReducedMotion();
   const id = `pen${React.useId().replace(/[^\w-]/g, '')}`;
   const draw = {
@@ -424,7 +429,7 @@ function Pen({ d, color = P.gold, width = 6, delay = 0, duration = 0.8, dash, gl
 }
 
 /** A paper label pinned to the picture; `ar` adds the Arabic word above the English. */
-function Tag({ style, children, ar, color = P.crimson, delay = 0, size = 22 }: { style: React.CSSProperties; children: React.ReactNode; ar?: string; color?: string; delay?: number; size?: number }) {
+export function Tag({ style, children, ar, color = P.crimson, delay = 0, size = 22 }: { style: React.CSSProperties; children: React.ReactNode; ar?: string; color?: string; delay?: number; size?: number }) {
   const reduce = useReducedMotion();
   return (
     <motion.span
@@ -443,7 +448,7 @@ function Tag({ style, children, ar, color = P.crimson, delay = 0, size = 22 }: {
 export type Built = { lines: number; items: number; evidence: boolean; interaction: boolean };
 
 /** A framed print of a painting on the notebook page, 4:3, right of the text column. */
-function Print({ name, children, label }: { name: string; children?: React.ReactNode; label: string }) {
+export function Print({ name, children, label }: { name: string; children?: React.ReactNode; label: string }) {
   const reduce = useReducedMotion();
   return (
     <div className="absolute left-[720px] top-[150px] h-[570px] w-[760px]" role="img" aria-label={label}>
@@ -462,6 +467,8 @@ const SIT: Px = { w: 1400, h: 1050 };
 /** Each line marks one part of the visitor's adab on the painting; the Arabic words join the marks with the evidence;
  *  the question dims the room and draws the "learning seat" (straight back, steady base) the child is about to copy. */
 export function SittingStudy({ v, label }: { v: Built; label: string }) {
+  useCue('pen', v.lines);
+  useCue('whoosh', v.interaction);
   return (
     <Print name="sitting" label={label}>
       <motion.div className="absolute inset-0 rounded-[28px]" style={{ background: 'rgba(30,20,16,0.4)' }} initial={false} animate={{ opacity: v.interaction ? 1 : 0 }} transition={{ duration: 0.6 }} />
@@ -517,6 +524,8 @@ const DRAW: Px = { w: 1400, h: 1050 };
 /** The card she is making is ringed, then the heart she is colouring is traced; at the question the room goes dark
  *  ("nobody is looking") and only her work keeps its light. */
 export function IhsanLight({ v, label }: { v: Built; label: string }) {
+  useCue('pen', v.lines, 0.2);
+  useCue('whoosh', v.interaction);
   const reduce = useReducedMotion();
   return (
     <Print name="drawing" label={label}>
@@ -577,6 +586,8 @@ export function Unveil({ revealed, step, v, name, teach }: {
 }) {
   const reduce = useReducedMotion();
   const open = revealed && v.lines >= 1;
+  useCue('whoosh', revealed ? 0 : step);
+  useCue('reveal', open, 0.6);
   const gap = revealed ? 80 : 10 + step * 14;
   const inset = 60 - gap / 2;
   const slide = { duration: reduce ? 0.3 : open ? 1.6 : 0.9, ease: [0.65, 0, 0.35, 1] as const };
@@ -695,6 +706,7 @@ const archClip = (d: Door) => {
 export function DoorsLight({ items, v, label, arabic }: { items: string[]; v: Built; label: string; arabic: (word: string) => string | undefined }) {
   const reduce = useReducedMotion();
   const lit = Math.min(v.items, DOORS.length);
+  useCue('chime', lit, 0.2);
   return (
     <div className="absolute left-[680px] top-[132px] h-[630px] w-[840px]" role="img" aria-label={`${label}: ${lit} of 3 doors open`}>
       <div className="absolute inset-0 overflow-hidden rounded-[28px] shadow-[0_40px_80px_-40px_rgba(139,73,53,0.6)]">
@@ -768,6 +780,8 @@ export function PackZad({ v, word, doors, chosen, label }: {
 }) {
   const reduce = useReducedMotion();
   const mapLit = v.lines >= 3;
+  useCue('sparkle', v.lines >= 1);
+  useCue('reveal', mapLit, 0.4);
   return (
     <div
       className="absolute left-[-5px] top-[110px] h-[690px] w-[690px]" role="img" aria-label={label}
@@ -824,172 +838,5 @@ export function PackZad({ v, word, doors, chosen, label }: {
         </motion.div>
       )}
     </div>
-  );
-}
-
-/* ---------- Lesson 2: Who Made It All? ---------- */
-
-const L2: Px = { w: 1448, h: 1086 };
-const WAYS = ['It popped out of nothing', 'The bricks built themselves', 'Someone built it'];
-
-/** Small drawings for the three ways: an empty dotted spot, a heap of loose bricks, a hand placing a brick. */
-function WayIcon({ i }: { i: number }) {
-  return (
-    <svg viewBox="0 0 80 60" className="h-[60px] w-[80px]" aria-hidden="true">
-      {i === 0 && <rect x="14" y="8" width="52" height="44" rx="8" fill="none" stroke={P.inkSoft} strokeWidth="3" strokeDasharray="5 6" />}
-      {i === 1 && (
-        <g stroke={P.ink} strokeWidth="2">
-          <rect x="8" y="34" width="26" height="16" rx="3" fill={P.crimson} transform="rotate(-12 21 42)" />
-          <rect x="38" y="36" width="26" height="16" rx="3" fill={P.teal} transform="rotate(9 51 44)" />
-          <rect x="26" y="14" width="26" height="16" rx="3" fill={P.gold} transform="rotate(-4 39 22)" />
-        </g>
-      )}
-      {i === 2 && (
-        <g stroke={P.ink} strokeWidth="2">
-          <rect x="10" y="38" width="60" height="14" rx="3" fill={P.teal} />
-          <rect x="22" y="22" width="36" height="14" rx="3" fill={P.crimson} />
-          <path d="M44 4 C52 4 60 10 58 18 L40 20 C36 14 38 6 44 4 Z" fill="#E8B48A" />
-        </g>
-      )}
-    </svg>
-  );
-}
-
-/** The castle on top, the three ways below as cards. A way is struck through with the teacher's red pen once the next one
- *  is shown; the last one is ringed in gold. `ar` pins the ayah's Arabic to a card (the 52:35 page). */
-function WaysBoard({ shown, struck, ringed, ar = [], answer, label }: { shown: boolean[]; struck: boolean[]; ringed: boolean; ar?: (string | undefined)[]; answer?: { en: string; ar: string }; label: string }) {
-  const reduce = useReducedMotion();
-  return (
-    <div className="absolute left-[720px] top-[140px] h-[640px] w-[760px]" role="img" aria-label={label}>
-      <div className="absolute inset-x-0 top-0 h-[300px] overflow-hidden rounded-[28px] shadow-[0_30px_60px_-34px_rgba(139,73,53,0.6)]">
-        <motion.img src={src('lego')} alt="" draggable={false} className="h-full w-full select-none object-cover" style={{ objectPosition: '72% 55%' }} initial={reduce ? false : { scale: 1.06 }} animate={{ scale: 1 }} transition={{ duration: 1.4, ease: out }} />
-      </div>
-      {WAYS.map((w, i) =>
-        shown[i] ? (
-          <motion.div
-            key={w}
-            className="absolute top-[330px] flex h-[250px] w-[236px] flex-col items-center gap-3 rounded-[24px] border-[3px] px-4 pt-5 text-center"
-            style={{ left: i * 262, background: '#FFFDF7', borderColor: i === 2 && ringed ? P.gold : '#E3D6B8', boxShadow: i === 2 && ringed ? '0 0 0 6px rgba(229,169,60,0.35), 0 20px 40px -24px rgba(139,73,53,0.7)' : undefined }}
-            initial={reduce ? { opacity: 0 } : { opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: out }}
-          >
-            <motion.div className="flex flex-col items-center gap-3" initial={false} animate={{ opacity: struck[i] ? 0.5 : 1 }} transition={{ duration: 0.4 }}>
-              <span className="flex h-9 w-9 items-center justify-center rounded-full font-sans text-[18px] font-bold text-white" style={{ background: i === 2 ? P.teal : P.copper }}>{i + 1}</span>
-              <WayIcon i={i} />
-              <span className="font-sans text-[23px] font-bold leading-tight" style={{ color: P.ink }}>{i === 2 && answer ? answer.en : w}</span>
-            </motion.div>
-            {struck[i] && (
-              <svg className="pointer-events-none absolute inset-0 h-full w-full overflow-visible" viewBox="0 0 236 250" preserveAspectRatio="none" aria-hidden="true">
-                <Pen d="M24 70 L212 200" color={P.crimson} width={8} duration={0.45} />
-                <Pen d="M212 70 L24 200" color={P.crimson} width={8} delay={0.35} duration={0.45} />
-              </svg>
-            )}
-            {ar[i] && <Tag style={{ left: '50%', top: -6 }} ar={ar[i]} delay={0.3} size={18}><span /></Tag>}
-            {i === 2 && answer && <Tag style={{ left: '50%', top: -6 }} ar={answer.ar} color={P.teal} delay={0.3} size={18}><span /></Tag>}
-          </motion.div>
-        ) : null,
-      )}
-    </div>
-  );
-}
-
-/** p4 Three ways: each way is shown, and moving on to the next one strikes the one before; the third is the answer. */
-export function ThreeWaysBuild({ labels, label }: { labels: (string | null)[]; label: string }) {
-  const shown = WAYS.map((_, i) => labels[i] != null);
-  return <WaysBoard shown={shown} struck={shown.map((s, i) => s && i < 2 && shown[i + 1])} ringed={shown[2]} label={label} />;
-}
-
-/** p8 At-Tur 52:35: Maryam's three ways come back, and the ayah's own words land on the two impossible ones; the
- *  question turns the third card into the answer. */
-export function ThreeWaysQuran({ v, label }: { v: Built; label: string }) {
-  const on = v.lines >= 1;
-  return (
-    <WaysBoard
-      shown={[on, on, on]} struck={[on, on, false]} ringed={on}
-      ar={v.evidence ? ['مِنْ غَيْرِ شَىْءٍ', 'هُمُ ٱلْخَـٰلِقُونَ'] : []}
-      answer={v.interaction ? { en: 'Allah made them', ar: 'الخالق' } : undefined}
-      label={label}
-    />
-  );
-}
-
-/** Stars over the garden in sky.webp (px), lit one after another. */
-const STARS = [[180, 90], [330, 210], [470, 70], [610, 260], [700, 140], [860, 60], [930, 300], [1090, 200], [1180, 80], [1310, 160], [1250, 330], [420, 330]];
-
-/** p9 Who made the sky? The stars come out over the family; the ayah names the skies and the earth; the question draws
- *  one arc across the whole sky: only Allah. */
-export function SkyStars({ v, label }: { v: Built; label: string }) {
-  const reduce = useReducedMotion();
-  return (
-    <Print name="l02/sky" label={label}>
-      {v.lines >= 1 && !reduce && STARS.map(([x, y], i) => (
-        <motion.span
-          key={i}
-          className="pointer-events-none absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full"
-          style={{ ...at(L2, x, y), background: '#FFF6D8', boxShadow: '0 0 14px 5px rgba(255,236,170,0.8)' }}
-          initial={{ opacity: 0, scale: 0 }} animate={{ opacity: [0, 1, 0.55, 1], scale: 1 }}
-          transition={{ duration: 2.4, delay: 0.2 + i * 0.12, ease: 'easeInOut' }}
-        />
-      ))}
-      <svg className="pointer-events-none absolute inset-0 h-full w-full overflow-visible" viewBox={`0 0 ${L2.w} ${L2.h}`} preserveAspectRatio="none" aria-hidden="true">
-        {v.interaction && <Pen d="M120 560 C420 40 1030 40 1330 560" color={P.goldSoft} width={6} dash="12 14" duration={1.6} glow />}
-      </svg>
-      {v.lines >= 2 && <Tag style={at(L2, 724, 420)} color={P.ink} delay={0.6}>Nobody has ever made a sky</Tag>}
-      {v.evidence && <Tag style={at(L2, 1060, 250)} ar="ٱلسَّمَـٰوَٰتِ" color={P.teal} delay={0.4}>the skies</Tag>}
-      {v.evidence && <Tag style={at(L2, 1180, 800)} ar="ٱلْأَرْضَ" color={P.copper} delay={0.9}>the earth</Tag>}
-      {v.interaction && <Tag style={at(L2, 724, 110)} color={P.crimson} delay={1.4} size={26}>Only Allah</Tag>}
-    </Print>
-  );
-}
-
-/** p11 Made ready to know Him: the lock is our heart and mind, the key is Islam, and the key slides into the lock it was
- *  made for. Two copies of lock.webp: the lock half stays, the key half is clipped out and moved. */
-export function KeyFits({ v, label }: { v: Built; label: string }) {
-  const reduce = useReducedMotion();
-  const inLock = v.lines >= 2;
-  return (
-    <div className="absolute left-[720px] top-[150px] h-[570px] w-[760px]" role="img" aria-label={label}>
-      <div className="absolute inset-0 overflow-hidden rounded-[28px] shadow-[0_40px_80px_-40px_rgba(139,73,53,0.6)]" style={{ background: '#FBF5EA' }}>
-        {/* lock-base.webp is lock.webp with the key painted out; key.webp is the key cut out (both made with ffmpeg from
-            the owner's painting). The key travels until its tip reaches the keyhole, then pushes in: the clip's left
-            edge stays on the keyhole, so the shaft disappears inside. Numbers are % of the key box (708 × 380 px). */}
-        <Layer name="l02/lock-base" filter="none" />
-        <motion.img
-          src={src('l02/key')} alt="" aria-hidden="true" draggable={false}
-          className="absolute select-none" style={{ ...at(L2, 740, 400), width: `${(708 / L2.w) * 100}%`, height: `${(380 / L2.h) * 100}%` }}
-          initial={false}
-          animate={inLock
-            ? { x: ['0%', '-66.4%', '-82.8%'], y: ['0%', '-11.4%', '-11.4%'], clipPath: ['inset(0% 0% 0% 0%)', 'inset(0% 0% 0% 0%)', 'inset(0% 0% 0% 20.6%)'] }
-            : { x: '0%', y: '0%', clipPath: 'inset(0% 0% 0% 0%)' }}
-          transition={reduce ? { duration: 0 } : { duration: 1.5, times: [0, 0.7, 1], ease: 'easeInOut' }}
-        />
-        {inLock && !reduce && (
-          <motion.span
-            className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full"
-            style={{ ...at(L2, 300, 550), width: '30%', height: '40%', background: 'radial-gradient(circle, rgba(255,226,150,0.75), rgba(255,226,150,0) 65%)', mixBlendMode: 'screen' }}
-            initial={{ opacity: 0 }} animate={{ opacity: [0, 1, 0.6] }} transition={{ duration: 1.8, delay: 0.9, ease: out }}
-          />
-        )}
-      </div>
-      {v.lines >= 1 && <Tag style={at(L2, 330, 960)} delay={0.4}>Your heart and mind</Tag>}
-      {inLock && <Tag style={at(L2, 720, 770)} color={P.teal} delay={1.4}>Islam</Tag>}
-      {v.evidence && <Tag style={at(L2, 1080, 200)} ar="فِطْرَتَ ٱللَّهِ" color={P.copper} delay={0.3}>the fitrah of Allah</Tag>}
-      {v.interaction && <Tag style={at(L2, 1080, 980)} color={P.crimson} delay={0.5}>One Maker made both</Tag>}
-    </div>
-  );
-}
-
-/** p12 Allah says: Look! The ayah's four words are pinned on the four things in one desert landscape. */
-const LOOK_AT = [
-  { x: 230, y: 420, ar: 'ٱلْإِبِلِ', en: 'the camels', color: P.copper },
-  { x: 900, y: 150, ar: 'ٱلسَّمَآءِ', en: 'the sky', color: P.teal },
-  { x: 1160, y: 520, ar: 'ٱلْجِبَالِ', en: 'the mountains', color: P.crimson },
-  { x: 700, y: 900, ar: 'ٱلْأَرْضِ', en: 'the earth', color: '#9A6A12' },
-];
-export function LookFour({ v, label }: { v: Built; label: string }) {
-  return (
-    <Print name="l02/look" label={label}>
-      {v.lines >= 2 && !v.evidence && <Tag style={at(L2, 724, 560)} color={P.crimson} size={34}>Look!</Tag>}
-      {v.evidence && LOOK_AT.map((t, i) => <Tag key={t.en} style={at(L2, t.x, t.y)} ar={t.ar} color={t.color} delay={0.5 + i * 0.7}>{t.en}</Tag>)}
-    </Print>
   );
 }

@@ -58,6 +58,7 @@ Decision values: Allowed · With conditions · Needs permission · Research only
 | Storyset | https://storyset.com/terms | Free licence with credit (checked 2026-10-17); modify/animate allowed; no resale or redistribution as files | Yes, with credit | Credit required | **With conditions** (add credit on the curriculum page) |
 | ChatGPT image generation (owner's account) | https://openai.com/policies/terms-of-use | Output belongs to the user under OpenAI terms (to verify current text) | Expected yes | Not required | To verify |
 | Our own SVG + Motion animations | — | Ours | Yes | — | **Allowed** (preferred) |
+| Our own synthesised sound effects (`src/curriculum/slides/sfx.ts`, Web Audio API) | — | Ours, generated in code at play time | Yes | — | **Allowed** (2026-10-18) |
 
 ## E2. Lesson images (owner, ChatGPT)
 

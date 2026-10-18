@@ -138,6 +138,53 @@ is **gold**). Save as WebP in `public/curriculum/zad-kids/l02/` with these names
    circles around it. Yusuf and Maryam sit side by side, both gripping one steering wheel, Yusuf pulling it left and
    Maryam right, both laughing. Seen from the side.
 
+Delivered 2026-10-18 (all seven). `lock-base.webp` and `key.webp` were cut from `lock.webp` with ffmpeg.
+
+## Images, batch 2 (no image twice; RULES.md §1.10)
+
+Attach `l01/characters.webp` and `l02/crash.webp` in ChatGPT as style references for every prompt. Scenes start with the
+base prompt in `../style/kids.md`; characters and props use the transparent prefix there. The character library
+(14 poses, `../style/kids.md`) is made in the same batch and reused by every later lesson.
+
+| # | File | Kind | Transparent | Page | Motion it enables |
+|---|---|---|---|---|---|
+| 1 | `l02/cover.webp` | Scene | No | 1 Cover | parallax, a brick falls and spins |
+| 2 | `l01/lego.webp` (redo) | Scene | No | 3 The castle | push-in, waving flag |
+| 3 | `l02/hand-brick.png` | Prop | Yes | 4 Three ways | the hand places bricks, the castle builds |
+| 4 | `l02/hand.png` | Prop | Yes | 7 Something bigger | joints marked, a scratch heals |
+| 5 | `l02/baby.webp` | Scene | No | 10 Who told you? | glow round the baby |
+| 6 | `l02/desert-sky.webp` | Scene layer | No | 12 Look! | depth layer 1 |
+| 7 | `l02/desert-mountains.png` | Layer | Yes | 12 Look! | depth layer 2 |
+| 8 | `l02/desert-ground.png` | Layer | Yes | 12 Look! | depth layer 3 |
+| 9 | `l02/desert-camel.png` | Prop | Yes | 12 Look! | the camel steps forward |
+| 10 | `l02/ladybird.png` | Prop | Yes | 14 Clue spotting | walks along the leaf |
+| 11 | `l02/magnifier.png` | Prop | Yes | 16 My Zad | drops into the bag |
+
+Prompts:
+1. **cover.webp:** night, a cosy living room with a tall arched window full of stars. On the right half, Jiddo, Yusuf and
+   Maryam kneel on a patterned rug looking up at the window in wonder; Mishmish sits beside them. A box of loose
+   colourful toy bricks is spilled on the rug in front of them. Keep the left third calm and dark (the title goes there).
+2. **lego.webp (redo):** same scene as the existing `l01/lego.webp` (attach it): Maryam sitting on her bedroom floor in
+   the morning, chin in her hands, amazed at a toy brick castle with towers, a gate and a red flag. **Her hijab is gold**
+   and she wears her red dress with gold trim. Castle on the right, Maryam on the left.
+3. **hand-brick.png:** a child's hand (warm brown skin, teal hoodie cuff) seen from the side, fingers pinching one red toy
+   brick, as if placing it on top of a wall. Transparent background.
+4. **hand.png:** a child's open hand, palm facing the viewer, fingers spread, warm brown skin, teal hoodie cuff at the
+   wrist. Transparent background.
+5. **baby.webp:** a warm lamp-lit living room. Their aunt, in a soft cream hijab, sits on a sofa holding a sleeping
+   newborn wrapped in a cream blanket. Maryam leans in close with wonder; Jiddo smiles from an armchair behind. The baby
+   is in the centre of the picture.
+6. **desert-sky.webp:** a vast golden-hour desert sky only, low sun near the horizon line at the bottom, soft clouds, no
+   land at all except a thin flat horizon. 4:3.
+7. **desert-mountains.png:** a range of firm rocky desert mountains in golden light, seen from far away, filling the
+   lower half; everything above the mountains is transparent. Wide, 4:3.
+8. **desert-ground.png:** a wide open sandy plain in the foreground with a few rocks and dry shrubs, spreading towards
+   the viewer; everything above the ground is transparent. Wide, 4:3.
+9. **desert-camel.png:** one dromedary camel standing, side view facing right, whole body, golden light. Transparent.
+10. **ladybird.png:** one red ladybird with black spots, seen from above, wings closed. Transparent background.
+11. **magnifier.png:** a brass magnifying glass with a dark wooden handle and a small khatam-star pattern on the ring,
+    lying at a slight angle. Transparent background.
+
 ## Owner decisions (2026-10-18)
 
 1. Hadith for 6–11: first clause only, as proposed.

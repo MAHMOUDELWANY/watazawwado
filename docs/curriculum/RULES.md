@@ -99,7 +99,24 @@ Sources: recognised tafsir through the quran.com connector only; no personal taf
 - **Image consistency:** each version has a style guide in `style/<version>.md` (palette, character sheet, base prompt).
   Claude writes image prompts from it; the owner generates images (ChatGPT); each image is checked against the guide
   before it enters a lesson. Files go in `public/curriculum/<subject>/<lesson>/`.
-- **Sound effects only, no music.**
+- **No image is used twice in a lesson (owner, 2026-10-18).** Repeating a picture is boring and shows nothing new.
+  Allowed: two consecutive pages that continue one scene (Lesson 1's veil), and the series devices (the three doors on the
+  recall page, Jiddo's backpack on the Ahd page). `test/curriculum-rules.test.ts` enforces it.
+- **Three kinds of images (owner, 2026-10-18).** Claude asks for exactly what a scene needs:
+  1. **Scenes:** 4:3 paintings of a place or a moment (people in them stay still).
+  2. **Character library:** the recurring characters in many poses on a transparent background, made once and reused in
+     every lesson so they can enter, move, point and react. Reusing a character is allowed; reusing a painting is not.
+  3. **Props:** objects that must move on their own (a key, a magnifier), transparent background.
+  If ChatGPT cannot give transparency, a plain white background, which Claude removes with ffmpeg.
+- **Claude adds code-drawn elements** wherever they make a scene better, without asking: bricks that build, particles
+  (sand, stars, sparks), pen lines, a magnifying lens, zoom on a detail, parallax depth. Primitives:
+  `src/curriculum/slides/Motion.tsx`.
+- **The wow moment of every lesson is a motion scene** (like the key sliding into the lock), never a still picture with
+  labels.
+- **Every lesson brief has an "Images" table:** file, kind (scene / character / prop), transparent or not, description,
+  page, and a prompt ready to paste into ChatGPT.
+- **Sound effects only, no music.** Synthesised in code (`src/curriculum/slides/sfx.ts`); every key motion has its
+  sound; the teacher can mute them in the player.
 
 ### 1.11 Learning psychology
 Hook first; questions throughout (the learner answers before being told); story and characters where the version allows;
@@ -113,6 +130,8 @@ worship into points. Love first; Jannah and the Fire are both mentioned honestly
   decisions only. No page counts or page text (they drift).
 - **Unit map** (`MAP.md`): lesson titles, outcomes, evidence and threads.
 - **Where we are:** `PLAN.md §0`. **Decisions and history:** `PLAN.md`.
+- **All curriculum files are written in English** (plans, rules, briefs, maps, style guides; owner, 2026-10-18). The
+  Arabic teacher notes (`lxx-teacher-ar.ts`) are content and stay Arabic.
 
 ## 2. Workflow (how any agent works, even from a vague prompt)
 

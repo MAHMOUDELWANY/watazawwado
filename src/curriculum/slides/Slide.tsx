@@ -2,7 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import type { Interaction, Lesson, LessonPage } from '../types';
 import { SceneArt, P } from './Art';
-import { PillarsBuild, RootsGrow, ClueLens, SittingStudy, IhsanLight, Unveil, DoorsLight, PackZad, Callback, ThreeWaysBuild, ThreeWaysQuran, SkyStars, KeyFits, LookFour, type Lens } from './Scenes';
+import { play } from './sfx';
+import { ClueLens, Unveil, DoorsLight, PackZad, Callback, type Lens } from './Scenes';
+import { BUILDS, STUDIES, MOMENTS, PACKED } from './lessons';
 
 /** Correct answers per bin of a game checkpoint, for the teacher report (PLAN §3a.3b). */
 export type GameResult = Record<string, { correct: number; total: number }>;
@@ -188,19 +190,16 @@ function ChapterTracker({ lesson, pageIndex, light = false }: { lesson: Lesson; 
    so the lesson alternates rhythm instead of repeating one template (docs/curriculum/PLAN.md, slide system v3). */
 
 /** Painted scenes (owner, ChatGPT) in public/curriculum/zad-kids/<lesson>/; scenes not listed fall back to SVG art. */
-const SCENE_IMAGES: Partial<Record<LessonPage['scene'], string>> = {
+export const SCENE_IMAGES: Partial<Record<LessonPage['scene'], string>> = {
   doorsHero: 'l01/cover', doors: 'l01/cover', chalkboard: 'l01/classroom', jiddo: 'l01/jiddo', madinah: 'l01/madinah', stranger: 'l01/stranger',
   sitting: 'l01/sitting', pillars: 'l01/pillars', roots: 'l01/roots', drawing: 'l01/drawing', reveal: 'l01/reveal', backpack: 'l01/backpack', lego: 'l01/lego',
-  threeWays: 'l01/lego', crash: 'l02/crash', sky: 'l02/sky', lock: 'l02/lock', look: 'l02/look', camel: 'l02/camel', park: 'l02/park', boat: 'l02/boat',
+  crash: 'l02/crash', sky: 'l02/sky', lock: 'l02/lock', look: 'l02/look', camel: 'l02/camel', park: 'l02/park', boat: 'l02/boat',
 };
 
 /** Where labels point on each painting (% of the image box): x,y = the point, lx,ly = the label. */
 type Pin = { x: number; y: number; lx: number; ly: number };
 const PINS: Partial<Record<LessonPage['scene'], Pin[]>> = {
   doors: [{ x: 18, y: 50, lx: 18, ly: 86 }, { x: 50, y: 50, lx: 50, ly: 86 }, { x: 82, y: 50, lx: 82, ly: 86 }],
-  // Lesson 2. Boxes are 800 × 640 with the 4:3 painting cropped by object-cover, so x is shifted from the image's %.
-  lego: [{ x: 80, y: 71, lx: 74, ly: 93 }, { x: 64, y: 72, lx: 40, ly: 60 }, { x: 72, y: 18, lx: 44, ly: 10 }],
-  camel: [{ x: 83, y: 9.5, lx: 58, ly: 5 }, { x: 82, y: 8, lx: 50, ly: 19 }, { x: 94, y: 10.5, lx: 85, ly: 27 }, { x: 47, y: 93, lx: 37, ly: 80 }],
 };
 /** Clues found on the stranger page: a lens magnifies the detail in stranger.webp (x,y = % of the image). */
 const CLUE_LENSES: Record<string, Lens> = {
@@ -393,6 +392,8 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
   onAnswer: () => void; onChoose: (option: string) => void; onCorrect: () => void; onGameResult: (r: GameResult) => void; onClue: (label: string) => void;
 }) {
   const c = compositionFor(page);
+  const Moment = MOMENTS[page.scene];
+  const Packed = PACKED[lesson.number];
   const interaction = page.interaction && v.interaction ? <InteractionView interaction={page.interaction} onCorrect={onCorrect} onGameResult={onGameResult} onClue={onClue} onChoose={onChoose} onAnswer={onAnswer} /> : null;
 
   switch (c) {
@@ -427,7 +428,9 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
             page={page}
             className="left-[600px] right-0 top-0 bottom-[100px] rounded-bl-[40px]"
             style={{ maskImage: 'linear-gradient(90deg, transparent 0, #000 120px)', WebkitMaskImage: 'linear-gradient(90deg, transparent 0, #000 120px)' }}
-          />
+          >
+            {Moment && <Moment v={v} lesson={lesson} />}
+          </Painting>
           <div className={`absolute left-[120px] top-[140px] bottom-[120px] w-[580px] space-y-6 ${COL}`}>
             <Title size={68}>{page.title}</Title>
             {v.evidence ? <Manuscript page={page} size={40} align="start" /> : <Lines lines={page.lines} count={v.lines} size={32} />}
@@ -455,7 +458,7 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
 
     case 'manuscript': {
       // Pages whose painting can show the idea get a large annotated print instead of the small arch.
-      const Study = ({ sitting: SittingStudy, drawing: IhsanLight, threeWays: ThreeWaysQuran, sky: SkyStars, lock: KeyFits, look: LookFour } as Partial<Record<LessonPage['scene'], typeof SittingStudy>>)[page.scene];
+      const Study = STUDIES[page.scene];
       if (Study)
         return (
           <>
@@ -492,7 +495,7 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
       const labels = pins.map((_, i) => (i < v.items ? page.items?.[i] ?? null : null));
       // Pages whose painting can act out the idea get a scene build instead of labels on a still picture.
       const built = (page.items || []).map((it, i) => (i < v.items ? it : null));
-      const Build = page.scene === 'pillars' ? PillarsBuild : page.scene === 'roots' ? RootsGrow : page.scene === 'threeWays' ? ThreeWaysBuild : null;
+      const Build = BUILDS[page.scene];
       return (
         <>
           <div className={`absolute left-[120px] top-[140px] bottom-[120px] w-[520px] space-y-6 ${COL}`}>
@@ -587,7 +590,10 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
       return (
         <>
           {page.scene === 'backpack' ? (
-            <PackZad v={v} label={page.title} chosen={chosen} word={vocabOf(lesson, 'zad')} doors={threeDoors(lesson)} />
+            <>
+              <PackZad v={v} label={page.title} chosen={chosen} word={vocabOf(lesson, 'zad')} doors={threeDoors(lesson)} />
+              {Packed && <div className="pointer-events-none absolute left-[-5px] top-[110px] h-[690px] w-[690px]"><Packed v={v} /></div>}
+            </>
           ) : (
             <Painting page={page} className="left-0 top-[110px] bottom-[100px] w-[680px] rounded-r-[40px]" style={{ maskImage: 'linear-gradient(270deg, transparent 0, #000 140px)', WebkitMaskImage: 'linear-gradient(270deg, transparent 0, #000 140px)' }} />
           )}
@@ -605,7 +611,9 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
       return (
         <>
           <div className="band-deep absolute inset-0" />
-          <Painting page={page} className="left-0 top-0 bottom-0 w-[1040px]" style={{ maskImage: 'linear-gradient(270deg, transparent 0, #000 260px)', WebkitMaskImage: 'linear-gradient(270deg, transparent 0, #000 260px)' }} />
+          <Painting page={page} className="left-0 top-0 bottom-0 w-[1040px]" style={{ maskImage: 'linear-gradient(270deg, transparent 0, #000 260px)', WebkitMaskImage: 'linear-gradient(270deg, transparent 0, #000 260px)' }}>
+            {Moment && <Moment v={v} lesson={lesson} />}
+          </Painting>
           <Scrim to="sideEnd" />
           <div className={`absolute right-[110px] top-[200px] bottom-[120px] w-[720px] space-y-6 ${COL}`}>
             <motion.span initial={{ opacity: 0, letterSpacing: '0.3em' }} animate={{ opacity: 1, letterSpacing: '0.01em' }} transition={{ duration: 1.2, ease }} className="block font-serif text-[34px] italic" style={{ color: P.goldSoft }}>
@@ -647,7 +655,7 @@ function Ask({ prompt, reveal, onAnswer }: { prompt: string; reveal?: string; on
               {reveal}
             </motion.p>
           ) : (
-            <motion.button key="b" type="button" onClick={() => { setOpen(true); onAnswer?.(); }} className="mt-4 rounded-full px-6 py-2 font-sans text-[22px] font-bold" style={{ background: P.gold, color: P.ink }}>
+            <motion.button key="b" type="button" onClick={() => { setOpen(true); play('chime'); onAnswer?.(); }} className="mt-4 rounded-full px-6 py-2 font-sans text-[22px] font-bold" style={{ background: P.gold, color: P.ink }}>
               Show the answer
             </motion.button>
           )}
@@ -663,6 +671,7 @@ function Clues({ interaction, onCorrect, onClue }: { interaction: Extract<Intera
   const found = picked.filter((i) => interaction.clues[i].correct).length;
   const pick = (i: number) => {
     if (picked.includes(i)) return;
+    play(interaction.clues[i].correct ? 'pop' : 'oops');
     const next = [...picked, i];
     setPicked(next);
     if (interaction.clues[i].correct) onClue?.(interaction.clues[i].label);
@@ -710,7 +719,7 @@ function Choose({ interaction, onChoose }: { interaction: Extract<Interaction, {
           <button
             key={o}
             type="button"
-            onClick={() => { setChoice(i); onChoose?.(o); }}
+            onClick={() => { setChoice(i); play('pop'); onChoose?.(o); }}
             aria-pressed={choice === i}
             className="rounded-[20px] border-[3px] px-5 py-3 text-left font-sans text-[22px] font-bold"
             style={{ borderColor: choice === i ? P.gold : '#E3D6B8', background: choice === i ? '#FCEFD2' : '#FFFDF7' }}
@@ -734,6 +743,7 @@ function SortGame({ interaction, onCorrect, onResult }: { interaction: Extract<I
 
   const place = (bin: string) => {
     if (selected === null || checked) return;
+    play('whoosh');
     setPlaced((p) => ({ ...p, [selected]: bin }));
     setSelected(null);
   };
@@ -742,6 +752,7 @@ function SortGame({ interaction, onCorrect, onResult }: { interaction: Extract<I
     setChecked(true);
     onResult(r);
     if (Object.values(r).every((x) => x.correct === x.total)) onCorrect();
+    else play('oops');
   };
 
   return (
@@ -754,7 +765,7 @@ function SortGame({ interaction, onCorrect, onResult }: { interaction: Extract<I
               layout
               key={card.label}
               type="button"
-              onClick={() => setSelected(i)}
+              onClick={() => { setSelected(i); play('pop'); }}
               aria-pressed={selected === i}
               className="rounded-[18px] border-[3px] px-5 py-3 font-sans text-[24px] font-bold"
               style={{ borderColor: selected === i ? P.gold : '#E3D6B8', background: selected === i ? '#FCEFD2' : '#FFFDF7', transform: selected === i ? 'translateY(-4px)' : undefined }}

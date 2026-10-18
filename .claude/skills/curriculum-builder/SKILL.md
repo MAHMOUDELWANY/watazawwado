@@ -50,16 +50,23 @@ Checklist:
 - [ ] `reviewed: false`.
 
 ### Built pages
-Scene builds on every idea page (`src/curriculum/slides/Scenes.tsx`), the version's look and style guide
-(`docs/curriculum/style/<version>.md`), no depiction of prophets, Sahaba or Jibril, sound effects only. Image prompts are
-written from the style guide for the owner to generate; record every asset and licence in `sources.md`. Use the design and
-motion skills (`apple-design`, `animate`, `taste-skill`, `impeccable`, `review-animations`).
+Scene builds on every idea page (one file per lesson in `src/curriculum/slides/lessons/`, primitives in
+`slides/Motion.tsx`), the version's look and style guide (`docs/curriculum/style/<version>.md`), no depiction of
+prophets, Sahaba or Jibril. Checklist (RULES §1.10):
+- [ ] Storyboard first: every page gets its own visual; no image twice in a lesson (except consecutive pages of one scene
+      and the doors / backpack devices). The test fails otherwise.
+- [ ] Images table in the brief: scenes (4:3 paintings), characters from the library (transparent, reused), props
+      (transparent), each with a ready ChatGPT prompt. Ask the owner only for what is missing.
+- [ ] Add code-drawn elements freely (bricks, particles, pen lines, lens, parallax). The wow moment is a motion scene.
+- [ ] Sound effects (`slides/sfx.ts`) on every key motion; never music.
+Record every asset and licence in `sources.md`. Use the design and motion skills (`apple-design`, `animate`,
+`taste-skill`, `impeccable`, `review-animations`). All files written in English.
 
 ## 3. Verify (always)
 - `node node_modules/typescript/bin/tsc --noEmit`
 - `npm test` (at least `test/curriculum-rules.test.ts` and `test/curriculum-lesson-player.test.ts`).
 - Built pages: open the lesson at `/dashboard/curriculum` in the browser; desktop and phone, light and dark, reduced
-  motion; no console errors.
+  motion; no console errors. The in-app browser pane pauses animation while hidden; use headless Playwright for motion.
 - Run `verification-before-completion` before saying the step is done.
 
 ## 4. Record and stop

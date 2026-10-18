@@ -14,8 +14,12 @@ export type SceneId =
   | 'doors'
   | 'backpack'
   | 'lego'
-  // Lesson 2 (paintings in public/curriculum/zad-kids/l02; threeWays reuses the Lesson 1 castle)
+  // Lesson 2 (paintings in public/curriculum/zad-kids/l02; threeWays and castleClues are drawn in code)
   | 'threeWays'
+  | 'castleClues'
+  | 'window'
+  | 'hand'
+  | 'baby'
   | 'crash'
   | 'sky'
   | 'lock'

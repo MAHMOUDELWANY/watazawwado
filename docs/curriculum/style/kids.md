@@ -36,3 +36,41 @@ regenerate or recolour those images when they are next touched.
 
 Then add the characters exactly as in the table above, the scene, and what must be visible for the lesson's scene build.
 Save as WebP in `public/curriculum/zad-kids/lNN/` and record it in `docs/curriculum/sources.md`.
+
+**Look in practice (2026-10-18):** the owner's Lesson 2 paintings came out as soft 3D animated-film illustration rather
+than gouache, and the owner accepted them. New images match that set: in ChatGPT, attach `characters.webp` and one
+Lesson 2 painting (`l02/crash.webp`) as references and add "same style and same characters as the reference images".
+
+## Three kinds of images (RULES.md §1.10)
+
+| Kind | What | Background | Folder | Reuse |
+|---|---|---|---|---|
+| Scene | A 4:3 painting of a place or moment | Painted | `lNN/` | One page per lesson only |
+| Character | One character, one pose, full body | **Transparent PNG** | `characters/` | Every lesson |
+| Prop | One object that must move on its own | **Transparent PNG** | `lNN/` | The lesson that needs it |
+
+**Character / prop prompt (prefix):**
+> Same style and same character as the reference images. A single [character / object], full body, centred, soft studio
+> light from the upper left, a gentle shadow under the feet, **transparent background (PNG)**, nothing else in the
+> image, no text.
+
+If ChatGPT returns a background anyway, ask for "plain pure white background" instead; Claude removes it with ffmpeg.
+
+## Character library (`public/curriculum/zad-kids/characters/`, made once)
+
+| File | Pose |
+|---|---|
+| `yusuf-stand.png` | standing, relaxed, smiling, three-quarter view |
+| `yusuf-point.png` | pointing to the right with one arm, excited |
+| `yusuf-think.png` | hand on chin, eyes up, thinking |
+| `yusuf-surprised.png` | both hands up, mouth open, surprised |
+| `maryam-stand.png` | standing, hands together, smiling, three-quarter view |
+| `maryam-point.png` | pointing to the left, curious |
+| `maryam-think.png` | finger on cheek, head tilted, wondering |
+| `maryam-happy.png` | jumping with joy, arms up |
+| `jiddo-stand.png` | standing with his wooden stick, warm smile |
+| `jiddo-explain.png` | one open hand raised as if explaining a story |
+| `jiddo-sit.png` | sitting cross-legged on a floor cushion, hands on knees |
+| `mishmish-sit.png` | ginger tabby with a white chest, sitting, tail curled |
+| `mishmish-walk.png` | walking to the right, tail up |
+| `mishmish-leap.png` | mid-leap to the right, paws stretched |
