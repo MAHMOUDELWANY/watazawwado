@@ -5,7 +5,7 @@ Read this first in a new session, then `RULES.md` (binding owner decisions) and 
 ## Where the code is
 
 - Everything is on `main` and **live in production** (watazawwado.academy) since 2026-10-14. Rollback candidate in Vercel: the previous production deployment (commit 35381f0).
-- All database migrations up to `20261014000004` are applied to production Supabase.
+- All database migrations up to `20261018000000` are applied to production Supabase.
 - No preview environment: Vercel variables are Production-only by owner choice.
 
 ## Done
@@ -25,8 +25,8 @@ Read this first in a new session, then `RULES.md` (binding owner decisions) and 
 - Emails (Brevo, free plan) redesigned: Arabic + English, logo, brand colours, light/dark, legal footer. Samples in docs/email-previews/. Brevo delivery verified from notification_events (sent OK).
 - Production smoke test 2026-10-14: pages 200, 18 packages served, auth required on protected APIs, dev tokens rejected, security headers present.
 
-### Added 2026-10-18 (not pushed yet)
-- Subject catalog (RULES.md §2b): 8 bookable subjects in three families (Quran, The Zad Path, Languages); levels per subject in `src/components/onboarding/subjects.ts`; Revision, Arabic basics, Conversation, Islamic studies, Fiqh and Aqeedah retired (hidden, rows kept). Migration `20261018000000_subject_catalog_2026_10_18.sql` **must be applied to production together with the push** (otherwise the database still offers the retired subjects to the booking API).
+### Added 2026-10-18 (live)
+- Subject catalog (RULES.md §2b): 8 bookable subjects in three families (Quran, The Zad Path, Languages); levels per subject in `src/components/onboarding/subjects.ts`; Revision, Arabic basics, Conversation, Islamic studies, Fiqh and Aqeedah retired (hidden, rows kept). Migration `20261018000000_subject_catalog_2026_10_18.sql` applied to production with the push (8 active services, 6 inactive).
 - Curriculum-building rules `docs/curriculum/RULES.md`, the `curriculum-builder` skill, `test/curriculum-rules.test.ts`, `test/subject-catalog.test.ts`, Kids style guide `docs/curriculum/style/kids.md`.
 
 ### Added 2026-10-15
@@ -103,3 +103,5 @@ Read this first in a new session, then `RULES.md` (binding owner decisions) and 
 - Zoom variables are now Production-only, so Zoom links won't be created on preview deployments (expected).
 - Supabase "leaked password protection" needs Pro; replaced by the free browser check above.
 - Vercel shows "billing address missing" on the account.
+- Owner's standing approval (RULES.md §7): commit, push and apply migrations without asking; only curriculum content waits for review. Production sits behind Vercel's bot challenge, so smoke-test in the browser (plain curl gets 403).
+- The site no longer presents itself as Ustadh Mahmoud's (CLAUDE.md): team / assigned-teacher wording everywhere, AI guide facts updated.
