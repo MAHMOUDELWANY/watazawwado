@@ -115,8 +115,12 @@ Sources: recognised tafsir through the quran.com connector only; no personal taf
   labels.
 - **Every lesson brief has an "Images" table:** file, kind (scene / character / prop), transparent or not, description,
   page, and a prompt ready to paste into ChatGPT.
-- **Sound effects only, no music.** Synthesised in code (`src/curriculum/slides/sfx.ts`); every key motion has its
-  sound; the teacher can mute them in the player.
+- **Sound effects only, no music, and few of them (owner, 2026-10-18: "too much, make them fit the scene").** Recorded
+  CC0 effects (Kenney, `public/curriculum/sfx/`, listed in `sources.md`) with a few soft synthesised ones, all in
+  `src/curriculum/slides/sfx.ts`. One sound per moment: cues that land within half a second are arbitrated by
+  importance, so a step never stacks sounds. No sound on a plain Next click. The teacher can mute them in the player.
+- **Our praise word is "Zādak Allāh!" (زادك الله, may Allah give you more)** (owner asked for a word of our own,
+  2026-10-18), drawn from *zad*; it replaces "MashaAllah!" in the player.
 
 ### 1.11 Learning psychology
 Hook first; questions throughout (the learner answers before being told); story and characters where the version allows;

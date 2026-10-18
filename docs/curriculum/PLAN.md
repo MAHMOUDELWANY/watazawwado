@@ -27,6 +27,8 @@
 - **Now:** owner reviews Lesson 1 v2 and marks it reviewed (then students can open it).
 - **Now (Lessons 1 and 2):** both have the full motion and sound pass. The owner reviews the two together and marks
   them reviewed.
+- **Now (player polish, 2026-10-18):** owner reviews the new sounds, the praise word "Zādak Allāh", the new question
+  cards and game, and the page-turn transition (they apply to every lesson of the series).
 - **Next:** after the review, Lesson 3 (Allah Is One) brief.
 - **Not started:** Lessons 3–37.
 - **Known limit:** lesson text ships in the site bundle, so the lock is a UI lock (content is not secret). Upgrade to
@@ -369,3 +371,12 @@ B3–B5 → continue lesson by lesson.
   a "?" by Ms. Clarke, whisper waves), Jiddo's story (steam, Mishmish's hearts, a trail of light to the window), Madinah
   (sun rays, a soft light round the man in white, seen from behind). Scenes in `slides/lessons/l01.tsx`; new primitives
   `Rise`, `SunRays`, `Glow` in `Motion.tsx`. The painting's slow camera move now carries its overlays with it.
+- **2026-10-18** — Player polish for the whole series (owner: sounds too much and not fitting; new look and mechanics for
+  checkpoints, questions and the game; a praise word of our own; better slide transitions). Sounds: recorded CC0 Kenney
+  clips replace most synthesised ones, quieter, no sound on Next, and cues within 0.5 s are arbitrated so only the most
+  important plays. Praise: "Zādak Allāh!" with the khatam star drawing itself in gold, the Arabic written right to left
+  and motes of light rising (replaces "MashaAllah!" and the confetti). Questions: a khatam "seal", "Think first" card,
+  the answer unfolding under a gold rule; choice and clue cards with letter badges. Game: one card at a time from a
+  deck, dragged or tapped to a door, instant feedback (the door glows or shakes), first try counted for the teacher's
+  report. Page turn: the old slide dims away as the new one drifts in from the direction of travel. Needs review: the
+  link of "زادك الله" to the Prophet's words to Abu Bakrah (Bukhari 783) is not verified and is not shown on screen.

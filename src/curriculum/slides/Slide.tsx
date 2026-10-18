@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { AnimatePresence, motion, useAnimate, useReducedMotion } from 'motion/react';
 import type { Interaction, Lesson, LessonPage } from '../types';
 import { SceneArt, P } from './Art';
 import { play } from './sfx';
@@ -656,19 +656,56 @@ function InteractionView({ interaction, onCorrect, onGameResult, onClue, onChoos
   }
 }
 
+/** The question seal: the brand's khatam star with a glyph in it, stamped on to every question and game card. */
+function Seal({ glyph, color = P.crimson, size = 64 }: { glyph: string; color?: string; size?: number }) {
+  return (
+    <motion.span
+      aria-hidden="true"
+      className="relative inline-flex shrink-0 items-center justify-center"
+      style={{ width: size, height: size }}
+      initial={{ scale: 0, rotate: -45 }}
+      animate={{ scale: 1, rotate: 0 }}
+      transition={{ type: 'spring', stiffness: 320, damping: 18 }}
+    >
+      <svg viewBox="0 0 40 40" className="absolute inset-0 h-full w-full">
+        <rect x="8" y="8" width="24" height="24" fill={color} />
+        <rect x="8" y="8" width="24" height="24" fill={color} transform="rotate(45 20 20)" />
+      </svg>
+      <span className="relative font-serif font-bold text-white" style={{ fontSize: size * 0.42 }}>{glyph}</span>
+    </motion.span>
+  );
+}
+
+/** A question to think about: the seal, the question, a pause, then the answer unfolds under a gold rule. */
 function Ask({ prompt, reveal, onAnswer }: { prompt: string; reveal?: string; onAnswer?: () => void }) {
   const [open, setOpen] = useState(false);
   return (
-    <motion.div {...build} className="rounded-[28px] px-8 py-6 shadow-[0_20px_40px_-26px_rgba(5,54,63,0.8)]" style={{ background: 'linear-gradient(135deg, #05363F 0%, #0A5866 55%, #3B2219 100%)' }}>
-      <p className="font-sans text-[30px] font-bold leading-snug text-white">{prompt}</p>
+    <motion.div {...build} className="relative rounded-[30px] bg-[#FFFDF7] px-8 pb-7 pt-6 shadow-[0_24px_50px_-30px_rgba(91,58,30,0.75)] ring-1 ring-[#E3D6B8]">
+      <div className="flex items-start gap-5">
+        <Seal glyph="?" color={P.teal} />
+        <div className="min-w-0 flex-1">
+          <span className="font-sans text-[18px] font-bold uppercase tracking-[0.18em]" style={{ color: P.teal }}>Think first</span>
+          <p className="mt-1 font-sans text-[30px] font-bold leading-snug" style={{ color: P.ink }}>{prompt}</p>
+        </div>
+      </div>
       {reveal && (
         <AnimatePresence initial={false} mode="wait">
           {open ? (
-            <motion.p key="a" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-3 font-sans text-[27px] leading-snug" style={{ color: P.goldSoft }}>
-              {reveal}
-            </motion.p>
+            <motion.div key="a" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} transition={{ duration: 0.5, ease }} className="overflow-hidden">
+              <motion.span className="mt-5 block h-[2px] origin-left" style={{ background: P.gold }} initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.6, ease }} />
+              <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.5, ease }} className="mt-4 ps-[84px] font-sans text-[28px] font-semibold leading-snug" style={{ color: P.copper }}>
+                {reveal}
+              </motion.p>
+            </motion.div>
           ) : (
-            <motion.button key="b" type="button" onClick={() => { setOpen(true); play('chime'); onAnswer?.(); }} className="mt-4 rounded-full px-6 py-2 font-sans text-[22px] font-bold" style={{ background: P.gold, color: P.ink }}>
+            <motion.button
+              key="b"
+              type="button"
+              whileTap={{ scale: 0.96 }}
+              onClick={() => { setOpen(true); play('chime'); onAnswer?.(); }}
+              className="ms-[84px] mt-5 rounded-full px-7 py-2.5 font-sans text-[22px] font-bold shadow-[0_10px_20px_-12px_rgba(139,73,53,0.8)]"
+              style={{ background: P.gold, color: P.ink }}
+            >
               Show the answer
             </motion.button>
           )}
@@ -678,46 +715,64 @@ function Ask({ prompt, reveal, onAnswer }: { prompt: string; reveal?: string; on
   );
 }
 
+const LETTERS = 'ABCDEF';
+
+/** An answer card: a letter badge, the text, and a mark that stamps on when it is picked. */
+function OptionCard({ letter, label, state, onPick }: { letter: string; label: string; state: 'idle' | 'picked' | 'right' | 'wrong'; onPick: () => void }) {
+  const tone = state === 'right' ? { border: P.teal, bg: '#E3F3F2' } : state === 'picked' ? { border: P.gold, bg: '#FCEFD2' } : state === 'wrong' ? { border: '#E7CFCB', bg: '#F7F1EC' } : { border: '#E3D6B8', bg: '#FFFDF7' };
+  const plain = state === 'idle' || state === 'wrong';
+  return (
+    <motion.button
+      type="button"
+      onClick={onPick}
+      aria-pressed={state !== 'idle'}
+      whileHover={state === 'idle' ? { y: -3 } : undefined}
+      whileTap={{ scale: 0.97 }}
+      animate={state === 'wrong' ? { x: [0, -8, 8, -4, 0], opacity: 0.6 } : { opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      className="relative flex items-center gap-4 rounded-[22px] border-[3px] px-5 py-3.5 text-left font-sans text-[23px] font-bold shadow-[0_12px_24px_-20px_rgba(91,58,30,0.7)]"
+      style={{ borderColor: tone.border, background: tone.bg, color: P.ink }}
+    >
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full font-sans text-[20px] font-bold" style={{ background: plain ? '#F1E7D3' : tone.border, color: plain ? P.inkSoft : '#fff' }}>
+        {state === 'right' ? '✓' : state === 'picked' ? '★' : letter}
+      </span>
+      <span className="leading-snug">{label}</span>
+    </motion.button>
+  );
+}
+
 function Clues({ interaction, onCorrect, onClue }: { interaction: Extract<Interaction, { kind: 'clues' }>; onCorrect: () => void; onClue?: (label: string) => void }) {
   const [picked, setPicked] = useState<number[]>([]);
   const needed = interaction.clues.filter((c) => c.correct).length;
   const found = picked.filter((i) => interaction.clues[i].correct).length;
   const pick = (i: number) => {
     if (picked.includes(i)) return;
-    play(interaction.clues[i].correct ? 'pop' : 'oops');
+    const right = interaction.clues[i].correct;
     const next = [...picked, i];
     setPicked(next);
-    if (interaction.clues[i].correct) onClue?.(interaction.clues[i].label);
-    if (interaction.clues[i].correct && next.filter((j) => interaction.clues[j].correct).length === needed) onCorrect();
+    if (right) onClue?.(interaction.clues[i].label);
+    if (right && next.filter((j) => interaction.clues[j].correct).length === needed) onCorrect();
+    else play(right ? 'correct' : 'oops');
   };
   return (
-    <motion.div {...build} className="space-y-3">
-      <p className="font-sans text-[26px] font-bold">{interaction.prompt}</p>
-      <div className="grid grid-cols-2 gap-3">
-        {interaction.clues.map((clue, i) => {
-          const state = picked.includes(i) ? (clue.correct ? 'right' : 'wrong') : 'idle';
-          return (
-            <motion.button
-              key={clue.label}
-              type="button"
-              onClick={() => pick(i)}
-              animate={state === 'wrong' ? { x: [0, -10, 10, -5, 0] } : {}}
-              aria-pressed={picked.includes(i)}
-              className="rounded-[20px] border-[3px] px-5 py-3 text-left font-sans text-[23px] font-bold transition-colors"
-              style={{
-                borderColor: state === 'right' ? P.teal : state === 'wrong' ? '#E7B2B3' : '#E3D6B8',
-                background: state === 'right' ? '#DDF1F2' : state === 'wrong' ? '#FBEDED' : '#FFFDF7',
-                color: state === 'wrong' ? '#A0807F' : P.ink,
-              }}
-            >
-              {state === 'right' ? '✓ ' : ''}{clue.label}
-            </motion.button>
-          );
-        })}
+    <motion.div {...build} className="space-y-4">
+      <div className="flex items-center gap-4">
+        <Seal glyph="?" color={P.copper} size={56} />
+        <p className="font-sans text-[26px] font-bold leading-snug">{interaction.prompt}</p>
       </div>
-      <p className="font-sans text-[22px] font-bold" style={{ color: found === needed ? P.teal : P.inkSoft }} aria-live="polite">
-        {found === needed ? 'You found both clues. Great detective work!' : `Clues found: ${found} of ${needed}`}
-      </p>
+      <div className="grid grid-cols-2 gap-3">
+        {interaction.clues.map((clue, i) => (
+          <OptionCard key={clue.label} letter={LETTERS[i]} label={clue.label} state={picked.includes(i) ? (clue.correct ? 'right' : 'wrong') : 'idle'} onPick={() => pick(i)} />
+        ))}
+      </div>
+      <div className="flex items-center gap-3" aria-live="polite">
+        {Array.from({ length: needed }).map((_, i) => (
+          <motion.span key={i} className="h-4 w-4 rounded-full border-[3px]" animate={{ backgroundColor: i < found ? P.teal : 'rgba(255,255,255,0)', scale: i < found ? [1, 1.4, 1] : 1 }} style={{ borderColor: P.teal }} />
+        ))}
+        <span className="font-sans text-[22px] font-bold" style={{ color: found === needed ? P.teal : P.inkSoft }}>
+          {found === needed ? 'You found both clues. Great detective work!' : `Clues found: ${found} of ${needed}`}
+        </span>
+      </div>
     </motion.div>
   );
 }
@@ -726,19 +781,13 @@ function Choose({ interaction, onChoose }: { interaction: Extract<Interaction, {
   const [choice, setChoice] = useState<number | null>(null);
   return (
     <motion.div {...build} className="space-y-4">
-      <p className="font-sans text-[28px] font-bold">{interaction.prompt}</p>
+      <div className="flex items-center gap-4">
+        <Seal glyph="★" color={P.gold} size={56} />
+        <p className="font-sans text-[28px] font-bold leading-snug">{interaction.prompt}</p>
+      </div>
       <div className="grid grid-cols-2 gap-3">
         {interaction.options.map((o, i) => (
-          <button
-            key={o}
-            type="button"
-            onClick={() => { setChoice(i); play('pop'); onChoose?.(o); }}
-            aria-pressed={choice === i}
-            className="rounded-[20px] border-[3px] px-5 py-3 text-left font-sans text-[22px] font-bold"
-            style={{ borderColor: choice === i ? P.gold : '#E3D6B8', background: choice === i ? '#FCEFD2' : '#FFFDF7' }}
-          >
-            {choice === i ? '★ ' : ''}{o}
-          </button>
+          <OptionCard key={o} letter={LETTERS[i]} label={o} state={choice === i ? 'picked' : 'idle'} onPick={() => { setChoice(i); play('pop'); onChoose?.(o); }} />
         ))}
       </div>
     </motion.div>
@@ -747,89 +796,134 @@ function Choose({ interaction, onChoose }: { interaction: Extract<Interaction, {
 
 const DOOR_COLORS: Record<number, string> = { 0: P.teal, 1: P.crimson, 2: P.gold };
 
-/** Tap a card, then tap a door. Works by touch, mouse and keyboard (no drag needed). */
+/** The game checkpoint. One card at a time comes up from the deck; the child drags it to a door, or taps the door.
+ *  The right door takes it in and glows; the wrong door shakes and the card stays to try again. The teacher's report
+ *  counts the first try of each card, so trying again never hides what needs reinforcing. */
 function SortGame({ interaction, onCorrect, onResult }: { interaction: Extract<Interaction, { kind: 'sort' }>; onCorrect: () => void; onResult: (r: GameResult) => void }) {
-  const [selected, setSelected] = useState<number | null>(null);
-  const [placed, setPlaced] = useState<Record<number, string>>({});
-  const [checked, setChecked] = useState(false);
-  const done = Object.keys(placed).length === interaction.cards.length;
+  const reduce = useReducedMotion();
+  const cards = interaction.cards;
+  const [first, setFirst] = useState<Record<number, string>>({});
+  const [sorted, setSorted] = useState<number[]>([]);
+  const [miss, setMiss] = useState<{ bin: string; n: number } | null>(null);
+  const [hit, setHit] = useState<string | null>(null);
+  const [scope, animate] = useAnimate();
+  const current = cards.findIndex((_, i) => !sorted.includes(i));
+  const done = current === -1;
 
-  const place = (bin: string) => {
-    if (selected === null || checked) return;
-    play('whoosh');
-    setPlaced((p) => ({ ...p, [selected]: bin }));
-    setSelected(null);
+  const drop = (bin: string) => {
+    if (done) return;
+    const nextFirst = first[current] === undefined ? { ...first, [current]: bin } : first;
+    setFirst(nextFirst);
+    if (cards[current].bin !== bin) {
+      play('oops');
+      setMiss((m) => ({ bin, n: (m?.n ?? 0) + 1 }));
+      if (!reduce) {
+        animate(`[data-bin="${bin}"]`, { x: [0, -7, 7, -3, 0] }, { duration: 0.4 });
+        animate('[data-card]', { x: [0, -12, 12, -5, 0] }, { duration: 0.4 });
+      }
+      return;
+    }
+    setMiss(null);
+    setHit(bin);
+    window.setTimeout(() => setHit((h) => (h === bin ? null : h)), 700);
+    if (!reduce) animate(`[data-bin="${bin}"]`, { scale: [1, 1.05, 1] }, { duration: 0.5 });
+    const nextSorted = [...sorted, current];
+    setSorted(nextSorted);
+    if (nextSorted.length === cards.length) {
+      onResult(scoreSort(interaction, nextFirst));
+      onCorrect();
+    } else play('correct');
   };
-  const check = () => {
-    const r = scoreSort(interaction, placed);
-    setChecked(true);
-    onResult(r);
-    if (Object.values(r).every((x) => x.correct === x.total)) onCorrect();
-    else play('oops');
-  };
+  const restart = () => { setFirst({}); setSorted([]); setMiss(null); setHit(null); };
+  const firstRight = Object.entries(first).filter(([i, b]) => cards[Number(i)].bin === b).length;
 
   return (
-    <div className="space-y-6">
-      <p className="font-sans text-[30px] font-bold">{interaction.prompt}</p>
-      <div className="flex min-h-[64px] flex-wrap gap-3">
-        {interaction.cards.map((card, i) =>
-          placed[i] ? null : (
+    <div ref={scope} className="space-y-5">
+      <div className="flex items-center gap-4">
+        <Seal glyph="✦" color={P.crimson} size={56} />
+        <p className="font-sans text-[28px] font-bold leading-snug">{interaction.prompt}</p>
+        <span className="ms-auto flex shrink-0 gap-1.5" aria-label={`${sorted.length} of ${cards.length} sorted`}>
+          {cards.map((_, i) => (
+            <span key={i} className="h-3 w-3 rounded-full transition-colors duration-300" style={{ background: sorted.includes(i) ? P.teal : i === current ? P.gold : '#E3D6B8' }} />
+          ))}
+        </span>
+      </div>
+
+      <div className="relative flex h-[96px] items-center justify-center">
+        {/* The deck: the cards still to come peek out behind the one in play. */}
+        {!done && cards.length - sorted.length > 1 && (
+          <span className="absolute h-[76px] w-[520px] translate-x-2 translate-y-2 rotate-[1.5deg] rounded-[20px] border-[3px] border-[#E3D6B8] bg-[#F6EEDD]" aria-hidden="true" />
+        )}
+        <AnimatePresence mode="popLayout">
+          {done ? (
+            <motion.p key="done" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, ease }} className="font-serif text-[40px] font-bold" style={{ color: P.teal }} aria-live="polite">
+              All sorted! {firstRight} of {cards.length} on the first try.
+            </motion.p>
+          ) : (
             <motion.button
-              layout
-              key={card.label}
+              key={current}
+              data-card
               type="button"
-              onClick={() => { setSelected(i); play('pop'); }}
-              aria-pressed={selected === i}
-              className="rounded-[18px] border-[3px] px-5 py-3 font-sans text-[24px] font-bold"
-              style={{ borderColor: selected === i ? P.gold : '#E3D6B8', background: selected === i ? '#FCEFD2' : '#FFFDF7', transform: selected === i ? 'translateY(-4px)' : undefined }}
+              drag={!reduce}
+              dragSnapToOrigin
+              dragElastic={0.6}
+              whileDrag={{ scale: 1.06, rotate: -2, zIndex: 10 }}
+              onDragEnd={(e) => {
+                const pt = e as PointerEvent;
+                const bin = document.elementsFromPoint(pt.clientX, pt.clientY).map((el) => el.closest('[data-bin]')).find(Boolean) as HTMLElement | undefined;
+                if (bin?.dataset.bin) drop(bin.dataset.bin);
+              }}
+              initial={reduce ? { opacity: 0 } : { opacity: 0, y: 40, rotate: 4 }}
+              animate={{ opacity: 1, y: 0, rotate: 0 }}
+              exit={reduce ? { opacity: 0 } : { opacity: 0, y: 160, scale: 0.5, transition: { duration: 0.35, ease: [0.4, 0, 1, 1] } }}
+              transition={{ duration: 0.45, ease }}
+              className="relative z-[1] w-[520px] cursor-grab touch-none rounded-[20px] border-[3px] bg-[#FFFDF7] px-6 py-4 text-center font-sans text-[28px] font-bold active:cursor-grabbing"
+              style={{ borderColor: P.gold, color: P.ink, boxShadow: '0 16px 30px -22px rgba(91,58,30,0.7)' }}
+              aria-label={`Card: ${cards[current].label}. Drag it to a door, or tap a door.`}
             >
-              {card.label}
+              {cards[current].label}
             </motion.button>
-          ),
-        )}
+          )}
+        </AnimatePresence>
       </div>
+      <p className="h-7 text-center font-sans text-[21px] font-bold" style={{ color: miss ? P.crimson : P.inkSoft }} aria-live="polite">
+        {done ? '' : miss ? 'Not that door. Look again and try another one.' : 'Drag the card to its door, or tap the door.'}
+      </p>
+
       <div className="grid gap-6" style={{ gridTemplateColumns: `repeat(${interaction.bins.length}, minmax(0, 1fr))` }}>
-        {interaction.bins.map((bin, bi) => (
-          <button
-            key={bin.id}
-            type="button"
-            onClick={() => place(bin.id)}
-            disabled={selected === null || checked}
-            aria-label={`${bin.label}: ${bin.hint}`}
-            className="flex min-h-[250px] flex-col items-center gap-2 rounded-t-[999px] rounded-b-[24px] px-4 pb-4 pt-9 text-center enabled:cursor-pointer"
-            style={{ background: DOOR_COLORS[bi] ?? P.teal }}
-          >
-            <span className="font-serif text-[40px] font-bold text-white">{bin.label}</span>
-            <span className="font-sans text-[20px] font-bold text-white/85">{bin.hint}</span>
-            {interaction.cards.map((card, i) =>
-              placed[i] === bin.id ? (
-                <motion.span
-                  key={card.label}
-                  initial={{ scale: 0.6, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className="w-full rounded-[14px] px-3 py-2 font-sans text-[19px] font-bold"
-                  style={{ background: checked ? (card.bin === bin.id ? '#E8F7F2' : '#FDE7E7') : '#FFFDF7', color: P.ink }}
-                >
-                  {checked && (card.bin === bin.id ? '✓ ' : '✗ ')}
-                  {card.label}
-                </motion.span>
-              ) : null,
-            )}
-          </button>
-        ))}
+        {interaction.bins.map((bin, bi) => {
+          const color = DOOR_COLORS[bi] ?? P.teal;
+          const inside = sorted.filter((i) => cards[i].bin === bin.id);
+          const glow = hit === bin.id;
+          return (
+            <button
+              key={bin.id}
+              data-bin={bin.id}
+              type="button"
+              onClick={() => drop(bin.id)}
+              disabled={done}
+              aria-label={`${bin.label}: ${bin.hint}`}
+              className="relative flex min-h-[250px] flex-col items-center gap-2 overflow-hidden px-4 pb-4 pt-12 text-center enabled:cursor-pointer"
+              style={{ background: color, borderRadius: '50% 50% 24px 24px / 110px 110px 24px 24px', boxShadow: `inset 0 0 0 5px rgba(255,255,255,0.22)${glow ? `, 0 0 0 6px ${P.goldSoft}, 0 0 40px ${P.goldSoft}` : ', 0 18px 30px -22px rgba(30,20,16,0.7)'}`, transition: 'box-shadow 0.6s ease' }}
+            >
+              <span className="font-serif text-[40px] font-bold text-white">{bin.label}</span>
+              <span className="font-sans text-[20px] font-bold text-white/85">{bin.hint}</span>
+              <span className="mt-1 flex w-full flex-col gap-1.5">
+                {inside.map((i) => (
+                  <motion.span key={i} initial={{ opacity: 0, y: -30, scale: 0.7 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: 'spring', stiffness: 300, damping: 22 }} className="w-full rounded-[12px] bg-[#FFFDF7] px-3 py-1.5 font-sans text-[18px] font-bold" style={{ color: P.ink }}>
+                    {cards[i].label}
+                  </motion.span>
+                ))}
+              </span>
+            </button>
+          );
+        })}
       </div>
-      <div className="flex gap-4">
-        {done && !checked && (
-          <button type="button" onClick={check} className="rounded-full px-8 py-3 font-sans text-[24px] font-bold text-white" style={{ background: P.crimson }}>
-            Check my answers
-          </button>
-        )}
-        {Object.keys(placed).length > 0 && (
-          <button type="button" onClick={() => { setPlaced({}); setChecked(false); setSelected(null); }} className="rounded-full border-[3px] px-7 py-3 font-sans text-[22px] font-bold" style={{ borderColor: '#E3D6B8' }}>
-            Try again
-          </button>
-        )}
-      </div>
+      {Object.keys(first).length > 0 && (
+        <button type="button" onClick={restart} className="rounded-full border-[3px] px-7 py-2.5 font-sans text-[22px] font-bold" style={{ borderColor: '#E3D6B8' }}>
+          {done ? 'Play again' : 'Start again'}
+        </button>
+      )}
     </div>
   );
 }

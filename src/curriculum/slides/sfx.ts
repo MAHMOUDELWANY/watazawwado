@@ -1,11 +1,13 @@
 import { useEffect, useRef } from 'react';
 
 /* ---------- Sound effects for the lesson player (docs/curriculum/RULES.md §1.10) ----------
-   Every sound is synthesised here with the Web Audio API: no files to download, no licence, and never music.
+   Recorded effects from Kenney's CC0 packs (public/curriculum/sfx, listed in docs/curriculum/sources.md), and a few soft
+   synthesised ones (air, sand, water) where no recording fits. Never music. One sound per moment: when two cues land
+   within half a second, only the more important one plays, so a scene never stacks sparkle on chime on click.
    Browsers only allow audio after a user gesture; the teacher's first click on the player unlocks it. */
 
 export type Sound =
-  | 'step' | 'page' | 'pop' | 'whoosh' | 'chime' | 'reveal' | 'brick' | 'thud' | 'lock' | 'sparkle'
+  | 'page' | 'pop' | 'whoosh' | 'chime' | 'reveal' | 'brick' | 'thud' | 'lock' | 'sparkle'
   | 'sand' | 'water' | 'pen' | 'strike' | 'poof' | 'correct' | 'oops' | 'praise';
 
 const MUTE_KEY = 'curriculum-sfx-muted';
@@ -74,27 +76,70 @@ function voice(a: AudioContext, out: AudioNode, t: number, o: {
 
 const NOTES = { C5: 523.25, E5: 659.25, G5: 783.99, A5: 880, C6: 1046.5, E6: 1318.5, G6: 1568 };
 
-/** The sound recipes. Short, soft and warm: they mark a moment, they never fill the room. */
+/** Synthesised recipes: the sound itself for air, sand, water and the page turn, and the fallback for a recording that
+ *  has not loaded yet. Short, soft and warm: they mark a moment, they never fill the room. */
 const RECIPES: Record<Sound, (a: AudioContext, out: AudioNode, t: number) => void> = {
-  step: (a, o, t) => voice(a, o, t, { f: 880, f2: 660, dur: 0.07, vol: 0.05 }),
-  page: (a, o, t) => voice(a, o, t, { type: 'noise', f: 0, dur: 0.28, vol: 0.09, attack: 0.04, filter: { type: 'bandpass', f: 1800, f2: 5000, q: 0.8 } }),
+  page: (a, o, t) => voice(a, o, t, { type: 'noise', f: 0, dur: 0.32, vol: 0.035, attack: 0.04, filter: { type: 'bandpass', f: 1800, f2: 5000, q: 0.8 } }),
   pop: (a, o, t) => voice(a, o, t, { f: 420, f2: 900, dur: 0.12, vol: 0.18 }),
-  whoosh: (a, o, t) => voice(a, o, t, { type: 'noise', f: 0, dur: 0.6, vol: 0.12, attack: 0.25, filter: { type: 'bandpass', f: 300, f2: 2400, q: 1.2 } }),
+  whoosh: (a, o, t) => voice(a, o, t, { type: 'noise', f: 0, dur: 0.6, vol: 0.05, attack: 0.25, filter: { type: 'bandpass', f: 300, f2: 2400, q: 1.2 } }),
   chime: (a, o, t) => { voice(a, o, t, { f: NOTES.E6, dur: 0.9, vol: 0.12 }); voice(a, o, t + 0.07, { f: NOTES.A5, dur: 1.1, vol: 0.08 }); },
   reveal: (a, o, t) => [NOTES.C5, NOTES.E5, NOTES.G5, NOTES.C6].forEach((f, i) => voice(a, o, t + i * 0.09, { type: 'triangle', f, dur: 1.4, vol: 0.09 })),
   brick: (a, o, t) => { voice(a, o, t, { type: 'square', f: 1400, f2: 900, dur: 0.05, vol: 0.05, filter: { type: 'highpass', f: 900 } }); voice(a, o, t, { f: 180, f2: 120, dur: 0.08, vol: 0.12 }); },
   thud: (a, o, t) => { voice(a, o, t, { f: 120, f2: 55, dur: 0.35, vol: 0.3 }); voice(a, o, t, { type: 'noise', f: 0, dur: 0.18, vol: 0.06, filter: { type: 'lowpass', f: 600 } }); },
   lock: (a, o, t) => { voice(a, o, t, { type: 'square', f: 2200, f2: 1600, dur: 0.04, vol: 0.06, filter: { type: 'bandpass', f: 2500, q: 4 } }); voice(a, o, t + 0.11, { type: 'square', f: 1500, f2: 900, dur: 0.06, vol: 0.08, filter: { type: 'bandpass', f: 1800, q: 4 } }); voice(a, o, t + 0.13, { f: 260, f2: 140, dur: 0.12, vol: 0.12 }); },
   sparkle: (a, o, t) => [NOTES.G6, NOTES.E6, NOTES.C6, NOTES.G6].forEach((f, i) => voice(a, o, t + i * 0.06, { f, dur: 0.35, vol: 0.05 })),
-  sand: (a, o, t) => voice(a, o, t, { type: 'noise', f: 0, dur: 1.6, vol: 0.07, attack: 0.5, filter: { type: 'highpass', f: 2500, f2: 4500 } }),
-  water: (a, o, t) => [0, 0.16, 0.34].forEach((d, i) => voice(a, o, t + d, { f: 500 + i * 120, f2: 1100 + i * 150, dur: 0.16, vol: 0.08 })),
+  sand: (a, o, t) => voice(a, o, t, { type: 'noise', f: 0, dur: 1.6, vol: 0.035, attack: 0.5, filter: { type: 'highpass', f: 2500, f2: 4500 } }),
+  water: (a, o, t) => [0, 0.16, 0.34].forEach((d, i) => voice(a, o, t + d, { f: 500 + i * 120, f2: 1100 + i * 150, dur: 0.16, vol: 0.04 })),
   pen: (a, o, t) => voice(a, o, t, { type: 'noise', f: 0, dur: 0.4, vol: 0.05, attack: 0.05, filter: { type: 'bandpass', f: 3500, q: 2 } }),
   strike: (a, o, t) => { voice(a, o, t, { type: 'noise', f: 0, dur: 0.18, vol: 0.08, filter: { type: 'bandpass', f: 2600, f2: 1200, q: 1.5 } }); voice(a, o, t + 0.32, { type: 'noise', f: 0, dur: 0.18, vol: 0.08, filter: { type: 'bandpass', f: 2600, f2: 1200, q: 1.5 } }); },
-  poof: (a, o, t) => voice(a, o, t, { type: 'noise', f: 0, dur: 0.5, vol: 0.12, attack: 0.02, filter: { type: 'lowpass', f: 1800, f2: 200 } }),
+  poof: (a, o, t) => voice(a, o, t, { type: 'noise', f: 0, dur: 0.5, vol: 0.06, attack: 0.02, filter: { type: 'lowpass', f: 1800, f2: 200 } }),
   correct: (a, o, t) => { voice(a, o, t, { type: 'triangle', f: NOTES.E5, dur: 0.25, vol: 0.12 }); voice(a, o, t + 0.1, { type: 'triangle', f: NOTES.A5, dur: 0.45, vol: 0.12 }); },
   oops: (a, o, t) => voice(a, o, t, { type: 'triangle', f: 330, f2: 260, dur: 0.3, vol: 0.08 }),
   praise: (a, o, t) => [NOTES.C5, NOTES.E5, NOTES.G5, NOTES.C6, NOTES.E6].forEach((f, i) => voice(a, o, t + i * 0.07, { type: 'triangle', f, dur: 0.8, vol: 0.08 })),
 };
+
+/** Recorded effects: file in public/curriculum/sfx, volume, and playback rate (below 1 = lower and warmer). */
+const SAMPLES: Partial<Record<Sound, { file: string; vol: number; rate?: number }>> = {
+  pop: { file: 'pop', vol: 0.22 },
+  chime: { file: 'chime', vol: 0.3 },
+  reveal: { file: 'chime', vol: 0.32, rate: 0.75 },
+  correct: { file: 'correct', vol: 0.4 },
+  praise: { file: 'praise', vol: 0.45 },
+  oops: { file: 'oops', vol: 0.18 },
+  brick: { file: 'brick', vol: 0.22 },
+  thud: { file: 'thud', vol: 0.3 },
+  lock: { file: 'lock', vol: 0.3 },
+  strike: { file: 'strike', vol: 0.18 },
+  pen: { file: 'pen', vol: 0.12 },
+  sparkle: { file: 'sparkle', vol: 0.16, rate: 1.1 },
+};
+const buffers = new Map<string, AudioBuffer>();
+let loading = false;
+function loadSamples(a: AudioContext) {
+  if (loading) return;
+  loading = true;
+  new Set(Object.values(SAMPLES).map((x) => x!.file)).forEach((file) => {
+    fetch(`/curriculum/sfx/${file}.mp3`)
+      .then((r) => r.arrayBuffer())
+      .then((b) => a.decodeAudioData(b))
+      .then((buf) => buffers.set(file, buf))
+      .catch(() => { /* the synthesised recipe stands in */ });
+  });
+}
+
+/** Called on the teacher's first tap in the player: wakes the audio and fetches the recordings before the first cue. */
+export function primeSounds() {
+  const a = audio();
+  if (a && !muted) loadSamples(a);
+}
+
+/** Which cue wins when two land together: the moment itself beats its decoration. */
+const PRIORITY: Record<Sound, number> = {
+  praise: 4, correct: 4, lock: 3, reveal: 3, oops: 3, thud: 2, brick: 2, strike: 2, chime: 2, poof: 2, water: 2, sand: 2,
+  pop: 1, pen: 1, whoosh: 1, sparkle: 1, page: 0,
+};
+const WINDOW = 0.5;
+let recent: { at: number; prio: number; gain: GainNode }[] = [];
 
 /** Play a sound now, or after `delay` seconds (so it lands with its animation). */
 export function play(name: Sound, delay = 0) {
@@ -105,11 +150,32 @@ export function play(name: Sound, delay = 0) {
   if (muted) return;
   const a = audio();
   if (!a) return;
-  const quiet = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  loadSamples(a);
+  const at = a.currentTime + Math.max(0, delay);
+  const prio = PRIORITY[name];
+  recent = recent.filter((r) => r.at > a.currentTime - 2);
+  const clash = recent.filter((r) => Math.abs(r.at - at) < WINDOW);
+  if (clash.some((r) => r.prio >= prio)) return;
+  clash.forEach((r) => { try { r.gain.disconnect(); } catch { /* already gone */ } });
+  recent = recent.filter((r) => !clash.includes(r));
+  const quiet = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
   const master = a.createGain();
   master.gain.value = quiet ? 0.5 : 1;
   master.connect(a.destination);
-  try { RECIPES[name](a, master, a.currentTime + Math.max(0, delay)); } catch { /* audio is a nicety, never break a slide */ }
+  recent.push({ at, prio, gain: master });
+  try {
+    const s = SAMPLES[name];
+    const buf = s && buffers.get(s.file);
+    if (s && buf) {
+      const src = a.createBufferSource();
+      src.buffer = buf;
+      src.playbackRate.value = s.rate ?? 1;
+      const g = a.createGain();
+      g.gain.value = s.vol;
+      src.connect(g).connect(master);
+      src.start(at);
+    } else RECIPES[name](a, master, at);
+  } catch { /* audio is a nicety, never break a slide */ }
 }
 
 /** Plays `name` each time `value` goes up (a new pillar, the key going in, a true flag), timed `delay` seconds later.

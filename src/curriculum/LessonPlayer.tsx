@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import {
   ChevronLeft, ChevronRight, Maximize2, Minimize2, Star, PenLine, Highlighter, MousePointer2, Eraser, LayoutGrid,
   Timer, RotateCcw, SkipBack, BookOpenText, X, Globe, Volume2, VolumeX,
@@ -9,7 +9,7 @@ import { Slide, SlideText, stepsFor, CANVAS_W, CANVAS_H, scoreSort, type GameRes
 import { InkLayer, type InkTool } from './slides/Ink';
 import { P } from './slides/Art';
 import { useAppLanguage } from '../lib/language';
-import { play, isMuted, setMuted } from './slides/sfx';
+import { play, isMuted, setMuted, primeSounds } from './slides/sfx';
 
 export { scoreSort, type GameResult };
 
@@ -52,6 +52,9 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   const rootRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0.5);
+  // Which way the last page turn went, so the next slide slides in from the side the teacher is moving towards.
+  const [dir, setDir] = useState(1);
+  const reduce = useReducedMotion();
   const current = lesson.pages[page];
   const total = stepsFor(current);
   const last = lesson.pages.length - 1;
@@ -73,7 +76,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
 
   const goPage = useCallback((p: number, atEnd = false) => {
     const next = Math.min(last, Math.max(0, p));
-    if (next !== page) play('page');
+    if (next !== page) { play('page'); setDir(next > page ? 1 : -1); }
     setPage(next);
     setStep(atEnd ? stepsFor(lesson.pages[next]) : 0);
     setGrid(false);
@@ -81,7 +84,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
 
   /** Next = reveal the next build step; when the page is fully built, go to the next page. */
   const forward = useCallback(() => {
-    if (step < total) { play('step'); setStep((s) => s + 1); }
+    if (step < total) setStep((s) => s + 1);
     else if (page < last) goPage(page + 1);
   }, [step, total, page, last, goPage]);
   const backward = useCallback(() => {
@@ -105,7 +108,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   const cheer = useCallback(() => {
     play('praise');
     setPraise(true);
-    window.setTimeout(() => setPraise(false), 1900);
+    window.setTimeout(() => setPraise(false), 2300);
   }, []);
 
   useEffect(() => {
@@ -287,7 +290,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   );
 
   return (
-    <div ref={rootRef} dir="ltr" className={`flex gap-3 ${fillWindow ? 'fixed inset-0 z-[100]' : 'relative'} ${fullscreen ? `band-deep h-full p-3 ${ar ? 'flex-row-reverse' : 'flex-row'}` : 'flex-col'}`}>
+    <div ref={rootRef} onPointerDownCapture={primeSounds} dir="ltr" className={`flex gap-3 ${fillWindow ? 'fixed inset-0 z-[100]' : 'relative'} ${fullscreen ? `band-deep h-full p-3 ${ar ? 'flex-row-reverse' : 'flex-row'}` : 'flex-col'}`}>
       <div dir={ar ? 'rtl' : 'ltr'} className={`flex flex-col gap-3 lg:flex-row ${fullscreen ? 'min-h-0 flex-1' : ''}`}>
         <div className={`flex min-w-0 flex-1 flex-col gap-3 ${fullscreen ? 'h-full min-h-0' : ''}`}>
           <div ref={stageRef} className={`relative min-w-0 ${fullscreen ? 'min-h-0 flex-1' : 'aspect-video'}`}>
@@ -295,9 +298,26 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
               className="absolute left-1/2 top-1/2 overflow-hidden rounded-[22px] shadow-[0_30px_70px_-35px_rgba(59,34,25,0.7)]"
               style={{ width: CANVAS_W, height: CANVAS_H, transform: `translate(-50%, -50%) scale(${scale})` }}
             >
-              <div key={`${page}-${replay}`} className="absolute inset-0">
-                <Slide lesson={lesson} pageIndex={page} step={step} onCorrect={cheer} onGameResult={(r) => onGameResult?.(page, r)} />
-              </div>
+              {/* Page turn: the old slide dims away while the new one drifts in from the side we are moving to. */}
+              <AnimatePresence initial={false} custom={dir}>
+                <motion.div
+                  key={page}
+                  custom={dir}
+                  className="absolute inset-0"
+                  variants={{
+                    enter: (d: number) => (reduce ? { opacity: 0 } : { opacity: 0, x: 60 * d, scale: 0.985, filter: 'blur(6px)' }),
+                    center: { opacity: 1, x: 0, scale: 1, filter: 'blur(0px)', transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
+                    leave: (d: number) => (reduce ? { opacity: 0, transition: { duration: 0.2 } } : { opacity: 0, x: -30 * d, scale: 0.99, transition: { duration: 0.32, ease: [0.4, 0, 1, 1] } }),
+                  }}
+                  initial="enter"
+                  animate="center"
+                  exit="leave"
+                >
+                  <div key={replay} className="absolute inset-0">
+                    <Slide lesson={lesson} pageIndex={page} step={step} onCorrect={cheer} onGameResult={(r) => onGameResult?.(page, r)} />
+                  </div>
+                </motion.div>
+              </AnimatePresence>
               <InkLayer tool={tool} color={inkColor} pageKey={String(page)} clearSignal={clearSignal} width={CANVAS_W} height={CANVAS_H} />
               {timerLeft > 0 && (
                 <div className="absolute right-[90px] top-[130px] rounded-full bg-white px-6 py-2 font-sans text-[34px] font-bold tabular-nums shadow-lg" style={{ color: timerLeft <= 10 ? P.crimson : P.ink }}>
@@ -358,36 +378,55 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   );
 }
 
+/** Our praise: "Zādak Allāh!" (زادك الله, may Allah give you more), the academy's own word from zad. The brand's khatam
+ *  star draws itself in gold, the Arabic is written in right to left like every ayah in the lesson, and a few motes of
+ *  light rise, as if added to the learner's zad. Calm and short: it honours the answer, it does not throw a party. */
 function Praise() {
+  const reduce = useReducedMotion();
+  const ease = [0.22, 1, 0.36, 1] as const;
+  // The khatam: a square and the same square turned 45°, as one outline.
+  const star = 'M50 10 L61.7 21.7 L78.3 21.7 L78.3 38.3 L90 50 L78.3 61.7 L78.3 78.3 L61.7 78.3 L50 90 L38.3 78.3 L21.7 78.3 L21.7 61.7 L10 50 L21.7 38.3 L21.7 21.7 L38.3 21.7 Z';
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="pointer-events-none absolute inset-0 z-40 flex items-center justify-center" role="status" aria-live="assertive">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.4 } }} className="pointer-events-none absolute inset-0 z-40 flex items-center justify-center" role="status" aria-live="assertive">
+      <div className="absolute inset-0 backdrop-blur-[3px]" style={{ background: 'radial-gradient(ellipse 70% 75% at 50% 50%, rgba(30,20,16,0.9), rgba(30,20,16,0.7))' }} />
       <motion.div
-        className="absolute h-[1400px] w-[1400px] rounded-full"
-        style={{ background: 'repeating-conic-gradient(from 0deg, rgba(246,213,142,0.45) 0deg 8deg, transparent 8deg 22deg)' }}
-        initial={{ rotate: 0, scale: 0.6 }}
-        animate={{ rotate: 40, scale: 1 }}
-        transition={{ duration: 1.9, ease: 'easeOut' }}
+        className="absolute h-[760px] w-[760px] rounded-full"
+        style={{ background: 'radial-gradient(circle, rgba(246,213,142,0.38), rgba(229,169,60,0.08) 45%, transparent 70%)' }}
+        initial={reduce ? false : { scale: 0.6, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 1.2, ease }}
       />
-      {Array.from({ length: 26 }).map((_, i) => (
+      {!reduce && Array.from({ length: 12 }).map((_, i) => (
         <motion.span
           key={i}
-          className="absolute h-4 w-2.5 rounded-sm"
-          style={{ background: [P.gold, P.teal, P.crimson, '#ffffff'][i % 4] }}
-          initial={{ x: 0, y: 0, rotate: 0, opacity: 1 }}
-          animate={{ x: Math.cos(i * 0.9) * (300 + (i % 5) * 70), y: Math.sin(i * 0.9) * (220 + (i % 3) * 60), rotate: 220, opacity: 0 }}
-          transition={{ duration: 1.6, ease: 'easeOut' }}
+          className="absolute h-2.5 w-2.5 rounded-full"
+          style={{ left: `calc(50% + ${Math.round(Math.sin(i * 2.4) * 260)}px)`, top: '58%', background: i % 3 ? P.goldSoft : '#FFF8EA', boxShadow: '0 0 12px rgba(246,213,142,0.9)' }}
+          initial={{ y: 0, opacity: 0, scale: 0.4 }}
+          animate={{ y: -220 - (i % 4) * 50, opacity: [0, 1, 0], scale: 1 }}
+          transition={{ duration: 1.6, delay: 0.35 + (i % 6) * 0.08, ease: 'easeOut' }}
         />
       ))}
-      <motion.div
-        initial={{ scale: 0.5, rotate: -6 }}
-        animate={{ scale: 1, rotate: 0 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 15 }}
-        className="relative rounded-[36px] px-16 py-10 text-center shadow-2xl ring-8 ring-[#E5A93C]/60"
-        style={{ background: P.ink }}
-      >
-        <p className="font-serif text-[88px] font-bold leading-none text-[#E5A93C]">MashaAllah!</p>
-        <p className="mt-4 text-[54px] tracking-[0.35em] text-[#E5A93C]" aria-hidden="true">★★★</p>
-      </motion.div>
+      <div className="relative flex flex-col items-center">
+        <motion.svg width="150" height="150" viewBox="0 0 100 100" aria-hidden="true" initial={reduce ? false : { rotate: -45, scale: 0.7 }} animate={{ rotate: 0, scale: 1 }} transition={{ type: 'spring', stiffness: 140, damping: 16 }}>
+          <motion.path d={star} fill="none" stroke={P.gold} strokeWidth={3} strokeLinejoin="round" initial={reduce ? false : { pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.7, ease: 'easeInOut' }} />
+          <motion.path d={star} fill={P.gold} initial={{ opacity: 0 }} animate={{ opacity: 0.9 }} transition={{ delay: reduce ? 0 : 0.55, duration: 0.4 }} />
+          <circle cx="50" cy="50" r="11" fill="#FFF8EA" />
+        </motion.svg>
+        <motion.p
+          lang="ar"
+          dir="rtl"
+          className="mt-4 font-serif text-[132px] font-bold leading-[1.2]"
+          style={{ color: '#FFF3D6', textShadow: '0 0 40px rgba(246,213,142,0.55)' }}
+          initial={reduce ? { opacity: 0 } : { clipPath: 'inset(0 0 0 100%)' }}
+          animate={reduce ? { opacity: 1 } : { clipPath: 'inset(0 0 0 0%)' }}
+          transition={{ delay: 0.25, duration: 0.8, ease: 'easeInOut' }}
+        >
+          زادك الله
+        </motion.p>
+        <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9, duration: 0.5, ease }} className="mt-2 font-sans text-[34px] font-semibold" style={{ color: P.goldSoft }}>
+          Zādak Allāh! May Allah give you more.
+        </motion.p>
+      </div>
     </motion.div>
   );
 }

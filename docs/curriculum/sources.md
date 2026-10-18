@@ -58,6 +58,7 @@ Decision values: Allowed · With conditions · Needs permission · Research only
 | Storyset | https://storyset.com/terms | Free licence with credit (checked 2026-10-17); modify/animate allowed; no resale or redistribution as files | Yes, with credit | Credit required | **With conditions** (add credit on the curriculum page) |
 | ChatGPT image generation (owner's account) | https://openai.com/policies/terms-of-use | Output belongs to the user under OpenAI terms (to verify current text) | Expected yes | Not required | To verify |
 | Our own SVG + Motion animations | — | Ours | Yes | — | **Allowed** (preferred) |
+| Kenney packs used in the player: Interface Sounds, UI Audio, Impact Sounds (1.0) | https://kenney.nl/assets | CC0 (License.txt in each pack, checked 2026-10-18) | Yes | Not required | **In use** (2026-10-18): 11 clips in `public/curriculum/sfx/` (pop, chime, correct, praise, oops, brick, thud, lock, strike, pen, sparkle), trimmed and converted to mp3. Source clip for each, in that order: drop_002, glass_004, confirmation_002, confirmation_004, error_006, impactPlank_medium_001, impactSoft_heavy_000, switch_003, scratch_004, scratch_005, glass_001 |
 | Our own synthesised sound effects (`src/curriculum/slides/sfx.ts`, Web Audio API) | — | Ours, generated in code at play time | Yes | — | **Allowed** (2026-10-18) |
 
 ## E2. Lesson images (owner, ChatGPT)
