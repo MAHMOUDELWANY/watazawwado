@@ -74,3 +74,11 @@ If ChatGPT returns a background anyway, ask for "plain pure white background" in
 | `mishmish-sit.png` | ginger tabby with a white chest, sitting, tail curled |
 | `mishmish-walk.png` | walking to the right, tail up |
 | `mishmish-leap.png` | mid-leap to the right, paws stretched |
+
+**How the owner makes them (sent 2026-10-18):** one ChatGPT chat with `l01/characters.webp` and `l02/crash.webp`
+attached. The first prompt of each character names the reference and spells out the character from the table above
+("Using the two attached images as style and character references (same 3D animated-film children's book style, same
+characters): draw Yusuf, 9 years old, ... Full body, [pose]. Soft studio light from the upper left, a gentle shadow under
+the feet. Transparent background (PNG), nothing else in the image, no text."). Later poses say "Same style and same
+[character]. Full body, [pose]. ..." with the same ending. The owner sends the results in table order; Claude names them,
+removes any painted background with ffmpeg and saves them as WebP.
