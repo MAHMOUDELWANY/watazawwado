@@ -1,5 +1,6 @@
 import type { Lesson } from './types';
 import { lesson01 } from './content/zad-kids/l01-the-visitor-in-white.js';
+import { lesson02 } from './content/zad-kids/l02-who-made-it-all.js';
 
 export interface SubjectEntry {
   id: string;
@@ -31,7 +32,7 @@ export const SUBJECTS: SubjectEntry[] = [
       'Allah Sees Me', 'My Parents, My Jannah', "A Father's Advice", 'True Words, Kept Promises',
       'Kind to Every Living Thing', 'Little Sunnahs, Big Love', 'Me, My Friends, My Faith', 'My Zad for the Road',
     ],
-    lessons: { 1: lesson01 },
+    lessons: { 1: lesson01, 2: lesson02 },
   },
 ];
 

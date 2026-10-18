@@ -25,10 +25,11 @@
   fixed 1600×900 notebook canvas (`src/curriculum/slides/`), build steps per page, pen/highlighter/laser, page grid,
   thinking timer, replay, praise, explanation panel with a read-aloud `explain` text on every page, new scene art.
 - **Now:** owner reviews Lesson 1 v2 and marks it reviewed (then students can open it).
-- **Now (Lesson 2):** brief written (`zad-essentials-kids/L02-who-made-it-all.md`), waiting for the owner's review,
-  with 4 open points (hadith wording for 6–11, optional 52:36, the Lesson 3 cliffhanger, science source).
-- **Next:** Lesson 2 page text once the brief is reviewed; later the Teens and Adults unit maps (same spine, RULES.md §3).
-- **Not started:** Lessons 3–37 (Lesson 2: brief only), sound effects, the teacher pen/drawing tool.
+- **Now (Lesson 2):** brief approved; page text written (`content/zad-kids/l02-*.ts`, 17 pages, draft), waiting for
+  the owner's review of the wording and meanings.
+- **Next:** Lesson 2 built pages (new scenes: sky, fitrah, "look", camel, park, boat; image prompts) once the text is
+  reviewed; later the Teens and Adults unit maps (same spine, RULES.md §3).
+- **Not started:** Lessons 3–37 (Lesson 2: text only, no scenes yet), sound effects, the teacher pen/drawing tool.
 - **Known limit:** lesson text ships in the site bundle, so the lock is a UI lock (content is not secret). Upgrade to
   server-served lessons if content must be protected.
 
@@ -332,3 +333,7 @@ B3–B5 → continue lesson by lesson.
   checked with the quran.com connector (tafsir al-Sa'di, al-Muyassar, al-Wasit; morphology for the tadabbur words);
   fitrah hadith verified on Dorar (Bukhari 1385/1358/1359/4775, Muslim 2658, sahih); camel facts from San Diego Zoo
   (`sources.md` §G). Waiting for the owner's review of 4 open points.
+- **2026-10-18** — Owner approved the Lesson 2 brief (first clause of the fitrah hadith, 52:36 included at a child's
+  level, pedal-boat cliffhanger, San Diego Zoo). Lesson 2 page text written: 17 pages across the four stations, a
+  tadabbur stop on every ayah (52:35, 52:36, 30:30, 88:17-20), Arabic teacher notes, game "Who made it?", Ahd "Clue
+  Hunt". tsc + curriculum tests pass. Not checked in the browser (workspace needs a teacher login; scenes come next).

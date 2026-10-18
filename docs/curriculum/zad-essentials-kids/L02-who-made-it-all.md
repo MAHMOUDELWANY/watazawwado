@@ -1,8 +1,9 @@
 # Lesson 2 — Who Made It All?
 
 Zad Essentials · Kids (6–11) · Part 1 · ~45 min
-Status: **brief written 2026-10-18, waiting for the owner's review.** Page text comes next, in
-`src/curriculum/content/zad-kids/l02-who-made-it-all.ts` (source of truth for pages, `../RULES.md` §1.12).
+Status: **brief reviewed by the owner 2026-10-18; page text written 2026-10-18** in
+`src/curriculum/content/zad-kids/l02-who-made-it-all.ts` + `l02-teacher-ar.ts` (`reviewed: false`; source of truth for
+pages, `../RULES.md` §1.12). Next: built pages (scenes) after the owner reviews the text.
 Links: answers Lesson 1's cliffhanger (the LEGO castle on Maryam's floor); its own cliffhanger opens Lesson 3 (Allah Is One).
 
 ## Goal
@@ -15,7 +16,8 @@ feel that their heart already knew it (fitrah), and they start noticing Allah's 
 1. Explains in their own words why a made thing cannot make itself (castle, drawing, phone).
 2. Gives the three choices in At-Tur 52:35 (from nothing / made themselves / made by a Maker) and says why only the
    third one works.
-3. Finds at least 3 of 4 "maker's clues" in a nature scene (the game).
+3. Sorts at least 5 of 6 things by who made them: "Only Allah made it" / "People built it, with hands and things
+   Allah made" (the game). The child also finds a made thing's three clues (parts fit, it works, it has a purpose).
 4. Knows that the feeling "someone made this" is the fitrah Allah put in every person (Ar-Rum 30:30), and is proud that
    Islam matches what the heart already knows.
 5. Behaviour: when something in creation amazes them, they remember who made it and thank Allah (Alhamdulillah).
@@ -63,6 +65,7 @@ English meanings are written by us at the page-text step, for the owner to revie
 
 | Ayah | Key word | Root | Simple meaning | Question for the child | Small deed |
 |---|---|---|---|---|---|
+| 52:36 | يُوقِنُونَ (yuqinun) | ي ق ن | to be really sure in the heart (yaqeen) | "Is my heart sure that Allah made everything?" | Look at the sky tonight and say "Allah made this, and I am sure" |
 | 52:35 | ٱلْخَـٰلِقُونَ (al-khaliqun) | خ ل ق | "the ones who create"; Allah is al-Khaliq, the Creator | "Could I have made myself?" | Look at your hand and say "Allah made this" |
 | 30:30 | فِطْرَت (fitrah) | ف ط ر | the way Allah first made us, ready to know Him | "What did my heart know before anyone told me?" | Thank Allah for a heart that knows Him |
 | 88:17 | يَنظُرُونَ (yanzurun) | ن ظ ر | to look closely and think | "What is Allah inviting me to look at today?" | Spend one minute looking at the sky |
@@ -106,6 +109,14 @@ We state these as facts about the camel and say "look how it was made". We never
    happens when there are two bosses?"
 4. **Science source:** San Diego Zoo is a fact reference only (facts, our own words). Added to `sources.md` §G.
 
-## Owner decisions
+## Owner decisions (2026-10-18)
 
-None yet.
+1. Hadith for 6–11: first clause only, as proposed.
+2. 52:36 included, because it moves the story from the child to the whole sky; narration kept at a child's level
+   (owner: "you are speaking to a child's mind").
+3. Pedal-boat cliffhanger for Lesson 3 approved.
+4. San Diego Zoo approved as a fact reference.
+
+Claude's calls at the page-text step: the game sorts things by who made them (the two bins teach that what people build
+is also made from what Allah created, so it never splits creation between Allah and people); "Clue spotting" is the
+optional page; the three clues of a maker (fit, work, purpose) are the child's detective tools across the lesson.
