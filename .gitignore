@@ -16,3 +16,6 @@ coverage/
 graphify-out/
 .claude/settings.json.graphify-bak
 .claude/settings.local.json
+
+# Removed from the repo in 22bcbc3; a local npm install recreates it.
+package-lock.json
