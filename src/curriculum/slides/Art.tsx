@@ -224,7 +224,8 @@ function Dunes() {
 
 /* ---------- scenes ---------- */
 
-const SCENES: Record<SceneId, () => React.ReactElement> = {
+/** SVG fallbacks for scenes without a painting; painted-only scenes (Lesson 2 on) fall back to the castle. */
+const SCENES: Partial<Record<SceneId, () => React.ReactElement>> = {
   doorsHero: () => (
     <>
       <rect width={640} height={560} fill="url(#g-dawn)" />
@@ -485,7 +486,7 @@ const SCENES: Record<SceneId, () => React.ReactElement> = {
 };
 
 export function SceneArt({ id, label }: { id: SceneId; label: string }) {
-  const Draw = SCENES[id];
+  const Draw = SCENES[id] ?? SCENES.lego!;
   return (
     <svg viewBox="0 0 640 560" role="img" aria-label={label} className="block w-full h-full" preserveAspectRatio="xMidYMid slice">
       <Defs />

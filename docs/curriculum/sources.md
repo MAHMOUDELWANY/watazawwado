@@ -59,6 +59,12 @@ Decision values: Allowed · With conditions · Needs permission · Research only
 | ChatGPT image generation (owner's account) | https://openai.com/policies/terms-of-use | Output belongs to the user under OpenAI terms (to verify current text) | Expected yes | Not required | To verify |
 | Our own SVG + Motion animations | — | Ours | Yes | — | **Allowed** (preferred) |
 
+## E2. Lesson images (owner, ChatGPT)
+
+| Lesson | Files | Made | Notes |
+|---|---|---|---|
+| L2 | `public/curriculum/zad-kids/l02/`: crash, sky, lock, look, camel, park, boat (.webp) | Owner, ChatGPT, 2026-10-18; compressed to WebP by Claude | `lock-base.webp` (key painted out) and `key.webp` (key cut out) made from `lock.webp` with ffmpeg. Style is more 3D than the gouache base prompt; owner accepted the set. |
+
 ## G. Science facts (reference only)
 
 Facts are not owned; we write them in our own words and never copy text or images.

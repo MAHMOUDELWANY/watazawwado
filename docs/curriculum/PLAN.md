@@ -25,10 +25,10 @@
   fixed 1600×900 notebook canvas (`src/curriculum/slides/`), build steps per page, pen/highlighter/laser, page grid,
   thinking timer, replay, praise, explanation panel with a read-aloud `explain` text on every page, new scene art.
 - **Now:** owner reviews Lesson 1 v2 and marks it reviewed (then students can open it).
-- **Now (Lesson 2):** brief and page text approved. Built pages started: 7 image prompts in the L02 brief, waiting
-  for the owner to generate the paintings (`public/curriculum/zad-kids/l02/`).
-- **Next:** Lesson 2 scene builds once the paintings arrive; later the Teens and Adults unit maps (same spine, RULES.md §3).
-- **Not started:** Lessons 3–37 (Lesson 2: text only, no scenes yet), sound effects, the teacher pen/drawing tool.
+- **Now (Lesson 2):** built pages done: the owner's 7 paintings are in, scene builds on every idea page; waiting for
+  the owner to review the look in the player (/dashboard/curriculum, Lesson 2).
+- **Next:** after that review, Lesson 2 is ready for the owner to mark reviewed; later the Teens and Adults unit maps (same spine, RULES.md §3).
+- **Not started:** Lessons 3–37 , sound effects, the teacher pen/drawing tool.
 - **Known limit:** lesson text ships in the site bundle, so the lock is a UI lock (content is not secret). Upgrade to
   server-served lessons if content must be protected.
 
@@ -339,3 +339,11 @@ B3–B5 → continue lesson by lesson.
 - **2026-10-18** — Owner approved Lesson 2's text. New rule (RULES.md §1.9, §3): English meanings for Kids and Teens in
   simple everyday words; Lesson 1 and 2 meanings simplified. Built-pages step started: 7 image prompts written in the L02
   brief for the owner to generate.
+- **2026-10-18** — Lesson 2 built pages. Owner delivered 7 paintings (`l02/`). Scene builds: three ways (cards struck
+  through one by one, the third ringed), 52:35 (the same cards come back and the ayah's words land on the two impossible
+  ways; the third turns into "Allah made them"), sky (stars come out, the skies and the earth named, one arc: only
+  Allah), fitrah (the key slides into the lock: heart and mind / Islam), "Look!" (the four words of 88:17-20 pinned on
+  one desert), camel kit and maker's clues (pins). Player: paintings can live in any lesson folder; the cliffhanger keeps
+  the painting on the left so people stay clear of the text (Lesson 1 too); cover and game wording no longer Lesson 1
+  only. Checked in headless Chromium (Playwright) at 1280 wide and with reduced motion; tsc, 1011 tests and the build
+  pass. Not checked: the real teacher workspace (needs a teacher login), phone and dark mode.

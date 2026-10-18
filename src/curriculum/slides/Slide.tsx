@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import type { Interaction, Lesson, LessonPage } from '../types';
 import { SceneArt, P } from './Art';
-import { PillarsBuild, RootsGrow, ClueLens, SittingStudy, IhsanLight, Unveil, DoorsLight, PackZad, Callback, type Lens } from './Scenes';
+import { PillarsBuild, RootsGrow, ClueLens, SittingStudy, IhsanLight, Unveil, DoorsLight, PackZad, Callback, ThreeWaysBuild, ThreeWaysQuran, SkyStars, KeyFits, LookFour, type Lens } from './Scenes';
 
 /** Correct answers per bin of a game checkpoint, for the teacher report (PLAN §3a.3b). */
 export type GameResult = Record<string, { correct: number; total: number }>;
@@ -187,16 +187,20 @@ function ChapterTracker({ lesson, pageIndex, light = false }: { lesson: Lesson; 
    Paper = the notebook page (evidence, diagrams, the game). Each page gets a composition from its role,
    so the lesson alternates rhythm instead of repeating one template (docs/curriculum/PLAN.md, slide system v3). */
 
-/** Painted scenes (owner, ChatGPT, 2026-10-17) in public/curriculum/zad-kids/l01; scenes not listed fall back to SVG art. */
+/** Painted scenes (owner, ChatGPT) in public/curriculum/zad-kids/<lesson>/; scenes not listed fall back to SVG art. */
 const SCENE_IMAGES: Partial<Record<LessonPage['scene'], string>> = {
-  doorsHero: 'cover', doors: 'cover', chalkboard: 'classroom', jiddo: 'jiddo', madinah: 'madinah', stranger: 'stranger',
-  sitting: 'sitting', pillars: 'pillars', roots: 'roots', drawing: 'drawing', reveal: 'reveal', backpack: 'backpack', lego: 'lego',
+  doorsHero: 'l01/cover', doors: 'l01/cover', chalkboard: 'l01/classroom', jiddo: 'l01/jiddo', madinah: 'l01/madinah', stranger: 'l01/stranger',
+  sitting: 'l01/sitting', pillars: 'l01/pillars', roots: 'l01/roots', drawing: 'l01/drawing', reveal: 'l01/reveal', backpack: 'l01/backpack', lego: 'l01/lego',
+  threeWays: 'l01/lego', crash: 'l02/crash', sky: 'l02/sky', lock: 'l02/lock', look: 'l02/look', camel: 'l02/camel', park: 'l02/park', boat: 'l02/boat',
 };
 
 /** Where labels point on each painting (% of the image box): x,y = the point, lx,ly = the label. */
 type Pin = { x: number; y: number; lx: number; ly: number };
 const PINS: Partial<Record<LessonPage['scene'], Pin[]>> = {
   doors: [{ x: 18, y: 50, lx: 18, ly: 86 }, { x: 50, y: 50, lx: 50, ly: 86 }, { x: 82, y: 50, lx: 82, ly: 86 }],
+  // Lesson 2. Boxes are 800 × 640 with the 4:3 painting cropped by object-cover, so x is shifted from the image's %.
+  lego: [{ x: 80, y: 71, lx: 74, ly: 93 }, { x: 64, y: 72, lx: 40, ly: 60 }, { x: 72, y: 18, lx: 44, ly: 10 }],
+  camel: [{ x: 83, y: 9.5, lx: 58, ly: 5 }, { x: 82, y: 8, lx: 50, ly: 19 }, { x: 94, y: 10.5, lx: 85, ly: 27 }, { x: 47, y: 93, lx: 37, ly: 80 }],
 };
 /** Clues found on the stranger page: a lens magnifies the detail in stranger.webp (x,y = % of the image). */
 const CLUE_LENSES: Record<string, Lens> = {
@@ -234,7 +238,7 @@ function Painting({ page, className = '', style, drift = true, children }: { pag
     <div className={`absolute overflow-hidden ${className}`} style={style}>
       {src ? (
         <motion.img
-          src={`/curriculum/zad-kids/l01/${src}.webp`}
+          src={`/curriculum/zad-kids/${src}.webp`}
           alt={page.title}
           draggable={false}
           className="h-full w-full object-cover"
@@ -409,7 +413,7 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
             </motion.p>
             <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.3, duration: 0.8 }} className="mt-8 flex items-center gap-3 font-sans text-[22px] font-semibold" style={{ color: P.goldSoft }}>
               <KhatamStar size={20} color={P.gold} />
-              {lesson.minutes} minutes, {lesson.pages.length} pages, 3 big questions
+              {lesson.minutes} minutes, {lesson.pages.length} pages
             </motion.p>
           </div>
         </>
@@ -451,7 +455,7 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
 
     case 'manuscript': {
       // Pages whose painting can show the idea get a large annotated print instead of the small arch.
-      const Study = page.scene === 'sitting' ? SittingStudy : page.scene === 'drawing' ? IhsanLight : null;
+      const Study = ({ sitting: SittingStudy, drawing: IhsanLight, threeWays: ThreeWaysQuran, sky: SkyStars, lock: KeyFits, look: LookFour } as Partial<Record<LessonPage['scene'], typeof SittingStudy>>)[page.scene];
       if (Study)
         return (
           <>
@@ -488,7 +492,7 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
       const labels = pins.map((_, i) => (i < v.items ? page.items?.[i] ?? null : null));
       // Pages whose painting can act out the idea get a scene build instead of labels on a still picture.
       const built = (page.items || []).map((it, i) => (i < v.items ? it : null));
-      const Build = page.scene === 'pillars' ? PillarsBuild : page.scene === 'roots' ? RootsGrow : null;
+      const Build = page.scene === 'pillars' ? PillarsBuild : page.scene === 'roots' ? RootsGrow : page.scene === 'threeWays' ? ThreeWaysBuild : null;
       return (
         <>
           <div className={`absolute left-[120px] top-[140px] bottom-[120px] w-[520px] space-y-6 ${COL}`}>
@@ -597,9 +601,11 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
       );
 
     case 'cliffhanger':
+      // The painting keeps the left two thirds, so the people in it stay clear of the text on the right.
       return (
         <>
-          <Painting page={page} className="inset-0" />
+          <div className="band-deep absolute inset-0" />
+          <Painting page={page} className="left-0 top-0 bottom-0 w-[1040px]" style={{ maskImage: 'linear-gradient(270deg, transparent 0, #000 260px)', WebkitMaskImage: 'linear-gradient(270deg, transparent 0, #000 260px)' }} />
           <Scrim to="sideEnd" />
           <div className={`absolute right-[110px] top-[200px] bottom-[120px] w-[720px] space-y-6 ${COL}`}>
             <motion.span initial={{ opacity: 0, letterSpacing: '0.3em' }} animate={{ opacity: 1, letterSpacing: '0.01em' }} transition={{ duration: 1.2, ease }} className="block font-serif text-[34px] italic" style={{ color: P.goldSoft }}>
@@ -758,7 +764,7 @@ function SortGame({ interaction, onCorrect, onResult }: { interaction: Extract<I
           ),
         )}
       </div>
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid gap-6" style={{ gridTemplateColumns: `repeat(${interaction.bins.length}, minmax(0, 1fr))` }}>
         {interaction.bins.map((bin, bi) => (
           <button
             key={bin.id}
@@ -791,7 +797,7 @@ function SortGame({ interaction, onCorrect, onResult }: { interaction: Extract<I
       <div className="flex gap-4">
         {done && !checked && (
           <button type="button" onClick={check} className="rounded-full px-8 py-3 font-sans text-[24px] font-bold text-white" style={{ background: P.crimson }}>
-            Check my doors
+            Check my answers
           </button>
         )}
         {Object.keys(placed).length > 0 && (

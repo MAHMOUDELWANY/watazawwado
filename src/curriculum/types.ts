@@ -13,7 +13,16 @@ export type SceneId =
   | 'reveal'
   | 'doors'
   | 'backpack'
-  | 'lego';
+  | 'lego'
+  // Lesson 2 (paintings in public/curriculum/zad-kids/l02; threeWays reuses the Lesson 1 castle)
+  | 'threeWays'
+  | 'crash'
+  | 'sky'
+  | 'lock'
+  | 'look'
+  | 'camel'
+  | 'park'
+  | 'boat';
 
 /** How a page is laid out on the slide (docs/curriculum/PLAN.md §7, slide system v2). */
 export type Layout =

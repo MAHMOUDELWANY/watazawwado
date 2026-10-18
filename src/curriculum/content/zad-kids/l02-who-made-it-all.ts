@@ -4,8 +4,7 @@ import { lesson02TeacherAr } from './l02-teacher-ar.js';
 // Brief and evidence log: docs/curriculum/zad-essentials-kids/L02-who-made-it-all.md
 // Ayat copied unchanged from the quran.com connector (2026-10-18); the hadith from Sahih al-Bukhari 1385 on Dorar
 // (first clause only for 6–11, owner 2026-10-18). English meanings are ours, for the owner to review.
-// Scenes reuse Lesson 1 art for now. The sky, fitrah, "look", camel, park and boat pages get their own scenes at the
-// built-pages step.
+// Paintings: public/curriculum/zad-kids/l02 (owner, ChatGPT, 2026-10-18); the castle pages reuse Lesson 1's lego.webp.
 const FITRAH_HADITH = 'Sahih al-Bukhari 1385 and Sahih Muslim 2658, narrated by Abu Hurayrah';
 
 export const lesson02: Lesson = {
@@ -84,7 +83,7 @@ export const lesson02: Lesson = {
       title: 'Three ways',
       station: 'zad',
       layout: 'concept',
-      scene: 'lego',
+      scene: 'threeWays',
       lines: ['Maryam thinks hard.', 'There are only three ways the castle got here.'],
       items: ['It popped out of nothing', 'The bricks built themselves', 'Someone built it'],
       askFirst: true,
@@ -105,7 +104,7 @@ export const lesson02: Lesson = {
       title: 'Crash!',
       station: 'zad',
       layout: 'story',
-      scene: 'lego',
+      scene: 'crash',
       lines: ['Yusuf grins from the door. "I built it while you were asleep!"', 'Then Mishmish jumps up. Crash! A tower falls.', 'The bricks scatter, and stay scattered.'],
       interaction: {
         kind: 'ask',
@@ -159,7 +158,7 @@ export const lesson02: Lesson = {
       title: 'The same three questions',
       station: 'zad',
       layout: 'evidence',
-      scene: 'lego',
+      scene: 'threeWays',
       lines: ['Long ago, Allah asked people these very questions in the Quran.'],
       evidence: {
         arabic: 'أَمْ خُلِقُوا۟ مِنْ غَيْرِ شَىْءٍ أَمْ هُمُ ٱلْخَـٰلِقُونَ',
@@ -190,7 +189,7 @@ export const lesson02: Lesson = {
       title: 'Who made the sky?',
       station: 'zad',
       layout: 'evidence',
-      scene: 'jiddo',
+      scene: 'sky',
       lines: ['Then the Quran looks up, at something even bigger.', 'Nobody has ever made a sky. Not even a tiny one.'],
       evidence: {
         arabic: 'أَمْ خَلَقُوا۟ ٱلسَّمَـٰوَٰتِ وَٱلْأَرْضَ ۚ بَل لَّا يُوقِنُونَ',
@@ -244,7 +243,7 @@ export const lesson02: Lesson = {
       title: 'Made ready to know Him',
       station: 'zad',
       layout: 'evidence',
-      scene: 'roots',
+      scene: 'lock',
       lines: ['Allah made every person with fitrah.', 'Islam fits it, like a key fits its lock.'],
       evidence: {
         arabic: 'فِطْرَتَ ٱللَّهِ ٱلَّتِى فَطَرَ ٱلنَّاسَ عَلَيْهَا ۚ لَا تَبْدِيلَ لِخَلْقِ ٱللَّهِ',
@@ -273,7 +272,7 @@ export const lesson02: Lesson = {
       title: 'Allah says: Look!',
       station: 'athar',
       layout: 'evidence',
-      scene: 'chalkboard',
+      scene: 'look',
       lines: ['The Quran tells us to look closely and think.', 'Four times in a row, it says: look!'],
       evidence: {
         arabic: 'أَفَلَا يَنظُرُونَ إِلَى ٱلْإِبِلِ كَيْفَ خُلِقَتْ ۝ وَإِلَى ٱلسَّمَآءِ كَيْفَ رُفِعَتْ ۝ وَإِلَى ٱلْجِبَالِ كَيْفَ نُصِبَتْ ۝ وَإِلَى ٱلْأَرْضِ كَيْفَ سُطِحَتْ',
@@ -301,9 +300,9 @@ export const lesson02: Lesson = {
       title: 'The camel\'s desert kit',
       station: 'athar',
       layout: 'concept',
-      scene: 'chalkboard',
+      scene: 'camel',
       lines: ['Allah says: look at the camel, how it was made.', 'So let\'s look closely.'],
-      items: ['A clear inner eyelid, like built-in goggles', 'Two rows of long eyelashes', 'Nostrils it can shut tight', 'Wide feet that spread on the sand'],
+      items: ['Built-in goggles', 'Double eyelashes', 'Nostrils that shut', 'Wide sand feet'],
       interaction: {
         kind: 'ask',
         prompt: 'Who gave the camel its sand kit before it ever saw a sandstorm?',
@@ -320,7 +319,7 @@ export const lesson02: Lesson = {
       title: 'Clue spotting',
       station: 'athar',
       layout: 'question',
-      scene: 'chalkboard',
+      scene: 'park',
       lines: ['On Saturday, Yusuf and Maryam go to the park.', 'A ladybird on a leaf. A rainbow after the rain.', 'Maryam whispers: "Alhamdulillah."'],
       interaction: {
         kind: 'ask',
@@ -382,7 +381,7 @@ export const lesson02: Lesson = {
       title: 'Next time…',
       station: 'ahd',
       layout: 'next',
-      scene: 'lego',
+      scene: 'boat',
       lines: ['At the park lake, Yusuf and Maryam ride a pedal boat.', 'Both grab the wheel. Yusuf turns left. Maryam turns right.', 'The boat spins round and round and round…'],
       interaction: { kind: 'ask', prompt: 'What happens when there are two bosses?', reveal: 'Find out next time, in Lesson 3: Allah Is One.' },
       explain: [
