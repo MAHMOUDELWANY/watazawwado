@@ -116,7 +116,10 @@ export function ThreeWaysBuild({ labels, label }: { labels: (string | null)[]; l
         {n === 1 && <Tag style={{ left: '50%', top: '42%' }} color={P.inkSoft} delay={1.3}>Nothing came!</Tag>}
         <LoosePile wobble={n === 2} gone={building} />
         {n === 2 && <Tag style={{ left: '50%', top: '30%' }} color={P.inkSoft} delay={1.2}>Still just bricks</Tag>}
-        <BrickCastle built={building} stagger={0.04} className="left-[16%] top-[4%] h-[88%] w-[68%]" />
+        <BrickCastle built={building} stagger={0.04} className="left-[24%] top-[6%] h-[84%] w-[64%]" />
+        {/* Maryam thinks it through, and jumps for joy once the castle stands. */}
+        {n >= 1 && !building && <Sprite key="think" name="characters/maryam-think.webp" enter="left" className="h-[78%]" style={{ left: '1%', bottom: '2%' }} />}
+        {building && <Sprite key="happy" name="characters/maryam-happy.webp" enter="up" delay={buildTime} className="h-[82%]" style={{ left: '0%', bottom: '2%' }} />}
         {building && (
           <Sprite name="l02/hand-brick.webp" enter="right" className="w-[22%]"
             style={{ left: '62%', top: '20%' }}
@@ -143,7 +146,10 @@ export function CastleClues({ labels, label }: { labels: (string | null)[]; labe
       <BrickCastle built stagger={0} shine={n >= 1} open={n >= 2} className="left-[10%] top-[6%] h-[80%] w-[80%]" />
       {n >= 3 && (
         <>
-          <Sprite name="characters/mishmish-walk.webp" enter="left" delay={0.3} className="w-[18%]" style={{ left: '22%', top: '62%' }} />
+          {/* Mishmish trots in from the left and goes through the open gate: the castle is made for playing in. */}
+          <Sprite name="characters/mishmish-walk.webp" className="w-[16%]" style={{ left: '4%', top: '64%' }}
+            animate={{ opacity: [0, 1, 1, 0], x: [-80, 120, 250, 290], scale: [1, 1, 0.9, 0.7] }}
+            transition={{ duration: 2.6, delay: 0.3, times: [0, 0.2, 0.8, 1], ease: 'easeInOut' }} />
           <Burst x={50} y={66} kind="sparks" count={14} seed={5} delay={0.6} />
         </>
       )}
@@ -471,4 +477,10 @@ export function LadybirdWalk({ v }: { v: Built }) {
       transition={{ opacity: { duration: 0.4 }, scale: { duration: 0.4 }, default: { duration: 6, delay: 0.6, repeat: Infinity, ease: 'easeInOut' } }}
     />
   );
+}
+
+/** p2 Last time: Jiddo steps in beside the three doors to start the recall. */
+export function JiddoRecall({ v }: { v: Built }) {
+  useCue('whoosh', v.lines >= 1, 0.1);
+  return v.lines >= 1 ? <Sprite name="characters/jiddo-explain.webp" enter="right" delay={0.2} className="h-[66%]" style={{ right: '4%', bottom: '13%' }} /> : null;
 }

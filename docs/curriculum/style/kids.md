@@ -56,7 +56,7 @@ Lesson 2 painting (`l02/crash.webp`) as references and add "same style and same 
 
 If ChatGPT returns a background anyway, ask for "plain pure white background" instead; Claude removes it with ffmpeg.
 
-## Character library (`public/curriculum/zad-kids/characters/`, made once)
+## Character library (`public/curriculum/zad-kids/characters/`, made once; delivered 2026-10-18, saved as `.webp`)
 
 | File | Pose |
 |---|---|

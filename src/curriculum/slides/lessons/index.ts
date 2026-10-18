@@ -2,7 +2,7 @@ import type React from 'react';
 import type { Lesson, SceneId } from '../../types';
 import type { Built } from '../Scenes';
 import { PillarsBuild, RootsGrow, SittingStudy, IhsanLight } from '../Scenes';
-import { ThreeWaysBuild, CastleClues, ThreeWaysQuran, SkyStars, KeyFits, DesertLook, BabyGlow, CamelKit, CastleSparkle, CrashBricks, BoatRipples, MagnifierDrop, CoverStars, HandStudy, LadybirdWalk } from './l02';
+import { ThreeWaysBuild, CastleClues, ThreeWaysQuran, SkyStars, KeyFits, DesertLook, BabyGlow, CamelKit, CastleSparkle, CrashBricks, BoatRipples, MagnifierDrop, CoverStars, HandStudy, LadybirdWalk, JiddoRecall } from './l02';
 
 /* Which scene build acts out a page, by scene id (docs/curriculum/RULES.md §1.10). Each lesson adds its scenes in its
    own file (lessons/lNN.tsx) and lists them here; the slide compositions look them up instead of naming scenes. */
@@ -22,7 +22,7 @@ export const STUDIES: Partial<Record<SceneId, React.ComponentType<{ v: Built; la
 /** Motion over the painting on cover, story, question and cliffhanger pages. On a question page the painting then shows
  *  at full strength (or the moment stands alone when the scene has no painting, like the hand). */
 export const MOMENTS: Partial<Record<SceneId, React.ComponentType<{ v: Built; lesson: Lesson }>>> = {
-  lego: CastleSparkle, crash: CrashBricks, boat: BoatRipples, window: CoverStars, hand: HandStudy, park: LadybirdWalk,
+  lego: CastleSparkle, crash: CrashBricks, boat: BoatRipples, window: CoverStars, hand: HandStudy, park: LadybirdWalk, doors: JiddoRecall,
 };
 
 /** Today's provision dropped into Jiddo's bag on the Ahd page, by lesson number. */

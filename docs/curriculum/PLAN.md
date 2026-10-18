@@ -26,8 +26,8 @@
   thinking timer, replay, praise, explanation panel with a read-aloud `explain` text on every page, new scene art.
 - **Now:** owner reviews Lesson 1 v2 and marks it reviewed (then students can open it).
 - **Now (Lesson 2):** complete: every page has its own picture and a motion build with sound. Waiting for the owner to
-  review it in the player and mark it reviewed. Still to come from the owner: the character library (14 poses); until
-  then Mishmish does not walk in on the clues page.
+  review it in the player and mark it reviewed. The character library (14 poses) is in `characters/` and used: Jiddo on
+  the recall page, Maryam thinking and then jumping for joy on the three-ways page, Mishmish through the castle gate.
 - **Next:** after the owner's review, Lesson 3 (Allah Is One) brief.
 - **Not started:** Lessons 3–37.
 - **Known limit:** lesson text ships in the site bundle, so the lock is a UI lock (content is not secret). Upgrade to
@@ -363,3 +363,5 @@ B3–B5 → continue lesson by lesson.
   four depth layers (each sign comes forward in the ayah's order), the ladybird walking on the leaf, the magnifier
   dropping into the bag. Camel and mountain cut-outs cleaned with ffmpeg (fake checkerboard). Line changed to "Jiddo
   holds up Yusuf's hand" to match the picture. Checked in headless Chromium; tsc, tests and build pass.
+- **2026-10-18** — Owner delivered the character library (14 transparent poses, `characters/`). Lesson 2 now uses Jiddo
+  (recall), Maryam (thinking, then jumping for joy as the castle stands) and Mishmish (walking through the open gate).
