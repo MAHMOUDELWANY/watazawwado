@@ -25,9 +25,10 @@
   fixed 1600×900 notebook canvas (`src/curriculum/slides/`), build steps per page, pen/highlighter/laser, page grid,
   thinking timer, replay, praise, explanation panel with a read-aloud `explain` text on every page, new scene art.
 - **Now:** owner reviews Lesson 1 v2 and marks it reviewed (then students can open it).
-- **Next:** Lesson 2 (Who Made It All?), built with the `curriculum-builder` skill under `RULES.md`; later the Teens and
-  Adults unit maps (same spine, RULES.md §3).
-- **Not started:** Lessons 2–37, sound effects, the teacher pen/drawing tool.
+- **Now (Lesson 2):** brief written (`zad-essentials-kids/L02-who-made-it-all.md`), waiting for the owner's review,
+  with 4 open points (hadith wording for 6–11, optional 52:36, the Lesson 3 cliffhanger, science source).
+- **Next:** Lesson 2 page text once the brief is reviewed; later the Teens and Adults unit maps (same spine, RULES.md §3).
+- **Not started:** Lessons 3–37 (Lesson 2: brief only), sound effects, the teacher pen/drawing tool.
 - **Known limit:** lesson text ships in the site bundle, so the lock is a UI lock (content is not secret). Upgrade to
   server-served lessons if content must be protected.
 
@@ -327,3 +328,7 @@ B3–B5 → continue lesson by lesson.
   in every band, 45-minute lessons with optional extra pages, mandatory scene builds, per-band rules for Kids / Teens /
   Adults, agent workflow), the `curriculum-builder` skill, `test/curriculum-rules.test.ts`, and tagged Lesson 1's
   stations. All curriculum documentation is in English from now on (owner).
+- **2026-10-18** — Lesson 2 brief written (`zad-essentials-kids/L02-who-made-it-all.md`): 52:35–36, 30:30, 88:17–20
+  checked with the quran.com connector (tafsir al-Sa'di, al-Muyassar, al-Wasit; morphology for the tadabbur words);
+  fitrah hadith verified on Dorar (Bukhari 1385/1358/1359/4775, Muslim 2658, sahih); camel facts from San Diego Zoo
+  (`sources.md` §G). Waiting for the owner's review of 4 open points.

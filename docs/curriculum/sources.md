@@ -59,6 +59,14 @@ Decision values: Allowed · With conditions · Needs permission · Research only
 | ChatGPT image generation (owner's account) | https://openai.com/policies/terms-of-use | Output belongs to the user under OpenAI terms (to verify current text) | Expected yes | Not required | To verify |
 | Our own SVG + Motion animations | — | Ours | Yes | — | **Allowed** (preferred) |
 
+## G. Science facts (reference only)
+
+Facts are not owned; we write them in our own words and never copy text or images.
+
+| Source | Link | Use | Checked | Decision |
+|---|---|---|---|---|
+| San Diego Zoo Wildlife Alliance, "Camel" | https://animals.sandiegozoo.org/animals/camel | Camel facts for Lesson 2 (eyelid, eyelashes, nostrils, feet, water) | 2026-10-18 | Facts only, own words |
+
 ## F. Files the owner needs to download
 
 None yet. Requests will list: name, official link, why, exact pages/chapters, what is extracted.
