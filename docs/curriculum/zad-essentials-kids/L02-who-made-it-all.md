@@ -160,6 +160,8 @@ base prompt in `../style/kids.md`; characters and props use the transparent pref
 | 10 | `l02/ladybird.png` | Prop | Yes | 14 Clue spotting | walks along the leaf |
 | 11 | `l02/magnifier.png` | Prop | Yes | 16 My Zad | drops into the bag |
 
+Delivered 2026-10-18 (all eleven); the character library is still to come (Mishmish on the clues page and later lessons).
+
 Prompts:
 1. **cover.webp:** night, a cosy living room with a tall arched window full of stars. On the right half, Jiddo, Yusuf and
    Maryam kneel on a patterned rug looking up at the window in wonder; Mishmish sits beside them. A box of loose

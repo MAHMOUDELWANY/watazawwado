@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { P } from '../Art';
 import { Pen, Tag, Print, Layer, at, src, out, type Px, type Built } from '../Scenes';
@@ -118,9 +118,10 @@ export function ThreeWaysBuild({ labels, label }: { labels: (string | null)[]; l
         {n === 2 && <Tag style={{ left: '50%', top: '30%' }} color={P.inkSoft} delay={1.2}>Still just bricks</Tag>}
         <BrickCastle built={building} stagger={0.04} className="left-[16%] top-[4%] h-[88%] w-[68%]" />
         {building && (
-          <Sprite name="l02/hand-brick.png" enter="right" className="w-[22%]"
+          <Sprite name="l02/hand-brick.webp" enter="right" className="w-[22%]"
             style={{ left: '62%', top: '20%' }}
             animate={reduce ? { opacity: 1 } : { opacity: [0, 1, 1, 0], x: [120, 0, -260, -300], y: [0, 60, -40, -80] }}
+            transition={{ duration: buildTime + 0.4, times: [0, 0.12, 0.85, 1], ease: 'easeInOut' }}
           />
         )}
       </Room>
@@ -142,7 +143,7 @@ export function CastleClues({ labels, label }: { labels: (string | null)[]; labe
       <BrickCastle built stagger={0} shine={n >= 1} open={n >= 2} className="left-[10%] top-[6%] h-[80%] w-[80%]" />
       {n >= 3 && (
         <>
-          <Sprite name="characters/mishmish-walk.png" enter="left" delay={0.3} className="w-[18%]" style={{ left: '22%', top: '62%' }} />
+          <Sprite name="characters/mishmish-walk.webp" enter="left" delay={0.3} className="w-[18%]" style={{ left: '22%', top: '62%' }} />
           <Burst x={50} y={66} kind="sparks" count={14} seed={5} delay={0.6} />
         </>
       )}
@@ -253,45 +254,6 @@ export function KeyFits({ v, label }: { v: Built; label: string }) {
   );
 }
 
-/** p12 Allah says: Look! When the ayah is read, the camera travels to each of its four signs in turn (camels, sky,
- *  mountains, earth), pins its word there, then pulls back to show all four. */
-const LOOK_AT = [
-  { x: 230, y: 420, ar: 'ٱلْإِبِلِ', en: 'the camels', color: P.copper },
-  { x: 900, y: 150, ar: 'ٱلسَّمَآءِ', en: 'the sky', color: P.teal },
-  { x: 1160, y: 520, ar: 'ٱلْجِبَالِ', en: 'the mountains', color: P.crimson },
-  { x: 700, y: 900, ar: 'ٱلْأَرْضِ', en: 'the earth', color: '#9A6A12' },
-];
-const TOUR = 5.5;
-export function LookFour({ v, label }: { v: Built; label: string }) {
-  const reduce = useReducedMotion();
-  const zoom = 1.7;
-  const xs = LOOK_AT.map((t) => -zoom * ((t.x / L2.w) * 100 - 50));
-  const ys = LOOK_AT.map((t) => -zoom * ((t.y / L2.h) * 100 - 50));
-  useCue('whoosh', v.lines >= 2, 0.1);
-  useEffect(() => { if (v.evidence) LOOK_AT.forEach((_, i) => play('pop', reduce ? 0.2 * i : 0.9 + i * 1.1)); }, [v.evidence, reduce]);
-  const tour = v.evidence && !reduce;
-  return (
-    <div className="absolute left-[720px] top-[150px] h-[570px] w-[760px]" role="img" aria-label={label}>
-      <div className="absolute inset-0 overflow-hidden rounded-[28px] shadow-[0_40px_80px_-40px_rgba(139,73,53,0.6)]">
-        <motion.div
-          className="absolute inset-0"
-          initial={false}
-          animate={tour
-            ? { scale: [1, zoom, zoom, zoom, zoom, 1], x: ['0%', ...xs.map((x) => `${x}%`), '0%'], y: ['0%', ...ys.map((y) => `${y}%`), '0%'] }
-            : { scale: 1, x: '0%', y: '0%' }}
-          transition={tour ? { duration: TOUR, times: [0, 0.18, 0.38, 0.58, 0.78, 1], ease: 'easeInOut' } : { duration: 0.6 }}
-        >
-          <Layer name="l02/look" filter="none" />
-          {v.evidence && LOOK_AT.map((t, i) => (
-            <Tag key={t.en} style={at(L2, t.x, t.y)} ar={t.ar} color={t.color} delay={reduce ? 0.2 * i : 0.9 + i * 1.1}>{t.en}</Tag>
-          ))}
-        </motion.div>
-        {v.lines >= 2 && !v.evidence && <Tag style={at(L2, 724, 560)} color={P.crimson} size={34}>Look!</Tag>}
-      </div>
-    </div>
-  );
-}
-
 /** p13 The camel's desert kit. A sandstorm blows across the camel; each item opens a lens on its part and shows it
  *  working: the clear eyelid slides over the eye, the sand bounces off the lashes, the nostrils close, the feet spread.
  *  Spots are % of camel.webp (contain fit, so they map 1:1 onto the box). */
@@ -343,7 +305,7 @@ export function CamelKit({ labels, label }: { labels: (string | null)[]; label: 
 /** p3 The castle: sparkles round the castle as Maryam sees it. lego.webp in the picture-book box (cover fit). */
 export function CastleSparkle({ v }: { v: Built }) {
   useCue('sparkle', v.lines >= 2, 0.2);
-  return v.lines >= 2 ? <Burst x={65} y={52} kind="sparks" count={20} seed={2} spread={26} delay={0.1} /> : null;
+  return v.lines >= 2 ? <Burst x={74} y={50} kind="sparks" count={22} seed={2} spread={26} delay={0.1} /> : null;
 }
 
 /** p5 Crash! The tower bursts into bricks that land and stay where they fall. */
@@ -363,5 +325,150 @@ export function BoatRipples({ v }: { v: Built }) {
 /** p16 My Zad: today's provision, a magnifier for the clue hunt, drops into Jiddo's bag. */
 export function MagnifierDrop({ v }: { v: Built }) {
   useCue('pop', v.lines >= 2, 0.5);
-  return v.lines >= 2 ? <Sprite name="l02/magnifier.png" enter="drop" delay={0.2} className="w-[34%]" style={{ left: '33%', top: '30%', rotate: '-14deg' }} /> : null;
+  return v.lines >= 2 ? <Sprite name="l02/magnifier.webp" enter="drop" delay={0.2} className="w-[34%]" style={{ left: '33%', top: '30%', rotate: '-14deg' }} /> : null;
+}
+
+/** p1 Cover: stars twinkle in the window and one brick tumbles onto the spilled pile. cover.webp (1536 × 1024) fills the
+ *  slide (cover fit), so the window spans about x 61-92%, y 0-60% of the slide. */
+const WINDOW_STARS = [[66, 10], [72, 26], [79, 8], [86, 20], [90, 38], [69, 44], [83, 48], [76, 34]];
+export function CoverStars() {
+  const reduce = useReducedMotion();
+  if (reduce) return null;
+  return (
+    <>
+      {WINDOW_STARS.map(([x, y], i) => (
+        <motion.span key={i} className="pointer-events-none absolute h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full"
+          style={{ left: `${x}%`, top: `${y}%`, background: '#FFF6D8', boxShadow: '0 0 12px 4px rgba(255,236,170,0.8)' }}
+          animate={{ opacity: [0.2, 1, 0.3] }} transition={{ duration: 2 + (i % 3), delay: i * 0.4, repeat: Infinity, ease: 'easeInOut' }} />
+      ))}
+      <motion.span
+        className="pointer-events-none absolute block h-[26px] w-[44px] rounded-[5px] border-2 border-black/30"
+        style={{ left: '58.6%', background: P.crimson, boxShadow: '0 8px 12px -6px rgba(0,0,0,0.6)' }}
+        initial={{ top: '-8%', rotate: 0 }} animate={{ top: ['-8%', '86%', '83%', '86%'], rotate: [0, 260, 300, 330] }}
+        transition={{ duration: 1.6, delay: 1.4, times: [0, 0.7, 0.85, 1], ease: 'easeIn' }}
+      />
+    </>
+  );
+}
+
+/** p7 Something bigger: Yusuf's hand rises into view, the fingertips and joints are marked like a teacher's sketch, the
+ *  thumb is ringed, and a little scratch on the palm heals and fades. Points are % of hand.webp. */
+const TIPS = [[13.5, 39], [40, 11], [57, 5], [79, 15], [92.6, 34.5]];
+const JOINTS = [[24, 45], [41, 22], [56, 20], [73, 24], [85.5, 38], [44, 34], [57, 33], [67, 36], [74, 45]];
+export function HandStudy({ v }: { v: Built }) {
+  const reduce = useReducedMotion();
+  useCue('whoosh', v.lines >= 1, 0.1);
+  useCue('pop', v.lines >= 2, 0.3);
+  useCue('pen', v.lines >= 3, 0.2);
+  useCue('sparkle', v.lines >= 3, 1.6);
+  return (
+    <div className="pointer-events-none absolute left-[150px] top-[230px] h-[463px] w-[470px]" aria-hidden="true">
+      {v.lines >= 1 && (
+        <motion.img src={src('l02/hand')} alt="" draggable={false} className="absolute inset-0 h-full w-full select-none"
+          initial={reduce ? false : { opacity: 0, y: 120 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring', bounce: 0.25, duration: 0.9 }} />
+      )}
+      <svg className="absolute inset-0 h-full w-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
+        {v.lines >= 2 && TIPS.map(([x, y], i) => (
+          <motion.circle key={i} cx={x} cy={y} r="1.8" fill={P.gold} stroke="#FFFDF7" strokeWidth="0.6"
+            style={{ transformBox: 'fill-box', transformOrigin: 'center' }}
+            initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: reduce ? 0 : 0.2 + i * 0.12, type: 'spring' }} />
+        ))}
+        {v.lines >= 3 && JOINTS.map(([x, y], i) => (
+          <motion.circle key={i} cx={x} cy={y} r="1.3" fill="none" stroke={P.goldSoft} strokeWidth="0.7"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: reduce ? 0 : 0.1 + i * 0.07 }} />
+        ))}
+        {v.lines >= 3 && <Pen d="M10 30 C4 40 10 52 22 50 C30 48 30 36 22 32 C18 30 13 30 10 30" color={P.crimson} width={3} delay={0.6} duration={0.6} />}
+        {v.lines >= 3 && (
+          <motion.path d="M46 52 L60 57" stroke="#B2242A" strokeWidth="1.4" strokeLinecap="round" fill="none"
+            initial={{ opacity: 0.9 }} animate={{ opacity: reduce ? 0 : [0.9, 0.9, 0] }} transition={{ duration: 2.2, delay: 0.4, times: [0, 0.55, 1] }} />
+        )}
+      </svg>
+      {v.lines >= 3 && <Tag style={{ left: '20%', top: '62%' }} color={P.crimson} delay={0.9}>A thumb that grips</Tag>}
+      {v.lines >= 3 && <Tag style={{ left: '70%', top: '70%' }} color={P.teal} delay={1.8}>It heals by itself</Tag>}
+      {v.lines >= 3 && <Burst x={53} y={55} kind="sparks" count={12} seed={6} delay={1.6} spread={16} />}
+    </div>
+  );
+}
+
+/** p10 Who told you? The baby in her aunt's arms, a warm light that breathes around her, and the word fitrah. */
+export function BabyGlow({ v, label }: { v: Built; label: string }) {
+  const reduce = useReducedMotion();
+  useCue('chime', v.evidence, 0.4);
+  useCue('sparkle', v.interaction, 0.2);
+  return (
+    <Print name="l02/baby" label={label}>
+      {v.lines >= 2 && (
+        <motion.span className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 rounded-full"
+          style={{ ...at(L2, 1010, 520), width: '34%', height: '40%', background: 'radial-gradient(circle, rgba(255,226,150,0.7), rgba(255,226,150,0) 65%)', mixBlendMode: 'screen' }}
+          initial={{ opacity: 0 }} animate={reduce ? { opacity: 0.7 } : { opacity: [0.35, 0.85, 0.35] }}
+          transition={reduce ? { duration: 0.4 } : { duration: 3, repeat: Infinity, ease: 'easeInOut' }} />
+      )}
+      {v.evidence && <Tag style={at(L2, 800, 150)} ar="الفِطرة" color={P.copper} delay={0.4}>fitrah</Tag>}
+      {v.evidence && <Burst x={(1010 / L2.w) * 100} y={(520 / L2.h) * 100} kind="sparks" count={14} seed={13} delay={0.5} spread={18} />}
+      {v.interaction && <Tag style={at(L2, 460, 980)} color={P.teal} delay={0.3}>Allah put it in every heart</Tag>}
+    </Print>
+  );
+}
+
+/** p12 Allah says: Look! The desert in four layers that drift at different depths. When the ayah is read, each sign comes
+ *  forward and lights up in the ayah's order (camels, sky, mountains, earth), then all four stand together. */
+const SIGNS = [
+  { ar: 'ٱلْإِبِلِ', en: 'the camels', color: P.copper, x: 22, y: 30 },
+  { ar: 'ٱلسَّمَآءِ', en: 'the sky', color: P.teal, x: 62, y: 14 },
+  { ar: 'ٱلْجِبَالِ', en: 'the mountains', color: P.crimson, x: 78, y: 50 },
+  { ar: 'ٱلْأَرْضِ', en: 'the earth', color: '#9A6A12', x: 55, y: 86 },
+];
+/** Which layer each sign lights: 0 sky, 1 mountains, 2 ground, 3 the camel. */
+const LAYER_OF = [3, 0, 1, 2];
+export function DesertLook({ v, label }: { v: Built; label: string }) {
+  const reduce = useReducedMotion();
+  const [focus, setFocus] = useState(-1);
+  const [shown, setShown] = useState(0);
+  useCue('whoosh', v.lines >= 2, 0.1);
+  useEffect(() => {
+    if (!v.evidence) { setFocus(-1); setShown(0); return; }
+    if (reduce) { setShown(SIGNS.length); return; }
+    const ids = SIGNS.map((_, i) => window.setTimeout(() => { setFocus(i); setShown(i + 1); play('pop'); }, 600 + i * 1100));
+    ids.push(window.setTimeout(() => { setFocus(-1); play('reveal'); }, 600 + SIGNS.length * 1100));
+    return () => ids.forEach((t) => window.clearTimeout(t));
+  }, [v.evidence, reduce]);
+  const lit = (layer: number) => focus < 0 || LAYER_OF[focus] === layer;
+  const shade = (layer: number) => (lit(layer) ? 'brightness(1.08) saturate(1.1)' : 'brightness(0.5) saturate(0.6)');
+  return (
+    <div className="absolute left-[720px] top-[150px] h-[570px] w-[760px] overflow-hidden rounded-[28px] shadow-[0_40px_80px_-40px_rgba(139,73,53,0.6)]" role="img" aria-label={label}>
+      {['l02/desert-sky', 'l02/desert-mountains', 'l02/desert-ground'].map((name, layer) => {
+        const d = 0.6 + layer * 1.2;
+        return (
+          <motion.img
+            key={name} src={src(name)} alt="" draggable={false} className="absolute inset-[-3%] h-[106%] w-[106%] max-w-none select-none object-cover"
+            initial={false}
+            animate={{ x: reduce ? '0%' : [`-${d}%`, `${d}%`], scale: focus >= 0 && LAYER_OF[focus] === layer ? 1.06 : 1, filter: shade(layer) }}
+            transition={{ x: { duration: 12, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' }, scale: { duration: 0.7, ease: out }, filter: { duration: 0.5 } }}
+          />
+        );
+      })}
+      <motion.img
+        src={src('l02/desert-camel')} alt="" draggable={false} className="absolute bottom-[4%] left-[2%] w-[40%] select-none" style={{ transformOrigin: '50% 100%' }}
+        initial={false} animate={{ x: focus === 0 ? 24 : 0, scale: focus === 0 ? 1.12 : 1, filter: shade(3) }} transition={{ duration: 0.7, ease: out }}
+      />
+      {v.lines >= 2 && !v.evidence && <Tag style={{ left: '50%', top: '50%' }} color={P.crimson} size={34}>Look!</Tag>}
+      {SIGNS.slice(0, shown).map((t) => <Tag key={t.en} style={{ left: `${t.x}%`, top: `${t.y}%` }} ar={t.ar} color={t.color}>{t.en}</Tag>)}
+    </div>
+  );
+}
+
+/** p14 Clue spotting: a ladybird walks along the leaf in Maryam's hand. park.webp in the right-hand panel (cover fit). */
+export function LadybirdWalk({ v }: { v: Built }) {
+  const reduce = useReducedMotion();
+  useCue('pop', v.lines >= 2, 0.4);
+  if (v.lines < 2) return null;
+  return (
+    <motion.img
+      src={src('l02/ladybird')} alt="" aria-hidden="true" draggable={false} className="pointer-events-none absolute w-[7%] select-none"
+      style={{ left: '27%', top: '45%' }}
+      initial={reduce ? false : { opacity: 0, scale: 0.4 }}
+      animate={reduce ? { opacity: 1 } : { opacity: 1, scale: 1, x: [0, 22, 34, 22, 0], y: [0, 6, 12, 6, 0], rotate: [100, 110, 120, 280, 290] }}
+      transition={{ opacity: { duration: 0.4 }, scale: { duration: 0.4 }, default: { duration: 6, delay: 0.6, repeat: Infinity, ease: 'easeInOut' } }}
+    />
+  );
 }

@@ -193,7 +193,8 @@ function ChapterTracker({ lesson, pageIndex, light = false }: { lesson: Lesson; 
 export const SCENE_IMAGES: Partial<Record<LessonPage['scene'], string>> = {
   doorsHero: 'l01/cover', doors: 'l01/cover', chalkboard: 'l01/classroom', jiddo: 'l01/jiddo', madinah: 'l01/madinah', stranger: 'l01/stranger',
   sitting: 'l01/sitting', pillars: 'l01/pillars', roots: 'l01/roots', drawing: 'l01/drawing', reveal: 'l01/reveal', backpack: 'l01/backpack', lego: 'l01/lego',
-  crash: 'l02/crash', sky: 'l02/sky', lock: 'l02/lock', look: 'l02/look', camel: 'l02/camel', park: 'l02/park', boat: 'l02/boat',
+  crash: 'l02/crash', sky: 'l02/sky', lock: 'l02/lock', camel: 'l02/camel', park: 'l02/park', boat: 'l02/boat',
+  window: 'l02/cover', baby: 'l02/baby', desert: 'l02/desert-sky',
 };
 
 /** Where labels point on each painting (% of the image box): x,y = the point, lx,ly = the label. */
@@ -400,7 +401,7 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
     case 'title':
       return (
         <>
-          <Painting page={page} className="inset-0" />
+          <Painting page={page} className="inset-0">{Moment && <Moment v={v} lesson={lesson} />}</Painting>
           <Scrim to="side" />
           <div className="absolute left-[120px] top-[190px] w-[780px]">
             <motion.p initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.7, ease }} lang="ar" dir="rtl" className="w-fit font-serif text-[48px] font-bold" style={{ color: P.goldSoft }}>
@@ -524,9 +525,13 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
           <Painting
             page={page}
             drift={false}
-            className="right-0 top-0 bottom-0 w-[640px] opacity-40"
-            style={{ maskImage: 'linear-gradient(90deg, transparent, #000 60%)', WebkitMaskImage: 'linear-gradient(90deg, transparent, #000 60%)' }}
-          />
+            className={`right-0 top-0 bottom-0 w-[640px] ${Moment ? '' : 'opacity-40'}`}
+            style={Moment
+              ? { maskImage: 'linear-gradient(90deg, transparent, #000 22%)', WebkitMaskImage: 'linear-gradient(90deg, transparent, #000 22%)' }
+              : { maskImage: 'linear-gradient(90deg, transparent, #000 60%)', WebkitMaskImage: 'linear-gradient(90deg, transparent, #000 60%)' }}
+          >
+            {Moment && <Moment v={v} lesson={lesson} />}
+          </Painting>
           <div className={`absolute left-[120px] right-[460px] top-[150px] bottom-[120px] space-y-6 ${COL}`}>
             <Title size={72} light>{page.title}</Title>
             {!v.evidence && <Lines lines={page.lines} count={v.lines} size={36} light />}

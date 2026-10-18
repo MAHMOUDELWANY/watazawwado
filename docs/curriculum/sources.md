@@ -64,7 +64,8 @@ Decision values: Allowed · With conditions · Needs permission · Research only
 
 | Lesson | Files | Made | Notes |
 |---|---|---|---|
-| L2 | `public/curriculum/zad-kids/l02/`: crash, sky, lock, look, camel, park, boat (.webp) | Owner, ChatGPT, 2026-10-18; compressed to WebP by Claude | `lock-base.webp` (key painted out) and `key.webp` (key cut out) made from `lock.webp` with ffmpeg. Style is more 3D than the gouache base prompt; owner accepted the set. |
+| L2 | `public/curriculum/zad-kids/l02/`: crash, sky, lock, camel, park, boat (.webp) | Owner, ChatGPT, 2026-10-18; compressed to WebP by Claude | `lock-base.webp` (key painted out) and `key.webp` (key cut out) made from `lock.webp` with ffmpeg. Style is more 3D than the gouache base prompt; owner accepted the set. |
+| L2 batch 2 | `l02/`: cover, baby, desert-sky, desert-mountains, desert-ground, desert-camel, hand, hand-brick, ladybird, magnifier (.webp); `l01/lego.webp` redone with a gold hijab | Owner, ChatGPT, 2026-10-18; converted to WebP by Claude | ChatGPT painted a fake checkerboard behind the camel and the mountains; Claude keyed it out with ffmpeg (a faint checker texture stays in the camel's fur). `look.webp` retired (replaced by the four desert layers). |
 
 ## G. Science facts (reference only)
 

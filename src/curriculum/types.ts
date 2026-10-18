@@ -20,6 +20,7 @@ export type SceneId =
   | 'window'
   | 'hand'
   | 'baby'
+  | 'desert'
   | 'crash'
   | 'sky'
   | 'lock'

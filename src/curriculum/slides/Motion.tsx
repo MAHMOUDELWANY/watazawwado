@@ -230,9 +230,10 @@ export function BrickCastle({ built, open = false, shine = false, stagger = 0.04
 
 /** A transparent cut-out (`characters/maryam-point.png`, `l02/magnifier.png`) that enters and can float. If the file is
  *  not there yet, nothing shows, so a page never breaks while the owner's images are on their way. */
-export function Sprite({ name, style, enter = 'up', delay = 0, float = false, className = '', animate }: {
+export function Sprite({ name, style, enter = 'up', delay = 0, float = false, className = '', animate, transition }: {
   name: string; style: React.CSSProperties; enter?: 'up' | 'left' | 'right' | 'drop' | 'fade'; delay?: number; float?: boolean; className?: string;
-  animate?: React.ComponentProps<typeof motion.img>['animate'];
+  /** A custom path (keyframes) needs a timed `transition`, since springs only run between two points. */
+  animate?: React.ComponentProps<typeof motion.img>['animate']; transition?: React.ComponentProps<typeof motion.img>['transition'];
 }) {
   const reduce = useReducedMotion();
   const [missing, setMissing] = useState(false);
@@ -244,9 +245,9 @@ export function Sprite({ name, style, enter = 'up', delay = 0, float = false, cl
       className={`pointer-events-none absolute select-none ${className}`} style={style}
       initial={reduce ? false : { opacity: 0, ...from }}
       animate={animate ?? (float && !reduce ? { opacity: 1, x: 0, y: [0, -8, 0], rotate: 0 } : { opacity: 1, x: 0, y: 0, rotate: 0 })}
-      transition={reduce ? { duration: 0 } : float
+      transition={reduce ? { duration: 0 } : transition ?? (float
         ? { opacity: { duration: 0.5, delay }, x: { delay, type: 'spring', bounce: 0.3 }, y: { duration: 3, delay: delay + 0.6, repeat: Infinity, ease: 'easeInOut' }, rotate: { delay } }
-        : { delay, type: 'spring', duration: 0.8, bounce: enter === 'drop' ? 0.45 : 0.25 }}
+        : { delay, type: 'spring', duration: 0.8, bounce: enter === 'drop' ? 0.45 : 0.25 })}
     />
   );
 }

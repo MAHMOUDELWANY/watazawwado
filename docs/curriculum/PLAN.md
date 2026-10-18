@@ -25,11 +25,10 @@
   fixed 1600×900 notebook canvas (`src/curriculum/slides/`), build steps per page, pen/highlighter/laser, page grid,
   thinking timer, replay, praise, explanation panel with a read-aloud `explain` text on every page, new scene art.
 - **Now:** owner reviews Lesson 1 v2 and marks it reviewed (then students can open it).
-- **Now (Lesson 2):** motion and sound pass done (castle built in code, camel lens, camera tour, sparks, sound effects
-  in Lessons 1 and 2, mute button). Waiting for the owner's images batch 2 (11 files in the L02 brief) and the
-  character library (14 poses, `style/kids.md`); pages 1, 7, 10 show no picture until they arrive.
-- **Next:** place batch 2 and the library (cover, hand, baby, desert layers, ladybird, magnifier, Yusuf's hand), then the
-  owner reviews Lesson 2 and marks it reviewed.
+- **Now (Lesson 2):** complete: every page has its own picture and a motion build with sound. Waiting for the owner to
+  review it in the player and mark it reviewed. Still to come from the owner: the character library (14 poses); until
+  then Mishmish does not walk in on the clues page.
+- **Next:** after the owner's review, Lesson 3 (Allah Is One) brief.
 - **Not started:** Lessons 3–37.
 - **Known limit:** lesson text ships in the site bundle, so the lock is a UI lock (content is not secret). Upgrade to
   server-served lessons if content must be protected.
@@ -358,3 +357,9 @@ B3–B5 → continue lesson by lesson.
   builds), clues (the gate opens), 52:35 (cards fly in), sky (constellation, shooting star), key (click and sparks), Look!
   (camera tour of the four signs), camel (lens per part: eyelid, sand on lashes, nostrils, feet), crash (bricks fly and
   stay), boat (ripples). Lesson 1 scenes got their sounds. Image batch 2 + character library requested.
+- **2026-10-18** — Owner delivered image batch 2. Placed: new cover (stars twinkle in the window, a brick drops), Lesson 1
+  castle redone with a gold hijab (sparkles), Yusuf's hand placing bricks as the code castle builds, the hand study
+  (fingertips and joints marked, thumb ringed, a scratch heals), the newborn (breathing light, fitrah), the desert in
+  four depth layers (each sign comes forward in the ayah's order), the ladybird walking on the leaf, the magnifier
+  dropping into the bag. Camel and mountain cut-outs cleaned with ffmpeg (fake checkerboard). Line changed to "Jiddo
+  holds up Yusuf's hand" to match the picture. Checked in headless Chromium; tsc, tests and build pass.

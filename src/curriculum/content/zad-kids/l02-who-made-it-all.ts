@@ -142,7 +142,7 @@ export const lesson02: Lesson = {
       station: 'zad',
       layout: 'question',
       scene: 'hand',
-      lines: ['That evening, Jiddo holds up his hand.', '"Your castle has two hundred bricks. Now look at this."', 'Fingers that bend. A thumb that grips. Skin that heals by itself.'],
+      lines: ["That evening, Jiddo holds up Yusuf's hand.", '"Your castle has two hundred bricks. Now look at this."', 'Fingers that bend. A thumb that grips. Skin that heals by itself.'],
       interaction: {
         kind: 'ask',
         prompt: 'If a castle needs a builder, what about you?',
@@ -273,7 +273,7 @@ export const lesson02: Lesson = {
       title: 'Allah says: Look!',
       station: 'athar',
       layout: 'evidence',
-      scene: 'look',
+      scene: 'desert',
       lines: ['The Quran tells us to look closely and think.', 'Four times in a row, it says: look!'],
       evidence: {
         arabic: 'أَفَلَا يَنظُرُونَ إِلَى ٱلْإِبِلِ كَيْفَ خُلِقَتْ ۝ وَإِلَى ٱلسَّمَآءِ كَيْفَ رُفِعَتْ ۝ وَإِلَى ٱلْجِبَالِ كَيْفَ نُصِبَتْ ۝ وَإِلَى ٱلْأَرْضِ كَيْفَ سُطِحَتْ',
