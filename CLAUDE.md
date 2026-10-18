@@ -8,6 +8,8 @@ Watazawwado Academy: an online academy with a team of male and female teachers g
 
 **Curriculum (المنهج) work, any size, even a vague prompt: use the `curriculum-builder` skill.** Binding rules: [docs/curriculum/RULES.md](docs/curriculum/RULES.md); where we are, decisions and progress log: [docs/curriculum/PLAN.md](docs/curriculum/PLAN.md).
 
+**Social media, video and marketing content, any size: use the `watazawwado-content` skill.** Plan: [docs/marketing/PLAN.md](docs/marketing/PLAN.md); binding content rules: [docs/marketing/RULES.md](docs/marketing/RULES.md); shared context for the marketing skills: `.claude/product-marketing.md`.
+
 ## Skills (use these first)
 
 Owner's priority skills in `.claude/skills`. Reach for them before generic approaches, and always in curriculum work:
@@ -15,6 +17,7 @@ Owner's priority skills in `.claude/skills`. Reach for them before generic appro
 - Writing: `humanizer` on all user-facing copy (site, emails, curriculum); `writing-skills` when making skills.
 - Design: `taste-skill`, `soft-skill`, `redesign-skill`, `minimalist-skill`, `output-skill`, `impeccable` (design/audit/polish commands for any UI).
 - Motion and feel (Emil Kowalski's set, MIT), for the whole site and the curriculum alongside the design skills above: `apple-design` (important), `animate`, `review-animations`, `improve-animations`, `find-animation-opportunities`, `animation-performance`, `mobile-native`, `break-ui`, `emil-design-eng`. Also present but off-stack: `animate-expo`, `write-swift`, `ask-sonner`.
+- Marketing and social media (MIT, installed 2026-10-19 from coreyhaines31/marketingskills and charlie947/social-media-skills): `content-strategy`, `social`, `video`, `copywriting`, `lead-magnets`, `emails`, `hook-generator`, `reels-scripting`, `youtube-thumbnail`, `content-matrix`, `niche-research` and more; always through `watazawwado-content`.
 - SEO: the `seo` hub and `seo-*` leaves (bilingual site, so `seo-hreflang` matters). Their Python helpers live in `.claude/skills/seo/scripts` and need Python plus its requirements; the guidance works without them.
 
 ## Stack
