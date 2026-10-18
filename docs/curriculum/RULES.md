@@ -80,6 +80,10 @@ Sources: recognised tafsir through the quran.com connector only; no personal taf
 ### 1.9 Language and voice
 - Content is **in English** (the audience is Muslim families in the West), keeping essential Arabic terms with Arabic
   script, transliteration and meaning. Ayat and hadith appear in Arabic with our English meaning.
+- **The English meaning fits the learner's mind (owner, 2026-10-18).** For the young versions (Kids and Teens) the
+  meaning of an ayah or hadith is written in simple, everyday words the learner already knows, in short sentences, never
+  heavy or formal English ("made" rather than "created", "the skies" rather than "the heavens"). It stays faithful to the
+  Arabic and to the tafsir; simple never means changed. Per band: see "Meaning of ayat and hadith" in §3.
 - Voice: warm, wise, human and short. Never sounds AI-written. Run the `humanizer` skill on every learner- or
   teacher-facing text before it ships.
 
@@ -137,6 +141,7 @@ worship into points. Love first; Jannah and the Fire are both mentioned honestly
 | **Check (Athar)** | A game checkpoint (types in `zad-essentials-kids/MAP.md`) | A challenge game | Case questions and a short review |
 | **Doubts (shubuhat)** | Not raised | Answered inside the related lesson: rational first, then textual; never planting a doubt the learner did not have | As teens, in more depth |
 | **Fiqh differences** | None (Shafi'i only) | None (Shafi'i only) | Shafi'i; where a recognised difference exists, one line: other views exist, ask your teacher |
+| **Meaning of ayat and hadith** | Words a 6–11 child uses every day, short sentences, no formal English | Plain modern English, short sentences | Faithful and fuller, still plain English |
 | **Tadabbur depth** | One word, one simple question, one small deed | The word's root and how it shapes the meaning | Root, context and tafsir notes |
 | **Ahd** | A small deed, often with the family | A personal challenge | A habit or decision |
 | **Look** | Illustrated storybook (the current slide system) | Bolder: graphic novel / anime | Calm, cinematic, editorial |

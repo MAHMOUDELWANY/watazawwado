@@ -163,7 +163,7 @@ export const lesson02: Lesson = {
       lines: ['Long ago, Allah asked people these very questions in the Quran.'],
       evidence: {
         arabic: 'أَمْ خُلِقُوا۟ مِنْ غَيْرِ شَىْءٍ أَمْ هُمُ ٱلْخَـٰلِقُونَ',
-        meaning: 'Or were they created from nothing? Or did they create themselves?',
+        meaning: 'Were they made from nothing? Or did they make themselves?',
         reference: 'At-Tur 52:35',
       },
       tadabbur: {
@@ -194,7 +194,7 @@ export const lesson02: Lesson = {
       lines: ['Then the Quran looks up, at something even bigger.', 'Nobody has ever made a sky. Not even a tiny one.'],
       evidence: {
         arabic: 'أَمْ خَلَقُوا۟ ٱلسَّمَـٰوَٰتِ وَٱلْأَرْضَ ۚ بَل لَّا يُوقِنُونَ',
-        meaning: 'Or did they create the heavens and the earth? No. The truth is, they are not sure.',
+        meaning: 'Or did they make the skies and the earth? No! The truth is, their hearts are not sure.',
         reference: 'At-Tur 52:36',
       },
       tadabbur: {
@@ -224,7 +224,7 @@ export const lesson02: Lesson = {
       lines: ['"Jiddo, nobody taught me that castles need builders. I just knew!" says Maryam.', 'Jiddo smiles. "That knowing was put inside you. It has a name."'],
       evidence: {
         arabic: 'كُلُّ مَولودٍ يولَدُ على الفِطرةِ',
-        meaning: 'Every baby is born on the fitrah.',
+        meaning: 'Every baby is born with the fitrah.',
         reference: FITRAH_HADITH,
       },
       interaction: {
@@ -248,7 +248,7 @@ export const lesson02: Lesson = {
       lines: ['Allah made every person with fitrah.', 'Islam fits it, like a key fits its lock.'],
       evidence: {
         arabic: 'فِطْرَتَ ٱللَّهِ ٱلَّتِى فَطَرَ ٱلنَّاسَ عَلَيْهَا ۚ لَا تَبْدِيلَ لِخَلْقِ ٱللَّهِ',
-        meaning: 'The fitrah of Allah, the way He made all people. Nothing can change what Allah has made.',
+        meaning: 'The fitrah of Allah: the way He made all people. No one can change what Allah made.',
         reference: 'Ar-Rum 30:30',
       },
       tadabbur: {
@@ -277,7 +277,7 @@ export const lesson02: Lesson = {
       lines: ['The Quran tells us to look closely and think.', 'Four times in a row, it says: look!'],
       evidence: {
         arabic: 'أَفَلَا يَنظُرُونَ إِلَى ٱلْإِبِلِ كَيْفَ خُلِقَتْ ۝ وَإِلَى ٱلسَّمَآءِ كَيْفَ رُفِعَتْ ۝ وَإِلَى ٱلْجِبَالِ كَيْفَ نُصِبَتْ ۝ وَإِلَى ٱلْأَرْضِ كَيْفَ سُطِحَتْ',
-        meaning: 'Do they not look at the camels, how they were made? And at the sky, how it was raised? And at the mountains, how they were set firm? And at the earth, how it was spread out?',
+        meaning: "Won't they look at the camels, how they were made? And at the sky, how it was lifted up high? And at the mountains, how they were made to stand firm? And at the earth, how it was spread out wide?",
         reference: 'Al-Ghashiyah 88:17-20',
       },
       tadabbur: {

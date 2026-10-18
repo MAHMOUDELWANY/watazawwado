@@ -109,6 +109,35 @@ We state these as facts about the camel and say "look how it was made". We never
    happens when there are two bosses?"
 4. **Science source:** San Diego Zoo is a fact reference only (facts, our own words). Added to `sources.md` §G.
 
+## Images for the built pages (owner generates in ChatGPT)
+
+Each prompt starts with the base prompt in `../style/kids.md`. Characters exactly as the character sheet (Maryam's hijab
+is **gold**). Save as WebP in `public/curriculum/zad-kids/l02/` with these names. Reused from Lesson 1: `lego.webp`
+(castle, cover, game), `jiddo.webp`, `backpack.webp`, `doors`.
+
+1. **crash.webp** (page "Crash!"): Maryam's bedroom in the morning, sun through the window. Mishmish, a ginger tabby cat
+   with a white chest, mid-leap into a colourful toy brick castle; one tower is falling and bricks are scattering in the
+   air. Maryam (7, gold hijab, red dress with gold trim) sits up in bed, hands on her cheeks. Yusuf (9, curly black hair,
+   teal hoodie) grins in the doorway. Clear floor space in front of the castle.
+2. **sky.webp** (page "Who made the sky?"): dusk in a back garden of a Western city house. Jiddo (white beard, white
+   crocheted kufi, cream thobe, brown embroidered vest, wooden stick), Yusuf and Maryam sit on a wooden bench, seen from
+   behind, looking up. The top two thirds is a huge deep blue sky turning to gold at the horizon, the first stars
+   appearing. Keep the sky empty of objects.
+3. **lock.webp** (page "Made ready to know Him"): object study on a plain cream background. An old brass key beside a
+   wooden chest's ornate brass lock with a khatam-star pattern; the key is clearly the one that fits the keyhole. Lock on
+   the left, key on the right, space between them.
+4. **look.webp** (page "Allah says: Look!"): one wide desert landscape at golden hour, no people. A dromedary camel in
+   the left foreground, a vast high sky with soft clouds, firm mountains in the distance, a wide open plain spreading to
+   the horizon. Each of the four (camel, sky, mountains, earth) sits in its own clear area of the picture.
+5. **camel.webp** (page "The camel's desert kit"): study of one dromedary camel on a plain cream background, side view,
+   whole body. Clearly visible: long double row of eyelashes, slit nostrils, wide flat padded feet. Calm, friendly, not
+   cartoonish. Space around the head and feet for labels.
+6. **park.webp** (page "Clue spotting"): a green city park just after rain, a rainbow across the sky. Maryam crouches,
+   holding out a leaf with a ladybird on it; Yusuf leans in to look. Wet grass, puddles with reflections, a few trees.
+7. **boat.webp** (page "Next time…"): a park lake on a sunny Saturday. A small pedal boat spinning on the water, ripples in
+   circles around it. Yusuf and Maryam sit side by side, both gripping one steering wheel, Yusuf pulling it left and
+   Maryam right, both laughing. Seen from the side.
+
 ## Owner decisions (2026-10-18)
 
 1. Hadith for 6–11: first clause only, as proposed.
@@ -116,6 +145,8 @@ We state these as facts about the camel and say "look how it was made". We never
    (owner: "you are speaking to a child's mind").
 3. Pedal-boat cliffhanger for Lesson 3 approved.
 4. San Diego Zoo approved as a fact reference.
+5. New rule: English meanings for the young versions in simple, everyday words (RULES.md §1.9, §3). Applied to the
+   meanings in Lessons 1 and 2.
 
 Claude's calls at the page-text step: the game sorts things by who made them (the two bins teach that what people build
 is also made from what Allah created, so it never splits creation between Allah and people); "Clue spotting" is the

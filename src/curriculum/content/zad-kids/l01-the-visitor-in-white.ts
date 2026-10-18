@@ -100,7 +100,7 @@ export const lesson01: Lesson = {
       lines: ['He had no dust on him, as if he lived nearby.', 'But nobody there knew who he was.'],
       evidence: {
         arabic: 'لا يُرى عليه أثَرُ السَّفَرِ، ولا يَعرِفُه مِنَّا أحَدٌ',
-        meaning: 'No sign of travel could be seen on him, and none of us knew him.',
+        meaning: 'We could not see any dust from a journey on him, and none of us knew him.',
         reference: MUSLIM_8,
       },
       interaction: {
@@ -128,7 +128,7 @@ export const lesson01: Lesson = {
       lines: ['He sat right in front of the Prophet ﷺ, knee to knee.', 'He placed his hands on his thighs, ready to listen.'],
       evidence: {
         arabic: 'فأسنَدَ رُكبَتَيه إلى رُكبَتَيه، ووضَعَ كَفَّيه على فخِذَيه',
-        meaning: 'He sat with his knees touching his knees, and placed his hands on his thighs.',
+        meaning: 'He sat knee to knee with him, and put his hands on his legs.',
         reference: MUSLIM_8,
       },
       interaction: { kind: 'ask', prompt: 'Show me how you sit when you really want to learn something.' },
@@ -164,7 +164,7 @@ export const lesson01: Lesson = {
       lines: ['The man said: "You have spoken the truth."', 'The companions were amazed.'],
       evidence: {
         arabic: 'فعَجِبنا له يَسألُه، ويُصَدِّقُه',
-        meaning: 'We were amazed: he asks him, and then he tells him he is right.',
+        meaning: 'We were surprised: he asks a question, then says the answer is right!',
         reference: MUSLIM_8,
       },
       interaction: {
@@ -205,7 +205,7 @@ export const lesson01: Lesson = {
       lines: ['"Tell me about Ihsan."', 'Doing your very best, because Allah sees you.'],
       evidence: {
         arabic: 'أن تَعبُدَ اللهَ كَأنَّك تَراه، فإن لَم تَكُنْ تَراه فإنَّه يَراك',
-        meaning: 'To worship Allah as if you see Him, and if you do not see Him, He sees you.',
+        meaning: 'To worship Allah as if you can see Him. And even if you cannot see Him, He sees you.',
         reference: MUSLIM_8,
       },
       interaction: { kind: 'ask', prompt: 'When nobody is looking, who still sees you?', reveal: 'Allah does. And He loves it when you try your best.' },
@@ -224,7 +224,7 @@ export const lesson01: Lesson = {
       lines: ['Then the man stood up and left.', 'The Prophet ﷺ asked Umar: "Do you know who the questioner was?"', 'Umar said: "Allah and His Messenger know best."'],
       evidence: {
         arabic: 'يا عُمَرُ أتَدري مَنِ السَّائِلُ؟ قُلتُ: اللهُ ورَسولُه أعلَمُ',
-        meaning: '"O Umar, do you know who the questioner was?" I said: "Allah and His Messenger know best."',
+        meaning: '"Umar, do you know who that man asking questions was?" I said: "Allah and His Messenger know best."',
         reference: MUSLIM_8,
       },
       interaction: { kind: 'ask', prompt: 'What do you think? Who was he?' },
