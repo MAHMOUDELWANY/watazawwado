@@ -236,20 +236,28 @@ function Painting({ page, className = '', style, drift = true, children }: { pag
   const src = SCENE_IMAGES[page.scene];
   return (
     <div className={`absolute overflow-hidden ${className}`} style={style}>
-      {src ? (
-        <motion.img
-          src={`/curriculum/zad-kids/${src}.webp`}
-          alt={page.title}
-          draggable={false}
-          className="h-full w-full object-cover"
-          initial={reduce ? false : { scale: 1.1, filter: 'blur(8px) saturate(0.85)' }}
-          animate={reduce ? undefined : { scale: drift ? 1 : 1, filter: 'blur(0px) saturate(1)' }}
-          transition={{ scale: { duration: drift ? 16 : 1.2, ease: 'easeOut' }, filter: { duration: 0.8, ease } }}
-        />
-      ) : (
-        <SceneArt id={page.scene} label={page.title} />
-      )}
-      {children}
+      {/* The slow camera move scales the painting and its overlays together, so motion drawn over it stays on its spot. */}
+      <motion.div
+        className="absolute inset-0"
+        initial={reduce ? false : { scale: 1.1 }}
+        animate={reduce ? undefined : { scale: 1 }}
+        transition={{ duration: drift ? 16 : 1.2, ease: 'easeOut' }}
+      >
+        {src ? (
+          <motion.img
+            src={`/curriculum/zad-kids/${src}.webp`}
+            alt={page.title}
+            draggable={false}
+            className="h-full w-full object-cover"
+            initial={reduce ? false : { filter: 'blur(8px) saturate(0.85)' }}
+            animate={reduce ? undefined : { filter: 'blur(0px) saturate(1)' }}
+            transition={{ duration: 0.8, ease }}
+          />
+        ) : (
+          <SceneArt id={page.scene} label={page.title} />
+        )}
+        {children}
+      </motion.div>
     </div>
   );
 }

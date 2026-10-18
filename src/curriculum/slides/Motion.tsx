@@ -114,6 +114,58 @@ export function ShootingStar({ x1 = 15, y1 = 12, x2 = 70, y2 = 34, delay = 0 }: 
   );
 }
 
+/** Specks of light (or steam, or hearts) rising from each source point and fading, on a loop. */
+export function Rise({ from, count = 6, kind = 'mote', height = 18, seed = 1 }: {
+  from: { x: number; y: number }[]; count?: number; kind?: 'mote' | 'steam' | 'heart'; height?: number; seed?: number;
+}) {
+  const reduce = useReducedMotion();
+  if (reduce) return null;
+  const r = rng(seed);
+  return (
+    <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+      {from.flatMap((f, j) => Array.from({ length: count }, (_, i) => {
+        const dx = (r() - 0.5) * (kind === 'steam' ? 2 : 6);
+        const dur = (kind === 'steam' ? 2.6 : 3.4) + r() * 1.6;
+        const style: React.CSSProperties = { left: `${f.x + dx}%`, top: `${f.y}%` };
+        const anim = { top: [`${f.y}%`, `${f.y - height}%`], left: [`${f.x + dx}%`, `${f.x + dx + (r() - 0.5) * 4}%`], opacity: [0, 0.9, 0], scale: kind === 'steam' ? [0.6, 1.6] : [0.6, 1] };
+        const t = { duration: dur, delay: i * (dur / count) + j * 0.3, repeat: Infinity, ease: 'easeOut' as const };
+        if (kind === 'heart') return <motion.span key={`${j}-${i}`} className="absolute -translate-x-1/2 text-[22px] leading-none" style={{ ...style, color: P.crimson }} animate={anim} transition={t}>♥</motion.span>;
+        return (
+          <motion.span key={`${j}-${i}`} className="absolute block -translate-x-1/2 rounded-full"
+            style={{ ...style, width: kind === 'steam' ? 18 : 6, height: kind === 'steam' ? 18 : 6,
+              background: kind === 'steam' ? 'rgba(255,250,240,0.55)' : '#FFE7A3', filter: kind === 'steam' ? 'blur(5px)' : undefined,
+              boxShadow: kind === 'mote' ? '0 0 10px 3px rgba(255,220,140,0.85)' : undefined }}
+            animate={anim} transition={t} />
+        );
+      }))}
+    </div>
+  );
+}
+
+/** Slow sun rays turning round (x, y). */
+export function SunRays({ x, y, size = 60 }: { x: number; y: number; size?: number }) {
+  const reduce = useReducedMotion();
+  return (
+    <motion.div className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2" aria-hidden="true"
+      style={{ left: `${x}%`, top: `${y}%`, width: `${size}%`, aspectRatio: '1', mixBlendMode: 'screen',
+        background: 'repeating-conic-gradient(from 0deg, rgba(255,230,160,0.38) 0deg 6deg, rgba(255,230,160,0) 6deg 22deg)',
+        WebkitMaskImage: 'radial-gradient(circle, #000 10%, transparent 68%)', maskImage: 'radial-gradient(circle, #000 10%, transparent 68%)' }}
+      initial={{ opacity: 0, rotate: 0 }} animate={{ opacity: 1, rotate: reduce ? 0 : 40 }}
+      transition={{ opacity: { duration: 1.2 }, rotate: { duration: 30, repeat: Infinity, ease: 'linear' } }} />
+  );
+}
+
+/** A soft round light that breathes at (x, y): a lantern, a doorway, a glowing figure. */
+export function Glow({ x, y, w = 24, h = 30, color = '255,236,180' }: { x: number; y: number; w?: number; h?: number; color?: string }) {
+  const reduce = useReducedMotion();
+  return (
+    <motion.span className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 rounded-full" aria-hidden="true"
+      style={{ left: `${x}%`, top: `${y}%`, width: `${w}%`, height: `${h}%`, background: `radial-gradient(ellipse, rgba(${color},0.75), rgba(${color},0) 68%)`, mixBlendMode: 'screen' }}
+      initial={{ opacity: 0 }} animate={reduce ? { opacity: 0.8 } : { opacity: [0.4, 0.95, 0.4] }}
+      transition={reduce ? { duration: 0.4 } : { duration: 3.2, repeat: Infinity, ease: 'easeInOut' }} />
+  );
+}
+
 /** Rings spreading out on water from (x, y), on a loop. */
 export function Ripples({ x, y, w = 30, count = 3 }: { x: number; y: number; w?: number; count?: number }) {
   const reduce = useReducedMotion();

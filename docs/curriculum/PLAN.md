@@ -25,10 +25,9 @@
   fixed 1600×900 notebook canvas (`src/curriculum/slides/`), build steps per page, pen/highlighter/laser, page grid,
   thinking timer, replay, praise, explanation panel with a read-aloud `explain` text on every page, new scene art.
 - **Now:** owner reviews Lesson 1 v2 and marks it reviewed (then students can open it).
-- **Now (Lesson 2):** complete: every page has its own picture and a motion build with sound. Waiting for the owner to
-  review it in the player and mark it reviewed. The character library (14 poses) is in `characters/` and used: Jiddo on
-  the recall page, Maryam thinking and then jumping for joy on the three-ways page, Mishmish through the castle gate.
-- **Next:** after the owner's review, Lesson 3 (Allah Is One) brief.
+- **Now (Lessons 1 and 2):** both have the full motion and sound pass. The owner reviews the two together and marks
+  them reviewed.
+- **Next:** after the review, Lesson 3 (Allah Is One) brief.
 - **Not started:** Lessons 3–37.
 - **Known limit:** lesson text ships in the site bundle, so the lock is a UI lock (content is not secret). Upgrade to
   server-served lessons if content must be protected.
@@ -365,3 +364,8 @@ B3–B5 → continue lesson by lesson.
   holds up Yusuf's hand" to match the picture. Checked in headless Chromium; tsc, tests and build pass.
 - **2026-10-18** — Owner delivered the character library (14 transparent poses, `characters/`). Lesson 2 now uses Jiddo
   (recall), Maryam (thinking, then jumping for joy as the castle stands) and Mishmish (walking through the open gate).
+- **2026-10-18** — Lesson 1 motion pass (owner: "apply the effects to Lesson 1 too, I will review both together"):
+  cover (doorways glow, motes rise, Yusuf and Maryam from the library wonder at the doors), classroom (chalk underline,
+  a "?" by Ms. Clarke, whisper waves), Jiddo's story (steam, Mishmish's hearts, a trail of light to the window), Madinah
+  (sun rays, a soft light round the man in white, seen from behind). Scenes in `slides/lessons/l01.tsx`; new primitives
+  `Rise`, `SunRays`, `Glow` in `Motion.tsx`. The painting's slow camera move now carries its overlays with it.
