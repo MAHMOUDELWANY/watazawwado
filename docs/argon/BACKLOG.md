@@ -44,7 +44,7 @@ Principles every PR/RN task follows:
 ## PR: Learner progress experience (owner priority)
 
 ### PR-01 Progress data model: shared lesson summaries and milestones
-- Priority P1 · Zone 🟢 (additive migration) · Size M · Status todo
+- Priority P1 · Zone 🟢 (additive migration) · Size M · Status taken (2026-10-19 argon)
 - Files: new migration, `src/types/database.ts`, `api/index.ts` or a new `server/routes/progress.ts`.
 - Do: `lesson_notes.private_notes` is teacher-only and must never reach a family. Add what the family view needs:
   a nullable `family_summary text` and `achievements jsonb` on `lesson_notes` (what was covered, in the teacher's words
