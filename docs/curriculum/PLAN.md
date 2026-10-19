@@ -29,8 +29,11 @@
   them reviewed.
 - **Now (player polish, 2026-10-18):** owner reviews the new sounds, the praise word "Zādak Allāh", the new question
   cards and game, and the page-turn transition (they apply to every lesson of the series).
-- **Next:** after the review, Lesson 3 (Allah Is One) brief.
-- **Not started:** Lessons 3–37.
+- **Now (Lesson 3, 2026-10-19):** at the owner's request ("finish everything for Lesson 3, then tell me what to add"),
+  the brief, page text, Arabic notes and code scenes were done in one pass (`zad-essentials-kids/L03-allah-is-one.md`).
+  Waiting for the owner: review of the brief's 5 open points and the text, and 7 images (table in the brief).
+- **Next:** place the Lesson 3 images when they arrive and tune the moments over them; then Lesson 4 brief.
+- **Not started:** Lessons 4–37.
 - **Known limit:** lesson text ships in the site bundle, so the lock is a UI lock (content is not secret). Upgrade to
   server-served lessons if content must be protected.
 
@@ -380,3 +383,11 @@ B3–B5 → continue lesson by lesson.
   deck, dragged or tapped to a door, instant feedback (the door glows or shakes), first try counted for the teacher's
   report. Page turn: the old slide dims away as the new one drifts in from the direction of travel. Needs review: the
   link of "زادك الله" to the Prophet's words to Abu Bakrah (Bukhari 783) is not verified and is not shown on screen.
+- **2026-10-19** — Lesson 3 (Allah Is One), all steps in one pass at the owner's request. Evidence checked: 21:22, 47:19,
+  112:1-4 (quran.com connector; al-Sa'di, al-Muyassar; morphology), Bukhari 7375 / Muslim 813, Bukhari 5013, Bukhari 5017
+  (Dorar, sahih). 16 pages (one optional), tadabbur on every ayah, game "True or not?", Ahd al-Ikhlas before sleep,
+  cliffhanger to Lesson 4 (the football coach). Code scenes in `slides/lessons/l03.tsx`: two captains from above, the
+  solar system that wobbles with a second "boss" (wow), the shahada's two halves, one heart with one centre, the khatam
+  star of al-Ikhlas in four pieces, the needs chain. Player: a painting not delivered yet shows a warm wash instead of a
+  broken image; Arabic vocab no longer wraps mid-phrase. Checked in headless Edge; tsc, tests and build pass. Waiting:
+  owner review + 7 images.

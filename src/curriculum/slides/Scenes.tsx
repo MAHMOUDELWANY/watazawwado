@@ -27,7 +27,8 @@ function Plate({ children, className = '' }: { children: React.ReactNode; classN
 const PAPER_WHITE = 'brightness(1.045)';
 
 export function Layer({ name, style, filter, ...rest }: { name: string; style?: React.CSSProperties; filter?: string } & React.ComponentProps<typeof motion.img>) {
-  return <motion.img src={src(name)} alt="" aria-hidden="true" draggable={false} className="absolute inset-0 h-full w-full select-none object-contain" style={{ filter: filter ?? PAPER_WHITE, ...style }} {...rest} />;
+  // A painting not delivered yet hides itself instead of showing a broken-image icon.
+  return <motion.img src={src(name)} alt="" aria-hidden="true" draggable={false} onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }} className="absolute inset-0 h-full w-full select-none object-contain" style={{ filter: filter ?? PAPER_WHITE, ...style }} {...rest} />;
 }
 
 /* ---------- Islam: five pillars hold up the house ---------- */
@@ -452,7 +453,7 @@ export function Print({ name, children, label }: { name: string; children?: Reac
   const reduce = useReducedMotion();
   return (
     <div className="absolute left-[720px] top-[150px] h-[570px] w-[760px]" role="img" aria-label={label}>
-      <div className="absolute inset-0 overflow-hidden rounded-[28px] shadow-[0_40px_80px_-40px_rgba(139,73,53,0.6)]">
+      <div className="absolute inset-0 overflow-hidden rounded-[28px] shadow-[0_40px_80px_-40px_rgba(139,73,53,0.6)]" style={{ background: 'radial-gradient(ellipse at 40% 40%, #F3D9A4 0%, #C98D57 70%, #8A5634 100%)' }}>
         <Layer name={name} filter="none" initial={reduce ? false : { scale: 1.06 }} animate={{ scale: 1 }} transition={{ duration: 1.4, ease: out }} />
       </div>
       {children}

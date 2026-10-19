@@ -27,7 +27,21 @@ export type SceneId =
   | 'look'
   | 'camel'
   | 'park'
-  | 'boat';
+  | 'boat'
+  // Lesson 3 (paintings in public/curriculum/zad-kids/l03; twoCaptains, orbits, shahada, oneHeart, starPieces and needs
+  // are drawn in code)
+  | 'oneSun'
+  | 'twoCaptains'
+  | 'sunrise'
+  | 'orbits'
+  | 'shahada'
+  | 'oneHeart'
+  | 'recite'
+  | 'starPieces'
+  | 'needs'
+  | 'masjidNight'
+  | 'dua'
+  | 'football';
 
 /** How a page is laid out on the slide (docs/curriculum/PLAN.md §7, slide system v2). */
 export type Layout =

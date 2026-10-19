@@ -195,6 +195,7 @@ export const SCENE_IMAGES: Partial<Record<LessonPage['scene'], string>> = {
   sitting: 'l01/sitting', pillars: 'l01/pillars', roots: 'l01/roots', drawing: 'l01/drawing', reveal: 'l01/reveal', backpack: 'l01/backpack', lego: 'l01/lego',
   crash: 'l02/crash', sky: 'l02/sky', lock: 'l02/lock', camel: 'l02/camel', park: 'l02/park', boat: 'l02/boat',
   window: 'l02/cover', baby: 'l02/baby', desert: 'l02/desert-sky',
+  oneSun: 'l03/cover', sunrise: 'l03/sunrise', recite: 'l03/recite', masjidNight: 'l03/masjid-night', dua: 'l03/dua', football: 'l03/football',
 };
 
 /** Where labels point on each painting (% of the image box): x,y = the point, lx,ly = the label. */
@@ -233,7 +234,10 @@ export const isStage = (c: Composition) => c === 'title' || c === 'spotlight' ||
 /** The painting, with one authored entrance: it settles out of a soft blur, then drifts slowly. */
 function Painting({ page, className = '', style, drift = true, children }: { page: LessonPage; className?: string; style?: React.CSSProperties; drift?: boolean; children?: React.ReactNode }) {
   const reduce = useReducedMotion();
-  const src = SCENE_IMAGES[page.scene];
+  // A painting the owner has not delivered yet shows a warm wash, so the page's motion still reads on it.
+  const [missing, setMissing] = useState<string | null>(null);
+  const listed = SCENE_IMAGES[page.scene];
+  const src = listed && listed !== missing ? listed : undefined;
   return (
     <div className={`absolute overflow-hidden ${className}`} style={style}>
       {/* The slow camera move scales the painting and its overlays together, so motion drawn over it stays on its spot. */}
@@ -248,11 +252,14 @@ function Painting({ page, className = '', style, drift = true, children }: { pag
             src={`/curriculum/zad-kids/${src}.webp`}
             alt={page.title}
             draggable={false}
+            onError={() => setMissing(src)}
             className="h-full w-full object-cover"
             initial={reduce ? false : { filter: 'blur(8px) saturate(0.85)' }}
             animate={reduce ? undefined : { filter: 'blur(0px) saturate(1)' }}
             transition={{ duration: 0.8, ease }}
           />
+        ) : listed ? (
+          <div className="h-full w-full" role="img" aria-label={page.title} style={{ background: 'radial-gradient(ellipse at 60% 40%, #F3D9A4 0%, #C98D57 60%, #7A4A30 100%)' }} />
         ) : (
           <SceneArt id={page.scene} label={page.title} />
         )}
@@ -364,8 +371,8 @@ function Vocab({ page, light = false }: { page: LessonPage; light?: boolean }) {
     <div className="flex flex-wrap gap-6">
       {page.vocab.map((w) => (
         <span key={w.translit} className="flex items-baseline gap-3 font-sans text-[22px]" style={{ color: light ? '#FFF8EA' : P.ink }}>
-          <motion.span lang="ar" dir="rtl" className="font-serif text-[40px] leading-none" style={{ color: light ? P.goldSoft : P.crimson }} initial={{ clipPath: 'inset(0 0 0 100%)' }} animate={{ clipPath: 'inset(0 0 0 0%)' }} transition={{ duration: 0.9, delay: 0.3, ease: 'easeInOut' }}>{w.arabic}</motion.span>
-          <b>{w.translit}</b>
+          <motion.span lang="ar" dir="rtl" className="shrink-0 whitespace-nowrap font-serif text-[40px] leading-none" style={{ color: light ? P.goldSoft : P.crimson }} initial={{ clipPath: 'inset(0 0 0 100%)' }} animate={{ clipPath: 'inset(0 0 0 0%)' }} transition={{ duration: 0.9, delay: 0.3, ease: 'easeInOut' }}>{w.arabic}</motion.span>
+          <b className="shrink-0 whitespace-nowrap">{w.translit}</b>
           <span style={{ color: light ? '#E9DCC5' : P.inkSoft }}>{w.meaning}</span>
         </span>
       ))}
