@@ -65,7 +65,7 @@ Principles every PR/RN task follows:
 - Done when: tests cover own learner, guardian's child, foreign child (403), learner with zero lessons (empty but valid).
 
 ### PR-03 Progress page: the learning path
-- Priority P1 · Zone 🟢 · Size L · Status taken (2026-10-19 argon) · Depends on PR-02
+- Priority P1 · Zone 🟢 · Size L · Status done (dc58c80) · Depends on PR-02
 - Files: new `src/student/pages/StudentProgressPage.tsx`, route and nav entry in `src/student/StudentApp.tsx`.
 - Do: the centrepiece. A vertical path per subject (like a learning-app map) built from the subject's real levels:
   finished levels as filled medallions, the current level glowing with progress inside it, future levels as soft

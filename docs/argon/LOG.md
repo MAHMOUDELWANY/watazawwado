@@ -28,6 +28,13 @@ _None yet._
 
 ## Done
 
+### PR-03 Progress page: the learning path (2026-10-19)
+- Result: done (dc58c80 on main)
+- Changed: `src/student/pages/StudentProgressPage.tsx`, `src/student/StudentApp.tsx`, `test/pr-03-progress-page.test.ts`, `docs/argon/screenshots/pr03-*.png`
+- Migration: none
+- Checks: tsc pass (0 errors), npm test 1043 pass / 0 fail, build pass, browser check `/student/progress` verified in Arabic & English, light & dark themes, desktop (1280px) & mobile (375px) + zero-lesson empty state (0 console errors; screenshots in `docs/argon/screenshots/pr03-desktop-ar-path-scrolled.png`, `docs/argon/screenshots/pr03-desktop-en-dark.png`, `docs/argon/screenshots/pr03-mobile-375-ar-path-scrolled.png`, `docs/argon/screenshots/pr03-mobile-375-en-dark.png`)
+- Not checked / risks: Auto-scroll to `[data-current-level="true"]` verified in headless Chromium; family overview grid for multi-child guardian accounts is scheduled in PR-07 (currently uses learner switcher pills).
+
 ### PR-02 Progress API (read model) (2026-10-19)
 - Result: done (27df92a on main)
 - Changed: `server/routes/progress.ts`, `test/pr-02-progress-api.test.ts`
