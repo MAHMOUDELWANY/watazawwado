@@ -57,7 +57,7 @@ Principles every PR/RN task follows:
 - Skills: `new-migration`, `security-and-hardening`.
 
 ### PR-02 Progress API (read model)
-- Priority P1 · Zone 🟢 · Size M · Status todo · Depends on PR-01
+- Priority P1 · Zone 🟢 · Size M · Status taken (2026-10-19 argon) · Depends on PR-01
 - Do: `GET /api/student/progress?learnerId=` returns, per subject: current level and the subject's level list (from
   `src/components/onboarding/subjects.ts`), lessons attended (total, this month), weekly rhythm (current, longest),
   milestones, last 5 family summaries, placement result, next booked lesson. A guardian may pass a child's id only if
