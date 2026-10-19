@@ -28,4 +28,10 @@ _None yet._
 
 ## Done
 
-_None yet._
+### PR-01 Progress data model: shared lesson summaries and milestones (2026-10-19)
+- Result: done (b7b5060 on main)
+- Changed: `supabase/migrations/20261019000000_learner_progress_summaries_milestones.sql`, `src/types/database.ts`, `server/routes/progress.ts`, `api/index.ts`, `test/pr-01-progress-data-model.test.ts`
+- Migration: `supabase/migrations/20261019000000_learner_progress_summaries_milestones.sql`, applied to production no (no `supabase` CLI or direct SQL connection available locally; ready for owner to apply via Supabase SQL editor or `supabase db push`)
+- Checks: tsc pass (0 errors), npm test 1032 pass / 0 fail, build pass, browser check N/A (backend + schema task)
+- Not checked / risks: Migration file is ready and verified by tests, and existing `/api/dashboard/students/:id/notes` endpoints remain backward-compatible before migration application, but the SQL file must be applied to production Supabase before `/api/student/milestones` or `/api/dashboard/students/:id/milestones` are queried against production.
+
