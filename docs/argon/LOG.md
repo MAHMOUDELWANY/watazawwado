@@ -28,6 +28,13 @@ _None yet._
 
 ## Done
 
+### PR-02 Progress API (read model) (2026-10-19)
+- Result: done (27df92a on main)
+- Changed: `server/routes/progress.ts`, `test/pr-02-progress-api.test.ts`
+- Migration: none
+- Checks: tsc pass (0 errors), npm test 1039 pass / 0 fail, build pass, browser check N/A (backend API task)
+- Not checked / risks: Smoke-tested locally with dev student/guardian/foreign tokens and zero-lesson student fixture; relies on PR-01 migration (`learner_milestones` and `lesson_notes` columns) already applied to production by Claude.
+
 ### PR-01 Progress data model: shared lesson summaries and milestones (2026-10-19)
 - Result: done (b7b5060 on main)
 - Changed: `supabase/migrations/20261019000000_learner_progress_summaries_milestones.sql`, `src/types/database.ts`, `server/routes/progress.ts`, `api/index.ts`, `test/pr-01-progress-data-model.test.ts`
