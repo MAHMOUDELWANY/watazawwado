@@ -66,6 +66,7 @@ import {
 import { createIntakeToken, readIntakeToken } from '../server/intake/intakeToken.js';
 import { registerCommunityRoutes, ensureTeacherThreads } from '../server/routes/community.js';
 import { registerCurriculumRoutes } from '../server/routes/curriculum.js';
+import { registerProgressRoutes, validateFamilyNoteFields } from '../server/routes/progress.js';
 import { announceNewStudent, type NewLearner } from '../server/onboarding/newStudent.js';
 import { isAdultAge, isGuardianAge, isChildAge, parseAge, ADULT_MIN_AGE, GUARDIAN_MIN_AGE, CHILD_MIN_AGE, CHILD_MAX_AGE } from '../src/lib/ageRules.js';
 import { notifyUser, notifySuperAdmins, resolveLearnerAccount } from '../server/notifications/inbox.js';
@@ -2792,9 +2793,12 @@ app.get('/api/dashboard/students/:id', verifyTeacherAuth, async (req: any, res: 
     const formattedNotes = (notesRes.data || []).map(n => ({
       id: n.id,
       student_id: n.student_id,
+      session_id: n.session_id || null,
       content: n.private_notes,
       observations: n.observations || null,
       next_steps: n.next_steps || null,
+      family_summary: n.family_summary || null,
+      achievements: n.achievements ?? null,
       created_at: n.created_at,
       updated_at: n.updated_at
     }));
@@ -3486,9 +3490,12 @@ app.get('/api/dashboard/students/:id/notes', verifyTeacherAuth, async (req: any,
     const notes = (data || []).map(n => ({
       id: n.id,
       student_id: n.student_id,
+      session_id: n.session_id || null,
       content: n.private_notes,
       observations: n.observations || null,
       next_steps: n.next_steps || null,
+      family_summary: n.family_summary || null,
+      achievements: n.achievements ?? null,
       created_at: n.created_at,
       updated_at: n.updated_at
     }));
@@ -3513,6 +3520,11 @@ app.post('/api/dashboard/students/:id/notes', verifyTeacherAuth, async (req: any
       return res.status(400).json({ error: 'Note content cannot be empty.' });
     }
 
+    const familyCheck = validateFamilyNoteFields(req.body);
+    if (familyCheck.ok === false) {
+      return res.status(400).json({ error: familyCheck.error });
+    }
+
     // Verify student exists and check authorization
     const { data: student, error: studentErr } = await supabase
       .from('students')
@@ -3530,14 +3542,25 @@ app.post('/api/dashboard/students/:id/notes', verifyTeacherAuth, async (req: any
       }
     }
 
+    const insertRow: Record<string, any> = {
+      student_id: id,
+      private_notes: content.trim(),
+      observations: observations && typeof observations === 'string' ? observations.trim() : null,
+      next_steps: next_steps && typeof next_steps === 'string' ? next_steps.trim() : null
+    };
+    if (familyCheck.value.family_summary !== undefined) {
+      insertRow.family_summary = familyCheck.value.family_summary;
+    }
+    if (familyCheck.value.achievements !== undefined) {
+      insertRow.achievements = familyCheck.value.achievements;
+    }
+    if (familyCheck.value.session_id !== undefined) {
+      insertRow.session_id = familyCheck.value.session_id;
+    }
+
     const { data: inserted, error: insertErr } = await supabase
       .from('lesson_notes')
-      .insert({
-        student_id: id,
-        private_notes: content.trim(),
-        observations: observations && typeof observations === 'string' ? observations.trim() : null,
-        next_steps: next_steps && typeof next_steps === 'string' ? next_steps.trim() : null
-      })
+      .insert(insertRow)
       .select()
       .single();
 
@@ -3552,9 +3575,12 @@ app.post('/api/dashboard/students/:id/notes', verifyTeacherAuth, async (req: any
       note: {
         id: inserted.id,
         student_id: inserted.student_id,
+        session_id: inserted.session_id || null,
         content: inserted.private_notes,
         observations: inserted.observations,
         next_steps: inserted.next_steps,
+        family_summary: inserted.family_summary || null,
+        achievements: inserted.achievements ?? null,
         created_at: inserted.created_at,
         updated_at: inserted.updated_at
       }
@@ -3573,6 +3599,11 @@ app.patch('/api/dashboard/students/:id/notes/:noteId', verifyTeacherAuth, async 
 
     const { id, noteId } = req.params;
     const { content, observations, next_steps } = req.body;
+
+    const familyCheck = validateFamilyNoteFields(req.body);
+    if (familyCheck.ok === false) {
+      return res.status(400).json({ error: familyCheck.error });
+    }
 
     if (req.teacherUser?.role !== 'super_admin') {
       const { data: student } = await supabase.from('students').select('assigned_teacher_id').eq('id', id).maybeSingle();
@@ -3611,6 +3642,18 @@ app.patch('/api/dashboard/students/:id/notes/:noteId', verifyTeacherAuth, async 
       updates.next_steps = next_steps && typeof next_steps === 'string' ? next_steps.trim() : null;
     }
 
+    if (familyCheck.value.family_summary !== undefined) {
+      updates.family_summary = familyCheck.value.family_summary;
+    }
+
+    if (familyCheck.value.achievements !== undefined) {
+      updates.achievements = familyCheck.value.achievements;
+    }
+
+    if (familyCheck.value.session_id !== undefined) {
+      updates.session_id = familyCheck.value.session_id;
+    }
+
     const { data: updated, error: updateErr } = await supabase
       .from('lesson_notes')
       .update(updates)
@@ -3629,9 +3672,12 @@ app.patch('/api/dashboard/students/:id/notes/:noteId', verifyTeacherAuth, async 
       note: {
         id: updated.id,
         student_id: updated.student_id,
+        session_id: updated.session_id || null,
         content: updated.private_notes,
         observations: updated.observations,
         next_steps: updated.next_steps,
+        family_summary: updated.family_summary || null,
+        achievements: updated.achievements ?? null,
         created_at: updated.created_at,
         updated_at: updated.updated_at
       }
@@ -9659,6 +9705,15 @@ registerCurriculumRoutes(app, {
   rateLimit,
   verifyStudentAuth,
   verifyTeacherAuth,
+  getLearners: getAuthorizedLearnersForStudent
+});
+
+registerProgressRoutes(app, {
+  getClient: getSupabaseAdminClient,
+  rateLimit,
+  verifyStudentAuth,
+  verifyTeacherAuth,
+  requireSuperAdmin,
   getLearners: getAuthorizedLearnersForStudent
 });
 

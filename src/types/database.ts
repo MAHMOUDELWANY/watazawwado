@@ -37,6 +37,13 @@ export type PaymentStatus = 'pending' | 'confirmed' | 'rejected' | 'refunded';
 export type ReminderType = '24h_before' | '1h_before' | 'email_3h' | 'site_12h' | 'site_2h';
 export type ReminderStatus = 'pending' | 'sent' | 'failed' | 'cancelled';
 export type BlogPostStatus = 'draft' | 'published' | 'archived';
+export type LearnerMilestoneKind =
+  | 'surah_memorized'
+  | 'juz_completed'
+  | 'level_completed'
+  | 'rule_mastered'
+  | 'book_completed'
+  | 'custom';
 
 export interface Database {
   public: {
@@ -428,6 +435,8 @@ export interface Database {
           private_notes: string;
           observations: string | null;
           next_steps: string | null;
+          family_summary: string | null;
+          achievements: Json | null;
           created_at: string;
           updated_at: string;
         };
@@ -438,6 +447,8 @@ export interface Database {
           private_notes: string;
           observations?: string | null;
           next_steps?: string | null;
+          family_summary?: string | null;
+          achievements?: Json | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -448,6 +459,8 @@ export interface Database {
           private_notes?: string;
           observations?: string | null;
           next_steps?: string | null;
+          family_summary?: string | null;
+          achievements?: Json | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -832,6 +845,47 @@ export interface Database {
           created_at?: string;
         };
         Update: never;
+      };
+      learner_milestones: {
+        Row: {
+          id: string;
+          student_id: string;
+          subject: string;
+          kind: LearnerMilestoneKind;
+          title_ar: string;
+          title_en: string;
+          reached_at: string;
+          created_by: string | null;
+          lesson_session_id: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          student_id: string;
+          subject: string;
+          kind: LearnerMilestoneKind;
+          title_ar: string;
+          title_en: string;
+          reached_at?: string;
+          created_by?: string | null;
+          lesson_session_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          student_id?: string;
+          subject?: string;
+          kind?: LearnerMilestoneKind;
+          title_ar?: string;
+          title_en?: string;
+          reached_at?: string;
+          created_by?: string | null;
+          lesson_session_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
       };
     };
     Functions: {
