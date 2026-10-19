@@ -28,6 +28,13 @@ _None yet._
 
 ## Done
 
+### PR-06 Teacher side: record the family summary and milestones after a lesson (2026-10-20)
+- Result: done (87ade22 on main)
+- Changed: `server/routes/progress.ts`, `api/index.ts`, `src/dashboard/components/PostLessonSummaryEditor.tsx`, `src/dashboard/components/LessonDetailModal.tsx`, `src/dashboard/pages/TodayPage.tsx`, `src/dashboard/pages/StudentDetailPage.tsx`, `src/dashboard/types.ts`, `test/pr-06-teacher-family-summary.test.ts`, `docs/argon/screenshots/pr06-teacher-summary-ar.png`, `docs/argon/screenshots/pr06-teacher-summary-en-mobile.png`
+- Migration: none (uses live `lesson_notes.family_summary`, `lesson_notes.achievements`, and `learner_milestones`)
+- Checks: tsc pass (0 errors), npm test 1046 pass / 0 fail, build pass, browser check `/dashboard/students/:id` verified in Arabic & English, light & dark themes, desktop (1280px) & mobile (375px) (0 console errors; screenshots in `docs/argon/screenshots/pr06-teacher-summary-ar.png` and `docs/argon/screenshots/pr06-teacher-summary-en-mobile.png`)
+- Not checked / risks: Jalila AI summary drafting is intentionally deferred per task spec.
+
 ### PR-03 Progress page: the learning path (2026-10-19)
 - Result: done (dc58c80 on main)
 - Changed: `src/student/pages/StudentProgressPage.tsx`, `src/student/StudentApp.tsx`, `test/pr-03-progress-page.test.ts`, `docs/argon/screenshots/pr03-*.png`
