@@ -61,8 +61,10 @@ cut it.
 
 1. Run the `RULES.md` §8 checklist item by item; fix, don't flag.
 2. Run `humanizer` on every caption and script line.
-3. Save deliverables under `docs/marketing/content/YYYY-Wnn/<slug>.md` (scripts, captions, prompts) so the owner can
-   film from them; images go next to them.
+3. Write each deliverable (script table, shot notes, captions per platform, pinned comment) into the body of its item
+   page in the Notion Content Calendar, where the owner reviews and films from it (owner, 2026-10-19). Directions to
+   the owner in Arabic, spoken lines in the video's language. Images and exports go in the week's Drive folder.
+   A week's overview (filming day, posting times, stories, reply templates) is its own page under the hub.
 4. Move the item's Status in the Notion calendar (Idea → Scripted …) and put the deliverable path in its Notes. Add a
    line to `LOG.md`; mark used ideas in `IDEAS.md`; update `PLAN.md` §1 and §9 (starting point, open items) if they
    changed.

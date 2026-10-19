@@ -21,3 +21,7 @@ Change next week: <one thing>
 - Notion **Watazawwado Content Hub** (private draft): https://app.notion.com/p/3fea5208a5168151bcf5d6f042da2bde
   with the strategy summary, a page per platform (ready-to-paste bios, UTM links), the Content Calendar (~98 dated
   items, 31 Oct 2026 – 29 May 2027, 4 views) and Weekly Numbers.
+- Week 1 production pack (31 Oct – 8 Nov) written in Notion: overview page (filming day 29 Oct, posting times, daily
+  stories, reply templates, hashtags) + full scripts and captions in 10 calendar items, now Status = Scripted.
+  Quran text verified with quran.ai (1:1–7, 112:1); the translation server was down, so no English translation goes on
+  screen until checked. Rule kept: wrong-vs-right only on syllables, never on ayat.
