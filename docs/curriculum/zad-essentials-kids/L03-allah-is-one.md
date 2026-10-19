@@ -99,7 +99,7 @@ Morphology note (connector): الصمد appears **only once** in the whole Quran
 
 1. **112:3 for 6–11 and our families with Christian relatives.** We show the whole surah (it is short and every child
    memorises it) and teach 112:3 plainly as "He has no parents and no children", with no mention of any other belief. In the
-   game the card reads "Allah has parents or children" → not true. **Owner to approve**, or take that card out of the game.
+   game the card reads "Allah has parents or children" → not true. **Decided below (1).**
 2. **Hadith wording.** For the Companion's story we show only the Prophet's ﷺ answer «أخبِرُوه أنَّ اللهَ يُحِبُّه» on screen;
    the teacher tells the rest in their own words. Bukhari 5017 (bedtime) and 5013 (a third of the Quran) are in the
    teacher's notes only, not on screen. **Owner to approve.**
@@ -163,6 +163,22 @@ tsc, the curriculum tests and the build pass. All 16 pages rendered in headless 
 temporary harness, at their last build step, plus reduced motion; no console errors. Not checked: the real teacher
 workspace (needs a teacher login), phone width, and phone width. The paintings were re-checked on their pages after delivery.
 
-## Owner decisions
+## Owner decisions (2026-10-19)
 
-None yet (2026-10-19).
+The owner asked Claude to settle the five open points as an expert curriculum designer, within our rules (hook and
+cliffhanger, 45-minute length, Kids band). Decided:
+
+1. **112:3** stays in the surah (it is Quran and every child memorises it) and is taught plainly as one of the four facts,
+   with no other religion mentioned. **The game card is changed** from "Allah has parents or children" to "Allah needs help
+   from someone" (not true; from as-Samad). Reason: a stealth-assessment card should check understanding, not ask a child
+   with Christian relatives to mark something about their family's belief as false; 112:3 is still checked in class by
+   the "four pieces" recall.
+2. **Hadith on screen:** only the Prophet's ﷺ answer «أخبِرُوه أنَّ اللهَ يُحِبُّه»; the teacher tells the story. One idea per
+   page, few words on screen (RULES §1.11). Bukhari 5013 and 5017 stay in the teacher's notes.
+3. **"Everyone needs Him" (as-Samad) stays as the optional page.** It adds a new idea (everything needs something, every
+   chain ends at Allah) and a "did you know" (the word appears once in the Quran), so it is real 60-minute content, not
+   filler (RULES §1.7). A 30-minute class skips it with no gap.
+4. **Cliffhanger kept** (the book vs the coach). It plants Lesson 4's rational step from the map ("we learn best from
+   someone who shows us") and ends on an open question answered next lesson.
+5. **Ahd: al-Ikhlas only** (one small deed, today's surah, Kids band), worded honestly: the Prophet ﷺ recited it every
+   night; children who know al-Falaq and an-Nas are invited to add them, as in Bukhari 5017.

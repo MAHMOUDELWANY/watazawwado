@@ -31,8 +31,8 @@
   cards and game, and the page-turn transition (they apply to every lesson of the series).
 - **Now (Lesson 3, 2026-10-19):** at the owner's request ("finish everything for Lesson 3, then tell me what to add"),
   the brief, page text, Arabic notes and code scenes were done in one pass (`zad-essentials-kids/L03-allah-is-one.md`).
-  The owner delivered the 7 images the same day; placed and the moments re-aimed. Waiting for the owner: review of the
-  brief's 5 open points, the text and the built pages.
+  The owner delivered the 7 images the same day; placed and the moments re-aimed. The 5 open points were settled by
+  Claude at the owner's request (brief, "Owner decisions"). Waiting for the owner: review of the text and built pages.
 - **Next:** after the review, Lesson 4 (Muhammad ﷺ, the Messenger) brief.
 - **Not started:** Lessons 4–37.
 - **Known limit:** lesson text ships in the site bundle, so the lock is a UI lock (content is not secret). Upgrade to
@@ -394,3 +394,6 @@ B3–B5 → continue lesson by lesson.
   owner review + 7 images.
 - **2026-10-19** — Lesson 3 images delivered (7, 16:9). Placed; player can shift a wide painting's crop per scene
   (`SCENE_FOCUS`); moments re-aimed on the real pictures (sun rays, lamps, du'a light, the coach). Checked in headless Edge.
+- **2026-10-19** — Lesson 3 open points settled by Claude at the owner's request: 112:3 taught plainly, its game card
+  replaced by "Allah needs help from someone"; only the Prophet's ﷺ answer on screen; as-Samad stays optional; football
+  cliffhanger kept; Ahd al-Ikhlas before sleep, with al-Falaq and an-Nas as an invitation.
