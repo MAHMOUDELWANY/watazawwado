@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Lock, CalendarPlus } from 'lucide-react';
+import { ArrowLeft, Lock, CalendarPlus, Sparkles } from 'lucide-react';
 import { authedJson } from '../../lib/authedJson';
 import { BrandSpinner } from '../../components/ui/BrandLoader';
 import { Button } from '../../components/ui/Button';
 import { StudentMap, type MapSubject } from '../../curriculum/StudentMap';
 import { LessonPlayer } from '../../curriculum/LessonPlayer';
-import { SUBJECTS, findLesson } from '../../curriculum/catalog';
+import { SUBJECTS, findLesson, sampleLesson } from '../../curriculum/catalog';
 
 interface CurriculumData {
   booked: boolean;
@@ -32,9 +32,36 @@ export default function StudentCurriculumPage({ lang }: { lang: 'ar' | 'en' }) {
   if (!data) return <div className="flex justify-center py-16"><BrandSpinner size={28} /></div>;
 
   if (!data.booked) {
+    const sample = sampleLesson();
     return (
       <div className="space-y-6">
         <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground">{L('My curriculum', 'منهجي')}</h1>
+        {sample && (
+          <section className="space-y-4" aria-labelledby="sample-title">
+            <div>
+              <p className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-[var(--copper)]">
+                <Sparkles className="w-3.5 h-3.5" /> {L('Free sample', 'عيّنة مجانية')}
+              </p>
+              <h2 id="sample-title" dir="ltr" className="font-display text-xl font-bold text-foreground text-start">{sample.number}. {sample.title}</h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                {L('The opening of our first Zad Essentials lesson for kids. Watch it together.', 'بداية أول درس من «أول الزاد» للأطفال. اتفرجوا عليه سوا.')}
+              </p>
+            </div>
+            <LessonPlayer lesson={sample} lang={lang} />
+            <div className="glass-2 rounded-[var(--r-4,28px)] p-6 text-center space-y-3">
+              <h3 className="font-display text-lg font-bold text-foreground">{L('Who was the visitor in white?', 'مين الضيف اللي لابس أبيض؟')}</h3>
+              <p className="text-muted-foreground max-w-md mx-auto">
+                {L(
+                  'Book a free trial lesson and your teacher will finish the story with you, then play the game at the end.',
+                  'احجز حصة تجريبية مجانية، والمعلم هيكمل معاك القصة وتلعبوا لعبة آخر الدرس.'
+                )}
+              </p>
+              <Link to="/student/book">
+                <Button><CalendarPlus className="w-4 h-4 me-2" /> {L('Book a free trial', 'احجز حصة تجريبية مجانية')}</Button>
+              </Link>
+            </div>
+          </section>
+        )}
         <section className="relative overflow-hidden glass-2 rounded-[var(--r-4,28px)] p-6 sm:p-8 text-center space-y-4">
           <div className="mx-auto w-14 h-14 rounded-2xl bg-teal/15 text-teal flex items-center justify-center">
             <Lock className="w-7 h-7" />

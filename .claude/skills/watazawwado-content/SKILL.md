@@ -15,6 +15,10 @@ channels. One request = one finished, checked deliverable (a week's scripts coun
 3. `docs/marketing/PRODUCTION.md`: formats, script anatomy, safe zones.
 4. The last two weeks of `docs/marketing/LOG.md`.
 5. Root `RULES.md` §2b, §3, §4, §6, §6b when prices, subjects or voice are involved.
+6. The Notion **Watazawwado Content Hub** (https://app.notion.com/p/3fea5208a5168151bcf5d6f042da2bde): the dated
+   Content Calendar (data source `collection://96ad53ef-3a27-4d1e-a955-89e1ada5885e`) and Weekly Numbers
+   (`collection://640f0993-1ba6-4d7a-983e-12689dfee88e`). Read the calendar through the Notion connector when it is
+   connected; if not, work from `PLAN.md` §6 and tell the owner to update the hub.
 
 The installed marketing skills read `.claude/product-marketing.md`; the social-media skills ask for `about-me.md` and
 `voice.md`: use `.claude/product-marketing.md` as about-me and `docs/marketing/RULES.md` §2 as the voice instead, and
@@ -59,7 +63,8 @@ cut it.
 2. Run `humanizer` on every caption and script line.
 3. Save deliverables under `docs/marketing/content/YYYY-Wnn/<slug>.md` (scripts, captions, prompts) so the owner can
    film from them; images go next to them.
-4. Add a line to `LOG.md`; mark used ideas in `IDEAS.md`; update `PLAN.md` §1 and §9 (starting point, open items) if they
+4. Move the item's Status in the Notion calendar (Idea → Scripted …) and put the deliverable path in its Notes. Add a
+   line to `LOG.md`; mark used ideas in `IDEAS.md`; update `PLAN.md` §1 and §9 (starting point, open items) if they
    changed.
 5. Tell the owner, in Arabic, what is ready and what they need to do (film, record, approve), shortest first.
 

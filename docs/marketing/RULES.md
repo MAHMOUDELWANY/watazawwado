@@ -11,7 +11,8 @@ date.
    memory. Show surah name and ayah number. Translations name their source (e.g. Saheeh International).
 2. **Hadith**: only authentic (sahih/hasan) with the collection and number; if unsure, leave it out.
 3. **Recitation on camera** is checked before publishing: a teacher re-listens to every recited word. A Tajweed video
-   with a Tajweed mistake is deleted, not explained.
+   with a Tajweed mistake is deleted, not explained. We never recite the Quran wrongly on purpose, not even to
+   demonstrate a mistake: "wrong vs right" examples use isolated letters or practice syllables.
 4. **No fatwas.** Fiqh questions in comments get: "Great question, ask your teacher in class or a scholar you trust."
    Teaching follows the moderate Azhari foundation, Ahl al-Sunnah wal-Jama'ah (root RULES.md §6).
 5. **No images of prophets, companions or angels**, not even silhouettes with faces. Stories use places, objects,
@@ -37,7 +38,12 @@ date.
    prices; free trial 30 minutes (max 45), one per new student.
 3. No fake urgency or scarcity ("only 3 spots left!") unless it is literally true and the owner approved it.
 4. No promises of outcomes ("memorize a Juz in 30 days"). Say what we do, not what the child will become.
-5. Teachers' backgrounds only as written on the About page; no degree claims.
+5. Teachers' backgrounds only as written on the About page; no degree claims. Say plainly where each teacher is
+   from when asked (false "Arab teacher" claims are a common complaint in this market).
+6. **Reviews (US FTC rule 2024, UK DMCC Act 2025).** Never write, buy or post fake, AI-made or staff/relative reviews
+   without disclosure; never tie any gift, discount or benefit to a review or to a positive rating; any thank-you
+   goes to every reviewer whatever they wrote; never hide or cherry-pick bad reviews; reply to every review kindly,
+   quickly and without defensiveness.
 
 ## 4. Children, privacy and safety
 
@@ -45,8 +51,9 @@ date.
    learner (for an adult). Even with consent, children are not named and their faces are not shown; voice or hands
    only.
 2. Demo data only on screen (portal, reports, chat); never real accounts, emails or booking references.
-3. Ustadha Afnan (and any female teacher) decides how she appears: on camera, voice only, hands only, or not at all.
-   That choice is recorded in `PLAN.md` §9 and respected in every asset.
+3. **[Decided 2026-10-19] Only Ustadh Mahmoud appears in content.** Ustadha Afnan does not appear (no face, voice,
+   hands or photo in videos); we may say in words that families can choose a female teacher. Any future teacher
+   appears only with their own written agreement.
 4. DMs with minors: never. A child who writes in DMs gets a polite reply asking a parent to contact us on WhatsApp.
 5. Only the official contact number (root RULES.md §6: WhatsApp +48 508 157 886). No other number anywhere.
 

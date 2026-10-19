@@ -14,7 +14,7 @@ verses, rulings) are checked at scripting time (`RULES.md` §1), never taken fro
 - "Reading the Mushaf for the first time (reverts)" (long).
 - "Noon sakinah: 4 rules, 4 minutes" (long) → 4 Shorts.
 - "Read with me": 60 s slow recitation of a short surah with word-by-word highlight.
-- Duet/stitch-style "Spot the mistake" (teacher reads with a planted mistake, answer at the end).
+- "Spot the mistake" on isolated letters or practice syllables only (never inside an ayah), answer at the end.
 
 ## B. Parent playbook
 - "7 questions to ask before choosing an online Quran teacher" (carousel + long).
@@ -45,7 +45,7 @@ verses, rulings) are checked at scripting time (`RULES.md` §1), never taken fro
 
 ## E. Inside Watazawwado
 - "What happens in a free trial lesson" (long + Short).
-- "Meet Ustadh Mahmoud / Meet Ustadha Afnan" (each as one teacher of the academy).
+- "Meet Ustadh Mahmoud, one of our teachers" (and in words: families can choose a female teacher).
 - "Booking a free trial in 60 seconds" (screen recording, demo account).
 - "What our teacher report looks like" (demo data).
 - "Inside a lesson: the animated curriculum" (reviewed pages only).

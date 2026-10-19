@@ -36,6 +36,19 @@ export const SUBJECTS: SubjectEntry[] = [
   },
 ];
 
+/**
+ * Free sample for signed-in accounts without a booking (docs/marketing/PLAN.md §9, owner 2026-10-19): the opening of
+ * Lesson 1, stopping on the mystery of the visitor so the learner books to hear the rest. Shown only once the owner
+ * has marked the lesson reviewed (docs/curriculum/RULES.md §2).
+ */
+export const SAMPLE = { subject: 'zad-kids', number: 1, pages: 5 } as const;
+
+export function sampleLesson(): Lesson | undefined {
+  const lesson = findLesson(SAMPLE.subject, SAMPLE.number);
+  if (!lesson?.reviewed) return undefined;
+  return { ...lesson, chapters: [], pages: lesson.pages.slice(0, SAMPLE.pages) };
+}
+
 export function findLesson(subjectId: string | undefined, number: number): Lesson | undefined {
   return SUBJECTS.find((s) => s.id === subjectId)?.lessons[number];
 }
