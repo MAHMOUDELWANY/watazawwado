@@ -10,6 +10,8 @@ Watazawwado Academy: an online academy with a team of male and female teachers g
 
 **Social media, video and marketing content, any size: use the `watazawwado-content` skill.** Plan: [docs/marketing/PLAN.md](docs/marketing/PLAN.md); binding content rules: [docs/marketing/RULES.md](docs/marketing/RULES.md); shared context for the marketing skills: `.claude/product-marketing.md`.
 
+**Other agents (Antigravity / Gemini 4 Argon) work on this repo too** (owner, 2026-10-19). Their contract is [AGENTS.md](AGENTS.md), their tasks [docs/argon/BACKLOG.md](docs/argon/BACKLOG.md). At the start of a session, read [docs/argon/LOG.md](docs/argon/LOG.md): review and merge the red-zone branches listed under "Waiting for Claude" and handle "Needs Claude". Curriculum and marketing stay Claude-only. After changing a skill listed in `scripts/sync-agent-skills.mjs`, re-run it.
+
 ## Skills (use these first)
 
 Owner's priority skills in `.claude/skills`. Reach for them before generic approaches, and always in curriculum work:
