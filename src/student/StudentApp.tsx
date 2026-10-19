@@ -37,6 +37,7 @@ import StudentOffersPage from './pages/StudentOffersPage';
 import StudentPlacementPage from './pages/StudentPlacementPage';
 import StudentPlacementReportPage from './pages/StudentPlacementReportPage';
 import StudentCurriculumPage, { StudentCurriculumLessonPage } from './pages/StudentCurriculumPage';
+import StudentProgressPage from './pages/StudentProgressPage';
 import { ChatPanel } from '../components/chat/ChatPanel';
 import IntakeConversation from '../components/intake/IntakeConversation';
 import { Button } from '../components/ui/Button';
@@ -342,6 +343,12 @@ export default function StudentApp() {
       icon: Calendar,
       badge: null
     },
+    {
+      name: isAr ? 'مسيرتي' : 'My progress',
+      path: '/student/progress',
+      icon: Compass,
+      badge: null
+    },
     { 
       name: isAr ? 'حجز جديد' : 'Book', 
       path: '/student/book', 
@@ -420,6 +427,12 @@ export default function StudentApp() {
       return {
         title: isAr ? 'الدروس' : 'Lessons',
         subtitle: isAr ? 'جدول الجلسات المباشرة' : 'Your scheduled 1-on-1 sessions'
+      };
+    }
+    if (pathname.startsWith('/student/progress')) {
+      return {
+        title: isAr ? 'مسيرتي التعليمية' : 'Learning Path',
+        subtitle: isAr ? 'خطواتك وإنجازاتك درساً بعد درس' : 'Your steps and milestones lesson by lesson'
       };
     }
     if (pathname.startsWith('/student/packages')) {
@@ -741,6 +754,7 @@ export default function StudentApp() {
               <Routes>
               <Route path="/" element={<StudentHomePage lang={lang} />} />
               <Route path="/lessons" element={<StudentLessonsPage lang={lang} session={session} />} />
+              <Route path="/progress" element={<StudentProgressPage lang={lang} />} />
               <Route path="/packages" element={<StudentPackagesPage lang={lang} session={session} />} />
               <Route path="/payments" element={<StudentPaymentsPage lang={lang} session={session} />} />
               <Route path="/notifications" element={<StudentNotificationsPage lang={lang} session={session} />} />
