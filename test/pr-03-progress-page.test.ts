@@ -52,7 +52,9 @@ describe('PR-03: Progress page — the learning path', () => {
       'Must respect prefers-reduced-motion via useReducedMotion()'
     );
     assert.ok(
-      progressPageSource.includes("scrollIntoView({\n          behavior: prefersReducedMotion ? 'auto' : 'smooth'"),
+      /scrollIntoView\(\{\s*behavior:\s*prefersReducedMotion\s*\?\s*'auto'\s*:\s*'smooth'/.test(
+        progressPageSource
+      ),
       'Path must scroll to current level and switch to auto scroll when reduced-motion is active'
     );
   });

@@ -148,9 +148,26 @@ export interface DashboardAnalytics {
 export interface StudentNote {
   id: string;
   student_id: string;
+  session_id?: string | null;
   content: string;
   observations?: string | null;
   next_steps?: string | null;
+  family_summary?: string | null;
+  achievements?: Array<string | { label?: string; title?: string; en?: string; ar?: string; kind?: string }> | Record<string, any> | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface StudentMilestoneItem {
+  id: string;
+  student_id: string;
+  subject: string;
+  kind: 'surah_memorized' | 'juz_completed' | 'level_completed' | 'rule_mastered' | 'book_completed' | 'custom';
+  title_ar: string;
+  title_en: string;
+  reached_at: string;
+  created_by?: string | null;
+  lesson_session_id?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -289,6 +306,7 @@ export interface DashboardStudentDetail {
     created_at: string;
   } | null;
   notes: StudentNote[];
+  milestones?: StudentMilestoneItem[];
   services?: Array<{ id: string; title: string; arabic_title?: string }>;
 }
 

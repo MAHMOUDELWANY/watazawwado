@@ -819,6 +819,127 @@ export async function canTeacherAccessStudent(
 }
 
 /**
+ * PR-06: Checks whether a teacher/admin may write a post-lesson summary or milestone
+ * for a given student and optional lesson (`bookingId` or `sessionId`).
+ * - Verifies `canTeacherAccessStudent(client, teacherUser, studentId)`.
+ * - If `bookingId` is provided, verifies the booking belongs to `studentId` and (for a
+ *   non-admin teacher) that `booking.teacher_id` is not another teacher; also resolves
+ *   the linked `lesson_sessions.id` if available.
+ * - If `sessionId` is provided, verifies the `lesson_sessions` row belongs to `studentId`
+ *   and (for a non-admin teacher) that its linked booking does not belong to another teacher.
+ */
+export async function canTeacherWriteForLesson(
+  client: any,
+  teacherUser: any,
+  params: {
+    studentId: string;
+    bookingId?: string | null;
+    sessionId?: string | null;
+  }
+): Promise<{
+  allowed: boolean;
+  exists: boolean;
+  resolvedSessionId: string | null;
+  reason?: string;
+}> {
+  const { studentId, bookingId, sessionId } = params;
+  const studentAccess = await canTeacherAccessStudent(client, teacherUser, studentId);
+  if (!studentAccess.exists) {
+    return { allowed: false, exists: false, resolvedSessionId: null, reason: 'Student record not found.' };
+  }
+  if (!studentAccess.allowed) {
+    return {
+      allowed: false,
+      exists: true,
+      resolvedSessionId: null,
+      reason: 'Forbidden: You can only write lesson summaries and milestones for your own assigned students.',
+    };
+  }
+
+  const isAdmin = teacherUser?.role === 'super_admin';
+  let resolvedSessionId: string | null = sessionId && isUuid(sessionId) ? sessionId.trim() : null;
+
+  if (resolvedSessionId) {
+    const { data: sessionRow, error: sessErr } = await client
+      .from('lesson_sessions')
+      .select('id, student_id, booking_id')
+      .eq('id', resolvedSessionId)
+      .maybeSingle();
+
+    if (sessErr || !sessionRow || sessionRow.student_id !== studentId) {
+      return {
+        allowed: false,
+        exists: true,
+        resolvedSessionId: null,
+        reason: 'Forbidden: The specified lesson session does not belong to this student.',
+      };
+    }
+
+    if (!isAdmin && sessionRow.booking_id && isUuid(sessionRow.booking_id)) {
+      const { data: bookingRow } = await client
+        .from('bookings')
+        .select('id, teacher_id, student_id')
+        .eq('id', sessionRow.booking_id)
+        .maybeSingle();
+
+      if (
+        bookingRow &&
+        bookingRow.teacher_id &&
+        bookingRow.teacher_id !== teacherUser.id
+      ) {
+        return {
+          allowed: false,
+          exists: true,
+          resolvedSessionId: null,
+          reason: 'Forbidden: You can only write for your own lessons.',
+        };
+      }
+    }
+  }
+
+  if (bookingId && isUuid(bookingId)) {
+    const cleanBookingId = bookingId.trim();
+    const { data: bookingRow, error: bookErr } = await client
+      .from('bookings')
+      .select('id, student_id, teacher_id')
+      .eq('id', cleanBookingId)
+      .maybeSingle();
+
+    if (bookErr || !bookingRow || (bookingRow.student_id && bookingRow.student_id !== studentId)) {
+      return {
+        allowed: false,
+        exists: true,
+        resolvedSessionId: null,
+        reason: 'Forbidden: The specified lesson booking does not belong to this student.',
+      };
+    }
+
+    if (!isAdmin && bookingRow.teacher_id && bookingRow.teacher_id !== teacherUser.id) {
+      return {
+        allowed: false,
+        exists: true,
+        resolvedSessionId: null,
+        reason: 'Forbidden: You can only write for your own lessons.',
+      };
+    }
+
+    if (!resolvedSessionId) {
+      const { data: linkedSession } = await client
+        .from('lesson_sessions')
+        .select('id')
+        .eq('booking_id', cleanBookingId)
+        .eq('student_id', studentId)
+        .maybeSingle();
+      if (linkedSession?.id) {
+        resolvedSessionId = linkedSession.id;
+      }
+    }
+  }
+
+  return { allowed: true, exists: true, resolvedSessionId };
+}
+
+/**
  * Checks whether a signed-in student or guardian may read milestones/summaries/progress
  * for the requested learner ID.
  */
@@ -897,13 +1018,26 @@ export function registerProgressRoutes(app: express.Express, deps: ProgressDeps)
           return res.status(400).json({ error: parsed.error });
         }
 
-        const access = await canTeacherAccessStudent(client, req.teacherUser, studentId);
+        const rawBookingId =
+          typeof req.body?.booking_id === 'string'
+            ? req.body.booking_id
+            : typeof req.body?.bookingId === 'string'
+              ? req.body.bookingId
+              : null;
+
+        const access = await canTeacherWriteForLesson(client, req.teacherUser, {
+          studentId,
+          bookingId: rawBookingId,
+          sessionId: parsed.value.lesson_session_id ?? null,
+        });
         if (!access.exists) {
           return res.status(404).json({ error: 'Student record not found.' });
         }
         if (!access.allowed) {
           return res.status(403).json({
-            error: 'Forbidden: You can only record milestones for your own assigned students.',
+            error:
+              access.reason ||
+              'Forbidden: You can only record milestones for your own assigned students.',
           });
         }
 
@@ -914,7 +1048,7 @@ export function registerProgressRoutes(app: express.Express, deps: ProgressDeps)
           title_ar: parsed.value.title_ar,
           title_en: parsed.value.title_en,
           created_by: req.teacherUser?.id || null,
-          lesson_session_id: parsed.value.lesson_session_id ?? null,
+          lesson_session_id: access.resolvedSessionId ?? parsed.value.lesson_session_id ?? null,
         };
         if (parsed.value.reached_at) {
           insertPayload.reached_at = parsed.value.reached_at;
@@ -934,6 +1068,170 @@ export function registerProgressRoutes(app: express.Express, deps: ProgressDeps)
         return res.status(201).json({ success: true, milestone });
       } catch (err) {
         console.error('[POST /api/dashboard/students/:id/milestones]', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
+      }
+    }
+  );
+
+  // PR-06: Teacher / Admin quick post-lesson form submission (private notes + family summary + achievements + optional milestone)
+  app.post(
+    '/api/dashboard/students/:id/post-lesson-summary',
+    verifyTeacherAuth,
+    rateLimit,
+    async (req: any, res: any) => {
+      try {
+        const client = getClient();
+        if (!client) {
+          return res.status(503).json({ error: 'Database integration is not properly configured.' });
+        }
+        const studentId = String(req.params.id || '').trim();
+        if (!isUuid(studentId)) {
+          return res.status(400).json({ error: 'Valid student ID is required.' });
+        }
+
+        const rawPrivateNotes =
+          typeof req.body?.private_notes === 'string'
+            ? req.body.private_notes.trim()
+            : typeof req.body?.content === 'string'
+              ? req.body.content.trim()
+              : '';
+        const rawObservations =
+          typeof req.body?.observations === 'string' ? req.body.observations.trim() : '';
+        const rawNextSteps =
+          typeof req.body?.next_steps === 'string' ? req.body.next_steps.trim() : '';
+        const rawBookingId =
+          typeof req.body?.booking_id === 'string'
+            ? req.body.booking_id.trim()
+            : typeof req.body?.bookingId === 'string'
+              ? req.body.bookingId.trim()
+              : null;
+
+        if (rawBookingId && !isUuid(rawBookingId)) {
+          return res.status(400).json({ error: 'booking_id must be a valid UUID.' });
+        }
+
+        const familyCheck = validateFamilyNoteFields(req.body);
+        if (familyCheck.ok === false) {
+          return res.status(400).json({ error: familyCheck.error });
+        }
+
+        const hasMilestone = Boolean(req.body?.milestone && typeof req.body.milestone === 'object');
+        let parsedMilestone: ValidatedMilestoneInput | null = null;
+        if (hasMilestone) {
+          const mRes = validateMilestoneInput(req.body.milestone);
+          if (mRes.ok === false) {
+            return res.status(400).json({ error: mRes.error });
+          }
+          parsedMilestone = mRes.value;
+        }
+
+        const hasAchievements =
+          Array.isArray(familyCheck.value.achievements)
+            ? familyCheck.value.achievements.length > 0
+            : Boolean(familyCheck.value.achievements);
+        const hasNotePayload =
+          Boolean(rawPrivateNotes) ||
+          Boolean(familyCheck.value.family_summary) ||
+          hasAchievements ||
+          Boolean(rawNextSteps) ||
+          Boolean(rawObservations);
+
+        if (!hasNotePayload && !parsedMilestone) {
+          return res.status(400).json({
+            error: 'Please enter a private note, family summary, achievement, or milestone.',
+          });
+        }
+
+        const access = await canTeacherWriteForLesson(client, req.teacherUser, {
+          studentId,
+          bookingId: rawBookingId,
+          sessionId: familyCheck.value.session_id ?? parsedMilestone?.lesson_session_id ?? null,
+        });
+
+        if (!access.exists) {
+          return res.status(404).json({ error: 'Student record not found.' });
+        }
+        if (!access.allowed) {
+          return res.status(403).json({
+            error:
+              access.reason ||
+              'Forbidden: You can only record lesson summaries and milestones for your own students.',
+          });
+        }
+
+        let savedNote: any = null;
+        if (hasNotePayload) {
+          const noteInsert: Record<string, any> = {
+            student_id: studentId,
+            session_id: access.resolvedSessionId ?? null,
+            private_notes: rawPrivateNotes,
+            observations: rawObservations || null,
+            next_steps: rawNextSteps || null,
+            family_summary: familyCheck.value.family_summary ?? null,
+            achievements: hasAchievements ? familyCheck.value.achievements : null,
+          };
+
+          const { data: insertedNote, error: noteErr } = await client
+            .from('lesson_notes')
+            .insert(noteInsert)
+            .select()
+            .single();
+
+          if (noteErr || !insertedNote) {
+            console.error('[POST /api/dashboard/students/:id/post-lesson-summary note]', noteErr?.message);
+            return res.status(500).json({ error: 'Could not save lesson summary.' });
+          }
+
+          savedNote = {
+            id: insertedNote.id,
+            student_id: insertedNote.student_id,
+            session_id: insertedNote.session_id || null,
+            content: insertedNote.private_notes,
+            observations: insertedNote.observations || null,
+            next_steps: insertedNote.next_steps || null,
+            family_summary: insertedNote.family_summary || null,
+            achievements: insertedNote.achievements ?? null,
+            created_at: insertedNote.created_at,
+            updated_at: insertedNote.updated_at,
+          };
+        }
+
+        let savedMilestone: any = null;
+        if (parsedMilestone) {
+          const milestoneInsert: Record<string, any> = {
+            student_id: studentId,
+            subject: parsedMilestone.subject,
+            kind: parsedMilestone.kind,
+            title_ar: parsedMilestone.title_ar,
+            title_en: parsedMilestone.title_en,
+            created_by: req.teacherUser?.id || null,
+            lesson_session_id:
+              access.resolvedSessionId ?? parsedMilestone.lesson_session_id ?? null,
+          };
+          if (parsedMilestone.reached_at) {
+            milestoneInsert.reached_at = parsedMilestone.reached_at;
+          }
+
+          const { data: insertedMilestone, error: mErr } = await client
+            .from('learner_milestones')
+            .insert(milestoneInsert)
+            .select(MILESTONE_COLUMNS)
+            .single();
+
+          if (mErr || !insertedMilestone) {
+            console.error('[POST /api/dashboard/students/:id/post-lesson-summary milestone]', mErr?.message);
+            return res.status(500).json({ error: 'Could not save milestone.' });
+          }
+          savedMilestone = insertedMilestone;
+        }
+
+        return res.status(201).json({
+          success: true,
+          note: savedNote,
+          milestone: savedMilestone,
+        });
+      } catch (err) {
+        console.error('[POST /api/dashboard/students/:id/post-lesson-summary]', err);
         return res.status(500).json({ error: 'Internal Server Error' });
       }
     }

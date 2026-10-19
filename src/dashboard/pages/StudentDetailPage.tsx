@@ -25,13 +25,15 @@ import {
   Target,
   RefreshCw,
   ShieldCheck,
-  UserCheck
+  UserCheck,
+  Award
 } from 'lucide-react';
 import { useTeacherAuth } from '../../lib/auth';
 import { DashboardStudentDetail, StudentNote } from '../types';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 import { StudentEditModal } from '../components/StudentEditModal';
+import { PostLessonSummaryEditor } from '../components/PostLessonSummaryEditor';
 import { useT } from '../../lib/language';
 
 export default function StudentDetailPage() {
@@ -66,6 +68,7 @@ export default function StudentDetailPage() {
   // Note Inline Editing
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [editNoteContent, setEditNoteContent] = useState('');
+  const [editNoteFamilySummary, setEditNoteFamilySummary] = useState('');
   const [editNoteObservations, setEditNoteObservations] = useState('');
   const [editNoteNextSteps, setEditNoteNextSteps] = useState('');
   const [isUpdatingNote, setIsUpdatingNote] = useState(false);
@@ -197,20 +200,22 @@ export default function StudentDetailPage() {
   const handleStartEditNote = (note: StudentNote) => {
     setEditingNoteId(note.id);
     setEditNoteContent(note.content || '');
+    setEditNoteFamilySummary(note.family_summary || '');
     setEditNoteObservations(note.observations || '');
     setEditNoteNextSteps(note.next_steps || '');
   };
 
   // Handle Update Note
   const handleUpdateNote = async (noteId: string) => {
-    if (!id || !editNoteContent.trim()) return;
+    if (!id || (!editNoteContent.trim() && !editNoteFamilySummary.trim())) return;
     setIsUpdatingNote(true);
 
     try {
       const res = await dashboardFetch(`/api/dashboard/students/${id}/notes/${noteId}`, {
         method: 'PATCH',
         body: JSON.stringify({
-          content: editNoteContent.trim(),
+          content: editNoteContent.trim() || undefined,
+          family_summary: editNoteFamilySummary.trim() || null,
           observations: editNoteObservations.trim() || undefined,
           next_steps: editNoteNextSteps.trim() || undefined
         })
@@ -850,173 +855,231 @@ export default function StudentDetailPage() {
           </div>
 
           <div className="glass-card rounded-2xl p-6 border border-border shadow-2xs space-y-5">
+            {/* Post-lesson Summary, Achievements, Milestones & Private Notes Editor (PR-06) */}
+            <PostLessonSummaryEditor
+              studentId={student.id}
+              studentName={student.name}
+              bookingId={last_lesson?.id || next_lesson?.id || null}
+              subjectHint={primary_service_name || studentDetail.primary_service_id || student.notes}
+              onSaved={({ note, milestone }) => {
+                setStudentDetail((prev) => {
+                  if (!prev) return null;
+                  return {
+                    ...prev,
+                    notes: note ? [note, ...(prev.notes || [])] : prev.notes,
+                    milestones: milestone
+                      ? [milestone, ...(prev.milestones || [])]
+                      : prev.milestones,
+                  };
+                });
+              }}
+            />
+
+            {/* Recorded Milestones List */}
+            {studentDetail.milestones && studentDetail.milestones.length > 0 && (
+              <div className="space-y-2.5 pt-2 border-t border-border-subtle" data-testid="student-milestones-list">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Award className="w-4 h-4 text-[#E5A93C]" />
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-foreground">
+                      {t('Recorded milestones', 'الأوسمة المسجلة للطالب')}
+                    </h3>
+                  </div>
+                  <span className="text-[11px] font-medium text-muted-foreground">
+                    {studentDetail.milestones.length}
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  {studentDetail.milestones.map((ms) => (
+                    <div
+                      key={ms.id}
+                      className="p-3 rounded-xl bg-[#E5A93C]/10 border border-[#E5A93C]/30 flex items-start justify-between gap-2 text-xs"
+                    >
+                      <div className="space-y-0.5 min-w-0">
+                        <p className="font-semibold text-foreground truncate">
+                          {isAr ? ms.title_ar : ms.title_en}
+                        </p>
+                        <p className="text-[11px] text-muted-foreground truncate">
+                          {isAr ? ms.title_en : ms.title_ar}
+                        </p>
+                      </div>
+                      <span className="text-[11px] text-muted-foreground shrink-0">
+                        {DateTime.fromISO(ms.reached_at).setLocale(locale).toFormat('MMM d, yyyy')}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Notes Section Header */}
-            <div>
+            <div className="pt-2 border-t border-border-subtle">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Lock className="w-4 h-4 text-warning" />
                   <h2 className="text-sm font-semibold uppercase tracking-wider text-foreground">
-                    {t('Private notes', 'ملاحظات خاصة')}
+                    {t('Notes & family summaries history', 'سجل الملاحظات وملخصات الأسرة')}
                   </h2>
                 </div>
-                <span className="text-[13px] px-2 py-0.5 rounded bg-warning/15 text-warning-foreground border border-warning/25 font-medium">
-                  {t('Teachers only', 'للمعلمين بس')}
+                <span className="text-[11px] px-2 py-0.5 rounded bg-warning/15 text-warning-foreground border border-warning/25 font-medium">
+                  {t('Private notes: only you and the admin', 'الملاحظات الخاصة: لك وللمدير فقط')}
                 </span>
               </div>
-              <p className="text-[11px] text-muted-foreground mt-1">
-                {t('Your observations and progress notes. Students never see them.', 'ملاحظاتك عن الطالب وتقدمه. الطلاب مش بيشوفوها أبداً.')}
-              </p>
             </div>
-
-            {/* Note Creation Box */}
-            <form onSubmit={handleCreateNote} className="space-y-3 p-4 rounded-xl glass-surface border border-border-subtle">
-              {noteFormError && (
-                <div className="p-2 rounded-lg bg-destructive/15 text-sm text-destructive border border-destructive/30">
-                  {noteFormError}
-                </div>
-              )}
-              <div>
-                <label className="block text-[11px] font-medium text-muted-foreground mb-1" htmlFor="sdp-note">
-                  {t('New note', 'ملاحظة جديدة')} <span className="text-destructive">*</span>
-                </label>
-                <textarea
-                  id="sdp-note"
-                  rows={3}
-                  value={newNoteContent}
-                  onChange={e => setNewNoteContent(e.target.value)}
-                  required
-                  placeholder={t('Lesson observations, Tajweed, pronunciation…', 'ملاحظات الحصة، التجويد، النطق…')}
-                  className="w-full px-3 py-2 text-sm rounded-xl border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-                />
-              </div>
-
-              <div>
-                <input
-                  type="text"
-                  value={newNoteObservations}
-                  onChange={e => setNewNoteObservations(e.target.value)}
-                  aria-label={t('Observations', 'ملاحظات تفصيلية')}
-                  placeholder={t('Details (e.g. needs practice on Noon Sakinah)', 'تفاصيل (مثلاً: محتاج يتدرب على النون الساكنة)')}
-                  className="w-full px-3 py-1.5 text-sm rounded-lg border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-                />
-              </div>
-
-              <div>
-                <input
-                  type="text"
-                  value={newNoteNextSteps}
-                  onChange={e => setNewNoteNextSteps(e.target.value)}
-                  aria-label={t('Next steps', 'الخطوة الجاية')}
-                  placeholder={t('Next steps / homework', 'الخطوة الجاية / الواجب')}
-                  className="w-full px-3 py-1.5 text-sm rounded-lg border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-                />
-              </div>
-
-              <div className="flex justify-end">
-                <button
-                  type="submit"
-                  disabled={isSubmittingNote || !newNoteContent.trim()}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 cursor-pointer"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>{isSubmittingNote ? t('Saving…', 'جارٍ الحفظ…') : t('Save note', 'احفظ الملاحظة')}</span>
-                </button>
-              </div>
-            </form>
 
             {/* List of Existing Notes */}
             <div className="space-y-3">
               {notes && notes.length > 0 ? (
-                notes.map(note => (
-                  <div
-                    key={note.id}
-                    className="p-3.5 rounded-xl glass-card border-none-subtle shadow-2xs space-y-2 text-sm"
-                  >
-                    {editingNoteId === note.id ? (
-                      /* Inline Edit Mode */
-                      <div className="space-y-2">
-                        <textarea
-                          rows={3}
-                          value={editNoteContent}
-                          onChange={e => setEditNoteContent(e.target.value)}
-                          className="w-full px-2.5 py-1.5 text-sm rounded-lg border border-border glass-card text-foreground"
-                        />
-                        <input
-                          type="text"
-                          value={editNoteObservations}
-                          onChange={e => setEditNoteObservations(e.target.value)}
-                          placeholder={t('Details', 'تفاصيل')}
-                          className="w-full px-2.5 py-1 text-sm rounded-lg border border-border glass-card text-foreground"
-                        />
-                        <input
-                          type="text"
-                          value={editNoteNextSteps}
-                          onChange={e => setEditNoteNextSteps(e.target.value)}
-                          placeholder={t('Next steps', 'الخطوة الجاية')}
-                          className="w-full px-2.5 py-1 text-sm rounded-lg border border-border glass-card text-foreground"
-                        />
-                        <div className="flex items-center justify-end gap-2 pt-1">
-                          <button
-                            type="button"
-                            onClick={() => setEditingNoteId(null)}
-                            className="px-2.5 py-1 text-[11px] rounded-lg text-muted-foreground hover:bg-surface-subtle cursor-pointer"
-                          >
-                            {t('Cancel', 'إلغاء')}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleUpdateNote(note.id)}
-                            disabled={isUpdatingNote || !editNoteContent.trim()}
-                            className="px-3 py-1 text-[11px] font-semibold rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
-                          >
-                            {isUpdatingNote ? t('Saving…', 'جارٍ الحفظ…') : t('Save', 'احفظ')}
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      /* Display Mode */
-                      <>
-                        <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-                          <span>{DateTime.fromISO(note.created_at).setLocale(locale).toFormat('MMM d, yyyy • hh:mm a')}</span>
-                          <div className="flex items-center gap-1.5">
+                notes.map(note => {
+                  const achList = Array.isArray(note.achievements) ? note.achievements : [];
+                  return (
+                    <div
+                      key={note.id}
+                      className="p-3.5 rounded-xl glass-card border-none-subtle shadow-2xs space-y-2.5 text-sm"
+                    >
+                      {editingNoteId === note.id ? (
+                        /* Inline Edit Mode */
+                        <div className="space-y-2">
+                          <div>
+                            <label className="block text-[11px] font-medium text-muted-foreground mb-1">
+                              {t('For the family (shared)', 'ملخص للأسرة (مشترك)')}
+                            </label>
+                            <textarea
+                              rows={2}
+                              value={editNoteFamilySummary}
+                              onChange={e => setEditNoteFamilySummary(e.target.value)}
+                              className="w-full px-2.5 py-1.5 text-sm rounded-lg border border-border glass-card text-foreground"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[11px] font-medium text-muted-foreground mb-1">
+                              {t('Private notes (only you and the admin)', 'ملاحظات خاصة (لك وللمدير فقط)')}
+                            </label>
+                            <textarea
+                              rows={2}
+                              value={editNoteContent}
+                              onChange={e => setEditNoteContent(e.target.value)}
+                              className="w-full px-2.5 py-1.5 text-sm rounded-lg border border-border glass-card text-foreground"
+                            />
+                          </div>
+                          <input
+                            type="text"
+                            value={editNoteObservations}
+                            onChange={e => setEditNoteObservations(e.target.value)}
+                            placeholder={t('Details', 'تفاصيل')}
+                            className="w-full px-2.5 py-1 text-sm rounded-lg border border-border glass-card text-foreground"
+                          />
+                          <input
+                            type="text"
+                            value={editNoteNextSteps}
+                            onChange={e => setEditNoteNextSteps(e.target.value)}
+                            placeholder={t('Next steps', 'الخطوة الجاية')}
+                            className="w-full px-2.5 py-1 text-sm rounded-lg border border-border glass-card text-foreground"
+                          />
+                          <div className="flex items-center justify-end gap-2 pt-1">
                             <button
-                              onClick={() => handleStartEditNote(note)}
-                              className="p-1 hover:text-primary transition-colors cursor-pointer"
-                              title={t('Edit note', 'عدّل الملاحظة')}
-                              aria-label={t('Edit note', 'عدّل الملاحظة')}
+                              type="button"
+                              onClick={() => setEditingNoteId(null)}
+                              className="px-2.5 py-1 text-[11px] rounded-lg text-muted-foreground hover:bg-surface-subtle cursor-pointer"
                             >
-                              <Edit3 className="w-3.5 h-3.5" />
+                              {t('Cancel', 'إلغاء')}
                             </button>
                             <button
-                              onClick={() => handleDeleteNote(note.id)}
-                              className="p-1 hover:text-destructive transition-colors cursor-pointer"
-                              title={t('Delete note', 'امسح الملاحظة')}
-                              aria-label={t('Delete note', 'امسح الملاحظة')}
+                              type="button"
+                              onClick={() => handleUpdateNote(note.id)}
+                              disabled={isUpdatingNote || (!editNoteContent.trim() && !editNoteFamilySummary.trim())}
+                              className="px-3 py-1 text-[11px] font-semibold rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
                             >
-                              <Trash2 className="w-3.5 h-3.5" />
+                              {isUpdatingNote ? t('Saving…', 'جارٍ الحفظ…') : t('Save', 'احفظ')}
                             </button>
                           </div>
                         </div>
+                      ) : (
+                        /* Display Mode */
+                        <>
+                          <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+                            <span>{DateTime.fromISO(note.created_at).setLocale(locale).toFormat('MMM d, yyyy • hh:mm a')}</span>
+                            <div className="flex items-center gap-1.5">
+                              <button
+                                onClick={() => handleStartEditNote(note)}
+                                className="p-1 hover:text-primary transition-colors cursor-pointer"
+                                title={t('Edit note', 'عدّل الملاحظة')}
+                                aria-label={t('Edit note', 'عدّل الملاحظة')}
+                              >
+                                <Edit3 className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteNote(note.id)}
+                                className="p-1 hover:text-destructive transition-colors cursor-pointer"
+                                title={t('Delete note', 'امسح الملاحظة')}
+                                aria-label={t('Delete note', 'امسح الملاحظة')}
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
 
-                        <p className="text-foreground whitespace-pre-line leading-relaxed">
-                          {note.content}
-                        </p>
+                          {note.family_summary && (
+                            <div className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/25 space-y-1">
+                              <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-700 dark:text-emerald-300 block">
+                                {t('For the family', 'ملخص للأسرة')}
+                              </span>
+                              <p className="text-foreground whitespace-pre-line leading-relaxed text-xs sm:text-sm">
+                                {note.family_summary}
+                              </p>
+                            </div>
+                          )}
 
-                        {note.observations && (
-                          <p className="text-[11px] text-muted-foreground glass-surface p-2 rounded-lg border border-border-subtle">
-                            <strong className="font-semibold text-primary">{t('Details', 'تفاصيل')}:</strong> {note.observations}
-                          </p>
-                        )}
+                          {achList.length > 0 && (
+                            <div className="flex flex-wrap gap-1.5">
+                              {achList.map((item: any, idx: number) => {
+                                const text =
+                                  typeof item === 'string'
+                                    ? item
+                                    : isAr
+                                      ? item?.ar || item?.label || item?.title || item?.en
+                                      : item?.en || item?.label || item?.title || item?.ar;
+                                if (!text) return null;
+                                return (
+                                  <span
+                                    key={idx}
+                                    className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-secondary/40 text-primary border border-secondary/60"
+                                  >
+                                    ✓ {text}
+                                  </span>
+                                );
+                              })}
+                            </div>
+                          )}
 
-                        {note.next_steps && (
-                          <p className="text-[11px] text-muted-foreground glass-surface p-2 rounded-lg border border-border-subtle">
-                            <strong className="font-semibold text-warning-foreground">{t('Next steps', 'الخطوة الجاية')}:</strong> {note.next_steps}
-                          </p>
-                        )}
-                      </>
-                    )}
-                  </div>
-                ))
+                          {note.content && (
+                            <div className="p-2.5 rounded-lg glass-surface border border-border-subtle space-y-1">
+                              <span className="text-[10px] font-semibold uppercase tracking-wider text-warning-foreground flex items-center gap-1">
+                                <Lock className="w-3 h-3 text-warning" />
+                                {t('Only you and the admin', 'لك وللمدير فقط')}
+                              </span>
+                              <p className="text-foreground whitespace-pre-line leading-relaxed text-xs sm:text-sm">
+                                {note.content}
+                              </p>
+                            </div>
+                          )}
+
+                          {note.observations && (
+                            <p className="text-[11px] text-muted-foreground glass-surface p-2 rounded-lg border border-border-subtle">
+                              <strong className="font-semibold text-primary">{t('Details', 'تفاصيل')}:</strong> {note.observations}
+                            </p>
+                          )}
+
+                          {note.next_steps && (
+                            <p className="text-[11px] text-muted-foreground glass-surface p-2 rounded-lg border border-border-subtle">
+                              <strong className="font-semibold text-warning-foreground">{t('Next steps', 'الخطوة الجاية')}:</strong> {note.next_steps}
+                            </p>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  );
+                })
               ) : (
                 <div className="p-6 rounded-xl glass-surface border border-dashed border-border text-center">
                   <FileText className="w-7 h-7 text-muted-foreground mx-auto mb-1.5 opacity-50" />

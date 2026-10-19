@@ -25,15 +25,17 @@ import { dashboardFetch, openZoomAsHost } from '../lib/dashboardApi';
 import FocusTrap from '../../components/FocusTrap';
 import { useTeacherAuth } from '../../lib/auth';
 import { useT } from '../../lib/language';
+import { PostLessonSummaryEditor } from './PostLessonSummaryEditor';
 
 interface LessonDetailModalProps {
   lesson: DashboardLesson | null;
   onClose: () => void;
   onBookingUpdated?: () => void;
+  openSummaryEditor?: boolean;
 }
 
 /** Quick lesson view from Today / Schedule. Teachers see no fees (RULES.md §1). */
-export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonDetailModalProps) {
+export function LessonDetailModal({ lesson, onClose, onBookingUpdated, openSummaryEditor = false }: LessonDetailModalProps) {
   const { t, isAr } = useT();
   const { teacherRole } = useTeacherAuth();
   const isSuperAdmin = teacherRole === 'super_admin';
@@ -478,6 +480,20 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated }: LessonD
                 </button>
               </div>
             )}
+
+            {(currentStatus === 'completed' || isMarkingCompleted || openSummaryEditor) &&
+              (lesson.student_id || lesson.studentId) && (
+                <PostLessonSummaryEditor
+                  studentId={String(lesson.student_id || lesson.studentId)}
+                  studentName={lesson.learner_name}
+                  bookingId={lesson.id}
+                  subjectHint={lesson.service_id || lesson.service_name}
+                  compact={true}
+                  onSaved={() => {
+                    if (onBookingUpdated) onBookingUpdated();
+                  }}
+                />
+              )}
 
             {isMarkingNoShow && (
               <div className="p-4 bg-warning/10 border border-warning/20 rounded-xl space-y-3 animate-in fade-in">

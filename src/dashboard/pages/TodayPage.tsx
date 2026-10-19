@@ -38,6 +38,7 @@ export default function TodayPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedLesson, setSelectedLesson] = useState<DashboardLesson | null>(null);
+  const [openSummaryEditor, setOpenSummaryEditor] = useState(false);
   const [lastRefreshed, setLastRefreshed] = useState<DateTime>(() => DateTime.now().setZone(getActiveWorkingTimezone('Africa/Cairo')));
 
   // Listen to timezone change event from settings
@@ -303,7 +304,14 @@ export default function TodayPage() {
                     key={lesson.id}
                     lesson={lesson}
                     timeContext={getLessonTimeContext(lesson)}
-                    onSelect={() => setSelectedLesson(lesson)}
+                    onSelect={() => {
+                      setOpenSummaryEditor(false);
+                      setSelectedLesson(lesson);
+                    }}
+                    onOpenSummary={() => {
+                      setOpenSummaryEditor(true);
+                      setSelectedLesson(lesson);
+                    }}
                     activeTz={activeTz}
                     t={t}
                     locale={locale}
@@ -369,7 +377,11 @@ export default function TodayPage() {
       {selectedLesson && (
         <LessonDetailModal
           lesson={selectedLesson}
-          onClose={() => setSelectedLesson(null)}
+          openSummaryEditor={openSummaryEditor}
+          onClose={() => {
+            setSelectedLesson(null);
+            setOpenSummaryEditor(false);
+          }}
           onBookingUpdated={() => fetchTodayLessons(true)}
         />
       )}
@@ -488,6 +500,7 @@ function TodayLessonRow({
   lesson,
   timeContext,
   onSelect,
+  onOpenSummary,
   activeTz = 'Africa/Cairo',
   t,
   locale
@@ -496,6 +509,7 @@ function TodayLessonRow({
   lesson: DashboardLesson;
   timeContext: { type: string; label: string };
   onSelect: () => void;
+  onOpenSummary?: () => void;
   activeTz?: string;
   t: T;
   locale: string;
@@ -632,6 +646,20 @@ function TodayLessonRow({
             <span className="hidden sm:inline">{t('Start', 'ابدأ')}</span>
           </a>
         )}
+
+        {(isCompleted || isNeedsOutcome || isInProgress) &&
+          (lesson.student_id || lesson.studentId) &&
+          onOpenSummary && (
+            <button
+              type="button"
+              data-testid="today-record-summary-btn"
+              onClick={onOpenSummary}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-secondary/40 hover:bg-secondary/60 text-primary border border-secondary/60 text-xs sm:text-sm font-semibold transition-colors cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>{t('Record summary', 'سجّل الملخص')}</span>
+            </button>
+          )}
 
         <button
           onClick={onSelect}

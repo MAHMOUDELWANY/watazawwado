@@ -66,7 +66,7 @@ import {
 import { createIntakeToken, readIntakeToken } from '../server/intake/intakeToken.js';
 import { registerCommunityRoutes, ensureTeacherThreads } from '../server/routes/community.js';
 import { registerCurriculumRoutes } from '../server/routes/curriculum.js';
-import { registerProgressRoutes, validateFamilyNoteFields } from '../server/routes/progress.js';
+import { registerProgressRoutes, validateFamilyNoteFields, canTeacherWriteForLesson } from '../server/routes/progress.js';
 import { announceNewStudent, type NewLearner } from '../server/onboarding/newStudent.js';
 import { isAdultAge, isGuardianAge, isChildAge, parseAge, ADULT_MIN_AGE, GUARDIAN_MIN_AGE, CHILD_MIN_AGE, CHILD_MAX_AGE } from '../src/lib/ageRules.js';
 import { notifyUser, notifySuperAdmins, resolveLearnerAccount } from '../server/notifications/inbox.js';
@@ -2670,7 +2670,7 @@ app.get('/api/dashboard/students/:id', verifyTeacherAuth, async (req: any, res: 
     }
 
     // Fetch related records in parallel
-    const [guardiansRes, goalsRes, bookingsRes, notesRes, servicesRes, leadRes] = await Promise.all([
+    const [guardiansRes, goalsRes, bookingsRes, notesRes, milestonesRes, servicesRes, leadRes] = await Promise.all([
       supabase.from('guardians').select('*').eq('student_id', id).maybeSingle(),
       supabase.from('student_goals').select('*').eq('student_id', id).order('created_at', { ascending: false }),
       bookingsQuery,
@@ -2679,6 +2679,11 @@ app.get('/api/dashboard/students/:id', verifyTeacherAuth, async (req: any, res: 
         .select('*')
         .eq('student_id', id)
         .order('created_at', { ascending: false }),
+      supabase
+        .from('learner_milestones')
+        .select('*')
+        .eq('student_id', id)
+        .order('reached_at', { ascending: false }),
       supabase.from('services').select('id, title, arabic_title'),
       leadId
         ? supabase.from('leads').select('*').eq('id', leadId).maybeSingle()
@@ -2867,6 +2872,7 @@ app.get('/api/dashboard/students/:id', verifyTeacherAuth, async (req: any, res: 
       trial_context: trialContext,
       lead_context: leadContext,
       notes: formattedNotes,
+      milestones: milestonesRes.data || [],
       services: servicesRes.data || []
     });
   } catch (err) {
@@ -3516,35 +3522,50 @@ app.post('/api/dashboard/students/:id/notes', verifyTeacherAuth, async (req: any
     const { id } = req.params;
     const { content, observations, next_steps } = req.body;
 
-    if (!content || typeof content !== 'string' || !content.trim()) {
-      return res.status(400).json({ error: 'Note content cannot be empty.' });
-    }
-
     const familyCheck = validateFamilyNoteFields(req.body);
     if (familyCheck.ok === false) {
       return res.status(400).json({ error: familyCheck.error });
     }
 
-    // Verify student exists and check authorization
-    const { data: student, error: studentErr } = await supabase
-      .from('students')
-      .select('id, assigned_teacher_id')
-      .eq('id', id)
-      .maybeSingle();
+    const hasPrivateContent = typeof content === 'string' && content.trim().length > 0;
+    const hasFamilySummary =
+      typeof familyCheck.value.family_summary === 'string' &&
+      familyCheck.value.family_summary.trim().length > 0;
+    const hasAchievements = Array.isArray(familyCheck.value.achievements)
+      ? familyCheck.value.achievements.length > 0
+      : Boolean(familyCheck.value.achievements);
 
-    if (studentErr || !student) {
+    if (!hasPrivateContent && !hasFamilySummary && !hasAchievements) {
+      return res.status(400).json({ error: 'Note content cannot be empty.' });
+    }
+
+    const rawBookingId =
+      typeof req.body?.booking_id === 'string'
+        ? req.body.booking_id
+        : typeof req.body?.bookingId === 'string'
+          ? req.body.bookingId
+          : null;
+
+    // Verify student exists and check authorization (including lesson/session ownership if provided)
+    const access = await canTeacherWriteForLesson(supabase, req.teacherUser, {
+      studentId: id,
+      bookingId: rawBookingId,
+      sessionId: familyCheck.value.session_id ?? null,
+    });
+
+    if (!access.exists) {
       return res.status(404).json({ error: 'Student record not found.' });
     }
 
-    if (req.teacherUser?.role !== 'super_admin') {
-      if (student.assigned_teacher_id !== req.teacherUser.id) {
-        return res.status(403).json({ error: 'Forbidden: You do not have authorization to add notes for this student.' });
-      }
+    if (!access.allowed) {
+      return res.status(403).json({
+        error: access.reason || 'Forbidden: You do not have authorization to add notes for this student.',
+      });
     }
 
     const insertRow: Record<string, any> = {
       student_id: id,
-      private_notes: content.trim(),
+      private_notes: hasPrivateContent ? content.trim() : '',
       observations: observations && typeof observations === 'string' ? observations.trim() : null,
       next_steps: next_steps && typeof next_steps === 'string' ? next_steps.trim() : null
     };
@@ -3554,8 +3575,8 @@ app.post('/api/dashboard/students/:id/notes', verifyTeacherAuth, async (req: any
     if (familyCheck.value.achievements !== undefined) {
       insertRow.achievements = familyCheck.value.achievements;
     }
-    if (familyCheck.value.session_id !== undefined) {
-      insertRow.session_id = familyCheck.value.session_id;
+    if (access.resolvedSessionId || familyCheck.value.session_id !== undefined) {
+      insertRow.session_id = access.resolvedSessionId ?? familyCheck.value.session_id ?? null;
     }
 
     const { data: inserted, error: insertErr } = await supabase
