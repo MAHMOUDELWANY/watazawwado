@@ -89,7 +89,7 @@ Principles every PR/RN task follows:
   summary and achievements, homework/next steps if shared. Paginate (20 per page).
 
 ### PR-06 Teacher side: record the family summary and milestones after a lesson
-- Priority P1 · Zone 🟢 · Size M · Status todo · Depends on PR-01
+- Priority P1 · Zone 🟢 · Size M · Status taken (2026-10-20 argon) · Depends on PR-01
 - Files: `src/dashboard/pages/TodayPage.tsx` / `StudentDetailPage.tsx`, the lesson notes editor.
 - Do: after a lesson, the teacher sees one quick form: private notes (unchanged, labelled "only you and the admin"),
   "for the family" summary, quick-pick achievements for the subject (for Memorization: surah + ayah range; Tajweed: rule;
