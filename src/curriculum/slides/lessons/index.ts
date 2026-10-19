@@ -3,7 +3,7 @@ import type { Lesson, SceneId } from '../../types';
 import type { Built } from '../Scenes';
 import { PillarsBuild, RootsGrow, SittingStudy, IhsanLight } from '../Scenes';
 import { DoorsWonder, ClassroomWhisper, JiddoTea, MadinahLight } from './l01';
-import { TwoCaptains, OrbitsOrder, ShahadaWords, OneHeart, StarPieces, NeedsChain, ReciteLamp, CoverDawn, SunClimb, LampsGlow, DuaLight, BallRoll, CompassDrop } from './l03';
+import { TwoCaptains, OrbitsOrder, ShahadaWords, OneHeart, StarPieces, NeedsChain, ReciteLamp, CoverDawn, SunClimb, LampsGlow, DuaLight, CoachShows, CompassDrop } from './l03';
 import { ThreeWaysBuild, CastleClues, ThreeWaysQuran, SkyStars, KeyFits, DesertLook, BabyGlow, CamelKit, CastleSparkle, CrashBricks, BoatRipples, MagnifierDrop, CoverStars, HandStudy, LadybirdWalk, JiddoRecall } from './l02';
 
 /* Which scene build acts out a page, by scene id (docs/curriculum/RULES.md §1.10). Each lesson adds its scenes in its
@@ -28,7 +28,7 @@ export const STUDIES: Partial<Record<SceneId, React.ComponentType<{ v: Built; la
 export const MOMENTS: Partial<Record<SceneId, React.ComponentType<{ v: Built; lesson: Lesson }>>> = {
   lego: CastleSparkle, crash: CrashBricks, boat: BoatRipples, window: CoverStars, hand: HandStudy, park: LadybirdWalk, doors: JiddoRecall,
   doorsHero: DoorsWonder, chalkboard: ClassroomWhisper, jiddo: JiddoTea, madinah: MadinahLight,
-  oneSun: CoverDawn, sunrise: SunClimb, masjidNight: LampsGlow, dua: DuaLight, football: BallRoll,
+  oneSun: CoverDawn, sunrise: SunClimb, masjidNight: LampsGlow, dua: DuaLight, football: CoachShows,
 };
 
 /** Today's provision dropped into Jiddo's bag on the Ahd page, by lesson number. */

@@ -198,6 +198,9 @@ export const SCENE_IMAGES: Partial<Record<LessonPage['scene'], string>> = {
   oneSun: 'l03/cover', sunrise: 'l03/sunrise', recite: 'l03/recite', masjidNight: 'l03/masjid-night', dua: 'l03/dua', football: 'l03/football',
 };
 
+/** Where the crop of a wide (16:9) painting sits when its box cuts it (CSS object-position), so the people stay in view. */
+const SCENE_FOCUS: Partial<Record<LessonPage['scene'], string>> = { sunrise: '75% 50%', dua: '32% 50%', football: '10% 50%' };
+
 /** Where labels point on each painting (% of the image box): x,y = the point, lx,ly = the label. */
 type Pin = { x: number; y: number; lx: number; ly: number };
 const PINS: Partial<Record<LessonPage['scene'], Pin[]>> = {
@@ -254,6 +257,7 @@ function Painting({ page, className = '', style, drift = true, children }: { pag
             draggable={false}
             onError={() => setMissing(src)}
             className="h-full w-full object-cover"
+            style={{ objectPosition: SCENE_FOCUS[page.scene] }}
             initial={reduce ? false : { filter: 'blur(8px) saturate(0.85)' }}
             animate={reduce ? undefined : { filter: 'blur(0px) saturate(1)' }}
             transition={{ duration: 0.8, ease }}

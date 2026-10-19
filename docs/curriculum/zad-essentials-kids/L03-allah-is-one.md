@@ -153,12 +153,15 @@ Prompts (each scene: base prompt + this):
 7. **compass.png:** an old brass pocket compass, lid open, a small khatam-star pattern on the lid, the needle pointing up.
    Transparent background (or plain pure white; Claude removes it).
 
+Delivered 2026-10-19 (all seven), as 16:9 WebP (the compass with transparency), saved unchanged in `l03/`. Because they
+are 16:9, the player shifts the crop of `sunrise`, `dua` and `football` (`SCENE_FOCUS` in `slides/Slide.tsx`) so the
+people stay in view, and `recite` sits in a 16:9 box. Moments re-placed on the real pictures.
+
 ## Checked (2026-10-19)
 
 tsc, the curriculum tests and the build pass. All 16 pages rendered in headless Edge (Playwright) at 1600 × 900 through a
 temporary harness, at their last build step, plus reduced motion; no console errors. Not checked: the real teacher
-workspace (needs a teacher login), phone width, and the six paintings (not delivered yet: their pages show a warm wash
-with the code motion on top, and the moment positions are guesses until the paintings arrive).
+workspace (needs a teacher login), phone width, and phone width. The paintings were re-checked on their pages after delivery.
 
 ## Owner decisions
 

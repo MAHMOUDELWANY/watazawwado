@@ -31,8 +31,9 @@
   cards and game, and the page-turn transition (they apply to every lesson of the series).
 - **Now (Lesson 3, 2026-10-19):** at the owner's request ("finish everything for Lesson 3, then tell me what to add"),
   the brief, page text, Arabic notes and code scenes were done in one pass (`zad-essentials-kids/L03-allah-is-one.md`).
-  Waiting for the owner: review of the brief's 5 open points and the text, and 7 images (table in the brief).
-- **Next:** place the Lesson 3 images when they arrive and tune the moments over them; then Lesson 4 brief.
+  The owner delivered the 7 images the same day; placed and the moments re-aimed. Waiting for the owner: review of the
+  brief's 5 open points, the text and the built pages.
+- **Next:** after the review, Lesson 4 (Muhammad ﷺ, the Messenger) brief.
 - **Not started:** Lessons 4–37.
 - **Known limit:** lesson text ships in the site bundle, so the lock is a UI lock (content is not secret). Upgrade to
   server-served lessons if content must be protected.
@@ -391,3 +392,5 @@ B3–B5 → continue lesson by lesson.
   star of al-Ikhlas in four pieces, the needs chain. Player: a painting not delivered yet shows a warm wash instead of a
   broken image; Arabic vocab no longer wraps mid-phrase. Checked in headless Edge; tsc, tests and build pass. Waiting:
   owner review + 7 images.
+- **2026-10-19** — Lesson 3 images delivered (7, 16:9). Placed; player can shift a wide painting's crop per scene
+  (`SCENE_FOCUS`); moments re-aimed on the real pictures (sun rays, lamps, du'a light, the coach). Checked in headless Edge.

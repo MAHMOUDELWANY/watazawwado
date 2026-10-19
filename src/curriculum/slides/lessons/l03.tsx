@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { P } from '../Art';
-import { Pen, Tag, Print, out, type Built } from '../Scenes';
+import { Pen, Tag, out, src, type Built } from '../Scenes';
 import { Burst, Rise, SunRays, Glow, Ripples, Sprite } from '../Motion';
 import { play, useCue } from '../sfx';
 
@@ -327,8 +327,9 @@ export function NeedsChain({ v, label }: { v: Built; label: string }) {
   );
 }
 
-/** p9 Say: He is Allah, One. The lantern breathes over Jiddo, Maryam and the open Quran; with the surah four ayah markers
- *  light up one after another, and the word أحد is pinned; the question sends light up from the page. recite.webp. */
+/** p9 Say: He is Allah, One. The lantern breathes beside Jiddo, Maryam and the open Quran; with the surah four ayah markers
+ *  light up one after another on the wall, and the word أحد is pinned; the question sends light up from the page.
+ *  recite.webp is 16:9, so its box is 16:9 too and positions are % of the painting. */
 export function ReciteLamp({ v, label }: { v: Built; label: string }) {
   const reduce = useReducedMotion();
   const [marks, setMarks] = useState(0);
@@ -340,70 +341,78 @@ export function ReciteLamp({ v, label }: { v: Built; label: string }) {
   }, [v.evidence, reduce]);
   useCue('sparkle', v.interaction, 0.3);
   return (
-    <Print name="l03/recite" label={label}>
-      <Glow x={16} y={34} w={30} h={46} />
+    <div className="absolute left-[720px] top-[200px] h-[428px] w-[760px]" role="img" aria-label={label}>
+      <div className="absolute inset-0 overflow-hidden rounded-[28px] shadow-[0_40px_80px_-40px_rgba(139,73,53,0.6)]" style={{ background: '#7A4A30' }}>
+        <motion.img src={src('l03/recite')} alt="" aria-hidden="true" draggable={false} className="absolute inset-0 h-full w-full select-none object-cover"
+          onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }}
+          initial={reduce ? false : { scale: 1.06 }} animate={{ scale: 1 }} transition={{ duration: 1.4, ease: out }} />
+        <Glow x={6} y={74} w={20} h={40} />
+      </div>
       {[0, 1, 2, 3].slice(0, marks).map((i) => (
-        <motion.span key={i} className="pointer-events-none absolute flex h-[64px] w-[64px] -translate-x-1/2 -translate-y-1/2 items-center justify-center"
-          style={{ left: '88%', top: `${18 + i * 20}%` }} initial={reduce ? false : { scale: 0, rotate: -45 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', bounce: 0.45 }}>
+        <motion.span key={i} className="pointer-events-none absolute flex h-[58px] w-[58px] -translate-x-1/2 -translate-y-1/2 items-center justify-center"
+          style={{ left: `${70 + i * 7}%`, top: '30%' }} initial={reduce ? false : { scale: 0, rotate: -45 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', bounce: 0.45 }}>
           <svg viewBox="0 0 40 40" className="absolute inset-0 h-full w-full" aria-hidden="true">
             <rect x="8" y="8" width="24" height="24" fill={P.teal} stroke="#FFFDF7" strokeWidth="2" />
             <rect x="8" y="8" width="24" height="24" fill={P.teal} stroke="#FFFDF7" strokeWidth="2" transform="rotate(45 20 20)" />
           </svg>
-          <span className="relative font-sans text-[22px] font-bold text-white">{i + 1}</span>
+          <span className="relative font-sans text-[20px] font-bold text-white">{i + 1}</span>
         </motion.span>
       ))}
-      {v.evidence && <Tag style={{ left: '62%', top: '12%' }} ar="أَحَدٌ" color={P.crimson} delay={0.4}>One</Tag>}
-      {v.interaction && <Rise from={[{ x: 46, y: 62 }]} count={6} height={30} seed={9} />}
-    </Print>
+      {v.evidence && <Tag style={{ left: '80%', top: '12%' }} ar="أَحَدٌ" color={P.crimson} delay={0.4}>One</Tag>}
+      {v.interaction && <Rise from={[{ x: 44, y: 66 }]} count={6} height={34} seed={9} />}
+    </div>
   );
 }
 
-/* ---------- moments on story, question and cliffhanger pages: motion over the painting ---------- */
+/* ---------- moments on story, question and cliffhanger pages: motion over the painting ----------
+   The Lesson 3 paintings are 16:9 and drawn cover-fit; Slide.tsx shifts the crop of sunrise, dua and football
+   (SCENE_FOCUS) so the people stay in view. Positions below are % of each composition's box. */
 
-/** p1 Cover: the rising sun throws slow rays over the city and motes of light drift up from the hill. cover.webp fills
- *  the slide; the sun is expected right of centre. */
+/** p1 Cover: the one sun throws slow rays over the city and motes of light drift up from the hill. cover.webp fills the
+ *  slide (no crop), sun at 44% / 57%. */
 export function CoverDawn() {
   return (
     <>
-      <SunRays x={64} y={50} size={70} />
-      <Glow x={64} y={50} w={26} h={36} />
-      <Rise from={[{ x: 70, y: 86 }, { x: 84, y: 86 }]} count={4} height={26} seed={11} />
+      <SunRays x={44} y={57} size={64} />
+      <Glow x={44} y={57} w={20} h={30} />
+      <Rise from={[{ x: 58, y: 92 }, { x: 76, y: 94 }]} count={4} height={24} seed={11} />
     </>
   );
 }
 
-/** p5 One order: the sun comes up with its rays, then its daily path is drawn over the window: every day, the same way. */
+/** p5 One order: the sun comes up with its rays, then its daily path is drawn up over the window: every day, the same
+ *  way. sunrise.webp in the picture-book box, crop shifted right: the sun sits at 94% / 44%. */
 export function SunClimb({ v }: { v: Built }) {
   useCue('whoosh', v.lines >= 2, 0.2);
   useCue('pen', v.lines >= 3, 0.3);
   return (
     <>
-      {v.lines >= 2 && <SunRays x={72} y={46} size={60} />}
-      {v.lines >= 2 && <Glow x={72} y={46} w={22} h={28} />}
+      {v.lines >= 2 && <SunRays x={94} y={44} size={60} />}
+      {v.lines >= 2 && <Glow x={94} y={44} w={22} h={28} />}
       {v.lines >= 3 && (
         <svg className="pointer-events-none absolute inset-0 h-full w-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-          <Pen d="M44 62 C54 14 80 10 96 40" color={P.goldSoft} width={0.6} dash="1.5 2" duration={1.6} delay={0.3} glow />
+          <Pen d="M94 42 C90 6 58 2 44 24" color="#FFF6D8" width={0.6} dash="1.5 2" duration={1.6} delay={0.3} glow />
         </svg>
       )}
-      {v.lines >= 3 && <Tag style={{ left: '62%', top: '24%' }} color={P.copper} delay={1.4}>Every day, the same way</Tag>}
+      {v.lines >= 3 && <Tag style={{ left: '68%', top: '32%' }} color={P.copper} delay={1.4}>Every day, the same way</Tag>}
     </>
   );
 }
 
-/** Lamps hanging between the palm-trunk pillars of masjid-night.webp (% of the picture-book box). */
-const LAMPS = [24, 44, 64, 84];
-/** p12 Allah loves him: the lamps of the empty mosque light one after another as the story is told; with the Prophet's ﷺ
- *  words a warm light fills the prayer row and motes of light rise from it. */
+/** Lamps of masjid-night.webp as % of the picture-book box (centre crop), in the order they light. */
+const LAMPS = [{ x: 30, y: 30 }, { x: 38.6, y: 30 }, { x: 45.7, y: 38 }, { x: 51.4, y: 38 }, { x: 87, y: 40 }, { x: 13, y: 16 }];
+/** p12 Allah loves him: the lamps of the empty mosque light two by two as the story is told; with the Prophet's ﷺ words a
+ *  warm light fills the prayer rows and motes of light rise from them. */
 export function LampsGlow({ v }: { v: Built }) {
-  const lit = Math.min(LAMPS.length, v.lines + (v.lines > 0 ? 1 : 0));
+  const lit = Math.min(LAMPS.length, (v.lines + (v.evidence ? 1 : 0)) * 2);
   useCue('chime', v.evidence, 0.4);
   return (
     <>
-      {LAMPS.slice(0, lit).map((x) => <Glow key={x} x={x} y={30} w={12} h={18} />)}
+      {LAMPS.slice(0, lit).map((l) => <Glow key={l.x} x={l.x} y={l.y} w={10} h={14} />)}
       {v.evidence && (
         <>
-          <Glow x={56} y={72} w={60} h={30} />
-          <Rise from={[{ x: 44, y: 80 }, { x: 56, y: 80 }, { x: 68, y: 80 }]} count={4} height={30} seed={13} />
+          <Glow x={52} y={82} w={70} h={26} />
+          <Rise from={[{ x: 40, y: 84 }, { x: 55, y: 84 }, { x: 70, y: 84 }]} count={4} height={30} seed={13} />
         </>
       )}
     </>
@@ -411,36 +420,35 @@ export function LampsGlow({ v }: { v: Built }) {
 }
 
 /** p13 Only Allah, every day: a soft light gathers round Yusuf's raised hands as he whispers his du'a, motes rise from
- *  them, and a spark lands on his pencil when he gets to work. dua.webp in the spotlight panel. */
+ *  them, and a spark lands on his test when he gets to work. dua.webp in the spotlight panel, crop shifted left. */
 export function DuaLight({ v }: { v: Built }) {
   useCue('chime', v.lines >= 2, 0.3);
   useCue('sparkle', v.lines >= 3, 0.3);
   return (
     <>
-      {v.lines >= 2 && <Glow x={40} y={56} w={30} h={26} />}
-      {v.lines >= 2 && <Rise from={[{ x: 40, y: 54 }]} count={5} height={34} seed={15} />}
-      {v.lines >= 3 && <Burst x={52} y={72} kind="sparks" count={12} seed={16} delay={0.2} spread={10} />}
+      {v.lines >= 2 && <Glow x={40} y={66} w={34} h={20} />}
+      {v.lines >= 2 && <Rise from={[{ x: 40, y: 62 }]} count={5} height={30} seed={15} />}
+      {v.lines >= 3 && <Burst x={76} y={83} kind="sparks" count={12} seed={16} delay={0.2} spread={10} />}
     </>
   );
 }
 
-/** p16 Next time: the ball rolls away from Yusuf across the grass, then a spark marks the coach who will show him. */
-export function BallRoll({ v }: { v: Built }) {
+/** p16 Next time: a "?" pops over Yusuf as the book fails him; then a light and sparks mark the coach who will show him.
+ *  football.webp in the cliffhanger box, crop shifted left: Yusuf's head at 30% / 35%, the coach at 58% / 30%. */
+export function CoachShows({ v }: { v: Built }) {
   const reduce = useReducedMotion();
-  useCue('thud', v.lines >= 2, 0.1);
-  useCue('pop', v.lines >= 3, 0.4);
+  useCue('pop', v.lines >= 2, 0.3);
+  useCue('sparkle', v.lines >= 3, 0.4);
   return (
     <>
       {v.lines >= 2 && (
-        <motion.span className="pointer-events-none absolute block h-[54px] w-[54px] rounded-full"
-          style={{ top: '80%', background: 'radial-gradient(circle at 35% 35%, #FFFFFF, #E9E3D3 60%, #9C9584 100%)', boxShadow: 'inset -6px -6px 0 rgba(0,0,0,0.12), 0 10px 14px -8px rgba(0,0,0,0.6)' }}
-          initial={reduce ? { left: '46%' } : { left: '28%', rotate: 0 }} animate={reduce ? { left: '46%' } : { left: ['28%', '46%', '44%'], rotate: [0, 540, 500] }}
-          transition={{ duration: 1.8, times: [0, 0.8, 1], ease: 'easeOut' }}>
-          <span className="absolute left-1/2 top-1/2 h-[18px] w-[18px] -translate-x-1/2 -translate-y-1/2 rotate-45 bg-[#2A2420]" />
-        </motion.span>
+        <motion.span className="pointer-events-none absolute flex h-[70px] w-[70px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-[4px] font-serif text-[46px] font-bold shadow-[0_12px_24px_-12px_rgba(30,20,16,0.7)]"
+          style={{ left: '36%', top: '22%', background: '#FFFDF7', borderColor: P.teal, color: P.crimson }}
+          initial={reduce ? false : { scale: 0, rotate: -20 }} animate={reduce ? undefined : { scale: 1, rotate: 0, y: [0, -6, 0] }}
+          transition={{ scale: { type: 'spring', bounce: 0.5, duration: 0.6, delay: 0.3 }, rotate: { duration: 0.5, delay: 0.3 }, y: { duration: 2.4, repeat: Infinity, delay: 1 } }}>?</motion.span>
       )}
-      {v.lines >= 3 && <Glow x={52} y={46} w={20} h={40} />}
-      {v.lines >= 3 && <Burst x={52} y={40} kind="sparks" count={12} seed={18} delay={0.3} spread={10} />}
+      {v.lines >= 3 && <Glow x={58} y={34} w={22} h={56} />}
+      {v.lines >= 3 && <Burst x={58} y={18} kind="sparks" count={12} seed={18} delay={0.3} spread={10} />}
     </>
   );
 }
