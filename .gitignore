@@ -7,8 +7,6 @@ coverage/
 .env*
 !.env.example
 
-# Antigravity skills are local copies (node scripts/sync-agent-skills.mjs); its rules are tracked.
-.agents/skills/
 
 # Local tool artifacts
 .playwright-mcp/

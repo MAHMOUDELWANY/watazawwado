@@ -1,15 +1,24 @@
-# Pre-launch backlog (2026-10-19 → 2026-10-23)
+# Pre-launch backlog
 
-**Claude Code is now the primary executor** (2026-10-20). Argon coordination files removed. Pick tasks top-down by priority.
+Approved by the owner on 2026-10-19 (`/plan-ceo-review`, selective expansion). Claude does every task from 2026-10-20
+(the Antigravity agents are no longer used). The four big additions are the learner progress experience (PR), the
+retention engine (RN), the admin CRM (CRM) and launch operations (OPS); the other lanes polish what exists for each role.
+Binding rules: `RULES.md` and `CLAUDE.md`. Progress log: `docs/backlog/LOG.md`.
 
-Core additions: learner progress experience (PR), retention engine (RN), admin CRM (CRM), launch operations (OPS), plus polish for each role.
+## Order of work
+
+1. All P1 tasks, top-down (OPS first: small and launch-critical; then RN, CRM, PA, ST, TE, AD, PU, QA).
+2. PR-04 (design approved, `docs/superpowers/specs/2026-10-20-milestone-celebration-design.md`): implementation plan,
+   then build.
+3. The remaining P2 tasks, then P3.
 
 ## How to read a task
 
 - **ID**: lane + number. Lanes: `PR` progress, `RN` retention, `CRM` admin CRM, `OPS` launch ops, `PA` parent,
   `ST` student, `TE` teacher, `AD` super admin, `PU` public site, `QA` quality (tests, accessibility, SEO, performance).
 - **Priority**: `P1` before launch, `P2` launch week, `P3` when P1/P2 in your lane are done.
-- **Zone**: 🟢 green → `main` after checks; 🔴 red → branch, Claude reviews Friday (AGENTS.md section 4).
+- **Zone**: 🟢 green → `main` after tsc, tests and build; 🔴 red (money, booking rules, auth, RLS, RPCs, legal) →
+  extra care: full test run plus a `/code-review` before it reaches `main`.
 - **Size**: S (< 2 h), M (half a day), L (a day or more).
 - **Status**: `todo` → `taken (date note)` → `done (sha)` or `review (branch)`; `blocked (reason)`.
 - **Every task**, even when not repeated below: check first whether it already exists (search the code; if it exists,
@@ -26,8 +35,9 @@ Principles every PR/RN task follows:
 - **Our rhythm is weekly, not daily.** Lessons are booked a few times a week, so the streak counts consecutive weeks with
   at least one attended lesson ("7-week rhythm"). Never a daily streak, never guilt ("you lost your streak!"), never a
   red alarm. A missed week simply starts a new rhythm; the longest rhythm stays visible.
-- **No leaderboards and no comparing children.** Progress is personal. Children's data is private (RULES.md, terms
-  "Children & safeguarding").
+- **Progress is personal by default.** Children's data is private (RULES.md, terms "Children & safeguarding"). The owner
+  approved (2026-10-20, PR-04 design) an opt-in social layer later: an effort-based class view and an academy Hall of
+  Honor, only with explicit guardian or adult consent. Until those tasks are built, no leaderboard and no comparing.
 - **Real data only.** Every number comes from attended lessons, teacher notes, placement results or teacher-set
   milestones. No fake XP that means nothing; if we show points, they map to real things (lessons, verses, rules).
 - **Motion with purpose** (`apple-design`, `animate`): a milestone unlock gets one short celebration; everything else is
@@ -73,11 +83,15 @@ Principles every PR/RN task follows:
 - Skills: `brainstorming`, `impeccable`, `apple-design`, `animate`, `taste-skill`, `soft-skill`, `mobile-native`.
 
 ### PR-04 Milestone celebration and achievements shelf
-- Priority **P2 → deferred** · Zone 🟢 · Size M · Status **taken (2026-10-20, design complete at 8020175)**
-- **Full design**: `docs/superpowers/specs/2026-10-20-milestone-celebration-design.md` (age-appropriate celebration, seasonal Islamic context, two-tier milestones, privacy-first consent flow, parent notifications, family achievements, effort-based leaderboard with Islamic framing)
-- **Execution order**: After all P1 tasks (27 remaining). Design approved; implementation plan + build will follow once P1 lane is clear.
-- Do: when the page loads and a milestone is new since last visit (localStorage per learner), play one short celebration (emblem rises, gold light, praise word adapted to age group and Islamic season), then it settles on an achievements shelf. Shelf shows earned emblems in colour and next reachable ones in outline with what earns them. Design 8–12 emblems in our own SVG.
-- Done when: celebration plays once only, can be dismissed, works with reduced motion (static reveal), age-appropriate (Kids playful, Teens balanced, Adults minimal), seasonal text (Ramadan/Dhul Hijjah/Eids), screenshots in both languages and themes.
+- Priority P2 · Zone 🟢 · Size M · Status todo (design approved 2026-10-20; next after the P1 tasks) · Depends on PR-03
+- Design: `docs/superpowers/specs/2026-10-20-milestone-celebration-design.md`. This task builds only the celebration and
+  the shelf; the leaderboard, Hall of Honor, consent flow and parent email in that design are separate later tasks.
+- Do: when the page loads and a milestone is new since the last visit (localStorage per learner), play one short
+  celebration (emblem rises, gold light, praise word fitted to age group and Islamic season), then it settles on an
+  achievements shelf. Shelf shows earned emblems in colour and the next reachable ones in outline with what earns them.
+  Design 8–12 emblems in our own SVG. No sound.
+- Done when: plays once only, can be dismissed, static reveal with reduced motion, Kids / Teens / Adults variants,
+  seasonal wording, screenshots in both languages and themes.
 
 ### PR-05 Lesson timeline with family summaries
 - Priority P2 · Zone 🟢 · Size M · Status todo · Depends on PR-02
@@ -229,11 +243,11 @@ Principles every PR/RN task follows:
 - Priority P1 · Zone 🟢 · Size S · Status todo
 - Do: a public `GET /api/health` (no secrets, no DB details) for a free uptime monitor, and record each reminder-cron
   run so OPS-02 can say "cron has not run for 2 hours". Write the owner's 5-minute setup steps for a free monitor
-  (UptimeRobot or similar) in `docs/argon/launch-runbook.md`.
+  (UptimeRobot or similar) in `docs/launch-runbook.md`.
 
 ### OPS-04 Launch-day runbook
 - Priority P1 · Zone 🟢 · Size S · Status todo
-- Do: `docs/argon/launch-runbook.md`: pre-launch checklist (placement test mode off, test accounts removed, emails
+- Do: `docs/launch-runbook.md`: pre-launch checklist (placement test mode off, test accounts removed, emails
   pasted into Supabase, firewall rules on), how to roll back in Vercel, who to message when payments fail, the first
   24 h checks. English.
 
@@ -432,9 +446,9 @@ Principles every PR/RN task follows:
 
 ### QA-07 Split `api/index.ts` safely (prep only)
 - Priority P3 · Zone 🔴 · Size L · Status todo
-- Do: propose (in `docs/argon/api-split-plan.md`) how to move route groups out of `api/index.ts` into
+- Do: propose (in `docs/api-split-plan.md`) how to move route groups out of `api/index.ts` into
   `server/routes/*` with zero behaviour change, and move one low-risk group as a pilot on a branch with all tests
-  green. Claude reviews before more moves.
+  green. Review the pilot before more moves.
 
 ---
 

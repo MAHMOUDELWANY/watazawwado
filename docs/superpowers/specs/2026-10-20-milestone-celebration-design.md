@@ -2,7 +2,7 @@
 
 **Date**: 2026-10-20  
 **Status**: Design  
-**Owner**: Mahmoud El-Wany  
+**Approved by**: the owner (2026-10-20, in chat)  
 **Target**: PR-04 (student progress page), with hooks for PR-06 (teacher post-lesson) and future parent/community features
 
 ---
@@ -21,7 +21,7 @@ The progress page (PR-03) shows the learning path and current level, but it does
 
 1. **Celebrate milestones authentically**: use Islamic framing (du'a, praise), quiet dignity for adults, playful warmth for children.
 2. **One-time celebration**: the full animation plays once per milestone (first visit to the progress page after it's earned), then settles into a permanent shelf.
-3. **Age-appropriate tone**: different animation style, wording, and sound for Kids (7–11), Teens (12–17), Adults (18+).
+3. **Age-appropriate tone**: different animation style and wording for Kids (7–11), Teens (12–17), Adults (18+).
 4. **Seasonal awareness**: celebration text and emblem styling adapt to Ramadan, Dhul Hijjah, Eids.
 5. **Social recognition at two levels**:
    - **Teacher's class leaderboard**: effort-based (lessons attended, weekly rhythm, milestones), visible to that teacher's students only.
@@ -140,8 +140,8 @@ The progress page (PR-03) shows the learning path and current level, but it does
 - Arabic: **"ماشاء الله! أحسنت يا بطل!"** (boy) / **"ماشاء الله! أحسنتِ يا بطلة!"** (girl)
 - English: **"MashaAllah! Excellent work, champion!"**
 
-**Sound** (optional, respects `prefers-reduced-motion` and user's system volume):
-- Soft **applause** or a cheerful **"ding"** (1–2 seconds, <50KB mp3)
+**Sound**:
+- **None.** The backlog's Islamic adab rule forbids music; we do not ship celebration sounds.
 
 ---
 
@@ -158,7 +158,7 @@ The progress page (PR-03) shows the learning path and current level, but it does
 - English: **"BarakAllahu feek, excellent achievement"**
 
 **Sound**:
-- **None** (or a very subtle ambient hum, <1 second, only if user has explicitly enabled sounds in settings — not implemented in PR-04)
+- **None**
 
 ---
 
@@ -235,7 +235,7 @@ Instead of the playful kid animation, parent sees:
 - Details:
   - "أتم 10 دروس هذا الشهر" / "Completed 10 lessons this month"
   - "تقدم ممتاز في أحكام التجويد" / "Excellent progress in tajweed rules"
-  - "المعلم الشيخ محمود يشيد بانتظامه وحماسه" / "Teacher Sheikh Mahmoud praises his consistency and enthusiasm"
+  - "معلّمه يشيد بانتظامه وحماسه" / "His teacher praises his consistency and enthusiasm" (the teacher's own words from the family summary, never invented)
 - **Progress chart**: bar chart showing lessons per month for last 3 months
 - Button: **"شارك هذا الإنجاز"** / **"Share this achievement"** (see Consent Flow below)
 
@@ -346,9 +346,7 @@ When the **entire family** collectively reaches a milestone (e.g., 100 lessons c
   - Show static "New milestone earned" card instead
 
 ### Sound:
-- **Optional feature** (not required for PR-04). If implemented:
-  - `<audio>` element, `preload="none"`, only plays if user has not disabled sounds in browser/OS
-  - Check `navigator.mediaDevices` or `window.Audio` support before attempting
+- None (no music, per the backlog's Islamic adab rule).
 
 ### Emblems:
 - **Inline SVG components** (not `<img>` tags — allows dynamic color theming for dark mode)
@@ -387,7 +385,6 @@ When the **entire family** collectively reaches a milestone (e.g., 100 lessons c
 - ❌ **Hall of Honor page** (`HallOfHonorPage.tsx`) — just the celebration experience in PR-04
 - ❌ **Super Admin consent workflow UI** (manual for now: Super Admin sends email, marks consent in a Google Sheet or Notion; future: `SuperAdminConsentDashboard.tsx`)
 - ❌ **Family achievement auto-detection** (requires new backend logic to sum lessons across family members; can be added later)
-- ❌ **Sound toggle in student settings** (future: `StudentSettingsPage.tsx` with "Enable celebration sounds" checkbox)
 
 ---
 
