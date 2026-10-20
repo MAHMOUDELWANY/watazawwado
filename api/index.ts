@@ -2793,7 +2793,7 @@ app.get('/api/dashboard/students/:id', verifyTeacherAuth, async (req: any, res: 
 
     const filterClauses: string[] = [`student_id.eq.${id}`];
     if (emailLower) {
-      filterClauses.push(`contact_email.ilike.${emailLower}`);
+      filterClauses.push(`contact_email.ilike.${pgrstValue(escapeLike(emailLower))}`);
     }
     if (leadId) {
       filterClauses.push(`lead_id.eq.${leadId}`);
