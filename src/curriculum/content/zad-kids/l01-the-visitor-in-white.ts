@@ -15,7 +15,7 @@ export const lesson01: Lesson = {
   part: 'Part 1 · Who Am I, and Who Made Me?',
   minutes: 45,
   goal: 'By the end of this lesson, you will know the three parts of our deen, and the angel who came to teach them.',
-  reviewed: false,
+  reviewed: true,
   teacherAr: lesson01TeacherAr,
   outcomes: [
     'Retells the story in three sentences: a stranger came, asked three questions, and it was Jibril.',

@@ -24,16 +24,11 @@
 - **Done (slide system v2, 2026-10-16):** owner rejected v1 (weak visuals, no control, too little to explain). Rebuilt:
   fixed 1600×900 notebook canvas (`src/curriculum/slides/`), build steps per page, pen/highlighter/laser, page grid,
   thinking timer, replay, praise, explanation panel with a read-aloud `explain` text on every page, new scene art.
-- **Now:** owner reviews Lesson 1 v2 and marks it reviewed (then students can open it).
-- **Now (Lessons 1 and 2):** both have the full motion and sound pass. The owner reviews the two together and marks
-  them reviewed.
+- **Done (2026-10-20):** the owner reviewed and approved Zad Essentials Lessons 1, 2 and 3; all three are marked
+  `reviewed: true`, so booked students can open them.
 - **Now (player polish, 2026-10-18):** owner reviews the new sounds, the praise word "Zādak Allāh", the new question
   cards and game, and the page-turn transition (they apply to every lesson of the series).
-- **Now (Lesson 3, 2026-10-19):** at the owner's request ("finish everything for Lesson 3, then tell me what to add"),
-  the brief, page text, Arabic notes and code scenes were done in one pass (`zad-essentials-kids/L03-allah-is-one.md`).
-  The owner delivered the 7 images the same day; placed and the moments re-aimed. The 5 open points were settled by
-  Claude at the owner's request (brief, "Owner decisions"). Waiting for the owner: review of the text and built pages.
-- **Next:** after the review, Lesson 4 (Muhammad ﷺ, the Messenger) brief.
+- **Next:** Lesson 4 (Muhammad ﷺ, the Messenger) brief.
 - **Not started:** Lessons 4–37.
 - **Known limit:** lesson text ships in the site bundle, so the lock is a UI lock (content is not secret). Upgrade to
   server-served lessons if content must be protected.
@@ -397,3 +392,5 @@ B3–B5 → continue lesson by lesson.
 - **2026-10-19** — Lesson 3 open points settled by Claude at the owner's request: 112:3 taught plainly, its game card
   replaced by "Allah needs help from someone"; only the Prophet's ﷺ answer on screen; as-Samad stays optional; football
   cliffhanger kept; Ahd al-Ikhlas before sleep, with al-Falaq and an-Nas as an invitation.
+- **2026-10-20** — Owner approved Lessons 1, 2 and 3 after review; `reviewed: true` set in the three lesson files
+  (`src/curriculum/content/zad-kids/`), so they open for booked students and the "mystery visitor" teaser is unblocked.

@@ -21,8 +21,8 @@ const TEACHERS: Array<{ src: string; name: L; badge: L; bio: L[]; mirror?: boole
         ar: 'الأستاذ محمود بيدرّس القرآن والتجويد والعربية والعلوم الشرعية في وتزودوا. وبقاله أكتر من ٣ سنين بيدرّس طلاب بشكل فردي في كندا وأمريكا وبريطانيا وأستراليا.'
       },
       {
-        en: 'His English (IELTS C1) helps him explain pronunciation and grammar clearly to students who grew up abroad.',
-        ar: 'وإنجليزيته (IELTS C1) بتساعده يشرح النطق والقواعد بوضوح للطلاب اللي اتربوا برّه.'
+        en: 'His fluent English helps him explain pronunciation and grammar clearly to students who grew up abroad.',
+        ar: 'وإنجليزيته القوية بتساعده يشرح النطق والقواعد بوضوح للطلاب اللي اتربوا برّه.'
       }
     ]
   },

@@ -18,7 +18,7 @@ export const lesson03: Lesson = {
   part: 'Part 1 · Who Am I, and Who Made Me?',
   minutes: 45,
   goal: 'By the end of this lesson, you will know what la ilaha illallah means, and why the whole world shows that Allah is One.',
-  reviewed: false,
+  reviewed: true,
   teacherAr: lesson03TeacherAr,
   outcomes: [
     'Explains with the boat why the world could not run in order with two gods.',

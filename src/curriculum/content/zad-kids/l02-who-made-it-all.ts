@@ -18,7 +18,7 @@ export const lesson02: Lesson = {
   part: 'Part 1 · Who Am I, and Who Made Me?',
   minutes: 45,
   goal: 'By the end of this lesson, you will be able to show, with your own thinking, that everything made has a Maker, and that the Maker is Allah.',
-  reviewed: false,
+  reviewed: true,
   teacherAr: lesson02TeacherAr,
   outcomes: [
     'Explains in their own words why a made thing cannot make itself.',
