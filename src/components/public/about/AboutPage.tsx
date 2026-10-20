@@ -17,11 +17,11 @@ const TEACHERS: Array<{ src: string; name: L; badge: L; bio: L[]; mirror?: boole
     badge: { en: 'Balanced, moderate teaching', ar: 'علم وسطي معتدل' },
     bio: [
       {
-        en: 'Ustadh Mahmoud teaches Quran, Tajweed, Arabic and Islamic studies at Watazawwado. For more than three years he has taught students one-on-one in Canada, the US, the UK and Australia.',
-        ar: 'الأستاذ محمود بيدرّس القرآن والتجويد والعربية والعلوم الشرعية في وتزودوا. وبقاله أكتر من ٣ سنين بيدرّس طلاب بشكل فردي في كندا وأمريكا وبريطانيا وأستراليا.'
+        en: 'Ustadh Mahmoud teaches Quran, Tajweed, Arabic and the Zad Path at Watazawwado. For more than three years he has taught students one-on-one in Canada, the US, the UK and Australia.',
+        ar: 'الأستاذ محمود بيدرّس القرآن والتجويد والعربية ومسار الأثر في وتزودوا. وبقاله أكتر من ٣ سنين بيدرّس طلاب بشكل فردي في كندا وأمريكا وبريطانيا وأستراليا.'
       },
       {
-        en: 'His fluent English helps him explain pronunciation and grammar clearly to students who grew up abroad.',
+        en: 'His strong English helps him explain pronunciation and grammar clearly to students who grew up abroad.',
         ar: 'وإنجليزيته القوية بتساعده يشرح النطق والقواعد بوضوح للطلاب اللي اتربوا برّه.'
       }
     ]
@@ -33,8 +33,8 @@ const TEACHERS: Array<{ src: string; name: L; badge: L; bio: L[]; mirror?: boole
     mirror: true,
     bio: [
       {
-        en: 'Ustadha Afnan teaches Quran, Tajweed, Arabic, Islamic studies and English at Watazawwado, with wide experience in teaching. Her English (C1) helps her explain clearly to students who grew up abroad.',
-        ar: 'الأستاذة أفنان بتدرّس القرآن والتجويد والعربية والعلوم الشرعية والإنجليزية في وتزودوا، وعندها خبرة كبيرة في التدريس. وإنجليزيتها (C1) بتساعدها تشرح بوضوح للطلاب اللي اتربوا برّه.'
+        en: 'Ustadha Afnan teaches Quran, Tajweed, Arabic, the Zad Path and English at Watazawwado, with wide experience in teaching. Her strong English helps her explain clearly to students who grew up abroad.',
+        ar: 'الأستاذة أفنان بتدرّس القرآن والتجويد والعربية ومسار الأثر والإنجليزية في وتزودوا، وعندها خبرة كبيرة في التدريس. وإنجليزيتها القوية بتساعدها تشرح بوضوح للطلاب اللي اتربوا برّه.'
       },
       {
         en: 'Families who prefer a female teacher can choose her when they set up their learning profile.',
@@ -92,8 +92,8 @@ export function AboutPage() {
           <PageHero
             title={isEn ? <>An academy built <span className="text-ribbon">to leave a mark.</span></> : <>أكاديمية اتبنت <span className="text-ribbon">عشان تسيب أثر.</span></>}
             intro={isEn
-              ? 'Watazawwado is an online academy for Quran, Tajweed, Islamic studies, Arabic and English. One-on-one lessons, a teacher who knows you by name, and learning that stays with you.'
-              : 'وتزودوا أكاديمية أونلاين للقرآن والتجويد والعلوم الشرعية والعربية والإنجليزية. حصص فردية، ومعلم يعرفك باسمك، وعلم يفضل معاك.'}
+              ? 'Watazawwado is an online academy for Quran, Tajweed, the Zad Path, Arabic and English. One-on-one lessons, a teacher who knows you by name, and learning that stays with you.'
+              : 'وتزودوا أكاديمية أونلاين للقرآن والتجويد ومسار الأثر والعربية والإنجليزية. حصص فردية، ومعلم يعرفك باسمك، وعلم يفضل معاك.'}
           />
 
           {/* Why we exist */}

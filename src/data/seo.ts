@@ -23,11 +23,11 @@ export interface PageSeo {
 export const PUBLIC_PAGES: PageSeo[] = [
   {
     path: '/',
-    titleEn: 'Watazawwado Academy | Online Quran, Arabic, Islamic Studies & English',
-    titleAr: 'أكاديمية وتزودوا Watazawwado | قرآن وتجويد وعربي وعلوم شرعية وإنجليزي',
-    descEn: 'Watazawwado Academy: live 1-on-1 Zoom lessons in Quran, Tajweed, Islamic studies, Arabic and English for families and adults. Free 30-minute trial.',
-    descAr: 'أكاديمية وتزودوا: حصص فردية مباشرة على Zoom في القرآن والتجويد والعلوم الشرعية والعربية والإنجليزية، للأطفال والكبار حول العالم. أول حصة مجاناً ٣٠ دقيقة.',
-    h1En: 'Watazawwado Academy — online 1-on-1 Quran, Arabic & Islamic studies'
+    titleEn: 'Watazawwado Academy | Online Quran, Tajweed, Arabic & English',
+    titleAr: 'أكاديمية وتزودوا Watazawwado | قرآن وتجويد ومسار الأثر وعربي وإنجليزي',
+    descEn: 'Watazawwado Academy: live 1-on-1 Zoom lessons in Quran, Tajweed, the Zad Path, Arabic and English for families and adults. Free 30-minute trial.',
+    descAr: 'أكاديمية وتزودوا: حصص فردية مباشرة على Zoom في القرآن والتجويد ومسار الأثر والعربية والإنجليزية، للأطفال والكبار حول العالم. أول حصة مجاناً ٣٠ دقيقة.',
+    h1En: 'Watazawwado Academy — online 1-on-1 Quran, Arabic & English'
   },
   {
     path: '/about',
@@ -49,8 +49,8 @@ export const PUBLIC_PAGES: PageSeo[] = [
     path: '/learning',
     titleEn: 'Quran, Tajweed, Arabic & English Classes | Watazawwado',
     titleAr: 'المواد: القرآن والتجويد والعربية والإنجليزية | وتزودوا',
-    descEn: 'Quran reading, Tajweed, Hifz, Aqeedah, Fiqh, Seerah, Fusha and Egyptian Arabic, Arabic conversation and English, taught 1-on-1 online.',
-    descAr: 'القراءة والقاعدة النورانية، التجويد، الحفظ والمراجعة، العقيدة والفقه والسيرة، العربية الفصحى والمصرية والمحادثة، والإنجليزية — حصص فردية أونلاين.',
+    descEn: 'Quran reading, Tajweed, memorization and revision, the Zad Path (Zad Essentials and Seerah), Fusha, Egyptian Arabic and English, taught 1-on-1 online.',
+    descAr: 'قراءة القرآن، التجويد، الحفظ والمراجعة، مسار الأثر (أول الزاد والسيرة)، الفصحى، العامية المصرية، والإنجليزية: حصص فردية أونلاين.',
     h1En: 'Subjects at Watazawwado Academy'
   },
   {

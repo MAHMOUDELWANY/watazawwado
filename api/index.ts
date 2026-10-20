@@ -180,7 +180,7 @@ const PAYMENT_HOLD_MINUTES = 35;
 const MAX_LOST_TRIALS = 5;
 const MAX_STUDENT_REFUNDED_LESSONS = 3;
 // Bump when the terms page changes in substance; stored with each booking/package as proof of consent.
-const TERMS_VERSION = '2026-10-15.3';
+const TERMS_VERSION = '2026-10-20.1';
 // Keep in sync with AGREEMENT_VERSION in src/pages/StaffAgreementPage.tsx; bump to make every teacher accept again.
 const TEACHER_AGREEMENT_VERSION = '2026-10-15.2';
 
@@ -295,7 +295,7 @@ app.post('/api/learning-guide', rateLimit, async (req, res) => {
     // visitor sounds interested, warmly invites them to book the free trial.
     const faqText = FAQS.map((f: any) => `Q: ${f.question}\nA: ${f.answer}`).join('\n\n');
     const stepsText = (HOW_IT_WORKS_STEPS as any[]).map((s: any, i: number) => `${i + 1}. ${s.title || s.titleEn || ''}: ${s.description || s.descriptionEn || ''}`).join('\n');
-    const systemInstruction = `You are the friendly guide on the Watazawwado homepage (online 1-on-1 Quran, Islamic studies, Arabic and English lessons).
+    const systemInstruction = `You are the friendly guide on the Watazawwado homepage (online 1-on-1 Quran, Tajweed, the Zad Path, Arabic and English lessons).
 Your job:
 1. Answer visitors' questions about who we are, how it works, subjects, teachers, prices, the free trial, payments and policies, using ONLY the facts below. If something is not covered, say you'll let the team answer and suggest WhatsApp or the website chat. Never invent prices, names, degrees or promises.
 2. If someone doesn't want to read the pages, give a short, clear summary (a few lines or bullets).

@@ -78,11 +78,11 @@ export function PrivacyPolicyPage() {
                 <p>
                   {isEn ? (
                     <>
-                      Welcome to <strong>Watazawwado Academy</strong> (accessible at <a href="https://watazawwado.academy" className="text-teal-600 dark:text-teal-400 underline">watazawwado.academy</a>). It is an online academy offering one-on-one lessons in the Quran, Tajweed, Arabic, Islamic studies and English.
+                      Welcome to <strong>Watazawwado Academy</strong> (accessible at <a href="https://watazawwado.academy" className="text-teal-600 dark:text-teal-400 underline">watazawwado.academy</a>). It is an online academy offering one-on-one lessons in the Quran, Tajweed, the Zad Path, Arabic and English.
                     </>
                   ) : (
                     <>
-                      أهلاً بك في <strong>أكاديمية وتزودوا (Watazawwado Academy)</strong> المتاحة عبر الرابط (<a href="https://watazawwado.academy" className="text-teal-600 dark:text-teal-400 underline">watazawwado.academy</a>). وهي أكاديمية تعليمية عبر الإنترنت تقدّم دروساً فردية في القرآن الكريم والتجويد واللغة العربية والعلوم الشرعية واللغة الإنجليزية للطلاب في مختلف أنحاء العالم.
+                      أهلاً بك في <strong>أكاديمية وتزودوا (Watazawwado Academy)</strong> المتاحة عبر الرابط (<a href="https://watazawwado.academy" className="text-teal-600 dark:text-teal-400 underline">watazawwado.academy</a>). وهي أكاديمية تعليمية عبر الإنترنت تقدّم دروساً فردية في القرآن الكريم والتجويد ومسار الأثر واللغة العربية واللغة الإنجليزية للطلاب في مختلف أنحاء العالم.
                     </>
                   )}
                 </p>

@@ -660,8 +660,8 @@ export default function StudentProfilePage({
                   </div>
                   <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">
                     {isAr
-                      ? 'تأسيس متدرج في تلاوة القرآن الكريم وأحكام التجويد والدراسات الإسلامية واللغة العربية وفق خطة فردية تناسب مستواك وأهدافك.'
-                      : 'Personalized curriculum in Quran recitation, Tajweed mastery, Islamic studies, and Arabic language tailored to your actual level.'}
+                      ? 'تأسيس متدرج في تلاوة القرآن وأحكام التجويد ومسار الأثر واللغة العربية، بخطة فردية تناسب مستواك وأهدافك.'
+                      : 'A step-by-step plan in Quran recitation, Tajweed, the Zad Path and Arabic, built around your level and goals.'}
                   </p>
                   <div className="mt-3 flex items-center gap-2 text-sm text-primary font-medium">
                     <Check className="w-4 h-4 shrink-0" />

@@ -88,8 +88,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
       length: 60,
       label: '60 Minutes',
       arabicLabel: '٦٠ دقيقة',
-      note: 'Comprehensive session for Arabic grammar, Islamic Studies, or dual-discipline learning.',
-      arabicNote: 'جلسة شاملة وموسعة لقواعد النحو، أو الدراسات الإسلامية ومناقشاتها.'
+      note: 'A full hour: room for a Zad Path lesson, or deeper Fusha and English practice.',
+      arabicNote: 'ساعة كاملة: وقت كفاية لحصة من مسار الأثر، أو تدريب أعمق في الفصحى والإنجليزي.'
     }
   ];
 

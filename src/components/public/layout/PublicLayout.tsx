@@ -49,8 +49,8 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
       targetId: 'nav-brand',
       title: lang === 'ar' ? 'وتزودوا' : 'Watazawwado',
       description: lang === 'ar'
-        ? 'أكاديمية أونلاين لحصص فردية في القرآن والتجويد والعربية والعلوم الشرعية والإنجليزية.'
-        : 'An online academy for one-on-one lessons in Quran, Tajweed, Arabic, Islamic studies and English.',
+        ? 'أكاديمية أونلاين لحصص فردية في القرآن والتجويد ومسار الأثر والعربية والإنجليزية.'
+        : 'An online academy for one-on-one lessons in Quran, Tajweed, the Zad Path, Arabic and English.',
       position: 'bottom',
     },
     {

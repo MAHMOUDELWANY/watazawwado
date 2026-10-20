@@ -337,8 +337,8 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
   ];
   const packageTypeLabel = (type: string): string => {
     const map: Record<string, [string, string]> = {
-      '9': ['Quran, Tajweed & Islamic studies ($9 / hour)', 'القرآن والتجويد والعلوم الشرعية (9$ للساعة)'],
-      '13': ['Arabic & English (from $13 / hour)', 'العربية والإنجليزية (من 13$ للساعة)'],
+      '9': ['Quran, Tajweed & the Zad Path ($9 / hour)', 'القرآن والتجويد ومسار الأثر (9$ للساعة)'],
+      '13': ['Fusha, Egyptian Arabic & English (from $13 / hour)', 'الفصحى والعامية المصرية والإنجليزية (من 13$ للساعة)'],
       weekly: ['Weekly', 'أسبوعية'],
       monthly: ['Monthly', 'شهرية'],
     };

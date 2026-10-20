@@ -560,7 +560,7 @@ Teacher notes: ${(notes || []).map((n: any) => String([n.observations, n.next_st
         model: GEMINI_MODEL,
         contents: `${taskText[task]}\n${context ? `\n${context}\n` : ''}\nTeacher's request: ${request || '(none)'}`,
         config: {
-          systemInstruction: `You are Jalila (جليلة), the teaching assistant of a teacher at Watazawwado, an online 1-on-1 academy for Quran, Tajweed, Islamic studies (Ahl al-Sunnah wal-Jama'ah, balanced and moderate), Arabic and English. Be practical and concise, use headings and short lists. Answer in ${lang === 'ar' ? 'Arabic' : 'English'}. Never invent facts about the student beyond the context given.`,
+          systemInstruction: `You are Jalila (جليلة), the teaching assistant of a teacher at Watazawwado, an online 1-on-1 academy for Quran, Tajweed, the Zad Path (Ahl al-Sunnah wal-Jama'ah, balanced and moderate), Arabic and English. Be practical and concise, use headings and short lists. Answer in ${lang === 'ar' ? 'Arabic' : 'English'}. Never invent facts about the student beyond the context given.`,
           temperature: 0.6
         }
       });

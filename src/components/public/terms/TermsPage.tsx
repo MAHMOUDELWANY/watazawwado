@@ -5,7 +5,7 @@ import { PublicSection, EditorialHeading, MarginNote, PageHero } from '../Public
 import { FileText, CalendarClock, RotateCcw, Wallet } from 'lucide-react';
 
 // Keep in sync with TERMS_VERSION in api/index.ts: bookings store the version the student accepted.
-const TERMS_VERSION_LABEL = { en: 'Version 2026-10-15.3, last updated 15 October 2026', ar: 'الإصدار 2026-10-15.3، آخر تحديث 15 أكتوبر 2026' };
+const TERMS_VERSION_LABEL = { en: 'Version 2026-10-20.1, last updated 20 October 2026', ar: 'الإصدار 2026-10-20.1، آخر تحديث 20 أكتوبر 2026' };
 
 // Trader identity (consumer law). The block shows once name and address are filled in.
 // Not a registered business: leave ceidg/nip empty. Never publish a PESEL here.
@@ -18,12 +18,12 @@ const SECTIONS: Section[] = [
   {
     id: 'agreement',
     en: { title: 'Agreement', items: [
-      'Watazawwado is an online platform for private 1-on-1 lessons in Quran, Tajweed, Islamic studies, Arabic and English. By creating an account, booking a lesson or buying a package, you agree to these terms.',
+      'Watazawwado is an online platform for private 1-on-1 lessons in Quran, Tajweed, the Zad Path (our own course in faith and Seerah), Arabic and English. By creating an account, booking a lesson or buying a package, you agree to these terms.',
       'Before every booking or package purchase you confirm that you have read and accepted these terms. We keep a record of the version you accepted and when.',
       'If you book for a child, you are responsible for the booking, the payment and the child’s use of the platform.',
     ] },
     ar: { title: 'الموافقة على الشروط', items: [
-      'منصة وتزودوا منصة إلكترونية لدروس فردية خاصة في القرآن والتجويد والعلوم الشرعية واللغة العربية والإنجليزية. بإنشاء حساب أو حجز درس أو شراء باقة، فأنت توافق على هذه الشروط.',
+      'منصة وتزودوا منصة إلكترونية لدروس فردية خاصة في القرآن والتجويد ومسار الأثر (منهجنا الخاص في أساسيات الدين والسيرة) واللغة العربية والإنجليزية. بإنشاء حساب أو حجز درس أو شراء باقة، فأنت توافق على هذه الشروط.',
       'قبل كل حجز أو شراء باقة تؤكد أنك قرأت هذه الشروط ووافقت عليها، ونحتفظ بسجل لإصدار الشروط الذي وافقت عليه وتاريخ الموافقة.',
       'إذا حجزت لطفل، فأنت المسؤول عن الحجز والدفع واستخدام الطفل للمنصة.',
     ] },
@@ -55,14 +55,14 @@ const SECTIONS: Section[] = [
   {
     id: 'prices',
     en: { title: 'Prices and payment', items: [
-      'Standard prices per 60 minutes: $9 for Quran, Tajweed and Islamic studies, and from $13 for Arabic and English. Shorter lessons cost the same rate per minute (for example 30 minutes = half the hourly price).',
+      'Standard prices per 60 minutes: $9 for Quran, Tajweed and the Zad Path, and from $13 for Arabic (Fusha and Egyptian) and English. Shorter lessons cost the same rate per minute (for example 30 minutes = half the hourly price).',
       'Advanced, specialized or intensive learning may cost more. That price is set by the teacher after an assessment and is always shown to you before you pay.',
       'Lessons are paid in advance. A booking is confirmed only after the payment succeeds. While you pay, the time is held for about 35 minutes; if payment is not completed, the time is released.',
       'Payments are processed by Stripe (card, Apple Pay, Google Pay or PayPal). We never see or store your card details.',
       '“Pay later” is a courtesy offered only to regular students with at least 12 paid lessons, and each request needs our approval.',
     ] },
     ar: { title: 'الأسعار والدفع', items: [
-      'الأسعار الأساسية لكل 60 دقيقة: 9 دولار للقرآن والتجويد والعلوم الشرعية، ومن 13 دولار للغة العربية والإنجليزية. الحصص الأقصر بنفس السعر للدقيقة (مثلاً 30 دقيقة = نصف سعر الساعة).',
+      'الأسعار الأساسية لكل 60 دقيقة: 9 دولار للقرآن والتجويد ومسار الأثر، ومن 13 دولار للغة العربية (الفصحى والعامية المصرية) والإنجليزية. الحصص الأقصر بنفس السعر للدقيقة (مثلاً 30 دقيقة = نصف سعر الساعة).',
       'التعليم المتقدم أو المتخصص أو المكثف قد يكون سعره أعلى، ويحدده المعلم بعد تقييم الطالب، ويظهر لك دائماً قبل الدفع.',
       'الدفع مقدماً، ولا يتأكد الحجز إلا بعد نجاح الدفع. أثناء الدفع نحجز لك الموعد حوالي 35 دقيقة، وإذا لم يكتمل الدفع يُتاح الموعد لغيرك.',
       'تتم المدفوعات عبر Stripe (بطاقة، أو Apple Pay، أو Google Pay، أو PayPal)، ولا نرى بيانات بطاقتك ولا نخزنها.',

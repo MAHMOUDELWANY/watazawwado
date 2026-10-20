@@ -345,7 +345,7 @@ export function LearningPage() {
               type="search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={isEn ? 'Search: Tajweed, grammar, Fiqh…' : 'ابحث: تجويد، نحو، فقه…'}
+              placeholder={isEn ? 'Search: Tajweed, Seerah, Fusha…' : 'ابحث: تجويد، سيرة، فصحى…'}
               aria-label={isEn ? 'Search subjects' : 'ابحث في المواد'}
               className="w-full ps-11 pe-10 py-3 rounded-full bg-surface border border-border text-sm text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-[#087D91]/50"
             />
