@@ -1018,7 +1018,7 @@ export async function canTeacherWriteForLesson(
       };
     }
 
-    if (!isAdmin && bookingRow.teacher_id && bookingRow.teacher_id !== teacherUser.id) {
+    if (!isAdmin && bookingRow.teacher_id !== teacherUser.id) {
       return {
         allowed: false,
         exists: true,
