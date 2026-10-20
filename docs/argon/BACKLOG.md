@@ -1,12 +1,8 @@
-# Argon backlog: pre-launch improvements (2026-10-19 → 2026-10-23)
+# Pre-launch backlog (2026-10-19 → 2026-10-23)
 
-Task list for Antigravity agents (Gemini 4 Argon) while Claude is out of weekly quota. Read `AGENTS.md` first: it says
-how to take a task, the green/red zones, the checks and the hard rules. Curriculum and marketing are not in this list
-(Claude only).
+**Claude Code is now the primary executor** (2026-10-20). Argon coordination files removed. Pick tasks top-down by priority.
 
-Approved by the owner on 2026-10-19 through `/plan-ceo-review` (selective expansion): the four big additions are the
-learner progress experience (PR), the retention engine (RN), the admin CRM (CRM) and launch operations (OPS). The other
-lanes polish what exists for each role.
+Core additions: learner progress experience (PR), retention engine (RN), admin CRM (CRM), launch operations (OPS), plus polish for each role.
 
 ## How to read a task
 
@@ -77,11 +73,11 @@ Principles every PR/RN task follows:
 - Skills: `brainstorming`, `impeccable`, `apple-design`, `animate`, `taste-skill`, `soft-skill`, `mobile-native`.
 
 ### PR-04 Milestone celebration and achievements shelf
-- Priority P2 · Zone 🟢 · Size M · Status taken (2026-10-20 Argon PR-04) · Depends on PR-03
-- Do: when the page loads and a milestone is new since the last visit (store last-seen per learner), play one short
-  celebration (emblem rises, gold light, the praise word), then it settles on an achievements shelf. Shelf shows earned
-  emblems in colour and the next reachable ones in outline with what earns them. Design 8–12 emblems in our own SVG.
-- Done when: celebration plays once only, can be dismissed, works with reduced motion (static reveal).
+- Priority **P2 → deferred** · Zone 🟢 · Size M · Status **taken (2026-10-20, design complete at 8020175)**
+- **Full design**: `docs/superpowers/specs/2026-10-20-milestone-celebration-design.md` (age-appropriate celebration, seasonal Islamic context, two-tier milestones, privacy-first consent flow, parent notifications, family achievements, effort-based leaderboard with Islamic framing)
+- **Execution order**: After all P1 tasks (27 remaining). Design approved; implementation plan + build will follow once P1 lane is clear.
+- Do: when the page loads and a milestone is new since last visit (localStorage per learner), play one short celebration (emblem rises, gold light, praise word adapted to age group and Islamic season), then it settles on an achievements shelf. Shelf shows earned emblems in colour and next reachable ones in outline with what earns them. Design 8–12 emblems in our own SVG.
+- Done when: celebration plays once only, can be dismissed, works with reduced motion (static reveal), age-appropriate (Kids playful, Teens balanced, Adults minimal), seasonal text (Ramadan/Dhul Hijjah/Eids), screenshots in both languages and themes.
 
 ### PR-05 Lesson timeline with family summaries
 - Priority P2 · Zone 🟢 · Size M · Status todo · Depends on PR-02
