@@ -41,7 +41,7 @@ import StudentProgressPage from './pages/StudentProgressPage';
 import { ChatPanel } from '../components/chat/ChatPanel';
 import IntakeConversation from '../components/intake/IntakeConversation';
 import { Button } from '../components/ui/Button';
-import { ActiveLearnerProvider, ChildSwitcher } from './activeLearner';
+import { ActiveLearnerProvider, ChildSwitcher, PROFILE_CHANGED_EVENT } from './activeLearner';
 import { StudentAuthModal } from '../components/StudentAuthModal';
 import { AuthPage, AuthCard, AuthPortal } from '../components/auth/AuthFrame';
 import { useOtpCelebrating } from '../components/auth/otpCelebration';
@@ -151,6 +151,14 @@ export default function StudentApp() {
   // bring back the full-page loader: that remounted every page and threw away what the user was doing.
   const accessToken = session?.access_token || null;
   const userId = user?.id || null;
+  // A page that changes the family (PA-02 add a child) asks for a quiet reload, so the header switcher,
+  // booking and home see the change without a full page reload.
+  const [profileVersion, setProfileVersion] = useState(0);
+  useEffect(() => {
+    const reload = () => setProfileVersion((v) => v + 1);
+    window.addEventListener(PROFILE_CHANGED_EVENT, reload);
+    return () => window.removeEventListener(PROFILE_CHANGED_EVENT, reload);
+  }, []);
   useEffect(() => {
     let isMounted = true;
     const loadProfile = async () => {
@@ -190,7 +198,7 @@ export default function StudentApp() {
     };
     // accessToken is read at call time; a refreshed token for the same user must not reload the profile.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId, userRole, Boolean(accessToken), isTeacherAuthenticated]);
+  }, [userId, userRole, Boolean(accessToken), isTeacherAuthenticated, profileVersion]);
 
   // Unread badge: refreshed in the background on page changes, never blocks the page.
   useEffect(() => {

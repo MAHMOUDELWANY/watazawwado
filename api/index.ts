@@ -66,6 +66,7 @@ import {
 import { createIntakeToken, readIntakeToken } from '../server/intake/intakeToken.js';
 import { registerCommunityRoutes, ensureTeacherThreads, PLACEMENT_BEFORE_BOOKING } from '../server/routes/community.js';
 import { registerCrmRoutes, createCrmTask } from '../server/routes/crm.js';
+import { findSubject, levelsFor } from '../src/components/onboarding/subjects.js';
 import { registerOpsRoutes, apiErrorMonitor, recordHeartbeat, HEARTBEAT_REMINDER_CRON, HEARTBEAT_STRIPE_WEBHOOK } from '../server/routes/ops.js';
 import { registerCurriculumRoutes } from '../server/routes/curriculum.js';
 import { registerProgressRoutes, validateFamilyNoteFields, canTeacherWriteForLesson } from '../server/routes/progress.js';
@@ -8098,6 +8099,128 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
 });
 
 // PATCH /api/student/me - Safely update authenticated student's profile
+// PA-02: a parent adds one more child after onboarding. Same rules as onboarding: the account holder is an
+// adult (every onboarded account is 18+), the child is 6-17 (src/lib/ageRules.ts), at most 10 children,
+// teacher = the one picked (if active) or routed by gender. Never touches the parent's own profile.
+app.post('/api/student/children', rateLimit, verifyStudentAuth, async (req: any, res: any) => {
+  try {
+    const studentId = req.studentUser?.student_id;
+    const parentEmail = String(req.studentUser?.email || '').toLowerCase().trim();
+    if (!studentId || !parentEmail) return res.status(404).json({ error: 'Student profile not found.' });
+    const supabaseAdmin = getSupabaseAdminClient();
+    if (!supabaseAdmin) return res.status(503).json({ error: 'Database service unavailable.' });
+
+    const { data: parent } = await supabaseAdmin
+      .from('students')
+      .select('id, name, whatsapp, country, timezone, onboarding_completed, learner_type')
+      .eq('id', studentId)
+      .maybeSingle();
+    // Children are created without a login, so whoever is signed in is the account holder.
+    // (A family account's own row is stored with learner_type 'child'; that is not a child.)
+    if (!parent?.onboarding_completed) return res.status(409).json({ error: 'Please finish setting up your account first.' });
+
+    const name = typeof req.body?.name === 'string' ? req.body.name.trim() : '';
+    if (name.length < 2 || name.length > 80) return res.status(422).json({ error: 'Please write the child\'s name (2 to 80 characters).' });
+    if (!isChildAge(req.body?.age)) {
+      return res.status(422).json({ error: `Each child must be ${CHILD_MIN_AGE} to ${CHILD_MAX_AGE} years old. Learners aged ${ADULT_MIN_AGE} or over open their own account.` });
+    }
+    const gender = req.body?.gender === 'female' ? 'female' : 'male';
+    // Only a subject from the catalogue, and only one of that subject's levels (or beginner).
+    const subject = typeof req.body?.learningInterest === 'string' && findSubject(req.body.learningInterest.trim())
+      ? req.body.learningInterest.trim()
+      : 'quran-reading';
+    const subjectLevels = levelsFor(subject).map(l => l.id as string);
+    const level = subjectLevels.includes(req.body?.currentLevel) ? req.body.currentLevel : 'beginner';
+    const teacherPref = ['male_teacher', 'female_teacher'].includes(req.body?.teacherGenderPreference) ? req.body.teacherGenderPreference : 'no_preference';
+    const notes = typeof req.body?.notes === 'string' && req.body.notes.trim() ? req.body.notes.trim().slice(0, 500) : null;
+
+    const learners = await getAuthorizedLearnersForStudent(supabaseAdmin, req);
+    // A retry (slow network, second tab) for the same child returns the child already added instead of a duplicate.
+    const childIds = learners.filter(l => !l.isPrimary).map(l => l.id);
+    if (childIds.length) {
+      const { data: sameChild } = await supabaseAdmin
+        .from('students')
+        .select('id, name, current_level, learning_interest')
+        .in('id', childIds)
+        .ilike('name', escapeLike(name))
+        .eq('age', Number(req.body.age))
+        .gte('created_at', new Date(Date.now() - 10 * 60_000).toISOString())
+        .limit(1);
+      const dup = sameChild?.[0];
+      if (dup) return res.status(200).json({ child: { id: dup.id, name: dup.name, currentLevel: dup.current_level, learningInterest: dup.learning_interest }, alreadyAdded: true });
+    }
+    if (childIds.length >= 10) return res.status(422).json({ error: 'A family account can have up to 10 children.' });
+
+    const publicTeachers = await listPublicTeachers(supabaseAdmin);
+    const picked = typeof req.body?.teacherId === 'string' ? publicTeachers.find(t => t.id === req.body.teacherId) : undefined;
+    const targetGender: 'male' | 'female' = picked?.gender || (teacherPref === 'female_teacher' ? 'female' : teacherPref === 'male_teacher' ? 'male' : gender);
+    const fallback = publicTeachers.find(t => t.gender === targetGender);
+    const teacher = picked || fallback
+      ? { id: (picked || fallback)!.id }
+      : await resolveSmartTeacherRouting(targetGender, supabaseAdmin);
+
+    const { data: child, error: childErr } = await supabaseAdmin
+      .from('students')
+      .insert({
+        name,
+        learner_type: 'child',
+        gender,
+        teacher_gender_preference: teacherPref,
+        assigned_teacher_id: teacher.id,
+        current_level: level,
+        learning_interest: subject,
+        country: parent.country || null,
+        timezone: parent.timezone || 'UTC',
+        whatsapp: parent.whatsapp || null,
+        notes,
+        status: 'active',
+        age: Number(req.body.age),
+        onboarding_completed: true
+      })
+      .select('id, name, current_level, learning_interest, assigned_teacher_id')
+      .single();
+    if (childErr || !child?.id) {
+      console.error('[POST /api/student/children] insert failed', childErr?.message);
+      return res.status(500).json({ error: `We could not save ${name}'s profile. Please try again.` });
+    }
+
+    const { error: gErr } = await supabaseAdmin.from('guardians').insert({
+      student_id: child.id,
+      parent_name: parent.name,
+      parent_email: parentEmail,
+      parent_whatsapp: parent.whatsapp || null,
+      relationship_type: 'parent'
+    });
+    if (gErr) {
+      // Without the guardian link the parent could not see or book for the child: undo.
+      await supabaseAdmin.from('students').delete().eq('id', child.id);
+      console.error('[POST /api/student/children] guardian link failed', gErr.message);
+      return res.status(500).json({ error: `We could not save ${name}'s profile. Please try again.` });
+    }
+
+    waitUntil(announceNewStudent(
+      supabaseAdmin,
+      {
+        ownerUserId: req.studentUser?.auth_id || null,
+        name: parent.name,
+        email: parentEmail,
+        whatsapp: parent.whatsapp || null,
+        country: parent.country || null,
+        timezone: parent.timezone || null,
+        isFamily: true,
+        guardianAge: null
+      },
+      [{ name, age: parseAge(req.body.age), gender, subject, level, notes, teacherId: teacher.id }],
+      publicTeachers.map(t => ({ id: t.id, email: t.email, name: t.nameEn }))
+    ));
+
+    return res.status(201).json({ child: { id: child.id, name: child.name, currentLevel: child.current_level, learningInterest: child.learning_interest } });
+  } catch (err: any) {
+    console.error('[POST /api/student/children]', err);
+    return res.status(500).json({ error: 'Internal server error.' });
+  }
+});
+
 app.patch('/api/student/me', verifyStudentAuth, async (req: any, res: any) => {
   try {
     const studentId = req.studentUser?.student_id;
