@@ -14,8 +14,8 @@ owner, tests never weakened to pass.
 | # | Task | Zone | Status |
 |---|------|------|--------|
 | 0 | PU-02 conversion audit | 🟢 | done (1652807) |
-| 1 | Security review of b850ad2..HEAD (code changes since the last security fix) | 🔴 | todo |
-| 2 | Fix confirmed security findings, with tests | 🔴 | todo |
+| 1 | Security review of b850ad2..HEAD (code changes since the last security fix) | 🔴 | done (89463f0) |
+| 2 | Fix confirmed security findings, with tests | 🔴 | done (89463f0, 2 migrations applied) |
 | 3 | QA-01 e2e smoke tests for the money paths (local only) | 🟢 | todo |
 | 4 | QA-02 accessibility audit | 🟢 | todo |
 | 5 | QA-03 RTL and bilingual sweep | 🟢 | todo |
@@ -30,3 +30,4 @@ Each task: tsc, full `npm test`, build, commit, push to main, production smoke (
 ## Progress notes
 
 - 2026-10-21: PU-02 done and live (header/sign-up tap targets 44 px, onboarding error scrolls into view).
+- 2026-10-21: SEC-01 done. Teachers could read all payments and edit bookings/guardians/leads/etc. via Supabase REST; locked to super admin; one unescaped PostgREST filter fixed. Owner action: enable leaked password protection in Supabase Auth.
