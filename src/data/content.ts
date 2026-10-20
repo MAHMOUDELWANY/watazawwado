@@ -1,4 +1,4 @@
-import { ServicePillar, FAQItem } from '../types';
+import type { ServicePillar, FAQItem } from '../types';
 
 export const SERVICES_DATA: ServicePillar[] = [
   {

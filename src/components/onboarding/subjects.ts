@@ -1,4 +1,4 @@
-import { BOOKING_SERVICES } from '../../booking/mockData';
+import { BOOKING_SERVICES } from '../../booking/mockData.js';
 
 /**
  * The subject catalog (RULES.md "Subjects", owner 2026-10-18): what can be chosen today, in three families, each

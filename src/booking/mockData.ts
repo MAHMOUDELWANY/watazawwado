@@ -1,4 +1,4 @@
-import { ServiceOption, TimezoneOption, DayAvailability, TimeSlot, LessonDuration } from './types';
+import type { ServiceOption, TimezoneOption, DayAvailability, TimeSlot, LessonDuration } from './types';
 
 export const BOOKING_SERVICES: ServiceOption[] = [
   // --- QURAN PILLAR ---
@@ -382,7 +382,7 @@ export function calculateLessonFee(serviceId: string, duration: LessonDuration, 
   return Math.round(((hourlyRate * duration) / 60) * 100) / 100;
 }
 
-import { calculateCairoEquivalent } from '../lib/timezone';
+import { calculateCairoEquivalent } from '../lib/timezone.js';
 
 // Generate realistic mock availability for 21 days from today
 export function generateMockAvailability(baseDate = new Date(), timezone = 'America/New_York'): DayAvailability[] {
