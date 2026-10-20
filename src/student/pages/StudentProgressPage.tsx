@@ -106,6 +106,22 @@ export interface ProgressLearnerSummary {
   isPrimary?: boolean;
 }
 
+export interface FamilyChildOverviewCard {
+  id: string;
+  name: string;
+  learnerType: string;
+  assignedTeacherName: string | null;
+  subject: string;
+  subjectMeta: ProgressSubjectMeta;
+  currentLevel: SubjectLevel;
+  currentLevelIndex: number;
+  totalLevels: number;
+  weeklyRhythm: { current: number; longest: number };
+  lessonsAttended: { total: number; thisMonth: number };
+  nextBookedLesson: ProgressNextLessonItem | null;
+  newestMilestone: ProgressMilestoneItem | null;
+}
+
 export interface ProgressApiResponse {
   learner: {
     id: string;
@@ -117,6 +133,8 @@ export interface ProgressApiResponse {
     assignedTeacherName: string | null;
   } | null;
   learners: ProgressLearnerSummary[];
+  isGuardianAccount?: boolean;
+  childrenOverview?: FamilyChildOverviewCard[];
   overall: {
     lessonsAttended: { total: number; thisMonth: number };
     weeklyRhythm: { current: number; longest: number };
@@ -124,6 +142,30 @@ export interface ProgressApiResponse {
     nextBookedLesson: ProgressNextLessonItem | null;
   };
   subjects: SubjectProgressModel[];
+}
+
+export const LAST_OPENED_CHILD_STORAGE_KEY = 'watazawwado_progress_last_child_id';
+
+export function getRememberedChildId(): string | null {
+  try {
+    if (typeof window === 'undefined' || !window.localStorage) return null;
+    const val = window.localStorage.getItem(LAST_OPENED_CHILD_STORAGE_KEY);
+    return val && val.trim() ? val.trim() : null;
+  } catch {
+    return null;
+  }
+}
+
+export function setRememberedChildId(childId: string): void {
+  try {
+    if (typeof window === 'undefined' || !window.localStorage) return;
+    const trimmed = (childId || '').trim();
+    if (trimmed) {
+      window.localStorage.setItem(LAST_OPENED_CHILD_STORAGE_KEY, trimmed);
+    }
+  } catch {
+    // Ignore storage quota or SSR errors
+  }
 }
 
 // ============================================================================
@@ -635,6 +677,306 @@ const DEV_PREVIEW_DATA: Record<string, ProgressApiResponse> = {
       },
     ],
   },
+  family: {
+    isGuardianAccount: true,
+    childrenOverview: [
+      {
+        id: '44444444-4444-4444-8444-444444444444',
+        name: 'Maryam Al-Ansari',
+        learnerType: 'child',
+        assignedTeacherName: 'Ustadha Fatima Al-Zahraa',
+        subject: 'hifz',
+        subjectMeta: {
+          id: 'hifz',
+          glyph: 'ح',
+          en: 'Quran Memorization (Hifz)',
+          ar: 'حفظ القرآن الكريم',
+          spineEn: 'Hifz',
+          spineAr: 'الحفظ',
+          familyKey: 'quran',
+          familyColor: '#087D91',
+          familyEn: 'Quran',
+          familyAr: 'القرآن الكريم',
+        },
+        currentLevel: {
+          id: 'beginner',
+          en: "Juz 'Amma",
+          ar: 'جزء عمّ',
+          descEn: 'Short surahs and the habit of daily review.',
+          descAr: 'قصار السور وعادة المراجعة اليومية.',
+        },
+        currentLevelIndex: 0,
+        totalLevels: 4,
+        weeklyRhythm: { current: 6, longest: 6 },
+        lessonsAttended: { total: 14, thisMonth: 4 },
+        nextBookedLesson: {
+          id: 'booking-family-1',
+          serviceId: 'hifz',
+          scheduledStart: '2026-10-22T16:00:00.000Z',
+          scheduledEnd: '2026-10-22T16:30:00.000Z',
+          durationMinutes: 30,
+          status: 'confirmed',
+          teacherName: 'Ustadha Fatima Al-Zahraa',
+          zoomJoinUrl: null,
+        },
+        newestMilestone: {
+          id: 'ms-family-1',
+          student_id: '44444444-4444-4444-8444-444444444444',
+          subject: 'hifz',
+          kind: 'surah_memorized',
+          title_ar: 'إتمام حفظ سورة النبأ بإتقان',
+          title_en: "Memorized Surah An-Naba' with mastery",
+          reached_at: '2026-10-18T16:00:00.000Z',
+          lesson_session_id: null,
+        },
+      },
+      {
+        id: '55555555-5555-4555-8555-555555555555',
+        name: 'Omar Al-Ansari',
+        learnerType: 'child',
+        assignedTeacherName: 'Sheikh Ibrahim Al-Masri',
+        subject: 'noorani-qaida',
+        subjectMeta: {
+          id: 'noorani-qaida',
+          glyph: 'ن',
+          en: 'Noorani Qaida',
+          ar: 'القاعدة النورانية',
+          spineEn: 'Noorani',
+          spineAr: 'النورانية',
+          familyKey: 'quran',
+          familyColor: '#087D91',
+          familyEn: 'Quran',
+          familyAr: 'القرآن الكريم',
+        },
+        currentLevel: {
+          id: 'intermediate',
+          en: 'Vowels & Tanween',
+          ar: 'الحركات والتنوين',
+          descEn: 'Fatha, kasra, damma, tanween, and joining letters smoothly.',
+          descAr: 'الفتحة والكسرة والضمة والتنوين، ووصل الحروف ببعض.',
+        },
+        currentLevelIndex: 1,
+        totalLevels: 3,
+        weeklyRhythm: { current: 3, longest: 4 },
+        lessonsAttended: { total: 9, thisMonth: 3 },
+        nextBookedLesson: {
+          id: 'booking-family-2',
+          serviceId: 'noorani-qaida',
+          scheduledStart: '2026-10-23T15:30:00.000Z',
+          scheduledEnd: '2026-10-23T16:00:00.000Z',
+          durationMinutes: 30,
+          status: 'confirmed',
+          teacherName: 'Sheikh Ibrahim Al-Masri',
+          zoomJoinUrl: null,
+        },
+        newestMilestone: {
+          id: 'ms-family-2',
+          student_id: '55555555-5555-4555-8555-555555555555',
+          subject: 'noorani-qaida',
+          kind: 'rule_mastered',
+          title_ar: 'إتقان حروف المد الثلاثة واللين',
+          title_en: 'Mastered Madd & Leen Letters',
+          reached_at: '2026-10-15T15:00:00.000Z',
+          lesson_session_id: null,
+        },
+      },
+      {
+        id: '66666666-6666-4666-8666-666666666666',
+        name: 'Layla Al-Ansari',
+        learnerType: 'child',
+        assignedTeacherName: 'Ustadha Fatima Al-Zahraa',
+        subject: 'modern-standard-arabic',
+        subjectMeta: {
+          id: 'modern-standard-arabic',
+          glyph: 'ض',
+          en: 'Fusha Arabic',
+          ar: 'العربية الفصحى',
+          spineEn: 'Fusha',
+          spineAr: 'الفصحى',
+          familyKey: 'languages',
+          familyColor: '#C51F24',
+          familyEn: 'Languages',
+          familyAr: 'اللغات',
+        },
+        currentLevel: {
+          id: 'beginner',
+          en: 'Foundations',
+          ar: 'التأسيس',
+          descEn: 'The alphabet, reading and writing, from zero.',
+          descAr: 'الحروف والقراءة والكتابة، من الصفر.',
+        },
+        currentLevelIndex: 0,
+        totalLevels: 4,
+        weeklyRhythm: { current: 2, longest: 2 },
+        lessonsAttended: { total: 4, thisMonth: 2 },
+        nextBookedLesson: null,
+        newestMilestone: {
+          id: 'ms-family-3',
+          student_id: '66666666-6666-4666-8666-666666666666',
+          subject: 'modern-standard-arabic',
+          kind: 'book_completed',
+          title_ar: 'قراءة الحروف الهجائية كاملة بالحركات',
+          title_en: 'Reading the Complete Arabic Alphabet with Vowels',
+          reached_at: '2026-10-14T16:00:00.000Z',
+          lesson_session_id: null,
+        },
+      },
+    ],
+    learner: {
+      id: '44444444-4444-4444-8444-444444444444',
+      name: 'Maryam Al-Ansari',
+      learnerType: 'child',
+      currentLevel: 'beginner',
+      learningInterest: 'hifz',
+      timezone: 'Europe/London',
+      assignedTeacherName: 'Ustadha Fatima Al-Zahraa',
+    },
+    learners: [
+      {
+        id: '11111111-2222-3333-4444-555555555555',
+        name: 'Yusuf Al-Ansari',
+        learnerType: 'adult',
+        isPrimary: true,
+      },
+      {
+        id: '44444444-4444-4444-8444-444444444444',
+        name: 'Maryam Al-Ansari',
+        learnerType: 'child',
+        isPrimary: false,
+      },
+      {
+        id: '55555555-5555-4555-8555-555555555555',
+        name: 'Omar Al-Ansari',
+        learnerType: 'child',
+        isPrimary: false,
+      },
+      {
+        id: '66666666-6666-4666-8666-666666666666',
+        name: 'Layla Al-Ansari',
+        learnerType: 'child',
+        isPrimary: false,
+      },
+    ],
+    overall: {
+      lessonsAttended: { total: 14, thisMonth: 4 },
+      weeklyRhythm: { current: 6, longest: 6 },
+      milestonesCount: 3,
+      nextBookedLesson: {
+        id: 'booking-family-1',
+        serviceId: 'hifz',
+        scheduledStart: '2026-10-22T16:00:00.000Z',
+        scheduledEnd: '2026-10-22T16:30:00.000Z',
+        durationMinutes: 30,
+        status: 'confirmed',
+        teacherName: 'Ustadha Fatima Al-Zahraa',
+        zoomJoinUrl: null,
+      },
+    },
+    subjects: [
+      {
+        subject: 'hifz',
+        subjectMeta: {
+          id: 'hifz',
+          glyph: 'ح',
+          en: 'Quran Memorization (Hifz)',
+          ar: 'حفظ القرآن الكريم',
+          spineEn: 'Hifz',
+          spineAr: 'الحفظ',
+          familyKey: 'quran',
+          familyColor: '#087D91',
+          familyEn: 'Quran',
+          familyAr: 'القرآن الكريم',
+        },
+        currentLevel: {
+          id: 'beginner',
+          en: "Juz 'Amma",
+          ar: 'جزء عمّ',
+          descEn: 'Short surahs and the habit of daily review.',
+          descAr: 'قصار السور وعادة المراجعة اليومية.',
+        },
+        currentLevelIndex: 0,
+        levels: [
+          {
+            id: 'beginner',
+            en: "Juz 'Amma",
+            ar: 'جزء عمّ',
+            descEn: 'Short surahs and the habit of daily review.',
+            descAr: 'قصار السور وعادة المراجعة اليومية.',
+          },
+          {
+            id: 'elementary',
+            en: 'Juz Tabarak & Qad Sami’a',
+            ar: 'جزء تبارك وقد سمع',
+            descEn: 'Expanding memorization with connected review.',
+            descAr: 'توسيع الحفظ مع تثبيت المراجعة المتصلة.',
+          },
+          {
+            id: 'intermediate',
+            en: 'Selected Surahs & Ajza’',
+            ar: 'سور وأجزاء مختارة',
+            descEn: 'Longer surahs with steady weekly review cycles.',
+            descAr: 'سور أطول مع دورات مراجعة أسبوعية منتظمة.',
+          },
+          {
+            id: 'advanced',
+            en: 'Full Khatmah Path',
+            ar: 'مسار الختمة الكاملة',
+            descEn: 'Completing and anchoring the entire Quran.',
+            descAr: 'إتمام القرآن الكريم وتثبيته.',
+          },
+        ],
+        lessonsAttended: { total: 14, thisMonth: 4 },
+        weeklyRhythm: { current: 6, longest: 6 },
+        milestones: [
+          {
+            id: 'ms-family-1',
+            student_id: '44444444-4444-4444-8444-444444444444',
+            subject: 'hifz',
+            kind: 'surah_memorized',
+            title_ar: 'إتمام حفظ سورة النبأ بإتقان',
+            title_en: "Memorized Surah An-Naba' with mastery",
+            reached_at: '2026-10-18T16:00:00.000Z',
+            lesson_session_id: null,
+          },
+          {
+            id: 'ms-family-1b',
+            student_id: '44444444-4444-4444-8444-444444444444',
+            subject: 'hifz',
+            kind: 'surah_memorized',
+            title_ar: 'إتمام حفظ سورة النازعات وعبس',
+            title_en: "Memorized Surah An-Nazi'at & 'Abasa",
+            reached_at: '2026-10-10T16:00:00.000Z',
+            lesson_session_id: null,
+          },
+        ],
+        familySummaries: [
+          {
+            id: 'sum-family-1',
+            student_id: '44444444-4444-4444-8444-444444444444',
+            session_id: null,
+            family_summary:
+              'ما شاء الله، سمّعت مريم سورة النبأ كاملة دون تردد، وقرأنا معًا أول عشر آيات من سورة المرسلات.',
+            achievements: ['تسميع سورة النبأ كاملة', 'تلقين أول ١٠ آيات من سورة المرسلات'],
+            homework: 'مراجعة سورة النبأ يوميًا قبل النوم وتكرار الآيات ١–١٠ من المرسلات خمس مرات.',
+            next_steps: 'إكمال سورة المرسلات في الدرس القادم بإذن الله.',
+            created_at: '2026-10-18T17:00:00.000Z',
+            updated_at: '2026-10-18T17:00:00.000Z',
+          },
+        ],
+        placementResult: null,
+        nextBookedLesson: {
+          id: 'booking-family-1',
+          serviceId: 'hifz',
+          scheduledStart: '2026-10-22T16:00:00.000Z',
+          scheduledEnd: '2026-10-22T16:30:00.000Z',
+          durationMinutes: 30,
+          status: 'confirmed',
+          teacherName: 'Ustadha Fatima Al-Zahraa',
+          zoomJoinUrl: null,
+        },
+      },
+    ],
+  },
 };
 
 function formatMilestoneKindLabel(kind: LearnerMilestoneKind | string, isAr: boolean): string {
@@ -682,6 +1024,9 @@ export default function StudentProgressPage({
   const [searchParams, setSearchParams] = useSearchParams();
 
   const requestedLearnerId = searchParams.get('learnerId') || '';
+  const [rememberedChildId, setRememberedChildIdState] = useState<string | null>(() =>
+    getRememberedChildId()
+  );
   const isDevEnv = Boolean((import.meta as any).env?.DEV);
   const previewMode = isDevEnv ? searchParams.get('preview') : null;
 
@@ -693,16 +1038,53 @@ export default function StudentProgressPage({
   const [selectedSubjectId, setSelectedSubjectId] = useState<string>('');
 
   const currentLevelRef = useRef<HTMLDivElement | null>(null);
+  const learningPathSectionRef = useRef<HTMLDivElement | null>(null);
   const hasAutoScrolledRef = useRef<string>('');
 
+  // Persist requestedLearnerId to localStorage when present
+  useEffect(() => {
+    if (requestedLearnerId) {
+      setRememberedChildId(requestedLearnerId);
+      setRememberedChildIdState(requestedLearnerId);
+    }
+  }, [requestedLearnerId]);
+
   const fetchProgress = useCallback(async () => {
+    const effectiveLearnerId = requestedLearnerId || getRememberedChildId() || '';
+
     if (initialData) {
       setData(initialData);
       setLoading(false);
       return;
     }
     if (previewMode && DEV_PREVIEW_DATA[previewMode]) {
-      setData(DEV_PREVIEW_DATA[previewMode]);
+      const basePreview = DEV_PREVIEW_DATA[previewMode];
+      if (effectiveLearnerId && basePreview.childrenOverview?.length) {
+        const matchedChild = basePreview.childrenOverview.find((c) => c.id === effectiveLearnerId);
+        if (matchedChild) {
+          setData({
+            ...basePreview,
+            learner: {
+              id: matchedChild.id,
+              name: matchedChild.name,
+              learnerType: matchedChild.learnerType,
+              currentLevel: matchedChild.currentLevel.id,
+              learningInterest: matchedChild.subject,
+              timezone: basePreview.learner?.timezone || 'Europe/London',
+              assignedTeacherName: matchedChild.assignedTeacherName,
+            },
+            overall: {
+              lessonsAttended: matchedChild.lessonsAttended,
+              weeklyRhythm: matchedChild.weeklyRhythm,
+              milestonesCount: matchedChild.newestMilestone ? 1 : 0,
+              nextBookedLesson: matchedChild.nextBookedLesson,
+            },
+          });
+          setLoading(false);
+          return;
+        }
+      }
+      setData(basePreview);
       setLoading(false);
       return;
     }
@@ -710,11 +1092,15 @@ export default function StudentProgressPage({
     try {
       setLoading(true);
       setError(null);
-      const query = requestedLearnerId
-        ? `?learnerId=${encodeURIComponent(requestedLearnerId)}`
+      const query = effectiveLearnerId
+        ? `?learnerId=${encodeURIComponent(effectiveLearnerId)}`
         : '';
       const response = await authedJson<ProgressApiResponse>(`/api/student/progress${query}`);
       setData(response);
+      if (response?.learner?.id && response?.isGuardianAccount) {
+        setRememberedChildId(response.learner.id);
+        setRememberedChildIdState(response.learner.id);
+      }
     } catch (err: any) {
       console.error('[StudentProgressPage] Failed to load progress:', err);
       setError(
@@ -778,10 +1164,21 @@ export default function StudentProgressPage({
     }
   };
 
-  const handleSelectLearner = (newLearnerId: string) => {
+  const handleSelectLearner = (newLearnerId: string, scrollToPath = false) => {
+    setRememberedChildId(newLearnerId);
+    setRememberedChildIdState(newLearnerId);
     const nextParams = new URLSearchParams(searchParams);
     nextParams.set('learnerId', newLearnerId);
     setSearchParams(nextParams);
+
+    if (scrollToPath && learningPathSectionRef.current && typeof learningPathSectionRef.current.scrollIntoView === 'function') {
+      window.setTimeout(() => {
+        learningPathSectionRef.current?.scrollIntoView({
+          behavior: prefersReducedMotion ? 'auto' : 'smooth',
+          block: 'start',
+        });
+      }, 120);
+    }
   };
 
   const springTransition = prefersReducedMotion
@@ -863,15 +1260,224 @@ export default function StudentProgressPage({
     });
   };
 
+  const childrenOverview = data.childrenOverview || [];
+  const showFamilyOverview = Boolean(data.isGuardianAccount && childrenOverview.length > 0);
+
   return (
     <div
       className="space-y-6 sm:space-y-8 pb-12"
       data-testid="student-progress-page"
       data-learner-mode={isChildLearner ? 'child' : 'adult'}
     >
-      {/* Learner Switcher when account has multiple learners (e.g., parent/guardian) */}
+      {/* ====================================================================
+          PARENT / GUARDIAN FAMILY VIEW: All children at a glance (PR-07)
+          ==================================================================== */}
+      {showFamilyOverview && (
+        <motion.section
+          initial={prefersReducedMotion ? false : { opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={springTransition}
+          data-testid="parent-family-overview"
+          aria-label={isAr ? 'أبناؤك في نظرة واحدة' : 'All children at a glance'}
+          className="rounded-[2rem] p-1.5 bg-gradient-to-b from-[#087D91]/15 via-black/[0.03] to-[#C9973B]/15 dark:from-[#087D91]/20 dark:via-white/[0.04] dark:to-[#C9973B]/20 ring-1 ring-[#C9973B]/25 dark:ring-[#E5A93C]/20"
+        >
+          <div className="rounded-[calc(2rem-0.375rem)] bg-[#FBF7EF] dark:bg-[#0D161A] p-4 sm:p-6 space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#087D91]/12 text-[#087D91] dark:bg-[#087D91]/25 dark:text-[#14A3B8]">
+                  <Sparkles className="w-3 h-3" />
+                  <span>{isAr ? 'نظرة العائلة' : 'Family Overview'}</span>
+                </div>
+                <h2 className="font-serif text-lg sm:text-xl font-bold text-foreground">
+                  {isAr ? 'أبناؤك في نظرة واحدة' : 'All children at a glance'}
+                </h2>
+                <p className="text-xs sm:text-sm text-muted-foreground">
+                  {isAr
+                    ? 'اضغط على بطاقة أي طفل لفتح مساره التعليمي الكامل بالأسفل.'
+                    : 'Tap any child’s card to open their full learning path below.'}
+                </p>
+              </div>
+
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-card border border-border text-muted-foreground">
+                {isAr
+                  ? `${childrenOverview.length} ${childrenOverview.length === 2 ? 'طفلين' : 'أبناء'}`
+                  : `${childrenOverview.length} ${childrenOverview.length === 1 ? 'child' : 'children'}`}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3.5 sm:gap-4">
+              {childrenOverview.map((child) => {
+                const isSelectedChild = child.id === learner?.id;
+                const isRememberedChild = child.id === rememberedChildId;
+                return (
+                  <button
+                    key={child.id}
+                    type="button"
+                    data-testid={`family-child-card-${child.id}`}
+                    data-selected-child={isSelectedChild ? 'true' : 'false'}
+                    aria-pressed={isSelectedChild}
+                    onClick={() => handleSelectLearner(child.id, true)}
+                    className={`group relative w-full text-start rounded-[1.5rem] p-4 sm:p-5 transition-all select-none active:scale-[0.99] flex flex-col justify-between gap-4 ${
+                      isSelectedChild
+                        ? 'bg-card border-2 border-[#087D91] dark:border-[#14A3B8] shadow-md ring-4 ring-[#087D91]/10'
+                        : 'bg-card/85 hover:bg-card border border-border/80 hover:border-[#C9973B]/50 shadow-2xs'
+                    }`}
+                  >
+                    {/* Top row: Child Name + Subject Badge + Active/Remembered Pill */}
+                    <div className="space-y-3 w-full">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <span
+                            className="w-10 h-10 rounded-2xl flex items-center justify-center font-serif text-lg font-bold text-white shrink-0 shadow-2xs"
+                            style={{ backgroundColor: child.subjectMeta.familyColor }}
+                            aria-hidden="true"
+                          >
+                            {child.subjectMeta.glyph}
+                          </span>
+                          <div className="min-w-0 flex-1">
+                            <h3
+                              className="font-serif text-base sm:text-lg font-bold text-foreground leading-snug"
+                              data-testid={`family-child-name-${child.id}`}
+                            >
+                              {child.name}
+                            </h3>
+                            <p
+                              className="text-xs font-medium text-muted-foreground truncate"
+                              data-testid={`family-child-subject-${child.id}`}
+                            >
+                              {isAr ? child.subjectMeta.ar : child.subjectMeta.en}
+                            </p>
+                          </div>
+                        </div>
+
+                        {(isSelectedChild || isRememberedChild) && (
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            {isSelectedChild && (
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#087D91] text-white">
+                                {isAr ? 'معروض الآن' : 'Viewing now'}
+                              </span>
+                            )}
+                            {isRememberedChild && (
+                              <span
+                                data-testid={`remembered-child-badge-${child.id}`}
+                                className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#C9973B]/15 text-[#8B4935] dark:bg-[#E5A93C]/20 dark:text-[#F6D58E]"
+                              >
+                                {isAr ? 'آخر مسار فتحته' : 'Last opened'}
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Current Level & Weekly Rhythm Row */}
+                      <div className="grid grid-cols-2 gap-2 pt-1">
+                        <div
+                          className="rounded-xl bg-[#FBF7EF] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.06] px-3 py-2"
+                          data-testid={`family-child-level-${child.id}`}
+                        >
+                          <div className="text-[10px] font-semibold text-muted-foreground">
+                            {isAr ? 'المستوى الحالي' : 'Current stage'}
+                          </div>
+                          <div className="text-xs font-bold text-foreground truncate mt-0.5">
+                            {isAr ? child.currentLevel.ar : child.currentLevel.en}
+                          </div>
+                          <div className="text-[10px] text-muted-foreground">
+                            {isAr
+                              ? `المرحلة ${child.currentLevelIndex + 1} من ${child.totalLevels}`
+                              : `Stage ${child.currentLevelIndex + 1} of ${child.totalLevels}`}
+                          </div>
+                        </div>
+
+                        <div
+                          className="rounded-xl bg-[#FBF7EF] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.06] px-3 py-2 flex items-center gap-2"
+                          data-testid={`family-child-rhythm-${child.id}`}
+                        >
+                          <RhythmLanternEmblem
+                            active={child.weeklyRhythm.current > 0}
+                            isChild={true}
+                            className="w-8 h-8 shrink-0"
+                          />
+                          <div className="min-w-0">
+                            <div className="text-[10px] font-semibold text-muted-foreground">
+                              {isAr ? 'الإيقاع الأسبوعي' : 'Weekly rhythm'}
+                            </div>
+                            <div className="text-xs font-bold text-[#087D91] dark:text-[#14A3B8] truncate mt-0.5 tabular-nums">
+                              {child.weeklyRhythm.current > 0
+                                ? isAr
+                                  ? `${child.weeklyRhythm.current} أسابيع`
+                                  : `${child.weeklyRhythm.current}w steady`
+                                : isAr
+                                  ? 'في استراحة'
+                                  : 'Resting'}
+                            </div>
+                            <div className="text-[10px] text-muted-foreground tabular-nums">
+                              {isAr
+                                ? `${child.lessonsAttended.total} دروس`
+                                : `${child.lessonsAttended.total} lessons`}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Bottom section: Next Lesson + Newest Milestone */}
+                    <div className="space-y-2 pt-2 border-t border-border/60 w-full">
+                      <div
+                        className="flex items-center justify-between gap-2 text-xs"
+                        data-testid={`family-child-next-lesson-${child.id}`}
+                      >
+                        <span className="inline-flex items-center gap-1.5 text-muted-foreground font-medium shrink-0">
+                          <Calendar className="w-3.5 h-3.5 text-[#087D91] shrink-0" />
+                          <span>{isAr ? 'الدرس القادم:' : 'Next lesson:'}</span>
+                        </span>
+                        <span className="font-semibold text-foreground truncate">
+                          {child.nextBookedLesson
+                            ? formatDateTime(child.nextBookedLesson.scheduledStart)
+                            : isAr
+                              ? 'غير محجوز بعد'
+                              : 'Not scheduled yet'}
+                        </span>
+                      </div>
+
+                      <div
+                        className="flex items-center gap-2 rounded-xl bg-[#C9973B]/10 dark:bg-[#E5A93C]/10 border border-[#C9973B]/25 px-2.5 py-2"
+                        data-testid={`family-child-milestone-${child.id}`}
+                      >
+                        <MilestoneEmblemByKind
+                          kind={child.newestMilestone?.kind || 'custom'}
+                          className="w-7 h-7 shrink-0"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <div className="text-[10px] font-bold text-[#8B4935] dark:text-[#F6D58E]">
+                            {isAr ? 'أحدث وسام' : 'Newest milestone'}
+                          </div>
+                          <div className="text-xs font-semibold text-foreground truncate">
+                            {child.newestMilestone
+                              ? isAr
+                                ? child.newestMilestone.title_ar
+                                : child.newestMilestone.title_en
+                              : isAr
+                                ? 'أول وسام في الطريق بإذن الله'
+                                : 'First milestone on the way'}
+                          </div>
+                        </div>
+                        <span className="text-xs font-bold text-[#087D91] dark:text-[#14A3B8] shrink-0 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform">
+                          {isAr ? <ArrowLeft className="w-3.5 h-3.5" /> : <ArrowRight className="w-3.5 h-3.5" />}
+                        </span>
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </motion.section>
+      )}
+
+      {/* Learner Switcher when account has multiple learners (e.g., parent himself + children) */}
       {data.learners && data.learners.length > 1 && (
         <div
+          ref={learningPathSectionRef}
           className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar"
           role="navigation"
           aria-label={isAr ? 'اختيار المتعلم' : 'Select learner'}

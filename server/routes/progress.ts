@@ -634,6 +634,110 @@ export function buildLearnerProgressReadModel(input: BuildProgressModelInput) {
   };
 }
 
+export interface FamilyChildOverviewCard {
+  id: string;
+  name: string;
+  learnerType: string;
+  assignedTeacherName: string | null;
+  subject: string;
+  subjectMeta: {
+    id: string;
+    glyph: string;
+    en: string;
+    ar: string;
+    spineEn: string;
+    spineAr: string;
+    familyKey: string;
+    familyColor: string;
+    familyEn: string;
+    familyAr: string;
+  };
+  currentLevel: SubjectLevel;
+  currentLevelIndex: number;
+  totalLevels: number;
+  weeklyRhythm: { current: number; longest: number };
+  lessonsAttended: { total: number; thisMonth: number };
+  nextBookedLesson: ReturnType<typeof sanitizeNextBookingForProgress>;
+  newestMilestone: {
+    id: string;
+    student_id: string;
+    subject: string;
+    kind: LearnerMilestoneKind;
+    title_ar: string;
+    title_en: string;
+    reached_at: string;
+    lesson_session_id: string | null;
+  } | null;
+}
+
+/**
+ * PR-07: Condenses a learner's full progress read model into a single at-a-glance
+ * card for the guardian family overview ("All children at a glance").
+ */
+export function buildFamilyChildOverviewCard(
+  readModel: ReturnType<typeof buildLearnerProgressReadModel>
+): FamilyChildOverviewCard {
+  const learner = readModel.learner;
+  const primarySubject = readModel.subjects[0] || null;
+  const fallbackMeta = resolveSubjectMeta(learner?.learningInterest || 'quran-reading');
+
+  const allMilestones = readModel.subjects
+    .flatMap((s) => s.milestones || [])
+    .sort((a, b) => new Date(b.reached_at).getTime() - new Date(a.reached_at).getTime());
+  const newestMilestone = allMilestones[0] || null;
+
+  const subjectMeta = primarySubject?.subjectMeta || {
+    id: fallbackMeta.id,
+    glyph: fallbackMeta.glyph,
+    en: fallbackMeta.en,
+    ar: fallbackMeta.ar,
+    spineEn: fallbackMeta.spineEn,
+    spineAr: fallbackMeta.spineAr,
+    familyKey: fallbackMeta.familyKey,
+    familyColor: fallbackMeta.familyColor,
+    familyEn: fallbackMeta.familyEn,
+    familyAr: fallbackMeta.familyAr,
+  };
+
+  const currentLevelIdx = primarySubject?.currentLevelIndex ?? 0;
+  const currentLevel: SubjectLevel =
+    primarySubject?.levels?.[currentLevelIdx] ||
+    fallbackMeta.levels[0] || {
+      id: 'beginner',
+      en: 'First steps',
+      ar: 'البداية',
+      descEn: 'Starting the path',
+      descAr: 'بداية المسار',
+    };
+
+  return {
+    id: learner?.id || '',
+    name: learner?.name || 'Learner',
+    learnerType: learner?.learnerType || 'child',
+    assignedTeacherName: learner?.assignedTeacherName || null,
+    subject: primarySubject?.subject || fallbackMeta.id,
+    subjectMeta,
+    currentLevel,
+    currentLevelIndex: currentLevelIdx,
+    totalLevels: primarySubject?.levels?.length || fallbackMeta.levels.length || 1,
+    weeklyRhythm: readModel.overall.weeklyRhythm,
+    lessonsAttended: readModel.overall.lessonsAttended,
+    nextBookedLesson: readModel.overall.nextBookedLesson,
+    newestMilestone: newestMilestone
+      ? {
+          id: newestMilestone.id,
+          student_id: newestMilestone.student_id,
+          subject: newestMilestone.subject,
+          kind: newestMilestone.kind,
+          title_ar: newestMilestone.title_ar,
+          title_en: newestMilestone.title_en,
+          reached_at: newestMilestone.reached_at,
+          lesson_session_id: newestMilestone.lesson_session_id ?? null,
+        }
+      : null,
+  };
+}
+
 /**
  * Validates optional `family_summary` and `achievements` fields on `lesson_notes`.
  */
@@ -1416,7 +1520,160 @@ export function registerProgressRoutes(app: express.Express, deps: ProgressDeps)
     }
   });
 
-  // PR-02: Student / Guardian Progress Read Model (`GET /api/student/progress?learnerId=`)
+  async function loadLearnerProgressReadModel(
+    client: any,
+    learnerEntry: { id: string; name: string; learnerType: string; isPrimary?: boolean },
+    profileFallback: any
+  ) {
+    const linkedChildFallback = Array.isArray(profileFallback?.linkedChildren)
+      ? profileFallback.linkedChildren.find((c: any) => c?.id === learnerEntry.id)
+      : null;
+
+    if (!client || !isUuid(learnerEntry.id)) {
+      return buildLearnerProgressReadModel({
+        learnerProfile: {
+          id: learnerEntry.id,
+          name: linkedChildFallback?.name || learnerEntry.name || 'Learner',
+          learnerType: linkedChildFallback?.learnerType || learnerEntry.learnerType || 'adult',
+          currentLevel:
+            linkedChildFallback?.currentLevel || profileFallback?.current_level || 'beginner',
+          learningInterest:
+            linkedChildFallback?.learningInterest ||
+            profileFallback?.learning_interest ||
+            'quran-reading',
+          timezone: profileFallback?.timezone || 'UTC',
+          assignedTeacherName:
+            linkedChildFallback?.assignedTeacherName ||
+            profileFallback?.assigned_teacher_name ||
+            null,
+        },
+        bookings: [],
+        lessonSessions: [],
+        lessonNotes: [],
+        milestones: [],
+        placementTests: [],
+      });
+    }
+
+    const [
+      studentRes,
+      bookingsRes,
+      sessionsRes,
+      notesRes,
+      milestonesRes,
+      placementRes,
+    ] = await Promise.all([
+      client
+        .from('students')
+        .select(
+          'id, name, learner_type, current_level, learning_interest, timezone, assigned_teacher_id'
+        )
+        .eq('id', learnerEntry.id)
+        .maybeSingle(),
+      client
+        .from('bookings')
+        .select(PROGRESS_BOOKING_COLUMNS)
+        .eq('student_id', learnerEntry.id)
+        .order('scheduled_start', { ascending: false })
+        .limit(500),
+      client
+        .from('lesson_sessions')
+        .select(PROGRESS_SESSION_COLUMNS)
+        .eq('student_id', learnerEntry.id)
+        .order('lesson_date', { ascending: false })
+        .limit(500),
+      client
+        .from('lesson_notes')
+        .select(FAMILY_SUMMARY_COLUMNS)
+        .eq('student_id', learnerEntry.id)
+        .order('created_at', { ascending: false })
+        .limit(100),
+      client
+        .from('learner_milestones')
+        .select(MILESTONE_COLUMNS)
+        .eq('student_id', learnerEntry.id)
+        .order('reached_at', { ascending: false })
+        .limit(200),
+      client
+        .from('placement_tests')
+        .select(PROGRESS_PLACEMENT_COLUMNS)
+        .eq('learner_student_id', learnerEntry.id)
+        .order('created_at', { ascending: false })
+        .limit(20),
+    ]);
+
+    const studentRow = studentRes?.data || null;
+    const bookingsRows = Array.isArray(bookingsRes?.data) ? bookingsRes.data : [];
+    const sessionRows = Array.isArray(sessionsRes?.data) ? sessionsRes.data : [];
+    const noteRows = Array.isArray(notesRes?.data) ? notesRes.data : [];
+    const milestoneRows = Array.isArray(milestonesRes?.data) ? milestonesRes.data : [];
+    const placementRows = Array.isArray(placementRes?.data) ? placementRes.data : [];
+
+    // Resolve teacher display names for assigned teacher + any upcoming booking teachers (no emails/money)
+    const teacherIds = Array.from(
+      new Set(
+        [
+          studentRow?.assigned_teacher_id,
+          ...bookingsRows.map((b: any) => b?.teacher_id),
+        ].filter((id): id is string => isUuid(id))
+      )
+    );
+
+    const teacherNamesById = new Map<string, string>();
+    if (teacherIds.length > 0) {
+      const { data: profilesData } = await client
+        .from('profiles')
+        .select('id, display_name')
+        .in('id', teacherIds);
+      if (Array.isArray(profilesData)) {
+        for (const p of profilesData) {
+          if (p?.id && p?.display_name) {
+            teacherNamesById.set(p.id, p.display_name);
+          }
+        }
+      }
+    }
+
+    const assignedTeacherId = studentRow?.assigned_teacher_id || null;
+    const assignedTeacherName =
+      (assignedTeacherId && teacherNamesById.get(assignedTeacherId)) ||
+      linkedChildFallback?.assignedTeacherName ||
+      profileFallback?.assigned_teacher_name ||
+      null;
+
+    return buildLearnerProgressReadModel({
+      learnerProfile: {
+        id: learnerEntry.id,
+        name: studentRow?.name || linkedChildFallback?.name || learnerEntry.name || 'Learner',
+        learnerType:
+          studentRow?.learner_type ||
+          linkedChildFallback?.learnerType ||
+          learnerEntry.learnerType ||
+          'adult',
+        currentLevel:
+          studentRow?.current_level ||
+          linkedChildFallback?.currentLevel ||
+          profileFallback?.current_level ||
+          'beginner',
+        learningInterest:
+          studentRow?.learning_interest ||
+          linkedChildFallback?.learningInterest ||
+          profileFallback?.learning_interest ||
+          'quran-reading',
+        timezone: studentRow?.timezone || profileFallback?.timezone || 'UTC',
+        assignedTeacherId,
+        assignedTeacherName,
+      },
+      bookings: bookingsRows,
+      lessonSessions: sessionRows,
+      lessonNotes: noteRows,
+      milestones: milestoneRows,
+      placementTests: placementRows,
+      teacherNamesById,
+    });
+  }
+
+  // PR-02 + PR-07: Student / Guardian Progress Read Model (`GET /api/student/progress?learnerId=`)
   app.get('/api/student/progress', verifyStudentAuth, async (req: any, res: any) => {
     try {
       const client = getClient();
@@ -1436,6 +1693,8 @@ export function registerProgressRoutes(app: express.Express, deps: ProgressDeps)
         return res.json({
           learner: null,
           learners: [],
+          isGuardianAccount: false,
+          childrenOverview: [],
           overall: {
             lessonsAttended: { total: 0, thisMonth: 0 },
             weeklyRhythm: { current: 0, longest: 0 },
@@ -1446,178 +1705,48 @@ export function registerProgressRoutes(app: express.Express, deps: ProgressDeps)
         });
       }
 
-      // If learnerId was not specified, pick the first child for a parent account, else primary learner
-      const isParentAccount =
-        req.studentUser?.studentProfile?.learner_type === 'child' &&
-        learners.some((l) => !l.isPrimary);
-      const defaultLearner = isParentAccount
-        ? learners.find((l) => !l.isPrimary) || learners[0]
-        : learners[0];
+      const profileFallback = req.studentUser?.studentProfile || {};
+      const hasLinkedChildren = learners.some((l) => !l.isPrimary);
+      const isGuardianAccount = Boolean(
+        hasLinkedChildren ||
+          profileFallback.learner_type === 'child' ||
+          profileFallback.booking_preference === 'child' ||
+          profileFallback.canBookForChild === true ||
+          learners.some((l) => l.learnerType === 'child')
+      );
+
+      const defaultLearner = learners[0];
       const targetLearner = requestedLearnerId
         ? learners.find((l) => l.id === requestedLearnerId) || defaultLearner
         : defaultLearner;
 
-      const profileFallback = req.studentUser?.studentProfile || {};
-      const linkedChildFallback = Array.isArray(profileFallback.linkedChildren)
-        ? profileFallback.linkedChildren.find((c: any) => c?.id === targetLearner.id)
-        : null;
+      const readModel = await loadLearnerProgressReadModel(client, targetLearner, profileFallback);
 
-      if (!client || !isUuid(targetLearner.id)) {
-        const readModel = buildLearnerProgressReadModel({
-          learnerProfile: {
-            id: targetLearner.id,
-            name: linkedChildFallback?.name || targetLearner.name || 'Learner',
-            learnerType: linkedChildFallback?.learnerType || targetLearner.learnerType || 'adult',
-            currentLevel:
-              linkedChildFallback?.currentLevel || profileFallback.current_level || 'beginner',
-            learningInterest:
-              linkedChildFallback?.learningInterest ||
-              profileFallback.learning_interest ||
-              'quran-reading',
-            timezone: profileFallback.timezone || 'UTC',
-            assignedTeacherName:
-              linkedChildFallback?.assignedTeacherName ||
-              profileFallback.assigned_teacher_name ||
-              null,
-          },
-          bookings: [],
-          lessonSessions: [],
-          lessonNotes: [],
-          milestones: [],
-          placementTests: [],
-        });
+      // PR-07: Build the family overview cards ("All children at a glance") for guardian accounts
+      const familyChildEntries = hasLinkedChildren
+        ? learners.filter((l) => !l.isPrimary || l.learnerType === 'child')
+        : isGuardianAccount
+          ? learners
+          : [];
 
-        return res.json({
-          ...readModel,
-          learners: learners.map((l) => ({
-            id: l.id,
-            name: l.name,
-            learnerType: l.learnerType,
-            isPrimary: l.isPrimary,
-          })),
-        });
-      }
-
-      // Query all progress sources in parallel for the authorized target learner
-      const [
-        studentRes,
-        bookingsRes,
-        sessionsRes,
-        notesRes,
-        milestonesRes,
-        placementRes,
-      ] = await Promise.all([
-        client
-          .from('students')
-          .select(
-            'id, name, learner_type, current_level, learning_interest, timezone, assigned_teacher_id'
-          )
-          .eq('id', targetLearner.id)
-          .maybeSingle(),
-        client
-          .from('bookings')
-          .select(PROGRESS_BOOKING_COLUMNS)
-          .eq('student_id', targetLearner.id)
-          .order('scheduled_start', { ascending: false })
-          .limit(500),
-        client
-          .from('lesson_sessions')
-          .select(PROGRESS_SESSION_COLUMNS)
-          .eq('student_id', targetLearner.id)
-          .order('lesson_date', { ascending: false })
-          .limit(500),
-        client
-          .from('lesson_notes')
-          .select(FAMILY_SUMMARY_COLUMNS)
-          .eq('student_id', targetLearner.id)
-          .order('created_at', { ascending: false })
-          .limit(100),
-        client
-          .from('learner_milestones')
-          .select(MILESTONE_COLUMNS)
-          .eq('student_id', targetLearner.id)
-          .order('reached_at', { ascending: false })
-          .limit(200),
-        client
-          .from('placement_tests')
-          .select(PROGRESS_PLACEMENT_COLUMNS)
-          .eq('learner_student_id', targetLearner.id)
-          .order('created_at', { ascending: false })
-          .limit(20),
-      ]);
-
-      const studentRow = studentRes?.data || null;
-      const bookingsRows = Array.isArray(bookingsRes?.data) ? bookingsRes.data : [];
-      const sessionRows = Array.isArray(sessionsRes?.data) ? sessionsRes.data : [];
-      const noteRows = Array.isArray(notesRes?.data) ? notesRes.data : [];
-      const milestoneRows = Array.isArray(milestonesRes?.data) ? milestonesRes.data : [];
-      const placementRows = Array.isArray(placementRes?.data) ? placementRes.data : [];
-
-      // Resolve teacher display names for assigned teacher + any upcoming booking teachers (no emails/money)
-      const teacherIds = Array.from(
-        new Set(
-          [
-            studentRow?.assigned_teacher_id,
-            ...bookingsRows.map((b: any) => b?.teacher_id),
-          ].filter((id): id is string => isUuid(id))
-        )
-      );
-
-      const teacherNamesById = new Map<string, string>();
-      if (teacherIds.length > 0) {
-        const { data: profilesData } = await client
-          .from('profiles')
-          .select('id, display_name')
-          .in('id', teacherIds);
-        if (Array.isArray(profilesData)) {
-          for (const p of profilesData) {
-            if (p?.id && p?.display_name) {
-              teacherNamesById.set(p.id, p.display_name);
-            }
+      const childrenOverview: FamilyChildOverviewCard[] = await Promise.all(
+        familyChildEntries.map(async (childEntry) => {
+          if (childEntry.id === targetLearner.id) {
+            return buildFamilyChildOverviewCard(readModel);
           }
-        }
-      }
-
-      const assignedTeacherId = studentRow?.assigned_teacher_id || null;
-      const assignedTeacherName =
-        (assignedTeacherId && teacherNamesById.get(assignedTeacherId)) ||
-        linkedChildFallback?.assignedTeacherName ||
-        profileFallback.assigned_teacher_name ||
-        null;
-
-      const readModel = buildLearnerProgressReadModel({
-        learnerProfile: {
-          id: targetLearner.id,
-          name: studentRow?.name || linkedChildFallback?.name || targetLearner.name || 'Learner',
-          learnerType:
-            studentRow?.learner_type ||
-            linkedChildFallback?.learnerType ||
-            targetLearner.learnerType ||
-            'adult',
-          currentLevel:
-            studentRow?.current_level ||
-            linkedChildFallback?.currentLevel ||
-            profileFallback.current_level ||
-            'beginner',
-          learningInterest:
-            studentRow?.learning_interest ||
-            linkedChildFallback?.learningInterest ||
-            profileFallback.learning_interest ||
-            'quran-reading',
-          timezone: studentRow?.timezone || profileFallback.timezone || 'UTC',
-          assignedTeacherId,
-          assignedTeacherName,
-        },
-        bookings: bookingsRows,
-        lessonSessions: sessionRows,
-        lessonNotes: noteRows,
-        milestones: milestoneRows,
-        placementTests: placementRows,
-        teacherNamesById,
-      });
+          const childModel = await loadLearnerProgressReadModel(
+            client,
+            childEntry,
+            profileFallback
+          );
+          return buildFamilyChildOverviewCard(childModel);
+        })
+      );
 
       return res.json({
         ...readModel,
+        isGuardianAccount,
+        childrenOverview,
         learners: learners.map((l) => ({
           id: l.id,
           name: l.name,

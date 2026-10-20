@@ -248,7 +248,12 @@ export default function StudentApp() {
     return <Navigate to="/dashboard" replace />;
   }
 
-  if (showWelcome && user && !otpCelebrating) {
+  const isDevProgressPreview =
+    Boolean((import.meta as any).env?.DEV) &&
+    location.pathname.endsWith('/progress') &&
+    new URLSearchParams(location.search).has('preview');
+
+  if (showWelcome && user && !otpCelebrating && !isDevProgressPreview) {
     return (
       <WelcomeLoader
         role="student"
@@ -259,7 +264,7 @@ export default function StudentApp() {
   }
 
   // Auth Hydration Gate: Show BrandLoader while auth session or user role is resolving
-  if (!otpCelebrating && (loading || (user && (!userRole || !session?.access_token)))) {
+  if (!isDevProgressPreview && !otpCelebrating && (loading || (user && (!userRole || !session?.access_token)))) {
     return (
       <BrandLoader 
         size="page" 
@@ -270,7 +275,7 @@ export default function StudentApp() {
   }
 
   // If not authenticated, provide choices: Sign In, Create Account
-  if (otpCelebrating || !user || userRole !== 'student') {
+  if (!isDevProgressPreview && (otpCelebrating || !user || userRole !== 'student')) {
     return (
       <AuthPage isAr={isAr} onToggleLang={toggleLang}>
         <AuthCard>
@@ -303,7 +308,7 @@ export default function StudentApp() {
 
   // Authenticated Student: Show BrandLoader until profile is definitively loaded.
   // This guarantees that newly verified students NEVER see the dashboard before onboarding!
-  if (loadingProfile || !profile) {
+  if (!isDevProgressPreview && (loadingProfile || !profile)) {
     return (
       <BrandLoader 
         size="page" 
@@ -314,7 +319,7 @@ export default function StudentApp() {
   }
 
   // Onboarding Gate: If onboarding is not completed, lock dashboard until onboarding is completed
-  const needsOnboarding = profile && profile.onboardingCompleted === false;
+  const needsOnboarding = !isDevProgressPreview && profile && profile.onboardingCompleted === false;
   if (needsOnboarding) {
     return (
       <div className="min-h-screen bg-background text-foreground">
