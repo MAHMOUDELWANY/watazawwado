@@ -42,7 +42,8 @@ export async function recordAppError(
   client: Client | null,
   e: { source: 'client' | 'api'; message: string; path?: string | null; stack?: string | null; accountId?: string | null }
 ): Promise<void> {
-  if (!client) return;
+  // Local dev and the test suite share the production database; only the live site's errors belong in the list.
+  if (!client || process.env.VERCEL_ENV !== 'production') return;
   try {
     const accountId = typeof e.accountId === 'string' && /^[0-9a-f-]{36}$/i.test(e.accountId) ? e.accountId : null;
     const { error } = await client.rpc('record_app_error', {
@@ -60,7 +61,8 @@ export async function recordAppError(
 
 /** Marks that a background process ran now. Never throws. */
 export async function recordHeartbeat(client: Client | null, key: string, detail: Record<string, unknown> = {}): Promise<void> {
-  if (!client) return;
+  // A test run hitting the cron route must not make a dead production cron look healthy.
+  if (!client || process.env.VERCEL_ENV !== 'production') return;
   try {
     const { error } = await client
       .from('ops_heartbeats')
