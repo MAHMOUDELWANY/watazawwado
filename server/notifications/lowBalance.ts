@@ -37,7 +37,9 @@ export function lowBalanceThreshold(ent: EntitlementRow | null | undefined): Low
 const enLessons = (n: number) => `${n} ${n === 1 ? 'lesson' : 'lessons'}`;
 const arSize = (n: number) => (n >= 3 && n <= 10 ? `${n} حصص` : `${n} حصة`);
 
-export function lowBalanceNotice(t: LowBalanceThreshold, size: number, learnerName: string | null) {
+export function lowBalanceNotice(t: LowBalanceThreshold, size: number, learnerName: string | null, entitlementId?: string) {
+  // RN-03: the link opens the packages page with this same package selected for renewal.
+  const link = entitlementId ? `/student/packages?renew=${encodeURIComponent(entitlementId)}` : '/student/packages';
   const forEn = learnerName ? ` for ${learnerName}` : '';
   const forAr = learnerName ? ` لـ ${learnerName}` : '';
   if (t === 2) {
@@ -48,7 +50,7 @@ export function lowBalanceNotice(t: LowBalanceThreshold, size: number, learnerNa
         en: `Your ${enLessons(size)} package${forEn} has 2 lessons left. When you are ready, you can renew the same package from your packages page.`,
         ar: `باقة الـ ${arSize(size)}${forAr} فاضل فيها حصتين. لما تحب، تقدر تجدد نفس الباقة من صفحة الباقات.`
       },
-      link: '/student/packages'
+      link
     };
   }
   return {
@@ -58,7 +60,7 @@ export function lowBalanceNotice(t: LowBalanceThreshold, size: number, learnerNa
       en: `All ${enLessons(size)} of your package${forEn} are done. You can renew the same package or book a single lesson whenever you like.`,
       ar: `خلصت الـ ${arSize(size)} اللي في باقتك${forAr}، زادك الله. تقدر تجدد نفس الباقة أو تحجز حصة واحدة في أي وقت يناسبك.`
     },
-    link: '/student/packages'
+    link
   };
 }
 
@@ -133,7 +135,7 @@ export async function notifyLowBalance(
     await notify(
       client,
       { userId: to.userId, email: to.email, name: to.name },
-      lowBalanceNotice(t, Number(ent.purchased_quantity), to.learnerName),
+      lowBalanceNotice(t, Number(ent.purchased_quantity), to.learnerName, ent.id),
       { email: true }
     );
     return t;

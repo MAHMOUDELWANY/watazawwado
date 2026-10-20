@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { hasBookingDraft } from '../../components/booking/BookingFlow';
 import { DateTime } from 'luxon';
 import {
@@ -20,7 +20,8 @@ import {
   User,
   History,
   ArrowDownLeft,
-  ArrowUpRight
+  ArrowUpRight,
+  RotateCcw
 } from 'lucide-react';
 import { useTeacherAuth } from '../../lib/auth';
 import { BrandSpinner } from '../../components/ui/BrandLoader';
@@ -63,6 +64,10 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [acceptedEarlyStart, setAcceptedEarlyStart] = useState(false);
   const [packageMinutes, setPackageMinutes] = useState(60);
+  // RN-03: the catalogue package being renewed (highlighted; the family still ticks the boxes and confirms).
+  const [renewCatalogId, setRenewCatalogId] = useState<string | null>(null);
+  const [renewMissing, setRenewMissing] = useState(false);
+  const [searchParams] = useSearchParams();
   const [refundBusyId, setRefundBusyId] = useState<string | null>(null);
 
   const isAr = lang === 'ar';
@@ -152,6 +157,30 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
     fetchPackages();
     fetchLedger();
   }, [fetchPackages, fetchLedger]);
+
+  /** Pre-selects the same package (catalogue item, lesson length, learner); the server still prices it. */
+  const startRenew = useCallback((ent: any, catalog: any[]) => {
+    const cat = catalog.find((c: any) => c.id === ent.packageCatalogId && c.is_active !== false);
+    setRenewMissing(!cat);
+    setRenewCatalogId(cat ? cat.id : null);
+    if (!cat) return;
+    setPackageMinutes(Number(cat.eligibility_rules?.duration_minutes ?? ent.durationMinutes ?? 60));
+    if (ent.learnerStudentId) setSelectedLearnerId(ent.learnerStudentId);
+    // After the catalogue re-renders with the chosen length.
+    requestAnimationFrame(() => document.getElementById(`package-${cat.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+  }, []);
+
+  // /student/packages?renew=<entitlementId> (the low-balance notice links here).
+  const renewParam = searchParams.get('renew');
+  const renewParamApplied = React.useRef(false);
+  useEffect(() => {
+    // Once: a refetch after buying must not jump back to the renew target.
+    if (!renewParam || loading || renewParamApplied.current) return;
+    const ent = (data.entitlements || []).find((e: any) => e.id === renewParam && !e.isCredit);
+    if (!ent) return;
+    renewParamApplied.current = true;
+    startRenew(ent, Array.isArray(data.catalog) ? data.catalog : []);
+  }, [renewParam, loading, data, startRenew]);
 
   const handleSelectPackage = async (catalogItem: any) => {
     try {
@@ -603,6 +632,16 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                         </span>
                       )}
                     </div>
+                    {!ent.isCredit && (ent.status === 'active' || ent.status === 'exhausted') && (
+                      <button
+                        type="button"
+                        onClick={() => startRenew(ent, catalogItems)}
+                        className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-surface-subtle cursor-pointer min-h-[40px]"
+                      >
+                        <RotateCcw className="w-3.5 h-3.5 text-accent" />
+                        <span>{isAr ? 'جدّد نفس الباقة' : 'Renew this package'}</span>
+                      </button>
+                    )}
                   </CardContent>
                 </Card>
               );
@@ -656,6 +695,21 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                 );
               })}
             </div>
+          </div>
+        )}
+
+        {renewCatalogId && (
+          <div role="status" className="p-3.5 rounded-xl bg-secondary/30 border border-secondary/50 text-sm text-foreground">
+            {isAr
+              ? 'اخترنالك نفس الباقة تحت. وافق على الشروط واضغط اختيار الباقة عشان تكمل.'
+              : 'Your package is selected below. Accept the terms and choose it to continue.'}
+          </div>
+        )}
+        {renewMissing && (
+          <div role="status" className="p-3.5 rounded-xl bg-warning/10 border border-warning/30 text-sm text-foreground">
+            {isAr
+              ? 'الباقة دي مبقتش متاحة. اختار باقة تانية من اللي تحت.'
+              : 'That package is no longer offered. Please choose another one below.'}
           </div>
         )}
 
@@ -747,6 +801,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                       isPurchasing={purchasingCatalogId === cat.id}
                       canSelect={acceptedTerms && acceptedEarlyStart}
                       onSelect={handleSelectPackage}
+                      isRenewTarget={renewCatalogId === cat.id}
                     />
                   ))}
                 </div>
@@ -915,12 +970,14 @@ function PackageCard({
   isPurchasing,
   canSelect,
   onSelect,
+  isRenewTarget = false,
 }: {
   cat: any;
   isAr: boolean;
   isPurchasing: boolean;
   canSelect: boolean;
   onSelect: (cat: any) => void;
+  isRenewTarget?: boolean;
 }) {
   const lessonCount = Number(cat?.lesson_count) || 0;
   const price = Number(cat?.price_amount);
@@ -935,13 +992,19 @@ function PackageCard({
   const saving = hasRef ? Math.round((singleRef * lessonCount - price) * 100) / 100 : 0;
 
   return (
-    <Card className="border-border hover:border-primary/40 transition-all flex flex-col justify-between glass-card">
+    <Card
+      id={`package-${cat.id}`}
+      className={`hover:border-primary/40 transition-all flex flex-col justify-between glass-card ${isRenewTarget ? 'border-primary ring-2 ring-primary/30' : 'border-border'}`}
+    >
       <CardContent className="p-6 space-y-5 flex-1 flex flex-col justify-between">
         <div className="space-y-3">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-2">
             <span className="text-[11px] font-bold uppercase tracking-wider text-primary px-2.5 py-1 rounded-md bg-secondary/30">
               {lessonCount} {isAr ? 'دروس خاصة' : 'Private Lessons'}
             </span>
+            {isRenewTarget && (
+              <Badge variant="success">{isAr ? 'نفس باقتك' : 'Your package'}</Badge>
+            )}
           </div>
 
           <div>
