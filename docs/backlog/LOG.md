@@ -4,6 +4,12 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### ST-01 Lesson-day experience (2026-10-20)
+- Result: done (main)
+- Changed: new `src/student/components/LessonDayCard.tsx` (countdown that updates every 30 s, subject + learner, teacher name, Join in Zoom blue from 10 minutes before until the end, "Before the lesson" from the teacher's last shared next steps, "I'm running late" WhatsApp to the academy number with the booking reference), `StudentHomePage.tsx` (the card leads the page on the lesson's own day for confirmed/rescheduled lessons), `api/index.ts` (`GET /api/student/bookings` adds `teacherName` and `prepareNote` to upcoming lessons; `prepareNote` = latest `lesson_notes.next_steps` for that learner, never private notes), `test/st-01-lesson-day.test.ts`
+- Migration: none
+- Checks: tsc pass, npm test 1110 pass / 0 fail (5 skipped), build pass.
+- Not checked / risks: not opened in a browser (needs a signed-in student with a lesson today). "Lesson day" is the viewer's device day.
 ### PA-02 Add another child after onboarding (2026-10-20)
 - Result: done (main, after `/code-review`)
 - Changed: `api/index.ts` (new `POST /api/student/children`: account holder only after onboarding, child 6-17 via `isChildAge`, at most 10 children, catalogue subject and its levels only, teacher = the picked active teacher or routed by gender, guardian link, undo if the link fails, teachers + admin told through `announceNewStudent`; a retry within 10 minutes returns the same child), new `src/student/components/AddChildForm.tsx` (profile page; opens from `#add-child`), `StudentProfilePage.tsx`, `StudentHomePage.tsx` ("Add a child" tile in the family section and a line for personal accounts), `StudentApp.tsx` + `activeLearner.tsx` (profile reloads quietly after a child is added), `test/pa-02-add-child.test.ts`

@@ -290,7 +290,7 @@ Principles every PR/RN task follows:
 ## ST: Student experience
 
 ### ST-01 Lesson-day experience
-- Priority P1 · Zone 🟢 · Size M · Status todo
+- Priority P1 · Zone 🟢 · Size M · Status done
 - Do: on lesson day the home page leads with one card: countdown, teacher, subject, "Join" button active from
   10 minutes before (Zoom blue `.btn-zoom`), what to prepare (from last lesson's next steps), and a "running late"
   WhatsApp prefill to the team.

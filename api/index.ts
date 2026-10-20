@@ -8496,7 +8496,32 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
     }
 
     // Map to a clean, coherent DTO that matches both the new explicit contract and legacy fields
+    // ST-01 lesson-day card: the teacher's display name and, per learner, the latest "next steps" the teacher
+    // shared with the family (the same field the progress page shows; never private notes).
+    const nowIso = new Date().toISOString();
+    const upcomingRows = (bookingsData || []).filter((b: any) => ['confirmed', 'rescheduled'].includes(b.status) && b.scheduled_end > nowIso);
+    const teacherIds = Array.from(new Set(upcomingRows.map((b: any) => b.teacher_id).filter(Boolean))) as string[];
+    const [teacherMetas, { data: nextStepRows }] = await Promise.all([
+      Promise.all(teacherIds.map(async (tid) => [tid, await resolveTeacherMetadata(tid, supabaseAdmin)] as const)),
+      upcomingRows.length
+        ? supabaseAdmin
+            .from('lesson_notes')
+            .select('student_id, next_steps, created_at')
+            .in('student_id', learnerIds)
+            .not('next_steps', 'is', null)
+            .order('created_at', { ascending: false })
+            .limit(50)
+        : Promise.resolve({ data: [] as any[] })
+    ]);
+    const teacherNameById = new Map<string, string | null>(teacherMetas.map(([tid, m]) => [tid, m?.display_name || null]));
+    const nextStepsByStudent = new Map<string, string>();
+    for (const n of nextStepRows || []) {
+      const text = String(n.next_steps || '').trim();
+      if (text && !nextStepsByStudent.has(n.student_id)) nextStepsByStudent.set(n.student_id, text.slice(0, 400));
+    }
+
     const formattedBookings = (bookingsData || []).map((b: any) => {
+      const isUpcoming = ['confirmed', 'rescheduled'].includes(b.status) && b.scheduled_end > nowIso;
       const s = serviceMap.get(b.service_id);
       const serviceTitle = s?.title || 'Lesson';
       const zoomUrl = (b.zoom_meeting_link && typeof b.zoom_meeting_link === 'string' && b.zoom_meeting_link.trim().length > 0)
@@ -8528,6 +8553,8 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
         zoomMeetingLink: zoomUrl,
         packageEntitlementId: b.package_entitlement_id || null,
         teacherId: b.teacher_id || null,
+        teacherName: isUpcoming && b.teacher_id ? teacherNameById.get(b.teacher_id) || null : null,
+        prepareNote: isUpcoming ? nextStepsByStudent.get(b.student_id) || null : null,
         rescheduleCount: b.reschedule_count || 0,
         rescheduleRequestedAt: b.reschedule_requested_at || null,
         rescheduleRequestNote: b.reschedule_request_note || null,

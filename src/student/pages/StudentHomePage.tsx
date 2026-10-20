@@ -32,6 +32,7 @@ import { OnboardingGuide } from '../../components/ui/OnboardingGuide';
 import type { OnboardingStep } from '../../components/ui/OnboardingGuide';
 import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal';
 import { PackageBalance } from '../components/PackageBalance';
+import { LessonDayCard, isLessonDay } from '../components/LessonDayCard';
 import { getBookingPaymentSummary } from '../../lib/paymentStatus';
 
 export interface StudentHomePageProps {
@@ -449,6 +450,11 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
       </div>
     );
   })()}
+
+      {/* ST-01: on lesson day, the first thing on home is that lesson. */}
+      {nextBooking && ['confirmed', 'rescheduled'].includes(nextBooking.status) && isLessonDay(nextBooking.scheduledStart || nextBooking.scheduled_start) && (
+        <LessonDayCard booking={nextBooking} isAr={isAr} />
+      )}
 
       {/* ========================================================================= */}
       {/* 2.5 FAMILY & CHILDREN OVERVIEW (For Parent Accounts) */}
