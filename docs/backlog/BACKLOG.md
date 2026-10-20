@@ -158,7 +158,7 @@ Principles every PR/RN task follows:
   suggestion, not a recurring booking (multi-lesson booking was removed on purpose; do not bring it back).
 
 ### RN-05 Trial → first paid lesson follow-up
-- Priority P1 · Zone 🔴 (new scheduled send) · Size M · Status todo
+- Priority P1 · Zone 🔴 (new scheduled send) · Size M · Status done
 - Do: 24 hours after an attended free trial, send one warm email + on-site notice: what the teacher noted (family
   summary if any), the placement result if taken, and how to continue (single lesson or package). Once per learner.
 

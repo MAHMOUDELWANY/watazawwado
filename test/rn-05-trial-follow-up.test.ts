@@ -7,10 +7,11 @@ const NOW = Date.parse('2026-10-20T12:00:00Z');
 const hoursAgo = (h: number) => new Date(NOW - h * 3_600_000).toISOString();
 
 /** In-memory tables with the PostgREST filters this module uses, plus claim/finalize_notification_event. */
-function fakeDb(tables: Record<string, any[]>) {
-  const events = new Map<string, { status: string; token: string | null }>();
+function fakeDb(tables: Record<string, any[]>, clock = { now: NOW }) {
+  tables.notification_events ||= [];
+  const ev = (key: string) => tables.notification_events.find((e) => e.idempotency_key === key);
   const client = {
-    events,
+    events: { get: (key: string) => ev(key) },
     from(table: string) {
       const filters: ((r: any) => boolean)[] = [];
       let limit = Infinity;
@@ -31,16 +32,18 @@ function fakeDb(tables: Record<string, any[]>) {
       return chain;
     },
     async rpc(name: string, a: any) {
+      const stamp = new Date(clock.now).toISOString();
       if (name === 'claim_notification_event') {
-        const cur = events.get(a.p_key);
+        const cur = ev(a.p_key);
         if (cur && cur.status !== 'failed') return { data: { claimed: false, claim_token: null }, error: null };
-        const token = `t${events.size + 1}`;
-        events.set(a.p_key, { status: 'sending', token });
+        const token = `t${tables.notification_events.length + 1}-${clock.now}`;
+        if (cur) Object.assign(cur, { status: 'sending', token, updated_at: stamp });
+        else tables.notification_events.push({ idempotency_key: a.p_key, status: 'sending', token, error_details: null, updated_at: stamp });
         return { data: { claimed: true, claim_token: token }, error: null };
       }
       if (name === 'finalize_notification_event') {
-        const cur = events.get(a.p_key);
-        if (cur?.token === a.p_token) events.set(a.p_key, { status: a.p_status, token: null });
+        const cur = ev(a.p_key);
+        if (cur?.token === a.p_token) Object.assign(cur, { status: a.p_status, token: null, error_details: a.p_error, updated_at: stamp });
         return { data: true, error: null };
       }
       throw new Error(`unexpected rpc ${name}`);
@@ -51,11 +54,12 @@ function fakeDb(tables: Record<string, any[]>) {
 
 const trial = (over: Record<string, any> = {}) => ({
   id: 'b1', student_id: 's1', booking_type: 'trial', status: 'completed',
-  scheduled_start: hoursAgo(26), scheduled_end: hoursAgo(25.5), created_at: hoursAgo(50), ...over
+  scheduled_start: hoursAgo(26), scheduled_end: hoursAgo(25.5), created_at: hoursAgo(50), updated_at: hoursAgo(25), ...over
 });
 
 function harness(tables: Record<string, any[]>, opts: { emailOk?: boolean; viaParent?: boolean } = {}) {
-  const db = fakeDb({ students: [{ id: 's1', name: 'Maryam' }], ...tables });
+  const clock = { now: NOW };
+  const db = fakeDb({ students: [{ id: 's1', name: 'Maryam' }], ...tables }, clock);
   const emails: any[] = [];
   const notices: any[] = [];
   const deps = {
@@ -64,7 +68,7 @@ function harness(tables: Record<string, any[]>, opts: { emailOk?: boolean; viaPa
     resolve: (async () => ({ userId: 'u1', email: 'family@example.com', name: 'Maryam', viaParent: opts.viaParent ?? true })) as any,
     emailLang: (async () => 'en') as any
   };
-  return { db, emails, notices, run: () => processTrialFollowUps(db, NOW, deps) };
+  return { db, emails, notices, clock, run: () => processTrialFollowUps(db, clock.now, deps) };
 }
 
 describe('RN-05 trial follow-up', () => {
@@ -78,9 +82,19 @@ describe('RN-05 trial follow-up', () => {
     assert.strictEqual(h.emails.length, 1);
   });
 
-  it('waits until 24 h have passed and stops after 72 h', async () => {
+  it('waits until 24 h have passed, and skips stale trials', async () => {
     assert.strictEqual(await harness({ bookings: [trial({ scheduled_end: hoursAgo(10) })] }).run(), 0);
-    assert.strictEqual(await harness({ bookings: [trial({ scheduled_end: hoursAgo(80) })] }).run(), 0);
+    assert.strictEqual(await harness({ bookings: [trial({ scheduled_end: hoursAgo(80), updated_at: hoursAgo(79) })] }).run(), 0, 'recorded more than 72 h ago');
+    assert.strictEqual(await harness({ bookings: [trial({ scheduled_end: hoursAgo(15 * 24), updated_at: hoursAgo(1) })] }).run(), 0, 'older than 14 days');
+  });
+
+  it('still follows up a trial the teacher recorded days late', async () => {
+    assert.strictEqual(await harness({ bookings: [trial({ scheduled_end: hoursAgo(5 * 24), updated_at: hoursAgo(2) })] }).run(), 1);
+  });
+
+  it('skips a learner who bought a package after the trial', async () => {
+    const pkg = { id: 'p1', learner_student_id: 's1', status: 'active', created_at: hoursAgo(20) };
+    assert.strictEqual(await harness({ bookings: [trial()], package_entitlements: [pkg] }).run(), 0);
   });
 
   it('skips trials that were not attended and learners who already booked a paid lesson', async () => {
@@ -96,11 +110,28 @@ describe('RN-05 trial follow-up', () => {
     assert.strictEqual(h.emails.length, 1);
   });
 
-  it('retries a failed email on the next run without a duplicate on-site notice', async () => {
+  it('retries a failing email an hour apart, 3 times at most, then sends the on-site notice only', async () => {
     const h = harness({ bookings: [trial()] }, { emailOk: false });
-    assert.strictEqual(await h.run(), 0);
-    assert.strictEqual(h.notices.length, 0, 'no on-site notice until the email went out');
+    await h.run();
+    assert.strictEqual(h.emails.length, 1);
+    assert.strictEqual(h.notices.length, 0, 'no on-site notice while the email may still go out');
     assert.strictEqual(h.db.events.get('trial_followup:s1')?.status, 'failed');
+
+    h.clock.now += 10 * 60_000;
+    await h.run();
+    assert.strictEqual(h.emails.length, 1, 'the next 10-minute cron run waits for the hour');
+
+    h.clock.now += 60 * 60_000;
+    await h.run();
+    h.clock.now += 61 * 60_000;
+    await h.run();
+    assert.strictEqual(h.emails.length, 3);
+    assert.strictEqual(h.notices.length, 1, 'after the last try the family still gets the on-site notice');
+
+    h.clock.now += 5 * 60 * 60_000;
+    await h.run();
+    assert.strictEqual(h.emails.length, 3, 'no fourth attempt');
+    assert.strictEqual(h.notices.length, 1);
   });
 
   it('includes the teacher family summary and the placement result', async () => {

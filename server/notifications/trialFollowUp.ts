@@ -10,9 +10,15 @@ import { resolveEmailLanguage } from './dispatcher.js';
 import { notifyUser, resolveLearnerAccount } from './inbox.js';
 
 const HOUR = 3_600_000;
-/** Sent from 24 h after the trial ends; after 72 h it is no longer a follow-up, so it is dropped. */
+/** Sent from 24 h after the trial ends. */
 export const FOLLOW_UP_AFTER_MS = 24 * HOUR;
-export const FOLLOW_UP_UNTIL_MS = 72 * HOUR;
+/** The attendance must have been recorded in the last 72 h (a teacher may record it days late)... */
+export const RECORDED_WITHIN_MS = 72 * HOUR;
+/** ...but a trial older than 14 days is no longer something to follow up. */
+export const TRIAL_MAX_AGE_MS = 14 * 24 * HOUR;
+/** A failing email is tried at most this many times, an hour apart; after that only the on-site notice goes out. */
+export const MAX_EMAIL_ATTEMPTS = 3;
+const RETRY_GAP_MS = HOUR;
 
 const LEVEL_NAMES: Record<string, { en: string; ar: string }> = {
   beginner: { en: 'beginner', ar: 'مبتدئ' },
@@ -89,18 +95,29 @@ async function factsFor(client: any, trial: any): Promise<TrialFollowUpFacts> {
   };
 }
 
-/** A learner who already booked a paid lesson after the trial needs no nudge. */
+/** A learner who already booked a paid lesson or bought a package after the trial needs no nudge. */
 async function alreadyContinued(client: any, trial: any): Promise<boolean> {
-  const { data } = await client
-    .from('bookings')
-    .select('id')
-    .eq('student_id', trial.student_id)
-    .neq('booking_type', 'trial')
-    .neq('status', 'cancelled')
-    .gte('created_at', trial.scheduled_start)
-    .limit(1);
-  return Boolean(data?.length);
+  const [{ data: booked }, { data: bought }] = await Promise.all([
+    client
+      .from('bookings')
+      .select('id')
+      .eq('student_id', trial.student_id)
+      .neq('booking_type', 'trial')
+      .neq('status', 'cancelled')
+      .gte('created_at', trial.scheduled_start)
+      .limit(1),
+    client
+      .from('package_entitlements')
+      .select('id')
+      .eq('learner_student_id', trial.student_id)
+      .in('status', ['active', 'exhausted', 'pending_payment'])
+      .gte('created_at', trial.scheduled_start)
+      .limit(1)
+  ]);
+  return Boolean(booked?.length || bought?.length);
 }
+
+const attemptsOf = (error: string | null | undefined) => Number(/attempt (\d+)/.exec(error || '')?.[1] || 0);
 
 export async function processTrialFollowUps(client: any, now = Date.now(), deps: Deps = {}): Promise<number> {
   if (!client) return 0;
@@ -117,19 +134,33 @@ export async function processTrialFollowUps(client: any, now = Date.now(), deps:
       .eq('status', 'completed')
       .not('student_id', 'is', null)
       .lte('scheduled_end', new Date(now - FOLLOW_UP_AFTER_MS).toISOString())
-      .gte('scheduled_end', new Date(now - FOLLOW_UP_UNTIL_MS).toISOString())
+      .gte('scheduled_end', new Date(now - TRIAL_MAX_AGE_MS).toISOString())
+      .gte('updated_at', new Date(now - RECORDED_WITHIN_MS).toISOString())
       .order('scheduled_end', { ascending: true })
-      .limit(50);
+      .limit(200);
     if (error || !trials?.length) return 0;
+
+    // One read of the past attempts, so finished learners don't take a slot and failing emails wait an hour.
+    const keyOf = (studentId: string) => `trial_followup:${studentId}`;
+    const { data: past } = await client
+      .from('notification_events')
+      .select('idempotency_key, status, error_details, updated_at')
+      .in('idempotency_key', [...new Set(trials.map((t: any) => keyOf(t.student_id)))]);
+    const pastByKey = new Map<string, any>((past || []).map((e: any) => [e.idempotency_key, e]));
 
     const seen = new Set<string>();
     for (const trial of trials) {
       if (seen.has(trial.student_id)) continue;
       seen.add(trial.student_id);
+      const key = keyOf(trial.student_id);
+      const prev = pastByKey.get(key);
+      if (prev && prev.status !== 'failed') continue;
+      const attempts = attemptsOf(prev?.error_details);
+      if (attempts >= MAX_EMAIL_ATTEMPTS) continue;
+      if (prev && now - Date.parse(prev.updated_at) < RETRY_GAP_MS) continue;
       try {
         if (await alreadyContinued(client, trial)) continue;
 
-        const key = `trial_followup:${trial.student_id}`;
         const { data: claim } = await client.rpc('claim_notification_event', { p_key: key, p_type: 'trial_follow_up' });
         if (!claim?.claimed || !claim.claim_token) continue;
 
@@ -144,7 +175,7 @@ export async function processTrialFollowUps(client: any, now = Date.now(), deps:
 
         const account = await resolve(client, trial.student_id);
         if (!account.userId && !account.email) {
-          await finalize(false, 'no recipient');
+          await finalize(false, `attempt ${MAX_EMAIL_ATTEMPTS}: no recipient`);
           continue;
         }
         const facts = await factsFor(client, trial);
@@ -156,8 +187,16 @@ export async function processTrialFollowUps(client: any, now = Date.now(), deps:
           const mail = renderSimpleNotice({ name: account.viaParent ? null : account.name, title: notice.title, body: notice.body, buttonPath: notice.link, lang });
           const result = await send({ to: account.email, toName: account.viaParent ? undefined : account.name || undefined, ...mail, from: 'support' });
           if (result?.status !== 'sent') {
-            // Left as failed: the next cron run within the 72 h window tries again; nothing on-site yet, so no duplicate.
-            await finalize(false, String(result?.status || 'send failed'));
+            const attempt = attempts + 1;
+            const reason = String(result?.status || 'send failed');
+            if (attempt < MAX_EMAIL_ATTEMPTS) {
+              // Retried in an hour; nothing on-site yet, so the retry cannot duplicate it.
+              await finalize(false, `attempt ${attempt}: ${reason}`);
+              continue;
+            }
+            // Last try: the email will not go out, but the family still gets the on-site notice.
+            if (account.userId) await notify(client, { userId: account.userId }, notice);
+            await finalize(false, `attempt ${attempt} (final, on-site only): ${reason}`);
             continue;
           }
         }

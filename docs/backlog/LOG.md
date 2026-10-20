@@ -4,6 +4,13 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### RN-05 Trial → first paid lesson follow-up (2026-10-20)
+- Result: done (main, after `/code-review`)
+- Changed: new `server/notifications/trialFollowUp.ts`, run by the reminder cron in production only (`api/index.ts`); `test/rn-05-trial-follow-up.test.ts`
+- How: 24 h after an attended (`completed`) free trial, one email + on-site notice to the account that owns the learner (parent for a child): thanks, the teacher's family summary if any, the placement level if taken (admin level first), and "book a single lesson or choose a package" (link /student/book). Once per learner: `notification_events` key `trial_followup:<student id>`. Skipped if the learner already booked a paid lesson or bought a package after the trial. A teacher recording attendance late still triggers it (attendance recorded within 72 h, trial no older than 14 days). A failing email is tried 3 times an hour apart, then only the on-site notice goes out.
+- Migration: none
+- Checks: tsc pass, npm test 1082 pass / 0 fail (5 skipped), build pass. Review: 6 findings, 5 fixed (retry cap + gap, on-site notice after the last failure, no starving with limit, late-recorded trials, package buyers skipped).
+- Not checked / risks: runs only on the live cron, so the first real send is unobserved; check the health page and `notification_events` (`trial_follow_up`) after the first trials. Queries run one learner at a time (fine for current volume).
 ### RN-03 One-click renew the same package (2026-10-20)
 - Result: done (main, after `/code-review`)
 - Changed: `src/student/pages/StudentPackagesPage.tsx` ("Renew this package" on each real package card; selects the same catalogue item, lesson length and learner, highlights and scrolls to it; `?renew=<entitlementId>` does the same on load; a note if that package is no longer offered), `server/notifications/lowBalance.ts` (RN-02 notice links to `?renew=`), `test/rn-03-renew-package.test.ts`
