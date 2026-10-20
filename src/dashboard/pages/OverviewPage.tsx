@@ -20,6 +20,7 @@ import { dashboardFetch } from '../lib/dashboardApi';
 import { useT } from '../../lib/language';
 import { CompactCalendar, InboxCard, DASH_CARD } from '../components/DashboardCards';
 import { FollowUpsCard } from '../components/FollowUps';
+import { ActionItems } from '../components/ActionItems';
 
 export default function OverviewPage() {
   const { t } = useT();
@@ -97,6 +98,8 @@ export default function OverviewPage() {
           <span>{t('Refresh', 'تحديث')}</span>
         </button>
       </div>
+
+      <ActionItems />
 
       <FollowUpsCard />
 

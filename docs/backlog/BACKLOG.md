@@ -365,7 +365,7 @@ Principles every PR/RN task follows:
 ## AD: Super admin (beyond the CRM)
 
 ### AD-01 Admin overview that answers "what needs me today"
-- Priority P1 · Zone 🟢 · Size M · Status todo · Depends on CRM-04, OPS-02
+- Priority P1 · Zone 🟢 · Size M · Status done · Depends on CRM-04, OPS-02
 - Files: `src/dashboard/pages/OverviewPage.tsx`.
 - Do: lead with action items: follow-ups due, pay-later requests, refund requests, placement results to review, unread
   chats, system health warnings, lessons in the next 24 h without a Zoom link. Then the numbers.

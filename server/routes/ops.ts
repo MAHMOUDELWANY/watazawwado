@@ -177,6 +177,13 @@ export function registerOpsRoutes(app: express.Express, deps: OpsDeps) {
   app.get('/api/dashboard/health', verifyTeacherAuth, requireSuperAdmin, async (_req: any, res: any) => {
     const client = getClient();
     if (!client) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+    return res.json(await computeHealth(client, deps.placementBeforeBooking));
+  });
+}
+
+/** The health checks behind /dashboard/health; also counted on the admin overview (AD-01). */
+export async function computeHealth(client: Client, placementBeforeBooking: boolean) {
+  {
     const now = Date.now();
     const since24h = new Date(now - DAY).toISOString();
     const since30d = new Date(now - 30 * DAY).toISOString();
@@ -222,10 +229,10 @@ export function registerOpsRoutes(app: express.Express, deps: OpsDeps) {
       { key: 'app_errors_24h', status: countStatus(errors24h.count || 0, 1, 20), count: errors24h.count || 0 }
     ];
 
-    return res.json({
+    return {
       checkedAt: new Date(now).toISOString(),
-      placementBeforeBooking: deps.placementBeforeBooking,
+      placementBeforeBooking,
       checks
-    });
-  });
+    };
+  }
 }

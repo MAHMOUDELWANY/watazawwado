@@ -67,7 +67,7 @@ import { createIntakeToken, readIntakeToken } from '../server/intake/intakeToken
 import { registerCommunityRoutes, ensureTeacherThreads, PLACEMENT_BEFORE_BOOKING } from '../server/routes/community.js';
 import { registerCrmRoutes, createCrmTask } from '../server/routes/crm.js';
 import { findSubject, levelsFor } from '../src/components/onboarding/subjects.js';
-import { registerOpsRoutes, apiErrorMonitor, recordHeartbeat, HEARTBEAT_REMINDER_CRON, HEARTBEAT_STRIPE_WEBHOOK } from '../server/routes/ops.js';
+import { registerOpsRoutes, computeHealth, apiErrorMonitor, recordHeartbeat, HEARTBEAT_REMINDER_CRON, HEARTBEAT_STRIPE_WEBHOOK } from '../server/routes/ops.js';
 import { registerCurriculumRoutes } from '../server/routes/curriculum.js';
 import { registerProgressRoutes, validateFamilyNoteFields, canTeacherWriteForLesson } from '../server/routes/progress.js';
 import { announceNewStudent, type NewLearner } from '../server/onboarding/newStudent.js';
@@ -2422,6 +2422,48 @@ app.get('/api/dashboard/today', verifyTeacherAuth, async (req: any, res: any) =>
   } catch (err) {
     console.error('[Dashboard Error]', err);
     res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// AD-01: what needs the admin today, as counts with a link each. Same filters as the pages they open.
+app.get('/api/dashboard/admin/action-items', verifyTeacherAuth, requireSuperAdmin, async (_req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+    const now = DateTime.utc();
+    const endOfToday = DateTime.now().setZone('Africa/Cairo').endOf('day').toUTC().toISO();
+    const [tasks, payLater, refunds, placements, threads, noZoom, health] = await Promise.all([
+      supabase.from('crm_tasks').select('id', { count: 'exact', head: true }).is('done_at', null).lte('due_at', endOfToday),
+      supabase.from('bookings').select('id', { count: 'exact', head: true }).eq('status', 'pending').eq('payment_plan', 'pay_later'),
+      supabase.from('package_entitlements').select('id', { count: 'exact', head: true }).eq('status', 'active')
+        .eq('metadata->>source', 'cancellation_credit').not('metadata->>refund_requested_at', 'is', null),
+      supabase.from('placement_tests').select('id', { count: 'exact', head: true }).eq('status', 'submitted'),
+      supabase.from('chat_threads').select('last_message_at, staff_last_read_at, last_sender_role').eq('kind', 'support')
+        .not('last_message_at', 'is', null).gte('last_message_at', now.minus({ days: 30 }).toISO()).limit(500),
+      supabase.from('bookings').select('id', { count: 'exact', head: true }).in('status', ['confirmed', 'rescheduled'])
+        .gte('scheduled_start', now.toISO()).lte('scheduled_start', now.plus({ hours: 24 }).toISO())
+        .or('zoom_meeting_link.is.null,zoom_meeting_link.not.like.http*'),
+      computeHealth(supabase, PLACEMENT_BEFORE_BOOKING)
+    ]);
+    // Unread = the family wrote last and the admin hasn't opened it since (two columns, so compared here).
+    const unreadChats = (threads.data || []).filter((t: any) =>
+      !['teacher', 'admin'].includes(t.last_sender_role) && (!t.staff_last_read_at || t.staff_last_read_at < t.last_message_at)
+    ).length;
+    const healthWarnings = health.checks.filter((c: any) => c.status !== 'green').length;
+    return res.json({
+      items: [
+        { key: 'follow_ups', count: tasks.count || 0, link: '/dashboard' },
+        { key: 'pay_later', count: payLater.count || 0, link: '/dashboard/pay-later' },
+        { key: 'refunds', count: refunds.count || 0, link: '/dashboard/pay-later' },
+        { key: 'placements', count: placements.count || 0, link: '/dashboard/placement' },
+        { key: 'unread_chats', count: unreadChats, link: '/dashboard/messages' },
+        { key: 'health', count: healthWarnings, link: '/dashboard/health' },
+        { key: 'no_zoom_24h', count: noZoom.count || 0, link: '/dashboard/upcoming' }
+      ]
+    });
+  } catch (err) {
+    console.error('[Admin action items]', err);
+    return res.status(500).json({ error: 'Failed to load action items.' });
   }
 });
 

@@ -18,6 +18,12 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Checks: tsc pass; npm test 1111 pass / 7 fail / 5 skipped in the worktree, the 7 being CRLF checkout artefacts (same 4 files 22/22 pass after an LF re-checkout); build pass (9 pages prerendered); local static preview at 375px RTL (/safety, /pricing, homepage, first touch kept across pages); production: /safety 200 and in sitemap, /pricing copy live, `/_vercel/insights/script.js` 200, migration columns present.
 - Not checked / risks: Admin views (CRM timeline, leads source badge and filter) not opened in the browser (no admin login here). Accounts that finished onboarding before today have no source. Other pages still say "Islamic studies" (About, layout meta, privacy, terms, home SEO title); left for a copy pass, the terms need a version bump.
 
+### AD-01 Admin overview that answers "what needs me today" (2026-10-21)
+- Result: done (main)
+- Changed: `api/index.ts` (new `GET /api/dashboard/admin/action-items`, super admin only: follow-ups due by end of today, pay-later requests, refund requests, placement results waiting for review, unread support chats, health warnings, lessons in the next 24 h without a Zoom link; each with a count and a link, using the same filters as the page it opens), `server/routes/ops.ts` (health checks moved into `computeHealth()` so the health page and the overview share them), new `src/dashboard/components/ActionItems.tsx` (leads `OverviewPage.tsx`; only items with a count, or "Nothing needs you right now"), `test/ad-01-admin-action-items.test.ts`
+- Migration: none
+- Checks: tsc pass, npm test 1149 pass / 0 fail (5 skipped), build pass; route called against real data (3 placement results to review, 2 health warnings), health page unchanged after the refactor.
+- Not checked / risks: unread chats are compared in code over support threads active in the last 30 days (500 at most). Dashboard not opened in a browser (owner rule).
 ### TE-04 Teacher onboarding checklist (2026-10-21)
 - Result: done (main)
 - Changed: `api/index.ts` (new `GET /api/dashboard/onboarding-checklist`: agreement = current `TEACHER_AGREEMENT_VERSION` (admin exempt), hours = an active `availability` row, calendar = an active Google `calendar_connections` row, photo = `teacher_accounts.photo_url`, Zoom = a booking of this teacher with a real Zoom link), new `src/dashboard/components/TeacherChecklist.tsx` (on Today until everything is done; each item links to where it is done), `TodayPage.tsx`, `test/te-04-teacher-checklist.test.ts`
