@@ -5,11 +5,11 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 ## Done
 
 ### OPS-01..05 Launch operations: error capture, health page, cron heartbeat, runbook, placement reminder (2026-10-20)
-- Result: done on branch `feat/ops-launch`; waiting for the owner's OK to apply the migration (declined at the prompt), then merge to main.
+- Result: done (merged to main 2026-10-20)
 - Changed: `server/routes/ops.ts` (`POST /api/client-errors` rate limited 10/min/IP, `GET/DELETE /api/dashboard/app-errors`, `GET /api/dashboard/health`, API 5xx monitor, heartbeats), `api/index.ts` (wiring; heartbeat on each successful reminder-cron run and each signed Stripe webhook), `src/lib/errorReporter.ts` + `src/main.tsx` + `src/components/ErrorBoundary.tsx` (window errors, unhandled rejections, render errors), `src/dashboard/pages/HealthPage.tsx` + `DashboardApp.tsx` (`/dashboard/health`, super admin only, placement test mode banner), `src/types/database.ts`, `docs/launch-runbook.md`, `test/ops.test.ts`
-- Migration: `20261020000000_ops_monitoring.sql` (`app_errors` grouped by fingerprint, `record_app_error` RPC, `ops_heartbeats`), not applied yet.
+- Migration: `20261020000000_ops_monitoring.sql` (`app_errors` grouped by fingerprint, `record_app_error` RPC, `ops_heartbeats`), applied to production 2026-10-20 (verified: RPC write, read and heartbeat table work with the service key).
 - Checks: tsc pass, npm test 1056 pass / 0 fail (5 skipped), build pass. Errors are scrubbed (no query strings, emails or JWTs) and only the account id is kept.
-- Not checked / risks: the health page was not opened in a browser (needs a real admin session). Until the migration is applied, error capture and heartbeats only log a warning and the cron / Stripe rows show red/amber. The free uptime monitor needs a Vercel Firewall bypass rule for `/api/health` (runbook §2, owner step).
+- Not checked / risks: the health page was not opened in a browser (needs a real admin session). The free uptime monitor needs a Vercel Firewall bypass rule for `/api/health` (runbook §2, owner step).
 
 
 ### PR-07 Progress for parents: all children at a glance (2026-10-20)
