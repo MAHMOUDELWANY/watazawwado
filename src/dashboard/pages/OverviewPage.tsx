@@ -19,6 +19,7 @@ import { SuperAdminOverviewMetrics } from '../types';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { useT } from '../../lib/language';
 import { CompactCalendar, InboxCard, DASH_CARD } from '../components/DashboardCards';
+import { FollowUpsCard } from '../components/FollowUps';
 
 export default function OverviewPage() {
   const { t } = useT();
@@ -96,6 +97,8 @@ export default function OverviewPage() {
           <span>{t('Refresh', 'تحديث')}</span>
         </button>
       </div>
+
+      <FollowUpsCard />
 
       {/* Action Alerts / Attention Banners */}
       {(metrics.unassigned_students > 0 || metrics.students_needing_attention > 0 || metrics.pending_payments > 0) && (

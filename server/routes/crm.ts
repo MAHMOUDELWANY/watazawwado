@@ -122,9 +122,119 @@ export function normalizeTags(input: unknown): string[] | null {
   return out;
 }
 
+export type CrmTaskSource = 'manual' | 'trial_followup' | 'quiet_learner' | 'low_balance';
+
+/**
+ * CRM-04: creates a follow-up task; with a dedupeKey, at most one ever exists for it (automatic tasks).
+ * Never throws: a failed task must not fail the action that triggered it.
+ */
+export async function createCrmTask(
+  client: any,
+  t: { accountStudentId: string; title: string; dueAt: Date; source?: CrmTaskSource; createdBy?: string | null; dedupeKey?: string | null }
+): Promise<boolean> {
+  if (!client || !t.accountStudentId) return false;
+  try {
+    const row = {
+      account_student_id: t.accountStudentId,
+      title: t.title.slice(0, 300),
+      due_at: t.dueAt.toISOString(),
+      source: t.source || 'manual',
+      created_by: t.createdBy || null,
+      dedupe_key: t.dedupeKey || null
+    };
+    const { error } = t.dedupeKey
+      ? await client.from('crm_tasks').upsert(row, { onConflict: 'dedupe_key', ignoreDuplicates: true })
+      : await client.from('crm_tasks').insert(row);
+    if (error) console.warn('[CRM task] create failed:', error.message);
+    return !error;
+  } catch (err) {
+    console.warn('[CRM task] create failed:', err);
+    return false;
+  }
+}
+
 export function registerCrmRoutes(app: express.Express, deps: CrmDeps) {
   const { getClient, verifyTeacherAuth, requireSuperAdmin } = deps;
   const guard = [verifyTeacherAuth, requireSuperAdmin];
+
+  // ---- CRM-04 follow-up tasks
+  app.get('/api/dashboard/admin/crm/tasks', ...guard, async (_req: any, res: any) => {
+    const client = getClient();
+    if (!client) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+    const weekEnd = new Date(Date.now() + 8 * 24 * 3_600_000).toISOString();
+    const { data: tasks, error } = await client
+      .from('crm_tasks')
+      .select('id, account_student_id, title, due_at, source')
+      .is('done_at', null)
+      .lte('due_at', weekEnd)
+      .order('due_at', { ascending: true })
+      .limit(200);
+    if (error) return res.status(500).json({ error: 'Failed to load follow-ups.' });
+    const ids = [...new Set((tasks || []).map((t: any) => t.account_student_id))];
+    const [{ data: students }, { data: guardians }] = ids.length
+      ? await Promise.all([
+          client.from('students').select('id, name, whatsapp').in('id', ids),
+          client.from('guardians').select('student_id, parent_name, parent_whatsapp').in('student_id', ids)
+        ])
+      : [{ data: [] }, { data: [] }];
+    const byId = new Map<string, any>((students || []).map((s: any) => [s.id, s]));
+    const guardianOf = new Map<string, any>((guardians || []).map((g: any) => [g.student_id, g]));
+    return res.json({
+      tasks: (tasks || []).map((t: any) => {
+        const s = byId.get(t.account_student_id);
+        const g = guardianOf.get(t.account_student_id);
+        return { ...t, studentName: s?.name || null, contactName: g?.parent_name || s?.name || null, whatsapp: s?.whatsapp || g?.parent_whatsapp || null };
+      })
+    });
+  });
+
+  app.get('/api/dashboard/admin/students/:id/crm/tasks', ...guard, async (req: any, res: any) => {
+    const client = getClient();
+    if (!client) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+    if (!UUID_RE.test(String(req.params.id))) return res.status(400).json({ error: 'Invalid student id.' });
+    const { data, error } = await client
+      .from('crm_tasks')
+      .select('id, title, due_at, done_at, source')
+      .eq('account_student_id', req.params.id)
+      .order('done_at', { ascending: true, nullsFirst: true })
+      .order('due_at', { ascending: true })
+      .limit(100);
+    if (error) return res.status(500).json({ error: 'Failed to load follow-ups.' });
+    return res.json({ tasks: data || [] });
+  });
+
+  app.post('/api/dashboard/admin/students/:id/crm/tasks', ...guard, async (req: any, res: any) => {
+    const client = getClient();
+    if (!client) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+    if (!UUID_RE.test(String(req.params.id))) return res.status(400).json({ error: 'Invalid student id.' });
+    const title = typeof req.body?.title === 'string' ? req.body.title.trim() : '';
+    const due = new Date(String(req.body?.dueAt || ''));
+    if (!title || title.length > 300) return res.status(400).json({ error: 'Write a title of 1 to 300 characters.' });
+    if (Number.isNaN(due.getTime())) return res.status(400).json({ error: 'Choose a due date.' });
+    const { data, error } = await client
+      .from('crm_tasks')
+      .insert({ account_student_id: req.params.id, title, due_at: due.toISOString(), source: 'manual', created_by: req.teacherUser?.id || null })
+      .select('id, title, due_at, done_at, source')
+      .single();
+    if (error) return res.status(error.code === '23503' ? 404 : 500).json({ error: error.code === '23503' ? 'Student not found.' : 'Failed to save the follow-up.' });
+    return res.status(201).json({ task: data });
+  });
+
+  app.patch('/api/dashboard/admin/crm/tasks/:taskId', ...guard, async (req: any, res: any) => {
+    const client = getClient();
+    if (!client) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+    if (!UUID_RE.test(String(req.params.taskId))) return res.status(400).json({ error: 'Invalid task id.' });
+    if (typeof req.body?.done !== 'boolean') return res.status(400).json({ error: 'Send done: true or false.' });
+    const { data, error } = await client
+      .from('crm_tasks')
+      .update({ done_at: req.body.done ? new Date().toISOString() : null })
+      .eq('id', req.params.taskId)
+      .select('id, done_at')
+      .maybeSingle();
+    if (error) return res.status(500).json({ error: 'Failed to update the follow-up.' });
+    if (!data) return res.status(404).json({ error: 'Follow-up not found.' });
+    return res.json({ task: data });
+  });
 
   // ---- CRM-03 notes and tags (super admin only; never shown to families or teachers)
   app.get('/api/dashboard/admin/students/:id/crm', ...guard, async (req: any, res: any) => {

@@ -196,7 +196,7 @@ Principles every PR/RN task follows:
   Suggested tags: "sibling likely", "prefers female teacher", "time zone tricky", "pay-later trusted". Admin only (RLS).
 
 ### CRM-04 Follow-up tasks with due dates
-- Priority P1 · Zone 🟢 (additive) · Size M · Status todo · Depends on CRM-03
+- Priority P1 · Zone 🟢 (additive) · Size M · Status done · Depends on CRM-03
 - Do: table `crm_tasks` (account, title, due_at, done_at, created_by, source [manual, trial_followup, quiet_learner,
   low_balance]). "My follow-ups" list on the admin overview: overdue, today, this week. One-tap WhatsApp prefill
   (greeting from the Watazawwado team) and "mark done". Auto-create a task after every attended trial.

@@ -4,6 +4,12 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### CRM-04 Follow-up tasks with due dates (2026-10-20)
+- Result: done (main)
+- Changed: migration `20261020000002_crm_tasks.sql` (`crm_tasks` with `source` and a unique `dedupe_key`; RLS on, service_role only), `server/routes/crm.ts` (`createCrmTask`; `GET /api/dashboard/admin/crm/tasks` with name + WhatsApp, `GET/POST /api/dashboard/admin/students/:id/crm/tasks`, `PATCH /api/dashboard/admin/crm/tasks/:id`), `api/index.ts` (every attended free trial creates one task for the next day, key `trial:<booking id>`), new `src/dashboard/components/FollowUps.tsx` ("My follow-ups" card on the admin overview: overdue / today / this week in the admin's time zone, WhatsApp prefill from the academy team, Done; add form on the student page inside the admin notes panel), `src/dashboard/pages/OverviewPage.tsx`, `src/dashboard/components/CrmNotesPanel.tsx`, `test/crm-04-follow-up-tasks.test.ts`
+- Migration: applied to production 2026-10-20.
+- Checks: tsc pass, npm test 1095 pass / 0 fail (5 skipped), build pass; round trip on one real student (automatic task is created once per key, listed with the name, manual task 201, mark done removes it from the list), nothing left behind.
+- Not checked / risks: `quiet_learner` and `low_balance` sources exist for RN-06 and later; RN-02 does not create tasks yet. Not opened in the browser (no dev login for the dashboard UI).
 ### CRM-03 Admin notes and tags per family (2026-10-20)
 - Result: done (main)
 - Changed: migration `20261020000001_crm_notes_tags.sql` (`crm_notes`, `crm_tags`; RLS on, service_role only), `server/routes/crm.ts` (`GET /api/dashboard/admin/students/:id/crm`, `POST/DELETE .../crm/notes`, `PUT .../crm/tags`, super admin only; `normalizeTags`), new `src/dashboard/components/CrmNotesPanel.tsx` on `StudentDetailPage.tsx` (admin only: tag chips with the four suggested tags in Arabic/English, free tags, notes with delete), `src/types/database.ts`, `test/crm-03-notes-tags.test.ts`

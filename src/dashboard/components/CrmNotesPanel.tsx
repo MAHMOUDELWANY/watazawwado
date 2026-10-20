@@ -6,6 +6,7 @@ import { useT } from '../../lib/language';
 import { Button } from '../../components/ui/Button';
 import { Textarea } from '../../components/ui/Textarea';
 import { Input } from '../../components/ui/Input';
+import { StudentFollowUps } from './FollowUps';
 
 interface CrmNote { id: string; body: string; created_at: string }
 
@@ -95,6 +96,8 @@ export function CrmNotesPanel({ studentId }: { studentId: string }) {
           <Button type="submit" variant="outline" size="sm" disabled={busy || !newTag.trim()}>{t('Add', 'إضافة')}</Button>
         </form>
       </div>
+
+      <StudentFollowUps studentId={studentId} />
 
       <div className="space-y-2">
         <Textarea value={draft} onChange={(e) => setDraft(e.target.value)} maxLength={4000} rows={3} placeholder={t('Write a note about this family…', 'اكتب ملاحظة عن الأسرة دي…')} aria-label={t('New note', 'ملاحظة جديدة')} />

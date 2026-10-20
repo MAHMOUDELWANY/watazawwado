@@ -65,7 +65,7 @@ import {
 } from '../server/intake/intakeService.js';
 import { createIntakeToken, readIntakeToken } from '../server/intake/intakeToken.js';
 import { registerCommunityRoutes, ensureTeacherThreads, PLACEMENT_BEFORE_BOOKING } from '../server/routes/community.js';
-import { registerCrmRoutes } from '../server/routes/crm.js';
+import { registerCrmRoutes, createCrmTask } from '../server/routes/crm.js';
 import { registerOpsRoutes, apiErrorMonitor, recordHeartbeat, HEARTBEAT_REMINDER_CRON, HEARTBEAT_STRIPE_WEBHOOK } from '../server/routes/ops.js';
 import { registerCurriculumRoutes } from '../server/routes/curriculum.js';
 import { registerProgressRoutes, validateFamilyNoteFields, canTeacherWriteForLesson } from '../server/routes/progress.js';
@@ -4430,6 +4430,17 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
                            rpcErr.code === 'P0003' ? 403 :
                            400;
         return res.status(statusCode).json({ error: rpcErr.message || `Failed to record lesson outcome: ${status}` });
+      }
+
+      // CRM-04: every attended free trial gets one admin follow-up for the next day.
+      if (status === 'completed' && existingBooking.booking_type === 'trial' && existingBooking.student_id) {
+        waitUntil(createCrmTask(supabase, {
+          accountStudentId: existingBooking.student_id,
+          title: `Follow up after the free trial (${existingBooking.reference_code}) · متابعة بعد الحصة التجريبية`,
+          dueAt: new Date(Date.now() + 24 * 3_600_000),
+          source: 'trial_followup',
+          dedupeKey: `trial:${existingBooking.id}`
+        }));
       }
 
       // RN-02: only when a credit was actually used (a no-show with the credit returned changes nothing).
