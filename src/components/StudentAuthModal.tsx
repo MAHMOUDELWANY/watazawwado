@@ -226,7 +226,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                   type="button"
                   onClick={onClose}
                   aria-label={isAr ? 'إغلاق' : 'Close'}
-                  className={`w-9 h-9 flex items-center justify-center rounded-full text-white bg-white/10 hover:bg-white/20 border border-white/25 transition-colors cursor-pointer focus-ring ${isSignup ? 'lg:text-foreground lg:bg-surface-subtle lg:border-border' : ''}`}
+                  className={`w-11 h-11 flex items-center justify-center rounded-full text-white bg-white/10 hover:bg-white/20 border border-white/25 transition-colors cursor-pointer focus-ring ${isSignup ? 'lg:text-foreground lg:bg-surface-subtle lg:border-border' : ''}`}
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -239,7 +239,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                   type="button"
                   onClick={onClose}
                   aria-label={isAr ? 'إغلاق' : 'Close'}
-                  className="absolute top-4 end-4 z-20 w-9 h-9 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-subtle cursor-pointer focus-ring"
+                  className="absolute top-4 end-4 z-20 w-11 h-11 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-subtle cursor-pointer focus-ring"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -427,14 +427,14 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                               autoComplete={view === 'login' ? 'current-password' : 'new-password'}
                               value={password}
                               onChange={(e) => setPassword(e.target.value)}
-                              className="auth-field pe-11"
+                              className="auth-field pe-14"
                               placeholder="••••••••"
                             />
                             <button
                               type="button"
                               onClick={() => setShowPassword(!showPassword)}
                               aria-label={showPassword ? (isAr ? 'إخفاء كلمة السر' : 'Hide password') : (isAr ? 'إظهار كلمة السر' : 'Show password')}
-                              className="absolute end-1.5 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors cursor-pointer rounded-lg focus-ring"
+                              className="absolute end-1 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors cursor-pointer rounded-lg focus-ring"
                             >
                               {showPassword ? <EyeOff className="w-4 h-4 text-[var(--teal)]" /> : <Eye className="w-4 h-4" />}
                             </button>

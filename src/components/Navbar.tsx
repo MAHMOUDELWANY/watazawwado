@@ -141,7 +141,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               id="lang-switch-btn"
               data-tour="lang-switch-btn"
               aria-label={isEn ? 'التبديل إلى العربية' : 'Switch to English'}
-              className="flex items-center gap-1 sm:gap-1.5 px-2 py-1.5 sm:px-2.5 rounded-xl text-xs sm:text-sm font-semibold text-foreground hover:bg-surface-subtle border border-border/80 transition-colors cursor-pointer shadow-2xs shrink-0"
+              className="flex items-center justify-center gap-1 sm:gap-1.5 min-h-11 px-2 py-1.5 sm:px-2.5 rounded-xl text-xs sm:text-sm font-semibold text-foreground hover:bg-surface-subtle border border-border/80 transition-colors cursor-pointer shadow-2xs shrink-0"
             >
               <Globe className="w-3.5 h-3.5 text-accent transition-colors shrink-0" />
               <span>{isEn ? 'عربي' : 'EN'}</span>
@@ -155,7 +155,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               data-tour="mobile-menu-toggle"
               aria-label={isEn ? 'Open the menu' : 'افتح القائمة'}
               aria-expanded={sideDrawerOpen}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-surface hover:bg-surface-subtle text-foreground border border-border/80 shadow-2xs active:scale-95 transition-all cursor-pointer touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary shrink-0"
+              className="flex items-center justify-center gap-1.5 min-h-11 min-w-11 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-surface hover:bg-surface-subtle text-foreground border border-border/80 shadow-2xs active:scale-95 transition-all cursor-pointer touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary shrink-0"
             >
               <Menu className="w-5 h-5 text-foreground shrink-0" />
               <span className="hidden md:inline text-xs sm:text-sm font-bold">

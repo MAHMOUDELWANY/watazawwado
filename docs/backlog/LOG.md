@@ -4,6 +4,15 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### PU-02 Conversion audit of the trial path (2026-10-21)
+- Result: done (main). Walked home → trial CTA → "your first lesson is on us" sheet → sign-up form at 375×812 in the local preview; onboarding (signed in) reviewed from code per the owner rule (no browser sign-in).
+- Found and fixed: header theme, language and menu buttons were 32–41 px tall (now 44 px, `ThemeToggle.tsx`, `Navbar.tsx`, no horizontal overflow at 375 px); sign-up sheet close/back and show-password buttons were 36 px (now 44 px, password field padding widened, `StudentAuthModal.tsx`); onboarding errors render above the form, out of view on a phone after tapping Continue at the bottom, so they now scroll into view and are announced (`role="alert"`, `StudentOnboardingPage.tsx`).
+- Kept as is: the funnel copy is already short and honest (30 min free, no card, choose a male or female teacher); sign-up asks name, email, password and an 18+ tick (family: guardian age), and onboarding pre-fills the name and the guardian age from sign-up, so nothing is asked twice; "How did you hear about us" is optional; the age tick's whole row is the tap target.
+- Screenshots: before, header buttons 32×32 / 53×33 / 41×32 and sheet buttons 36×36 (measured in the preview); after, 44×44 / 53×44 / 44×44 and 44×44. Images were taken in the session, not saved to the repo.
+- Migration: none
+- Checks: tsc pass; npm test 1149 pass / 0 fail / 5 skipped; build pass.
+- Not checked / risks: onboarding steps 2–3 and the trial booking itself were not clicked through (signed-in); footer legal links stay 20 px tall (low traffic, left for QA-04).
+
 ### MK-02 Retired "Islamic studies" removed from public copy (2026-10-20)
 - Result: done (main). Follow-up to MK-01; catalog per RULES.md §2b.
 - Changed: `AboutPage.tsx` (intro and both teacher cards name the Zad Path; "strong English" with no level or certificate, owner's answer on the Notion review page §9), `PublicLayout.tsx` meta description, `src/data/seo.ts` (home title/description/h1, /learning description now lists the current catalog), `PrivacyPolicyPage.tsx` intro, `TermsPage.tsx` (agreement intro and prices: $9 = Quran, Tajweed and the Zad Path; $13 = Fusha, Egyptian Arabic and English) with `TERMS_VERSION` 2026-10-15.3 → 2026-10-20.1 in `api/index.ts` and the page label, `StepLessonType.tsx` 60-minute note, student portal `StudentPackagesPage.tsx` package band labels and `StudentProfilePage.tsx` plan line, `/learning` search placeholder (Fiqh → Seerah, Fusha), `index.html` (title, meta, Open Graph, Twitter, JSON-LD), `public/site.webmanifest`, AI chat facts `server/siteFacts.ts` ($9/$13 bands) and the homepage guide and Jalila prompts, new `test/retired-subject-copy.test.ts`.

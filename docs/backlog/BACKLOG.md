@@ -390,7 +390,7 @@ Principles every PR/RN task follows:
   labelled as an example (no fake names or fake results presented as real).
 
 ### PU-02 Conversion audit of the trial path
-- Priority P1 · Zone 🟢 · Size M · Status todo
+- Priority P1 · Zone 🟢 · Size M · Status done
 - Do: run `cro` + `signup` on home → get started → sign-up → onboarding → trial booked. Fix friction (copy, order,
   number of fields, mobile tap targets). Record before/after screenshots in the log.
 

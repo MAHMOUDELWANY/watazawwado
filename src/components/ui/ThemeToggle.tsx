@@ -33,7 +33,7 @@ export function ThemeToggle({ className = '', compact = false }: { className?: s
         onClick={toggleTheme}
         className={`
           relative inline-flex items-center justify-center
-          w-8 h-8 rounded-xl
+          w-11 h-11 rounded-xl
           bg-surface hover:bg-surface-subtle
           border border-border/80 text-foreground
           shadow-2xs active:scale-95

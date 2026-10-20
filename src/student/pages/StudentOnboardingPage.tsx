@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   BookOpen, 
@@ -233,6 +233,11 @@ export default function StudentOnboardingPage({
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // The error sits above the form; on a phone the Continue button is far below it, so bring it into view.
+  const errorRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (error) errorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [error]);
   // Family accounts: only one child's ticket is open at a time; finished ones fold into a pass.
   const childComplete = (c: ChildOnboardingForm) => c.name.trim().length >= 2 && isChildAge(c.age);
   const childAgeMessage = (index: number) => isRTL
@@ -568,7 +573,7 @@ export default function StudentOnboardingPage({
       </div>
 
       {error && (
-        <div className="mb-6 p-4 rounded-2xl bg-destructive/10 border border-destructive/30 text-destructive text-sm leading-relaxed">
+        <div ref={errorRef} role="alert" className="mb-6 p-4 rounded-2xl bg-destructive/10 border border-destructive/30 text-destructive text-sm leading-relaxed">
           {error}
         </div>
       )}
