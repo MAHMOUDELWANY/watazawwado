@@ -11,6 +11,12 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Checks: tsc pass; npm test 1111 pass / 7 fail / 5 skipped in the worktree, the 7 being CRLF checkout artefacts (same 4 files 22/22 pass after an LF re-checkout); build pass (9 pages prerendered); local static preview at 375px RTL (/safety, /pricing, homepage, first touch kept across pages); production: /safety 200 and in sitemap, /pricing copy live, `/_vercel/insights/script.js` 200, migration columns present.
 - Not checked / risks: Admin views (CRM timeline, leads source badge and filter) not opened in the browser (no admin login here). Accounts that finished onboarding before today have no source. Other pages still say "Islamic studies" (About, layout meta, privacy, terms, home SEO title); left for a copy pass, the terms need a version bump.
 
+### ST-04 Empty, loading and error states across the portal (2026-10-20)
+- Result: done (main)
+- Audit (from the code, 11 data pages): all had a loading state; home, lessons, progress, packages, payments, notifications and booking already had an error with retry and empty states with a next step.
+- Fixed: new shared `src/components/ErrorState.tsx` (plain message + "Try again", pairs with `EmptyState`). Curriculum and its lesson view (red text, no retry), placement report (red text), placement test (a failed load showed an empty page), profile (a failed load showed an empty form under a banner) and offers (error without retry; empty state now `EmptyState` with "Talk to the guide") now use it. Files: those pages + `test/st-04-portal-states.test.ts`
+- Migration: none
+- Checks: tsc pass, npm test 1125 pass / 0 fail (5 skipped), build pass. Not opened in a browser (signed-in pages; verified from code by owner rule).
 ### ST-03 Booking flow polish (2026-10-20)
 - Result: done (main), presentation only, no booking rule touched
 - Audit (from the code): step header, availability skeleton + retry, time zone on every time (date step banner, summary, confirmation) and the saved draft were already in place.

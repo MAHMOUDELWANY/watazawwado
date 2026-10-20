@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Loader2, CheckCircle2, Clock, Sparkles, Info, ArrowRight } from 'lucide-react';
 import { analyticsRepository } from '../../lib/analyticsRepository';
+import { EmptyState } from '../../components/EmptyState';
+import { ErrorState } from '../../components/ErrorState';
 
 /**
  * ====================================================================
@@ -131,16 +133,21 @@ export default function StudentOffersPage({ session, lang = 'en' }: StudentOffer
           : 'Offers reviewed and approved by our team.'}
       </p>
 
-      {error && (
-        <div className="flex items-center gap-2 text-sm text-warning bg-warning/10 rounded-lg p-3 mb-4">
-          <Info className="w-4 h-4" /> {error}
-        </div>
-      )}
+      {error && <ErrorState isAr={isAr} message={error} onRetry={load} />}
 
       {offers.length === 0 && !error && (
-        <div className="glass-card border-none rounded-xl p-8 text-center text-muted-foreground">
-          {isAr ? 'لسه مفيش عروض جاهزة.' : 'No offers yet.'}
-        </div>
+        <EmptyState
+          icon={Info}
+          title={isAr ? 'لسه مفيش عروض جاهزة' : 'No offers yet'}
+          description={isAr
+            ? 'احكي للمرشد عن اللي عايز تتعلمه، وفريقنا هيجهزلك عرض يناسبك.'
+            : 'Tell our guide what you want to learn, and our team will prepare an offer for you.'}
+          action={
+            <Link to="/student/guide" className="inline-flex items-center px-4 py-2 rounded-xl btn-primary-material text-primary-foreground text-sm font-semibold">
+              {isAr ? 'كلّم المرشد' : 'Talk to the guide'}
+            </Link>
+          }
+        />
       )}
 
       <div className="space-y-4">

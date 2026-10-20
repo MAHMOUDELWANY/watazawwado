@@ -5,6 +5,7 @@ import { authedJson } from '../../lib/authedJson';
 import { BrandLogo } from '../../components/ui/BrandLogo';
 import { Button } from '../../components/ui/Button';
 import { BrandSpinner } from '../../components/ui/BrandLoader';
+import { ErrorState } from '../../components/ErrorState';
 import { BOOKING_SERVICES } from '../../booking/mockData';
 
 /**
@@ -40,14 +41,16 @@ export default function StudentPlacementReportPage({ lang }: { lang: 'ar' | 'en'
   const { id } = useParams();
   const [report, setReport] = useState<Report | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
+    setError(null);
     authedJson<{ report: Report }>(`/api/placement/${id}/report`)
       .then((d) => setReport(d.report))
       .catch((err) => setError(err.message));
-  }, [id]);
+  }, [id, attempt]);
 
-  if (error) return <p role="alert" className="text-center text-sm text-destructive py-12">{error}</p>;
+  if (error) return <ErrorState isAr={isAr} message={error} onRetry={() => setAttempt((n) => n + 1)} />;
   if (!report) return <div className="py-16 flex justify-center"><BrandSpinner size={28} /></div>;
 
   const service = BOOKING_SERVICES.find((s) => s.id === report.serviceId);

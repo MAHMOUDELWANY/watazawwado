@@ -309,7 +309,7 @@ Principles every PR/RN task follows:
   (red zone); only presentation.
 
 ### ST-04 Empty, loading and error states across the portal
-- Priority P1 · Zone 🟢 · Size M · Status todo
+- Priority P1 · Zone 🟢 · Size M · Status done
 - Do: every portal page gets a designed loading skeleton, an empty state with one next action, and an error state with
   retry. Use `src/components/EmptyState.tsx`.
 

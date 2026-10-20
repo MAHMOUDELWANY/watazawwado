@@ -6,6 +6,7 @@ import { authedJson } from '../../lib/authedJson';
 import { Button } from '../../components/ui/Button';
 import { Card, CardContent } from '../../components/ui/Card';
 import { BrandSpinner } from '../../components/ui/BrandLoader';
+import { ErrorState } from '../../components/ErrorState';
 import { BOOKING_SERVICES } from '../../booking/mockData';
 import { Select } from '../../components/ui/Select';
 import { SUBJECT_FAMILIES } from '../../components/onboarding/subjects';
@@ -35,7 +36,10 @@ export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
   const [trySubject, setTrySubject] = useState('');
   const [tryLevel, setTryLevel] = useState('');
 
+  // ST-04: a failed first load is an error with retry, not an empty page.
+  const [loadFailed, setLoadFailed] = useState(false);
   const load = useCallback(async () => {
+    setLoadFailed(false);
     try {
       const d = await authedJson<{ learners: LearnerState[]; testMode?: boolean }>('/api/placement/mine');
       setLearners(d.learners);
@@ -43,6 +47,7 @@ export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
       setLearnerId((cur) => cur || d.learners.find((l) => l.status === 'take_now' || l.status === 'in_progress')?.id || d.learners[0]?.id || '');
     } catch (err: any) {
       setError(err.message);
+      setLoadFailed(true);
       setLearners([]);
     }
   }, []);
@@ -91,6 +96,10 @@ export default function StudentPlacementPage({ lang }: { lang: 'ar' | 'en' }) {
 
   if (learners === null) {
     return <div className="py-16 flex justify-center"><BrandSpinner size={28} /></div>;
+  }
+
+  if (loadFailed) {
+    return <ErrorState isAr={isAr} message={error} onRetry={() => { setError(null); setLearners(null); load(); }} />;
   }
 
   if (test) {

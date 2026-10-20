@@ -30,6 +30,7 @@ import { BrandFrame } from '../../components/ui/BrandFrame';
 import { CountryTimezonePicker } from '../../components/ui/CountryTimezonePicker';
 import { setActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { AddChildForm } from '../components/AddChildForm';
+import { ErrorState } from '../../components/ErrorState';
 
 export interface StudentProfilePageProps {
   profile?: any;
@@ -315,6 +316,11 @@ export default function StudentProfilePage({
         subtext={isAr ? 'نستحضر معلومات الحساب والتفضيلات الشخصية' : 'Retrieving your account details and learning preferences'}
       />
     );
+  }
+
+  // ST-04: the profile never loaded: an error with retry instead of an empty form.
+  if (error && !profile) {
+    return <ErrorState isAr={isAr} message={error} onRetry={fetchProfile} />;
   }
 
   return (

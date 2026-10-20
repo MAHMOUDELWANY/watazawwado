@@ -4,6 +4,7 @@ import { ArrowLeft, Lock, CalendarPlus, Sparkles } from 'lucide-react';
 import { authedJson } from '../../lib/authedJson';
 import { BrandSpinner } from '../../components/ui/BrandLoader';
 import { Button } from '../../components/ui/Button';
+import { ErrorState } from '../../components/ErrorState';
 import { StudentMap, type MapSubject } from '../../curriculum/StudentMap';
 import { LessonPlayer } from '../../curriculum/LessonPlayer';
 import { SUBJECTS, findLesson, sampleLesson } from '../../curriculum/catalog';
@@ -16,19 +17,21 @@ interface CurriculumData {
 function useCurriculum() {
   const [data, setData] = useState<CurriculumData | null>(null);
   const [error, setError] = useState('');
+  const [attempt, setAttempt] = useState(0);
   useEffect(() => {
+    setError('');
     authedJson<CurriculumData>('/api/student/curriculum').then(setData).catch((e) => setError(e?.message || 'Error'));
-  }, []);
-  return { data, error };
+  }, [attempt]);
+  return { data, error, retry: () => setAttempt((n) => n + 1) };
 }
 
 /** My curriculum: the puzzle per learner. Locked until the family has a booking (PLAN §4.2). */
 export default function StudentCurriculumPage({ lang }: { lang: 'ar' | 'en' }) {
   const ar = lang === 'ar';
   const L = (en: string, arText: string) => (ar ? arText : en);
-  const { data, error } = useCurriculum();
+  const { data, error, retry } = useCurriculum();
 
-  if (error) return <p className="text-sm text-crimson" role="alert">{error}</p>;
+  if (error) return <ErrorState isAr={ar} message={L("Couldn't load your curriculum.", 'تعذر تحميل منهجك.')} onRetry={retry} />;
   if (!data) return <div className="flex justify-center py-16"><BrandSpinner size={28} /></div>;
 
   if (!data.booked) {
@@ -122,7 +125,7 @@ export function StudentCurriculumLessonPage({ lang }: { lang: 'ar' | 'en' }) {
   const { learner, subject, number } = useParams();
   const ar = lang === 'ar';
   const L = (en: string, arText: string) => (ar ? arText : en);
-  const { data, error } = useCurriculum();
+  const { data, error, retry } = useCurriculum();
   const lesson = findLesson(subject, Number(number));
 
   const covered = useMemo(() => {
@@ -130,7 +133,7 @@ export function StudentCurriculumLessonPage({ lang }: { lang: 'ar' | 'en' }) {
     return map?.lessons.find((l) => l.number === Number(number))?.coveredPages || [];
   }, [data, learner, subject, number]);
 
-  if (error) return <p className="text-sm text-crimson" role="alert">{error}</p>;
+  if (error) return <ErrorState isAr={ar} message={L("Couldn't load this lesson.", 'تعذر تحميل الدرس ده.')} onRetry={retry} />;
   if (!data) return <div className="flex justify-center py-16"><BrandSpinner size={28} /></div>;
   if (!data.booked || !lesson || !lesson.reviewed || covered.length === 0) return <Navigate to="/student/curriculum" replace />;
 
