@@ -29,6 +29,7 @@ import { StudentPageBack } from '../components/StudentPageBack';
 import { BrandFrame } from '../../components/ui/BrandFrame';
 import { CountryTimezonePicker } from '../../components/ui/CountryTimezonePicker';
 import { setActiveWorkingTimezone } from '../../lib/countryTimezones';
+import { AddChildForm } from '../components/AddChildForm';
 
 export interface StudentProfilePageProps {
   profile?: any;
@@ -713,6 +714,11 @@ export default function StudentProfilePage({
                     </div>
                   </div>
                 )}
+              </div>
+
+              {/* PA-02: add another child after onboarding (any adult account holder). */}
+              <div className="pt-4 border-t border-border">
+                <AddChildForm isAr={isAr} onAdded={fetchProfile} />
               </div>
 
               {/* Linked Children (if guardian) */}
