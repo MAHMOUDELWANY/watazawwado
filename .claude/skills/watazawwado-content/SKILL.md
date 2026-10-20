@@ -65,7 +65,8 @@ cut it.
    page in the Notion Content Calendar, where the owner reviews and films from it (owner, 2026-10-19). Directions to
    the owner in Arabic, spoken lines in the video's language. Images and exports go in the week's Drive folder.
    A week's overview (filming day, posting times, stories, reply templates) is its own page under the hub.
-4. Move the item's Status in the Notion calendar (Idea → Scripted …) and put the deliverable path in its Notes. Add a
+4. Move the item's Status in the Notion calendar to **Review** (the owner reads it in the Steps tab of the hub page
+   "Script & Record Videos"; after approval it becomes Scripted → Filmed → Edited → Scheduled → Published) and put the deliverable path in its Notes. Add a
    line to `LOG.md`; mark used ideas in `IDEAS.md`; update `PLAN.md` §1 and §9 (starting point, open items) if they
    changed.
 5. Tell the owner, in Arabic, what is ready and what they need to do (film, record, approve), shortest first.
