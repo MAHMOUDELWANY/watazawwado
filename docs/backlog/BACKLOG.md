@@ -351,7 +351,7 @@ Principles every PR/RN task follows:
   London sees 4–6 pm"). Same data shape; the availability engine is not touched.
 
 ### TE-04 Teacher onboarding checklist
-- Priority P1 · Zone 🟢 · Size S · Status todo
+- Priority P1 · Zone 🟢 · Size S · Status done
 - Do: a first-week checklist on the dashboard: accept agreement, set hours, connect Google Calendar, add photo and bio,
   test Zoom host link. Each item links to where it is done and ticks itself from real data.
 

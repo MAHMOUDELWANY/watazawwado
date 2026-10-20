@@ -18,6 +18,12 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Checks: tsc pass; npm test 1111 pass / 7 fail / 5 skipped in the worktree, the 7 being CRLF checkout artefacts (same 4 files 22/22 pass after an LF re-checkout); build pass (9 pages prerendered); local static preview at 375px RTL (/safety, /pricing, homepage, first touch kept across pages); production: /safety 200 and in sitemap, /pricing copy live, `/_vercel/insights/script.js` 200, migration columns present.
 - Not checked / risks: Admin views (CRM timeline, leads source badge and filter) not opened in the browser (no admin login here). Accounts that finished onboarding before today have no source. Other pages still say "Islamic studies" (About, layout meta, privacy, terms, home SEO title); left for a copy pass, the terms need a version bump.
 
+### TE-04 Teacher onboarding checklist (2026-10-21)
+- Result: done (main)
+- Changed: `api/index.ts` (new `GET /api/dashboard/onboarding-checklist`: agreement = current `TEACHER_AGREEMENT_VERSION` (admin exempt), hours = an active `availability` row, calendar = an active Google `calendar_connections` row, photo = `teacher_accounts.photo_url`, Zoom = a booking of this teacher with a real Zoom link), new `src/dashboard/components/TeacherChecklist.tsx` (on Today until everything is done; each item links to where it is done), `TodayPage.tsx`, `test/te-04-teacher-checklist.test.ts`
+- Migration: none
+- Checks: tsc pass, npm test 1146 pass / 0 fail (5 skipped), build pass; route called with the teacher token against real data.
+- Not checked / risks: there is no per-teacher bio field (the `bio` setting is global), so the item is "photo and card"; teachers can't upload a photo themselves, the item points them to Messages to send it to the admin. "Zoom tested" is inferred from a lesson having a Zoom link, not from a click. Dashboard not opened in a browser (owner rule).
 ### TE-02 Student card for teachers (2026-10-20)
 - Result: done (main)
 - Already there: goals from onboarding, milestones, lesson history and notes on `StudentDetailPage.tsx`.

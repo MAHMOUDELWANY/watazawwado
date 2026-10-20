@@ -2425,6 +2425,34 @@ app.get('/api/dashboard/today', verifyTeacherAuth, async (req: any, res: any) =>
   }
 });
 
+// TE-04: a new teacher's first-week checklist; every item ticks itself from real data.
+app.get('/api/dashboard/onboarding-checklist', verifyTeacherAuth, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+    const teacherId = req.teacherUser?.id;
+    const email = String(req.teacherUser?.email || '').toLowerCase();
+    const [account, hours, calendar, zoom] = await Promise.all([
+      supabase.from('teacher_accounts').select('agreement_version, photo_url').eq('email', email).maybeSingle(),
+      supabase.from('availability').select('id', { count: 'exact', head: true }).eq('teacher_id', teacherId).eq('is_active', true),
+      supabase.from('calendar_connections').select('id', { count: 'exact', head: true }).eq('teacher_id', teacherId).eq('provider', 'google_calendar').eq('is_active', true),
+      supabase.from('bookings').select('id', { count: 'exact', head: true }).eq('teacher_id', teacherId).like('zoom_meeting_link', 'http%')
+    ]);
+    const isAdmin = req.teacherUser?.role === 'super_admin';
+    const items = [
+      { key: 'agreement', done: isAdmin || account.data?.agreement_version === TEACHER_AGREEMENT_VERSION, link: '/staff/agreement' },
+      { key: 'hours', done: (hours.count || 0) > 0, link: '/dashboard/availability' },
+      { key: 'calendar', done: (calendar.count || 0) > 0, link: '/dashboard/settings' },
+      { key: 'photo', done: Boolean(account.data?.photo_url), link: '/dashboard/messages' },
+      { key: 'zoom', done: (zoom.count || 0) > 0, link: '/dashboard/upcoming' }
+    ];
+    return res.json({ items, allDone: items.every(i => i.done) });
+  } catch (err) {
+    console.error('[Onboarding checklist]', err);
+    return res.status(500).json({ error: 'Failed to load the checklist.' });
+  }
+});
+
 // 14. DASHBOARD: Fetch upcoming lessons
 app.get('/api/dashboard/upcoming', verifyTeacherAuth, async (req: any, res: any) => {
   try {

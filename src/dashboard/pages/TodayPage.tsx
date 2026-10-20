@@ -17,6 +17,7 @@ import {
 import { useTeacherAuth } from '../../lib/auth';
 import { DashboardLesson, DashboardSummary, MissingNoteLesson } from '../types';
 import { LessonDetailModal } from '../components/LessonDetailModal';
+import { TeacherChecklist } from '../components/TeacherChecklist';
 import { Link } from 'react-router-dom';
 import { dashboardFetch, openZoomAsHost } from '../lib/dashboardApi';
 
@@ -204,6 +205,8 @@ export default function TodayPage() {
         </div>
       ) : (
         <>
+          <TeacherChecklist />
+
           {/* TE-01: the next lesson leads the page. */}
           {summary?.next_lesson && (
             <NextLessonSpotlight
