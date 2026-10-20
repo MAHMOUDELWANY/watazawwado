@@ -72,6 +72,7 @@ import { registerCurriculumRoutes } from '../server/routes/curriculum.js';
 import { registerProgressRoutes, validateFamilyNoteFields, canTeacherWriteForLesson } from '../server/routes/progress.js';
 import { announceNewStudent, type NewLearner } from '../server/onboarding/newStudent.js';
 import { isAdultAge, isGuardianAge, isChildAge, parseAge, ADULT_MIN_AGE, GUARDIAN_MIN_AGE, CHILD_MIN_AGE, CHILD_MAX_AGE } from '../src/lib/ageRules.js';
+import { sanitizeLeadSource, isHeardAbout } from '../src/lib/leadSource.js';
 import { notifyUser, notifySuperAdmins, resolveLearnerAccount } from '../server/notifications/inbox.js';
 import { notifyLowBalance } from '../server/notifications/lowBalance.js';
 import { processTrialFollowUps } from '../server/notifications/trialFollowUp.js';
@@ -6288,6 +6289,17 @@ app.get('/api/dashboard/leads', verifyTeacherAuth, requireSuperAdmin, async (req
 
     const allBookings = bookingsRes.data || [];
 
+    // Marketing source of the account behind each lead (first-touch tags + "how did you hear"), matched by email.
+    const leadEmails = [...new Set((leadsRes.data || []).map(l => String(l.email || '').toLowerCase()).filter(Boolean))];
+    const sourceByEmail = new Map<string, { lead_source: any; heard_about: string | null }>();
+    if (leadEmails.length) {
+      const { data: sourced, error: sourcedErr } = await supabase.from('students').select('email, lead_source, heard_about').in('email', leadEmails);
+      if (sourcedErr) console.warn('[Dashboard Leads] lead sources not loaded:', sourcedErr.message);
+      for (const st of sourced || []) {
+        if (st.email && (st.lead_source || st.heard_about)) sourceByEmail.set(String(st.email).toLowerCase(), { lead_source: st.lead_source || null, heard_about: st.heard_about || null });
+      }
+    }
+
     const leads = (leadsRes.data || []).map(lead => {
       // Find associated booking (prioritizing trial)
       const leadBookings = allBookings.filter(b =>
@@ -6368,6 +6380,7 @@ app.get('/api/dashboard/leads', verifyTeacherAuth, requireSuperAdmin, async (req
         service_interest_name: lead.service_interest_id ? (serviceMap.get(lead.service_interest_id) || lead.service_interest_id) : null,
         goal: lead.goal || null,
         source: lead.source || null,
+        acquisition: sourceByEmail.get(String(lead.email || '').toLowerCase()) || null,
         status: lead.status,
         notes: lead.notes || null,
         created_at: lead.created_at,
@@ -7650,7 +7663,9 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
       children,
       age,
       guardianAge,
-      teacherId
+      teacherId,
+      leadSource,
+      heardAbout
     } = req.body || {};
 
     if (!name || typeof name !== 'string' || name.trim().length < 2) {
@@ -7796,6 +7811,7 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
     if (learningInterest) studentUpdate.learning_interest = String(learningInterest).trim();
     if (learningGoal) studentUpdate.learning_goal = String(learningGoal).trim();
     if (learningNeeds) studentUpdate.learning_needs = String(learningNeeds).trim();
+    if (isHeardAbout(heardAbout)) studentUpdate.heard_about = heardAbout;
 
     const { data: updatedStudent, error: updateErr } = await supabaseAdmin
       .from('students')
@@ -7807,6 +7823,13 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
     if (updateErr) {
       console.error('[POST /api/student/onboarding DB Error]', updateErr);
       return res.status(500).json({ error: 'Failed to save onboarding information.' });
+    }
+
+    // First touch only: an account's lead source is written once and never overwritten.
+    const cleanLeadSource = sanitizeLeadSource(leadSource);
+    if (cleanLeadSource) {
+      const { error: sourceErr } = await supabaseAdmin.from('students').update({ lead_source: cleanLeadSource }).eq('id', studentId).is('lead_source', null);
+      if (sourceErr) console.warn('[POST /api/student/onboarding] lead source not saved:', sourceErr.message);
     }
 
     // 2. Handle child guardian and multiple children if provided

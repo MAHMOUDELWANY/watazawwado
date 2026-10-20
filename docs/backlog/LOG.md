@@ -4,6 +4,13 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### MK-01 Ready to measure content before the first post (2026-10-20)
+- Result: done (main). From the external research review (`docs/marketing/reports/2026-10-20 External research review.md`).
+- Changed: new `src/lib/leadSource.ts` (first-touch UTM tags + referrer host + landing path in localStorage `wz_first_touch`, only from a visit that carries any; sanitizer; "How did you hear about us?" options), `src/main.tsx`, `src/student/pages/StudentOnboardingPage.tsx` (optional question, sends both), `api/index.ts` (onboarding saves `heard_about` and `lead_source` once, never overwritten; `/api/dashboard/leads` adds `acquisition` per lead by email), `server/routes/crm.ts` (timeline "Account created" shows the source), `src/dashboard/pages/LeadsPage.tsx` + `src/dashboard/components/LeadsBoard.tsx` (source badge and filter), `@vercel/analytics` in `PublicLayout.tsx` (public pages only, cookie-free) + privacy page lines, copy fixes (homepage 8 subjects, /pricing Zad Path + single-lesson and $13 package line, booking summary pricing note, /pricing SEO description), new `/safety` parent page (`src/components/public/safety/SafetyPage.tsx`, only facts from the terms §Children, RULES.md §2 Zoom host and the privacy policy; linked from the footer, the FAQ and the sitemap), tests `test/lead-source.test.ts`, `test/measurement-ready.test.ts`.
+- Migration: `20261020000003_lead_source.sql` (`students.lead_source jsonb`, `students.heard_about text` with a check), applied to production 2026-10-20.
+- Checks: see the release commit message.
+- Not checked / risks: Vercel Web Analytics must be switched on once in the Vercel project (Analytics tab) or the script 404s silently. Accounts that finished onboarding before today have no source. Other pages still say "Islamic studies" (About, layout meta, privacy, terms, home SEO title); left for a copy pass, the terms need a version bump.
+
 ### ST-01 Lesson-day experience (2026-10-20)
 - Result: done (main)
 - Changed: new `src/student/components/LessonDayCard.tsx` (countdown that updates every 30 s, subject + learner, teacher name, Join in Zoom blue from 10 minutes before until the end, "Before the lesson" from the teacher's last shared next steps, "I'm running late" WhatsApp to the academy number with the booking reference), `StudentHomePage.tsx` (the card leads the page on the lesson's own day for confirmed/rescheduled lessons), `api/index.ts` (`GET /api/student/bookings` adds `teacherName` and `prepareNote` to upcoming lessons; `prepareNote` = latest `lesson_notes.next_steps` for that learner, never private notes), `test/st-01-lesson-day.test.ts`

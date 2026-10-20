@@ -37,6 +37,7 @@ const HowItWorksPage = lazyWithReload(() => import('./components/public/how-it-w
 const PricingPage = lazyWithReload(() => import('./components/public/pricing/PricingPage').then((m) => ({ default: m.PricingPage })));
 const FAQPage = lazyWithReload(() => import('./components/public/faq/FAQPage').then((m) => ({ default: m.FAQPage })));
 const PrivacyPolicyPage = lazyWithReload(() => import('./components/public/privacy/PrivacyPolicyPage').then((m) => ({ default: m.PrivacyPolicyPage })));
+const SafetyPage = lazyWithReload(() => import('./components/public/safety/SafetyPage').then((m) => ({ default: m.SafetyPage })));
 const TermsPage = lazyWithReload(() => import('./components/public/terms/TermsPage').then((m) => ({ default: m.TermsPage })));
 
 // The dashboard, student portal and auth pages load on demand so public visitors don't download them.
@@ -76,6 +77,7 @@ export function AppRoutes() {
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/privacy" element={<PrivacyPolicyPage />} />
             <Route path="/terms" element={<TermsPage />} />
+            <Route path="/safety" element={<SafetyPage />} />
           </Route>
 
           {/* Authenticated and Special Routes */}

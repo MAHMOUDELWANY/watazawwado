@@ -189,9 +189,11 @@ account, or 18+) and a teacher has a slot in the family's time zone. Each post's
 the step where the funnel drops, change one variable at a time, never judge a platform on a handful of leads.
 Interview the first 5–8 families after their trial (what made you book, what worried you, why not).
 
-Lead source: links carry UTM tags (`RULES.md` §6). **Not captured yet (2026-10-20):** the site stores no UTM, asks no
-"how did you hear" and has no analytics; this is fixed before the first post. Engineering follow-ups that serve this plan (no owner decision
-needed): a "How did you hear about us?" question at onboarding; the same-day post-trial parent report; a public sample
+Lead source: links carry UTM tags (`RULES.md` §6). **Captured since 2026-10-20:** the first tagged visit's UTM tags and
+referring site are kept in the browser and saved on the account at onboarding, with the optional "How did you hear
+about us?" answer; both show in the admin CRM (family timeline, leads list and board, source filter). Page views:
+Vercel Web Analytics on public pages. Parent safety page: `/safety`. Engineering follow-ups that serve this plan (no
+owner decision needed): the same-day post-trial parent report; a public sample
 report page (demo data); a safeguarding page (parent may sit in, lessons only on our Zoom with the waiting room, no
 private messages with minors, recording policy, how to report a concern); a review policy page.
 Checks still to do by hand before any ad spend: Google Trends exports for the core terms (US, UK, Canada), a reading

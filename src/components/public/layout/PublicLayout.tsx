@@ -13,6 +13,7 @@ import { OnboardingGuide, OnboardingStep } from '../../ui/OnboardingGuide';
 import { useAppLanguage } from '../../../lib/language';
 import { WelcomeStopButton } from '../WelcomeRecitation';
 import { BackToTop } from './BackToTop';
+import { Analytics } from '@vercel/analytics/react';
 
 export interface PublicLayoutContextType {
   lang: Language;
@@ -141,6 +142,8 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
         />
 
         <Outlet context={{ lang, onOpenTrialModal: handleOpenGetStarted } as PublicLayoutContextType} />
+        {/* Cookie-free page views, public pages only (docs/marketing/PLAN.md §8). */}
+        <Analytics />
 
         {/* Footer */}
         <Footer

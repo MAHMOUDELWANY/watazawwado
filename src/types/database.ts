@@ -6,6 +6,8 @@
 -- ====================================================================
 */
 
+import type { LeadSource, HeardAbout } from '../lib/leadSource';
+
 export type Json =
   | string
   | number
@@ -226,6 +228,8 @@ export interface Database {
           notes: string | null;
           booking_preference?: 'self' | 'child';
           age?: number | null;
+          lead_source?: LeadSource | null;
+          heard_about?: HeardAbout | null;
           status: StudentStatus;
           created_at: string;
           updated_at: string;
@@ -244,6 +248,8 @@ export interface Database {
           notes?: string | null;
           booking_preference?: 'self' | 'child';
           age?: number | null;
+          lead_source?: LeadSource | null;
+          heard_about?: HeardAbout | null;
           status?: StudentStatus;
           created_at?: string;
           updated_at?: string;
@@ -262,6 +268,8 @@ export interface Database {
           notes?: string | null;
           booking_preference?: 'self' | 'child';
           age?: number | null;
+          lead_source?: LeadSource | null;
+          heard_about?: HeardAbout | null;
           status?: StudentStatus;
           created_at?: string;
           updated_at?: string;

@@ -24,6 +24,8 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '../../components/ui/Input';
+import { Select } from '../../components/ui/Select';
+import { HEARD_ABOUT, HEARD_ABOUT_LABELS, readFirstTouch } from '../../lib/leadSource';
 import { BookShelf } from '../../components/onboarding/BookShelf';
 import { TravelModeChoice, PassCard, PassField, passInputClass, SealChoice, GuideChoice, FoldedPass, teacherColor } from '../../components/onboarding/TravelPass';
 import { JourneyPath, LEVELS } from '../../components/onboarding/JourneyPath';
@@ -226,6 +228,7 @@ export default function StudentOnboardingPage({
   }, []);
 
   const [whatsapp, setWhatsapp] = useState(currentProfile?.whatsapp || '');
+  const [heardAbout, setHeardAbout] = useState('');
   const [isPhoneValid, setIsPhoneValid] = useState(true);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -366,7 +369,9 @@ export default function StudentOnboardingPage({
         learnerType,
         country,
         timezone,
-        whatsapp: whatsapp.trim()
+        whatsapp: whatsapp.trim(),
+        leadSource: readFirstTouch(),
+        ...(heardAbout ? { heardAbout } : {})
       };
 
       if (learnerType === 'adult') {
@@ -711,6 +716,15 @@ export default function StudentOnboardingPage({
                   isAr={isRTL}
                   required={true}
                 />
+              </PassField>
+
+              <PassField htmlFor="heard-about" label={isRTL ? 'عرفتونا منين؟ (اختياري)' : 'How did you hear about us? (optional)'}>
+                <Select id="heard-about" value={heardAbout} onChange={(e) => setHeardAbout(e.target.value)}>
+                  <option value="">{isRTL ? 'اختار لو حابب' : 'Choose if you like'}</option>
+                  {HEARD_ABOUT.map((k) => (
+                    <option key={k} value={k}>{HEARD_ABOUT_LABELS[k][isRTL ? 1 : 0]}</option>
+                  ))}
+                </Select>
               </PassField>
             </PassCard>
 

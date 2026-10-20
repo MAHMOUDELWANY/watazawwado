@@ -23,6 +23,17 @@ export function FAQPage() {
           />
 
           <div className="pt-2 space-y-8">
+            <div className="space-y-2.5 pt-2">
+              <h2 className="font-editorial text-xl sm:text-2xl text-foreground font-bold">
+                {isEn ? 'How do you keep my child safe?' : 'إزاي بتحافظوا على أمان ابني؟'}
+              </h2>
+              <p className="text-muted-foreground leading-relaxed text-base">
+                {isEn
+                  ? 'You can sit in on any lesson, the teacher hosts the Zoom room with a waiting room, lessons are not recorded, and teachers talk to students only on our platform. '
+                  : 'تقدر تحضر أي حصة، والمعلم هو مضيف غرفة Zoom ومعاها غرفة انتظار، والحصص مش بتتسجّل، والمعلم بيكلّم الطالب على منصتنا بس. '}
+                <Link to="/safety" className="underline text-primary font-semibold">{isEn ? 'Read how it works' : 'اعرف التفاصيل'}</Link>
+              </p>
+            </div>
             {FAQS.map((faq, index) => (
               <div key={index} className="space-y-2.5 border-t border-border-subtle pt-8">
                 <h2 className="font-editorial text-xl sm:text-2xl text-foreground font-bold">

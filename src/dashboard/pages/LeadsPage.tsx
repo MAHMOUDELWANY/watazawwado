@@ -22,6 +22,8 @@ import { LeadsBoard } from '../components/LeadsBoard';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 import { useT } from '../../lib/language';
+import { sourceLabel } from '../../lib/leadSource';
+import { Select } from '../../components/ui/Select';
 
 const STAGE_CONFIG: Record<LeadStatus, { label: string; labelAr: string; color: string }> = {
   visitor: {
@@ -80,6 +82,7 @@ export default function LeadsPage() {
   const [pipelineSummary, setPipelineSummary] = useState<Record<string, number>>({});
   const [filterCategory, setFilterCategory] = useState<FilterCategory>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [sourceFilter, setSourceFilter] = useState('');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -129,6 +132,7 @@ export default function LeadsPage() {
     }
 
     if (!matchesCategory) return false;
+    if (sourceFilter && leadSourceOf(lead) !== sourceFilter) return false;
 
     // Search query filter
     if (!searchQuery.trim()) return true;
@@ -142,6 +146,8 @@ export default function LeadsPage() {
       (lead.notes && lead.notes.toLowerCase().includes(q))
     );
   });
+
+  const sourceOptions = [...new Set(leads.map(leadSourceOf).filter(Boolean))] as string[];
 
   const trialCount = (pipelineSummary.trial_booked || 0) + (pipelineSummary.trial_completed || 0);
   const newLeadsCount = (pipelineSummary.visitor || 0) + (pipelineSummary.lead || 0);
@@ -321,6 +327,15 @@ export default function LeadsPage() {
           </button>
         </div>
 
+        {sourceOptions.length > 0 && (
+          <div className="w-full sm:w-48">
+            <Select aria-label={t('Filter by source', 'فلترة حسب المصدر')} value={sourceFilter} onChange={(e) => setSourceFilter(e.target.value)} className="h-9">
+              <option value="">{t('All sources', 'كل المصادر')}</option>
+              {sourceOptions.map((o) => <option key={o} value={o}>{o}</option>)}
+            </Select>
+          </div>
+        )}
+
         <div className="relative w-full sm:w-64">
           <Search className="w-4 h-4 absolute start-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
@@ -408,6 +423,12 @@ export default function LeadsPage() {
                     {lead.learner_type === 'child' && (
                       <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-warning/10 text-warning-foreground border border-warning/20">
                         {t('Child', 'طفل')}
+                      </span>
+                    )}
+
+                    {leadSourceOf(lead) && (
+                      <span className="text-[13px] px-1.5 py-0.5 rounded bg-accent/10 text-accent border border-accent/25">
+                        <bdi>{leadSourceOf(lead)}</bdi>
                       </span>
                     )}
 
@@ -506,4 +527,9 @@ export default function LeadsPage() {
       )}
     </div>
   );
+}
+
+/** The lead's marketing source for the badge and the filter (first-touch tag, referrer, or onboarding answer). */
+function leadSourceOf(lead: DashboardLead): string | null {
+  return sourceLabel(lead.acquisition?.lead_source, lead.acquisition?.heard_about);
 }

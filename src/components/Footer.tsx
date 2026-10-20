@@ -110,6 +110,11 @@ export const Footer: React.FC<FooterProps> = ({
                   </Link>
                 </li>
                 <li>
+                  <Link to="/safety" className="inline-block py-1.5 hover:text-accent transition-colors">
+                    {isEn ? 'Child safety' : 'أمان الأطفال'}
+                  </Link>
+                </li>
+                <li>
                   <Link to="/privacy" className="inline-block py-1.5 hover:text-accent transition-colors">
                     {isEn ? 'Privacy' : 'الخصوصية'}
                   </Link>

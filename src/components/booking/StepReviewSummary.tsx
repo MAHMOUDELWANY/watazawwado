@@ -245,12 +245,12 @@ export const StepReviewSummary: React.FC<StepReviewSummaryProps> = ({
             <div className="p-3.5 rounded-2xl glass-surface border border-secondary/40 text-xs sm:text-sm space-y-1">
               <div className="flex items-center gap-2 font-semibold text-primary">
                 <Sparkles className="w-4 h-4 text-accent" />
-                <span>{isEn ? 'Transparent Rate Policy ($9 - $13/hr)' : 'شفافية تسعير الدروس الفردية (٩$ - ١٣$ / ساعة)'}</span>
+                <span>{isEn ? 'How lesson prices work ($9–$13 an hour)' : 'إزاي بنسعّر الحصص (٩$–١٣$ للساعة)'}</span>
               </div>
               <p className="leading-relaxed text-muted-foreground text-xs sm:text-sm">
                 {isEn
-                  ? 'Base lessons start from $9/hr for foundational tracks and up to $13/hr for specialized tracks (Modern Standard Arabic, English IELTS, Egyptian Dialect, and Advanced Fiqh). Rates may be adjusted by Super Admin if your specific requested curriculum requires custom specialized materials.'
-                  : 'يبدأ سعر الساعة من ٩$ للمسارات الأساسية ويصل إلى ١٣$ للمسارات المتقدمة والتخصصية (كالفصحى وقواعد النحو، والإنجليزية، واللهجة المصرية، والفقه التخصصي). قد يتم ضبط السعر من الإدارة حسب المواصفات والمتطلبات الخاصة التي تطلبها.'}
+                  ? 'Quran, Tajweed and the Zad Path are $9 an hour. Fusha, Egyptian Arabic and English start from $13 an hour. Advanced or intensive study can cost more; your teacher sets it after an assessment, and you always see the price before you pay.'
+                  : 'القرآن والتجويد ومسار الأثر بـ ٩$ للساعة. الفصحى والعامية المصرية والإنجليزية من ١٣$ للساعة. والدراسة المتقدمة أو المكثفة ممكن تكون أعلى؛ بيحددها المعلم بعد التقييم، ودايماً بتشوف السعر قبل ما تدفع.'}
               </p>
             </div>
           </div>

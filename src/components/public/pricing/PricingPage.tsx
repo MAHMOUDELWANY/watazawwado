@@ -110,8 +110,8 @@ export function PricingPage() {
 
           <p className="text-sm text-muted-foreground leading-relaxed max-w-3xl mx-auto text-center">
             {isEn
-              ? 'These packages are for Quran, Tajweed and Islamic studies ($9 an hour). Arabic and English start from $13 an hour, with their own packages in your account. Shorter lessons cost the same per minute. Advanced or intensive study can cost more; your teacher sets it after an assessment, and you always see it before you pay.'
-              : 'الباقات دي للقرآن والتجويد والعلوم الشرعية (9$ للساعة). العربية والإنجليزية من 13$ للساعة، وليها باقاتها في حسابك. الحصص الأقصر بنفس السعر للدقيقة. والدراسة المتقدمة أو المكثفة ممكن تكون أعلى؛ بيحددها المعلم بعد التقييم، ودايماً بتشوفها قبل ما تدفع.'}
+              ? 'These packages are for Quran, Tajweed and the Zad Path. One lesson on its own is $9 an hour; a package brings it down to $8. Fusha, Egyptian Arabic and English start from $13 an hour, with their own $13 packages in your account. Shorter lessons cost the same per minute. Advanced or intensive study can cost more; your teacher sets it after an assessment, and you always see it before you pay.'
+              : 'الباقات دي للقرآن والتجويد ومسار الأثر. الحصة لوحدها بـ 9$ للساعة، والباقة بتنزّلها لحد 8$. الفصحى والعامية المصرية والإنجليزية من 13$ للساعة، وليها باقات 13$ في حسابك. الحصص الأقصر بنفس السعر للدقيقة. والدراسة المتقدمة أو المكثفة ممكن تكون أعلى؛ بيحددها المعلم بعد التقييم، ودايماً بتشوفها قبل ما تدفع.'}
           </p>
 
           <ul className="grid grid-cols-1 sm:grid-cols-3 gap-4">

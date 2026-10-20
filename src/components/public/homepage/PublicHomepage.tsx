@@ -57,7 +57,7 @@ const EXPLORE: Door[] = [
   {
     to: '/learning', emblem: MushafEmblem, tone: ['#0B7486', '#04323A'],
     title: { en: 'Lessons and subjects', ar: 'الدروس والمواد' },
-    body: { en: '14 subjects, your own teacher.', ar: '١٤ مادة، ومعلم ليك إنت.' }
+    body: { en: '8 subjects, your own teacher.', ar: '٨ مواد، ومعلم ليك إنت.' }
   },
   {
     to: '/how-it-works', emblem: PathEmblem, tone: ['#8B4935', '#33190F'],

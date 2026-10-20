@@ -57,8 +57,8 @@ export const PUBLIC_PAGES: PageSeo[] = [
     path: '/pricing',
     titleEn: 'Prices & packages — from $9/hour | Watazawwado Academy',
     titleAr: 'الأسعار والباقات — من 9 دولار للساعة | وتزودوا Watazawwado',
-    descEn: 'Quran, Tajweed and Islamic studies from $9 an hour; Arabic and English from $13. Packages of 4, 8 or 12 lessons, family discount, free trial.',
-    descAr: 'القرآن والتجويد والعلوم الشرعية من 9 دولار للساعة، والعربية والإنجليزية من 13 دولار. باقات 4 و8 و12 حصة وخصم عائلي، وحصة تجريبية مجانية.',
+    descEn: 'Quran, Tajweed and the Zad Path from $9 an hour; Fusha, Egyptian Arabic and English from $13. Packages of 4, 8 or 12 lessons, family discount, free trial.',
+    descAr: 'القرآن والتجويد ومسار الأثر من 9 دولار للساعة، والفصحى والعامية المصرية والإنجليزية من 13 دولار. باقات 4 و8 و12 حصة وخصم عائلي، وحصة تجريبية مجانية.',
     h1En: 'Prices and packages'
   },
   {
@@ -68,6 +68,14 @@ export const PUBLIC_PAGES: PageSeo[] = [
     descEn: 'Answers about the free trial, Zoom lessons, teachers, scheduling, cancellations, payments and packages at Watazawwado Academy.',
     descAr: 'إجابات عن الحصة التجريبية، حصص زووم، المعلمين، المواعيد، الإلغاء، الدفع والباقات في أكاديمية وتزودوا.',
     h1En: 'Frequently asked questions'
+  },
+  {
+    path: '/safety',
+    titleEn: 'Your child’s safety in lessons | Watazawwado Academy',
+    titleAr: 'أمان ابنك في الحصص | وتزودوا Watazawwado',
+    descEn: 'Parents can sit in, the teacher hosts every Zoom lesson with a waiting room, lessons are not recorded and teachers talk to students only on our platform.',
+    descAr: 'ولي الأمر يقدر يحضر، والمعلم هو مضيف كل حصة Zoom مع غرفة انتظار، والحصص مش بتتسجّل، والمعلم بيكلّم الطالب على منصتنا بس.',
+    h1En: 'Your child’s safety'
   },
   {
     path: '/privacy',

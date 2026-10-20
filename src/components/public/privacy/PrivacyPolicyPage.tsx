@@ -289,7 +289,7 @@ export function PrivacyPolicyPage() {
                     <strong>WhatsApp (Meta)</strong> — {isEn ? 'Only when you choose to message us, for example for support, pay-later or refund requests.' : 'فقط عندما تختار مراسلتنا، مثل الدعم أو طلبات الدفع لاحقاً أو الاسترداد.'}
                   </li>
                   <li>
-                    <strong>Vercel Inc.</strong> — {isEn ? 'Global edge application deployment and SSL/TLS encryption in transit.' : 'استضافة واجهة الويب والتشفير الكامل للبيانات أثناء النقل (SSL/TLS).'}
+                    <strong>Vercel Inc.</strong> — {isEn ? 'Global edge application deployment, SSL/TLS encryption in transit, and anonymous visit counts on our public pages (Vercel Web Analytics, no cookies).' : 'استضافة واجهة الويب والتشفير الكامل للبيانات أثناء النقل (SSL/TLS)، وإحصاءات زيارات مجهولة الهوية لصفحاتنا العامة (Vercel Web Analytics، بدون ملفات ارتباط).'}
                   </li>
                 </ul>
                 <p>
@@ -308,8 +308,8 @@ export function PrivacyPolicyPage() {
                 </h3>
                 <p>
                   {isEn
-                    ? 'We use only necessary cookies and browser storage: to keep you signed in and to remember the language you chose. If you are signed in and pick a language, we save it on your account so our emails reach you in that language (English by default). We do not use advertising or tracking cookies.'
-                    : 'نستخدم فقط ملفات الارتباط وتخزين المتصفح الضرورية: لإبقائك مسجلاً للدخول ولتذكّر اللغة التي اخترتها. وإذا كنت مسجلاً واخترت لغة، نحفظها في حسابك لتصلك رسائلنا بها (الإنجليزية افتراضياً). لا نستخدم ملفات ارتباط إعلانية أو للتتبع.'}
+                    ? 'We use only necessary cookies and browser storage: to keep you signed in and to remember the language you chose. If you are signed in and pick a language, we save it on your account so our emails reach you in that language (English by default). We do not use advertising or tracking cookies. To learn which of our posts and links bring families to us, your browser also keeps the campaign tags of the link you first arrived from (for example utm_source=youtube) and the name of the referring site; when you complete your account, we save them on it. Our public pages count visits anonymously, without cookies.'
+                    : 'نستخدم فقط ملفات الارتباط وتخزين المتصفح الضرورية: لإبقائك مسجلاً للدخول ولتذكّر اللغة التي اخترتها. وإذا كنت مسجلاً واخترت لغة، نحفظها في حسابك لتصلك رسائلنا بها (الإنجليزية افتراضياً). لا نستخدم ملفات ارتباط إعلانية أو للتتبع. ولنعرف أي منشوراتنا وروابطنا توصل العائلات إلينا، يحتفظ متصفحك أيضاً بوسوم الحملة في الرابط الذي وصلت منه أول مرة (مثل utm_source=youtube) واسم الموقع الذي أحالك إلينا؛ وعند إكمال بيانات حسابك نحفظها فيه. وتُحصى زيارات صفحاتنا العامة دون معرفة هويتك ودون ملفات ارتباط.'}
                 </p>
               </div>
             </section>

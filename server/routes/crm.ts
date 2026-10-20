@@ -1,4 +1,5 @@
 import type express from 'express';
+import { HEARD_ABOUT_LABELS, isHeardAbout, type LeadSource } from '../../src/lib/leadSource.js';
 
 /**
  * Super admin CRM (docs/backlog/BACKLOG.md CRM lane).
@@ -44,6 +45,13 @@ const OUTCOME: Record<string, { en: string; ar: string }> = {
   cancelled: { en: 'cancelled', ar: 'اتلغت' }
 };
 
+/** Where the account came from: first-touch tags, referring site and the onboarding answer, e.g. "instagram / social / id12 · from instagram.com · heard: Instagram". */
+export function sourceDetail(leadSource: LeadSource | null | undefined, heardAbout?: string | null): string | null {
+  const tags = [leadSource?.utm_source, leadSource?.utm_medium, leadSource?.utm_campaign, leadSource?.utm_content].filter(Boolean).join(' / ');
+  const parts = [tags || null, leadSource?.referrer ? `from ${leadSource.referrer}` : null, isHeardAbout(heardAbout) ? `heard: ${HEARD_ABOUT_LABELS[heardAbout][0]}` : null];
+  return parts.filter(Boolean).join(' · ') || null;
+}
+
 /** Newest first. Pure: every event comes from a row passed in. */
 export function buildTimeline(input: TimelineInput): TimelineEvent[] {
   const names = new Map<string, string>(input.students.map((s) => [s.id, s.name]));
@@ -52,7 +60,7 @@ export function buildTimeline(input: TimelineInput): TimelineEvent[] {
   const push = (e: TimelineEvent) => { if (e.at) ev.push(e); };
 
   for (const s of input.students) {
-    push({ at: s.created_at, type: 'account', title: { en: 'Account created', ar: 'اتعمل الحساب' }, learnerName: s.name });
+    push({ at: s.created_at, type: 'account', title: { en: 'Account created', ar: 'اتعمل الحساب' }, learnerName: s.name, detail: sourceDetail(s.lead_source, s.heard_about) });
   }
   for (const l of input.leads || []) {
     push({ at: l.created_at, type: 'account', title: { en: 'First contact (lead)', ar: 'أول تواصل (مهتم)' }, detail: [l.source, l.status].filter(Boolean).join(' · ') || null });
@@ -302,7 +310,7 @@ export function registerCrmRoutes(app: express.Express, deps: CrmDeps) {
     const id = String(req.params.id || '');
     if (!/^[0-9a-f-]{36}$/i.test(id)) return res.status(400).json({ error: 'Invalid student id.' });
     try {
-      const { data: student } = await client.from('students').select('id, name, email, auth_user_id, lead_id, created_at').eq('id', id).maybeSingle();
+      const { data: student } = await client.from('students').select('id, name, email, auth_user_id, lead_id, created_at, lead_source, heard_about').eq('id', id).maybeSingle();
       if (!student) return res.status(404).json({ error: 'Student not found.' });
 
       // The account's children: guardian rows that name this account's email.

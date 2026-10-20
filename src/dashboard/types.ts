@@ -1,4 +1,5 @@
 import { LeadStatus } from '../types/database';
+import type { LeadSource } from '../lib/leadSource';
 
 export type { LeadStatus };
 
@@ -94,6 +95,8 @@ export interface DashboardLead {
   service_interest_name?: string | null;
   goal: string | null;
   source: string | null;
+  /** First-touch marketing source of the account behind this lead, when it has one. */
+  acquisition?: { lead_source: LeadSource | null; heard_about: string | null } | null;
   status: LeadStatus;
   notes: string | null;
   created_at: string;

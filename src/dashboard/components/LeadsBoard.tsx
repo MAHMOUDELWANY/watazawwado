@@ -5,6 +5,7 @@ import { dashboardFetch } from '../lib/dashboardApi';
 import { useT } from '../../lib/language';
 import type { DashboardLead } from '../types';
 import { Select } from '../../components/ui/Select';
+import { sourceLabel } from '../../lib/leadSource';
 
 type StageLabels = Record<string, { label: string; labelAr: string }>;
 
@@ -85,6 +86,9 @@ export function LeadsBoard({
                     <button type="button" onClick={() => onOpen(lead)} className="block w-full text-start text-sm font-semibold text-foreground hover:underline cursor-pointer">
                       {lead.name}
                     </button>
+                    {sourceLabel(lead.acquisition?.lead_source, lead.acquisition?.heard_about) && (
+                      <div className="text-xs text-accent"><bdi>{sourceLabel(lead.acquisition?.lead_source, lead.acquisition?.heard_about)}</bdi></div>
+                    )}
                     {d !== null && (
                       <div className="text-xs text-muted-foreground">
                         {d === 0 ? t('changed today', 'اتغير النهارده') : t(`${d} days in this stage`, `${d} يوم في المرحلة دي`)}
