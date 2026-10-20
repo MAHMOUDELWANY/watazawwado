@@ -181,7 +181,16 @@ Starting targets [Proposed], recalibrated after week 6:
 - Month 3: 10+ trial bookings in total since launch.
 - Month 6: 15–30 trial bookings a month, 5+ real public reviews.
 
-Lead source: links carry UTM tags (`RULES.md` §6). Engineering follow-ups that serve this plan (no owner decision
+**Funnel (added 2026-10-20 from the external research review):** each week also count level checks, trials
+attended, paid families and families still learning 4 weeks later, plus the top repeated questions (Notion Weekly
+Numbers). Views are diagnosis only. A **qualified lead**: the subject is offered, the age fits (6–17 in a family
+account, or 18+) and a teacher has a slot in the family's time zone. Each post's link adds
+`utm_content=id<calendar ID>`. After 4 weeks (review 29 Nov) apply the decision rules in the Notion review page: fix
+the step where the funnel drops, change one variable at a time, never judge a platform on a handful of leads.
+Interview the first 5–8 families after their trial (what made you book, what worried you, why not).
+
+Lead source: links carry UTM tags (`RULES.md` §6). **Not captured yet (2026-10-20):** the site stores no UTM, asks no
+"how did you hear" and has no analytics; this is fixed before the first post. Engineering follow-ups that serve this plan (no owner decision
 needed): a "How did you hear about us?" question at onboarding; the same-day post-trial parent report; a public sample
 report page (demo data); a safeguarding page (parent may sit in, lessons only on our Zoom with the waiting room, no
 private messages with minors, recording policy, how to report a concern); a review policy page.
@@ -207,6 +216,7 @@ strategy, the hub holds the dated items.
 
 ## 10. Research
 
+External five-phase research pack reviewed 2026-10-20: `reports/2026-10-20 External research review.md`.
 Full report: `reports/Online Quran academy market.md` (2026-10-19, internal: it names competitors). Notes behind it:
 `research_notes/Online Quran academy market/` (competitors, customer voice, content landscape, demand and seasonality,
 lead generation). Gaps: Reddit, Facebook groups, Google Trends, competitor follower counts and ads were not reachable.

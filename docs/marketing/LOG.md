@@ -25,3 +25,8 @@ Change next week: <one thing>
   stories, reply templates, hashtags) + full scripts and captions in 10 calendar items, now Status = Scripted.
   Quran text verified with quran.ai (1:1–7, 112:1); the translation server was down, so no English translation goes on
   screen until checked. Rule kept: wrong-vs-right only on syllables, never on ayat.
+- 2026-10-20: external five-phase research pack reviewed against the live site and code
+  (`reports/2026-10-20 External research review.md`, Notion review page linked from the hub). Adopted its funnel,
+  gates and decision rules (`RULES.md` §9, `PLAN.md` §8); 10 new calendar items (8 new series) on free Sundays;
+  Weekly Numbers got 5 funnel columns. Found: no UTM/source capture and no analytics on the site, "14 subjects" on
+  the homepage, "Islamic studies" on /pricing. 4 owner questions open.

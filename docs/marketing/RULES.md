@@ -86,3 +86,11 @@ moment, enough to show the quality. Curriculum content itself is still owned by 
 - [ ] Captions burned in, readable on a phone, inside the safe zone (`PRODUCTION.md` §4)
 - [ ] One CTA; UTM link (§6)
 - [ ] Logged in `LOG.md`
+
+## 9. Publish gates [Decided 2026-10-20, delegated]
+
+- **Green, publish:** §8 passes, the link works on a phone and carries UTM, and someone is free to answer messages.
+- **Amber, adjust first:** the parent safety page is not live → never say "safe" or "fully supervised", answer safety
+  questions privately; a price line on the site is being fixed → link the pricing page without stating a number.
+- **Red, do not publish:** unchecked Quran, Tajweed or pronunciation; a credential, result or review we cannot prove;
+  an identifiable child; a price, time or subject that contradicts the live site.

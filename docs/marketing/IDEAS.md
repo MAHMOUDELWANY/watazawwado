@@ -53,3 +53,16 @@ verses, rulings) are checked at scripting time (`RULES.md` §1), never taken fro
 - "Why our times show in your time zone" (Western-family logistics).
 - "Our two verses" (the name ﴿وتزودوا﴾ and ﴿وأما ما ينفع الناس فيمكث في الأرض﴾): the mission video.
 - Founding-family stories (consented, no child faces/names) from Month 5.
+
+## Added 2026-10-20 (brainstorm after the external research review; in the Notion calendar as Idea)
+- **Can You Read This?** (A): five words getting harder, "where did you stop? comment the number", teacher reads them
+  correctly, CTA = free level check. Verified single words only.
+- **Gently** (A/E): our signature correction line ("Very close. Let's try it once more, together.") on practice
+  syllables; answers the parents' biggest fear.
+- **After every class, this lands in your inbox** (E): the teacher report, demo data, labelled "Example".
+- **Our Promises** (E): "We're new, no reviews yet, so here is what we promise." Fourth pinned post.
+- **The mystery visitor** (C): Zad Lesson 1 teaser ending on the mystery; only after the owner marks it reviewed.
+- **Comment Replies** (B): reply-to-comment videos; each becomes an FAQ answer.
+- **Dinner Table Ayah** (C): weekly channel card, one short ayah, one meaning, one family question.
+- **Teta Call Challenge** (D, Arabic): winter break, one Egyptian phrase a day for the call with Teta; voice notes
+  only with written parental consent.
