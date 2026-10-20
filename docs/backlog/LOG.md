@@ -4,6 +4,13 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### RN-02 Low-balance notice (on-site + email) (2026-10-20)
+- Result: done (main, after `/code-review`)
+- Changed: new `server/notifications/lowBalance.ts`; `api/index.ts` calls it after the lesson-outcome RPC, only when a credit was used; `test/rn-02-low-balance.test.ts`
+- How: at 2 lessons left and at 0, one on-site notice + email (calm copy, link to /student/packages) to the person who paid (`purchaser_account_id`), naming the learner when it is someone else. Once per threshold: `package_entitlements.metadata.low_balance_<n>_notified_at`, set by a conditional update that also requires an unchanged `updated_at`. Skipped for cancelled-lesson credits, refunded/cancelled packages and refund requests.
+- Migration: none
+- Checks: tsc pass, npm test 1068 pass / 0 fail (5 skipped), build pass; JSON-path filter checked against the real PostgREST (no rows touched). Review: 6 findings, 4 fixed (payer as recipient, stale-metadata write, notice only when a credit was used, route wiring test).
+- Not checked / risks: at most once by design: if the email fails after the claim, that notice is not resent. Plural helpers are duplicated from `PackageBalance.tsx` (the server can't import the React file). Waits for RN-07 to respect notification preferences.
 ### RN-01 Package balance on every surface (2026-10-20)
 - Result: done (main)
 - Changed: new `src/student/components/PackageBalance.tsx` (one line per active package: "3 lessons left in your 8-lesson package", length, price band, learner), used on `StudentHomePage.tsx` (replaces the Used/Total grid), `StudentBookingPage.tsx` (above the booking flow) and `StudentPackagesPage.tsx` (under the header); `test/rn-01-package-balance.test.ts`

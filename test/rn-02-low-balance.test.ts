@@ -1,5 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
+import fs from 'node:fs';
 import { lowBalanceThreshold, lowBalanceNotice, notifyLowBalance, lowBalanceKey } from '../server/notifications/lowBalance.js';
 
 const ent = (over: Record<string, any> = {}) => ({
@@ -8,31 +9,41 @@ const ent = (over: Record<string, any> = {}) => ({
   purchased_quantity: 8,
   remaining_credits: 2,
   learner_student_id: 'stu-1',
+  purchaser_account_id: null,
   metadata: {},
+  updated_at: 't0',
   ...over
 });
 
-/** Minimal Supabase stand-in for one package_entitlements row, with the conditional update the claim uses. */
-function fakeClient(row: any) {
+/**
+ * Minimal Supabase stand-in: one package_entitlements row (with the conditional update the claim uses) and
+ * read-only students / profiles rows.
+ */
+function fakeClient(row: any, other: Record<string, any[]> = {}) {
   const state = { row: structuredClone(row) };
   return {
     state,
-    from() {
+    from(table: string) {
       const q: any = { filters: [] as any[], patch: null as any };
+      const rows = () => (table === 'package_entitlements' ? [state.row] : other[table] || []);
+      const matches = () => rows().filter((r: any) => q.filters.every((f: any) => f(r)));
       const chain = {
         select() { return chain; },
+        limit() { return chain; },
         update(patch: any) { q.patch = patch; return chain; },
-        eq(_c: string, v: any) { q.filters.push((r: any) => r.id === v); return chain; },
+        eq(col: string, v: any) { q.filters.push((r: any) => r[col] === v); return chain; },
         is(col: string, v: null) {
           const key = col.replace('metadata->>', '');
           q.filters.push((r: any) => (r.metadata?.[key] ?? null) === v);
           return chain;
         },
-        async maybeSingle() { return { data: q.filters.every((f: any) => f(state.row)) ? state.row : null, error: null }; },
+        async maybeSingle() { return { data: matches()[0] || null, error: null }; },
         then(resolve: any) {
-          const match = q.filters.every((f: any) => f(state.row));
-          if (match && q.patch) state.row = { ...state.row, ...q.patch };
-          resolve({ data: match ? [{ id: state.row.id }] : [], error: null });
+          const found = matches();
+          if (found.length && q.patch && table === 'package_entitlements') {
+            state.row = { ...state.row, ...q.patch, updated_at: `${state.row.updated_at}+` };
+          }
+          resolve({ data: found.map((r: any) => ({ ...r })), error: null });
         }
       };
       return chain;
@@ -41,6 +52,11 @@ function fakeClient(row: any) {
 }
 
 const account = async () => ({ userId: 'user-1', email: 'parent@example.com', name: 'Maryam', viaParent: true });
+const capture = () => {
+  const sent: any[] = [];
+  const notify = (async (_c: any, to: any, notice: any, opts: any) => { sent.push({ to, notice, opts }); }) as any;
+  return { sent, notify };
+};
 
 describe('RN-02 low-balance notice', () => {
   it('fires at 2 and 0 only, for real packages that are not refunded', () => {
@@ -80,6 +96,57 @@ describe('RN-02 low-balance notice', () => {
     await notifyLowBalance(fakeClient(ent({ status: 'refunded' })), 'ent-1', { notify, resolve: account as any });
     await notifyLowBalance(fakeClient(ent({ metadata: { refund_requested_at: 'x' } })), 'ent-1', { notify, resolve: account as any });
     assert.strictEqual(sent.length, 0);
+  });
+
+  it('tells the person who paid, naming the learner when it is someone else', async () => {
+    const client = fakeClient(ent({ purchaser_account_id: 'parent-auth' }), {
+      students: [
+        { id: 'stu-1', name: 'Yusuf', auth_user_id: 'teen-auth' },
+        { id: 'stu-0', name: 'Amina', auth_user_id: 'parent-auth' }
+      ],
+      profiles: [{ id: 'parent-auth', email: 'amina@example.com' }]
+    });
+    const { sent, notify } = capture();
+    assert.strictEqual(await notifyLowBalance(client, 'ent-1', { notify, resolve: account as any }), 2);
+    assert.deepStrictEqual(sent[0].to, { userId: 'parent-auth', email: 'amina@example.com', name: 'Amina' });
+    assert.ok(sent[0].notice.title.en.includes('for Yusuf'));
+  });
+
+  it('does not name the learner when the learner paid', async () => {
+    const client = fakeClient(ent({ purchaser_account_id: 'me' }), {
+      students: [{ id: 'stu-1', name: 'Omar', auth_user_id: 'me' }],
+      profiles: [{ id: 'me', email: 'omar@example.com' }]
+    });
+    const { sent, notify } = capture();
+    await notifyLowBalance(client, 'ent-1', { notify, resolve: account as any });
+    assert.strictEqual(sent[0].to.name, 'Omar');
+    assert.ok(!sent[0].notice.title.en.includes(' for '));
+  });
+
+  it('backs off when the package changed between read and claim (no stale metadata write)', async () => {
+    const client = fakeClient(ent());
+    const { sent, notify } = capture();
+    const realFrom = client.from.bind(client);
+    let reads = 0;
+    // After the first read, another writer updates the row (updated_at moves on).
+    client.from = ((table: string) => {
+      const chain = realFrom(table);
+      const maybeSingle = chain.maybeSingle;
+      chain.maybeSingle = async () => {
+        const r = await maybeSingle();
+        if (table === 'package_entitlements' && reads++ === 0) client.state.row = { ...client.state.row, metadata: { note: 'admin' }, updated_at: 't1' };
+        return r;
+      };
+      return chain;
+    }) as any;
+    assert.strictEqual(await notifyLowBalance(client, 'ent-1', { notify, resolve: account as any }), null);
+    assert.strictEqual(sent.length, 0);
+    assert.deepStrictEqual(client.state.row.metadata, { note: 'admin' }, 'the other writer\'s metadata is kept');
+  });
+
+  it('is called from the outcome route only when a credit was used', () => {
+    const src = fs.readFileSync('api/index.ts', 'utf8');
+    assert.match(src, /package_entitlement_id && \(status === 'completed' \|\| creditDecision === 'used'\)\) \{\s*waitUntil\(notifyLowBalance\(/);
   });
 
   it('uses calm words, no urgency', () => {

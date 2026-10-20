@@ -141,7 +141,7 @@ Principles every PR/RN task follows:
   packages page in one consistent component. Copy is calm: "3 lessons left in your 8-lesson package".
 
 ### RN-02 Low-balance notice (on-site + email)
-- Priority P1 · Zone 🔴 (new notification trigger) · Size M · Status todo · Depends on RN-01
+- Priority P1 · Zone 🔴 (new notification trigger) · Size M · Status done · Depends on RN-01
 - Do: when a package reaches 2 lessons left (and again at 0), create one on-site notice and one email with a renew link.
   Never more than once per threshold per package. No urgency words, no countdowns.
 - Done when: tests prove one notice per threshold and none for refunded/expired packages.

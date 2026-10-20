@@ -62,6 +62,42 @@ export function lowBalanceNotice(t: LowBalanceThreshold, size: number, learnerNa
   };
 }
 
+/**
+ * The person who renews is the one who paid (purchaser_account_id), e.g. the parent of a teen with their own login.
+ * learnerName is set when the learner is someone else, so the text says whose package it is.
+ */
+async function resolveRecipient(
+  client: any,
+  ent: { learner_student_id: string | null; purchaser_account_id?: string | null },
+  resolve: typeof resolveLearnerAccount
+): Promise<{ userId: string | null; email: string | null; name: string | null; learnerName: string | null }> {
+  const { data: learner } = ent.learner_student_id
+    ? await client.from('students').select('name, auth_user_id').eq('id', ent.learner_student_id).maybeSingle()
+    : { data: null };
+  if (ent.purchaser_account_id) {
+    const [{ data: profile }, { data: own }] = await Promise.all([
+      client.from('profiles').select('email').eq('id', ent.purchaser_account_id).maybeSingle(),
+      client.from('students').select('name').eq('auth_user_id', ent.purchaser_account_id).limit(1)
+    ]);
+    const learnerIsPayer = learner?.auth_user_id === ent.purchaser_account_id;
+    return {
+      userId: ent.purchaser_account_id,
+      email: profile?.email || null,
+      name: own?.[0]?.name || null,
+      learnerName: learner && !learnerIsPayer ? learner.name : null
+    };
+  }
+  // Older packages without a purchaser: the account that owns the learner (the parent for a child).
+  const account = await resolve(client, ent.learner_student_id);
+  return {
+    userId: account.userId,
+    email: account.email,
+    // For a child, account.name is the child's: the parent is not greeted by it; the child's name goes in the text.
+    name: account.viaParent ? null : account.name,
+    learnerName: account.viaParent ? account.name : null
+  };
+}
+
 export async function notifyLowBalance(
   client: any,
   entitlementId: string | null | undefined,
@@ -73,7 +109,7 @@ export async function notifyLowBalance(
   try {
     const { data: ent, error } = await client
       .from('package_entitlements')
-      .select('id, status, purchased_quantity, remaining_credits, learner_student_id, metadata')
+      .select('id, status, purchased_quantity, remaining_credits, learner_student_id, purchaser_account_id, metadata, updated_at')
       .eq('id', entitlementId)
       .maybeSingle();
     if (error) return null;
@@ -81,22 +117,23 @@ export async function notifyLowBalance(
     if (t === null) return null;
 
     // Claim: only the update that still finds the key unset wins, so a retry or a parallel call sends nothing.
+    // updated_at must also be unchanged, so metadata another writer just changed is never overwritten with our copy.
     const key = lowBalanceKey(t);
     const { data: claimed, error: claimErr } = await client
       .from('package_entitlements')
       .update({ metadata: { ...(ent.metadata || {}), [key]: new Date().toISOString() } })
       .eq('id', ent.id)
+      .eq('updated_at', ent.updated_at)
       .is(`metadata->>${key}`, null)
       .select('id');
     if (claimErr || !claimed?.length) return null;
 
-    const account = await resolve(client, ent.learner_student_id);
-    if (!account.userId && !account.email) return null;
+    const to = await resolveRecipient(client, ent, resolve);
+    if (!to.userId && !to.email) return null;
     await notify(
       client,
-      // For a child, account.name is the child's: the parent gets no name in the greeting, the child's name is in the text.
-      { userId: account.userId, email: account.email, name: account.viaParent ? null : account.name },
-      lowBalanceNotice(t, Number(ent.purchased_quantity), account.viaParent ? account.name : null),
+      { userId: to.userId, email: to.email, name: to.name },
+      lowBalanceNotice(t, Number(ent.purchased_quantity), to.learnerName),
       { email: true }
     );
     return t;

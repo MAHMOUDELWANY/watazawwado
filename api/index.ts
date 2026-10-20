@@ -4430,8 +4430,8 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
         return res.status(statusCode).json({ error: rpcErr.message || `Failed to record lesson outcome: ${status}` });
       }
 
-      // RN-02: the credit was just used; tell the family at 2 lessons left and at 0 (after the reply).
-      if (existingBooking.package_entitlement_id) {
+      // RN-02: only when a credit was actually used (a no-show with the credit returned changes nothing).
+      if (existingBooking.package_entitlement_id && (status === 'completed' || creditDecision === 'used')) {
         waitUntil(notifyLowBalance(supabase, existingBooking.package_entitlement_id));
       }
 
