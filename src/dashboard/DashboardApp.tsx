@@ -37,6 +37,7 @@ import {
   Search,
   MoreHorizontal,
   Library,
+  Activity,
 } from 'lucide-react';
 import OverviewPage from './pages/OverviewPage';
 import TodayPage from './pages/TodayPage';
@@ -53,6 +54,7 @@ import TeachersPage from './pages/TeachersPage';
 import AvailabilityPage from './pages/AvailabilityPage';
 import NotificationsPage, { useUnreadDashboardNotifications } from './pages/NotificationsPage';
 import PayLaterPage from './pages/PayLaterPage';
+import HealthPage from './pages/HealthPage';
 import PlacementTestsPage from './pages/PlacementTestsPage';
 import AssistantPage from './pages/AssistantPage';
 import CurriculumPage, { CurriculumLessonPage } from './pages/CurriculumPage';
@@ -225,6 +227,7 @@ export function DashboardApp() {
     { name: L('Reports', 'التقارير'), path: '/dashboard/analytics', icon: TrendingUp },
     { name: L('My hours', 'مواعيدي'), path: '/dashboard/availability', icon: CalendarClock },
     { name: L('Curriculum', 'المنهج'), path: '/dashboard/curriculum', icon: Library },
+    { name: L('System health', 'صحة النظام'), path: '/dashboard/health', icon: Activity },
     { name: L('Settings', 'الإعدادات'), path: '/dashboard/settings', icon: Settings },
   ];
 
@@ -588,6 +591,7 @@ export function DashboardApp() {
                 <Route path="/availability" element={<AvailabilityPage />} />
                 <Route path="/notifications" element={<NotificationsPage />} />
                 <Route path="/pay-later" element={isSuperAdmin ? <PayLaterPage /> : <Navigate to="/dashboard" replace />} />
+                <Route path="/health" element={isSuperAdmin ? <HealthPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/messages" element={<ChatPanel lang={ar ? 'ar' : 'en'} />} />
                 <Route path="/assistant" element={<AssistantPage />} />

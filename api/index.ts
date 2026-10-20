@@ -64,7 +64,8 @@ import {
   type IntakeTurnMessage
 } from '../server/intake/intakeService.js';
 import { createIntakeToken, readIntakeToken } from '../server/intake/intakeToken.js';
-import { registerCommunityRoutes, ensureTeacherThreads } from '../server/routes/community.js';
+import { registerCommunityRoutes, ensureTeacherThreads, PLACEMENT_BEFORE_BOOKING } from '../server/routes/community.js';
+import { registerOpsRoutes, apiErrorMonitor, recordHeartbeat, HEARTBEAT_REMINDER_CRON, HEARTBEAT_STRIPE_WEBHOOK } from '../server/routes/ops.js';
 import { registerCurriculumRoutes } from '../server/routes/curriculum.js';
 import { registerProgressRoutes, validateFamilyNoteFields, canTeacherWriteForLesson } from '../server/routes/progress.js';
 import { announceNewStudent, type NewLearner } from '../server/onboarding/newStudent.js';
@@ -249,6 +250,7 @@ function rateLimit(req: express.Request, res: express.Response, next: express.Ne
 
 // rawBody is kept for the Stripe webhook signature check.
 app.use(express.json({ limit: '1mb', verify: (req: any, _res, buf) => { req.rawBody = buf; } }));
+app.use('/api', apiErrorMonitor(getSupabaseAdminClient));
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
@@ -5267,6 +5269,7 @@ app.post('/api/payments/stripe/webhook', async (req: any, res: any) => {
   }
 
   const event = req.body;
+  await recordHeartbeat(getSupabaseAdminClient(), HEARTBEAT_STRIPE_WEBHOOK, { type: String(event?.type || '') });
   if (event?.type !== 'checkout.session.completed' && event?.type !== 'checkout.session.async_payment_succeeded') {
     return res.json({ received: true });
   }
@@ -7267,6 +7270,7 @@ app.all('/api/cron/process-reminders', async (req, res) => {
     const integrationsProcessed = await processIntegrationJobs();
 
     const summary = await processDueReminders();
+    await recordHeartbeat(cronClient, HEARTBEAT_REMINDER_CRON, { integrationsProcessed });
     res.json({
       success: true,
       timestamp: new Date().toISOString(),
@@ -9736,6 +9740,13 @@ registerProgressRoutes(app, {
   verifyTeacherAuth,
   requireSuperAdmin,
   getLearners: getAuthorizedLearnersForStudent
+});
+
+registerOpsRoutes(app, {
+  getClient: getSupabaseAdminClient,
+  verifyTeacherAuth,
+  requireSuperAdmin,
+  placementBeforeBooking: PLACEMENT_BEFORE_BOOKING
 });
 
 export {

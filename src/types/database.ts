@@ -48,6 +48,27 @@ export type LearnerMilestoneKind =
 export interface Database {
   public: {
     Tables: {
+      app_errors: {
+        Row: {
+          fingerprint: string;
+          source: 'client' | 'api';
+          message: string;
+          path: string | null;
+          stack: string | null;
+          last_account_id: string | null;
+          occurrences: number;
+          first_seen: string;
+          last_seen: string;
+        };
+        // Written only through the record_app_error RPC.
+        Insert: never;
+        Update: never;
+      };
+      ops_heartbeats: {
+        Row: { key: string; last_at: string; detail: Record<string, unknown> };
+        Insert: { key: string; last_at?: string; detail?: Record<string, unknown> };
+        Update: { key?: string; last_at?: string; detail?: Record<string, unknown> };
+      };
       profiles: {
         Row: {
           id: string;

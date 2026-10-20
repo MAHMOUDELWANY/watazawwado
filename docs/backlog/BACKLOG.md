@@ -227,32 +227,32 @@ Principles every PR/RN task follows:
 ## OPS: Launch operations (free tools only)
 
 ### OPS-01 Error monitoring
-- Priority P1 · Zone 🟢 · Size M · Status todo
+- Priority P1 · Zone 🟢 · Size M · Status done
 - Do: capture front-end errors (`ErrorBoundary.tsx`, `window.onerror`, unhandled rejections) and API 5xx into a new
   `app_errors` table through a small rate-limited endpoint (no third-party paid service; no personal data beyond the
   account id; strip query strings). Admin page lists them grouped by message with counts and last seen.
 - Done when: a thrown test error appears in the list; the endpoint refuses floods (rate limit test).
 
 ### OPS-02 System health page
-- Priority P1 · Zone 🟢 · Size M · Status todo
+- Priority P1 · Zone 🟢 · Size M · Status done
 - Do: `/dashboard/health` (admin only): last successful Brevo send, failed `notification_events` in 24 h, pending
   `integration_jobs` and their age, Google Calendar connections that lost their token, Zoom link creation failures,
   Stripe webhook last received, cron last run. Green / amber / red per row with the fix in one sentence.
 
 ### OPS-03 Uptime and cron heartbeat
-- Priority P1 · Zone 🟢 · Size S · Status todo
+- Priority P1 · Zone 🟢 · Size S · Status done
 - Do: a public `GET /api/health` (no secrets, no DB details) for a free uptime monitor, and record each reminder-cron
   run so OPS-02 can say "cron has not run for 2 hours". Write the owner's 5-minute setup steps for a free monitor
   (UptimeRobot or similar) in `docs/launch-runbook.md`.
 
 ### OPS-04 Launch-day runbook
-- Priority P1 · Zone 🟢 · Size S · Status todo
+- Priority P1 · Zone 🟢 · Size S · Status done
 - Do: `docs/launch-runbook.md`: pre-launch checklist (placement test mode off, test accounts removed, emails
   pasted into Supabase, firewall rules on), how to roll back in Vercel, who to message when payments fail, the first
   24 h checks. English.
 
 ### OPS-05 Placement test mode switch reminder
-- Priority P1 · Zone 🔴 (booking rule) · Size S · Status todo
+- Priority P1 · Zone 🔴 (booking rule) · Size S · Status done
 - Do: `PLACEMENT_BEFORE_BOOKING` is still `true` (temporary). Do not flip it. Add an admin banner on the health page
   showing its current value so the owner remembers to ask for the switch. The flip itself waits for the owner.
 
