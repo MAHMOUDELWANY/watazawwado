@@ -30,3 +30,7 @@ Change next week: <one thing>
   gates and decision rules (`RULES.md` §9, `PLAN.md` §8); 10 new calendar items (8 new series) on free Sundays;
   Weekly Numbers got 5 funnel columns. Found: no UTM/source capture and no analytics on the site, "14 subjects" on
   the homepage, "Islamic studies" on /pricing. 4 owner questions open.
+- 2026-10-20 (later): owner answers recorded (`PLAN.md` §9 items 6–8): IELTS B2 so no level claims, owner replies as
+  the academy within 12 h, Zad Lessons 1–3 approved, new series approved as ideas. Notion page "Script & Record
+  Videos" built from the owner's reference video (Steps / Ideas / Post Calendar / Categories); new Status "Review";
+  the 10 Week-1 scripts plus "Our Promises" and the parent-privacy post moved to Review.

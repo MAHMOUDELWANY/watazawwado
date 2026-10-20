@@ -209,6 +209,17 @@ education leads cost ~$28–35 and religion targeting no longer exists).
 5. A sample of Zad Essentials Lesson 1 is shown to signed-in accounts (not on the homepage), stopping at a point that
    makes the viewer want to book. Implemented; visible once the owner marks Lesson 1 reviewed.
 
+6. **[Decided 2026-10-20]** English credential: the owner holds IELTS B2 (not C1); content and the About page never
+   state a level or certificate. Teachers keep their normal hours (the site shows them in the family's time zone).
+   The owner answers all messages as the academy ("the Watazawwado team"), within 12 hours; a support person is
+   added once the academy grows. The new series from the external research review are approved as ideas; each
+   script waits in the Notion **Review** column for the owner.
+7. **[Decided 2026-10-20]** Zad Essentials Lessons 1–3 reviewed and approved by the owner, so "The mystery visitor"
+   teaser is unblocked.
+8. **[Decided 2026-10-20]** Production board in Notion: page **Script & Record Videos** under the hub (tabs Steps,
+   Ideas, Post Calendar, Categories, modelled on the owner's reference video). Status flow: Idea → Review (script
+   written, owner reviews) → Scripted (approved, ready to film) → Filmed → Edited → Scheduled → Published.
+
 Open: none.
 
 The content calendar of record is the Notion **Watazawwado Content Hub** (link in `LOG.md`): this file holds the
