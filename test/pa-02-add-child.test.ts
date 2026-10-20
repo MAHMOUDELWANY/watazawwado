@@ -16,6 +16,17 @@ describe('PA-02 add another child after onboarding', () => {
     assert.ok(route.includes(".delete().eq('id', child.id)"), 'no orphan child if the guardian link fails');
   });
 
+  it('accepts only catalogue subjects and their levels, and a retry returns the child already added', () => {
+    assert.ok(route.includes('findSubject(req.body.learningInterest.trim())'));
+    assert.ok(route.includes('levelsFor(subject)'));
+    assert.ok(route.includes('alreadyAdded: true'));
+  });
+
+  it('tells the rest of the portal to reload the profile after adding', () => {
+    assert.ok(fs.readFileSync('src/student/components/AddChildForm.tsx', 'utf8').includes('window.dispatchEvent(new Event(PROFILE_CHANGED_EVENT))'));
+    assert.ok(fs.readFileSync('src/student/StudentApp.tsx', 'utf8').includes('window.addEventListener(PROFILE_CHANGED_EVENT, reload)'));
+  });
+
   it('never changes the parent profile and never trusts a teacher id that is not an active public teacher', () => {
     assert.ok(!/from\('students'\)\s*\.update/.test(route), 'no update to the parent row');
     assert.ok(route.includes('publicTeachers.find(t => t.id === req.body.teacherId)'));

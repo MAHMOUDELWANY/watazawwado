@@ -555,6 +555,17 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
         </section>
       )}
 
+      {/* PA-02: a personal account can add a child too. */}
+      {!(profile?.learnerType === 'child' || (Array.isArray(profile?.linkedChildren) && profile.linkedChildren.length > 0)) && profile?.onboardingCompleted !== false && (
+        <Link
+          to="/student/profile#add-child"
+          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <Plus className="w-4 h-4 text-accent" />
+          <span>{isAr ? 'عايز ابنك أو بنتك يتعلموا معانا كمان؟ ضيفهم لحسابك.' : 'Want your child to learn with us too? Add them to your account.'}</span>
+        </Link>
+      )}
+
       {/* ========================================================================= */}
       {/* 3. COMMAND CENTER: TWO-COLUMN BALANCED DESKTOP LAYOUT */}
       {/* ========================================================================= */}

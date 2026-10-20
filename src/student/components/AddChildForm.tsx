@@ -6,6 +6,7 @@ import { CHILD_MIN_AGE, CHILD_MAX_AGE, isChildAge } from '../../lib/ageRules';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Select } from '../../components/ui/Select';
+import { PROFILE_CHANGED_EVENT } from '../activeLearner';
 
 /**
  * PA-02: a parent adds another child after onboarding (name, age 6-17, subject, level, teacher preference).
@@ -47,6 +48,7 @@ export function AddChildForm({ isAr, onAdded }: { isAr: boolean; onAdded: () => 
       setAge('');
       setOpen(false);
       onAdded();
+      window.dispatchEvent(new Event(PROFILE_CHANGED_EVENT));
     } catch (err: any) {
       setMessage({ ok: false, text: err?.message || (isAr ? 'حصلت مشكلة، حاول تاني.' : 'Something went wrong. Please try again.') });
     } finally {

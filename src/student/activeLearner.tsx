@@ -8,6 +8,9 @@ import { Select } from '../components/ui/Select';
  */
 export const ACTIVE_LEARNER_STORAGE_KEY = 'watazawwado_progress_last_child_id';
 
+/** Dispatched on window after the family changes (a child added); StudentApp reloads the profile. */
+export const PROFILE_CHANGED_EVENT = 'watazawwado:profile-changed';
+
 export interface PortalLearner { id: string; name: string }
 
 interface ActiveLearnerState {

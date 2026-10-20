@@ -66,6 +66,7 @@ import {
 import { createIntakeToken, readIntakeToken } from '../server/intake/intakeToken.js';
 import { registerCommunityRoutes, ensureTeacherThreads, PLACEMENT_BEFORE_BOOKING } from '../server/routes/community.js';
 import { registerCrmRoutes, createCrmTask } from '../server/routes/crm.js';
+import { findSubject, levelsFor } from '../src/components/onboarding/subjects.js';
 import { registerOpsRoutes, apiErrorMonitor, recordHeartbeat, HEARTBEAT_REMINDER_CRON, HEARTBEAT_STRIPE_WEBHOOK } from '../server/routes/ops.js';
 import { registerCurriculumRoutes } from '../server/routes/curriculum.js';
 import { registerProgressRoutes, validateFamilyNoteFields, canTeacherWriteForLesson } from '../server/routes/progress.js';
@@ -8124,13 +8125,31 @@ app.post('/api/student/children', rateLimit, verifyStudentAuth, async (req: any,
       return res.status(422).json({ error: `Each child must be ${CHILD_MIN_AGE} to ${CHILD_MAX_AGE} years old. Learners aged ${ADULT_MIN_AGE} or over open their own account.` });
     }
     const gender = req.body?.gender === 'female' ? 'female' : 'male';
-    const level = ['beginner', 'elementary', 'intermediate', 'advanced'].includes(req.body?.currentLevel) ? req.body.currentLevel : 'beginner';
-    const subject = typeof req.body?.learningInterest === 'string' && req.body.learningInterest.trim() ? req.body.learningInterest.trim().slice(0, 60) : 'quran-reading';
+    // Only a subject from the catalogue, and only one of that subject's levels (or beginner).
+    const subject = typeof req.body?.learningInterest === 'string' && findSubject(req.body.learningInterest.trim())
+      ? req.body.learningInterest.trim()
+      : 'quran-reading';
+    const subjectLevels = levelsFor(subject).map(l => l.id as string);
+    const level = subjectLevels.includes(req.body?.currentLevel) ? req.body.currentLevel : 'beginner';
     const teacherPref = ['male_teacher', 'female_teacher'].includes(req.body?.teacherGenderPreference) ? req.body.teacherGenderPreference : 'no_preference';
     const notes = typeof req.body?.notes === 'string' && req.body.notes.trim() ? req.body.notes.trim().slice(0, 500) : null;
 
     const learners = await getAuthorizedLearnersForStudent(supabaseAdmin, req);
-    if (learners.filter(l => !l.isPrimary).length >= 10) return res.status(422).json({ error: 'A family account can have up to 10 children.' });
+    // A retry (slow network, second tab) for the same child returns the child already added instead of a duplicate.
+    const childIds = learners.filter(l => !l.isPrimary).map(l => l.id);
+    if (childIds.length) {
+      const { data: sameChild } = await supabaseAdmin
+        .from('students')
+        .select('id, name, current_level, learning_interest')
+        .in('id', childIds)
+        .ilike('name', escapeLike(name))
+        .eq('age', Number(req.body.age))
+        .gte('created_at', new Date(Date.now() - 10 * 60_000).toISOString())
+        .limit(1);
+      const dup = sameChild?.[0];
+      if (dup) return res.status(200).json({ child: { id: dup.id, name: dup.name, currentLevel: dup.current_level, learningInterest: dup.learning_interest }, alreadyAdded: true });
+    }
+    if (childIds.length >= 10) return res.status(422).json({ error: 'A family account can have up to 10 children.' });
 
     const publicTeachers = await listPublicTeachers(supabaseAdmin);
     const picked = typeof req.body?.teacherId === 'string' ? publicTeachers.find(t => t.id === req.body.teacherId) : undefined;
