@@ -266,7 +266,7 @@ Principles every PR/RN task follows:
   booking to that child; "All children" view on home. Persist the choice.
 
 ### PA-02 Add another child after onboarding
-- Priority P1 · Zone 🔴 (account data + age rules) · Size M · Status todo
+- Priority P1 · Zone 🔴 (account data + age rules) · Size M · Status done
 - Do: confirm a guardian can add a child later from the profile (age 6–17, `src/lib/ageRules.ts`, server enforced),
   choose subject, level and teacher like onboarding. If it exists, make it obvious from the home page.
 

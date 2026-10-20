@@ -4,6 +4,13 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### PA-02 Add another child after onboarding (2026-10-20)
+- Result: done (main, after `/code-review`)
+- Changed: `api/index.ts` (new `POST /api/student/children`: account holder only after onboarding, child 6-17 via `isChildAge`, at most 10 children, catalogue subject and its levels only, teacher = the picked active teacher or routed by gender, guardian link, undo if the link fails, teachers + admin told through `announceNewStudent`; a retry within 10 minutes returns the same child), new `src/student/components/AddChildForm.tsx` (profile page; opens from `#add-child`), `StudentProfilePage.tsx`, `StudentHomePage.tsx` ("Add a child" tile in the family section and a line for personal accounts), `StudentApp.tsx` + `activeLearner.tsx` (profile reloads quietly after a child is added), `test/pa-02-add-child.test.ts`
+- Before: there was no way to add a child after onboarding; the home "Add child" link only opened the profile, which listed children without an add option.
+- Migration: none
+- Checks: tsc pass, npm test 1105 pass / 0 fail (5 skipped), build pass, ESM import scan clean. Review: 5 findings, 4 fixed (portal profile refresh, duplicate on retry, subject/level validation, home entry for personal accounts).
+- Not checked / risks: not tried with a real parent session or in the browser. Route tests read the source rather than calling it with a real account.
 ### PA-01 Child switcher everywhere (2026-10-20)
 - Result: done (main)
 - Changed: new `src/student/activeLearner.tsx` (context + header `ChildSwitcher`: "Whole family" or one learner, saved under the progress page's key), `src/student/StudentApp.tsx` (provider + switcher in the header, only for accounts with children), `StudentLessonsPage.tsx` (filters by the chosen learner; "For <name>" on each lesson in the whole-family view), `StudentProgressPage.tsx` (header and the page's own child cards stay in sync), `StudentPackagesPage.tsx` (new packages default to the chosen child; list narrowed to them plus account-level packages), `StudentBookingPage.tsx` (a new booking starts for the chosen child), `api/index.ts`, `test/pa-01-child-switcher.test.ts`
