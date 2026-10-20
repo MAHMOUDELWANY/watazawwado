@@ -177,7 +177,7 @@ Principles every PR/RN task follows:
 ## CRM: Super admin CRM
 
 ### CRM-01 Family timeline
-- Priority P1 · Zone 🟢 · Size L · Status todo
+- Priority P1 · Zone 🟢 · Size L · Status done
 - Files: `src/dashboard/pages/StudentDetailPage.tsx`, `LeadsPage.tsx`, read-only API.
 - Do: one chronological timeline per account (and per child): sign-up, onboarding, intake/AI guide request, placement,
   trial booked/attended/missed, payments, packages, lessons, refunds, teacher changes, chat started, notes. Built from

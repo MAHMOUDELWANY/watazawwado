@@ -34,6 +34,7 @@ import { dashboardFetch } from '../lib/dashboardApi';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 import { StudentEditModal } from '../components/StudentEditModal';
 import { PostLessonSummaryEditor } from '../components/PostLessonSummaryEditor';
+import { FamilyTimeline } from '../components/FamilyTimeline';
 import { useT } from '../../lib/language';
 
 export default function StudentDetailPage() {
@@ -676,6 +677,8 @@ export default function StudentDetailPage() {
               )}
             </div>
           )}
+
+          {isSuperAdmin && id && <FamilyTimeline studentId={id} />}
 
           {/* Bookings & Lessons History Table */}
           <div className="glass-card rounded-2xl p-6 border border-border shadow-2xs space-y-4">

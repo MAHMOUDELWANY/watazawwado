@@ -65,6 +65,7 @@ import {
 } from '../server/intake/intakeService.js';
 import { createIntakeToken, readIntakeToken } from '../server/intake/intakeToken.js';
 import { registerCommunityRoutes, ensureTeacherThreads, PLACEMENT_BEFORE_BOOKING } from '../server/routes/community.js';
+import { registerCrmRoutes } from '../server/routes/crm.js';
 import { registerOpsRoutes, apiErrorMonitor, recordHeartbeat, HEARTBEAT_REMINDER_CRON, HEARTBEAT_STRIPE_WEBHOOK } from '../server/routes/ops.js';
 import { registerCurriculumRoutes } from '../server/routes/curriculum.js';
 import { registerProgressRoutes, validateFamilyNoteFields, canTeacherWriteForLesson } from '../server/routes/progress.js';
@@ -9749,6 +9750,12 @@ registerProgressRoutes(app, {
   verifyTeacherAuth,
   requireSuperAdmin,
   getLearners: getAuthorizedLearnersForStudent
+});
+
+registerCrmRoutes(app, {
+  getClient: getSupabaseAdminClient,
+  verifyTeacherAuth,
+  requireSuperAdmin
 });
 
 registerOpsRoutes(app, {

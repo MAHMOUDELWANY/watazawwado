@@ -4,6 +4,13 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### CRM-01 Family timeline (2026-10-20)
+- Result: done (main)
+- Changed: new `server/routes/crm.ts` (`buildTimeline`, `GET /api/dashboard/admin/students/:id/timeline`, super admin only), `api/index.ts` (registration), new `src/dashboard/components/FamilyTimeline.tsx` on `StudentDetailPage.tsx` (admin only, filter chips by type, Arabic/English), `test/crm-01-family-timeline.test.ts`
+- What it shows (account + children found through `guardians.parent_email`): account created, first contact (lead), AI guide requests, placement started/finished/reviewed, trial and lessons booked/attended/missed/cancelled, payments started/confirmed/refunded, packages and cancelled-lesson credits, refund requests, chats started, teacher notes (family summary only, never private notes), trial follow-up sent.
+- Migration: none (read-only, existing tables)
+- Checks: tsc pass, npm test 1084 pass / 0 fail (5 skipped), build pass; route run against 5 real students (200, no query errors).
+- Not checked / risks: teacher changes are not in the timeline: there is no history table for `assigned_teacher_id` yet. Not opened in the browser (dashboard needs an admin login).
 ### RN-05 Trial → first paid lesson follow-up (2026-10-20)
 - Result: done (main, after `/code-review`)
 - Changed: new `server/notifications/trialFollowUp.ts`, run by the reminder cron in production only (`api/index.ts`); `test/rn-05-trial-follow-up.test.ts`
