@@ -679,6 +679,30 @@ export default function StudentDetailPage() {
             </div>
           )}
 
+          {/* TE-02: placement result and a one-tap chat with the family. */}
+          {(studentDetail.placement || studentDetail.chat_thread_id) && (
+            <div className="glass-card rounded-2xl p-5 border border-border shadow-2xs flex flex-wrap items-center justify-between gap-3">
+              {studentDetail.placement ? (
+                <div className="text-sm space-y-0.5">
+                  <div className="font-semibold text-foreground">{t('Placement test', 'اختبار تحديد المستوى')}</div>
+                  <div className="text-muted-foreground">
+                    {studentDetail.placement.level ? <span className="capitalize">{studentDetail.placement.level}</span> : null}
+                    {studentDetail.placement.score != null && studentDetail.placement.max_score ? ` · ${studentDetail.placement.score}/${studentDetail.placement.max_score}` : ''}
+                    {' · '}{studentDetail.placement.reviewed ? t('reviewed', 'اتراجع') : t('waiting for review', 'مستني مراجعة')}
+                  </div>
+                </div>
+              ) : <span className="text-sm text-muted-foreground">{t('No placement test yet.', 'لسه معملش اختبار مستوى.')}</span>}
+              {studentDetail.chat_thread_id && (
+                <Link
+                  to={`/dashboard/messages?thread=${studentDetail.chat_thread_id}`}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-surface-subtle"
+                >
+                  {t('Message the family', 'كلّم الأسرة')}
+                </Link>
+              )}
+            </div>
+          )}
+
           {isSuperAdmin && id && <CrmNotesPanel studentId={id} />}
           {isSuperAdmin && id && <FamilyTimeline studentId={id} />}
 

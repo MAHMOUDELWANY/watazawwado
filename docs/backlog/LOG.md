@@ -18,6 +18,13 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Checks: tsc pass; npm test 1111 pass / 7 fail / 5 skipped in the worktree, the 7 being CRLF checkout artefacts (same 4 files 22/22 pass after an LF re-checkout); build pass (9 pages prerendered); local static preview at 375px RTL (/safety, /pricing, homepage, first touch kept across pages); production: /safety 200 and in sitemap, /pricing copy live, `/_vercel/insights/script.js` 200, migration columns present.
 - Not checked / risks: Admin views (CRM timeline, leads source badge and filter) not opened in the browser (no admin login here). Accounts that finished onboarding before today have no source. Other pages still say "Islamic studies" (About, layout meta, privacy, terms, home SEO title); left for a copy pass, the terms need a version bump.
 
+### TE-02 Student card for teachers (2026-10-20)
+- Result: done (main)
+- Already there: goals from onboarding, milestones, lesson history and notes on `StudentDetailPage.tsx`.
+- Added: `GET /api/dashboard/students/:id` returns the latest submitted/reviewed `placement` (level, score, reviewed or not) and `chat_thread_id` (the teacher's lesson chat with this family, or the admin's support chat); the page shows a placement line and "Message the family" (`/dashboard/messages?thread=...`). Files: `api/index.ts`, `src/dashboard/pages/StudentDetailPage.tsx`, `src/dashboard/types.ts`, `test/te-02-teacher-student-card.test.ts`
+- Money: the test calls the route with the teacher token for a real student assigned to that teacher and walks the whole response for any fee/price/amount/payment/refund/currency key: none.
+- Migration: none
+- Checks: tsc pass, npm test 1144 pass / 0 fail (5 skipped), build pass. Dashboard not opened in a browser (owner rule).
 ### TE-01 Today page as a cockpit (2026-10-20)
 - Result: done (main)
 - Changed: `api/index.ts` (`GET /api/dashboard/today` adds `summary.next_lesson_context`: the learner's age, level, subject and the latest family summary + next steps; and `missing_notes`: the teacher's completed lessons of the last 14 days with no family summary, up to 10, with the learner's own name), `src/dashboard/pages/TodayPage.tsx` (the next lesson card now leads the page, above the numbers, with age, level, "last time (to the family)" and next steps next to the existing Start-as-host button; "Summaries still to write" after today's lessons, each linking to the student page where the PR-06 editor is), `src/dashboard/types.ts`, `test/te-01-today-cockpit.test.ts`

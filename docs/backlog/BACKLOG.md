@@ -340,7 +340,7 @@ Principles every PR/RN task follows:
   the rest of today, then notes still missing from past lessons (feeds PR-06).
 
 ### TE-02 Student card for teachers
-- Priority P1 · Zone 🟢 · Size M · Status todo
+- Priority P1 · Zone 🟢 · Size M · Status done
 - Do: in the teacher's student view: goals from onboarding, placement result, milestones, last 5 lessons, chat shortcut.
   No money anywhere (test that payment fields are absent for a teacher token).
 

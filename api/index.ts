@@ -2875,6 +2875,23 @@ app.get('/api/dashboard/students/:id', verifyTeacherAuth, async (req: any, res: 
     }));
 
     // Format bookings history
+    // TE-02: latest placement result and the conversation with this family (the teacher's lesson chat, or the
+    // admin's support chat). No money is read here.
+    const learnerAccount = await resolveLearnerAccount(supabase, id);
+    const isAdminViewer = req.teacherUser?.role === 'super_admin';
+    const [placementRes, threadRes] = await Promise.all([
+      supabase.from('placement_tests')
+        .select('id, service_id, status, score, max_score, suggested_level, admin_level, submitted_at, reviewed_at')
+        .eq('learner_student_id', id).in('status', ['submitted', 'reviewed'])
+        .order('created_at', { ascending: false }).limit(1),
+      learnerAccount.userId
+        ? (isAdminViewer
+            ? supabase.from('chat_threads').select('id').eq('kind', 'support').eq('owner_user_id', learnerAccount.userId).limit(1)
+            : supabase.from('chat_threads').select('id').eq('kind', 'lesson').eq('owner_user_id', learnerAccount.userId).eq('teacher_id', req.teacherUser?.id).limit(1))
+        : Promise.resolve({ data: [] as any[] })
+    ]);
+    const latestPlacement = placementRes.data?.[0] || null;
+
     const formattedBookings = allBookings.map(b => ({
       id: b.id,
       reference_code: b.reference_code,
@@ -2939,7 +2956,18 @@ app.get('/api/dashboard/students/:id', verifyTeacherAuth, async (req: any, res: 
       lead_context: leadContext,
       notes: formattedNotes,
       milestones: milestonesRes.data || [],
-      services: servicesRes.data || []
+      services: servicesRes.data || [],
+      placement: latestPlacement ? {
+        id: latestPlacement.id,
+        service_id: latestPlacement.service_id,
+        status: latestPlacement.status,
+        score: latestPlacement.score,
+        max_score: latestPlacement.max_score,
+        level: latestPlacement.admin_level || latestPlacement.suggested_level || null,
+        reviewed: latestPlacement.status === 'reviewed',
+        at: latestPlacement.reviewed_at || latestPlacement.submitted_at
+      } : null,
+      chat_thread_id: threadRes.data?.[0]?.id || null
     });
   } catch (err) {
     console.error('[Dashboard Student Detail Error]', err);

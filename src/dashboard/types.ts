@@ -328,6 +328,10 @@ export interface DashboardStudentDetail {
   } | null;
   notes: StudentNote[];
   milestones?: StudentMilestoneItem[];
+  /** TE-02: latest submitted or reviewed placement test. */
+  placement?: { id: string; service_id: string; status: string; score: number | null; max_score: number | null; level: string | null; reviewed: boolean; at: string | null } | null;
+  /** TE-02: the viewer's conversation with this family (lesson chat for a teacher, support chat for the admin). */
+  chat_thread_id?: string | null;
   services?: Array<{ id: string; title: string; arabic_title?: string }>;
 }
 
