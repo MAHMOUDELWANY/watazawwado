@@ -7,7 +7,7 @@ const page = fs.readFileSync('src/student/pages/StudentPackagesPage.tsx', 'utf8'
 
 describe('RN-03 renew the same package', () => {
   it('offers "Renew this package" on real packages only, not on cancelled-lesson credits', () => {
-    assert.match(page, /!ent\.isCredit && \(ent\.status === 'active' \|\| ent\.status === 'exhausted'\) && \(\s*<button[\s\S]*?startRenew\(ent, catalogItems\)/);
+    assert.match(page, /!ent\.isCredit && \(ent\.status === 'active' \|\| ent\.status === 'exhausted'\) && \(\s*<button[\s\S]*?startRenew\(ent, catalogItems\b/);
     assert.ok(page.includes("'Renew this package'") && page.includes("'جدّد نفس الباقة'"));
   });
 
@@ -16,6 +16,8 @@ describe('RN-03 renew the same package', () => {
     assert.ok(fn.includes('c.id === ent.packageCatalogId'), 'matches the same catalogue item');
     assert.ok(fn.includes('setPackageMinutes('), 'selects the same lesson length');
     assert.ok(fn.includes('setSelectedLearnerId(ent.learnerStudentId)'), 'selects the same learner');
+    assert.ok(fn.includes('learners.some((l: any) => l.id === ent.learnerStudentId)'), 'only a learner the account still lists');
+    assert.ok(fn.includes('if (catalog.length === 0) return;'), 'a catalogue that failed to load is not "no longer offered"');
     assert.ok(!/price/i.test(fn), 'renewal never touches a price; the server computes it');
   });
 

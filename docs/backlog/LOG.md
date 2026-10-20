@@ -4,6 +4,12 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### RN-03 One-click renew the same package (2026-10-20)
+- Result: done (main, after `/code-review`)
+- Changed: `src/student/pages/StudentPackagesPage.tsx` ("Renew this package" on each real package card; selects the same catalogue item, lesson length and learner, highlights and scrolls to it; `?renew=<entitlementId>` does the same on load; a note if that package is no longer offered), `server/notifications/lowBalance.ts` (RN-02 notice links to `?renew=`), `test/rn-03-renew-package.test.ts`
+- Migration: none. The terms and early-start checkboxes are still required and the server still computes the price (`/api/student/packages/select` unchanged).
+- Checks: tsc pass, npm test 1072 pass / 0 fail (5 skipped; one earlier run had an unrelated ECONNRESET in the availability test, a rerun passed), build pass. Review: 6 findings, 5 fixed (scroll after render, clear highlight on length change / purchase, learner must still be listed, empty catalogue isn't "no longer offered", hook import).
+- Not checked / risks: not opened in a browser (needs a signed-in account with a package). The tests read the page source rather than render it.
 ### RN-02 Low-balance notice (on-site + email) (2026-10-20)
 - Result: done (main, after `/code-review`)
 - Changed: new `server/notifications/lowBalance.ts`; `api/index.ts` calls it after the lesson-outcome RPC, only when a credit was used; `test/rn-02-low-balance.test.ts`

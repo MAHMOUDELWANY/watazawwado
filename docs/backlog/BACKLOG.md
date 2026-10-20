@@ -147,7 +147,7 @@ Principles every PR/RN task follows:
 - Done when: tests prove one notice per threshold and none for refunded/expired packages.
 
 ### RN-03 One-click renew the same package
-- Priority P1 · Zone 🔴 (purchase flow) · Size M · Status todo · Depends on RN-01
+- Priority P1 · Zone 🔴 (purchase flow) · Size M · Status done · Depends on RN-01
 - Do: "Renew this package" opens the existing purchase flow pre-filled with the same band, length and size (the server
   still computes the price; terms and early-start checkboxes still required).
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { hasBookingDraft } from '../../components/booking/BookingFlow';
 import { DateTime } from 'luxon';
@@ -159,27 +159,37 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
   }, [fetchPackages, fetchLedger]);
 
   /** Pre-selects the same package (catalogue item, lesson length, learner); the server still prices it. */
-  const startRenew = useCallback((ent: any, catalog: any[]) => {
+  const renewScrollPending = useRef(false);
+  const startRenew = useCallback((ent: any, catalog: any[], learners: any[]) => {
+    // An empty catalogue means it failed to load, not that the package is gone.
+    if (catalog.length === 0) return;
     const cat = catalog.find((c: any) => c.id === ent.packageCatalogId && c.is_active !== false);
     setRenewMissing(!cat);
     setRenewCatalogId(cat ? cat.id : null);
     if (!cat) return;
     setPackageMinutes(Number(cat.eligibility_rules?.duration_minutes ?? ent.durationMinutes ?? 60));
-    if (ent.learnerStudentId) setSelectedLearnerId(ent.learnerStudentId);
-    // After the catalogue re-renders with the chosen length.
-    requestAnimationFrame(() => document.getElementById(`package-${cat.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+    // Only a learner the account still lists; otherwise keep the current choice.
+    if (ent.learnerStudentId && learners.some((l: any) => l.id === ent.learnerStudentId)) setSelectedLearnerId(ent.learnerStudentId);
+    renewScrollPending.current = true;
   }, []);
+
+  // Scroll once the catalogue has re-rendered with the chosen length (an effect runs after the commit).
+  useEffect(() => {
+    if (!renewScrollPending.current || !renewCatalogId) return;
+    renewScrollPending.current = false;
+    document.getElementById(`package-${renewCatalogId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [renewCatalogId, packageMinutes]);
 
   // /student/packages?renew=<entitlementId> (the low-balance notice links here).
   const renewParam = searchParams.get('renew');
-  const renewParamApplied = React.useRef(false);
+  const renewParamApplied = useRef(false);
   useEffect(() => {
     // Once: a refetch after buying must not jump back to the renew target.
     if (!renewParam || loading || renewParamApplied.current) return;
     const ent = (data.entitlements || []).find((e: any) => e.id === renewParam && !e.isCredit);
     if (!ent) return;
     renewParamApplied.current = true;
-    startRenew(ent, Array.isArray(data.catalog) ? data.catalog : []);
+    startRenew(ent, Array.isArray(data.catalog) ? data.catalog : [], Array.isArray(data.learners) ? data.learners : []);
   }, [renewParam, loading, data, startRenew]);
 
   const handleSelectPackage = async (catalogItem: any) => {
@@ -209,6 +219,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
 
       // Re-fetch entitlements and ledger
       await Promise.all([fetchPackages(), fetchLedger()]);
+      setRenewCatalogId(null);
 
       // Open claim modal with the newly created entitlement
       setActiveClaimEntitlement({
@@ -635,7 +646,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                     {!ent.isCredit && (ent.status === 'active' || ent.status === 'exhausted') && (
                       <button
                         type="button"
-                        onClick={() => startRenew(ent, catalogItems)}
+                        onClick={() => startRenew(ent, catalogItems, learners)}
                         className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-surface-subtle cursor-pointer min-h-[40px]"
                       >
                         <RotateCcw className="w-3.5 h-3.5 text-accent" />
@@ -727,7 +738,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
               <button
                 key={m}
                 type="button"
-                onClick={() => setPackageMinutes(m)}
+                onClick={() => { setPackageMinutes(m); setRenewCatalogId(null); setRenewMissing(false); }}
                 aria-pressed={packageMinutes === m}
                 className={`px-3 py-1.5 rounded-xl border text-sm font-medium cursor-pointer ${packageMinutes === m ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-muted-foreground hover:text-foreground'}`}
               >
