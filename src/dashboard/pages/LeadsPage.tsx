@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { DashboardLead, LeadStatus } from '../types';
 import { LeadDetailModal } from '../components/LeadDetailModal';
+import { LeadsBoard } from '../components/LeadsBoard';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 import { useT } from '../../lib/language';
@@ -84,6 +85,7 @@ export default function LeadsPage() {
   const [error, setError] = useState<string | null>(null);
   const [selectedLead, setSelectedLead] = useState<DashboardLead | null>(null);
   const [lastRefreshed, setLastRefreshed] = useState<DateTime | null>(null);
+  const [view, setView] = useState<'list' | 'board'>('list');
 
   const fetchLeads = useCallback(async (isManual = false) => {
     if (isManual) setRefreshing(true);
@@ -340,8 +342,24 @@ export default function LeadsPage() {
         </div>
       )}
 
+      <div className="flex gap-1.5" role="group" aria-label={t('View', 'طريقة العرض')}>
+        {(['list', 'board'] as const).map((v) => (
+          <button
+            key={v}
+            type="button"
+            aria-pressed={view === v}
+            onClick={() => setView(v)}
+            className={`px-3 py-1.5 rounded-xl border text-sm font-medium cursor-pointer ${view === v ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-muted-foreground hover:text-foreground'}`}
+          >
+            {v === 'list' ? t('List', 'قائمة') : t('Board', 'لوحة المراحل')}
+          </button>
+        ))}
+      </div>
+
       {/* Leads List */}
-      {loading ? (
+      {view === 'board' && !loading ? (
+        <LeadsBoard leads={filteredLeads} stages={STAGE_CONFIG} onMoved={() => fetchLeads(true)} onOpen={setSelectedLead} />
+      ) : loading ? (
         <div className="p-12 text-center text-sm text-muted-foreground animate-pulse">
           {t('Loading…', 'جارٍ التحميل…')}
         </div>

@@ -185,7 +185,7 @@ Principles every PR/RN task follows:
   Filters by type. Admin only.
 
 ### CRM-02 Pipeline board
-- Priority P1 · Zone 🟢 · Size M · Status todo
+- Priority P1 · Zone 🟢 · Size M · Status done
 - Do: a kanban view of the existing lead statuses (`server/leadTransitions.ts`: visitor → lead → contacted →
   trial_booked → trial_completed → potential_student → active_student → returning_student / lost). Drag only along
   allowed transitions (the server validates with `ALLOWED_LEAD_TRANSITIONS`). Counts per column, days in stage.

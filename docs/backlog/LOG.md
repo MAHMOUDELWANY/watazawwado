@@ -4,6 +4,12 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### CRM-02 Pipeline board (2026-10-20)
+- Result: done (main)
+- Changed: new `src/dashboard/components/LeadsBoard.tsx` (one column per lead status with counts; drag a card or use its "Move to" menu, offered moves come from `ALLOWED_LEAD_TRANSITIONS`; days since the lead last changed), `src/dashboard/pages/LeadsPage.tsx` (List / Board switch; search and filters apply to both), `test/crm-02-pipeline-board.test.ts`
+- Migration: none. Moves use the existing `PATCH /api/dashboard/leads/:id`, which validates the transition (including the active_student side effects).
+- Checks: tsc pass, npm test 1086 pass / 0 fail (5 skipped), build pass. Test proves every offered move is accepted by the server map.
+- Not checked / risks: "days in stage" is days since `leads.updated_at` (any edit resets it); a true stage-entered time needs a status history. Not opened in the browser (no dev login for the dashboard UI). Dragging is mouse-only by nature; the menu covers phones and keyboard.
 ### CRM-01 Family timeline (2026-10-20)
 - Result: done (main)
 - Changed: new `server/routes/crm.ts` (`buildTimeline`, `GET /api/dashboard/admin/students/:id/timeline`, super admin only), `api/index.ts` (registration), new `src/dashboard/components/FamilyTimeline.tsx` on `StudentDetailPage.tsx` (admin only, filter chips by type, Arabic/English), `test/crm-01-family-timeline.test.ts`
