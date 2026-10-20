@@ -4,6 +4,12 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### CRM-03 Admin notes and tags per family (2026-10-20)
+- Result: done (main)
+- Changed: migration `20261020000001_crm_notes_tags.sql` (`crm_notes`, `crm_tags`; RLS on, service_role only), `server/routes/crm.ts` (`GET /api/dashboard/admin/students/:id/crm`, `POST/DELETE .../crm/notes`, `PUT .../crm/tags`, super admin only; `normalizeTags`), new `src/dashboard/components/CrmNotesPanel.tsx` on `StudentDetailPage.tsx` (admin only: tag chips with the four suggested tags in Arabic/English, free tags, notes with delete), `src/types/database.ts`, `test/crm-03-notes-tags.test.ts`
+- Migration: applied to production 2026-10-20.
+- Checks: tsc pass, npm test 1090 pass / 0 fail (5 skipped; the first run hit the recurring ECONNRESET flake in `phase5g-security`, a rerun passed), build pass; round trip on one real student (add/replace tags, add/read/delete a note, restore), nothing left behind.
+- Not checked / risks: notes are per account; the table allows a child id but the panel doesn't offer it yet. Not opened in the browser (no dev login for the dashboard UI). The `phase5g-security` ECONNRESET flake shows up in about 1 of 3 full runs.
 ### CRM-02 Pipeline board (2026-10-20)
 - Result: done (main)
 - Changed: new `src/dashboard/components/LeadsBoard.tsx` (one column per lead status with counts; drag a card or use its "Move to" menu, offered moves come from `ALLOWED_LEAD_TRANSITIONS`; days since the lead last changed), `src/dashboard/pages/LeadsPage.tsx` (List / Board switch; search and filters apply to both), `test/crm-02-pipeline-board.test.ts`

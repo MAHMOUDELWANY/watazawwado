@@ -191,7 +191,7 @@ Principles every PR/RN task follows:
   allowed transitions (the server validates with `ALLOWED_LEAD_TRANSITIONS`). Counts per column, days in stage.
 
 ### CRM-03 Admin notes and tags per family
-- Priority P1 · Zone 🟢 (additive) · Size M · Status todo
+- Priority P1 · Zone 🟢 (additive) · Size M · Status done
 - Do: new table `crm_notes` (account id, child id nullable, body, author, created_at) and `crm_tags` (account id, tag).
   Suggested tags: "sibling likely", "prefers female teacher", "time zone tricky", "pay-later trusted". Admin only (RLS).
 

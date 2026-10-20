@@ -64,6 +64,16 @@ export interface Database {
         Insert: never;
         Update: never;
       };
+      crm_notes: {
+        Row: { id: string; account_student_id: string; child_student_id: string | null; body: string; author_id: string | null; created_at: string };
+        Insert: { id?: string; account_student_id: string; child_student_id?: string | null; body: string; author_id?: string | null; created_at?: string };
+        Update: { child_student_id?: string | null; body?: string };
+      };
+      crm_tags: {
+        Row: { account_student_id: string; tag: string; created_by: string | null; created_at: string };
+        Insert: { account_student_id: string; tag: string; created_by?: string | null; created_at?: string };
+        Update: never;
+      };
       ops_heartbeats: {
         Row: { key: string; last_at: string; detail: Record<string, unknown> };
         Insert: { key: string; last_at?: string; detail?: Record<string, unknown> };

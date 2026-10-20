@@ -109,8 +109,82 @@ export function buildTimeline(input: TimelineInput): TimelineEvent[] {
   return ev.sort((a, b) => Date.parse(b.at) - Date.parse(a.at));
 }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** CRM-03 suggested tags (any short text is allowed too). */
+export const SUGGESTED_TAGS = ['sibling likely', 'prefers female teacher', 'time zone tricky', 'pay-later trusted'];
+
+/** Trimmed, lower-cased, de-duplicated tags of 1-60 characters; at most 20. */
+export function normalizeTags(input: unknown): string[] | null {
+  if (!Array.isArray(input)) return null;
+  const out = [...new Set(input.map((t) => (typeof t === 'string' ? t.trim().toLowerCase().replace(/\s+/g, ' ') : '')).filter(Boolean))];
+  if (out.length > 20 || out.some((t) => t.length > 60)) return null;
+  return out;
+}
+
 export function registerCrmRoutes(app: express.Express, deps: CrmDeps) {
   const { getClient, verifyTeacherAuth, requireSuperAdmin } = deps;
+  const guard = [verifyTeacherAuth, requireSuperAdmin];
+
+  // ---- CRM-03 notes and tags (super admin only; never shown to families or teachers)
+  app.get('/api/dashboard/admin/students/:id/crm', ...guard, async (req: any, res: any) => {
+    const client = getClient();
+    if (!client) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+    if (!UUID_RE.test(String(req.params.id))) return res.status(400).json({ error: 'Invalid student id.' });
+    const [notes, tags] = await Promise.all([
+      client.from('crm_notes').select('id, child_student_id, body, created_at').eq('account_student_id', req.params.id).order('created_at', { ascending: false }).limit(200),
+      client.from('crm_tags').select('tag').eq('account_student_id', req.params.id).order('created_at', { ascending: true })
+    ]);
+    if (notes.error || tags.error) return res.status(500).json({ error: 'Failed to load notes.' });
+    return res.json({ notes: notes.data || [], tags: (tags.data || []).map((t: any) => t.tag), suggestedTags: SUGGESTED_TAGS });
+  });
+
+  app.post('/api/dashboard/admin/students/:id/crm/notes', ...guard, async (req: any, res: any) => {
+    const client = getClient();
+    if (!client) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+    if (!UUID_RE.test(String(req.params.id))) return res.status(400).json({ error: 'Invalid student id.' });
+    const body = typeof req.body?.body === 'string' ? req.body.body.trim() : '';
+    if (!body || body.length > 4000) return res.status(400).json({ error: 'Write a note of 1 to 4000 characters.' });
+    const childId = req.body?.childId;
+    if (childId != null && !UUID_RE.test(String(childId))) return res.status(400).json({ error: 'Invalid child id.' });
+    const { data, error } = await client
+      .from('crm_notes')
+      .insert({ account_student_id: req.params.id, child_student_id: childId || null, body, author_id: req.teacherUser?.id || null })
+      .select('id, child_student_id, body, created_at')
+      .single();
+    if (error) return res.status(error.code === '23503' ? 404 : 500).json({ error: error.code === '23503' ? 'Student not found.' : 'Failed to save the note.' });
+    return res.status(201).json({ note: data });
+  });
+
+  app.delete('/api/dashboard/admin/students/:id/crm/notes/:noteId', ...guard, async (req: any, res: any) => {
+    const client = getClient();
+    if (!client) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+    if (!UUID_RE.test(String(req.params.id)) || !UUID_RE.test(String(req.params.noteId))) return res.status(400).json({ error: 'Invalid id.' });
+    const { error } = await client.from('crm_notes').delete().eq('id', req.params.noteId).eq('account_student_id', req.params.id);
+    if (error) return res.status(500).json({ error: 'Failed to delete the note.' });
+    return res.json({ success: true });
+  });
+
+  // Replaces the family's tag set with the one sent.
+  app.put('/api/dashboard/admin/students/:id/crm/tags', ...guard, async (req: any, res: any) => {
+    const client = getClient();
+    if (!client) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+    if (!UUID_RE.test(String(req.params.id))) return res.status(400).json({ error: 'Invalid student id.' });
+    const tags = normalizeTags(req.body?.tags);
+    if (!tags) return res.status(400).json({ error: 'Send up to 20 tags of at most 60 characters.' });
+    const id = req.params.id;
+    const del = tags.length
+      ? await client.from('crm_tags').delete().eq('account_student_id', id).not('tag', 'in', `(${tags.map((t) => `"${t.replace(/"/g, '\\"')}"`).join(',')})`)
+      : await client.from('crm_tags').delete().eq('account_student_id', id);
+    if (del.error) return res.status(500).json({ error: 'Failed to save tags.' });
+    if (tags.length) {
+      const { error } = await client
+        .from('crm_tags')
+        .upsert(tags.map((tag) => ({ account_student_id: id, tag, created_by: req.teacherUser?.id || null })), { onConflict: 'account_student_id,tag', ignoreDuplicates: true });
+      if (error) return res.status(error.code === '23503' ? 404 : 500).json({ error: error.code === '23503' ? 'Student not found.' : 'Failed to save tags.' });
+    }
+    return res.json({ tags });
+  });
 
   app.get('/api/dashboard/admin/students/:id/timeline', verifyTeacherAuth, requireSuperAdmin, async (req: any, res: any) => {
     const client = getClient();

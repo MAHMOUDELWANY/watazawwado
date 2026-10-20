@@ -35,6 +35,7 @@ import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 import { StudentEditModal } from '../components/StudentEditModal';
 import { PostLessonSummaryEditor } from '../components/PostLessonSummaryEditor';
 import { FamilyTimeline } from '../components/FamilyTimeline';
+import { CrmNotesPanel } from '../components/CrmNotesPanel';
 import { useT } from '../../lib/language';
 
 export default function StudentDetailPage() {
@@ -678,6 +679,7 @@ export default function StudentDetailPage() {
             </div>
           )}
 
+          {isSuperAdmin && id && <CrmNotesPanel studentId={id} />}
           {isSuperAdmin && id && <FamilyTimeline studentId={id} />}
 
           {/* Bookings & Lessons History Table */}
