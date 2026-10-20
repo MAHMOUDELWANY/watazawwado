@@ -302,7 +302,7 @@ Principles every PR/RN task follows:
   when the teacher writes it.
 
 ### ST-03 Booking flow polish
-- Priority P1 · Zone 🟢 (UI only, no rule changes) · Size M · Status todo
+- Priority P1 · Zone 🟢 (UI only, no rule changes) · Size M · Status done
 - Files: `src/student/pages/StudentBookingPage.tsx` (1,082 lines).
 - Do: audit with `impeccable` and `break-ui`: step clarity, time-zone labels on every time, slow network states,
   double-tap protection on submit, back button keeps the draft, errors in plain words. Do not change any booking rule

@@ -121,7 +121,7 @@ export const bookingRepository = {
       scheduledEndUtc = times.scheduledEndUtc;
       cairoTimeDisplay = times.cairoTimeDisplay;
     } catch (tzErr: any) {
-      return { success: false, error: `Invalid date or time scheduling: ${tzErr?.message || 'Please verify selected slot.'}` };
+      return { success: false, error: 'There is a problem with the time you chose. Please pick it again (invalid date or time).' };
     }
 
     // Server-side slot pre-validation to avoid double booking
@@ -206,7 +206,7 @@ export const bookingRepository = {
       bookingStatus = resData.status || bookingStatus;
     } catch (err: any) {
       console.error('Server booking error:', err);
-      return { success: false, error: 'Database service is currently unavailable. Please try again later or message us on WhatsApp.' };
+      return { success: false, error: "We couldn't reach our server. Please check your internet connection and try again." };
     }
 
     // Trigger Server-Side Integrations (Google Calendar & Zoom) only for confirmed bookings

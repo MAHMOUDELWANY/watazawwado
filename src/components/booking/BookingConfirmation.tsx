@@ -180,7 +180,7 @@ export const BookingConfirmation: React.FC<BookingConfirmationProps> = ({
                 {confirmation.timeDisplay}
               </span>
               <span className="text-[11px] text-foreground/60 dark:text-muted-foreground/60 block">
-                {confirmation.timezone} ({confirmation.durationMinutes} min)
+                {confirmation.timezone} ({confirmation.durationMinutes} {isEn ? 'min' : 'دقيقة'})
               </span>
             </div>
           </div>

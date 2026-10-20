@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { bookingErrorText } from './bookingErrors';
 import { motion, AnimatePresence } from 'motion/react';
 import { CheckCircle2 } from 'lucide-react';
 import {
@@ -133,6 +134,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     return initialStep && initialStep >= 1 && initialStep <= 7 ? initialStep : 1;
   });
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const submittingRef = useRef(false);
   const [confirmation, setConfirmation] = useState<BookingConfirmationData | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [pendingBooking, setPendingBooking] = useState<BookingConfirmationData | null>(() => draft?.pendingBooking || null);
@@ -439,6 +441,9 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   };
 
   const handleSubmitBooking = async () => {
+    // Two quick taps run before React re-renders the disabled button; the ref stops the second one.
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     setIsSubmitting(true);
     setValidationError(null);
     try {
@@ -454,13 +459,9 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
         setIsCheckoutModalOpen(true);
       }
     } catch (err: any) {
-      setValidationError(
-        err?.message ||
-        (isEn
-          ? 'Unable to finalize your booking right now. Please try again or message us on WhatsApp.'
-          : 'تعذر استكمال الحجز في الوقت الحالي، يرجى إعادة المحاولة أو مراسلتنا مباشرة.')
-      );
+      setValidationError(bookingErrorText(err?.message, isEn));
     } finally {
+      submittingRef.current = false;
       setIsSubmitting(false);
     }
   };
