@@ -72,6 +72,7 @@ import { announceNewStudent, type NewLearner } from '../server/onboarding/newStu
 import { isAdultAge, isGuardianAge, isChildAge, parseAge, ADULT_MIN_AGE, GUARDIAN_MIN_AGE, CHILD_MIN_AGE, CHILD_MAX_AGE } from '../src/lib/ageRules.js';
 import { notifyUser, notifySuperAdmins, resolveLearnerAccount } from '../server/notifications/inbox.js';
 import { notifyLowBalance } from '../server/notifications/lowBalance.js';
+import { processTrialFollowUps } from '../server/notifications/trialFollowUp.js';
 import {
   validateIntakeOutput
 } from '../server/intake/intakeSchema.js';
@@ -7276,7 +7277,9 @@ app.all('/api/cron/process-reminders', async (req, res) => {
     const integrationsProcessed = await processIntegrationJobs();
 
     const summary = await processDueReminders();
-    await recordHeartbeat(cronClient, HEARTBEAT_REMINDER_CRON, { integrationsProcessed });
+    // Production only: the test suite calls this route against the shared database and must not email real families.
+    const trialFollowUps = process.env.VERCEL_ENV === 'production' ? await processTrialFollowUps(cronClient) : 0;
+    await recordHeartbeat(cronClient, HEARTBEAT_REMINDER_CRON, { integrationsProcessed, trialFollowUps });
     res.json({
       success: true,
       timestamp: new Date().toISOString(),
