@@ -18,6 +18,12 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Checks: tsc pass; npm test 1111 pass / 7 fail / 5 skipped in the worktree, the 7 being CRLF checkout artefacts (same 4 files 22/22 pass after an LF re-checkout); build pass (9 pages prerendered); local static preview at 375px RTL (/safety, /pricing, homepage, first touch kept across pages); production: /safety 200 and in sitemap, /pricing copy live, `/_vercel/insights/script.js` 200, migration columns present.
 - Not checked / risks: Admin views (CRM timeline, leads source badge and filter) not opened in the browser (no admin login here). Accounts that finished onboarding before today have no source. Other pages still say "Islamic studies" (About, layout meta, privacy, terms, home SEO title); left for a copy pass, the terms need a version bump.
 
+### TE-01 Today page as a cockpit (2026-10-20)
+- Result: done (main)
+- Changed: `api/index.ts` (`GET /api/dashboard/today` adds `summary.next_lesson_context`: the learner's age, level, subject and the latest family summary + next steps; and `missing_notes`: the teacher's completed lessons of the last 14 days with no family summary, up to 10, with the learner's own name), `src/dashboard/pages/TodayPage.tsx` (the next lesson card now leads the page, above the numbers, with age, level, "last time (to the family)" and next steps next to the existing Start-as-host button; "Summaries still to write" after today's lessons, each linking to the student page where the PR-06 editor is), `src/dashboard/types.ts`, `test/te-01-today-cockpit.test.ts`
+- Migration: none. Private teacher notes are never read by this route.
+- Checks: tsc pass, npm test 1129 pass / 0 fail (5 skipped), build pass; route called in-process against real data (200, no errors) and the new PostgREST filters checked directly.
+- Not checked / risks: there were no lessons today and no completed lessons in the last 14 days, so the filled-in card and list were not seen with data. Dashboard not opened in a browser (owner rule).
 ### ST-04 Empty, loading and error states across the portal (2026-10-20)
 - Result: done (main)
 - Audit (from the code, 11 data pages): all had a loading state; home, lessons, progress, packages, payments, notifications and booking already had an error with retry and empty states with a next step.

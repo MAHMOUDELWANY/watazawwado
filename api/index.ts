@@ -2349,6 +2349,63 @@ app.get('/api/dashboard/today', verifyTeacherAuth, async (req: any, res: any) =>
 
     const nextLesson = inProgressLesson || upcomingLesson || null;
 
+    // TE-01: who the next lesson is with (age, level, subject) and what the family was last told.
+    const nextRow = nextLesson ? (data || []).find((b: any) => b.id === nextLesson.id) : null;
+    let nextLessonContext: any = null;
+    if (nextRow?.student_id) {
+      const [{ data: st }, { data: notes }] = await Promise.all([
+        supabase.from('students').select('age, current_level, learning_interest, learner_type').eq('id', nextRow.student_id).maybeSingle(),
+        supabase.from('lesson_notes').select('family_summary, next_steps, created_at').eq('student_id', nextRow.student_id)
+          .or('family_summary.not.is.null,next_steps.not.is.null').order('created_at', { ascending: false }).limit(1)
+      ]);
+      nextLessonContext = {
+        age: st?.age ?? null,
+        level: st?.current_level || null,
+        subject: st?.learning_interest || null,
+        lastFamilySummary: notes?.[0]?.family_summary || null,
+        lastNextSteps: notes?.[0]?.next_steps || null,
+        lastNoteAt: notes?.[0]?.created_at || null
+      };
+    }
+
+    // TE-01 → PR-06: this teacher's completed lessons of the last 14 days with no family summary yet.
+    let missingNotes: any[] = [];
+    {
+      let pastQuery = supabase
+        .from('bookings')
+        .select('id, student_id, contact_name, service_id, scheduled_start, teacher_id')
+        .eq('status', 'completed')
+        .gte('scheduled_start', nowCairo.minus({ days: 14 }).toUTC().toISO())
+        .lt('scheduled_start', startOfDayUtc)
+        .order('scheduled_start', { ascending: false })
+        .limit(40);
+      if (req.teacherUser?.role !== 'super_admin') pastQuery = pastQuery.eq('teacher_id', req.teacherUser.id);
+      const { data: past } = await pastQuery;
+      const pastIds = (past || []).map((b: any) => b.id);
+      if (pastIds.length) {
+        const { data: sessions } = await supabase.from('lesson_sessions').select('id, booking_id').in('booking_id', pastIds);
+        const sessionIds = (sessions || []).map((s: any) => s.id);
+        const { data: withSummary } = sessionIds.length
+          ? await supabase.from('lesson_notes').select('session_id').in('session_id', sessionIds).not('family_summary', 'is', null)
+          : { data: [] as any[] };
+        const summarized = new Set((withSummary || []).map((n: any) => n.session_id));
+        const bookingHasSummary = new Set((sessions || []).filter((s: any) => summarized.has(s.id)).map((s: any) => s.booking_id));
+        const missing = (past || []).filter((b: any) => !bookingHasSummary.has(b.id)).slice(0, 10);
+        const missingStudentIds = [...new Set(missing.map((b: any) => b.student_id).filter(Boolean))];
+        const { data: names } = missingStudentIds.length
+          ? await supabase.from('students').select('id, name').in('id', missingStudentIds)
+          : { data: [] as any[] };
+        const nameById = new Map((names || []).map((s: any) => [s.id, s.name]));
+        missingNotes = missing.map((b: any) => ({
+          id: b.id,
+          student_id: b.student_id,
+          learner_name: nameById.get(b.student_id) || b.contact_name,
+          service_id: b.service_id,
+          scheduled_start: b.scheduled_start
+        }));
+      }
+    }
+
     res.json({
       lessons,
       summary: {
@@ -2357,8 +2414,10 @@ app.get('/api/dashboard/today', verifyTeacherAuth, async (req: any, res: any) =>
         trials_today: trialsCount,
         completed_today: completedCount,
         needs_attention_count: needsAttentionCount,
-        next_lesson: nextLesson
-      }
+        next_lesson: nextLesson,
+        next_lesson_context: nextLessonContext
+      },
+      missing_notes: missingNotes
     });
   } catch (err) {
     console.error('[Dashboard Error]', err);

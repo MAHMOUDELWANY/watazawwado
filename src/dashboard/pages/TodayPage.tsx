@@ -15,7 +15,7 @@ import {
   UserPlus
 } from 'lucide-react';
 import { useTeacherAuth } from '../../lib/auth';
-import { DashboardLesson, DashboardSummary } from '../types';
+import { DashboardLesson, DashboardSummary, MissingNoteLesson } from '../types';
 import { LessonDetailModal } from '../components/LessonDetailModal';
 import { Link } from 'react-router-dom';
 import { dashboardFetch, openZoomAsHost } from '../lib/dashboardApi';
@@ -34,6 +34,7 @@ export default function TodayPage() {
   const [activeTz, setActiveTz] = useState<string>(() => getActiveWorkingTimezone('Africa/Cairo'));
   const [lessons, setLessons] = useState<DashboardLesson[]>([]);
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
+  const [missingNotes, setMissingNotes] = useState<MissingNoteLesson[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -63,6 +64,7 @@ export default function TodayPage() {
       const data = await dashboardFetch('/api/dashboard/today');
       setLessons(data.lessons || []);
       setSummary(data.summary || null);
+      setMissingNotes(data.missing_notes || []);
       setLastRefreshed(DateTime.now().setZone(activeTz));
     } catch (err: any) {
       setError(err.message || t("Your lessons couldn't be loaded right now.", 'تعذر تحميل حصصك دلوقتي.'));
@@ -202,6 +204,18 @@ export default function TodayPage() {
         </div>
       ) : (
         <>
+          {/* TE-01: the next lesson leads the page. */}
+          {summary?.next_lesson && (
+            <NextLessonSpotlight
+              lesson={summary.next_lesson}
+              context={summary.next_lesson_context || null}
+              onSelect={() => setSelectedLesson(summary.next_lesson)}
+              activeTz={activeTz}
+              t={t}
+              locale={locale}
+            />
+          )}
+
           {/* Summary Row */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="bg-teal/10 dark:bg-teal/15 rounded-[1.25rem] p-4">
@@ -254,17 +268,6 @@ export default function TodayPage() {
                 </div>
               </div>
             </div>
-          )}
-
-          {/* Next Lesson Spotlight */}
-          {summary?.next_lesson && (
-            <NextLessonSpotlight
-              lesson={summary.next_lesson}
-              onSelect={() => setSelectedLesson(summary.next_lesson)}
-              activeTz={activeTz}
-              t={t}
-              locale={locale}
-            />
           )}
 
           {/* Today Timeline Header */}
@@ -320,6 +323,30 @@ export default function TodayPage() {
               </div>
             )}
           </div>
+
+          {/* TE-01: past lessons whose family summary is still missing (PR-06). */}
+          {missingNotes.length > 0 && (
+            <section aria-labelledby="missing-notes-heading" className="space-y-2">
+              <h2 id="missing-notes-heading" className="text-lg font-display font-semibold text-foreground">
+                {t(`Summaries still to write (${missingNotes.length})`, `ملخصات لسه محتاجة تتكتب (${missingNotes.length})`)}
+              </h2>
+              <p className="text-sm text-muted-foreground">{t('The family sees what you write on their progress page.', 'الأسرة بتشوف اللي تكتبه في صفحة التقدم بتاعتها.')}</p>
+              <div className="space-y-2">
+                {missingNotes.map((m) => (
+                  <Link
+                    key={m.id}
+                    to={m.student_id ? `/dashboard/students/${m.student_id}` : '/dashboard/bookings'}
+                    className="flex items-center justify-between gap-3 p-3 rounded-xl glass-card border border-border hover:border-primary/40 transition-colors"
+                  >
+                    <span className="text-sm font-semibold text-foreground">{m.learner_name || t('Student', 'طالب')}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {DateTime.fromISO(m.scheduled_start).setZone(activeTz).setLocale(locale).toLocaleString(DateTime.DATE_MED)} · {t('Write summary', 'اكتب الملخص')}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
 
           </div>
 
@@ -392,12 +419,14 @@ export default function TodayPage() {
 // Next Lesson Spotlight Card
 function NextLessonSpotlight({
   lesson,
+  context,
   onSelect,
   activeTz = 'Africa/Cairo',
   t,
   locale
 }: {
   lesson: DashboardLesson;
+  context?: DashboardSummary['next_lesson_context'];
   onSelect: () => void;
   activeTz?: string;
   t: T;
@@ -458,8 +487,20 @@ function NextLessonSpotlight({
             )}
             <p className="text-sm text-muted-foreground mt-0.5">
               {lesson.service_name} • {lesson.duration_minutes} {t('minutes', 'دقيقة')}
+              {context?.age != null && <> • {t(`${context.age} years old`, `${context.age} سنة`)}</>}
+              {context?.level && <> • <span className="capitalize">{context.level}</span></>}
             </p>
           </div>
+          {(context?.lastFamilySummary || context?.lastNextSteps) && (
+            <div className="mt-2 p-3 rounded-xl glass-surface border border-border-subtle text-sm space-y-1">
+              {context.lastFamilySummary && (
+                <p><span className="font-semibold text-foreground">{t('Last time (to the family): ', 'آخر مرة (للأسرة): ')}</span><span className="text-muted-foreground">{context.lastFamilySummary}</span></p>
+              )}
+              {context.lastNextSteps && (
+                <p><span className="font-semibold text-foreground">{t('Next steps: ', 'الخطوات الجاية: ')}</span><span className="text-muted-foreground">{context.lastNextSteps}</span></p>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Action Controls */}

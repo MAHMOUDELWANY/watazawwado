@@ -38,6 +38,24 @@ export interface DashboardSummary {
   completed_today: number;
   needs_attention_count: number;
   next_lesson: DashboardLesson | null;
+  /** TE-01: the next learner's age, level, subject and what the family was last told. */
+  next_lesson_context?: {
+    age: number | null;
+    level: string | null;
+    subject: string | null;
+    lastFamilySummary: string | null;
+    lastNextSteps: string | null;
+    lastNoteAt: string | null;
+  } | null;
+}
+
+/** TE-01: a completed lesson of the last 14 days still without a family summary (PR-06). */
+export interface MissingNoteLesson {
+  id: string;
+  student_id: string | null;
+  learner_name: string | null;
+  service_id: string | null;
+  scheduled_start: string;
 }
 
 export interface TrialAssessment {

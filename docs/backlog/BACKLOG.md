@@ -334,7 +334,7 @@ Principles every PR/RN task follows:
 ## TE: Teacher experience
 
 ### TE-01 Today page as a cockpit
-- Priority P1 · Zone 🟢 · Size M · Status todo
+- Priority P1 · Zone 🟢 · Size M · Status done
 - Files: `src/dashboard/pages/TodayPage.tsx`.
 - Do: the next lesson leads (student, age, subject, level, last family summary and next steps, "Start as host"), then
   the rest of today, then notes still missing from past lessons (feeds PR-06).
