@@ -442,7 +442,7 @@ export function MilestoneEmblemByKind({
  * Loaded lazily inside the component to avoid top-level await.
  */
 function loadDevFixtures(): Promise<Record<string, ProgressApiResponse>> {
-  if (import.meta.env.DEV) {
+  if ((import.meta as any).env?.DEV) {
     return import('./StudentProgressPage.fixtures').then((m) => m.DEV_PREVIEW_DATA);
   }
   return Promise.resolve({});
@@ -580,9 +580,9 @@ export default function StudentProgressPage({
       }
     } catch (err: any) {
       console.error('[StudentProgressPage] Failed to load progress:', err);
-      // Clear invalid localStorage on 403
-      if (err.response?.status === 403) {
-        localStorage.removeItem(LAST_OPENED_CHILD_STORAGE_KEY);
+      // A remembered child the family can no longer read: forget it so the next load falls back to the default learner
+      if (err?.status === 403) {
+        try { window.localStorage.removeItem(LAST_OPENED_CHILD_STORAGE_KEY); } catch { /* storage blocked */ }
       }
       setError(
         isAr

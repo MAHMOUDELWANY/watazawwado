@@ -1,6 +1,6 @@
 import { getFreshAccessToken } from './auth';
 
-/** JSON request with the signed-in user's token (students and staff). Throws the server's error message. */
+/** JSON request with the signed-in user's token (students and staff). Throws the server's error message, with `status` set. */
 export async function authedJson<T = any>(path: string, init: RequestInit = {}): Promise<T> {
   const token = await getFreshAccessToken();
   const res = await fetch(path, {
@@ -12,7 +12,7 @@ export async function authedJson<T = any>(path: string, init: RequestInit = {}):
     }
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error((data as any)?.error || `Request failed (${res.status})`);
+  if (!res.ok) throw Object.assign(new Error((data as any)?.error || `Request failed (${res.status})`), { status: res.status });
   return data as T;
 }
 

@@ -3,7 +3,7 @@
  * This file is tree-shaken out of production builds.
  */
 
-import type { ProgressApiResponse } from '../../types/database';
+import type { ProgressApiResponse } from './StudentProgressPage';
 
 export const DEV_PREVIEW_DATA: Record<string, ProgressApiResponse> = {
   active: {
