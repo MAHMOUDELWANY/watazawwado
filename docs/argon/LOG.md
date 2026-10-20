@@ -28,6 +28,13 @@ _None yet._
 
 ## Done
 
+### PR-07 Progress for parents: all children at a glance (2026-10-20)
+- Result: done (8eb5c72 on main, merge dbec55e)
+- Changed: `server/routes/progress.ts` (`buildFamilyChildOverviewCard`, `isGuardianAccount` + `childrenOverview` on `GET /api/student/progress`), `src/student/pages/StudentProgressPage.tsx` (family overview cards, last-opened child in localStorage, dev `?preview=family` fixture), `src/student/StudentApp.tsx` (dev-only bypass of the auth gate for `/student/progress?preview=...`, guarded by `import.meta.env.DEV`), `test/pr-07-parent-family-view.test.ts`, `docs/argon/screenshots/pr07-family-ar-light.png`, `docs/argon/screenshots/pr07-family-en-mobile.png`
+- Migration: none
+- Checks: tsc pass (0 errors), npm test 1050 pass / 0 fail (5 skipped), build pass, browser check `/student/progress?preview=family` in Arabic light desktop (1440px) and English dark mobile (375px); tapping a child card stores it as last opened; 0 console errors. Screenshots: `docs/argon/screenshots/pr07-family-ar-light.png`, `docs/argon/screenshots/pr07-family-en-mobile.png`
+- Not checked / risks: Not tested against a real guardian account (no Supabase connection here). Without `?learnerId=`, the API still returns the primary learner's path (the PR-02 contract); the page then opens the remembered child, if there is one. Arabic dark and English light were not captured as screenshots.
+
 ### PR-06 Teacher side: record the family summary and milestones after a lesson (2026-10-20)
 - Result: done (87ade22 on main)
 - Changed: `server/routes/progress.ts`, `api/index.ts`, `src/dashboard/components/PostLessonSummaryEditor.tsx`, `src/dashboard/components/LessonDetailModal.tsx`, `src/dashboard/pages/TodayPage.tsx`, `src/dashboard/pages/StudentDetailPage.tsx`, `src/dashboard/types.ts`, `test/pr-06-teacher-family-summary.test.ts`, `docs/argon/screenshots/pr06-teacher-summary-ar.png`, `docs/argon/screenshots/pr06-teacher-summary-en-mobile.png`

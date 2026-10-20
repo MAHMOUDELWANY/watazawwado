@@ -98,7 +98,7 @@ Principles every PR/RN task follows:
 - Done when: a teacher can only write for their own students' lessons (server check + test).
 
 ### PR-07 Progress for parents: all children at a glance
-- Priority P1 · Zone 🟢 · Size M · Status taken (2026-10-20 argon) · Depends on PR-03
+- Priority P1 · Zone 🟢 · Size M · Status done (8eb5c72) · Depends on PR-03
 - Do: for a guardian account, the progress page opens on a family view: one card per child (name, subject, current
   level, rhythm, next lesson, newest milestone) → tap opens that child's path. Remember the last opened child.
 
