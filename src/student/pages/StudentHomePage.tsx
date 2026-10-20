@@ -31,6 +31,7 @@ import { BrandLoader, BrandSpinner } from '../../components/ui/BrandLoader';
 import { OnboardingGuide } from '../../components/ui/OnboardingGuide';
 import type { OnboardingStep } from '../../components/ui/OnboardingGuide';
 import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal';
+import { PackageBalance } from '../components/PackageBalance';
 import { getBookingPaymentSummary } from '../../lib/paymentStatus';
 
 export interface StudentHomePageProps {
@@ -929,30 +930,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   </span>
                 </div>
 
-                {packagesData?.creditSummary && (
-                  <div className="grid grid-cols-2 gap-2 text-sm p-2.5 rounded-lg glass-surface border border-border text-muted-foreground">
-                    <div>
-                      <span>{isAr ? 'المستخدم:' : 'Used:'} </span>
-                      <span className="font-semibold text-foreground">
-                        {packagesData.creditSummary.totalUsed ?? 0}
-                      </span>
-                    </div>
-                    <div>
-                      <span>{isAr ? 'الإجمالي:' : 'Total:'} </span>
-                      <span className="font-semibold text-foreground">
-                        {packagesData.creditSummary.totalPurchased ?? creditsRemaining}
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {isAr 
-                    ? 'لديك حصص مدفوعة مسبقاً جاهزة للحجز مع معلمك.' 
-                    : 'You have active prepaid credits ready to use for upcoming lessons.'}
-                </p>
-
-                
+                <PackageBalance entitlements={packagesData?.entitlements} isAr={isAr} showLink />
               </div>
             ) : (
               /* No active package */

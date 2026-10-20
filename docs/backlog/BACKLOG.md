@@ -136,7 +136,7 @@ Principles every PR/RN task follows:
 ## RN: Retention engine (no pressure, RULES.md §4)
 
 ### RN-01 Package balance on every surface
-- Priority P1 · Zone 🟢 · Size S · Status todo
+- Priority P1 · Zone 🟢 · Size S · Status done
 - Do: show remaining lessons per active package (band + length) on the student home page, booking page header and
   packages page in one consistent component. Copy is calm: "3 lessons left in your 8-lesson package".
 

@@ -28,6 +28,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../..
 import { Badge } from '../../components/ui/Badge';
 import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal';
 import { StudentPageBack } from '../components/StudentPageBack';
+import { PackageBalance } from '../components/PackageBalance';
 
 export interface StudentPackagesPageProps {
   lang?: 'en' | 'ar';
@@ -373,6 +374,8 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
           </Link>
         </div>
       </div>
+
+      <PackageBalance entitlements={entitlements} isAr={isAr} />
 
       {/* 2. Top Metric Cards (Credit Summary) */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

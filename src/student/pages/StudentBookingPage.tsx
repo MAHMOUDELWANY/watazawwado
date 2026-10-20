@@ -3,6 +3,7 @@ import { useNavigate, useLocation, useSearchParams, Link } from 'react-router-do
 import { AlertCircle, RefreshCw, RotateCcw, Check, Sparkles } from 'lucide-react';
 import { BookingFlow, hasBookingDraft, clearBookingDraft } from '../../components/booking/BookingFlow';
 import { BrandLoader, BrandSpinner } from '../../components/ui/BrandLoader';
+import { PackageBalance } from '../components/PackageBalance';
 import { BOOKING_SERVICES, BOOKABLE_SERVICES } from '../../booking/mockData';
 import { BookingFormData, BookingMode, ProficiencyLevel, LessonDuration, PackageCatalogEntry } from '../../booking/types';
 import { useTeacherAuth, getFreshAccessToken } from '../../lib/auth';
@@ -1001,6 +1002,8 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
         /* Detailed Booking Flow Container wrapped in ErrorBoundary */
         <BookingErrorBoundary>
           <div className="space-y-4">
+            <PackageBalance entitlements={packagesData?.entitlements} isAr={isAr} />
+
             {/* Active reuse feedback banner */}
             {isReusing && (lastBookingSummary || repeatTarget) && (
               <div className="p-3.5 rounded-2xl bg-secondary/30 border border-secondary/50 text-sm text-primary flex flex-col sm:flex-row sm:items-center justify-between gap-2">

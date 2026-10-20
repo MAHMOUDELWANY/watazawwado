@@ -4,6 +4,12 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### RN-01 Package balance on every surface (2026-10-20)
+- Result: done (main)
+- Changed: new `src/student/components/PackageBalance.tsx` (one line per active package: "3 lessons left in your 8-lesson package", length, price band, learner), used on `StudentHomePage.tsx` (replaces the Used/Total grid), `StudentBookingPage.tsx` (above the booking flow) and `StudentPackagesPage.tsx` (under the header); `test/rn-01-package-balance.test.ts`
+- Migration: none (reads the existing `GET /api/student/packages`)
+- Checks: tsc pass, npm test 1060 pass / 0 fail (5 skipped), build pass. Credits with a refund request are left out of the list.
+- Not checked / risks: not opened in a browser (student pages need a signed-in account); Arabic plural forms covered by the unit test.
 ### OPS-01..05 Launch operations: error capture, health page, cron heartbeat, runbook, placement reminder (2026-10-20)
 - Result: done (merged to main 2026-10-20)
 - Changed: `server/routes/ops.ts` (`POST /api/client-errors` rate limited 10/min/IP, `GET/DELETE /api/dashboard/app-errors`, `GET /api/dashboard/health`, API 5xx monitor, heartbeats), `api/index.ts` (wiring; heartbeat on each successful reminder-cron run and each signed Stripe webhook), `src/lib/errorReporter.ts` + `src/main.tsx` + `src/components/ErrorBoundary.tsx` (window errors, unhandled rejections, render errors), `src/dashboard/pages/HealthPage.tsx` + `DashboardApp.tsx` (`/dashboard/health`, super admin only, placement test mode banner), `src/types/database.ts`, `docs/launch-runbook.md`, `test/ops.test.ts`
