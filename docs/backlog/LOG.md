@@ -4,6 +4,13 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### PA-01 Child switcher everywhere (2026-10-20)
+- Result: done (main)
+- Changed: new `src/student/activeLearner.tsx` (context + header `ChildSwitcher`: "Whole family" or one learner, saved under the progress page's key), `src/student/StudentApp.tsx` (provider + switcher in the header, only for accounts with children), `StudentLessonsPage.tsx` (filters by the chosen learner; "For <name>" on each lesson in the whole-family view), `StudentProgressPage.tsx` (header and the page's own child cards stay in sync), `StudentPackagesPage.tsx` (new packages default to the chosen child; list narrowed to them plus account-level packages), `StudentBookingPage.tsx` (a new booking starts for the chosen child), `api/index.ts`, `test/pa-01-child-switcher.test.ts`
+- Fixed on the way: `GET /api/student/bookings` returned only the parent's own bookings, so a parent never saw the children's lessons. It now returns the whole family (same `getAuthorizedLearnersForStudent` check as cancel/reschedule) with `studentId` and `learnerName`.
+- Migration: none
+- Checks: tsc pass, npm test 1099 pass / 0 fail (5 skipped), build pass.
+- Not checked / risks: not opened in a browser and not tried with a real parent session (dev tokens return mock data). Home already shows the whole family through the same bookings API. The parent appears in the switcher unless their booking preference is "child".
 ### CRM-04 Follow-up tasks with due dates (2026-10-20)
 - Result: done (main)
 - Changed: migration `20261020000002_crm_tasks.sql` (`crm_tasks` with `source` and a unique `dedupe_key`; RLS on, service_role only), `server/routes/crm.ts` (`createCrmTask`; `GET /api/dashboard/admin/crm/tasks` with name + WhatsApp, `GET/POST /api/dashboard/admin/students/:id/crm/tasks`, `PATCH /api/dashboard/admin/crm/tasks/:id`), `api/index.ts` (every attended free trial creates one task for the next day, key `trial:<booking id>`), new `src/dashboard/components/FollowUps.tsx` ("My follow-ups" card on the admin overview: overdue / today / this week in the admin's time zone, WhatsApp prefill from the academy team, Done; add form on the student page inside the admin notes panel), `src/dashboard/pages/OverviewPage.tsx`, `src/dashboard/components/CrmNotesPanel.tsx`, `test/crm-04-follow-up-tasks.test.ts`

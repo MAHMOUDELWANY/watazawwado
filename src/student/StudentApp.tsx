@@ -41,6 +41,7 @@ import StudentProgressPage from './pages/StudentProgressPage';
 import { ChatPanel } from '../components/chat/ChatPanel';
 import IntakeConversation from '../components/intake/IntakeConversation';
 import { Button } from '../components/ui/Button';
+import { ActiveLearnerProvider, ChildSwitcher } from './activeLearner';
 import { StudentAuthModal } from '../components/StudentAuthModal';
 import { AuthPage, AuthCard, AuthPortal } from '../components/auth/AuthFrame';
 import { useOtpCelebrating } from '../components/auth/otpCelebration';
@@ -498,7 +499,8 @@ export default function StudentApp() {
   const studentInitial = profile?.name ? profile.name.charAt(0).toUpperCase() : (user?.email?.charAt(0).toUpperCase() || 'S');
 
   return (
-    <div 
+    <ActiveLearnerProvider profile={profile}>
+    <div
       className="min-h-screen bg-background text-foreground font-sans flex overflow-hidden"
       dir={isAr ? 'rtl' : 'ltr'}
       lang={lang}
@@ -694,6 +696,7 @@ export default function StudentApp() {
 
           {/* Right Side: Quick Action Utilities (Tour, Lang, Notifications, Account) */}
           <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+            <ChildSwitcher isAr={isAr} />
             {/* Quick Tour Button (hidden on phone, accessible via drawer/settings) */}
             <button
               type="button"
@@ -831,6 +834,7 @@ export default function StudentApp() {
         initialView={authInitialView}
       />
     </div>
+    </ActiveLearnerProvider>
   );
 }
 

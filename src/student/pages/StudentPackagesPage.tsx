@@ -30,6 +30,7 @@ import { Badge } from '../../components/ui/Badge';
 import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal';
 import { StudentPageBack } from '../components/StudentPageBack';
 import { PackageBalance } from '../components/PackageBalance';
+import { useActiveLearner } from '../activeLearner';
 
 export interface StudentPackagesPageProps {
   lang?: 'en' | 'ar';
@@ -157,6 +158,12 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
     fetchPackages();
     fetchLedger();
   }, [fetchPackages, fetchLedger]);
+
+  // PA-01: the header's child switcher picks who a new package is for and narrows the list to them.
+  const { activeId } = useActiveLearner();
+  useEffect(() => {
+    if (activeId && (data.learners || []).some((l: any) => l.id === activeId)) setSelectedLearnerId(activeId);
+  }, [activeId, data.learners]);
 
   /** Pre-selects the same package (catalogue item, lesson length, learner); the server still prices it. */
   const renewScrollPending = useRef(false);
@@ -308,7 +315,11 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
   // hardcoded package prices; when the server catalog is unavailable the UI
   // renders a truthful unavailable state instead.
   const catalogItems = Array.isArray(data.catalog) ? data.catalog : [];
-  const entitlements = data.entitlements || [];
+  const allEntitlements = data.entitlements || [];
+  // Packages bought for the account itself (no learner) stay visible for every child.
+  const entitlements = activeId
+    ? allEntitlements.filter((e: any) => !e.learnerStudentId || e.learnerStudentId === activeId)
+    : allEntitlements;
 
   // Group the SERVER-provided catalog by its real package_type (weekly / monthly).
   // No price is ever computed here — grouping is display-only.

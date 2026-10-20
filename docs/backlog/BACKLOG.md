@@ -261,7 +261,7 @@ Principles every PR/RN task follows:
 ## PA: Parent experience
 
 ### PA-01 Child switcher everywhere
-- Priority P1 · Zone 🟢 · Size M · Status todo
+- Priority P1 · Zone 🟢 · Size M · Status done
 - Do: in a family account, one clear child switcher in the portal header that filters lessons, progress, packages and
   booking to that child; "All children" view on home. Persist the choice.
 

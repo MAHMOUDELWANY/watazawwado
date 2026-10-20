@@ -18,6 +18,7 @@ import { authedJson } from '../../lib/authedJson';
 import { BrandLoader } from '../../components/ui/BrandLoader';
 import type { SubjectLevel } from '../../components/onboarding/subjects';
 import type { LearnerMilestoneKind } from '../../types/database';
+import { useActiveLearner } from '../activeLearner';
 
 export interface StudentProgressPageProps {
   lang?: 'en' | 'ar';
@@ -518,13 +519,29 @@ export default function StudentProgressPage({
   const learningPathSectionRef = useRef<HTMLDivElement | null>(null);
   const hasAutoScrolledRef = useRef<string>('');
 
+  // PA-01: the header's child switcher and this page share one choice.
+  const { activeId, setActiveId } = useActiveLearner();
+
   // Persist requestedLearnerId to localStorage when present
   useEffect(() => {
     if (requestedLearnerId) {
       setRememberedChildId(requestedLearnerId);
       setRememberedChildIdState(requestedLearnerId);
+      setActiveId(requestedLearnerId);
     }
   }, [requestedLearnerId]);
+
+  // A change in the header switcher reloads this page for that learner ("Whole family" = the default view).
+  const lastActiveRef = useRef(activeId);
+  useEffect(() => {
+    if (lastActiveRef.current === activeId) return;
+    lastActiveRef.current = activeId;
+    if ((activeId || '') === requestedLearnerId) return;
+    const nextParams = new URLSearchParams(searchParams);
+    if (activeId) nextParams.set('learnerId', activeId);
+    else nextParams.delete('learnerId');
+    setSearchParams(nextParams, { replace: true });
+  }, [activeId]);
 
   const fetchProgress = useCallback(async () => {
     const effectiveLearnerId = requestedLearnerId || getRememberedChildId() || '';
@@ -648,6 +665,8 @@ export default function StudentProgressPage({
   const handleSelectLearner = (newLearnerId: string, scrollToPath = false) => {
     setRememberedChildId(newLearnerId);
     setRememberedChildIdState(newLearnerId);
+    lastActiveRef.current = newLearnerId;
+    setActiveId(newLearnerId);
     const nextParams = new URLSearchParams(searchParams);
     nextParams.set('learnerId', newLearnerId);
     setSearchParams(nextParams);

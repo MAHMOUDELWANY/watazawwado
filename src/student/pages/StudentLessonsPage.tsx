@@ -37,6 +37,7 @@ import {
   type LessonFilter
 } from '../lessonsPresentation';
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
+import { useActiveLearner } from '../activeLearner';
 
 export interface StudentLessonsPageProps {
   lang?: 'en' | 'ar';
@@ -118,7 +119,13 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
   // UPCOMING: confirmed / pending / rescheduled whose scheduled_start >= now - 60 minutes
   // HISTORY: cancelled / no_show, plus past-but-unfinalised in-flight lessons
   // COMPLETED: ONLY bookings whose backend status is genuinely 'completed'
-  const categorizedBookings = useMemo(() => categorizeLessons(bookings), [bookings]);
+  // PA-01: the header's child switcher narrows the list to one learner.
+  const { activeId, learners } = useActiveLearner();
+  const learnerBookings = useMemo(
+    () => (activeId ? bookings.filter((b: any) => b.studentId === activeId) : bookings),
+    [bookings, activeId]
+  );
+  const categorizedBookings = useMemo(() => categorizeLessons(learnerBookings), [learnerBookings]);
 
   const displayedBookings = categorizedBookings[activeFilter];
 
@@ -344,6 +351,11 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                         <h3 className="font-display font-bold text-base sm:text-lg text-foreground">
                           {isAr && b.serviceArabicTitle ? b.serviceArabicTitle : b.serviceTitle}
                         </h3>
+                        {learners.length > 0 && !activeId && b.learnerName && (
+                          <Badge variant="outline" className="text-[13px] border-secondary/60">
+                            {isAr ? `لـ ${b.learnerName}` : `For ${b.learnerName}`}
+                          </Badge>
+                        )}
                         {b.bookingType === 'trial' && (
                           <Badge variant="outline" className="text-[13px] text-primary border-secondary/60">
                             {isAr ? 'تجريبي مجاني' : 'Free Trial'}

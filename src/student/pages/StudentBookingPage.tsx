@@ -4,6 +4,7 @@ import { AlertCircle, RefreshCw, RotateCcw, Check, Sparkles } from 'lucide-react
 import { BookingFlow, hasBookingDraft, clearBookingDraft } from '../../components/booking/BookingFlow';
 import { BrandLoader, BrandSpinner } from '../../components/ui/BrandLoader';
 import { PackageBalance } from '../components/PackageBalance';
+import { useActiveLearner } from '../activeLearner';
 import { BOOKING_SERVICES, BOOKABLE_SERVICES } from '../../booking/mockData';
 import { BookingFormData, BookingMode, ProficiencyLevel, LessonDuration, PackageCatalogEntry } from '../../booking/types';
 import { useTeacherAuth, getFreshAccessToken } from '../../lib/auth';
@@ -549,6 +550,8 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
   const [bookingsError, setBookingsError] = useState<string | null>(null);
 
   const [packagesData, setPackagesData] = useState<{ entitlements: any[]; catalog: PackageCatalogEntry[]; creditSummary: any } | null>(null);
+  // PA-01: a new booking starts for the child chosen in the header (the family can still change it in the flow).
+  const { activeId } = useActiveLearner();
   // A booking left half-way (terms page, packages, Stripe) continues where it stopped.
   const [resumingDraft, setResumingDraft] = useState<boolean>(hasBookingDraft);
   const [placement, setPlacement] = useState<Array<{ id: string; status: string }> | null>(null);
@@ -863,10 +866,14 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
     ? requestedServiceId
     : standardServiceId;
 
+  const activeChild = profile?.canBookForChild && Array.isArray(profile?.linkedChildren)
+    ? profile.linkedChildren.find((c: any) => c.id === activeId)
+    : null;
   const currentInitialData = activeConfig
     ? activeConfig.initialData
     : {
         ...standardInitialData,
+        ...(activeChild ? { audience: 'child' as const, studentId: activeChild.id, childName: activeChild.name, childLevel: activeChild.currentLevel } : {}),
         ...(requestedEntitlementId ? { packageEntitlementId: requestedEntitlementId } : {})
       };
   const currentServiceId = activeConfig ? activeConfig.matchedServiceId : matchedQueryServiceId;

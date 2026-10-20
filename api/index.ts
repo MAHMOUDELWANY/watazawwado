@@ -8319,11 +8319,14 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
       return res.json([]);
     }
 
-    // Fetch bookings belonging strictly to this authenticated student (idempotent read)
+    // Bookings of this account and its linked children (the same learners the cancel/reschedule routes accept).
+    const learners = await getAuthorizedLearnersForStudent(supabaseAdmin, req);
+    const learnerIds = learners.length ? learners.map(l => l.id) : [studentId];
+    const learnerNameById = new Map(learners.map(l => [l.id, l.name]));
     const { data: bookingsData, error: bookingsError } = await supabaseAdmin
       .from('bookings')
-      .select('id, reference_code, service_id, package_entitlement_id, booking_type, duration_minutes, scheduled_start, scheduled_end, student_timezone, status, contact_name, contact_email, contact_whatsapp, parent_name, notes, fee_amount_usd, zoom_meeting_link, created_at, teacher_id, reschedule_count, payment_plan, reschedule_requested_at, reschedule_request_note')
-      .eq('student_id', studentId)
+      .select('id, student_id, reference_code, service_id, package_entitlement_id, booking_type, duration_minutes, scheduled_start, scheduled_end, student_timezone, status, contact_name, contact_email, contact_whatsapp, parent_name, notes, fee_amount_usd, zoom_meeting_link, created_at, teacher_id, reschedule_count, payment_plan, reschedule_requested_at, reschedule_request_note')
+      .in('student_id', learnerIds)
       .order('scheduled_start', { ascending: true });
 
     if (bookingsError) {
@@ -8381,6 +8384,8 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
 
       return {
         id: b.id,
+        studentId: b.student_id,
+        learnerName: learnerNameById.get(b.student_id) || null,
         referenceCode: b.reference_code,
         serviceId: b.service_id,
         serviceTitle,
