@@ -4,6 +4,15 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### PR-05 Lesson timeline and PR-10 progress on home (2026-10-21)
+- Result: done (main).
+- PR-05: under the path on the progress page, every attended lesson newest first: date and time in the viewer's time zone, subject, teacher, a free-trial tag, the teacher's family summary, achievements as chips, and "for next time". 20 per page with "Show older lessons". New `GET /api/student/progress/timeline?learnerId=&page=` (same family check as the progress page: 401 without sign-in, 403 for teachers and for a learner outside the family). Built by the pure `buildLessonTimeline` in `server/routes/progress.ts` from attended sessions and completed bookings (each lesson once; missed/cancelled skipped); only family-safe note fields are selected, never `private_notes`. Arabic counts read naturally (حصة واحدة، حصتين، ٥ حصص، ٢٥ حصة).
+- PR-10: a compact card on the student home page right after the lesson-day card: the rhythm lantern with weeks in rhythm, subject and current level, the newest milestone; it opens the progress page for the learner chosen in the header. Lazy-loaded so home stays light; if progress cannot load, the card simply is not shown.
+- Files: `server/routes/progress.ts`, `src/student/components/progress/LessonTimeline.tsx`, `src/student/components/progress/HomeProgressCard.tsx`, `StudentProgressPage.tsx`, `StudentHomePage.tsx`; tests `test/pr-05-lesson-timeline.test.ts`, `test/pr-10-home-progress-card.test.ts`.
+- Migration: none
+- Checks: tsc pass; npm test 1201 pass / 0 fail / 5 skipped; build pass.
+- Not checked / risks: signed-in pages checked from code and tests only (owner rule); the timeline reads up to 1000 rows per table for a learner (enough for years of weekly lessons).
+
 ### PR-04 Milestone celebration and achievements shelf (2026-10-21)
 - Result: done (main). Built from the approved design (`docs/superpowers/specs/2026-10-20-milestone-celebration-design.md`); leaderboard, Hall of Honor, consent flow and parent email stay separate tasks, as the backlog says.
 - What it does: the progress page now ends with an achievements shelf of 12 emblems in our own SVG (first lesson; 10/25/50/100 lessons; a weekly rhythm of 4, 12 and 52 weeks; a surah, a juz, a tajweed rule, a level or book), plus any custom teacher recognition. Earned ones are in colour with the teacher's own title or the date; the rest are outlines that say what earns them. Effort only, no ranking. When something new appears, one short celebration plays: kids get a spring rise, a gold pulse and about two dozen falling stars and crescents (2 s); teens a smooth rise with a halo; adults and parents looking at a child a quiet fade with a still glow. No sound. Reduced motion shows it all at once. It can be closed (button, X, Escape, backdrop), traps focus, and tells how many more emblems are new.

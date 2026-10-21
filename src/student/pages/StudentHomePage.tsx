@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, lazy, Suspense } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { isCoordinationAllowed } from '../lessonsPresentation';
 import { authedJson } from '../../lib/authedJson';
@@ -34,6 +34,7 @@ import { StudentPaymentClaimModal } from '../components/StudentPaymentClaimModal
 import { PackageBalance } from '../components/PackageBalance';
 import { LessonDayCard, isLessonDay } from '../components/LessonDayCard';
 import { getBookingPaymentSummary } from '../../lib/paymentStatus';
+const HomeProgressCard = lazy(() => import('../components/progress/HomeProgressCard').then((m) => ({ default: m.HomeProgressCard })));
 
 export interface StudentHomePageProps {
   lang?: 'en' | 'ar';
@@ -455,6 +456,11 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
       {nextBooking && ['confirmed', 'rescheduled'].includes(nextBooking.status) && isLessonDay(nextBooking.scheduledStart || nextBooking.scheduled_start) && (
         <LessonDayCard booking={nextBooking} isAr={isAr} />
       )}
+
+      {/* PR-10: progress at a glance; opens the progress page. Loaded on its own so home stays light. */}
+      <Suspense fallback={null}>
+        <HomeProgressCard isAr={isAr} />
+      </Suspense>
 
       {/* ========================================================================= */}
       {/* 2.5 FAMILY & CHILDREN OVERVIEW (For Parent Accounts) */}

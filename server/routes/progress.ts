@@ -1053,6 +1053,67 @@ export async function canTeacherWriteForLesson(
  * Checks whether a signed-in student or guardian may read milestones/summaries/progress
  * for the requested learner ID.
  */
+export const TIMELINE_PAGE_SIZE = 20;
+
+/**
+ * PR-05: every attended lesson, newest first, with what the teacher shared with the family for it.
+ * Family-safe fields only (family_summary, achievements, next_steps); private notes are never selected.
+ */
+export function buildLessonTimeline(input: {
+  bookings: any[];
+  lessonSessions: any[];
+  lessonNotes: any[];
+  teacherNamesById?: Map<string, string>;
+  page?: number;
+  pageSize?: number;
+}) {
+  const { bookings = [], lessonSessions = [], lessonNotes = [], teacherNamesById = new Map<string, string>() } = input;
+  const pageSize = Math.min(50, Math.max(1, input.pageSize || TIMELINE_PAGE_SIZE));
+  const page = Math.max(1, Math.floor(Number(input.page) || 1));
+  const bookingById = new Map<string, any>(bookings.filter((b) => b?.id).map((b) => [b.id, b]));
+  const notesBySession = new Map<string, any>();
+  for (const n of [...lessonNotes].sort((a, b) => String(b?.created_at || '').localeCompare(String(a?.created_at || '')))) {
+    if (n?.session_id && !notesBySession.has(n.session_id)) notesBySession.set(n.session_id, n);
+  }
+
+  const items: any[] = [];
+  const handledBookings = new Set<string>();
+  for (const s of lessonSessions) {
+    if (!s) continue;
+    if (s.booking_id) handledBookings.add(s.booking_id);
+    if (s.attendance === 'missed' || s.attendance === 'cancelled') continue;
+    if (!(s.attendance === 'attended' || s.completion_status === 'completed')) continue;
+    const b = s.booking_id ? bookingById.get(s.booking_id) : null;
+    const dateIso = b?.scheduled_start || s.lesson_date || s.created_at;
+    if (!dateIso) continue;
+    items.push({ key: `session:${s.id}`, dateIso, booking: b, note: notesBySession.get(s.id) || null });
+  }
+  for (const b of bookings) {
+    if (!b || b.status !== 'completed' || handledBookings.has(b.id)) continue;
+    items.push({ key: `booking:${b.id}`, dateIso: b.scheduled_start || b.created_at, booking: b, note: null });
+  }
+  items.sort((a, b) => new Date(b.dateIso).getTime() - new Date(a.dateIso).getTime());
+
+  const total = items.length;
+  const slice = items.slice((page - 1) * pageSize, page * pageSize).map((it) => {
+    const subject = normalizeSubjectSlug(it.booking?.service_id);
+    const meta = subject ? resolveSubjectMeta(subject) : null;
+    const note = it.note ? sanitizeNoteForFamily(it.note) : null;
+    return {
+      id: it.key,
+      date: it.dateIso,
+      durationMinutes: typeof it.booking?.duration_minutes === 'number' ? it.booking.duration_minutes : null,
+      bookingType: it.booking?.booking_type || null,
+      subject: meta ? { id: meta.id, en: meta.en, ar: meta.ar, color: meta.familyColor } : null,
+      teacherName: (it.booking?.teacher_id && teacherNamesById.get(it.booking.teacher_id)) || null,
+      familySummary: note?.family_summary || null,
+      achievements: note?.achievements ?? null,
+      nextSteps: note?.next_steps || null,
+    };
+  });
+  return { items: slice, page, pageSize, total, hasMore: page * pageSize < total };
+}
+
 export function canFamilyReadLearner(
   authorizedLearners: Array<{ id: string }>,
   requestedLearnerId: string
@@ -1680,6 +1741,44 @@ export function registerProgressRoutes(app: express.Express, deps: ProgressDeps)
       teacherNamesById,
     });
   }
+
+  // PR-05: the family's lesson timeline, 20 per page (`GET /api/student/progress/timeline?learnerId=&page=`).
+  app.get('/api/student/progress/timeline', verifyStudentAuth, async (req: any, res: any) => {
+    try {
+      const client = getClient();
+      if (!client) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+      const learners = await getLearners(client, req);
+      const requested = typeof req.query?.learnerId === 'string' ? req.query.learnerId.trim() : '';
+      if (requested && !canFamilyReadLearner(learners, requested)) {
+        return res.status(403).json({ error: 'Forbidden: You cannot view lessons for a learner outside your family.' });
+      }
+      const learnerId = requested || learners[0]?.id;
+      if (!learnerId || !isUuid(learnerId)) return res.json({ items: [], page: 1, pageSize: TIMELINE_PAGE_SIZE, total: 0, hasMore: false });
+
+      const [bookingsRes, sessionsRes, notesRes] = await Promise.all([
+        client.from('bookings').select(PROGRESS_BOOKING_COLUMNS).eq('student_id', learnerId).order('scheduled_start', { ascending: false }).limit(1000),
+        client.from('lesson_sessions').select(PROGRESS_SESSION_COLUMNS).eq('student_id', learnerId).order('lesson_date', { ascending: false }).limit(1000),
+        client.from('lesson_notes').select(FAMILY_SUMMARY_COLUMNS).eq('student_id', learnerId).order('created_at', { ascending: false }).limit(1000)
+      ]);
+      if (bookingsRes.error || sessionsRes.error || notesRes.error) {
+        console.error('[GET /api/student/progress/timeline]', bookingsRes.error?.message || sessionsRes.error?.message || notesRes.error?.message);
+        return res.status(500).json({ error: 'Could not load the lesson timeline.' });
+      }
+      const bookings = bookingsRes.data || [];
+      const teacherIds = [...new Set(bookings.map((b: any) => b?.teacher_id).filter((id: any) => isUuid(id)))] as string[];
+      const teacherNamesById = new Map<string, string>();
+      if (teacherIds.length) {
+        const { data: profiles } = await client.from('profiles').select('id, display_name').in('id', teacherIds);
+        for (const p of profiles || []) if (p?.id && p?.display_name) teacherNamesById.set(p.id, p.display_name);
+      }
+      return res.json(buildLessonTimeline({
+        bookings, lessonSessions: sessionsRes.data || [], lessonNotes: notesRes.data || [], teacherNamesById, page: Number(req.query?.page) || 1
+      }));
+    } catch (err) {
+      console.error('[GET /api/student/progress/timeline]', err);
+      return res.status(500).json({ error: 'Could not load the lesson timeline.' });
+    }
+  });
 
   // PR-02 + PR-07: Student / Guardian Progress Read Model (`GET /api/student/progress?learnerId=`)
   app.get('/api/student/progress', verifyStudentAuth, async (req: any, res: any) => {

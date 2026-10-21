@@ -22,6 +22,7 @@ import { useActiveLearner } from '../activeLearner';
 import type { IslamicSeason } from '../../lib/islamicSeason';
 import { useProgressAchievements } from '../components/achievements/useProgressAchievements';
 import { AchievementsShelf } from '../components/achievements/AchievementsShelf';
+import { LessonTimeline } from '../components/progress/LessonTimeline';
 
 export interface StudentProgressPageProps {
   lang?: 'en' | 'ar';
@@ -1760,6 +1761,9 @@ export default function StudentProgressPage({
         </div>
       )}
 
+      {data.learner && (
+        <LessonTimeline learnerId={data.learner.id} isAr={isAr} timezone={viewerTz} />
+      )}
       {data.learner && achievements.shelf.length > 0 && (
         <AchievementsShelf items={achievements.shelf} isAr={isAr} highlight={achievements.highlight} />
       )}

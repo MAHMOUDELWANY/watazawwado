@@ -36,3 +36,4 @@ Each task: tsc, full `npm test`, build, commit, push to main, production smoke (
 - 2026-10-21: QA-03 done (logical sides in booking/packages/payments, bilingual aria labels, booking error banner).
 - 2026-10-21: QA-04 done (44px targets public+portal+dashboard, dvh shells, guide button no longer covers hero CTA). P1 complete; next PR-04.
 - 2026-10-21: PR-04 done (12 emblems, shelf, one-time age/season-aware celebration). Next: P2 list starting PR-05.
+- 2026-10-21: PR-05 (lesson timeline + endpoint) and PR-10 (home progress card) done.

@@ -94,7 +94,7 @@ Principles every PR/RN task follows:
   seasonal wording, screenshots in both languages and themes.
 
 ### PR-05 Lesson timeline with family summaries
-- Priority P2 · Zone 🟢 · Size M · Status todo · Depends on PR-02
+- Priority P2 · Zone 🟢 · Size M · Status done · Depends on PR-02
 - Do: below the path, a timeline of attended lessons: date in the viewer's time zone, teacher, subject, the family
   summary and achievements, homework/next steps if shared. Paginate (20 per page).
 
@@ -128,7 +128,7 @@ Principles every PR/RN task follows:
 - Skills: `emails`, `humanizer`.
 
 ### PR-10 Progress on the student home page
-- Priority P2 · Zone 🟢 · Size S · Status todo · Depends on PR-03
+- Priority P2 · Zone 🟢 · Size S · Status done · Depends on PR-03
 - Do: a compact progress card on `StudentHomePage.tsx` (rhythm, current level, newest milestone) linking to the page.
 
 ---
