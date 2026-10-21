@@ -212,7 +212,7 @@ Principles every PR/RN task follows:
   record.
 
 ### CRM-07 Funnel analytics that match reality
-- Priority P2 · Zone 🟢 · Size M · Status todo
+- Priority P2 · Zone 🟢 · Size M · Status done
 - Files: `src/dashboard/pages/AnalyticsPage.tsx`.
 - Do: sign-ups → onboarding done → trial booked → trial attended → first paid → second month, by week, with the real
   counts behind each step (click to list the people). Remove any number that cannot be traced to data.

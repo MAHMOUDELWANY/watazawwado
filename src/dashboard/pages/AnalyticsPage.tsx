@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { AccountFunnel } from '../components/AccountFunnel';
 import {
   TrendingUp,
   Users,
@@ -325,6 +326,9 @@ export default function AnalyticsPage() {
 
         <div className="space-y-6">
           {/* Payments: super admin only (RULES.md §1) */}
+          {/* CRM-07: the account funnel with the people behind each number. */}
+          {isSuperAdmin && <AccountFunnel />}
+
           {isSuperAdmin && <div className="p-6 rounded-2xl glass-card border-none/30 dark:border-border/30 shadow-xs space-y-4">
             <div className="flex items-center gap-2">
               <DollarSign className="w-4 h-4 text-accent dark:text-primary" />

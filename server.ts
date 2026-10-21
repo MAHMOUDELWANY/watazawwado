@@ -29,9 +29,13 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
+  const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });
+  // Node 19+ clients keep connections alive; with the default 5 s server timeout a reused idle socket can be closed
+  // mid-request (ECONNRESET). Keep idle sockets longer than clients reuse them; headersTimeout must stay above it.
+  server.keepAliveTimeout = 65_000;
+  server.headersTimeout = 66_000;
 }
 
 startServer();

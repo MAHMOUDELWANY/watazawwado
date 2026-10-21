@@ -4,6 +4,15 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### CRM-07 Funnel analytics that match reality (2026-10-21)
+- Result: done (main). Reports page (admin): a table of accounts by sign-up week (Cairo weeks, last 8) through signed up → set-up done → trial booked → trial attended → first payment → second month, with real counts only. Clicking a number lists the accounts behind it, each linking to the student page. A family counts once: the account plus the children whose guardian email is the account's. Trial booked ignores cancelled trials; first payment = a payment received (confirmed, or refunded later); second month = paid lessons attended at least 28 days apart. The existing lead-based report was checked: its numbers are all computed from leads/bookings/payments (no estimates), so it stays.
+- Server: `server/routes/funnel.ts` (pure `buildAccountFunnel` + `GET /api/dashboard/admin/funnel?weeks=`, admin only).
+- Also fixed: the recurring ECONNRESET in `task-0.55-google-calendar-deep-audit` (3 times tonight). Cause: Node 24 clients keep connections alive and reused an idle socket the dev server had just closed after its 5-second default. `server.ts` (local dev server only; production runs on Vercel functions) now keeps idle sockets for 65 s (`headersTimeout` 66 s). Two full runs in a row after the fix: 1230 pass, 0 fail.
+- Files: `server/routes/funnel.ts`, `api/index.ts`, `src/dashboard/components/AccountFunnel.tsx`, `AnalyticsPage.tsx`, `server.ts`, `test/crm-07-account-funnel.test.ts`.
+- Migration: none
+- Checks: tsc pass; npm test 1230 pass / 0 fail / 5 skipped (twice); build pass.
+- Not checked / risks: the dashboard page was not opened live (owner rule); guardian emails are matched as stored (lower case from the site's forms).
+
 ### CRM-06 Search everything (2026-10-21)
 - Result: done (main). Super admin presses Ctrl/Cmd+K (or the search icon in the dashboard header) and types a name, email, phone, booking reference or payment id/reference. Results cover accounts, children (found through their parent's name or email), bookings, payments and leads, grouped by type; arrow keys move, Enter opens the record (the student page for accounts, children, bookings and payments; the leads page for leads), Escape closes. Focus-trapped dialog with listbox semantics. The page-name search in the header stays as it was.
 - Server: `GET /api/dashboard/admin/search?q=` (admin only, 2–80 characters, 8 per type, 30 in total). Every filter value goes through `pgrstValue(escapeLike(...))`; a raw id is used only after a UUID check. Queries with filter syntax (`a,b),status.eq.x`, `%_*"\`) return normally.

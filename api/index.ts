@@ -67,6 +67,7 @@ import { createIntakeToken, readIntakeToken } from '../server/intake/intakeToken
 import { registerCommunityRoutes, ensureTeacherThreads, PLACEMENT_BEFORE_BOOKING } from '../server/routes/community.js';
 import { registerCrmRoutes, createCrmTask } from '../server/routes/crm.js';
 import { registerExportRoutes } from '../server/routes/exports.js';
+import { registerFunnelRoutes } from '../server/routes/funnel.js';
 import { findSubject, levelsFor } from '../src/components/onboarding/subjects.js';
 import { registerOpsRoutes, computeHealth, apiErrorMonitor, recordHeartbeat, HEARTBEAT_REMINDER_CRON, HEARTBEAT_STRIPE_WEBHOOK } from '../server/routes/ops.js';
 import { registerCurriculumRoutes } from '../server/routes/curriculum.js';
@@ -10207,6 +10208,12 @@ registerProgressRoutes(app, {
 });
 
 registerCrmRoutes(app, {
+  getClient: getSupabaseAdminClient,
+  verifyTeacherAuth,
+  requireSuperAdmin
+});
+
+registerFunnelRoutes(app, {
   getClient: getSupabaseAdminClient,
   verifyTeacherAuth,
   requireSuperAdmin

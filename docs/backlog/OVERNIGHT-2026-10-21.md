@@ -42,3 +42,4 @@ Each task: tsc, full `npm test`, build, commit, push to main, production smoke (
 - 2026-10-21: RN-07 done (preferences table applied; RN-02/RN-05 respect it).
 - 2026-10-21: CRM-05 CSV export done (BOM, no notes, formula-injection safe).
 - 2026-10-21: CRM-06 search (Ctrl+K) done.
+- 2026-10-21: CRM-07 account funnel done; fixed test flake root cause (dev server keepAliveTimeout).
