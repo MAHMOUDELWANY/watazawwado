@@ -73,6 +73,7 @@ import { registerPrivacyRoutes } from '../server/routes/privacy.js';
 import { registerTeacherLoadRoutes } from '../server/routes/teacherLoad.js';
 import { registerSummaryDraftRoutes } from '../server/routes/summaryDraft.js';
 import { registerCalendarFeedRoutes } from '../server/routes/calendarFeed.js';
+import { registerLessonTeacherMoveRoutes } from '../server/routes/lessonTeacherMove.js';
 import { findSubject, levelsFor } from '../src/components/onboarding/subjects.js';
 import { registerOpsRoutes, computeHealth, apiErrorMonitor, recordHeartbeat, HEARTBEAT_REMINDER_CRON, HEARTBEAT_STRIPE_WEBHOOK } from '../server/routes/ops.js';
 import { registerCurriculumRoutes } from '../server/routes/curriculum.js';
@@ -10344,6 +10345,13 @@ registerCalendarFeedRoutes(app, {
   verifyStudentAuth,
   rateLimit,
   escapeLike
+});
+
+registerLessonTeacherMoveRoutes(app, {
+  getClient: getSupabaseAdminClient,
+  verifyTeacherAuth,
+  requireSuperAdmin,
+  resolveTeacher: resolveTeacherMetadata
 });
 
 registerExportRoutes(app, {

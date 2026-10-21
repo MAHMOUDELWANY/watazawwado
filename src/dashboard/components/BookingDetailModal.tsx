@@ -28,6 +28,7 @@ import { DashboardBookingDetail, BookingPaymentStatus } from '../types';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 import { RecordPaymentModal } from './RecordPaymentModal';
+import { MoveTeacherControl } from './MoveTeacherControl';
 import { useTeacherAuth } from '../../lib/auth';
 import { useT } from '../../lib/language';
 
@@ -812,6 +813,11 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     {requestingMove ? t('Sending…', 'جارٍ الإرسال…') : t('Send request', 'ابعت الطلب')}
                   </button>
                 </div>
+              )}
+
+              {/* AD-02b: move this upcoming lesson to another teacher, same time and price (super admin only) */}
+              {isSuperAdmin && isUpcoming && (
+                <MoveTeacherControl bookingId={booking.id} currentTeacherId={(booking as any).teacher_id || null} onMoved={refresh} />
               )}
 
               {/* Move the lesson: the admin, or the lesson's own teacher with a reason (RULES.md §1) */}
