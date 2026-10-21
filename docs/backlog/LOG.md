@@ -4,6 +4,11 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### RN-02 follow-up: admin task when a package is used up (2026-10-21)
+- Closes the gap noted under CRM-04 ("RN-02 does not create tasks yet"). When a package reaches 0 lessons (once, inside the existing claim), the admin gets one CRM follow-up task due in 2 days, "Package used up: check in about renewing (for <learner>)", on the paying account's own student record (else the learner's), source `low_balance`, dedupe key `low_balance:0:<package id>`. Nothing at 2 lessons left (the family's notice covers that). The DB check on `crm_tasks.source` already allows `low_balance`.
+- Files: `server/notifications/lowBalance.ts`, `test/rn-02-low-balance.test.ts` (new case).
+- Checks: tsc pass; npm test 1322 pass / 0 fail / 5 skipped; build pass.
+
 ### QA-07 step 3: next-week suggestion moved (2026-10-21)
 - `GET /api/student/next-week-suggestion` (RN-04) moved unchanged to `server/routes/nextWeekSuggestion.ts`; it imports `validateSlotAvailability` and `nextWeekSlot` directly and gets `getAuthorizedLearnersForStudent` and `resolveTeacherMetadata` in `deps`. The RN-04 source check now reads the new file (same assertions).
 - Checks: tsc pass; npm test 1321 pass / 0 fail / 5 skipped; build pass.

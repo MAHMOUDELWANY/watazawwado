@@ -91,6 +91,23 @@ describe('RN-02 low-balance notice', () => {
     assert.strictEqual(sent.length, 2);
   });
 
+  it('a used-up package also gives the admin one follow-up task on the paying account, a low one does not', async () => {
+    const tasks: any[] = [];
+    const task = (async (_c: any, t: any) => { tasks.push(t); return true; }) as any;
+    const notify = (async () => {}) as any;
+    const client = fakeClient(ent(), { students: [{ id: 'parent-stu', auth_user_id: 'user-1' }] });
+    await notifyLowBalance(client, 'ent-1', { notify, resolve: account as any, task });
+    assert.strictEqual(tasks.length, 0, 'nothing at 2 lessons left');
+    client.state.row = { ...client.state.row, remaining_credits: 0, status: 'exhausted' };
+    await notifyLowBalance(client, 'ent-1', { notify, resolve: account as any, task });
+    await notifyLowBalance(client, 'ent-1', { notify, resolve: account as any, task });
+    assert.strictEqual(tasks.length, 1);
+    assert.strictEqual(tasks[0].accountStudentId, 'parent-stu');
+    assert.strictEqual(tasks[0].source, 'low_balance');
+    assert.strictEqual(tasks[0].dedupeKey, 'low_balance:0:ent-1');
+    assert.ok(tasks[0].title.includes('for Maryam'));
+  });
+
   it('sends nothing for a refunded package', async () => {
     const sent: any[] = [];
     const notify = (async () => { sent.push(1); }) as any;

@@ -1,9 +1,11 @@
 /**
  * RN-02: one calm on-site notice + email when a package reaches 2 lessons left, and again at 0.
  * Once per threshold per package: the first writer marks package_entitlements.metadata, later calls find it set.
+ * When the package is used up, the admin also gets one CRM follow-up task (source low_balance) to check in about renewing.
  * Never throws: a failed notice must not fail recording the lesson.
  */
 import { notifyUser, resolveLearnerAccount } from './inbox.js';
+import { createCrmTask } from '../routes/crm.js';
 
 export const LOW_BALANCE_THRESHOLDS = [2, 0] as const;
 export type LowBalanceThreshold = (typeof LOW_BALANCE_THRESHOLDS)[number];
@@ -103,11 +105,12 @@ async function resolveRecipient(
 export async function notifyLowBalance(
   client: any,
   entitlementId: string | null | undefined,
-  deps: { notify?: typeof notifyUser; resolve?: typeof resolveLearnerAccount } = {}
+  deps: { notify?: typeof notifyUser; resolve?: typeof resolveLearnerAccount; task?: typeof createCrmTask } = {}
 ): Promise<LowBalanceThreshold | null> {
   if (!client || !entitlementId) return null;
   const notify = deps.notify || notifyUser;
   const resolve = deps.resolve || resolveLearnerAccount;
+  const task = deps.task || createCrmTask;
   try {
     const { data: ent, error } = await client
       .from('package_entitlements')
@@ -138,6 +141,22 @@ export async function notifyLowBalance(
       lowBalanceNotice(t, Number(ent.purchased_quantity), to.learnerName, ent.id),
       { email: true, preference: 'renewal_reminders' }
     );
+    if (t === 0) {
+      // CRM-04: the task goes on the paying account's own student record, else on the learner's.
+      const { data: own } = to.userId
+        ? await client.from('students').select('id').eq('auth_user_id', to.userId).maybeSingle()
+        : { data: null };
+      const accountStudentId = own?.id || ent.learner_student_id;
+      if (accountStudentId) {
+        await task(client, {
+          accountStudentId,
+          title: `Package used up: check in about renewing${to.learnerName ? ` for ${to.learnerName}` : ''}`,
+          dueAt: new Date(Date.now() + 2 * 24 * 3_600_000),
+          source: 'low_balance',
+          dedupeKey: `low_balance:0:${ent.id}`
+        });
+      }
+    }
     return t;
   } catch (err) {
     console.warn('[Low balance] notice failed:', err);
