@@ -102,3 +102,36 @@ If ChatGPT returns a background anyway, ask for "plain pure white background"; C
 studio light from the upper left, a gentle shadow under the feet. Transparent background (PNG), nothing else in the
 image, no text." The owner sends the results in table order; Claude names them, removes any painted background with
 ffmpeg and saves them as WebP.
+
+## Step 3: Lesson 1 scenes (`public/curriculum/zad-teens/l01/`)
+
+Same ChatGPT chat as Steps 1 and 2. **Before the first scene, send this note** (once):
+
+> Now we switch from character cut-outs to full scenes. For every scene from now on: 4:3 landscape, a full painted
+> background (no transparency), the same anime style as the sheet. When a scene names one of our characters, draw them
+> exactly as on the attached sheet. Never show the face or body of any prophet, any companion of the Prophet, or the
+> angel Jibril: when I say "the stranger", show only a small figure in white clothes seen from behind, far away. No text,
+> letters, numbers or logos anywhere; phone screens show only soft glowing shapes. Reply "OK" and wait.
+
+Then send each prompt below as it is, one at a time, and attach the sheet (Step 1) with the prompts that name a
+character. Send the results back with their file names.
+
+| File | Prompt (paste as is) |
+|---|---|
+| `doors` | Three tall arched wooden doors side by side in a softly lit space, Islamic geometric carving on each, warm gold light leaking from under them; the left door glows teal, the middle crimson, the right gold. Mysterious and inviting. No people. |
+| `canteen` | (attach the sheet) A busy secondary-school canteen at lunchtime. Zayn sits at a table looking at his phone, unsure what to type; Ethan sits opposite, grinning, leaning in as if he just asked a question. Other students blurred in the background. |
+| `bus` | (attach the sheet) Evening, inside a city bus. Zayn sits by the window typing a note on his phone, the screen lighting his face; city lights blur outside. Leave the middle of the picture fairly calm. |
+| `madinah` | Madinah at dawn, long ago: a simple old mosque of mud brick and palm trunks, palm trees, a soft golden sunrise in the upper right, a quiet courtyard with woven mats. No people. |
+| `stranger` | The desert edge of old Madinah, wind blowing sand across the frame. In the centre, a little below the middle, small and far away, seen only from behind: a figure in bright white clothes walking towards the town; the sand seems to pass around him without touching him. No face visible. |
+| `cushions` | Close view inside an old mosque: two plain cushions on a woven mat, placed very close and facing each other, soft light from a high window falling between them. No people. |
+| `courtyard` | A shaded courtyard in old Madinah at midday: palm leaves casting patterned shadows on the sand and woven mats, quiet and calm. No people. |
+| `noor-room` | (attach the sheet) Night, Noor's bedroom: her phone lies face down on the desk, a folded prayer mat on the chair, a small lamp glowing on the right; Noor sits on her bed, calm and thoughtful. |
+| `walk-away` | Old Madinah, late morning: in the centre, far away and small, seen only from behind, the figure in white walks away along a path between palm trees into bright light. No face visible. |
+| `footprints` | Desert sand seen from above: many footprints, each step pressed into the one before, going round in one big closed circle that fills the picture. No people. |
+| `corridor` | (attach the sheet) A school corridor between lockers: Noor and Amira stand together on the left, Amira with her arms crossed; on the right, a small group of students laughing and pointing. Tense but not violent. |
+| `zayn-desk` | (attach the sheet) Night, Zayn at his desk on the left of the picture: a notebook open, his phone beside it glowing softly, a desk lamp, his face determined. Keep the right side calm and dark. |
+| `science` | (attach the sheet) A school science classroom: a big picture of the Big Bang (a glowing burst of light and galaxies, no text) on the screen at the front, top centre; Zayn sits near the back on the left, looking at his phone, thoughtful. |
+
+The five pillars, the six articles of Iman, the three doors on the "Three doors" page and the Why List phone are drawn in
+code: no image needed. Claude saves the scenes as WebP; `SCENE_IMAGES` in `src/curriculum/slides/Slide.tsx` maps them to
+the pages.

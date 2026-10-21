@@ -6,7 +6,7 @@ import { Burst, Rise, SunRays, Glow, Sandstorm } from '../Motion';
 import { useCue } from '../sfx';
 
 /* ---------- Teens Lesson 1: The Stranger with No Dust (brief: docs/curriculum/zad-essentials-teens/L01-the-stranger-with-no-dust.md)
-   Paintings in public/curriculum/zad-teens/l01 (prompts: docs/curriculum/zad-essentials-teens/chatgpt-prompts.md). Until a
+   Paintings in public/curriculum/zad-teens/l01 (prompts: docs/curriculum/style/teens.md, Step 3). Until a
    painting arrives its page shows a warm wash with the code-drawn motion on top. The Why List phone, the five pillars, the
    six articles of Iman and the three doors are drawn here in code. Positions over paintings are % of the painting's box,
    first guesses from the prompts: check them when the paintings arrive. */

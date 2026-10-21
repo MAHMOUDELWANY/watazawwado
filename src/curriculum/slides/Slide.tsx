@@ -196,7 +196,7 @@ export const SCENE_IMAGES: Partial<Record<LessonPage['scene'], string>> = {
   crash: 'l02/crash', sky: 'l02/sky', lock: 'l02/lock', camel: 'l02/camel', park: 'l02/park', boat: 'l02/boat',
   window: 'l02/cover', baby: 'l02/baby', desert: 'l02/desert-sky',
   oneSun: 'l03/cover', sunrise: 'l03/sunrise', recite: 'l03/recite', masjidNight: 'l03/masjid-night', dua: 'l03/dua', football: 'l03/football',
-  // Teens (docs/curriculum/zad-essentials-teens/chatgpt-prompts.md); tPillars and tSix are drawn in code.
+  // Teens (docs/curriculum/style/teens.md, Step 3); tPillars and tSix are drawn in code.
   tDoors: 'zad-teens/l01/doors', tCanteen: 'zad-teens/l01/canteen', tWhyList: 'zad-teens/l01/bus', tMadinah: 'zad-teens/l01/madinah',
   tStranger: 'zad-teens/l01/stranger', tSitting: 'zad-teens/l01/cushions', tTruth: 'zad-teens/l01/courtyard', tIhsan: 'zad-teens/l01/noor-room',
   tReveal: 'zad-teens/l01/walk-away', tFathers: 'zad-teens/l01/footprints', tKnowWhy: 'zad-teens/l01/corridor', tNight: 'zad-teens/l01/zayn-desk',

@@ -30,7 +30,7 @@
   cards and game, and the page-turn transition (they apply to every lesson of the series).
 - **Next:** Lesson 4 (Muhammad ﷺ, the Messenger) brief.
 - **Now (Teens, 2026-10-21):** Teens L1 built in code (draft at /dashboard/curriculum). Waiting: the owner generates the
-  images from `zad-essentials-teens/chatgpt-prompts.md` (setup message + 33 numbered prompts) and reviews the lesson.
+  images from `style/teens.md` (Step 1 sheet done, Step 2 library in progress, Step 3 the L1 scenes) and reviews the lesson.
   When images arrive: name them per the table, place them, re-aim the motion positions, then Teens L2 brief.
 - **Not started:** Lessons 4–37.
 - **Known limit:** lesson text ships in the site bundle, so the lock is a UI lock (content is not secret). Upgrade to
@@ -417,3 +417,5 @@ B3–B5 → continue lesson by lesson.
   the stranger = wow, Why List phone, pillars, six around the heart, three doors, footprints circle, Big Bang); curriculum
   files now resolve per subject folder (`asset()` in Art.tsx, `zad-teens/...`). Checked in headless Edge: 18 pages, desktop
   and phone, dark, reduced motion, no console errors. tsc, tests and build pass.
+- **2026-10-21** — Owner works from `style/teens.md` directly (sheet done, library in progress). L1 scene prompts moved there as
+  Step 3, with a note to send ChatGPT first; `chatgpt-prompts.md` removed.
