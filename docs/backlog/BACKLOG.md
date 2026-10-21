@@ -320,7 +320,7 @@ Principles every PR/RN task follows:
   Tests still pass.
 
 ### ST-06 Self-service privacy requests
-- Priority P2 · Zone 🔴 (personal data) · Size M · Status todo
+- Priority P2 · Zone 🔴 (personal data) · Size M · Status done
 - Do: "Download my data" (JSON of the account's own data) and "Delete my account" request (creates a request for the
   admin, emails privacy@, explains "within one month" per the privacy policy). No automatic hard delete.
 

@@ -18,7 +18,8 @@ import {
   LogOut,
   ShieldCheck,
   Check,
-  Baby
+  Baby,
+  Lock
 } from 'lucide-react';
 import { DateTime } from 'luxon';
 import { useTeacherAuth, getFreshAccessToken } from '../../lib/auth';
@@ -32,6 +33,7 @@ import { BrandFrame } from '../../components/ui/BrandFrame';
 import { CountryTimezonePicker } from '../../components/ui/CountryTimezonePicker';
 import { setActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { AddChildForm } from '../components/AddChildForm';
+import { PrivacyRequests } from '../components/PrivacyRequests';
 import { ErrorState } from '../../components/ErrorState';
 
 export interface StudentProfilePageProps {
@@ -281,8 +283,8 @@ export default function StudentProfilePage({
 
   // Settings Category Navigation
   // ST-05: the open tab lives in the URL (?tab=family), so links and reloads land on the right section.
-  type CategoryId = 'profile' | 'learning' | 'family' | 'preferences' | 'security';
-  const CATEGORY_IDS: CategoryId[] = ['profile', 'learning', 'family', 'preferences', 'security'];
+  type CategoryId = 'profile' | 'learning' | 'family' | 'preferences' | 'privacy' | 'security';
+  const CATEGORY_IDS: CategoryId[] = ['profile', 'learning', 'family', 'preferences', 'privacy', 'security'];
   const [searchParams, setSearchParams] = useSearchParams();
   const tabParam = searchParams.get('tab') as CategoryId | null;
   const activeCategory: CategoryId = tabParam && CATEGORY_IDS.includes(tabParam) ? tabParam : 'profile';
@@ -316,6 +318,12 @@ export default function StudentProfilePage({
       name: isAr ? 'تفضيلات الحجز والمظهر' : 'Booking & Preferences',
       description: isAr ? 'المستفيد الافتراضي، اللغة، المظهر، والإيميلات' : 'Default learner, language, theme & emails',
       icon: Users
+    },
+    {
+      id: 'privacy' as const,
+      name: isAr ? 'الخصوصية وبياناتك' : 'Privacy & your data',
+      description: isAr ? 'نزّل بياناتك أو اطلب حذف الحساب' : 'Download your data or ask for deletion',
+      icon: Lock
     },
     {
       id: 'security' as const,
@@ -1020,6 +1028,18 @@ export default function StudentProfilePage({
                   <span>{isAr ? 'حفظ التفضيلات' : 'Save Preferences'}</span>
                 </Button>
               </div>
+            </div>
+          )}
+
+          {/* ST-06: Privacy & your data */}
+          {activeCategory === 'privacy' && (
+            <div className="rounded-2xl border border-border glass-card p-5 sm:p-7 shadow-2xs space-y-6">
+              <div className="border-b border-border pb-4">
+                <h2 className="text-lg sm:text-xl font-display font-bold text-foreground">
+                  {isAr ? 'الخصوصية وبياناتك' : 'Privacy & your data'}
+                </h2>
+              </div>
+              <PrivacyRequests isAr={isAr} />
             </div>
           )}
 

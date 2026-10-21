@@ -11,8 +11,8 @@ const panel = (id: string) => {
 };
 
 describe('ST-05 profile page sections', () => {
-  it('has five sections and the open one lives in the URL', () => {
-    assert.ok(page.includes("const CATEGORY_IDS: CategoryId[] = ['profile', 'learning', 'family', 'preferences', 'security'];"));
+  it('has six sections (privacy added by ST-06) and the open one lives in the URL', () => {
+    assert.ok(page.includes("const CATEGORY_IDS: CategoryId[] = ['profile', 'learning', 'family', 'preferences', 'privacy', 'security'];"));
     assert.ok(page.includes("searchParams.get('tab')"));
     assert.ok(page.includes('setSearchParams(next, { replace: true })'), 'switching tabs does not flood the back button');
   });

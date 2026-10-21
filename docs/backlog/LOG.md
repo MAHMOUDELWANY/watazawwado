@@ -4,6 +4,16 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### ST-06 Self-service privacy requests (2026-10-21)
+- Result: done (main). New profile tab "Privacy & your data" (`/student/account?tab=privacy`):
+  - "Download my data": one JSON file with the account's own data and its children's (learners, guardians, goals, lessons, payments, packages, the teacher's notes for the family, placement results, ratings, conversations, site notices, email and language preferences). Every column is on an allow-list; tokens, Zoom/calendar ids, payment references, teachers' private notes and placement answer keys never leave. The file says to write to privacy@ for anything else. Rate limited; only real signed-in accounts.
+  - "Delete my account": a confirm box and an optional reason create one open request (one per account), notify the super admin on the site and email privacy@ (production only). The family sees "we received it on <date>; within one month". Nothing is deleted automatically.
+- Admin: Analytics page → "Account deletion requests" with the due date (one month), a link to the student, and "Mark handled" (only after deleting by hand).
+- Migration: `20261021000005_privacy_requests.sql` (applied; server only, checked on production grants).
+- Files: `server/routes/privacy.ts`, `api/index.ts`, `src/student/components/PrivacyRequests.tsx`, `StudentProfilePage.tsx`, `src/dashboard/components/AdminPrivacyRequests.tsx`, `AnalyticsPage.tsx`, `test/st-06-privacy-requests.test.ts`, `test/st-05-profile-split.test.ts` (six tabs now).
+- Checks: tsc pass; npm test 1283 pass / 0 fail / 5 skipped; build pass.
+- Owner review (provisionally approved): what the export includes and leaves out (teachers' private notes are left out; under GDPR a person may ask for them, handled by privacy@), and the wording. How to delete an account by hand is not automated on purpose.
+
 ### PR-09 Monthly progress email (2026-10-21) — built, OFF until the owner switches it on
 - Result: done (main), sending nothing. On the 1st to 5th of each month the reminder cron would send one short email per account about last month: for an adult "You took N lessons with us last month", for a family one line per child, then a button to that month's PR-08 report and, in the footer, a link to switch these emails off (profile → preferences, RN-07). One language per account (RULES.md §6). Only accounts with an attended lesson that month; accounts with progress emails off are skipped.
 - Safety: it runs only when `MONTHLY_PROGRESS_EMAILS=on` is set in Vercel (production). Never twice for the same month (`notification_events` key `monthly_progress:<month>:<account>`, claimed atomically; a failed send is retried by a later run); at most 150 per run so booking emails keep room in the Brevo free quota (300/day).

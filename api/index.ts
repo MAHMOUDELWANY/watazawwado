@@ -69,6 +69,7 @@ import { registerCrmRoutes, createCrmTask } from '../server/routes/crm.js';
 import { registerExportRoutes } from '../server/routes/exports.js';
 import { registerFunnelRoutes } from '../server/routes/funnel.js';
 import { registerFeedbackRoutes } from '../server/routes/feedback.js';
+import { registerPrivacyRoutes } from '../server/routes/privacy.js';
 import { buildIcs } from '../src/lib/ics.js';
 import { findSubject, levelsFor } from '../src/components/onboarding/subjects.js';
 import { registerOpsRoutes, computeHealth, apiErrorMonitor, recordHeartbeat, HEARTBEAT_REMINDER_CRON, HEARTBEAT_STRIPE_WEBHOOK } from '../server/routes/ops.js';
@@ -10347,6 +10348,22 @@ registerFeedbackRoutes(app, {
   rateLimit,
   getLearners: getAuthorizedLearnersForStudent,
   teacherName: resolveTeacherMetadata
+});
+
+registerPrivacyRoutes(app, {
+  getClient: getSupabaseAdminClient,
+  verifyStudentAuth,
+  verifyTeacherAuth,
+  requireSuperAdmin,
+  rateLimit,
+  getLearners: getAuthorizedLearnersForStudent,
+  notifyAdmins: (client, notice) => notifySuperAdmins(client, notice),
+  // Production only: local test runs share the database and must not email the team.
+  emailPrivacyTeam: async (subject, text) => {
+    if (process.env.VERCEL_ENV !== 'production') return;
+    const html = `<pre style="font-family:inherit;white-space:pre-wrap">${text.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as any)[c])}</pre>`;
+    await sendEmail({ to: 'privacy@watazawwado.academy', subject, text, html, from: 'privacy' });
+  }
 });
 
 registerExportRoutes(app, {

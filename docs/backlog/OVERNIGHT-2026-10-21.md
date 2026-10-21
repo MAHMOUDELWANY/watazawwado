@@ -55,3 +55,4 @@ Each task: tsc, full `npm test`, build, commit, push to main, production smoke (
 - 2026-10-21: PU-04: home LCP 7.8 s -> 2.4 s (hero photo fade removed), cache headers for assets/fonts/media. hydrateRoot recommended as follow-up.
 - 2026-10-21: QA-05 SEO checked; Course JSON-LD added; hreflang needs /en URLs (decision).
 - 2026-10-21: PR-09 monthly progress email built, OFF behind MONTHLY_PROGRESS_EMAILS=on; admin dry-run preview.
+- 2026-10-21: ST-06 privacy: data export (allow-listed) + deletion request (no auto delete), migration applied. P2 list complete.
