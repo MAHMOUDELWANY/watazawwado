@@ -4,6 +4,12 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### AD-02 Bulk actions on bookings (2026-10-21) — cancel only
+- Result: done for cancelling (main). On Lessons, the super admin sees a checkbox on every lesson still ahead (pending, confirmed or moved); picking some shows a bar: write one reason (the family sees it), confirm, and each lesson is cancelled through the same single-lesson request as the lesson screen, one after the other, so the server applies its usual rules, credits and emails to each. The bar reports how many were cancelled and how many failed.
+- Not done: "move to another teacher". There is no single-lesson path that moves a booked lesson to another teacher (only the student's assigned teacher can change, and booked lessons stay with their teacher per RULES.md §1); building one means new rules for Zoom host, calendars and availability, so it needs its own task and the owner's go-ahead.
+- Files: `src/dashboard/components/BulkCancelBar.tsx`, `src/dashboard/pages/BookingsPage.tsx`, `test/ad-02-bulk-cancel.test.ts`.
+- Checks: tsc pass; npm test 1306 pass / 0 fail / 5 skipped; build pass. Red zone: no server change, the server's cancel rules are untouched.
+
 ### RN-06 Gentle "we miss you" for quiet learners (2026-10-21) — built, OFF until the owner switches it on
 - Result: done (main), sending nothing. Once a day (09:00 UTC hour) the reminder cron would find learners with a paid lesson in the last 6 months, the last one 21+ days ago and nothing booked since; a family is skipped while another child still has lessons. Each account gets one note from our team ("We miss you" / "وحشتونا", on the site, and by email unless follow-ups are switched off), and the admin gets a CRM follow-up task (source `quiet_learner`, due in 2 days). Never more than once per account per 60 days.
 - Safety: runs only with `QUIET_LEARNER_EMAILS=on` in Vercel (production); 50 accounts per run; idempotent keys in `notification_events`. Dry run: Analytics → ""We miss you" notes" → "Preview the list" (reads only).

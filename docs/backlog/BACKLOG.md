@@ -371,7 +371,7 @@ Principles every PR/RN task follows:
   chats, system health warnings, lessons in the next 24 h without a Zoom link. Then the numbers.
 
 ### AD-02 Bulk actions on bookings
-- Priority P3 · Zone 🔴 · Size M · Status todo
+- Priority P3 · Zone 🔴 · Size M · Status done (cancel only; teacher move needs a single-lesson path first)
 - Do: select several lessons → move to another teacher or cancel with a reason (reuses the existing single-lesson
   server paths and their notifications; no new rules).
 

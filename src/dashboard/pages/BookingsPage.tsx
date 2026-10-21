@@ -18,6 +18,7 @@ import { dashboardFetch } from '../lib/dashboardApi';
 import { DashboardBookingListItem, BookingsOperationalSummary, BookingPaymentStatus } from '../types';
 import { BookingDetailModal } from '../components/BookingDetailModal';
 import { RecordPaymentModal } from '../components/RecordPaymentModal';
+import { BulkCancelBar, bulkCancelable } from '../components/BulkCancelBar';
 import { EmptyState } from '../../components/EmptyState';
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { useT } from '../../lib/language';
@@ -64,6 +65,8 @@ export default function BookingsPage() {
   const [paymentsError, setPaymentsError] = useState<string | null>(null);
 
   const [selectedBookingId, setSelectedBookingId] = useState<string | null>(null);
+  // AD-02: lessons picked for a bulk cancel (super admin only).
+  const [picked, setPicked] = useState<string[]>([]);
   const [paymentModalData, setPaymentModalData] = useState<{
     bookingId?: string | null;
     studentId?: string | null;
@@ -331,6 +334,9 @@ export default function BookingsPage() {
             />
           ) : (
             <div className="space-y-3">
+              {isSuperAdmin && (
+                <BulkCancelBar ids={picked} onClear={() => setPicked([])} onDone={() => { setPicked([]); fetchBookings(); }} />
+              )}
               {bookings.map((b) => {
                 const startUtc = DateTime.fromISO(b.scheduled_start);
                 const startTeacher = startUtc.setZone(activeTz).setLocale(locale);
@@ -350,6 +356,16 @@ export default function BookingsPage() {
                   >
                     <div className="space-y-1.5 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
+                        {isSuperAdmin && bulkCancelable(b) && (
+                          <input
+                            type="checkbox"
+                            className="w-5 h-5 cursor-pointer"
+                            aria-label={t(`Select lesson ${b.reference_code}`, `اختار الحصة ${b.reference_code}`)}
+                            checked={picked.includes(b.id)}
+                            onClick={(e) => e.stopPropagation()}
+                            onChange={(e) => setPicked((p) => (e.target.checked ? [...p, b.id] : p.filter((x) => x !== b.id)))}
+                          />
+                        )}
                         <span className="font-mono font-bold text-sm text-primary group-hover:underline">{b.reference_code}</span>
                         <span className={`px-2 py-0.5 rounded-full text-[13px] font-semibold border ${getBookingStatusBadge(b.status)}`}>{statusLabel(b.status)}</span>
                         {isSuperAdmin && (
