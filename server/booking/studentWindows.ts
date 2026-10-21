@@ -46,3 +46,18 @@ export function studentCancelBlock(b: WindowBooking, now: DateTime = DateTime.no
   }
   return null;
 }
+
+/**
+ * RN-04: the same weekday and time one week after a lesson, when that is still at least 24 hours away.
+ * Only a suggestion: the caller checks the teacher's real availability, and nothing is booked automatically.
+ */
+export function nextWeekSlot(lastStartIso: string, durationMinutes: number, now: DateTime = DateTime.utc(), studentTimezone?: string | null): { startIso: string; endIso: string } | null {
+  // Same clock time for the student, also across a daylight-saving change.
+  const zone = studentTimezone && DateTime.now().setZone(studentTimezone).isValid ? studentTimezone : 'utc';
+  const last = DateTime.fromISO(lastStartIso, { zone: 'utc' }).setZone(zone);
+  if (!last.isValid) return null;
+  const start = last.plus({ weeks: 1 }).toUTC();
+  if (start < now.plus({ hours: 24 })) return null;
+  const minutes = [30, 45, 60].includes(durationMinutes) ? durationMinutes : 45;
+  return { startIso: start.toISO()!, endIso: start.plus({ minutes }).toISO()! };
+}

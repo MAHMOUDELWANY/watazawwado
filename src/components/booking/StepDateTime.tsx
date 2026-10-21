@@ -86,6 +86,12 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
           // If already selected, ensure active index matches
           const idx = data.findIndex((d) => d.dateString === selectedDate);
           if (idx !== -1) setActiveDateIndex(idx);
+          // RN-04: a suggested time arrives as a UTC start only; select the live slot so the engine has the last word.
+          if (idx !== -1 && selectedSlot?.utcStartIso && selectedSlot.id.startsWith('suggested-')) {
+            const live = data[idx].slots.find((s) => s.available && s.utcStartIso && Date.parse(s.utcStartIso) === Date.parse(selectedSlot.utcStartIso!));
+            const fallback = data[idx].slots.find((s) => s.available);
+            if (live || fallback) onSelectSlot((live || fallback)!);
+          }
         }
       })
       .catch((err) => {

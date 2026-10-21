@@ -152,7 +152,7 @@ Principles every PR/RN task follows:
   still computes the price; terms and early-start checkboxes still required).
 
 ### RN-04 Weekly time suggestion ("same time next week")
-- Priority P2 · Zone 🟢 · Size M · Status todo
+- Priority P2 · Zone 🟢 · Size M · Status done
 - Do: after a lesson, suggest booking the same weekday and time next week if the teacher is free (read availability from
   the existing engine, never bypass it). One tap opens the booking flow with that slot pre-selected. This is a
   suggestion, not a recurring booking (multi-lesson booking was removed on purpose; do not bring it back).

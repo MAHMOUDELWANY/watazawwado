@@ -6,7 +6,8 @@ import { BrandLoader, BrandSpinner } from '../../components/ui/BrandLoader';
 import { PackageBalance } from '../components/PackageBalance';
 import { useActiveLearner } from '../activeLearner';
 import { BOOKING_SERVICES, BOOKABLE_SERVICES } from '../../booking/mockData';
-import { BookingFormData, BookingMode, ProficiencyLevel, LessonDuration, PackageCatalogEntry } from '../../booking/types';
+import { BookingFormData, BookingMode, ProficiencyLevel, LessonDuration, PackageCatalogEntry, TimeSlot } from '../../booking/types';
+import { DateTime } from 'luxon';
 import { useTeacherAuth, getFreshAccessToken } from '../../lib/auth';
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { useAppLanguage } from '../../lib/language';
@@ -389,6 +390,28 @@ export function mapLastBookingToBookingFormData(
   };
 }
 
+/** RN-04: a `?slot=` UTC start as the booking flow's date and a placeholder slot (replaced by the live one). */
+export function suggestedSlotFrom(slotParam: string | null, timezone: string): { date: string; slot: TimeSlot } | null {
+  if (!slotParam) return null;
+  const start = DateTime.fromISO(slotParam, { zone: 'utc' });
+  if (!start.isValid || start < DateTime.utc()) return null;
+  const local = start.setZone(timezone);
+  const zoned = local.isValid ? local : start;
+  const hour = zoned.hour;
+  return {
+    date: zoned.toFormat('yyyy-MM-dd'),
+    slot: {
+      id: `suggested-${start.toMillis()}`,
+      time24: zoned.toFormat('HH:mm'),
+      timeDisplay: zoned.toFormat('hh:mm a'),
+      period: hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening',
+      available: true,
+      cairoTimeEquiv: start.setZone('Africa/Cairo').toFormat('HH:mm'),
+      utcStartIso: start.toISO()!
+    }
+  };
+}
+
 /**
  * Pure mapping of authenticated Student Profile (Adult or Child with Guardian)
  * into initial BookingFormData for BookingFlow.
@@ -648,6 +671,12 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
     clearBookingDraft();
     setResumingDraft(false);
     const reused = mapLastBookingToBookingFormData(source, profile, canBookTrial);
+    // RN-04: "same time next week" passes the suggested start (?slot=); the date step swaps in the live slot.
+    const suggested = target && target.id ? suggestedSlotFrom(searchParams.get('slot'), reused.initialData.timezone || 'UTC') : null;
+    if (suggested) {
+      reused.initialData.date = suggested.date;
+      reused.initialData.timeSlot = suggested.slot;
+    }
     setActiveConfig({
       initialData: reused.initialData,
       matchedServiceId: reused.matchedServiceId,
@@ -656,7 +685,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
     setFlowStep(reused.initialStep);
     setIsReusing(true);
     setFlowKey((k) => k + 1);
-  }, [lastEligibleBooking, profile, canBookTrial]);
+  }, [lastEligibleBooking, profile, canBookTrial, searchParams]);
 
   const handleStartOver = useCallback(() => {
     clearBookingDraft();
