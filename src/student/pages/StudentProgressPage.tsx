@@ -1762,6 +1762,17 @@ export default function StudentProgressPage({
       )}
 
       {data.learner && (
+        <div className="flex justify-end">
+          <Link
+            to={`/student/progress/report?learnerId=${encodeURIComponent(data.learner.id)}`}
+            className="inline-flex items-center gap-1.5 min-h-11 px-4 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-surface-subtle focus-ring"
+            data-testid="monthly-report-link"
+          >
+            {isAr ? 'تقرير الشهر' : 'Monthly report'}
+          </Link>
+        </div>
+      )}
+      {data.learner && (
         <LessonTimeline learnerId={data.learner.id} isAr={isAr} timezone={viewerTz} />
       )}
       {data.learner && achievements.shelf.length > 0 && (

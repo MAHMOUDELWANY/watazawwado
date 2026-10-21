@@ -1095,7 +1095,7 @@ export function buildLessonTimeline(input: {
   items.sort((a, b) => new Date(b.dateIso).getTime() - new Date(a.dateIso).getTime());
 
   const total = items.length;
-  const slice = items.slice((page - 1) * pageSize, page * pageSize).map((it) => {
+  const all = items.map((it) => {
     const subject = normalizeSubjectSlug(it.booking?.service_id);
     const meta = subject ? resolveSubjectMeta(subject) : null;
     const note = it.note ? sanitizeNoteForFamily(it.note) : null;
@@ -1111,7 +1111,44 @@ export function buildLessonTimeline(input: {
       nextSteps: note?.next_steps || null,
     };
   });
-  return { items: slice, page, pageSize, total, hasMore: page * pageSize < total };
+  if (input.page === -1) return { items: all, page: 1, pageSize: total, total, hasMore: false };
+  return { items: all.slice((page - 1) * pageSize, page * pageSize), page, pageSize, total, hasMore: page * pageSize < total };
+}
+
+export const REPORT_MONTH_RE = /^\d{4}-(0[1-9]|1[0-2])$/;
+
+/**
+ * PR-08: one learner's month, for the printable progress report. A progress report, never a certificate.
+ * `items` are full timeline items (buildLessonTimeline with page -1); dates are bucketed in the learner's time zone.
+ */
+export function buildMonthlyReport(input: { items: any[]; milestones: any[]; month: string; timezone: string }) {
+  const tz = safeTimezone(input.timezone);
+  const start = DateTime.fromISO(`${input.month}-01`, { zone: tz }).startOf('month');
+  const end = start.endOf('month');
+  const inMonth = (iso: string | null | undefined) => {
+    if (!iso) return false;
+    const d = DateTime.fromISO(iso).setZone(tz);
+    return d.isValid && d >= start && d <= end;
+  };
+  const lessons = input.items.filter((i) => inMonth(i.date)).sort((a, b) => String(a.date).localeCompare(String(b.date)));
+  const weeks = new Set(lessons.map((l) => DateTime.fromISO(l.date).setZone(tz).toFormat("kkkk-'W'WW")));
+  const condense = (t: string) => (t.length > 320 ? `${t.slice(0, 317).trimEnd()}…` : t);
+  return {
+    month: input.month,
+    monthStart: start.toISODate(),
+    lessons: {
+      count: lessons.length,
+      minutes: lessons.reduce((n, l) => n + (typeof l.durationMinutes === 'number' ? l.durationMinutes : 0), 0),
+      weeksWithLesson: weeks.size,
+      list: lessons.map((l) => ({ id: l.id, date: l.date, subject: l.subject, teacherName: l.teacherName, durationMinutes: l.durationMinutes }))
+    },
+    milestones: (input.milestones || [])
+      .filter((m) => inMonth(m?.reached_at))
+      .sort((a, b) => String(a.reached_at).localeCompare(String(b.reached_at)))
+      .map((m) => ({ id: m.id, kind: m.kind, title_en: m.title_en, title_ar: m.title_ar, reached_at: m.reached_at })),
+    summaries: lessons.filter((l) => l.familySummary).slice(-6).map((l) => ({ date: l.date, teacherName: l.teacherName, text: condense(String(l.familySummary)) })),
+    nextSteps: [...lessons].reverse().find((l) => l.nextSteps)?.nextSteps || null
+  };
 }
 
 export function canFamilyReadLearner(
@@ -1742,6 +1779,55 @@ export function registerProgressRoutes(app: express.Express, deps: ProgressDeps)
     });
   }
 
+  // PR-08: monthly progress report data (`GET /api/student/progress/report?month=YYYY-MM&learnerId=`).
+  app.get('/api/student/progress/report', verifyStudentAuth, async (req: any, res: any) => {
+    try {
+      const client = getClient();
+      if (!client) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+      const learners = await getLearners(client, req);
+      const requested = typeof req.query?.learnerId === 'string' ? req.query.learnerId.trim() : '';
+      if (requested && !canFamilyReadLearner(learners, requested)) {
+        return res.status(403).json({ error: 'Forbidden: You cannot view a report for a learner outside your family.' });
+      }
+      const entry = (requested && learners.find((l) => l.id === requested)) || learners[0];
+      if (!entry || !isUuid(entry.id)) return res.status(404).json({ error: 'No learner on this account yet.' });
+      const model = await loadLearnerProgressReadModel(client, entry, req.studentUser?.studentProfile || {});
+      const tz = model.learner.timezone || 'UTC';
+      const monthParam = typeof req.query?.month === 'string' ? req.query.month : '';
+      const month = REPORT_MONTH_RE.test(monthParam) ? monthParam : DateTime.now().setZone(tz).toFormat('yyyy-MM');
+
+      const [bookingsRes, sessionsRes, notesRes, milestonesRes] = await Promise.all([
+        client.from('bookings').select(PROGRESS_BOOKING_COLUMNS).eq('student_id', entry.id).order('scheduled_start', { ascending: false }).limit(1000),
+        client.from('lesson_sessions').select(PROGRESS_SESSION_COLUMNS).eq('student_id', entry.id).order('lesson_date', { ascending: false }).limit(1000),
+        client.from('lesson_notes').select(FAMILY_SUMMARY_COLUMNS).eq('student_id', entry.id).order('created_at', { ascending: false }).limit(1000),
+        client.from('learner_milestones').select(MILESTONE_COLUMNS).eq('student_id', entry.id).order('reached_at', { ascending: false }).limit(500)
+      ]);
+      const failed = bookingsRes.error || sessionsRes.error || notesRes.error || milestonesRes.error;
+      if (failed) {
+        console.error('[GET /api/student/progress/report]', failed.message);
+        return res.status(500).json({ error: 'Could not build the report.' });
+      }
+      const bookings = bookingsRes.data || [];
+      const teacherIds = [...new Set(bookings.map((b: any) => b?.teacher_id).filter((id: any) => isUuid(id)))] as string[];
+      const teacherNamesById = new Map<string, string>();
+      if (teacherIds.length) {
+        const { data: profiles } = await client.from('profiles').select('id, display_name').in('id', teacherIds);
+        for (const p of profiles || []) if (p?.id && p?.display_name) teacherNamesById.set(p.id, p.display_name);
+      }
+      const timeline = buildLessonTimeline({ bookings, lessonSessions: sessionsRes.data || [], lessonNotes: notesRes.data || [], teacherNamesById, page: -1 });
+      const report = buildMonthlyReport({ items: timeline.items, milestones: milestonesRes.data || [], month, timezone: tz });
+      return res.json({
+        learner: { id: model.learner.id, name: model.learner.name, timezone: tz },
+        subjects: model.subjects.map((s: any) => ({ id: s.subject, en: s.subjectMeta.en, ar: s.subjectMeta.ar, level: s.currentLevel })),
+        weeklyRhythm: model.overall.weeklyRhythm,
+        ...report
+      });
+    } catch (err) {
+      console.error('[GET /api/student/progress/report]', err);
+      return res.status(500).json({ error: 'Could not build the report.' });
+    }
+  });
+
   // PR-05: the family's lesson timeline, 20 per page (`GET /api/student/progress/timeline?learnerId=&page=`).
   app.get('/api/student/progress/timeline', verifyStudentAuth, async (req: any, res: any) => {
     try {
@@ -1772,7 +1858,7 @@ export function registerProgressRoutes(app: express.Express, deps: ProgressDeps)
         for (const p of profiles || []) if (p?.id && p?.display_name) teacherNamesById.set(p.id, p.display_name);
       }
       return res.json(buildLessonTimeline({
-        bookings, lessonSessions: sessionsRes.data || [], lessonNotes: notesRes.data || [], teacherNamesById, page: Number(req.query?.page) || 1
+        bookings, lessonSessions: sessionsRes.data || [], lessonNotes: notesRes.data || [], teacherNamesById, page: Math.max(1, Math.floor(Number(req.query?.page) || 1))
       }));
     } catch (err) {
       console.error('[GET /api/student/progress/timeline]', err);

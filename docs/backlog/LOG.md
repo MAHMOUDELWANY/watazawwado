@@ -4,6 +4,15 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### PR-08 Monthly progress report page (2026-10-21)
+- Result: done (main). `/student/progress/report?month=YYYY-MM&learnerId=` (a "Monthly report" button on the progress page opens it for the learner on screen): a one-page report in the placement report's identity: lessons attended, minutes and weeks with a lesson that month, where each subject stands (current level), the month's milestones, the teacher's summaries condensed (six latest, max 320 characters each), the latest next step, and the list of lesson dates. Previous/next month buttons (no future months). Footer: "This is a progress report, not a certificate." in both languages. Print / save as PDF prints only the report, in colour, with no fixed paper size so it fits A4 and Letter.
+- Server: `GET /api/student/progress/report` (family check like the progress page; 401/403 otherwise), pure `buildMonthlyReport` buckets dates in the learner's time zone (a lesson at 23:30 UTC on 31 October counts as November in Cairo). `buildLessonTimeline` can now return every lesson (`page: -1`, server only); the public timeline endpoint clamps the page to 1 or more.
+- Level movement: shown as the current level per subject plus any level/book milestones of the month; there is no level history table to compare against.
+- Files: `server/routes/progress.ts`, `src/student/pages/StudentProgressReportPage.tsx`, route in `StudentApp.tsx`, link in `StudentProgressPage.tsx`, print rule in `src/index.css`, `test/pr-08-monthly-report.test.ts`.
+- Migration: none
+- Checks: tsc pass; npm test 1206 pass / 0 fail / 5 skipped on the second run (first run: one ECONNRESET in the Google Calendar callback test, a known flake, unrelated); build pass.
+- Not checked / risks: the signed-in page and its print preview were not opened (owner rule); a very long month (20+ lessons) may run onto a second printed page.
+
 ### PR-05 Lesson timeline and PR-10 progress on home (2026-10-21)
 - Result: done (main).
 - PR-05: under the path on the progress page, every attended lesson newest first: date and time in the viewer's time zone, subject, teacher, a free-trial tag, the teacher's family summary, achievements as chips, and "for next time". 20 per page with "Show older lessons". New `GET /api/student/progress/timeline?learnerId=&page=` (same family check as the progress page: 401 without sign-in, 403 for teachers and for a learner outside the family). Built by the pure `buildLessonTimeline` in `server/routes/progress.ts` from attended sessions and completed bookings (each lesson once; missed/cancelled skipped); only family-safe note fields are selected, never `private_notes`. Arabic counts read naturally (حصة واحدة، حصتين، ٥ حصص، ٢٥ حصة).

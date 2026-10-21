@@ -1405,8 +1405,10 @@ h3, .text-heading-lg {
   body * { visibility: hidden; }
   html, body, body * { overflow: visible !important; }
   body .h-screen { height: auto !important; }
-  #placement-report, #placement-report * { visibility: visible; }
-  #placement-report { position: absolute; inset: 0; margin: 0; box-shadow: none; }
+  #placement-report, #placement-report *, #progress-report, #progress-report * { visibility: visible; }
+  #placement-report, #progress-report { position: absolute; inset: 0; margin: 0; box-shadow: none; }
+  /* PR-08: no fixed paper size, so the one-page report fits A4 and Letter alike. */
+  @page { margin: 12mm; }
 }
 
 /* Onboarding backdrop: the star lattice drifts very slowly. */

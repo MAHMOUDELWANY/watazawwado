@@ -113,7 +113,7 @@ Principles every PR/RN task follows:
   level, rhythm, next lesson, newest milestone) → tap opens that child's path. Remember the last opened child.
 
 ### PR-08 Monthly progress report page (printable)
-- Priority P2 · Zone 🟢 · Size M · Status todo · Depends on PR-02
+- Priority P2 · Zone 🟢 · Size M · Status done · Depends on PR-02
 - Do: `/student/progress/report?month=YYYY-MM&learnerId=`: a branded one-page report per learner per month (lessons
   attended, milestones, teacher summaries condensed, level movement, a short note from the teacher if written). Print
   CSS for A4 and Letter. Label it clearly as a progress report, not a certificate (same rule as placement reports).
