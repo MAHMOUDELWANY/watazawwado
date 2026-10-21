@@ -70,6 +70,7 @@ import { registerExportRoutes } from '../server/routes/exports.js';
 import { registerFunnelRoutes } from '../server/routes/funnel.js';
 import { registerFeedbackRoutes } from '../server/routes/feedback.js';
 import { registerPrivacyRoutes } from '../server/routes/privacy.js';
+import { registerTeacherLoadRoutes } from '../server/routes/teacherLoad.js';
 import { buildIcs } from '../src/lib/ics.js';
 import { findSubject, levelsFor } from '../src/components/onboarding/subjects.js';
 import { registerOpsRoutes, computeHealth, apiErrorMonitor, recordHeartbeat, HEARTBEAT_REMINDER_CRON, HEARTBEAT_STRIPE_WEBHOOK } from '../server/routes/ops.js';
@@ -4577,6 +4578,15 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
 
       let whatsappUrl: string | null = null;
       if (!isAdminActor) {
+        // CRM-08: keep a record of teacher moves for the admin's teacher view (best effort; the move already happened).
+        const { error: moveLogErr } = await supabase.from('teacher_lesson_moves').insert({
+          booking_id: id,
+          teacher_id: (req as any).teacherUser?.id || null,
+          old_start: oldStart.toISO(),
+          new_start: newStart.toISO(),
+          reason: rescheduleReason || null
+        });
+        if (moveLogErr) console.warn('[Teacher Reschedule] move log failed:', moveLogErr.message);
         const tz = existingBooking.student_timezone || 'UTC';
         const fmt = (d: DateTime) => d.setZone(tz).toFormat('ccc d LLL, HH:mm');
         const teacherName = (req as any).teacherUser?.display_name || 'Teacher';
@@ -10369,6 +10379,12 @@ registerPrivacyRoutes(app, {
     const html = `<pre style="font-family:inherit;white-space:pre-wrap">${text.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' } as any)[c])}</pre>`;
     await sendEmail({ to: 'privacy@watazawwado.academy', subject, text, html, from: 'privacy' });
   }
+});
+
+registerTeacherLoadRoutes(app, {
+  getClient: getSupabaseAdminClient,
+  verifyTeacherAuth,
+  requireSuperAdmin
 });
 
 registerExportRoutes(app, {

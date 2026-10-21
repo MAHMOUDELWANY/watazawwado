@@ -218,7 +218,7 @@ Principles every PR/RN task follows:
   counts behind each step (click to list the people). Remove any number that cannot be traced to data.
 
 ### CRM-08 Teacher load and quality view
-- Priority P3 · Zone 🟢 · Size M · Status todo
+- Priority P3 · Zone 🟢 · Size M · Status done
 - Do: per teacher: active students, lessons this week, hours offered vs booked, lessons moved by the teacher (with
   reasons), notes completion rate after lessons (PR-06). Admin only; teachers never see money.
 

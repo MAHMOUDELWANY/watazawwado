@@ -3,6 +3,7 @@ import { AccountFunnel } from '../components/AccountFunnel';
 import { AdminLessonFeedback } from '../components/LessonFeedbackPanels';
 import { MonthlyProgressPreview } from '../components/MonthlyProgressPreview';
 import { AdminPrivacyRequests } from '../components/AdminPrivacyRequests';
+import { TeacherLoad } from '../components/TeacherLoad';
 import {
   TrendingUp,
   Users,
@@ -331,6 +332,7 @@ export default function AnalyticsPage() {
           {/* Payments: super admin only (RULES.md §1) */}
           {/* CRM-07: the account funnel with the people behind each number. */}
           {isSuperAdmin && <AccountFunnel />}
+          {isSuperAdmin && <TeacherLoad />}
           {isSuperAdmin && <AdminLessonFeedback />}
           {isSuperAdmin && <AdminPrivacyRequests />}
           {isSuperAdmin && <MonthlyProgressPreview />}

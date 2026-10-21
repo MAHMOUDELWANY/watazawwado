@@ -4,6 +4,13 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### CRM-08 Teacher load and quality view (2026-10-21)
+- Result: done (main). Analytics page (super admin) → "Teachers: load and care": per active teacher, active students, lessons this week (from Monday, UTC), hours booked this week vs weekly hours offered (from "My hours"), lessons the teacher moved in the last 30 days with the latest reasons, and how often the family summary was written after completed lessons (last 30 days). No money anywhere.
+- Teacher moves were only kept inside admin notices; a new server-only table `teacher_lesson_moves` now records each move (booking, teacher, old/new time, reason) right after the move succeeds (best effort: a logging failure never blocks the move). Counts start from today.
+- Migration: `20261021000006_teacher_lesson_moves.sql` (applied; server only, grants checked).
+- Files: `server/routes/teacherLoad.ts`, `api/index.ts` (move log + registration), `src/dashboard/components/TeacherLoad.tsx`, `AnalyticsPage.tsx`, `test/crm-08-teacher-load.test.ts`.
+- Checks: tsc pass; npm test 1296 pass / 0 fail / 5 skipped; build pass; production columns checked.
+
 ### PA-04 Family savings made visible (2026-10-21)
 - Result: done (main). A package bought for a second (third...) child now shows "Family care: −$X" / "رعاية الأسرة: −$X" on its card in My packages. X is computed by the server only: the catalogue price minus what the server charged, and only when the server applied the family discount (`metadata.family_discount`). The select response also returns `familySaving`. The 5% rule itself is unchanged (RULES.md §4); the page already explained family care.
 - Files: `api/index.ts`, `src/student/pages/StudentPackagesPage.tsx`, `test/pa-04-family-saving.test.ts`.
