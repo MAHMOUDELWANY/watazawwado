@@ -78,6 +78,17 @@ export function AppRoutes() {
             <Route path="/privacy" element={<PrivacyPolicyPage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/safety" element={<SafetyPage />} />
+            {/* QA-05b: the same public pages in English under /en (Arabic keeps the plain paths). */}
+            <Route path="/en" element={<PublicHomepage />} />
+            <Route path="/en/get-started" element={<PublicHomepage />} />
+            <Route path="/en/about" element={<AboutPage />} />
+            <Route path="/en/how-it-works" element={<HowItWorksPage />} />
+            <Route path="/en/learning" element={<LearningPage />} />
+            <Route path="/en/pricing" element={<PricingPage />} />
+            <Route path="/en/faq" element={<FAQPage />} />
+            <Route path="/en/privacy" element={<PrivacyPolicyPage />} />
+            <Route path="/en/terms" element={<TermsPage />} />
+            <Route path="/en/safety" element={<SafetyPage />} />
           </Route>
 
           {/* Authenticated and Special Routes */}
@@ -94,6 +105,7 @@ export function AppRoutes() {
           <Route path="/verify-otp" element={<OtpVerificationPage />} />
           <Route path="/verify" element={<OtpVerificationPage />} />
           <Route path="/student/*" element={<StudentApp />} />
+          <Route path="/en/*" element={<Navigate to="/en" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         </Suspense>

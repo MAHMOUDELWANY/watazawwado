@@ -1,7 +1,7 @@
 import { BrandLogo } from './ui/BrandLogo';
 import React from 'react';
 import { SocialLinks } from './ui/SocialLinks';
-import { Link } from 'react-router-dom';
+import { Link } from './public/LangLink';
 import { motion } from 'motion/react';
 import { Globe } from 'lucide-react';
 import { Language } from '../types';
