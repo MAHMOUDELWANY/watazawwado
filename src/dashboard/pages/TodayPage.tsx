@@ -24,6 +24,7 @@ import { dashboardFetch, openZoomAsHost } from '../lib/dashboardApi';
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { useT } from '../../lib/language';
 import { CompactCalendar, InboxCard, DASH_CARD } from '../components/DashboardCards';
+import { TeacherRatingNote } from '../components/LessonFeedbackPanels';
 
 type T = (en: string, ar: string) => string;
 
@@ -249,6 +250,8 @@ export default function TodayPage() {
               </div>
             </div>
           </div>
+
+          <TeacherRatingNote />
 
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] items-start">
           <div className="space-y-6 min-w-0">

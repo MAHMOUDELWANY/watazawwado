@@ -68,6 +68,7 @@ import { registerCommunityRoutes, ensureTeacherThreads, PLACEMENT_BEFORE_BOOKING
 import { registerCrmRoutes, createCrmTask } from '../server/routes/crm.js';
 import { registerExportRoutes } from '../server/routes/exports.js';
 import { registerFunnelRoutes } from '../server/routes/funnel.js';
+import { registerFeedbackRoutes } from '../server/routes/feedback.js';
 import { buildIcs } from '../src/lib/ics.js';
 import { findSubject, levelsFor } from '../src/components/onboarding/subjects.js';
 import { registerOpsRoutes, computeHealth, apiErrorMonitor, recordHeartbeat, HEARTBEAT_REMINDER_CRON, HEARTBEAT_STRIPE_WEBHOOK } from '../server/routes/ops.js';
@@ -10308,6 +10309,16 @@ registerFunnelRoutes(app, {
   getClient: getSupabaseAdminClient,
   verifyTeacherAuth,
   requireSuperAdmin
+});
+
+registerFeedbackRoutes(app, {
+  getClient: getSupabaseAdminClient,
+  verifyStudentAuth,
+  verifyTeacherAuth,
+  requireSuperAdmin,
+  rateLimit,
+  getLearners: getAuthorizedLearnersForStudent,
+  teacherName: resolveTeacherMetadata
 });
 
 registerExportRoutes(app, {

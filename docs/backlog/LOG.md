@@ -4,6 +4,14 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### ST-02 Post-lesson moment (2026-10-21)
+- Result: done (main). After a lesson ends (completed, or confirmed and past its end; up to 7 days), the portal home shows "How was the <subject> lesson with <child>?" with five stars: one tap saves the rating. Then an optional comment (only our team reads it) and the teacher's family summary for that lesson, or a note that it will come soon. "Hide" keeps it away for that lesson on this browser. Follows the child switcher.
+- Who sees what: the super admin sees each rating and comment and every teacher's average (Analytics page, "After-lesson ratings"). A teacher sees only their own average on the Today page, and only once they have 5 ratings; comments never reach teachers. Only the account that owns the lesson can rate it; the same account can change its rating, another cannot overwrite it.
+- Migration: `20261021000004_lesson_feedback.sql` (applied; table readable and writable by the server only, checked on production grants).
+- Files: `server/routes/feedback.ts`, `api/index.ts` (registration), `src/student/components/LessonFeedbackCard.tsx`, `StudentHomePage.tsx`, `src/dashboard/components/LessonFeedbackPanels.tsx`, `AnalyticsPage.tsx`, `TodayPage.tsx`, `test/st-02-lesson-feedback.test.ts`.
+- Checks: tsc pass; npm test 1248 pass / 0 fail / 5 skipped; build pass.
+- Not checked / risks: signed-in pages not opened (owner rule); no real rating was written (would need a real family account and a finished lesson). `src/types/database.ts` does not list tonight's new tables (it has not been kept in step for recent tables either).
+
 ### PA-05 Parent onboarding tour (2026-10-21)
 - Result: done (main). A family account (a guardian with linked children) gets a 4-step tour on its first portal visit after onboarding: the child switcher, booking, progress, and messages to our team. It uses the existing spotlight tour (skip, Esc, arrows), opens about a second after the page settles, never over the sign-in modal, and is stored as seen per account on this browser once closed or skipped. The help button ("Tour Guide" / "دليل الاستخدام") replays it; adult learners keep the general tour. On phones the progress step shows as a centred card (that link lives in the menu).
 - Files: `src/student/familyTour.ts`, `src/student/StudentApp.tsx` (messages tab is now a tour target), `test/pa-05-family-tour.test.ts`.

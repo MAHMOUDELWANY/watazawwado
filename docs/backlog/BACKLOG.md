@@ -296,7 +296,7 @@ Principles every PR/RN task follows:
   WhatsApp prefill to the team.
 
 ### ST-02 Post-lesson moment
-- Priority P2 · Zone 🟢 (additive) · Size M · Status todo
+- Priority P2 · Zone 🟢 (additive) · Size M · Status done
 - Do: after the lesson ends, a one-tap rating (how was it) and optional comment, stored for the admin (new table
   `lesson_feedback`, admin-only read; teacher sees only an average after 5 ratings). Then show the family summary
   when the teacher writes it.
