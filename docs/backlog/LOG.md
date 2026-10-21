@@ -4,6 +4,10 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### QA-07 step 2: account language and email choices moved (2026-10-21)
+- `PUT /api/me/language`, `GET`/`PUT /api/student/notification-preferences` moved unchanged (only `deps.*`) to `server/routes/accountPreferences.ts`; the `preferences.js` import moved with them. No catch-all route sits before these paths, so registration order is safe.
+- Checks: tsc pass; npm test 1321 pass / 0 fail / 5 skipped; build pass.
+
 ### Integration of round 2: QA-07 pilot, QA-05b, AD-02b (2026-10-21) — done
 - QA-07 pilot merged into main (family calendar routes in `server/routes/calendarFeed.ts`), together with the English subject text per RULES §2b (`src/booking/mockData.ts`, migration `20261021000007` already applied) and the privacy policy text on AI help for teachers and switching emails off.
 - QA-05b English URLs: every public page also at `/en/...` with `lang="en" dir="ltr"`, English title and description, self canonical, ar/en/x-default hreflang (x-default = Arabic) and the same alternates in `sitemap.xml` (18 URLs). Opening an `/en` address picks English and keeps it; the toggle moves between matching addresses; an unknown `/en/*` goes to `/en`. Checked in `dist/`: `en/pricing.html`, `pricing.html`, `en.html` (tags, and the rendered body is in the right language).

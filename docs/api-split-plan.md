@@ -1,7 +1,6 @@
 # Plan: split `api/index.ts` safely (QA-07)
 
-Status: plan + one pilot (2026-10-21). The pilot is on branch `refactor/qa-07-pilot-calendar-feed` (not merged);
-review it before any more moves.
+Status (2026-10-21): pilot and step 2 merged into `main`. Next: step 3.
 
 ## Why
 
@@ -29,8 +28,8 @@ summaryDraft). The split continues that pattern; it does not change any behaviou
 
 | Step | Group | Approx. lines | Risk | Notes |
 |---|---|---|---|---|
-| Pilot | Family calendar feed (`/api/student/calendar-feed`, `/api/calendar/family/:file`) | 100 | Low | Done on the branch; self-contained, tests in `pa-03`. |
-| 2 | Notification preferences, language (`/api/student/notification-preferences`, `/api/me/language`) | 80 | Low | Small, read/write own rows. |
+| Pilot | Family calendar feed (`/api/student/calendar-feed`, `/api/calendar/family/:file`) | 100 | Low | Done: `server/routes/calendarFeed.ts` (merged). |
+| 2 | Notification preferences, language (`/api/student/notification-preferences`, `/api/me/language`) | 80 | Low | Done: `server/routes/accountPreferences.ts`. |
 | 3 | Next-week suggestion, progress timeline/report wiring already in `progress.ts` | 60 | Low | Uses `validateSlotAvailability` (pass in `deps`). |
 | 4 | Intake and learning guide (`/api/intake/*`, `/api/learning-guide`) | 400 | Medium | Gemini calls; keep model names as they are. |
 | 5 | Dashboard leads, trials, intakes (`/api/dashboard/leads`, `/trials`, `/intakes`) | 600 | Medium | Admin only. |
