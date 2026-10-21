@@ -65,3 +65,5 @@ Each task: tsc, full `npm test`, build, commit, push to main, production smoke (
 - 2026-10-21: RN-06 we-miss-you built, OFF behind QUIET_LEARNER_EMAILS=on; admin dry-run preview.
 - 2026-10-21: AD-02 bulk cancel (reuses single path); bulk teacher move left for a decision.
 - 2026-10-21: QA-07 plan on main; pilot on branch refactor/qa-07-pilot-calendar-feed (review). Backlog (non-decision items) complete.
+
+- 2026-10-21 (round 2): session stopped by the owner. NEXT SESSION: read docs/backlog/HANDOFF-2026-10-21.md first (3 branches to integrate).
