@@ -46,6 +46,7 @@ Decision values: Allowed · With conditions · Needs permission · Research only
 | OpenStax | https://openstax.org | How chapters/outcomes/exercises are built | CC BY-NC-SA, verified 2026-10-16 | Principles only (no content) |
 | MIT OpenCourseWare | https://ocw.mit.edu | Course structure, assessment design | Mostly CC BY-NC-SA | Principles only |
 | Existing Islamic school series (Safar, Weekend Learning, IQRA', Darussalam) | publishers' sites | Table-of-contents study: scope and age sequencing | Commercial, copyrighted | Study TOC only, never content |
+| Yaqeen Institute, "Modern Pathways to Doubt in Islam" (Chouhoud, 2016) | https://yaqeeninstitute.org/read/paper/modern-pathways-to-doubt-in-islam | Scope reference: which doubts Western Muslim youth meet (Teens map, 2026-10-21) | Not checked; nothing copied | Research only |
 
 ## E. Media
 

@@ -29,6 +29,9 @@
 - **Now (player polish, 2026-10-18):** owner reviews the new sounds, the praise word "Zādak Allāh", the new question
   cards and game, and the page-turn transition (they apply to every lesson of the series).
 - **Next:** Lesson 4 (Muhammad ﷺ, the Messenger) brief.
+- **Now (Teens, 2026-10-21):** owner reviews the Zad Essentials · Teens unit map (`zad-essentials-teens/MAP.md`, 40
+  lessons, story world, open points at the end). After approval: `style/teens.md` (anime look, character sheet), then
+  Teens Lesson 1 brief.
 - **Not started:** Lessons 4–37.
 - **Known limit:** lesson text ships in the site bundle, so the lock is a UI lock (content is not secret). Upgrade to
   server-served lessons if content must be protected.
@@ -394,3 +397,11 @@ B3–B5 → continue lesson by lesson.
   cliffhanger kept; Ahd al-Ikhlas before sleep, with al-Falaq and an-Nas as an invitation.
 - **2026-10-20** — Owner approved Lessons 1, 2 and 3 after review; `reviewed: true` set in the three lesson files
   (`src/curriculum/content/zad-kids/`), so they open for booked students and the "mystery visitor" teaser is unblocked.
+- **2026-10-21** — Zad Essentials · Teens started (map step, A1). Owner decisions: recurring characters are a brother and
+  sister (about 15 and 13) at a Western secondary school; anime look; puberty rulings get one shared lesson (bulugh,
+  ghusl) plus one lesson for boys and one for girls, the teacher picks by learner; doubts are the common online ones
+  (science and faith, evil and suffering, "all religions are the same", "why am I Muslim?", identity), each answered
+  inside its related lesson. Kept from RULES §3: same spine, challenge game, personal-challenge Ahd, Shafi'i only.
+- **2026-10-21** — Teens unit map drafted after a short brainstorm with the owner (why the version exists: teens pushed
+  into worship without understanding; tone: no preaching, no heavy fear, story-led, curiosity). Web check: Yaqeen's
+  "Modern Pathways to Doubt in Islam" used as a scope reference for which doubts to answer. Waiting: owner review.
