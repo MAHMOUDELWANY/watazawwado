@@ -4,6 +4,16 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### PA-03 Family calendar (2026-10-21)
+- Result: done (main). New portal page `/student/calendar` (sidebar: "Calendar" / "تقويم العيلة"): all the family's lessons in a week view (one column per day; stacked on phones) or a month view (dots per child; a day opens its week), one colour per child with a legend, times in the viewer's time zone (shown on the page), today highlighted. On the lesson day the Join button appears when the join window opens (same rule as the lesson-day card). Each upcoming lesson has "Add to my calendar" (an .ics file made in the browser).
+- Subscription link: "Get my calendar link" creates a private feed URL (`/api/calendar/family/<token>.ics`) for Google/Apple/Outlook. 32 random bytes; only the SHA-256 is stored (`calendar_feed_tokens`), the link is shown once; "Make a new link" revokes the old one, "Turn the link off" deletes it. The feed lists confirmed lessons from 30 days back to 180 ahead with subject and first name only, never Zoom links (joining stays on the site); malformed or unknown tokens get a plain 404; rate limited; `noindex`.
+- Shared `src/lib/ics.ts` (RFC 5545: UTC times, escaping, 75-octet folding that keeps Arabic characters whole).
+- Migration: `20261021000003_calendar_feed_tokens.sql` (applied).
+- Also: a few test files written tonight through the shell had double backslashes collapsed; the one that became looser (RLS lockdown regex) is fixed, the others were checked and are exact.
+- Files: `api/index.ts`, `src/lib/ics.ts`, `src/student/pages/StudentCalendarPage.tsx`, `StudentApp.tsx`, `test/pa-03-family-calendar.test.ts`.
+- Checks: tsc pass; npm test 1238 pass / 0 fail / 5 skipped; build pass.
+- Not checked / risks: signed-in page not opened (owner rule); if Vercel's firewall challenges bots, calendar apps fetching the feed could be blocked: test the link once in Google Calendar after launch and allow `/api/calendar/family/*` if needed; a leaked link shows lesson times and first names until it is turned off.
+
 ### CRM-07 Funnel analytics that match reality (2026-10-21)
 - Result: done (main). Reports page (admin): a table of accounts by sign-up week (Cairo weeks, last 8) through signed up → set-up done → trial booked → trial attended → first payment → second month, with real counts only. Clicking a number lists the accounts behind it, each linking to the student page. A family counts once: the account plus the children whose guardian email is the account's. Trial booked ignores cancelled trials; first payment = a payment received (confirmed, or refunded later); second month = paid lessons attended at least 28 days apart. The existing lead-based report was checked: its numbers are all computed from leads/bookings/payments (no estimates), so it stays.
 - Server: `server/routes/funnel.ts` (pure `buildAccountFunnel` + `GET /api/dashboard/admin/funnel?weeks=`, admin only).

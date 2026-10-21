@@ -271,7 +271,7 @@ Principles every PR/RN task follows:
   choose subject, level and teacher like onboarding. If it exists, make it obvious from the home page.
 
 ### PA-03 Family calendar
-- Priority P2 · Zone 🟢 · Size M · Status todo
+- Priority P2 · Zone 🟢 · Size M · Status done
 - Do: one week/month view of all children's lessons, colour per child, in the parent's time zone, with join buttons on
   the day. Plus "Add to my calendar" (`.ics` download per lesson and a per-family feed link with a secret token).
 

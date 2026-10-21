@@ -15,7 +15,7 @@ describe('RLS lockdown (security review 2026-10-21)', () => {
 
   it('browser roles cannot write bookings, payments or packages', () => {
     for (const t of ['bookings', 'payments', 'package_entitlements']) {
-      assert.match(lockdown, new RegExp(`REVOKE INSERT, UPDATE, DELETE, TRUNCATE, TRIGGER ON public\.${t} FROM anon, authenticated`));
+      assert.match(lockdown, new RegExp(`REVOKE INSERT, UPDATE, DELETE, TRUNCATE, TRIGGER ON public\\.${t} FROM anon, authenticated`));
     }
   });
 

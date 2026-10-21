@@ -20,6 +20,7 @@ import { HelpCircle, Globe, LogOut, BookOpen,
   ChevronRight,
   MessageCircle,
   Library,
+  CalendarDays,
 } from 'lucide-react';
 import { useTeacherAuth } from '../lib/auth';
 import { useAppLanguage } from '../lib/language';
@@ -39,6 +40,7 @@ import StudentPlacementReportPage from './pages/StudentPlacementReportPage';
 import StudentCurriculumPage, { StudentCurriculumLessonPage } from './pages/StudentCurriculumPage';
 import StudentProgressPage from './pages/StudentProgressPage';
 import StudentProgressReportPage from './pages/StudentProgressReportPage';
+import StudentCalendarPage from './pages/StudentCalendarPage';
 import { ChatPanel } from '../components/chat/ChatPanel';
 import IntakeConversation from '../components/intake/IntakeConversation';
 import { Button } from '../components/ui/Button';
@@ -356,6 +358,12 @@ export default function StudentApp() {
       name: isAr ? 'الدروس' : 'Lessons', 
       path: '/student/lessons', 
       icon: Calendar,
+      badge: null
+    },
+    {
+      name: isAr ? 'تقويم العيلة' : 'Calendar',
+      path: '/student/calendar',
+      icon: CalendarDays,
       badge: null
     },
     {
@@ -773,6 +781,7 @@ export default function StudentApp() {
               <Route path="/lessons" element={<StudentLessonsPage lang={lang} session={session} />} />
               <Route path="/progress" element={<StudentProgressPage lang={lang} />} />
               <Route path="/progress/report" element={<StudentProgressReportPage lang={lang} />} />
+              <Route path="/calendar" element={<StudentCalendarPage lang={lang} />} />
               <Route path="/packages" element={<StudentPackagesPage lang={lang} session={session} />} />
               <Route path="/payments" element={<StudentPaymentsPage lang={lang} session={session} />} />
               <Route path="/notifications" element={<StudentNotificationsPage lang={lang} session={session} />} />
