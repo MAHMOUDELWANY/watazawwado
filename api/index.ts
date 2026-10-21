@@ -72,6 +72,7 @@ import { registerFeedbackRoutes } from '../server/routes/feedback.js';
 import { registerPrivacyRoutes } from '../server/routes/privacy.js';
 import { registerTeacherLoadRoutes } from '../server/routes/teacherLoad.js';
 import { registerSummaryDraftRoutes } from '../server/routes/summaryDraft.js';
+import { registerLessonTeacherMoveRoutes } from '../server/routes/lessonTeacherMove.js';
 import { buildIcs } from '../src/lib/ics.js';
 import { findSubject, levelsFor } from '../src/components/onboarding/subjects.js';
 import { registerOpsRoutes, computeHealth, apiErrorMonitor, recordHeartbeat, HEARTBEAT_REMINDER_CRON, HEARTBEAT_STRIPE_WEBHOOK } from '../server/routes/ops.js';
@@ -10427,6 +10428,13 @@ registerSummaryDraftRoutes(app, {
     const response = await ai.models.generateContent({ model: 'gemini-3.1-flash-lite', contents: prompt });
     return response.text || '';
   }
+});
+
+registerLessonTeacherMoveRoutes(app, {
+  getClient: getSupabaseAdminClient,
+  verifyTeacherAuth,
+  requireSuperAdmin,
+  resolveTeacher: resolveTeacherMetadata
 });
 
 registerExportRoutes(app, {
