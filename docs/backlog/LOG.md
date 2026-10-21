@@ -4,6 +4,14 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### QA-01 Smoke tests for the money paths (2026-10-21)
+- Result: done (main), with a deliberate limit. The local server uses the production database, and a real booking there would make the production cron create a Zoom meeting, a teacher calendar event and emails. So `test/qa-01-money-paths-smoke.test.ts` walks every money path up to the first write, with dev auth and booking ids that match no row: booking validation (duration, trial length, time zone, email, name, guardian, slot), checkout (Stripe only, a known booking only, no amount read from the browser), payment confirmation only through a verified Stripe session or a signed webhook, every student money route 401 without a token and 403 for a teacher, cancel/move of a lesson that is not yours → 404, packages data from the server catalogue, refund and pay-later admin-only, and no money keys in the teacher Today/Upcoming responses.
+- Window rules moved into `server/booking/studentWindows.ts` (same checks, same messages, same order) and unit tested: trial cancel 1 h, other lessons 3 h, move up to 1 h, a trial moved once, a pending/finished lesson can be neither moved nor cancelled; teacher moves need a reason before the RPC; a move lands on a later day in the student's time zone.
+- Found: the Stripe test key in the local `.env` is expired (Stripe answers "Expired API Key"), so no local checkout can reach Stripe. Owner: create a new test key in the Stripe dashboard and put it in `.env`; check the production key works with one real checkout before launch.
+- Migration: none
+- Checks: tsc pass; npm test 1168 pass / 0 fail / 5 skipped; build pass.
+- Not checked / risks: the write path (create booking → Stripe test checkout → webhook → confirmed, sign-up/onboarding writes) needs a separate test database (a second free Supabase project with the migrations applied, wired through `.env.test`), owner decision. The dev teacher may have no lessons, in which case the no-money walk checks empty lists; TE-02's test covers the student card.
+
 ### SEC-01 Security review of the recent changes and the live database (2026-10-21)
 - Result: done (89463f0). Owner asked for a careful security pass before more backlog work. Scope: every code change in b850ad2..HEAD (OPS, RN, CRM, PA, ST, TE, AD, PU), plus production RLS policies, table/column grants and the Supabase security advisor.
 - Found and fixed (applied to production, verified as a real teacher session inside a rolled-back transaction):

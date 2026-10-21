@@ -75,6 +75,7 @@ import { isAdultAge, isGuardianAge, isChildAge, parseAge, ADULT_MIN_AGE, GUARDIA
 import { sanitizeLeadSource, isHeardAbout } from '../src/lib/leadSource.js';
 import { notifyUser, notifySuperAdmins, resolveLearnerAccount } from '../server/notifications/inbox.js';
 import { notifyLowBalance } from '../server/notifications/lowBalance.js';
+import { studentRescheduleBlock, studentCancelBlock } from '../server/booking/studentWindows.js';
 import { processTrialFollowUps } from '../server/notifications/trialFollowUp.js';
 import {
   validateIntakeOutput
@@ -5733,18 +5734,9 @@ app.post('/api/student/bookings/:id/reschedule', rateLimit, verifyStudentAuth, a
     const { booking, error: ownErr } = await resolveStudentBooking(supabase, req, req.params.id);
     if (ownErr) return res.status(ownErr.status).json({ error: ownErr.message });
 
-    if (!['confirmed', 'rescheduled'].includes(booking.status)) {
-      return res.status(400).json({ error: 'Only confirmed lessons can be rescheduled.' });
-    }
-    const isTrial = booking.booking_type === 'trial';
-    const hoursLeft = DateTime.fromISO(booking.scheduled_start).diffNow('hours').hours;
-    if (isTrial && (booking.reschedule_count || 0) >= 1) {
-      return res.status(400).json({ error: 'A free trial can be rescheduled only once. You can cancel it and book again after 48 hours.', code: 'TRIAL_RESCHEDULE_USED' });
-    }
-    // RULES.md §2: any lesson can be moved up to 1 hour before it starts.
-    if (hoursLeft < 1) {
-      return res.status(400).json({ error: 'Lessons can be moved up to 1 hour before they start. For a real emergency, please message us on WhatsApp.', code: 'TOO_LATE' });
-    }
+    // RULES.md §2: any lesson can be moved up to 1 hour before it starts; a free trial only once.
+    const moveBlock = studentRescheduleBlock(booking);
+    if (moveBlock) return res.status(moveBlock.status).json({ error: moveBlock.error, ...(moveBlock.code ? { code: moveBlock.code } : {}) });
 
     const newStart = DateTime.fromISO(String(req.body?.utcStartIso || ''), { zone: 'utc' });
     if (!newStart.isValid || newStart < DateTime.utc().plus({ minutes: 10 })) {
@@ -5815,19 +5807,9 @@ app.post('/api/student/bookings/:id/cancel', rateLimit, verifyStudentAuth, async
     const { booking, error: ownErr } = await resolveStudentBooking(supabase, req, req.params.id);
     if (ownErr) return res.status(ownErr.status).json({ error: ownErr.message });
 
-    if (!['confirmed', 'rescheduled'].includes(booking.status)) {
-      return res.status(400).json({ error: 'This lesson cannot be cancelled.' });
-    }
+    const cancelBlock = studentCancelBlock(booking);
+    if (cancelBlock) return res.status(cancelBlock.status).json({ error: cancelBlock.error, ...(cancelBlock.code ? { code: cancelBlock.code } : {}) });
     const isTrial = booking.booking_type === 'trial';
-    const minHours = isTrial ? 1 : 3;
-    if (DateTime.fromISO(booking.scheduled_start).diffNow('hours').hours < minHours) {
-      return res.status(400).json({
-        error: isTrial
-          ? 'A free trial can be cancelled up to 1 hour before it starts.'
-          : 'Lessons can be cancelled up to 3 hours before they start. You can still move it up to 1 hour before.',
-        code: 'TOO_LATE'
-      });
-    }
     const reason = typeof req.body?.reason === 'string' && req.body.reason.trim() ? req.body.reason.trim().slice(0, 500) : 'Cancelled by student';
 
     const isPaidSingle = !isTrial && !booking.package_entitlement_id && booking.payment_plan !== 'pay_later';

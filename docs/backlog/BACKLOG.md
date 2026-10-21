@@ -409,7 +409,7 @@ Principles every PR/RN task follows:
 ## QA: Quality, tests, accessibility, SEO
 
 ### QA-01 End-to-end smoke tests for the money paths (local only)
-- Priority P1 · Zone 🟢 · Size L · Status todo
+- Priority P1 · Zone 🟢 · Size L · Status done
 - Do: automated browser tests against the local dev server with dev auth for: sign-up/onboarding (adult and family),
   free trial booking, paid booking reaching Stripe Checkout (stop there; Stripe test mode only if configured locally),
   package page, cancel and reschedule windows, teacher move with reason, admin refund button visibility. Never against
