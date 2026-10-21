@@ -608,7 +608,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
               <button
                 type="button"
                 onClick={() => setValidationError(null)}
-                className="text-amber-700 dark:text-amber-400 font-bold ml-2 cursor-pointer"
+                className="text-amber-700 dark:text-amber-400 font-bold ms-2 cursor-pointer"
               >
                 ✕
               </button>

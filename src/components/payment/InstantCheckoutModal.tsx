@@ -109,7 +109,7 @@ export function InstantCheckoutModal({
           <button
             onClick={onClose}
             className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors"
-            aria-label="Close"
+            aria-label={isAr ? 'إغلاق' : 'Close'}
           >
             <X className="w-5 h-5" />
           </button>

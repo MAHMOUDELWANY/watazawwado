@@ -124,7 +124,7 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
               onClick={onClose}
               type="button"
               className="p-1.5 rounded-full text-foreground/60 dark:text-muted-foreground/60 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
-              aria-label="Close"
+              aria-label={isEn ? 'Close' : 'إغلاق'}
             >
               <X className="w-5 h-5" />
             </motion.button>

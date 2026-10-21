@@ -906,8 +906,8 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
             <AlertCircle className="w-4 h-4 text-warning shrink-0" />
             <span>
               {bookingsError.toLowerCase().includes('auth') || bookingsError.includes('401')
-                ? 'يرجى تسجيل الدخول أو تحديث الجلسة لتأكيد سجل الدروس والاستفادة من الجلسة المجانية.'
-                : `${bookingsError} Free trial booking is unavailable until history is verified.`}
+                ? (isAr ? 'سجّل دخولك تاني عشان نتأكد من حصصك ونقدر نحجزلك الحصة المجانية.' : 'Please sign in again so we can check your lessons and book your free trial.')
+                : (isAr ? 'معرفناش نحمّل حصصك، فالحصة المجانية مقفولة لحد ما نتأكد منها. جرّب تاني.' : 'We could not load your lessons, so the free trial stays locked until we can check them. Please try again.')}
             </span>
           </div>
           <button
@@ -920,7 +920,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-warning hover:bg-warning/90 text-primary-foreground font-medium self-start sm:self-auto transition-colors cursor-pointer disabled:opacity-50"
           >
             {bookingsLoading ? <BrandSpinner size={14} /> : <RefreshCw className="w-3.5 h-3.5" />}
-            <span>تحديث الجلسة / Retry</span>
+            <span>{isAr ? 'حاول تاني' : 'Try again'}</span>
           </button>
         </div>
       )}

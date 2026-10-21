@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrandLogo } from './BrandLogo';
+import { getStoredLanguage } from '../../lib/language';
 
 export interface BrandSpinnerProps {
   /** Size in pixels or preset alias */
@@ -35,7 +36,7 @@ export function BrandSpinner({
   return (
     <div
       role="status"
-      aria-label="Loading..."
+      aria-label={getStoredLanguage() === 'ar' ? 'جارٍ التحميل' : 'Loading'}
       className={`relative inline-flex items-center justify-center shrink-0 select-none ${className}`}
       style={{ width: dimension, height: dimension }}
     >

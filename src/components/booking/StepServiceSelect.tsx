@@ -125,7 +125,7 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
       </div>
 
       {/* Services Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 max-h-[460px] overflow-y-auto pr-1.5 focus:outline-none">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 max-h-[460px] overflow-y-auto pe-1.5 focus:outline-none">
         {filteredServices.map((service) => {
           const isSelected = selectedServiceId === service.id;
           return (

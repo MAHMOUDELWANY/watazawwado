@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { Check } from 'lucide-react';
+import { getStoredLanguage } from '../../lib/language';
 
 /**
  * Backdrop and step trail for the onboarding "journey". The backdrop is a slow-drifting
@@ -32,7 +33,7 @@ export function JourneyBackdrop() {
 export function JourneyTrail({ step, labels }: { step: number; labels: string[] }) {
   const reduce = useReducedMotion();
   return (
-    <ol className="flex items-center justify-center gap-0 w-full max-w-md mx-auto" aria-label="progress">
+    <ol className="flex items-center justify-center gap-0 w-full max-w-md mx-auto" aria-label={getStoredLanguage() === 'ar' ? 'خطوات التسجيل' : 'Sign-up steps'}>
       {labels.map((label, i) => {
         const n = i + 1;
         const done = n < step;

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import FocusTrap from '../FocusTrap';
+import { getStoredLanguage } from '../../lib/language';
 
 export interface ModalProps {
   isOpen: boolean;
@@ -99,7 +100,7 @@ export function Modal({
                     <button
                       onClick={onClose}
                       className="p-2 -me-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                      aria-label="Close modal"
+                      aria-label={getStoredLanguage() === 'ar' ? 'إغلاق' : 'Close'}
                     >
                       <X className="w-5 h-5" />
                     </button>
@@ -112,7 +113,7 @@ export function Modal({
                 <button
                   onClick={onClose}
                   className="absolute top-4 end-4 z-10 p-2 rounded-xl glass-card/50 backdrop-blur-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors shadow-xs"
-                  aria-label="Close modal"
+                  aria-label={getStoredLanguage() === 'ar' ? 'إغلاق' : 'Close'}
                 >
                   <X className="w-5 h-5" />
                 </button>

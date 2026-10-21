@@ -167,7 +167,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
           <button
             type="button"
             onClick={() => setTzModalOpen(false)}
-            className="underline ml-auto font-medium"
+            className="underline ms-auto font-medium"
           >
             {isEn ? 'Retry' : 'إعادة المحاولة'}
           </button>

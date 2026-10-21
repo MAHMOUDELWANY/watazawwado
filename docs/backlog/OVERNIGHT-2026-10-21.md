@@ -18,7 +18,7 @@ owner, tests never weakened to pass.
 | 2 | Fix confirmed security findings, with tests | 🔴 | done (89463f0, 2 migrations applied) |
 | 3 | QA-01 e2e smoke tests for the money paths (local only) | 🟢 | done (no-write smoke; full e2e needs a test DB) |
 | 4 | QA-02 accessibility audit | 🟢 | done |
-| 5 | QA-03 RTL and bilingual sweep | 🟢 | todo |
+| 5 | QA-03 RTL and bilingual sweep | 🟢 | done |
 | 6 | QA-04 mobile break test (incl. footer links 20 px from PU-02) | 🟢 | todo |
 | 7 | PR-04 milestone celebration: plan, then build | 🟢 | todo |
 | 8 | P2 in order: PR-05, PR-08, PR-10, RN-04, RN-07, CRM-05, CRM-06, CRM-07, PA-03, PA-05, ST-02, ST-05, TE-03, AD-03, PU-03, PU-04, QA-05 | mixed | todo |
@@ -33,3 +33,4 @@ Each task: tsc, full `npm test`, build, commit, push to main, production smoke (
 - 2026-10-21: SEC-01 done. Teachers could read all payments and edit bookings/guardians/leads/etc. via Supabase REST; locked to super admin; one unescaped PostgREST filter fixed. Owner action: enable leaked password protection in Supabase Auth.
 - 2026-10-21: QA-01 done as no-write smoke tests (13 tests). Local Stripe test key is expired: owner action.
 - 2026-10-21: QA-02 done (focus trap everywhere, 28 unlabelled fields, dark-theme contrast, dead TeacherAuthModal removed).
+- 2026-10-21: QA-03 done (logical sides in booking/packages/payments, bilingual aria labels, booking error banner).

@@ -1042,7 +1042,7 @@ function PackageCard({
 
           <div className="pt-2">
             <span className="text-3xl font-display font-bold text-foreground">${price}</span>
-            <span className="text-sm text-muted-foreground ml-1">{currency}</span>
+            <span className="text-sm text-muted-foreground ms-1">{currency}</span>
             <div className="text-[11px] text-muted-foreground mt-0.5">
               ${perLesson.toFixed(2)} / {isAr ? 'درس' : 'lesson'}
             </div>

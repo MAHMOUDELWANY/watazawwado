@@ -422,7 +422,7 @@ Principles every PR/RN task follows:
   in both themes; `aria-live` for toasts; modals trap focus (`src/components/FocusTrap.tsx`). Fix what fails.
 
 ### QA-03 RTL and bilingual sweep
-- Priority P1 · Zone 🟢 · Size M · Status todo
+- Priority P1 · Zone 🟢 · Size M · Status done
 - Do: grep for `left`/`right`, `ml-`/`mr-`/`pl-`/`pr-` in `src/` and replace with logical classes; find hard-coded
   English or Arabic strings that skip the language system; icons that point the wrong way in RTL.
 

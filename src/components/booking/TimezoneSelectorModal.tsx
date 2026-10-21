@@ -68,19 +68,19 @@ export const TimezoneSelectorModal: React.FC<TimezoneSelectorModalProps> = ({
 
             <div className="py-3">
               <div className="relative">
-                <Search className="w-4 h-4 absolute left-3 top-3 text-foreground/50 dark:text-muted-foreground/50" />
+                <Search className="w-4 h-4 absolute start-3 top-3 text-foreground/50 dark:text-muted-foreground/50" />
                 <input
                   aria-label={isEn ? 'Search city or time zone' : 'ابحث عن مدينة أو منطقة زمنية'}
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={isEn ? 'Search city or timezone (e.g. Toronto, London)...' : 'ابحث عن مدينة أو منطقة زمنية...'}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-border bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full ps-9 pe-3 py-2 rounded-xl border border-border bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto space-y-1.5 pr-1 py-1">
+            <div className="flex-1 overflow-y-auto space-y-1.5 pe-1 py-1">
               {filtered.map((tz) => {
                 const isSelected = currentTimezone === tz.value;
                 return (

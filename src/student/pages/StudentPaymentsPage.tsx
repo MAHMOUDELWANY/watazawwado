@@ -486,7 +486,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
                       <span className="text-lg sm:text-xl font-display font-bold text-foreground">
                         {p.amount ? `$${p.amount}` : '—'}
                       </span>
-                      <span className="text-sm text-muted-foreground ml-1">
+                      <span className="text-sm text-muted-foreground ms-1">
                         {p.currency || 'USD'}
                       </span>
                     </div>
