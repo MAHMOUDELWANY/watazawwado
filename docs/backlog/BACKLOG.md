@@ -281,7 +281,7 @@ Principles every PR/RN task follows:
   using the server's computed numbers only.
 
 ### PA-05 Parent onboarding tour
-- Priority P2 · Zone 🟢 · Size S · Status todo
+- Priority P2 · Zone 🟢 · Size S · Status done
 - Do: first visit of a guardian: a short 4-step tour (children, booking, progress, chat with the team). Skippable,
   shown once, replayable from the help menu.
 

@@ -4,6 +4,12 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### PA-05 Parent onboarding tour (2026-10-21)
+- Result: done (main). A family account (a guardian with linked children) gets a 4-step tour on its first portal visit after onboarding: the child switcher, booking, progress, and messages to our team. It uses the existing spotlight tour (skip, Esc, arrows), opens about a second after the page settles, never over the sign-in modal, and is stored as seen per account on this browser once closed or skipped. The help button ("Tour Guide" / "دليل الاستخدام") replays it; adult learners keep the general tour. On phones the progress step shows as a centred card (that link lives in the menu).
+- Files: `src/student/familyTour.ts`, `src/student/StudentApp.tsx` (messages tab is now a tour target), `test/pa-05-family-tour.test.ts`.
+- Checks: tsc pass; npm test 1242 pass / 0 fail / 5 skipped; build pass.
+- Not checked / risks: signed-in page not opened (owner rule); "seen" lives in the browser, so a parent on a second device sees it once more there.
+
 ### PA-03 Family calendar (2026-10-21)
 - Result: done (main). New portal page `/student/calendar` (sidebar: "Calendar" / "تقويم العيلة"): all the family's lessons in a week view (one column per day; stacked on phones) or a month view (dots per child; a day opens its week), one colour per child with a legend, times in the viewer's time zone (shown on the page), today highlighted. On the lesson day the Join button appears when the join window opens (same rule as the lesson-day card). Each upcoming lesson has "Add to my calendar" (an .ics file made in the browser).
 - Subscription link: "Get my calendar link" creates a private feed URL (`/api/calendar/family/<token>.ics`) for Google/Apple/Outlook. 32 random bytes; only the SHA-256 is stored (`calendar_feed_tokens`), the link is shown once; "Make a new link" revokes the old one, "Turn the link off" deletes it. The feed lists confirmed lessons from 30 days back to 180 ahead with subject and first name only, never Zoom links (joining stays on the site); malformed or unknown tokens get a plain 404; rate limited; `noindex`.

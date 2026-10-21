@@ -45,6 +45,7 @@ import { ChatPanel } from '../components/chat/ChatPanel';
 import IntakeConversation from '../components/intake/IntakeConversation';
 import { Button } from '../components/ui/Button';
 import { ActiveLearnerProvider, ChildSwitcher, PROFILE_CHANGED_EVENT } from './activeLearner';
+import { familyTourSteps, isFamilyAccount, markFamilyTourSeen, shouldAutoOpenFamilyTour } from './familyTour';
 import { StudentAuthModal } from '../components/StudentAuthModal';
 import { AuthPage, AuthCard, AuthPortal } from '../components/auth/AuthFrame';
 import { useOtpCelebrating } from '../components/auth/otpCelebration';
@@ -202,6 +203,16 @@ export default function StudentApp() {
     // accessToken is read at call time; a refreshed token for the same user must not reload the profile.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, userRole, Boolean(accessToken), isTeacherAuthenticated, profileVersion]);
+
+  // PA-05: a family account sees its short tour once, after onboarding, when no sign-in modal is open.
+  useEffect(() => {
+    if (authModalOpen) return;
+    let storage: Storage | null = null;
+    try { storage = window.localStorage; } catch { /* blocked storage: never auto-open */ }
+    if (!storage || !shouldAutoOpenFamilyTour(profile, storage)) return;
+    const timer = window.setTimeout(() => setShowGlobalTour(true), 900);
+    return () => window.clearTimeout(timer);
+  }, [profile, authModalOpen]);
 
   // Unread badge: refreshed in the background on page changes, never blocks the page.
   useEffect(() => {
@@ -829,7 +840,7 @@ export default function StudentApp() {
             { key: 'home', label: isAr ? 'الرئيسية' : 'Home', icon: BookOpen, to: '/student', id: 'nav-home-link', tour: 'student-home' },
             { key: 'lessons', label: isAr ? 'الدروس' : 'Lessons', icon: Calendar, to: '/student/lessons', id: 'nav-lessons-link', tour: 'student-lessons' },
             { key: 'book', label: isAr ? 'احجز' : 'Book', icon: Plus, to: '/student/book', id: 'nav-book-link', tour: 'student-book', primary: true },
-            { key: 'messages', label: isAr ? 'الرسائل' : 'Messages', icon: MessageCircle, to: '/student/messages', badge: unreadChats },
+            { key: 'messages', label: isAr ? 'الرسائل' : 'Messages', icon: MessageCircle, to: '/student/messages', tour: 'student-messages', badge: unreadChats },
             { key: 'account', label: isAr ? 'حسابي' : 'Profile', icon: User, to: '/student/account', id: 'nav-account-link', tour: 'student-account' },
           ].map((tab) => ({
             ...tab,
@@ -840,9 +851,14 @@ export default function StudentApp() {
 
       {/* Global Onboarding Guide */}
       <OnboardingGuide
-        steps={globalTourSteps}
+        steps={isFamilyAccount(profile) ? familyTourSteps(isAr) : globalTourSteps}
         isOpen={showGlobalTour}
-        onClose={() => setShowGlobalTour(false)}
+        onClose={() => {
+          setShowGlobalTour(false);
+          if (isFamilyAccount(profile)) {
+            try { markFamilyTourSeen(profile, window.localStorage); } catch { /* blocked storage */ }
+          }
+        }}
         isAr={isAr}
       />
 
