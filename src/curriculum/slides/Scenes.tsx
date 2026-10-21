@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'motion/react';
-import { P } from './Art';
+import { P, asset } from './Art';
 import { useCue } from './sfx';
 
 /* ---------- scene builds: the painting itself takes part in the explanation ----------
@@ -12,7 +12,7 @@ import { useCue } from './sfx';
 
 export const out = [0.23, 1, 0.32, 1] as const;
 /** A painting by name: Lesson 1 names are bare ('lego'), later lessons give their folder ('l02/sky'). */
-export const src = (name: string) => `/curriculum/zad-kids/${name.includes('/') ? name : `l01/${name}`}.webp`;
+export const src = (name: string) => asset(`${name.includes('/') ? name : `l01/${name}`}.webp`);
 
 /** The painting on the notebook: the white of the image melts into the paper (multiply), so it reads as printed on the page. */
 function Plate({ children, className = '' }: { children: React.ReactNode; className?: string }) {

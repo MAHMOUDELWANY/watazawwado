@@ -29,9 +29,9 @@
 - **Now (player polish, 2026-10-18):** owner reviews the new sounds, the praise word "Zādak Allāh", the new question
   cards and game, and the page-turn transition (they apply to every lesson of the series).
 - **Next:** Lesson 4 (Muhammad ﷺ, the Messenger) brief.
-- **Now (Teens, 2026-10-21):** owner reviews the Teens Lesson 1 page text (draft at /dashboard/curriculum, Zad Essentials ·
-  Teens; `src/curriculum/content/zad-teens/`). The owner can also generate the Teens character sheet and library
-  (`style/teens.md`). Next: Teens L1 built pages (scenes, images, motion).
+- **Now (Teens, 2026-10-21):** Teens L1 built in code (draft at /dashboard/curriculum). Waiting: the owner generates the
+  images from `zad-essentials-teens/chatgpt-prompts.md` (setup message + 33 numbered prompts) and reviews the lesson.
+  When images arrive: name them per the table, place them, re-aim the motion positions, then Teens L2 brief.
 - **Not started:** Lessons 4–37.
 - **Known limit:** lesson text ships in the site bundle, so the lock is a UI lock (content is not secret). Upgrade to
   server-served lessons if content must be protected.
@@ -412,3 +412,8 @@ B3–B5 → continue lesson by lesson.
   (two optional), full Muslim 8 matn checked on Dorar, 2:170 tadabbur on يعقلون (plain root meaning only), challenge
   "Three Doors, 60 Seconds", Ahd picked by the learner, cliffhanger to L2 (the Big Bang). `zad-teens` added to the catalog
   (teacher page shows the draft); scene ids added, paintings come at the built step. tsc, full tests and build pass.
+- **2026-10-21** — Owner approved the Teens L1 page text and asked for a ChatGPT setup prompt. Wrote `chatgpt-prompts.md`
+  (setup message, characters 1–20, L1 scenes 21–33). Built Teens L1: `slides/lessons/t01.tsx` (sand that never lands on
+  the stranger = wow, Why List phone, pillars, six around the heart, three doors, footprints circle, Big Bang); curriculum
+  files now resolve per subject folder (`asset()` in Art.tsx, `zad-teens/...`). Checked in headless Edge: 18 pages, desktop
+  and phone, dark, reduced motion, no console errors. tsc, tests and build pass.

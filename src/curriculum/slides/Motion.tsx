@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
-import { P } from './Art';
+import { P, asset } from './Art';
 
 /* ---------- Motion primitives for scene builds (docs/curriculum/RULES.md §1.10) ----------
    Code-drawn elements any lesson can add to its paintings: bursts and drifting particles, a toy-brick castle that
@@ -293,7 +293,7 @@ export function Sprite({ name, style, enter = 'up', delay = 0, float = false, cl
   const from = { up: { y: 60 }, left: { x: -120 }, right: { x: 120 }, drop: { y: -220, rotate: -12 }, fade: {} }[enter];
   return (
     <motion.img
-      src={`/curriculum/zad-kids/${name}`} alt="" aria-hidden="true" draggable={false} onError={() => setMissing(true)}
+      src={asset(name)} alt="" aria-hidden="true" draggable={false} onError={() => setMissing(true)}
       className={`pointer-events-none absolute select-none ${className}`} style={style}
       initial={reduce ? false : { opacity: 0, ...from }}
       animate={animate ?? (float && !reduce ? { opacity: 1, x: 0, y: [0, -8, 0], rotate: 0 } : { opacity: 1, x: 0, y: 0, rotate: 0 })}
@@ -365,7 +365,7 @@ function DepthLayer({ name, depth, lit, dim, reduce }: { name: string; depth: nu
   const travel = 1.5 + depth * 3;
   return (
     <motion.img
-      src={`/curriculum/zad-kids/${name}`} alt="" draggable={false} onError={() => setMissing(true)}
+      src={asset(name)} alt="" draggable={false} onError={() => setMissing(true)}
       className="absolute inset-[-4%] h-[108%] w-[108%] max-w-none select-none object-cover"
       initial={false}
       animate={{ x: reduce ? 0 : [`-${travel}%`, `${travel}%`], scale: lit ? 1.05 : 1, filter: dim ? 'brightness(0.55) saturate(0.7)' : lit ? 'brightness(1.12) saturate(1.1)' : 'brightness(1)' }}

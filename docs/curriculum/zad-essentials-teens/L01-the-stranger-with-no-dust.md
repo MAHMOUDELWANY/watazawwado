@@ -1,7 +1,7 @@
 # Lesson 1: The Stranger with No Dust
 
 Zad Essentials · Teens (12–17) · Part 1 · ~45 min
-Status: **brief approved by the owner 2026-10-21** (hook and 2:170 kept). **Page text written 2026-10-21**, waiting for the owner's review. Pages, their order and text will live only in the code
+Status: **brief approved by the owner 2026-10-21** (hook and 2:170 kept). Page text approved 2026-10-21. **Built pages done 2026-10-21** (code scenes); waiting for the owner's images and review. Pages, their order and text will live only in the code
 (`src/curriculum/content/zad-teens/l01-the-stranger-with-no-dust.ts`, RULES §1.12).
 
 ## Goal
@@ -97,17 +97,11 @@ habit, pause once and remember "He sees me".
 A new line lands on Zayn's Why List from Ethan's science lesson: "If the Big Bang explains everything, who needs God?"
 Answered in Lesson 2.
 
-## Images (to request at the built-pages step)
+## Images
 
-| File | Kind | Transparent | Page | Description |
-|---|---|---|---|---|
-| `l01/canteen.webp` | scene | no | Spark | School canteen at lunch, Zayn at a table with his phone, Ethan opposite, grinning |
-| `l01/madinah-dawn.webp` | scene | no | Zad | Madinah at dawn, the masjid, the circle of sitting places, no people's faces |
-| `l01/stranger.webp` | scene | no | Zad (wow) | The white-clothed stranger from behind at a distance, desert wind |
-| `l01/zayn-night.webp` | scene | no | Ahd | Zayn on his bed at night, the phone lighting his face, writing in a note |
-| characters | character | yes | several | From the Teens library (`style/teens.md` Step 2) |
-
-Prompts are written at the built-pages step from `style/teens.md`.
+Storyboard and ready ChatGPT prompts: `chatgpt-prompts.md` (setup message, 20 character images, 13 Lesson 1 scenes;
+number → file table at the end). Every page has its own visual; the five pillars, the six articles of Iman, the three
+doors (concept page) and the Why List phone are drawn in code. Scene builds: `src/curriculum/slides/lessons/t01.tsx`.
 
 ## Open points for the owner
 

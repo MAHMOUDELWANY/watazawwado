@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useAnimate, useReducedMotion } from 'motion/react';
 import type { Interaction, Lesson, LessonPage } from '../types';
-import { SceneArt, P } from './Art';
+import { SceneArt, P, asset } from './Art';
 import { play } from './sfx';
 import { ClueLens, Unveil, DoorsLight, PackZad, Callback, type Lens } from './Scenes';
 import { BUILDS, STUDIES, MOMENTS, PACKED } from './lessons';
@@ -196,6 +196,11 @@ export const SCENE_IMAGES: Partial<Record<LessonPage['scene'], string>> = {
   crash: 'l02/crash', sky: 'l02/sky', lock: 'l02/lock', camel: 'l02/camel', park: 'l02/park', boat: 'l02/boat',
   window: 'l02/cover', baby: 'l02/baby', desert: 'l02/desert-sky',
   oneSun: 'l03/cover', sunrise: 'l03/sunrise', recite: 'l03/recite', masjidNight: 'l03/masjid-night', dua: 'l03/dua', football: 'l03/football',
+  // Teens (docs/curriculum/zad-essentials-teens/chatgpt-prompts.md); tPillars and tSix are drawn in code.
+  tDoors: 'zad-teens/l01/doors', tCanteen: 'zad-teens/l01/canteen', tWhyList: 'zad-teens/l01/bus', tMadinah: 'zad-teens/l01/madinah',
+  tStranger: 'zad-teens/l01/stranger', tSitting: 'zad-teens/l01/cushions', tTruth: 'zad-teens/l01/courtyard', tIhsan: 'zad-teens/l01/noor-room',
+  tReveal: 'zad-teens/l01/walk-away', tFathers: 'zad-teens/l01/footprints', tKnowWhy: 'zad-teens/l01/corridor', tNight: 'zad-teens/l01/zayn-desk',
+  tNext: 'zad-teens/l01/science',
 };
 
 /** Where the crop of a wide (16:9) painting sits when its box cuts it (CSS object-position), so the people stay in view. */
@@ -252,7 +257,7 @@ function Painting({ page, className = '', style, drift = true, children }: { pag
       >
         {src ? (
           <motion.img
-            src={`/curriculum/zad-kids/${src}.webp`}
+            src={asset(`${src}.webp`)}
             alt={page.title}
             draggable={false}
             onError={() => setMissing(src)}
@@ -466,6 +471,7 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
             {found.filter((l) => CLUE_LENSES[l]).map((l) => (
               <ClueLens key={l} name="stranger" img={STRANGER} box={{ w: 560, h: 800 }} lens={CLUE_LENSES[l]} />
             ))}
+            {Moment && <Moment v={v} lesson={lesson} />}
           </Painting>
           <div className={`absolute left-[120px] right-[620px] top-[140px] bottom-[120px] space-y-5 ${COL}`}>
             <Title size={58}>{page.title}</Title>
@@ -619,7 +625,9 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
               {Packed && <div className="pointer-events-none absolute left-[-5px] top-[110px] h-[690px] w-[690px]"><Packed v={v} /></div>}
             </>
           ) : (
-            <Painting page={page} className="left-0 top-[110px] bottom-[100px] w-[680px] rounded-r-[40px]" style={{ maskImage: 'linear-gradient(270deg, transparent 0, #000 140px)', WebkitMaskImage: 'linear-gradient(270deg, transparent 0, #000 140px)' }} />
+            <Painting page={page} className="left-0 top-[110px] bottom-[100px] w-[680px] rounded-r-[40px]" style={{ maskImage: 'linear-gradient(270deg, transparent 0, #000 140px)', WebkitMaskImage: 'linear-gradient(270deg, transparent 0, #000 140px)' }}>
+              {Moment && <Moment v={v} lesson={lesson} />}
+            </Painting>
           )}
           <div className={`absolute left-[760px] right-[110px] top-[140px] bottom-[120px] space-y-6 ${COL}`}>
             <Title size={72}>{page.title}</Title>
