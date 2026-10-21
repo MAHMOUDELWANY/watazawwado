@@ -41,7 +41,23 @@ export type SceneId =
   | 'needs'
   | 'masjidNight'
   | 'dua'
-  | 'football';
+  | 'football'
+  // Teens Lesson 1 (anime look, docs/curriculum/style/teens.md; paintings arrive at the built-pages step)
+  | 'tDoors'
+  | 'tCanteen'
+  | 'tWhyList'
+  | 'tMadinah'
+  | 'tStranger'
+  | 'tSitting'
+  | 'tPillars'
+  | 'tTruth'
+  | 'tSix'
+  | 'tIhsan'
+  | 'tReveal'
+  | 'tFathers'
+  | 'tKnowWhy'
+  | 'tNight'
+  | 'tNext';
 
 /** How a page is laid out on the slide (docs/curriculum/PLAN.md §7, slide system v2). */
 export type Layout =

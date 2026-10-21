@@ -29,9 +29,9 @@
 - **Now (player polish, 2026-10-18):** owner reviews the new sounds, the praise word "Zādak Allāh", the new question
   cards and game, and the page-turn transition (they apply to every lesson of the series).
 - **Next:** Lesson 4 (Muhammad ﷺ, the Messenger) brief.
-- **Now (Teens, 2026-10-21):** Teens map approved (`zad-essentials-teens/MAP.md`). Owner reviews `style/teens.md`
-  (anime look, six characters, sheet + library prompts; the owner can start generating them) and the Teens Lesson 1
-  brief (`zad-essentials-teens/L01-the-stranger-with-no-dust.md`, two open points). Next: Teens L1 page text.
+- **Now (Teens, 2026-10-21):** owner reviews the Teens Lesson 1 page text (draft at /dashboard/curriculum, Zad Essentials ·
+  Teens; `src/curriculum/content/zad-teens/`). The owner can also generate the Teens character sheet and library
+  (`style/teens.md`). Next: Teens L1 built pages (scenes, images, motion).
 - **Not started:** Lessons 4–37.
 - **Known limit:** lesson text ships in the site bundle, so the lock is a UI lock (content is not secret). Upgrade to
   server-served lessons if content must be protected.
@@ -408,3 +408,7 @@ B3–B5 → continue lesson by lesson.
 - **2026-10-21** — Owner approved the Teens map as written. Wrote `style/teens.md` and the Teens L1 brief (Muslim 8 reused;
   Al-Baqarah 2:170 checked on the quran.com website with al-Sa'di because the connector was offline; text to re-copy at
   the page step; tadabbur root note marked needs review). Waiting: owner review.
+- **2026-10-21** — Owner approved the Teens style guide and L1 brief (hook and 2:170 kept). Teens L1 page text written: 18 pages
+  (two optional), full Muslim 8 matn checked on Dorar, 2:170 tadabbur on يعقلون (plain root meaning only), challenge
+  "Three Doors, 60 Seconds", Ahd picked by the learner, cliffhanger to L2 (the Big Bang). `zad-teens` added to the catalog
+  (teacher page shows the draft); scene ids added, paintings come at the built step. tsc, full tests and build pass.

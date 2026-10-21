@@ -48,7 +48,7 @@ describe('Curriculum lessons follow docs/curriculum/RULES.md', () => {
 
       it('never shows the same painting on two separate pages (§1.10)', () => {
         // Allowed: consecutive pages continuing one scene, and the series devices (the doors, the backpack).
-        const DEVICES = new Set(['doors', 'doorsHero', 'backpack']);
+        const DEVICES = new Set(['doors', 'doorsHero', 'backpack', 'tDoors']);
         const seen = new Map<string, number>();
         lesson.pages.forEach((p, i) => {
           const img = SCENE_IMAGES[p.scene];

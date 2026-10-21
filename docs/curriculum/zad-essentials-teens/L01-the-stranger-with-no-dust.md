@@ -1,7 +1,7 @@
 # Lesson 1: The Stranger with No Dust
 
 Zad Essentials · Teens (12–17) · Part 1 · ~45 min
-Status: **brief, waiting for the owner's review** (2026-10-21). Pages, their order and text will live only in the code
+Status: **brief approved by the owner 2026-10-21** (hook and 2:170 kept). **Page text written 2026-10-21**, waiting for the owner's review. Pages, their order and text will live only in the code
 (`src/curriculum/content/zad-teens/l01-the-stranger-with-no-dust.ts`, RULES §1.12).
 
 ## Goal
@@ -47,9 +47,9 @@ Arabic phrases from Muslim 8 already verified for Kids L1 (reused unchanged):
 - «أن تَعبُدَ اللهَ كَأنَّك تَراه، فإن لَم تَكُنْ تَراه فإنَّه يَراك»
 - «فإنَّه جِبريلُ أتاكُم يُعَلِّمُكُم دينَكُم»
 
-New phrases this lesson needs (**needs review**: copy unchanged from the Muslim 8 text on Dorar at the page step):
-- the answer on Islam (the five pillars) and the answer on Iman (the six articles);
-- «فعَجِبْنا له يَسأَلُه ويُصَدِّقُه» (the Sahaba's surprise), the heart of the rational step.
+New phrases (copied unchanged from the full Muslim 8 text on Dorar, 2026-10-21, «صحيح», المحدث: مسلم، الرقم 8): the answer
+on Islam (the five pillars), «فعَجِبنا له يَسألُه، ويُصَدِّقُه», the answer on Iman (the six articles), and «يا عُمَرُ أتَدري مَنِ
+السَّائِلُ؟ قُلتُ: اللهُ ورَسولُه أعلَمُ».
 
 **Tafsir for 2:170.** Al-Sa'di (quran.com/2:170/tafsirs/91, read 2026-10-21): they were content with imitating their
 fathers and turned away from the messengers; it is a weak excuse for rejecting the truth; whoever makes the truth his
@@ -57,10 +57,9 @@ aim and weighs it fairly against other claims will see it and follow it. Our use
 Taught carefully: **it is not about our parents being wrong**; the ayah is about following *without understanding*.
 Holding the same faith as your parents is good; holding it with knowledge makes it yours.
 
-**Tadabbur stop (2:170), Teens depth: the root and how it shapes the meaning.** Candidate word: يَعْقِلُونَ, root
-ع ق ل. The sense that *'aql* holds a person back from harm, as a rope (*'iqal*) holds a camel, is common in the
-dictionaries but **needs review**: confirm it in a recognised source (morphology through the connector; the meaning
-through a tafsir on quran.com) before it goes on a page. Question: "Do I use my mind on my deen, or just my habit?"
+**Tadabbur stop (2:170), Teens depth: the root and how it shapes the meaning.** Word: يَعْقِلُونَ, root ع ق ل
+(the root of *'aql*, the mind). The page uses only that plain meaning; the "camel rope" etymology was left out because
+it was not confirmed in a recognised source. Question: "Do I use my mind on my deen, or just my habit?"
 Action: ask one real question this week (the Ahd).
 
 ## Not in this lesson (Claude's calls)
