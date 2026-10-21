@@ -79,8 +79,10 @@ export function TeacherDuo({ isEn }: { isEn: boolean }) {
           <motion.div
             key={t.src}
             className={i === 1 ? 'mt-10 sm:mt-14' : ''}
-            initial={reduce ? false : { opacity: 0, y: 36 }}
-            animate={{ opacity: 1, y: 0 }}
+            // PU-04: no fade. The photos are the page's largest paint (LCP); at opacity 0 the prerendered
+            // ones stayed invisible until the JavaScript ran (~5 s on a mid-range phone). They slide in only.
+            initial={reduce ? false : { y: 36 }}
+            animate={{ y: 0 }}
             transition={{ duration: 0.9, delay: 0.15 + i * 0.18, ease: [0.22, 1, 0.36, 1] }}
           >
             <motion.div
