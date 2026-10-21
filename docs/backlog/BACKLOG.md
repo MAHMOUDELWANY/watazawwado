@@ -445,7 +445,7 @@ Principles every PR/RN task follows:
   outside the repo (do not delete). List what moved in the log.
 
 ### QA-07 Split `api/index.ts` safely (prep only)
-- Priority P3 · Zone 🔴 · Size L · Status todo
+- Priority P3 · Zone 🔴 · Size L · Status review (refactor/qa-07-pilot-calendar-feed)
 - Do: propose (in `docs/api-split-plan.md`) how to move route groups out of `api/index.ts` into
   `server/routes/*` with zero behaviour change, and move one low-risk group as a pilot on a branch with all tests
   green. Review the pilot before more moves.

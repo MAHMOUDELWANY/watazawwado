@@ -4,6 +4,11 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### QA-07 Split `api/index.ts` safely (prep only) (2026-10-21) — review
+- Plan: `docs/api-split-plan.md` (rules for zero-behaviour-change moves, the order from low risk to red zone, what stays in `api/index.ts`).
+- Pilot (branch `refactor/qa-07-pilot-calendar-feed`, pushed, NOT merged): the four PA-03 family calendar routes moved to `server/routes/calendarFeed.ts` unchanged apart from `deps.*`; two unused imports removed from `api/index.ts`; the PA-03 test reads the new file. tsc pass; npm test 1306 pass / 0 fail / 5 skipped; build pass.
+- Owner/reviewer: look at the branch diff; if fine, merge it and continue with step 2 of the plan.
+
 ### AD-02 Bulk actions on bookings (2026-10-21) — cancel only
 - Result: done for cancelling (main). On Lessons, the super admin sees a checkbox on every lesson still ahead (pending, confirmed or moved); picking some shows a bar: write one reason (the family sees it), confirm, and each lesson is cancelled through the same single-lesson request as the lesson screen, one after the other, so the server applies its usual rules, credits and emails to each. The bar reports how many were cancelled and how many failed.
 - Not done: "move to another teacher". There is no single-lesson path that moves a booked lesson to another teacher (only the student's assigned teacher can change, and booked lessons stay with their teacher per RULES.md §1); building one means new rules for Zoom host, calendars and availability, so it needs its own task and the owner's go-ahead.

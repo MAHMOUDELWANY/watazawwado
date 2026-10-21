@@ -64,3 +64,4 @@ Each task: tsc, full `npm test`, build, commit, push to main, production smoke (
 - 2026-10-21: QA-06 20 root scratch files moved to ../watazawwado-archive.
 - 2026-10-21: RN-06 we-miss-you built, OFF behind QUIET_LEARNER_EMAILS=on; admin dry-run preview.
 - 2026-10-21: AD-02 bulk cancel (reuses single path); bulk teacher move left for a decision.
+- 2026-10-21: QA-07 plan on main; pilot on branch refactor/qa-07-pilot-calendar-feed (review). Backlog (non-decision items) complete.
