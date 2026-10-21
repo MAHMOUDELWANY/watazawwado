@@ -4,6 +4,13 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### TE-05 Jalila drafts the family summary (2026-10-21)
+- Result: done (main). In the after-lesson editor, under the family summary: "Draft with Jalila" / "اكتبها مع جليلة" (active once private notes are written). It sends the notes as typed, the next step and the subject to Gemini with the learner's first name only, and puts a 1-2 sentence draft in the family's language (the account's saved language, English by default) into the family summary box. If a summary is already there it asks before replacing it. Nothing is saved or sent by the draft: the teacher edits and saves as before.
+- The prompt tells Jalila to use only facts from the notes, invent nothing, and leave out what is not for the family (criticism, health, behaviour, family or money matters). Only the student's own teacher or the admin can ask; rate limited.
+- Files: `server/routes/summaryDraft.ts`, `api/index.ts`, `src/dashboard/components/PostLessonSummaryEditor.tsx`, `test/te-05-jalila-summary-draft.test.ts`.
+- Checks: tsc pass; npm test 1299 pass / 0 fail / 5 skipped; build pass.
+- Not checked: a real Gemini call (needs the production key and a teacher login). Privacy note: private notes go to Google Gemini, as Jalila's lesson brief already does; the privacy policy should mention AI help for teachers if it does not yet.
+
 ### CRM-08 Teacher load and quality view (2026-10-21)
 - Result: done (main). Analytics page (super admin) → "Teachers: load and care": per active teacher, active students, lessons this week (from Monday, UTC), hours booked this week vs weekly hours offered (from "My hours"), lessons the teacher moved in the last 30 days with the latest reasons, and how often the family summary was written after completed lessons (last 30 days). No money anywhere.
 - Teacher moves were only kept inside admin notices; a new server-only table `teacher_lesson_moves` now records each move (booking, teacher, old/new time, reason) right after the move succeeds (best effort: a logging failure never blocks the move). Counts start from today.

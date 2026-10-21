@@ -71,6 +71,7 @@ import { registerFunnelRoutes } from '../server/routes/funnel.js';
 import { registerFeedbackRoutes } from '../server/routes/feedback.js';
 import { registerPrivacyRoutes } from '../server/routes/privacy.js';
 import { registerTeacherLoadRoutes } from '../server/routes/teacherLoad.js';
+import { registerSummaryDraftRoutes } from '../server/routes/summaryDraft.js';
 import { buildIcs } from '../src/lib/ics.js';
 import { findSubject, levelsFor } from '../src/components/onboarding/subjects.js';
 import { registerOpsRoutes, computeHealth, apiErrorMonitor, recordHeartbeat, HEARTBEAT_REMINDER_CRON, HEARTBEAT_STRIPE_WEBHOOK } from '../server/routes/ops.js';
@@ -10385,6 +10386,23 @@ registerTeacherLoadRoutes(app, {
   getClient: getSupabaseAdminClient,
   verifyTeacherAuth,
   requireSuperAdmin
+});
+
+registerSummaryDraftRoutes(app, {
+  getClient: getSupabaseAdminClient,
+  verifyTeacherAuth,
+  rateLimit,
+  // The family's language: the account's saved choice (RULES.md §6), English by default.
+  familyLanguage: async (client, studentId) => {
+    const account = await resolveLearnerAccount(client, studentId);
+    return account.email ? resolveEmailLanguage(account.email) : 'en';
+  },
+  generate: async (prompt) => {
+    if (!process.env.GEMINI_API_KEY) throw new Error('missing GEMINI_API_KEY');
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    const response = await ai.models.generateContent({ model: 'gemini-3.1-flash-lite', contents: prompt });
+    return response.text || '';
+  }
 });
 
 registerExportRoutes(app, {

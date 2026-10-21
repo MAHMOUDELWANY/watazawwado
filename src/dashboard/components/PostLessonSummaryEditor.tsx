@@ -188,6 +188,26 @@ export function PostLessonSummaryEditor({
   const [familySummary, setFamilySummary] = useState('');
   const [nextSteps, setNextSteps] = useState('');
   const [achievements, setAchievements] = useState<AchievementChip[]>([]);
+  // TE-05: Jalila turns the private notes into a family summary draft; the teacher edits it and saves as usual.
+  const [drafting, setDrafting] = useState(false);
+  const [draftError, setDraftError] = useState<string | null>(null);
+  const draftWithJalila = async () => {
+    if (!privateNotes.trim()) return;
+    if (familySummary.trim() && !window.confirm(t('Replace the family summary with Jalila\'s draft?', 'تستبدل ملخص الأسرة بمسودة جليلة؟'))) return;
+    setDrafting(true);
+    setDraftError(null);
+    try {
+      const res = await dashboardFetch<{ draft: string }>(`/api/dashboard/students/${studentId}/family-summary-draft`, {
+        method: 'POST',
+        body: JSON.stringify({ privateNotes: privateNotes.trim(), nextSteps: nextSteps.trim(), subject: subjectSlug })
+      });
+      setFamilySummary(res.draft);
+    } catch (err: any) {
+      setDraftError(err?.message || t('Jalila could not write a draft.', 'جليلة معرفتش تكتب مسودة.'));
+    } finally {
+      setDrafting(false);
+    }
+  };
 
   // Memorization quick-pickers
   const [selectedSurah, setSelectedSurah] = useState<string>(SURAH_QUICK_OPTIONS[8].ar); // Al-Mulk
@@ -758,6 +778,24 @@ export function PostLessonSummaryEditor({
           )}
           className="w-full px-3 py-2 text-sm rounded-xl border border-border glass-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
         />
+        <div className="flex flex-wrap items-center gap-2 mt-1.5">
+          <button
+            type="button"
+            data-testid="draft-with-jalila"
+            onClick={draftWithJalila}
+            disabled={drafting || !privateNotes.trim()}
+            className="inline-flex items-center gap-1.5 min-h-11 px-3 rounded-xl text-xs font-semibold border border-border glass-card text-primary hover:bg-surface-subtle disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+          >
+            <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
+            {drafting ? t('Jalila is writing…', 'جليلة بتكتب…') : t('Draft with Jalila', 'اكتبها مع جليلة')}
+          </button>
+          <span className="text-[11px] text-muted-foreground">
+            {privateNotes.trim()
+              ? t('From your private notes, in the family\'s language. You review it before saving.', 'من ملاحظاتك الخاصة، بلغة الأسرة. بتراجعها قبل الحفظ.')
+              : t('Write your private notes below first.', 'اكتب ملاحظاتك الخاصة تحت الأول.')}
+          </span>
+          {draftError && <span role="alert" className="text-[11px] text-destructive w-full">{draftError}</span>}
+        </div>
       </div>
 
       {/* 3. Next steps / homework (shared) */}

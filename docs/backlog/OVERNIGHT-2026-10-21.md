@@ -60,3 +60,4 @@ Each task: tsc, full `npm test`, build, commit, push to main, production smoke (
 - 2026-10-21: ST-07 PWA manifest + maskable icons + install hint.
 - 2026-10-21: PA-04 family care saving line (server numbers).
 - 2026-10-21: CRM-08 teacher load view + teacher move log (migration applied).
+- 2026-10-21: TE-05 Draft with Jalila (first name only, nothing saved automatically).

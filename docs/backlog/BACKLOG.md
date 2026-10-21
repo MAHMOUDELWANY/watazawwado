@@ -356,7 +356,7 @@ Principles every PR/RN task follows:
   test Zoom host link. Each item links to where it is done and ticks itself from real data.
 
 ### TE-05 Jalila drafts the family summary
-- Priority P3 · Zone 🟢 · Size M · Status todo · Depends on PR-06
+- Priority P3 · Zone 🟢 · Size M · Status done · Depends on PR-06
 - Do: a "Draft with Jalila" button that turns the teacher's private notes into a warm family summary in the family's
   language. The teacher edits and saves; nothing is sent automatically. Send Gemini the first name only (privacy rule).
 
