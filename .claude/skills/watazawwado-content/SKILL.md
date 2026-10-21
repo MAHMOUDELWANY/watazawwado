@@ -35,6 +35,7 @@ never let `voice-builder` invent a voice or write files to the project root.
 
 | Deliverable | Use |
 |---|---|
+| **Any spoken script (always)** | `mahmoud-voice`: the six moves, word choice per audience, stage cues, owner's edits log |
 | Short / Reel / TikTok script | `PRODUCTION.md` §3 anatomy; `hook-generator` for 6 hooks; `reels-scripting` in supplied-input mode (no Apify) |
 | Long YouTube script | `PRODUCTION.md` §5; `video`, `copywriting` |
 | Title, description, chapters, tags | `seo-content-brief` / `ai-seo` for the search phrase; `PRODUCTION.md` §5 |
