@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useOutletContext, Link, useNavigate } from 'react-router-dom';
+import { useOutletContext, useNavigate } from 'react-router-dom';
+import { Link } from '../LangLink';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
 import { PublicSection, PublicButton, PageHero } from '../PublicDesignSystem';
 import { EnvelopeCard, EnvelopePlan } from './EnvelopeCard';

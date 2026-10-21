@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Navbar } from '../../Navbar';
 import { Footer } from '../../Footer';
@@ -9,7 +9,7 @@ import { Language } from '../../../types';
 import { LearningGuide } from '../../LearningGuide';
 import { useTheme } from '../../ThemeProvider';
 import { OnboardingGuide, OnboardingStep } from '../../ui/OnboardingGuide';
-import { useAppLanguage } from '../../../lib/language';
+import { useAppLanguage, applyUrlLanguage, localizedPath, stripEnPrefix } from '../../../lib/language';
 import { WelcomeStopButton } from '../WelcomeRecitation';
 import { BackToTop } from './BackToTop';
 import { Analytics } from '@vercel/analytics/react';
@@ -24,10 +24,23 @@ interface PublicLayoutProps {
 }
 
 export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProps) {
-  const { lang, toggleLanguage: handleToggleLang } = useAppLanguage();
+  const { lang, setLanguage } = useAppLanguage();
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
+
+  // QA-05b: the toggle moves between a page's Arabic and /en address; elsewhere it only switches language.
+  const handleToggleLang = () => {
+    const next: Language = lang === 'ar' ? 'en' : 'ar';
+    const target = localizedPath(location.pathname, next);
+    if (target !== location.pathname) navigate(target + location.search + location.hash);
+    setLanguage(next);
+  };
+
+  // Arriving at an /en address inside the app (a link) picks English, as a full page load does in main.tsx.
+  useEffect(() => {
+    applyUrlLanguage(location.pathname);
+  }, [location.pathname]);
 
   const [getStartedModalOpen, setGetStartedModalOpen] = useState<boolean>(Boolean(initialGetStartedOpen));
   const [preselectedService, setPreselectedService] = useState<string | undefined>();
@@ -36,7 +49,13 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
   const [publicTourOpen, setPublicTourOpen] = useState<boolean>(false);
 
   // Scroll to top on every page change, or to the linked section (e.g. /terms#refunds).
+  // Switching the same page between Arabic and English keeps the reader where they are.
+  const lastPage = useRef<string | null>(null);
   useEffect(() => {
+    const page = stripEnPrefix(location.pathname);
+    const samePage = page === lastPage.current;
+    lastPage.current = page;
+    if (samePage) return;
     const target = location.hash ? document.getElementById(location.hash.slice(1)) : null;
     if (target) target.scrollIntoView();
     else window.scrollTo({ top: 0, behavior: 'instant' });

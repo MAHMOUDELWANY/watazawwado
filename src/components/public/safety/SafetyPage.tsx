@@ -1,5 +1,6 @@
 import React from 'react';
-import { useOutletContext, Link } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
+import { Link } from '../LangLink';
 import { Eye, MessagesSquare, DoorClosed, VideoOff, UserRound, ShieldAlert } from 'lucide-react';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
 import { PublicSection, PageHero } from '../PublicDesignSystem';

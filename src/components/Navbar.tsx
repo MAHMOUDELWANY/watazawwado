@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
 import FocusTrap from './FocusTrap';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { Link } from './public/LangLink';
+import { stripEnPrefix } from '../lib/language';
 import {
   Menu,
   X,
@@ -251,7 +253,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </span>
                   {navLinks.map((link) => {
                     const Icon = link.icon;
-                    const isActive = location.pathname === link.href;
+                    const isActive = stripEnPrefix(location.pathname) === link.href;
                     return (
                       <Link
                         key={link.href}

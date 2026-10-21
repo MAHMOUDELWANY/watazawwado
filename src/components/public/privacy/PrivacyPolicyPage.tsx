@@ -1,5 +1,6 @@
 import React from 'react';
-import { useOutletContext, Link } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
+import { Link } from '../LangLink';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
 import { PublicSection, EditorialHeading, MarginNote, PageHero } from '../PublicDesignSystem';
 import { ShieldCheck, Lock, Eye, FileText, Mail, Globe, CheckCircle2 } from 'lucide-react';

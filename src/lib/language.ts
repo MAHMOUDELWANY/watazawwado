@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Language } from '../types';
+import { PUBLIC_PAGES } from '../data/seo';
 
 export const LANGUAGE_STORAGE_KEY = 'watazawwado_lang';
 export const LANG_CHANGE_EVENT = 'watazawwado_lang_change';
@@ -39,6 +40,37 @@ export async function syncChosenLanguage(): Promise<void> {
 }
 
 /**
+ * English URLs (QA-05b): every public page also lives under /en (/en, /en/about, ...). Arabic keeps
+ * the plain paths. Account areas (student, dashboard, staff, API) never get the prefix.
+ */
+export const EN_PREFIX = '/en';
+const LOCALIZED_PATHS = new Set([...PUBLIC_PAGES.map((p) => p.path), '/get-started']);
+
+export const isEnPath = (pathname: string) => pathname === EN_PREFIX || pathname.startsWith(EN_PREFIX + '/');
+
+/** '/en/pricing' -> '/pricing', '/en' -> '/'; other paths unchanged. */
+export function stripEnPrefix(pathname: string): string {
+  if (!isEnPath(pathname)) return pathname;
+  return pathname.slice(EN_PREFIX.length) || '/';
+}
+
+/** The URL of a public page in a language: localizedPath('/pricing', 'en') -> '/en/pricing'. Keeps ?query and #hash. */
+export function localizedPath(to: string, lang: Language): string {
+  const cut = to.search(/[?#]/);
+  const pathname = cut === -1 ? to : to.slice(0, cut);
+  const rest = cut === -1 ? '' : to.slice(cut);
+  const base = stripEnPrefix(pathname);
+  if (lang !== 'en' || !LOCALIZED_PATHS.has(base)) return base + rest;
+  return (base === '/' ? EN_PREFIX : EN_PREFIX + base) + rest;
+}
+
+// The prerender build has no window: it renders /en pages in English through this.
+let prerenderLanguage: Language = 'ar';
+export function setPrerenderLanguage(lang: Language) {
+  prerenderLanguage = lang;
+}
+
+/**
  * Retrieves the current language preference.
  * Priority: localStorage -> document element -> default 'ar'
  */
@@ -59,8 +91,9 @@ export function getStoredLanguage(): Language {
     } catch {
       // Ignore localStorage errors (e.g. private mode)
     }
+    return 'ar'; // Strict default is Arabic
   }
-  return 'ar'; // Strict default is Arabic
+  return prerenderLanguage;
 }
 
 /**
@@ -83,6 +116,18 @@ export function setStoredLanguage(lang: Language): void {
 
     window.dispatchEvent(new CustomEvent<Language>(LANG_CHANGE_EVENT, { detail: lang }));
   }
+}
+
+/** Saves a language the user picked (toggle or an /en address): storage, cookie, and their account. */
+export function chooseLanguage(lang: Language): void {
+  setStoredLanguage(lang);
+  writeCookie(LANG_CHOSEN_COOKIE, lang);
+  void syncChosenLanguage();
+}
+
+/** Opening an /en address picks English, the same way the toggle does, so the choice sticks. */
+export function applyUrlLanguage(pathname: string): void {
+  if (isEnPath(pathname) && getStoredLanguage() !== 'en') chooseLanguage('en');
 }
 
 /**
@@ -127,9 +172,7 @@ export function useAppLanguage() {
 
   const setLanguage = (nextLang: Language) => {
     setLangState(nextLang);
-    setStoredLanguage(nextLang);
-    writeCookie(LANG_CHOSEN_COOKIE, nextLang);
-    void syncChosenLanguage();
+    chooseLanguage(nextLang);
   };
 
   const toggleLanguage = () => {

@@ -40,7 +40,8 @@
     <script>
       (function() {
         try {
-          var saved = localStorage.getItem('watazawwado_lang');
+          var p = location.pathname;
+          var saved = (p === '/en' || p.indexOf('/en/') === 0) ? 'en' : localStorage.getItem('watazawwado_lang');
           var l = (saved === 'en') ? 'en' : 'ar';
           document.documentElement.lang = l;
           document.documentElement.dir = (l === 'ar') ? 'rtl' : 'ltr';

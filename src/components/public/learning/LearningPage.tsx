@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { useOutletContext, Link } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
+import { Link } from '../LangLink';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
 import { PublicSection, PublicButton, PageHero } from '../PublicDesignSystem';
 import { SERVICES_DATA as ALL_PILLARS } from '../../../data/content';

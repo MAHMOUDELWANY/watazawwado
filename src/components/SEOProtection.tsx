@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { findPageSeo, SITE_URL } from '../data/seo';
-import { useAppLanguage } from '../lib/language';
+import { findPageSeo, pageUrl } from '../data/seo';
+import { isEnPath, stripEnPrefix, useAppLanguage } from '../lib/language';
 
 /**
  * Per-page search tags. Public pages (home, about, how it works, subjects, pricing, FAQ, terms,
@@ -30,20 +30,36 @@ function setCanonical(href: string) {
   el.href = href;
 }
 
+/** hreflang links (QA-05b): each public page names its Arabic and English address; x-default is Arabic. */
+function setAlternates(path: string | null) {
+  document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach((el) => el.remove());
+  if (!path) return;
+  for (const [hreflang, href] of [['ar', pageUrl(path, 'ar')], ['en', pageUrl(path, 'en')], ['x-default', pageUrl(path, 'ar')]]) {
+    const el = document.createElement('link');
+    el.rel = 'alternate';
+    el.hreflang = hreflang;
+    el.href = href;
+    document.head.appendChild(el);
+  }
+}
+
 export default function SEOProtection() {
   const { pathname } = useLocation();
   const { isAr } = useAppLanguage();
 
   useEffect(() => {
     // /get-started shows the homepage: same page for search engines.
-    const page = findPageSeo(pathname === '/get-started' ? '/' : pathname.replace(/\/+$/, '') || '/');
+    const base = stripEnPrefix(pathname.replace(/\/+$/, '') || '/');
+    const page = findPageSeo(base === '/get-started' ? '/' : base);
     if (!page) {
       setMeta('name', 'robots', 'noindex, nofollow');
+      setAlternates(null);
       return;
     }
     const title = isAr ? page.titleAr : page.titleEn;
     const desc = isAr ? page.descAr : page.descEn;
-    const url = `${SITE_URL}${page.path === '/' ? '/' : page.path}`;
+    // Canonical is the address itself: /pricing stays /pricing even when shown in English.
+    const url = pageUrl(page.path, isEnPath(pathname) ? 'en' : 'ar');
     document.title = title;
     setMeta('name', 'robots', 'index, follow, max-image-preview:large');
     setMeta('name', 'description', desc);
@@ -53,6 +69,7 @@ export default function SEOProtection() {
     setMeta('name', 'twitter:title', title);
     setMeta('name', 'twitter:description', desc);
     setCanonical(url);
+    setAlternates(page.path);
   }, [pathname, isAr]);
 
   return null;

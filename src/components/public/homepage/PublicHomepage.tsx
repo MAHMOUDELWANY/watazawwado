@@ -1,5 +1,6 @@
 import React from 'react';
-import { useOutletContext, Link } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
+import { Link } from '../LangLink';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
 import { PublicSection, PublicButton } from '../PublicDesignSystem';
 import { Check, User, Users, Volume2, VolumeX } from 'lucide-react';
