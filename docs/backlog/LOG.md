@@ -4,6 +4,14 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### RN-06 Gentle "we miss you" for quiet learners (2026-10-21) — built, OFF until the owner switches it on
+- Result: done (main), sending nothing. Once a day (09:00 UTC hour) the reminder cron would find learners with a paid lesson in the last 6 months, the last one 21+ days ago and nothing booked since; a family is skipped while another child still has lessons. Each account gets one note from our team ("We miss you" / "وحشتونا", on the site, and by email unless follow-ups are switched off), and the admin gets a CRM follow-up task (source `quiet_learner`, due in 2 days). Never more than once per account per 60 days.
+- Safety: runs only with `QUIET_LEARNER_EMAILS=on` in Vercel (production); 50 accounts per run; idempotent keys in `notification_events`. Dry run: Analytics → ""We miss you" notes" → "Preview the list" (reads only).
+- Reviewed (red zone): only reads plus the claimed send; filters escaped; no money; no new table.
+- Files: `server/notifications/quietLearners.ts`, `api/index.ts` (cron hook + preview route), `src/dashboard/components/MonthlyProgressPreview.tsx` (QuietLearnersPreview), `AnalyticsPage.tsx`, `test/rn-06-quiet-learners.test.ts`.
+- Checks: tsc pass; npm test 1304 pass / 0 fail / 5 skipped; build pass.
+- Owner action to turn it on: check the preview and wording, then add `QUIET_LEARNER_EMAILS` = `on` in Vercel (Production) and redeploy.
+
 ### QA-06 Repo cleanup of root one-off files (2026-10-21)
 - Result: done (main). Checked each root file against code, package scripts and config (none used them) and scanned them for secrets (none). Moved, not deleted, to `../watazawwado-archive/root-files-2026-10-21/` (outside the repo, next to it on the owner's PC): `FINAL_REPORT.md`, `README_WORKFLOW_03A.md`, `SUPABASE_VERIFICATION_CHECKLIST.md`, `TASK_0_58_I_VERIFICATION_REPORT.md`, `add-tour.js`, `avail.json`, `diff.txt`, `get_zoom_docs.ts`, `pr_body.md`, `run_local.ts`, `scratch_handoff.txt`, `scratch_handoff_utf8.txt`, `temp_css.txt`, `test-auth.js`, `test-brevo.ts`, `test-identity.js`, `test-me.ts`, `test-syntax.js`, `test_regex.cjs`, `test_tailwind.html`. They remain in git history.
 - Kept: `GEMINI.md` (agent instructions), `metadata.json` (AI Studio file), `README.md`, configs.

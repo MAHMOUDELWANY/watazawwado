@@ -62,3 +62,4 @@ Each task: tsc, full `npm test`, build, commit, push to main, production smoke (
 - 2026-10-21: CRM-08 teacher load view + teacher move log (migration applied).
 - 2026-10-21: TE-05 Draft with Jalila (first name only, nothing saved automatically).
 - 2026-10-21: QA-06 20 root scratch files moved to ../watazawwado-archive.
+- 2026-10-21: RN-06 we-miss-you built, OFF behind QUIET_LEARNER_EMAILS=on; admin dry-run preview.

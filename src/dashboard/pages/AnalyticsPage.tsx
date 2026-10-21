@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { AccountFunnel } from '../components/AccountFunnel';
 import { AdminLessonFeedback } from '../components/LessonFeedbackPanels';
-import { MonthlyProgressPreview } from '../components/MonthlyProgressPreview';
+import { MonthlyProgressPreview, QuietLearnersPreview } from '../components/MonthlyProgressPreview';
 import { AdminPrivacyRequests } from '../components/AdminPrivacyRequests';
 import { TeacherLoad } from '../components/TeacherLoad';
 import {
@@ -336,6 +336,7 @@ export default function AnalyticsPage() {
           {isSuperAdmin && <AdminLessonFeedback />}
           {isSuperAdmin && <AdminPrivacyRequests />}
           {isSuperAdmin && <MonthlyProgressPreview />}
+          {isSuperAdmin && <QuietLearnersPreview />}
 
           {isSuperAdmin && <div className="p-6 rounded-2xl glass-card border-none/30 dark:border-border/30 shadow-xs space-y-4">
             <div className="flex items-center gap-2">

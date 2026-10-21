@@ -85,6 +85,7 @@ import { notifyLowBalance } from '../server/notifications/lowBalance.js';
 import { loadPreferences, sanitizePreferences } from '../server/notifications/preferences.js';
 import { studentRescheduleBlock, studentCancelBlock, nextWeekSlot } from '../server/booking/studentWindows.js';
 import { processTrialFollowUps } from '../server/notifications/trialFollowUp.js';
+import { processQuietLearners, quietEmailsEnabled, isQuietRunHour } from '../server/notifications/quietLearners.js';
 import { processMonthlyProgressEmails, monthlyEmailsEnabled, isSendWindow, reportMonthFor, monthLabel } from '../server/notifications/monthlyProgress.js';
 import {
   validateIntakeOutput
@@ -7543,6 +7544,24 @@ app.get('/api/dashboard/admin/monthly-progress/preview', verifyTeacherAuth, requ
   }
 });
 
+// RN-06: super admin preview of the "we miss you" list (dry run: reads only, sends and records nothing).
+app.get('/api/dashboard/admin/quiet-learners/preview', verifyTeacherAuth, requireSuperAdmin, async (_req: any, res: any) => {
+  const client = getSupabaseAdminClient();
+  if (!client) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+  try {
+    const result = await processQuietLearners(client, { dryRun: true, limit: 500 });
+    return res.json({
+      enabled: quietEmailsEnabled(),
+      count: result.candidates.length,
+      skipped: result.skipped,
+      accounts: result.candidates.slice(0, 200).map((a) => ({ name: a.learnerName, email: a.email, family: a.viaParent, lastLesson: a.lastLesson }))
+    });
+  } catch (err) {
+    console.error('[GET quiet-learners/preview]', err);
+    return res.status(500).json({ error: 'Could not build the preview.' });
+  }
+});
+
 // 23. CRON: Process pending 24h and 1h lesson reminders
 app.all('/api/cron/process-reminders', async (req, res) => {
   try {
@@ -7582,7 +7601,12 @@ app.all('/api/cron/process-reminders', async (req, res) => {
     if (cronClient && monthlyEmailsEnabled() && isSendWindow(DateTime.utc())) {
       try { monthlyProgress = (await processMonthlyProgressEmails(cronClient)).sent; } catch (err) { console.warn('[Cron] monthly progress failed:', err); }
     }
-    await recordHeartbeat(cronClient, HEARTBEAT_REMINDER_CRON, { integrationsProcessed, trialFollowUps, monthlyProgress });
+    // RN-06: off until the owner sets QUIET_LEARNER_EMAILS=on (production only); once a day.
+    let quietLearners = 0;
+    if (cronClient && quietEmailsEnabled() && isQuietRunHour(DateTime.utc())) {
+      try { quietLearners = (await processQuietLearners(cronClient)).sent; } catch (err) { console.warn('[Cron] quiet learners failed:', err); }
+    }
+    await recordHeartbeat(cronClient, HEARTBEAT_REMINDER_CRON, { integrationsProcessed, trialFollowUps, monthlyProgress, quietLearners });
     res.json({
       success: true,
       timestamp: new Date().toISOString(),

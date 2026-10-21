@@ -163,7 +163,7 @@ Principles every PR/RN task follows:
   summary if any), the placement result if taken, and how to continue (single lesson or package). Once per learner.
 
 ### RN-06 Gentle "we miss you" for quiet learners
-- Priority P3 · Zone 🔴 · Size M · Status todo · Depends on RN-05
+- Priority P3 · Zone 🔴 · Size M · Status done · Depends on RN-05
 - Do: a learner with paid history and no booking for 21 days gets one friendly message from "our team" (and the admin
   gets a CRM follow-up task, CRM-04). Never more than once per 60 days.
 
