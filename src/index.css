@@ -1863,3 +1863,9 @@ html.dark .bg-primary.text-primary-foreground, html.dark .bg-primary.text-white 
 
 /* QA-04: a 44px touch area around a control that looks smaller (needs position: relative on the control). */
 .tap-44::after { content: ""; position: absolute; left: 50%; top: 50%; width: max(100%, 44px); height: max(100%, 44px); transform: translate(-50%, -50%); }
+
+/* PR-04: an achievement not earned yet is the same emblem drawn as an outline. */
+.emblem-locked { color: var(--muted-foreground); opacity: 0.6; }
+.emblem-locked * { fill: none !important; stroke: currentColor !important; stroke-width: 1.4px !important; animation: none !important; }
+.emblem-locked .emblem-glow { display: none; }
+.emblem-locked text { fill: currentColor !important; stroke: none !important; }

@@ -546,3 +546,12 @@ export const DEV_PREVIEW_DATA: Record<string, ProgressApiResponse> = {
     ],
   },
 };
+
+// PR-04: a 9-year-old learner on their own account, to preview the kids' celebration (?preview=kid).
+DEV_PREVIEW_DATA.kid = {
+  ...DEV_PREVIEW_DATA.active,
+  learner: { ...DEV_PREVIEW_DATA.active.learner!, name: 'Yusuf', learnerType: 'child', age: 9, gender: 'male' },
+  learners: [{ id: DEV_PREVIEW_DATA.active.learner!.id, name: 'Yusuf', learnerType: 'child', isPrimary: true }],
+  isGuardianAccount: false,
+  childrenOverview: [],
+};

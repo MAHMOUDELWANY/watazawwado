@@ -83,7 +83,7 @@ Principles every PR/RN task follows:
 - Skills: `brainstorming`, `impeccable`, `apple-design`, `animate`, `taste-skill`, `soft-skill`, `mobile-native`.
 
 ### PR-04 Milestone celebration and achievements shelf
-- Priority P2 · Zone 🟢 · Size M · Status todo (design approved 2026-10-20; next after the P1 tasks) · Depends on PR-03
+- Priority P2 · Zone 🟢 · Size M · Status done · Depends on PR-03
 - Design: `docs/superpowers/specs/2026-10-20-milestone-celebration-design.md`. This task builds only the celebration and
   the shelf; the leaderboard, Hall of Honor, consent flow and parent email in that design are separate later tasks.
 - Do: when the page loads and a milestone is new since the last visit (localStorage per learner), play one short

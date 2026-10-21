@@ -13,6 +13,7 @@
  *   - Server-side guardian child ownership check; never includes `private_notes`,
  *     prices, or teacher-only fields.
  */
+import { islamicSeasonFor } from '../../src/lib/islamicSeason.js';
 import type express from 'express';
 import { DateTime } from 'luxon';
 import type { LearnerMilestoneKind } from '../../src/types/database.js';
@@ -369,6 +370,9 @@ export interface BuildProgressModelInput {
     currentLevel: string | null;
     learningInterest: string | null;
     timezone: string | null;
+    /** PR-04: the celebration's tone follows age group and gender. */
+    age?: number | null;
+    gender?: string | null;
     assignedTeacherId?: string | null;
     assignedTeacherName?: string | null;
   };
@@ -623,6 +627,8 @@ export function buildLearnerProgressReadModel(input: BuildProgressModelInput) {
       learningInterest: primarySubjectSlug,
       timezone: tz,
       assignedTeacherName: learnerProfile.assignedTeacherName || null,
+      age: typeof learnerProfile.age === 'number' ? learnerProfile.age : null,
+      gender: learnerProfile.gender === 'female' || learnerProfile.gender === 'male' ? learnerProfile.gender : null,
     },
     overall: {
       lessonsAttended: overallLessonsAttended,
@@ -1566,7 +1572,7 @@ export function registerProgressRoutes(app: express.Express, deps: ProgressDeps)
       client
         .from('students')
         .select(
-          'id, name, learner_type, current_level, learning_interest, timezone, assigned_teacher_id'
+          'id, name, learner_type, current_level, learning_interest, timezone, assigned_teacher_id, age, gender'
         )
         .eq('id', learnerEntry.id)
         .maybeSingle(),
@@ -1661,6 +1667,8 @@ export function registerProgressRoutes(app: express.Express, deps: ProgressDeps)
           profileFallback?.learning_interest ||
           'quran-reading',
         timezone: studentRow?.timezone || profileFallback?.timezone || 'UTC',
+        age: typeof studentRow?.age === 'number' ? studentRow.age : null,
+        gender: studentRow?.gender ?? null,
         assignedTeacherId,
         assignedTeacherName,
       },
@@ -1745,6 +1753,8 @@ export function registerProgressRoutes(app: express.Express, deps: ProgressDeps)
 
       return res.json({
         ...readModel,
+        // PR-04: the celebration's wording adapts to the season in the learner's time zone.
+        currentIslamicSeason: islamicSeasonFor(new Date(), readModel.learner.timezone || 'UTC'),
         isGuardianAccount,
         childrenOverview,
         learners: learners.map((l) => ({

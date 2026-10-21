@@ -19,6 +19,9 @@ import { BrandLoader } from '../../components/ui/BrandLoader';
 import type { SubjectLevel } from '../../components/onboarding/subjects';
 import type { LearnerMilestoneKind } from '../../types/database';
 import { useActiveLearner } from '../activeLearner';
+import type { IslamicSeason } from '../../lib/islamicSeason';
+import { useProgressAchievements } from '../components/achievements/useProgressAchievements';
+import { AchievementsShelf } from '../components/achievements/AchievementsShelf';
 
 export interface StudentProgressPageProps {
   lang?: 'en' | 'ar';
@@ -132,8 +135,12 @@ export interface ProgressApiResponse {
     learningInterest: string;
     timezone: string;
     assignedTeacherName: string | null;
+    age?: number | null;
+    gender?: string | null;
   } | null;
   learners: ProgressLearnerSummary[];
+  /** PR-04: drives the seasonal line of a celebration. */
+  currentIslamicSeason?: IslamicSeason;
   isGuardianAccount?: boolean;
   childrenOverview?: FamilyChildOverviewCard[];
   overall: {
@@ -551,7 +558,10 @@ export default function StudentProgressPage({
       setLoading(false);
       return;
     }
+    // Dev preview: wait for the fixtures instead of calling the API (its failure would race the preview data).
+    if (previewMode && !devFixtures[previewMode]) return;
     if (previewMode && devFixtures[previewMode]) {
+      setError(null);
       const basePreview = devFixtures[previewMode];
       if (effectiveLearnerId && basePreview.childrenOverview?.length) {
         const matchedChild = basePreview.childrenOverview.find((c) => c.id === effectiveLearnerId);
@@ -680,6 +690,9 @@ export default function StudentProgressPage({
       }, 120);
     }
   };
+
+  // PR-04: achievements shelf and the one-time celebration (hooks stay above the early returns).
+  const achievements = useProgressAchievements(data, isAr);
 
   const springTransition = prefersReducedMotion
     ? { duration: 0 }
@@ -1746,6 +1759,11 @@ export default function StudentProgressPage({
           </div>
         </div>
       )}
+
+      {data.learner && achievements.shelf.length > 0 && (
+        <AchievementsShelf items={achievements.shelf} isAr={isAr} highlight={achievements.highlight} />
+      )}
+      {achievements.celebration}
     </div>
   );
 }
