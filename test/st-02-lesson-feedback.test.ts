@@ -4,7 +4,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import { DateTime } from 'luxon';
 import app from '../api/index.js';
-import { canRate, parseFeedback, teacherAverage, TEACHER_MIN_RATINGS } from '../server/routes/feedback.js';
+import { canRate, parseFeedback, teacherAverage, teacherVisibleRatings, TEACHER_MIN_RATINGS } from '../server/routes/feedback.js';
 
 const now = DateTime.fromISO('2026-10-21T12:00:00Z', { zone: 'utc' });
 const lesson = (status: string, startIso: string, minutes = 45) => ({ status, scheduled_start: startIso, duration_minutes: minutes });
@@ -32,6 +32,18 @@ describe('ST-02 who can rate what', () => {
     assert.strictEqual(TEACHER_MIN_RATINGS, 5);
     assert.deepStrictEqual(teacherAverage([5, 4, 1, 5]), { count: 4, average: null, minimum: 5 });
     assert.deepStrictEqual(teacherAverage([5, 4, 4, 5, 3]), { count: 5, average: 4.2, minimum: 5 });
+  });
+
+  it('a single new rating never changes what the teacher sees (no before/after differencing)', () => {
+    const at = (iso: string, rating: number) => ({ rating, created_at: iso });
+    const september = [5, 5, 4, 4, 5].map((r, i) => at(`2026-09-0${i + 1}T10:00:00Z`, r));
+    const base = teacherAverage(teacherVisibleRatings(september, now));
+    assert.deepStrictEqual(base, { count: 5, average: 4.6, minimum: 5 });
+    const withNew = teacherAverage(teacherVisibleRatings([...september, at('2026-10-20T10:00:00Z', 1)], now));
+    assert.deepStrictEqual(withNew, base, 'this month is not counted yet');
+    const thinMonth = teacherAverage(teacherVisibleRatings([...september, at('2026-08-10T10:00:00Z', 1)], now));
+    assert.deepStrictEqual(thinMonth, base, 'a past month with fewer than 5 ratings is left out');
+    assert.strictEqual(teacherAverage(teacherVisibleRatings(september.slice(0, 4), now)).average, null);
   });
 
   it('the table is server-only and the admin list needs the super admin', () => {

@@ -40,6 +40,23 @@ export function teacherAverage(ratings: number[]): { count: number; average: num
   return { count, average, minimum: TEACHER_MIN_RATINGS };
 }
 
+/**
+ * What a teacher may see: only finished calendar months (UTC) that each hold TEACHER_MIN_RATINGS or more ratings.
+ * The figure then changes at most once a month and always by a batch of 5+, so comparing it before and after one
+ * lesson can never reveal that family's rating (security review 2026-10-21).
+ */
+export function teacherVisibleRatings(rows: Array<{ rating: number; created_at: string }>, now: DateTime): number[] {
+  const monthStart = now.toUTC().startOf('month');
+  const byMonth = new Map<string, number[]>();
+  for (const r of rows) {
+    const at = DateTime.fromISO(r.created_at, { zone: 'utc' });
+    if (!at.isValid || at >= monthStart) continue;
+    const key = at.toFormat('yyyy-LL');
+    byMonth.set(key, [...(byMonth.get(key) || []), Number(r.rating)]);
+  }
+  return [...byMonth.values()].filter((m) => m.length >= TEACHER_MIN_RATINGS).flat();
+}
+
 const subjectOf = (serviceId: string | null) => {
   const slug = normalizeSubjectSlug(serviceId);
   if (!slug) return { en: 'Lesson', ar: 'درس' };
@@ -156,15 +173,15 @@ export function registerFeedbackRoutes(app: express.Express, deps: {
     }
   });
 
-  // A teacher's own average, shown only from TEACHER_MIN_RATINGS ratings.
+  // A teacher's own average over finished months with TEACHER_MIN_RATINGS+ ratings each (see teacherVisibleRatings).
   app.get('/api/dashboard/me/lesson-feedback', deps.verifyTeacherAuth, async (req: any, res: any) => {
     const client = deps.getClient();
     if (!client) return res.status(503).json({ error: 'Database service unavailable.' });
     const teacherId = req.teacherUser?.id;
     if (!teacherId || !UUID_RE.test(teacherId)) return res.json(teacherAverage([]));
-    const { data, error } = await client.from('lesson_feedback').select('rating').eq('teacher_id', teacherId);
+    const { data, error } = await client.from('lesson_feedback').select('rating, created_at').eq('teacher_id', teacherId);
     if (error) return res.status(500).json({ error: 'Could not load ratings.' });
-    return res.json(teacherAverage((data || []).map((r: any) => Number(r.rating))));
+    return res.json(teacherAverage(teacherVisibleRatings(data || [], DateTime.utc())));
   });
 
   // Super admin: recent ratings with comments, and every teacher's average.

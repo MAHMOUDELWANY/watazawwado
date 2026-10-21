@@ -4,18 +4,18 @@ import { Star } from 'lucide-react';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { useT } from '../../lib/language';
 
-/** ST-02: a teacher's own average from families, shown only from 5 ratings (single ratings stay with the admin). */
+/** ST-02: a teacher's own average from families, over finished months with 5+ ratings each (single ratings stay with the admin). */
 export function TeacherRatingNote() {
   const { t } = useT();
   const [d, setD] = useState<{ count: number; average: number | null; minimum: number } | null>(null);
   useEffect(() => { dashboardFetch<typeof d>('/api/dashboard/me/lesson-feedback').then(setD).catch(() => {}); }, []);
-  if (!d || d.count === 0) return null;
+  if (!d || d.average == null) return null;
   return (
     <p className="flex items-center gap-2 text-sm text-muted-foreground" data-testid="teacher-rating">
       <Star className="w-4 h-4 fill-gold text-gold" aria-hidden="true" />
       {d.average != null
-        ? t(`Families rate your lessons ${d.average} / 5 on average (${d.count} ratings).`, `متوسط تقييم الأسر لدروسك ${d.average} من 5 (${d.count} تقييم).`)
-        : t(`Your average appears after ${d.minimum} ratings (${d.count} so far).`, `المتوسط هيظهر بعد ${d.minimum} تقييمات (لحد دلوقتي ${d.count}).`)}
+        ? t(`Families rate your lessons ${d.average} / 5 on average (${d.count} ratings, up to last month).`, `متوسط تقييم الأسر لدروسك ${d.average} من 5 (${d.count} تقييم لحد الشهر اللي فات).`)
+        : null}
     </p>
   );
 }
@@ -36,7 +36,7 @@ export function AdminLessonFeedback() {
     <section className="p-6 rounded-2xl glass-card space-y-4" aria-labelledby="lesson-feedback-admin-title" data-testid="admin-lesson-feedback">
       <div>
         <h2 id="lesson-feedback-admin-title" className="text-lg font-display font-bold text-foreground">{t('After-lesson ratings', 'تقييمات بعد الدرس')}</h2>
-        <p className="text-sm text-muted-foreground">{t('Only you see single ratings and comments; teachers see their average from 5 ratings.', 'التقييمات والتعليقات دي ليك بس؛ المعلم بيشوف متوسطه بعد 5 تقييمات.')}</p>
+        <p className="text-sm text-muted-foreground">{t('Only you see single ratings and comments. A teacher sees only an average over past months that each have 5+ ratings.', 'التقييمات والتعليقات دي ليك بس. المعلم بيشوف متوسط بس، من الشهور اللي خلصت وفي كل شهر 5 تقييمات أو أكتر.')}</p>
       </div>
       {failed ? (
         <p className="text-sm text-destructive" role="alert">{t('Could not load ratings.', 'معرفناش نحمّل التقييمات.')}</p>
