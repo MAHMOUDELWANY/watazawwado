@@ -376,7 +376,7 @@ Principles every PR/RN task follows:
   server paths and their notifications; no new rules).
 
 ### AD-03 Chat inbox for the admin
-- Priority P2 · Zone 🟢 · Size M · Status todo
+- Priority P2 · Zone 🟢 · Size M · Status done
 - Do: one inbox across all conversations: unread first, filter by teacher/family, quick replies (saved snippets in
   both languages), jump to the family timeline (CRM-01).
 

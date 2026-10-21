@@ -4,6 +4,13 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### AD-03 Chat inbox for the admin (2026-10-21)
+- Result: done (main). The admin's Messages page (which already listed every conversation) is now an inbox: unread first, then newest; search by family or teacher name; filter by type (support / lessons) and by teacher; an unread count. In a conversation: a "Family timeline" link to the CRM-01 student page, and quick replies (4 built-in in Arabic and 4 in English, written as "we"), inserted into the draft and never sent by themselves; "Save as quick reply" keeps the admin's own replies, removable. Families and teachers see their chat exactly as before.
+- Server: the thread list adds the owner's student id for the admin only.
+- Files: `server/routes/community.ts`, `src/components/chat/ChatPanel.tsx`, `src/components/chat/quickReplies.ts`, `test/ad-03-admin-inbox.test.ts`.
+- Checks: tsc pass; npm test 1264 pass / 0 fail / 5 skipped; build pass.
+- Not checked / risks: dashboard page not opened (owner rule). The admin's own replies are kept in that browser only (fine for one admin; a table if several admins should share them).
+
 ### TE-03 Weekly hours editor polish (2026-10-21)
 - Result: done (main). "My teaching hours" now opens with a week grid of half-hour cells: press and drag with a mouse or pen to paint hours on or off (also across days); on a phone a tap toggles a cell and a swipe still scrolls; every cell is a keyboard button with a spoken day and time. Below it: copy one day's hours onto chosen days (replaces those days), and a preview "a student in London / New York / Chicago / Los Angeles / Toronto / Berlin / Sydney sees your hours like this" for the coming week, so daylight saving is right and day changes show (e.g. 02:00 Cairo is Sunday in Los Angeles). The exact-minute list editor stays underneath for odd times; painting a day only rewrites that day.
 - Same data shape and the same `PUT /api/dashboard/availability`; the availability engine and server validation are untouched (end of day is saved as 23:59, which the server already accepts).

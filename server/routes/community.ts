@@ -143,10 +143,12 @@ async function describeThreads(client: any, threads: any[], actor: Actor) {
   const ownerIds = [...new Set(threads.map(t => t.owner_user_id))];
   const [{ data: teachers }, { data: owners }, { data: staffOwners }] = await Promise.all([
     teacherIds.length ? client.from('profiles').select('id, display_name').in('id', teacherIds) : Promise.resolve({ data: [] }),
-    ownerIds.length ? client.from('students').select('auth_user_id, name').in('auth_user_id', ownerIds) : Promise.resolve({ data: [] }),
+    ownerIds.length ? client.from('students').select('id, auth_user_id, name').in('auth_user_id', ownerIds) : Promise.resolve({ data: [] }),
     ownerIds.length ? client.from('profiles').select('id, display_name').in('id', ownerIds) : Promise.resolve({ data: [] })
   ]);
   const teacherName = new Map((teachers || []).map((t: any) => [t.id, t.display_name]));
+  // AD-03: the admin can jump from a conversation to the family timeline.
+  const ownerStudentId = new Map((owners || []).map((s: any) => [s.auth_user_id, s.id]));
   const ownerName = new Map<string, string>([
     ...(staffOwners || []).map((p: any) => [p.id, p.display_name] as [string, string]),
     ...(owners || []).map((s: any) => [s.auth_user_id, s.name] as [string, string])
@@ -159,7 +161,8 @@ async function describeThreads(client: any, threads: any[], actor: Actor) {
     teacherName: t.teacher_id ? teacherName.get(t.teacher_id) || null : null,
     isMine: t.owner_user_id === actor.userId,
     lastMessageAt: t.last_message_at,
-    unread: isUnreadFor(t, actor)
+    unread: isUnreadFor(t, actor),
+    ...(actor.role === 'admin' ? { ownerStudentId: ownerStudentId.get(t.owner_user_id) || null } : {})
   }));
 }
 
