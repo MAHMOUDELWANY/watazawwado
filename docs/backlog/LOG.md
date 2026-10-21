@@ -4,6 +4,10 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### QA-07 step 3: next-week suggestion moved (2026-10-21)
+- `GET /api/student/next-week-suggestion` (RN-04) moved unchanged to `server/routes/nextWeekSuggestion.ts`; it imports `validateSlotAvailability` and `nextWeekSlot` directly and gets `getAuthorizedLearnersForStudent` and `resolveTeacherMetadata` in `deps`. The RN-04 source check now reads the new file (same assertions).
+- Checks: tsc pass; npm test 1321 pass / 0 fail / 5 skipped; build pass.
+
 ### QA-07 step 2: account language and email choices moved (2026-10-21)
 - `PUT /api/me/language`, `GET`/`PUT /api/student/notification-preferences` moved unchanged (only `deps.*`) to `server/routes/accountPreferences.ts`; the `preferences.js` import moved with them. No catch-all route sits before these paths, so registration order is safe.
 - Checks: tsc pass; npm test 1321 pass / 0 fail / 5 skipped; build pass.

@@ -1,6 +1,6 @@
 # Plan: split `api/index.ts` safely (QA-07)
 
-Status (2026-10-21): pilot and step 2 merged into `main`. Next: step 3.
+Status (2026-10-21): pilot, step 2 and step 3 merged into `main`. Next: step 4 (medium risk).
 
 ## Why
 
@@ -30,7 +30,7 @@ summaryDraft). The split continues that pattern; it does not change any behaviou
 |---|---|---|---|---|
 | Pilot | Family calendar feed (`/api/student/calendar-feed`, `/api/calendar/family/:file`) | 100 | Low | Done: `server/routes/calendarFeed.ts` (merged). |
 | 2 | Notification preferences, language (`/api/student/notification-preferences`, `/api/me/language`) | 80 | Low | Done: `server/routes/accountPreferences.ts`. |
-| 3 | Next-week suggestion, progress timeline/report wiring already in `progress.ts` | 60 | Low | Uses `validateSlotAvailability` (pass in `deps`). |
+| 3 | Next-week suggestion, progress timeline/report wiring already in `progress.ts` | 60 | Low | Done: `server/routes/nextWeekSuggestion.ts` (the progress routes were already in `progress.ts`). |
 | 4 | Intake and learning guide (`/api/intake/*`, `/api/learning-guide`) | 400 | Medium | Gemini calls; keep model names as they are. |
 | 5 | Dashboard leads, trials, intakes (`/api/dashboard/leads`, `/trials`, `/intakes`) | 600 | Medium | Admin only. |
 | 6 | Dashboard students and notes (`/api/dashboard/students/*`) | 900 | Medium | Teacher scope checks must move intact. |

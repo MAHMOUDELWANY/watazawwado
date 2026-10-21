@@ -33,8 +33,8 @@ describe('RN-04 same time next week', () => {
     assert.ok(s!.slot.id.startsWith('suggested-'));
   });
   it('checks the real availability engine and books nothing by itself', () => {
-    const api = fs.readFileSync('api/index.ts', 'utf8');
-    const route = api.slice(api.indexOf("app.get('/api/student/next-week-suggestion'"), api.indexOf("app.post('/api/student/bookings/:id/reschedule'"));
+    const api = fs.readFileSync('server/routes/nextWeekSuggestion.ts', 'utf8');
+    const route = api.slice(api.indexOf("app.get('/api/student/next-week-suggestion'"), api.length);
     assert.ok(route.includes('await validateSlotAvailability(slot.startIso, slot.endIso, last.teacher_id)'));
     assert.ok(!/\.insert\(|\.update\(|create_booking/.test(route), 'read-only');
     assert.ok(!/recurr/i.test(fs.readFileSync('src/student/components/NextWeekSuggestion.tsx', 'utf8').replace('no recurring bookings', '')), 'no recurring booking');
