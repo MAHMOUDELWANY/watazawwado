@@ -8,6 +8,7 @@ import { sendEmail } from './emailService.js';
 import { renderSimpleNotice } from './emailTemplates.js';
 import { resolveEmailLanguage } from './dispatcher.js';
 import { notifyUser, resolveLearnerAccount } from './inbox.js';
+import { emailAllowed } from './preferences.js';
 
 const HOUR = 3_600_000;
 /** Sent from 24 h after the trial ends. */
@@ -61,6 +62,7 @@ type Deps = {
   notify?: typeof notifyUser;
   resolve?: typeof resolveLearnerAccount;
   emailLang?: typeof resolveEmailLanguage;
+  allowed?: typeof emailAllowed;
 };
 
 async function factsFor(client: any, trial: any): Promise<TrialFollowUpFacts> {
@@ -125,6 +127,7 @@ export async function processTrialFollowUps(client: any, now = Date.now(), deps:
   const notify = deps.notify || notifyUser;
   const resolve = deps.resolve || resolveLearnerAccount;
   const emailLang = deps.emailLang || resolveEmailLanguage;
+  const allowed = deps.allowed || emailAllowed;
   let sent = 0;
   try {
     const { data: trials, error } = await client
@@ -182,7 +185,9 @@ export async function processTrialFollowUps(client: any, now = Date.now(), deps:
         // For a child the account is the parent's: the child's name goes in the text, the parent is not greeted by it.
         const notice = trialFollowUpNotice({ ...facts, learnerName: account.viaParent ? facts.learnerName : null });
 
-        if (account.email) {
+        // RN-07: a family that switched off follow-ups gets the on-site notice only.
+        const emailOk = await allowed(client, account.userId, 'follow_ups');
+        if (account.email && emailOk) {
           const lang = await emailLang(account.email);
           const mail = renderSimpleNotice({ name: account.viaParent ? null : account.name, title: notice.title, body: notice.body, buttonPath: notice.link, lang });
           const result = await send({ to: account.email, toName: account.viaParent ? undefined : account.name || undefined, ...mail, from: 'support' });

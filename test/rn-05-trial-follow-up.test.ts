@@ -57,7 +57,7 @@ const trial = (over: Record<string, any> = {}) => ({
   scheduled_start: hoursAgo(26), scheduled_end: hoursAgo(25.5), created_at: hoursAgo(50), updated_at: hoursAgo(25), ...over
 });
 
-function harness(tables: Record<string, any[]>, opts: { emailOk?: boolean; viaParent?: boolean } = {}) {
+function harness(tables: Record<string, any[]>, opts: { emailOk?: boolean; viaParent?: boolean; followUpsOn?: boolean } = {}) {
   const clock = { now: NOW };
   const db = fakeDb({ students: [{ id: 's1', name: 'Maryam' }], ...tables }, clock);
   const emails: any[] = [];
@@ -66,12 +66,21 @@ function harness(tables: Record<string, any[]>, opts: { emailOk?: boolean; viaPa
     send: (async (m: any) => { emails.push(m); return { success: opts.emailOk !== false, status: opts.emailOk === false ? 'failed' : 'sent' }; }) as any,
     notify: (async (_c: any, to: any, n: any) => { notices.push({ to, n }); }) as any,
     resolve: (async () => ({ userId: 'u1', email: 'family@example.com', name: 'Maryam', viaParent: opts.viaParent ?? true })) as any,
-    emailLang: (async () => 'en') as any
+    emailLang: (async () => 'en') as any,
+    allowed: (async () => opts.followUpsOn !== false) as any
   };
   return { db, emails, notices, clock, run: () => processTrialFollowUps(db, clock.now, deps) };
 }
 
 describe('RN-05 trial follow-up', () => {
+  it('RN-07: a family that switched off follow-ups gets the on-site notice only, once', async () => {
+    const h = harness({ bookings: [trial()] }, { followUpsOn: false });
+    assert.strictEqual(await h.run(), 1);
+    assert.strictEqual(h.emails.length, 0);
+    assert.strictEqual(h.notices.length, 1);
+    assert.strictEqual(await h.run(), 0);
+  });
+
   it('sends one email + on-site notice 24 h after an attended trial, and never again', async () => {
     const h = harness({ bookings: [trial()] });
     assert.strictEqual(await h.run(), 1);

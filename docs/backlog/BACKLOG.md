@@ -168,7 +168,7 @@ Principles every PR/RN task follows:
   gets a CRM follow-up task, CRM-04). Never more than once per 60 days.
 
 ### RN-07 Notification preferences
-- Priority P2 · Zone 🟢 · Size S · Status todo
+- Priority P2 · Zone 🟢 · Size S · Status done
 - Do: in the profile, toggles for progress emails, renewal reminders and "we miss you" (transactional emails such as
   booking confirmations and reminders stay on). Respect them in RN-02, RN-05, RN-06, PR-09.
 

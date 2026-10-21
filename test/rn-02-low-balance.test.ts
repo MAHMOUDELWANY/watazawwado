@@ -83,6 +83,7 @@ describe('RN-02 low-balance notice', () => {
     assert.strictEqual(sent[0].opts.email, true);
     assert.strictEqual(sent[0].to.name, null, 'the parent is not greeted by the child\'s name');
     assert.ok(sent[0].notice.title.en.includes('for Maryam'));
+    assert.deepStrictEqual(sent[0].opts, { email: true, preference: 'renewal_reminders' }, 'RN-07: respects the renewal-reminders switch');
 
     client.state.row = { ...client.state.row, remaining_credits: 0, status: 'exhausted' };
     assert.strictEqual(await notifyLowBalance(client, 'ent-1', { notify, resolve: account as any }), 0);

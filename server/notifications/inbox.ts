@@ -3,6 +3,7 @@
  * Used for things a person must not miss: refunds, admin questions, placement-test results.
  * Never throws: a failed notice must not fail the action that triggered it.
  */
+import { emailAllowed, type EmailPreference } from './preferences.js';
 import { sendEmail, OFFICIAL_ADMIN_EMAIL } from './emailService.js';
 import { renderSimpleNotice, type EmailLang } from './emailTemplates.js';
 import { resolveEmailLanguage } from './dispatcher.js';
@@ -47,7 +48,7 @@ export async function notifyUser(
   client: any,
   recipient: { userId?: string | null; email?: string | null; name?: string | null; staff?: boolean },
   notice: InboxNotice,
-  options: { email?: boolean } = {}
+  options: { email?: boolean; preference?: EmailPreference } = {}
 ): Promise<void> {
   try {
     if (recipient.userId) {
@@ -62,7 +63,9 @@ export async function notifyUser(
       });
       if (error) console.warn('[Inbox] insert failed:', error.message);
     }
-    if (options.email && recipient.email) {
+    // RN-07: an optional email the account switched off is not sent; the on-site notice above still is.
+    const emailWanted = !options.preference || (await emailAllowed(client, recipient.userId, options.preference));
+    if (options.email && recipient.email && emailWanted) {
       const lang: EmailLang = await resolveEmailLanguage(recipient.email);
       const mail = renderSimpleNotice({ name: recipient.name, title: notice.title, body: notice.body, buttonPath: notice.link, staff: recipient.staff, lang });
       // Refund notices come from finance@; everything else from support@.

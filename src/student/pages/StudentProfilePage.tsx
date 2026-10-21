@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { NotificationPreferences } from '../components/NotificationPreferences';
 import { subjectLabel as subjectName } from '../../components/onboarding/subjects';
 import { Link } from 'react-router-dom';
 import {
@@ -969,6 +970,9 @@ export default function StudentProfilePage({
               </div>
 
               {/* Save Preferences Button */}
+              {/* RN-07: optional emails; each switch saves at once. */}
+              <NotificationPreferences isAr={isAr} />
+
               <div className="pt-3 border-t border-border">
                 <Button
                   type="button"

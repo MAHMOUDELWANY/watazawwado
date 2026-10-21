@@ -75,6 +75,7 @@ import { isAdultAge, isGuardianAge, isChildAge, parseAge, ADULT_MIN_AGE, GUARDIA
 import { sanitizeLeadSource, isHeardAbout } from '../src/lib/leadSource.js';
 import { notifyUser, notifySuperAdmins, resolveLearnerAccount } from '../server/notifications/inbox.js';
 import { notifyLowBalance } from '../server/notifications/lowBalance.js';
+import { loadPreferences, sanitizePreferences } from '../server/notifications/preferences.js';
 import { studentRescheduleBlock, studentCancelBlock, nextWeekSlot } from '../server/booking/studentWindows.js';
 import { processTrialFollowUps } from '../server/notifications/trialFollowUp.js';
 import {
@@ -8435,6 +8436,37 @@ app.post('/api/student/children', rateLimit, verifyStudentAuth, async (req: any,
   } catch (err: any) {
     console.error('[POST /api/student/children]', err);
     return res.status(500).json({ error: 'Internal server error.' });
+  }
+});
+
+// RN-07: the signed-in account's optional emails (progress, renewal reminders, follow-ups). Booking and payment
+// emails are not optional. Stored per account (auth user), so a parent's choice covers all their children.
+app.get('/api/student/notification-preferences', verifyStudentAuth, async (req: any, res: any) => {
+  const supabaseAdmin = getSupabaseAdminClient();
+  if (!supabaseAdmin) return res.status(503).json({ error: 'Database service unavailable.' });
+  return res.json({ preferences: await loadPreferences(supabaseAdmin, req.studentUser?.auth_id) });
+});
+
+app.put('/api/student/notification-preferences', rateLimit, verifyStudentAuth, async (req: any, res: any) => {
+  try {
+    const supabaseAdmin = getSupabaseAdminClient();
+    if (!supabaseAdmin) return res.status(503).json({ error: 'Database service unavailable.' });
+    const userId = req.studentUser?.auth_id;
+    if (!userId || !/^[0-9a-f-]{36}$/i.test(userId)) return res.status(401).json({ error: 'Please sign in again.' });
+    const changes = sanitizePreferences(req.body);
+    if (!changes) return res.status(400).json({ error: 'Send at least one of progress_emails, renewal_reminders, follow_ups as true or false.' });
+    const merged = { ...(await loadPreferences(supabaseAdmin, userId)), ...changes };
+    const { error } = await supabaseAdmin
+      .from('notification_preferences')
+      .upsert({ user_id: userId, ...merged, updated_at: new Date().toISOString() }, { onConflict: 'user_id' });
+    if (error) {
+      console.error('[PUT /api/student/notification-preferences]', error.message);
+      return res.status(500).json({ error: 'Could not save your choices. Please try again.' });
+    }
+    return res.json({ preferences: merged });
+  } catch (err) {
+    console.error('[PUT /api/student/notification-preferences]', err);
+    return res.status(500).json({ error: 'Could not save your choices. Please try again.' });
   }
 });
 

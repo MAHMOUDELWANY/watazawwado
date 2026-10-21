@@ -136,7 +136,7 @@ export async function notifyLowBalance(
       client,
       { userId: to.userId, email: to.email, name: to.name },
       lowBalanceNotice(t, Number(ent.purchased_quantity), to.learnerName, ent.id),
-      { email: true }
+      { email: true, preference: 'renewal_reminders' }
     );
     return t;
   } catch (err) {

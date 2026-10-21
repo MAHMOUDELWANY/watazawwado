@@ -4,6 +4,14 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### RN-07 Notification preferences (2026-10-21)
+- Result: done (main). Profile → Preferences now has three switches that save at once: progress emails (for PR-09), renewal reminders (RN-02 low balance) and follow-ups (RN-05 trial follow-up, and RN-06 later). Booking, lesson-reminder and payment emails are not listed and always go (the page says so). A switch stops only the email; the notice on the site still appears. One choice per account, so a parent's choice covers all their children.
+- Server: new table `notification_preferences` (per auth user, all on by default, RLS on, service role only); `server/notifications/preferences.ts` (`loadPreferences`, `emailAllowed`, `sanitizePreferences`; a read error never silences an email); `notifyUser` takes an optional `preference` and skips just the email when it is off; RN-02 passes `renewal_reminders`; RN-05 checks `follow_ups` before emailing and still records the on-site notice. `GET/PUT /api/student/notification-preferences` (signed-in family only, rate limited, only the three keys as booleans).
+- Migration: `20261021000002_notification_preferences.sql` (applied).
+- Tests: new `test/rn-07-notification-preferences.test.ts`; RN-05 test gains "follow-ups off → on-site notice only, once"; RN-02 test checks the renewal-reminders switch is passed.
+- Checks: tsc pass; npm test 1217 pass / 0 fail / 5 skipped; build pass.
+- Not checked / risks: the signed-in profile page was not opened (owner rule); there is no unsubscribe link in those emails yet (they point to the profile page through the site).
+
 ### RN-04 "Same time next week?" (2026-10-21)
 - Result: done (main). After a lesson attended in the last 7 days, the student home shows "Same time next week?" with the day, time (viewer's time zone), teacher and learner, a "Book it" button and "Not now" (remembered per suggested time). "Book it" opens the booking flow as "book again" for that lesson with that time chosen (`/student/book?repeat=<id>&slot=<UTC start>`); the family still reviews, pays or uses a credit, and confirms. Nothing is booked automatically and there is no recurring booking.
 - Server: `GET /api/student/next-week-suggestion?learnerId=` (signed-in family only; 403 for teachers and for learners outside the family; read-only). It takes the latest completed lesson of the last 7 days, adds one week at the same clock time in the student's time zone (so a daylight-saving change does not shift it), needs at least 24 hours of notice (never jumps to the week after), skips learners who already have a lesson booked in the next 8 days, and asks the existing `validateSlotAvailability` engine whether the teacher is free.
