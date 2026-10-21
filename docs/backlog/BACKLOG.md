@@ -119,7 +119,7 @@ Principles every PR/RN task follows:
   CSS for A4 and Letter. Label it clearly as a progress report, not a certificate (same rule as placement reports).
 
 ### PR-09 Monthly progress email to guardians and adult learners
-- Priority P2 · Zone 🔴 (new scheduled send) · Size M · Status todo · Depends on PR-08
+- Priority P2 · Zone 🔴 (new scheduled send) · Size M · Status done · Depends on PR-08
 - Do: on the 1st of each month (through the existing external cron with `CRON_SECRET`), email each active learner
   (guardian for children) a short summary + link to PR-08. One language per RULES.md §6 (user preference). Brevo free
   plan limit is 300 emails/day: batch and resume safely; never send twice for the same month (store a send record).

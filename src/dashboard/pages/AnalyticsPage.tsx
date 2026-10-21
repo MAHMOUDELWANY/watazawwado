@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { AccountFunnel } from '../components/AccountFunnel';
 import { AdminLessonFeedback } from '../components/LessonFeedbackPanels';
+import { MonthlyProgressPreview } from '../components/MonthlyProgressPreview';
 import {
   TrendingUp,
   Users,
@@ -330,6 +331,7 @@ export default function AnalyticsPage() {
           {/* CRM-07: the account funnel with the people behind each number. */}
           {isSuperAdmin && <AccountFunnel />}
           {isSuperAdmin && <AdminLessonFeedback />}
+          {isSuperAdmin && <MonthlyProgressPreview />}
 
           {isSuperAdmin && <div className="p-6 rounded-2xl glass-card border-none/30 dark:border-border/30 shadow-xs space-y-4">
             <div className="flex items-center gap-2">

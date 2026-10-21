@@ -4,6 +4,14 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### PR-09 Monthly progress email (2026-10-21) — built, OFF until the owner switches it on
+- Result: done (main), sending nothing. On the 1st to 5th of each month the reminder cron would send one short email per account about last month: for an adult "You took N lessons with us last month", for a family one line per child, then a button to that month's PR-08 report and, in the footer, a link to switch these emails off (profile → preferences, RN-07). One language per account (RULES.md §6). Only accounts with an attended lesson that month; accounts with progress emails off are skipped.
+- Safety: it runs only when `MONTHLY_PROGRESS_EMAILS=on` is set in Vercel (production). Never twice for the same month (`notification_events` key `monthly_progress:<month>:<account>`, claimed atomically; a failed send is retried by a later run); at most 150 per run so booking emails keep room in the Brevo free quota (300/day).
+- Dry run: Analytics page → "Monthly progress emails" → "Preview recipients" (super admin) lists who would get it for last month, without sending or recording anything.
+- Files: `server/notifications/monthlyProgress.ts`, `server/notifications/emailTemplates.ts` (`renderMonthlyProgressEmail`), `api/index.ts` (cron hook + preview route), `src/dashboard/components/MonthlyProgressPreview.tsx`, `AnalyticsPage.tsx`, `test/pr-09-monthly-progress.test.ts` (switch, month window, dry run writes nothing, no double send, retry, batch, escaping).
+- Checks: tsc pass; npm test 1279 pass / 0 fail / 5 skipped; build pass.
+- Owner action to turn it on: review the preview and wording, then add `MONTHLY_PROGRESS_EMAILS` = `on` in Vercel → Settings → Environment Variables (Production) and redeploy.
+
 ### QA-05 SEO and hreflang check (2026-10-21)
 - Checked every prerendered public page (home, about, how it works, subjects, pricing, FAQ, safety, privacy, terms): unique title and description, canonical, robots index/follow (the app shell `spa.html` is noindex), one H1, every image has alt text, Organization + WebSite JSON-LD, og:image, sitemap with the 9 public pages, robots.txt blocking account areas and the API. All fine.
 - Added: Course structured data on `/learning` (an ItemList of the 8 bookable subjects from the live catalogue, provider = the academy, online, "from" hourly price 9 or 13 USD as RULES.md §3).

@@ -82,6 +82,7 @@ import { notifyLowBalance } from '../server/notifications/lowBalance.js';
 import { loadPreferences, sanitizePreferences } from '../server/notifications/preferences.js';
 import { studentRescheduleBlock, studentCancelBlock, nextWeekSlot } from '../server/booking/studentWindows.js';
 import { processTrialFollowUps } from '../server/notifications/trialFollowUp.js';
+import { processMonthlyProgressEmails, monthlyEmailsEnabled, isSendWindow, reportMonthFor, monthLabel } from '../server/notifications/monthlyProgress.js';
 import {
   validateIntakeOutput
 } from '../server/intake/intakeSchema.js';
@@ -7508,6 +7509,28 @@ app.post('/api/contact', rateLimit, async (req, res) => {
   }
 });
 
+// PR-09: super admin preview of the monthly progress email (dry run: reads only, sends and records nothing).
+app.get('/api/dashboard/admin/monthly-progress/preview', verifyTeacherAuth, requireSuperAdmin, async (req: any, res: any) => {
+  const client = getSupabaseAdminClient();
+  if (!client) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+  const raw = typeof req.query?.month === 'string' ? req.query.month : '';
+  const month = /^\d{4}-(0[1-9]|1[0-2])$/.test(raw) ? raw : reportMonthFor(DateTime.utc());
+  try {
+    const result = await processMonthlyProgressEmails(client, { month, dryRun: true, limit: 1000 });
+    return res.json({
+      month,
+      monthLabel: monthLabel(month),
+      enabled: monthlyEmailsEnabled(),
+      count: result.recipients.length,
+      skipped: result.skipped,
+      recipients: result.recipients.slice(0, 200).map((r) => ({ name: r.name, email: r.email, family: r.viaParent, learners: r.learners.map((l) => ({ name: l.learnerName, lessons: l.lessons })) }))
+    });
+  } catch (err) {
+    console.error('[GET monthly-progress/preview]', err);
+    return res.status(500).json({ error: 'Could not build the preview.' });
+  }
+});
+
 // 23. CRON: Process pending 24h and 1h lesson reminders
 app.all('/api/cron/process-reminders', async (req, res) => {
   try {
@@ -7542,7 +7565,12 @@ app.all('/api/cron/process-reminders', async (req, res) => {
     const summary = await processDueReminders();
     // Production only: the test suite calls this route against the shared database and must not email real families.
     const trialFollowUps = process.env.VERCEL_ENV === 'production' ? await processTrialFollowUps(cronClient) : 0;
-    await recordHeartbeat(cronClient, HEARTBEAT_REMINDER_CRON, { integrationsProcessed, trialFollowUps });
+    // PR-09: off until the owner sets MONTHLY_PROGRESS_EMAILS=on (production only); then the 1st-5th of each month.
+    let monthlyProgress = 0;
+    if (cronClient && monthlyEmailsEnabled() && isSendWindow(DateTime.utc())) {
+      try { monthlyProgress = (await processMonthlyProgressEmails(cronClient)).sent; } catch (err) { console.warn('[Cron] monthly progress failed:', err); }
+    }
+    await recordHeartbeat(cronClient, HEARTBEAT_REMINDER_CRON, { integrationsProcessed, trialFollowUps, monthlyProgress });
     res.json({
       success: true,
       timestamp: new Date().toISOString(),

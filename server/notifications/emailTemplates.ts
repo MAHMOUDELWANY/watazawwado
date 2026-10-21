@@ -619,6 +619,36 @@ export function renderTeacherNotification(params: {
 }
 
 // Short notice that mirrors an on-site notification (refunds, admin replies, placement results).
+/**
+ * PR-09: the monthly progress note for an adult learner or a family. Names come from our database and are escaped;
+ * the footer reason says how to switch these emails off (profile → preferences, RN-07).
+ */
+export function renderMonthlyProgressEmail(params: {
+  name?: string | null;
+  monthLabel: L;
+  lines: L[];
+  reportPath: string;
+  lang?: EmailLang;
+}): EmailRenderResult {
+  const name = escapeHtml(params.name || '');
+  const settings = `${SITE_URL}/student/account?tab=preferences`;
+  const title: L = { en: `Your month with us: ${params.monthLabel.en}`, ar: `شهرك معانا: ${params.monthLabel.ar}` };
+  return render({
+    preheader: title,
+    title,
+    greeting: name ? { en: `Assalamu alaikum ${name},`, ar: `السلام عليكم ${name}،` } : { en: 'Assalamu alaikum,', ar: 'السلام عليكم،' },
+    paragraphs: [
+      ...params.lines.map((l) => ({ en: escapeHtml(l.en), ar: escapeHtml(l.ar) })),
+      { en: 'The full report, with the teacher\'s notes, is in your account. You can print it or keep it.', ar: 'التقرير الكامل بملاحظات المعلم موجود في حسابك، وتقدر تطبعه أو تحتفظ بيه.' }
+    ],
+    button: { url: `${SITE_URL}${params.reportPath}`, label: { en: 'Open the monthly report', ar: 'افتح التقرير الشهري' } },
+    reason: {
+      en: `You get this monthly note because progress emails are on in your account. <a href="${settings}" style="color:${TEAL};">Turn them off</a> any time.`,
+      ar: `وصلتك الرسالة دي لأن إيميلات التقدّم شغّالة في حسابك. تقدر <a href="${settings}" style="color:${TEAL};">توقفها</a> في أي وقت.`
+    }
+  }, title, params.lang);
+}
+
 export function renderSimpleNotice(params: {
   name?: string | null;
   title: L;
