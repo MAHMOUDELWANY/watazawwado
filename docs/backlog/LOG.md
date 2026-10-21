@@ -4,6 +4,15 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### CRM-06 Search everything (2026-10-21)
+- Result: done (main). Super admin presses Ctrl/Cmd+K (or the search icon in the dashboard header) and types a name, email, phone, booking reference or payment id/reference. Results cover accounts, children (found through their parent's name or email), bookings, payments and leads, grouped by type; arrow keys move, Enter opens the record (the student page for accounts, children, bookings and payments; the leads page for leads), Escape closes. Focus-trapped dialog with listbox semantics. The page-name search in the header stays as it was.
+- Server: `GET /api/dashboard/admin/search?q=` (admin only, 2–80 characters, 8 per type, 30 in total). Every filter value goes through `pgrstValue(escapeLike(...))`; a raw id is used only after a UUID check. Queries with filter syntax (`a,b),status.eq.x`, `%_*"\`) return normally.
+- Found and fixed while building: the shortcut hook was first placed after the dashboard's early returns (a React hooks-order bug); moved above them, and the test pins it.
+- Files: `api/index.ts`, `src/dashboard/components/CommandSearch.tsx`, `src/dashboard/DashboardApp.tsx`, `test/crm-06-search-everything.test.ts`.
+- Migration: none
+- Checks: tsc pass; npm test 1226 pass / 0 fail / 5 skipped; build pass.
+- Not checked / risks: the dashboard was not opened live (signed-in, owner rule); leads open the list, not one lead (the leads page has no deep link yet).
+
 ### CRM-05 CSV export (2026-10-21)
 - Result: done (main). Admin-only downloads: students (with parent contact for children, teacher name, subject, level, onboarding, how they heard about us, first-touch utm_source) and payments from the Students page; leads from the Leads page. Built on the server (`server/routes/exports.ts`, `GET /api/dashboard/admin/export/{students,leads,payments}.csv`), UTF-8 with a BOM so Arabic opens correctly in Excel, up to 5000 rows each.
 - Safety: no notes columns at all (teacher private notes, admin notes, lead/payment notes), no tokens; a cell that starts with = + - @ or a tab gets a leading apostrophe so a name like `=HYPERLINK(...)` can never run as a formula (CSV injection); `Cache-Control: no-store`. 401 without sign-in, 403 for teachers.

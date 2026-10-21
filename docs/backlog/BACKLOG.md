@@ -207,7 +207,7 @@ Principles every PR/RN task follows:
   Excel). No private teacher notes, no secrets.
 
 ### CRM-06 Search everything
-- Priority P2 · Zone 🟢 · Size M · Status todo
+- Priority P2 · Zone 🟢 · Size M · Status done
 - Do: one admin search box (Ctrl+K) across accounts, children, emails, booking references and payments; jump to the
   record.
 

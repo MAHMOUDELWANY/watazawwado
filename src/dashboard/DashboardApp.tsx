@@ -60,6 +60,7 @@ import AssistantPage from './pages/AssistantPage';
 import CurriculumPage, { CurriculumLessonPage } from './pages/CurriculumPage';
 import { ChatPanel } from '../components/chat/ChatPanel';
 import { TeacherAuthDiagnosticPanel } from './components/TeacherAuthDiagnosticPanel';
+import { CommandSearch } from './components/CommandSearch';
 import { useAppLanguage } from '../lib/language';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 
@@ -73,6 +74,7 @@ export function DashboardApp() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showGlobalTour, setShowGlobalTour] = useState(false);
   const [search, setSearch] = useState('');
+  const [commandOpen, setCommandOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   // Same language as the rest of the site (cookie + account preference), RULES.md §6.
@@ -164,6 +166,16 @@ export function DashboardApp() {
       document.body.style.overflow = '';
     };
   }, []);
+
+  // CRM-06: Ctrl/Cmd+K opens the admin search across accounts, bookings and payments.
+  useEffect(() => {
+    if (!isSuperAdmin) return;
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); setCommandOpen(true); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isSuperAdmin]);
 
   if (isTeacherAuthenticated && agreementRequired) {
     return <Navigate to="/staff/agreement" replace />;
@@ -531,6 +543,17 @@ export function DashboardApp() {
                   {navigation.map((item) => <option key={item.path} value={item.name} />)}
                 </datalist>
               </form>
+              {isSuperAdmin && (
+                <button
+                  type="button"
+                  onClick={() => setCommandOpen(true)}
+                  aria-label={L('Search everything (Ctrl K)', 'ابحث في كل حاجة (Ctrl K)')}
+                  title={L('Search everything (Ctrl K)', 'ابحث في كل حاجة (Ctrl K)')}
+                  className="w-10 h-10 grid place-items-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-subtle cursor-pointer focus-ring"
+                >
+                  <Search className="w-4 h-4" aria-hidden="true" />
+                </button>
+              )}
               <button
                 type="button"
                 id="teacher-header-tour-btn"
@@ -573,6 +596,7 @@ export function DashboardApp() {
         <div className={`flex-1 overflow-y-auto overflow-x-hidden px-3 sm:px-6 lg:px-8 pt-5 sm:pt-6 ${MOBILE_TAB_BAR_PADDING} w-full max-w-full`}>
           <div className="max-w-6xl mx-auto space-y-6 min-w-0">
             <TeacherAuthDiagnosticPanel />
+            {isSuperAdmin && <CommandSearch open={commandOpen} onClose={() => setCommandOpen(false)} />}
             <ErrorBoundary>
               <Routes>
                 {/* If super_admin, root /dashboard is Overview; if teacher, root /dashboard is Today */}

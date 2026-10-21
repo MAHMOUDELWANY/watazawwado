@@ -2428,6 +2428,44 @@ app.get('/api/dashboard/today', verifyTeacherAuth, async (req: any, res: any) =>
   }
 });
 
+// CRM-06: one admin search across accounts, children (through their parent), emails, phone numbers, booking
+// references and payments; every hit carries the page to open.
+app.get('/api/dashboard/admin/search', verifyTeacherAuth, requireSuperAdmin, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+    const q = typeof req.query?.q === 'string' ? req.query.q.trim().slice(0, 80) : '';
+    if (q.length < 2) return res.json({ results: [] });
+    const pattern = pgrstValue(`%${escapeLike(q)}%`);
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(q);
+    const [students, guardians, bookings, payments, leads] = await Promise.all([
+      supabase.from('students').select('id, name, email, learner_type').or(`name.ilike.${pattern},email.ilike.${pattern},whatsapp.ilike.${pattern}`).limit(8),
+      supabase.from('guardians').select('student_id, parent_name, parent_email').or(`parent_name.ilike.${pattern},parent_email.ilike.${pattern}`).limit(8),
+      supabase.from('bookings').select('id, reference_code, student_id, contact_name, scheduled_start, status').or(`reference_code.ilike.${pattern},contact_email.ilike.${pattern},contact_name.ilike.${pattern}`).order('scheduled_start', { ascending: false }).limit(8),
+      isUuid
+        ? supabase.from('payments').select('id, student_id, amount, currency, status, created_at').or(`id.eq.${q},payment_reference.ilike.${pattern}`).limit(8)
+        : supabase.from('payments').select('id, student_id, amount, currency, status, created_at').ilike('payment_reference', `%${escapeLike(q)}%`).limit(8),
+      supabase.from('leads').select('id, name, email, status').or(`name.ilike.${pattern},email.ilike.${pattern}`).limit(8)
+    ]);
+    const childIds = [...new Set((guardians.data || []).map((g: any) => g.student_id))];
+    const { data: children } = childIds.length ? await supabase.from('students').select('id, name').in('id', childIds) : { data: [] as any[] };
+    const childName = new Map((children || []).map((c: any) => [c.id, c.name]));
+    const results: Array<{ type: string; id: string; title: string; subtitle: string; link: string }> = [];
+    for (const s of students.data || []) results.push({ type: 'student', id: s.id, title: s.name || s.email || 'Student', subtitle: [s.email, s.learner_type].filter(Boolean).join(' · '), link: `/dashboard/students/${s.id}` });
+    for (const g of guardians.data || []) {
+      if (results.some((r) => r.id === g.student_id)) continue;
+      results.push({ type: 'child', id: g.student_id, title: childName.get(g.student_id) || 'Child', subtitle: `${g.parent_name || ''}${g.parent_email ? ` · ${g.parent_email}` : ''}`, link: `/dashboard/students/${g.student_id}` });
+    }
+    for (const b of bookings.data || []) results.push({ type: 'booking', id: b.id, title: b.reference_code || 'Booking', subtitle: [b.contact_name, b.status, b.scheduled_start?.slice(0, 10)].filter(Boolean).join(' · '), link: b.student_id ? `/dashboard/students/${b.student_id}` : '/dashboard/bookings' });
+    for (const p of payments.data || []) results.push({ type: 'payment', id: p.id, title: `${p.amount ?? ''} ${p.currency || ''}`.trim() || 'Payment', subtitle: [p.status, p.created_at?.slice(0, 10)].filter(Boolean).join(' · '), link: p.student_id ? `/dashboard/students/${p.student_id}` : '/dashboard/pay-later' });
+    for (const l of leads.data || []) results.push({ type: 'lead', id: l.id, title: l.name || l.email || 'Lead', subtitle: [l.email, l.status].filter(Boolean).join(' · '), link: '/dashboard/leads' });
+    return res.json({ results: results.slice(0, 30) });
+  } catch (err) {
+    console.error('[GET /api/dashboard/admin/search]', err);
+    return res.status(500).json({ error: 'Search failed.' });
+  }
+});
+
 // AD-01: what needs the admin today, as counts with a link each. Same filters as the pages they open.
 app.get('/api/dashboard/admin/action-items', verifyTeacherAuth, requireSuperAdmin, async (_req: any, res: any) => {
   try {
