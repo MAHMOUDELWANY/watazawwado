@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { ExportCsvButton } from '../components/ExportCsvButton';
 import { Link } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import {
@@ -138,6 +139,9 @@ export default function StudentsPage() {
           </p>
         </div>
 
+        <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+        {isSuperAdmin && <ExportCsvButton kind="students" />}
+        {isSuperAdmin && <ExportCsvButton kind="payments" />}
         <button
           onClick={() => fetchStudents(true)}
           disabled={refreshing}
@@ -146,6 +150,7 @@ export default function StudentsPage() {
           <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
           <span>{t('Refresh', 'تحديث')}</span>
         </button>
+        </div>
       </div>
 
       {/* Filter Tabs & Search Bar */}

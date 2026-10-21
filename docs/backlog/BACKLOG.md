@@ -202,7 +202,7 @@ Principles every PR/RN task follows:
   (greeting from the Watazawwado team) and "mark done". Auto-create a task after every attended trial.
 
 ### CRM-05 CSV export
-- Priority P2 · Zone 🟢 · Size S · Status todo
+- Priority P2 · Zone 🟢 · Size S · Status done
 - Do: export the students list, leads and payments (admin only, server-generated, UTF-8 with BOM so Arabic opens in
   Excel). No private teacher notes, no secrets.
 

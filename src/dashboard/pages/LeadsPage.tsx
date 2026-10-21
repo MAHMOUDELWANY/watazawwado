@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { ExportCsvButton } from '../components/ExportCsvButton';
 import { DateTime } from 'luxon';
 import {
   UserPlus,
@@ -169,7 +170,8 @@ export default function LeadsPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <ExportCsvButton kind="leads" />
           {lastRefreshed && (
             <span className="text-[11px] text-muted-foreground">
               {t('Cairo', 'القاهرة')}: {lastRefreshed.setLocale(locale).toFormat('hh:mm a')}

@@ -40,3 +40,4 @@ Each task: tsc, full `npm test`, build, commit, push to main, production smoke (
 - 2026-10-21: PR-08 monthly report done. Next: PR-09 is red-zone (scheduled email) → after the green P2 list; next green: RN-04.
 - 2026-10-21: RN-04 done (same time next week, read-only, engine-checked). Known flake: task-0.55 google-calendar callback tests (ECONNRESET).
 - 2026-10-21: RN-07 done (preferences table applied; RN-02/RN-05 respect it).
+- 2026-10-21: CRM-05 CSV export done (BOM, no notes, formula-injection safe).

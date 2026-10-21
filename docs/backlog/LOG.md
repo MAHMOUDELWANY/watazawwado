@@ -4,6 +4,14 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### CRM-05 CSV export (2026-10-21)
+- Result: done (main). Admin-only downloads: students (with parent contact for children, teacher name, subject, level, onboarding, how they heard about us, first-touch utm_source) and payments from the Students page; leads from the Leads page. Built on the server (`server/routes/exports.ts`, `GET /api/dashboard/admin/export/{students,leads,payments}.csv`), UTF-8 with a BOM so Arabic opens correctly in Excel, up to 5000 rows each.
+- Safety: no notes columns at all (teacher private notes, admin notes, lead/payment notes), no tokens; a cell that starts with = + - @ or a tab gets a leading apostrophe so a name like `=HYPERLINK(...)` can never run as a formula (CSV injection); `Cache-Control: no-store`. 401 without sign-in, 403 for teachers.
+- Files: `server/routes/exports.ts`, `api/index.ts`, `src/dashboard/lib/dashboardApi.ts` (`dashboardDownload`), `src/dashboard/components/ExportCsvButton.tsx`, `StudentsPage.tsx`, `LeadsPage.tsx`, `test/crm-05-csv-export.test.ts`.
+- Migration: none
+- Checks: tsc pass; npm test 1222 pass / 0 fail / 5 skipped; build pass.
+- Not checked / risks: the dashboard buttons were not clicked live (signed-in, owner rule); more than 5000 rows would be cut (far above today's numbers).
+
 ### RN-07 Notification preferences (2026-10-21)
 - Result: done (main). Profile → Preferences now has three switches that save at once: progress emails (for PR-09), renewal reminders (RN-02 low balance) and follow-ups (RN-05 trial follow-up, and RN-06 later). Booking, lesson-reminder and payment emails are not listed and always go (the page says so). A switch stops only the email; the notice on the site still appears. One choice per account, so a parent's choice covers all their children.
 - Server: new table `notification_preferences` (per auth user, all on by default, RLS on, service role only); `server/notifications/preferences.ts` (`loadPreferences`, `emailAllowed`, `sanitizePreferences`; a read error never silences an email); `notifyUser` takes an optional `preference` and skips just the email when it is off; RN-02 passes `renewal_reminders`; RN-05 checks `follow_ups` before emailing and still records the on-site notice. `GET/PUT /api/student/notification-preferences` (signed-in family only, rate limited, only the three keys as booleans).

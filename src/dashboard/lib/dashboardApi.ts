@@ -286,3 +286,18 @@ export function openZoomAsHost(event: { preventDefault: () => void }, bookingId:
       else window.location.href = url;
     });
 }
+
+/** CRM-05: downloads a server-generated file (CSV export) with the dashboard session, then saves it. */
+export async function dashboardDownload(endpoint: string, filename: string): Promise<void> {
+  const { data: { session } } = await supabase.auth.getSession();
+  const res = await fetch(endpoint, { headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {} });
+  if (!res.ok) throw new Error(`Download failed (${res.status})`);
+  const url = URL.createObjectURL(await res.blob());
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
