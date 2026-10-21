@@ -4,7 +4,14 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
-### QA-07 Split `api/index.ts` safely (prep only) (2026-10-21) — review
+### Integration of round 2: QA-07 pilot, QA-05b, AD-02b (2026-10-21) — done
+- QA-07 pilot merged into main (family calendar routes in `server/routes/calendarFeed.ts`), together with the English subject text per RULES §2b (`src/booking/mockData.ts`, migration `20261021000007` already applied) and the privacy policy text on AI help for teachers and switching emails off.
+- QA-05b English URLs: every public page also at `/en/...` with `lang="en" dir="ltr"`, English title and description, self canonical, ar/en/x-default hreflang (x-default = Arabic) and the same alternates in `sitemap.xml` (18 URLs). Opening an `/en` address picks English and keeps it; the toggle moves between matching addresses; an unknown `/en/*` goes to `/en`. Checked in `dist/`: `en/pricing.html`, `pricing.html`, `en.html` (tags, and the rendered body is in the right language).
+- AD-02b move booked lessons to another teacher (single on the lesson screen, bulk in the Lessons bar), super admin only. The server checks the new teacher's hours, calendar and lessons; `admin_move_booking_teacher` locks the lesson and changes only `teacher_id`, and the per-teacher exclusion constraint refuses overlaps. Same time, price, payment and Zoom meeting (academy account; the host link follows `bookings.teacher_id`). The old Google event is removed (the admin is told if that fails) and a booking_sync job puts the lesson on the new teacher's calendar; the family and both teachers are told, no prices shown. Migration `20261021000010` applied to production after review. Merge fix: the teacher select got an aria-label (QA-02 test).
+- Checks: tsc pass; npm test 1321 pass / 0 fail / 5 skipped; build pass (9 pages x 2 languages prerendered).
+- Not checked: a real move on production (needs two teachers with calendars); Search Console pick-up of the `/en` URLs.
+
+### QA-07 Split `api/index.ts` safely (prep only) (2026-10-21) — review (pilot merged, see above)
 - Plan: `docs/api-split-plan.md` (rules for zero-behaviour-change moves, the order from low risk to red zone, what stays in `api/index.ts`).
 - Pilot (branch `refactor/qa-07-pilot-calendar-feed`, pushed, NOT merged): the four PA-03 family calendar routes moved to `server/routes/calendarFeed.ts` unchanged apart from `deps.*`; two unused imports removed from `api/index.ts`; the PA-03 test reads the new file. tsc pass; npm test 1306 pass / 0 fail / 5 skipped; build pass.
 - Owner/reviewer: look at the branch diff; if fine, merge it and continue with step 2 of the plan.

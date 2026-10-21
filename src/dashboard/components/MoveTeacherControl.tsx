@@ -32,7 +32,7 @@ export function TeacherPicker({ id, teachers, value, onChange, excludeId, disabl
 }) {
   const { t } = useT();
   return (
-    <Select id={id} value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled}>
+    <Select id={id} aria-label={t('Teacher to move the lessons to', 'المدرس اللي هتنقل له الحصص')} value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled}>
       <option value="">{t('Choose a teacher', 'اختار مدرس')}</option>
       {teachers.filter((tc) => !excludeId || tc.id !== excludeId).map((tc) => (
         <option key={teacherValue(tc)} value={teacherValue(tc)}>{tc.display_name}</option>

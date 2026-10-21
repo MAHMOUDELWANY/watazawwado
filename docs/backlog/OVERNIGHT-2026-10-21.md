@@ -67,3 +67,4 @@ Each task: tsc, full `npm test`, build, commit, push to main, production smoke (
 - 2026-10-21: QA-07 plan on main; pilot on branch refactor/qa-07-pilot-calendar-feed (review). Backlog (non-decision items) complete.
 
 - 2026-10-21 (round 2): session stopped by the owner. NEXT SESSION: read docs/backlog/HANDOFF-2026-10-21.md first (3 branches to integrate).
+- 2026-10-21 (integration): round-2, QA-05b /en URLs + hreflang, AD-02b teacher move merged to main; migration 20261021000010 applied; tests 1321/0.

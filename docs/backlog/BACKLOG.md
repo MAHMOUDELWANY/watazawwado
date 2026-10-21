@@ -371,7 +371,7 @@ Principles every PR/RN task follows:
   chats, system health warnings, lessons in the next 24 h without a Zoom link. Then the numbers.
 
 ### AD-02 Bulk actions on bookings
-- Priority P3 · Zone 🔴 · Size M · Status done (cancel only; teacher move needs a single-lesson path first)
+- Priority P3 · Zone 🔴 · Size M · Status done (cancel + move to another teacher, AD-02b)
 - Do: select several lessons → move to another teacher or cancel with a reason (reuses the existing single-lesson
   server paths and their notifications; no new rules).
 
@@ -437,6 +437,12 @@ Principles every PR/RN task follows:
   images for each public page; prerendered content present (`scripts/prerender-seo.ts`).
 - Skills: `seo`, `seo-hreflang`, `seo-schema`, `seo-technical`.
 
+### QA-05b English URLs with hreflang
+- Priority P2 · Zone 🟢 · Size M · Status done
+- Do: every public page also at `/en/...` (Arabic stays at the plain paths, x-default = Arabic), self canonical,
+  ar/en/x-default hreflang in the page and the sitemap, the language toggle switches between matching URLs; no
+  forced browser-language redirect; portal and dashboard untouched.
+
 ### QA-06 Repo cleanup of root one-off files
 - Priority P3 · Zone 🟢 · Size S · Status done
 - Do: the root has old scratch and report files (`diff.txt`, `temp_css.txt`, `scratch_handoff*.txt`, `test-*.js`,
@@ -445,7 +451,7 @@ Principles every PR/RN task follows:
   outside the repo (do not delete). List what moved in the log.
 
 ### QA-07 Split `api/index.ts` safely (prep only)
-- Priority P3 · Zone 🔴 · Size L · Status review (refactor/qa-07-pilot-calendar-feed)
+- Priority P3 · Zone 🔴 · Size L · Status done (pilot merged; next moves follow docs/api-split-plan.md)
 - Do: propose (in `docs/api-split-plan.md`) how to move route groups out of `api/index.ts` into
   `server/routes/*` with zero behaviour change, and move one low-risk group as a pilot on a branch with all tests
   green. Review the pilot before more moves.
