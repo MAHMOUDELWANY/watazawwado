@@ -4,6 +4,11 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### QA-06 Repo cleanup of root one-off files (2026-10-21)
+- Result: done (main). Checked each root file against code, package scripts and config (none used them) and scanned them for secrets (none). Moved, not deleted, to `../watazawwado-archive/root-files-2026-10-21/` (outside the repo, next to it on the owner's PC): `FINAL_REPORT.md`, `README_WORKFLOW_03A.md`, `SUPABASE_VERIFICATION_CHECKLIST.md`, `TASK_0_58_I_VERIFICATION_REPORT.md`, `add-tour.js`, `avail.json`, `diff.txt`, `get_zoom_docs.ts`, `pr_body.md`, `run_local.ts`, `scratch_handoff.txt`, `scratch_handoff_utf8.txt`, `temp_css.txt`, `test-auth.js`, `test-brevo.ts`, `test-identity.js`, `test-me.ts`, `test-syntax.js`, `test_regex.cjs`, `test_tailwind.html`. They remain in git history.
+- Kept: `GEMINI.md` (agent instructions), `metadata.json` (AI Studio file), `README.md`, configs.
+- Checks: tsc pass; npm test 1299 pass / 0 fail / 5 skipped; build pass.
+
 ### TE-05 Jalila drafts the family summary (2026-10-21)
 - Result: done (main). In the after-lesson editor, under the family summary: "Draft with Jalila" / "اكتبها مع جليلة" (active once private notes are written). It sends the notes as typed, the next step and the subject to Gemini with the learner's first name only, and puts a 1-2 sentence draft in the family's language (the account's saved language, English by default) into the family summary box. If a summary is already there it asks before replacing it. Nothing is saved or sent by the draft: the teacher edits and saves as before.
 - The prompt tells Jalila to use only facts from the notes, invent nothing, and leave out what is not for the family (criticism, health, behaviour, family or money matters). Only the student's own teacher or the admin can ask; rate limited.

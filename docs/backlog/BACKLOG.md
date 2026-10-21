@@ -438,7 +438,7 @@ Principles every PR/RN task follows:
 - Skills: `seo`, `seo-hreflang`, `seo-schema`, `seo-technical`.
 
 ### QA-06 Repo cleanup of root one-off files
-- Priority P3 · Zone 🟢 · Size S · Status todo
+- Priority P3 · Zone 🟢 · Size S · Status done
 - Do: the root has old scratch and report files (`diff.txt`, `temp_css.txt`, `scratch_handoff*.txt`, `test-*.js`,
   `test_regex.cjs`, `test_tailwind.html`, `avail.json`, `pr_body.md`, old `Task_*` and `FINAL_REPORT.md` reports).
   Check each is unused (grep imports and package scripts), then move the unused ones to `../watazawwado-archive/`
