@@ -4,6 +4,12 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### ST-05 Profile page split (2026-10-21)
+- Result: done (main). The page already had tabs (personal details, learning track, booking & preferences, security); the family items (add a child, the children list with "Book for", the responsible guardian) were inside the learning tab and now have their own "Family" / "العيلة" tab, moved unchanged. The open tab is in the URL (`/student/account?tab=family|learning|preferences|security`) so links and reloads land on it, without adding history entries. Section buttons are announced as tabs (tablist/tab/tabpanel, aria-selected). Preferences description now mentions emails (RN-07 lives there). The privacy section comes with ST-06.
+- Files: `src/student/pages/StudentProfilePage.tsx`, `test/st-05-profile-split.test.ts`.
+- Checks: tsc pass; npm test 1253 pass / 0 fail / 5 skipped; build pass.
+- Not checked / risks: signed-in page not opened (owner rule).
+
 ### ST-02 Post-lesson moment (2026-10-21)
 - Result: done (main). After a lesson ends (completed, or confirmed and past its end; up to 7 days), the portal home shows "How was the <subject> lesson with <child>?" with five stars: one tap saves the rating. Then an optional comment (only our team reads it) and the teacher's family summary for that lesson, or a note that it will come soon. "Hide" keeps it away for that lesson on this browser. Follows the child switcher.
 - Who sees what: the super admin sees each rating and comment and every teacher's average (Analytics page, "After-lesson ratings"). A teacher sees only their own average on the Today page, counted over finished calendar months that each hold 5+ ratings (security review fix: a live average would let a teacher work out one family's rating by comparing before and after a lesson); comments never reach teachers. A rating can be changed only during the month it was given, so a closed month never moves (second review fix). Residual: deleting a booking or a student removes its rating from a closed month (admin-only actions). Only the account that owns the lesson can rate it; the same account can change its rating, another cannot overwrite it.

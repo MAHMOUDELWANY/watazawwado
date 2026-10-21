@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { NotificationPreferences } from '../components/NotificationPreferences';
 import { subjectLabel as subjectName } from '../../components/onboarding/subjects';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   User,
   Globe,
@@ -17,7 +17,8 @@ import {
   Sun,
   LogOut,
   ShieldCheck,
-  Check
+  Check,
+  Baby
 } from 'lucide-react';
 import { DateTime } from 'luxon';
 import { useTeacherAuth, getFreshAccessToken } from '../../lib/auth';
@@ -279,8 +280,17 @@ export default function StudentProfilePage({
   }, [profile?.createdAt, profile?.created_at, isAr]);
 
   // Settings Category Navigation
-  type CategoryId = 'profile' | 'learning' | 'preferences' | 'security';
-  const [activeCategory, setActiveCategory] = useState<CategoryId>('profile');
+  // ST-05: the open tab lives in the URL (?tab=family), so links and reloads land on the right section.
+  type CategoryId = 'profile' | 'learning' | 'family' | 'preferences' | 'security';
+  const CATEGORY_IDS: CategoryId[] = ['profile', 'learning', 'family', 'preferences', 'security'];
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tabParam = searchParams.get('tab') as CategoryId | null;
+  const activeCategory: CategoryId = tabParam && CATEGORY_IDS.includes(tabParam) ? tabParam : 'profile';
+  const setActiveCategory = (id: CategoryId) => {
+    const next = new URLSearchParams(searchParams);
+    if (id === 'profile') next.delete('tab'); else next.set('tab', id);
+    setSearchParams(next, { replace: true });
+  };
 
   const categories = useMemo(() => [
     {
@@ -296,9 +306,15 @@ export default function StudentProfilePage({
       icon: Target
     },
     {
+      id: 'family' as const,
+      name: isAr ? 'العيلة' : 'Family',
+      description: isAr ? 'الأبناء المسجلين، إضافة طفل، وولي الأمر' : 'Your children, adding a child & guardian',
+      icon: Baby
+    },
+    {
       id: 'preferences' as const,
       name: isAr ? 'تفضيلات الحجز والمظهر' : 'Booking & Preferences',
-      description: isAr ? 'المستفيد الافتراضي، لغة المنصة، والمظهر' : 'Default learner, platform language & theme',
+      description: isAr ? 'المستفيد الافتراضي، اللغة، المظهر، والإيميلات' : 'Default learner, language, theme & emails',
       icon: Users
     },
     {
@@ -392,13 +408,16 @@ export default function StudentProfilePage({
       )}
 
       {/* Mobile/Tablet Category Tabs (< lg) */}
-      <div className="lg:hidden flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+      <div role="tablist" aria-label={isAr ? 'أقسام الحساب' : 'Account sections'} className="lg:hidden flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
         {categories.map((cat) => {
           const isActive = activeCategory === cat.id;
           const Icon = cat.icon;
           return (
             <button
               key={cat.id}
+              type="button"
+              role="tab"
+              aria-selected={isActive}
               onClick={() => setActiveCategory(cat.id)}
               className={`
                 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm sm:text-sm font-medium transition-all whitespace-nowrap cursor-pointer min-h-[44px]
@@ -421,13 +440,16 @@ export default function StudentProfilePage({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left Side: Category Navigation (Desktop lg: 4 columns) */}
         <div className="hidden lg:block lg:col-span-4 space-y-4">
-          <div className="rounded-2xl border border-border glass-card p-2 space-y-1 shadow-2xs">
+          <div role="tablist" aria-orientation="vertical" aria-label={isAr ? 'أقسام الحساب' : 'Account sections'} className="rounded-2xl border border-border glass-card p-2 space-y-1 shadow-2xs">
             {categories.map((cat) => {
               const isActive = activeCategory === cat.id;
               const Icon = cat.icon;
               return (
                 <button
                   key={cat.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={isActive}
                   onClick={() => setActiveCategory(cat.id)}
                   className={`
                     w-full flex items-start gap-3 p-3.5 rounded-xl text-start transition-all cursor-pointer min-h-[44px]
@@ -470,7 +492,7 @@ export default function StudentProfilePage({
         </div>
 
         {/* Right Side: Focused Settings Content Panel (Desktop lg: 8 columns) */}
-        <div className="lg:col-span-8">
+        <div className="lg:col-span-8" role="tabpanel" aria-label={categories.find((c) => c.id === activeCategory)?.name}>
           {/* PANEL 1: Personal Details */}
           {activeCategory === 'profile' && (
             <div className="rounded-2xl border border-border glass-card p-5 sm:p-7 shadow-2xs space-y-6">
@@ -723,8 +745,20 @@ export default function StudentProfilePage({
                 )}
               </div>
 
+            </div>
+          )}
+
+          {/* PANEL: Family (children of this account, or the responsible guardian) */}
+          {activeCategory === 'family' && (
+            <div className="rounded-2xl border border-border glass-card p-5 sm:p-7 shadow-2xs space-y-6">
+              <div className="border-b border-border pb-4">
+                <h2 className="text-lg sm:text-xl font-display font-bold text-foreground">
+                  {isAr ? 'العيلة' : 'Family'}
+                </h2>
+              </div>
+
               {/* PA-02: add another child after onboarding (any adult account holder). */}
-              <div className="pt-4 border-t border-border">
+              <div>
                 <AddChildForm isAr={isAr} onAdded={fetchProfile} />
               </div>
 

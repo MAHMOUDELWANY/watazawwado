@@ -48,3 +48,4 @@ Each task: tsc, full `npm test`, build, commit, push to main, production smoke (
 - 2026-10-21: ST-02 post-lesson rating done (migration applied; teacher sees average from 5).
 - 2026-10-21: ST-02 follow-up: automated security review flagged average differencing; teacher figure now uses finished months with 5+ ratings each.
 - 2026-10-21: ST-02 follow-up 2: ratings frozen once their month ends (closed months cannot move).
+- 2026-10-21: ST-05 profile Family tab + ?tab= deep link done.

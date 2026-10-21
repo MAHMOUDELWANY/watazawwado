@@ -314,7 +314,7 @@ Principles every PR/RN task follows:
   retry. Use `src/components/EmptyState.tsx`.
 
 ### ST-05 Profile page split
-- Priority P2 · Zone 🟢 · Size M · Status todo
+- Priority P2 · Zone 🟢 · Size M · Status done
 - Files: `src/student/pages/StudentProfilePage.tsx` (1,061 lines).
 - Do: split into sections or tabs (account, learners, language and notifications, privacy) with no behaviour change.
   Tests still pass.
