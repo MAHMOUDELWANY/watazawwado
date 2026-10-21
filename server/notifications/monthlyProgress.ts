@@ -111,6 +111,13 @@ export async function processMonthlyProgressEmails(
   const out = { month, recipients: [] as MonthlyRecipient[], sent: 0, skipped: 0 };
   if (!client) return out;
 
+  // Once a month is finished, later cron runs stop at this one read instead of rebuilding the list.
+  const doneKey = `monthly_progress_done:${month}`;
+  if (!opts.dryRun) {
+    const { data: finished } = await client.from('notification_events').select('idempotency_key').in('idempotency_key', [doneKey]);
+    if (finished?.length) return out;
+  }
+
   const all = await collectRecipients(client, month, deps);
   const { data: past } = all.length
     ? await client.from('notification_events').select('idempotency_key, status').in('idempotency_key', all.map((r) => r.key))
@@ -141,6 +148,13 @@ export async function processMonthlyProgressEmails(
     } catch (err) {
       await finalize(false, 'send threw');
       console.warn('[Monthly progress] send failed for one account');
+    }
+  }
+  // Nothing left to send (everyone sent, opted out or claimed): mark the month finished.
+  if (!opts.dryRun && out.recipients.length === 0) {
+    const { data: claim } = await client.rpc('claim_notification_event', { p_key: doneKey, p_type: 'monthly_progress_done' });
+    if (claim?.claimed && claim.claim_token) {
+      await client.rpc('finalize_notification_event', { p_key: doneKey, p_token: claim.claim_token, p_status: 'sent', p_message_id: null, p_error: null });
     }
   }
   return out;

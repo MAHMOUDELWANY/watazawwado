@@ -116,6 +116,11 @@ export function registerPrivacyRoutes(app: express.Express, deps: {
       const { data: open } = await client.from('privacy_requests').select('created_at').eq('user_id', userId).eq('status', 'open').maybeSingle();
       if (open) return res.json({ request: { status: 'open', createdAt: open.created_at }, alreadyOpen: true });
       const { data, error } = await client.from('privacy_requests').insert({ user_id: userId, kind: 'deletion', reason }).select('created_at').single();
+      // Two taps at once: the one-open-request index keeps one row; answer the second like the first.
+      if (error?.code === '23505') {
+        const { data: existing } = await client.from('privacy_requests').select('created_at').eq('user_id', userId).eq('status', 'open').maybeSingle();
+        if (existing) return res.json({ request: { status: 'open', createdAt: existing.created_at }, alreadyOpen: true });
+      }
       if (error) {
         console.error('[POST delete-request]', error.message);
         return res.status(500).json({ error: 'Could not record your request.' });

@@ -90,6 +90,11 @@ describe('PR-09 monthly progress email', () => {
     const again = await processMonthlyProgressEmails(client, { now }, deps(sent));
     assert.strictEqual(again.sent, 0);
     assert.strictEqual(sent.length, 2, 'second run sends nothing');
+    assert.strictEqual(client.events.get('monthly_progress_done:2026-10')?.status, 'sent', 'the month is marked finished');
+    let reads = 0;
+    const counting = { ...deps(sent), resolve: async (...a: any[]) => { reads++; return (deps(sent).resolve as any)(...a); } };
+    await processMonthlyProgressEmails(client, { now }, counting);
+    assert.strictEqual(reads, 0, 'a finished month is not rebuilt');
 
     const flaky = fakeClient([{ student_id: 'adult' }]);
     let fail = true;

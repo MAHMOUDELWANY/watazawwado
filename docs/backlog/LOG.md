@@ -4,6 +4,11 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Red-zone review of PR-09 and ST-06 (2026-10-21)
+- Reviewed both diffs line by line (BACKLOG rule: red zone gets a review). Fixed: (1) a double tap on "Send the deletion request" could hit the one-open-request index and show an error; the second request now returns the open one. (2) On the 1st-5th the cron rebuilt the recipient list on every run even after the month was finished; a finished month is now marked once (`monthly_progress_done:<month>`) and later runs stop at one read. Known limit: a lesson the teacher records as attended after the month is marked finished is not counted in that month's email.
+- No other findings: every route checks the account (students: own learners only; admin routes: super admin), no raw `select('*')`, no deletes, both tables server-only, the team email and the monthly email cannot send outside production.
+- Checks: tsc pass; npm test 1284 pass / 0 fail / 5 skipped; build pass.
+
 ### ST-06 Self-service privacy requests (2026-10-21)
 - Result: done (main). New profile tab "Privacy & your data" (`/student/account?tab=privacy`):
   - "Download my data": one JSON file with the account's own data and its children's (learners, guardians, goals, lessons, payments, packages, the teacher's notes for the family, placement results, ratings, conversations, site notices, email and language preferences). Every column is on an allow-list; tokens, Zoom/calendar ids, payment references, teachers' private notes and placement answer keys never leave. The file says to write to privacy@ for anything else. Rate limited; only real signed-in accounts.

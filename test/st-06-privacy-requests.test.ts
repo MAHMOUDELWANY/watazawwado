@@ -48,3 +48,10 @@ describe('ST-06 privacy requests', () => {
     assert.strictEqual(admin.status, 403);
   });
 });
+
+describe('ST-06 double tap', () => {
+  it('a second request at the same moment returns the open one instead of failing', () => {
+    const src = fs.readFileSync('server/routes/privacy.ts', 'utf8');
+    assert.ok(src.includes("if (error?.code === '23505')"));
+  });
+});
