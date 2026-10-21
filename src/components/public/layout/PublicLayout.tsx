@@ -3,7 +3,6 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Navbar } from '../../Navbar';
 import { Footer } from '../../Footer';
 // Dialogs load on first open: they pull in booking, auth and country data the first paint doesn't need.
-const TeacherAuthModal = lazy(() => import('../../TeacherAuthModal').then((m) => ({ default: m.TeacherAuthModal })));
 const StudentAuthModal = lazy(() => import('../../StudentAuthModal').then((m) => ({ default: m.StudentAuthModal })));
 const GetStartedModal = lazy(() => import('../../GetStartedModal').then((m) => ({ default: m.GetStartedModal })));
 import { Language } from '../../../types';
@@ -32,7 +31,6 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
 
   const [getStartedModalOpen, setGetStartedModalOpen] = useState<boolean>(Boolean(initialGetStartedOpen));
   const [preselectedService, setPreselectedService] = useState<string | undefined>();
-  const [teacherModalOpen, setTeacherModalOpen] = useState<boolean>(false);
   const [studentModalOpen, setStudentModalOpen] = useState<boolean>(false);
   const [studentModalInitialView, setStudentModalInitialView] = useState<'login' | 'signup'>('login');
   const [publicTourOpen, setPublicTourOpen] = useState<boolean>(false);
@@ -150,18 +148,10 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
           lang={lang}
           onToggleLang={handleToggleLang}
           onOpenTrialModal={() => handleOpenGetStarted(undefined)}
-          onOpenTeacherModal={() => setTeacherModalOpen(true)}
         />
 
 
         <Suspense fallback={null}>
-
-        {/* Teacher Auth & Diagnostics Modal (Phase 3 Backend Foundation) */}
-        {teacherModalOpen && <TeacherAuthModal
-          isOpen={teacherModalOpen}
-          onClose={() => setTeacherModalOpen(false)}
-          lang={lang}
-        />}
 
         {/* Get Started Choice Modal (Guest Demo, Account Creation, Login) */}
         {getStartedModalOpen && <GetStartedModal

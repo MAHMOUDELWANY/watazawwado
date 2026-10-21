@@ -19,8 +19,9 @@ test('Phase D Remediation: SEO Protection Hook', () => {
 
 test('Phase D Remediation: Modal FocusTrap', () => {
   const code = fs.readFileSync(path.join(process.cwd(), 'src/components/FocusTrap.tsx'), 'utf8');
-  assert.ok(code.includes('const isTabPressed = e.key === \'Tab\''), 'Should listen to Tab key');
-  assert.ok(code.includes('document.activeElement === firstElement'), 'Should cycle back to last');
+  // QA-02 rewrote the trap (document-level listener, recomputed focusables); same two behaviours.
+  assert.ok(code.includes('if (e.key !== \'Tab\') return;'), 'Should listen to Tab key');
+  assert.ok(code.includes('e.shiftKey && active === firstEl') && code.includes('lastEl.focus()'), 'Should cycle back to last');
   
   const modalCode = fs.readFileSync(path.join(process.cwd(), 'src/components/ui/Modal.tsx'), 'utf8');
   assert.ok(modalCode.includes('<FocusTrap'), 'Generic Modal should use FocusTrap');

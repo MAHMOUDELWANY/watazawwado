@@ -347,10 +347,11 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
         <div className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/80 mb-1.5">
+              <label htmlFor="booking-details-field-1" className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/80 mb-1.5">
                 {isEn ? 'Your Full Name' : 'اسمك الكريم'} <span className="text-muted-foreground">*</span>
               </label>
               <input
+                id="booking-details-field-1"
                 type="text"
                 required
                 value={formData.studentName}
@@ -361,10 +362,11 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
             </div>
 
             <div>
-              <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/80 mb-1.5">
+              <label htmlFor="booking-details-field-2" className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/80 mb-1.5">
                 {isEn ? 'Age Group' : 'الفئة العمرية'}
               </label>
               <select
+                id="booking-details-field-2"
                 value={formData.ageGroup || '18-29'}
                 onChange={(e) => updateForm({ ageGroup: e.target.value })}
                 className="w-full px-4 py-2.5 rounded-xl border border-border bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
@@ -378,11 +380,12 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="flex items-center gap-1 text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/80 mb-1.5">
+              <label htmlFor="booking-details-field-3" className="flex items-center gap-1 text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/80 mb-1.5">
                 <Mail className="w-3.5 h-3.5 text-accent" />
                 <span>{isEn ? 'Email Address' : 'البريد الإلكتروني'}</span> <span className="text-muted-foreground">*</span>
               </label>
               <input
+                id="booking-details-field-3"
                 type="email"
                 required
                 value={formData.email}
@@ -396,11 +399,12 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
             </div>
 
             <div>
-              <label className="flex items-center gap-1 text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/80 mb-1.5">
+              <label htmlFor="booking-details-field-4" className="flex items-center gap-1 text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/80 mb-1.5">
                 <Phone className="w-3.5 h-3.5 text-accent" />
                 <span>{isEn ? 'WhatsApp Number (Recommended)' : 'رقم الواتساب (موصى به للتذكير)'}</span>
               </label>
               <input
+                id="booking-details-field-4"
                 type="tel"
                 value={formData.whatsapp}
                 onChange={(e) => updateForm({ whatsapp: e.target.value })}
@@ -424,11 +428,12 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               <div>
-                <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/80 mb-1">
+                <label htmlFor="booking-details-field-5" className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/80 mb-1">
                   {isEn ? 'Child’s Full Name' : 'اسم الطفل الكريم'} <span className="text-muted-foreground">*</span>
                 </label>
                 {linkedChildren.length > 0 ? (
                   <select
+                    id="booking-details-field-5"
                     value={formData.studentId || ''}
                     onChange={(e) => handleChildSelect(e.target.value)}
                     required
@@ -441,6 +446,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
                   </select>
                 ) : (
                   <input
+                    id="booking-details-field-5"
                     type="text"
                     required
                     value={formData.childName}
@@ -452,10 +458,11 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/80 mb-1">
+                <label htmlFor="booking-details-field-6" className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/80 mb-1">
                   {isEn ? 'Child’s Age' : 'عمر الطفل'} <span className="text-muted-foreground">*</span>
                 </label>
                 <select
+                  id="booking-details-field-6"
                   value={formData.childAge || '8-11'}
                   onChange={(e) => updateForm({ childAge: e.target.value })}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-border glass-surface text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
@@ -477,10 +484,11 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
               <div>
-                <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/80 mb-1">
+                <label htmlFor="booking-details-field-7" className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/80 mb-1">
                   {isEn ? 'Parent’s Full Name' : 'اسم ولي الأمر'} <span className="text-muted-foreground">*</span>
                 </label>
                 <input
+                  id="booking-details-field-7"
                   type="text"
                   required
                   value={formData.parentName}
@@ -491,10 +499,11 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/80 mb-1">
+                <label htmlFor="booking-details-field-8" className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/80 mb-1">
                   {isEn ? 'Parent’s Email' : 'البريد الإلكتروني لولي الأمر'} <span className="text-muted-foreground">*</span>
                 </label>
                 <input
+                  id="booking-details-field-8"
                   type="email"
                   required
                   value={formData.parentEmail}
@@ -505,10 +514,11 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/80 mb-1">
+                <label htmlFor="booking-details-field-9" className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/80 mb-1">
                   {isEn ? 'Parent’s WhatsApp' : 'رقم واتساب ولي الأمر'}
                 </label>
                 <input
+                  id="booking-details-field-9"
                   type="tel"
                   value={formData.parentWhatsapp}
                   onChange={(e) => updateForm({ parentWhatsapp: e.target.value })}

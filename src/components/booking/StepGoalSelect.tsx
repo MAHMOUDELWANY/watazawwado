@@ -102,6 +102,7 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
           </span>
         </label>
         <textarea
+          aria-label={isEn ? 'Tell your teacher in your own words (optional)' : 'أخبر معلمك بكلماتك (اختياري)'}
           rows={3}
           value={customGoalText}
           onChange={(e) => onChangeCustomGoal(e.target.value)}

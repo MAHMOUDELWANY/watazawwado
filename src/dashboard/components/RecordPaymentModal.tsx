@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import FocusTrap from '../../components/FocusTrap';
 import { X, DollarSign, Check, AlertCircle, Calendar, Hash, FileText } from 'lucide-react';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { PaymentMethodType, PaymentRecordStatus } from '../types';
@@ -112,6 +113,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
   };
 
   return (
+    <FocusTrap>
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/40 backdrop-blur-xs animate-in fade-in duration-150"
       onClick={onClose}
@@ -326,5 +328,6 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
         </form>
       </div>
     </div>
+    </FocusTrap>
   );
 };

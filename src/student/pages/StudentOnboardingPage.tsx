@@ -939,6 +939,7 @@ export default function StudentOnboardingPage({
                         {/* Notes for child */}
                         <div>
                           <input
+                            aria-label={isRTL ? 'ملاحظات للمعلم عن الطفل (اختياري)' : 'Notes for the teacher about this child (optional)'}
                             type="text"
                             value={child.notes}
                             onChange={(e) => handleUpdateChild(index, { notes: e.target.value })}
@@ -996,6 +997,7 @@ export default function StudentOnboardingPage({
                     {isRTL ? 'ما هو هدفك الأساسي من هذه الدروس؟' : 'What is your main goal?'}
                   </label>
                   <input
+                    aria-label={isRTL ? 'ما هو هدفك الأساسي من هذه الدروس؟' : 'What is your main goal?'}
                     type="text"
                     value={learningGoal}
                     onChange={(e) => setLearningGoal(e.target.value)}
@@ -1011,6 +1013,7 @@ export default function StudentOnboardingPage({
                       : `Any specific notes or learning needs for the instructor? (Optional)`}
                   </label>
                   <textarea
+                    aria-label={isRTL ? 'ملاحظات أو احتياجات دراسية للمعلم (اختياري)' : 'Notes or learning needs for the teacher (optional)'}
                     rows={2}
                     value={learningNeeds}
                     onChange={(e) => setLearningNeeds(e.target.value)}

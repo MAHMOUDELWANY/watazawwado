@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Language } from '../booking/types';
 import { Button } from './ui/Button';
 import { AuthCard, AuthPortal } from './auth/AuthFrame';
+import FocusTrap from './FocusTrap';
 
 interface GetStartedModalProps {
   isOpen: boolean;
@@ -38,6 +39,7 @@ export const GetStartedModal: React.FC<GetStartedModalProps> = ({
         aria-labelledby="get-started-title"
         dir={isAr ? 'rtl' : 'ltr'}
       >
+        <FocusTrap onEscape={onClose}>
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -58,13 +60,14 @@ export const GetStartedModal: React.FC<GetStartedModalProps> = ({
               type="button"
               onClick={onClose}
               aria-label={isAr ? 'إغلاق' : 'Close'}
-              className="absolute top-3 end-3 z-20 w-9 h-9 flex items-center justify-center rounded-full text-white bg-white/10 hover:bg-white/20 border border-white/25 transition-colors cursor-pointer focus-ring"
+              className="absolute top-3 end-3 z-20 w-11 h-11 flex items-center justify-center rounded-full text-white bg-white/10 hover:bg-white/20 border border-white/25 transition-colors cursor-pointer focus-ring"
             >
               <X className="w-4 h-4" />
             </button>
 
             <AuthPortal
               titleId="get-started-title"
+              heading="h2"
               title={isAr ? 'حصتك الأولى علينا' : 'Your first lesson is on us'}
               subtitle={isAr
                 ? 'عشان نحجزلك ونبعتلك رابط الحصة، محتاجين حساب. بياخد دقيقة.'
@@ -113,6 +116,7 @@ export const GetStartedModal: React.FC<GetStartedModalProps> = ({
             </div>
           </AuthCard>
         </motion.div>
+        </FocusTrap>
       </div>
     </AnimatePresence>
   );

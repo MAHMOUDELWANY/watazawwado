@@ -598,6 +598,7 @@ export function PostLessonSummaryEditor({
             </div>
             <div className="flex items-center gap-2">
               <input
+                aria-label={t('Or type a specific rule', 'أو اكتب حكم تجويد محدد')}
                 type="text"
                 value={customRuleText}
                 onChange={(e) => setCustomRuleText(e.target.value)}
@@ -648,6 +649,7 @@ export function PostLessonSummaryEditor({
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <input
+                aria-label={t('Page number', 'رقم الصفحة')}
                 type="text"
                 data-testid="reading-page-input"
                 value={readingPage}

@@ -439,7 +439,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated, openSumma
                 <p className="text-xs text-muted-foreground">
                   {t('The student gets a notification on the site and picks a new time.', 'الطالب هيوصله إشعار على الموقع ويختار ميعاد جديد.')}
                 </p>
-                <input type="text" maxLength={500} placeholder={t('Short note (optional)', 'ملاحظة قصيرة (اختياري)')} value={moveNote} onChange={(e) => setMoveNote(e.target.value)} className={fieldClass} />
+                <input aria-label={t('Short note (optional)', 'ملاحظة قصيرة (اختياري)')} type="text" maxLength={500} placeholder={t('Short note (optional)', 'ملاحظة قصيرة (اختياري)')} value={moveNote} onChange={(e) => setMoveNote(e.target.value)} className={fieldClass} />
                 <button
                   onClick={handleRequestMove}
                   disabled={updatingStatus}

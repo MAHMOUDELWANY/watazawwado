@@ -71,8 +71,9 @@ export function OnboardingGuide({ steps, isOpen, onClose, isAr = false }: Onboar
 
     for (const id of targetIds) {
       if (!id) continue;
-      // 1. Try data-tour attribute
-      let el = document.querySelector(`[data-tour="${id}"]`) as HTMLElement | null;
+      // 1. Try data-tour attribute (the visible one: some controls exist twice, for phone and desktop)
+      const tagged = Array.from(document.querySelectorAll<HTMLElement>(`[data-tour="${id}"]`));
+      let el = tagged.find((t) => t.getClientRects().length > 0) || tagged[0] || null;
       // 2. Try ID attribute
       if (!el) el = document.getElementById(id);
       // 3. Try CSS selector if starts with . or #

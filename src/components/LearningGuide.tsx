@@ -170,6 +170,7 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
             <form onSubmit={handleSubmit} className="p-3 glass-card border-t border-border">
               <div className="flex gap-2">
                 <input
+                  aria-label={isEn ? 'Your question' : 'سؤالك'}
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}

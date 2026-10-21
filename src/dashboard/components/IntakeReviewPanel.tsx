@@ -314,6 +314,7 @@ export default function IntakeReviewPanel({ lang, apiFetch }: IntakeReviewPanelP
                 <div className="mt-4">
                   <label className="block text-sm text-muted-foreground mb-1">{c.price}</label>
                   <input
+                    aria-label={c.price}
                     type="number"
                     min="0"
                     step="0.01"
@@ -329,6 +330,7 @@ export default function IntakeReviewPanel({ lang, apiFetch }: IntakeReviewPanelP
                 <div className="mt-3">
                   <label className="block text-sm text-muted-foreground mb-1">{c.notes}</label>
                   <textarea
+                    aria-label={c.notes}
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     rows={2}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import FocusTrap from '../../components/FocusTrap';
 import { DateTime } from 'luxon';
 import { X, User, Mail, Phone, Globe, Shield, BookOpen, AlertCircle, Check } from 'lucide-react';
 import { DashboardStudentDetail } from '../types';
@@ -126,7 +127,8 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm overflow-y-auto">
+    <FocusTrap onEscape={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="student-edit-title">
       <div
         className="relative w-full max-w-2xl glass-surface rounded-2xl shadow-xl border border-border/40 dark:border-border/40 overflow-hidden my-8"
         onClick={e => e.stopPropagation()}
@@ -134,7 +136,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border/30 dark:border-border/30 bg-background dark:bg-background">
           <div>
-            <h2 className="text-lg font-display font-bold text-foreground">
+            <h2 id="student-edit-title" className="text-lg font-display font-bold text-foreground">
               {t('Edit student', 'تعديل بيانات الطالب')}
             </h2>
             <p className="text-sm text-foreground/70 dark:text-muted-foreground/70">
@@ -166,6 +168,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
                 {t("Student's name", 'اسم الطالب')} <span className="text-red-500">*</span>
               </label>
               <input
+                aria-label={t("Student's name", 'اسم الطالب')}
                 id="sem-name"
                 type="text"
                 value={name}
@@ -413,5 +416,6 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
         </form>
       </div>
     </div>
+    </FocusTrap>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
+import FocusTrap from './FocusTrap';
 import { Link, useLocation } from 'react-router-dom';
 import {
   Menu,
@@ -115,7 +116,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             to="/"
             id="nav-brand"
             data-tour="nav-brand"
-            className="group flex items-center gap-2 sm:gap-3 text-foreground focus:outline-none rounded-lg shrink min-w-0"
+            className="group flex items-center gap-2 sm:gap-3 text-foreground focus-ring rounded-lg shrink min-w-0"
           >
             <BrandLogo variant="compact" />
             <span className="font-display text-base sm:text-xl lg:text-2xl font-bold text-foreground group-hover:text-primary transition-colors truncate">
@@ -170,7 +171,8 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* ─── DEDICATED SIDE DRAWER NAVIGATION (Desktop & Mobile) ─────────────── */}
       <AnimatePresence>
         {sideDrawerOpen && (
-          <div className="fixed inset-0 z-50 overflow-hidden">
+          <FocusTrap onEscape={() => setSideDrawerOpen(false)}>
+          <div className="fixed inset-0 z-50 overflow-hidden" role="dialog" aria-modal="true" aria-label={isEn ? 'Site menu' : 'قائمة الموقع'}>
             {/* Backdrop Overlay */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -188,7 +190,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-              className="fixed top-0 bottom-0 right-0 w-full max-w-[320px] sm:max-w-[360px] md:max-w-[380px] text-foreground border-s border-border shadow-2xl flex flex-col justify-between z-10 overscroll-contain overflow-y-auto touch-pan-y"
+              className="fixed top-0 bottom-0 right-0 w-full max-w-[320px] sm:max-w-[360px] md:max-w-[380px] text-foreground border-l border-border shadow-2xl flex flex-col justify-between z-10 overscroll-contain overflow-y-auto touch-pan-y"
               style={{ backgroundColor: 'var(--surface)', opacity: 1 }}
             >
               {/* Drawer Top Bar */}
@@ -343,6 +345,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             </motion.div>
           </div>
+          </FocusTrap>
         )}
       </AnimatePresence>
     </>

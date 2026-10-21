@@ -417,7 +417,7 @@ Principles every PR/RN task follows:
 - Skills: `webapp-testing`, `test-guard`.
 
 ### QA-02 Accessibility audit
-- Priority P1 · Zone 🟢 · Size M · Status todo
+- Priority P1 · Zone 🟢 · Size M · Status done
 - Do: keyboard-only pass on booking, onboarding, portal and dashboard; focus rings visible; labels on inputs; contrast
   in both themes; `aria-live` for toasts; modals trap focus (`src/components/FocusTrap.tsx`). Fix what fails.
 

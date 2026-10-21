@@ -1,51 +1,69 @@
 import React, { useEffect, useRef } from 'react';
 
-export default function FocusTrap({ children, isActive = true }: { children: React.ReactNode, isActive?: boolean }) {
+const FOCUSABLE =
+  'a[href], area[href], input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex]:not([tabindex="-1"]), [contenteditable="true"]';
+
+// Open traps, innermost last: only the top one handles Tab and Escape (a modal opened inside a modal).
+const stack: symbol[] = [];
+
+/**
+ * Keeps keyboard focus inside a dialog while it is open (QA-02): focus moves in on open, Tab and Shift+Tab wrap,
+ * Escape calls onEscape, and focus returns to whatever opened the dialog when it closes.
+ */
+export default function FocusTrap({ children, isActive = true, onEscape }: { children: React.ReactNode; isActive?: boolean; onEscape?: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const onEscapeRef = useRef(onEscape);
+  onEscapeRef.current = onEscape;
 
   useEffect(() => {
     if (!isActive) return;
-
     const container = containerRef.current;
     if (!container) return;
+    const id = Symbol('focus-trap');
+    stack.push(id);
+    const opener = document.activeElement as HTMLElement | null;
 
-    const focusableElementsString =
-      'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex="0"], [contenteditable]';
-    let focusableElements = Array.from(container.querySelectorAll<HTMLElement>(focusableElementsString));
-    
-    if (focusableElements.length === 0) {
+    const focusables = () =>
+      Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE)).filter((el) => el.getClientRects().length > 0);
+
+    const first = focusables()[0];
+    if (first) first.focus();
+    else {
       container.setAttribute('tabindex', '-1');
       container.focus();
-      return;
     }
 
-    const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
-
     const handleKeyDown = (e: KeyboardEvent) => {
-      const isTabPressed = e.key === 'Tab';
-      if (!isTabPressed) return;
-
-      if (e.shiftKey) {
-        if (document.activeElement === firstElement) {
-          lastElement.focus();
-          e.preventDefault();
-        }
-      } else {
-        if (document.activeElement === lastElement) {
-          firstElement.focus();
-          e.preventDefault();
-        }
+      if (stack[stack.length - 1] !== id) return;
+      if (e.key === 'Escape' && onEscapeRef.current) {
+        e.stopPropagation();
+        onEscapeRef.current();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      const items = focusables();
+      if (items.length === 0) { e.preventDefault(); return; }
+      const firstEl = items[0];
+      const lastEl = items[items.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+      if (!active || !container.contains(active)) {
+        e.preventDefault();
+        (e.shiftKey ? lastEl : firstEl).focus();
+      } else if (e.shiftKey && active === firstEl) {
+        e.preventDefault();
+        lastEl.focus();
+      } else if (!e.shiftKey && active === lastEl) {
+        e.preventDefault();
+        firstEl.focus();
       }
     };
 
-    container.addEventListener('keydown', handleKeyDown);
-    
-    // Focus first element on mount
-    firstElement.focus();
-
+    document.addEventListener('keydown', handleKeyDown, true);
     return () => {
-      container.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keydown', handleKeyDown, true);
+      const at = stack.indexOf(id);
+      if (at >= 0) stack.splice(at, 1);
+      if (opener && document.contains(opener)) opener.focus();
     };
   }, [isActive]);
 

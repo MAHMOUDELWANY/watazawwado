@@ -419,6 +419,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
 
           <div className="flex items-center gap-2">
             <input
+              aria-label={isEn ? 'Date to check' : 'التاريخ'}
               type="date"
               value={selectedAuditDate}
               onChange={(e) => setSelectedAuditDate(e.target.value)}

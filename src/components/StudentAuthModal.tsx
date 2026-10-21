@@ -4,6 +4,7 @@ import { Mail, Lock, User, Users, X, Eye, EyeOff, Check, ShieldCheck } from 'luc
 import { Button } from './ui/Button';
 import { ThemeToggle } from './ui/ThemeToggle';
 import { AuthPortal } from './auth/AuthFrame';
+import FocusTrap from './FocusTrap';
 import { useTeacherAuth } from '../lib/auth'; // it's now AuthProvider
 import { LEAKED_PASSWORD_MESSAGE } from '../lib/pwnedPassword';
 import { useNavigate } from 'react-router-dom';
@@ -202,6 +203,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
           aria-labelledby="auth-modal-title"
           dir={isAr ? 'rtl' : 'ltr'}
         >
+          <FocusTrap onEscape={onClose}>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -301,7 +303,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                 <div>
                   {/* The deep portal crowns the card; the desktop sign-up has the side pane instead. */}
                   <div className={isSignup ? 'lg:hidden' : ''}>
-                    <AuthPortal title={titles[view][0]} subtitle={titles[view][1]} titleId={isSignup ? undefined : 'auth-modal-title'} />
+                    <AuthPortal heading="h2" title={titles[view][0]} subtitle={titles[view][1]} titleId={isSignup ? undefined : 'auth-modal-title'} />
                   </div>
                   {isSignup && (
                     <div className="hidden lg:block px-8 pt-10 text-center">
@@ -539,6 +541,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
               </div>
             )}
           </motion.div>
+          </FocusTrap>
         </div>
       )}
     </AnimatePresence>

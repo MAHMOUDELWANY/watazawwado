@@ -24,7 +24,6 @@ export function ThemeToggle({ className = '', compact = false }: { className?: s
   if (compact) {
     return (
       <button
-        id="theme-toggle-btn"
         data-tour="theme-toggle-btn"
         type="button"
         role="switch"
@@ -53,7 +52,6 @@ export function ThemeToggle({ className = '', compact = false }: { className?: s
 
   return (
     <button
-      id="theme-toggle-btn"
       data-tour="theme-toggle-btn"
       type="button"
       role="switch"

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import FocusTrap from '../../components/FocusTrap';
 import { DateTime } from 'luxon';
 import {
   X,
@@ -193,6 +194,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
     : null;
 
   return (
+    <FocusTrap>
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/40 backdrop-blur-xs animate-in fade-in duration-150"
       onClick={onClose}
@@ -497,5 +499,6 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
         </div>
       </div>
     </div>
+    </FocusTrap>
   );
 }

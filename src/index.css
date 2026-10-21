@@ -389,8 +389,9 @@ html.dark {
   --brand-soft: rgba(232, 44, 50, 0.22);
 
   /* Semantic Status */
-  --destructive: #E22B31;
-  --destructive-foreground: #FFFFFF;
+  /* QA-02: error text reaches 4.5:1 on the dark background and surfaces; dark text on the red fill. */
+  --destructive: #EC4046;
+  --destructive-foreground: #1A0B0B;
   --success: #34A853;
   --success-foreground: #FFFFFF;
   --warning: #F59E0B;
@@ -1856,3 +1857,6 @@ html.dark {
 .slide-scroll { scrollbar-width: thin; scrollbar-color: rgba(139,73,53,0.45) transparent; overscroll-behavior: contain; }
 .slide-scroll::-webkit-scrollbar { width: 10px; }
 .slide-scroll::-webkit-scrollbar-thumb { background: rgba(139,73,53,0.4); border-radius: 999px; border: 3px solid transparent; background-clip: content-box; }
+
+/* QA-02: white text on the dark-theme crimson fill was 4.34:1; this fill keeps the brand and reaches 4.7:1. */
+html.dark .bg-primary.text-primary-foreground, html.dark .bg-primary.text-white { background-color: #DD2A30; }

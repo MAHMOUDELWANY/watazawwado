@@ -974,6 +974,7 @@ export default function StudentDetailPage() {
                               {t('For the family (shared)', 'ملخص للأسرة (مشترك)')}
                             </label>
                             <textarea
+                              aria-label={t('For the family (shared)', 'ملخص للأسرة (مشترك)')}
                               rows={2}
                               value={editNoteFamilySummary}
                               onChange={e => setEditNoteFamilySummary(e.target.value)}
@@ -985,6 +986,7 @@ export default function StudentDetailPage() {
                               {t('Private notes (only you and the admin)', 'ملاحظات خاصة (لك وللمدير فقط)')}
                             </label>
                             <textarea
+                              aria-label={t('Private notes (only you and the admin)', 'ملاحظات خاصة (لك وللمدير فقط)')}
                               rows={2}
                               value={editNoteContent}
                               onChange={e => setEditNoteContent(e.target.value)}
@@ -992,6 +994,7 @@ export default function StudentDetailPage() {
                             />
                           </div>
                           <input
+                            aria-label={t('Details', 'تفاصيل')}
                             type="text"
                             value={editNoteObservations}
                             onChange={e => setEditNoteObservations(e.target.value)}
@@ -999,6 +1002,7 @@ export default function StudentDetailPage() {
                             className="w-full px-2.5 py-1 text-sm rounded-lg border border-border glass-card text-foreground"
                           />
                           <input
+                            aria-label={t('Next steps', 'الخطوة الجاية')}
                             type="text"
                             value={editNoteNextSteps}
                             onChange={e => setEditNoteNextSteps(e.target.value)}

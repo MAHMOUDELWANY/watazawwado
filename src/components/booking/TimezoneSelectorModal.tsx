@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import FocusTrap from '../FocusTrap';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Search, Globe, Check } from 'lucide-react';
 import { MAJOR_TIMEZONES } from '../../booking/mockData';
@@ -32,11 +33,15 @@ export const TimezoneSelectorModal: React.FC<TimezoneSelectorModalProps> = ({
   return (
     <AnimatePresence>
       {isOpen && (
+        <FocusTrap onEscape={onClose}>
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/50 backdrop-blur-md"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="timezone-selector-title"
         >
           <motion.div
             initial={{ scale: 0.95, opacity: 0, y: 10 }}
@@ -47,7 +52,7 @@ export const TimezoneSelectorModal: React.FC<TimezoneSelectorModalProps> = ({
             <div className="flex items-center justify-between pb-3 border-b border-border">
               <div className="flex items-center gap-2">
                 <Globe className="w-5 h-5 text-accent" />
-                <h3 className="font-display text-lg font-medium">
+                <h3 id="timezone-selector-title" className="font-display text-lg font-medium">
                   {isEn ? 'Select Your Timezone' : 'اختر منطقتك الزمنية'}
                 </h3>
               </div>
@@ -65,6 +70,7 @@ export const TimezoneSelectorModal: React.FC<TimezoneSelectorModalProps> = ({
               <div className="relative">
                 <Search className="w-4 h-4 absolute left-3 top-3 text-foreground/50 dark:text-muted-foreground/50" />
                 <input
+                  aria-label={isEn ? 'Search city or time zone' : 'ابحث عن مدينة أو منطقة زمنية'}
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -104,6 +110,7 @@ export const TimezoneSelectorModal: React.FC<TimezoneSelectorModalProps> = ({
             </div>
           </motion.div>
         </motion.div>
+        </FocusTrap>
       )}
     </AnimatePresence>
   );

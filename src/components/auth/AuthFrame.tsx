@@ -9,7 +9,8 @@ import { ThemeToggle } from '../ui/ThemeToggle';
  * a deep mihrab portal with the logo in a paper arch, the logo ribbon drawing once under it,
  * then the form on a glass-3 card. Same palette in light and dark (docs/design-system.md §8).
  */
-export function AuthPortal({ title, subtitle, titleId }: { title: React.ReactNode; subtitle?: React.ReactNode; titleId?: string }) {
+// Pages use the default h1; a dialog over a page passes heading="h2" so the page keeps one h1 (QA-02).
+export function AuthPortal({ title, subtitle, titleId, heading: Heading = 'h1' }: { title: React.ReactNode; subtitle?: React.ReactNode; titleId?: string; heading?: 'h1' | 'h2' }) {
   const reduce = useReducedMotion();
   return (
     <>
@@ -40,7 +41,7 @@ export function AuthPortal({ title, subtitle, titleId }: { title: React.ReactNod
         </svg>
       </div>
       <div className="px-6 sm:px-8 pt-6 text-center">
-        <h1 id={titleId} className="font-editorial text-2xl sm:text-[1.75rem] font-bold text-foreground leading-snug">{title}</h1>
+        <Heading id={titleId} className="font-editorial text-2xl sm:text-[1.75rem] font-bold text-foreground leading-snug">{title}</Heading>
         {subtitle && <p className="mt-2 text-sm text-muted-foreground leading-relaxed max-w-sm mx-auto">{subtitle}</p>}
       </div>
     </>

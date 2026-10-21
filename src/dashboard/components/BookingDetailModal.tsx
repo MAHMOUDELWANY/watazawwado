@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import FocusTrap from '../../components/FocusTrap';
 import { DateTime } from 'luxon';
 import {
   X,
@@ -395,6 +396,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
   const fieldClass = 'w-full p-2 text-sm glass-card border-none rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40';
 
   return (
+    <FocusTrap>
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/40 backdrop-blur-xs animate-in fade-in duration-150"
       onClick={onClose}
@@ -750,6 +752,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                   {t('Private notes', 'ملاحظات خاصة')}
                 </span>
                 <textarea
+                  aria-label={t('Private notes', 'ملاحظات خاصة')}
                   rows={3}
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
@@ -793,6 +796,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     {t('The student gets a notification on the site and picks a new time that suits you both.', 'الطالب هيوصله إشعار على الموقع ويختار ميعاد جديد يناسبكم.')}
                   </p>
                   <input
+                    aria-label={t('Short note for the student (optional)', 'ملاحظة قصيرة للطالب (اختياري)')}
                     type="text"
                     placeholder={t('Short note for the student (optional)', 'ملاحظة قصيرة للطالب (اختياري)')}
                     value={moveNote}
@@ -865,6 +869,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     </button>
                   </div>
                   <input
+                    aria-label={t('Reason for cancelling', 'سبب الإلغاء')}
                     type="text"
                     placeholder={t('Reason (e.g. requested by the student, emergency)', 'السبب (مثلاً بطلب الطالب، ظرف طارئ)')}
                     value={cancellationReason}
@@ -1091,5 +1096,6 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
         />
       )}
     </div>
+    </FocusTrap>
   );
 };

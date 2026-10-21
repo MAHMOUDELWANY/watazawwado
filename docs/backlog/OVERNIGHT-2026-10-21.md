@@ -17,7 +17,7 @@ owner, tests never weakened to pass.
 | 1 | Security review of b850ad2..HEAD (code changes since the last security fix) | 🔴 | done (89463f0) |
 | 2 | Fix confirmed security findings, with tests | 🔴 | done (89463f0, 2 migrations applied) |
 | 3 | QA-01 e2e smoke tests for the money paths (local only) | 🟢 | done (no-write smoke; full e2e needs a test DB) |
-| 4 | QA-02 accessibility audit | 🟢 | todo |
+| 4 | QA-02 accessibility audit | 🟢 | done |
 | 5 | QA-03 RTL and bilingual sweep | 🟢 | todo |
 | 6 | QA-04 mobile break test (incl. footer links 20 px from PU-02) | 🟢 | todo |
 | 7 | PR-04 milestone celebration: plan, then build | 🟢 | todo |
@@ -32,3 +32,4 @@ Each task: tsc, full `npm test`, build, commit, push to main, production smoke (
 - 2026-10-21: PU-02 done and live (header/sign-up tap targets 44 px, onboarding error scrolls into view).
 - 2026-10-21: SEC-01 done. Teachers could read all payments and edit bookings/guardians/leads/etc. via Supabase REST; locked to super admin; one unescaped PostgREST filter fixed. Owner action: enable leaked password protection in Supabase Auth.
 - 2026-10-21: QA-01 done as no-write smoke tests (13 tests). Local Stripe test key is expired: owner action.
+- 2026-10-21: QA-02 done (focus trap everywhere, 28 unlabelled fields, dark-theme contrast, dead TeacherAuthModal removed).

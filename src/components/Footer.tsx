@@ -11,7 +11,6 @@ interface FooterProps {
   onToggleLang: () => void;
   onOpenTrialModal: () => void;
   onOpenManageModal?: () => void;
-  onOpenTeacherModal?: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
