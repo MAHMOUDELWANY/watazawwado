@@ -7,6 +7,7 @@ import { HOW_IT_WORKS_STEPS, TEACHING_PILLARS } from '../../../data/content';
 import { WhatsAppIcon } from '../../ui/WhatsAppIcon';
 import { buildWhatsAppUrl } from '../../../lib/whatsapp';
 import { ValueCard, PORTALS } from '../ValueCard';
+import { ProgressShowcase } from './ProgressShowcase';
 import {
   TrialCalendarEmblem, MeetLevelEmblem, PlanScrollEmblem, LessonLaptopEmblem,
   HourglassEmblem, UnderstandEmblem, WeekHabitEmblem, AdabEmblem,
@@ -53,6 +54,8 @@ export function HowItWorksPage() {
               </li>
             ))}
           </ol>
+
+          <ProgressShowcase isEn={isEn} />
 
           <section aria-labelledby="pillars-title" className="space-y-8">
             <div className="text-center max-w-2xl mx-auto space-y-3">

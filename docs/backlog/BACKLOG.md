@@ -385,7 +385,7 @@ Principles every PR/RN task follows:
 ## PU: Public site
 
 ### PU-01 Progress showcase section
-- Priority P2 · Zone 🟢 · Size M · Status todo · Depends on PR-03
+- Priority P2 · Zone 🟢 · Size M · Status done · Depends on PR-03
 - Do: a homepage / how-it-works section that shows the progress path and monthly report with sample data clearly
   labelled as an example (no fake names or fake results presented as real).
 

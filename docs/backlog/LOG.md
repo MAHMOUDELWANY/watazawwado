@@ -4,6 +4,12 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### PU-01 Progress showcase section (2026-10-21)
+- Result: done (main). How it works now shows "You always know where things stand": two cards, each with an EXAMPLE / مثال badge. (1) The learning path for Tajweed with its real three levels from the subject catalogue (first done, second in progress with a half bar, third next). (2) The monthly report: lessons attended, weeks in a row, a new milestone, and a teacher's note, with "Sample figures to show the layout, not a real student." No names anywhere. Checked in the browser: English light desktop, Arabic RTL dark at 375 px, no horizontal overflow; it is in the prerendered page.
+- Files: `src/components/public/how-it-works/ProgressShowcase.tsx`, `HowItWorksPage.tsx`, `test/pu-01-progress-showcase.test.ts`.
+- Checks: tsc pass; npm test 1287 pass / 0 fail / 5 skipped; build pass.
+- Owner review (provisionally approved): the sample numbers and the sample teacher note (Tajweed: noon sakinah, then meem sakinah). Not added to the homepage, to keep it short.
+
 ### Red-zone review of PR-09 and ST-06 (2026-10-21)
 - Reviewed both diffs line by line (BACKLOG rule: red zone gets a review). Fixed: (1) a double tap on "Send the deletion request" could hit the one-open-request index and show an error; the second request now returns the open one. (2) On the 1st-5th the cron rebuilt the recipient list on every run even after the month was finished; a finished month is now marked once (`monthly_progress_done:<month>`) and later runs stop at one read. Known limit: a lesson the teacher records as attended after the month is marked finished is not counted in that month's email.
 - No other findings: every route checks the account (students: own learners only; admin routes: super admin), no raw `select('*')`, no deletes, both tables server-only, the team email and the monthly email cannot send outside production.
