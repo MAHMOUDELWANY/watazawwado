@@ -4,6 +4,12 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### ST-07 Install as an app (PWA basics) (2026-10-21)
+- Result: done (main). The manifest now opens the portal (`start_url` `/student`, scope `/`, an `id`) and has maskable icons (192 and 512, the logo inside the safe zone on the site's cream background) next to the existing ones. On a phone, the portal home shows a small dismissible card "Keep Watazawwado on your home screen": Android/Chrome get an "Add it" button (the browser's own install prompt); iPhone Safari gets the two steps (Share → Add to Home Screen). Hidden on wide screens, inside the installed app, and after "Not now". No service worker, nothing cached.
+- Files: `public/site.webmanifest`, `public/maskable-192x192.png`, `public/maskable-512x512.png`, `src/student/components/InstallHint.tsx`, `StudentHomePage.tsx`, `test/st-07-pwa.test.ts`.
+- Checks: tsc pass; npm test 1290 pass / 0 fail / 5 skipped; build pass.
+- Not checked: installing on a real phone (owner test below).
+
 ### PU-01 Progress showcase section (2026-10-21)
 - Result: done (main). How it works now shows "You always know where things stand": two cards, each with an EXAMPLE / مثال badge. (1) The learning path for Tajweed with its real three levels from the subject catalogue (first done, second in progress with a half bar, third next). (2) The monthly report: lessons attended, weeks in a row, a new milestone, and a teacher's note, with "Sample figures to show the layout, not a real student." No names anywhere. Checked in the browser: English light desktop, Arabic RTL dark at 375 px, no horizontal overflow; it is in the prerendered page.
 - Files: `src/components/public/how-it-works/ProgressShowcase.tsx`, `HowItWorksPage.tsx`, `test/pu-01-progress-showcase.test.ts`.

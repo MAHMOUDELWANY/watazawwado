@@ -325,7 +325,7 @@ Principles every PR/RN task follows:
   admin, emails privacy@, explains "within one month" per the privacy policy). No automatic hard delete.
 
 ### ST-07 Install as an app (PWA basics)
-- Priority P3 · Zone 🟢 · Size S · Status todo
+- Priority P3 · Zone 🟢 · Size S · Status done
 - Do: `public/site.webmanifest` exists; complete it (name, short name, theme colours, maskable icons, start URL
   `/student`) and add an install hint on mobile. No service worker caching of API responses.
 

@@ -35,6 +35,7 @@ import { PackageBalance } from '../components/PackageBalance';
 import { LessonDayCard, isLessonDay } from '../components/LessonDayCard';
 import { NextWeekSuggestion } from '../components/NextWeekSuggestion';
 import { LessonFeedbackCard } from '../components/LessonFeedbackCard';
+import { InstallHint } from '../components/InstallHint';
 import { getBookingPaymentSummary } from '../../lib/paymentStatus';
 const HomeProgressCard = lazy(() => import('../components/progress/HomeProgressCard').then((m) => ({ default: m.HomeProgressCard })));
 
@@ -467,6 +468,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
       {/* RN-04: after a lesson, offer the same weekday and time next week (a suggestion, never a recurring booking). */}
       <LessonFeedbackCard isAr={isAr} timezone={profile?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'} />
       <NextWeekSuggestion isAr={isAr} timezone={profile?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'} />
+      <InstallHint isAr={isAr} />
 
       {/* ========================================================================= */}
       {/* 2.5 FAMILY & CHILDREN OVERVIEW (For Parent Accounts) */}
