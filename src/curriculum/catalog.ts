@@ -3,6 +3,7 @@ import { lesson01 } from './content/zad-kids/l01-the-visitor-in-white.js';
 import { lesson02 } from './content/zad-kids/l02-who-made-it-all.js';
 import { lesson03 } from './content/zad-kids/l03-allah-is-one.js';
 import { lesson01Teens } from './content/zad-teens/l01-the-stranger-with-no-dust.js';
+import { lesson02Teens } from './content/zad-teens/l02-did-it-all-just-happen.js';
 
 export interface SubjectEntry {
   id: string;
@@ -55,7 +56,7 @@ export const SUBJECTS: SubjectEntry[] = [
       'He Sees Me, Even Offline', 'Parents: Hard, but Worth It', 'Your Tongue and Your Thumbs',
       'Guarding the Gaze and the Heart', 'Friends Who Lift You Up', 'Proud, Not Loud', 'My Zad for the Road',
     ],
-    lessons: { 1: lesson01Teens },
+    lessons: { 1: lesson01Teens, 2: lesson02Teens },
   },
 ];
 

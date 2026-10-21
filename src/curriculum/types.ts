@@ -57,7 +57,22 @@ export type SceneId =
   | 'tFathers'
   | 'tKnowWhy'
   | 'tNight'
-  | 'tNext';
+  | 'tNext'
+  // Teens Lesson 2 (paintings in public/curriculum/zad-teens/l02; tl2Chain, tl2Expand, tl2Three, tl2Tur, tl2Yaqeen and
+  // tl2First are drawn in code)
+  | 'tl2Cover'
+  | 'tl2Science'
+  | 'tl2Chain'
+  | 'tl2Expand'
+  | 'tl2Three'
+  | 'tl2Tur'
+  | 'tl2Yaqeen'
+  | 'tl2Kitchen'
+  | 'tl2Fitrah'
+  | 'tl2First'
+  | 'tl2Pitch'
+  | 'tl2Bench'
+  | 'tl2Gaming';
 
 /** How a page is laid out on the slide (docs/curriculum/PLAN.md §7, slide system v2). */
 export type Layout =

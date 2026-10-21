@@ -12,11 +12,11 @@ import { useCue } from '../sfx';
    first guesses from the prompts: check them when the paintings arrive. */
 
 const T = (name: string) => `zad-teens/l01/${name}`;
-const C = (name: string) => `zad-teens/characters/${name}.webp`;
+export const C = (name: string) => `zad-teens/characters/${name}.webp`;
 
-/** The series device: Zayn's "Why List" note on a phone. `typed` is the row being written now (typewriter); rows before
- *  it are already there, `done` rows are crossed off. */
-function WhyList({ rows, typed = -1, done = 0, style, delay = 0 }: { rows: string[]; typed?: number; done?: number; style: React.CSSProperties; delay?: number }) {
+/** The series device: Zayn's "Why List" note on a phone. `typed` is the row being written now (typewriter); `crossed`
+ *  rows are answered and struck through. Used by every Teens lesson. */
+export function WhyList({ rows, typed = -1, crossed = [], style, delay = 0 }: { rows: string[]; typed?: number; crossed?: number[]; style: React.CSSProperties; delay?: number }) {
   const reduce = useReducedMotion();
   useCue('pen', typed >= 0, delay + 0.4);
   return (
@@ -31,12 +31,12 @@ function WhyList({ rows, typed = -1, done = 0, style, delay = 0 }: { rows: strin
       </div>
       {rows.map((r, i) => (
         <div key={r} className="relative flex items-start gap-2 border-t py-2 text-[17px] font-semibold leading-snug" style={{ borderColor: P.sand, color: P.ink }}>
-          <span className="mt-1 inline-block h-4 w-4 shrink-0 rounded-[5px] border-2" style={{ borderColor: i < done ? P.teal : P.inkSoft, background: i < done ? P.teal : 'transparent' }} />
+          <span className="mt-1 inline-block h-4 w-4 shrink-0 rounded-[5px] border-2" style={{ borderColor: crossed.includes(i) ? P.teal : P.inkSoft, background: crossed.includes(i) ? P.teal : 'transparent' }} />
           <motion.span
             initial={i === typed && !reduce ? { clipPath: 'inset(0 100% 0 0)' } : false}
             animate={{ clipPath: 'inset(0 0% 0 0)' }}
             transition={{ duration: Math.max(0.8, r.length * 0.035), delay: delay + 0.6, ease: 'linear' }}
-            style={{ textDecoration: i < done ? 'line-through' : undefined }}
+            style={{ textDecoration: crossed.includes(i) ? 'line-through' : undefined }}
           >
             {r}
           </motion.span>
@@ -46,8 +46,9 @@ function WhyList({ rows, typed = -1, done = 0, style, delay = 0 }: { rows: strin
   );
 }
 
-const Q1 = 'Am I Muslim only because my parents are?';
-const Q2 = 'If the Big Bang explains everything, who needs God?';
+export const Q1 = 'Am I Muslim only because my parents are?';
+export const Q2 = 'If the Big Bang explains everything, who needs God?';
+export const Q3 = 'Why one God? Why not a team?';
 
 /** Cover: three doors breathe with their colours and gold dust rises from under them. */
 export function DoorsBreathe(_: { v: Built }) {
