@@ -9,6 +9,7 @@ import fs from 'fs';
 import path from 'path';
 import { pathToFileURL } from 'url';
 import { PUBLIC_PAGES, SITE_URL } from '../src/data/seo';
+import { BOOKABLE_SERVICES } from '../src/booking/mockData';
 
 const dist = path.resolve('dist');
 const template = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
@@ -23,6 +24,31 @@ fs.writeFileSync(
 // Public pages inline the stylesheet: one less round trip before the first paint on phones.
 const cssLink = template.match(/<link rel="stylesheet"[^>]*href="(\/assets\/[^"]+\.css)"[^>]*>/);
 const inlineCss = cssLink ? fs.readFileSync(path.join(dist, cssLink[1]), 'utf8') : null;
+
+export function courseListJsonLd(): string {
+  const data = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Subjects at Watazawwado Academy',
+    itemListElement: BOOKABLE_SERVICES.map((s, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      item: {
+        '@type': 'Course',
+        name: s.name,
+        description: s.description,
+        url: `${SITE_URL}/learning`,
+        inLanguage: ['en', 'ar'],
+        provider: { '@id': `${SITE_URL}/#org` },
+        // RULES.md §3: hourly "from" prices for standard lessons; the server sets the charged fee.
+        offers: { '@type': 'Offer', category: 'Paid', price: s.hourlyRateUsd, priceCurrency: 'USD' },
+        hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'Online', courseWorkload: 'PT1H' }
+      }
+    }))
+  };
+  // No raw "<" inside a script tag.
+  return JSON.stringify(data).replace(/</g, '\\u003c');
+}
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
@@ -48,6 +74,10 @@ function render(page: (typeof PUBLIC_PAGES)[number], body: string | null): strin
     `</nav></div>`;
   swap(/<div id="root"><\/div>/, `<div id="root">${body || summary}</div>`);
   if (cssLink && inlineCss) html = html.replace(cssLink[0], () => `<style>${inlineCss}</style>`);
+  // QA-05: the subjects page describes each bookable subject as a Course (same names and "from" prices as the site).
+  if (page.path === '/learning') {
+    html = html.replace('</head>', () => `<script type="application/ld+json">${courseListJsonLd()}</script></head>`);
+  }
   // On wide screens the teacher photo is the largest element above the fold: fetch it first.
   // On phones it sits below the fold, so preloading it would only compete with the page itself.
   if (page.path === '/' || page.path === '/about') {

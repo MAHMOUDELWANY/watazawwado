@@ -432,7 +432,7 @@ Principles every PR/RN task follows:
   under 44px, sticky elements covering buttons, keyboard covering inputs.
 
 ### QA-05 SEO and hreflang check
-- Priority P2 · Zone 🟢 · Size M · Status todo
+- Priority P2 · Zone 🟢 · Size M · Status done
 - Do: titles, descriptions, canonical, hreflang ar/en, Organization and Course structured data, sitemap and robots, OG
   images for each public page; prerendered content present (`scripts/prerender-seo.ts`).
 - Skills: `seo`, `seo-hreflang`, `seo-schema`, `seo-technical`.

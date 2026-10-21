@@ -4,6 +4,13 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### QA-05 SEO and hreflang check (2026-10-21)
+- Checked every prerendered public page (home, about, how it works, subjects, pricing, FAQ, safety, privacy, terms): unique title and description, canonical, robots index/follow (the app shell `spa.html` is noindex), one H1, every image has alt text, Organization + WebSite JSON-LD, og:image, sitemap with the 9 public pages, robots.txt blocking account areas and the API. All fine.
+- Added: Course structured data on `/learning` (an ItemList of the 8 bookable subjects from the live catalogue, provider = the academy, online, "from" hourly price 9 or 13 USD as RULES.md §3).
+- Found, not changed (needs a decision, see the report): (1) hreflang cannot be added because Arabic and English share the same URL (language is a client setting, default Arabic). Crawlers get an English title and description over an Arabic body with `lang=ar`. For English searches by Western families, separate English URLs (e.g. `/en/pricing`) with hreflang ar/en/x-default would be the real fix; it touches routing, prerendering and the sitemap. (2) Every page shares one og:image; per-page images need design work. (3) The English subject name says "English Language (Conversation, IELTS & Academic)"; RULES.md §2b describes English as phonics/reading for kids and CEFR A1–C1 for 12+, so the IELTS mention may need the owner's check. (4) Google shows FAQ rich results only for government and health sites, so no FAQPage markup was added.
+- Files: `scripts/prerender-seo.ts`, `test/qa-05-seo.test.ts`.
+- Checks: tsc pass; npm test 1272 pass / 0 fail / 5 skipped; build pass; JSON-LD parsed from the built page.
+
 ### PU-04 Performance pass on public pages (2026-10-21)
 - Measured on production with Chrome DevTools traces: phone 390x844, 4x slower CPU, Fast 4G, cold cache.
 - Before: home LCP 7.8 s (the teacher photo: downloaded at 2.3 s, painted at 7.8 s), CLS 0. Cause: the prerendered photos carried `opacity:0` from their entrance animation, so they stayed invisible until the JavaScript ran and replaced the prerendered page. Also every hashed bundle, font and image was served with `max-age=0`, so repeat visits re-checked every file.

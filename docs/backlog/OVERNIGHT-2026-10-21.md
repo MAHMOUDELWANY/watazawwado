@@ -53,3 +53,4 @@ Each task: tsc, full `npm test`, build, commit, push to main, production smoke (
 - 2026-10-21: AD-03 admin inbox (unread first, filters, quick replies, timeline link) done.
 - 2026-10-21: PU-03 FAQ: missed lesson, progress, family account answers added.
 - 2026-10-21: PU-04: home LCP 7.8 s -> 2.4 s (hero photo fade removed), cache headers for assets/fonts/media. hydrateRoot recommended as follow-up.
+- 2026-10-21: QA-05 SEO checked; Course JSON-LD added; hreflang needs /en URLs (decision).
