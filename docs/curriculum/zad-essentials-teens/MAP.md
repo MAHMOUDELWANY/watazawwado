@@ -1,6 +1,6 @@
 # Zad Essentials · Teens (12–17): Unit Map
 
-Status: **draft, waiting for the owner's review** (2026-10-21). Rules: `../RULES.md` (§3 Teens column) and `../PLAN.md`
+Status: **approved by the owner 2026-10-21** (all proposals and open points accepted as written). Rules: `../RULES.md` (§3 Teens column) and `../PLAN.md`
 §3a. Fiqh: Shafi'i only, no differences shown. Each lesson is about 45 minutes and split into pages, so the teacher can
 finish in 30 or stretch to 60. Evidence marked ✔ was already verified for the Kids lessons (quran.com connector, Dorar)
 and is reused without re-research. Everything else is "to verify" before its lesson brief.

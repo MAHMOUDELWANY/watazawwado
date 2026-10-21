@@ -29,9 +29,9 @@
 - **Now (player polish, 2026-10-18):** owner reviews the new sounds, the praise word "Zādak Allāh", the new question
   cards and game, and the page-turn transition (they apply to every lesson of the series).
 - **Next:** Lesson 4 (Muhammad ﷺ, the Messenger) brief.
-- **Now (Teens, 2026-10-21):** owner reviews the Zad Essentials · Teens unit map (`zad-essentials-teens/MAP.md`, 40
-  lessons, story world, open points at the end). After approval: `style/teens.md` (anime look, character sheet), then
-  Teens Lesson 1 brief.
+- **Now (Teens, 2026-10-21):** Teens map approved (`zad-essentials-teens/MAP.md`). Owner reviews `style/teens.md`
+  (anime look, six characters, sheet + library prompts; the owner can start generating them) and the Teens Lesson 1
+  brief (`zad-essentials-teens/L01-the-stranger-with-no-dust.md`, two open points). Next: Teens L1 page text.
 - **Not started:** Lessons 4–37.
 - **Known limit:** lesson text ships in the site bundle, so the lock is a UI lock (content is not secret). Upgrade to
   server-served lessons if content must be protected.
@@ -405,3 +405,6 @@ B3–B5 → continue lesson by lesson.
 - **2026-10-21** — Teens unit map drafted after a short brainstorm with the owner (why the version exists: teens pushed
   into worship without understanding; tone: no preaching, no heavy fear, story-led, curiosity). Web check: Yaqeen's
   "Modern Pathways to Doubt in Islam" used as a scope reference for which doubts to answer. Waiting: owner review.
+- **2026-10-21** — Owner approved the Teens map as written. Wrote `style/teens.md` and the Teens L1 brief (Muslim 8 reused;
+  Al-Baqarah 2:170 checked on the quran.com website with al-Sa'di because the connector was offline; text to re-copy at
+  the page step; tadabbur root note marked needs review). Waiting: owner review.
