@@ -4,6 +4,16 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### PU-04 Performance pass on public pages (2026-10-21)
+- Measured on production with Chrome DevTools traces: phone 390x844, 4x slower CPU, Fast 4G, cold cache.
+- Before: home LCP 7.8 s (the teacher photo: downloaded at 2.3 s, painted at 7.8 s), CLS 0. Cause: the prerendered photos carried `opacity:0` from their entrance animation, so they stayed invisible until the JavaScript ran and replaced the prerendered page. Also every hashed bundle, font and image was served with `max-age=0`, so repeat visits re-checked every file.
+- Fix: the hero photos slide in without fading (still a gentle entrance; reduced motion unchanged). `vercel.json`: hashed `/assets/*` cached for a year (immutable), `/fonts/*` 30 days, images/mp3 1 day with stale-while-revalidate; HTML and the API unchanged (still revalidate).
+- After: home LCP 2.4 s, CLS 0; about LCP 1.7 s, CLS 0; pricing: the heading first paints at 2.3 s (FCP) but lab LCP reads 5.4 s because React re-draws the prerendered page (`createRoot` in `src/main.tsx`) and the new heading measures 4% larger. Users already see it at 2.3 s.
+- Already fine, left as is: below-the-fold portraits are lazy; fonts use swap and are not preloaded on purpose; the welcome recitation loads only when it plays (owner rule §6, autoplay).
+- Recommended next (not done, needs care): hydrate the prerendered page (`hydrateRoot`) instead of re-rendering it, which removes the pricing re-paint and saves work on every page; risk is hydration mismatches from language/theme read from storage, so it needs its own task and checks. The homepage loads Supabase (226 kB) and motion early; deferring them is a larger refactor.
+- Files: `src/components/public/homepage/TeacherDuo.tsx`, `vercel.json`, `test/pu-04-performance.test.ts`.
+- Checks: tsc pass; npm test 1269 pass / 0 fail / 5 skipped; build pass; production headers verified with curl.
+
 ### PU-03 FAQ and trust content for Western parents (2026-10-21)
 - Result: done (main). The FAQ already covered one-on-one lessons, safety (sit in, Zoom host + waiting room, no recording), time zones and cancelling. Added three answers: "What happens if we miss a lesson?" (reminders; a missed lesson counts as taken; emergencies via WhatsApp as goodwill; if we cancel you choose a new time, credit or refund), "How will I know how my child is doing?" (family summary after lessons, progress per subject, printable monthly report, chat), "Can I manage all my children in one account?" (one family account, children 6 to 17, one family calendar, 5% off a second child's package). The female-teacher answer now mentions daughters and changing teacher. Every fact is checked against RULES.md §2 and §4 in a test; no monthly email is promised (PR-09 is not live).
 - Files: `src/data/content.ts`, `test/pu-03-faq.test.ts`.

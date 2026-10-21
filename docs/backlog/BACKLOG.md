@@ -400,7 +400,7 @@ Principles every PR/RN task follows:
   happens if a lesson is missed, how progress is shared). Facts must match RULES.md; Arabic 50/50 style per §6.
 
 ### PU-04 Performance pass on public pages
-- Priority P2 · Zone 🟢 · Size M · Status todo
+- Priority P2 · Zone 🟢 · Size M · Status done
 - Do: measure LCP/CLS/INP on home, pricing, about at mobile; lazy-load below-the-fold images and the welcome audio,
   check font loading, remove unused CSS/JS. Report numbers before and after.
 
