@@ -4,7 +4,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import { DateTime } from 'luxon';
 import app from '../api/index.js';
-import { canRate, parseFeedback, teacherAverage, teacherVisibleRatings, TEACHER_MIN_RATINGS } from '../server/routes/feedback.js';
+import { canRate, parseFeedback, teacherAverage, teacherVisibleRatings, ratingStillEditable, TEACHER_MIN_RATINGS } from '../server/routes/feedback.js';
 
 const now = DateTime.fromISO('2026-10-21T12:00:00Z', { zone: 'utc' });
 const lesson = (status: string, startIso: string, minutes = 45) => ({ status, scheduled_start: startIso, duration_minutes: minutes });
@@ -44,6 +44,9 @@ describe('ST-02 who can rate what', () => {
     const thinMonth = teacherAverage(teacherVisibleRatings([...september, at('2026-08-10T10:00:00Z', 1)], now));
     assert.deepStrictEqual(thinMonth, base, 'a past month with fewer than 5 ratings is left out');
     assert.strictEqual(teacherAverage(teacherVisibleRatings(september.slice(0, 4), now)).average, null);
+    assert.strictEqual(ratingStillEditable('2026-10-01T00:00:00Z', now), true, 'this month: can still change');
+    assert.strictEqual(ratingStillEditable('2026-09-30T23:59:00Z', now), false, 'closed month: frozen');
+    assert.strictEqual(ratingStillEditable('junk', now), false);
   });
 
   it('the table is server-only and the admin list needs the super admin', () => {

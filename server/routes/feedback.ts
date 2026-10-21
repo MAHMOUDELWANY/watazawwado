@@ -73,6 +73,12 @@ async function familySummaryFor(client: any, bookingId: string): Promise<string 
   return notes?.[0]?.family_summary || null;
 }
 
+/** A rating is frozen once its month has ended, so a closed month the teacher sees can never change. */
+export function ratingStillEditable(createdAt: string, now: DateTime): boolean {
+  const at = DateTime.fromISO(createdAt, { zone: 'utc' });
+  return at.isValid && at >= now.toUTC().startOf('month');
+}
+
 type Middleware = (req: any, res: any, next: any) => any;
 
 export function registerFeedbackRoutes(app: express.Express, deps: {
@@ -148,8 +154,9 @@ export function registerFeedbackRoutes(app: express.Express, deps: {
       if (!learners.some((l) => l.id === booking.student_id)) return res.status(403).json({ error: 'This lesson does not belong to your account.' });
       if (!canRate(booking, DateTime.utc())) return res.status(409).json({ error: 'This lesson can no longer be rated.' });
 
-      const { data: existing } = await client.from('lesson_feedback').select('submitted_by').eq('booking_id', bookingId).maybeSingle();
+      const { data: existing } = await client.from('lesson_feedback').select('submitted_by, created_at').eq('booking_id', bookingId).maybeSingle();
       if (existing && existing.submitted_by !== userId) return res.status(409).json({ error: 'This lesson was already rated.' });
+      if (existing && !ratingStillEditable(existing.created_at, DateTime.utc())) return res.status(409).json({ error: 'This rating can no longer be changed.' });
       const row = {
         booking_id: bookingId,
         student_id: booking.student_id,
