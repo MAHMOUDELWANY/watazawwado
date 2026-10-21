@@ -2,7 +2,7 @@ import React from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { P } from '../Art';
 import { Pen, Tag, Print, out, type Built } from '../Scenes';
-import { Burst, Rise, SunRays, Glow, Sandstorm } from '../Motion';
+import { Burst, Rise, SunRays, Glow, Sandstorm, Sprite } from '../Motion';
 import { useCue } from '../sfx';
 
 /* ---------- Teens Lesson 1: The Stranger with No Dust (brief: docs/curriculum/zad-essentials-teens/L01-the-stranger-with-no-dust.md)
@@ -12,6 +12,7 @@ import { useCue } from '../sfx';
    first guesses from the prompts: check them when the paintings arrive. */
 
 const T = (name: string) => `zad-teens/l01/${name}`;
+const C = (name: string) => `zad-teens/characters/${name}.webp`;
 
 /** The series device: Zayn's "Why List" note on a phone. `typed` is the row being written now (typewriter); rows before
  *  it are already there, `done` rows are crossed off. */
@@ -55,7 +56,7 @@ export function DoorsBreathe(_: { v: Built }) {
       <Glow x={24} y={55} w={18} h={40} color="8,125,145" />
       <Glow x={50} y={55} w={18} h={40} color="197,31,36" />
       <Glow x={76} y={55} w={18} h={40} color="229,169,60" />
-      <Rise from={[{ x: 24, y: 86 }, { x: 50, y: 86 }, { x: 76, y: 86 }]} count={5} height={22} seed={11} />
+      <Rise from={[{ x: 22, y: 78 }, { x: 50, y: 78 }, { x: 77, y: 78 }]} count={5} height={22} seed={11} />
     </>
   );
 }
@@ -66,7 +67,7 @@ export function TypingDots({ v }: { v: Built }) {
   useCue('pop', v.lines >= 3);
   if (v.lines < 3) return null;
   return (
-    <motion.div className="absolute left-[34%] top-[36%] flex gap-2 rounded-[22px] px-5 py-3 shadow-[0_12px_30px_-14px_rgba(0,0,0,0.7)]" style={{ background: '#FFFDF7' }} aria-hidden="true"
+    <motion.div className="absolute left-[16%] top-[40%] flex gap-2 rounded-[22px] px-5 py-3 shadow-[0_12px_30px_-14px_rgba(0,0,0,0.7)]" style={{ background: '#FFFDF7' }} aria-hidden="true"
       initial={{ opacity: 0 }} animate={reduce ? { opacity: 1 } : { opacity: [0, 1, 1, 0, 0, 1, 1, 0] }}
       transition={reduce ? { duration: 0.3 } : { duration: 5, times: [0, 0.08, 0.35, 0.42, 0.55, 0.62, 0.9, 1], repeat: Infinity, repeatDelay: 1 }}>
       {[0, 1, 2].map((i) => (
@@ -80,14 +81,14 @@ export function TypingDots({ v }: { v: Built }) {
 /** p3 The bus: the Why List opens and its first question writes itself. */
 export function WhyListOpens({ v }: { v: Built }) {
   if (v.lines < 2) return null;
-  return <WhyList rows={v.lines >= 3 ? [Q1] : []} typed={v.lines >= 3 ? 0 : -1} style={{ left: '30%', top: '30%' }} />;
+  return <WhyList rows={v.lines >= 3 ? [Q1] : []} typed={v.lines >= 3 ? 0 : -1} style={{ left: '16%', top: '58%' }} />;
 }
 
 /** p4 Madinah at dawn: the sun's rays turn slowly and dust motes rise in the light. */
 export function DawnRays(_: { v: Built }) {
   return (
     <>
-      <SunRays x={72} y={26} size={70} />
+      <SunRays x={88} y={33} size={70} />
       <Rise from={[{ x: 40, y: 80 }, { x: 62, y: 84 }]} count={6} height={26} seed={5} />
     </>
   );
@@ -151,6 +152,7 @@ export function PillarsRise({ v, label }: { v: Built; label: string }) {
       ))}
       <div className="absolute inset-x-0 bottom-0 h-[8%]" style={{ background: P.sandDeep }} />
       {done && <Burst x={50} y={22} kind="sparks" count={14} seed={4} spread={30} delay={0.3} />}
+      {done && <Sprite name={C('zayn-point')} enter="left" className="h-[46%]" style={{ left: '-3%', bottom: '0%' }} delay={0.6} />}
     </div>
   );
 }
@@ -189,6 +191,7 @@ export function SixAroundHeart({ v, label }: { v: Built; label: string }) {
       {IMAN.slice(0, lit).map((w, i) => (
         <Tag key={w} style={{ left: `${(pt(i).x / 760) * 100}%`, top: `${(pt(i).y / 570) * 100}%` }} size={20} color={P.teal} delay={0.3}>{w}</Tag>
       ))}
+      <Sprite name={C('noor-think')} enter="up" className="h-[44%]" style={{ left: '1%', bottom: '0%' }} delay={0.3} />
     </div>
   );
 }
@@ -198,8 +201,8 @@ export function NoOneWatching({ v, label }: { v: Built; label: string }) {
   useCue('reveal', v.lines >= 3, 0.2);
   return (
     <Print name={T('noor-room')} label={label}>
-      <div className="absolute inset-0 overflow-hidden rounded-[28px]"><Glow x={72} y={40} w={22} h={28} /></div>
-      {v.lines >= 2 && <Tag style={{ left: '28%', top: '20%' }} color={P.teal} delay={0.4}>Phone face down. Nobody here.</Tag>}
+      <div className="absolute inset-0 overflow-hidden rounded-[28px]"><Glow x={92} y={30} w={18} h={26} /></div>
+      {v.lines >= 2 && <Tag style={{ left: '78%', top: '60%' }} color={P.teal} delay={0.4}>Phone face down. Nobody here.</Tag>}
       {v.lines >= 3 && <Tag style={{ left: '50%', top: '86%' }} ar={v.evidence ? 'فإنَّه يَراك' : undefined} color="#9A6A12" delay={0.6}>He sees you</Tag>}
     </Print>
   );
@@ -209,8 +212,8 @@ export function NoOneWatching({ v, label }: { v: Built; label: string }) {
 export function FarLight(_: { v: Built }) {
   return (
     <>
-      <Glow x={52} y={58} w={14} h={30} />
-      <Rise from={[{ x: 52, y: 70 }]} count={7} height={30} seed={3} />
+      <Glow x={50} y={72} w={12} h={24} />
+      <Rise from={[{ x: 50, y: 80 }]} count={7} height={30} seed={3} />
     </>
   );
 }
@@ -222,7 +225,7 @@ export function LightOpens({ v, label }: { v: Built; label: string }) {
   return (
     <Print name={T('walk-away')} label={label}>
       <div className="absolute inset-0 overflow-hidden rounded-[28px]">
-        <motion.div className="absolute left-1/2 top-[56%] h-[40%] w-[30%] -translate-x-1/2 -translate-y-1/2 rounded-full" aria-hidden="true"
+        <motion.div className="absolute left-1/2 top-[72%] h-[40%] w-[30%] -translate-x-1/2 -translate-y-1/2 rounded-full" aria-hidden="true"
           style={{ background: 'radial-gradient(circle, rgba(255,246,216,0.95), rgba(255,236,180,0) 70%)', mixBlendMode: 'screen' }}
           initial={false} animate={{ scale: v.lines >= 1 ? (reduce ? 2.4 : [1, 2.6]) : 1, opacity: v.lines >= 1 ? 1 : 0.6 }} transition={{ duration: 1.6, ease: out }} />
       </div>
@@ -270,12 +273,12 @@ export function FootprintsCircle({ v, label }: { v: Built; label: string }) {
   return (
     <Print name={T('footprints')} label={label}>
       <svg className="pointer-events-none absolute inset-0 h-full w-full overflow-visible" viewBox="0 0 760 570" aria-hidden="true">
-        {v.lines >= 2 && <Pen d="M380 110 A200 170 0 1 1 379 110" color={P.crimson} width={6} dash="8 14" duration={1.6} />}
-        {v.interaction && <Pen d="M560 330 C620 340 680 300 730 240" color={P.teal} width={9} glow delay={0.6} duration={1} />}
+        {v.lines >= 2 && <Pen d="M380 26 A305 245 0 1 1 379 26" color={P.crimson} width={6} dash="8 14" duration={1.8} />}
+        {v.interaction && <Pen d="M686 300 C715 280 735 250 752 215" color={P.teal} width={9} glow delay={0.6} duration={1} />}
       </svg>
       {v.lines >= 2 && <Tag style={{ left: '50%', top: '50%' }} delay={1.2}>Round and round, eyes down</Tag>}
       {v.evidence && <Tag style={{ left: '30%', top: '12%' }} ar="يَعْقِلُونَ" color="#9A6A12" delay={0.4}>use the mind</Tag>}
-      {v.interaction && <Tag style={{ left: '84%', top: '30%' }} color={P.teal} delay={1.5}>Look, then walk</Tag>}
+      {v.interaction && <Tag style={{ left: '86%', top: '22%' }} color={P.teal} delay={1.5}>Look, then walk</Tag>}
     </Print>
   );
 }
@@ -287,9 +290,9 @@ export function RootsUnder({ v }: { v: Built }) {
   return (
     <>
       <svg className="pointer-events-none absolute inset-0 h-full w-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-        <Pen d="M36 90 C34 94 30 96 26 99 M36 90 C37 95 38 97 37 100 M36 90 C39 94 43 96 46 99" color={P.gold} width={5} glow duration={1.2} />
+        <Pen d="M14 93 C12 96 8 98 4 100 M14 93 C15 97 16 99 15 101 M14 93 C17 96 21 98 24 100" color={P.gold} width={5} glow duration={1.2} />
       </svg>
-      <Tag style={{ left: '36%', top: '80%' }} color="#9A6A12" delay={1}>She knows why</Tag>
+      <Tag style={{ left: '22%', top: '84%' }} color="#9A6A12" delay={1}>She knows why</Tag>
     </>
   );
 }
@@ -297,7 +300,7 @@ export function RootsUnder({ v }: { v: Built }) {
 /** p17 My Ahd: the Why List on Zayn's desk, with an empty row waiting for the learner's own question. */
 export function ListOnDesk({ v }: { v: Built }) {
   if (v.lines < 3) return null;
-  return <WhyList rows={[Q1, 'Your question: …']} typed={1} style={{ right: '6%', top: '10%', width: '60%' }} />;
+  return <WhyList rows={[Q1, 'Your question: …']} typed={1} style={{ right: '3%', top: '50%', width: '50%' }} />;
 }
 
 /** p18 Cliffhanger: the Big Bang bursts on the classroom screen, and a new question lands on the Why List. */
@@ -305,9 +308,9 @@ export function BigBang({ v }: { v: Built }) {
   useCue('sparkle', v.lines >= 1, 0.3);
   return (
     <>
-      {v.lines >= 1 && <Burst x={50} y={28} kind="sparks" count={22} seed={13} spread={34} delay={0.3} />}
-      {v.lines >= 1 && <Glow x={50} y={28} w={26} h={30} />}
-      {v.lines >= 3 && <WhyList rows={[Q1, Q2]} typed={1} style={{ left: '8%', top: '46%' }} delay={0.2} />}
+      {v.lines >= 1 && <Burst x={64} y={23} kind="sparks" count={22} seed={13} spread={30} delay={0.3} />}
+      {v.lines >= 1 && <Glow x={64} y={23} w={24} h={28} />}
+      {v.lines >= 3 && <WhyList rows={[Q1, Q2]} typed={1} style={{ left: '30%', top: '56%', width: '42%' }} delay={0.2} />}
     </>
   );
 }

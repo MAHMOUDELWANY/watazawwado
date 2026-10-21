@@ -52,9 +52,9 @@ export const lesson01Teens: Lesson = {
       layout: 'story',
       scene: 'tCanteen',
       lines: [
-        'Lunch break. Zayn and his friend Ethan are sharing a table.',
-        'Ethan, half joking: "Be honest. If you\'d been born in my family, would you even be Muslim?"',
-        'Zayn types an answer. Deletes it. Types again. Sends nothing.',
+        'Lunch break. Zayn and Ethan share a table.',
+        'Ethan, half joking: "If you\'d been born in my family, would you even be Muslim?"',
+        'Zayn types. Deletes. Types again. Sends nothing.',
       ],
       interaction: {
         kind: 'ask',
@@ -74,8 +74,8 @@ export const lesson01Teens: Lesson = {
       layout: 'story',
       scene: 'tWhyList',
       lines: [
-        'That night Zayn opens a new note on his phone.',
-        'He calls it "Why List" and writes the first line:',
+        'That night Zayn starts a new note.',
+        'He calls it "Why List" and writes:',
         '"Am I Muslim only because my parents are?"',
       ],
       interaction: {
