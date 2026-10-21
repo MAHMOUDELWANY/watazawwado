@@ -276,7 +276,7 @@ Principles every PR/RN task follows:
   the day. Plus "Add to my calendar" (`.ics` download per lesson and a per-family feed link with a secret token).
 
 ### PA-04 Family savings made visible
-- Priority P3 · Zone 🟢 · Size S · Status todo
+- Priority P3 · Zone 🟢 · Size S · Status done
 - Do: where packages are bought for a second child, show the 5% family care saving as a line ("Family care: −$X"),
   using the server's computed numbers only.
 

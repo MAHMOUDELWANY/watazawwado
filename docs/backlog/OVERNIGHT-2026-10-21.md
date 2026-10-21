@@ -58,3 +58,4 @@ Each task: tsc, full `npm test`, build, commit, push to main, production smoke (
 - 2026-10-21: ST-06 privacy: data export (allow-listed) + deletion request (no auto delete), migration applied. P2 list complete.
 - 2026-10-21: PU-01 progress showcase (labelled example) on How it works.
 - 2026-10-21: ST-07 PWA manifest + maskable icons + install hint.
+- 2026-10-21: PA-04 family care saving line (server numbers).

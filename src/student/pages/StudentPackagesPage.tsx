@@ -578,6 +578,11 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
                             {ent.purchasedQuantity} {isAr ? 'دروس فردية' : 'private 1-on-1 lessons'}
                             {ent.pricePaid ? ` • $${ent.pricePaid} ${ent.currency}` : ''}
                           </span>
+                          {ent.familySaving ? (
+                            <span data-testid="family-saving" className="text-success font-medium">
+                              {isAr ? `رعاية الأسرة: −$${ent.familySaving}` : `Family care: −$${ent.familySaving}`}
+                            </span>
+                          ) : null}
                           {ent.learnerName && (
                             <Badge variant="outline" className="text-[13px] font-normal border-secondary/50 text-primary bg-secondary/20">
                               {isAr ? `لـ ${ent.learnerName}` : `For ${ent.learnerName}`}

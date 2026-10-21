@@ -4,6 +4,11 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### PA-04 Family savings made visible (2026-10-21)
+- Result: done (main). A package bought for a second (third...) child now shows "Family care: −$X" / "رعاية الأسرة: −$X" on its card in My packages. X is computed by the server only: the catalogue price minus what the server charged, and only when the server applied the family discount (`metadata.family_discount`). The select response also returns `familySaving`. The 5% rule itself is unchanged (RULES.md §4); the page already explained family care.
+- Files: `api/index.ts`, `src/student/pages/StudentPackagesPage.tsx`, `test/pa-04-family-saving.test.ts`.
+- Checks: tsc pass; npm test 1292 pass / 0 fail / 5 skipped; build pass.
+
 ### ST-07 Install as an app (PWA basics) (2026-10-21)
 - Result: done (main). The manifest now opens the portal (`start_url` `/student`, scope `/`, an `id`) and has maskable icons (192 and 512, the logo inside the safe zone on the site's cream background) next to the existing ones. On a phone, the portal home shows a small dismissible card "Keep Watazawwado on your home screen": Android/Chrome get an "Add it" button (the browser's own install prompt); iPhone Safari gets the two steps (Share → Add to Home Screen). Hidden on wide screens, inside the installed app, and after "Not now". No service worker, nothing cached.
 - Files: `public/site.webmanifest`, `public/maskable-192x192.png`, `public/maskable-512x512.png`, `src/student/components/InstallHint.tsx`, `StudentHomePage.tsx`, `test/st-07-pwa.test.ts`.

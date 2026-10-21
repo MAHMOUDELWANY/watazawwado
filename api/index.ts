@@ -9186,6 +9186,10 @@ app.get('/api/student/packages', verifyStudentAuth, async (req: any, res: any) =
         purchasedQuantity: ent.purchased_quantity || 0,
         remainingCredits: ent.remaining_credits || 0,
         pricePaid: ent.price_paid,
+        // PA-04: the family care saving the server applied (catalogue price minus what was charged).
+        familySaving: ent.metadata?.family_discount && cat?.price_amount != null
+          ? Math.max(0, Math.round((Number(cat.price_amount) - Number(ent.price_paid)) * 100) / 100) || null
+          : null,
         currency: ent.currency || 'USD',
         paymentReference: ent.payment_reference || null,
         learnerStudentId: ent.learner_student_id || null,
@@ -9339,6 +9343,7 @@ app.post('/api/student/packages/select', verifyStudentAuth, async (req: any, res
       entitlement: newEntitlement,
       package: catalogItem,
       familyDiscount,
+      familySaving: familyDiscount ? Math.round((Number(catalogItem.price_amount) - pricePaid) * 100) / 100 : null,
       message: 'Package entitlement created. Please submit your payment reference to activate your credits.'
     });
   } catch (err: any) {
