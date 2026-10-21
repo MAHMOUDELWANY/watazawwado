@@ -378,8 +378,8 @@ export const FAQS: FAQItem[] = [
   {
     question: 'Can I choose a female teacher?',
     arabicQuestion: 'أقدر أختار معلّمة؟',
-    answer: 'Yes. When you set up your learning profile you choose a male or a female teacher, for yourself or for each child.',
-    arabicAnswer: 'أيوه. وإنت بتعمل ملفك التعليمي بتختار معلّم أو معلّمة، ليك أو لكل طفل من أولادك.',
+    answer: 'Yes. When you set up your learning profile you choose a male or a female teacher, for yourself or for each child. Many families choose a female teacher for their daughters, and you can ask us to change teacher at any time.',
+    arabicAnswer: 'أيوه. وإنت بتعمل ملفك التعليمي بتختار معلّم أو معلّمة، ليك أو لكل طفل من أولادك. أسر كتير بتختار معلّمة لبناتها، وتقدر تطلب مننا تغيير المعلم في أي وقت.',
     category: 'general'
   },
   {
@@ -388,6 +388,27 @@ export const FAQS: FAQItem[] = [
     answer: 'You can cancel up to 3 hours before (a paid lesson comes back as a lesson credit) and move it yourself up to 1 hour before, to tomorrow or later. In the last hour nothing can change; for a real emergency, message us on WhatsApp.',
     arabicAnswer: 'تقدر تلغي الحصة لحد ٣ ساعات قبل ميعادها (والحصة المدفوعة بترجعلك كرصيد)، وتغيّر ميعادها بنفسك من حسابك لحد ساعة قبلها، لأي يوم من بكرة ورايح. في آخر ساعة مفيش تغيير؛ ولو حصل ظرف طارئ فعلاً، كلّمنا على واتساب.',
     category: 'booking'
+  },
+  {
+    question: 'What happens if we miss a lesson?',
+    arabicQuestion: 'لو فاتتنا حصة، إيه اللي بيحصل؟',
+    answer: 'We send reminders before every lesson, by email and on the site. A lesson that is missed without cancelling counts as taken, so cancel or move it in time if plans change. If a real emergency comes up, message us on WhatsApp and we will see what we can do. If we or the teacher cancel, you choose a free new time, a lesson credit or a refund.',
+    arabicAnswer: 'بنفكّرك قبل كل حصة بإيميل وعلى الموقع. الحصة اللي بتفوت من غير إلغاء بتتحسب إنها اتاخدت، فلو الظروف اتغيرت الغيها أو غيّر ميعادها في الوقت. ولو حصل ظرف طارئ فعلاً كلّمنا على واتساب ونشوف نقدر نعمل إيه. ولو إحنا أو المعلم لغينا الحصة، إنت تختار ميعاد جديد ببلاش أو رصيد حصة أو استرداد فلوسك.',
+    category: 'booking'
+  },
+  {
+    question: 'How will I know how my child is doing?',
+    arabicQuestion: 'هعرف إزاي ابني ماشي إزاي؟',
+    answer: 'After lessons the teacher writes a short summary for the family, with what to practise next. Your account shows where each child is in every subject, and a monthly report you can print. You can also message the teacher and our team any time.',
+    arabicAnswer: 'بعد الحصص المعلم بيكتب للأسرة ملخص قصير وإيه اللي يتمرّن عليه بعدها. وفي حسابك هتشوف كل طفل وصل لفين في كل مادة، وتقرير شهري تقدر تطبعه. وتقدر تكلّم المعلم وفريقنا في أي وقت.',
+    category: 'teaching'
+  },
+  {
+    question: 'Can I manage all my children in one account?',
+    arabicQuestion: 'أقدر أتابع كل أولادي من حساب واحد؟',
+    answer: 'Yes. A parent opens one family account and adds each child (ages 6 to 17). You book, follow progress and see one family calendar for everyone, and a package for a second child gets 5% off.',
+    arabicAnswer: 'أيوه. ولي الأمر بيفتح حساب عيلة واحد ويضيف كل طفل (من ٦ لـ١٧ سنة). بتحجز وتتابع التقدّم وتشوف تقويم واحد للعيلة كلها، وباقة الطفل التاني عليها خصم ٥٪.',
+    category: 'general'
   },
   {
     question: 'I cannot read any Arabic. Can I still start?',

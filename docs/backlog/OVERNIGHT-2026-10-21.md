@@ -51,3 +51,4 @@ Each task: tsc, full `npm test`, build, commit, push to main, production smoke (
 - 2026-10-21: ST-05 profile Family tab + ?tab= deep link done.
 - 2026-10-21: TE-03 hours grid (paint, copy day, student-zone preview) done.
 - 2026-10-21: AD-03 admin inbox (unread first, filters, quick replies, timeline link) done.
+- 2026-10-21: PU-03 FAQ: missed lesson, progress, family account answers added.

@@ -4,6 +4,12 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### PU-03 FAQ and trust content for Western parents (2026-10-21)
+- Result: done (main). The FAQ already covered one-on-one lessons, safety (sit in, Zoom host + waiting room, no recording), time zones and cancelling. Added three answers: "What happens if we miss a lesson?" (reminders; a missed lesson counts as taken; emergencies via WhatsApp as goodwill; if we cancel you choose a new time, credit or refund), "How will I know how my child is doing?" (family summary after lessons, progress per subject, printable monthly report, chat), "Can I manage all my children in one account?" (one family account, children 6 to 17, one family calendar, 5% off a second child's package). The female-teacher answer now mentions daughters and changing teacher. Every fact is checked against RULES.md §2 and §4 in a test; no monthly email is promised (PR-09 is not live).
+- Files: `src/data/content.ts`, `test/pu-03-faq.test.ts`.
+- Checks: tsc pass; npm test 1267 pass / 0 fail / 5 skipped; build pass.
+- Owner review (provisionally approved per the overnight instruction): the new Arabic and English wording.
+
 ### AD-03 Chat inbox for the admin (2026-10-21)
 - Result: done (main). The admin's Messages page (which already listed every conversation) is now an inbox: unread first, then newest; search by family or teacher name; filter by type (support / lessons) and by teacher; an unread count. In a conversation: a "Family timeline" link to the CRM-01 student page, and quick replies (4 built-in in Arabic and 4 in English, written as "we"), inserted into the draft and never sent by themselves; "Save as quick reply" keeps the admin's own replies, removable. Families and teachers see their chat exactly as before.
 - Server: the thread list adds the owner's student id for the admin only.

@@ -395,7 +395,7 @@ Principles every PR/RN task follows:
   number of fields, mobile tap targets). Record before/after screenshots in the log.
 
 ### PU-03 FAQ and trust content for Western parents
-- Priority P2 · Zone 🟢 · Size S · Status todo
+- Priority P2 · Zone 🟢 · Size S · Status done
 - Do: add answers families ask (safeguarding and who is in the lesson, female teacher for daughters, time zones, what
   happens if a lesson is missed, how progress is shared). Facts must match RULES.md; Arabic 50/50 style per §6.
 
