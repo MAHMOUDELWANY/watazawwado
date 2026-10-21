@@ -39,8 +39,9 @@ describe('PA-03 calendar view helpers', () => {
 
 describe('PA-03 feed security', () => {
   it('the feed never carries Zoom links and stores only a hash of the token', () => {
-    const api = fs.readFileSync('api/index.ts', 'utf8');
-    const feed = api.slice(api.indexOf("app.get('/api/calendar/family/:file'"), api.indexOf("app.patch('/api/student/me'"));
+    // QA-07: the calendar routes live in server/routes/calendarFeed.ts.
+    const api = fs.readFileSync('server/routes/calendarFeed.ts', 'utf8');
+    const feed = api.slice(api.indexOf("app.get('/api/calendar/family/:file'"));
     assert.ok(!feed.includes('zoom'), 'no zoom column or link in the feed');
     assert.ok(api.includes("crypto.createHash('sha256').update(token).digest('hex')"));
     assert.ok(api.includes("crypto.randomBytes(32).toString('base64url')"));

@@ -331,24 +331,24 @@ export const BOOKING_SERVICES: ServiceOption[] = [
   // --- ENGLISH PILLAR ---
   {
     id: 'english',
-    name: 'English Language (Conversation, IELTS & Academic)',
-    arabicName: 'اللغة الإنجليزية (المحادثة والتأهيل الدولي)',
+    name: 'English Language (Phonics, Reading & CEFR A1–C1)',
+    arabicName: 'اللغة الإنجليزية (الأصوات والقراءة ومستويات A1–C1)',
     group: 'english',
     tagline: 'Everyday, school and work English with a patient, qualified teacher ($13/hr).',
     arabicTagline: 'إنجليزي للحياة والمدرسة والشغل، مع معلم صبور ومؤهل (13$ للساعة).',
-    description: 'Personalized English training focusing on professional speaking confidence, IELTS exam preparation, accent clarity, and academic writing.',
-    arabicDescription: 'تطوير الطلاقة الإنجليزية، التحضير لاختبارات الآيلتس، وتحسين النطق والقواعد.',
+    description: 'For children: phonics and reading, step by step. From age 12: the CEFR levels A1 to C1, with speaking in every lesson, grammar and writing.',
+    arabicDescription: 'للأطفال: الأصوات والقراءة خطوة بخطوة. ومن سن 12: مستويات A1 لحد C1، مع محادثة في كل درس، وقواعد وكتابة.',
     suggestedGoals: [
-      'Score 7.0+ in IELTS Speaking and Writing',
-      'Gain executive English conversational confidence',
-      'Eliminate grammatical errors in professional emails and speech',
-      'Improve American/British accent clarity and natural flow'
+      'Read simple English words and sentences with confidence (children)',
+      'Speak more confidently in everyday conversations',
+      'Reach the next CEFR level (A1 to C1)',
+      'Write clearer emails and school work with fewer grammar mistakes'
     ],
     arabicSuggestedGoals: [
-      'تحقيق درجة 7.0+ في اختبار الآيلتس',
-      'اكتساب ثقة التحدث في بيئات العمل والدراسة',
-      'تصحيح الأخطاء القواعدية المتكررة',
-      'تحسين النطق ومخارج الأصوات الإنجليزية'
+      'يقرأ كلمات وجمل إنجليزي بسيطة بثقة (للأطفال)',
+      'ثقة أكبر في المحادثة اليومية',
+      'الوصول للمستوى اللي بعده (من A1 لحد C1)',
+      'كتابة إيميلات وواجبات أوضح وبأخطاء أقل'
     ],
     defaultDurations: [30, 45, 60],
     hourlyRateUsd: 13
