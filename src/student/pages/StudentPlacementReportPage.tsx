@@ -66,7 +66,7 @@ export default function StudentPlacementReportPage({ lang }: { lang: 'ar' | 'en'
         <Button variant="outline" size="sm" onClick={() => window.print()}>
           <Printer className="w-4 h-4" /><span className="ms-1.5">{t('Print / save as PDF', 'اطبع أو احفظ PDF')}</span>
         </Button>
-        <Link to="/student/messages" className="inline-flex items-center gap-1.5 h-9 px-4 rounded-lg btn-primary-material text-sm font-medium">
+        <Link to="/student/messages" className="inline-flex items-center gap-1.5 h-11 px-4 rounded-lg btn-primary-material text-sm font-medium">
           <MessageCircle className="w-4 h-4" />{t('Ask our team', 'اسأل فريقنا')}
         </Link>
       </div>

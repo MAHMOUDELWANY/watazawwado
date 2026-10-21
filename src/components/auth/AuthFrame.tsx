@@ -64,7 +64,7 @@ export function AuthPage({ isAr, onToggleLang, children }: { isAr: boolean; onTo
               <span>{isAr ? 'EN' : 'عربي'}</span>
             </button>
           )}
-          <ThemeToggle compact className="!w-10 !h-10 !rounded-full" />
+          <ThemeToggle compact className="!w-11 !h-11 !rounded-full" />
         </div>
       </header>
       <main className="flex-1 w-full px-4 py-8 sm:py-12 flex items-center justify-center">{children}</main>

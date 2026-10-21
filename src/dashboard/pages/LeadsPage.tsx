@@ -178,7 +178,7 @@ export default function LeadsPage() {
           <button
             onClick={() => fetchLeads(true)}
             disabled={refreshing || loading}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass-card border-none text-sm font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
+            className="tap-44 relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass-card border-none text-sm font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
             <span>{t('Refresh', 'تحديث')}</span>
@@ -478,7 +478,7 @@ export default function LeadsPage() {
                         href={leadWhatsappUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-1.5 rounded-lg text-success hover:bg-success/10 transition-colors"
+                        className="tap-44 relative p-1.5 rounded-lg text-success hover:bg-success/10 transition-colors"
                         title={t('WhatsApp', 'واتساب')}
                         aria-label={t('WhatsApp', 'واتساب')}
                       >
@@ -488,7 +488,7 @@ export default function LeadsPage() {
                     {lead.email && (
                       <a
                         href={`mailto:${lead.email}`}
-                        className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors"
+                        className="tap-44 relative p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors"
                         title={t('Email', 'إيميل')}
                         aria-label={t('Email', 'إيميل')}
                       >
@@ -503,7 +503,7 @@ export default function LeadsPage() {
                       e.stopPropagation();
                       setSelectedLead(lead);
                     }}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-secondary/30 hover:bg-secondary/40 text-accent text-sm font-semibold transition-colors cursor-pointer"
+                    className="tap-44 relative inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-secondary/30 hover:bg-secondary/40 text-accent text-sm font-semibold transition-colors cursor-pointer"
                   >
                     <span>{t('Open', 'افتح')}</span>
                     <ChevronRight className="w-3.5 h-3.5 rtl:rotate-180" />

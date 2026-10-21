@@ -416,7 +416,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
                       <button
                         type="button"
                         onClick={() => handleCopyRef(b.referenceCode)}
-                        className="p-1 rounded-md text-muted-foreground hover:text-foreground glass-hover hover:bg-surface transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+                        className="tap-44 relative p-1 rounded-md text-muted-foreground hover:text-foreground glass-hover hover:bg-surface transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
                         title={isAr ? 'نسخ الرقم المرجعي' : 'Copy reference code'}
                         aria-label={isAr ? `نسخ الرقم المرجعي ${b.referenceCode}` : `Copy reference code ${b.referenceCode}`}
                       >

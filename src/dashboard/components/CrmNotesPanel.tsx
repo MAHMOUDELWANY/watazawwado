@@ -83,7 +83,7 @@ export function CrmNotesPanel({ studentId }: { studentId: string }) {
             </span>
           ))}
           {suggested.filter((s) => !tags.includes(s)).map((s) => (
-            <button key={s} type="button" disabled={busy} onClick={() => saveTags([...tags, s])} className="px-2.5 py-1 rounded-full border border-dashed border-border text-xs text-muted-foreground hover:text-foreground cursor-pointer">
+            <button key={s} type="button" disabled={busy} onClick={() => saveTags([...tags, s])} className="tap-44 relative px-2.5 py-1 rounded-full border border-dashed border-border text-xs text-muted-foreground hover:text-foreground cursor-pointer">
               + {tagLabel(s)}
             </button>
           ))}

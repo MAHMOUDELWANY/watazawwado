@@ -308,7 +308,7 @@ export function DashboardApp() {
 
   return (
     <div
-      className={`relative isolate brand-lights h-screen bg-background text-foreground font-sans flex overflow-hidden ${ar ? 'font-arabic' : ''}`}
+      className={`relative isolate brand-lights h-screen supports-[height:100dvh]:h-dvh bg-background text-foreground font-sans flex overflow-hidden ${ar ? 'font-arabic' : ''}`}
       dir={ar ? 'rtl' : 'ltr'}
     >
       {/* Desktop: floating ink rail with every page */}
@@ -378,7 +378,7 @@ export function DashboardApp() {
         }`}
       >
         <div className="h-20 flex items-center justify-between px-6 border-b border-border/50">
-          <Link to="/" className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg p-1">
+          <Link to="/" className="tap-44 relative flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg p-1">
             <BrandLogo variant="compact" />
             <div>
               <span className="text-xl font-display font-bold text-foreground block leading-none">
@@ -446,7 +446,7 @@ export function DashboardApp() {
             <button
               onClick={toggleLanguage}
               data-tour="language-toggle"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all cursor-pointer"
+              className="tap-44 relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all cursor-pointer"
             >
               <Globe className="w-3.5 h-3.5" />
               <span>{lang === 'en' ? 'عربي' : 'EN'}</span>
@@ -472,7 +472,7 @@ export function DashboardApp() {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden md:ps-[100px]">
+      <main className="flex-1 flex flex-col min-w-0 h-screen supports-[height:100dvh]:h-dvh overflow-hidden md:ps-[100px]">
         <header className="shrink-0 z-20 px-3 sm:px-6 lg:px-8 pt-3 md:pt-4">
           <div className="max-w-6xl mx-auto flex items-center gap-2 sm:gap-3">
             {/* Start: menu (phones) and workspace name */}

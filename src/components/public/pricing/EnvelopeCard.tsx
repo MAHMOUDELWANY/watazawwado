@@ -112,7 +112,7 @@ export const EnvelopeCard = React.forwardRef<HTMLDivElement, EnvelopeCardProps>(
               <button
                 type="button"
                 onClick={onSecondary}
-                className="w-full py-1 text-sm font-semibold text-muted-foreground underline underline-offset-4 hover:text-foreground transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
+                className="w-full min-h-11 py-1 text-sm font-semibold text-muted-foreground underline underline-offset-4 hover:text-foreground transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
               >
                 {secondaryLabel}
               </button>

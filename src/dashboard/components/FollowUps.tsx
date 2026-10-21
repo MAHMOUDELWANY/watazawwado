@@ -96,7 +96,7 @@ export function FollowUpsCard() {
                       href={buildWhatsAppUrl(followUpMessage(task.contactName, isAr), task.whatsapp)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl btn-whatsapp-solid text-xs font-semibold"
+                      className="tap-44 relative inline-flex items-center gap-1 px-3 py-1.5 rounded-xl btn-whatsapp-solid text-xs font-semibold"
                     >
                       <MessageCircle className="w-3.5 h-3.5" />
                       {t('WhatsApp', 'واتساب')}

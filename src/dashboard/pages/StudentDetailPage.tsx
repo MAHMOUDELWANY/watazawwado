@@ -417,7 +417,7 @@ export default function StudentDetailPage() {
                 </div>
                 <button
                   onClick={() => { setAiBrief(null); setBriefError(null); }}
-                  className="text-xl leading-none text-muted-foreground hover:text-foreground p-1 transition-colors"
+                  className="tap-44 relative text-xl leading-none text-muted-foreground hover:text-foreground p-1 transition-colors"
                   title={t('Dismiss', 'إخفاء')}
                   aria-label={t('Dismiss', 'إخفاء')}
                 >
@@ -601,7 +601,7 @@ export default function StudentDetailPage() {
                       href={next_lesson.zoom_join_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors cursor-pointer"
+                      className="tap-44 relative inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors cursor-pointer"
                     >
                       <span>{t('Open Zoom', 'افتح Zoom')}</span>
                       <ExternalLink className="w-3 h-3" />
@@ -1013,7 +1013,7 @@ export default function StudentDetailPage() {
                             <button
                               type="button"
                               onClick={() => setEditingNoteId(null)}
-                              className="px-2.5 py-1 text-[11px] rounded-lg text-muted-foreground hover:bg-surface-subtle cursor-pointer"
+                              className="tap-44 relative px-2.5 py-1 text-[11px] rounded-lg text-muted-foreground hover:bg-surface-subtle cursor-pointer"
                             >
                               {t('Cancel', 'إلغاء')}
                             </button>
@@ -1021,7 +1021,7 @@ export default function StudentDetailPage() {
                               type="button"
                               onClick={() => handleUpdateNote(note.id)}
                               disabled={isUpdatingNote || (!editNoteContent.trim() && !editNoteFamilySummary.trim())}
-                              className="px-3 py-1 text-[11px] font-semibold rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
+                              className="tap-44 relative px-3 py-1 text-[11px] font-semibold rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
                             >
                               {isUpdatingNote ? t('Saving…', 'جارٍ الحفظ…') : t('Save', 'احفظ')}
                             </button>
@@ -1035,7 +1035,7 @@ export default function StudentDetailPage() {
                             <div className="flex items-center gap-1.5">
                               <button
                                 onClick={() => handleStartEditNote(note)}
-                                className="p-1 hover:text-primary transition-colors cursor-pointer"
+                                className="tap-44 relative p-1 hover:text-primary transition-colors cursor-pointer"
                                 title={t('Edit note', 'عدّل الملاحظة')}
                                 aria-label={t('Edit note', 'عدّل الملاحظة')}
                               >
@@ -1043,7 +1043,7 @@ export default function StudentDetailPage() {
                               </button>
                               <button
                                 onClick={() => handleDeleteNote(note.id)}
-                                className="p-1 hover:text-destructive transition-colors cursor-pointer"
+                                className="tap-44 relative p-1 hover:text-destructive transition-colors cursor-pointer"
                                 title={t('Delete note', 'امسح الملاحظة')}
                                 aria-label={t('Delete note', 'امسح الملاحظة')}
                               >

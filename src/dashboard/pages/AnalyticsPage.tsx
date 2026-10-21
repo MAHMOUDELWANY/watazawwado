@@ -149,7 +149,7 @@ export default function AnalyticsPage() {
             <button
               onClick={() => fetchAnalytics(true)}
               disabled={refreshing}
-              className="px-3 py-1.5 rounded-xl border border-border glass-card text-sm font-medium text-foreground hover:bg-stone-50 dark:hover:bg-border/40 transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              className="tap-44 relative px-3 py-1.5 rounded-xl border border-border glass-card text-sm font-medium text-foreground hover:bg-stone-50 dark:hover:bg-border/40 transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
               <span className="hidden sm:inline">{t('Refresh', 'تحديث')}</span>

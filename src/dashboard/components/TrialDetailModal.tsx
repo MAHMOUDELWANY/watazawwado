@@ -335,7 +335,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
           <button
             aria-label={t('Close', 'إغلاق')}
             onClick={onClose}
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground glass-hover hover:bg-surface transition-colors"
+            className="tap-44 relative p-1.5 rounded-lg text-muted-foreground hover:text-foreground glass-hover hover:bg-surface transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -596,7 +596,7 @@ export function TrialDetailModal({ trial, onClose, onAssessmentSaved }: TrialDet
               <button
                 type="button"
                 onClick={() => copyToClipboard(studentPlanMessage, 'plan')}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg glass-card text-sm font-medium text-foreground border border-border hover:bg-surface-subtle transition-colors cursor-pointer"
+                className="tap-44 relative inline-flex items-center gap-1 px-2.5 py-1 rounded-lg glass-card text-sm font-medium text-foreground border border-border hover:bg-surface-subtle transition-colors cursor-pointer"
               >
                 {copiedLink === 'plan' ? <Check className="w-3 h-3 text-success" /> : <Copy className="w-3 h-3 opacity-70" />}
                 <span>{copiedLink === 'plan' ? t('Copied!', 'اتنسخت!') : t('Copy plan for the student', 'انسخ الخطة للطالب')}</span>

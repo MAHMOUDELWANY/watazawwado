@@ -237,7 +237,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated, openSumma
                 </p>
               )}
             </div>
-            <button onClick={onClose} className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground glass-hover hover:bg-surface transition-colors" aria-label={t('Close', 'إغلاق')}>
+            <button onClick={onClose} className="tap-44 relative p-1.5 rounded-lg text-muted-foreground hover:text-foreground glass-hover hover:bg-surface transition-colors" aria-label={t('Close', 'إغلاق')}>
               <X className="w-5 h-5" />
             </button>
           </div>
@@ -350,7 +350,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated, openSumma
                   <button
                     onClick={handleGenerateAiBrief}
                     disabled={isGeneratingBrief}
-                    className="text-[13px] bg-accent/10 hover:bg-accent/20 text-accent px-2 py-0.5 rounded-full font-medium transition-colors disabled:opacity-50"
+                    className="tap-44 relative text-[13px] bg-accent/10 hover:bg-accent/20 text-accent px-2 py-0.5 rounded-full font-medium transition-colors disabled:opacity-50"
                   >
                     {isGeneratingBrief ? t('Preparing…', 'جارٍ التحضير…') : t('Prepare brief', 'جهّز ملخص')}
                   </button>
@@ -361,7 +361,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated, openSumma
                   <div className="flex justify-end mb-2">
                     <button
                       onClick={() => { setAiBrief(null); setBriefError(null); }}
-                      className="text-muted-foreground hover:text-foreground p-1 transition-colors leading-none"
+                      className="tap-44 relative text-muted-foreground hover:text-foreground p-1 transition-colors leading-none"
                       aria-label={t('Dismiss', 'إخفاء')}
                     >
                       <X className="w-4 h-4" />
@@ -559,7 +559,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated, openSumma
                       onClick={() => { setIsMarkingCompleted(true); setIsMarkingNoShow(false); setIsRequestingMove(false); }}
                       disabled={updatingStatus || notStartedYet}
                       title={notStartedYet ? t('Available once the lesson starts', 'متاح لما الحصة تبدأ') : undefined}
-                      className="px-3 py-1.5 btn-primary-material text-primary-foreground rounded-xl text-sm font-semibold shadow-2xs transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                      className="tap-44 relative px-3 py-1.5 btn-primary-material text-primary-foreground rounded-xl text-sm font-semibold shadow-2xs transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                     >
                       <CalendarCheck2 className="w-3.5 h-3.5" />
                       {t('Mark completed', 'الحصة تمت')}
@@ -570,7 +570,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated, openSumma
                       onClick={() => { setIsMarkingNoShow(true); setIsMarkingCompleted(false); setIsRequestingMove(false); }}
                       disabled={updatingStatus || notStartedYet}
                       title={notStartedYet ? t('Available once the lesson starts', 'متاح لما الحصة تبدأ') : undefined}
-                      className="px-3 py-1.5 bg-warning/10 hover:bg-warning/20 text-warning-foreground border border-warning/30 rounded-xl text-sm font-medium transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                      className="tap-44 relative px-3 py-1.5 bg-warning/10 hover:bg-warning/20 text-warning-foreground border border-warning/30 rounded-xl text-sm font-medium transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                     >
                       <UserX className="w-3.5 h-3.5" />
                       {t('No-show', 'غياب')}
@@ -579,7 +579,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated, openSumma
                   {isUpcoming && !isRequestingMove && (
                     <button
                       onClick={() => { setIsRequestingMove(true); setIsMarkingCompleted(false); setIsMarkingNoShow(false); }}
-                      className="px-3 py-1.5 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-sm font-medium transition-colors flex items-center gap-1.5 cursor-pointer"
+                      className="tap-44 relative px-3 py-1.5 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-sm font-medium transition-colors flex items-center gap-1.5 cursor-pointer"
                     >
                       <Send className="w-3.5 h-3.5" />
                       {t('Ask to reschedule', 'اطلب تغيير الميعاد')}

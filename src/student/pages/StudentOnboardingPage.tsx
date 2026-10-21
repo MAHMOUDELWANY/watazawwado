@@ -829,7 +829,7 @@ export default function StudentOnboardingPage({
                             <button
                               type="button"
                               onClick={() => handleRemoveChild(index)}
-                              className="text-destructive hover:bg-destructive/10 p-1.5 rounded-lg text-xs font-medium inline-flex items-center gap-1 transition-colors cursor-pointer"
+                              className="min-h-11 text-destructive hover:bg-destructive/10 p-1.5 rounded-lg text-xs font-medium inline-flex items-center gap-1 transition-colors cursor-pointer"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                               <span>{isRTL ? 'شيل' : 'Remove'}</span>

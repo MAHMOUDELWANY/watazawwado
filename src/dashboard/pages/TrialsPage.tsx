@@ -100,7 +100,7 @@ export default function TrialsPage() {
           <button
             onClick={() => fetchTrials(true)}
             disabled={refreshing || loading}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass-card border-none text-sm font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer shadow-2xs"
+            className="tap-44 relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass-card border-none text-sm font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer shadow-2xs"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-accent' : 'opacity-70'}`} />
             <span>{t('Refresh', 'تحديث')}</span>
@@ -341,7 +341,7 @@ export default function TrialsPage() {
                       e.stopPropagation();
                       setSelectedTrial(trial);
                     }}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-secondary/30 hover:bg-secondary/40 text-accent text-sm font-medium transition-colors cursor-pointer border border-secondary/50"
+                    className="tap-44 relative inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-secondary/30 hover:bg-secondary/40 text-accent text-sm font-medium transition-colors cursor-pointer border border-secondary/50"
                   >
                     <span>{isAssessed ? t('View / edit plan', 'شوف / عدّل الخطة') : t('Assess & plan', 'قيّم واعمل خطة')}</span>
                     <ChevronRight className="w-3.5 h-3.5 rtl:rotate-180" />

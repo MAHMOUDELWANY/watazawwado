@@ -115,9 +115,9 @@ export function HowItWorksPage() {
               </a>
             </div>
             <p className="mt-6 text-sm text-[#FAF7F2]/75 flex flex-wrap justify-center gap-x-5 gap-y-2">
-              <Link to="/learning" className="underline hover:text-[#FAF7F2]">{isEn ? 'The subjects' : 'المواد'}</Link>
-              <Link to="/pricing" className="underline hover:text-[#FAF7F2]">{isEn ? 'Prices' : 'الأسعار'}</Link>
-              <Link to="/about" className="underline hover:text-[#FAF7F2]">{isEn ? 'About us' : 'من نحن'}</Link>
+              <Link to="/learning" className="inline-flex items-center min-h-11 underline hover:text-[#FAF7F2]">{isEn ? 'The subjects' : 'المواد'}</Link>
+              <Link to="/pricing" className="inline-flex items-center min-h-11 underline hover:text-[#FAF7F2]">{isEn ? 'Prices' : 'الأسعار'}</Link>
+              <Link to="/about" className="inline-flex items-center min-h-11 underline hover:text-[#FAF7F2]">{isEn ? 'About us' : 'من نحن'}</Link>
             </p>
           </section>
 

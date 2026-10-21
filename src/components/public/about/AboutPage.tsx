@@ -189,9 +189,9 @@ export function AboutPage() {
               </a>
             </div>
             <p className="mt-6 text-sm text-[#FAF7F2]/75 flex flex-wrap justify-center gap-x-5 gap-y-2">
-              <Link to="/how-it-works" className="underline hover:text-[#FAF7F2]">{isEn ? 'How it works' : 'كيف نعمل'}</Link>
-              <Link to="/learning" className="underline hover:text-[#FAF7F2]">{isEn ? 'The subjects' : 'المواد'}</Link>
-              <Link to="/pricing" className="underline hover:text-[#FAF7F2]">{isEn ? 'Prices' : 'الأسعار'}</Link>
+              <Link to="/how-it-works" className="inline-flex items-center min-h-11 underline hover:text-[#FAF7F2]">{isEn ? 'How it works' : 'كيف نعمل'}</Link>
+              <Link to="/learning" className="inline-flex items-center min-h-11 underline hover:text-[#FAF7F2]">{isEn ? 'The subjects' : 'المواد'}</Link>
+              <Link to="/pricing" className="inline-flex items-center min-h-11 underline hover:text-[#FAF7F2]">{isEn ? 'Prices' : 'الأسعار'}</Link>
             </p>
           </section>
 

@@ -146,7 +146,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
           <button
             aria-label={t('Close', 'إغلاق')}
             onClick={onClose}
-            className="p-1.5 rounded-lg text-foreground/60 dark:text-muted-foreground/60 hover:text-foreground dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+            className="tap-44 relative p-1.5 rounded-lg text-foreground/60 dark:text-muted-foreground/60 hover:text-foreground dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>

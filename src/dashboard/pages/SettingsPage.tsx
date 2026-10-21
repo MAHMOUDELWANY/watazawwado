@@ -254,7 +254,7 @@ export default function SettingsPage() {
                         <button
                           onClick={() => handleSaveService(service)}
                           disabled={savingServiceId === service.id}
-                          className="self-start sm:self-auto px-3 py-1.5 rounded-xl bg-secondary/30 hover:bg-secondary/40 text-accent text-sm font-semibold transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50 min-h-[36px]"
+                          className="tap-44 relative self-start sm:self-auto px-3 py-1.5 rounded-xl bg-secondary/30 hover:bg-secondary/40 text-accent text-sm font-semibold transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50 min-h-[36px]"
                         >
                           {savingServiceId === service.id ? <div className="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin" /> : <Save className="w-3.5 h-3.5" />}
                           {t('Save', 'احفظ')}

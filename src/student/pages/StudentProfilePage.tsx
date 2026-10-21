@@ -779,7 +779,7 @@ export default function StudentProfilePage({
 
                           <Link
                             to={`/student/book?studentId=${child.id}&forChild=true`}
-                            className="mt-2 w-full py-1.5 px-3 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary font-medium text-xs text-center transition-colors"
+                            className="mt-2 w-full min-h-11 py-1.5 px-3 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary font-medium text-xs text-center transition-colors"
                           >
                             {isAr ? `احجز لـ ${child.name}` : `Book for ${child.name}`}
                           </Link>

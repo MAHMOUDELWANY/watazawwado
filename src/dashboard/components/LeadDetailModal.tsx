@@ -233,7 +233,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
           <button
             aria-label={t('Close', 'إغلاق')}
             onClick={onClose}
-            className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground glass-hover hover:bg-surface transition-colors cursor-pointer"
+            className="tap-44 relative p-1.5 rounded-lg text-muted-foreground hover:text-foreground glass-hover hover:bg-surface transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -291,7 +291,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-success hover:bg-success/90 text-white text-sm font-semibold transition-colors shadow-2xs cursor-pointer"
+                  className="tap-44 relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-success hover:bg-success/90 text-white text-sm font-semibold transition-colors shadow-2xs cursor-pointer"
                 >
                   <MessageCircle className="w-3.5 h-3.5" />
                   <span>{t('WhatsApp', 'واتساب')}</span>
@@ -305,7 +305,7 @@ export function LeadDetailModal({ lead, onClose, onLeadUpdated }: LeadDetailModa
               {lead.email && (
                 <a
                   href={`mailto:${lead.email}`}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg glass-card border-none text-sm font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
+                  className="tap-44 relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg glass-card border-none text-sm font-medium text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
                 >
                   <Mail className="w-3.5 h-3.5" />
                   <span>{t('Email', 'إيميل')}</span>

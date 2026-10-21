@@ -418,7 +418,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
               {booking && (
                 <button
                   onClick={() => copyToClipboard(booking.reference_code, 'ref')}
-                  className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
+                  className="tap-44 relative p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
                   title={t('Copy reference', 'انسخ رقم الحجز')}
                   aria-label={t('Copy reference', 'انسخ رقم الحجز')}
                 >
@@ -461,7 +461,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
               : 'bg-destructive/15 text-destructive border-destructive/30'
           }`}>
             <span>{actionMessage.text}</span>
-            <button onClick={() => setActionMessage(null)} className="opacity-70 hover:opacity-100 p-1 cursor-pointer" aria-label={t('Dismiss', 'إخفاء')}>
+            <button onClick={() => setActionMessage(null)} className="tap-44 relative opacity-70 hover:opacity-100 p-1 cursor-pointer" aria-label={t('Dismiss', 'إخفاء')}>
               <X className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -625,7 +625,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     </div>
                     <button
                       onClick={() => setShowPaymentModal(true)}
-                      className="px-3 py-1.5 text-sm font-semibold text-primary-foreground btn-primary-material rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
+                      className="tap-44 relative px-3 py-1.5 text-sm font-semibold text-primary-foreground btn-primary-material rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       {t('Record payment', 'سجّل دفع')}
@@ -694,7 +694,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                             {p.status === 'confirmed' && (
                               <button
                                 onClick={() => handleRefundPayment(p.id)}
-                                className="shrink-0 px-3 py-1.5 text-sm font-semibold text-destructive hover:bg-destructive/15 border border-destructive/30 rounded-xl transition-colors cursor-pointer min-h-[36px]"
+                                className="tap-44 relative shrink-0 px-3 py-1.5 text-sm font-semibold text-destructive hover:bg-destructive/15 border border-destructive/30 rounded-xl transition-colors cursor-pointer min-h-[36px]"
                               >
                                 {t('Refund', 'استرداد')}
                               </button>
@@ -703,14 +703,14 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                               <div className="flex items-center gap-2 shrink-0">
                                 <button
                                   onClick={() => handleConfirmPayment(p.id)}
-                                  className="px-3 py-1.5 text-sm font-semibold text-success-foreground bg-success hover:bg-success/90 rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
+                                  className="tap-44 relative px-3 py-1.5 text-sm font-semibold text-success-foreground bg-success hover:bg-success/90 rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
                                 >
                                   <CheckCircle2 className="w-3.5 h-3.5" />
                                   {t('Confirm', 'تأكيد')}
                                 </button>
                                 <button
                                   onClick={() => handleRejectPayment(p.id)}
-                                  className="px-3 py-1.5 text-sm font-semibold text-destructive hover:bg-destructive/15 border border-destructive/30 rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
+                                  className="tap-44 relative px-3 py-1.5 text-sm font-semibold text-destructive hover:bg-destructive/15 border border-destructive/30 rounded-xl transition-colors flex items-center gap-1 cursor-pointer min-h-[36px]"
                                 >
                                   <XCircle className="w-3.5 h-3.5" />
                                   {t('Reject', 'رفض')}
@@ -735,10 +735,10 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     )}
                   </div>
                   <div className="flex gap-2">
-                    <button onClick={() => handlePayLaterDecision('approve')} className="px-3 py-1.5 text-sm font-semibold text-success-foreground bg-success hover:bg-success/90 rounded-xl cursor-pointer min-h-[36px]">
+                    <button onClick={() => handlePayLaterDecision('approve')} className="tap-44 relative px-3 py-1.5 text-sm font-semibold text-success-foreground bg-success hover:bg-success/90 rounded-xl cursor-pointer min-h-[36px]">
                       {t('Approve', 'موافقة')}
                     </button>
-                    <button onClick={() => handlePayLaterDecision('reject')} className="px-3 py-1.5 text-sm font-semibold text-destructive hover:bg-destructive/15 border border-destructive/30 rounded-xl cursor-pointer min-h-[36px]">
+                    <button onClick={() => handlePayLaterDecision('reject')} className="tap-44 relative px-3 py-1.5 text-sm font-semibold text-destructive hover:bg-destructive/15 border border-destructive/30 rounded-xl cursor-pointer min-h-[36px]">
                       {t('Decline', 'رفض')}
                     </button>
                   </div>
@@ -763,7 +763,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                   <button
                     onClick={handleSaveNotes}
                     disabled={savingNotes}
-                    className="px-3.5 py-1.5 text-sm font-medium text-foreground hover:bg-surface-subtle rounded-xl border border-border transition-colors disabled:opacity-50 cursor-pointer min-h-[36px]"
+                    className="tap-44 relative px-3.5 py-1.5 text-sm font-medium text-foreground hover:bg-surface-subtle rounded-xl border border-border transition-colors disabled:opacity-50 cursor-pointer min-h-[36px]"
                   >
                     {savingNotes ? t('Saving…', 'جارٍ الحفظ…') : t('Save notes', 'احفظ الملاحظات')}
                   </button>

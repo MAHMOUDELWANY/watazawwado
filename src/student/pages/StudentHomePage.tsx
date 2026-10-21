@@ -664,7 +664,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                       <button
                         type="button"
                         onClick={() => setPaymentClaimBooking(nextBooking)}
-                        className="px-3 py-1.5 btn-primary-material rounded-xl font-semibold transition-colors shrink-0 cursor-pointer self-start sm:self-center text-sm shadow-xs"
+                        className="px-3 py-1.5 min-h-11 btn-primary-material rounded-xl font-semibold transition-colors shrink-0 cursor-pointer self-start sm:self-center text-sm shadow-xs"
                       >
                         {isAr ? 'الدفع وتأكيد الحجز' : 'Pay & Confirm'}
                       </button>
@@ -847,7 +847,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                       <div className="flex items-center gap-2 self-start sm:self-center shrink-0">
                         <Link
                           to="/student/lessons"
-                          className="px-3 py-1.5 rounded-lg border border-border glass-hover hover:bg-surface-subtle text-foreground text-sm font-medium transition-colors"
+                          className="inline-flex items-center px-3 py-1.5 min-h-11 rounded-lg border border-border glass-hover hover:bg-surface-subtle text-foreground text-sm font-medium transition-colors"
                         >
                           {isAr ? 'التفاصيل' : 'Details'}
                         </Link>
@@ -855,7 +855,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                         <Link
                           id={`btn-repeat-history-${b.id}`}
                           to={`/student/book?repeat=${b.id}`}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary/30 hover:bg-primary text-primary hover:text-primary-foreground text-sm font-semibold transition-all cursor-pointer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 min-h-11 rounded-lg bg-secondary/30 hover:bg-primary text-primary hover:text-primary-foreground text-sm font-semibold transition-all cursor-pointer"
                         >
                           <RotateCcw className="w-3 h-3" />
                           <span>{isAr ? 'حجز مجدداً' : 'Rebook'}</span>

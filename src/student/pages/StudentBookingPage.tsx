@@ -917,7 +917,7 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
               fetchBookings(fresh || accessToken);
             }}
             disabled={bookingsLoading}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-warning hover:bg-warning/90 text-primary-foreground font-medium self-start sm:self-auto transition-colors cursor-pointer disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 min-h-11 rounded-lg bg-warning hover:bg-warning/90 text-primary-foreground font-medium self-start sm:self-auto transition-colors cursor-pointer disabled:opacity-50"
           >
             {bookingsLoading ? <BrandSpinner size={14} /> : <RefreshCw className="w-3.5 h-3.5" />}
             <span>{isAr ? 'حاول تاني' : 'Try again'}</span>

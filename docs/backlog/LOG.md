@@ -4,6 +4,15 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### QA-04 Mobile break test (2026-10-21)
+- Result: done (main). Public pages measured live on production at 360×740 (home, pricing, learning, faq, about, how-it-works, safety, terms, privacy, staff sign-in): no horizontal overflow on any page. Portal and dashboard checked from code (owner rule).
+- Fixed: footer column and legal links 20–32 px tall → 44 px; "related pages" links on FAQ/About/How it works 20 px → 44 px; pricing "try a free lesson first" 29 px and "questions about paying?" 18 px → 44 px; staff sign-in: forgot-password, show-password, student-area link, theme button → 44 px. Portal: header language and messages/notifications icons, copy-reference button (a new `tap-44` class gives a 44 px touch area without changing the look), and seven text buttons (pay/confirm, details, book again, pay now, ask our team, remove child, retry) → `min-h-11`. Dashboard: 48 small buttons/links get `tap-44` (look unchanged). The portal and dashboard shells used `h-screen` (100vh), which is taller than a phone's visible area when the address bar shows; now `100dvh` where supported. The floating learning-guide button covered the hero's trial button on a 360×740 phone; on phones it now appears after a short scroll.
+- Checked and fine: the mobile tab bar has matching bottom padding plus the safe-area inset; the only fixed element on the public home is the header.
+- Tests: new `test/qa-04-mobile.test.ts`.
+- Migration: none
+- Checks: tsc pass; npm test 1179 pass / 0 fail / 5 skipped; build pass.
+- Not checked / risks: signed-in pages were not rendered on a phone; overlap of neighbouring `tap-44` areas is a few pixels where buttons sit 6 px apart (the later one wins); the keyboard covering inputs was reviewed from code only (no bottom-fixed inputs in the portal; the guide chat panel uses `100dvh`).
+
 ### QA-03 RTL and bilingual sweep (2026-10-21)
 - Result: done (main). Swept `src/` (curriculum slides excluded: a fixed 16:9 canvas laid out on purpose).
 - Fixed: physical margins/paddings that ignored the reading direction → logical (`ms-`, `pe-`, `ps-`, `start-`) in the booking flow (stepper link, date step, service list, time-zone search field and its icon), the packages and payments pages. Six hard-coded English accessible names → bilingual (booking header close, checkout close, shared Modal close, loading spinner, sign-up steps). The booking page's error banner mixed Arabic and English ("تحديث الجلسة / Retry", an Arabic-only sign-in message, and the raw server error with English after it): now one plain sentence and a "Try again" button in the visitor's language, without the raw error. The side menu border now sits on its inner edge in both directions.

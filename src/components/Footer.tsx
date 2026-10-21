@@ -56,27 +56,27 @@ export const Footer: React.FC<FooterProps> = ({
               </div>
               <ul className="space-y-0.5 text-muted-foreground font-medium">
                 <li>
-                  <Link to="/learning" className="inline-block py-1.5 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
+                  <Link to="/learning" className="inline-flex items-center min-h-11 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
                     {isEn ? 'Quran & Tajweed' : 'القرآن والتجويد'}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/learning" className="inline-block py-1.5 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
+                  <Link to="/learning" className="inline-flex items-center min-h-11 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
                     {isEn ? 'The Zad Path' : 'مسار الأثر'}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/learning" className="inline-block py-1.5 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
+                  <Link to="/learning" className="inline-flex items-center min-h-11 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
                     {isEn ? 'Arabic' : 'اللغة العربية'}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/learning" className="inline-block py-1.5 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
+                  <Link to="/learning" className="inline-flex items-center min-h-11 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
                     {isEn ? 'English' : 'اللغة الإنجليزية'}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/pricing" className="inline-block py-1.5 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
+                  <Link to="/pricing" className="inline-flex items-center min-h-11 hover:text-teal-700 dark:hover:text-teal-300 transition-colors">
                     {isEn ? 'Prices & packages' : 'الأسعار والباقات'}
                   </Link>
                 </li>
@@ -89,37 +89,37 @@ export const Footer: React.FC<FooterProps> = ({
               </div>
               <ul className="space-y-0.5 text-muted-foreground font-medium">
                 <li>
-                  <Link to="/about" className="inline-block py-1.5 hover:text-accent transition-colors">
+                  <Link to="/about" className="inline-flex items-center min-h-11 hover:text-accent transition-colors">
                     {isEn ? 'About us' : 'من نحن'}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/how-it-works" className="inline-block py-1.5 hover:text-accent font-semibold transition-colors">
+                  <Link to="/how-it-works" className="inline-flex items-center min-h-11 hover:text-accent font-semibold transition-colors">
                     {isEn ? 'How it works' : 'كيف نعمل'}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/pricing" className="inline-block py-1.5 hover:text-accent transition-colors">
+                  <Link to="/pricing" className="inline-flex items-center min-h-11 hover:text-accent transition-colors">
                     {isEn ? 'Pricing' : 'الأسعار'}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/faq" className="inline-block py-1.5 hover:text-accent transition-colors">
+                  <Link to="/faq" className="inline-flex items-center min-h-11 hover:text-accent transition-colors">
                     {isEn ? 'FAQ' : 'الأسئلة الشائعة'}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/safety" className="inline-block py-1.5 hover:text-accent transition-colors">
+                  <Link to="/safety" className="inline-flex items-center min-h-11 hover:text-accent transition-colors">
                     {isEn ? 'Child safety' : 'أمان الأطفال'}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/privacy" className="inline-block py-1.5 hover:text-accent transition-colors">
+                  <Link to="/privacy" className="inline-flex items-center min-h-11 hover:text-accent transition-colors">
                     {isEn ? 'Privacy' : 'الخصوصية'}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/terms" className="inline-block py-1.5 hover:text-accent transition-colors">
+                  <Link to="/terms" className="inline-flex items-center min-h-11 hover:text-accent transition-colors">
                     {isEn ? 'Terms' : 'الشروط'}
                   </Link>
                 </li>
@@ -155,11 +155,11 @@ export const Footer: React.FC<FooterProps> = ({
           </div>
 
           <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-                        <Link to="/privacy" className="hover:text-foreground hover:underline transition-colors">
+                        <Link to="/privacy" className="inline-flex items-center min-h-11 hover:text-foreground hover:underline transition-colors">
               {isEn ? 'Privacy' : 'الخصوصية'}
             </Link>
             <span>•</span>
-            <Link to="/terms" className="hover:text-foreground hover:underline transition-colors">
+            <Link to="/terms" className="inline-flex items-center min-h-11 hover:text-foreground hover:underline transition-colors">
               {isEn ? 'Terms' : 'الشروط'}
             </Link>
             <span>•</span>
@@ -169,7 +169,7 @@ export const Footer: React.FC<FooterProps> = ({
             <span>•</span>
             <Link
               to="/staff/login"
-              className="text-muted-foreground hover:text-foreground hover:underline font-medium flex items-center gap-1"
+              className="text-muted-foreground hover:text-foreground hover:underline font-medium flex items-center gap-1 min-h-11"
             >
               <span>{isEn ? 'Teacher sign-in' : 'دخول المعلمين'}</span>
             </Link>

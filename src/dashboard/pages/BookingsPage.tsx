@@ -407,7 +407,7 @@ export default function BookingsPage() {
                         {isSuperAdmin && b.payment_status === 'pending_review' && (
                           <button
                             onClick={() => setSelectedBookingId(b.id)}
-                            className="px-3 py-1.5 text-sm font-medium text-warning bg-warning/15 hover:bg-warning/25 rounded-xl border border-warning/30 transition-colors cursor-pointer min-h-[36px]"
+                            className="tap-44 relative px-3 py-1.5 text-sm font-medium text-warning bg-warning/15 hover:bg-warning/25 rounded-xl border border-warning/30 transition-colors cursor-pointer min-h-[36px]"
                           >
                             {t('Review payment', 'راجع الدفع')}
                           </button>

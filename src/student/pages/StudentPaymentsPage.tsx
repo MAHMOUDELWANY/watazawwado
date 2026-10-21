@@ -314,7 +314,7 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
                   setSelectedBookingForClaim(b);
                   setIsClaimModalOpen(true);
                 }}
-                className="inline-flex items-center gap-2 px-3.5 py-1.5 glass-card border border-primary/40 text-foreground hover:border-primary rounded-xl text-sm font-medium transition-colors cursor-pointer"
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 min-h-11 glass-card border border-primary/40 text-foreground hover:border-primary rounded-xl text-sm font-medium transition-colors cursor-pointer"
               >
                 <span>{b.serviceTitle} ({b.referenceCode})</span>
                 <span className="text-primary font-bold">{isAr ? 'الدفع الآن' : 'Pay Now'} →</span>

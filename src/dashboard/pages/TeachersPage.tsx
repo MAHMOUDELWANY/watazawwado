@@ -276,7 +276,7 @@ export default function TeachersPage() {
             <div className="flex items-center justify-between gap-2 pt-1">
               <Link
                 to={`/dashboard/students?teacher=${encodeURIComponent(tc.email)}`}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-semibold glass-surface glass-hover hover:bg-surface border-none text-foreground transition-colors"
+                className="tap-44 relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-semibold glass-surface glass-hover hover:bg-surface border-none text-foreground transition-colors"
               >
                 <Users className="w-3.5 h-3.5 text-accent" />
                 <span>{t('Their students', 'طلابه')}</span>

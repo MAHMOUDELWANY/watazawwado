@@ -542,7 +542,7 @@ export function PostLessonSummaryEditor({
                 type="button"
                 data-testid="add-memorization-achievement"
                 onClick={handleAddMemorizationRange}
-                className="w-full inline-flex items-center justify-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-primary/15 text-primary hover:bg-primary/25 border border-primary/30 transition-colors cursor-pointer"
+                className="tap-44 relative w-full inline-flex items-center justify-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-primary/15 text-primary hover:bg-primary/25 border border-primary/30 transition-colors cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>{t('Add range', 'أضف الآيات')}</span>
@@ -608,7 +608,7 @@ export function PostLessonSummaryEditor({
               <button
                 type="button"
                 onClick={handleAddCustomRule}
-                className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-secondary/40 text-foreground hover:bg-secondary/60 cursor-pointer"
+                className="tap-44 relative px-2.5 py-1 text-xs font-semibold rounded-lg bg-secondary/40 text-foreground hover:bg-secondary/60 cursor-pointer"
               >
                 {t('Add', 'أضف')}
               </button>
@@ -661,7 +661,7 @@ export function PostLessonSummaryEditor({
                 type="button"
                 data-testid="add-reading-achievement"
                 onClick={handleAddReadingStageOrPage}
-                className="shrink-0 whitespace-nowrap inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-primary/15 text-primary hover:bg-primary/25 border border-primary/30 cursor-pointer"
+                className="tap-44 relative shrink-0 whitespace-nowrap inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-primary/15 text-primary hover:bg-primary/25 border border-primary/30 cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>{t('Add stage + page', 'أضف المرحلة والصفحة')}</span>
@@ -739,7 +739,7 @@ export function PostLessonSummaryEditor({
               key={starter.chipEn}
               type="button"
               onClick={() => applyQuickFamilyStarter(starter.ar, starter.en)}
-              className="px-2 py-0.5 rounded-md text-[11px] glass-card border border-border-subtle text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              className="tap-44 relative px-2 py-0.5 rounded-md text-[11px] glass-card border border-border-subtle text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
             >
               {isAr ? starter.chipAr : starter.chipEn}
             </button>

@@ -141,7 +141,7 @@ export default function StudentsPage() {
         <button
           onClick={() => fetchStudents(true)}
           disabled={refreshing}
-          className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-xl glass-card border-none text-foreground hover:bg-surface-subtle transition-colors disabled:opacity-50 cursor-pointer"
+          className="tap-44 relative self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-xl glass-card border-none text-foreground hover:bg-surface-subtle transition-colors disabled:opacity-50 cursor-pointer"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
           <span>{t('Refresh', 'تحديث')}</span>
@@ -247,7 +247,7 @@ export default function StudentsPage() {
           <h3 className="text-sm font-medium text-destructive">{error}</h3>
           <button
             onClick={() => fetchStudents()}
-            className="px-4 py-1.5 text-sm font-medium rounded-xl bg-destructive/20 text-destructive hover:bg-destructive/30 transition-colors cursor-pointer"
+            className="tap-44 relative px-4 py-1.5 text-sm font-medium rounded-xl bg-destructive/20 text-destructive hover:bg-destructive/30 transition-colors cursor-pointer"
           >
             {t('Try again', 'حاول تاني')}
           </button>
@@ -404,7 +404,7 @@ export default function StudentsPage() {
 
                   <Link
                     to={`/dashboard/students/${student.id}`}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-semibold rounded-xl bg-secondary/30 text-primary hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
+                    className="tap-44 relative inline-flex items-center gap-1 px-3 py-1.5 text-sm font-semibold rounded-xl bg-secondary/30 text-primary hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
                   >
                     <span>{t('Open', 'افتح')}</span>
                     <ChevronRight className="w-3.5 h-3.5 rtl:rotate-180" />

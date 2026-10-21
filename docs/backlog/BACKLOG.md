@@ -427,7 +427,7 @@ Principles every PR/RN task follows:
   English or Arabic strings that skip the language system; icons that point the wrong way in RTL.
 
 ### QA-04 Mobile break test
-- Priority P1 · Zone 🟢 · Size M · Status todo
+- Priority P1 · Zone 🟢 · Size M · Status done
 - Do: run `break-ui` and `mobile-native` on every portal and dashboard page at 360/375/414 px: overflow, tap targets
   under 44px, sticky elements covering buttons, keyboard covering inputs.
 

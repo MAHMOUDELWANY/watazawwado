@@ -105,7 +105,7 @@ export default function StaffLoginPage() {
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="block text-sm font-semibold text-foreground" htmlFor="staff-password">{t('Password', 'كلمة السر')}</label>
-                  <button type="button" onClick={handleForgotPassword} className="text-xs sm:text-sm font-semibold text-[var(--teal)] hover:underline cursor-pointer">
+                  <button type="button" onClick={handleForgotPassword} className="inline-flex items-center min-h-11 text-xs sm:text-sm font-semibold text-[var(--teal)] hover:underline cursor-pointer">
                     {t('Forgot your password?', 'نسيت كلمة السر؟')}
                   </button>
                 </div>
@@ -120,13 +120,13 @@ export default function StaffLoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••••••"
                     autoComplete="current-password"
-                    className="auth-field pe-11 text-start"
+                    className="auth-field pe-14 text-start"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? t('Hide password', 'إخفاء كلمة السر') : t('Show password', 'إظهار كلمة السر')}
-                    className="absolute end-1.5 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors cursor-pointer rounded-lg focus-ring"
+                    className="absolute end-1 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors cursor-pointer rounded-lg focus-ring"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4 text-[var(--teal)]" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -141,7 +141,7 @@ export default function StaffLoginPage() {
 
             <p className="mt-6 pt-5 border-t border-border text-center text-sm text-muted-foreground">
               <span>{t('Are you a student? ', 'إنت طالب؟ ')}</span>
-              <Link to="/student" className="font-semibold text-[var(--teal)] hover:underline">{t('Go to the student area', 'روح لصفحة الطالب')}</Link>
+              <Link to="/student" className="inline-flex items-center min-h-11 font-semibold text-[var(--teal)] hover:underline">{t('Go to the student area', 'روح لصفحة الطالب')}</Link>
             </p>
           </div>
         </AuthCard>

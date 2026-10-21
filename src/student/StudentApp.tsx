@@ -643,7 +643,7 @@ export default function StudentApp() {
             <span className="text-xs text-muted-foreground">{isAr ? 'اللغة' : 'Language'}</span>
             <button
               onClick={toggleLang} data-tour="language-toggle"
-              className="px-3 py-1 rounded-lg text-xs font-semibold hover:bg-surface-subtle transition-colors cursor-pointer"
+              className="px-3 py-1 min-h-11 rounded-lg text-xs font-semibold hover:bg-surface-subtle transition-colors cursor-pointer"
             >
               {isAr ? 'English' : 'عربي'}
             </button>
@@ -674,7 +674,7 @@ export default function StudentApp() {
       {/* MAIN APPLICATION VIEWPORT & HEADER */}
       {/* ========================================================================= */}
       <div 
-        className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden"
+        className="flex-1 flex flex-col min-w-0 h-screen supports-[height:100dvh]:h-dvh overflow-hidden"
         aria-hidden={sidebarOpen ? true : undefined}
       >
         {/* TOP APPLICATION HEADER (Responsive for Desktop and Mobile) */}
@@ -724,7 +724,7 @@ export default function StudentApp() {
               id="header-lang-btn"
               data-tour="header-lang-btn"
               onClick={toggleLang}
-              className="px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold text-foreground hover:bg-surface-subtle border border-border/80 transition-colors cursor-pointer flex items-center gap-1"
+              className="tap-44 relative px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold text-foreground hover:bg-surface-subtle border border-border/80 transition-colors cursor-pointer flex items-center gap-1"
             >
               <Globe className="w-3.5 h-3.5 text-accent" />
               <span>{isAr ? 'EN' : 'عربي'}</span>
@@ -732,7 +732,7 @@ export default function StudentApp() {
 
             <Link
               to="/student/messages"
-              className="relative w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer border border-border/60 shrink-0"
+              className="tap-44 relative w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer border border-border/60 shrink-0"
               aria-label={isAr ? 'الرسائل' : 'Messages'}
             >
               <MessageCircle className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
@@ -744,7 +744,7 @@ export default function StudentApp() {
               to="/student/notifications"
               id="student-notifications"
               data-tour="student-notifications"
-              className="relative w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer border border-border/60 shrink-0"
+              className="tap-44 relative w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer border border-border/60 shrink-0"
               aria-label={isAr ? 'التنبيهات' : 'Notifications'}
             >
               <Bell className="w-4 h-4 sm:w-4.5 sm:h-4.5" />

@@ -137,7 +137,7 @@ export function PricingPage() {
               {isEn ? 'Book your free trial lesson' : 'احجز حصتك التجريبية المجانية'}
             </PublicButton>
             <p className="text-sm text-muted-foreground">
-              <Link to="/faq" className="underline hover:text-foreground">{isEn ? 'Questions about paying?' : 'عندك سؤال عن الدفع؟'}</Link>
+              <Link to="/faq" className="inline-flex items-center min-h-11 underline hover:text-foreground">{isEn ? 'Questions about paying?' : 'عندك سؤال عن الدفع؟'}</Link>
             </p>
           </div>
         </div>

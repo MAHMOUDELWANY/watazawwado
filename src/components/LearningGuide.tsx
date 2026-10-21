@@ -16,6 +16,14 @@ interface LearningGuideProps {
 export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
   const isEn = lang === 'en';
   const [isOpen, setIsOpen] = useState(false);
+  // QA-04: on a phone the floating button sat on top of the hero's trial button; it appears once the visitor scrolls.
+  const [revealed, setRevealed] = useState(() => typeof window === 'undefined' || window.innerWidth >= 640 || window.scrollY > 240);
+  useEffect(() => {
+    if (revealed) return;
+    const onScroll = () => { if (window.scrollY > 240) setRevealed(true); };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [revealed]);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'model',
@@ -81,7 +89,7 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
     <>
       {/* Floating Button */}
       <AnimatePresence>
-        {!isOpen && (
+        {!isOpen && revealed && (
           <motion.button
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
