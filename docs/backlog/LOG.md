@@ -4,6 +4,13 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### TE-03 Weekly hours editor polish (2026-10-21)
+- Result: done (main). "My teaching hours" now opens with a week grid of half-hour cells: press and drag with a mouse or pen to paint hours on or off (also across days); on a phone a tap toggles a cell and a swipe still scrolls; every cell is a keyboard button with a spoken day and time. Below it: copy one day's hours onto chosen days (replaces those days), and a preview "a student in London / New York / Chicago / Los Angeles / Toronto / Berlin / Sydney sees your hours like this" for the coming week, so daylight saving is right and day changes show (e.g. 02:00 Cairo is Sunday in Los Angeles). The exact-minute list editor stays underneath for odd times; painting a day only rewrites that day.
+- Same data shape and the same `PUT /api/dashboard/availability`; the availability engine and server validation are untouched (end of day is saved as 23:59, which the server already accepts).
+- Files: `src/dashboard/lib/weeklyHours.ts`, `src/dashboard/components/WeekHoursGrid.tsx`, `src/dashboard/pages/AvailabilityPage.tsx`, `test/te-03-weekly-hours.test.ts`.
+- Checks: tsc pass; npm test 1259 pass / 0 fail / 5 skipped; build pass.
+- Not checked / risks: dashboard page not opened (owner rule), drag behaviour verified by code and helper tests only. Painting a day with non-half-hour times (e.g. 09:10) rounds that day out to whole half hours.
+
 ### ST-05 Profile page split (2026-10-21)
 - Result: done (main). The page already had tabs (personal details, learning track, booking & preferences, security); the family items (add a child, the children list with "Book for", the responsible guardian) were inside the learning tab and now have their own "Family" / "العيلة" tab, moved unchanged. The open tab is in the URL (`/student/account?tab=family|learning|preferences|security`) so links and reloads land on it, without adding history entries. Section buttons are announced as tabs (tablist/tab/tabpanel, aria-selected). Preferences description now mentions emails (RN-07 lives there). The privacy section comes with ST-06.
 - Files: `src/student/pages/StudentProfilePage.tsx`, `test/st-05-profile-split.test.ts`.

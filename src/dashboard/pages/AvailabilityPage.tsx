@@ -3,6 +3,8 @@ import { Plus, Trash2, Save, Loader2 } from 'lucide-react';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { useAppLanguage } from '../../lib/language';
 import { CountryTimezonePicker } from '../../components/ui/CountryTimezonePicker';
+import { WeekHoursGrid } from '../components/WeekHoursGrid';
+import type { Interval } from '../lib/weeklyHours';
 
 const browserZone = (() => {
   try {
@@ -11,12 +13,6 @@ const browserZone = (() => {
     return 'Africa/Cairo';
   }
 })();
-
-interface Interval {
-  weekday: number;
-  start_time: string; // HH:mm
-  end_time: string;   // HH:mm
-}
 
 // weekday follows the DB/engine convention: 0 = Sunday … 6 = Saturday.
 const DAYS = [
@@ -111,6 +107,9 @@ export default function AvailabilityPage() {
         </div>
       )}
 
+      <WeekHoursGrid intervals={intervals} setIntervals={setIntervals} days={DAYS} isAr={isAr} timezone={timezone} />
+
+      <h2 className="text-lg font-display font-bold text-foreground">{isAr ? 'أو اكتب المواعيد بالدقيقة' : 'Or type exact times'}</h2>
       <div className="space-y-4">
         {DAYS.map((day, weekday) => {
           const rows = intervals.map((iv, index) => ({ iv, index })).filter(r => r.iv.weekday === weekday);

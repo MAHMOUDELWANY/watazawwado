@@ -345,7 +345,7 @@ Principles every PR/RN task follows:
   No money anywhere (test that payment fields are absent for a teacher token).
 
 ### TE-03 Weekly hours editor polish
-- Priority P2 · Zone 🟢 · Size M · Status todo
+- Priority P2 · Zone 🟢 · Size M · Status done
 - Files: `src/dashboard/pages/AvailabilityPage.tsx`.
 - Do: drag to paint hours on a week grid, copy a day to other days, preview in the student's time zone ("a student in
   London sees 4–6 pm"). Same data shape; the availability engine is not touched.
