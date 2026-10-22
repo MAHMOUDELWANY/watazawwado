@@ -196,4 +196,28 @@ export interface Lesson {
   pages: LessonPage[];
   /** Arabic teacher notes, one per page, shown when the interface is Arabic. */
   teacherAr?: TeacherNotesAr[];
+  /** The series opening ("meet the cast") that plays before the first lesson of a version (RULES.md §1.10). */
+  opening?: SeriesOpening;
+}
+
+/** One recurring character, introduced in the series opening like the opening of an anime. */
+export interface CastMember {
+  id: string;
+  name: string;
+  nameAr: string;
+  /** Shown as a chip when the story gives one. */
+  age?: number;
+  /** One line that makes you want to meet them. */
+  line: string;
+  traits: string[];
+  /** Transparent character image (asset path). */
+  img: string;
+  /** Their colour in the opening. */
+  color: string;
+}
+
+export interface SeriesOpening {
+  cast: CastMember[];
+  tagline: string;
+  taglineAr: string;
 }

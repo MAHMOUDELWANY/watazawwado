@@ -457,3 +457,6 @@ B3–B5 → continue lesson by lesson.
   pillars (coloured shafts, names on the floor, roof drops), the cause chain and the "look up" pitch; StageBg on every
   drawn scene; certainty scene shows what feeds yaqeen. Player: paintings preloaded, a Finish card ends the lesson and
   leaves full screen; Why List marks Q1 "Lesson 11" instead of looking unfinished. All 48 pages audited headless.
+- **2026-10-22** — Series opening (owner): anime-style "meet the cast" before Lesson 1 of Kids (Yusuf, Maryam, Jiddo,
+  Mishmish) and Teens (Zayn, Noor, Ethan, Amira, Hamza, Aunt Salma); replay from the clapper button. Covers no longer
+  show "45 minutes". Rules in RULES §1.10. Character lines and traits are new copy: owner to review.

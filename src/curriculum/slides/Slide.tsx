@@ -483,7 +483,7 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
             </motion.p>
             <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.3, duration: 0.8 }} className="mt-8 flex items-center gap-3 font-sans text-[22px] font-semibold" style={{ color: P.goldSoft }}>
               <KhatamStar size={20} color={P.gold} />
-              {lesson.minutes} minutes, {lesson.pages.length} pages
+              {lesson.subjectTitle}
             </motion.p>
 </Fit>          </div>
         </>

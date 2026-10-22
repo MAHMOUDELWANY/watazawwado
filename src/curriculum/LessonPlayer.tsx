@@ -2,11 +2,12 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import {
   ChevronLeft, ChevronRight, Maximize2, Minimize2, Star, PenLine, Highlighter, MousePointer2, Eraser, LayoutGrid,
-  Timer, RotateCcw, BookOpenText, X, Volume2, VolumeX, Smartphone, Trash2, Check,
+  Timer, RotateCcw, BookOpenText, X, Clapperboard, Volume2, VolumeX, Smartphone, Trash2, Check,
 } from 'lucide-react';
 import type { Lesson } from './types';
 import { Slide, SlideText, stepsFor, CANVAS_W, CANVAS_H, scoreSort, SCENE_IMAGES, type GameResult } from './slides/Slide';
 import { InkLayer, type InkTool } from './slides/Ink';
+import { Opening } from './slides/Opening';
 import { P, asset } from './slides/Art';
 import { useAppLanguage } from '../lib/language';
 import { play, isMuted, setMuted, primeSounds } from './slides/sfx';
@@ -37,6 +38,8 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   const ar = lang === 'ar';
   const L = (en: string, arText: string) => (ar ? arText : en);
   const [page, setPage] = useState(0);
+  // The series opening plays before the first lesson of a version; the clapper button replays it.
+  const [opening, setOpening] = useState(Boolean(lesson.opening));
   const [step, setStep] = useState(0);
   const [tool, setTool] = useState<InkTool>('none');
   const [inkColor, setInkColor] = useState(INK_COLORS[0]);
@@ -277,6 +280,11 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
         </span>
       )}
       <span className={fullscreen ? 'my-1.5 h-px w-full bg-[#8B4935]/15' : 'mx-1 hidden h-7 w-px bg-[#8B4935]/20 lg:mx-auto lg:block'} aria-hidden="true" />
+      {lesson.opening && (
+        <button type="button" className={btn(opening)} onClick={() => setOpening((o) => !o)} aria-pressed={opening} title={L('Series opening: meet the characters', 'مقدمة السلسلة: تعرّف على الشخصيات')} aria-label={L('Series opening', 'مقدمة السلسلة')}>
+          <Clapperboard className="w-5 h-5 shrink-0" />
+        </button>
+      )}
       <button type="button" className={btn()} onClick={replayStep} title={L('Replay the last step (R)', 'أعد آخر خطوة (R)')} aria-label={L('Replay the last step', 'أعد آخر خطوة')}>
         <RotateCcw className="w-5 h-5 shrink-0" />
       </button>
@@ -372,7 +380,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
             // Swipe left / right on a phone or tablet to go forward / back (owner, 2026-10-22). Taps, vertical scrolls,
             // drawing and the game's draggable card are left alone.
             onPointerDown={(e) => {
-              if (e.pointerType === 'mouse' || tool !== 'none' || (e.target as Element).closest('[data-no-swipe], input, textarea')) return;
+              if (opening || e.pointerType === 'mouse' || tool !== 'none' || (e.target as Element).closest('[data-no-swipe], input, textarea')) return;
               swipe.current = { x: e.clientX, y: e.clientY, id: e.pointerId };
             }}
             onPointerUp={(e) => {
@@ -413,6 +421,9 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
                 </motion.div>
               </AnimatePresence>
               <InkLayer tool={tool} color={inkColor} pageKey={String(page)} clearSignal={clearSignal} width={CANVAS_W} height={CANVAS_H} />
+              <AnimatePresence>
+                {opening && lesson.opening && <Opening lesson={lesson} data={lesson.opening} ar={ar} onDone={() => { setOpening(false); goPage(0); }} />}
+              </AnimatePresence>
               {timerLeft > 0 && (
                 // Small and out of the way; amber in the last 5 minutes, crimson in the last minute.
                 <div className="pointer-events-none absolute right-[200px] top-[28px] z-20 flex items-center gap-2 rounded-full px-4 py-1.5 font-sans text-[22px] font-bold tabular-nums shadow-md"
@@ -465,7 +476,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
             </div>
             {/* Back / Next live on the slide's lower corners, outside the tool bar, so they are always one tap away
                 (owner, 2026-10-22). Next shows this page's build steps. Arrow keys and swipes do the same. */}
-            <div dir="ltr" className="pointer-events-none absolute inset-x-2 bottom-[15%] z-30 flex items-end justify-between sm:inset-x-3">
+            <div dir="ltr" className={`pointer-events-none absolute inset-x-2 bottom-[15%] z-30 flex items-end justify-between sm:inset-x-3 ${opening ? 'hidden' : ''}`}>
               <button type="button" onClick={backward} disabled={page === 0 && step === 0} aria-label={L('Back', 'رجوع')} title={L('Back (←)', 'رجوع (←)')}
                 className="pointer-events-auto flex h-11 w-11 items-center justify-center rounded-full bg-[#FFFDF7]/85 text-[#1E1410] shadow-[0_10px_24px_-10px_rgba(30,20,16,0.6)] ring-1 ring-black/5 backdrop-blur transition-[transform,opacity] duration-150 hover:bg-[#FFFDF7] active:scale-95 disabled:opacity-0 sm:h-12 sm:w-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C]">
                 <ChevronLeft className="h-6 w-6" aria-hidden="true" />

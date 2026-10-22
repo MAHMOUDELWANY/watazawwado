@@ -92,6 +92,13 @@ Sources: recognised tafsir through the quran.com connector only; no personal taf
   with only one or two thin sentences, no text over a painting or outside its box. Before a lesson goes to review, every
   page is checked headless at its final step. The player design of 2026-10-22 (full-width bar, icon-only full-screen
   rail, exit icon in the corner outside the slide) is the baseline for the whole series.
+- **Series opening (owner, 2026-10-22).** Every version with recurring characters (Kids, Teens) opens its first lesson
+  with an anime-style "meet the cast" sequence, good enough to use in ads: cold open with the series title, one hard-cut
+  card per character (name, Arabic name, age, one line, three traits, speed lines), the whole cast together with the
+  series tagline, then the episode title and Start. Code: `src/curriculum/slides/Opening.tsx`; data:
+  `src/curriculum/content/<subject>/opening.ts`, attached to Lesson 1 as `opening`. A character who joins later gets a
+  card. Skip is always visible; the clapper button in the player replays it.
+- **No lesson length on covers (owner, 2026-10-22).** The cover shows the series and version, never "45 minutes".
 - **Never depict** prophets, Sahaba or Jibril (no face, no body). Show the place, the light, or a figure from behind at a
   distance, as Lesson 1 does.
 - Any image style that serves the lesson is allowed (painting, anime, characters with faces, photographs). The goal is a
