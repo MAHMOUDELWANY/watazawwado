@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-export type InkTool = 'none' | 'pen' | 'marker' | 'laser';
+export type InkTool = 'none' | 'pen' | 'marker' | 'laser' | 'eraser';
+
+/** Eraser reach in canvas units: a stroke is removed when any of its points passes this close (owner, 2026-10-22). */
+const ERASE_R = 30;
 
 interface Stroke {
   tool: 'pen' | 'marker';
@@ -35,7 +38,12 @@ interface Props {
 export function InkLayer({ tool, color, pageKey, clearSignal, width, height }: Props) {
   const [strokes, setStrokes] = useState<Stroke[]>([]);
   const [laser, setLaser] = useState<{ x: number; y: number; t: number }[]>([]);
+  const [eraserAt, setEraserAt] = useState<[number, number] | null>(null);
+  const erasing = useRef(false);
   const drawing = useRef<Stroke | null>(null);
+  // Remove only the strokes the eraser touches, not the whole page.
+  const eraseAt = ([x, y]: [number, number]) =>
+    setStrokes((s) => s.filter((st) => !st.points.some(([px, py]) => (px - x) ** 2 + (py - y) ** 2 < ERASE_R ** 2 + (st.tool === 'marker' ? 289 : 0))));
   const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => setStrokes([]), [pageKey, clearSignal]);
@@ -58,8 +66,14 @@ export function InkLayer({ tool, color, pageKey, clearSignal, width, height }: P
       ref={svgRef}
       viewBox={`0 0 ${width} ${height}`}
       className="absolute inset-0 h-full w-full"
-      style={{ pointerEvents: active ? 'auto' : 'none', cursor: tool === 'laser' ? 'none' : active ? 'crosshair' : undefined, touchAction: active ? 'none' : undefined }}
+      style={{ pointerEvents: active ? 'auto' : 'none', cursor: tool === 'laser' || tool === 'eraser' ? 'none' : active ? 'crosshair' : undefined, touchAction: active ? 'none' : undefined }}
       onPointerDown={(e) => {
+        if (tool === 'eraser') {
+          e.currentTarget.setPointerCapture?.(e.pointerId);
+          erasing.current = true;
+          eraseAt(toCanvas(e));
+          return;
+        }
         if (tool !== 'pen' && tool !== 'marker') return;
         e.currentTarget.setPointerCapture?.(e.pointerId);
         const stroke: Stroke = { tool, color, points: [toCanvas(e)] };
@@ -67,6 +81,12 @@ export function InkLayer({ tool, color, pageKey, clearSignal, width, height }: P
         setStrokes((s) => [...s, stroke]);
       }}
       onPointerMove={(e) => {
+        if (tool === 'eraser') {
+          const p = toCanvas(e);
+          setEraserAt(p);
+          if (erasing.current) eraseAt(p);
+          return;
+        }
         if (tool === 'laser') {
           const [x, y] = toCanvas(e);
           setLaser((l) => [...l.slice(-14), { x, y, t: Date.now() }]);
@@ -79,8 +99,9 @@ export function InkLayer({ tool, color, pageKey, clearSignal, width, height }: P
         drawing.current = next;
         setStrokes((s) => [...s.slice(0, -1), next]);
       }}
-      onPointerUp={() => (drawing.current = null)}
-      onPointerCancel={() => (drawing.current = null)}
+      onPointerUp={() => { drawing.current = null; erasing.current = false; }}
+      onPointerCancel={() => { drawing.current = null; erasing.current = false; }}
+      onPointerLeave={() => setEraserAt(null)}
       aria-hidden="true"
     >
       {strokes.map((s, i) => (
@@ -95,6 +116,9 @@ export function InkLayer({ tool, color, pageKey, clearSignal, width, height }: P
           strokeLinejoin="round"
         />
       ))}
+      {tool === 'eraser' && eraserAt && (
+        <circle cx={eraserAt[0]} cy={eraserAt[1]} r={ERASE_R} fill="rgba(255,253,247,0.55)" stroke="#1E1410" strokeWidth={3} strokeDasharray="6 6" />
+      )}
       {laser.map((p, i) => (
         <circle key={p.t + '-' + i} cx={p.x} cy={p.y} r={4 + i * 0.9} fill="#FF2D2D" opacity={(i + 1) / laser.length * 0.8} />
       ))}

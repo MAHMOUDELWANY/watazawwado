@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import {
   ChevronLeft, ChevronRight, Maximize2, Minimize2, Star, PenLine, Highlighter, MousePointer2, Eraser, LayoutGrid,
-  Timer, RotateCcw, SkipBack, BookOpenText, X, Globe, Volume2, VolumeX,
+  Timer, RotateCcw, BookOpenText, X, Globe, Volume2, VolumeX, Smartphone, Trash2,
 } from 'lucide-react';
 import type { Lesson } from './types';
 import { Slide, SlideText, stepsFor, CANVAS_W, CANVAS_H, scoreSort, type GameResult } from './slides/Slide';
@@ -25,7 +25,9 @@ interface Props {
 }
 
 const INK_COLORS = [P.crimson, P.teal, P.gold, P.ink];
-const TIMER_STEPS = [0, 60, 120, 180, 300];
+/** Lesson timer lengths: 5 to 60 minutes in steps of 5, so the teacher always sees how much of the class is left. */
+const TIMER_MINUTES = Array.from({ length: 12 }, (_, i) => (i + 1) * 5);
+const clock = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
 /** Slide player v2: fixed 16:9 canvas, build steps, pen/marker/laser, page grid, timer, explanation panel. */
 export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGameResult, onPageChange }: Props) {
@@ -48,7 +50,12 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   const [isWide, setIsWide] = useState(wide);
   const [notes, setNotes] = useState(false);
   const [toolsOpen, setToolsOpen] = useState(false);
+  // The lesson timer counts down to an end time, so it stays right even if the tab sleeps.
+  const [timerEnd, setTimerEnd] = useState(0);
   const [timerLeft, setTimerLeft] = useState(0);
+  const [timerMenu, setTimerMenu] = useState(false);
+  const [rotateHint, setRotateHint] = useState(true);
+  const swipe = useRef<{ x: number; y: number; id: number } | null>(null);
   const [fullscreen, setFullscreen] = useState(false);
   const [muted, setMutedState] = useState(isMuted);
   const toggleMute = useCallback(() => setMutedState((m) => { setMuted(!m); return !m; }), []);
@@ -120,10 +127,17 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   }, []);
 
   useEffect(() => {
-    if (!timerLeft) return;
-    const id = window.setTimeout(() => setTimerLeft((t) => t - 1), 1000);
-    return () => window.clearTimeout(id);
-  }, [timerLeft]);
+    if (!timerEnd) { setTimerLeft(0); return; }
+    const tick = () => {
+      const left = Math.max(0, Math.round((timerEnd - Date.now()) / 1000));
+      setTimerLeft(left);
+      if (!left) { play('chime'); setTimerEnd(0); }
+    };
+    tick();
+    const id = window.setInterval(tick, 1000);
+    return () => window.clearInterval(id);
+  }, [timerEnd]);
+  const startTimer = (min: number) => { setTimerEnd(min ? Date.now() + min * 60_000 : 0); setTimerMenu(false); };
 
   const toggleFullscreen = useCallback(() => {
     const fill = (on: boolean) => setFullscreen(on);
@@ -133,7 +147,11 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
     // then fill the window instead, with the same layout.
     if (!document.fullscreenEnabled || !rootRef.current?.requestFullscreen) { fill(true); return; }
     const t = window.setTimeout(() => { if (!document.fullscreenElement) fill(true); }, 800);
-    rootRef.current.requestFullscreen().then(() => window.clearTimeout(t), () => { window.clearTimeout(t); fill(true); });
+    rootRef.current.requestFullscreen().then(() => {
+      window.clearTimeout(t);
+      // Phones and tablets: turn the slide sideways by itself where the browser allows it (Android Chrome).
+      (screen.orientation as ScreenOrientation & { lock?: (o: string) => Promise<void> })?.lock?.('landscape').catch(() => {});
+    }, () => { window.clearTimeout(t); fill(true); });
   }, [fullscreen]);
   const fillWindow = fullscreen && typeof document !== 'undefined' && !document.fullscreenElement;
 
@@ -147,7 +165,8 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
       else if (k === 'd') setTool((t) => (t === 'pen' ? 'none' : 'pen'));
       else if (k === 'h') setTool((t) => (t === 'marker' ? 'none' : 'marker'));
       else if (k === 'l') setTool((t) => (t === 'laser' ? 'none' : 'laser'));
-      else if (k === 'e') setClearSignal((c) => c + 1);
+      else if (k === 'e') setTool((t) => (t === 'eraser' ? 'none' : 'eraser'));
+      else if (k === 'c') setClearSignal((c) => c + 1);
       else if (k === 'g') setGrid((g) => !g);
       else if (k === 'n') setNotes((n) => !n);
       else if (k === 't') setToolsOpen((o) => !o);
@@ -188,18 +207,6 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
             'sticky bottom-2 z-20 flex-nowrap overflow-x-auto px-2 py-1.5 [scrollbar-width:none] sm:flex-wrap sm:overflow-visible lg:static'
       }`}
     >
-      <button type="button" className={btn()} onClick={backward} disabled={page === 0 && step === 0} aria-label={L('Back', 'رجوع')} title={L('Back (←)', 'رجوع (←)')}>
-        <ChevronLeft className="w-5 h-5 rtl:rotate-180" />
-      </button>
-      <button type="button" className={`${btn()} bg-[#C51F24] text-white hover:bg-[#A9191E] px-4`} onClick={forward} disabled={page === last && step >= total} aria-label={L('Next', 'التالي')} title={L('Next (→ or Space)', 'التالي (→ أو مسافة)')}>
-        <span className="flex gap-1" aria-hidden="true">
-          {Array.from({ length: total }).map((_, i) => (
-            <span key={i} className={`h-1.5 w-1.5 rounded-full ${i < step ? 'bg-white' : 'bg-white/35'}`} />
-          ))}
-        </span>
-        <ChevronRight className="w-5 h-5 rtl:rotate-180" />
-      </button>
-      <span className={fullscreen ? 'my-1 h-px w-6 bg-[#8B4935]/20' : 'mx-1 h-6 w-px bg-[#8B4935]/20'} aria-hidden="true" />
       <button type="button" className={btn(grid)} onClick={() => setGrid((g) => !g)} aria-pressed={grid} title={L('All pages (G)', 'كل الصفحات (G)')} aria-label={L('All pages', 'كل الصفحات')}>
         <LayoutGrid className="w-[18px] h-[18px]" />
       </button>
@@ -212,34 +219,50 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
       <button type="button" className={btn(tool === 'laser')} onClick={() => setTool((t) => (t === 'laser' ? 'none' : 'laser'))} aria-pressed={tool === 'laser'} title={L('Laser pointer (L)', 'مؤشر ليزر (L)')} aria-label={L('Laser pointer', 'مؤشر ليزر')}>
         <MousePointer2 className="w-[18px] h-[18px]" />
       </button>
+      <button type="button" className={btn(tool === 'eraser')} onClick={() => setTool((t) => (t === 'eraser' ? 'none' : 'eraser'))} aria-pressed={tool === 'eraser'} title={L('Eraser: drag over what to remove (E)', 'ممحاة: اسحبها على اللي عايز تمسحه (E)')} aria-label={L('Eraser', 'ممحاة')}>
+        <Eraser className="w-[18px] h-[18px]" />
+      </button>
+      {tool === 'eraser' && (
+        <button type="button" className={`${btn()} text-[#C51F24]`} onClick={() => setClearSignal((c) => c + 1)} title={L('Clear the whole page (C)', 'امسح الصفحة كلها (C)')} aria-label={L('Clear the whole page', 'امسح الصفحة كلها')}>
+          <Trash2 className="w-[18px] h-[18px]" />
+        </button>
+      )}
       {(tool === 'pen' || tool === 'marker') &&
         INK_COLORS.map((c) => (
           <button key={c} type="button" onClick={() => setInkColor(c)} aria-label={L('Ink colour', 'لون الحبر')} aria-pressed={inkColor === c} className="h-11 w-8 inline-flex items-center justify-center">
             <span className={`block h-6 w-6 rounded-full ring-2 ring-offset-2 ring-offset-[#FAF7F2] ${inkColor === c ? 'ring-[#1E1410]' : 'ring-transparent'}`} style={{ background: c }} />
           </button>
         ))}
-      <button type="button" className={btn()} onClick={() => setClearSignal((c) => c + 1)} title={L('Clear drawing (E)', 'امسح الرسم (E)')} aria-label={L('Clear drawing', 'امسح الرسم')}>
-        <Eraser className="w-[18px] h-[18px]" />
-      </button>
       <span className={fullscreen ? 'my-1 h-px w-6 bg-[#8B4935]/20' : 'mx-1 h-6 w-px bg-[#8B4935]/20'} aria-hidden="true" />
       <button type="button" className={btn()} onClick={replayStep} title={L('Replay the last step (R)', 'أعد آخر خطوة (R)')} aria-label={L('Replay the last step', 'أعد آخر خطوة')}>
         <RotateCcw className="w-[18px] h-[18px]" />
       </button>
-      <button type="button" className={btn()} onClick={restartPage} title={L('Start this page again from its first step (Home)', 'ابدأ الصفحة من أول خطوة (Home)')} aria-label={L('Start this page again', 'ابدأ الصفحة من الأول')}>
-        <SkipBack className="w-[18px] h-[18px] rtl:rotate-180" />
-      </button>
       {teacher && (
         <>
-          <button
-            type="button"
-            className={btn(timerLeft > 0)}
-            onClick={() => setTimerLeft((t) => TIMER_STEPS[(TIMER_STEPS.findIndex((s) => s >= t) + 1) % TIMER_STEPS.length])}
-            title={L('Thinking timer: tap for 1, 2, 3, 5 minutes', 'مؤقت التفكير: دوس لـ 1 أو 2 أو 3 أو 5 دقايق')}
-            aria-label={L('Timer', 'مؤقت')}
-          >
-            <Timer className="w-[18px] h-[18px]" />
-            {timerLeft > 0 && <span className="tabular-nums">{Math.floor(timerLeft / 60)}:{String(timerLeft % 60).padStart(2, '0')}</span>}
-          </button>
+          <span className="relative">
+            <button
+              type="button"
+              className={btn(timerLeft > 0 || timerMenu)}
+              onClick={() => setTimerMenu((m) => !m)}
+              aria-expanded={timerMenu}
+              title={L('Lesson timer: 5 to 60 minutes', 'مؤقت الحصة: من 5 لـ 60 دقيقة')}
+              aria-label={L('Lesson timer', 'مؤقت الحصة')}
+            >
+              <Timer className="w-[18px] h-[18px]" />
+              {timerLeft > 0 && <span className="tabular-nums">{clock(timerLeft)}</span>}
+            </button>
+            {timerMenu && (
+              <span role="menu" className={`absolute z-50 grid w-[228px] grid-cols-4 gap-1.5 rounded-2xl bg-[#FFFDF7] p-2.5 shadow-[0_18px_40px_-14px_rgba(59,34,25,0.55)] ring-1 ring-black/5 ${fullscreen ? 'bottom-0 end-full me-2' : 'bottom-full start-1/2 mb-2 -translate-x-1/2 rtl:translate-x-1/2'}`}>
+                <span className="col-span-4 px-1 pb-1 text-xs font-bold text-[#453D34]">{L('Minutes left in the lesson', 'الدقايق الفاضلة في الحصة')}</span>
+                {TIMER_MINUTES.map((m) => (
+                  <button key={m} type="button" role="menuitem" onClick={() => startTimer(m)} className="h-10 rounded-xl text-sm font-bold tabular-nums text-[#1E1410] hover:bg-[#F6D58E] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C]">{m}</button>
+                ))}
+                {timerLeft > 0 && (
+                  <button type="button" role="menuitem" onClick={() => startTimer(0)} className="col-span-4 h-10 rounded-xl text-sm font-bold text-[#C51F24] hover:bg-[#C51F24]/10">{L('Stop the timer', 'وقّف المؤقت')}</button>
+                )}
+              </span>
+            )}
+          </span>
           <button type="button" className={btn()} onClick={cheer} title={L('Praise (P)', 'تشجيع (P)')} aria-label={L('Praise', 'تشجيع')}>
             <Star className="w-[18px] h-[18px] text-[#E5A93C]" />
           </button>
@@ -306,7 +329,27 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
     <div ref={rootRef} onPointerDownCapture={primeSounds} dir="ltr" className={`flex gap-3 ${fillWindow ? 'fixed inset-0 z-[100]' : 'relative'} ${fullscreen ? 'band-deep h-full p-3' : 'flex-col'}`}>
       <div dir={ar ? 'rtl' : 'ltr'} className={`relative flex flex-col gap-3 overflow-hidden ${fullscreen ? 'min-h-0 flex-1' : ''}`}>
         <div className={`flex min-w-0 flex-1 flex-col gap-3 ${fullscreen ? 'h-full min-h-0' : ''}`}>
-          <div ref={stageRef} className={`relative min-w-0 ${fullscreen ? 'min-h-0 flex-1' : 'aspect-video'}`}>
+          <div
+            ref={stageRef}
+            className={`relative min-w-0 ${fullscreen ? 'min-h-0 flex-1' : 'aspect-video'}`}
+            style={{ touchAction: tool === 'none' ? 'pan-y' : undefined }}
+            // Swipe left / right on a phone or tablet to go forward / back (owner, 2026-10-22). Taps, vertical scrolls,
+            // drawing and the game's draggable card are left alone.
+            onPointerDown={(e) => {
+              if (e.pointerType === 'mouse' || tool !== 'none' || (e.target as Element).closest('[data-no-swipe], input, textarea')) return;
+              swipe.current = { x: e.clientX, y: e.clientY, id: e.pointerId };
+            }}
+            onPointerUp={(e) => {
+              const s = swipe.current;
+              swipe.current = null;
+              if (!s || s.id !== e.pointerId) return;
+              const dx = e.clientX - s.x;
+              const dy = e.clientY - s.y;
+              if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+              if (dx < 0) forward(); else backward();
+            }}
+            onPointerCancel={() => (swipe.current = null)}
+          >
             <div
               className="absolute left-1/2 top-1/2 overflow-hidden rounded-[22px] shadow-[0_30px_70px_-35px_rgba(59,34,25,0.7)]"
               style={{ width: CANVAS_W, height: CANVAS_H, transform: `translate(-50%, -50%) scale(${scale})` }}
@@ -335,8 +378,10 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
               </AnimatePresence>
               <InkLayer tool={tool} color={inkColor} pageKey={String(page)} clearSignal={clearSignal} width={CANVAS_W} height={CANVAS_H} />
               {timerLeft > 0 && (
-                <div className="absolute right-[90px] top-[130px] rounded-full bg-white px-6 py-2 font-sans text-[34px] font-bold tabular-nums shadow-lg" style={{ color: timerLeft <= 10 ? P.crimson : P.ink }}>
-                  {Math.floor(timerLeft / 60)}:{String(timerLeft % 60).padStart(2, '0')}
+                // Small and out of the way; amber in the last 5 minutes, crimson in the last minute.
+                <div className="pointer-events-none absolute right-[200px] top-[28px] z-20 flex items-center gap-2 rounded-full px-4 py-1.5 font-sans text-[22px] font-bold tabular-nums shadow-md"
+                  style={{ background: timerLeft <= 60 ? P.crimson : timerLeft <= 300 ? P.gold : 'rgba(255,253,247,0.92)', color: timerLeft <= 60 ? '#fff' : P.ink }}>
+                  <Timer className="h-5 w-5" aria-hidden="true" />{clock(timerLeft)}
                 </div>
               )}
               <AnimatePresence>{praise && <Praise />}</AnimatePresence>
@@ -362,14 +407,40 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
                 )}
               </AnimatePresence>
             </div>
+            {/* Back / Next live on the slide's lower corners, outside the tool bar, so they are always one tap away
+                (owner, 2026-10-22). Next shows this page's build steps. Arrow keys and swipes do the same. */}
+            <div dir="ltr" className="pointer-events-none absolute inset-x-2 bottom-[15%] z-30 flex items-end justify-between sm:inset-x-3">
+              <button type="button" onClick={backward} disabled={page === 0 && step === 0} aria-label={L('Back', 'رجوع')} title={L('Back (←)', 'رجوع (←)')}
+                className="pointer-events-auto flex h-11 w-11 items-center justify-center rounded-full bg-[#FFFDF7]/85 text-[#1E1410] shadow-[0_10px_24px_-10px_rgba(30,20,16,0.6)] ring-1 ring-black/5 backdrop-blur transition-[transform,opacity] duration-150 hover:bg-[#FFFDF7] active:scale-95 disabled:opacity-0 sm:h-12 sm:w-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C]">
+                <ChevronLeft className="h-6 w-6" aria-hidden="true" />
+              </button>
+              <button type="button" onClick={forward} disabled={page === last && step >= total} aria-label={L('Next', 'التالي')} title={L('Next (→ or Space)', 'التالي (→ أو مسافة)')}
+                className="pointer-events-auto flex h-11 items-center gap-2 rounded-full bg-[#C51F24] ps-4 pe-3 text-white shadow-[0_12px_28px_-10px_rgba(197,31,36,0.7)] transition-[transform,opacity] duration-150 hover:bg-[#A9191E] active:scale-95 disabled:opacity-30 sm:h-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C]">
+                {total > 0 && (
+                  <span className="flex gap-1" aria-hidden="true">
+                    {Array.from({ length: total }).map((_, i) => <span key={i} className={`h-1.5 w-1.5 rounded-full transition-colors ${i < step ? 'bg-white' : 'bg-white/35'}`} />)}
+                  </span>
+                )}
+                <ChevronRight className="h-6 w-6" aria-hidden="true" />
+              </button>
+            </div>
           </div>
           {/* Below ~575px of slide width the canvas text is too small to read; give its words at reading size. */}
           {!fullscreen && scale < 0.36 && (
             <>
-              <p className="hidden items-center gap-2 text-sm font-bold text-[#8B4935] portrait:flex">
-                <RotateCcw className="h-4 w-4 rotate-90" aria-hidden="true" />
-                {L('Turn your phone sideways for a bigger slide.', 'لف الموبايل بالعرض عشان الشريحة تكبر.')}
-              </p>
+              {rotateHint && (
+                <div className="hidden items-center gap-3 rounded-2xl bg-[#FFFDF7] p-3 text-[#1E1410] shadow-sm ring-1 ring-black/5 portrait:flex" role="note">
+                  <motion.span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F6D58E]" aria-hidden="true"
+                    animate={reduce ? undefined : { rotate: [0, 0, -90, -90, 0] }} transition={{ duration: 3, repeat: Infinity, times: [0, 0.3, 0.5, 0.8, 1] }}>
+                    <Smartphone className="h-5 w-5" />
+                  </motion.span>
+                  <span className="flex-1 text-sm font-semibold leading-snug">
+                    {L('Turn your phone sideways, or tap full screen, for the best view.', 'لف الموبايل بالعرض، أو دوس ملء الشاشة، عشان تشوف الدرس أحسن.')}
+                  </span>
+                  <button type="button" onClick={toggleFullscreen} className="rounded-full bg-[#C51F24] px-3 py-2 text-xs font-bold text-white">{L('Full screen', 'ملء الشاشة')}</button>
+                  <button type="button" onClick={() => setRotateHint(false)} aria-label={L('Dismiss', 'اقفل')} className="rounded-full p-1.5 text-[#453D34] hover:bg-black/5"><X className="h-4 w-4" /></button>
+                </div>
+              )}
               {grid ? (
                 <ol className="grid grid-cols-2 gap-2" aria-label={L('All pages', 'كل الصفحات')}>
                   {lesson.pages.map((p, i) => (

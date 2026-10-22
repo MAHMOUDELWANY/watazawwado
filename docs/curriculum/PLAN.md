@@ -442,4 +442,9 @@ B3–B5 → continue lesson by lesson.
   subjects (Zad Essentials; Seerah coming soon) → age versions (Kids, Teens; Adults coming soon) → lessons grouped by part
   with Ready / Draft / Coming soon. New routes /dashboard/curriculum/:group/:track/:number; old two-part lesson links
   redirect. `GROUPS`, `parts`, `art` added to `catalog.ts`. Player toolbar no longer floats over the slide on desktop.
+- **2026-10-22** — Player UX (owner): Back / Next moved out of the tool bar onto the slide's lower corners (Next shows the
+  build steps); swipe left/right on phones and tablets; full screen tries to turn phones sideways, and a dismissible
+  "turn your phone / full screen" card replaces the old hint; lesson timer 5–60 minutes in steps of 5 (counts down to an
+  end time; chip beside the lesson badge turns amber at 5 min, crimson at 1); a real eraser (drag over strokes) with a
+  "clear page" button beside it (C key); "start page again" and the bar's Back/Next removed (Home key still restarts).
 

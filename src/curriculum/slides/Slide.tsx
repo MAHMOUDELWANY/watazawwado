@@ -887,6 +887,7 @@ function SortGame({ interaction, onCorrect, onResult }: { interaction: Extract<I
               key={current}
               data-card
               type="button"
+              data-no-swipe
               drag={!reduce}
               dragSnapToOrigin
               dragElastic={0.6}
