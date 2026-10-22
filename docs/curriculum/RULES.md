@@ -88,6 +88,10 @@ Sources: recognised tafsir through the quran.com connector only; no personal taf
   teacher-facing text before it ships.
 
 ### 1.10 Visuals, motion and sound
+- **Premium, out-of-the-box level for every version (owner, 2026-10-22).** Motion as rich as the Kids lessons, no slide
+  with only one or two thin sentences, no text over a painting or outside its box. Before a lesson goes to review, every
+  page is checked headless at its final step. The player design of 2026-10-22 (full-width bar, icon-only full-screen
+  rail, exit icon in the corner outside the slide) is the baseline for the whole series.
 - **Never depict** prophets, Sahaba or Jibril (no face, no body). Show the place, the light, or a figure from behind at a
   distance, as Lesson 1 does.
 - Any image style that serves the lesson is allowed (painting, anime, characters with faces, photographs). The goal is a

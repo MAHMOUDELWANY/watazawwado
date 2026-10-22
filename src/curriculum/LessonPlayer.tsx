@@ -214,12 +214,21 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   }, []);
 
   const btn = (active = false) =>
-    `h-12 min-w-12 px-3 inline-flex items-center gap-2 rounded-full text-sm font-bold ${fullscreen ? 'justify-start' : 'justify-center'} transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C] disabled:opacity-35 ${
+    `h-12 min-w-12 px-3 inline-flex items-center justify-center gap-2 rounded-full text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C] disabled:opacity-35 ${
       active ? 'bg-[#E5A93C] text-[#1E1410]' : 'text-[#1E1410] hover:bg-[#8B4935]/10'
     }`;
 
-  // Button names show in the full-screen rail, where there is room; the bar under the slide stays icon-only.
-  const name = (text: string) => (fullscreen ? <span className="truncate">{text}</span> : null);
+  const timerMenuEl = (
+    <span role="menu" className={`${fullscreen ? 'w-[300px]' : 'absolute w-[228px]'} z-50 grid grid-cols-4 gap-1.5 rounded-2xl bg-[#FFFDF7] p-2.5 shadow-[0_18px_40px_-14px_rgba(59,34,25,0.55)] ring-1 ring-black/5 ${fullscreen ? '' : 'bottom-full start-1/2 mb-2 -translate-x-1/2 rtl:translate-x-1/2'}`}>
+      <span className="col-span-4 px-1 pb-1 text-xs font-bold text-[#453D34]">{L('Minutes left in the lesson', 'الدقايق الفاضلة في الحصة')}</span>
+      {TIMER_MINUTES.map((m) => (
+        <button key={m} type="button" role="menuitem" onClick={() => startTimer(m)} className="h-10 rounded-xl text-sm font-bold tabular-nums text-[#1E1410] hover:bg-[#F6D58E] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C]">{m}</button>
+      ))}
+      {timerLeft > 0 && (
+        <button type="button" role="menuitem" onClick={() => startTimer(0)} className="col-span-4 h-10 rounded-xl text-sm font-bold text-[#C51F24] hover:bg-[#C51F24]/10">{L('Stop the timer', 'وقّف المؤقت')}</button>
+      )}
+    </span>
+  );
 
   const toolbar = (
     <nav
@@ -228,44 +237,48 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
       className={`flex items-center gap-1 rounded-[28px] [&>*]:shrink-0 border border-white/70 bg-[#FAF7F2]/90 shadow-[0_18px_40px_-20px_rgba(139,73,53,0.55)] backdrop-blur-xl transition-[transform,opacity] duration-300 ${
         fullscreen
           ? // Full screen: a rail in a side drawer (right in English, left in Arabic), opened on its arrow handle.
-            'max-h-full w-[176px] shrink-0 flex-col items-stretch overflow-y-auto px-2 py-3'
+            'max-h-full shrink-0 flex-col items-center overflow-y-auto px-1.5 py-2 [overflow-anchor:none]'
           : // Phones: the buttons wrap onto rows (Back and Next live on the slide now). From lg it is one full-width row under
             // the slide that scrolls with the page, never floating over it (owner, 2026-10-22).
             'sticky bottom-2 z-20 w-full flex-wrap justify-center px-3 py-2 lg:static lg:flex-nowrap lg:justify-start'
       }`}
     >
       <button type="button" className={btn(grid)} onClick={() => setGrid((g) => !g)} aria-pressed={grid} title={L('All pages (G)', 'كل الصفحات (G)')} aria-label={L('All pages', 'كل الصفحات')}>
-        <LayoutGrid className="w-5 h-5 shrink-0" />{name(L('All pages', 'كل الصفحات'))}
+        <LayoutGrid className="w-5 h-5 shrink-0" />
       </button>
       <button type="button" className={btn(tool === 'pen')} onClick={() => setTool((t) => (t === 'pen' ? 'none' : 'pen'))} aria-pressed={tool === 'pen'} title={L('Pen (D)', 'قلم (D)')} aria-label={L('Pen', 'قلم')}>
-        <PenLine className="w-5 h-5 shrink-0" />{name(L('Pen', 'قلم'))}
+        <PenLine className="w-5 h-5 shrink-0" />
       </button>
       <button type="button" className={btn(tool === 'marker')} onClick={() => setTool((t) => (t === 'marker' ? 'none' : 'marker'))} aria-pressed={tool === 'marker'} title={L('Highlighter (H)', 'تظليل (H)')} aria-label={L('Highlighter', 'تظليل')}>
-        <Highlighter className="w-5 h-5 shrink-0" />{name(L('Highlighter', 'تظليل'))}
+        <Highlighter className="w-5 h-5 shrink-0" />
       </button>
       {/* Students get a study kit only: pen, highlighter, eraser. The laser and the teacher's notes are for presenting. */}
       {teacher && (
         <button type="button" className={btn(tool === 'laser')} onClick={() => setTool((t) => (t === 'laser' ? 'none' : 'laser'))} aria-pressed={tool === 'laser'} title={L('Laser pointer (L)', 'مؤشر ليزر (L)')} aria-label={L('Laser pointer', 'مؤشر ليزر')}>
-          <MousePointer2 className="w-5 h-5 shrink-0" />{name(L('Laser', 'ليزر'))}
+          <MousePointer2 className="w-5 h-5 shrink-0" />
         </button>
       )}
       <button type="button" className={btn(tool === 'eraser')} onClick={() => setTool((t) => (t === 'eraser' ? 'none' : 'eraser'))} aria-pressed={tool === 'eraser'} title={L('Eraser: drag over what to remove (E)', 'ممحاة: اسحبها على اللي عايز تمسحه (E)')} aria-label={L('Eraser', 'ممحاة')}>
-        <Eraser className="w-5 h-5 shrink-0" />{name(L('Eraser', 'ممحاة'))}
+        <Eraser className="w-5 h-5 shrink-0" />
       </button>
-      {tool === 'eraser' && (
-        <button type="button" className={`${btn()} text-[#C51F24]`} onClick={() => setClearSignal((c) => c + 1)} title={L('Clear the whole page (C)', 'امسح الصفحة كلها (C)')} aria-label={L('Clear the whole page', 'امسح الصفحة كلها')}>
-          <Trash2 className="w-5 h-5 shrink-0" />{name(L('Clear page', 'امسح الصفحة'))}
+      {(tool === 'eraser' || fullscreen) && (
+        <button type="button" disabled={tool !== 'eraser'} className={`${btn()} text-[#C51F24]`} onClick={() => setClearSignal((c) => c + 1)} title={L('Clear the whole page (C)', 'امسح الصفحة كلها (C)')} aria-label={L('Clear the whole page', 'امسح الصفحة كلها')}>
+          <Trash2 className="w-5 h-5 shrink-0" />
         </button>
       )}
-      {(tool === 'pen' || tool === 'marker') &&
-        INK_COLORS.map((c) => (
-          <button key={c} type="button" onClick={() => setInkColor(c)} aria-label={L('Ink colour', 'لون الحبر')} aria-pressed={inkColor === c} className="h-11 w-8 inline-flex items-center justify-center">
-            <span className={`block h-6 w-6 rounded-full ring-2 ring-offset-2 ring-offset-[#FAF7F2] ${inkColor === c ? 'ring-[#1E1410]' : 'ring-transparent'}`} style={{ background: c }} />
-          </button>
-        ))}
+      {/* Always in place (dimmed until a pen is picked), so choosing a tool never shifts the buttons under the cursor. */}
+      {(
+        <span className={`${fullscreen ? 'grid grid-cols-2 gap-1 py-1' : 'inline-flex'} transition-opacity duration-150 ${tool === 'pen' || tool === 'marker' ? '' : 'pointer-events-none opacity-30'}`} inert={tool !== 'pen' && tool !== 'marker'}>
+          {INK_COLORS.map((c) => (
+            <button key={c} type="button" onClick={() => setInkColor(c)} aria-label={L('Ink colour', 'لون الحبر')} aria-pressed={inkColor === c} className={`${fullscreen ? 'h-7 w-7' : 'h-11 w-8'} inline-flex items-center justify-center`}>
+              <span className={`block rounded-full ring-2 ring-offset-2 ring-offset-[#FAF7F2] ${fullscreen ? 'h-4 w-4' : 'h-6 w-6'} ${inkColor === c ? 'ring-[#1E1410]' : 'ring-transparent'}`} style={{ background: c }} />
+            </button>
+          ))}
+        </span>
+      )}
       <span className={fullscreen ? 'my-1.5 h-px w-full bg-[#8B4935]/15' : 'mx-1 hidden h-7 w-px bg-[#8B4935]/20 lg:mx-auto lg:block'} aria-hidden="true" />
       <button type="button" className={btn()} onClick={replayStep} title={L('Replay the last step (R)', 'أعد آخر خطوة (R)')} aria-label={L('Replay the last step', 'أعد آخر خطوة')}>
-        <RotateCcw className="w-5 h-5 shrink-0" />{name(L('Replay step', 'أعد الخطوة'))}
+        <RotateCcw className="w-5 h-5 shrink-0" />
       </button>
       {teacher && (
         <>
@@ -278,49 +291,37 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
               title={L('Lesson timer: 5 to 60 minutes', 'مؤقت الحصة: من 5 لـ 60 دقيقة')}
               aria-label={L('Lesson timer', 'مؤقت الحصة')}
             >
-              <Timer className="w-5 h-5 shrink-0" />{timerLeft <= 0 && name(L('Timer', 'المؤقت'))}
-              {timerLeft > 0 && <span className="tabular-nums">{clock(timerLeft)}</span>}
+              <Timer className="w-5 h-5 shrink-0" />
+              {timerLeft > 0 && !fullscreen && <span className="tabular-nums">{clock(timerLeft)}</span>}
             </button>
-            {timerMenu && (
-              <span role="menu" className={`absolute z-50 grid w-[228px] grid-cols-4 gap-1.5 rounded-2xl bg-[#FFFDF7] p-2.5 shadow-[0_18px_40px_-14px_rgba(59,34,25,0.55)] ring-1 ring-black/5 ${fullscreen ? 'bottom-0 end-full me-2' : 'bottom-full start-1/2 mb-2 -translate-x-1/2 rtl:translate-x-1/2'}`}>
-                <span className="col-span-4 px-1 pb-1 text-xs font-bold text-[#453D34]">{L('Minutes left in the lesson', 'الدقايق الفاضلة في الحصة')}</span>
-                {TIMER_MINUTES.map((m) => (
-                  <button key={m} type="button" role="menuitem" onClick={() => startTimer(m)} className="h-10 rounded-xl text-sm font-bold tabular-nums text-[#1E1410] hover:bg-[#F6D58E] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C]">{m}</button>
-                ))}
-                {timerLeft > 0 && (
-                  <button type="button" role="menuitem" onClick={() => startTimer(0)} className="col-span-4 h-10 rounded-xl text-sm font-bold text-[#C51F24] hover:bg-[#C51F24]/10">{L('Stop the timer', 'وقّف المؤقت')}</button>
-                )}
-              </span>
-            )}
+            {timerMenu && !fullscreen && timerMenuEl}
           </span>
           <button type="button" className={btn()} onClick={cheer} title={L('Praise (P)', 'تشجيع (P)')} aria-label={L('Praise', 'تشجيع')}>
-            <Star className="w-5 h-5 shrink-0 text-[#E5A93C]" />{name(L('Praise', 'تشجيع'))}
+            <Star className="w-5 h-5 shrink-0 text-[#E5A93C]" />
           </button>
         </>
       )}
       <button type="button" className={btn()} onClick={toggleMute} aria-pressed={muted} title={muted ? L('Sound off (M)', 'الصوت مقفول (M)') : L('Sound on (M)', 'الصوت شغال (M)')} aria-label={muted ? L('Turn sound on', 'شغّل الصوت') : L('Turn sound off', 'اقفل الصوت')}>
-        {muted ? <VolumeX className="w-5 h-5 shrink-0" /> : <Volume2 className="w-5 h-5 shrink-0" />}{name(L('Sound', 'الصوت'))}
+        {muted ? <VolumeX className="w-5 h-5 shrink-0" /> : <Volume2 className="w-5 h-5 shrink-0" />}
       </button>
       {teacher && (
         <button type="button" className={btn(notes)} onClick={() => setNotes((n) => !n)} aria-pressed={notes} title={L('Explanation (N)', 'الشرح (N)')} aria-label={L('Explanation', 'الشرح')}>
-          <BookOpenText className="w-5 h-5 shrink-0" />{name(L('Explanation', 'الشرح'))}
+          <BookOpenText className="w-5 h-5 shrink-0" />
         </button>
       )}
-      <span className={`text-sm font-bold text-[#453D34] tabular-nums ${fullscreen ? 'px-3 pt-2' : 'ms-auto pe-3 ps-2'}`}>
-        {L('Page', 'صفحة')} {page + 1}/{lesson.pages.length}
-        {/* Extra page for a 60-minute lesson; skip it in 30 minutes (docs/curriculum/RULES.md §1.7). */}
-        {current.optional && <span className="ms-2 rounded-full bg-[#E5A93C]/20 px-2 py-0.5 text-[#8B4935]">{L('Optional', 'إضافية')}</span>}
-      </span>
-      <button
-        type="button"
-        onClick={toggleFullscreen}
-        title={L('Full screen (F)', 'ملء الشاشة (F)')}
-        aria-label={fullscreen ? L('Exit full screen', 'خروج من ملء الشاشة') : L('Full screen', 'ملء الشاشة')}
-        className={`${fullscreen ? 'order-first mb-2' : 'max-lg:order-first max-lg:w-full'} h-12 shrink-0 whitespace-nowrap inline-flex items-center justify-center gap-2 rounded-full bg-[#C51F24] px-5 text-[15px] font-bold text-white shadow-[0_10px_24px_-12px_rgba(197,31,36,0.8)] transition-[background-color,transform] duration-150 hover:bg-[#A8181D] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C] focus-visible:ring-offset-2`}
-      >
-        {fullscreen ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
-        {fullscreen ? L('Exit', 'خروج') : L('Full screen', 'ملء الشاشة')}
-      </button>
+      {/* Extra page for a 60-minute lesson; skip it in 30 minutes (docs/curriculum/RULES.md §1.7). The slide shows the page count. */}
+      {current.optional && <span className={`rounded-full bg-[#E5A93C]/20 px-2.5 py-1 text-xs font-bold text-[#8B4935] ${fullscreen ? '' : 'ms-auto'}`}>{L('Optional', 'إضافية')}</span>}
+      {!fullscreen && (
+        <button
+          type="button"
+          onClick={toggleFullscreen}
+          title={L('Full screen (F)', 'ملء الشاشة (F)')}
+          className={`${current.optional ? '' : 'lg:ms-auto'} max-lg:order-first max-lg:w-full h-12 shrink-0 whitespace-nowrap inline-flex items-center justify-center gap-2 rounded-full bg-[#C51F24] px-5 text-[15px] font-bold text-white shadow-[0_10px_24px_-12px_rgba(197,31,36,0.8)] transition-[background-color,transform] duration-150 hover:bg-[#A8181D] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C] focus-visible:ring-offset-2`}
+        >
+          <Maximize2 className="w-5 h-5" />
+          {L('Full screen', 'ملء الشاشة')}
+        </button>
+      )}
     </nav>
   );
 
@@ -361,7 +362,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   const toolsSide = ar ? 'left' : 'right';
 
   return (
-    <div ref={rootRef} onPointerDownCapture={primeSounds} dir="ltr" className={`flex gap-3 ${fillWindow ? 'fixed inset-0 z-[100]' : 'relative'} ${fullscreen ? 'band-deep h-full p-3' : 'flex-col'}`}>
+    <div ref={rootRef} onPointerDownCapture={primeSounds} dir="ltr" className={`flex gap-3 ${fillWindow ? 'fixed inset-0 z-[100]' : 'relative'} ${fullscreen ? 'band-deep h-full p-3 pb-16' : 'flex-col'}`}>
       <div dir={ar ? 'rtl' : 'ltr'} className={`relative flex flex-col gap-3 overflow-hidden ${fullscreen ? 'min-h-0 flex-1' : ''}`}>
         <div className={`flex min-w-0 flex-1 flex-col gap-3 ${fullscreen ? 'h-full min-h-0' : ''}`}>
           <div
@@ -525,6 +526,25 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
           {toolbar}
         </Drawer>
       ) : toolbar}
+      {fullscreen && (
+        <>
+          {/* Exit lives in the strip under the slide, in the corner away from the tools rail, on every screen size (owner, 2026-10-22). */}
+          <button
+            type="button"
+            onClick={toggleFullscreen}
+            title={L('Exit full screen (Esc)', 'خروج من ملء الشاشة (Esc)')}
+            aria-label={L('Exit full screen', 'خروج من ملء الشاشة')}
+            className={`absolute bottom-2.5 ${toolsSide === 'left' ? 'right-3' : 'left-3'} z-40 inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#C51F24] text-white shadow-[0_10px_24px_-10px_rgba(0,0,0,0.6)] ring-2 ring-white/70 transition-[background-color,transform] duration-150 hover:bg-[#A8181D] active:scale-[0.94] focus-visible:outline-none focus-visible:ring-[#E5A93C]`}
+          >
+            <Minimize2 className="h-5 w-5" />
+          </button>
+          {timerMenu && (
+            <div className="absolute inset-0 z-[60] grid place-items-center bg-black/35" onClick={() => setTimerMenu(false)}>
+              <div dir={ar ? 'rtl' : 'ltr'} onClick={(e) => e.stopPropagation()}>{timerMenuEl}</div>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
