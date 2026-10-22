@@ -24,11 +24,15 @@ The lessons are in `MAP.md`; the look will be in `../style/adults.md` (made befo
   No mockery of anyone, nothing that promotes what is haram.
 - **Role models only from the Companions, Islamic history, and recently deceased Muslims of sound character.** Living
   people appear only as a quote that shows an idea, never as someone to follow. The owner approves each recent name.
-- **Connected lessons:** the Certainty Notebook, Then and Now, and the hand-off question (see `MAP.md`).
+- **Connected lessons:** the learner's notebook **Zad al-Yaqeen (زاد اليقين)**, Then and Now, and the hand-off question (see `MAP.md`).
 - Fiqh: Shafi'i; where a recognised difference exists, one line says so and sends the learner to the teacher.
 - Doubts answered in depth inside their lesson, reasoning first, never planting one the learner didn't have.
 - Tadabbur on every ayah: key word, root, context and recognised tafsir notes.
-- Check: case questions and a short review. Ahd: a habit or decision the learner chooses and writes in the notebook.
+- Check: case questions and a short review. Ahd: a habit or decision the learner chooses and writes in Zad al-Yaqeen.
+- **Money (Lesson 44):** any case named is defined with its ruling, reason and halal way out, so the teacher can explain
+  it; a recognised minority fatwa is named with its source and condition in one line.
+- **Lesson 20 is two parallel lessons:** 20a for women, 20b for men (how men treat their mothers, sisters and wives, and
+  how the Messenger ﷺ treated his wives). The teacher picks by learner.
 
 ## 4. Voice
 - **More advanced English** than the Kids and Teens versions: the register of an educated adult, still clear and never

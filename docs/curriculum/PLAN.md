@@ -34,9 +34,9 @@ Last update: 2026-10-22. History of how we got here: §8 (progress log).
   (new Muslims later, if there is demand); the aim is yaqeen and pride in the deen; 60-minute lessons with every page
   shown, no optional pages; projections from well-known people; role models only from the Companions, history and
   recently deceased Muslims of sound character; more advanced English in the owner's voice.
-- **Done:** map drafted (46 lessons, 5 parts; Certainty Notebook, Then and Now, hand-off questions).
-- **Waiting for the owner:** review of `zad-essentials-adults/MAP.md` and its four open points.
-- **Next after review:** `style/adults.md`, then Lesson 1 (The Man No One Knew) brief.
+- **Done:** map approved 2026-10-22 (46 lessons per learner, 5 parts; 20a women / 20b men; notebook Zad al-Yaqeen,
+  Then and Now, hand-off questions; money cases defined).
+- **Next:** `style/adults.md` (look and base prompt), then Lesson 1 (The Man No One Knew) brief.
 
 ### Seerah and the Scholar's Path
 - Seerah (Kids / Teens / Adults): planned, not started. Scholar's Path: books, sessions and prices are the owner's call
@@ -487,3 +487,5 @@ B3–B5 → continue lesson by lesson.
 - **2026-10-22** — Adults started (owner, after brainstorming): audience, aim (yaqeen, pride), 60-minute lessons with no
   optional pages, projections and role-model rules recorded in `zad-essentials-adults/RULES.md`; map drafted
   (`zad-essentials-adults/MAP.md`, 46 lessons) for the owner's review.
+- **2026-10-22** — Adults map approved (owner): 46 lessons; notebook renamed Zad al-Yaqeen; money lesson with defined
+  cases; Lesson 20 split into 20a (women) and 20b (men, incl. how the Messenger ﷺ treated his wives).

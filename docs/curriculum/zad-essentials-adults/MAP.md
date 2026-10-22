@@ -1,6 +1,6 @@
 # Zad Essentials · Adults (18+): Unit Map
 
-Status: **draft, waiting for the owner's review** (2026-10-22). Rules: `../RULES.md` (§3 Adults column) and this version's
+Status: **approved by the owner 2026-10-22**, with his answers to the open points (end of file). Rules: `../RULES.md` (§3 Adults column) and this version's
 `RULES.md`, which holds the owner's decisions of 2026-10-22. Fiqh: Shafi'i; where a recognised difference exists, one line
 says so and sends the learner to the teacher. Every lesson is **60 minutes, every page shown in order** (no optional pages).
 Evidence marked ✔ was verified for the Kids or Teens lessons (quran.com connector, Dorar) and is reused without
@@ -26,9 +26,10 @@ a Muslim who is **proud of the deen and unafraid to say "I am Muslim"**.
 
 Adults have no recurring characters, so the series is held together by three devices:
 
-1. **The Certainty Notebook (دفتر اليقين).** Each lesson ends with the learner writing one sentence, "I am now certain
+1. **Zad al-Yaqeen (زاد اليقين), the learner's notebook** (named close to the series' *zad*, owner 2026-10-22). Each lesson ends with the learner writing one sentence, "I am now certain
    that…", and the habit or decision they commit to. Each Spark opens by reading last week's line and asking how the habit
-   went. Lesson 46 reads the whole notebook back.
+   went. Lesson 46 reads it all back: the provision of certainty
+   the learner carries out of the course.
 2. **Then and Now.** Every lesson pairs one true moment from the Companions or history (shown without depicting them) with
    one moment from today's world, and asks: what did they know that made them act like that, and what would I do?
 3. **The hand-off.** Each lesson ends on a real question or case that the next lesson opens with (column "Hands on" below),
@@ -39,14 +40,14 @@ Each Part also closes with a **review lesson segment** (the check of its last le
 ## How an Adults lesson feels (on top of the four stations)
 
 - **Spark:** a real moment: a quote from a public figure, a news story, a situation at work, at home or online. Then the
-  question to the learner, before anything is explained. From Lesson 2: the notebook line and the habit check.
+  question to the learner, before anything is explained. From Lesson 2: last week's Zad al-Yaqeen line and the habit check.
 - **Zad:** the reasoning built with the learner (rational step first), then the evidence with its exact reference and
   grading, then the ruling where there is one. Doubts answered in depth in the lesson they belong to, reasoning first.
   One wow moment as a motion scene.
 - **Athar:** a tadabbur stop on every ayah: key word, root, context (sabab al-nuzul or place in the surah) and notes from
   recognised tafsir. Then **Then and Now**, then the check: **case questions** (real-life scenarios, Shafi'i rulings) and a
   **short review**.
-- **Ahd:** a habit or a decision, chosen by the learner from two or three, written in the notebook. Then the hand-off.
+- **Ahd:** a habit or a decision, chosen by the learner from two or three, written in Zad al-Yaqeen. Then the hand-off.
 
 ## Part 1: From Knowing to Certainty (Iman)
 
@@ -76,7 +77,8 @@ Each Part also closes with a **review lesson segment** (the check of its last le
 | 17 | Water and Najasah: The Shafi'i Map | Kinds of water; the three grades of najasah and how each is removed; istinja | Shafi'i primers (to verify) | "Now the wudu most people rush" |
 | 18 | Wudu, and the Mistakes Most People Make | Fard and sunnah of wudu, with the common errors | Al-Ma'idah 5:6; hadith of Uthman, Bukhari 159 (to verify) | "What undoes it?" |
 | 19 | What Breaks Wudu | The breakers (Shafi'i), with one line where others differ (touch) | to verify | "And when wudu is not enough?" |
-| 20 | Ghusl: Janabah, Hayd and Nifas | When ghusl is required and how; rulings of hayd and nifas | Al-Ma'idah 5:6; An-Nisa 4:43; hadith of Aisha, Bukhari 248; Muslim 335 (to verify) | "No water, a cast, a long journey?" |
+| 20a | For Women: Clean, Dignified, Certain | Ghusl (when and how); hayd, nifas and istihadah in full (Shafi'i): what pauses, ghusl after, making up fasts and not prayers; how a woman carries herself and deals with those around her as the deen asks | Al-Ma'idah 5:6; An-Nisa 4:43; Al-Baqarah 2:222; Bukhari 248; Muslim 335 (to verify) | "No water, a cast, a long journey?" |
+| 20b | For Men: The Women in Your Life | Ghusl (when and how); what a man must know of hayd and nifas for his wife; how to treat his mother, sisters and wife; how the Messenger ﷺ treated his wives: kindness, help at home, play, patience | Al-Ma'idah 5:6; Al-Baqarah 2:222; An-Nisa 4:19; Bukhari 248; "خيركم خيركم لأهله" (Tirmidhi, to verify); helping at home (Bukhari, to verify); racing Aisha (Abu Dawud, to verify) | "No water, a cast, a long journey?" |
 | 21 | The Ease Built In | Tayammum, wiping over khuffs and over a cast (jabirah). **Part 2 review** | Al-Ma'idah 5:6; wiping over khuffs (Muslim, to verify) | "Clean, for which meeting?" → Part 3 |
 
 ## Part 3: The Meeting (Salah)
@@ -113,11 +115,27 @@ Each Part also closes with a **review lesson segment** (the check of its last le
 | 39 | He Sees You | Ihsan in worship and in work | — | Muslim 8 ✔; Qaf 50:16; Al-Hadid 57:4 (to verify) | "Who are you doing it for?" |
 | 40 | For Whom? | Sincerity and showing off in the age of views and likes | — | "إنما الأعمال بالنيات" Bukhari 1 (to verify) | "Your words are written too" |
 | 41 | The Tongue and the Screen | Honesty, backbiting, slander and online speech | — | Al-Hujurat 49:6, 49:12; Qaf 50:18; Bukhari 6018 (to verify) | "Begin with the people closest to you" |
-| 42 | Home | Parents, spouse and children: rights and mercy | "Religion makes family life harder" | Al-Isra 17:23–24; Ar-Rum 30:21; At-Tahrim 66:6 (to verify) | "What protects a home?" |
+| 42 | Home | Parents and children; the rights of husband and wife on each other (20b covers a man's conduct with the women of his family, so the two never repeat) | "Religion makes family life harder" | Al-Isra 17:23–24; Ar-Rum 30:21; At-Tahrim 66:6 (to verify) | "What protects a home?" |
 | 43 | Haya: Gaze, Dress and Boundaries | Lowering the gaze, hijab, boundaries between men and women (Shafi'i) | "Hijab is oppression" | An-Nur 24:30–31; Al-Ahzab 33:59 (to verify) | "And what feeds the home?" |
-| 44 | Clean Money | Halal earning, riba and debt; one line where scholars differ on cases in the West, ask your teacher | "Everyone does it, there's no other way" | Al-Baqarah 2:275–279 (to verify) | "How do you live this in the West?" |
-| 45 | Proud, Just and Inviting | Muslim identity in the West, justice with non-Muslims, inviting by example | "I have to choose between being Western and Muslim" | Al-Mumtahanah 60:8; Fussilat 41:33 (to verify) | "Read your notebook" |
-| 46 | My Zad for the Road | The Certainty Notebook read back; a plan for life; the next course | — | Al-Baqarah 2:197 | — |
+| 44 | Clean Money | Halal earning, riba and debt, through defined cases the teacher can explain (table below) | "Everyone does it, there's no other way" | Al-Baqarah 2:275–279 (to verify) | "How do you live this in the West?" |
+| 45 | Proud, Just and Inviting | Muslim identity in the West, justice with non-Muslims, inviting by example | "I have to choose between being Western and Muslim" | Al-Mumtahanah 60:8; Fussilat 41:33 (to verify) | "Read your Zad al-Yaqeen" |
+| 46 | My Zad for the Road | Zad al-Yaqeen read back; a plan for life; the next course | — | Al-Baqarah 2:197 | — |
+
+## Lesson 44: the money cases (owner, 2026-10-22: anything named must be defined so the teacher can explain it)
+
+Each case is taught with the ruling we teach (Shafi'i, here also the view of the great majority), the reason behind it,
+and the halal way out. Where a recognised council has given a different fatwa, the lesson names the council and its
+condition in one line, so the teacher can answer when asked. Every ruling and fatwa is "to verify" in the lesson brief,
+with its source, before it reaches a slide.
+
+| Case | What the lesson defines |
+|---|---|
+| Interest on a savings account | Why it is riba; what to do with interest already received |
+| Credit cards | When using one is fine (paid in full before interest) and when it is not |
+| Conventional mortgage vs Islamic home finance | Why an interest-based loan is riba; how murabaha and ijarah work; the minority fatwa of the European Council for Fatwa and Research, named with its condition |
+| Student loans | The case in the learner's country, its ruling and the alternatives |
+| Insurance | Compulsory insurance (car) vs optional; takaful |
+| Debt | Paying debts, delaying a debt one can pay, mercy to a debtor |
 
 ## Role models (to be approved by the owner, one by one)
 
@@ -130,17 +148,19 @@ name before it is used.
 
 - **Yaqeen is the backbone:** Part 1 grows to 15 lessons, with three new ones aimed at certainty: the fitrah and the
   emptiness (3), the Names of Allah (5), death and the grave (10), and "Real Enough to Run Toward" (12), the wow of the course.
-- Part 2 adds the three grades of najasah, hayd and nifas in one lesson for every learner, and khuffs and jabirah.
+- Part 2 adds the three grades of najasah and khuffs and jabirah, and splits ghusl into two parallel lessons (owner):
+  20a for women, 20b for men. The teacher teaches the one that fits the learner.
 - Part 3 adds travel and illness (31) and the night prayer (32).
 - Part 4 splits zakah rulings (36) from trust in provision (37).
-- Part 5 adds sincerity in the age of likes (40), family as a whole (42) and halal money (44). The puberty lessons of the
+- Part 5 adds sincerity in the age of likes (40), the home (42) and halal money (44). The puberty lessons of the
   Teens version are not needed for adults.
-- Total: 46 lessons of 60 minutes.
+- Total: 47 lesson files; a learner takes 46 lessons of 60 minutes.
 
-## Open points for the owner
+## Owner decisions on the open points (2026-10-22)
 
-1. Is 46 lessons right, or should any lesson be merged, split, added or removed?
-2. The Certainty Notebook (دفتر اليقين) as the thread: keep it, rename it?
-3. Lesson 44 (money): include mortgages and interest in the West with "scholars differ, ask your teacher", or leave the
-   specific cases out?
-4. Hayd and nifas taught in one lesson to men and women alike (20), or a separate lesson for women only?
+1. 46 lessons per learner: approved.
+2. The notebook is named **Zad al-Yaqeen (زاد اليقين)**, close to the series name (Claude's proposal after the owner
+   asked for a name near *zad* and *yaqeen*; the owner may still rename it).
+3. The money lesson names specific cases, each defined so the teacher can explain it (table above).
+4. Lesson 20 becomes two parallel lessons: 20a for women (their rulings, and how to carry themselves and deal with those
+   around them), 20b for men (how to treat their mothers, sisters and wives, and how the Messenger ﷺ treated his wives).
