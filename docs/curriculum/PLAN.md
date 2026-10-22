@@ -29,10 +29,8 @@
 - **Now (player polish, 2026-10-18):** owner reviews the new sounds, the praise word "Zādak Allāh", the new question
   cards and game, and the page-turn transition (they apply to every lesson of the series).
 - **Next:** Lesson 4 (Muhammad ﷺ, the Messenger) brief.
-- **Now (Teens, 2026-10-22):** Teens Lessons 1, 2 and 3 built overnight at the owner's request (owner asleep): L1 with all
-  its paintings and the character library; L2 and L3 brief + pages + Arabic notes + code scenes (drafts, teacher-only at
-  /dashboard/curriculum). Waiting: owner review of all three, the L2/L3 images (`style/teens.md` Steps 4 and 5), and the
-  owner's call on the doors' six-pointed stars and the minarets in the L1 Madinah paintings. Next: Teens L4 brief.
+- **Now (Teens, 2026-10-22):** Teens Lessons 1, 2 and 3 complete with all their images (drafts, teacher-only at
+  /dashboard/curriculum). Waiting: the owner reviews all three together. Next after review: Teens L4 (Can I Trust Him?).
 - **Not started:** Lessons 4–37.
 - **Known limit:** lesson text ships in the site bundle, so the lock is a UI lock (content is not secret). Upgrade to
   server-served lessons if content must be protected.
@@ -437,4 +435,6 @@ B3–B5 → continue lesson by lesson.
   outfits, so the top of the TV was blurred into soft lights (sea, sky, sun) and three code glows mark them; `bench`: trainer
   logo painted out. Motion re-aimed on the real paintings; 57:3 shown as its first clause so the page fits. Waiting: owner
   reviews L1 and L2 together; L3 images (`style/teens.md` Step 5).
-
+- **2026-10-22** — Teens L3 images (4) placed from `watazawwado-archive/`; motion re-aimed (sun, hearts from Noor's phone,
+  the three lights on the game screen, Zayn's du'a page cropped to keep him in view); ﷺ in the Why List now drawn with the
+  Arabic font. All 48 Teens pages checked, no console errors. All three Teens lessons ready for the owner's review.

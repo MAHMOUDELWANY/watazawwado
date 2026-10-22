@@ -38,7 +38,8 @@ export function WhyList({ rows, typed = -1, crossed = [], style, delay = 0 }: { 
             transition={{ duration: Math.max(0.8, r.length * 0.035), delay: delay + 0.6, ease: 'linear' }}
             style={{ textDecoration: crossed.includes(i) ? 'line-through' : undefined }}
           >
-            {r}
+            {/* ﷺ is not in the sans font: draw it with the Arabic serif so it never shows as a box. */}
+            {r.split('ﷺ').flatMap((part, j) => (j ? [<span key={j} lang="ar" className="mx-0.5 font-serif text-[1.5em] leading-none">ﷺ</span>, part] : [part]))}
           </motion.span>
         </div>
       ))}

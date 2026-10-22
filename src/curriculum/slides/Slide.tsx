@@ -208,7 +208,7 @@ export const SCENE_IMAGES: Partial<Record<LessonPage['scene'], string>> = {
 };
 
 /** Where the crop of a wide (16:9) painting sits when its box cuts it (CSS object-position), so the people stay in view. */
-const SCENE_FOCUS: Partial<Record<LessonPage['scene'], string>> = { sunrise: '75% 50%', dua: '32% 50%', football: '10% 50%', tKnowWhy: '20% 50%' };
+const SCENE_FOCUS: Partial<Record<LessonPage['scene'], string>> = { sunrise: '75% 50%', dua: '32% 50%', football: '10% 50%', tKnowWhy: '20% 50%', tl3Prayer: '8% 50%' };
 
 /** Where labels point on each painting (% of the image box): x,y = the point, lx,ly = the label. */
 type Pin = { x: number; y: number; lx: number; ly: number };

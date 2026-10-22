@@ -21,7 +21,7 @@ const DEEP = 'radial-gradient(circle at 50% 45%, #0B4C57 0%, #05363F 70%, #031F2
 export function OneSunRises(_: { v: Built }) {
   return (
     <>
-      <SunRays x={50} y={40} size={80} />
+      <SunRays x={50} y={22} size={80} />
       <Rise from={[{ x: 40, y: 70 }, { x: 60, y: 72 }]} count={4} height={18} seed={31} />
     </>
   );
@@ -50,10 +50,10 @@ export function TeamOnScreen({ v }: { v: Built }) {
   useCue('sparkle', v.lines >= 1, 0.2);
   return (
     <>
-      <Glow x={46} y={30} w={10} h={14} color="62,155,176" />
-      <Glow x={56} y={26} w={10} h={14} color="160,190,255" />
-      <Glow x={66} y={30} w={10} h={14} color="229,169,60" />
-      {v.lines >= 2 && <Tag style={{ left: '56%', top: '50%' }} color={P.crimson} delay={0.4}>Why not a team?</Tag>}
+      <Glow x={36} y={24} w={16} h={22} color="62,155,200" />
+      <Glow x={52} y={20} w={16} h={22} color="230,240,255" />
+      <Glow x={68} y={24} w={16} h={22} color="229,169,60" />
+      {v.lines >= 2 && <Tag style={{ left: '52%', top: '48%' }} color={P.crimson} delay={0.4}>Why not a team?</Tag>}
     </>
   );
 }
@@ -109,8 +109,8 @@ export function LikesRise({ v }: { v: Built }) {
   useCue('pop', v.lines, 0.2);
   return (
     <>
-      <Rise from={[{ x: 46, y: 52 }]} count={7} kind="heart" height={30} seed={12} />
-      {v.lines >= 2 && <Tag style={{ left: '70%', top: '20%' }} color={P.crimson} delay={0.4}>obeyed like a god?</Tag>}
+      <Rise from={[{ x: 76, y: 24 }]} count={7} kind="heart" height={22} seed={12} />
+      {v.lines >= 2 && <Tag style={{ left: '38%', top: '22%' }} color={P.crimson} delay={0.4}>obeyed like a god?</Tag>}
     </>
   );
 }
@@ -228,6 +228,6 @@ export function ThirdCrossed({ v }: { v: Built }) {
 
 /** p15 Cliffhanger: a new line on the Why List, in the library. */
 export function LibraryQuestion({ v }: { v: Built }) {
-  if (v.lines < 3) return <Glow x={50} y={40} w={30} h={30} />;
-  return <WhyList rows={[Q1, Q2, Q3, Q4]} crossed={[1, 2]} typed={3} style={{ left: '28%', top: '46%', width: '44%' }} delay={0.2} />;
+  if (v.lines < 3) return <Glow x={84} y={42} w={24} h={30} />;
+  return <WhyList rows={[Q1, Q2, Q3, Q4]} crossed={[1, 2]} typed={3} style={{ left: '3%', top: '46%', width: '40%' }} delay={0.2} />;
 }
