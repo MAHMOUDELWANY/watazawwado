@@ -11,29 +11,51 @@
 
 ## 0. Where we are (update every session)
 
-- **Done:** scope, mission, age bands, rules (§3, §3a), source registry (`sources.md`), working plan (§7), subject
-  name (§1a), fiqh school, Quran/hadith/translation method (§5).
-- **Done (A1):** unit map of Zad Essentials · Kids approved → `zad-essentials-kids/MAP.md` (37 lessons, game
-  checkpoint every lesson, story world proposed).
-- **Done (A2–A3, B1–B2):** Lesson 1 written (`src/curriculum/content/zad-kids/`), lesson player + scenes + game
-  (`src/curriculum/`), teacher page at **/dashboard/curriculum** (draft badge while `reviewed: false`).
-- **Done (B3–B5):** teacher report after class (pages, evaluation per outcome, note, game result) in the lesson page;
-  student map + puzzle at **/student/curriculum** (per learner, parents see each child); locked until the family has a
-  confirmed/rescheduled/completed booking; covered pages of **reviewed** lessons open for review. Table
-  `curriculum_lesson_reports` (server-only) applied to production 2026-10-16.
-- **Done (slide system v2, 2026-10-16):** owner rejected v1 (weak visuals, no control, too little to explain). Rebuilt:
-  fixed 1600×900 notebook canvas (`src/curriculum/slides/`), build steps per page, pen/highlighter/laser, page grid,
-  thinking timer, replay, praise, explanation panel with a read-aloud `explain` text on every page, new scene art.
-- **Done (2026-10-20):** the owner reviewed and approved Zad Essentials Lessons 1, 2 and 3; all three are marked
-  `reviewed: true`, so booked students can open them.
-- **Now (player polish, 2026-10-18):** owner reviews the new sounds, the praise word "Zādak Allāh", the new question
-  cards and game, and the page-turn transition (they apply to every lesson of the series).
+Last update: 2026-10-22. History of how we got here: §8 (progress log).
+
+### Zad Essentials · Kids (6–11): `zad-essentials-kids/`
+- **Done:** map (37 lessons) approved; Lessons 1, 2, 3 built and **approved by the owner** (`reviewed: true`, open to
+  booked students); series opening (Yusuf, Maryam, Jiddo, Mishmish) before Lesson 1.
 - **Next:** Lesson 4 (Muhammad ﷺ, the Messenger) brief.
-- **Now (Teens, 2026-10-22):** Teens Lessons 1, 2 and 3 complete with all their images (drafts, teacher-only at
-  /dashboard/curriculum). Waiting: the owner reviews all three together. Next after review: Teens L4 (Can I Trust Him?).
 - **Not started:** Lessons 4–37.
-- **Known limit:** lesson text ships in the site bundle, so the lock is a UI lock (content is not secret). Upgrade to
-  server-served lessons if content must be protected.
+
+### Zad Essentials · Teens (12–17): `zad-essentials-teens/`
+- **Binding Teens rules in one file: `zad-essentials-teens/RULES.md`.**
+- **Done:** map (40 lessons, 5 parts) approved 2026-10-21; Lessons 1, 2, 3 written, built with all images, and polished
+  after the owner's feedback (text fit, richer scenes, Finish card); series opening (Zayn, Noor, Ethan, Amira, Hamza,
+  Aunt Salma) before Lesson 1.
+- **Waiting for the owner:** review of Lessons 1–3 together (drafts, `reviewed: false`, teacher-only at
+  /dashboard/curriculum), and of the cast lines and traits in `src/curriculum/content/zad-teens/opening.ts`.
+- **Next after review:** Lesson 4 (Can I Trust Him?) brief.
+- **Not started:** Lessons 4–40.
+
+### Zad Essentials · Adults (18+)
+- **Not started.** Next step: the unit map (`zad-essentials-adults/MAP.md`), with `brainstorming` first.
+- Already decided for Adults (RULES §3): same spine and five parts; **no recurring characters** (so no series opening);
+  true stories and real-life cases; check = case questions and a short review; Ahd = a habit or decision; Shafi'i, with
+  one line where a recognised difference exists; tadabbur = root, context and tafsir notes; look = calm, cinematic,
+  editorial. The premium bar and the slide rules of RULES §1.10 apply (text fit, no thin slides, no "45 minutes" on covers).
+- To start: read this file, `RULES.md`, the Teens `RULES.md` (as the model of a version's rule file), `sources.md`;
+  reuse verified evidence (✔ in the Kids and Teens maps) without re-research; make `style/adults.md` before any image.
+
+### Seerah and the Scholar's Path
+- Seerah (Kids / Teens / Adults): planned, not started. Scholar's Path: books, sessions and prices are the owner's call
+  (RULES §6); nothing built.
+
+### The lesson player (shared by every version) — done
+- 1600×900 slide canvas, build steps, page turn, scene builds, sounds (`slides/sfx.ts`), praise "Zādak Allāh".
+- Bar under the slide: full width, icon tools, red labelled "Full screen" button; language follows the site; no page count.
+- Full screen: icon-only tools rail on an arrow handle, teacher's explanation drawer (N), exit icon in the corner strip
+  outside the slide, timer 5–60 min (opens over the player), pen / highlighter / laser / stroke eraser / clear page.
+- Back / Next on the slide, swipe on touch, rotate hint on phones, Finish card at the end of every lesson.
+- Student view is a study kit only (no teacher notes, laser, timer or praise).
+- Teacher curriculum page: subject → version → lessons as door cards. Teacher report after class; student map + puzzle.
+- Text columns auto-fit (`Fit` in `slides/Slide.tsx`); paintings preloaded; series opening (`slides/Opening.tsx`).
+
+### Known limits
+- Lesson text ships in the site bundle, so the student lock is a UI lock. Upgrade to server-served lessons if content
+  must be protected.
+- Phones checked in a desktop browser at phone size only, never on a real device.
 
 ## 1. What we are building
 

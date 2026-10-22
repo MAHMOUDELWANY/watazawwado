@@ -12,7 +12,9 @@ two disagree, RULES.md wins and you tell the owner.
 ## 0. Read before doing anything
 1. `docs/curriculum/PLAN.md` §0 ("Where we are": done / now / next).
 2. `docs/curriculum/RULES.md` in full.
-3. The version's `MAP.md` (e.g. `docs/curriculum/zad-essentials-kids/MAP.md`) and the lesson brief you will touch.
+3. The version's `MAP.md` (e.g. `docs/curriculum/zad-essentials-kids/MAP.md`), its `RULES.md` when it has one
+   (e.g. `docs/curriculum/zad-essentials-teens/RULES.md`), and the lesson brief you will touch. A new version gets its own
+   `RULES.md` for the owner's decisions about it.
 4. `docs/curriculum/sources.md` before researching any source (never re-research a source already there).
 
 ## 1. Find the step
