@@ -1,6 +1,6 @@
 import type { Lesson } from '../../types';
 import { lesson01TeensTeacherAr } from './l01-teacher-ar.js';
-import { teensOpening } from './opening';
+import { teensOpening } from './opening.js';
 
 // Brief and evidence log: docs/curriculum/zad-essentials-teens/L01-the-stranger-with-no-dust.md
 // Hadith lines are copied unchanged from Sahih Muslim 8 on Dorar (checked 2026-10-21). Al-Baqarah 2:170 is the Uthmani

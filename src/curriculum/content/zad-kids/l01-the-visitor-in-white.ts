@@ -1,6 +1,6 @@
 import type { Lesson } from '../../types';
 import { lesson01TeacherAr } from './l01-teacher-ar.js';
-import { kidsOpening } from './opening';
+import { kidsOpening } from './opening.js';
 
 // Brief and evidence log: docs/curriculum/zad-essentials-kids/L01-the-visitor-in-white.md
 // Every Arabic line is copied unchanged from Sahih Muslim 8 (Dorar, checked 2026-10-16). English meanings are ours.
