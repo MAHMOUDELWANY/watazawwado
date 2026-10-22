@@ -178,6 +178,9 @@ export function DashboardApp() {
     return () => window.removeEventListener('keydown', onKey);
   }, [isSuperAdmin]);
 
+  // Hooks must run before any early return (the login / loading screens below), or React crashes after sign-in.
+  const [railOpen, toggleRail] = useSidebarOpen('teacher-rail-open');
+
   if (isTeacherAuthenticated && agreementRequired) {
     return <Navigate to="/staff/agreement" replace />;
   }
@@ -319,7 +322,6 @@ export function DashboardApp() {
   const roleLabel = isSuperAdmin ? L('Super Admin', 'الإدارة العامة') : L('Teacher Workspace', 'مساحة المعلم');
   const iconButton = 'relative w-10 h-10 flex items-center justify-center rounded-full text-foreground hover:bg-surface-subtle transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary';
 
-  const [railOpen, toggleRail] = useSidebarOpen('teacher-rail-open');
   return (
     <div
       className={`relative isolate brand-lights h-screen supports-[height:100dvh]:h-dvh bg-background text-foreground font-sans flex overflow-hidden ${ar ? 'font-arabic' : ''}`}
