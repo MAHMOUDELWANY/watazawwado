@@ -460,3 +460,5 @@ B3–B5 → continue lesson by lesson.
 - **2026-10-22** — Series opening (owner): anime-style "meet the cast" before Lesson 1 of Kids (Yusuf, Maryam, Jiddo,
   Mishmish) and Teens (Zayn, Noor, Ethan, Amira, Hamza, Aunt Salma); replay from the clapper button. Covers no longer
   show "45 minutes". Rules in RULES §1.10. Character lines and traits are new copy: owner to review.
+- **2026-10-22** — Opening pacing (owner): cards stay 7 s (Teens) / 8.5 s (Kids); Back, Next, Pause and clickable progress
+  ticks (the current tick fills with the time left); P pauses; cast images decoded before their card.

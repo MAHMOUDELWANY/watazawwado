@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { Play, RotateCcw, SkipForward } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Pause, Play, RotateCcw, SkipForward } from 'lucide-react';
 import type { CastMember, Lesson, SeriesOpening } from '../types';
 import { P, asset } from './Art';
 import { play } from './sfx';
@@ -10,31 +10,40 @@ import { play } from './sfx';
    the episode title. Runs on its own on the 1600×900 canvas; Next / click moves on a beat, Skip ends it. Transform and
    opacity only (plus clip-path on the colour panels), so it stays smooth while the lesson's paintings preload. */
 
+const CTRL = 'inline-flex h-[64px] w-[64px] items-center justify-center rounded-full bg-white/12 text-white ring-1 ring-white/25 backdrop-blur-md transition-[background-color,transform] duration-150 hover:bg-white/25 active:scale-95 disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C]';
 const STAR = 'M50 4 L63.4 17.6 L82.5 17.5 L82.4 36.6 L96 50 L82.4 63.4 L82.5 82.5 L63.4 82.4 L50 96 L36.6 82.4 L17.5 82.5 L17.6 63.4 L4 50 L17.6 36.6 L17.5 17.5 L36.6 17.6 Z';
-const COLD = 2900;
-const CARD = 3700;
-const TEAM = 5200;
+const COLD = 3200;
+// Long enough to read the line and the traits aloud (owner, 2026-10-22); younger readers get more.
+const CARD = { teens: 7000, kids: 8500 };
+const TEAM = 7000;
 
 export function Opening({ lesson, data, ar = false, onDone }: { lesson: Lesson; data: SeriesOpening; ar?: boolean; onDone: () => void }) {
   const reduce = useReducedMotion() ?? false;
   const kids = lesson.version === 'kids';
   const n = data.cast.length;
   const last = n + 2; // 0 cold open · 1..n cast · n+1 together · n+2 title card
+  const card = kids ? CARD.kids : CARD.teens;
+  // Decode every character up front, so no card cuts in before its picture is ready.
+  useEffect(() => { data.cast.forEach((m) => { const im = new Image(); im.src = asset(m.img); im.decode?.().catch(() => {}); }); }, [data]);
   const [beat, setBeat] = useState(0);
+  const [paused, setPaused] = useState(false);
   const next = () => setBeat((b) => Math.min(last, b + 1));
+  const prev = () => setBeat((b) => Math.max(0, b - 1));
+  const beatMs = beat === 0 ? COLD : beat <= n ? card : TEAM;
 
   useEffect(() => {
-    if (beat >= last) return;
-    const t = window.setTimeout(next, beat === 0 ? COLD : beat <= n ? CARD : TEAM);
+    if (beat >= last || paused) return;
+    const t = window.setTimeout(next, beatMs);
     return () => window.clearTimeout(t);
-  }, [beat, last, n]);
+  }, [beat, last, paused, beatMs]);
 
   // The opening owns the arrow keys while it plays; captured before the player's own shortcuts.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const k = e.key.toLowerCase();
       if (k === 'arrowright' || k === ' ' || k === 'pagedown' || k === 'enter') { e.preventDefault(); e.stopPropagation(); beat >= last ? onDone() : next(); }
-      else if (k === 'arrowleft' || k === 'pageup') { e.preventDefault(); e.stopPropagation(); setBeat((b) => Math.max(0, b - 1)); }
+      else if (k === 'arrowleft' || k === 'pageup') { e.preventDefault(); e.stopPropagation(); prev(); }
+      else if (k === 'p' || k === 'k') { e.stopPropagation(); setPaused((v) => !v); }
       else if (k === 's') { e.stopPropagation(); onDone(); }
     };
     document.addEventListener('keydown', onKey, true);
@@ -54,20 +63,40 @@ export function Opening({ lesson, data, ar = false, onDone }: { lesson: Lesson; 
       <AnimatePresence mode="popLayout">
         {beat === 0 && <ColdOpen key="cold" series={series} version={version} kids={kids} reduce={reduce} />}
         {beat >= 1 && beat <= n && (
-          <CastCard key={data.cast[beat - 1].id} m={data.cast[beat - 1]} i={beat - 1} total={n} kids={kids} reduce={reduce} />
+          <CastCard key={data.cast[beat - 1].id} m={data.cast[beat - 1]} i={beat - 1} total={n} kids={kids} reduce={reduce} ms={card} />
         )}
         {beat === n + 1 && <Together key="team" data={data} series={series} kids={kids} reduce={reduce} />}
         {beat === last && <TitleCard key="title" lesson={lesson} data={data} series={series} reduce={reduce} ar={ar} onStart={onDone} onReplay={() => setBeat(0)} />}
       </AnimatePresence>
 
-      {/* Progress ticks and Skip: the teacher always knows how long is left and can leave at any moment. */}
+      {/* Controls: back, one tick per beat (click to jump; the current one fills with the time left), next, pause.
+          The teacher sets the pace, so a child has time to read every card (owner, 2026-10-22). */}
       {beat < last && (
-        <div className="pointer-events-none absolute inset-x-0 bottom-[34px] z-30 flex items-center justify-center gap-2">
-          {Array.from({ length: last }, (_, i) => (
-            <span key={i} className="h-[5px] rounded-full transition-[width,background-color] duration-300" style={{ width: i === beat ? 54 : 18, background: i <= beat ? P.goldSoft : 'rgba(255,255,255,0.25)' }} />
-          ))}
+        <div className="absolute inset-x-0 bottom-[26px] z-30 flex items-center justify-center gap-4" onClick={(e) => e.stopPropagation()}>
+          <button type="button" onClick={prev} disabled={beat === 0} aria-label={ar ? 'السابق' : 'Previous'} className={CTRL}>
+            <ChevronLeft className="h-8 w-8" />
+          </button>
+          <div className="flex items-center gap-2 rounded-full bg-black/25 px-4 py-3 backdrop-blur-md">
+            {Array.from({ length: last + 1 }, (_, i) => (
+              <button key={i} type="button" onClick={() => setBeat(i)} aria-label={`${i + 1}`} aria-current={i === beat}
+                className="relative h-[10px] overflow-hidden rounded-full transition-[width] duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C]"
+                style={{ width: i === beat ? 70 : 22, background: i < beat ? P.goldSoft : 'rgba(255,255,255,0.28)' }}>
+                {i === beat && (
+                  <span key={beat} className="absolute inset-y-0 left-0 w-full origin-left rounded-full"
+                    style={{ background: P.goldSoft, animation: `op-fill ${beatMs}ms linear forwards`, animationPlayState: paused ? 'paused' : 'running' }} />
+                )}
+              </button>
+            ))}
+          </div>
+          <button type="button" onClick={next} aria-label={ar ? 'التالي' : 'Next'} className={CTRL}>
+            <ChevronRight className="h-8 w-8" />
+          </button>
+          <button type="button" onClick={() => setPaused((v) => !v)} aria-pressed={paused} aria-label={paused ? (ar ? 'كمّل' : 'Play') : (ar ? 'إيقاف مؤقت' : 'Pause')} className={`${CTRL} ${paused ? '!bg-[#E5A93C] !text-[#1E1410]' : ''}`}>
+            {paused ? <Play className="h-7 w-7 fill-current" /> : <Pause className="h-7 w-7 fill-current" />}
+          </button>
         </div>
       )}
+      <style>{'@keyframes op-fill { from { transform: scaleX(0) } to { transform: scaleX(1) } }'}</style>
       {beat < last && (
         <button
           type="button"
@@ -123,7 +152,7 @@ function ColdOpen({ series, version, kids, reduce }: { series: string; version: 
 }
 
 /** One character: a hard cut to their colour, speed lines, their name huge behind them, then the name plate. */
-function CastCard({ m, i, total, kids, reduce }: { m: CastMember; i: number; total: number; kids: boolean; reduce: boolean }) {
+function CastCard({ m, i, total, kids, reduce, ms }: { m: CastMember; i: number; total: number; kids: boolean; reduce: boolean; ms: number }) {
   const flip = i % 2 === 1; // characters alternate sides, like the cuts of an opening
   useEffect(() => { play('whoosh'); play('thud', 0.45); }, []);
   const lines = useMemo(() => speedLines(i + 3, kids), [i, kids]);
@@ -142,13 +171,13 @@ function CastCard({ m, i, total, kids, reduce }: { m: CastMember; i: number; tot
       {/* giant outlined name drifting behind */}
       <motion.p aria-hidden="true" className="absolute top-[18%] whitespace-nowrap font-serif text-[380px] font-bold uppercase leading-none"
         style={{ color: 'transparent', WebkitTextStroke: '3px rgba(255,255,255,0.16)', left: 0 }}
-        initial={{ transform: `translateX(${flip ? -300 : 400}px)` }} animate={{ transform: `translateX(${flip ? 100 : -100}px)` }} transition={{ duration: reduce ? 0 : CARD / 1000, ease: 'linear' }}>
+        initial={{ transform: `translateX(${flip ? -300 : 400}px)` }} animate={{ transform: `translateX(${flip ? 100 : -100}px)` }} transition={{ duration: reduce ? 0 : ms / 1000, ease: 'linear' }}>
         {m.name.replace('Aunt ', '')}
       </motion.p>
       {/* speed lines (rays for the kids' version) */}
       {!reduce && (
         <motion.div className="absolute inset-0" style={{ transformOrigin: `${cx / 16}% 50%` }} aria-hidden="true"
-          initial={{ opacity: 0, transform: 'rotate(0deg)' }} animate={{ opacity: [0, 1, 0.55], transform: 'rotate(8deg)' }} transition={{ duration: CARD / 1000, ease: 'linear', opacity: { duration: 1.2, times: [0, 0.2, 1] } }}>
+          initial={{ opacity: 0, transform: 'rotate(0deg)' }} animate={{ opacity: [0, 1, 0.55], transform: 'rotate(8deg)' }} transition={{ duration: ms / 1000, ease: 'linear', opacity: { duration: 1.2, times: [0, 0.2, 1] } }}>
           <svg className="h-full w-full" viewBox="0 0 1600 900">
             {lines.map((l, k) => (
               <line key={k} x1={cx + Math.cos(l.a) * l.r0} y1={450 + Math.sin(l.a) * l.r0} x2={cx + Math.cos(l.a) * 1500} y2={450 + Math.sin(l.a) * 1500}
