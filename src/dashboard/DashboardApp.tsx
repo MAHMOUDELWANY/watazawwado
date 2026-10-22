@@ -4,6 +4,7 @@ import { OnboardingGuide } from '../components/ui/OnboardingGuide';
 import { AccountDropdown } from '../components/ui/AccountDropdown';
 import { MobileTabBar, isTabActive, MOBILE_TAB_BAR_PADDING, type MobileTab } from '../components/ui/MobileTabBar';
 import { BrandLoader } from '../components/ui/BrandLoader';
+import { SidebarHandle, useSidebarOpen } from '../components/ui/SidebarHandle';
 import { WelcomeLoader, useWelcomeGate, type WelcomeGender } from '../components/ui/WelcomeLoader';
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, Link, useLocation, useNavigate } from 'react-router-dom';
@@ -318,6 +319,7 @@ export function DashboardApp() {
   const roleLabel = isSuperAdmin ? L('Super Admin', 'الإدارة العامة') : L('Teacher Workspace', 'مساحة المعلم');
   const iconButton = 'relative w-10 h-10 flex items-center justify-center rounded-full text-foreground hover:bg-surface-subtle transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary';
 
+  const [railOpen, toggleRail] = useSidebarOpen('teacher-rail-open');
   return (
     <div
       className={`relative isolate brand-lights h-screen supports-[height:100dvh]:h-dvh bg-background text-foreground font-sans flex overflow-hidden ${ar ? 'font-arabic' : ''}`}
@@ -327,7 +329,8 @@ export function DashboardApp() {
       <aside
         id="teacher-rail"
         aria-label={L('Teacher Navigation Sidebar', 'شريط التنقل للمعلم')}
-        className={`hidden md:flex fixed start-4 top-1/2 -translate-y-1/2 z-30 w-[68px] max-h-[calc(100vh-2rem)] flex-col items-center gap-2 rounded-[2.25rem] py-3 ${INK} backdrop-blur-xl text-white/70 ring-1 ring-white/10 shadow-[0_24px_48px_-24px_rgba(5,54,63,0.65)]`}
+        inert={!railOpen}
+        className={`hidden md:flex fixed start-4 top-1/2 -translate-y-1/2 z-30 w-[68px] max-h-[calc(100vh-2rem)] flex-col items-center gap-2 rounded-[2.25rem] py-3 ${INK} backdrop-blur-xl text-white/70 ring-1 ring-white/10 shadow-[0_24px_48px_-24px_rgba(5,54,63,0.65)] transition-[opacity,translate] duration-300 ease-out ${railOpen ? '' : 'opacity-0 -translate-x-[140%] rtl:translate-x-[140%] pointer-events-none'}`}
       >
         <Link to="/" aria-label={L('Watazawwado website', 'موقع وتزودوا')} className="rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C]">
           <BrandLogo variant="compact" />
@@ -369,6 +372,12 @@ export function DashboardApp() {
           <LogOut className="w-[18px] h-[18px] rtl:rotate-180" aria-hidden="true" />
         </button>
       </aside>
+
+      <SidebarHandle
+        open={railOpen} onToggle={toggleRail} controls="teacher-rail"
+        labelOpen={L('Hide the sidebar', 'اخفي الشريط الجانبي')} labelClosed={L('Show the sidebar', 'اظهر الشريط الجانبي')}
+        className={`hidden md:flex fixed top-1/2 -translate-y-1/2 ${railOpen ? 'start-[88px]' : 'start-0'}`}
+      />
 
       {/* Phone drawer (opened by the menu button or "More") */}
       {isMobileMenuOpen && (
@@ -484,7 +493,7 @@ export function DashboardApp() {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col min-w-0 h-screen supports-[height:100dvh]:h-dvh overflow-hidden md:ps-[100px]">
+      <main className={`flex-1 flex flex-col min-w-0 h-screen supports-[height:100dvh]:h-dvh overflow-hidden transition-[padding] duration-300 ease-out ${railOpen ? 'md:ps-[100px]' : 'md:ps-6'}`}>
         <header className="shrink-0 z-20 px-3 sm:px-6 lg:px-8 pt-3 md:pt-4">
           <div className="max-w-6xl mx-auto flex items-center gap-2 sm:gap-3">
             {/* Start: menu (phones) and workspace name */}

@@ -4,6 +4,7 @@ import { OnboardingGuide } from '../components/ui/OnboardingGuide';
 import { BrandLoader } from '../components/ui/BrandLoader';
 import { ThemeToggle } from '../components/ui/ThemeToggle';
 import { MobileTabBar, isTabActive, MOBILE_TAB_BAR_PADDING } from '../components/ui/MobileTabBar';
+import { SidebarHandle, useSidebarOpen } from '../components/ui/SidebarHandle';
 import { WelcomeLoader, useWelcomeGate, markJustSignedIn } from '../components/ui/WelcomeLoader';
 import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
@@ -59,7 +60,7 @@ export default function StudentApp() {
   const { user, session, loading, isTeacherAuthenticated, userRole, signOut } = useTeacherAuth();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
+  const [desktopSidebarOpen, toggleDesktopSidebar] = useSidebarOpen('student-sidebar-open');
   const [showGlobalTour, setShowGlobalTour] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const [loadingProfile, setLoadingProfile] = useState<boolean>(true);
@@ -689,6 +690,12 @@ export default function StudentApp() {
     </div>
   </div>
 </aside>
+
+      <SidebarHandle
+        open={desktopSidebarOpen} onToggle={toggleDesktopSidebar} controls="student-sidebar"
+        labelOpen={isAr ? 'اخفي الشريط الجانبي' : 'Hide the sidebar'} labelClosed={isAr ? 'اظهر الشريط الجانبي' : 'Show the sidebar'}
+        className={`hidden lg:flex fixed top-1/2 -translate-y-1/2 ${desktopSidebarOpen ? 'start-[296px]' : 'start-0'}`}
+      />
 
       {/* ========================================================================= */}
       {/* MAIN APPLICATION VIEWPORT & HEADER */}
