@@ -26,7 +26,12 @@ Examples with shorter lessons (12 × 30 min, $9 group): 12 × $8.00 × 0.5 = $48
 - When a parent account buys a package for a **second (or third…) child**, that child's package gets an extra **5% off**.
 - The first child pays the normal package price.
 - Shown with warm wording, for example "Family care: 5% off for siblings".
-- Total discount never exceeds about 16% (12-lesson package + family).
+- Package + family discount never exceeds about 16% (12-lesson package + family).
+
+## Discount codes and account balance (owner, 2026-10-22)
+
+- A discount code from the super admin stacks on top, but package + family + code together stay within the savings cap (a setting, 25% of the full price at launch). Gift codes are outside the cap. See RULES.md §4.
+- Account balance (referral credit) is money, not a discount, so it is outside the cap.
 
 ## What changes in the system after approval
 

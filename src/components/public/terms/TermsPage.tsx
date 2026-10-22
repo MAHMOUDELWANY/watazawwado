@@ -6,7 +6,7 @@ import { PublicSection, EditorialHeading, MarginNote, PageHero } from '../Public
 import { FileText, CalendarClock, RotateCcw, Wallet } from 'lucide-react';
 
 // Keep in sync with TERMS_VERSION in api/index.ts: bookings store the version the student accepted.
-const TERMS_VERSION_LABEL = { en: 'Version 2026-10-20.1, last updated 20 October 2026', ar: 'الإصدار 2026-10-20.1، آخر تحديث 20 أكتوبر 2026' };
+const TERMS_VERSION_LABEL = { en: 'Version 2026-10-22.1, last updated 22 October 2026', ar: 'الإصدار 2026-10-22.1، آخر تحديث 22 أكتوبر 2026' };
 
 // Trader identity (consumer law). The block shows once name and address are filled in.
 // Not a registered business: leave ceidg/nip empty. Never publish a PESEL here.
@@ -159,6 +159,21 @@ const SECTIONS: Section[] = [
       'المبلغ المسترد هو ما دفعته لهذا الدرس، وقد يخصم البنك أو مزود الدفع رسومه الخاصة.',
       'الدروس التي تمت، أو التي لم تحضرها أو ألغيتها متأخراً بينما كان المعلم مستعداً، غير قابلة للاسترداد.',
       'لا يوجد في هذه الشروط ما يقيّد أي حقوق تمنحها لك قوانين حماية المستهلك المطبقة عليك.',
+    ] },
+  },
+  {
+    id: 'codes',
+    en: { title: 'Discount codes, invites and account balance', items: [
+      'A discount code works only within its stated terms (what it applies to, dates and number of uses), one code per order. Together with package and family savings, a code is limited to a maximum total saving per order, shown at checkout before you pay. A code has no cash value.',
+      'Invite a friend: a new account that joins through your personal link (or enters your code) gets a welcome credit once. You get a credit after that friend completes their first paid lesson; the free trial does not count. The amounts are shown on your Invite page, and there is a yearly limit.',
+      'Account balance is used automatically at checkout, and you can switch it off there. It can pay for lessons and packages only, cannot be exchanged for money or transferred, and comes back to your balance if the booking is not completed or is refunded.',
+      'Inviting yourself, opening extra accounts or any other misuse means the credit or reward may be cancelled. We may change or end the invite program for the future; credit already in your balance stays yours.',
+    ] },
+    ar: { title: 'أكواد الخصم والدعوات ورصيد الحساب', items: [
+      'يسري كود الخصم وفق شروطه المعلنة فقط (ما ينطبق عليه، ومدته، وعدد مرات استخدامه)، وكود واحد لكل طلب. ويخضع الكود مع توفير الباقة وخصم الأسرة لحد أقصى لإجمالي التوفير في الطلب الواحد، ويظهر لك ذلك عند الدفع قبل أن تدفع. ولا قيمة نقدية للكود.',
+      'دعوة صديق: الحساب الجديد الذي يسجّل من رابطك الخاص (أو يُدخل كودك) يحصل على رصيد ترحيب مرة واحدة، وتحصل أنت على رصيد بعد أن يُتم صديقك أول درس مدفوع، ولا تُحتسب الحصة التجريبية المجانية. تظهر المبالغ في صفحة الدعوة، ويوجد حد سنوي للمكافآت.',
+      'يُستخدم رصيد الحساب تلقائياً عند الدفع، ويمكنك إيقاف ذلك من صفحة الدفع. ويُستخدم في الدروس والباقات فقط، ولا يُستبدل بمال ولا يُحوّل لحساب آخر، ويعود إلى رصيدك إذا لم يكتمل الحجز أو تم استرداد مبلغه.',
+      'دعوة النفس أو فتح حسابات إضافية أو أي إساءة استخدام أخرى يجيز لنا إلغاء الرصيد أو المكافأة. ويجوز لنا تعديل برنامج الدعوات أو إيقافه مستقبلاً، ويبقى الرصيد الموجود في حسابك ملكاً لك.',
     ] },
   },
   {

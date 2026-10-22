@@ -25,7 +25,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { Input } from '../../components/ui/Input';
 import { Select } from '../../components/ui/Select';
-import { HEARD_ABOUT, HEARD_ABOUT_LABELS, readFirstTouch } from '../../lib/leadSource';
+import { HEARD_ABOUT, HEARD_ABOUT_LABELS, readFirstTouch, readReferral } from '../../lib/leadSource';
 import { BookShelf } from '../../components/onboarding/BookShelf';
 import { TravelModeChoice, PassCard, PassField, passInputClass, SealChoice, GuideChoice, FoldedPass, teacherColor } from '../../components/onboarding/TravelPass';
 import { JourneyPath, LEVELS } from '../../components/onboarding/JourneyPath';
@@ -376,6 +376,7 @@ export default function StudentOnboardingPage({
         timezone,
         whatsapp: whatsapp.trim(),
         leadSource: readFirstTouch(),
+        ...(readReferral() ? { referralCode: readReferral() } : {}),
         ...(heardAbout ? { heardAbout } : {})
       };
 

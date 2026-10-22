@@ -22,6 +22,7 @@ import { HelpCircle, Globe, LogOut, BookOpen,
   MessageCircle,
   Library,
   CalendarDays,
+  Gift,
 } from 'lucide-react';
 import { useTeacherAuth } from '../lib/auth';
 import { useAppLanguage } from '../lib/language';
@@ -36,6 +37,7 @@ import StudentPackagesPage from './pages/StudentPackagesPage';
 import StudentPaymentsPage from './pages/StudentPaymentsPage';
 import StudentNotificationsPage from './pages/StudentNotificationsPage';
 import StudentOffersPage from './pages/StudentOffersPage';
+import StudentInvitePage from './pages/StudentInvitePage';
 import StudentPlacementPage from './pages/StudentPlacementPage';
 import StudentPlacementReportPage from './pages/StudentPlacementReportPage';
 import StudentCurriculumPage, { StudentCurriculumLessonPage } from './pages/StudentCurriculumPage';
@@ -408,9 +410,15 @@ export default function StudentApp() {
       icon: Sparkles,
       badge: null
     },
-    { 
-      name: isAr ? 'حسابي' : 'Account', 
-      path: '/student/account', 
+    {
+      name: isAr ? 'ادعُ صاحبك' : 'Invite friends',
+      path: '/student/invite',
+      icon: Gift,
+      badge: null
+    },
+    {
+      name: isAr ? 'حسابي' : 'Account',
+      path: '/student/account',
       icon: User,
       badge: null
     }
@@ -486,6 +494,12 @@ export default function StudentApp() {
       return {
         title: isAr ? 'مرشد التعلم' : 'Learning Guide',
         subtitle: isAr ? 'مساعدك الذكي للتخطيط' : 'AI study assistant'
+      };
+    }
+    if (pathname.startsWith('/student/invite')) {
+      return {
+        title: isAr ? 'ادعُ صاحبك' : 'Invite friends',
+        subtitle: isAr ? 'شارك الخير، وخدوا رصيد انتوا الاتنين' : 'Share the good, and you both get credit'
       };
     }
     if (pathname.startsWith('/student/account') || pathname.startsWith('/student/profile')) {
@@ -805,6 +819,7 @@ export default function StudentApp() {
               <Route path="/notifications" element={<StudentNotificationsPage lang={lang} session={session} />} />
               <Route path="/guide" element={<IntakeConversation session={session} lang={lang} />} />
               <Route path="/offers" element={<StudentOffersPage session={session} lang={lang} />} />
+              <Route path="/invite" element={<StudentInvitePage lang={lang} />} />
               <Route path="/messages" element={<ChatPanel lang={lang} />} />
               <Route path="/placement" element={<StudentPlacementPage lang={lang} />} />
               <Route path="/curriculum" element={<StudentCurriculumPage lang={lang} />} />

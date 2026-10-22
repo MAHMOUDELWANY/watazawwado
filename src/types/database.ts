@@ -938,3 +938,72 @@ export interface Database {
     };
   };
 }
+
+// Discount codes, account balance and referrals (migration 20261022000000, RULES.md §4).
+// Server-only tables (service_role); the browser sees them only through server/routes/growth.ts.
+export interface DiscountCodeRow {
+  id: string;
+  code: string;
+  discount_type: 'percent' | 'fixed';
+  value: number;
+  applies_to: 'all' | 'lessons' | 'packages';
+  first_purchase_only: boolean;
+  min_amount_usd: number;
+  max_redemptions: number | null;
+  max_per_account: number;
+  starts_at: string | null;
+  ends_at: string | null;
+  is_gift: boolean;
+  is_active: boolean;
+  note: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DiscountRedemptionRow {
+  id: string;
+  code_id: string | null;
+  account_user_id: string;
+  target_type: 'booking' | 'package';
+  target_id: string;
+  list_amount: number;
+  base_amount: number;
+  discount_amount: number;
+  credit_used: number;
+  final_amount: number;
+  status: 'reserved' | 'redeemed' | 'released' | 'reversed';
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AccountCreditLedgerRow {
+  id: string;
+  account_user_id: string;
+  amount_usd: number;
+  reason: 'referral_welcome' | 'referral_reward' | 'checkout_use' | 'checkout_release' | 'refund_return' | 'admin_adjust';
+  redemption_id: string | null;
+  referral_id: string | null;
+  note: string | null;
+  created_by: string | null;
+  created_at: string;
+}
+
+export interface ReferralCodeRow {
+  owner_user_id: string;
+  code: string;
+  created_at: string;
+}
+
+export interface ReferralRow {
+  id: string;
+  referrer_user_id: string;
+  referred_user_id: string;
+  referred_name: string | null;
+  status: 'signed_up' | 'rewarded' | 'not_rewarded' | 'void';
+  welcome_credit_usd: number;
+  reward_credit_usd: number;
+  qualifying_booking_id: string | null;
+  created_at: string;
+  qualified_at: string | null;
+}

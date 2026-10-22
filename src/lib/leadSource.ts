@@ -87,6 +87,40 @@ export function readFirstTouch(): LeadSource | null {
   }
 }
 
+/**
+ * Invite links (RULES.md §4 referral): `?ref=CODE` on any page. Unlike the first touch, the latest invite wins
+ * and it is kept for 30 days; onboarding sends it once and the server decides whether it counts.
+ */
+export const REFERRAL_KEY = 'wz_ref';
+const REFERRAL_DAYS = 30;
+
+export function normalizeReferralCode(v: unknown): string | null {
+  const code = typeof v === 'string' ? v.trim().toUpperCase() : '';
+  return /^[A-Z0-9]{4,20}$/.test(code) ? code : null;
+}
+
+export function captureReferral(): void {
+  try {
+    const code = normalizeReferralCode(new URLSearchParams(window.location.search).get('ref'));
+    if (code) localStorage.setItem(REFERRAL_KEY, JSON.stringify({ code, at: new Date().toISOString() }));
+  } catch { /* storage blocked */ }
+}
+
+export function readReferral(): string | null {
+  try {
+    const stored = JSON.parse(localStorage.getItem(REFERRAL_KEY) || 'null');
+    if (!stored?.code || !stored?.at) return null;
+    if (Date.now() - Date.parse(stored.at) > REFERRAL_DAYS * 86_400_000) return null;
+    return normalizeReferralCode(stored.code);
+  } catch {
+    return null;
+  }
+}
+
+export function clearReferral(): void {
+  try { localStorage.removeItem(REFERRAL_KEY); } catch { /* storage blocked */ }
+}
+
 /** One short label for admin screens: utm_source, else the referrer host, else the onboarding answer. */
 export function sourceLabel(leadSource: LeadSource | null | undefined, heardAbout?: string | null, isAr = false): string | null {
   const tag = leadSource?.utm_source || leadSource?.referrer;

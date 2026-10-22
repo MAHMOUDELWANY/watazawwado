@@ -79,6 +79,7 @@ import { registerNextWeekSuggestionRoutes } from '../server/routes/nextWeekSugge
 import { findSubject, levelsFor } from '../src/components/onboarding/subjects.js';
 import { registerOpsRoutes, computeHealth, apiErrorMonitor, recordHeartbeat, HEARTBEAT_REMINDER_CRON, HEARTBEAT_STRIPE_WEBHOOK } from '../server/routes/ops.js';
 import { registerCurriculumRoutes } from '../server/routes/curriculum.js';
+import { registerGrowthRoutes, attachReferralForAccount, qualifyReferralForBooking, reverseCheckoutDiscount, settleCheckoutRedemptions } from '../server/routes/growth.js';
 import { registerProgressRoutes, validateFamilyNoteFields, canTeacherWriteForLesson } from '../server/routes/progress.js';
 import { announceNewStudent, type NewLearner } from '../server/onboarding/newStudent.js';
 import { isAdultAge, isGuardianAge, isChildAge, parseAge, ADULT_MIN_AGE, GUARDIAN_MIN_AGE, CHILD_MIN_AGE, CHILD_MAX_AGE } from '../src/lib/ageRules.js';
@@ -193,7 +194,7 @@ const PAYMENT_HOLD_MINUTES = 35;
 const MAX_LOST_TRIALS = 5;
 const MAX_STUDENT_REFUNDED_LESSONS = 3;
 // Bump when the terms page changes in substance; stored with each booking/package as proof of consent.
-const TERMS_VERSION = '2026-10-20.1';
+const TERMS_VERSION = '2026-10-22.1';
 // Keep in sync with AGREEMENT_VERSION in src/pages/StaffAgreementPage.tsx; bump to make every teacher accept again.
 const TEACHER_AGREEMENT_VERSION = '2026-10-15.2';
 
@@ -4698,6 +4699,11 @@ app.patch('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => 
         }));
       }
 
+      // Referral (RULES.md §4): a referred family's first completed paid lesson earns the inviter's credit.
+      if (status === 'completed' && existingBooking.booking_type !== 'trial') {
+        waitUntil(qualifyReferralForBooking(supabase, existingBooking));
+      }
+
       // RN-02: only when a credit was actually used (a no-show with the credit returned changes nothing).
       if (existingBooking.package_entitlement_id && (status === 'completed' || creditDecision === 'used')) {
         waitUntil(notifyLowBalance(supabase, existingBooking.package_entitlement_id));
@@ -5284,6 +5290,9 @@ async function fulfillAutomatedPayment(params: {
     throw new PublicError('Payment received but could not be confirmed automatically. It is pending manual review.');
   }
 
+  // A discount code or account balance on this checkout is now used for good.
+  await settleCheckoutRedemptions(supabaseAdmin);
+
   if (bookingId) {
     await enqueueAndRunBookingSync(supabaseAdmin, bookingId);
   }
@@ -5806,6 +5815,10 @@ app.post('/api/dashboard/payments/:id/refund', verifyTeacherAuth, requireSuperAd
       console.error('[Refund Payment Error]', error);
       return res.status(400).json({ error: clientErrorMessage(error, 'Could not refund this payment.') });
     }
+    // A code or account balance used on this checkout comes back (RULES.md §4).
+    const { data: refunded } = await supabase.from('payments').select('booking_id, entitlement_id').eq('id', req.params.id).maybeSingle();
+    if (refunded?.booking_id) await reverseCheckoutDiscount(supabase, 'booking', refunded.booking_id);
+    if (refunded?.entitlement_id) await reverseCheckoutDiscount(supabase, 'package', refunded.entitlement_id);
     // Cancel the Zoom meeting / calendar event of any lesson the refund cancelled.
     try {
       await processIntegrationJobs();
@@ -8116,6 +8129,11 @@ app.post('/api/student/onboarding', verifyStudentAuth, async (req: any, res: any
       if (sourceErr) console.warn('[POST /api/student/onboarding] lead source not saved:', sourceErr.message);
     }
 
+    // Joined through a friend's invite link: welcome credit for this account (once; never your own code).
+    if (req.body?.referralCode && req.studentUser?.auth_id) {
+      await attachReferralForAccount(supabaseAdmin, { userId: req.studentUser.auth_id, name: updatedStudent?.name || name, code: req.body.referralCode });
+    }
+
     // 2. Handle child guardian and multiple children if provided
     const effectiveParentName = (parentName || name).trim();
     const effectiveParentPhone = parentWhatsapp ? String(parentWhatsapp).trim() : (whatsapp ? String(whatsapp).trim() : null);
@@ -10322,6 +10340,19 @@ registerExportRoutes(app, {
   getClient: getSupabaseAdminClient,
   verifyTeacherAuth,
   requireSuperAdmin
+});
+
+registerGrowthRoutes(app, {
+  getClient: getSupabaseAdminClient,
+  rateLimit,
+  verifyStudentAuth,
+  verifyTeacherAuth,
+  requireSuperAdmin,
+  getLearners: getAuthorizedLearnersForStudent,
+  // A fully covered booking is confirmed by the code/balance itself: create its calendar event and Zoom like a paid one.
+  afterFreeConfirm: async (client, targetType, targetId) => {
+    if (targetType === 'booking') await enqueueAndRunBookingSync(client, targetId);
+  }
 });
 
 registerOpsRoutes(app, {

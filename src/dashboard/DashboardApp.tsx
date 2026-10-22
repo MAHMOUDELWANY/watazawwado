@@ -39,6 +39,7 @@ import {
   MoreHorizontal,
   Library,
   Activity,
+  Tag,
 } from 'lucide-react';
 import OverviewPage from './pages/OverviewPage';
 import TodayPage from './pages/TodayPage';
@@ -52,6 +53,7 @@ import AnalyticsPage from './pages/AnalyticsPage';
 import SettingsPage from './pages/SettingsPage';
 import IntakeReviewPage from './pages/IntakeReviewPage';
 import TeachersPage from './pages/TeachersPage';
+import DiscountsPage from './pages/DiscountsPage';
 import AvailabilityPage from './pages/AvailabilityPage';
 import NotificationsPage, { useUnreadDashboardNotifications } from './pages/NotificationsPage';
 import PayLaterPage from './pages/PayLaterPage';
@@ -238,6 +240,7 @@ export function DashboardApp() {
     { name: L('Trials', 'التجريبية'), path: '/dashboard/trials', icon: Sparkles },
     { name: L('Placement tests', 'اختبارات المستوى'), path: '/dashboard/placement', icon: GraduationCap },
     { name: L('Leads', 'المهتمون'), path: '/dashboard/leads', icon: UserPlus },
+    { name: L('Discounts & invites', 'الخصومات والدعوات'), path: '/dashboard/discounts', icon: Tag },
     { name: L('Requests', 'الطلبات'), path: '/dashboard/intakes', icon: ClipboardCheck },
     { name: L('Jalila (assistant)', 'جليلة (المساعدة)'), path: '/dashboard/assistant', icon: Compass },
     { name: L('Reports', 'التقارير'), path: '/dashboard/analytics', icon: TrendingUp },
@@ -626,6 +629,7 @@ export function DashboardApp() {
                 <Route path="/availability" element={<AvailabilityPage />} />
                 <Route path="/notifications" element={<NotificationsPage />} />
                 <Route path="/pay-later" element={isSuperAdmin ? <PayLaterPage /> : <Navigate to="/dashboard" replace />} />
+                <Route path="/discounts" element={isSuperAdmin ? <DiscountsPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/health" element={isSuperAdmin ? <HealthPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/messages" element={<ChatPanel lang={ar ? 'ar' : 'en'} />} />
