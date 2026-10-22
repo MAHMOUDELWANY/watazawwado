@@ -11,8 +11,12 @@ import {
   UserPlus,
   Power,
   PowerOff,
-  Search
+  Search,
+  Trash2
 } from 'lucide-react';
+import { Modal } from '../../components/ui/Modal';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
 import { TeacherAccountItem } from '../types';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { useT } from '../../lib/language';
@@ -30,6 +34,11 @@ export default function TeachersPage() {
   const [newGender, setNewGender] = useState<'male' | 'female'>('male');
   const [adding, setAdding] = useState(false);
   const [addMessage, setAddMessage] = useState<{ kind: 'ok' | 'error'; text: string } | null>(null);
+  // Delete for good: the admin types the email back before the button unlocks.
+  const [deleting, setDeleting] = useState<TeacherAccountItem | null>(null);
+  const [confirmEmail, setConfirmEmail] = useState('');
+  const [deleteBusy, setDeleteBusy] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const fetchTeachers = useCallback(async (isManual = false) => {
     if (isManual) setRefreshing(true);
@@ -69,6 +78,25 @@ export default function TeachersPage() {
       alert(err.message || t("Couldn't update the teacher.", 'تعذر تحديث المعلم.'));
     } finally {
       setActionLoading(null);
+    }
+  };
+
+  const openDelete = (tc: TeacherAccountItem) => { setDeleting(tc); setConfirmEmail(''); setDeleteError(null); };
+  const handleDelete = async () => {
+    if (!deleting) return;
+    setDeleteBusy(true);
+    setDeleteError(null);
+    try {
+      await dashboardFetch(`/api/dashboard/admin/teachers/${encodeURIComponent(deleting.email)}`, {
+        method: 'DELETE',
+        body: JSON.stringify({ confirm_email: confirmEmail.trim() })
+      });
+      setDeleting(null);
+      await fetchTeachers(true);
+    } catch (err: any) {
+      setDeleteError(err.message || t("Couldn't delete the teacher.", 'تعذر حذف المعلم.'));
+    } finally {
+      setDeleteBusy(false);
     }
   };
 
@@ -296,10 +324,59 @@ export default function TeachersPage() {
                   <span>{tc.is_active ? t('Stop', 'وقّف') : t('Activate', 'فعّل')}</span>
                 </button>
               )}
+              {tc.role !== 'super_admin' && (
+                <button
+                  onClick={() => openDelete(tc)}
+                  aria-label={t(`Delete ${tc.display_name}`, `حذف ${tc.display_name}`)}
+                  title={t('Delete for good', 'حذف نهائي')}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-semibold text-white bg-destructive hover:bg-destructive/90 transition-colors cursor-pointer"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>{t('Delete', 'حذف')}</span>
+                </button>
+              )}
             </div>
           </div>
         ))}
       </div>
+
+      <Modal
+        isOpen={Boolean(deleting)}
+        onClose={() => !deleteBusy && setDeleting(null)}
+        title={t('Delete this teacher for good?', 'حذف المعلم نهائيًا؟')}
+        footer={
+          <div className="flex justify-end gap-2">
+            <Button variant="ghost" onClick={() => setDeleting(null)} disabled={deleteBusy}>{t('Cancel', 'إلغاء')}</Button>
+            <Button
+              className="bg-destructive text-white hover:bg-destructive/90"
+              onClick={handleDelete}
+              disabled={deleteBusy || confirmEmail.trim().toLowerCase() !== (deleting?.email || '').toLowerCase()}
+            >
+              <Trash2 className="w-4 h-4" />
+              {deleteBusy ? t('Deleting…', 'جاري الحذف…') : t('Delete for good', 'احذف نهائيًا')}
+            </Button>
+          </div>
+        }
+      >
+        {deleting && (
+          <div className="space-y-4 text-sm text-foreground">
+            <p className="font-semibold">{deleting.display_name} · <span dir="ltr">{deleting.email}</span></p>
+            <ul className="list-disc space-y-1.5 ps-5 text-muted-foreground">
+              <li>{t('Their account, login, schedule and calendar link are removed. This cannot be undone.', 'حسابه ودخوله ومواعيده وربط التقويم هيتمسحوا، ومينفعش نرجّعهم.')}</li>
+              <li>{t(`Their ${deleting.assigned_students_count} student(s) become unassigned; give them a new teacher afterwards.`, `طلابه (${deleting.assigned_students_count}) هيبقوا من غير معلم، فاختارلهم معلم جديد بعدها.`)}</li>
+              <li>{t('Past lessons, payments and reports stay as records.', 'الحصص اللي فاتت والمدفوعات والتقارير بتفضل محفوظة كسجلات.')}</li>
+              {deleting.upcoming_lessons_count > 0 && (
+                <li className="font-semibold text-destructive">{t(`They still have ${deleting.upcoming_lessons_count} upcoming lesson(s). Move them to another teacher first, or the delete is refused.`, `لسه عنده ${deleting.upcoming_lessons_count} حصة جاية. انقلها لمعلم تاني الأول، وإلا الحذف هيترفض.`)}</li>
+              )}
+            </ul>
+            <label className="block space-y-1.5">
+              <span className="font-semibold">{t('Type the email to confirm', 'اكتب الإيميل للتأكيد')}</span>
+              <Input dir="ltr" value={confirmEmail} onChange={(e) => setConfirmEmail(e.target.value)} placeholder={deleting.email} autoComplete="off" />
+            </label>
+            {deleteError && <p role="alert" className="font-semibold text-destructive">{deleteError}</p>}
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }

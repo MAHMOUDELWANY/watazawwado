@@ -20,6 +20,7 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 - **[Decided 2026-10-15] Adding teachers:** the super admin adds a teacher (email, name, gender) on the Teachers page; the teacher receives an invitation email to set a password and signs in at /staff/login. Each teacher's emails go to the email of their teacher account, so no Vercel setting is needed per teacher.
 - **[Decided 2026-10-15] Teacher time zones:** each teacher enters weekly hours in their own time zone on "My hours"; students always see times in theirs.
 - **[Decided 2026-10-15] Teacher agreement.** Every teacher reads and accepts the teacher agreement (/staff/agreement) after setting a password and again whenever its version changes; the dashboard is blocked until then. Pay is agreed separately in writing.
+- **[Decided 2026-10-22] Deleting a teacher.** Besides Stop (deactivate), the super admin can delete a teacher for good from the Teachers page after typing their email: the account, login, profile, hours and calendar link are removed and their students become unassigned. Refused while they have upcoming lessons (move them first) and for super admins or yourself. Past lessons, payments and reports stay as records with no teacher.
 - Roles: `student` (adult learner), `parent` (guardian account managing children), `teacher`, `super_admin`.
 
 ## 2. Accounts & booking

@@ -3657,6 +3657,64 @@ app.patch('/api/dashboard/admin/teachers/:email/toggle-active', verifyTeacherAut
   }
 });
 
+// 15C-5. DASHBOARD (Super Admin Only): Delete a teacher for good (owner, 2026-10-22).
+// Removes the teacher account and their login; the database then drops their profile, availability and calendar link
+// (ON DELETE CASCADE) and unassigns their students (SET NULL). Past lessons, payments and reports are kept as records
+// with no teacher (RULES.md: payments are never deleted). Refused while they still have upcoming lessons: move those first.
+app.delete('/api/dashboard/admin/teachers/:email', verifyTeacherAuth, requireSuperAdmin, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database integration is not properly configured.' });
+
+    const targetEmail = String(req.params.email).trim().toLowerCase();
+    // The client must type the email back; a stray request can't delete anyone.
+    if (String(req.body?.confirm_email || '').trim().toLowerCase() !== targetEmail) {
+      return res.status(400).json({ error: 'Type the teacher email to confirm.' });
+    }
+    if (targetEmail === String(req.teacherUser?.email || '').trim().toLowerCase()) {
+      return res.status(403).json({ error: 'You cannot delete your own account.' });
+    }
+
+    const { data: account, error: accErr } = await supabase.from('teacher_accounts').select('email, role').ilike('email', escapeLike(targetEmail)).maybeSingle();
+    if (accErr) return res.status(500).json({ error: 'Failed to load the teacher account.' });
+    if (!account) return res.status(404).json({ error: 'Teacher not found.' });
+    if (account.role === 'super_admin') return res.status(403).json({ error: 'Super Admin accounts cannot be deleted.' });
+
+    const authUser = (await listAllAuthUsers(supabase)).find((u) => (u.email || '').toLowerCase().trim() === targetEmail);
+
+    if (authUser) {
+      const { count: upcoming, error: upErr } = await supabase
+        .from('bookings')
+        .select('id', { count: 'exact', head: true })
+        .eq('teacher_id', authUser.id)
+        .gte('scheduled_start', new Date().toISOString())
+        .not('status', 'in', '(cancelled,completed,no_show)');
+      if (upErr) return res.status(500).json({ error: 'Failed to check upcoming lessons.' });
+      if ((upcoming || 0) > 0) {
+        return res.status(409).json({ error: `This teacher still has ${upcoming} upcoming lesson(s). Move them to another teacher first.`, upcoming });
+      }
+
+      const { error: delAuthErr } = await supabase.auth.admin.deleteUser(authUser.id);
+      if (delAuthErr) {
+        console.error('[Delete Teacher] auth delete failed:', delAuthErr.message);
+        return res.status(500).json({ error: 'Could not delete the teacher login. Nothing else was removed.' });
+      }
+    }
+
+    const { error: delAccErr } = await supabase.from('teacher_accounts').delete().ilike('email', escapeLike(targetEmail));
+    if (delAccErr) {
+      console.error('[Delete Teacher] account delete failed:', delAccErr);
+      return res.status(500).json({ error: 'The login was removed but the teacher account row was not. Try again.' });
+    }
+
+    console.info('[Delete Teacher]', { deleted: targetEmail, by: req.teacherUser?.email, hadLogin: Boolean(authUser) });
+    return res.json({ success: true });
+  } catch (err) {
+    console.error('[Delete Teacher Error]', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 // 15D. DASHBOARD: Student Private Notes CRUD
 app.get('/api/dashboard/students/:id/notes', verifyTeacherAuth, async (req: any, res: any) => {
   try {

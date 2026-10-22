@@ -86,6 +86,9 @@ describe('Teacher Workspace Contract & Production Alignment Tests', () => {
     // Admin-only endpoints require requireSuperAdmin
     assert.ok(apiCode.includes("app.get('/api/dashboard/admin/teachers', verifyTeacherAuth, requireSuperAdmin"), 'Teachers directory must be Super Admin only');
     assert.ok(apiCode.includes("app.patch('/api/dashboard/admin/teachers/:email/toggle-active', verifyTeacherAuth, requireSuperAdmin"), 'Toggle active must be Super Admin only');
+    assert.ok(apiCode.includes("app.delete('/api/dashboard/admin/teachers/:email', verifyTeacherAuth, requireSuperAdmin"), 'Deleting a teacher must be Super Admin only');
+    const del = apiCode.slice(apiCode.indexOf("app.delete('/api/dashboard/admin/teachers/:email'"));
+    assert.ok(del.includes('confirm_email') && del.includes("'Super Admin accounts cannot be deleted.'") && del.includes('upcoming lesson'), 'Teacher delete needs typed confirmation, spares super admins and refuses while lessons are upcoming');
   });
 
   it('D1: Student self-profile and booking contract remains intact', () => {
