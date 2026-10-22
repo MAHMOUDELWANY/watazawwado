@@ -2,9 +2,9 @@ import React from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { P } from '../Art';
 import { Pen, Tag, Print, out, type Built } from '../Scenes';
-import { Burst, Rise, Glow, ShootingStar, Sprite } from '../Motion';
+import { Burst, Rise, Glow, ShootingStar } from '../Motion';
 import { useCue } from '../sfx';
-import { WhyList, C, Q1, Q2, Q3 } from './t01';
+import { WhyList, Q1, Q2, Q3 } from './t01';
 
 /* ---------- Teens Lesson 2: Did It All Just Happen? (brief: docs/curriculum/zad-essentials-teens/L02-did-it-all-just-happen.md)
    Paintings in public/curriculum/zad-teens/l02 (prompts: docs/curriculum/style/teens.md, Step 4); `science` is reused from
@@ -194,9 +194,9 @@ export function CakeHowWho({ v }: { v: Built }) {
   useCue('pop', v.lines);
   return (
     <>
-      <Rise from={[{ x: 52, y: 58 }]} count={6} kind="steam" height={16} seed={4} />
-      {v.lines >= 1 && <Tag style={{ left: '52%', top: '40%' }} color={P.teal} delay={0.5}>How: heat, gas, rising</Tag>}
-      {v.lines >= 2 && <Tag style={{ left: '26%', top: '24%' }} color="#9A6A12" delay={0.4}>Who: Noor baked it</Tag>}
+      <Rise from={[{ x: 50, y: 60 }]} count={6} kind="steam" height={16} seed={4} />
+      {v.lines >= 1 && <Tag style={{ left: '50%', top: '46%' }} color={P.teal} delay={0.5}>How: heat, gas, rising</Tag>}
+      {v.lines >= 2 && <Tag style={{ left: '22%', top: '14%' }} color="#9A6A12" delay={0.4}>Who: Noor baked it</Tag>}
     </>
   );
 }
@@ -206,7 +206,7 @@ export function BuiltIn({ v, label }: { v: Built; label: string }) {
   useCue('chime', v.evidence, 0.3);
   return (
     <Print name={T('newborn')} label={label}>
-      <div className="absolute inset-0 overflow-hidden rounded-[28px]"><Glow x={50} y={52} w={30} h={34} /></div>
+      <div className="absolute inset-0 overflow-hidden rounded-[28px]"><Glow x={44} y={44} w={28} h={34} /></div>
       {v.lines >= 2 && <Tag style={{ left: '50%', top: '14%' }} color={P.teal} delay={0.4}>Ready to know Him</Tag>}
       {v.evidence && <Tag style={{ left: '50%', top: '88%' }} ar="فِطْرَة" color="#9A6A12" delay={0.6}>fitrah</Tag>}
     </Print>
@@ -253,7 +253,7 @@ export function LookUp({ v, label }: { v: Built; label: string }) {
     <Print name={T('pitch')} label={label}>
       <div className="absolute inset-0 overflow-hidden rounded-[28px]"><Rise from={[{ x: 30, y: 30 }, { x: 70, y: 22 }]} count={3} height={10} seed={9} /></div>
       {v.evidence && <Tag style={{ left: '50%', top: '12%' }} ar="رُفِعَتْ" color={P.teal} delay={0.4}>the sky, raised</Tag>}
-      {v.evidence && <Tag style={{ left: '82%', top: '46%' }} ar="نُصِبَتْ" color={P.copper} delay={0.9}>the hills, set firm</Tag>}
+      {v.evidence && <Tag style={{ left: '80%', top: '30%' }} ar="نُصِبَتْ" color={P.copper} delay={0.9}>the hills, set firm</Tag>}
       {v.evidence && <Tag style={{ left: '40%', top: '86%' }} ar="سُطِحَتْ" color="#9A6A12" delay={1.4}>the earth, spread out</Tag>}
     </Print>
   );
@@ -270,8 +270,11 @@ export function ListCrossed({ v }: { v: Built }) {
 export function GameGlow({ v }: { v: Built }) {
   return (
     <>
-      <Glow x={60} y={30} w={30} h={26} color="120,180,255" />
-      {v.lines >= 2 && <Sprite name={C('ethan-ask')} enter="right" className="h-[46%]" style={{ right: '2%', bottom: '0%' }} delay={0.2} />}
+      {/* The three "gods" on the game screen are soft lights only (sea, sky, sun): no figures (owner, 2026-10-22). */}
+      <Glow x={36} y={24} w={16} h={22} color="62,155,200" />
+      <Glow x={52} y={20} w={16} h={22} color="230,240,255" />
+      <Glow x={68} y={24} w={16} h={22} color="229,169,60" />
+      {v.lines >= 2 && <Tag style={{ left: '52%', top: '46%' }} color={P.crimson} delay={0.3}>"A whole team of gods"</Tag>}
       {v.lines >= 3 && <WhyList rows={[Q1, Q2, Q3]} crossed={[1]} typed={2} style={{ left: '28%', top: '50%', width: '44%' }} delay={0.2} />}
     </>
   );

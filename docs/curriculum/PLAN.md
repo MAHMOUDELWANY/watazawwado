@@ -433,4 +433,8 @@ B3–B5 → continue lesson by lesson.
   turns were laggy and noisy (two full slides blurring at once); now one slide at a time, transform + opacity only, no blur
   on paintings. The explanation panel and the full-screen tool rail are now side drawers on an arrow handle, closed by
   default (N / T keys), so the slide gets the full width.
+- **2026-10-22** — Teens L2 images delivered (6). Placed; `gaming`: the three game "gods" came out as women in revealing
+  outfits, so the top of the TV was blurred into soft lights (sea, sky, sun) and three code glows mark them; `bench`: trainer
+  logo painted out. Motion re-aimed on the real paintings; 57:3 shown as its first clause so the page fits. Waiting: owner
+  reviews L1 and L2 together; L3 images (`style/teens.md` Step 5).
 

@@ -237,8 +237,8 @@ export const lesson02Teens: Lesson = {
       scene: 'tl2First',
       lines: ['The rule was: everything that begins has a cause.', 'Allah didn\'t begin. He is al-Awwal, the First.'],
       evidence: {
-        arabic: 'هُوَ ٱلْأَوَّلُ وَٱلْـَٔاخِرُ وَٱلظَّـٰهِرُ وَٱلْبَاطِنُ ۖ وَهُوَ بِكُلِّ شَىْءٍ عَلِيمٌ',
-        meaning: 'He is the First and the Last, the Highest and the Nearest, and He knows everything.',
+        arabic: 'هُوَ ٱلْأَوَّلُ وَٱلْـَٔاخِرُ وَٱلظَّـٰهِرُ وَٱلْبَاطِنُ',
+        meaning: 'He is the First and the Last, the Highest and the Nearest.',
         reference: 'Al-Hadid 57:3',
       },
       tadabbur: {

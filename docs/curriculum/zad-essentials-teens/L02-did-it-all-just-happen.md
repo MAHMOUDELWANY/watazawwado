@@ -45,7 +45,7 @@ The learner answers first.
 | ﴿أَمْ خَلَقُوا۟ ٱلسَّمَـٰوَٰتِ وَٱلْأَرْضَ ۚ بَل لَّا يُوقِنُونَ﴾ (optional page) | At-Tur 52:36 | quran.com connector | ✔ 2026-10-18 (Kids L2) |
 | ﴿فِطْرَتَ ٱللَّهِ ٱلَّتِى فَطَرَ ٱلنَّاسَ عَلَيْهَا ۚ لَا تَبْدِيلَ لِخَلْقِ ٱللَّهِ﴾ | Ar-Rum 30:30 | quran.com connector | ✔ 2026-10-18 (Kids L2) |
 | «كُلُّ مَولودٍ يولَدُ على الفِطرةِ» (in the teacher notes) | Bukhari 1385, Muslim 2658 | صحيح, Dorar | ✔ 2026-10-18 (Kids L2) |
-| ﴿هُوَ ٱلْأَوَّلُ وَٱلْـَٔاخِرُ وَٱلظَّـٰهِرُ وَٱلْبَاطِنُ ۖ وَهُوَ بِكُلِّ شَىْءٍ عَلِيمٌ﴾ | Al-Hadid 57:3 | quran.com website (Uthmani); re-checked with the quran.com connector 2026-10-22 (text and root) | 2026-10-22 |
+| ﴿هُوَ ٱلْأَوَّلُ وَٱلْـَٔاخِرُ وَٱلظَّـٰهِرُ وَٱلْبَاطِنُ﴾ (first clause shown) | Al-Hadid 57:3 | quran.com website (Uthmani); re-checked with the quran.com connector 2026-10-22 (text and root) | 2026-10-22 |
 | «اللَّهمَّ أنتَ الأوَّلُ فليسَ قَبلَكَ شَيءٌ، وأنتَ الآخِرُ فليسَ بَعدَكَ شَيءٌ» | Sahih Muslim 2713, from Abu Hurayrah | صحيح, Dorar (المحدث: مسلم) | 2026-10-22 |
 | ﴿أَفَلَا يَنظُرُونَ إِلَى ٱلْإِبِلِ كَيْفَ خُلِقَتْ﴾ … ﴿وَإِلَى ٱلْأَرْضِ كَيْفَ سُطِحَتْ﴾ | Al-Ghashiyah 88:17–20 | quran.com connector | ✔ 2026-10-18 (Kids L2) |
 
