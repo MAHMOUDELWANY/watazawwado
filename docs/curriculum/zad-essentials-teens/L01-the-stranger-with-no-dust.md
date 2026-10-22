@@ -40,7 +40,7 @@ Zayn types, deletes, types again. Sends nothing. He opens a new note and writes 
 | Item | Reference | Grading / text source | Checked |
 |---|---|---|---|
 | Hadith of Jibril, from Umar ibn al-Khattab | Sahih Muslim 8 (also Abu Dawud 4695, Tirmidhi 2610) | صحيح, Dorar | ✔ 2026-10-16 (Kids L1) |
-| ﴿وَإِذَا قِيلَ لَهُمُ ٱتَّبِعُوا۟ مَآ أَنزَلَ ٱللَّهُ قَالُوا۟ بَلْ نَتَّبِعُ مَآ أَلْفَيْنَا عَلَيْهِ ءَابَآءَنَآ ۗ أَوَلَوْ كَانَ ءَابَآؤُهُمْ لَا يَعْقِلُونَ شَيْـًۭٔا وَلَا يَهْتَدُونَ﴾ | Al-Baqarah 2:170 | quran.com website (Uthmani) | 2026-10-21 · **re-copy from the connector / Tanzil at the page step** (the connector was offline this session) |
+| ﴿وَإِذَا قِيلَ لَهُمُ ٱتَّبِعُوا۟ مَآ أَنزَلَ ٱللَّهُ قَالُوا۟ بَلْ نَتَّبِعُ مَآ أَلْفَيْنَا عَلَيْهِ ءَابَآءَنَآ ۗ أَوَلَوْ كَانَ ءَابَآؤُهُمْ لَا يَعْقِلُونَ شَيْـًٔا وَلَا يَهْتَدُونَ﴾ | Al-Baqarah 2:170 | quran.com website (Uthmani) | 2026-10-21 · re-checked with the quran.com connector 2026-10-22 (text and root) |
 
 Arabic phrases from Muslim 8 already verified for Kids L1 (reused unchanged):
 - «لا يُرى عليه أثرُ السَّفَرِ، ولا يَعرِفُه مِنَّا أحَدٌ»

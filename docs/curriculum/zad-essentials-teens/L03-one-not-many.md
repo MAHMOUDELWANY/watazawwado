@@ -40,7 +40,7 @@ go?". Then the Lesson 2 cliffhanger: Ethan's game has a whole team of gods. "Why
 |---|---|---|---|
 | ﴿لَوْ كَانَ فِيهِمَآ ءَالِهَةٌ إِلَّا ٱللَّهُ لَفَسَدَتَا ۚ فَسُبْحَـٰنَ ٱللَّهِ رَبِّ ٱلْعَرْشِ عَمَّا يَصِفُونَ﴾ | Al-Anbiya 21:22 | quran.com connector | ✔ 2026-10-19 (Kids L3) |
 | ﴿فَٱعْلَمْ أَنَّهُۥ لَآ إِلَـٰهَ إِلَّا ٱللَّهُ﴾ (first clause shown) | Muhammad 47:19 | quran.com connector | ✔ 2026-10-19 (Kids L3) |
-| ﴿أَفَرَءَيْتَ مَنِ ٱتَّخَذَ إِلَـٰهَهُۥ هَوَىٰهُ﴾ (first clause shown) | Al-Jathiyah 45:23 | quran.com website (Uthmani); **re-copy from the connector / Tanzil when it is back** | 2026-10-22 |
+| ﴿أَفَرَءَيْتَ مَنِ ٱتَّخَذَ إِلَـٰهَهُۥ هَوَىٰهُ﴾ (first clause shown) | Al-Jathiyah 45:23 | quran.com website (Uthmani); re-checked with the quran.com connector 2026-10-22 (text and root) | 2026-10-22 |
 | ﴿قُلْ هُوَ ٱللَّهُ أَحَدٌ ۝ ٱللَّهُ ٱلصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ﴾ | Al-Ikhlas 112:1–4 | quran.com connector | ✔ 2026-10-19 (Kids L3) |
 | «أخبِرُوه أنَّ اللهَ يُحِبُّه» (the man who loved al-Ikhlas) | Bukhari 7375, Muslim 813 | صحيح, Dorar | ✔ 2026-10-19 (Kids L3) |
 | Al-Ikhlas equals a third of the Quran | Bukhari 5013 | صحيح, Dorar | ✔ 2026-10-19 (Kids L3) |

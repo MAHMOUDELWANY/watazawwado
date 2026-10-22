@@ -230,7 +230,7 @@ export function TheFirst({ v, label }: { v: Built; label: string }) {
           {b}
         </motion.span>
       ))}
-      {v.lines >= 1 && !anchored && <Tag style={{ left: '20%', top: '52%' }} color={P.crimson} delay={1.2}>…forever? Nothing would ever start</Tag>}
+      {v.lines >= 1 && !anchored && <Tag style={{ left: '24%', top: '52%' }} color={P.crimson} delay={1.2}>Carriages forever, no engine: nothing moves</Tag>}
       {anchored && (
         <>
           <svg className="absolute inset-0 h-full w-full" viewBox="0 0 760 570" aria-hidden="true"><Pen d="M250 300 C330 250 470 220 600 172" color={P.goldSoft} width={6} glow duration={0.8} delay={0.6} /></svg>

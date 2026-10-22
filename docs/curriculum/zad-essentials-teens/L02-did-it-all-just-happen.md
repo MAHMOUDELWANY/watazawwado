@@ -35,7 +35,7 @@ The learner answers first.
    making yourself means existing before you exist. One option is left.
 4. **How is not who.** Chemistry explains how a cake rises; it does not mean nobody baked it.
 5. **Who made God?** The rule is about things that *begin*. A Maker of time and matter is not inside time; Allah has no
-   beginning (al-Awwal). Asking who made Him is like asking what is north of the North Pole.
+   beginning (al-Awwal). A train of carriages with no engine never moves, however many carriages you add; causes need a First that nothing caused.
 
 ## Evidence
 
@@ -45,7 +45,7 @@ The learner answers first.
 | ﴿أَمْ خَلَقُوا۟ ٱلسَّمَـٰوَٰتِ وَٱلْأَرْضَ ۚ بَل لَّا يُوقِنُونَ﴾ (optional page) | At-Tur 52:36 | quran.com connector | ✔ 2026-10-18 (Kids L2) |
 | ﴿فِطْرَتَ ٱللَّهِ ٱلَّتِى فَطَرَ ٱلنَّاسَ عَلَيْهَا ۚ لَا تَبْدِيلَ لِخَلْقِ ٱللَّهِ﴾ | Ar-Rum 30:30 | quran.com connector | ✔ 2026-10-18 (Kids L2) |
 | «كُلُّ مَولودٍ يولَدُ على الفِطرةِ» (in the teacher notes) | Bukhari 1385, Muslim 2658 | صحيح, Dorar | ✔ 2026-10-18 (Kids L2) |
-| ﴿هُوَ ٱلْأَوَّلُ وَٱلْـَٔاخِرُ وَٱلظَّـٰهِرُ وَٱلْبَاطِنُ ۖ وَهُوَ بِكُلِّ شَىْءٍ عَلِيمٌ﴾ | Al-Hadid 57:3 | quran.com website (Uthmani); **re-copy from the connector / Tanzil when it is back** | 2026-10-22 |
+| ﴿هُوَ ٱلْأَوَّلُ وَٱلْـَٔاخِرُ وَٱلظَّـٰهِرُ وَٱلْبَاطِنُ ۖ وَهُوَ بِكُلِّ شَىْءٍ عَلِيمٌ﴾ | Al-Hadid 57:3 | quran.com website (Uthmani); re-checked with the quran.com connector 2026-10-22 (text and root) | 2026-10-22 |
 | «اللَّهمَّ أنتَ الأوَّلُ فليسَ قَبلَكَ شَيءٌ، وأنتَ الآخِرُ فليسَ بَعدَكَ شَيءٌ» | Sahih Muslim 2713, from Abu Hurayrah | صحيح, Dorar (المحدث: مسلم) | 2026-10-22 |
 | ﴿أَفَلَا يَنظُرُونَ إِلَى ٱلْإِبِلِ كَيْفَ خُلِقَتْ﴾ … ﴿وَإِلَى ٱلْأَرْضِ كَيْفَ سُطِحَتْ﴾ | Al-Ghashiyah 88:17–20 | quran.com connector | ✔ 2026-10-18 (Kids L2) |
 
@@ -93,7 +93,7 @@ Answered in Lesson 3 (One, Not Many).
 Prompts: `../style/teens.md`, Step 4. The cause chain, the expanding universe (the wow), the three options and the
 "who made God?" chain are drawn in code. `science.webp` from Lesson 1 is reused once on the Spark page.
 
-## Open points for the owner
+## Owner decisions (2026-10-22)
 
-1. The "Who made God?" page: keep it in Lesson 2, or move it to a later lesson?
-2. The "north of the North Pole" comparison (a well-known one) is ours to use as an analogy only; fine?
+1. The "Who made God?" page stays in Lesson 2.
+2. The "north of the North Pole" comparison felt hard; replaced by the train with no engine.

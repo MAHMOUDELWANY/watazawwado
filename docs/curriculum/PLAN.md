@@ -427,3 +427,10 @@ B3–B5 → continue lesson by lesson.
   7375/5013/5017; reuses the Kids L3 solar system and shahada scenes). Image prompts in `style/teens.md` Steps 4–5. The
   Why List is now a shared device (`t01.tsx`). Checked all 48 pages in headless Edge (desktop; phone, dark and reduced
   motion spot-checked), no console errors.
+- **2026-10-22** — Owner review: six-pointed stars on the doors and the minarets are fine; L2 "Who made God?" stays, its
+  analogy changed to a train with no engine; L3 "modern gods" tone approved. Quran connector back: 2:170 re-copied from it
+  (one mark differed from the website copy), 57:3 and 45:23 matched, roots checked. Player (all lessons, Kids too): page
+  turns were laggy and noisy (two full slides blurring at once); now one slide at a time, transform + opacity only, no blur
+  on paintings. The explanation panel and the full-screen tool rail are now side drawers on an arrow handle, closed by
+  default (N / T keys), so the slide gets the full width.
+

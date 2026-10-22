@@ -42,9 +42,12 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   const [replay, setReplay] = useState(0);
   const [praise, setPraise] = useState(false);
   const [grid, setGrid] = useState(false);
-  // Below the lg breakpoint the explanation would sit between the slide and its controls, so it starts closed there.
+  // The explanation and (in full screen) the tool rail are drawers that slide in from the side on an arrow handle, closed
+  // by default, so the slide gets the whole width (owner, 2026-10-22). Below lg the explanation stacks under the slide.
   const wide = () => typeof window === 'undefined' || window.innerWidth >= 1024;
-  const [notes, setNotes] = useState(wide);
+  const [isWide, setIsWide] = useState(wide);
+  const [notes, setNotes] = useState(false);
+  const [toolsOpen, setToolsOpen] = useState(false);
   const [timerLeft, setTimerLeft] = useState(0);
   const [fullscreen, setFullscreen] = useState(false);
   const [muted, setMutedState] = useState(isMuted);
@@ -60,6 +63,11 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   const last = lesson.pages.length - 1;
 
   useEffect(() => onPageChange?.(page), [page, onPageChange]);
+  useEffect(() => {
+    const onResize = () => setIsWide(wide());
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   useLayoutEffect(() => {
     const el = stageRef.current;
@@ -118,7 +126,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   }, [timerLeft]);
 
   const toggleFullscreen = useCallback(() => {
-    const fill = (on: boolean) => { setFullscreen(on); setNotes(!on && wide()); };
+    const fill = (on: boolean) => setFullscreen(on);
     if (document.fullscreenElement) { document.exitFullscreen().catch(() => {}); return; }
     if (fullscreen) { fill(false); return; }
     // iPhone Safari has no element full screen, and embedded browsers may refuse it or never answer:
@@ -142,6 +150,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
       else if (k === 'e') setClearSignal((c) => c + 1);
       else if (k === 'g') setGrid((g) => !g);
       else if (k === 'n') setNotes((n) => !n);
+      else if (k === 't') setToolsOpen((o) => !o);
       else if (k === 'r') replayStep();
       else if (k === 'home') { e.preventDefault(); restartPage(); }
       else if (k === 'f') toggleFullscreen();
@@ -156,7 +165,6 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
     const sync = () => {
       const on = Boolean(document.fullscreenElement);
       setFullscreen(on);
-      setNotes(!on && wide());
     };
     document.addEventListener('fullscreenchange', sync);
     return () => document.removeEventListener('fullscreenchange', sync);
@@ -173,8 +181,8 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
       aria-label={L('Lesson controls', 'التحكم في الدرس')}
       className={`flex items-center gap-1 rounded-[28px] [&>*]:shrink-0 border border-white/70 bg-[#FAF7F2]/90 shadow-[0_18px_40px_-20px_rgba(139,73,53,0.55)] backdrop-blur-xl transition-[transform,opacity] duration-300 ${
         fullscreen
-          ? // Full screen: a docked rail beside the slide (right in English, left in Arabic), never on top of it (owner 2026-10-17).
-            'max-h-full shrink-0 self-center flex-col overflow-y-auto px-1.5 py-2'
+          ? // Full screen: a rail in a side drawer (right in English, left in Arabic), opened on its arrow handle.
+            'max-h-full shrink-0 flex-col overflow-y-auto px-1.5 py-2'
           : // Phones: one sticky row that scrolls sideways, so Back and Next never leave the screen.
             'sticky bottom-2 z-20 flex-nowrap overflow-x-auto px-2 py-1.5 [scrollbar-width:none] sm:flex-wrap sm:overflow-visible'
       }`}
@@ -258,8 +266,8 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   );
 
   const notesAr = ar ? lesson.teacherAr?.[page] : undefined;
-  const notesPanel = notes && (
-    <aside dir={notesAr ? 'rtl' : 'ltr'} lang={notesAr ? 'ar' : 'en'} className={`flex flex-col gap-4 overflow-y-auto rounded-[24px] bg-[#FFFDF7] p-5 text-[#1E1410] ring-1 ring-black/5 shadow-[0_18px_40px_-28px_rgba(91,58,30,0.5)] lg:w-[360px] lg:shrink-0 ${fullscreen ? 'lg:max-h-full' : 'lg:max-h-[min(78vh,720px)]'}`} aria-label={L('Explanation', 'الشرح')}>
+  const notesPanel = (
+    <aside dir={notesAr ? 'rtl' : 'ltr'} lang={notesAr ? 'ar' : 'en'} className={`flex flex-col gap-4 overflow-y-auto rounded-[24px] bg-[#FFFDF7] p-5 text-[#1E1410] ring-1 ring-black/5 shadow-[0_24px_60px_-20px_rgba(59,34,25,0.55)] ${isWide ? 'h-full w-[360px]' : ''}`} aria-label={L('Explanation', 'الشرح')}>
       <div className="flex items-start justify-between gap-2">
         <h3 className="font-serif text-2xl font-bold leading-tight">{notesAr?.title ?? current.title}</h3>
         <button type="button" onClick={() => setNotes(false)} className="rounded-full p-1.5 hover:bg-black/5" aria-label={L('Close explanation', 'اقفل الشرح')}>
@@ -289,25 +297,31 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
     </aside>
   );
 
+  // Notes open on the reading side (left in English, right in Arabic); the full-screen tool rail on the other side.
+  const notesSide = ar ? 'right' : 'left';
+  const toolsSide = ar ? 'left' : 'right';
+
   return (
-    <div ref={rootRef} onPointerDownCapture={primeSounds} dir="ltr" className={`flex gap-3 ${fillWindow ? 'fixed inset-0 z-[100]' : 'relative'} ${fullscreen ? `band-deep h-full p-3 ${ar ? 'flex-row-reverse' : 'flex-row'}` : 'flex-col'}`}>
-      <div dir={ar ? 'rtl' : 'ltr'} className={`flex flex-col gap-3 lg:flex-row ${fullscreen ? 'min-h-0 flex-1' : ''}`}>
+    <div ref={rootRef} onPointerDownCapture={primeSounds} dir="ltr" className={`flex gap-3 ${fillWindow ? 'fixed inset-0 z-[100]' : 'relative'} ${fullscreen ? 'band-deep h-full p-3' : 'flex-col'}`}>
+      <div dir={ar ? 'rtl' : 'ltr'} className={`relative flex flex-col gap-3 overflow-hidden ${fullscreen ? 'min-h-0 flex-1' : ''}`}>
         <div className={`flex min-w-0 flex-1 flex-col gap-3 ${fullscreen ? 'h-full min-h-0' : ''}`}>
           <div ref={stageRef} className={`relative min-w-0 ${fullscreen ? 'min-h-0 flex-1' : 'aspect-video'}`}>
             <div
               className="absolute left-1/2 top-1/2 overflow-hidden rounded-[22px] shadow-[0_30px_70px_-35px_rgba(59,34,25,0.7)]"
               style={{ width: CANVAS_W, height: CANVAS_H, transform: `translate(-50%, -50%) scale(${scale})` }}
             >
-              {/* Page turn: the old slide dims away while the new one drifts in from the side we are moving to. */}
-              <AnimatePresence initial={false} custom={dir}>
+              {/* Page turn: the old slide fades out quickly, then the new one drifts in from the side we are moving to.
+                  One slide at a time (mode "wait") and transform + opacity only: two full-size slides blurring over each
+                  other was the lag and the visual noise the owner saw (2026-10-22). Transform strings run off the main thread. */}
+              <AnimatePresence initial={false} custom={dir} mode="wait">
                 <motion.div
                   key={page}
                   custom={dir}
                   className="absolute inset-0"
                   variants={{
-                    enter: (d: number) => (reduce ? { opacity: 0 } : { opacity: 0, x: 60 * d, scale: 0.985, filter: 'blur(6px)' }),
-                    center: { opacity: 1, x: 0, scale: 1, filter: 'blur(0px)', transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
-                    leave: (d: number) => (reduce ? { opacity: 0, transition: { duration: 0.2 } } : { opacity: 0, x: -30 * d, scale: 0.99, transition: { duration: 0.32, ease: [0.4, 0, 1, 1] } }),
+                    enter: (d: number) => (reduce ? { opacity: 0 } : { opacity: 0, transform: `translateX(${40 * d}px)` }),
+                    center: { opacity: 1, transform: 'translateX(0px)', transition: { duration: 0.42, ease: [0.22, 1, 0.36, 1] } },
+                    leave: (d: number) => (reduce ? { opacity: 0, transition: { duration: 0.15 } } : { opacity: 0, transform: `translateX(${-20 * d}px)`, transition: { duration: 0.16, ease: [0.4, 0, 1, 1] } }),
                   }}
                   initial="enter"
                   animate="center"
@@ -371,9 +385,50 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
             </>
           )}
         </div>
-        {notesPanel}
+        {isWide ? (
+          <Drawer side={notesSide} open={notes} onToggle={() => setNotes((n) => !n)} icon={<BookOpenText className="h-4 w-4" />} label={notes ? L('Hide explanation (N)', 'اخفي الشرح (N)') : L('Show explanation (N)', 'اظهر الشرح (N)')}>
+            {notesPanel}
+          </Drawer>
+        ) : notes && notesPanel}
       </div>
-      {toolbar}
+      {fullscreen ? (
+        <Drawer side={toolsSide} open={toolsOpen} onToggle={() => setToolsOpen((o) => !o)} icon={<PenLine className="h-4 w-4" />} label={toolsOpen ? L('Hide tools (T)', 'اخفي الأدوات (T)') : L('Show tools (T)', 'اظهر الأدوات (T)')} padded>
+          {toolbar}
+        </Drawer>
+      ) : toolbar}
+    </div>
+  );
+}
+
+/** A side drawer over the slide: only its arrow handle shows until it is opened, then the panel slides in with a spring.
+ *  Transform only, so it never re-lays out the slide underneath (docs: animation-performance). */
+function Drawer({ side, open, onToggle, icon, label, padded = false, children }: {
+  side: 'left' | 'right'; open: boolean; onToggle: () => void; icon: React.ReactNode; label: string; padded?: boolean; children: React.ReactNode;
+}) {
+  const reduce = useReducedMotion();
+  const right = side === 'right';
+  const Arrow = right === open ? ChevronRight : ChevronLeft;
+  return (
+    <div dir="ltr" className={`pointer-events-none absolute inset-y-0 z-40 flex items-center ${right ? 'right-0 flex-row' : 'left-0 flex-row-reverse'} ${padded ? 'py-3' : ''}`}>
+      <motion.div
+        className={`flex h-full items-center ${right ? 'flex-row' : 'flex-row-reverse'}`}
+        initial={false}
+        animate={{ transform: open ? 'translateX(0%)' : `translateX(${right ? 'calc(100% - 34px)' : 'calc(-100% + 34px)'})` }}
+        transition={reduce ? { duration: 0 } : { type: 'spring', stiffness: 420, damping: 40, mass: 0.9 }}
+      >
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-expanded={open}
+          aria-label={label}
+          title={label}
+          className={`pointer-events-auto flex h-24 w-[34px] shrink-0 flex-col items-center justify-center gap-1.5 border border-white/70 bg-[#FAF7F2]/95 text-[#1E1410] shadow-[0_12px_30px_-14px_rgba(59,34,25,0.6)] backdrop-blur-xl transition-colors hover:bg-[#F6D58E] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C] ${right ? 'rounded-l-2xl border-r-0' : 'rounded-r-2xl border-l-0'}`}
+        >
+          {icon}
+          <Arrow className="h-4 w-4" aria-hidden="true" />
+        </button>
+        <div className="pointer-events-auto flex h-full max-h-full" inert={!open}>{children}</div>
+      </motion.div>
     </div>
   );
 }

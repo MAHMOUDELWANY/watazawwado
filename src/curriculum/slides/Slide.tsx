@@ -255,8 +255,8 @@ function Painting({ page, className = '', style, drift = true, children }: { pag
       {/* The slow camera move scales the painting and its overlays together, so motion drawn over it stays on its spot. */}
       <motion.div
         className="absolute inset-0"
-        initial={reduce ? false : { scale: 1.1 }}
-        animate={reduce ? undefined : { scale: 1 }}
+        initial={reduce ? false : { transform: 'scale(1.1)' }}
+        animate={reduce ? undefined : { transform: 'scale(1)' }}
         transition={{ duration: drift ? 16 : 1.2, ease: 'easeOut' }}
       >
         {src ? (
@@ -267,9 +267,9 @@ function Painting({ page, className = '', style, drift = true, children }: { pag
             onError={() => setMissing(src)}
             className="h-full w-full object-cover"
             style={{ objectPosition: SCENE_FOCUS[page.scene] }}
-            initial={reduce ? false : { filter: 'blur(8px) saturate(0.85)' }}
-            animate={reduce ? undefined : { filter: 'blur(0px) saturate(1)' }}
-            transition={{ duration: 0.8, ease }}
+            initial={reduce ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, ease }}
           />
         ) : listed ? (
           <div className="h-full w-full" role="img" aria-label={page.title} style={{ background: 'radial-gradient(ellipse at 60% 40%, #F3D9A4 0%, #C98D57 60%, #7A4A30 100%)' }} />

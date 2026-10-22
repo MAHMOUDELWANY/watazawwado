@@ -251,12 +251,12 @@ export const lesson02Teens: Lesson = {
       interaction: {
         kind: 'ask',
         prompt: 'Why doesn\'t "who made God?" break the argument?',
-        reveal: 'Because the rule is about things that begin. The Maker of time isn\'t inside time. Asking who made Him is like asking what\'s north of the North Pole.',
+        reveal: 'Because the rule is about things that begin. A train of carriages with no engine never moves, however many you add. The chain needs a First that nothing pushed.',
       },
       explain: [
         'This is the question most teens ask straight after the argument, so answer it calmly. Go back to the exact wording of the rule: everything that BEGINS has a cause.',
         'Allah did not begin. The ayah calls Him al-Awwal, the First, and the Prophet ﷺ explained it in a du\'a: «اللَّهمَّ أنتَ الأوَّلُ فليسَ قَبلَكَ شَيءٌ», "O Allah, You are the First, there is nothing before You" (Muslim 2713). Al-Sa\'di explains al-Awwal the same way.',
-        'And it has to be so: if the cause of the universe also needed a cause, and that one needed another, forever, nothing would ever have started. The chain needs a First that has no beginning.',
+        'And it has to be so. Picture a train: a thousand carriages, each pulled by the one in front. Add a million more and it still won\'t move, unless there is an engine that pulls without being pulled. Causes are the same: if every cause needed a cause before it, forever, nothing would ever have started. The chain needs a First that has no beginning.',
       ],
       teacherNote: 'Keep this page calm and short. If the learner has more questions, praise them and note them for the Why List.',
     },

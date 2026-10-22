@@ -3,7 +3,7 @@ import { lesson01TeensTeacherAr } from './l01-teacher-ar.js';
 
 // Brief and evidence log: docs/curriculum/zad-essentials-teens/L01-the-stranger-with-no-dust.md
 // Hadith lines are copied unchanged from Sahih Muslim 8 on Dorar (checked 2026-10-21). Al-Baqarah 2:170 is the Uthmani
-// text from quran.com (2026-10-21). English meanings are ours.
+// text from the quran.com connector (re-checked 2026-10-22). English meanings are ours.
 const MUSLIM_8 = 'Sahih Muslim 8, narrated by Umar ibn al-Khattab';
 
 export const lesson01Teens: Lesson = {
@@ -295,7 +295,7 @@ export const lesson01Teens: Lesson = {
       scene: 'tFathers',
       lines: ['The Quran describes people who refused to think:', '"We just follow what our fathers did."'],
       evidence: {
-        arabic: 'وَإِذَا قِيلَ لَهُمُ ٱتَّبِعُوا۟ مَآ أَنزَلَ ٱللَّهُ قَالُوا۟ بَلْ نَتَّبِعُ مَآ أَلْفَيْنَا عَلَيْهِ ءَابَآءَنَآ ۗ أَوَلَوْ كَانَ ءَابَآؤُهُمْ لَا يَعْقِلُونَ شَيْـًۭٔا وَلَا يَهْتَدُونَ',
+        arabic: 'وَإِذَا قِيلَ لَهُمُ ٱتَّبِعُوا۟ مَآ أَنزَلَ ٱللَّهُ قَالُوا۟ بَلْ نَتَّبِعُ مَآ أَلْفَيْنَا عَلَيْهِ ءَابَآءَنَآ ۗ أَوَلَوْ كَانَ ءَابَآؤُهُمْ لَا يَعْقِلُونَ شَيْـًٔا وَلَا يَهْتَدُونَ',
         meaning: 'When they are told, "Follow what Allah has sent down," they say, "No, we follow what we found our fathers doing." Even if their fathers understood nothing and were not guided?',
         reference: 'Al-Baqarah 2:170',
       },
