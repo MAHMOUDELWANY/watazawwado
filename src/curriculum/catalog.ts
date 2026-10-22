@@ -6,11 +6,22 @@ import { lesson01Teens } from './content/zad-teens/l01-the-stranger-with-no-dust
 import { lesson02Teens } from './content/zad-teens/l02-did-it-all-just-happen.js';
 import { lesson03Teens } from './content/zad-teens/l03-one-not-many.js';
 
+/** A part of a curriculum (a unit in its MAP.md): its title and the number of its first lesson. */
+export interface PartEntry { title: string; titleAr: string; from: number }
+
 export interface SubjectEntry {
   id: string;
+  /** The subject this curriculum belongs to (GROUPS), e.g. the Kids and Teens versions of Zad Essentials. */
+  group: string;
   title: string;
   titleAr: string;
+  /** Short name of the version inside its subject ("Kids"), for the curriculum cards. */
+  version: string;
+  versionAr: string;
   audience: string;
+  /** Painting shown on the curriculum's door card (public/curriculum/...). */
+  art: string;
+  parts: PartEntry[];
   /** Planned lesson titles in order (docs/curriculum/zad-essentials-kids/MAP.md). Built lessons are in `lessons`. */
   plan: string[];
   lessons: Record<number, Lesson>;
@@ -23,9 +34,20 @@ export interface SubjectEntry {
 export const SUBJECTS: SubjectEntry[] = [
   {
     id: 'zad-kids',
+    group: 'zad-essentials',
     title: 'Zad Essentials · Kids',
     titleAr: 'أول الزاد · للأطفال',
+    version: 'Kids',
+    versionAr: 'الأطفال',
     audience: '6–11',
+    art: '/curriculum/zad-kids/l01/cover.webp',
+    parts: [
+      { title: 'Who Am I, and Who Made Me?', titleAr: 'مين أنا، ومين خلقني؟', from: 1 },
+      { title: 'Clean Inside and Out', titleAr: 'نضيف من جوه ومن بره', from: 11 },
+      { title: 'My Salah', titleAr: 'صلاتي', from: 16 },
+      { title: 'The Other Pillars', titleAr: 'باقي الأركان', from: 27 },
+      { title: 'Ihsan: My Character', titleAr: 'الإحسان: أخلاقي', from: 30 },
+    ],
     plan: [
       'The Visitor in White', 'Who Made It All?', 'Allah Is One', 'Muhammad ﷺ, the Messenger', 'The Unseen Helpers',
       'Letters from Allah', 'The Last Day', 'Allah Knows and Plans', 'A House on Five Pillars', 'Why Am I Here?',
@@ -40,9 +62,20 @@ export const SUBJECTS: SubjectEntry[] = [
   },
   {
     id: 'zad-teens',
+    group: 'zad-essentials',
     title: 'Zad Essentials · Teens',
     titleAr: 'أول الزاد · للشباب',
+    version: 'Teens',
+    versionAr: 'الشباب',
     audience: '12–17',
+    art: '/curriculum/zad-teens/l01/doors.webp',
+    parts: [
+      { title: 'Do I Believe It, or Was I Just Told?', titleAr: 'مؤمن عن اقتناع، ولا عشان اتقالي؟', from: 1 },
+      { title: 'Clean, and Growing Up', titleAr: 'الطهارة والبلوغ', from: 12 },
+      { title: 'My Salah', titleAr: 'صلاتي', from: 20 },
+      { title: 'The Other Pillars', titleAr: 'باقي الأركان', from: 31 },
+      { title: "Ihsan: Who I Am When No One's Watching", titleAr: 'الإحسان: أنا مين لما محدش شايفني', from: 34 },
+    ],
     // docs/curriculum/zad-essentials-teens/MAP.md (approved 2026-10-21); 18a and 18b are one slot, taught by learner.
     plan: [
       'The Stranger with No Dust', 'Did It All Just Happen?', 'One, Not Many', 'Can I Trust Him?', 'The Book That Dares You',
@@ -60,6 +93,45 @@ export const SUBJECTS: SubjectEntry[] = [
     lessons: { 1: lesson01Teens, 2: lesson02Teens, 3: lesson03Teens },
   },
 ];
+
+/** Subjects of the Zad Path (docs/curriculum/RULES.md): each holds its age versions (SUBJECTS with that `group`).
+ *  `planned` versions and subjects show as "coming soon" doors, so the teacher sees where the path is going. */
+export interface GroupEntry {
+  id: string;
+  title: string;
+  titleAr: string;
+  tagline: string;
+  taglineAr: string;
+  art?: string;
+  planned: { version: string; versionAr: string; audience: string }[];
+}
+
+export const GROUPS: GroupEntry[] = [
+  {
+    id: 'zad-essentials',
+    title: 'Zad Essentials',
+    titleAr: 'أول الزاد',
+    tagline: 'What every Muslim needs to know, by understanding: belief, purity, salah and character.',
+    taglineAr: 'ما لا يسع المسلم جهله، بفهم واقتناع: العقيدة والطهارة والصلاة والأخلاق.',
+    art: '/curriculum/zad-teens/l01/doors.webp',
+    planned: [{ version: 'Adults', versionAr: 'الكبار', audience: '18+' }],
+  },
+  {
+    id: 'seerah',
+    title: 'Seerah',
+    titleAr: 'السيرة',
+    tagline: 'The life of the Prophet ﷺ, told so it changes ours.',
+    taglineAr: 'حياة النبي ﷺ، تتحكي عشان تغيّر حياتنا.',
+    planned: [
+      { version: 'Kids', versionAr: 'الأطفال', audience: '6–11' },
+      { version: 'Teens', versionAr: 'الشباب', audience: '12–17' },
+      { version: 'Adults', versionAr: 'الكبار', audience: '18+' },
+    ],
+  },
+];
+
+export const tracksOf = (groupId: string | undefined) => SUBJECTS.filter((s) => s.group === groupId);
+export const groupOf = (trackId: string | undefined) => GROUPS.find((g) => g.id === SUBJECTS.find((s) => s.id === trackId)?.group);
 
 /**
  * Free sample for signed-in accounts without a booking (docs/marketing/PLAN.md §9, owner 2026-10-19): the opening of

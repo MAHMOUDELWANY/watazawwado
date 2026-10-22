@@ -183,8 +183,9 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
         fullscreen
           ? // Full screen: a rail in a side drawer (right in English, left in Arabic), opened on its arrow handle.
             'max-h-full shrink-0 flex-col overflow-y-auto px-1.5 py-2'
-          : // Phones: one sticky row that scrolls sideways, so Back and Next never leave the screen.
-            'sticky bottom-2 z-20 flex-nowrap overflow-x-auto px-2 py-1.5 [scrollbar-width:none] sm:flex-wrap sm:overflow-visible'
+          : // Phones: one sticky row that scrolls sideways, so Back and Next never leave the screen. From lg it sits under the
+            // slide and scrolls with the page, never floating over the slide (owner, 2026-10-22).
+            'sticky bottom-2 z-20 flex-nowrap overflow-x-auto px-2 py-1.5 [scrollbar-width:none] sm:flex-wrap sm:overflow-visible lg:static'
       }`}
     >
       <button type="button" className={btn()} onClick={backward} disabled={page === 0 && step === 0} aria-label={L('Back', 'رجوع')} title={L('Back (←)', 'رجوع (←)')}>

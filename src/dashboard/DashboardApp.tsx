@@ -57,7 +57,7 @@ import PayLaterPage from './pages/PayLaterPage';
 import HealthPage from './pages/HealthPage';
 import PlacementTestsPage from './pages/PlacementTestsPage';
 import AssistantPage from './pages/AssistantPage';
-import CurriculumPage, { CurriculumLessonPage } from './pages/CurriculumPage';
+import CurriculumPage, { CurriculumGroupPage, CurriculumTrackPage, CurriculumLessonPage } from './pages/CurriculumPage';
 import { ChatPanel } from '../components/chat/ChatPanel';
 import { TeacherAuthDiagnosticPanel } from './components/TeacherAuthDiagnosticPanel';
 import { CommandSearch } from './components/CommandSearch';
@@ -620,7 +620,9 @@ export function DashboardApp() {
                 <Route path="/messages" element={<ChatPanel lang={ar ? 'ar' : 'en'} />} />
                 <Route path="/assistant" element={<AssistantPage />} />
                 <Route path="/curriculum" element={<CurriculumPage />} />
-                <Route path="/curriculum/:subject/:number" element={<CurriculumLessonPage />} />
+                <Route path="/curriculum/:group" element={<CurriculumGroupPage />} />
+                <Route path="/curriculum/:group/:track" element={<CurriculumTrackPage />} />
+                <Route path="/curriculum/:group/:track/:number" element={<CurriculumLessonPage />} />
                 <Route path="/placement" element={isSuperAdmin ? <PlacementTestsPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>

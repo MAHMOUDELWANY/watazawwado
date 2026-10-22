@@ -438,3 +438,8 @@ B3–B5 → continue lesson by lesson.
 - **2026-10-22** — Teens L3 images (4) placed from `watazawwado-archive/`; motion re-aimed (sun, hearts from Noor's phone,
   the three lights on the game screen, Zayn's du'a page cropped to keep him in view); ﷺ in the Why List now drawn with the
   Arabic font. All 48 Teens pages checked, no console errors. All three Teens lessons ready for the owner's review.
+- **2026-10-22** — Teacher curriculum page reorganised (owner): three levels of arched door cards (the homepage design):
+  subjects (Zad Essentials; Seerah coming soon) → age versions (Kids, Teens; Adults coming soon) → lessons grouped by part
+  with Ready / Draft / Coming soon. New routes /dashboard/curriculum/:group/:track/:number; old two-part lesson links
+  redirect. `GROUPS`, `parts`, `art` added to `catalog.ts`. Player toolbar no longer floats over the slide on desktop.
+
