@@ -135,3 +135,29 @@ character. Send the results back with their file names.
 The five pillars, the six articles of Iman, the three doors on the "Three doors" page and the Why List phone are drawn in
 code: no image needed. Claude saves the scenes as WebP; `SCENE_IMAGES` in `src/curriculum/slides/Slide.tsx` maps them to
 the pages.
+
+## Step 4: Lesson 2 scenes (`public/curriculum/zad-teens/l02/`)
+
+Same chat and same rules as Step 3 (the note to ChatGPT is sent once and still applies). Attach the sheet with the
+prompts that name a character.
+
+| File | Prompt (paste as is) |
+|---|---|
+| `cover` | (attach the sheet) Night on a city rooftop. Zayn and Noor sit side by side in the lower middle, seen from behind, looking up at a huge starry sky that fills the top two thirds of the picture, the Milky Way across it. Calm and full of wonder. |
+| `kitchen` | (attach the sheet) A warm family kitchen. Noor stands on the left with oven gloves, proud; a freshly baked cake sits in the middle of the counter with a little steam rising; Zayn stands on the right, one hand up, explaining something like a scientist. Cheerful. |
+| `newborn` | Close-up: a newborn baby's tiny hand wrapped around an adult's finger, in the centre of the picture, soft warm morning light, a blanket in cream and teal. No faces visible. |
+| `pitch` | Sunset over an empty football pitch at the edge of a town: a wide glowing sky in the top half, low hills on the right side, the grass spreading out wide in front, a single ball on the grass. No people. |
+| `bench` | (attach the sheet) School playground at break. Zayn and Ethan sit on a bench on the left half of the picture; Zayn talks with his hands, confident; Ethan listens, curious. Keep the lower right of the picture calm and plain. |
+| `gaming` | (attach the sheet) Evening, a cosy living room. Zayn and Ethan sit on a sofa with game controllers, seen from slightly behind. A big TV in the upper middle shows a fantasy game: three glowing mythical figures, one made of sea water, one of sky and wind, one of sunlight (no text on screen). Keep the lower middle calm. |
+
+## Step 5: Lesson 3 scenes (`public/curriculum/zad-teens/l03/`)
+
+| File | Prompt (paste as is) |
+|---|---|
+| `cover` | A modern city skyline at dawn with one large sun rising exactly in the centre behind the buildings, golden light spreading across the whole sky. No people. |
+| `likes` | (attach the sheet) Noor sits on a bench, holding her phone in front of her in the middle of the picture; soft glowing hearts and round notification bubbles (no text, no logos) float up from the phone; her face is thoughtful, a little unsure. |
+| `prayer` | (attach the sheet) Night, Zayn's bedroom. Zayn sits on a prayer mat on the left after prayer, hands raised in du'a, eyes lowered, calm; a small lamp glows. Keep the lower right of the picture calm and plain. |
+| `library` | (attach the sheet) A school library with tall shelves. Ethan holds a thick book open and asks a question with a friendly, challenging look; Zayn listens, thinking. Both on the left half; keep the right side calm. |
+
+`science.webp` (Lesson 1) is reused once in Lesson 2 and `gaming.webp` (Lesson 2) once in Lesson 3; no new image needed
+for those pages.

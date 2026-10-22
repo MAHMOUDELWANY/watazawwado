@@ -79,6 +79,7 @@ Facts are not owned; we write them in our own words and never copy text or image
 | Source | Link | Use | Checked | Decision |
 |---|---|---|---|---|
 | San Diego Zoo Wildlife Alliance, "Camel" | https://animals.sandiegozoo.org/animals/camel | Camel facts for Lesson 2 (eyelid, eyelashes, nostrils, feet, water) | 2026-10-18 | Facts only, own words |
+| NASA Science, "Universe: Overview" | https://science.nasa.gov/universe/overview/ | "Around 13.8 billion years ago": the universe's beginning (Teens L2) | Read 2026-10-22; fact only, no text copied | Allowed (fact) |
 
 ## F. Files the owner needs to download
 

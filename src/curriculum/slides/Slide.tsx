@@ -203,6 +203,8 @@ export const SCENE_IMAGES: Partial<Record<LessonPage['scene'], string>> = {
   tNext: 'zad-teens/l01/science',
   tl2Cover: 'zad-teens/l02/cover', tl2Science: 'zad-teens/l01/science', tl2Kitchen: 'zad-teens/l02/kitchen', tl2Fitrah: 'zad-teens/l02/newborn',
   tl2Pitch: 'zad-teens/l02/pitch', tl2Bench: 'zad-teens/l02/bench', tl2Gaming: 'zad-teens/l02/gaming',
+  tl3Cover: 'zad-teens/l03/cover', tl3Gaming: 'zad-teens/l02/gaming', tl3Likes: 'zad-teens/l03/likes', tl3Prayer: 'zad-teens/l03/prayer',
+  tl3Library: 'zad-teens/l03/library',
 };
 
 /** Where the crop of a wide (16:9) painting sits when its box cuts it (CSS object-position), so the people stay in view. */

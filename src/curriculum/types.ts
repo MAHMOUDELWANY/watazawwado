@@ -72,7 +72,23 @@ export type SceneId =
   | 'tl2First'
   | 'tl2Pitch'
   | 'tl2Bench'
-  | 'tl2Gaming';
+  | 'tl2Gaming'
+  // Teens Lesson 3 (paintings in public/curriculum/zad-teens/l03; tl3Orbits and tl3Shahada reuse the Kids Lesson 3 scenes;
+  // tl3Recall, tl3Bosses, tl3Team, tl3Hawa, tl3Ikhlas, tl3Loved and tl3Center are drawn in code)
+  | 'tl3Cover'
+  | 'tl3Recall'
+  | 'tl3Gaming'
+  | 'tl3Bosses'
+  | 'tl3Team'
+  | 'tl3Orbits'
+  | 'tl3Shahada'
+  | 'tl3Likes'
+  | 'tl3Hawa'
+  | 'tl3Ikhlas'
+  | 'tl3Loved'
+  | 'tl3Center'
+  | 'tl3Prayer'
+  | 'tl3Library';
 
 /** How a page is laid out on the slide (docs/curriculum/PLAN.md §7, slide system v2). */
 export type Layout =

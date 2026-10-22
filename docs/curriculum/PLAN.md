@@ -29,9 +29,10 @@
 - **Now (player polish, 2026-10-18):** owner reviews the new sounds, the praise word "Zādak Allāh", the new question
   cards and game, and the page-turn transition (they apply to every lesson of the series).
 - **Next:** Lesson 4 (Muhammad ﷺ, the Messenger) brief.
-- **Now (Teens, 2026-10-21):** Teens L1 built in code (draft at /dashboard/curriculum). Waiting: the owner generates the
-  images from `style/teens.md` (Step 1 sheet done, Step 2 library in progress, Step 3 the L1 scenes) and reviews the lesson.
-  When images arrive: name them per the table, place them, re-aim the motion positions, then Teens L2 brief.
+- **Now (Teens, 2026-10-22):** Teens Lessons 1, 2 and 3 built overnight at the owner's request (owner asleep): L1 with all
+  its paintings and the character library; L2 and L3 brief + pages + Arabic notes + code scenes (drafts, teacher-only at
+  /dashboard/curriculum). Waiting: owner review of all three, the L2/L3 images (`style/teens.md` Steps 4 and 5), and the
+  owner's call on the doors' six-pointed stars and the minarets in the L1 Madinah paintings. Next: Teens L4 brief.
 - **Not started:** Lessons 4–37.
 - **Known limit:** lesson text ships in the site bundle, so the lock is a UI lock (content is not secret). Upgrade to
   server-served lessons if content must be protected.
@@ -419,3 +420,10 @@ B3–B5 → continue lesson by lesson.
   and phone, dark, reduced motion, no console errors. tsc, tests and build pass.
 - **2026-10-21** — Owner works from `style/teens.md` directly (sheet done, library in progress). L1 scene prompts moved there as
   Step 3, with a note to send ChatGPT first; `chatgpt-prompts.md` removed.
+- **2026-10-22** — Overnight run (owner: "finish L1, then do L2 and L3, give me the image prompts, don't stop"). L1: 32
+  images placed (13 scenes, 19 characters; Ethan's trainer logo painted out), motion re-aimed on the real paintings,
+  characters added to two code studies. L2 "Did It All Just Happen?" (52:35-36, 30:30, 57:3 + Muslim 2713 new, 88:17-20;
+  NASA 13.8 bn years; "who made God?" answered with al-Awwal). L3 "One, Not Many" (21:22, 47:19, 45:23 new, 112, Bukhari
+  7375/5013/5017; reuses the Kids L3 solar system and shahada scenes). Image prompts in `style/teens.md` Steps 4–5. The
+  Why List is now a shared device (`t01.tsx`). Checked all 48 pages in headless Edge (desktop; phone, dark and reduced
+  motion spot-checked), no console errors.

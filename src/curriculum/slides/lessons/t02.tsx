@@ -100,7 +100,7 @@ export function UniverseBegins({ labels, label }: { labels: (string | null)[]; l
         <>
           <motion.span className="absolute left-1/2 top-1/2 block h-[86%] w-[78%] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-dashed"
             style={{ borderColor: 'rgba(246,213,142,0.6)' }} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }} />
-          <motion.span className="absolute right-[3%] top-[6%] flex h-[78px] w-[78px] items-center justify-center rounded-full font-serif text-[56px] font-bold"
+          <motion.span className="absolute right-[16%] top-[7%] flex h-[78px] w-[78px] items-center justify-center rounded-full font-serif text-[56px] font-bold"
             style={{ background: P.gold, color: P.ink, boxShadow: '0 0 40px rgba(229,169,60,0.85)' }}
             initial={{ opacity: 0, scale: 0.4 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.6, type: 'spring', bounce: 0.4 }}>?</motion.span>
         </>
@@ -108,7 +108,7 @@ export function UniverseBegins({ labels, label }: { labels: (string | null)[]; l
       {labels.map((l, i) => (l ? (
         <Tag key={l} style={{ left: ['22%', '50%', '78%'][i], top: '93%' }} color={i === 2 ? '#9A6A12' : P.teal} delay={0.6}>{l}</Tag>
       ) : null))}
-      {n >= 3 && <Tag style={{ left: '82%', top: '24%' }} size={18} color={P.ink} delay={1}>outside time, space, matter</Tag>}
+      {n >= 3 && <Tag style={{ left: '72%', top: '25%' }} size={18} color={P.ink} delay={1}>outside time, space, matter</Tag>}
     </div>
   );
 }
