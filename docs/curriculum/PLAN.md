@@ -29,14 +29,14 @@ Last update: 2026-10-22. History of how we got here: §8 (progress log).
 - **Next after review:** Lesson 4 (Can I Trust Him?) brief.
 - **Not started:** Lessons 4–40.
 
-### Zad Essentials · Adults (18+)
-- **Not started.** Next step: the unit map (`zad-essentials-adults/MAP.md`), with `brainstorming` first.
-- Already decided for Adults (RULES §3): same spine and five parts; **no recurring characters** (so no series opening);
-  true stories and real-life cases; check = case questions and a short review; Ahd = a habit or decision; Shafi'i, with
-  one line where a recognised difference exists; tadabbur = root, context and tafsir notes; look = calm, cinematic,
-  editorial. The premium bar and the slide rules of RULES §1.10 apply (text fit, no thin slides, no "45 minutes" on covers).
-- To start: read this file, `RULES.md`, the Teens `RULES.md` (as the model of a version's rule file), `sources.md`;
-  reuse verified evidence (✔ in the Kids and Teens maps) without re-research; make `style/adults.md` before any image.
+### Zad Essentials · Adults (18+): `zad-essentials-adults/`
+- **Binding Adults rules in one file: `zad-essentials-adults/RULES.md`** (owner, 2026-10-22): Muslims with a background
+  (new Muslims later, if there is demand); the aim is yaqeen and pride in the deen; 60-minute lessons with every page
+  shown, no optional pages; projections from well-known people; role models only from the Companions, history and
+  recently deceased Muslims of sound character; more advanced English in the owner's voice.
+- **Done:** map drafted (46 lessons, 5 parts; Certainty Notebook, Then and Now, hand-off questions).
+- **Waiting for the owner:** review of `zad-essentials-adults/MAP.md` and its four open points.
+- **Next after review:** `style/adults.md`, then Lesson 1 (The Man No One Knew) brief.
 
 ### Seerah and the Scholar's Path
 - Seerah (Kids / Teens / Adults): planned, not started. Scholar's Path: books, sessions and prices are the owner's call
@@ -484,3 +484,6 @@ B3–B5 → continue lesson by lesson.
   show "45 minutes". Rules in RULES §1.10. Character lines and traits are new copy: owner to review.
 - **2026-10-22** — Opening pacing (owner): cards stay 7 s (Teens) / 8.5 s (Kids); Back, Next, Pause and clickable progress
   ticks (the current tick fills with the time left); P pauses; cast images decoded before their card.
+- **2026-10-22** — Adults started (owner, after brainstorming): audience, aim (yaqeen, pride), 60-minute lessons with no
+  optional pages, projections and role-model rules recorded in `zad-essentials-adults/RULES.md`; map drafted
+  (`zad-essentials-adults/MAP.md`, 46 lessons) for the owner's review.

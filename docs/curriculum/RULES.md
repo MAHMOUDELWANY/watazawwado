@@ -71,6 +71,7 @@ Sources: recognised tafsir through the quran.com connector only; no personal taf
 - To fill a 60-minute lesson, extra content goes **on the slides themselves** (extra pages, deeper tadabbur, a second game),
   never as filler in the teacher notes, and never repeating what was said. Extra pages are marked `optional: true`; the
   teacher skips them in a 30-minute lesson.
+- **Adults: 60 minutes, every page shown in order, no optional pages** (owner, 2026-10-22; `zad-essentials-adults/RULES.md`).
 
 ### 1.8 Teacher notes
 - Every page has `explain`: the read-aloud detail behind the slide, with points the teacher can branch from.
@@ -182,7 +183,7 @@ worship into points. Love first; Jannah and the Fire are both mentioned honestly
 | **Excluded** | Signs of the Hour; explicit doubts; details of ghusl beyond Friday/Eid | — | — |
 
 **Version rule files:** each version keeps its own owner decisions in `<version>/RULES.md` (Teens:
-`zad-essentials-teens/RULES.md`). Read it with this file before working on that version; this file wins on conflict.
+`zad-essentials-teens/RULES.md`, Adults: `zad-essentials-adults/RULES.md`). Read it with this file before working on that version; this file wins on conflict.
 
 All three versions share **the same spine** (Zad Essentials: the hadith of Jibril and its three doors, five parts: Iman →
 Taharah → Salah → the other pillars → Ihsan). Lessons are added or merged per version according to age (e.g. full ghusl
