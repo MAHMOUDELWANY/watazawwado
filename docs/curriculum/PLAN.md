@@ -30,6 +30,8 @@ Last update: 2026-10-22. History of how we got here: §8 (progress log).
 - **Not started:** Lessons 4–40.
 
 ### Zad Essentials · Adults (18+): `zad-essentials-adults/`
+- **New session or account? Read `zad-essentials-adults/HANDOFF-2026-10-22.md` first** (the owner's conversation and
+  where the work stopped).
 - **Binding Adults rules in one file: `zad-essentials-adults/RULES.md`** (owner, 2026-10-22): Muslims with a background
   (new Muslims later, if there is demand); the aim is yaqeen and pride in the deen; 60-minute lessons with every page
   shown, no optional pages; projections from well-known people; role models only from the Companions, history and
