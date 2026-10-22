@@ -2,12 +2,12 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import {
   ChevronLeft, ChevronRight, Maximize2, Minimize2, Star, PenLine, Highlighter, MousePointer2, Eraser, LayoutGrid,
-  Timer, RotateCcw, BookOpenText, X, Globe, Volume2, VolumeX, Smartphone, Trash2,
+  Timer, RotateCcw, BookOpenText, X, Globe, Volume2, VolumeX, Smartphone, Trash2, Check,
 } from 'lucide-react';
 import type { Lesson } from './types';
-import { Slide, SlideText, stepsFor, CANVAS_W, CANVAS_H, scoreSort, type GameResult } from './slides/Slide';
+import { Slide, SlideText, stepsFor, CANVAS_W, CANVAS_H, scoreSort, SCENE_IMAGES, type GameResult } from './slides/Slide';
 import { InkLayer, type InkTool } from './slides/Ink';
-import { P } from './slides/Art';
+import { P, asset } from './slides/Art';
 import { useAppLanguage } from '../lib/language';
 import { play, isMuted, setMuted, primeSounds } from './slides/sfx';
 
@@ -55,6 +55,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   const [timerLeft, setTimerLeft] = useState(0);
   const [timerMenu, setTimerMenu] = useState(false);
   const [rotateHint, setRotateHint] = useState(true);
+  const [finished, setFinished] = useState(false);
   const swipe = useRef<{ x: number; y: number; id: number } | null>(null);
   const [fullscreen, setFullscreen] = useState(false);
   const [muted, setMutedState] = useState(isMuted);
@@ -70,6 +71,20 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   const last = lesson.pages.length - 1;
 
   useEffect(() => onPageChange?.(page), [page, onPageChange]);
+  // Decode every painting of the lesson up front (nearest pages first), so no page freezes while its image loads.
+  useEffect(() => {
+    const order = lesson.pages.map((_, i) => i).sort((a, b) => Math.abs(a - page) - Math.abs(b - page));
+    const seen = new Set<string>();
+    for (const i of order) {
+      const name = SCENE_IMAGES[lesson.pages[i].scene];
+      if (!name || seen.has(name)) continue;
+      seen.add(name);
+      const img = new Image();
+      img.src = asset(`${name}.webp`);
+      img.decode?.().catch(() => {});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lesson]);
   useEffect(() => {
     const onResize = () => setIsWide(wide());
     window.addEventListener('resize', onResize);
@@ -98,10 +113,19 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   }, [last, lesson.pages, page]);
 
   /** Next = reveal the next build step; when the page is fully built, go to the next page. */
+  // The end of the lesson: leave full screen and show the closing card (owner, 2026-10-22).
+  const finish = useCallback(() => {
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    setFullscreen(false);
+    setTool('none');
+    setFinished(true);
+    play('praise');
+  }, []);
   const forward = useCallback(() => {
     if (step < total) setStep((s) => s + 1);
     else if (page < last) goPage(page + 1);
-  }, [step, total, page, last, goPage]);
+    else finish();
+  }, [step, total, page, last, goPage, finish]);
   const backward = useCallback(() => {
     if (step > 0) setStep((s) => s - 1);
     else if (page > 0) goPage(page - 1, true);
@@ -391,6 +415,26 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
               )}
               <AnimatePresence>{praise && <Praise />}</AnimatePresence>
               <AnimatePresence>
+                {finished && (
+                  <motion.div dir={ar ? 'rtl' : 'ltr'} className="band-deep absolute inset-0 z-40 flex flex-col items-center justify-center gap-8 text-center"
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.4 }}>
+                    <motion.svg width="120" height="120" viewBox="0 0 100 100" aria-hidden="true" initial={reduce ? false : { rotate: -45, scale: 0.6 }} animate={{ rotate: 0, scale: 1 }} transition={{ type: 'spring', stiffness: 140, damping: 16 }}>
+                      <path d="M50 10 L61.7 21.7 L78.3 21.7 L78.3 38.3 L90 50 L78.3 61.7 L78.3 78.3 L61.7 78.3 L50 90 L38.3 78.3 L21.7 78.3 L21.7 61.7 L10 50 L21.7 38.3 L21.7 21.7 L38.3 21.7 Z" fill={P.gold} />
+                    </motion.svg>
+                    <div className="space-y-3">
+                      <p className="font-serif text-[40px] font-bold text-[#F6D58E]" lang="ar" dir="rtl">زادك الله</p>
+                      <p className="font-serif text-[84px] font-bold leading-none text-white">{L('Lesson complete', 'خلصنا الدرس')}</p>
+                      <p dir="ltr" className="font-sans text-[30px] text-white/80">{lesson.title}</p>
+                    </div>
+                    {teacher && <p className="font-sans text-[26px] font-semibold text-white/75">{L('Write the lesson report under the slide.', 'اكتب تقرير الحصة تحت الشريحة.')}</p>}
+                    <div className="flex gap-4">
+                      <button type="button" onClick={() => { setFinished(false); goPage(0); }} className="rounded-full bg-white/10 px-8 py-4 font-sans text-[26px] font-bold text-white ring-1 ring-white/30 hover:bg-white/20">{L('Start again', 'من الأول')}</button>
+                      <button type="button" onClick={() => setFinished(false)} className="rounded-full bg-[#E5A93C] px-8 py-4 font-sans text-[26px] font-bold text-[#1E1410] hover:bg-[#F6D58E]">{L('Close', 'اقفل')}</button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <AnimatePresence>
                 {grid && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} dir="ltr" lang="en" className="band-deep absolute inset-0 z-30 p-16">
                     <p className="mb-8 font-serif text-[48px] font-bold text-white">{lesson.title}</p>
@@ -419,14 +463,16 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
                 className="pointer-events-auto flex h-11 w-11 items-center justify-center rounded-full bg-[#FFFDF7]/85 text-[#1E1410] shadow-[0_10px_24px_-10px_rgba(30,20,16,0.6)] ring-1 ring-black/5 backdrop-blur transition-[transform,opacity] duration-150 hover:bg-[#FFFDF7] active:scale-95 disabled:opacity-0 sm:h-12 sm:w-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C]">
                 <ChevronLeft className="h-6 w-6" aria-hidden="true" />
               </button>
-              <button type="button" onClick={forward} disabled={page === last && step >= total} aria-label={L('Next', 'التالي')} title={L('Next (→ or Space)', 'التالي (→ أو مسافة)')}
+              <button type="button" onClick={forward} aria-label={page === last && step >= total ? L('Finish the lesson', 'خلّص الدرس') : L('Next', 'التالي')} title={L('Next (→ or Space)', 'التالي (→ أو مسافة)')}
                 className="pointer-events-auto flex h-11 items-center gap-2 rounded-full bg-[#C51F24] ps-4 pe-3 text-white shadow-[0_12px_28px_-10px_rgba(197,31,36,0.7)] transition-[transform,opacity] duration-150 hover:bg-[#A9191E] active:scale-95 disabled:opacity-30 sm:h-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C]">
-                {total > 0 && (
+                {page === last && step >= total ? (
+                  <span className="text-sm font-bold">{L('Finish', 'خلّص الدرس')}</span>
+                ) : total > 0 && (
                   <span className="flex gap-1" aria-hidden="true">
                     {Array.from({ length: total }).map((_, i) => <span key={i} className={`h-1.5 w-1.5 rounded-full transition-colors ${i < step ? 'bg-white' : 'bg-white/35'}`} />)}
                   </span>
                 )}
-                <ChevronRight className="h-6 w-6" aria-hidden="true" />
+                {page === last && step >= total ? <Check className="h-6 w-6" aria-hidden="true" /> : <ChevronRight className="h-6 w-6" aria-hidden="true" />}
               </button>
             </div>
           </div>

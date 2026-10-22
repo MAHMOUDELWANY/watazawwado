@@ -1,10 +1,11 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { P } from '../Art';
-import { Pen, Tag, Print, out, type Built } from '../Scenes';
-import { Burst, Rise, Glow, ShootingStar } from '../Motion';
+import { Pen, Tag, Print, out, src, type Built } from '../Scenes';
+import { Burst, Rise, Glow, ShootingStar, SunRays } from '../Motion';
+import { Factory, Smartphone, Flame, Cake, Users, Baby, CircleHelp, Orbit } from 'lucide-react';
 import { useCue } from '../sfx';
-import { WhyList, Q1, Q2, Q3 } from './t01';
+import { StageBg, WhyList, Q1, Q2, Q3 } from './t01';
 
 /* ---------- Teens Lesson 2: Did It All Just Happen? (brief: docs/curriculum/zad-essentials-teens/L02-did-it-all-just-happen.md)
    Paintings in public/curriculum/zad-teens/l02 (prompts: docs/curriculum/style/teens.md, Step 4); `science` is reused from
@@ -13,7 +14,7 @@ import { WhyList, Q1, Q2, Q3 } from './t01';
    prompts: check them when the paintings arrive. */
 
 const T = (name: string) => `zad-teens/l02/${name}`;
-const PANEL = 'absolute left-[680px] top-[132px] h-[630px] w-[840px] overflow-hidden rounded-[28px]';
+const PANEL = 'absolute left-[680px] top-[172px] h-[630px] w-[840px] overflow-hidden rounded-[28px]';
 const DEEP = 'radial-gradient(circle at 50% 45%, #0B4C57 0%, #05363F 70%, #031F25 100%)';
 
 /** Cover: the night sky over the rooftop twinkles, and one shooting star crosses it. */
@@ -38,30 +39,57 @@ export function ScreenFlare({ v }: { v: Built }) {
   );
 }
 
-/** p4 What begins has a cause: each item draws a thing, an arrow back to what caused it; the universe's cause is a "?". */
+const CHAIN = [
+  { Cause: Factory, Thing: Smartphone, a: '#16A0B5' },
+  { Cause: Flame, Thing: Cake, a: '#E2474B' },
+  { Cause: Users, Thing: Baby, a: '#F0BD5A' },
+  { Cause: CircleHelp, Thing: Orbit, a: '#F6D58E' },
+];
+
+/** p4 What begins has a cause. Four rows build one by one: a cause (factory, oven, parents) sends a stream of light along
+ *  a rail and the thing it made pops into being at the other end (phone, cake, baby). The last row runs backwards: the
+ *  universe appears first, and the light travels back to a cause that is still only a pulsing "?". */
 export function CauseChain({ labels, label }: { labels: (string | null)[]; label: string }) {
   const reduce = useReducedMotion();
   const n = labels.filter(Boolean).length;
-  useCue('pop', n, 0.15);
+  useCue('pop', n, 0.7);
   return (
-    <div className={PANEL} role="img" aria-label={`${label}: ${n} of ${labels.length}`} style={{ background: DEEP }}>
+    <div className={PANEL} role="img" aria-label={`${label}: ${n} of ${labels.length}`}>
+      <StageBg tone="teal" />
+      <div className="absolute inset-x-[5%] top-[3%] flex justify-between font-sans text-[16px] font-bold uppercase tracking-[0.2em] text-[#F6D58E]/80">
+        <span>Cause</span><span>It began</span>
+      </div>
       {labels.map((l, i) => {
         if (!l) return null;
         const [thing, cause] = l.split(':').map((x) => x.trim());
-        const last = cause === '?';
+        const { Cause, Thing, a } = CHAIN[i];
+        const last = i === CHAIN.length - 1;
+        const top = 10 + i * 22;
+        const node = (Icon: typeof Factory, glow: boolean, pulse = false) => (
+          <motion.span className="flex h-[92px] w-[92px] shrink-0 items-center justify-center rounded-full border-2"
+            style={{ borderColor: a, background: glow ? `radial-gradient(circle, ${a}55, #05363F 70%)` : 'rgba(255,253,247,0.06)', boxShadow: glow ? `0 0 34px -4px ${a}` : undefined }}
+            animate={pulse && !reduce ? { scale: [1, 1.1, 1] } : undefined} transition={pulse ? { duration: 1.4, repeat: Infinity } : undefined}>
+            <Icon className="h-11 w-11" style={{ color: glow ? '#FFFDF7' : a }} strokeWidth={1.8} />
+          </motion.span>
+        );
         return (
-          <motion.div key={l} className="absolute left-[6%] right-[6%] flex items-center gap-4 font-sans" style={{ top: `${8 + i * 22}%` }}
-            initial={reduce ? { opacity: 0 } : { opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, ease: out }}>
-            <span className="w-[38%] rounded-[16px] px-4 py-3 text-center text-[26px] font-bold" style={{ background: last ? P.goldSoft : '#FFFDF7', color: P.ink }}>{thing}</span>
-            <svg width="110" height="30" viewBox="0 0 110 30" aria-hidden="true"><Pen d="M5 15 L95 15 M82 4 L98 15 L82 26" color={P.goldSoft} width={5} duration={0.4} /></svg>
-            {last ? (
-              <motion.span className="flex h-[72px] w-[72px] items-center justify-center rounded-full font-serif text-[52px] font-bold"
-                style={{ background: P.gold, color: P.ink, boxShadow: '0 0 40px rgba(229,169,60,0.8)' }}
-                animate={reduce ? undefined : { scale: [1, 1.12, 1] }} transition={{ duration: 1.6, repeat: Infinity }}>?</motion.span>
-            ) : (
-              <span className="flex-1 rounded-[16px] border-2 px-4 py-3 text-[22px] font-semibold" style={{ borderColor: P.tealSoft, color: '#E8F4F5' }}>{cause}</span>
-            )}
-          </motion.div>
+          <div key={l} className="absolute inset-x-[5%] flex items-center" style={{ top: `${top}%`, height: '19%' }}>
+            <motion.div initial={reduce ? false : { opacity: 0, transform: 'scale(0.6)' }} animate={{ opacity: 1, transform: 'scale(1)' }} transition={{ duration: 0.4, delay: last ? 1.2 : 0, ease: out }}>
+              {node(Cause, !last, last)}
+            </motion.div>
+            <div className="relative mx-4 h-[6px] flex-1 overflow-hidden rounded-full bg-white/10">
+              <motion.span className="absolute inset-y-0 rounded-full" style={{ background: `linear-gradient(90deg, transparent, ${a}, #FFF6D8)`, width: '35%' }}
+                initial={{ left: last ? '100%' : '-35%' }} animate={{ left: last ? '-35%' : '100%' }}
+                transition={{ duration: 0.9, delay: last ? 0.5 : 0.2, ease: 'easeInOut', repeat: reduce ? 0 : Infinity, repeatDelay: 1.6 }} />
+            </div>
+            <motion.div initial={reduce ? false : { opacity: 0, transform: 'scale(0.4)' }} animate={{ opacity: 1, transform: 'scale(1)' }} transition={{ type: 'spring', bounce: 0.5, delay: last ? 0 : 0.9 }}>
+              {node(Thing, true)}
+            </motion.div>
+            <div className="ms-4 w-[34%] font-sans">
+              <p className="text-[24px] font-bold leading-tight text-white">{thing}</p>
+              <p className="text-[17px] font-semibold" style={{ color: last ? '#F6D58E' : '#BFE3E6' }}>{last ? 'caused by… ?' : cause}</p>
+            </div>
+          </div>
         );
       })}
     </div>
@@ -80,7 +108,8 @@ export function UniverseBegins({ labels, label }: { labels: (string | null)[]; l
   useCue('whoosh', n >= 2, 0.1);
   useCue('reveal', n >= 3, 0.4);
   return (
-    <div className={PANEL} role="img" aria-label={`${label}: ${n} of 3`} style={{ background: 'radial-gradient(circle at 50% 50%, #12233A 0%, #070D18 75%)' }}>
+    <div className={PANEL} role="img" aria-label={`${label}: ${n} of 3`}>
+      <StageBg tone="night" />
       {n >= 1 && (
         <motion.span className="absolute left-1/2 top-1/2 block h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full"
           style={{ background: '#FFF6D8', boxShadow: '0 0 40px 18px rgba(255,236,170,0.9)' }}
@@ -123,7 +152,8 @@ export function ThreeOptions({ labels, label }: { labels: (string | null)[]; lab
     <g key="2"><rect x="30" y="34" width="60" height="52" rx="8" fill="none" stroke={P.tealSoft} strokeWidth="5" /><path d="M100 10 L72 40" stroke={P.goldSoft} strokeWidth="6" strokeLinecap="round" /><circle cx="100" cy="10" r="7" fill={P.goldSoft} /></g>,
   ];
   return (
-    <div className={PANEL} role="img" aria-label={`${label}: ${n} of 3`} style={{ background: DEEP }}>
+    <div className={PANEL} role="img" aria-label={`${label}: ${n} of 3`}>
+      <StageBg tone="teal" />
       {labels.map((l, i) => (l ? (
         <motion.div key={l} className="absolute top-[16%] flex h-[66%] w-[28%] flex-col items-center justify-center gap-6 rounded-[24px] border-2 px-4 text-center"
           style={{ left: `${4 + i * 32.5}%`, borderColor: 'rgba(191,227,230,0.5)', background: 'rgba(255,255,255,0.04)' }}
@@ -145,7 +175,8 @@ export function AyahThreeSlots({ v, label }: { v: Built; label: string }) {
     { en: 'Made themselves?', ar: 'هُمُ ٱلْخَـٰلِقُونَ' },
   ];
   return (
-    <div className="absolute left-[720px] top-[150px] h-[570px] w-[760px] overflow-hidden rounded-[28px]" role="img" aria-label={label} style={{ background: DEEP }}>
+    <div className="absolute left-[720px] top-[150px] h-[570px] w-[760px] overflow-hidden rounded-[28px]" role="img" aria-label={label}>
+      <StageBg tone="teal" />
       {slots.map((s, i) => (
         <motion.div key={s.en} className="absolute left-[6%] right-[6%] flex items-center justify-between rounded-[20px] px-6 py-4"
           style={{ top: `${8 + i * 26}%`, background: '#FFFDF7' }} initial={{ opacity: 0, x: -24 }} animate={{ opacity: v.lines >= 1 ? (v.lines >= 2 ? 0.55 : 1) : 0, x: v.lines >= 1 ? 0 : -24 }}
@@ -176,7 +207,8 @@ export function SteadyLine({ v, label }: { v: Built; label: string }) {
   const calm = v.evidence;
   useCue('chime', calm, 0.3);
   return (
-    <div className="absolute left-[720px] top-[150px] h-[570px] w-[760px] overflow-hidden rounded-[28px]" role="img" aria-label={label} style={{ background: DEEP }}>
+    <div className="absolute left-[720px] top-[150px] h-[570px] w-[760px] overflow-hidden rounded-[28px]" role="img" aria-label={label}>
+      <StageBg tone="teal" />
       <svg className="absolute inset-0 h-full w-full" viewBox="0 0 760 570" aria-hidden="true">
         <motion.path fill="none" stroke={calm ? P.goldSoft : P.tealSoft} strokeWidth="7" strokeLinecap="round"
           initial={false}
@@ -185,6 +217,15 @@ export function SteadyLine({ v, label }: { v: Built; label: string }) {
       </svg>
       {v.lines >= 1 && !calm && <Tag style={{ left: '50%', top: '18%' }} color={P.teal} delay={0.3}>Doubt: up and down</Tag>}
       {calm && <Tag style={{ left: '50%', top: '22%' }} ar="يَقِين" color="#9A6A12" delay={0.8}>Yaqeen: settled</Tag>}
+      {/* What feeds yaqeen (teacher note): three sources rise to the steady line one after another. */}
+      {calm && ["Du'a", 'Quran', 'Good company'].map((f, i) => (
+        <motion.span key={f} className="absolute top-[72%] -translate-x-1/2 whitespace-nowrap rounded-full border border-[#F6D58E]/60 bg-[#05363F]/80 px-5 py-2 font-sans text-[22px] font-bold text-[#F6D58E] shadow-lg"
+          style={{ left: `${25 + i * 25}%` }}
+          initial={reduce ? false : { opacity: 0, transform: 'translateY(40px)' }} animate={{ opacity: 1, transform: 'translateY(0px)' }}
+          transition={{ delay: 1.4 + i * 0.35, duration: 0.6, ease: out }}>{f}</motion.span>
+      ))}
+      {calm && <motion.p className="absolute inset-x-0 top-[85%] text-center font-sans text-[18px] font-semibold uppercase tracking-[0.2em] text-[#BFE3E0]"
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.6, duration: 0.6 }}>What feeds it</motion.p>}
     </div>
   );
 }
@@ -222,7 +263,8 @@ export function TheFirst({ v, label }: { v: Built; label: string }) {
   useCue('reveal', anchored, 0.6);
   const boxes = ['universe', 'cause?', 'cause?', 'cause?', 'cause?'];
   return (
-    <div className="absolute left-[720px] top-[150px] h-[570px] w-[760px] overflow-hidden rounded-[28px]" role="img" aria-label={label} style={{ background: DEEP }}>
+    <div className="absolute left-[720px] top-[150px] h-[570px] w-[760px] overflow-hidden rounded-[28px]" role="img" aria-label={label}>
+      <StageBg tone="teal" />
       {v.lines >= 1 && boxes.map((b, i) => (
         <motion.span key={i} className="absolute top-[30%] flex h-[64px] -translate-y-1/2 items-center justify-center rounded-[14px] px-3 font-sans text-[20px] font-bold"
           style={{ right: `${4 + i * 19}%`, width: '15%', background: i === 0 ? '#FFFDF7' : 'rgba(255,253,247,0.12)', color: i === 0 ? P.ink : '#E8F4F5' }}
@@ -246,16 +288,44 @@ export function TheFirst({ v, label }: { v: Built; label: string }) {
   );
 }
 
-/** p12 Look up: the sky, the hills and the ground of the pitch get their words from the ayah, one by one. */
+/** A small bird in flight, two strokes that flap. */
+function Bird({ x, y, delay, dur, scale = 1 }: { x: number; y: number; delay: number; dur: number; scale?: number }) {
+  return (
+    <motion.svg viewBox="0 0 40 20" className="absolute" style={{ left: `${x}%`, top: `${y}%`, width: 34 * scale }} aria-hidden="true"
+      initial={{ transform: 'translateX(0px)', opacity: 0 }} animate={{ transform: 'translateX(-520px)', opacity: [0, 1, 1, 0] }}
+      transition={{ duration: dur, delay, repeat: Infinity, ease: 'linear' }}>
+      <motion.path d="M2 12 Q10 2 20 11 Q30 2 38 12" fill="none" stroke="#2A130C" strokeWidth="2.6" strokeLinecap="round"
+        animate={{ d: ['M2 12 Q10 2 20 11 Q30 2 38 12', 'M2 6 Q10 14 20 11 Q30 14 38 6', 'M2 12 Q10 2 20 11 Q30 2 38 12'] }} transition={{ duration: 0.6, repeat: Infinity }} />
+    </motion.svg>
+  );
+}
+
+/** p12 Look up (Al-Ghashiyah 88:17-20). The sunset pitch comes alive: the sun breathes and turns its rays, birds cross the
+ *  sky, a band of light sweeps over the grass. With the ayah, the camera slowly rises from the ground to the sky while the
+ *  words are pinned: the sky, raised; the hills, set firm; the earth, spread out. Sun at 32% / 47% of pitch.webp. */
 export function LookUp({ v, label }: { v: Built; label: string }) {
+  const reduce = useReducedMotion();
   useCue('pen', v.evidence, 0.3);
   return (
-    <Print name={T('pitch')} label={label}>
-      <div className="absolute inset-0 overflow-hidden rounded-[28px]"><Rise from={[{ x: 30, y: 30 }, { x: 70, y: 22 }]} count={3} height={10} seed={9} /></div>
-      {v.evidence && <Tag style={{ left: '50%', top: '12%' }} ar="رُفِعَتْ" color={P.teal} delay={0.4}>the sky, raised</Tag>}
-      {v.evidence && <Tag style={{ left: '80%', top: '30%' }} ar="نُصِبَتْ" color={P.copper} delay={0.9}>the hills, set firm</Tag>}
-      {v.evidence && <Tag style={{ left: '40%', top: '86%' }} ar="سُطِحَتْ" color="#9A6A12" delay={1.4}>the earth, spread out</Tag>}
-    </Print>
+    <div className="absolute left-[720px] top-[150px] h-[570px] w-[760px] overflow-hidden rounded-[28px] shadow-[0_40px_80px_-40px_rgba(139,73,53,0.6)]" role="img" aria-label={label}>
+      <motion.img src={src(T('pitch'))} alt="" draggable={false} className="absolute inset-0 h-full w-full select-none object-cover"
+        initial={false} animate={reduce ? undefined : { transform: v.evidence ? 'scale(1.12) translateY(3%)' : 'scale(1.04) translateY(-1%)' }}
+        transition={{ duration: 6, ease: 'easeInOut' }} />
+      <SunRays x={32} y={47} size={55} />
+      <Glow x={32} y={47} w={20} h={26} color="255,190,110" />
+      {!reduce && (
+        <>
+          <Bird x={78} y={18} delay={0} dur={11} />
+          <Bird x={88} y={24} delay={1.2} dur={12} scale={0.8} />
+          <Bird x={95} y={14} delay={2.4} dur={13} scale={0.7} />
+          <motion.div className="absolute bottom-0 h-[42%] w-[30%] -skew-x-12" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,226,150,0.35), transparent)', mixBlendMode: 'screen' }}
+            initial={{ left: '-30%' }} animate={{ left: '110%' }} transition={{ duration: 4.5, repeat: Infinity, repeatDelay: 2, ease: 'easeInOut' }} />
+        </>
+      )}
+      {v.evidence && <Tag style={{ left: '55%', top: '12%' }} ar="رُفِعَتْ" color={P.teal} delay={0.6}>the sky, raised</Tag>}
+      {v.evidence && <Tag style={{ left: '80%', top: '36%' }} ar="نُصِبَتْ" color={P.copper} delay={1.6}>the hills, set firm</Tag>}
+      {v.evidence && <Tag style={{ left: '36%', top: '80%' }} ar="سُطِحَتْ" color="#9A6A12" delay={2.6}>the earth, spread out</Tag>}
+    </div>
   );
 }
 
@@ -263,7 +333,7 @@ export function LookUp({ v, label }: { v: Built; label: string }) {
 export function ListCrossed({ v }: { v: Built }) {
   useCue('strike', v.lines >= 3, 1.2);
   if (v.lines < 3) return null;
-  return <WhyList rows={[Q1, Q2]} crossed={[1]} style={{ right: '3%', top: '52%', width: '52%' }} />;
+  return <WhyList later={{ 0: 'Lesson 11' }} rows={[Q1, Q2]} crossed={[1]} style={{ right: '3%', top: '52%', width: '52%' }} />;
 }
 
 /** p15 Cliffhanger: the game screen glows and Ethan's question lands as a new line on the Why List. */
@@ -275,7 +345,7 @@ export function GameGlow({ v }: { v: Built }) {
       <Glow x={52} y={20} w={16} h={22} color="230,240,255" />
       <Glow x={68} y={24} w={16} h={22} color="229,169,60" />
       {v.lines >= 2 && <Tag style={{ left: '52%', top: '46%' }} color={P.crimson} delay={0.3}>"A whole team of gods"</Tag>}
-      {v.lines >= 3 && <WhyList rows={[Q1, Q2, Q3]} crossed={[1]} typed={2} style={{ left: '28%', top: '50%', width: '44%' }} delay={0.2} />}
+      {v.lines >= 3 && <WhyList later={{ 0: 'Lesson 11' }} rows={[Q1, Q2, Q3]} crossed={[1]} typed={2} style={{ left: '28%', top: '50%', width: '44%' }} delay={0.2} />}
     </>
   );
 }

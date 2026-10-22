@@ -156,13 +156,13 @@ function Paper() {
 
 function ChapterTracker({ lesson, pageIndex, light = false }: { lesson: Lesson; pageIndex: number; light?: boolean }) {
   return (
-    <footer className="absolute left-[120px] right-[90px] bottom-[34px] flex items-center gap-8">
-      <span className="font-sans text-[19px] font-bold" style={{ color: light ? '#E9DCC5' : P.inkSoft }}>In this lesson</span>
+    <footer className={`absolute left-[120px] right-[90px] bottom-[34px] flex items-center whitespace-nowrap ${lesson.chapters.length > 6 ? 'gap-5' : 'gap-8'}`}>
+      <span className="shrink-0 font-sans text-[19px] font-bold" style={{ color: light ? '#E9DCC5' : P.inkSoft }}>In this lesson</span>
       {lesson.chapters.map((c, i) => {
         const next = lesson.chapters[i + 1]?.page ?? lesson.pages.length;
         const state = pageIndex >= next ? 'done' : pageIndex >= c.page ? 'now' : 'later';
         return (
-          <span key={c.label} className="flex items-center gap-3 font-sans text-[20px] font-bold" style={{ color: state === 'later' ? (light ? 'rgba(255,248,234,0.55)' : '#A39686') : light ? '#FFF8EA' : P.ink }}>
+          <span key={c.label} className={`flex shrink-0 items-center gap-3 font-sans font-bold ${lesson.chapters.length > 6 ? 'text-[18px]' : 'text-[20px]'}`} style={{ color: state === 'later' ? (light ? 'rgba(255,248,234,0.55)' : '#A39686') : light ? '#FFF8EA' : P.ink }}>
             <span
               className="flex h-9 w-9 items-center justify-center rounded-full text-[17px]"
               style={{
@@ -177,7 +177,7 @@ function ChapterTracker({ lesson, pageIndex, light = false }: { lesson: Lesson; 
           </span>
         );
       })}
-      <span className="ml-auto font-sans text-[18px] font-bold" style={{ color: '#A39686' }}>
+      <span className="ml-auto shrink-0 font-sans text-[18px] font-bold" style={{ color: '#A39686' }}>
         {pageIndex + 1} / {lesson.pages.length}
       </span>
     </footer>
@@ -208,7 +208,8 @@ export const SCENE_IMAGES: Partial<Record<LessonPage['scene'], string>> = {
 };
 
 /** Where the crop of a wide (16:9) painting sits when its box cuts it (CSS object-position), so the people stay in view. */
-const SCENE_FOCUS: Partial<Record<LessonPage['scene'], string>> = { sunrise: '75% 50%', dua: '32% 50%', football: '10% 50%', tKnowWhy: '20% 50%', tl3Prayer: '8% 50%' };
+const SCENE_FOCUS: Partial<Record<LessonPage['scene'], string>> = { sunrise: '75% 50%', dua: '32% 50%', football: '10% 50%', tKnowWhy: '20% 50%', tl3Prayer: '8% 50%',
+  tNight: '0% 50%', tl2Bench: '0% 50%', tl3Library: '8% 50%', tNext: '18% 50%' };
 
 /** Where labels point on each painting (% of the image box): x,y = the point, lx,ly = the label. */
 type Pin = { x: number; y: number; lx: number; ly: number };
@@ -348,6 +349,17 @@ function Lines({ lines, count, size = 40, light = false }: { lines: string[]; co
   );
 }
 
+/** Once the evidence arrives the lines give way to it; the page's last line stays as a lead-in so the point is not lost. */
+function Kicker({ page }: { page: LessonPage }) {
+  const last = page.lines[page.lines.length - 1];
+  if (!last) return null;
+  return (
+    <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease }} className="border-s-4 ps-4 font-sans text-[26px] font-semibold leading-snug [text-wrap:pretty]" style={{ borderColor: P.gold, color: P.inkSoft }}>
+      {last}
+    </motion.p>
+  );
+}
+
 /** Manuscript treatment: the Arabic is the hero, written in right to left between gold rules. */
 function Manuscript({ page, size = 60, light = false, align = 'center' }: { page: LessonPage; size?: number; light?: boolean; align?: 'center' | 'start' }) {
   const e = page.evidence!;
@@ -405,7 +417,35 @@ function Scrim({ to }: { to: 'side' | 'sideEnd' | 'bottom' | 'all' }) {
   return <div className="pointer-events-none absolute inset-0" style={{ background: bg }} />;
 }
 
-const COL = 'slide-scroll overflow-y-auto pb-4 pr-4';
+const COL = 'overflow-hidden';
+
+/** A text column that always fits its box: when an ayah, a hadith or a question makes it taller than the room it has,
+ *  the whole column scales down instead of spilling onto the picture (owner, 2026-10-22). Re-measured on every build step. */
+function Fit({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  const inner = useRef<HTMLDivElement>(null);
+  const [k, setK] = useState(1);
+  useEffect(() => {
+    const el = inner.current;
+    const box = el?.parentElement;
+    if (!el || !box) return;
+    const measure = () => {
+      // Scale only (no re-wrap), so the measured height does not change with k and the fit never oscillates.
+      const room = box.clientHeight;
+      const need = el.scrollHeight;
+      setK(need > room + 1 ? Math.max(0.55, room / need) : 1);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    ro.observe(box);
+    return () => ro.disconnect();
+  }, []);
+  return (
+    <div ref={inner} className={`origin-top-left ${className}`} style={{ transform: k < 1 ? `scale(${k})` : undefined, transition: 'transform 0.25s ease-out' }}>
+      {children}
+    </div>
+  );
+}
 
 /** An Arabic term the lesson teaches somewhere in its vocab, looked up by its transliteration. */
 const vocabOf = (lesson: Lesson, translit: string) => lesson.pages.flatMap((p) => p.vocab ?? []).find((w) => w.translit === translit);
@@ -431,7 +471,7 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
         <>
           <Painting page={page} className="inset-0">{Moment && <Moment v={v} lesson={lesson} />}</Painting>
           <Scrim to="side" />
-          <div className="absolute left-[120px] top-[190px] w-[780px]">
+          <div className="absolute left-[120px] top-[150px] bottom-[150px] w-[780px] overflow-hidden"><Fit>
             <motion.p initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.7, ease }} lang="ar" dir="rtl" className="w-fit font-serif text-[48px] font-bold" style={{ color: P.goldSoft }}>
               {lesson.titleAr}
             </motion.p>
@@ -445,7 +485,7 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
               <KhatamStar size={20} color={P.gold} />
               {lesson.minutes} minutes, {lesson.pages.length} pages
             </motion.p>
-          </div>
+</Fit>          </div>
         </>
       );
 
@@ -460,11 +500,11 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
           >
             {Moment && <Moment v={v} lesson={lesson} />}
           </Painting>
-          <div className={`absolute left-[120px] top-[140px] bottom-[120px] w-[580px] space-y-6 ${COL}`}>
+          <div className={`absolute left-[120px] top-[140px] bottom-[120px] w-[470px] space-y-6 ${COL}`}><Fit className="space-y-6">
             <Title size={68}>{page.title}</Title>
-            {v.evidence ? <Manuscript page={page} size={40} align="start" /> : <Lines lines={page.lines} count={v.lines} size={32} />}
+            {v.evidence ? <Manuscript page={page} size={36} align="start" /> : <Lines lines={page.lines} count={v.lines} size={32} />}
             {interaction}
-          </div>
+          </Fit></div>
         </>
       );
 
@@ -477,12 +517,12 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
             ))}
             {Moment && <Moment v={v} lesson={lesson} />}
           </Painting>
-          <div className={`absolute left-[120px] right-[620px] top-[140px] bottom-[120px] space-y-5 ${COL}`}>
+          <div className={`absolute left-[120px] right-[620px] top-[140px] bottom-[120px] space-y-5 ${COL}`}><Fit className="space-y-5">
             <Title size={58}>{page.title}</Title>
             {!v.interaction && <Lines lines={page.lines} count={v.lines} size={30} />}
             {v.evidence && <Manuscript page={page} size={40} align="start" />}
             {interaction}
-          </div>
+          </Fit></div>
         </>
       );
 
@@ -492,13 +532,14 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
       if (Study)
         return (
           <>
-            <div className={`absolute left-[120px] top-[140px] bottom-[120px] w-[560px] space-y-5 ${COL}`}>
+            <div className={`absolute left-[120px] top-[140px] bottom-[120px] w-[560px] space-y-5 ${COL}`}><Fit className="space-y-5">
               <Title size={60}>{page.title}</Title>
               {!v.evidence && <Lines lines={page.lines} count={v.lines} size={32} />}
+              {v.evidence && lesson.version === 'teens' && <Kicker page={page} />}
               {v.evidence && <Manuscript page={page} size={36} align="start" />}
               <Vocab page={page} />
               {interaction}
-            </div>
+            </Fit></div>
             <Study v={v} label={page.title} />
           </>
         );
@@ -509,13 +550,14 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
             className="right-[110px] top-[160px] h-[300px] w-[270px]"
             style={{ borderRadius: '50% 50% 26px 26px / 34% 34% 26px 26px', boxShadow: '0 30px 60px -30px rgba(139,73,53,0.6)', outline: `2px solid ${P.goldSoft}`, outlineOffset: 8 }}
           />
-          <div className={`absolute left-[120px] right-[430px] top-[140px] bottom-[120px] space-y-5 ${COL}`}>
+          <div className={`absolute left-[120px] right-[430px] top-[140px] bottom-[120px] space-y-5 ${COL}`}><Fit className="space-y-5">
             <Title size={60}>{page.title}</Title>
             {!v.evidence && <Lines lines={page.lines} count={v.lines} size={34} />}
+            {v.evidence && lesson.version === 'teens' && <Kicker page={page} />}
             {v.evidence && <Manuscript page={page} size={44} align="start" />}
             <Vocab page={page} />
             {interaction}
-          </div>
+          </Fit></div>
         </>
       );
     }
@@ -528,12 +570,12 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
       const Build = BUILDS[page.scene];
       return (
         <>
-          <div className={`absolute left-[120px] top-[140px] bottom-[120px] w-[520px] space-y-6 ${COL}`}>
+          <div className={`absolute left-[120px] top-[140px] bottom-[120px] w-[520px] space-y-6 ${COL}`}><Fit className="space-y-6">
             <Title size={68}>{page.title}</Title>
             <Lines lines={page.lines} count={v.lines} size={32} />
             <Vocab page={page} />
             {interaction}
-          </div>
+          </Fit></div>
           {Build ? (
             <Build labels={built} label={page.title} />
           ) : page.scene === 'doors' && page.items ? (
@@ -561,12 +603,12 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
           >
             {Moment && <Moment v={v} lesson={lesson} />}
           </Painting>
-          <div className={`absolute left-[120px] right-[460px] top-[150px] bottom-[120px] space-y-6 ${COL}`}>
+          <div className={`absolute left-[120px] right-[640px] top-[150px] bottom-[120px] space-y-6 ${COL}`}><Fit className="space-y-6">
             <Title size={72} light>{page.title}</Title>
             {!v.evidence && <Lines lines={page.lines} count={v.lines} size={36} light />}
             {v.evidence && <Manuscript page={page} size={44} light align="start" />}
             {interaction}
-          </div>
+          </Fit></div>
           {/* p8: the answer links back to Ms. Clarke's question on the classroom page. */}
           {page.scene === 'pillars' && answered && <Callback name="classroom" caption="Just like Ms. Clarke" />}
         </>
@@ -577,14 +619,14 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
         <>
           <Painting page={page} className="inset-0" />
           <Scrim to="all" />
-          <div className={`absolute left-[200px] right-[200px] top-[150px] bottom-[120px] text-center ${COL}`}>
+          <div className={`absolute left-[200px] right-[200px] top-[150px] bottom-[120px] text-center ${COL}`}><Fit>
             <Title size={88} light>{page.title}</Title>
             <div className="mx-auto mt-6 max-w-[1000px] space-y-6">
               {!v.evidence && <Lines lines={page.lines} count={v.lines} size={36} light />}
               {v.evidence && <Manuscript page={page} size={64} light />}
               {interaction && <div className="text-left">{interaction}</div>}
             </div>
-          </div>
+          </Fit></div>
         </>
       );
 
@@ -596,7 +638,7 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
       return (
         <>
           <Unveil revealed={revealed} step={step} v={v} name={revealed ? page.vocab?.[0] : undefined} teach={threeDoors(lesson)} />
-          <div className={`absolute left-[120px] top-[150px] bottom-[120px] w-[640px] space-y-6 ${COL}`}>
+          <div className={`absolute left-[120px] top-[150px] bottom-[120px] w-[640px] space-y-6 ${COL}`}><Fit className="space-y-6">
             <motion.div initial={false} animate={{ opacity: v.interaction ? 0.45 : 1 }} transition={{ duration: 0.5 }} className="space-y-6">
               {!hold && (
                 <motion.div initial={revealed ? { opacity: 0, y: 16 } : false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: revealed ? 1.2 : 0, ease }}>
@@ -607,7 +649,7 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
               {v.evidence && <Manuscript page={page} size={44} light align="start" />}
             </motion.div>
             {interaction}
-          </div>
+          </Fit></div>
         </>
       );
     }
@@ -633,12 +675,12 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
               {Moment && <Moment v={v} lesson={lesson} />}
             </Painting>
           )}
-          <div className={`absolute left-[760px] right-[110px] top-[140px] bottom-[120px] space-y-6 ${COL}`}>
+          <div className={`absolute left-[760px] right-[110px] top-[140px] bottom-[120px] space-y-6 ${COL}`}><Fit className="space-y-6">
             <Title size={72}>{page.title}</Title>
             {!v.interaction && <Lines lines={page.lines} count={v.lines} size={30} />}
             <Vocab page={page} />
             {interaction}
-          </div>
+          </Fit></div>
         </>
       );
 
@@ -651,14 +693,14 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
             {Moment && <Moment v={v} lesson={lesson} />}
           </Painting>
           <Scrim to="sideEnd" />
-          <div className={`absolute right-[110px] top-[200px] bottom-[120px] w-[720px] space-y-6 ${COL}`}>
+          <div className={`absolute right-[110px] top-[200px] bottom-[120px] w-[720px] space-y-6 ${COL}`}><Fit className="space-y-6">
             <motion.span initial={{ opacity: 0, letterSpacing: '0.3em' }} animate={{ opacity: 1, letterSpacing: '0.01em' }} transition={{ duration: 1.2, ease }} className="block font-serif text-[34px] italic" style={{ color: P.goldSoft }}>
               Next time on Zad Essentials…
             </motion.span>
             <Title size={92} light>{page.title}</Title>
             <Lines lines={page.lines} count={v.lines} size={34} light />
             {interaction}
-          </div>
+          </Fit></div>
         </>
       );
   }

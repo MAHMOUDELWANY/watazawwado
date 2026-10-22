@@ -4,7 +4,7 @@ import { P } from '../Art';
 import { Pen, Tag, out, type Built } from '../Scenes';
 import { Burst, Rise, SunRays, Glow } from '../Motion';
 import { useCue } from '../sfx';
-import { WhyList, Q1, Q2, Q3 } from './t01';
+import { StageBg, WhyList, Q1, Q2, Q3 } from './t01';
 
 /* ---------- Teens Lesson 3: One, Not Many (brief: docs/curriculum/zad-essentials-teens/L03-one-not-many.md)
    Paintings in public/curriculum/zad-teens/l03 (prompts: docs/curriculum/style/teens.md, Step 5); `gaming` is reused from
@@ -13,7 +13,7 @@ import { WhyList, Q1, Q2, Q3 } from './t01';
    over paintings not delivered yet are first guesses from the prompts. */
 
 const Q4 = 'How do I know Muhammad ﷺ really spoke for God?';
-const PANEL = 'absolute left-[680px] top-[132px] h-[630px] w-[840px] overflow-hidden rounded-[28px]';
+const PANEL = 'absolute left-[680px] top-[172px] h-[630px] w-[840px] overflow-hidden rounded-[28px]';
 const STUDY = 'absolute left-[720px] top-[150px] h-[570px] w-[760px] overflow-hidden rounded-[28px]';
 const DEEP = 'radial-gradient(circle at 50% 45%, #0B4C57 0%, #05363F 70%, #031F25 100%)';
 
@@ -32,7 +32,8 @@ export function RecallTicks({ labels, label }: { labels: (string | null)[]; labe
   const n = labels.filter(Boolean).length;
   useCue('pop', n, 0.2);
   return (
-    <div className={PANEL} role="img" aria-label={`${label}: ${n} of 3`} style={{ background: DEEP }}>
+    <div className={PANEL} role="img" aria-label={`${label}: ${n} of 3`}>
+      <StageBg tone="teal" />
       {labels.map((l, i) => (l ? (
         <motion.div key={l} className="absolute left-[8%] right-[8%] flex items-center gap-5 rounded-[20px] px-6 py-5" style={{ top: `${12 + i * 27}%`, background: '#FFFDF7' }}
           initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, ease: out }}>
@@ -65,7 +66,8 @@ export function TwoBosses({ labels, label }: { labels: (string | null)[]; label:
   useCue('whoosh', n >= 1 && n < 3, 0.1);
   useCue('thud', n >= 3, 0.2);
   return (
-    <div className={PANEL} role="img" aria-label={`${label}: ${n} of 3`} style={{ background: DEEP }}>
+    <div className={PANEL} role="img" aria-label={`${label}: ${n} of 3`}>
+      <StageBg tone="teal" />
       <motion.div className="absolute left-1/2 top-[18%] h-[56%] w-[24%] -translate-x-1/2 rounded-t-[60px] border-[6px]"
         style={{ borderColor: P.goldSoft, background: 'linear-gradient(180deg, #8B4935, #5E2F22)' }}
         animate={n >= 3 && !reduce ? { rotate: [0, -3, 3, -3, 3, 0] } : { rotate: 0 }} transition={{ duration: 0.6, repeat: n >= 3 && !reduce ? Infinity : 0, repeatDelay: 0.6 }} />
@@ -86,7 +88,8 @@ export function TeamOfThree({ labels, label }: { labels: (string | null)[]; labe
   const n = labels.filter(Boolean).length;
   useCue('pop', n, 0.2);
   return (
-    <div className={PANEL} role="img" aria-label={`${label}: ${n} of 3`} style={{ background: DEEP }}>
+    <div className={PANEL} role="img" aria-label={`${label}: ${n} of 3`}>
+      <StageBg tone="teal" />
       {[0, 1, 2].map((i) => {
         const leader = i === 1 && n >= 2;
         const faded = i !== 1 && n >= 3;
@@ -124,7 +127,8 @@ export function PulledCompass({ v, label }: { v: Built; label: string }) {
   useCue('thud', pulled, 0.4);
   const pulls = [{ t: 'likes', x: 14, y: 22 }, { t: 'money', x: 86, y: 22 }, { t: 'fitting in', x: 14, y: 80 }, { t: 'my desire', x: 86, y: 80 }];
   return (
-    <div className={STUDY} role="img" aria-label={label} style={{ background: DEEP }}>
+    <div className={STUDY} role="img" aria-label={label}>
+      <StageBg tone="teal" />
       <div className="absolute left-1/2 top-1/2 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full border-[8px]" style={{ borderColor: P.goldSoft, background: 'rgba(255,253,247,0.06)' }}>
         <span className="absolute left-1/2 top-2 -translate-x-1/2 font-sans text-[20px] font-bold" style={{ color: P.goldSoft }}>Allah</span>
         <motion.span className="absolute left-1/2 top-1/2 block h-[130px] w-[10px] -translate-x-1/2 origin-bottom rounded-full"
@@ -158,7 +162,8 @@ export function IkhlasStar({ v, label }: { v: Built; label: string }) {
     { t: 'No child, no parent', x: 50, y: 91 }, { t: 'None like Him', x: 18, y: 50 },
   ];
   return (
-    <div className={STUDY} role="img" aria-label={label} style={{ background: DEEP }}>
+    <div className={STUDY} role="img" aria-label={label}>
+      <StageBg tone="teal" />
       <motion.svg className="absolute inset-0 h-full w-full" viewBox="0 0 760 570" aria-hidden="true"
         animate={reduce ? undefined : { rotate: 360 }} transition={{ duration: 60, repeat: Infinity, ease: 'linear' }} style={{ transformOrigin: '50% 50%' }}>
         <polygon points={a} fill="none" stroke={P.goldSoft} strokeWidth="6" />
@@ -175,7 +180,8 @@ export function LovedHeart({ v, label }: { v: Built; label: string }) {
   const reduce = useReducedMotion();
   useCue('reveal', v.evidence, 0.3);
   return (
-    <div className={STUDY} role="img" aria-label={label} style={{ background: DEEP }}>
+    <div className={STUDY} role="img" aria-label={label}>
+      <StageBg tone="teal" />
       <svg className="absolute inset-0 h-full w-full" viewBox="0 0 760 570" aria-hidden="true">
         <motion.path d="M380 420 C250 330 200 250 250 190 C300 130 360 160 380 210 C400 160 460 130 510 190 C560 250 510 330 380 420 Z"
           fill={v.evidence ? P.crimson : 'rgba(197,31,36,0.25)'} stroke={P.goldSoft} strokeWidth="5"
@@ -198,7 +204,8 @@ export function CentreOfLife({ labels, label }: { labels: (string | null)[]; lab
   useCue('reveal', centred, 0.2);
   const rings = [120, 190, 260];
   return (
-    <div className={PANEL} role="img" aria-label={`${label}: ${n} of 4`} style={{ background: DEEP }}>
+    <div className={PANEL} role="img" aria-label={`${label}: ${n} of 4`}>
+      <StageBg tone="teal" />
       {rings.slice(0, Math.min(n, 3)).map((r, i) => (
         <motion.div key={r} className="absolute left-1/2 top-1/2" style={{ width: r * 2, height: r * 2 * 0.72, marginLeft: -r, marginTop: -r * 0.72 }}
           animate={{ rotate: reduce ? 0 : 360, x: centred || reduce ? 0 : [0, 14, -10, 0] }}
@@ -223,11 +230,11 @@ export function CentreOfLife({ labels, label }: { labels: (string | null)[]; lab
 export function ThirdCrossed({ v }: { v: Built }) {
   useCue('strike', v.lines >= 1, 1);
   if (v.lines < 1) return null;
-  return <WhyList rows={[Q1, Q2, Q3]} crossed={[1, 2]} style={{ right: '3%', top: '50%', width: '52%' }} />;
+  return <WhyList later={{ 0: 'Lesson 11' }} rows={[Q1, Q2, Q3]} crossed={[1, 2]} style={{ right: '3%', top: '50%', width: '52%' }} />;
 }
 
 /** p15 Cliffhanger: a new line on the Why List, in the library. */
 export function LibraryQuestion({ v }: { v: Built }) {
   if (v.lines < 3) return <Glow x={84} y={42} w={24} h={30} />;
-  return <WhyList rows={[Q1, Q2, Q3, Q4]} crossed={[1, 2]} typed={3} style={{ left: '3%', top: '46%', width: '40%' }} delay={0.2} />;
+  return <WhyList later={{ 0: 'Lesson 11' }} rows={[Q1, Q2, Q3, Q4]} crossed={[1, 2]} typed={3} style={{ left: '3%', top: '46%', width: '40%' }} delay={0.2} />;
 }

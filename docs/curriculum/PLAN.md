@@ -451,3 +451,9 @@ B3–B5 → continue lesson by lesson.
   grid, replay, sound, full screen, language. The teacher's explanation drawer, teaching tips, laser, timer and praise are
   teacher-only.
 
+- **2026-10-22** — Teens L1–L3 quality pass (owner feedback): text columns auto-fit their box (scale only) so text never
+  spills onto the paintings; picturebook and spotlight columns end before the painting; scene panels sit below the lesson
+  ribbon; chapter strip stays on one line; evidence pages keep their key line as a lead-in (Teens only). Rebuilt the five
+  pillars (coloured shafts, names on the floor, roof drops), the cause chain and the "look up" pitch; StageBg on every
+  drawn scene; certainty scene shows what feeds yaqeen. Player: paintings preloaded, a Finish card ends the lesson and
+  leaves full screen; Why List marks Q1 "Lesson 11" instead of looking unfinished. All 48 pages audited headless.

@@ -16,7 +16,7 @@ export const C = (name: string) => `zad-teens/characters/${name}.webp`;
 
 /** The series device: Zayn's "Why List" note on a phone. `typed` is the row being written now (typewriter); `crossed`
  *  rows are answered and struck through. Used by every Teens lesson. */
-export function WhyList({ rows, typed = -1, crossed = [], style, delay = 0 }: { rows: string[]; typed?: number; crossed?: number[]; style: React.CSSProperties; delay?: number }) {
+export function WhyList({ rows, typed = -1, crossed = [], later = {}, style, delay = 0 }: { rows: string[]; typed?: number; crossed?: number[]; later?: Record<number, string>; style: React.CSSProperties; delay?: number }) {
   const reduce = useReducedMotion();
   useCue('pen', typed >= 0, delay + 0.4);
   return (
@@ -39,11 +39,42 @@ export function WhyList({ rows, typed = -1, crossed = [], style, delay = 0 }: { 
             style={{ textDecoration: crossed.includes(i) ? 'line-through' : undefined }}
           >
             {/* ﷺ is not in the sans font: draw it with the Arabic serif so it never shows as a box. */}
+            {later[i] && <span className="me-1.5 inline-block rounded-full bg-[#F6D58E] px-1.5 align-middle text-[11px] font-bold text-[#8B4935]">{later[i]}</span>}
             {r.split('ﷺ').flatMap((part, j) => (j ? [<span key={j} lang="ar" className="mx-0.5 font-serif text-[1.5em] leading-none">ﷺ</span>, part] : [part]))}
           </motion.span>
         </div>
       ))}
     </motion.div>
+  );
+}
+
+/** The backdrop of every code-drawn Teens panel: deep teal with a slowly turning khatam lattice, a soft top light, a
+ *  vignette and drifting motes, so a diagram reads as a lit stage, not a flat box. Transform and opacity only. */
+export function StageBg({ tone = 'teal' }: { tone?: 'teal' | 'night' | 'warm' }) {
+  const reduce = useReducedMotion();
+  const base = {
+    teal: 'radial-gradient(120% 90% at 50% 0%, #11707F 0%, #0A4A55 45%, #05303A 100%)',
+    night: 'radial-gradient(120% 90% at 50% 20%, #1A2D4D 0%, #0B1426 60%, #050913 100%)',
+    warm: 'radial-gradient(120% 90% at 50% 0%, #8B4935 0%, #4A2418 55%, #2A130C 100%)',
+  }[tone];
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true" style={{ background: base }}>
+      <motion.svg className="absolute left-1/2 top-1/2 h-[180%] w-[180%] -translate-x-1/2 -translate-y-1/2 opacity-[0.10]" viewBox="0 0 200 200"
+        animate={reduce ? undefined : { rotate: 360 }} transition={{ duration: 160, repeat: Infinity, ease: 'linear' }}>
+        <defs>
+          <pattern id={`kh-${tone}`} width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M10 2 L12.3 7.7 L18 10 L12.3 12.3 L10 18 L7.7 12.3 L2 10 L7.7 7.7 Z" fill="none" stroke="#F6D58E" strokeWidth="0.6" />
+            <rect x="6.5" y="6.5" width="7" height="7" fill="none" stroke="#F6D58E" strokeWidth="0.4" transform="rotate(45 10 10)" />
+          </pattern>
+        </defs>
+        <rect width="200" height="200" fill={`url(#kh-${tone})`} />
+      </motion.svg>
+      <motion.div className="absolute left-1/2 top-[-30%] h-[90%] w-[70%] -translate-x-1/2 rounded-full"
+        style={{ background: 'radial-gradient(closest-side, rgba(246,213,142,0.28), transparent)' }}
+        animate={reduce ? undefined : { opacity: [0.6, 1, 0.6] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }} />
+      <div className="absolute inset-0" style={{ background: 'radial-gradient(130% 100% at 50% 40%, transparent 55%, rgba(0,0,0,0.45) 100%)' }} />
+      <Rise from={[{ x: 15, y: 95 }, { x: 50, y: 98 }, { x: 85, y: 95 }]} count={3} height={60} seed={77} />
+    </div>
   );
 }
 
@@ -127,34 +158,70 @@ export function CushionsStudy({ v, label }: { v: Built; label: string }) {
   );
 }
 
-const PILLARS = ['Shahadah', 'Salah', 'Zakah', 'Fasting', 'Hajj'];
+const PILLARS = [
+  { en: 'Shahadah', ar: 'الشهادة', a: '#16A0B5', b: '#086A7A' },
+  { en: 'Salah', ar: 'الصلاة', a: '#E2474B', b: '#9E1A1E' },
+  { en: 'Zakah', ar: 'الزكاة', a: '#F0BD5A', b: '#B97F18' },
+  { en: 'Fasting', ar: 'الصوم', a: '#C77B5B', b: '#7A3B26' },
+  { en: 'Hajj', ar: 'الحج', a: '#5BB59A', b: '#22705A' },
+];
 
-/** p7 Islam: a roof waits in the air; each answer raises one pillar under it; with all five the building stands and lights up. */
+/** p7 Islam: five pillars, the building of the deen. Dashed sockets wait on a marble floor under a roof that only floats.
+ *  Each answer raises one pillar out of the floor in its own colour, with its name in Arabic and English and a puff of
+ *  dust where it lands. When the fifth stands, the roof drops onto them with a thud, its khatam lights and rays open. */
 export function PillarsRise({ v, label }: { v: Built; label: string }) {
   const reduce = useReducedMotion();
   const up = Math.min(v.items, PILLARS.length);
   const done = up === PILLARS.length;
-  useCue('thud', up, 0.25);
-  useCue('chime', done, 0.9);
+  useCue('thud', up, 0.45);
+  useCue('reveal', done, 0.9);
+  const colLeft = (i: number) => 13 + i * 15.6;
   return (
-    <div className="absolute left-[720px] top-[150px] h-[570px] w-[760px] overflow-hidden rounded-[28px]" role="img" aria-label={`${label}: ${up} of 5 pillars`}
-      style={{ background: 'linear-gradient(180deg, #05363F 0%, #0B4C57 70%, #2B5F63 100%)' }}>
-      <motion.div className="absolute left-[8%] right-[8%] top-[14%] h-[13%]" style={{ background: P.goldSoft, clipPath: 'polygon(6% 100%, 50% 0, 94% 100%)' }}
-        initial={false} animate={{ y: done ? 0 : reduce ? 0 : [0, -6, 0], filter: done ? 'brightness(1.15) drop-shadow(0 0 24px rgba(246,213,142,0.9))' : 'brightness(0.8)' }}
-        transition={done ? { duration: 0.6 } : { duration: 2.4, repeat: Infinity, ease: 'easeInOut' }} />
-      <div className="absolute left-[10%] right-[10%] top-[27%] h-[3%] rounded" style={{ background: P.gold, opacity: done ? 1 : 0.5 }} />
+    <div className="absolute left-[720px] top-[150px] h-[570px] w-[760px] overflow-hidden rounded-[28px] shadow-[0_40px_80px_-40px_rgba(5,54,63,0.8)]" role="img" aria-label={`${label}: ${up} of 5 pillars`}>
+      <StageBg tone="teal" />
+      {done && !reduce && (
+        <motion.div className="absolute left-1/2 top-[18%] h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2"
+          style={{ background: 'repeating-conic-gradient(from 0deg, rgba(246,213,142,0.22) 0deg 5deg, transparent 5deg 20deg)', maskImage: 'radial-gradient(circle, #000 5%, transparent 55%)', WebkitMaskImage: 'radial-gradient(circle, #000 5%, transparent 55%)' }}
+          initial={{ opacity: 0, rotate: 0 }} animate={{ opacity: 1, rotate: 30 }} transition={{ opacity: { duration: 1, delay: 0.9 }, rotate: { duration: 40, repeat: Infinity, ease: 'linear' } }} />
+      )}
+      {/* The roof: a ghost that hovers until all five stand, then drops and lights. */}
+      <motion.div className="absolute left-[7%] right-[7%] top-[8%] h-[22%]" initial={false}
+        animate={{ transform: done ? 'translateY(14px)' : reduce ? 'translateY(0px)' : ['translateY(0px)', 'translateY(-8px)', 'translateY(0px)'], opacity: done ? 1 : 0.55 }}
+        transition={done ? { type: 'spring', stiffness: 420, damping: 18, delay: 0.5 } : { duration: 3, repeat: Infinity, ease: 'easeInOut' }}>
+        <svg viewBox="0 0 660 125" className="h-full w-full overflow-visible" aria-hidden="true">
+          <defs><linearGradient id="roof" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#FCE3A8" /><stop offset="1" stopColor="#C98A2E" /></linearGradient></defs>
+          <path d="M20 112 L330 12 L640 112 Z" fill={done ? 'url(#roof)' : 'rgba(246,213,142,0.12)'} stroke="#F6D58E" strokeWidth="4" strokeDasharray={done ? undefined : '10 10'} strokeLinejoin="round" />
+          <rect x="10" y="108" width="640" height="16" rx="5" fill={done ? '#E5A93C' : 'rgba(246,213,142,0.15)'} stroke="#F6D58E" strokeWidth="3" strokeDasharray={done ? undefined : '10 10'} />
+          <g transform="translate(330 72)">
+            <path d="M0 -26 L7.4 -17.8 L18.4 -18.4 L17.8 -7.4 L26 0 L17.8 7.4 L18.4 18.4 L7.4 17.8 L0 26 L-7.4 17.8 L-18.4 18.4 L-17.8 7.4 L-26 0 L-17.8 -7.4 L-18.4 -18.4 L-7.4 -17.8 Z"
+              fill={done ? '#FFF6D8' : 'none'} stroke={done ? '#8B4935' : '#F6D58E'} strokeWidth="3" style={{ filter: done ? 'drop-shadow(0 0 12px rgba(255,236,170,0.95))' : undefined }} />
+          </g>
+        </svg>
+      </motion.div>
+      {/* Sockets and pillars. */}
       {PILLARS.map((p, i) => (
-        <div key={p} className="absolute bottom-[14%] top-[30%]" style={{ left: `${14 + i * 15.5}%`, width: '9%' }}>
-          <motion.div className="absolute inset-x-0 bottom-0 origin-bottom rounded-t-[6px]"
-            style={{ height: '100%', background: `linear-gradient(90deg, #E9DCC2, #FFFDF7 45%, #D8C7A6)` }}
-            initial={false} animate={{ scaleY: i < up ? 1 : 0.04, opacity: i < up ? 1 : 0.35 }}
-            transition={{ duration: reduce ? 0.2 : 0.7, ease: out }} />
-          {i < up && <Tag style={{ left: '50%', top: '112%' }} size={18} color={P.ink} delay={0.4}>{p}</Tag>}
+        <div key={p.en} className="absolute bottom-[16%] top-[33%]" style={{ left: `${colLeft(i)}%`, width: '11.5%' }}>
+          {i >= up && <div className="absolute inset-0 rounded-t-[10px] border-2 border-dashed border-[#F6D58E]/40 bg-white/[0.03]" />}
+          <motion.div className="absolute inset-0 overflow-hidden rounded-t-[10px]" initial={false}
+            style={{ background: `linear-gradient(90deg, ${p.b} 0%, ${p.a} 38%, ${p.a} 55%, ${p.b} 100%)`, boxShadow: i < up ? '0 0 30px -6px rgba(0,0,0,0.6)' : undefined }}
+            animate={{ clipPath: i < up ? 'inset(0% 0 0 0)' : 'inset(100% 0 0 0)' }} transition={{ duration: reduce ? 0.2 : 0.75, ease: out }}>
+            <span className="absolute inset-x-0 top-0 h-[7%] bg-white/25" />
+            <span className="absolute inset-y-0 left-[22%] w-[6%] bg-white/15" />
+            <span className="absolute inset-y-0 left-[62%] w-[6%] bg-black/10" />
+            <span lang="ar" dir="rtl" className="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center font-serif text-[26px] font-bold text-white [text-shadow:0_2px_6px_rgba(0,0,0,0.45)]">{p.ar}</span>
+          </motion.div>
+          {i < up && !reduce && <Burst x={50} y={100} kind="dust" count={10} seed={i + 3} spread={60} delay={0.55} />}
         </div>
       ))}
-      <div className="absolute inset-x-0 bottom-0 h-[8%]" style={{ background: P.sandDeep }} />
-      {done && <Burst x={50} y={22} kind="sparks" count={14} seed={4} spread={30} delay={0.3} />}
-      {done && <Sprite name={C('zayn-point')} enter="left" className="h-[46%]" style={{ left: '-3%', bottom: '0%' }} delay={0.6} />}
+      {/* The marble floor, with each pillar's English name under it. */}
+      <div className="absolute inset-x-0 bottom-0 h-[16%] border-t-4 border-[#F6D58E]/70" style={{ background: 'linear-gradient(180deg, #F3E6CC, #D9C29B)' }}>
+        {PILLARS.map((p, i) => (
+          <motion.span key={p.en} className="absolute top-[22%] -translate-x-1/2 whitespace-nowrap font-sans text-[18px] font-bold" style={{ left: `${colLeft(i) + 5.75}%`, color: i < up ? P.ink : 'rgba(30,20,16,0.25)' }}
+            initial={false} animate={{ opacity: i < up ? 1 : 0.4 }}>{i < up ? p.en : '?'}</motion.span>
+        ))}
+      </div>
+      {done && <Tag style={{ left: '50%', top: '4%' }} color="#9A6A12" delay={1.4}>Islam stands on five</Tag>}
+      {done && <Burst x={50} y={22} kind="sparks" count={18} seed={4} spread={34} delay={0.9} />}
     </div>
   );
 }
@@ -181,8 +248,8 @@ export function SixAroundHeart({ v, label }: { v: Built; label: string }) {
   useCue('chime', lit, 0.2);
   const pt = (i: number) => { const a = (Math.PI * 2 * i) / IMAN.length - Math.PI / 2; return { x: 380 + 210 * Math.cos(a), y: 285 + 195 * Math.sin(a) }; };
   return (
-    <div className="absolute left-[720px] top-[150px] h-[570px] w-[760px] overflow-hidden rounded-[28px]" role="img" aria-label={`${label}: ${lit} of 6`}
-      style={{ background: 'radial-gradient(circle at 50% 50%, #0B4C57 0%, #05363F 75%)' }}>
+    <div className="absolute left-[720px] top-[150px] h-[570px] w-[760px] overflow-hidden rounded-[28px]" role="img" aria-label={`${label}: ${lit} of 6`}>
+      <StageBg tone="teal" />
       <svg className="absolute inset-0 h-full w-full overflow-visible" viewBox="0 0 760 570" aria-hidden="true">
         <circle cx="380" cy="285" r="205" fill="none" stroke="rgba(246,213,142,0.25)" strokeWidth="3" strokeDasharray="6 12" />
         {IMAN.slice(0, lit).map((_, i) => <Pen key={i} d={`M380 285 L${pt(i).x} ${pt(i).y}`} color={P.goldSoft} width={4} duration={0.5} />)}
@@ -245,8 +312,9 @@ export function ThreeDoorsBuild({ labels, label }: { labels: (string | null)[]; 
   const lit = labels.filter(Boolean).length;
   useCue('chime', lit, 0.2);
   return (
-    <div className="absolute left-[680px] top-[132px] h-[630px] w-[840px] overflow-hidden rounded-[28px]" role="img" aria-label={`${label}: ${lit} of 3 doors open`}
-      style={{ background: 'linear-gradient(180deg, #05363F, #0B2F36)' }}>
+    <div className="absolute left-[680px] top-[172px] h-[630px] w-[840px] overflow-hidden rounded-[28px]" role="img" aria-label={`${label}: ${lit} of 3 doors open`}
+>
+      <StageBg tone="teal" />
       <svg className="absolute inset-0 h-full w-full" viewBox="0 0 840 630" aria-hidden="true">
         {DOORS.map((d, i) => (
           <motion.path key={i} d={`${arch(d.x)} Z`} fill={d.color} initial={false} animate={{ opacity: i < lit ? 0.9 : 0.12 }} transition={{ duration: 0.9, ease: out }} />
@@ -302,7 +370,7 @@ export function RootsUnder({ v }: { v: Built }) {
 /** p17 My Ahd: the Why List on Zayn's desk, with an empty row waiting for the learner's own question. */
 export function ListOnDesk({ v }: { v: Built }) {
   if (v.lines < 3) return null;
-  return <WhyList rows={[Q1, 'Your question: …']} typed={1} style={{ right: '3%', top: '50%', width: '50%' }} />;
+  return <WhyList later={{ 0: 'Lesson 11' }} rows={[Q1, 'Your question: …']} typed={1} style={{ right: '3%', top: '50%', width: '50%' }} />;
 }
 
 /** p18 Cliffhanger: the Big Bang bursts on the classroom screen, and a new question lands on the Why List. */
@@ -312,7 +380,7 @@ export function BigBang({ v }: { v: Built }) {
     <>
       {v.lines >= 1 && <Burst x={64} y={23} kind="sparks" count={22} seed={13} spread={30} delay={0.3} />}
       {v.lines >= 1 && <Glow x={64} y={23} w={24} h={28} />}
-      {v.lines >= 3 && <WhyList rows={[Q1, Q2]} typed={1} style={{ left: '30%', top: '56%', width: '42%' }} delay={0.2} />}
+      {v.lines >= 3 && <WhyList later={{ 0: 'Lesson 11' }} rows={[Q1, Q2]} typed={1} style={{ left: '30%', top: '56%', width: '42%' }} delay={0.2} />}
     </>
   );
 }
