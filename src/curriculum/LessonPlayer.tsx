@@ -164,11 +164,11 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
       else if (k === 'escape') { setTool('none'); setGrid(false); if (fillWindow) toggleFullscreen(); }
       else if (k === 'd') setTool((t) => (t === 'pen' ? 'none' : 'pen'));
       else if (k === 'h') setTool((t) => (t === 'marker' ? 'none' : 'marker'));
-      else if (k === 'l') setTool((t) => (t === 'laser' ? 'none' : 'laser'));
+      else if (teacher && k === 'l') setTool((t) => (t === 'laser' ? 'none' : 'laser'));
       else if (k === 'e') setTool((t) => (t === 'eraser' ? 'none' : 'eraser'));
       else if (k === 'c') setClearSignal((c) => c + 1);
       else if (k === 'g') setGrid((g) => !g);
-      else if (k === 'n') setNotes((n) => !n);
+      else if (teacher && k === 'n') setNotes((n) => !n);
       else if (k === 't') setToolsOpen((o) => !o);
       else if (k === 'r') replayStep();
       else if (k === 'home') { e.preventDefault(); restartPage(); }
@@ -216,9 +216,12 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
       <button type="button" className={btn(tool === 'marker')} onClick={() => setTool((t) => (t === 'marker' ? 'none' : 'marker'))} aria-pressed={tool === 'marker'} title={L('Highlighter (H)', 'تظليل (H)')} aria-label={L('Highlighter', 'تظليل')}>
         <Highlighter className="w-[18px] h-[18px]" />
       </button>
-      <button type="button" className={btn(tool === 'laser')} onClick={() => setTool((t) => (t === 'laser' ? 'none' : 'laser'))} aria-pressed={tool === 'laser'} title={L('Laser pointer (L)', 'مؤشر ليزر (L)')} aria-label={L('Laser pointer', 'مؤشر ليزر')}>
-        <MousePointer2 className="w-[18px] h-[18px]" />
-      </button>
+      {/* Students get a study kit only: pen, highlighter, eraser. The laser and the teacher's notes are for presenting. */}
+      {teacher && (
+        <button type="button" className={btn(tool === 'laser')} onClick={() => setTool((t) => (t === 'laser' ? 'none' : 'laser'))} aria-pressed={tool === 'laser'} title={L('Laser pointer (L)', 'مؤشر ليزر (L)')} aria-label={L('Laser pointer', 'مؤشر ليزر')}>
+          <MousePointer2 className="w-[18px] h-[18px]" />
+        </button>
+      )}
       <button type="button" className={btn(tool === 'eraser')} onClick={() => setTool((t) => (t === 'eraser' ? 'none' : 'eraser'))} aria-pressed={tool === 'eraser'} title={L('Eraser: drag over what to remove (E)', 'ممحاة: اسحبها على اللي عايز تمسحه (E)')} aria-label={L('Eraser', 'ممحاة')}>
         <Eraser className="w-[18px] h-[18px]" />
       </button>
@@ -271,9 +274,11 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
       <button type="button" className={btn()} onClick={toggleMute} aria-pressed={muted} title={muted ? L('Sound off (M)', 'الصوت مقفول (M)') : L('Sound on (M)', 'الصوت شغال (M)')} aria-label={muted ? L('Turn sound on', 'شغّل الصوت') : L('Turn sound off', 'اقفل الصوت')}>
         {muted ? <VolumeX className="w-[18px] h-[18px]" /> : <Volume2 className="w-[18px] h-[18px]" />}
       </button>
-      <button type="button" className={btn(notes)} onClick={() => setNotes((n) => !n)} aria-pressed={notes} title={L('Explanation (N)', 'الشرح (N)')} aria-label={L('Explanation', 'الشرح')}>
-        <BookOpenText className="w-[18px] h-[18px]" />
-      </button>
+      {teacher && (
+        <button type="button" className={btn(notes)} onClick={() => setNotes((n) => !n)} aria-pressed={notes} title={L('Explanation (N)', 'الشرح (N)')} aria-label={L('Explanation', 'الشرح')}>
+          <BookOpenText className="w-[18px] h-[18px]" />
+        </button>
+      )}
       <button type="button" className={btn()} onClick={toggleFullscreen} title={L('Full screen (F)', 'ملء الشاشة (F)')} aria-label={fullscreen ? L('Exit full screen', 'خروج من ملء الشاشة') : L('Full screen', 'ملء الشاشة')}>
         {fullscreen ? <Minimize2 className="w-[18px] h-[18px]" /> : <Maximize2 className="w-[18px] h-[18px]" />}
       </button>
@@ -457,7 +462,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
             </>
           )}
         </div>
-        {isWide ? (
+        {!teacher ? null : isWide ? (
           <Drawer side={notesSide} open={notes} onToggle={() => setNotes((n) => !n)} icon={<BookOpenText className="h-4 w-4" />} label={notes ? L('Hide explanation (N)', 'اخفي الشرح (N)') : L('Show explanation (N)', 'اظهر الشرح (N)')}>
             {notesPanel}
           </Drawer>

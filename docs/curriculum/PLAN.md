@@ -447,4 +447,7 @@ B3–B5 → continue lesson by lesson.
   "turn your phone / full screen" card replaces the old hint; lesson timer 5–60 minutes in steps of 5 (counts down to an
   end time; chip beside the lesson badge turns amber at 5 min, crimson at 1); a real eraser (drag over strokes) with a
   "clear page" button beside it (C key); "start page again" and the bar's Back/Next removed (Home key still restarts).
+- **2026-10-22** — Student view of a lesson (portal review and free sample) is a study kit only: pen, highlighter, eraser, page
+  grid, replay, sound, full screen, language. The teacher's explanation drawer, teaching tips, laser, timer and praise are
+  teacher-only.
 
