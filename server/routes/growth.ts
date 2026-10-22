@@ -229,13 +229,29 @@ function quoteResponse(q: QuoteResult) {
   };
 }
 
-/** Attaches a referral for a new account (onboarding or code box). Never throws. */
+/** Every learner an account pays for: its own students row(s) and the children linked to its email. */
+async function accountLearnerIds(client: any, userId: string): Promise<string[]> {
+  const { data: own } = await client.from('students').select('id, email').eq('auth_user_id', userId);
+  const ids = new Set<string>((own || []).map((s: any) => s.id));
+  const emails: string[] = [...new Set<string>((own || []).map((s: any) => String(s.email || '').toLowerCase()).filter(Boolean))];
+  for (const email of emails) {
+    const safe = email.replace(/[\\%_]/g, (c) => '\\' + c);
+    const { data: kids } = await client.from('guardians').select('student_id').ilike('parent_email', safe);
+    for (const k of kids || []) if (k.student_id) ids.add(k.student_id);
+  }
+  return [...ids];
+}
+
+/** Attaches a referral for a new account (onboarding or code box): never one that already paid. Never throws. */
 export async function attachReferralForAccount(client: any, params: { userId: string; name?: string | null; code: unknown }): Promise<{ attached: boolean; reason?: string }> {
   try {
     const code = normalizeCode(params.code);
     if (!code || !isUuid(params.userId)) return { attached: false, reason: 'INVALID' };
     const settings = await loadGrowthSettings(client);
     if (!settings.referral_enabled) return { attached: false, reason: 'DISABLED' };
+    if (await hasPaidBefore(client, params.userId, await accountLearnerIds(client, params.userId))) {
+      return { attached: false, reason: 'NOT_NEW' };
+    }
     const firstName = String(params.name || '').trim().split(/\s+/)[0] || null;
     const { data, error } = await client.rpc('attach_referral', {
       p_referred_user_id: params.userId,
@@ -258,10 +274,21 @@ export async function attachReferralForAccount(client: any, params: { userId: st
 export async function qualifyReferralForBooking(client: any, booking: { id: string; student_id: string | null; booking_type?: string | null; fee_amount_usd?: number | null; package_entitlement_id?: string | null }): Promise<void> {
   try {
     if (!booking.student_id || booking.booking_type === 'trial') return;
-    let paid = Number(booking.fee_amount_usd || 0) > 0;
-    if (!paid && booking.package_entitlement_id) {
-      const { data: ent } = await client.from('package_entitlements').select('price_paid, metadata').eq('id', booking.package_entitlement_id).maybeSingle();
-      paid = Number(ent?.price_paid || 0) > 0 || ent?.metadata?.source === 'cancellation_credit';
+    // Paid means money actually received: a confirmed payment for this lesson, or a package bought with one
+    // (a lesson credit from a cancelled paid lesson counts). A lesson fully covered by a code or balance does not.
+    let paid = false;
+    if (booking.package_entitlement_id) {
+      const { data: ent } = await client.from('package_entitlements').select('id, metadata').eq('id', booking.package_entitlement_id).maybeSingle();
+      if (ent?.metadata?.source === 'cancellation_credit') paid = true;
+      else if (ent) {
+        const { count } = await client.from('payments').select('id', { count: 'exact', head: true })
+          .eq('entitlement_id', ent.id).eq('status', 'confirmed').gt('amount', 0);
+        paid = (count || 0) > 0;
+      }
+    } else {
+      const { count } = await client.from('payments').select('id', { count: 'exact', head: true })
+        .eq('booking_id', booking.id).eq('status', 'confirmed').gt('amount', 0);
+      paid = (count || 0) > 0;
     }
     if (!paid) return;
     const account = await resolveLearnerAccount(client, booking.student_id);
