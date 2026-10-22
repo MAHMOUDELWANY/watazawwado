@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import {
   ChevronLeft, ChevronRight, Maximize2, Minimize2, Star, PenLine, Highlighter, MousePointer2, Eraser, LayoutGrid,
-  Timer, RotateCcw, BookOpenText, X, Globe, Volume2, VolumeX, Smartphone, Trash2, Check,
+  Timer, RotateCcw, BookOpenText, X, Volume2, VolumeX, Smartphone, Trash2, Check,
 } from 'lucide-react';
 import type { Lesson } from './types';
 import { Slide, SlideText, stepsFor, CANVAS_W, CANVAS_H, scoreSort, SCENE_IMAGES, type GameResult } from './slides/Slide';
@@ -31,8 +31,8 @@ const clock = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2,
 
 /** Slide player v2: fixed 16:9 canvas, build steps, pen/marker/laser, page grid, timer, explanation panel. */
 export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGameResult, onPageChange }: Props) {
-  // The player switches the site language itself, so the teacher never leaves the lesson to change it.
-  const { lang: appLang, toggleLanguage } = useAppLanguage();
+  // The player follows the language the user picked for the site (owner, 2026-10-22: no switch inside the player).
+  const { lang: appLang } = useAppLanguage();
   const lang = appLang || initialLang;
   const ar = lang === 'ar';
   const L = (en: string, arText: string) => (ar ? arText : en);
@@ -214,9 +214,12 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   }, []);
 
   const btn = (active = false) =>
-    `h-11 min-w-11 px-2.5 inline-flex items-center justify-center gap-1.5 rounded-full text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C] disabled:opacity-35 ${
+    `h-12 min-w-12 px-3 inline-flex items-center gap-2 rounded-full text-sm font-bold ${fullscreen ? 'justify-start' : 'justify-center'} transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C] disabled:opacity-35 ${
       active ? 'bg-[#E5A93C] text-[#1E1410]' : 'text-[#1E1410] hover:bg-[#8B4935]/10'
     }`;
+
+  // Button names show in the full-screen rail, where there is room; the bar under the slide stays icon-only.
+  const name = (text: string) => (fullscreen ? <span className="truncate">{text}</span> : null);
 
   const toolbar = (
     <nav
@@ -225,33 +228,33 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
       className={`flex items-center gap-1 rounded-[28px] [&>*]:shrink-0 border border-white/70 bg-[#FAF7F2]/90 shadow-[0_18px_40px_-20px_rgba(139,73,53,0.55)] backdrop-blur-xl transition-[transform,opacity] duration-300 ${
         fullscreen
           ? // Full screen: a rail in a side drawer (right in English, left in Arabic), opened on its arrow handle.
-            'max-h-full shrink-0 flex-col overflow-y-auto px-1.5 py-2'
-          : // Phones: one sticky row that scrolls sideways, so Back and Next never leave the screen. From lg it sits under the
-            // slide and scrolls with the page, never floating over the slide (owner, 2026-10-22).
-            'sticky bottom-2 z-20 flex-nowrap overflow-x-auto px-2 py-1.5 [scrollbar-width:none] sm:flex-wrap sm:overflow-visible lg:static'
+            'max-h-full w-[176px] shrink-0 flex-col items-stretch overflow-y-auto px-2 py-3'
+          : // Phones: the buttons wrap onto rows (Back and Next live on the slide now). From lg it is one full-width row under
+            // the slide that scrolls with the page, never floating over it (owner, 2026-10-22).
+            'sticky bottom-2 z-20 w-full flex-wrap justify-center px-3 py-2 lg:static lg:flex-nowrap lg:justify-start'
       }`}
     >
       <button type="button" className={btn(grid)} onClick={() => setGrid((g) => !g)} aria-pressed={grid} title={L('All pages (G)', 'كل الصفحات (G)')} aria-label={L('All pages', 'كل الصفحات')}>
-        <LayoutGrid className="w-[18px] h-[18px]" />
+        <LayoutGrid className="w-5 h-5 shrink-0" />{name(L('All pages', 'كل الصفحات'))}
       </button>
       <button type="button" className={btn(tool === 'pen')} onClick={() => setTool((t) => (t === 'pen' ? 'none' : 'pen'))} aria-pressed={tool === 'pen'} title={L('Pen (D)', 'قلم (D)')} aria-label={L('Pen', 'قلم')}>
-        <PenLine className="w-[18px] h-[18px]" />
+        <PenLine className="w-5 h-5 shrink-0" />{name(L('Pen', 'قلم'))}
       </button>
       <button type="button" className={btn(tool === 'marker')} onClick={() => setTool((t) => (t === 'marker' ? 'none' : 'marker'))} aria-pressed={tool === 'marker'} title={L('Highlighter (H)', 'تظليل (H)')} aria-label={L('Highlighter', 'تظليل')}>
-        <Highlighter className="w-[18px] h-[18px]" />
+        <Highlighter className="w-5 h-5 shrink-0" />{name(L('Highlighter', 'تظليل'))}
       </button>
       {/* Students get a study kit only: pen, highlighter, eraser. The laser and the teacher's notes are for presenting. */}
       {teacher && (
         <button type="button" className={btn(tool === 'laser')} onClick={() => setTool((t) => (t === 'laser' ? 'none' : 'laser'))} aria-pressed={tool === 'laser'} title={L('Laser pointer (L)', 'مؤشر ليزر (L)')} aria-label={L('Laser pointer', 'مؤشر ليزر')}>
-          <MousePointer2 className="w-[18px] h-[18px]" />
+          <MousePointer2 className="w-5 h-5 shrink-0" />{name(L('Laser', 'ليزر'))}
         </button>
       )}
       <button type="button" className={btn(tool === 'eraser')} onClick={() => setTool((t) => (t === 'eraser' ? 'none' : 'eraser'))} aria-pressed={tool === 'eraser'} title={L('Eraser: drag over what to remove (E)', 'ممحاة: اسحبها على اللي عايز تمسحه (E)')} aria-label={L('Eraser', 'ممحاة')}>
-        <Eraser className="w-[18px] h-[18px]" />
+        <Eraser className="w-5 h-5 shrink-0" />{name(L('Eraser', 'ممحاة'))}
       </button>
       {tool === 'eraser' && (
         <button type="button" className={`${btn()} text-[#C51F24]`} onClick={() => setClearSignal((c) => c + 1)} title={L('Clear the whole page (C)', 'امسح الصفحة كلها (C)')} aria-label={L('Clear the whole page', 'امسح الصفحة كلها')}>
-          <Trash2 className="w-[18px] h-[18px]" />
+          <Trash2 className="w-5 h-5 shrink-0" />{name(L('Clear page', 'امسح الصفحة'))}
         </button>
       )}
       {(tool === 'pen' || tool === 'marker') &&
@@ -260,9 +263,9 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
             <span className={`block h-6 w-6 rounded-full ring-2 ring-offset-2 ring-offset-[#FAF7F2] ${inkColor === c ? 'ring-[#1E1410]' : 'ring-transparent'}`} style={{ background: c }} />
           </button>
         ))}
-      <span className={fullscreen ? 'my-1 h-px w-6 bg-[#8B4935]/20' : 'mx-1 h-6 w-px bg-[#8B4935]/20'} aria-hidden="true" />
+      <span className={fullscreen ? 'my-1.5 h-px w-full bg-[#8B4935]/15' : 'mx-1 hidden h-7 w-px bg-[#8B4935]/20 lg:mx-auto lg:block'} aria-hidden="true" />
       <button type="button" className={btn()} onClick={replayStep} title={L('Replay the last step (R)', 'أعد آخر خطوة (R)')} aria-label={L('Replay the last step', 'أعد آخر خطوة')}>
-        <RotateCcw className="w-[18px] h-[18px]" />
+        <RotateCcw className="w-5 h-5 shrink-0" />{name(L('Replay step', 'أعد الخطوة'))}
       </button>
       {teacher && (
         <>
@@ -275,7 +278,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
               title={L('Lesson timer: 5 to 60 minutes', 'مؤقت الحصة: من 5 لـ 60 دقيقة')}
               aria-label={L('Lesson timer', 'مؤقت الحصة')}
             >
-              <Timer className="w-[18px] h-[18px]" />
+              <Timer className="w-5 h-5 shrink-0" />{timerLeft <= 0 && name(L('Timer', 'المؤقت'))}
               {timerLeft > 0 && <span className="tabular-nums">{clock(timerLeft)}</span>}
             </button>
             {timerMenu && (
@@ -291,30 +294,33 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
             )}
           </span>
           <button type="button" className={btn()} onClick={cheer} title={L('Praise (P)', 'تشجيع (P)')} aria-label={L('Praise', 'تشجيع')}>
-            <Star className="w-[18px] h-[18px] text-[#E5A93C]" />
+            <Star className="w-5 h-5 shrink-0 text-[#E5A93C]" />{name(L('Praise', 'تشجيع'))}
           </button>
         </>
       )}
       <button type="button" className={btn()} onClick={toggleMute} aria-pressed={muted} title={muted ? L('Sound off (M)', 'الصوت مقفول (M)') : L('Sound on (M)', 'الصوت شغال (M)')} aria-label={muted ? L('Turn sound on', 'شغّل الصوت') : L('Turn sound off', 'اقفل الصوت')}>
-        {muted ? <VolumeX className="w-[18px] h-[18px]" /> : <Volume2 className="w-[18px] h-[18px]" />}
+        {muted ? <VolumeX className="w-5 h-5 shrink-0" /> : <Volume2 className="w-5 h-5 shrink-0" />}{name(L('Sound', 'الصوت'))}
       </button>
       {teacher && (
         <button type="button" className={btn(notes)} onClick={() => setNotes((n) => !n)} aria-pressed={notes} title={L('Explanation (N)', 'الشرح (N)')} aria-label={L('Explanation', 'الشرح')}>
-          <BookOpenText className="w-[18px] h-[18px]" />
+          <BookOpenText className="w-5 h-5 shrink-0" />{name(L('Explanation', 'الشرح'))}
         </button>
       )}
-      <button type="button" className={btn()} onClick={toggleFullscreen} title={L('Full screen (F)', 'ملء الشاشة (F)')} aria-label={fullscreen ? L('Exit full screen', 'خروج من ملء الشاشة') : L('Full screen', 'ملء الشاشة')}>
-        {fullscreen ? <Minimize2 className="w-[18px] h-[18px]" /> : <Maximize2 className="w-[18px] h-[18px]" />}
-      </button>
-      <button type="button" className={btn()} onClick={toggleLanguage} title={L('عربي', 'English')} aria-label={L('Switch to Arabic', 'Switch to English')}>
-        <Globe className="w-[18px] h-[18px]" />
-        <span>{ar ? 'EN' : 'عربي'}</span>
-      </button>
-      <span className={`text-xs font-bold text-[#453D34] tabular-nums ${fullscreen ? 'py-1' : 'ms-auto pe-3 ps-2'}`}>
+      <span className={`text-sm font-bold text-[#453D34] tabular-nums ${fullscreen ? 'px-3 pt-2' : 'ms-auto pe-3 ps-2'}`}>
         {L('Page', 'صفحة')} {page + 1}/{lesson.pages.length}
         {/* Extra page for a 60-minute lesson; skip it in 30 minutes (docs/curriculum/RULES.md §1.7). */}
         {current.optional && <span className="ms-2 rounded-full bg-[#E5A93C]/20 px-2 py-0.5 text-[#8B4935]">{L('Optional', 'إضافية')}</span>}
       </span>
+      <button
+        type="button"
+        onClick={toggleFullscreen}
+        title={L('Full screen (F)', 'ملء الشاشة (F)')}
+        aria-label={fullscreen ? L('Exit full screen', 'خروج من ملء الشاشة') : L('Full screen', 'ملء الشاشة')}
+        className={`${fullscreen ? 'order-first mb-2' : 'max-lg:order-first max-lg:w-full'} h-12 shrink-0 whitespace-nowrap inline-flex items-center justify-center gap-2 rounded-full bg-[#C51F24] px-5 text-[15px] font-bold text-white shadow-[0_10px_24px_-12px_rgba(197,31,36,0.8)] transition-[background-color,transform] duration-150 hover:bg-[#A8181D] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C] focus-visible:ring-offset-2`}
+      >
+        {fullscreen ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
+        {fullscreen ? L('Exit', 'خروج') : L('Full screen', 'ملء الشاشة')}
+      </button>
     </nav>
   );
 
