@@ -49,6 +49,9 @@ like a well-designed long-form article or a film title sequence, not a children'
   cheap and are not used. Every idea page has a real still; the camera travels across it to the detail each line names,
   then drifts; one lower-third at a time; until a still arrives, a title card with the Arabic word in light. Drawn-in-code
   stays only for what a photo cannot do (the mist of the wow scene, the notebook's pen line, particles and light).
+- **Depth (2026-10-23):** every Adults still comes with a depth map (ChatGPT: "a grayscale depth map of the same image,
+  near = white, far = black", saved as `<name>-depth`). `DepthStill` moves the camera in real depth: parallax, dolly,
+  rack focus to the subject of each line, distance haze, rays from the light in the photo.
 - **v2 (owner, 2026-10-23):** labels are documentary lower-thirds (dark glass, a gold rule, the words sliding out),
   never paper tags; light is volumetric (beams with drifting dust); film grain and a slow light leak on every still;
   depth by perspective and parallax; Arabic sharpens out of a blur. Stills and panels sit in one frame below the lesson

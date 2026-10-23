@@ -180,7 +180,7 @@ export const SCENE_IMAGES: Partial<Record<LessonPage['scene'], string>> = {
   a1Next: 'zad-adults/l01/night',
   // v3 stills (prompts in the Lesson 1 brief, "v3 cinematic pass"); until delivered the page shows a warm wash.
   a1Count: 'zad-adults/l01/purse', a1Case: 'zad-adults/l01/canteen', a1Case2: 'zad-adults/l01/suitcase',
-  a1Case3: 'zad-adults/l01/corridor', a1Case4: 'zad-adults/l01/phone',
+  a1Case3: 'zad-adults/l01/corridor', a1Case4: 'zad-adults/l01/phone', a1Notebook: 'zad-adults/l01/notebook',
 };
 
 /** Where the crop of a wide (16:9) painting sits when its box cuts it (CSS object-position), so the people stay in view. */
@@ -327,10 +327,10 @@ function Lines({ lines, count, size = 40, light = false }: { lines: string[]; co
 
 /** Adults: the text and the lines both stay, in reading order: text then what we draw from it, or (contextFirst) the
  *  scene-setting then the text. Other versions keep their own behaviour (the lines give way to the text). */
-function TextWithLines({ page, v, size, textSize }: { page: LessonPage; v: ReturnType<typeof visibility>; size: number; textSize: number }) {
+function TextWithLines({ page, v, size, textSize, light = false }: { page: LessonPage; v: ReturnType<typeof visibility>; size: number; textSize: number; light?: boolean }) {
   // Once the comment arrives the text steps back (smaller, its translation already read) so the new thought leads.
-  const text = v.evidence ? <Manuscript page={page} size={textSize} align="start" compact={!page.contextFirst && v.lines > 0} /> : null;
-  const lines = <Lines lines={page.lines} count={v.lines} size={size} />;
+  const text = v.evidence ? <Manuscript page={page} size={textSize} light={light} align="start" compact={!page.contextFirst && v.lines > 0} /> : null;
+  const lines = <Lines lines={page.lines} count={v.lines} size={size} light={light} />;
   return page.contextFirst ? <>{lines}{text}</> : <>{text}{lines}</>;
 }
 
@@ -595,8 +595,10 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
           </Painting>
           <div className={`absolute left-[120px] right-[640px] top-[150px] bottom-[120px] space-y-6 ${COL}`}><Fit className="space-y-6">
             <Title size={72} light>{page.title}</Title>
-            {!v.evidence && <Lines lines={page.lines} count={v.lines} size={36} light />}
-            {v.evidence && <Manuscript page={page} size={44} light align="start" />}
+            {lesson.version === 'adults' ? <TextWithLines page={page} v={v} size={30} textSize={36} light /> : <>
+              {!v.evidence && <Lines lines={page.lines} count={v.lines} size={36} light />}
+              {v.evidence && <Manuscript page={page} size={44} light align="start" />}
+            </>}
             {interaction}
           </Fit></div>
           {/* p8: the answer links back to Ms. Clarke's question on the classroom page. */}

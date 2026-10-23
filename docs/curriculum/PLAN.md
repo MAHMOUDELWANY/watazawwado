@@ -50,7 +50,10 @@ Last update: 2026-10-23. History of how we got here: §8 (progress log).
 - **Done 2026-10-23:** text first, then what we draw from it (Adults player rule + test); v3 cinematic pass: code-drawn
   diagrams replaced by the documentary `Reel` (real still, camera travels per build step, one lower-third at a time,
   title card until the still arrives).
-- **Waiting for the owner:** the 16 v3 stills listed in the L1 brief ("v3 cinematic pass"), then a review of Lesson 1.
+- **Done 2026-10-23:** the 16 v3 stills with depth maps placed; `DepthStill` (Three.js shader: parallax, dolly, rack focus,
+  haze, light rays) drives every idea page, a shot per build step.
+- **Waiting for the owner:** review of Lesson 1 in the player; depth maps for the 9 older stills (cover, madinah,
+  stranger, cushions, graves, horizon, lane, monday, night) so those pages move in depth too.
 - **Next after review:** Lesson 2 (A World That Should Not Exist) brief.
 
 ### Seerah and the Scholar's Path

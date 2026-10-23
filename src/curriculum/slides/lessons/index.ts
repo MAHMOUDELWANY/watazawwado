@@ -7,7 +7,7 @@ import { TwoCaptains, OrbitsOrder, ShahadaWords, OneHeart, StarPieces, NeedsChai
 import { DoorsBreathe, TypingDots, WhyListOpens, DawnRays, SandPassesBy, CushionsStudy, PillarsRise, AsksAndConfirms, SixAroundHeart, NoOneWatching, FarLight, LightOpens, ThreeDoorsBuild, FootprintsCircle, RootsUnder, ListOnDesk, BigBang } from './t01';
 import { NightSky, ScreenFlare, CauseChain, UniverseBegins, ThreeOptions, AyahThreeSlots, SteadyLine, CakeHowWho, BuiltIn, TheFirst, LookUp, ListCrossed, GameGlow } from './t02';
 import { OneSunRises, RecallTicks, TeamOnScreen, TwoBosses, TeamOfThree, LikesRise, PulledCompass, IkhlasStar, LovedHeart, CentreOfLife, ThirdCrossed, LibraryQuestion } from './t03';
-import { ShaftOfLight, GapSteps, MadinahMorning, SandAround, CushionsClose, ColumnsRise, SixLights, IhsanSteps, HourglassRuns, FarLightOpens, RingsInward, ShadowsLengthen, CountersFade, SoundToHeart, EyeOpens, CourseArches, MistToSight, LaneTwoStates, MondayPile, CaseLight, NotebookOpens, FirstQuestionSky } from './a01';
+import { ShaftOfLight, GapSteps, MadinahMorning, SandAround, CushionsClose, ColumnsRise, SixLights, IhsanSteps, HourglassRuns, FarLightOpens, RingsInward, ShadowsLengthen, CountersFade, SoundToHeart, EyeOpens, CourseArches, MistToSight, LaneTwoStates, MondayPile, CaseLight, CaseTwo, CaseThree, CaseFour, NotebookOpens, FirstQuestionSky } from './a01';
 import { ThreeWaysBuild, CastleClues, ThreeWaysQuran, SkyStars, KeyFits, DesertLook, BabyGlow, CamelKit, CastleSparkle, CrashBricks, BoatRipples, MagnifierDrop, CoverStars, HandStudy, LadybirdWalk, JiddoRecall } from './l02';
 
 /* Which scene build acts out a page, by scene id (docs/curriculum/RULES.md §1.10). Each lesson adds its scenes in its
@@ -46,7 +46,7 @@ export const MOMENTS: Partial<Record<SceneId, React.ComponentType<{ v: Built; le
   tl2Cover: NightSky, tl2Science: ScreenFlare, tl2Kitchen: CakeHowWho, tl2Bench: ListCrossed, tl2Gaming: GameGlow,
   tl3Cover: OneSunRises, tl3Gaming: TeamOnScreen, tl3Likes: LikesRise, tl3Prayer: ThirdCrossed, tl3Library: LibraryQuestion,
   a1Cover: ShaftOfLight, a1Madinah: MadinahMorning,
-  a1Stranger: SandAround, a1Cushions: CushionsClose, a1Count: CountersFade, a1Monday: MondayPile, a1Case: CaseLight, a1Case2: CaseLight, a1Case3: CaseLight, a1Case4: CaseLight, a1Notebook: NotebookOpens,
+  a1Stranger: SandAround, a1Cushions: CushionsClose, a1Count: CountersFade, a1Monday: MondayPile, a1Case: CaseLight, a1Case2: CaseTwo, a1Case3: CaseThree, a1Case4: CaseFour, a1Notebook: NotebookOpens,
   a1Next: FirstQuestionSky,
 };
 

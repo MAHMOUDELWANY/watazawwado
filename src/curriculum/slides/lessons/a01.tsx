@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from 'motion/react';
 import { P } from '../Art';
 import { Layer, src, type Built } from '../Scenes';
 import { useCue } from '../sfx';
+import { DepthStill, type Shot, type Light } from '../DepthStill';
 
 /* ---------- Adults Lesson 1: The Man No One Knew (brief: docs/curriculum/zad-essentials-adults/L01-the-man-no-one-knew.md)
    Look: docs/curriculum/style/adults.md. v2 after the owner's review (2026-10-23: "premium motion for grown-ups"):
@@ -247,63 +248,57 @@ export function CushionsClose({ v }: { v: Built }) {
 }
 
 /* ---------- v3: the documentary reel (owner, 2026-10-23: "cinematic documentary"; the code-drawn diagrams looked
-   cheap). A real still is the hero of every idea page. On each build step the camera travels to the detail the line is
-   about, the way a documentary pans across a photograph, and drifts slowly in between. Labels are lower-thirds. Until a
-   still is delivered the panel is a title card: the Arabic word as the hero, one pass of light across it. ---------- */
-
-/** Where the camera looks on a build step: focus point in % of the still, and zoom. */
-type Frame = { x: number; y: number; z: number };
+   cheap). A real still is the hero of every idea page, moving in real depth (its depth map: DepthStill). On each build
+   step the camera travels to the detail the line is about and the focus pulls to it; between steps it breathes. One
+   lower-third at a time. Stills without a depth map fall back to a flat camera move; a missing still to a title card.
+   Shots: x, y = where the camera looks (% of the photo), z = zoom, focus = depth in focus (0 far … 1 near),
+   pan = sideways parallax. ---------- */
 
 /** Translation (in % of the box) that brings (x, y) to the centre at zoom z, clamped so the still always covers the box. */
-function aim({ x, y, z }: Frame) {
+function aim({ x, y, z }: Shot) {
   const room = 50 * (1 - 1 / z);
   const c = (d: number) => Math.max(-room, Math.min(room, d));
   return { x: `${c(50 - x)}%`, y: `${c(50 - y)}%`, scale: z };
 }
 
-function Reel({ still, frames, k, ar, kicker, label, tone = 'ink', grade = 'then', children }: {
-  still: string; frames: Frame[]; k: number; ar: string; kicker?: string; label: string;
+const at = (shots: Shot[], k: number) => shots[Math.max(0, Math.min(k, shots.length - 1))];
+
+function Reel({ still, shots, k, ar, kicker, label, light, depth = true, tone = 'ink', grade = 'then', children }: {
+  still: string; shots: Shot[]; k: number; ar: string; kicker?: string; label: string; light?: Light; depth?: boolean;
   tone?: 'ink' | 'dusk' | 'night'; grade?: 'then' | 'now'; children?: React.ReactNode;
 }) {
-  const reduce = useReducedMotion();
-  const [missing, setMissing] = React.useState(false);
-  const f = frames[Math.max(0, Math.min(k, frames.length - 1))];
-  const tint = grade === 'then'
-    ? 'linear-gradient(180deg, rgba(60,30,10,0.05), rgba(30,14,6,0.35))'
-    : 'linear-gradient(180deg, rgba(8,30,40,0.1), rgba(4,14,20,0.45))';
+  const reduce = Boolean(useReducedMotion());
+  const [mode, setMode] = React.useState<'depth' | 'flat' | 'card'>(depth ? 'depth' : 'flat');
+  const f = at(shots, k);
+  const toFlat = React.useCallback(() => setMode('flat'), []);
   return (
     <motion.div className="absolute left-[720px] top-[184px] h-[570px] w-[760px] overflow-hidden rounded-[22px]" role="img" aria-label={label}
       style={{ boxShadow: '0 50px 90px -40px rgba(5,15,22,0.9), 0 0 0 1px rgba(232,194,122,0.18)', background: INK }}
       initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.1, ease }}>
-      {missing ? (
+      {mode === 'depth' && (
+        <DepthStill img={src(A(still))} depth={src(A(`${still}-depth`))} shot={f} light={light} grade={grade} still={reduce} onFail={toFlat} />
+      )}
+      {mode === 'flat' && (
+        <motion.div className="absolute inset-0 will-change-transform" initial={reduce ? false : aim({ ...shots[0], z: shots[0].z * 1.06 })}
+          animate={aim(f)} transition={{ duration: reduce ? 0 : 3.2, ease: [0.45, 0, 0.2, 1] }}>
+          <img src={src(A(still))} alt="" aria-hidden="true" draggable={false} onError={() => setMode('card')}
+            className="absolute inset-0 h-full w-full select-none object-cover" />
+        </motion.div>
+      )}
+      {mode === 'card' && (
         <>
           <Stage tone={tone} />
           <Word ar={ar} style={{ left: '50%', top: '44%' }} size={ar.length > 12 ? 70 : 104} delay={0.3} />
-          {/* One slow pass of light across the word, like a lamp carried past an inscription. */}
-          {!reduce && (
-            <motion.div className="pointer-events-none absolute top-[24%] h-[42%] w-[30%] will-change-transform" aria-hidden="true"
-              style={{ background: 'linear-gradient(100deg, transparent, rgba(255,232,190,0.22), transparent)', mixBlendMode: 'screen' }}
-              initial={{ x: '-120%' }} animate={{ x: '440%' }} transition={{ duration: 4.5, delay: 1.2, ease: 'easeInOut' }} />
-          )}
           {kicker && <Kinetic text={kicker} style={{ left: '50%', top: '62%' }} size={26} delay={1} color="rgba(239,232,220,0.75)" />}
         </>
-      ) : (
-        <motion.div className="absolute inset-0 will-change-transform" initial={reduce ? false : aim({ ...frames[0], z: frames[0].z * 1.06 })}
-          animate={aim(f)} transition={{ duration: reduce ? 0 : 3.2, ease: [0.45, 0, 0.2, 1] }}>
-          <motion.img src={src(A(still))} alt="" aria-hidden="true" draggable={false} onError={() => setMissing(true)}
-            className="absolute inset-0 h-full w-full select-none object-cover"
-            initial={reduce ? false : { scale: 1 }} animate={reduce ? undefined : { scale: 1.045 }} transition={{ duration: 24, ease: 'linear' }} />
-          <div className="pointer-events-none absolute inset-0" style={{ background: tint }} />
-        </motion.div>
       )}
       {children}
-      <Film leak={!missing} />
+      <Film leak={false} />
     </motion.div>
   );
 }
 
-/** One lower-third at a time, as in a documentary: step n replaces the caption with point n (its number shows how far
- *  along we are). */
+/** One lower-third at a time, as in a documentary: step n replaces the caption with point n. */
 function Thirds({ items, k, from = 0 }: { items: { en: string; ar?: string }[]; k: number; from?: number }) {
   const i = Math.min(k - from, items.length) - 1;
   if (i < 0) return null;
@@ -320,60 +315,85 @@ const PILLARS = [
   { en: 'The two testimonies', ar: 'الشهادتان' }, { en: 'Salah', ar: 'الصلاة' }, { en: 'Zakah', ar: 'الزكاة' },
   { en: 'Fasting Ramadan', ar: 'الصوم' }, { en: 'Hajj', ar: 'الحج' },
 ];
-/** Islam: the camera walks along five palm-trunk columns, one per pillar, then pulls back to the whole roof they hold. */
+/** Islam: palm-trunk columns in the old mosque. As each pillar is named, focus and camera move to the next column, far
+ *  to near, until the nearest stands sharp in front of us. */
 export function ColumnsRise({ v, label }: { v: Built; label: string }) {
   const k = shown(v);
   return (
-    <Reel still="pillars" ar="الإسلام" kicker="What a Muslim does" label={label} k={k}
-      frames={[{ x: 50, y: 50, z: 1.05 }, { x: 22, y: 55, z: 1.5 }, { x: 50, y: 52, z: 1.25 }, { x: 50, y: 50, z: 1.05 }]}>
-      {k >= 2 && <Caption style={{ left: '5%', top: '6%' }} delay={0.6}>"You are right." He already knew.</Caption>}
-      {k >= 3 && <Caption style={{ left: '5%', bottom: '6%' }} delay={0.4}>{PILLARS.map((p) => p.en).join(' · ')}</Caption>}
+    <Reel still="pillars" ar="الإسلام" kicker="What a Muslim does" label={label} k={k} light={{ x: 62, y: -8, strength: 0.7 }}
+      shots={[
+        { x: 50, y: 50, z: 1.02, focus: 0.5, pan: -0.6 }, { x: 46, y: 46, z: 1.15, focus: 0.4, pan: -0.2 },
+        { x: 54, y: 50, z: 1.2, focus: 0.4, pan: 0.1 }, { x: 58, y: 52, z: 1.22, focus: 0.55, pan: 0.3 },
+        { x: 38, y: 45, z: 1.5, focus: 0.36, pan: -0.5 }, { x: 46, y: 45, z: 1.5, focus: 0.46, pan: -0.3 },
+        { x: 56, y: 47, z: 1.45, focus: 0.57, pan: 0 }, { x: 69, y: 50, z: 1.4, focus: 0.72, pan: 0.3 },
+        { x: 82, y: 50, z: 1.25, focus: 0.93, pan: 0.6 },
+      ]}>
+      {k === 3 && <Caption style={{ left: '5%', top: '6%' }} delay={0.6}>"You are right." He already knew.</Caption>}
+      <Thirds items={PILLARS} k={k} from={3} />
     </Reel>
   );
 }
 
-const SIX = ['Allah', 'His angels', 'His books', 'His messengers', 'The Last Day', 'Qadar'];
-/** Iman: a quiet room before fajr, the window open on the last stars; the camera rises from the mat to the sky. */
+const SIX = [{ en: 'Allah' }, { en: 'His angels' }, { en: 'His books' }, { en: 'His messengers' }, { en: 'The Last Day' }, { en: 'Qadar' }];
+/** Iman, the unseen: a quiet room before fajr. With each of the six the camera rises from the prayer mat to the window
+ *  and the focus travels out to the last stars. */
 export function SixLights({ v, label }: { v: Built; label: string }) {
   const k = shown(v);
   return (
-    <Reel still="window" ar="الإيمان" kicker="What a Muslim holds true" label={label} k={k} grade="now" tone="night"
-      frames={[{ x: 50, y: 62, z: 1.2 }, { x: 55, y: 35, z: 1.35 }, { x: 50, y: 50, z: 1.05 }]}>
-      {k >= 2 && <Caption style={{ left: '5%', top: '6%' }} delay={0.4}>{SIX.join(' · ')}</Caption>}
+    <Reel still="window" ar="الإيمان" kicker="What a Muslim holds true" label={label} k={k} grade="now" tone="night" light={{ x: 91, y: 57, strength: 0.45 }}
+      shots={[
+        { x: 50, y: 55, z: 1.02, focus: 0.6, pan: -0.4 }, { x: 36, y: 76, z: 1.3, focus: 0.88, pan: -0.3 },
+        { x: 58, y: 52, z: 1.15, focus: 0.5, pan: 0 }, { x: 62, y: 46, z: 1.2, focus: 0.4, pan: 0.1 },
+        { x: 64, y: 41, z: 1.3, focus: 0.3, pan: 0.2 }, { x: 66, y: 37, z: 1.4, focus: 0.2, pan: 0.3 },
+        { x: 67, y: 34, z: 1.5, focus: 0.12, pan: 0.35 }, { x: 67, y: 31, z: 1.6, focus: 0.06, pan: 0.4 },
+        { x: 66, y: 33, z: 1.35, focus: 0.05, pan: 0.2 },
+      ]}>
+      <Thirds items={SIX} k={k} from={2} />
     </Reel>
   );
 }
 
-/** Ihsan: one person praying alone in a dim room, seen from behind; the camera moves into the shaft of light ahead. */
+/** Ihsan: one person praying alone, seen from behind. The focus settles on him at "as if you see Him", then the camera
+ *  moves into the light falling just ahead of him. */
 export function IhsanSteps({ v, label }: { v: Built; label: string }) {
   const k = shown(v);
   return (
-    <Reel still="prayer" ar="كأنك تراه" kicker="As if you see Him" label={label} k={k} grade="now"
-      frames={[{ x: 45, y: 55, z: 1.08 }, { x: 60, y: 45, z: 1.4 }, { x: 52, y: 50, z: 1.18 }]}>
+    <Reel still="prayer" ar="كأنك تراه" kicker="As if you see Him" label={label} k={k} grade="now" light={{ x: 87, y: 12, strength: 0.9 }}
+      shots={[
+        { x: 50, y: 50, z: 1.02, focus: 0.3, pan: -0.5 }, { x: 50, y: 45, z: 1.28, focus: 0.58, pan: 0 },
+        { x: 56, y: 64, z: 1.45, focus: 0.62, pan: 0.3 }, { x: 52, y: 42, z: 1.15, focus: 0.45, pan: 0.1 },
+      ]}>
       {k >= 1 && <Caption ar="كَأنَّك تَراه" style={{ left: '5%', top: '6%' }} delay={1.2}>as if you see Him</Caption>}
       {k >= 2 && <Caption ar="فإنَّه يَراك" style={{ left: '5%', bottom: '6%' }} delay={0.4}>if not, He sees you</Caption>}
     </Reel>
   );
 }
 
-/** The Hour: a brass hourglass on a ledge, sand running; the camera closes on the thin stream, then on the doorway. */
+/** The Hour: the hourglass sharp on its ledge, then the falling sand, then the focus leaves it for the open desert
+ *  through the door: so who is he? */
 export function HourglassRuns({ v, label }: { v: Built; label: string }) {
   const k = shown(v);
   return (
-    <Reel still="hourglass" ar="الساعة" kicker="Its time is with Allah alone" label={label} k={k}
-      frames={[{ x: 50, y: 50, z: 1.1 }, { x: 48, y: 52, z: 1.6 }, { x: 50, y: 50, z: 1.2 }]}>
+    <Reel still="hourglass" ar="الساعة" kicker="Its time is with Allah alone" label={label} k={k} light={{ x: 81, y: 27, strength: 1 }}
+      shots={[
+        { x: 55, y: 50, z: 1.02, focus: 0.4, pan: 0.5 }, { x: 31, y: 45, z: 1.5, focus: 0.92, pan: -0.3 },
+        { x: 31, y: 60, z: 1.8, focus: 0.92, pan: -0.2 }, { x: 76, y: 40, z: 1.3, focus: 0.1, pan: 0.4 },
+      ]}>
       {k >= 2 && <Caption style={{ left: '5%', bottom: '6%' }} delay={0.4}>Certain, and hidden</Caption>}
     </Reel>
   );
 }
 
-/** The reveal: the mosque doorway from inside, bright morning outside, footprints that lead out and stop. */
+/** The reveal: the open doorway, the bright morning outside, footprints that lead out and stop. */
 export function FarLightOpens({ v, label }: { v: Built; label: string }) {
   const k = shown(v);
   useCue('reveal', k >= 1, 0.3);
   return (
-    <Reel still="doorway" ar="جبريل" kicker="He came to teach you your deen" label={label} k={k} tone="night"
-      frames={[{ x: 50, y: 55, z: 1.1 }, { x: 52, y: 60, z: 1.45 }, { x: 50, y: 50, z: 1.05 }]}>
+    <Reel still="doorway" ar="جبريل" kicker="He came to teach you your deen" label={label} k={k} tone="night" light={{ x: 55, y: 42, strength: 1 }}
+      shots={[
+        { x: 50, y: 50, z: 1.02, focus: 0.55, pan: -0.4 }, { x: 57, y: 55, z: 1.3, focus: 0.2, pan: 0 },
+        { x: 60, y: 82, z: 1.6, focus: 0.45, pan: 0.2 }, { x: 55, y: 46, z: 1.15, focus: 0.15, pan: 0.1 },
+      ]}>
       {k >= 1 && <Caption ar="جِبريلُ" style={{ left: '5%', top: '6%' }} delay={1.4}>Jibril</Caption>}
       {k >= 2 && <Caption ar="يُعَلِّمُكُم دينَكُم" style={{ left: '5%', bottom: '6%' }} delay={0.4}>to teach you your deen</Caption>}
     </Reel>
@@ -381,12 +401,16 @@ export function FarLightOpens({ v, label }: { v: Built; label: string }) {
 }
 
 const LEVELS = [{ en: 'Islam: what I do', ar: 'الإسلام' }, { en: 'Iman: what I hold true', ar: 'الإيمان' }, { en: 'Ihsan: as if I see Him', ar: 'الإحسان' }];
-/** Three levels of one deen: the mosque from above, three nested spaces; the camera descends through each. */
+/** Three levels of one deen: the old mosque from above, three nested spaces; the camera descends through each and the
+ *  focus moves inward with it. */
 export function RingsInward({ labels, label }: { labels: (string | null)[]; label: string }) {
   const k = labels.filter(Boolean).length;
   return (
-    <Reel still="above" ar="دين واحد" kicker="Three depths of one deen" label={label} k={k}
-      frames={[{ x: 50, y: 50, z: 1.02 }, { x: 50, y: 50, z: 1.2 }, { x: 50, y: 50, z: 1.5 }, { x: 50, y: 50, z: 1.95 }]}>
+    <Reel still="above" ar="دين واحد" kicker="Three depths of one deen" label={label} k={k} light={{ x: 18, y: 8, strength: 0.3 }}
+      shots={[
+        { x: 50, y: 50, z: 1.02, focus: 0.75, pan: 0 }, { x: 50, y: 52, z: 1.12, focus: 0.8, pan: -0.3 },
+        { x: 48, y: 46, z: 1.35, focus: 0.85, pan: 0 }, { x: 48, y: 40, z: 1.7, focus: 0.92, pan: 0.3 },
+      ]}>
       <Thirds items={LEVELS} k={k} />
     </Reel>
   );
@@ -395,67 +419,103 @@ export function RingsInward({ labels, label }: { labels: (string | null)[]; labe
 /* ---------- Zad: knowing and seeing ---------- */
 
 const GAP = [{ en: 'Knowing: you were told, and you agree' }, { en: 'Certain knowledge: it has reached the heart' }, { en: 'Seeing it: failing to act becomes rare' }];
-/** Where the gap is: a shelf of books under a desk lamp at night, an empty chair, a phone glowing. All the knowledge is
- *  here; the camera moves from the books to the empty chair. */
+/** Where the gap is: the shelf of books (all we know), the phone glowing on the desk (what pulls us), the empty chair
+ *  (nobody sitting with it). */
 export function GapSteps({ labels, label }: { labels: (string | null)[]; label: string }) {
   const k = labels.filter(Boolean).length;
   return (
-    <Reel still="shelf" ar="تعرف… أم ترى؟" kicker="Knowing is not yet seeing" label={label} k={k} grade="now"
-      frames={[{ x: 40, y: 40, z: 1.15 }, { x: 35, y: 35, z: 1.4 }, { x: 60, y: 62, z: 1.35 }, { x: 50, y: 50, z: 1.05 }]}>
+    <Reel still="shelf" ar="تعرف… أم ترى؟" kicker="Knowing is not yet seeing" label={label} k={k} grade="now" light={{ x: 84, y: 24, strength: 0.6 }}
+      shots={[
+        { x: 50, y: 50, z: 1.02, focus: 0.5, pan: -0.3 }, { x: 72, y: 34, z: 1.4, focus: 0.55, pan: 0.2 },
+        { x: 64, y: 70, z: 1.6, focus: 0.76, pan: 0.3 }, { x: 42, y: 56, z: 1.18, focus: 0.84, pan: -0.4 },
+      ]}>
       <Thirds items={GAP} k={k} />
     </Reel>
   );
 }
 
-/** At-Takathur 102:1–2: the sun lowers and the shadows lengthen across the graves as the ayah is read. */
+/** At-Takathur 102:1–2: the graves in late light (no depth map yet: a flat camera move). */
 export function ShadowsLengthen({ v, label }: { v: Built; label: string }) {
   const k = shown(v);
   return (
-    <Reel still="graves" ar="ألهاكم التكاثر" label={label} k={k}
-      frames={[{ x: 50, y: 45, z: 1.08 }, { x: 62, y: 60, z: 1.35 }, { x: 45, y: 70, z: 1.5 }, { x: 50, y: 50, z: 1.05 }]}>
+    <Reel still="graves" ar="ألهاكم التكاثر" label={label} k={k} depth={false}
+      shots={[
+        { x: 50, y: 45, z: 1.08, focus: 0.5 }, { x: 62, y: 60, z: 1.35, focus: 0.5 },
+        { x: 45, y: 70, z: 1.5, focus: 0.5 }, { x: 50, y: 50, z: 1.05, focus: 0.5 },
+      ]}>
       {k >= 1 && <Caption style={{ left: '5%', top: '6%' }} delay={1}>Busy, all the way here</Caption>}
       {k >= 3 && <Caption ar="زُرْتُمُ" style={{ left: '5%', bottom: '6%' }} delay={0.4}>visited: guests, not residents</Caption>}
     </Reel>
   );
 }
 
-/** "My wealth, my wealth": three things on a mat in late light (a bowl of dates, a worn robe, a cloth purse). The
- *  painting carries the page; the three fates come in as lower-thirds. */
+/** A depth still filling a painting (story, question and journal pages), its shot chosen by the page's build step. */
+function PaintingDepth({ name, shots, k, light, grade = 'then' }: { name: string; shots: Shot[]; k: number; light?: Light; grade?: 'then' | 'now' }) {
+  const reduce = Boolean(useReducedMotion());
+  const [ok, setOk] = React.useState(true);
+  const fail = React.useCallback(() => setOk(false), []);
+  return ok ? <DepthStill img={src(A(name))} depth={src(A(`${name}-depth`))} shot={at(shots, k)} light={light} grade={grade} still={reduce} onFail={fail} /> : null;
+}
+const steps = (v: Built) => (v.evidence ? 1 : 0) + v.lines + v.items + (v.interaction ? 1 : 0);
+
+/** "My wealth, my wealth": the bowl of dates (ate), the robe (wore), the purse with coins (gave); at the question the
+ *  three fates come in. */
 export function CountersFade({ v }: { v: Built }) {
   const items = [{ en: 'Ate: used up' }, { en: 'Wore: worn out' }, { en: 'Gave: sent ahead' }];
-  return <>{v.interaction && <Caption style={{ left: '5%', bottom: '6%' }} delay={0.4}>{items.map((t) => t.en).join(' · ')}</Caption>}<Film /></>;
+  return (
+    <>
+      <PaintingDepth name="purse" k={steps(v)} light={{ x: 20, y: 10, strength: 0.4 }} shots={[
+        { x: 60, y: 60, z: 1.02, focus: 0.7, pan: -0.3 }, { x: 65, y: 65, z: 1.35, focus: 0.86, pan: -0.1 },
+        { x: 80, y: 45, z: 1.35, focus: 0.8, pan: 0.2 }, { x: 74, y: 76, z: 1.5, focus: 0.95, pan: 0.3 },
+      ]} />
+      {v.interaction && <Caption style={{ right: '6%', bottom: '6%' }} delay={0.4}>{items.map((t) => t.en).join(' · ')}</Caption>}
+      <Film leak={false} />
+    </>
+  );
 }
 
-/** 'Ilm al-yaqeen: someone sits at the back of a quiet mosque at night, listening; the lamps ahead are out of focus. */
+/** 'Ilm al-yaqeen: the listener sharp at the back of the mosque; then the focus travels to the lamps far ahead, the
+ *  source of what he hears. */
 export function SoundToHeart({ v, label }: { v: Built; label: string }) {
   const k = shown(v);
   return (
-    <Reel still="listening" ar="عِلْمَ ٱلْيَقِينِ" kicker="Knowledge from a true report" label={label} k={k} grade="now" tone="night"
-      frames={[{ x: 35, y: 60, z: 1.25 }, { x: 60, y: 40, z: 1.4 }, { x: 50, y: 50, z: 1.05 }]}>
+    <Reel still="listening" ar="عِلْمَ ٱلْيَقِينِ" kicker="Knowledge from a true report" label={label} k={k} grade="now" tone="night" light={{ x: 63, y: 24, strength: 0.6 }}
+      shots={[
+        { x: 50, y: 50, z: 1.02, focus: 0.9, pan: -0.3 }, { x: 42, y: 60, z: 1.3, focus: 0.95, pan: -0.2 },
+        { x: 62, y: 34, z: 1.45, focus: 0.15, pan: 0.3 },
+      ]}>
       {k >= 2 && <Caption ar="عِلْمَ ٱلْيَقِينِ" style={{ left: '5%', bottom: '6%' }} delay={0.4}>heard, and certain</Caption>}
     </Reel>
   );
 }
 
-/** 'Ayn al-yaqeen: a train window at dawn, the landscape outside sharp in the first sun; the camera leans to the glass. */
+/** 'Ayn al-yaqeen: the empty seat sharp, the world outside soft; then the focus goes through the glass and the
+ *  landscape comes sharp in the first sun. */
 export function EyeOpens({ v, label }: { v: Built; label: string }) {
   const k = shown(v);
   return (
-    <Reel still="train" ar="عَيْنَ ٱلْيَقِينِ" kicker="Certainty by seeing" label={label} k={k} grade="now"
-      frames={[{ x: 50, y: 50, z: 1.05 }, { x: 62, y: 45, z: 1.45 }, { x: 55, y: 48, z: 1.7 }]}>
+    <Reel still="train" ar="عَيْنَ ٱلْيَقِينِ" kicker="Certainty by seeing" label={label} k={k} grade="now" light={{ x: 93, y: 37, strength: 1 }}
+      shots={[
+        { x: 40, y: 50, z: 1.02, focus: 0.9, pan: -0.5 }, { x: 65, y: 52, z: 1.3, focus: 0.15, pan: 0.2 },
+        { x: 80, y: 46, z: 1.55, focus: 0.08, pan: 0.4 }, { x: 68, y: 50, z: 1.2, focus: 0.1, pan: 0.1 },
+      ]}>
       {k >= 2 && <Caption ar="عَيْنَ ٱلْيَقِينِ" style={{ left: '5%', bottom: '6%' }} delay={0.4}>seen with the eyes</Caption>}
     </Reel>
   );
 }
 
 const ROAD = ['Iman', 'Taharah and Salah', 'The pillars', 'Ihsan'];
-/** What this course is for: an old caravan road through the hills at dawn toward a lit oasis town; with each part of
- *  the course the camera travels further down the road. */
+/** What this course is for: the caravan road at dawn; with each part of the course the camera travels further down it
+ *  and the focus moves out to the lit town at the end. */
 export function CourseArches({ labels, label }: { labels: (string | null)[]; label: string }) {
   const k = labels.filter(Boolean).length;
   return (
-    <Reel still="road" ar="من العلم إلى الرؤية" kicker="From knowing to seeing" label={label} k={k}
-      frames={[{ x: 50, y: 70, z: 1.05 }, { x: 48, y: 62, z: 1.25 }, { x: 52, y: 52, z: 1.5 }, { x: 54, y: 44, z: 1.8 }, { x: 55, y: 38, z: 2.1 }]}>
+    <Reel still="road" ar="من العلم إلى الرؤية" kicker="From knowing to seeing" label={label} k={k} light={{ x: 31, y: 31, strength: 0.9 }}
+      shots={[
+        { x: 50, y: 55, z: 1.02, focus: 0.85, pan: -0.3 }, { x: 48, y: 62, z: 1.15, focus: 0.75, pan: -0.1 },
+        { x: 52, y: 54, z: 1.3, focus: 0.5, pan: 0 }, { x: 58, y: 48, z: 1.5, focus: 0.3, pan: 0.2 },
+        { x: 60, y: 44, z: 1.75, focus: 0.15, pan: 0.3 },
+      ]}>
       <Thirds items={ROAD.map((en, i) => ({ en: `${i + 1}. ${en}` }))} k={k} />
     </Reel>
   );
@@ -551,38 +611,51 @@ export function MondayPile({ v }: { v: Built }) {
   );
 }
 
-/** The cases: each case has its own still of today's world; the film carries it, the question does the work. */
-export function CaseLight(_: { v: Built }) {
-  return <Film />;
-}
+/** The cases: each one a still of today's world; the focus moves from the setting to what the case turns on. */
+const caseScene = (name: string, shots: Shot[], light?: Light) => function CaseScene({ v }: { v: Built }) {
+  return <><PaintingDepth name={name} k={steps(v)} shots={shots} light={light} grade="now" /><Film leak={false} /></>;
+};
+export const CaseLight = caseScene('canteen', [
+  { x: 60, y: 60, z: 1.02, focus: 0.9, pan: 0.3 }, { x: 82, y: 66, z: 1.3, focus: 0.92, pan: 0.3 },
+  { x: 50, y: 40, z: 1.35, focus: 0.35, pan: -0.3 }, { x: 52, y: 42, z: 1.4, focus: 0.35, pan: -0.2 },
+]);
+export const CaseTwo = caseScene('suitcase', [
+  { x: 50, y: 55, z: 1.02, focus: 0.8, pan: -0.3 }, { x: 32, y: 74, z: 1.35, focus: 0.9, pan: -0.3 },
+  { x: 76, y: 25, z: 1.4, focus: 0.1, pan: 0.3 }, { x: 46, y: 70, z: 1.2, focus: 0.85, pan: 0 },
+], { x: 78, y: 22, strength: 0.4 });
+export const CaseThree = caseScene('corridor', [
+  { x: 50, y: 50, z: 1.02, focus: 0.3, pan: 0.3 }, { x: 74, y: 36, z: 1.5, focus: 0.15, pan: 0.3 },
+  { x: 58, y: 82, z: 1.6, focus: 0.7, pan: -0.2 }, { x: 55, y: 60, z: 1.2, focus: 0.5, pan: 0 },
+], { x: 92, y: 20, strength: 0.5 });
+export const CaseFour = caseScene('phone', [
+  { x: 50, y: 55, z: 1.02, focus: 0.8, pan: -0.3 }, { x: 58, y: 68, z: 1.5, focus: 0.95, pan: 0.2 },
+  { x: 60, y: 40, z: 1.3, focus: 0.4, pan: 0.3 }, { x: 56, y: 62, z: 1.25, focus: 0.9, pan: 0 },
+], { x: 63, y: 30, strength: 0.6 });
 
-/** p30 Zad al-Yaqeen: a leather notebook opens in three dimensions onto bone pages; a pen writes the first line. */
+/** Zad al-Yaqeen: the notebook open on the desk at fajr; the focus moves from the window to the empty page, and the
+ *  first line arrives as it would be written. */
 export function NotebookOpens({ v }: { v: Built }) {
   const reduce = useReducedMotion();
   useCue('pen', v.lines >= 2, 0.9);
   return (
-    <div className="absolute inset-0" style={{ perspective: 1400 }}>
-      <Stage />
-      <Beam x={40} y={-10} angle={12} length={90} width={60} opacity={0.3} />
-      <div className="absolute left-[14%] right-[10%] top-[18%] bottom-[14%]" style={{ transformStyle: 'preserve-3d', transform: 'rotateX(18deg)' }}>
-        <div className="absolute inset-0 rounded-[10px] px-[7%] pt-[12%]" style={{ background: `repeating-linear-gradient(180deg, ${BONE} 0 46px, #D9CDB9 46px 47px)`, boxShadow: '0 50px 80px -30px rgba(0,0,0,0.9)' }}>
-          <span lang="ar" dir="rtl" className="absolute right-[7%] top-[3%] font-serif text-[32px] font-bold" style={{ color: P.copper }}>زاد اليقين</span>
-          {v.lines >= 2 && (
-            <motion.span className="block font-serif text-[32px] italic leading-[47px]" style={{ color: INK }}
-              initial={reduce ? false : { clipPath: 'inset(0 100% 0 0)' }} animate={{ clipPath: 'inset(0 0% 0 0)' }} transition={{ duration: 2.4, delay: 1, ease: 'linear' }}>
-              I am now certain that…
-            </motion.span>
-          )}
-          {v.lines >= 3 && <span className="mt-[47px] block font-sans text-[20px] font-semibold" style={{ color: '#6B6157' }}>This week: ______________</span>}
-        </div>
-        <motion.div className="absolute inset-0 rounded-[10px]" aria-hidden="true"
-          style={{ background: 'linear-gradient(135deg, #4A2C1C, #1E120C)', transformOrigin: 'left center', backfaceVisibility: 'hidden', boxShadow: 'inset 0 0 0 3px rgba(232,194,122,0.35)' }}
-          initial={reduce ? { opacity: 0 } : { rotateY: 0 }} animate={reduce ? { opacity: 0 } : { rotateY: -165 }} transition={{ duration: 1.8, delay: 0.3, ease: [0.6, 0, 0.2, 1] }}>
-          <span lang="ar" dir="rtl" className="absolute inset-0 flex items-center justify-center font-serif text-[48px] font-bold" style={{ color: GOLD }}>زاد اليقين</span>
+    <>
+      <PaintingDepth name="notebook" k={Math.min(v.lines, 3)} light={{ x: 85, y: 12, strength: 0.7 }} shots={[
+        { x: 70, y: 30, z: 1.05, focus: 0.15, pan: 0.3 }, { x: 60, y: 60, z: 1.2, focus: 0.7, pan: 0 },
+        { x: 55, y: 70, z: 1.45, focus: 0.9, pan: -0.2 }, { x: 58, y: 66, z: 1.35, focus: 0.9, pan: -0.1 },
+      ]} />
+      {v.lines >= 2 && (
+        <motion.div className="pointer-events-none absolute left-[8%] right-[8%] bottom-[8%] rounded-[12px] px-6 py-4"
+          style={{ background: 'rgba(239,232,220,0.93)', boxShadow: '0 30px 60px -30px rgba(0,0,0,0.9)' }}
+          initial={reduce ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease }}>
+          <span lang="ar" dir="rtl" className="block font-serif text-[22px] font-bold" style={{ color: P.copper }}>زاد اليقين</span>
+          <motion.span className="block font-serif text-[30px] italic" style={{ color: INK }}
+            initial={reduce ? false : { clipPath: 'inset(0 100% 0 0)' }} animate={{ clipPath: 'inset(0 0% 0 0)' }} transition={{ duration: 2.4, delay: 0.8, ease: 'linear' }}>
+            I am now certain that…
+          </motion.span>
         </motion.div>
-      </div>
+      )}
       <Film leak={false} />
-    </div>
+    </>
   );
 }
 
