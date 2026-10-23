@@ -2,10 +2,10 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import {
   ChevronLeft, ChevronRight, Maximize2, Minimize2, Star, PenLine, Highlighter, MousePointer2, Eraser, LayoutGrid,
-  Timer, RotateCcw, BookOpenText, X, Clapperboard, Volume2, VolumeX, Smartphone, Trash2, Check,
+  Timer, RotateCcw, BookOpenText, X, Clapperboard, Volume2, VolumeX, Smartphone, Trash2, Check, Lock,
 } from 'lucide-react';
 import type { Lesson } from './types';
-import { Slide, SlideText, stepsFor, CANVAS_W, CANVAS_H, scoreSort, SCENE_IMAGES, type GameResult } from './slides/Slide';
+import { Slide, stepsFor, CANVAS_W, CANVAS_H, scoreSort, SCENE_IMAGES, type GameResult } from './slides/Slide';
 import { InkLayer, type InkTool } from './slides/Ink';
 import { Opening } from './slides/Opening';
 import { P, asset } from './slides/Art';
@@ -23,6 +23,8 @@ interface Props {
   onGameResult?: (pageIndex: number, result: GameResult) => void;
   /** Called with the 0-based page index whenever the page changes (the teacher report uses it). */
   onPageChange?: (pageIndex: number) => void;
+  /** A free sample: the lesson stops after these pages behind a lock, with a call to book (owner, 2026-10-23). */
+  sample?: { totalPages: number; teaser: string; onBook: () => void };
 }
 
 const INK_COLORS = [P.crimson, P.teal, P.gold, P.ink];
@@ -31,7 +33,7 @@ const TIMER_MINUTES = Array.from({ length: 12 }, (_, i) => (i + 1) * 5);
 const clock = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
 /** Slide player v2: fixed 16:9 canvas, build steps, pen/marker/laser, page grid, timer, explanation panel. */
-export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGameResult, onPageChange }: Props) {
+export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGameResult, onPageChange, sample }: Props) {
   // The player follows the language the user picked for the site (owner, 2026-10-22: no switch inside the player).
   const { lang: appLang } = useAppLanguage();
   const lang = appLang || initialLang;
@@ -57,7 +59,6 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   const [timerEnd, setTimerEnd] = useState(0);
   const [timerLeft, setTimerLeft] = useState(0);
   const [timerMenu, setTimerMenu] = useState(false);
-  const [rotateHint, setRotateHint] = useState(true);
   const [finished, setFinished] = useState(false);
   const swipe = useRef<{ x: number; y: number; id: number } | null>(null);
   const [fullscreen, setFullscreen] = useState(false);
@@ -241,9 +242,9 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
         fullscreen
           ? // Full screen: a rail in a side drawer (right in English, left in Arabic), opened on its arrow handle.
             'max-h-full shrink-0 flex-col items-center overflow-y-auto px-1.5 py-2 [overflow-anchor:none]'
-          : // Phones: the buttons wrap onto rows (Back and Next live on the slide now). From lg it is one full-width row under
-            // the slide that scrolls with the page, never floating over it (owner, 2026-10-22).
-            'sticky bottom-2 z-20 w-full flex-wrap justify-center px-3 py-2 lg:static lg:flex-nowrap lg:justify-start'
+          : // Under the slide, fixed in place with it (never sticky, never floating), wrapping onto rows instead of running off
+            // the side when the screen is narrow or rotated (owner, 2026-10-22 and 2026-10-23).
+            'w-full max-w-full flex-wrap justify-center px-3 py-2 xl:justify-start'
       }`}
     >
       <button type="button" className={btn(grid)} onClick={() => setGrid((g) => !g)} aria-pressed={grid} title={L('All pages (G)', 'كل الصفحات (G)')} aria-label={L('All pages', 'كل الصفحات')}>
@@ -279,7 +280,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
           ))}
         </span>
       )}
-      <span className={fullscreen ? 'my-1.5 h-px w-full bg-[#8B4935]/15' : 'mx-1 hidden h-7 w-px bg-[#8B4935]/20 lg:mx-auto lg:block'} aria-hidden="true" />
+      <span className={fullscreen ? 'my-1.5 h-px w-full bg-[#8B4935]/15' : 'mx-1 hidden h-7 w-px bg-[#8B4935]/20 xl:mx-auto xl:block'} aria-hidden="true" />
       {lesson.opening && (
         <button type="button" className={btn(opening)} onClick={() => setOpening((o) => !o)} aria-pressed={opening} title={L('Series opening: meet the characters', 'مقدمة السلسلة: تعرّف على الشخصيات')} aria-label={L('Series opening', 'مقدمة السلسلة')}>
           <Clapperboard className="w-5 h-5 shrink-0" />
@@ -324,10 +325,16 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
           type="button"
           onClick={toggleFullscreen}
           title={L('Full screen (F)', 'ملء الشاشة (F)')}
-          className={`${current.optional ? '' : 'lg:ms-auto'} max-lg:order-first max-lg:w-full h-12 shrink-0 whitespace-nowrap inline-flex items-center justify-center gap-2 rounded-full bg-[#C51F24] px-5 text-[15px] font-bold text-white shadow-[0_10px_24px_-12px_rgba(197,31,36,0.8)] transition-[background-color,transform] duration-150 hover:bg-[#A8181D] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C] focus-visible:ring-offset-2`}
+          className={`${current.optional ? '' : 'xl:ms-auto'} relative max-xl:order-first max-xl:w-full h-12 shrink-0 whitespace-nowrap inline-flex items-center justify-center gap-2 rounded-full bg-[#C51F24] px-5 text-[15px] font-bold text-white shadow-[0_10px_24px_-12px_rgba(197,31,36,0.8)] transition-[background-color,transform] duration-150 hover:bg-[#A8181D] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C] focus-visible:ring-offset-2`}
         >
-          <Maximize2 className="w-5 h-5" />
+          {/* On a phone held upright the hint is the button itself: a phone that turns sideways and one short line. */}
+          <motion.span className="hidden portrait:max-xl:inline-flex" aria-hidden="true"
+            animate={reduce ? undefined : { rotate: [0, 0, -90, -90, 0] }} transition={{ duration: 3, repeat: Infinity, times: [0, 0.3, 0.5, 0.8, 1] }}>
+            <Smartphone className="w-5 h-5" />
+          </motion.span>
+          <Maximize2 className="w-5 h-5 portrait:max-xl:hidden" />
           {L('Full screen', 'ملء الشاشة')}
+          <span className="hidden text-[12px] font-semibold text-white/80 portrait:max-xl:inline">{L('· best sideways', '· أحسن بالعرض')}</span>
         </button>
       )}
     </nav>
@@ -370,7 +377,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
   const toolsSide = ar ? 'left' : 'right';
 
   return (
-    <div ref={rootRef} onPointerDownCapture={primeSounds} dir="ltr" className={`flex gap-3 ${fillWindow ? 'fixed inset-0 z-[100]' : 'relative'} ${fullscreen ? 'band-deep h-full p-3 pb-16' : 'flex-col'}`}>
+    <div ref={rootRef} onPointerDownCapture={primeSounds} dir="ltr" className={`flex gap-3 ${fillWindow ? 'fixed inset-0 z-[100]' : 'relative'} ${fullscreen ? 'band-deep h-full p-3 pb-16 [@media(max-height:620px)]:p-0' : 'flex-col'}`}>
       <div dir={ar ? 'rtl' : 'ltr'} className={`relative flex flex-col gap-3 overflow-hidden ${fullscreen ? 'min-h-0 flex-1' : ''}`}>
         <div className={`flex min-w-0 flex-1 flex-col gap-3 ${fullscreen ? 'h-full min-h-0' : ''}`}>
           <div
@@ -433,7 +440,25 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
               )}
               <AnimatePresence>{praise && <Praise />}</AnimatePresence>
               <AnimatePresence>
-                {finished && (
+                {finished && sample && (
+                  <motion.div dir={ar ? 'rtl' : 'ltr'} className="band-deep absolute inset-0 z-40 flex flex-col items-center justify-center gap-7 px-24 text-center"
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5 }}>
+                    <motion.span className="flex h-36 w-36 items-center justify-center rounded-full bg-[#E5A93C]/15 ring-2 ring-[#E5A93C]/60" aria-hidden="true"
+                      initial={reduce ? false : { scale: 0.6, rotate: -12 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', bounce: 0.35, duration: 0.8 }}>
+                      <Lock className="h-16 w-16 text-[#F6D58E]" />
+                    </motion.span>
+                    <p className="font-serif text-[72px] font-bold leading-[1.05] text-white">{sample.teaser}</p>
+                    <p className="max-w-[1000px] font-sans text-[30px] leading-snug text-white/80">
+                      {L(`You watched ${lesson.pages.length} of ${sample.totalPages} pages. Book a free trial lesson and your teacher opens the rest with you.`,
+                        `شفت ${lesson.pages.length} من ${sample.totalPages} صفحة. احجز حصة تجريبية مجانية، والمعلم يفتحلك باقي الدرس.`)}
+                    </p>
+                    <div className="flex gap-4">
+                      <button type="button" onClick={() => { setFinished(false); goPage(0); }} className="rounded-full bg-white/10 px-8 py-4 font-sans text-[26px] font-bold text-white ring-1 ring-white/30 hover:bg-white/20">{L('Watch again', 'اتفرج تاني')}</button>
+                      <button type="button" onClick={sample.onBook} className="rounded-full bg-[#C51F24] px-10 py-4 font-sans text-[28px] font-bold text-white shadow-[0_14px_30px_-12px_rgba(197,31,36,0.8)] hover:bg-[#A8181D]">{L('Book a free trial', 'احجز حصة تجريبية مجانية')}</button>
+                    </div>
+                  </motion.div>
+                )}
+                {finished && !sample && (
                   <motion.div dir={ar ? 'rtl' : 'ltr'} className="band-deep absolute inset-0 z-40 flex flex-col items-center justify-center gap-8 text-center"
                     initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.4 }}>
                     <motion.svg width="120" height="120" viewBox="0 0 100 100" aria-hidden="true" initial={reduce ? false : { rotate: -45, scale: 0.6 }} animate={{ rotate: 0, scale: 1 }} transition={{ type: 'spring', stiffness: 140, damping: 16 }}>
@@ -484,46 +509,27 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
               <button type="button" onClick={forward} aria-label={page === last && step >= total ? L('Finish the lesson', 'خلّص الدرس') : L('Next', 'التالي')} title={L('Next (→ or Space)', 'التالي (→ أو مسافة)')}
                 className="pointer-events-auto flex h-11 items-center gap-2 rounded-full bg-[#C51F24] ps-4 pe-3 text-white shadow-[0_12px_28px_-10px_rgba(197,31,36,0.7)] transition-[transform,opacity] duration-150 hover:bg-[#A9191E] active:scale-95 disabled:opacity-30 sm:h-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C]">
                 {page === last && step >= total ? (
-                  <span className="text-sm font-bold">{L('Finish', 'خلّص الدرس')}</span>
+                  <span className="text-sm font-bold">{sample ? L('See the rest', 'شوف الباقي') : L('Finish', 'خلّص الدرس')}</span>
                 ) : total > 0 && (
                   <span className="flex gap-1" aria-hidden="true">
                     {Array.from({ length: total }).map((_, i) => <span key={i} className={`h-1.5 w-1.5 rounded-full transition-colors ${i < step ? 'bg-white' : 'bg-white/35'}`} />)}
                   </span>
                 )}
-                {page === last && step >= total ? <Check className="h-6 w-6" aria-hidden="true" /> : <ChevronRight className="h-6 w-6" aria-hidden="true" />}
+                {page === last && step >= total ? (sample ? <Lock className="h-5 w-5" aria-hidden="true" /> : <Check className="h-6 w-6" aria-hidden="true" />) : <ChevronRight className="h-6 w-6" aria-hidden="true" />}
               </button>
             </div>
           </div>
-          {/* Below ~575px of slide width the canvas text is too small to read; give its words at reading size. */}
-          {!fullscreen && scale < 0.36 && (
-            <>
-              {rotateHint && (
-                <div className="hidden items-center gap-3 rounded-2xl bg-[#FFFDF7] p-3 text-[#1E1410] shadow-sm ring-1 ring-black/5 portrait:flex" role="note">
-                  <motion.span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F6D58E]" aria-hidden="true"
-                    animate={reduce ? undefined : { rotate: [0, 0, -90, -90, 0] }} transition={{ duration: 3, repeat: Infinity, times: [0, 0.3, 0.5, 0.8, 1] }}>
-                    <Smartphone className="h-5 w-5" />
-                  </motion.span>
-                  <span className="flex-1 text-sm font-semibold leading-snug">
-                    {L('Turn your phone sideways, or tap full screen, for the best view.', 'لف الموبايل بالعرض، أو دوس ملء الشاشة، عشان تشوف الدرس أحسن.')}
-                  </span>
-                  <button type="button" onClick={toggleFullscreen} className="rounded-full bg-[#C51F24] px-3 py-2 text-xs font-bold text-white">{L('Full screen', 'ملء الشاشة')}</button>
-                  <button type="button" onClick={() => setRotateHint(false)} aria-label={L('Dismiss', 'اقفل')} className="rounded-full p-1.5 text-[#453D34] hover:bg-black/5"><X className="h-4 w-4" /></button>
-                </div>
-              )}
-              {grid ? (
-                <ol className="grid grid-cols-2 gap-2" aria-label={L('All pages', 'كل الصفحات')}>
-                  {lesson.pages.map((p, i) => (
-                    <li key={i}>
-                      <button type="button" dir="ltr" lang="en" onClick={() => goPage(i)} className={`min-h-11 w-full rounded-2xl px-3 py-2 text-start text-sm font-bold ${i === page ? 'bg-[#E5A93C] text-[#1E1410]' : 'bg-[#FFFDF7] text-[#1E1410] ring-1 ring-black/5'}`}>
-                        <span className="me-1.5 opacity-60">{i + 1}</span>{p.title}{p.optional && <span className="ms-1.5 opacity-60">· {L('Optional', 'إضافية')}</span>}
-                      </button>
-                    </li>
-                  ))}
-                </ol>
-              ) : (
-                <SlideText page={current} step={step} />
-              )}
-            </>
+          {/* The page list at a readable size on phones, where the grid inside the slide is too small. */}
+          {!fullscreen && scale < 0.36 && grid && (
+            <ol className="grid grid-cols-2 gap-2" aria-label={L('All pages', 'كل الصفحات')}>
+              {lesson.pages.map((p, i) => (
+                <li key={i}>
+                  <button type="button" dir="ltr" lang="en" onClick={() => goPage(i)} className={`min-h-11 w-full rounded-2xl px-3 py-2 text-start text-sm font-bold ${i === page ? 'bg-[#E5A93C] text-[#1E1410]' : 'bg-[#FFFDF7] text-[#1E1410] ring-1 ring-black/5'}`}>
+                    <span className="me-1.5 opacity-60">{i + 1}</span>{p.title}{p.optional && <span className="ms-1.5 opacity-60">· {L('Optional', 'إضافية')}</span>}
+                  </button>
+                </li>
+              ))}
+            </ol>
           )}
         </div>
         {!teacher ? null : isWide ? (

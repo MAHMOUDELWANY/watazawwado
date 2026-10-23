@@ -93,40 +93,6 @@ export function Slide({ lesson, pageIndex, step, onCorrect, onGameResult }: Slid
   );
 }
 
-/** The slide's words at reading size, for screens where the 16:9 canvas is too small to read (a phone held upright).
- *  It follows the same build steps as the canvas, so it never shows more than the teacher has revealed. */
-export function SlideText({ page, step }: { page: LessonPage; step: number }) {
-  const v = visibility(page, step);
-  // The answer page of the reveal keeps its title back until the veil parts (see the 'unveil' composition).
-  const hideTitle = compositionFor(page) === 'unveil' && page.layout === 'evidence' && v.lines === 0;
-  if (hideTitle) return null;
-  const e = page.evidence;
-  return (
-    <section lang="en" dir="ltr" aria-label="Slide text" className="space-y-2 rounded-[20px] bg-[#FFFDF7] px-4 py-3 text-[#1E1410] ring-1 ring-black/5">
-      <h3 className="font-serif text-xl font-bold leading-tight">{page.title}</h3>
-      {v.evidence && e ? (
-        <figure className="space-y-1">
-          <blockquote lang="ar" dir="rtl" className="font-serif text-2xl leading-[1.7]">{e.arabic}</blockquote>
-          <figcaption className="text-[15px] leading-snug">
-            <span className="italic">“{e.meaning}”</span>
-            <span className="mt-0.5 block text-[13px] font-bold" style={{ color: P.copper }}>{e.reference}</span>
-          </figcaption>
-        </figure>
-      ) : (
-        page.lines.slice(0, v.lines).map((l, i) => (
-          <p key={i} className={`text-[16px] leading-snug ${i === v.lines - 1 ? 'font-semibold' : 'opacity-70'}`}>{l}</p>
-        ))
-      )}
-      {v.items > 0 && (
-        <ol className="flex flex-wrap gap-1.5">
-          {page.items!.slice(0, v.items).map((it) => <li key={it} className="rounded-full bg-[#FCEFD2] px-2.5 py-0.5 text-[14px] font-bold">{it}</li>)}
-        </ol>
-      )}
-      {v.interaction && page.interaction && <p className="text-[16px] font-bold" style={{ color: P.teal }}>{page.interaction.prompt}</p>}
-    </section>
-  );
-}
-
 const KHATAM = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Cg fill='none' stroke='%238B4935' stroke-opacity='0.13' stroke-width='1.4'%3E%3Crect x='24' y='24' width='48' height='48'/%3E%3Crect x='24' y='24' width='48' height='48' transform='rotate(45 48 48)'/%3E%3Ccircle cx='48' cy='48' r='8'/%3E%3C/g%3E%3C/svg%3E\")";
 
 /** The brand's eight-point khatam star. */

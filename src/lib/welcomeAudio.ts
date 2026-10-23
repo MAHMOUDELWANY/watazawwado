@@ -83,7 +83,8 @@ export async function playWelcome(inGesture = true): Promise<boolean> {
   } else {
     const start = performance.now();
     const step = (now: number) => {
-      const t = Math.min(1, (now - start) / (FADE_S * 1000));
+      // rAF's timestamp is the frame start, which can be slightly before `start`; never hand volume a negative value.
+      const t = Math.min(1, Math.max(0, (now - start) / (FADE_S * 1000)));
       el.volume = TARGET_VOLUME * t;
       if (t < 1) raf = requestAnimationFrame(step);
     };

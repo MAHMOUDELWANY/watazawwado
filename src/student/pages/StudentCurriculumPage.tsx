@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Lock, CalendarPlus, Sparkles } from 'lucide-react';
 import { authedJson } from '../../lib/authedJson';
 import { BrandSpinner } from '../../components/ui/BrandLoader';
@@ -8,6 +8,7 @@ import { ErrorState } from '../../components/ErrorState';
 import { StudentMap, type MapSubject } from '../../curriculum/StudentMap';
 import { LessonPlayer } from '../../curriculum/LessonPlayer';
 import { SUBJECTS, findLesson, samples } from '../../curriculum/catalog';
+import { Door, DOORS } from '../../curriculum/Door';
 
 interface CurriculumData {
   booked: boolean;
@@ -25,35 +26,53 @@ function useCurriculum() {
   return { data, error, retry: () => setAttempt((n) => n + 1) };
 }
 
-/** A taste of each version (Kids, Teens, Adults): the opening of Lesson 1, picked by tab. Shown to every account. */
+/** A taste of each version (Kids, Teens, Adults) as the curriculum's arched doors. A door opens the opening pages of
+ *  Lesson 1; the sample stops behind a lock with a call to book (owner, 2026-10-23). */
 function Samples({ lang }: { lang: 'ar' | 'en' }) {
   const ar = lang === 'ar';
   const L = (en: string, arText: string) => (ar ? arText : en);
+  const navigate = useNavigate();
   const list = samples();
-  const [pick, setPick] = useState(0);
-  const current = list[pick];
-  if (!current) return null;
+  const [pick, setPick] = useState<number | null>(null);
+  const current = pick === null ? undefined : list[pick];
+  if (!list.length) return null;
   return (
-    <section className="space-y-4" aria-labelledby="samples-title">
-      <div>
+    <section className="space-y-5" aria-labelledby="samples-title">
+      <div className="text-center">
         <p className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-[var(--copper)]">
           <Sparkles className="w-3.5 h-3.5" /> {L('Free samples', 'عيّنات مجانية')}
         </p>
-        <h2 id="samples-title" className="font-display text-xl font-bold text-foreground">{L('A taste of our curriculum', 'جزء من مناهجنا')}</h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          {L('The opening of the first Zad Essentials lesson, for each age. Pick one and watch.', 'بداية أول درس من «أول الزاد» لكل سن. اختار واحد واتفرج.')}
+        <h2 id="samples-title" className="font-display text-2xl sm:text-3xl font-bold text-foreground">{L('Step through a door', 'ادخل من باب')}</h2>
+        <p className="text-sm text-muted-foreground mt-1 max-w-xl mx-auto">
+          {L('The opening of the first Zad Essentials lesson, for each age. Watch it, then book to see the rest.', 'بداية أول درس من «أول الزاد» لكل سن. اتفرج، واحجز عشان تشوف الباقي.')}
         </p>
       </div>
-      <div role="tablist" aria-label={L('Age group', 'السن')} className="flex flex-wrap gap-2">
-        {list.map((s, i) => (
-          <button key={s.track.id} type="button" role="tab" aria-selected={i === pick} onClick={() => setPick(i)}
-            className={`rounded-full px-4 py-2 text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${i === pick ? 'bg-teal text-white' : 'glass-1 text-foreground hover:bg-surface-subtle'}`}>
-            {ar ? s.track.versionAr : s.track.version} <span className="opacity-70">· {s.track.audience}</span>
-          </button>
-        ))}
-      </div>
-      <h3 dir="ltr" className="font-display text-lg font-bold text-foreground text-start">{current.lesson.number}. {current.lesson.title}</h3>
-      <LessonPlayer key={current.track.id} lesson={current.lesson} lang={lang} />
+      {current ? (
+        <div className="space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <button type="button" onClick={() => setPick(null)} className="inline-flex items-center gap-1.5 text-sm font-semibold text-teal hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded">
+              <ArrowLeft className="w-4 h-4 rtl:rotate-180" /> {L('All samples', 'كل العيّنات')}
+            </button>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#E5A93C]/15 px-3 py-1 text-xs font-bold text-[var(--copper)]">
+              <Lock className="w-3.5 h-3.5" /> {L(`Sample · ${current.lesson.pages.length} of ${current.totalPages} pages`, `عيّنة · ${current.lesson.pages.length} من ${current.totalPages} صفحة`)}
+            </span>
+          </div>
+          <h3 dir="ltr" className="font-display text-lg font-bold text-foreground text-start">{current.lesson.number}. {current.lesson.title}</h3>
+          <LessonPlayer key={current.track.id} lesson={current.lesson} lang={lang}
+            sample={{ totalPages: current.totalPages, teaser: ar ? current.teaserAr : current.teaser, onBook: () => navigate('/student/book') }} />
+          <Link to="/student/book" className="block">
+            <Button className="w-full"><CalendarPlus className="w-4 h-4 me-2" /> {L('Book a free trial to unlock the full lesson', 'احجز حصة تجريبية مجانية وافتح الدرس كله')}</Button>
+          </Link>
+        </div>
+      ) : (
+        <ul className={DOORS}>
+          {list.map((s, i) => (
+            <Door key={s.track.id} index={i} art={s.track.art} onOpen={() => setPick(i)}
+              title={ar ? s.track.versionAr : s.track.version} tagline={L(`Ages ${s.track.audience}`, `من ${s.track.audience} سنة`)}
+              facts={[ar ? s.teaserAr : s.teaser]} enter={L('Watch the sample', 'اتفرج على العيّنة')} />
+          ))}
+        </ul>
+      )}
     </section>
   );
 }
@@ -73,7 +92,7 @@ export default function StudentCurriculumPage({ lang }: { lang: 'ar' | 'en' }) {
         <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground">{L('My curriculum', 'منهجي')}</h1>
         <Samples lang={lang} />
         <div className="glass-2 rounded-[var(--r-4,28px)] p-6 text-center space-y-3">
-          <h3 className="font-display text-lg font-bold text-foreground">{L('Who was the visitor no one knew?', 'مين الغريب اللي محدش عرفه؟')}</h3>
+          <h3 className="font-display text-lg font-bold text-foreground">{L('Like what you saw?', 'عجبك اللي شفته؟')}</h3>
           <p className="text-muted-foreground max-w-md mx-auto">
             {L(
               'Book a free trial lesson and your teacher will finish the story with you, then play the game at the end.',

@@ -174,16 +174,18 @@ export const groupOf = (trackId: string | undefined) => GROUPS.find((g) => g.id 
  * shortcut: drafts are shown to students here on the owner's request; remove the unreviewed ones at launch.
  */
 export const SAMPLES = [
-  { subject: 'zad-kids', number: 1, pages: 5 },
-  { subject: 'zad-teens', number: 1, pages: 5 },
-  { subject: 'zad-adults', number: 1, pages: 9 },
+  { subject: 'zad-kids', number: 1, pages: 5, teaser: 'Who was the visitor in white?', teaserAr: 'مين الضيف اللي لابس أبيض؟' },
+  { subject: 'zad-teens', number: 1, pages: 5, teaser: 'Who was the stranger with no dust?', teaserAr: 'مين الغريب اللي مفيش عليه غبار؟' },
+  { subject: 'zad-adults', number: 1, pages: 9, teaser: 'Who was the man no one knew?', teaserAr: 'مين الرجل اللي محدش عرفه؟' },
 ] as const;
 
-export function samples(): { track: SubjectEntry; lesson: Lesson }[] {
+export function samples(): { track: SubjectEntry; lesson: Lesson; totalPages: number; teaser: string; teaserAr: string }[] {
   return SAMPLES.flatMap((s) => {
     const track = SUBJECTS.find((t) => t.id === s.subject);
     const lesson = findLesson(s.subject, s.number);
-    return track && lesson ? [{ track, lesson: { ...lesson, chapters: [], pages: lesson.pages.slice(0, s.pages) } }] : [];
+    return track && lesson
+      ? [{ track, totalPages: lesson.pages.length, teaser: s.teaser, teaserAr: s.teaserAr, lesson: { ...lesson, chapters: [], pages: lesson.pages.slice(0, s.pages) } }]
+      : [];
   });
 }
 

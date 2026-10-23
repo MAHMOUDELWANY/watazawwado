@@ -30,15 +30,15 @@ function Film({ leak = true }: { leak?: boolean }) {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
       {leak && !reduce && (
-        <motion.div className="absolute top-[-20%] h-[140%] w-[60%] rounded-full"
-          style={{ background: 'radial-gradient(closest-side, rgba(255,190,120,0.32), rgba(255,140,80,0.08) 60%, transparent)', mixBlendMode: 'screen', filter: 'blur(30px)' }}
-          initial={{ left: '-60%' }} animate={{ left: ['-60%', '110%'] }} transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut', repeatDelay: 4 }} />
+        <motion.div className="absolute left-0 top-[-20%] h-[140%] w-[60%] rounded-full will-change-transform"
+          style={{ background: 'radial-gradient(closest-side, rgba(255,190,120,0.26), rgba(255,140,80,0.07) 55%, transparent 72%)', mixBlendMode: 'screen' }}
+          initial={{ x: '-100%' }} animate={{ x: ['-100%', '190%'] }} transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut', repeatDelay: 4 }} />
       )}
-      <motion.svg className="absolute -inset-[10%] h-[120%] w-[120%] opacity-[0.10] mix-blend-overlay"
-        animate={reduce ? undefined : { x: ['0%', '-3%', '2%', '-1%'], y: ['0%', '2%', '-2%', '1%'] }} transition={{ duration: 0.5, repeat: Infinity, ease: 'linear' }}>
+      {/* Grain is static: an animated turbulence filter re-renders every frame and made the page stutter (owner, 2026-10-23). */}
+      <svg className="absolute inset-0 h-full w-full opacity-[0.08] mix-blend-overlay">
         <filter id="a1grain"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" /></filter>
         <rect width="100%" height="100%" filter="url(#a1grain)" />
-      </motion.svg>
+      </svg>
       <div className="absolute inset-0" style={{ background: 'radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(0,0,0,0.42) 100%)' }} />
     </div>
   );
@@ -70,7 +70,7 @@ function Beam({ x, y, angle = 30, length = 120, width = 26, opacity = 0.5 }: { x
     <motion.div className="pointer-events-none absolute origin-top" aria-hidden="true"
       style={{ left: `${x}%`, top: `${y}%`, width: `${width}%`, height: `${length}%`, marginLeft: `-${width / 2}%`, rotate: `${angle}deg`,
         background: 'linear-gradient(180deg, rgba(255,236,190,0.75), rgba(255,220,160,0.18) 60%, transparent)', clipPath: 'polygon(42% 0, 58% 0, 100% 100%, 0 100%)',
-        filter: 'blur(14px)', mixBlendMode: 'screen' }}
+        maskImage: 'linear-gradient(90deg, transparent, #000 35%, #000 65%, transparent)', WebkitMaskImage: 'linear-gradient(90deg, transparent, #000 35%, #000 65%, transparent)', mixBlendMode: 'screen' }}
       initial={{ opacity: 0 }} animate={reduce ? { opacity } : { opacity: [opacity * 0.6, opacity, opacity * 0.6] }}
       transition={reduce ? { duration: 0.6 } : { duration: 7, repeat: Infinity, ease: 'easeInOut' }} />
   );
@@ -93,7 +93,7 @@ function Caption({ children, ar, style, delay = 0, align = 'left', tone = 'dark'
   const dark = tone === 'dark';
   return (
     <motion.div className={`pointer-events-none absolute flex max-w-[78%] items-stretch gap-3 rounded-[10px] px-4 py-2.5 ${align === 'center' ? '-translate-x-1/2' : ''}`}
-      style={{ background: dark ? 'rgba(8,16,22,0.62)' : 'rgba(250,246,238,0.86)', backdropFilter: 'blur(10px)', boxShadow: '0 18px 40px -20px rgba(0,0,0,0.8)', ...style }}
+      style={{ background: dark ? 'rgba(8,16,22,0.8)' : 'rgba(250,246,238,0.94)', boxShadow: '0 18px 40px -20px rgba(0,0,0,0.8)', ...style }}
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: reduce ? 0.2 : 0.5, delay: reduce ? 0 : delay }}>
       <motion.span className="w-[3px] shrink-0 rounded-full" style={{ background: GOLD, transformOrigin: 'top' }}
         initial={reduce ? false : { scaleY: 0 }} animate={{ scaleY: 1 }} transition={{ duration: 0.5, delay: reduce ? 0 : delay + 0.1, ease }} />
@@ -199,7 +199,7 @@ export function MirrorWipe({ v }: { v: Built }) {
   return (
     <>
       <motion.div className="absolute inset-0" aria-hidden="true"
-        style={{ background: 'linear-gradient(180deg, rgba(220,230,236,0.42), rgba(196,210,220,0.36))', backdropFilter: 'blur(5px)' }}
+        style={{ background: 'linear-gradient(180deg, rgba(222,231,236,0.62), rgba(198,211,220,0.56))' }}
         initial={false}
         animate={{ clipPath: v.lines >= 1 ? 'polygon(0 0,100% 0,100% 24%,0 34%,0 56%,100% 46%,100% 100%,0 100%)' : 'polygon(0 0,100% 0,100% 24%,0 34%,0 34%,100% 24%,100% 100%,0 100%)' }}
         transition={{ duration: reduce ? 0 : 2.2, ease }} />
@@ -244,9 +244,9 @@ export function FuneralPasses({ v }: { v: Built }) {
           animate={{ x: [0, -30, 0], opacity: [0.3, 0.8, 0.3] }} transition={{ duration: 8 + r() * 6, repeat: Infinity, ease: 'easeInOut' }} />
       ))}
       {!reduce && (
-        <motion.div className="pointer-events-none absolute top-[48%] h-[20%] w-[40%]" aria-hidden="true"
-          style={{ background: 'radial-gradient(closest-side, rgba(255,236,190,0.45), transparent)', mixBlendMode: 'screen', filter: 'blur(10px)' }}
-          initial={{ left: '-40%' }} animate={{ left: '110%' }} transition={{ duration: 12, repeat: Infinity, ease: 'linear' }} />
+        <motion.div className="pointer-events-none absolute left-0 top-[48%] h-[20%] w-[40%] will-change-transform" aria-hidden="true"
+          style={{ background: 'radial-gradient(closest-side, rgba(255,236,190,0.4), transparent)', mixBlendMode: 'screen' }}
+          initial={{ x: '-100%' }} animate={{ x: '260%' }} transition={{ duration: 12, repeat: Infinity, ease: 'linear' }} />
       )}
       {v.lines >= 2 && <Caption style={{ left: '8%', top: '24%' }} delay={0.3}>Everyone here is sure</Caption>}
       {v.interaction && <Caption style={{ left: '8%', top: '78%' }} delay={0.3}>Sure, and not moved</Caption>}
@@ -299,7 +299,7 @@ export function GapSteps({ labels, label }: { labels: (string | null)[]; label: 
             <motion.div key={i} className="absolute bottom-0 w-[26%] rounded-t-[10px]"
               style={{ left: `${s.x}%`, height: `${s.h}%`, transformOrigin: 'bottom',
                 background: ['linear-gradient(180deg, rgba(120,160,175,0.55), rgba(40,70,85,0.35))', 'linear-gradient(180deg, rgba(220,140,100,0.65), rgba(110,50,30,0.45))', 'linear-gradient(180deg, rgba(255,215,140,0.9), rgba(200,140,50,0.55))'][i],
-                boxShadow: `inset 0 1px 0 rgba(255,255,255,0.5), 0 0 ${i === 2 && lit >= 3 ? 70 : 20}px -6px rgba(255,210,140,${i < lit ? 0.6 : 0})`, backdropFilter: 'blur(6px)' }}
+                boxShadow: `inset 0 1px 0 rgba(255,255,255,0.5), 0 0 ${i === 2 && lit >= 3 ? 70 : 20}px -6px rgba(255,210,140,${i < lit ? 0.6 : 0})` }}
               initial={false} animate={{ scaleY: i < lit ? 1 : 0.02, opacity: i < lit ? 1 : 0.25 }} transition={{ duration: reduce ? 0 : 1.2, ease }} />
           ))}
         </div>
@@ -384,8 +384,8 @@ export function SandAround(_: { v: Built }) {
   const layer = (n: number, seed: number, speed: number, thick: number, alpha: number) => {
     const r = rng(seed);
     return Array.from({ length: n }, (_, i) => (
-      <motion.span key={`${seed}-${i}`} className="absolute block rounded-full" style={{ top: `${r() * 100}%`, width: 30 + r() * 90, height: thick, background: `linear-gradient(90deg, rgba(225,185,120,0), rgba(225,185,120,${alpha}))`, filter: thick > 3 ? 'blur(1.5px)' : undefined }}
-        initial={{ left: '-20%' }} animate={{ left: '115%' }} transition={{ duration: (1.6 + r()) / speed, delay: r() * 2, repeat: Infinity, ease: 'linear' }} />
+      <motion.span key={`${seed}-${i}`} className="absolute left-0 block rounded-full will-change-transform" style={{ top: `${r() * 100}%`, width: 30 + r() * 90, height: thick, background: `linear-gradient(90deg, rgba(225,185,120,0), rgba(225,185,120,${alpha}))` }}
+        initial={{ x: -140 }} animate={{ x: 900 }} transition={{ duration: (1.6 + r()) / speed, delay: r() * 2, repeat: Infinity, ease: 'linear' }} />
     ));
   };
   return (
@@ -650,8 +650,8 @@ export function CountersFade({ v }: { v: Built }) {
       <div className="absolute left-[14%] right-[8%] top-[18%] space-y-4">
         {COUNTS.map((c, i) => (
           <motion.div key={c.label} className="flex items-baseline justify-between rounded-[14px] px-5 py-3"
-            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(239,232,220,0.12)', backdropFilter: 'blur(8px)' }}
-            initial={false} animate={gone ? { opacity: 0, y: -40, filter: 'blur(10px)' } : { opacity: 1, y: 0, filter: 'blur(0px)' }}
+            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(239,232,220,0.12)' }}
+            initial={false} animate={gone ? { opacity: 0, y: -40 } : { opacity: 1, y: 0 }}
             transition={{ duration: reduce ? 0.2 : 1.6, delay: i * 0.25, ease }}>
             <span className="font-sans text-[20px] font-semibold" style={{ color: 'rgba(239,232,220,0.7)' }}>{c.label}</span>
             <span className="font-serif text-[46px] font-bold tabular-nums" style={{ color: BONE }}><Counter from={c.from} to={c.to} run={v.lines >= 1} /></span>
@@ -777,7 +777,7 @@ export function MistToSight({ labels, label }: { labels: (string | null)[]; labe
         {stage >= 1 && <Beam x={50} y={74} angle={180} length={90} width={60} opacity={0.5} />}
         {stage >= 2 && <Bloom x={50} y={72} size={70} strength={0.8} />}
         <motion.div className="absolute inset-0" aria-hidden="true"
-          style={{ background: 'linear-gradient(180deg, rgba(228,234,238,0.88), rgba(206,216,222,0.82))', backdropFilter: 'blur(16px)' }}
+          style={{ background: 'linear-gradient(180deg, rgba(228,234,238,0.88), rgba(206,216,222,0.82))' }}
           initial={false}
           animate={{ clipPath: stage >= 1 ? 'ellipse(0% 0% at 10% 90%)' : 'ellipse(150% 150% at 10% 90%)' }}
           transition={{ duration: reduce ? 0 : 2.2, ease: [0.5, 0, 0.2, 1] }}>
