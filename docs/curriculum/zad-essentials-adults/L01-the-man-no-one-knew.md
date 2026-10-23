@@ -1,7 +1,7 @@
 # Lesson 1: The Man No One Knew
 
 Zad Essentials · Adults (18+) · Part 1 (From Knowing to Certainty) · 60 minutes, every page shown
-Status: **brief approved by the owner 2026-10-23** (all three open points accepted: Jobs hook, Hanzalah in Lesson 1, levels of yaqeen as the course backbone). **Page text written 2026-10-23**, waiting for the owner's review. Pages, their order and text will live only in the code
+Status: **brief approved by the owner 2026-10-23** (all three open points accepted: Jobs hook, Hanzalah in Lesson 1, levels of yaqeen as the course backbone). Page text approved 2026-10-23. **Built pages done 2026-10-23** (code scenes in `src/curriculum/slides/lessons/a01.tsx`); waiting for the owner's 12 stills (table below) and review. Pages, their order and text will live only in the code
 (`src/curriculum/content/zad-adults/l01-the-man-no-one-knew.ts`, RULES §1.12). Look: `../style/adults.md` (approved
 2026-10-23).
 
@@ -187,14 +187,13 @@ The first approved scene (`madinah`) is saved as `public/curriculum/zad-adults/r
 | `madinah` | Scene | No | The hadith (setting) | Then: Madinah long ago at morning, the courtyard of a simple mosque of mud brick and palm trunks, woven mats, palm shadows, soft warm light. No people. |
 | `stranger` | Scene | No | The stranger arrives | Then: the desert edge of old Madinah, wind blowing sand across the frame; small and far away in the centre, seen only from behind, a figure in very white clothes with very black hair walking towards the town. No face visible. |
 | `cushions` | Scene | No | Knees to knees | Then: close view inside the old mosque, two plain cushions on a woven mat placed very close, facing each other, soft light from a high opening falling between them. No people. |
-| `hourglass` | Prop | **Yes** | "Tell me about the Hour" | Same photographic style as the reference image. A single old wooden hourglass with pale sand, centred, soft studio light from the upper left, a gentle shadow under it, transparent background (PNG), nothing else, no text. |
 | `graves` | Scene | No | At-Takathur 102:1–2 | Then and now at once: a simple Muslim graveyard in late afternoon, plain low stones and mounds of earth, long shadows, a dusty path through it. No people. Keep the right third calm. |
 | `horizon` | Scene | No | Wow: from hearing to seeing | A vast, open dawn horizon over gentle desert hills, the sun just below the edge, the sky moving from deep teal to gold. No people. Clear and sharp (the code adds the mist). |
 | `lane` | Scene | No | Then and Now: Hanzalah | Then: dusk in an old Madinah lane between mud-brick houses, a warm lamp glowing in an open doorway at the end; at most a small figure seen from behind walking towards it. No face. |
 | `monday` | Scene | No | Then and Now: today | Now: Monday morning, an office desk by a window, a laptop screen glowing with soft shapes, a coffee cup, rain on the glass; a folded small prayer mat at the edge of the desk. No people. Keep the left half calm. |
 | `night` | Scene | No | Hand-off | A night sky full of stars over a dark desert horizon, the Milky Way rising from the lower left. No people. |
 
-The case-question page, the review, the three levels and Zad al-Yaqeen use code-drawn visuals: no image needed.
+The case-question pages, the review, the three levels, the chain of narrators, the hourglass (drawn in code at the built-pages step instead of a prop) and Zad al-Yaqeen use code-drawn visuals: no image needed.
 
 ## Sources used (to add to `../sources.md` when the page text is written)
 

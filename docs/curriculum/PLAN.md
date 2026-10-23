@@ -42,9 +42,11 @@ Last update: 2026-10-23. History of how we got here: §8 (progress log).
   quotes as code-built cards).
 - **Done:** Lesson 1 brief approved 2026-10-23 (Jobs hook, Hanzalah in L1, levels of yaqeen as the course backbone).
   Lesson 1 page text written (31 pages, `src/curriculum/content/zad-adults/`), catalog entry `zad-adults` added.
-- **Waiting for the owner:** review of Lesson 1 page text (draft, `reviewed: false`, teacher-only), English slides and
-  Arabic teacher notes.
-- **Next after review:** Lesson 1 built pages (13 images from the brief, code scenes, the wow scene).
+- **Done:** Lesson 1 page text approved; built pages done 2026-10-23: code scenes for every page
+  (`slides/lessons/a01.tsx`), the wow scene "From hearing to seeing", the chain of narrators, the hourglass and the Zad
+  al-Yaqeen notebook drawn in code.
+- **Waiting for the owner:** the 12 stills listed in the L1 brief (prompts ready), then review of the lesson in the player.
+- **Next after review:** Lesson 2 (A World That Should Not Exist) brief.
 
 ### Seerah and the Scholar's Path
 - Seerah (Kids / Teens / Adults): planned, not started. Scholar's Path: books, sessions and prices are the owner's call
@@ -507,3 +509,7 @@ B3–B5 → continue lesson by lesson.
 - **2026-10-23** — Owner approved the Adults L1 brief and its three open points. Page text written: 31 pages, Arabic
   teacher notes, catalog entry `zad-adults` (46-lesson plan, five parts); test added for "no optional pages" in Adults.
   tsc and curriculum tests pass. Waiting for the owner's review.
+- **2026-10-23** — Owner approved the Adults L1 page text. Built pages: 27 code scenes in `slides/lessons/a01.tsx`
+  (documentary look, slow motion, few sounds), registered in `lessons/index.ts` and `SCENE_IMAGES`; hourglass drawn in
+  code instead of a prop. Every page checked at its final step in a local preview (desktop and phone size, no console
+  errors); reduced motion handled in code but not emulated. Waiting for the owner's 12 stills.

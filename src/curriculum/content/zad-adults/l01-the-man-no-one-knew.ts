@@ -15,7 +15,7 @@ export const lesson01Adults: Lesson = {
   titleAr: 'الرجل الذي لم يعرفه أحد',
   part: 'Part 1 · From Knowing to Certainty',
   minutes: 60,
-  goal: 'By the end of this lesson you will know the three levels of the deen, and why what most of us lack is certainty: the information we already have.',
+  goal: 'By the end of this lesson you will know the three levels of the deen, and why most of us need certainty more than we need new information.',
   reviewed: false,
   teacherAr: lesson01AdultsTeacherAr,
   outcomes: [
@@ -257,7 +257,7 @@ export const lesson01Adults: Lesson = {
     {
       title: 'First question: Islam',
       station: 'zad',
-      layout: 'concept',
+      layout: 'evidence',
       scene: 'a1Pillars',
       lines: ['"Tell me about Islam."', 'He listened, then said: "You are right." And we were amazed.'],
       items: ['The two testimonies', 'Salah', 'Zakah', 'Fasting Ramadan', 'Hajj, for whoever is able'],
@@ -275,7 +275,7 @@ export const lesson01Adults: Lesson = {
     {
       title: 'Second question: Iman',
       station: 'zad',
-      layout: 'concept',
+      layout: 'evidence',
       scene: 'a1Six',
       lines: ['"Tell me about Iman."', 'Six things, held as true in the heart.'],
       items: ['Allah', 'His angels', 'His books', 'His messengers', 'The Last Day', 'Qadar, its good and its bad'],

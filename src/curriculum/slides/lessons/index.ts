@@ -7,6 +7,7 @@ import { TwoCaptains, OrbitsOrder, ShahadaWords, OneHeart, StarPieces, NeedsChai
 import { DoorsBreathe, TypingDots, WhyListOpens, DawnRays, SandPassesBy, CushionsStudy, PillarsRise, AsksAndConfirms, SixAroundHeart, NoOneWatching, FarLight, LightOpens, ThreeDoorsBuild, FootprintsCircle, RootsUnder, ListOnDesk, BigBang } from './t01';
 import { NightSky, ScreenFlare, CauseChain, UniverseBegins, ThreeOptions, AyahThreeSlots, SteadyLine, CakeHowWho, BuiltIn, TheFirst, LookUp, ListCrossed, GameGlow } from './t02';
 import { OneSunRises, RecallTicks, TeamOnScreen, TwoBosses, TeamOfThree, LikesRise, PulledCompass, IkhlasStar, LovedHeart, CentreOfLife, ThirdCrossed, LibraryQuestion } from './t03';
+import { ShaftOfLight, MirrorWipe, HandsWarm, FuneralPasses, SunsetCertainty, GapSteps, MadinahMorning, NarratorChain, SandAround, CushionsClose, ColumnsRise, SixLights, IhsanSteps, HourglassRuns, FarLightOpens, RingsInward, ShadowsLengthen, CountersFade, SoundToHeart, EyeOpens, ArchesDeeper, MistToSight, LaneTwoStates, MondayPile, CaseLight, NotebookOpens, FirstQuestionSky } from './a01';
 import { ThreeWaysBuild, CastleClues, ThreeWaysQuran, SkyStars, KeyFits, DesertLook, BabyGlow, CamelKit, CastleSparkle, CrashBricks, BoatRipples, MagnifierDrop, CoverStars, HandStudy, LadybirdWalk, JiddoRecall } from './l02';
 
 /* Which scene build acts out a page, by scene id (docs/curriculum/RULES.md §1.10). Each lesson adds its scenes in its
@@ -19,6 +20,7 @@ export const BUILDS: Partial<Record<SceneId, React.ComponentType<{ labels: (stri
   twoCaptains: TwoCaptains, oneHeart: OneHeart, starPieces: StarPieces,
   tDoors: ThreeDoorsBuild, tl2Chain: CauseChain, tl2Expand: UniverseBegins, tl2Three: ThreeOptions,
   tl3Recall: RecallTicks, tl3Bosses: TwoBosses, tl3Team: TeamOfThree, tl3Center: CentreOfLife,
+  a1Gap: GapSteps, a1Levels: RingsInward, a1Horizon: MistToSight,
 };
 
 /** Evidence pages (layout 'evidence'): a large annotated study beside the Arabic. */
@@ -29,6 +31,8 @@ export const STUDIES: Partial<Record<SceneId, React.ComponentType<{ v: Built; la
   tSitting: CushionsStudy, tPillars: PillarsRise, tSix: SixAroundHeart, tIhsan: NoOneWatching, tReveal: LightOpens, tFathers: FootprintsCircle,
   tl2Tur: AyahThreeSlots, tl2Yaqeen: SteadyLine, tl2Fitrah: BuiltIn, tl2First: TheFirst, tl2Pitch: LookUp,
   tl3Orbits: OrbitsOrder, tl3Shahada: ShahadaWords, tl3Hawa: PulledCompass, tl3Ikhlas: IkhlasStar, tl3Loved: LovedHeart,
+  a1Yaqeen: SunsetCertainty, a1Pillars: ColumnsRise, a1Six: SixLights, a1Ihsan: IhsanSteps, a1Hour: HourglassRuns, a1Reveal: FarLightOpens,
+  a1Graves: ShadowsLengthen, a1Know: SoundToHeart, a1See: EyeOpens, a1Inside: ArchesDeeper, a1Lane: LaneTwoStates,
 };
 
 /** Motion over the painting on cover, story, question and cliffhanger pages. On a question page the painting then shows
@@ -41,6 +45,9 @@ export const MOMENTS: Partial<Record<SceneId, React.ComponentType<{ v: Built; le
   tReveal: FarLight, tKnowWhy: RootsUnder, tNight: ListOnDesk, tNext: BigBang,
   tl2Cover: NightSky, tl2Science: ScreenFlare, tl2Kitchen: CakeHowWho, tl2Bench: ListCrossed, tl2Gaming: GameGlow,
   tl3Cover: OneSunRises, tl3Gaming: TeamOnScreen, tl3Likes: LikesRise, tl3Prayer: ThirdCrossed, tl3Library: LibraryQuestion,
+  a1Cover: ShaftOfLight, a1Mirror: MirrorWipe, a1Bedside: HandsWarm, a1Street: FuneralPasses, a1Madinah: MadinahMorning, a1Source: NarratorChain,
+  a1Stranger: SandAround, a1Cushions: CushionsClose, a1Count: CountersFade, a1Monday: MondayPile, a1Case: CaseLight, a1Notebook: NotebookOpens,
+  a1Next: FirstQuestionSky,
 };
 
 /** Today's provision dropped into Jiddo's bag on the Ahd page, by lesson number. */
