@@ -20,9 +20,14 @@ test('tab bars point at existing routes for every role', () => {
   assert.match(dash, /setIsMobileMenuOpen\(true\)/, '"More" opens the drawer');
   const student = fs.readFileSync('src/student/StudentApp.tsx', 'utf8');
   assert.match(student, /<MobileTabBar/);
-  for (const to of ["to: '/student'", "to: '/student/lessons'", "to: '/student/book'", "to: '/student/messages'", "to: '/student/account'"]) {
-    assert.ok(student.includes(to), `student tab ${to}`);
+  for (const path of ["path: '/student'", "path: '/student/lessons'", "path: '/student/book'", "path: '/student/messages'", "to=\"/student/account\""]) {
+    assert.ok(student.includes(path), `student nav ${path}`);
   }
+  assert.match(student, /setSidebarOpen\(true\)/, '"More" opens the sheet');
+  // One place per screen size: header tabs and rail share no page; bottom bar and the More sheet share none.
+  assert.match(student, /const topTabs = \[home, lessons, book, curriculum\];/);
+  assert.match(student, /const railItems = \[messages, calendar, progress, guide, invite\];/);
+  assert.match(student, /const moreItems = \[curriculum, calendar, progress, guide, invite\];/);
 });
 
 test('welcome loader is wired after sign-in for staff and students', () => {

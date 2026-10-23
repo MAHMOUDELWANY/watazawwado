@@ -18,7 +18,6 @@ import {
   Users,
   BookOpen,
   Settings,
-  Menu,
   X,
   Sparkles,
   UserPlus,
@@ -87,7 +86,6 @@ export function DashboardApp() {
   const isSuperAdmin = teacherRole === 'super_admin';
 
   const drawerRef = React.useRef<HTMLElement>(null);
-  const menuTriggerRef = React.useRef<HTMLButtonElement>(null);
   const closeButtonRef = React.useRef<HTMLButtonElement>(null);
   const prevMobileMenuOpenRef = React.useRef(isMobileMenuOpen);
 
@@ -157,7 +155,7 @@ export function DashboardApp() {
     } else {
       document.body.style.overflow = '';
       if (prevMobileMenuOpenRef.current) {
-        menuTriggerRef.current?.focus();
+        document.getElementById('teacher-more-btn')?.focus();
       }
     }
     prevMobileMenuOpenRef.current = isMobileMenuOpen;
@@ -285,13 +283,18 @@ export function DashboardApp() {
           teacherNavigation[4],
         ]
     ).map((item) => ({ key: item.path, label: item.name, icon: item.icon, to: item.path, active: isActive(item.path) })),
-    { key: 'more', label: L('More', 'المزيد'), icon: MoreHorizontal, onClick: () => setIsMobileMenuOpen(true) },
+    { key: 'more', id: 'teacher-more-btn', label: L('More', 'المزيد'), icon: MoreHorizontal, onClick: () => setIsMobileMenuOpen(true) },
   ];
+
+  // Each page has one place per screen size (owner, 2026-10-23): header tabs + bell on tablets and up, the rail holds the
+  // rest; on phones the bottom bar holds the main sections and the "More" drawer the rest.
+  const railItems = navigation.filter((item) => item.path !== '/dashboard/notifications' && !topTabs.includes(item));
+  const drawerItems = navigation.filter((item) => !mobileTabs.some((tab) => tab.to === item.path));
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
   const globalTourSteps = [
     {
-      targetId: ['teacher-rail', 'teacher-sidebar', 'teacher-mobile-menu-btn'],
+      targetId: ['teacher-rail', 'teacher-sidebar', 'teacher-more-btn'],
       title: L('Workspace Navigation', 'القائمة الرئيسية'),
       description: L('Easily navigate between sessions, schedule, student roster, and workspace controls.', 'التنقل بين الدروس، جدول المواعيد، قائمة الطلاب، وإدارة المنصة.'),
       position: 'bottom' as const,
@@ -345,7 +348,7 @@ export function DashboardApp() {
           aria-label={L('Teacher Primary Navigation', 'روابط التنقل الرئيسية للمعلم')}
           className="flex-1 min-h-0 overflow-y-auto [scrollbar-width:none] flex flex-col items-center gap-1 px-2"
         >
-          {navigation.map((item) => {
+          {railItems.map((item) => {
             const active = isActive(item.path);
             return (
               <Link
@@ -365,17 +368,6 @@ export function DashboardApp() {
             );
           })}
         </nav>
-        <span className="w-6 h-px bg-white/15" aria-hidden="true" />
-        <button
-          type="button"
-          onClick={() => signOut()}
-          data-tour="teacher-logout"
-          title={L('Log Out', 'تسجيل الخروج')}
-          aria-label={L('Log Out', 'تسجيل الخروج')}
-          className="w-11 h-11 rounded-full flex items-center justify-center hover:text-white hover:bg-white/10 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C]"
-        >
-          <LogOut className="w-[18px] h-[18px] rtl:rotate-180" aria-hidden="true" />
-        </button>
       </aside>
 
       <SidebarHandle
@@ -427,7 +419,7 @@ export function DashboardApp() {
           className="flex-1 overflow-y-auto py-4 px-4 space-y-1"
           aria-label={L('Teacher Primary Navigation', 'روابط التنقل الرئيسية للمعلم')}
         >
-          {navigation.map((item) => {
+          {drawerItems.map((item) => {
             const active = isActive(item.path);
             return (
               <Link
@@ -503,18 +495,6 @@ export function DashboardApp() {
           <div className="max-w-6xl mx-auto flex items-center gap-2 sm:gap-3">
             {/* Start: menu (phones) and workspace name */}
             <div className="flex items-center gap-2 min-w-0 flex-1 md:flex-none">
-              <button
-                ref={menuTriggerRef}
-                id="teacher-mobile-menu-btn"
-                data-tour="teacher-mobile-menu-btn"
-                onClick={toggleMobileMenu}
-                className={`md:hidden ${iconButton} bg-surface/80 backdrop-blur-xl ring-1 ring-border/60 shrink-0`}
-                aria-label={L('Menu', 'القائمة الجانبية')}
-                aria-expanded={isMobileMenuOpen}
-                aria-controls="teacher-sidebar"
-              >
-                <Menu className="w-5 h-5" />
-              </button>
               <div className="min-w-0 text-start">
                 <span className="block font-display font-bold text-lg leading-tight truncate">{L('Watazawwado', 'وتزودوا')}</span>
                 <span className="block text-[11px] text-muted-foreground truncate">{roleLabel}</span>
@@ -575,7 +555,7 @@ export function DashboardApp() {
                 onClick={() => setShowGlobalTour(true)}
                 title={L('Tour Guide', 'دليل الاستخدام')}
                 aria-label={L('Tour Guide', 'دليل الاستخدام')}
-                className={`hidden sm:flex ${iconButton} text-teal`}
+                className={`hidden md:flex ${iconButton} text-teal`}
               >
                 <Compass className="w-[18px] h-[18px]" />
               </button>
@@ -598,9 +578,9 @@ export function DashboardApp() {
                 <Globe className="w-3.5 h-3.5 text-accent" />
                 <span>{lang === 'en' ? 'عربي' : 'EN'}</span>
               </button>
-              <ThemeToggle compact className="hidden sm:flex" />
+              <span className="hidden md:contents"><ThemeToggle compact /></span>
               <div id="teacher-account-dropdown" data-tour="teacher-account-dropdown">
-                <AccountDropdown initials={(displayName || user?.email || 'M').charAt(0).toUpperCase()} isAr={ar} />
+                <AccountDropdown initials={(displayName || user?.email || 'M').charAt(0).toUpperCase()} isAr={ar} accountPath="/dashboard/settings" />
               </div>
             </div>
           </div>

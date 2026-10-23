@@ -11,7 +11,7 @@ export interface MobileTab {
   to?: string;
   onClick?: () => void;
   active?: boolean;
-  /** The academy's main action (Book): crimson circle even when not selected. */
+  /** The academy's main action (Book): a gold ring even when not selected. */
   primary?: boolean;
   badge?: number | null;
   id?: string;
@@ -24,74 +24,56 @@ export function isTabActive(path: string, pathname: string, root: string): boole
   return path === root ? clean === root : clean === path || clean.startsWith(`${path}/`);
 }
 
+const BAR = '#101B22';
+
 /**
- * Phone bottom tab bar (hidden from md up). The selected tab rises into a coloured circle and the
- * glass bar opens a smooth notch under it; both glide between tabs.
+ * Phone bottom tab bar (hidden from md up), after the owner's reference (2026-10-23): a dark floating pill; the selected
+ * tab rises into a crimson circle that sits in a smooth bump of the bar, and both glide to the next tab on a spring.
+ * Every tab keeps its label, so nothing is an unlabelled icon. Thumb zone: the bar sits at the bottom edge, 64px tall,
+ * every target at least 48px wide.
  */
-export function MobileTabBar({ tabs, label, hidden, isAr }: { tabs: MobileTab[]; label: string; hidden?: boolean; isAr: boolean }) {
+export function MobileTabBar({ tabs, label, hidden }: { tabs: MobileTab[]; label: string; hidden?: boolean; isAr?: boolean }) {
   const still = Boolean(useReducedMotion());
-  const activeIndex = tabs.findIndex((t) => t.active);
-  // Visual centre of the active tab; RTL lays the tabs out from the right.
-  const centre = activeIndex < 0 ? 50 : ((activeIndex + 0.5) / tabs.length) * 100;
-  const notchX = `${isAr ? 100 - centre : centre}%`;
-  const spring = still ? { duration: 0 } : { type: 'spring' as const, stiffness: 420, damping: 34 };
-  const notch = activeIndex < 0
-    ? 'none'
-    : 'radial-gradient(circle 34px at var(--notch-x) 0, transparent 32px, #000 33.5px)';
+  const spring = still ? { duration: 0 } : { type: 'spring' as const, bounce: 0.25, duration: 0.5 };
 
   return (
     <div
-      className={`md:hidden fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 mx-auto max-w-md transition-opacity duration-200 ${hidden ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+      className={`md:hidden fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 mx-auto max-w-md transition-[opacity,transform] duration-200 ${hidden ? 'pointer-events-none translate-y-4 opacity-0' : 'opacity-100'}`}
     >
-      <nav aria-label={label} className="relative h-16">
-        {/* Glass bar with the notch cut out under the active tab */}
-        {/* The mask would clip an outer shadow, so the shadow sits on its own layer. */}
-        <span aria-hidden="true" className="absolute inset-0 rounded-[var(--r-4)] shadow-[var(--shadow-3)]" />
-        <motion.div
-          aria-hidden="true"
-          className="tabbar-glass !mb-0 absolute inset-0"
-          initial={false}
-          animate={{ '--notch-x': notchX } as any}
-          transition={spring}
-          style={{ WebkitMaskImage: notch, maskImage: notch } as React.CSSProperties}
-        />
-        <ul className="relative flex h-full items-stretch">
+      <nav aria-label={label} className="relative h-[68px] rounded-[26px] shadow-[0_18px_40px_-16px_rgba(5,15,22,0.75)]" style={{ background: BAR }}>
+        <span aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-[26px] ring-1 ring-white/10" />
+        <ul className="relative flex h-full items-stretch px-2.5">
           {tabs.map((tab) => {
             const Icon = tab.icon;
-            const bubbleColour = tab.primary ? 'bg-crimson text-white shadow-crimson/40' : 'bg-teal text-white shadow-teal/40';
             const inner = (
               <>
-                <span className="relative flex h-11 w-11 items-center justify-center">
-                  {tab.active && (
-                    <motion.span
-                      layoutId="mobile-tab-bubble"
-                      transition={spring}
-                      className={`absolute -top-6 h-12 w-12 rounded-full shadow-lg ${bubbleColour}`}
-                    />
-                  )}
-                  {!tab.active && tab.primary && <span className="absolute h-10 w-10 rounded-full bg-crimson shadow-md shadow-crimson/30" />}
-                  <motion.span
-                    className={`relative ${tab.active || tab.primary ? 'text-white' : 'text-muted-foreground group-hover:text-foreground'}`}
-                    initial={false}
-                    animate={{ y: tab.active ? -22 : 0 }}
-                    transition={spring}
-                  >
-                    <Icon className="h-[22px] w-[22px]" strokeWidth={tab.active ? 2.4 : 2} />
+                {tab.active && (
+                  // The bump: a circle of the bar's own colour rising above it, with two soft shoulders, and the crimson
+                  // disc inside. One layoutId, so it slides from tab to tab instead of blinking.
+                  <motion.span layoutId="tab-bump" transition={spring} aria-hidden="true" className="pointer-events-none absolute left-1/2 top-[-22px] h-[64px] w-[64px] -translate-x-1/2">
+                    <span className="absolute inset-0 rounded-full" style={{ background: BAR }} />
+                    <span className="absolute top-[22px] -left-[14px] h-[14px] w-[14px]" style={{ background: `radial-gradient(circle at 0 0, transparent 13.5px, ${BAR} 14px)` }} />
+                    <span className="absolute top-[22px] -right-[14px] h-[14px] w-[14px]" style={{ background: `radial-gradient(circle at 100% 0, transparent 13.5px, ${BAR} 14px)` }} />
+                    <span className="absolute inset-[7px] rounded-full bg-crimson shadow-[0_8px_22px_-6px_rgba(197,31,36,0.9)]" />
                   </motion.span>
+                )}
+                <motion.span className="relative flex h-7 items-center justify-center" initial={false} animate={{ y: tab.active ? -20 : 0 }} transition={spring}>
+                  {!tab.active && tab.primary && <span aria-hidden="true" className="absolute h-9 w-9 rounded-full ring-2 ring-[#E5A93C]/80" />}
+                  <Icon className={`h-[22px] w-[22px] ${tab.active ? 'text-white' : tab.primary ? 'text-[#F6D58E]' : 'text-white/60 group-hover:text-white'}`} strokeWidth={tab.active ? 2.4 : 2} />
                   {tab.badge ? (
-                    <span className={`absolute ${tab.active ? '-top-7' : 'top-0.5'} end-0 min-w-[18px] h-[18px] px-1 rounded-full bg-crimson text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-surface`}>
+                    <span className="absolute -top-1.5 -end-3 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[#E5A93C] px-1 text-[10px] font-bold text-[#1E1410] ring-2 ring-[#101B22]">
                       {tab.badge > 9 ? '9+' : tab.badge}
                     </span>
                   ) : null}
-                </span>
-                <span className={`-mt-1.5 text-[0.78rem] leading-none truncate max-w-full px-0.5 ${tab.active ? 'font-bold text-foreground' : 'font-medium text-muted-foreground'}`}>
+                </motion.span>
+                <span className={`relative mt-1 max-w-full truncate px-0.5 text-[11px] leading-none ${tab.active ? 'font-bold text-white' : 'font-medium text-white/55'}`}>
                   {tab.label}
                 </span>
               </>
             );
-            const cls = 'group flex h-full w-full flex-col items-center justify-center min-h-[44px] touch-manipulation rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary';
+            const cls = 'group relative flex h-full w-full min-w-[48px] flex-col items-center justify-center touch-manipulation rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C]';
             return (
-              <li key={tab.key} className="flex-1 min-w-0">
+              <li key={tab.key} className="relative flex-1 min-w-0">
                 {tab.to ? (
                   <Link to={tab.to} id={tab.id} data-tour={tab.tour} aria-current={tab.active ? 'page' : undefined} className={cls} onClick={tab.onClick}>
                     {inner}

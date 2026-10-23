@@ -8,9 +8,10 @@ import { SidebarHandle, useSidebarOpen } from '../components/ui/SidebarHandle';
 import { WelcomeLoader, useWelcomeGate, markJustSignedIn } from '../components/ui/WelcomeLoader';
 import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
+import { motion } from 'motion/react';
 import { HelpCircle, Globe, LogOut, BookOpen,
   User,
-  Menu,
+  MoreHorizontal,
   X,
   Sparkles,
   Calendar,
@@ -85,7 +86,6 @@ export default function StudentApp() {
     }
   }, [location.search, location.pathname]);
 
-  const menuTriggerRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLElement>(null);
   const prevSidebarOpenRef = useRef<boolean>(false);
@@ -139,9 +139,9 @@ export default function StudentApp() {
       };
     } else {
       document.body.style.overflow = '';
-      // If drawer was open previously and is now closed, restore focus to menu trigger
+      // If the sheet was open and is now closed, give focus back to the "More" tab that opened it
       if (prevSidebarOpenRef.current) {
-        menuTriggerRef.current?.focus();
+        document.getElementById('nav-more-btn')?.focus();
       }
     }
     prevSidebarOpenRef.current = sidebarOpen;
@@ -274,9 +274,10 @@ export default function StudentApp() {
     return <Navigate to="/dashboard" replace />;
   }
 
+  // Dev builds only (never production): ?preview opens any student page's shell without signing in, so the layout can be
+  // checked in a browser.
   const isDevProgressPreview =
     Boolean((import.meta as any).env?.DEV) &&
-    location.pathname.endsWith('/progress') &&
     new URLSearchParams(location.search).has('preview');
 
   if (showWelcome && user && !otpCelebrating && !isDevProgressPreview) {
@@ -360,69 +361,26 @@ export default function StudentApp() {
     );
   }
 
-  // Information Architecture Navigation Items (Reduced words, friendly, concise)
-  const navItems = [
-    { 
-      name: isAr ? 'الرئيسية' : 'Home', 
-      path: '/student', 
-      icon: BookOpen,
-      badge: null
-    },
-    { 
-      name: isAr ? 'الدروس' : 'Lessons', 
-      path: '/student/lessons', 
-      icon: Calendar,
-      badge: null
-    },
-    {
-      name: isAr ? 'تقويم العيلة' : 'Calendar',
-      path: '/student/calendar',
-      icon: CalendarDays,
-      badge: null
-    },
-    {
-      name: isAr ? 'مسيرتي' : 'My progress',
-      path: '/student/progress',
-      icon: Compass,
-      badge: null
-    },
-    { 
-      name: isAr ? 'حجز جديد' : 'Book', 
-      path: '/student/book', 
-      icon: Plus,
-      badge: null
-    },
-    {
-      name: isAr ? 'منهجي' : 'My curriculum',
-      path: '/student/curriculum',
-      icon: Library,
-      badge: null
-    },
-    {
-      name: isAr ? 'الرسائل' : 'Messages',
-      path: '/student/messages',
-      icon: MessageCircle,
-      badge: unreadChats || null
-    },
-    { 
-      name: isAr ? 'المرشد' : 'Guide', 
-      path: '/student/guide', 
-      icon: Sparkles,
-      badge: null
-    },
-    {
-      name: isAr ? 'ادعُ صاحبك' : 'Invite friends',
-      path: '/student/invite',
-      icon: Gift,
-      badge: null
-    },
-    {
-      name: isAr ? 'حسابي' : 'Account',
-      path: '/student/account',
-      icon: User,
-      badge: null
-    }
-  ];
+  // Every page lives in exactly one place per screen size (owner, 2026-10-23: nothing shown twice).
+  // Tablet/desktop, like the teacher's workspace: main sections as labelled pill tabs in the header, the other pages on
+  // the floating ink rail, notifications / language / theme / account in the utilities pill.
+  // Phone: main sections in the bottom bar, the other pages in the "More" sheet.
+  type NavItem = { name: string; path: string; icon: typeof BookOpen; badge?: number | null; id?: string; tour: string };
+  const home: NavItem = { name: isAr ? 'الرئيسية' : 'Home', path: '/student', icon: BookOpen, tour: 'student-home' };
+  const lessons: NavItem = { name: isAr ? 'الدروس' : 'Lessons', path: '/student/lessons', icon: Calendar, tour: 'student-lessons' };
+  const book: NavItem = { name: isAr ? 'احجز' : 'Book', path: '/student/book', icon: Plus, tour: 'student-book' };
+  const curriculum: NavItem = { name: isAr ? 'منهجي' : 'My curriculum', path: '/student/curriculum', icon: Library, tour: 'student-curriculum' };
+  const messages: NavItem = { name: isAr ? 'الرسائل' : 'Messages', path: '/student/messages', icon: MessageCircle, badge: unreadChats || null, tour: 'student-messages' };
+  const calendar: NavItem = { name: isAr ? 'تقويم العيلة' : 'Calendar', path: '/student/calendar', icon: CalendarDays, tour: 'student-calendar' };
+  const progress: NavItem = { name: isAr ? 'مسيرتي' : 'My progress', path: '/student/progress', icon: Compass, tour: 'student-progress' };
+  const guide: NavItem = { name: isAr ? 'المرشد' : 'Guide', path: '/student/guide', icon: Sparkles, tour: 'student-guide' };
+  const invite: NavItem = { name: isAr ? 'ادعُ صاحبك' : 'Invite friends', path: '/student/invite', icon: Gift, tour: 'student-invite' };
+
+  const topTabs = [home, lessons, book, curriculum];
+  const railItems = [messages, calendar, progress, guide, invite];
+  const moreItems = [curriculum, calendar, progress, guide, invite];
+  const isActive = (path: string) =>
+    isTabActive(path, location.pathname, '/student') || (path === '/student/account' && isTabActive('/student/profile', location.pathname, '/student'));
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const globalTourSteps = [
@@ -458,355 +416,234 @@ export default function StudentApp() {
     }
   ];
 
-  // Dynamic Header Title & Subtitle helper (Concise & friendly)
-  const getHeaderInfo = (pathname: string) => {
-    if (pathname === '/student' || pathname === '/student/') {
-      return {
-        title: isAr ? 'لوحة التحكم' : 'Overview',
-        subtitle: isAr ? 'مرحباً بك في مساحتك التعليمية' : 'Welcome to your learning space'
-      };
-    }
-    if (pathname.startsWith('/student/lessons')) {
-      return {
-        title: isAr ? 'الدروس' : 'Lessons',
-        subtitle: isAr ? 'جدول الجلسات المباشرة' : 'Your scheduled 1-on-1 sessions'
-      };
-    }
-    if (pathname.startsWith('/student/progress')) {
-      return {
-        title: isAr ? 'مسيرتي التعليمية' : 'Learning Path',
-        subtitle: isAr ? 'خطواتك وإنجازاتك درساً بعد درس' : 'Your steps and milestones lesson by lesson'
-      };
-    }
-    if (pathname.startsWith('/student/packages')) {
-      return {
-        title: isAr ? 'الباقات' : 'Packages',
-        subtitle: isAr ? 'رصيد الحصص والسجل' : 'Lesson credits and history'
-      };
-    }
-    if (pathname.startsWith('/student/book')) {
-      return {
-        title: isAr ? 'حجز درس' : 'Book a Lesson',
-        subtitle: isAr ? 'اختر الوقت المناسب لك' : 'Choose your preferred time'
-      };
-    }
-    if (pathname.startsWith('/student/guide')) {
-      return {
-        title: isAr ? 'مرشد التعلم' : 'Learning Guide',
-        subtitle: isAr ? 'مساعدك الذكي للتخطيط' : 'AI study assistant'
-      };
-    }
-    if (pathname.startsWith('/student/invite')) {
-      return {
-        title: isAr ? 'ادعُ صاحبك' : 'Invite friends',
-        subtitle: isAr ? 'شارك الخير، وخدوا رصيد انتوا الاتنين' : 'Share the good, and you both get credit'
-      };
-    }
-    if (pathname.startsWith('/student/account') || pathname.startsWith('/student/profile')) {
-      return {
-        title: isAr ? 'حسابي' : 'Account',
-        subtitle: isAr ? 'إعدادات الملف الشخصي' : 'Profile & settings'
-      };
-    }
-    if (pathname.startsWith('/student/notifications')) {
-      return {
-        title: isAr ? 'التنبيهات' : 'Notifications',
-        subtitle: isAr ? 'آخر التحديثات والإشعارات' : 'Recent updates and alerts'
-      };
-    }
-    if (pathname.startsWith('/student/messages')) {
-      return {
-        title: isAr ? 'الرسائل' : 'Messages',
-        subtitle: isAr ? 'كلّم فريقنا ومعلمك' : 'Chat with our team and your teacher'
-      };
-    }
-    if (pathname.startsWith('/student/placement')) {
-      return {
-        title: isAr ? 'اختبار تحديد المستوى' : 'Placement test',
-        subtitle: isAr ? 'أسئلة قصيرة على حسب مادتك' : 'Short questions for your subject'
-      };
-    }
-    if (pathname.startsWith('/student/payments')) {
-      return {
-        title: isAr ? 'المدفوعات' : 'Payments',
-        subtitle: isAr ? 'سجل الحصص والإيصالات' : 'Receipts & payment history'
-      };
-    }
-    return {
-      title: isAr ? 'لوحة التحكم' : 'Overview',
-      subtitle: isAr ? 'مساحتك التعليمية' : 'Learning Space'
-    };
-  };
-
-  const currentHeader = getHeaderInfo(location.pathname);
-  const studentInitial = profile?.name ? profile.name.charAt(0).toUpperCase() : (user?.email?.charAt(0).toUpperCase() || 'S');
+  const displayName = profile?.name || user?.email?.split('@')[0] || (isAr ? 'طالب' : 'Student');
+  const studentInitial = (profile?.name || user?.email || 'S').charAt(0).toUpperCase();
+  const spaceLabel = isFamilyAccount(profile) ? (isAr ? 'مساحة العيلة' : 'Family space') : (isAr ? 'مساحة الطالب' : 'Student space');
+  const INK = 'bg-[#0A2E35]/92 dark:bg-[#0B1C1F]/90';
+  const iconButton = 'tap-44 relative w-10 h-10 flex items-center justify-center rounded-full text-foreground hover:bg-surface-subtle transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary';
+  const pill = 'rounded-full bg-surface/80 dark:bg-surface/70 backdrop-blur-xl ring-1 ring-border/60 shadow-xs';
 
   return (
     <ActiveLearnerProvider profile={profile}>
     <div
-      className="min-h-screen bg-background text-foreground font-sans flex overflow-hidden"
+      className="relative isolate brand-lights h-screen supports-[height:100dvh]:h-dvh bg-background text-foreground font-sans flex overflow-hidden"
       dir={isAr ? 'rtl' : 'ltr'}
       lang={lang}
     >
-      {/* Mobile & Tablet Backdrop (< lg) */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/40 dark:bg-black/60 z-40 lg:hidden backdrop-blur-xs transition-opacity"
-          onClick={() => setSidebarOpen(false)}
-          aria-hidden="true"
-        />
-      )}
+      {/* Tablet & desktop: floating ink rail with the pages that are not header tabs */}
+      <aside
+        id="student-rail"
+        aria-label={isAr ? 'صفحات أخرى' : 'More pages'}
+        inert={!desktopSidebarOpen}
+        className={`hidden md:flex fixed start-4 top-1/2 -translate-y-1/2 z-30 w-[68px] max-h-[calc(100vh-2rem)] flex-col items-center gap-2 rounded-[2.25rem] py-3 ${INK} backdrop-blur-xl text-white/70 ring-1 ring-white/10 shadow-[0_24px_48px_-24px_rgba(5,54,63,0.65)] transition-[opacity,translate] duration-300 ease-out ${desktopSidebarOpen ? '' : 'opacity-0 -translate-x-[140%] rtl:translate-x-[140%] pointer-events-none'}`}
+      >
+        <Link to="/" aria-label={isAr ? 'موقع وتزودوا' : 'Watazawwado website'} className="rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C]">
+          <BrandLogo variant="compact" />
+        </Link>
+        <span className="w-6 h-px bg-white/15" aria-hidden="true" />
+        <nav className="flex-1 min-h-0 overflow-y-auto [scrollbar-width:none] flex flex-col items-center gap-1 px-2">
+          {railItems.map((item) => {
+            const active = isActive(item.path);
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                title={item.name}
+                aria-label={item.name}
+                aria-current={active ? 'page' : undefined}
+                data-tour={item.tour}
+                className={`group relative shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C] ${active ? 'text-white' : 'hover:text-white hover:bg-white/10'}`}
+              >
+                {active && <motion.span layoutId="student-rail-active" className="absolute inset-0 rounded-full bg-crimson shadow-md shadow-black/30" transition={{ type: 'spring', stiffness: 420, damping: 36 }} />}
+                <item.icon className="relative w-[18px] h-[18px]" aria-hidden="true" />
+                {item.badge ? <span className="absolute top-1.5 end-1.5 w-2 h-2 rounded-full bg-[#E5A93C] ring-2 ring-[#0A2E35]" /> : null}
+                {/* A visible name on hover/focus, so nobody has to guess an icon. */}
+                <span className="pointer-events-none absolute start-[calc(100%+14px)] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-full bg-[#0A2E35] px-3 py-1.5 text-xs font-semibold text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+                  {item.name}
+                </span>
+              </Link>
+            );
+          })}
+        </nav>
+      </aside>
 
-      {/* ========================================================================= */}
-      {/* MAIN PERSISTENT STUDENT SIDEBAR (Desktop lg: ~280px persistent, accessible drawer on mobile & tablet) */}
-      {/* ========================================================================= */}
+      <SidebarHandle
+        open={desktopSidebarOpen} onToggle={toggleDesktopSidebar} controls="student-rail"
+        labelOpen={isAr ? 'اخفي الشريط الجانبي' : 'Hide the sidebar'} labelClosed={isAr ? 'اظهر الشريط الجانبي' : 'Show the sidebar'}
+        className={`hidden md:flex fixed top-1/2 -translate-y-1/2 ${desktopSidebarOpen ? 'start-[88px]' : 'start-0'}`}
+      />
+
+      {/* Phone: the "More" sheet (pages that are not in the bottom bar, the account and settings) */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 bg-black/40 dark:bg-black/60 z-40 md:hidden backdrop-blur-xs transition-opacity" onClick={() => setSidebarOpen(false)} aria-hidden="true" />
+      )}
       <aside
         ref={drawerRef}
         id="student-sidebar"
         role={sidebarOpen ? 'dialog' : undefined}
         aria-modal={sidebarOpen ? 'true' : undefined}
-        aria-label={isAr ? 'شريط التنقل الجانبي للطالب' : 'Student Navigation Sidebar'}
-        className={`
-          fixed inset-y-0 z-50 flex flex-col transition-transform duration-250 ease-out shrink-0
-          /* Mobile styling: solid opaque surface drawer with shadow */
-          max-lg:bg-surface max-lg:text-foreground max-lg:border-e max-lg:border-border max-lg:shadow-2xl max-lg:w-72 max-lg:max-w-[85vw] max-lg:inset-inline-start-0
-          ${sidebarOpen 
-            ? 'max-lg:translate-x-0' 
-            : (isAr ? 'max-lg:translate-x-full' : 'max-lg:-translate-x-full')
-          }
-          /* Desktop styling: floating glass sidebar */
-          ${desktopSidebarOpen ? 'lg:static lg:translate-x-0 lg:w-[280px] lg:m-4 lg:rounded-3xl lg:glass-nav lg:shadow-xl lg:border lg:border-border/50' : 'lg:hidden lg:w-0 lg:m-0'}
-        `}
+        aria-label={isAr ? 'المزيد' : 'More'}
+        inert={!sidebarOpen}
+        className={`md:hidden fixed inset-x-0 bottom-0 z-50 flex flex-col max-h-[85dvh] rounded-t-[28px] bg-surface text-foreground shadow-2xl transition-transform duration-300 ease-premium ${sidebarOpen ? 'translate-y-0' : 'translate-y-full'}`}
       >
-        {/* Brand & Portal Header */}
-        <div className="h-20 flex items-center justify-between px-6 border-b border-border/50">
-          <Link 
-            to="/student" 
-            className="flex items-center gap-3 text-foreground hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg p-1"
-          >
-            <BrandLogo variant="compact" />
-            <div className="flex flex-col text-start">
-              <span className="font-display font-bold text-xl sm:text-2xl leading-none text-foreground">
-                {isAr ? 'وتزودوا' : 'Watazawwado'}
-              </span>
-              <span className="text-xs text-muted-foreground tracking-wider uppercase mt-1.5">
-                {isAr ? 'مساحة الطالب' : 'Student Space'}
-              </span>
-            </div>
-          </Link>
+        <div className="flex justify-center pt-2.5" aria-hidden="true"><span className="h-1.5 w-10 rounded-full bg-border" /></div>
+        <div className="flex items-center justify-between px-5 pt-2 pb-3">
+          <span className="font-display text-xl font-bold">{isAr ? 'المزيد' : 'More'}</span>
           <button
             ref={closeButtonRef}
             onClick={toggleSidebar}
-            className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            aria-label={isAr ? 'إغلاق القائمة' : 'Close menu'}
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full bg-surface-subtle text-muted-foreground hover:text-foreground cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            aria-label={isAr ? 'إغلاق' : 'Close'}
           >
             <X className="w-5 h-5" />
           </button>
         </div>
-
-        {/* Student Profile Quick Card in Sidebar */}
-        <Link
-          to="/student/account"
-          onClick={() => setSidebarOpen(false)}
-          className="p-4 m-4 rounded-2xl border border-border/50 bg-surface-subtle/30 hover:bg-surface-subtle transition-colors flex items-center gap-3 text-start group"
-          data-tour="student-account"
-        >
-          <div className="w-10 h-10 rounded-full bg-secondary/30 border border-secondary/50 text-interactive flex items-center justify-center font-bold text-sm shrink-0 shadow-sm">
-            {studentInitial}
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-sm font-semibold truncate text-foreground group-hover:text-primary transition-colors">
-              {profile?.name || user?.email?.split('@')[0] || (isAr ? 'طالب' : 'Student')}
-            </div>
-            <div className="text-[11px] text-muted-foreground truncate capitalize mt-0.5">
-              {profile?.learnerType || (isAr ? 'طالب منتظم' : 'Active Learner')}
-            </div>
-          </div>
-          <ChevronRight className={`w-4 h-4 text-muted-foreground group-hover:text-foreground transition-transform ${isAr ? 'rotate-180' : ''}`} />
-        </Link>
-
-        {/* Navigation Links */}
-        <nav 
-          className="flex-1 overflow-y-auto px-3 space-y-1.5"
-          aria-label={isAr ? 'روابط التنقل الرئيسية' : 'Primary Navigation Links'}
-        >
-          {navItems.map(item => {
-            const isActive = location.pathname === item.path || 
-              (item.path === '/student/account' && location.pathname === '/student/profile');
-            const Icon = item.icon;
-            
-            // Generate robust data-tour target from path (e.g. '/student/lessons' -> 'student-lessons')
-            const tourTarget = item.path === '/student' ? 'student-home' : item.path.replace(/^\//, '').replace(/\//g, '-');
-
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                id={item.path === '/student/book' ? 'nav-book-link-desktop' : item.path === '/student/account' ? 'nav-account-link-desktop' : undefined}
-                onClick={() => setSidebarOpen(false)}
-                aria-current={isActive ? 'page' : undefined}
-                data-tour={tourTarget}
-                className={`
-                  flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all touch-manipulation min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary group
-                  ${isActive
-                    ? 'bg-primary text-primary-foreground font-semibold shadow-md'
-                    : 'text-muted-foreground hover:bg-surface-subtle hover:text-foreground'
-                  }
-                `}
-              >
-                <div className="flex items-center gap-3.5 min-w-0">
-                  <Icon className={`w-4.5 h-4.5 shrink-0 ${isActive ? 'text-primary-foreground' : 'opacity-70 group-hover:opacity-100 transition-opacity'}`} />
-                  <span className="truncate">{item.name}</span>
-                </div>
-                {item.badge !== null && item.badge > 0 && (
-                  <span className={`px-2 py-0.5 text-[11px] font-bold rounded-full ${isActive ? 'bg-primary-foreground text-primary' : 'bg-primary text-primary-foreground'}`}>
-                    {item.badge}
+        <div className="flex-1 overflow-y-auto px-4 pb-[max(1rem,env(safe-area-inset-bottom))] space-y-4">
+          <Link
+            to="/student/account"
+            id="nav-account-link"
+            onClick={() => setSidebarOpen(false)}
+            aria-current={isActive('/student/account') ? 'page' : undefined}
+            data-tour="student-account"
+            className="flex items-center gap-3 p-3.5 rounded-2xl bg-surface-subtle/60 border border-border/60 text-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          >
+            <span className="w-12 h-12 rounded-full bg-secondary/30 border border-secondary/50 text-interactive flex items-center justify-center font-bold shrink-0">{studentInitial}</span>
+            <span className="flex-1 min-w-0">
+              <span className="block font-semibold truncate">{displayName}</span>
+              <span className="block text-xs text-muted-foreground">{isAr ? 'حسابي وبياناتي' : 'My account and details'}</span>
+            </span>
+            <ChevronRight className="w-5 h-5 text-muted-foreground rtl:rotate-180" />
+          </Link>
+          {/* Big labelled tiles: easy to read and to hit, also for parents who rarely use apps. */}
+          <nav className="grid grid-cols-2 gap-2.5" aria-label={isAr ? 'صفحات أخرى' : 'More pages'}>
+            {moreItems.map((item) => {
+              const active = isActive(item.path);
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setSidebarOpen(false)}
+                  aria-current={active ? 'page' : undefined}
+                  data-tour={item.tour}
+                  className={`flex flex-col items-start gap-3 rounded-2xl p-4 min-h-[96px] text-start transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${active ? `${INK} text-white` : 'bg-surface-subtle/60 border border-border/60 text-foreground active:scale-[0.98]'}`}
+                >
+                  <span className={`w-10 h-10 rounded-xl flex items-center justify-center ${active ? 'bg-crimson text-white' : 'bg-background text-primary'}`}>
+                    <item.icon className="w-5 h-5" aria-hidden="true" />
                   </span>
-                )}
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Sidebar Footer Controls */}
-        <div className="p-4 border-t border-border/50 flex flex-col gap-2">
-          <div className="flex items-center justify-between px-2 py-1">
-            <span className="text-xs text-muted-foreground">{isAr ? 'المظهر' : 'Theme'}</span>
-            <ThemeToggle />
-          </div>
-          <div className="flex items-center justify-between px-2 py-1">
-            <span className="text-xs text-muted-foreground">{isAr ? 'اللغة' : 'Language'}</span>
+                  <span className="text-sm font-semibold leading-tight">{item.name}</span>
+                </Link>
+              );
+            })}
+          </nav>
+          <div className="rounded-2xl border border-border/60 divide-y divide-border/60">
+            <div className="flex items-center justify-between px-4 min-h-[56px]">
+              <span className="text-sm font-medium">{isAr ? 'المظهر' : 'Theme'}</span>
+              <ThemeToggle />
+            </div>
             <button
-              onClick={toggleLang} data-tour="language-toggle"
-              className="px-3 py-1 min-h-11 rounded-lg text-xs font-semibold hover:bg-surface-subtle transition-colors cursor-pointer"
+              type="button"
+              onClick={() => { setSidebarOpen(false); setShowGlobalTour(true); }}
+              className="w-full flex items-center gap-3 px-4 min-h-[56px] text-sm font-medium text-start cursor-pointer"
             >
-              {isAr ? 'English' : 'عربي'}
+              <HelpCircle className="w-5 h-5 text-teal" /> {isAr ? 'جولة سريعة في الحساب' : 'Quick tour of your account'}
+            </button>
+            <button
+              type="button"
+              onClick={() => signOut()}
+              data-tour="student-logout"
+              className="w-full flex items-center gap-3 px-4 min-h-[56px] text-sm font-medium text-destructive text-start cursor-pointer"
+            >
+              <LogOut className="w-5 h-5 rtl:rotate-180" /> {isAr ? 'تسجيل الخروج' : 'Log out'}
             </button>
           </div>
-        
-    
-      <div className="p-4 mt-auto mb-[env(safe-area-inset-bottom)] lg:mb-0 border-t border-border/10">
-        <button 
-          onClick={() => { setSidebarOpen(false); setShowGlobalTour(true); }}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 mb-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-all font-semibold text-sm cursor-pointer"
-        >
-          <HelpCircle className="w-4 h-4" />
-          <span>{isAr ? 'دليل الاستخدام' : 'Tour Guide'}</span>
-        </button>
-        <button 
-        onClick={() => signOut()}
-        data-tour="student-logout"
-        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-destructive/10 text-destructive hover:bg-destructive hover:text-destructive-foreground transition-all font-semibold text-sm"
-      >
-        <LogOut className="w-4 h-4" />
-        <span>{isAr ? 'تسجيل الخروج' : 'Log Out'}</span>
-      </button>
-    </div>
-  </div>
-</aside>
+        </div>
+      </aside>
 
-      <SidebarHandle
-        open={desktopSidebarOpen} onToggle={toggleDesktopSidebar} controls="student-sidebar"
-        labelOpen={isAr ? 'اخفي الشريط الجانبي' : 'Hide the sidebar'} labelClosed={isAr ? 'اظهر الشريط الجانبي' : 'Show the sidebar'}
-        className={`hidden lg:flex fixed top-1/2 -translate-y-1/2 ${desktopSidebarOpen ? 'start-[296px]' : 'start-0'}`}
-      />
-
-      {/* ========================================================================= */}
-      {/* MAIN APPLICATION VIEWPORT & HEADER */}
-      {/* ========================================================================= */}
-      <div 
-        className="flex-1 flex flex-col min-w-0 h-screen supports-[height:100dvh]:h-dvh overflow-hidden"
+      <div
+        className={`flex-1 flex flex-col min-w-0 h-screen supports-[height:100dvh]:h-dvh overflow-hidden transition-[padding] duration-300 ease-out ${desktopSidebarOpen ? 'md:ps-[100px]' : 'md:ps-6'}`}
         aria-hidden={sidebarOpen ? true : undefined}
       >
-        {/* TOP APPLICATION HEADER (Responsive for Desktop and Mobile) */}
-        <header className="h-16 sm:h-20 flex items-center justify-between px-3 sm:px-6 lg:px-10 shrink-0 z-10 border-b border-border/10 bg-background/50 backdrop-blur-md">
-          {/* Left Side: Mobile Menu Button + Dynamic Page Title */}
-          <div className="flex items-center gap-2.5 sm:gap-4 min-w-0 flex-1">
-            <button
-              ref={menuTriggerRef}
-              onClick={toggleSidebar}
-              className="lg:hidden min-h-[40px] min-w-[40px] sm:min-h-[44px] sm:min-w-[44px] flex items-center justify-center rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-subtle touch-manipulation cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary shrink-0"
-              aria-label={isAr ? 'فتح القائمة الرئيسية' : 'Open menu'}
-              aria-expanded={sidebarOpen}
-              aria-controls="student-sidebar"
-            >
-              <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
-            </button>
-
-            <div className="flex flex-col text-start min-w-0 flex-1">
-              <h2 className="text-lg sm:text-2xl font-display font-bold text-foreground leading-tight truncate">
-                {currentHeader.title}
-              </h2>
-              <span className="text-xs sm:text-sm text-muted-foreground truncate hidden xs:block">
-                {currentHeader.subtitle}
+        <header className="shrink-0 z-20 px-3 sm:px-6 lg:px-8 pt-3 md:pt-4">
+          <div className="max-w-6xl mx-auto flex items-center gap-2 sm:gap-3">
+            {/* Start: who and where (phones show the logo here; tablets and up have it on the rail) */}
+            <Link to="/student" className="flex md:hidden xl:flex items-center gap-2 min-w-0 flex-1 md:flex-none rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+              <span className="md:hidden shrink-0"><BrandLogo variant="compact" /></span>
+              <span className="min-w-0 text-start">
+                <span className="block font-display font-bold text-lg leading-tight truncate">{isAr ? 'وتزودوا' : 'Watazawwado'}</span>
+                <span className="block text-[11px] text-muted-foreground truncate">{spaceLabel}</span>
               </span>
+            </Link>
+
+            {/* Centre: main sections */}
+            <nav aria-label={isAr ? 'الأقسام الرئيسية' : 'Main sections'} className={`hidden md:flex mx-auto items-center gap-1 p-1 ${pill}`}>
+              {topTabs.map((item) => {
+                const active = isActive(item.path);
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    id={item === book ? 'nav-book-link-desktop' : item === lessons ? 'nav-lessons-link-desktop' : undefined}
+                    data-tour={item.tour}
+                    aria-current={active ? 'page' : undefined}
+                    className={`relative flex items-center gap-2 px-3.5 lg:px-4 h-9 rounded-full text-sm font-semibold whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${active ? 'text-white' : item === book ? 'text-primary hover:text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+                  >
+                    {active && <motion.span layoutId="student-top-tab" className={`absolute inset-0 rounded-full ${INK}`} transition={{ type: 'spring', stiffness: 420, damping: 36 }} />}
+                    <item.icon className="relative w-4 h-4" aria-hidden="true" />
+                    <span className="relative">{item.name}</span>
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* End: child, tour, notifications, language, theme, account */}
+            <div className="flex items-center gap-1.5 shrink-0">
+              <ChildSwitcher isAr={isAr} />
+              <div className={`flex items-center gap-1 p-1 ${pill}`}>
+                <button
+                  type="button"
+                  id="student-header-tour-btn"
+                  data-tour="student-header-tour-btn"
+                  onClick={() => setShowGlobalTour(true)}
+                  title={isAr ? 'جولة سريعة' : 'Quick tour'}
+                  aria-label={isAr ? 'جولة سريعة' : 'Quick tour'}
+                  className={`hidden md:flex ${iconButton} text-teal`}
+                >
+                  <HelpCircle className="w-[18px] h-[18px]" />
+                </button>
+                <Link to="/student/notifications" id="student-notifications" data-tour="student-notifications" aria-label={isAr ? 'التنبيهات' : 'Notifications'} aria-current={isActive('/student/notifications') ? 'page' : undefined} className={iconButton}>
+                  <Bell className="w-[18px] h-[18px]" />
+                  {unreadNotificationsCount > 0 && (
+                    <span className="absolute top-0.5 end-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-crimson text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-surface">
+                      {unreadNotificationsCount > 9 ? '9+' : unreadNotificationsCount}
+                    </span>
+                  )}
+                </Link>
+                <button
+                  type="button"
+                  id="header-lang-btn"
+                  data-tour="header-lang-btn"
+                  onClick={toggleLang}
+                  aria-label={isAr ? 'Switch to English' : 'التبديل للعربية'}
+                  className="h-10 px-2.5 rounded-full text-xs font-semibold text-foreground hover:bg-surface-subtle transition-colors cursor-pointer flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                >
+                  <Globe className="w-3.5 h-3.5 text-accent" />
+                  <span>{isAr ? 'EN' : 'عربي'}</span>
+                </button>
+                <span className="hidden md:contents"><ThemeToggle compact /></span>
+                <div id="nav-account-link-desktop" className="hidden md:block">
+                  <AccountDropdown initials={studentInitial} isAr={isAr} accountPath="/student/account" />
+                </div>
+              </div>
             </div>
-          </div>
-
-          {/* Right Side: Quick Action Utilities (Tour, Lang, Notifications, Account) */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-            <ChildSwitcher isAr={isAr} />
-            {/* Quick Tour Button (hidden on phone, accessible via drawer/settings) */}
-            <button
-              type="button"
-              id="student-header-tour-btn"
-              data-tour="student-header-tour-btn"
-              onClick={() => setShowGlobalTour(true)}
-              title={isAr ? 'دليل الاستخدام' : 'Tour Guide'}
-              aria-label={isAr ? 'دليل الاستخدام' : 'Tour Guide'}
-              className="hidden sm:flex w-9 h-9 sm:w-10 sm:h-10 items-center justify-center rounded-full text-teal-800 dark:text-teal-200 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/30 transition-all cursor-pointer shadow-2xs"
-            >
-              <Compass className="w-4.5 h-4.5 text-teal-600 dark:text-teal-400" />
-            </button>
-
-            {/* Language Switcher */}
-            <button
-              type="button"
-              id="header-lang-btn"
-              data-tour="header-lang-btn"
-              onClick={toggleLang}
-              className="tap-44 relative px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold text-foreground hover:bg-surface-subtle border border-border/80 transition-colors cursor-pointer flex items-center gap-1"
-            >
-              <Globe className="w-3.5 h-3.5 text-accent" />
-              <span>{isAr ? 'EN' : 'عربي'}</span>
-            </button>
-
-            <Link
-              to="/student/messages"
-              className="tap-44 relative w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer border border-border/60 shrink-0"
-              aria-label={isAr ? 'الرسائل' : 'Messages'}
-            >
-              <MessageCircle className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
-              {unreadChats > 0 && (
-                <span className="absolute top-1 end-1 w-2 h-2 rounded-full bg-primary ring-2 ring-surface" />
-              )}
-            </Link>
-            <Link
-              to="/student/notifications"
-              id="student-notifications"
-              data-tour="student-notifications"
-              className="tap-44 relative w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-subtle transition-colors cursor-pointer border border-border/60 shrink-0"
-              aria-label={isAr ? 'التنبيهات' : 'Notifications'}
-            >
-              <Bell className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
-              {unreadNotificationsCount > 0 && (
-                <span className="absolute top-1 end-1 w-2 h-2 rounded-full bg-primary ring-2 ring-surface animate-pulse" />
-              )}
-            </Link>
-            <AccountDropdown 
-              initials={profile?.display_name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || 'S'} 
-              isAr={isAr} 
-            />
           </div>
         </header>
 
-        {/* Scrollable Main Application Content (Using full available viewport width intelligently) */}
-        <main 
+        <main
           id="student-main-content"
-          className={`flex-1 overflow-y-auto overflow-x-hidden w-full max-w-full px-3 sm:px-6 lg:px-8 py-5 sm:py-8 focus:outline-none ${MOBILE_TAB_BAR_PADDING}`}
+          className={`flex-1 overflow-y-auto overflow-x-hidden w-full max-w-full px-3 sm:px-6 lg:px-8 pt-5 sm:pt-6 focus:outline-none ${MOBILE_TAB_BAR_PADDING}`}
           tabIndex={-1}
         >
-          <div className="w-full max-w-7xl mx-auto min-w-0">
+          <div className="w-full max-w-6xl mx-auto min-w-0">
             <ErrorBoundary>
               <Routes>
               <Route path="/" element={<StudentHomePage lang={lang} />} />
@@ -853,21 +690,20 @@ export default function StudentApp() {
           </div>
         </main>
 
-        {/* Mobile bottom tab bar (Navigation Tabs V5, liquid notch) */}
+        {/* Phone bottom bar: the main sections, then "More" for everything else */}
         <MobileTabBar
           label={isAr ? 'التنقل السفلي' : 'Bottom mobile navigation'}
           hidden={sidebarOpen}
-          isAr={isAr}
           tabs={[
-            { key: 'home', label: isAr ? 'الرئيسية' : 'Home', icon: BookOpen, to: '/student', id: 'nav-home-link', tour: 'student-home' },
-            { key: 'lessons', label: isAr ? 'الدروس' : 'Lessons', icon: Calendar, to: '/student/lessons', id: 'nav-lessons-link', tour: 'student-lessons' },
-            { key: 'book', label: isAr ? 'احجز' : 'Book', icon: Plus, to: '/student/book', id: 'nav-book-link', tour: 'student-book', primary: true },
-            { key: 'messages', label: isAr ? 'الرسائل' : 'Messages', icon: MessageCircle, to: '/student/messages', tour: 'student-messages', badge: unreadChats },
-            { key: 'account', label: isAr ? 'حسابي' : 'Profile', icon: User, to: '/student/account', id: 'nav-account-link', tour: 'student-account' },
-          ].map((tab) => ({
-            ...tab,
-            active: isTabActive(tab.to, location.pathname, '/student') || (tab.key === 'account' && isTabActive('/student/profile', location.pathname, '/student')),
-          }))}
+            { key: 'home', label: home.name, icon: home.icon, to: home.path, id: 'nav-home-link', tour: home.tour, active: isActive(home.path) },
+            { key: 'lessons', label: lessons.name, icon: lessons.icon, to: lessons.path, id: 'nav-lessons-link', tour: lessons.tour, active: isActive(lessons.path) },
+            { key: 'book', label: book.name, icon: book.icon, to: book.path, id: 'nav-book-link', tour: book.tour, primary: true, active: isActive(book.path) },
+            { key: 'messages', label: messages.name, icon: messages.icon, to: messages.path, tour: messages.tour, badge: unreadChats, active: isActive(messages.path) },
+            {
+              key: 'more', id: 'nav-more-btn', label: isAr ? 'المزيد' : 'More', icon: MoreHorizontal, onClick: () => setSidebarOpen(true),
+              active: [...moreItems.map((i) => i.path), '/student/account'].some(isActive),
+            },
+          ]}
         />
       </div>
 

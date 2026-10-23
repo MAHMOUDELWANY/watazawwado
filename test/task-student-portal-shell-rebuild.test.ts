@@ -25,21 +25,22 @@ describe('Task: Student Portal Information Architecture & Application Shell Rebu
       // Payments and notifications left the sidebar in the 2026-09-29 redesign; they stay one tap away.
       assert.ok(studentHomeSource.includes('to="/student/payments"'), 'Overview must link to Payments');
       assert.ok(studentAppSource.includes('to="/student/notifications"'), 'Header must link to Notifications');
-      assert.ok(studentAppSource.includes("path: '/student/account'"), 'Must include Account route in navigation');
+      // The account opens from the avatar menu (tablet/desktop) and the top of the More sheet (phone), 2026-10-23.
+      assert.ok(studentAppSource.includes('accountPath="/student/account"'), 'Avatar menu opens the account');
+      assert.ok(studentAppSource.includes('to="/student/account"'), 'More sheet opens the account');
     });
 
     it('verifies Book New Lesson is prominent and routes to /student/book with zero /#book references', () => {
       assert.ok(studentAppSource.includes("path: '/student/book'"), 'Sidebar must route Book to /student/book');
-      assert.ok(studentAppSource.includes("to: '/student/book'") && studentAppSource.includes('primary: true'), 'Mobile bar must make Book the primary action');
+      assert.ok(studentAppSource.includes("to: book.path") && studentAppSource.includes('primary: true'), 'Mobile bar must make Book the primary action');
       assert.ok(!studentAppSource.includes('/#book'), 'StudentApp must contain zero /#book links');
       assert.ok(!studentHomeSource.includes('/#book'), 'StudentHomePage must contain zero /#book links');
     });
 
     it('verifies application header with dynamic route titles and action utilities', () => {
-      // Header component
-      assert.ok(studentAppSource.includes('<header className="h-16 '), 'Must render dedicated application header');
-      assert.ok(studentAppSource.includes('getHeaderInfo'), 'Must include dynamic route title helper');
-      assert.ok(studentAppSource.includes('currentHeader.title'), 'Must display dynamic page title');
+      // Header like the teacher's (owner, 2026-10-23): main sections as pill tabs; no page title (each page has its own).
+      assert.ok(studentAppSource.includes('<header className="shrink-0 z-20'), 'Must render dedicated application header');
+      assert.ok(studentAppSource.includes("aria-label={isAr ? 'الأقسام الرئيسية' : 'Main sections'}"), 'Header carries the main sections');
       // Action utilities
       assert.ok(studentAppSource.includes('to="/student/notifications"'), 'Header must include notification trigger');
       assert.ok(studentAppSource.includes('toggleLang'), 'Header must include language toggle');
@@ -48,7 +49,7 @@ describe('Task: Student Portal Information Architecture & Application Shell Rebu
     });
 
     it('verifies responsive layout using wide viewport instead of cramped column', () => {
-      assert.ok(studentAppSource.includes('max-w-7xl'), 'Main content container must use max-w-7xl layout');
+      assert.ok(studentAppSource.includes('max-w-6xl'), 'Main content uses the same width as the teacher workspace');
       assert.ok(!studentAppSource.includes('max-w-5xl mx-auto\n            <Routes>'), 'Must not restrict viewport to narrow 5xl column');
     });
 

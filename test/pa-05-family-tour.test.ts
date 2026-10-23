@@ -42,7 +42,7 @@ describe('PA-05 family tour', () => {
     const switcher = fs.readFileSync('src/student/activeLearner.tsx', 'utf8');
     assert.ok(switcher.includes('data-tour="child-switcher"'));
     assert.ok(app.includes("tour: 'student-messages'"), 'messages tab is a target on phones');
-    assert.ok(app.includes('data-tour={tourTarget}'), 'sidebar links carry student-progress / student-messages');
+    assert.ok(app.includes('data-tour={item.tour}'), 'sidebar links carry student-progress / student-messages');
     assert.ok(app.includes('isFamilyAccount(profile) ? familyTourSteps(isAr) : globalTourSteps'));
     assert.ok(app.includes('markFamilyTourSeen(profile'));
   });

@@ -17,7 +17,7 @@ describe('QA-04 mobile', () => {
 
   it('a 44px touch area exists for controls that look smaller', () => {
     assert.match(read('src/index.css'), /\.tap-44::after \{[^}]*width: max\(100%, 44px\); height: max\(100%, 44px\)/);
-    assert.ok(read('src/student/StudentApp.tsx').includes('tap-44 relative w-8 h-8'), 'portal header icons');
+    assert.ok(read('src/student/StudentApp.tsx').includes('tap-44 relative w-10 h-10'), 'portal header icons');
   });
 
   it('app shells use the dynamic viewport height on phones', () => {

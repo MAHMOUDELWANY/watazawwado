@@ -22,10 +22,8 @@ describe('PR-03: Progress page — the learning path', () => {
       studentAppSource.includes("path: '/student/progress'"),
       'Sidebar navigation must include /student/progress'
     );
-    assert.ok(
-      studentAppSource.includes("pathname.startsWith('/student/progress')"),
-      'getHeaderInfo must handle /student/progress'
-    );
+    assert.match(studentAppSource, /const railItems = \[[^\]]*progress/, 'Progress is on the tablet/desktop rail');
+    assert.match(studentAppSource, /const moreItems = \[[^\]]*progress/, 'Progress is in the phone More sheet');
     assert.ok(
       studentAppSource.includes('<Route path="/progress" element={<StudentProgressPage lang={lang} />} />'),
       'Routes must mount StudentProgressPage at /progress'

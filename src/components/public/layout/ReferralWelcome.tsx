@@ -54,7 +54,6 @@ export function ReferralWelcome({ lang }: { lang: 'ar' | 'en' }) {
       {info && (
         <motion.aside
           dir={isAr ? 'rtl' : 'ltr'}
-          role="dialog"
           aria-label={isAr ? 'دعوة من صاحبك' : 'An invite from your friend'}
           className="fixed bottom-4 start-4 end-4 z-40 sm:end-auto sm:w-[360px]"
           initial={reduce ? { opacity: 0 } : { opacity: 0, y: 40, scale: 0.96 }}
