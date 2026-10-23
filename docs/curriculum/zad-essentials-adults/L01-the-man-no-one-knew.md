@@ -1,9 +1,47 @@
 # Lesson 1: The Man No One Knew
 
 Zad Essentials · Adults (18+) · Part 1 (From Knowing to Certainty) · 60 minutes, every page shown
-Status: **brief approved by the owner 2026-10-23** (all three open points accepted: Jobs hook, Hanzalah in Lesson 1, levels of yaqeen as the course backbone). Page text approved 2026-10-23. **Built pages done 2026-10-23** (code scenes in `src/curriculum/slides/lessons/a01.tsx`); the owner's 12 stills placed 2026-10-23; **waiting for the owner's review of the whole lesson**. Note: the cover still shows a dome and minaret (the brief asked for mud brick and palm trunks); acceptable on a cover that names no place, regenerate if the owner prefers. Pages, their order and text will live only in the code
+Status: **v2 storyline waiting for the owner's approval (2026-10-23)**; v1 was approved 2026-10-23 (all three open points accepted: Jobs hook, Hanzalah in Lesson 1, levels of yaqeen as the course backbone). Page text approved 2026-10-23. **Built pages done 2026-10-23** (code scenes in `src/curriculum/slides/lessons/a01.tsx`); the owner's 12 stills placed 2026-10-23; **waiting for the owner's review of the whole lesson**. Note: the cover still shows a dome and minaret (the brief asked for mud brick and palm trunks); acceptable on a cover that names no place, regenerate if the owner prefers. Pages, their order and text will live only in the code
 (`src/curriculum/content/zad-adults/l01-the-man-no-one-knew.ts`, RULES §1.12). Look: `../style/adults.md` (approved
 2026-10-23).
+
+## v2 storyline (owner's review 2026-10-23: the v1 order did not hold together; waiting for approval)
+
+The owner's verdict on v1: it opened on death and certainty with no reason to, the Ibn Umar context added nothing, and
+the ideas did not lead into each other in a way a thinking adult follows. v2 tells **one story with one question**, and
+every page answers the question the page before it raised. Certainty is not announced at the start; the learner arrives
+at it from the hadith itself.
+
+**The question that drives the lesson:** "A stranger walks into the masjid, asks five questions he already knows the
+answers to, and leaves. Why?"
+
+| # | Beat | What the page does | The question it leaves |
+|---|---|---|---|
+| 1 | Cold open | Madinah, a gathering, a man in very white clothes; no dust on him, no one knows him | Who is he? |
+| 2 | The contradiction | No sign of travel, yet a stranger: the learner names the two facts that cannot both be true | What does he want? |
+| 3 | How he sat | Knees to knees, hands on his thighs: a student's posture before a teacher | Why sit like a student, then test the teacher? |
+| 4 | Islam | He asks, hears the five pillars, says "you are right"; the companions are amazed | Who confirms an answer he asked for? |
+| 5 | Iman | The six things held true in the heart | Is there a level beyond belief? |
+| 6 | Ihsan | "As if you see Him; if not, He sees you" | And when does all this end? |
+| 7 | The Hour | "The one asked knows no more than the one asking" | So who was the questioner? |
+| 8 | The reveal | "That was Jibril. He came to teach you your deen." The answer to the opening question: he asked so that we would hear | What exactly did he teach? |
+| 9 | The map | Three levels of one deen: what I do, what I hold true, how I worship. Not three subjects: three depths of one thing | Where am I on this map? |
+| 10 | The gap (the adult turn) | Most of us know all five pillars and all six beliefs. What separates level two from level three is not more information. Ihsan's own words are about *seeing* | What is the difference between knowing and seeing? |
+| 11 | Hearing and seeing (wow) | "As if you see Him" (Ihsan) beside Hanzalah's "as if we saw it with our own eyes": the companions at their best lived close to seeing. The motion scene: from heard, to seen | Did they stay there? |
+| 12 | Then: Hanzalah | He felt it fade at home and called himself a hypocrite; "an hour and an hour" | And us? |
+| 13 | Now | The Friday khutbah, then Monday morning | What pulls what we know away from the heart? |
+| 14 | At-Takathur 102:1–2 | "Competing for more kept you busy, until you visit the graves" (+ "my wealth, my wealth", Muslim 2958) | What would change it? |
+| 15 | At-Takathur 102:5–7 | 'Ilm al-yaqeen, then 'ayn al-yaqeen: Allah names the same two steps the lesson found in the hadith (Ibn al-Qayyim's three levels); everyone reaches seeing at death, the believer works to reach it before | What is this course for? |
+| 16 | The promise | This course walks the three levels in order (Iman → Taharah → Salah → the pillars → Ihsan), so that what you know becomes what you see | — |
+| 17–20 | Check | Four case questions and the short review | — |
+| 21 | Ahd | Zad al-Yaqeen, first line and one habit | — |
+| 22 | Next time | "Level one of Iman is the first question of all: is there a Maker?" | Lesson 2 |
+
+**Removed from v1:** the Steve Jobs and Bronnie Ware openings (death as the hook), Al-Hijr 15:99 as an opening, and the
+Ibn Umar / qadar context page. Al-Waqi'ah 56:95 (haqq al-yaqeen) stays only as one line on page 15 or is cut, to keep the
+lesson on one thread. **Kept:** every verified hadith and ayah already in the evidence table below, so no new evidence is
+needed; the projection onto today is Hanzalah's Friday/Monday and the counters of At-Takathur, not a celebrity quote.
+Design: one premium motion scene per beat, at most one sound per beat.
 
 ## Goal
 
