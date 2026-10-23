@@ -45,6 +45,10 @@ like a well-designed long-form article or a film title sequence, not a children'
 - No music; sound effects only, few and fitting the scene (RULES §1.10).
 
 ## The slide around the image (code, not ChatGPT)
+- **v2 (owner, 2026-10-23):** labels are documentary lower-thirds (dark glass, a gold rule, the words sliding out),
+  never paper tags; light is volumetric (beams with drifting dust); film grain and a slow light leak on every still;
+  depth by perspective and parallax; Arabic sharpens out of a blur. Stills and panels sit in one frame below the lesson
+  badge. Sounds: only on the few moments that change the meaning (the reveal, the wow, the notebook).
 - **Editorial layout**: large calm serif-style headings in the player's existing fonts (no new font without recording
   its licence in `sources.md`), generous margins, one idea per page, thin rules and small caps for labels.
 - **Quote cards**: the quote, then the person's name, role and source (interview, podcast, book, post, year), typed in

@@ -516,3 +516,9 @@ B3–B5 → continue lesson by lesson.
 - **2026-10-23** — Owner delivered the 12 Adults L1 stills; converted to WebP in `public/curriculum/zad-adults/l01`
   (madinah also saved as `reference.webp`), overlays re-placed to fit them, pen strokes thinned; pages checked with
   headless Chrome at their final step. Lesson 1 complete, waiting for the owner's review.
+- **2026-10-23** — Owner reviewed Adults L1 live: motion not premium enough, player looked pushed up and cut. Fixes: v2
+  of `slides/lessons/a01.tsx` (documentary lower-thirds, volumetric light and dust, film grain and leaks, perspective
+  depth, kinetic type, fewer sounds); every Adults panel and still now sits in one frame below the lesson badge
+  (picturebook and portrait compositions framed for `version: 'adults'`); shorter chapter names. Owner also asked for
+  samples in the student/parent portal until launch: `SAMPLES` in `catalog.ts` (opening of Lesson 1 for Kids, Teens,
+  Adults, drafts included) shown to every account on My curriculum.

@@ -495,13 +495,14 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
       );
 
     case 'picturebook':
-      // Book spread: the written page on the left, the painting bleeding off the right edge.
+      // Book spread: the written page on the left, the painting bleeding off the right edge. Adults: the still sits in
+      // a framed window below the lesson badge, like the code-drawn panels (owner, 2026-10-23).
       return (
         <>
           <Painting
             page={page}
-            className="left-[600px] right-0 top-0 bottom-[100px] rounded-bl-[40px]"
-            style={{ maskImage: 'linear-gradient(90deg, transparent 0, #000 120px)', WebkitMaskImage: 'linear-gradient(90deg, transparent 0, #000 120px)' }}
+            className={lesson.version === 'adults' ? 'left-[680px] right-[110px] top-[184px] bottom-[120px] rounded-[22px] shadow-[0_50px_90px_-40px_rgba(5,15,22,0.9)]' : 'left-[600px] right-0 top-0 bottom-[100px] rounded-bl-[40px]'}
+            style={lesson.version === 'adults' ? undefined : { maskImage: 'linear-gradient(90deg, transparent 0, #000 120px)', WebkitMaskImage: 'linear-gradient(90deg, transparent 0, #000 120px)' }}
           >
             {Moment && <Moment v={v} lesson={lesson} />}
           </Painting>
@@ -516,7 +517,7 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
     case 'portrait':
       return (
         <>
-          <Painting page={page} className="right-0 top-0 bottom-[100px] w-[560px] rounded-bl-[40px]" style={{ maskImage: 'linear-gradient(90deg, transparent 0, #000 90px)', WebkitMaskImage: 'linear-gradient(90deg, transparent 0, #000 90px)' }}>
+          <Painting page={page} className={lesson.version === 'adults' ? 'right-[110px] top-[184px] bottom-[120px] w-[500px] rounded-[22px]' : 'right-0 top-0 bottom-[100px] w-[560px] rounded-bl-[40px]'} style={lesson.version === 'adults' ? undefined : { maskImage: 'linear-gradient(90deg, transparent 0, #000 90px)', WebkitMaskImage: 'linear-gradient(90deg, transparent 0, #000 90px)' }}>
             {found.filter((l) => CLUE_LENSES[l]).map((l) => (
               <ClueLens key={l} name="stranger" img={STRANGER} box={{ w: 560, h: 800 }} lens={CLUE_LENSES[l]} />
             ))}

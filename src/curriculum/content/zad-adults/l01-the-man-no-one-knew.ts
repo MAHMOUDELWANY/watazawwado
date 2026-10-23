@@ -27,12 +27,12 @@ export const lesson01Adults: Lesson = {
     'Writes the first line of Zad al-Yaqeen and chooses one habit for the week.',
   ],
   chapters: [
-    { label: 'You know you will die', page: 0 },
-    { label: 'The man no one knew', page: 6 },
-    { label: 'Three levels of the deen', page: 10 },
-    { label: 'Three levels of certainty', page: 16 },
+    { label: 'The one certainty', page: 0 },
+    { label: 'The stranger', page: 6 },
+    { label: 'Three levels', page: 10 },
+    { label: 'Yaqeen', page: 16 },
     { label: 'Then and Now', page: 22 },
-    { label: 'Cases and review', page: 24 },
+    { label: 'Cases', page: 24 },
     { label: 'Zad al-Yaqeen', page: 29 },
   ],
   pages: [
