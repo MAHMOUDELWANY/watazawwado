@@ -158,7 +158,7 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
           onOpenTrialModal={(serviceId) => handleOpenGetStarted(serviceId)}
           onStartTour={() => setPublicTourOpen(true)}
         />
-        <ReferralWelcome lang={lang} onStart={() => handleOpenGetStarted(undefined)} />
+        <ReferralWelcome lang={lang} />
 
         <Outlet context={{ lang, onOpenTrialModal: handleOpenGetStarted } as PublicLayoutContextType} />
         {/* Cookie-free page views, public pages only (docs/marketing/PLAN.md §8). */}
