@@ -40,9 +40,11 @@ Last update: 2026-10-23. History of how we got here: §8 (progress log).
   Then and Now, hand-off questions; money cases defined).
 - **Done:** `style/adults.md` approved 2026-10-23 (cinematic documentary look, Then warm / Now cool, anonymous people,
   quotes as code-built cards).
-- **Waiting for the owner:** review of the Lesson 1 brief `zad-essentials-adults/L01-the-man-no-one-knew.md` (evidence
-  all verified; three open points: the Steve Jobs hook, Hanzalah in Lesson 1, the levels of yaqeen as the course backbone).
-- **Next after review:** Lesson 1 page text.
+- **Done:** Lesson 1 brief approved 2026-10-23 (Jobs hook, Hanzalah in L1, levels of yaqeen as the course backbone).
+  Lesson 1 page text written (31 pages, `src/curriculum/content/zad-adults/`), catalog entry `zad-adults` added.
+- **Waiting for the owner:** review of Lesson 1 page text (draft, `reviewed: false`, teacher-only), English slides and
+  Arabic teacher notes.
+- **Next after review:** Lesson 1 built pages (13 images from the brief, code scenes, the wow scene).
 
 ### Seerah and the Scholar's Path
 - Seerah (Kids / Teens / Adults): planned, not started. Scholar's Path: books, sessions and prices are the owner's call
@@ -502,3 +504,6 @@ B3–B5 → continue lesson by lesson.
   (Hanzalah), Muslim 2958 on Dorar; 102:1–8, 15:99, 56:95 with al-Sa'di, Ibn Kathir, Ibn al-Qayyim (levels of yaqeen),
   al-Muyassar via the quran.com connector; quotes from Steve Jobs (Stanford 2005) and Bronnie Ware; «هاذم اللذات» left
   out (disputed grading). Waiting for the owner's review.
+- **2026-10-23** — Owner approved the Adults L1 brief and its three open points. Page text written: 31 pages, Arabic
+  teacher notes, catalog entry `zad-adults` (46-lesson plan, five parts); test added for "no optional pages" in Adults.
+  tsc and curriculum tests pass. Waiting for the owner's review.

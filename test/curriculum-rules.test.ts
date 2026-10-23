@@ -59,6 +59,11 @@ describe('Curriculum lessons follow docs/curriculum/RULES.md', () => {
         });
       });
 
+      it('Adults lessons show every page: no optional pages (zad-essentials-adults/RULES.md §2)', () => {
+        if (lesson.version !== 'adults') return;
+        lesson.pages.forEach((p, i) => assert.ok(!p.optional, `page ${i + 1} (${p.title}) is optional`));
+      });
+
       it('has a goal, outcomes and chapters, and is a draft until the owner approves it (§1.5, §2)', () => {
         assert.ok(lesson.goal.trim() && lesson.outcomes.length && lesson.chapters.length);
         assert.ok(['kids', 'teens', 'adults'].includes(lesson.version));

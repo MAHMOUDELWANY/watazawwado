@@ -88,7 +88,37 @@ export type SceneId =
   | 'tl3Loved'
   | 'tl3Center'
   | 'tl3Prayer'
-  | 'tl3Library';
+  | 'tl3Library'
+  // Adults Lesson 1 (documentary look, docs/curriculum/style/adults.md; paintings and code scenes arrive at the
+  // built-pages step)
+  | 'a1Cover'
+  | 'a1Mirror'
+  | 'a1Bedside'
+  | 'a1Street'
+  | 'a1Yaqeen'
+  | 'a1Gap'
+  | 'a1Madinah'
+  | 'a1Source'
+  | 'a1Stranger'
+  | 'a1Cushions'
+  | 'a1Pillars'
+  | 'a1Six'
+  | 'a1Ihsan'
+  | 'a1Hour'
+  | 'a1Reveal'
+  | 'a1Levels'
+  | 'a1Graves'
+  | 'a1Count'
+  | 'a1Know'
+  | 'a1See'
+  | 'a1Inside'
+  | 'a1Horizon'
+  | 'a1Lane'
+  | 'a1Monday'
+  | 'a1Case'
+  | 'a1Review'
+  | 'a1Notebook'
+  | 'a1Next';
 
 /** How a page is laid out on the slide (docs/curriculum/PLAN.md §7, slide system v2). */
 export type Layout =

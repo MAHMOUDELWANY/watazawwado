@@ -5,6 +5,7 @@ import { lesson03 } from './content/zad-kids/l03-allah-is-one.js';
 import { lesson01Teens } from './content/zad-teens/l01-the-stranger-with-no-dust.js';
 import { lesson02Teens } from './content/zad-teens/l02-did-it-all-just-happen.js';
 import { lesson03Teens } from './content/zad-teens/l03-one-not-many.js';
+import { lesson01Adults } from './content/zad-adults/l01-the-man-no-one-knew.js';
 
 /** A part of a curriculum (a unit in its MAP.md): its title and the number of its first lesson. */
 export interface PartEntry { title: string; titleAr: string; from: number }
@@ -92,6 +93,40 @@ export const SUBJECTS: SubjectEntry[] = [
     ],
     lessons: { 1: lesson01Teens, 2: lesson02Teens, 3: lesson03Teens },
   },
+  {
+    id: 'zad-adults',
+    group: 'zad-essentials',
+    title: 'Zad Essentials · Adults',
+    titleAr: 'أول الزاد · للكبار',
+    version: 'Adults',
+    versionAr: 'الكبار',
+    audience: '18+',
+    // shortcut: the Madinah painting from Kids Lesson 1 until the Adults cover arrives at the built-pages step.
+    art: '/curriculum/zad-kids/l01/madinah.webp',
+    parts: [
+      { title: 'From Knowing to Certainty', titleAr: 'من المعرفة إلى اليقين', from: 1 },
+      { title: 'Clean Before the Meeting', titleAr: 'طهارة قبل اللقاء', from: 16 },
+      { title: 'The Meeting', titleAr: 'اللقاء', from: 22 },
+      { title: 'The Other Pillars', titleAr: 'باقي الأركان', from: 34 },
+      { title: 'Ihsan: The Life That Shows the Certainty', titleAr: 'الإحسان: حياة تشهد باليقين', from: 39 },
+    ],
+    // docs/curriculum/zad-essentials-adults/MAP.md (approved 2026-10-22); 20a and 20b are one slot, taught by learner.
+    plan: [
+      'The Man No One Knew', 'A World That Should Not Exist', 'The Emptiness Fame Cannot Fill', 'The Sentence That Costs Something',
+      'Knowing Him by His Names', 'The Case for Trust', 'An Open Challenge', 'The Witnesses You Never See', 'One Story, Last Chapter',
+      'The Appointment No One Misses', 'The Day Justice Is Done', 'Real Enough to Run Toward', 'Calm Without Giving Up',
+      'What Holds the Building', 'Why Islam, and Why Proud',
+      'Why Allah Cares About Clean', "Water and Najasah: The Shafi'i Map", 'Wudu, and the Mistakes Most People Make',
+      'What Breaks Wudu', 'Clean, Dignified, Certain (women) / The Women in Your Life (men)', 'The Ease Built In',
+      'The Line Between', 'Standing Before the King', 'Five Meetings in a Working Day', 'Before You Say Allahu Akbar',
+      'Inside the Prayer (1)', 'Inside the Prayer (2)', 'Pillars, Sunnahs and Breakers', 'When You Forget', 'Together, and Friday',
+      'On the Road and in Pain', 'The Night Prayer', 'Starting Again',
+      'Fasting: The Rulings in Full', 'Ramadan Beyond Hunger', 'Your Wealth Has a Share in It', 'Certain About Rizq', 'The Rehearsal',
+      'He Sees You', 'For Whom?', 'The Tongue and the Screen', 'Home', 'Haya: Gaze, Dress and Boundaries', 'Clean Money',
+      'Proud, Just and Inviting', 'My Zad for the Road',
+    ],
+    lessons: { 1: lesson01Adults },
+  },
 ];
 
 /** Subjects of the Zad Path (docs/curriculum/RULES.md): each holds its age versions (SUBJECTS with that `group`).
@@ -114,7 +149,7 @@ export const GROUPS: GroupEntry[] = [
     tagline: 'What every Muslim needs to know, by understanding: belief, purity, salah and character.',
     taglineAr: 'ما لا يسع المسلم جهله، بفهم واقتناع: العقيدة والطهارة والصلاة والأخلاق.',
     art: '/curriculum/zad-teens/l01/doors.webp',
-    planned: [{ version: 'Adults', versionAr: 'الكبار', audience: '18+' }],
+    planned: [],
   },
   {
     id: 'seerah',

@@ -48,6 +48,13 @@ Decision values: Allowed · With conditions · Needs permission · Research only
 | Existing Islamic school series (Safar, Weekend Learning, IQRA', Darussalam) | publishers' sites | Table-of-contents study: scope and age sequencing | Commercial, copyrighted | Study TOC only, never content |
 | Yaqeen Institute, "Modern Pathways to Doubt in Islam" (Chouhoud, 2016) | https://yaqeeninstitute.org/read/paper/modern-pathways-to-doubt-in-islam | Scope reference: which doubts Western Muslim youth meet (Teens map, 2026-10-21) | Not checked; nothing copied | Research only |
 
+## D2. Quotes used in lessons (Adults RULES §3: public, checkable, quote only, never a role model)
+
+| Quote | Source | Checked | Lesson | Note |
+|---|---|---|---|---|
+| Steve Jobs: "Remembering that I'll be dead soon is the most important tool I've ever encountered to help me make the big choices in life." | Stanford commencement address, 12 June 2005 | Transcript on rev.com, 2026-10-23 | Adults L1 | Official Stanford page blocked the fetch; check the wording against the Stanford video before the lesson ships |
+| Bronnie Ware: "I wish I'd had the courage to live a life true to myself, not the life others expected of me." | "Regrets of the Dying", bronnieware.com/blog/regrets-of-the-dying/ | Read 2026-10-23 | Adults L1 | Short quote with attribution |
+
 ## E. Media
 
 | Source | Link | Licence | Commercial | Attribution | Decision |
