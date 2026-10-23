@@ -100,6 +100,13 @@ describe('Phase 5F — Final Closure Verification Tests', () => {
       assert.strictEqual(res.status, 401);
     });
 
+    it('gives a regular teacher only the display settings', async () => {
+      const res = await fetch(`${baseUrl}/api/dashboard/settings`, { headers: { Authorization: 'Bearer dev-teacher-token' } });
+      assert.strictEqual(res.status, 200);
+      const rows = await res.json();
+      assert.ok(rows.every((r: any) => ['theme', 'timezone', 'language'].includes(r.key)));
+    });
+
     it('rejects settings update with unknown setting key', async () => {
       const res = await fetch(`${baseUrl}/api/dashboard/settings`, {
         method: 'PATCH',

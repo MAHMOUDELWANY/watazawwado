@@ -7045,12 +7045,15 @@ app.put('/api/dashboard/availability', verifyTeacherAuth, async (req: any, res: 
 });
 
 // 20c. DASHBOARD: Get teacher settings
-app.get('/api/dashboard/settings', verifyTeacherAuth, async (req, res) => {
+app.get('/api/dashboard/settings', verifyTeacherAuth, async (req: any, res) => {
   try {
     const supabase = getSupabaseAdminClient();
     if (!supabase) return res.status(503).json({ error: 'Database integration is not properly configured.' });
 
-    const { data, error } = await supabase.from('settings').select('*');
+    // The service-role read bypasses the super-admin RLS policy, so regular teachers only get the keys their page shows.
+    let query = supabase.from('settings').select('*');
+    if (req.teacherUser?.role !== 'super_admin') query = query.in('key', ['theme', 'timezone', 'language']);
+    const { data, error } = await query;
     if (error) throw error;
 
     res.json(data || []);
