@@ -3108,7 +3108,7 @@ app.post('/api/dashboard/students/:id/ai-brief', verifyTeacherAuth, async (req: 
     // 3. Gather Context (Minimizing PII)
     const [goalsRes, lessonsRes, intakesRes] = await Promise.all([
       supabase.from('student_goals').select('goal_text, service_id, is_primary').eq('student_id', id).order('created_at', { ascending: false }).limit(3),
-      supabase.from('lesson_notes').select('next_steps, observations, private_notes, created_at').eq('student_id', id).order('created_at', { ascending: false }).limit(3),
+      supabase.from('lesson_notes').select('next_steps, observations, created_at').eq('student_id', id).order('created_at', { ascending: false }).limit(3),
       supabase.from('student_intakes').select('learning_profile, assessment').eq('learner_student_id', id).order('created_at', { ascending: false }).limit(1)
     ]);
 
@@ -3123,9 +3123,8 @@ app.post('/api/dashboard/students/:id/ai-brief', verifyTeacherAuth, async (req: 
       recent_lessons: (lessonsRes.data || []).map(l => ({
         date: l.created_at,
         next_steps: l.next_steps,
-        observations: l.observations,
-        private_notes: l.private_notes
-      })),
+        observations: l.observations
+      })), // private_notes stay with the teacher, never sent to the model
       intake: intakesRes.data?.[0] || null
     };
 
