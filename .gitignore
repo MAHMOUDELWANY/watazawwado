@@ -18,3 +18,7 @@ graphify-out/
 
 # Removed from the repo in 22bcbc3; a local npm install recreates it.
 package-lock.json
+
+# oh-my-claudecode session state
+.omc/
+**/.omc/
