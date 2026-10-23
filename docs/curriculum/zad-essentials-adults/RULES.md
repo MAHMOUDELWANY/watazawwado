@@ -46,3 +46,8 @@ The lessons are in `MAP.md`; the look will be in `../style/adults.md` (made befo
   series opening.
 - The premium bar and slide rules of `../RULES.md` §1.10 apply in full: rich motion, a scene build on every idea page, one
   wow motion scene per lesson, text that fits, no thin slides, no lesson length on covers, the Finish card.
+- **The text first, then what we draw from it** (owner, 2026-10-23). An ayah or hadith is never paraphrased in the slide
+  lines before it appears; the learner would read the same thing twice. The page shows the text, then one or two lines
+  that add something the text does not say: what it means here, the question it raises, the link to the next page.
+  Lines may come first only when they set the scene the text needs (`contextFirst`, e.g. Hanzalah's story before the
+  Prophet's ﷺ reply), and even then they never restate it. The player enforces the order for `version: 'adults'`.

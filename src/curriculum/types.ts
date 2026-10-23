@@ -187,6 +187,9 @@ export interface LessonPage {
   interaction?: Interaction;
   /** Ask the question before the items appear (a prediction), instead of after. */
   askFirst?: boolean;
+  /** Adults show the ayah or hadith first and the lines after it, as what we draw from it (owner, 2026-10-23: never
+   *  restate the text before it appears). Set this when the lines are the scene-setting the text needs before it. */
+  contextFirst?: boolean;
   /** Read-aloud detail for the teacher: the fuller explanation behind the slide (owner, 2026-10-16). */
   explain: string[];
   /** Short tip on how to teach this page. Only the teacher sees it. */

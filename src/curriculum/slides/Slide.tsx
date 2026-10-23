@@ -18,14 +18,16 @@ export function stepsFor(page: LessonPage): number {
 }
 
 /** What is visible at build step `step` (0 = nothing yet, stepsFor = everything). */
-function visibility(page: LessonPage, step: number) {
+function visibility(page: LessonPage, step: number, textFirst = false) {
   let rest = step;
   const take = (n: number) => { const t = Math.min(Math.max(rest, 0), n); rest -= n; return t; };
+  // Adults: the text arrives first, then the lines that comment on it (see LessonPage.contextFirst).
+  const early = textFirst && Boolean(page.evidence) && !page.contextFirst && take(1) === 1;
   const lines = take(page.lines.length);
   let interaction = false;
   if (page.askFirst && page.interaction) interaction = take(1) === 1;
   const items = take(page.items?.length || 0);
-  const evidence = Boolean(page.evidence) && take(1) === 1;
+  const evidence = early || (Boolean(page.evidence) && !(textFirst && !page.contextFirst) && take(1) === 1);
   if (!page.askFirst && page.interaction) interaction = take(1) === 1;
   return { lines, items, evidence, interaction };
 }
@@ -44,7 +46,7 @@ interface SlideProps {
 /** One slide on the fixed 1600 × 900 notebook canvas. */
 export function Slide({ lesson, pageIndex, step, onCorrect, onGameResult }: SlideProps) {
   const page = lesson.pages[pageIndex];
-  const v = visibility(page, step);
+  const v = visibility(page, step, lesson.version === 'adults');
   const chapter = [...lesson.chapters].reverse().find((c) => c.page <= pageIndex);
   const rootRef = useRef<HTMLDivElement>(null);
   const [found, setFound] = useState<string[]>([]);
@@ -320,6 +322,15 @@ function Lines({ lines, count, size = 40, light = false }: { lines: string[]; co
   );
 }
 
+/** Adults: the text and the lines both stay, in reading order: text then what we draw from it, or (contextFirst) the
+ *  scene-setting then the text. Other versions keep their own behaviour (the lines give way to the text). */
+function TextWithLines({ page, v, size, textSize }: { page: LessonPage; v: ReturnType<typeof visibility>; size: number; textSize: number }) {
+  // Once the comment arrives the text steps back (smaller, its translation already read) so the new thought leads.
+  const text = v.evidence ? <Manuscript page={page} size={textSize} align="start" compact={!page.contextFirst && v.lines > 0} /> : null;
+  const lines = <Lines lines={page.lines} count={v.lines} size={size} />;
+  return page.contextFirst ? <>{lines}{text}</> : <>{text}{lines}</>;
+}
+
 /** Once the evidence arrives the lines give way to it; the page's last line stays as a lead-in so the point is not lost. */
 function Kicker({ page }: { page: LessonPage }) {
   const last = page.lines[page.lines.length - 1];
@@ -332,7 +343,7 @@ function Kicker({ page }: { page: LessonPage }) {
 }
 
 /** Manuscript treatment: the Arabic is the hero, written in right to left between gold rules. */
-function Manuscript({ page, size = 60, light = false, align = 'center' }: { page: LessonPage; size?: number; light?: boolean; align?: 'center' | 'start' }) {
+function Manuscript({ page, size = 60, light = false, align = 'center', compact = false }: { page: LessonPage; size?: number; light?: boolean; align?: 'center' | 'start'; compact?: boolean }) {
   const e = page.evidence!;
   const write = Math.min(4, 1 + e.arabic.length / 40);
   return (
@@ -345,8 +356,8 @@ function Manuscript({ page, size = 60, light = false, align = 'center' }: { page
       <motion.blockquote
         lang="ar"
         dir="rtl"
-        className="mt-4 font-serif leading-[1.75]"
-        style={{ fontSize: size, color: light ? '#FFF3D6' : P.ink, textShadow: light ? '0 0 30px rgba(246,213,142,0.45)' : undefined }}
+        className="mt-4 font-serif leading-[1.75] transition-[font-size,opacity] duration-500"
+        style={{ fontSize: compact ? Math.round(size * 0.62) : size, opacity: compact ? 0.7 : 1, color: light ? '#FFF3D6' : P.ink, textShadow: light ? '0 0 30px rgba(246,213,142,0.45)' : undefined }}
         initial={{ clipPath: 'inset(0 0 0 100%)' }}
         animate={{ clipPath: 'inset(0 0 0 0%)' }}
         transition={{ duration: write, ease: 'easeInOut' }}
@@ -354,7 +365,7 @@ function Manuscript({ page, size = 60, light = false, align = 'center' }: { page
         {e.arabic}
       </motion.blockquote>
       <motion.figcaption initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(3, write * 0.7), duration: 0.6, ease }} className="mt-3">
-        <span className="block font-serif text-[27px] italic leading-snug" style={{ color: light ? '#F3E6CC' : P.inkSoft }}>“{e.meaning}”</span>
+        {!compact && <span className="block font-serif text-[27px] italic leading-snug" style={{ color: light ? '#F3E6CC' : P.inkSoft }}>“{e.meaning}”</span>}
         <span className="mt-2 block font-sans text-[19px] font-bold" style={{ color: light ? P.goldSoft : P.copper }}>{e.reference}</span>
       </motion.figcaption>
     </motion.figure>
@@ -474,7 +485,7 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
           </Painting>
           <div className={`absolute left-[120px] top-[140px] bottom-[120px] w-[470px] space-y-6 ${COL}`}><Fit className="space-y-6">
             <Title size={68}>{page.title}</Title>
-            {v.evidence ? <Manuscript page={page} size={36} align="start" /> : <Lines lines={page.lines} count={v.lines} size={32} />}
+            {lesson.version === 'adults' ? <TextWithLines page={page} v={v} size={28} textSize={34} /> : v.evidence ? <Manuscript page={page} size={36} align="start" /> : <Lines lines={page.lines} count={v.lines} size={32} />}
             {interaction}
           </Fit></div>
         </>
@@ -491,8 +502,10 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
           </Painting>
           <div className={`absolute left-[120px] right-[620px] top-[140px] bottom-[120px] space-y-5 ${COL}`}><Fit className="space-y-5">
             <Title size={58}>{page.title}</Title>
-            {!v.interaction && <Lines lines={page.lines} count={v.lines} size={30} />}
-            {v.evidence && <Manuscript page={page} size={40} align="start" />}
+            {lesson.version === 'adults' ? !v.interaction && <TextWithLines page={page} v={v} size={28} textSize={36} /> : <>
+              {!v.interaction && <Lines lines={page.lines} count={v.lines} size={30} />}
+              {v.evidence && <Manuscript page={page} size={40} align="start" />}
+            </>}
             {interaction}
           </Fit></div>
         </>
@@ -506,9 +519,11 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
           <>
             <div className={`absolute left-[120px] top-[140px] bottom-[120px] w-[560px] space-y-5 ${COL}`}><Fit className="space-y-5">
               <Title size={60}>{page.title}</Title>
-              {!v.evidence && <Lines lines={page.lines} count={v.lines} size={32} />}
-              {v.evidence && lesson.version === 'teens' && <Kicker page={page} />}
-              {v.evidence && <Manuscript page={page} size={36} align="start" />}
+              {lesson.version === 'adults' ? <TextWithLines page={page} v={v} size={28} textSize={34} /> : <>
+                {!v.evidence && <Lines lines={page.lines} count={v.lines} size={32} />}
+                {v.evidence && lesson.version === 'teens' && <Kicker page={page} />}
+                {v.evidence && <Manuscript page={page} size={36} align="start" />}
+              </>}
               <Vocab page={page} />
               {interaction}
             </Fit></div>

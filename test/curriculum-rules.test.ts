@@ -64,6 +64,21 @@ describe('Curriculum lessons follow docs/curriculum/RULES.md', () => {
         lesson.pages.forEach((p, i) => assert.ok(!p.optional, `page ${i + 1} (${p.title}) is optional`));
       });
 
+      it('Adults lines never restate the ayah or hadith on the same page (zad-essentials-adults/RULES.md §5)', () => {
+        if (lesson.version !== 'adults') return;
+        const words = (t: string) => t.toLowerCase().replace(/[^a-z' ]/g, ' ').split(/\s+/).filter(Boolean);
+        lesson.pages.forEach((p, i) => {
+          if (!p.evidence) return;
+          const m = words(p.evidence.meaning);
+          const runs = new Set(m.map((_, k) => m.slice(k, k + 5).join(' ')).filter((r) => r.split(' ').length === 5));
+          for (const line of p.lines) {
+            const w = words(line);
+            const hit = w.map((_, k) => w.slice(k, k + 5).join(' ')).find((r) => runs.has(r));
+            assert.ok(!hit, `page ${i + 1} (${p.title}) repeats the text: "${hit}"`);
+          }
+        });
+      });
+
       it('has a goal, outcomes and chapters, and is a draft until the owner approves it (§1.5, §2)', () => {
         assert.ok(lesson.goal.trim() && lesson.outcomes.length && lesson.chapters.length);
         assert.ok(['kids', 'teens', 'adults'].includes(lesson.version));

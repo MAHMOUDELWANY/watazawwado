@@ -55,8 +55,8 @@ export const lesson01Adults: Lesson = {
       layout: 'story',
       scene: 'a1Madinah',
       lines: [
-        'The Prophet ﷺ sat with his companions.',
-        'Then a man appeared: very white clothes, very black hair.',
+        'Umar still remembers the colours years later.',
+        'Something about this man did not fit.',
       ],
       evidence: {
         arabic: 'بينَما نَحنُ عِندَ رَسولِ اللهِ صلَّى اللهُ عليه وسلَّم ذاتَ يَومٍ إذ طَلَعَ علينا رَجُلٌ شَديدُ بَياضِ الثِّيابِ، شَديدُ سَوادِ الشَّعَرِ',
@@ -75,7 +75,9 @@ export const lesson01Adults: Lesson = {
       station: 'spark',
       layout: 'evidence',
       scene: 'a1Stranger',
-      lines: ['No sign of a journey on him.', 'And not one of us knew who he was.'],
+      lines: [
+        'Two facts that cannot both be true of an ordinary man.',
+      ],
       evidence: {
         arabic: 'لا يُرى عليه أثَرُ السَّفَرِ، ولا يَعرِفُه مِنَّا أحَدٌ',
         meaning: 'No sign of travel could be seen on him, and none of us knew him.',
@@ -102,9 +104,8 @@ export const lesson01Adults: Lesson = {
       layout: 'story',
       scene: 'a1Cushions',
       lines: [
-        'He sat right in front of the Prophet ﷺ, knees touching his knees.',
-        'He placed his hands on his thighs, like a student before a teacher.',
-        'Then he began to ask.',
+        'A student\'s posture: close, still, all attention.',
+        'And in a moment he will test the teacher.',
       ],
       evidence: {
         arabic: 'حتَّى جَلَسَ إلى النَّبيِّ صلَّى اللهُ عليه وسلَّم، فأسنَدَ رُكبَتَيه إلى رُكبَتَيه، ووضَعَ كَفَّيه على فخِذَيه',
@@ -121,7 +122,10 @@ export const lesson01Adults: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'a1Pillars',
-      lines: ['"Tell me about Islam."', 'He listened, then said: "You are right." And we were amazed.'],
+      lines: [
+        'Islam is the outward building: what a Muslim does.',
+        'Then the odd part. You only confirm an answer you already know.',
+      ],
       items: ['The two testimonies', 'Salah', 'Zakah', 'Fasting Ramadan', 'Hajj, for whoever is able'],
       evidence: {
         arabic: 'الإسلامُ أن تَشهَدَ أن لا إلَهَ إلَّا اللهُ وأنَّ مُحَمَّدًا رَسولُ اللهِ صلَّى اللهُ عليه وسلَّم، وتُقيمَ الصَّلاةَ، وتُؤتيَ الزَّكاةَ، وتَصومَ رَمَضانَ، وتَحُجَّ البَيتَ إنِ استَطَعتَ إليه سَبيلًا، قال: صَدَقتَ، قال: فعَجِبنا له يَسألُه، ويُصَدِّقُه',
@@ -139,7 +143,9 @@ export const lesson01Adults: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'a1Six',
-      lines: ['"Tell me about Iman."', 'Six things, held as true in the heart.'],
+      lines: [
+        'The ground under the building: what a Muslim holds true.',
+      ],
       items: ['Allah', 'His angels', 'His books', 'His messengers', 'The Last Day', 'Qadar, its good and its bad'],
       evidence: {
         arabic: 'أن تُؤمِنَ باللهِ، ومَلائِكَتِه، وكُتُبِه، ورُسُلِه، واليَومِ الآخِرِ، وتُؤمِنَ بالقدَرِ خَيرِه وشَرِّه',
@@ -161,7 +167,10 @@ export const lesson01Adults: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'a1Ihsan',
-      lines: ['"Tell me about Ihsan."', 'The highest level of the deen, in one sentence.'],
+      lines: [
+        'Two steps: the higher one, and the floor beneath it.',
+        'Keep the word "see". The lesson comes back to it.',
+      ],
       evidence: {
         arabic: 'أن تَعبُدَ اللهَ كَأنَّك تَراه، فإن لَم تَكُنْ تَراه فإنَّه يَراك',
         meaning: 'That you worship Allah as though you see Him, and if you do not see Him, He surely sees you.',
@@ -179,7 +188,9 @@ export const lesson01Adults: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'a1Hour',
-      lines: ['"Tell me about the Hour."', 'The one asked knows no more about it than the one asking.'],
+      lines: [
+        'Its time is known to Allah alone.',
+      ],
       evidence: {
         arabic: 'قال: فأخبِرْني عَنِ السَّاعةِ، قال: ما المَسؤولُ عَنها بأعلَمَ مِنَ السَّائِلِ',
         meaning: 'He said: "Tell me about the Hour." He said: "The one being asked about it knows no more than the one asking."',
@@ -201,7 +212,10 @@ export const lesson01Adults: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'a1Reveal',
-      lines: ['He left. Umar waited a while.', 'Then the Prophet ﷺ asked him a question.'],
+      lines: [
+        'Every clue fits now: no dust, no one knew him, every answer confirmed.',
+        'He asked so that we would hear.',
+      ],
       evidence: {
         arabic: 'يا عُمَرُ أتَدري مَنِ السَّائِلُ؟ قُلتُ: اللهُ ورَسولُه أعلَمُ، قال: فإنَّه جِبريلُ أتاكُم يُعَلِّمُكُم دينَكُم',
         meaning: '"Umar, do you know who the questioner was?" I said: "Allah and His Messenger know best." He said: "That was Jibril. He came to you to teach you your deen."',
@@ -278,6 +292,7 @@ export const lesson01Adults: Lesson = {
     {
       title: 'Then: "Hanzalah has become a hypocrite"',
       station: 'zad',
+      contextFirst: true,
       layout: 'evidence',
       scene: 'a1Lane',
       lines: [
@@ -322,7 +337,10 @@ export const lesson01Adults: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'a1Graves',
-      lines: ['Surah At-Takathur opens on people too busy to notice.', 'They only stop when they reach the graves.'],
+      lines: [
+        'Allah does not say what they compete in, so it covers everything (Ibn al-Qayyim).',
+        'And they only "visit" the graves. Even the grave is a stop on the way.',
+      ],
       evidence: {
         arabic: 'أَلْهَىٰكُمُ ٱلتَّكَاثُرُ ۝ حَتَّىٰ زُرْتُمُ ٱلْمَقَابِرَ',
         meaning: 'Competing for more has kept you busy, until you visit the graves.',
@@ -346,7 +364,9 @@ export const lesson01Adults: Lesson = {
       station: 'zad',
       layout: 'question',
       scene: 'a1Count',
-      lines: ['The Prophet ﷺ was reciting At-Takathur.', 'Then he asked what we really own.'],
+      lines: [
+        'He said it while reciting At-Takathur: the Sunnah\'s own comment on "more".',
+      ],
       evidence: {
         arabic: 'يقولُ ابنُ آدَمَ: مالي، مالي، قال: وهل لَكَ -يا ابنَ آدَمَ- مِن مالِكَ إلَّا ما أكَلتَ فأفنَيتَ، أو لَبِستَ فأبلَيتَ، أو تَصَدَّقتَ فأمضَيتَ؟!',
         meaning: 'The son of Adam says: "My wealth, my wealth." But son of Adam, what do you have of your wealth except what you ate and used up, what you wore and wore out, or what you gave in charity and sent ahead?',
@@ -367,7 +387,9 @@ export const lesson01Adults: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'a1Know',
-      lines: ['The first level of certainty is named.', 'Knowledge that reaches the heart.'],
+      lines: [
+        'They did know. What was missing was knowledge that reaches the heart (al-Sa\'di).',
+      ],
       evidence: {
         arabic: 'كَلَّا سَوْفَ تَعْلَمُونَ ۝ ثُمَّ كَلَّا سَوْفَ تَعْلَمُونَ ۝ كَلَّا لَوْ تَعْلَمُونَ عِلْمَ ٱلْيَقِينِ',
         meaning: 'No! You will come to know. Then no! You will come to know. No! If only you knew with the knowledge of certainty.',
@@ -392,7 +414,10 @@ export const lesson01Adults: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'a1See',
-      lines: ['The second level: seeing with your own eyes.', 'Everyone reaches it. The question is when.'],
+      lines: [
+        'The same two steps the hadith gave us: knowing, then seeing.',
+        'Everyone reaches seeing at death. The believer works to reach it before.',
+      ],
       evidence: {
         arabic: 'لَتَرَوُنَّ ٱلْجَحِيمَ ۝ ثُمَّ لَتَرَوُنَّهَا عَيْنَ ٱلْيَقِينِ',
         meaning: 'You will surely see the Blazing Fire. Then you will surely see it with the eye of certainty.',
@@ -493,6 +518,7 @@ export const lesson01Adults: Lesson = {
     {
       title: 'Case 4: "past the rituals"',
       station: 'athar',
+      contextFirst: true,
       layout: 'question',
       scene: 'a1Case',
       lines: [
