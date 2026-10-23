@@ -1,0 +1,2 @@
+
+Source: gsap-skills (MIT), installed 2026-10-23 at the owner's request.
