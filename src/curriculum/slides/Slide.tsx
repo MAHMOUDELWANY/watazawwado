@@ -4,6 +4,8 @@ import type { Interaction, Lesson, LessonPage } from '../types';
 import { SceneArt, P, asset } from './Art';
 import { play } from './sfx';
 import { Arch, RIBBON } from './Arch';
+import { CinemaPage } from './cinema/CinemaPage';
+import { SCENES } from './cinema/scenes';
 import { ClueLens, Unveil, DoorsLight, PackZad, Callback, type Lens } from './Scenes';
 import { BUILDS, STUDIES, MOMENTS, PACKED } from './lessons';
 
@@ -55,7 +57,7 @@ export function Slide({ lesson, pageIndex, step, onCorrect, onGameResult }: Slid
   const [answered, setAnswered] = useState(false);
   const adults = lesson.version === 'adults';
   // Adults use the light manuscript look on every page (owner's choice, 2026-10-23): no dark stage compositions.
-  const stage = isStage(compositionFor(page)) && !adults;
+  const stage = adults ? Boolean(SCENES[page.scene]) && compositionFor(page) !== 'arena' : isStage(compositionFor(page));
   // Stepping back past the question (or replaying it) clears what the child found or chose, so the art matches the question.
   useEffect(() => {
     if (!v.interaction) { setFound([]); setChosen(null); setAnswered(false); }
@@ -727,6 +729,9 @@ function AdultsTitle({ text, size }: { text: string; size: number }) {
  */
 function AdultsLayout({ page, v, lesson, interaction }: { page: LessonPage; v: ReturnType<typeof visibility>; lesson: Lesson; interaction: React.ReactNode }) {
   const c = compositionFor(page);
+  // Full-screen cinema pages (owner, 2026-10-24); the arch layout below stays for pages without a scene and the review.
+  const scene = SCENES[page.scene];
+  if (scene && c !== 'arena') return <CinemaPage page={page} v={v} lesson={lesson} scene={scene} interaction={interaction} cover={c === 'title'} next={c === 'cliffhanger'} />;
   const Moment = MOMENTS[page.scene];
   const Study = STUDIES[page.scene];
   const Build = BUILDS[page.scene];

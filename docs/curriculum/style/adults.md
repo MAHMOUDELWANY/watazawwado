@@ -45,6 +45,14 @@ like a well-designed long-form article or a film title sequence, not a children'
 - No music; sound effects only, few and fitting the scene (RULES §1.10).
 
 ## The slide around the image (code, not ChatGPT)
+- **Cinema pages (owner, 2026-10-24, current).** "The window is too small for motion graphics." Every Adults page is now
+  a full-screen scene after the owner's three reference videos (Duolingo motion piece, two motion-design reels): the
+  still fills the canvas and moves in depth; one idea per screen; the title rises word by word out of a blur, huge,
+  then steps back to the corner; an ayah or hadith arrives as the hero card and docks; commentary plays as one subtitle
+  at a time; scene graphics in brand colours draw over the photo (gold light lines and nodes, a constellation, a rising
+  path, count-ups, huge Arabic in the ribbon gradient for the wow); the crimson khatam star is the travelling hero
+  object. Code: `slides/cinema/` (`Cinema.tsx` kit, `CinemaPage.tsx`, `scenes.tsx` per-page direction). Identity rules
+  above still hold (Thmanyah, ribbon gradient, khatam, crimson/gold/teal); the review game keeps the arch layout.
 - **The light manuscript (owner's choice, 2026-10-23, binding).** The owner rejected the dark documentary panels: "no
   fonts, no typography, no colours, no site identity". Adults slides use the site's own identity: bone paper with the
   khatam field and two brand lights, every picture inside the homepage's mihrab arch with the teal-gold-copper ring

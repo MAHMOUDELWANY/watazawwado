@@ -1,0 +1,149 @@
+import React from 'react';
+import { motion } from 'motion/react';
+import type { SceneId } from '../../types';
+import type { Shot, Light } from '../DepthStill';
+import { GlowPath, Node, CountUp, KineticTitle, ease, GOLD, BONE, CRIMSON, TEAL } from './Cinema';
+
+/**
+ * Per-page direction for the Adults cinema pages: which still fills the screen, where the light comes from, the
+ * camera and focus for each build step (x, y = where it looks in % of the photo; z = zoom; focus 0 far … 1 near;
+ * pan = sideways parallax), and the motion graphics drawn over it. Shot n is used when n build steps are showing.
+ */
+export type Scene = {
+  still: string;
+  light?: Light;
+  grade?: 'then' | 'now';
+  shots: Shot[];
+  /** Motion graphics on top of the photo, by build step (k) and item count. */
+  overlay?: (s: { k: number; items: number; labels: string[] }) => React.ReactNode;
+  /** Where the photo's subject sits, so the text keeps to the other side. */
+  textSide?: 'left' | 'right';
+};
+
+/* ---------- motion-graphic overlays ---------- */
+
+/** Islam: a gold line along the floor; each column's foot ignites with its pillar (positions from the depth map). */
+const FEET = [{ x: 618, y: 636 }, { x: 736, y: 664 }, { x: 896, y: 692 }, { x: 1112, y: 722 }, { x: 1466, y: 836 }];
+const FLOOR = `M 480 620 C ${FEET[0].x} 620, ${FEET[0].x + 60} 640, ${FEET[1].x} 664 S ${FEET[2].x - 70} 684, ${FEET[2].x} 692 S ${FEET[3].x - 110} 712, ${FEET[3].x} 722 S ${FEET[4].x - 180} 800, ${FEET[4].x} 836`;
+const PILLARS = [['الشهادتان', 'The two testimonies'], ['الصلاة', 'Salah'], ['الزكاة', 'Zakah'], ['الصوم', 'Fasting Ramadan'], ['الحج', 'Hajj']];
+function PillarsOverlay({ items }: { items: number }) {
+  if (items === 0) return null;
+  const cur = Math.min(items, 5) - 1;
+  return (
+    <>
+      <GlowPath d={FLOOR} progress={items / 5} />
+      {FEET.map((f, i) => <Node key={i} x={f.x} y={f.y} on={i <= cur} current={i === cur} ar={PILLARS[i][0]} en={PILLARS[i][1]} />)}
+      <Count n={items} of={5} label="pillars" />
+    </>
+  );
+}
+
+/** A big count in the corner: "3 of 6". */
+function Count({ n, of, label }: { n: number; of: number; label: string }) {
+  return (
+    <motion.div className="absolute flex items-baseline gap-3" style={{ right: 300, top: 64 }} initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
+      <CountUp to={n} size={92} />
+      <span className="font-sans font-semibold" style={{ fontSize: 22, color: 'rgba(246,241,232,0.75)' }}>of {of} {label}</span>
+    </motion.div>
+  );
+}
+
+/** A constellation: each item is a star that lights up and joins the ones before with a thin line (Iman: the unseen). */
+const SKY = [{ x: 1000, y: 250 }, { x: 1150, y: 190 }, { x: 1290, y: 260 }, { x: 1240, y: 400 }, { x: 1090, y: 430 }, { x: 1170, y: 320 }];
+function ConstellationOverlay({ items, labels }: { items: number; labels: string[] }) {
+  if (items === 0) return null;
+  const d = SKY.slice(0, items).map((p, i) => `${i ? 'L' : 'M'} ${p.x} ${p.y}`).join(' ');
+  return (
+    <>
+      {items > 1 && <GlowPath d={d} progress={1} color="#F6E3B8" width={1.5} />}
+      {SKY.slice(0, items).map((p, i) => (
+        <motion.div key={i} className="absolute" style={{ left: p.x, top: p.y }} initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.7, ease }}>
+          <span className="absolute rounded-full" style={{ left: -7, top: -7, width: 14, height: 14, background: '#FFF4D6', boxShadow: '0 0 22px 8px rgba(255,226,160,0.75)' }} />
+          <span className="absolute whitespace-nowrap font-sans font-semibold" style={{ left: 16, top: -12, fontSize: i === items - 1 ? 26 : 18, color: i === items - 1 ? BONE : 'rgba(246,241,232,0.65)', textShadow: '0 2px 14px rgba(0,0,0,0.8)', transition: 'font-size 0.5s' }}>{labels[i]?.split(':')[0]}</span>
+        </motion.div>
+      ))}
+      <Count n={items} of={6} label="pillars of Iman" />
+    </>
+  );
+}
+
+/** A path of steps: each item is a stage on a rising line, lit in turn (levels, the gap, the course road). */
+function StepsOverlay({ items, labels, total, origin = { x: 980, y: 720 }, step = { x: 150, y: -150 } }: { items: number; labels: string[]; total: number; origin?: { x: number; y: number }; step?: { x: number; y: number } }) {
+  if (items === 0) return null;
+  const pts = Array.from({ length: total }, (_, i) => ({ x: origin.x + step.x * i, y: origin.y + step.y * i }));
+  const d = pts.map((p, i) => `${i ? 'L' : 'M'} ${p.x} ${p.y}`).join(' ');
+  return (
+    <>
+      <GlowPath d={d} progress={(items - 1) / Math.max(1, total - 1)} />
+      {pts.map((p, i) => {
+        const [word, hint] = (labels[i] || '').split(':').map((s) => s.trim());
+        return (
+            <React.Fragment key={i}>
+              <Node x={p.x} y={p.y} on={i < items} current={i === items - 1} ar="" en="" />
+              {i < items && (
+                <motion.div className="absolute" style={{ left: p.x + 26, top: p.y - 30, width: 300 }} initial={{ opacity: 0, x: -12 }} animate={{ opacity: i === items - 1 ? 1 : 0.55, x: 0 }} transition={{ duration: 0.6, ease }}>
+                  <span className="block font-serif" style={{ fontSize: i === items - 1 ? 40 : 28, color: BONE, lineHeight: 1.05, transition: 'font-size 0.5s' }}>{word}</span>
+                  {hint && <span className="block font-sans font-semibold" style={{ fontSize: 18, color: GOLD }}>{hint}</span>}
+                </motion.div>
+              )}
+            </React.Fragment>
+          );
+      })}
+    </>
+  );
+}
+
+/** The wow: "From hearing to seeing". The two phrases rise huge in Arabic, one under the other, as the camera pushes in. */
+function WowOverlay({ items, k }: { items: number; k: number }) {
+  return (
+    <>
+      {items === 0 && k > 0 && <motion.p className="absolute m-0 font-serif italic" style={{ left: 0, right: 0, top: 380, textAlign: 'center', fontSize: 64, color: BONE }} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>You heard it.</motion.p>}
+      {items >= 1 && <ArabicHero text="كَأنَّك تَراه" sub="as if you see Him" top={250} />}
+      {items >= 2 && <ArabicHero text="كَأنَّا رَأيُ عَينٍ" sub="as if we saw it with our own eyes" top={470} delay={0.3} />}
+    </>
+  );
+}
+
+function ArabicHero({ text, sub, top, delay = 0 }: { text: string; sub: string; top: number; delay?: number }) {
+  return (
+    <motion.div className="absolute text-center" style={{ left: 0, right: 0, top }} initial={{ opacity: 0, scale: 1.25, filter: 'blur(16px)' }} animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }} transition={{ duration: 1.3, delay, ease }}>
+      <span lang="ar" dir="rtl" className="block font-bold" style={{ fontFamily: 'var(--font-display-ar)', fontSize: 120, lineHeight: 1.2, backgroundImage: `linear-gradient(100deg, ${CRIMSON}, #E07B3C 35%, ${GOLD} 60%, ${TEAL})`, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent', filter: 'drop-shadow(0 6px 30px rgba(0,0,0,0.55))' }}>{text}</span>
+      <span className="block font-serif italic" style={{ fontSize: 30, color: BONE }}>{sub}</span>
+    </motion.div>
+  );
+}
+
+/** The next-time question, huge, word by word over the night sky. */
+function NextOverlay({ k }: { k: number }) {
+  return k >= 3 ? <div className="absolute" style={{ left: 760, top: 300, width: 760 }}><KineticTitle text="Is there a Maker at all?" size={92} /></div> : null;
+}
+
+/* ---------- the direction for every Adults Lesson 1 page ---------- */
+
+export const SCENES: Partial<Record<SceneId, Scene>> = {
+  a1Cover: { still: 'cover', light: { x: 82, y: 5, strength: 0.8 }, shots: [{ x: 58, y: 50, z: 1.12, focus: 0.5, pan: -0.5 }] },
+  a1Madinah: { still: 'madinah', light: { x: 80, y: 8, strength: 0.6 }, shots: [{ x: 50, y: 55, z: 1.1, focus: 0.5, pan: -0.4 }, { x: 55, y: 50, z: 1.02, focus: 0.35, pan: 0 }, { x: 62, y: 56, z: 1.15, focus: 0.6, pan: 0.3 }, { x: 60, y: 52, z: 1.2, focus: 0.5, pan: 0.2 }] },
+  a1Stranger: { still: 'stranger', textSide: 'left', shots: [{ x: 50, y: 55, z: 1.05, focus: 0.3, pan: -0.3 }, { x: 54, y: 52, z: 1.35, focus: 0.2, pan: 0 }, { x: 54, y: 50, z: 1.6, focus: 0.2, pan: 0.2 }] },
+  a1Cushions: { still: 'cushions', light: { x: 50, y: 4, strength: 0.8 }, shots: [{ x: 50, y: 60, z: 1.05, focus: 0.7, pan: -0.3 }, { x: 50, y: 66, z: 1.3, focus: 0.85, pan: 0 }, { x: 52, y: 64, z: 1.45, focus: 0.85, pan: 0.2 }, { x: 55, y: 55, z: 1.2, focus: 0.7, pan: 0.1 }] },
+  a1Pillars: { still: 'pillars', light: { x: 62, y: -8, strength: 0.75 }, shots: [{ x: 50, y: 50, z: 1.12, focus: 0.5, pan: -0.6 }, { x: 50, y: 50, z: 1, focus: 0.3 }], overlay: ({ items }) => <PillarsOverlay items={items} /> },
+  a1Six: { still: 'window', grade: 'now', light: { x: 91, y: 57, strength: 0.45 }, shots: [{ x: 50, y: 55, z: 1.05, focus: 0.6, pan: -0.4 }, { x: 40, y: 72, z: 1.25, focus: 0.88, pan: -0.3 }, { x: 60, y: 45, z: 1.1, focus: 0.3, pan: 0.1 }, { x: 62, y: 40, z: 1.15, focus: 0.1, pan: 0.2 }], overlay: ({ items, labels }) => <ConstellationOverlay items={items} labels={labels} /> },
+  a1Ihsan: { still: 'prayer', grade: 'now', light: { x: 87, y: 12, strength: 0.9 }, shots: [{ x: 50, y: 50, z: 1.05, focus: 0.3, pan: -0.5 }, { x: 52, y: 46, z: 1.25, focus: 0.58, pan: 0 }, { x: 56, y: 62, z: 1.4, focus: 0.62, pan: 0.3 }, { x: 54, y: 44, z: 1.15, focus: 0.45, pan: 0.1 }] },
+  a1Hour: { still: 'hourglass', light: { x: 81, y: 27, strength: 1 }, shots: [{ x: 55, y: 50, z: 1.05, focus: 0.4, pan: 0.5 }, { x: 34, y: 46, z: 1.35, focus: 0.92, pan: -0.3 }, { x: 34, y: 58, z: 1.6, focus: 0.92, pan: -0.2 }, { x: 74, y: 40, z: 1.25, focus: 0.1, pan: 0.4 }] },
+  a1Reveal: { still: 'doorway', light: { x: 55, y: 42, strength: 1 }, shots: [{ x: 50, y: 50, z: 1.05, focus: 0.55, pan: -0.4 }, { x: 56, y: 55, z: 1.3, focus: 0.2, pan: 0 }, { x: 60, y: 80, z: 1.55, focus: 0.45, pan: 0.2 }, { x: 56, y: 48, z: 1.15, focus: 0.15, pan: 0.1 }] },
+  a1Levels: { still: 'above', light: { x: 18, y: 8, strength: 0.3 }, shots: [{ x: 50, y: 50, z: 1.05, focus: 0.75 }, { x: 46, y: 50, z: 1.15, focus: 0.8, pan: -0.3 }, { x: 46, y: 46, z: 1.3, focus: 0.85 }, { x: 46, y: 42, z: 1.55, focus: 0.92, pan: 0.3 }], overlay: ({ items, labels }) => <StepsOverlay items={items} labels={labels} total={3} origin={{ x: 1000, y: 540 }} step={{ x: 120, y: -140 }} /> },
+  a1Gap: { still: 'shelf', grade: 'now', light: { x: 84, y: 24, strength: 0.6 }, shots: [{ x: 50, y: 50, z: 1.05, focus: 0.5, pan: -0.3 }, { x: 68, y: 38, z: 1.3, focus: 0.55, pan: 0.2 }, { x: 64, y: 62, z: 1.35, focus: 0.76, pan: 0.3 }, { x: 44, y: 56, z: 1.15, focus: 0.84, pan: -0.4 }], overlay: ({ items, labels }) => <StepsOverlay items={items} labels={labels} total={3} origin={{ x: 1000, y: 470 }} step={{ x: 150, y: -115 }} /> },
+  a1Horizon: { still: 'horizon', light: { x: 50, y: 55, strength: 1 }, shots: [{ x: 50, y: 55, z: 1.05, focus: 0.5 }, { x: 50, y: 55, z: 1.2, focus: 0.3 }, { x: 50, y: 55, z: 1.6, focus: 0.15 }], overlay: ({ items, k }) => <WowOverlay items={items} k={k} /> },
+  a1Lane: { still: 'lane', light: { x: 50, y: 60, strength: 0.7 }, shots: [{ x: 50, y: 55, z: 1.05, focus: 0.5, pan: -0.3 }, { x: 50, y: 55, z: 1.15, focus: 0.4 }, { x: 52, y: 58, z: 1.25, focus: 0.3, pan: 0.2 }, { x: 50, y: 60, z: 1.4, focus: 0.2, pan: 0.2 }, { x: 50, y: 55, z: 1.15, focus: 0.4 }] },
+  a1Monday: { still: 'monday', grade: 'now', shots: [{ x: 50, y: 55, z: 1.05, focus: 0.6, pan: -0.3 }, { x: 60, y: 50, z: 1.25, focus: 0.7, pan: 0.1 }, { x: 64, y: 48, z: 1.35, focus: 0.75, pan: 0.2 }, { x: 40, y: 75, z: 1.3, focus: 0.9, pan: -0.2 }] },
+  a1Graves: { still: 'graves', light: { x: 85, y: 30, strength: 0.6 }, shots: [{ x: 50, y: 45, z: 1.05, focus: 0.5, pan: -0.3 }, { x: 60, y: 58, z: 1.3, focus: 0.6, pan: 0.2 }, { x: 45, y: 68, z: 1.45, focus: 0.8, pan: -0.1 }, { x: 50, y: 50, z: 1.1, focus: 0.4 }] },
+  a1Count: { still: 'purse', light: { x: 20, y: 10, strength: 0.4 }, shots: [{ x: 60, y: 60, z: 1.05, focus: 0.7, pan: -0.3 }, { x: 68, y: 62, z: 1.35, focus: 0.86, pan: -0.1 }, { x: 80, y: 45, z: 1.3, focus: 0.8, pan: 0.2 }, { x: 74, y: 74, z: 1.45, focus: 0.95, pan: 0.3 }] },
+  a1Know: { still: 'listening', grade: 'now', light: { x: 63, y: 24, strength: 0.6 }, shots: [{ x: 50, y: 50, z: 1.05, focus: 0.9, pan: -0.3 }, { x: 44, y: 60, z: 1.25, focus: 0.95, pan: -0.2 }, { x: 62, y: 36, z: 1.4, focus: 0.15, pan: 0.3 }] },
+  a1See: { still: 'train', grade: 'now', light: { x: 93, y: 37, strength: 1 }, shots: [{ x: 40, y: 50, z: 1.05, focus: 0.9, pan: -0.5 }, { x: 62, y: 52, z: 1.25, focus: 0.15, pan: 0.2 }, { x: 78, y: 46, z: 1.45, focus: 0.08, pan: 0.4 }, { x: 66, y: 50, z: 1.2, focus: 0.1, pan: 0.1 }] },
+  a1Inside: { still: 'road', light: { x: 31, y: 31, strength: 0.9 }, shots: [{ x: 50, y: 60, z: 1.05, focus: 0.85, pan: -0.3 }, { x: 50, y: 62, z: 1.12, focus: 0.75 }, { x: 52, y: 55, z: 1.25, focus: 0.5 }, { x: 56, y: 50, z: 1.45, focus: 0.3, pan: 0.2 }, { x: 58, y: 46, z: 1.65, focus: 0.15, pan: 0.3 }], overlay: ({ items, labels }) => <StepsOverlay items={items} labels={labels} total={4} origin={{ x: 900, y: 720 }} step={{ x: 150, y: -120 }} /> },
+  a1Case: { still: 'canteen', grade: 'now', shots: [{ x: 60, y: 60, z: 1.05, focus: 0.9, pan: 0.3 }, { x: 80, y: 64, z: 1.25, focus: 0.92, pan: 0.3 }, { x: 50, y: 42, z: 1.3, focus: 0.35, pan: -0.3 }] },
+  a1Case2: { still: 'suitcase', grade: 'now', light: { x: 78, y: 22, strength: 0.4 }, shots: [{ x: 50, y: 55, z: 1.05, focus: 0.8, pan: -0.3 }, { x: 34, y: 72, z: 1.3, focus: 0.9, pan: -0.3 }, { x: 74, y: 28, z: 1.35, focus: 0.1, pan: 0.3 }] },
+  a1Case3: { still: 'corridor', grade: 'now', light: { x: 92, y: 20, strength: 0.5 }, shots: [{ x: 50, y: 50, z: 1.05, focus: 0.4, pan: 0.3 }, { x: 72, y: 40, z: 1.3, focus: 0.15, pan: 0.3 }, { x: 30, y: 74, z: 1.35, focus: 0.75, pan: -0.2 }] },
+  a1Case4: { still: 'phone', grade: 'now', light: { x: 63, y: 30, strength: 0.6 }, shots: [{ x: 50, y: 55, z: 1.05, focus: 0.8, pan: -0.3 }, { x: 58, y: 66, z: 1.4, focus: 0.95, pan: 0.2 }, { x: 60, y: 42, z: 1.25, focus: 0.4, pan: 0.3 }, { x: 56, y: 60, z: 1.2, focus: 0.9 }] },
+  a1Notebook: { still: 'notebook', light: { x: 85, y: 12, strength: 0.7 }, shots: [{ x: 70, y: 35, z: 1.05, focus: 0.15, pan: 0.3 }, { x: 62, y: 62, z: 1.2, focus: 0.7 }, { x: 58, y: 70, z: 1.35, focus: 0.9, pan: -0.2 }] },
+  a1Next: { still: 'night', shots: [{ x: 50, y: 50, z: 1.05, focus: 0.2, pan: -0.3 }, { x: 45, y: 45, z: 1.2, focus: 0.1, pan: 0 }, { x: 40, y: 40, z: 1.35, focus: 0.05, pan: 0.2 }], overlay: ({ k }) => <NextOverlay k={k} /> },
+};

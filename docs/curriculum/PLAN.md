@@ -540,3 +540,9 @@ B3–B5 → continue lesson by lesson.
   when the comment arrives. Owner chose "cinematic documentary": code-drawn diagrams removed for the `Reel` (stills
   with a guided camera, lower-thirds, title-card fallback); 16 new still prompts in the brief; each case got its own
   still slot.
+- **2026-10-24** — Owner: the framed window is too small for motion graphics; sent three motion-design references.
+  Adults pages now play full-screen as "cinema" scenes (`slides/cinema/`): the still fills the canvas and moves in
+  depth (depth maps for every L1 still), a kinetic title that steps back to the corner, the ayah/hadith as a hero card
+  that docks when the comment arrives, one subtitle at a time, gold light paths and nodes for steps and pillars, count
+  ups, huge Arabic on the wow page, the khatam star as the recurring hero object. The review game keeps the arch layout.
+  Not yet checked on a real phone or for real-time frame rate.
