@@ -168,16 +168,23 @@ export const tracksOf = (groupId: string | undefined) => SUBJECTS.filter((s) => 
 export const groupOf = (trackId: string | undefined) => GROUPS.find((g) => g.id === SUBJECTS.find((s) => s.id === trackId)?.group);
 
 /**
- * Free sample for signed-in accounts without a booking (docs/marketing/PLAN.md §9, owner 2026-10-19): the opening of
- * Lesson 1, stopping on the mystery of the visitor so the learner books to hear the rest. Shown only once the owner
- * has marked the lesson reviewed (docs/curriculum/RULES.md §2).
+ * Samples for every student and parent account (owner, 2026-10-23): the opening of Lesson 1 in each version we have
+ * built, drafts included, so the owner sees how lessons look in the student portal before launch. Each stops on the
+ * mystery of the visitor, before the answer.
+ * shortcut: drafts are shown to students here on the owner's request; remove the unreviewed ones at launch.
  */
-export const SAMPLE = { subject: 'zad-kids', number: 1, pages: 5 } as const;
+export const SAMPLES = [
+  { subject: 'zad-kids', number: 1, pages: 5 },
+  { subject: 'zad-teens', number: 1, pages: 5 },
+  { subject: 'zad-adults', number: 1, pages: 9 },
+] as const;
 
-export function sampleLesson(): Lesson | undefined {
-  const lesson = findLesson(SAMPLE.subject, SAMPLE.number);
-  if (!lesson?.reviewed) return undefined;
-  return { ...lesson, chapters: [], pages: lesson.pages.slice(0, SAMPLE.pages) };
+export function samples(): { track: SubjectEntry; lesson: Lesson }[] {
+  return SAMPLES.flatMap((s) => {
+    const track = SUBJECTS.find((t) => t.id === s.subject);
+    const lesson = findLesson(s.subject, s.number);
+    return track && lesson ? [{ track, lesson: { ...lesson, chapters: [], pages: lesson.pages.slice(0, s.pages) } }] : [];
+  });
 }
 
 export function findLesson(subjectId: string | undefined, number: number): Lesson | undefined {
