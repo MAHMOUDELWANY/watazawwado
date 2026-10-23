@@ -45,6 +45,12 @@ like a well-designed long-form article or a film title sequence, not a children'
 - No music; sound effects only, few and fitting the scene (RULES §1.10).
 
 ## The slide around the image (code, not ChatGPT)
+- **The light manuscript (owner's choice, 2026-10-23, binding).** The owner rejected the dark documentary panels: "no
+  fonts, no typography, no colours, no site identity". Adults slides use the site's own identity: bone paper with the
+  khatam field and two brand lights, every picture inside the homepage's mihrab arch with the teal-gold-copper ring
+  (`slides/Arch.tsx`), the last word of each title in the ribbon gradient (crimson → gold → teal), ayat and hadith in deep
+  red Thmanyah Display, a gradient rule under the title, labels as light chips. Built in `AdultsLayout` (Slide.tsx).
+  The depth camera and rack focus stay, inside the arch. Never go back to dark panels or a generic look.
 - **v3 (owner, 2026-10-23): cinematic documentary.** Code-drawn diagrams (columns, steps, rings, arches, gauges) read as
   cheap and are not used. Every idea page has a real still; the camera travels across it to the detail each line names,
   then drifts; one lower-third at a time; until a still arrives, a title card with the Arabic word in light. Drawn-in-code

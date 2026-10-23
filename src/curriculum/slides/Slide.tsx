@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useAnimate, useReducedMotion } from 'motion/re
 import type { Interaction, Lesson, LessonPage } from '../types';
 import { SceneArt, P, asset } from './Art';
 import { play } from './sfx';
+import { Arch, RIBBON } from './Arch';
 import { ClueLens, Unveil, DoorsLight, PackZad, Callback, type Lens } from './Scenes';
 import { BUILDS, STUDIES, MOMENTS, PACKED } from './lessons';
 
@@ -52,7 +53,9 @@ export function Slide({ lesson, pageIndex, step, onCorrect, onGameResult }: Slid
   const [found, setFound] = useState<string[]>([]);
   const [chosen, setChosen] = useState<string | null>(null);
   const [answered, setAnswered] = useState(false);
-  const stage = isStage(compositionFor(page));
+  const adults = lesson.version === 'adults';
+  // Adults use the light manuscript look on every page (owner's choice, 2026-10-23): no dark stage compositions.
+  const stage = isStage(compositionFor(page)) && !adults;
   // Stepping back past the question (or replaying it) clears what the child found or chose, so the art matches the question.
   useEffect(() => {
     if (!v.interaction) { setFound([]); setChosen(null); setAnswered(false); }
@@ -66,7 +69,7 @@ export function Slide({ lesson, pageIndex, step, onCorrect, onGameResult }: Slid
 
   return (
     <div ref={rootRef} className="absolute inset-0 overflow-hidden" style={{ background: P.paper, color: P.ink }} dir="ltr" lang="en">
-      {!stage && <Paper />}
+      {!stage && (adults ? <AdultsPaper /> : <Paper />)}
       <Body page={page} v={v} step={step} lesson={lesson} found={found} chosen={chosen} answered={answered} onAnswer={() => setAnswered(true)} onChoose={setChosen} onCorrect={onCorrect} onGameResult={onGameResult} onClue={(l) => setFound((f) => (f.includes(l) ? f : [...f, l]))} />
       {stage && (
         <>
@@ -118,6 +121,17 @@ function Paper() {
       <div className="absolute inset-0" style={{ backgroundImage: KHATAM, WebkitMaskImage: 'radial-gradient(ellipse 60% 70% at 100% 100%, #000, transparent 70%)', maskImage: 'radial-gradient(ellipse 60% 70% at 100% 100%, #000, transparent 70%)' }} />
       <div className="absolute inset-0" style={{ background: 'radial-gradient(900px 500px at 92% 8%, rgba(229,169,60,0.14), transparent 70%), radial-gradient(700px 500px at 0% 100%, rgba(8,125,145,0.08), transparent 70%)' }} />
       <div className="absolute top-0 bottom-0 left-[80px] w-[2px]" style={{ background: 'rgba(197,31,36,0.25)' }} />
+    </>
+  );
+}
+
+/** Adults paper: bone, the site's khatam field and two soft brand lights; no ruled lines. */
+function AdultsPaper() {
+  return (
+    <>
+      <div className="absolute inset-0" style={{ background: '#F6F1E8' }} />
+      <div className="absolute inset-0" style={{ backgroundImage: KHATAM, WebkitMaskImage: 'radial-gradient(ellipse 75% 70% at 30% 40%, #000 15%, transparent 75%)', maskImage: 'radial-gradient(ellipse 75% 70% at 30% 40%, #000 15%, transparent 75%)', opacity: 0.8 }} />
+      <div className="absolute inset-0" style={{ background: 'radial-gradient(900px 520px at 88% 6%, rgba(8,125,145,0.10), transparent 70%), radial-gradient(760px 520px at 4% 100%, rgba(229,169,60,0.13), transparent 70%)' }} />
     </>
   );
 }
@@ -329,7 +343,7 @@ function Lines({ lines, count, size = 40, light = false }: { lines: string[]; co
  *  scene-setting then the text. Other versions keep their own behaviour (the lines give way to the text). */
 function TextWithLines({ page, v, size, textSize, light = false }: { page: LessonPage; v: ReturnType<typeof visibility>; size: number; textSize: number; light?: boolean }) {
   // Once the comment arrives the text steps back (smaller, its translation already read) so the new thought leads.
-  const text = v.evidence ? <Manuscript page={page} size={textSize} light={light} align="start" compact={!page.contextFirst && v.lines > 0} /> : null;
+  const text = v.evidence ? <Manuscript page={page} size={textSize} light={light} ink={light ? undefined : '#8B1A1E'} align="start" compact={!page.contextFirst && v.lines > 0} /> : null;
   const lines = <Lines lines={page.lines} count={v.lines} size={size} light={light} />;
   return page.contextFirst ? <>{lines}{text}</> : <>{text}{lines}</>;
 }
@@ -346,7 +360,7 @@ function Kicker({ page }: { page: LessonPage }) {
 }
 
 /** Manuscript treatment: the Arabic is the hero, written in right to left between gold rules. */
-function Manuscript({ page, size = 60, light = false, align = 'center', compact = false }: { page: LessonPage; size?: number; light?: boolean; align?: 'center' | 'start'; compact?: boolean }) {
+function Manuscript({ page, size = 60, light = false, align = 'center', compact = false, ink }: { page: LessonPage; size?: number; light?: boolean; align?: 'center' | 'start'; compact?: boolean; ink?: string }) {
   const e = page.evidence!;
   const write = Math.min(4, 1 + e.arabic.length / 40);
   return (
@@ -360,7 +374,7 @@ function Manuscript({ page, size = 60, light = false, align = 'center', compact 
         lang="ar"
         dir="rtl"
         className="mt-4 font-serif leading-[1.75] transition-[font-size,opacity] duration-500"
-        style={{ fontSize: compact ? Math.round(size * 0.62) : size, opacity: compact ? 0.7 : 1, color: light ? '#FFF3D6' : P.ink, textShadow: light ? '0 0 30px rgba(246,213,142,0.45)' : undefined }}
+        style={{ fontSize: compact ? Math.round(size * 0.8) : size, opacity: compact ? 0.88 : 1, color: light ? '#FFF3D6' : ink ?? P.ink, fontFamily: ink ? 'var(--font-display-ar)' : undefined, textShadow: light ? '0 0 30px rgba(246,213,142,0.45)' : undefined }}
         initial={{ clipPath: 'inset(0 0 0 100%)' }}
         animate={{ clipPath: 'inset(0 0 0 0%)' }}
         transition={{ duration: write, ease: 'easeInOut' }}
@@ -450,6 +464,8 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
   const Packed = PACKED[lesson.number];
   const interaction = page.interaction && v.interaction ? <InteractionView interaction={page.interaction} onCorrect={onCorrect} onGameResult={onGameResult} onClue={onClue} onChoose={onChoose} onAnswer={onAnswer} /> : null;
 
+  if (lesson.version === 'adults') return <AdultsLayout page={page} v={v} lesson={lesson} interaction={interaction} />;
+
   switch (c) {
     case 'title':
       return (
@@ -481,14 +497,14 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
         <>
           <Painting
             page={page}
-            className={lesson.version === 'adults' ? 'left-[680px] right-[110px] top-[184px] bottom-[120px] rounded-[22px] shadow-[0_50px_90px_-40px_rgba(5,15,22,0.9)]' : 'left-[600px] right-0 top-0 bottom-[100px] rounded-bl-[40px]'}
-            style={lesson.version === 'adults' ? undefined : { maskImage: 'linear-gradient(90deg, transparent 0, #000 120px)', WebkitMaskImage: 'linear-gradient(90deg, transparent 0, #000 120px)' }}
+            className="left-[600px] right-0 top-0 bottom-[100px] rounded-bl-[40px]"
+            style={{ maskImage: 'linear-gradient(90deg, transparent 0, #000 120px)', WebkitMaskImage: 'linear-gradient(90deg, transparent 0, #000 120px)' }}
           >
             {Moment && <Moment v={v} lesson={lesson} />}
           </Painting>
           <div className={`absolute left-[120px] top-[140px] bottom-[120px] w-[470px] space-y-6 ${COL}`}><Fit className="space-y-6">
             <Title size={68}>{page.title}</Title>
-            {lesson.version === 'adults' ? <TextWithLines page={page} v={v} size={28} textSize={34} /> : v.evidence ? <Manuscript page={page} size={36} align="start" /> : <Lines lines={page.lines} count={v.lines} size={32} />}
+            {v.evidence ? <Manuscript page={page} size={36} align="start" /> : <Lines lines={page.lines} count={v.lines} size={32} />}
             {interaction}
           </Fit></div>
         </>
@@ -497,7 +513,7 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
     case 'portrait':
       return (
         <>
-          <Painting page={page} className={lesson.version === 'adults' ? 'right-[110px] top-[184px] bottom-[120px] w-[500px] rounded-[22px]' : 'right-0 top-0 bottom-[100px] w-[560px] rounded-bl-[40px]'} style={lesson.version === 'adults' ? undefined : { maskImage: 'linear-gradient(90deg, transparent 0, #000 90px)', WebkitMaskImage: 'linear-gradient(90deg, transparent 0, #000 90px)' }}>
+          <Painting page={page} className="right-0 top-0 bottom-[100px] w-[560px] rounded-bl-[40px]" style={{ maskImage: 'linear-gradient(90deg, transparent 0, #000 90px)', WebkitMaskImage: 'linear-gradient(90deg, transparent 0, #000 90px)' }}>
             {found.filter((l) => CLUE_LENSES[l]).map((l) => (
               <ClueLens key={l} name="stranger" img={STRANGER} box={{ w: 560, h: 800 }} lens={CLUE_LENSES[l]} />
             ))}
@@ -505,10 +521,8 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
           </Painting>
           <div className={`absolute left-[120px] right-[620px] top-[140px] bottom-[120px] space-y-5 ${COL}`}><Fit className="space-y-5">
             <Title size={58}>{page.title}</Title>
-            {lesson.version === 'adults' ? !v.interaction && <TextWithLines page={page} v={v} size={28} textSize={36} /> : <>
-              {!v.interaction && <Lines lines={page.lines} count={v.lines} size={30} />}
-              {v.evidence && <Manuscript page={page} size={40} align="start" />}
-            </>}
+            {!v.interaction && <Lines lines={page.lines} count={v.lines} size={30} />}
+            {v.evidence && <Manuscript page={page} size={40} align="start" />}
             {interaction}
           </Fit></div>
         </>
@@ -522,11 +536,9 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
           <>
             <div className={`absolute left-[120px] top-[140px] bottom-[120px] w-[560px] space-y-5 ${COL}`}><Fit className="space-y-5">
               <Title size={60}>{page.title}</Title>
-              {lesson.version === 'adults' ? <TextWithLines page={page} v={v} size={28} textSize={34} /> : <>
-                {!v.evidence && <Lines lines={page.lines} count={v.lines} size={32} />}
-                {v.evidence && lesson.version === 'teens' && <Kicker page={page} />}
-                {v.evidence && <Manuscript page={page} size={36} align="start" />}
-              </>}
+              {!v.evidence && <Lines lines={page.lines} count={v.lines} size={32} />}
+              {v.evidence && lesson.version === 'teens' && <Kicker page={page} />}
+              {v.evidence && <Manuscript page={page} size={36} align="start" />}
               <Vocab page={page} />
               {interaction}
             </Fit></div>
@@ -595,10 +607,8 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
           </Painting>
           <div className={`absolute left-[120px] right-[640px] top-[150px] bottom-[120px] space-y-6 ${COL}`}><Fit className="space-y-6">
             <Title size={72} light>{page.title}</Title>
-            {lesson.version === 'adults' ? <TextWithLines page={page} v={v} size={30} textSize={36} light /> : <>
-              {!v.evidence && <Lines lines={page.lines} count={v.lines} size={36} light />}
-              {v.evidence && <Manuscript page={page} size={44} light align="start" />}
-            </>}
+            {!v.evidence && <Lines lines={page.lines} count={v.lines} size={36} light />}
+            {v.evidence && <Manuscript page={page} size={44} light align="start" />}
             {interaction}
           </Fit></div>
           {/* p8: the answer links back to Ms. Clarke's question on the classroom page. */}
@@ -696,6 +706,77 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
         </>
       );
   }
+}
+
+/** Adults title: the last word carries the site's ribbon gradient, like the homepage headline. */
+function AdultsTitle({ text, size }: { text: string; size: number }) {
+  const cut = text.lastIndexOf(' ');
+  const head = cut > 0 ? text.slice(0, cut + 1) : '';
+  const tail = cut > 0 ? text.slice(cut + 1) : text;
+  return (
+    <h2 className="font-serif font-medium leading-[1.02] tracking-[-0.015em] [text-wrap:balance]" style={{ fontSize: size, color: '#2A1A14' }}>
+      {head}<span style={RIBBON}>{tail}</span>
+    </h2>
+  );
+}
+
+/**
+ * Adults pages, the light manuscript (owner's choice, 2026-10-23): bone paper, text on one side in the brand type (title
+ * with a ribbon word, ayat and hadith in deep red Thmanyah, a gradient rule), the picture in the mihrab arch on the
+ * other. Every composition maps onto this one layout so the whole lesson reads as one designed piece.
+ */
+function AdultsLayout({ page, v, lesson, interaction }: { page: LessonPage; v: ReturnType<typeof visibility>; lesson: Lesson; interaction: React.ReactNode }) {
+  const c = compositionFor(page);
+  const Moment = MOMENTS[page.scene];
+  const Study = STUDIES[page.scene];
+  const Build = BUILDS[page.scene];
+  const built = (page.items || []).map((it, i) => (i < v.items ? it : null));
+  if (c === 'arena') {
+    return (
+      <div className="absolute left-[120px] right-[110px] top-[140px] bottom-[120px] slide-scroll space-y-4 overflow-y-auto pr-4">
+        <AdultsTitle text={page.title} size={56} />
+        {interaction}
+      </div>
+    );
+  }
+  const left = c === 'journal' || c === 'cliffhanger';
+  const picture = Study ? <Study v={v} label={page.title} /> : Build ? <Build labels={built} label={page.title} /> : (
+    <Arch side={left ? 'left' : 'right'} label={page.title}>
+      <Painting page={page} className="inset-0">{Moment && <Moment v={v} lesson={lesson} />}</Painting>
+    </Arch>
+  );
+  const rule = <div className="h-[3px] w-40 rounded-full" style={{ background: 'linear-gradient(90deg, #C51F24, #E5A93C, #087D91)' }} />;
+  return (
+    <>
+      {picture}
+      <div className={`absolute ${left ? 'left-[690px] right-[110px]' : 'left-[120px] w-[700px]'} top-[150px] bottom-[120px] ${COL}`}><Fit className="space-y-6">
+        {c === 'title' ? (
+          <>
+            <motion.p initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.7, ease }} lang="ar" dir="rtl" className="w-fit text-[52px] font-bold" style={{ color: '#8B1A1E', fontFamily: 'var(--font-display-ar)' }}>
+              {lesson.titleAr}
+            </motion.p>
+            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.9, ease }}>
+              <AdultsTitle text={lesson.title} size={112} />
+            </motion.div>
+            {rule}
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9, duration: 0.8 }} className="max-w-[620px] font-sans text-[29px] leading-[1.45]" style={{ color: '#4A3A31' }}>
+              {lesson.goal}
+            </motion.p>
+            <p className="flex items-center gap-3 font-sans text-[22px] font-semibold" style={{ color: '#8B4935' }}><KhatamStar size={20} color={P.crimson} />{lesson.subjectTitle}</p>
+          </>
+        ) : (
+          <>
+            {c === 'cliffhanger' && <p className="font-serif text-[32px] italic" style={{ color: '#C51F24' }}>Next time on Zad Essentials…</p>}
+            <AdultsTitle text={page.title} size={c === 'cliffhanger' ? 88 : 66} />
+            {rule}
+            {!(c === 'portrait' && v.interaction) && <TextWithLines page={page} v={v} size={29} textSize={36} />}
+            <Vocab page={page} />
+            {interaction}
+          </>
+        )}
+      </Fit></div>
+    </>
+  );
 }
 
 /* ---------- interactions (sized for the canvas) ---------- */

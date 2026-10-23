@@ -4,6 +4,7 @@ import { P } from '../Art';
 import { Layer, src, type Built } from '../Scenes';
 import { useCue } from '../sfx';
 import { DepthStill, type Shot, type Light } from '../DepthStill';
+import { Arch } from '../Arch';
 
 /* ---------- Adults Lesson 1: The Man No One Knew (brief: docs/curriculum/zad-essentials-adults/L01-the-man-no-one-knew.md)
    Look: docs/curriculum/style/adults.md. v2 after the owner's review (2026-10-23: "premium motion for grown-ups"):
@@ -88,21 +89,18 @@ function Bloom({ x, y, size = 30, color = '255,226,170', strength = 0.7 }: { x: 
   );
 }
 
-/** A documentary lower-third: dark glass, a gold rule that draws first, then the words slide out of it. */
-function Caption({ children, ar, style, delay = 0, align = 'left', tone = 'dark' }: { children?: React.ReactNode; ar?: string; style: React.CSSProperties; delay?: number; align?: 'left' | 'center'; tone?: 'dark' | 'light' }) {
+/** A label on the picture, in the site's chip style: bone glass, a ribbon-gradient bar, Arabic in deep red Thmanyah. */
+function Caption({ children, ar, style, delay = 0, align = 'left' }: { children?: React.ReactNode; ar?: string; style: React.CSSProperties; delay?: number; align?: 'left' | 'center'; tone?: 'dark' | 'light' }) {
   const reduce = useReducedMotion();
-  const dark = tone === 'dark';
   return (
-    <motion.div className={`pointer-events-none absolute flex max-w-[78%] items-stretch gap-3 rounded-[10px] px-4 py-2.5 ${align === 'center' ? '-translate-x-1/2' : ''}`}
-      style={{ background: dark ? 'rgba(8,16,22,0.8)' : 'rgba(250,246,238,0.94)', boxShadow: '0 18px 40px -20px rgba(0,0,0,0.8)', ...style }}
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: reduce ? 0.2 : 0.5, delay: reduce ? 0 : delay }}>
-      <motion.span className="w-[3px] shrink-0 rounded-full" style={{ background: GOLD, transformOrigin: 'top' }}
-        initial={reduce ? false : { scaleY: 0 }} animate={{ scaleY: 1 }} transition={{ duration: 0.5, delay: reduce ? 0 : delay + 0.1, ease }} />
-      <motion.span className="flex flex-col leading-tight" initial={reduce ? false : { opacity: 0, x: -14, filter: 'blur(6px)' }} animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
-        transition={{ duration: 0.8, delay: reduce ? 0 : delay + 0.35, ease }}>
-        {ar && <span lang="ar" dir="rtl" className="font-serif text-[28px] font-bold leading-[1.35]" style={{ color: GOLD }}>{ar}</span>}
-        {children && <span className="font-sans text-[20px] font-semibold tracking-[0.01em]" style={{ color: dark ? BONE : INK }}>{children}</span>}
-      </motion.span>
+    <motion.div className={`pointer-events-none absolute flex max-w-[84%] items-stretch gap-3 rounded-[14px] px-4 py-2.5 ${align === 'center' ? '-translate-x-1/2' : ''}`}
+      style={{ background: 'rgba(250,246,238,0.94)', border: '1px solid rgba(139,73,53,0.16)', boxShadow: '0 18px 40px -22px rgba(42,26,20,0.65)', ...style }}
+      initial={reduce ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduce ? 0.2 : 0.6, delay: reduce ? 0 : delay, ease }}>
+      <span className="w-[4px] shrink-0 rounded-full" style={{ background: 'linear-gradient(180deg, #C51F24, #E5A93C, #087D91)' }} />
+      <span className="flex flex-col leading-tight">
+        {ar && <span lang="ar" dir="rtl" className="text-[27px] font-bold leading-[1.4]" style={{ color: '#8B1A1E', fontFamily: 'var(--font-display-ar)' }}>{ar}</span>}
+        {children && <span className="font-sans text-[19px] font-semibold" style={{ color: '#2A1A14' }}>{children}</span>}
+      </span>
     </motion.div>
   );
 }
@@ -165,9 +163,7 @@ function Stars({ count = 70, seed = 3, top = 70 }: { count?: number; seed?: numb
 function Panel({ children, label, still, tone, film = true }: { children?: React.ReactNode; label: string; still?: string; tone?: 'ink' | 'dusk' | 'night'; film?: boolean }) {
   const reduce = useReducedMotion();
   return (
-    <motion.div className="absolute left-[720px] top-[184px] h-[570px] w-[760px] overflow-hidden rounded-[22px]" role="img" aria-label={label}
-      style={{ boxShadow: '0 50px 90px -40px rgba(5,15,22,0.9), 0 0 0 1px rgba(232,194,122,0.18)' }}
-      initial={reduce ? false : { opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.9, ease }}>
+    <Arch label={label}><motion.div className="absolute inset-0" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.9, ease }}>
       <Stage tone={tone} />
       {still && (
         <Layer name={A(still)} filter="none" style={{ objectFit: 'cover' }}
@@ -175,7 +171,7 @@ function Panel({ children, label, still, tone, film = true }: { children?: React
       )}
       {children}
       {film && <Film leak={Boolean(still)} />}
-    </motion.div>
+    </motion.div></Arch>
   );
 }
 
@@ -272,9 +268,7 @@ function Reel({ still, shots, k, ar, kicker, label, light, depth = true, tone = 
   const f = at(shots, k);
   const toFlat = React.useCallback(() => setMode('flat'), []);
   return (
-    <motion.div className="absolute left-[720px] top-[184px] h-[570px] w-[760px] overflow-hidden rounded-[22px]" role="img" aria-label={label}
-      style={{ boxShadow: '0 50px 90px -40px rgba(5,15,22,0.9), 0 0 0 1px rgba(232,194,122,0.18)', background: INK }}
-      initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.1, ease }}>
+    <Arch label={label}><motion.div className="absolute inset-0" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.1, ease }}>
       {mode === 'depth' && (
         <DepthStill img={src(A(still))} depth={src(A(`${still}-depth`))} shot={f} light={light} grade={grade} still={reduce} onFail={toFlat} />
       )}
@@ -287,14 +281,13 @@ function Reel({ still, shots, k, ar, kicker, label, light, depth = true, tone = 
       )}
       {mode === 'card' && (
         <>
-          <Stage tone={tone} />
-          <Word ar={ar} style={{ left: '50%', top: '44%' }} size={ar.length > 12 ? 70 : 104} delay={0.3} />
-          {kicker && <Kinetic text={kicker} style={{ left: '50%', top: '62%' }} size={26} delay={1} color="rgba(239,232,220,0.75)" />}
+          <Word ar={ar} style={{ left: '50%', top: '50%' }} size={ar.length > 12 ? 52 : 80} delay={0.3} color="#8B1A1E" glow={false} />
+          {kicker && <Kinetic text={kicker} style={{ left: '50%', top: '64%' }} size={22} delay={1} color="#5C4A40" />}
         </>
       )}
       {children}
-      <Film leak={false} />
-    </motion.div>
+      {mode !== 'card' && <Film leak={false} />}
+    </motion.div></Arch>
   );
 }
 
@@ -303,7 +296,7 @@ function Thirds({ items, k, from = 0 }: { items: { en: string; ar?: string }[]; 
   const i = Math.min(k - from, items.length) - 1;
   if (i < 0) return null;
   const t = items[i];
-  return <Caption key={t.en} ar={t.ar} style={{ left: '5%', bottom: '6%' }} delay={0.3}>{t.en}</Caption>;
+  return <Caption key={t.en} ar={t.ar} style={{ left: '6%', bottom: '6%' }} delay={0.3}>{t.en}</Caption>;
 }
 
 /** How many build steps of a study page are showing (text first in Adults, then lines and items). */
@@ -328,7 +321,7 @@ export function ColumnsRise({ v, label }: { v: Built; label: string }) {
         { x: 56, y: 47, z: 1.45, focus: 0.57, pan: 0 }, { x: 69, y: 50, z: 1.4, focus: 0.72, pan: 0.3 },
         { x: 82, y: 50, z: 1.25, focus: 0.93, pan: 0.6 },
       ]}>
-      {k === 3 && <Caption style={{ left: '5%', top: '6%' }} delay={0.6}>"You are right." He already knew.</Caption>}
+      {k === 3 && <Caption style={{ left: '6%', bottom: '19%' }} delay={0.6}>"You are right." He already knew.</Caption>}
       <Thirds items={PILLARS} k={k} from={3} />
     </Reel>
   );
@@ -363,8 +356,8 @@ export function IhsanSteps({ v, label }: { v: Built; label: string }) {
         { x: 50, y: 50, z: 1.02, focus: 0.3, pan: -0.5 }, { x: 50, y: 45, z: 1.28, focus: 0.58, pan: 0 },
         { x: 56, y: 64, z: 1.45, focus: 0.62, pan: 0.3 }, { x: 52, y: 42, z: 1.15, focus: 0.45, pan: 0.1 },
       ]}>
-      {k >= 1 && <Caption ar="كَأنَّك تَراه" style={{ left: '5%', top: '6%' }} delay={1.2}>as if you see Him</Caption>}
-      {k >= 2 && <Caption ar="فإنَّه يَراك" style={{ left: '5%', bottom: '6%' }} delay={0.4}>if not, He sees you</Caption>}
+      {k >= 1 && <Caption ar="كَأنَّك تَراه" style={{ left: '6%', bottom: '19%' }} delay={1.2}>as if you see Him</Caption>}
+      {k >= 2 && <Caption ar="فإنَّه يَراك" style={{ left: '6%', bottom: '6%' }} delay={0.4}>if not, He sees you</Caption>}
     </Reel>
   );
 }
@@ -379,7 +372,7 @@ export function HourglassRuns({ v, label }: { v: Built; label: string }) {
         { x: 55, y: 50, z: 1.02, focus: 0.4, pan: 0.5 }, { x: 31, y: 45, z: 1.5, focus: 0.92, pan: -0.3 },
         { x: 31, y: 60, z: 1.8, focus: 0.92, pan: -0.2 }, { x: 76, y: 40, z: 1.3, focus: 0.1, pan: 0.4 },
       ]}>
-      {k >= 2 && <Caption style={{ left: '5%', bottom: '6%' }} delay={0.4}>Certain, and hidden</Caption>}
+      {k >= 2 && <Caption style={{ left: '6%', bottom: '6%' }} delay={0.4}>Certain, and hidden</Caption>}
     </Reel>
   );
 }
@@ -394,8 +387,8 @@ export function FarLightOpens({ v, label }: { v: Built; label: string }) {
         { x: 50, y: 50, z: 1.02, focus: 0.55, pan: -0.4 }, { x: 57, y: 55, z: 1.3, focus: 0.2, pan: 0 },
         { x: 60, y: 82, z: 1.6, focus: 0.45, pan: 0.2 }, { x: 55, y: 46, z: 1.15, focus: 0.15, pan: 0.1 },
       ]}>
-      {k >= 1 && <Caption ar="جِبريلُ" style={{ left: '5%', top: '6%' }} delay={1.4}>Jibril</Caption>}
-      {k >= 2 && <Caption ar="يُعَلِّمُكُم دينَكُم" style={{ left: '5%', bottom: '6%' }} delay={0.4}>to teach you your deen</Caption>}
+      {k >= 1 && <Caption ar="جِبريلُ" style={{ left: '6%', bottom: '19%' }} delay={1.4}>Jibril</Caption>}
+      {k >= 2 && <Caption ar="يُعَلِّمُكُم دينَكُم" style={{ left: '6%', bottom: '6%' }} delay={0.4}>to teach you your deen</Caption>}
     </Reel>
   );
 }
@@ -443,8 +436,8 @@ export function ShadowsLengthen({ v, label }: { v: Built; label: string }) {
         { x: 50, y: 45, z: 1.08, focus: 0.5 }, { x: 62, y: 60, z: 1.35, focus: 0.5 },
         { x: 45, y: 70, z: 1.5, focus: 0.5 }, { x: 50, y: 50, z: 1.05, focus: 0.5 },
       ]}>
-      {k >= 1 && <Caption style={{ left: '5%', top: '6%' }} delay={1}>Busy, all the way here</Caption>}
-      {k >= 3 && <Caption ar="زُرْتُمُ" style={{ left: '5%', bottom: '6%' }} delay={0.4}>visited: guests, not residents</Caption>}
+      {k >= 1 && <Caption style={{ left: '6%', bottom: '19%' }} delay={1}>Busy, all the way here</Caption>}
+      {k >= 3 && <Caption ar="زُرْتُمُ" style={{ left: '6%', bottom: '6%' }} delay={0.4}>visited: guests, not residents</Caption>}
     </Reel>
   );
 }
@@ -484,7 +477,7 @@ export function SoundToHeart({ v, label }: { v: Built; label: string }) {
         { x: 50, y: 50, z: 1.02, focus: 0.9, pan: -0.3 }, { x: 42, y: 60, z: 1.3, focus: 0.95, pan: -0.2 },
         { x: 62, y: 34, z: 1.45, focus: 0.15, pan: 0.3 },
       ]}>
-      {k >= 2 && <Caption ar="عِلْمَ ٱلْيَقِينِ" style={{ left: '5%', bottom: '6%' }} delay={0.4}>heard, and certain</Caption>}
+      {k >= 2 && <Caption ar="عِلْمَ ٱلْيَقِينِ" style={{ left: '6%', bottom: '6%' }} delay={0.4}>heard, and certain</Caption>}
     </Reel>
   );
 }
@@ -499,7 +492,7 @@ export function EyeOpens({ v, label }: { v: Built; label: string }) {
         { x: 40, y: 50, z: 1.02, focus: 0.9, pan: -0.5 }, { x: 65, y: 52, z: 1.3, focus: 0.15, pan: 0.2 },
         { x: 80, y: 46, z: 1.55, focus: 0.08, pan: 0.4 }, { x: 68, y: 50, z: 1.2, focus: 0.1, pan: 0.1 },
       ]}>
-      {k >= 2 && <Caption ar="عَيْنَ ٱلْيَقِينِ" style={{ left: '5%', bottom: '6%' }} delay={0.4}>seen with the eyes</Caption>}
+      {k >= 2 && <Caption ar="عَيْنَ ٱلْيَقِينِ" style={{ left: '6%', bottom: '6%' }} delay={0.4}>seen with the eyes</Caption>}
     </Reel>
   );
 }
@@ -531,8 +524,7 @@ export function MistToSight({ labels, label }: { labels: (string | null)[]; labe
   useCue('reveal', stage >= 2, 0.8);
   const r = rng(71);
   return (
-    <motion.div className="absolute left-[680px] top-[184px] h-[590px] w-[830px] overflow-hidden rounded-[22px]" role="img" aria-label={`${label}: ${['hearing', 'seeing', 'inside'][stage]}`}
-      style={{ boxShadow: '0 50px 90px -40px rgba(5,15,22,0.9), 0 0 0 1px rgba(232,194,122,0.25)' }}>
+    <Arch label={`${label}: ${['hearing', 'seeing', 'inside'][stage]}`}><div className="absolute inset-0">
       <motion.div className="absolute inset-0" initial={false} animate={{ scale: stage >= 2 && !reduce ? 1.6 : 1 }} transition={{ duration: 3.6, ease: [0.65, 0, 0.35, 1] }}>
         <Stage tone="dusk" />
         <Layer name={A('horizon')} filter="none" style={{ objectFit: 'cover' }} />
@@ -561,11 +553,11 @@ export function MistToSight({ labels, label }: { labels: (string | null)[]; labe
           transition={{ duration: 2.4, delay: 0.6 + r() * 2, repeat: Infinity, ease: 'easeIn' }} />;
       })}
       {stage === 0 && <Kinetic text="You heard it." style={{ left: '50%', top: '44%' }} size={44} color={INK} />}
-      {labels[0] && <Word ar={labels[0]} style={{ left: '70%', top: '18%' }} size={60} delay={1.6} />}
-      {labels[1] && <Word ar={labels[1]} style={{ left: '30%', top: '18%' }} size={60} delay={1} />}
+      {labels[0] && <Word ar={labels[0]} style={{ left: '50%', top: '40%' }} size={54} delay={1.6} />}
+      {labels[1] && <Word ar={labels[1]} style={{ left: '50%', top: '54%' }} size={54} delay={1} />}
       {stage >= 1 && <Caption style={{ left: '50%', top: '84%' }} align="center" delay={stage >= 2 ? 3 : 1.8}>{stage >= 2 ? 'This is where the course wants to take you' : 'You see it'}</Caption>}
       <Film leak={stage >= 1} />
-    </motion.div>
+    </div></Arch>
   );
 }
 
@@ -586,7 +578,7 @@ export function LaneTwoStates({ v, label }: { v: Built; label: string }) {
             initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.8, delay: 0.6, ease }} />
         </svg>
       )}
-      {v.lines >= 1 && <Caption style={{ left: '5%', top: '6%' }} ar="كَأنَّا رَأيُ عَينٍ" delay={0.2}>At the gathering</Caption>}
+      {v.lines >= 1 && <Caption style={{ left: '6%', bottom: '19%' }} ar="كَأنَّا رَأيُ عَينٍ" delay={0.2}>At the gathering</Caption>}
       {v.lines >= 1 && <Caption style={{ left: '56%', top: '44%' }} delay={1.8}>At home: we forgot</Caption>}
       {v.evidence && <Caption style={{ left: '50%', top: '78%' }} align="center" ar="ساعةً وساعةً" delay={0.5}>an hour and an hour</Caption>}
     </Panel>
@@ -599,7 +591,7 @@ export function MondayPile({ v }: { v: Built }) {
   const reduce = useReducedMotion();
   return (
     <>
-      {v.lines >= 1 && <Caption style={{ left: '6%', top: '20%' }} delay={0.2}>Friday: moved</Caption>}
+      {v.lines >= 1 && <Caption style={{ left: '6%', top: '34%' }} delay={0.2}>Friday: moved</Caption>}
       {v.lines >= 2 && [0, 1, 2, 3, 4].map((i) => (
         <motion.span key={i} className="pointer-events-none absolute h-[5%] w-[16%] rounded-[6px]" aria-hidden="true"
           style={{ left: '60%', top: `${44 + i * 3.2}%`, background: 'rgba(250,250,252,0.92)', boxShadow: '0 6px 14px -6px rgba(0,0,0,0.6)', borderLeft: `4px solid ${P.crimson}` }}
@@ -624,8 +616,8 @@ export const CaseTwo = caseScene('suitcase', [
   { x: 76, y: 25, z: 1.4, focus: 0.1, pan: 0.3 }, { x: 46, y: 70, z: 1.2, focus: 0.85, pan: 0 },
 ], { x: 78, y: 22, strength: 0.4 });
 export const CaseThree = caseScene('corridor', [
-  { x: 50, y: 50, z: 1.02, focus: 0.3, pan: 0.3 }, { x: 74, y: 36, z: 1.5, focus: 0.15, pan: 0.3 },
-  { x: 58, y: 82, z: 1.6, focus: 0.7, pan: -0.2 }, { x: 55, y: 60, z: 1.2, focus: 0.5, pan: 0 },
+  { x: 40, y: 50, z: 1.02, focus: 0.5, pan: 0.3 }, { x: 72, y: 38, z: 1.35, focus: 0.15, pan: 0.3 },
+  { x: 32, y: 76, z: 1.4, focus: 0.75, pan: -0.2 }, { x: 34, y: 62, z: 1.12, focus: 0.7, pan: -0.1 },
 ], { x: 92, y: 20, strength: 0.5 });
 export const CaseFour = caseScene('phone', [
   { x: 50, y: 55, z: 1.02, focus: 0.8, pan: -0.3 }, { x: 58, y: 68, z: 1.5, focus: 0.95, pan: 0.2 },
