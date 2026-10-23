@@ -5,7 +5,10 @@ Status: **v2 storyline waiting for the owner's approval (2026-10-23)**; v1 was a
 (`src/curriculum/content/zad-adults/l01-the-man-no-one-knew.ts`, RULES §1.12). Look: `../style/adults.md` (approved
 2026-10-23).
 
-## v2 storyline (owner's review 2026-10-23: the v1 order did not hold together; waiting for approval)
+## v2 storyline (owner's review 2026-10-23: the v1 order did not hold together; v2 approved 2026-10-23 and applied)
+
+The sections below this table (Spark, Rational step, Images) describe v1 and are kept for the record; where they
+disagree with this table, the table wins. The mirror, bedside and street stills are no longer used.
 
 The owner's verdict on v1: it opened on death and certainty with no reason to, the Ibn Umar context added nothing, and
 the ideas did not lead into each other in a way a thinking adult follows. v2 tells **one story with one question**, and

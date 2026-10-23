@@ -172,7 +172,7 @@ export const SCENE_IMAGES: Partial<Record<LessonPage['scene'], string>> = {
   tl3Cover: 'zad-teens/l03/cover', tl3Gaming: 'zad-teens/l02/gaming', tl3Likes: 'zad-teens/l03/likes', tl3Prayer: 'zad-teens/l03/prayer',
   tl3Library: 'zad-teens/l03/library',
   // Adults (docs/curriculum/style/adults.md; prompts in the Lesson 1 brief). Panels without a still are drawn in code.
-  a1Cover: 'zad-adults/l01/cover', a1Mirror: 'zad-adults/l01/mirror', a1Bedside: 'zad-adults/l01/bedside', a1Street: 'zad-adults/l01/street',
+  a1Cover: 'zad-adults/l01/cover',
   a1Madinah: 'zad-adults/l01/madinah', a1Stranger: 'zad-adults/l01/stranger', a1Cushions: 'zad-adults/l01/cushions',
   a1Graves: 'zad-adults/l01/graves', a1Horizon: 'zad-adults/l01/horizon', a1Lane: 'zad-adults/l01/lane', a1Monday: 'zad-adults/l01/monday',
   a1Next: 'zad-adults/l01/night',

@@ -191,98 +191,6 @@ export function ShaftOfLight(_: { v: Built }) {
   );
 }
 
-/** p2 The misted mirror: condensation beads on the glass; a hand-wide streak wipes clear along a slant, then the
- *  morning question is written in the clear stripe. */
-export function MirrorWipe({ v }: { v: Built }) {
-  const reduce = useReducedMotion();
-  const r = rng(5);
-  return (
-    <>
-      <motion.div className="absolute inset-0" aria-hidden="true"
-        style={{ background: 'linear-gradient(180deg, rgba(222,231,236,0.62), rgba(198,211,220,0.56))' }}
-        initial={false}
-        animate={{ clipPath: v.lines >= 1 ? 'polygon(0 0,100% 0,100% 24%,0 34%,0 56%,100% 46%,100% 100%,0 100%)' : 'polygon(0 0,100% 0,100% 24%,0 34%,0 34%,100% 24%,100% 100%,0 100%)' }}
-        transition={{ duration: reduce ? 0 : 2.2, ease }} />
-      {Array.from({ length: 26 }, (_, i) => (
-        <span key={i} className="pointer-events-none absolute rounded-full" aria-hidden="true"
-          style={{ left: `${r() * 100}%`, top: `${r() < 0.5 ? r() * 22 : 58 + r() * 40}%`, width: 3 + r() * 6, height: 3 + r() * 7, background: 'radial-gradient(circle at 35% 30%, rgba(255,255,255,0.9), rgba(200,215,225,0.2))' }} />
-      ))}
-      {v.lines >= 3 && <Kinetic text="If today were my last day…" style={{ left: '50%', top: '33%' }} size={40} color="#FFFFFF" delay={0.4} />}
-      <Film leak={false} />
-    </>
-  );
-}
-
-/** p3 The bedside: the sun flares in the window; a warm bloom gathers on the hands; knowing is joined to seeing. */
-export function HandsWarm({ v }: { v: Built }) {
-  const reduce = useReducedMotion();
-  return (
-    <>
-      <Bloom x={62} y={18} size={40} color="255,190,120" />
-      {!reduce && [0.2, 0.36, 0.5].map((k, i) => (
-        <motion.span key={i} className="pointer-events-none absolute rounded-full" aria-hidden="true"
-          style={{ left: `${62 - k * 40}%`, top: `${18 + k * 60}%`, width: 30 + i * 18, height: 30 + i * 18, border: '2px solid rgba(255,210,150,0.35)', mixBlendMode: 'screen' }}
-          animate={{ opacity: [0.2, 0.6, 0.2] }} transition={{ duration: 6, delay: i, repeat: Infinity }} />
-      ))}
-      <Bloom x={42} y={66} size={36} strength={v.lines >= 3 ? 0.8 : 0.4} />
-      {v.lines >= 3 && <Caption style={{ left: '8%', top: '34%' }} delay={0.3}>They knew all their lives</Caption>}
-      {v.lines >= 3 && <Caption style={{ left: '40%', top: '50%' }} delay={1.3}>At the end, they saw</Caption>}
-      <Film />
-    </>
-  );
-}
-
-/** p4 The street: bokeh lights drift, a headlight sweep follows the car; then the gap is named. */
-export function FuneralPasses({ v }: { v: Built }) {
-  const reduce = useReducedMotion();
-  const r = rng(9);
-  return (
-    <>
-      {!reduce && Array.from({ length: 12 }, (_, i) => (
-        <motion.span key={i} className="pointer-events-none absolute rounded-full" aria-hidden="true"
-          style={{ left: `${r() * 100}%`, top: `${30 + r() * 30}%`, width: 20 + r() * 40, height: 20 + r() * 40, background: `radial-gradient(circle, rgba(${r() < 0.5 ? '255,200,130' : '180,210,255'},0.35), transparent 70%)`, mixBlendMode: 'screen' }}
-          animate={{ x: [0, -30, 0], opacity: [0.3, 0.8, 0.3] }} transition={{ duration: 8 + r() * 6, repeat: Infinity, ease: 'easeInOut' }} />
-      ))}
-      {!reduce && (
-        <motion.div className="pointer-events-none absolute left-0 top-[48%] h-[20%] w-[40%] will-change-transform" aria-hidden="true"
-          style={{ background: 'radial-gradient(closest-side, rgba(255,236,190,0.4), transparent)', mixBlendMode: 'screen' }}
-          initial={{ x: '-100%' }} animate={{ x: '260%' }} transition={{ duration: 12, repeat: Infinity, ease: 'linear' }} />
-      )}
-      {v.lines >= 2 && <Caption style={{ left: '8%', top: '24%' }} delay={0.3}>Everyone here is sure</Caption>}
-      {v.interaction && <Caption style={{ left: '8%', top: '78%' }} delay={0.3}>Sure, and not moved</Caption>}
-      <Film />
-    </>
-  );
-}
-
-/* ---------- Zad ---------- */
-
-/** p5 Al-Hijr 15:99: dusk turns to night; the sun sinks behind the hills with a bloom, stars come out, and the word is
- *  set where the sun went down. */
-export function SunsetCertainty({ v, label }: { v: Built; label: string }) {
-  const reduce = useReducedMotion();
-  const set = v.evidence;
-  useCue('chime', set, 1.8);
-  return (
-    <Panel label={label} tone="dusk">
-      <motion.div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, #0A1424 0%, #142A44 55%, #2B2A3A 100%)' }} initial={false}
-        animate={{ opacity: set ? 1 : 0 }} transition={{ duration: reduce ? 0 : 3.5 }} aria-hidden="true" />
-      {set && <Stars count={60} seed={7} top={55} />}
-      <motion.div className="absolute left-1/2 h-[150px] w-[150px] -translate-x-1/2 rounded-full" aria-hidden="true"
-        style={{ background: 'radial-gradient(circle, #FFF4D6 0%, #F5B754 45%, rgba(245,183,84,0) 70%)', boxShadow: '0 0 140px 50px rgba(245,170,80,0.35)' }}
-        initial={false} animate={{ top: set ? '72%' : '30%', opacity: set ? 0.35 : 1 }} transition={{ duration: reduce ? 0 : 3.5, ease: [0.45, 0, 0.2, 1] }} />
-      <svg className="absolute inset-x-0 bottom-0 h-[34%] w-full" viewBox="0 0 760 190" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M0 70 C120 40 220 80 330 55 C450 28 560 75 760 45 L760 190 L0 190 Z" fill="#1A120F" />
-        <path d="M0 110 C160 80 300 120 440 95 C560 75 660 110 760 90 L760 190 L0 190 Z" fill="#0D0907" />
-      </svg>
-      <motion.div className="absolute inset-x-0 top-[64%] h-[10%]" aria-hidden="true" style={{ background: 'linear-gradient(180deg, transparent, rgba(255,170,90,0.35), transparent)', filter: 'blur(8px)' }}
-        initial={false} animate={{ opacity: set ? 0.9 : 0.4 }} transition={{ duration: 2 }} />
-      {v.lines >= 2 && <Caption style={{ left: '6%', top: '8%' }} delay={0.3}>The one thing no one doubts</Caption>}
-      {set && <Word ar="ٱلْيَقِينُ" style={{ left: '50%', top: '44%' }} size={86} delay={2.6} />}
-    </Panel>
-  );
-}
-
 /** p6 Where the gap is: three glass steps rise in perspective; light falls on the highest; a fracture marks the gap. */
 export function GapSteps({ labels, label }: { labels: (string | null)[]; label: string }) {
   const reduce = useReducedMotion();
@@ -332,47 +240,6 @@ export function MadinahMorning(_: { v: Built }) {
       <Motes count={22} seed={8} box={{ x: 40, y: 35, w: 50, h: 55 }} />
       <Film />
     </>
-  );
-}
-
-const CHAIN = [
-  { en: 'The Prophet', ar: 'النبي ﷺ' },
-  { en: 'Umar ibn al-Khattab', ar: 'عمر بن الخطاب' },
-  { en: 'Abdullah ibn Umar', ar: 'عبد الله بن عمر' },
-  { en: "Yahya ibn Ya'mar", ar: 'يحيى بن يعمر' },
-  { en: 'Sahih Muslim, then us', ar: 'صحيح مسلم' },
-];
-
-/** p8 Why Ibn Umar told it: a vertical line of light; a pulse travels down it and each name ignites as it arrives,
- *  from the Messenger ﷺ to the page in front of the learner. Names only; no one is drawn. */
-export function NarratorChain({ v }: { v: Built }) {
-  const reduce = useReducedMotion();
-  const lit = v.lines >= 3 ? CHAIN.length : v.lines >= 2 ? 3 : v.lines >= 1 ? 2 : 1;
-  const y = (i: number) => 22 + i * 15;
-  return (
-    <div className="absolute inset-0" role="img" aria-label="The chain of narrators">
-      <Stage tone="dusk" />
-      <div className="absolute left-[34%] top-[22%] h-[60%] w-[2px] bg-[rgba(232,194,122,0.18)]" aria-hidden="true" />
-      <motion.div className="absolute left-[34%] top-[22%] w-[2px] origin-top" aria-hidden="true" style={{ background: `linear-gradient(180deg, ${GOLD}, #FFF4D6)`, boxShadow: '0 0 14px rgba(232,194,122,0.9)' }}
-        initial={false} animate={{ height: `${(lit - 1) * 15}%` }} transition={{ duration: reduce ? 0 : 1.2, ease }} />
-      {!reduce && lit > 1 && (
-        <motion.span key={lit} className="absolute left-[34%] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white" aria-hidden="true"
-          style={{ boxShadow: '0 0 24px 8px rgba(255,236,190,0.9)' }}
-          initial={{ top: `${y(lit - 2)}%`, opacity: 1 }} animate={{ top: `${y(lit - 1)}%`, opacity: [1, 1, 0] }} transition={{ duration: 1.2, ease }} />
-      )}
-      {CHAIN.map((c, i) => (
-        <motion.div key={c.en} className="absolute flex -translate-y-1/2 items-center gap-4" style={{ left: '34%', top: `${y(i)}%` }} initial={false}
-          animate={{ opacity: i < lit ? 1 : 0.15 }} transition={{ duration: 0.8, delay: i < lit ? 0.9 : 0 }}>
-          <span className="-ml-[9px] h-[18px] w-[18px] rounded-full border-2" style={{ borderColor: GOLD, background: i < lit ? GOLD : 'transparent', boxShadow: i < lit ? '0 0 16px rgba(232,194,122,0.9)' : undefined }} />
-          <span className="flex flex-col leading-tight">
-            <span lang="ar" dir="rtl" className="font-serif text-[30px] font-bold" style={{ color: i === 2 ? '#FFD9A0' : GOLD }}>{c.ar}</span>
-            <span className="font-sans text-[18px] font-semibold" style={{ color: BONE }}>{c.en}</span>
-          </span>
-        </motion.div>
-      ))}
-      {v.evidence && <Caption style={{ left: '8%', top: '86%' }} delay={0.3}>When doubt came, he went back to the source</Caption>}
-      <Film leak={false} />
-    </div>
   );
 }
 
@@ -545,7 +412,7 @@ export function HourglassRuns({ v, label }: { v: Built; label: string }) {
         ))}
       </div>
       {v.evidence && <Caption style={{ left: '6%', top: '84%' }} delay={0.4}>Its time is with Allah alone</Caption>}
-      {v.interaction && <Caption style={{ left: '6%', top: '6%' }} delay={0.3}>Certain. Hidden. So, ready.</Caption>}
+      {v.interaction && <Caption style={{ left: '6%', top: '6%' }} delay={0.3}>Certain, and hidden</Caption>}
     </Panel>
   );
 }
@@ -733,28 +600,25 @@ export function EyeOpens({ v, label }: { v: Built; label: string }) {
   );
 }
 
-const THROUGH = ['Told', 'Seen', 'Inside'];
-
-/** p21 Haqq al-yaqeen: three arches one behind another; with each level the camera moves through the next arch, until
- *  the last opens into light. */
-export function ArchesDeeper({ v, label }: { v: Built; label: string }) {
+/** "What this course is for": four arches one behind another, one per part of the course. With each part the camera moves
+ *  through the next arch; the last (Ihsan) opens into light. */
+export function CourseArches({ labels, label }: { labels: (string | null)[]; label: string }) {
   const reduce = useReducedMotion();
-  const lit = Math.min(v.items, 3);
+  const lit = labels.filter(Boolean).length;
   const arch = (s: number) => { const w = 300 * s, x = 380 - w / 2, top = 560 - 440 * s; return `M${x} 570 L${x} ${top + w / 2} A${w / 2} ${w / 2} 0 0 1 ${x + w} ${top + w / 2} L${x + w} 570 Z`; };
   return (
-    <Panel label={`${label}: ${lit} of 3`} tone="dusk">
-      <motion.div className="absolute inset-0" initial={false} animate={{ scale: reduce ? 1 : [1, 1.12, 1.3, 1.55][lit] }} style={{ transformOrigin: '50% 70%' }} transition={{ duration: 2.2, ease }}>
+    <Panel label={`${label}: ${lit} of 4`} tone="dusk">
+      <motion.div className="absolute inset-0" initial={false} animate={{ scale: reduce ? 1 : [1, 1.08, 1.2, 1.36, 1.6][lit] }} style={{ transformOrigin: '50% 70%' }} transition={{ duration: 2.2, ease }}>
         <svg className="absolute inset-0 h-full w-full" viewBox="0 0 760 570" aria-hidden="true">
-          {[1.2, 0.85, 0.55].map((s, i) => (
-            <motion.path key={s} d={arch(s)} fill={['#1F2A30', '#4A2A1E', '#FFE7B0'][i]} stroke={GOLD} strokeOpacity={0.5} strokeWidth={1.5}
+          {[1.25, 0.95, 0.7, 0.48].map((s, i) => (
+            <motion.path key={s} d={arch(s)} fill={['#1F2A30', '#33302A', '#4A2A1E', '#FFE7B0'][i]} stroke={GOLD} strokeOpacity={0.5} strokeWidth={1.5}
               initial={false} animate={{ opacity: i < lit ? 1 : 0.12 }} transition={{ duration: 1.2 }} />
           ))}
         </svg>
-        {lit >= 3 && <Bloom x={50} y={72} size={36} />}
-        {lit >= 3 && <Motes count={14} seed={61} box={{ x: 38, y: 50, w: 24, h: 40 }} />}
+        {lit >= 4 && <Bloom x={50} y={74} size={34} />}
+        {lit >= 4 && <Motes count={14} seed={61} box={{ x: 40, y: 52, w: 20, h: 40 }} />}
       </motion.div>
-      {THROUGH.slice(0, lit).map((w, i) => <Caption key={w} style={{ left: '6%', top: `${8 + i * 12}%` }} delay={0.6}>{`${i + 1}. ${w}`}</Caption>)}
-      {v.evidence && <Word ar="حَقُّ ٱلْيَقِينِ" style={{ left: '50%', top: '88%' }} color="#3A2608" size={46} delay={0.6} glow={false} />}
+      {labels.map((l, i) => l && <Caption key={l} style={{ left: '6%', top: `${8 + i * 11}%` }} delay={0.6}>{`${i + 1}. ${l.split(':')[0]}`}</Caption>)}
     </Panel>
   );
 }

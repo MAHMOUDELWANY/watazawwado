@@ -1,7 +1,8 @@
 import type { Lesson } from '../../types';
 import { lesson01AdultsTeacherAr } from './l01-teacher-ar.js';
 
-// Brief and evidence log: docs/curriculum/zad-essentials-adults/L01-the-man-no-one-knew.md (approved 2026-10-23).
+// Brief and evidence log: docs/curriculum/zad-essentials-adults/L01-the-man-no-one-knew.md (v2 storyline approved
+// 2026-10-23: one question drives the lesson, each page answers the one before).
 // Hadith lines are copied unchanged from Dorar (Sahih Muslim 8, 2750, 2958; checked 2026-10-23). Ayat are the Uthmani
 // text from the quran.com connector (2026-10-23). English meanings are ours. Adults: 60 minutes, every page shown.
 const MUSLIM_8 = 'Sahih Muslim 8, narrated by Umar ibn al-Khattab';
@@ -19,24 +20,23 @@ export const lesson01Adults: Lesson = {
   reviewed: false,
   teacherAr: lesson01AdultsTeacherAr,
   outcomes: [
-    'Retells the hadith of Jibril with its details, and knows why Ibn Umar told it.',
+    'Retells the hadith of Jibril with its details, and can say why a man asked questions he already knew the answers to.',
     'Explains Islam, Iman and Ihsan in their own words, at an adult level.',
     "Explains the difference between knowing and certainty through 'ilm al-yaqeen, 'ayn al-yaqeen and haqq al-yaqeen.",
-    'Can say why Allah calls death al-yaqeen (Al-Hijr 15:99) and what that asks of the way we live.',
+    'Answers "once you know Allah you need no rituals" from Al-Hijr 15:99.',
     'Understands from Hanzalah that certainty rises and falls, so the work is to keep returning to it.',
     'Writes the first line of Zad al-Yaqeen and chooses one habit for the week.',
   ],
   chapters: [
-    { label: 'The one certainty', page: 0 },
-    { label: 'The stranger', page: 6 },
-    { label: 'Three levels', page: 10 },
-    { label: 'Yaqeen', page: 16 },
-    { label: 'Then and Now', page: 22 },
-    { label: 'Cases', page: 24 },
-    { label: 'Zad al-Yaqeen', page: 29 },
+    { label: 'The stranger', page: 0 },
+    { label: 'Three levels', page: 9 },
+    { label: 'Knowing and seeing', page: 10 },
+    { label: 'Then and Now', page: 12 },
+    { label: 'At-Takathur', page: 14 },
+    { label: 'Cases', page: 19 },
+    { label: 'Zad al-Yaqeen', page: 24 },
   ],
   pages: [
-    // ── Spark ──────────────────────────────────────────────────────────────────────────────────────────────────
     {
       title: 'The Man No One Knew',
       station: 'spark',
@@ -44,131 +44,14 @@ export const lesson01Adults: Lesson = {
       scene: 'a1Cover',
       lines: [],
       explain: [
-        'Welcome the learner and read the title together. Ask: "A man walks into the masjid and no one there knows him. Why would that matter 1,400 years later?" Take any answer; it comes back within ten minutes.',
-        'Say what this course is: you already know a great deal about Islam. This course is about something else, turning what you know into certainty, the kind that changes how you live.',
+        'Welcome the learner and read the title together. Then give them the question the whole lesson answers: "A stranger walks into the masjid, asks five questions he already knows the answers to, and leaves. Why?"',
+        'Take any guess and write it down. Do not answer it; the lesson answers it page by page, and the learner should feel each page close one part of the puzzle.',
       ],
       teacherNote: 'Two minutes. Set the tone: an honest conversation between adults, not a lecture.',
     },
     {
-      title: 'A tool for big choices',
-      station: 'spark',
-      layout: 'story',
-      scene: 'a1Mirror',
-      lines: [
-        '"Remembering that I\'ll be dead soon is the most important tool I\'ve ever encountered to help me make the big choices in life."',
-        'Steve Jobs, Stanford commencement address, June 2005.',
-        'He said he asked himself each morning: if today were my last day, would I want to do what I am about to do?',
-      ],
-      interaction: {
-        kind: 'ask',
-        prompt: 'You know you will die. Name one thing you did this week that shows you know it.',
-        reveal: 'Keep your answer. The whole lesson grows out of it.',
-      },
-      explain: [
-        'Read the quote slowly. Jobs gave this speech to graduates about a year after he was first told he had cancer; he died in 2011.',
-        'We use his words because they show an idea clearly, not because he is a model to follow. A man without our deen saw that remembering death sharpens a life. We have been told far more than he was.',
-        'Ask the question on the slide and wait. Most adults go quiet here, and that silence is honest. Do not fill it and do not correct the answer.',
-      ],
-      teacherNote: 'If the learner names something, praise it. If they cannot, say: "That is exactly why we are here."',
-    },
-    {
-      title: 'What people see at the end',
-      station: 'spark',
-      layout: 'story',
-      scene: 'a1Bedside',
-      lines: [
-        'Bronnie Ware spent years caring for people in the last weeks of their lives.',
-        'The regret she heard most: "I wish I\'d had the courage to live a life true to myself, not the life others expected of me."',
-        'They had known all their lives that they would die. At the end, they saw it.',
-      ],
-      interaction: {
-        kind: 'ask',
-        prompt: 'Why do people see clearly only at the very end?',
-        reveal: 'Because at the end, knowing turns into seeing. Hold on to that difference: it is the key to this course.',
-      },
-      explain: [
-        'Bronnie Ware worked in palliative care and wrote about it in a post called "Regrets of the Dying", later a book. Again, her words illustrate an idea; she is not a role model.',
-        'Draw out the point: none of those people were surprised that they were dying. What changed at the end was not their information. It was how real it had become to them.',
-        'Ask the question and let the learner try. Then say: today we give that difference its name.',
-      ],
-    },
-    // ── Zad ────────────────────────────────────────────────────────────────────────────────────────────────────
-    {
-      title: 'The one thing no one doubts',
-      station: 'zad',
-      layout: 'question',
-      scene: 'a1Street',
-      lines: [
-        'A funeral car passes along a busy street.',
-        'Not one person on that pavement doubts they will die.',
-        'Most of them will be on their phones again before it turns the corner.',
-      ],
-      interaction: {
-        kind: 'ask',
-        prompt: 'If everyone is sure of death, why does it change so little?',
-        reveal: 'Because knowing a thing and being certain of it in a way that moves you are two different things.',
-      },
-      explain: [
-        'This is the rational step of the lesson. Death is the one fact no sane person argues with, and yet most of us live as though we were not sure of it.',
-        'So the gap is not knowledge. The people on the pavement know. Something has not reached the heart.',
-        'Let the learner answer before you reveal. Many will describe their own week; that is exactly the point.',
-      ],
-    },
-    {
-      title: 'Allah calls death "the certainty"',
-      station: 'zad',
-      layout: 'evidence',
-      scene: 'a1Yaqeen',
-      lines: [
-        'The last ayah of Surah Al-Hijr, spoken to the Messenger ﷺ.',
-        'The early scholars said al-yaqeen here means death.',
-      ],
-      evidence: {
-        arabic: 'وَٱعْبُدْ رَبَّكَ حَتَّىٰ يَأْتِيَكَ ٱلْيَقِينُ',
-        meaning: 'And worship your Lord until the certainty comes to you.',
-        reference: 'Al-Hijr 15:99',
-      },
-      tadabbur: {
-        word: 'ٱلْيَقِينُ',
-        root: 'ي ق ن',
-        meaning: 'Certainty: knowledge so settled that you no longer doubt it or argue with it. Here, as Salim ibn Abdullah ibn Umar, Mujahid, al-Hasan and Qatada explained (Ibn Kathir), it is death itself.',
-        question: 'Death is called the certainty. Is the rest of my deen as certain to me as my death?',
-        action: 'After one prayer a day this week, spend one minute with that question.',
-      },
-      explain: [
-        'Ibn Kathir reports that Salim ibn Abdullah ibn Umar, Mujahid, al-Hasan, Qatada and others said al-yaqeen in this ayah is death. He supports it with 74:47, where the people of the Fire say they denied the Day "until the certainty came to us".',
-        'Ibn Kathir also refutes people who claimed that once you "reach certainty" worship is no longer required. The prophets knew Allah best, he says, and they worshipped more than anyone until they died. Al-Sa\'di: keep drawing near to Allah at all times, until death.',
-        'Pause on the word itself. Allah names death "the certainty" because no one doubts it. That gives us a measure for everything else we believe.',
-      ],
-      teacherNote: 'Keep this page calm. The aim is clarity, not fear.',
-    },
-    {
-      title: 'Where the gap really is',
-      station: 'zad',
-      layout: 'concept',
-      scene: 'a1Gap',
-      lines: [
-        'Ibn al-Qayyim noticed something about the human heart.',
-        'Simply knowing that a thing is wrong may not be enough to leave it.',
-      ],
-      items: [
-        'Knowing: you were told, and you agree',
-        'Certain knowledge: it has reached your heart, and the pull to act is stronger',
-        'Seeing it: failing to act becomes the rarest thing',
-      ],
-      interaction: {
-        kind: 'ask',
-        prompt: 'Think of one thing you know is good for you and still do not do. Which line are you on with it?',
-      },
-      explain: [
-        'Ibn al-Qayyim says on Surah At-Takathur: mere knowledge that a thing is bad and ends badly may not be enough for a person to leave it. When it becomes \'ilm al-yaqeen, the pull to leave it is stronger. When it becomes \'ayn al-yaqeen, like something seen with the eyes, failing to act on it is the rarest thing.',
-        'This is why the course will not pile up facts. You have heard years of khutbahs. Our work is to move what you already know from the first line to the second, and closer to the third.',
-        'Let the learner answer privately if they prefer. Nobody needs to confess anything; the question is for them.',
-      ],
-    },
-    {
       title: 'One morning in Madinah',
-      station: 'zad',
+      station: 'spark',
       layout: 'story',
       scene: 'a1Madinah',
       lines: [
@@ -182,35 +65,14 @@ export const lesson01Adults: Lesson = {
       },
       explain: [
         'This is the hadith of Jibril, narrated by Umar ibn al-Khattab, who was there. It opens the Book of Iman in Sahih Muslim, and the whole deen is gathered in this one conversation.',
-        'Many learners have heard it before. Say so openly: "You probably know this story. Today, listen for what it says about certainty."',
+        'Many learners have heard it before. Say so openly: "You probably know this story. Today, read it like a detective: every detail is there for a reason."',
         'Ask: "Why would Umar remember the colour of a stranger\'s clothes and hair years later?" Something about him did not fit. Next pages.',
       ],
       teacherNote: 'The Prophet ﷺ, the companions and Jibril are never drawn. The scene shows the place and the light.',
     },
     {
-      title: 'Why Ibn Umar told it',
-      station: 'zad',
-      layout: 'story',
-      scene: 'a1Source',
-      lines: [
-        'Years later, in Basra, people began to say there is no qadar.',
-        'Two travellers asked Abdullah ibn Umar about it.',
-        'He did not give them his opinion. He said: my father Umar told me.',
-      ],
-      evidence: {
-        arabic: 'ثُمَّ قال: حدَّثَني أبي عُمَرُ بنُ الخَطَّابِ',
-        meaning: 'Then he said: my father, Umar ibn al-Khattab, told me.',
-        reference: MUSLIM_8,
-      },
-      explain: [
-        'In Sahih Muslim the hadith begins with Yahya ibn Ya\'mar: the first man to speak against qadar in Basra was Ma\'bad al-Juhani. Yahya and Humayd ibn Abd al-Rahman went on Hajj or Umrah hoping to meet a companion, and found Abdullah ibn Umar entering the masjid.',
-        'Ibn Umar answered a new doubt by going straight back to what he heard from his father, who heard it in the presence of the Messenger ﷺ. When something unsettles you, go back to the source.',
-        'Qadar itself has its own lesson (Lesson 13). Here the point is the method: certainty is built on a source you can trust.',
-      ],
-    },
-    {
       title: 'The man no one knew',
-      station: 'zad',
+      station: 'spark',
       layout: 'evidence',
       scene: 'a1Stranger',
       lines: ['No sign of a journey on him.', 'And not one of us knew who he was.'],
@@ -231,12 +93,12 @@ export const lesson01Adults: Lesson = {
       },
       explain: [
         'In a desert town, a traveller arrives dusty and tired. No dust means he lives nearby. But Madinah was small enough that everyone knew everyone, and no one knew him.',
-        'Umar is building a puzzle for us on purpose. Let the learner name the contradiction before you do.',
+        'Umar is building a puzzle for us on purpose. Let the learner name the contradiction before you do, then ask the next question of the story: "So what does he want?"',
       ],
     },
     {
       title: 'Knees to knees',
-      station: 'zad',
+      station: 'spark',
       layout: 'story',
       scene: 'a1Cushions',
       lines: [
@@ -251,7 +113,7 @@ export const lesson01Adults: Lesson = {
       },
       explain: [
         'Notice the manners before the questions. He comes close, sits still and gives full attention. Learning the deen begins with how you sit before it.',
-        'Ask: "When did you last give the deen your full attention, phone away, nothing else running?" No answer needed aloud.',
+        'Then the oddity: he sits like a student, and in a moment he will test the teacher. Ask: "Why sit like a student and then test the teacher?" Keep the question open; the reveal answers it.',
       ],
     },
     {
@@ -325,13 +187,13 @@ export const lesson01Adults: Lesson = {
       },
       interaction: {
         kind: 'ask',
-        prompt: 'The Hour is certain and its time is hidden. Your own death is the same. What does that ask of you?',
-        reveal: 'To be ready on any day, because no day is promised.',
+        prompt: 'Four questions, and he confirmed every answer. So who is he?',
+        reveal: 'Hold on to your guess. The next page answers it.',
       },
       explain: [
         'Even the best of creation, asked by the best of the angels, says: I do not know more than you. The time of the Hour is with Allah alone.',
         'The hadith goes on to the signs of the Hour; we leave those for Lesson 11, the Last Day, so that today stays on one idea.',
-        'Bring it back to the learner: the appointment is certain, its time is hidden. That is true of the Hour and of each of us.',
+        'Now let the learner gather the clues: no dust, no one knew him, sat like a student, confirmed every answer, asked about the unseen. Ask for their final guess before the reveal.',
       ],
     },
     {
@@ -348,7 +210,8 @@ export const lesson01Adults: Lesson = {
       explain: [
         'Now the puzzle resolves. No dust, no one knew him, he confirmed the answers: because he was Jibril, sent to teach.',
         'Notice what Jibril chose to teach in one short visit: Islam, Iman, Ihsan and the Hour. That is the whole deen, and the shape of this course.',
-        'Go back to the cover question: why does a man no one knew matter 1,400 years later? Because what he taught that morning is what we are still learning.',
+        'Now answer the cover question together: why ask what you already know? So that the people listening would hear the answers. Jibril asked so that we would hear; the questions were for us.',
+        'Then the next question: what exactly did he teach? The next page puts it on one map.',
       ],
     },
     {
@@ -360,14 +223,99 @@ export const lesson01Adults: Lesson = {
       items: ['Islam: what I do', 'Iman: what I hold to be true', 'Ihsan: worship as if I see Him, knowing He sees me'],
       interaction: {
         kind: 'ask',
-        prompt: 'Where do you think most Muslims you know stop?',
-        reveal: 'Many stop at doing, with belief that is real but distant. This course aims at the third level, and that needs certainty.',
+        prompt: 'Where are you on this map today?',
+        reveal: 'Most of us know the first two levels well. What lies between the second and the third is the rest of this lesson.',
       },
       explain: [
         'Let the learner put the three in their own words before the items appear. At this age they can explain them well.',
-        'Make the link to the start of the lesson: doing is visible, belief is in the heart, and Ihsan is where belief has become so real that you worship as if you see. The bridge between them is yaqeen.',
+        'Stress that these are not three subjects but three depths of one deen: doing is visible, belief is in the heart, and Ihsan is where belief has become so real that you worship as if you see.',
       ],
       askFirst: true,
+    },
+    {
+      title: 'Where the gap really is',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'a1Gap',
+      lines: [
+        'You know the five pillars and the six things of Iman. Most of us do.',
+        'What lifts you from the second level to the third is not more information. The words of Ihsan are about seeing.',
+      ],
+      items: [
+        'Knowing: you were told, and you agree',
+        'Certain knowledge: it has reached your heart, and the pull to act is stronger',
+        'Seeing it: failing to act becomes the rarest thing',
+      ],
+      interaction: {
+        kind: 'ask',
+        prompt: 'Think of one thing you know is good for you and still do not do. Which line are you on with it?',
+      },
+      explain: [
+        'Ibn al-Qayyim says on Surah At-Takathur: mere knowledge that a thing is bad and ends badly may not be enough for a person to leave it. When it becomes \'ilm al-yaqeen, the pull to leave it is stronger. When it becomes \'ayn al-yaqeen, like something seen with the eyes, failing to act on it is the rarest thing.',
+        'This is the adult turn of the lesson. The learner does not lack facts; they have heard years of khutbahs. So this course will not pile up facts. Our work is to move what you already know from the first line to the second, and closer to the third.',
+        'Leave the question that opens the next page: what is the difference between knowing and seeing?',
+        'Let the learner answer privately if they prefer. Nobody needs to confess anything; the question is for them.',
+      ],
+    },
+    {
+      title: 'From hearing to seeing',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'a1Horizon',
+      lines: [
+        'Ihsan: worship Allah as if you see Him.',
+        'Hanzalah, a companion: with the Messenger ﷺ "it was as if we saw it with our own eyes".',
+        'The same picture twice. This is where the course wants to take you.',
+      ],
+      items: ['كَأنَّك تَراه', 'كَأنَّا رَأيُ عَينٍ'],
+      explain: [
+        'This is the moment of the lesson. The words of Ihsan, "as if you see Him", and the words of Hanzalah, "as if we saw it with our eyes", are the same image. At their best, the companions lived close to \'ayn al-yaqeen.',
+        'That is why they acted the way they did. Lesson 12 tells how some of them ran toward Jannah. It began here: what they knew had become something they could almost see.',
+        'Let the scene play without talking over it. Then ask: "What would change in your week if you lived one step closer to seeing?"',
+      ],
+      teacherNote: 'The wow moment. Give the motion its silence before you speak.',
+    },
+    {
+      title: 'Then: "Hanzalah has become a hypocrite"',
+      station: 'zad',
+      layout: 'evidence',
+      scene: 'a1Lane',
+      lines: [
+        'Hanzalah left the gathering certain. At home, with his family and his work, he forgot.',
+        'He met Abu Bakr and said: "Hanzalah has become a hypocrite."',
+        'Abu Bakr said: "By Allah, we find the same." They went to the Prophet ﷺ together.',
+      ],
+      evidence: {
+        arabic: 'والذي نَفسي بيَدِه، إن لَو تَدومونَ على ما تَكونونَ عِندي وفي الذِّكرِ، لَصافَحَتكُمُ المَلائِكةُ على فُرُشِكُم وفي طُرُقِكُم، ولَكِن يا حَنظَلةُ ساعةً وساعةً',
+        meaning: 'By the One in whose hand is my soul, if you stayed as you are with me and in remembrance, the angels would shake your hands on your beds and in your streets. But Hanzalah, an hour and an hour.',
+        reference: 'Sahih Muslim 2750, narrated by Hanzalah al-Usayyidi',
+      },
+      explain: [
+        'Hanzalah was one of the Prophet\'s ﷺ scribes. He told Abu Bakr: «نَكونُ عِندَ رَسولِ اللهِ صلَّى اللهُ عليه وسلَّم يُذَكِّرُنا بالنَّارِ والجَنَّةِ، حتَّى كَأنَّا رَأيُ عَينٍ» "we are with the Messenger, he reminds us of the Fire and Jannah until it is as if we see them, then we go out to our wives, children and work, and forget much."',
+        'The Prophet ﷺ did not shame them. He told them what would happen if that state lasted, and then said three times: "an hour and an hour". The heart rises and falls; that is human.',
+        'Make one thing clear: "an hour and an hour" is not permission to drop what is obligatory. It means a believer whose certainty fades keeps returning to its source.',
+      ],
+    },
+    {
+      title: 'Now: Friday, then Monday',
+      station: 'zad',
+      layout: 'story',
+      scene: 'a1Monday',
+      lines: [
+        'Friday: a khutbah that moved you. You promised yourself something.',
+        'Monday, ten o\'clock: the inbox has taken it.',
+        'Hanzalah felt the same, and went back to the source.',
+      ],
+      interaction: {
+        kind: 'ask',
+        prompt: 'Between Friday and Monday, what pulled it away?',
+        reveal: 'The next ayah names it in one word.',
+      },
+      explain: [
+        'This is Then and Now, the thread of the whole course: one moment from the companions beside one from our lives, and the question of what they did that we can do.',
+        'Many adults feel guilty that their iman goes up and down. Hanzalah\'s story removes the despair without removing the effort.',
+        'Ask where the learner goes back to when certainty fades: a weekly circle, a lesson, a teacher, a set time with the Quran. The Ahd returns to it.',
+      ],
     },
     {
       title: 'Busy until the grave',
@@ -460,92 +408,29 @@ export const lesson01Adults: Lesson = {
       vocab: [{ arabic: 'عين اليقين', translit: "'ayn al-yaqeen", meaning: 'certainty by seeing' }],
       explain: [
         'Ibn Kathir: this explains the warning "you will come to know". It is the moment of seeing what was promised.',
-        'Bring back Bronnie Ware\'s page: at the end, people moved from knowing to seeing. Everyone reaches \'ayn al-yaqeen. The believer\'s work is to live as close to it as possible before the end.',
+        'Allah names here the same two steps the lesson found in the hadith: knowing and seeing. Ibn al-Qayyim adds a third, haqq al-yaqeen, being inside it (Al-Waqi\'ah 56:95 calls the reward of deeds "the certain truth itself").',
+        'Everyone reaches \'ayn al-yaqeen at death. The believer\'s work is to come as close to it as possible before.',
       ],
     },
     {
-      title: 'The certain truth itself',
-      station: 'zad',
-      layout: 'evidence',
-      scene: 'a1Inside',
-      lines: ['The third level: being inside it.', 'Allah says of the reward of every deed:'],
-      evidence: {
-        arabic: 'إِنَّ هَـٰذَا لَهُوَ حَقُّ ٱلْيَقِينِ',
-        meaning: 'This is indeed the certain truth itself.',
-        reference: "Al-Waqi'ah 56:95",
-      },
-      tadabbur: {
-        word: 'حَقُّ',
-        root: 'ح ق ق',
-        meaning: "The truth that is firmly established. Al-Sa'di: Allah showed His servants such clear proofs that people of understanding became as if they taste it and see it. Ibn al-Qayyim: when the people of Jannah enter Jannah, that is haqq al-yaqeen.",
-        question: 'Which of the six things of Iman is still only "heard" for me?',
-        action: 'Name it in Zad al-Yaqeen. Part 1 of the course will take you to it.',
-      },
-      items: ["'Ilm al-yaqeen: you were told by the truest report", "'Ayn al-yaqeen: you see it", 'Haqq al-yaqeen: you are inside it'],
-      explain: [
-        'Ibn al-Qayyim puts the three together: \'ilm al-yaqeen comes from a true report; then the reality becomes clear to the heart or the eye, and it is \'ayn al-yaqeen; then a person is inside it, and it is haqq al-yaqeen.',
-        'Al-Sa\'di on this ayah: the reward of deeds is the truth with no doubt in it, and Allah gave such clear proofs that people of understanding became as if they taste it and see it. That "as if" is reachable now.',
-      ],
-    },
-    {
-      title: 'From hearing to seeing',
+      title: 'What this course is for',
       station: 'zad',
       layout: 'concept',
-      scene: 'a1Horizon',
+      scene: 'a1Inside',
       lines: [
-        'Ihsan: worship Allah as if you see Him.',
-        'Hanzalah, a companion: with the Messenger ﷺ "it was as if we saw it with our own eyes".',
-        'The same picture twice. This is where the course wants to take you.',
+        'This course walks the three levels in order.',
+        'Not to tell you more, but so that what you know becomes what you see.',
       ],
-      items: ['كَأنَّك تَراه', 'كَأنَّا رَأيُ عَينٍ'],
+      items: [
+        'Iman: the six things, one by one, until none is only "heard"',
+        'Taharah and Salah: the deeds, done with the heart present',
+        'The pillars: what each one builds in you',
+        'Ihsan: worship as if you see Him',
+      ],
       explain: [
-        'This is the moment of the lesson. The words of Ihsan, "as if you see Him", and the words of Hanzalah, "as if we saw it with our eyes", are the same image. At their best, the companions lived close to \'ayn al-yaqeen.',
-        'That is why they acted the way they did. Lesson 12 tells how some of them ran toward Jannah. It began here: what they knew had become something they could almost see.',
-        'Let the scene play without talking over it. Then ask: "What would change in your week if you lived one step closer to seeing?"',
-      ],
-      teacherNote: 'The wow moment. Give the motion its silence before you speak.',
-    },
-    // ── Athar ──────────────────────────────────────────────────────────────────────────────────────────────────
-    {
-      title: 'Then: "Hanzalah has become a hypocrite"',
-      station: 'athar',
-      layout: 'evidence',
-      scene: 'a1Lane',
-      lines: [
-        'Hanzalah left the gathering certain. At home, with his family and his work, he forgot.',
-        'He met Abu Bakr and said: "Hanzalah has become a hypocrite."',
-        'Abu Bakr said: "By Allah, we find the same." They went to the Prophet ﷺ together.',
-      ],
-      evidence: {
-        arabic: 'والذي نَفسي بيَدِه، إن لَو تَدومونَ على ما تَكونونَ عِندي وفي الذِّكرِ، لَصافَحَتكُمُ المَلائِكةُ على فُرُشِكُم وفي طُرُقِكُم، ولَكِن يا حَنظَلةُ ساعةً وساعةً',
-        meaning: 'By the One in whose hand is my soul, if you stayed as you are with me and in remembrance, the angels would shake your hands on your beds and in your streets. But Hanzalah, an hour and an hour.',
-        reference: 'Sahih Muslim 2750, narrated by Hanzalah al-Usayyidi',
-      },
-      explain: [
-        'Hanzalah was one of the Prophet\'s ﷺ scribes. He told Abu Bakr: «نَكونُ عِندَ رَسولِ اللهِ صلَّى اللهُ عليه وسلَّم يُذَكِّرُنا بالنَّارِ والجَنَّةِ، حتَّى كَأنَّا رَأيُ عَينٍ» "we are with the Messenger, he reminds us of the Fire and Jannah until it is as if we see them, then we go out to our wives, children and work, and forget much."',
-        'The Prophet ﷺ did not shame them. He told them what would happen if that state lasted, and then said three times: "an hour and an hour". The heart rises and falls; that is human.',
-        'Make one thing clear: "an hour and an hour" is not permission to drop what is obligatory. It means a believer whose certainty fades keeps returning to its source.',
-      ],
-    },
-    {
-      title: 'Now: Friday, then Monday',
-      station: 'athar',
-      layout: 'story',
-      scene: 'a1Monday',
-      lines: [
-        'Friday: a khutbah that moved you. You promised yourself something.',
-        'Monday, ten o\'clock: the inbox has taken it.',
-        'Hanzalah felt this 1,400 years ago. He did not give up. He went back to the source.',
-      ],
-      interaction: {
-        kind: 'ask',
-        prompt: 'Where is your source each week, the place you go back to when certainty fades?',
-        reveal: 'If you do not have one yet, this course can be it. Each lesson is one hour of going back.',
-      },
-      explain: [
-        'This is Then and Now, the thread of the whole course: one moment from the companions beside one from our lives, and the question of what they did that we can do.',
-        'Many adults feel guilty that their iman goes up and down. Hanzalah\'s story removes the despair without removing the effort.',
-        'Help the learner name a real source: a weekly circle, a lesson, a teacher, a set time with the Quran.',
+        'Close the argument: the hadith gave us the map, At-Takathur named the two steps, and this course is the road from the first to the second.',
+        'Answer the question the lesson opened with, one last time: Jibril asked so that we would hear. This course is our way of hearing it until it becomes seeing.',
+        'Keep it short. The cases come next, and the learner should feel ready for them.',
       ],
     },
     {
@@ -614,13 +499,25 @@ export const lesson01Adults: Lesson = {
         'Someone online says: "Once you truly know God, you don\'t need the rituals any more."',
         'It sounds deep. Is it true?',
       ],
+      evidence: {
+        arabic: 'وَٱعْبُدْ رَبَّكَ حَتَّىٰ يَأْتِيَكَ ٱلْيَقِينُ',
+        meaning: 'And worship your Lord until the certainty comes to you.',
+        reference: 'Al-Hijr 15:99',
+      },
+      tadabbur: {
+        word: 'ٱلْيَقِينُ',
+        root: 'ي ق ن',
+        meaning: 'Certainty: knowledge so settled that you no longer doubt it. Here, as Salim ibn Abdullah ibn Umar, Mujahid, al-Hasan and Qatada explained (Ibn Kathir), it is death itself. The last ayah of Al-Hijr, spoken to the Messenger ﷺ.',
+        question: 'Death is called the certainty. Is the rest of my deen as certain to me as my death?',
+        action: 'After one prayer a day this week, spend one minute with that question.',
+      },
       interaction: {
         kind: 'ask',
         prompt: 'What does Al-Hijr 15:99 say to this?',
         reveal: '"Worship your Lord until the certainty comes": until death. Ibn Kathir: the prophets knew Allah best and worshipped most, until they died.',
       },
       explain: [
-        'This idea is old. Ibn Kathir refutes exactly this reading of al-yaqeen in his tafsir of 15:99.',
+        'This idea is old. Ibn Kathir reports that Salim ibn Abdullah ibn Umar, Mujahid, al-Hasan and Qatada said al-yaqeen in this ayah is death, and he refutes exactly the reading "certainty, after which worship drops".',
         'The learner should see that certainty does not replace worship. In the Prophet ﷺ, the most certain of people, it produced more worship.',
       ],
     },
@@ -655,7 +552,6 @@ export const lesson01Adults: Lesson = {
       ],
       teacherNote: 'The result is added to your lesson report automatically.',
     },
-    // ── Ahd ────────────────────────────────────────────────────────────────────────────────────────────────────
     {
       title: 'Zad al-Yaqeen',
       station: 'ahd',

@@ -92,13 +92,8 @@ export type SceneId =
   // Adults Lesson 1 (documentary look, docs/curriculum/style/adults.md; paintings and code scenes arrive at the
   // built-pages step)
   | 'a1Cover'
-  | 'a1Mirror'
-  | 'a1Bedside'
-  | 'a1Street'
-  | 'a1Yaqeen'
   | 'a1Gap'
   | 'a1Madinah'
-  | 'a1Source'
   | 'a1Stranger'
   | 'a1Cushions'
   | 'a1Pillars'

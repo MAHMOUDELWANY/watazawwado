@@ -45,7 +45,9 @@ Last update: 2026-10-23. History of how we got here: §8 (progress log).
 - **Done:** Lesson 1 page text approved; built pages done 2026-10-23: code scenes for every page
   (`slides/lessons/a01.tsx`), the wow scene "From hearing to seeing", the chain of narrators, the hourglass and the Zad
   al-Yaqeen notebook drawn in code.
-- **Waiting for the owner:** review of the whole Lesson 1 in the player (12 stills placed 2026-10-23).
+- **Done:** v2 storyline approved 2026-10-23 and applied: 26 pages on one question ("why ask five questions he already
+  knows?"), the death/Jobs/Bronnie opening, the 15:99 opener and the Ibn Umar page removed; 15:99 now answers Case 4.
+- **Waiting for the owner:** review of the whole Lesson 1 v2 in the player.
 - **Next after review:** Lesson 2 (A World That Should Not Exist) brief.
 
 ### Seerah and the Scholar's Path
@@ -522,3 +524,8 @@ B3–B5 → continue lesson by lesson.
   (picturebook and portrait compositions framed for `version: 'adults'`); shorter chapter names. Owner also asked for
   samples in the student/parent portal until launch: `SAMPLES` in `catalog.ts` (opening of Lesson 1 for Kids, Teens,
   Adults, drafts included) shown to every account on My curriculum.
+- **2026-10-23** — Owner approved the Adults L1 v2 storyline. Page text rewritten in the new order (26 pages, spark =
+  the stranger, zad = the questions → reveal → map → knowing vs seeing → Hanzalah → At-Takathur → what the course is
+  for, athar = four cases + review, ahd); teacher notes reordered and rewritten to match; five scenes removed (mirror,
+  bedside, street, sunset 15:99, narrator chain), the arches scene became the four-part course build; Adults sample
+  now 8 pages (ends on "So who is he?").
