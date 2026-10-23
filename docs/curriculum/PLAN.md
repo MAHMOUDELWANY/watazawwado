@@ -11,7 +11,7 @@
 
 ## 0. Where we are (update every session)
 
-Last update: 2026-10-22. History of how we got here: §8 (progress log).
+Last update: 2026-10-23. History of how we got here: §8 (progress log).
 
 ### Zad Essentials · Kids (6–11): `zad-essentials-kids/`
 - **Done:** map (37 lessons) approved; Lessons 1, 2, 3 built and **approved by the owner** (`reviewed: true`, open to
@@ -38,7 +38,10 @@ Last update: 2026-10-22. History of how we got here: §8 (progress log).
   recently deceased Muslims of sound character; more advanced English in the owner's voice.
 - **Done:** map approved 2026-10-22 (46 lessons per learner, 5 parts; 20a women / 20b men; notebook Zad al-Yaqeen,
   Then and Now, hand-off questions; money cases defined).
-- **Next:** `style/adults.md` (look and base prompt), then Lesson 1 (The Man No One Knew) brief.
+- **Waiting for the owner:** review of `style/adults.md` (draft 2026-10-23: cinematic photographic documentary look,
+  Then = warm desert gold / Now = cool blue-hour city, anonymous people only, quotes as code-built cards, Zad al-Yaqeen
+  notebook drawn in code, base prompt and the note for ChatGPT).
+- **Next after review:** Lesson 1 (The Man No One Knew) brief.
 
 ### Seerah and the Scholar's Path
 - Seerah (Kids / Teens / Adults): planned, not started. Scholar's Path: books, sessions and prices are the owner's call
@@ -491,3 +494,6 @@ B3–B5 → continue lesson by lesson.
   (`zad-essentials-adults/MAP.md`, 46 lessons) for the owner's review.
 - **2026-10-22** — Adults map approved (owner): 46 lessons; notebook renamed Zad al-Yaqeen; money lesson with defined
   cases; Lesson 20 split into 20a (women) and 20b (men, incl. how the Messenger ﷺ treated his wives).
+- **2026-10-23** — Adults style guide drafted (`style/adults.md`): calm cinematic documentary-photo look, Then/Now light
+  worlds, no recurring characters, anonymous people, no generated likeness of real people, editorial slide rules, base
+  prompt. Waiting for the owner's review.
