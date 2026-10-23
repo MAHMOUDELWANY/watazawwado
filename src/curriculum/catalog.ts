@@ -101,8 +101,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Adults',
     versionAr: 'الكبار',
     audience: '18+',
-    // shortcut: the Madinah painting from Kids Lesson 1 until the Adults cover arrives at the built-pages step.
-    art: '/curriculum/zad-kids/l01/madinah.webp',
+    art: '/curriculum/zad-adults/l01/cover.webp',
     parts: [
       { title: 'From Knowing to Certainty', titleAr: 'من المعرفة إلى اليقين', from: 1 },
       { title: 'Clean Before the Meeting', titleAr: 'طهارة قبل اللقاء', from: 16 },
