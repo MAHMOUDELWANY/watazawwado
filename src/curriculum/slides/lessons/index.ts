@@ -46,7 +46,7 @@ export const MOMENTS: Partial<Record<SceneId, React.ComponentType<{ v: Built; le
   tl2Cover: NightSky, tl2Science: ScreenFlare, tl2Kitchen: CakeHowWho, tl2Bench: ListCrossed, tl2Gaming: GameGlow,
   tl3Cover: OneSunRises, tl3Gaming: TeamOnScreen, tl3Likes: LikesRise, tl3Prayer: ThirdCrossed, tl3Library: LibraryQuestion,
   a1Cover: ShaftOfLight, a1Madinah: MadinahMorning,
-  a1Stranger: SandAround, a1Cushions: CushionsClose, a1Count: CountersFade, a1Monday: MondayPile, a1Case: CaseLight, a1Notebook: NotebookOpens,
+  a1Stranger: SandAround, a1Cushions: CushionsClose, a1Count: CountersFade, a1Monday: MondayPile, a1Case: CaseLight, a1Case2: CaseLight, a1Case3: CaseLight, a1Case4: CaseLight, a1Notebook: NotebookOpens,
   a1Next: FirstQuestionSky,
 };
 

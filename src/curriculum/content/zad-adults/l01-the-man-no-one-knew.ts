@@ -481,7 +481,7 @@ export const lesson01Adults: Lesson = {
       title: 'Case 2: Layla after Umrah',
       station: 'athar',
       layout: 'question',
-      scene: 'a1Case',
+      scene: 'a1Case2',
       lines: [
         'Layla came back from Umrah feeling closer to Allah than ever.',
         'Three weeks later she feels nothing, and wonders if she was faking it.',
@@ -500,7 +500,7 @@ export const lesson01Adults: Lesson = {
       title: 'Case 3: the colleague\'s question',
       station: 'athar',
       layout: 'question',
-      scene: 'a1Case',
+      scene: 'a1Case3',
       lines: [
         'A colleague watches you go to pray, again.',
         '"Honest question: do you actually believe it, or is it just habit?"',
@@ -520,7 +520,7 @@ export const lesson01Adults: Lesson = {
       station: 'athar',
       contextFirst: true,
       layout: 'question',
-      scene: 'a1Case',
+      scene: 'a1Case4',
       lines: [
         'Someone online says: "Once you truly know God, you don\'t need the rituals any more."',
         'It sounds deep. Is it true?',

@@ -47,7 +47,10 @@ Last update: 2026-10-23. History of how we got here: §8 (progress log).
   al-Yaqeen notebook drawn in code.
 - **Done:** v2 storyline approved 2026-10-23 and applied: 26 pages on one question ("why ask five questions he already
   knows?"), the death/Jobs/Bronnie opening, the 15:99 opener and the Ibn Umar page removed; 15:99 now answers Case 4.
-- **Waiting for the owner:** review of the whole Lesson 1 v2 in the player.
+- **Done 2026-10-23:** text first, then what we draw from it (Adults player rule + test); v3 cinematic pass: code-drawn
+  diagrams replaced by the documentary `Reel` (real still, camera travels per build step, one lower-third at a time,
+  title card until the still arrives).
+- **Waiting for the owner:** the 16 v3 stills listed in the L1 brief ("v3 cinematic pass"), then a review of Lesson 1.
 - **Next after review:** Lesson 2 (A World That Should Not Exist) brief.
 
 ### Seerah and the Scholar's Path
@@ -529,3 +532,8 @@ B3–B5 → continue lesson by lesson.
   for, athar = four cases + review, ahd); teacher notes reordered and rewritten to match; five scenes removed (mirror,
   bedside, street, sunset 15:99, narrator chain), the arches scene became the four-part course build; Adults sample
   now 8 pages (ends on "So who is he?").
+- **2026-10-23** — Owner: lines paraphrased each ayah/hadith before showing it, and the motion still looked cheap. Adults
+  now show the text first, then a line that adds something new (RULES §5, test); the text steps back to a compact form
+  when the comment arrives. Owner chose "cinematic documentary": code-drawn diagrams removed for the `Reel` (stills
+  with a guided camera, lower-thirds, title-card fallback); 16 new still prompts in the brief; each case got its own
+  still slot.

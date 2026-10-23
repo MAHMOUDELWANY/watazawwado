@@ -46,6 +46,37 @@ lesson on one thread. **Kept:** every verified hadith and ayah already in the ev
 needed; the projection onto today is Hanzalah's Friday/Monday and the counters of At-Takathur, not a celebrity quote.
 Design: one premium motion scene per beat, at most one sound per beat.
 
+## v3 cinematic pass (owner, 2026-10-23)
+
+The owner's verdict on the motion: the code-drawn graphics (columns, steps, rings, arches, hourglass, counters) look
+cheap; the direction is **cinematic documentary**. Every idea page now has a real still as its hero; on each build step
+the camera travels to the detail the line is about (a documentary pan across a photograph) and drifts slowly in between;
+labels are one lower-third at a time. Until a still is delivered the page shows a title card (the Arabic word in light,
+one pass of a lamp across it). Engine: `Reel` in `src/curriculum/slides/lessons/a01.tsx`; camera framings are tuned
+once each still arrives.
+
+Send the ChatGPT note once (style guide), attach `reference.webp`, and start each prompt with the base prompt and "same
+photographic style as the reference image". Files go in `public/curriculum/zad-adults/l01/` with these names.
+
+| File | Page | Prompt (after the base prompt) |
+|---|---|---|
+| `pillars` | First question: Islam | Then: inside a simple old mosque of mud brick at first light, five palm-trunk columns standing in one row and holding a roof of palm fronds, thin sunbeams falling between them onto woven mats. No people. Keep the left third calm and dark. |
+| `window` | Second question: Iman | Now: a quiet room before fajr, an open window onto a deep blue sky with the last stars, a folded prayer mat and a small brass lamp glowing on the sill. No people. Keep the left half calm. |
+| `prayer` | Third question: Ihsan | Now: one person seen from behind, alone, standing in prayer on a mat in a dim empty room, modest plain clothes, a single shaft of morning light falling on the floor just in front of them. No face visible. |
+| `hourglass` | Fourth question: the Hour | Then: an old brass-and-wood hourglass on a mud-brick ledge, the sand running in a thin stream, warm dawn light from a doorway behind it, the desert outside out of focus. |
+| `doorway` | "He came to teach you your deen" | Then: the open doorway of the old mosque seen from inside, the bright desert morning outside, a line of footprints in the sand leading out through the door and ending; no figure anywhere. |
+| `above` | Three levels of one deen | Then: looking straight down from above onto an old mud-brick mosque: the outer wall, the open courtyard inside it, and the covered prayer hall inside that, three nested spaces, long morning shadows. No people. |
+| `shelf` | Where the gap really is | Now: night, a bookshelf full of Islamic books with plain spines (no letters) under a warm desk lamp, an empty chair pushed back from the desk, a phone glowing face up on the desk. No people. Keep the left third calm. |
+| `listening` | If only you knew (102:3–5) | Now: a person seen from behind sitting at the back of a quiet mosque at night, listening, warm lamps far ahead out of focus, carpet lines leading forward. No face. |
+| `train` | Then you will see it (102:6–7) | Now: inside a train at dawn, an empty seat by a clean window, the landscape outside sharp and lit by the first sunlight, long shadows. No people. |
+| `road` | What this course is for | Then: an old caravan road winding through desert hills at dawn towards a distant oasis town with a few warm lights, footprints along the road. No people. Keep the left third calm. |
+| `purse` | "My wealth, my wealth" | Then: on a woven mat in late-afternoon light, a wooden bowl with a few dates, a folded worn robe, and a small cloth purse with a few old coins spilling out. No people. Keep the left half calm. |
+| `canteen` | Case 1: Omar at lunch | Now: an office kitchen at lunchtime, coffee cups and a sandwich on a table in focus, three colleagues blurred in the background leaning in to talk. No faces readable. Cool light. |
+| `suitcase` | Case 2: Layla after Umrah | Now: an unpacked suitcase on a bed in the evening, a folded prayer dress, prayer beads and a small bottle of Zamzam water beside it, city lights through the window. No people. |
+| `corridor` | Case 3: the colleague's question | Now: an office corridor, the door of a small quiet room half open with a prayer mat visible inside, a colleague out of focus further down the corridor. No faces readable. |
+| `phone` | Case 4: "past the rituals" | Now: a phone lying on a bed at night, its screen glowing with soft abstract shapes (no text), the reflection of a bedside lamp on it. No people. |
+| `notebook` | Zad al-Yaqeen | A dark leather notebook lying open on a wooden desk, bone-coloured empty pages, a fountain pen beside it, a warm lamp, a window at fajr behind. No people, no writing on the pages (the slide writes the line). |
+
 ## Goal
 
 The learner sees that the deen has three levels (Islam, Iman, Ihsan), and that the problem of most Muslims who "know

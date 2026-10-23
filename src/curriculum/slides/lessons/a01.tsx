@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { P } from '../Art';
-import { Layer, type Built } from '../Scenes';
+import { Layer, src, type Built } from '../Scenes';
 import { useCue } from '../sfx';
 
 /* ---------- Adults Lesson 1: The Man No One Knew (brief: docs/curriculum/zad-essentials-adults/L01-the-man-no-one-knew.md)
@@ -191,47 +191,6 @@ export function ShaftOfLight(_: { v: Built }) {
   );
 }
 
-/** p6 Where the gap is: three glass steps rise in perspective; light falls on the highest; a fracture marks the gap. */
-export function GapSteps({ labels, label }: { labels: (string | null)[]; label: string }) {
-  const reduce = useReducedMotion();
-  const lit = labels.filter(Boolean).length;
-  const steps = [{ x: 8, h: 26 }, { x: 37, h: 46 }, { x: 66, h: 66 }];
-  return (
-    <motion.div className="absolute left-[700px] top-[184px] h-[580px] w-[790px] overflow-hidden rounded-[22px]" role="img" aria-label={`${label}: ${lit} of 3`}
-      style={{ boxShadow: '0 50px 90px -40px rgba(5,15,22,0.9), 0 0 0 1px rgba(232,194,122,0.18)' }}>
-      <Stage />
-      {lit >= 3 && <Beam x={80} y={-10} angle={8} length={90} width={30} opacity={0.6} />}
-      <div className="absolute inset-0" style={{ perspective: 900 }}>
-        <div className="absolute inset-x-0 bottom-[10%] top-0" style={{ transformStyle: 'preserve-3d', transform: 'rotateX(14deg)' }}>
-          {steps.map((s, i) => (
-            <motion.div key={i} className="absolute bottom-0 w-[26%] rounded-t-[10px]"
-              style={{ left: `${s.x}%`, height: `${s.h}%`, transformOrigin: 'bottom',
-                background: ['linear-gradient(180deg, rgba(120,160,175,0.55), rgba(40,70,85,0.35))', 'linear-gradient(180deg, rgba(220,140,100,0.65), rgba(110,50,30,0.45))', 'linear-gradient(180deg, rgba(255,215,140,0.9), rgba(200,140,50,0.55))'][i],
-                boxShadow: `inset 0 1px 0 rgba(255,255,255,0.5), 0 0 ${i === 2 && lit >= 3 ? 70 : 20}px -6px rgba(255,210,140,${i < lit ? 0.6 : 0})` }}
-              initial={false} animate={{ scaleY: i < lit ? 1 : 0.02, opacity: i < lit ? 1 : 0.25 }} transition={{ duration: reduce ? 0 : 1.2, ease }} />
-          ))}
-        </div>
-      </div>
-      {labels.map((l, i) => {
-        if (!l) return null;
-        const [word, hint] = l.split(':').map((s) => s.trim());
-        return <Caption key={l} style={{ left: `${steps[i].x}%`, top: `${84 - steps[i].h - 18}%`, maxWidth: '30%' }} delay={0.6}>
-          <span className="block text-[21px] font-bold" style={{ color: GOLD }}>{word}</span><span className="block text-[15px] font-medium opacity-90">{hint}</span>
-        </Caption>;
-      })}
-      {lit >= 2 && (
-        <svg className="pointer-events-none absolute left-[33%] top-[42%] h-[40%] w-[5%] overflow-visible" viewBox="0 0 20 100" preserveAspectRatio="none" aria-hidden="true">
-          <motion.path d="M10 0 L6 18 L13 34 L5 52 L12 70 L8 100" fill="none" stroke={P.crimson} strokeWidth={2.5} vectorEffect="non-scaling-stroke"
-            initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1, delay: 0.8 }} />
-        </svg>
-      )}
-      {lit >= 2 && <Caption style={{ left: '27%', top: '88%' }} delay={1.4}>the gap</Caption>}
-      {lit >= 3 && <Motes count={14} seed={33} box={{ x: 64, y: 0, w: 30, h: 40 }} />}
-      <Film leak={false} />
-    </motion.div>
-  );
-}
-
 /** p7 Madinah: a shaft of morning light moves across the courtyard; dust turns in it. */
 export function MadinahMorning(_: { v: Built }) {
   return (
@@ -287,339 +246,218 @@ export function CushionsClose({ v }: { v: Built }) {
   );
 }
 
-const PILLARS = [
-  { en: 'Shahadah', ar: 'الشهادة' }, { en: 'Salah', ar: 'الصلاة' }, { en: 'Zakah', ar: 'الزكاة' },
-  { en: 'Fasting', ar: 'الصوم' }, { en: 'Hajj', ar: 'الحج' },
-];
+/* ---------- v3: the documentary reel (owner, 2026-10-23: "cinematic documentary"; the code-drawn diagrams looked
+   cheap). A real still is the hero of every idea page. On each build step the camera travels to the detail the line is
+   about, the way a documentary pans across a photograph, and drifts slowly in between. Labels are lower-thirds. Until a
+   still is delivered the panel is a title card: the Arabic word as the hero, one pass of light across it. ---------- */
 
-/** p11 Islam: fluted stone columns rise out of the floor one by one, each throwing dust and a shadow; when the fifth
- *  stands the lintel settles on them and a light sweeps across the stone. */
-export function ColumnsRise({ v, label }: { v: Built; label: string }) {
-  const reduce = useReducedMotion();
-  const up = Math.min(v.items, PILLARS.length);
-  const done = up === PILLARS.length;
-  useCue('thud', done, 0.9);
-  const left = (i: number) => 11 + i * 16.5;
-  const stone = 'repeating-linear-gradient(90deg, #B9AE9C 0 6%, #E9E1D2 6% 12%, #CFC4B2 12% 16%), linear-gradient(90deg, rgba(0,0,0,0.35), transparent 30%, transparent 70%, rgba(0,0,0,0.4))';
-  return (
-    <Panel label={`${label}: ${up} of 5`}>
-      <Beam x={50} y={-20} angle={0} length={80} width={70} opacity={done ? 0.45 : 0.18} />
-      <div className="absolute inset-x-0 bottom-0 h-[16%]" style={{ background: 'linear-gradient(180deg, #2A2621, #14110E)' }} aria-hidden="true" />
-      <motion.div className="absolute left-[7%] right-[7%] top-[12%] h-[9%] overflow-hidden rounded-[4px]" aria-hidden="true"
-        style={{ background: done ? 'linear-gradient(180deg, #F2EBDD, #BDB09B)' : 'transparent', border: done ? 'none' : '1.5px dashed rgba(239,232,220,0.35)', boxShadow: done ? '0 12px 30px -10px rgba(0,0,0,0.8)' : undefined }}
-        initial={false} animate={{ y: done ? 12 : 0 }} transition={{ duration: reduce ? 0 : 1, ease: [0.6, 0, 0.2, 1], delay: done ? 0.5 : 0 }}>
-        {done && !reduce && <motion.span className="absolute inset-y-0 w-[30%]" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent)' }}
-          initial={{ left: '-30%' }} animate={{ left: '110%' }} transition={{ duration: 1.6, delay: 1.5, ease: 'easeInOut' }} />}
-      </motion.div>
-      {PILLARS.map((p, i) => (
-        <div key={p.en} className="absolute bottom-[16%] top-[23%]" style={{ left: `${left(i)}%`, width: '11%' }}>
-          <motion.div className="absolute inset-0 rounded-t-[4px]" style={{ background: stone, transformOrigin: 'bottom', boxShadow: i < up ? '18px 10px 30px -10px rgba(0,0,0,0.7)' : undefined }}
-            initial={false} animate={{ scaleY: i < up ? 1 : 0, opacity: i < up ? 1 : 0 }} transition={{ duration: reduce ? 0 : 1.1, ease }} />
-          {i < up && <Word ar={p.ar} style={{ left: '50%', top: '50%', color: '#5A4B3A', textShadow: '0 1px 0 rgba(255,255,255,0.6), 0 -1px 0 rgba(0,0,0,0.35)' }} size={24} delay={0.9} glow={false} />}
-          {i < up && !reduce && <motion.span className="absolute -bottom-[6%] left-1/2 h-10 w-[160%] -translate-x-1/2 rounded-full" style={{ background: 'radial-gradient(closest-side, rgba(220,200,170,0.6), transparent)', filter: 'blur(6px)' }}
-            initial={{ opacity: 0.9, scale: 0.4 }} animate={{ opacity: 0, scale: 1.6 }} transition={{ duration: 1.4, delay: 0.8 }} aria-hidden="true" />}
-          <span className="absolute -bottom-[18%] left-1/2 -translate-x-1/2 whitespace-nowrap font-sans text-[17px] font-semibold tracking-wide" style={{ color: i < up ? BONE : 'rgba(239,232,220,0.2)' }}>{p.en}</span>
-        </div>
-      ))}
-      {v.evidence && <Caption style={{ left: '50%', top: '2.5%' }} align="center" delay={0.3}>"You are right." He already knew.</Caption>}
-    </Panel>
-  );
+/** Where the camera looks on a build step: focus point in % of the still, and zoom. */
+type Frame = { x: number; y: number; z: number };
+
+/** Translation (in % of the box) that brings (x, y) to the centre at zoom z, clamped so the still always covers the box. */
+function aim({ x, y, z }: Frame) {
+  const room = 50 * (1 - 1 / z);
+  const c = (d: number) => Math.max(-room, Math.min(room, d));
+  return { x: `${c(50 - x)}%`, y: `${c(50 - y)}%`, scale: z };
 }
 
-const SIX = ['Allah', 'His angels', 'His books', 'His messengers', 'The Last Day', 'Qadar'];
-
-/** p12 Iman: a core of light; six lights on a slowly turning ring ignite and send a beam to the core, which grows
- *  brighter with each. */
-export function SixLights({ v, label }: { v: Built; label: string }) {
+function Reel({ still, frames, k, ar, kicker, label, tone = 'ink', grade = 'then', children }: {
+  still: string; frames: Frame[]; k: number; ar: string; kicker?: string; label: string;
+  tone?: 'ink' | 'dusk' | 'night'; grade?: 'then' | 'now'; children?: React.ReactNode;
+}) {
   const reduce = useReducedMotion();
-  const lit = Math.min(v.items, SIX.length);
-  const pt = (i: number) => { const a = (Math.PI * 2 * i) / SIX.length - Math.PI / 2; return { x: 380 + 215 * Math.cos(a), y: 285 + 190 * Math.sin(a) }; };
+  const [missing, setMissing] = React.useState(false);
+  const f = frames[Math.max(0, Math.min(k, frames.length - 1))];
+  const tint = grade === 'then'
+    ? 'linear-gradient(180deg, rgba(60,30,10,0.05), rgba(30,14,6,0.35))'
+    : 'linear-gradient(180deg, rgba(8,30,40,0.1), rgba(4,14,20,0.45))';
   return (
-    <Panel label={`${label}: ${lit} of 6`} tone="night">
-      <Stars count={40} seed={19} top={100} />
-      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 760 570" aria-hidden="true">
-        <motion.ellipse cx="380" cy="285" rx="215" ry="190" fill="none" stroke="rgba(232,194,122,0.25)" strokeWidth="1.5" strokeDasharray="2 10"
-          animate={reduce ? undefined : { rotate: 360 }} style={{ transformOrigin: '380px 285px' }} transition={{ duration: 120, repeat: Infinity, ease: 'linear' }} />
-        {SIX.slice(0, lit).map((_, i) => (
-          <motion.line key={i} x1="380" y1="285" x2={pt(i).x} y2={pt(i).y} stroke={GOLD} strokeWidth="1.5" initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 0.8 }}
-            transition={{ duration: 0.9, ease }} style={{ filter: 'drop-shadow(0 0 4px rgba(232,194,122,0.9))' }} />
-        ))}
-      </svg>
-      <motion.span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full" aria-hidden="true"
-        style={{ width: 70, height: 70, background: 'radial-gradient(circle, #FFF6DC, #E8C27A 50%, rgba(232,194,122,0) 72%)' }}
-        initial={false} animate={{ scale: 0.6 + (lit / SIX.length) * 1.4, opacity: 0.4 + (lit / SIX.length) * 0.6 }} transition={{ duration: 1, ease }} />
-      {SIX.map((w, i) => (
-        <motion.div key={w} className="absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-2" style={{ left: `${(pt(i).x / 760) * 100}%`, top: `${(pt(i).y / 570) * 100}%` }}
-          initial={false} animate={{ opacity: i < lit ? 1 : 0.18 }} transition={{ duration: 0.8 }}>
-          <span className="h-4 w-4 rounded-full" style={{ background: i < lit ? '#FFF4D6' : 'transparent', border: `1.5px solid ${GOLD}`, boxShadow: i < lit ? '0 0 20px 6px rgba(232,194,122,0.8)' : undefined }} />
-          <span className="whitespace-nowrap font-sans text-[18px] font-semibold" style={{ color: BONE }}>{w}</span>
+    <motion.div className="absolute left-[720px] top-[184px] h-[570px] w-[760px] overflow-hidden rounded-[22px]" role="img" aria-label={label}
+      style={{ boxShadow: '0 50px 90px -40px rgba(5,15,22,0.9), 0 0 0 1px rgba(232,194,122,0.18)', background: INK }}
+      initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.1, ease }}>
+      {missing ? (
+        <>
+          <Stage tone={tone} />
+          <Word ar={ar} style={{ left: '50%', top: '44%' }} size={ar.length > 12 ? 70 : 104} delay={0.3} />
+          {/* One slow pass of light across the word, like a lamp carried past an inscription. */}
+          {!reduce && (
+            <motion.div className="pointer-events-none absolute top-[24%] h-[42%] w-[30%] will-change-transform" aria-hidden="true"
+              style={{ background: 'linear-gradient(100deg, transparent, rgba(255,232,190,0.22), transparent)', mixBlendMode: 'screen' }}
+              initial={{ x: '-120%' }} animate={{ x: '440%' }} transition={{ duration: 4.5, delay: 1.2, ease: 'easeInOut' }} />
+          )}
+          {kicker && <Kinetic text={kicker} style={{ left: '50%', top: '62%' }} size={26} delay={1} color="rgba(239,232,220,0.75)" />}
+        </>
+      ) : (
+        <motion.div className="absolute inset-0 will-change-transform" initial={reduce ? false : aim({ ...frames[0], z: frames[0].z * 1.06 })}
+          animate={aim(f)} transition={{ duration: reduce ? 0 : 3.2, ease: [0.45, 0, 0.2, 1] }}>
+          <motion.img src={src(A(still))} alt="" aria-hidden="true" draggable={false} onError={() => setMissing(true)}
+            className="absolute inset-0 h-full w-full select-none object-cover"
+            initial={reduce ? false : { scale: 1 }} animate={reduce ? undefined : { scale: 1.045 }} transition={{ duration: 24, ease: 'linear' }} />
+          <div className="pointer-events-none absolute inset-0" style={{ background: tint }} />
         </motion.div>
-      ))}
-    </Panel>
-  );
-}
-
-/** p13 Ihsan: two planes in perspective. Above, a luminous plane barely there: as if you see Him. Below, a solid gold
- *  floor: He sees you. A ray joins them. */
-export function IhsanSteps({ v, label }: { v: Built; label: string }) {
-  const show = v.lines >= 1;
-  return (
-    <Panel label={label} tone="night">
-      <div className="absolute inset-0" style={{ perspective: 800 }} aria-hidden="true">
-        <motion.div className="absolute left-[14%] right-[14%] top-[18%] h-[22%] rounded-[14px]"
-          style={{ transform: 'rotateX(55deg)', background: 'linear-gradient(180deg, rgba(255,244,214,0.35), rgba(255,244,214,0.05))', border: '1px solid rgba(255,244,214,0.6)', boxShadow: '0 0 80px 10px rgba(255,236,190,0.25)' }}
-          initial={{ opacity: 0 }} animate={{ opacity: show ? 1 : 0 }} transition={{ duration: 1.4, ease }} />
-        <motion.div className="absolute left-[6%] right-[6%] top-[58%] h-[26%] rounded-[14px]"
-          style={{ transform: 'rotateX(60deg)', background: 'linear-gradient(180deg, #F0C66E, #9A6A12)', boxShadow: '0 30px 60px -20px rgba(0,0,0,0.8), 0 0 60px -10px rgba(232,194,122,0.6)' }}
-          initial={{ opacity: 0 }} animate={{ opacity: show ? 1 : 0 }} transition={{ duration: 1.4, delay: 0.4, ease }} />
-      </div>
-      {show && <Beam x={50} y={30} angle={0} length={40} width={14} opacity={0.6} />}
-      {v.evidence && <Word ar="كَأنَّك تَراه" style={{ left: '50%', top: '27%' }} size={50} delay={0.3} />}
-      {v.evidence && <Word ar="فإنَّه يَراك" style={{ left: '50%', top: '69%' }} color="#3A2608" size={50} delay={1.3} glow={false} />}
-      {v.evidence && <Caption style={{ left: '50%', top: '86%' }} align="center" delay={2}>If not the first, never less than the second</Caption>}
-    </Panel>
-  );
-}
-
-/** p14 The Hour: an hourglass of glass and brass; grains fall in a thin stream, the top empties, the heap grows. */
-export function HourglassRuns({ v, label }: { v: Built; label: string }) {
-  const reduce = useReducedMotion();
-  const r = rng(41);
-  return (
-    <Panel label={label} tone="dusk">
-      <Bloom x={50} y={48} size={60} strength={0.25} />
-      <div className="absolute left-1/2 top-[8%] h-[76%] -translate-x-1/2" style={{ aspectRatio: '2 / 3' }} aria-hidden="true">
-        <svg className="absolute inset-0 h-full w-full overflow-visible" viewBox="0 0 200 300">
-          <defs>
-            <linearGradient id="a1brass" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#5A3A1E" /><stop offset="0.5" stopColor="#C9934A" /><stop offset="1" stopColor="#5A3A1E" /></linearGradient>
-            <linearGradient id="a1glass" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="rgba(255,255,255,0.18)" /><stop offset="0.25" stopColor="rgba(255,255,255,0.02)" /><stop offset="0.8" stopColor="rgba(255,255,255,0.06)" /><stop offset="1" stopColor="rgba(255,255,255,0.2)" /></linearGradient>
-            <clipPath id="a1top"><path d="M48 20 C48 105 94 128 98 150 L102 150 C106 128 152 105 152 20 Z" /></clipPath>
-            <clipPath id="a1bot"><path d="M98 150 C94 172 48 195 48 280 L152 280 C152 195 106 172 102 150 Z" /></clipPath>
-          </defs>
-          <g clipPath="url(#a1top)">
-            <motion.rect x="40" width="120" height="140" fill="#E6C487" initial={false} animate={{ y: reduce ? 70 : [50, 140] }} transition={{ duration: 40, repeat: Infinity, ease: 'linear' }} />
-          </g>
-          <g clipPath="url(#a1bot)">
-            <motion.ellipse cx="100" cy="282" rx="60" fill="#E6C487" initial={false} animate={{ ry: reduce ? 40 : [12, 70] }} transition={{ duration: 40, repeat: Infinity, ease: 'linear' }} />
-          </g>
-          <path d="M48 20 C48 105 94 128 98 150 C94 172 48 195 48 280 L152 280 C152 195 106 172 102 150 C106 128 152 105 152 20 Z" fill="url(#a1glass)" stroke="rgba(239,232,220,0.55)" strokeWidth="1.5" />
-          <rect x="30" y="8" width="140" height="14" rx="5" fill="url(#a1brass)" />
-          <rect x="30" y="278" width="140" height="14" rx="5" fill="url(#a1brass)" />
-        </svg>
-        {!reduce && Array.from({ length: 16 }, (_, i) => (
-          <motion.span key={i} className="absolute left-1/2 h-[3px] w-[3px] rounded-full bg-[#F1D49A]" style={{ marginLeft: (r() - 0.5) * 3 }}
-            initial={{ top: '50%', opacity: 1 }} animate={{ top: ['50%', '86%'], opacity: [1, 1, 0] }} transition={{ duration: 0.9, delay: i * 0.06, repeat: Infinity, ease: 'easeIn' }} />
-        ))}
-      </div>
-      {v.evidence && <Caption style={{ left: '6%', top: '84%' }} delay={0.4}>Its time is with Allah alone</Caption>}
-      {v.interaction && <Caption style={{ left: '6%', top: '6%' }} delay={0.3}>Certain, and hidden</Caption>}
-    </Panel>
-  );
-}
-
-/** p15 The reveal: a far point of light on the night horizon opens into slowly turning rays; the name is set above. */
-export function FarLightOpens({ v, label }: { v: Built; label: string }) {
-  const reduce = useReducedMotion();
-  const open = v.evidence;
-  useCue('reveal', open, 0.3);
-  return (
-    <Panel label={label} tone="night">
-      <Stars count={50} seed={23} top={60} />
-      <div className="absolute inset-x-0 bottom-0 h-[30%]" style={{ background: 'linear-gradient(180deg, #120E0B, #060504)' }} aria-hidden="true" />
-      {open && !reduce && (
-        <motion.div className="absolute left-1/2 top-[70%] h-[160%] w-[160%] -translate-x-1/2 -translate-y-1/2" aria-hidden="true"
-          style={{ background: 'repeating-conic-gradient(from 0deg, rgba(255,240,205,0.22) 0deg 4deg, transparent 4deg 16deg)', maskImage: 'radial-gradient(circle, #000 4%, transparent 50%)', WebkitMaskImage: 'radial-gradient(circle, #000 4%, transparent 50%)' }}
-          initial={{ opacity: 0, rotate: 0 }} animate={{ opacity: 1, rotate: 25 }} transition={{ opacity: { duration: 2 }, rotate: { duration: 60, repeat: Infinity, ease: 'linear' } }} />
       )}
-      <motion.div className="absolute left-1/2 top-[70%] h-[22%] w-[16%] -translate-x-1/2 -translate-y-1/2 rounded-full" aria-hidden="true"
-        style={{ background: 'radial-gradient(circle, #FFFFFF, rgba(255,240,205,0.6) 30%, rgba(255,240,205,0) 70%)', mixBlendMode: 'screen' }}
-        initial={false} animate={{ scale: open ? 3.4 : 1, opacity: open ? 1 : 0.7 }} transition={{ duration: reduce ? 0 : 2.4, ease }} />
-      {open && <Motes count={20} seed={29} box={{ x: 30, y: 40, w: 40, h: 40 }} color="255,250,235" />}
-      {open && <Word ar="جِبريل" style={{ left: '50%', top: '30%' }} size={96} delay={1.2} />}
-      {open && <Caption style={{ left: '50%', top: '82%' }} align="center" ar="يُعَلِّمُكُم دينَكُم" delay={2.2}>to teach you your deen</Caption>}
-    </Panel>
-  );
-}
-
-const LEVELS = [{ r: 255, name: 'Islam' }, { r: 175, name: 'Iman' }, { r: 95, name: 'Ihsan' }];
-
-/** p16 Three levels of one deen: three rings, each inside the last, turning at their own speeds; each lights from the
- *  outside in, and the core glows when all three are lit. */
-export function RingsInward({ labels, label }: { labels: (string | null)[]; label: string }) {
-  const reduce = useReducedMotion();
-  const lit = labels.filter(Boolean).length;
-  return (
-    <motion.div className="absolute left-[700px] top-[184px] h-[580px] w-[790px] overflow-hidden rounded-[22px]" role="img" aria-label={`${label}: ${lit} of 3`}
-      style={{ boxShadow: '0 50px 90px -40px rgba(5,15,22,0.9), 0 0 0 1px rgba(232,194,122,0.18)' }}>
-      <Stage tone="night" />
-      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 790 580" aria-hidden="true">
-        {LEVELS.map((l, i) => (
-          <g key={l.name}>
-            <motion.circle cx="395" cy="290" r={l.r} fill={['rgba(60,85,96,0.35)', 'rgba(139,73,53,0.4)', 'rgba(232,194,122,0.55)'][i]} initial={false}
-              animate={{ opacity: i < lit ? 1 : 0.08 }} transition={{ duration: 1.2, ease }} />
-            <motion.circle cx="395" cy="290" r={l.r} fill="none" stroke={GOLD} strokeWidth="1.5" strokeDasharray={`${2 + i * 2} ${10 + i * 4}`} initial={false}
-              animate={reduce ? { opacity: i < lit ? 0.8 : 0.15 } : { rotate: i % 2 ? -360 : 360, opacity: i < lit ? 0.8 : 0.15 }} style={{ transformOrigin: '395px 290px' }}
-              transition={{ rotate: { duration: 60 + i * 30, repeat: Infinity, ease: 'linear' }, opacity: { duration: 1 } }} />
-          </g>
-        ))}
-      </svg>
-      {lit === 3 && <Bloom x={50} y={50} size={30} />}
-      {LEVELS.map((l, i) => (i < lit ? (
-        <Caption key={l.name} style={{ left: '50%', top: `${50 - ((l.r - 30) / 580) * 100}%` }} align="center" delay={0.5}>{labels[i]?.split(':')[0]}</Caption>
-      ) : null))}
-      <Film leak={false} />
+      {children}
+      <Film leak={!missing} />
     </motion.div>
   );
 }
 
-/** p17 At-Takathur 102:1–2: the sun lowers and the shadows lengthen across the graves as the ayah is read. */
-export function ShadowsLengthen({ v, label }: { v: Built; label: string }) {
-  const reduce = useReducedMotion();
-  return (
-    <Panel label={label} still="graves">
-      <motion.div className="absolute inset-0" aria-hidden="true" style={{ background: 'linear-gradient(105deg, rgba(11,21,28,0) 25%, rgba(11,21,28,0.65) 100%)' }}
-        initial={false} animate={{ opacity: v.evidence ? 1 : 0.15 }} transition={{ duration: reduce ? 0 : 5, ease: 'easeInOut' }} />
-      <Bloom x={94} y={36} size={36} color="255,190,110" />
-      <Motes count={14} seed={44} box={{ x: 10, y: 40, w: 80, h: 40 }} />
-      {v.lines >= 2 && <Caption style={{ left: '5%', top: '6%' }} delay={0.3}>Busy, all the way here</Caption>}
-      {v.evidence && <Caption style={{ left: '5%', top: '78%' }} ar="زُرْتُمُ" delay={1.2}>visited: guests, not residents</Caption>}
-    </Panel>
-  );
+/** One lower-third at a time, as in a documentary: step n replaces the caption with point n (its number shows how far
+ *  along we are). */
+function Thirds({ items, k, from = 0 }: { items: { en: string; ar?: string }[]; k: number; from?: number }) {
+  const i = Math.min(k - from, items.length) - 1;
+  if (i < 0) return null;
+  const t = items[i];
+  return <Caption key={t.en} ar={t.ar} style={{ left: '5%', bottom: '6%' }} delay={0.3}>{t.en}</Caption>;
 }
 
-const COUNTS = [
-  { label: 'Followers', from: 1240, to: 12480 },
-  { label: 'Balance', from: 3200, to: 28900 },
-  { label: 'Likes', from: 88, to: 9410 },
+/** How many build steps of a study page are showing (text first in Adults, then lines and items). */
+const shown = (v: Built) => (v.evidence ? 1 : 0) + v.lines + v.items;
+
+/* ---------- Zad: the questions ---------- */
+
+const PILLARS = [
+  { en: 'The two testimonies', ar: 'الشهادتان' }, { en: 'Salah', ar: 'الصلاة' }, { en: 'Zakah', ar: 'الزكاة' },
+  { en: 'Fasting Ramadan', ar: 'الصوم' }, { en: 'Hajj', ar: 'الحج' },
 ];
-
-function Counter({ from, to, run }: { from: number; to: number; run: boolean }) {
-  const reduce = useReducedMotion();
-  const [n, setN] = React.useState(from);
-  React.useEffect(() => {
-    if (!run || reduce) { setN(run ? to : from); return; }
-    let raf = 0; const t0 = performance.now();
-    const tick = (t: number) => { const k = Math.min(1, (t - t0) / 2600); setN(Math.round(from + (to - from) * (1 - (1 - k) ** 3))); if (k < 1) raf = requestAnimationFrame(tick); };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [run, from, to, reduce]);
-  return <>{n.toLocaleString('en-GB')}</>;
+/** Islam: the camera walks along five palm-trunk columns, one per pillar, then pulls back to the whole roof they hold. */
+export function ColumnsRise({ v, label }: { v: Built; label: string }) {
+  const k = shown(v);
+  return (
+    <Reel still="pillars" ar="الإسلام" kicker="What a Muslim does" label={label} k={k}
+      frames={[{ x: 50, y: 50, z: 1.05 }, { x: 22, y: 55, z: 1.5 }, { x: 50, y: 52, z: 1.25 }, { x: 50, y: 50, z: 1.05 }]}>
+      {k >= 2 && <Caption style={{ left: '5%', top: '6%' }} delay={0.6}>"You are right." He already knew.</Caption>}
+      {k >= 3 && <Caption style={{ left: '5%', bottom: '6%' }} delay={0.4}>{PILLARS.map((p) => p.en).join(' · ')}</Caption>}
+    </Reel>
+  );
 }
 
-/** p18 "My wealth, my wealth": three glass counters climb; at the question they blur and drift away like dust, and one
- *  quiet card rises and glows: what you gave. */
+const SIX = ['Allah', 'His angels', 'His books', 'His messengers', 'The Last Day', 'Qadar'];
+/** Iman: a quiet room before fajr, the window open on the last stars; the camera rises from the mat to the sky. */
+export function SixLights({ v, label }: { v: Built; label: string }) {
+  const k = shown(v);
+  return (
+    <Reel still="window" ar="الإيمان" kicker="What a Muslim holds true" label={label} k={k} grade="now" tone="night"
+      frames={[{ x: 50, y: 62, z: 1.2 }, { x: 55, y: 35, z: 1.35 }, { x: 50, y: 50, z: 1.05 }]}>
+      {k >= 2 && <Caption style={{ left: '5%', top: '6%' }} delay={0.4}>{SIX.join(' · ')}</Caption>}
+    </Reel>
+  );
+}
+
+/** Ihsan: one person praying alone in a dim room, seen from behind; the camera moves into the shaft of light ahead. */
+export function IhsanSteps({ v, label }: { v: Built; label: string }) {
+  const k = shown(v);
+  return (
+    <Reel still="prayer" ar="كأنك تراه" kicker="As if you see Him" label={label} k={k} grade="now"
+      frames={[{ x: 45, y: 55, z: 1.08 }, { x: 60, y: 45, z: 1.4 }, { x: 52, y: 50, z: 1.18 }]}>
+      {k >= 1 && <Caption ar="كَأنَّك تَراه" style={{ left: '5%', top: '6%' }} delay={1.2}>as if you see Him</Caption>}
+      {k >= 2 && <Caption ar="فإنَّه يَراك" style={{ left: '5%', bottom: '6%' }} delay={0.4}>if not, He sees you</Caption>}
+    </Reel>
+  );
+}
+
+/** The Hour: a brass hourglass on a ledge, sand running; the camera closes on the thin stream, then on the doorway. */
+export function HourglassRuns({ v, label }: { v: Built; label: string }) {
+  const k = shown(v);
+  return (
+    <Reel still="hourglass" ar="الساعة" kicker="Its time is with Allah alone" label={label} k={k}
+      frames={[{ x: 50, y: 50, z: 1.1 }, { x: 48, y: 52, z: 1.6 }, { x: 50, y: 50, z: 1.2 }]}>
+      {k >= 2 && <Caption style={{ left: '5%', bottom: '6%' }} delay={0.4}>Certain, and hidden</Caption>}
+    </Reel>
+  );
+}
+
+/** The reveal: the mosque doorway from inside, bright morning outside, footprints that lead out and stop. */
+export function FarLightOpens({ v, label }: { v: Built; label: string }) {
+  const k = shown(v);
+  useCue('reveal', k >= 1, 0.3);
+  return (
+    <Reel still="doorway" ar="جبريل" kicker="He came to teach you your deen" label={label} k={k} tone="night"
+      frames={[{ x: 50, y: 55, z: 1.1 }, { x: 52, y: 60, z: 1.45 }, { x: 50, y: 50, z: 1.05 }]}>
+      {k >= 1 && <Caption ar="جِبريلُ" style={{ left: '5%', top: '6%' }} delay={1.4}>Jibril</Caption>}
+      {k >= 2 && <Caption ar="يُعَلِّمُكُم دينَكُم" style={{ left: '5%', bottom: '6%' }} delay={0.4}>to teach you your deen</Caption>}
+    </Reel>
+  );
+}
+
+const LEVELS = [{ en: 'Islam: what I do', ar: 'الإسلام' }, { en: 'Iman: what I hold true', ar: 'الإيمان' }, { en: 'Ihsan: as if I see Him', ar: 'الإحسان' }];
+/** Three levels of one deen: the mosque from above, three nested spaces; the camera descends through each. */
+export function RingsInward({ labels, label }: { labels: (string | null)[]; label: string }) {
+  const k = labels.filter(Boolean).length;
+  return (
+    <Reel still="above" ar="دين واحد" kicker="Three depths of one deen" label={label} k={k}
+      frames={[{ x: 50, y: 50, z: 1.02 }, { x: 50, y: 50, z: 1.2 }, { x: 50, y: 50, z: 1.5 }, { x: 50, y: 50, z: 1.95 }]}>
+      <Thirds items={LEVELS} k={k} />
+    </Reel>
+  );
+}
+
+/* ---------- Zad: knowing and seeing ---------- */
+
+const GAP = [{ en: 'Knowing: you were told, and you agree' }, { en: 'Certain knowledge: it has reached the heart' }, { en: 'Seeing it: failing to act becomes rare' }];
+/** Where the gap is: a shelf of books under a desk lamp at night, an empty chair, a phone glowing. All the knowledge is
+ *  here; the camera moves from the books to the empty chair. */
+export function GapSteps({ labels, label }: { labels: (string | null)[]; label: string }) {
+  const k = labels.filter(Boolean).length;
+  return (
+    <Reel still="shelf" ar="تعرف… أم ترى؟" kicker="Knowing is not yet seeing" label={label} k={k} grade="now"
+      frames={[{ x: 40, y: 40, z: 1.15 }, { x: 35, y: 35, z: 1.4 }, { x: 60, y: 62, z: 1.35 }, { x: 50, y: 50, z: 1.05 }]}>
+      <Thirds items={GAP} k={k} />
+    </Reel>
+  );
+}
+
+/** At-Takathur 102:1–2: the sun lowers and the shadows lengthen across the graves as the ayah is read. */
+export function ShadowsLengthen({ v, label }: { v: Built; label: string }) {
+  const k = shown(v);
+  return (
+    <Reel still="graves" ar="ألهاكم التكاثر" label={label} k={k}
+      frames={[{ x: 50, y: 45, z: 1.08 }, { x: 62, y: 60, z: 1.35 }, { x: 45, y: 70, z: 1.5 }, { x: 50, y: 50, z: 1.05 }]}>
+      {k >= 1 && <Caption style={{ left: '5%', top: '6%' }} delay={1}>Busy, all the way here</Caption>}
+      {k >= 3 && <Caption ar="زُرْتُمُ" style={{ left: '5%', bottom: '6%' }} delay={0.4}>visited: guests, not residents</Caption>}
+    </Reel>
+  );
+}
+
+/** "My wealth, my wealth": three things on a mat in late light (a bowl of dates, a worn robe, a cloth purse). The
+ *  painting carries the page; the three fates come in as lower-thirds. */
 export function CountersFade({ v }: { v: Built }) {
-  const reduce = useReducedMotion();
-  const gone = v.interaction;
-  return (
-    <div className="absolute inset-0">
-      <Stage />
-      <div className="absolute left-[14%] right-[8%] top-[18%] space-y-4">
-        {COUNTS.map((c, i) => (
-          <motion.div key={c.label} className="flex items-baseline justify-between rounded-[14px] px-5 py-3"
-            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(239,232,220,0.12)' }}
-            initial={false} animate={gone ? { opacity: 0, y: -40 } : { opacity: 1, y: 0 }}
-            transition={{ duration: reduce ? 0.2 : 1.6, delay: i * 0.25, ease }}>
-            <span className="font-sans text-[20px] font-semibold" style={{ color: 'rgba(239,232,220,0.7)' }}>{c.label}</span>
-            <span className="font-serif text-[46px] font-bold tabular-nums" style={{ color: BONE }}><Counter from={c.from} to={c.to} run={v.lines >= 1} /></span>
-          </motion.div>
-        ))}
-      </div>
-      {gone && <Motes count={18} seed={52} box={{ x: 14, y: 15, w: 78, h: 40 }} color="239,232,220" />}
-      {gone && (
-        <motion.div className="absolute left-[24%] right-[18%] top-[58%] rounded-[16px] px-6 py-5 text-center"
-          style={{ background: 'linear-gradient(180deg, rgba(232,194,122,0.22), rgba(232,194,122,0.06))', border: `1px solid ${GOLD}`, boxShadow: '0 0 60px -10px rgba(232,194,122,0.6)' }}
-          initial={reduce ? false : { opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, delay: 1.4, ease }}>
-          <span className="block font-sans text-[16px] font-semibold uppercase tracking-[0.2em]" style={{ color: 'rgba(239,232,220,0.7)' }}>Still yours</span>
-          <span className="block font-serif text-[34px] font-bold" style={{ color: GOLD }}>What you gave</span>
-        </motion.div>
-      )}
-      <Film leak={false} />
-    </div>
-  );
+  const items = [{ en: 'Ate: used up' }, { en: 'Wore: worn out' }, { en: 'Gave: sent ahead' }];
+  return <>{v.interaction && <Caption style={{ left: '5%', bottom: '6%' }} delay={0.4}>{items.map((t) => t.en).join(' · ')}</Caption>}<Film /></>;
 }
 
-/** p19 'Ilm al-yaqeen: rings of sound carry "a true report" across the dark; a heart is drawn in a single line and
- *  fills with a slow warm light when the knowledge reaches it. */
+/** 'Ilm al-yaqeen: someone sits at the back of a quiet mosque at night, listening; the lamps ahead are out of focus. */
 export function SoundToHeart({ v, label }: { v: Built; label: string }) {
-  const reduce = useReducedMotion();
-  const reach = v.evidence;
-  useCue('chime', reach, 1.6);
+  const k = shown(v);
   return (
-    <Panel label={label}>
-      <span className="absolute left-[22%] top-[44%] -translate-x-1/2 -translate-y-1/2 whitespace-nowrap font-serif text-[30px] italic" style={{ color: BONE }}>a true report</span>
-      {!reduce && [0, 1, 2, 3].map((i) => (
-        <motion.span key={i} className="absolute left-[22%] top-[44%] h-[100px] w-[100px] -translate-x-1/2 -translate-y-1/2 rounded-full border" aria-hidden="true"
-          style={{ borderColor: 'rgba(232,194,122,0.55)' }}
-          animate={{ left: ['22%', '70%'], scale: [0.5, 1.8], opacity: [0.8, 0] }} transition={{ duration: 3.4, delay: i * 0.85, repeat: Infinity, ease: 'easeOut' }} />
-      ))}
-      <svg className="absolute left-[70%] top-[44%] h-[200px] w-[200px] -translate-x-1/2 -translate-y-1/2 overflow-visible" viewBox="0 0 100 100" aria-hidden="true">
-        <motion.path d="M50 86 C20 64 8 46 18 30 C28 16 44 20 50 34 C56 20 72 16 82 30 C92 46 80 64 50 86 Z" fill="none" stroke={BONE} strokeWidth="1.5"
-          initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2, ease }} />
-        <motion.path d="M50 86 C20 64 8 46 18 30 C28 16 44 20 50 34 C56 20 72 16 82 30 C92 46 80 64 50 86 Z" fill="#C51F24" initial={false}
-          animate={{ opacity: reach ? 0.9 : 0 }} transition={{ duration: 2, delay: 1.2 }} style={{ filter: 'drop-shadow(0 0 18px rgba(197,31,36,0.85))' }} />
-      </svg>
-      {reach && <Bloom x={70} y={44} size={40} color="220,90,80" strength={0.5} />}
-      {v.lines >= 2 && <Caption style={{ left: '52%', top: '8%' }} delay={0.4}>…until it reaches the heart</Caption>}
-      {reach && <Word ar="عِلْمَ ٱلْيَقِينِ" style={{ left: '50%', top: '84%' }} size={52} delay={2} />}
-    </Panel>
+    <Reel still="listening" ar="عِلْمَ ٱلْيَقِينِ" kicker="Knowledge from a true report" label={label} k={k} grade="now" tone="night"
+      frames={[{ x: 35, y: 60, z: 1.25 }, { x: 60, y: 40, z: 1.4 }, { x: 50, y: 50, z: 1.05 }]}>
+      {k >= 2 && <Caption ar="عِلْمَ ٱلْيَقِينِ" style={{ left: '5%', bottom: '6%' }} delay={0.4}>heard, and certain</Caption>}
+    </Reel>
   );
 }
 
-/** p20 'Ayn al-yaqeen: an eye with a golden iris opens slowly; its pupil narrows to the light and rays spread out. */
+/** 'Ayn al-yaqeen: a train window at dawn, the landscape outside sharp in the first sun; the camera leans to the glass. */
 export function EyeOpens({ v, label }: { v: Built; label: string }) {
-  const reduce = useReducedMotion();
-  const open = v.evidence;
-  useCue('reveal', open, 1);
+  const k = shown(v);
   return (
-    <Panel label={label} tone="night">
-      {open && !reduce && (
-        <motion.div className="absolute left-1/2 top-[44%] h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2" aria-hidden="true"
-          style={{ background: 'repeating-conic-gradient(from 0deg, rgba(232,194,122,0.14) 0deg 3deg, transparent 3deg 12deg)', maskImage: 'radial-gradient(circle, #000 10%, transparent 55%)', WebkitMaskImage: 'radial-gradient(circle, #000 10%, transparent 55%)' }}
-          initial={{ opacity: 0 }} animate={{ opacity: 1, rotate: 15 }} transition={{ opacity: { duration: 2, delay: 1.5 }, rotate: { duration: 40, repeat: Infinity, ease: 'linear' } }} />
-      )}
-      <svg className="absolute left-1/2 top-[44%] h-[62%] w-[84%] -translate-x-1/2 -translate-y-1/2 overflow-visible" viewBox="0 0 400 200" aria-hidden="true">
-        <defs>
-          <clipPath id="a1eye"><path d="M20 100 C110 8 290 8 380 100 C290 192 110 192 20 100 Z" /></clipPath>
-          <radialGradient id="a1iris"><stop offset="0" stopColor="#120A04" /><stop offset="0.26" stopColor="#120A04" /><stop offset="0.3" stopColor="#F4D592" /><stop offset="0.7" stopColor="#C2802F" /><stop offset="1" stopColor="#5E3414" /></radialGradient>
-        </defs>
-        <g clipPath="url(#a1eye)">
-          <rect width="400" height="200" fill="#EDE6DA" />
-          <circle cx="200" cy="100" r="72" fill="url(#a1iris)" />
-          <circle cx="200" cy="100" r="60" fill="none" stroke="rgba(90,50,20,0.35)" strokeWidth="1" strokeDasharray="1 3" />
-          <motion.circle cx="200" cy="100" fill="#0A0603" initial={false} animate={{ r: open ? 14 : 22 }} transition={{ duration: 2, delay: 1.4 }} />
-          <circle cx="222" cy="80" r="9" fill="rgba(255,255,255,0.85)" />
-          <motion.rect x="0" width="400" height="100" fill={INK} initial={false} animate={{ y: open ? -104 : 0 }} transition={{ duration: reduce ? 0 : 2.4, ease: [0.6, 0, 0.2, 1] }} />
-          <motion.rect x="0" width="400" height="100" fill={INK} initial={false} animate={{ y: open ? 204 : 100 }} transition={{ duration: reduce ? 0 : 2.4, ease: [0.6, 0, 0.2, 1] }} />
-        </g>
-        <path d="M20 100 C110 8 290 8 380 100 C290 192 110 192 20 100 Z" fill="none" stroke="rgba(239,232,220,0.5)" strokeWidth="1.5" />
-      </svg>
-      {v.lines >= 2 && <Caption style={{ left: '6%', top: '6%' }} delay={0.4}>Everyone reaches it. The question is when.</Caption>}
-      {open && <Word ar="عَيْنَ ٱلْيَقِينِ" style={{ left: '50%', top: '86%' }} size={50} delay={2.4} />}
-    </Panel>
+    <Reel still="train" ar="عَيْنَ ٱلْيَقِينِ" kicker="Certainty by seeing" label={label} k={k} grade="now"
+      frames={[{ x: 50, y: 50, z: 1.05 }, { x: 62, y: 45, z: 1.45 }, { x: 55, y: 48, z: 1.7 }]}>
+      {k >= 2 && <Caption ar="عَيْنَ ٱلْيَقِينِ" style={{ left: '5%', bottom: '6%' }} delay={0.4}>seen with the eyes</Caption>}
+    </Reel>
   );
 }
 
-/** "What this course is for": four arches one behind another, one per part of the course. With each part the camera moves
- *  through the next arch; the last (Ihsan) opens into light. */
+const ROAD = ['Iman', 'Taharah and Salah', 'The pillars', 'Ihsan'];
+/** What this course is for: an old caravan road through the hills at dawn toward a lit oasis town; with each part of
+ *  the course the camera travels further down the road. */
 export function CourseArches({ labels, label }: { labels: (string | null)[]; label: string }) {
-  const reduce = useReducedMotion();
-  const lit = labels.filter(Boolean).length;
-  const arch = (s: number) => { const w = 300 * s, x = 380 - w / 2, top = 560 - 440 * s; return `M${x} 570 L${x} ${top + w / 2} A${w / 2} ${w / 2} 0 0 1 ${x + w} ${top + w / 2} L${x + w} 570 Z`; };
+  const k = labels.filter(Boolean).length;
   return (
-    <Panel label={`${label}: ${lit} of 4`} tone="dusk">
-      <motion.div className="absolute inset-0" initial={false} animate={{ scale: reduce ? 1 : [1, 1.08, 1.2, 1.36, 1.6][lit] }} style={{ transformOrigin: '50% 70%' }} transition={{ duration: 2.2, ease }}>
-        <svg className="absolute inset-0 h-full w-full" viewBox="0 0 760 570" aria-hidden="true">
-          {[1.25, 0.95, 0.7, 0.48].map((s, i) => (
-            <motion.path key={s} d={arch(s)} fill={['#1F2A30', '#33302A', '#4A2A1E', '#FFE7B0'][i]} stroke={GOLD} strokeOpacity={0.5} strokeWidth={1.5}
-              initial={false} animate={{ opacity: i < lit ? 1 : 0.12 }} transition={{ duration: 1.2 }} />
-          ))}
-        </svg>
-        {lit >= 4 && <Bloom x={50} y={74} size={34} />}
-        {lit >= 4 && <Motes count={14} seed={61} box={{ x: 40, y: 52, w: 20, h: 40 }} />}
-      </motion.div>
-      {labels.map((l, i) => l && <Caption key={l} style={{ left: '6%', top: `${8 + i * 11}%` }} delay={0.6}>{`${i + 1}. ${l.split(':')[0]}`}</Caption>)}
-    </Panel>
+    <Reel still="road" ar="من العلم إلى الرؤية" kicker="From knowing to seeing" label={label} k={k}
+      frames={[{ x: 50, y: 70, z: 1.05 }, { x: 48, y: 62, z: 1.25 }, { x: 52, y: 52, z: 1.5 }, { x: 54, y: 44, z: 1.8 }, { x: 55, y: 38, z: 2.1 }]}>
+      <Thirds items={ROAD.map((en, i) => ({ en: `${i + 1}. ${en}` }))} k={k} />
+    </Reel>
   );
 }
 
@@ -713,25 +551,10 @@ export function MondayPile({ v }: { v: Built }) {
   );
 }
 
-/** p25–28 The cases: a single desk light on a dark page, and the thin outline of a khatam star turning slowly. */
-export function CaseLight({ v }: { v: Built }) {
-  const reduce = useReducedMotion();
-  return (
-    <div className="absolute inset-0">
-      <Stage />
-      <Beam x={52} y={-10} angle={0} length={80} width={50} opacity={0.35} />
-      <motion.svg className="absolute left-1/2 top-[48%] h-[54%] w-[54%] -translate-x-1/2 -translate-y-1/2" viewBox="-60 -60 120 120" aria-hidden="true"
-        animate={reduce ? undefined : { rotate: 360 }} transition={{ duration: 90, repeat: Infinity, ease: 'linear' }}>
-        <path d="M0 -50 L14 -34 L35 -35 L34 -14 L50 0 L34 14 L35 35 L14 34 L0 50 L-14 34 L-35 35 L-34 14 L-50 0 L-34 -14 L-35 -35 L-14 -34 Z" fill="none" stroke={GOLD} strokeOpacity={v.interaction ? 0.7 : 0.3} strokeWidth="0.8" />
-        <rect x="-26" y="-26" width="52" height="52" fill="none" stroke={GOLD} strokeOpacity="0.25" strokeWidth="0.6" transform="rotate(45)" />
-      </motion.svg>
-      {v.interaction && <Motes count={12} seed={83} box={{ x: 35, y: 30, w: 30, h: 40 }} />}
-      <Film leak={false} />
-    </div>
-  );
+/** The cases: each case has its own still of today's world; the film carries it, the question does the work. */
+export function CaseLight(_: { v: Built }) {
+  return <Film />;
 }
-
-/* ---------- Ahd ---------- */
 
 /** p30 Zad al-Yaqeen: a leather notebook opens in three dimensions onto bone pages; a pen writes the first line. */
 export function NotebookOpens({ v }: { v: Built }) {

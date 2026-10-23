@@ -111,6 +111,9 @@ export type SceneId =
   | 'a1Lane'
   | 'a1Monday'
   | 'a1Case'
+  | 'a1Case2'
+  | 'a1Case3'
+  | 'a1Case4'
   | 'a1Review'
   | 'a1Notebook'
   | 'a1Next';

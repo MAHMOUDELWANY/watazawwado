@@ -178,6 +178,9 @@ export const SCENE_IMAGES: Partial<Record<LessonPage['scene'], string>> = {
   a1Madinah: 'zad-adults/l01/madinah', a1Stranger: 'zad-adults/l01/stranger', a1Cushions: 'zad-adults/l01/cushions',
   a1Graves: 'zad-adults/l01/graves', a1Horizon: 'zad-adults/l01/horizon', a1Lane: 'zad-adults/l01/lane', a1Monday: 'zad-adults/l01/monday',
   a1Next: 'zad-adults/l01/night',
+  // v3 stills (prompts in the Lesson 1 brief, "v3 cinematic pass"); until delivered the page shows a warm wash.
+  a1Count: 'zad-adults/l01/purse', a1Case: 'zad-adults/l01/canteen', a1Case2: 'zad-adults/l01/suitcase',
+  a1Case3: 'zad-adults/l01/corridor', a1Case4: 'zad-adults/l01/phone',
 };
 
 /** Where the crop of a wide (16:9) painting sits when its box cuts it (CSS object-position), so the people stay in view. */
