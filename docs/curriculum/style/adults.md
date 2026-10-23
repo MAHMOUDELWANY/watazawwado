@@ -1,7 +1,7 @@
 # Style guide: Zad Path · Adults (18+)
 
 Binding for every image and slide look in an Adults lesson (`docs/curriculum/RULES.md` §1.10, §3 "Look: calm, cinematic,
-editorial"; `zad-essentials-adults/RULES.md` §5). Draft by Claude, 2026-10-23, **waiting for the owner's review**. When
+editorial"; `zad-essentials-adults/RULES.md` §5). Draft by Claude, **approved by the owner 2026-10-23**. When
 the owner approves it, the first Lesson 1 image becomes the reference image (`public/curriculum/zad-adults/reference.webp`):
 when a later image disagrees with it, the reference wins.
 

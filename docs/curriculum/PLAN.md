@@ -38,10 +38,11 @@ Last update: 2026-10-23. History of how we got here: §8 (progress log).
   recently deceased Muslims of sound character; more advanced English in the owner's voice.
 - **Done:** map approved 2026-10-22 (46 lessons per learner, 5 parts; 20a women / 20b men; notebook Zad al-Yaqeen,
   Then and Now, hand-off questions; money cases defined).
-- **Waiting for the owner:** review of `style/adults.md` (draft 2026-10-23: cinematic photographic documentary look,
-  Then = warm desert gold / Now = cool blue-hour city, anonymous people only, quotes as code-built cards, Zad al-Yaqeen
-  notebook drawn in code, base prompt and the note for ChatGPT).
-- **Next after review:** Lesson 1 (The Man No One Knew) brief.
+- **Done:** `style/adults.md` approved 2026-10-23 (cinematic documentary look, Then warm / Now cool, anonymous people,
+  quotes as code-built cards).
+- **Waiting for the owner:** review of the Lesson 1 brief `zad-essentials-adults/L01-the-man-no-one-knew.md` (evidence
+  all verified; three open points: the Steve Jobs hook, Hanzalah in Lesson 1, the levels of yaqeen as the course backbone).
+- **Next after review:** Lesson 1 page text.
 
 ### Seerah and the Scholar's Path
 - Seerah (Kids / Teens / Adults): planned, not started. Scholar's Path: books, sessions and prices are the owner's call
@@ -497,3 +498,7 @@ B3–B5 → continue lesson by lesson.
 - **2026-10-23** — Adults style guide drafted (`style/adults.md`): calm cinematic documentary-photo look, Then/Now light
   worlds, no recurring characters, anonymous people, no generated likeness of real people, editorial slide rules, base
   prompt. Waiting for the owner's review.
+- **2026-10-23** — Owner approved `style/adults.md`. Adults Lesson 1 brief written: Muslim 8 (full matn), Muslim 2750
+  (Hanzalah), Muslim 2958 on Dorar; 102:1–8, 15:99, 56:95 with al-Sa'di, Ibn Kathir, Ibn al-Qayyim (levels of yaqeen),
+  al-Muyassar via the quran.com connector; quotes from Steve Jobs (Stanford 2005) and Bronnie Ware; «هاذم اللذات» left
+  out (disputed grading). Waiting for the owner's review.
