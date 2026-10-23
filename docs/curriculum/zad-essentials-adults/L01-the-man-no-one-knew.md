@@ -1,7 +1,7 @@
 # Lesson 1: The Man No One Knew
 
 Zad Essentials · Adults (18+) · Part 1 (From Knowing to Certainty) · 60 minutes, every page shown
-Status: **brief approved by the owner 2026-10-23** (all three open points accepted: Jobs hook, Hanzalah in Lesson 1, levels of yaqeen as the course backbone). Page text approved 2026-10-23. **Built pages done 2026-10-23** (code scenes in `src/curriculum/slides/lessons/a01.tsx`); waiting for the owner's 12 stills (table below) and review. Pages, their order and text will live only in the code
+Status: **brief approved by the owner 2026-10-23** (all three open points accepted: Jobs hook, Hanzalah in Lesson 1, levels of yaqeen as the course backbone). Page text approved 2026-10-23. **Built pages done 2026-10-23** (code scenes in `src/curriculum/slides/lessons/a01.tsx`); the owner's 12 stills placed 2026-10-23; **waiting for the owner's review of the whole lesson**. Note: the cover still shows a dome and minaret (the brief asked for mud brick and palm trunks); acceptable on a cover that names no place, regenerate if the owner prefers. Pages, their order and text will live only in the code
 (`src/curriculum/content/zad-adults/l01-the-man-no-one-knew.ts`, RULES §1.12). Look: `../style/adults.md` (approved
 2026-10-23).
 

@@ -84,7 +84,7 @@ export function MirrorWipe({ v }: { v: Built }) {
   return (
     <>
       <motion.div className="absolute inset-0" aria-hidden="true"
-        style={{ background: 'linear-gradient(180deg, rgba(225,232,236,0.62), rgba(200,212,220,0.55))', backdropFilter: 'blur(6px)' }}
+        style={{ background: 'linear-gradient(180deg, rgba(225,232,236,0.38), rgba(200,212,220,0.32))', backdropFilter: 'blur(4px)' }}
         initial={false}
         animate={{ clipPath: v.lines >= 1 ? 'polygon(0 0, 100% 0, 100% 30%, 0 30%, 0 52%, 100% 52%, 100% 100%, 0 100%)' : 'polygon(0 0, 100% 0, 100% 30%, 0 30%, 0 30%, 100% 30%, 100% 100%, 0 100%)' }}
         transition={{ duration: reduce ? 0 : 1.6, ease: out }} />
@@ -103,7 +103,7 @@ export function HandsWarm({ v }: { v: Built }) {
       {v.lines >= 3 && <Tag style={{ left: '68%', top: '36%' }} color="#9A6A12" delay={1.1}>At the end, they saw</Tag>}
       {v.lines >= 3 && (
         <svg className="pointer-events-none absolute inset-0 h-full w-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-          <Pen d="M36 36 C44 29 52 29 60 36" color={P.goldSoft} width={4} delay={0.7} duration={0.6} />
+          <Pen d="M36 36 C44 29 52 29 60 36" color={P.goldSoft} width={0.5} delay={0.7} duration={0.6} />
         </svg>
       )}
     </>
@@ -204,7 +204,7 @@ export function NarratorChain({ v }: { v: Built }) {
     <div className="absolute inset-0" role="img" aria-label="The chain of narrators">
       <Stage tone="dawn" />
       <svg className="pointer-events-none absolute inset-0 h-full w-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-        {CHAIN.slice(1, lit).map((_, i) => <Pen key={i} d={`M52 ${y(i) + 4} L52 ${y(i + 1) - 4}`} color={P.goldSoft} width={3} duration={0.6} glow />)}
+        {CHAIN.slice(1, lit).map((_, i) => <Pen key={i} d={`M52 ${y(i) + 4} L52 ${y(i + 1) - 4}`} color={P.goldSoft} width={0.6} duration={0.6} glow />)}
       </svg>
       {CHAIN.slice(0, lit).map((c, i) => (
         <Tag key={c.en} style={{ left: '52%', top: `${y(i)}%` }} size={20} color={i === 2 ? P.crimson : P.ink} ar={c.ar} delay={0.3}>{c.en}</Tag>
@@ -236,7 +236,7 @@ export function CushionsClose({ v }: { v: Built }) {
       <Glow x={50} y={40} w={30} h={30} />
       {v.lines >= 1 && (
         <svg className="pointer-events-none absolute inset-0 h-full w-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-          <Pen d="M34 70 C42 58 58 58 66 70" color={P.goldSoft} width={4} dash="2 4" duration={0.9} />
+          <Pen d="M30 66 C42 56 58 56 70 66" color={P.goldSoft} width={0.5} duration={0.9} glow />
         </svg>
       )}
       {v.lines >= 1 && <Tag style={{ left: '50%', top: '52%' }} size={18} color={P.deep} delay={0.8} ar={v.evidence ? 'رُكبَتَيه إلى رُكبَتَيه' : undefined}>Knees to knees</Tag>}
@@ -550,9 +550,9 @@ export function LaneTwoStates({ v, label }: { v: Built; label: string }) {
   useCue('chime', v.evidence, 0.6);
   return (
     <Panel label={label} still="lane">
-      <Glow x={70} y={56} w={16} h={26} />
+      <Glow x={49} y={58} w={14} h={24} />
       {v.lines >= 1 && <Tag style={{ left: '22%', top: '16%' }} size={18} color="#9A6A12" ar="كَأنَّا رَأيُ عَينٍ" delay={0.3}>At the gathering</Tag>}
-      {v.lines >= 1 && <Tag style={{ left: '74%', top: '30%' }} size={18} color={P.inkSoft} delay={1}>At home: we forgot</Tag>}
+      {v.lines >= 1 && <Tag style={{ left: '64%', top: '46%' }} size={18} color={P.inkSoft} delay={1}>At home: we forgot</Tag>}
       {v.evidence && <Tag style={{ left: '50%', top: '86%' }} color={P.deep} ar="ساعةً وساعةً" delay={0.6}>an hour and an hour</Tag>}
     </Panel>
   );
@@ -567,7 +567,7 @@ export function MondayPile({ v }: { v: Built }) {
       {v.lines >= 1 && <Tag style={{ left: '24%', top: '18%' }} size={18} color="#9A6A12" delay={0.3}>Friday: moved</Tag>}
       {v.lines >= 2 && Array.from({ length: 7 }, (_, i) => (
         <motion.span key={i} className="absolute h-[22px] w-[22px] rounded-full" aria-hidden="true"
-          style={{ left: `${54 + (i % 4) * 5}%`, top: `${40 - Math.floor(i / 4) * 7}%`, background: P.crimson, boxShadow: '0 0 12px rgba(197,31,36,0.6)' }}
+          style={{ left: `${64 + (i % 4) * 4}%`, top: `${56 - Math.floor(i / 4) * 6}%`, background: P.crimson, boxShadow: '0 0 12px rgba(197,31,36,0.6)' }}
           initial={reduce ? false : { opacity: 0, scale: 0.4 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4, delay: 0.3 + i * 0.18, ease: out }} />
       ))}
       {v.lines >= 3 && <Tag style={{ left: '50%', top: '82%' }} color={P.deep} delay={0.4}>Go back to the source</Tag>}

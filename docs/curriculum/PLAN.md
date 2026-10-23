@@ -45,7 +45,7 @@ Last update: 2026-10-23. History of how we got here: §8 (progress log).
 - **Done:** Lesson 1 page text approved; built pages done 2026-10-23: code scenes for every page
   (`slides/lessons/a01.tsx`), the wow scene "From hearing to seeing", the chain of narrators, the hourglass and the Zad
   al-Yaqeen notebook drawn in code.
-- **Waiting for the owner:** the 12 stills listed in the L1 brief (prompts ready), then review of the lesson in the player.
+- **Waiting for the owner:** review of the whole Lesson 1 in the player (12 stills placed 2026-10-23).
 - **Next after review:** Lesson 2 (A World That Should Not Exist) brief.
 
 ### Seerah and the Scholar's Path
@@ -513,3 +513,6 @@ B3–B5 → continue lesson by lesson.
   (documentary look, slow motion, few sounds), registered in `lessons/index.ts` and `SCENE_IMAGES`; hourglass drawn in
   code instead of a prop. Every page checked at its final step in a local preview (desktop and phone size, no console
   errors); reduced motion handled in code but not emulated. Waiting for the owner's 12 stills.
+- **2026-10-23** — Owner delivered the 12 Adults L1 stills; converted to WebP in `public/curriculum/zad-adults/l01`
+  (madinah also saved as `reference.webp`), overlays re-placed to fit them, pen strokes thinned; pages checked with
+  headless Chrome at their final step. Lesson 1 complete, waiting for the owner's review.
