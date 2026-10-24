@@ -99,7 +99,12 @@ export const lesson01: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'stranger',
-      lines: ['He had no dust on him, as if he lived nearby.', 'But nobody there knew who he was.'],
+      lines: [
+        'Long ago, people crossed the desert on foot or on camels. Days and days of sand and wind.',
+        'Every traveller arrived dusty and tired. So no dust means he lives nearby.',
+        'But Madinah was small. Everyone knew everyone.',
+        "So he must live nearby, and he can't live nearby. Both can't be true!",
+      ],
       evidence: {
         arabic: 'لا يُرى عليه أثَرُ السَّفَرِ، ولا يَعرِفُه مِنَّا أحَدٌ',
         meaning: 'We could not see any dust from a journey on him, and none of us knew him.',
@@ -145,8 +150,12 @@ export const lesson01: Lesson = {
       title: 'Question one: Islam',
       station: 'zad',
       layout: 'concept',
-      scene: 'pillars',
-      lines: ['"O Muhammad, tell me about Islam."'],
+      scene: 'kIslam',
+      lines: [
+        'The visitor\'s first question: "Tell me about Islam."',
+        'A house needs strong pillars, or the roof falls in.',
+        'Islam is like a house with five pillars. Each one is something a Muslim does.',
+      ],
       items: ['Shahadah', 'Salah', 'Zakah', 'Fasting', 'Hajj'],
       askFirst: true,
       interaction: { kind: 'ask', prompt: 'Before we hear the answer: what do you think Islam is made of?', reveal: 'Five things a Muslim does, like five pillars holding up a house.' },

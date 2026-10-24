@@ -7,6 +7,7 @@ import { Arch, RIBBON } from './Arch';
 import { CinemaPage } from './cinema/CinemaPage';
 import { AdultAsk, LevelsReview, ReviewIntro } from './motion/Questions';
 import { SCENES } from './cinema/scenes';
+import { StagePage } from './motion/Stage';
 import { ClueLens, Unveil, DoorsLight, PackZad, Callback, type Lens } from './Scenes';
 import { BUILDS, STUDIES, MOMENTS, PACKED } from './lessons';
 
@@ -50,7 +51,9 @@ interface SlideProps {
 /** One slide on the fixed 1600 × 900 notebook canvas. */
 export function Slide({ lesson, pageIndex, step, onCorrect, onGameResult }: SlideProps) {
   const page = lesson.pages[pageIndex];
-  const v = visibility(page, step, lesson.version === 'adults');
+  // A motion stage (owner, 2026-10-24) puts the ayah or hadith first in every version, then the lines that add to it.
+  const onStage = isMotionStage(page);
+  const v = visibility(page, step, lesson.version === 'adults' || onStage);
   const chapter = [...lesson.chapters].reverse().find((c) => c.page <= pageIndex);
   const rootRef = useRef<HTMLDivElement>(null);
   const [found, setFound] = useState<string[]>([]);
@@ -58,9 +61,9 @@ export function Slide({ lesson, pageIndex, step, onCorrect, onGameResult }: Slid
   const [answered, setAnswered] = useState(false);
   const adults = lesson.version === 'adults';
   // Adults use the light manuscript look on every page (owner's choice, 2026-10-23): no dark stage compositions.
-  const stage = adults ? Boolean(SCENES[page.scene]) && compositionFor(page) !== 'arena' : isStage(compositionFor(page));
+  const stage = adults ? Boolean(SCENES[page.scene]) && compositionFor(page) !== 'arena' : onStage || isStage(compositionFor(page));
   // A light motion stage keeps the paper chrome; photo and night stages get the light-on-dark chrome.
-  const dark = stage && !(adults && SCENES[page.scene]?.stage?.tone === 'light');
+  const dark = stage && SCENES[page.scene]?.stage?.tone !== 'light';
   // Stepping back past the question (or replaying it) clears what the child found or chose, so the art matches the question.
   useEffect(() => {
     if (!v.interaction) { setFound([]); setChosen(null); setAnswered(false); }
@@ -236,6 +239,8 @@ export function compositionFor(page: LessonPage): Composition {
     case 'next': return 'cliffhanger';
   }
 }
+/** A Kids or Teens page drawn on a motion stage (slides/motion) instead of a painting; the game keeps its own arena. */
+export const isMotionStage = (page: LessonPage) => Boolean(SCENES[page.scene]?.stage) && compositionFor(page) !== 'arena';
 /** Dark compositions put light chrome (header, tracker) over the painting. */
 export const isStage = (c: Composition) => c === 'title' || c === 'spotlight' || c === 'luminous' || c === 'unveil' || c === 'cliffhanger';
 
@@ -467,9 +472,12 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
   const c = compositionFor(page);
   const Moment = MOMENTS[page.scene];
   const Packed = PACKED[lesson.number];
-  const interaction = page.interaction && v.interaction ? <InteractionView interaction={page.interaction} onCorrect={onCorrect} onGameResult={onGameResult} onClue={onClue} onChoose={onChoose} onAnswer={onAnswer} adult={lesson.version === 'adults'} title={page.title} /> : null;
+  const onStage = isMotionStage(page);
+  const interaction = page.interaction && v.interaction ? <InteractionView interaction={page.interaction} onCorrect={onCorrect} onGameResult={onGameResult} onClue={onClue} onChoose={onChoose} onAnswer={onAnswer} adult={lesson.version === 'adults'} strip={onStage} title={page.title} /> : null;
 
   if (lesson.version === 'adults') return <AdultsLayout page={page} v={v} lesson={lesson} interaction={interaction} />;
+  // Kids and Teens pages that have a motion stage use the Adults stage system in their own tone.
+  if (onStage) return <StagePage page={page} v={v} lesson={lesson} stage={SCENES[page.scene]!.stage!} interaction={interaction} cover={c === 'title'} next={c === 'cliffhanger'} />;
 
   switch (c) {
     case 'title':
@@ -791,8 +799,8 @@ function AdultsLayout({ page, v, lesson, interaction }: { page: LessonPage; v: R
 
 /* ---------- interactions (sized for the canvas) ---------- */
 
-function InteractionView({ interaction, onCorrect, onGameResult, onClue, onChoose, onAnswer, adult = false, title = '' }: { interaction: Interaction; onCorrect: () => void; onGameResult: (r: GameResult) => void; onClue?: (label: string) => void; onChoose?: (option: string) => void; onAnswer?: () => void; adult?: boolean; title?: string }) {
-  if (adult && interaction.kind === 'ask') return <AdultAsk prompt={interaction.prompt} reveal={interaction.reveal} tone="light" onAnswer={onAnswer} />;
+function InteractionView({ interaction, onCorrect, onGameResult, onClue, onChoose, onAnswer, adult = false, strip = false, title = '' }: { interaction: Interaction; onCorrect: () => void; onGameResult: (r: GameResult) => void; onClue?: (label: string) => void; onChoose?: (option: string) => void; onAnswer?: () => void; adult?: boolean; strip?: boolean; title?: string }) {
+  if ((adult || strip) && interaction.kind === 'ask') return <AdultAsk prompt={interaction.prompt} reveal={interaction.reveal} tone="light" onAnswer={onAnswer} />;
   if (adult && interaction.kind === 'sort') return <LevelsReview title={title} interaction={interaction} onCorrect={onCorrect} onResult={onGameResult} />;
   switch (interaction.kind) {
     case 'ask':

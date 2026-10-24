@@ -119,7 +119,12 @@ export const lesson01Teens: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'tStranger',
-      lines: ['No dust from a journey, so he must live nearby.', 'But nobody there knew him.'],
+      lines: [
+        'Madinah sat in the middle of the desert. Getting there meant days of heat, sand and wind.',
+        'Anyone who arrived carried the road on them: dust, cracked lips, tired eyes.',
+        'So a clean traveller would have to be a local.',
+        'But Madinah was a small town where everybody knew everybody, and nobody knew him.',
+      ],
       evidence: {
         arabic: 'لا يُرى عليه أثَرُ السَّفَرِ، ولا يَعرِفُه مِنَّا أحَدٌ',
         meaning: 'There was no sign of travel on him, and none of us knew who he was.',

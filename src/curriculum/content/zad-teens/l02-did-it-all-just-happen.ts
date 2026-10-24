@@ -119,7 +119,11 @@ export const lesson02Teens: Lesson = {
       station: 'zad',
       layout: 'concept',
       scene: 'tl2Three',
-      lines: ['How could the universe have begun? Only three ways.'],
+      lines: [
+        'We know the universe began. So how could it begin?',
+        'Think it through and there are only three options. There is no fourth.',
+        'Test each one like a scientist: can it actually happen?',
+      ],
       items: ['From nothing at all', 'It made itself', 'Something outside it made it'],
       interaction: {
         kind: 'clues',

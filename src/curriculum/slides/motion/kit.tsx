@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, useSpring, useTransform } from 'motion/react';
 import { ease, CRIMSON, GOLD, TEAL } from '../cinema/Cinema';
 import { INK_TEXT, type Tone, ink, soft } from './Stage';
+import { asset } from '../Art';
 
 /**
  * Shared pieces for the Adults motion stages: faceless SVG people (modern learners only; prophets, companions and angels
@@ -225,4 +226,24 @@ function Head({ look, nx, ny, children }: { look: number; nx: number; ny: number
   React.useEffect(() => { angle.set(look); }, [look, angle]);
   const transform = useTransform(angle, (a) => `rotate(${a} ${nx} ${ny})`);
   return <motion.g transform={transform}>{children}</motion.g>;
+}
+
+/* ---------- painted cut-outs from the Kids and Teens libraries (characters and props) ---------- */
+
+/**
+ * A transparent painting (public/curriculum/<path>.webp) standing with its feet at (x, y), `h` tall. Kids and Teens use
+ * their own cast as the people on the stage (never prophets, companions or angels). Changing `src` swaps the pose in place.
+ */
+export function Cut({ src, x, y, h, ratio = 0.667, flip = false, delay = 0, bounce = 0.35, dim = false, style }: {
+  src: string; x: number; y: number; h: number; ratio?: number; flip?: boolean; delay?: number; bounce?: number; dim?: boolean; style?: React.CSSProperties;
+}) {
+  const w = h * ratio;
+  return (
+    <motion.div className="pointer-events-none absolute" style={{ left: x - w / 2, top: y - h, width: w, height: h, ...style }}
+      initial={{ opacity: 0, y: 40, scale: 0.9 }} animate={{ opacity: dim ? 0.4 : 1, y: 0, scale: 1 }} transition={{ type: 'spring', bounce, duration: 0.9, delay }}>
+      <motion.img key={src} src={asset(`${src}.webp`)} alt="" draggable={false} className="h-full w-full object-contain object-bottom"
+        style={{ transform: flip ? 'scaleX(-1)' : undefined, filter: 'drop-shadow(0 18px 18px rgba(60,30,10,0.18))' }}
+        initial={{ opacity: 0.4, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4, ease }} />
+    </motion.div>
+  );
 }

@@ -123,7 +123,11 @@ export const lesson02: Lesson = {
       station: 'zad',
       layout: 'concept',
       scene: 'castleClues',
-      lines: ['How did Maryam know someone built it?', 'The castle left clues.'],
+      lines: [
+        'How did Maryam know someone built the castle? Nobody saw Yusuf do it.',
+        'She looked for clues, like a detective.',
+        'Things that are made leave the same three clues behind.',
+      ],
       items: ['The pieces fit together', 'It works: the gate opens', 'It is made for something: to play in'],
       interaction: {
         kind: 'ask',

@@ -28,6 +28,10 @@ export function StagePage({ page, v, lesson, stage, interaction, cover = false, 
   page: LessonPage; v: Seen; lesson: Lesson; stage: StageDef; interaction: React.ReactNode; cover?: boolean; next?: boolean;
 }) {
   const { tone, Graphic } = stage;
+  // Each version keeps the system and its own voice: Kids brighter and bigger, Teens bolder and quicker.
+  const look = lesson.version;
+  const kids = look === 'kids';
+  const quick = look === 'teens' ? 0.75 : 1;
   const started = !cover && (v.evidence || v.lines > 0 || v.items > 0 || v.interaction);
   // The text is the hero until the explanation starts, then it docks under the title. On a scene-setting page
   // (contextFirst) the lines come first and the text stays the hero until the question.
@@ -41,7 +45,7 @@ export function StagePage({ page, v, lesson, stage, interaction, cover = false, 
   const big = page.interaction?.kind === 'clues' || page.interaction?.kind === 'choose';
   return (
     <div className="absolute inset-0 overflow-hidden" style={{ background: tone === 'light' ? PAPER : '#2A0E10' }}>
-      <Backdrop tone={tone} />
+      <Backdrop tone={tone} look={look} />
 
       {/* The graphic steps back while the text is the hero, and while the learner answers. */}
       {/* When a question arrives the graphic steps up and back (from the top right) so the question strip sits under it,
@@ -53,7 +57,7 @@ export function StagePage({ page, v, lesson, stage, interaction, cover = false, 
 
       {/* Title: big on the opening beat, then it steps back to the corner (the cover keeps it). */}
       <motion.div className="absolute origin-top-left" style={{ left: 110, top: cover ? 170 : 96, width: cover ? 760 : 1100 }} initial={false}
-        animate={{ scale: started ? 0.46 : 1, y: started || cover ? 0 : 200 }} transition={{ duration: 0.7, ease }}>
+        animate={{ scale: started ? 0.46 : 1, y: started || cover ? 0 : 200 }} transition={{ duration: 0.7 * quick, ease }}>
         {(cover || next) && (
           <p className="m-0 mb-4 font-sans font-bold uppercase" style={{ fontSize: 20, letterSpacing: '0.2em', color: tone === 'light' ? CRIMSON : GOLD }}>
             {cover ? lesson.part ?? `Lesson ${lesson.number}` : 'Next time on Zad Essentials'}
@@ -82,8 +86,8 @@ export function StagePage({ page, v, lesson, stage, interaction, cover = false, 
             const now = i === v.lines - 1 && !v.interaction;
             return (
               <motion.p key={i} layout="position" className="m-0 font-sans"
-                initial={{ opacity: 0, y: 24, filter: 'blur(8px)' }} animate={{ opacity: now ? 1 : 0.55, y: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, transition: { duration: 0.25 } }} transition={{ duration: 0.6, ease }}
-                style={{ fontSize: now ? 30 : v.interaction ? 18 : 20, lineHeight: 1.3, fontWeight: now ? 650 : 500, color: ink(tone), transition: 'font-size 0.5s cubic-bezier(0.22,1,0.36,1)' }}>
+                initial={{ opacity: 0, y: 24, filter: 'blur(8px)' }} animate={{ opacity: now ? 1 : 0.55, y: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, transition: { duration: 0.25 } }} transition={{ duration: 0.6 * quick, ease }}
+                style={{ fontSize: now ? (kids ? 34 : 30) : v.interaction ? 18 : kids ? 22 : 20, lineHeight: 1.3, fontWeight: now ? (look === 'teens' ? 750 : 650) : 500, color: ink(tone), transition: 'font-size 0.5s cubic-bezier(0.22,1,0.36,1)' }}>
                 {l}
               </motion.p>
             );
@@ -108,7 +112,9 @@ const KHATAM_TILE = (stroke: string) =>
 
 /** The stage itself: paper with a warm glow rising from the floor; or, for the unseen and the endings, a deep night in
  *  the brand's own colours (crimson to teal, never flat black) with the khatam lattice and two brand lights. */
-export function Backdrop({ tone }: { tone: Tone }) {
+export function Backdrop({ tone, look = 'adults' }: { tone: Tone; look?: 'kids' | 'teens' | 'adults' }) {
+  if (look === 'kids' && tone === 'light') return <KidsPaper />;
+  if (look === 'teens' && tone === 'light') return <TeensPaper />;
   return tone === 'light' ? (
     <>
       <div className="pointer-events-none absolute inset-0" style={{ background: `radial-gradient(70% 55% at 70% 108%, rgba(229,169,60,0.38), transparent 70%), radial-gradient(40% 40% at 96% 0%, rgba(197,31,36,0.10), transparent 70%)` }} />
@@ -119,6 +125,29 @@ export function Backdrop({ tone }: { tone: Tone }) {
       <div className="pointer-events-none absolute inset-0" style={{ background: 'linear-gradient(155deg, #4A1216 0%, #2A0E10 38%, #12232A 78%, #0B3A42 100%)' }} />
       <div className="pointer-events-none absolute inset-0" style={{ backgroundImage: KHATAM_TILE('rgba(229,169,60,0.13)'), backgroundSize: '120px 120px', maskImage: 'radial-gradient(120% 100% at 70% 40%, #000 30%, rgba(0,0,0,0.35) 100%)' }} />
       <div className="pointer-events-none absolute inset-0" style={{ background: 'radial-gradient(55% 55% at 78% 105%, rgba(229,169,60,0.30), transparent 70%), radial-gradient(40% 45% at 100% 0%, rgba(15,163,184,0.28), transparent 70%), radial-gradient(45% 50% at 0% 100%, rgba(197,31,36,0.35), transparent 70%)' }} />
+    </>
+  );
+}
+
+/** Kids: a sunny sheet, a sky-teal morning in the top corner, warm sand at the foot, and the lattice in bright stars. */
+function KidsPaper() {
+  return (
+    <>
+      <div className="pointer-events-none absolute inset-0" style={{ background: 'linear-gradient(180deg, #FFF7E6 0%, #FBEFD9 100%)' }} />
+      <div className="pointer-events-none absolute inset-0" style={{ background: 'radial-gradient(48% 55% at 92% -6%, rgba(15,163,184,0.28), transparent 70%), radial-gradient(70% 50% at 70% 112%, rgba(229,169,60,0.45), transparent 70%), radial-gradient(30% 30% at 0% 100%, rgba(197,31,36,0.12), transparent 70%)' }} />
+      <div className="pointer-events-none absolute inset-0" style={{ backgroundImage: KHATAM_TILE('rgba(229,169,60,0.22)'), backgroundSize: '96px 96px', maskImage: 'radial-gradient(90% 80% at 75% 50%, #000 20%, transparent 80%)' }} />
+    </>
+  );
+}
+
+/** Teens: paper with a bold ribbon slash across the graphic side and a firmer lattice. */
+function TeensPaper() {
+  return (
+    <>
+      <div className="pointer-events-none absolute inset-0" style={{ background: '#F4EEE4' }} />
+      <div className="pointer-events-none absolute" style={{ left: 640, top: -200, width: 260, height: 1400, transform: 'rotate(24deg)', background: `linear-gradient(180deg, ${CRIMSON}, ${GOLD} 55%, ${TEAL})`, opacity: 0.09 }} />
+      <div className="pointer-events-none absolute inset-0" style={{ backgroundImage: KHATAM_TILE('rgba(31,22,18,0.08)'), backgroundSize: '120px 120px' }} />
+      <div className="pointer-events-none absolute inset-0" style={{ background: 'radial-gradient(60% 50% at 80% 110%, rgba(197,31,36,0.16), transparent 70%)' }} />
     </>
   );
 }

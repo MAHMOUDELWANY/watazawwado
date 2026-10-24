@@ -8,6 +8,8 @@ import { StrangerGraphic, IslamGraphic } from '../motion/graphics';
 import { CoverGraphic, MadinahGraphic, HourGraphic, RevealGraphic } from '../motion/g-story';
 import { KneesGraphic, IhsanPeopleGraphic, NextPeopleGraphic } from '../motion/g-people';
 import { ImanGraphic, LevelsGraphic, GapGraphic, HorizonGraphic, KnowGraphic, SeeGraphic, InsideGraphic } from '../motion/g-levels';
+import { KidsStrangerGraphic, KidsIslamGraphic, KidsCastleGraphic } from '../motion/g-kids';
+import { TeensStrangerGraphic, TeensOptionsGraphic, TeensBossesGraphic } from '../motion/g-teens';
 import { LaneGraphic, MondayGraphic, GravesGraphic, CountGraphic, CaseOmarGraphic, CaseLaylaGraphic, CaseColleagueGraphic, CaseOnlineGraphic, NotebookGraphic } from '../motion/g-life';
 
 /**
@@ -126,6 +128,9 @@ function NextOverlay({ k }: { k: number }) {
   return k >= 3 ? <div className="absolute" style={{ left: 760, top: 300, width: 760 }}><KineticTitle text="Is there a Maker at all?" size={92} /></div> : null;
 }
 
+/** A Kids or Teens page drawn only as a motion stage (no photo behind it). */
+const onStage = (stage: StageDef): Scene => ({ stage, still: '', shots: [] });
+
 /* ---------- the direction for every Adults Lesson 1 page ---------- */
 
 export const SCENES: Partial<Record<SceneId, Scene>> = {
@@ -179,4 +184,12 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
     stage: { tone: 'light', Graphic: NotebookGraphic }, still: 'notebook', light: { x: 85, y: 12, strength: 0.7 }, shots: [{ x: 70, y: 35, z: 1.05, focus: 0.15, pan: 0.3 }, { x: 62, y: 62, z: 1.2, focus: 0.7 }, { x: 58, y: 70, z: 1.35, focus: 0.9, pan: -0.2 }] },
   a1Next: {
     stage: { tone: 'dark', Graphic: NextPeopleGraphic }, still: 'night', shots: [{ x: 50, y: 50, z: 1.05, focus: 0.2, pan: -0.3 }, { x: 45, y: 45, z: 1.2, focus: 0.1, pan: 0 }, { x: 40, y: 40, z: 1.35, focus: 0.05, pan: 0.2 }], overlay: ({ k }) => <NextOverlay k={k} /> },
+
+  /* Kids and Teens motion stages (2026-10-24; prototype pages for the owner) */
+  stranger: onStage({ tone: 'light', Graphic: KidsStrangerGraphic, marks: ['dust from a journey', 'none of us knew him'] }),
+  kIslam: onStage({ tone: 'light', Graphic: KidsIslamGraphic }),
+  castleClues: onStage({ tone: 'light', Graphic: KidsCastleGraphic }),
+  tStranger: onStage({ tone: 'light', Graphic: TeensStrangerGraphic, marks: ['no sign of travel', 'none of us knew who he was'] }),
+  tl2Three: onStage({ tone: 'light', Graphic: TeensOptionsGraphic }),
+  tl3Bosses: onStage({ tone: 'light', Graphic: TeensBossesGraphic }),
 };

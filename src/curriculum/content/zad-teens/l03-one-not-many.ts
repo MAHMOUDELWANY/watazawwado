@@ -85,7 +85,11 @@ export const lesson03Teens: Lesson = {
       station: 'zad',
       layout: 'concept',
       scene: 'tl3Bosses',
-      lines: ['One shop. Two bosses. Both have total power.'],
+      lines: [
+        'Ethan wants a team of gods. Test the idea on something small first.',
+        'One shop. Two bosses. Both have total power.',
+        'Total power means nobody can stop you.',
+      ],
       items: ['Boss A: "Open the shop."', 'Boss B: "Keep it shut."', 'Who wins?'],
       interaction: {
         kind: 'ask',
