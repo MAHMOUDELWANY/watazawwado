@@ -18,6 +18,14 @@
         "process.env.NODE_ENV='production';require('./build/server.cjs')"
       ],
       "port": 3000
+    },
+    {
+      "name": "curriculum-preview",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "scripts/curriculum/serve.mjs"
+      ],
+      "port": 3101
     }
   ]
 }
