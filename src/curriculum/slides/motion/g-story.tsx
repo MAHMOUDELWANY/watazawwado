@@ -1,4 +1,5 @@
 import React from 'react';
+import { useCue } from '../sfx';
 import { motion, AnimatePresence } from 'motion/react';
 import { CountUp, ease, CRIMSON, GOLD, TEAL } from '../cinema/Cinema';
 import { Orb, useReduce, ink, soft, INK_TEXT, type GraphicProps } from './Stage';
@@ -67,6 +68,9 @@ function Swatch({ x, y, fill, label, dusty = false, delay = 0, big = false }: { 
 }
 
 export function MadinahGraphic({ lines, tone }: GraphicProps) {
+  useCue('whoosh', lines >= 1);
+  useCue('pen', lines >= 2, 0.3);
+  useCue('sparkle', lines >= 3, 0.3);
   return (
     <div className="pointer-events-none absolute inset-0">
       {/* where we are */}
@@ -161,6 +165,10 @@ export function CushionsGraphic({ lines, tone }: GraphicProps) {
 const CLK = { x: 1080, y: 420, r: 190 };
 
 export function HourGraphic({ lines, interaction, tone }: GraphicProps) {
+  useCue('whoosh', lines >= 1);
+  useCue('chime', lines >= 2, 0.4);
+  useCue('strike', lines >= 3, 0.5);
+  useCue('pen', lines >= 4, 0.3);
   const reduce = useReduce();
   const ready = lines >= 3;
   return (
@@ -226,6 +234,9 @@ const PIECES = [
 ];
 
 export function RevealGraphic({ lines, tone }: GraphicProps) {
+  useCue('reveal', lines >= 1, 0.2);
+  useCue('whoosh', lines >= 2, 0.3);
+  useCue('sparkle', lines >= 3, 0.4);
   const reduce = useReduce();
   const C = { x: 1120, y: 420 };
   return (

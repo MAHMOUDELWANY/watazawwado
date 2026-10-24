@@ -12,7 +12,7 @@ import { play } from './sfx';
 
 const CTRL = 'inline-flex h-[64px] w-[64px] items-center justify-center rounded-full bg-white/12 text-white ring-1 ring-white/25 backdrop-blur-md transition-[background-color,transform] duration-150 hover:bg-white/25 active:scale-95 disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C]';
 const STAR = 'M50 4 L63.4 17.6 L82.5 17.5 L82.4 36.6 L96 50 L82.4 63.4 L82.5 82.5 L63.4 82.4 L50 96 L36.6 82.4 L17.5 82.5 L17.6 63.4 L4 50 L17.6 36.6 L17.5 17.5 L36.6 17.6 Z';
-const COLD = 3200;
+const COLD = 4600;
 // Long enough to read the line and the traits aloud (owner, 2026-10-22); younger readers get more.
 const CARD = { teens: 7000, kids: 8500 };
 const TEAM = 7000;
@@ -61,7 +61,7 @@ export function Opening({ lesson, data, ar = false, onDone }: { lesson: Lesson; 
       role="region" aria-label={`${series} opening: meet the characters`}
     >
       <AnimatePresence mode="popLayout">
-        {beat === 0 && <ColdOpen key="cold" series={series} version={version} kids={kids} reduce={reduce} />}
+        {beat === 0 && <ColdOpen key="cold" series={series} version={version} kids={kids} reduce={reduce} cast={data.cast} />}
         {beat >= 1 && beat <= n && (
           <CastCard key={data.cast[beat - 1].id} m={data.cast[beat - 1]} i={beat - 1} total={n} kids={kids} reduce={reduce} ms={card} />
         )}
@@ -110,51 +110,88 @@ export function Opening({ lesson, data, ar = false, onDone }: { lesson: Lesson; 
   );
 }
 
-/** Cold open: a line of light cuts the dark, folds into the star, the star shockwaves and the series title slams in. */
-function ColdOpen({ series, version, kids, reduce }: { series: string; version: string; kids: boolean; reduce: boolean }) {
-  useEffect(() => { play('whoosh', 0.1); play('reveal', 1.1); play('thud', 1.75); }, []);
+/**
+ * Cold open: "the road begins" (owner, 2026-10-24: the old title on a plain background had no life). Zad is provision for
+ * a journey, so the series opens on one: a road draws itself to the horizon, the khatam star rises over it like a dawn,
+ * the lattice of our brand fills the sky, the cast set off along the road as silhouettes, and the title lands with the
+ * star. Kids open at a warm dawn; Teens at a deeper night in the brand's crimson.
+ */
+function ColdOpen({ series, version, kids, reduce, cast }: { series: string; version: string; kids: boolean; reduce: boolean; cast: CastMember[] }) {
+  useEffect(() => { play('riser', 0.1); play('impact', 1.75); play('sparkle', 2.3); }, []);
+  const H = 610; // the horizon
+  const sky = kids
+    ? 'linear-gradient(180deg, #06323A 0%, #0B4C57 38%, #2E6E6A 62%, #E9A15A 86%, #F6D58E 100%)'
+    : 'linear-gradient(180deg, #12070B 0%, #2A0E10 40%, #4A1216 66%, #0B3A42 92%, #0FA3B8 100%)';
+  const stars = useMemo(() => Array.from({ length: kids ? 22 : 40 }, (_, k) => ({ x: (k * 397 + 53) % 1600, y: 30 + ((k * 211) % (H - 140)), r: kids ? 2 + (k % 3) : 1 + (k % 3) * 0.6 })), [kids]);
   return (
-    <motion.div className="absolute inset-0" exit={{ opacity: 0, transition: { duration: 0.25 } }}>
-      <div className="absolute inset-0" style={{ background: 'radial-gradient(circle at 50% 50%, #0B4C57 0%, #05262D 45%, #020B0D 100%)' }} />
-      <Halftone opacity={0.07} />
-      {/* the cut of light */}
-      <motion.div className="absolute left-0 top-1/2 h-[3px] w-full origin-left" style={{ background: `linear-gradient(90deg, transparent, ${P.goldSoft}, #fff, ${P.goldSoft}, transparent)`, boxShadow: '0 0 30px 6px rgba(246,213,142,0.6)' }}
-        initial={{ transform: 'scaleX(0)', opacity: 1 }} animate={{ transform: 'scaleX(1)', opacity: [1, 1, 0] }} transition={{ duration: 1.1, ease: [0.7, 0, 0.2, 1], opacity: { times: [0, 0.75, 1], duration: 1.2 } }} />
-      {/* shockwave rings */}
-      {[0, 0.18, 0.36].map((d) => (
-        <motion.div key={d} className="absolute left-1/2 top-[40%] h-[260px] w-[260px] rounded-full border-[3px]" style={{ borderColor: P.goldSoft, marginLeft: -130, marginTop: -130 }}
-          initial={{ transform: 'scale(0.2)', opacity: 0 }} animate={{ transform: 'scale(4.2)', opacity: [0, 0.9, 0] }} transition={{ delay: 1.1 + d, duration: 1.2, ease: 'easeOut' }} />
+    <motion.div className="absolute inset-0" exit={{ opacity: 0, transition: { duration: 0.35 } }}>
+      {/* the sky, down to the horizon */}
+      <div className="absolute inset-x-0 top-0" style={{ height: H, background: sky }} />
+      <motion.div className="absolute inset-x-0 top-0" style={{ height: H, backgroundImage: KHATAM_SKY, backgroundSize: '120px 120px', maskImage: 'linear-gradient(180deg, #000 10%, transparent 85%)', WebkitMaskImage: 'linear-gradient(180deg, #000 10%, transparent 85%)' }}
+        initial={{ opacity: 0 }} animate={{ opacity: kids ? 0.5 : 0.7 }} transition={{ delay: 1.2, duration: 1.6 }} />
+      {stars.map((st, k) => (
+        <motion.span key={k} className="absolute rounded-full bg-white" style={{ left: st.x, top: st.y, width: st.r * 2, height: st.r * 2, boxShadow: `0 0 ${st.r * 4}px rgba(255,240,200,0.9)` }}
+          initial={{ opacity: 0 }} animate={reduce ? { opacity: 0.7 } : { opacity: [0, 0.9, 0.35, 0.9] }} transition={{ delay: 0.2 + (k % 9) * 0.12, duration: 3, repeat: reduce ? 0 : Infinity, repeatType: 'mirror' }} />
       ))}
-      <motion.svg viewBox="0 0 100 100" className="absolute left-1/2 top-[40%] h-[230px] w-[230px] -translate-x-1/2 -translate-y-1/2" aria-hidden="true"
-        initial={reduce ? { opacity: 0 } : { opacity: 0, transform: 'scale(0.2) rotate(-180deg)' }} animate={{ opacity: 1, transform: 'scale(1) rotate(0deg)' }} transition={{ delay: 0.9, type: 'spring', stiffness: 120, damping: 13 }}>
-        <defs>
-          <linearGradient id="op-star" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#FFF1C9" /><stop offset="1" stopColor={P.gold} /></linearGradient>
-        </defs>
+      {/* the star rises over the horizon, rays turning behind it */}
+      {!reduce && (
+        <motion.div className="absolute left-1/2 h-[1400px] w-[1400px]" style={{ top: 270 - 700, marginLeft: -700, background: `repeating-conic-gradient(from 0deg, rgba(246,213,142,${kids ? 0.16 : 0.12}) 0deg 5deg, transparent 5deg 15deg)`, maskImage: 'radial-gradient(circle, #000 0%, transparent 55%)', WebkitMaskImage: 'radial-gradient(circle, #000 0%, transparent 55%)' }}
+          initial={{ opacity: 0, transform: 'rotate(0deg)' }} animate={{ opacity: 1, transform: 'rotate(20deg)' }} transition={{ opacity: { delay: 1.3, duration: 1 }, transform: { duration: COLD / 1000 + 1, ease: 'linear' } }} />
+      )}
+      <motion.div className="absolute left-1/2 rounded-full" style={{ top: 270, width: 420, height: 420, marginLeft: -210, marginTop: -210, background: 'radial-gradient(circle, rgba(255,226,160,0.55), transparent 65%)' }}
+        initial={{ opacity: 0, y: H - 270 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 1.3, ease: [0.22, 1, 0.36, 1] }} />
+      <motion.svg viewBox="0 0 100 100" className="absolute left-1/2 h-[170px] w-[170px]" style={{ top: 270 - 85, marginLeft: -85 }} aria-hidden="true"
+        initial={reduce ? { opacity: 0 } : { opacity: 0, y: H - 270, rotate: -90 }} animate={{ opacity: 1, y: 0, rotate: 0 }} transition={{ delay: 0.5, duration: 1.3, ease: [0.22, 1, 0.36, 1] }}>
+        <defs><linearGradient id="op-star" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#FFF1C9" /><stop offset="1" stopColor={P.gold} /></linearGradient></defs>
         <path d={STAR} fill="url(#op-star)" />
         <path d={STAR} fill="none" stroke="#fff" strokeOpacity="0.6" strokeWidth="1.2" transform="translate(50 50) scale(0.62) translate(-50 -50)" />
       </motion.svg>
-      <div className="absolute inset-x-0 top-[57%] text-center">
-        <motion.p lang="ar" dir="rtl" className="font-serif text-[64px] font-bold leading-none" style={{ color: P.goldSoft }}
-          initial={{ opacity: 0, transform: 'translateY(20px)' }} animate={{ opacity: 1, transform: 'translateY(0px)' }} transition={{ delay: 1.35, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}>
+      {/* the ground, the horizon and the road to it */}
+      <div className="absolute inset-x-0 bottom-0" style={{ top: H, background: kids ? 'linear-gradient(180deg, #7A4A30 0%, #3B2418 60%, #1E120C 100%)' : 'linear-gradient(180deg, #2A0E10 0%, #12070B 100%)' }} />
+      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 1600 900" aria-hidden="true">
+        <defs><linearGradient id="op-road" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stopColor={P.gold} stopOpacity="0.55" /><stop offset="1" stopColor={P.goldSoft} stopOpacity="0.9" /></linearGradient></defs>
+        <motion.line x1={0} y1={H} x2={1600} y2={H} stroke={P.goldSoft} strokeWidth={2} initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 0.8 }} transition={{ duration: 1.1, ease: [0.65, 0, 0.35, 1] }} />
+        <motion.path d={`M 560 900 L 790 ${H} L 810 ${H} L 1040 900 Z`} fill="url(#op-road)" initial={{ clipPath: 'inset(100% 0 0 0)' }} animate={{ clipPath: 'inset(0% 0 0 0)' }} transition={{ duration: reduce ? 0 : 1.1, ease: [0.22, 1, 0.36, 1] }} />
+        <motion.path d={`M 800 900 L 800 ${H}`} stroke="#fff" strokeWidth={5} strokeDasharray="26 22" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: reduce ? 0 : 1.2, delay: 0.2 }} />
+      </svg>
+      {/* the cast set off along the road */}
+      <div className="absolute inset-x-0" style={{ top: H + 20 }}>
+        {cast.map((m, k) => {
+          const off = (k - (cast.length - 1) / 2) * 92;
+          return (
+            <motion.img key={m.id} src={asset(m.img)} alt="" draggable={false} className="absolute object-contain object-bottom"
+              style={{ left: 800 + off - 45, top: 0, width: 90, height: 150, filter: `brightness(0) drop-shadow(0 0 10px ${kids ? 'rgba(246,213,142,0.6)' : 'rgba(197,31,36,0.6)'})` }}
+              initial={{ opacity: 0, y: 40, scale: 1.1 }} animate={reduce ? { opacity: 0.85, y: 0, scale: 1 } : { opacity: 0.9, y: [40, -12, -24], scale: [1.1, 0.92, 0.84] }}
+              transition={{ delay: 1.5 + k * 0.12, duration: reduce ? 0.4 : 2.6, ease: 'easeOut' }} />
+          );
+        })}
+      </div>
+      {/* the title, landing with the star */}
+      <div className="absolute inset-x-0 text-center" style={{ top: 372 }}>
+        <motion.p lang="ar" dir="rtl" className="font-serif text-[46px] font-bold leading-none" style={{ color: P.goldSoft }}
+          initial={{ opacity: 0, transform: 'translateY(16px)' }} animate={{ opacity: 1, transform: 'translateY(0px)' }} transition={{ delay: 1.4, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}>
           أول الزاد
         </motion.p>
-        <motion.p className="mt-5 font-serif text-[118px] font-bold uppercase leading-none text-white" style={{ letterSpacing: '0.06em', textShadow: '0 10px 50px rgba(0,0,0,0.6)' }}
-          initial={reduce ? { opacity: 0 } : { opacity: 0, transform: 'scale(1.5)' }} animate={{ opacity: 1, transform: 'scale(1)' }} transition={{ delay: 1.7, type: 'spring', stiffness: 260, damping: 18 }}>
+        <motion.p className="mt-3 font-serif text-[104px] font-bold uppercase leading-none" style={{ backgroundImage: 'linear-gradient(100deg, #FFFFFF 0%, #FFF1C9 40%, #F6D58E 70%, #FFFFFF 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent', filter: 'drop-shadow(0 10px 40px rgba(0,0,0,0.55))' }}
+          initial={reduce ? { opacity: 0 } : { opacity: 0, transform: 'scale(1.4)', letterSpacing: '0.3em' }} animate={{ opacity: 1, transform: 'scale(1)', letterSpacing: '0.05em' }} transition={{ delay: 1.7, type: 'spring', stiffness: 220, damping: 20 }}>
           {series}
         </motion.p>
-        <motion.span className="mt-6 inline-block rounded-full px-8 py-2.5 font-sans text-[30px] font-extrabold uppercase tracking-[0.35em] text-white" style={{ background: kids ? '#E58A2B' : P.crimson }}
-          initial={{ opacity: 0, transform: 'translateY(16px) scale(0.8)' }} animate={{ opacity: 1, transform: 'translateY(0px) scale(1)' }} transition={{ delay: 2.1, type: 'spring', stiffness: 300, damping: 16 }}>
-          {version}
-        </motion.span>
       </div>
+      <motion.span className="absolute rounded-full px-8 py-2 font-sans text-[28px] font-extrabold uppercase tracking-[0.35em] text-white" style={{ left: 800, top: H - 24, x: '-50%', background: kids ? '#E58A2B' : P.crimson, boxShadow: `0 0 40px 8px ${kids ? 'rgba(229,138,43,0.45)' : 'rgba(197,31,36,0.5)'}` }}
+        initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 2.2, type: 'spring', stiffness: 300, damping: 16 }}>
+        {version}
+      </motion.span>
     </motion.div>
   );
 }
 
+/** The khatam lattice in gold outline, for the opening's sky. */
+const KHATAM_SKY = `url("data:image/svg+xml,${encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'><g fill='none' stroke='rgba(246,213,142,0.35)' stroke-width='1.2'><rect x='35' y='35' width='50' height='50'/><rect x='35' y='35' width='50' height='50' transform='rotate(45 60 60)'/><circle cx='60' cy='60' r='9'/><path d='M0 0 L25 25 M120 0 L95 25 M0 120 L25 95 M120 120 L95 95'/></g></svg>")}")`;
+
 /** One character: a hard cut to their colour, speed lines, their name huge behind them, then the name plate. */
 function CastCard({ m, i, total, kids, reduce, ms }: { m: CastMember; i: number; total: number; kids: boolean; reduce: boolean; ms: number }) {
   const flip = i % 2 === 1; // characters alternate sides, like the cuts of an opening
-  useEffect(() => { play('whoosh'); play('thud', 0.45); }, []);
+  useEffect(() => { play(kids ? 'castKids' : 'castTeens'); }, [kids]);
   const lines = useMemo(() => speedLines(i + 3, kids), [i, kids]);
   const cx = flip ? 470 : 1130;
   const panelIn = flip ? 'polygon(0% 0%, 58% 0%, 46% 100%, 0% 100%)' : 'polygon(42% 0%, 100% 0%, 100% 100%, 54% 100%)';
@@ -230,7 +267,7 @@ function CastCard({ m, i, total, kids, reduce, ms }: { m: CastMember; i: number;
 
 /** The whole cast together: they rise one after another into one line-up under a sweep of light. */
 function Together({ data, series, kids, reduce }: { data: SeriesOpening; series: string; kids: boolean; reduce: boolean }) {
-  useEffect(() => { play('sparkle', 0.3); play('chime', 1.6); }, []);
+  useEffect(() => { play('whoosh', 0.1); play('sparkle', 1.5); }, []);
   // Leads in the middle: 0 and 1 are the two main characters.
   const order = [...data.cast.slice(2).filter((_, k) => k % 2 === 0).reverse(), data.cast[0], data.cast[1], ...data.cast.slice(2).filter((_, k) => k % 2 === 1)];
   const w = 1500 / order.length;

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useCue } from '../sfx';
 import { motion, AnimatePresence } from 'motion/react';
 import { CountUp, ease, CRIMSON, GOLD, TEAL } from '../cinema/Cinema';
 import { Orb, useReduce, ink, soft, INK_TEXT, type GraphicProps } from './Stage';
@@ -13,6 +14,8 @@ const STONES = [
 ];
 
 export function ImanGraphic({ lines, items, labels, tone }: GraphicProps) {
+  useCue('pen', lines >= 1, 0.2);
+  useCue('brick', items, 0.2);
   const down = items > 0;
   const GROUND = 430;
   return (
@@ -70,6 +73,8 @@ const RINGS = [
 ];
 
 export function LevelsGraphic({ lines, items, interaction, tone }: GraphicProps) {
+  useCue('pen', lines >= 1, 0.2);
+  useCue('pop', interaction, 0.3);
   const reduce = useReduce();
   const C = { x: 1000, y: 390 };
   return (
@@ -102,6 +107,9 @@ export function LevelsGraphic({ lines, items, interaction, tone }: GraphicProps)
 /* ---------- The gap: you already know the list; more information does not lift you; three kinds of knowing. ---------- */
 
 export function GapGraphic({ lines, items, tone }: GraphicProps) {
+  useCue('pen', lines >= 1, 0.2);
+  useCue('thud', lines >= 2, 0.6);
+  useCue('pop', items, 0.2);
   const ticks = 11;
   const bars = [
     { v: 0.28, c: '#C9B79D', sub: 'you agree' },
@@ -154,6 +162,9 @@ export function GapGraphic({ lines, items, tone }: GraphicProps) {
 /* ---------- From hearing to seeing: two sayings, one picture. ---------- */
 
 export function HorizonGraphic({ lines, items, tone }: GraphicProps) {
+  useCue('whoosh', lines >= 1);
+  useCue('riser', lines >= 2);
+  useCue('reveal', lines >= 3, 0.3);
   const merged = lines >= 3;
   const card = (side: 0 | 1) => {
     const t = side === 0 ? { k: 'The hadith of Jibril', en: 'as if you see Him', ar: 'كَأنَّك تَراه' } : { k: 'Hanzalah', en: 'as if we saw it with our own eyes', ar: 'كَأنَّا رَأيُ عَينٍ' };
@@ -185,6 +196,9 @@ export function HorizonGraphic({ lines, items, tone }: GraphicProps) {
 /* ---------- If only you knew: knowledge in the head, and the line that has to reach the heart. ---------- */
 
 export function KnowGraphic({ lines, tone }: GraphicProps) {
+  useCue('pen', lines >= 1, 0.2);
+  useCue('chime', lines >= 2, 0.4);
+  useCue('sparkle', lines >= 3, 0.4);
   const H = { x: 1080, y: 290 };
   const R = { x: 1080, y: 560 };
   return (
@@ -221,6 +235,8 @@ export function KnowGraphic({ lines, tone }: GraphicProps) {
 /* ---------- Then you will see it: the two steps again, and where seeing falls on a life. ---------- */
 
 export function SeeGraphic({ lines, tone }: GraphicProps) {
+  useCue('whoosh', lines >= 1);
+  useCue('reveal', lines >= 2, 0.3);
   const reduce = useReduce();
   return (
     <div className="pointer-events-none absolute inset-0">
@@ -263,6 +279,9 @@ const ROAD = 'M 780 700 C 900 700, 920 560, 1040 560 S 1200 420, 1300 420 S 1460
 const STOPS = [{ x: 860, y: 690 }, { x: 1040, y: 560 }, { x: 1250, y: 440 }, { x: 1470, y: 240 }];
 
 export function InsideGraphic({ lines, items, labels, tone }: GraphicProps) {
+  useCue('pen', lines >= 1, 0.2);
+  useCue('whoosh', lines >= 2);
+  useCue('pop', items, 0.2);
   return (
     <div className="pointer-events-none absolute inset-0">
       {lines >= 1 && <Svg><Draw d={ROAD} color={soft(tone)} width={3} dash="2 12" dur={1.6} /></Svg>}

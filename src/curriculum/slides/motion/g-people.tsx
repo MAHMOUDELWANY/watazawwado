@@ -1,4 +1,5 @@
 import React from 'react';
+import { useCue } from '../sfx';
 import { motion, AnimatePresence } from 'motion/react';
 import { ease, CRIMSON, GOLD, TEAL } from '../cinema/Cinema';
 import { useReduce, ink, soft, INK_TEXT, type GraphicProps } from './Stage';
@@ -14,6 +15,10 @@ import { Figure, Svg, Draw, Chip, Big, Ar, Icon, Bubble } from './kit';
 /* ---------- Knees to knees: a student comes close, puts the phone away, rests the hands, gives all attention. ---------- */
 
 export function KneesGraphic({ lines, tone }: GraphicProps) {
+  useCue('pen', lines >= 1, 0.2);
+  useCue('pop', lines >= 2, 0.6);
+  useCue('whoosh', lines >= 3, 0.2);
+  useCue('chime', lines >= 4, 0.4);
   const reduce = useReduce();
   const close = lines >= 2;
   const still = lines >= 3;
@@ -64,6 +69,9 @@ export function KneesGraphic({ lines, tone }: GraphicProps) {
 const NOISE = ['bell', 'mail', 'chat', 'clock', 'phone'];
 
 export function IhsanPeopleGraphic({ lines, tone }: GraphicProps) {
+  useCue('reveal', lines >= 1, 0.3);
+  useCue('chime', lines >= 2, 0.5);
+  useCue('sparkle', lines >= 4, 0.4);
   const reduce = useReduce();
   const high = lines >= 2;
   const floor = lines >= 3;
@@ -137,6 +145,9 @@ export function IhsanPeopleGraphic({ lines, tone }: GraphicProps) {
 const STEPS = ['the Day', 'messengers', 'books', 'angels'];
 
 export function NextPeopleGraphic({ lines, tone }: GraphicProps) {
+  useCue('sparkle', lines >= 1, 0.3);
+  useCue('pen', lines >= 2, 0.3);
+  useCue('reveal', lines >= 3, 0.3);
   const reduce = useReduce();
   const sky = lines >= 3;
   const P = { x: 860, y: 780 };

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useCue } from '../sfx';
 import { motion, AnimatePresence } from 'motion/react';
 import { CountUp, ease, CRIMSON, GOLD, TEAL } from '../cinema/Cinema';
 import { Orb, useReduce, ink, soft, INK_TEXT, type GraphicProps } from './Stage';
@@ -10,6 +11,8 @@ import { Svg, Draw, Chip, Big, Ar, Icon, Badge, Bubble, Person, CLAY, DEEP } fro
 const DAY = 'M 780 300 C 860 300, 900 300, 960 330 S 1100 560, 1200 590 S 1380 610, 1470 600';
 
 export function LaneGraphic({ lines, tone }: GraphicProps) {
+  useCue('whoosh', lines >= 1);
+  useCue('chime', lines >= 3, 0.5);
   const reduce = useReduce();
   return (
     <div className="pointer-events-none absolute inset-0">
@@ -55,6 +58,9 @@ const NOTES = [
 ];
 
 export function MondayGraphic({ lines, interaction, tone }: GraphicProps) {
+  useCue('pen', lines >= 1, 0.3);
+  useCue('poof', lines >= 3, 0.4);
+  useCue('thud', lines >= 4, 0.4);
   const mon = lines >= 2;
   const shown = lines >= 3 ? NOTES.length : mon ? 4 : 0;
   const back = lines >= 4;
@@ -112,6 +118,9 @@ export function MondayGraphic({ lines, interaction, tone }: GraphicProps) {
 const RACE = ['money', 'followers', 'titles', 'a bigger house', 'the car', 'likes', 'salary', 'grades'];
 
 export function GravesGraphic({ lines, tone }: GraphicProps) {
+  useCue('whoosh', lines >= 1);
+  useCue('pen', lines >= 2, 0.3);
+  useCue('chime', lines >= 3, 0.5);
   const reduce = useReduce();
   const [tick, setTick] = React.useState(0);
   React.useEffect(() => {
@@ -173,6 +182,9 @@ const BINS = [
 ];
 
 export function CountGraphic({ lines, interaction, tone }: GraphicProps) {
+  useCue('pen', lines >= 1, 0.2);
+  useCue('pop', lines >= 2, 0.3);
+  useCue('chime', lines >= 3, 0.4);
   const sorted = lines >= 2;
   const ahead = lines >= 3;
   return (
@@ -220,6 +232,9 @@ export function CountGraphic({ lines, interaction, tone }: GraphicProps) {
 /* ---------- Case 1, Omar at lunch: he knows it in his head; the table, every day. ---------- */
 
 export function CaseOmarGraphic({ lines, interaction, tone }: GraphicProps) {
+  useCue('pen', lines >= 1, 0.2);
+  useCue('pop', lines >= 2, 0.3);
+  useCue('chime', lines >= 3, 0.4);
   const reduce = useReduce();
   return (
     <div className="pointer-events-none absolute inset-0">
@@ -276,6 +291,9 @@ export function CaseOmarGraphic({ lines, interaction, tone }: GraphicProps) {
 const FEEL = 'M 800 600 C 860 600, 900 260, 960 250 S 1080 380, 1180 470 S 1380 560, 1480 570';
 
 export function CaseLaylaGraphic({ lines, tone }: GraphicProps) {
+  useCue('pen', lines >= 1, 0.2);
+  useCue('pop', lines >= 2, 0.3);
+  useCue('chime', lines >= 3, 0.4);
   return (
     <div className="pointer-events-none absolute inset-0">
       {lines >= 1 && (
@@ -311,6 +329,9 @@ export function CaseLaylaGraphic({ lines, tone }: GraphicProps) {
 /* ---------- Case 3, the colleague's question: what you do, why you believe, who it is for. ---------- */
 
 export function CaseColleagueGraphic({ lines, interaction, tone }: GraphicProps) {
+  useCue('pen', lines >= 1, 0.2);
+  useCue('pop', lines >= 2, 0.3);
+  useCue('chime', lines >= 3, 0.4);
   const reduce = useReduce();
   return (
     <div className="pointer-events-none absolute inset-0">
@@ -352,6 +373,8 @@ export function CaseColleagueGraphic({ lines, interaction, tone }: GraphicProps)
 /* ---------- Case 4, "past the rituals": a post that sounds deep, and the line of worship that runs to the end. ---------- */
 
 export function CaseOnlineGraphic({ lines, interaction, tone }: GraphicProps) {
+  useCue('pen', lines >= 1, 0.2);
+  useCue('pop', lines >= 2, 0.3);
   return (
     <div className="pointer-events-none absolute inset-0">
       {lines >= 1 && !interaction && (
@@ -395,6 +418,9 @@ export function CaseOnlineGraphic({ lines, interaction, tone }: GraphicProps) {
 const FIRST = 'I am now certain that…';
 
 export function NotebookGraphic({ lines, tone }: GraphicProps) {
+  useCue('page', lines >= 1, 0.2);
+  useCue('pen', lines >= 2, 0.3);
+  useCue('chime', lines >= 3, 0.4);
   const reduce = useReduce();
   const [n, setN] = React.useState(0);
   React.useEffect(() => {

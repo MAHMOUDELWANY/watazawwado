@@ -61,9 +61,9 @@ export function TeensStrangerGraphic({ lines }: GraphicProps) {
   const town = lines >= 4;
   useCue('pen', lines >= 1);
   useCue('sand', lines >= 2, 0.3);
-  useCue('thud', lines >= 3, 0.5);
+  useCue('stamp', lines >= 3, 0.9);
   useCue('whoosh', lines >= 4);
-  useCue('strike', lines >= 4, 1.9);
+  useCue('stamp', lines >= 4, 2.2);
   return (
     <div className="pointer-events-none absolute inset-0">
       <AnimatePresence>

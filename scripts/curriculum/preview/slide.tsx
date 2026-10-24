@@ -1,10 +1,12 @@
 // One slide on the 1600 × 900 canvas, for screenshots and recordings (see scripts/curriculum/README.md).
-// ?subject=zad-adults&lesson=1&p=<page>&s=<step>   &demo steps forward every &gap= ms; &end shows the end screen (&ar).
+// ?subject=zad-adults&lesson=1&p=<page>&s=<step>   &demo steps forward every &gap= ms; &end shows the end screen (&ar);
+// &opening plays the series opening (Kids and Teens lesson 1).
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import '../../../src/index.css';
 import { Slide } from '../../../src/curriculum/slides/Slide';
 import { LessonEnd } from '../../../src/curriculum/slides/motion/LessonEnd';
+import { Opening } from '../../../src/curriculum/slides/Opening';
 import { findLesson } from '../../../src/curriculum/catalog';
 
 const q = new URLSearchParams(location.search);
@@ -22,7 +24,9 @@ function App() {
   }, []);
   return (
     <div style={{ width: 1600, height: 900, position: 'relative', overflow: 'hidden' }}>
-      {q.has('end')
+      {q.has('opening') && lesson.opening
+        ? <Opening lesson={lesson} data={lesson.opening} onDone={() => {}} />
+        : q.has('end')
         ? <LessonEnd lesson={lesson} ar={q.has('ar')} teacher onRestart={() => {}} onClose={() => {}} />
         : <Slide lesson={lesson} pageIndex={p} step={step} onCorrect={() => {}} onGameResult={() => {}} />}
     </div>

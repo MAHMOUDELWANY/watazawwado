@@ -1,4 +1,5 @@
 import React from 'react';
+import { useCue } from '../sfx';
 import { motion, AnimatePresence } from 'motion/react';
 import { CountUp, ease, CRIMSON, GOLD, TEAL } from '../cinema/Cinema';
 import { Orb, FactCard, bezier, useReduce, ink, soft, INK_TEXT, type GraphicProps } from './Stage';
@@ -24,6 +25,11 @@ const TIES = PEOPLE.flatMap((p, i) => PEOPLE.slice(i + 1).map((q, j) => ({ p, q,
 const NEAREST = [...PEOPLE].sort((a, b) => Math.hypot(a.x - TOWN_C.x, a.y - TOWN_C.y) - Math.hypot(b.x - TOWN_C.x, b.y - TOWN_C.y)).slice(0, 5);
 
 export function StrangerGraphic({ lines, interaction, tone }: GraphicProps) {
+  useCue('sand', lines >= 1, 0.6);
+  useCue('whoosh', lines >= 2);
+  useCue('pen', lines >= 3, 0.2);
+  useCue('strike', lines >= 4, 0.4);
+  useCue('thud', lines >= 5, 0.7);
   const reduce = useReduce();
   const map = lines >= 1 && lines < 2;
   const town = lines >= 2;
@@ -163,6 +169,10 @@ export function Block({ x, y, w, h, front, top, side }: { x: number; y: number; 
 }
 
 export function IslamGraphic({ lines, items, interaction, tone }: GraphicProps) {
+  useCue('thud', lines >= 1, 1.0);
+  useCue('brick', items, 0.2);
+  useCue('reveal', items >= 5, 0.9);
+  useCue('chime', interaction, 1.3);
   const reduce = useReduce();
   const roof = items >= 5;
   const cur = Math.min(items, 5) - 1;

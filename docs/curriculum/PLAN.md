@@ -565,3 +565,9 @@ B3–B5 → continue lesson by lesson.
   (`AUDIT-2026-10-24-kids-teens.md`); stage pages put the text first in every version; Kids (brighter, the cast on stage)
   and Teens (bolder) tones; 6 prototype pages live for the owner's review on the site: Kids L1 p5 and p7, L2 p6; Teens
   L1 p5, L2 p6, L3 p4 (lines rewritten, `reviewed` unchanged). Rollout to all pages waits for the owner's yes.
+- 2026-10-25 — Sound and opening (owner's feedback): a new sound bank for every lesson and version (22 effects generated
+  on ElevenLabs: paper, wood, pencil, a small brass bell; levelled; `sources.md`), cues added to every Adults motion stage
+  (they had none), new entrance sounds for the cast (Kids: a springy swoosh; Teens: a whoosh-hit). The opening's first
+  screen redesigned as "the road begins": a road to the horizon, the khatam star rising like a dawn, the brand lattice
+  in the sky, the cast setting off as silhouettes. Kids L1 "Question one: Islam" back to the colouring pillars painting
+  (owner preferred it), with the new lines. Preview tool: `&opening`.

@@ -8,7 +8,7 @@ import { StrangerGraphic, IslamGraphic } from '../motion/graphics';
 import { CoverGraphic, MadinahGraphic, HourGraphic, RevealGraphic } from '../motion/g-story';
 import { KneesGraphic, IhsanPeopleGraphic, NextPeopleGraphic } from '../motion/g-people';
 import { ImanGraphic, LevelsGraphic, GapGraphic, HorizonGraphic, KnowGraphic, SeeGraphic, InsideGraphic } from '../motion/g-levels';
-import { KidsStrangerGraphic, KidsIslamGraphic, KidsCastleGraphic } from '../motion/g-kids';
+import { KidsStrangerGraphic, KidsCastleGraphic } from '../motion/g-kids';
 import { TeensStrangerGraphic, TeensOptionsGraphic, TeensBossesGraphic } from '../motion/g-teens';
 import { LaneGraphic, MondayGraphic, GravesGraphic, CountGraphic, CaseOmarGraphic, CaseLaylaGraphic, CaseColleagueGraphic, CaseOnlineGraphic, NotebookGraphic } from '../motion/g-life';
 
@@ -187,7 +187,6 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
 
   /* Kids and Teens motion stages (2026-10-24; prototype pages for the owner) */
   stranger: onStage({ tone: 'light', Graphic: KidsStrangerGraphic, marks: ['dust from a journey', 'none of us knew him'] }),
-  kIslam: onStage({ tone: 'light', Graphic: KidsIslamGraphic }),
   castleClues: onStage({ tone: 'light', Graphic: KidsCastleGraphic }),
   tStranger: onStage({ tone: 'light', Graphic: TeensStrangerGraphic, marks: ['no sign of travel', 'none of us knew who he was'] }),
   tl2Three: onStage({ tone: 'light', Graphic: TeensOptionsGraphic }),

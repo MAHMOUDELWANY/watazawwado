@@ -1,14 +1,17 @@
 import { useEffect, useRef } from 'react';
 
 /* ---------- Sound effects for the lesson player (docs/curriculum/RULES.md §1.10) ----------
-   Recorded effects from Kenney's CC0 packs (public/curriculum/sfx, listed in docs/curriculum/sources.md), and a few soft
-   synthesised ones (air, sand, water) where no recording fits. Never music. One sound per moment: when two cues land
+   Recorded effects generated for us on ElevenLabs (2026-10-24, public/curriculum/sfx, listed in docs/curriculum/
+   sources.md): warm and organic (paper, wood, pencil, a small brass bell). The synthesised recipes only stand in until a
+   file has loaded. Never music. One sound per moment: when two cues land
    within half a second, only the more important one plays, so a scene never stacks sparkle on chime on click.
    Browsers only allow audio after a user gesture; the teacher's first click on the player unlocks it. */
 
 export type Sound =
   | 'page' | 'pop' | 'whoosh' | 'chime' | 'reveal' | 'brick' | 'thud' | 'lock' | 'sparkle'
-  | 'sand' | 'water' | 'pen' | 'strike' | 'poof' | 'correct' | 'oops' | 'praise';
+  | 'sand' | 'water' | 'pen' | 'strike' | 'poof' | 'correct' | 'oops' | 'praise'
+  // the series opening and stamps
+  | 'riser' | 'impact' | 'stamp' | 'castKids' | 'castTeens';
 
 const MUTE_KEY = 'curriculum-sfx-muted';
 let muted = (() => { try { return localStorage.getItem(MUTE_KEY) === '1'; } catch { return false; } })();
@@ -96,22 +99,38 @@ const RECIPES: Record<Sound, (a: AudioContext, out: AudioNode, t: number) => voi
   correct: (a, o, t) => { voice(a, o, t, { type: 'triangle', f: NOTES.E5, dur: 0.25, vol: 0.12 }); voice(a, o, t + 0.1, { type: 'triangle', f: NOTES.A5, dur: 0.45, vol: 0.12 }); },
   oops: (a, o, t) => voice(a, o, t, { type: 'triangle', f: 330, f2: 260, dur: 0.3, vol: 0.08 }),
   praise: (a, o, t) => [NOTES.C5, NOTES.E5, NOTES.G5, NOTES.C6, NOTES.E6].forEach((f, i) => voice(a, o, t + i * 0.07, { type: 'triangle', f, dur: 0.8, vol: 0.08 })),
+  riser: (a, o, t) => voice(a, o, t, { type: 'noise', f: 0, dur: 1.6, vol: 0.05, attack: 1.2, filter: { type: 'bandpass', f: 400, f2: 4000, q: 1 } }),
+  impact: (a, o, t) => voice(a, o, t, { f: 90, f2: 40, dur: 0.8, vol: 0.35 }),
+  stamp: (a, o, t) => voice(a, o, t, { f: 160, f2: 70, dur: 0.2, vol: 0.3 }),
+  castKids: (a, o, t) => voice(a, o, t, { f: 300, f2: 700, dur: 0.3, vol: 0.12 }),
+  castTeens: (a, o, t) => voice(a, o, t, { type: 'noise', f: 0, dur: 0.5, vol: 0.07, attack: 0.3, filter: { type: 'bandpass', f: 300, f2: 2400, q: 1.2 } }),
 };
 
-/** Recorded effects: file in public/curriculum/sfx, volume, and playback rate (below 1 = lower and warmer). */
+/** Recorded effects: file in public/curriculum/sfx and its volume (files are levelled to about -18 LUFS; decoration sits
+ *  lower than the moments that matter). */
 const SAMPLES: Partial<Record<Sound, { file: string; vol: number; rate?: number }>> = {
-  pop: { file: 'pop', vol: 0.22 },
-  chime: { file: 'chime', vol: 0.3 },
-  reveal: { file: 'chime', vol: 0.32, rate: 0.75 },
-  correct: { file: 'correct', vol: 0.4 },
-  praise: { file: 'praise', vol: 0.45 },
-  oops: { file: 'oops', vol: 0.18 },
-  brick: { file: 'brick', vol: 0.22 },
-  thud: { file: 'thud', vol: 0.3 },
-  lock: { file: 'lock', vol: 0.3 },
-  strike: { file: 'strike', vol: 0.18 },
-  pen: { file: 'pen', vol: 0.12 },
-  sparkle: { file: 'sparkle', vol: 0.16, rate: 1.1 },
+  page: { file: 'page', vol: 0.25 },
+  pop: { file: 'pop', vol: 0.2 },
+  whoosh: { file: 'whoosh', vol: 0.28 },
+  chime: { file: 'chime', vol: 0.32 },
+  reveal: { file: 'reveal', vol: 0.55 },
+  brick: { file: 'brick', vol: 0.4 },
+  thud: { file: 'thud', vol: 0.38 },
+  lock: { file: 'lock', vol: 0.45 },
+  sparkle: { file: 'sparkle', vol: 0.32 },
+  sand: { file: 'sand', vol: 0.32 },
+  water: { file: 'water', vol: 0.4 },
+  pen: { file: 'pen', vol: 0.3 },
+  strike: { file: 'strike', vol: 0.32 },
+  poof: { file: 'poof', vol: 0.35 },
+  correct: { file: 'correct', vol: 0.5 },
+  oops: { file: 'oops', vol: 0.3 },
+  praise: { file: 'praise', vol: 0.5 },
+  riser: { file: 'riser', vol: 0.45 },
+  impact: { file: 'impact', vol: 0.45 },
+  stamp: { file: 'stamp', vol: 0.55 },
+  castKids: { file: 'cast-kids', vol: 0.42 },
+  castTeens: { file: 'cast-teens', vol: 0.4 },
 };
 const buffers = new Map<string, AudioBuffer>();
 let loading = false;
@@ -136,7 +155,7 @@ export function primeSounds() {
 /** Which cue wins when two land together: the moment itself beats its decoration. */
 const PRIORITY: Record<Sound, number> = {
   praise: 4, correct: 4, lock: 3, reveal: 3, oops: 3, thud: 2, brick: 2, strike: 2, chime: 2, poof: 2, water: 2, sand: 2,
-  pop: 1, pen: 1, whoosh: 1, sparkle: 1, page: 0,
+  pop: 1, pen: 1, whoosh: 1, sparkle: 1, page: 0, impact: 3, stamp: 2, riser: 1, castKids: 2, castTeens: 2,
 };
 const WINDOW = 0.5;
 let recent: { at: number; prio: number; gain: GainNode }[] = [];

@@ -150,7 +150,7 @@ export const lesson01: Lesson = {
       title: 'Question one: Islam',
       station: 'zad',
       layout: 'concept',
-      scene: 'kIslam',
+      scene: 'pillars',
       lines: [
         'The visitor\'s first question: "Tell me about Islam."',
         'A house needs strong pillars, or the roof falls in.',

@@ -2,8 +2,8 @@ import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ease, CRIMSON, GOLD, TEAL } from '../cinema/Cinema';
 import { useCue } from '../sfx';
-import { bezier, useReduce, ink, soft, INK_TEXT, type GraphicProps } from './Stage';
-import { Cut, Icon, Ar, CLAY } from './kit';
+import { bezier, useReduce, soft, INK_TEXT, type GraphicProps } from './Stage';
+import { Cut, Icon, CLAY } from './kit';
 import { asset } from '../Art';
 
 /**
@@ -79,7 +79,7 @@ export function KidsStrangerGraphic({ lines }: GraphicProps) {
   useCue('sand', lines >= 1);
   useCue('sparkle', lines >= 2, 0.6);
   useCue('whoosh', lines >= 3);
-  useCue('strike', lines >= 4, 1.2);
+  useCue('thud', lines >= 4, 1.8);
   return (
     <div className="pointer-events-none absolute inset-0">
       <AnimatePresence>
@@ -181,116 +181,6 @@ function Tag({ x, y, text, strong, color }: { x: number; y: number; text: string
       initial={{ opacity: 0, y: 10, scale: 0.85 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: 'spring', bounce: 0.45, duration: 0.7, delay: 0.4 }}>
       {text}
     </motion.span>
-  );
-}
-
-/* ======================================================================================================================
- * Kids L1 · Question one: Islam. "Tell me about Islam" floats in; a roof with nothing under it crashes down (a house
- * needs pillars); five numbered spaces wait; then the Shahadah is laid as the floor and four pillars bounce up, each
- * with its picture; the roof lands on them and says ISLAM. Maryam claps.
- * ==================================================================================================================== */
-
-const SLAB = { x: 820, y: 672, w: 600, h: 58 };
-const PCOLS = [892, 1036, 1180, 1324];
-const PH = 330;
-const PILLARS = [
-  { en: 'Shahadah', ar: 'الشهادتان', color: CRIMSON, icon: 'finger' },
-  { en: 'Salah', ar: 'الصلاة', color: TEAL, icon: 'mat' },
-  { en: 'Zakah', ar: 'الزكاة', color: GOLD, icon: 'coin' },
-  { en: 'Fasting', ar: 'الصوم', color: CLAY, icon: 'moon' },
-  { en: 'Hajj', ar: 'الحج', color: '#2E6F7E', icon: 'kaaba' },
-];
-
-/** Little pictures for the pillars (drawn, 48 × 48, centred on 0,0). */
-function PillarIcon({ kind, color = '#fff' }: { kind: string; color?: string }) {
-  switch (kind) {
-    case 'finger': return <path d="M -4 18 L -4 -14 a 5 5 0 0 1 10 0 L 6 2 L 14 4 a 5 5 0 0 1 4 6 L 16 18 Z" fill={color} />;
-    case 'mat': return <g><rect x={-14} y={-18} width={28} height={38} rx={3} fill={color} /><path d="M -8 -8 Q 0 -18 8 -8 L 8 12 L -8 12 Z" fill="none" stroke="rgba(0,0,0,0.25)" strokeWidth={2.5} /></g>;
-    case 'coin': return <g><circle r={15} fill={color} /><circle r={9} fill="none" stroke="rgba(0,0,0,0.2)" strokeWidth={2.5} /></g>;
-    case 'moon': return <g><circle r={15} fill={color} /><circle cx={7} cy={-5} r={13} fill="#fff" /></g>;
-    default: return <g><rect x={-15} y={-12} width={30} height={28} rx={2} fill="#1F1612" stroke={color} strokeWidth={2} /><rect x={-15} y={-6} width={30} height={5} fill={GOLD} /></g>;
-  }
-}
-
-export function KidsIslamGraphic({ lines, items }: GraphicProps) {
-  const reduce = useReduce();
-  const roofY = SLAB.y - PH;
-  const done = items >= 5;
-  useCue('thud', lines >= 2, 0.9);
-  useCue('brick', items);
-  useCue('sparkle', done, 1);
-  return (
-    <div className="pointer-events-none absolute inset-0">
-      {/* 1. the question */}
-      {lines >= 1 && (
-        <motion.div className="absolute rounded-[26px] font-serif" style={{ left: 840, top: 196, padding: '14px 26px', fontSize: 36, background: '#FFFDF8', color: INK_TEXT, boxShadow: '0 22px 46px -26px rgba(80,30,10,0.55)' }}
-          initial={{ opacity: 0, scale: 0.6, y: 20 }} animate={{ opacity: items >= 1 ? 0 : 1, scale: 1, y: 0 }} transition={{ type: 'spring', bounce: 0.45, duration: 0.8 }}>
-          “Tell me about <span style={{ color: CRIMSON }}>Islam</span>.”
-        </motion.div>
-      )}
-      <svg className="absolute inset-0 h-full w-full overflow-visible" viewBox="0 0 1600 900">
-        {/* the plot */}
-        {lines >= 1 && <motion.line x1={SLAB.x - 30} y1={SLAB.y + SLAB.h} x2={SLAB.x + SLAB.w + 30} y2={SLAB.y + SLAB.h} stroke={soft('light')} strokeWidth={3} strokeDasharray="6 9" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.8 }} />}
-        {/* 3. five spaces waiting */}
-        {lines >= 3 && !done && PCOLS.map((cx, i) => items < i + 2 && (
-          <motion.g key={i} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: reduce ? 0 : 0.2 + i * 0.15 }}>
-            <rect x={cx - 40} y={roofY} width={80} height={PH} rx={14} fill="rgba(229,169,60,0.08)" stroke={GOLD} strokeWidth={3} strokeDasharray="8 8" />
-            <text x={cx} y={roofY + PH / 2 + 14} textAnchor="middle" fill={GOLD} style={{ font: '800 38px var(--font-sans, sans-serif)' }}>{i + 2}</text>
-          </motion.g>
-        ))}
-        {lines >= 3 && items < 1 && (
-          <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: reduce ? 0 : 0.1 }}>
-            <rect x={SLAB.x} y={SLAB.y} width={SLAB.w} height={SLAB.h} rx={12} fill="rgba(197,31,36,0.06)" stroke={CRIMSON} strokeWidth={3} strokeDasharray="8 8" />
-            <text x={SLAB.x + SLAB.w / 2} y={SLAB.y + 38} textAnchor="middle" fill={CRIMSON} style={{ font: '800 30px var(--font-sans, sans-serif)' }}>1</text>
-          </motion.g>
-        )}
-        {/* the floor: the Shahadah */}
-        {items >= 1 && (
-          <motion.g initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ type: 'spring', bounce: 0.3, duration: 0.8 }} style={{ transformBox: 'fill-box', transformOrigin: 'center' }}>
-            <rect x={SLAB.x} y={SLAB.y} width={SLAB.w} height={SLAB.h} rx={12} fill={CRIMSON} />
-            <text x={SLAB.x + SLAB.w / 2} y={SLAB.y + 37} textAnchor="middle" fill="#fff" style={{ font: '800 26px var(--font-sans, sans-serif)' }}>Shahadah · الشهادتان</text>
-          </motion.g>
-        )}
-        {/* four pillars bounce up from it */}
-        {PCOLS.map((cx, i) => items >= i + 2 && (
-          <motion.g key={i} initial={{ scaleY: 0 }} animate={{ scaleY: 1 }} transition={{ type: 'spring', bounce: 0.45, duration: 0.9 }} style={{ transformBox: 'fill-box', transformOrigin: 'bottom' }}>
-            <rect x={cx - 40} y={roofY} width={80} height={PH} rx={14} fill={PILLARS[i + 1].color} />
-            <rect x={cx - 40} y={roofY} width={16} height={PH} rx={8} fill="rgba(255,255,255,0.22)" />
-            <circle cx={cx} cy={roofY + PH / 2} r={34} fill="rgba(255,255,255,0.92)" />
-            <g transform={`translate(${cx} ${roofY + PH / 2}) scale(1.25)`}><PillarIcon kind={PILLARS[i + 1].icon} color={PILLARS[i + 1].color} /></g>
-          </motion.g>
-        ))}
-        {/* 2. a roof with nothing to hold it crashes down; at the end it lands on the five pillars */}
-        {lines >= 2 && items < 1 && (
-          <motion.g initial={{ y: -300, rotate: 0, opacity: 0 }} animate={{ y: [-300, 0, 0, 0], rotate: [0, 0, 12, 12], opacity: [1, 1, 1, 0] }} transition={{ duration: 2.2, delay: 0.3, times: [0, 0.3, 0.7, 1], ease: 'easeIn' }}
-            style={{ transformBox: 'fill-box', transformOrigin: 'right bottom' }}>
-            <polygon points={`${SLAB.x - 10},${SLAB.y} ${SLAB.x + SLAB.w / 2},${SLAB.y - 110} ${SLAB.x + SLAB.w + 10},${SLAB.y}`} fill={CLAY} />
-          </motion.g>
-        )}
-        {done && (
-          <motion.g initial={{ y: -220, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ type: 'spring', bounce: 0.4, duration: 1, delay: 0.8 }}>
-            <polygon points={`${SLAB.x - 10},${roofY} ${SLAB.x + SLAB.w / 2},${roofY - 120} ${SLAB.x + SLAB.w + 10},${roofY}`} fill="url(#kidsRoof)" />
-            <defs><linearGradient id="kidsRoof" x1="0" x2="1"><stop offset="0" stopColor={CRIMSON} /><stop offset="0.5" stopColor={GOLD} /><stop offset="1" stopColor={SKY} /></linearGradient></defs>
-            <text x={SLAB.x + SLAB.w / 2} y={roofY - 30} textAnchor="middle" fill="#fff" style={{ font: '800 40px var(--font-sans, sans-serif)', letterSpacing: '0.18em' }}>ISLAM</text>
-          </motion.g>
-        )}
-      </svg>
-      {lines >= 2 && items < 1 && lines < 3 && <Tag x={SLAB.x + SLAB.w / 2} y={SLAB.y + 76} text="No pillars? Crash!" color={CLAY} strong />}
-      {lines >= 3 && items < 1 && <Tag x={SLAB.x + SLAB.w / 2} y={SLAB.y + 76} text="Five things a Muslim does" strong />}
-      {/* the pillar names, under the floor */}
-      {PCOLS.map((cx, i) => items >= i + 2 && (
-        <motion.div key={i} className="absolute -translate-x-1/2 text-center" style={{ left: cx, top: SLAB.y + SLAB.h + 12 }} initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3, ease }}>
-          <p className="m-0 whitespace-nowrap font-sans font-extrabold" style={{ fontSize: 22, color: ink('light') }}>{PILLARS[i + 1].en}</p>
-          <Ar size={20}>{PILLARS[i + 1].ar}</Ar>
-        </motion.div>
-      ))}
-      {/* confetti stars when the house stands */}
-      {done && !reduce && Array.from({ length: 14 }, (_, i) => (
-        <motion.span key={i} className="absolute" style={{ left: 1120, top: roofY - 60, width: 16, height: 16, background: [CRIMSON, GOLD, TEAL][i % 3], clipPath: 'polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%)' }}
-          initial={{ opacity: 0 }} animate={{ opacity: [0, 1, 0], x: Math.cos(i * 0.45) * 320, y: Math.sin(i * 0.45) * 160 - 60, rotate: 180 }} transition={{ duration: 1.4, delay: 1.3 }} />
-      ))}
-      {lines >= 1 && <Cut src={`${KIDS}/${done ? 'maryam-happy' : 'maryam-think'}`} x={1490} y={822} h={250} delay={0.5} />}
-    </div>
   );
 }
 

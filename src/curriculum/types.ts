@@ -8,8 +8,6 @@ export type SceneId =
   | 'stranger'
   | 'sitting'
   | 'pillars'
-  // Kids motion stages (2026-10-24): pages that need their own stage where a painting was shared
-  | 'kIslam'
   | 'roots'
   | 'drawing'
   | 'reveal'
