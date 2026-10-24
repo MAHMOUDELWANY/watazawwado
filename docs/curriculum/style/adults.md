@@ -45,7 +45,20 @@ like a well-designed long-form article or a film title sequence, not a children'
 - No music; sound effects only, few and fitting the scene (RULES §1.10).
 
 ## The slide around the image (code, not ChatGPT)
-- **Cinema pages (owner, 2026-10-24, current).** "The window is too small for motion graphics." Every Adults page is now
+- **Motion stages (owner, 2026-10-24, current; replaces the cinema pages).** The owner: the camera "moved left, right and
+  zoomed for nothing", some screens were black with no graphics, one or two lines per page, and the Arabic hadith alone.
+  Every Adults page is now a designed stage (bone paper, or a warm night for the unseen and for endings) with one motion
+  graphic that explains the page step by step, after his reference videos: a hero object (the crimson-gold orb) that
+  travels and becomes the diagram, lines that draw, blocks that rise, cards that collide, count-ups, faceless SVG people
+  for modern scenes (Monday, the cases), a camera that moves only to reach something (into Madinah, down under the
+  building of Islam). Rules: the hadith or ayah shows first in **English as the hero with the Arabic beneath it**, then
+  docks under the title; every line stays on screen (the newest strongest); each page carries enough explanation to teach
+  from (3 to 5 lines); the graphic steps back while the text is the hero and while the learner answers; identity as
+  above (Thmanyah, ribbon gradient, khatam, crimson/gold/teal). Prophets, companions and angels are never drawn: they
+  are words, points of light or empty places. Code: `slides/motion/` (`Stage.tsx` layout, `kit.tsx` people, bubbles,
+  icons, meters; `graphics.tsx`, `g-story.tsx`, `g-levels.tsx`, `g-life.tsx` one graphic per page), wired in
+  `slides/cinema/scenes.tsx` (`stage`). The review game keeps the arch layout.
+- **Cinema pages (2026-10-24, replaced the same day by the motion stages).** "The window is too small for motion graphics." Every Adults page is now
   a full-screen scene after the owner's three reference videos (Duolingo motion piece, two motion-design reels): the
   still fills the canvas and moves in depth; one idea per screen; the title rises word by word out of a blur, huge,
   then steps back to the corner; an ayah or hadith arrives as the hero card and docks; commentary plays as one subtitle

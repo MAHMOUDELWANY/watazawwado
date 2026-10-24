@@ -58,6 +58,8 @@ export function Slide({ lesson, pageIndex, step, onCorrect, onGameResult }: Slid
   const adults = lesson.version === 'adults';
   // Adults use the light manuscript look on every page (owner's choice, 2026-10-23): no dark stage compositions.
   const stage = adults ? Boolean(SCENES[page.scene]) && compositionFor(page) !== 'arena' : isStage(compositionFor(page));
+  // A light motion stage keeps the paper chrome; photo and night stages get the light-on-dark chrome.
+  const dark = stage && !(adults && SCENES[page.scene]?.stage?.tone === 'light');
   // Stepping back past the question (or replaying it) clears what the child found or chose, so the art matches the question.
   useEffect(() => {
     if (!v.interaction) { setFound([]); setChosen(null); setAnswered(false); }
@@ -73,7 +75,7 @@ export function Slide({ lesson, pageIndex, step, onCorrect, onGameResult }: Slid
     <div ref={rootRef} className="absolute inset-0 overflow-hidden" style={{ background: P.paper, color: P.ink }} dir="ltr" lang="en">
       {!stage && (adults ? <AdultsPaper /> : <Paper />)}
       <Body page={page} v={v} step={step} lesson={lesson} found={found} chosen={chosen} answered={answered} onAnswer={() => setAnswered(true)} onChoose={setChosen} onCorrect={onCorrect} onGameResult={onGameResult} onClue={(l) => setFound((f) => (f.includes(l) ? f : [...f, l]))} />
-      {stage && (
+      {dark && (
         <>
           <div className="pointer-events-none absolute inset-x-0 top-0 h-[150px]" style={{ background: 'linear-gradient(180deg, rgba(20,12,8,0.55), transparent)' }} />
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[150px]" style={{ background: 'linear-gradient(0deg, rgba(20,12,8,0.6), transparent)' }} />
@@ -81,9 +83,9 @@ export function Slide({ lesson, pageIndex, step, onCorrect, onGameResult }: Slid
       )}
       <header className="absolute left-[120px] right-[260px] top-[46px] flex items-center gap-4">
         <KhatamStar size={30} color={P.crimson} />
-        <span className="font-sans text-[24px] font-bold" style={{ color: stage ? '#FFF8EA' : P.crimson }}>Lesson {lesson.number}</span>
-        <span className="font-sans text-[24px] font-semibold" style={{ color: stage ? '#F3E6CC' : P.inkSoft }}>{chapter?.label}</span>
-        <span lang="ar" dir="rtl" className="font-serif text-[30px] font-bold leading-none" style={{ color: stage ? P.goldSoft : P.copper }}>{lesson.titleAr}</span>
+        <span className="font-sans text-[24px] font-bold" style={{ color: dark ? '#FFF8EA' : P.crimson }}>Lesson {lesson.number}</span>
+        <span className="font-sans text-[24px] font-semibold" style={{ color: dark ? '#F3E6CC' : P.inkSoft }}>{chapter?.label}</span>
+        <span lang="ar" dir="rtl" className="font-serif text-[30px] font-bold leading-none" style={{ color: dark ? P.goldSoft : P.copper }}>{lesson.titleAr}</span>
       </header>
       <div
         className="absolute right-[90px] top-0 w-[136px] pb-4 pt-9 text-center shadow-[0_16px_34px_-16px_rgba(197,31,36,0.7)]"
@@ -95,7 +97,7 @@ export function Slide({ lesson, pageIndex, step, onCorrect, onGameResult }: Slid
       </div>
 
 
-      <ChapterTracker lesson={lesson} pageIndex={pageIndex} light={stage} />
+      <ChapterTracker lesson={lesson} pageIndex={pageIndex} light={dark} />
     </div>
   );
 }

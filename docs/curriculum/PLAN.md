@@ -546,3 +546,8 @@ B3–B5 → continue lesson by lesson.
   that docks when the comment arrives, one subtitle at a time, gold light paths and nodes for steps and pillars, count
   ups, huge Arabic on the wow page, the khatam star as the recurring hero object. The review game keeps the arch layout.
   Not yet checked on a real phone or for real-time frame rate.
+- **2026-10-24** — Owner: the cinema camera moved for nothing, some screens were black, too little text, and the Arabic
+  hadith alone. Three-page prototype approved ("continue, and better"). All Adults L1 pages (except the review game) are
+  now motion stages (`slides/motion/`): English-first text, 3 to 5 explanation lines per page (new lines on pages 2, 3,
+  4, 5, 7, 8, 9, 14, 15, 16, 17, 20, 21, 22; Islam page got a "why ask what he knows" question), and one explaining
+  graphic per page. Still `reviewed: false`; the new lines wait for the owner's review.

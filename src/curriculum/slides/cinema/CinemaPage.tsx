@@ -5,6 +5,7 @@ import { DepthStill } from '../DepthStill';
 import { asset } from '../Art';
 import { KineticTitle, Khatam, TextCard, Subtitle, Grade, ease, BONE, GOLD } from './Cinema';
 import type { Scene } from './scenes';
+import { StagePage } from '../motion/Stage';
 
 type Seen = { lines: number; items: number; evidence: boolean; interaction: boolean };
 
@@ -18,6 +19,7 @@ export function CinemaPage({ page, v, lesson, scene, interaction, cover = false,
   page: LessonPage; v: Seen; lesson: Lesson; scene: Scene; interaction: React.ReactNode; cover?: boolean; next?: boolean;
 }) {
   const reduce = Boolean(useReducedMotion());
+  if (scene.stage) return <StagePage page={page} v={v} lesson={lesson} stage={scene.stage} interaction={interaction} cover={cover} next={next} />;
   const k = (v.evidence ? 1 : 0) + v.lines + v.items + (v.interaction ? 1 : 0);
   const shot = scene.shots[Math.max(0, Math.min(k, scene.shots.length - 1))];
   const started = k > 0;

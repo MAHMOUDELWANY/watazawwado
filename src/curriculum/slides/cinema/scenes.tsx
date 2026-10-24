@@ -3,6 +3,11 @@ import { motion } from 'motion/react';
 import type { SceneId } from '../../types';
 import type { Shot, Light } from '../DepthStill';
 import { GlowPath, Node, CountUp, KineticTitle, ease, GOLD, BONE, CRIMSON, TEAL } from './Cinema';
+import type { StageDef } from '../motion/Stage';
+import { StrangerGraphic, IslamGraphic, IhsanGraphic } from '../motion/graphics';
+import { CoverGraphic, MadinahGraphic, CushionsGraphic, HourGraphic, RevealGraphic } from '../motion/g-story';
+import { ImanGraphic, LevelsGraphic, GapGraphic, HorizonGraphic, KnowGraphic, SeeGraphic, InsideGraphic } from '../motion/g-levels';
+import { LaneGraphic, MondayGraphic, GravesGraphic, CountGraphic, CaseOmarGraphic, CaseLaylaGraphic, CaseColleagueGraphic, CaseOnlineGraphic, NotebookGraphic, NextGraphic } from '../motion/g-life';
 
 /**
  * Per-page direction for the Adults cinema pages: which still fills the screen, where the light comes from, the
@@ -18,6 +23,8 @@ export type Scene = {
   overlay?: (s: { k: number; items: number; labels: string[] }) => React.ReactNode;
   /** Where the photo's subject sits, so the text keeps to the other side. */
   textSide?: 'left' | 'right';
+  /** A designed motion stage instead of the photo (owner, 2026-10-24): the graphic explains the page step by step. */
+  stage?: StageDef;
 };
 
 /* ---------- motion-graphic overlays ---------- */
@@ -121,29 +128,54 @@ function NextOverlay({ k }: { k: number }) {
 /* ---------- the direction for every Adults Lesson 1 page ---------- */
 
 export const SCENES: Partial<Record<SceneId, Scene>> = {
-  a1Cover: { still: 'cover', light: { x: 82, y: 5, strength: 0.8 }, shots: [{ x: 58, y: 50, z: 1.12, focus: 0.5, pan: -0.5 }] },
-  a1Madinah: { still: 'madinah', light: { x: 80, y: 8, strength: 0.6 }, shots: [{ x: 50, y: 55, z: 1.1, focus: 0.5, pan: -0.4 }, { x: 55, y: 50, z: 1.02, focus: 0.35, pan: 0 }, { x: 62, y: 56, z: 1.15, focus: 0.6, pan: 0.3 }, { x: 60, y: 52, z: 1.2, focus: 0.5, pan: 0.2 }] },
-  a1Stranger: { still: 'stranger', textSide: 'left', shots: [{ x: 50, y: 55, z: 1.05, focus: 0.3, pan: -0.3 }, { x: 54, y: 52, z: 1.35, focus: 0.2, pan: 0 }, { x: 54, y: 50, z: 1.6, focus: 0.2, pan: 0.2 }] },
-  a1Cushions: { still: 'cushions', light: { x: 50, y: 4, strength: 0.8 }, shots: [{ x: 50, y: 60, z: 1.05, focus: 0.7, pan: -0.3 }, { x: 50, y: 66, z: 1.3, focus: 0.85, pan: 0 }, { x: 52, y: 64, z: 1.45, focus: 0.85, pan: 0.2 }, { x: 55, y: 55, z: 1.2, focus: 0.7, pan: 0.1 }] },
-  a1Pillars: { still: 'pillars', light: { x: 62, y: -8, strength: 0.75 }, shots: [{ x: 50, y: 50, z: 1.12, focus: 0.5, pan: -0.6 }, { x: 50, y: 50, z: 1, focus: 0.3 }], overlay: ({ items }) => <PillarsOverlay items={items} /> },
-  a1Six: { still: 'window', grade: 'now', light: { x: 91, y: 57, strength: 0.45 }, shots: [{ x: 50, y: 55, z: 1.05, focus: 0.6, pan: -0.4 }, { x: 40, y: 72, z: 1.25, focus: 0.88, pan: -0.3 }, { x: 60, y: 45, z: 1.1, focus: 0.3, pan: 0.1 }, { x: 62, y: 40, z: 1.15, focus: 0.1, pan: 0.2 }], overlay: ({ items, labels }) => <ConstellationOverlay items={items} labels={labels} /> },
-  a1Ihsan: { still: 'prayer', grade: 'now', light: { x: 87, y: 12, strength: 0.9 }, shots: [{ x: 50, y: 50, z: 1.05, focus: 0.3, pan: -0.5 }, { x: 52, y: 46, z: 1.25, focus: 0.58, pan: 0 }, { x: 56, y: 62, z: 1.4, focus: 0.62, pan: 0.3 }, { x: 54, y: 44, z: 1.15, focus: 0.45, pan: 0.1 }] },
-  a1Hour: { still: 'hourglass', light: { x: 81, y: 27, strength: 1 }, shots: [{ x: 55, y: 50, z: 1.05, focus: 0.4, pan: 0.5 }, { x: 34, y: 46, z: 1.35, focus: 0.92, pan: -0.3 }, { x: 34, y: 58, z: 1.6, focus: 0.92, pan: -0.2 }, { x: 74, y: 40, z: 1.25, focus: 0.1, pan: 0.4 }] },
-  a1Reveal: { still: 'doorway', light: { x: 55, y: 42, strength: 1 }, shots: [{ x: 50, y: 50, z: 1.05, focus: 0.55, pan: -0.4 }, { x: 56, y: 55, z: 1.3, focus: 0.2, pan: 0 }, { x: 60, y: 80, z: 1.55, focus: 0.45, pan: 0.2 }, { x: 56, y: 48, z: 1.15, focus: 0.15, pan: 0.1 }] },
-  a1Levels: { still: 'above', light: { x: 18, y: 8, strength: 0.3 }, shots: [{ x: 50, y: 50, z: 1.05, focus: 0.75 }, { x: 46, y: 50, z: 1.15, focus: 0.8, pan: -0.3 }, { x: 46, y: 46, z: 1.3, focus: 0.85 }, { x: 46, y: 42, z: 1.55, focus: 0.92, pan: 0.3 }], overlay: ({ items, labels }) => <StepsOverlay items={items} labels={labels} total={3} origin={{ x: 1000, y: 540 }} step={{ x: 120, y: -140 }} /> },
-  a1Gap: { still: 'shelf', grade: 'now', light: { x: 84, y: 24, strength: 0.6 }, shots: [{ x: 50, y: 50, z: 1.05, focus: 0.5, pan: -0.3 }, { x: 68, y: 38, z: 1.3, focus: 0.55, pan: 0.2 }, { x: 64, y: 62, z: 1.35, focus: 0.76, pan: 0.3 }, { x: 44, y: 56, z: 1.15, focus: 0.84, pan: -0.4 }], overlay: ({ items, labels }) => <StepsOverlay items={items} labels={labels} total={3} origin={{ x: 1000, y: 470 }} step={{ x: 150, y: -115 }} /> },
-  a1Horizon: { still: 'horizon', light: { x: 50, y: 55, strength: 1 }, shots: [{ x: 50, y: 55, z: 1.05, focus: 0.5 }, { x: 50, y: 55, z: 1.2, focus: 0.3 }, { x: 50, y: 55, z: 1.6, focus: 0.15 }], overlay: ({ items, k }) => <WowOverlay items={items} k={k} /> },
-  a1Lane: { still: 'lane', light: { x: 50, y: 60, strength: 0.7 }, shots: [{ x: 50, y: 55, z: 1.05, focus: 0.5, pan: -0.3 }, { x: 50, y: 55, z: 1.15, focus: 0.4 }, { x: 52, y: 58, z: 1.25, focus: 0.3, pan: 0.2 }, { x: 50, y: 60, z: 1.4, focus: 0.2, pan: 0.2 }, { x: 50, y: 55, z: 1.15, focus: 0.4 }] },
-  a1Monday: { still: 'monday', grade: 'now', shots: [{ x: 50, y: 55, z: 1.05, focus: 0.6, pan: -0.3 }, { x: 60, y: 50, z: 1.25, focus: 0.7, pan: 0.1 }, { x: 64, y: 48, z: 1.35, focus: 0.75, pan: 0.2 }, { x: 40, y: 75, z: 1.3, focus: 0.9, pan: -0.2 }] },
-  a1Graves: { still: 'graves', light: { x: 85, y: 30, strength: 0.6 }, shots: [{ x: 50, y: 45, z: 1.05, focus: 0.5, pan: -0.3 }, { x: 60, y: 58, z: 1.3, focus: 0.6, pan: 0.2 }, { x: 45, y: 68, z: 1.45, focus: 0.8, pan: -0.1 }, { x: 50, y: 50, z: 1.1, focus: 0.4 }] },
-  a1Count: { still: 'purse', light: { x: 20, y: 10, strength: 0.4 }, shots: [{ x: 60, y: 60, z: 1.05, focus: 0.7, pan: -0.3 }, { x: 68, y: 62, z: 1.35, focus: 0.86, pan: -0.1 }, { x: 80, y: 45, z: 1.3, focus: 0.8, pan: 0.2 }, { x: 74, y: 74, z: 1.45, focus: 0.95, pan: 0.3 }] },
-  a1Know: { still: 'listening', grade: 'now', light: { x: 63, y: 24, strength: 0.6 }, shots: [{ x: 50, y: 50, z: 1.05, focus: 0.9, pan: -0.3 }, { x: 44, y: 60, z: 1.25, focus: 0.95, pan: -0.2 }, { x: 62, y: 36, z: 1.4, focus: 0.15, pan: 0.3 }] },
-  a1See: { still: 'train', grade: 'now', light: { x: 93, y: 37, strength: 1 }, shots: [{ x: 40, y: 50, z: 1.05, focus: 0.9, pan: -0.5 }, { x: 62, y: 52, z: 1.25, focus: 0.15, pan: 0.2 }, { x: 78, y: 46, z: 1.45, focus: 0.08, pan: 0.4 }, { x: 66, y: 50, z: 1.2, focus: 0.1, pan: 0.1 }] },
-  a1Inside: { still: 'road', light: { x: 31, y: 31, strength: 0.9 }, shots: [{ x: 50, y: 60, z: 1.05, focus: 0.85, pan: -0.3 }, { x: 50, y: 62, z: 1.12, focus: 0.75 }, { x: 52, y: 55, z: 1.25, focus: 0.5 }, { x: 56, y: 50, z: 1.45, focus: 0.3, pan: 0.2 }, { x: 58, y: 46, z: 1.65, focus: 0.15, pan: 0.3 }], overlay: ({ items, labels }) => <StepsOverlay items={items} labels={labels} total={4} origin={{ x: 900, y: 720 }} step={{ x: 150, y: -120 }} /> },
-  a1Case: { still: 'canteen', grade: 'now', shots: [{ x: 60, y: 60, z: 1.05, focus: 0.9, pan: 0.3 }, { x: 80, y: 64, z: 1.25, focus: 0.92, pan: 0.3 }, { x: 50, y: 42, z: 1.3, focus: 0.35, pan: -0.3 }] },
-  a1Case2: { still: 'suitcase', grade: 'now', light: { x: 78, y: 22, strength: 0.4 }, shots: [{ x: 50, y: 55, z: 1.05, focus: 0.8, pan: -0.3 }, { x: 34, y: 72, z: 1.3, focus: 0.9, pan: -0.3 }, { x: 74, y: 28, z: 1.35, focus: 0.1, pan: 0.3 }] },
-  a1Case3: { still: 'corridor', grade: 'now', light: { x: 92, y: 20, strength: 0.5 }, shots: [{ x: 50, y: 50, z: 1.05, focus: 0.4, pan: 0.3 }, { x: 72, y: 40, z: 1.3, focus: 0.15, pan: 0.3 }, { x: 30, y: 74, z: 1.35, focus: 0.75, pan: -0.2 }] },
-  a1Case4: { still: 'phone', grade: 'now', light: { x: 63, y: 30, strength: 0.6 }, shots: [{ x: 50, y: 55, z: 1.05, focus: 0.8, pan: -0.3 }, { x: 58, y: 66, z: 1.4, focus: 0.95, pan: 0.2 }, { x: 60, y: 42, z: 1.25, focus: 0.4, pan: 0.3 }, { x: 56, y: 60, z: 1.2, focus: 0.9 }] },
-  a1Notebook: { still: 'notebook', light: { x: 85, y: 12, strength: 0.7 }, shots: [{ x: 70, y: 35, z: 1.05, focus: 0.15, pan: 0.3 }, { x: 62, y: 62, z: 1.2, focus: 0.7 }, { x: 58, y: 70, z: 1.35, focus: 0.9, pan: -0.2 }] },
-  a1Next: { still: 'night', shots: [{ x: 50, y: 50, z: 1.05, focus: 0.2, pan: -0.3 }, { x: 45, y: 45, z: 1.2, focus: 0.1, pan: 0 }, { x: 40, y: 40, z: 1.35, focus: 0.05, pan: 0.2 }], overlay: ({ k }) => <NextOverlay k={k} /> },
+  a1Cover: {
+    stage: { tone: 'dark', Graphic: CoverGraphic }, still: 'cover', light: { x: 82, y: 5, strength: 0.8 }, shots: [{ x: 58, y: 50, z: 1.12, focus: 0.5, pan: -0.5 }] },
+  a1Madinah: {
+    stage: { tone: 'light', Graphic: MadinahGraphic, marks: ['very white clothes', 'very black hair'] }, still: 'madinah', light: { x: 80, y: 8, strength: 0.6 }, shots: [{ x: 50, y: 55, z: 1.1, focus: 0.5, pan: -0.4 }, { x: 55, y: 50, z: 1.02, focus: 0.35, pan: 0 }, { x: 62, y: 56, z: 1.15, focus: 0.6, pan: 0.3 }, { x: 60, y: 52, z: 1.2, focus: 0.5, pan: 0.2 }] },
+  a1Stranger: {
+    stage: { tone: 'light', Graphic: StrangerGraphic, marks: ['No sign of travel', 'none of us knew him'], keepOnAsk: true }, still: 'stranger', textSide: 'left', shots: [{ x: 50, y: 55, z: 1.05, focus: 0.3, pan: -0.3 }, { x: 54, y: 52, z: 1.35, focus: 0.2, pan: 0 }, { x: 54, y: 50, z: 1.6, focus: 0.2, pan: 0.2 }] },
+  a1Cushions: {
+    stage: { tone: 'light', Graphic: CushionsGraphic, marks: ['rested his knees against his knees', 'placed his palms on his thighs'] }, still: 'cushions', light: { x: 50, y: 4, strength: 0.8 }, shots: [{ x: 50, y: 60, z: 1.05, focus: 0.7, pan: -0.3 }, { x: 50, y: 66, z: 1.3, focus: 0.85, pan: 0 }, { x: 52, y: 64, z: 1.45, focus: 0.85, pan: 0.2 }, { x: 55, y: 55, z: 1.2, focus: 0.7, pan: 0.1 }] },
+  a1Pillars: {
+    stage: { tone: 'light', Graphic: IslamGraphic, keepOnAsk: true }, still: 'pillars', light: { x: 62, y: -8, strength: 0.75 }, shots: [{ x: 50, y: 50, z: 1.12, focus: 0.5, pan: -0.6 }, { x: 50, y: 50, z: 1, focus: 0.3 }], overlay: ({ items }) => <PillarsOverlay items={items} /> },
+  a1Six: {
+    stage: { tone: 'light', Graphic: ImanGraphic }, still: 'window', grade: 'now', light: { x: 91, y: 57, strength: 0.45 }, shots: [{ x: 50, y: 55, z: 1.05, focus: 0.6, pan: -0.4 }, { x: 40, y: 72, z: 1.25, focus: 0.88, pan: -0.3 }, { x: 60, y: 45, z: 1.1, focus: 0.3, pan: 0.1 }, { x: 62, y: 40, z: 1.15, focus: 0.1, pan: 0.2 }], overlay: ({ items, labels }) => <ConstellationOverlay items={items} labels={labels} /> },
+  a1Ihsan: {
+    stage: { tone: 'dark', Graphic: IhsanGraphic, marks: ['see'] }, still: 'prayer', grade: 'now', light: { x: 87, y: 12, strength: 0.9 }, shots: [{ x: 50, y: 50, z: 1.05, focus: 0.3, pan: -0.5 }, { x: 52, y: 46, z: 1.25, focus: 0.58, pan: 0 }, { x: 56, y: 62, z: 1.4, focus: 0.62, pan: 0.3 }, { x: 54, y: 44, z: 1.15, focus: 0.45, pan: 0.1 }] },
+  a1Hour: {
+    stage: { tone: 'dark', Graphic: HourGraphic, keepOnAsk: true }, still: 'hourglass', light: { x: 81, y: 27, strength: 1 }, shots: [{ x: 55, y: 50, z: 1.05, focus: 0.4, pan: 0.5 }, { x: 34, y: 46, z: 1.35, focus: 0.92, pan: -0.3 }, { x: 34, y: 58, z: 1.6, focus: 0.92, pan: -0.2 }, { x: 74, y: 40, z: 1.25, focus: 0.1, pan: 0.4 }] },
+  a1Reveal: {
+    stage: { tone: 'light', Graphic: RevealGraphic, marks: ['Jibril'] }, still: 'doorway', light: { x: 55, y: 42, strength: 1 }, shots: [{ x: 50, y: 50, z: 1.05, focus: 0.55, pan: -0.4 }, { x: 56, y: 55, z: 1.3, focus: 0.2, pan: 0 }, { x: 60, y: 80, z: 1.55, focus: 0.45, pan: 0.2 }, { x: 56, y: 48, z: 1.15, focus: 0.15, pan: 0.1 }] },
+  a1Levels: {
+    stage: { tone: 'light', Graphic: LevelsGraphic, keepOnAsk: true }, still: 'above', light: { x: 18, y: 8, strength: 0.3 }, shots: [{ x: 50, y: 50, z: 1.05, focus: 0.75 }, { x: 46, y: 50, z: 1.15, focus: 0.8, pan: -0.3 }, { x: 46, y: 46, z: 1.3, focus: 0.85 }, { x: 46, y: 42, z: 1.55, focus: 0.92, pan: 0.3 }], overlay: ({ items, labels }) => <StepsOverlay items={items} labels={labels} total={3} origin={{ x: 1000, y: 540 }} step={{ x: 120, y: -140 }} /> },
+  a1Gap: {
+    stage: { tone: 'light', Graphic: GapGraphic }, still: 'shelf', grade: 'now', light: { x: 84, y: 24, strength: 0.6 }, shots: [{ x: 50, y: 50, z: 1.05, focus: 0.5, pan: -0.3 }, { x: 68, y: 38, z: 1.3, focus: 0.55, pan: 0.2 }, { x: 64, y: 62, z: 1.35, focus: 0.76, pan: 0.3 }, { x: 44, y: 56, z: 1.15, focus: 0.84, pan: -0.4 }], overlay: ({ items, labels }) => <StepsOverlay items={items} labels={labels} total={3} origin={{ x: 1000, y: 470 }} step={{ x: 150, y: -115 }} /> },
+  a1Horizon: {
+    stage: { tone: 'dark', Graphic: HorizonGraphic }, still: 'horizon', light: { x: 50, y: 55, strength: 1 }, shots: [{ x: 50, y: 55, z: 1.05, focus: 0.5 }, { x: 50, y: 55, z: 1.2, focus: 0.3 }, { x: 50, y: 55, z: 1.6, focus: 0.15 }], overlay: ({ items, k }) => <WowOverlay items={items} k={k} /> },
+  a1Lane: {
+    stage: { tone: 'dark', Graphic: LaneGraphic, marks: ['an hour and an hour'] }, still: 'lane', light: { x: 50, y: 60, strength: 0.7 }, shots: [{ x: 50, y: 55, z: 1.05, focus: 0.5, pan: -0.3 }, { x: 50, y: 55, z: 1.15, focus: 0.4 }, { x: 52, y: 58, z: 1.25, focus: 0.3, pan: 0.2 }, { x: 50, y: 60, z: 1.4, focus: 0.2, pan: 0.2 }, { x: 50, y: 55, z: 1.15, focus: 0.4 }] },
+  a1Monday: {
+    stage: { tone: 'light', Graphic: MondayGraphic }, still: 'monday', grade: 'now', shots: [{ x: 50, y: 55, z: 1.05, focus: 0.6, pan: -0.3 }, { x: 60, y: 50, z: 1.25, focus: 0.7, pan: 0.1 }, { x: 64, y: 48, z: 1.35, focus: 0.75, pan: 0.2 }, { x: 40, y: 75, z: 1.3, focus: 0.9, pan: -0.2 }] },
+  a1Graves: {
+    stage: { tone: 'light', Graphic: GravesGraphic, marks: ['Competing for more', 'visit the graves'] }, still: 'graves', light: { x: 85, y: 30, strength: 0.6 }, shots: [{ x: 50, y: 45, z: 1.05, focus: 0.5, pan: -0.3 }, { x: 60, y: 58, z: 1.3, focus: 0.6, pan: 0.2 }, { x: 45, y: 68, z: 1.45, focus: 0.8, pan: -0.1 }, { x: 50, y: 50, z: 1.1, focus: 0.4 }] },
+  a1Count: {
+    stage: { tone: 'light', Graphic: CountGraphic, marks: ['what you ate and used up', 'what you wore and wore out', 'what you gave in charity and sent ahead'] }, still: 'purse', light: { x: 20, y: 10, strength: 0.4 }, shots: [{ x: 60, y: 60, z: 1.05, focus: 0.7, pan: -0.3 }, { x: 68, y: 62, z: 1.35, focus: 0.86, pan: -0.1 }, { x: 80, y: 45, z: 1.3, focus: 0.8, pan: 0.2 }, { x: 74, y: 74, z: 1.45, focus: 0.95, pan: 0.3 }] },
+  a1Know: {
+    stage: { tone: 'light', Graphic: KnowGraphic, marks: ['the knowledge of certainty'] }, still: 'listening', grade: 'now', light: { x: 63, y: 24, strength: 0.6 }, shots: [{ x: 50, y: 50, z: 1.05, focus: 0.9, pan: -0.3 }, { x: 44, y: 60, z: 1.25, focus: 0.95, pan: -0.2 }, { x: 62, y: 36, z: 1.4, focus: 0.15, pan: 0.3 }] },
+  a1See: {
+    stage: { tone: 'dark', Graphic: SeeGraphic, marks: ['the eye of certainty'] }, still: 'train', grade: 'now', light: { x: 93, y: 37, strength: 1 }, shots: [{ x: 40, y: 50, z: 1.05, focus: 0.9, pan: -0.5 }, { x: 62, y: 52, z: 1.25, focus: 0.15, pan: 0.2 }, { x: 78, y: 46, z: 1.45, focus: 0.08, pan: 0.4 }, { x: 66, y: 50, z: 1.2, focus: 0.1, pan: 0.1 }] },
+  a1Inside: {
+    stage: { tone: 'light', Graphic: InsideGraphic }, still: 'road', light: { x: 31, y: 31, strength: 0.9 }, shots: [{ x: 50, y: 60, z: 1.05, focus: 0.85, pan: -0.3 }, { x: 50, y: 62, z: 1.12, focus: 0.75 }, { x: 52, y: 55, z: 1.25, focus: 0.5 }, { x: 56, y: 50, z: 1.45, focus: 0.3, pan: 0.2 }, { x: 58, y: 46, z: 1.65, focus: 0.15, pan: 0.3 }], overlay: ({ items, labels }) => <StepsOverlay items={items} labels={labels} total={4} origin={{ x: 900, y: 720 }} step={{ x: 150, y: -120 }} /> },
+  a1Case: {
+    stage: { tone: 'light', Graphic: CaseOmarGraphic, keepOnAsk: true }, still: 'canteen', grade: 'now', shots: [{ x: 60, y: 60, z: 1.05, focus: 0.9, pan: 0.3 }, { x: 80, y: 64, z: 1.25, focus: 0.92, pan: 0.3 }, { x: 50, y: 42, z: 1.3, focus: 0.35, pan: -0.3 }] },
+  a1Case2: {
+    stage: { tone: 'light', Graphic: CaseLaylaGraphic }, still: 'suitcase', grade: 'now', light: { x: 78, y: 22, strength: 0.4 }, shots: [{ x: 50, y: 55, z: 1.05, focus: 0.8, pan: -0.3 }, { x: 34, y: 72, z: 1.3, focus: 0.9, pan: -0.3 }, { x: 74, y: 28, z: 1.35, focus: 0.1, pan: 0.3 }] },
+  a1Case3: {
+    stage: { tone: 'light', Graphic: CaseColleagueGraphic, keepOnAsk: true }, still: 'corridor', grade: 'now', light: { x: 92, y: 20, strength: 0.5 }, shots: [{ x: 50, y: 50, z: 1.05, focus: 0.4, pan: 0.3 }, { x: 72, y: 40, z: 1.3, focus: 0.15, pan: 0.3 }, { x: 30, y: 74, z: 1.35, focus: 0.75, pan: -0.2 }] },
+  a1Case4: {
+    stage: { tone: 'light', Graphic: CaseOnlineGraphic, keepOnAsk: true }, still: 'phone', grade: 'now', light: { x: 63, y: 30, strength: 0.6 }, shots: [{ x: 50, y: 55, z: 1.05, focus: 0.8, pan: -0.3 }, { x: 58, y: 66, z: 1.4, focus: 0.95, pan: 0.2 }, { x: 60, y: 42, z: 1.25, focus: 0.4, pan: 0.3 }, { x: 56, y: 60, z: 1.2, focus: 0.9 }] },
+  a1Notebook: {
+    stage: { tone: 'light', Graphic: NotebookGraphic }, still: 'notebook', light: { x: 85, y: 12, strength: 0.7 }, shots: [{ x: 70, y: 35, z: 1.05, focus: 0.15, pan: 0.3 }, { x: 62, y: 62, z: 1.2, focus: 0.7 }, { x: 58, y: 70, z: 1.35, focus: 0.9, pan: -0.2 }] },
+  a1Next: {
+    stage: { tone: 'dark', Graphic: NextGraphic }, still: 'night', shots: [{ x: 50, y: 50, z: 1.05, focus: 0.2, pan: -0.3 }, { x: 45, y: 45, z: 1.2, focus: 0.1, pan: 0 }, { x: 40, y: 40, z: 1.35, focus: 0.05, pan: 0.2 }], overlay: ({ k }) => <NextOverlay k={k} /> },
 };

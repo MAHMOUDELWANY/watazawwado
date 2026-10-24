@@ -56,6 +56,7 @@ export const lesson01Adults: Lesson = {
       scene: 'a1Madinah',
       lines: [
         'Umar still remembers the colours years later.',
+        'On a desert road, white cloth is the first thing the dust ruins.',
         'Something about this man did not fit.',
       ],
       evidence: {
@@ -76,7 +77,11 @@ export const lesson01Adults: Lesson = {
       layout: 'evidence',
       scene: 'a1Stranger',
       lines: [
-        'Two facts that cannot both be true of an ordinary man.',
+        'In the desert, a traveller arrives with the road still on him: dust, tired eyes, worn sandals.',
+        'This man had none of it. So he must live close by.',
+        'But Madinah was small. Everyone there knew everyone.',
+        'And still, not one of them knew his face.',
+        'Each fact alone is ordinary. Together they make no sense for an ordinary man.',
       ],
       evidence: {
         arabic: 'لا يُرى عليه أثَرُ السَّفَرِ، ولا يَعرِفُه مِنَّا أحَدٌ',
@@ -105,6 +110,8 @@ export const lesson01Adults: Lesson = {
       scene: 'a1Cushions',
       lines: [
         'A student\'s posture: close, still, all attention.',
+        'Knees to knees: nothing left between him and the lesson.',
+        'Hands resting, nothing in them, nothing else on his mind.',
         'And in a moment he will test the teacher.',
       ],
       evidence: {
@@ -123,10 +130,14 @@ export const lesson01Adults: Lesson = {
       layout: 'evidence',
       scene: 'a1Pillars',
       lines: [
-        'Islam is the outward building: what a Muslim does.',
-        'Then the odd part. You only confirm an answer you already know.',
+        'Islam is the outward building: what a Muslim does, where everyone can see it. Five pillars hold it up.',
       ],
       items: ['The two testimonies', 'Salah', 'Zakah', 'Fasting Ramadan', 'Hajj, for whoever is able'],
+      interaction: {
+        kind: 'ask',
+        prompt: 'He asked, heard the answer, then said "you are right". Why would anyone ask what he already knows?',
+        reveal: 'You only confirm an answer you already know. Hold on to that; the end of the story explains it.',
+      },
       evidence: {
         arabic: 'الإسلامُ أن تَشهَدَ أن لا إلَهَ إلَّا اللهُ وأنَّ مُحَمَّدًا رَسولُ اللهِ صلَّى اللهُ عليه وسلَّم، وتُقيمَ الصَّلاةَ، وتُؤتيَ الزَّكاةَ، وتَصومَ رَمَضانَ، وتَحُجَّ البَيتَ إنِ استَطَعتَ إليه سَبيلًا، قال: صَدَقتَ، قال: فعَجِبنا له يَسألُه، ويُصَدِّقُه',
         meaning: 'Islam is that you testify that there is no god but Allah and that Muhammad is the Messenger of Allah ﷺ, establish the prayer, give zakah, fast Ramadan, and make Hajj to the House if you are able. He said: "You are right." Umar said: we were amazed that he asked him and then confirmed him.',
@@ -168,8 +179,10 @@ export const lesson01Adults: Lesson = {
       layout: 'evidence',
       scene: 'a1Ihsan',
       lines: [
-        'Two steps: the higher one, and the floor beneath it.',
-        'Keep the word "see". The lesson comes back to it.',
+        'This one sentence holds two steps.',
+        'The higher step: your heart is so present that the prayer feels like standing in front of Him.',
+        'The floor beneath it: on the days you cannot reach that, you still know you are being watched, and you never fall lower.',
+        'Keep the word "see". The rest of this lesson is about seeing.',
       ],
       evidence: {
         arabic: 'أن تَعبُدَ اللهَ كَأنَّك تَراه، فإن لَم تَكُنْ تَراه فإنَّه يَراك',
@@ -190,6 +203,9 @@ export const lesson01Adults: Lesson = {
       scene: 'a1Hour',
       lines: [
         'Its time is known to Allah alone.',
+        'The best-informed man on earth answers: I know no more than you.',
+        'Once a man asked him when the Hour would come. He answered with a question: "What have you prepared for it?" (Al-Bukhari 6171)',
+        'So the real question is not when. It is how ready.',
       ],
       evidence: {
         arabic: 'قال: فأخبِرْني عَنِ السَّاعةِ، قال: ما المَسؤولُ عَنها بأعلَمَ مِنَ السَّائِلِ',
@@ -215,6 +231,7 @@ export const lesson01Adults: Lesson = {
       lines: [
         'Every clue fits now: no dust, no one knew him, every answer confirmed.',
         'He asked so that we would hear.',
+        'The companions heard the answers that day. Fourteen centuries later, so do you.',
       ],
       evidence: {
         arabic: 'يا عُمَرُ أتَدري مَنِ السَّائِلُ؟ قُلتُ: اللهُ ورَسولُه أعلَمُ، قال: فإنَّه جِبريلُ أتاكُم يُعَلِّمُكُم دينَكُم',
@@ -319,6 +336,7 @@ export const lesson01Adults: Lesson = {
       lines: [
         'Friday: a khutbah that moved you. You promised yourself something.',
         'Monday, ten o\'clock: the inbox has taken it.',
+        'Nothing dramatic happened. Small things, one after another.',
         'Hanzalah felt the same, and went back to the source.',
       ],
       interaction: {
@@ -339,6 +357,7 @@ export const lesson01Adults: Lesson = {
       scene: 'a1Graves',
       lines: [
         'Allah does not say what they compete in, so it covers everything (Ibn al-Qayyim).',
+        'Money, followers, titles, a bigger house: the list never closes.',
         'And they only "visit" the graves. Even the grave is a stop on the way.',
       ],
       evidence: {
@@ -366,6 +385,8 @@ export const lesson01Adults: Lesson = {
       scene: 'a1Count',
       lines: [
         'He said it while reciting At-Takathur: the Sunnah\'s own comment on "more".',
+        'Everything you own ends up in one of three places.',
+        'Two of them are used up. Only one travels with you.',
       ],
       evidence: {
         arabic: 'يقولُ ابنُ آدَمَ: مالي، مالي، قال: وهل لَكَ -يا ابنَ آدَمَ- مِن مالِكَ إلَّا ما أكَلتَ فأفنَيتَ، أو لَبِستَ فأبلَيتَ، أو تَصَدَّقتَ فأمضَيتَ؟!',
@@ -388,7 +409,9 @@ export const lesson01Adults: Lesson = {
       layout: 'evidence',
       scene: 'a1Know',
       lines: [
+        'The warning comes twice, so that it lands.',
         'They did know. What was missing was knowledge that reaches the heart (al-Sa\'di).',
+        'Knowledge of certainty: the kind that changes what you do next.',
       ],
       evidence: {
         arabic: 'كَلَّا سَوْفَ تَعْلَمُونَ ۝ ثُمَّ كَلَّا سَوْفَ تَعْلَمُونَ ۝ كَلَّا لَوْ تَعْلَمُونَ عِلْمَ ٱلْيَقِينِ',
@@ -466,6 +489,7 @@ export const lesson01Adults: Lesson = {
       lines: [
         'Omar knows backbiting is haram. He could quote you the ayah.',
         'Every lunch break at work, he joins in anyway.',
+        'Afterwards he feels bad. The next day: the same table, the same talk.',
       ],
       interaction: {
         kind: 'ask',
@@ -485,6 +509,7 @@ export const lesson01Adults: Lesson = {
       lines: [
         'Layla came back from Umrah feeling closer to Allah than ever.',
         'Three weeks later she feels nothing, and wonders if she was faking it.',
+        'She still prays. The sweetness has just gone quiet.',
       ],
       interaction: {
         kind: 'ask',
@@ -504,6 +529,7 @@ export const lesson01Adults: Lesson = {
       lines: [
         'A colleague watches you go to pray, again.',
         '"Honest question: do you actually believe it, or is it just habit?"',
+        'He is not mocking. He really wants to know.',
       ],
       interaction: {
         kind: 'ask',
