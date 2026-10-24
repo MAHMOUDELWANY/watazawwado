@@ -8,6 +8,7 @@ import type { Lesson } from './types';
 import { Slide, stepsFor, CANVAS_W, CANVAS_H, scoreSort, SCENE_IMAGES, type GameResult } from './slides/Slide';
 import { InkLayer, type InkTool } from './slides/Ink';
 import { Opening } from './slides/Opening';
+import { LessonEnd } from './slides/motion/LessonEnd';
 import { P, asset } from './slides/Art';
 import { useAppLanguage } from '../lib/language';
 import { play, isMuted, setMuted, primeSounds } from './slides/sfx';
@@ -476,22 +477,7 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
                   </motion.div>
                 )}
                 {finished && !sample && (
-                  <motion.div dir={ar ? 'rtl' : 'ltr'} className="band-deep absolute inset-0 z-40 flex flex-col items-center justify-center gap-8 text-center"
-                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.4 }}>
-                    <motion.svg width="120" height="120" viewBox="0 0 100 100" aria-hidden="true" initial={reduce ? false : { rotate: -45, scale: 0.6 }} animate={{ rotate: 0, scale: 1 }} transition={{ type: 'spring', stiffness: 140, damping: 16 }}>
-                      <path d="M50 10 L61.7 21.7 L78.3 21.7 L78.3 38.3 L90 50 L78.3 61.7 L78.3 78.3 L61.7 78.3 L50 90 L38.3 78.3 L21.7 78.3 L21.7 61.7 L10 50 L21.7 38.3 L21.7 21.7 L38.3 21.7 Z" fill={P.gold} />
-                    </motion.svg>
-                    <div className="space-y-3">
-                      <p className="font-serif text-[40px] font-bold text-[#F6D58E]" lang="ar" dir="rtl">زادك الله</p>
-                      <p className="font-serif text-[84px] font-bold leading-none text-white">{L('Lesson complete', 'خلصنا الدرس')}</p>
-                      <p dir="ltr" className="font-sans text-[30px] text-white/80">{lesson.title}</p>
-                    </div>
-                    {teacher && <p className="font-sans text-[26px] font-semibold text-white/75">{L('Write the lesson report under the slide.', 'اكتب تقرير الحصة تحت الشريحة.')}</p>}
-                    <div className="flex gap-4">
-                      <button type="button" onClick={() => { setFinished(false); goPage(0); }} className="rounded-full bg-white/10 px-8 py-4 font-sans text-[26px] font-bold text-white ring-1 ring-white/30 hover:bg-white/20">{L('Start again', 'من الأول')}</button>
-                      <button type="button" onClick={() => setFinished(false)} className="rounded-full bg-[#E5A93C] px-8 py-4 font-sans text-[26px] font-bold text-[#1E1410] hover:bg-[#F6D58E]">{L('Close', 'اقفل')}</button>
-                    </div>
-                  </motion.div>
+                  <LessonEnd lesson={lesson} ar={ar} teacher={Boolean(teacher)} onRestart={() => { setFinished(false); goPage(0); }} onClose={() => setFinished(false)} />
                 )}
               </AnimatePresence>
               <AnimatePresence>

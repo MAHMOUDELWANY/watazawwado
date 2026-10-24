@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'motion/react';
+import { motion, useSpring, useTransform } from 'motion/react';
 import { ease, CRIMSON, GOLD, TEAL } from '../cinema/Cinema';
 import { INK_TEXT, type Tone, ink, soft } from './Stage';
 
@@ -35,7 +35,8 @@ export function Person({ x, y, scale = 1, color = CRIMSON, hijab = false, sittin
         {hijab ? (
           <path d={`M60 ${sitting ? 20 : 38} C 84 ${sitting ? 20 : 38}, 90 ${sitting ? 54 : 72}, 88 ${sitting ? 84 : 102} C 76 ${sitting ? 92 : 110}, 44 ${sitting ? 92 : 110}, 32 ${sitting ? 84 : 102} C 30 ${sitting ? 54 : 72}, 36 ${sitting ? 20 : 38}, 60 ${sitting ? 20 : 38} Z`} fill={color} style={{ filter: 'brightness(0.82)' }} />
         ) : null}
-        <circle cx="60" cy={sitting ? 46 : 64} r="24" fill="#E8C9A6" />
+        <rect x="52" y={sitting ? 58 : 76} width="16" height="22" rx="4" fill="#E8C9A6" />
+        <circle cx="60" cy={sitting ? 50 : 68} r="24" fill="#E8C9A6" />
         {hijab && <path d={`M36 ${sitting ? 42 : 60} C 38 ${sitting ? 18 : 36}, 82 ${sitting ? 18 : 36}, 84 ${sitting ? 42 : 60} C 80 ${sitting ? 30 : 48}, 40 ${sitting ? 30 : 48}, 36 ${sitting ? 42 : 60} Z`} fill={color} style={{ filter: 'brightness(0.82)' }} />}
         {!hijab && <path d={`M37 ${sitting ? 40 : 58} C 40 ${sitting ? 20 : 38}, 80 ${sitting ? 20 : 38}, 83 ${sitting ? 40 : 58} C 74 ${sitting ? 32 : 50}, 46 ${sitting ? 32 : 50}, 37 ${sitting ? 40 : 58} Z`} fill="#2B1C14" />}
       </svg>
@@ -205,15 +206,23 @@ export function Figure({ x, y, scale = 1, pose = 'stand', arms = 'side', look = 
           initial={false} animate={{ d: `M ${shoulder.x} ${shoulder.y} L ${elbow.x} ${elbow.y} L ${hand.x} ${hand.y}` }} transition={ease2} />
         <motion.circle r={8} fill="#E8C9A6" initial={false} animate={{ cx: hand.x, cy: hand.y }} transition={ease2} />
         {arms === 'phone' && <motion.rect width={14} height={24} rx={3} fill="#2A2A2A" initial={{ opacity: 0 }} animate={{ opacity: 1, x: hand.x - 2, y: hand.y - 20 }} transition={ease2} />}
-        {/* head: turns from the neck */}
-        <motion.g initial={false} animate={{ rotate: look }} style={{ transformOrigin: `${neck.x}px ${neck.y}px`, transformBox: 'view-box' }} transition={ease2}>
-          <rect x={neck.x - 7} y={neck.y - 14} width={14} height={18} fill="#E8C9A6" />
+        {/* neck, fixed into the shoulders, then the head turning about the top of it */}
+        <rect x={neck.x - 8} y={neck.y - 16} width={16} height={30} rx={5} fill="#E8C9A6" />
+        <Head look={look} nx={neck.x} ny={neck.y - 10}>
           <circle cx={neck.x + 4} cy={neck.y - 34} r={24} fill="#E8C9A6" />
           <path d={`M ${neck.x - 20} ${neck.y - 26} C ${neck.x - 22} ${neck.y - 62}, ${neck.x + 20} ${neck.y - 66}, ${neck.x + 26} ${neck.y - 42} C ${neck.x + 12} ${neck.y - 50}, ${neck.x - 6} ${neck.y - 44}, ${neck.x - 8} ${neck.y - 22} Z`} fill="#2B1C14" />
           <path d={`M ${neck.x + 27} ${neck.y - 34} l 6 6 l -6 2`} fill="#D9B48F" />
-        </motion.g>
+        </Head>
       </svg>
       {label && <span className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap font-sans font-bold" style={{ top: '100%', marginTop: 8, fontSize: 16, color: 'rgba(31,22,18,0.6)' }}>{label}</span>}
     </motion.div>
   );
+}
+
+/** The head group, turned with a real SVG transform about the neck so it can never drift away from the body. */
+function Head({ look, nx, ny, children }: { look: number; nx: number; ny: number; children: React.ReactNode }) {
+  const angle = useSpring(look, { stiffness: 90, damping: 18 });
+  React.useEffect(() => { angle.set(look); }, [look, angle]);
+  const transform = useTransform(angle, (a) => `rotate(${a} ${nx} ${ny})`);
+  return <motion.g transform={transform}>{children}</motion.g>;
 }

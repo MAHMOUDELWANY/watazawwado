@@ -34,7 +34,7 @@ export function KneesGraphic({ lines, tone }: GraphicProps) {
       </motion.div>
       {/* 1. attention: a line of sight from the student to the teacher */}
       {lines >= 1 && (
-        <Svg><motion.line x1={studentX - 30} y1={FLOOR - 250} x2={1060} y2={FLOOR - 250} stroke={GOLD} strokeWidth={2.5} strokeDasharray="4 8" initial={{ pathLength: 0 }} animate={{ pathLength: 1, x1: studentX - 40 }} transition={{ duration: 1, ease }} /></Svg>
+        <Svg><motion.line key={studentX} x1={studentX - 40} y1={FLOOR - 250} x2={1060} y2={FLOOR - 250} stroke={GOLD} strokeWidth={2.5} strokeDasharray="4 8" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1, ease }} /></Svg>
       )}
       {lines === 1 && <Label x={1240} y={FLOOR - 300} text="all attention" tone={tone} strong color={GOLD} />}
       {/* 2. the distance closes until the knees touch */}
