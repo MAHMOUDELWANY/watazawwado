@@ -561,3 +561,7 @@ B3–B5 → continue lesson by lesson.
   `slides/motion/kit.tsx`, `g-people.tsx`): a student today comes close and rests the hands (the Prophet ﷺ and Jibril
   are never drawn); a person looks up into the light while the day's noise falls away, and a person head-down at a desk
   is still in the light; a person at the foot of the stairs to certainty looks up at a sky that fills with stars.
+- 2026-10-24 — Kids/Teens motion stage, prototype: audit of Kids and Teens L1–3 against the approved Adults standard
+  (`AUDIT-2026-10-24-kids-teens.md`); stage pages put the text first in every version; Kids (brighter, the cast on stage)
+  and Teens (bolder) tones; 6 prototype pages live for the owner's review on the site: Kids L1 p5 and p7, L2 p6; Teens
+  L1 p5, L2 p6, L3 p4 (lines rewritten, `reviewed` unchanged). Rollout to all pages waits for the owner's yes.
