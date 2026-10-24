@@ -38,12 +38,16 @@ export function StagePage({ page, v, lesson, stage, interaction, cover = false, 
   const showLines = v.lines > 0 && !(ctx && hero);
   const keep = docked && evidence ? 2 : 4;
   const first = Math.max(0, v.lines - 1 - keep);
+  const big = page.interaction?.kind === 'clues' || page.interaction?.kind === 'choose';
   return (
-    <div className="absolute inset-0 overflow-hidden" style={{ background: tone === 'light' ? PAPER : NIGHT }}>
+    <div className="absolute inset-0 overflow-hidden" style={{ background: tone === 'light' ? PAPER : '#2A0E10' }}>
       <Backdrop tone={tone} />
 
       {/* The graphic steps back while the text is the hero, and while the learner answers. */}
-      <motion.div className="absolute inset-0" initial={false} animate={{ opacity: hero ? 0.1 : v.interaction && !stage.keepOnAsk ? 0.3 : 1 }} transition={{ duration: 0.7 }}>
+      {/* When a question arrives the graphic steps up and back (from the top right) so the question strip sits under it,
+          never on top of it; the bigger answer cards (clues, choices) also dim it. */}
+      <motion.div className="absolute inset-0" style={{ transformOrigin: '1500px 130px' }} initial={false}
+        animate={{ opacity: hero ? 0.1 : v.interaction && big ? 0.3 : 1, scale: v.interaction ? (big ? 0.62 : 0.8) : 1 }} transition={{ duration: 0.8, ease }}>
         <Graphic lines={v.lines} items={v.items} interaction={v.interaction} labels={page.items ?? []} tone={tone} />
       </motion.div>
 
@@ -89,7 +93,7 @@ export function StagePage({ page, v, lesson, stage, interaction, cover = false, 
       </AnimatePresence>
       <AnimatePresence>
         {interaction && (
-          <motion.div className="absolute" style={{ right: 110, bottom: 110, width: 600 }} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.6, ease }}>
+          <motion.div className="absolute" style={{ right: 110, bottom: 104, width: big ? 760 : 820 }} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.6, ease }}>
             {interaction}
           </motion.div>
         )}
@@ -98,17 +102,23 @@ export function StagePage({ page, v, lesson, stage, interaction, cover = false, 
   );
 }
 
-/** The stage itself: paper with a warm glow rising from the floor, or a warm night with the ribbon's colours far off. */
-function Backdrop({ tone }: { tone: Tone }) {
+/** The khatam star tiled as a lattice (the site's geometric motif): two squares at 45° per tile, in outline. */
+const KHATAM_TILE = (stroke: string) =>
+  `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'><g fill='none' stroke='${stroke}' stroke-width='1.2'><rect x='35' y='35' width='50' height='50'/><rect x='35' y='35' width='50' height='50' transform='rotate(45 60 60)'/><circle cx='60' cy='60' r='9'/><path d='M0 0 L25 25 M120 0 L95 25 M0 120 L25 95 M120 120 L95 95'/></g></svg>`)}")`;
+
+/** The stage itself: paper with a warm glow rising from the floor; or, for the unseen and the endings, a deep night in
+ *  the brand's own colours (crimson to teal, never flat black) with the khatam lattice and two brand lights. */
+export function Backdrop({ tone }: { tone: Tone }) {
   return tone === 'light' ? (
     <>
       <div className="pointer-events-none absolute inset-0" style={{ background: `radial-gradient(70% 55% at 70% 108%, rgba(229,169,60,0.38), transparent 70%), radial-gradient(40% 40% at 96% 0%, rgba(197,31,36,0.10), transparent 70%)` }} />
-      <div className="pointer-events-none absolute inset-0 opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(#1F1612 1px, transparent 1px)', backgroundSize: '22px 22px' }} />
+      <div className="pointer-events-none absolute inset-0" style={{ backgroundImage: KHATAM_TILE('rgba(139,73,53,0.07)'), backgroundSize: '120px 120px' }} />
     </>
   ) : (
     <>
-      <div className="pointer-events-none absolute inset-0" style={{ background: `radial-gradient(60% 60% at 75% 110%, rgba(197,31,36,0.45), transparent 70%), radial-gradient(45% 45% at 100% 0%, rgba(8,125,145,0.25), transparent 70%), linear-gradient(180deg, #1A120E, #120C09)` }} />
-      <div className="pointer-events-none absolute inset-0 opacity-[0.06]" style={{ backgroundImage: 'radial-gradient(#F6F1E8 1px, transparent 1px)', backgroundSize: '22px 22px' }} />
+      <div className="pointer-events-none absolute inset-0" style={{ background: 'linear-gradient(155deg, #4A1216 0%, #2A0E10 38%, #12232A 78%, #0B3A42 100%)' }} />
+      <div className="pointer-events-none absolute inset-0" style={{ backgroundImage: KHATAM_TILE('rgba(229,169,60,0.13)'), backgroundSize: '120px 120px', maskImage: 'radial-gradient(120% 100% at 70% 40%, #000 30%, rgba(0,0,0,0.35) 100%)' }} />
+      <div className="pointer-events-none absolute inset-0" style={{ background: 'radial-gradient(55% 55% at 78% 105%, rgba(229,169,60,0.30), transparent 70%), radial-gradient(40% 45% at 100% 0%, rgba(15,163,184,0.28), transparent 70%), radial-gradient(45% 50% at 0% 100%, rgba(197,31,36,0.35), transparent 70%)' }} />
     </>
   );
 }

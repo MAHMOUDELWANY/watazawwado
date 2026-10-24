@@ -5,6 +5,7 @@ import { SceneArt, P, asset } from './Art';
 import { play } from './sfx';
 import { Arch, RIBBON } from './Arch';
 import { CinemaPage } from './cinema/CinemaPage';
+import { AdultAsk, LevelsReview, ReviewIntro } from './motion/Questions';
 import { SCENES } from './cinema/scenes';
 import { ClueLens, Unveil, DoorsLight, PackZad, Callback, type Lens } from './Scenes';
 import { BUILDS, STUDIES, MOMENTS, PACKED } from './lessons';
@@ -77,8 +78,8 @@ export function Slide({ lesson, pageIndex, step, onCorrect, onGameResult }: Slid
       <Body page={page} v={v} step={step} lesson={lesson} found={found} chosen={chosen} answered={answered} onAnswer={() => setAnswered(true)} onChoose={setChosen} onCorrect={onCorrect} onGameResult={onGameResult} onClue={(l) => setFound((f) => (f.includes(l) ? f : [...f, l]))} />
       {dark && (
         <>
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-[150px]" style={{ background: 'linear-gradient(180deg, rgba(20,12,8,0.55), transparent)' }} />
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[150px]" style={{ background: 'linear-gradient(0deg, rgba(20,12,8,0.6), transparent)' }} />
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[150px]" style={{ background: 'linear-gradient(180deg, rgba(20,12,8,0.3), transparent)' }} />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[150px]" style={{ background: 'linear-gradient(0deg, rgba(20,12,8,0.35), transparent)' }} />
         </>
       )}
       <header className="absolute left-[120px] right-[260px] top-[46px] flex items-center gap-4">
@@ -466,7 +467,7 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
   const c = compositionFor(page);
   const Moment = MOMENTS[page.scene];
   const Packed = PACKED[lesson.number];
-  const interaction = page.interaction && v.interaction ? <InteractionView interaction={page.interaction} onCorrect={onCorrect} onGameResult={onGameResult} onClue={onClue} onChoose={onChoose} onAnswer={onAnswer} /> : null;
+  const interaction = page.interaction && v.interaction ? <InteractionView interaction={page.interaction} onCorrect={onCorrect} onGameResult={onGameResult} onClue={onClue} onChoose={onChoose} onAnswer={onAnswer} adult={lesson.version === 'adults'} title={page.title} /> : null;
 
   if (lesson.version === 'adults') return <AdultsLayout page={page} v={v} lesson={lesson} interaction={interaction} />;
 
@@ -738,6 +739,8 @@ function AdultsLayout({ page, v, lesson, interaction }: { page: LessonPage; v: R
   const Study = STUDIES[page.scene];
   const Build = BUILDS[page.scene];
   const built = (page.items || []).map((it, i) => (i < v.items ? it : null));
+  // Adults review: a case file on the rings of the three levels (owner, 2026-10-24), drawn full-screen.
+  if (c === 'arena' && page.interaction?.kind === 'sort') return <>{interaction ?? <ReviewIntro title={page.title} prompt={page.interaction.prompt} />}</>;
   if (c === 'arena') {
     return (
       <div className="absolute left-[120px] right-[110px] top-[140px] bottom-[120px] slide-scroll space-y-4 overflow-y-auto pr-4">
@@ -788,7 +791,9 @@ function AdultsLayout({ page, v, lesson, interaction }: { page: LessonPage; v: R
 
 /* ---------- interactions (sized for the canvas) ---------- */
 
-function InteractionView({ interaction, onCorrect, onGameResult, onClue, onChoose, onAnswer }: { interaction: Interaction; onCorrect: () => void; onGameResult: (r: GameResult) => void; onClue?: (label: string) => void; onChoose?: (option: string) => void; onAnswer?: () => void }) {
+function InteractionView({ interaction, onCorrect, onGameResult, onClue, onChoose, onAnswer, adult = false, title = '' }: { interaction: Interaction; onCorrect: () => void; onGameResult: (r: GameResult) => void; onClue?: (label: string) => void; onChoose?: (option: string) => void; onAnswer?: () => void; adult?: boolean; title?: string }) {
+  if (adult && interaction.kind === 'ask') return <AdultAsk prompt={interaction.prompt} reveal={interaction.reveal} tone="light" onAnswer={onAnswer} />;
+  if (adult && interaction.kind === 'sort') return <LevelsReview title={title} interaction={interaction} onCorrect={onCorrect} onResult={onGameResult} />;
   switch (interaction.kind) {
     case 'ask':
       return <Ask prompt={interaction.prompt} reveal={interaction.reveal} onAnswer={onAnswer} />;

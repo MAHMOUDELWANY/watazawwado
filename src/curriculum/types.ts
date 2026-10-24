@@ -173,7 +173,7 @@ export type Interaction =
   /** The learner picks one option (no right answer). */
   | { kind: 'choose'; prompt: string; options: string[] }
   /** Game checkpoint: put each card in the right bin. Results feed the teacher report (PLAN §3a.3b). */
-  | { kind: 'sort'; prompt: string; bins: { id: string; label: string; hint: string }[]; cards: { label: string; bin: string }[] };
+  | { kind: 'sort'; prompt: string; bins: { id: string; label: string; hint: string }[]; cards: { label: string; bin: string; why?: string }[] };
 
 export interface LessonPage {
   title: string;

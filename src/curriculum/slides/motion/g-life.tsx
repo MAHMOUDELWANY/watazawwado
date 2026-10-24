@@ -148,9 +148,9 @@ export function GravesGraphic({ lines, tone }: GraphicProps) {
             <Draw d="M 790 700 L 1260 700" color={ink(tone)} width={4} dur={1} />
             <Draw d="M 1300 700 L 1490 700" color={GOLD} width={4} dash="3 12" delay={1.4} dur={1} />
           </Svg>
-          <motion.div className="absolute flex flex-col items-center" style={{ left: 1250, top: 610 }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9 }}>
-            <div className="h-[70px] w-[56px] rounded-t-[28px]" style={{ background: '#8E8070' }} />
-            <span className="mt-2 whitespace-nowrap font-sans font-bold" style={{ fontSize: 17, color: ink(tone) }}>the grave: a visit</span>
+          <motion.div className="absolute flex flex-col items-center" style={{ left: 1250, top: 596 }} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9 }}>
+            <span className="mb-1 whitespace-nowrap font-sans font-bold" style={{ fontSize: 17, color: ink(tone) }}>the grave: a visit</span>
+            <div className="h-[78px] w-[56px] rounded-t-[28px]" style={{ background: '#8E8070' }} />
           </motion.div>
           <motion.div className="absolute" style={{ left: 0, top: 0 }} initial={{ x: 790, y: 700 }} animate={{ x: reduce ? 1490 : [790, 1250, 1250, 1490], y: 700 }} transition={{ duration: 4, times: [0, 0.4, 0.6, 1], ease: 'easeInOut' }}>
             <Orb size={26} />

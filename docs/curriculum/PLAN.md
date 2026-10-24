@@ -551,3 +551,7 @@ B3–B5 → continue lesson by lesson.
   now motion stages (`slides/motion/`): English-first text, 3 to 5 explanation lines per page (new lines on pages 2, 3,
   4, 5, 7, 8, 9, 14, 15, 16, 17, 20, 21, 22; Islam page got a "why ask what he knows" question), and one explaining
   graphic per page. Still `reviewed: false`; the new lines wait for the owner's review.
+- **2026-10-24** — Owner: adult-style review, questions that do not cover the graphics, no flat black pages. The review
+  is now a case file on the rings of the three levels (eight new moments with a reason each; content waits for review);
+  "think first" questions are a strip under the graphic; dark stages use the khatam lattice in brand colours; a bug pass
+  fixed overlaps on the cover, the grave page and the review dots.

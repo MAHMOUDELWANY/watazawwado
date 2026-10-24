@@ -36,7 +36,7 @@ export function CoverGraphic({ tone }: GraphicProps) {
           {q.t}
         </motion.span>
       ))}
-      <motion.p className="absolute m-0 text-center font-serif italic" style={{ left: 900, width: 600, top: 800, fontSize: 28, color: GOLD }} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 5.2, duration: 0.8 }}>
+      <motion.p className="absolute m-0 font-serif italic" style={{ left: 110, width: 640, top: 712, fontSize: 30, color: GOLD }} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 5.2, duration: 0.8 }}>
         He knew every answer. So why did he ask?
       </motion.p>
     </div>

@@ -57,7 +57,13 @@ like a well-designed long-form article or a film title sequence, not a children'
   above (Thmanyah, ribbon gradient, khatam, crimson/gold/teal). Prophets, companions and angels are never drawn: they
   are words, points of light or empty places. Code: `slides/motion/` (`Stage.tsx` layout, `kit.tsx` people, bubbles,
   icons, meters; `graphics.tsx`, `g-story.tsx`, `g-levels.tsx`, `g-life.tsx` one graphic per page), wired in
-  `slides/cinema/scenes.tsx` (`stage`). The review game keeps the arch layout.
+  `slides/cinema/scenes.tsx` (`stage`).
+- **Questions and the review (owner, 2026-10-24).** A question to think about is a slim strip under the graphic
+  (`slides/motion/Questions.tsx`, `AdultAsk`); when it arrives the graphic steps up and back so nothing covers it. The
+  review is a case file, not a card-sorting game: one moment from an ordinary week at a time, answered by tapping the
+  rings of the three levels (or 1/2/3), the reason shown after every answer (`why` on each card), and a result per level
+  at the end, which still feeds the teacher's report. Dark stages are never flat black: a deep crimson-to-teal night with
+  the khatam lattice and brand lights.
 - **Cinema pages (2026-10-24, replaced the same day by the motion stages).** "The window is too small for motion graphics." Every Adults page is now
   a full-screen scene after the owner's three reference videos (Duolingo motion piece, two motion-design reels): the
   still fills the canvas and moves in depth; one idea per screen; the title rises word by word out of a blur, huge,
