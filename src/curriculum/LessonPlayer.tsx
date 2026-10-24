@@ -208,6 +208,23 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
     return () => window.removeEventListener('keydown', onKey);
   }, [forward, backward, cheer, teacher, toggleFullscreen, replayStep, restartPage, fillWindow, toggleMute]);
 
+  // Replay the current slide's motion whenever it is really seen (owner, 2026-10-24: the first page looked still on
+  // opening): when the player first comes into view, when the tab comes back, and on entering or leaving full screen.
+  // An animation that ran while hidden has already finished by the time anyone looks.
+  useEffect(() => {
+    const el = rootRef.current;
+    let seen = false;
+    const io = el && 'IntersectionObserver' in window ? new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !seen) { seen = true; setReplay((r) => r + 1); }
+      if (!e.isIntersecting) seen = false;
+    }, { threshold: 0.5 }) : null;
+    if (el && io) io.observe(el);
+    const onVisible = () => { if (document.visibilityState === 'visible') setReplay((r) => r + 1); };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => { io?.disconnect(); document.removeEventListener('visibilitychange', onVisible); };
+  }, []);
+  useEffect(() => { setReplay((r) => r + 1); }, [fullscreen]);
+
   useEffect(() => {
     const sync = () => {
       const on = Boolean(document.fullscreenElement);
