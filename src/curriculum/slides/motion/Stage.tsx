@@ -47,7 +47,7 @@ export function StagePage({ page, v, lesson, stage, interaction, cover = false, 
       {/* When a question arrives the graphic steps up and back (from the top right) so the question strip sits under it,
           never on top of it; the bigger answer cards (clues, choices) also dim it. */}
       <motion.div className="absolute inset-0" style={{ transformOrigin: '1500px 130px' }} initial={false}
-        animate={{ opacity: hero ? 0.1 : v.interaction && big ? 0.3 : 1, scale: v.interaction ? (big ? 0.62 : 0.8) : 1 }} transition={{ duration: 0.8, ease }}>
+        animate={{ opacity: hero ? 0.1 : v.interaction && big ? 0.3 : 1, scale: v.interaction && big ? 0.62 : 1 }} transition={{ duration: 0.8, ease }}>
         <Graphic lines={v.lines} items={v.items} interaction={v.interaction} labels={page.items ?? []} tone={tone} />
       </motion.div>
 
@@ -73,27 +73,27 @@ export function StagePage({ page, v, lesson, stage, interaction, cover = false, 
 
       {evidence && v.evidence && <Quote arabic={evidence.arabic} meaning={evidence.meaning} reference={evidence.reference} docked={docked} tone={tone} marks={stage.marks} />}
 
-      {/* The explanation: the lines stay, the newest is the strongest; when the question comes they all settle back. */}
+      {/* The left column carries the words: the lines (newest strongest), and under them the question when it comes, so
+          the question fills the empty column instead of covering the graphic. Bigger answer cards sit on the right. */}
+      <div className="absolute flex flex-col gap-4" style={{ left: 110, bottom: 120, width: 560 }}>
+        <AnimatePresence>
+          {showLines && page.lines.slice(v.interaction && !big ? Math.max(0, v.lines - 2) : first, v.lines).map((l, j, arr) => {
+            const i = v.lines - arr.length + j;
+            const now = i === v.lines - 1 && !v.interaction;
+            return (
+              <motion.p key={i} layout="position" className="m-0 font-sans"
+                initial={{ opacity: 0, y: 24, filter: 'blur(8px)' }} animate={{ opacity: now ? 1 : 0.55, y: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, transition: { duration: 0.25 } }} transition={{ duration: 0.6, ease }}
+                style={{ fontSize: now ? 30 : v.interaction ? 18 : 20, lineHeight: 1.3, fontWeight: now ? 650 : 500, color: ink(tone), transition: 'font-size 0.5s cubic-bezier(0.22,1,0.36,1)' }}>
+                {l}
+              </motion.p>
+            );
+          })}
+        </AnimatePresence>
+        {interaction && !big && <motion.div layout="position">{interaction}</motion.div>}
+      </div>
       <AnimatePresence>
-        {showLines && (
-          <motion.div key="beats" className="absolute flex flex-col gap-4" style={{ left: 110, bottom: 120, width: 540 }} exit={{ opacity: 0, transition: { duration: 0.3 } }}>
-            {page.lines.slice(first, v.lines).map((l, j) => {
-              const i = first + j;
-              const now = i === v.lines - 1 && !v.interaction;
-              return (
-                <motion.p key={i} layout="position" className="m-0 font-sans"
-                  initial={{ opacity: 0, y: 24, filter: 'blur(8px)' }} animate={{ opacity: now ? 1 : 0.55, y: 0, filter: 'blur(0px)' }} transition={{ duration: 0.6, ease }}
-                  style={{ fontSize: now ? 30 : 20, lineHeight: 1.3, fontWeight: now ? 650 : 500, color: ink(tone), transition: 'font-size 0.5s cubic-bezier(0.22,1,0.36,1)' }}>
-                  {l}
-                </motion.p>
-              );
-            })}
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <AnimatePresence>
-        {interaction && (
-          <motion.div className="absolute" style={{ right: 110, bottom: 104, width: big ? 760 : 820 }} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.6, ease }}>
+        {interaction && big && (
+          <motion.div className="absolute" style={{ right: 110, bottom: 104, width: 760 }} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.6, ease }}>
             {interaction}
           </motion.div>
         )}

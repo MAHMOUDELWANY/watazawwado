@@ -167,3 +167,53 @@ export function Badge({ x, y, name, size = 76, color = CRIMSON, bg, delay = 0, g
 }
 
 export { CRIMSON, GOLD, TEAL };
+
+/* ---------- an articulated figure in profile (modern people only) ---------- */
+
+type Pose = 'kneel' | 'stand' | 'chair';
+type Arms = 'thigh' | 'phone' | 'side' | 'open';
+
+/**
+ * A faceless person in profile, facing right (flip to face left), feet at (x, y). The head turns (look: degrees, negative
+ * looks up), the arm moves between resting on the thigh, holding a phone, hanging, or open in front; every change eases,
+ * so a scene can show attention, distraction and stillness with the body alone.
+ */
+export function Figure({ x, y, scale = 1, pose = 'stand', arms = 'side', look = 0, flip = false, color = CRIMSON, glow = false, label, delay = 0 }: {
+  x: number; y: number; scale?: number; pose?: Pose; arms?: Arms; look?: number; flip?: boolean; color?: string; glow?: boolean; label?: string; delay?: number;
+}) {
+  const W = 200, H = 240;
+  const hip = pose === 'stand' ? { x: 108, y: 150 } : pose === 'chair' ? { x: 100, y: 168 } : { x: 100, y: 196 };
+  const neck = { x: hip.x + 8, y: hip.y - 78 };
+  const shoulder = { x: neck.x + 2, y: neck.y + 14 };
+  const knee = pose === 'kneel' ? { x: hip.x + 64, y: 222 } : pose === 'chair' ? { x: hip.x + 66, y: 172 } : { x: hip.x + 4, y: 196 };
+  const thighMid = { x: (hip.x + knee.x) / 2 + 6, y: (hip.y + knee.y) / 2 - 4 };
+  const hand = arms === 'thigh' ? thighMid : arms === 'phone' ? { x: shoulder.x + 34, y: shoulder.y + 28 } : arms === 'open' ? { x: shoulder.x + 46, y: shoulder.y + 10 } : { x: shoulder.x + 6, y: hip.y + 4 };
+  const elbow = arms === 'side' ? { x: shoulder.x + 4, y: (shoulder.y + hand.y) / 2 } : { x: shoulder.x + 10, y: shoulder.y + 40 };
+  const ease2 = { duration: 0.9, ease };
+  return (
+    <motion.div className="pointer-events-none absolute" style={{ left: x - (W / 2) * scale, top: y - H * scale, width: W * scale, height: H * scale }}
+      initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay, ease }}>
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="100%" style={{ overflow: 'visible', transform: flip ? 'scaleX(-1)' : undefined, filter: glow ? `drop-shadow(0 0 18px ${GOLD})` : undefined }}>
+        {/* legs */}
+        {pose === 'kneel' && <path d={`M ${hip.x - 20} ${hip.y + 10} Q ${hip.x} ${H - 4} ${knee.x + 12} ${H - 6} L ${knee.x + 14} ${knee.y - 14} Q ${hip.x + 20} ${hip.y - 12} ${hip.x - 22} ${hip.y - 6} Z`} fill={color} style={{ filter: 'brightness(0.85)' }} />}
+        {pose === 'stand' && <path d={`M ${hip.x - 22} ${hip.y - 6} L ${hip.x + 20} ${hip.y - 6} L ${hip.x + 16} ${H} L ${hip.x - 18} ${H} Z`} fill={color} style={{ filter: 'brightness(0.85)' }} />}
+        {pose === 'chair' && <path d={`M ${hip.x - 22} ${hip.y - 10} L ${knee.x + 10} ${knee.y - 12} L ${knee.x + 8} ${H} L ${knee.x - 10} ${H} L ${knee.x - 12} ${knee.y + 10} L ${hip.x - 22} ${hip.y + 12} Z`} fill={color} style={{ filter: 'brightness(0.85)' }} />}
+        {/* body */}
+        <path d={`M ${hip.x - 24} ${hip.y + 4} C ${hip.x - 28} ${neck.y + 30}, ${neck.x - 22} ${neck.y + 6}, ${neck.x} ${neck.y + 4} C ${neck.x + 22} ${neck.y + 6}, ${hip.x + 30} ${neck.y + 34}, ${hip.x + 24} ${hip.y + 4} Z`} fill={color} />
+        {/* arm */}
+        <motion.path fill="none" stroke={color} strokeWidth={16} strokeLinecap="round" strokeLinejoin="round" style={{ filter: 'brightness(0.78)' }}
+          initial={false} animate={{ d: `M ${shoulder.x} ${shoulder.y} L ${elbow.x} ${elbow.y} L ${hand.x} ${hand.y}` }} transition={ease2} />
+        <motion.circle r={8} fill="#E8C9A6" initial={false} animate={{ cx: hand.x, cy: hand.y }} transition={ease2} />
+        {arms === 'phone' && <motion.rect width={14} height={24} rx={3} fill="#2A2A2A" initial={{ opacity: 0 }} animate={{ opacity: 1, x: hand.x - 2, y: hand.y - 20 }} transition={ease2} />}
+        {/* head: turns from the neck */}
+        <motion.g initial={false} animate={{ rotate: look }} style={{ transformOrigin: `${neck.x}px ${neck.y}px`, transformBox: 'view-box' }} transition={ease2}>
+          <rect x={neck.x - 7} y={neck.y - 14} width={14} height={18} fill="#E8C9A6" />
+          <circle cx={neck.x + 4} cy={neck.y - 34} r={24} fill="#E8C9A6" />
+          <path d={`M ${neck.x - 20} ${neck.y - 26} C ${neck.x - 22} ${neck.y - 62}, ${neck.x + 20} ${neck.y - 66}, ${neck.x + 26} ${neck.y - 42} C ${neck.x + 12} ${neck.y - 50}, ${neck.x - 6} ${neck.y - 44}, ${neck.x - 8} ${neck.y - 22} Z`} fill="#2B1C14" />
+          <path d={`M ${neck.x + 27} ${neck.y - 34} l 6 6 l -6 2`} fill="#D9B48F" />
+        </motion.g>
+      </svg>
+      {label && <span className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap font-sans font-bold" style={{ top: '100%', marginTop: 8, fontSize: 16, color: 'rgba(31,22,18,0.6)' }}>{label}</span>}
+    </motion.div>
+  );
+}

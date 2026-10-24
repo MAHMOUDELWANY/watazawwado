@@ -555,3 +555,9 @@ B3–B5 → continue lesson by lesson.
   is now a case file on the rings of the three levels (eight new moments with a reason each; content waits for review);
   "think first" questions are a strip under the graphic; dark stages use the khatam lattice in brand colours; a bug pass
   fixed overlaps on the cover, the grave page and the review dots.
+- **2026-10-24** — Owner (from the live site): the question strip still covered the graphics while the left column sat
+  empty; the Ihsan and next-time graphics had no clear meaning; knees to knees used blocks. Questions now sit in the left
+  column under the lines; knees to knees, Ihsan and next time are told with articulated SVG people (`Figure` in
+  `slides/motion/kit.tsx`, `g-people.tsx`): a student today comes close and rests the hands (the Prophet ﷺ and Jibril
+  are never drawn); a person looks up into the light while the day's noise falls away, and a person head-down at a desk
+  is still in the light; a person at the foot of the stairs to certainty looks up at a sky that fills with stars.

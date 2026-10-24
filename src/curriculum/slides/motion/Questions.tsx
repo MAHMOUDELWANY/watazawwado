@@ -25,7 +25,7 @@ export function AdultAsk({ prompt, reveal, tone, onAnswer }: { prompt: string; r
         <Khatam size={34} color={TEAL} glow={false} />
         <div className="min-w-0 flex-1">
           <span className="font-sans font-bold uppercase" style={{ fontSize: 13, letterSpacing: '0.18em', color: TEAL }}>Think first</span>
-          <p className="m-0 font-sans font-semibold" style={{ fontSize: 22, lineHeight: 1.3, color: INK_TEXT }}>{prompt}</p>
+          <p className="m-0 font-sans font-semibold" style={{ fontSize: 21, lineHeight: 1.3, color: INK_TEXT }}>{prompt}</p>
         </div>
         {reveal && !open && (
           <motion.button type="button" whileTap={{ scale: 0.96 }} onClick={() => { setOpen(true); play('chime'); onAnswer?.(); }}
@@ -37,9 +37,9 @@ export function AdultAsk({ prompt, reveal, tone, onAnswer }: { prompt: string; r
       <AnimatePresence>
         {open && reveal && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} transition={{ duration: 0.5, ease }} className="overflow-hidden">
-            <div className="flex gap-4" style={{ padding: '0 24px 18px 87px' }}>
+            <div className="flex gap-3" style={{ padding: '0 22px 18px 28px' }}>
               <motion.span className="mt-2 block h-[2px] w-10 shrink-0 origin-left" style={{ background: GOLD }} initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.5, ease }} />
-              <motion.p className="m-0 font-serif" style={{ fontSize: 22, lineHeight: 1.35, color: COPPER }} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5 }}>{reveal}</motion.p>
+              <motion.p className="m-0 font-serif" style={{ fontSize: 20, lineHeight: 1.35, color: COPPER }} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5 }}>{reveal}</motion.p>
             </div>
           </motion.div>
         )}

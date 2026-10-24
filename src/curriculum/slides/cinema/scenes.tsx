@@ -4,10 +4,11 @@ import type { SceneId } from '../../types';
 import type { Shot, Light } from '../DepthStill';
 import { GlowPath, Node, CountUp, KineticTitle, ease, GOLD, BONE, CRIMSON, TEAL } from './Cinema';
 import type { StageDef } from '../motion/Stage';
-import { StrangerGraphic, IslamGraphic, IhsanGraphic } from '../motion/graphics';
-import { CoverGraphic, MadinahGraphic, CushionsGraphic, HourGraphic, RevealGraphic } from '../motion/g-story';
+import { StrangerGraphic, IslamGraphic } from '../motion/graphics';
+import { CoverGraphic, MadinahGraphic, HourGraphic, RevealGraphic } from '../motion/g-story';
+import { KneesGraphic, IhsanPeopleGraphic, NextPeopleGraphic } from '../motion/g-people';
 import { ImanGraphic, LevelsGraphic, GapGraphic, HorizonGraphic, KnowGraphic, SeeGraphic, InsideGraphic } from '../motion/g-levels';
-import { LaneGraphic, MondayGraphic, GravesGraphic, CountGraphic, CaseOmarGraphic, CaseLaylaGraphic, CaseColleagueGraphic, CaseOnlineGraphic, NotebookGraphic, NextGraphic } from '../motion/g-life';
+import { LaneGraphic, MondayGraphic, GravesGraphic, CountGraphic, CaseOmarGraphic, CaseLaylaGraphic, CaseColleagueGraphic, CaseOnlineGraphic, NotebookGraphic } from '../motion/g-life';
 
 /**
  * Per-page direction for the Adults cinema pages: which still fills the screen, where the light comes from, the
@@ -135,13 +136,13 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
   a1Stranger: {
     stage: { tone: 'light', Graphic: StrangerGraphic, marks: ['No sign of travel', 'none of us knew him'], keepOnAsk: true }, still: 'stranger', textSide: 'left', shots: [{ x: 50, y: 55, z: 1.05, focus: 0.3, pan: -0.3 }, { x: 54, y: 52, z: 1.35, focus: 0.2, pan: 0 }, { x: 54, y: 50, z: 1.6, focus: 0.2, pan: 0.2 }] },
   a1Cushions: {
-    stage: { tone: 'light', Graphic: CushionsGraphic, marks: ['rested his knees against his knees', 'placed his palms on his thighs'] }, still: 'cushions', light: { x: 50, y: 4, strength: 0.8 }, shots: [{ x: 50, y: 60, z: 1.05, focus: 0.7, pan: -0.3 }, { x: 50, y: 66, z: 1.3, focus: 0.85, pan: 0 }, { x: 52, y: 64, z: 1.45, focus: 0.85, pan: 0.2 }, { x: 55, y: 55, z: 1.2, focus: 0.7, pan: 0.1 }] },
+    stage: { tone: 'light', Graphic: KneesGraphic, marks: ['rested his knees against his knees', 'placed his palms on his thighs'] }, still: 'cushions', light: { x: 50, y: 4, strength: 0.8 }, shots: [{ x: 50, y: 60, z: 1.05, focus: 0.7, pan: -0.3 }, { x: 50, y: 66, z: 1.3, focus: 0.85, pan: 0 }, { x: 52, y: 64, z: 1.45, focus: 0.85, pan: 0.2 }, { x: 55, y: 55, z: 1.2, focus: 0.7, pan: 0.1 }] },
   a1Pillars: {
     stage: { tone: 'light', Graphic: IslamGraphic, keepOnAsk: true }, still: 'pillars', light: { x: 62, y: -8, strength: 0.75 }, shots: [{ x: 50, y: 50, z: 1.12, focus: 0.5, pan: -0.6 }, { x: 50, y: 50, z: 1, focus: 0.3 }], overlay: ({ items }) => <PillarsOverlay items={items} /> },
   a1Six: {
     stage: { tone: 'light', Graphic: ImanGraphic }, still: 'window', grade: 'now', light: { x: 91, y: 57, strength: 0.45 }, shots: [{ x: 50, y: 55, z: 1.05, focus: 0.6, pan: -0.4 }, { x: 40, y: 72, z: 1.25, focus: 0.88, pan: -0.3 }, { x: 60, y: 45, z: 1.1, focus: 0.3, pan: 0.1 }, { x: 62, y: 40, z: 1.15, focus: 0.1, pan: 0.2 }], overlay: ({ items, labels }) => <ConstellationOverlay items={items} labels={labels} /> },
   a1Ihsan: {
-    stage: { tone: 'dark', Graphic: IhsanGraphic, marks: ['see'] }, still: 'prayer', grade: 'now', light: { x: 87, y: 12, strength: 0.9 }, shots: [{ x: 50, y: 50, z: 1.05, focus: 0.3, pan: -0.5 }, { x: 52, y: 46, z: 1.25, focus: 0.58, pan: 0 }, { x: 56, y: 62, z: 1.4, focus: 0.62, pan: 0.3 }, { x: 54, y: 44, z: 1.15, focus: 0.45, pan: 0.1 }] },
+    stage: { tone: 'dark', Graphic: IhsanPeopleGraphic, marks: ['see'] }, still: 'prayer', grade: 'now', light: { x: 87, y: 12, strength: 0.9 }, shots: [{ x: 50, y: 50, z: 1.05, focus: 0.3, pan: -0.5 }, { x: 52, y: 46, z: 1.25, focus: 0.58, pan: 0 }, { x: 56, y: 62, z: 1.4, focus: 0.62, pan: 0.3 }, { x: 54, y: 44, z: 1.15, focus: 0.45, pan: 0.1 }] },
   a1Hour: {
     stage: { tone: 'dark', Graphic: HourGraphic, keepOnAsk: true }, still: 'hourglass', light: { x: 81, y: 27, strength: 1 }, shots: [{ x: 55, y: 50, z: 1.05, focus: 0.4, pan: 0.5 }, { x: 34, y: 46, z: 1.35, focus: 0.92, pan: -0.3 }, { x: 34, y: 58, z: 1.6, focus: 0.92, pan: -0.2 }, { x: 74, y: 40, z: 1.25, focus: 0.1, pan: 0.4 }] },
   a1Reveal: {
@@ -177,5 +178,5 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
   a1Notebook: {
     stage: { tone: 'light', Graphic: NotebookGraphic }, still: 'notebook', light: { x: 85, y: 12, strength: 0.7 }, shots: [{ x: 70, y: 35, z: 1.05, focus: 0.15, pan: 0.3 }, { x: 62, y: 62, z: 1.2, focus: 0.7 }, { x: 58, y: 70, z: 1.35, focus: 0.9, pan: -0.2 }] },
   a1Next: {
-    stage: { tone: 'dark', Graphic: NextGraphic }, still: 'night', shots: [{ x: 50, y: 50, z: 1.05, focus: 0.2, pan: -0.3 }, { x: 45, y: 45, z: 1.2, focus: 0.1, pan: 0 }, { x: 40, y: 40, z: 1.35, focus: 0.05, pan: 0.2 }], overlay: ({ k }) => <NextOverlay k={k} /> },
+    stage: { tone: 'dark', Graphic: NextPeopleGraphic }, still: 'night', shots: [{ x: 50, y: 50, z: 1.05, focus: 0.2, pan: -0.3 }, { x: 45, y: 45, z: 1.2, focus: 0.1, pan: 0 }, { x: 40, y: 40, z: 1.35, focus: 0.05, pan: 0.2 }], overlay: ({ k }) => <NextOverlay k={k} /> },
 };

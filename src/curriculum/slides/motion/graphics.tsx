@@ -172,7 +172,7 @@ export function IslamGraphic({ lines, items, interaction, tone }: GraphicProps) 
     {/* his reply: he asks, hears the answer, and confirms it */}
     {interaction && <ConfirmChain tone={tone} />}
     <motion.div className="pointer-events-none absolute inset-0" style={{ transformOrigin: '1120px 700px' }}
-      animate={interaction ? { scale: 0.7, x: 120, y: 120, opacity: 0.35 } : { scale: 1, y: 0, opacity: 1 }} transition={{ duration: 0.8, ease }}>
+      animate={interaction ? { scale: 0.85, x: 60, y: 70, opacity: 0.6 } : { scale: 1, y: 0, opacity: 1 }} transition={{ duration: 0.8, ease }}>
       {lines >= 1 && (
         <>
           {/* the empty plot, and the orb that lands on it */}
