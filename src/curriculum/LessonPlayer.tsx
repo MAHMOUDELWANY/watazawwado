@@ -426,7 +426,8 @@ export function LessonPlayer({ lesson, lang: initialLang, teacher = false, onGam
               {/* Page turn: the old slide fades out quickly, then the new one drifts in from the side we are moving to.
                   One slide at a time (mode "wait") and transform + opacity only: two full-size slides blurring over each
                   other was the lag and the visual noise the owner saw (2026-10-22). Transform strings run off the main thread. */}
-              <AnimatePresence initial={false} custom={dir} mode="wait">
+              {/* No initial={false}: it also blocks the first page's own enter animations (Adults stages stood still on open). */}
+              <AnimatePresence custom={dir} mode="wait">
                 <motion.div
                   key={page}
                   custom={dir}

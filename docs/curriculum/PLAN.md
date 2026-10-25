@@ -586,3 +586,6 @@ B3–B5 → continue lesson by lesson.
   as Then; L3 on the fitrah (30:30, Muslim 2658), the storm (29:65, Ikrimah, an-Nasa'i 4067), ma'ishah dank (20:124) and
   13:28 as the wow. Quotes: Hawking, Einstein, Brady, Carrey (sources.md D2). The adult review now also lays its answers
   out in a row (`look: 'row'`) when the bins are not levels. Waiting for the owner's review.
+- 2026-10-25 — Owner's review of Adults L2–L3: the player's first page now plays its motion on opening (AnimatePresence
+  `initial={false}` was freezing it, all lessons); the review's "Next moment" button works by click (the rings svg covered it);
+  long lesson titles shrink on the cover (no overlap); Ar-Rum 30:30 reads "no altering of Allah's creation".

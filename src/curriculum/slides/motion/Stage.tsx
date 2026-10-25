@@ -64,7 +64,7 @@ export function StagePage({ page, v, lesson, stage, interaction, cover = false, 
           </p>
         )}
         {cover && <p lang="ar" dir="rtl" className="m-0 mb-2 w-fit font-bold" style={{ fontFamily: 'var(--font-display-ar)', fontSize: 46, color: tone === 'light' ? '#8B1A1E' : GOLD }}>{lesson.titleAr}</p>}
-        <KineticTitle key={page.title} text={cover ? lesson.title : page.title} size={cover ? 124 : 112} color={ink(tone)} />
+        <KineticTitle key={page.title} text={cover ? lesson.title : page.title} size={cover ? (lesson.title.length > 22 ? 90 : 124) : 112} color={ink(tone)} />
         {cover && (
           <motion.p className="m-0 mt-8 font-sans" style={{ fontSize: 27, lineHeight: 1.45, color: soft(tone), maxWidth: 640 }} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1, duration: 0.8, ease }}>
             {lesson.goal}

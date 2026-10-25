@@ -6,7 +6,8 @@ Used by the `curriculum-builder` skill to see every step of every slide before t
    `.claude/launch.json` (in a worktree without `node_modules`, it runs the main checkout's Vite).
 2. **Open one slide**: `http://localhost:3101/scripts/curriculum/preview/slide.html?subject=zad-adults&lesson=1&p=4&s=3`
    (`p` = page index from 0, `s` = build step; `&end` shows the end-of-lesson screen, `&ar` in Arabic; `&demo&gap=3800`
-   steps forward on its own).
+   steps forward on its own; `&player` loads the whole lesson in the real `LessonPlayer`, to test what the owner sees on
+   opening a lesson: first-page motion, clicks, the toolbar).
 3. **Screenshot every step** (headless Chrome, page clock under our control, 6 s of animation per shot):
    `node scripts/curriculum/shots.mjs <outDir> "subject=zad-adults&lesson=1&p=4&s=1" "…&s=2" …`
 4. **Contact sheet** of a page's steps: `python scripts/curriculum/sheet.py sheet.png 3 <outDir>/*.png`, then read the

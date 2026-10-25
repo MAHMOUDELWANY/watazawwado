@@ -194,13 +194,14 @@ export function LevelsReview({ title, interaction, onCorrect, onResult }: { titl
       </div>
 
       {/* the rings: the map of the three levels, each one a place to answer */}
-      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 1600 900">
+      {/* The svg box spans the canvas: only the rings take clicks, so the case column's buttons stay reachable. */}
+      <svg className="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 1600 900">
         {bins.map((b, bi) => {
           const isRight = answered && b.id === card.bin;
           const isWrong = answered && b.id === picked && !right;
           return (
             <motion.circle key={b.id} cx={T[bi].x} cy={T[bi].y} r={T[bi].r} fill={T[bi].color} role="button" aria-label={`${b.label}: ${b.hint}`}
-              style={{ cursor: answered || done ? 'default' : 'pointer', transformOrigin: `${T[bi].x}px ${T[bi].y}px` }}
+              style={{ pointerEvents: 'auto', cursor: answered || done ? 'default' : 'pointer', transformOrigin: `${T[bi].x}px ${T[bi].y}px` }}
               initial={{ scale: 0, opacity: 0 }} animate={{ scale: isRight ? 1.03 : 1, opacity: 1, x: isWrong && !reduce ? [0, -10, 10, -5, 0] : 0 }}
               whileHover={!answered && !done ? { opacity: 1, scale: 1.015 } : undefined}
               transition={{ duration: 0.5, ease, delay: answered ? 0 : row ? 0.15 * bi : 0.15 * (2 - bi) }}

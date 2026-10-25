@@ -159,7 +159,7 @@ export const lesson03Adults: Lesson = {
       ],
       evidence: {
         arabic: 'فَأَقِمْ وَجْهَكَ لِلدِّينِ حَنِيفًا ۚ فِطْرَتَ ٱللَّهِ ٱلَّتِى فَطَرَ ٱلنَّاسَ عَلَيْهَا ۚ لَا تَبْدِيلَ لِخَلْقِ ٱللَّهِ',
-        meaning: 'So set your face toward the deen, turning to the truth: the natural way of Allah, on which He made people. There is no altering Allah\'s creation.',
+        meaning: 'So set your face toward the deen, turning to the truth: the natural way of Allah, on which He made people. There is no altering of Allah\'s creation.',
         reference: 'Ar-Rum 30:30',
       },
       tadabbur: {
@@ -172,7 +172,7 @@ export const lesson03Adults: Lesson = {
       vocab: [{ arabic: 'فطرة', translit: 'fitrah', meaning: 'the original make of a person, ready to know Allah' }],
       explain: [
         'Al-Sa\'di on 30:30: Allah placed in all hearts an inclination to the outward and inward rulings of the deen; He placed in them love of the truth and preferring it, and this is the reality of fitrah. Whoever leaves this does so because something came over it and spoiled it.',
-        'Ibn Kathir: Allah created His creation to know Him and know that He is One, and "no altering Allah\'s creation" is read by many of the salaf as "the religion of Allah".',
+        'Ibn Kathir: Allah created His creation to know Him and know that He is One, and "no altering of Allah\'s creation" is read by many of the salaf as "the religion of Allah".',
         'For the learner: the longing they felt is not a malfunction. It is the most original thing about them.',
       ],
     },
