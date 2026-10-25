@@ -589,3 +589,7 @@ B3–B5 → continue lesson by lesson.
 - 2026-10-25 — Owner's review of Adults L2–L3: the player's first page now plays its motion on opening (AnimatePresence
   `initial={false}` was freezing it, all lessons); the review's "Next moment" button works by click (the rings svg covered it);
   long lesson titles shrink on the cover (no overlap); Ar-Rum 30:30 reads "no altering of Allah's creation".
+- 2026-10-25 — **[Decided] Owner approved the motion-stage design for Kids, Teens and Adults** as the Zad Path standard;
+  Adults L2–L3 reviewed. Seerah will follow a presentation the owner will send, with Ar-Raheeq al-Makhtum as the source
+  (facts only, our wording, all three ages). Next: a written plan for the other subjects (literacy, Quran, Hifz tests,
+  languages); Scholar's Path postponed.
