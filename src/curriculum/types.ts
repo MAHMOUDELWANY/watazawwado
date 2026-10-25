@@ -226,6 +226,22 @@ export type Interaction =
   /** Game checkpoint: put each card in the right bin. Results feed the teacher report (PLAN §3a.3b). */
   | { kind: 'sort'; prompt: string; look?: 'rings' | 'row'; bins: { id: string; label: string; hint: string }[]; cards: { label: string; bin: string; why?: string }[] };
 
+/** Who speaks a clip (design §3a): the owner's ElevenLabs clones, the owner himself, or a Quran reciter. */
+export type Voice = 'en' | 'eg' | 'fusha' | 'owner' | 'reciter';
+
+/** A sound the learner can play again from the page. Fusha text is fully diacritized (owner, 2026-10-25). */
+export interface Clip {
+  /** Kebab-case; the file is public/curriculum/<subject>/audio/l<NN>-<id>.mp3. */
+  id: string;
+  text: string;
+  voice: Voice;
+  /** How it is said, for the ElevenLabs script ("warm", "curious"). */
+  emotion?: string;
+  /** An ayah: always the reciter, never a clone, streamed by surah:ayah. */
+  quran?: boolean;
+  ayah?: string;
+}
+
 export interface LessonPage {
   title: string;
   station: Station;
@@ -238,6 +254,8 @@ export interface LessonPage {
   evidence?: Evidence;
   tadabbur?: Tadabbur;
   vocab?: Vocab[];
+  /** Sounds on this page the learner can replay (letters, words, lines, dialogues, ayat). */
+  say?: Clip[];
   interaction?: Interaction;
   /** Ask the question before the items appear (a prediction), instead of after. */
   askFirst?: boolean;

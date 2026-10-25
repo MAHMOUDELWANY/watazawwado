@@ -78,6 +78,16 @@ describe('Curriculum lessons follow docs/curriculum/RULES.md', () => {
         });
       });
 
+      it('clip ids are unique and kebab-case, and Quran clips are never a clone voice (design §3a)', () => {
+        const clips = lesson.pages.flatMap((p) => p.say ?? []);
+        const ids = clips.map((c) => c.id);
+        assert.equal(new Set(ids).size, ids.length, 'duplicate clip id');
+        for (const c of clips) {
+          assert.match(c.id, /^[a-z0-9-]+$/, `clip id ${c.id}`);
+          if (c.quran) assert.ok(c.voice === 'reciter' && /^\d{1,3}:\d{1,3}$/.test(c.ayah ?? ''), `${c.id}: an ayah needs the reciter and a surah:ayah`);
+        }
+      });
+
       it('has a goal, outcomes and chapters, and is a draft until the owner approves it (§1.5, §2)', () => {
         assert.ok(lesson.goal.trim() && lesson.outcomes.length && lesson.chapters.length);
         assert.ok(['kids', 'teens', 'adults'].includes(lesson.version));
