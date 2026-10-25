@@ -7,6 +7,7 @@ import { lesson02Teens } from './content/zad-teens/l02-did-it-all-just-happen.js
 import { lesson03Teens } from './content/zad-teens/l03-one-not-many.js';
 import { lesson01Adults } from './content/zad-adults/l01-the-man-no-one-knew.js';
 import { lesson02Adults } from './content/zad-adults/l02-a-world-that-should-not-exist.js';
+import { lessonB01 } from './content/literacy-b/l01-same-letters-new-marks.js';
 import { lesson03Adults } from './content/zad-adults/l03-the-emptiness-fame-cannot-fill.js';
 
 /** A part of a curriculum (a unit in its MAP.md): its title and the number of its first lesson. */
@@ -128,6 +129,24 @@ export const SUBJECTS: SubjectEntry[] = [
     ],
     lessons: { 1: lesson01Adults, 2: lesson02Adults, 3: lesson03Adults },
   },
+  {
+    id: 'literacy-b-kids',
+    group: 'quran',
+    title: 'Quranic Reading Rules',
+    titleAr: 'قواعد القراءة القرآنية',
+    version: 'Reading rules',
+    versionAr: 'قواعد القراءة',
+    audience: '6+',
+    art: '/curriculum/zad-kids/l01/cover.webp',
+    parts: [{ title: 'Reading the Mushaf', titleAr: 'قراءة المصحف', from: 1 }],
+    // docs/curriculum/literacy-quranic/MAP.md (Claude's draft, 2026-10-25, for the owner's review).
+    plan: [
+      'Same Letters, New Marks', 'The Alif That Stands Up', 'Written, Not Read', 'The Quiet Alif', 'The Sun and the Moon',
+      'The Name of Allah', 'The Wavy Line', 'Tanween, the Mushaf Way', 'Where to Stop', 'Stopping on a Word',
+      'Letters With Names', 'Reading a Whole Surah',
+    ],
+    lessons: { 1: lessonB01 },
+  },
 ];
 
 /** Subjects of the Zad Path (docs/curriculum/RULES.md): each holds its age versions (SUBJECTS with that `group`).
@@ -185,7 +204,6 @@ export const GROUPS: GroupEntry[] = [
     tagline: 'Reading the Mushaf as it is written, then reciting it with tajweed.',
     taglineAr: 'تقرا المصحف زي ما هو مكتوب، وبعدين تتلوه بالتجويد.',
     planned: [
-      { version: 'Quranic reading rules', versionAr: 'قواعد القراءة القرآنية', audience: '6–11' },
       { version: 'Quran reading', versionAr: 'قراءة القرآن', audience: '6+' },
       { version: 'Tajweed', versionAr: 'التجويد', audience: '6+' },
     ],

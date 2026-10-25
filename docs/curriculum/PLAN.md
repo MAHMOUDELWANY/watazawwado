@@ -599,3 +599,7 @@ B3–B5 → continue lesson by lesson.
   in the style of the owner's deck. Voice: three clones of the owner (English, Egyptian, Fusha; scripts in
   `voice/clone-scripts.md`). Books moved to `Documents\watazawwado-sources` (sources.md §H). Thursday prototypes:
   Literacy A Kids L1, Literacy B Kids L1, Fusha Kids L1, Seerah Ep. 1 if time holds.
+- 2026-10-25 — Literacy B (Quranic reading rules), Kids look: map of 12 lessons (`literacy-quranic/MAP.md`, Claude's draft)
+  and Lesson 1 "Same Letters, New Marks" built (13 pages, every graphic in code, Zad Kids cast; Bukhari 5027; Al-Fatiha
+  and 112:4 play Husary on tap). Draft, `reviewed: false`. New in the player: tap-to-hear clips (`Say`, `Hear`), Amiri
+  Quran for Uthmani text. Literacy cast: three look options sent to the owner (video), waiting for his pick.

@@ -13,6 +13,7 @@ import { TeensStrangerGraphic, TeensOptionsGraphic, TeensBossesGraphic } from '.
 import { A2CoverGraphic, A2RecallGraphic, A2QuestionGraphic, A2HawkingGraphic, A2CauseGraphic, A2BeganGraphic, A2ThreeGraphic, A2NothingGraphic, A2ItselfGraphic, A2TurGraphic, A2JubayrGraphic, A2YaqeenGraphic, A2BackGraphic, A2HowGraphic, A2FirstGraphic, A2OrderGraphic, A2SignsGraphic, A2NowGraphic, A2CaseGraphic, A2Case2Graphic, A2Case3Graphic, A2Case4Graphic, A2NotebookGraphic, A2NextGraphic } from '../motion/g-a2';
 import { A3CoverGraphic, A3RecallGraphic, A3QuestionGraphic, A3BradyGraphic, A3CarreyGraphic, A3HungerGraphic, A3FitrahGraphic, A3BornGraphic, A3NoiseGraphic, A3SeaGraphic, A3IkrimahGraphic, A3FeelGraphic, A3DankGraphic, A3GhinaGraphic, A3RestGraphic, A3NightGraphic, A3TwoGraphic, A3CaseGraphic, A3Case2Graphic, A3Case3Graphic, A3Case4Graphic, A3NotebookGraphic, A3NextGraphic } from '../motion/g-a3';
 import { LookAMeetGraphic, LookAWordGraphic, LookBMeetGraphic, LookBWordGraphic, LookCMeetGraphic, LookCWordGraphic } from '../motion/g-literacy-looks';
+import { LbCoverGraphic, LbStuckGraphic, LbGuessGraphic, LbBestGraphic, LbMapGraphic, LbCircleGraphic, LbHelpersGraphic, LbUthmanGraphic, LbSpotGraphic, LbAlongGraphic, LbMissionGraphic, LbNextGraphic } from '../motion/g-lb1';
 import { LaneGraphic, MondayGraphic, GravesGraphic, CountGraphic, CaseOmarGraphic, CaseLaylaGraphic, CaseColleagueGraphic, CaseOnlineGraphic, NotebookGraphic } from '../motion/g-life';
 
 /**
@@ -137,6 +138,13 @@ const onStage = (stage: StageDef): Scene => ({ stage, still: '', shots: [] });
 /* ---------- the direction for every Adults Lesson 1 page ---------- */
 
 export const SCENES: Partial<Record<SceneId, Scene>> = {
+  // Literacy B · Lesson 1
+  lbCover: onStage({ tone: 'light', Graphic: LbCoverGraphic }), lbStuck: onStage({ tone: 'light', Graphic: LbStuckGraphic }),
+  lbGuess: onStage({ tone: 'light', Graphic: LbGuessGraphic, keepOnAsk: true }), lbBest: onStage({ tone: 'light', Graphic: LbBestGraphic, marks: ['learn the Quran', 'teach it'] }),
+  lbMap: onStage({ tone: 'light', Graphic: LbMapGraphic }), lbCircle: onStage({ tone: 'light', Graphic: LbCircleGraphic }),
+  lbHelpers: onStage({ tone: 'light', Graphic: LbHelpersGraphic }), lbUthman: onStage({ tone: 'light', Graphic: LbUthmanGraphic }),
+  lbSpot: onStage({ tone: 'light', Graphic: LbSpotGraphic }), lbAlong: onStage({ tone: 'light', Graphic: LbAlongGraphic, keepOnAsk: true }),
+  lbMission: onStage({ tone: 'light', Graphic: LbMissionGraphic }), lbNext: onStage({ tone: 'light', Graphic: LbNextGraphic }),
   // Literacy look options (plan Task 3)
   lkA1: onStage({ tone: 'light', Graphic: LookAMeetGraphic }), lkA2: onStage({ tone: 'light', Graphic: LookAWordGraphic }),
   lkB1: onStage({ tone: 'light', Graphic: LookBMeetGraphic }), lkB2: onStage({ tone: 'light', Graphic: LookBWordGraphic }),

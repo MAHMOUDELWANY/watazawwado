@@ -1,4 +1,5 @@
 import React from 'react';
+import { ClipContext } from '../Say';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import type { Lesson, LessonPage } from '../../types';
 import { KineticTitle, Khatam, ease, CRIMSON, GOLD, TEAL } from '../cinema/Cinema';
@@ -52,7 +53,9 @@ export function StagePage({ page, v, lesson, stage, interaction, cover = false, 
           never on top of it; the bigger answer cards (clues, choices) also dim it. */}
       <motion.div className="absolute inset-0" style={{ transformOrigin: '1500px 130px' }} initial={false}
         animate={{ opacity: hero ? 0.1 : v.interaction && big ? 0.3 : 1, scale: v.interaction && big ? 0.62 : 1 }} transition={{ duration: 0.8, ease }}>
-        <Graphic lines={v.lines} items={v.items} interaction={v.interaction} labels={page.items ?? []} tone={tone} />
+        <ClipContext.Provider value={{ subject: lesson.subject, lesson: lesson.number, clips: page.say ?? [] }}>
+          <Graphic lines={v.lines} items={v.items} interaction={v.interaction} labels={page.items ?? []} tone={tone} />
+        </ClipContext.Provider>
       </motion.div>
 
       {/* Title: big on the opening beat, then it steps back to the corner (the cover keeps it). */}

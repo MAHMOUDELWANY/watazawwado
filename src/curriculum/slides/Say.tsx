@@ -26,3 +26,27 @@ export function Say({ subject, lesson, clip, children, style }: { subject: strin
     </button>
   );
 }
+
+/** The page's clips, so a graphic can make any word on the stage playable by id (`<Hear id="fatiha-1">`). */
+export const ClipContext = React.createContext<{ subject: string; lesson: number; clips: Clip[] }>({ subject: '', lesson: 0, clips: [] });
+
+export function Hear({ id, children, style }: { id: string; children: React.ReactNode; style?: React.CSSProperties }) {
+  const { subject, lesson, clips } = React.useContext(ClipContext);
+  const clip = clips.find((c) => c.id === id);
+  if (!clip) return <>{children}</>;
+  return <Say subject={subject} lesson={lesson} clip={clip} style={{ pointerEvents: 'auto', ...style }}>{children}</Say>;
+}
+
+let quranFont = false;
+/** Amiri Quran (OFL, Google Fonts) for Uthmani text: Thmanyah has no glyphs for the Mushaf's small marks. */
+export const QURAN_FONT = "'Amiri Quran', 'Amiri', serif";
+export function useQuranFont() {
+  React.useEffect(() => {
+    if (quranFont) return;
+    quranFont = true;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap';
+    document.head.appendChild(link);
+  }, []);
+}

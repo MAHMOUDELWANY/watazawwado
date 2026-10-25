@@ -3,6 +3,8 @@
 export type SceneId =
   // Literacy look options (plan Task 3; removed after the owner's pick)
   | 'lkA1' | 'lkA2' | 'lkB1' | 'lkB2' | 'lkC1' | 'lkC2'
+  // Literacy B · Lesson 1 (all drawn in code, slides/motion/g-lb1.tsx)
+  | 'lbCover' | 'lbStuck' | 'lbGuess' | 'lbBest' | 'lbMap' | 'lbCircle' | 'lbHelpers' | 'lbUthman' | 'lbSpot' | 'lbSort' | 'lbAlong' | 'lbMission' | 'lbNext'
   | 'chalkboard'
   | 'doorsHero'
   | 'jiddo'
