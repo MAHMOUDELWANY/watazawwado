@@ -12,6 +12,7 @@ import { KidsStrangerGraphic, KidsCastleGraphic } from '../motion/g-kids';
 import { TeensStrangerGraphic, TeensOptionsGraphic, TeensBossesGraphic } from '../motion/g-teens';
 import { A2CoverGraphic, A2RecallGraphic, A2QuestionGraphic, A2HawkingGraphic, A2CauseGraphic, A2BeganGraphic, A2ThreeGraphic, A2NothingGraphic, A2ItselfGraphic, A2TurGraphic, A2JubayrGraphic, A2YaqeenGraphic, A2BackGraphic, A2HowGraphic, A2FirstGraphic, A2OrderGraphic, A2SignsGraphic, A2NowGraphic, A2CaseGraphic, A2Case2Graphic, A2Case3Graphic, A2Case4Graphic, A2NotebookGraphic, A2NextGraphic } from '../motion/g-a2';
 import { A3CoverGraphic, A3RecallGraphic, A3QuestionGraphic, A3BradyGraphic, A3CarreyGraphic, A3HungerGraphic, A3FitrahGraphic, A3BornGraphic, A3NoiseGraphic, A3SeaGraphic, A3IkrimahGraphic, A3FeelGraphic, A3DankGraphic, A3GhinaGraphic, A3RestGraphic, A3NightGraphic, A3TwoGraphic, A3CaseGraphic, A3Case2Graphic, A3Case3Graphic, A3Case4Graphic, A3NotebookGraphic, A3NextGraphic } from '../motion/g-a3';
+import { LookAMeetGraphic, LookAWordGraphic, LookBMeetGraphic, LookBWordGraphic, LookCMeetGraphic, LookCWordGraphic } from '../motion/g-literacy-looks';
 import { LaneGraphic, MondayGraphic, GravesGraphic, CountGraphic, CaseOmarGraphic, CaseLaylaGraphic, CaseColleagueGraphic, CaseOnlineGraphic, NotebookGraphic } from '../motion/g-life';
 
 /**
@@ -136,6 +137,10 @@ const onStage = (stage: StageDef): Scene => ({ stage, still: '', shots: [] });
 /* ---------- the direction for every Adults Lesson 1 page ---------- */
 
 export const SCENES: Partial<Record<SceneId, Scene>> = {
+  // Literacy look options (plan Task 3)
+  lkA1: onStage({ tone: 'light', Graphic: LookAMeetGraphic }), lkA2: onStage({ tone: 'light', Graphic: LookAWordGraphic }),
+  lkB1: onStage({ tone: 'light', Graphic: LookBMeetGraphic }), lkB2: onStage({ tone: 'light', Graphic: LookBWordGraphic }),
+  lkC1: onStage({ tone: 'dark', Graphic: LookCMeetGraphic }), lkC2: onStage({ tone: 'dark', Graphic: LookCWordGraphic }),
   a1Cover: {
     stage: { tone: 'dark', Graphic: CoverGraphic }, still: 'cover', light: { x: 82, y: 5, strength: 0.8 }, shots: [{ x: 58, y: 50, z: 1.12, focus: 0.5, pan: -0.5 }] },
   a1Madinah: {

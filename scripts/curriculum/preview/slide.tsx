@@ -9,9 +9,10 @@ import { LessonEnd } from '../../../src/curriculum/slides/motion/LessonEnd';
 import { Opening } from '../../../src/curriculum/slides/Opening';
 import { findLesson } from '../../../src/curriculum/catalog';
 import { LessonPlayer } from '../../../src/curriculum/LessonPlayer';
+import { LOOKS } from './looks';
 
 const q = new URLSearchParams(location.search);
-const lesson = findLesson(q.get('subject') || 'zad-adults', Number(q.get('lesson') || 1))!;
+const lesson = q.has('looks') ? LOOKS : findLesson(q.get('subject') || 'zad-adults', Number(q.get('lesson') || 1))!;
 const p = Number(q.get('p') || 0);
 const page = lesson.pages[p];
 const total = page.lines.length + (page.items?.length || 0) + (page.evidence ? 1 : 0) + (page.interaction ? 1 : 0);

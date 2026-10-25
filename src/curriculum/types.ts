@@ -1,6 +1,8 @@
 // Curriculum lessons are data (docs/curriculum/PLAN.md §4.7). The player renders them; content never lives in components.
 
 export type SceneId =
+  // Literacy look options (plan Task 3; removed after the owner's pick)
+  | 'lkA1' | 'lkA2' | 'lkB1' | 'lkB2' | 'lkC1' | 'lkC2'
   | 'chalkboard'
   | 'doorsHero'
   | 'jiddo'
