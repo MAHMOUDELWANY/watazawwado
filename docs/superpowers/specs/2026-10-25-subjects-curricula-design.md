@@ -58,7 +58,7 @@ after the prototypes (§7), not before Thursday.
 ## 3a. Voice and audio — [Owner, 2026-10-25]
 
 - Three ElevenLabs clones of the owner's voice: **"mahmoud"** (English, exists, id `jSOs0gJh7GzUGtEgxVhs`),
-  **"Mahmoud Egyptian"** (Egyptian pronunciation) and **"Mahmoud Fusha"** (Modern Standard Arabic). The owner records the
+  **"mahmoud-egyptian"** (Egyptian pronunciation, id `oLqSNPM5VkAPU9WSo945`) and **"mahmoud-fusha"** (Modern Standard Arabic, id `apVCnpO0uLwNUlmrixXF`); generate with `eleven_multilingual_v2`, one take per clip, then download the signed URL into `public/curriculum/<subject>/audio/`. The owner records the
   two Arabic clones from `docs/curriculum/voice/clone-scripts.md`.
 - Claude writes every word, sentence or dialogue with its emotion, generates it with the clone of that language and
   places it in the lesson; the learner replays it at any time. Clips that sound wrong (most likely single letters and
