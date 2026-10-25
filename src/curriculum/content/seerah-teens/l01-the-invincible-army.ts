@@ -6,7 +6,7 @@ import { seerahE01TeacherAr } from './l01-teacher-ar.js';
 // cites Ibn Hisham 1/43–56. The camels conversation is Ibn Ishaq (Ibn Hisham), not in The Sealed Nectar: flagged for the
 // owner. The signs at the birth are left out: the book calls them disputed. Ayat 105:1–5 Tanzil Uthmani via the Quran
 // Foundation API (2026-10-25), unchanged; English meanings ours. Stills: the owner's, from docs/curriculum/seerah/EP01-image-prompts.md.
-const AL_FIL = 'Al-Fil 105:1–5';
+const AL_FIL = 'Al-Fil 105:1-5';
 
 export const seerahE01: Lesson = {
   subject: 'seerah-teens',
@@ -243,7 +243,7 @@ export const seerahE01: Lesson = {
       explain: ['Ask about it next episode: what was the effort, and what was the trust?'],
     },
     {
-      title: 'To be continued', station: 'ahd', layout: 'next', scene: 'se1Next',
+      title: 'Next time… to be continued', station: 'ahd', layout: 'next', scene: 'se1Next',
       lines: [
         'The baby is given to a poor nurse from the desert tribe of Banu Sa\'d. Why does her life change overnight?',
         'Years later, two figures in white come to the boy in the hills. What do they open, and what do they place inside?',

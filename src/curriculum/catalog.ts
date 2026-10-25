@@ -9,6 +9,7 @@ import { lesson01Adults } from './content/zad-adults/l01-the-man-no-one-knew.js'
 import { lesson02Adults } from './content/zad-adults/l02-a-world-that-should-not-exist.js';
 import { lessonA01 } from './content/literacy-a-kids/l01-dots-make-the-difference.js';
 import { lessonF01 } from './content/fusha-kids/l01-what-is-this.js';
+import { seerahE01 } from './content/seerah-teens/l01-the-invincible-army.js';
 import { lessonB01 } from './content/literacy-b/l01-same-letters-new-marks.js';
 import { lesson03Adults } from './content/zad-adults/l03-the-emptiness-fame-cannot-fill.js';
 
@@ -178,6 +179,23 @@ export const SUBJECTS: SubjectEntry[] = [
     lessons: { 1: lessonF01 },
   },
   {
+    id: 'seerah-teens',
+    group: 'seerah',
+    title: 'Seerah · Teens & Adults',
+    titleAr: 'السيرة · للشباب والكبار',
+    version: 'Teens & Adults',
+    versionAr: 'الشباب والكبار',
+    audience: '12+',
+    art: '/curriculum/zad-adults/l01/cover.webp',
+    parts: [{ title: 'Season 1 · Before the Message', titleAr: 'الموسم الأول · قبل البعثة', from: 1 }],
+    // docs/curriculum/seerah/MAP.md (Claude's draft, 2026-10-25, for the owner's review).
+    plan: [
+      'The World in Shadows: The Invincible Army', 'The Shepherd Boy and the Sealed Chest', 'Loss After Loss', 'The Monk Who Knew',
+      'The War He Watched', 'The Honest One', 'Khadijah', 'The Black Stone', 'The Cave',
+    ],
+    lessons: { 1: seerahE01 },
+  },
+  {
     id: 'literacy-b-kids',
     group: 'quran',
     title: 'Quranic Reading Rules',
@@ -228,7 +246,6 @@ export const GROUPS: GroupEntry[] = [
     // Two versions (owner, 2026-10-25): Kids, and one shared version for teens and adults.
     planned: [
       { version: 'Kids', versionAr: 'الأطفال', audience: '6–11' },
-      { version: 'Teens & Adults', versionAr: 'الشباب والكبار', audience: '12+' },
     ],
   },
   // Beyond the Zad Path: docs/superpowers/specs/2026-10-25-subjects-curricula-design.md §2.
