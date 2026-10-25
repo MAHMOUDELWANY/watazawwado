@@ -11,7 +11,7 @@
 
 ## 0. Where we are (update every session)
 
-Last update: 2026-10-23. History of how we got here: §8 (progress log).
+Last update: 2026-10-25. History of how we got here: §8 (progress log).
 
 ### Zad Essentials · Kids (6–11): `zad-essentials-kids/`
 - **Done:** map (37 lessons) approved; Lessons 1, 2, 3 built and **approved by the owner** (`reviewed: true`, open to
@@ -61,9 +61,18 @@ Last update: 2026-10-23. History of how we got here: §8 (progress log).
 - **Waiting for the owner:** review of Lessons 2 and 3 (drafts, `reviewed: false`, teacher-only).
 - **Next after review:** Lesson 4 (The Sentence That Costs Something) brief.
 
-### Seerah and the Scholar's Path
-- Seerah (Kids / Teens / Adults): planned, not started. Scholar's Path: books, sessions and prices are the owner's call
-  (RULES §6); nothing built.
+### Beyond Zad Essentials (design 2026-10-25: `docs/superpowers/specs/2026-10-25-subjects-curricula-design.md`)
+- **Seerah · Teens & Adults:** rules (`seerah/RULES.md`, the owner's deck as template), season 1 map, Episode 1 built
+  (21 pages, dark stage). **Waiting:** the owner's 22 stills (`seerah/EP01-image-prompts.md`; drop them in
+  `public/curriculum/seerah-teens/ep01/` by file name) and his call on the camels story (Ibn Ishaq). Seerah Kids: not started.
+- **Literacy B · Quranic reading rules (Kids look):** map (12) and Lesson 1 built; ayat play Husary on tap.
+- **Literacy A · Reading Arabic · Kids:** map (29) and Lesson 1 built in look A "letter friends" (Claude's pick, the owner
+  did not choose; switchable). Letter sounds wait for the owner's own recordings (`literacy/L01-clips.md`).
+- **Fusha · Kids:** rules, Level 1 map (21) and Lesson 1 built; all 30 Arabic clips generated in the mahmoud-fusha clone.
+- **Not started:** Literacy A Teens/Adults, Literacy C (Franco rules from the owner), Quran Reading, Tajweed, Egyptian,
+  English, Hifz test generator, the two new skills (`literacy-quran-builder`, `language-builder`), onboarding and catalog
+  changes, spaced repetition. Scholar's Path: postponed.
+- Every new lesson is a draft (`reviewed: false`), teacher-only.
 
 ### The lesson player (shared by every version) — done
 - 1600×900 slide canvas, build steps, page turn, scene builds, sounds (`slides/sfx.ts`), praise "Zādak Allāh".
