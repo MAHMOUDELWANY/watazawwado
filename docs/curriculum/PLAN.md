@@ -575,3 +575,4 @@ B3–B5 → continue lesson by lesson.
   (no hiss or static, no eraser-like rub); the whole bank re-processed with noise reduction and a gate. Text: Kids and
   Teens L1–3 now show the ayah/hadith first in every layout, and the lines on all 32 evidence pages were rewritten so they
   add an idea in the version's voice instead of retelling the text (the rules test now checks this in every version).
+- 2026-10-25 — Page-turn sound back to the original soft synthesised one (owner preferred it); its recording removed.

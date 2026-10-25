@@ -109,7 +109,7 @@ const RECIPES: Record<Sound, (a: AudioContext, out: AudioNode, t: number) => voi
 /** Recorded effects: file in public/curriculum/sfx and its volume (files are levelled to about -18 LUFS; decoration sits
  *  lower than the moments that matter). */
 const SAMPLES: Partial<Record<Sound, { file: string; vol: number; rate?: number }>> = {
-  page: { file: 'page', vol: 0.25 },
+  // page: the soft synthesised turn stays (owner, 2026-10-25: the recorded ones were worse)
   pop: { file: 'pop', vol: 0.2 },
   whoosh: { file: 'whoosh', vol: 0.28 },
   chime: { file: 'chime', vol: 0.32 },
