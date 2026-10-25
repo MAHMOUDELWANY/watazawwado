@@ -146,7 +146,11 @@ export const lesson02Teens: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'tl2Tur',
-      lines: ['1,400 years ago the Quran asked the same three questions.', 'Two are impossible. One is left.'],
+      lines: [
+        'Same options. Same order. 1,400 years earlier.',
+        'The ayah doesn\'t even say the last option out loud.',
+        'It doesn\'t need to. Two are impossible, so only a Creator is left.',
+      ],
       evidence: {
         arabic: 'أَمْ خُلِقُوا۟ مِنْ غَيْرِ شَىْءٍ أَمْ هُمُ ٱلْخَـٰلِقُونَ',
         meaning: 'Were they made from nothing? Or did they make themselves?',
@@ -171,7 +175,11 @@ export const lesson02Teens: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'tl2Yaqeen',
-      lines: ['The next ayah goes deeper.', 'The real problem is often not the proof. It\'s the heart.'],
+      lines: [
+        'Nobody has ever claimed they made the sky.',
+        'So why do people still doubt? The ayah points at the heart, not the proof.',
+        'Sometimes you need a better argument. Sometimes your heart needs feeding: du\'a, Quran, good friends.',
+      ],
       evidence: {
         arabic: 'أَمْ خَلَقُوا۟ ٱلسَّمَـٰوَٰتِ وَٱلْأَرْضَ ۚ بَل لَّا يُوقِنُونَ',
         meaning: 'Or did they make the skies and the earth? No, the truth is they have no certainty.',
@@ -215,7 +223,11 @@ export const lesson02Teens: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'tl2Fitrah',
-      lines: ['Before any argument, something in you already knew.', 'Allah made every person ready to know Him.'],
+      lines: [
+        'Before any argument, something in you already knew.',
+        'Ever been scared or amazed and called on Allah without thinking? That\'s it.',
+        'Arguments help the mind. The fitrah is what the heart already knows.',
+      ],
       evidence: {
         arabic: 'فِطْرَتَ ٱللَّهِ ٱلَّتِى فَطَرَ ٱلنَّاسَ عَلَيْهَا ۚ لَا تَبْدِيلَ لِخَلْقِ ٱللَّهِ',
         meaning: 'The fitrah of Allah, the nature He made all people with. Nothing can change what Allah made.',
@@ -239,7 +251,11 @@ export const lesson02Teens: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'tl2First',
-      lines: ['The rule was: everything that begins has a cause.', 'Allah didn\'t begin. He is al-Awwal, the First.'],
+      lines: [
+        'Read the rule again: everything that begins has a cause.',
+        'Allah never began. Nothing came before Him.',
+        'So nothing had to make Him.',
+      ],
       evidence: {
         arabic: 'هُوَ ٱلْأَوَّلُ وَٱلْـَٔاخِرُ وَٱلظَّـٰهِرُ وَٱلْبَاطِنُ',
         meaning: 'He is the First and the Last, the Highest and the Nearest.',
@@ -269,7 +285,11 @@ export const lesson02Teens: Lesson = {
       station: 'athar',
       layout: 'evidence',
       scene: 'tl2Pitch',
-      lines: ['The Quran doesn\'t only argue. It tells you to look.'],
+      lines: [
+        'After the arguments, the Quran gives you a practice.',
+        'Look at what is in front of you every day, and ask who made it.',
+        'Try it: one minute, phone away, just the sky.',
+      ],
       evidence: {
         arabic: 'أَفَلَا يَنظُرُونَ إِلَى ٱلْإِبِلِ كَيْفَ خُلِقَتْ ۝ وَإِلَى ٱلسَّمَآءِ كَيْفَ رُفِعَتْ ۝ وَإِلَى ٱلْجِبَالِ كَيْفَ نُصِبَتْ ۝ وَإِلَى ٱلْأَرْضِ كَيْفَ سُطِحَتْ',
         meaning: 'Won\'t they look at the camels, how they were made? And at the sky, how it was raised? And at the mountains, how they were set firm? And at the earth, how it was spread out?',

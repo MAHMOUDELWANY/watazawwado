@@ -64,8 +64,7 @@ describe('Curriculum lessons follow docs/curriculum/RULES.md', () => {
         lesson.pages.forEach((p, i) => assert.ok(!p.optional, `page ${i + 1} (${p.title}) is optional`));
       });
 
-      it('Adults lines never restate the ayah or hadith on the same page (zad-essentials-adults/RULES.md §5)', () => {
-        if (lesson.version !== 'adults') return;
+      it('lines never restate the ayah or hadith on the same page (owner, 2026-10-25: every version)', () => {
         const words = (t: string) => t.toLowerCase().replace(/[^a-z' ]/g, ' ').split(/\s+/).filter(Boolean);
         lesson.pages.forEach((p, i) => {
           if (!p.evidence) return;

@@ -98,9 +98,9 @@ export const lesson01Teens: Lesson = {
       layout: 'story',
       scene: 'tMadinah',
       lines: [
-        'The Prophet ﷺ was sitting with his companions.',
-        'Out of nowhere, a man walked up to them.',
-        'Bright white clothes. Jet black hair.',
+        'Umar was there. He is the one telling us this, word for word.',
+        'Out of everything that day, those two details stuck with him.',
+        'Why would he remember a stranger\'s clothes and hair? Hold that thought.',
       ],
       evidence: {
         arabic: 'بينَما نَحنُ عِندَ رَسولِ اللهِ صلَّى اللهُ عليه وسلَّم ذاتَ يَومٍ إذ طَلَعَ علينا رَجُلٌ شَديدُ بَياضِ الثِّيابِ، شَديدُ سَوادِ الشَّعَرِ',
@@ -152,7 +152,11 @@ export const lesson01Teens: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'tSitting',
-      lines: ['He sat right in front of the Prophet ﷺ, knees touching his knees.', 'Hands on his thighs. Full attention.'],
+      lines: [
+        'Before a single question, his body said it all.',
+        'Close. Still. Full attention. No half-listening.',
+        'Now compare that with one earbud in and the phone face up on the desk.',
+      ],
       evidence: {
         arabic: 'فأسنَدَ رُكبَتَيه إلى رُكبَتَيه، ووضَعَ كَفَّيه على فخِذَيه',
         meaning: 'He sat with his knees against his knees, and put his hands on his thighs.',
@@ -172,7 +176,10 @@ export const lesson01Teens: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'tPillars',
-      lines: ['"Tell me about Islam."', 'The answer: five things a Muslim does.'],
+      lines: [
+        'Question one, and the answer is five things you can see a Muslim do.',
+        'Islam is the outside: what your body and your tongue do.',
+      ],
       evidence: {
         arabic: 'الإسلامُ أن تَشهَدَ أن لا إلَهَ إلَّا اللهُ وأنَّ مُحَمَّدًا رَسولُ اللهِ صلَّى اللهُ عليه وسلَّم، وتُقيمَ الصَّلاةَ، وتُؤتيَ الزَّكاةَ، وتَصومَ رَمَضانَ، وتَحُجَّ البَيتَ إنِ استَطَعتَ إليه سَبيلًا',
         meaning: 'Islam is to declare that there is no god but Allah and that Muhammad is the Messenger of Allah ﷺ, to pray, to give zakah, to fast Ramadan, and to make Hajj to the House if you are able to.',
@@ -192,7 +199,11 @@ export const lesson01Teens: Lesson = {
       station: 'zad',
       layout: 'question',
       scene: 'tTruth',
-      lines: ['Then the stranger said: "You\'re right."', 'The companions were amazed.'],
+      lines: [
+        'Wait. He asks, then marks the answer?',
+        'You only say that if you already knew.',
+        'So who was he really asking for?',
+      ],
       evidence: {
         arabic: 'فعَجِبنا له يَسألُه، ويُصَدِّقُه',
         meaning: 'We were amazed by him: he asks him, and then tells him he is right.',
@@ -215,7 +226,10 @@ export const lesson01Teens: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'tSix',
-      lines: ['"Tell me about Iman."', 'The answer: six things a Muslim believes.'],
+      lines: [
+        'Islam you can see. Iman you can\'t: it lives in the heart.',
+        'Six things, and every one of them gets its own lesson in this course.',
+      ],
       evidence: {
         arabic: 'أن تُؤمِنَ باللهِ، ومَلائِكَتِه، وكُتُبِه، ورُسُلِه، واليَومِ الآخِرِ، وتُؤمِنَ بالقدَرِ خَيرِه وشَرِّه',
         meaning: 'To believe in Allah, His angels, His books, His messengers and the Last Day, and to believe in Qadar, the good of it and the bad of it.',
@@ -234,7 +248,11 @@ export const lesson01Teens: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'tIhsan',
-      lines: ['"Tell me about Ihsan."', 'Worship Allah as if you see Him.', 'And if you can\'t see Him, He sees you.'],
+      lines: [
+        'The top level, and the one that follows you everywhere.',
+        'In class, in your room, online: there is no "nobody\'s watching".',
+        'That is where your best comes from.',
+      ],
       evidence: {
         arabic: 'أن تَعبُدَ اللهَ كَأنَّك تَراه، فإن لَم تَكُنْ تَراه فإنَّه يَراك',
         meaning: 'To worship Allah as if you see Him, and even though you don\'t see Him, He sees you.',
@@ -253,7 +271,11 @@ export const lesson01Teens: Lesson = {
       station: 'zad',
       layout: 'question',
       scene: 'tReveal',
-      lines: ['The stranger left.', 'After a while the Prophet ﷺ asked Umar: "Do you know who the questioner was?"'],
+      lines: [
+        'The stranger got up and left.',
+        'Umar, one of the sharpest minds of his time, answers: I don\'t know.',
+        'Saying "I don\'t know" is where real learning starts.',
+      ],
       evidence: {
         arabic: 'يا عُمَرُ أتَدري مَنِ السَّائِلُ؟ قُلتُ: اللهُ ورَسولُه أعلَمُ',
         meaning: '"Umar, do you know who the questioner was?" I said: "Allah and His Messenger know best."',
@@ -270,7 +292,11 @@ export const lesson01Teens: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'tReveal',
-      lines: ['"That was Jibril."', '"He came to teach you your deen."'],
+      lines: [
+        'Every clue clicks into place.',
+        'No dust: he didn\'t travel like us. Nobody knew him: an angel in human form.',
+        'And the questions? Asked out loud so that everyone, including you, would learn.',
+      ],
       evidence: {
         arabic: 'فإنَّه جِبريلُ أتاكُم يُعَلِّمُكُم دينَكُم',
         meaning: 'That was Jibril. He came to you to teach you your deen.',
@@ -300,7 +326,11 @@ export const lesson01Teens: Lesson = {
       station: 'athar',
       layout: 'evidence',
       scene: 'tFathers',
-      lines: ['The Quran describes people who refused to think:', '"We just follow what our fathers did."'],
+      lines: [
+        'This is how some people answered the Prophet ﷺ: no reason, just habit.',
+        'The key word comes from \'aql: the mind.',
+        'So what is the ayah really asking for?',
+      ],
       evidence: {
         arabic: 'وَإِذَا قِيلَ لَهُمُ ٱتَّبِعُوا۟ مَآ أَنزَلَ ٱللَّهُ قَالُوا۟ بَلْ نَتَّبِعُ مَآ أَلْفَيْنَا عَلَيْهِ ءَابَآءَنَآ ۗ أَوَلَوْ كَانَ ءَابَآؤُهُمْ لَا يَعْقِلُونَ شَيْـًٔا وَلَا يَهْتَدُونَ',
         meaning: 'When they are told, "Follow what Allah has sent down," they say, "No, we follow what we found our fathers doing." Even if their fathers understood nothing and were not guided?',

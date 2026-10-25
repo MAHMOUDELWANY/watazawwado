@@ -571,3 +571,7 @@ B3–B5 → continue lesson by lesson.
   screen redesigned as "the road begins": a road to the horizon, the khatam star rising like a dawn, the brand lattice
   in the sky, the cast setting off as silhouettes. Kids L1 "Question one: Islam" back to the colouring pillars painting
   (owner preferred it), with the new lines. Preview tool: `&opening`.
+- 2026-10-25 — Owner's feedback on sound and text: page turn, sparkle, reveal, praise, pencil and pen swipe regenerated
+  (no hiss or static, no eraser-like rub); the whole bank re-processed with noise reduction and a gate. Text: Kids and
+  Teens L1–3 now show the ayah/hadith first in every layout, and the lines on all 32 evidence pages were rewritten so they
+  add an idea in the version's voice instead of retelling the text (the rules test now checks this in every version).

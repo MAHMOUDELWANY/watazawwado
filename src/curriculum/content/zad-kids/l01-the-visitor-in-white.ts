@@ -81,7 +81,11 @@ export const lesson01: Lesson = {
       station: 'zad',
       layout: 'story',
       scene: 'madinah',
-      lines: ['The Prophet ﷺ was sitting with his companions.', 'Suddenly a man appeared.', 'His clothes were very white. His hair was very black.'],
+      lines: [
+        'Umar was there that day. He is the one telling us this story.',
+        'Out of everything, he remembered two things about the man.',
+        'Very neat and very clean. Keep that in mind: it is a clue!',
+      ],
       evidence: {
         arabic: 'بينَما نَحنُ عِندَ رَسولِ اللهِ صلَّى اللهُ عليه وسلَّم ذاتَ يَومٍ إذ طَلَعَ علينا رَجُلٌ شَديدُ بَياضِ الثِّيابِ، شَديدُ سَوادِ الشَّعَرِ',
         meaning: 'One day, while we were sitting with the Messenger of Allah ﷺ, a man came to us with very white clothes and very black hair.',
@@ -132,7 +136,11 @@ export const lesson01: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'sitting',
-      lines: ['He sat right in front of the Prophet ﷺ, knee to knee.', 'He placed his hands on his thighs, ready to listen.'],
+      lines: [
+        'Before asking a single question, he showed us something.',
+        'He came close and kept still. His whole body said: I am ready to learn.',
+        'That is adab: good manners for a learner.',
+      ],
       evidence: {
         arabic: 'فأسنَدَ رُكبَتَيه إلى رُكبَتَيه، ووضَعَ كَفَّيه على فخِذَيه',
         meaning: 'He sat knee to knee with him, and put his hands on his legs.',
@@ -172,7 +180,11 @@ export const lesson01: Lesson = {
       station: 'zad',
       layout: 'question',
       scene: 'pillars',
-      lines: ['The man said: "You have spoken the truth."', 'The companions were amazed.'],
+      lines: [
+        'Wait! He asks a question, and then he marks the answer?',
+        'You can only say "that\'s right" if you already know the answer.',
+        'Have we met someone who does this before?',
+      ],
       evidence: {
         arabic: 'فعَجِبنا له يَسألُه، ويُصَدِّقُه',
         meaning: 'We were surprised: he asks a question, then says the answer is right!',
@@ -213,7 +225,11 @@ export const lesson01: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'drawing',
-      lines: ['"Tell me about Ihsan."', 'Doing your very best, because Allah sees you.'],
+      lines: [
+        'The third question is about the very best level.',
+        'Think of a card you make for Mum: your best colours, your neatest lines.',
+        'Ihsan is doing everything like that, because Allah is watching you with love.',
+      ],
       evidence: {
         arabic: 'أن تَعبُدَ اللهَ كَأنَّك تَراه، فإن لَم تَكُنْ تَراه فإنَّه يَراك',
         meaning: 'To worship Allah as if you can see Him. And even if you cannot see Him, He sees you.',
@@ -232,7 +248,11 @@ export const lesson01: Lesson = {
       station: 'zad',
       layout: 'question',
       scene: 'reveal',
-      lines: ['Then the man stood up and left.', 'The Prophet ﷺ asked Umar: "Do you know who the questioner was?"', 'Umar said: "Allah and His Messenger know best."'],
+      lines: [
+        'The visitor stood up and walked away.',
+        'Look at Umar\'s answer. A great companion, and he is happy to say: I don\'t know!',
+        'Good learners are never shy to say that.',
+      ],
       evidence: {
         arabic: 'يا عُمَرُ أتَدري مَنِ السَّائِلُ؟ قُلتُ: اللهُ ورَسولُه أعلَمُ',
         meaning: '"Umar, do you know who that man asking questions was?" I said: "Allah and His Messenger know best."',
@@ -250,7 +270,11 @@ export const lesson01: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'reveal',
-      lines: ['He was Jibril, the angel.', 'He came to teach us our religion.'],
+      lines: [
+        'Now every clue makes sense!',
+        'No dust? He did not travel like people do. Nobody knew him? He was an angel.',
+        'And he asked questions he already knew, just like Ms. Clarke, so that we would learn.',
+      ],
       evidence: {
         arabic: 'فإنَّه جِبريلُ أتاكُم يُعَلِّمُكُم دينَكُم',
         meaning: 'He was Jibril. He came to teach you your religion.',

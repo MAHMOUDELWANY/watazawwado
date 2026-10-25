@@ -132,7 +132,11 @@ export const lesson03: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'orbits',
-      lines: ['The Quran makes this very point.'],
+      lines: [
+        'Remember the spinning boat?',
+        'Two bosses pulling two ways, and everything goes wrong.',
+        'But the sun has never been late, and the moon has never got lost. So there is only One in charge.',
+      ],
       evidence: {
         arabic: 'لَوْ كَانَ فِيهِمَآ ءَالِهَةٌ إِلَّا ٱللَّهُ لَفَسَدَتَا ۚ فَسُبْحَـٰنَ ٱللَّهِ رَبِّ ٱلْعَرْشِ عَمَّا يَصِفُونَ',
         meaning: 'If there were other gods in the skies and the earth besides Allah, both would fall apart. Glory be to Allah, Lord of the Throne, far above what they say.',
@@ -163,7 +167,11 @@ export const lesson03: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'shahada',
-      lines: ['There is one sentence every Muslim knows by heart.', 'It has two halves.'],
+      lines: [
+        'Every Muslim knows this sentence by heart.',
+        'It has two halves: "no one else", then "only Allah".',
+        'And Allah says: know it. Not just say it, understand it!',
+      ],
       evidence: {
         arabic: 'فَٱعْلَمْ أَنَّهُۥ لَآ إِلَـٰهَ إِلَّا ٱللَّهُ',
         meaning: 'So know that there is no god except Allah.',
@@ -213,7 +221,11 @@ export const lesson03: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'recite',
-      lines: ['Allah tells us about Himself in a very short surah.', 'You might already know it by heart.'],
+      lines: [
+        'In this short surah, Allah tells us about Himself.',
+        'You might already know it by heart. Now you will know what it means.',
+        'Its name, al-Ikhlas, means a heart that is for Allah alone.',
+      ],
       evidence: {
         arabic: 'قُلْ هُوَ ٱللَّهُ أَحَدٌ ۝ ٱللَّهُ ٱلصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ',
         meaning: 'Say: He is Allah, the One. Allah, the One everyone turns to for what they need. He has no child, and He was not born. And there is no one like Him.',
@@ -298,6 +310,7 @@ export const lesson03: Lesson = {
         'Every time, he finished with Qul huwa Allahu ahad.',
         'His friends asked him why. He said: "It describes Allah, the Most Merciful, and I love to recite it."',
       ],
+      contextFirst: true,
       evidence: {
         arabic: 'أخبِرُوه أنَّ اللهَ يُحِبُّه',
         meaning: 'Tell him that Allah loves him.',

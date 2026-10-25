@@ -120,7 +120,11 @@ export const lesson03Teens: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'tl3Orbits',
-      lines: ['One set of laws, from the smallest atom to the farthest galaxy we can see.', 'The Quran makes the same argument.'],
+      lines: [
+        'One set of laws, from the smallest atom to the farthest galaxy we can see.',
+        'Two bosses would mean two sets of orders, and something would break.',
+        'Nothing has. Not once. That order points to one Lord.',
+      ],
       evidence: {
         arabic: 'لَوْ كَانَ فِيهِمَآ ءَالِهَةٌ إِلَّا ٱللَّهُ لَفَسَدَتَا ۚ فَسُبْحَـٰنَ ٱللَّهِ رَبِّ ٱلْعَرْشِ عَمَّا يَصِفُونَ',
         meaning: 'If there were gods in the heavens and the earth other than Allah, both would have fallen apart. So glory be to Allah, Lord of the Throne, far above what they claim.',
@@ -146,7 +150,11 @@ export const lesson03Teens: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'tl3Shahada',
-      lines: ['La ilaha: first, a no, to every false god.', 'Illa Allah: then a yes, to Allah alone.'],
+      lines: [
+        'La ilaha: first, a no, to every false god.',
+        'Illa Allah: then a yes, to Allah alone.',
+        'And it starts with "know". The deen is something you understand, not just say.',
+      ],
       evidence: {
         arabic: 'فَٱعْلَمْ أَنَّهُۥ لَآ إِلَـٰهَ إِلَّا ٱللَّهُ',
         meaning: 'So know that there is no god except Allah.',
@@ -192,7 +200,11 @@ export const lesson03Teens: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'tl3Hawa',
-      lines: ['The Quran describes someone who made his own desire his god.'],
+      lines: [
+        'Desires are normal. Allah made us with them.',
+        'The problem starts when one always wins, even against Allah.',
+        'Then it is sitting in the place that belongs to Him.',
+      ],
       evidence: {
         arabic: 'أَفَرَءَيْتَ مَنِ ٱتَّخَذَ إِلَـٰهَهُۥ هَوَىٰهُ',
         meaning: 'Have you seen the one who has taken his own desire as his god?',
@@ -216,7 +228,11 @@ export const lesson03Teens: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'tl3Ikhlas',
-      lines: ['Four short ayat. The whole of tawhid.'],
+      lines: [
+        'Four short ayat answer Ethan completely.',
+        'A team of gods fails every single line.',
+        'The Prophet ﷺ said this surah equals a third of the Quran.',
+      ],
       evidence: {
         arabic: 'قُلْ هُوَ ٱللَّهُ أَحَدٌ ۝ ٱللَّهُ ٱلصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ',
         meaning: 'Say: He is Allah, One. Allah, the One everyone turns to in need. He has no child and no parent. And there is none like Him.',
@@ -244,6 +260,7 @@ export const lesson03Teens: Lesson = {
         'A Companion leading prayers ended every recitation with al-Ikhlas.',
         'He said: "It describes the Most Merciful, and I love to recite it."',
       ],
+      contextFirst: true,
       evidence: {
         arabic: 'أخبِرُوه أنَّ اللهَ يُحِبُّه',
         meaning: 'Tell him that Allah loves him.',

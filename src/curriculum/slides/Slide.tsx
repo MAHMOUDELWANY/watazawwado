@@ -51,9 +51,9 @@ interface SlideProps {
 /** One slide on the fixed 1600 × 900 notebook canvas. */
 export function Slide({ lesson, pageIndex, step, onCorrect, onGameResult }: SlideProps) {
   const page = lesson.pages[pageIndex];
-  // A motion stage (owner, 2026-10-24) puts the ayah or hadith first in every version, then the lines that add to it.
+  // Every version shows the ayah or hadith first, then the lines that add to it (owner, 2026-10-24).
   const onStage = isMotionStage(page);
-  const v = visibility(page, step, lesson.version === 'adults' || onStage);
+  const v = visibility(page, step, true);
   const chapter = [...lesson.chapters].reverse().find((c) => c.page <= pageIndex);
   const rootRef = useRef<HTMLDivElement>(null);
   const [found, setFound] = useState<string[]>([]);
@@ -358,17 +358,6 @@ function TextWithLines({ page, v, size, textSize, light = false }: { page: Lesso
   return page.contextFirst ? <>{lines}{text}</> : <>{text}{lines}</>;
 }
 
-/** Once the evidence arrives the lines give way to it; the page's last line stays as a lead-in so the point is not lost. */
-function Kicker({ page }: { page: LessonPage }) {
-  const last = page.lines[page.lines.length - 1];
-  if (!last) return null;
-  return (
-    <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease }} className="border-s-4 ps-4 font-sans text-[26px] font-semibold leading-snug [text-wrap:pretty]" style={{ borderColor: P.gold, color: P.inkSoft }}>
-      {last}
-    </motion.p>
-  );
-}
-
 /** Manuscript treatment: the Arabic is the hero, written in right to left between gold rules. */
 function Manuscript({ page, size = 60, light = false, align = 'center', compact = false, ink }: { page: LessonPage; size?: number; light?: boolean; align?: 'center' | 'start'; compact?: boolean; ink?: string }) {
   const e = page.evidence!;
@@ -517,7 +506,7 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
           </Painting>
           <div className={`absolute left-[120px] top-[140px] bottom-[120px] w-[470px] space-y-6 ${COL}`}><Fit className="space-y-6">
             <Title size={68}>{page.title}</Title>
-            {v.evidence ? <Manuscript page={page} size={36} align="start" /> : <Lines lines={page.lines} count={v.lines} size={32} />}
+            <TextWithLines page={page} v={v} size={32} textSize={36} />
             {interaction}
           </Fit></div>
         </>
@@ -534,8 +523,7 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
           </Painting>
           <div className={`absolute left-[120px] right-[620px] top-[140px] bottom-[120px] space-y-5 ${COL}`}><Fit className="space-y-5">
             <Title size={58}>{page.title}</Title>
-            {!v.interaction && <Lines lines={page.lines} count={v.lines} size={30} />}
-            {v.evidence && <Manuscript page={page} size={40} align="start" />}
+            <TextWithLines page={page} v={v} size={30} textSize={40} />
             {interaction}
           </Fit></div>
         </>
@@ -549,9 +537,7 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
           <>
             <div className={`absolute left-[120px] top-[140px] bottom-[120px] w-[560px] space-y-5 ${COL}`}><Fit className="space-y-5">
               <Title size={60}>{page.title}</Title>
-              {!v.evidence && <Lines lines={page.lines} count={v.lines} size={32} />}
-              {v.evidence && lesson.version === 'teens' && <Kicker page={page} />}
-              {v.evidence && <Manuscript page={page} size={36} align="start" />}
+              <TextWithLines page={page} v={v} size={32} textSize={36} />
               <Vocab page={page} />
               {interaction}
             </Fit></div>
@@ -567,9 +553,7 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
           />
           <div className={`absolute left-[120px] right-[430px] top-[140px] bottom-[120px] space-y-5 ${COL}`}><Fit className="space-y-5">
             <Title size={60}>{page.title}</Title>
-            {!v.evidence && <Lines lines={page.lines} count={v.lines} size={34} />}
-            {v.evidence && lesson.version === 'teens' && <Kicker page={page} />}
-            {v.evidence && <Manuscript page={page} size={44} align="start" />}
+            <TextWithLines page={page} v={v} size={34} textSize={44} />
             <Vocab page={page} />
             {interaction}
           </Fit></div>
@@ -620,8 +604,7 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
           </Painting>
           <div className={`absolute left-[120px] right-[640px] top-[150px] bottom-[120px] space-y-6 ${COL}`}><Fit className="space-y-6">
             <Title size={72} light>{page.title}</Title>
-            {!v.evidence && <Lines lines={page.lines} count={v.lines} size={36} light />}
-            {v.evidence && <Manuscript page={page} size={44} light align="start" />}
+            <TextWithLines page={page} v={v} size={36} textSize={44} light />
             {interaction}
           </Fit></div>
           {/* p8: the answer links back to Ms. Clarke's question on the classroom page. */}
@@ -637,8 +620,7 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
           <div className={`absolute left-[200px] right-[200px] top-[150px] bottom-[120px] text-center ${COL}`}><Fit>
             <Title size={88} light>{page.title}</Title>
             <div className="mx-auto mt-6 max-w-[1000px] space-y-6">
-              {!v.evidence && <Lines lines={page.lines} count={v.lines} size={36} light />}
-              {v.evidence && <Manuscript page={page} size={64} light />}
+              <TextWithLines page={page} v={v} size={36} textSize={56} light />
               {interaction && <div className="text-left">{interaction}</div>}
             </div>
           </Fit></div>
@@ -660,8 +642,7 @@ function Body({ page, v, step, lesson, found, chosen, answered, onAnswer, onChoo
                   <Title size={revealed ? 96 : 64} light>{page.title}</Title>
                 </motion.div>
               )}
-              {!v.evidence && <Lines lines={page.lines} count={v.lines} size={34} light />}
-              {v.evidence && <Manuscript page={page} size={44} light align="start" />}
+              <TextWithLines page={page} v={v} size={34} textSize={44} light />
             </motion.div>
             {interaction}
           </Fit></div>

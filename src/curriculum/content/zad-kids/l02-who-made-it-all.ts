@@ -164,7 +164,11 @@ export const lesson02: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'threeWays',
-      lines: ['Long ago, Allah asked people these very questions in the Quran.'],
+      lines: [
+        'Look closely. These are Maryam\'s questions!',
+        'Allah asked them in the Quran long ago, in the very same order.',
+        'And you worked them out yourself, before you even saw the ayah.',
+      ],
       evidence: {
         arabic: 'أَمْ خُلِقُوا۟ مِنْ غَيْرِ شَىْءٍ أَمْ هُمُ ٱلْخَـٰلِقُونَ',
         meaning: 'Were they made from nothing? Or did they make themselves?',
@@ -195,7 +199,11 @@ export const lesson02: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'sky',
-      lines: ['Then the Quran looks up, at something even bigger.', 'Nobody has ever made a sky. Not even a tiny one.'],
+      lines: [
+        'Now the Quran looks up, at something even bigger.',
+        'Nobody has ever made a sky. Not even a tiny one.',
+        'Being sure in your heart has a name: yaqeen. Every clue makes it grow.',
+      ],
       evidence: {
         arabic: 'أَمْ خَلَقُوا۟ ٱلسَّمَـٰوَٰتِ وَٱلْأَرْضَ ۚ بَل لَّا يُوقِنُونَ',
         meaning: 'Or did they make the skies and the earth? No! The truth is, their hearts are not sure.',
@@ -226,6 +234,7 @@ export const lesson02: Lesson = {
       layout: 'evidence',
       scene: 'baby',
       lines: ['"Jiddo, nobody taught me that castles need builders. I just knew!" says Maryam.', 'Jiddo smiles. "That knowing was put inside you. It has a name."'],
+      contextFirst: true,
       evidence: {
         arabic: 'كُلُّ مَولودٍ يولَدُ على الفِطرةِ',
         meaning: 'Every baby is born with the fitrah.',
@@ -249,7 +258,11 @@ export const lesson02: Lesson = {
       station: 'zad',
       layout: 'evidence',
       scene: 'lock',
-      lines: ['Allah made every person with fitrah.', 'Islam fits it, like a key fits its lock.'],
+      lines: [
+        'Think of a lock and its key.',
+        'Allah made the lock: your heart and your mind. And He made the key: Islam.',
+        'That is why they fit together so well.',
+      ],
       evidence: {
         arabic: 'فِطْرَتَ ٱللَّهِ ٱلَّتِى فَطَرَ ٱلنَّاسَ عَلَيْهَا ۚ لَا تَبْدِيلَ لِخَلْقِ ٱللَّهِ',
         meaning: 'The fitrah of Allah: the way He made all people. No one can change what Allah made.',
@@ -278,7 +291,11 @@ export const lesson02: Lesson = {
       station: 'athar',
       layout: 'evidence',
       scene: 'desert',
-      lines: ['The Quran tells us to look closely and think.', 'Four times in a row, it says: look!'],
+      lines: [
+        'Count them: a camel, the sky, the mountains, the earth.',
+        'Looking here means looking like a detective: closely, and thinking.',
+        'A Muslim is curious, because our deen tells us to look!',
+      ],
       evidence: {
         arabic: 'أَفَلَا يَنظُرُونَ إِلَى ٱلْإِبِلِ كَيْفَ خُلِقَتْ ۝ وَإِلَى ٱلسَّمَآءِ كَيْفَ رُفِعَتْ ۝ وَإِلَى ٱلْجِبَالِ كَيْفَ نُصِبَتْ ۝ وَإِلَى ٱلْأَرْضِ كَيْفَ سُطِحَتْ',
         meaning: "Won't they look at the camels, how they were made? And at the sky, how it was lifted up high? And at the mountains, how they were made to stand firm? And at the earth, how it was spread out wide?",

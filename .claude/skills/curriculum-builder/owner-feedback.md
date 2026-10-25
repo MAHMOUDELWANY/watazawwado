@@ -25,6 +25,18 @@ Each row is a real rejection (2026-10-23/24) on Adults Lesson 1. Audit every new
 | First page looked still when the lesson opened | The player replays the slide when it is seen or goes full screen |
 | Plain end-of-lesson page | `LessonEnd`: our night background, the khatam draws itself, chapters light up along a gold line |
 
+## Sound (2026-10-25)
+| Rejected | Fix |
+|---|---|
+| Sound effects that did not fit the new style | One coherent bank (ElevenLabs, warm and organic: paper, wood, pencil, a small bell; never music), listed in `sources.md` |
+| A hiss under the page turn; TV-like static at the end of the sparkle | Short clean takes; noise reduction and a gate before levelling (levelling a quiet clip raises its noise floor); read a spectrogram of every clip: the background after the sound must be dark |
+| An eraser-like rubbing sound | Writing cues are one short tick or one quick swipe, never a long scribble |
+
+## Text, every version (2026-10-25)
+- Kids and Teens follow the same text rule as Adults: the ayah or hadith first, then lines that add (what to notice, why,
+  what it means for you), in each version's voice. The rules test checks 5-word repeats in every version.
+- A story page whose hadith is the punchline uses `contextFirst`: the lines set the scene without giving the punchline away.
+
 ## Bug list (check every contact sheet)
 - Text over text: title vs docked text, labels vs bubbles, two bubbles, chips vs the lesson badge.
 - Anything on the chapter bar (y ≈ 830–870) or under the lesson badge (x > 1374, y < 180).
