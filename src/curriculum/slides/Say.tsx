@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { Clip } from '../types';
-import { clipUrl, playClip } from './say';
+import { clipUrl, playClip } from './clip';
 
 let current: HTMLAudioElement | null = null;
 

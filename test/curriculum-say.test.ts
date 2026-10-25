@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { clipUrl, playClip } from '../src/curriculum/slides/say';
+import { clipUrl, playClip } from '../src/curriculum/slides/clip';
 
 // Voice clips on lesson pages (design §3a): our clips are files per lesson; ayat stream from a reciter.
 describe('Voice clips', () => {
