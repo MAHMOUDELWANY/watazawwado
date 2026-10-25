@@ -63,7 +63,10 @@ after the prototypes (§7), not before Thursday.
 - Claude writes every word, sentence or dialogue with its emotion, generates it with the clone of that language and
   places it in the lesson; the learner replays it at any time. Clips that sound wrong (most likely single letters and
   harakat) go on a short list the owner records himself.
-- **[Claude's call]** The Quran is never voiced by a clone: ayat use the owner's real recording or a licensed reciter.
+- **[Owner, 2026-10-25]** The clones exist: "mahmoud" (English), "Mahmoud Fusha", "Mahmoud Egyptian". Text sent to the
+  Fusha clone is **fully diacritized**, so it never misreads a word.
+- **[Owner]** The Quran is never voiced by a clone: wherever a lesson plays an ayah, it uses a well-known reciter
+  (licensed recitation, streamed; sources.md A).
 - **Comprehensible-input videos** are the owner's later idea (videos hosted elsewhere, linked from the lesson). Until
   then, input stories and dialogues are audio in the matching clone.
 

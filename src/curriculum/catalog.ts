@@ -158,10 +158,47 @@ export const GROUPS: GroupEntry[] = [
     titleAr: 'السيرة',
     tagline: 'The life of the Prophet ﷺ, told so it changes ours.',
     taglineAr: 'حياة النبي ﷺ، تتحكي عشان تغيّر حياتنا.',
+    // Two versions (owner, 2026-10-25): Kids, and one shared version for teens and adults.
+    planned: [
+      { version: 'Kids', versionAr: 'الأطفال', audience: '6–11' },
+      { version: 'Teens & Adults', versionAr: 'الشباب والكبار', audience: '12+' },
+    ],
+  },
+  // Beyond the Zad Path: docs/superpowers/specs/2026-10-25-subjects-curricula-design.md §2.
+  {
+    id: 'literacy',
+    title: 'Reading Arabic',
+    titleAr: 'القرائية',
+    tagline: 'From the first letter to reading on your own. The door to the Quran, Fusha and Egyptian.',
+    taglineAr: 'من أول حرف لحد ما تقرا لوحدك. الباب للقرآن والفصحى والمصري.',
     planned: [
       { version: 'Kids', versionAr: 'الأطفال', audience: '6–11' },
       { version: 'Teens', versionAr: 'الشباب', audience: '12–17' },
       { version: 'Adults', versionAr: 'الكبار', audience: '18+' },
+      { version: 'Franco', versionAr: 'فرانكو', audience: '18+' },
+    ],
+  },
+  {
+    id: 'quran',
+    title: 'Quran',
+    titleAr: 'القرآن',
+    tagline: 'Reading the Mushaf as it is written, then reciting it with tajweed.',
+    taglineAr: 'تقرا المصحف زي ما هو مكتوب، وبعدين تتلوه بالتجويد.',
+    planned: [
+      { version: 'Quranic reading rules', versionAr: 'قواعد القراءة القرآنية', audience: '6–11' },
+      { version: 'Quran reading', versionAr: 'قراءة القرآن', audience: '6+' },
+      { version: 'Tajweed', versionAr: 'التجويد', audience: '6+' },
+    ],
+  },
+  {
+    id: 'fusha',
+    title: 'Fusha Arabic',
+    titleAr: 'العربية الفصحى',
+    tagline: 'Understand it, then speak it: stories first, rules after, words that come back until they stay.',
+    taglineAr: 'افهمها وبعدين اتكلمها: الحكاية الأول، والقاعدة بعدها، والكلمات بترجع لحد ما تثبت.',
+    planned: [
+      { version: 'Kids', versionAr: 'الأطفال', audience: '6–11' },
+      { version: '12+', versionAr: '12 سنة فأكبر', audience: '12+' },
     ],
   },
 ];
