@@ -15,6 +15,7 @@ import { A3CoverGraphic, A3RecallGraphic, A3QuestionGraphic, A3BradyGraphic, A3C
 import { LookAMeetGraphic, LookAWordGraphic, LookBMeetGraphic, LookBWordGraphic, LookCMeetGraphic, LookCWordGraphic } from '../motion/g-literacy-looks';
 import { LbCoverGraphic, LbStuckGraphic, LbGuessGraphic, LbBestGraphic, LbMapGraphic, LbCircleGraphic, LbHelpersGraphic, LbUthmanGraphic, LbSpotGraphic, LbAlongGraphic, LbMissionGraphic, LbNextGraphic } from '../motion/g-lb1';
 import { La1CoverGraphic, La1NoteGraphic, La1GuessGraphic, La1AlifGraphic, La1BaaGraphic, La1TaaGraphic, La1ThaaGraphic, La1TrickGraphic, La1FindGraphic, La1WordGraphic, La1MissionGraphic, La1NextGraphic } from '../motion/g-la1';
+import { Fk1CoverGraphic, Fk1GameGraphic, Fk1StoryGraphic, Fk1HaadhaGraphic, Fk1MaaGraphic, Fk1ManGraphic, Fk1WordsGraphic, Fk1SpotGraphic, Fk1TalkGraphic, Fk1MissionGraphic, Fk1NextGraphic } from '../motion/g-fk1';
 import { LaneGraphic, MondayGraphic, GravesGraphic, CountGraphic, CaseOmarGraphic, CaseLaylaGraphic, CaseColleagueGraphic, CaseOnlineGraphic, NotebookGraphic } from '../motion/g-life';
 
 /**
@@ -146,6 +147,13 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
   la1Thaa: onStage({ tone: 'light', Graphic: La1ThaaGraphic }), la1Trick: onStage({ tone: 'light', Graphic: La1TrickGraphic }),
   la1Find: onStage({ tone: 'light', Graphic: La1FindGraphic }), la1Word: onStage({ tone: 'light', Graphic: La1WordGraphic }),
   la1Mission: onStage({ tone: 'light', Graphic: La1MissionGraphic }), la1Next: onStage({ tone: 'light', Graphic: La1NextGraphic }),
+  // Fusha · Kids · Lesson 1
+  fk1Cover: onStage({ tone: 'light', Graphic: Fk1CoverGraphic }), fk1Game: onStage({ tone: 'light', Graphic: Fk1GameGraphic }),
+  fk1Story: onStage({ tone: 'light', Graphic: Fk1StoryGraphic }), fk1Haadha: onStage({ tone: 'light', Graphic: Fk1HaadhaGraphic }),
+  fk1Maa: onStage({ tone: 'light', Graphic: Fk1MaaGraphic }), fk1Man: onStage({ tone: 'light', Graphic: Fk1ManGraphic }),
+  fk1Words: onStage({ tone: 'light', Graphic: Fk1WordsGraphic }), fk1Spot: onStage({ tone: 'light', Graphic: Fk1SpotGraphic }),
+  fk1Talk: onStage({ tone: 'light', Graphic: Fk1TalkGraphic, keepOnAsk: true }), fk1Mission: onStage({ tone: 'light', Graphic: Fk1MissionGraphic }),
+  fk1Next: onStage({ tone: 'light', Graphic: Fk1NextGraphic }),
   // Literacy B · Lesson 1
   lbCover: onStage({ tone: 'light', Graphic: LbCoverGraphic }), lbStuck: onStage({ tone: 'light', Graphic: LbStuckGraphic }),
   lbGuess: onStage({ tone: 'light', Graphic: LbGuessGraphic, keepOnAsk: true }), lbBest: onStage({ tone: 'light', Graphic: LbBestGraphic, marks: ['learn the Quran', 'teach it'] }),

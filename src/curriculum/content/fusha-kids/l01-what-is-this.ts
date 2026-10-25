@@ -118,7 +118,7 @@ export const lessonF01: Lesson = {
         { arabic: 'طَالِبٌ', translit: 'taalibun', meaning: 'a student' },
         { arabic: 'مُعَلِّمٌ', translit: "mu'allimun", meaning: 'a teacher' },
       ],
-      say: [W('man-haadha', 'مَنْ هَذَا؟'), W('haadha-walad', 'هَذَا وَلَدٌ.'), W('haadha-talib', 'هَذَا طَالِبٌ.'), W('haadha-muallim', 'هَذَا مُعَلِّمٌ.')],
+      say: [W('man-haadha', 'مَنْ هَذَا؟'), W('maa-haadha', 'مَا هَذَا؟'), W('haadha-walad', 'هَذَا وَلَدٌ.'), W('haadha-talib', 'هَذَا طَالِبٌ.'), W('haadha-muallim', 'هَذَا مُعَلِّمٌ.')],
       explain: ['This is the key idea of the lesson: مَا for things, مَنْ for people.', 'Remember the joke in the story: Sam said قِطٌّ, then corrected himself. Sam is a person, so مَنْ.'],
     },
     {
@@ -179,6 +179,7 @@ export const lessonF01: Lesson = {
       station: 'athar',
       layout: 'question',
       scene: 'fk1Talk',
+      say: [W('maa-haadha', 'مَا هَذَا؟'), W('haadha-miftah', 'هَذَا مِفْتَاحٌ.')],
       lines: ['Now we play Lina and Sam\'s game, in Arabic only.', 'Hide something. Your partner asks: مَا هَذَا؟'],
       interaction: { kind: 'ask', prompt: 'Play three rounds. Can you also use مَنْ هَذَا؟ with a photo of someone?', reveal: 'مُمْتَازٌ! You just had a whole conversation in Arabic.' },
       explain: ['Play the game with real objects: the child hides, you ask, then swap.', 'Use a family photo for مَنْ هَذَا؟ The child answers هَذَا + the word (أَبِي, my father, is a bonus).'],
@@ -188,6 +189,7 @@ export const lessonF01: Lesson = {
       station: 'ahd',
       layout: 'mission',
       scene: 'fk1Mission',
+      say: [W('maa-haadha', 'مَا هَذَا؟'), W('haadha-sarir', 'هَذَا سَرِيرٌ!')],
       lines: ['At home, Sam plays the game with his little sister.', 'He points: مَا هَذَا؟ She laughs: هَذَا سَرِيرٌ!'],
       interaction: {
         kind: 'choose',
@@ -201,6 +203,7 @@ export const lessonF01: Lesson = {
       station: 'ahd',
       layout: 'next',
       scene: 'fk1Next',
+      say: [W('a-haadha-qitt', 'أَهَذَا قِطٌّ؟')],
       lines: ['Lina holds up a toy cat.', 'Sam says: "أَهَذَا قِطٌّ؟" Is this a cat?', 'Next time: asking yes-or-no questions.'],
       explain: ['End on the new question. Let the child guess what أَ at the start does.'],
     },

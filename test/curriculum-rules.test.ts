@@ -78,10 +78,15 @@ describe('Curriculum lessons follow docs/curriculum/RULES.md', () => {
         });
       });
 
-      it('clip ids are unique and kebab-case, and Quran clips are never a clone voice (design §3a)', () => {
+      it('clip ids name one recording and are kebab-case, and Quran clips are never a clone voice (design §3a)', () => {
         const clips = lesson.pages.flatMap((p) => p.say ?? []);
-        const ids = clips.map((c) => c.id);
-        assert.equal(new Set(ids).size, ids.length, 'duplicate clip id');
+        // One id is one recording: a clip may come back on another page, but always with the same text and voice.
+        const seen = new Map<string, string>();
+        for (const c of clips) {
+          const key = `${c.voice}|${c.text}`;
+          assert.ok(!seen.has(c.id) || seen.get(c.id) === key, `clip id ${c.id} is used for two different recordings`);
+          seen.set(c.id, key);
+        }
         for (const c of clips) {
           assert.match(c.id, /^[a-z0-9-]+$/, `clip id ${c.id}`);
           if (c.quran) assert.ok(c.voice === 'reciter' && /^\d{1,3}:\d{1,3}$/.test(c.ayah ?? ''), `${c.id}: an ayah needs the reciter and a surah:ayah`);

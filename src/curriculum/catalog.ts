@@ -8,6 +8,7 @@ import { lesson03Teens } from './content/zad-teens/l03-one-not-many.js';
 import { lesson01Adults } from './content/zad-adults/l01-the-man-no-one-knew.js';
 import { lesson02Adults } from './content/zad-adults/l02-a-world-that-should-not-exist.js';
 import { lessonA01 } from './content/literacy-a-kids/l01-dots-make-the-difference.js';
+import { lessonF01 } from './content/fusha-kids/l01-what-is-this.js';
 import { lessonB01 } from './content/literacy-b/l01-same-letters-new-marks.js';
 import { lesson03Adults } from './content/zad-adults/l03-the-emptiness-fame-cannot-fill.js';
 
@@ -158,6 +159,25 @@ export const SUBJECTS: SubjectEntry[] = [
     lessons: { 1: lessonA01 },
   },
   {
+    id: 'fusha-kids',
+    group: 'fusha',
+    title: 'Fusha Arabic · Kids',
+    titleAr: 'الفصحى · للأطفال',
+    version: 'Kids',
+    versionAr: 'الأطفال',
+    audience: '6–11',
+    art: '/curriculum/zad-kids/l01/cover.webp',
+    parts: [{ title: 'Level 1', titleAr: 'المستوى الأول', from: 1 }],
+    // docs/curriculum/fusha/MAP.md (Claude's draft, 2026-10-25, for the owner's review).
+    plan: [
+      'What Is This?', 'Is This a Cat?', 'This One, That One', 'The Door and a Door', 'Where Is the Ball?', 'Whose Book?',
+      'My Book, Your Book', 'She and He', 'Big and Small', 'Colours', 'Who Are You?', 'Counting to Ten', 'Review and Story',
+      'I Went, You Went', 'We Went', 'From and To', 'What Did You Eat?', 'Days of the Week', 'These and Those', 'Many Books',
+      'Level 1 Story',
+    ],
+    lessons: { 1: lessonF01 },
+  },
+  {
     id: 'literacy-b-kids',
     group: 'quran',
     title: 'Quranic Reading Rules',
@@ -242,7 +262,6 @@ export const GROUPS: GroupEntry[] = [
     tagline: 'Understand it, then speak it: stories first, rules after, words that come back until they stay.',
     taglineAr: 'افهمها وبعدين اتكلمها: الحكاية الأول، والقاعدة بعدها، والكلمات بترجع لحد ما تثبت.',
     planned: [
-      { version: 'Kids', versionAr: 'الأطفال', audience: '6–11' },
       { version: '12+', versionAr: '12 سنة فأكبر', audience: '12+' },
     ],
   },
