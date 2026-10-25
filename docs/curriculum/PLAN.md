@@ -593,3 +593,9 @@ B3–B5 → continue lesson by lesson.
   Adults L2–L3 reviewed. Seerah will follow a presentation the owner will send, with Ar-Raheeq al-Makhtum as the source
   (facts only, our wording, all three ages). Next: a written plan for the other subjects (literacy, Quran, Hifz tests,
   languages); Scholar's Path postponed.
+- 2026-10-25 — **[Decided] Design for every subject approved** (`docs/superpowers/specs/2026-10-25-subjects-curricula-design.md`):
+  Literacy (general A in 3 versions, Quranic rules B, Franco C) as the entry door to Quran, Fusha (3 levels) and
+  Egyptian; Hifz as a test generator; English by goal; Seerah as a series (Kids; Teens + Adults) from The Sealed Nectar
+  in the style of the owner's deck. Voice: three clones of the owner (English, Egyptian, Fusha; scripts in
+  `voice/clone-scripts.md`). Books moved to `Documents\watazawwado-sources` (sources.md §H). Thursday prototypes:
+  Literacy A Kids L1, Literacy B Kids L1, Fusha Kids L1, Seerah Ep. 1 if time holds.

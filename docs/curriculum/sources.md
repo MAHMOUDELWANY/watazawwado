@@ -100,3 +100,21 @@ Facts are not owned; we write them in our own words and never copy text or image
 ## F. Files the owner needs to download
 
 None yet. Requests will list: name, official link, why, exact pages/chapters, what is extracted.
+
+## H. Course books (scope only, owner's copies, 2026-10-25)
+
+Local folder `C:\Users\ahmed\Documents\watazawwado-sources\` (never committed). All are copyrighted: we take scope,
+order and facts; never their wording, exercises, dialogues or illustrations (RULES §1.4). Design:
+`docs/superpowers/specs/2026-10-25-subjects-curricula-design.md`.
+
+| Folder | Books | Role |
+|---|---|---|
+| `literacy` | Arabic Bilqalam (241 slides), Nour al-Bayan (modern ed.), Fath ar-Rahman, Steps for writing the letters | Literacy A/B order, drills, stroke order (Bilqalam: inspiration only) |
+| `tajweed` | Jannat al-Quran Arabic & Tajweed / Tajweed Books 1, 2, 4; Taysir ar-Rahman (Su'ad Abdul-Hamid) | Literacy B, Tajweed levels; Taysir to check accuracy |
+| `fusha` | Madinah Arabic Reader 1–6, 8; Lughatuna al-Fusha 2–3; Jannat Quranic Arabic 1–3 | Fusha levels 1–3 |
+| `egyptian` | Kallimni 'Arabi: Bishweesh, Kallimni, Aktar, Mazboot, fi Kull Haaga; Egyptian Colloquial; ECA for the Advanced Learner 1–3 | Egyptian (Arabic script and Franco) |
+| `english\phonics`, `english\jolly-phonics-stories` | Oxford Phonics World 1–2 (SB, WB); 67 Jolly Phonics readers | English Kids |
+| `english\courses` | English File 4th ed. Beginner/Elementary/Intermediate; English for Everyone (grammar, vocabulary); Vocabulary in Use Elementary; Complete IELTS 4–5, 5–6.5, 6.5–7.5 | English general and exams |
+| `english\method-grammar` | How to Teach Grammar/Reading/Vocabulary Like a Pro; English Grammar: A University Course; Academic Writing Course | Teacher method, grammar reference |
+| `seerah` | The Sealed Nectar (Ar-Raheeq al-Makhtum, English); owner's deck Episode 1 | Seerah facts; the deck is the owner's own design model |
+| `reference-islamic` | Minhaj al-Muslim vol. 1; Jannat Islamic Studies 1–4 | Reference only (Zad, Scholar's Path later) |
