@@ -12,8 +12,8 @@ import { useReduce } from './Stage';
 export const LETTERS: Record<string, { strokes: string[]; dots: { x: number; y: number }[] }> = {
   'ا': { strokes: ['M 156 40 C 150 100, 148 150, 150 205'], dots: [] },
   'ب': { strokes: ['M 268 128 C 276 176, 252 200, 196 200 L 96 200 C 46 200, 26 186, 30 150'], dots: [{ x: 150, y: 248 }] },
-  'ت': { strokes: ['M 268 128 C 276 176, 252 200, 196 200 L 96 200 C 46 200, 26 186, 30 150'], dots: [{ x: 172, y: 140 }, { x: 128, y: 140 }] },
-  'ث': { strokes: ['M 268 128 C 276 176, 252 200, 196 200 L 96 200 C 46 200, 26 186, 30 150'], dots: [{ x: 172, y: 145 }, { x: 128, y: 145 }, { x: 150, y: 108 }] },
+  'ت': { strokes: ['M 268 128 C 276 176, 252 200, 196 200 L 96 200 C 46 200, 26 186, 30 150'], dots: [{ x: 176, y: 146 }, { x: 124, y: 146 }] },
+  'ث': { strokes: ['M 268 128 C 276 176, 252 200, 196 200 L 96 200 C 46 200, 26 186, 30 150'], dots: [{ x: 178, y: 150 }, { x: 122, y: 150 }, { x: 150, y: 106 }] },
   'ن': { strokes: ['M 232 112 C 244 196, 214 240, 150 240 C 88 240, 58 206, 68 156'], dots: [{ x: 150, y: 160 }] },
   'ي': {
     strokes: ['M 232 118 C 196 104, 160 126, 186 160 C 210 192, 262 206, 240 240 C 218 274, 112 272, 70 226'],
@@ -32,8 +32,10 @@ export function lettersIn(text: string): string[] {
  * Writes one letter with its feet on (x, y) of the canvas: strokes draw in order, then the dots pop in. `instant` (or
  * reduced motion) shows the finished letter at once. `size` is the box width in canvas pixels.
  */
-export function WriteLetter({ ch, x, y, size = 300, color = CRIMSON, width = 30, delay = 0, speed = 1, instant = false }: {
+export function WriteLetter({ ch, x, y, size = 300, color = CRIMSON, width = 30, delay = 0, speed = 1, instant = false, dots = true }: {
   ch: string; x: number; y: number; size?: number; color?: string; width?: number; delay?: number; speed?: number; instant?: boolean;
+  /** false draws the body only (a lesson can drop the dots in on a later build step). */
+  dots?: boolean;
 }) {
   const reduce = useReduce();
   const now = instant || reduce;
@@ -48,7 +50,7 @@ export function WriteLetter({ ch, x, y, size = 300, color = CRIMSON, width = 30,
           initial={{ pathLength: now ? 1 : 0 }} animate={{ pathLength: 1 }}
           transition={{ duration: now ? 0 : strokeDur, delay: now ? 0 : delay + i * strokeDur, ease: [0.65, 0, 0.35, 1] }} />
       ))}
-      {L.dots.map((p, i) => (
+      {dots && L.dots.map((p, i) => (
         <motion.circle key={`d${i}`} cx={p.x} cy={p.y} r={width * 0.62} fill={color}
           initial={{ scale: now ? 1 : 0 }} animate={{ scale: 1 }} style={{ transformOrigin: '50% 50%', transformBox: 'fill-box' as never }}
           transition={now ? { duration: 0 } : { type: 'spring', bounce: 0.5, delay: delay + L.strokes.length * strokeDur + i * 0.2 }} />

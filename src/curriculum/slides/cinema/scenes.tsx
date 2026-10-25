@@ -14,6 +14,7 @@ import { A2CoverGraphic, A2RecallGraphic, A2QuestionGraphic, A2HawkingGraphic, A
 import { A3CoverGraphic, A3RecallGraphic, A3QuestionGraphic, A3BradyGraphic, A3CarreyGraphic, A3HungerGraphic, A3FitrahGraphic, A3BornGraphic, A3NoiseGraphic, A3SeaGraphic, A3IkrimahGraphic, A3FeelGraphic, A3DankGraphic, A3GhinaGraphic, A3RestGraphic, A3NightGraphic, A3TwoGraphic, A3CaseGraphic, A3Case2Graphic, A3Case3Graphic, A3Case4Graphic, A3NotebookGraphic, A3NextGraphic } from '../motion/g-a3';
 import { LookAMeetGraphic, LookAWordGraphic, LookBMeetGraphic, LookBWordGraphic, LookCMeetGraphic, LookCWordGraphic } from '../motion/g-literacy-looks';
 import { LbCoverGraphic, LbStuckGraphic, LbGuessGraphic, LbBestGraphic, LbMapGraphic, LbCircleGraphic, LbHelpersGraphic, LbUthmanGraphic, LbSpotGraphic, LbAlongGraphic, LbMissionGraphic, LbNextGraphic } from '../motion/g-lb1';
+import { La1CoverGraphic, La1NoteGraphic, La1GuessGraphic, La1AlifGraphic, La1BaaGraphic, La1TaaGraphic, La1ThaaGraphic, La1TrickGraphic, La1FindGraphic, La1WordGraphic, La1MissionGraphic, La1NextGraphic } from '../motion/g-la1';
 import { LaneGraphic, MondayGraphic, GravesGraphic, CountGraphic, CaseOmarGraphic, CaseLaylaGraphic, CaseColleagueGraphic, CaseOnlineGraphic, NotebookGraphic } from '../motion/g-life';
 
 /**
@@ -138,6 +139,13 @@ const onStage = (stage: StageDef): Scene => ({ stage, still: '', shots: [] });
 /* ---------- the direction for every Adults Lesson 1 page ---------- */
 
 export const SCENES: Partial<Record<SceneId, Scene>> = {
+  // Literacy A · Kids · Lesson 1 (look A, letter friends)
+  la1Cover: onStage({ tone: 'light', Graphic: La1CoverGraphic }), la1Note: onStage({ tone: 'light', Graphic: La1NoteGraphic }),
+  la1Guess: onStage({ tone: 'light', Graphic: La1GuessGraphic, keepOnAsk: true }), la1Alif: onStage({ tone: 'light', Graphic: La1AlifGraphic }),
+  la1Baa: onStage({ tone: 'light', Graphic: La1BaaGraphic }), la1Taa: onStage({ tone: 'light', Graphic: La1TaaGraphic }),
+  la1Thaa: onStage({ tone: 'light', Graphic: La1ThaaGraphic }), la1Trick: onStage({ tone: 'light', Graphic: La1TrickGraphic }),
+  la1Find: onStage({ tone: 'light', Graphic: La1FindGraphic }), la1Word: onStage({ tone: 'light', Graphic: La1WordGraphic }),
+  la1Mission: onStage({ tone: 'light', Graphic: La1MissionGraphic }), la1Next: onStage({ tone: 'light', Graphic: La1NextGraphic }),
   // Literacy B · Lesson 1
   lbCover: onStage({ tone: 'light', Graphic: LbCoverGraphic }), lbStuck: onStage({ tone: 'light', Graphic: LbStuckGraphic }),
   lbGuess: onStage({ tone: 'light', Graphic: LbGuessGraphic, keepOnAsk: true }), lbBest: onStage({ tone: 'light', Graphic: LbBestGraphic, marks: ['learn the Quran', 'teach it'] }),

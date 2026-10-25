@@ -7,6 +7,7 @@ import { lesson02Teens } from './content/zad-teens/l02-did-it-all-just-happen.js
 import { lesson03Teens } from './content/zad-teens/l03-one-not-many.js';
 import { lesson01Adults } from './content/zad-adults/l01-the-man-no-one-knew.js';
 import { lesson02Adults } from './content/zad-adults/l02-a-world-that-should-not-exist.js';
+import { lessonA01 } from './content/literacy-a-kids/l01-dots-make-the-difference.js';
 import { lessonB01 } from './content/literacy-b/l01-same-letters-new-marks.js';
 import { lesson03Adults } from './content/zad-adults/l03-the-emptiness-fame-cannot-fill.js';
 
@@ -130,6 +131,33 @@ export const SUBJECTS: SubjectEntry[] = [
     lessons: { 1: lesson01Adults, 2: lesson02Adults, 3: lesson03Adults },
   },
   {
+    id: 'literacy-a-kids',
+    group: 'literacy',
+    title: 'Reading Arabic · Kids',
+    titleAr: 'القرائية · للأطفال',
+    version: 'Kids',
+    versionAr: 'الأطفال',
+    audience: '6–11',
+    art: '/curriculum/zad-kids/l01/cover.webp',
+    parts: [
+      { title: 'The Letters', titleAr: 'الحروف', from: 1 },
+      { title: 'Letters Change Shape', titleAr: 'الحروف بتغيّر شكلها', from: 10 },
+      { title: 'Short Vowels', titleAr: 'الحركات', from: 14 },
+      { title: 'Sukoon, Shadda, Tanween', titleAr: 'السكون والشدة والتنوين', from: 19 },
+      { title: 'Long Vowels', titleAr: 'المدود', from: 22 },
+      { title: 'Reading', titleAr: 'القراءة', from: 27 },
+    ],
+    // docs/curriculum/literacy/MAP.md (Claude's draft, 2026-10-25, for the owner's review).
+    plan: [
+      'Dots Make the Difference', 'The Cup Family', 'Little Hooks', 'Teeth and Dots', 'The Big Bowls', 'The Eye Letters',
+      'Loops and Tails', 'Round Friends', 'All Twenty-Eight', 'Start, Middle, End', "Letters That Don't Hold Hands",
+      'Shapes in Words (1)', 'Shapes in Words (2)', 'Fatha', 'Kasra', 'Damma', 'Three Little Vowels', 'My First Words',
+      'Sukoon: the Stop', 'Shadda: Say It Twice', 'Tanween', 'Alif Stretches', 'Waw Stretches', 'Yaa Stretches',
+      'Al-: The Sun and Moon Letters', 'Ta Marbuta and Alif Maqsura', 'Short Sentences', 'My First Story', 'I Can Read!',
+    ],
+    lessons: { 1: lessonA01 },
+  },
+  {
     id: 'literacy-b-kids',
     group: 'quran',
     title: 'Quranic Reading Rules',
@@ -191,7 +219,6 @@ export const GROUPS: GroupEntry[] = [
     tagline: 'From the first letter to reading on your own. The door to the Quran, Fusha and Egyptian.',
     taglineAr: 'من أول حرف لحد ما تقرا لوحدك. الباب للقرآن والفصحى والمصري.',
     planned: [
-      { version: 'Kids', versionAr: 'الأطفال', audience: '6–11' },
       { version: 'Teens', versionAr: 'الشباب', audience: '12–17' },
       { version: 'Adults', versionAr: 'الكبار', audience: '18+' },
       { version: 'Franco', versionAr: 'فرانكو', audience: '18+' },

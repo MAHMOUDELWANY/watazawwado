@@ -63,7 +63,7 @@ export function StagePage({ page, v, lesson, stage, interaction, cover = false, 
         animate={{ scale: started ? 0.46 : 1, y: started || cover ? 0 : 200 }} transition={{ duration: 0.7 * quick, ease }}>
         {(cover || next) && (
           <p className="m-0 mb-4 font-sans font-bold uppercase" style={{ fontSize: 20, letterSpacing: '0.2em', color: tone === 'light' ? CRIMSON : GOLD }}>
-            {cover ? lesson.part ?? `Lesson ${lesson.number}` : 'Next time on Zad Essentials'}
+            {cover ? lesson.part ?? `Lesson ${lesson.number}` : `Next time on ${lesson.subjectTitle.split(' · ')[0]}`}
           </p>
         )}
         {cover && <p lang="ar" dir="rtl" className="m-0 mb-2 w-fit font-bold" style={{ fontFamily: 'var(--font-display-ar)', fontSize: 46, color: tone === 'light' ? '#8B1A1E' : GOLD }}>{lesson.titleAr}</p>}
