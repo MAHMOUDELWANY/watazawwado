@@ -22,3 +22,10 @@ describe('Voice clips', () => {
     assert.equal(await playClip({ play: () => Promise.resolve() }), 'played');
   });
 });
+
+describe('Voice clips: review fixes', () => {
+  it('an interrupted clip (AbortError) is not reported as missing', async () => {
+    const err = Object.assign(new Error('interrupted'), { name: 'AbortError' });
+    assert.equal(await playClip({ play: () => Promise.reject(err) }), 'aborted');
+  });
+});

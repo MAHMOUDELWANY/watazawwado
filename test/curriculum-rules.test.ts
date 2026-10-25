@@ -89,6 +89,7 @@ describe('Curriculum lessons follow docs/curriculum/RULES.md', () => {
         }
         for (const c of clips) {
           assert.match(c.id, /^[a-z0-9-]+$/, `clip id ${c.id}`);
+          if (c.voice === 'reciter') assert.ok(c.quran, `${c.id}: the reciter only reads ayat`);
           if (c.quran) assert.ok(c.voice === 'reciter' && /^\d{1,3}:\d{1,3}$/.test(c.ayah ?? ''), `${c.id}: an ayah needs the reciter and a surah:ayah`);
         }
       });

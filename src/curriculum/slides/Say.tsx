@@ -8,12 +8,15 @@ let current: HTMLAudioElement | null = null;
 export function Say({ subject, lesson, clip, children, style }: { subject: string; lesson: number; clip: Clip; children: React.ReactNode; style?: React.CSSProperties }) {
   const [missing, setMissing] = useState(false);
   const [playing, setPlaying] = useState(false);
+  // A clip never keeps talking over the next page.
+  React.useEffect(() => () => { current?.pause(); }, []);
   const hear = async (e: React.MouseEvent) => {
     e.stopPropagation(); // a tap on a clip must not advance the build step
     current?.pause();
     const audio = new Audio(clipUrl(subject, lesson, clip));
     current = audio;
     audio.onended = () => setPlaying(false);
+    audio.onpause = () => setPlaying(false);
     setPlaying(true);
     const r = await playClip(audio);
     if (r === 'missing') { setPlaying(false); setMissing(true); }

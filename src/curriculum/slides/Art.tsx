@@ -4,9 +4,9 @@ import type { SceneId } from '../types';
 
 // Scene art for the slide system v2. Own SVG (RULES §6b). Literal brand hex so art looks the same in light and dark
 // (docs/design-system.md §1). Prophets and companions are never drawn (PLAN §3.9). Canvas: 640 × 560.
-/** URL of a curriculum file: paths starting with a subject folder ('zad-teens/l01/doors.webp') are used as they are;
+/** URL of a curriculum file: paths starting with a subject folder ('zad-teens/l01/doors.webp', 'seerah-teens/ep01/x.webp') are used as they are;
  *  bare paths are Kids files ('l02/sky.webp' → zad-kids). */
-export const asset = (path: string) => `/curriculum/${path.startsWith('zad-') ? path : `zad-kids/${path}`}`;
+export const asset = (path: string) => `/curriculum/${/^[a-z]+-[a-z-]+\//.test(path) ? path : `zad-kids/${path}`}`;
 
 export const P = {
   ink: '#1E1410',

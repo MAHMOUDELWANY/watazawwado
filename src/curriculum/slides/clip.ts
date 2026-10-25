@@ -12,12 +12,12 @@ export function clipUrl(subject: string, lesson: number, clip: Clip): string {
   return `/curriculum/${subject}/audio/l${pad(lesson, 2)}-${clip.id}.mp3`;
 }
 
-/** Plays and never throws: a clip not recorded yet just reports 'missing'. */
-export async function playClip(audio: { play: () => Promise<void> }): Promise<'played' | 'missing'> {
+/** Plays and never throws: a clip not recorded yet reports 'missing'; one cut short by another tap reports 'aborted'. */
+export async function playClip(audio: { play: () => Promise<void> }): Promise<'played' | 'missing' | 'aborted'> {
   try {
     await audio.play();
     return 'played';
-  } catch {
-    return 'missing';
+  } catch (e) {
+    return (e as { name?: string })?.name === 'AbortError' ? 'aborted' : 'missing';
   }
 }
