@@ -6,6 +6,8 @@ import { lesson01Teens } from './content/zad-teens/l01-the-stranger-with-no-dust
 import { lesson02Teens } from './content/zad-teens/l02-did-it-all-just-happen.js';
 import { lesson03Teens } from './content/zad-teens/l03-one-not-many.js';
 import { lesson01Adults } from './content/zad-adults/l01-the-man-no-one-knew.js';
+import { lesson02Adults } from './content/zad-adults/l02-a-world-that-should-not-exist.js';
+import { lesson03Adults } from './content/zad-adults/l03-the-emptiness-fame-cannot-fill.js';
 
 /** A part of a curriculum (a unit in its MAP.md): its title and the number of its first lesson. */
 export interface PartEntry { title: string; titleAr: string; from: number }
@@ -124,7 +126,7 @@ export const SUBJECTS: SubjectEntry[] = [
       'He Sees You', 'For Whom?', 'The Tongue and the Screen', 'Home', 'Haya: Gaze, Dress and Boundaries', 'Clean Money',
       'Proud, Just and Inviting', 'My Zad for the Road',
     ],
-    lessons: { 1: lesson01Adults },
+    lessons: { 1: lesson01Adults, 2: lesson02Adults, 3: lesson03Adults },
   },
 ];
 

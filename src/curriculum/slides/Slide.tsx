@@ -729,7 +729,7 @@ function AdultsLayout({ page, v, lesson, interaction }: { page: LessonPage; v: R
   const Build = BUILDS[page.scene];
   const built = (page.items || []).map((it, i) => (i < v.items ? it : null));
   // Adults review: a case file on the rings of the three levels (owner, 2026-10-24), drawn full-screen.
-  if (c === 'arena' && page.interaction?.kind === 'sort') return <>{interaction ?? <ReviewIntro title={page.title} prompt={page.interaction.prompt} />}</>;
+  if (c === 'arena' && page.interaction?.kind === 'sort') return <>{interaction ?? <ReviewIntro title={page.title} prompt={page.interaction.prompt} bins={page.interaction.bins.length} look={page.interaction.look} />}</>;
   if (c === 'arena') {
     return (
       <div className="absolute left-[120px] right-[110px] top-[140px] bottom-[120px] slide-scroll space-y-4 overflow-y-auto pr-4">

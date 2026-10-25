@@ -10,6 +10,8 @@ import { KneesGraphic, IhsanPeopleGraphic, NextPeopleGraphic } from '../motion/g
 import { ImanGraphic, LevelsGraphic, GapGraphic, HorizonGraphic, KnowGraphic, SeeGraphic, InsideGraphic } from '../motion/g-levels';
 import { KidsStrangerGraphic, KidsCastleGraphic } from '../motion/g-kids';
 import { TeensStrangerGraphic, TeensOptionsGraphic, TeensBossesGraphic } from '../motion/g-teens';
+import { A2CoverGraphic, A2RecallGraphic, A2QuestionGraphic, A2HawkingGraphic, A2CauseGraphic, A2BeganGraphic, A2ThreeGraphic, A2NothingGraphic, A2ItselfGraphic, A2TurGraphic, A2JubayrGraphic, A2YaqeenGraphic, A2BackGraphic, A2HowGraphic, A2FirstGraphic, A2OrderGraphic, A2SignsGraphic, A2NowGraphic, A2CaseGraphic, A2Case2Graphic, A2Case3Graphic, A2Case4Graphic, A2NotebookGraphic, A2NextGraphic } from '../motion/g-a2';
+import { A3CoverGraphic, A3RecallGraphic, A3QuestionGraphic, A3BradyGraphic, A3CarreyGraphic, A3HungerGraphic, A3FitrahGraphic, A3BornGraphic, A3NoiseGraphic, A3SeaGraphic, A3IkrimahGraphic, A3FeelGraphic, A3DankGraphic, A3GhinaGraphic, A3RestGraphic, A3NightGraphic, A3TwoGraphic, A3CaseGraphic, A3Case2Graphic, A3Case3Graphic, A3Case4Graphic, A3NotebookGraphic, A3NextGraphic } from '../motion/g-a3';
 import { LaneGraphic, MondayGraphic, GravesGraphic, CountGraphic, CaseOmarGraphic, CaseLaylaGraphic, CaseColleagueGraphic, CaseOnlineGraphic, NotebookGraphic } from '../motion/g-life';
 
 /**
@@ -184,6 +186,57 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
     stage: { tone: 'light', Graphic: NotebookGraphic }, still: 'notebook', light: { x: 85, y: 12, strength: 0.7 }, shots: [{ x: 70, y: 35, z: 1.05, focus: 0.15, pan: 0.3 }, { x: 62, y: 62, z: 1.2, focus: 0.7 }, { x: 58, y: 70, z: 1.35, focus: 0.9, pan: -0.2 }] },
   a1Next: {
     stage: { tone: 'dark', Graphic: NextPeopleGraphic }, still: 'night', shots: [{ x: 50, y: 50, z: 1.05, focus: 0.2, pan: -0.3 }, { x: 45, y: 45, z: 1.2, focus: 0.1, pan: 0 }, { x: 40, y: 40, z: 1.35, focus: 0.05, pan: 0.2 }], overlay: ({ k }) => <NextOverlay k={k} /> },
+
+  /* Adults Lesson 2 (2026-10-25): every page a motion stage, no stills */
+  a2Cover: onStage({ tone: 'dark', Graphic: A2CoverGraphic }),
+  a2Recall: onStage({ tone: 'light', Graphic: A2RecallGraphic }),
+  a2Question: onStage({ tone: 'light', Graphic: A2QuestionGraphic }),
+  a2Hawking: onStage({ tone: 'light', Graphic: A2HawkingGraphic }),
+  a2Cause: onStage({ tone: 'light', Graphic: A2CauseGraphic }),
+  a2Began: onStage({ tone: 'dark', Graphic: A2BeganGraphic }),
+  a2Three: onStage({ tone: 'light', Graphic: A2ThreeGraphic }),
+  a2Nothing: onStage({ tone: 'light', Graphic: A2NothingGraphic }),
+  a2Itself: onStage({ tone: 'light', Graphic: A2ItselfGraphic }),
+  a2Tur: onStage({ tone: 'light', Graphic: A2TurGraphic, marks: ['from nothing', 'the creators'] }),
+  a2Jubayr: onStage({ tone: 'dark', Graphic: A2JubayrGraphic, marks: ['my heart almost flew'] }),
+  a2Yaqeen: onStage({ tone: 'light', Graphic: A2YaqeenGraphic, marks: ['no certainty'] }),
+  a2Back: onStage({ tone: 'light', Graphic: A2BackGraphic }),
+  a2How: onStage({ tone: 'light', Graphic: A2HowGraphic }),
+  a2First: onStage({ tone: 'light', Graphic: A2FirstGraphic, marks: ['the First'] }),
+  a2Order: onStage({ tone: 'dark', Graphic: A2OrderGraphic }),
+  a2Signs: onStage({ tone: 'dark', Graphic: A2SignsGraphic, marks: ['on the horizons', 'within themselves'] }),
+  a2Now: onStage({ tone: 'dark', Graphic: A2NowGraphic }),
+  a2Case: onStage({ tone: 'light', Graphic: A2CaseGraphic }),
+  a2Case2: onStage({ tone: 'light', Graphic: A2Case2Graphic }),
+  a2Case3: onStage({ tone: 'light', Graphic: A2Case3Graphic }),
+  a2Case4: onStage({ tone: 'light', Graphic: A2Case4Graphic }),
+  a2Notebook: onStage({ tone: 'light', Graphic: A2NotebookGraphic }),
+  a2Next: onStage({ tone: 'dark', Graphic: A2NextGraphic }),
+
+  /* Adults Lesson 3 (2026-10-25) */
+  a3Cover: onStage({ tone: 'dark', Graphic: A3CoverGraphic }),
+  a3Recall: onStage({ tone: 'light', Graphic: A3RecallGraphic }),
+  a3Question: onStage({ tone: 'light', Graphic: A3QuestionGraphic }),
+  a3Brady: onStage({ tone: 'light', Graphic: A3BradyGraphic }),
+  a3Carrey: onStage({ tone: 'light', Graphic: A3CarreyGraphic }),
+  a3Hunger: onStage({ tone: 'light', Graphic: A3HungerGraphic }),
+  a3Fitrah: onStage({ tone: 'light', Graphic: A3FitrahGraphic, marks: ['the natural way of Allah', 'no altering'] }),
+  a3Born: onStage({ tone: 'light', Graphic: A3BornGraphic, marks: ['on the fitrah'] }),
+  a3Noise: onStage({ tone: 'light', Graphic: A3NoiseGraphic }),
+  a3Sea: onStage({ tone: 'dark', Graphic: A3SeaGraphic, marks: ['making their worship purely His'] }),
+  a3Ikrimah: onStage({ tone: 'dark', Graphic: A3IkrimahGraphic, marks: ['nothing else will save me on land'] }),
+  a3Feel: onStage({ tone: 'light', Graphic: A3FeelGraphic }),
+  a3Dank: onStage({ tone: 'light', Graphic: A3DankGraphic, marks: ['a cramped life', 'turns away from My remembrance'] }),
+  a3Ghina: onStage({ tone: 'light', Graphic: A3GhinaGraphic, marks: ['the richness of the soul'] }),
+  a3Rest: onStage({ tone: 'dark', Graphic: A3RestGraphic, marks: ['hearts find rest'] }),
+  a3Night: onStage({ tone: 'dark', Graphic: A3NightGraphic }),
+  a3Two: onStage({ tone: 'light', Graphic: A3TwoGraphic }),
+  a3Case: onStage({ tone: 'light', Graphic: A3CaseGraphic }),
+  a3Case2: onStage({ tone: 'light', Graphic: A3Case2Graphic }),
+  a3Case3: onStage({ tone: 'light', Graphic: A3Case3Graphic }),
+  a3Case4: onStage({ tone: 'light', Graphic: A3Case4Graphic }),
+  a3Notebook: onStage({ tone: 'light', Graphic: A3NotebookGraphic }),
+  a3Next: onStage({ tone: 'dark', Graphic: A3NextGraphic }),
 
   /* Kids and Teens motion stages (2026-10-24; prototype pages for the owner) */
   stranger: onStage({ tone: 'light', Graphic: KidsStrangerGraphic, marks: ['dust from a journey', 'none of us knew him'] }),

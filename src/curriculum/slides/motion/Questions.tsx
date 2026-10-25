@@ -64,6 +64,22 @@ function score(interaction: Sort, first: Record<number, string>): Score {
   return r;
 }
 
+/** The answer targets. Levels nest as rings (Lesson 1); bins that are not levels sit side by side in a row. */
+type Target = { x: number; y: number; r: number; color: string };
+function targets(n: number, look: 'rings' | 'row' = 'rings'): Target[] {
+  if (look === 'rings' && n === 3) return RADII.map((r, i) => ({ ...C, r, color: RING_COLORS[i] }));
+  const r = n === 2 ? 170 : 122;
+  const gap = n === 2 ? 380 : 270;
+  const colors = n === 2 ? [TEAL, CRIMSON] : RING_COLORS;
+  return Array.from({ length: n }, (_, i) => ({ x: C.x + (i - (n - 1) / 2) * gap, y: C.y, r, color: colors[i % colors.length] }));
+}
+
+/** Where the k-th answered moment sits inside a row target: a small grid under its label. */
+function rowDotAt(t: Target, k: number) {
+  const col = k % 3, row = Math.floor(k / 3);
+  return { x: t.x + (col - 1) * 40, y: t.y + 10 + row * 40 };
+}
+
 /** Where the i-th answered moment sits as a dot inside its ring. */
 function dotAt(bin: number, k: number) {
   // Inside Ihsan the dots sit in a small arc under its label; in the outer rings they run round the band.
@@ -76,6 +92,8 @@ export function LevelsReview({ title, interaction, onCorrect, onResult }: { titl
   const reduce = useReducedMotion();
   const cards = interaction.cards;
   const bins = interaction.bins;
+  const row = interaction.look === 'row' || bins.length !== 3;
+  const T = targets(bins.length, row ? 'row' : 'rings');
   const [i, setI] = useState(0);
   const [first, setFirst] = useState<Record<number, string>>({});
   const [picked, setPicked] = useState<string | null>(null);
@@ -137,7 +155,7 @@ export function LevelsReview({ title, interaction, onCorrect, onResult }: { titl
               <p className="m-0 font-sans font-bold uppercase" style={{ fontSize: 13, letterSpacing: '0.18em', color: CRIMSON }}>{interaction.prompt.split('.')[0]}</p>
               <p className="m-0 mt-3 font-serif" style={{ fontSize: 40, lineHeight: 1.15, color: INK_TEXT }}>{card.label}</p>
               {!answered && (
-                <p className="m-0 mt-6 font-sans font-semibold" style={{ fontSize: 18, color: 'rgba(31,22,18,0.55)' }}>Tap the ring this moment belongs to, or press 1, 2 or 3.</p>
+                <p className="m-0 mt-6 font-sans font-semibold" style={{ fontSize: 18, color: 'rgba(31,22,18,0.55)' }}>{row ? `Tap the answer on the right, or press ${bins.map((_, k) => k + 1).join(bins.length === 2 ? ' or ' : ', ')}.` : 'Tap the ring this moment belongs to, or press 1, 2 or 3.'}</p>
               )}
               {answered && (
                 <motion.div className="mt-6 rounded-[20px]" style={{ padding: '18px 22px', background: '#FFFDF8', borderLeft: `5px solid ${right ? TEAL : CRIMSON}`, boxShadow: '0 20px 40px -28px rgba(60,20,10,0.6)' }} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease }}>
@@ -159,9 +177,9 @@ export function LevelsReview({ title, interaction, onCorrect, onResult }: { titl
                   const r = result[b.id];
                   return (
                     <div key={b.id}>
-                      <div className="flex items-baseline justify-between font-sans"><span className="font-bold" style={{ fontSize: 20, color: INK_TEXT }}>{b.label} <span className="font-semibold" style={{ fontSize: 15, color: 'rgba(31,22,18,0.5)' }}>· {b.hint}</span></span><span className="font-bold" style={{ fontSize: 17, color: RING_COLORS[bi] }}>{r.correct} / {r.total}</span></div>
+                      <div className="flex items-baseline justify-between font-sans"><span className="font-bold" style={{ fontSize: 20, color: INK_TEXT }}>{b.label} <span className="font-semibold" style={{ fontSize: 15, color: 'rgba(31,22,18,0.5)' }}>· {b.hint}</span></span><span className="font-bold" style={{ fontSize: 17, color: T[bi].color }}>{r.correct} / {r.total}</span></div>
                       <div className="mt-1 h-[12px] overflow-hidden rounded-full" style={{ background: 'rgba(31,22,18,0.08)' }}>
-                        <motion.div className="h-full rounded-full" style={{ background: RING_COLORS[bi] }} initial={{ width: 0 }} animate={{ width: `${(r.correct / Math.max(1, r.total)) * 100}%` }} transition={{ duration: 1, delay: 0.3 + bi * 0.15, ease }} />
+                        <motion.div className="h-full rounded-full" style={{ background: T[bi].color }} initial={{ width: 0 }} animate={{ width: `${(r.correct / Math.max(1, r.total)) * 100}%` }} transition={{ duration: 1, delay: 0.3 + bi * 0.15, ease }} />
                       </div>
                     </div>
                   );
@@ -181,24 +199,24 @@ export function LevelsReview({ title, interaction, onCorrect, onResult }: { titl
           const isRight = answered && b.id === card.bin;
           const isWrong = answered && b.id === picked && !right;
           return (
-            <motion.circle key={b.id} cx={C.x} cy={C.y} r={RADII[bi]} fill={RING_COLORS[bi]} role="button" aria-label={`${b.label}: ${b.hint}`}
-              style={{ cursor: answered || done ? 'default' : 'pointer', transformOrigin: `${C.x}px ${C.y}px` }}
+            <motion.circle key={b.id} cx={T[bi].x} cy={T[bi].y} r={T[bi].r} fill={T[bi].color} role="button" aria-label={`${b.label}: ${b.hint}`}
+              style={{ cursor: answered || done ? 'default' : 'pointer', transformOrigin: `${T[bi].x}px ${T[bi].y}px` }}
               initial={{ scale: 0, opacity: 0 }} animate={{ scale: isRight ? 1.03 : 1, opacity: 1, x: isWrong && !reduce ? [0, -10, 10, -5, 0] : 0 }}
               whileHover={!answered && !done ? { opacity: 1, scale: 1.015 } : undefined}
-              transition={{ duration: 0.5, ease, delay: answered ? 0 : 0.15 * (2 - bi) }}
+              transition={{ duration: 0.5, ease, delay: answered ? 0 : row ? 0.15 * bi : 0.15 * (2 - bi) }}
               onClick={(e) => { e.stopPropagation(); choose(b.id); }} />
           );
         })}
         {answered && !right && (
-          <circle cx={C.x} cy={C.y} r={RADII[bins.findIndex((b) => b.id === picked)] - 4} fill="none" stroke="#FFFDF8" strokeWidth={3} strokeDasharray="8 8" style={{ pointerEvents: 'none' }} />
+          (() => { const t = T[bins.findIndex((b) => b.id === picked)]; return <circle cx={t.x} cy={t.y} r={t.r - 4} fill="none" stroke="#FFFDF8" strokeWidth={3} strokeDasharray="8 8" style={{ pointerEvents: 'none' }} />; })()
         )}
         {answered && (
-          <motion.circle key={i} cx={C.x} cy={C.y} r={RADII[bins.findIndex((b) => b.id === card.bin)]} fill="none" stroke="#FFE7A8" strokeWidth={5} style={{ filter: 'drop-shadow(0 0 12px rgba(255,214,140,0.9))', pointerEvents: 'none' }}
+          <motion.circle key={i} cx={T[bins.findIndex((b) => b.id === card.bin)].x} cy={C.y} r={T[bins.findIndex((b) => b.id === card.bin)].r} fill="none" stroke="#FFE7A8" strokeWidth={5} style={{ filter: 'drop-shadow(0 0 12px rgba(255,214,140,0.9))', pointerEvents: 'none' }}
             initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.8, ease }} />
         )}
       </svg>
       {bins.map((b, bi) => (
-        <span key={b.id} className="pointer-events-none absolute -translate-x-1/2 text-center font-sans font-bold text-white" style={{ left: C.x, top: C.y - RADII[bi] + (bi === 2 ? 30 : 18), fontSize: bi === 2 ? 20 : 19 }}>
+        <span key={b.id} className="pointer-events-none absolute -translate-x-1/2 text-center font-sans font-bold text-white" style={{ left: T[bi].x, top: row ? T[bi].y - T[bi].r + 34 : C.y - RADII[bi] + (bi === 2 ? 30 : 18), fontSize: row ? 22 : bi === 2 ? 20 : 19, width: row ? T[bi].r * 1.7 : undefined }}>
           <span className="me-1 opacity-70">{bi + 1}</span>{b.label}
           <span className="block font-semibold opacity-80" style={{ fontSize: 13 }}>{b.hint}</span>
         </span>
@@ -207,7 +225,7 @@ export function LevelsReview({ title, interaction, onCorrect, onResult }: { titl
       {placed.map((p) => {
         const bi = bins.findIndex((b) => b.id === p.b);
         const k = placed.filter((q) => q.b === p.b && q.k < p.k).length;
-        const d = dotAt(bi, k);
+        const d = row ? rowDotAt(T[bi], k) : dotAt(bi, k);
         return (
           <motion.span key={p.k} className="pointer-events-none absolute flex items-center justify-center rounded-full font-sans font-bold" style={{ left: d.x - 15, top: d.y - 15, width: 30, height: 30, fontSize: 14, background: '#FFFDF8', color: p.wasRight ? TEAL : CRIMSON, boxShadow: '0 6px 14px -6px rgba(0,0,0,0.6)' }}
             initial={{ x: 110 - d.x + 200, y: 300 - d.y, scale: 0.4, opacity: 0 }} animate={{ x: 0, y: 0, scale: 1, opacity: 1 }} transition={{ type: 'spring', bounce: 0.3, duration: 0.9, delay: 0.2 }}>
@@ -220,7 +238,8 @@ export function LevelsReview({ title, interaction, onCorrect, onResult }: { titl
 }
 
 /** Before the review starts: the rings draw themselves under the title. */
-export function ReviewIntro({ title, prompt }: { title: string; prompt: string }) {
+export function ReviewIntro({ title, prompt, bins = 3, look = 'rings' }: { title: string; prompt: string; bins?: number; look?: 'rings' | 'row' }) {
+  const T = targets(bins, look === 'row' || bins !== 3 ? 'row' : 'rings');
   return (
     <div className="absolute inset-0 overflow-hidden" style={{ background: '#F6F1E8' }}>
       <Backdrop tone="light" />
@@ -229,8 +248,8 @@ export function ReviewIntro({ title, prompt }: { title: string; prompt: string }
         <motion.p className="m-0 mt-6 font-sans" style={{ fontSize: 26, lineHeight: 1.4, color: 'rgba(31,22,18,0.7)' }} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}>{prompt}</motion.p>
       </div>
       <svg className="absolute inset-0 h-full w-full" viewBox="0 0 1600 900">
-        {RADII.map((r, bi) => (
-          <motion.circle key={r} cx={C.x} cy={C.y} r={r} fill="none" stroke={RING_COLORS[bi]} strokeWidth={3} initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.4, delay: 0.3 + bi * 0.25, ease }} />
+        {T.map((t, bi) => (
+          <motion.circle key={bi} cx={t.x} cy={t.y} r={t.r} fill="none" stroke={t.color} strokeWidth={3} initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.4, delay: 0.3 + bi * 0.25, ease }} />
         ))}
       </svg>
     </div>

@@ -116,7 +116,58 @@ export type SceneId =
   | 'a1Case4'
   | 'a1Review'
   | 'a1Notebook'
-  | 'a1Next';
+  | 'a1Next'
+  // Adults Lesson 2 (motion stages drawn in code, slides/motion/g-a2.tsx)
+  | 'a2Cover'
+  | 'a2Recall'
+  | 'a2Question'
+  | 'a2Hawking'
+  | 'a2Cause'
+  | 'a2Began'
+  | 'a2Three'
+  | 'a2Nothing'
+  | 'a2Itself'
+  | 'a2Tur'
+  | 'a2Jubayr'
+  | 'a2Yaqeen'
+  | 'a2Back'
+  | 'a2How'
+  | 'a2First'
+  | 'a2Order'
+  | 'a2Signs'
+  | 'a2Now'
+  | 'a2Case'
+  | 'a2Case2'
+  | 'a2Case3'
+  | 'a2Case4'
+  | 'a2Review'
+  | 'a2Notebook'
+  | 'a2Next'
+  // Adults Lesson 3 (motion stages drawn in code, slides/motion/g-a3.tsx)
+  | 'a3Cover'
+  | 'a3Recall'
+  | 'a3Question'
+  | 'a3Brady'
+  | 'a3Carrey'
+  | 'a3Hunger'
+  | 'a3Fitrah'
+  | 'a3Born'
+  | 'a3Noise'
+  | 'a3Sea'
+  | 'a3Ikrimah'
+  | 'a3Feel'
+  | 'a3Dank'
+  | 'a3Ghina'
+  | 'a3Rest'
+  | 'a3Night'
+  | 'a3Two'
+  | 'a3Case'
+  | 'a3Case2'
+  | 'a3Case3'
+  | 'a3Case4'
+  | 'a3Review'
+  | 'a3Notebook'
+  | 'a3Next';
 
 /** How a page is laid out on the slide (docs/curriculum/PLAN.md §7, slide system v2). */
 export type Layout =
@@ -173,7 +224,7 @@ export type Interaction =
   /** The learner picks one option (no right answer). */
   | { kind: 'choose'; prompt: string; options: string[] }
   /** Game checkpoint: put each card in the right bin. Results feed the teacher report (PLAN §3a.3b). */
-  | { kind: 'sort'; prompt: string; bins: { id: string; label: string; hint: string }[]; cards: { label: string; bin: string; why?: string }[] };
+  | { kind: 'sort'; prompt: string; look?: 'rings' | 'row'; bins: { id: string; label: string; hint: string }[]; cards: { label: string; bin: string; why?: string }[] };
 
 export interface LessonPage {
   title: string;

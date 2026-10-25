@@ -91,7 +91,8 @@ export function Node({ x, y, on, current, ar, en }: { x: number; y: number; on: 
 }
 
 /** Counts up to its value (the references' 286 → 365). */
-export function CountUp({ to, size = 120, color = BONE, suffix }: { to: number; size?: number; color?: string; suffix?: React.ReactNode }) {
+export function CountUp({ to, size = 120, color = BONE, suffix, decimals = 0 }: { to: number; size?: number; color?: string; suffix?: React.ReactNode; decimals?: number }) {
+  const f = 10 ** decimals;
   const reduce = useReducedMotion();
   const [n, setN] = React.useState(reduce ? to : 0);
   React.useEffect(() => {
@@ -101,14 +102,14 @@ export function CountUp({ to, size = 120, color = BONE, suffix }: { to: number; 
     let raf = 0;
     const tick = (now: number) => {
       const k = Math.min(1, (now - t0) / 700);
-      setN(Math.round(from + (to - from) * (1 - Math.pow(1 - k, 3))));
+      setN(Math.round((from + (to - from) * (1 - Math.pow(1 - k, 3))) * f) / f);
       if (k < 1) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [to]);
-  return <span className="font-serif font-medium tabular-nums" style={{ fontSize: size, lineHeight: 1, color }}>{n}{suffix}</span>;
+  return <span className="font-serif font-medium tabular-nums" style={{ fontSize: size, lineHeight: 1, color }}>{n.toFixed(decimals)}{suffix}</span>;
 }
 
 /** The text of an ayah or hadith: first as the hero in the middle of the screen, then docked as a compact card while

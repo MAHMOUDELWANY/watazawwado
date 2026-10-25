@@ -54,6 +54,10 @@ Decision values: Allowed · With conditions · Needs permission · Research only
 |---|---|---|---|---|
 | Steve Jobs: "Remembering that I'll be dead soon is the most important tool I've ever encountered to help me make the big choices in life." | Stanford commencement address, 12 June 2005 | Transcript on rev.com, 2026-10-23 | Adults L1 | Official Stanford page blocked the fetch; check the wording against the Stanford video before the lesson ships |
 | Bronnie Ware: "I wish I'd had the courage to live a life true to myself, not the life others expected of me." | "Regrets of the Dying", bronnieware.com/blog/regrets-of-the-dying/ | Read 2026-10-23 | Adults L1 | Short quote with attribution |
+| Stephen Hawking (with Leonard Mlodinow): "Because there is a law such as gravity, the universe can and will create itself from nothing." | *The Grand Design* (2010); excerpts reported by AP and Al Jazeera, 2 September 2010 (aljazeera.com/news/2010/9/2/universe-is-self-created-hawking) | Read 2026-10-25 | Adults L2 | Shown as the doubt the lesson answers, with respect; quote only |
+| Albert Einstein: "One may say 'the eternal mystery of the world is its comprehensibility.'" | "Physics and Reality", *Journal of the Franklin Institute*, March 1936; reprint in *Dædalus*, Fall 2003 (amacad.org/publication/daedalus/physics-reality) | Read 2026-10-25 | Adults L2 | The popular "most incomprehensible thing…" version is a later rewording; we use the 1936 wording |
+| Tom Brady: "I think, God, it's got to be more than this. I mean this can't be what it's all cracked up to be." | *60 Minutes*, CBS, Steve Kroft, 2005; quoted by CBS News 1 Feb 2022 (cbsnews.com/news/tom-brady-retirement-60-minutes-2022-02-01) | Read 2026-10-25 | Adults L3 | Living, not Muslim: quote only |
+| Jim Carrey: "I think everybody should get rich and famous and everything they ever dreamed of so they can see that that's not the answer." | Jay Stone, *The Ottawa Citizen*, 16 Dec 2005, F1–F2; traced by Quote Investigator (quoteinvestigator.com/2022/11/09/rich-famous/) | Read 2026-10-25 | Adults L3 | Living, not Muslim: quote only; wording per the Ottawa Citizen print |
 
 ## E. Media
 

@@ -54,7 +54,12 @@ Last update: 2026-10-23. History of how we got here: §8 (progress log).
   haze, light rays) drives every idea page, a shot per build step.
 - **Waiting for the owner:** review of Lesson 1 in the player; depth maps for the 9 older stills (cover, madinah,
   stranger, cushions, graves, horizon, lane, monday, night) so those pages move in depth too.
-- **Next after review:** Lesson 2 (A World That Should Not Exist) brief.
+- **Done 2026-10-24/25:** Lesson 1 rebuilt as motion stages; the owner approved the style as the standard.
+- **Done 2026-10-25 (overnight, at the owner's request: all steps in one run):** Lessons 2 (A World That Should Not
+  Exist, 25 pages) and 3 (The Emptiness Fame Cannot Fill, 24 pages): briefs, page text, Arabic notes and a motion stage
+  on every page; no images needed. Owner's questions and the morning report: `zad-essentials-adults/HANDOFF-2026-10-25.md`.
+- **Waiting for the owner:** review of Lessons 2 and 3 (drafts, `reviewed: false`, teacher-only).
+- **Next after review:** Lesson 4 (The Sentence That Costs Something) brief.
 
 ### Seerah and the Scholar's Path
 - Seerah (Kids / Teens / Adults): planned, not started. Scholar's Path: books, sessions and prices are the owner's call
@@ -576,3 +581,8 @@ B3–B5 → continue lesson by lesson.
   Teens L1–3 now show the ayah/hadith first in every layout, and the lines on all 32 evidence pages were rewritten so they
   add an idea in the version's voice instead of retelling the text (the rules test now checks this in every version).
 - 2026-10-25 — Page-turn sound back to the original soft synthesised one (owner preferred it); its recording removed.
+- 2026-10-25 — Adults Lessons 2 and 3 built overnight in one run at the owner's request (brief → text → built pages):
+  At-Tur 52:35–36 as the wow of L2 (the learner closes two of three doors, the ayah names the same two), Jubayr ibn Mut'im
+  as Then; L3 on the fitrah (30:30, Muslim 2658), the storm (29:65, Ikrimah, an-Nasa'i 4067), ma'ishah dank (20:124) and
+  13:28 as the wow. Quotes: Hawking, Einstein, Brady, Carrey (sources.md D2). The adult review now also lays its answers
+  out in a row (`look: 'row'`) when the bins are not levels. Waiting for the owner's review.
