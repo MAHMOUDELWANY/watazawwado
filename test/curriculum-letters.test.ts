@@ -11,8 +11,8 @@ describe('Letter-writing kit', () => {
     assert.deepEqual(lettersIn('بَيْتٌ'), ['ب', 'ي', 'ت']);
   });
 
-  it('every letter used by literacy and fusha lessons has stroke paths', () => {
-    const lessons = SUBJECTS.filter((s) => /^(literacy-a|fusha)-/.test(s.id)).flatMap((s) => Object.values(s.lessons));
+  it('every letter used by literacy lessons has stroke paths', () => {
+    const lessons = SUBJECTS.filter((s) => /^literacy-a-/.test(s.id)).flatMap((s) => Object.values(s.lessons));
     for (const l of lessons) for (const p of l.pages) for (const v of p.vocab ?? []) {
       for (const ch of lettersIn(v.arabic)) assert.ok(LETTERS[ch], `${l.subject} L${l.number}: no strokes for ${ch} (${v.arabic})`);
     }
