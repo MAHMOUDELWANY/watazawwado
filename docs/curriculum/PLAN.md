@@ -699,3 +699,6 @@ B3–B5 → continue lesson by lesson.
   "start on the right"; the ticket's first stamp and a carriage with ا that slides in and couples; the train to
   station 2 and three boats that get their dots. Every step screenshotted; the clue and sort games clicked through in
   real time. Clips still to generate. Draft, `reviewed: false`.
+- 2026-10-26 — Literacy Kids L1 audio: قِطَارُ الحُرُوف, قِطَار and بَ generated with the owner's Fusha clone and saved as
+  `literacy-a-kids/audio/l01-{qitar-al-huruf,qitar,ba}.mp3` (list: `literacy/L01-welcome-clips.md`); tap checked in the
+  preview. Single letters ا ح ع خ ق still wait for the owner's recordings.
