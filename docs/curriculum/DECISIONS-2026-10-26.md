@@ -33,3 +33,14 @@ Binding for every subject beyond Zad Essentials. They override the prototypes bu
     Nectar, plus Ibn Hisham and others, every fact verified. Texts (ayat, hadith) wherever they serve the story. Reviews
     stay light: they measure focus and enjoyment, not exams. Stories with a known difference of opinion may stay if they
     are widely accepted and stir no controversy.
+
+## Third round (same day)
+11. **Seerah plan (46 episodes, 6 seasons) approved as it is.** Every episode ends on a cliffhanger and the episodes
+    build on each other as one story; the storytelling must be the best work Claude has produced.
+12. **The teacher tells the Seerah,** for every age; the screen supports. No narrator voice, no character who seems to
+    be the storyteller (the teacher must never look like they are reading someone else's lines). Kids version: the Zad
+    Kids cast appear (they may react, ask, or give advice), but they do not narrate.
+13. **Literacy A:** goal = the learner can read anything, literally. Writing is light: the motion shows how a letter is
+    written, simply, so the learner can copy it on paper with the teacher; never a core skill. Words are neutral and
+    everyday (common words like مسجد are fine as part of the language). New neutral characters for Kids and Teens only;
+    none for Adults. The roadmap is a real journey the learner walks after each lesson, different per age; Claude designs it.
