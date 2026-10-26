@@ -11,7 +11,7 @@
 
 ## 0. Where we are (update every session)
 
-Last update: 2026-10-25. History of how we got here: §8 (progress log).
+Last update: 2026-10-26. History of how we got here: §8 (progress log).
 
 ### Zad Essentials · Kids (6–11): `zad-essentials-kids/`
 - **Done:** map (37 lessons) approved; Lessons 1, 2, 3 built and **approved by the owner** (`reviewed: true`, open to
@@ -78,8 +78,8 @@ Last update: 2026-10-25. History of how we got here: §8 (progress log).
   Al-Ikhlas layers as the wow; Muslim 798 checked on Dorar). Bukhari 5027 (Literacy B L1) also checked: sahih.
 - **Quran Reading (12+):** map (19 graded passages) and Lesson 1 "Reading Al-Fatiha from the Page" built 2026-10-26.
 - **English · Kids:** rules, phonics map (24) and Lesson 1 "The Snake Sound" built 2026-10-26.
-- **Not started:** Literacy A Teens, Literacy C (Franco rules from the owner),
-  English, Hifz test generator, the two new skills (`literacy-quran-builder`, `language-builder`), onboarding and catalog
+- **Not started:** Literacy A Teens, Literacy C (Franco rules from the owner), Egyptian Kids/Teens and Franco, English
+  General and Exams, Seerah Kids, Tajweed and Quran Reading in the Kids look, Hifz test generator, the two new skills (`literacy-quran-builder`, `language-builder`), onboarding and catalog
   changes, spaced repetition. Scholar's Path: postponed.
 - Every new lesson is a draft (`reviewed: false`), teacher-only.
 
