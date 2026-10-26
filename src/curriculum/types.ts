@@ -25,6 +25,10 @@ export type SceneId =
   | 'ek1Cover' | 'ek1Door' | 'ek1Listen' | 'ek1Hello' | 'ek1Ismi' | 'ek1AkIk' | 'ek1Bye' | 'ek1Sort' | 'ek1Talk' | 'ek1Mission' | 'ek1Next'
   // Egyptian Arabic · Teens · Lesson 1 (drawn in code, slides/motion/g-egy.tsx)
   | 'et1Cover' | 'et1Club' | 'et1Listen' | 'et1How' | 'et1Ending' | 'et1Hi' | 'et1Names' | 'et1Sort' | 'et1Talk' | 'et1Mission' | 'et1Next'
+  // English · General · Lesson 1 (drawn in code, slides/motion/g-eng.tsx)
+  | 'eg1Cover' | 'eg1Cafe' | 'eg1Listen' | 'eg1Im' | 'eg1Youre' | 'eg1Name' | 'eg1Bye' | 'eg1Sort' | 'eg1Talk' | 'eg1Mission' | 'eg1Next'
+  // English · Exams · Lesson 1 (drawn in code, slides/motion/g-eng.tsx)
+  | 'ex1Cover' | 'ex1Short' | 'ex1Bands' | 'ex1Part1' | 'ex1Are' | 'ex1Length' | 'ex1Link' | 'ex1Sort' | 'ex1Timed' | 'ex1Mission' | 'ex1Next'
   // Seerah · Teens & Adults · Episode 1 (the owner's stills + code motion)
   | 'se1Cover' | 'se1Empires' | 'se1Jahiliyyah' | 'se1Makkah' | 'se1Abraha' | 'se1Qullays' | 'se1Scales' | 'se1March' | 'se1Camp' | 'se1Walk' | 'se1Tent' | 'se1Trust' | 'se1Kneel' | 'se1Spear' | 'se1Birds' | 'se1Fil' | 'se1Aftermath' | 'se1Sort' | 'se1Cradle' | 'se1Mission' | 'se1Next'
   | 'lbCover' | 'lbStuck' | 'lbGuess' | 'lbBest' | 'lbMap' | 'lbCircle' | 'lbHelpers' | 'lbUthman' | 'lbSpot' | 'lbSort' | 'lbAlong' | 'lbMission' | 'lbNext'

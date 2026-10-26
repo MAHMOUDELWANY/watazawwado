@@ -20,6 +20,8 @@ import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-crack-the-code.js';
 import { lessonEK01 } from './content/egyptian-kids/l01-ahlan-teta.js';
 import { lessonET01 } from './content/egyptian-teens/l01-ezzayak.js';
+import { lessonEG01 } from './content/english-general/l01-hello-im.js';
+import { lessonEX01 } from './content/english-exams/l01-your-first-three-minutes.js';
 import { lesson03Adults } from './content/zad-adults/l03-the-emptiness-fame-cannot-fill.js';
 
 /** A part of a curriculum (a unit in its MAP.md): its title and the number of its first lesson. */
@@ -404,6 +406,41 @@ export const SUBJECTS: SubjectEntry[] = [
     ],
     lessons: { 1: lessonET01 },
   },
+  {
+    id: 'english-general',
+    group: 'english',
+    title: 'English · General',
+    titleAr: 'الإنجليزي · عام',
+    version: 'General',
+    versionAr: 'عام',
+    audience: '12+',
+    art: '/curriculum/zad-adults/l01/cover.webp',
+    parts: [{ title: 'Level 1', titleAr: 'المستوى الأول', from: 1 }],
+    // docs/curriculum/english/MAP-general.md (Claude's draft, 2026-10-26, for the owner's review).
+    plan: [
+      "Hello, I'm…", 'Where Are You From?', 'Numbers and Phones', 'My Things', 'Family', 'My Day', 'Her Day', 'Time',
+      'Review: A Week in London', 'Food and Drink', 'How Much?', 'Where Is It?', 'Can You…?', 'Yesterday', 'Last Weekend',
+      'A Trip', 'Plans', 'Level 1 Review',
+    ],
+    lessons: { 1: lessonEG01 },
+  },
+  {
+    id: 'english-exams',
+    group: 'english',
+    title: 'English · Exams (IELTS)',
+    titleAr: 'الإنجليزي · الامتحانات (IELTS)',
+    version: 'Exams',
+    versionAr: 'الامتحانات',
+    audience: '16+',
+    art: '/curriculum/zad-adults/l01/cover.webp',
+    parts: [{ title: 'Band 4–5 → 5.5', titleAr: 'من 4–5 لـ 5.5', from: 1 }],
+    // docs/curriculum/english/MAP-exams.md (Claude's draft, 2026-10-26, for the owner's review).
+    plan: [
+      'Your First Three Minutes', 'Listen for the Gap', 'Skim, Then Scan', 'Describe the Trend', 'Two Minutes Alone',
+      'Signposts', 'True, False, Not Given', 'Have Your Say', 'Why Do You Think So?', 'Mock Test 1',
+    ],
+    lessons: { 1: lessonEX01 },
+  },
 ];
 
 /** Subjects of the Zad Path (docs/curriculum/RULES.md): each holds its age versions (SUBJECTS with that `group`).
@@ -478,8 +515,6 @@ export const GROUPS: GroupEntry[] = [
     taglineAr: 'إنجليزي للي إنت محتاجه: قراءة للأطفال، كلام يومي، امتحانات أو شغل.',
     // Goal-based tracks (design §4.7).
     planned: [
-      { version: 'General', versionAr: 'عام', audience: '12+' },
-      { version: 'Exams', versionAr: 'الامتحانات', audience: '16+' },
     ],
   },
   {

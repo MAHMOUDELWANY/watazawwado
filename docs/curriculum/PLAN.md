@@ -18,6 +18,7 @@ Last update: 2026-10-26. History of how we got here: §8 (progress log).
   booked students); series opening (Yusuf, Maryam, Jiddo, Mishmish) before Lesson 1.
 - **Next:** Lesson 4 (Muhammad ﷺ, the Messenger) brief.
 - **Egyptian · Kids and Teens:** Lesson 1 of each built 2026-10-26 ("Ahlan, Teta!", "Ezzayak? What's Up, Cairo").
+- **English · General and Exams:** maps (18, 10) and Lesson 1 of each built 2026-10-26.
 - **Not started:** Lessons 4–37.
 
 ### Zad Essentials · Teens (12–17): `zad-essentials-teens/`
@@ -81,8 +82,7 @@ Last update: 2026-10-26. History of how we got here: §8 (progress log).
 - **English · Kids:** rules, phonics map (24) and Lesson 1 "The Snake Sound" built 2026-10-26.
 - **Fusha · 12+:** map (19, `fusha/MAP-12plus.md`) and Lesson 1 "First Day at the Institute" built 2026-10-26.
 - **Literacy A · Teens:** map (21, `literacy/MAP-teens.md`) and Lesson 1 "Crack the Code" built 2026-10-26.
-- **Not started:** Literacy C (Franco rules from the owner), Egyptian Franco, English
-  General and Exams, Seerah Kids, Tajweed and Quran Reading in the Kids look, Hifz test generator, the two new skills (`literacy-quran-builder`, `language-builder`), onboarding and catalog
+- **Not started:** Literacy C (Franco rules from the owner), Egyptian Franco, Seerah Kids, Tajweed and Quran Reading in the Kids look, Hifz test generator, the two new skills (`literacy-quran-builder`, `language-builder`), onboarding and catalog
   changes, spaced repetition. Scholar's Path: postponed.
 - Every new lesson is a draft (`reviewed: false`), teacher-only.
 
@@ -659,3 +659,8 @@ B3–B5 → continue lesson by lesson.
 - 2026-10-26 — Egyptian · Kids ("Ahlan, Teta!": a summer at grandma's in Cairo, greetings, اسمي, اسمَك / اسمِك, bye) and
   Teens ("Ezzayak? What's Up, Cairo": a football club, إزيَّك / عامل إيه / عاملة إيه and the answers, register from هاي
   to السلام عليكم, swapping names), 11 pages each, `g-egy.tsx`. Clips listed, not generated. Drafts.
+- 2026-10-26 — English · General (`MAP-general.md`, English File Beginner order; Lesson 1 "Hello, I'm…": an airport
+  café, I'm / you're as tiles that slide into one, the meeting chain, goodbyes, a review of the am/are mistake Arabic
+  speakers make) and English · Exams (`MAP-exams.md`, IELTS 4–5 → 5.5; Lesson 1 "Your First Three Minutes": the test and
+  its bands, Speaking Part 1, Answer + Reason + Example built block by block, a timing bar, a sort of answers that help
+  or hurt the score, timed practice). `g-eng.tsx`. Clips listed. Drafts.
