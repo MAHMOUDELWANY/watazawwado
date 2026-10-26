@@ -1,23 +1,21 @@
 import type { Lesson } from '../../types';
-import { lessonA01TeacherAr } from './l01-teacher-ar.js';
-import { literacyKidsOpening } from './opening.js';
+import { lessonA02TeacherAr } from './l02-teacher-ar.js';
 
-// Brief: docs/curriculum/literacy/L01-dots-make-the-difference.md. No religious content (design §4.1).
+// Brief: docs/curriculum/literacy/L01-dots-make-the-difference.md (the first prototype; Lesson 2 since 2026-10-26). No religious content (design §4.1).
 // Letters are written on the stage stroke by stroke (slides/motion/letters.tsx); sounds play on tap.
 
-export const lessonA01: Lesson = {
-  opening: literacyKidsOpening,
+export const lessonA02: Lesson = {
   subject: 'literacy-a-kids',
   version: 'kids',
   subjectTitle: 'Reading Arabic · Kids',
-  number: 1,
+  number: 2,
   title: 'Dots Make the Difference',
   titleAr: 'النقط بتفرق',
   part: 'Part 1 · The Letters',
   minutes: 45,
   goal: 'By the end of this lesson, you will say and write four Arabic letters, and tell three look-alike letters apart by their dots.',
   reviewed: false,
-  teacherAr: lessonA01TeacherAr,
+  teacherAr: lessonA02TeacherAr,
   outcomes: [
     'Says the sounds of ا ب ت ث.',
     'Writes ب ت ث in the right order: the body first, then the dots.',

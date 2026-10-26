@@ -678,3 +678,13 @@ B3–B5 → continue lesson by lesson.
   before Lesson 1. Brief for the new Lesson 1 "Welcome to Arabic" (all three ages): `literacy/L01-welcome-to-arabic.md`.
   Stale duplicate tables removed from `literacy/PLAN.md`. Waits for the owner: the brief, then the page text and the
   Kids look (2–3 prototype pages with the new cast on the beige paper stage).
+- 2026-10-26 — Literacy A · Kids · Lesson 1 "Welcome to Arabic" (15 pages, `content/literacy-a-kids/l01-welcome-to-arabic.ts`,
+  `slides/motion/g-law.tsx`), with the new cast on the Kids paper stage. Prototype look for the owner: the cover (the
+  platform, the Letter Train facing left, Rami and Dalia, Hibr flying in while alif writes itself on his card), "All
+  aboard!" (the road draws right to left through six lands, 32 stations pop in, Reading Town lights up, "We are here!")
+  and "Right to left" (a finger reads "train" left to right and قِطَار right to left, the train rolls in facing left,
+  two books open on opposite sides). The other 12 pages are simple drafts (a cast pose and the key letters) until the
+  owner approves the look. The first prototype "Dots Make the Difference" is now Lesson 2 (ب ت ث, as in the plan; its
+  clip renamed l02-baab). Catalog parts and plan follow `literacy/PLAN.md` (32 lessons). Fix: the clue game keyed cards by
+  label, so two identical letters (two alifs) could not both be found; now keyed by position. Clips listed in the lesson,
+  not generated (fusha: قِطَارُ الحُرُوف, قِطَار, بَ; owner: ا ح ع خ ق). Draft, `reviewed: false`.

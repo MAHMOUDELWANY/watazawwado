@@ -14,6 +14,7 @@ import { A2CoverGraphic, A2RecallGraphic, A2QuestionGraphic, A2HawkingGraphic, A
 import { A3CoverGraphic, A3RecallGraphic, A3QuestionGraphic, A3BradyGraphic, A3CarreyGraphic, A3HungerGraphic, A3FitrahGraphic, A3BornGraphic, A3NoiseGraphic, A3SeaGraphic, A3IkrimahGraphic, A3FeelGraphic, A3DankGraphic, A3GhinaGraphic, A3RestGraphic, A3NightGraphic, A3TwoGraphic, A3CaseGraphic, A3Case2Graphic, A3Case3Graphic, A3Case4Graphic, A3NotebookGraphic, A3NextGraphic } from '../motion/g-a3';
 import { LookAMeetGraphic, LookAWordGraphic, LookBMeetGraphic, LookBWordGraphic, LookCMeetGraphic, LookCWordGraphic } from '../motion/g-literacy-looks';
 import { LbCoverGraphic, LbStuckGraphic, LbGuessGraphic, LbBestGraphic, LbMapGraphic, LbCircleGraphic, LbHelpersGraphic, LbUthmanGraphic, LbSpotGraphic, LbAlongGraphic, LbMissionGraphic, LbNextGraphic } from '../motion/g-lb1';
+import { LawCoverGraphic, LawTrainGraphic, LawSignGraphic, LawWorldGraphic, LawRtlGraphic, Law28Graphic, LawHandsGraphic, LawDotsGraphic, LawMarksGraphic, LawSoundsGraphic, LawAlifGraphic, LawTrueGraphic, LawReadGraphic, LawStampGraphic, LawNextGraphic } from '../motion/g-law';
 import { La1CoverGraphic, La1NoteGraphic, La1GuessGraphic, La1AlifGraphic, La1BaaGraphic, La1TaaGraphic, La1ThaaGraphic, La1TrickGraphic, La1FindGraphic, La1WordGraphic, La1MissionGraphic, La1NextGraphic } from '../motion/g-la1';
 import { Fk1CoverGraphic, Fk1GameGraphic, Fk1StoryGraphic, Fk1HaadhaGraphic, Fk1MaaGraphic, Fk1ManGraphic, Fk1WordsGraphic, Fk1SpotGraphic, Fk1TalkGraphic, Fk1MissionGraphic, Fk1NextGraphic } from '../motion/g-fk1';
 import { Ea1CoverGraphic, Ea1BookGraphic, Ea1DoorGraphic, Ea1PairsGraphic, Ea1EhGraphic, Ea1MonaGraphic, Ea1SuffixGraphic, Ea1HadraGraphic, Ea1SorryGraphic, Ea1ByeGraphic, Ea1TalkGraphic, Ea1MissionGraphic, Ea1NextGraphic } from '../motion/g-ea1';
@@ -153,7 +154,23 @@ const onStage = (stage: StageDef): Scene => ({ stage, still: '', shots: [] });
 /* ---------- the direction for every Adults Lesson 1 page ---------- */
 
 export const SCENES: Partial<Record<SceneId, Scene>> = {
-  // Literacy A · Kids · Lesson 1 (look A, letter friends)
+  // Literacy A · Kids · Lesson 1 · Welcome to Arabic (the Letter Train)
+  lawCover: onStage({ tone: 'light', Graphic: LawCoverGraphic }),
+  lawTrain: onStage({ tone: 'light', Graphic: LawTrainGraphic }),
+  lawSign: onStage({ tone: 'light', Graphic: LawSignGraphic, keepOnAsk: true }),
+  lawWorld: onStage({ tone: 'light', Graphic: LawWorldGraphic }),
+  lawRtl: onStage({ tone: 'light', Graphic: LawRtlGraphic }),
+  law28: onStage({ tone: 'light', Graphic: Law28Graphic }),
+  lawHands: onStage({ tone: 'light', Graphic: LawHandsGraphic }),
+  lawDots: onStage({ tone: 'light', Graphic: LawDotsGraphic }),
+  lawMarks: onStage({ tone: 'light', Graphic: LawMarksGraphic }),
+  lawSounds: onStage({ tone: 'light', Graphic: LawSoundsGraphic }),
+  lawAlif: onStage({ tone: 'light', Graphic: LawAlifGraphic }),
+  lawTrue: onStage({ tone: 'light', Graphic: LawTrueGraphic }),
+  lawRead: onStage({ tone: 'light', Graphic: LawReadGraphic }),
+  lawStamp: onStage({ tone: 'light', Graphic: LawStampGraphic }),
+  lawNext: onStage({ tone: 'light', Graphic: LawNextGraphic }),
+  // Literacy A · Kids · Lesson 2 (first prototype, look A, letter friends)
   la1Cover: onStage({ tone: 'light', Graphic: La1CoverGraphic }), la1Note: onStage({ tone: 'light', Graphic: La1NoteGraphic }),
   la1Guess: onStage({ tone: 'light', Graphic: La1GuessGraphic, keepOnAsk: true }), la1Alif: onStage({ tone: 'light', Graphic: La1AlifGraphic }),
   la1Baa: onStage({ tone: 'light', Graphic: La1BaaGraphic }), la1Taa: onStage({ tone: 'light', Graphic: La1TaaGraphic }),

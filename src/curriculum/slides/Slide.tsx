@@ -901,7 +901,7 @@ function Clues({ interaction, onCorrect, onClue }: { interaction: Extract<Intera
       </div>
       <div className="grid grid-cols-2 gap-3">
         {interaction.clues.map((clue, i) => (
-          <OptionCard key={clue.label} letter={LETTERS[i]} label={clue.label} state={picked.includes(i) ? (clue.correct ? 'right' : 'wrong') : 'idle'} onPick={() => pick(i)} />
+          <OptionCard key={i} letter={LETTERS[i]} label={clue.label} state={picked.includes(i) ? (clue.correct ? 'right' : 'wrong') : 'idle'} onPick={() => pick(i)} />
         ))}
       </div>
       <div className="flex items-center gap-3" aria-live="polite">

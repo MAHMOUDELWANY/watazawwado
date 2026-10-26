@@ -7,7 +7,8 @@ import { lesson02Teens } from './content/zad-teens/l02-did-it-all-just-happen.js
 import { lesson03Teens } from './content/zad-teens/l03-one-not-many.js';
 import { lesson01Adults } from './content/zad-adults/l01-the-man-no-one-knew.js';
 import { lesson02Adults } from './content/zad-adults/l02-a-world-that-should-not-exist.js';
-import { lessonA01 } from './content/literacy-a-kids/l01-dots-make-the-difference.js';
+import { lessonA01 } from './content/literacy-a-kids/l01-welcome-to-arabic.js';
+import { lessonA02 } from './content/literacy-a-kids/l02-dots-make-the-difference.js';
 import { lessonF01 } from './content/fusha-kids/l01-what-is-this.js';
 import { seerahE01 } from './content/seerah-teens/l01-the-invincible-army.js';
 import { lessonB01 } from './content/literacy-b/l01-same-letters-new-marks.js';
@@ -154,22 +155,24 @@ export const SUBJECTS: SubjectEntry[] = [
     audience: '6–11',
     art: '/curriculum/zad-kids/l01/cover.webp',
     parts: [
-      { title: 'The Letters', titleAr: 'الحروف', from: 1 },
-      { title: 'Letters Change Shape', titleAr: 'الحروف بتغيّر شكلها', from: 10 },
-      { title: 'Short Vowels', titleAr: 'الحركات', from: 14 },
-      { title: 'Sukoon, Shadda, Tanween', titleAr: 'السكون والشدة والتنوين', from: 19 },
-      { title: 'Long Vowels', titleAr: 'المدود', from: 22 },
-      { title: 'Reading', titleAr: 'القراءة', from: 27 },
+      { title: 'All Aboard', titleAr: 'يلا نركب', from: 1 },
+      { title: 'The Letters', titleAr: 'الحروف', from: 2 },
+      { title: 'Letters Hold Hands', titleAr: 'الحروف بتمسك إيد بعض', from: 12 },
+      { title: 'More Little Marks', titleAr: 'علامات صغيرة كمان', from: 16 },
+      { title: 'Stretching', titleAr: 'المدود', from: 20 },
+      { title: 'Special Marks', titleAr: 'علامات مميزة', from: 23 },
+      { title: 'Reading Town', titleAr: 'مدينة القراءة', from: 28 },
     ],
-    // docs/curriculum/literacy/MAP.md (Claude's draft, 2026-10-25, for the owner's review).
+    // docs/curriculum/literacy/PLAN.md (the Letter Train, 32 lessons; approved 2026-10-26).
     plan: [
-      'Dots Make the Difference', 'The Cup Family', 'Little Hooks', 'Teeth and Dots', 'The Big Bowls', 'The Eye Letters',
-      'Loops and Tails', 'Round Friends', 'All Twenty-Eight', 'Start, Middle, End', "Letters That Don't Hold Hands",
-      'Shapes in Words (1)', 'Shapes in Words (2)', 'Fatha', 'Kasra', 'Damma', 'Three Little Vowels', 'My First Words',
-      'Sukoon: the Stop', 'Shadda: Say It Twice', 'Tanween', 'Alif Stretches', 'Waw Stretches', 'Yaa Stretches',
-      'Al-: The Sun and Moon Letters', 'Ta Marbuta and Alif Maqsura', 'Short Sentences', 'My First Story', 'I Can Read!',
+      'Welcome to Arabic', 'ب ت ث', 'ج ح خ', 'د ذ ر ز', 'س ش', 'ص ض ط ظ', 'ع غ', 'ف ق', 'ك ل م', 'ن ه و ي', 'ء and All 28',
+      'Start, Middle, End', 'The Six That Let Go', 'Every Letter Joined', 'Words with Fatha',
+      'Kasra', 'Damma', 'Three Vowels Together', 'Sukoon: the Stop',
+      'Alif Stretches', 'Yaa Stretches', 'Waw Stretches',
+      'Tanween', 'Shadda', 'Al- and the Moon Letters', 'Al- and the Sun Letters', 'ة ى and the Small Alif',
+      'Sentences', 'My First Story', 'No Marks', 'Signs, Labels, Menus', 'I Can Read Anything',
     ],
-    lessons: { 1: lessonA01 },
+    lessons: { 1: lessonA01, 2: lessonA02 },
   },
   {
     id: 'literacy-a-adults',
