@@ -76,7 +76,8 @@ Last update: 2026-10-25. History of how we got here: §8 (progress log).
   2026-10-26 (13 pages, Adults paper stage, the dots system as the wow).
 - **Tajweed · Level 1 (12+):** rules, map (19) and Lesson 1 "Every Letter Has a Right" built 2026-10-26 (13 pages,
   Al-Ikhlas layers as the wow; Muslim 798 checked on Dorar). Bukhari 5027 (Literacy B L1) also checked: sahih.
-- **Not started:** Literacy A Teens, Literacy C (Franco rules from the owner), Quran Reading,
+- **Quran Reading (12+):** map (19 graded passages) and Lesson 1 "Reading Al-Fatiha from the Page" built 2026-10-26.
+- **Not started:** Literacy A Teens, Literacy C (Franco rules from the owner),
   English, Hifz test generator, the two new skills (`literacy-quran-builder`, `language-builder`), onboarding and catalog
   changes, spaced repetition. Scholar's Path: postponed.
 - Every new lesson is a draft (`reviewed: false`), teacher-only.
@@ -635,3 +636,8 @@ B3–B5 → continue lesson by lesson.
   clear and hidden mistakes, the layers of Al-Ikhlas switched on one by one (Uthmani text with zero-width joiners so
   coloured letters keep their joins), isti'adha and basmalah, a review and a recital. Ayat and roots fetched with the
   Quran connector; Muslim 798 and Bukhari 5027 checked on Dorar (both sahih). Draft, `reviewed: false`.
+- 2026-10-26 — Quran Reading: `quran-reading/MAP.md` (19 graded passages, short surahs first) and Lesson 1 "Reading
+  Al-Fatiha from the Page" (12 pages, `g-qr1.tsx`): seventeen Fatihas a day, the course's three moves (listen, follow,
+  read; the teacher marks each ayah), the surah ayah by ayah on the Mushaf panel with one reading focus each (small
+  alif, still waw, shadda, hamzat al-wasl, madd sign), a review of the small alif and a full reading. Text fetched with
+  the Quran connector. Draft, `reviewed: false`.

@@ -13,6 +13,7 @@ import { seerahE01 } from './content/seerah-teens/l01-the-invincible-army.js';
 import { lessonB01 } from './content/literacy-b/l01-same-letters-new-marks.js';
 import { lessonAA01 } from './content/literacy-a-adults/l01-fewer-shapes-than-you-think.js';
 import { lessonT01 } from './content/tajweed/l01-every-letter-has-a-right.js';
+import { lessonQ01 } from './content/quran-reading/l01-reading-al-fatiha.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lesson03Adults } from './content/zad-adults/l03-the-emptiness-fame-cannot-fill.js';
 
@@ -243,6 +244,24 @@ export const SUBJECTS: SubjectEntry[] = [
     lessons: { 1: lessonB01 },
   },
   {
+    id: 'quran-reading',
+    group: 'quran',
+    title: 'Quran Reading',
+    titleAr: 'قراءة القرآن',
+    version: 'Quran reading',
+    versionAr: 'قراءة القرآن',
+    audience: '12+',
+    art: '/curriculum/zad-adults/l01/cover.webp',
+    parts: [{ title: "Juz 'Amma and Al-Fatiha", titleAr: 'جزء عمّ والفاتحة', from: 1 }],
+    // docs/curriculum/quran-reading/MAP.md (Claude's draft, 2026-10-26, for the owner's review).
+    plan: [
+      'Reading Al-Fatiha from the Page', 'The Last Two Surahs', 'One and Many', 'Short and Steady', 'Gifts and Losses',
+      'Journeys', 'Time', 'The Race', 'The Shaking', 'The Clear Proof', 'The Night of Power', 'The Fig', 'Relief',
+      'The Night', 'The Sun', 'The Dawn', 'The Overwhelming', 'The Night Visitor', "Juz 'Amma Recital",
+    ],
+    lessons: { 1: lessonQ01 },
+  },
+  {
     id: 'tajweed',
     group: 'quran',
     title: 'Tajweed · Level 1',
@@ -337,7 +356,6 @@ export const GROUPS: GroupEntry[] = [
     tagline: 'Reading the Mushaf as it is written, then reciting it with tajweed.',
     taglineAr: 'تقرا المصحف زي ما هو مكتوب، وبعدين تتلوه بالتجويد.',
     planned: [
-      { version: 'Quran reading', versionAr: 'قراءة القرآن', audience: '6+' },
     ],
   },
   {
