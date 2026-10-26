@@ -19,6 +19,8 @@ export type SceneId =
   | 'ea1Cover' | 'ea1Book' | 'ea1Door' | 'ea1Pairs' | 'ea1Eh' | 'ea1Mona' | 'ea1Suffix' | 'ea1Hadra' | 'ea1Sorry' | 'ea1Bye' | 'ea1Review' | 'ea1Talk' | 'ea1Mission' | 'ea1Next'
   // Fusha · 12+ · Lesson 1 (drawn in code, slides/motion/g-ft1.tsx)
   | 'ft1Cover' | 'ft1Arrive' | 'ft1Listen' | 'ft1Haadhihi' | 'ft1MaaMan' | 'ft1NoIs' | 'ft1Words' | 'ft1Sort' | 'ft1Talk' | 'ft1Mission' | 'ft1Next'
+  // Literacy A · Teens · Lesson 1 (drawn in code, slides/motion/g-lq1.tsx)
+  | 'lq1Cover' | 'lq1Message' | 'lq1Guess' | 'lq1Alif' | 'lq1Three' | 'lq1Speed' | 'lq1Rule' | 'lq1Sort' | 'lq1Word' | 'lq1Write' | 'lq1Mission' | 'lq1Next'
   // Seerah · Teens & Adults · Episode 1 (the owner's stills + code motion)
   | 'se1Cover' | 'se1Empires' | 'se1Jahiliyyah' | 'se1Makkah' | 'se1Abraha' | 'se1Qullays' | 'se1Scales' | 'se1March' | 'se1Camp' | 'se1Walk' | 'se1Tent' | 'se1Trust' | 'se1Kneel' | 'se1Spear' | 'se1Birds' | 'se1Fil' | 'se1Aftermath' | 'se1Sort' | 'se1Cradle' | 'se1Mission' | 'se1Next'
   | 'lbCover' | 'lbStuck' | 'lbGuess' | 'lbBest' | 'lbMap' | 'lbCircle' | 'lbHelpers' | 'lbUthman' | 'lbSpot' | 'lbSort' | 'lbAlong' | 'lbMission' | 'lbNext'

@@ -22,6 +22,7 @@ import { Tj1CoverGraphic, Tj1QalbGraphic, Tj1TarteelGraphic, Tj1RightGraphic, Tj
 import { Qr1CoverGraphic, Qr1SeventeenGraphic, Qr1MovesGraphic, Qr1Ayah1Graphic, Qr1Ayah2Graphic, Qr1Ayah4Graphic, Qr1Ayah5Graphic, Qr1Ayah6Graphic, Qr1ReadGraphic, Qr1MissionGraphic, Qr1NextGraphic } from '../motion/g-qr1';
 import { En1CoverGraphic, En1GardenGraphic, En1SGraphic, En1AGraphic, En1TGraphic, En1BlendGraphic, En1FindGraphic, En1ReadGraphic, En1MissionGraphic, En1NextGraphic } from '../motion/g-en1';
 import { Ft1CoverGraphic, Ft1ArriveGraphic, Ft1ListenGraphic, Ft1HaadhihiGraphic, Ft1MaaManGraphic, Ft1NoIsGraphic, Ft1WordsGraphic, Ft1TalkGraphic, Ft1MissionGraphic, Ft1NextGraphic } from '../motion/g-ft1';
+import { Lq1CoverGraphic, Lq1MessageGraphic, Lq1GuessGraphic, Lq1AlifGraphic, Lq1ThreeGraphic, Lq1SpeedGraphic, Lq1RuleGraphic, Lq1WordGraphic, Lq1WriteGraphic, Lq1MissionGraphic, Lq1NextGraphic } from '../motion/g-lq1';
 import { Se1CoverGraphic, Se1EmpiresGraphic, Se1JahiliyyahGraphic, Se1MakkahGraphic, Se1AbrahaGraphic, Se1QullaysGraphic, Se1ScalesGraphic, Se1MarchGraphic, Se1CampGraphic, Se1WalkGraphic, Se1TentGraphic, Se1TrustGraphic, Se1KneelGraphic, Se1SpearGraphic, Se1BirdsGraphic, Se1FilGraphic, Se1AftermathGraphic, Se1CradleGraphic, Se1MissionGraphic, Se1NextGraphic } from '../motion/g-se1';
 import { LaneGraphic, MondayGraphic, GravesGraphic, CountGraphic, CaseOmarGraphic, CaseLaylaGraphic, CaseColleagueGraphic, CaseOnlineGraphic, NotebookGraphic } from '../motion/g-life';
 
@@ -207,6 +208,18 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
   ft1Talk: onStage({ tone: 'light', Graphic: Ft1TalkGraphic, keepOnAsk: true }),
   ft1Mission: onStage({ tone: 'light', Graphic: Ft1MissionGraphic }),
   ft1Next: onStage({ tone: 'light', Graphic: Ft1NextGraphic }),
+
+  lq1Cover: onStage({ tone: 'light', Graphic: Lq1CoverGraphic }),
+  lq1Message: onStage({ tone: 'light', Graphic: Lq1MessageGraphic }),
+  lq1Guess: onStage({ tone: 'light', Graphic: Lq1GuessGraphic, keepOnAsk: true }),
+  lq1Alif: onStage({ tone: 'light', Graphic: Lq1AlifGraphic }),
+  lq1Three: onStage({ tone: 'light', Graphic: Lq1ThreeGraphic }),
+  lq1Speed: onStage({ tone: 'light', Graphic: Lq1SpeedGraphic }),
+  lq1Rule: onStage({ tone: 'light', Graphic: Lq1RuleGraphic }),
+  lq1Word: onStage({ tone: 'light', Graphic: Lq1WordGraphic }),
+  lq1Write: onStage({ tone: 'light', Graphic: Lq1WriteGraphic, keepOnAsk: true }),
+  lq1Mission: onStage({ tone: 'light', Graphic: Lq1MissionGraphic }),
+  lq1Next: onStage({ tone: 'light', Graphic: Lq1NextGraphic }),
 
   se1Cover: onStage({ tone: 'dark', Graphic: Se1CoverGraphic }),
   se1Empires: onStage({ tone: 'dark', Graphic: Se1EmpiresGraphic }),

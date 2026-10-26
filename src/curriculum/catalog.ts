@@ -17,6 +17,7 @@ import { lessonQ01 } from './content/quran-reading/l01-reading-al-fatiha.js';
 import { lessonEN01 } from './content/english-kids/l01-the-snake-sound.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
+import { lessonAT01 } from './content/literacy-a-teens/l01-crack-the-code.js';
 import { lesson03Adults } from './content/zad-adults/l03-the-emptiness-fame-cannot-fill.js';
 
 /** A part of a curriculum (a unit in its MAP.md): its title and the number of its first lesson. */
@@ -342,6 +343,31 @@ export const SUBJECTS: SubjectEntry[] = [
     ],
     lessons: { 1: lessonFT01 },
   },
+  {
+    id: 'literacy-a-teens',
+    group: 'literacy',
+    title: 'Reading Arabic · Teens',
+    titleAr: 'القرائية · للشباب',
+    version: 'Teens',
+    versionAr: 'الشباب',
+    audience: '12–17',
+    art: '/curriculum/zad-teens/l01/doors.webp',
+    parts: [
+      { title: 'The Code', titleAr: 'الشفرة', from: 1 },
+      { title: 'Joined Writing', titleAr: 'اتصال الحروف', from: 9 },
+      { title: 'Vowels and Marks', titleAr: 'الحركات والعلامات', from: 12 },
+      { title: 'Long Vowels and Spelling', titleAr: 'المدود والإملاء', from: 16 },
+      { title: 'Read the World', titleAr: 'اقرا الدنيا', from: 19 },
+    ],
+    // docs/curriculum/literacy/MAP-teens.md (Claude's draft, 2026-10-26, for the owner's review).
+    plan: [
+      'Crack the Code', 'Cups and Hooks', 'Tails and Teeth', 'The Heavy Four', 'Throat Sounds', 'Loops and Lines',
+      'The Last Five', 'Full Alphabet Speedrun', 'Letters Change Shape', 'The Six That Never Join', 'Decode a Chat',
+      'Short Vowels', 'First Real Words', 'Sukoon and Shadda', 'Tanween', 'Long Vowels', 'Al- and the Sun Letters',
+      'ة, ى and Hamza', 'Signs, Menus, Screens', 'No Vowel Marks', 'Boss Level',
+    ],
+    lessons: { 1: lessonAT01 },
+  },
 ];
 
 /** Subjects of the Zad Path (docs/curriculum/RULES.md): each holds its age versions (SUBJECTS with that `group`).
@@ -385,7 +411,6 @@ export const GROUPS: GroupEntry[] = [
     tagline: 'From the first letter to reading on your own. The door to the Quran, Fusha and Egyptian.',
     taglineAr: 'من أول حرف لحد ما تقرا لوحدك. الباب للقرآن والفصحى والمصري.',
     planned: [
-      { version: 'Teens', versionAr: 'الشباب', audience: '12–17' },
       { version: 'Franco', versionAr: 'فرانكو', audience: '18+' },
     ],
   },

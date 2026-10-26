@@ -79,7 +79,8 @@ Last update: 2026-10-26. History of how we got here: §8 (progress log).
 - **Quran Reading (12+):** map (19 graded passages) and Lesson 1 "Reading Al-Fatiha from the Page" built 2026-10-26.
 - **English · Kids:** rules, phonics map (24) and Lesson 1 "The Snake Sound" built 2026-10-26.
 - **Fusha · 12+:** map (19, `fusha/MAP-12plus.md`) and Lesson 1 "First Day at the Institute" built 2026-10-26.
-- **Not started:** Literacy A Teens, Literacy C (Franco rules from the owner), Egyptian Kids/Teens and Franco, English
+- **Literacy A · Teens:** map (21, `literacy/MAP-teens.md`) and Lesson 1 "Crack the Code" built 2026-10-26.
+- **Not started:** Literacy C (Franco rules from the owner), Egyptian Kids/Teens and Franco, English
   General and Exams, Seerah Kids, Tajweed and Quran Reading in the Kids look, Hifz test generator, the two new skills (`literacy-quran-builder`, `language-builder`), onboarding and catalog
   changes, spaced repetition. Scholar's Path: postponed.
 - Every new lesson is a draft (`reviewed: false`), teacher-only.
@@ -651,3 +652,6 @@ B3–B5 → continue lesson by lesson.
   Lesson 1 "First Day at the Institute" (11 pages, `g-ft1.tsx`): a tour heard before any rule, هَذَا / هَذِهِ and the ة,
   مَا / مَنْ, and the wow "where did 'is' go?" (English tiles fall away, the "a" hides in -un). New shared pieces for
   language lessons in `g-lang.tsx`; eight new kit icons. 26 Fusha clips listed, not generated. Draft, `reviewed: false`.
+- 2026-10-26 — Literacy A · Teens: map of 21 told as cracking a code, and Lesson 1 "Crack the Code" (12 pages,
+  `g-lq1.tsx`): a message on a phone, 28 letters but under 20 shapes, ا ب ت ث written stroke by stroke, a flashing speed
+  round, the dots rule as a lock that opens family by family, بَاب and the boss word ثَابِت, a writing check. Draft.
