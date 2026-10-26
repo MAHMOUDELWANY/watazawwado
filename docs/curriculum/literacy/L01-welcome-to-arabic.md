@@ -30,8 +30,8 @@ everyday words.
 | 13 | ahd | **Our first stamp** | The ticket gets stamp 1; a carriage joins the train carrying ا; mission: find Arabic writing around you and spot an alif |
 | 14 | ahd | **Next time…** | Three boats on the platform, each with its own dots: ب ت ث, the boat family (Lesson 2) |
 
-Page text: `src/curriculum/content/literacy-a-kids/l01-welcome-to-arabic.ts` (2026-10-26). Prototype look: pages 0, 1 and 4
-are fully built; the others are simple drafts until the owner approves the look. The first prototype (Dots Make the
+Page text: `src/curriculum/content/literacy-a-kids/l01-welcome-to-arabic.ts` (2026-10-26). Look approved by the owner on pages 0, 1 and 4
+(2026-10-26); every page is now built in that look. The first prototype (Dots Make the
 Difference) is now Lesson 2.
 
 **Teens (Decode the City):** Karim's phone gets a message he can't read; the same beats as "codes" (direction, 28

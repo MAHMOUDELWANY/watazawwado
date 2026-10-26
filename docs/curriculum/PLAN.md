@@ -688,3 +688,14 @@ B3–B5 → continue lesson by lesson.
   clip renamed l02-baab). Catalog parts and plan follow `literacy/PLAN.md` (32 lessons). Fix: the clue game keyed cards by
   label, so two identical letters (two alifs) could not both be found; now keyed by position. Clips listed in the lesson,
   not generated (fusha: قِطَارُ الحُرُوف, قِطَار, بَ; owner: ا ح ع خ ق). Draft, `reviewed: false`.
+- 2026-10-26 — Owner approved the Literacy Kids look (cover, journey, right to left). All 15 pages of "Welcome to Arabic"
+  now built in it (`g-law.tsx`): the sign over the train that Rami reads from the left and gets nowhere, Dalia's light at
+  the right end; a dot-matrix globe where 22 gold lights (the Arab League) and a counter to 400,000,000+ come on, then
+  learners everywhere; the 28 cards with Arabic 28 / English 26, A a (2 sizes) beside ب (1 size) and a "0 capitals"
+  stamp; four letters that slide into قطار, a gold line drawn right to left, بَا (holds hands) and اب (a gap); the boat
+  ب whose dots fly from under to two on top to three (b, t, th) and the family row; the fatha that drops onto ب (b → ba)
+  and بَ بِ بُ; ح ع خ ق on tap, a faceless profile with the sound glowing in the throat, Hibr's glasses fogging; alif
+  written top-down with the start dot and arrow, "aa" as in father, Rami writing three alifs; the sign again with
+  "start on the right"; the ticket's first stamp and a carriage with ا that slides in and couples; the train to
+  station 2 and three boats that get their dots. Every step screenshotted; the clue and sort games clicked through in
+  real time. Clips still to generate. Draft, `reviewed: false`.
