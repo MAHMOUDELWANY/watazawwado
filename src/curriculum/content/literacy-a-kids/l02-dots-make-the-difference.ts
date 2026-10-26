@@ -20,7 +20,7 @@ export const lessonA02: Lesson = {
     'Says the sounds of ا ب ت ث.',
     'Writes ب ت ث in the right order: the body first, then the dots.',
     'Tells ب ت ث apart by the number and place of their dots.',
-    'Reads and builds the word بَاب, door.',
+    'Reads and builds the word بَابٌ, door.',
   ],
   chapters: [
     { label: 'The note', page: 0 },
@@ -162,8 +162,8 @@ export const lessonA02: Lesson = {
       layout: 'concept',
       scene: 'la1Word',
       lines: ['Put baa, alif and baa side by side.', 'Baa holds hands with alif. Alif lets go. Then baa again.', 'Baab means door!'],
-      vocab: [{ arabic: 'بَاب', translit: 'baab', meaning: 'door' }],
-      say: [{ id: 'baab', text: 'بَاب', voice: 'fusha', emotion: 'proud' }],
+      vocab: [{ arabic: 'بَابٌ', translit: 'baabun', meaning: 'door' }],
+      say: [{ id: 'baab', text: 'بَابٌ', voice: 'fusha', emotion: 'proud' }],
       explain: ['Build the word slowly: b, aa, b. Then say it together: baab.', 'Show that alif never holds hands with the letter after it. That is why baab has a gap.', 'Tap the word to hear it.'],
     },
     {

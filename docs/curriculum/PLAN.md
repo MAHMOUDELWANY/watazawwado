@@ -702,3 +702,7 @@ B3–B5 → continue lesson by lesson.
 - 2026-10-26 — Literacy Kids L1 audio: قِطَارُ الحُرُوف, قِطَار and بَ generated with the owner's Fusha clone and saved as
   `literacy-a-kids/audio/l01-{qitar-al-huruf,qitar,ba}.mp3` (list: `literacy/L01-welcome-clips.md`); tap checked in the
   preview. Single letters ا ح ع خ ق still wait for the owner's recordings.
+- 2026-10-26 — Owner's notes on the clips: single words must keep one tone, and every word needs its last-letter mark.
+  Redone: قِطَارٌ, قِطَارُ الْحُرُوفِ, بَ and Lesson 2's بَابٌ from one take with pauses, cut on the silences
+  (`l01-qitar`, `l01-qitar-al-huruf`, `l01-ba`, `l02-baab`); the same words on screen now carry their endings. Rule added
+  to `curriculum-builder/owner-feedback.md` (Sound).

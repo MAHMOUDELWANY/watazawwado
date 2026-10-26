@@ -31,6 +31,8 @@ Each row is a real rejection (2026-10-23/24) on Adults Lesson 1. Audit every new
 | Sound effects that did not fit the new style | One coherent bank (ElevenLabs, warm and organic: paper, wood, pencil, a small bell; never music), listed in `sources.md` |
 | A hiss under the page turn; TV-like static at the end of the sparkle | Short clean takes; noise reduction and a gate before levelling (levelling a quiet clip raises its noise floor); read a spectrogram of every clip: the background after the sound must be dark |
 | An eraser-like rubbing sound | Writing cues are one short tick or one quick swipe, never a long scribble |
+| Single-word voice clips in different tones, one generation per word (2026-10-26) | Every word clip of a lesson (and the words reused from earlier lessons) comes from **one take**: the words in one prompt with `<break time="1.2s" />` between them, cut on the silences (`silencedetect`), with 20 ms / 80 ms fades. One take = one tone |
+| Fusha words with no mark on the last letter (2026-10-26) | Every Fusha word is diacritized to the last letter, on screen and in the prompt: قِطَارٌ, قِطَارُ الْحُرُوفِ, بَابٌ (not قِطَار or a sukun ending) |
 
 ## Text, every version (2026-10-25)
 - Kids and Teens follow the same text rule as Adults: the ayah or hadith first, then lines that add (what to notice, why,

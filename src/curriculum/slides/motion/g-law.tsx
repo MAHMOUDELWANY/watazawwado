@@ -284,7 +284,7 @@ export function LawRtlGraphic({ lines }: GraphicProps) {
       )}
       {lines >= 2 && (
         <WordCard y={350} dir="rtl" color={CRIMSON} label="Arabic">
-          <Hear id="qitar"><span lang="ar" style={{ ...AR, fontSize: 84, lineHeight: 1, color: '#8B1A1E' }}>قِطَار</span></Hear>
+          <Hear id="qitar"><span lang="ar" style={{ ...AR, fontSize: 84, lineHeight: 1, color: '#8B1A1E' }}>قِطَارٌ</span></Hear>
         </WordCard>
       )}
       {lines >= 4 && (
@@ -310,7 +310,7 @@ export function LawRtlGraphic({ lines }: GraphicProps) {
 
 /* ---------- shared pieces for the other pages ---------- */
 
-const SIGN = 'قِطَارُ الحُرُوف';
+const SIGN = 'قِطَارُ الْحُرُوفِ';
 const PAPER_CARD: React.CSSProperties = { background: '#FFFDF8', boxShadow: '0 26px 50px -28px rgba(80,30,10,0.5)' };
 
 /** The sign that hangs over the train: two chains and a wooden board with قِطَارُ الحُرُوف (tap to hear it). */

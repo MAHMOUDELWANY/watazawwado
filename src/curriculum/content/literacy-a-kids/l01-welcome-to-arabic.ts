@@ -69,7 +69,7 @@ export const lessonA01: Lesson = {
         'He starts reading from the left, like in English. The letters make no sense!',
         'Dalia tilts her head. "Maybe we start somewhere else?"',
       ],
-      say: [{ id: 'qitar-al-huruf', text: 'قِطَارُ الحُرُوف', voice: 'fusha', emotion: 'cheerful' }],
+      say: [{ id: 'qitar-al-huruf', text: 'قِطَارُ الْحُرُوفِ', voice: 'fusha', emotion: 'cheerful' }],
       interaction: { kind: 'ask', prompt: 'Where do you think Arabic starts: on the left or on the right?', reveal: 'On the right! We find out why in a moment.' },
       explain: ['Let the child guess before you reveal anything.', 'Any guess is fine. The sign stays a mystery until the end of the lesson.'],
     },
@@ -97,7 +97,7 @@ export const lessonA01: Lesson = {
         'Even our train faces left. That is the way Arabic goes!',
         'Books open the other way too: the first page is where English books end.',
       ],
-      say: [{ id: 'qitar', text: 'قِطَار', voice: 'fusha', emotion: 'clear' }],
+      say: [{ id: 'qitar', text: 'قِطَارٌ', voice: 'fusha', emotion: 'clear' }],
       explain: ['Run your finger under the English word, then under the Arabic word.', 'Play a game: point to where an Arabic line starts. Again. And again.'],
     },
     {
@@ -218,7 +218,7 @@ export const lessonA01: Lesson = {
       layout: 'question',
       scene: 'lawRead',
       lines: ['Back to the sign over the train. Now you know where to start!', 'Can you find alif in it? It is hiding twice.'],
-      say: [{ id: 'qitar-al-huruf', text: 'قِطَارُ الحُرُوف', voice: 'fusha', emotion: 'cheerful' }],
+      say: [{ id: 'qitar-al-huruf', text: 'قِطَارُ الْحُرُوفِ', voice: 'fusha', emotion: 'cheerful' }],
       interaction: {
         kind: 'clues',
         prompt: 'Tap every alif in the sign.',
@@ -231,7 +231,7 @@ export const lessonA01: Lesson = {
           { label: 'ل', correct: false },
         ],
       },
-      explain: ['Start on the right, letter by letter.', 'If the child taps ل, show the difference: alif stands alone, ل curls at the bottom.', 'Then read the sign to them: "Qitaaru l-huruuf", the Letter Train.'],
+      explain: ['Start on the right, letter by letter.', 'If the child taps ل, show the difference: alif stands alone, ل curls at the bottom.', 'Then read the sign to them: "Qitaaru l-huruufi", the Letter Train.'],
     },
     {
       title: 'Our first stamp',
