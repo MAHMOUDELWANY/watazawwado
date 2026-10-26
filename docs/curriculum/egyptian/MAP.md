@@ -35,3 +35,11 @@ Notes
 - Literacy A comes first for learners who cannot read Arabic script; the Franco track uses the same map.
 - The Fusha → Egyptian sound shifts (ق → ء، ث → ت/س، ذ → د/ز، ج → g) are taught where they first appear (L1: none;
   L2 جديد = gidiid), with a short "sound shift" note, never a separate lecture.
+
+## Kids (6–11) and Teens (12–17) versions (Claude's draft, 2026-10-26)
+Same functions and structures as the Adults map, in their own world and at their own pace:
+- **Kids:** a child from abroad spends the summer at Teta's (grandma's) flat in Cairo with cousins Ziad and Mariam.
+  Lesson 1 "Ahlan, Teta!" (greetings, اسمي / اسمَك / اسمِك). Short lessons (35–40 min), songs of the street replaced by
+  call-and-response games.
+- **Teens:** a teen joins a summer football and arts club in Cairo. Lesson 1 "Ezzayak? What's Up, Cairo" (إزيّك /
+  عامل إيه / عاملة إيه and their answers, names, the m/f endings). Faster; social media and texting phrases later.

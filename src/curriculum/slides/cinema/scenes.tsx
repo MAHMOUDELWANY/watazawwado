@@ -23,6 +23,8 @@ import { Qr1CoverGraphic, Qr1SeventeenGraphic, Qr1MovesGraphic, Qr1Ayah1Graphic,
 import { En1CoverGraphic, En1GardenGraphic, En1SGraphic, En1AGraphic, En1TGraphic, En1BlendGraphic, En1FindGraphic, En1ReadGraphic, En1MissionGraphic, En1NextGraphic } from '../motion/g-en1';
 import { Ft1CoverGraphic, Ft1ArriveGraphic, Ft1ListenGraphic, Ft1HaadhihiGraphic, Ft1MaaManGraphic, Ft1NoIsGraphic, Ft1WordsGraphic, Ft1TalkGraphic, Ft1MissionGraphic, Ft1NextGraphic } from '../motion/g-ft1';
 import { Lq1CoverGraphic, Lq1MessageGraphic, Lq1GuessGraphic, Lq1AlifGraphic, Lq1ThreeGraphic, Lq1SpeedGraphic, Lq1RuleGraphic, Lq1WordGraphic, Lq1WriteGraphic, Lq1MissionGraphic, Lq1NextGraphic } from '../motion/g-lq1';
+import { Ek1CoverGraphic, Ek1DoorGraphic, Ek1ListenGraphic, Ek1HelloGraphic, Ek1IsmiGraphic, Ek1AkIkGraphic, Ek1ByeGraphic, Ek1TalkGraphic, Ek1MissionGraphic, Ek1NextGraphic } from '../motion/g-egy';
+import { Et1CoverGraphic, Et1ClubGraphic, Et1ListenGraphic, Et1HowGraphic, Et1EndingGraphic, Et1HiGraphic, Et1NamesGraphic, Et1TalkGraphic, Et1MissionGraphic, Et1NextGraphic } from '../motion/g-egy';
 import { Se1CoverGraphic, Se1EmpiresGraphic, Se1JahiliyyahGraphic, Se1MakkahGraphic, Se1AbrahaGraphic, Se1QullaysGraphic, Se1ScalesGraphic, Se1MarchGraphic, Se1CampGraphic, Se1WalkGraphic, Se1TentGraphic, Se1TrustGraphic, Se1KneelGraphic, Se1SpearGraphic, Se1BirdsGraphic, Se1FilGraphic, Se1AftermathGraphic, Se1CradleGraphic, Se1MissionGraphic, Se1NextGraphic } from '../motion/g-se1';
 import { LaneGraphic, MondayGraphic, GravesGraphic, CountGraphic, CaseOmarGraphic, CaseLaylaGraphic, CaseColleagueGraphic, CaseOnlineGraphic, NotebookGraphic } from '../motion/g-life';
 
@@ -220,6 +222,28 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
   lq1Write: onStage({ tone: 'light', Graphic: Lq1WriteGraphic, keepOnAsk: true }),
   lq1Mission: onStage({ tone: 'light', Graphic: Lq1MissionGraphic }),
   lq1Next: onStage({ tone: 'light', Graphic: Lq1NextGraphic }),
+
+  ek1Cover: onStage({ tone: 'light', Graphic: Ek1CoverGraphic }),
+  ek1Door: onStage({ tone: 'light', Graphic: Ek1DoorGraphic }),
+  ek1Listen: onStage({ tone: 'light', Graphic: Ek1ListenGraphic }),
+  ek1Hello: onStage({ tone: 'light', Graphic: Ek1HelloGraphic }),
+  ek1Ismi: onStage({ tone: 'light', Graphic: Ek1IsmiGraphic }),
+  ek1AkIk: onStage({ tone: 'light', Graphic: Ek1AkIkGraphic }),
+  ek1Bye: onStage({ tone: 'light', Graphic: Ek1ByeGraphic }),
+  ek1Talk: onStage({ tone: 'light', Graphic: Ek1TalkGraphic, keepOnAsk: true }),
+  ek1Mission: onStage({ tone: 'light', Graphic: Ek1MissionGraphic }),
+  ek1Next: onStage({ tone: 'light', Graphic: Ek1NextGraphic }),
+
+  et1Cover: onStage({ tone: 'light', Graphic: Et1CoverGraphic }),
+  et1Club: onStage({ tone: 'light', Graphic: Et1ClubGraphic }),
+  et1Listen: onStage({ tone: 'light', Graphic: Et1ListenGraphic }),
+  et1How: onStage({ tone: 'light', Graphic: Et1HowGraphic }),
+  et1Ending: onStage({ tone: 'light', Graphic: Et1EndingGraphic }),
+  et1Hi: onStage({ tone: 'light', Graphic: Et1HiGraphic }),
+  et1Names: onStage({ tone: 'light', Graphic: Et1NamesGraphic }),
+  et1Talk: onStage({ tone: 'light', Graphic: Et1TalkGraphic, keepOnAsk: true }),
+  et1Mission: onStage({ tone: 'light', Graphic: Et1MissionGraphic }),
+  et1Next: onStage({ tone: 'light', Graphic: Et1NextGraphic }),
 
   se1Cover: onStage({ tone: 'dark', Graphic: Se1CoverGraphic }),
   se1Empires: onStage({ tone: 'dark', Graphic: Se1EmpiresGraphic }),

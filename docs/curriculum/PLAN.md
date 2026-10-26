@@ -17,6 +17,7 @@ Last update: 2026-10-26. History of how we got here: §8 (progress log).
 - **Done:** map (37 lessons) approved; Lessons 1, 2, 3 built and **approved by the owner** (`reviewed: true`, open to
   booked students); series opening (Yusuf, Maryam, Jiddo, Mishmish) before Lesson 1.
 - **Next:** Lesson 4 (Muhammad ﷺ, the Messenger) brief.
+- **Egyptian · Kids and Teens:** Lesson 1 of each built 2026-10-26 ("Ahlan, Teta!", "Ezzayak? What's Up, Cairo").
 - **Not started:** Lessons 4–37.
 
 ### Zad Essentials · Teens (12–17): `zad-essentials-teens/`
@@ -80,7 +81,7 @@ Last update: 2026-10-26. History of how we got here: §8 (progress log).
 - **English · Kids:** rules, phonics map (24) and Lesson 1 "The Snake Sound" built 2026-10-26.
 - **Fusha · 12+:** map (19, `fusha/MAP-12plus.md`) and Lesson 1 "First Day at the Institute" built 2026-10-26.
 - **Literacy A · Teens:** map (21, `literacy/MAP-teens.md`) and Lesson 1 "Crack the Code" built 2026-10-26.
-- **Not started:** Literacy C (Franco rules from the owner), Egyptian Kids/Teens and Franco, English
+- **Not started:** Literacy C (Franco rules from the owner), Egyptian Franco, English
   General and Exams, Seerah Kids, Tajweed and Quran Reading in the Kids look, Hifz test generator, the two new skills (`literacy-quran-builder`, `language-builder`), onboarding and catalog
   changes, spaced repetition. Scholar's Path: postponed.
 - Every new lesson is a draft (`reviewed: false`), teacher-only.
@@ -655,3 +656,6 @@ B3–B5 → continue lesson by lesson.
 - 2026-10-26 — Literacy A · Teens: map of 21 told as cracking a code, and Lesson 1 "Crack the Code" (12 pages,
   `g-lq1.tsx`): a message on a phone, 28 letters but under 20 shapes, ا ب ت ث written stroke by stroke, a flashing speed
   round, the dots rule as a lock that opens family by family, بَاب and the boss word ثَابِت, a writing check. Draft.
+- 2026-10-26 — Egyptian · Kids ("Ahlan, Teta!": a summer at grandma's in Cairo, greetings, اسمي, اسمَك / اسمِك, bye) and
+  Teens ("Ezzayak? What's Up, Cairo": a football club, إزيَّك / عامل إيه / عاملة إيه and the answers, register from هاي
+  to السلام عليكم, swapping names), 11 pages each, `g-egy.tsx`. Clips listed, not generated. Drafts.

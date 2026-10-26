@@ -18,6 +18,8 @@ import { lessonEN01 } from './content/english-kids/l01-the-snake-sound.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lessonAT01 } from './content/literacy-a-teens/l01-crack-the-code.js';
+import { lessonEK01 } from './content/egyptian-kids/l01-ahlan-teta.js';
+import { lessonET01 } from './content/egyptian-teens/l01-ezzayak.js';
 import { lesson03Adults } from './content/zad-adults/l03-the-emptiness-fame-cannot-fill.js';
 
 /** A part of a curriculum (a unit in its MAP.md): its title and the number of its first lesson. */
@@ -368,6 +370,40 @@ export const SUBJECTS: SubjectEntry[] = [
     ],
     lessons: { 1: lessonAT01 },
   },
+  {
+    id: 'egyptian-kids',
+    group: 'egyptian',
+    title: 'Egyptian Arabic · Kids',
+    titleAr: 'العامية المصرية · للأطفال',
+    version: 'Kids',
+    versionAr: 'الأطفال',
+    audience: '6–11',
+    art: '/curriculum/zad-kids/l01/cover.webp',
+    parts: [{ title: "Beginner · Summer at Teta's", titleAr: 'المبتدئ · الصيف عند تيتة', from: 1 }],
+    // docs/curriculum/egyptian/MAP.md, Kids section (Claude's draft, 2026-10-26, for the owner's review).
+    plan: [
+      'Ahlan, Teta!', 'Where Are You From?', "What's This?", 'Where Are My Keys?', 'Numbers and Phones',
+      'What Time Is It?', 'How Much?', 'At the Market', 'Where Is It?', 'My Address', 'Review: The First Month',
+    ],
+    lessons: { 1: lessonEK01 },
+  },
+  {
+    id: 'egyptian-teens',
+    group: 'egyptian',
+    title: 'Egyptian Arabic · Teens',
+    titleAr: 'العامية المصرية · للشباب',
+    version: 'Teens',
+    versionAr: 'الشباب',
+    audience: '12–17',
+    art: '/curriculum/zad-teens/l01/doors.webp',
+    parts: [{ title: 'Beginner · Summer in Cairo', titleAr: 'المبتدئ · صيف في القاهرة', from: 1 }],
+    // docs/curriculum/egyptian/MAP.md, Teens section (Claude's draft, 2026-10-26, for the owner's review).
+    plan: [
+      "Ezzayak? What's Up, Cairo", 'Where Are You From?', "What's This?", 'Where Are My Keys?', 'Numbers and Phones',
+      'What Time Is It?', 'How Much?', 'At the Market', 'Where Is It?', 'My Address', 'Review: The First Month',
+    ],
+    lessons: { 1: lessonET01 },
+  },
 ];
 
 /** Subjects of the Zad Path (docs/curriculum/RULES.md): each holds its age versions (SUBJECTS with that `group`).
@@ -431,8 +467,6 @@ export const GROUPS: GroupEntry[] = [
     taglineAr: 'عربي شوارع القاهرة وبيوتها: تسلّم وتسأل وتفاصل وتزور العيلة زي المصريين.',
     // Arabic script in three versions (Adults first) and one Franco version (design §4.6).
     planned: [
-      { version: 'Kids', versionAr: 'الأطفال', audience: '6–11' },
-      { version: 'Teens', versionAr: 'الشباب', audience: '12–17' },
       { version: 'Franco', versionAr: 'فرانكو', audience: '18+' },
     ],
   },
