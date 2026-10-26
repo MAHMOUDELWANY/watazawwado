@@ -77,6 +77,7 @@ Last update: 2026-10-25. History of how we got here: §8 (progress log).
 - **Tajweed · Level 1 (12+):** rules, map (19) and Lesson 1 "Every Letter Has a Right" built 2026-10-26 (13 pages,
   Al-Ikhlas layers as the wow; Muslim 798 checked on Dorar). Bukhari 5027 (Literacy B L1) also checked: sahih.
 - **Quran Reading (12+):** map (19 graded passages) and Lesson 1 "Reading Al-Fatiha from the Page" built 2026-10-26.
+- **English · Kids:** rules, phonics map (24) and Lesson 1 "The Snake Sound" built 2026-10-26.
 - **Not started:** Literacy A Teens, Literacy C (Franco rules from the owner),
   English, Hifz test generator, the two new skills (`literacy-quran-builder`, `language-builder`), onboarding and catalog
   changes, spaced repetition. Scholar's Path: postponed.
@@ -641,3 +642,7 @@ B3–B5 → continue lesson by lesson.
   read; the teacher marks each ayah), the surah ayah by ayah on the Mushaf panel with one reading focus each (small
   alif, still waw, shadda, hamzat al-wasl, madd sign), a review of the small alif and a full reading. Text fetched with
   the Quran connector. Draft, `reviewed: false`.
+- 2026-10-26 — English · Kids: `english/RULES.md` (goal-based tracks; synthetic phonics in Jolly-style groups with
+  Oxford Phonics World for vocabulary fields), `english/MAP-kids.md` (24) and Lesson 1 "The Snake Sound" (11 pages,
+  `g-en1.tsx`): s, a, t written from their start dot, blending tiles that slide into "sat" and "at", a sort by first
+  sound and a first reading. New group `english`. Audio not generated. Draft, `reviewed: false`.

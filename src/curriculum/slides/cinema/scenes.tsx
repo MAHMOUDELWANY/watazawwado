@@ -20,6 +20,7 @@ import { Ea1CoverGraphic, Ea1BookGraphic, Ea1DoorGraphic, Ea1PairsGraphic, Ea1Eh
 import { Lt1CoverGraphic, Lt1SignGraphic, Lt1GuessGraphic, Lt1AlifGraphic, Lt1BaaGraphic, Lt1TaaGraphic, Lt1ThaaGraphic, Lt1SystemGraphic, Lt1FindGraphic, Lt1WordGraphic, Lt1MissionGraphic, Lt1NextGraphic } from '../motion/g-lt1';
 import { Tj1CoverGraphic, Tj1QalbGraphic, Tj1TarteelGraphic, Tj1RightGraphic, Tj1StumbleGraphic, Tj1MistakesGraphic, Tj1LayersGraphic, Tj1IstiadhaGraphic, Tj1BasmalahGraphic, Tj1ReciteGraphic, Tj1MissionGraphic, Tj1NextGraphic } from '../motion/g-tj1';
 import { Qr1CoverGraphic, Qr1SeventeenGraphic, Qr1MovesGraphic, Qr1Ayah1Graphic, Qr1Ayah2Graphic, Qr1Ayah4Graphic, Qr1Ayah5Graphic, Qr1Ayah6Graphic, Qr1ReadGraphic, Qr1MissionGraphic, Qr1NextGraphic } from '../motion/g-qr1';
+import { En1CoverGraphic, En1GardenGraphic, En1SGraphic, En1AGraphic, En1TGraphic, En1BlendGraphic, En1FindGraphic, En1ReadGraphic, En1MissionGraphic, En1NextGraphic } from '../motion/g-en1';
 import { Se1CoverGraphic, Se1EmpiresGraphic, Se1JahiliyyahGraphic, Se1MakkahGraphic, Se1AbrahaGraphic, Se1QullaysGraphic, Se1ScalesGraphic, Se1MarchGraphic, Se1CampGraphic, Se1WalkGraphic, Se1TentGraphic, Se1TrustGraphic, Se1KneelGraphic, Se1SpearGraphic, Se1BirdsGraphic, Se1FilGraphic, Se1AftermathGraphic, Se1CradleGraphic, Se1MissionGraphic, Se1NextGraphic } from '../motion/g-se1';
 import { LaneGraphic, MondayGraphic, GravesGraphic, CountGraphic, CaseOmarGraphic, CaseLaylaGraphic, CaseColleagueGraphic, CaseOnlineGraphic, NotebookGraphic } from '../motion/g-life';
 
@@ -160,6 +161,12 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
   fk1Talk: onStage({ tone: 'light', Graphic: Fk1TalkGraphic, keepOnAsk: true }), fk1Mission: onStage({ tone: 'light', Graphic: Fk1MissionGraphic }),
   fk1Next: onStage({ tone: 'light', Graphic: Fk1NextGraphic }),
   // Seerah · Teens & Adults · Episode 1 (the owner's stills, dark stage)
+  en1Cover: onStage({ tone: 'light', Graphic: En1CoverGraphic }), en1Garden: onStage({ tone: 'light', Graphic: En1GardenGraphic }),
+  en1S: onStage({ tone: 'light', Graphic: En1SGraphic }), en1A: onStage({ tone: 'light', Graphic: En1AGraphic }), en1T: onStage({ tone: 'light', Graphic: En1TGraphic }),
+  en1Blend: onStage({ tone: 'light', Graphic: En1BlendGraphic }), en1Find: onStage({ tone: 'light', Graphic: En1FindGraphic }),
+  en1Read: onStage({ tone: 'light', Graphic: En1ReadGraphic }), en1Mission: onStage({ tone: 'light', Graphic: En1MissionGraphic }),
+  en1Next: onStage({ tone: 'light', Graphic: En1NextGraphic }),
+
   qr1Cover: onStage({ tone: 'light', Graphic: Qr1CoverGraphic }), qr1Seventeen: onStage({ tone: 'light', Graphic: Qr1SeventeenGraphic }),
   qr1Moves: onStage({ tone: 'light', Graphic: Qr1MovesGraphic }), qr1Ayah1: onStage({ tone: 'light', Graphic: Qr1Ayah1Graphic }),
   qr1Ayah2: onStage({ tone: 'light', Graphic: Qr1Ayah2Graphic }), qr1Ayah4: onStage({ tone: 'light', Graphic: Qr1Ayah4Graphic }),

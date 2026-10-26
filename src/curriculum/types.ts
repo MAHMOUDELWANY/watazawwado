@@ -7,6 +7,8 @@ export type SceneId =
   // Literacy A · Kids · Lesson 1 and Fusha · Kids · Lesson 1 (drawn in code)
   | 'la1Cover' | 'la1Note' | 'la1Guess' | 'la1Alif' | 'la1Baa' | 'la1Taa' | 'la1Thaa' | 'la1Trick' | 'la1Find' | 'la1Sort' | 'la1Word' | 'la1Mission' | 'la1Next'
   | 'fk1Cover' | 'fk1Game' | 'fk1Story' | 'fk1Haadha' | 'fk1Maa' | 'fk1Man' | 'fk1Words' | 'fk1Talk' | 'fk1Spot' | 'fk1Sort' | 'fk1Mission' | 'fk1Next'
+  // English · Kids · Lesson 1 (drawn in code, slides/motion/g-en1.tsx)
+  | 'en1Cover' | 'en1Garden' | 'en1S' | 'en1A' | 'en1T' | 'en1Blend' | 'en1Find' | 'en1Sort' | 'en1Read' | 'en1Mission' | 'en1Next'
   // Quran Reading · Lesson 1 (drawn in code, slides/motion/g-qr1.tsx)
   | 'qr1Cover' | 'qr1Seventeen' | 'qr1Moves' | 'qr1Ayah1' | 'qr1Ayah2' | 'qr1Ayah4' | 'qr1Ayah5' | 'qr1Ayah6' | 'qr1Review' | 'qr1Read' | 'qr1Mission' | 'qr1Next'
   // Tajweed · Level 1 · Lesson 1 (drawn in code, slides/motion/g-tj1.tsx)

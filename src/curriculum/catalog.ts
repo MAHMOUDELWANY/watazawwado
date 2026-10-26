@@ -14,6 +14,7 @@ import { lessonB01 } from './content/literacy-b/l01-same-letters-new-marks.js';
 import { lessonAA01 } from './content/literacy-a-adults/l01-fewer-shapes-than-you-think.js';
 import { lessonT01 } from './content/tajweed/l01-every-letter-has-a-right.js';
 import { lessonQ01 } from './content/quran-reading/l01-reading-al-fatiha.js';
+import { lessonEN01 } from './content/english-kids/l01-the-snake-sound.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lesson03Adults } from './content/zad-adults/l03-the-emptiness-fame-cannot-fill.js';
 
@@ -244,6 +245,25 @@ export const SUBJECTS: SubjectEntry[] = [
     lessons: { 1: lessonB01 },
   },
   {
+    id: 'english-kids',
+    group: 'english',
+    title: 'English · Kids',
+    titleAr: 'الإنجليزي · للأطفال',
+    version: 'Kids',
+    versionAr: 'الأطفال',
+    audience: '5–9',
+    art: '/curriculum/zad-kids/l01/cover.webp',
+    parts: [{ title: 'Phonics Level 1', titleAr: 'الفونكس · المستوى الأول', from: 1 }],
+    // docs/curriculum/english/MAP-kids.md (Claude's draft, 2026-10-26, for the owner's review).
+    plan: [
+      'The Snake Sound', 'Pins and Pans', 'Review: My First Sentence', 'Kick and Cat', 'Run, Mum!', 'Up and Down',
+      'Fish and Bat', 'Review: A Short Story', 'Rain and Boat', 'Pie and Bee', 'Jam and Fork', 'Zip and Win',
+      'Sing and Van', 'Book and Moon', 'Yes and Box', 'Chip and Ship', 'This and Thin', 'Queen and Out', 'Coin and Cue',
+      'Her and Car', 'Tricky Words (1)', 'Tricky Words (2)', 'Two Short Stories', 'I Can Read English',
+    ],
+    lessons: { 1: lessonEN01 },
+  },
+  {
     id: 'quran-reading',
     group: 'quran',
     title: 'Quran Reading',
@@ -369,6 +389,18 @@ export const GROUPS: GroupEntry[] = [
       { version: 'Kids', versionAr: 'الأطفال', audience: '6–11' },
       { version: 'Teens', versionAr: 'الشباب', audience: '12–17' },
       { version: 'Franco', versionAr: 'فرانكو', audience: '18+' },
+    ],
+  },
+  {
+    id: 'english',
+    title: 'English',
+    titleAr: 'الإنجليزي',
+    tagline: 'English for what you need it for: reading for children, everyday conversation, exams or work.',
+    taglineAr: 'إنجليزي للي إنت محتاجه: قراءة للأطفال، كلام يومي، امتحانات أو شغل.',
+    // Goal-based tracks (design §4.7).
+    planned: [
+      { version: 'General', versionAr: 'عام', audience: '12+' },
+      { version: 'Exams', versionAr: 'الامتحانات', audience: '16+' },
     ],
   },
   {
