@@ -6,6 +6,8 @@ Watazawwado Academy: an online academy with a team of male and female teachers g
 
 **Binding owner decisions live in [RULES.md](RULES.md). Read it before any change to booking, pricing, payments, packages, teachers, language or tone; it overrides older docs (including `src/data/master_spec.ts`) where they disagree.** Background product vision: `src/data/master_spec.ts`.
 
+**New account or session? Read [docs/curriculum/HANDOFF-2026-10-26.md](docs/curriculum/HANDOFF-2026-10-26.md) first** (new subjects: literacy, Quranic rules, Fusha, Seerah; what is done and what waits for the owner).
+
 **Curriculum (المنهج) work, any size, even a vague prompt: use the `curriculum-builder` skill.** Binding rules: [docs/curriculum/RULES.md](docs/curriculum/RULES.md); where we are, decisions and progress log: [docs/curriculum/PLAN.md](docs/curriculum/PLAN.md).
 
 **Social media, video and marketing content, any size: use the `watazawwado-content` skill.** Plan: [docs/marketing/PLAN.md](docs/marketing/PLAN.md); binding content rules: [docs/marketing/RULES.md](docs/marketing/RULES.md); shared context for the marketing skills: `.claude/product-marketing.md`.
