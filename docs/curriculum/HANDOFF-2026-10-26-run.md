@@ -20,3 +20,19 @@ Also: Bukhari 5027 (Literacy B L1) and Muslim 798 checked on Dorar: both sahih.
    sounds). Generate with the clone ids in HANDOFF-2026-10-26.md, then the "recording coming" tags disappear.
 3. Open questions: English Kids audience and sound order; Tajweed and Quran Reading at 12+ (Kids look later); Egyptian
    spelling and vowel marks.
+
+## Second run (same day): one Lesson 1 in every remaining version
+Owner: "make at least one lesson in every version not done yet; no more videos, I check on the site".
+
+| Version (catalog id) | Lesson 1 |
+|---|---|
+| Fusha · 12+ (`fusha-12`) | First Day at the Institute (`fusha/MAP-12plus.md`) |
+| Reading Arabic · Teens (`literacy-a-teens`) | Crack the Code (`literacy/MAP-teens.md`) |
+| Egyptian · Kids (`egyptian-kids`) | Ahlan, Teta! |
+| Egyptian · Teens (`egyptian-teens`) | Ezzayak? What's Up, Cairo |
+| English · General (`english-general`) | Hello, I'm… (`english/MAP-general.md`) |
+| English · Exams (`english-exams`) | Your First Three Minutes (`english/MAP-exams.md`) |
+| Seerah · Kids (`seerah-kids`) | The Elephant Who Sat Down |
+
+Still without a lesson: Literacy Franco and Egyptian Franco (they need the owner's Franco spelling rules). Shared
+pieces for language lessons: `slides/motion/g-lang.tsx`. No audio was generated in either run.
