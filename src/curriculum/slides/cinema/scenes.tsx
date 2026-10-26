@@ -17,6 +17,7 @@ import { LbCoverGraphic, LbStuckGraphic, LbGuessGraphic, LbBestGraphic, LbMapGra
 import { La1CoverGraphic, La1NoteGraphic, La1GuessGraphic, La1AlifGraphic, La1BaaGraphic, La1TaaGraphic, La1ThaaGraphic, La1TrickGraphic, La1FindGraphic, La1WordGraphic, La1MissionGraphic, La1NextGraphic } from '../motion/g-la1';
 import { Fk1CoverGraphic, Fk1GameGraphic, Fk1StoryGraphic, Fk1HaadhaGraphic, Fk1MaaGraphic, Fk1ManGraphic, Fk1WordsGraphic, Fk1SpotGraphic, Fk1TalkGraphic, Fk1MissionGraphic, Fk1NextGraphic } from '../motion/g-fk1';
 import { Ea1CoverGraphic, Ea1BookGraphic, Ea1DoorGraphic, Ea1PairsGraphic, Ea1EhGraphic, Ea1MonaGraphic, Ea1SuffixGraphic, Ea1HadraGraphic, Ea1SorryGraphic, Ea1ByeGraphic, Ea1TalkGraphic, Ea1MissionGraphic, Ea1NextGraphic } from '../motion/g-ea1';
+import { Lt1CoverGraphic, Lt1SignGraphic, Lt1GuessGraphic, Lt1AlifGraphic, Lt1BaaGraphic, Lt1TaaGraphic, Lt1ThaaGraphic, Lt1SystemGraphic, Lt1FindGraphic, Lt1WordGraphic, Lt1MissionGraphic, Lt1NextGraphic } from '../motion/g-lt1';
 import { Se1CoverGraphic, Se1EmpiresGraphic, Se1JahiliyyahGraphic, Se1MakkahGraphic, Se1AbrahaGraphic, Se1QullaysGraphic, Se1ScalesGraphic, Se1MarchGraphic, Se1CampGraphic, Se1WalkGraphic, Se1TentGraphic, Se1TrustGraphic, Se1KneelGraphic, Se1SpearGraphic, Se1BirdsGraphic, Se1FilGraphic, Se1AftermathGraphic, Se1CradleGraphic, Se1MissionGraphic, Se1NextGraphic } from '../motion/g-se1';
 import { LaneGraphic, MondayGraphic, GravesGraphic, CountGraphic, CaseOmarGraphic, CaseLaylaGraphic, CaseColleagueGraphic, CaseOnlineGraphic, NotebookGraphic } from '../motion/g-life';
 
@@ -157,6 +158,13 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
   fk1Talk: onStage({ tone: 'light', Graphic: Fk1TalkGraphic, keepOnAsk: true }), fk1Mission: onStage({ tone: 'light', Graphic: Fk1MissionGraphic }),
   fk1Next: onStage({ tone: 'light', Graphic: Fk1NextGraphic }),
   // Seerah · Teens & Adults · Episode 1 (the owner's stills, dark stage)
+  lt1Cover: onStage({ tone: 'light', Graphic: Lt1CoverGraphic }), lt1Sign: onStage({ tone: 'light', Graphic: Lt1SignGraphic }),
+  lt1Guess: onStage({ tone: 'light', Graphic: Lt1GuessGraphic, keepOnAsk: true }), lt1Alif: onStage({ tone: 'light', Graphic: Lt1AlifGraphic }),
+  lt1Baa: onStage({ tone: 'light', Graphic: Lt1BaaGraphic }), lt1Taa: onStage({ tone: 'light', Graphic: Lt1TaaGraphic }),
+  lt1Thaa: onStage({ tone: 'light', Graphic: Lt1ThaaGraphic }), lt1System: onStage({ tone: 'light', Graphic: Lt1SystemGraphic }),
+  lt1Find: onStage({ tone: 'light', Graphic: Lt1FindGraphic }), lt1Word: onStage({ tone: 'light', Graphic: Lt1WordGraphic }),
+  lt1Mission: onStage({ tone: 'light', Graphic: Lt1MissionGraphic }), lt1Next: onStage({ tone: 'light', Graphic: Lt1NextGraphic }),
+
   ea1Cover: onStage({ tone: 'light', Graphic: Ea1CoverGraphic }), ea1Book: onStage({ tone: 'light', Graphic: Ea1BookGraphic }),
   ea1Door: onStage({ tone: 'light', Graphic: Ea1DoorGraphic }), ea1Pairs: onStage({ tone: 'light', Graphic: Ea1PairsGraphic }),
   ea1Eh: onStage({ tone: 'light', Graphic: Ea1EhGraphic }), ea1Mona: onStage({ tone: 'light', Graphic: Ea1MonaGraphic }),

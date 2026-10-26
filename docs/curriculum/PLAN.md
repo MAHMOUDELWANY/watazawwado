@@ -72,7 +72,9 @@ Last update: 2026-10-25. History of how we got here: §8 (progress log).
 - **Egyptian · Adults (Arabic script):** rules, beginner map (22, Kallimni 'Arabi Bishweesh order) and Lesson 1 "Ahlan!
   What's Your Name?" built 2026-10-26 (14 pages, Cairo building cast). 38 clips listed for the Egyptian clone, not yet
   generated (no ElevenLabs connector in that session).
-- **Not started:** Literacy A Teens/Adults, Literacy C (Franco rules from the owner), Quran Reading, Tajweed,
+- **Literacy A · Adults:** map (24, `literacy/MAP-adults.md`) and Lesson 1 "Fewer Shapes Than You Think" built
+  2026-10-26 (13 pages, Adults paper stage, the dots system as the wow).
+- **Not started:** Literacy A Teens, Literacy C (Franco rules from the owner), Quran Reading, Tajweed,
   English, Hifz test generator, the two new skills (`literacy-quran-builder`, `language-builder`), onboarding and catalog
   changes, spaced repetition. Scholar's Path: postponed.
 - Every new lesson is a draft (`reviewed: false`), teacher-only.
@@ -621,3 +623,7 @@ B3–B5 → continue lesson by lesson.
   endings ـي / ـَك / ـِك told through Mona and Amm Sayed, حضرتك as the polite you, sorry/thanks/goodbye, an adult review of
   eight street moments, role-play and mission. New group `egyptian` in the catalog. Clips listed in
   `egyptian/L01-clips.md`, audio not generated yet. Draft, `reviewed: false`.
+- 2026-10-26 — Literacy A · Adults: map of 24 lessons at an adult pace (two letter families per lesson after L1, reading
+  signs, menus and unmarked text as the goal) and Lesson 1 "Fewer Shapes Than You Think" (13 pages, `g-lt1.tsx`): a shop
+  sign that looks like one line, 28 letters but fewer than 20 shapes, ا ب ت ث written stroke by stroke, the dots
+  system (18 letters on 8 bodies), بَاب and ثَابِت, a photo mission. Draft, `reviewed: false`.

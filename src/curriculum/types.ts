@@ -7,6 +7,8 @@ export type SceneId =
   // Literacy A · Kids · Lesson 1 and Fusha · Kids · Lesson 1 (drawn in code)
   | 'la1Cover' | 'la1Note' | 'la1Guess' | 'la1Alif' | 'la1Baa' | 'la1Taa' | 'la1Thaa' | 'la1Trick' | 'la1Find' | 'la1Sort' | 'la1Word' | 'la1Mission' | 'la1Next'
   | 'fk1Cover' | 'fk1Game' | 'fk1Story' | 'fk1Haadha' | 'fk1Maa' | 'fk1Man' | 'fk1Words' | 'fk1Talk' | 'fk1Spot' | 'fk1Sort' | 'fk1Mission' | 'fk1Next'
+  // Literacy A · Adults · Lesson 1 (drawn in code, slides/motion/g-lt1.tsx)
+  | 'lt1Cover' | 'lt1Sign' | 'lt1Guess' | 'lt1Alif' | 'lt1Baa' | 'lt1Taa' | 'lt1Thaa' | 'lt1System' | 'lt1Find' | 'lt1Review' | 'lt1Word' | 'lt1Mission' | 'lt1Next'
   // Egyptian Arabic · Adults · Lesson 1 (drawn in code, slides/motion/g-ea1.tsx)
   | 'ea1Cover' | 'ea1Book' | 'ea1Door' | 'ea1Pairs' | 'ea1Eh' | 'ea1Mona' | 'ea1Suffix' | 'ea1Hadra' | 'ea1Sorry' | 'ea1Bye' | 'ea1Review' | 'ea1Talk' | 'ea1Mission' | 'ea1Next'
   // Seerah · Teens & Adults · Episode 1 (the owner's stills + code motion)

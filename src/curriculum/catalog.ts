@@ -11,6 +11,7 @@ import { lessonA01 } from './content/literacy-a-kids/l01-dots-make-the-differenc
 import { lessonF01 } from './content/fusha-kids/l01-what-is-this.js';
 import { seerahE01 } from './content/seerah-teens/l01-the-invincible-army.js';
 import { lessonB01 } from './content/literacy-b/l01-same-letters-new-marks.js';
+import { lessonAA01 } from './content/literacy-a-adults/l01-fewer-shapes-than-you-think.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lesson03Adults } from './content/zad-adults/l03-the-emptiness-fame-cannot-fill.js';
 
@@ -161,6 +162,32 @@ export const SUBJECTS: SubjectEntry[] = [
     lessons: { 1: lessonA01 },
   },
   {
+    id: 'literacy-a-adults',
+    group: 'literacy',
+    title: 'Reading Arabic · Adults',
+    titleAr: 'القرائية · للكبار',
+    version: 'Adults',
+    versionAr: 'الكبار',
+    audience: '18+',
+    art: '/curriculum/zad-adults/l01/cover.webp',
+    parts: [
+      { title: 'The Letters', titleAr: 'الحروف', from: 1 },
+      { title: 'Joining', titleAr: 'اتصال الحروف', from: 9 },
+      { title: 'Vowels and Marks', titleAr: 'الحركات والعلامات', from: 12 },
+      { title: 'Long Vowels and Spelling', titleAr: 'المدود والإملاء', from: 17 },
+      { title: 'Reading the Real World', titleAr: 'القراءة في الحياة', from: 21 },
+    ],
+    // docs/curriculum/literacy/MAP-adults.md (Claude's draft, 2026-10-26, for the owner's review).
+    plan: [
+      'Fewer Shapes Than You Think', 'Cups and Hooks', 'Tails and Teeth', 'The Heavy Letters', 'From the Throat',
+      'Loops and Lines', 'The Last Five', 'The Whole Alphabet', 'Start, Middle, End', 'Six Letters That Never Join',
+      'Reading Joined Shapes', 'Short Vowels: a, i, u', 'Your First Real Words', 'Sukoon: the Stop', 'Shadda: Say It Twice',
+      'Tanween', 'Long Vowels: aa, oo, ee', 'Al- and the Sun Letters', 'ة and ى', "Hamza's Seats", 'Signs and Menus',
+      'Reading Without Vowel Marks', 'A Short Text', 'I Can Read',
+    ],
+    lessons: { 1: lessonAA01 },
+  },
+  {
     id: 'fusha-kids',
     group: 'fusha',
     title: 'Fusha Arabic · Kids',
@@ -281,7 +308,6 @@ export const GROUPS: GroupEntry[] = [
     taglineAr: 'من أول حرف لحد ما تقرا لوحدك. الباب للقرآن والفصحى والمصري.',
     planned: [
       { version: 'Teens', versionAr: 'الشباب', audience: '12–17' },
-      { version: 'Adults', versionAr: 'الكبار', audience: '18+' },
       { version: 'Franco', versionAr: 'فرانكو', audience: '18+' },
     ],
   },
