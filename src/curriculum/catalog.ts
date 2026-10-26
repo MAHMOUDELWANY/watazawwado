@@ -11,6 +11,7 @@ import { lessonA01 } from './content/literacy-a-kids/l01-dots-make-the-differenc
 import { lessonF01 } from './content/fusha-kids/l01-what-is-this.js';
 import { seerahE01 } from './content/seerah-teens/l01-the-invincible-army.js';
 import { lessonB01 } from './content/literacy-b/l01-same-letters-new-marks.js';
+import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lesson03Adults } from './content/zad-adults/l03-the-emptiness-fame-cannot-fill.js';
 
 /** A part of a curriculum (a unit in its MAP.md): its title and the number of its first lesson. */
@@ -213,6 +214,29 @@ export const SUBJECTS: SubjectEntry[] = [
     ],
     lessons: { 1: lessonB01 },
   },
+  {
+    id: 'egyptian-adults',
+    group: 'egyptian',
+    title: 'Egyptian Arabic · Adults',
+    titleAr: 'العامية المصرية · للكبار',
+    version: 'Adults',
+    versionAr: 'الكبار',
+    audience: '18+',
+    art: '/curriculum/zad-adults/l01/cover.webp',
+    parts: [
+      { title: 'Beginner · Meeting People', titleAr: 'المبتدئ · التعارف', from: 1 },
+      { title: 'Beginner · Around Cairo', titleAr: 'المبتدئ · في القاهرة', from: 12 },
+    ],
+    // docs/curriculum/egyptian/MAP.md (Claude's draft, 2026-10-26, for the owner's review).
+    plan: [
+      "Ahlan! What's Your Name?", 'Where Are You From?', "What's This?", 'Where Are My Keys?', 'Numbers and Phones',
+      'What Time Is It?', 'How Much?', 'At the Market', 'Where Is It?', 'My Address', 'Review: The First Month',
+      'Left, Right, Straight', 'Is There a Pharmacy?', 'Every Day', "Not Now, I'm Busy", 'What Do You Do?',
+      'Come In, Have Tea!', 'Are You Free Tonight?', 'A Gift for Mona', 'Taxi, Train, Ticket', 'What Will You Have?',
+      'Review: Ready for Cairo',
+    ],
+    lessons: { 1: lessonE01 },
+  },
 ];
 
 /** Subjects of the Zad Path (docs/curriculum/RULES.md): each holds its age versions (SUBJECTS with that `group`).
@@ -270,6 +294,19 @@ export const GROUPS: GroupEntry[] = [
     planned: [
       { version: 'Quran reading', versionAr: 'قراءة القرآن', audience: '6+' },
       { version: 'Tajweed', versionAr: 'التجويد', audience: '6+' },
+    ],
+  },
+  {
+    id: 'egyptian',
+    title: 'Egyptian Arabic',
+    titleAr: 'العامية المصرية',
+    tagline: "The Arabic of Cairo's streets and kitchens: greet, ask, bargain and visit family the way Egyptians do.",
+    taglineAr: 'عربي شوارع القاهرة وبيوتها: تسلّم وتسأل وتفاصل وتزور العيلة زي المصريين.',
+    // Arabic script in three versions (Adults first) and one Franco version (design §4.6).
+    planned: [
+      { version: 'Kids', versionAr: 'الأطفال', audience: '6–11' },
+      { version: 'Teens', versionAr: 'الشباب', audience: '12–17' },
+      { version: 'Franco', versionAr: 'فرانكو', audience: '18+' },
     ],
   },
   {

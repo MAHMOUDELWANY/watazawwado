@@ -16,6 +16,7 @@ import { LookAMeetGraphic, LookAWordGraphic, LookBMeetGraphic, LookBWordGraphic,
 import { LbCoverGraphic, LbStuckGraphic, LbGuessGraphic, LbBestGraphic, LbMapGraphic, LbCircleGraphic, LbHelpersGraphic, LbUthmanGraphic, LbSpotGraphic, LbAlongGraphic, LbMissionGraphic, LbNextGraphic } from '../motion/g-lb1';
 import { La1CoverGraphic, La1NoteGraphic, La1GuessGraphic, La1AlifGraphic, La1BaaGraphic, La1TaaGraphic, La1ThaaGraphic, La1TrickGraphic, La1FindGraphic, La1WordGraphic, La1MissionGraphic, La1NextGraphic } from '../motion/g-la1';
 import { Fk1CoverGraphic, Fk1GameGraphic, Fk1StoryGraphic, Fk1HaadhaGraphic, Fk1MaaGraphic, Fk1ManGraphic, Fk1WordsGraphic, Fk1SpotGraphic, Fk1TalkGraphic, Fk1MissionGraphic, Fk1NextGraphic } from '../motion/g-fk1';
+import { Ea1CoverGraphic, Ea1BookGraphic, Ea1DoorGraphic, Ea1PairsGraphic, Ea1EhGraphic, Ea1MonaGraphic, Ea1SuffixGraphic, Ea1HadraGraphic, Ea1SorryGraphic, Ea1ByeGraphic, Ea1TalkGraphic, Ea1MissionGraphic, Ea1NextGraphic } from '../motion/g-ea1';
 import { Se1CoverGraphic, Se1EmpiresGraphic, Se1JahiliyyahGraphic, Se1MakkahGraphic, Se1AbrahaGraphic, Se1QullaysGraphic, Se1ScalesGraphic, Se1MarchGraphic, Se1CampGraphic, Se1WalkGraphic, Se1TentGraphic, Se1TrustGraphic, Se1KneelGraphic, Se1SpearGraphic, Se1BirdsGraphic, Se1FilGraphic, Se1AftermathGraphic, Se1CradleGraphic, Se1MissionGraphic, Se1NextGraphic } from '../motion/g-se1';
 import { LaneGraphic, MondayGraphic, GravesGraphic, CountGraphic, CaseOmarGraphic, CaseLaylaGraphic, CaseColleagueGraphic, CaseOnlineGraphic, NotebookGraphic } from '../motion/g-life';
 
@@ -156,6 +157,14 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
   fk1Talk: onStage({ tone: 'light', Graphic: Fk1TalkGraphic, keepOnAsk: true }), fk1Mission: onStage({ tone: 'light', Graphic: Fk1MissionGraphic }),
   fk1Next: onStage({ tone: 'light', Graphic: Fk1NextGraphic }),
   // Seerah · Teens & Adults · Episode 1 (the owner's stills, dark stage)
+  ea1Cover: onStage({ tone: 'light', Graphic: Ea1CoverGraphic }), ea1Book: onStage({ tone: 'light', Graphic: Ea1BookGraphic }),
+  ea1Door: onStage({ tone: 'light', Graphic: Ea1DoorGraphic }), ea1Pairs: onStage({ tone: 'light', Graphic: Ea1PairsGraphic }),
+  ea1Eh: onStage({ tone: 'light', Graphic: Ea1EhGraphic }), ea1Mona: onStage({ tone: 'light', Graphic: Ea1MonaGraphic }),
+  ea1Suffix: onStage({ tone: 'light', Graphic: Ea1SuffixGraphic }), ea1Hadra: onStage({ tone: 'light', Graphic: Ea1HadraGraphic }),
+  ea1Sorry: onStage({ tone: 'light', Graphic: Ea1SorryGraphic }), ea1Bye: onStage({ tone: 'light', Graphic: Ea1ByeGraphic }),
+  ea1Talk: onStage({ tone: 'light', Graphic: Ea1TalkGraphic, keepOnAsk: true }), ea1Mission: onStage({ tone: 'light', Graphic: Ea1MissionGraphic }),
+  ea1Next: onStage({ tone: 'light', Graphic: Ea1NextGraphic }),
+
   se1Cover: onStage({ tone: 'dark', Graphic: Se1CoverGraphic }),
   se1Empires: onStage({ tone: 'dark', Graphic: Se1EmpiresGraphic }),
   se1Jahiliyyah: onStage({ tone: 'dark', Graphic: Se1JahiliyyahGraphic }),

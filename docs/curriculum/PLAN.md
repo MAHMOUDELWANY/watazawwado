@@ -69,7 +69,10 @@ Last update: 2026-10-25. History of how we got here: §8 (progress log).
 - **Literacy A · Reading Arabic · Kids:** map (29) and Lesson 1 built in look A "letter friends" (Claude's pick, the owner
   did not choose; switchable). Letter sounds wait for the owner's own recordings (`literacy/L01-clips.md`).
 - **Fusha · Kids:** rules, Level 1 map (21) and Lesson 1 built; all 30 Arabic clips generated in the mahmoud-fusha clone.
-- **Not started:** Literacy A Teens/Adults, Literacy C (Franco rules from the owner), Quran Reading, Tajweed, Egyptian,
+- **Egyptian · Adults (Arabic script):** rules, beginner map (22, Kallimni 'Arabi Bishweesh order) and Lesson 1 "Ahlan!
+  What's Your Name?" built 2026-10-26 (14 pages, Cairo building cast). 38 clips listed for the Egyptian clone, not yet
+  generated (no ElevenLabs connector in that session).
+- **Not started:** Literacy A Teens/Adults, Literacy C (Franco rules from the owner), Quran Reading, Tajweed,
   English, Hifz test generator, the two new skills (`literacy-quran-builder`, `language-builder`), onboarding and catalog
   changes, spaced repetition. Scholar's Path: postponed.
 - Every new lesson is a draft (`reviewed: false`), teacher-only.
@@ -612,3 +615,9 @@ B3–B5 → continue lesson by lesson.
   and Lesson 1 "Same Letters, New Marks" built (13 pages, every graphic in code, Zad Kids cast; Bukhari 5027; Al-Fatiha
   and 112:4 play Husary on tap). Draft, `reviewed: false`. New in the player: tap-to-hear clips (`Say`, `Hear`), Amiri
   Quran for Uthmani text. Literacy cast: three look options sent to the owner (video), waiting for his pick.
+- 2026-10-26 — Egyptian Arabic · Adults: `egyptian/RULES.md`, `egyptian/MAP.md` (22 lessons in the order of Kallimni
+  'Arabi Bishweesh, our own Cairo scenes) and Lesson 1 "Ahlan! What's Your Name?" (14 pages, motion stage on every page,
+  `slides/motion/g-ea1.tsx`): greeting pairs, the question word at the end ("put the answer where إيه was"), the
+  endings ـي / ـَك / ـِك told through Mona and Amm Sayed, حضرتك as the polite you, sorry/thanks/goodbye, an adult review of
+  eight street moments, role-play and mission. New group `egyptian` in the catalog. Clips listed in
+  `egyptian/L01-clips.md`, audio not generated yet. Draft, `reviewed: false`.
