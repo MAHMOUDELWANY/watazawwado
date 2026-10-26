@@ -16,6 +16,7 @@ import { lessonT01 } from './content/tajweed/l01-every-letter-has-a-right.js';
 import { lessonQ01 } from './content/quran-reading/l01-reading-al-fatiha.js';
 import { lessonEN01 } from './content/english-kids/l01-the-snake-sound.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
+import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
 import { lesson03Adults } from './content/zad-adults/l03-the-emptiness-fame-cannot-fill.js';
 
 /** A part of a curriculum (a unit in its MAP.md): its title and the number of its first lesson. */
@@ -322,6 +323,25 @@ export const SUBJECTS: SubjectEntry[] = [
     ],
     lessons: { 1: lessonE01 },
   },
+  {
+    id: 'fusha-12',
+    group: 'fusha',
+    title: 'Fusha Arabic · 12+',
+    titleAr: 'الفصحى · 12 سنة فأكبر',
+    version: '12+',
+    versionAr: '12 سنة فأكبر',
+    audience: '12+',
+    art: '/curriculum/zad-teens/l01/doors.webp',
+    parts: [{ title: 'Level 1', titleAr: 'المستوى الأول', from: 1 }],
+    // docs/curriculum/fusha/MAP-12plus.md (Claude's draft, 2026-10-26, for the owner's review).
+    plan: [
+      'First Day at the Institute', 'Is This Your Room?', 'Near and Far', 'The Door and a Door', 'Where Is the Library?',
+      'Whose Is This?', 'My Phone, Your Laptop', 'A New Building', 'Who Are You?', 'Numbers and Prices',
+      'Review: My First Week', 'Where Did You Go?', 'We Went Together', 'From and To', 'What Did You Eat?', 'My Week',
+      'Classmates', 'Many Books', 'Level 1 Story',
+    ],
+    lessons: { 1: lessonFT01 },
+  },
 ];
 
 /** Subjects of the Zad Path (docs/curriculum/RULES.md): each holds its age versions (SUBJECTS with that `group`).
@@ -410,7 +430,6 @@ export const GROUPS: GroupEntry[] = [
     tagline: 'Understand it, then speak it: stories first, rules after, words that come back until they stay.',
     taglineAr: 'افهمها وبعدين اتكلمها: الحكاية الأول، والقاعدة بعدها، والكلمات بترجع لحد ما تثبت.',
     planned: [
-      { version: '12+', versionAr: '12 سنة فأكبر', audience: '12+' },
     ],
   },
 ];

@@ -17,6 +17,8 @@ export type SceneId =
   | 'lt1Cover' | 'lt1Sign' | 'lt1Guess' | 'lt1Alif' | 'lt1Baa' | 'lt1Taa' | 'lt1Thaa' | 'lt1System' | 'lt1Find' | 'lt1Review' | 'lt1Word' | 'lt1Mission' | 'lt1Next'
   // Egyptian Arabic · Adults · Lesson 1 (drawn in code, slides/motion/g-ea1.tsx)
   | 'ea1Cover' | 'ea1Book' | 'ea1Door' | 'ea1Pairs' | 'ea1Eh' | 'ea1Mona' | 'ea1Suffix' | 'ea1Hadra' | 'ea1Sorry' | 'ea1Bye' | 'ea1Review' | 'ea1Talk' | 'ea1Mission' | 'ea1Next'
+  // Fusha · 12+ · Lesson 1 (drawn in code, slides/motion/g-ft1.tsx)
+  | 'ft1Cover' | 'ft1Arrive' | 'ft1Listen' | 'ft1Haadhihi' | 'ft1MaaMan' | 'ft1NoIs' | 'ft1Words' | 'ft1Sort' | 'ft1Talk' | 'ft1Mission' | 'ft1Next'
   // Seerah · Teens & Adults · Episode 1 (the owner's stills + code motion)
   | 'se1Cover' | 'se1Empires' | 'se1Jahiliyyah' | 'se1Makkah' | 'se1Abraha' | 'se1Qullays' | 'se1Scales' | 'se1March' | 'se1Camp' | 'se1Walk' | 'se1Tent' | 'se1Trust' | 'se1Kneel' | 'se1Spear' | 'se1Birds' | 'se1Fil' | 'se1Aftermath' | 'se1Sort' | 'se1Cradle' | 'se1Mission' | 'se1Next'
   | 'lbCover' | 'lbStuck' | 'lbGuess' | 'lbBest' | 'lbMap' | 'lbCircle' | 'lbHelpers' | 'lbUthman' | 'lbSpot' | 'lbSort' | 'lbAlong' | 'lbMission' | 'lbNext'

@@ -148,6 +148,14 @@ const ICONS: Record<string, string> = {
   check: 'M5 12l5 5L20 7',
   door: 'M6 21V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v17M4 21h16M14 12h.01',
   globe: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18',
+  key: 'M8 14a4 4 0 1 1 0-8 4 4 0 0 1 0 8zM11 11l9 0M17 11v3M20 11v4',
+  bag: 'M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2',
+  window: 'M5 4h14v16H5zM12 4v16M5 12h14',
+  desk: 'M3 9h18M5 9v10M19 9v10M13 9v5h6',
+  cup: 'M5 8h11v6a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zM16 10h2a2 2 0 0 1 0 4h-2',
+  bread: 'M4 12a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v6H4zM8 12v2M12 12v2M16 12v2',
+  plane: 'M2 13l20-8-6 16-4-6zM12 15l4-6',
+  ticket: 'M3 7h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4zM14 7v10',
 };
 
 export function Icon({ name, size = 40, color = INK_TEXT, width = 1.8 }: { name: keyof typeof ICONS | string; size?: number; color?: string; width?: number }) {
