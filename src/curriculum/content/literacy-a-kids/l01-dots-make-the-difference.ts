@@ -1,10 +1,12 @@
 import type { Lesson } from '../../types';
 import { lessonA01TeacherAr } from './l01-teacher-ar.js';
+import { literacyKidsOpening } from './opening.js';
 
 // Brief: docs/curriculum/literacy/L01-dots-make-the-difference.md. No religious content (design §4.1).
 // Letters are written on the stage stroke by stroke (slides/motion/letters.tsx); sounds play on tap.
 
 export const lessonA01: Lesson = {
+  opening: literacyKidsOpening,
   subject: 'literacy-a-kids',
   version: 'kids',
   subjectTitle: 'Reading Arabic · Kids',

@@ -1,5 +1,7 @@
 # Image prompts for characters and poses (for the owner)
 
+**Status 2026-10-26: all images delivered and placed** (`zad-kids/characters`, `literacy-a-kids/characters`, `literacy-a-teens/characters`).
+
 Each prompt is complete on its own: paste it into a **new** ChatGPT chat (image generation). Where it says "attach",
 attach the named file from `public/curriculum/...` so the style and the character stay the same. Save each result as
 the file name given (WebP or PNG, transparent or plain white background), and send it to Claude; Claude cuts it out and

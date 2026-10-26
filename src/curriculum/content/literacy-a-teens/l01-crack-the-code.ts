@@ -1,10 +1,12 @@
 import type { Lesson } from '../../types';
 import { lessonAT01TeacherAr } from './l01-teacher-ar.js';
+import { literacyTeensOpening } from './opening.js';
 
 // Map: docs/curriculum/literacy/MAP-teens.md. Same scope as Kids and Adults Lesson 1, told as a code to crack. No
 // religious content (design §4.1). Letters are written stroke by stroke (slides/motion/letters.tsx).
 
 export const lessonAT01: Lesson = {
+  opening: literacyTeensOpening,
   subject: 'literacy-a-teens',
   version: 'teens',
   subjectTitle: 'Reading Arabic · Teens',

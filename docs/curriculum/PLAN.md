@@ -670,3 +670,11 @@ B3–B5 → continue lesson by lesson.
   with the reciter, a story check, the birth as a light over an empty cradle. The camels conversation (Ibn Ishaq) is left
   out until the owner decides. Draft. With this, every planned version has a Lesson 1 except the two Franco tracks,
   which wait for the owner's Franco rules.
+- 2026-10-26 — Owner delivered the 22 cast images (`CAST-PROMPTS.md` A, B, C). Cut out to transparent WebP (734×1100,
+  like the existing cast): six new Zad Kids poses in `zad-kids/characters/` (yusuf-listen, yusuf-sad, yusuf-brave,
+  maryam-amazed, maryam-dua, jiddo-advice), the Literacy Kids cast Rami, Dalia and Hibr the owl in
+  `literacy-a-kids/characters/` (9 poses), the Literacy Teens cast Karim and Lina in `literacy-a-teens/characters/`
+  (5 poses). Series openings ("meet the cast") added for Literacy A Kids ("All aboard the Letter Train!") and Teens, played
+  before Lesson 1. Brief for the new Lesson 1 "Welcome to Arabic" (all three ages): `literacy/L01-welcome-to-arabic.md`.
+  Stale duplicate tables removed from `literacy/PLAN.md`. Waits for the owner: the brief, then the page text and the
+  Kids look (2–3 prototype pages with the new cast on the beige paper stage).
