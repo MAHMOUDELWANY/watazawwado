@@ -29,6 +29,8 @@ export type SceneId =
   | 'eg1Cover' | 'eg1Cafe' | 'eg1Listen' | 'eg1Im' | 'eg1Youre' | 'eg1Name' | 'eg1Bye' | 'eg1Sort' | 'eg1Talk' | 'eg1Mission' | 'eg1Next'
   // English · Exams · Lesson 1 (drawn in code, slides/motion/g-eng.tsx)
   | 'ex1Cover' | 'ex1Short' | 'ex1Bands' | 'ex1Part1' | 'ex1Are' | 'ex1Length' | 'ex1Link' | 'ex1Sort' | 'ex1Timed' | 'ex1Mission' | 'ex1Next'
+  // Seerah · Kids · Episode 1 (drawn in code, slides/motion/g-sk1.tsx)
+  | 'sk1Cover' | 'sk1Makkah' | 'sk1Abraha' | 'sk1Scales' | 'sk1March' | 'sk1Hills' | 'sk1Kneel' | 'sk1Birds' | 'sk1Fil' | 'sk1Sort' | 'sk1Baby' | 'sk1Mission' | 'sk1Next'
   // Seerah · Teens & Adults · Episode 1 (the owner's stills + code motion)
   | 'se1Cover' | 'se1Empires' | 'se1Jahiliyyah' | 'se1Makkah' | 'se1Abraha' | 'se1Qullays' | 'se1Scales' | 'se1March' | 'se1Camp' | 'se1Walk' | 'se1Tent' | 'se1Trust' | 'se1Kneel' | 'se1Spear' | 'se1Birds' | 'se1Fil' | 'se1Aftermath' | 'se1Sort' | 'se1Cradle' | 'se1Mission' | 'se1Next'
   | 'lbCover' | 'lbStuck' | 'lbGuess' | 'lbBest' | 'lbMap' | 'lbCircle' | 'lbHelpers' | 'lbUthman' | 'lbSpot' | 'lbSort' | 'lbAlong' | 'lbMission' | 'lbNext'

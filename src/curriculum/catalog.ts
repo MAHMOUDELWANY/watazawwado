@@ -22,6 +22,7 @@ import { lessonEK01 } from './content/egyptian-kids/l01-ahlan-teta.js';
 import { lessonET01 } from './content/egyptian-teens/l01-ezzayak.js';
 import { lessonEG01 } from './content/english-general/l01-hello-im.js';
 import { lessonEX01 } from './content/english-exams/l01-your-first-three-minutes.js';
+import { seerahK01 } from './content/seerah-kids/l01-the-elephant-who-sat-down.js';
 import { lesson03Adults } from './content/zad-adults/l03-the-emptiness-fame-cannot-fill.js';
 
 /** A part of a curriculum (a unit in its MAP.md): its title and the number of its first lesson. */
@@ -441,6 +442,23 @@ export const SUBJECTS: SubjectEntry[] = [
     ],
     lessons: { 1: lessonEX01 },
   },
+  {
+    id: 'seerah-kids',
+    group: 'seerah',
+    title: 'Seerah · Kids',
+    titleAr: 'السيرة · للأطفال',
+    version: 'Kids',
+    versionAr: 'الأطفال',
+    audience: '6–11',
+    art: '/curriculum/zad-kids/l01/cover.webp',
+    parts: [{ title: 'Season 1 · Before the Message', titleAr: 'الموسم الأول · قبل البعثة', from: 1 }],
+    // docs/curriculum/seerah/MAP.md (same season as Teens & Adults, told for children; Claude's draft, 2026-10-26).
+    plan: [
+      'The Elephant Who Sat Down', 'Halimah and the Baby', 'Loss After Loss', 'The Monk Who Knew', 'The War He Watched',
+      'The Honest One', 'Khadijah', 'The Black Stone', 'The Cave',
+    ],
+    lessons: { 1: seerahK01 },
+  },
 ];
 
 /** Subjects of the Zad Path (docs/curriculum/RULES.md): each holds its age versions (SUBJECTS with that `group`).
@@ -472,9 +490,7 @@ export const GROUPS: GroupEntry[] = [
     tagline: 'The life of the Prophet ﷺ, told so it changes ours.',
     taglineAr: 'حياة النبي ﷺ، تتحكي عشان تغيّر حياتنا.',
     // Two versions (owner, 2026-10-25): Kids, and one shared version for teens and adults.
-    planned: [
-      { version: 'Kids', versionAr: 'الأطفال', audience: '6–11' },
-    ],
+    planned: [],
   },
   // Beyond the Zad Path: docs/superpowers/specs/2026-10-25-subjects-curricula-design.md §2.
   {

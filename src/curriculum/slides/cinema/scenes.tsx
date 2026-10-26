@@ -27,6 +27,7 @@ import { Ek1CoverGraphic, Ek1DoorGraphic, Ek1ListenGraphic, Ek1HelloGraphic, Ek1
 import { Et1CoverGraphic, Et1ClubGraphic, Et1ListenGraphic, Et1HowGraphic, Et1EndingGraphic, Et1HiGraphic, Et1NamesGraphic, Et1TalkGraphic, Et1MissionGraphic, Et1NextGraphic } from '../motion/g-egy';
 import { Eg1CoverGraphic, Eg1CafeGraphic, Eg1ListenGraphic, Eg1ImGraphic, Eg1YoureGraphic, Eg1NameGraphic, Eg1ByeGraphic, Eg1TalkGraphic, Eg1MissionGraphic, Eg1NextGraphic } from '../motion/g-eng';
 import { Ex1CoverGraphic, Ex1ShortGraphic, Ex1BandsGraphic, Ex1Part1Graphic, Ex1AreGraphic, Ex1LengthGraphic, Ex1LinkGraphic, Ex1TimedGraphic, Ex1MissionGraphic, Ex1NextGraphic } from '../motion/g-eng';
+import { Sk1CoverGraphic, Sk1MakkahGraphic, Sk1AbrahaGraphic, Sk1ScalesGraphic, Sk1MarchGraphic, Sk1HillsGraphic, Sk1KneelGraphic, Sk1BirdsGraphic, Sk1FilGraphic, Sk1BabyGraphic, Sk1MissionGraphic, Sk1NextGraphic } from '../motion/g-sk1';
 import { Se1CoverGraphic, Se1EmpiresGraphic, Se1JahiliyyahGraphic, Se1MakkahGraphic, Se1AbrahaGraphic, Se1QullaysGraphic, Se1ScalesGraphic, Se1MarchGraphic, Se1CampGraphic, Se1WalkGraphic, Se1TentGraphic, Se1TrustGraphic, Se1KneelGraphic, Se1SpearGraphic, Se1BirdsGraphic, Se1FilGraphic, Se1AftermathGraphic, Se1CradleGraphic, Se1MissionGraphic, Se1NextGraphic } from '../motion/g-se1';
 import { LaneGraphic, MondayGraphic, GravesGraphic, CountGraphic, CaseOmarGraphic, CaseLaylaGraphic, CaseColleagueGraphic, CaseOnlineGraphic, NotebookGraphic } from '../motion/g-life';
 
@@ -268,6 +269,19 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
   ex1Timed: onStage({ tone: 'light', Graphic: Ex1TimedGraphic, keepOnAsk: true }),
   ex1Mission: onStage({ tone: 'light', Graphic: Ex1MissionGraphic }),
   ex1Next: onStage({ tone: 'light', Graphic: Ex1NextGraphic }),
+
+  sk1Cover: onStage({ tone: 'light', Graphic: Sk1CoverGraphic }),
+  sk1Makkah: onStage({ tone: 'light', Graphic: Sk1MakkahGraphic }),
+  sk1Abraha: onStage({ tone: 'light', Graphic: Sk1AbrahaGraphic }),
+  sk1Scales: onStage({ tone: 'light', Graphic: Sk1ScalesGraphic, keepOnAsk: true }),
+  sk1March: onStage({ tone: 'light', Graphic: Sk1MarchGraphic }),
+  sk1Hills: onStage({ tone: 'light', Graphic: Sk1HillsGraphic }),
+  sk1Kneel: onStage({ tone: 'light', Graphic: Sk1KneelGraphic }),
+  sk1Birds: onStage({ tone: 'light', Graphic: Sk1BirdsGraphic }),
+  sk1Fil: onStage({ tone: 'light', Graphic: Sk1FilGraphic }),
+  sk1Baby: onStage({ tone: 'light', Graphic: Sk1BabyGraphic }),
+  sk1Mission: onStage({ tone: 'light', Graphic: Sk1MissionGraphic }),
+  sk1Next: onStage({ tone: 'light', Graphic: Sk1NextGraphic }),
 
   se1Cover: onStage({ tone: 'dark', Graphic: Se1CoverGraphic }),
   se1Empires: onStage({ tone: 'dark', Graphic: Se1EmpiresGraphic }),

@@ -1,0 +1,202 @@
+import type { Lesson } from '../../types';
+import { seerahK01TeacherAr } from './l01-teacher-ar.js';
+
+// Seerah · Kids · Episode 1. Rules: docs/curriculum/seerah/RULES.md (Kids: own tone, same facts). Facts: The Sealed
+// Nectar, "The Elephant Raid" and "His Birth" (as in the Teens & Adults episode). The camels conversation (Ibn Ishaq) is
+// left out of the Kids version until the owner decides. Ayat 105:1–5: Tanzil Uthmani, the same fetched text as the
+// Teens episode; audio Husary. The Prophet ﷺ is never drawn: he is a soft light over an empty cradle.
+
+const R = (id: string, text: string, ayah: string) => ({ id, text, voice: 'reciter' as const, quran: true, ayah });
+
+export const seerahK01: Lesson = {
+  subject: 'seerah-kids',
+  version: 'kids',
+  subjectTitle: 'Seerah · Kids',
+  number: 1,
+  title: 'The Elephant Who Sat Down',
+  titleAr: 'الفيل اللي قعد',
+  part: 'Episode 1 · The Year of the Elephant',
+  minutes: 40,
+  goal: 'By the end of this episode, you will tell the story of the Year of the Elephant, know Surat al-Fil, and know which special baby was born that year.',
+  reviewed: false,
+  teacherAr: seerahK01TeacherAr,
+  outcomes: [
+    'Tells the story of Abraha and the elephant in order.',
+    'Knows that Allah protected the Kaaba when nobody could.',
+    'Recites Surat al-Fil and says what each ayah is about.',
+    'Knows that the Prophet Muhammad ﷺ was born in the Year of the Elephant.',
+  ],
+  chapters: [
+    { label: 'Makkah', page: 0 },
+    { label: 'The big army', page: 2 },
+    { label: 'The elephant', page: 6 },
+    { label: 'The surah', page: 8 },
+    { label: 'The baby', page: 10 },
+    { label: 'My mission', page: 11 },
+  ],
+  pages: [
+    {
+      title: 'The Elephant Who Sat Down',
+      station: 'spark',
+      layout: 'cover',
+      scene: 'sk1Cover',
+      lines: [],
+      explain: ['Start like a cartoon series: "Episode 1!" Ask: have you ever seen a real elephant? How big was it?'],
+    },
+    {
+      title: 'A little town with a big House',
+      station: 'spark',
+      layout: 'story',
+      scene: 'sk1Makkah',
+      lines: [
+        'Long ago, in the desert, there was a little town called Makkah.',
+        'It had no big walls and no big army. But it had something special: the Kaaba.',
+        'People came from far away, on camels, just to visit it.',
+      ],
+      explain: ['Ask: why do you think people travelled so far to visit the Kaaba?'],
+    },
+    {
+      title: 'A jealous king',
+      station: 'zad',
+      layout: 'story',
+      scene: 'sk1Abraha',
+      lines: [
+        'Far away in Yemen lived a ruler called Abraha.',
+        'He built a huge, shiny church and wanted everyone to visit it instead.',
+        'But people still went to the Kaaba. Abraha was very, very jealous.',
+        'So he made a plan: "I will knock the Kaaba down!"',
+      ],
+      explain: ['The Sealed Nectar: Abraha built a great church in Sana\'a to turn the pilgrims away from the Kaaba.', 'Ask: what does being jealous make people do?'],
+    },
+    {
+      title: 'Who would win?',
+      station: 'zad',
+      layout: 'question',
+      scene: 'sk1Scales',
+      lines: ['On one side: a huge army with elephants.', 'On the other side: a little town with no army at all.'],
+      interaction: { kind: 'ask', prompt: 'If you had to guess, who would win?', reveal: 'Everyone would say the army. But wait and see what happens!' },
+      explain: ['Let the child guess. Do not tell the end yet.'],
+    },
+    {
+      title: 'The giant army',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'sk1March',
+      lines: ['Abraha marched with a giant army. The books say sixty thousand soldiers!', 'And he brought war elephants, nine or thirteen of them.', 'The biggest elephant walked at the front.'],
+      items: ['60,000 soldiers', '9 or 13 elephants'],
+      explain: ['Make 60,000 feel big: more people than a whole football stadium.'],
+    },
+    {
+      title: 'Up the mountains',
+      station: 'zad',
+      layout: 'story',
+      scene: 'sk1Hills',
+      lines: [
+        'The people of Makkah could not fight such an army.',
+        'Their chief, Abdul-Muttalib, told them to climb up into the mountains to be safe.',
+        'Now the Kaaba stood all alone in the valley. Who would protect it?',
+      ],
+      explain: ['The Sealed Nectar: the people of Quraysh went up to the hilltops.', 'Abdul-Muttalib is the grandfather of the Prophet ﷺ. The child will meet him again.'],
+    },
+    {
+      title: 'The elephant sat down!',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'sk1Kneel',
+      lines: [
+        'In the morning, the army marched toward Makkah.',
+        'Suddenly, the big elephant sat down and would not move!',
+        'They turned it another way: it stood up and walked. They turned it to the Kaaba: it sat down again!',
+      ],
+      explain: ['This is the wow. Act it out with a toy or your hand: walk, walk, turn to the Kaaba... sit!', 'The Sealed Nectar: in the valley of Muhassir the elephant knelt; turned to any other direction it went quickly.'],
+    },
+    {
+      title: 'The little birds',
+      station: 'zad',
+      layout: 'concept',
+      scene: 'sk1Birds',
+      lines: ['Then Allah sent flocks of little birds across the sky.', 'Each bird carried three small stones: one in its beak and one in each foot.', 'The stones fell on the army, and the giant army was beaten by tiny birds.'],
+      explain: ['The Sealed Nectar: birds like swallows, each carrying three stones.', 'Ask: who was stronger in the end, the elephants or Allah?'],
+    },
+    {
+      title: 'The story in the Quran',
+      station: 'zad',
+      layout: 'evidence',
+      scene: 'sk1Fil',
+      evidence: {
+        arabic: 'أَلَمْ تَرَ كَيْفَ فَعَلَ رَبُّكَ بِأَصْحَـٰبِ ٱلْفِيلِ ۝ أَلَمْ يَجْعَلْ كَيْدَهُمْ فِى تَضْلِيلٍ ۝ وَأَرْسَلَ عَلَيْهِمْ طَيْرًا أَبَابِيلَ ۝ تَرْمِيهِم بِحِجَارَةٍ مِّن سِجِّيلٍ ۝ فَجَعَلَهُمْ كَعَصْفٍ مَّأْكُولٍۭ',
+        meaning: 'Have you not seen what your Lord did to the people of the elephant? Did He not ruin their plan, and send flocks of birds against them, throwing stones of baked clay, and leave them like chewed-up straw?',
+        reference: 'Al-Fil 105:1-5',
+      },
+      tadabbur: {
+        word: 'ٱلْفِيلِ',
+        root: 'ف ي ل',
+        meaning: 'the elephant',
+        question: 'Allah put this whole story in the Quran. Why do you think He wants us to remember it?',
+        action: 'Learn Surat al-Fil by heart this week, and tell someone the story behind it.',
+      },
+      lines: ['Allah told this story in a short surah with the elephant\'s name: Surat al-Fil.', 'Tap each ayah and listen. Which part of the story is it about?'],
+      say: [
+        R('fil-1', 'أَلَمْ تَرَ كَيْفَ فَعَلَ رَبُّكَ بِأَصْحَـٰبِ ٱلْفِيلِ', '105:1'),
+        R('fil-2', 'أَلَمْ يَجْعَلْ كَيْدَهُمْ فِى تَضْلِيلٍ', '105:2'),
+        R('fil-3', 'وَأَرْسَلَ عَلَيْهِمْ طَيْرًا أَبَابِيلَ', '105:3'),
+        R('fil-4', 'تَرْمِيهِم بِحِجَارَةٍ مِّن سِجِّيلٍ', '105:4'),
+        R('fil-5', 'فَجَعَلَهُمْ كَعَصْفٍ مَّأْكُولٍۭ', '105:5'),
+      ],
+      explain: ['Play each ayah and match it to a picture: the elephant, the plan, the birds, the stones, the straw.'],
+    },
+    {
+      title: 'Check the story',
+      station: 'athar',
+      layout: 'game',
+      scene: 'sk1Sort',
+      lines: [],
+      interaction: {
+        kind: 'sort',
+        prompt: 'Did it happen in the story?',
+        bins: [
+          { id: 'yes', label: 'It happened', hint: 'in the story' },
+          { id: 'no', label: 'Not in the story', hint: 'that is wrong' },
+        ],
+        cards: [
+          { label: 'The elephant sat down', bin: 'yes', why: 'It would not walk toward the Kaaba.' },
+          { label: 'Makkah had a big army', bin: 'no', why: 'Makkah had no army at all.' },
+          { label: 'Birds carried stones', bin: 'yes', why: 'Three stones each.' },
+          { label: 'Abraha loved the Kaaba', bin: 'no', why: 'He was jealous and wanted to destroy it.' },
+          { label: 'The people climbed the mountains', bin: 'yes', why: 'To stay safe.' },
+          { label: 'The Kaaba was knocked down', bin: 'no', why: 'Allah protected it.' },
+        ],
+      },
+      explain: ['Let the child explain each answer. The result goes into your report.'],
+    },
+    {
+      title: 'A very special baby',
+      station: 'athar',
+      layout: 'concept',
+      scene: 'sk1Baby',
+      lines: [
+        'In that same year, a baby boy was born in Makkah, on a Monday.',
+        'His grandfather Abdul-Muttalib carried him to the Kaaba, thanked Allah, and named him Muhammad.',
+        'He would grow up to be the last Prophet, Muhammad ﷺ. That year is called the Year of the Elephant.',
+      ],
+      explain: ['The Sealed Nectar: born on a Monday in Rabi al-Awwal, in the Year of the Elephant; named by Abdul-Muttalib.', 'We never draw the Prophet ﷺ: on the stage he is a soft light.'],
+    },
+    {
+      title: 'My mission',
+      station: 'ahd',
+      layout: 'mission',
+      scene: 'sk1Mission',
+      lines: ['Tell your family the story of the elephant who sat down.', 'Then recite Surat al-Fil for them.'],
+      interaction: { kind: 'choose', prompt: 'Who will hear your story first?', options: ['Mum', 'Dad', 'Grandma or Grandpa', 'My brother or sister'] },
+      explain: ['Ask next time: who did you tell? Did they know the story?'],
+    },
+    {
+      title: 'Next time…',
+      station: 'ahd',
+      layout: 'next',
+      scene: 'sk1Next',
+      lines: ['A kind lady from the desert comes to Makkah, looking for a baby to look after.', 'Her donkey is the slowest of all. But something amazing is about to happen…', 'Next time: Episode 2, Halimah and the baby.'],
+      explain: ['End on the mystery. Do not tell what happens.'],
+    },
+  ],
+};

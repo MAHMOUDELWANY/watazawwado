@@ -66,7 +66,7 @@ Last update: 2026-10-26. History of how we got here: §8 (progress log).
 ### Beyond Zad Essentials (design 2026-10-25: `docs/superpowers/specs/2026-10-25-subjects-curricula-design.md`)
 - **Seerah · Teens & Adults:** rules (`seerah/RULES.md`, the owner's deck as template), season 1 map, Episode 1 built
   (21 pages, dark stage). **Waiting:** the owner's 22 stills (`seerah/EP01-image-prompts.md`; drop them in
-  `public/curriculum/seerah-teens/ep01/` by file name) and his call on the camels story (Ibn Ishaq). Seerah Kids: not started.
+  `public/curriculum/seerah-teens/ep01/` by file name) and his call on the camels story (Ibn Ishaq). Seerah Kids: Episode 1 "The Elephant Who Sat Down" built 2026-10-26 (all in code, no stills).
 - **Literacy B · Quranic reading rules (Kids look):** map (12) and Lesson 1 built; ayat play Husary on tap.
 - **Literacy A · Reading Arabic · Kids:** map (29) and Lesson 1 built in look A "letter friends" (Claude's pick, the owner
   did not choose; switchable). Letter sounds wait for the owner's own recordings (`literacy/L01-clips.md`).
@@ -82,7 +82,7 @@ Last update: 2026-10-26. History of how we got here: §8 (progress log).
 - **English · Kids:** rules, phonics map (24) and Lesson 1 "The Snake Sound" built 2026-10-26.
 - **Fusha · 12+:** map (19, `fusha/MAP-12plus.md`) and Lesson 1 "First Day at the Institute" built 2026-10-26.
 - **Literacy A · Teens:** map (21, `literacy/MAP-teens.md`) and Lesson 1 "Crack the Code" built 2026-10-26.
-- **Not started:** Literacy C (Franco rules from the owner), Egyptian Franco, Seerah Kids, Tajweed and Quran Reading in the Kids look, Hifz test generator, the two new skills (`literacy-quran-builder`, `language-builder`), onboarding and catalog
+- **Not started:** Literacy C (Franco rules from the owner), Egyptian Franco, Tajweed and Quran Reading in the Kids look, Hifz test generator, the two new skills (`literacy-quran-builder`, `language-builder`), onboarding and catalog
   changes, spaced repetition. Scholar's Path: postponed.
 - Every new lesson is a draft (`reviewed: false`), teacher-only.
 
@@ -664,3 +664,9 @@ B3–B5 → continue lesson by lesson.
   speakers make) and English · Exams (`MAP-exams.md`, IELTS 4–5 → 5.5; Lesson 1 "Your First Three Minutes": the test and
   its bands, Speaking Part 1, Answer + Reason + Example built block by block, a timing bar, a sort of answers that help
   or hurt the score, timed practice). `g-eng.tsx`. Clips listed. Drafts.
+- 2026-10-26 — Seerah · Kids: Episode 1 "The Elephant Who Sat Down" (13 pages, `g-sk1.tsx`, no stills needed): Makkah and
+  the Kaaba, Abraha's jealousy, a balance that tips toward the army, the march (60,000; 9 or 13 elephants), the people in
+  the hills, the elephant that sits facing the Kaaba (the wow), the birds with three stones, Surat al-Fil ayah by ayah
+  with the reciter, a story check, the birth as a light over an empty cradle. The camels conversation (Ibn Ishaq) is left
+  out until the owner decides. Draft. With this, every planned version has a Lesson 1 except the two Franco tracks,
+  which wait for the owner's Franco rules.
