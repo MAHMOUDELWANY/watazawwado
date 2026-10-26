@@ -74,7 +74,9 @@ Last update: 2026-10-25. History of how we got here: §8 (progress log).
   generated (no ElevenLabs connector in that session).
 - **Literacy A · Adults:** map (24, `literacy/MAP-adults.md`) and Lesson 1 "Fewer Shapes Than You Think" built
   2026-10-26 (13 pages, Adults paper stage, the dots system as the wow).
-- **Not started:** Literacy A Teens, Literacy C (Franco rules from the owner), Quran Reading, Tajweed,
+- **Tajweed · Level 1 (12+):** rules, map (19) and Lesson 1 "Every Letter Has a Right" built 2026-10-26 (13 pages,
+  Al-Ikhlas layers as the wow; Muslim 798 checked on Dorar). Bukhari 5027 (Literacy B L1) also checked: sahih.
+- **Not started:** Literacy A Teens, Literacy C (Franco rules from the owner), Quran Reading,
   English, Hifz test generator, the two new skills (`literacy-quran-builder`, `language-builder`), onboarding and catalog
   changes, spaced repetition. Scholar's Path: postponed.
 - Every new lesson is a draft (`reviewed: false`), teacher-only.
@@ -627,3 +629,9 @@ B3–B5 → continue lesson by lesson.
   signs, menus and unmarked text as the goal) and Lesson 1 "Fewer Shapes Than You Think" (13 pages, `g-lt1.tsx`): a shop
   sign that looks like one line, 28 letters but fewer than 20 shapes, ا ب ت ث written stroke by stroke, the dots
   system (18 letters on 8 bodies), بَاب and ثَابِت, a photo mission. Draft, `reviewed: false`.
+- 2026-10-26 — Tajweed · Level 1: `tajweed/RULES.md`, `tajweed/MAP.md` (19 lessons, Jannat Book 2 order re-ordered so the
+  most-heard rules come first) and Lesson 1 "Every Letter Has a Right" (13 pages, `g-tj1.tsx`): قَلْب/كَلْب, 73:4 and the
+  chain of recitation as points of light, a letter's right and due, Muslim 798 (two rewards for the one who struggles),
+  clear and hidden mistakes, the layers of Al-Ikhlas switched on one by one (Uthmani text with zero-width joiners so
+  coloured letters keep their joins), isti'adha and basmalah, a review and a recital. Ayat and roots fetched with the
+  Quran connector; Muslim 798 and Bukhari 5027 checked on Dorar (both sahih). Draft, `reviewed: false`.

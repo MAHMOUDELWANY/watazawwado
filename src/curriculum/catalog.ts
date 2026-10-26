@@ -12,6 +12,7 @@ import { lessonF01 } from './content/fusha-kids/l01-what-is-this.js';
 import { seerahE01 } from './content/seerah-teens/l01-the-invincible-army.js';
 import { lessonB01 } from './content/literacy-b/l01-same-letters-new-marks.js';
 import { lessonAA01 } from './content/literacy-a-adults/l01-fewer-shapes-than-you-think.js';
+import { lessonT01 } from './content/tajweed/l01-every-letter-has-a-right.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lesson03Adults } from './content/zad-adults/l03-the-emptiness-fame-cannot-fill.js';
 
@@ -242,6 +243,24 @@ export const SUBJECTS: SubjectEntry[] = [
     lessons: { 1: lessonB01 },
   },
   {
+    id: 'tajweed',
+    group: 'quran',
+    title: 'Tajweed · Level 1',
+    titleAr: 'التجويد · المستوى الأول',
+    version: 'Tajweed',
+    versionAr: 'التجويد',
+    audience: '12+',
+    art: '/curriculum/zad-adults/l01/cover.webp',
+    parts: [{ title: 'Level 1 · The Essential Rules', titleAr: 'المستوى الأول · الأحكام الأساسية', from: 1 }],
+    // docs/curriculum/tajweed/MAP.md (Claude's draft, 2026-10-26, for the owner's review).
+    plan: [
+      'Every Letter Has a Right', 'The Bounce', 'Four Doors', 'Merging', 'The Hidden Swap', 'Hiding', 'All Four Doors',
+      'Lips Together', 'The Hum', 'Sun and Moon', 'The Name Allah', 'Two Counts', 'When Hamza Follows', 'More Stretches',
+      'The Longest Stretch', 'Heavy and Light', 'Raa', 'Where to Stop', 'Level 1 Recital',
+    ],
+    lessons: { 1: lessonT01 },
+  },
+  {
     id: 'egyptian-adults',
     group: 'egyptian',
     title: 'Egyptian Arabic · Adults',
@@ -319,7 +338,6 @@ export const GROUPS: GroupEntry[] = [
     taglineAr: 'تقرا المصحف زي ما هو مكتوب، وبعدين تتلوه بالتجويد.',
     planned: [
       { version: 'Quran reading', versionAr: 'قراءة القرآن', audience: '6+' },
-      { version: 'Tajweed', versionAr: 'التجويد', audience: '6+' },
     ],
   },
   {

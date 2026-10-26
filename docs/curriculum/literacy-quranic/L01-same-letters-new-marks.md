@@ -17,7 +17,7 @@ line. Same letters... so what are those little marks?
 
 **Evidence log**
 - Sahih al-Bukhari 5027: «خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ», narrated by Uthman ibn Affan; sahih (in al-Bukhari).
-  English meaning ours. *To check on Dorar before review.*
+  English meaning ours. Checked on Dorar 2026-10-26: sahih (al-Bukhari 5027; also Abu Dawud 1452, at-Tirmidhi 2907).
 - Ayat 1:1–1:7, 112:4: Tanzil Uthmani text through the Quran Foundation API, 2026-10-25, unchanged.
 - Uthman's copies sent to the cities: the standard account (al-Bukhari 4987 on the compilation; the list of cities from the
   books of Quran sciences). Shown without numbers of copies, which the sources differ on.

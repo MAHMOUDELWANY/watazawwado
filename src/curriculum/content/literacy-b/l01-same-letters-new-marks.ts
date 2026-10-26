@@ -3,7 +3,7 @@ import { lessonB01TeacherAr } from './l01-teacher-ar.js';
 
 // Brief and evidence log: docs/curriculum/literacy-quranic/L01-same-letters-new-marks.md
 // Ayat: Tanzil Uthmani text through the Quran Foundation API (2026-10-25), unchanged; audio streams from Husary (muallim).
-// Hadith: Sahih al-Bukhari 5027 (to check on Dorar before review). English meanings are ours, for the owner to review.
+// Hadith: Sahih al-Bukhari 5027, checked on Dorar 2026-10-26: sahih (narrated by Uthman ibn Affan). English meanings are ours, for the owner to review.
 // Every graphic is drawn in code (slides/motion/g-lb1.tsx); the cast are the Zad Kids cut-outs.
 
 export const lessonB01: Lesson = {
