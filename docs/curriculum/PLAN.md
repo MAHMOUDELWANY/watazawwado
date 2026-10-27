@@ -773,3 +773,6 @@ B3–B5 → continue lesson by lesson.
   itself). Checked in light, dark, Arabic and on a phone.
 - 2026-10-27 — Road map landmarks: 58 prompts (one per stage of every version) in `LANDMARK-PROMPTS.md`; the road map
   shows each stage's landmark in an arch beside its gate (desktop) as soon as `public/curriculum/landmarks/<track>-s<N>.webp` exists.
+- 2026-10-27 — All 58 landmarks placed (made as 2x2 grid sheets, `LANDMARK-SHEETS.md`, cut by script). The adult look
+  became a close-up daylight still life after ChatGPT kept returning sunset skylines; pasting one sheet at a time in a
+  temporary chat worked. Checked on the road map (Seerah Kids light, Zad Adults dark, desktop) and live on production.
