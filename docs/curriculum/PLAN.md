@@ -66,7 +66,7 @@ Last update: 2026-10-26. History of how we got here: §8 (progress log).
 ### Beyond Zad Essentials (design 2026-10-25: `docs/superpowers/specs/2026-10-25-subjects-curricula-design.md`)
 - **Seerah (map of 46 episodes approved 2026-10-26):** Teens & Adults Episodes 1–3 built (dark stage with the owner's
   stills), Kids Episodes 1–3 built (Ep1 drawn in code; Ep2–3 painted pictures in a storybook frame with the Zad Kids
-  cast). **Waiting:** 9 redo images (`seerah/IMAGE-PROMPTS.md`, "Redo batch"; 73 of 82 placed 2026-10-27), the camels story (Ibn Ishaq), review of all six episodes. **Next:** Episode 4,
+  cast). All 82 images placed 2026-10-27. **Waiting:** the camels story (Ibn Ishaq), review of all six episodes. **Next:** Episode 4,
   The Monk on the Road, with its image batch.
 - **Literacy B · Quranic reading rules (Kids look):** map (12) and Lesson 1 built; ayat play Husary on tap.
 - **Literacy A · Reading Arabic · Kids:** map (29) and Lesson 1 built in look A "letter friends" (Claude's pick, the owner
@@ -737,4 +737,5 @@ B3–B5 → continue lesson by lesson.
   rewritten in the prompts file's "Redo batch" (a boy or a lone figure that reads as the Prophet ﷺ, modern gold
   calligraphy on the Kaaba, faces in profile, a Western family scene). Catalog cards now use Seerah covers. Every page of
   the five episodes screenshotted with its image; the Ep1 army counters no longer overlap. Waiting: the 9 redos.
-
+- 2026-10-27 — Seerah redo batch: the 9 new images checked (no faces, no child figure, bare-stone Kaaba, a modern
+  cafeteria) and placed; all 82 images of Episodes 1–3 are on the site. Affected pages screenshotted.
