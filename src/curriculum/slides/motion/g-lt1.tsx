@@ -313,16 +313,16 @@ export function Lt1WordGraphic({ lines }: GraphicProps) {
       )}
       {joined && (
         <motion.div className="absolute text-center" style={{ left: 880, top: lines >= 4 ? 150 : 200, width: 560 }} initial={{ opacity: 0, scale: 0.85, filter: 'blur(8px)' }} animate={{ opacity: 1, scale: lines >= 4 ? 0.7 : 1, filter: 'blur(0px)' }} transition={{ duration: 0.8, ease }}>
-          <Hear id="baab"><span lang="ar" style={{ ...AR, fontSize: 200, lineHeight: 1.1, color: INK_TEXT }}>بَا<span style={{ color: CRIMSON }}>ب</span></span></Hear>
-          {lines < 4 && <p className="m-0 mt-6 font-sans font-bold" style={{ fontSize: 24, color: TEAL }}>baab · tap to listen</p>}
+          <Hear id="baab"><span lang="ar" style={{ ...AR, fontSize: 200, lineHeight: 1.1, color: INK_TEXT }}>بَا<span style={{ color: CRIMSON }}>بٌ</span></span></Hear>
+          {lines < 4 && <p className="m-0 mt-6 font-sans font-bold" style={{ fontSize: 24, color: TEAL }}>baabun · tap to listen</p>}
         </motion.div>
       )}
       {lines >= 2 && lines < 4 && <Chip x={1110} y={560} color={GOLD} delay={0.6}>alif lets go: the gap</Chip>}
       {lines >= 3 && lines < 4 && <Chip x={1160} y={630} strong delay={0.3}>a door</Chip>}
       {lines >= 4 && (
         <motion.div className="absolute text-center" style={{ left: 840, top: 400, width: 640 }} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease }}>
-          <Hear id="thaabit"><span lang="ar" style={{ ...AR, fontSize: 170, lineHeight: 1.15, color: DEEP }}>ثَابِت</span></Hear>
-          <p className="m-0 mt-12 font-sans font-bold" style={{ fontSize: 24, color: TEAL }}>thaabit · steady</p>
+          <Hear id="thaabit"><span lang="ar" style={{ ...AR, fontSize: 170, lineHeight: 1.15, color: DEEP }}>ثَابِتٌ</span></Hear>
+          <p className="m-0 mt-12 font-sans font-bold" style={{ fontSize: 24, color: TEAL }}>thaabitun · steady</p>
         </motion.div>
       )}
     </>

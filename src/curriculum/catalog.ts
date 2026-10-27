@@ -12,13 +12,15 @@ import { lessonA02 } from './content/literacy-a-kids/l02-dots-make-the-differenc
 import { lessonF01 } from './content/fusha-kids/l01-what-is-this.js';
 import { seerahE01 } from './content/seerah-teens/l01-the-invincible-army.js';
 import { lessonB01 } from './content/literacy-b/l01-same-letters-new-marks.js';
-import { lessonAA01 } from './content/literacy-a-adults/l01-fewer-shapes-than-you-think.js';
+import { lessonAA01 } from './content/literacy-a-adults/l01-welcome-to-arabic.js';
+import { lessonAA02 } from './content/literacy-a-adults/l02-fewer-shapes-than-you-think.js';
 import { lessonT01 } from './content/tajweed/l01-every-letter-has-a-right.js';
 import { lessonQ01 } from './content/quran-reading/l01-reading-al-fatiha.js';
 import { lessonEN01 } from './content/english-kids/l01-the-snake-sound.js';
 import { lessonE01 } from './content/egyptian-adults/l01-ahlan-whats-your-name.js';
 import { lessonFT01 } from './content/fusha-12/l01-first-day.js';
-import { lessonAT01 } from './content/literacy-a-teens/l01-crack-the-code.js';
+import { lessonAT01 } from './content/literacy-a-teens/l01-welcome-to-arabic.js';
+import { lessonAT02 } from './content/literacy-a-teens/l02-crack-the-code.js';
 import { lessonEK01 } from './content/egyptian-kids/l01-ahlan-teta.js';
 import { lessonET01 } from './content/egyptian-teens/l01-ezzayak.js';
 import { lessonEG01 } from './content/english-general/l01-hello-im.js';
@@ -184,21 +186,22 @@ export const SUBJECTS: SubjectEntry[] = [
     audience: '18+',
     art: '/curriculum/zad-adults/l01/cover.webp',
     parts: [
-      { title: 'The Letters', titleAr: 'الحروف', from: 1 },
-      { title: 'Joining', titleAr: 'اتصال الحروف', from: 9 },
-      { title: 'Vowels and Marks', titleAr: 'الحركات والعلامات', from: 12 },
-      { title: 'Long Vowels and Spelling', titleAr: 'المدود والإملاء', from: 17 },
-      { title: 'Reading the Real World', titleAr: 'القراءة في الحياة', from: 21 },
+      { title: 'Start', titleAr: 'البداية', from: 1 },
+      { title: 'The Letters', titleAr: 'الحروف', from: 2 },
+      { title: 'Joining', titleAr: 'اتصال الحروف', from: 8 },
+      { title: 'Vowels and Marks', titleAr: 'الحركات والعلامات', from: 11 },
+      { title: 'Without Marks', titleAr: 'من غير تشكيل', from: 19 },
+      { title: 'The Real World', titleAr: 'القراءة في الحياة', from: 22 },
     ],
-    // docs/curriculum/literacy/MAP-adults.md (Claude's draft, 2026-10-26, for the owner's review).
+    // docs/curriculum/literacy/PLAN.md (Teens and Adults share one list, 26 lessons; approved 2026-10-26).
     plan: [
-      'Fewer Shapes Than You Think', 'Cups and Hooks', 'Tails and Teeth', 'The Heavy Letters', 'From the Throat',
-      'Loops and Lines', 'The Last Five', 'The Whole Alphabet', 'Start, Middle, End', 'Six Letters That Never Join',
-      'Reading Joined Shapes', 'Short Vowels: a, i, u', 'Your First Real Words', 'Sukoon: the Stop', 'Shadda: Say It Twice',
-      'Tanween', 'Long Vowels: aa, oo, ee', 'Al- and the Sun Letters', 'ة and ى', "Hamza's Seats", 'Signs and Menus',
-      'Reading Without Vowel Marks', 'A Short Text', 'I Can Read',
+      'Welcome to Arabic', 'ب ت ث · ج ح خ', 'د ذ ر ز · س ش', 'ص ض ط ظ', 'ع غ · ف ق', 'ك ل م · ن ه و ي', 'ء and All 28',
+      'Start, Middle, End', 'The Six That Let Go', 'Words with Fatha',
+      'Kasra and Damma', 'Sukoon', 'Long Vowels', 'Tanween', 'Shadda', 'Al-', 'Spelling Marks', 'Sentences',
+      'Dropping the Marks', 'Patterns and Context', 'Fonts and Handwriting',
+      'Signs and Streets', 'Menus and Labels', 'Messages', 'Headlines and a Short Article', 'I Can Read Anything',
     ],
-    lessons: { 1: lessonAA01 },
+    lessons: { 1: lessonAA01, 2: lessonAA02 },
   },
   {
     id: 'fusha-kids',
@@ -361,20 +364,22 @@ export const SUBJECTS: SubjectEntry[] = [
     audience: '12–17',
     art: '/curriculum/zad-teens/l01/doors.webp',
     parts: [
-      { title: 'The Code', titleAr: 'الشفرة', from: 1 },
-      { title: 'Joined Writing', titleAr: 'اتصال الحروف', from: 9 },
-      { title: 'Vowels and Marks', titleAr: 'الحركات والعلامات', from: 12 },
-      { title: 'Long Vowels and Spelling', titleAr: 'المدود والإملاء', from: 16 },
-      { title: 'Read the World', titleAr: 'اقرا الدنيا', from: 19 },
+      { title: 'Start', titleAr: 'البداية', from: 1 },
+      { title: 'The Letters', titleAr: 'الحروف', from: 2 },
+      { title: 'Joining', titleAr: 'اتصال الحروف', from: 8 },
+      { title: 'Vowels and Marks', titleAr: 'الحركات والعلامات', from: 11 },
+      { title: 'Without Marks', titleAr: 'من غير تشكيل', from: 19 },
+      { title: 'The Real World', titleAr: 'القراءة في الحياة', from: 22 },
     ],
-    // docs/curriculum/literacy/MAP-teens.md (Claude's draft, 2026-10-26, for the owner's review).
+    // docs/curriculum/literacy/PLAN.md (Teens and Adults share one list, 26 lessons; approved 2026-10-26).
     plan: [
-      'Crack the Code', 'Cups and Hooks', 'Tails and Teeth', 'The Heavy Four', 'Throat Sounds', 'Loops and Lines',
-      'The Last Five', 'Full Alphabet Speedrun', 'Letters Change Shape', 'The Six That Never Join', 'Decode a Chat',
-      'Short Vowels', 'First Real Words', 'Sukoon and Shadda', 'Tanween', 'Long Vowels', 'Al- and the Sun Letters',
-      'ة, ى and Hamza', 'Signs, Menus, Screens', 'No Vowel Marks', 'Boss Level',
+      'Welcome to Arabic', 'ب ت ث · ج ح خ', 'د ذ ر ز · س ش', 'ص ض ط ظ', 'ع غ · ف ق', 'ك ل م · ن ه و ي', 'ء and All 28',
+      'Start, Middle, End', 'The Six That Let Go', 'Words with Fatha',
+      'Kasra and Damma', 'Sukoon', 'Long Vowels', 'Tanween', 'Shadda', 'Al-', 'Spelling Marks', 'Sentences',
+      'Dropping the Marks', 'Patterns and Context', 'Fonts and Handwriting',
+      'Signs and Streets', 'Menus and Labels', 'Messages', 'Headlines and a Short Article', 'I Can Read Anything',
     ],
-    lessons: { 1: lessonAT01 },
+    lessons: { 1: lessonAT01, 2: lessonAT02 },
   },
   {
     id: 'egyptian-kids',

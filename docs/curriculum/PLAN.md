@@ -706,3 +706,11 @@ B3–B5 → continue lesson by lesson.
   Redone: قِطَارٌ, قِطَارُ الْحُرُوفِ, بَ and Lesson 2's بَابٌ from one take with pauses, cut on the silences
   (`l01-qitar`, `l01-qitar-al-huruf`, `l01-ba`, `l02-baab`); the same words on screen now carry their endings. Rule added
   to `curriculum-builder/owner-feedback.md` (Sound).
+- 2026-10-27 — Owner asked for the language welcome in all three versions. Literacy A Teens and Adults now have
+  Lesson 1 "Welcome to Arabic" (15 pages each, same order as Kids; page text and Arabic teacher notes done). Teens:
+  Decode the City (night stage, 26 blocks in six districts, Karim and Lina, the message سَلَامٌ يَا كَرِيمُ). Adults: The
+  Reading Map (paper map, 26 stops in six stages, milestones, the shop sign سُوقُ الْخُضَارِ; no cast). Prototype pages
+  built for the owner's review: cover, the journey and right to left in each version (`g-lwt.tsx`, `g-lwa.tsx`); the
+  other 12 pages per version show the plain layout until the look is approved. The old Teens/Adults Lesson 1 (Crack the
+  Code, Fewer Shapes) became Lesson 2, with full endings (بَابٌ, ثَابِتٌ). Teens and Adults catalogues now follow
+  `literacy/PLAN.md` (26 lessons, six parts). Clips from one take: `l01-salam-ya-karim`, `l01-suq-al-khudar`, `l01-ba`.

@@ -189,14 +189,14 @@ export function Lq1WordGraphic({ lines }: GraphicProps) {
     <>
       {lines >= 1 && (
         <motion.div className="absolute text-center" style={{ left: 880, top: lines >= 3 ? 160 : 220, width: 560 }} initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: lines >= 3 ? 0.7 : 1 }} transition={{ duration: 0.8, ease }}>
-          <Hear id="baab"><span lang="ar" style={{ ...AR, fontSize: 190, lineHeight: 1.2, color: INK_TEXT }}>بَا<span style={{ color: CRIMSON }}>ب</span></span></Hear>
+          <Hear id="baab"><span lang="ar" style={{ ...AR, fontSize: 190, lineHeight: 1.2, color: INK_TEXT }}>بَا<span style={{ color: CRIMSON }}>بٌ</span></span></Hear>
         </motion.div>
       )}
       {lines === 2 && <Chip x={1120} y={560} color={GOLD} delay={0.3}>alif lets go: the gap</Chip>}
       {lines >= 3 && (
         <motion.div className="absolute text-center" style={{ left: 840, top: 420, width: 640 }} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease }}>
-          <Hear id="thaabit"><span lang="ar" style={{ ...AR, fontSize: 160, lineHeight: 1.2, color: CRIMSON }}>ثَابِت</span></Hear>
-          <p className="m-0 mt-10 font-sans font-black" style={{ fontSize: 26, color: TEAL }}>BOSS WORD · thaabit · steady</p>
+          <Hear id="thaabit"><span lang="ar" style={{ ...AR, fontSize: 160, lineHeight: 1.2, color: CRIMSON }}>ثَابِتٌ</span></Hear>
+          <p className="m-0 mt-10 font-sans font-black" style={{ fontSize: 26, color: TEAL }}>BOSS WORD · thaabitun · steady</p>
         </motion.div>
       )}
     </>

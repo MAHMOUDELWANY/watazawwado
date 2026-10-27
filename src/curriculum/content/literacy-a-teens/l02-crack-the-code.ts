@@ -1,28 +1,26 @@
 import type { Lesson } from '../../types';
-import { lessonAT01TeacherAr } from './l01-teacher-ar.js';
-import { literacyTeensOpening } from './opening.js';
+import { lessonAT02TeacherAr } from './l02-teacher-ar.js';
 
 // Map: docs/curriculum/literacy/MAP-teens.md. Same scope as Kids and Adults Lesson 1, told as a code to crack. No
 // religious content (design §4.1). Letters are written stroke by stroke (slides/motion/letters.tsx).
 
-export const lessonAT01: Lesson = {
-  opening: literacyTeensOpening,
+export const lessonAT02: Lesson = {
   subject: 'literacy-a-teens',
   version: 'teens',
   subjectTitle: 'Reading Arabic · Teens',
-  number: 1,
+  number: 2,
   title: 'Crack the Code',
   titleAr: 'فُكّ الشفرة',
-  part: 'Part 1 · The Code',
+  part: 'Part 1 · The Letters',
   minutes: 45,
   goal: 'By the end of this lesson, you will crack your first four Arabic letters, learn the rule that unlocks most of the alphabet, and read your first word.',
   reviewed: false,
-  teacherAr: lessonAT01TeacherAr,
+  teacherAr: lessonAT02TeacherAr,
   outcomes: [
     'Says the sounds of ا ب ت ث.',
     'Writes ب ت ث right to left, body first, dots last.',
     'Uses the dots rule to tell look-alike letters apart.',
-    'Reads بَاب (door) and ثَابِت (steady).',
+    'Reads بَابٌ (door) and ثَابِتٌ (steady).',
   ],
   chapters: [
     { label: 'The message', page: 0 },
@@ -147,17 +145,17 @@ export const lessonAT01: Lesson = {
       station: 'athar',
       layout: 'concept',
       scene: 'lq1Word',
-      lines: ['Baa, alif, baa: بَاب, baab, a door.', 'Alif never joins the next letter: that is the gap.', 'Boss word: ثَابِت, thaabit, steady. All four of today\'s letters.'],
-      vocab: [{ arabic: 'بَاب', translit: 'baab', meaning: 'door' }, { arabic: 'ثَابِت', translit: 'thaabit', meaning: 'steady' }],
-      say: [{ id: 'baab', text: 'بَاب', voice: 'fusha', emotion: 'proud' }, { id: 'thaabit', text: 'ثَابِت', voice: 'fusha', emotion: 'calm, steady' }],
-      explain: ['Read baab together, then let the learner find the four letters inside thaabit.', 'The small mark under baa in thaabit is a vowel (i): it comes later.'],
+      lines: ['Baa, alif, baa: بَابٌ, baabun, a door.', 'Alif never joins the next letter: that is the gap.', 'Boss word: ثَابِتٌ, thaabitun, steady. All four of today\'s letters.'],
+      vocab: [{ arabic: 'بَابٌ', translit: 'baabun', meaning: 'door' }, { arabic: 'ثَابِتٌ', translit: 'thaabitun', meaning: 'steady' }],
+      say: [{ id: 'baab', text: 'بَابٌ', voice: 'fusha', emotion: 'proud' }, { id: 'thaabit', text: 'ثَابِتٌ', voice: 'fusha', emotion: 'calm, steady' }],
+      explain: ['Read baabun together, then let the learner find the four letters inside thaabitun.', 'The small mark under baa in thaabitun is a vowel (i): it comes later.'],
     },
     {
       title: 'Your turn to write',
       station: 'athar',
       layout: 'question',
       scene: 'lq1Write',
-      lines: ['Write ب ت ث in a row, right to left.', 'Then write بَاب underneath.'],
+      lines: ['Write ب ت ث in a row, right to left.', 'Then write بَابٌ underneath.'],
       interaction: { kind: 'ask', prompt: 'Hold it up to the camera. Did you write every body first and the dots last?', reveal: 'Code cracked: four letters and two words.' },
       explain: ['Check the direction (right to left) and the order (body, then dots).'],
     },

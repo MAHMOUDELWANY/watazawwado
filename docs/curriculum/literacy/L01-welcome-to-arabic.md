@@ -36,8 +36,13 @@ Difference) is now Lesson 2.
 
 **Teens (Decode the City):** Karim's phone gets a message he can't read; the same beats as "codes" (direction, 28
 symbols, joining, dots, marks, new sounds); the first block of the night city lights up at the end. Lina leads the
-decoding. **Adults (The Reading Map):** a shop sign; no cast; the route shows the first milestone, "I know how Arabic
+decoding. Page text: `literacy-a-teens/l01-welcome-to-arabic.ts`; the message is سَلَامٌ يَا كَرِيمُ (alif twice, ل as the
+look-alike). **Adults (The Reading Map):** a shop sign; no cast; the route shows the first milestone, "I know how Arabic
 works"; facts told plainly, a little more about the sounds and the alphabet's shape families.
+
+Adults page text: `literacy-a-adults/l01-welcome-to-arabic.ts`; the sign is سُوقُ الْخُضَارِ (the vegetable market; alif twice
+in the second word), plus one fact for adults: numbers still run left to right. Teens and Adults prototypes (cover, the
+journey, right to left) built 2026-10-27 for the owner's review; the other pages wait for his yes.
 
 ## Sounds and facts
 - Clips: alif, the vowel "ba", the four new sounds (owner's recordings preferred, else the Fusha clone), the sign

@@ -1,27 +1,27 @@
 import type { Lesson } from '../../types';
-import { lessonAA01TeacherAr } from './l01-teacher-ar.js';
+import { lessonAA02TeacherAr } from './l02-teacher-ar.js';
 
 // Map: docs/curriculum/literacy/MAP-adults.md. Same scope as Kids Lesson 1 at an adult pace. No religious content
 // (design §4.1). Letters are written on the stage stroke by stroke (slides/motion/letters.tsx); sounds play on tap.
 
-export const lessonAA01: Lesson = {
+export const lessonAA02: Lesson = {
   subject: 'literacy-a-adults',
   version: 'adults',
   subjectTitle: 'Reading Arabic · Adults',
-  number: 1,
+  number: 2,
   title: 'Fewer Shapes Than You Think',
   titleAr: 'أشكالٌ أقلّ ممّا تظن',
   part: 'Part 1 · The Letters',
   minutes: 45,
   goal: 'By the end of this lesson, you will read and write four Arabic letters, and see why the alphabet is smaller than it looks.',
   reviewed: false,
-  teacherAr: lessonAA01TeacherAr,
+  teacherAr: lessonAA02TeacherAr,
   outcomes: [
     'Says the sounds of ا ب ت ث.',
     'Writes ب ت ث in the right order: the body first, then the dots.',
     'Tells ب ت ث apart by the number and place of their dots.',
     'Knows that many Arabic letters share one body and differ only by their dots.',
-    'Reads بَاب (door) and ثَابِت (steady).',
+    'Reads بَابٌ (door) and ثَابِتٌ (steady).',
   ],
   chapters: [
     { label: 'The shapes', page: 0 },
@@ -197,17 +197,17 @@ export const lessonAA01: Lesson = {
       lines: [
         'Put baa, alif and baa side by side.',
         'Baa joins the alif. Alif never joins the letter after it: that is the gap.',
-        'بَاب, baab: a door. Your first Arabic word.',
-        'One more, with all four of today\'s letters: ثَابِت, thaabit, steady.',
+        'بَابٌ, baabun: a door. Your first Arabic word.',
+        'One more, with all four of today\'s letters: ثَابِتٌ, thaabitun, steady.',
       ],
       vocab: [
-        { arabic: 'بَاب', translit: 'baab', meaning: 'door' },
-        { arabic: 'ثَابِت', translit: 'thaabit', meaning: 'steady, fixed' },
+        { arabic: 'بَابٌ', translit: 'baabun', meaning: 'door' },
+        { arabic: 'ثَابِتٌ', translit: 'thaabitun', meaning: 'steady, fixed' },
       ],
-      say: [{ id: 'baab', text: 'بَاب', voice: 'fusha', emotion: 'proud' }, { id: 'thaabit', text: 'ثَابِت', voice: 'fusha', emotion: 'calm, steady' }],
+      say: [{ id: 'baab', text: 'بَابٌ', voice: 'fusha', emotion: 'proud' }, { id: 'thaabit', text: 'ثَابِتٌ', voice: 'fusha', emotion: 'calm, steady' }],
       explain: [
-        'Build baab slowly: b, aa, b. Then read it together.',
-        'For thaabit, read it for them first: the small mark under baa is a vowel (i). Vowels come in Lesson 12; today the learner only finds the four letters inside the word.',
+        'Build baabun slowly: b, aa, b. Then read it together.',
+        'For thaabitun, read it for them first: the small mark under baa is a vowel (i). Vowels come in Lesson 12; today the learner only finds the four letters inside the word.',
       ],
     },
     {
