@@ -612,6 +612,21 @@ objects around him.
 
 ---
 
+**Episode 4 check, 2026-10-27:** 28 of 29 placed. One redo:
+
+**`teens-ep04/wallet`** (rejected: two different pictures stitched into one frame, a man in a robe above a city and the
+shop counter below)
+> LOOK T: a cinematic photorealistic image, landscape 3:2, ONE single continuous scene only (no split, no collage, no
+> second picture inside the frame). No faces, no text, letters or readable signs, no logos. **Modern day, today:** the
+> counter of a small corner shop in a Western city; a teenager's hand, with only the hand and the sleeve of a dark hoodie
+> visible, slides a lost brown leather wallet across the counter toward the shopkeeper, who is out of frame. Shelves of
+> snacks softly out of focus behind, bright honest daylight from the shop window, a touch of teal in the shop's colours.
+> Main subject centre-right; left third darker and simpler.
+
+Save as `C:\Users\ahmed\OneDrive\Desktop\watazawwado-archive\seerah\teens-ep04\wallet.png`, replacing the old one.
+
+---
+
 ## Kids · Episode 4 · The Monk on the Road (folder `kids-ep04`, 11 images)
 
 Save in `C:\Users\ahmed\OneDrive\Desktop\watazawwado-archive\seerah\kids-ep04\`.
