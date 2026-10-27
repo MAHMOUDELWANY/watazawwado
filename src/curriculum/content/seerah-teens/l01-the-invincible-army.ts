@@ -5,7 +5,7 @@ import { seerahE01TeacherAr } from './l01-teacher-ar.js';
 // Facts: The Sealed Nectar (English), "The Elephant Raid" and "His Birth" (pp. 33–36 of the MSA NIU edition), which
 // cites Ibn Hisham 1/43–56. The camels conversation is Ibn Ishaq (Ibn Hisham), not in The Sealed Nectar: flagged for the
 // owner. The signs at the birth are left out: the book calls them disputed. Ayat 105:1–5 Tanzil Uthmani via the Quran
-// Foundation API (2026-10-25), unchanged; English meanings ours. Stills: the owner's, from docs/curriculum/seerah/EP01-image-prompts.md.
+// Foundation API (2026-10-25), unchanged; English meanings ours. Stills: the owner's, from docs/curriculum/seerah/IMAGE-PROMPTS.md.
 const AL_FIL = 'Al-Fil 105:1-5';
 
 export const seerahE01: Lesson = {

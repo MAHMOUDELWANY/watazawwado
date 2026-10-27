@@ -65,7 +65,7 @@ Last update: 2026-10-26. History of how we got here: §8 (progress log).
 
 ### Beyond Zad Essentials (design 2026-10-25: `docs/superpowers/specs/2026-10-25-subjects-curricula-design.md`)
 - **Seerah · Teens & Adults:** rules (`seerah/RULES.md`, the owner's deck as template), season 1 map, Episode 1 built
-  (21 pages, dark stage). **Waiting:** the owner's 22 stills (`seerah/EP01-image-prompts.md`; drop them in
+  (21 pages, dark stage). **Waiting:** the owner's 22 stills (`seerah/IMAGE-PROMPTS.md`; drop them in
   `public/curriculum/seerah-teens/ep01/` by file name) and his call on the camels story (Ibn Ishaq). Seerah Kids: Episode 1 "The Elephant Who Sat Down" built 2026-10-26 (all in code, no stills).
 - **Literacy B · Quranic reading rules (Kids look):** map (12) and Lesson 1 built; ayat play Husary on tap.
 - **Literacy A · Reading Arabic · Kids:** map (29) and Lesson 1 built in look A "letter friends" (Claude's pick, the owner

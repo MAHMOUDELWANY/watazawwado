@@ -6,7 +6,7 @@ import { asset } from '../Art';
 
 /**
  * Seerah · Teens & Adults · Episode 1, in the look of the owner's deck (docs/curriculum/seerah/RULES.md): a cinematic
- * still fills the stage (the owner's images, file names in docs/curriculum/seerah/EP01-image-prompts.md), darkened on
+ * still fills the stage (the owner's images, file names in docs/curriculum/seerah/IMAGE-PROMPTS.md), darkened on
  * the text side; the page's Arabic key term in gold; the deck's cards rise one per build step; a few pages add motion
  * that explains (numbers counting up, the elephant's compass). A still that has not arrived yet simply leaves the dark
  * stage. The Prophet ﷺ and the companions are never shown.
