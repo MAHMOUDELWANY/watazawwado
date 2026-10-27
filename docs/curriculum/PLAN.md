@@ -759,3 +759,10 @@ B3–B5 → continue lesson by lesson.
   split again (new instructions in the prompts file).
 - 2026-10-27 — Kids Episode 1 paintings (10, saved by ChatGPT in `seerah\year-of-the-elephant\`) and the Episode 4 wallet
   redo checked and placed. Every Seerah image of Episodes 1–4 is now on the site (Kids and Teens & Adults).
+- 2026-10-27 — Owner: the road map is the version's lessons page, not a page inside lessons. New `Roadmap.tsx` replaces
+  the stacked lesson list in the teacher curriculum for every subject and version: a winding road (straight on phones),
+  each part a stage flag with its ready count, each lesson a station (ready ones open the lesson), a finish line per
+  subject; Kids a wide sand road with big round stations, Teens a glowing night road, Adults a fine line with arched
+  stations. The journey page (All aboard! / Decode the City / The Reading Map) removed from Literacy Lesson 1 in all three
+  versions; `literacy/PLAN.md` and `DECISIONS` updated.
+

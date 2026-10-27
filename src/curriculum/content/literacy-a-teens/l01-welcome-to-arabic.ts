@@ -26,12 +26,12 @@ export const lessonAT01: Lesson = {
     'Says and writes alif, top to bottom, and finds it in a message.',
   ],
   chapters: [
-    { label: 'The city', page: 0 },
-    { label: 'The language', page: 3 },
-    { label: 'The code', page: 5 },
-    { label: 'Alif', page: 10 },
-    { label: 'Level check', page: 11 },
-    { label: 'First block', page: 13 },
+    { label: 'Welcome', page: 0 },
+    { label: 'The language', page: 2 },
+    { label: 'The code', page: 4 },
+    { label: 'Alif', page: 9 },
+    { label: 'Level check', page: 10 },
+    { label: 'First block', page: 12 },
   ],
   pages: [
     {
@@ -42,19 +42,6 @@ export const lessonAT01: Lesson = {
       lines: [],
       explain: ['Welcome the learner and ask where they already see Arabic: games, signs, a friend\'s phone, family chats.', 'Tell them: by the end of this course, you read all of it.'],
       teacherNote: 'Have paper and a pen ready: the learner writes their first letter today. Keep the pace quick.',
-    },
-    {
-      title: 'Decode the City',
-      station: 'spark',
-      layout: 'story',
-      scene: 'lwtCity',
-      lines: [
-        'Picture a city at night where every sign is written in a code.',
-        'It has six districts. Each lesson lights up one block.',
-        'Light all 26 blocks and the whole skyline is yours: you can read anything in it.',
-        'Right now every window is dark. Block one starts today.',
-      ],
-      explain: ['Point at the districts one by one, from the first block to the skyline.', 'Tell them: at the end of every lesson we come back here and light a new block.'],
     },
     {
       title: 'A message you can\'t read',

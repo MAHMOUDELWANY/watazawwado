@@ -26,12 +26,12 @@ export const lessonA01: Lesson = {
     'Says and writes alif, top to bottom, and finds it in a word.',
   ],
   chapters: [
-    { label: 'All aboard', page: 0 },
-    { label: 'The language', page: 3 },
-    { label: 'Letter secrets', page: 5 },
-    { label: 'Alif', page: 10 },
-    { label: 'Play', page: 11 },
-    { label: 'First stamp', page: 13 },
+    { label: 'Welcome', page: 0 },
+    { label: 'The language', page: 2 },
+    { label: 'Letter secrets', page: 4 },
+    { label: 'Alif', page: 9 },
+    { label: 'Play', page: 10 },
+    { label: 'First stamp', page: 12 },
   ],
   pages: [
     {
@@ -42,22 +42,6 @@ export const lessonA01: Lesson = {
       lines: [],
       explain: ['Welcome the child warmly and say the title together.', 'Today is the first day of a long, fun trip: by the end of it, you will read anything in Arabic.'],
       teacherNote: 'Have paper and a thick pencil or crayon ready: the child writes their first letter today.',
-    },
-    {
-      title: 'All aboard!',
-      station: 'spark',
-      layout: 'story',
-      scene: 'lawTrain',
-      lines: [
-        'This is the Letter Train. It runs through six lands.',
-        'Every station is one lesson. At every station, new letters climb on board.',
-        'The last station is Reading Town, where you can read every sign.',
-        'We are here, at station one. Ready?',
-      ],
-      explain: [
-        'Trace the track with your finger from station one to Reading Town.',
-        'Tell the child: after every lesson we stop here, get a stamp, and see how far we have come.',
-      ],
     },
     {
       title: 'A sign nobody can read',

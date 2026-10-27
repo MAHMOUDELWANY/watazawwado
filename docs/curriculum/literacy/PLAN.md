@@ -14,13 +14,14 @@ are fine), neutral praise ("Well done!", "Excellent!", "You read it!"), modest n
 teaching, nothing indecent.
 
 ## The roadmap: a journey the learner walks
-Every lesson is a stop on a road the learner sees at the start and at the end of each lesson: where they came from,
-where they are, what is next. Each age has its own journey.
+Every lesson is a stop on a road: where they came from, where they are, what is next. **Owner, 2026-10-27:** the road
+map lives on the version's lessons page in the curriculum (`src/curriculum/Roadmap.tsx`), not as pages inside the
+lessons; the journey page was removed from Lesson 1 in every version. Each age has its own journey.
 
 | | Kids (6–11) | Teens (12–17) | Adults (18+) |
 |---|---|---|---|
 | The journey | **The Letter Train**: a little train crosses a land of six regions (the parts). Each station is a lesson; at each station the learner's ticket gets a stamp and a carriage is added with the new letters riding in it. The last station is **Reading Town**, where every sign can be read. | **Decode the City**: a night city of six districts. Each lesson lights up a block; each district ends with a "level" (a real text to decode). The last district is the skyline, fully lit: the learner can read the whole city. | **The Reading Map**: a clean route on a paper map, from "I can't read a word" to "I read anything", with milestones (first word, first sentence, first menu, first page without marks). |
-| Where it appears | Opening and closing page of every lesson; the student portal map | Same | Same |
+| Where it appears | The version's lessons page (the road map in the curriculum), not inside lessons (owner, 2026-10-27) | Same | Same |
 | Characters | New neutral cast (see `CAST-PROMPTS.md`) | New neutral cast | None: the learner's own route |
 
 ## What the books teach us (read 2026-10-26; scope only, never their wording or drills)

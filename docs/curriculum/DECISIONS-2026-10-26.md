@@ -44,3 +44,11 @@ Binding for every subject beyond Zad Essentials. They override the prototypes bu
     written, simply, so the learner can copy it on paper with the teacher; never a core skill. Words are neutral and
     everyday (common words like مسجد are fine as part of the language). New neutral characters for Kids and Teens only;
     none for Adults. The roadmap is a real journey the learner walks after each lesson, different per age; Claude designs it.
+
+## Fourth round (2026-10-27)
+14. **The road map belongs on the curriculum page, not in the lessons.** "Road map" (decisions 9 and 13) means the page of
+    a version's lessons: a designed road with every part as a stage and every lesson as a station, for every subject and
+    every age (`src/curriculum/Roadmap.tsx`). Lessons do not carry a journey or map page.
+15. **Images:** Kids pictures fill the whole slide like Teens & Adults; every subject and version door has its own
+    banner, never an episode image.
+

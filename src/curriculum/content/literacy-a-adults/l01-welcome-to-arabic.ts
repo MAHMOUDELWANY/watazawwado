@@ -24,12 +24,12 @@ export const lessonAA01: Lesson = {
     'Says and writes alif, top to bottom, and finds it in a sign.',
   ],
   chapters: [
-    { label: 'The map', page: 0 },
-    { label: 'The language', page: 3 },
-    { label: 'How the script works', page: 5 },
-    { label: 'Alif', page: 10 },
-    { label: 'Check', page: 11 },
-    { label: 'First milestone', page: 13 },
+    { label: 'Welcome', page: 0 },
+    { label: 'The language', page: 2 },
+    { label: 'How the script works', page: 4 },
+    { label: 'Alif', page: 9 },
+    { label: 'Check', page: 10 },
+    { label: 'First milestone', page: 12 },
   ],
   pages: [
     {
@@ -40,19 +40,6 @@ export const lessonAA01: Lesson = {
       lines: [],
       explain: ['Welcome the learner and ask what they want to read first: signs on a trip, a menu, messages, a family name.', 'Tell them: today is about how the script works. The letters start next lesson.'],
       teacherNote: 'Have paper and a pen ready: the learner writes one letter today. Adults often feel shy writing; write with them.',
-    },
-    {
-      title: 'The Reading Map',
-      station: 'spark',
-      layout: 'story',
-      scene: 'lwaMap',
-      lines: [
-        'This is your route, from "I can\'t read a word" to "I can read anything".',
-        'Twenty-six lessons, in five stages after today.',
-        'Along the way: your first word, your first sentence, your first menu, your first page without vowel marks.',
-        'Today\'s milestone: you will know how Arabic writing works.',
-      ],
-      explain: ['Walk the route with the learner, milestone by milestone.', 'Tell them: we come back to this map at the end of every lesson.'],
     },
     {
       title: 'A sign you can\'t read',

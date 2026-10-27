@@ -1,16 +1,18 @@
 import React, { useCallback, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { motion, useReducedMotion } from 'motion/react';
-import { ArrowLeft, ChevronRight, Lock, PlayCircle } from 'lucide-react';
+import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { useAppLanguage } from '../../lib/language';
 import { SUBJECTS, GROUPS, tracksOf, groupOf, findLesson } from '../../curriculum/catalog';
 import { LessonPlayer, type GameResult } from '../../curriculum/LessonPlayer';
 import { Badge } from '../../components/ui/Badge';
 import { CurriculumReportPanel } from '../components/CurriculumReportPanel';
 import { Door, DOORS } from '../../curriculum/Door';
+import { Roadmap } from '../../curriculum/Roadmap';
 
 /* Teacher workspace: subjects, then their age versions, then the lessons by part, as arched doors (the homepage's door
-   design), so a growing catalogue never becomes one long list (owner, 2026-10-22). The player is CurriculumLessonPage. */
+   design), then each version's lessons as a road map (owner, 2026-10-27), so a growing catalogue never becomes one long
+   list. The player is CurriculumLessonPage. */
 
 const base = '/dashboard/curriculum';
 
@@ -129,49 +131,8 @@ export function CurriculumTrackPage() {
           </div>
         </div>
       </header>
-      {t.parts.map((part, pi) => {
-        const last = (t.parts[pi + 1]?.from ?? t.plan.length + 1) - 1;
-        const numbers = Array.from({ length: last - part.from + 1 }, (_, k) => part.from + k);
-        return (
-          <section key={part.from} className="space-y-3" aria-labelledby={`part-${pi}`}>
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-              <span className="arch-tile flex h-10 w-9 shrink-0 items-center justify-center bg-teal text-sm font-bold text-white">{pi + 1}</span>
-              <h2 id={`part-${pi}`} className="font-display text-lg sm:text-xl font-bold text-foreground">{ar ? part.titleAr : part.title}</h2>
-              <span className="text-xs font-semibold text-muted-foreground">{L(`Lessons ${part.from}–${last}`, `الدروس ${part.from}–${last}`)}</span>
-            </div>
-            <ol className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {numbers.map((n) => {
-                const lesson = t.lessons[n];
-                const card = (
-                  <>
-                    <span className={`arch-tile flex h-12 w-11 shrink-0 items-center justify-center text-base font-bold ${lesson ? 'bg-crimson text-white' : 'bg-surface-subtle text-muted-foreground'}`}>{n}</span>
-                    <span className="min-w-0 flex-1">
-                      <span dir="ltr" className="block text-start font-semibold leading-snug text-foreground line-clamp-2">{t.plan[n - 1]}</span>
-                      {lesson ? (
-                        <span className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[11px] font-bold ${lesson.reviewed ? 'bg-teal/15 text-teal' : 'bg-[#E5A93C]/20 text-[#8B4935]'}`}>
-                          {lesson.reviewed ? L('Ready', 'جاهز') : L('Draft', 'مسودة')}
-                        </span>
-                      ) : (
-                        <span className="mt-1 inline-flex items-center gap-1 text-[11px] font-semibold text-muted-foreground"><Lock className="h-3 w-3" aria-hidden="true" />{L('Coming soon', 'قريباً')}</span>
-                      )}
-                    </span>
-                    {lesson && <PlayCircle className="h-6 w-6 shrink-0 text-teal transition-transform group-hover:scale-110" aria-hidden="true" />}
-                  </>
-                );
-                return (
-                  <li key={n}>
-                    {lesson ? (
-                      <Link to={`${base}/${g.id}/${t.id}/${n}`} className="group glass-1 flex min-h-[76px] items-center gap-3 rounded-2xl px-3 py-3 transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:ring-2 hover:ring-teal/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">{card}</Link>
-                    ) : (
-                      <div className="flex min-h-[76px] items-center gap-3 rounded-2xl border border-dashed border-border px-3 py-3 opacity-75">{card}</div>
-                    )}
-                  </li>
-                );
-              })}
-            </ol>
-          </section>
-        );
-      })}
+      <Roadmap plan={t.plan} parts={t.parts} lessons={t.lessons} group={g.id} version={t.version} audience={t.audience} ar={ar} L={L}
+        hrefFor={(n) => `${base}/${g.id}/${t.id}/${n}`} />
     </div>
   );
 }
