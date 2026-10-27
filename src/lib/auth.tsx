@@ -4,6 +4,18 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase, isSupabaseConfigured } from './supabase';
 import { syncChosenLanguage } from './language';
 
+/** Set when someone logs out; the dashboard gate reads it (see wasJustSignedOut). */
+const SIGNED_OUT_KEY = 'wz_signed_out_at';
+/** True for a few seconds after a log-out in this tab. */
+export function wasJustSignedOut(now = Date.now()): boolean {
+  try {
+    const at = Number(sessionStorage.getItem(SIGNED_OUT_KEY) || 0);
+    return at > 0 && now - at < 15000;
+  } catch {
+    return false;
+  }
+}
+
 export const APPROVED_TEACHER_EMAILS = [
   'mhmwdlwany4222@gmail.com',
   'mahmoudelwany98@gmail.com'
@@ -520,6 +532,8 @@ export const TeacherAuthProvider: React.FC<{ children: React.ReactNode }> = ({ c
     // Drop any in-progress booking (contact details, management token) so the next user on this tab can't see it.
     try {
       sessionStorage.removeItem('watazawwado_pending_booking_state');
+      // Lets the teacher dashboard send a person who just logged out to the shared sign-in door, not the staff login.
+      sessionStorage.setItem(SIGNED_OUT_KEY, String(Date.now()));
     } catch {}
   };
 

@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Mail, Lock, User, Users, X, Eye, EyeOff, Check, ShieldCheck } from 'lucide-react';
+import { Mail, Lock, User, Users, X, Eye, EyeOff, Check, ShieldCheck, AlertCircle } from 'lucide-react';
 import { Button } from './ui/Button';
 import { ThemeToggle } from './ui/ThemeToggle';
-import { AuthPortal } from './auth/AuthFrame';
 import FocusTrap from './FocusTrap';
 import { useTeacherAuth } from '../lib/auth'; // it's now AuthProvider
 import { LEAKED_PASSWORD_MESSAGE } from '../lib/pwnedPassword';
 import { useNavigate } from 'react-router-dom';
 import { OtpVerificationCard } from './auth/OtpVerificationCard';
 import { markJustSignedIn } from './ui/WelcomeLoader';
-import { SubjectMark } from './onboarding/SubjectMark';
 import { ADULT_MIN_AGE, GUARDIAN_MIN_AGE, MAX_AGE, parseAge, signupAgeProblem, SIGNUP_CHOICE_KEY } from '../lib/ageRules';
 
 interface StudentAuthModalProps {
@@ -21,6 +19,17 @@ interface StudentAuthModalProps {
 }
 
 type View = 'login' | 'signup' | 'verify' | 'forgot' | 'update-password';
+
+const VERSE_TEXT = '﴿وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ﴾';
+// Thmanyah has no ornate Quranic brackets: the verse uses Amiri Quran, loaded for these letters only (as on the homepage).
+function loadVerseFont() {
+  if (typeof document === 'undefined' || document.getElementById('verse-font-auth') || document.getElementById('verse-font')) return;
+  const link = document.createElement('link');
+  link.id = 'verse-font-auth';
+  link.rel = 'stylesheet';
+  link.href = 'https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap&text=' + encodeURIComponent(Array.from(new Set(VERSE_TEXT)).join(''));
+  document.head.appendChild(link);
+}
 
 export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = 'login' }: StudentAuthModalProps) {
   const [view, setView] = useState<View>(initialView);
@@ -80,6 +89,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
 
   useEffect(() => {
     if (isOpen) {
+      loadVerseFont();
       if (typeof window !== 'undefined') {
         const hash = window.location.hash.toLowerCase();
         if (hash.includes('type=recovery') || hash === '#reset-password') {
@@ -118,6 +128,15 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
     try {
       if (view === 'login') {
         const { success, role, error: authError } = await signIn(email, password, 'student');
+        // Teacher and admin accounts sign in on the staff page (RULES.md); say so plainly with the way there.
+        if (!success && role === 'teacher') {
+          setError(
+            isAr
+              ? 'الحساب ده حساب معلم. ادخل من صفحة دخول المعلمين (/staff/login).'
+              : 'This is a teacher account. Please sign in from the teacher sign-in page (/staff/login).'
+          );
+          return;
+        }
         if (success) {
           if (role === 'teacher') {
             await signOut();
@@ -191,7 +210,26 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
     'update-password': isAr ? 'احفظ كلمة السر' : 'Save password',
   };
   const isSignup = view === 'signup';
-  const width = view === 'verify' ? 'sm:max-w-lg' : isSignup ? 'sm:max-w-md lg:max-w-4xl' : 'sm:max-w-md';
+  const showTabs = view === 'login' || isSignup;
+  const isWide = view !== 'verify';
+  const width = view === 'verify' ? 'sm:max-w-lg' : 'sm:max-w-[30rem] lg:max-w-[58rem]';
+
+  const googleButton = (
+    <button
+      type="button"
+      onClick={handleGoogleSignIn}
+      disabled={isSubmitting}
+      className="auth-google"
+    >
+      <svg className="w-[18px] h-[18px] shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+      </svg>
+      <span>{isAr ? 'كمّل بحساب Google' : 'Continue with Google'}</span>
+    </button>
+  );
 
   return (
     <AnimatePresence>
@@ -208,33 +246,18 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-[#05363F]/45 dark:bg-black/60 backdrop-blur-md"
+            className="fixed inset-0 bg-[#05363F]/50 dark:bg-black/65 backdrop-blur-sm"
             onClick={onClose}
           />
 
-          {/* Phones: a bottom sheet that scrolls; tablets: a centred card; desktop sign-up: two panes. */}
+          {/* Phones: a bottom sheet; tablets: one card; desktop: the brand pane beside the form. */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.97, y: 24 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.97, y: 24 }}
-            transition={{ type: 'spring', damping: 26, stiffness: 300 }}
-            className={`auth-card glass-3 relative w-full ${width} max-h-[94dvh] overflow-y-auto overscroll-contain !rounded-b-none sm:!rounded-b-[var(--r-4)]`}
+            initial={{ opacity: 0, y: 32 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 32 }}
+            transition={{ type: 'spring', damping: 30, stiffness: 320 }}
+            className={`auth-sheet relative w-full ${width} max-h-[94dvh] overflow-y-auto overscroll-contain`}
           >
-            {/* Day/night switch and close; paper tones while they sit on the deep portal */}
-            {view !== 'verify' && (
-              <div className="absolute top-3 end-3 z-20 flex items-center gap-1.5">
-                <ThemeToggle compact className={`!w-9 !h-9 !rounded-full !bg-white/10 !border-white/25 [&_svg]:!text-white ${isSignup ? 'lg:!bg-surface-subtle lg:!border-border lg:[&_svg]:!text-foreground' : ''}`} />
-                <button
-                  type="button"
-                  onClick={onClose}
-                  aria-label={isAr ? 'إغلاق' : 'Close'}
-                  className={`w-11 h-11 flex items-center justify-center rounded-full text-white bg-white/10 hover:bg-white/20 border border-white/25 transition-colors cursor-pointer focus-ring ${isSignup ? 'lg:text-foreground lg:bg-surface-subtle lg:border-border' : ''}`}
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            )}
-
             {view === 'verify' ? (
               <div className="relative p-6 sm:p-8">
                 <button
@@ -271,93 +294,167 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                 />
               </div>
             ) : (
-              <div className={isSignup ? 'lg:grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)]' : ''}>
-                {isSignup && (
-                  <aside className="band-deep khatam-window hidden lg:flex flex-col justify-center gap-10 p-9 relative overflow-hidden" aria-hidden="true">
-                    <span className="door-glow" />
-                    <div className="relative">
-                      <p className="text-3xl leading-[1.8] text-[#F6D58E]" dir="rtl" lang="ar" style={{ fontFamily: "'Amiri Quran', var(--font-serif)" }}>﴿وَتَزَوَّدُوا فَإِنَّ خَيْرَ الزَّادِ التَّقْوَىٰ﴾</p>
-                      <span className="mt-2 block h-[3px] w-16 rounded-full bg-[linear-gradient(90deg,#C51F24,#E5A93C,#12A4BC)]" />
-                    </div>
-                    <div className="relative flex items-end gap-3">
-                      {['quran-reading', 'seerah', 'arabic-foundations'].map((id, i) => (
-                        <span key={id} className={i === 1 ? '-translate-y-4' : ''}>
-                          <SubjectMark subjectId={id} size={i === 1 ? 92 : 76} className="bg-white/10 ring-1 ring-white/20 shadow-[0_18px_30px_-16px_rgba(0,0,0,.6)]" />
-                        </span>
-                      ))}
-                    </div>
-                    <ul className="relative space-y-3 text-sm text-white/90">
-                      {(isAr
-                        ? ['حصص فردية مع معلم بيعرفك باسمك', 'حصة تجريبية مجانية قبل أي دفع', 'حساب عائلة لكل أولادك في مكان واحد']
-                        : ['One-to-one lessons with a teacher who knows you', 'A free trial before any payment', 'One family account for all your children']
-                      ).map((line) => (
-                        <li key={line} className="flex items-start gap-2.5">
-                          <span className="mt-0.5 grid place-items-center w-5 h-5 shrink-0 rounded-full bg-white/15"><Check className="w-3 h-3" /></span>
-                          <span>{line}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </aside>
-                )}
-
-                <div>
-                  {/* The deep portal crowns the card; the desktop sign-up has the side pane instead. */}
-                  <div className={isSignup ? 'lg:hidden' : ''}>
-                    <AuthPortal heading="h2" title={titles[view][0]} subtitle={titles[view][1]} titleId={isSignup ? undefined : 'auth-modal-title'} />
+              <div className={isWide ? 'lg:grid lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1fr)]' : ''}>
+                {/* Brand pane (desktop): the verse, three promises, quiet pattern. */}
+                <aside className="auth-brand-pane hidden lg:flex" aria-hidden="true">
+                  <div className="relative flex items-center gap-3">
+                    <span className="grid place-items-center w-11 h-11 rounded-2xl bg-[#FAF7F2] ring-1 ring-[#E5A93C]/60">
+                      <img src="/logo-256.png" alt="" className="w-8 h-auto" />
+                    </span>
+                    <span className="leading-tight">
+                      <span className="block font-editorial text-lg font-bold text-[#FAF7F2]">{isAr ? 'وتزودوا' : 'Watazawwado'}</span>
+                      <span className="block text-xs text-white/65">{isAr ? 'أكاديمية حصص فردية أونلاين' : 'One-to-one online academy'}</span>
+                    </span>
                   </div>
-                  {isSignup && (
-                    <div className="hidden lg:block px-8 pt-10 text-center">
-                      <h2 id="auth-modal-title" className="font-editorial text-[1.75rem] font-bold text-foreground">{titles.signup[0]}</h2>
-                      <p className="mt-2 text-sm text-muted-foreground">{titles.signup[1]}</p>
-                    </div>
-                  )}
 
-                  <div className="px-6 sm:px-8 pt-6 pb-7">
-                    {(view === 'login' || isSignup) && (
-                      <div className="glass-1 grid grid-cols-2 p-1 rounded-full mb-5">
+                  <div className="relative">
+                    <p className="text-[2rem] leading-[1.9] text-[#F6D58E]" dir="rtl" lang="ar" style={{ fontFamily: "'Amiri Quran', var(--font-serif)" }}>{VERSE_TEXT}</p>
+                    <p className="mt-3 font-editorial text-2xl leading-snug text-[#FAF7F2]">
+                      {isAr ? <>زادٌ يبقى،<br />لك ولأهل بيتك.</> : <>Provision that lasts,<br />for you and your family.</>}
+                    </p>
+                  </div>
+
+                  <ul className="relative space-y-3.5 text-[0.95rem] text-white/90">
+                    {(isAr
+                      ? ['حصص فردية مع معلم بيعرفك باسمك', 'حصة تجريبية مجانية قبل أي دفع', 'حساب عائلة واحد لكل أولادك']
+                      : ['One-to-one lessons with a teacher who knows you', 'A free trial before any payment', 'One family account for all your children']
+                    ).map((line) => (
+                      <li key={line} className="flex items-center gap-3">
+                        <span className="grid place-items-center w-6 h-6 shrink-0 rounded-full bg-[#E5A93C]/20 text-[#F6D58E] ring-1 ring-[#E5A93C]/40"><Check className="w-3.5 h-3.5" /></span>
+                        <span>{line}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </aside>
+
+                <div className="relative">
+                  {/* Top bar: the mark on phones and tablets, day/night and close everywhere. */}
+                  <div className="flex items-center justify-between gap-2 px-5 sm:px-7 pt-3 sm:pt-5">
+                    <span className="sm:hidden absolute top-2 left-1/2 -translate-x-1/2 h-1.5 w-10 rounded-full bg-border" aria-hidden="true" />
+                    <span className="lg:invisible grid place-items-center w-11 h-11 mt-2 sm:mt-0 rounded-2xl bg-[#FAF7F2] ring-1 ring-[#E5A93C]/50 shadow-[var(--shadow-1)]" aria-hidden="true">
+                      <img src="/logo-256.png" alt="" className="w-8 h-auto" />
+                    </span>
+                    <div className="flex items-center gap-1.5 mt-2 sm:mt-0">
+                      <ThemeToggle compact className="!w-10 !h-10 !rounded-full" />
+                      <button
+                        type="button"
+                        onClick={onClose}
+                        aria-label={isAr ? 'إغلاق' : 'Close'}
+                        className="w-10 h-10 flex items-center justify-center rounded-full text-muted-foreground bg-surface-subtle hover:text-foreground hover:bg-muted/60 transition-colors cursor-pointer focus-ring"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="px-5 sm:px-7 pt-3 lg:pt-1">
+                    <h2 id="auth-modal-title" className="font-editorial text-[1.7rem] sm:text-[1.9rem] font-bold text-foreground leading-tight">{titles[view][0]}</h2>
+                    <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">{titles[view][1]}</p>
+                  </div>
+
+                  <div className="px-5 sm:px-7 pt-5 pb-[max(1.75rem,env(safe-area-inset-bottom))]">
+                    {showTabs && (
+                      <div className="auth-tabs mb-5" role="tablist" aria-label={isAr ? 'دخول أو حساب جديد' : 'Sign in or new account'}>
                         {(['login', 'signup'] as const).map((v) => (
                           <button
                             key={v}
                             type="button"
-                            aria-pressed={view === v}
+                            role="tab"
+                            aria-selected={view === v}
                             onClick={() => { setView(v); setError(''); setSuccess(''); }}
-                            className={`min-h-10 rounded-full text-sm font-bold transition-colors cursor-pointer focus-ring ${view === v ? 'bg-[var(--teal)] text-white shadow-[var(--shadow-1)]' : 'text-muted-foreground hover:text-foreground'}`}
+                            className="relative z-10 min-h-10 rounded-full text-sm font-bold transition-colors cursor-pointer focus-ring aria-selected:text-foreground text-muted-foreground hover:text-foreground"
                           >
+                            {view === v && <motion.span layoutId="auth-tab" className="absolute inset-0 -z-10 rounded-full bg-surface shadow-[var(--shadow-1)] ring-1 ring-border/60" transition={{ type: 'spring', stiffness: 460, damping: 36 }} />}
                             {v === 'login' ? (isAr ? 'دخول' : 'Sign in') : (isAr ? 'حساب جديد' : 'New account')}
                           </button>
                         ))}
                       </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form onSubmit={handleSubmit} className="space-y-4" noValidate={false}>
                       {isSignup && (
-                        <div role="radiogroup" aria-label={isAr ? 'نوع الحساب' : 'Account type'} className="grid grid-cols-2 gap-2.5">
-                          {([
-                            { id: 'self' as const, Icon: User, title: isAr ? 'حساب شخصي' : 'For myself', sub: isAr ? `${ADULT_MIN_AGE} سنة وأكبر` : `Aged ${ADULT_MIN_AGE}+` },
-                            { id: 'family' as const, Icon: Users, title: isAr ? 'حساب عائلة' : 'Family account', sub: isAr ? 'ولي أمر يسجّل أولاده' : 'A parent enrols children' }
-                          ]).map(({ id, Icon, title, sub }) => {
-                            const selected = accountType === id;
-                            return (
-                              <button
-                                key={id}
-                                type="button"
-                                role="radio"
-                                aria-checked={selected}
-                                onClick={() => { setAccountType(id); setError(''); }}
-                                className={`arch-top relative flex flex-col items-center gap-1 border-2 px-3 pt-4 pb-3 text-center transition-colors cursor-pointer focus-ring ${
-                                  selected ? 'border-[var(--teal)] bg-[var(--teal)]/8 text-foreground' : 'border-border/70 bg-surface text-muted-foreground hover:border-[var(--teal)]/40'
-                                }`}
-                              >
-                                <span className={`grid place-items-center w-9 h-9 rounded-full ${selected ? 'bg-[var(--teal)] text-white' : 'bg-surface-subtle text-[var(--teal)]'}`}>
-                                  <Icon className="w-4.5 h-4.5" aria-hidden="true" />
-                                </span>
-                                <span className="text-sm font-bold text-foreground">{title}</span>
-                                <span className="text-xs leading-tight">{sub}</span>
-                                {selected && <Check className="absolute top-3 end-3 w-3.5 h-3.5 text-[var(--teal)]" aria-hidden="true" />}
-                              </button>
-                            );
-                          })}
-                        </div>
+                        <fieldset className="space-y-2.5">
+                          <legend className="text-sm font-semibold text-foreground mb-2">{isAr ? 'الحساب ده لمين؟' : 'Who is this account for?'}</legend>
+                          <div role="radiogroup" aria-label={isAr ? 'نوع الحساب' : 'Account type'} className="grid grid-cols-2 gap-2.5">
+                            {([
+                              { id: 'self' as const, Icon: User, title: isAr ? 'ليا أنا' : 'For myself', sub: isAr ? `${ADULT_MIN_AGE} سنة وأكبر` : `Aged ${ADULT_MIN_AGE}+` },
+                              { id: 'family' as const, Icon: Users, title: isAr ? 'لعيلتي' : 'For my family', sub: isAr ? 'ولي أمر يسجّل أولاده' : 'A parent enrols children' }
+                            ]).map(({ id, Icon, title, sub }) => {
+                              const selected = accountType === id;
+                              return (
+                                <button
+                                  key={id}
+                                  type="button"
+                                  role="radio"
+                                  aria-checked={selected}
+                                  onClick={() => { setAccountType(id); setError(''); }}
+                                  className={`auth-choice ${selected ? 'is-selected' : ''}`}
+                                >
+                                  <span className="auth-choice-icon"><Icon className="w-[18px] h-[18px]" aria-hidden="true" /></span>
+                                  <span className="min-w-0 text-start">
+                                    <span className="block text-sm font-bold text-foreground leading-tight">{title}</span>
+                                    <span className="block text-xs text-muted-foreground leading-tight mt-0.5">{sub}</span>
+                                  </span>
+                                  <span className="auth-choice-dot" aria-hidden="true">{selected && <Check className="w-3 h-3" />}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+
+                          {accountType === 'self' ? (
+                            <label className="flex items-start gap-2.5 pt-1 cursor-pointer select-none">
+                              <input
+                                type="checkbox"
+                                checked={confirmedAdult}
+                                onChange={(e) => { setConfirmedAdult(e.target.checked); setError(''); }}
+                                className="mt-0.5 w-[18px] h-[18px] shrink-0 accent-[#087D91] cursor-pointer"
+                              />
+                              <span className="text-sm text-foreground leading-snug">
+                                {isAr ? `أؤكد إن سني ${ADULT_MIN_AGE} سنة أو أكتر.` : `I confirm I am ${ADULT_MIN_AGE} or older.`}
+                                <span className="block text-xs text-muted-foreground mt-0.5">{isAr ? 'أصغر؟ ولي أمرك يفتح حساب "لعيلتي" ويسجّلك.' : 'Younger? A parent opens a family account for you.'}</span>
+                              </span>
+                            </label>
+                          ) : (
+                            <div className="pt-1">
+                              <label htmlFor="signup-guardian-age" className="block text-sm font-semibold text-foreground mb-1.5">
+                                {isAr ? 'سنك (ولي الأمر)' : 'Your age (parent or guardian)'}
+                              </label>
+                              <div className="relative">
+                                <ShieldCheck className="auth-field-icon" aria-hidden="true" />
+                                <input
+                                  id="signup-guardian-age"
+                                  type="number"
+                                  inputMode="numeric"
+                                  min={GUARDIAN_MIN_AGE}
+                                  max={MAX_AGE}
+                                  value={guardianAge}
+                                  onChange={(e) => { setGuardianAge(e.target.value); setError(''); }}
+                                  aria-invalid={parseAge(guardianAge) !== null && Number(guardianAge) < GUARDIAN_MIN_AGE}
+                                  aria-describedby="signup-guardian-age-hint"
+                                  className="auth-field"
+                                  placeholder={isAr ? 'مثال: 38' : 'e.g. 38'}
+                                />
+                              </div>
+                              {(() => {
+                                const tooYoung = parseAge(guardianAge) !== null && Number(guardianAge) < GUARDIAN_MIN_AGE;
+                                return (
+                                  <p id="signup-guardian-age-hint" aria-live="polite" className={`mt-1.5 text-xs ${tooYoung ? 'text-destructive font-semibold' : 'text-muted-foreground'}`}>
+                                    {tooYoung
+                                      ? (isAr ? `لازم ولي الأمر يكون ${GUARDIAN_MIN_AGE} سنة أو أكتر عشان يفتح حساب عائلة.` : `A guardian must be ${GUARDIAN_MIN_AGE} or over to open a family account.`)
+                                      : (isAr ? `ولي الأمر ${GUARDIAN_MIN_AGE} سنة أو أكتر.` : `Guardians must be ${GUARDIAN_MIN_AGE} or over.`)}
+                                  </p>
+                                );
+                              })()}
+                            </div>
+                          )}
+                        </fieldset>
+                      )}
+
+                      {showTabs && (
+                        <>
+                          {googleButton}
+                          <div className="auth-divider">{isAr ? 'أو بالإيميل' : 'or with email'}</div>
+                        </>
                       )}
 
                       {isSignup && (
@@ -393,6 +490,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                               type="email"
                               required
                               autoComplete="email"
+                              inputMode="email"
                               value={email}
                               onChange={(e) => setEmail(e.target.value)}
                               className="auth-field text-start"
@@ -429,6 +527,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                               autoComplete={view === 'login' ? 'current-password' : 'new-password'}
                               value={password}
                               onChange={(e) => setPassword(e.target.value)}
+                              aria-describedby={view === 'login' ? undefined : 'auth-password-hint'}
                               className="auth-field pe-14"
                               placeholder="••••••••"
                             />
@@ -441,93 +540,38 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                               {showPassword ? <EyeOff className="w-4 h-4 text-[var(--teal)]" /> : <Eye className="w-4 h-4" />}
                             </button>
                           </div>
+                          {view !== 'login' && (
+                            <p id="auth-password-hint" className="mt-1.5 text-xs text-muted-foreground">{isAr ? '٦ حروف على الأقل.' : 'At least 6 characters.'}</p>
+                          )}
                         </div>
                       )}
 
-                      {isSignup && (accountType === 'self' ? (
-                        <label className="flex items-start gap-3 p-3 rounded-[var(--r-2)] border border-border bg-surface cursor-pointer select-none">
-                          <input
-                            type="checkbox"
-                            checked={confirmedAdult}
-                            onChange={(e) => { setConfirmedAdult(e.target.checked); setError(''); }}
-                            className="mt-0.5 w-4.5 h-4.5 shrink-0 accent-[#087D91] cursor-pointer"
-                          />
-                          <span className="text-sm text-foreground leading-relaxed">
-                            {isAr ? `أؤكد إن سني ${ADULT_MIN_AGE} سنة أو أكتر.` : `I confirm I am ${ADULT_MIN_AGE} or older.`}
-                            <span className="block text-xs text-muted-foreground mt-0.5">
-                              {isAr ? 'أقل من كده؟ ولي أمرك يفتح "حساب عائلة" ويسجّلك.' : 'Younger? A parent opens a family account for you.'}
-                            </span>
-                          </span>
-                        </label>
-                      ) : (
-                        <div>
-                          <label htmlFor="signup-guardian-age" className="block text-sm font-semibold text-foreground mb-1.5">
-                            {isAr ? 'سنك (ولي الأمر)' : 'Your age (parent or guardian)'}
-                          </label>
-                          <div className="relative">
-                            <ShieldCheck className="auth-field-icon" aria-hidden="true" />
-                            <input
-                              id="signup-guardian-age"
-                              type="number"
-                              inputMode="numeric"
-                              min={GUARDIAN_MIN_AGE}
-                              max={MAX_AGE}
-                              value={guardianAge}
-                              onChange={(e) => { setGuardianAge(e.target.value); setError(''); }}
-                              aria-invalid={parseAge(guardianAge) !== null && Number(guardianAge) < GUARDIAN_MIN_AGE}
-                              aria-describedby="signup-guardian-age-hint"
-                              className="auth-field"
-                              placeholder={isAr ? 'مثال: 38' : 'e.g. 38'}
-                            />
-                          </div>
-                          {(() => {
-                            const tooYoung = parseAge(guardianAge) !== null && Number(guardianAge) < GUARDIAN_MIN_AGE;
-                            return (
-                              <p id="signup-guardian-age-hint" aria-live="polite" className={`mt-1.5 text-xs ${tooYoung ? 'text-destructive font-semibold' : 'text-muted-foreground'}`}>
-                                {tooYoung
-                                  ? (isAr ? `لازم ولي الأمر يكون ${GUARDIAN_MIN_AGE} سنة أو أكتر عشان يفتح حساب عائلة.` : `A guardian must be ${GUARDIAN_MIN_AGE} or over to open a family account.`)
-                                  : (isAr ? `ولي الأمر ${GUARDIAN_MIN_AGE} سنة أو أكتر.` : `Guardians must be ${GUARDIAN_MIN_AGE} or over.`)}
-                              </p>
-                            );
-                          })()}
-                        </div>
-                      ))}
-
                       {error && (
-                        <div role="alert" className="p-3 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-[var(--r-2)]">
-                          {error}
+                        <div role="alert" className="flex items-start gap-2 p-3 bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-[var(--r-2)]">
+                          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
+                          <span>{error}</span>
                         </div>
                       )}
                       {success && (
-                        <div role="status" className="p-3 bg-success/10 border border-success/25 text-success text-sm rounded-[var(--r-2)]">
-                          {success}
+                        <div role="status" className="flex items-start gap-2 p-3 bg-success/10 border border-success/25 text-success text-sm rounded-[var(--r-2)]">
+                          <Check className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
+                          <span>{success}</span>
                         </div>
                       )}
 
-                      <Button type="submit" isLoading={isSubmitting} className="w-full !rounded-full mt-2">
+                      <Button type="submit" isLoading={isSubmitting} className="w-full !h-12 !rounded-full !text-base !font-bold">
                         {submitLabel[view]}
                       </Button>
-
-                      {(view === 'login' || isSignup) && (
-                        <>
-                          <div className="auth-divider">{isAr ? 'أو' : 'or'}</div>
-                          <button
-                            type="button"
-                            onClick={handleGoogleSignIn}
-                            disabled={isSubmitting}
-                            className="btn-glass is-pill w-full disabled:opacity-50"
-                          >
-                            <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
-                              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
-                              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
-                            </svg>
-                            <span>{isAr ? 'كمّل بحساب Google' : 'Continue with Google'}</span>
-                          </button>
-                        </>
-                      )}
                     </form>
+
+                    {view === 'login' && (
+                      <p className="mt-5 text-center text-sm text-muted-foreground">
+                        {isAr ? 'أول مرة معانا؟ ' : 'New here? '}
+                        <button type="button" onClick={() => { setView('signup'); setError(''); setSuccess(''); }} className="text-[var(--teal)] font-bold hover:underline cursor-pointer">
+                          {isAr ? 'افتح حساب في دقيقة' : 'Open an account in a minute'}
+                        </button>
+                      </p>
+                    )}
 
                     {(view === 'forgot' || view === 'update-password') && (
                       <p className="mt-5 text-center text-sm">

@@ -31,9 +31,61 @@
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#087D91",
-  "background_color": "#F8F6F0",
+  "theme_color": "#FAF7F2",
+  "background_color": "#FAF7F2",
   "display": "standalone",
   "scope": "/",
-  "start_url": "/student"
+  "start_url": "/student",
+  "display_override": [
+    "standalone"
+  ],
+  "orientation": "any",
+  "categories": [
+    "education",
+    "lifestyle"
+  ],
+  "launch_handler": {
+    "client_mode": [
+      "navigate-existing",
+      "auto"
+    ]
+  },
+  "shortcuts": [
+    {
+      "name": "My lessons — حصصي",
+      "short_name": "Lessons",
+      "url": "/student/lessons",
+      "icons": [
+        {
+          "src": "/android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Book a lesson — احجز حصة",
+      "short_name": "Book",
+      "url": "/student/book",
+      "icons": [
+        {
+          "src": "/android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Teacher workspace — مساحة المعلم",
+      "short_name": "Teachers",
+      "url": "/dashboard",
+      "icons": [
+        {
+          "src": "/android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
 }

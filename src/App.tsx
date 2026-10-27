@@ -9,6 +9,7 @@ import SEOProtection from './components/SEOProtection';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { useScrollPaletteTransition } from './lib/useScrollPaletteTransition';
 import { BrandLoader } from './components/ui/BrandLoader';
+import { InstallAppSheetHost } from './components/pwa/InstallApp';
 
 /**
  * After a new deployment the old page's lazy files no longer exist, so the next page change failed
@@ -129,6 +130,7 @@ export default function App() {
     <AppProviders>
       <BrowserRouter>
         <AppRoutes />
+        <InstallAppSheetHost />
       </BrowserRouter>
     </AppProviders>
   );

@@ -13,6 +13,7 @@ import { useAppLanguage, applyUrlLanguage, localizedPath, stripEnPrefix } from '
 import { WelcomeStopButton } from '../WelcomeRecitation';
 import { BackToTop } from './BackToTop';
 import { ReferralWelcome } from './ReferralWelcome';
+import { InstallAppNudge } from '../../pwa/InstallApp';
 import { Analytics } from '@vercel/analytics/react';
 
 export interface PublicLayoutContextType {
@@ -201,6 +202,7 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
         {/* AI Learning Guide (end corner) and back to top (the opposite corner) */}
         <LearningGuide lang={lang} />
         <BackToTop isAr={lang === 'ar'} />
+        <InstallAppNudge isAr={lang === 'ar'} />
 
         {/* Stop button while the welcome recitation plays (started from the homepage or the menu) */}
         <WelcomeStopButton isAr={lang === 'ar'} />

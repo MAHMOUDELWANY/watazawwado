@@ -30,6 +30,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     } else {
       document.documentElement.classList.remove('dark');
     }
+    // The installed app's title bar follows the chosen theme, not only the system one.
+    document.querySelectorAll('meta[name="theme-color"]').forEach((m) => {
+      m.setAttribute('content', theme === 'dark' ? '#110F0E' : '#FAF7F2');
+    });
     try {
       localStorage.setItem('mahmoud_theme', theme);
     } catch {
