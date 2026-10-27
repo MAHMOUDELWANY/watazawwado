@@ -18,8 +18,8 @@ const TEACHERS: Array<{ src: string; name: L; badge: L; bio: L[]; mirror?: boole
     badge: { en: 'Balanced, moderate teaching', ar: 'علم وسطي معتدل' },
     bio: [
       {
-        en: 'Ustadh Mahmoud teaches Quran, Tajweed, Arabic and the Zad Path at Watazawwado. For more than three years he has taught students one-on-one in Canada, the US, the UK and Australia.',
-        ar: 'الأستاذ محمود بيدرّس القرآن والتجويد والعربية ومسار الأثر في وتزودوا. وبقاله أكتر من ٣ سنين بيدرّس طلاب بشكل فردي في كندا وأمريكا وبريطانيا وأستراليا.'
+        en: 'Ustadh Mahmoud teaches Quran, Tajweed, Arabic and the Zad Path at Watazawwado. For more than three years he has taught students one-on-one in several countries.',
+        ar: 'الأستاذ محمود بيدرّس القرآن والتجويد والعربية ومسار الأثر في وتزودوا. وبقاله أكتر من ٣ سنين بيدرّس طلاب بشكل فردي في أكتر من بلد.'
       },
       {
         en: 'His strong English helps him explain pronunciation and grammar clearly to students who grew up abroad.',
@@ -86,7 +86,7 @@ export function AboutPage() {
   const t = (l: L) => (isEn ? l.en : l.ar);
 
   return (
-    <main id="main-content" className="pt-24 lg:pt-32 pb-16">
+    <main id="main-content" className="pt-16 sm:pt-20 pb-16">
       <PublicSection>
         <div className="max-w-5xl mx-auto space-y-16 lg:space-y-20">
 

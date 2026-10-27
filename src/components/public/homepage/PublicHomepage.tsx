@@ -3,7 +3,7 @@ import { useOutletContext } from 'react-router-dom';
 import { Link } from '../LangLink';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
 import { PublicSection, PublicButton } from '../PublicDesignSystem';
-import { Check, User, Users, Volume2, VolumeX, Eye, DoorClosed, VideoOff, ArrowRight } from 'lucide-react';
+import { Check, User, Users, Volume2, VolumeX } from 'lucide-react';
 import { WhatsAppIcon } from '../../ui/WhatsAppIcon';
 import { WelcomeRecitation } from '../WelcomeRecitation';
 import { TeacherDuo } from './TeacherDuo';
@@ -51,49 +51,6 @@ const PATHS: Array<{ icon: typeof User; tone: string; title: L; body: L; note: L
   }
 ];
 
-// What we teach (RULES.md §2b and §3): three families, their subjects and the "from" hourly price.
-const FAMILIES: Array<{ tone: [string, string]; title: L; price: L; note: L; subjects: L[] }> = [
-  {
-    tone: ['#0B7486', '#04323A'],
-    title: { en: 'The Quran', ar: 'القرآن' },
-    price: { en: '$9 an hour', ar: '9$ للساعة' },
-    note: { en: 'From the first letter to the Mushaf.', ar: 'من أول حرف لحد المصحف.' },
-    subjects: [
-      { en: 'Quran Reading', ar: 'قراءة القرآن' },
-      { en: 'Tajweed', ar: 'التجويد' },
-      { en: 'Memorization & Revision', ar: 'الحفظ والمراجعة' },
-    ],
-  },
-  {
-    tone: ['#8B4935', '#33190F'],
-    title: { en: 'The Zad Path', ar: 'مسار الأثر' },
-    price: { en: '$9 an hour', ar: '9$ للساعة' },
-    note: { en: 'Our own curriculum, in three versions by age.', ar: 'منهجنا إحنا، بتلات نسخ حسب السن.' },
-    subjects: [
-      { en: 'Zad Essentials', ar: 'أول الزاد' },
-      { en: 'Seerah', ar: 'السيرة' },
-    ],
-  },
-  {
-    tone: ['#A3271F', '#3F0E10'],
-    title: { en: 'Languages', ar: 'اللغات' },
-    price: { en: 'from $13 an hour', ar: 'من 13$ للساعة' },
-    note: { en: 'For kids, teens and adults.', ar: 'للأطفال والناشئة والكبار.' },
-    subjects: [
-      { en: 'Fusha Arabic', ar: 'العربية الفصحى' },
-      { en: 'Egyptian Arabic', ar: 'العامية المصرية' },
-      { en: 'English', ar: 'الإنجليزية' },
-    ],
-  },
-];
-
-// Restates /safety in three lines, for the parents reading the homepage.
-const PEACE: Array<{ icon: typeof Eye; text: L }> = [
-  { icon: Eye, text: { en: 'You can sit in on any lesson.', ar: 'تقدر تحضر أي حصة مع ابنك.' } },
-  { icon: DoorClosed, text: { en: 'The teacher opens the Zoom room; your child waits until let in.', ar: 'المعلم بيفتح أوضة Zoom، وابنك بيستنى لحد ما يدخّله.' } },
-  { icon: VideoOff, text: { en: 'Lessons are not recorded.', ar: 'الحصص مش بتتسجّل.' } },
-];
-
 // Each door's portal: [top, bottom] of its deep gradient. Teal, copper and crimson take turns.
 type Door = { to: string; emblem: React.ComponentType<{ className?: string }>; tone: [string, string]; title: L; body: L };
 
@@ -138,7 +95,7 @@ export function PublicHomepage() {
   useVerseFont();
 
   return (
-    <main id="main-content" className="pt-20 lg:pt-24">
+    <main id="main-content" className="pt-16 sm:pt-20">
       {/* Welcome recitation: first visit of a session (homepage only). */}
       <WelcomeRecitation isAr={!isEn} />
 
@@ -259,77 +216,6 @@ export function PublicHomepage() {
           </div>
         </div>
       </PublicSection>
-
-      {/* ─── 3b. WHAT WE TEACH ─── three mihrab-shaped shelves, each with its subjects and its hourly price */}
-      <section className="teach-band relative overflow-hidden" aria-labelledby="teach-title">
-        <div className="public-container py-16 lg:py-24">
-          <div className="max-w-2xl mb-10 lg:mb-14">
-            <h2 id="teach-title" className="editorial-heading font-editorial text-3xl sm:text-4xl text-foreground">
-              {isEn ? 'What we teach' : 'بنعلّم إيه'}
-            </h2>
-            <p className="text-muted-foreground text-base sm:text-lg leading-relaxed mt-4">
-              {isEn
-                ? 'Eight subjects in three families. Every lesson is one-on-one, 30, 45 or 60 minutes.'
-                : 'تمان مواد في تلات عائلات. وكل حصة فردية، ٣٠ أو ٤٥ أو ٦٠ دقيقة.'}
-            </p>
-          </div>
-
-          <ul className="grid gap-6 md:grid-cols-3 lg:gap-8">
-            {FAMILIES.map((f) => (
-              <li key={f.title.en} className="teach-slot">
-                <Link to="/learning" className="teach-arch group" style={{ '--door-a': f.tone[0], '--door-b': f.tone[1] } as React.CSSProperties}>
-                  <span className="teach-crown khatam-window" aria-hidden="true">
-                    <svg viewBox="0 0 80 80" className="teach-star" fill="none">
-                      <rect x="20" y="20" width="40" height="40" />
-                      <rect x="20" y="20" width="40" height="40" transform="rotate(45 40 40)" />
-                      <circle cx="40" cy="40" r="11" />
-                    </svg>
-                  </span>
-                  <span className="teach-body">
-                    <span className="block font-editorial text-2xl font-bold text-foreground">{t(f.title)}</span>
-                    <span className="teach-price">{t(f.price)}</span>
-                    <span className="block mt-3 text-sm text-muted-foreground leading-relaxed">{t(f.note)}</span>
-                    <ul className="teach-list">
-                      {f.subjects.map((s) => <li key={s.en}>{t(s)}</li>)}
-                    </ul>
-                    <span className="teach-more">
-                      {isEn ? 'See the subjects' : 'شوف المواد'}
-                      <ArrowRight className="w-4 h-4 rtl:-scale-x-100 transition-transform duration-200 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" aria-hidden="true" />
-                    </span>
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-6 text-sm text-muted-foreground">
-            {isEn
-              ? 'Shorter lessons cost the same per minute. Packages bring the price down; advanced or intensive study may cost more, and you always see it before you pay.'
-              : 'الحصص الأقصر بنفس السعر للدقيقة. والباقات بتنزّل السعر، والدراسة المتقدمة أو المكثفة ممكن تكون أعلى، ودايماً بتشوف السعر قبل ما تدفع.'}{' '}
-            <Link to="/pricing" className="font-semibold text-[var(--teal)] underline underline-offset-4">{isEn ? 'Prices and packages' : 'الأسعار والباقات'}</Link>
-          </p>
-        </div>
-      </section>
-
-      {/* ─── 3c. FOR PARENTS ─── three lines from /safety */}
-      <section className="public-container pb-4" aria-labelledby="peace-title">
-        <div className="peace-strip">
-          <h2 id="peace-title" className="font-editorial text-xl sm:text-2xl font-bold text-foreground">
-            {isEn ? 'For parents' : 'لأولياء الأمور'}
-          </h2>
-          <ul className="peace-list">
-            {PEACE.map(({ icon: Icon, text }) => (
-              <li key={text.en}>
-                <span className="peace-icon"><Icon className="w-4 h-4" aria-hidden="true" /></span>
-                <span>{t(text)}</span>
-              </li>
-            ))}
-          </ul>
-          <Link to="/safety" className="peace-link">
-            {isEn ? 'How lessons with children work' : 'إزاي بتمشي حصص الأطفال'}
-            <ArrowRight className="w-4 h-4 rtl:-scale-x-100" aria-hidden="true" />
-          </Link>
-        </div>
-      </section>
 
       {/* ─── 4. WHY WE EXIST ─── */}
       <section className="khatam-field relative">

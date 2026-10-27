@@ -48,7 +48,7 @@ export function SafetyPage() {
   const isEn = lang === 'en';
 
   return (
-    <main id="main-content" className="pt-24 lg:pt-32 pb-16">
+    <main id="main-content" className="pt-16 sm:pt-20 pb-16">
       <PublicSection>
         <div className="max-w-3xl mx-auto space-y-10">
           <PageHero

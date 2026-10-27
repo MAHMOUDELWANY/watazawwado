@@ -491,3 +491,10 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - FAQ: no promise that we never change teacher (the admin may, per RULES §1); the trial answer adds one per new student, one reschedule ≥1 h before and the 48 h wait; same-day booking is not possible. New answers on starting ages (6–17 family, 18+ own account) and refunds (14-day withdrawal, credits, our cancellations).
 - Homepage: new "What we teach" (three arched shelves: Quran $9, Zad Path $9, Languages from $13, with the "from"/per-minute/advanced note and a link to prices) and a "For parents" strip restating /safety.
 - RULES.md §6: the welcome-recitation rule updated to the owner's 2026-10-27 decision (no sound hint, mute button in the header).
+
+## 2026-10-27 — Owner feedback on the homepage review
+- Homepage: "What we teach" and "For parents" removed. The hour price now sits on every subject card on /learning, with a link to that subject's packages.
+- /pricing: pick a subject first (short names; `?subject=` in the URL). The packages then show for its band: $9 (8.50 / 8.25 / 8.00) or $13 (12.25 / 12.00 / 11.50), from docs/pricing/packages.md. Envelopes: hover on desktop; tap on touch screens (tablets); phones still open the centred one while scrolling.
+- Welcome recitation: the mute button left the header (it truncated the name). It is now a round floating button at the screen's edge, a third of the way down, and can be dragged. RULES.md §6 updated.
+- No more blank band under the header: public pages start at the header height (pt-16 sm:pt-20).
+- About: Ustadh Mahmoud's bio keeps "more than three years" without the country list (the owner confirmed the years, not the countries). The owner confirmed PayPal and Apple Pay are on in Stripe.

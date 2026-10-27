@@ -287,7 +287,7 @@ export function LearningPage() {
   const totalResultsCount = filteredPillars.reduce((acc, p) => acc + p.services.length, 0);
 
   return (
-    <main id="main-content" className="pt-24 lg:pt-32 pb-24 min-h-screen">
+    <main id="main-content" className="pt-16 sm:pt-20 pb-24 min-h-screen">
       
       {/* ─── 1. HERO & INTRODUCTION ───────────────────────────────────────── */}
       <PublicSection className="pb-8">
@@ -436,6 +436,7 @@ export function LearningPage() {
                           whoFor={isEn ? service.whoIsItFor : (arDetails?.whoIsItFor || service.whoIsItFor)}
                           learn={isEn ? (service.whatYouWillLearn || []) : (arDetails?.whatYouWillLearn || service.whatYouWillLearn || [])}
                           frequency={isEn ? service.recommendedFrequency : (arDetails?.recommendedFrequency || service.recommendedFrequency)}
+                          rate={BOOKABLE_SERVICES.find((b) => b.id === service.id)?.hourlyRateUsd ?? 9}
                           expanded={Boolean(expandedServices[service.id])}
                           onToggle={() => toggleExpand(service.id)}
                           onTrial={() => onOpenTrialModal(service.id)}
