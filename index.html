@@ -25,7 +25,12 @@
     <meta name="application-name" content="Watazawwado Academy" />
     <meta name="apple-mobile-web-app-title" content="Watazawwado" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="theme-color" content="#087D91" />
+    <!-- The browser bar takes the page colour, so the installed app looks like one surface (light and dark). -->
+    <meta name="theme-color" content="#FAF7F2" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#110F0E" media="(prefers-color-scheme: dark)" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
     <!-- Favicon & App Icons -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
@@ -49,9 +54,42 @@
           if (t === 'dark' || (t !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
           }
+          // Launch screen: inside the installed app, and on the account areas (never over the public pages,
+          // which arrive prerendered and must show at once).
+          var standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+          if (standalone || /^\/(student|dashboard|teacher|staff)(\/|$)/.test(p)) {
+            document.documentElement.classList.add('boot-app');
+          }
         } catch(e) {}
       })();
     </script>
+    <style>
+      #boot-splash { display: none; }
+      .boot-app #boot-splash {
+        position: fixed; inset: 0; z-index: 2147483000; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 22px; background: #FAF7F2;
+        transition: opacity .28s ease, visibility .28s ease;
+      }
+      .boot-app.dark #boot-splash { background: #110F0E; }
+      #boot-splash.is-leaving { opacity: 0; visibility: hidden; }
+      #boot-splash .bs-tile {
+        width: 112px; height: 112px; border-radius: 28px; display: grid; place-items: center; background: #FAF7F2;
+        box-shadow: 0 0 0 1px rgba(229,169,60,.55), 0 22px 44px -22px rgba(5,54,63,.55);
+        animation: bs-in .5s cubic-bezier(.22,1,.36,1) both;
+      }
+      #boot-splash .bs-tile img { width: 80px; height: auto; }
+      #boot-splash .bs-bar { width: 96px; height: 3px; border-radius: 3px; overflow: hidden; background: rgba(139,73,53,.14); }
+      .dark #boot-splash .bs-bar { background: rgba(250,247,242,.12); }
+      #boot-splash .bs-bar i {
+        display: block; width: 40%; height: 100%; border-radius: 3px;
+        background: linear-gradient(90deg, #C51F24, #E5A93C, #12A4BC);
+        animation: bs-run 1.1s cubic-bezier(.65,0,.35,1) infinite;
+      }
+      [dir="rtl"] #boot-splash .bs-bar i { animation-direction: reverse; }
+      @keyframes bs-in { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
+      @keyframes bs-run { from { transform: translateX(-110%); } to { transform: translateX(260%); } }
+      @media (prefers-reduced-motion: reduce) { #boot-splash .bs-tile, #boot-splash .bs-bar i { animation: none; } }
+    </style>
     <script type="application/ld+json">
     {"@context":"https://schema.org","@graph":[
       {"@type":"EducationalOrganization","@id":"https://watazawwado.academy/#org","name":"Watazawwado Academy","alternateName":["وتزودوا","أكاديمية وتزودوا","Watazawwado","watazawwado.academy"],"url":"https://watazawwado.academy/","logo":"https://watazawwado.academy/logo.png","image":"https://watazawwado.academy/og-image.jpg","description":"Online 1-on-1 Quran, Tajweed, the Zad Path, Arabic and English lessons on Zoom for families and adults worldwide.","email":"info@watazawwado.academy","contactPoint":{"@type":"ContactPoint","contactType":"customer support","email":"support@watazawwado.academy","telephone":"+48508157886","availableLanguage":["English","Arabic"]},"sameAs":["https://www.facebook.com/profile.php?id=61595353682477","https://www.youtube.com/@watazawwado.academy","https://www.instagram.com/watazawwado.academy","https://www.tiktok.com/@watazawwado.academy","https://t.me/watazawwado_academy"]},
@@ -61,6 +99,7 @@
   </head>
   <body class="bg-background text-foreground antialiased overflow-x-hidden min-h-screen selection:bg-primary/20 selection:text-primary">
     <div id="root"></div>
+    <div id="boot-splash" aria-hidden="true"><span class="bs-tile"><img src="/logo-256.png" alt="" width="80" height="50" /></span><span class="bs-bar"><i></i></span></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

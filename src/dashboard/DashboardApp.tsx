@@ -1,3 +1,4 @@
+import { InstallAppEntry } from '../components/pwa/InstallApp';
 import { BrandLogo } from '../components/ui/BrandLogo';
 import { ThemeToggle } from '../components/ui/ThemeToggle';
 import { OnboardingGuide } from '../components/ui/OnboardingGuide';
@@ -9,7 +10,7 @@ import { WelcomeLoader, useWelcomeGate, type WelcomeGender } from '../components
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { useTeacherAuth } from '../lib/auth';
+import { useTeacherAuth, wasJustSignedOut } from '../lib/auth';
 import { dashboardFetch } from './lib/dashboardApi';
 import {
   LayoutDashboard,
@@ -72,7 +73,7 @@ type NavItem = { name: string; path: string; icon: typeof Clock };
 const INK = 'bg-[#0A2E35]/92 dark:bg-[#0B1C1F]/90';
 
 export function DashboardApp() {
-  const { isTeacherAuthenticated, user, signOut, teacherRole, loading } = useTeacherAuth();
+  const { isTeacherAuthenticated, user, signOut, teacherRole, loading, userRole } = useTeacherAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showGlobalTour, setShowGlobalTour] = useState(false);
   const [search, setSearch] = useState('');
@@ -198,27 +199,11 @@ export function DashboardApp() {
     );
   }
 
-  // Handle unauthorized state
+  // Not a signed-in teacher: no dead-end screen. A student goes to their own area; someone who just logged out goes
+  // to the shared sign-in door (/student, where the installed app opens); anyone else to the staff sign-in.
   if (!isTeacherAuthenticated) {
-    return (
-      <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-6">
-        <div className="max-w-md w-full glass-card border-none rounded-2xl p-8 shadow-sm text-center">
-          <div className="w-14 h-14 rounded-2xl bg-secondary/30 text-accent flex items-center justify-center mx-auto mb-4">
-            <ShieldCheck className="w-7 h-7" />
-          </div>
-          <h1 className="text-xl font-display font-semibold text-foreground mb-2">{lang === 'ar' ? 'مساحة المعلم' : 'Teacher Workspace'}</h1>
-          <p className="text-sm text-muted-foreground mb-6">
-            {lang === 'ar' ? 'سجّل دخولك بحساب معلم علشان تفتح مساحة العمل.' : 'Please sign in with a teacher account to open the workspace.'}
-          </p>
-          <Link
-            to="/staff/login"
-            className="inline-flex items-center justify-center px-6 py-2.5 btn-primary-material text-primary-foreground rounded-xl transition-all duration-base font-medium shadow-xs min-h-[44px]"
-          >
-            {lang === 'ar' ? 'دخول المعلمين' : 'Go to Teacher Login'}
-          </Link>
-        </div>
-      </div>
-    );
+    if (user && userRole === 'student') return <Navigate to="/student" replace />;
+    return <Navigate to={wasJustSignedOut() ? '/student' : '/staff/login'} replace />;
   }
 
   const ar = lang === 'ar';
@@ -444,6 +429,7 @@ export function DashboardApp() {
         </nav>
 
         <div className="p-4 pb-[max(1rem,env(safe-area-inset-bottom))] border-t border-border/50 space-y-3">
+          <InstallAppEntry isAr={ar} onOpen={() => setIsMobileMenuOpen(false)} />
           <div className="flex items-center gap-3 px-3 py-3 rounded-2xl bg-surface-subtle/40 border border-border/50">
             <div className="w-10 h-10 rounded-full bg-secondary/30 text-accent flex items-center justify-center font-bold text-sm shrink-0 border border-secondary/50">
               {(displayName || user?.email || 'M').charAt(0).toUpperCase()}

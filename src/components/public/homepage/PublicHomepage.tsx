@@ -95,7 +95,7 @@ export function PublicHomepage() {
   useVerseFont();
 
   return (
-    <main id="main-content" className="pt-20 lg:pt-24">
+    <main id="main-content" className="pt-16 sm:pt-20">
       {/* Welcome recitation: first visit of a session (homepage only). */}
       <WelcomeRecitation isAr={!isEn} />
 
@@ -169,7 +169,7 @@ export function PublicHomepage() {
           </p>
           <p className="mt-4 text-sm sm:text-base text-muted-foreground">
             {isEn
-              ? '“And take provisions, but indeed the best provision is God-consciousness.” Al-Baqarah 2:197'
+              ? '“And take provisions, but indeed, the best provision is fear of Allah.” Al-Baqarah 2:197, Saheeh International'
               : 'البقرة ١٩٧. ومنها اسمنا: نتزوّد بالعلم، وخير الزاد التقوى.'}
           </p>
           <button
@@ -230,8 +230,8 @@ export function PublicHomepage() {
           </p>
           {isEn ? (
             <p className="mt-3 text-base sm:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
-              “But as for what benefits the people, it remains on the earth.”
-              <span className="block mt-1 text-sm">Ar-Ra‘d 13:17</span>
+              “But as for that which benefits the people, it remains on the earth.”
+              <span className="block mt-1 text-sm">Ar-Ra‘d 13:17, Saheeh International</span>
             </p>
           ) : (
             <p className="mt-2 text-sm text-muted-foreground">الرعد ١٧</p>

@@ -47,6 +47,8 @@ interface EnvelopeCardProps {
   plan: EnvelopePlan;
   open: boolean;
   onHoverChange?: (hovering: boolean) => void;
+  /** Touch screens: tapping the envelope (not its buttons) opens it. */
+  onTap?: () => void;
   primaryLabel: string;
   onPrimary: () => void;
   secondaryLabel: string;
@@ -55,7 +57,7 @@ interface EnvelopeCardProps {
 }
 
 export const EnvelopeCard = React.forwardRef<HTMLDivElement, EnvelopeCardProps>(function EnvelopeCard(
-  { plan, open, onHoverChange, primaryLabel, onPrimary, secondaryLabel, onSecondary, isAr },
+  { plan, open, onHoverChange, onTap, primaryLabel, onPrimary, secondaryLabel, onSecondary, isAr },
   ref
 ) {
   const tone = TONES[plan.tone];
@@ -70,6 +72,7 @@ export const EnvelopeCard = React.forwardRef<HTMLDivElement, EnvelopeCardProps>(
       className="relative mx-auto w-full max-w-[20rem] h-[30rem] select-none"
       onMouseEnter={() => onHoverChange?.(true)}
       onMouseLeave={() => onHoverChange?.(false)}
+      onClick={(e) => { if (!(e.target as Element).closest('button, a')) onTap?.(); }}
       onFocus={() => setFocusInside(true)}
       onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setFocusInside(false); }}
     >

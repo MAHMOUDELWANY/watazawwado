@@ -4,6 +4,7 @@ import { Check, ChevronDown } from 'lucide-react';
 import { ServiceItem } from '../../../types';
 import { SUBJECT_EMBLEMS } from '../illustrations/SubjectEmblems';
 import { MushafEmblem } from '../emblems/DoorEmblems';
+import { Link } from '../LangLink';
 
 export type FamilyStyle = {
   /** Portal gradient, top → bottom (deep, so it reads the same in both themes). */
@@ -21,13 +22,15 @@ type Props = {
   whoFor: string;
   learn: string[];
   frequency: string;
+  /** Hourly rate in USD (RULES.md §3); the $13 band is a "from" price. */
+  rate: number;
   expanded: boolean;
   onToggle: () => void;
   onTrial: () => void;
 };
 
 /** One subject: a deep portal with its emblem, a title, one line, lesson lengths, details and a free trial. */
-export function SubjectCard({ service, family, isEn, title, tagline, whoFor, learn, frequency, expanded, onToggle, onTrial }: Props) {
+export function SubjectCard({ service, family, isEn, title, tagline, whoFor, learn, frequency, rate, expanded, onToggle, onTrial }: Props) {
   const reduceMotion = useReducedMotion();
   const Emblem = SUBJECT_EMBLEMS[service.id] || MushafEmblem;
   const detailsId = `details-${service.id}`;
@@ -51,6 +54,15 @@ export function SubjectCard({ service, family, isEn, title, tagline, whoFor, lea
             </li>
           ))}
         </ul>
+        <p className="mt-3.5 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+          <span className="font-editorial text-lg font-bold text-foreground">
+            {rate > 9 ? (isEn ? `from $${rate}` : `من ${rate}$`) : (isEn ? `$${rate}` : `${rate}$`)}
+          </span>
+          <span className="text-sm text-muted-foreground">{isEn ? 'an hour' : 'للساعة'}</span>
+          <Link to={`/pricing?subject=${service.id}`} className={`ms-auto text-sm font-bold underline-offset-4 hover:underline ${family.text}`}>
+            {isEn ? 'Packages' : 'الباقات'}
+          </Link>
+        </p>
       </div>
 
       <AnimatePresence initial={false}>

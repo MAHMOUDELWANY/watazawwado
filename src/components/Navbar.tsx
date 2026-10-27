@@ -1,3 +1,4 @@
+import { InstallAppEntry } from './pwa/InstallApp';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
 import FocusTrap from './FocusTrap';
@@ -301,6 +302,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                     </div>
                     <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180 text-muted-foreground" />
                   </Link>
+
+                  <InstallAppEntry isAr={!isEn} onOpen={() => setSideDrawerOpen(false)} />
                 </div>
 
               </div>

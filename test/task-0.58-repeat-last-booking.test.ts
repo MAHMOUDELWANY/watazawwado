@@ -170,10 +170,10 @@ describe('Task 0.58 — Repeat Last Booking Workflow Tests', () => {
       };
 
       const result = formatLastBookingSummary(booking, sampleProfile);
-      assert.strictEqual(result.serviceTitle, 'Quran Reading (Noorani Qaidah & Fluency)');
+      assert.strictEqual(result.serviceTitle, 'Quran Reading');
       assert.strictEqual(result.levelText, 'Beginner');
       assert.strictEqual(result.durationText, '45 mins');
-      assert.strictEqual(result.summaryText, 'Quran Reading (Noorani Qaidah & Fluency) · Beginner · 45 mins');
+      assert.strictEqual(result.summaryText, 'Quran Reading · Beginner · 45 mins');
     });
 
     it('handles missing level gracefully', () => {
@@ -350,7 +350,7 @@ describe('Task 0.58 — Repeat Last Booking Workflow Tests', () => {
       assert.strictEqual(trial.hasUsedTrial, true);
 
       const summary = formatLastBookingSummary(eligible, sampleProfile);
-      assert.strictEqual(summary.summaryText, 'Quran Reading (Noorani Qaidah & Fluency) · Intermediate · 45 mins');
+      assert.strictEqual(summary.summaryText, 'Quran Reading · Intermediate · 45 mins');
 
       const formData = mapLastBookingToBookingFormData(eligible, sampleProfile, trial.canBookTrial);
       assert.strictEqual(formData.initialStep, 6);

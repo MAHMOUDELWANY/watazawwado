@@ -472,3 +472,29 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Checks: tsc pass (0 errors), npm test 1032 pass / 0 fail, build pass, browser check N/A (backend + schema task)
 - Not checked / risks: Migration file is ready and verified by tests, and existing `/api/dashboard/students/:id/notes` endpoints remain backward-compatible before migration application, but the SQL file must be applied to production Supabase before `/api/student/milestones` or `/api/dashboard/students/:id/milestones` are queried against production.
 
+
+### UX-27 Install as an app, launch screen, new sign-in dialog, logout door, Today layout (2026-10-27)
+- Result: done on branch `ux/app-install-auth-today` (not pushed from the cloud session: no push access there)
+- Changed: `src/lib/pwaInstall.ts`, `src/components/pwa/InstallApp.tsx` (install sheet, menu row, card, phone nudge), `src/lib/bootSplash.ts`, `index.html` (launch screen, theme-color per scheme), `public/site.webmanifest` (paper colours, launch_handler, shortcuts), `src/components/StudentAuthModal.tsx` + `src/index.css` (opaque sheet, Google first, account type as one question), `src/lib/auth.tsx` + `src/dashboard/DashboardApp.tsx` (no "Teacher Workspace" dead end: a log-out lands on /student, a student goes to /student, others to /staff/login), `src/dashboard/pages/TodayPage.tsx` (one stats strip, compact empty day, coming 7 days, week strip, shortcuts; Inbox and month calendar removed as duplicates of the tabs and bell), entries in Navbar, StudentApp, StudentHomePage, DashboardApp drawer, `test/qa-02-accessibility.test.ts` (title is now a plain h2)
+- Checks: esbuild syntax pass on every changed file; type check with stubbed libraries shows no new errors; source tests qa-02, qa-04, phase-d, retired-subject-copy pass; screenshots of the sign-in dialog (phone/desktop, ar/en), install sheet, /student door and Today (phone/desktop, empty/full, dark) checked in a stubbed preview
+- Not checked / risks: full `npm test`, `tsc` and `npm run build` could not run in the cloud session (npm registry blocked); run them before pushing. No service worker added (ST-07 rule kept).
+
+## 2026-10-27 — Owner feedback on the app/auth branch
+- Sign-in dialog, desktop: a two-panel window. On one side, a gold mihrab drawn line by line with the khatam turning in its crown, the verse inside and three promises underneath. On the other, the form, which fits the window with no scroll (name and email side by side). Arabic and English, light and dark checked.
+- Phones: the sheet scrolls by touch and the page behind is locked while it is open.
+- Welcome recitation: the "tap the sound button" hint is gone; only a mute button shows, in the site header, while it plays.
+- Install: every "Get the app" opens the browser's own install dialog straight away where one exists (Chrome, Edge, Samsung Internet, Opera). `public/sw.js` caches nothing; it is there so those browsers offer the dialog. iPhone/iPad, Mac Safari and Firefox on Android get the short gesture sheet, because those browsers do not let a site install itself. The phone nudge now sits above the learning-guide button.
+
+## 2026-10-27 — Homepage and public pages: content review against RULES.md
+- Verses: the English of 2:197 and 13:17 now follows the verified Saheeh International translation (checked with the Quran MCP) and names it; the About page too.
+- Subjects (/learning, both languages): the 8 subjects on offer now match RULES.md §2b. Quran Reading has two stages (no Noorani Qaida claim). Memorization & Revision is one subject with three goals. Zad Essentials and Seerah have three age versions (6–11, 12–17, 18+). Fusha has four levels with conversation in each and covers learners starting from zero, and its lessons can be 30 minutes. Egyptian Arabic starts with the sounds and uses Franco plus Arabic script. English has a kids phonics track and CEFR A1–C1 for 12+, and the unverifiable "our teachers are C1" claim is gone. The booking subject name and the 30-minute note drop "Noorani" as well.
+- FAQ: no promise that we never change teacher (the admin may, per RULES §1); the trial answer adds one per new student, one reschedule ≥1 h before and the 48 h wait; same-day booking is not possible. New answers on starting ages (6–17 family, 18+ own account) and refunds (14-day withdrawal, credits, our cancellations).
+- Homepage: new "What we teach" (three arched shelves: Quran $9, Zad Path $9, Languages from $13, with the "from"/per-minute/advanced note and a link to prices) and a "For parents" strip restating /safety.
+- RULES.md §6: the welcome-recitation rule updated to the owner's 2026-10-27 decision (no sound hint, mute button in the header).
+
+## 2026-10-27 — Owner feedback on the homepage review
+- Homepage: "What we teach" and "For parents" removed. The hour price now sits on every subject card on /learning, with a link to that subject's packages.
+- /pricing: pick a subject first (short names; `?subject=` in the URL). The packages then show for its band: $9 (8.50 / 8.25 / 8.00) or $13 (12.25 / 12.00 / 11.50), from docs/pricing/packages.md. Envelopes: hover on desktop; tap on touch screens (tablets); phones still open the centred one while scrolling.
+- Welcome recitation: the mute button left the header (it truncated the name). It is now a round floating button at the screen's edge, a third of the way down, and can be dragged. RULES.md §6 updated.
+- No more blank band under the header: public pages start at the header height (pt-16 sm:pt-20).
+- About: Ustadh Mahmoud's bio keeps "more than three years" without the country list (the owner confirmed the years, not the countries). The owner confirmed PayPal and Apple Pay are on in Stripe.

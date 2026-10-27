@@ -1,3 +1,4 @@
+import { InstallAppEntry } from '../components/pwa/InstallApp';
 import { BrandLogo } from '../components/ui/BrandLogo';
 import { AccountDropdown } from '../components/ui/AccountDropdown';
 import { OnboardingGuide } from '../components/ui/OnboardingGuide';
@@ -320,6 +321,11 @@ export default function StudentApp() {
             <button type="button" onClick={() => { setAuthInitialView('signup'); setAuthModalOpen(true); }} className="btn-glass is-pill w-full">
               {isAr ? 'افتح حساب جديد' : 'Create an account'}
             </button>
+            <InstallAppEntry isAr={isAr} className="!mt-5" />
+            <p className="pt-3 text-center text-sm text-muted-foreground">
+              {isAr ? 'معلم أو من الإدارة؟ ' : 'Teacher or admin? '}
+              <Link to="/staff/login" className="font-bold text-[var(--teal)] hover:underline">{isAr ? 'ادخل من هنا' : 'Sign in here'}</Link>
+            </p>
           </div>
         </AuthCard>
 
@@ -535,6 +541,7 @@ export default function StudentApp() {
               );
             })}
           </nav>
+          <InstallAppEntry isAr={isAr} onOpen={() => setSidebarOpen(false)} className="mb-3" />
           <div className="rounded-2xl border border-border/60 divide-y divide-border/60">
             <div className="flex items-center justify-between px-4 min-h-[56px]">
               <span className="text-sm font-medium">{isAr ? 'المظهر' : 'Theme'}</span>

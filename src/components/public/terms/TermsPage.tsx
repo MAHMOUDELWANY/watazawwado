@@ -277,7 +277,7 @@ export function TermsPage() {
   ];
 
   return (
-    <main id="main-content" className="pt-24 lg:pt-32 pb-20">
+    <main id="main-content" className="pt-16 sm:pt-20 pb-20">
       <PublicSection>
         <div className="max-w-4xl mx-auto space-y-12">
           <PageHero

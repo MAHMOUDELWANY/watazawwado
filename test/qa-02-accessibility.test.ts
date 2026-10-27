@@ -71,7 +71,8 @@ describe('QA-02 accessibility', () => {
   });
 
   it('dialogs over a page do not add a second h1', () => {
-    for (const f of ['src/components/GetStartedModal.tsx', 'src/components/StudentAuthModal.tsx']) {
+    assert.match(fs.readFileSync('src/components/StudentAuthModal.tsx', 'utf8'), /<h2 id="auth-modal-title"/, 'sign-in dialog title is an h2');
+    for (const f of ['src/components/GetStartedModal.tsx']) {
       assert.match(fs.readFileSync(f, 'utf8'), /heading="h2"/, f);
     }
   });

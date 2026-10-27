@@ -10,9 +10,10 @@ import { LearningGuide } from '../../LearningGuide';
 import { useTheme } from '../../ThemeProvider';
 import { OnboardingGuide, OnboardingStep } from '../../ui/OnboardingGuide';
 import { useAppLanguage, applyUrlLanguage, localizedPath, stripEnPrefix } from '../../../lib/language';
-import { WelcomeStopButton } from '../WelcomeRecitation';
 import { BackToTop } from './BackToTop';
 import { ReferralWelcome } from './ReferralWelcome';
+import { InstallAppNudge } from '../../pwa/InstallApp';
+import { WelcomeMuteButton } from '../WelcomeRecitation';
 import { Analytics } from '@vercel/analytics/react';
 
 export interface PublicLayoutContextType {
@@ -201,9 +202,8 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
         {/* AI Learning Guide (end corner) and back to top (the opposite corner) */}
         <LearningGuide lang={lang} />
         <BackToTop isAr={lang === 'ar'} />
-
-        {/* Stop button while the welcome recitation plays (started from the homepage or the menu) */}
-        <WelcomeStopButton isAr={lang === 'ar'} />
+        <InstallAppNudge isAr={lang === 'ar'} />
+        <WelcomeMuteButton isAr={lang === 'ar'} />
 
         {/* Interactive Site Tour Guide */}
         <OnboardingGuide

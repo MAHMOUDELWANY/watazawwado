@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { holdBootSplash } from '../../lib/bootSplash';
 import { BrandLogo } from './BrandLogo';
 import { getStoredLanguage } from '../../lib/language';
 
@@ -146,6 +147,8 @@ export function BrandLoader({
   showProgressBar = true,
   className = '',
 }: BrandLoaderProps) {
+  // A full-page loader keeps the launch splash on screen instead of showing a second, different loader.
+  useEffect(() => ((size === 'page' || size === 'fullscreen') ? holdBootSplash() : undefined), [size]);
   const isReducedMotion =
     typeof window !== 'undefined' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
