@@ -66,8 +66,7 @@ Last update: 2026-10-26. History of how we got here: §8 (progress log).
 ### Beyond Zad Essentials (design 2026-10-25: `docs/superpowers/specs/2026-10-25-subjects-curricula-design.md`)
 - **Seerah (map of 46 episodes approved 2026-10-26):** Teens & Adults Episodes 1–3 built (dark stage with the owner's
   stills), Kids Episodes 1–3 built (Ep1 drawn in code; Ep2–3 painted pictures in a storybook frame with the Zad Kids
-  cast). **Waiting:** the 82 images of `seerah/IMAGE-PROMPTS.md` (owner → ChatGPT → `watazawwado-archive\seerah\`;
-  Claude converts and places them), the camels story (Ibn Ishaq), review of all six episodes. **Next:** Episode 4,
+  cast). **Waiting:** 9 redo images (`seerah/IMAGE-PROMPTS.md`, "Redo batch"; 73 of 82 placed 2026-10-27), the camels story (Ibn Ishaq), review of all six episodes. **Next:** Episode 4,
   The Monk on the Road, with its image batch.
 - **Literacy B · Quranic reading rules (Kids look):** map (12) and Lesson 1 built; ayat play Husary on tap.
 - **Literacy A · Reading Arabic · Kids:** map (29) and Lesson 1 built in look A "letter friends" (Claude's pick, the owner
@@ -733,3 +732,9 @@ B3–B5 → continue lesson by lesson.
   Reading Map, milestone 1). The explaining moments (globe, 28 letters, joining, dots, vowel marks, throat sounds, alif,
   next family) are shared in `g-welcome.tsx`, drawn for either stage tone. Every step screenshotted and checked.
   Unmarked text appears only where the page is about text without marks (سلام يا كريم, سوق الخضار).
+- 2026-10-27 — Seerah images: the owner's 82 ChatGPT images checked one by one against `seerah/IMAGE-PROMPTS.md`
+  Message 0. 73 placed as WebP (`public/curriculum/seerah-teens/ep01–03`, `seerah-kids/ep02–03`, 10.5 MB); 9 rejected and
+  rewritten in the prompts file's "Redo batch" (a boy or a lone figure that reads as the Prophet ﷺ, modern gold
+  calligraphy on the Kaaba, faces in profile, a Western family scene). Catalog cards now use Seerah covers. Every page of
+  the five episodes screenshotted with its image; the Ep1 army counters no longer overlap. Waiting: the 9 redos.
+

@@ -475,6 +475,78 @@ Every prompt starts with the **LOOK K line** above.
 
 ---
 
+## Redo batch · 2026-10-27 (9 images)
+
+Claude checked all 82 images. 73 are on the site. These 9 broke a rule, so they need a new version. Paste
+**Message 0** first, then these prompts. Save each one with the same file name in the same folder, replacing the old one.
+
+| File | Why it was rejected |
+|---|---|
+| `teens-ep02/lunch` | Faces visible in profile; an ancient hall instead of a modern school |
+| `teens-ep02/hills` | Boys on the ridge: could be read as the Prophet ﷺ as a child |
+| `teens-ep03/clouds` | The modern Kaaba cover with gold calligraphy (text, and the wrong era) |
+| `teens-ep03/mattress` | Gold calligraphy panels on the Kaaba |
+| `teens-ep03/grave-visit` | One man sitting alone at the grave: reads as the Prophet ﷺ himself |
+| `teens-ep03/north` | A small boy riding beside the man: reads as the Prophet ﷺ as a child |
+| `kids-ep02/hills` | Children running: could be read as the Prophet ﷺ as a child |
+| `kids-ep03/caravan` | A small rider beside the man, same problem |
+| `kids-ep03/sunrise` | A Western family with uncovered hair and a church-tower village |
+
+**`teens-ep02/hills`**
+> LOOK T: a cinematic historical matte painting, photorealistic, 6th-century Arabia, dramatic natural light, deep shadows, volumetric light and dust, warm amber and bronze palette, landscape 3:2. No faces (people only from behind or as distant silhouettes), no prophet, angel or companion, no text or letters, no logos. Main subject centre-right; left third darker and simpler. The hills of Banu Sa'd at golden hour: a flock of lambs and young goats grazing on a far ridge, a
+> shepherd's wooden staff stuck upright in the ground in the foreground, a small black tent far away. **No people at
+> all.** Big sky, long light, peaceful childhood landscape.
+
+**`teens-ep02/lunch`**
+> LOOK T: a cinematic historical matte painting, photorealistic, 6th-century Arabia, dramatic natural light, deep shadows, volumetric light and dust, warm amber and bronze palette, landscape 3:2. No faces (people only from behind or as distant silhouettes), no prophet, angel or companion, no text or letters, no logos. Main subject centre-right; left third darker and simpler. **Modern day, today:** a bright modern school cafeteria with plastic trays, steel tables and large windows.
+> The camera looks over the shoulder of a teenager seen fully from behind (back of the head and backpack only) toward the
+> far end, where one student sits alone, also seen fully from behind, with an empty chair beside them. All other students
+> are out of focus and turned away. **No face or profile visible anywhere, no historical clothing or architecture.**
+
+**`teens-ep03/clouds`**
+> LOOK T: a cinematic historical matte painting, photorealistic, 6th-century Arabia, dramatic natural light, deep shadows, volumetric light and dust, warm amber and bronze palette, landscape 3:2. No faces (people only from behind or as distant silhouettes), no prophet, angel or companion, no text or letters, no logos. Main subject centre-right; left third darker and simpler. Low angle from the sand near the ancient Kaaba: only its rough wall of stacked dark grey stones fills the
+> right edge of the frame, **with no cloth, no band, no decoration and no writing of any kind**. Heavy dark rain clouds
+> gather over the valley from every direction; the first fat drops of rain darken the dry sand in the foreground. No
+> people.
+
+**`teens-ep03/mattress`**
+> LOOK T: a cinematic historical matte painting, photorealistic, 6th-century Arabia, dramatic natural light, deep shadows, volumetric light and dust, warm amber and bronze palette, landscape 3:2. No faces (people only from behind or as distant silhouettes), no prophet, angel or companion, no text or letters, no logos. Main subject centre-right; left third darker and simpler. A thick mattress with a crimson and gold woven cover laid on the sand in the shade of a rough wall of stacked
+> dark grey stones (the ancient Kaaba, **bare stone only: no cloth, no band, no calligraphy, no writing**), cushions in a
+> circle around it, a sharp line between shade and sun across the sand. No people.
+
+**`teens-ep03/grave-visit`**
+> LOOK T: a cinematic historical matte painting, photorealistic, 6th-century Arabia, dramatic natural light, deep shadows, volumetric light and dust, warm amber and bronze palette, landscape 3:2. No faces (people only from behind or as distant silhouettes), no prophet, angel or companion, no text or letters, no logos. Main subject centre-right; left third darker and simpler. The plain of al-Abwa at early morning: in the foreground a single simple grave marked with a few stones, with
+> **nobody near it**. Far away on the horizon, tiny and faceless, a large group of riders and camels has stopped and stands
+> still. Pale gold light, a gentle and moving mood.
+
+**`teens-ep03/north`**
+> LOOK T: a cinematic historical matte painting, photorealistic, 6th-century Arabia, dramatic natural light, deep shadows, volumetric light and dust, warm amber and bronze palette, landscape 3:2. No faces (people only from behind or as distant silhouettes), no prophet, angel or companion, no text or letters, no logos. Main subject centre-right; left third darker and simpler. A great trading caravan leaving Makkah at dawn and heading north: dozens of loaded camels in a long line
+> winding out of the valley, dust glowing in the sunrise, the riders tiny adult silhouettes seen from behind. **No child
+> or small figure anywhere.** Adventure ahead.
+
+**`kids-ep02/hills`**
+> LOOK K: a warm painted storybook scene between a children's picture book and an animated family film, soft 3D-rendered
+> cartoon shapes with painterly gouache texture, rounded friendly forms, gentle warm light, cream, sand and terracotta
+> palette with touches of crimson, teal and gold, landscape 3:2. No text or letters. Rolling desert hills at golden hour
+> with fluffy lambs and baby goats skipping on the hilltops, birds in the sky, a little shepherd's staff and a small
+> water skin resting on a rock in front. **No people and no children at all.** Freedom and play.
+
+**`kids-ep03/caravan`**
+> LOOK K (as above). A long, exciting caravan of many loaded camels with colourful bags leaving a small desert town at
+> dawn and heading north, dust glowing in the sunrise, the riders small grown-up shapes seen from behind. **No child
+> anywhere.** A big trip begins.
+
+**`kids-ep03/sunrise`**
+> LOOK K (as above). A beautiful morning sun rising over soft desert mountains around a small town of low mud-brick houses
+> and palm trees, golden light spreading over the valley, birds flying. **No people at all, no churches, no European
+> houses.** Hopeful and warm.
+
+**Prompt lesson for every later batch:** never put a child, a boy or a single figure in a scene about the Prophet ﷺ (his
+childhood, his journeys, his own actions). Show the place, the animals, the objects or a far crowd of adults. The Kaaba
+is always bare stacked stone, or with plain undyed cloth, and never has a band or writing.
+
+---
+
 ## Visual registry (keeps images from repeating, for the whole series)
 
 Before writing prompts for a new episode, Claude reads this table and the rules below. A new image may not repeat a

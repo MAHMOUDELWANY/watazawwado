@@ -130,7 +130,7 @@ export const Se1QullaysGraphic = make({ still: 'qullays', term: 'القُلَّ�
 export const Se1ScalesGraphic = make({ still: 'scales', term: 'اخْتِبَارُ المَنْطِق' });
 export const Se1MarchGraphic = make({
   still: 'march', term: 'جَيْشُ الفِيل', tint: CRIMSON,
-  extra: ({ lines }) => (<>{lines >= 1 && <CountUp to={60000} x={110} y={300} label="soldiers" />}{lines >= 2 && <CountUp to={13} x={560} y={300} label="war elephants (9 or 13)" />}</>),
+  extra: ({ lines }) => (<>{lines >= 1 && <CountUp to={60000} x={110} y={300} label="soldiers" />}{lines >= 2 && <CountUp to={13} x={110} y={450} label="war elephants (9 or 13)" />}</>),
 });
 export const Se1CampGraphic = make({ still: 'camp', term: 'المُغَمِّس', extra: ({ lines }) => lines >= 2 && <CountUp to={200} x={110} y={330} label="camels seized" /> });
 export const Se1WalkGraphic = make({ still: 'walk', term: 'عَبْدُ المُطَّلِب' });

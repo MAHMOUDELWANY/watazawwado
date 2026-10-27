@@ -234,7 +234,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Teens & Adults',
     versionAr: 'الشباب والكبار',
     audience: '12+',
-    art: '/curriculum/zad-adults/l01/cover.webp',
+    art: '/curriculum/seerah-teens/ep01/cover.webp',
     parts: [
       { title: 'Season 1 · Before the Light', titleAr: 'الموسم الأول · قبل النور', from: 1 },
       { title: "Season 2 · Iqra'", titleAr: 'الموسم الثاني · اقرأ', from: 9 },
@@ -468,7 +468,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Kids',
     versionAr: 'الأطفال',
     audience: '6–11',
-    art: '/curriculum/zad-kids/l01/cover.webp',
+    art: '/curriculum/seerah-kids/ep02/cover.webp',
     parts: [
       { title: 'Season 1 · Before the Light', titleAr: 'الموسم الأول · قبل النور', from: 1 },
       { title: "Season 2 · Iqra'", titleAr: 'الموسم الثاني · اقرأ', from: 9 },
@@ -513,6 +513,7 @@ export const GROUPS: GroupEntry[] = [
     titleAr: 'السيرة',
     tagline: 'The life of the Prophet ﷺ, told so it changes ours.',
     taglineAr: 'حياة النبي ﷺ، تتحكي عشان تغيّر حياتنا.',
+    art: '/curriculum/seerah-teens/ep01/makkah.webp',
     // Two versions (owner, 2026-10-25): Kids, and one shared version for teens and adults.
     planned: [],
   },
