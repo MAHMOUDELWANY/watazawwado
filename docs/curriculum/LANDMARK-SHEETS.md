@@ -21,7 +21,7 @@ instead of 58. Claude cuts each sheet into its four squares and saves them as
 > Three looks:
 > - LOOK KIDS: a warm painted storybook vignette, soft 3D-rendered toy-like shapes with gouache texture, rounded friendly forms, cream, sand and terracotta with touches of crimson (#C51F24), teal (#0FA3B8) and gold (#E5A93C), cheerful and gentle.
 > - LOOK TEENS: a bold stylised cinematic illustration, strong simple shapes, confident colour, dusk or night light with teal (#0FA3B8) and crimson (#C51F24) accents and a gold (#E5A93C) glow, modern and energetic.
-> - LOOK ADULTS: a refined cinematic painterly still, calm natural light, warm amber palette with one accent of teal or crimson, elegant and quiet.
+> - LOOK ADULTS: a refined painted still life, like a plate in a fine illustrated book, close and simple framing, soft even daylight, muted cream, sand and olive tones with one small accent of teal or crimson, quiet and elegant.
 > Make one image per message. After each image I will write "next" and you make the next one in the list.
 > Save each as PNG with the exact name I give. Reply "Ready" and wait.
 
@@ -131,71 +131,74 @@ instead of 58. Claude cuts each sheet into its four squares and saves them as
 ---
 
 **11 · `sheet-11`** · LOOK ADULTS
-> Square 1:1, a 2x2 grid of four separate paintings, LOOK ADULTS: a refined cinematic painterly still, calm natural light, warm amber palette with one accent of teal or crimson, elegant and quiet.
+> Square 1:1, a 2x2 grid of four separate paintings, LOOK ADULTS: a refined painted still life, like a plate in a fine illustrated book, close and simple framing, soft even daylight, muted cream, sand and olive tones with one small accent of teal or crimson, quiet and elegant.
 > - **top-left:** A lone olive tree on a hill at dawn with a clear path leading to it, mist in the valley. Certainty.
 > - **top-right:** A stone wudu fountain in a quiet courtyard, clear water running over carved stone, morning light.
 > - **bottom-left:** The mihrab of a simple old masjid, an empty prayer row on red carpet, a shaft of light falling across it.
-> - **bottom-right:** A wooden table with an open ledger, a few coins and a bowl of dates beside a window with a crescent moon at dusk.
-> No text, no faces, thin cream gaps between cells, no borders or labels. No people at all. Do NOT draw a city skyline, mosque domes or a sunset view: draw exactly the four objects or places listed, each different.
+> - **bottom-right:** A wooden table with an open ledger, a few coins and a bowl of dates beside a window with a thin crescent moon in a pale sky.
+> No text, no faces, thin cream gaps between cells, no borders or labels. No people or figures of any size. No sunset, no city skyline, no domes or minarets on a horizon: paint exactly the four things listed, close up, each one different.
 
 ---
 
 **12 · `sheet-12`** · LOOK ADULTS
-> Square 1:1, a 2x2 grid of four separate paintings, LOOK ADULTS: a refined cinematic painterly still, calm natural light, warm amber palette with one accent of teal or crimson, elegant and quiet.
+> Square 1:1, a 2x2 grid of four separate paintings, LOOK ADULTS: a refined painted still life, like a plate in a fine illustrated book, close and simple framing, soft even daylight, muted cream, sand and olive tones with one small accent of teal or crimson, quiet and elegant.
 > - **top-left:** A home's front door at evening with warm light inside, a pair of shoes neatly placed by the step, a potted jasmine.
 > - **top-right:** A folded paper map and a brass compass on a wooden table, morning light. The start of a route.
 > - **bottom-left:** A reed pen, an inkwell and a sheet of handmade paper with abstract ink strokes (not letters), warm light.
 > - **bottom-right:** Old wooden typesetting blocks slotted together in a tray, blank faces, soft side light.
-> No text, no faces, thin cream gaps between cells, no borders or labels. No people at all. Do NOT draw a city skyline, mosque domes or a sunset view: draw exactly the four objects or places listed, each different.
+> No text, no faces, thin cream gaps between cells, no borders or labels. No people or figures of any size. No sunset, no city skyline, no domes or minarets on a horizon: paint exactly the four things listed, close up, each one different.
 
 ---
 
 **13 · `sheet-13`** · LOOK ADULTS
-> Square 1:1, a 2x2 grid of four separate paintings, LOOK ADULTS: a refined cinematic painterly still, calm natural light, warm amber palette with one accent of teal or crimson, elegant and quiet.
+> Square 1:1, a 2x2 grid of four separate paintings, LOOK ADULTS: a refined painted still life, like a plate in a fine illustrated book, close and simple framing, soft even daylight, muted cream, sand and olive tones with one small accent of teal or crimson, quiet and elegant.
 > - **top-left:** A musical score-like pattern of small ink dots and dashes across parchment (no letters), a magnifying glass on top.
 > - **top-right:** A café table with a newspaper folded so no text shows, a cup of coffee and reading glasses, morning light.
-> - **bottom-left:** A busy old street at dusk with shop awnings and blank hanging signs, warm lamps lighting up.
-> - **bottom-right:** An ancient desert valley at dusk with a distant line of dust on the horizon and a tiny low stone Kaaba of bare stacked stones.
-> No text, no faces, thin cream gaps between cells, no borders or labels. No people at all. Do NOT draw a city skyline, mosque domes or a sunset view: draw exactly the four objects or places listed, each different.
+> - **bottom-left:** A close view of one old shopfront with a striped awning, blank hanging signs and a warm lamp, in daylight.
+> - **bottom-right:** An ancient desert valley in soft evening light with a distant line of dust on the horizon and a tiny low stone Kaaba of bare stacked stones.
+> No text, no faces, thin cream gaps between cells, no borders or labels. No people or figures of any size. No sunset, no city skyline, no domes or minarets on a horizon: paint exactly the four things listed, close up, each one different.
 
 ---
 
 **14 · `sheet-14`** · LOOK ADULTS
-> Square 1:1, a 2x2 grid of four separate paintings, LOOK ADULTS: a refined cinematic painterly still, calm natural light, warm amber palette with one accent of teal or crimson, elegant and quiet.
+> Square 1:1, a 2x2 grid of four separate paintings, LOOK ADULTS: a refined painted still life, like a plate in a fine illustrated book, close and simple framing, soft even daylight, muted cream, sand and olive tones with one small accent of teal or crimson, quiet and elegant.
 > - **top-left:** The mountain of Hira at night, a small cave mouth glowing softly near the top, stars overhead. No people.
 > - **top-right:** A narrow rocky desert pass at night under a full moon, a faint trail of footprints leading north. No people.
 > - **bottom-left:** The first masjid of Madinah: palm-trunk pillars and a palm-leaf roof, morning light falling through the gaps. No people.
 > - **bottom-right:** A desert plain at dawn with wells in the foreground and a line of dunes, banners far away. No bodies, no people close up.
-> No text, no faces, thin cream gaps between cells, no borders or labels. No people at all. Do NOT draw a city skyline, mosque domes or a sunset view: draw exactly the four objects or places listed, each different.
+> No text, no faces, thin cream gaps between cells, no borders or labels. No people or figures of any size. No sunset, no city skyline, no domes or minarets on a horizon: paint exactly the four things listed, close up, each one different.
 
 ---
 
 **15 · `sheet-15`** · LOOK ADULTS
-> Square 1:1, a 2x2 grid of four separate paintings, LOOK ADULTS: a refined cinematic painterly still, calm natural light, warm amber palette with one accent of teal or crimson, elegant and quiet.
-> - **top-left:** The plain of Arafah with a gentle hill and thousands of small white tents at sunset, seen from far away.
+> Square 1:1, a 2x2 grid of four separate paintings, LOOK ADULTS: a refined painted still life, like a plate in a fine illustrated book, close and simple framing, soft even daylight, muted cream, sand and olive tones with one small accent of teal or crimson, quiet and elegant.
+> - **top-left:** The plain of Arafah with a gentle hill and thousands of small white tents in soft afternoon light, seen from far away.
 > - **top-right:** A closed mushaf on a carved rehal in the light of a dawn window, prayer beads beside it. No readable writing.
 > - **bottom-left:** Golden rings of light rippling outward from a closed mushaf on a low table, like sound waves, a brass lamp glowing.
-> - **bottom-right:** Two glasses of mint tea on a café table by the Nile at sunset, a felucca sail beyond.
-> No text, no faces, thin cream gaps between cells, no borders or labels. No people at all. Do NOT draw a city skyline, mosque domes or a sunset view: draw exactly the four objects or places listed, each different.
+> - **bottom-right:** Two glasses of mint tea on a café table by the Nile in afternoon light, a white felucca sail beyond.
+> No text, no faces, thin cream gaps between cells, no borders or labels. No people or figures of any size. No sunset, no city skyline, no domes or minarets on a horizon: paint exactly the four things listed, close up, each one different.
 
 ---
 
 **16 · `sheet-16`** · LOOK ADULTS
-> Square 1:1, a 2x2 grid of four separate paintings, LOOK ADULTS: a refined cinematic painterly still, calm natural light, warm amber palette with one accent of teal or crimson, elegant and quiet.
-> - **top-left:** A Cairo crossroads at dusk with a pharmacy sign showing a green leaf (no text), a bakery awning and a lamp post.
+> Square 1:1, a 2x2 grid of four separate paintings, LOOK ADULTS: a refined painted still life, like a plate in a fine illustrated book, close and simple framing, soft even daylight, muted cream, sand and olive tones with one small accent of teal or crimson, quiet and elegant.
+> - **top-left:** A Cairo street corner by day with a pharmacy sign showing a green leaf (no text), a bakery awning and a lamp post.
 > - **top-right:** An airport café table with a passport-shaped blank notebook, a boarding pass with no text and a cup of tea.
 > - **bottom-left:** An hourglass with golden sand running on a desk beside sharpened pencils and blank answer sheets.
 > - **bottom-right:** a simple eight-point khatam star in gold on a plain soft background (spare cell).
-> No text, no faces, thin cream gaps between cells, no borders or labels. No people at all. Do NOT draw a city skyline, mosque domes or a sunset view: draw exactly the four objects or places listed, each different.
+> No text, no faces, thin cream gaps between cells, no borders or labels. No people or figures of any size. No sunset, no city skyline, no domes or minarets on a horizon: paint exactly the four things listed, close up, each one different.
 
 ---
 
 ## Round 2 · paste in a NEW chat (2026-10-27)
 
-Round 1 gave sheets 01-10 (placed). Sheets 11-16 came back as sunset skylines with people, so they are asked
-again, and four cells are redone (two looked like other landmarks, one showed music gear, one had minarets in
-early Madinah). Open a new chat, paste Message 0 above, then this section and sheets 11-16 above, and say
-"Start with sheet-11". Then "next" up to sheet-18.
+Round 1 gave sheets 01-10 (placed). Sheets 11-16 came back twice as sunset skylines with people, so the adult
+look is now a close-up daylight still life, and four cells are redone (two looked like other landmarks, one
+showed music gear, one had minarets in early Madinah).
+
+**How:** open a **Temporary Chat** (memory off, so the old sunset style does not carry over). Paste Message 0
+above, then sheet-11 alone. If it shows the four things asked, write "next" with each following sheet's prompt,
+up to sheet-18.
 
 **17 · `sheet-17`** · LOOK KIDS
 > Square 1:1, a 2x2 grid of four separate paintings, LOOK KIDS: a warm painted storybook vignette, soft 3D-rendered toy-like shapes with gouache texture, rounded friendly forms, cream, sand and terracotta with touches of crimson (#C51F24), teal (#0FA3B8) and gold (#E5A93C), cheerful and gentle.
