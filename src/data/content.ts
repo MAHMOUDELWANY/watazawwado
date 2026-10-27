@@ -13,15 +13,15 @@ export const SERVICES_DATA: ServicePillar[] = [
         name: 'Quran Reading',
         arabicName: 'قراءة القرآن الكريم',
         category: 'quran',
-        tagline: 'From recognizing letters and vowels to fluent recitation directly from the Mushaf.',
-        arabicTagline: 'من معرفة الحروف والحركات إلى التلاوة السلسة مباشرة من المصحف الشريف.',
-        description: 'For adults and children who want to read the Quran independently. We start with letter shapes, vocal points of articulation (Makharij), and short vowels, building slowly and patiently until full verses flow naturally.',
-        whoIsItFor: 'Beginners of any age, adults returning to the Quran, or children starting their first Noorani / Qaida lessons.',
+        tagline: 'From the first letter to reading the Mushaf on your own.',
+        arabicTagline: 'من أول حرف لحد ما تقرا من المصحف بنفسك.',
+        description: 'Two stages. Foundations: every letter, its sound and its vowels, then joining letters into words. Reading the Mushaf: whole verses, read steadily and correctly. We go at your pace, with patience.',
+        whoIsItFor: 'Anyone starting from zero, children from age 6 and adults, and anyone coming back to the Quran after a long break.',
         whatYouWillLearn: [
-          'Arabic alphabet phonetics and precise mouth positioning',
-          'Connecting letters, short vowels, and Sukoon',
-          'Reading full sentences from the Mushaf with correct rhythm',
-          'Building reading stamina without frustration'
+          'Every letter: its shape, its sound and where it comes from',
+          'Short and long vowels, sukoon and shaddah',
+          'Joining letters into words, then words into verses',
+          'Reading from the Mushaf on your own, without stumbling'
         ],
         durations: [30, 45, 60],
         recommendedFrequency: '2 to 3 lessons a week'
@@ -31,10 +31,10 @@ export const SERVICES_DATA: ServicePillar[] = [
         name: 'Tajweed Rules & Application',
         arabicName: 'أحكام التجويد وتطبيقاته',
         category: 'quran',
-        tagline: 'Learn why and how every letter is pronounced according to authentic rules.',
+        tagline: 'Give every letter its right, in your own recitation.',
         arabicTagline: 'إتقان مخارج الحروف وصفاتها وتطبيق أحكام النون والميم والمدود عملياً.',
-        description: 'Tajweed is not just theory—it is hearing and practicing the exact acoustic characteristics of each letter. We study rules like Noon Sakinah, Meem Sakinah, Madd, and stopping rules, applying them immediately in your recitation.',
-        whoIsItFor: 'Students who can already read Arabic text but want to recite with beauty, accuracy, and traditional correctness.',
+        description: 'Three levels, always practised while you recite: where each letter comes from and how it sounds, the rules of noon and meem sakinah, the madd, and where to stop and start.',
+        whoIsItFor: 'Anyone who can already read the Mushaf and wants to recite correctly and beautifully.',
         whatYouWillLearn: [
           'Accurate Makharij (points of articulation) and Sifaat (letter characteristics)',
           'Noon Sakinah, Tanween, and Meem Sakinah rules in practice',
@@ -49,15 +49,15 @@ export const SERVICES_DATA: ServicePillar[] = [
         name: 'Quran Memorization & Revision',
         arabicName: 'الحفظ والمراجعة',
         category: 'quran',
-        tagline: 'A sustainable, steady memorization system built around your daily life.',
-        arabicTagline: 'منهجية حفظ مستدامة وتثبيت متقن يناسب وقتك وجدولك اليومي.',
-        description: 'Memorizing the Quran requires consistency over speed. We design a realistic weekly target—whether it is three verses or a full page—with live recitation to catch mistakes before they set into memory.',
-        whoIsItFor: 'Committed learners and youth striving to memorize Surahs or complete sections of the Quran.',
+        tagline: 'Memorize new surahs, or keep what you have firm.',
+        arabicTagline: 'احفظ سور جديدة، أو ثبّت اللي حفظته.',
+        description: 'One subject, built around your goal: start memorizing, add more, or keep what you already have. A weekly target that fits your life, recited to your teacher so mistakes are caught before they settle.',
+        whoIsItFor: 'Children and adults starting to memorize, and anyone who memorized before and wants to revise and keep it.',
         whatYouWillLearn: [
-          'Pre-memorization reading to guarantee flawless Tajweed before committing to memory',
-          'Systematic daily revision schedules that prevent forgetting older Surahs',
-          'Understanding key word meanings to anchor memorization naturally',
-          'Techniques to overcome difficult verse transitions (Mutashabihat)'
+          'Reading a passage correctly before you memorize it',
+          'A revision plan that keeps older surahs strong',
+          'The meaning of key words, so the verses stay with you',
+          'Telling similar verses apart (mutashabihat)'
         ],
         durations: [30, 45, 60],
         recommendedFrequency: '2 to 4 lessons a week'
@@ -132,13 +132,13 @@ export const SERVICES_DATA: ServicePillar[] = [
         category: 'islamic_studies',
         tagline: 'Walking through the life, character, and decisions of the Prophet Muhammad ﷺ.',
         arabicTagline: 'رحلة ملهمة في حياة النبي ﷺ ومواقفه وأخلاقه للقدوة والاهتداء.',
-        description: 'More than dates and events—a journey into the character, mercy, leadership, and emotional warmth of the Prophet ﷺ. We examine how he responded to hardship, family life, community building, and companionship.',
-        whoIsItFor: 'Anyone wishing to develop a personal love and connection with the Prophet ﷺ through his living example.',
+        description: 'Part of the Zad Path, our own curriculum: the life of the Prophet ﷺ in order, one episode at a time, and what each moment teaches us today. Three versions by age: Kids 6–11, Teens 12–17, Adults 18+.',
+        whoIsItFor: 'Every age. The version follows the learner’s age, so there is no level to choose.',
         whatYouWillLearn: [
-          'Chronological narrative from pre-Islamic Arabia to the farewell pilgrimage',
-          'The Prophet’s character in times of trial, victory, and grief',
-          'Practical lessons in leadership, family manners, and patience',
-          'Connecting historical incidents to our lives today'
+          'His life in order, one story at a time',
+          'His character in hardship, at home and with people',
+          'One small lesson to live from every episode',
+          'Love for him ﷺ that grows from knowing him'
         ],
         durations: [30, 45, 60],
         recommendedFrequency: '1 lesson a week'
@@ -151,7 +151,7 @@ export const SERVICES_DATA: ServicePillar[] = [
         tagline: 'The first things every Muslim needs, for learners starting from zero.',
         arabicTagline: 'ما لا يسع المسلم جهله، لمن يبدأ من الصفر.',
         description: 'Belief, purity, prayer and manners in animated lessons. Every topic gives the reason first, then the evidence from the Quran and Sunnah, then one small step to live it.',
-        whoIsItFor: 'Children who know nothing yet (Kids version, 6–11), and teens and adults who want a sound start (12+).',
+        whoIsItFor: 'Learners starting from zero, in three versions by age: Kids 6–11, Teens 12–17, Adults 18+.',
         whatYouWillLearn: [
           'Who Allah is, and why we worship Him alone',
           'Wudu and prayer step by step, with the evidence',
@@ -193,17 +193,17 @@ export const SERVICES_DATA: ServicePillar[] = [
         name: 'Fusha Arabic',
         arabicName: 'العربية الفصحى',
         category: 'arabic',
-        tagline: 'The universal written language of books, media, and scholarship across the Arab world.',
-        arabicTagline: 'إتقان لغة الكتب والتراث والقواعد الهيكلية بيسر وسلاسة.',
-        description: 'Learn to read, write, and comprehend standard Arabic grammar (Nahw) and morphology (Sarf) using interactive texts, structured dialogues, and real-world reading material.',
-        whoIsItFor: 'University students, Quran students wanting deep grammatical insight, and professionals.',
+        tagline: 'The Arabic of the Quran and of books, spoken from the first level.',
+        arabicTagline: 'عربية القرآن والكتب، وبتتكلمها من أول مستوى.',
+        description: 'Four levels: Foundations, Beginner, Intermediate and Advanced. From the letters to reading real texts, with grammar explained simply and conversation in every level. A kids version and a 12+ version.',
+        whoIsItFor: 'Non-Arabic speakers starting from zero, and anyone who wants to understand the Quran, read Arabic books or speak Fusha.',
         whatYouWillLearn: [
-          'Essential grammar structures explained simply in English without confusion',
-          'Sentence construction, verb conjugations, and root patterns',
-          'Reading comprehension of classical and modern passages',
-          'Writing coherent sentences with accurate voweling'
+          'Reading and writing the letters, if you are new to Arabic',
+          'Everyday conversation in clear Fusha, from the first level',
+          'Grammar and sentence building, explained simply',
+          'Understanding what you read and what you recite'
         ],
-        durations: [45, 60],
+        durations: [30, 45, 60],
         recommendedFrequency: '2 lessons a week'
       },
       {
@@ -229,15 +229,15 @@ export const SERVICES_DATA: ServicePillar[] = [
         name: 'Egyptian Spoken Arabic (Aammiyya)',
         arabicName: 'اللهجة المصرية الحية',
         category: 'arabic',
-        tagline: 'The most widely understood dialect in the Arab world through cinema, music, and daily life.',
-        arabicTagline: 'تحدث اللهجة الأكثر انتشاراً وفهماً في العالم العربي بثقة وعفوية.',
-        description: 'Learn the warm, humorous, and expressive dialect of Egypt. Ideal for travel, speaking with Egyptian friends and family, or understanding Arab media effortlessly.',
-        whoIsItFor: 'Spouses of Egyptians, travelers, diaspora youth, or students wanting a lively practical dialect.',
+        tagline: 'The Arabic people speak every day in Egypt.',
+        arabicTagline: 'العربي اللي الناس بتتكلمه كل يوم في مصر.',
+        description: 'We start with the sounds, then go level by level. Every word is written both in Franco (Arabic in Latin letters) and in Arabic script, so you can start before you read Arabic. One design for all ages.',
+        whoIsItFor: 'Families with Egyptian relatives, travellers to Egypt, children of Egyptian parents abroad, and anyone who wants everyday spoken Arabic.',
         whatYouWillLearn: [
-          'Unique Egyptian vocabulary, expressions, and cultural nuances',
-          'Everyday conversational patterns for greetings, bargaining, and hospitality',
-          'Key grammatical shifts between Fusha and Egyptian dialect',
-          'Pronunciation secrets that make you sound natural immediately'
+          'The sounds of Egyptian Arabic, first',
+          'Everyday talk: greetings, family, shopping and travel',
+          'Franco and Arabic script side by side',
+          'How Egyptian Arabic differs from Fusha'
         ],
         durations: [30, 45, 60],
         recommendedFrequency: '1 to 2 lessons a week'
@@ -274,15 +274,15 @@ export const SERVICES_DATA: ServicePillar[] = [
         name: '1-on-1 English Language Coaching',
         arabicName: 'تدريب اللغة الإنجليزية الفردي',
         category: 'english',
-        tagline: 'Build conversational fluency, clean grammar, and confident professional English.',
-        arabicTagline: 'تطوير الطلاقة والمحادثة وتجاوز أخطاء الترجمة للناطقين بالعربية.',
-        description: 'Our teachers teach English at C1 level. They know the sounds and grammar that trip up Arabic speakers, and correct them precisely and patiently.',
-        whoIsItFor: 'Arabic speakers seeking fluent spoken English, immigrants to English-speaking countries, or learners preparing for study abroad.',
+        tagline: 'English you speak, read and write with confidence.',
+        arabicTagline: 'إنجليزي تتكلمه وتقراه وتكتبه بثقة.',
+        description: 'Two tracks. Kids: phonics first, then reading. Ages 12 and up: levels A1 to C1 on the CEFR scale. Your teacher knows the sounds and grammar that trip up Arabic speakers, and corrects them patiently.',
+        whoIsItFor: 'Children learning to read English, and teens and adults who want to speak, read and write it better.',
         whatYouWillLearn: [
-          'Targeted pronunciation and accent clarity training',
-          'Practical conversational fluency for social and professional settings',
-          'Grammar repair tailored specifically to common Arabic-to-English translation errors',
-          'Reading comprehension and natural email / text writing'
+          'Phonics and reading, for kids',
+          'Speaking in real situations: school, work and home',
+          'Grammar that fixes the usual mistakes of Arabic speakers',
+          'Reading, and writing clear messages and emails'
         ],
         durations: [30, 45, 60],
         recommendedFrequency: '2 lessons a week'
@@ -364,15 +364,15 @@ export const FAQS: FAQItem[] = [
   {
     question: 'Is every lesson one-on-one?',
     arabicQuestion: 'هل كل حصة فردية؟',
-    answer: 'Yes. Every lesson is you and your teacher, nobody else. You keep the same teacher, and we never move you to another teacher or into a group without asking you first.',
-    arabicAnswer: 'أيوه. كل حصة إنت ومعلمك وبس. بتفضل مع نفس المعلم، ومش هننقلك لمعلم تاني أو لمجموعة من غير ما نسألك الأول.',
+    answer: 'Yes. Every lesson is you and your teacher, nobody else; there are no group lessons. You normally keep the same teacher, and you can ask us to change teacher at any time.',
+    arabicAnswer: 'أيوه. كل حصة إنت ومعلمك وبس، ومفيش حصص جماعية. وعادةً بتفضل مع نفس المعلم، وتقدر تطلب مننا تغيير المعلم في أي وقت.',
     category: 'general'
   },
   {
     question: 'How does the free trial work?',
     arabicQuestion: 'الحصة التجريبية المجانية بتكون إزاي؟',
-    answer: 'It is a free 30-minute lesson on Zoom (up to 45 if needed). Your teacher gets to know your goal, finds your level with simple exercises and teaches a short real lesson. Then you get a suggested plan. No card, no pressure.',
-    arabicAnswer: 'حصة مجانية على Zoom مدتها ٣٠ دقيقة (وممكن توصل ٤٥ لو احتجنا). معلمك بيتعرف على هدفك، ويعرف مستواك بتمارين بسيطة، ويشرحلك درس صغير حقيقي، وبعدها يقترح عليك خطة. من غير بطاقة ومن غير أي ضغط.',
+    answer: 'It is a free 30-minute lesson on Zoom (up to 45 if needed), one per new student. Your teacher gets to know your goal, finds your level with simple exercises and teaches a short real lesson, then suggests a plan. No card, no pressure. You can move it once, up to 1 hour before; if it is missed or cancelled, you can book again after 48 hours.',
+    arabicAnswer: 'حصة مجانية على Zoom مدتها ٣٠ دقيقة (وممكن توصل ٤٥ لو احتجنا)، واحدة لكل طالب جديد. معلمك بيتعرف على هدفك، ويعرف مستواك بتمارين بسيطة، ويشرحلك درس صغير حقيقي، وبعدها يقترح عليك خطة. من غير بطاقة ومن غير أي ضغط. تقدر تغيّر ميعادها مرة واحدة لحد ساعة قبلها، ولو فاتت أو اتلغت تقدر تحجز تاني بعد ٤٨ ساعة.',
     category: 'trial'
   },
   {
@@ -434,8 +434,8 @@ export const FAQS: FAQItem[] = [
   {
     question: 'How do time zones work?',
     arabicQuestion: 'المواعيد بتوقيت مين؟',
-    answer: 'Every time on the site is shown in your own time zone, automatically. No maths needed.',
-    arabicAnswer: 'كل المواعيد على الموقع بتظهر بتوقيت بلدك تلقائياً. مش محتاج تحسب فرق الساعات.',
+    answer: 'Every time on the site is shown in your own time zone, automatically. No maths needed. Lessons are booked from tomorrow onwards, never for the same day.',
+    arabicAnswer: 'كل المواعيد على الموقع بتظهر بتوقيت بلدك تلقائياً، مش محتاج تحسب فرق الساعات. والحجز بيكون من بكرة ورايح، مش في نفس اليوم.',
     category: 'general'
   },
   {
@@ -443,6 +443,20 @@ export const FAQS: FAQItem[] = [
     arabicQuestion: 'محتاج حساب عشان أحجز؟',
     answer: 'Yes, every booking needs a free account, the free trial too. It takes a minute, and it is where you see your lessons, Zoom links and packages, and talk to your teacher.',
     arabicAnswer: 'أيوه، كل حجز محتاج حساب مجاني، حتى الحصة التجريبية. بياخد دقيقة، ومنه تتابع حصصك وروابط Zoom وباقاتك، وتكلّم معلمك.',
+    category: 'booking'
+  },
+  {
+    question: 'From what age can my child start?',
+    arabicQuestion: 'ابني يقدر يبدأ من سن كام؟',
+    answer: 'From 6. A parent opens a family account and adds each child aged 6 to 17. Learners aged 18 and over open their own account.',
+    arabicAnswer: 'من ٦ سنين. ولي الأمر بيفتح حساب عيلة ويضيف كل طفل من ٦ لـ١٧ سنة، واللي عنده ١٨ سنة أو أكتر بيفتح حسابه بنفسه.',
+    category: 'general'
+  },
+  {
+    question: 'Can I get my money back?',
+    arabicQuestion: 'أقدر أسترد فلوسي؟',
+    answer: 'You can withdraw within 14 days of buying a lesson or a package, and we refund what was not delivered. A paid lesson cancelled in time becomes a lesson credit, or you can ask for a refund on WhatsApp. If we or the teacher cancel, you choose a new time, a credit or a refund. The full rules are in our terms.',
+    arabicAnswer: 'تقدر تنسحب خلال ١٤ يوم من شراء الحصة أو الباقة، وبنرجّعلك تمن اللي ماخدتوش. والحصة المدفوعة اللي بتلغيها في الوقت بترجعلك رصيد حصة، أو تطلب استرداد على واتساب. ولو إحنا أو المعلم لغينا، إنت تختار ميعاد جديد أو رصيد أو استرداد. والتفاصيل كلها في الشروط.',
     category: 'booking'
   }
 ];

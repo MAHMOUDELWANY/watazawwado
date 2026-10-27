@@ -1667,6 +1667,61 @@ html.dark {
 }
 .door-card:focus-visible .door-enter { background-color: var(--teal); border-color: var(--teal); color: #fff; }
 
+/* Homepage "What we teach" (2026-10-27): three mihrab shelves. A deep crown holds a turning khatam drawn in gold,
+   the paper body below lists the family's subjects and its hourly price. */
+.teach-band { background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--surface-warm) 55%, transparent) 30%, transparent); }
+.teach-arch {
+  position: relative; display: flex; flex-direction: column; height: 100%; overflow: hidden; color: var(--foreground);
+  border-radius: 999px 999px var(--r-4) var(--r-4) / 11rem 11rem var(--r-4) var(--r-4);
+  background: var(--surface); border: 1px solid var(--border-subtle);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), var(--shadow-2);
+  transition: transform var(--dur-move) var(--ease-out-soft), box-shadow var(--dur-move) var(--ease-out-soft), border-color var(--dur-ui) ease;
+}
+.teach-slot { container-type: inline-size; height: 100%; }
+/* A true semicircle on top: the radius is half the card's width (container units), the crown a little taller. */
+@supports (width: 1cqw) {
+  .teach-arch { border-radius: 50% 50% var(--r-4) var(--r-4) / 50cqw 50cqw var(--r-4) var(--r-4); }
+  .teach-crown { height: max(10.5rem, 54cqw); padding-top: 8cqw; }
+}
+.teach-arch:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+.teach-crown {
+  position: relative; display: grid; place-items: center; height: 10.5rem;
+  background:
+    radial-gradient(60% 70% at 50% 60%, rgba(246, 213, 142, 0.30), transparent 70%),
+    linear-gradient(180deg, var(--door-a) 0%, var(--door-b) 100%);
+  box-shadow: inset 0 -1px 0 rgba(229, 169, 60, 0.55);
+}
+.teach-crown.khatam-window::before { opacity: 0.4; }
+.teach-star { position: relative; width: 5.25rem; height: 5.25rem; stroke: #F3CF86; stroke-width: 1.4; filter: drop-shadow(0 0 12px rgba(229, 169, 60, 0.45)); animation: auth-turn 48s linear infinite; }
+.teach-body { display: flex; flex-direction: column; flex: 1; padding: 1.5rem 1.6rem 1.4rem; text-align: center; }
+.teach-price {
+  align-self: center; margin-top: 0.6rem; padding: 0.25rem 0.8rem; border-radius: var(--r-pill);
+  font-size: 0.85rem; font-weight: 700; color: #7A4E09; background: rgba(229, 169, 60, 0.16); border: 1px solid rgba(229, 169, 60, 0.4);
+}
+.dark .teach-price { color: #F6D58E; background: rgba(229, 169, 60, 0.12); }
+.teach-list { margin: 1.1rem 0 1.25rem; display: grid; gap: 0.55rem; font-weight: 600; }
+.teach-list li { display: flex; align-items: center; justify-content: center; gap: 0.55rem; }
+.teach-list li::before { content: ''; width: 7px; height: 7px; transform: rotate(45deg); border-radius: 1.5px; background: var(--door-a); box-shadow: 0 0 0 3px color-mix(in srgb, var(--door-a) 18%, transparent); }
+.dark .teach-list li::before { background: #E5A93C; box-shadow: 0 0 0 3px rgba(229, 169, 60, 0.18); }
+.teach-more { margin-top: auto; align-self: center; display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.88rem; font-weight: 700; color: var(--teal); }
+@media (hover: hover) {
+  .teach-arch:hover { transform: translateY(-6px); box-shadow: inset 0 1px 0 var(--glass-highlight), var(--shadow-3); border-color: rgba(229, 169, 60, 0.5); }
+}
+@media (prefers-reduced-motion: reduce) { .teach-star { animation: none; } .teach-arch { transition: none; } }
+
+/* Homepage "For parents": one quiet strip that restates /safety. */
+.peace-strip {
+  display: grid; gap: 1rem; align-items: center; padding: 1.25rem 1.5rem; border-radius: var(--r-4);
+  background: var(--teal-light); border: 1px solid color-mix(in srgb, var(--teal) 25%, transparent);
+}
+@media (min-width: 1024px) { .peace-strip { grid-template-columns: auto 1fr auto; gap: 2rem; padding: 1.25rem 2rem; } }
+.peace-list { display: grid; gap: 0.6rem; font-size: 0.92rem; color: var(--foreground); }
+@media (min-width: 768px) { .peace-list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; } }
+.peace-list li { display: flex; align-items: flex-start; gap: 0.6rem; line-height: 1.5; }
+.peace-icon { display: grid; place-items: center; width: 1.9rem; height: 1.9rem; flex-shrink: 0; border-radius: 999px; background: var(--surface); color: var(--teal); box-shadow: var(--shadow-1); }
+.peace-link { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 44px; font-weight: 700; font-size: 0.9rem; color: var(--teal); white-space: nowrap; }
+.peace-link:hover { text-decoration: underline; text-underline-offset: 4px; }
+
 /* Hero subject word: rotates for motion users; reduced motion shows the static full sentence instead. */
 .rotator-static {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;

@@ -104,7 +104,7 @@ export function AboutPage() {
             </h2>
             <p className="mt-4 text-base sm:text-lg text-muted-foreground leading-relaxed">
               {isEn
-                ? 'Our name comes from a verse: “take provision, and the best provision is God-consciousness.” We want every lesson to be provision that stays with you and your family, long after the screen closes.'
+                ? 'Our name comes from a verse: “And take provisions, but indeed, the best provision is fear of Allah” (Al-Baqarah 2:197, Saheeh International). We want every lesson to be provision that stays with you and your family, long after the screen closes.'
                 : 'اسمنا من آية: ﴿وتزودوا فإن خير الزاد التقوى﴾. وعايزين كل حصة تبقى زاد يفضل معاك ومع أهل بيتك، بعد ما الشاشة تتقفل بكتير.'}
             </p>
             <p className="mt-4 text-base text-foreground/85 leading-relaxed">

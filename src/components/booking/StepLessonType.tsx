@@ -74,8 +74,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
       length: 30,
       label: '30 Minutes',
       arabicLabel: '٣٠ دقيقة',
-      note: 'Optimal for young children, focused Noorani Qaidah, or daily Tajweed drill.',
-      arabicNote: 'مثالية للأطفال الصغار، القاعدة النورانية، أو التدريب اليومي السريع.'
+      note: 'Best for young children, first letters, or a short Tajweed drill.',
+      arabicNote: 'مناسبة للأطفال الصغار، وأول الحروف، أو تدريب تجويد قصير.'
     },
     {
       length: 45,

@@ -4,8 +4,8 @@ export const BOOKING_SERVICES: ServiceOption[] = [
   // --- QURAN PILLAR ---
   {
     id: 'quran-reading',
-    name: 'Quran Reading (Noorani Qaidah & Fluency)',
-    arabicName: 'القراءة القرآنية والقاعدة النورانية',
+    name: 'Quran Reading',
+    arabicName: 'قراءة القرآن الكريم',
     group: 'quran',
     tagline: 'Step-by-step reading mastery from Arabic letters to fluent recitation.',
     arabicTagline: 'من الحروف الأساسية إلى القراءة التامة السلسة للمصحف.',
@@ -14,13 +14,13 @@ export const BOOKING_SERVICES: ServiceOption[] = [
     suggestedGoals: [
       'Learn Arabic letters and vowels from scratch',
       'Improve reading fluency and eliminate hesitation',
-      'Transition from Nourani Qaidah to the Mushaf',
+      'Move from the letters to reading the Mushaf',
       'Learn correct Quranic pausing and stopping signs'
     ],
     arabicSuggestedGoals: [
       'تعلم الحروف والحركات من البداية',
       'تحسين طلاقة القراءة والتخلص من التردد',
-      'الانتقال من القاعدة النورانية إلى المصحف الشريف',
+      'الانتقال من الحروف للقراءة من المصحف',
       'إتقان علامات الوقف والابتداء'
     ],
     defaultDurations: [30, 45, 60],

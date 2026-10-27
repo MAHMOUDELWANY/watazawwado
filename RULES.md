@@ -118,7 +118,7 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 - **[Decided 2026-10-15] Email senders:** booking/schedule emails come from support@watazawwado.academy (Vercel `NOTIFICATION_FROM_EMAIL`); sign-up and password emails come from noreply@watazawwado.academy through Supabase Auth's own SMTP settings. Super admin alerts go to `NOTIFICATION_ADMIN_EMAIL` (falls back to `NOTIFICATION_TEACHER_EMAIL`).
 - **[Decided 2026-10-15] About page wording:** no degree claims and few Azhar mentions; describe the teaching as balanced and moderate, without extremism, with an Azhari foundation in Aqeedah, following Ahl al-Sunnah wal-Jama'ah.
 - **[Decided 2026-10-15] Team mailboxes:** support@ (bookings, lessons, complaints, withdrawals), finance@ (payments, refunds), hr@ (teachers), info@ (general, welcome), privacy@ (personal data). Emails are sent from the mailbox that matches them.
-- **[Decided 2026-10-15, changed 2026-10-16] Welcome recitation:** plays on the first homepage visit when the browser allows; otherwise a one-time animated hint asks to tap the sound button. It is replayed only from the button under the verse on the homepage (not from the menu).
+- **[Decided 2026-10-15, changed 2026-10-16 and 2026-10-27] Welcome recitation:** plays on the first homepage visit when the browser allows, otherwise on the visitor's first tap. No "turn the sound on" hint (owner, 2026-10-27); while it plays, a mute button sits in the site header. It is replayed only from the button under the verse on the homepage (not from the menu).
 - **[Decided 2026-10-14] Official contact number:** WhatsApp +48 508 157 886 (Poland). No other number may appear anywhere in the project.
 
 ## 6b. Voice, writing and mission
