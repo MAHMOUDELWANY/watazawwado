@@ -29,10 +29,12 @@ interface Props {
   lang: 'ar' | 'en';
   /** Link for a lesson the learner can review; omit to show the map without links (teacher view). */
   lessonHref?: (lesson: MapLesson) => string | null;
+  /** false: only the strengths and notes, under a road map that already shows the lessons (student portal). */
+  puzzle?: boolean;
 }
 
 /** The puzzle: one piece per planned lesson, filled by the pages the teacher reported (PLAN §4.1). */
-export function StudentMap({ subject, lang, lessonHref }: Props) {
+export function StudentMap({ subject, lang, lessonHref, puzzle = true }: Props) {
   const ar = lang === 'ar';
   const L = (en: string, arText: string) => (ar ? arText : en);
   const started = subject.lessons.filter((l) => l.coveredPages.length > 0);
@@ -40,8 +42,10 @@ export function StudentMap({ subject, lang, lessonHref }: Props) {
   const reinforce = [...new Set(started.flatMap((l) => l.toReinforce))].filter((o) => !strengths.includes(o));
   const done = subject.lessons.filter((l) => l.complete).length;
 
+  if (!puzzle && started.length === 0) return null;
   return (
     <section className="glass-2 rounded-[var(--r-3,20px)] p-5 space-y-5">
+      {puzzle && <>
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h2 className="font-display text-xl font-bold text-foreground">{ar ? subject.titleAr : subject.title}</h2>
         <p className="text-sm text-muted-foreground">
@@ -80,6 +84,7 @@ export function StudentMap({ subject, lang, lessonHref }: Props) {
           );
         })}
       </ol>
+      </>}
 
       {started.length === 0 ? (
         <p className="text-sm text-muted-foreground">

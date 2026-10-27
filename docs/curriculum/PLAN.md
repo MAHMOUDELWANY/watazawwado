@@ -776,3 +776,7 @@ B3–B5 → continue lesson by lesson.
 - 2026-10-27 — All 58 landmarks placed (made as 2x2 grid sheets, `LANDMARK-SHEETS.md`, cut by script). The adult look
   became a close-up daylight still life after ChatGPT kept returning sunset skylines; pasting one sheet at a time in a
   temporary chat worked. Checked on the road map (Seerah Kids light, Zad Adults dark, desktop) and live on production.
+- **2026-10-27 · Road map in the student portal.** "My curriculum" now shows each learner's subjects as the same road map
+  as the teacher dashboard (every subject and version, with its landmarks). Stations light up by the pages the teacher
+  reported (Done / %), the latest one is marked, the rest say "Still ahead", and covered approved lessons link to review.
+  Strengths and teacher notes stay under the map; the puzzle grid remains only in the teacher's report panel.

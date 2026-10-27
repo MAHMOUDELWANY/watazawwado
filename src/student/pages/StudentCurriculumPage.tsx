@@ -5,10 +5,11 @@ import { authedJson } from '../../lib/authedJson';
 import { BrandSpinner } from '../../components/ui/BrandLoader';
 import { Button } from '../../components/ui/Button';
 import { ErrorState } from '../../components/ErrorState';
-import { StudentMap, type MapSubject } from '../../curriculum/StudentMap';
+import { StudentMap, type MapLesson, type MapSubject } from '../../curriculum/StudentMap';
 import { LessonPlayer } from '../../curriculum/LessonPlayer';
 import { SUBJECTS, findLesson, samples } from '../../curriculum/catalog';
 import { Door, DOORS } from '../../curriculum/Door';
+import { Roadmap } from '../../curriculum/Roadmap';
 
 interface CurriculumData {
   booked: boolean;
@@ -132,7 +133,7 @@ export default function StudentCurriculumPage({ lang }: { lang: 'ar' | 'en' }) {
       <header>
         <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground">{L('My curriculum', 'منهجي')}</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          {L('Every class adds new pieces. Tap a piece to review what you learned.', 'كل حصة بتضيف قطع جديدة. دوس على القطعة علشان تراجع اللي اتعلمته.')}
+          {L('Every class takes you further along the road. Tap a lesson you covered to review it.', 'كل حصة بتقدّمك خطوة على الطريق. دوس على درس خدته علشان تراجعه.')}
         </p>
       </header>
       {data.learners.map((learner) => (
@@ -143,14 +144,19 @@ export default function StudentCurriculumPage({ lang }: { lang: 'ar' | 'en' }) {
               {L('Your teacher will add the first pieces after your next class.', 'المعلم هيضيف أول القطع بعد الحصة الجاية.')}
             </p>
           ) : (
-            learner.map.map((subject) => (
-              <StudentMap
-                key={subject.id}
-                subject={subject}
-                lang={lang}
-                lessonHref={(l) => (l.available && l.coveredPages.length > 0 ? `/student/curriculum/${learner.id}/${subject.id}/${l.number}` : null)}
-              />
-            ))
+            learner.map.map((subject) => {
+              const href = (l: MapLesson) => (l.available && l.coveredPages.length > 0 ? `/student/curriculum/${learner.id}/${subject.id}/${l.number}` : null);
+              const t = SUBJECTS.find((s) => s.id === subject.id);
+              if (!t) return <StudentMap key={subject.id} subject={subject} lang={lang} lessonHref={href} />;
+              const progress = Object.fromEntries(subject.lessons.map((l) => [l.number, { share: l.totalPages ? l.coveredPages.length / l.totalPages : 0, href: href(l) }]));
+              return (
+                <section key={subject.id} className="space-y-3" aria-label={ar ? subject.titleAr : subject.title}>
+                  <h2 className="font-display text-xl font-bold text-foreground">{ar ? subject.titleAr : subject.title}</h2>
+                  <Roadmap track={t.id} plan={t.plan} parts={t.parts} lessons={t.lessons} group={t.group} version={t.version} audience={t.audience} ar={ar} L={L} progress={progress} />
+                  <StudentMap subject={subject} lang={lang} lessonHref={href} puzzle={false} />
+                </section>
+              );
+            })
           )}
         </div>
       ))}

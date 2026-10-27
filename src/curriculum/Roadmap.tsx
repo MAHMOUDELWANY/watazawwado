@@ -94,11 +94,14 @@ type Props = {
   version: string;
   audience: string;
   ar: boolean;
-  hrefFor: (n: number) => string;
+  /** Teacher view: every ready lesson links here. */
+  hrefFor?: (n: number) => string;
+  /** Student view: the learner's own progress (share of pages covered, review link or null). Lights only what they did. */
+  progress?: Record<number, { share: number; href: string | null }>;
   L: (en: string, ar: string) => string;
 };
 
-export function Roadmap({ track, plan, parts, lessons, group, version, audience, ar, hrefFor, L }: Props) {
+export function Roadmap({ track, plan, parts, lessons, group, version, audience, ar, hrefFor, progress, L }: Props) {
   const reduce = useReducedMotion();
   const wide = useWide();
   const uid = useId().replace(/:/g, '');
@@ -106,7 +109,10 @@ export function Roadmap({ track, plan, parts, lessons, group, version, audience,
   const age = ageOf(version, audience);
   const look = LOOK[age];
   const Icon = theme.icon;
-  const readyNumbers = Object.keys(lessons).map(Number).filter((n) => n <= plan.length);
+  const lit = (n: number) => (progress ? (progress[n]?.share ?? 0) > 0 : Boolean(lessons[n]));
+  const hrefOf = (n: number) => (progress ? progress[n]?.href ?? null : lessons[n] && hrefFor ? hrefFor(n) : null);
+  const doneEn = progress ? 'done' : 'ready', doneAr = progress ? 'خلص' : 'جاهز';
+  const readyNumbers = plan.map((_, i) => i + 1).filter(lit);
   const latest = readyNumbers.length ? Math.max(...readyNumbers) : 0;
   const pct = Math.round((readyNumbers.length / Math.max(1, plan.length)) * 100);
   const enter = (d = 0, y = 16) => (reduce ? {} : {
@@ -119,7 +125,7 @@ export function Roadmap({ track, plan, parts, lessons, group, version, audience,
   /* ---------- pieces ---------- */
 
   const Station = ({ n }: { n: number }) => {
-    const lesson = lessons[n];
+    const lesson = lit(n);
     const size = look.node;
     return (
       <span className="relative z-10 grid shrink-0 place-items-center" style={{ width: size, height: size }}>
@@ -141,7 +147,8 @@ export function Roadmap({ track, plan, parts, lessons, group, version, audience,
   };
 
   const Card = ({ n }: { n: number }) => {
-    const lesson = lessons[n];
+    const lesson = lit(n);
+    const share = progress?.[n]?.share ?? 0;
     return (
       <span className={`relative flex min-w-0 items-center gap-3 overflow-hidden bg-surface ring-1 ring-border shadow-[0_18px_40px_-28px_rgba(40,20,10,0.55)] ${age === 'kids' ? 'rounded-[24px] px-4 py-3.5' : 'rounded-2xl px-4 py-3'}`}>
         {lesson && <span aria-hidden="true" className="absolute inset-y-0 start-0 w-1" style={{ background: `linear-gradient(180deg, ${RIBBON.join(', ')})` }} />}
@@ -149,15 +156,19 @@ export function Roadmap({ track, plan, parts, lessons, group, version, audience,
           <span className={`block text-[10.5px] font-bold uppercase tracking-[0.16em] ${lesson ? '' : 'text-muted-foreground'}`} style={lesson ? { color: theme.soft } : undefined}>{L(`Lesson ${n}`, `الدرس ${n}`)}</span>
           <span dir="ltr" className={`mt-0.5 block text-start font-display font-bold leading-snug text-foreground line-clamp-2 ${age === 'kids' ? 'text-[17px]' : 'text-[15.5px]'}`}>{plan[n - 1]}</span>
           <span className="mt-1.5 flex flex-wrap items-center gap-1.5">
-            {lesson ? (
-              <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${lesson.reviewed ? 'bg-teal/15 text-teal' : 'bg-gold/20 text-[#9A6A12] dark:text-[#F6D58E]'}`}>{lesson.reviewed ? L('Ready', 'جاهز') : L('Draft', 'مسودة')}</span>
+            {lesson && progress ? (
+              <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${share >= 1 ? 'bg-teal/15 text-teal' : 'bg-gold/20 text-[#9A6A12] dark:text-[#F6D58E]'}`}>{share >= 1 ? L('Done', 'خلص') : `${Math.round(share * 100)}%`}</span>
+            ) : lesson ? (
+              <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${lessons[n].reviewed ? 'bg-teal/15 text-teal' : 'bg-gold/20 text-[#9A6A12] dark:text-[#F6D58E]'}`}>{lessons[n].reviewed ? L('Ready', 'جاهز') : L('Draft', 'مسودة')}</span>
+            ) : progress ? (
+              <span className="text-[11px] font-semibold text-muted-foreground">{L('Still ahead', 'لسه قدامك')}</span>
             ) : (
               <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-muted-foreground"><Lock className="h-3 w-3" aria-hidden="true" />{L('Coming soon', 'قريباً')}</span>
             )}
             {n === latest && <span className="rounded-full px-2 py-0.5 text-[11px] font-bold text-white" style={{ background: theme.accent }}>{L('Latest', 'آخر درس')}</span>}
           </span>
         </span>
-        {lesson && (
+        {hrefOf(n) && (
           <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-white transition-transform duration-200 group-hover:scale-110" style={{ background: theme.accent }}>
             <Play className="h-4 w-4 translate-x-[1px] fill-current" aria-hidden="true" />
           </span>
@@ -168,9 +179,10 @@ export function Roadmap({ track, plan, parts, lessons, group, version, audience,
 
   const Wrap = ({ n, children, className, style }: { n: number; children: React.ReactNode; className?: string; style?: React.CSSProperties }) => {
     const label = `${L('Lesson', 'الدرس')} ${n}: ${plan[n - 1]}`;
-    return lessons[n]
-      ? <Link to={hrefFor(n)} aria-label={label} className={`group rounded-3xl outline-none transition-transform duration-200 hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-primary ${className ?? ''}`} style={style}>{children}</Link>
-      : <div aria-label={`${label} · ${L('Coming soon', 'قريباً')}`} className={className} style={style}>{children}</div>;
+    const href = hrefOf(n);
+    return href
+      ? <Link to={href} aria-label={label} className={`group rounded-3xl outline-none transition-transform duration-200 hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-primary ${className ?? ''}`} style={style}>{children}</Link>
+      : <div aria-label={lit(n) || progress ? label : `${label} · ${L('Coming soon', 'قريباً')}`} className={className} style={style}>{children}</div>;
   };
 
   /** The mihrab gate of a stage: arch top, khatam window pattern, title and a small progress bar. */
@@ -179,7 +191,7 @@ export function Roadmap({ track, plan, parts, lessons, group, version, audience,
       style={{ background: `radial-gradient(18rem 10rem at 50% 0%, ${theme.soft}55, transparent 70%), linear-gradient(170deg, ${theme.accent}, ${pi % 2 ? '#3B2219' : '#05363F'})` }}>
       <span className="relative block text-[11px] font-bold uppercase tracking-[0.2em] text-white/75">{L(`Stage ${pi + 1}`, `المرحلة ${pi + 1}`)}</span>
       <span id={`stage-${uid}-${pi}`} className="relative mt-1 block font-display text-lg font-bold leading-tight sm:text-xl">{title}</span>
-      <span className="relative mt-2 block text-xs font-semibold text-white/75">{L(`Lessons ${from}–${last}`, `الدروس ${from}–${last}`)} · {L(`${ready} of ${total} ready`, `${ready} من ${total} جاهز`)}</span>
+      <span className="relative mt-2 block text-xs font-semibold text-white/75">{L(`Lessons ${from}–${last}`, `الدروس ${from}–${last}`)} · {L(`${ready} of ${total} ${doneEn}`, `${ready} من ${total} ${doneAr}`)}</span>
       <span className="relative mx-auto mt-2 block h-1.5 w-40 overflow-hidden rounded-full bg-white/20">
         <motion.span className="block h-full rounded-full" style={{ background: `linear-gradient(90deg, ${RIBBON.join(', ')})`, width: reduce ? `${(ready / total) * 100}%` : undefined }}
           initial={reduce ? false : { width: 0 }} whileInView={{ width: `${(ready / total) * 100}%` }} viewport={{ once: true }} transition={{ duration: 1.1, ease: EASE, delay: 0.2 }} />
@@ -202,8 +214,8 @@ export function Roadmap({ track, plan, parts, lessons, group, version, audience,
         <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl text-white" style={{ background: `linear-gradient(150deg, ${theme.soft}, ${theme.accent})` }}><Icon className="h-6 w-6" aria-hidden="true" /></span>
         <div className="min-w-[220px] flex-1">
           <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground">{L('The road', 'خريطة الطريق')}</p>
-          <p className="font-display text-xl font-bold text-foreground">{L(`${parts.length} stages · ${plan.length} lessons · ${readyNumbers.length} ready`, `${parts.length} مراحل · ${plan.length} درس · ${readyNumbers.length} جاهز`)}</p>
-          <div className="mt-2 h-2 w-full max-w-md overflow-hidden rounded-full bg-border/60" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-label={L('Lessons ready', 'الدروس الجاهزة')}>
+          <p className="font-display text-xl font-bold text-foreground">{L(`${parts.length} stages · ${plan.length} lessons · ${readyNumbers.length} ${doneEn}`, `${parts.length} مراحل · ${plan.length} درس · ${readyNumbers.length} ${doneAr}`)}</p>
+          <div className="mt-2 h-2 w-full max-w-md overflow-hidden rounded-full bg-border/60" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-label={progress ? L('Lessons done', 'الدروس اللي خلصت') : L('Lessons ready', 'الدروس الجاهزة')}>
             <motion.div className="h-full rounded-full" style={{ background: `linear-gradient(90deg, ${RIBBON.join(', ')})` }}
               initial={reduce ? false : { width: 0 }} animate={{ width: `${Math.max(2, pct)}%` }} transition={{ duration: 1.2, ease: EASE }} />
           </div>
@@ -224,13 +236,13 @@ export function Roadmap({ track, plan, parts, lessons, group, version, audience,
         {parts.map((part, pi) => {
           const last = (parts[pi + 1]?.from ?? plan.length + 1) - 1;
           const numbers = Array.from({ length: last - part.from + 1 }, (_, k) => part.from + k);
-          const ready = numbers.filter((n) => lessons[n]).length;
+          const ready = numbers.filter(lit).length;
           const { row, wave } = look;
           const h = (numbers.length + 1) * row;
           const pts = [{ x: 50, y: 0 }, ...numbers.map((_, k) => ({ x: wave[k % wave.length], y: (k + 1) * row - row / 2 + 24 })), { x: 50, y: h }];
           const d = pts.map((p, k) => (k === 0 ? `M ${p.x} ${p.y}` : `C ${pts[k - 1].x} ${pts[k - 1].y + row / 2}, ${p.x} ${p.y - row / 2}, ${p.x} ${p.y}`)).join(' ');
           // How far along this stage's road the ready lessons reach (0..1), by station count.
-          const lastReadyHere = numbers.reduce((m, n, k) => (lessons[n] ? k + 1 : m), 0);
+          const lastReadyHere = numbers.reduce((m, n, k) => (lit(n) ? k + 1 : m), 0);
           const travelled = latest > numbers[numbers.length - 1] ? 1 : lastReadyHere / (numbers.length + 1);
           return (
             <li key={part.from} aria-labelledby={`stage-${uid}-${pi}`} className="scroll-mt-24">
