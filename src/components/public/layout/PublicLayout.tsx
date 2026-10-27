@@ -10,7 +10,6 @@ import { LearningGuide } from '../../LearningGuide';
 import { useTheme } from '../../ThemeProvider';
 import { OnboardingGuide, OnboardingStep } from '../../ui/OnboardingGuide';
 import { useAppLanguage, applyUrlLanguage, localizedPath, stripEnPrefix } from '../../../lib/language';
-import { WelcomeStopButton } from '../WelcomeRecitation';
 import { BackToTop } from './BackToTop';
 import { ReferralWelcome } from './ReferralWelcome';
 import { InstallAppNudge } from '../../pwa/InstallApp';
@@ -203,9 +202,6 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
         <LearningGuide lang={lang} />
         <BackToTop isAr={lang === 'ar'} />
         <InstallAppNudge isAr={lang === 'ar'} />
-
-        {/* Stop button while the welcome recitation plays (started from the homepage or the menu) */}
-        <WelcomeStopButton isAr={lang === 'ar'} />
 
         {/* Interactive Site Tour Guide */}
         <OnboardingGuide

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 
 /**
- * Install-as-an-app support (no service worker: nothing is cached, the site just opens in its own window).
+ * Install-as-an-app support. public/sw.js caches nothing (it only gives Chromium browsers the fetch handler their
+ * one-tap install still asks for, plus an offline notice); the site just opens in its own window.
  *
  * Chrome and Edge fire `beforeinstallprompt` once, early, often before React mounts. `capturePwaInstall()` runs in
  * main.tsx so the event is kept for whichever button asks for it later (site menu, portal home, teacher dashboard).
@@ -9,7 +10,7 @@ import { useEffect, useState } from 'react';
 
 type DeferredPrompt = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }> };
 
-export type InstallPlatform = 'ios-safari' | 'ios-other' | 'android' | 'samsung' | 'mac-safari' | 'desktop' | 'firefox' | 'unknown';
+export type InstallPlatform = 'ios-safari' | 'ios-other' | 'android' | 'samsung' | 'mac-safari' | 'desktop' | 'firefox-android' | 'firefox' | 'unknown';
 
 let deferred: DeferredPrompt | null = null;
 let installedNow = false;
@@ -22,6 +23,9 @@ export const DISMISS_FOR_MS = 14 * 24 * 60 * 60 * 1000;
 
 export function capturePwaInstall(): void {
   if (typeof window === 'undefined') return;
+  if ((import.meta as any).env?.PROD && 'serviceWorker' in navigator) {
+    window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }, { once: true });
+  }
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferred = e as DeferredPrompt;
@@ -49,7 +53,7 @@ export function detectPlatform(ua: string): InstallPlatform {
   if (/iPhone|iPad|iPod/i.test(ua) || (/Macintosh/i.test(ua) && /Mobile/i.test(ua))) {
     return /CriOS|FxiOS|EdgiOS/i.test(ua) ? 'ios-other' : 'ios-safari';
   }
-  if (/Firefox\//i.test(ua) && !/Seamonkey/i.test(ua)) return 'firefox';
+  if (/Firefox\//i.test(ua) && !/Seamonkey/i.test(ua)) return /Android/i.test(ua) ? 'firefox-android' : 'firefox';
   if (/SamsungBrowser/i.test(ua)) return 'samsung';
   if (/Android/i.test(ua)) return 'android';
   if (/Macintosh/i.test(ua) && /Safari\//i.test(ua) && !/Chrome|Chromium|Edg\//i.test(ua)) return 'mac-safari';
@@ -122,8 +126,18 @@ export function usePwaInstall(): PwaInstallState {
 export function canOfferInstall(s: Pick<PwaInstallState, 'installed' | 'canPrompt' | 'platform'>): boolean {
   if (s.installed) return false;
   if (s.canPrompt) return true;
-  // Firefox desktop and iOS browsers other than Safari cannot install a site: say nothing there.
-  return s.platform === 'ios-safari' || s.platform === 'android' || s.platform === 'samsung' || s.platform === 'mac-safari' || s.platform === 'desktop';
+  // Firefox on a computer cannot install a site at all: say nothing there.
+  return s.platform !== 'firefox' && s.platform !== 'unknown';
+}
+
+/**
+ * What every "Get the app" button does: the browser's own install dialog straight away where it offers one
+ * (Chrome, Edge, Samsung Internet, Opera on Android, Windows, Mac, Linux, ChromeOS); elsewhere (iPhone and iPad,
+ * Safari on Mac, Firefox on Android) browsers do not let a site install itself, so the sheet shows the one gesture.
+ */
+export async function getTheApp(): Promise<void> {
+  if (deferred) { await promptInstall(); return; }
+  openInstallSheet();
 }
 
 // One install sheet for the whole app, so a menu that closes itself does not take the sheet with it.

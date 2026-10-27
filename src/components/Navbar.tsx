@@ -1,4 +1,5 @@
 import { InstallAppEntry } from './pwa/InstallApp';
+import { WelcomeMuteButton } from './public/WelcomeRecitation';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
 import FocusTrap from './FocusTrap';
@@ -129,6 +130,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* ─── RIGHT CONTROLS: Clean, Spacious, and Accessible on Both Desktop & Mobile ─── */}
           <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+            <WelcomeMuteButton isAr={!isEn} />
             {/* Theme Toggle: Compact icon button on mobile, sliding switch on desktop */}
             <div className="flex items-center">
               <div className="sm:hidden">

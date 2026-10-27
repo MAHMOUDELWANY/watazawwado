@@ -4,7 +4,7 @@ import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { Download, X, Share, PlusSquare, MoreVertical, Menu, Zap, Bell, MonitorSmartphone, Check, ArrowRight } from 'lucide-react';
 import FocusTrap from '../FocusTrap';
 import {
-  usePwaInstall, promptInstall, dismissInstallSuggestion, canOfferInstall, openInstallSheet, closeInstallSheet, useInstallSheetOpen, type InstallPlatform,
+  usePwaInstall, promptInstall, dismissInstallSuggestion, canOfferInstall, getTheApp, closeInstallSheet, useInstallSheetOpen, type InstallPlatform,
 } from '../../lib/pwaInstall';
 
 type Lang = { isAr: boolean };
@@ -34,6 +34,16 @@ function Key({ children }: { children: React.ReactNode }) {
 function steps(platform: InstallPlatform, isAr: boolean): React.ReactNode[] {
   const t = (en: React.ReactNode, ar: React.ReactNode) => (isAr ? ar : en);
   switch (platform) {
+    case 'ios-other':
+      return [
+        t(<>Tap <Key><Share className="w-3.5 h-3.5" /> Share</Key> next to the address bar.</>, <>اضغط زرار <Key><Share className="w-3.5 h-3.5" /> المشاركة</Key> جنب شريط العنوان.</>),
+        t(<>Choose <Key><PlusSquare className="w-3.5 h-3.5" /> Add to Home Screen</Key>, then <Key>Add</Key>.</>, <>اختار <Key><PlusSquare className="w-3.5 h-3.5" /> إضافة إلى الشاشة الرئيسية</Key> وبعدها <Key>إضافة</Key>.</>),
+      ];
+    case 'firefox-android':
+      return [
+        t(<>Open Firefox’s menu <Key><MoreVertical className="w-3.5 h-3.5" /></Key>.</>, <>افتح قائمة Firefox <Key><MoreVertical className="w-3.5 h-3.5" /></Key>.</>),
+        t(<>Choose <Key>Install</Key> (or <Key>Add to Home screen</Key>).</>, <>اختار <Key>تثبيت</Key> (أو <Key>إضافة إلى الشاشة الرئيسية</Key>).</>),
+      ];
     case 'ios-safari':
       return [
         t(<>Tap <Key><Share className="w-3.5 h-3.5" /> Share</Key> in Safari’s toolbar.</>, <>اضغط زرار <Key><Share className="w-3.5 h-3.5" /> المشاركة</Key> في شريط Safari.</>),
@@ -145,7 +155,7 @@ export function InstallAppSheet({ open, onClose, isAr }: Lang & { open: boolean;
                       </button>
                     ) : (
                       <>
-                        <p className="text-xs font-bold text-muted-foreground mb-3">{isAr ? 'إزاي تثبّته' : 'How to install it'}</p>
+                        <p className="text-xs font-bold text-muted-foreground mb-3 leading-relaxed">{isAr ? 'متصفحك مش بيفتح التثبيت بلمسة واحدة هنا، فهي خطوة صغيرة منك:' : 'Your browser does not offer one-tap install here, so it takes one small step:'}</p>
                         <ol className="space-y-3">
                           {steps(s.platform, isAr).map((step, i) => (
                             <li key={i} className="flex items-start gap-3 text-sm leading-relaxed">
@@ -178,7 +188,7 @@ export function InstallAppEntry({ isAr, variant = 'row', className = '', onOpen 
   if (!canOfferInstall(s)) return null;
   if (variant === 'card' && s.dismissed) return null;
 
-  const openSheet = () => { onOpen?.(); openInstallSheet(); };
+  const openSheet = () => { onOpen?.(); void getTheApp(); };
 
   if (variant === 'row') {
     return (
@@ -227,8 +237,9 @@ export function InstallAppEntry({ isAr, variant = 'row', className = '', onOpen 
 const VISITS_KEY = 'wz.install.visits';
 
 /**
- * Public site: a small bar at the bottom, only after the visitor has spent a little time (second visit, or 25 s
- * on this one), never inside the app, and gone for two weeks once closed.
+ * Public site: a small card stacked just above the learning-guide button (same edge, so the corner buttons stay
+ * clear), only after the visitor has spent a little time (second visit, or 25 s on this one), never inside the
+ * app, and gone for two weeks once closed.
  */
 export function InstallAppNudge({ isAr }: Lang) {
   const s = usePwaInstall();
@@ -265,7 +276,7 @@ export function InstallAppNudge({ isAr }: Lang) {
             exit={reduce ? { opacity: 0 } : { opacity: 0, y: 24 }}
             transition={{ type: 'spring', damping: 28, stiffness: 300 }}
             dir={isAr ? 'rtl' : 'ltr'}
-            className="fixed z-[45] inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] mx-auto max-w-md"
+            className="fixed z-[45] end-3 sm:end-6 bottom-[calc(5.75rem+env(safe-area-inset-bottom))] w-[min(22rem,calc(100vw-1.5rem))]"
             role="region"
             aria-label={isAr ? 'تثبيت التطبيق' : 'Install the app'}
           >
@@ -275,7 +286,7 @@ export function InstallAppNudge({ isAr }: Lang) {
                 <p className="text-sm font-bold leading-tight">{isAr ? 'وتزودوا على شاشتك' : 'Watazawwado on your phone'}</p>
                 <p className="text-xs text-muted-foreground truncate">{isAr ? 'ثبّته كتطبيق، ببلاش ومن غير متجر' : 'Install it as an app, free, no store'}</p>
               </div>
-              <button type="button" onClick={openInstallSheet} className="shrink-0 h-10 px-4 rounded-full bg-[var(--teal)] text-white text-sm font-bold cursor-pointer focus-ring">
+              <button type="button" onClick={() => void getTheApp()} className="shrink-0 h-10 px-4 rounded-full bg-[var(--teal)] text-white text-sm font-bold cursor-pointer focus-ring">
                 {isAr ? 'ثبّت' : 'Install'}
               </button>
               <button type="button" onClick={dismissInstallSuggestion} aria-label={isAr ? 'مش دلوقتي' : 'Not now'} className="tap-44 relative shrink-0 w-8 h-8 grid place-items-center rounded-full text-muted-foreground hover:bg-surface-subtle cursor-pointer">

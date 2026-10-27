@@ -106,6 +106,15 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
     }
   }, [isOpen, initialView]);
 
+  // The page behind stays still while the dialog is open, so a swipe on a phone scrolls the sheet and not the page.
+  useEffect(() => {
+    if (!isOpen || typeof document === 'undefined') return;
+    const html = document.documentElement;
+    const prev = html.style.overflow;
+    html.style.overflow = 'hidden';
+    return () => { html.style.overflow = prev; };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const isAr = lang === 'ar';
@@ -212,7 +221,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
   const isSignup = view === 'signup';
   const showTabs = view === 'login' || isSignup;
   const isWide = view !== 'verify';
-  const width = view === 'verify' ? 'sm:max-w-lg' : 'sm:max-w-[30rem] lg:max-w-[58rem]';
+  const width = view === 'verify' ? 'sm:max-w-lg' : 'sm:max-w-[30rem] lg:max-w-[68rem]';
 
   const googleButton = (
     <button
@@ -256,7 +265,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 32 }}
             transition={{ type: 'spring', damping: 30, stiffness: 320 }}
-            className={`auth-sheet relative w-full ${width} max-h-[94dvh] overflow-y-auto overscroll-contain`}
+            className={`auth-sheet relative w-full ${width} ${isWide ? 'is-wide' : ''}`}
           >
             {view === 'verify' ? (
               <div className="relative p-6 sm:p-8">
@@ -294,42 +303,53 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                 />
               </div>
             ) : (
-              <div className={isWide ? 'lg:grid lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1fr)]' : ''}>
-                {/* Brand pane (desktop): the verse, three promises, quiet pattern. */}
-                <aside className="auth-brand-pane hidden lg:flex" aria-hidden="true">
-                  <div className="relative flex items-center gap-3">
-                    <span className="grid place-items-center w-11 h-11 rounded-2xl bg-[#FAF7F2] ring-1 ring-[#E5A93C]/60">
-                      <img src="/logo-256.png" alt="" className="w-8 h-auto" />
+              <div className={isWide ? 'auth-split' : ''}>
+                {/* Brand pane (desktop): a mihrab drawn in gold line, the khatam turning in its crown, the verse inside. */}
+                <aside className="auth-art hidden lg:flex" aria-hidden="true">
+                  <svg className="auth-art-frame" viewBox="0 0 400 600" preserveAspectRatio="xMidYMid meet" fill="none">
+                    <path pathLength={1} className="auth-art-line" d="M34 600V262C34 158 112 92 200 30c88 62 166 128 166 232v338" />
+                    <path pathLength={1} className="auth-art-line is-inner" d="M56 600V268C56 176 124 116 200 62c76 54 144 114 144 206v332" />
+                    <g className="auth-art-khatam" transform="translate(200 182)">
+                      <rect pathLength={1} className="auth-art-line is-star" x="-34" y="-34" width="68" height="68" />
+                      <rect pathLength={1} className="auth-art-line is-star" x="-34" y="-34" width="68" height="68" transform="rotate(45)" />
+                      <circle pathLength={1} className="auth-art-line is-star" r="20" />
+                    </g>
+                    <path className="auth-art-ribbon" d="M80 548c40-14 80-14 120 0s80 14 120 0" pathLength={1} />
+                  </svg>
+
+                  <div className="auth-art-mark">
+                    <span className="grid place-items-center w-10 h-10 rounded-[14px] bg-[#FAF7F2] ring-1 ring-[#E5A93C]/60">
+                      <img src="/logo-256.png" alt="" className="w-7 h-auto" />
                     </span>
                     <span className="leading-tight">
-                      <span className="block font-editorial text-lg font-bold text-[#FAF7F2]">{isAr ? 'وتزودوا' : 'Watazawwado'}</span>
-                      <span className="block text-xs text-white/65">{isAr ? 'أكاديمية حصص فردية أونلاين' : 'One-to-one online academy'}</span>
+                      <span className="block font-editorial text-base font-bold text-[#FAF7F2]">{isAr ? 'وتزودوا' : 'Watazawwado'}</span>
+                      <span className="block text-[11px] tracking-wide text-[#E9DCC6]/70">{isAr ? 'أكاديمية حصص فردية أونلاين' : 'One-to-one online academy'}</span>
                     </span>
                   </div>
 
-                  <div className="relative">
-                    <p className="text-[2rem] leading-[1.9] text-[#F6D58E]" dir="rtl" lang="ar" style={{ fontFamily: "'Amiri Quran', var(--font-serif)" }}>{VERSE_TEXT}</p>
-                    <p className="mt-3 font-editorial text-2xl leading-snug text-[#FAF7F2]">
+                  <div className="auth-art-body">
+                    <p className="auth-art-verse" dir="rtl" lang="ar">{VERSE_TEXT}</p>
+                    <p className="auth-art-line-text font-editorial">
                       {isAr ? <>زادٌ يبقى،<br />لك ولأهل بيتك.</> : <>Provision that lasts,<br />for you and your family.</>}
                     </p>
                   </div>
 
-                  <ul className="relative space-y-3.5 text-[0.95rem] text-white/90">
+                  <p className="auth-art-promises">
                     {(isAr
-                      ? ['حصص فردية مع معلم بيعرفك باسمك', 'حصة تجريبية مجانية قبل أي دفع', 'حساب عائلة واحد لكل أولادك']
-                      : ['One-to-one lessons with a teacher who knows you', 'A free trial before any payment', 'One family account for all your children']
-                    ).map((line) => (
-                      <li key={line} className="flex items-center gap-3">
-                        <span className="grid place-items-center w-6 h-6 shrink-0 rounded-full bg-[#E5A93C]/20 text-[#F6D58E] ring-1 ring-[#E5A93C]/40"><Check className="w-3.5 h-3.5" /></span>
+                      ? ['معلم واحد يعرفك باسمك', 'حصة تجريبية مجانية', 'حساب واحد لكل العيلة']
+                      : ['One teacher who knows you', 'A free trial first', 'One account for the family']
+                    ).map((line, i) => (
+                      <React.Fragment key={line}>
+                        {i > 0 && <span className="auth-art-dot" />}
                         <span>{line}</span>
-                      </li>
+                      </React.Fragment>
                     ))}
-                  </ul>
+                  </p>
                 </aside>
 
-                <div className="relative">
+                <div className="auth-form-col">
                   {/* Top bar: the mark on phones and tablets, day/night and close everywhere. */}
-                  <div className="flex items-center justify-between gap-2 px-5 sm:px-7 pt-3 sm:pt-5">
+                  <div className="auth-topbar flex items-center justify-between gap-2 px-5 sm:px-7 pt-3 sm:pt-5">
                     <span className="sm:hidden absolute top-2 left-1/2 -translate-x-1/2 h-1.5 w-10 rounded-full bg-border" aria-hidden="true" />
                     <span className="lg:invisible grid place-items-center w-11 h-11 mt-2 sm:mt-0 rounded-2xl bg-[#FAF7F2] ring-1 ring-[#E5A93C]/50 shadow-[var(--shadow-1)]" aria-hidden="true">
                       <img src="/logo-256.png" alt="" className="w-8 h-auto" />
@@ -347,7 +367,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                     </div>
                   </div>
 
-                  <div className="px-5 sm:px-7 pt-3 lg:pt-1">
+                  <div className="auth-head px-5 sm:px-7 pt-3">
                     <h2 id="auth-modal-title" className="font-editorial text-[1.7rem] sm:text-[1.9rem] font-bold text-foreground leading-tight">{titles[view][0]}</h2>
                     <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">{titles[view][1]}</p>
                   </div>
@@ -371,7 +391,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                       </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="space-y-4" noValidate={false}>
+                    <form onSubmit={handleSubmit} className="auth-form space-y-4" noValidate={false}>
                       {isSignup && (
                         <fieldset className="space-y-2.5">
                           <legend className="text-sm font-semibold text-foreground mb-2">{isAr ? 'الحساب ده لمين؟' : 'Who is this account for?'}</legend>
@@ -458,7 +478,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                       )}
 
                       {isSignup && (
-                        <div>
+                        <div className="auth-half">
                           <label htmlFor="auth-name" className="block text-sm font-semibold text-foreground mb-1.5">
                             {accountType === 'family' ? (isAr ? 'اسم ولي الأمر' : 'Parent or guardian name') : (isAr ? 'اسمك' : 'Your name')}
                           </label>
@@ -479,7 +499,7 @@ export function StudentAuthModal({ isOpen, onClose, lang = 'en', initialView = '
                       )}
 
                       {view !== 'update-password' && (
-                        <div>
+                        <div className={isSignup ? 'auth-half' : undefined}>
                           <label htmlFor="auth-email" className="block text-sm font-semibold text-foreground mb-1.5">
                             {isAr ? 'الإيميل' : 'Email'}
                           </label>
