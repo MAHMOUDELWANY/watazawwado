@@ -21,7 +21,7 @@ function Still({ file, folder }: { file: string; folder: string }) {
   const reduce = useReduce();
   return (
     <motion.div className="pointer-events-none absolute inset-0 overflow-hidden" initial={{ opacity: 0 }} animate={{ opacity: ok ? 1 : 0 }} transition={{ duration: 1.2 }}>
-      <motion.img src={asset(`${folder}/${file}.webp`)} alt="" draggable={false} onLoad={() => setOk(true)} onError={() => setOk(false)}
+      <motion.img ref={(el) => { if (el?.complete && el.naturalWidth > 0) setOk(true); }} src={asset(`${folder}/${file}.webp`)} alt="" draggable={false} onLoad={() => setOk(true)} onError={() => setOk(false)}
         className="absolute inset-0 h-full w-full object-cover" initial={{ scale: 1.04 }} animate={reduce ? { scale: 1.04 } : { scale: 1.12 }} transition={{ duration: 24, ease: 'linear' }} />
       <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(12,8,6,0.94) 0%, rgba(12,8,6,0.78) 34%, rgba(12,8,6,0.18) 62%, rgba(12,8,6,0.35) 100%)' }} />
       <div className="absolute inset-0" style={{ background: 'linear-gradient(0deg, rgba(12,8,6,0.85) 0%, transparent 32%)' }} />

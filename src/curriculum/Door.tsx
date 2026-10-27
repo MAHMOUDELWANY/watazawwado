@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'motion/react';
 import { ChevronRight, Lock } from 'lucide-react';
@@ -14,12 +14,13 @@ export function Door({ to, onOpen, art, title, tagline, facts, enter, soon, inde
   to?: string; onOpen?: () => void; art?: string; title: string; tagline: string; facts: string[]; enter: string; soon?: string; index: number;
 }) {
   const reduce = useReducedMotion();
+  const [broken, setBroken] = useState(false);
   const [a, b] = DOOR_COLORS[index % DOOR_COLORS.length];
   const body = (
     <>
       <span className="door-portal khatam-window" style={{ ['--door-a' as string]: a, ['--door-b' as string]: b } as React.CSSProperties}>
-        {art ? (
-          <img src={art} alt="" loading="lazy" draggable={false} className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
+        {art && !broken ? (
+          <img src={art} alt="" loading="lazy" draggable={false} onError={() => setBroken(true)} className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
         ) : (
           <span className="door-glow" aria-hidden="true" />
         )}

@@ -14,17 +14,24 @@ import { asset } from '../Art';
 
 const CAST = 'zad-kids/characters';
 
-/** The painted picture in a paper frame; a warm sand card until the picture arrives. */
+/** The painted picture fills the stage, like the Teens & Adults stills (owner, 2026-10-27: no window); a paper wash on
+ *  the text side and along the chapter bar keeps the text readable. Hidden until it loads, or if it is missing. */
 function Picture({ src }: { src: string }) {
   const [ok, setOk] = useState(false);
   const reduce = useReduce();
   return (
-    <motion.div className="pointer-events-none absolute overflow-hidden" style={{ left: 850, top: 200, width: 540, height: 360, borderRadius: 28, border: '10px solid #FFFDF8', boxShadow: '0 30px 60px -28px rgba(60,20,10,0.45)', background: 'linear-gradient(160deg, #F7E3BC 0%, #EBC88E 100%)', rotate: -1.2 }}
-      initial={{ opacity: 0, y: 30, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.8, ease }}>
-      <motion.img src={asset(`${src}.webp`)} alt="" draggable={false} onLoad={() => setOk(true)} onError={() => setOk(false)}
-        className="absolute inset-0 h-full w-full object-cover" initial={{ scale: 1.02 }} animate={{ opacity: ok ? 1 : 0, scale: reduce ? 1.02 : 1.07 }} transition={{ opacity: { duration: 0.8 }, scale: { duration: 18, ease: 'linear' } }} />
+    <motion.div className="pointer-events-none absolute inset-0 overflow-hidden" initial={{ opacity: 0 }} animate={{ opacity: ok ? 1 : 0 }} transition={{ duration: 1 }}>
+      <motion.img ref={(el) => { if (el?.complete && el.naturalWidth > 0) setOk(true); }} src={asset(`${src}.webp`)} alt="" draggable={false} onLoad={() => setOk(true)} onError={() => setOk(false)}
+        className="absolute inset-0 h-full w-full object-cover" initial={{ scale: 1.03 }} animate={reduce ? { scale: 1.03 } : { scale: 1.1 }} transition={{ duration: 22, ease: 'linear' }} />
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(251,244,230,0.97) 0%, rgba(251,244,230,0.9) 36%, rgba(251,244,230,0.2) 60%, rgba(251,244,230,0) 100%)' }} />
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(0deg, rgba(251,244,230,0.92) 0%, rgba(251,244,230,0) 24%)' }} />
     </motion.div>
   );
+}
+
+/** A soft paper panel behind a small diagram drawn over the picture. */
+function Panel({ x, y, w, h }: { x: number; y: number; w: number; h: number }) {
+  return <div className="pointer-events-none absolute rounded-[22px]" style={{ left: x, top: y, width: w, height: h, background: 'rgba(255,253,248,0.86)', boxShadow: '0 18px 40px -24px rgba(60,20,10,0.45)' }} />;
 }
 
 type Opts = {
@@ -55,6 +62,8 @@ function Race({ lines }: { lines: number }) {
   const reduce = useReduce();
   const lead = lines >= 1;
   return (
+    <>
+    <Panel x={790} y={620} w={590} h={80} />
     <svg className="pointer-events-none absolute inset-0" viewBox="0 0 1600 900" width="100%" height="100%">
       <line x1={820} y1={660} x2={1300} y2={660} stroke={soft('light')} strokeWidth={3} strokeDasharray="4 12" />
       <text x={1310} y={667} fill={INK_TEXT} fontSize={18} fontWeight={700}>home ›</text>
@@ -63,26 +72,32 @@ function Race({ lines }: { lines: number }) {
       ))}
       <motion.circle cx={0} cy={660} r={17} fill={GOLD} initial={{ x: 830 }} animate={{ x: lead ? 1240 : 830 }} transition={{ duration: reduce ? 0 : 2, delay: 0.4, ease }} style={{ filter: `drop-shadow(0 0 10px ${GOLD})` }} />
     </svg>
+    </>
   );
 }
 
-/** A dotted road from Makkah (south) to a town in the north, drawn under the picture. */
+/** A dotted road from Makkah (south) to a town in the north, drawn over the picture. */
 function Route({ to = 'Yathrib' }: { to?: string }) {
   return (
+    <>
+    <Panel x={790} y={600} w={540} h={170} />
     <svg className="pointer-events-none absolute inset-0" viewBox="0 0 1600 900" width="100%" height="100%">
       <motion.path d="M 860 700 C 980 640, 1120 720, 1260 650" fill="none" stroke={TEAL} strokeWidth={5} strokeLinecap="round" strokeDasharray="2 14" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2, delay: 0.6, ease }} />
       <text x={840} y={740} fill={INK_TEXT} fontSize={20} fontWeight={800} textAnchor="middle">Makkah</text>
       <motion.text x={1270} y={630} fill={TEAL} fontSize={20} fontWeight={800} textAnchor="middle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.4 }}>{to}</motion.text>
     </svg>
+    </>
   );
 }
 
-/** Three little lamps under the picture; `out` of them have gone out (left to right), with a curl of smoke. */
-function Lamps({ out }: { out: number }) {
+/** Three little lamps over the picture; `out` of them have gone out (left to right), with a curl of smoke. */
+function Lamps({ out, x0 = 960, y = 700 }: { out: number; x0?: number; y?: number }) {
   return (
+    <>
+    <Panel x={x0 - 70} y={y - 70} w={440} h={120} />
     <svg className="pointer-events-none absolute inset-0" viewBox="0 0 1600 900" width="100%" height="100%">
       {[0, 1, 2].map((i) => {
-        const x = 960 + i * 150, y = 700, off = i < out;
+        const x = x0 + i * 150, off = i < out;
         return (
           <g key={i}>
             <path d={`M ${x - 40} ${y} Q ${x} ${y + 34} ${x + 40} ${y} Z`} fill="#B8743C" />
@@ -92,6 +107,7 @@ function Lamps({ out }: { out: number }) {
         );
       })}
     </svg>
+    </>
   );
 }
 
@@ -139,7 +155,7 @@ export const Sk2NextGraphic = make({ pic: `${K2}/road`, poses: ['yusuf-think'] }
 
 /* ---------- Episode 3 ---------- */
 const K3 = 'seerah-kids/ep03';
-export const Sk3CoverGraphic = make({ pic: `${K3}/cover`, poses: ['yusuf-listen'], extra: () => <Lamps out={0} /> });
+export const Sk3CoverGraphic = make({ pic: `${K3}/cover`, poses: ['yusuf-listen'], extra: () => <Lamps out={0} x0={1060} y={330} /> });
 export const Sk3JourneyGraphic = make({ pic: `${K3}/journey`, poses: ['yusuf-listen'], extra: ({ lines }) => lines >= 2 && <Route /> });
 export const Sk3PalmsGraphic = make({ pic: `${K3}/palms`, poses: ['maryam-happy', 'maryam-happy', 'maryam-amazed'] });
 export const Sk3TentGraphic = make({ pic: `${K3}/tent`, poses: ['yusuf-listen', 'yusuf-sad', 'maryam-dua'], extra: ({ lines }) => lines >= 2 && <Lamps out={1} /> });
@@ -168,3 +184,16 @@ export const Sk4MercyGraphic = make({ pic: `${K4}/mercy`, poses: ['maryam-dua'] 
 export const Sk4BackGraphic = make({ pic: `${K4}/back`, poses: ['jiddo-advice', 'yusuf-listen'] });
 export const Sk4MissionGraphic = mission('yusuf-brave', 'maryam-happy', 'Honest when nobody is looking!');
 export const Sk4NextGraphic = make({ pic: `${K4}/pact`, poses: ['yusuf-think'] });
+
+/* ---------- Episode 1 (owner, 2026-10-27: paintings instead of the drawn scenes) ---------- */
+const K1 = 'seerah-kids/ep01';
+export const Sk1PicCoverGraphic = make({ pic: `${K1}/cover`, poses: ['yusuf-surprised'] });
+export const Sk1PicMakkahGraphic = make({ pic: `${K1}/makkah`, poses: ['maryam-happy'] });
+export const Sk1PicAbrahaGraphic = make({ pic: `${K1}/church`, poses: ['yusuf-think', 'yusuf-think', 'yusuf-surprised', 'yusuf-sad'] });
+export const Sk1PicMarchGraphic = make({ pic: `${K1}/march`, poses: ['yusuf-surprised'] });
+export const Sk1PicHillsGraphic = make({ pic: `${K1}/hills`, poses: ['maryam-think', 'maryam-think', 'yusuf-sad'] });
+export const Sk1PicKneelGraphic = make({ pic: `${K1}/kneel`, poses: ['yusuf-listen', 'maryam-amazed', 'yusuf-surprised'] });
+export const Sk1PicBirdsGraphic = make({ pic: `${K1}/birds`, poses: ['maryam-amazed'] });
+export const Sk1PicFilGraphic = make({ pic: `${K1}/stones`, poses: ['maryam-dua'] });
+export const Sk1PicBabyGraphic = make({ pic: `${K1}/cradle`, poses: ['jiddo-advice', 'jiddo-advice', 'maryam-happy'] });
+export const Sk1PicNextGraphic = make({ pic: `${K1}/nurse`, poses: ['yusuf-think'] });

@@ -119,7 +119,7 @@ export function CurriculumTrackPage() {
     <div className="space-y-8">
       <Crumbs items={[{ label: L('Curriculum', 'المنهج'), to: base }, { label: ar ? g.titleAr : g.title, to: `${base}/${g.id}` }, { label: ar ? t.versionAr : t.version }]} />
       <header className="band-deep relative overflow-hidden rounded-[var(--r-3,20px)] p-6 sm:p-8">
-        <img src={t.art} alt="" className="pointer-events-none absolute inset-y-0 end-0 h-full w-2/3 object-cover opacity-50 [mask-image:linear-gradient(to_left,#000_35%,transparent)] rtl:[mask-image:linear-gradient(to_right,#000_35%,transparent)]" />
+        <img src={t.art} alt="" onError={(e) => { e.currentTarget.style.display = 'none'; }} className="pointer-events-none absolute inset-y-0 end-0 h-full w-2/3 object-cover opacity-50 [mask-image:linear-gradient(to_left,#000_35%,transparent)] rtl:[mask-image:linear-gradient(to_right,#000_35%,transparent)]" />
         <div className="relative max-w-xl space-y-2">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#F6D58E]">{ar ? g.titleAr : g.title} · {L(`Ages ${t.audience}`, `من ${t.audience} سنة`)}</p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold">{ar ? t.titleAr : t.title}</h1>

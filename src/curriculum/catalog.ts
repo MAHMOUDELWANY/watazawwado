@@ -68,7 +68,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Kids',
     versionAr: 'الأطفال',
     audience: '6–11',
-    art: '/curriculum/zad-kids/l01/cover.webp',
+    art: '/curriculum/banners/zad-kids.webp',
     parts: [
       { title: 'Who Am I, and Who Made Me?', titleAr: 'مين أنا، ومين خلقني؟', from: 1 },
       { title: 'Clean Inside and Out', titleAr: 'نضيف من جوه ومن بره', from: 11 },
@@ -96,7 +96,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Teens',
     versionAr: 'الشباب',
     audience: '12–17',
-    art: '/curriculum/zad-teens/l01/doors.webp',
+    art: '/curriculum/banners/zad-teens.webp',
     parts: [
       { title: 'Do I Believe It, or Was I Just Told?', titleAr: 'مؤمن عن اقتناع، ولا عشان اتقالي؟', from: 1 },
       { title: 'Clean, and Growing Up', titleAr: 'الطهارة والبلوغ', from: 12 },
@@ -128,7 +128,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Adults',
     versionAr: 'الكبار',
     audience: '18+',
-    art: '/curriculum/zad-adults/l01/cover.webp',
+    art: '/curriculum/banners/zad-adults.webp',
     parts: [
       { title: 'From Knowing to Certainty', titleAr: 'من المعرفة إلى اليقين', from: 1 },
       { title: 'Clean Before the Meeting', titleAr: 'طهارة قبل اللقاء', from: 16 },
@@ -161,7 +161,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Kids',
     versionAr: 'الأطفال',
     audience: '6–11',
-    art: '/curriculum/zad-kids/l01/cover.webp',
+    art: '/curriculum/banners/literacy-a-kids.webp',
     parts: [
       { title: 'All Aboard', titleAr: 'يلا نركب', from: 1 },
       { title: 'The Letters', titleAr: 'الحروف', from: 2 },
@@ -190,7 +190,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Adults',
     versionAr: 'الكبار',
     audience: '18+',
-    art: '/curriculum/zad-adults/l01/cover.webp',
+    art: '/curriculum/banners/literacy-a-adults.webp',
     parts: [
       { title: 'Start', titleAr: 'البداية', from: 1 },
       { title: 'The Letters', titleAr: 'الحروف', from: 2 },
@@ -217,7 +217,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Kids',
     versionAr: 'الأطفال',
     audience: '6–11',
-    art: '/curriculum/zad-kids/l01/cover.webp',
+    art: '/curriculum/banners/fusha-kids.webp',
     parts: [{ title: 'Level 1', titleAr: 'المستوى الأول', from: 1 }],
     // docs/curriculum/fusha/MAP.md (Claude's draft, 2026-10-25, for the owner's review).
     plan: [
@@ -236,7 +236,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Teens & Adults',
     versionAr: 'الشباب والكبار',
     audience: '12+',
-    art: '/curriculum/seerah-teens/ep01/cover.webp',
+    art: '/curriculum/banners/seerah-teens.webp',
     parts: [
       { title: 'Season 1 · Before the Light', titleAr: 'الموسم الأول · قبل النور', from: 1 },
       { title: "Season 2 · Iqra'", titleAr: 'الموسم الثاني · اقرأ', from: 9 },
@@ -259,7 +259,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Reading rules',
     versionAr: 'قواعد القراءة',
     audience: '6+',
-    art: '/curriculum/zad-kids/l01/cover.webp',
+    art: '/curriculum/banners/literacy-b-kids.webp',
     parts: [{ title: 'Reading the Mushaf', titleAr: 'قراءة المصحف', from: 1 }],
     // docs/curriculum/literacy-quranic/MAP.md (Claude's draft, 2026-10-25, for the owner's review).
     plan: [
@@ -277,7 +277,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Kids',
     versionAr: 'الأطفال',
     audience: '5–9',
-    art: '/curriculum/zad-kids/l01/cover.webp',
+    art: '/curriculum/banners/english-kids.webp',
     parts: [{ title: 'Phonics Level 1', titleAr: 'الفونكس · المستوى الأول', from: 1 }],
     // docs/curriculum/english/MAP-kids.md (Claude's draft, 2026-10-26, for the owner's review).
     plan: [
@@ -296,7 +296,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Quran reading',
     versionAr: 'قراءة القرآن',
     audience: '12+',
-    art: '/curriculum/zad-adults/l01/cover.webp',
+    art: '/curriculum/banners/quran-reading.webp',
     parts: [{ title: "Juz 'Amma and Al-Fatiha", titleAr: 'جزء عمّ والفاتحة', from: 1 }],
     // docs/curriculum/quran-reading/MAP.md (Claude's draft, 2026-10-26, for the owner's review).
     plan: [
@@ -314,7 +314,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Tajweed',
     versionAr: 'التجويد',
     audience: '12+',
-    art: '/curriculum/zad-adults/l01/cover.webp',
+    art: '/curriculum/banners/tajweed.webp',
     parts: [{ title: 'Level 1 · The Essential Rules', titleAr: 'المستوى الأول · الأحكام الأساسية', from: 1 }],
     // docs/curriculum/tajweed/MAP.md (Claude's draft, 2026-10-26, for the owner's review).
     plan: [
@@ -332,7 +332,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Adults',
     versionAr: 'الكبار',
     audience: '18+',
-    art: '/curriculum/zad-adults/l01/cover.webp',
+    art: '/curriculum/banners/egyptian-adults.webp',
     parts: [
       { title: 'Beginner · Meeting People', titleAr: 'المبتدئ · التعارف', from: 1 },
       { title: 'Beginner · Around Cairo', titleAr: 'المبتدئ · في القاهرة', from: 12 },
@@ -355,7 +355,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: '12+',
     versionAr: '12 سنة فأكبر',
     audience: '12+',
-    art: '/curriculum/zad-teens/l01/doors.webp',
+    art: '/curriculum/banners/fusha-12.webp',
     parts: [{ title: 'Level 1', titleAr: 'المستوى الأول', from: 1 }],
     // docs/curriculum/fusha/MAP-12plus.md (Claude's draft, 2026-10-26, for the owner's review).
     plan: [
@@ -374,7 +374,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Teens',
     versionAr: 'الشباب',
     audience: '12–17',
-    art: '/curriculum/zad-teens/l01/doors.webp',
+    art: '/curriculum/banners/literacy-a-teens.webp',
     parts: [
       { title: 'Start', titleAr: 'البداية', from: 1 },
       { title: 'The Letters', titleAr: 'الحروف', from: 2 },
@@ -401,7 +401,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Kids',
     versionAr: 'الأطفال',
     audience: '6–11',
-    art: '/curriculum/zad-kids/l01/cover.webp',
+    art: '/curriculum/banners/egyptian-kids.webp',
     parts: [{ title: "Beginner · Summer at Teta's", titleAr: 'المبتدئ · الصيف عند تيتة', from: 1 }],
     // docs/curriculum/egyptian/MAP.md, Kids section (Claude's draft, 2026-10-26, for the owner's review).
     plan: [
@@ -418,7 +418,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Teens',
     versionAr: 'الشباب',
     audience: '12–17',
-    art: '/curriculum/zad-teens/l01/doors.webp',
+    art: '/curriculum/banners/egyptian-teens.webp',
     parts: [{ title: 'Beginner · Summer in Cairo', titleAr: 'المبتدئ · صيف في القاهرة', from: 1 }],
     // docs/curriculum/egyptian/MAP.md, Teens section (Claude's draft, 2026-10-26, for the owner's review).
     plan: [
@@ -435,7 +435,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'General',
     versionAr: 'عام',
     audience: '12+',
-    art: '/curriculum/zad-adults/l01/cover.webp',
+    art: '/curriculum/banners/english-general.webp',
     parts: [{ title: 'Level 1', titleAr: 'المستوى الأول', from: 1 }],
     // docs/curriculum/english/MAP-general.md (Claude's draft, 2026-10-26, for the owner's review).
     plan: [
@@ -453,7 +453,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Exams',
     versionAr: 'الامتحانات',
     audience: '16+',
-    art: '/curriculum/zad-adults/l01/cover.webp',
+    art: '/curriculum/banners/english-exams.webp',
     parts: [{ title: 'Band 4–5 → 5.5', titleAr: 'من 4–5 لـ 5.5', from: 1 }],
     // docs/curriculum/english/MAP-exams.md (Claude's draft, 2026-10-26, for the owner's review).
     plan: [
@@ -470,7 +470,7 @@ export const SUBJECTS: SubjectEntry[] = [
     version: 'Kids',
     versionAr: 'الأطفال',
     audience: '6–11',
-    art: '/curriculum/seerah-kids/ep02/cover.webp',
+    art: '/curriculum/banners/seerah-kids.webp',
     parts: [
       { title: 'Season 1 · Before the Light', titleAr: 'الموسم الأول · قبل النور', from: 1 },
       { title: "Season 2 · Iqra'", titleAr: 'الموسم الثاني · اقرأ', from: 9 },
@@ -506,7 +506,7 @@ export const GROUPS: GroupEntry[] = [
     titleAr: 'أول الزاد',
     tagline: 'What every Muslim needs to know, by understanding: belief, purity, salah and character.',
     taglineAr: 'ما لا يسع المسلم جهله، بفهم واقتناع: العقيدة والطهارة والصلاة والأخلاق.',
-    art: '/curriculum/zad-teens/l01/doors.webp',
+    art: '/curriculum/banners/zad-essentials.webp',
     planned: [],
   },
   {
@@ -515,7 +515,7 @@ export const GROUPS: GroupEntry[] = [
     titleAr: 'السيرة',
     tagline: 'The life of the Prophet ﷺ, told so it changes ours.',
     taglineAr: 'حياة النبي ﷺ، تتحكي عشان تغيّر حياتنا.',
-    art: '/curriculum/seerah-teens/ep01/makkah.webp',
+    art: '/curriculum/banners/seerah.webp',
     // Two versions (owner, 2026-10-25): Kids, and one shared version for teens and adults.
     planned: [],
   },
@@ -526,6 +526,7 @@ export const GROUPS: GroupEntry[] = [
     titleAr: 'القرائية',
     tagline: 'From the first letter to reading on your own. The door to the Quran, Fusha and Egyptian.',
     taglineAr: 'من أول حرف لحد ما تقرا لوحدك. الباب للقرآن والفصحى والمصري.',
+    art: '/curriculum/banners/literacy.webp',
     planned: [
       { version: 'Franco', versionAr: 'فرانكو', audience: '18+' },
     ],
@@ -536,6 +537,7 @@ export const GROUPS: GroupEntry[] = [
     titleAr: 'القرآن',
     tagline: 'Reading the Mushaf as it is written, then reciting it with tajweed.',
     taglineAr: 'تقرا المصحف زي ما هو مكتوب، وبعدين تتلوه بالتجويد.',
+    art: '/curriculum/banners/quran.webp',
     planned: [
     ],
   },
@@ -545,6 +547,7 @@ export const GROUPS: GroupEntry[] = [
     titleAr: 'العامية المصرية',
     tagline: "The Arabic of Cairo's streets and kitchens: greet, ask, bargain and visit family the way Egyptians do.",
     taglineAr: 'عربي شوارع القاهرة وبيوتها: تسلّم وتسأل وتفاصل وتزور العيلة زي المصريين.',
+    art: '/curriculum/banners/egyptian.webp',
     // Arabic script in three versions (Adults first) and one Franco version (design §4.6).
     planned: [
       { version: 'Franco', versionAr: 'فرانكو', audience: '18+' },
@@ -556,6 +559,7 @@ export const GROUPS: GroupEntry[] = [
     titleAr: 'الإنجليزي',
     tagline: 'English for what you need it for: reading for children, everyday conversation, exams or work.',
     taglineAr: 'إنجليزي للي إنت محتاجه: قراءة للأطفال، كلام يومي، امتحانات أو شغل.',
+    art: '/curriculum/banners/english.webp',
     // Goal-based tracks (design §4.7).
     planned: [
     ],
@@ -566,6 +570,7 @@ export const GROUPS: GroupEntry[] = [
     titleAr: 'العربية الفصحى',
     tagline: 'Understand it, then speak it: stories first, rules after, words that come back until they stay.',
     taglineAr: 'افهمها وبعدين اتكلمها: الحكاية الأول، والقاعدة بعدها، والكلمات بترجع لحد ما تثبت.',
+    art: '/curriculum/banners/fusha.webp',
     planned: [
     ],
   },

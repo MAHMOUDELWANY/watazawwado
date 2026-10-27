@@ -4,7 +4,8 @@ import { seerahK01TeacherAr } from './l01-teacher-ar.js';
 // Seerah · Kids · Episode 1. Rules: docs/curriculum/seerah/RULES.md (Kids: own tone, same facts). Facts: The Sealed
 // Nectar, "The Elephant Raid" and "His Birth" (as in the Teens & Adults episode). The camels conversation (Ibn Ishaq) is
 // left out of the Kids version until the owner decides. Ayat 105:1–5: Tanzil Uthmani, the same fetched text as the
-// Teens episode; audio Husary. The Prophet ﷺ is never drawn: he is a soft light over an empty cradle.
+// Teens episode; audio Husary. The Prophet ﷺ is never drawn: he is a soft light over an empty cradle. Pictures (owner,
+// 2026-10-27, instead of the drawn scenes): docs/curriculum/seerah/IMAGE-PROMPTS.md (kids-ep01).
 
 const R = (id: string, text: string, ayah: string) => ({ id, text, voice: 'reciter' as const, quran: true, ayah });
 

@@ -30,10 +30,10 @@ import { Ek1CoverGraphic, Ek1DoorGraphic, Ek1ListenGraphic, Ek1HelloGraphic, Ek1
 import { Et1CoverGraphic, Et1ClubGraphic, Et1ListenGraphic, Et1HowGraphic, Et1EndingGraphic, Et1HiGraphic, Et1NamesGraphic, Et1TalkGraphic, Et1MissionGraphic, Et1NextGraphic } from '../motion/g-egy';
 import { Eg1CoverGraphic, Eg1CafeGraphic, Eg1ListenGraphic, Eg1ImGraphic, Eg1YoureGraphic, Eg1NameGraphic, Eg1ByeGraphic, Eg1TalkGraphic, Eg1MissionGraphic, Eg1NextGraphic } from '../motion/g-eng';
 import { Ex1CoverGraphic, Ex1ShortGraphic, Ex1BandsGraphic, Ex1Part1Graphic, Ex1AreGraphic, Ex1LengthGraphic, Ex1LinkGraphic, Ex1TimedGraphic, Ex1MissionGraphic, Ex1NextGraphic } from '../motion/g-eng';
-import { Sk1CoverGraphic, Sk1MakkahGraphic, Sk1AbrahaGraphic, Sk1ScalesGraphic, Sk1MarchGraphic, Sk1HillsGraphic, Sk1KneelGraphic, Sk1BirdsGraphic, Sk1FilGraphic, Sk1BabyGraphic, Sk1MissionGraphic, Sk1NextGraphic } from '../motion/g-sk1';
+import { Sk1ScalesGraphic, Sk1MissionGraphic } from '../motion/g-sk1';
 import { Se1CoverGraphic, Se1EmpiresGraphic, Se1JahiliyyahGraphic, Se1MakkahGraphic, Se1AbrahaGraphic, Se1QullaysGraphic, Se1ScalesGraphic, Se1MarchGraphic, Se1CampGraphic, Se1WalkGraphic, Se1TentGraphic, Se1TrustGraphic, Se1KneelGraphic, Se1SpearGraphic, Se1BirdsGraphic, Se1FilGraphic, Se1AftermathGraphic, Se1CradleGraphic, Se1MissionGraphic, Se1NextGraphic } from '../motion/g-se1';
 import { Se2CoverGraphic, Se2CustomGraphic, Se2DroughtGraphic, Se2CaravanGraphic, Se2NightGraphic, Se2PassedGraphic, Se2LanesGraphic, Se2DoorwayGraphic, Se2HarithGraphic, Se2MilkGraphic, Se2DonkeyGraphic, Se2GreenGraphic, Se2SeedGraphic, Se2HazeGraphic, Se2HillsGraphic, Se2BasinGraphic, Se2VesselGraphic, Se2MissionGraphic, Se2NextGraphic, Se3CoverGraphic, Se3HomeGraphic, Se3JourneyGraphic, Se3PalmsGraphic, Se3TentGraphic, Se3FootprintsGraphic, Se3WayHomeGraphic, Se3MattressGraphic, Se3WallGraphic, Se3StaffGraphic, Se3ChainGraphic, Se3UncleGraphic, Se3CloudsGraphic, Se3RainGraphic, Se3DuhaGraphic, Se3GraveGraphic, Se3ShoulderGraphic, Se3MissionGraphic, Se3NextGraphic , Se4CoverGraphic, Se4MarketGraphic, Se4RopeGraphic, Se4RouteGraphic, Se4BusraGraphic, Se4CellGraphic, Se4CloudGraphic, Se4FeastGraphic, Se4DoorGraphic, Se4ScrollsGraphic, Se4PassGraphic, Se4LanternGraphic, Se4BookGraphic, Se4ForkGraphic, Se4WalletGraphic, Se4MissionGraphic, Se4NextGraphic } from '../motion/g-se23';
-import { Sk2CoverGraphic, Sk2DryGraphic, Sk2TripGraphic, Sk2TownGraphic, Sk2AskGraphic, Sk2DoorGraphic, Sk2MilkGraphic, Sk2RaceGraphic, Sk2GreenGraphic, Sk2HillsGraphic, Sk2BasinGraphic, Sk2MissionGraphic, Sk2NextGraphic, Sk3CoverGraphic, Sk3JourneyGraphic, Sk3PalmsGraphic, Sk3TentGraphic, Sk3AskGraphic, Sk3RugGraphic, Sk3StaffGraphic, Sk3HomeGraphic, Sk3CloudsGraphic, Sk3RainGraphic, Sk3DuhaGraphic, Sk3MissionGraphic, Sk3NextGraphic , Sk4CoverGraphic, Sk4YardGraphic, Sk4RoadGraphic, Sk4MonasteryGraphic, Sk4CloudGraphic, Sk4TreeGraphic, Sk4FeastGraphic, Sk4AskGraphic, Sk4DoorGraphic, Sk4MercyGraphic, Sk4BackGraphic, Sk4MissionGraphic, Sk4NextGraphic } from '../motion/g-sk23';
+import { Sk2CoverGraphic, Sk2DryGraphic, Sk2TripGraphic, Sk2TownGraphic, Sk2AskGraphic, Sk2DoorGraphic, Sk2MilkGraphic, Sk2RaceGraphic, Sk2GreenGraphic, Sk2HillsGraphic, Sk2BasinGraphic, Sk2MissionGraphic, Sk2NextGraphic, Sk3CoverGraphic, Sk3JourneyGraphic, Sk3PalmsGraphic, Sk3TentGraphic, Sk3AskGraphic, Sk3RugGraphic, Sk3StaffGraphic, Sk3HomeGraphic, Sk3CloudsGraphic, Sk3RainGraphic, Sk3DuhaGraphic, Sk3MissionGraphic, Sk3NextGraphic , Sk4CoverGraphic, Sk4YardGraphic, Sk4RoadGraphic, Sk4MonasteryGraphic, Sk4CloudGraphic, Sk4TreeGraphic, Sk4FeastGraphic, Sk4AskGraphic, Sk4DoorGraphic, Sk4MercyGraphic, Sk4BackGraphic, Sk4MissionGraphic, Sk4NextGraphic , Sk1PicCoverGraphic, Sk1PicMakkahGraphic, Sk1PicAbrahaGraphic, Sk1PicMarchGraphic, Sk1PicHillsGraphic, Sk1PicKneelGraphic, Sk1PicBirdsGraphic, Sk1PicFilGraphic, Sk1PicBabyGraphic, Sk1PicNextGraphic } from '../motion/g-sk23';
 import { LaneGraphic, MondayGraphic, GravesGraphic, CountGraphic, CaseOmarGraphic, CaseLaylaGraphic, CaseColleagueGraphic, CaseOnlineGraphic, NotebookGraphic } from '../motion/g-life';
 
 /**
@@ -323,18 +323,18 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
   ex1Mission: onStage({ tone: 'light', Graphic: Ex1MissionGraphic }),
   ex1Next: onStage({ tone: 'light', Graphic: Ex1NextGraphic }),
 
-  sk1Cover: onStage({ tone: 'light', Graphic: Sk1CoverGraphic }),
-  sk1Makkah: onStage({ tone: 'light', Graphic: Sk1MakkahGraphic }),
-  sk1Abraha: onStage({ tone: 'light', Graphic: Sk1AbrahaGraphic }),
+  sk1Cover: onStage({ tone: 'light', Graphic: Sk1PicCoverGraphic }),
+  sk1Makkah: onStage({ tone: 'light', Graphic: Sk1PicMakkahGraphic }),
+  sk1Abraha: onStage({ tone: 'light', Graphic: Sk1PicAbrahaGraphic }),
   sk1Scales: onStage({ tone: 'light', Graphic: Sk1ScalesGraphic, keepOnAsk: true }),
-  sk1March: onStage({ tone: 'light', Graphic: Sk1MarchGraphic }),
-  sk1Hills: onStage({ tone: 'light', Graphic: Sk1HillsGraphic }),
-  sk1Kneel: onStage({ tone: 'light', Graphic: Sk1KneelGraphic }),
-  sk1Birds: onStage({ tone: 'light', Graphic: Sk1BirdsGraphic }),
-  sk1Fil: onStage({ tone: 'light', Graphic: Sk1FilGraphic }),
-  sk1Baby: onStage({ tone: 'light', Graphic: Sk1BabyGraphic }),
+  sk1March: onStage({ tone: 'light', Graphic: Sk1PicMarchGraphic }),
+  sk1Hills: onStage({ tone: 'light', Graphic: Sk1PicHillsGraphic }),
+  sk1Kneel: onStage({ tone: 'light', Graphic: Sk1PicKneelGraphic }),
+  sk1Birds: onStage({ tone: 'light', Graphic: Sk1PicBirdsGraphic }),
+  sk1Fil: onStage({ tone: 'light', Graphic: Sk1PicFilGraphic }),
+  sk1Baby: onStage({ tone: 'light', Graphic: Sk1PicBabyGraphic }),
   sk1Mission: onStage({ tone: 'light', Graphic: Sk1MissionGraphic }),
-  sk1Next: onStage({ tone: 'light', Graphic: Sk1NextGraphic }),
+  sk1Next: onStage({ tone: 'light', Graphic: Sk1PicNextGraphic }),
 
   se1Cover: onStage({ tone: 'dark', Graphic: Se1CoverGraphic }),
   se1Empires: onStage({ tone: 'dark', Graphic: Se1EmpiresGraphic }),

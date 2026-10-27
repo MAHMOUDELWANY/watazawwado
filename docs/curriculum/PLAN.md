@@ -749,3 +749,9 @@ B3–B5 → continue lesson by lesson.
 
 - 2026-10-27 — Seerah Episode 4 images: 29 checked, 28 placed (4.2 MB); `teens-ep04/wallet` rejected (two pictures
   stitched into one frame) with a redo prompt in `seerah/IMAGE-PROMPTS.md`. Every Episode 4 page screenshotted with its image.
+- 2026-10-27 — Owner's feedback: Kids pictures now fill the whole slide like Teens & Adults (paper wash on the text side,
+  small paper panels behind the race, route and lamps); Kids Episode 1 moves from drawn scenes to paintings (10 prompts,
+  `seerah/IMAGE-PROMPTS.md`, kids-ep01; the balance and the mission keep their drawn graphics); every subject and version
+  door gets its own banner (26 prompts in `BANNER-PROMPTS.md`, catalog points to `public/curriculum/banners/<id>.webp`,
+  doors show their glow until a banner arrives); stills now appear even when the image was cached before the page drew.
+
