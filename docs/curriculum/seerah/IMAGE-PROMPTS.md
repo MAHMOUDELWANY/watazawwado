@@ -1,4 +1,4 @@
-# Seerah · image prompts · Episodes 1–3 (Teens & Adults, Kids)
+# Seerah · image prompts · Episodes 1–4 (Teens & Adults, Kids)
 
 For the owner: Episodes 1–3 (82 images, all on the site) and Episode 4 (29 images, below). Paste **Message 0** into a new ChatGPT chat first, then the prompts in order
 (one per message, or several per message if ChatGPT accepts them). Every prompt is also complete on its own, so any of

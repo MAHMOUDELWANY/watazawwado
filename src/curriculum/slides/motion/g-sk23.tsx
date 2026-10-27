@@ -66,13 +66,13 @@ function Race({ lines }: { lines: number }) {
   );
 }
 
-/** A dotted road from Makkah (south) to Yathrib (north), drawn under the picture. */
-function Route() {
+/** A dotted road from Makkah (south) to a town in the north, drawn under the picture. */
+function Route({ to = 'Yathrib' }: { to?: string }) {
   return (
     <svg className="pointer-events-none absolute inset-0" viewBox="0 0 1600 900" width="100%" height="100%">
       <motion.path d="M 860 700 C 980 640, 1120 720, 1260 650" fill="none" stroke={TEAL} strokeWidth={5} strokeLinecap="round" strokeDasharray="2 14" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2, delay: 0.6, ease }} />
       <text x={840} y={740} fill={INK_TEXT} fontSize={20} fontWeight={800} textAnchor="middle">Makkah</text>
-      <motion.text x={1270} y={630} fill={TEAL} fontSize={20} fontWeight={800} textAnchor="middle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.4 }}>Yathrib</motion.text>
+      <motion.text x={1270} y={630} fill={TEAL} fontSize={20} fontWeight={800} textAnchor="middle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.4 }}>{to}</motion.text>
     </svg>
   );
 }
@@ -152,3 +152,19 @@ export const Sk3RainGraphic = make({ pic: `${K3}/rain`, poses: ['maryam-amazed',
 export const Sk3DuhaGraphic = make({ pic: `${K3}/sunrise`, poses: ['maryam-dua'] });
 export const Sk3MissionGraphic = mission('maryam-happy', 'yusuf-brave', 'Make someone feel at home!');
 export const Sk3NextGraphic = make({ pic: `${K3}/caravan`, poses: ['yusuf-point'] });
+
+/* ---------- Episode 4 ---------- */
+const K4 = 'seerah-kids/ep04';
+export const Sk4CoverGraphic = make({ pic: `${K4}/cover`, poses: ['yusuf-listen'] });
+export const Sk4YardGraphic = make({ pic: `${K4}/yard`, poses: ['yusuf-point', 'yusuf-point', 'yusuf-brave'] });
+export const Sk4RoadGraphic = make({ pic: `${K4}/road`, poses: ['maryam-think'], extra: ({ lines }) => lines >= 2 && <Route to="Busra" /> });
+export const Sk4MonasteryGraphic = make({ pic: `${K4}/monastery`, poses: ['yusuf-think', 'yusuf-think', 'jiddo-explain'] });
+export const Sk4CloudGraphic = make({ pic: `${K4}/cloud`, poses: ['maryam-amazed'] });
+export const Sk4TreeGraphic = make({ pic: `${K4}/tree`, poses: ['yusuf-surprised'] });
+export const Sk4FeastGraphic = make({ pic: `${K4}/feast`, poses: ['maryam-happy', 'maryam-think'] });
+export const Sk4AskGraphic = asks('yusuf-think', 'maryam-think', 'Who is it?');
+export const Sk4DoorGraphic = make({ pic: `${K4}/door`, poses: ['maryam-amazed', 'maryam-amazed', 'jiddo-advice'] });
+export const Sk4MercyGraphic = make({ pic: `${K4}/mercy`, poses: ['maryam-dua'] });
+export const Sk4BackGraphic = make({ pic: `${K4}/back`, poses: ['jiddo-advice', 'yusuf-listen'] });
+export const Sk4MissionGraphic = mission('yusuf-brave', 'maryam-happy', 'Honest when nobody is looking!');
+export const Sk4NextGraphic = make({ pic: `${K4}/pact`, poses: ['yusuf-think'] });

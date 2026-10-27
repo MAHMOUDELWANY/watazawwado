@@ -66,8 +66,8 @@ Last update: 2026-10-26. History of how we got here: §8 (progress log).
 ### Beyond Zad Essentials (design 2026-10-25: `docs/superpowers/specs/2026-10-25-subjects-curricula-design.md`)
 - **Seerah (map of 46 episodes approved 2026-10-26):** Teens & Adults Episodes 1–3 built (dark stage with the owner's
   stills), Kids Episodes 1–3 built (Ep1 drawn in code; Ep2–3 painted pictures in a storybook frame with the Zad Kids
-  cast). All 82 images placed 2026-10-27. **Waiting:** the camels story (Ibn Ishaq), review of all six episodes. **Next:** Episode 4,
-  The Monk on the Road, with its image batch.
+  cast). All 82 images placed 2026-10-27; Episode 4 built (Teens & Adults and Kids) with its 29 prompts. **Waiting:** the Episode 4 images, the camels story (Ibn Ishaq), review of all six episodes. **Next:** Episode 5,
+  The Pact of the Just, with its image batch.
 - **Literacy B · Quranic reading rules (Kids look):** map (12) and Lesson 1 built; ayat play Husary on tap.
 - **Literacy A · Reading Arabic · Kids:** map (29) and Lesson 1 built in look A "letter friends" (Claude's pick, the owner
   did not choose; switchable). Letter sounds wait for the owner's own recordings (`literacy/L01-clips.md`).
@@ -739,3 +739,11 @@ B3–B5 → continue lesson by lesson.
   the five episodes screenshotted with its image; the Ep1 army counters no longer overlap. Waiting: the 9 redos.
 - 2026-10-27 — Seerah redo batch: the 9 new images checked (no faces, no child figure, bare-stone Kaaba, a modern
   cafeteria) and placed; all 82 images of Episodes 1–3 are on the site. Affected pages screenshotted.
+- 2026-10-27 — Seerah Episode 4 "The Monk on the Road", Teens & Adults (18 pages: Makkah's trade, the boy holding on to
+  Abu Talib, the road north on a map, Busra and the monk who never came out, the cloud and the leaning shade marked
+  "it is reported", the meal, "why now?", Bahira's words as a quote card, the stones, the trees and the seal, recognising
+  the truth = honest knowledge + the courage to say it, Al-Baqarah 2:146 with Al-Tafsir al-Muyassar, the return to Makkah,
+  honesty when nobody knows you) and Kids (14 pages, Al-Anbiya 21:107 with the reciter). The Abu Musa report (at-Tirmidhi
+  3620) is graded differently on Dorar, so its ending (Abu Bakr, Bilal, the seven Romans) is left out. 29 image prompts in
+  `seerah/IMAGE-PROMPTS.md`. Drafts, `reviewed: false`.
+

@@ -32,8 +32,8 @@ import { Eg1CoverGraphic, Eg1CafeGraphic, Eg1ListenGraphic, Eg1ImGraphic, Eg1You
 import { Ex1CoverGraphic, Ex1ShortGraphic, Ex1BandsGraphic, Ex1Part1Graphic, Ex1AreGraphic, Ex1LengthGraphic, Ex1LinkGraphic, Ex1TimedGraphic, Ex1MissionGraphic, Ex1NextGraphic } from '../motion/g-eng';
 import { Sk1CoverGraphic, Sk1MakkahGraphic, Sk1AbrahaGraphic, Sk1ScalesGraphic, Sk1MarchGraphic, Sk1HillsGraphic, Sk1KneelGraphic, Sk1BirdsGraphic, Sk1FilGraphic, Sk1BabyGraphic, Sk1MissionGraphic, Sk1NextGraphic } from '../motion/g-sk1';
 import { Se1CoverGraphic, Se1EmpiresGraphic, Se1JahiliyyahGraphic, Se1MakkahGraphic, Se1AbrahaGraphic, Se1QullaysGraphic, Se1ScalesGraphic, Se1MarchGraphic, Se1CampGraphic, Se1WalkGraphic, Se1TentGraphic, Se1TrustGraphic, Se1KneelGraphic, Se1SpearGraphic, Se1BirdsGraphic, Se1FilGraphic, Se1AftermathGraphic, Se1CradleGraphic, Se1MissionGraphic, Se1NextGraphic } from '../motion/g-se1';
-import { Se2CoverGraphic, Se2CustomGraphic, Se2DroughtGraphic, Se2CaravanGraphic, Se2NightGraphic, Se2PassedGraphic, Se2LanesGraphic, Se2DoorwayGraphic, Se2HarithGraphic, Se2MilkGraphic, Se2DonkeyGraphic, Se2GreenGraphic, Se2SeedGraphic, Se2HazeGraphic, Se2HillsGraphic, Se2BasinGraphic, Se2VesselGraphic, Se2MissionGraphic, Se2NextGraphic, Se3CoverGraphic, Se3HomeGraphic, Se3JourneyGraphic, Se3PalmsGraphic, Se3TentGraphic, Se3FootprintsGraphic, Se3WayHomeGraphic, Se3MattressGraphic, Se3WallGraphic, Se3StaffGraphic, Se3ChainGraphic, Se3UncleGraphic, Se3CloudsGraphic, Se3RainGraphic, Se3DuhaGraphic, Se3GraveGraphic, Se3ShoulderGraphic, Se3MissionGraphic, Se3NextGraphic } from '../motion/g-se23';
-import { Sk2CoverGraphic, Sk2DryGraphic, Sk2TripGraphic, Sk2TownGraphic, Sk2AskGraphic, Sk2DoorGraphic, Sk2MilkGraphic, Sk2RaceGraphic, Sk2GreenGraphic, Sk2HillsGraphic, Sk2BasinGraphic, Sk2MissionGraphic, Sk2NextGraphic, Sk3CoverGraphic, Sk3JourneyGraphic, Sk3PalmsGraphic, Sk3TentGraphic, Sk3AskGraphic, Sk3RugGraphic, Sk3StaffGraphic, Sk3HomeGraphic, Sk3CloudsGraphic, Sk3RainGraphic, Sk3DuhaGraphic, Sk3MissionGraphic, Sk3NextGraphic } from '../motion/g-sk23';
+import { Se2CoverGraphic, Se2CustomGraphic, Se2DroughtGraphic, Se2CaravanGraphic, Se2NightGraphic, Se2PassedGraphic, Se2LanesGraphic, Se2DoorwayGraphic, Se2HarithGraphic, Se2MilkGraphic, Se2DonkeyGraphic, Se2GreenGraphic, Se2SeedGraphic, Se2HazeGraphic, Se2HillsGraphic, Se2BasinGraphic, Se2VesselGraphic, Se2MissionGraphic, Se2NextGraphic, Se3CoverGraphic, Se3HomeGraphic, Se3JourneyGraphic, Se3PalmsGraphic, Se3TentGraphic, Se3FootprintsGraphic, Se3WayHomeGraphic, Se3MattressGraphic, Se3WallGraphic, Se3StaffGraphic, Se3ChainGraphic, Se3UncleGraphic, Se3CloudsGraphic, Se3RainGraphic, Se3DuhaGraphic, Se3GraveGraphic, Se3ShoulderGraphic, Se3MissionGraphic, Se3NextGraphic , Se4CoverGraphic, Se4MarketGraphic, Se4RopeGraphic, Se4RouteGraphic, Se4BusraGraphic, Se4CellGraphic, Se4CloudGraphic, Se4FeastGraphic, Se4DoorGraphic, Se4ScrollsGraphic, Se4PassGraphic, Se4LanternGraphic, Se4BookGraphic, Se4ForkGraphic, Se4WalletGraphic, Se4MissionGraphic, Se4NextGraphic } from '../motion/g-se23';
+import { Sk2CoverGraphic, Sk2DryGraphic, Sk2TripGraphic, Sk2TownGraphic, Sk2AskGraphic, Sk2DoorGraphic, Sk2MilkGraphic, Sk2RaceGraphic, Sk2GreenGraphic, Sk2HillsGraphic, Sk2BasinGraphic, Sk2MissionGraphic, Sk2NextGraphic, Sk3CoverGraphic, Sk3JourneyGraphic, Sk3PalmsGraphic, Sk3TentGraphic, Sk3AskGraphic, Sk3RugGraphic, Sk3StaffGraphic, Sk3HomeGraphic, Sk3CloudsGraphic, Sk3RainGraphic, Sk3DuhaGraphic, Sk3MissionGraphic, Sk3NextGraphic , Sk4CoverGraphic, Sk4YardGraphic, Sk4RoadGraphic, Sk4MonasteryGraphic, Sk4CloudGraphic, Sk4TreeGraphic, Sk4FeastGraphic, Sk4AskGraphic, Sk4DoorGraphic, Sk4MercyGraphic, Sk4BackGraphic, Sk4MissionGraphic, Sk4NextGraphic } from '../motion/g-sk23';
 import { LaneGraphic, MondayGraphic, GravesGraphic, CountGraphic, CaseOmarGraphic, CaseLaylaGraphic, CaseColleagueGraphic, CaseOnlineGraphic, NotebookGraphic } from '../motion/g-life';
 
 /**
@@ -356,6 +356,36 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
   se1Cradle: onStage({ tone: 'dark', Graphic: Se1CradleGraphic }),
   se1Mission: onStage({ tone: 'dark', Graphic: Se1MissionGraphic }),
   se1Next: onStage({ tone: 'dark', Graphic: Se1NextGraphic }),
+  se4Cover: onStage({ tone: 'dark', Graphic: Se4CoverGraphic }),
+  se4Market: onStage({ tone: 'dark', Graphic: Se4MarketGraphic }),
+  se4Rope: onStage({ tone: 'dark', Graphic: Se4RopeGraphic }),
+  se4Route: onStage({ tone: 'dark', Graphic: Se4RouteGraphic }),
+  se4Busra: onStage({ tone: 'dark', Graphic: Se4BusraGraphic }),
+  se4Cell: onStage({ tone: 'dark', Graphic: Se4CellGraphic }),
+  se4Cloud: onStage({ tone: 'dark', Graphic: Se4CloudGraphic }),
+  se4Feast: onStage({ tone: 'dark', Graphic: Se4FeastGraphic }),
+  se4Door: onStage({ tone: 'dark', Graphic: Se4DoorGraphic, keepOnAsk: true }),
+  se4Scrolls: onStage({ tone: 'dark', Graphic: Se4ScrollsGraphic }),
+  se4Pass: onStage({ tone: 'dark', Graphic: Se4PassGraphic }),
+  se4Lantern: onStage({ tone: 'dark', Graphic: Se4LanternGraphic }),
+  se4Book: onStage({ tone: 'dark', Graphic: Se4BookGraphic }),
+  se4Fork: onStage({ tone: 'dark', Graphic: Se4ForkGraphic }),
+  se4Wallet: onStage({ tone: 'dark', Graphic: Se4WalletGraphic }),
+  se4Mission: onStage({ tone: 'dark', Graphic: Se4MissionGraphic }),
+  se4Next: onStage({ tone: 'dark', Graphic: Se4NextGraphic }),
+  sk4Cover: onStage({ tone: 'light', Graphic: Sk4CoverGraphic }),
+  sk4Yard: onStage({ tone: 'light', Graphic: Sk4YardGraphic }),
+  sk4Road: onStage({ tone: 'light', Graphic: Sk4RoadGraphic }),
+  sk4Monastery: onStage({ tone: 'light', Graphic: Sk4MonasteryGraphic }),
+  sk4Cloud: onStage({ tone: 'light', Graphic: Sk4CloudGraphic }),
+  sk4Tree: onStage({ tone: 'light', Graphic: Sk4TreeGraphic }),
+  sk4Feast: onStage({ tone: 'light', Graphic: Sk4FeastGraphic }),
+  sk4Ask: onStage({ tone: 'light', Graphic: Sk4AskGraphic, keepOnAsk: true }),
+  sk4Door: onStage({ tone: 'light', Graphic: Sk4DoorGraphic }),
+  sk4Mercy: onStage({ tone: 'light', Graphic: Sk4MercyGraphic }),
+  sk4Back: onStage({ tone: 'light', Graphic: Sk4BackGraphic }),
+  sk4Mission: onStage({ tone: 'light', Graphic: Sk4MissionGraphic }),
+  sk4Next: onStage({ tone: 'light', Graphic: Sk4NextGraphic }),
   se2Cover: onStage({ tone: 'dark', Graphic: Se2CoverGraphic }),
   se2Custom: onStage({ tone: 'dark', Graphic: Se2CustomGraphic }),
   se2Drought: onStage({ tone: 'dark', Graphic: Se2DroughtGraphic }),

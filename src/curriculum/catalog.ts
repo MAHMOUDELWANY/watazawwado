@@ -13,6 +13,7 @@ import { lessonF01 } from './content/fusha-kids/l01-what-is-this.js';
 import { seerahE01 } from './content/seerah-teens/l01-the-invincible-army.js';
 import { seerahE02 } from './content/seerah-teens/l02-the-desert-nurse.js';
 import { seerahE03 } from './content/seerah-teens/l03-three-goodbyes.js';
+import { seerahE04 } from './content/seerah-teens/l04-the-monk-on-the-road.js';
 import { lessonB01 } from './content/literacy-b/l01-same-letters-new-marks.js';
 import { lessonAA01 } from './content/literacy-a-adults/l01-welcome-to-arabic.js';
 import { lessonAA02 } from './content/literacy-a-adults/l02-fewer-shapes-than-you-think.js';
@@ -30,6 +31,7 @@ import { lessonEX01 } from './content/english-exams/l01-your-first-three-minutes
 import { seerahK01 } from './content/seerah-kids/l01-the-elephant-who-sat-down.js';
 import { seerahK02 } from './content/seerah-kids/l02-halimah-and-the-blessed-baby.js';
 import { seerahK03 } from './content/seerah-kids/l03-three-goodbyes.js';
+import { seerahK04 } from './content/seerah-kids/l04-the-monk-on-the-road.js';
 import { lesson03Adults } from './content/zad-adults/l03-the-emptiness-fame-cannot-fill.js';
 
 /** A part of a curriculum (a unit in its MAP.md): its title and the number of its first lesson. */
@@ -247,7 +249,7 @@ export const SUBJECTS: SubjectEntry[] = [
     plan: [
       "The Invincible Army", "The Desert Nurse", "Three Goodbyes", "The Monk on the Road", "The Pact of the Just", "Al-Amin", "Khadijah", "The Stone and the Cave", "Read!", "The First Believers", "On the Mountain of Safa", "Under the Sun of Makkah", "The Offers", "The Lion of Allah", "The Man Who Came to Kill", "To the Just King", "The Boycott", "The Year of Sorrow", "Ta'if", "The Night Journey", "The Pledges of Aqabah", "The Plot", "The Cave of Thawr", "The Chase", "The Moon Rose Over Us", "The First Masjid", "Brothers", "A City of Neighbours", "Ahl as-Suffah", "The Prophet ﷺ at Home", "Ramadan and the First Eid", "Badr", "Uhud", "The Trench", "The Treaty", "Letters to Kings", "Khaybar", "Mu'tah", "The Conquest of Makkah", "Hunayn", "Tabuk", "The Year of Delegations", "The Farewell Hajj", "The Last Days", "\"Whoever Worshipped Muhammad…\"", "The Light Continues",
     ],
-    lessons: { 1: seerahE01, 2: seerahE02, 3: seerahE03 },
+    lessons: { 1: seerahE01, 2: seerahE02, 3: seerahE03, 4: seerahE04 },
   },
   {
     id: 'literacy-b-kids',
@@ -481,7 +483,7 @@ export const SUBJECTS: SubjectEntry[] = [
     plan: [
       "The Elephant Who Sat Down", "Halimah and the Blessed Baby", "Three Goodbyes", "The Monk on the Road", "The Pact of the Just", "Al-Amin", "Khadijah", "The Stone and the Cave", "Read!", "The First Believers", "On the Mountain of Safa", "Under the Sun of Makkah", "The Offers", "The Lion of Allah", "The Man Who Came to Kill", "To the Just King", "The Boycott", "The Year of Sorrow", "Ta'if", "The Night Journey", "The Pledges of Aqabah", "The Plot", "The Cave of Thawr", "The Chase", "The Moon Rose Over Us", "The First Masjid", "Brothers", "A City of Neighbours", "Ahl as-Suffah", "The Prophet ﷺ at Home", "Ramadan and the First Eid", "Badr", "Uhud", "The Trench", "The Treaty", "Letters to Kings", "Khaybar", "Mu'tah", "The Conquest of Makkah", "Hunayn", "Tabuk", "The Year of Delegations", "The Farewell Hajj", "The Last Days", "\"Whoever Worshipped Muhammad…\"", "The Light Continues",
     ],
-    lessons: { 1: seerahK01, 2: seerahK02, 3: seerahK03 },
+    lessons: { 1: seerahK01, 2: seerahK02, 3: seerahK03, 4: seerahK04 },
   },
 ];
 

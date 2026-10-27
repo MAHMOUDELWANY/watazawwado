@@ -160,3 +160,48 @@ export const Se3GraveGraphic = make({ folder: E3, still: 'grave-visit', term: ''
 export const Se3ShoulderGraphic = make({ folder: E3, still: 'shoulder', term: 'لَسْتَ وَحْدَك', tint: TEAL });
 export const Se3MissionGraphic = make({ folder: E3, still: 'bag', term: 'زَادِي' });
 export const Se3NextGraphic = make({ folder: E3, still: 'north', term: 'إِلَى الشَّام' });
+
+/* ---------- Episode 4 ---------- */
+const E4 = 'seerah-teens/ep04';
+
+/** The trade road north: Makkah far south, Busra in the Hawran; the line draws as the journey is told. */
+function North({ lines }: { lines: number }) {
+  const mk = { x: 1300, y: 760 }, bs = { x: 1220, y: 360 };
+  return (
+    <svg className="pointer-events-none absolute inset-0" viewBox="0 0 1600 900" width="100%" height="100%">
+      <rect x={1060} y={330} width={360} height={470} rx={18} fill="rgba(12,8,6,0.55)" stroke={`${GOLD}44`} />
+      <motion.path d={`M ${mk.x} ${mk.y} C 1360 640, 1140 520, ${bs.x} ${bs.y}`} fill="none" stroke={GOLD} strokeWidth={4} strokeLinecap="round"
+        initial={{ pathLength: 0 }} animate={{ pathLength: lines >= 1 ? 1 : 0.15 }} transition={{ duration: 2.2, ease }} />
+      {[{ p: mk, t: 'Makkah' }, { p: bs, t: 'Busra' }].map(({ p, t }) => (
+        <g key={t}><circle cx={p.x} cy={p.y} r={10} fill={BONE} /><text x={p.x + 18} y={p.y + 6} fill={BONE} fontSize={20} fontWeight={700}>{t}</text></g>
+      ))}
+      {lines >= 3 && (
+        <motion.g initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} style={{ transformBox: 'fill-box' as never, transformOrigin: '50% 50%' }} transition={{ type: 'spring', bounce: 0.3 }}>
+          <circle cx={bs.x} cy={bs.y} r={26} fill="none" stroke={TEAL} strokeWidth={3} />
+          <text x={bs.x - 34} y={bs.y + 7} fill={TEAL} fontSize={18} fontWeight={700} textAnchor="end">watching</text>
+        </motion.g>
+      )}
+    </svg>
+  );
+}
+
+export const Se4CoverGraphic = make({ folder: E4, still: 'cover', term: 'بَحِيرَى الرَّاهِب' });
+export const Se4MarketGraphic = make({ folder: E4, still: 'market', term: 'رِحْلَةُ التِّجَارَة' });
+export const Se4RopeGraphic = make({ folder: E4, still: 'rope', term: 'خُذْنِي مَعَك' });
+export const Se4RouteGraphic = make({ folder: E4, still: 'route', term: 'طَرِيقُ الشَّام', extra: ({ lines }) => <North lines={lines} /> });
+export const Se4BusraGraphic = make({ folder: E4, still: 'busra', term: 'بُصْرَى', tint: TEAL });
+export const Se4CellGraphic = make({ folder: E4, still: 'cell', term: 'الكُتُبُ القَدِيمَة' });
+export const Se4CloudGraphic = make({ folder: E4, still: 'cloud', term: 'غَمَامَةٌ تُظِلُّه', tint: TEAL });
+export const Se4FeastGraphic = make({ folder: E4, still: 'feast', term: 'ضِيَافَةُ الرَّاهِب' });
+export const Se4DoorGraphic = make({ folder: E4, still: 'door', term: 'لِمَاذَا الآن؟', tint: CRIMSON });
+export const Se4ScrollsGraphic = make({
+  folder: E4, still: 'scrolls', term: 'سَيِّدُ العَالَمِين',
+  extra: ({ lines }) => lines >= 2 && <Quote kicker="The words of a stranger" text="This is the master of all humans. Allah will send him with a Message which will be a mercy to all beings." by="Bahira at Busra · The Sealed Nectar, from Ibn Hisham" />,
+});
+export const Se4PassGraphic = make({ folder: E4, still: 'pass', term: 'خَاتَمُ النُّبُوَّة' });
+export const Se4LanternGraphic = make({ folder: E4, still: 'lantern', term: 'مَعْرِفَةُ الحَقّ', tint: TEAL });
+export const Se4BookGraphic = make({ folder: E4, still: 'book', term: '' });
+export const Se4ForkGraphic = make({ folder: E4, still: 'fork', term: 'العَوْدَةُ إِلَى مَكَّة', tint: CRIMSON });
+export const Se4WalletGraphic = make({ folder: E4, still: 'wallet', term: 'الأَمَانَة', tint: TEAL });
+export const Se4MissionGraphic = make({ folder: E4, still: 'phone', term: 'زَادِي' });
+export const Se4NextGraphic = make({ folder: E4, still: 'fijar', term: 'حِلْفُ الفُضُول', tint: CRIMSON });
