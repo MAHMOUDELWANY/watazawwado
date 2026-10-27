@@ -23,14 +23,14 @@ function Race({ lines }: { lines: number }) {
   const lead = lines >= 2;
   return (
     <svg className="pointer-events-none absolute inset-0" viewBox="0 0 1600 900" width="100%" height="100%">
-      <motion.line x1={780} y1={330} x2={1460} y2={330} stroke={DIM} strokeWidth={3} strokeDasharray="4 12" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1, ease }} />
-      <text x={1470} y={338} fill={BONE} fontSize={18} fontWeight={700}>home ›</text>
+      <motion.line x1={780} y1={480} x2={1460} y2={480} stroke={DIM} strokeWidth={3} strokeDasharray="4 12" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1, ease }} />
+      <text x={1470} y={488} fill={BONE} fontSize={18} fontWeight={700}>home ›</text>
       {xs.map((x, i) => (
-        <motion.circle key={i} cx={0} cy={330} r={12} fill="rgba(246,241,232,0.55)" initial={{ x: x - 40, opacity: 0 }} animate={{ x: lead ? x - 60 : x, opacity: 1 }} transition={{ duration: reduce ? 0 : 1.6, delay: 0.2 + i * 0.06, ease }} />
+        <motion.circle key={i} cx={0} cy={480} r={12} fill="rgba(246,241,232,0.55)" initial={{ x: x - 40, opacity: 0 }} animate={{ x: lead ? x - 60 : x, opacity: 1 }} transition={{ duration: reduce ? 0 : 1.6, delay: 0.2 + i * 0.06, ease }} />
       ))}
       <motion.g initial={{ x: 760, opacity: 0 }} animate={{ x: lead ? 1340 : 760, opacity: 1 }} transition={{ duration: reduce ? 0 : 2.2, delay: 0.4, ease }}>
-        <circle cx={0} cy={330} r={18} fill={GOLD} style={{ filter: `drop-shadow(0 0 14px ${GOLD})` }} />
-        <text x={0} y={296} fill={GOLD} fontSize={16} fontWeight={700} textAnchor="middle">{lead ? 'first' : 'last'}</text>
+        <circle cx={0} cy={480} r={18} fill={GOLD} style={{ filter: `drop-shadow(0 0 14px ${GOLD})` }} />
+        <text x={0} y={446} fill={GOLD} fontSize={16} fontWeight={700} textAnchor="middle">{lead ? 'first' : 'last'}</text>
       </motion.g>
     </svg>
   );
@@ -38,7 +38,7 @@ function Race({ lines }: { lines: number }) {
 
 /** A gold line of ages; each mark lights as its line is read. */
 function Years({ marks, lines }: { marks: { age: string; label: string; at: number }[]; lines: number }) {
-  const x0 = 800, x1 = 1460, y = 300;
+  const x0 = 820, x1 = 1380, y = 470;
   return (
     <svg className="pointer-events-none absolute inset-0" viewBox="0 0 1600 900" width="100%" height="100%">
       <motion.line x1={x0} y1={y} x2={x1} y2={y} stroke={`${GOLD}88`} strokeWidth={3} initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.2, ease }} />
@@ -85,7 +85,7 @@ function Road({ back = false, lines }: { back?: boolean; lines: number }) {
 /** The hands that held him: four lamps on a line, lit one after another; the last line draws one light over them all. */
 function Chain({ lines }: { lines: number }) {
   const who = ['His mother', 'Halimah', 'His grandfather', 'His uncle'];
-  const x0 = 830, gap = 200, y = 360;
+  const x0 = 830, gap = 190, y = 500;
   return (
     <svg className="pointer-events-none absolute inset-0" viewBox="0 0 1600 900" width="100%" height="100%">
       {who.map((w, i) => (
@@ -126,7 +126,7 @@ export const Se2HazeGraphic = make({
   extra: ({ lines }) => <Years lines={lines} marks={[{ age: '0', label: 'to the desert', at: 0 }, { age: '2', label: 'weaned', at: 1 }, { age: '4–5', label: 'still with Halimah', at: 3 }]} />,
 });
 export const Se2HillsGraphic = make({ folder: E2, still: 'hills', term: 'الشَّيْمَاء', tint: TEAL });
-export const Se2BasinGraphic = make({ folder: E2, still: 'basin', term: 'شَقُّ الصَّدْر' });
+export const Se2BasinGraphic = make({ folder: E2, still: 'basin', term: '' });
 export const Se2VesselGraphic = make({ folder: E2, still: 'vessel', term: 'طَهَارَةُ القَلْب', tint: TEAL });
 export const Se2MissionGraphic = make({ folder: E2, still: 'lunch', term: 'زَادِي' });
 export const Se2NextGraphic = make({ folder: E2, still: 'abwa-road', term: 'الطَّرِيقُ إِلَى يَثْرِب', tint: CRIMSON });
@@ -155,8 +155,8 @@ export const Se3UncleGraphic = make({
 });
 export const Se3CloudsGraphic = make({ folder: E3, still: 'clouds', term: 'الاِسْتِسْقَاء', tint: TEAL });
 export const Se3RainGraphic = make({ folder: E3, still: 'rain', term: 'الغَيْث', tint: TEAL });
-export const Se3DuhaGraphic = make({ folder: E3, still: 'duha', term: 'وَالضُّحَى' });
-export const Se3GraveGraphic = make({ folder: E3, still: 'grave-visit', term: 'قَبْرُ أُمِّه' });
+export const Se3DuhaGraphic = make({ folder: E3, still: 'duha', term: '' });
+export const Se3GraveGraphic = make({ folder: E3, still: 'grave-visit', term: '' });
 export const Se3ShoulderGraphic = make({ folder: E3, still: 'shoulder', term: 'لَسْتَ وَحْدَك', tint: TEAL });
 export const Se3MissionGraphic = make({ folder: E3, still: 'bag', term: 'زَادِي' });
 export const Se3NextGraphic = make({ folder: E3, still: 'north', term: 'إِلَى الشَّام' });

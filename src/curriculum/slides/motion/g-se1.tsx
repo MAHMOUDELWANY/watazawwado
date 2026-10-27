@@ -60,7 +60,7 @@ export function make({ still, term, tint = GOLD, folder = 'seerah-teens/ep01', e
     return (
       <>
         <Still file={still} folder={folder} />
-        <Term text={term} />
+        {term && <Term text={term} />}
         {p.labels.slice(0, p.items).map((l, i) => <Card key={l} label={l} i={i} n={p.labels.length} tint={tint} />)}
         {extra?.(p)}
       </>
@@ -139,7 +139,7 @@ export const Se1TrustGraphic = make({ still: 'storm-tree', term: 'التَّوَ
 export const Se1KneelGraphic = make({ still: 'kneel', term: 'بُرُوكُ الفِيل', extra: ({ lines }) => lines >= 1 && <Compass lines={lines} /> });
 export const Se1SpearGraphic = make({ still: 'spear', term: 'وَهْمُ القُوَّة' });
 export const Se1BirdsGraphic = make({ still: 'birds', term: 'طَيْرًا أَبَابِيل' });
-export const Se1FilGraphic = make({ still: 'stones', term: 'حِجَارَةٌ مِنْ سِجِّيل' });
+export const Se1FilGraphic = make({ still: 'stones', term: '' });
 export const Se1AftermathGraphic = make({ still: 'aftermath', term: 'عِزَّةُ الحَقّ' });
 export const Se1CradleGraphic = make({ still: 'cradle', term: 'المَوْلِدُ النَّبَوِيّ' });
 export const Se1MissionGraphic = make({ still: 'return', term: 'زَادِي' });

@@ -19,7 +19,7 @@ function Picture({ src }: { src: string }) {
   const [ok, setOk] = useState(false);
   const reduce = useReduce();
   return (
-    <motion.div className="pointer-events-none absolute overflow-hidden" style={{ left: 770, top: 200, width: 600, height: 400, borderRadius: 28, border: '10px solid #FFFDF8', boxShadow: '0 30px 60px -28px rgba(60,20,10,0.45)', background: 'linear-gradient(160deg, #F7E3BC 0%, #EBC88E 100%)', rotate: -1.2 }}
+    <motion.div className="pointer-events-none absolute overflow-hidden" style={{ left: 850, top: 200, width: 540, height: 360, borderRadius: 28, border: '10px solid #FFFDF8', boxShadow: '0 30px 60px -28px rgba(60,20,10,0.45)', background: 'linear-gradient(160deg, #F7E3BC 0%, #EBC88E 100%)', rotate: -1.2 }}
       initial={{ opacity: 0, y: 30, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.8, ease }}>
       <motion.img src={asset(`${src}.webp`)} alt="" draggable={false} onLoad={() => setOk(true)} onError={() => setOk(false)}
         className="absolute inset-0 h-full w-full object-cover" initial={{ scale: 1.02 }} animate={{ opacity: ok ? 1 : 0, scale: reduce ? 1.02 : 1.07 }} transition={{ opacity: { duration: 0.8 }, scale: { duration: 18, ease: 'linear' } }} />
