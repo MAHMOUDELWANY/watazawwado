@@ -42,7 +42,7 @@ works"; facts told plainly, a little more about the sounds and the alphabet's sh
 
 Adults page text: `literacy-a-adults/l01-welcome-to-arabic.ts`; the sign is سُوقُ الْخُضَارِ (the vegetable market; alif twice
 in the second word), plus one fact for adults: numbers still run left to right. Teens and Adults prototypes (cover, the
-journey, right to left) built 2026-10-27 for the owner's review; the other pages wait for his yes.
+journey, right to left) approved 2026-10-27; all pages are built in those looks.
 
 ## Sounds and facts
 - Clips: alif, the vowel "ba", the four new sounds (owner's recordings preferred, else the Fusha clone), the sign

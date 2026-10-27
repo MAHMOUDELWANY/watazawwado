@@ -15,8 +15,8 @@ import { A3CoverGraphic, A3RecallGraphic, A3QuestionGraphic, A3BradyGraphic, A3C
 import { LookAMeetGraphic, LookAWordGraphic, LookBMeetGraphic, LookBWordGraphic, LookCMeetGraphic, LookCWordGraphic } from '../motion/g-literacy-looks';
 import { LbCoverGraphic, LbStuckGraphic, LbGuessGraphic, LbBestGraphic, LbMapGraphic, LbCircleGraphic, LbHelpersGraphic, LbUthmanGraphic, LbSpotGraphic, LbAlongGraphic, LbMissionGraphic, LbNextGraphic } from '../motion/g-lb1';
 import { LawCoverGraphic, LawTrainGraphic, LawSignGraphic, LawWorldGraphic, LawRtlGraphic, Law28Graphic, LawHandsGraphic, LawDotsGraphic, LawMarksGraphic, LawSoundsGraphic, LawAlifGraphic, LawTrueGraphic, LawReadGraphic, LawStampGraphic, LawNextGraphic } from '../motion/g-law';
-import { LwtCoverGraphic, LwtCityGraphic, LwtRtlGraphic } from '../motion/g-lwt';
-import { LwaCoverGraphic, LwaMapGraphic, LwaRtlGraphic } from '../motion/g-lwa';
+import { LwtCoverGraphic, LwtCityGraphic, LwtMessageGraphic, LwtWorldGraphic, LwtRtlGraphic, Lwt28Graphic, LwtHandsGraphic, LwtDotsGraphic, LwtMarksGraphic, LwtSoundsGraphic, LwtAlifGraphic, LwtTrueGraphic, LwtReadGraphic, LwtBlockGraphic, LwtNextGraphic } from '../motion/g-lwt';
+import { LwaCoverGraphic, LwaMapGraphic, LwaSignGraphic, LwaWorldGraphic, LwaRtlGraphic, Lwa28Graphic, LwaHandsGraphic, LwaDotsGraphic, LwaMarksGraphic, LwaSoundsGraphic, LwaAlifGraphic, LwaTrueGraphic, LwaReadGraphic, LwaMilestoneGraphic, LwaNextGraphic } from '../motion/g-lwa';
 import { La1CoverGraphic, La1NoteGraphic, La1GuessGraphic, La1AlifGraphic, La1BaaGraphic, La1TaaGraphic, La1ThaaGraphic, La1TrickGraphic, La1FindGraphic, La1WordGraphic, La1MissionGraphic, La1NextGraphic } from '../motion/g-la1';
 import { Fk1CoverGraphic, Fk1GameGraphic, Fk1StoryGraphic, Fk1HaadhaGraphic, Fk1MaaGraphic, Fk1ManGraphic, Fk1WordsGraphic, Fk1SpotGraphic, Fk1TalkGraphic, Fk1MissionGraphic, Fk1NextGraphic } from '../motion/g-fk1';
 import { Ea1CoverGraphic, Ea1BookGraphic, Ea1DoorGraphic, Ea1PairsGraphic, Ea1EhGraphic, Ea1MonaGraphic, Ea1SuffixGraphic, Ea1HadraGraphic, Ea1SorryGraphic, Ea1ByeGraphic, Ea1TalkGraphic, Ea1MissionGraphic, Ea1NextGraphic } from '../motion/g-ea1';
@@ -174,14 +174,38 @@ export const SCENES: Partial<Record<SceneId, Scene>> = {
   lawRead: onStage({ tone: 'light', Graphic: LawReadGraphic }),
   lawStamp: onStage({ tone: 'light', Graphic: LawStampGraphic }),
   lawNext: onStage({ tone: 'light', Graphic: LawNextGraphic }),
-  // Literacy A · Teens · Lesson 1 · Welcome to Arabic (Decode the City; prototype pages, the rest waits for the owner's yes)
+  // Literacy A · Teens · Lesson 1 · Welcome to Arabic (Decode the City)
   lwtCover: onStage({ tone: 'dark', Graphic: LwtCoverGraphic }),
   lwtCity: onStage({ tone: 'dark', Graphic: LwtCityGraphic }),
+  lwtMessage: onStage({ tone: 'dark', Graphic: LwtMessageGraphic, keepOnAsk: true }),
+  lwtWorld: onStage({ tone: 'dark', Graphic: LwtWorldGraphic }),
   lwtRtl: onStage({ tone: 'dark', Graphic: LwtRtlGraphic }),
-  // Literacy A · Adults · Lesson 1 · Welcome to Arabic (the Reading Map; prototype pages, the rest waits for the owner's yes)
+  lwt28: onStage({ tone: 'dark', Graphic: Lwt28Graphic }),
+  lwtHands: onStage({ tone: 'dark', Graphic: LwtHandsGraphic }),
+  lwtDots: onStage({ tone: 'dark', Graphic: LwtDotsGraphic }),
+  lwtMarks: onStage({ tone: 'dark', Graphic: LwtMarksGraphic }),
+  lwtSounds: onStage({ tone: 'dark', Graphic: LwtSoundsGraphic }),
+  lwtAlif: onStage({ tone: 'dark', Graphic: LwtAlifGraphic }),
+  lwtTrue: onStage({ tone: 'dark', Graphic: LwtTrueGraphic }),
+  lwtRead: onStage({ tone: 'dark', Graphic: LwtReadGraphic }),
+  lwtBlock: onStage({ tone: 'dark', Graphic: LwtBlockGraphic }),
+  lwtNext: onStage({ tone: 'dark', Graphic: LwtNextGraphic }),
+  // Literacy A · Adults · Lesson 1 · Welcome to Arabic (the Reading Map)
   lwaCover: onStage({ tone: 'light', Graphic: LwaCoverGraphic }),
   lwaMap: onStage({ tone: 'light', Graphic: LwaMapGraphic }),
+  lwaSign: onStage({ tone: 'light', Graphic: LwaSignGraphic, keepOnAsk: true }),
+  lwaWorld: onStage({ tone: 'light', Graphic: LwaWorldGraphic }),
   lwaRtl: onStage({ tone: 'light', Graphic: LwaRtlGraphic }),
+  lwa28: onStage({ tone: 'light', Graphic: Lwa28Graphic }),
+  lwaHands: onStage({ tone: 'light', Graphic: LwaHandsGraphic }),
+  lwaDots: onStage({ tone: 'light', Graphic: LwaDotsGraphic }),
+  lwaMarks: onStage({ tone: 'light', Graphic: LwaMarksGraphic }),
+  lwaSounds: onStage({ tone: 'light', Graphic: LwaSoundsGraphic }),
+  lwaAlif: onStage({ tone: 'light', Graphic: LwaAlifGraphic }),
+  lwaTrue: onStage({ tone: 'light', Graphic: LwaTrueGraphic }),
+  lwaRead: onStage({ tone: 'light', Graphic: LwaReadGraphic }),
+  lwaMilestone: onStage({ tone: 'light', Graphic: LwaMilestoneGraphic }),
+  lwaNext: onStage({ tone: 'light', Graphic: LwaNextGraphic }),
   // Literacy A · Kids · Lesson 2 (first prototype, look A, letter friends)
   la1Cover: onStage({ tone: 'light', Graphic: La1CoverGraphic }), la1Note: onStage({ tone: 'light', Graphic: La1NoteGraphic }),
   la1Guess: onStage({ tone: 'light', Graphic: La1GuessGraphic, keepOnAsk: true }), la1Alif: onStage({ tone: 'light', Graphic: La1AlifGraphic }),

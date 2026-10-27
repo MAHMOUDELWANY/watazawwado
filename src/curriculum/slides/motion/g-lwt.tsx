@@ -5,12 +5,13 @@ import { useCue } from '../sfx';
 import { useReduce, type GraphicProps } from './Stage';
 import { Svg, Cut } from './kit';
 import { Hear } from '../Say';
+import { WorldScene, AlphabetScene, JoinScene, DotsScene, MarksScene, SoundsScene, AlifScene, NextBodies, Tag, DEEP } from './g-welcome';
 
 /**
  * Literacy A · Teens · Lesson 1 · Welcome to Arabic. Decode the City (docs/curriculum/literacy/PLAN.md): a night city
  * whose every sign is a code; each lesson lights one block, 26 in six districts, laid out right to left like Arabic.
- * Karim and Lina, our neutral teens cast, on the night stage. Prototype pages (cover, the city, right to left) for the
- * owner's review before the rest is built.
+ * Karim and Lina, our neutral teens cast, on the night stage. The owner approved the look on the cover, the city and
+ * right to left (2026-10-27); every page follows it. The explaining moments are shared with Adults (g-welcome.tsx).
  */
 
 const CAST = 'literacy-a-teens/characters';
@@ -64,7 +65,7 @@ function Windows({ x, w, h, lit, color, delay = 0 }: { x: number; w: number; h: 
 // A few stars over the city.
 const STARS = [[820, 200], [905, 150], [990, 230], [1080, 170], [1170, 215], [1250, 140], [1330, 240], [1420, 190], [1500, 250], [870, 300], [1120, 290], [1290, 320]];
 
-function City({ step, scale = 1 }: { step: number; scale?: number }) {
+function City({ step, scale = 1, next = false }: { step: number; scale?: number; next?: boolean }) {
   const reduce = useReduce();
   const preview = step === 3;
   return (
@@ -83,6 +84,10 @@ function City({ step, scale = 1 }: { step: number; scale?: number }) {
             transition={{ duration: 0.6, ease, delay: 0.1 + b.k * 0.04 }}>
             <rect x={b.x} y={GROUND - b.h} width={b.w} height={b.h} rx={3} fill="#1C2B33" stroke={lit ? dist.color : 'rgba(246,241,232,0.18)'} strokeWidth={2} />
             <Windows x={b.x} w={b.w} h={b.h} lit={lit} color={dist.color} delay={preview ? b.k * 0.05 : 0.6} />
+            {next && b.k === 1 && (
+              <motion.rect x={b.x - 3} y={GROUND - b.h - 3} width={b.w + 6} height={b.h + 6} rx={5} fill="none" stroke="#5FD3DD" strokeWidth={3}
+                animate={reduce ? { opacity: 1 } : { opacity: [0.2, 1, 0.2] }} transition={{ duration: 1.4, repeat: reduce ? 0 : Infinity }} />
+            )}
           </motion.g>
         );
       })}
@@ -237,6 +242,190 @@ export function LwtRtlGraphic({ lines }: GraphicProps) {
       )}
       {lines >= 1 && lines < 3 && <Cut src={`${CAST}/lina-point`} x={1420} y={840} h={460} flip delay={0.4} />}
       {lines >= 4 && <Cut src={`${CAST}/karim-gotit`} x={1190} y={840} h={300} delay={0.6} />}
+    </>
+  );
+}
+
+/* ---------- 2 · a message you can't read ---------- */
+
+/** Karim's phone, big, with Lina's chat open. */
+function BigPhone() {
+  return (
+    <motion.div className="pointer-events-none absolute overflow-hidden rounded-[38px]" style={{ left: 860, top: 170, width: 470, height: 600, background: '#101418', padding: 12, boxShadow: '0 40px 80px -30px rgba(0,0,0,0.85)' }}
+      initial={{ opacity: 0, y: 60, rotate: 6 }} animate={{ opacity: 1, y: 0, rotate: -2 }} transition={{ duration: 0.9, ease }}>
+      <div className="relative h-full w-full overflow-hidden rounded-[28px]" style={{ background: '#E9EEF0' }}>
+        <div className="absolute inset-x-0 top-0 flex items-center px-5" style={{ height: 64, background: TEAL }}>
+          <span className="font-sans font-bold text-white" style={{ fontSize: 22 }}>Lina</span>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+const MSG_BOX = { left: 900, top: 270, width: 380, height: 100 };
+
+function MessageOnPhone({ delay = 0.6 }: { delay?: number }) {
+  return (
+    <motion.div className="pointer-events-auto absolute flex items-center justify-center rounded-[20px]" style={{ ...MSG_BOX, background: '#FFFFFF', boxShadow: '0 6px 14px -8px rgba(0,0,0,0.4)' }}
+      initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: 'spring', bounce: 0.4, delay }}>
+      <Hear id="salam-ya-karim"><span lang="ar" style={{ ...AR, fontSize: 56, color: NIGHT }}>{MESSAGE}</span></Hear>
+    </motion.div>
+  );
+}
+
+/** A light at the right end of the message: that is where Arabic starts. */
+function StartLight({ pulse }: { pulse: boolean }) {
+  const reduce = useReduce();
+  return (
+    <motion.span className="pointer-events-none absolute rounded-full" style={{ left: MSG_BOX.left + MSG_BOX.width - 22, top: MSG_BOX.top - 18, width: 34, height: 34, background: GOLD, boxShadow: `0 0 18px ${GOLD}` }}
+      initial={{ scale: 0, opacity: 0 }} animate={pulse && !reduce ? { scale: [1, 1.5, 1], opacity: 1 } : { scale: 1, opacity: 1 }}
+      transition={pulse && !reduce ? { duration: 1.4, delay: 0.8, repeat: Infinity } : { type: 'spring', bounce: 0.5 }} />
+  );
+}
+
+export function LwtMessageGraphic({ lines }: GraphicProps) {
+  const reduce = useReduce();
+  useCue('pop', lines >= 1, 0.6);
+  useCue('oops', lines >= 2, 1.8);
+  useCue('sparkle', lines >= 3, 0.8);
+  return (
+    <>
+      {lines >= 1 && <BigPhone />}
+      {lines >= 1 && <MessageOnPhone />}
+      {/* Karim reads from the left, the English way, and gets nowhere */}
+      {lines >= 2 && (
+        <>
+          <motion.div className="pointer-events-none absolute rounded-full" style={{ top: MSG_BOX.top + 112, left: MSG_BOX.left + 10, width: 24, height: 24, background: TEAL, boxShadow: `0 0 0 7px ${TEAL}44` }}
+            initial={{ x: 0, opacity: 1 }} animate={{ x: reduce ? 0 : 330, opacity: [1, 1, 0] }} transition={{ duration: 1.6, ease: [0.45, 0, 0.55, 1] }} />
+          <motion.span className="pointer-events-none absolute font-sans font-black" style={{ left: 1180, top: 440, fontSize: 72, color: CRIMSON }}
+            initial={{ opacity: 0, scale: 0.4 }} animate={{ opacity: 1, scale: 1, rotate: reduce ? 0 : [0, -10, 8, 0] }} transition={{ delay: 1.6, duration: 0.6 }}>?!</motion.span>
+          <Tag tone="dark" x={1010} y={450} color={TEAL} delay={0.2}>from the left →</Tag>
+        </>
+      )}
+      {/* Lina's idea: a light pulses at the other end of the line */}
+      {lines >= 3 && <StartLight pulse />}
+      <Cut src={`${CAST}/${lines >= 3 ? 'lina-decode' : 'karim-phone'}`} x={1460} y={840} h={440} delay={0.3} />
+    </>
+  );
+}
+
+/* ---------- the explaining pages, shared with Adults ---------- */
+
+export function LwtWorldGraphic({ lines, tone }: GraphicProps) {
+  return <WorldScene lines={lines} tone={tone} third="songs · games · signs" />;
+}
+
+export function Lwt28Graphic({ lines, interaction, tone }: GraphicProps) {
+  return <AlphabetScene lines={lines} interaction={interaction} tone={tone} />;
+}
+
+export function LwtHandsGraphic({ lines, tone }: GraphicProps) {
+  return <JoinScene lines={lines} tone={tone} />;
+}
+
+export function LwtDotsGraphic({ lines, tone }: GraphicProps) {
+  return <DotsScene lines={lines} tone={tone} rule="count the dots" />;
+}
+
+/** The marks, then a real chat line that has none. */
+export function LwtMarksGraphic({ lines, tone }: GraphicProps) {
+  return (
+    <MarksScene lines={lines} tone={tone} last={
+      <motion.div className="pointer-events-none absolute flex flex-col items-center rounded-[20px]" style={{ ...GLASS, left: 1270, top: 460, width: 250, padding: '10px 0 12px' }}
+        initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ type: 'spring', bounce: 0.3 }}>
+        <span className="font-sans font-extrabold uppercase" style={{ fontSize: 13, letterSpacing: '0.14em', color: TEAL }}>in a real chat</span>
+        <span lang="ar" style={{ ...AR, fontSize: 44, lineHeight: 1.4, color: NIGHT }}>سلام يا كريم</span>
+        <span className="font-sans font-bold" style={{ fontSize: 15, color: 'rgba(31,22,18,0.55)' }}>no marks at all</span>
+      </motion.div>
+    } />
+  );
+}
+
+export function LwtSoundsGraphic({ lines, items, tone }: GraphicProps) {
+  useCue('poof', lines >= 3, 0.6);
+  return (
+    <>
+      <SoundsScene lines={lines} items={items} tone={tone} />
+      {lines >= 3 && <Cut src={`${CAST}/karim-gotit`} x={1440} y={840} h={420} delay={0.2} />}
+      {lines >= 3 && <Tag tone={tone} x={1440} y={380} color={CRIMSON} delay={0.6}>*cough*</Tag>}
+    </>
+  );
+}
+
+export function LwtAlifGraphic({ lines, tone }: GraphicProps) {
+  return (
+    <>
+      <AlifScene lines={lines} tone={tone} example="c·aa·r" />
+      {lines >= 4 && <Cut src={`${CAST}/lina-cheer`} x={1460} y={840} h={420} delay={0.5} />}
+    </>
+  );
+}
+
+/* ---------- 11 · level check (the game fills the page) ---------- */
+
+export function LwtTrueGraphic(_: GraphicProps) {
+  return <Cut src={`${CAST}/lina-decode`} x={1450} y={840} h={440} delay={0.4} />;
+}
+
+/* ---------- 12 · decode the message ---------- */
+
+export function LwtReadGraphic({ lines }: GraphicProps) {
+  const reduce = useReduce();
+  useCue('sparkle', lines >= 1, 0.3);
+  useCue('whoosh', lines >= 1, 0.9);
+  return (
+    <>
+      {lines >= 1 && <BigPhone />}
+      {lines >= 1 && <MessageOnPhone delay={0.3} />}
+      {lines >= 1 && (
+        <>
+          <StartLight pulse={false} />
+          <motion.div className="pointer-events-none absolute rounded-full" style={{ top: MSG_BOX.top + 112, left: MSG_BOX.left + 340, width: 24, height: 24, background: CRIMSON, boxShadow: `0 0 0 7px ${CRIMSON}33` }}
+            initial={{ x: 0 }} animate={{ x: reduce ? 0 : -330 }} transition={{ duration: 2, delay: 0.8, ease: [0.45, 0, 0.55, 1] }} />
+          <Tag tone="dark" x={1090} y={450} color={CRIMSON} solid delay={0.4}>← start on the right</Tag>
+        </>
+      )}
+      {lines >= 2 && <Cut src={`${CAST}/karim-gotit`} x={1460} y={840} h={440} delay={0.3} />}
+      {lines >= 2 && <Tag tone="dark" x={1460} y={380} color={TEAL} delay={0.8}>alif × 2</Tag>}
+    </>
+  );
+}
+
+/* ---------- 13 · first block lit ---------- */
+
+export function LwtBlockGraphic({ lines }: GraphicProps) {
+  useCue('chime', 1, 0.8);
+  useCue('sparkle', 1, 1.2);
+  const first = BLOCKS[0];
+  return (
+    <>
+      <City step={4} scale={0.85} />
+      <Svg>
+        <motion.circle cx={first.x + first.w / 2} cy={GROUND - first.h / 2} r={60} fill={GOLD} initial={{ opacity: 0, scale: 0.4 }} animate={{ opacity: 0.3, scale: 1.4 }}
+          style={{ filter: 'blur(18px)', transformBox: 'fill-box' as never, transformOrigin: '50% 50%' }} transition={{ duration: 1.6, delay: 0.6 }} />
+      </Svg>
+      {lines >= 1 && <motion.div className="pointer-events-none absolute flex flex-col items-center rounded-[24px]" style={{ ...GLASS, left: 840, top: 180, width: 260, padding: '12px 0 14px' }}
+        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring', bounce: 0.35, delay: 0.9 }}>
+        <span className="font-sans font-extrabold uppercase" style={{ fontSize: 14, letterSpacing: '0.16em', color: CRIMSON }}>Blocks lit</span>
+        <span className="font-sans font-black" style={{ fontSize: 64, lineHeight: 1.1, color: NIGHT }}>1<span style={{ fontSize: 32, color: 'rgba(31,22,18,0.4)' }}> / 26</span></span>
+        <span className="font-sans font-bold" style={{ fontSize: 17, color: 'rgba(31,22,18,0.55)' }}>unlocked: <span lang="ar" style={{ ...AR, fontSize: 26, color: DEEP }}>ا</span></span>
+      </motion.div>}
+      {lines >= 2 && <Cut src={`${CAST}/lina-cheer`} x={1230} y={700} h={330} delay={0.3} />}
+    </>
+  );
+}
+
+/* ---------- 14 · next time ---------- */
+
+export function LwtNextGraphic({ lines, tone }: GraphicProps) {
+  useCue('pop', lines >= 2, 0.3);
+  useCue('pop', lines >= 3, 0.6);
+  return (
+    <>
+      <City step={4} scale={0.7} next={lines >= 1} />
+      {lines >= 1 && <Tag tone={tone} x={1440} y={430} color={TEAL} delay={0.6}>next: block 2</Tag>}
+      <NextBodies lines={lines} tone={tone} y={360} />
+      {lines >= 3 && <Tag tone={tone} x={1110} y={430} color="#B07A1E" delay={0.8}>same body · new dots</Tag>}
     </>
   );
 }

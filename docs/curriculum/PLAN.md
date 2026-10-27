@@ -728,3 +728,8 @@ B3–B5 → continue lesson by lesson.
   Baby" and Ep3 "Three Goodbyes" (14 pages each; the three lamps going out, the route north, the race). Hadiths checked
   on Dorar (both sahih), ayat with the Quran connector. Catalog plans now list the 46 episodes in six seasons; Ep1's
   cliffhanger names "The Desert Nurse". Pages stay dark/plain until the images arrive. Drafts, `reviewed: false`.
+- 2026-10-27 — Owner approved the Teens and Adults looks ("الشكل تمام في النسختين"). All 15 pages of both Lesson 1s are
+  now built: Teens in `g-lwt.tsx` (Karim's phone, the night city, block 1 lit), Adults in `g-lwa.tsx` (the shop sign, the
+  Reading Map, milestone 1). The explaining moments (globe, 28 letters, joining, dots, vowel marks, throat sounds, alif,
+  next family) are shared in `g-welcome.tsx`, drawn for either stage tone. Every step screenshotted and checked.
+  Unmarked text appears only where the page is about text without marks (سلام يا كريم, سوق الخضار).

@@ -341,7 +341,7 @@ function Tag({ x, y, children, color = CRIMSON, delay = 0, solid = false }: { x:
 }
 
 /** Sound rings from a point (the letter is speaking). */
-function Rings({ x, y, color = GOLD, r = 40 }: { x: number; y: number; color?: string; r?: number }) {
+export function Rings({ x, y, color = GOLD, r = 40 }: { x: number; y: number; color?: string; r?: number }) {
   const reduce = useReduce();
   return (
     <Svg>
@@ -391,7 +391,7 @@ export function LawSignGraphic({ lines }: GraphicProps) {
 
 /* ---------- 3 · a language of millions: a globe of lights ---------- */
 
-const G = { cx: 1110, cy: 450, r: 245, lon0: 25, lat0: 18 };
+export const G = { cx: 1110, cy: 450, r: 245, lon0: 25, lat0: 18 };
 const rad = (d: number) => (d * Math.PI) / 180;
 /** Orthographic projection of (lat, lon) onto the globe; null when it is on the far side. */
 function project(lat: number, lon: number) {
@@ -400,19 +400,19 @@ function project(lat: number, lon: number) {
   if (front <= 0.05) return null;
   return { x: G.cx + G.r * Math.cos(f) * Math.sin(l), y: G.cy - G.r * (Math.cos(f0) * Math.sin(f) - Math.sin(f0) * Math.cos(f) * Math.cos(l)), z: front };
 }
-const GRID = (() => {
+export const GRID = (() => {
   const out: { x: number; y: number; z: number }[] = [];
   for (let lat = -78; lat <= 78; lat += 9) for (let lon = -180; lon < 180; lon += 9) { const p = project(lat, lon); if (p) out.push(p); }
   return out;
 })();
 // The countries where Arabic is the main language (the Arab League), one light each.
-const ARAB = [[32, -7], [28, 3], [34, 9], [27, 17], [26, 30], [15, 30], [20, -10], [24, 45], [15, 48], [21, 57], [24, 54], [25, 51], [26, 50.5],
+export const ARAB = [[32, -7], [28, 3], [34, 9], [27, 17], [26, 30], [15, 30], [20, -10], [24, 45], [15, 48], [21, 57], [24, 54], [25, 51], [26, 50.5],
   [29, 47.5], [33, 44], [35, 38], [31, 36], [34, 36], [31.9, 35.2], [5, 46], [11.6, 43], [-12, 43.8]].map(([a, b]) => project(a, b)!).filter(Boolean);
 // Learners everywhere else on this side of the world.
-const WORLD = [[51.5, 0], [48.8, 2.3], [52.5, 13.4], [41, 29], [6.5, 3.4], [-1.3, 36.8], [-26, 28], [25, 67], [28.6, 77], [55.7, 37.6], [40.4, -3.7],
+export const WORLD = [[51.5, 0], [48.8, 2.3], [52.5, 13.4], [41, 29], [6.5, 3.4], [-1.3, 36.8], [-26, 28], [25, 67], [28.6, 77], [55.7, 37.6], [40.4, -3.7],
   [59.3, 18], [45.5, 9.2], [9, 38.7], [-4.3, 15.3], [14.7, -17.4], [3.1, 101.7], [23.8, 90.4], [43.2, 76.9], [-33.9, 18.4]].map(([a, b]) => project(a, b)).filter(Boolean) as { x: number; y: number }[];
 
-function Counter({ to, delay = 0 }: { to: number; delay?: number }) {
+export function Counter({ to, delay = 0 }: { to: number; delay?: number }) {
   const reduce = useReduce();
   const mv = useMotionValue(reduce ? to : 0);
   const text = useTransform(mv, (v) => `${Math.round(v).toLocaleString('en-US')}+`);
@@ -462,7 +462,7 @@ export function LawWorldGraphic({ lines }: GraphicProps) {
 
 /* ---------- 5 · 28 letters, no capitals ---------- */
 
-const ALPHABET = 'ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي'.split(' ');
+export const ALPHABET = 'ا ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن ه و ي'.split(' ');
 
 export function Law28Graphic({ lines, interaction }: GraphicProps) {
   useCue('pop', lines >= 1, 0.2);

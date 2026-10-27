@@ -5,11 +5,13 @@ import { useCue } from '../sfx';
 import { bezier, useReduce, INK_TEXT, soft, type GraphicProps } from './Stage';
 import { Svg, Draw } from './kit';
 import { Hear } from '../Say';
+import { WorldScene, AlphabetScene, JoinScene, DotsScene, MarksScene, SoundsScene, AlifScene, NextBodies, Tag } from './g-welcome';
 
 /**
  * Literacy A · Adults · Lesson 1 · Welcome to Arabic. The Reading Map (docs/curriculum/literacy/PLAN.md): a clean route on
  * a paper map from "I can't read a word" to "I can read anything", with milestones. No cast for Adults (DECISIONS §13).
- * Prototype pages (cover, the map, right to left) for the owner's review before the rest is built.
+ * The owner approved the look on the cover, the map and right to left (2026-10-27); every page follows it. The
+ * explaining moments are shared with Teens (g-welcome.tsx).
  */
 
 const AR: React.CSSProperties = { fontFamily: 'var(--font-display-ar)', fontWeight: 800, direction: 'rtl' };
@@ -209,6 +211,170 @@ export function LwaRtlGraphic({ lines }: GraphicProps) {
           <span className="mt-3 font-sans font-bold" style={{ fontSize: 17, color: soft('light') }}>numbers: left to right →</span>
         </motion.div>
       )}
+    </>
+  );
+}
+
+/* ---------- 2 · a sign you can't read ---------- */
+
+const SIGN_AT = { x: 900, y: 220, w: 560 };
+// Inside the sign board (RTL): the second word, الْخُضَارِ, sits on the left half.
+const WORD2 = { left: 915, width: 285, top: SIGN_AT.y + 92 + 22 };
+
+export function LwaSignGraphic({ lines }: GraphicProps) {
+  const reduce = useReduce();
+  useCue('oops', lines >= 2, 1.8);
+  useCue('pop', lines >= 3, 0.4);
+  return (
+    <>
+      {lines >= 1 && <ShopSign x={SIGN_AT.x} y={SIGN_AT.y} w={SIGN_AT.w} />}
+      {/* the eye goes to the left, the English way: the reading dot walks left to right and finds nothing */}
+      {lines >= 2 && (
+        <>
+          <motion.div className="pointer-events-none absolute rounded-full" style={{ top: SIGN_AT.y + 240, left: SIGN_AT.x + 20, width: 24, height: 24, background: TEAL, boxShadow: `0 0 0 7px ${TEAL}33` }}
+            initial={{ x: 0, opacity: 1 }} animate={{ x: reduce ? 0 : 500, opacity: [1, 1, 0] }} transition={{ duration: 1.6, ease: [0.45, 0, 0.55, 1] }} />
+          <motion.span className="pointer-events-none absolute font-sans font-black" style={{ left: 1480, top: 300, fontSize: 64, color: CRIMSON }}
+            initial={{ opacity: 0, scale: 0.4 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 1.6, duration: 0.5 }}>?</motion.span>
+          <Tag tone="light" x={1010} y={SIGN_AT.y + 280} color={TEAL} delay={0.2}>from the left →</Tag>
+        </>
+      )}
+      {/* where does one letter end? dashed frames hover over the line, unsure */}
+      {lines >= 3 && [0, 1, 2].map((i) => (
+        <motion.span key={i} className="pointer-events-none absolute rounded-[10px]" style={{ top: SIGN_AT.y + 92, left: 980 + i * 150, width: 110, height: 110, border: `3px dashed ${GOLD}` }}
+          initial={{ opacity: 0, scale: 0.8 }} animate={reduce ? { opacity: 1, scale: 1 } : { opacity: [0, 1, 0.5], scale: 1, x: [0, 12, -8, 0] }} transition={{ duration: 1.6, delay: i * 0.3 }} />
+      ))}
+      {lines >= 3 && <Tag tone="light" x={1180} y={SIGN_AT.y + 360} color="#B07A1E" delay={0.6}>one letter? two? where is the gap?</Tag>}
+    </>
+  );
+}
+
+/* ---------- the explaining pages, shared with Teens ---------- */
+
+export function LwaWorldGraphic({ lines, tone }: GraphicProps) {
+  return <WorldScene lines={lines} tone={tone} third="one script, every country" />;
+}
+
+export function Lwa28Graphic({ lines, interaction, tone }: GraphicProps) {
+  return <AlphabetScene lines={lines} interaction={interaction} tone={tone} />;
+}
+
+export function LwaHandsGraphic({ lines, tone }: GraphicProps) {
+  return <JoinScene lines={lines} tone={tone} />;
+}
+
+export function LwaDotsGraphic({ lines, tone }: GraphicProps) {
+  return <DotsScene lines={lines} tone={tone} rule="count the dots first" />;
+}
+
+/** The marks, then the same sign as it is really printed: no marks. */
+export function LwaMarksGraphic({ lines, tone }: GraphicProps) {
+  return (
+    <MarksScene lines={lines} tone={tone} last={
+      <motion.div className="pointer-events-none absolute flex flex-col items-center rounded-[20px]" style={{ ...CARD, left: 1270, top: 460, width: 260, padding: '10px 0 12px' }}
+        initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ type: 'spring', bounce: 0.3 }}>
+        <span className="font-sans font-extrabold uppercase" style={{ fontSize: 13, letterSpacing: '0.14em', color: TEAL }}>on a real sign</span>
+        <span lang="ar" style={{ ...AR, fontSize: 44, lineHeight: 1.4, color: DEEP }}>سوق الخضار</span>
+        <span className="font-sans font-bold" style={{ fontSize: 15, color: soft('light') }}>no marks at all</span>
+      </motion.div>
+    } />
+  );
+}
+
+export function LwaSoundsGraphic({ lines, items, tone }: GraphicProps) {
+  return <SoundsScene lines={lines} items={items} tone={tone} />;
+}
+
+export function LwaAlifGraphic({ lines, tone }: GraphicProps) {
+  return <AlifScene lines={lines} tone={tone} example="f·aa·ther" />;
+}
+
+/* ---------- 11 · true or false: the map waits at stop 1 ---------- */
+
+export function LwaTrueGraphic(_: GraphicProps) {
+  return (
+    <motion.div className="pointer-events-none absolute flex flex-col items-center justify-center rounded-[22px]" style={{ ...CARD, left: 1330, top: 560, width: 200, height: 200, background: MAP_PAPER }}
+      initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease, delay: 0.4 }}>
+      <svg width={140} height={110} viewBox="0 0 140 110" className="overflow-visible">
+        <path d="M 120 90 C 80 100, 40 90, 30 60 C 20 30, 60 20, 110 20" fill="none" stroke="rgba(31,22,18,0.4)" strokeWidth={3} strokeDasharray="3 8" strokeLinecap="round" />
+        <circle cx={120} cy={90} r={9} fill={CRIMSON} />
+        <circle cx={110} cy={20} r={6} fill="#8B4A9C" />
+      </svg>
+      <span className="font-sans font-black" style={{ fontSize: 16, color: CRIMSON }}>stop 1 · check</span>
+    </motion.div>
+  );
+}
+
+/* ---------- 12 · back to the sign ---------- */
+
+export function LwaReadGraphic({ lines }: GraphicProps) {
+  const reduce = useReduce();
+  useCue('sparkle', lines >= 1, 0.3);
+  useCue('whoosh', lines >= 1, 0.9);
+  return (
+    <>
+      {lines >= 1 && <ShopSign x={SIGN_AT.x} y={SIGN_AT.y} w={SIGN_AT.w} />}
+      {lines >= 1 && (
+        <>
+          <motion.span className="pointer-events-none absolute rounded-full" style={{ left: SIGN_AT.x + SIGN_AT.w - 30, top: SIGN_AT.y + 70, width: 34, height: 34, background: GOLD, boxShadow: `0 0 18px ${GOLD}` }}
+            initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', bounce: 0.5 }} />
+          <motion.div className="pointer-events-none absolute rounded-full" style={{ top: SIGN_AT.y + 240, left: SIGN_AT.x + 500, width: 24, height: 24, background: CRIMSON, boxShadow: `0 0 0 7px ${CRIMSON}33` }}
+            initial={{ x: 0 }} animate={{ x: reduce ? 0 : -480 }} transition={{ duration: 2, delay: 0.8, ease: [0.45, 0, 0.55, 1] }} />
+          <Tag tone="light" x={1260} y={SIGN_AT.y + 280} color={CRIMSON} solid delay={0.4}>← start on the right</Tag>
+        </>
+      )}
+      {/* the second word, framed: alif is in it twice */}
+      {lines >= 2 && (
+        <>
+          <motion.span className="pointer-events-none absolute rounded-[14px]" style={{ left: WORD2.left, top: WORD2.top - 10, width: WORD2.width, height: 120, border: `4px solid ${GOLD}` }}
+            initial={{ opacity: 0, scale: 1.2 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: 'spring', bounce: 0.4, delay: 0.3 }} />
+          <Tag tone="light" x={WORD2.left + WORD2.width / 2} y={WORD2.top + 200} color={TEAL} delay={0.8}>second word · alif × 2</Tag>
+        </>
+      )}
+    </>
+  );
+}
+
+/* ---------- 13 · first milestone ---------- */
+
+export function LwaMilestoneGraphic({ lines }: GraphicProps) {
+  useCue('stamp', lines >= 1, 1.1);
+  const start = STOPS[0];
+  if (lines < 1) return null;
+  return (
+    <>
+      <Route step={2} />
+      <Svg>
+        <motion.g initial={{ scale: 3, opacity: 0, rotate: -30 }} animate={{ scale: 1, opacity: 1, rotate: -8 }} style={{ transformBox: 'fill-box' as never, transformOrigin: '50% 50%' }}
+          transition={{ type: 'spring', bounce: 0.35, delay: 1 }}>
+          <circle cx={start.x} cy={start.y} r={30} fill="rgba(197,31,36,0.12)" stroke={CRIMSON} strokeWidth={5} />
+          <path d={`M ${start.x - 13} ${start.y} l 9 10 l 18 -20`} fill="none" stroke={CRIMSON} strokeWidth={6} strokeLinecap="round" strokeLinejoin="round" />
+        </motion.g>
+      </Svg>
+      <Flag x={start.x - 110} y={start.y - 84} label="Milestone 1 ✓ How Arabic works" color={CRIMSON} strong delay={1.4} />
+      {lines >= 2 && <Flag x={1100} y={420} label="Mission: find alif this week" color={TEAL} delay={0.4} />}
+    </>
+  );
+}
+
+/* ---------- 14 · next time ---------- */
+
+export function LwaNextGraphic({ lines, tone }: GraphicProps) {
+  const reduce = useReduce();
+  useCue('pop', lines >= 2, 0.3);
+  useCue('pop', lines >= 3, 0.6);
+  const two = STOPS[1];
+  return (
+    <>
+      <motion.div className="absolute inset-0" initial={false} animate={{ opacity: lines >= 2 ? 0.35 : 1 }} transition={{ duration: 0.8 }}>
+        <Route step={2} />
+        <Svg>
+          <motion.circle cx={two.x} cy={two.y} r={20} fill="none" stroke={TEAL} strokeWidth={4} style={{ transformBox: 'fill-box' as never, transformOrigin: '50% 50%' }}
+            animate={reduce ? { opacity: 1 } : { scale: [0.6, 1.6], opacity: [1, 0] }} transition={{ duration: 1.6, repeat: reduce ? 0 : Infinity }} />
+        </Svg>
+      </motion.div>
+      {lines >= 1 && <Flag x={two.x - 60} y={two.y - 84} label="Next stop: the letters" color={TEAL} strong delay={0.4} />}
+      <NextBodies lines={lines} tone={tone} y={470} />
+      {lines >= 3 && <Tag tone={tone} x={1110} y={540} color="#B07A1E" delay={0.8}>one body · three letters</Tag>}
     </>
   );
 }
