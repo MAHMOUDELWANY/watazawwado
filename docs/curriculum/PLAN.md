@@ -64,9 +64,11 @@ Last update: 2026-10-26. History of how we got here: §8 (progress log).
 - **Next after review:** Lesson 4 (The Sentence That Costs Something) brief.
 
 ### Beyond Zad Essentials (design 2026-10-25: `docs/superpowers/specs/2026-10-25-subjects-curricula-design.md`)
-- **Seerah · Teens & Adults:** rules (`seerah/RULES.md`, the owner's deck as template), season 1 map, Episode 1 built
-  (21 pages, dark stage). **Waiting:** the owner's 22 stills (`seerah/IMAGE-PROMPTS.md`; drop them in
-  `public/curriculum/seerah-teens/ep01/` by file name) and his call on the camels story (Ibn Ishaq). Seerah Kids: Episode 1 "The Elephant Who Sat Down" built 2026-10-26 (all in code, no stills).
+- **Seerah (map of 46 episodes approved 2026-10-26):** Teens & Adults Episodes 1–3 built (dark stage with the owner's
+  stills), Kids Episodes 1–3 built (Ep1 drawn in code; Ep2–3 painted pictures in a storybook frame with the Zad Kids
+  cast). **Waiting:** the 82 images of `seerah/IMAGE-PROMPTS.md` (owner → ChatGPT → `watazawwado-archive\seerah\`;
+  Claude converts and places them), the camels story (Ibn Ishaq), review of all six episodes. **Next:** Episode 4,
+  The Monk on the Road, with its image batch.
 - **Literacy B · Quranic reading rules (Kids look):** map (12) and Lesson 1 built; ayat play Husary on tap.
 - **Literacy A · Reading Arabic · Kids:** map (29) and Lesson 1 built in look A "letter friends" (Claude's pick, the owner
   did not choose; switchable). Letter sounds wait for the owner's own recordings (`literacy/L01-clips.md`).
@@ -714,3 +716,15 @@ B3–B5 → continue lesson by lesson.
   other 12 pages per version show the plain layout until the look is approved. The old Teens/Adults Lesson 1 (Crack the
   Code, Fewer Shapes) became Lesson 2, with full endings (بَابٌ, ثَابِتٌ). Teens and Adults catalogues now follow
   `literacy/PLAN.md` (26 lessons, six parts). Clips from one take: `l01-salam-ya-karim`, `l01-suq-al-khudar`, `l01-ba`.
+- 2026-10-27 — Seerah Episodes 2 and 3, Kids and Teens & Adults. `seerah/IMAGE-PROMPTS.md` replaces the Episode 1 file:
+  82 self-contained prompts for Episodes 1–3 (Message 0 with the rules: no faces, no text, 6th-century Hejaz, LOOK T
+  cinematic / LOOK K storybook; brand accents), and a visual registry so no image repeats a look. Teens & Adults Ep2 "The
+  Desert Nurse" (20 pages: the desert custom, the drought, the orphan nobody took, Halimah's choice and al-Harith's
+  words, the milk, the slowest donkey taking the lead, the green land, barakah = kind choice + Allah's giving, Sahih
+  Muslim 162 on the opening of the chest, a private reflection, the cliffhanger to al-Abwa) and Ep3 "Three Goodbyes" (20
+  pages: Aminah, the road to Yathrib that stops at al-Abwa, Abdul-Muttalib's mattress and "Leave my grandson", 8 years 2
+  months 10 days, the chain of hands that held him, Abu Talib for forty years, the rain prayer marked "it is reported",
+  Ad-Duha 93:6–8 with a tadabbur on فَآوَى, Sahih Muslim 976 on visiting her grave). Kids Ep2 "Halimah and the Blessed
+  Baby" and Ep3 "Three Goodbyes" (14 pages each; the three lamps going out, the route north, the race). Hadiths checked
+  on Dorar (both sahih), ayat with the Quran connector. Catalog plans now list the 46 episodes in six seasons; Ep1's
+  cliffhanger names "The Desert Nurse". Pages stay dark/plain until the images arrive. Drafts, `reviewed: false`.

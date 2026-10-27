@@ -11,6 +11,8 @@ import { lessonA01 } from './content/literacy-a-kids/l01-welcome-to-arabic.js';
 import { lessonA02 } from './content/literacy-a-kids/l02-dots-make-the-difference.js';
 import { lessonF01 } from './content/fusha-kids/l01-what-is-this.js';
 import { seerahE01 } from './content/seerah-teens/l01-the-invincible-army.js';
+import { seerahE02 } from './content/seerah-teens/l02-the-desert-nurse.js';
+import { seerahE03 } from './content/seerah-teens/l03-three-goodbyes.js';
 import { lessonB01 } from './content/literacy-b/l01-same-letters-new-marks.js';
 import { lessonAA01 } from './content/literacy-a-adults/l01-welcome-to-arabic.js';
 import { lessonAA02 } from './content/literacy-a-adults/l02-fewer-shapes-than-you-think.js';
@@ -26,6 +28,8 @@ import { lessonET01 } from './content/egyptian-teens/l01-ezzayak.js';
 import { lessonEG01 } from './content/english-general/l01-hello-im.js';
 import { lessonEX01 } from './content/english-exams/l01-your-first-three-minutes.js';
 import { seerahK01 } from './content/seerah-kids/l01-the-elephant-who-sat-down.js';
+import { seerahK02 } from './content/seerah-kids/l02-halimah-and-the-blessed-baby.js';
+import { seerahK03 } from './content/seerah-kids/l03-three-goodbyes.js';
 import { lesson03Adults } from './content/zad-adults/l03-the-emptiness-fame-cannot-fill.js';
 
 /** A part of a curriculum (a unit in its MAP.md): its title and the number of its first lesson. */
@@ -231,13 +235,19 @@ export const SUBJECTS: SubjectEntry[] = [
     versionAr: 'الشباب والكبار',
     audience: '12+',
     art: '/curriculum/zad-adults/l01/cover.webp',
-    parts: [{ title: 'Season 1 · Before the Message', titleAr: 'الموسم الأول · قبل البعثة', from: 1 }],
-    // docs/curriculum/seerah/MAP.md (Claude's draft, 2026-10-25, for the owner's review).
-    plan: [
-      'The World in Shadows: The Invincible Army', 'The Shepherd Boy and the Sealed Chest', 'Loss After Loss', 'The Monk Who Knew',
-      'The War He Watched', 'The Honest One', 'Khadijah', 'The Black Stone', 'The Cave',
+    parts: [
+      { title: 'Season 1 · Before the Light', titleAr: 'الموسم الأول · قبل النور', from: 1 },
+      { title: "Season 2 · Iqra'", titleAr: 'الموسم الثاني · اقرأ', from: 9 },
+      { title: 'Season 3 · The Road to Madinah', titleAr: 'الموسم الثالث · الطريق إلى المدينة', from: 21 },
+      { title: 'Season 4 · Building Madinah', titleAr: 'الموسم الرابع · بناء المدينة', from: 26 },
+      { title: 'Season 5 · Trials and Victory', titleAr: 'الموسم الخامس · المحن والنصر', from: 32 },
+      { title: 'Season 6 · The Farewell', titleAr: 'الموسم السادس · الوداع', from: 43 },
     ],
-    lessons: { 1: seerahE01 },
+    // docs/curriculum/seerah/MAP.md (46 episodes in 6 seasons, approved by the owner 2026-10-26).
+    plan: [
+      "The Invincible Army", "The Desert Nurse", "Three Goodbyes", "The Monk on the Road", "The Pact of the Just", "Al-Amin", "Khadijah", "The Stone and the Cave", "Read!", "The First Believers", "On the Mountain of Safa", "Under the Sun of Makkah", "The Offers", "The Lion of Allah", "The Man Who Came to Kill", "To the Just King", "The Boycott", "The Year of Sorrow", "Ta'if", "The Night Journey", "The Pledges of Aqabah", "The Plot", "The Cave of Thawr", "The Chase", "The Moon Rose Over Us", "The First Masjid", "Brothers", "A City of Neighbours", "Ahl as-Suffah", "The Prophet ﷺ at Home", "Ramadan and the First Eid", "Badr", "Uhud", "The Trench", "The Treaty", "Letters to Kings", "Khaybar", "Mu'tah", "The Conquest of Makkah", "Hunayn", "Tabuk", "The Year of Delegations", "The Farewell Hajj", "The Last Days", "\"Whoever Worshipped Muhammad…\"", "The Light Continues",
+    ],
+    lessons: { 1: seerahE01, 2: seerahE02, 3: seerahE03 },
   },
   {
     id: 'literacy-b-kids',
@@ -459,13 +469,19 @@ export const SUBJECTS: SubjectEntry[] = [
     versionAr: 'الأطفال',
     audience: '6–11',
     art: '/curriculum/zad-kids/l01/cover.webp',
-    parts: [{ title: 'Season 1 · Before the Message', titleAr: 'الموسم الأول · قبل البعثة', from: 1 }],
-    // docs/curriculum/seerah/MAP.md (same season as Teens & Adults, told for children; Claude's draft, 2026-10-26).
-    plan: [
-      'The Elephant Who Sat Down', 'Halimah and the Baby', 'Loss After Loss', 'The Monk Who Knew', 'The War He Watched',
-      'The Honest One', 'Khadijah', 'The Black Stone', 'The Cave',
+    parts: [
+      { title: 'Season 1 · Before the Light', titleAr: 'الموسم الأول · قبل النور', from: 1 },
+      { title: "Season 2 · Iqra'", titleAr: 'الموسم الثاني · اقرأ', from: 9 },
+      { title: 'Season 3 · The Road to Madinah', titleAr: 'الموسم الثالث · الطريق إلى المدينة', from: 21 },
+      { title: 'Season 4 · Building Madinah', titleAr: 'الموسم الرابع · بناء المدينة', from: 26 },
+      { title: 'Season 5 · Trials and Victory', titleAr: 'الموسم الخامس · المحن والنصر', from: 32 },
+      { title: 'Season 6 · The Farewell', titleAr: 'الموسم السادس · الوداع', from: 43 },
     ],
-    lessons: { 1: seerahK01 },
+    // docs/curriculum/seerah/MAP.md (same 46 episodes as Teens & Adults, told for children; approved 2026-10-26).
+    plan: [
+      "The Elephant Who Sat Down", "Halimah and the Blessed Baby", "Three Goodbyes", "The Monk on the Road", "The Pact of the Just", "Al-Amin", "Khadijah", "The Stone and the Cave", "Read!", "The First Believers", "On the Mountain of Safa", "Under the Sun of Makkah", "The Offers", "The Lion of Allah", "The Man Who Came to Kill", "To the Just King", "The Boycott", "The Year of Sorrow", "Ta'if", "The Night Journey", "The Pledges of Aqabah", "The Plot", "The Cave of Thawr", "The Chase", "The Moon Rose Over Us", "The First Masjid", "Brothers", "A City of Neighbours", "Ahl as-Suffah", "The Prophet ﷺ at Home", "Ramadan and the First Eid", "Badr", "Uhud", "The Trench", "The Treaty", "Letters to Kings", "Khaybar", "Mu'tah", "The Conquest of Makkah", "Hunayn", "Tabuk", "The Year of Delegations", "The Farewell Hajj", "The Last Days", "\"Whoever Worshipped Muhammad…\"", "The Light Continues",
+    ],
+    lessons: { 1: seerahK01, 2: seerahK02, 3: seerahK03 },
   },
 ];
 

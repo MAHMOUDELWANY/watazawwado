@@ -35,3 +35,9 @@ Owner's decisions 2026-10-25 (design §4.9). `docs/curriculum/RULES.md` wins on 
 - Teens & Adults: the deck's look on our motion stage: dark, cinematic, gold serif titles, the owner's stills
   (prompts per page from Claude, images by the owner), motion that explains (maps, numbers, routes).
 - Kids: their own tone, simpler sentences, the Kids look and animation; same facts.
+
+## Images (owner, 2026-10-27)
+- Claude writes every image prompt in `IMAGE-PROMPTS.md`, several episodes in one batch, each prompt self-contained
+  (the owner pastes them into ChatGPT); the images land in `watazawwado-archive\seerah\<version>-epNN\`.
+- No two images in the series repeat a look: before a new batch, read the visual registry at the end of
+  `IMAGE-PROMPTS.md`, follow its rules, and add the new images to it.

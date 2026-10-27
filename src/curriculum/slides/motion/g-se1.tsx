@@ -12,16 +12,16 @@ import { asset } from '../Art';
  * stage. The Prophet ﷺ and the companions are never shown.
  */
 
-const BONE = '#F6F1E8';
+export const BONE = '#F6F1E8';
 const AR: React.CSSProperties = { fontFamily: 'var(--font-display-ar)', fontWeight: 800, direction: 'rtl' };
 
 /** The page's still, slowly pushing in; hidden until it loads (or if it is missing). */
-function Still({ file }: { file: string }) {
+function Still({ file, folder }: { file: string; folder: string }) {
   const [ok, setOk] = useState(false);
   const reduce = useReduce();
   return (
     <motion.div className="pointer-events-none absolute inset-0 overflow-hidden" initial={{ opacity: 0 }} animate={{ opacity: ok ? 1 : 0 }} transition={{ duration: 1.2 }}>
-      <motion.img src={asset(`seerah-teens/ep01/${file}.webp`)} alt="" draggable={false} onLoad={() => setOk(true)} onError={() => setOk(false)}
+      <motion.img src={asset(`${folder}/${file}.webp`)} alt="" draggable={false} onLoad={() => setOk(true)} onError={() => setOk(false)}
         className="absolute inset-0 h-full w-full object-cover" initial={{ scale: 1.04 }} animate={reduce ? { scale: 1.04 } : { scale: 1.12 }} transition={{ duration: 24, ease: 'linear' }} />
       <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(12,8,6,0.94) 0%, rgba(12,8,6,0.78) 34%, rgba(12,8,6,0.18) 62%, rgba(12,8,6,0.35) 100%)' }} />
       <div className="absolute inset-0" style={{ background: 'linear-gradient(0deg, rgba(12,8,6,0.85) 0%, transparent 32%)' }} />
@@ -52,14 +52,14 @@ function Card({ label, i, n, tint }: { label: string; i: number; n: number; tint
   );
 }
 
-type Opts = { still: string; term: string; tint?: string; extra?: (p: GraphicProps) => React.ReactNode };
+type Opts = { still: string; term: string; tint?: string; folder?: string; extra?: (p: GraphicProps) => React.ReactNode };
 
 /** Builds a page graphic from its still, term and cards (the labels of the page, one per build step). */
-function make({ still, term, tint = GOLD, extra }: Opts) {
+export function make({ still, term, tint = GOLD, folder = 'seerah-teens/ep01', extra }: Opts) {
   return function SeerahPage(p: GraphicProps) {
     return (
       <>
-        <Still file={still} />
+        <Still file={still} folder={folder} />
         <Term text={term} />
         {p.labels.slice(0, p.items).map((l, i) => <Card key={l} label={l} i={i} n={p.labels.length} tint={tint} />)}
         {extra?.(p)}
@@ -69,7 +69,7 @@ function make({ still, term, tint = GOLD, extra }: Opts) {
 }
 
 /** The army's numbers count up as they are named. */
-function CountUp({ to, x, y, label }: { to: number; x: number; y: number; label: string }) {
+export function CountUp({ to, x, y, label }: { to: number; x: number; y: number; label: string }) {
   const [n, setN] = useState(0);
   React.useEffect(() => {
     let raf = 0; const t0 = performance.now();
@@ -110,11 +110,11 @@ function Compass({ lines }: { lines: number }) {
 }
 
 /** A quote card for the line of the episode. */
-function Quote({ text, by }: { text: string; by: string }) {
+export function Quote({ text, by, kicker = 'The words that shook a throne' }: { text: string; by: string; kicker?: string }) {
   return (
     <motion.figure className="pointer-events-none absolute m-0" style={{ right: 110, bottom: 140, width: 640, padding: '22px 26px', background: 'rgba(20,12,9,0.78)', borderLeft: `3px solid ${GOLD}` }}
       initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease }}>
-      <p className="m-0 font-sans font-bold uppercase" style={{ fontSize: 13, letterSpacing: '0.2em', color: GOLD }}>The words that shook a throne</p>
+      <p className="m-0 font-sans font-bold uppercase" style={{ fontSize: 13, letterSpacing: '0.2em', color: GOLD }}>{kicker}</p>
       <blockquote className="m-0 mt-2 font-serif italic" style={{ fontSize: 30, lineHeight: 1.25, color: BONE }}>“{text}”</blockquote>
       <figcaption className="mt-2 font-sans font-bold uppercase" style={{ fontSize: 12, letterSpacing: '0.18em', color: 'rgba(246,241,232,0.6)' }}>{by}</figcaption>
     </motion.figure>

@@ -4,4 +4,4 @@ import { existsSync } from 'node:fs';
 
 const vite = ['node_modules/vite/bin/vite.js', '../../../node_modules/vite/bin/vite.js'].find((p) => existsSync(p));
 if (!vite) { console.error('vite not found: run from the project root (or a worktree under .claude/worktrees)'); process.exit(1); }
-spawn(process.execPath, [vite, '--port', '3101', '--strictPort'], { stdio: 'inherit' }).on('exit', (code) => process.exit(code ?? 0));
+spawn(process.execPath, [vite, '--port', process.env.PORT || '3101', '--strictPort'], { stdio: 'inherit' }).on('exit', (code) => process.exit(code ?? 0));

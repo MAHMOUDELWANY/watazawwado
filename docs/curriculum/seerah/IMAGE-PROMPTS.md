@@ -11,6 +11,11 @@ or plain until it arrives.
 
 Replaces `EP01-image-prompts.md` (same 22 file names for Episode 1, prompts rewritten to be self-contained).
 
+**For Claude, placing them:** each archive folder maps to the site: `seerah\teens-epNN\x.png` →
+`public/curriculum/seerah-teens/epNN/x.webp`, `seerah\kids-epNN\x.png` → `public/curriculum/seerah-kids/epNN/x.webp`
+(`ffmpeg -i x.png -vf scale=1600:-2 -c:v libwebp -quality 82 x.webp`; Kids pictures at 1200 wide). Check each image
+against Message 0 before placing it (no faces, no text, right era); ask the owner to redo any that fail, by file name.
+
 ---
 
 ## Message 0 · paste this first

@@ -247,7 +247,7 @@ export const seerahE01: Lesson = {
       lines: [
         'The baby is given to a poor nurse from the desert tribe of Banu Sa\'d. Why does her life change overnight?',
         'Years later, two figures in white come to the boy in the hills. What do they open, and what do they place inside?',
-        'Next: Episode 2, The Shepherd Boy and the Sealed Chest.',
+        'Next: Episode 2, The Desert Nurse.',
       ],
       explain: ['End on both mysteries. Do not answer them.'],
     },
