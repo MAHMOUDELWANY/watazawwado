@@ -64,7 +64,7 @@ instead of 58. Claude cuts each sheet into its four squares and saves them as
 > Square 1:1, a 2x2 grid of four separate paintings, LOOK KIDS: a warm painted storybook vignette, soft 3D-rendered toy-like shapes with gouache texture, rounded friendly forms, cream, sand and terracotta with touches of crimson (#C51F24), teal (#0FA3B8) and gold (#E5A93C), cheerful and gentle.
 > - **top-left:** A friendly elephant made of soft cartoon shapes sitting down in a sandy valley under a big sun, small birds in the sky.
 > - **top-right:** A glowing cave mouth high on a rocky mountain under a starry sky, a soft light shining out of it. No people.
-> - **bottom-left:** A camel walking along a dotted path on a map toward a green palm town, the moon rising.
+> - **bottom-left:** A camel walking along a dotted path on a map toward a green palm oasis with low mud-brick houses (no domes, no minarets), the moon rising.
 > - **bottom-right:** A simple masjid made of palm trunks and mud bricks with a palm-leaf roof, a little garden, happy morning light.
 > No text, no faces, thin cream gaps between cells, no borders or labels.
 
@@ -82,9 +82,9 @@ instead of 58. Claude cuts each sheet into its four squares and saves them as
 
 **6 · `sheet-06`** · LOOK KIDS
 > Square 1:1, a 2x2 grid of four separate paintings, LOOK KIDS: a warm painted storybook vignette, soft 3D-rendered toy-like shapes with gouache texture, rounded friendly forms, cream, sand and terracotta with touches of crimson (#C51F24), teal (#0FA3B8) and gold (#E5A93C), cheerful and gentle.
-> - **top-left:** A cat sitting beside an open door and a little wooden toy house, cheerful, like a first picture word.
+> - **top-left:** A bright paper kite shaped like a striped fish flying over a small toy park with round trees, cheerful, like a first picture word.
 > - **top-right:** A grandmother's balcony in Cairo with a tea tray, a sleeping orange cat and flower pots, minarets in the background.
-> - **bottom-left:** A friendly toy snake curled in the shape of a spiral on a play mat, with a toy red bus behind.
+> - **bottom-left:** A small wooden toy sailboat with a striped sail on a blue play mat painted like a sea, a toy lighthouse beside it.
 > - **bottom-right:** a simple eight-point khatam star in gold on a plain soft background (spare cell).
 > No text, no faces, thin cream gaps between cells, no borders or labels.
 
@@ -113,7 +113,7 @@ instead of 58. Claude cuts each sheet into its four squares and saves them as
 **9 · `sheet-09`** · LOOK TEENS
 > Square 1:1, a 2x2 grid of four separate paintings, LOOK TEENS: a bold stylised cinematic illustration, strong simple shapes, confident colour, dusk or night light with teal (#0FA3B8) and crimson (#C51F24) accents and a gold (#E5A93C) glow, modern and energetic.
 > - **top-left:** Glowing light trails on a night highway that join and split like connecting lines, seen from above.
-> - **top-right:** A turntable and headphones glowing on a desk, small floating dots and dashes of light above it like marks.
+> - **top-right:** An open sketchbook on a desk at night with glowing marker pens, small floating dots and dashes of teal and crimson light above it like marks.
 > - **bottom-left:** A blank billboard at night half revealed by a sweeping spotlight, teal and crimson glow.
 > - **bottom-right:** a simple eight-point khatam star in gold on a plain soft background (spare cell).
 > No text, no faces, thin cream gaps between cells, no borders or labels.
@@ -136,7 +136,7 @@ instead of 58. Claude cuts each sheet into its four squares and saves them as
 > - **top-right:** A stone wudu fountain in a quiet courtyard, clear water running over carved stone, morning light.
 > - **bottom-left:** The mihrab of a simple old masjid, an empty prayer row on red carpet, a shaft of light falling across it.
 > - **bottom-right:** A wooden table with an open ledger, a few coins and a bowl of dates beside a window with a crescent moon at dusk.
-> No text, no faces, thin cream gaps between cells, no borders or labels.
+> No text, no faces, thin cream gaps between cells, no borders or labels. No people at all. Do NOT draw a city skyline, mosque domes or a sunset view: draw exactly the four objects or places listed, each different.
 
 ---
 
@@ -146,7 +146,7 @@ instead of 58. Claude cuts each sheet into its four squares and saves them as
 > - **top-right:** A folded paper map and a brass compass on a wooden table, morning light. The start of a route.
 > - **bottom-left:** A reed pen, an inkwell and a sheet of handmade paper with abstract ink strokes (not letters), warm light.
 > - **bottom-right:** Old wooden typesetting blocks slotted together in a tray, blank faces, soft side light.
-> No text, no faces, thin cream gaps between cells, no borders or labels.
+> No text, no faces, thin cream gaps between cells, no borders or labels. No people at all. Do NOT draw a city skyline, mosque domes or a sunset view: draw exactly the four objects or places listed, each different.
 
 ---
 
@@ -156,7 +156,7 @@ instead of 58. Claude cuts each sheet into its four squares and saves them as
 > - **top-right:** A café table with a newspaper folded so no text shows, a cup of coffee and reading glasses, morning light.
 > - **bottom-left:** A busy old street at dusk with shop awnings and blank hanging signs, warm lamps lighting up.
 > - **bottom-right:** An ancient desert valley at dusk with a distant line of dust on the horizon and a tiny low stone Kaaba of bare stacked stones.
-> No text, no faces, thin cream gaps between cells, no borders or labels.
+> No text, no faces, thin cream gaps between cells, no borders or labels. No people at all. Do NOT draw a city skyline, mosque domes or a sunset view: draw exactly the four objects or places listed, each different.
 
 ---
 
@@ -166,7 +166,7 @@ instead of 58. Claude cuts each sheet into its four squares and saves them as
 > - **top-right:** A narrow rocky desert pass at night under a full moon, a faint trail of footprints leading north. No people.
 > - **bottom-left:** The first masjid of Madinah: palm-trunk pillars and a palm-leaf roof, morning light falling through the gaps. No people.
 > - **bottom-right:** A desert plain at dawn with wells in the foreground and a line of dunes, banners far away. No bodies, no people close up.
-> No text, no faces, thin cream gaps between cells, no borders or labels.
+> No text, no faces, thin cream gaps between cells, no borders or labels. No people at all. Do NOT draw a city skyline, mosque domes or a sunset view: draw exactly the four objects or places listed, each different.
 
 ---
 
@@ -176,7 +176,7 @@ instead of 58. Claude cuts each sheet into its four squares and saves them as
 > - **top-right:** A closed mushaf on a carved rehal in the light of a dawn window, prayer beads beside it. No readable writing.
 > - **bottom-left:** Golden rings of light rippling outward from a closed mushaf on a low table, like sound waves, a brass lamp glowing.
 > - **bottom-right:** Two glasses of mint tea on a café table by the Nile at sunset, a felucca sail beyond.
-> No text, no faces, thin cream gaps between cells, no borders or labels.
+> No text, no faces, thin cream gaps between cells, no borders or labels. No people at all. Do NOT draw a city skyline, mosque domes or a sunset view: draw exactly the four objects or places listed, each different.
 
 ---
 
@@ -185,6 +185,31 @@ instead of 58. Claude cuts each sheet into its four squares and saves them as
 > - **top-left:** A Cairo crossroads at dusk with a pharmacy sign showing a green leaf (no text), a bakery awning and a lamp post.
 > - **top-right:** An airport café table with a passport-shaped blank notebook, a boarding pass with no text and a cup of tea.
 > - **bottom-left:** An hourglass with golden sand running on a desk beside sharpened pencils and blank answer sheets.
+> - **bottom-right:** a simple eight-point khatam star in gold on a plain soft background (spare cell).
+> No text, no faces, thin cream gaps between cells, no borders or labels. No people at all. Do NOT draw a city skyline, mosque domes or a sunset view: draw exactly the four objects or places listed, each different.
+
+---
+
+## Round 2 · paste in a NEW chat (2026-10-27)
+
+Round 1 gave sheets 01-10 (placed). Sheets 11-16 came back as sunset skylines with people, so they are asked
+again, and four cells are redone (two looked like other landmarks, one showed music gear, one had minarets in
+early Madinah). Open a new chat, paste Message 0 above, then this section and sheets 11-16 above, and say
+"Start with sheet-11". Then "next" up to sheet-18.
+
+**17 · `sheet-17`** · LOOK KIDS
+> Square 1:1, a 2x2 grid of four separate paintings, LOOK KIDS: a warm painted storybook vignette, soft 3D-rendered toy-like shapes with gouache texture, rounded friendly forms, cream, sand and terracotta with touches of crimson (#C51F24), teal (#0FA3B8) and gold (#E5A93C), cheerful and gentle.
+> - **top-left:** A bright paper kite shaped like a striped fish flying over a small toy park with round trees, cheerful, like a first picture word.
+> - **top-right:** A small wooden toy sailboat with a striped sail on a blue play mat painted like a sea, a toy lighthouse beside it.
+> - **bottom-left:** A camel walking along a dotted path on a map toward a green palm oasis with low mud-brick houses (no domes, no minarets), the moon rising.
+> - **bottom-right:** a simple eight-point khatam star in gold on a plain soft background (spare cell).
+> No text, no faces, thin cream gaps between cells, no borders or labels.
+
+**18 · `sheet-18`** · LOOK TEENS
+> Square 1:1, a 2x2 grid of four separate paintings, LOOK TEENS: a bold stylised cinematic illustration, strong simple shapes, confident colour, dusk or night light with teal (#0FA3B8) and crimson (#C51F24) accents and a gold (#E5A93C) glow, modern and energetic.
+> - **top-left:** An open sketchbook on a desk at night with glowing marker pens, small floating dots and dashes of teal and crimson light above it like marks.
+> - **top-right:** a simple eight-point khatam star in gold on a plain soft background (spare cell).
+> - **bottom-left:** a simple eight-point khatam star in gold on a plain soft background (spare cell).
 > - **bottom-right:** a simple eight-point khatam star in gold on a plain soft background (spare cell).
 > No text, no faces, thin cream gaps between cells, no borders or labels.
 
@@ -256,3 +281,11 @@ instead of 58. Claude cuts each sheet into its four squares and saves them as
 | sheet-16 | top-right | `english-general-s1` |
 | sheet-16 | bottom-left | `english-exams-s1` |
 | sheet-16 | bottom-right | (spare) |
+| sheet-17 | top-left | `fusha-kids-s1` |
+| sheet-17 | top-right | `english-kids-s1` |
+| sheet-17 | bottom-left | `seerah-kids-s3` |
+| sheet-17 | bottom-right | (spare) |
+| sheet-18 | top-left | `literacy-a-teens-s4` |
+| sheet-18 | top-right | (spare) |
+| sheet-18 | bottom-left | (spare) |
+| sheet-18 | bottom-right | (spare) |
