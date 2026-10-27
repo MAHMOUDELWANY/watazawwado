@@ -771,3 +771,5 @@ B3–B5 → continue lesson by lesson.
   site's light and dark themes; overview with progress and a jump to every stage; motion per age (Kids spring pop-in
   and Yusuf at the latest lesson, Teens pulsing stations and a light running along the road, Adults a road that draws
   itself). Checked in light, dark, Arabic and on a phone.
+- 2026-10-27 — Road map landmarks: 58 prompts (one per stage of every version) in `LANDMARK-PROMPTS.md`; the road map
+  shows each stage's landmark in an arch beside its gate (desktop) as soon as `public/curriculum/landmarks/<track>-s<N>.webp` exists.

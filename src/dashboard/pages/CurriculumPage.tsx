@@ -131,7 +131,7 @@ export function CurriculumTrackPage() {
           </div>
         </div>
       </header>
-      <Roadmap plan={t.plan} parts={t.parts} lessons={t.lessons} group={g.id} version={t.version} audience={t.audience} ar={ar} L={L}
+      <Roadmap track={t.id} plan={t.plan} parts={t.parts} lessons={t.lessons} group={g.id} version={t.version} audience={t.audience} ar={ar} L={L}
         hrefFor={(n) => `${base}/${g.id}/${t.id}/${n}`} />
     </div>
   );

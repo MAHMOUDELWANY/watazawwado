@@ -11,7 +11,8 @@ import { asset } from './slides/Art';
  * through, every lesson a khatam station, and a gate at the finish. It follows the site's light and dark themes (surface
  * tokens, `.khatam-field`, `.brand-lights`). Each age moves differently: Kids stations pop in with a spring and Yusuf
  * waits at the latest lesson; Teens get a light that runs along the road and pulsing stations; Adults a calm road that
- * draws itself. On a phone the road runs straight down the start edge. Reduced motion shows everything at rest.
+ * draws itself. Each stage gate can carry a landmark painting beside it (desktop). On a phone the road runs straight
+ * down the start edge. Reduced motion shows everything at rest.
  */
 
 type Age = 'kids' | 'teens' | 'adults';
@@ -68,7 +69,24 @@ function KhatamShape({ size, fill, stroke, dash }: { size: number; fill: string;
   );
 }
 
+/** The stage's landmark painting in an arched frame; hidden until it loads (or if it has not arrived yet). */
+function Landmark({ track, pi, size, age, reduce }: { track: string; pi: number; size: number; age: Age; reduce: boolean | null }) {
+  const [ok, setOk] = useState(false);
+  return (
+    <motion.span aria-hidden="true" className={`arch-tile relative block shrink-0 overflow-hidden bg-surface ring-2 ring-surface shadow-[0_18px_36px_-20px_rgba(40,20,10,0.6)] ${ok ? '' : 'hidden'}`}
+      style={{ width: size, height: size * 1.15 }}
+      initial={reduce ? false : { opacity: 0, scale: 0.8, rotate: -4 }} whileInView={{ opacity: 1, scale: 1, rotate: 0 }} viewport={{ once: true }}
+      transition={age === 'kids' ? { type: 'spring', bounce: 0.5, duration: 0.9, delay: 0.2 } : { duration: 0.7, ease: EASE, delay: 0.2 }}>
+      <img src={`/curriculum/landmarks/${track}-s${pi + 1}.webp`} alt="" draggable={false} onLoad={() => setOk(true)} onError={() => setOk(false)}
+        ref={(el) => { if (el?.complete && el.naturalWidth > 0) setOk(true); }} className="h-full w-full object-cover" />
+    </motion.span>
+  );
+}
+
+
 type Props = {
+  /** The version's id: its stage landmarks live at /curriculum/landmarks/<track>-s<N>.webp (LANDMARK-PROMPTS.md). */
+  track: string;
   plan: string[];
   parts: { title: string; titleAr: string; from: number }[];
   lessons: Record<number, Lesson>;
@@ -80,7 +98,7 @@ type Props = {
   L: (en: string, ar: string) => string;
 };
 
-export function Roadmap({ plan, parts, lessons, group, version, audience, ar, hrefFor, L }: Props) {
+export function Roadmap({ track, plan, parts, lessons, group, version, audience, ar, hrefFor, L }: Props) {
   const reduce = useReducedMotion();
   const wide = useWide();
   const uid = useId().replace(/:/g, '');
@@ -217,6 +235,11 @@ export function Roadmap({ plan, parts, lessons, group, version, audience, ar, hr
           return (
             <li key={part.from} aria-labelledby={`stage-${uid}-${pi}`} className="scroll-mt-24">
               <motion.div className={`relative z-10 flex ${wide ? 'justify-center' : 'justify-start'} pb-2`} {...enter()}>
+                {wide && (
+                  <span dir="ltr" className="absolute bottom-2" style={pi % 2 ? { left: 'calc(50% + 190px)' } : { right: 'calc(50% + 190px)' }}>
+                    <Landmark track={track} age={age} reduce={reduce} pi={pi} size={age === 'kids' ? 132 : 116} />
+                  </span>
+                )}
                 <Gate pi={pi} title={ar ? part.titleAr : part.title} from={part.from} last={last} ready={ready} total={numbers.length} />
               </motion.div>
 
