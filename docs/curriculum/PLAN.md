@@ -766,3 +766,8 @@ B3–B5 → continue lesson by lesson.
   stations. The journey page (All aboard! / Decode the City / The Reading Map) removed from Literacy Lesson 1 in all three
   versions; `literacy/PLAN.md` and `DECISIONS` updated.
 
+- 2026-10-27 — Road map redesigned in the brand language after the owner's feedback: khatam lattice and brand lights,
+  ribbon gradient as the travelled road, mihrab gates for stages, khatam stations, an arch finish gate; follows the
+  site's light and dark themes; overview with progress and a jump to every stage; motion per age (Kids spring pop-in
+  and Yusuf at the latest lesson, Teens pulsing stations and a light running along the road, Adults a road that draws
+  itself). Checked in light, dark, Arabic and on a phone.
