@@ -66,7 +66,7 @@ Last update: 2026-10-26. History of how we got here: §8 (progress log).
 ### Beyond Zad Essentials (design 2026-10-25: `docs/superpowers/specs/2026-10-25-subjects-curricula-design.md`)
 - **Seerah (map of 46 episodes approved 2026-10-26):** Teens & Adults Episodes 1–3 built (dark stage with the owner's
   stills), Kids Episodes 1–3 built (Ep1 drawn in code; Ep2–3 painted pictures in a storybook frame with the Zad Kids
-  cast). All 82 images placed 2026-10-27; Episode 4 built and 28 of its 29 images placed. **Waiting:** the Episode 4 wallet redo, the camels story (Ibn Ishaq), review of all six episodes. **Next:** Episode 5,
+  cast). All 82 images placed 2026-10-27; Episodes 1–4 have every image placed (Kids and Teens & Adults). **Waiting:** the camels story (Ibn Ishaq), review of all six episodes. **Next:** Episode 5,
   The Pact of the Just, with its image batch.
 - **Literacy B · Quranic reading rules (Kids look):** map (12) and Lesson 1 built; ayat play Husary on tap.
 - **Literacy A · Reading Arabic · Kids:** map (29) and Lesson 1 built in look A "letter friends" (Claude's pick, the owner
@@ -757,3 +757,5 @@ B3–B5 → continue lesson by lesson.
 - 2026-10-27 — The 26 door banners checked and placed (no faces, no readable text; mushaf covers carry only ornament);
   doors and the version header now show them. Kids Episode 1 images not delivered yet; the Episode 4 wallet redo came back
   split again (new instructions in the prompts file).
+- 2026-10-27 — Kids Episode 1 paintings (10, saved by ChatGPT in `seerah\year-of-the-elephant\`) and the Episode 4 wallet
+  redo checked and placed. Every Seerah image of Episodes 1–4 is now on the site (Kids and Teens & Adults).
