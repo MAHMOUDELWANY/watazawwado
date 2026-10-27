@@ -80,6 +80,10 @@
       "destination": "/api/index"
     },
     {
+      "source": "/sb/(.*)",
+      "destination": "https://fmwxqyroyxgigvpahpri.supabase.co/$1"
+    },
+    {
       "source": "/(.*)",
       "destination": "/spa"
     }

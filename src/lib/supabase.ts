@@ -45,6 +45,31 @@ export const clearAuthLinkType = (): void => {
   } catch {}
 };
 
+/** The same Supabase request through our own domain (vercel.json rewrites /sb/* to the project), or null if it is not one. */
+export function proxiedSupabaseUrl(url: string, projectUrl: string | undefined, origin: string): string | null {
+  const base = (projectUrl || '').replace(/\/+$/, '');
+  if (!base || !url.startsWith(base + '/')) return null;
+  return origin + '/sb' + url.slice(base.length);
+}
+
+// Some home and mobile networks, private DNS and ad blockers block *.supabase.co, and sign-in then fails with
+// "Failed to fetch". A request that cannot leave the device is retried through our own domain, and the rest of the
+// visit keeps using that route. Realtime (chat websockets) still goes direct.
+let useProxy = false;
+const resilientFetch: typeof fetch = async (input, init) => {
+  const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+  const proxied = typeof window !== 'undefined' ? proxiedSupabaseUrl(url, supabaseUrl, window.location.origin) : null;
+  if (proxied && useProxy) return fetch(proxied, init);
+  try {
+    return await fetch(input, init);
+  } catch (err) {
+    if (!proxied || (err as Error)?.name === 'AbortError') throw err;
+    const res = await fetch(proxied, init);
+    useProxy = true;
+    return res;
+  }
+};
+
 // Create the client with standard options (auth persistence, auto refresh)
 export const supabase: SupabaseClient = createClient(
   isSupabaseConfigured() ? supabaseUrl! : 'https://placeholder.supabase.co',
@@ -55,6 +80,7 @@ export const supabase: SupabaseClient = createClient(
       autoRefreshToken: true,
       detectSessionInUrl: true,
     },
+    global: { fetch: resilientFetch },
   }
 );
 
