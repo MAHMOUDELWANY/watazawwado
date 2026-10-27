@@ -614,7 +614,9 @@ objects around him.
 
 ---
 
-**Episode 4 check, 2026-10-27:** 28 of 29 placed. One redo:
+**Episode 4 check, 2026-10-27:** 28 of 29 placed. One redo, still open: the second try (10:49) came back split in
+two again. Paste this prompt alone in a **brand-new chat** (without Message 0 and without other prompts), so ChatGPT does
+not merge it with the previous picture:
 
 **`teens-ep04/wallet`** (rejected: two different pictures stitched into one frame, a man in a robe above a city and the
 shop counter below)

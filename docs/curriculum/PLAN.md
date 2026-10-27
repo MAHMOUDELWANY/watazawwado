@@ -754,4 +754,6 @@ B3–B5 → continue lesson by lesson.
   `seerah/IMAGE-PROMPTS.md`, kids-ep01; the balance and the mission keep their drawn graphics); every subject and version
   door gets its own banner (26 prompts in `BANNER-PROMPTS.md`, catalog points to `public/curriculum/banners/<id>.webp`,
   doors show their glow until a banner arrives); stills now appear even when the image was cached before the page drew.
-
+- 2026-10-27 — The 26 door banners checked and placed (no faces, no readable text; mushaf covers carry only ornament);
+  doors and the version header now show them. Kids Episode 1 images not delivered yet; the Episode 4 wallet redo came back
+  split again (new instructions in the prompts file).

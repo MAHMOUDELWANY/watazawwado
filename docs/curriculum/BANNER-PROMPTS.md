@@ -1,5 +1,7 @@
 # Curriculum banners · image prompts (26 images)
 
+**Done 2026-10-27:** all 26 checked and placed (`public/curriculum/banners/`, 1000×1000 WebP).
+
 One banner for every subject door and every version door in the curriculum (teacher workspace and student portal). The
 owner's rule (2026-10-27): a banner is its own picture. It never reuses an episode or lesson image, and no two banners look
 alike. Until a banner arrives, its door shows the soft coloured glow.
