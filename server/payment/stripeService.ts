@@ -31,12 +31,15 @@ export interface CreateStripeSessionParams {
   metadata: Record<string, string>;
   successUrl: string;
   cancelUrl: string;
+  /** Owner D8 (2026-10-28): the card form inside our page; Stripe returns to successUrl after paying. */
+  embedded?: boolean;
 }
 
 export interface StripeSessionResult {
   id: string;
   url: string;
   status: string;
+  clientSecret?: string;
 }
 
 /**
@@ -58,9 +61,14 @@ export async function createStripeCheckoutSession(
   formParams.append('mode', 'payment');
   // Expire before the booking's 35-minute payment hold ends (Stripe's minimum is 30 minutes).
   formParams.append('expires_at', String(Math.floor(Date.now() / 1000) + 31 * 60));
-  formParams.append('success_url', params.successUrl);
-  formParams.append('cancel_url', params.cancelUrl);
-  
+  if (params.embedded) {
+    formParams.append('ui_mode', 'embedded_page');
+    formParams.append('return_url', params.successUrl);
+  } else {
+    formParams.append('success_url', params.successUrl);
+    formParams.append('cancel_url', params.cancelUrl);
+  }
+
   if (params.customerEmail && params.customerEmail.includes('@')) {
     formParams.append('customer_email', params.customerEmail.trim());
   }
@@ -83,15 +91,21 @@ export async function createStripeCheckoutSession(
     }
   }
 
-  const response = await fetch(`${baseUrl}/checkout/sessions`, {
+  const post = (body: string) => fetch(`${baseUrl}/checkout/sessions`, {
     signal: AbortSignal.timeout(15000),
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${secretKey}`,
       'Content-Type': 'application/x-www-form-urlencoded'
     },
-    body: formParams.toString()
+    body
   });
+  let response = await post(formParams.toString());
+  // Older Stripe API versions call the embedded mode `embedded`.
+  if (!response.ok && params.embedded && response.status === 400) {
+    formParams.set('ui_mode', 'embedded');
+    response = await post(formParams.toString());
+  }
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
@@ -103,7 +117,8 @@ export async function createStripeCheckoutSession(
   return {
     id: session.id,
     url: session.url,
-    status: session.status
+    status: session.status,
+    clientSecret: session.client_secret || undefined
   };
 }
 

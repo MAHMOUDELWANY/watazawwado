@@ -5484,6 +5484,9 @@ app.post('/api/payments/create-intent', rateLimit, async (req: any, res: any) =>
     const defaultSuccessUrl = `${hostOrigin}/student/payments?session_id={CHECKOUT_SESSION_ID}&gateway=stripe`;
     const defaultCancelUrl = `${hostOrigin}/student/payments?payment_cancelled=true`;
 
+    // Owner D8: card form inside our page when the client asks and the publishable key is configured.
+    const stripePublishableKey = getStripeConfig().publishableKey;
+    const wantEmbedded = req.body?.embedded === true && /^pk_/.test(stripePublishableKey);
     const session = await createStripeCheckoutSession({
       amount: authoritativeAmount,
       currency: authoritativeCurrency,
@@ -5494,7 +5497,8 @@ app.post('/api/payments/create-intent', rateLimit, async (req: any, res: any) =>
         targetId: String(targetId)
       },
       successUrl: sameSiteUrl(successUrl) || defaultSuccessUrl,
-      cancelUrl: sameSiteUrl(cancelUrl) || defaultCancelUrl
+      cancelUrl: sameSiteUrl(cancelUrl) || defaultCancelUrl,
+      embedded: wantEmbedded
     });
 
     return res.json({
@@ -5502,6 +5506,7 @@ app.post('/api/payments/create-intent', rateLimit, async (req: any, res: any) =>
       gateway: 'stripe',
       sessionId: session.id,
       sessionUrl: session.url,
+      ...(wantEmbedded && session.clientSecret ? { clientSecret: session.clientSecret, publishableKey: stripePublishableKey } : {}),
       amount: authoritativeAmount,
       currency: authoritativeCurrency
     });

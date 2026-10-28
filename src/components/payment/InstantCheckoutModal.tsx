@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CreditCard, ShieldCheck, AlertCircle, Lock, X, Tag, Wallet, CheckCircle2 } from 'lucide-react';
 import { Modal } from '../ui/Modal';
 import { Input } from '../ui/Input';
@@ -36,6 +36,21 @@ interface Quote {
 }
 
 const money = (n: number) => `$${Number(n || 0).toFixed(2)}`;
+
+/** Stripe.js from Stripe's own host (required by Stripe; no npm package needed). */
+let stripeJsPromise: Promise<any> | null = null;
+function loadStripeJs(): Promise<any> {
+  if ((window as any).Stripe) return Promise.resolve((window as any).Stripe);
+  stripeJsPromise ??= new Promise((resolve, reject) => {
+    const el = document.createElement('script');
+    el.src = 'https://js.stripe.com/v3/';
+    el.async = true;
+    el.onload = () => ((window as any).Stripe ? resolve((window as any).Stripe) : reject(new Error('Stripe.js missing')));
+    el.onerror = () => { stripeJsPromise = null; reject(new Error('Stripe.js failed to load')); };
+    document.head.appendChild(el);
+  });
+  return stripeJsPromise;
+}
 
 async function postJson(path: string, body: object) {
   const token = await getFreshAccessToken();
@@ -78,6 +93,9 @@ export function InstantCheckoutModal({
   const [checkingCode, setCheckingCode] = useState(false);
   const [useCredit, setUseCredit] = useState(true);
   const [confirmedFree, setConfirmedFree] = useState(false);
+  // Owner D8: the card form shows inside this window (Stripe Embedded Checkout); redirect stays as the fallback.
+  const [embedded, setEmbedded] = useState<{ clientSecret: string; publishableKey: string } | null>(null);
+  const embeddedRef = useRef<HTMLDivElement>(null);
 
   const loadQuote = useCallback(async (code: string, credit: boolean) => {
     const { ok, data } = await postJson('/api/checkout/quote', { targetType, targetId, code: code || undefined, useCredit: credit });
@@ -134,6 +152,65 @@ export function InstantCheckoutModal({
   const total = quote ? quote.finalAmount : Number(amount || 0);
   const formattedAmount = total.toFixed(2);
 
+  const stripeUrls = () => {
+    // Cancel returns to this exact page with only a flag, so the booking draft is restored.
+    const cancelTarget = new URL(window.location.href);
+    cancelTarget.searchParams.set('payment_cancelled', 'true');
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.set('gateway', 'stripe');
+    currentUrl.searchParams.set('payment_status', 'success');
+    currentUrl.searchParams.set('target_id', targetId);
+    currentUrl.searchParams.set('target_type', targetType);
+    // Stripe only substitutes the literal {CHECKOUT_SESSION_ID}; searchParams would percent-encode the braces.
+    return { successUrl: `${currentUrl.toString()}&session_id={CHECKOUT_SESSION_ID}`, cancelUrl: cancelTarget.toString() };
+  };
+
+  const createSession = async (wantEmbedded: boolean) => {
+    const res = await fetch('/api/payments/create-intent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ gateway: 'stripe', targetType, targetId, ...stripeUrls(), embedded: wantEmbedded })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to initialize Stripe Checkout session.');
+    return data;
+  };
+
+  const redirectToStripe = async () => {
+    const data = await createSession(false);
+    if (!data.sessionUrl) throw new Error('Failed to initialize Stripe Checkout session.');
+    window.location.href = data.sessionUrl;
+  };
+
+  // Mount the card form once its box is on screen; any failure falls back to Stripe's own page.
+  useEffect(() => {
+    if (!embedded || !embeddedRef.current) return;
+    let instance: any = null;
+    let cancelled = false;
+    (async () => {
+      try {
+        const Stripe = await loadStripeJs();
+        const stripe = Stripe(embedded.publishableKey);
+        const opts = { fetchClientSecret: async () => embedded.clientSecret };
+        instance = typeof stripe.createEmbeddedCheckoutPage === 'function'
+          ? await stripe.createEmbeddedCheckoutPage(opts)
+          : await stripe.initEmbeddedCheckout(opts);
+        if (cancelled) { instance.destroy?.(); return; }
+        instance.mount(embeddedRef.current);
+        setIsProcessingStripe(false);
+      } catch (err) {
+        console.error('[Stripe embedded]', err);
+        if (cancelled) return;
+        setEmbedded(null);
+        redirectToStripe().catch((e) => {
+          setError(e.message || (isAr ? 'فشل تحويلك إلى صفحة الدفع الآمن.' : 'Failed to redirect to Stripe checkout.'));
+          setIsProcessingStripe(false);
+        });
+      }
+    })();
+    return () => { cancelled = true; instance?.destroy?.(); };
+  }, [embedded]);
+
   const handleCheckout = async () => {
     setIsProcessingStripe(true);
     setError(null);
@@ -155,39 +232,13 @@ export function InstantCheckoutModal({
         return;
       }
 
-      // 2. Card payment on Stripe for the stored price.
-      // Cancel returns to this exact page with only a flag, so the booking draft is restored.
-      const cancelTarget = new URL(window.location.href);
-      cancelTarget.searchParams.set('payment_cancelled', 'true');
-      const cancelUrl = cancelTarget.toString();
-
-      const currentUrl = new URL(window.location.href);
-      currentUrl.searchParams.set('gateway', 'stripe');
-      currentUrl.searchParams.set('payment_status', 'success');
-      currentUrl.searchParams.set('target_id', targetId);
-      currentUrl.searchParams.set('target_type', targetType);
-
-      // Stripe only substitutes the literal {CHECKOUT_SESSION_ID}; searchParams would percent-encode the braces.
-      const successUrl = `${currentUrl.toString()}&session_id={CHECKOUT_SESSION_ID}`;
-
-      const res = await fetch('/api/payments/create-intent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          gateway: 'stripe',
-          targetType,
-          targetId,
-          successUrl,
-          cancelUrl
-        })
-      });
-
-      const data = await res.json();
-      if (!res.ok || !data.sessionUrl) {
-        throw new Error(data.error || 'Failed to initialize Stripe Checkout session.');
+      // 2. Card payment for the stored price: inside this window when Stripe allows it, else on Stripe's page.
+      const data = await createSession(true);
+      if (data.clientSecret && data.publishableKey) {
+        setEmbedded({ clientSecret: data.clientSecret, publishableKey: data.publishableKey });
+        return;
       }
-
-      // Redirect directly to Stripe hosted checkout page
+      if (!data.sessionUrl) throw new Error('Failed to initialize Stripe Checkout session.');
       window.location.href = data.sessionUrl;
     } catch (err: any) {
       console.error('[Stripe Checkout Error]', err);
@@ -321,6 +372,11 @@ export function InstantCheckoutModal({
                 )}
               </div>
 
+              {embedded && (
+                <div ref={embeddedRef} className="min-h-[24rem] rounded-2xl overflow-hidden" data-testid="stripe-embedded-checkout" />
+              )}
+
+              {!embedded && (<>
               {/* Account balance */}
               {quote && (quote.balance > 0 || quote.referral) && (
                 <label className="flex items-center justify-between gap-3 p-3.5 rounded-2xl border border-border/50 glass-card cursor-pointer">
@@ -423,7 +479,7 @@ export function InstantCheckoutModal({
                   {isProcessingStripe ? (
                     <>
                       <BrandSpinner size="sm" />
-                      <span>{total === 0 ? (isAr ? 'بنأكد الحجز...' : 'Confirming...') : (isAr ? 'جارِ التحويل إلى Stripe...' : 'Redirecting to Stripe...')}</span>
+                      <span>{total === 0 ? (isAr ? 'بنأكد الحجز...' : 'Confirming...') : (isAr ? 'بنجهز الدفع...' : 'Getting payment ready...')}</span>
                     </>
                   ) : total === 0 ? (
                     <>
@@ -444,20 +500,14 @@ export function InstantCheckoutModal({
                 {total > 0 && (
                   <p className="text-center text-[11px] text-muted-foreground">
                     {isAr
-                      ? 'سيتم تحويلك إلى صفحة الدفع الآمنة من Stripe: بطاقة، أو Apple Pay، أو Google Pay، أو PayPal'
-                      : 'You will go to Stripe’s secure checkout: card, Apple Pay, Google Pay or PayPal.'}
+                      ? 'الدفع آمن عن طريق Stripe: بطاقة، أو Apple Pay، أو Google Pay، أو PayPal'
+                      : 'Secure payment by Stripe: card, Apple Pay, Google Pay or PayPal.'}
                   </p>
                 )}
               </div>
 
-              {/* Trust & Guarantee Footer */}
-              <div className="pt-4 border-t border-border/40 flex items-center justify-between text-[11px] text-muted-foreground">
-                <span className="flex items-center gap-1.5">
-                  <Lock className="w-3.5 h-3.5 text-secondary" />
-                  <span>{isAr ? 'تشفير كامل 256-bit SSL' : '256-bit SSL Encrypted'}</span>
-                </span>
-                <span>{isAr ? 'تأكيد وحجز فوري' : 'Instant Confirmation'}</span>
-              </div>
+              </>)}
+
         </div>
       </div>
     </Modal>
