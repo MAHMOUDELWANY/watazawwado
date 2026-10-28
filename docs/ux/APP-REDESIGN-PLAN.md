@@ -58,7 +58,8 @@ Shipped: items 1, 2 and 4 in full; item 3 as phone padding only. The two-column 
 3. **Layout and spacing.** Phone: larger gaps, full-width primary buttons, 44px taps. Tablet/desktop: two-column layouts (main + side panel) with a max content width, instead of one stretched column.
 4. **Toasts + skeletons + empty states** as shared components; replace `window.confirm`/`alert` with the Modal.
 
-### Phase 2: Progress
+### Phase 2: Progress — done 2026-10-28
+Owner's pick: B (calm board) for adults and parents, A (road) for children, C (journey log) for teachers.
 Three prototypes (road-map based, calm number dashboard, timeline). Owner picks one. Then one shared progress component used by the student page and the teacher's student detail, replacing the current 1,784-line page.
 
 ### Phase 3: Look and feel
@@ -88,5 +89,4 @@ Public website pages; curriculum content; pricing/booking rules; any database ch
 
 VERDICT: Proceed with Phase 1 after owner go-ahead.
 
-**UNRESOLVED DECISIONS:**
-- Phase 2 progress look (waits for the 3 prototypes).
+NO UNRESOLVED DECISIONS

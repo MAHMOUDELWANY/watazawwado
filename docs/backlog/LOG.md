@@ -4,6 +4,13 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### App redesign, phase 2: progress (2026-10-28)
+- Owner picked a mix of the three prototypes (https://claude.ai/artifact/PEjhE9Gyq5SGWGNLX3mf1U): calm board (B) for adults and parents, road (A) for children, journey log (C) for teachers.
+- Student: `StudentProgressPage.tsx` keeps loading, learner/child switching and the monthly report, timeline and achievements; the 1,000-line path view is replaced by `components/progress/ProgressCalm.tsx` and `ProgressRoad.tsx` (shared bits in `progressShared.tsx`). Guardian child cards are simpler (level bar, rhythm, latest milestone).
+- Teacher: `dashboard/components/JourneyLog.tsx` on the student page: 12-week attendance strip from completed lessons, then notes and milestones newest first.
+- Tests: `pr-03-progress-page` rewritten for the new views; new `journey-log` (weekly counting). Fixture pages rendered with the built site CSS and checked at desktop and phone width (road and calm board, no horizontal scroll).
+- Not checked in the signed-in portal itself (no login here).
+
 ### App redesign, phase 1: clean-up (2026-10-28)
 - Plan and owner decisions: `docs/ux/APP-REDESIGN-PLAN.md`.
 - Settings by role: teachers see only Calendar and Time zone. Booking rules, Zoom/Brevo cards, env-var names, the time-zone audit table and the self-test are super-admin only (`IntegrationsManager` gets `isAdmin`). No `RULES.md` mentions left in settings copy. The dead "Look" select is gone (dark mode lives in the top bar).
