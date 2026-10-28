@@ -1,7 +1,7 @@
 /**
  * Runs after `vite build` and the SSR build of src/entry-prerender.tsx: writes two HTML files per
- * public page, Arabic at the plain path (dist/about.html) and English under /en (dist/en/about.html,
- * dist/en.html for the homepage, QA-05b), each with its own lang/dir, title, description, self
+ * public page, English at the plain path (dist/about.html) and Arabic under /ar (dist/ar/about.html,
+ * dist/ar.html for the homepage; owner 2026-10-28), each with its own lang/dir, title, description, self
  * canonical, hreflang alternates and social tags, the page itself rendered inside #root, and
  * dist/sitemap.xml listing both addresses with their alternates.
  * Vercel serves real files before the SPA rewrite, so visitors see content before the JavaScript
@@ -28,7 +28,7 @@ const cssLink = template.match(/<link rel="stylesheet"[^>]*href="(\/assets\/[^"]
 const inlineCss = cssLink ? fs.readFileSync(path.join(dist, cssLink[1]), 'utf8') : null;
 
 type Lang = 'ar' | 'en';
-const LANGS: Lang[] = ['ar', 'en'];
+const LANGS: Lang[] = ['en', 'ar'];
 
 export function courseListJsonLd(lang: Lang = 'ar'): string {
   const data = {
@@ -57,12 +57,12 @@ export function courseListJsonLd(lang: Lang = 'ar'): string {
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-/** hreflang alternates, the same on both language versions; x-default is the Arabic (root) address. */
+/** hreflang alternates, the same on both language versions; x-default is the English (root) address. */
 export function hreflangLinks(path: string): string {
   return (
     `<link rel="alternate" hreflang="ar" href="${pageUrl(path, 'ar')}" />` +
     `<link rel="alternate" hreflang="en" href="${pageUrl(path, 'en')}" />` +
-    `<link rel="alternate" hreflang="x-default" href="${pageUrl(path, 'ar')}" />`
+    `<link rel="alternate" hreflang="x-default" href="${pageUrl(path, 'en')}" />`
   );
 }
 
@@ -112,11 +112,11 @@ const renderer: { render: (url: string) => Promise<string> } | null = fs.existsS
   : null;
 
 let rendered = 0;
-fs.mkdirSync(path.join(dist, 'en'), { recursive: true });
+fs.mkdirSync(path.join(dist, 'ar'), { recursive: true });
 for (const page of PUBLIC_PAGES) {
   for (const lang of LANGS) {
     const urlPath = pagePath(page.path, lang);
-    // Vercel cleanUrls: /about -> about.html, /en -> en.html, /en/about -> en/about.html.
+    // Vercel cleanUrls: /about -> about.html, /ar -> ar.html, /ar/about -> ar/about.html.
     const file = urlPath === '/' ? 'index.html' : `${urlPath.slice(1)}.html`;
     let body: string | null = null;
     try {
@@ -133,7 +133,7 @@ const today = new Date().toISOString().slice(0, 10);
 const alternates = (p: string) =>
   `<xhtml:link rel="alternate" hreflang="ar" href="${pageUrl(p, 'ar')}"/>` +
   `<xhtml:link rel="alternate" hreflang="en" href="${pageUrl(p, 'en')}"/>` +
-  `<xhtml:link rel="alternate" hreflang="x-default" href="${pageUrl(p, 'ar')}"/>`;
+  `<xhtml:link rel="alternate" hreflang="x-default" href="${pageUrl(p, 'en')}"/>`;
 const priority = (p: string) => (p === '/' ? '1.0' : ['/privacy', '/terms'].includes(p) ? '0.3' : '0.8');
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">

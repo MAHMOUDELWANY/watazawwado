@@ -4,7 +4,7 @@ import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
 import FocusTrap from './FocusTrap';
 import { useLocation } from 'react-router-dom';
 import { Link } from './public/LangLink';
-import { stripEnPrefix } from '../lib/language';
+import { stripLangPrefix } from '../lib/language';
 import {
   Menu,
   X,
@@ -254,7 +254,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </span>
                   {navLinks.map((link) => {
                     const Icon = link.icon;
-                    const isActive = stripEnPrefix(location.pathname) === link.href;
+                    const isActive = stripLangPrefix(location.pathname) === link.href;
                     return (
                       <Link
                         key={link.href}

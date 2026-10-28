@@ -7,11 +7,11 @@ import React from 'react';
 import { prerenderToNodeStream } from 'react-dom/static';
 import { StaticRouter } from 'react-router';
 import { AppProviders, AppRoutes } from './App';
-import { isEnPath, setPrerenderLanguage } from './lib/language';
+import { pathLanguage, setPrerenderLanguage } from './lib/language';
 
 export async function render(url: string): Promise<string> {
-  // /en pages render in English, everything else in Arabic (the site default).
-  setPrerenderLanguage(isEnPath(url) ? 'en' : 'ar');
+  // /ar pages render in Arabic, everything else in English (the site default).
+  setPrerenderLanguage(pathLanguage(url));
   const { prelude } = await prerenderToNodeStream(
     <AppProviders>
       <StaticRouter location={url}>

@@ -40,58 +40,53 @@ export async function syncChosenLanguage(): Promise<void> {
 }
 
 /**
- * English URLs (QA-05b): every public page also lives under /en (/en, /en/about, ...). Arabic keeps
- * the plain paths. Account areas (student, dashboard, staff, API) never get the prefix.
+ * Language URLs (owner 2026-10-28: English is the site default): every public page is English at the plain
+ * path and Arabic under /ar (/ar, /ar/about, ...). Account areas (student, dashboard, staff, API) never get
+ * the prefix. The old /en addresses redirect to the plain path.
  */
-export const EN_PREFIX = '/en';
+export const AR_PREFIX = '/ar';
 const LOCALIZED_PATHS = new Set([...PUBLIC_PAGES.map((p) => p.path), '/get-started']);
 
-export const isEnPath = (pathname: string) => pathname === EN_PREFIX || pathname.startsWith(EN_PREFIX + '/');
+export const isArPath = (pathname: string) => pathname === AR_PREFIX || pathname.startsWith(AR_PREFIX + '/');
 
-/** '/en/pricing' -> '/pricing', '/en' -> '/'; other paths unchanged. */
-export function stripEnPrefix(pathname: string): string {
-  if (!isEnPath(pathname)) return pathname;
-  return pathname.slice(EN_PREFIX.length) || '/';
+/** The language a public address is written in: /ar/... is Arabic, everything else English. */
+export const pathLanguage = (pathname: string): Language => (isArPath(pathname) ? 'ar' : 'en');
+
+/** '/ar/pricing' -> '/pricing', '/ar' -> '/'; other paths unchanged. */
+export function stripLangPrefix(pathname: string): string {
+  if (!isArPath(pathname)) return pathname;
+  return pathname.slice(AR_PREFIX.length) || '/';
 }
 
-/** The URL of a public page in a language: localizedPath('/pricing', 'en') -> '/en/pricing'. Keeps ?query and #hash. */
+/** The URL of a public page in a language: localizedPath('/pricing', 'ar') -> '/ar/pricing'. Keeps ?query and #hash. */
 export function localizedPath(to: string, lang: Language): string {
   const cut = to.search(/[?#]/);
   const pathname = cut === -1 ? to : to.slice(0, cut);
   const rest = cut === -1 ? '' : to.slice(cut);
-  const base = stripEnPrefix(pathname);
-  if (lang !== 'en' || !LOCALIZED_PATHS.has(base)) return base + rest;
-  return (base === '/' ? EN_PREFIX : EN_PREFIX + base) + rest;
+  const base = stripLangPrefix(pathname);
+  if (lang !== 'ar' || !LOCALIZED_PATHS.has(base)) return base + rest;
+  return (base === '/' ? AR_PREFIX : AR_PREFIX + base) + rest;
 }
 
-// The prerender build has no window: it renders /en pages in English through this.
-let prerenderLanguage: Language = 'ar';
+// The prerender build has no window: it renders /ar pages in Arabic through this.
+let prerenderLanguage: Language = 'en';
 export function setPrerenderLanguage(lang: Language) {
   prerenderLanguage = lang;
 }
 
 /**
- * Retrieves the current language preference.
- * Priority: localStorage -> document element -> default 'ar'
+ * The current language: the one the person picked (toggle or an /ar address), else English, the site default.
+ * Only an explicit choice counts, so the Arabic that older builds stored as a silent default is ignored.
  */
 export function getStoredLanguage(): Language {
   if (typeof window !== 'undefined') {
     try {
-      const cookie = readCookie(LANGUAGE_STORAGE_KEY);
-      if (cookie === 'ar' || cookie === 'en') {
-        return cookie;
-      }
-      const saved = localStorage.getItem(LANGUAGE_STORAGE_KEY);
-      if (saved === 'ar' || saved === 'en') {
-        writeCookie(LANGUAGE_STORAGE_KEY, saved);
-        return saved;
-      }
-      // If not yet set, write default 'ar' to storage
-      localStorage.setItem(LANGUAGE_STORAGE_KEY, 'ar');
+      const chosen = readCookie(LANG_CHOSEN_COOKIE);
+      if (chosen === 'ar' || chosen === 'en') return chosen;
     } catch {
-      // Ignore localStorage errors (e.g. private mode)
+      // Ignore cookie errors (e.g. blocked storage)
     }
-    return 'ar'; // Strict default is Arabic
+    return 'en';
   }
   return prerenderLanguage;
 }
@@ -118,16 +113,22 @@ export function setStoredLanguage(lang: Language): void {
   }
 }
 
-/** Saves a language the user picked (toggle or an /en address): storage, cookie, and their account. */
+/** Saves a language the user picked (toggle or an /ar address): storage, cookie, and their account. */
 export function chooseLanguage(lang: Language): void {
   setStoredLanguage(lang);
   writeCookie(LANG_CHOSEN_COOKIE, lang);
   void syncChosenLanguage();
 }
 
-/** Opening an /en address picks English, the same way the toggle does, so the choice sticks. */
+/** Opening an /ar address picks Arabic, the same way the toggle does, so the choice sticks. */
 export function applyUrlLanguage(pathname: string): void {
-  if (isEnPath(pathname) && getStoredLanguage() !== 'en') chooseLanguage('en');
+  if (isArPath(pathname) && getStoredLanguage() !== 'ar') chooseLanguage('ar');
+}
+
+/** Someone who chose Arabic and opens a plain (English) public address is sent to its /ar twin; null when no move is needed. */
+export function arabicTwin(pathname: string): string | null {
+  if (isArPath(pathname) || getStoredLanguage() !== 'ar' || !LOCALIZED_PATHS.has(pathname)) return null;
+  return localizedPath(pathname, 'ar');
 }
 
 /**

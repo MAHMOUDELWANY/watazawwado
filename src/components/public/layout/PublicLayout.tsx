@@ -9,7 +9,7 @@ import { Language } from '../../../types';
 import { LearningGuide } from '../../LearningGuide';
 import { useTheme } from '../../ThemeProvider';
 import { OnboardingGuide, OnboardingStep } from '../../ui/OnboardingGuide';
-import { useAppLanguage, applyUrlLanguage, localizedPath, stripEnPrefix } from '../../../lib/language';
+import { useAppLanguage, applyUrlLanguage, arabicTwin, localizedPath, stripLangPrefix } from '../../../lib/language';
 import { BackToTop } from './BackToTop';
 import { ReferralWelcome } from './ReferralWelcome';
 import { InstallAppNudge } from '../../pwa/InstallApp';
@@ -31,7 +31,7 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
   const location = useLocation();
   const navigate = useNavigate();
 
-  // QA-05b: the toggle moves between a page's Arabic and /en address; elsewhere it only switches language.
+  // The toggle moves between a page's English and /ar address; elsewhere it only switches language.
   const handleToggleLang = () => {
     const next: Language = lang === 'ar' ? 'en' : 'ar';
     const target = localizedPath(location.pathname, next);
@@ -39,9 +39,11 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
     setLanguage(next);
   };
 
-  // Arriving at an /en address inside the app (a link) picks English, as a full page load does in main.tsx.
+  // Arriving at an /ar address picks Arabic; someone who chose Arabic and lands on an English address goes to its /ar twin.
   useEffect(() => {
     applyUrlLanguage(location.pathname);
+    const twin = arabicTwin(location.pathname);
+    if (twin) navigate(twin + location.search + location.hash, { replace: true });
   }, [location.pathname]);
 
   const [getStartedModalOpen, setGetStartedModalOpen] = useState<boolean>(Boolean(initialGetStartedOpen));
@@ -54,7 +56,7 @@ export function PublicLayout({ initialGetStartedOpen = false }: PublicLayoutProp
   // Switching the same page between Arabic and English keeps the reader where they are.
   const lastPage = useRef<string | null>(null);
   useEffect(() => {
-    const page = stripEnPrefix(location.pathname);
+    const page = stripLangPrefix(location.pathname);
     const samePage = page === lastPage.current;
     lastPage.current = page;
     if (samePage) return;

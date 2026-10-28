@@ -97,6 +97,6 @@ export const PUBLIC_PAGES: PageSeo[] = [
 
 export const findPageSeo = (path: string) => PUBLIC_PAGES.find((p) => p.path === path) || null;
 
-/** QA-05b: Arabic lives at the plain path, English under /en. pageUrl('/pricing', 'en') -> https://.../en/pricing */
-export const pagePath = (path: string, lang: 'ar' | 'en') => (lang === 'ar' ? path : path === '/' ? '/en' : `/en${path}`);
+/** English lives at the plain path, Arabic under /ar (owner 2026-10-28). pageUrl('/pricing', 'ar') -> https://.../ar/pricing */
+export const pagePath = (path: string, lang: 'ar' | 'en') => (lang === 'en' ? path : path === '/' ? '/ar' : `/ar${path}`);
 export const pageUrl = (path: string, lang: 'ar' | 'en') => `${SITE_URL}${pagePath(path, lang)}`;

@@ -110,6 +110,7 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 ## 6. Language & tone
 
 - **[Decided] Everything is bilingual (Arabic + English)** for every account type — student, parent, teacher, admin — on every page, email and message.
+- **[Decided 2026-10-28] English is the default language** of the site, the app and emails; Arabic is the second option. Public pages are English at the plain address and Arabic under `/ar` (old `/en` links redirect). Arabic shows only when the person picks it (toggle or an `/ar` address); that choice is remembered.
 - **[Decided] Tone:** friendly, warm and close to everyday speech in both languages; not stiff or overly formal, never boring.
 - **[Decided 2026-10-14] Arabic style: a 50/50 mix** — simple standard Arabic with a warm Egyptian touch (e.g. "احجز حصتك", "بتوفّر", "عايز"), the way a friendly Egyptian teacher writes. Legal pages (terms, privacy) stay in clear simple standard Arabic so they are unambiguous.
 - Arabic is right-to-left: use logical CSS (`ms-`/`me-`/`ps-`/`pe-`/`start`/`end`), never `left`/`right`.

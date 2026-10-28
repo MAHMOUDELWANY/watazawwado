@@ -79,17 +79,17 @@ export function AppRoutes() {
             <Route path="/privacy" element={<PrivacyPolicyPage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/safety" element={<SafetyPage />} />
-            {/* QA-05b: the same public pages in English under /en (Arabic keeps the plain paths). */}
-            <Route path="/en" element={<PublicHomepage />} />
-            <Route path="/en/get-started" element={<PublicHomepage />} />
-            <Route path="/en/about" element={<AboutPage />} />
-            <Route path="/en/how-it-works" element={<HowItWorksPage />} />
-            <Route path="/en/learning" element={<LearningPage />} />
-            <Route path="/en/pricing" element={<PricingPage />} />
-            <Route path="/en/faq" element={<FAQPage />} />
-            <Route path="/en/privacy" element={<PrivacyPolicyPage />} />
-            <Route path="/en/terms" element={<TermsPage />} />
-            <Route path="/en/safety" element={<SafetyPage />} />
+            {/* The same public pages in Arabic under /ar (English, the default, keeps the plain paths). */}
+            <Route path="/ar" element={<PublicHomepage />} />
+            <Route path="/ar/get-started" element={<PublicHomepage />} />
+            <Route path="/ar/about" element={<AboutPage />} />
+            <Route path="/ar/how-it-works" element={<HowItWorksPage />} />
+            <Route path="/ar/learning" element={<LearningPage />} />
+            <Route path="/ar/pricing" element={<PricingPage />} />
+            <Route path="/ar/faq" element={<FAQPage />} />
+            <Route path="/ar/privacy" element={<PrivacyPolicyPage />} />
+            <Route path="/ar/terms" element={<TermsPage />} />
+            <Route path="/ar/safety" element={<SafetyPage />} />
           </Route>
 
           {/* Authenticated and Special Routes */}
@@ -106,7 +106,10 @@ export function AppRoutes() {
           <Route path="/verify-otp" element={<OtpVerificationPage />} />
           <Route path="/verify" element={<OtpVerificationPage />} />
           <Route path="/student/*" element={<StudentApp />} />
-          <Route path="/en/*" element={<Navigate to="/en" replace />} />
+          <Route path="/ar/*" element={<Navigate to="/ar" replace />} />
+          {/* Old English addresses (before 2026-10-28) now live at the plain path. */}
+          <Route path="/en/*" element={<OldEnglishAddress />} />
+          <Route path="/en" element={<Navigate to="/" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         </Suspense>
@@ -134,4 +137,10 @@ export default function App() {
       </BrowserRouter>
     </AppProviders>
   );
+}
+
+/** /en/pricing -> /pricing (English moved to the plain paths on 2026-10-28). */
+function OldEnglishAddress() {
+  const { pathname, search, hash } = useLocation();
+  return <Navigate to={(pathname.replace(/^\/en(?=\/|$)/, '') || '/') + search + hash} replace />;
 }

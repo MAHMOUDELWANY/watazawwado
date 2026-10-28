@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ar" dir="rtl" class="notranslate" translate="no">
+<html lang="en" dir="ltr" class="notranslate" translate="no">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -46,8 +46,15 @@
       (function() {
         try {
           var p = location.pathname;
-          var saved = (p === '/en' || p.indexOf('/en/') === 0) ? 'en' : localStorage.getItem('watazawwado_lang');
-          var l = (saved === 'en') ? 'en' : 'ar';
+          // English is the default; Arabic only when the address is /ar or the person picked Arabic.
+          var m = document.cookie.match(/(?:^|; )watazawwado_lang_chosen=(ar|en)/);
+          var chosen = m ? m[1] : null;
+          var isAr = p === '/ar' || p.indexOf('/ar/') === 0;
+          var PUBLIC = ['/', '/about', '/how-it-works', '/learning', '/pricing', '/faq', '/privacy', '/terms', '/safety', '/get-started'];
+          if (!isAr && chosen === 'ar' && PUBLIC.indexOf(p) !== -1) {
+            location.replace((p === '/' ? '/ar' : '/ar' + p) + location.search + location.hash);
+          }
+          var l = (isAr || chosen === 'ar') ? 'ar' : 'en';
           document.documentElement.lang = l;
           document.documentElement.dir = (l === 'ar') ? 'rtl' : 'ltr';
           var t = localStorage.getItem('mahmoud_theme');

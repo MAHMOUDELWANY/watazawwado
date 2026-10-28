@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { findPageSeo, pageUrl } from '../data/seo';
-import { isEnPath, stripEnPrefix, useAppLanguage } from '../lib/language';
+import { pathLanguage, stripLangPrefix, useAppLanguage } from '../lib/language';
 
 /**
  * Per-page search tags. Public pages (home, about, how it works, subjects, pricing, FAQ, terms,
@@ -49,7 +49,7 @@ export default function SEOProtection() {
 
   useEffect(() => {
     // /get-started shows the homepage: same page for search engines.
-    const base = stripEnPrefix(pathname.replace(/\/+$/, '') || '/');
+    const base = stripLangPrefix(pathname.replace(/\/+$/, '') || '/');
     const page = findPageSeo(base === '/get-started' ? '/' : base);
     if (!page) {
       setMeta('name', 'robots', 'noindex, nofollow');
@@ -59,7 +59,7 @@ export default function SEOProtection() {
     const title = isAr ? page.titleAr : page.titleEn;
     const desc = isAr ? page.descAr : page.descEn;
     // Canonical is the address itself: /pricing stays /pricing even when shown in English.
-    const url = pageUrl(page.path, isEnPath(pathname) ? 'en' : 'ar');
+    const url = pageUrl(page.path, pathLanguage(pathname));
     document.title = title;
     setMeta('name', 'robots', 'index, follow, max-image-preview:large');
     setMeta('name', 'description', desc);
