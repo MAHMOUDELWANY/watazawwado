@@ -87,7 +87,6 @@ export default function NotificationsPage() {
       <InboxList lang={isAr ? 'ar' : 'en'} />
       <div>
         <h1 className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
-          <Bell className="w-6 h-6 text-accent" />
           {t('Notifications', 'الإشعارات')}
         </h1>
         <p className="text-sm text-muted-foreground mt-1">

@@ -433,7 +433,7 @@ export default function StudentApp() {
   return (
     <ActiveLearnerProvider profile={profile}>
     <div
-      className="relative isolate brand-lights h-screen supports-[height:100dvh]:h-dvh bg-background text-foreground font-sans flex overflow-hidden"
+      className="relative isolate h-screen supports-[height:100dvh]:h-dvh bg-background text-foreground font-sans flex overflow-hidden"
       dir={isAr ? 'rtl' : 'ltr'}
       lang={lang}
     >

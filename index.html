@@ -60,6 +60,13 @@
           if (standalone || /^\/(student|dashboard|teacher|staff)(\/|$)/.test(p)) {
             document.documentElement.classList.add('boot-app');
           }
+          // Opening the installed app plays the short brand intro once a day; the splash stays for it.
+          var day = new Date().toDateString();
+          if (standalone && localStorage.getItem('wz_intro_day') !== day && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            localStorage.setItem('wz_intro_day', day);
+            document.documentElement.classList.add('boot-intro');
+            window.__bootIntroUntil = Date.now() + 1500;
+          }
         } catch(e) {}
       })();
     </script>
@@ -88,6 +95,20 @@
       [dir="rtl"] #boot-splash .bs-bar i { animation-direction: reverse; }
       @keyframes bs-in { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
       @keyframes bs-run { from { transform: translateX(-110%); } to { transform: translateX(260%); } }
+      #boot-splash .bs-mark { position: relative; width: 148px; height: 148px; display: none; place-items: center; }
+      #boot-splash .bs-mark svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+      #boot-splash .bs-mark rect { fill: none; stroke: #E5A93C; stroke-width: 2.5; stroke-dasharray: 1; stroke-dashoffset: 1; animation: bs-draw .7s cubic-bezier(.65,0,.35,1) forwards; }
+      #boot-splash .bs-mark rect + rect { animation-delay: .18s; }
+      #boot-splash .bs-mark img { width: 76px; height: auto; opacity: 0; transform: scale(.86); animation: bs-pop .5s cubic-bezier(.22,1,.36,1) .55s forwards; }
+      #boot-splash .bs-name { display: none; font: 700 22px/1.2 'Thmanyah Serif Display', 'Thmanyah Sans', serif; color: #0A2E35; opacity: 0; animation: bs-rise .45s ease-out .85s forwards; }
+      .dark #boot-splash .bs-name { color: #FAF7F2; }
+      .boot-intro #boot-splash .bs-tile { display: none; }
+      .boot-intro #boot-splash .bs-mark { display: grid; }
+      .boot-intro #boot-splash .bs-name { display: block; }
+      .boot-intro #boot-splash .bs-bar { opacity: 0; animation: bs-rise .3s ease-out 1.5s forwards; }
+      @keyframes bs-draw { to { stroke-dashoffset: 0; } }
+      @keyframes bs-pop { to { opacity: 1; transform: none; } }
+      @keyframes bs-rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
       @media (prefers-reduced-motion: reduce) { #boot-splash .bs-tile, #boot-splash .bs-bar i { animation: none; } }
     </style>
     <script type="application/ld+json">
@@ -99,7 +120,7 @@
   </head>
   <body class="bg-background text-foreground antialiased overflow-x-hidden min-h-screen selection:bg-primary/20 selection:text-primary">
     <div id="root"></div>
-    <div id="boot-splash" aria-hidden="true"><span class="bs-tile"><img src="/logo-256.png" alt="" width="80" height="50" /></span><span class="bs-bar"><i></i></span></div>
+    <div id="boot-splash" aria-hidden="true"><span class="bs-tile"><img src="/logo-256.png" alt="" width="80" height="50" /></span><span class="bs-mark"><svg viewBox="0 0 100 100"><rect x="18" y="18" width="64" height="64" rx="3" pathLength="1" /><rect x="18" y="18" width="64" height="64" rx="3" pathLength="1" transform="rotate(45 50 50)" /></svg><img src="/logo-256.png" alt="" width="76" height="48" /></span><span class="bs-name">وتزودوا</span><span class="bs-bar"><i></i></span></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

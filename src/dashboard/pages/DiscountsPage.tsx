@@ -6,6 +6,7 @@ import { Input } from '../../components/ui/Input';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { useT } from '../../lib/language';
 import { confirmAction, notify } from '../../components/ui/Feedback';
+import { Switch } from '../../components/ui/Switch';
 
 /**
  * Super admin: discount codes, referrals and their settings (RULES.md §4, owner decisions 2026-10-22).
@@ -452,11 +453,9 @@ export default function DiscountsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <form onSubmit={saveSettings} className="glass-card border border-border rounded-2xl p-5 space-y-4">
             <h2 className="font-semibold text-foreground">{t('Program', 'البرنامج')}</h2>
-            <label className="flex items-center justify-between gap-3 text-sm">
-              <span>{t('Invite-a-friend program on', 'برنامج ادعُ صاحبك شغال')}</span>
-              <input type="checkbox" className="w-5 h-5 accent-primary" checked={settingsDraft.referral_enabled}
-                onChange={(e) => setSettingsDraft({ ...settingsDraft, referral_enabled: e.target.checked })} />
-            </label>
+            <Switch checked={settingsDraft.referral_enabled} onChange={(v) => setSettingsDraft({ ...settingsDraft, referral_enabled: v })}>
+              {t('Invite-a-friend program on', 'برنامج ادعُ صاحبك شغال')}
+            </Switch>
             {([
               ['friend_credit_usd', t('Friend gets (USD credit)', 'الصاحب ياخد (رصيد بالدولار)'), '0.5'],
               ['referrer_credit_usd', t('Inviter gets (USD credit)', 'اللي دعا ياخد (رصيد بالدولار)'), '0.5'],
@@ -563,21 +562,16 @@ export default function DiscountsPage() {
             </label>
           </div>
 
-          <label className="flex items-center justify-between gap-3 text-sm">
-            <span>{t('First purchase only', 'لأول شراء بس')}</span>
-            <input type="checkbox" className="w-5 h-5 accent-primary" checked={form.first_purchase_only}
-              onChange={(e) => setForm({ ...form, first_purchase_only: e.target.checked })} />
-          </label>
-          <label className="flex items-start justify-between gap-3 text-sm">
-            <span>
-              {t('Gift code', 'كود هدية')}
-              <span className="block text-xs text-muted-foreground">
-                {t('Goes past the savings cap. Use it for gifts and grants, e.g. 100% for a free lesson.', 'بيعدّي الحد الأقصى للتوفير. للهدايا والمنح، زي 100% لحصة ببلاش.')}
-              </span>
-            </span>
-            <input type="checkbox" className="w-5 h-5 accent-primary mt-0.5" checked={form.is_gift}
-              onChange={(e) => setForm({ ...form, is_gift: e.target.checked })} />
-          </label>
+          <Switch checked={form.first_purchase_only} onChange={(v) => setForm({ ...form, first_purchase_only: v })}>
+            {t('First purchase only', 'لأول شراء بس')}
+          </Switch>
+          <Switch
+            checked={form.is_gift}
+            onChange={(v) => setForm({ ...form, is_gift: v })}
+            hint={t('Goes past the savings cap. Use it for gifts and grants, e.g. 100% for a free lesson.', 'بيعدّي الحد الأقصى للتوفير. للهدايا والمنح، زي 100% لحصة ببلاش.')}
+          >
+            {t('Gift code', 'كود هدية')}
+          </Switch>
           <label className="block text-sm">
             <span className="text-muted-foreground">{t('Note for the team (optional)', 'ملاحظة للفريق (اختياري)')}</span>
             <Input className="mt-1" maxLength={500} value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} />

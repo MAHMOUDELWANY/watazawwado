@@ -17,6 +17,9 @@ function el(): HTMLElement | null {
 
 export function hideBootSplash(): void {
   if (gone) return;
+  // The once-a-day brand intro (index.html) gets to finish before the app shows.
+  const wait = ((window as any).__bootIntroUntil || 0) - Date.now();
+  if (wait > 0) { window.setTimeout(hideBootSplash, wait); return; }
   const node = el();
   gone = true;
   if (!node) return;

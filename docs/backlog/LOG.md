@@ -4,6 +4,13 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### App redesign, phase 3: look and feel (2026-10-28)
+- Opening the installed app: once a day (and never with reduced motion) the launch screen draws the gold khatam, then the logo and name appear (~1.5 s); the splash waits for it (`index.html`, `src/lib/bootSplash.ts`). Other opens keep the quick logo splash. The system splash itself cannot animate.
+- Offline: `public/sw.js` shows a branded bilingual screen (khatam and arch, light/dark) that reopens the page by itself when the connection is back.
+- Calmer app: no brand glow behind the student and staff shells; title icons removed on Settings and Notifications.
+- New `src/components/ui/Switch.tsx` for on/off settings (subject trial/visibility in Settings, referral program, first-purchase-only and gift code in Discounts). Consent and selection stay checkboxes.
+- Checked: launch screen, offline screen and switches rendered in a browser (RTL knob direction measured). Not done yet: two-column layouts for the remaining wide single-column pages, input masks and button-copy pass.
+
 ### App redesign, phase 2: progress (2026-10-28)
 - Owner picked a mix of the three prototypes (https://claude.ai/artifact/PEjhE9Gyq5SGWGNLX3mf1U): calm board (B) for adults and parents, road (A) for children, journey log (C) for teachers.
 - Student: `StudentProgressPage.tsx` keeps loading, learner/child switching and the monthly report, timeline and achievements; the 1,000-line path view is replaced by `components/progress/ProgressCalm.tsx` and `ProgressRoad.tsx` (shared bits in `progressShared.tsx`). Guardian child cards are simpler (level bar, rhythm, latest milestone).

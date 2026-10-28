@@ -309,7 +309,7 @@ export function DashboardApp() {
 
   return (
     <div
-      className={`relative isolate brand-lights h-screen supports-[height:100dvh]:h-dvh bg-background text-foreground font-sans flex overflow-hidden ${ar ? 'font-arabic' : ''}`}
+      className={`relative isolate h-screen supports-[height:100dvh]:h-dvh bg-background text-foreground font-sans flex overflow-hidden ${ar ? 'font-arabic' : ''}`}
       dir={ar ? 'rtl' : 'ltr'}
     >
       {/* Desktop: floating ink rail with every page */}

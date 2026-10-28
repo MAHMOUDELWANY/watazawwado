@@ -18,6 +18,7 @@ import { setActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { useTeacherAuth } from '../../lib/auth';
 import { useT } from '../../lib/language';
 import { notify } from '../../components/ui/Feedback';
+import { Switch } from '../../components/ui/Switch';
 
 interface Setting {
   key: string;
@@ -151,7 +152,6 @@ export default function SettingsPage() {
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
-            <SettingsIcon className="w-6 h-6 text-accent" />
             {t('Settings', 'الإعدادات')}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
@@ -274,14 +274,12 @@ export default function SettingsPage() {
                             />
                           </div>
                         </div>
-                        <label className="flex items-center gap-2 pt-4 sm:pt-0 text-sm font-medium text-foreground cursor-pointer">
-                          <input type="checkbox" checked={service.trial_allowed} onChange={(e) => updateServiceField(service.id, 'trial_allowed', e.target.checked)} className="w-4 h-4 accent-primary rounded border-border" />
+                        <Switch checked={service.trial_allowed} onChange={(v) => updateServiceField(service.id, 'trial_allowed', v)}>
                           {t('Free trial allowed', 'التجربة المجانية متاحة')}
-                        </label>
-                        <label className="flex items-center gap-2 pt-2 sm:pt-0 text-sm font-medium text-foreground cursor-pointer">
-                          <input type="checkbox" checked={service.is_active} onChange={(e) => updateServiceField(service.id, 'is_active', e.target.checked)} className="w-4 h-4 accent-primary rounded border-border" />
+                        </Switch>
+                        <Switch checked={service.is_active} onChange={(v) => updateServiceField(service.id, 'is_active', v)}>
                           {t('Shown on the site', 'ظاهرة على الموقع')}
-                        </label>
+                        </Switch>
                       </div>
                     </div>
                   ))}
