@@ -38,6 +38,7 @@ import {
 } from '../lessonsPresentation';
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { useActiveLearner } from '../activeLearner';
+import { PendingPaymentCard } from '../components/PendingPaymentCard';
 
 export interface StudentLessonsPageProps {
   lang?: 'en' | 'ar';
@@ -169,6 +170,8 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
           <span>{isAr ? 'احجز حصة' : 'Book a lesson'}</span>
         </Link>
       </div>
+
+      <PendingPaymentCard lang={lang} />
 
       {/* 2. Compact Cancellation / Rescheduling Policy Notice */}
       <div className="p-3.5 sm:p-4 rounded-xl glass-surface border border-border-subtle flex items-start gap-3 text-sm leading-relaxed text-muted-foreground">

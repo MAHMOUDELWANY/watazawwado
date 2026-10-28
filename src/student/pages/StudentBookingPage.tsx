@@ -11,6 +11,7 @@ import { DateTime } from 'luxon';
 import { useTeacherAuth, getFreshAccessToken } from '../../lib/auth';
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { useAppLanguage } from '../../lib/language';
+import { PendingPaymentCard } from '../components/PendingPaymentCard';
 
 export interface StudentBookingPageProps {
   profile?: any;
@@ -916,6 +917,8 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
 
   return (
     <div className="space-y-6">
+      {/* The booking flow confirms its own Stripe return; this card only shows and pays held lessons. */}
+      <PendingPaymentCard lang={currentLang} handleStripeReturn={false} />
       {resumingDraft && !isReusing && (
         <div className="p-3.5 rounded-2xl bg-secondary/30 border border-secondary/50 text-sm text-foreground flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <span className="flex items-center gap-2">

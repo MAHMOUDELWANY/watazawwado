@@ -5934,6 +5934,35 @@ app.post('/api/student/bookings/:id/reschedule', rateLimit, verifyStudentAuth, a
 
 // Student cancellation (RULES.md §2/§5): a free trial up to 1 hour before; any other lesson up to 3 hours before.
 // A paid single lesson cancelled in time comes back as a lesson credit; a package lesson keeps its credit.
+// Owner 2026-10-28 (B2): the student lets go of an unpaid held time before the 35-minute hold ends.
+// Only an unpaid pay-now hold; the update matches `pending` so a payment confirmed meanwhile wins.
+app.post('/api/student/bookings/:id/release-hold', rateLimit, verifyStudentAuth, async (req: any, res: any) => {
+  try {
+    const supabase = getSupabaseAdminClient();
+    if (!supabase) return res.status(503).json({ error: 'Database service unavailable.' });
+    const { booking, error: ownErr } = await resolveStudentBooking(supabase, req, req.params.id);
+    if (ownErr) return res.status(ownErr.status).json({ error: ownErr.message });
+    if (booking.status !== 'pending' || booking.payment_plan !== 'pay_now' || booking.package_entitlement_id) {
+      return res.status(400).json({ error: 'This lesson is not waiting for payment.' });
+    }
+    const reason = 'Released by the student before paying.';
+    const { data: released, error: updErr } = await supabase
+      .from('bookings')
+      .update({ status: 'cancelled', cancellation_reason: reason, updated_at: new Date().toISOString() })
+      .eq('id', booking.id)
+      .eq('status', 'pending')
+      .select('id');
+    if (updErr) return res.status(500).json({ error: 'Could not release the time. Please try again.' });
+    if (!released?.length) return res.status(409).json({ error: 'This lesson changed meanwhile. Please refresh the page.' });
+    await supabase.from('reminders').update({ status: 'cancelled', updated_at: new Date().toISOString() })
+      .eq('booking_id', booking.id).eq('status', 'pending');
+    return res.json({ success: true });
+  } catch (err: any) {
+    console.error('[POST /api/student/bookings/:id/release-hold]', err);
+    return res.status(500).json({ error: 'Could not release the time. Please try again.' });
+  }
+});
+
 app.post('/api/student/bookings/:id/cancel', rateLimit, verifyStudentAuth, async (req: any, res: any) => {
   try {
     const supabase = getSupabaseAdminClient();
@@ -8803,7 +8832,7 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
     const learnerNameById = new Map(learners.map(l => [l.id, l.name]));
     const { data: bookingsData, error: bookingsError } = await supabaseAdmin
       .from('bookings')
-      .select('id, student_id, reference_code, service_id, package_entitlement_id, booking_type, duration_minutes, scheduled_start, scheduled_end, student_timezone, status, contact_name, contact_email, contact_whatsapp, parent_name, notes, fee_amount_usd, zoom_meeting_link, created_at, teacher_id, reschedule_count, payment_plan, reschedule_requested_at, reschedule_request_note')
+      .select('id, student_id, reference_code, service_id, package_entitlement_id, booking_type, duration_minutes, scheduled_start, scheduled_end, student_timezone, status, contact_name, contact_email, contact_whatsapp, parent_name, notes, fee_amount_usd, zoom_meeting_link, created_at, teacher_id, reschedule_count, payment_plan, hold_expires_at, reschedule_requested_at, reschedule_request_note')
       .in('student_id', learnerIds)
       .order('scheduled_start', { ascending: true });
 
@@ -8914,6 +8943,7 @@ app.get('/api/student/bookings', verifyStudentAuth, async (req: any, res: any) =
         rescheduleRequestedAt: b.reschedule_requested_at || null,
         rescheduleRequestNote: b.reschedule_request_note || null,
         paymentPlan: b.payment_plan || 'pay_now',
+        holdExpiresAt: b.status === 'pending' ? b.hold_expires_at || null : null,
         packageName: pkgInfo?.packageName || (b.package_entitlement_id ? 'Lesson Package' : null),
         packageType: pkgInfo?.packageType || (b.package_entitlement_id ? 'monthly' : null),
         isPackageBooking: Boolean(b.package_entitlement_id),

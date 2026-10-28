@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { authedJson } from '../../lib/authedJson';
 import StudentPackagesPage from './StudentPackagesPage';
 import StudentPaymentsPage from './StudentPaymentsPage';
+import { PendingPaymentCard } from '../components/PendingPaymentCard';
 
 /**
  * My wallet (owner decision D3, 2026-10-28): one place for everything money. At the top what the learner can use
@@ -82,6 +83,7 @@ export default function StudentWalletPage({ lang = 'en', session }: { lang?: 'en
         </Link>
       </div>
 
+      <PendingPaymentCard lang={lang} />
       <WalletTiles summary={summary} isAr={isAr} />
       {summary && summary.balanceUsd > 0 && (
         <p className="text-sm text-muted-foreground">

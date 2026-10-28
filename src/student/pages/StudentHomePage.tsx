@@ -35,6 +35,7 @@ import { NextWeekSuggestion } from '../components/NextWeekSuggestion';
 import { LessonFeedbackCard } from '../components/LessonFeedbackCard';
 import { InstallAppEntry } from '../../components/pwa/InstallApp';
 import { getBookingPaymentSummary } from '../../lib/paymentStatus';
+import { PendingPaymentCard } from '../components/PendingPaymentCard';
 const HomeProgressCard = lazy(() => import('../components/progress/HomeProgressCard').then((m) => ({ default: m.HomeProgressCard })));
 
 export interface StudentHomePageProps {
@@ -356,6 +357,8 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
           </div>
         </div>
       </div>
+
+      <PendingPaymentCard lang={lang} />
 
       {placementTodo.length > 0 && (
         <Link

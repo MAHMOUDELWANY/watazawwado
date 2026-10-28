@@ -295,7 +295,7 @@ export default function StudentPaymentsPage({ lang = 'en', embedded = false }: S
       </div>
 
       {/* 4. Actionable notice — lessons with NO payment claim submitted yet */}
-      {awaitingClaim.length > 0 && (
+      {!embedded && awaitingClaim.length > 0 && (
         <div className="p-4 sm:p-5 rounded-2xl bg-warning/10 border border-warning/25 space-y-3">
           <div className="flex items-center gap-2 text-warning font-semibold text-sm">
             <AlertCircle className="w-4 h-4" />
