@@ -31,9 +31,11 @@ import {
 export interface StudentPaymentsPageProps {
   lang?: 'en' | 'ar';
   session?: any;
+  /** Inside the wallet: no page title or back link of its own. */
+  embedded?: boolean;
 }
 
-export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPageProps) {
+export default function StudentPaymentsPage({ lang = 'en', embedded = false }: StudentPaymentsPageProps) {
   const { session, loading: authLoading } = useTeacherAuth();
   const [payments, setPayments] = useState<any[]>([]);
   const [allBookings, setAllBookings] = useState<any[]>([]);
@@ -198,14 +200,16 @@ export default function StudentPaymentsPage({ lang = 'en' }: StudentPaymentsPage
             labelAr="العودة لبوابة الطالب"
             className="mb-1.5"
           />
+          {!embedded && (<>
           <h1 className="text-2xl sm:text-3xl font-display font-bold text-foreground">
-            {isAr ? 'المدفوعات الإلكترونية وبوابات الدفع' : 'Automated Payments & Billing'}
+            {isAr ? 'المدفوعات' : 'Payments'}
           </h1>
           <p className="text-sm sm:text-sm text-muted-foreground mt-1 leading-relaxed">
             {isAr
-              ? 'دفع فوري وتأكيد تلقائي للدروس والباقات عبر Stripe (بطاقات، Apple Pay، PayPal).'
-              : 'Instant checkout & automated confirmation via Stripe (cards, Apple Pay, PayPal).'}
+              ? 'الدروس والباقات اللي مستنية دفع، وسجل اللي اتدفع.'
+              : 'Lessons and packages waiting for payment, and everything already paid.'}
           </p>
+          </>)}
         </div>
 
         <button

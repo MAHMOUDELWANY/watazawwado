@@ -35,9 +35,11 @@ import { useActiveLearner } from '../activeLearner';
 export interface StudentPackagesPageProps {
   lang?: 'en' | 'ar';
   session?: any;
+  /** Inside the wallet: no page title or back link of its own. */
+  embedded?: boolean;
 }
 
-export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPageProps) {
+export default function StudentPackagesPage({ lang = 'en', embedded = false }: StudentPackagesPageProps) {
   const { session } = useTeacherAuth();
   const [data, setData] = useState<any>({
     entitlements: [],
@@ -402,6 +404,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
       )}
 
       {/* 1. Header & Back Navigation */}
+      {!embedded && (
       <div className="space-y-3">
         <StudentPageBack to="/student" label={isAr ? 'العودة للرئيسية' : 'Back to Dashboard'} />
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -425,6 +428,7 @@ export default function StudentPackagesPage({ lang = 'en' }: StudentPackagesPage
           </Link>
         </div>
       </div>
+      )}
 
       <PackageBalance entitlements={entitlements} isAr={isAr} />
 

@@ -811,7 +811,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
           <div className="space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-border">
               <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-                {isAr ? 'رصيد الباقات' : 'Package Credits'}
+                {isAr ? 'محفظتي' : 'My wallet'}
               </span>
               <Package className="w-4 h-4 text-accent" />
             </div>
@@ -843,11 +843,14 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                     {creditsRemaining}
                   </span>
                   <span className="text-sm text-muted-foreground">
-                    {isAr ? 'حصص متبقية' : 'credits remaining'}
+                    {isAr ? 'حصص جاهزة تحجزها' : 'lessons ready to book'}
                   </span>
                 </div>
 
-                <PackageBalance entitlements={packagesData?.entitlements} isAr={isAr} showLink />
+                <PackageBalance entitlements={packagesData?.entitlements} isAr={isAr} />
+                <Link to="/student/wallet" className="text-sm font-semibold text-primary underline underline-offset-4">
+                  {isAr ? 'افتح محفظتي' : 'Open my wallet'}
+                </Link>
               </div>
             ) : null}
           </div>
@@ -890,7 +893,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                     : 'Submit your transfer reference so we can verify your slot.'}
                 </p>
                 <Link
-                  to="/student/payments"
+                  to="/student/wallet?tab=payments"
                   className="inline-block text-sm font-semibold text-primary hover:underline"
                 >
                   {isAr ? 'عرض المدفوعات وإرسال الإثبات ←' : 'View payments & submit proof →'}
@@ -909,7 +912,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                     : 'Please review your transfer details or submit a corrected claim.'}
                 </p>
                 <Link
-                  to="/student/payments"
+                  to="/student/wallet?tab=payments"
                   className="inline-block text-sm font-semibold text-destructive hover:underline"
                 >
                   {isAr ? 'مراجعة المدفوعات ←' : 'Review payments →'}

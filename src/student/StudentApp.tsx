@@ -25,6 +25,7 @@ import { HelpCircle, Globe, LogOut, BookOpen,
   Library,
   CalendarDays,
   Gift,
+  Wallet,
 } from 'lucide-react';
 import { useTeacherAuth } from '../lib/auth';
 import { useAppLanguage } from '../lib/language';
@@ -35,8 +36,8 @@ import StudentProfilePage from './pages/StudentProfilePage';
 import StudentOnboardingPage from './pages/StudentOnboardingPage';
 import StudentBookingPage from './pages/StudentBookingPage';
 import StudentLessonsPage from './pages/StudentLessonsPage';
-import StudentPackagesPage from './pages/StudentPackagesPage';
-import StudentPaymentsPage from './pages/StudentPaymentsPage';
+
+
 import StudentNotificationsPage from './pages/StudentNotificationsPage';
 import StudentOffersPage from './pages/StudentOffersPage';
 import StudentInvitePage from './pages/StudentInvitePage';
@@ -64,6 +65,7 @@ import { TimezoneCheck } from '../components/ui/TimezoneCheck';
 import { setActiveWorkingTimezone } from '../lib/countryTimezones';
 import { authedJson } from '../lib/authedJson';
 import { DateTime } from 'luxon';
+import StudentWalletPage from './pages/StudentWalletPage';
 
 export default function StudentApp() {
   const { user, session, loading, isTeacherAuthenticated, userRole, signOut } = useTeacherAuth();
@@ -387,11 +389,12 @@ export default function StudentApp() {
   const calendar: NavItem = { name: isAr ? 'تقويم العيلة' : 'Calendar', path: '/student/calendar', icon: CalendarDays, tour: 'student-calendar' };
   const progress: NavItem = { name: isAr ? 'مسيرتي' : 'My progress', path: '/student/progress', icon: Compass, tour: 'student-progress' };
   const guide: NavItem = { name: isAr ? 'المرشد' : 'Guide', path: '/student/guide', icon: Sparkles, tour: 'student-guide' };
+  const wallet: NavItem = { name: isAr ? 'محفظتي' : 'My wallet', path: '/student/wallet', icon: Wallet, tour: 'student-wallet' };
   const invite: NavItem = { name: isAr ? 'ادعُ صاحبك' : 'Invite friends', path: '/student/invite', icon: Gift, tour: 'student-invite' };
 
   const topTabs = [home, lessons, book, curriculum];
-  const railItems = [messages, calendar, progress, guide, invite];
-  const moreItems = [curriculum, calendar, progress, guide, invite];
+  const railItems = [messages, wallet, calendar, progress, guide, invite];
+  const moreItems = [curriculum, wallet, calendar, progress, guide, invite];
   const isActive = (path: string) =>
     isTabActive(path, location.pathname, '/student') || (path === '/student/account' && isTabActive('/student/profile', location.pathname, '/student'));
 
@@ -676,8 +679,10 @@ export default function StudentApp() {
               <Route path="/progress" element={<StudentProgressPage lang={lang} />} />
               <Route path="/progress/report" element={<StudentProgressReportPage lang={lang} />} />
               <Route path="/calendar" element={<StudentCalendarPage lang={lang} />} />
-              <Route path="/packages" element={<StudentPackagesPage lang={lang} session={session} />} />
-              <Route path="/payments" element={<StudentPaymentsPage lang={lang} session={session} />} />
+              <Route path="/wallet" element={<StudentWalletPage lang={lang} session={session} />} />
+              {/* The wallet replaced these pages (2026-10-28); payment returns keep their query (Stripe ?payment_status=...). */}
+              <Route path="/packages" element={<WalletRedirect tab="packages" />} />
+              <Route path="/payments" element={<WalletRedirect tab="payments" />} />
               <Route path="/notifications" element={<StudentNotificationsPage lang={lang} session={session} />} />
               <Route path="/guide" element={<IntakeConversation session={session} lang={lang} />} />
               <Route path="/offers" element={<StudentOffersPage session={session} lang={lang} />} />
@@ -757,4 +762,10 @@ export default function StudentApp() {
   );
 }
 
-
+/** Old /student/packages and /student/payments addresses open the matching wallet tab, keeping their query. */
+function WalletRedirect({ tab }: { tab: 'packages' | 'payments' }) {
+  const { search, hash } = useLocation();
+  const params = new URLSearchParams(search);
+  params.set('tab', tab);
+  return <Navigate to={`/student/wallet?${params.toString()}${hash}`} replace />;
+}
