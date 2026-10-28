@@ -59,7 +59,8 @@ test('StudentHomePage package/payment sections keep independent loading/error/re
   // The two sections remain independently gated (not coupled to core fetch).
   assert.ok(/packagesLoading\s*\?/.test(HOME), 'packages loading branch present');
   assert.ok(/packagesError\s*\?/.test(HOME), 'packages error branch present');
-  assert.ok(/paymentsLoading\s*\?/.test(HOME), 'payments loading branch present');
+  // Payments show only when something needs action (audit 2026-10-28), so there is no loading spinner for them.
+  assert.ok(!/paymentsLoading\s*\?/.test(HOME), 'no payments spinner on home');
   assert.ok(/paymentsError\s*\?/.test(HOME), 'payments error branch present');
   // Both error branches offer a bounded retry bound to their own fetch.
   assert.ok(/onClick=\{fetchPackagesData\}/.test(HOME), 'packages retry bound to fetchPackagesData');
