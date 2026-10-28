@@ -1,4 +1,6 @@
-# Policy texts for teacher pay and lesson outcomes: DRAFT for the owner (2026-10-28)
+# Policy texts for teacher pay and lesson outcomes (2026-10-28)
+
+**Published 2026-10-28: the owner approved this wording as is.** The open questions at the end stay as they are today (the teacher chooses per no-show whether a package credit is used; repeated absences "may" lead to a deduction).
 
 Launch plan F. Nothing here is live yet. The owner reads it, changes what he wants, then says "publish". On publish:
 - the teacher agreement version goes from `2026-10-15.2` to `2026-10-28.1` (`src/pages/StaffAgreementPage.tsx` and `TEACHER_AGREEMENT_VERSION` in `api/index.ts`), so every teacher reads and accepts it again before continuing;

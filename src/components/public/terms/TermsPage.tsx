@@ -6,7 +6,7 @@ import { PublicSection, EditorialHeading, MarginNote, PageHero } from '../Public
 import { FileText, CalendarClock, RotateCcw, Wallet } from 'lucide-react';
 
 // Keep in sync with TERMS_VERSION in api/index.ts: bookings store the version the student accepted.
-const TERMS_VERSION_LABEL = { en: 'Version 2026-10-22.1, last updated 22 October 2026', ar: 'الإصدار 2026-10-22.1، آخر تحديث 22 أكتوبر 2026' };
+const TERMS_VERSION_LABEL = { en: 'Version 2026-10-28.1, last updated 28 October 2026', ar: 'الإصدار 2026-10-28.1، آخر تحديث 28 أكتوبر 2026' };
 
 // Trader identity (consumer law). The block shows once name and address are filled in.
 // Not a registered business: leave ceidg/nip empty. Never publish a PESEL here.
@@ -45,12 +45,12 @@ const SECTIONS: Section[] = [
     en: { title: 'Lessons and teachers', items: [
       'Lessons are live and online (usually on Zoom). The joining link is sent after the booking is confirmed.',
       'Each student has an assigned teacher. Parents can ask to change the teacher at any time; the change applies to new bookings.',
-      'Lessons start and end on time. If the student joins late, the lesson still ends at its scheduled time.',
+      'Lessons start and end on time. If the student joins late, the lesson still ends at its scheduled time; when the teacher is free, they may add a few minutes, but this is not guaranteed.',
     ] },
     ar: { title: 'الدروس والمعلمون', items: [
       'الدروس مباشرة عبر الإنترنت (غالباً على Zoom)، ويصلك رابط الدخول بعد تأكيد الحجز.',
       'لكل طالب معلم مخصص، ويمكن لولي الأمر طلب تغيير المعلم في أي وقت، ويطبق التغيير على الحجوزات الجديدة.',
-      'تبدأ الدروس وتنتهي في موعدها. إذا تأخر الطالب، ينتهي الدرس في موعده المحدد.',
+      'تبدأ الدروس وتنتهي في موعدها. إذا تأخر الطالب، ينتهي الدرس في موعده المحدد؛ وقد يضيف المعلم بضع دقائق إن كان متفرغاً، دون أن يكون ذلك مضموناً.',
     ] },
   },
   {
@@ -129,8 +129,9 @@ const SECTIONS: Section[] = [
       'Reschedule up to 1 hour before the lesson, by yourself, from your student account. The new time is on another day, from tomorrow onwards.',
       'If your teacher has to move a lesson, you get an email and a notice on the site with the reason. If the new time does not suit you, move it or cancel it under the same rules.',
       'Inside the last hour before the lesson nothing can be changed. A lesson cancelled less than 3 hours before, or missed without notice, counts as taken (no refund or credit) when the teacher was available and ready to teach. Technical problems and exceptional situations are looked at fairly, case by case.',
+      'A student who has not joined within 15 minutes of the start counts as not attending.',
       'Real emergencies: message us on WhatsApp. The platform owner may, as a goodwill gesture and at their sole discretion, move the lesson. This is not a right and does not change the rules above.',
-      'If we cancel, the teacher misses the lesson, or a technical problem on our side stops it, you choose: a free new time, a lesson credit, or a refund. This never counts toward the refund limit below.',
+      'If we cancel, the teacher misses the lesson, or a technical problem on our side stops it, the lesson comes back to you as a lesson credit straight away, and we tell you. If you prefer a free new time or a refund instead, message us. This never counts toward the refund limit below.',
     ] },
     ar: { title: 'الإلغاء وتغيير الموعد', items: [
       'الإلغاء حتى 3 ساعات قبل الدرس: الدرس المدفوع يعود لك كرصيد حصة تحجزه في أي وقت، ودرس الباقة يحتفظ برصيده.',
@@ -138,8 +139,9 @@ const SECTIONS: Section[] = [
       'تغيير الموعد حتى ساعة قبل الدرس، بنفسك من حساب الطالب، والموعد الجديد يكون في يوم آخر من الغد فصاعداً.',
       'إذا اضطر معلمك لتغيير موعد درس، يصلك بريد إلكتروني وإشعار على الموقع بالسبب. وإذا لم يناسبك الموعد الجديد، يمكنك تغييره أو إلغاؤه بنفس القواعد.',
       'خلال الساعة الأخيرة قبل الدرس لا يمكن تغيير أي شيء. الدرس الذي يُلغى قبل أقل من 3 ساعات من موعده، أو الذي لم تحضره دون إبلاغ، يُحتسب كدرس تم (بدون استرداد أو رصيد) متى كان المعلم متاحاً ومستعداً للتدريس. والمشكلات التقنية والظروف الاستثنائية تُراجع بعدل حسب كل حالة.',
+      'الطالب الذي لم يدخل خلال 15 دقيقة من بداية الدرس يُعتبر غائباً.',
       'الظروف الطارئة فعلاً: تواصل معنا عبر واتساب. يجوز لصاحب المنصة، كمراعاة وحسب تقديره وحده، تغيير موعد الدرس. هذا ليس حقاً مكتسباً ولا يغير القواعد السابقة.',
-      'إذا ألغينا نحن، أو غاب المعلم، أو منعت مشكلة تقنية من جهتنا الدرس، تختار أنت: موعداً جديداً مجاناً، أو رصيد حصة، أو استرداد المبلغ، ولا يُحتسب ذلك أبداً من حد الاسترداد التالي.',
+      'إذا ألغينا نحن، أو غاب المعلم، أو منعت مشكلة تقنية من جهتنا الدرس، يعود الدرس لك فوراً كرصيد حصة ونُبلغك بذلك. وإن فضّلت موعداً جديداً مجاناً أو استرداد المبلغ بدلاً منه، راسلنا. ولا يُحتسب ذلك أبداً من حد الاسترداد التالي.',
     ] },
   },
   {

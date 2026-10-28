@@ -196,9 +196,9 @@ const PAYMENT_HOLD_MINUTES = 35;
 const MAX_LOST_TRIALS = 5;
 const MAX_STUDENT_REFUNDED_LESSONS = 3;
 // Bump when the terms page changes in substance; stored with each booking/package as proof of consent.
-const TERMS_VERSION = '2026-10-22.1';
+const TERMS_VERSION = '2026-10-28.1';
 // Keep in sync with AGREEMENT_VERSION in src/pages/StaffAgreementPage.tsx; bump to make every teacher accept again.
-const TEACHER_AGREEMENT_VERSION = '2026-10-15.2';
+const TEACHER_AGREEMENT_VERSION = '2026-10-28.1';
 
 /** Cancels unpaid bookings whose payment hold expired, freeing their slots. Never throws. */
 async function releaseExpiredPaymentHolds(client: any): Promise<void> {

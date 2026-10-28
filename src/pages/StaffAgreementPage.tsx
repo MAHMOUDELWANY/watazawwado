@@ -7,7 +7,7 @@ import { useT } from '../lib/language';
 import { dashboardFetch } from '../dashboard/lib/dashboardApi';
 
 // Keep in sync with TEACHER_AGREEMENT_VERSION in api/index.ts.
-const AGREEMENT_VERSION = '2026-10-15.2';
+const AGREEMENT_VERSION = '2026-10-28.1';
 
 type Clause = { en: { title: string; items: string[] }; ar: { title: string; items: string[] } };
 
@@ -16,12 +16,12 @@ const CLAUSES: Clause[] = [
     en: { title: 'Who we are and how we work together', items: [
       'This agreement is between you (the teacher) and the operator of Watazawwado Academy (“Watazawwado”), who runs the platform from Poland.',
       'You teach as an independent contractor, not as an employee. You decide how to teach your lessons, within the standards in this agreement.',
-      'Your pay per lesson, how and when it is paid, and any changes to it are agreed with the platform owner separately in writing (for example by message or email). The dashboard does not show prices or payments to teachers.',
+      'Your pay is a fixed hourly rate in your own currency, agreed with Watazawwado in writing. Each lesson counts by its length (a 45-minute lesson is 0.75 hours). Your month so far, which lessons count and your payslips are on “My month” in the dashboard. You never see what students pay.',
     ] },
     ar: { title: 'من نحن وكيف نعمل معاً', items: [
       'هذا الاتفاق بينك (المعلم) وبين مشغّل منصة وتزودوا ("وتزودوا")، الذي يدير المنصة من بولندا.',
       'تعمل معنا كمتعاقد مستقل وليس كموظف، وتقرر طريقة تدريس دروسك في حدود المعايير الواردة في هذا الاتفاق.',
-      'أجرك عن كل درس، وطريقة ومواعيد دفعه، وأي تغيير عليه، يُتفق عليه مع صاحب المنصة كتابةً بشكل منفصل (مثلاً برسالة أو بريد إلكتروني). ولا تعرض لوحة التحكم الأسعار أو المدفوعات للمعلمين.',
+      'أجرك سعر ثابت للساعة بعملتك، متفق عليه مع وتزودوا كتابةً. كل حصة تُحسب بمدتها (حصة 45 دقيقة = 0.75 ساعة). تجد شهرك حتى الآن، والحصص المحسوبة، وإيصالات أجرك في صفحة "شهري" في لوحة التحكم. ولا تظهر لك أبداً المبالغ التي يدفعها الطلاب.',
     ] },
   },
   {
@@ -40,6 +40,27 @@ const CLAUSES: Clause[] = [
       'تغيير موعد الدرس قبل أقل من ٣ ساعات من بدايته ممكن، لكن عليك حينها أيضاً إرسال رسالة واتساب الجاهزة التي تُفتح لصاحب المنصة، حتى نعتذر للأسرة كما يليق.',
       'اكتب ملاحظة قصيرة بعد كل درس، ليستفيد منها الطالب وولي الأمر والدرس التالي.',
       'درّس بأسلوب متوازن ومعتدل يتفق مع القيم الموضحة على الموقع، وتعامل مع كل طالب وولي أمر باحترام.',
+    ] },
+  },
+  {
+    // 2026-10-28.1 (launch plan F, owner approved): pay month by month and what is paid (RULES.md §2c).
+    en: { title: 'Pay, month by month', items: [
+      'Your pay is counted per calendar month. It is sent between the 1st and the 5th of the next month, outside the site (bank transfer, Instapay, Wise or another way we agree). When it is sent you get a payslip by email and on the site.',
+      'Watazawwado may add a bonus or make a deduction for a month, always with a written reason that you can see on your payslip.',
+      'Record what happened in every lesson (held, student did not come, technical problem) from the lesson window. A lesson is counted once its outcome is recorded.',
+      'Paid to you: a lesson that was held (its full length); a lesson where the student did not come within 15 minutes or cancelled late; a lesson where the student came late (its full length); a lesson paid later, from a package or from a credit (same rate).',
+      'Not paid: a free trial lesson; a lesson the student cancelled in time (3 hours or more before); a lesson you could not attend or cancelled less than 3 hours before without moving it; a lesson a technical problem on our side stopped.',
+      'If a student comes late, the lesson still ends on time. If you are free afterwards, we encourage you to add a few minutes so the student gets at least 30 minutes in total. This is your choice, not an obligation.',
+      'If you cannot attend a lesson, move it from the dashboard as early as possible (see “Lessons and quality”). A missed lesson is not paid, the student gets the lesson back, and repeated absences may lead to a deduction.',
+    ] },
+    ar: { title: 'الأجر شهراً بشهر', items: [
+      'يُحسب أجرك عن كل شهر ميلادي، ويُرسل بين يوم 1 و5 من الشهر التالي خارج الموقع (تحويل بنكي، إنستاباي، Wise، أو طريقة أخرى نتفق عليها). وعند الإرسال يصلك إيصال بالبريد وعلى الموقع.',
+      'يجوز لوتزودوا إضافة مكافأة أو خصم عن شهر، دائماً مع سبب مكتوب تراه في إيصالك.',
+      'سجّل ما حدث في كل حصة (تمت، الطالب لم يحضر، مشكلة تقنية) من نافذة الحصة. والحصة تُحسب بعد تسجيل نتيجتها.',
+      'يُدفع لك عن: الحصة التي تمت (بمدتها كاملة)؛ والحصة التي لم يحضرها الطالب خلال 15 دقيقة أو ألغاها متأخراً؛ والحصة التي تأخر فيها الطالب (بمدتها كاملة)؛ والحصة بالدفع المؤجل أو من باقة أو من رصيد (بنفس السعر).',
+      'لا يُدفع عن: الحصة التجريبية المجانية؛ والحصة التي ألغاها الطالب في الوقت (قبلها بـ 3 ساعات أو أكثر)؛ والحصة التي لم تستطع حضورها أو ألغيتها قبل أقل من 3 ساعات دون تغيير موعدها؛ والحصة التي منعتها مشكلة تقنية من جهتنا.',
+      'إذا تأخر الطالب، تنتهي الحصة في موعدها. وإن كنت متفرغاً بعدها، نشجعك على إضافة دقائق ليحصل الطالب على 30 دقيقة على الأقل إجمالاً. هذا اختيارك وليس إلزاماً.',
+      'إذا لم تستطع حضور حصة، غيّر موعدها من لوحة التحكم في أقرب وقت (انظر "الدروس والجودة"). الحصة الفائتة لا يُدفع عنها، وتعود للطالب، وقد يؤدي تكرار الغياب إلى خصم.',
     ] },
   },
   {

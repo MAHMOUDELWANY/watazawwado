@@ -4,6 +4,10 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Launch plan F: policy texts published (2026-10-28)
+- Owner approved the draft as is. Teacher agreement 2026-10-28.1: pay item rewritten (hourly rate, My month) and new clause "Pay, month by month" (monthly payout 1st-5th, bonus/deduction with reason, record every outcome, what is and is not paid, late student, absences). Every teacher accepts the new version before continuing.
+- Terms 2026-10-28.1: late arrival wording, no-show after 15 minutes, a lesson not held on our side comes back as a credit at once (new time or refund on request). `TERMS_VERSION` and `TEACHER_AGREEMENT_VERSION` bumped in `api/index.ts`.
+
 ### Launch plan E: teacher My month (2026-10-28)
 - `/dashboard/month` (teacher menu "My month", replaces "My pay"): lessons held, hours, students, free trials, family summaries written within 24 h of the lesson end, the families' average rating, notes for missing summaries and student no-shows; then the pay for the same month. API `GET /api/dashboard/my-month` (`server/routes/myMonth.ts`, tested). No student money.
 

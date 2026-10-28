@@ -55,7 +55,7 @@ Status legend: **[Decided]** = in force. **[Open]** = still to be decided with t
 
 - **[Decided 2026-10-28] Teacher pay (D2, D6, D7).** Each teacher has one fixed hourly rate in their own pay currency, set by the super admin; a lesson counts by its length. Pay is per calendar month, sent outside the site between the 1st and 5th of the next month; the super admin may add a bonus or deduction with a written reason and records the transfer (method, reference), which sends the teacher a payslip. Teachers see their own pay ("My month") and never what students pay.
 - **[Decided 2026-10-28] What is paid (D5, S1–S4).** Held lesson: paid, full length. Free trial: not paid. Student cancels in time: not paid; the student gets a lesson credit. Student no-show (not in within 15 minutes) or late cancel: paid. Student late: paid, full length; the teacher is encouraged, not obliged, to add time if free so the student gets at least 30 minutes in total. Teacher absent or cancels inside 3 hours without moving: not paid; the student gets a lesson credit; the admin is alerted and may deduct if it repeats. Technical problem on our side: not paid; the student gets a lesson credit. Pay-later lesson unpaid at month end, package or credit lessons: paid at the same rate.
-- **[Pending owner review]** The wording in the teacher agreement and the student terms: `docs/plans/POLICY-DRAFT-2026-10-28.md`.
+- **[Decided 2026-10-28] Published** in the teacher agreement (version 2026-10-28.1, every teacher accepts it again) and the student terms (version 2026-10-28.1), as drafted in `docs/plans/POLICY-DRAFT-2026-10-28.md`.
 
 ## 2b. Subjects
 
