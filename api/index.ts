@@ -2631,7 +2631,7 @@ app.get('/api/dashboard/students', verifyTeacherAuth, async (req: any, res: any)
         .order('scheduled_start', { ascending: true }),
       supabase.from('lesson_notes').select('id, student_id').in('student_id', studentIds),
       supabase.from('services').select('id, title, arabic_title'),
-      supabase.from('teacher_accounts').select('email, display_name')
+      supabase.from('teacher_accounts').select('id, email, display_name')
     ]);
 
     const serviceMap = new Map<string, string>();
@@ -2641,11 +2641,14 @@ app.get('/api/dashboard/students', verifyTeacherAuth, async (req: any, res: any)
       }
     }
 
-    // Map teacher display names
+    // Map teacher display names by id (students.assigned_teacher_id is the teacher account id) and by email for older rows.
     const teacherNameMap = new Map<string, string>();
     (teachersRes.data || []).forEach(t => {
-      teacherNameMap.set(t.email.toLowerCase().trim(), t.display_name || 'Teacher');
+      if (t.id) teacherNameMap.set(String(t.id).toLowerCase().trim(), t.display_name || 'Teacher');
+      if (t.email) teacherNameMap.set(t.email.toLowerCase().trim(), t.display_name || 'Teacher');
     });
+    // Teachers reach families through the site chat; contact details stay with the admin (audit 2026-10-28).
+    const showContact = req.teacherUser?.role === 'super_admin';
 
     // Map guardians by student_id
     const guardianMap = new Map<string, string>();
@@ -2723,8 +2726,8 @@ app.get('/api/dashboard/students', verifyTeacherAuth, async (req: any, res: any)
         id: st.id,
         lead_id: st.lead_id || null,
         name: st.name,
-        email: st.email || null,
-        whatsapp: st.whatsapp || null,
+        email: showContact ? st.email || null : null,
+        whatsapp: showContact ? st.whatsapp || null : null,
         learner_type: st.learner_type || null,
         parent_name: parentName,
         country: st.country || null,
@@ -3007,6 +3010,7 @@ app.get('/api/dashboard/students/:id', verifyTeacherAuth, async (req: any, res: 
       notes: b.notes || null
     }));
 
+    const isAdminDetail = req.teacherUser?.role === 'super_admin';
     // The assigned teacher's name (the page showed "No teacher yet" to the very teacher who owns the student).
     let assignedTeacherName: string | null = null;
     if (student.assigned_teacher_id) {
@@ -3019,8 +3023,8 @@ app.get('/api/dashboard/students/:id', verifyTeacherAuth, async (req: any, res: 
         id: student.id,
         lead_id: student.lead_id || null,
         name: student.name,
-        email: student.email || null,
-        whatsapp: student.whatsapp || null,
+        email: isAdminDetail ? student.email || null : null,
+        whatsapp: isAdminDetail ? student.whatsapp || null : null,
         learner_type: student.learner_type || null,
         country: student.country || null,
         timezone: student.timezone || null,
@@ -3034,7 +3038,7 @@ app.get('/api/dashboard/students/:id', verifyTeacherAuth, async (req: any, res: 
         created_at: student.created_at,
         updated_at: student.updated_at
       },
-      guardian,
+      guardian: guardian && !isAdminDetail ? { ...guardian, parent_email: null, parent_whatsapp: null } : guardian,
       goals: (goalsRes.data || []).map(g => ({
         id: g.id,
         service_id: g.service_id || null,
@@ -4433,9 +4437,15 @@ app.get('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => {
     const payments = paymentsRes.data || [];
     const reconciliation = reconcileBookingPayments(booking, payments, service);
 
+    // Teachers reach families through the site chat; contact details stay with the admin (audit 2026-10-28).
+    const isAdminViewer = (req as any).teacherUser?.role === 'super_admin';
+    const withoutContact = (row: any) => (row && !isAdminViewer ? { ...row, email: undefined, whatsapp: undefined } : row);
+    const contactFields = isAdminViewer ? {} : { contact_email: undefined, contact_whatsapp: undefined };
+
     res.json({
       booking: {
         ...booking,
+        ...contactFields,
         service_name: service?.title || (booking.service_id ? booking.service_id.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) : 'Teaching Session'),
         service_arabic_title: service?.arabic_title || null,
         payment_status: reconciliation.payment_status,
@@ -4443,8 +4453,8 @@ app.get('/api/dashboard/bookings/:id', verifyTeacherAuth, async (req, res) => {
         confirmed_amount: reconciliation.confirmed_amount,
         currency: reconciliation.currency,
         payments: reconciliation.payments,
-        student: studentRes.data || null,
-        lead: leadRes.data || null,
+        student: withoutContact(studentRes.data) || null,
+        lead: withoutContact(leadRes.data) || null,
         lesson_session: sessionRes.data || null
       }
     });
