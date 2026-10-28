@@ -53,12 +53,12 @@ interface StudentOnboardingPageProps {
 export interface TeacherCard { id: string; gender: 'male' | 'female'; nameAr: string; nameEn: string; photo: string | null }
 
 /**
- * Shown only until the real list arrives (GET /api/student/teachers). These ids are not teacher
- * accounts, so they are never sent; the server then routes by the teacher's gender.
+ * Shown only until the real list arrives (GET /api/student/teachers): neutral cards, no real teacher's name or photo
+ * (the academy is not one person). These ids are never sent; the server then routes by the teacher's gender.
  */
 const FALLBACK_TEACHERS: TeacherCard[] = [
-  { id: 'male_teacher', gender: 'male', nameAr: 'أستاذ محمود', nameEn: 'Ustadh Mahmoud', photo: '/teacher-mahmoud-avatar.jpg' },
-  { id: 'female_teacher', gender: 'female', nameAr: 'أستاذة أفنان', nameEn: 'Ustadha Afnan', photo: '/teacher-afnan-avatar.jpg' }
+  { id: 'male_teacher', gender: 'male', nameAr: 'أستاذ', nameEn: 'A male teacher', photo: null },
+  { id: 'female_teacher', gender: 'female', nameAr: 'أستاذة', nameEn: 'A female teacher', photo: null }
 ];
 const isFallbackTeacherId = (id: string) => FALLBACK_TEACHERS.some((t) => t.id === id);
 

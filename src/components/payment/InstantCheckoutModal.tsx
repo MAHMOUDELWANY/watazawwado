@@ -61,6 +61,12 @@ export function InstantCheckoutModal({
 }: InstantCheckoutModalProps) {
   const isAr = lang === 'ar';
   const [isProcessingStripe, setIsProcessingStripe] = useState(false);
+  // Back from Stripe restores this page from the back/forward cache with the button still "redirecting": reset it.
+  useEffect(() => {
+    const onShow = (e: PageTransitionEvent) => { if (e.persisted) setIsProcessingStripe(false); };
+    window.addEventListener('pageshow', onShow);
+    return () => window.removeEventListener('pageshow', onShow);
+  }, []);
   const [errorMessage, setError] = useState<string | null>(null);
 
   // Code box and balance (RULES.md §4). The server prices everything; this only shows its numbers.

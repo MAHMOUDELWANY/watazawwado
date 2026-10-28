@@ -192,7 +192,8 @@ export function DashboardApp() {
   if (showWelcome) {
     return (
       <WelcomeLoader
-        role={isSuperAdmin ? 'admin' : 'teacher'}
+        // Until the role is known, the neutral academy line (never "your students are waiting" to the admin).
+        role={teacherRole === 'teacher' ? 'teacher' : 'admin'}
         lang={lang === 'ar' ? 'ar' : 'en'}
         name={me?.displayName || me?.display_name || user?.user_metadata?.full_name || user?.user_metadata?.name}
         gender={me?.gender}
