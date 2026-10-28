@@ -255,7 +255,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
       return dateB - dateA;
     });
 
-  const recentLessons = pastBookings.slice(0, 4);
+  const recentLessons = pastBookings.slice(0, 3);
 
   // Resolve the most recent completed booking for repeating
   const lastEligibleBooking = findLastEligibleBooking(bookings);
@@ -321,6 +321,16 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
       position: 'top'
     }
   ];
+
+  const showsLessonDayCard = Boolean(nextBooking && ['confirmed', 'rescheduled'].includes(nextBooking.status) && isLessonDay(nextBooking.scheduledStart || nextBooking.scheduled_start));
+  const statusLabel = (status: string) => ({
+    confirmed: isAr ? 'مؤكدة' : 'Confirmed',
+    rescheduled: isAr ? 'اتغيّر ميعادها' : 'Rescheduled',
+    pending: isAr ? 'مستنية الدفع' : 'Awaiting payment',
+    completed: isAr ? 'خلصت' : 'Done',
+    cancelled: isAr ? 'اتلغت' : 'Cancelled',
+    no_show: isAr ? 'غياب' : 'Missed',
+  } as Record<string, string>)[status] || status;
 
   const hasVerifiedPayment =
     bookings.some(b => getBookingPaymentSummary(b, paymentsData || []).payment_status === 'paid') ||
@@ -410,10 +420,8 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
     );
   })()}
 
-      {/* ST-01: on lesson day, the first thing on home is that lesson. */}
-      {nextBooking && ['confirmed', 'rescheduled'].includes(nextBooking.status) && isLessonDay(nextBooking.scheduledStart || nextBooking.scheduled_start) && (
-        <LessonDayCard booking={nextBooking} isAr={isAr} />
-      )}
+      {/* ST-01: on lesson day, the first thing on home is that lesson (and the next-lesson card below steps aside). */}
+      {showsLessonDayCard && <LessonDayCard booking={nextBooking} isAr={isAr} />}
 
       {/* PR-10: progress at a glance; opens the progress page. Loaded on its own so home stays light. */}
       <Suspense fallback={null}>
@@ -434,14 +442,14 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
             <div className="flex items-center gap-2">
               <Users className="w-5 h-5 text-primary" />
               <h2 id="family-overview-heading" className="text-base sm:text-lg font-display font-bold text-foreground">
-                {isAr ? 'لوحة متابعة الأبناء والمسار العائلي' : 'Children Progress & Family Workspace'}
+                {isAr ? 'أولادك' : 'Your children'}
               </h2>
             </div>
             <Link
-              to="/student/profile"
-              className="text-xs text-primary hover:underline font-semibold inline-flex items-center gap-1"
+              to="/student/account?tab=family"
+              className="text-sm text-primary underline underline-offset-4 font-semibold inline-flex items-center gap-1 min-h-11"
             >
-              <span>{isAr ? 'إدارة بيانات الأبناء' : 'Manage Children'}</span>
+              <span>{isAr ? 'إعدادات العيلة' : 'Family settings'}</span>
               <ArrowRight className={`w-3 h-3 ${isAr ? 'rotate-180' : ''}`} />
             </Link>
           </div>
@@ -460,7 +468,6 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                     <div className="space-y-2">
                       <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center gap-2 min-w-0">
-                          <span className="text-xl shrink-0">{child.gender === 'female' ? '👧' : '👦'}</span>
                           <h3 className="font-bold text-sm sm:text-base text-foreground truncate">
                             {child.name}
                           </h3>
@@ -522,7 +529,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   className="inline-flex items-center gap-1.5 text-xs text-primary font-bold hover:underline"
                 >
                   <Plus className="w-3.5 h-3.5" />
-                  <span>{isAr ? 'إضافة بيانات طفل الآن' : 'Add Child Details Now'}</span>
+                  <span>{isAr ? 'ضيف طفل' : 'Add a child'}</span>
                 </Link>
               </div>
             )}
@@ -539,6 +546,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
         <div className="lg:col-span-8 space-y-8">
           
           {/* PRIMARY: NEXT LESSON FOCUS */}
+          {!showsLessonDayCard && (
           <section id="onboarding-next-lesson" className="space-y-3" aria-labelledby="next-lesson-heading">
             <div className="flex items-center justify-between">
               <h2 id="next-lesson-heading" className="text-base sm:text-lg font-display font-bold text-foreground">
@@ -576,7 +584,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
                   <div className="shrink-0">
                     <Badge variant={nextBooking.status === 'confirmed' ? 'success' : nextBooking.status === 'pending' ? 'warning' : 'secondary'}>
-                      {nextBooking.status === 'pending' ? (isAr ? 'بانتظار الدفع' : 'Payment Required') : nextBooking.status}
+                      {statusLabel(nextBooking.status)}
                     </Badge>
                   </div>
                 </div>
@@ -663,21 +671,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                     </Link>
                   )}
 
-                  <Link
-                    id="link-home-repeat-lesson"
-                    to={`/student/book?repeat=${nextBooking.id}`}
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl glass-card hover:bg-surface-subtle border border-border text-foreground text-sm sm:text-[15px] font-medium transition-colors cursor-pointer min-h-[44px]"
-                  >
-                    <RotateCcw className="w-3.5 h-3.5 text-accent" />
-                    <span>{isAr ? 'حجز درس مماثل' : 'Repeat Lesson'}</span>
-                  </Link>
 
-                  <Link
-                    to="/student/lessons"
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl glass-card hover:bg-surface-subtle border border-border text-foreground text-sm sm:text-[15px] font-medium transition-colors cursor-pointer min-h-[44px]"
-                  >
-                    <span>{isAr ? 'عرض تفاصيل الدرس' : 'View Lesson Details'}</span>
-                  </Link>
                 </div>
               </div>
             ) : lastEligibleBooking && lastBookingSummary ? (
@@ -706,14 +700,9 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                       className="inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm sm:text-[15px] font-semibold transition-colors shadow-xs min-h-[44px]"
                     >
                       <RotateCcw className="w-4 h-4" />
-                      <span>{isAr ? 'حجز الدرس السابق' : 'Book with same details'}</span>
+                      <span>{isAr ? 'احجز تاني بنفس التفاصيل' : 'Book again'}</span>
                     </Link>
-                    <Link
-                      to="/student/book"
-                      className="inline-flex items-center justify-center gap-2 px-4 py-2.5 glass-card hover:bg-surface-subtle border border-border text-foreground rounded-xl text-sm sm:text-[15px] font-medium transition-colors min-h-[44px]"
-                    >
-                      <span>{isAr ? 'استكشاف المواد' : 'Explore Topics'}</span>
-                    </Link>
+
                   </div>
                 </div>
               </div>
@@ -741,6 +730,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
               </div>
             )}
           </section>
+          )}
 
           {/* RECENT LESSONS SECTION (Clean flat list with subtle dividers — NO trapped scrollbar!) */}
           <section className="space-y-3" aria-labelledby="recent-lessons-heading">
@@ -784,7 +774,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                             {title}
                           </h4>
                           <Badge variant={b.status === 'completed' ? 'success' : b.status === 'cancelled' ? 'destructive' : 'secondary'} className="text-sm px-2 py-0">
-                            {b.status}
+                            {statusLabel(b.status)}
                           </Badge>
                         </div>
 
@@ -803,23 +793,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 self-start sm:self-center shrink-0">
-                        <Link
-                          to="/student/lessons"
-                          className="inline-flex items-center px-3 py-1.5 min-h-11 rounded-lg border border-border glass-hover hover:bg-surface-subtle text-foreground text-sm font-medium transition-colors"
-                        >
-                          {isAr ? 'التفاصيل' : 'Details'}
-                        </Link>
 
-                        <Link
-                          id={`btn-repeat-history-${b.id}`}
-                          to={`/student/book?repeat=${b.id}`}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 min-h-11 rounded-lg bg-secondary/30 hover:bg-primary text-primary hover:text-primary-foreground text-sm font-semibold transition-all cursor-pointer"
-                        >
-                          <RotateCcw className="w-3 h-3" />
-                          <span>{isAr ? 'حجز مجدداً' : 'Rebook'}</span>
-                        </Link>
-                      </div>
                     </div>
                   );
                 })}
@@ -831,52 +805,9 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
         {/* RIGHT COLUMN: 4 COLS (Learning Snapshot, Package Status, Billing Status, Teacher Connection) */}
         <aside className="lg:col-span-4 space-y-6">
           
-          {/* 1. LEARNING SNAPSHOT (Explicit labels, factual metrics only) */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between pb-2 border-b border-border">
-              <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-                {isAr ? 'ملخص التعلم' : 'Learning Snapshot'}
-              </span>
-              <Award className="w-4 h-4 text-accent" />
-            </div>
 
-            <div className="grid grid-cols-2 gap-3 text-start">
-              <div className="py-2 border-b border-border/50">
-                <span className="text-sm text-muted-foreground block">
-                  {isAr ? 'دروس مكتملة' : 'completed lessons'}
-                </span>
-                <span className="text-heading-md text-foreground">
-                  {completedLessonsCount}
-                </span>
-              </div>
-
-              <div className="py-2 border-b border-border/50">
-                <span className="text-sm text-muted-foreground block">
-                  {isAr ? 'دروس قادمة' : 'upcoming lessons'}
-                </span>
-                <span className="text-heading-md text-primary">
-                  {upcomingBookings.length}
-                </span>
-              </div>
-            </div>
-
-            <div className="space-y-1.5 pt-1 text-sm text-muted-foreground">
-              <div className="flex items-center justify-between">
-                <span>{isAr ? 'المستوى التعليمي:' : 'Current Level:'}</span>
-                <span className="font-semibold text-foreground capitalize">
-                  {profile?.currentLevel || (isAr ? 'مبتدئ' : 'Beginner')}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span>{isAr ? 'نوع المتعلم:' : 'Learner Type:'}</span>
-                <span className="font-semibold text-foreground capitalize">
-                  {profile?.learnerType || (isAr ? 'طالب' : 'Student')}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* 2. PACKAGE BALANCE SNAPSHOT (Independent loading/error/active state) */}
+          {/* Package credits: only when there is a balance to show (the progress card covers lesson counts). */}
+          {(packagesLoading || packagesError || creditsRemaining > 0) && (
           <div className="space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-border">
               <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
@@ -918,26 +849,12 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
 
                 <PackageBalance entitlements={packagesData?.entitlements} isAr={isAr} showLink />
               </div>
-            ) : (
-              /* No active package */
-              <div className="space-y-3">
-                <div className="space-y-1">
-                  <h4 className="text-[15px] font-semibold text-foreground">
-                    {isAr ? 'هل أنت مستعد لدرسك القادم؟' : 'Ready for your next lesson?'}
-                  </h4>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {isAr 
-                      ? 'الباقات المدفوعة مسبقاً توفر تعليماً منظماً أسبوعياً أو شهرياً بأسعار مخفضة.' 
-                      : 'Choose what to learn and find an available time with your teacher.'}
-                  </p>
-                </div>
-
-                
-              </div>
-            )}
+            ) : null}
           </div>
+          )}
 
-          {/* 3. PAYMENT STATUS SNAPSHOT (Independent loading/error/factual payment state) */}
+          {/* Payments: only when something needs the learner (pending or rejected); receipts live on the Payments page. */}
+          {(paymentsError || pendingPaymentBookings.length > 0 || (paymentsData && paymentsData.some(p => p.status === 'pending' || p.status === 'rejected'))) && (
           <div className="space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-border">
               <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
@@ -946,12 +863,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
               <CreditCard className="w-4 h-4 text-accent" />
             </div>
 
-            {paymentsLoading ? (
-              <div className="py-4 flex items-center justify-center gap-2.5 text-muted-foreground text-sm">
-                <BrandSpinner size={18} />
-                <span>{isAr ? 'جاري تحميل المدفوعات...' : 'Loading payments...'}</span>
-              </div>
-            ) : paymentsError ? (
+            {paymentsError ? (
               <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20 text-sm space-y-2">
                 <p className="text-destructive font-medium">
                   {isAr ? 'تعذر تحميل بيانات المدفوعات' : 'Unable to load payment status.'}
@@ -984,22 +896,6 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   {isAr ? 'عرض المدفوعات وإرسال الإثبات ←' : 'View payments & submit proof →'}
                 </Link>
               </div>
-            ) : hasVerifiedPayment ? (
-              /* Verified payments state (derived from authoritative reconciliation) */
-              <div className="space-y-2">
-                <div className="flex items-center gap-2.5 text-sm text-muted-foreground">
-                  <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
-                  <span className="text-foreground font-medium">
-                    {isAr ? 'تم التحقق من المدفوعات السابقة بنجاح.' : 'Payment verified.'}
-                  </span>
-                </div>
-                <Link
-                  to="/student/payments"
-                  className="text-sm text-primary hover:underline font-medium block pt-1"
-                >
-                  {isAr ? 'عرض إيصالات المدفوعات ←' : 'View verified payment receipts →'}
-                </Link>
-              </div>
             ) : paymentsData && paymentsData.some(p => p.status === 'rejected') ? (
               /* Rejected payment state */
               <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20 space-y-2 text-sm">
@@ -1019,22 +915,9 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   {isAr ? 'مراجعة المدفوعات ←' : 'Review payments →'}
                 </Link>
               </div>
-            ) : (
-              /* Factual No payment history yet */
-              <div className="space-y-3">
-                <p className="text-sm text-muted-foreground">
-                  {isAr ? 'لا يوجد سجل مدفوعات مسجل حتى الآن.' : 'No payment history yet.'}
-                </p>
-                <Link
-                  to="/student/payments"
-                  className="w-full inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl glass-card hover:bg-surface-subtle border border-border text-foreground hover:text-primary text-sm font-medium transition-all shadow-2xs"
-                >
-                  <span>{isAr ? 'عرض صفحة المدفوعات' : 'View Payments'}</span>
-                  <ArrowRight className={`w-3.5 h-3.5 ${isAr ? 'rotate-180' : ''}`} />
-                </Link>
-              </div>
-            )}
+            ) : null}
           </div>
+          )}
 
           {/* 4. TEACHER RELATIONSHIP NOTE */}
           <div className="rounded-2xl border border-secondary/50 bg-secondary/20 p-5 space-y-3 text-start">
@@ -1047,27 +930,24 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   {profile?.assignedTeacherName || (isAr ? 'جارٍ تعيين المعلم' : 'Teacher assignment pending')}
                 </span>
                 <span className="text-sm text-muted-foreground block">
-                  {isAr ? 'معلمك الخاص' : 'Your 1-on-1 Mentor'}
+                  {isAr ? 'معلمك' : 'Your teacher'}
                 </span>
               </div>
             </div>
 
             <p className="text-sm text-muted-foreground leading-relaxed">
               {isAr
-                ? 'هل لديك استفسار حول خطتك التعليمية أو تحتاج لمراجعة تقدمك؟ تواصل مباشرة عبر واتساب.'
-                : 'Need to coordinate your lesson plan or have questions about what to prepare? You can message us directly on WhatsApp.'}
+                ? 'عندك سؤال عن الحصة الجاية أو عايز تراجع حاجة؟ ابعت لمعلمك هنا.'
+                : 'A question about the next lesson or something to review? Message your teacher here.'}
             </p>
 
-            <a
-              href="https://wa.me/48508157886"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl btn-whatsapp-solid text-sm font-bold shadow-sm"
+            <Link
+              to="/student/messages"
+              className="flex items-center justify-center gap-2 w-full min-h-11 px-4 rounded-xl bg-[#0A2E35] text-white text-sm font-semibold focus-ring"
             >
-              <MessageCircle className="w-4 h-4 fill-current shrink-0" />
-              <span>{isAr ? 'محادثة مباشرة على واتساب' : 'Direct WhatsApp message'}</span>
-              <ExternalLink className="w-3.5 h-3.5 opacity-80" />
-            </a>
+              <MessageCircle className="w-4 h-4 shrink-0" />
+              <span>{isAr ? 'راسل معلمك' : 'Message your teacher'}</span>
+            </Link>
           </div>
 
         </aside>

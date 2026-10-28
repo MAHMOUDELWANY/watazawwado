@@ -4,6 +4,12 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### App audit, batch 2: student home (2026-10-28)
+- On a lesson day the lesson-day card replaces the next-lesson card (no second "Join"). The next-lesson card keeps Join and "Reschedule or cancel" (Repeat and Details removed). Status badges in words (no raw `confirmed`).
+- One rebook prompt (the next-week suggestion; "Book again" when nothing is booked); "Explore topics" and the per-row Rebook/Details buttons are gone; recent lessons show 3.
+- Side column: "Learning snapshot" removed (the progress card covers it); package credits only with a balance; payments only when something needs action; the teacher card opens the site chat ("Message your teacher") instead of the academy WhatsApp.
+- Family block: "Family settings" opens the family tab; emoji removed; one "Add a child" label. Lessons page: one "Book a lesson" label.
+
 ### App audit, batch 1: teacher side (2026-10-28)
 - Full audit of every page and button: `docs/ux/APP-AUDIT-2026-10-28.md` (findings per role and batches 2–4).
 - Student page for teachers: the API now returns the assigned teacher, gender and teacher-gender preference (the page said "No teacher yet" to the student's own teacher). The assignment card is admin only. Teachers get one "Message the family" (site chat) in the header; WhatsApp and email are admin only, here and on the students list. "Edit profile" becomes "Level and notes" for teachers, and the API refuses any other field from a teacher (name, email, contact, guardian, time zone).

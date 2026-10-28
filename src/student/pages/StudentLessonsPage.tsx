@@ -166,7 +166,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
           className="inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm sm:text-sm font-semibold transition-colors shadow-xs shrink-0 min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
         >
           <Plus className="w-4 h-4 shrink-0" />
-          <span>{isAr ? 'حجز موعد جديد' : 'Book a Lesson'}</span>
+          <span>{isAr ? 'احجز حصة' : 'Book a lesson'}</span>
         </Link>
       </div>
 
@@ -299,7 +299,7 @@ export default function StudentLessonsPage({ lang = 'en' }: StudentLessonsPagePr
               className="inline-flex items-center justify-center gap-2 px-5 py-2.5 btn-primary-material text-primary-foreground rounded-xl text-sm sm:text-sm font-semibold transition-colors shadow-xs min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2"
             >
               <Plus className="w-4 h-4 shrink-0" />
-              <span>{isAr ? 'حجز موعد الآن' : 'Schedule a Lesson'}</span>
+              <span>{isAr ? 'احجز حصة' : 'Book a lesson'}</span>
             </Link>
           )}
         </motion.div>

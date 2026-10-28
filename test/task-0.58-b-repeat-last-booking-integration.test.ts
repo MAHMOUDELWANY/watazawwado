@@ -42,35 +42,16 @@ test('Task 0.58-B: Repeat Last Booking Dashboard Integration & Deep-Linking Work
       'StudentHomePage must present welcoming continuity copy'
     );
     assert(
-      homeCode.includes('Explore Topics'),
-      'StudentHomePage must provide secondary action to explore new topics'
+      !homeCode.includes('Explore Topics'),
+      'One action only: Book (in the app bar) already covers exploring subjects (audit 2026-10-28)'
     );
   });
 
-  await t.test('3. StudentHomePage provides Repeat topic link when an upcoming lesson exists', () => {
+  await t.test('3-4. Rebooking has one place on home: no repeat links on the next-lesson card or on each past lesson (audit 2026-10-28)', () => {
     const homeCode = fs.readFileSync('src/student/pages/StudentHomePage.tsx', 'utf8');
-
-    assert(
-      homeCode.includes('id="link-home-repeat-lesson"'),
-      'StudentHomePage must render quick repeat link with id="link-home-repeat-lesson"'
-    );
-    assert(
-      homeCode.includes('to="/student/book?repeat=true"'),
-      'Quick repeat link must deep-link to /student/book?repeat=true'
-    );
-  });
-
-  await t.test('4. StudentHomePage Learning History includes direct repeat button for completed/confirmed bookings', () => {
-    const homeCode = fs.readFileSync('src/student/pages/StudentHomePage.tsx', 'utf8');
-
-    assert(
-      homeCode.includes('id={`btn-repeat-history-${b.id}`}'),
-      'Learning History must provide repeat button per repeatable booking'
-    );
-    assert(
-      homeCode.includes('to={`/student/book?repeat=${b.id}`}'),
-      'Learning History repeat link must pass the lesson id so that exact lesson is reused'
-    );
+    assert(!homeCode.includes('id="link-home-repeat-lesson"'), 'No repeat link on the next-lesson card');
+    assert(!homeCode.includes('btn-repeat-history-'), 'No repeat button on each past lesson');
+    assert(homeCode.includes('<NextWeekSuggestion'), 'The next-week suggestion stays as the rebook prompt');
   });
 
   await t.test('5. StudentHomePage Zoom meeting link validation prevents fake /pending redirects', () => {
