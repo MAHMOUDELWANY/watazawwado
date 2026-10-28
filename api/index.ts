@@ -3142,7 +3142,8 @@ Student Context:
 ${JSON.stringify(context, null, 2)}
 
 Guidelines:
-- Exactly three short bullet points, no headings, under 70 words in total:
+- First line, in bold: ${briefLang === 'ar' ? '**«ملخص استرشادي مقترح — لا يغني عن تقييم المعلم المباشر»**' : "**Suggestion only. It does not replace the teacher's own judgement.**"}
+- Then exactly three short bullet points, no headings, under 70 words in total:
   1. Where the student is (from the last notes and goals).
   2. What to focus on in this lesson.
   3. One warm opening question or activity.

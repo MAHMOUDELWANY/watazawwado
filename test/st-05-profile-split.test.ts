@@ -23,7 +23,8 @@ describe('ST-05 profile page sections', () => {
     assert.ok(family.includes('linkedChildren.map('));
     assert.ok(family.includes('profile.guardian.parentWhatsapp'));
     assert.ok(!panel('learning').includes('AddChildForm'));
-    assert.strictEqual(page.split('<AddChildForm').length - 1, 1, 'rendered once');
+    // Once in the family tab, once behind the adult learner's explicit "Add a child" step (owner 2026-10-28).
+    assert.strictEqual(page.split('<AddChildForm').length - 1, 2, 'family tab + adult opt-in');
   });
 
   it('notifications stay in preferences and sign-out in security', () => {
