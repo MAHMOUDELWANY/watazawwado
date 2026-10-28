@@ -27,8 +27,8 @@ test('Phase D Remediation: Modal FocusTrap', () => {
   assert.ok(modalCode.includes('<FocusTrap'), 'Generic Modal should use FocusTrap');
   assert.ok(modalCode.includes('e.key === \'Escape\''), 'Escape handling should be preserved');
   
-  const lessonModalCode = fs.readFileSync(path.join(process.cwd(), 'src/dashboard/components/LessonDetailModal.tsx'), 'utf8');
-  assert.ok(lessonModalCode.includes('<FocusTrap'), 'LessonDetailModal should use FocusTrap');
+  const lessonModalCode = fs.readFileSync(path.join(process.cwd(), 'src/dashboard/components/BookingDetailModal.tsx'), 'utf8');
+  assert.ok(lessonModalCode.includes('<FocusTrap'), 'The lesson window should use FocusTrap');
 });
 
 test('Phase D Remediation: ErrorBoundary', () => {

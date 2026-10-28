@@ -11,7 +11,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { DashboardLesson } from '../types';
-import { LessonDetailModal } from '../components/LessonDetailModal';
+import { BookingDetailModal } from '../components/BookingDetailModal';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { useT } from '../../lib/language';
@@ -218,8 +218,9 @@ export default function UpcomingPage() {
 
       {/* Detail Modal */}
       {selectedLesson && (
-        <LessonDetailModal
-          lesson={selectedLesson}
+        <BookingDetailModal
+          bookingId={selectedLesson.id}
+          isOpen
           onClose={() => setSelectedLesson(null)}
           onBookingUpdated={() => fetchUpcomingLessons(true)}
         />

@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { useTeacherAuth } from '../../lib/auth';
 import { DashboardLesson, DashboardSummary, MissingNoteLesson } from '../types';
-import { LessonDetailModal } from '../components/LessonDetailModal';
+import { BookingDetailModal } from '../components/BookingDetailModal';
 import { TeacherChecklist } from '../components/TeacherChecklist';
 import { Link } from 'react-router-dom';
 import { dashboardFetch, openZoomAsHost } from '../lib/dashboardApi';
@@ -400,23 +400,6 @@ export default function TodayPage() {
             <aside className="space-y-4" aria-label={t('At a glance', 'نظرة سريعة')}>
               <WeekStrip lessons={[...lessons.filter(l => l.status !== 'cancelled'), ...upcoming]} activeTz={activeTz} locale={locale} t={t} />
               <InstallAppEntry variant="card" isAr={isAr} />
-              {/* Places that are not in the top tabs (Schedule and Messages already are) */}
-              <nav aria-label={t('Shortcuts', 'اختصارات')} className={`${DASH_CARD} p-1.5`}>
-                {[
-                  { to: '/dashboard/trials', Icon: Sparkles, tone: 'bg-[#E5A93C]/15 text-[#8B4935] dark:text-[#E5A93C]', title: t('Free trials', 'الحصص التجريبية'), text: t('Assess new students and suggest a plan', 'قيّم الطلاب الجداد واقترح خطة') },
-                  { to: '/dashboard/availability', Icon: Clock, tone: 'bg-teal/10 text-teal', title: t('My hours', 'مواعيدي'), text: t('The weekly times families can book', 'المواعيد اللي الأسر تقدر تحجز فيها') },
-                  ...(isSuperAdmin ? [{ to: '/dashboard/leads', Icon: UserPlus, tone: 'bg-crimson/10 text-crimson', title: t('Interested students', 'الطلاب المهتمين'), text: t('From first question to first lessons', 'من أول سؤال لحد أول حصص') }] : []),
-                ].map(({ to, Icon, tone, title, text }) => (
-                  <Link key={to} to={to} className="flex items-center gap-3 p-3 rounded-2xl hover:bg-surface-subtle transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
-                    <span className={`w-10 h-10 rounded-full grid place-items-center shrink-0 ${tone}`}><Icon className="w-4.5 h-4.5" aria-hidden="true" /></span>
-                    <span className="flex-1 min-w-0">
-                      <span className="block text-sm font-semibold text-foreground">{title}</span>
-                      <span className="block text-xs text-muted-foreground truncate">{text}</span>
-                    </span>
-                    <ChevronRight className="w-4 h-4 text-muted-foreground rtl:rotate-180 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform" aria-hidden="true" />
-                  </Link>
-                ))}
-              </nav>
             </aside>
           </div>
         </div>
@@ -424,8 +407,9 @@ export default function TodayPage() {
 
       {/* Lesson Details Modal */}
       {selectedLesson && (
-        <LessonDetailModal
-          lesson={selectedLesson}
+        <BookingDetailModal
+          bookingId={selectedLesson.id}
+          isOpen
           openSummaryEditor={openSummaryEditor}
           onClose={() => {
             setSelectedLesson(null);

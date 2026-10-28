@@ -31,24 +31,30 @@ import { RecordPaymentModal } from './RecordPaymentModal';
 import { MoveTeacherControl } from './MoveTeacherControl';
 import { useTeacherAuth } from '../../lib/auth';
 import { useT } from '../../lib/language';
+import { JalilaBrief } from './JalilaBrief';
+import { PostLessonSummaryEditor } from './PostLessonSummaryEditor';
 
 interface BookingDetailModalProps {
   bookingId: string | null;
   isOpen: boolean;
   onClose: () => void;
   onBookingUpdated?: () => void;
+  /** Opened from "Record summary": show the family summary editor right away. */
+  openSummaryEditor?: boolean;
 }
 
 /**
- * One lesson in the dashboard. RULES.md §1/§2: teachers see no payment information and
- * don't move or cancel lessons; they ask the student to reschedule. The super admin sees
- * payments and can move, cancel, refund and approve pay-later requests.
+ * The one lesson window of the dashboard (Today, Schedule, All lessons; audit 2026-10-28).
+ * RULES.md: teachers see no payment information, move their own lessons with a reason or ask the student to
+ * reschedule, never cancel; they talk to the family in the site chat. The super admin also sees payments and
+ * contact details and can cancel, refund and approve pay-later requests.
  */
 export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
   bookingId,
   isOpen,
   onClose,
-  onBookingUpdated
+  onBookingUpdated,
+  openSummaryEditor = false
 }) => {
   const { t, isAr } = useT();
   const { teacherRole } = useTeacherAuth();
@@ -507,6 +513,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                   </div>
 
                   <div className="space-y-1.5 text-sm text-foreground">
+                    {isSuperAdmin && (<>
                     <div className="flex items-center justify-between gap-2">
                       <span className="flex items-center gap-1.5 text-muted-foreground"><Mail className="w-3.5 h-3.5" /> {t('Email', 'الإيميل')}:</span>
                       <a href={`mailto:${booking.contact_email}`} className="font-mono text-[11px] hover:underline text-primary font-medium" dir="ltr">
@@ -527,6 +534,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                         </a>
                       </div>
                     )}
+                    </>)}
                     <div className="flex items-center justify-between gap-2">
                       <span className="flex items-center gap-1.5 text-muted-foreground"><Globe className="w-3.5 h-3.5" /> {t('Time zone', 'المنطقة الزمنية')}:</span>
                       <span className="font-medium text-foreground" dir="ltr">{booking.student_timezone || t('Not set', 'مش محددة')}</span>
@@ -1000,6 +1008,19 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     {markingNoShow ? t('Saving…', 'جارٍ الحفظ…') : t('Confirm no-show', 'أكّد الغياب')}
                   </button>
                 </div>
+              )}
+
+              {/* Before the lesson: Jalila's prep. After it (or from "Record summary"): the family summary. */}
+              {isUpcoming && booking.student_id && <JalilaBrief studentId={booking.student_id} />}
+              {(booking.status === 'completed' || isMarkingCompleted || openSummaryEditor) && booking.student_id && (
+                <PostLessonSummaryEditor
+                  studentId={String(booking.student_id)}
+                  studentName={booking.contact_name}
+                  bookingId={booking.id}
+                  subjectHint={booking.service_id || booking.service_name}
+                  compact={true}
+                  onSaved={() => onBookingUpdated?.()}
+                />
               )}
 
               {/* Actions */}

@@ -4,6 +4,11 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### App audit, batch 3: one lesson window (2026-10-28)
+- Today, Schedule and All lessons now open the same lesson window (`BookingDetailModal`); the second window (`LessonDetailModal`) is deleted. The window now also carries Jalila's prep before the lesson and the family summary editor after it (or straight away from "Record summary"), and it has the teacher's "Move lesson" (RULES.md: teachers move with a reason, never cancel) that the Today/Schedule window lacked. Contact email and WhatsApp in the window are admin only.
+- Today: the shortcuts box (Free trials, My hours) repeated the menu and is gone.
+- Trials keep their own window: the trial outcome (attended, might continue, continuing) is a different job from a lesson.
+
 ### App audit, batch 2: student home (2026-10-28)
 - On a lesson day the lesson-day card replaces the next-lesson card (no second "Join"). The next-lesson card keeps Join and "Reschedule or cancel" (Repeat and Details removed). Status badges in words (no raw `confirmed`).
 - One rebook prompt (the next-week suggestion; "Book again" when nothing is booked); "Explore topics" and the per-row Rebook/Details buttons are gone; recent lessons show 3.
