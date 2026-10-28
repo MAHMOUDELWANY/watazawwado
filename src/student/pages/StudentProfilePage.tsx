@@ -90,6 +90,9 @@ export default function StudentProfilePage({
     profile?.bookingPreference === 'child'
   );
   const linkedChildren = Array.isArray(profile?.linkedChildren) ? profile.linkedChildren : [];
+  // A family account manages children; an adult who learns for themselves sees no family controls (owner 2026-10-28).
+  const isFamily = linkedChildren.length > 0 || profile?.bookingPreference === 'child' || profile?.learnerType === 'child';
+  const [showAddChild, setShowAddChild] = useState(false);
 
   // Diagnostic helper for student auth probe
   const probeStudentMe = async () => {
@@ -287,7 +290,9 @@ export default function StudentProfilePage({
   const CATEGORY_IDS: CategoryId[] = ['profile', 'learning', 'family', 'preferences', 'privacy', 'security'];
   const [searchParams, setSearchParams] = useSearchParams();
   const tabParam = searchParams.get('tab') as CategoryId | null;
-  const activeCategory: CategoryId = tabParam && CATEGORY_IDS.includes(tabParam) ? tabParam : 'profile';
+  const requestedCategory: CategoryId = tabParam && CATEGORY_IDS.includes(tabParam) ? tabParam : 'profile';
+  // An adult learner has no family tab; an old link to it opens Preferences, where adding a child lives.
+  const activeCategory: CategoryId = requestedCategory === 'family' && !(isFamily || profile?.guardian) ? 'preferences' : requestedCategory;
   const setActiveCategory = (id: CategoryId) => {
     const next = new URLSearchParams(searchParams);
     if (id === 'profile') next.delete('tab'); else next.set('tab', id);
@@ -307,16 +312,18 @@ export default function StudentProfilePage({
       description: isAr ? 'الإشراف المباشر من معلمك والتقييم' : '1-on-1 teaching with your teacher',
       icon: Target
     },
-    {
+    ...(isFamily || profile?.guardian ? [{
       id: 'family' as const,
       name: isAr ? 'العيلة' : 'Family',
       description: isAr ? 'الأبناء المسجلين، إضافة طفل، وولي الأمر' : 'Your children, adding a child & guardian',
       icon: Baby
-    },
+    }] : []),
     {
       id: 'preferences' as const,
-      name: isAr ? 'تفضيلات الحجز والمظهر' : 'Booking & Preferences',
-      description: isAr ? 'المستفيد الافتراضي، اللغة، المظهر، والإيميلات' : 'Default learner, language, theme & emails',
+      name: isFamily ? (isAr ? 'تفضيلات الحجز والمظهر' : 'Booking & Preferences') : (isAr ? 'التفضيلات' : 'Preferences'),
+      description: isFamily
+        ? (isAr ? 'المستفيد الافتراضي، اللغة، المظهر، والإيميلات' : 'Default learner, language, theme & emails')
+        : (isAr ? 'اللغة، المظهر، والإيميلات' : 'Language, theme & emails'),
       icon: Users
     },
     {
@@ -331,7 +338,7 @@ export default function StudentProfilePage({
       description: isAr ? 'حالة المصادقة، فحص الاتصال، والخروج' : 'Auth verification, diagnostics & sign out',
       icon: ShieldCheck
     }
-  ], [isAr]);
+  ], [isAr, isFamily, profile?.guardian]);
 
   if (loading) {
     return (
@@ -368,8 +375,8 @@ export default function StudentProfilePage({
                 {profile?.name || user?.email?.split('@')[0] || (isAr ? 'طالب' : 'Student')}
               </h1>
               <Badge variant="secondary" className="text-sm px-2.5 py-0.5">
-                {bookingPreference === 'child'
-                  ? (isAr ? 'حساب ولي أمر' : 'Parent Account')
+                {isFamily
+                  ? (isAr ? 'حساب عيلة' : 'Family account')
                   : (isAr ? 'طالب' : 'Student')}
               </Badge>
             </div>
@@ -868,16 +875,38 @@ export default function StudentProfilePage({
             <div className="rounded-2xl border border-border glass-card p-5 sm:p-7 shadow-2xs space-y-6">
               <div className="border-b border-border pb-4">
                 <h2 className="text-lg sm:text-xl font-display font-bold text-foreground">
-                  {isAr ? 'تفضيلات الحجز والمظهر' : 'Booking & Preferences'}
+                  {isFamily ? (isAr ? 'تفضيلات الحجز والمظهر' : 'Booking & Preferences') : (isAr ? 'التفضيلات' : 'Preferences')}
                 </h2>
                 <p className="text-sm sm:text-sm text-muted-foreground mt-1 leading-relaxed">
                   {isAr
-                    ? 'تحديد المستفيد الافتراضي عند حجز الدروس، لغة المنصة، ومظهر العرض'
-                    : 'Configure default learner preference, platform language, and display theme'}
+                    ? (isFamily ? 'المستفيد الافتراضي عند الحجز، لغة المنصة، ومظهر العرض' : 'لغة المنصة ومظهر العرض')
+                    : (isFamily ? 'Default learner for bookings, platform language and display theme' : 'Platform language and display theme')}
                 </p>
               </div>
 
-              {/* Default Booking Preference */}
+              {/* An adult learner: adding a child is an explicit step that turns this into a family account. */}
+              {!isFamily && (
+                <div className="p-4 rounded-xl border border-border bg-surface-subtle/60 space-y-3" id="add-child-optin">
+                  <div>
+                    <span className="block text-sm font-semibold text-foreground">{isAr ? 'عندك طفل عايز يتعلم معانا؟' : 'Have a child who wants to learn with us?'}</span>
+                    <p className="text-sm text-muted-foreground mt-0.5">
+                      {isAr
+                        ? 'لو ضفت طفل، حسابك هيبقى حساب عيلة: تحجز وتتابع لكل واحد لوحده، وحصصك انت فاضلة زي ما هي.'
+                        : 'Adding a child turns this into a family account: you book and follow each learner separately, and your own lessons stay as they are.'}
+                    </p>
+                  </div>
+                  {showAddChild
+                    ? <AddChildForm isAr={isAr} onAdded={fetchProfile} />
+                    : (
+                      <Button type="button" variant="outline" onClick={() => setShowAddChild(true)} className="w-full sm:w-auto min-h-11">
+                        {isAr ? 'ضيف طفل' : 'Add a child'}
+                      </Button>
+                    )}
+                </div>
+              )}
+
+              {/* Default Booking Preference (family accounts only) */}
+              {isFamily && (
               <div className="space-y-3">
                 <div>
                   <span className="block text-sm font-semibold text-foreground">
@@ -953,6 +982,7 @@ export default function StudentProfilePage({
                   </label>
                 </div>
               </div>
+              )}
 
               {/* Interface Language */}
               <div className="flex items-center justify-between p-4 rounded-xl glass-surface border border-border">

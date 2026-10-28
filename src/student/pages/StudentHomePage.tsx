@@ -505,7 +505,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                 // PA-02: adding another child is one tap from home.
                 <Link
                   key="add-child"
-                  to="/student/profile#add-child"
+                  to="/student/account?tab=family#add-child"
                   className="p-4 sm:p-5 rounded-2xl border border-dashed border-border hover:border-primary/40 transition-all flex flex-col items-center justify-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground min-h-[140px]"
                 >
                   <Plus className="w-5 h-5 text-accent" />
@@ -518,7 +518,7 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
                   {isAr ? 'لم تتم إضافة أي أبناء بعد في ملفك العائلي.' : 'No children added to your family profile yet.'}
                 </p>
                 <Link
-                  to="/student/profile#add-child"
+                  to="/student/account?tab=family#add-child"
                   className="inline-flex items-center gap-1.5 text-xs text-primary font-bold hover:underline"
                 >
                   <Plus className="w-3.5 h-3.5" />
@@ -530,16 +530,6 @@ export default function StudentHomePage({ lang = 'en' }: StudentHomePageProps) {
         </section>
       )}
 
-      {/* PA-02: a personal account can add a child too. */}
-      {!(profile?.learnerType === 'child' || (Array.isArray(profile?.linkedChildren) && profile.linkedChildren.length > 0)) && profile?.onboardingCompleted !== false && (
-        <Link
-          to="/student/profile#add-child"
-          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <Plus className="w-4 h-4 text-accent" />
-          <span>{isAr ? 'عايز ابنك أو بنتك يتعلموا معانا كمان؟ ضيفهم لحسابك.' : 'Want your child to learn with us too? Add them to your account.'}</span>
-        </Link>
-      )}
 
       {/* ========================================================================= */}
       {/* 3. COMMAND CENTER: TWO-COLUMN BALANCED DESKTOP LAYOUT */}

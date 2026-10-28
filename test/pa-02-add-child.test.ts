@@ -32,10 +32,14 @@ describe('PA-02 add another child after onboarding', () => {
     assert.ok(route.includes('publicTeachers.find(t => t.id === req.body.teacherId)'));
   });
 
-  it('is reachable from the profile and from home', () => {
-    assert.ok(fs.readFileSync('src/student/pages/StudentProfilePage.tsx', 'utf8').includes('<AddChildForm'));
+  it('families add from home and the family tab; an adult learner opts in from Preferences only', () => {
+    const profile = fs.readFileSync('src/student/pages/StudentProfilePage.tsx', 'utf8');
+    assert.ok(profile.includes('<AddChildForm'));
+    assert.ok(profile.includes('id="add-child-optin"'), 'adult learners get one explicit "add a child" step');
+    assert.match(profile, /isFamily \|\| profile\?\.guardian \? \[\{\s*id: 'family'/, 'the family tab is for family accounts only');
     const home = fs.readFileSync('src/student/pages/StudentHomePage.tsx', 'utf8');
-    assert.ok(home.includes('to="/student/profile#add-child"'));
+    assert.ok(home.includes('to="/student/account?tab=family#add-child"'), 'family home links open the family tab');
+    assert.ok(!home.includes('a personal account can add a child'), 'no add-child nudge on an adult learner home');
   });
 
   describe('endpoint', () => {
