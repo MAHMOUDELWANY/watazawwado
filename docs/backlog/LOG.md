@@ -4,6 +4,9 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Launch plan E: teacher My month (2026-10-28)
+- `/dashboard/month` (teacher menu "My month", replaces "My pay"): lessons held, hours, students, free trials, family summaries written within 24 h of the lesson end, the families' average rating, notes for missing summaries and student no-shows; then the pay for the same month. API `GET /api/dashboard/my-month` (`server/routes/myMonth.ts`, tested). No student money.
+
 ### Launch plan D: teacher pay (2026-10-28)
 - Migration `20261028000000_teacher_pay.sql` (applied to production): `teacher_pay_rates` (hourly rate + currency per teacher), `teacher_pay_adjustments` (bonus/deduction with a reason), `teacher_payouts` (one per teacher per month, statement frozen when paid), `bookings.not_held_reason`, RPC `record_lesson_not_held` (cancels the lesson; a paid single lesson comes back as a lesson credit; package lessons need nothing because credits are used only on completion).
 - Rules (`server/payroll/payroll.ts`, tested): held and student no-show are paid at rate × length; trial, cancelled in time, teacher absent and technical problem are not; a lesson with no outcome waits; month = UTC calendar month. Never reads what students paid.

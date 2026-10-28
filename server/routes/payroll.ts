@@ -162,7 +162,7 @@ export function registerPayrollRoutes(app: express.Express, deps: {
       const money = (n: number) => `${n.toFixed(2)} ${statement.currency}`;
       const title = { en: `Your pay for ${month} was sent`, ar: `مرتب شهر ${month} اتبعت` };
       const body = { en: `${money(statement.total)} by ${method}.`, ar: `${money(statement.total)} عن طريق ${method}.` };
-      await notifyUser(client, { userId: teacherId, staff: true }, { kind: 'payslip', title, body, link: '/dashboard/pay' });
+      await notifyUser(client, { userId: teacherId, staff: true }, { kind: 'payslip', title, body, link: '/dashboard/month' });
       try {
         const lang = await resolveEmailLanguage(teacher.email);
         const rows: Array<[string, string, unknown]> = [

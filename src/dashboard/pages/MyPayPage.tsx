@@ -8,9 +8,11 @@ import { PayLines, PayTotals, MonthSelect, fmtMoney, monthLabel } from '../compo
  * Teacher: My pay (launch plan D). This month so far (it grows with each lesson whose outcome is recorded),
  * which lessons count and why, and the payslips. Nothing about what students pay.
  */
-export default function MyPayPage() {
+export default function MyPayPage({ month: monthProp, embedded = false }: { month?: string; embedded?: boolean } = {}) {
   const { isAr } = useT();
-  const [month, setMonth] = useState(DateTime.utc().toFormat('yyyy-MM'));
+  const [ownMonth, setMonth] = useState(DateTime.utc().toFormat('yyyy-MM'));
+  // Inside My month the month comes from that page's picker.
+  const month = monthProp || ownMonth;
   const [data, setData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,15 +26,17 @@ export default function MyPayPage() {
   const isCurrent = month === DateTime.utc().toFormat('yyyy-MM');
 
   return (
-    <div className="space-y-6 pb-12 max-w-4xl" data-testid="my-pay">
+    <div className={`space-y-6 max-w-4xl ${embedded ? '' : 'pb-12'}`} data-testid="my-pay">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground">{isAr ? 'مرتبي' : 'My pay'}</h1>
+          {embedded
+            ? <h2 className="font-display text-xl font-bold text-foreground">{isAr ? 'مرتبي' : 'My pay'}</h2>
+            : <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground">{isAr ? 'مرتبي' : 'My pay'}</h1>}
           <p className="text-sm text-muted-foreground mt-1">
             {isAr ? 'بيتحسب من سعر ساعتك ومدة كل حصة. بيتحوّل بين يوم 1 و5 من الشهر اللي بعده.' : 'From your hourly rate and each lesson\'s length. Sent between the 1st and 5th of the next month.'}
           </p>
         </div>
-        <MonthSelect value={month} onChange={setMonth} isAr={isAr} />
+        {!embedded && <MonthSelect value={month} onChange={setMonth} isAr={isAr} />}
       </div>
 
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}

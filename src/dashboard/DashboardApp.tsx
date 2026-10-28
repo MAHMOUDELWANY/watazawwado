@@ -59,7 +59,7 @@ import AvailabilityPage from './pages/AvailabilityPage';
 import NotificationsPage, { useUnreadDashboardNotifications } from './pages/NotificationsPage';
 import PayLaterPage from './pages/PayLaterPage';
 import PayrollPage from './pages/PayrollPage';
-import MyPayPage from './pages/MyPayPage';
+import MyMonthPage from './pages/MyMonthPage';
 import HealthPage from './pages/HealthPage';
 import PlacementTestsPage from './pages/PlacementTestsPage';
 import CurriculumPage, { CurriculumGroupPage, CurriculumTrackPage, CurriculumLessonPage } from './pages/CurriculumPage';
@@ -255,7 +255,7 @@ export function DashboardApp() {
     // Schedule = what is coming; All lessons = past and future, where summaries are written.
     { name: L('All lessons', 'كل الحصص'), path: '/dashboard/bookings', icon: BookOpen },
     { name: L('My hours', 'مواعيدي'), path: '/dashboard/availability', icon: CalendarClock },
-    { name: L('My pay', 'مرتبي'), path: '/dashboard/pay', icon: Banknote },
+    { name: L('My month', 'شهري'), path: '/dashboard/month', icon: Banknote },
     { name: L('Curriculum', 'المنهج'), path: '/dashboard/curriculum', icon: Library },
     { name: L('Settings', 'الإعدادات'), path: '/dashboard/settings', icon: Settings },
   ];
@@ -609,8 +609,9 @@ export function DashboardApp() {
                 <Route path="/availability" element={<AvailabilityPage />} />
                 <Route path="/notifications" element={<NotificationsPage />} />
                 <Route path="/pay-later" element={isSuperAdmin ? <PayLaterPage /> : <Navigate to="/dashboard" replace />} />
-                <Route path="/payroll" element={isSuperAdmin ? <PayrollPage /> : <Navigate to="/dashboard/pay" replace />} />
-                <Route path="/pay" element={<MyPayPage />} />
+                <Route path="/payroll" element={isSuperAdmin ? <PayrollPage /> : <Navigate to="/dashboard/month" replace />} />
+                <Route path="/month" element={<MyMonthPage />} />
+                <Route path="/pay" element={<Navigate to="/dashboard/month" replace />} />
                 <Route path="/discounts" element={isSuperAdmin ? <DiscountsPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/health" element={isSuperAdmin ? <HealthPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/settings" element={<SettingsPage />} />

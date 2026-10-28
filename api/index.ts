@@ -73,6 +73,7 @@ import { registerPrivacyRoutes } from '../server/routes/privacy.js';
 import { registerTeacherLoadRoutes } from '../server/routes/teacherLoad.js';
 import { registerSummaryDraftRoutes, registerMonthlyDraftRoute } from '../server/routes/summaryDraft.js';
 import { registerPayrollRoutes, type StaffAccount } from '../server/routes/payroll.js';
+import { registerMyMonthRoute } from '../server/routes/myMonth.js';
 import { registerCalendarFeedRoutes } from '../server/routes/calendarFeed.js';
 import { registerLessonTeacherMoveRoutes } from '../server/routes/lessonTeacherMove.js';
 import { registerAccountPreferenceRoutes } from '../server/routes/accountPreferences.js';
@@ -10417,6 +10418,8 @@ registerPayrollRoutes(app, {
   rateLimit,
   listStaff: async () => listStaffAccounts(getSupabaseAdminClient())
 });
+// Launch plan E: the teacher's own month (no student money).
+registerMyMonthRoute(app, { getClient: getSupabaseAdminClient, verifyTeacherAuth });
 
 registerNextWeekSuggestionRoutes(app, {
   getClient: getSupabaseAdminClient,
