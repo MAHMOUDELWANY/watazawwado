@@ -26,6 +26,7 @@ import { StepReviewSummary } from './StepReviewSummary';
 import { BookingConfirmation } from './BookingConfirmation';
 import { InstantCheckoutModal } from '../payment/InstantCheckoutModal';
 import { getFreshAccessToken } from '../../lib/auth';
+import { authedJson } from '../../lib/authedJson';
 
 const DRAFT_KEY = 'watazawwado_pending_booking_state';
 // A draft older than this starts fresh (its time slot is likely gone anyway).
@@ -142,6 +143,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   const [payLaterEligible, setPayLaterEligible] = useState(false);
   const [payLaterBusy, setPayLaterBusy] = useState(false);
   const [isVerifyingPayment, setIsVerifyingPayment] = useState<boolean>(false);
+  const [packagePaidNote, setPackagePaidNote] = useState(false);
 
   // Progressive Form State
   const [formData, setFormData] = useState<BookingFormData>(() => {
@@ -219,6 +221,8 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
 
   // Determines whether this is a 7-step regular package flow or 6-step trial/credit flow
   const isMultiStepFlow = formData.mode === 'regular' && !formData.packageEntitlementId;
+  // Four screens over the internal steps (owner D4): what (subject, goal, learner), length & plan, time, review & pay.
+  const screens: number[][] = isMultiStepFlow ? [[1, 2, 3], [4, 5], [6], [7]] : [[1, 2, 3], [4], [5], [6]];
   const totalSteps = isMultiStepFlow ? 7 : 6;
 
   // Persist draft to sessionStorage whenever user makes changes or holds a pending booking
@@ -254,7 +258,8 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
       const cleanUrl = new URL(window.location.href);
       cleanUrl.searchParams.delete('payment_cancelled');
       window.history.replaceState({}, document.title, cleanUrl.pathname + (cleanUrl.search ? cleanUrl.search : ''));
-      setStep(isMultiStepFlow ? 7 : 6);
+      // A package checkout returns to the plan screen; a lesson checkout to the review.
+      setStep(formData.buyPackageCatalogId ? 4 : (isMultiStepFlow ? 7 : 6));
       return;
     }
 
@@ -270,6 +275,14 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
       })
         .then(res => res.json())
         .then(async (data) => {
+          if (data.success && data.status === 'confirmed' && params.get('target_type') === 'package') {
+            const cleanUrl = new URL(window.location.href);
+            ['session_id', 'gateway', 'payment_status', 'target_id', 'target_type'].forEach((k) => cleanUrl.searchParams.delete(k));
+            window.history.replaceState({}, document.title, cleanUrl.pathname + cleanUrl.search);
+            applyPaidPackage(data.targetId || targetId);
+            setPackagePaidNote(true);
+            return;
+          }
           if (data.success && data.status === 'confirmed') {
             const refCode = data.referenceCode || targetId;
             let confirmedRecord: any = null;
@@ -388,49 +401,74 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
 
   const currentService = BOOKING_SERVICES.find((s) => s.id === formData.serviceId);
 
+  const screenIndex = Math.max(0, screens.findIndex((g) => g.includes(step)));
+  const showStep = (n: number) => screens[screenIndex].includes(n);
+
   const handleNext = () => {
     setValidationError(null);
-
-    // Validate standard step 1 to 4 fields
-    if (step === 1 || step === 2 || step === 3 || step === 4) {
-      const check = validateStep(step, formData, lang === 'ar');
+    // Check every step on this screen; validateStep(5) is the date/time check in both flows.
+    for (const n of screens[screenIndex]) {
+      const rule = n <= 4 ? n : (isMultiStepFlow ? (n === 6 ? 5 : 0) : (n === 5 ? 5 : 0));
+      if (!rule) continue;
+      const check = validateStep(rule, formData, lang === 'ar');
       if (!check.isValid) {
-        const firstError = Object.values(check.errors)[0];
-        setValidationError(firstError);
+        setValidationError(Object.values(check.errors)[0] as string);
         return;
       }
-    } else if (isMultiStepFlow) {
-      // Step 5 is "one lesson or a package" (packages are bought on the packages page, RULES.md §4).
-      if (step === 6) {
-        const check = validateStep(5, formData, lang === 'ar');
-        if (!check.isValid) {
-          const firstError = Object.values(check.errors)[0];
-          setValidationError(firstError);
-          return;
-        }
-      }
-    } else {
-      // 6-step flow (Trial or Credit redemption)
-      if (step === 5) {
-        const check = validateStep(5, formData, lang === 'ar');
-        if (!check.isValid) {
-          const firstError = Object.values(check.errors)[0];
-          setValidationError(firstError);
-          return;
-        }
-      }
     }
+    // A package chosen on this screen is bought now; its first lesson is then booked from it (owner D4).
+    if (isMultiStepFlow && screens[screenIndex].includes(5) && formData.buyPackageCatalogId) {
+      void startPackagePurchase();
+      return;
+    }
+    const next = screens[screenIndex + 1];
+    if (next) setStep(next[0]);
+  };
 
-    if (step < totalSteps) {
-      setStep((prev) => prev + 1);
+  const [packageCheckout, setPackageCheckout] = useState<{ entitlementId: string; title: string; amount: number } | null>(null);
+  const [buyingPackage, setBuyingPackage] = useState(false);
+
+  const startPackagePurchase = async () => {
+    if (!formData.acceptedTerms || !formData.acceptedEarlyStart) {
+      setValidationError(isAr ? 'وافق على الشروط وعلى بدء الحصص الأول.' : 'Please tick both boxes under the package first.');
+      return;
     }
+    const pkg = catalog.find((c) => c.id === formData.buyPackageCatalogId);
+    setBuyingPackage(true);
+    try {
+      const json = await authedJson<any>('/api/student/packages/select', {
+        method: 'POST',
+        body: JSON.stringify({
+          packageCatalogId: formData.buyPackageCatalogId,
+          acceptedTerms: true,
+          acceptedEarlyStart: true,
+          ...(formData.studentId ? { learnerStudentId: formData.studentId } : {})
+        })
+      });
+      setPackageCheckout({
+        entitlementId: json.entitlement?.id,
+        title: pkg?.name || (isAr ? 'باقة حصص' : 'Lesson package'),
+        // The server may apply the family discount, so show what it actually charges.
+        amount: Number(json.entitlement?.price_paid ?? pkg?.price_amount ?? 0)
+      });
+    } catch (err: any) {
+      setValidationError(err?.message || (isAr ? 'معرفناش نجهز الباقة، جرّب تاني.' : 'Could not start the package, please try again.'));
+    } finally {
+      setBuyingPackage(false);
+    }
+  };
+
+  /** The package is paid: book the first lesson from it (screen 3, pick a time). */
+  const applyPaidPackage = (entitlementId: string) => {
+    setPackageCheckout(null);
+    setFormData((prev) => ({ ...prev, packageEntitlementId: entitlementId, buyPackageCatalogId: undefined }));
+    setStep(5);
   };
 
   const handleBack = () => {
     setValidationError(null);
-    if (step > 1) {
-      setStep((prev) => prev - 1);
-    }
+    const prev = screens[screenIndex - 1];
+    if (prev) setStep(prev[0]);
   };
 
   const handleGoToStep = (targetStep: number) => {
@@ -588,11 +626,11 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
         /* 3. Progressive Multi-Step Booking Flow */
         <div>
           <BookingHeader
-            step={step}
-            totalSteps={totalSteps}
+            step={screenIndex + 1}
+            totalSteps={screens.length}
             mode={formData.mode}
             lang={lang}
-            onBack={step > 1 ? handleBack : undefined}
+            onBack={screenIndex > 0 ? handleBack : undefined}
             onClose={onClose}
             serviceName={isEn ? currentService?.name : currentService?.arabicName}
           />
@@ -616,8 +654,8 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
           )}
 
           {/* Steps Presentation */}
-          <AnimatePresence mode="wait" initial={false}>
-            {step === 1 && (
+          <AnimatePresence initial={false}>
+            {showStep(1) && (
               <motion.div
                 key="step1"
                 initial={{ opacity: 0, x: 10 }}
@@ -626,6 +664,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                 transition={{ duration: 0.2 }}
               >
                 <StepServiceSelect
+                  hideNav
                   suggestedServiceId={profileServiceId}
                   suggestedLevel={formData.audience === 'child' ? formData.childLevel : formData.currentLevel}
                   selectedServiceId={formData.serviceId}
@@ -636,7 +675,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
               </motion.div>
             )}
 
-            {step === 2 && (
+            {showStep(2) && (
               <motion.div
                 key="step2"
                 initial={{ opacity: 0, x: 10 }}
@@ -645,6 +684,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                 transition={{ duration: 0.2 }}
               >
                 <StepGoalSelect
+                  hideNav
                   serviceId={formData.serviceId}
                   selectedGoal={formData.goal}
                   customGoalText={formData.customGoalText}
@@ -657,7 +697,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
               </motion.div>
             )}
 
-            {step === 3 && (
+            {showStep(3) && (
               <motion.div
                 key="step3"
                 initial={{ opacity: 0, x: 10 }}
@@ -666,6 +706,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                 transition={{ duration: 0.2 }}
               >
                 <StepStudentDetails
+                  hideNav
                   formData={formData}
                   updateForm={updateFormData}
                   onNext={handleNext}
@@ -681,7 +722,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
               </motion.div>
             )}
 
-            {step === 4 && (
+            {showStep(4) && (
               <motion.div
                 key="step4"
                 initial={{ opacity: 0, x: 10 }}
@@ -690,6 +731,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                 transition={{ duration: 0.2 }}
               >
                 <StepLessonType
+                  hideNav
                   mode={formData.mode}
                   duration={formData.duration}
                   serviceId={formData.serviceId}
@@ -711,7 +753,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
             )}
 
             {/* FLOW A: Dedicated Step 5 for Regular Packages / Lesson Quantity */}
-            {isMultiStepFlow && step === 5 && (
+            {isMultiStepFlow && showStep(5) && (
               <motion.div
                 key="step5-packages"
                 initial={{ opacity: 0, x: 10 }}
@@ -720,10 +762,17 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                 transition={{ duration: 0.2 }}
               >
                 <StepPackageQuantity
+                  hideNav
                   serviceId={formData.serviceId}
                   duration={formData.duration}
                   catalog={catalog}
                   lang={lang}
+                  selectedCatalogId={formData.buyPackageCatalogId}
+                  onSelect={(buyPackageCatalogId) => updateFormData({ buyPackageCatalogId })}
+                  acceptedTerms={formData.acceptedTerms}
+                  acceptedEarlyStart={formData.acceptedEarlyStart}
+                  onAcceptTerms={(acceptedTerms) => updateFormData({ acceptedTerms })}
+                  onAcceptEarlyStart={(acceptedEarlyStart) => updateFormData({ acceptedEarlyStart })}
                   onNext={handleNext}
                   onBack={handleBack}
                 />
@@ -731,7 +780,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
             )}
 
             {/* FLOW A: Step 6 Date & Time / Multi-Lesson Schedule */}
-            {isMultiStepFlow && step === 6 && (
+            {isMultiStepFlow && showStep(6) && (
               <motion.div
                 key="step6-schedule"
                 initial={{ opacity: 0, x: 10 }}
@@ -740,6 +789,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                 transition={{ duration: 0.2 }}
               >
                   <StepDateTime
+                  hideNav
                     mode={formData.mode}
                     duration={formData.duration}
                     teacherId={formData.teacherId}
@@ -757,7 +807,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
             )}
 
             {/* FLOW A: Step 7 Review & Confirmation */}
-            {isMultiStepFlow && step === 7 && (
+            {isMultiStepFlow && showStep(7) && (
               <motion.div
                 key="step7-review"
                 initial={{ opacity: 0, x: 10 }}
@@ -785,8 +835,14 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
               </motion.div>
             )}
 
+            {packagePaidNote && !isMultiStepFlow && showStep(5) && (
+              <div role="status" className="mb-4 rounded-2xl bg-secondary/10 border border-secondary/30 p-4 text-sm text-foreground" data-testid="booking-package-paid">
+                {isAr ? 'تم دفع الباقة. اختار ميعاد أول حصة، ومش هتدفع حاجة تاني.' : 'Your package is paid. Pick the time of your first lesson; there is nothing more to pay.'}
+              </div>
+            )}
+
             {/* FLOW B: 6-step flow (Trial or Package Credit Redemption) */}
-            {!isMultiStepFlow && step === 5 && (
+            {!isMultiStepFlow && showStep(5) && (
               <motion.div
                 key="step5-datetime-single"
                 initial={{ opacity: 0, x: 10 }}
@@ -795,6 +851,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                 transition={{ duration: 0.2 }}
               >
                 <StepDateTime
+                  hideNav
                   mode={formData.mode}
                   duration={formData.duration}
                   teacherId={formData.teacherId}
@@ -811,7 +868,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
               </motion.div>
             )}
 
-            {!isMultiStepFlow && step === 6 && (
+            {!isMultiStepFlow && showStep(6) && (
               <motion.div
                 key="step6-review-single"
                 initial={{ opacity: 0, x: 10 }}
@@ -839,7 +896,44 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
               </motion.div>
             )}
           </AnimatePresence>
+
+          {/* One Back / Continue per screen (the review screen has its own confirm and pay). */}
+          {screenIndex < screens.length - 1 && (
+            <div className="mt-6 pt-4 border-t border-border flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3">
+              {screenIndex > 0 ? (
+                <button type="button" onClick={handleBack} className="min-h-11 px-4 rounded-xl text-sm font-semibold text-foreground hover:bg-surface-subtle cursor-pointer focus-ring">
+                  {isAr ? 'رجوع' : 'Back'}
+                </button>
+              ) : <span />}
+              <button
+                type="button"
+                onClick={handleNext}
+                disabled={buyingPackage}
+                data-testid="booking-continue"
+                className="w-full sm:w-auto min-h-12 px-8 rounded-xl bg-[#0A2E35] text-white text-sm font-semibold cursor-pointer focus-ring"
+              >
+                {isMultiStepFlow && screenIndex === 1 && formData.buyPackageCatalogId
+                  ? (buyingPackage ? (isAr ? 'لحظة…' : 'One moment…') : (isAr ? 'ادفع الباقة' : 'Pay for the package'))
+                  : [isAr ? 'كمّل: المدة والخطة' : 'Continue: length and plan', isAr ? 'كمّل: اختار الميعاد' : 'Continue: pick a time', isAr ? 'كمّل: راجع وادفع' : 'Continue: review and pay'][screenIndex]}
+              </button>
+            </div>
+          )}
         </div>
+      )}
+
+      {/* Package bought inside the flow (screen 2). */}
+      {packageCheckout && (
+        <InstantCheckoutModal
+          isOpen
+          onClose={() => setPackageCheckout(null)}
+          targetType="package"
+          targetId={packageCheckout.entitlementId}
+          itemTitle={packageCheckout.title}
+          amount={packageCheckout.amount}
+          currency="USD"
+          lang={isAr ? 'ar' : 'en'}
+          onSuccess={() => applyPaidPackage(packageCheckout.entitlementId)}
+        />
       )}
 
       {/* Instant Checkout Modal for Pending Bookings */}

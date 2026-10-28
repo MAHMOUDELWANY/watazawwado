@@ -13,6 +13,8 @@ interface StepGoalSelectProps {
   onNext: () => void;
   onBack: () => void;
   lang: Language;
+  /** Inside a screen with several steps, the screen shows one Back/Continue for all of them. */
+  hideNav?: boolean;
 }
 
 export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
@@ -23,6 +25,7 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
   onChangeCustomGoal,
   onNext,
   onBack,
+  hideNav = false,
   lang
 }) => {
   const isEn = lang === 'en';
@@ -120,7 +123,8 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
         </p>
       </div>
 
-      {/* Controls */}
+{/* Controls */}
+      {!hideNav && (
       <div className="pt-4 border-t border-border flex items-center justify-between gap-4">
         <motion.button
           whileHover={{ scale: 1.03 }}
@@ -144,6 +148,7 @@ export const StepGoalSelect: React.FC<StepGoalSelectProps> = ({
           <ArrowRight className={`w-4 h-4 ${lang === 'ar' ? 'rotate-180' : ''}`} />
         </motion.button>
       </div>
+      )}
     </div>
   );
 };

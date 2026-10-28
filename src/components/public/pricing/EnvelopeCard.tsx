@@ -51,8 +51,8 @@ interface EnvelopeCardProps {
   onTap?: () => void;
   primaryLabel: string;
   onPrimary: () => void;
-  secondaryLabel: string;
-  onSecondary: () => void;
+  secondaryLabel?: string;
+  onSecondary?: () => void;
   isAr: boolean;
 }
 
@@ -112,6 +112,7 @@ export const EnvelopeCard = React.forwardRef<HTMLDivElement, EnvelopeCardProps>(
               >
                 {primaryLabel}
               </button>
+              {secondaryLabel && onSecondary && (
               <button
                 type="button"
                 onClick={onSecondary}
@@ -119,6 +120,7 @@ export const EnvelopeCard = React.forwardRef<HTMLDivElement, EnvelopeCardProps>(
               >
                 {secondaryLabel}
               </button>
+              )}
             </div>
           </div>
         </div>

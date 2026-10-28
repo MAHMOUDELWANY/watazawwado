@@ -87,6 +87,8 @@ export interface BookingFormData {
   studentId?: string;
   teacherId?: string;
   selectedPackageId?: string;
+  /** Package chosen inside the booking flow (screen 2): bought before the time is picked, then the first lesson uses it. */
+  buyPackageCatalogId?: string;
   packageEntitlementId?: string;
   /** Student ticked "I accept the terms and the cancellation & refund policy" (RULES.md §5). */
   acceptedTerms?: boolean;

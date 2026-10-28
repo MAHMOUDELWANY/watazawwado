@@ -35,6 +35,8 @@ interface StepDateTimeProps {
   onNext: () => void;
   onBack: () => void;
   lang: Language;
+  /** Inside a screen with several steps, the screen shows one Back/Continue for all of them. */
+  hideNav?: boolean;
 }
 
 export const StepDateTime: React.FC<StepDateTimeProps> = ({
@@ -49,6 +51,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
   onSelectTimezone,
   onNext,
   onBack,
+  hideNav = false,
   lang
 }) => {
   const isEn = lang === 'en';
@@ -420,7 +423,8 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
         </div>
       )}
 
-      {/* Controls */}
+{/* Controls */}
+      {!hideNav && (
       <div className="pt-4 border-t border-border flex items-center justify-between gap-4">
         <motion.button
           whileHover={{ scale: 1.03 }}
@@ -444,6 +448,7 @@ export const StepDateTime: React.FC<StepDateTimeProps> = ({
           <ArrowRight className={`w-4 h-4 ${lang === 'ar' ? 'rotate-180' : ''}`} />
         </motion.button>
       </div>
+      )}
 
       {/* Timezone Selector Modal */}
       <TimezoneSelectorModal

@@ -15,6 +15,8 @@ interface StepStudentDetailsProps {
   canBookForChild?: boolean;
   studentName?: string;
   studentEmail?: string;
+  /** Inside a screen with several steps, the screen shows one Back/Continue for all of them. */
+  hideNav?: boolean;
 }
 
 export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
@@ -22,6 +24,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
   updateForm,
   onNext,
   onBack,
+  hideNav = false,
   lang,
   linkedChildren = [],
   isAuthenticatedStudent = false,
@@ -590,7 +593,8 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
         </span>
       </div>
 
-      {/* Controls */}
+{/* Controls */}
+      {!hideNav && (
       <div className="pt-4 border-t border-border flex items-center justify-between gap-4">
         <motion.button
           whileHover={{ scale: 1.03 }}
@@ -614,6 +618,7 @@ export const StepStudentDetails: React.FC<StepStudentDetailsProps> = ({
           <ArrowRight className={`w-4 h-4 ${lang === 'ar' ? 'rotate-180' : ''}`} />
         </motion.button>
       </div>
+      )}
     </div>
   );
 };

@@ -25,43 +25,10 @@ export const BookingHeader: React.FC<BookingHeaderProps> = ({
 }) => {
   const isEn = lang === 'en';
 
-  const stepTitles = totalSteps === 7
-    ? (isEn
-        ? [
-            'Select Your Subject',
-            'Your Learning Goals',
-            'About You & Level',
-            'Lesson Type & Length',
-            'Choose Lessons & Package',
-            'Choose Date & Time',
-            'Review & Confirmation'
-          ]
-        : [
-            'اختر مادتك التعليمية',
-            'أهدافك ومستواك',
-            'بياناتك ومستواك الحالي',
-            'نوع الدرس ومدته',
-            'باقة الدروس أو العدد',
-            'اختيار المواعيد المناسبة',
-            'المراجعة والتأكيد'
-          ])
-    : (isEn
-        ? [
-            'Select Your Subject',
-            'Your Learning Goals',
-            'About You & Level',
-            'Lesson Type & Length',
-            'Choose Date & Time',
-            'Review & Confirmation'
-          ]
-        : [
-            'اختر مادتك التعليمية',
-            'أهدافك ومستواك',
-            'بياناتك ومستواك الحالي',
-            'نوع الدرس ومدته',
-            'اختر الموعد المناسب',
-            'المراجعة والتأكيد'
-          ]);
+  // Four screens (owner D4, 2026-10-28): what, length & plan, time, review & pay.
+  const stepTitles = isEn
+    ? ['What you will learn', 'Length and plan', 'Pick a time', 'Review and pay']
+    : ['هتتعلم إيه', 'المدة والخطة', 'اختار الميعاد', 'راجع وادفع'];
 
   const currentStepTitle = stepTitles[step - 1] || '';
 

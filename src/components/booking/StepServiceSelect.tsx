@@ -13,6 +13,8 @@ interface StepServiceSelectProps {
   onSelectService: (serviceId: string) => void;
   onNext: () => void;
   lang: Language;
+  /** Inside a screen with several steps, the screen shows one Back/Continue for all of them. */
+  hideNav?: boolean;
 }
 
 const LEVEL_LABELS: Record<string, { en: string; ar: string }> = {
@@ -28,6 +30,7 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
   selectedServiceId,
   onSelectService,
   onNext,
+  hideNav = false,
   lang
 }) => {
   const isEn = lang === 'en';
@@ -56,7 +59,7 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
             type="button"
             onClick={() => {
               onSelectService(suggested.id);
-              onNext();
+              if (!hideNav) onNext();
             }}
             className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl btn-primary-material text-white text-sm font-semibold shadow-md cursor-pointer"
           >
@@ -192,6 +195,7 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
           )}
         </div>
 
+        {!hideNav && (
         <motion.button
           whileHover={{ scale: 1.03, y: -1 }}
           whileTap={{ scale: 0.97 }}
@@ -202,6 +206,7 @@ export const StepServiceSelect: React.FC<StepServiceSelectProps> = ({
           <span>{isEn ? 'Next: Define Your Goal' : 'التالي: حدد هدفك'}</span>
           <ArrowRight className={`w-4 h-4 ${lang === 'ar' ? 'rotate-180' : ''}`} />
         </motion.button>
+        )}
       </div>
     </div>
   );

@@ -17,13 +17,19 @@ describe('booking flow: one lesson at a time, packages on the packages page (RUL
     assert.doesNotMatch(fs.readFileSync('api/index.ts', 'utf8'), /\/api\/student\/multi-lesson-plan/);
   });
 
-  it('shows server catalog packages for the chosen band and length, display only', () => {
+  it('shows server catalog packages for the chosen band and length as envelopes, and buys inside the flow (owner D4)', () => {
     const step = read('components/booking/StepPackageQuantity.tsx');
     assert.match(step, /eligibility_rules\?\.hourly_rate/);
     assert.match(step, /eligibility_rules\?\.duration_minutes/);
-    // In-app link keeps the booking draft; the packages page leads back to it.
-    assert.match(step, /to="\/student\/packages\?from=booking"/);
+    assert.match(step, /<EnvelopeCard/);
+    assert.doesNotMatch(step, /from=booking/, 'no detour to the packages page');
     assert.doesNotMatch(step, /fetch\(/);
+    const flow = read('components/booking/BookingFlow.tsx');
+    // Server sets the price: the flow sends only the catalog id, then pays the new entitlement.
+    assert.match(flow, /\/api\/student\/packages\/select/);
+    assert.match(flow, /targetType="package"/);
+    assert.match(flow, /target_type'\) === 'package'/);
+    assert.match(flow, /packageEntitlementId: entitlementId/);
   });
 
   it('still redeems a single lesson credit', () => {
