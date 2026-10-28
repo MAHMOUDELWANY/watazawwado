@@ -30,34 +30,17 @@ describe('PR-03: Progress page — the learning path', () => {
     );
   });
 
-  it('2. uses custom SVG emblems in Watazawwado motif, never fire emojis or shame copy, and respects reduced-motion', () => {
-    assert.ok(
-      !progressPageSource.includes('🔥'),
-      'Progress page must never use a fire emoji for weekly rhythm'
-    );
-    assert.ok(
-      progressPageSource.includes('RhythmLanternEmblem'),
-      'Header card must use custom SVG RhythmLanternEmblem'
-    );
-    assert.ok(
-      progressPageSource.includes('KhatamStarMilestoneEmblem') &&
-        progressPageSource.includes('OpenMushafMilestoneEmblem') &&
-        progressPageSource.includes('MihrabArchMilestoneEmblem'),
-      'Milestones on the path must use custom SVG emblems (khatam star, open mushaf, arch)'
-    );
-    assert.ok(
-      progressPageSource.includes('useReducedMotion'),
-      'Must respect prefers-reduced-motion via useReducedMotion()'
-    );
-    assert.ok(
-      /scrollIntoView\(\{\s*behavior:\s*prefersReducedMotion\s*\?\s*'auto'\s*:\s*'smooth'/.test(
-        progressPageSource
-      ),
-      'Path must scroll to current level and switch to auto scroll when reduced-motion is active'
-    );
+  it('2. adults and parents get the calm board, children the road; never fire emojis; reduced motion respected', () => {
+    const calm = fs.readFileSync(path.join(rootDir, 'src/student/components/progress/ProgressCalm.tsx'), 'utf-8');
+    const road = fs.readFileSync(path.join(rootDir, 'src/student/components/progress/ProgressRoad.tsx'), 'utf-8');
+    assert.ok(!progressPageSource.includes('🔥') && !calm.includes('🔥') && !road.includes('🔥'), 'No fire emoji for the weekly rhythm');
+    assert.match(progressPageSource, /isChildLearner\s*\?\s*<ProgressRoad[\s\S]*:\s*<ProgressCalm/, 'Children get the road, everyone else the calm board');
+    assert.ok(road.includes('useReducedMotion'), 'The road respects prefers-reduced-motion');
+    assert.match(road, /scrollIntoView\?\.\(\{\s*behavior:\s*reduceMotion\s*\?\s*'auto'\s*:\s*'smooth'/, 'Scroll to "you are here" is instant under reduced motion');
+    assert.ok(road.includes('KhatamStarMilestoneEmblem'), 'The road marks "you are here" with the khatam star');
   });
 
-  it('3. renders vertical learning path with completed, current (with progress inside), and future levels plus milestones and subject switcher', () => {
+  it('3. renders the calm board for adults and the road for children, with levels, milestones, teacher note and subject switcher', () => {
     const richData: ProgressApiResponse = {
       learner: {
         id: '11111111-2222-3333-4444-555555555555',
@@ -217,14 +200,15 @@ describe('PR-03: Progress page — the learning path', () => {
       )
     );
 
-    assert.ok(htmlAr.includes('زادك الله علمًا ونورًا'), 'Must render Arabic praise phrase');
+    assert.ok(htmlAr.includes('data-testid="progress-calm"'), 'An adult learner sees the calm board');
+    assert.ok(htmlAr.includes('انت في'), 'The headline speaks to the learner directly');
     assert.ok(htmlAr.includes('data-testid="subject-switcher"'), 'Must render subject switcher when >1 subject');
-    assert.ok(htmlAr.includes('data-level-state="completed"'), 'Must render completed stage node');
-    assert.ok(htmlAr.includes('data-level-state="current"'), 'Must render current stage node');
-    assert.ok(htmlAr.includes('data-current-level="true"'), 'Must mark current level for scrollIntoView');
-    assert.ok(htmlAr.includes('data-testid="current-level-progress-box"'), 'Current level must show progress inside it');
-    assert.ok(htmlAr.includes('data-level-state="future"'), 'Must render future stage node');
-    assert.ok(htmlAr.includes('data-testid="path-milestone-emblem"'), 'Must render milestones placed on the path');
+    assert.ok(htmlAr.includes('data-level-state="completed"'), 'Must render completed level');
+    assert.ok(htmlAr.includes('data-level-state="current"'), 'Must render current level');
+    assert.ok(htmlAr.includes('data-level-state="future"'), 'Must render future level');
+    assert.ok(htmlAr.includes('data-testid="path-milestone-emblem"'), 'Must list the latest milestones');
+    assert.ok(htmlAr.includes('data-testid="latest-teacher-note"'), 'Must show the newest note from the teacher');
+    assert.ok(htmlAr.includes('data-testid="progress-book-cta"'), 'Without a booked lesson, one button books the next');
     assert.ok(!htmlAr.includes('data-testid="new-learner-empty-state"'), 'Active learner must not see zero-lesson empty state');
 
     const htmlEn = renderToStaticMarkup(
@@ -234,9 +218,20 @@ describe('PR-03: Progress page — the learning path', () => {
         React.createElement(StudentProgressPage, { lang: 'en', initialData: richData })
       )
     );
-    assert.ok(htmlEn.includes('May Allah increase you in knowledge'), 'Must render English praise phrase');
-    assert.ok(htmlEn.includes('4-week steady learning rhythm'), 'Must render English weekly rhythm headline');
-    assert.ok(htmlEn.includes('Your progress in this stage'), 'Must render English in-stage progress box');
+    assert.ok(htmlEn.includes('weeks in a row'), 'Must render the weekly rhythm in English');
+
+    const childData: ProgressApiResponse = { ...richData, learner: { ...richData.learner!, learnerType: 'child' } };
+    const htmlChild = renderToStaticMarkup(
+      React.createElement(
+        MemoryRouter,
+        { initialEntries: ['/student/progress'] },
+        React.createElement(StudentProgressPage, { lang: 'ar', initialData: childData })
+      )
+    );
+    assert.ok(htmlChild.includes('data-testid="progress-road"'), 'A child sees the road');
+    assert.ok(htmlChild.includes('data-current-level="true"'), 'The road marks the current level');
+    assert.ok(htmlChild.includes('انت هنا'), 'The road says "you are here"');
+    assert.ok(htmlChild.includes('زادك الله علمًا ونورًا'), 'The road carries the praise phrase');
   });
 
   it('4. renders warm empty state inviting the first lesson for a new learner and calm resting copy when rhythm is paused', () => {
@@ -320,6 +315,7 @@ describe('PR-03: Progress page — the learning path', () => {
     // Paused streak: current = 0, longest = 3 -> "resting", never "lost"
     const restingData: ProgressApiResponse = {
       ...newLearnerData,
+      subjects: newLearnerData.subjects.map((sub) => ({ ...sub, lessonsAttended: { total: 5, thisMonth: 0 }, weeklyRhythm: { current: 0, longest: 3 } })),
       overall: {
         lessonsAttended: { total: 5, thisMonth: 0 },
         weeklyRhythm: { current: 0, longest: 3 },
@@ -335,7 +331,7 @@ describe('PR-03: Progress page — the learning path', () => {
       )
     );
     assert.ok(
-      restingHtml.includes('Your lantern is resting'),
+      restingHtml.includes('Resting. One lesson starts it again'),
       'Paused streak must use calm resting copy rather than shame or loss framing'
     );
   });

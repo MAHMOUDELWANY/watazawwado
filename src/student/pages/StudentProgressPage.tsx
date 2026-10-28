@@ -23,6 +23,9 @@ import type { IslamicSeason } from '../../lib/islamicSeason';
 import { useProgressAchievements } from '../components/achievements/useProgressAchievements';
 import { AchievementsShelf } from '../components/achievements/AchievementsShelf';
 import { LessonTimeline } from '../components/progress/LessonTimeline';
+import { ProgressCalm } from '../components/progress/ProgressCalm';
+import { ProgressRoad } from '../components/progress/ProgressRoad';
+import { rhythmText } from '../components/progress/progressShared';
 
 export interface StudentProgressPageProps {
   lang?: 'en' | 'ar';
@@ -755,250 +758,59 @@ export default function StudentProgressPage({
       .toLocaleString({ month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
   };
 
-  // Map milestones onto level indices for the active subject
-  const subjectLevels = activeSubject?.levels || [];
-  const currentIdx = activeSubject?.currentLevelIndex ?? 0;
-  const subjectMilestones = activeSubject?.milestones || [];
-  const familyColor = activeSubject?.subjectMeta.familyColor || TEAL;
-
-  const getMilestonesForLevelIndex = (idx: number): ProgressMilestoneItem[] => {
-    if (!subjectMilestones.length) return [];
-    if (subjectLevels.length <= 1) return idx === 0 ? subjectMilestones : [];
-
-    return subjectMilestones.filter((m) => {
-      if (m.kind === 'level_completed') {
-        const completedTarget = Math.max(0, currentIdx - 1);
-        return idx === completedTarget;
-      }
-      return idx === currentIdx;
-    });
-  };
-
   const childrenOverview = data.childrenOverview || [];
   const showFamilyOverview = Boolean(data.isGuardianAccount && childrenOverview.length > 0);
+  const learnerName = learner?.name?.split(' ')[0] || (isAr ? 'الطالب' : 'Learner');
+  const isSelf = !data.isGuardianAccount || Boolean(data.learners.find((l) => l.id === learner?.id)?.isPrimary);
 
   return (
     <div
-      className="space-y-6 sm:space-y-8 pb-12"
+      className="space-y-5 sm:space-y-6 pb-12"
       data-testid="student-progress-page"
       data-learner-mode={isChildLearner ? 'child' : 'adult'}
     >
-      {/* ====================================================================
-          PARENT / GUARDIAN FAMILY VIEW: All children at a glance (PR-07)
-          ==================================================================== */}
+      <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground">{isAr ? 'مسيرتي' : 'My progress'}</h1>
+
+      {/* PR-07: a guardian sees every child at a glance; tapping one opens that child's progress. */}
       {showFamilyOverview && (
-        <motion.section
-          initial={prefersReducedMotion ? false : { opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={springTransition}
-          data-testid="parent-family-overview"
-          aria-label={isAr ? 'أبناؤك في نظرة واحدة' : 'All children at a glance'}
-          className="rounded-[2rem] p-1.5 bg-gradient-to-b from-[#087D91]/15 via-black/[0.03] to-[#C9973B]/15 dark:from-[#087D91]/20 dark:via-white/[0.04] dark:to-[#C9973B]/20 ring-1 ring-[#C9973B]/25 dark:ring-[#E5A93C]/20"
-        >
-          <div className="rounded-[calc(2rem-0.375rem)] bg-[#FBF7EF] dark:bg-[#0D161A] p-4 sm:p-6 space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="space-y-1">
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#087D91]/12 text-[#087D91] dark:bg-[#087D91]/25 dark:text-[#14A3B8]">
-                  <Sparkles className="w-3 h-3" />
-                  <span>{isAr ? 'نظرة العائلة' : 'Family Overview'}</span>
-                </div>
-                <h2 className="font-serif text-lg sm:text-xl font-bold text-foreground">
-                  {isAr ? 'أبناؤك في نظرة واحدة' : 'All children at a glance'}
-                </h2>
-                <p className="text-xs sm:text-sm text-muted-foreground">
-                  {isAr
-                    ? 'اضغط على بطاقة أي طفل لفتح مساره التعليمي الكامل بالأسفل.'
-                    : 'Tap any child’s card to open their full learning path below.'}
-                </p>
-              </div>
-
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-card border border-border text-muted-foreground">
-                {isAr
-                  ? `${childrenOverview.length} ${childrenOverview.length === 2 ? 'طفلين' : 'أبناء'}`
-                  : `${childrenOverview.length} ${childrenOverview.length === 1 ? 'child' : 'children'}`}
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3.5 sm:gap-4">
-              {childrenOverview.map((child) => {
-                const isSelectedChild = child.id === learner?.id;
-                const isRememberedChild = child.id === rememberedChildId;
-                return (
-                  <button
-                    key={child.id}
-                    type="button"
-                    data-testid={`family-child-card-${child.id}`}
-                    data-selected-child={isSelectedChild ? 'true' : 'false'}
-                    aria-pressed={isSelectedChild}
-                    onClick={() => handleSelectLearner(child.id, true)}
-                    className={`group relative w-full text-start rounded-[1.5rem] p-4 sm:p-5 transition-all select-none active:scale-[0.99] flex flex-col justify-between gap-4 ${
-                      isSelectedChild
-                        ? 'bg-card border-2 border-[#087D91] dark:border-[#14A3B8] shadow-md ring-4 ring-[#087D91]/10'
-                        : 'bg-card/85 hover:bg-card border border-border/80 hover:border-[#C9973B]/50 shadow-2xs'
-                    }`}
-                  >
-                    {/* Top row: Child Name + Subject Badge + Active/Remembered Pill */}
-                    <div className="space-y-3 w-full">
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-3 min-w-0">
-                          <span
-                            className="w-10 h-10 rounded-2xl flex items-center justify-center font-serif text-lg font-bold text-white shrink-0 shadow-2xs"
-                            style={{ backgroundColor: child.subjectMeta.familyColor }}
-                            aria-hidden="true"
-                          >
-                            {child.subjectMeta.glyph}
-                          </span>
-                          <div className="min-w-0 flex-1">
-                            <h3
-                              className="font-serif text-base sm:text-lg font-bold text-foreground leading-snug"
-                              data-testid={`family-child-name-${child.id}`}
-                            >
-                              {child.name}
-                            </h3>
-                            <p
-                              className="text-xs font-medium text-muted-foreground truncate"
-                              data-testid={`family-child-subject-${child.id}`}
-                            >
-                              {isAr ? child.subjectMeta.ar : child.subjectMeta.en}
-                            </p>
-                          </div>
-                        </div>
-
-                        {(isSelectedChild || isRememberedChild) && (
-                          <div className="flex flex-wrap items-center gap-1.5">
-                            {isSelectedChild && (
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#087D91] text-white">
-                                {isAr ? 'معروض الآن' : 'Viewing now'}
-                              </span>
-                            )}
-                            {isRememberedChild && (
-                              <span
-                                data-testid={`remembered-child-badge-${child.id}`}
-                                className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#C9973B]/15 text-[#8B4935] dark:bg-[#E5A93C]/20 dark:text-[#F6D58E]"
-                              >
-                                {isAr ? 'آخر مسار فتحته' : 'Last opened'}
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Current Level & Weekly Rhythm Row */}
-                      <div className="grid grid-cols-2 gap-2 pt-1">
-                        <div
-                          className="rounded-xl bg-[#FBF7EF] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.06] px-3 py-2"
-                          data-testid={`family-child-level-${child.id}`}
-                        >
-                          <div className="text-[10px] font-semibold text-muted-foreground">
-                            {isAr ? 'المستوى الحالي' : 'Current stage'}
-                          </div>
-                          <div className="text-xs font-bold text-foreground truncate mt-0.5">
-                            {isAr ? child.currentLevel.ar : child.currentLevel.en}
-                          </div>
-                          <div className="text-[10px] text-muted-foreground">
-                            {isAr
-                              ? `المرحلة ${child.currentLevelIndex + 1} من ${child.totalLevels}`
-                              : `Stage ${child.currentLevelIndex + 1} of ${child.totalLevels}`}
-                          </div>
-                        </div>
-
-                        <div
-                          className="rounded-xl bg-[#FBF7EF] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.06] px-3 py-2 flex items-center gap-2"
-                          data-testid={`family-child-rhythm-${child.id}`}
-                        >
-                          <RhythmLanternEmblem
-                            active={child.weeklyRhythm.current > 0}
-                            isChild={true}
-                            className="w-8 h-8 shrink-0"
-                          />
-                          <div className="min-w-0">
-                            <div className="text-[10px] font-semibold text-muted-foreground">
-                              {isAr ? 'الإيقاع الأسبوعي' : 'Weekly rhythm'}
-                            </div>
-                            <div className="text-xs font-bold text-[#087D91] dark:text-[#14A3B8] truncate mt-0.5 tabular-nums">
-                              {child.weeklyRhythm.current > 0
-                                ? isAr
-                                  ? `${child.weeklyRhythm.current} أسابيع`
-                                  : `${child.weeklyRhythm.current}w steady`
-                                : isAr
-                                  ? 'في استراحة'
-                                  : 'Resting'}
-                            </div>
-                            <div className="text-[10px] text-muted-foreground tabular-nums">
-                              {isAr
-                                ? `${child.lessonsAttended.total} دروس`
-                                : `${child.lessonsAttended.total} lessons`}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Bottom section: Next Lesson + Newest Milestone */}
-                    <div className="space-y-2 pt-2 border-t border-border/60 w-full">
-                      <div
-                        className="flex items-center justify-between gap-2 text-xs"
-                        data-testid={`family-child-next-lesson-${child.id}`}
-                      >
-                        <span className="inline-flex items-center gap-1.5 text-muted-foreground font-medium shrink-0">
-                          <Calendar className="w-3.5 h-3.5 text-[#087D91] shrink-0" />
-                          <span>{isAr ? 'الدرس القادم:' : 'Next lesson:'}</span>
-                        </span>
-                        <span className="font-semibold text-foreground truncate">
-                          {child.nextBookedLesson
-                            ? formatDateTime(child.nextBookedLesson.scheduledStart)
-                            : isAr
-                              ? 'غير محجوز بعد'
-                              : 'Not scheduled yet'}
-                        </span>
-                      </div>
-
-                      <div
-                        className="flex items-center gap-2 rounded-xl bg-[#C9973B]/10 dark:bg-[#E5A93C]/10 border border-[#C9973B]/25 px-2.5 py-2"
-                        data-testid={`family-child-milestone-${child.id}`}
-                      >
-                        <MilestoneEmblemByKind
-                          kind={child.newestMilestone?.kind || 'custom'}
-                          className="w-7 h-7 shrink-0"
-                        />
-                        <div className="min-w-0 flex-1">
-                          <div className="text-[10px] font-bold text-[#8B4935] dark:text-[#F6D58E]">
-                            {isAr ? 'أحدث وسام' : 'Newest milestone'}
-                          </div>
-                          <div className="text-xs font-semibold text-foreground truncate">
-                            {child.newestMilestone
-                              ? isAr
-                                ? child.newestMilestone.title_ar
-                                : child.newestMilestone.title_en
-                              : isAr
-                                ? 'أول وسام في الطريق بإذن الله'
-                                : 'First milestone on the way'}
-                          </div>
-                        </div>
-                        <span className="text-xs font-bold text-[#087D91] dark:text-[#14A3B8] shrink-0 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform">
-                          {isAr ? <ArrowLeft className="w-3.5 h-3.5" /> : <ArrowRight className="w-3.5 h-3.5" />}
-                        </span>
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </motion.section>
+        <section data-testid="parent-family-overview" aria-label={isAr ? 'أبناؤك في نظرة واحدة' : 'All children at a glance'} className="grid gap-2 sm:grid-cols-2">
+          {childrenOverview.map((child) => {
+            const selected = child.id === learner?.id;
+            return (
+              <button
+                key={child.id}
+                type="button"
+                data-testid={`family-child-card-${child.id}`}
+                onClick={() => handleSelectLearner(child.id, true)}
+                aria-pressed={selected}
+                className={`text-start rounded-2xl border p-4 grid gap-2 min-h-11 cursor-pointer focus-ring ${selected ? 'border-teal bg-teal/5' : 'border-border bg-surface hover:border-teal/50'}`}
+              >
+                <span className="flex items-center justify-between gap-2">
+                  <span className="font-semibold text-foreground" data-testid={`family-child-name-${child.id}`}>{child.name}</span>
+                  <span className="text-xs font-semibold text-teal" data-testid={`family-child-subject-${child.id}`}>{isAr ? child.subjectMeta.ar : child.subjectMeta.en}</span>
+                </span>
+                <span className="grid gap-1" style={{ gridTemplateColumns: `repeat(${Math.max(1, child.totalLevels)}, minmax(0, 1fr))` }} data-testid={`family-child-level-${child.id}`}>
+                  {Array.from({ length: Math.max(1, child.totalLevels) }, (_, i) => (
+                    <span key={i} className={`h-1.5 rounded-full ${i < child.currentLevelIndex ? 'bg-teal' : i === child.currentLevelIndex ? 'bg-teal/40' : 'bg-border'}`} />
+                  ))}
+                </span>
+                <span className="text-xs text-muted-foreground" data-testid={`family-child-rhythm-${child.id}`}>
+                  {isAr ? child.currentLevel.ar : child.currentLevel.en} · {rhythmText(child.weeklyRhythm.current, child.weeklyRhythm.longest, isAr)}
+                </span>
+                {child.newestMilestone && (
+                  <span className="text-xs font-semibold text-foreground" data-testid={`family-child-milestone-${child.id}`}>
+                    {isAr ? 'آخر محطة: ' : 'Latest milestone: '}{isAr ? child.newestMilestone.title_ar : child.newestMilestone.title_en}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </section>
       )}
 
-      {/* Learner Switcher when account has multiple learners (e.g., parent himself + children) */}
-      {data.learners && data.learners.length > 1 && (
-        <div
-          ref={learningPathSectionRef}
-          className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar"
-          role="navigation"
-          aria-label={isAr ? 'اختيار المتعلم' : 'Select learner'}
-        >
-          <span className="text-xs font-semibold text-muted-foreground whitespace-nowrap pe-1">
-            {isAr ? 'المسار الخاص بـ:' : 'Showing path for:'}
-          </span>
+      {/* An account with more than one learner (a parent and their children) picks whose progress to show. */}
+      {data.learners && data.learners.length > 1 && !showFamilyOverview && (
+        <div ref={learningPathSectionRef} className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar" role="navigation" aria-label={isAr ? 'اختيار المتعلم' : 'Select learner'}>
           {data.learners.map((item) => {
             const isSelected = item.id === learner?.id;
             return (
@@ -1006,12 +818,8 @@ export default function StudentProgressPage({
                 key={item.id}
                 type="button"
                 onClick={() => handleSelectLearner(item.id)}
-                className={`min-h-[44px] px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all whitespace-nowrap select-none active:scale-[0.98] ${
-                  isSelected
-                    ? 'bg-[#087D91] text-white shadow-sm'
-                    : 'bg-card text-foreground/80 border border-border hover:border-[#C9973B]/50'
-                }`}
                 aria-pressed={isSelected}
+                className={`min-h-11 px-4 rounded-full text-sm font-semibold whitespace-nowrap cursor-pointer focus-ring ${isSelected ? 'bg-teal text-white' : 'bg-surface text-foreground border border-border'}`}
               >
                 {item.name}
               </button>
@@ -1020,759 +828,60 @@ export default function StudentProgressPage({
         </div>
       )}
 
-      {/* ====================================================================
-          HEADER CARD: Weekly Rhythm (Lantern & Date Palm motif), Praise & Stats
-          ==================================================================== */}
-      <motion.section
-        initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={springTransition}
-        aria-label={isAr ? 'ملخص الإيقاع الأسبوعي والحضور' : 'Weekly rhythm and attendance summary'}
-        className="rounded-[2rem] p-1.5 bg-gradient-to-b from-[#C9973B]/20 via-black/[0.04] to-[#087D91]/15 dark:from-[#C9973B]/25 dark:via-white/[0.05] dark:to-[#087D91]/20 ring-1 ring-[#C9973B]/25 dark:ring-[#E5A93C]/20 shadow-sm"
-      >
-        <div className="relative overflow-hidden rounded-[calc(2rem-0.375rem)] bg-[#FBF7EF] dark:bg-[#0D161A] px-4 py-5 sm:px-7 sm:py-7">
-          {/* Subtle warm radial glow in corner */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute -top-20 -end-20 w-64 h-64 rounded-full opacity-25 dark:opacity-20"
-            style={{
-              background: 'radial-gradient(circle, #E5A93C 0%, transparent 70%)',
-            }}
-          />
-
-          <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-            {/* Left / Start: Motif Emblem + Rhythm Copy + Praise Word */}
-            <div className="flex items-start sm:items-center gap-4 sm:gap-5 min-w-0">
-              <div className="shrink-0 rounded-2xl bg-[#087D91]/[0.08] dark:bg-[#087D91]/20 border border-[#C9973B]/30 p-2 sm:p-2.5">
-                <RhythmLanternEmblem
-                  active={rhythmCurrent > 0}
-                  isChild={isChildLearner}
-                  className={isChildLearner ? 'w-16 h-16 sm:w-20 sm:h-20' : 'w-14 h-14 sm:w-16 sm:h-16'}
-                />
-              </div>
-
-              <div className="min-w-0 flex-1 space-y-1.5">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#C9973B]/15 text-[#8B4935] dark:bg-[#E5A93C]/20 dark:text-[#F6D58E]">
-                    <Sparkles className="w-3.5 h-3.5 shrink-0" />
-                    <span>{isAr ? 'زادك الله علمًا ونورًا' : 'May Allah increase you in knowledge'}</span>
-                  </span>
-                  {learner?.assignedTeacherName && (
-                    <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-                      <UserCheck className="w-3.5 h-3.5 text-[#087D91]" />
-                      <span>
-                        {isAr
-                          ? `مع ${learner.assignedTeacherName}`
-                          : `With ${learner.assignedTeacherName}`}
-                      </span>
-                    </span>
-                  )}
-                </div>
-
-                <h2 className="font-serif text-xl sm:text-2xl font-bold text-foreground tracking-tight">
-                  {rhythmCurrent > 0
-                    ? isAr
-                      ? `إيقاع أسبوعي مضيء: ${rhythmCurrent} ${rhythmCurrent === 1 ? 'أسبوع' : 'أسابيع'} متتالية`
-                      : `${rhythmCurrent}-week steady learning rhythm`
-                    : rhythmLongest > 0
-                      ? isAr
-                        ? 'فانوسك في استراحة هادئة — نكمل خطوتك متى شئت'
-                        : 'Your lantern is resting — ready whenever you are'
-                      : isAr
-                        ? `أهلاً بك يا ${learner?.name || ''} في مسيرتك التعليمية`
-                        : `Welcome to your learning path${learner?.name ? `, ${learner.name}` : ''}`}
-                </h2>
-
-                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-2xl">
-                  {rhythmCurrent > 0
-                    ? isAr
-                      ? 'كل درس أسبوعي تحضره يبني عادة راسخة ويزيدك قربًا وإتقانًا خطوة بعد خطوة.'
-                      : 'Every weekly lesson you attend nurtures a steady habit and deepens your mastery step by step.'
-                    : rhythmLongest > 0
-                      ? isAr
-                        ? 'ما بنيته محفوظ في ميزانك ومسيرتك. درس واحد هذا الأسبوع يعيد إضاءة إيقاعك الأسبوعي بهدوء.'
-                        : 'Everything you have built stays with you. One lesson this week gently lights your weekly rhythm again.'
-                      : isAr
-                        ? 'خطوة هادئة كل أسبوع كافية لتصنع أثرًا يدوم. تابع مراحل مادتك وإنجازاتك من هنا.'
-                        : 'One calm step each week builds lasting knowledge. Follow your stages and milestones right here.'}
-                </p>
-              </div>
-            </div>
-
-            {/* Right / End: 3 Tactile Rhythm & Attendance Stat Pills */}
-            <div className="grid grid-cols-3 gap-2.5 sm:gap-3 shrink-0">
-              <div
-                className="rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] px-3 py-3 sm:px-4 sm:py-3.5 text-center"
-                data-testid="metric-weekly-rhythm"
-              >
-                <div className="text-lg sm:text-2xl font-bold text-[#087D91] dark:text-[#14A3B8] tabular-nums">
-                  {rhythmCurrent}
-                </div>
-                <div className="text-[11px] sm:text-xs font-medium text-muted-foreground mt-0.5">
-                  {isAr ? 'الإيقاع الحالي (أسابيع)' : 'Current rhythm (wks)'}
-                </div>
-              </div>
-
-              <div
-                className="rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] px-3 py-3 sm:px-4 sm:py-3.5 text-center"
-                data-testid="metric-lessons-attended"
-              >
-                <div className="text-lg sm:text-2xl font-bold text-foreground tabular-nums">
-                  {overall.lessonsAttended.total}
-                </div>
-                <div className="text-[11px] sm:text-xs font-medium text-muted-foreground mt-0.5">
-                  {isAr
-                    ? `دروس حضرتها (${overall.lessonsAttended.thisMonth} هذا الشهر)`
-                    : `Lessons (${overall.lessonsAttended.thisMonth} this mo)`}
-                </div>
-              </div>
-
-              <div
-                className="rounded-2xl bg-white/80 dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] px-3 py-3 sm:px-4 sm:py-3.5 text-center"
-                data-testid="metric-longest-rhythm"
-              >
-                <div className="text-lg sm:text-2xl font-bold text-[#C9973B] dark:text-[#F6D58E] tabular-nums">
-                  {rhythmLongest}
-                </div>
-                <div className="text-[11px] sm:text-xs font-medium text-muted-foreground mt-0.5">
-                  {isAr ? 'أطول إيقاع (أسابيع)' : 'Longest rhythm (wks)'}
-                </div>
-              </div>
-            </div>
+      {isNewLearner ? (
+        <section data-testid="new-learner-empty-state" className="rounded-3xl bg-surface border border-border p-6 sm:p-8 grid gap-4 justify-items-center text-center">
+          <OpenMushafMilestoneEmblem className="w-14 h-14" />
+          <div className="grid gap-1.5 max-w-md">
+            <h2 className="font-display text-xl font-bold text-foreground">
+              {isChildLearner
+                ? (isAr ? `طريق ${learnerName} بيبدأ من أول حصة` : `${learnerName}'s road starts with the first lesson`)
+                : (isAr ? 'مسيرتك بتبدأ من أول حصة' : 'Your progress starts with the first lesson')}
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              {isAr ? 'بعد كل حصة هيظهر هنا المستوى، والمحطات، وكلمة المعلم.' : 'After each lesson you will see the level, milestones and a note from the teacher here.'}
+            </p>
           </div>
-        </div>
-      </motion.section>
-
-      {/* ====================================================================
-          NEW LEARNER EMPTY STATE: Invites the first lesson warmly
-          ==================================================================== */}
-      {isNewLearner && (
-        <motion.section
-          initial={prefersReducedMotion ? false : { opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={springTransition}
-          data-testid="new-learner-empty-state"
-          aria-label={isAr ? 'ابدأ درسك الأول' : 'Start your first lesson'}
-          className="rounded-[1.75rem] p-1.5 bg-black/[0.03] dark:bg-white/[0.04] ring-1 ring-[#C9973B]/30"
-        >
-          <div className="rounded-[calc(1.75rem-0.375rem)] bg-card px-5 py-6 sm:px-8 sm:py-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
-            <div className="flex items-start sm:items-center gap-4">
-              <div className="shrink-0 w-14 h-14 rounded-2xl bg-[#C9973B]/15 dark:bg-[#E5A93C]/15 flex items-center justify-center">
-                <OpenMushafMilestoneEmblem className="w-11 h-11" />
-              </div>
-              <div className="space-y-1">
-                <h3 className="font-serif text-lg sm:text-xl font-bold text-foreground">
-                  {isAr
-                    ? 'رحلتك تبدأ بالدرس الأول'
-                    : 'Your learning path begins with your first lesson'}
-                </h3>
-                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-xl">
-                  {isAr
-                    ? 'اختر موعدك المناسب مع معلمك ليضيء أول وسام على مسارك التعليمي بالأسفل، وتبدأ خطواتك بثبات.'
-                    : 'Choose a time that suits your family to unlock your first milestone on the path below and begin at a calm, steady pace.'}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto shrink-0">
-              <Link
-                to="/student/book"
-                data-testid="empty-state-book-cta"
-                className="group inline-flex items-center justify-between gap-3 min-h-[44px] w-full sm:w-auto ps-5 pe-2 py-2 rounded-full bg-[#087D91] hover:bg-[#066677] text-white text-sm font-semibold shadow-sm transition-all active:scale-[0.98]"
-              >
-                <span>{isAr ? 'احجز درسك الأول' : 'Book your first lesson'}</span>
-                <span className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center transition-transform group-hover:scale-105">
-                  {isAr ? <ArrowLeft className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />}
-                </span>
-              </Link>
-            </div>
-          </div>
-        </motion.section>
-      )}
-
-      {/* ====================================================================
-          SUBJECT SWITCHER / TABS (when learner has multiple subjects)
-          ==================================================================== */}
-      {data.subjects.length > 1 && (
-        <section aria-label={isAr ? 'المواد الدراسية' : 'Learning subjects'}>
-          <div className="flex items-center justify-between gap-2 mb-2.5 px-1">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              {isAr ? 'اختر المادة لعرض مسارها' : 'Select subject path'}
-            </h3>
-            <span className="text-xs text-muted-foreground">
-              {isAr ? `${data.subjects.length} مواد` : `${data.subjects.length} subjects`}
-            </span>
-          </div>
-
-          <div
-            role="tablist"
-            aria-label={isAr ? 'مواد المتعلم' : 'Learner subjects'}
-            className="flex items-center gap-2.5 overflow-x-auto pb-1.5 no-scrollbar"
-            data-testid="subject-switcher"
-          >
-            {data.subjects.map((subj) => {
-              const isSelected = subj.subject === activeSubject?.subject;
-              return (
-                <button
-                  key={subj.subject}
-                  role="tab"
-                  type="button"
-                  aria-selected={isSelected}
-                  onClick={() => setSelectedSubjectId(subj.subject)}
-                  className={`group flex items-center gap-3 min-h-[48px] px-4 py-2.5 rounded-2xl border text-start transition-all whitespace-nowrap select-none active:scale-[0.98] ${
-                    isSelected
-                      ? 'bg-card border-[#C9973B] shadow-sm ring-2 ring-[#C9973B]/20'
-                      : 'bg-card/60 border-border hover:bg-card hover:border-foreground/20'
-                  }`}
-                >
-                  <span
-                    className="w-8 h-8 rounded-xl flex items-center justify-center font-serif text-base font-bold text-white shrink-0"
-                    style={{ backgroundColor: subj.subjectMeta.familyColor }}
-                    aria-hidden="true"
-                  >
-                    {subj.subjectMeta.glyph}
-                  </span>
-                  <div>
-                    <div className="text-sm font-bold text-foreground">
-                      {isAr ? subj.subjectMeta.ar : subj.subjectMeta.en}
-                    </div>
-                    <div className="text-[11px] text-muted-foreground">
-                      {isAr ? subj.currentLevel.ar : subj.currentLevel.en} ·{' '}
-                      {isAr
-                        ? `${subj.lessonsAttended.total} دروس`
-                        : `${subj.lessonsAttended.total} lessons`}
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </section>
-      )}
-
-      {/* ====================================================================
-          THE LEARNING PATH (Vertical Map built from the subject's real levels)
-          ==================================================================== */}
-      {activeSubject && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
-          {/* Main Column: Vertical Learning Path */}
-          <div className="lg:col-span-8 rounded-[2rem] p-1.5 bg-black/[0.03] dark:bg-white/[0.04] ring-1 ring-black/[0.06] dark:ring-white/[0.08]">
-            <div className="rounded-[calc(2rem-0.375rem)] bg-card p-4 sm:p-7 space-y-6">
-              {/* Subject Path Header */}
-              <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-border/70">
-                <div className="flex items-center gap-3.5 min-w-0">
-                  <div
-                    className="w-12 h-12 rounded-2xl flex items-center justify-center font-serif text-2xl font-bold text-white shadow-sm shrink-0"
-                    style={{ backgroundColor: familyColor }}
-                    aria-hidden="true"
-                  >
-                    {activeSubject.subjectMeta.glyph}
-                  </div>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span
-                        className="text-xs font-bold tracking-wide"
-                        style={{ color: familyColor }}
-                      >
-                        {isAr
-                          ? activeSubject.subjectMeta.familyAr
-                          : activeSubject.subjectMeta.familyEn}
-                      </span>
-                      <span className="text-muted-foreground/40">•</span>
-                      <span className="text-xs text-muted-foreground">
-                        {isAr
-                          ? `المرحلة ${currentIdx + 1} من ${subjectLevels.length}`
-                          : `Stage ${currentIdx + 1} of ${subjectLevels.length}`}
-                      </span>
-                    </div>
-                    <h3 className="font-serif text-xl sm:text-2xl font-bold text-foreground truncate">
-                      {isAr
-                        ? `مسار ${activeSubject.subjectMeta.ar}`
-                        : `${activeSubject.subjectMeta.en} Path`}
-                    </h3>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleScrollToCurrentLevel}
-                  className="inline-flex items-center gap-1.5 min-h-[44px] px-3.5 py-2 rounded-full text-xs font-semibold bg-[#087D91]/10 text-[#087D91] dark:bg-[#087D91]/20 dark:text-[#14A3B8] hover:bg-[#087D91]/15 transition-colors select-none active:scale-[0.98]"
-                >
-                  <Compass className="w-3.5 h-3.5" />
-                  <span>{isAr ? 'موقعي على المسار' : 'My current stage'}</span>
-                </button>
-              </div>
-
-              {/* Vertical Learning Map Nodes */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeSubject.subject}
-                  initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={prefersReducedMotion ? undefined : { opacity: 0, y: -8 }}
-                  transition={springTransition}
-                  className="relative space-y-6 pt-2 pb-4"
-                  data-testid="learning-path-nodes"
-                >
-                  {subjectLevels.map((lvl, index) => {
-                    const isCompleted = index < currentIdx;
-                    const isCurrent = index === currentIdx;
-                    const isFuture = index > currentIdx;
-                    const isLast = index === subjectLevels.length - 1;
-                    const nodeMilestones = getMilestonesForLevelIndex(index);
-
-                    // Compute visual progress percentage inside the current level card
-                    const stageLessonsCount = activeSubject.lessonsAttended.total;
-                    const inStageProgressPct = isCurrent
-                      ? stageLessonsCount === 0
-                        ? 12
-                        : Math.min(92, 20 + ((stageLessonsCount * 12) % 75))
-                      : isCompleted
-                        ? 100
-                        : 0;
-
-                    return (
-                      <div
-                        key={lvl.id}
-                        ref={isCurrent ? currentLevelRef : undefined}
-                        data-testid={`path-level-${lvl.id}`}
-                        data-level-state={
-                          isCompleted ? 'completed' : isCurrent ? 'current' : 'future'
-                        }
-                        data-current-level={isCurrent ? 'true' : undefined}
-                        className="relative flex items-stretch gap-3.5 sm:gap-5"
-                      >
-                        {/* Left/Start Rail: Medallion + Vertical Spine Line */}
-                        <div className="relative flex flex-col items-center shrink-0 w-12 sm:w-16">
-                          {/* Medallion */}
-                          {isCompleted && (
-                            <div
-                              className="relative z-10 w-11 h-11 sm:w-14 sm:h-14 rounded-full flex items-center justify-center bg-gradient-to-b from-[#E5A93C] to-[#B9782A] text-white shadow-md ring-4 ring-[#C9973B]/20"
-                              title={isAr ? 'مرحلة مكتملة' : 'Completed stage'}
-                            >
-                              <Check className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.75]" />
-                            </div>
-                          )}
-
-                          {isCurrent && (
-                            <div className="relative z-10 flex items-center justify-center">
-                              <span
-                                aria-hidden="true"
-                                className="emblem-glow absolute -inset-2 rounded-full opacity-45"
-                                style={{ backgroundColor: familyColor }}
-                              />
-                              <div
-                                className="relative w-12 h-12 sm:w-16 sm:h-16 rounded-full flex flex-col items-center justify-center text-white shadow-lg ring-4 ring-[#C9973B]/50"
-                                style={{ backgroundColor: familyColor }}
-                              >
-                                <span className="font-serif text-base sm:text-xl font-bold leading-none">
-                                  {index + 1}
-                                </span>
-                                <span className="text-[9px] font-semibold uppercase tracking-wider opacity-90 mt-0.5">
-                                  {isAr ? 'الآن' : 'Now'}
-                                </span>
-                              </div>
-                            </div>
-                          )}
-
-                          {isFuture && (
-                            <div
-                              className="relative z-10 w-11 h-11 sm:w-14 sm:h-14 rounded-full flex items-center justify-center border-2 border-dashed border-[#C9973B]/45 dark:border-[#E5A93C]/30 bg-background/80 text-muted-foreground font-serif text-sm sm:text-base font-bold"
-                              title={isAr ? 'مرحلة قادمة' : 'Upcoming stage'}
-                            >
-                              {index + 1}
-                            </div>
-                          )}
-
-                          {/* Connecting Spine to Next Stage */}
-                          {!isLast && (
-                            <div
-                              aria-hidden="true"
-                              className={`w-1 flex-1 my-1.5 rounded-full ${
-                                isCompleted
-                                  ? 'bg-gradient-to-b from-[#C9973B] to-[#087D91]'
-                                  : 'border-s-2 border-dashed border-[#C9973B]/35 dark:border-[#E5A93C]/25'
-                              }`}
-                            />
-                          )}
-                        </div>
-
-                        {/* Right/End Content: Level Card + Milestones placed on this stage */}
-                        <div className="flex-1 min-w-0 pb-2">
-                          <div
-                            className={`rounded-[1.5rem] transition-all ${
-                              isCurrent
-                                ? 'p-1 bg-gradient-to-r from-[#087D91]/25 via-[#C9973B]/30 to-[#087D91]/20 shadow-sm'
-                                : isCompleted
-                                  ? 'border border-[#C9973B]/35 bg-[#FBF7EF]/70 dark:bg-white/[0.03]'
-                                  : 'border border-dashed border-border/80 bg-card/40 opacity-85'
-                            }`}
-                          >
-                            <div
-                              className={`rounded-[calc(1.5rem-0.25rem)] p-4 sm:p-5 space-y-3.5 ${
-                                isCurrent ? 'bg-card' : ''
-                              }`}
-                            >
-                              {/* Stage Title & Status Badge */}
-                              <div className="flex flex-wrap items-start justify-between gap-2">
-                                <div className="space-y-1">
-                                  <div className="flex flex-wrap items-center gap-2">
-                                    <span
-                                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
-                                        isCompleted
-                                          ? 'bg-[#C9973B]/20 text-[#8B4935] dark:text-[#F6D58E]'
-                                          : isCurrent
-                                            ? 'bg-[#087D91] text-white'
-                                            : 'bg-muted text-muted-foreground'
-                                      }`}
-                                    >
-                                      {isCompleted
-                                        ? isAr
-                                          ? 'مكتمل بحمد الله'
-                                          : 'Completed'
-                                        : isCurrent
-                                          ? isAr
-                                            ? 'مرحلتك الحالية'
-                                            : 'Current stage'
-                                          : isAr
-                                            ? 'المرحلة القادمة'
-                                            : 'Upcoming stage'}
-                                    </span>
-
-                                    {isCurrent && activeSubject.placementResult && (
-                                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#C9973B]/15 text-[#8B4935] dark:text-[#F6D58E]">
-                                        <Sparkles className="w-3 h-3" />
-                                        <span>
-                                          {activeSubject.placementResult.status === 'reviewed'
-                                            ? isAr
-                                              ? 'مؤكد من المعلم'
-                                              : 'Teacher verified'
-                                            : isAr
-                                              ? 'وفق تحديد المستوى'
-                                              : 'From placement'}
-                                        </span>
-                                      </span>
-                                    )}
-                                  </div>
-
-                                  <h4
-                                    className={`font-serif font-bold text-foreground ${
-                                      isChildLearner
-                                        ? 'text-lg sm:text-xl'
-                                        : 'text-base sm:text-lg'
-                                    }`}
-                                  >
-                                    {isAr ? lvl.ar : lvl.en}
-                                  </h4>
-                                </div>
-
-                                {isCompleted && (
-                                  <KhatamStarMilestoneEmblem className="w-8 h-8 shrink-0" />
-                                )}
-                              </div>
-
-                              {/* Stage Description */}
-                              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                                {isAr ? lvl.descAr : lvl.descEn}
-                              </p>
-
-                              {/* CURRENT STAGE PROGRESS INSIDE IT */}
-                              {isCurrent && (
-                                <div
-                                  className="rounded-2xl bg-[#FBF7EF] dark:bg-white/[0.04] border border-[#C9973B]/25 p-3.5 sm:p-4 space-y-3"
-                                  data-testid="current-level-progress-box"
-                                >
-                                  <div className="flex items-center justify-between gap-2 text-xs">
-                                    <span className="font-semibold text-foreground">
-                                      {isAr
-                                        ? 'تقدمك داخل هذه المرحلة'
-                                        : 'Your progress in this stage'}
-                                    </span>
-                                    <span className="font-bold text-[#087D91] dark:text-[#14A3B8] tabular-nums">
-                                      {isAr
-                                        ? `${activeSubject.lessonsAttended.total} دروس أُنجزت`
-                                        : `${activeSubject.lessonsAttended.total} lessons attended`}
-                                    </span>
-                                  </div>
-
-                                  {/* Glowing Progress Bar inside current medallion card */}
-                                  <div
-                                    className="h-2.5 w-full rounded-full bg-black/[0.06] dark:bg-white/10 overflow-hidden"
-                                    role="progressbar"
-                                    aria-valuenow={inStageProgressPct}
-                                    aria-valuemin={0}
-                                    aria-valuemax={100}
-                                    aria-label={
-                                      isAr ? 'مؤشر التقدم في المرحلة الحالية' : 'Current stage progress'
-                                    }
-                                  >
-                                    <motion.div
-                                      initial={prefersReducedMotion ? false : { width: '0%' }}
-                                      animate={{ width: `${inStageProgressPct}%` }}
-                                      transition={springTransition}
-                                      className="h-full rounded-full"
-                                      style={{
-                                        background: `linear-gradient(90deg, ${familyColor} 0%, ${GOLD} 100%)`,
-                                      }}
-                                    />
-                                  </div>
-
-                                  <div className="flex flex-wrap items-center justify-between gap-2 pt-0.5 text-[11px] sm:text-xs text-muted-foreground">
-                                    <span>
-                                      {activeSubject.lessonsAttended.thisMonth > 0
-                                        ? isAr
-                                          ? `${activeSubject.lessonsAttended.thisMonth} دروس هذا الشهر · إيقاع ${activeSubject.weeklyRhythm.current} أسابيع`
-                                          : `${activeSubject.lessonsAttended.thisMonth} this month · ${activeSubject.weeklyRhythm.current}w rhythm`
-                                        : isAr
-                                          ? 'كل حصة مع معلمك تثبّت مهارات هذه المرحلة'
-                                          : 'Each session with your teacher builds this stage'}
-                                    </span>
-
-                                    {activeSubject.nextBookedLesson ? (
-                                      <span className="inline-flex items-center gap-1 font-semibold text-[#087D91] dark:text-[#14A3B8]">
-                                        <Calendar className="w-3.5 h-3.5" />
-                                        <span>
-                                          {isAr ? 'الدرس القادم: ' : 'Next: '}
-                                          {formatDateTime(
-                                            activeSubject.nextBookedLesson.scheduledStart
-                                          )}
-                                        </span>
-                                      </span>
-                                    ) : (
-                                      <Link
-                                        to="/student/book"
-                                        className="inline-flex items-center gap-1 font-semibold text-[#087D91] dark:text-[#14A3B8] hover:underline"
-                                      >
-                                        <span>
-                                          {isAr ? 'احجز الحصة القادمة' : 'Schedule next lesson'}
-                                        </span>
-                                        {isAr ? (
-                                          <ArrowLeft className="w-3 h-3" />
-                                        ) : (
-                                          <ArrowRight className="w-3 h-3" />
-                                        )}
-                                      </Link>
-                                    )}
-                                  </div>
-                                </div>
-                              )}
-
-                              {/* Milestones placed on the path at this stage */}
-                              {nodeMilestones.length > 0 && (
-                                <div
-                                  className="pt-1 space-y-2"
-                                  data-testid={`stage-milestones-${lvl.id}`}
-                                >
-                                  <div className="text-[11px] font-bold uppercase tracking-wider text-[#8B4935] dark:text-[#F6D58E]">
-                                    {isAr
-                                      ? 'أوسمة محققة على هذا المسار'
-                                      : 'Milestones earned along this stage'}
-                                  </div>
-                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                                    {nodeMilestones.map((ms) => (
-                                      <div
-                                        key={ms.id}
-                                        data-testid="path-milestone-emblem"
-                                        className="flex items-center gap-3 rounded-2xl bg-card border border-[#C9973B]/35 px-3 py-2.5 shadow-2xs"
-                                      >
-                                        <MilestoneEmblemByKind
-                                          kind={ms.kind}
-                                          className="w-10 h-10 shrink-0"
-                                        />
-                                        <div className="min-w-0 flex-1">
-                                          <div className="text-[10px] font-bold text-[#087D91] dark:text-[#14A3B8]">
-                                            {formatMilestoneKindLabel(ms.kind, isAr)}
-                                          </div>
-                                          <div className="text-xs font-bold text-foreground truncate">
-                                            {isAr ? ms.title_ar : ms.title_en}
-                                          </div>
-                                          <div className="text-[11px] text-muted-foreground">
-                                            {formatDate(ms.reached_at)}
-                                          </div>
-                                        </div>
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </div>
-
-          {/* Side Column: Next Lesson, Milestones Overview & Teacher Family Summaries */}
-          <div className="lg:col-span-4 space-y-6">
-            {/* Next Booked Lesson or Quick Schedule Card */}
-            <div className="rounded-[1.75rem] p-1.5 bg-black/[0.03] dark:bg-white/[0.04] ring-1 ring-black/[0.06] dark:ring-white/[0.08]">
-              <div className="rounded-[calc(1.75rem-0.375rem)] bg-card p-5 space-y-4">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                    {isAr ? 'الخطوة القادمة' : 'Next Step'}
-                  </span>
-                  <Clock className="w-4 h-4 text-[#C9973B]" />
-                </div>
-
-                {activeSubject.nextBookedLesson || overall.nextBookedLesson ? (
-                  (() => {
-                    const nextLesson =
-                      activeSubject.nextBookedLesson || overall.nextBookedLesson!;
-                    return (
-                      <div className="space-y-3">
-                        <div className="text-base font-serif font-bold text-foreground">
-                          {formatDateTime(nextLesson.scheduledStart)}
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                          {nextLesson.teacherName
-                            ? isAr
-                              ? `حصة فردية مباشرة (${nextLesson.durationMinutes} دقيقة) مع ${nextLesson.teacherName}`
-                              : `1-on-1 live lesson (${nextLesson.durationMinutes} min) with ${nextLesson.teacherName}`
-                            : isAr
-                              ? `حصة فردية مباشرة (${nextLesson.durationMinutes} دقيقة)`
-                              : `1-on-1 live lesson (${nextLesson.durationMinutes} min)`}
-                        </p>
-                        <Link
-                          to="/student/lessons"
-                          className="inline-flex items-center justify-center gap-2 min-h-[44px] w-full rounded-full bg-[#087D91]/10 text-[#087D91] dark:bg-[#087D91]/20 dark:text-[#14A3B8] text-xs font-bold hover:bg-[#087D91]/15 transition-colors"
-                        >
-                          <span>{isAr ? 'عرض تفاصيل الدرس' : 'View lesson details'}</span>
-                          {isAr ? (
-                            <ArrowLeft className="w-3.5 h-3.5" />
-                          ) : (
-                            <ArrowRight className="w-3.5 h-3.5" />
-                          )}
-                        </Link>
-                      </div>
-                    );
-                  })()
-                ) : (
-                  <div className="space-y-3">
-                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                      {isAr
-                        ? 'لا يوجد درس قادم محجوز حاليًا. احجز موعدك القادم لتحافظ على إيقاعك الأسبوعي.'
-                        : 'No upcoming lesson is currently scheduled. Book your next session to keep your weekly rhythm glowing.'}
-                    </p>
-                    <Link
-                      to="/student/book"
-                      className="inline-flex items-center justify-center gap-2 min-h-[44px] w-full rounded-full bg-[#087D91] text-white text-xs font-bold hover:bg-[#066677] transition-colors"
-                    >
-                      <span>{isAr ? 'حجز درس جديد' : 'Book next lesson'}</span>
-                      {isAr ? (
-                        <ArrowLeft className="w-3.5 h-3.5" />
-                      ) : (
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      )}
-                    </Link>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Recent Teacher Family Summaries */}
-            <div
-              className="rounded-[1.75rem] p-1.5 bg-black/[0.03] dark:bg-white/[0.04] ring-1 ring-black/[0.06] dark:ring-white/[0.08]"
-              data-testid="family-summaries-card"
-            >
-              <div className="rounded-[calc(1.75rem-0.375rem)] bg-card p-5 space-y-4">
-                <div className="flex items-center justify-between gap-2">
-                  <div>
-                    <h4 className="font-serif text-base font-bold text-foreground">
-                      {isAr ? 'رسائل المعلم للأسرة' : 'Teacher Family Summaries'}
-                    </h4>
-                    <p className="text-xs text-muted-foreground">
-                      {isAr
-                        ? 'ملخصات ما تم إنجازه في الدروس الأخيرة'
-                        : 'Highlights shared after recent lessons'}
-                    </p>
-                  </div>
-                  <BookOpen className="w-4 h-4 text-[#087D91] shrink-0" />
-                </div>
-
-                {activeSubject.familySummaries.length > 0 ? (
-                  <div className="space-y-3">
-                    {activeSubject.familySummaries.map((note) => {
-                      const achievements = formatAchievementsList(note.achievements);
-                      return (
-                        <article
-                          key={note.id}
-                          className="rounded-2xl bg-[#FBF7EF]/80 dark:bg-white/[0.03] border border-[#C9973B]/25 p-3.5 space-y-2.5"
-                        >
-                          <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-                            <span>{formatDate(note.created_at)}</span>
-                            <span className="font-semibold text-[#8B4935] dark:text-[#F6D58E]">
-                              {isAr ? activeSubject.subjectMeta.ar : activeSubject.subjectMeta.en}
-                            </span>
-                          </div>
-
-                          {note.family_summary && (
-                            <p className="text-xs sm:text-sm text-foreground leading-relaxed">
-                              {note.family_summary}
-                            </p>
-                          )}
-
-                          {achievements.length > 0 && (
-                            <div className="flex flex-wrap gap-1.5">
-                              {achievements.map((ach, i) => (
-                                <span
-                                  key={i}
-                                  className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#087D91]/10 text-[#087D91] dark:bg-[#087D91]/20 dark:text-[#14A3B8]"
-                                >
-                                  <Check className="w-3 h-3" />
-                                  <span>{ach}</span>
-                                </span>
-                              ))}
-                            </div>
-                          )}
-
-                          {note.next_steps && (
-                            <p className="text-[11px] text-muted-foreground border-t border-border/60 pt-2">
-                              <strong className="text-foreground">
-                                {isAr ? 'الخطوة القادمة: ' : 'Next step: '}
-                              </strong>
-                              {note.next_steps}
-                            </p>
-                          )}
-                        </article>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <div className="rounded-2xl bg-muted/40 border border-dashed border-border p-4 text-center space-y-1.5">
-                    <p className="text-xs font-medium text-foreground">
-                      {isAr
-                        ? 'ستظهر ملخصات المعلم هنا بعد دروسك'
-                        : 'Teacher summaries will appear here after your lessons'}
-                    </p>
-                    <p className="text-[11px] text-muted-foreground leading-relaxed">
-                      {isAr
-                        ? 'يكتب المعلم عقب كل حصة ملخصًا دافئًا للأسرة يوضح ما تم إتقانه والخطوة التالية.'
-                        : 'After each session, your teacher shares a warm note on what was covered and what comes next.'}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {data.learner && (
-        <div className="flex justify-end">
-          <Link
-            to={`/student/progress/report?learnerId=${encodeURIComponent(data.learner.id)}`}
-            className="inline-flex items-center gap-1.5 min-h-11 px-4 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-surface-subtle focus-ring"
-            data-testid="monthly-report-link"
-          >
-            {isAr ? 'تقرير الشهر' : 'Monthly report'}
+          <Link to="/student/book" data-testid="empty-state-book-cta" className="flex items-center justify-center w-full sm:w-auto min-h-12 px-6 rounded-2xl bg-[#0A2E35] text-white font-semibold focus-ring">
+            {isAr ? 'احجز أول حصة' : 'Book your first lesson'}
           </Link>
-        </div>
+        </section>
+      ) : (
+        <>
+          {data.subjects.length > 1 && (
+            <div data-testid="subject-switcher" role="tablist" aria-label={isAr ? 'المادة' : 'Subject'} className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+              {data.subjects.map((s) => {
+                const active = s.subject === activeSubject?.subject;
+                return (
+                  <button
+                    key={s.subject}
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => setSelectedSubjectId(s.subject)}
+                    className={`min-h-11 px-4 rounded-full text-sm font-semibold whitespace-nowrap cursor-pointer focus-ring ${active ? 'bg-[#0A2E35] text-white' : 'bg-surface text-foreground border border-border'}`}
+                  >
+                    {isAr ? s.subjectMeta.ar : s.subjectMeta.en}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+          {activeSubject && (isChildLearner
+            ? <ProgressRoad subject={activeSubject} learnerName={learnerName} tz={viewerTz} isAr={isAr} />
+            : <ProgressCalm subject={activeSubject} learnerName={learnerName} isSelf={isSelf} tz={viewerTz} isAr={isAr} />)}
+        </>
       )}
-      {data.learner && (
+
+      {data.learner && !isNewLearner && (
+        <Link
+          to={`/student/progress/report?learnerId=${encodeURIComponent(data.learner.id)}`}
+          className="inline-flex items-center gap-1.5 min-h-11 px-4 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-surface-subtle focus-ring"
+          data-testid="monthly-report-link"
+        >
+          {isAr ? 'تقرير الشهر' : 'Monthly report'}
+        </Link>
+      )}
+      {data.learner && !isNewLearner && (
         <LessonTimeline learnerId={data.learner.id} isAr={isAr} timezone={viewerTz} />
       )}
       {data.learner && achievements.shelf.length > 0 && (

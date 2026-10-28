@@ -31,6 +31,7 @@ import {
 import { useTeacherAuth } from '../../lib/auth';
 import { DashboardStudentDetail, StudentNote } from '../types';
 import { dashboardFetch } from '../lib/dashboardApi';
+import { JourneyLog } from '../components/JourneyLog';
 import { buildContextualWhatsAppUrl } from '../lib/whatsapp';
 import { StudentEditModal } from '../components/StudentEditModal';
 import { PostLessonSummaryEditor } from '../components/PostLessonSummaryEditor';
@@ -622,6 +623,8 @@ export default function StudentDetailPage() {
               </div>
             )}
           </div>
+
+          <JourneyLog detail={studentDetail} tz={Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'} isAr={isAr} />
 
           {/* Trial & Assessment Context (if available) */}
           {trial_context && (
