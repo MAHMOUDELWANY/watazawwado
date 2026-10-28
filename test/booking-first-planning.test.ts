@@ -55,7 +55,7 @@ describe('learning guide unavailable state', () => {
     const guide = read('components/intake/IntakeConversation.tsx');
     assert.doesNotMatch(guide, /GEMINI_API_KEY/);
     assert.doesNotMatch(guide, /apiKey/);
-    const intakeApi = read('../api/index.ts');
+    const intakeApi = read('../server/routes/intake.ts');
     assert.match(intakeApi, /process\.env\.GEMINI_API_KEY/);
   });
 });

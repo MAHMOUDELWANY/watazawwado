@@ -26,6 +26,7 @@ import path from 'node:path';
 
 const root = process.cwd();
 const api = fs.readFileSync(path.join(root, 'api/index.ts'), 'utf-8');
+const intakeApi = fs.readFileSync(path.join(root, 'server/routes/intake.ts'), 'utf-8');
 const migration = fs.readFileSync(
   path.join(root, 'supabase/migrations/20261003000000_phase05_ai_intake_and_pricing.sql'),
   'utf-8'
@@ -35,15 +36,15 @@ describe('Phase 05 — Security & Integration (source-verified)', () => {
   describe('1. Server-authoritative pricing', () => {
     it('intake completion recomputes the recommendation server-side', () => {
       assert.ok(
-        api.includes('const recommendation = evaluateAssessment(validated.value.assessment)'),
+        intakeApi.includes('const recommendation = evaluateAssessment(validated.value.assessment)'),
         'server must recompute recommendation from the validated assessment'
       );
     });
     it('does not read an approved price from the request body on intake endpoints', () => {
       // Scope to the intake endpoints only (the teacher review endpoint is the
       // ONLY place an explicit teacher price is legitimately accepted).
-      const intakeTurn = api.slice(api.indexOf("app.post('/api/intake/turn'"), api.indexOf("app.post('/api/intake/complete'"));
-      const intakeComplete = api.slice(api.indexOf("app.post('/api/intake/complete'"), api.indexOf("app.get('/api/intake/:id'"));
+      const intakeTurn = intakeApi.slice(intakeApi.indexOf("app.post('/api/intake/turn'"), intakeApi.indexOf("app.post('/api/intake/complete'"));
+      const intakeComplete = intakeApi.slice(intakeApi.indexOf("app.post('/api/intake/complete'"), intakeApi.indexOf("app.get('/api/intake/:id'"));
       for (const [name, slice] of [['turn', intakeTurn], ['complete', intakeComplete]] as const) {
         assert.ok(
           !/req\.body\?\.(approved_price_usd|recommended_price_usd|price)/.test(slice),
@@ -61,12 +62,12 @@ describe('Phase 05 — Security & Integration (source-verified)', () => {
 
   describe('2. AI output never authoritative', () => {
     it('model output is validated before use', () => {
-      assert.ok(api.includes('validateIntakeOutput'));
-      assert.ok(api.includes('runIntakeTurn'));
+      assert.ok(intakeApi.includes('validateIntakeOutput'));
+      assert.ok(intakeApi.includes('runIntakeTurn'));
     });
     it('forbidden monetary fields are rejected at the endpoint', () => {
-      assert.ok(api.includes('FORBIDDEN_PRICING_FIELDS'));
-      assert.ok(api.includes('findForbiddenPricingFields'));
+      assert.ok(intakeApi.includes('FORBIDDEN_PRICING_FIELDS'));
+      assert.ok(intakeApi.includes('findForbiddenPricingFields'));
     });
   });
 
@@ -95,12 +96,11 @@ describe('Phase 05 — Security & Integration (source-verified)', () => {
       assert.ok(!accept.includes(".from('payments')"), 'accept must not create payments');
     });
     it('intake read verifies ownership server-side', () => {
-      assert.ok(api.includes("if (intake.auth_user_id !== authUserId) return res.status(404)"));
+      assert.ok(intakeApi.includes("if (intake.auth_user_id !== authUserId) return res.status(404)"));
     });
     it('teacher_notes are never returned to students', () => {
-      const start = api.indexOf("app.get('/api/intake/:id'");
-      const end = api.indexOf("app.get('/api/student/offers'");
-      const slice = api.slice(start, end).replace(/\/\/[^\n]*/g, ''); // strip comments
+      const start = intakeApi.indexOf("app.get('/api/intake/:id'");
+      const slice = intakeApi.slice(start).replace(/\/\/[^\n]*/g, ''); // strip comments
       const selectMatch = slice.match(/\.select\('([^']+)'\)/);
       assert.ok(selectMatch, 'intake read must use an explicit select list');
       assert.ok(!selectMatch![1].includes('teacher_notes'), 'student intake read must not select teacher_notes');
