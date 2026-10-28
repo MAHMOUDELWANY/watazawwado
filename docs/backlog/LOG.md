@@ -4,6 +4,12 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### App audit, batch 4: admin (2026-10-28)
+- Admin menu in groups: the day (Overview, Today, Schedule, Messages, Notifications), People (Students, Leads, Requests, Trials, Placement), Money (Bookings, Pay later, Discounts), Academy (Faculty, Curriculum, My hours, Reports), System (Health, Settings). Dividers on the rail (hover shows "group · page"), headings in the phone menu. Header tabs are picked by path, not by list position.
+- Reports: "Updated" time in the admin's working zone (no hard-coded "Cairo").
+- Bookings: the header button is for a payment outside a lesson and now says "Record other payment"; a lesson's own payment stays on its row and in its window.
+- Also in this round (security review): families' contact details are left out of the teacher API responses (lesson, student, guardian), and the admin students list shows real teacher names.
+
 ### App audit, batch 3: one lesson window (2026-10-28)
 - Today, Schedule and All lessons now open the same lesson window (`BookingDetailModal`); the second window (`LessonDetailModal`) is deleted. The window now also carries Jalila's prep before the lesson and the family summary editor after it (or straight away from "Record summary"), and it has the teacher's "Move lesson" (RULES.md: teachers move with a reason, never cancel) that the Today/Schedule window lacked. Contact email and WhatsApp in the window are admin only.
 - Today: the shortcuts box (Free trials, My hours) repeated the menu and is gone.

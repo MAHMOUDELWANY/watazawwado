@@ -68,7 +68,7 @@ import { ErrorBoundary } from '../components/ErrorBoundary';
 import { FeedbackHost } from '../components/ui/Feedback';
 import { TimezoneCheck } from '../components/ui/TimezoneCheck';
 
-type NavItem = { name: string; path: string; icon: typeof Clock };
+type NavItem = { name: string; path: string; icon: typeof Clock; group?: string };
 
 /** Dark ink glass used by the rail and the active top tab. */
 const INK = 'bg-[#0A2E35]/92 dark:bg-[#0B1C1F]/90';
@@ -211,26 +211,33 @@ export function DashboardApp() {
   const L = (en: string, arText: string) => (ar ? arText : en);
 
   // Role-scoped navigation (Concise, friendly, uncluttered)
+  // The admin menu in groups (audit 2026-10-28): the day, people, money, the academy, the system.
+  const G = {
+    people: L('People', 'الناس'),
+    money: L('Money', 'الفلوس'),
+    academy: L('Academy', 'الأكاديمية'),
+    system: L('System', 'النظام'),
+  };
   const superAdminNavigation: NavItem[] = [
     { name: L('Overview', 'الرئيسية'), path: '/dashboard', icon: LayoutDashboard },
     { name: L('Today', 'اليوم'), path: '/dashboard/today', icon: Clock },
     { name: L('Schedule', 'الجدول'), path: '/dashboard/upcoming', icon: Calendar },
-    { name: L('Faculty', 'المعلمون'), path: '/dashboard/teachers', icon: Shield },
-    { name: L('Students', 'الطلاب'), path: '/dashboard/students', icon: Users },
-    { name: L('Bookings', 'الحجوزات'), path: '/dashboard/bookings', icon: BookOpen },
-    { name: L('Pay later', 'ادفع لاحقاً'), path: '/dashboard/pay-later', icon: Wallet },
     { name: L('Messages', 'الرسائل'), path: '/dashboard/messages', icon: MessageCircle },
     { name: L('Notifications', 'الإشعارات'), path: '/dashboard/notifications', icon: Bell },
-    { name: L('Trials', 'التجريبية'), path: '/dashboard/trials', icon: Sparkles },
-    { name: L('Placement', 'تحديد المستوى'), path: '/dashboard/placement', icon: GraduationCap },
-    { name: L('Leads', 'المهتمون'), path: '/dashboard/leads', icon: UserPlus },
-    { name: L('Discounts', 'الخصومات'), path: '/dashboard/discounts', icon: Tag },
-    { name: L('Requests', 'الطلبات'), path: '/dashboard/intakes', icon: ClipboardCheck },
-    { name: L('Reports', 'التقارير'), path: '/dashboard/analytics', icon: TrendingUp },
-    { name: L('My hours', 'مواعيدي'), path: '/dashboard/availability', icon: CalendarClock },
-    { name: L('Curriculum', 'المنهج'), path: '/dashboard/curriculum', icon: Library },
-    { name: L('Health', 'صحة النظام'), path: '/dashboard/health', icon: Activity },
-    { name: L('Settings', 'الإعدادات'), path: '/dashboard/settings', icon: Settings },
+    { name: L('Students', 'الطلاب'), path: '/dashboard/students', icon: Users, group: G.people },
+    { name: L('Leads', 'المهتمون'), path: '/dashboard/leads', icon: UserPlus, group: G.people },
+    { name: L('Requests', 'الطلبات'), path: '/dashboard/intakes', icon: ClipboardCheck, group: G.people },
+    { name: L('Trials', 'التجريبية'), path: '/dashboard/trials', icon: Sparkles, group: G.people },
+    { name: L('Placement', 'تحديد المستوى'), path: '/dashboard/placement', icon: GraduationCap, group: G.people },
+    { name: L('Bookings', 'الحجوزات'), path: '/dashboard/bookings', icon: BookOpen, group: G.money },
+    { name: L('Pay later', 'ادفع لاحقاً'), path: '/dashboard/pay-later', icon: Wallet, group: G.money },
+    { name: L('Discounts', 'الخصومات'), path: '/dashboard/discounts', icon: Tag, group: G.money },
+    { name: L('Faculty', 'المعلمون'), path: '/dashboard/teachers', icon: Shield, group: G.academy },
+    { name: L('Curriculum', 'المنهج'), path: '/dashboard/curriculum', icon: Library, group: G.academy },
+    { name: L('My hours', 'مواعيدي'), path: '/dashboard/availability', icon: CalendarClock, group: G.academy },
+    { name: L('Reports', 'التقارير'), path: '/dashboard/analytics', icon: TrendingUp, group: G.academy },
+    { name: L('Health', 'صحة النظام'), path: '/dashboard/health', icon: Activity, group: G.system },
+    { name: L('Settings', 'الإعدادات'), path: '/dashboard/settings', icon: Settings, group: G.system },
   ];
 
   const teacherNavigation: NavItem[] = [
@@ -253,9 +260,10 @@ export function DashboardApp() {
     || (path === '/dashboard' && isTabActive(isSuperAdmin ? '/dashboard/overview' : '/dashboard/today', location.pathname, '/dashboard'));
 
   // Main sections: pill tabs on desktop, tab bar on phones.
+  const byPath = (list: NavItem[], paths: string[]) => paths.map((p) => list.find((i) => i.path === p)!).filter(Boolean);
   const topTabs: NavItem[] = isSuperAdmin
-    ? [superAdminNavigation[0], superAdminNavigation[5], superAdminNavigation[4], superAdminNavigation[7]]
-    : [teacherNavigation[0], teacherNavigation[1], teacherNavigation[3], teacherNavigation[4]];
+    ? byPath(superAdminNavigation, ['/dashboard', '/dashboard/bookings', '/dashboard/students', '/dashboard/messages'])
+    : byPath(teacherNavigation, ['/dashboard', '/dashboard/upcoming', '/dashboard/students', '/dashboard/messages']);
 
   // Phones show the same main sections as the desktop tabs, so a page never moves between screen sizes.
   const mobileTabs: MobileTab[] = [
@@ -325,13 +333,15 @@ export function DashboardApp() {
           aria-label={L('Teacher Primary Navigation', 'روابط التنقل الرئيسية للمعلم')}
           className="flex-1 min-h-0 overflow-y-auto [scrollbar-width:none] flex flex-col items-center gap-1 px-2"
         >
-          {railItems.map((item) => {
+          {railItems.map((item, idx) => {
             const active = isActive(item.path);
+            const startsGroup = Boolean(item.group && item.group !== railItems[idx - 1]?.group);
             return (
+              <React.Fragment key={item.path}>
+              {startsGroup && <span className="shrink-0 w-6 h-px my-1 bg-white/15" aria-hidden="true" />}
               <Link
-                key={item.path}
                 to={item.path}
-                title={item.name}
+                title={item.group ? `${item.group} · ${item.name}` : item.name}
                 aria-label={item.name}
                 aria-current={active ? 'page' : undefined}
                 className={`relative shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5A93C] ${active ? 'text-white' : 'hover:text-white hover:bg-white/10'}`}
@@ -342,6 +352,7 @@ export function DashboardApp() {
                   <span className="absolute top-1.5 end-1.5 w-2 h-2 rounded-full bg-[#E5A93C] ring-2 ring-[#0A2E35]" />
                 )}
               </Link>
+              </React.Fragment>
             );
           })}
         </nav>
@@ -396,11 +407,13 @@ export function DashboardApp() {
           className="flex-1 overflow-y-auto py-4 px-4 space-y-1"
           aria-label={L('Teacher Primary Navigation', 'روابط التنقل الرئيسية للمعلم')}
         >
-          {drawerItems.map((item) => {
+          {drawerItems.map((item, idx) => {
             const active = isActive(item.path);
+            const startsGroup = Boolean(item.group && item.group !== drawerItems[idx - 1]?.group);
             return (
+              <React.Fragment key={item.path}>
+              {startsGroup && <p className="px-4 pt-4 pb-1 text-xs font-semibold text-muted-foreground">{item.group}</p>}
               <Link
-                key={item.path}
                 to={item.path}
                 onClick={() => setIsMobileMenuOpen(false)}
                 aria-current={active ? 'page' : undefined}
@@ -416,6 +429,7 @@ export function DashboardApp() {
                   </span>
                 )}
               </Link>
+              </React.Fragment>
             );
           })}
         </nav>

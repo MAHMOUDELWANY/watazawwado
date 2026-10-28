@@ -26,6 +26,7 @@ import { dashboardFetch } from '../lib/dashboardApi';
 import { DashboardAnalytics } from '../types';
 import { useT } from '../../lib/language';
 import { useTeacherAuth } from '../../lib/auth';
+import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 
 type DateRange = 'all_time' | 'today' | 'last_7_days' | 'last_30_days' | 'this_month' | 'custom';
 
@@ -58,7 +59,7 @@ export default function AnalyticsPage() {
       }
       const res = await dashboardFetch(url);
       setData(res);
-      setLastRefreshed(DateTime.now().setZone('Africa/Cairo'));
+      setLastRefreshed(DateTime.now().setZone(getActiveWorkingTimezone()));
     } catch (err: any) {
       setError(err.message || t("Reports couldn't be loaded.", 'تعذر تحميل التقارير.'));
     } finally {
@@ -162,7 +163,7 @@ export default function AnalyticsPage() {
           </div>
           {lastRefreshed && (
             <span className="text-[11px] text-foreground/50 dark:text-muted-foreground/50 font-mono">
-              {t('Updated', 'اتحدث')} {lastRefreshed.toFormat('HH:mm')} {t('Cairo', 'القاهرة')}
+              {t('Updated', 'اتحدث')} {lastRefreshed.toFormat('HH:mm')}
             </span>
           )}
         </div>

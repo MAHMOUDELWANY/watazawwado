@@ -193,7 +193,8 @@ export default function BookingsPage() {
             className="px-4 py-2 text-sm font-semibold text-primary-foreground btn-primary-material rounded-xl shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer min-h-[40px]"
           >
             <Plus className="w-4 h-4" />
-            {t('Record payment', 'سجّل دفع')}
+            {/* For a payment not tied to one lesson; a lesson's own payment is recorded from its row or window. */}
+            {t('Record other payment', 'سجّل دفع من غير حصة')}
           </button>
         )}
       </header>
