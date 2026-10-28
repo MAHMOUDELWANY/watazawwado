@@ -362,7 +362,17 @@ export default function StudentDetailPage() {
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2.5 flex-wrap">
-          {waUrl && (
+          {/* Teachers talk to families in the site chat; direct WhatsApp/email stay with the admin (RULES.md chat). */}
+          {!isSuperAdmin && studentDetail.chat_thread_id && (
+            <Link
+              to={`/dashboard/messages?thread=${studentDetail.chat_thread_id}`}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl bg-[#0A2E35] text-white hover:opacity-90 transition-colors"
+            >
+              <MessageCircle className="w-3.5 h-3.5" />
+              <span>{t('Message the family', 'كلّم الأسرة')}</span>
+            </Link>
+          )}
+          {isSuperAdmin && waUrl && (
             <a
               href={waUrl}
               target="_blank"
@@ -374,7 +384,7 @@ export default function StudentDetailPage() {
             </a>
           )}
 
-          {student.email && (
+          {isSuperAdmin && student.email && (
             <a
               href={`mailto:${student.email}`}
               className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium rounded-xl glass-card border-none text-foreground hover:bg-surface-subtle transition-colors cursor-pointer"
@@ -390,7 +400,7 @@ export default function StudentDetailPage() {
             className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl bg-accent text-white hover:bg-accent/90 shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>{isGeneratingBrief ? t('Preparing…', 'جارٍ التحضير…') : t('AI brief', 'ملخص بالذكاء الاصطناعي')}</span>
+            <span>{isGeneratingBrief ? t('Jalila is preparing…', 'جليلة بتحضّر…') : t('Prep with Jalila', 'حضّر مع جليلة')}</span>
           </button>
 
           <button
@@ -398,7 +408,7 @@ export default function StudentDetailPage() {
             className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-2xs transition-colors cursor-pointer"
           >
             <Edit3 className="w-3.5 h-3.5" />
-            <span>{t('Edit profile', 'عدّل البيانات')}</span>
+            <span>{isSuperAdmin ? t('Edit profile', 'عدّل البيانات') : t('Level and notes', 'المستوى والملاحظات')}</span>
           </button>
         </div>
       </div>
@@ -702,7 +712,7 @@ export default function StudentDetailPage() {
                   </div>
                 </div>
               ) : <span className="text-sm text-muted-foreground">{t('No placement test yet.', 'لسه معملش اختبار مستوى.')}</span>}
-              {studentDetail.chat_thread_id && (
+              {isSuperAdmin && studentDetail.chat_thread_id && (
                 <Link
                   to={`/dashboard/messages?thread=${studentDetail.chat_thread_id}`}
                   className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-surface-subtle"
@@ -797,7 +807,8 @@ export default function StudentDetailPage() {
 
         {/* Right 1 Column: Faculty Assignment & Private Notes */}
         <div className="space-y-6">
-          {/* Faculty Assignment & Preferences Card */}
+          {/* Faculty Assignment & Preferences Card: the admin's tool (a teacher already knows the student is theirs). */}
+          {isSuperAdmin && (
           <div className="glass-card rounded-2xl p-6 border border-border shadow-2xs space-y-5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -892,6 +903,7 @@ export default function StudentDetailPage() {
               </form>
             )}
           </div>
+          )}
 
           <div className="glass-card rounded-2xl p-6 border border-border shadow-2xs space-y-5">
             {/* Post-lesson Summary, Achievements, Milestones & Private Notes Editor (PR-06) */}
@@ -1145,6 +1157,7 @@ export default function StudentDetailPage() {
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         onUpdated={updated => setStudentDetail(updated)}
+        limited={!isSuperAdmin}
       />
     </div>
   );

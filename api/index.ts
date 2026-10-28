@@ -3007,6 +3007,13 @@ app.get('/api/dashboard/students/:id', verifyTeacherAuth, async (req: any, res: 
       notes: b.notes || null
     }));
 
+    // The assigned teacher's name (the page showed "No teacher yet" to the very teacher who owns the student).
+    let assignedTeacherName: string | null = null;
+    if (student.assigned_teacher_id) {
+      const { data: teacher } = await supabase.from('teacher_accounts').select('display_name').eq('id', student.assigned_teacher_id).maybeSingle();
+      assignedTeacherName = teacher?.display_name || null;
+    }
+
     res.json({
       student: {
         id: student.id,
@@ -3017,6 +3024,10 @@ app.get('/api/dashboard/students/:id', verifyTeacherAuth, async (req: any, res: 
         learner_type: student.learner_type || null,
         country: student.country || null,
         timezone: student.timezone || null,
+        gender: student.gender || null,
+        teacher_gender_preference: student.teacher_gender_preference || null,
+        assigned_teacher_id: student.assigned_teacher_id || null,
+        assigned_teacher_name: assignedTeacherName,
         current_level: student.current_level || null,
         status: student.status || 'active',
         notes: student.notes || null,
@@ -3330,6 +3341,13 @@ app.patch('/api/dashboard/students/:id', verifyTeacherAuth, async (req: any, res
     if (req.teacherUser?.role !== 'super_admin') {
       if (existingStudent.assigned_teacher_id !== req.teacherUser.id) {
         return res.status(403).json({ error: 'Forbidden: You do not have authorization to modify this student.' });
+      }
+      // A teacher updates the level and their general notes only; identity, contact and guardian data stay with the
+      // family and the admin (changing an email here would detach the account).
+      const teacherFields = new Set(['current_level', 'notes', 'updated_at']);
+      const blocked = Object.keys(updates).filter((k) => !teacherFields.has(k));
+      if (blocked.length || parent_name !== undefined || parent_email !== undefined || parent_whatsapp !== undefined) {
+        return res.status(403).json({ error: 'Teachers can change the level and general notes only.' });
       }
     }
 

@@ -4,6 +4,11 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### App audit, batch 1: teacher side (2026-10-28)
+- Full audit of every page and button: `docs/ux/APP-AUDIT-2026-10-28.md` (findings per role and batches 2–4).
+- Student page for teachers: the API now returns the assigned teacher, gender and teacher-gender preference (the page said "No teacher yet" to the student's own teacher). The assignment card is admin only. Teachers get one "Message the family" (site chat) in the header; WhatsApp and email are admin only, here and on the students list. "Edit profile" becomes "Level and notes" for teachers, and the API refuses any other field from a teacher (name, email, contact, guardian, time zone).
+- Teacher navigation: Reports removed (it showed the sales funnel), "Bookings" renamed "All lessons". Overview, Leads, Requests, Faculty and Reports redirect a teacher to Today.
+
 ### Phase 4: Jalila drafts the monthly note (2026-10-28)
 - Teacher's student page → Journey log → "Write the monthly note with Jalila": a 3–5 sentence letter to the family about the last 30 days, in the family's language, from what the family was already told (shared summaries and next steps), milestones and the lesson count. Private notes are never read. The teacher edits it and saves it as a family note, so it shows on the family's progress page and in the monthly report.
 - Server: `POST /api/dashboard/students/:id/monthly-draft` in `server/routes/summaryDraft.ts` (teacher of the student or admin only; nothing saved or sent by the route). UI: `src/dashboard/components/MonthlyNoteDraft.tsx`.

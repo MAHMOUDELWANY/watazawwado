@@ -11,6 +11,8 @@ interface StudentEditModalProps {
   isOpen: boolean;
   onClose: () => void;
   onUpdated: (updatedDetail: DashboardStudentDetail) => void;
+  /** Teachers edit the level and general notes only (the server enforces the same). */
+  limited?: boolean;
 }
 
 const COMMON_TIMEZONES = [
@@ -30,7 +32,7 @@ const COMMON_TIMEZONES = [
   { label: 'UTC', value: 'UTC' }
 ];
 
-export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: StudentEditModalProps) {
+export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated, limited = false }: StudentEditModalProps) {
   const { student, guardian } = studentDetail;
   const { t } = useT();
 
@@ -95,7 +97,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
     setSaving(true);
 
     try {
-      const payload: Record<string, any> = {
+      const payload: Record<string, any> = limited ? { current_level: currentLevel || null, notes: notes.trim() || null } : {
         name: trimmedName,
         parent_name: parentName.trim() || null,
         parent_email: trimmedParentEmail,
@@ -137,10 +139,10 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
         <div className="flex items-center justify-between px-6 py-4 border-b border-border/30 dark:border-border/30 bg-background dark:bg-background">
           <div>
             <h2 id="student-edit-title" className="text-lg font-display font-bold text-foreground">
-              {t('Edit student', 'تعديل بيانات الطالب')}
+              {limited ? t('Level and notes', 'المستوى والملاحظات') : t('Edit student', 'تعديل بيانات الطالب')}
             </h2>
             <p className="text-sm text-foreground/70 dark:text-muted-foreground/70">
-              {t('Details, parent contact, level and time zone.', 'البيانات، تواصل ولي الأمر، المستوى والمنطقة الزمنية.')}
+              {limited ? t('Contact details are kept by the family and the academy.', 'بيانات التواصل بتغيّرها الأسرة والأكاديمية.') : t('Details, parent contact, level and time zone.', 'البيانات، تواصل ولي الأمر، المستوى والمنطقة الزمنية.')}
             </p>
           </div>
           <button
@@ -161,6 +163,7 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
             </div>
           )}
 
+          {!limited && (<>
           {/* Core Identity */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -353,6 +356,8 @@ export function StudentEditModal({ studentDetail, isOpen, onClose, onUpdated }: 
               </div>
             </div>
           </div>
+
+          </>)}
 
           {/* Level Assessment */}
           <div>

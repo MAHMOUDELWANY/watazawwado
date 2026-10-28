@@ -393,7 +393,7 @@ export default function StudentsPage() {
                 {/* Card Footer: WhatsApp & View Record Link */}
                 <div className="pt-3 border-t border-border-subtle flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    {waUrl && (
+                    {isSuperAdmin && waUrl && (
                       <a
                         href={waUrl}
                         target="_blank"

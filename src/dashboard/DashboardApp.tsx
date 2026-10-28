@@ -240,8 +240,8 @@ export function DashboardApp() {
     { name: L('Students', 'طلابي'), path: '/dashboard/students', icon: Users },
     { name: L('Messages', 'الرسائل'), path: '/dashboard/messages', icon: MessageCircle },
     { name: L('Notifications', 'الإشعارات'), path: '/dashboard/notifications', icon: Bell },
-    { name: L('Bookings', 'الحجوزات'), path: '/dashboard/bookings', icon: BookOpen },
-    { name: L('Reports', 'التقارير'), path: '/dashboard/analytics', icon: TrendingUp },
+    // Schedule = what is coming; All lessons = past and future, where summaries are written.
+    { name: L('All lessons', 'كل الحصص'), path: '/dashboard/bookings', icon: BookOpen },
     { name: L('My hours', 'مواعيدي'), path: '/dashboard/availability', icon: CalendarClock },
     { name: L('Curriculum', 'المنهج'), path: '/dashboard/curriculum', icon: Library },
     { name: L('Settings', 'الإعدادات'), path: '/dashboard/settings', icon: Settings },
@@ -575,17 +575,17 @@ export function DashboardApp() {
               <Routes>
                 {/* If super_admin, root /dashboard is Overview; if teacher, root /dashboard is Today */}
                 <Route path="/" element={isSuperAdmin ? <OverviewPage /> : <TodayPage />} />
-                <Route path="/overview" element={<OverviewPage />} />
+                <Route path="/overview" element={isSuperAdmin ? <OverviewPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/today" element={<TodayPage />} />
                 <Route path="/upcoming" element={<UpcomingPage />} />
                 <Route path="/trials" element={<TrialsPage />} />
-                <Route path="/leads" element={<LeadsPage />} />
-                <Route path="/intakes" element={<IntakeReviewPage />} />
-                <Route path="/teachers" element={<TeachersPage />} />
+                <Route path="/leads" element={isSuperAdmin ? <LeadsPage /> : <Navigate to="/dashboard" replace />} />
+                <Route path="/intakes" element={isSuperAdmin ? <IntakeReviewPage /> : <Navigate to="/dashboard" replace />} />
+                <Route path="/teachers" element={isSuperAdmin ? <TeachersPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/students" element={<StudentsPage />} />
                 <Route path="/students/:id" element={<StudentDetailPage />} />
                 <Route path="/bookings" element={<BookingsPage />} />
-                <Route path="/analytics" element={<AnalyticsPage />} />
+                <Route path="/analytics" element={isSuperAdmin ? <AnalyticsPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/availability" element={<AvailabilityPage />} />
                 <Route path="/notifications" element={<NotificationsPage />} />
                 <Route path="/pay-later" element={isSuperAdmin ? <PayLaterPage /> : <Navigate to="/dashboard" replace />} />
