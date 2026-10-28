@@ -17,6 +17,7 @@ import { bookingService } from '../../booking/bookingService';
 import { validateStep } from '../../booking/validation';
 import { BookingHeader } from './BookingHeader';
 import { StepServiceSelect } from './StepServiceSelect';
+import { StepLearner } from './StepLearner';
 import { StepGoalSelect } from './StepGoalSelect';
 import { StepStudentDetails } from './StepStudentDetails';
 import { StepLessonType } from './StepLessonType';
@@ -144,6 +145,11 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   const [payLaterBusy, setPayLaterBusy] = useState(false);
   const [isVerifyingPayment, setIsVerifyingPayment] = useState<boolean>(false);
   const [packagePaidNote, setPackagePaidNote] = useState(false);
+  const errorRef = useRef<HTMLDivElement>(null);
+  // Bring the error into view wherever the person is on the page (phones scroll a lot).
+  useEffect(() => {
+    if (validationError) errorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [validationError]);
 
   // Progressive Form State
   const [formData, setFormData] = useState<BookingFormData>(() => {
@@ -223,6 +229,22 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
   const isMultiStepFlow = formData.mode === 'regular' && !formData.packageEntitlementId;
   // Four screens over the internal steps (owner D4): what (subject, goal, learner), length & plan, time, review & pay.
   const screens: number[][] = isMultiStepFlow ? [[1, 2, 3], [4, 5], [6], [7]] : [[1, 2, 3], [4], [5], [6]];
+
+  // The student let the held time go from the pending-payment card: forget it and pick a time again.
+  useEffect(() => {
+    const onReleased = (e: Event) => {
+      const ref = (e as CustomEvent<string>).detail;
+      setPendingBooking((cur) => {
+        if (!cur || cur.bookingReference !== ref) return cur;
+        setIsCheckoutModalOpen(false);
+        setFormData((prev) => ({ ...prev, timeSlot: null }));
+        setStep(isMultiStepFlow ? 6 : 5);
+        return null;
+      });
+    };
+    window.addEventListener('watazawwado:hold-released', onReleased);
+    return () => window.removeEventListener('watazawwado:hold-released', onReleased);
+  }, [isMultiStepFlow]);
   const totalSteps = isMultiStepFlow ? 7 : 6;
 
   // Persist draft to sessionStorage whenever user makes changes or holds a pending booking
@@ -401,6 +423,11 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
 
   const currentService = BOOKING_SERVICES.find((s) => s.id === formData.serviceId);
 
+  // Signed-in students: contact details come from the profile; the form shows only if the profile lacks them.
+  const [needsContactDetails] = useState(() => !(formData.audience === 'child'
+    ? (formData.parentName || '').trim() && (formData.parentEmail || '').includes('@')
+    : (formData.studentName || '').trim() && (formData.email || '').includes('@')));
+
   const screenIndex = Math.max(0, screens.findIndex((g) => g.includes(step)));
   const showStep = (n: number) => screens[screenIndex].includes(n);
 
@@ -410,6 +437,13 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     for (const n of screens[screenIndex]) {
       const rule = n <= 4 ? n : (isMultiStepFlow ? (n === 6 ? 5 : 0) : (n === 5 ? 5 : 0));
       if (!rule) continue;
+      if (rule === 3 && isAuthenticatedStudent && !needsContactDetails) {
+        if (formData.audience === 'child' && linkedChildren.length > 0 && !formData.studentId) {
+          setValidationError(isAr ? 'اختار الحصة لمين.' : 'Choose who the lesson is for.');
+          return;
+        }
+        continue;
+      }
       const check = validateStep(rule, formData, lang === 'ar');
       if (!check.isValid) {
         setValidationError(Object.values(check.errors)[0] as string);
@@ -592,6 +626,17 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
     }
   };
 
+  const errorBox = validationError ? (
+    <div
+      ref={errorRef}
+      role="alert"
+      className="p-3.5 mb-4 rounded-2xl bg-amber-500/10 border border-amber-500/40 text-sm text-amber-900 dark:text-amber-200 flex items-start justify-between gap-3"
+    >
+      <span>{validationError}</span>
+      <button type="button" onClick={() => setValidationError(null)} aria-label={isAr ? 'إخفاء' : 'Dismiss'} className="font-bold cursor-pointer min-w-6">✕</button>
+    </div>
+  ) : null;
+
   return (
     <div
       className={`w-full ${
@@ -635,23 +680,8 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
             serviceName={isEn ? currentService?.name : currentService?.arabicName}
           />
 
-          {/* Validation Notice if any */}
-          {validationError && (
-            <motion.div
-              initial={{ opacity: 0, y: -5 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="p-3.5 mb-5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-sm text-amber-800 dark:text-amber-300 flex items-center justify-between"
-            >
-              <span>{validationError}</span>
-              <button
-                type="button"
-                onClick={() => setValidationError(null)}
-                className="text-amber-700 dark:text-amber-400 font-bold ms-2 cursor-pointer"
-              >
-                ✕
-              </button>
-            </motion.div>
-          )}
+          {/* On the review screen the error shows at the top (that screen has its own buttons). */}
+          {screenIndex === screens.length - 1 && errorBox}
 
           {/* Steps Presentation */}
           <AnimatePresence initial={false}>
@@ -663,6 +693,16 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                 exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.2 }}
               >
+                {isAuthenticatedStudent ? (
+                <StepLearner
+                  formData={formData}
+                  update={updateFormData}
+                  linkedChildren={linkedChildren}
+                  canBookForChild={canBookForChild}
+                  studentName={studentName}
+                  lang={lang}
+                />
+                ) : (
                 <StepServiceSelect
                   hideNav
                   suggestedServiceId={profileServiceId}
@@ -672,6 +712,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                   onNext={handleNext}
                   lang={lang}
                 />
+                )}
               </motion.div>
             )}
 
@@ -697,7 +738,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
               </motion.div>
             )}
 
-            {showStep(3) && (
+            {showStep(3) && (!isAuthenticatedStudent || needsContactDetails) && (
               <motion.div
                 key="step3"
                 initial={{ opacity: 0, x: 10 }}
@@ -897,9 +938,11 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
             )}
           </AnimatePresence>
 
-          {/* One Back / Continue per screen (the review screen has its own confirm and pay). */}
+          {/* One Back / Continue per screen (the review screen has its own confirm and pay). The error sits right above it. */}
           {screenIndex < screens.length - 1 && (
-            <div className="mt-6 pt-4 border-t border-border flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="mt-6 pt-4 border-t border-border">
+            {errorBox}
+            <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3">
               {screenIndex > 0 ? (
                 <button type="button" onClick={handleBack} className="min-h-11 px-4 rounded-xl text-sm font-semibold text-foreground hover:bg-surface-subtle cursor-pointer focus-ring">
                   {isAr ? 'رجوع' : 'Back'}
@@ -916,6 +959,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                   ? (buyingPackage ? (isAr ? 'لحظة…' : 'One moment…') : (isAr ? 'ادفع الباقة' : 'Pay for the package'))
                   : [isAr ? 'كمّل: المدة والخطة' : 'Continue: length and plan', isAr ? 'كمّل: اختار الميعاد' : 'Continue: pick a time', isAr ? 'كمّل: راجع وادفع' : 'Continue: review and pay'][screenIndex]}
               </button>
+            </div>
             </div>
           )}
         </div>

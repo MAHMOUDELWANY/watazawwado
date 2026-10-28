@@ -12,6 +12,7 @@ import { useTeacherAuth, getFreshAccessToken } from '../../lib/auth';
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { useAppLanguage } from '../../lib/language';
 import { PendingPaymentCard } from '../components/PendingPaymentCard';
+import { serviceIdForInterest } from '../../booking/serviceInterest';
 
 export interface StudentBookingPageProps {
   profile?: any;
@@ -449,27 +450,7 @@ export function mapStudentProfileToBookingInitialData(
   );
 
   let rawInterest = targetChild?.learningInterest || profile.learningInterest || '';
-  let matchedServiceId = 'quran-reading';
-  if (rawInterest) {
-    const interest = String(rawInterest).toLowerCase();
-    // Bookable only: a learner whose subject was retired falls back to the default instead of a refused booking.
-    const found = BOOKABLE_SERVICES.find(
-      (s) =>
-        s.id === interest ||
-        s.group.toLowerCase() === interest ||
-        s.name.toLowerCase().includes(interest) ||
-        (interest.includes('reading') && s.id === 'quran-reading') ||
-        (interest.includes('tajweed') && s.id === 'tajweed') ||
-        (interest.includes('hifz') && s.id === 'quran-memorization') ||
-        (interest.includes('memorization') && s.id === 'quran-memorization') ||
-        (interest.includes('islamic') && s.id === 'islamic-studies') ||
-        (interest.includes('arabic') && s.id === 'arabic') ||
-        (interest.includes('english') && s.id === 'english')
-    );
-    if (found) {
-      matchedServiceId = found.id;
-    }
-  }
+  const matchedServiceId = serviceIdForInterest(rawInterest);
 
   const mappedLevel: ProficiencyLevel =
     profile.currentLevel === 'beginner' ||
@@ -920,15 +901,12 @@ export default function StudentBookingPage({ profile: initialProfile, session: p
       {/* The booking flow confirms its own Stripe return; this card only shows and pays held lessons. */}
       <PendingPaymentCard lang={currentLang} handleStripeReturn={false} />
       {resumingDraft && !isReusing && (
-        <div className="p-3.5 rounded-2xl bg-secondary/30 border border-secondary/50 text-sm text-foreground flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <span className="flex items-center gap-2">
-            <Check className="w-4 h-4 text-accent shrink-0" />
-            {isAr ? 'كمّلنا حجزك من المكان اللي وقفت عنده.' : 'We kept your booking. Carry on where you left off.'}
-          </span>
-          <button type="button" onClick={handleStartOver} className="text-sm font-medium underline hover:text-primary cursor-pointer self-start sm:self-auto">
-            {isAr ? 'ابدأ حجز جديد' : 'Start over'}
+        <p className="text-sm text-muted-foreground flex flex-wrap items-center gap-x-2">
+          <span>{isAr ? 'كمّلنا حجزك من مكان ما وقفت.' : 'We kept your booking where you left it.'}</span>
+          <button type="button" onClick={handleStartOver} className="min-h-11 font-semibold text-foreground underline underline-offset-4 cursor-pointer">
+            {isAr ? 'ابدأ من الأول' : 'Start over'}
           </button>
-        </div>
+        </p>
       )}
 
       {/* Bookings Verification Warning / Retry (if /api/student/bookings failed) */}

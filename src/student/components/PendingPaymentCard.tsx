@@ -62,6 +62,8 @@ export function PendingPaymentCard({ lang = 'en', handleStripeReturn = true }: {
     setBusyId(b.id);
     try {
       await authedJson(`/api/student/bookings/${b.id}/release-hold`, { method: 'POST', body: '{}' });
+      // An open booking flow holding this lesson drops it (otherwise its checkout says "not awaiting payment").
+      window.dispatchEvent(new CustomEvent('watazawwado:hold-released', { detail: b.referenceCode }));
       notify(isAr ? 'اتساب الميعاد.' : 'The time was released.', 'success');
       await load();
     } catch (err: any) {

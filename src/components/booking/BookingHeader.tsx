@@ -1,8 +1,6 @@
 import React from 'react';
-import { motion } from 'motion/react';
-import { ArrowLeft, MessageCircle, X, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, X } from 'lucide-react';
 import { BookingMode, Language } from '../../booking/types';
-import { buildWhatsAppUrl } from '../../lib/whatsapp';
 
 interface BookingHeaderProps {
   step: number;
@@ -14,118 +12,56 @@ interface BookingHeaderProps {
   serviceName?: string;
 }
 
-export const BookingHeader: React.FC<BookingHeaderProps> = ({
-  step,
-  totalSteps,
-  mode,
-  lang,
-  onBack,
-  onClose,
-  serviceName
-}) => {
+/**
+ * Calm header (owner, 2026-10-28): back, the step and its title, four progress segments. No WhatsApp badge or
+ * lesson-type pill (they crowded phones); a free trial still says so under the title.
+ */
+export const BookingHeader: React.FC<BookingHeaderProps> = ({ step, totalSteps, mode, lang, onBack, onClose }) => {
   const isEn = lang === 'en';
-
   // Four screens (owner D4, 2026-10-28): what, length & plan, time, review & pay.
   const stepTitles = isEn
     ? ['What you will learn', 'Length and plan', 'Pick a time', 'Review and pay']
     : ['هتتعلم إيه', 'المدة والخطة', 'اختار الميعاد', 'راجع وادفع'];
 
-  const currentStepTitle = stepTitles[step - 1] || '';
-
   return (
-    <div className="pb-6 border-b border-border/80 mb-6 sm:mb-8">
-      {/* Top Bar: Back, Status Tag, and Close */}
-      <div className="flex items-center justify-between gap-3 mb-4">
-        <div className="flex items-center gap-3">
-          {step > 1 && onBack && (
-            <motion.button
-              whileHover={{ scale: 1.05, x: isEn ? -2 : 2 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={onBack}
-              type="button"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-foreground bg-surface-warm glass-surface hover:bg-border dark:hover:bg-surface-subtle transition-colors cursor-pointer"
-            >
-              <ArrowLeft className={`w-3.5 h-3.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
-              <span>{isEn ? 'Back' : 'رجوع'}</span>
-            </motion.button>
-          )}
-
-          {/* Mode Pill Badge */}
-          <span
-            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs sm:text-sm font-semibold tracking-wide ${
-              mode === 'trial'
-                ? 'bg-teal-500/15 text-teal-800 dark:text-teal-200 border border-teal-500/30'
-                : 'bg-muted-foreground/15 text-muted-foreground border border-muted-foreground/30'
-            }`}
+    <div className="pb-5 mb-5 sm:mb-7 border-b border-border/80">
+      <div className="flex items-center justify-between gap-3 min-h-11">
+        {step > 1 && onBack ? (
+          <button
+            type="button"
+            onClick={onBack}
+            className="inline-flex items-center gap-1.5 min-h-11 -ms-2 px-2 rounded-lg text-sm font-semibold text-foreground hover:bg-surface-subtle cursor-pointer focus-ring"
           >
-            <CheckCircle2 className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
-            <span>
-              {mode === 'trial'
-                ? isEn
-                  ? 'Free 30-Min Trial Session'
-                  : 'جلسة تعارف وتحديد مستوى (٣٠ دقيقة مجانًا)'
-                : isEn
-                ? 'Regular 1-on-1 Lesson'
-                : 'درس فردي منتظم'}
-            </span>
-          </span>
-        </div>
-
-        <div className="flex items-center gap-2">
-          {/* WhatsApp Assistance Badge */}
-          <a
-            href={buildWhatsAppUrl(isEn ? 'Assalamu alaikum, I have a question about booking a lesson.' : 'السلام عليكم، عندي سؤال عن حجز حصة.')}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden sm:inline-flex items-center gap-1.5 badge-whatsapp hover:scale-105 transition-all cursor-pointer"
-            title={isEn ? 'Ask a quick question first' : 'اسأل سؤالاً سريعاً على واتساب'}
+            <ArrowLeft className={`w-4 h-4 ${isEn ? '' : 'rotate-180'}`} />
+            <span>{isEn ? 'Back' : 'رجوع'}</span>
+          </button>
+        ) : (
+          <span className="text-sm font-semibold text-muted-foreground">{isEn ? `Step ${step} of ${totalSteps}` : `الخطوة ${step} من ${totalSteps}`}</span>
+        )}
+        {step > 1 && onBack && (
+          <span className="text-sm font-semibold text-muted-foreground">{isEn ? `Step ${step} of ${totalSteps}` : `الخطوة ${step} من ${totalSteps}`}</span>
+        )}
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="min-h-11 min-w-11 inline-flex items-center justify-center rounded-full text-muted-foreground hover:bg-surface-subtle cursor-pointer focus-ring"
+            aria-label={isEn ? 'Close' : 'إغلاق'}
           >
-            <MessageCircle className="w-3.5 h-3.5 fill-current shrink-0" />
-            <span>{isEn ? 'Ask us on WhatsApp' : 'تواصل معنا على واتساب'}</span>
-          </a>
-
-          {onClose && (
-            <motion.button
-              whileHover={{ scale: 1.1, rotate: 90 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={onClose}
-              type="button"
-              className="p-1.5 rounded-full text-foreground/60 dark:text-muted-foreground/60 hover:bg-surface-warm dark:hover:bg-surface-subtle transition-colors cursor-pointer"
-              aria-label={isEn ? 'Close' : 'إغلاق'}
-            >
-              <X className="w-5 h-5" />
-            </motion.button>
-          )}
-        </div>
-      </div>
-
-      {/* Step Title & Progress Track */}
-      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-3">
-        <div>
-          <span className="text-xs sm:text-sm font-semibold uppercase text-muted-foreground block mb-0.5">
-            {isEn ? `Step ${step} of ${totalSteps}` : `الخطوة ${step} من ${totalSteps}`}
-          </span>
-          <h2 className="font-display text-2xl sm:text-3xl font-medium text-foreground">
-            {currentStepTitle}
-          </h2>
-        </div>
-
-        {serviceName && step > 1 && (
-          <div className="text-sm text-foreground/70 dark:text-muted-foreground/70 bg-white/60 dark:bg-background/60 px-2.5 py-1 rounded-md border border-border/60 dark:border-border/60 self-start sm:self-auto">
-            <span className="text-foreground/50 dark:text-muted-foreground/50">{isEn ? 'Selected: ' : 'المادة: '}</span>
-            <span className="font-medium text-foreground">{serviceName}</span>
-          </div>
+            <X className="w-5 h-5" />
+          </button>
         )}
       </div>
 
-      {/* Modern, calm visual progress line with Islamic gradient */}
-      <div className="w-full bg-border/60 dark:bg-border h-2 rounded-full overflow-hidden">
-        <motion.div
-          className="bg-gradient-to-r from-teal-500 via-primary to-accent h-full rounded-full"
-          initial={false}
-          animate={{ width: `${(step / totalSteps) * 100}%` }}
-          transition={{ duration: 0.35, ease: 'easeInOut' }}
-        />
+      <h2 className="mt-2 font-display text-2xl sm:text-3xl font-medium text-foreground">{stepTitles[step - 1] || ''}</h2>
+      {mode === 'trial' && (
+        <p className="text-sm text-muted-foreground mt-1">{isEn ? 'Free 30-minute trial' : 'حصة تجريبية مجانية، 30 دقيقة'}</p>
+      )}
+
+      <div className="mt-4 grid gap-1.5" style={{ gridTemplateColumns: `repeat(${totalSteps}, minmax(0, 1fr))` }} aria-hidden="true">
+        {Array.from({ length: totalSteps }, (_, i) => (
+          <span key={i} className={`h-1.5 rounded-full transition-colors duration-300 ${i < step ? 'bg-[#0A2E35] dark:bg-teal' : 'bg-border'}`} />
+        ))}
       </div>
     </div>
   );

@@ -21,7 +21,9 @@ describe('booking flow: one lesson at a time, packages on the packages page (RUL
     const step = read('components/booking/StepPackageQuantity.tsx');
     assert.match(step, /eligibility_rules\?\.hourly_rate/);
     assert.match(step, /eligibility_rules\?\.duration_minutes/);
-    assert.match(step, /<EnvelopeCard/);
+    // Compact envelope-style plan cards, one tap to choose (owner, 2026-10-28 phone review).
+    assert.match(step, /role="radio"/);
+    assert.match(step, /Envelope edge/);
     assert.doesNotMatch(step, /from=booking/, 'no detour to the packages page');
     assert.doesNotMatch(step, /fetch\(/);
     const flow = read('components/booking/BookingFlow.tsx');

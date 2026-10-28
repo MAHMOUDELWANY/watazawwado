@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { activateOnKey } from '../../lib/a11y';
 import { motion } from 'motion/react';
-import { Check, ArrowRight, ArrowLeft, Clock, Gift, CalendarCheck, HelpCircle, Sparkles, Package } from 'lucide-react';
+import { Check, ArrowRight, ArrowLeft, Gift, CalendarCheck, Package } from 'lucide-react';
 import { BookingMode, Language, LessonDuration, PackageCatalogEntry, PackageEntitlementEntry } from '../../booking/types';
 import { BOOKING_SERVICES, calculateLessonFee } from '../../booking/mockData';
-import { buildWhatsAppUrl } from '../../lib/whatsapp';
 
 interface StepLessonTypeProps {
   mode: BookingMode;
@@ -98,7 +97,8 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Mode Choice (Free Trial vs Regular) */}
+      {/* Mode Choice (Free Trial vs Regular): only while a free trial is still possible. */}
+      {!trialDisabled && (
       <div>
         <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/90 mb-2.5">
           {isEn ? 'Choose Your Booking Type' : 'نوع الحجز المطلوب'}
@@ -224,80 +224,44 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
         </div>
       </div>
 
-      {/* Lesson Duration Selection */}
-      <div className="space-y-3 pt-2">
-        <div className="flex items-center justify-between">
-          <label className="block text-sm font-semibold uppercase tracking-wider text-foreground/80 dark:text-accent/90">
-            {isEn ? 'Select Preferred Lesson Duration' : 'اختر مدة الدرس المناسبة'}
-          </label>
-          <span className="text-sm text-foreground/60 dark:text-accent/90/60 flex items-center gap-1">
-            <Clock className="w-3.5 h-3.5 text-accent" />
-            {mode === 'trial'
-              ? isEn ? 'Trial standard: 30 min (up to 45 min max)' : 'المدة للتجربة: ٣٠ دقيقة (بحد أقصى ٤٥ دقيقة)'
-              : isEn ? 'Standard durations: 30, 45, 60 min' : 'المدد المعتمدة: ٣٠، ٤٥، ٦٠ دقيقة'}
-          </span>
-        </div>
+      )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      {/* Lesson length: three compact choices; the note of the chosen one shows below. */}
+      <div className="space-y-2.5">
+        <p className="text-sm font-semibold text-foreground">{isEn ? 'Lesson length' : 'مدة الحصة'}</p>
+        <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label={isEn ? 'Lesson length' : 'مدة الحصة'}>
           {durations.map((d) => {
             const isSelected = duration === d.length;
-            const regularFee = calculateLessonFee(serviceId, d.length, false);
-            const isDisabled = mode === 'trial' && d.length === 60; // Master Spec: 60 min is NOT a trial option (max trial is 45 min)
-
-            const displayPrice = mode === 'trial'
-              ? (isEn ? 'FREE' : 'مجاناً')
+            const isDisabled = mode === 'trial' && d.length === 60; // Master Spec: 60 min is not a trial option
+            const price = mode === 'trial'
+              ? (isEn ? 'Free' : 'مجاناً')
               : packageEntitlementId
-              ? (isEn ? '1 Credit ($0 today)' : '١ رصيد (٠$ اليوم)')
-              : `$${regularFee}`;
-
+              ? (isEn ? '1 credit' : 'رصيد حصة')
+              : `$${calculateLessonFee(serviceId, d.length, false)}`;
             return (
               <button
                 key={d.length}
                 type="button"
+                role="radio"
+                aria-checked={isSelected}
                 disabled={isDisabled}
                 onClick={() => onChangeDuration(d.length)}
-                className={`p-4 rounded-2xl border text-start transition-all cursor-pointer flex flex-col justify-between relative ${
-                  isDisabled
-                    ? 'opacity-40 cursor-not-allowed bg-black/5 dark:bg-white/5 border-transparent'
-                    : isSelected
-                    ? 'border-teal-500 bg-teal-500/15 dark:bg-teal-500/25 ring-2 ring-teal-500 shadow-md shadow-teal-500/15'
-                    : 'glass-surface border-border/80 hover:border-teal-500/50 hover:bg-teal-500/5'
+                className={`min-h-16 px-2 py-3 rounded-2xl border text-center transition-colors cursor-pointer focus-ring disabled:opacity-40 disabled:cursor-not-allowed ${
+                  isSelected
+                    ? 'border-[#0A2E35] bg-[#0A2E35] text-white dark:border-teal dark:bg-teal/20 dark:text-foreground'
+                    : 'border-border bg-surface text-foreground hover:border-foreground/40'
                 }`}
               >
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className={`font-display text-base font-bold ${isSelected ? 'text-teal-950 dark:text-teal-100' : 'text-foreground'}`}>
-                      {isEn ? d.label : d.arabicLabel}
-                    </span>
-                    <div className="flex items-center gap-1.5">
-                      <span className={`text-sm font-bold ${
-                        isSelected
-                          ? 'text-teal-700 dark:text-teal-300'
-                          : mode === 'trial' || packageEntitlementId ? 'text-teal-600' : 'text-muted-foreground'
-                      }`}>
-                        {displayPrice}
-                      </span>
-                      {isSelected && (
-                        <span className="w-5 h-5 rounded-full bg-teal-600 text-white flex items-center justify-center shrink-0">
-                          <Check className="w-3.5 h-3.5" />
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <p className={`text-[11px] ${isSelected ? 'text-teal-900/80 dark:text-teal-200/80' : 'text-foreground/80 dark:text-accent/90'} leading-relaxed`}>
-                    {isEn ? d.note : d.arabicNote}
-                  </p>
-                </div>
-
-                {isDisabled && (
-                  <div className="mt-2 text-[13px] text-amber-700 dark:text-amber-400">
-                    {isEn ? 'Max trial length is 45 min' : 'الحد الأقصى للتجربة ٤٥ دقيقة'}
-                  </div>
-                )}
+                <span className="block font-display text-lg font-bold leading-tight">{isEn ? `${d.length} min` : `${d.arabicLabel}`}</span>
+                <span className={`block text-sm font-semibold ${isSelected ? 'opacity-90' : 'text-muted-foreground'}`}>{price}</span>
               </button>
             );
           })}
         </div>
+        {(() => {
+          const chosen = durations.find((d) => d.length === duration);
+          return chosen ? <p className="text-sm text-muted-foreground">{isEn ? chosen.note : chosen.arabicNote}</p> : null;
+        })()}
       </div>
 
       {/* Package Entitlement Credit Redemption (When Active Entitlements Exist) */}
@@ -408,27 +372,6 @@ export const StepLessonType: React.FC<StepLessonTypeProps> = ({
           </div>
         </div>
       )}
-
-      {/* Manual Request for Sessions > 60 min note */}
-      <div className="p-3.5 rounded-xl glass-card border-none text-sm text-foreground/80 dark:text-accent/90 flex items-start gap-2.5">
-        <HelpCircle className="w-4 h-4 text-accent shrink-0 mt-0.5" />
-        <div className="leading-relaxed">
-          <span>
-            {isEn
-              ? '60 minutes is the standard maximum duration to protect focus and vocal clarity. If you need intensive multi-hour sessions or family blocks, please '
-              : '٦٠ دقيقة هي الحد الأقصى للجلسات العادية حفاظاً على جودة التركيز والصوت. إذا كنت بحاجة لجلسات مكثفة أطول أو ترتيب عائلي، يرجى '}
-          </span>
-          <a
-            href={buildWhatsAppUrl('Assalamu alaikum Watazawwado team, I would like to request an extended lesson session (longer than 60 minutes).')}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[#25D366] dark:text-[#25D366] font-bold underline hover:opacity-80 transition-opacity"
-          >
-            {isEn ? 'request an extended session from us' : 'مراسلتنا مباشرة لترتيبها'}
-          </a>
-          .
-        </div>
-      </div>
 
 {/* Controls */}
       {!hideNav && (
