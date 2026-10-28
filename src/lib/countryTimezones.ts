@@ -1155,6 +1155,6 @@ export function setActiveWorkingTimezone(tz: string): void {
   if (typeof window === 'undefined') return;
   try {
     localStorage.setItem(ACTIVE_TIMEZONE_STORAGE_KEY, tz);
-    window.dispatchEvent(new CustomEvent('watazawwado_timezone_change', { detail: tz }));
+    window.dispatchEvent(new CustomEvent('watazawwado_timezone_change', { detail: { timezone: tz } }));
   } catch {}
 }

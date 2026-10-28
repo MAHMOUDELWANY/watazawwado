@@ -60,6 +60,10 @@ import {  buildStudentNotifications,
   getSavedNotificationReadIds
 } from './notificationsPresentation';
 import { FeedbackHost } from '../components/ui/Feedback';
+import { TimezoneCheck } from '../components/ui/TimezoneCheck';
+import { setActiveWorkingTimezone } from '../lib/countryTimezones';
+import { authedJson } from '../lib/authedJson';
+import { DateTime } from 'luxon';
 
 export default function StudentApp() {
   const { user, session, loading, isTeacherAuthenticated, userRole, signOut } = useTeacherAuth();
@@ -183,6 +187,8 @@ export default function StudentApp() {
         if (profileRes.ok) {
           const data = await profileRes.json();
           if (isMounted) setProfile(data);
+          // The zone saved on the account wins on every device; TimezoneCheck offers the device's zone if it differs.
+          if (data?.timezone && DateTime.now().setZone(data.timezone).isValid) setActiveWorkingTimezone(data.timezone);
         } else if (profileRes.status === 404) {
           // Brand new student record in auth without DB profile row yet -> requires onboarding
           if (isMounted) {
@@ -652,6 +658,17 @@ export default function StudentApp() {
           tabIndex={-1}
         >
           <div className="w-full max-w-6xl mx-auto min-w-0">
+            {profile?.id && (
+              <div className="mb-4">
+                <TimezoneCheck
+                  isAr={isAr}
+                  onUse={async (tz) => {
+                    await authedJson('/api/student/me', { method: 'PATCH', body: JSON.stringify({ timezone: tz }) });
+                    setProfile((prev: any) => ({ ...prev, timezone: tz }));
+                  }}
+                />
+              </div>
+            )}
             <ErrorBoundary>
               <Routes>
               <Route path="/" element={<StudentHomePage lang={lang} />} />

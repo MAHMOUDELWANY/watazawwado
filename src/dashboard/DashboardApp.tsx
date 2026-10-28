@@ -67,6 +67,7 @@ import { CommandSearch } from './components/CommandSearch';
 import { useAppLanguage } from '../lib/language';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { FeedbackHost } from '../components/ui/Feedback';
+import { TimezoneCheck } from '../components/ui/TimezoneCheck';
 
 type NavItem = { name: string; path: string; icon: typeof Clock };
 
@@ -571,6 +572,7 @@ export function DashboardApp() {
           <div className="max-w-6xl mx-auto space-y-6 min-w-0">
             <TeacherAuthDiagnosticPanel />
             <FeedbackHost />
+            <TimezoneCheck isAr={ar} />
             {isSuperAdmin && <CommandSearch open={commandOpen} onClose={() => setCommandOpen(false)} />}
             <ErrorBoundary>
               <Routes>

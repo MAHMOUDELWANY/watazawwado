@@ -14,7 +14,7 @@ import {
 import { dashboardFetch } from '../lib/dashboardApi';
 import { IntegrationsManager } from '../../components/dashboard/IntegrationsManager';
 import { CountryTimezonePicker } from '../../components/ui/CountryTimezonePicker';
-import { setActiveWorkingTimezone } from '../../lib/countryTimezones';
+import { setActiveWorkingTimezone, getActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { useTeacherAuth } from '../../lib/auth';
 import { useT } from '../../lib/language';
 import { notify } from '../../components/ui/Feedback';
@@ -65,6 +65,8 @@ export default function SettingsPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState(isSuperAdmin ? 'Profile' : 'Integrations');
+  // The zone the schedule uses (this device, auto-detected until changed); the old site-wide setting is not it.
+  const [workingTz, setWorkingTz] = useState(() => getActiveWorkingTimezone());
 
   useEffect(() => {
     (async () => {
@@ -100,7 +102,6 @@ export default function SettingsPage() {
       setError(null);
       // Site-wide settings are the admin's; a teacher's time zone is saved on this device only.
       if (isSuperAdmin) await dashboardFetch('/api/dashboard/settings', { method: 'PATCH', body: JSON.stringify({ settings }) });
-      setActiveWorkingTimezone(getSetting('timezone') || 'Africa/Cairo');
       flash(t('Settings saved.', 'الإعدادات اتحفظت.'));
     } catch (err: any) {
       setError(err.message || t("Couldn't save the settings.", 'تعذر حفظ الإعدادات.'));
@@ -145,7 +146,7 @@ export default function SettingsPage() {
   ];
 
   const inputClass = 'w-full px-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:border-primary focus:ring-2 focus:ring-primary/40 outline-none transition-colors placeholder:text-muted-foreground';
-  const canSaveSettings = isSuperAdmin || activeTab === 'Preferences';
+  const canSaveSettings = isSuperAdmin;
 
   return (
     <div className="space-y-8 pb-10 max-w-5xl">
@@ -319,10 +320,12 @@ export default function SettingsPage() {
                 </p>
                 <div className="p-4 rounded-xl glass-surface border border-border">
                   <CountryTimezonePicker
-                    timezone={getSetting('timezone') || 'Africa/Cairo'}
+                    timezone={workingTz}
                     onTimezoneChange={(newTz) => {
                       updateSetting('timezone', newTz);
+                      setWorkingTz(newTz);
                       setActiveWorkingTimezone(newTz);
+                      notify(t('Time zone saved. Your schedule now uses it.', 'التوقيت اتحفظ. جدولك بقى بيستخدمه.'));
                     }}
                     isAr={lang === 'ar'}
                     showTimePreview={true}
