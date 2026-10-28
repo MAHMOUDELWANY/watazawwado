@@ -3134,22 +3134,21 @@ app.post('/api/dashboard/students/:id/ai-brief', verifyTeacherAuth, async (req: 
 
     // 4. Generate AI Brief
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-    const prompt = `You are an expert teaching assistant in the Watazawwado educational platform.
-Your task is to provide a brief, structured lesson preparation guide for the teacher based on the provided student context.
+    const briefLang = req.body?.lang === 'ar' ? 'ar' : 'en';
+    const prompt = `You are Jalila, the teaching assistant of Watazawwado Academy.
+Write a SHORT prep note the teacher reads in 20 seconds right before the next lesson, based on the student context.
 
 Student Context:
 ${JSON.stringify(context, null, 2)}
 
 Guidelines:
-- This is strictly advisory (human-in-the-loop).
-- Provide a short summary of the student's status.
-- Suggest 2-3 specific preparation ideas or topics to review.
-- Suggest 1-2 engaging questions or activities to start the next lesson.
-- If the context is insufficient (e.g., no past lessons), explicitly state that and offer general advice based on the learner type or level.
-- DO NOT make auth decisions, assign teachers, discuss pricing/financials, or invent history/abilities.
-- Use a calm, professional, and encouraging tone in Arabic.
-- Format the output in clear Markdown with headings and bullet points.
-- Include this exact label at the very top of your response (in bold): **«ملخص استرشادي مقترح — لا يغني عن تقييم المعلم المباشر»**`;
+- Exactly three short bullet points, no headings, under 70 words in total:
+  1. Where the student is (from the last notes and goals).
+  2. What to focus on in this lesson.
+  3. One warm opening question or activity.
+- If there are no past notes, say so in the first bullet and base the rest on the level and goals.
+- Never invent history or abilities. No pricing, scheduling or account matters.
+- Write in ${briefLang === 'ar' ? 'Arabic (simple, warm, a light Egyptian touch)' : 'English (simple and warm)'}.`;
 
     const response = await ai.models.generateContent({
       model: 'gemini-3.1-flash-lite',

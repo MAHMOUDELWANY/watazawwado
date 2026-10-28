@@ -89,7 +89,8 @@ export default function StudentDetailPage() {
     setAiBrief(null);
     try {
       const res = await dashboardFetch(`/api/dashboard/students/${id}/ai-brief`, {
-        method: 'POST'
+        method: 'POST',
+        body: JSON.stringify({ lang: isAr ? 'ar' : 'en' })
       });
       setAiBrief(res.brief);
     } catch (err: any) {
@@ -414,7 +415,7 @@ export default function StudentDetailPage() {
                 <div className="flex items-center gap-2 text-accent">
                   <Sparkles className="w-5 h-5" />
                   <h2 className="text-sm font-semibold uppercase tracking-wider">
-                    {t('AI lesson prep', 'تحضير الحصة بالذكاء الاصطناعي')}
+                    {t('Jalila · lesson prep', 'جليلة · تحضير الحصة')}
                   </h2>
                 </div>
                 <button

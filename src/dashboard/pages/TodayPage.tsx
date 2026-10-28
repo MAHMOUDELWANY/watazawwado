@@ -27,6 +27,7 @@ import { useT } from '../../lib/language';
 import { DASH_CARD } from '../components/DashboardCards';
 import { InstallAppEntry } from '../../components/pwa/InstallApp';
 import { TeacherRatingNote } from '../components/LessonFeedbackPanels';
+import { JalilaBrief } from '../components/JalilaBrief';
 
 type T = (en: string, ar: string) => string;
 
@@ -592,6 +593,11 @@ function NextLessonSpotlight({
           </button>
         </div>
       </div>
+      {(lesson.student_id || (lesson as any).studentId) && (
+        <div className="mt-5">
+          <JalilaBrief studentId={(lesson.student_id || (lesson as any).studentId) as string} />
+        </div>
+      )}
     </div>
   );
 }

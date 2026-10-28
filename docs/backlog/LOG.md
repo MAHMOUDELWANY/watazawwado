@@ -4,6 +4,13 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Owner round 2026-10-28: English default, time zone, adult vs family, phase 4 (Jalila)
+- English is the default everywhere (RULES.md §6): public pages English at the plain path, Arabic under `/ar` (x-default English, old `/en` links redirect); Arabic only after an explicit choice, and someone who chose Arabic is sent to the `/ar` twin. The silent Arabic default stored by older builds is ignored. Emails were already English by default.
+- Time zone: the teacher Settings picker showed the old site-wide zone (Cairo) while the schedule used the device's saved zone (Warsaw). Settings now shows and saves the zone the schedule uses (with a toast). A student's saved profile zone is applied on every device. New `TimezoneCheck` banner offers the device's zone when its clock differs (students: saved to the profile; "Keep it" remembered). The zone-change event now carries `{ timezone }`.
+- Adult learner vs family: the family tab and default-learner choice show only for family accounts. An adult learner gets one explicit "Add a child" step in Preferences that says it turns the account into a family account; the add-child nudge on an adult's home is gone; family links open the family tab.
+- Phase 4: the Jalila page and nav item are gone (`/dashboard/assistant` redirects) and the free-text `/api/dashboard/ai-assistant` endpoint is removed. Jalila now sits on the next-lesson card on Today ("Prep this lesson with Jalila": three short bullets from goals and last lesson notes, in the teacher's language; private notes never sent). The student-page and lesson-window prep use the same short format. "Draft with Jalila" for the family summary stays after the lesson.
+- Not done: a Jalila draft of the monthly report; checking these screens inside a signed-in portal (no login here).
+
 ### App redesign, phase 3: look and feel (2026-10-28)
 - Opening the installed app: once a day (and never with reduced motion) the launch screen draws the gold khatam, then the logo and name appear (~1.5 s); the splash waits for it (`index.html`, `src/lib/bootSplash.ts`). Other opens keep the quick logo splash. The system splash itself cannot animate.
 - Offline: `public/sw.js` shows a branded bilingual screen (khatam and arch, light/dark) that reopens the page by itself when the connection is back.

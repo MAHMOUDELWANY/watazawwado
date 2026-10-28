@@ -67,7 +67,7 @@ Plain background (drop `brand-lights` glow in the app), icons only in navigation
 **App opening:** OS splash cannot animate (Android builds it from the manifest). We set the manifest/iOS startup colours to match, then hand off to a short animated brand intro (khatam draws in, ~700 ms, skipped on reduced motion and on repeat opens the same day).
 **Offline screen:** branded page in `sw.js` (logo, arch, Arabic + English, retry, auto-retry when back online).
 
-### Phase 4: AI for teachers (Jalila inside the work)
+### Phase 4: AI for teachers (Jalila inside the work) — done 2026-10-28 except the monthly report draft
 Remove the Jalila page and nav item. Add:
 - **Before a lesson** (Today card): two-line brief from the last notes and the curriculum position.
 - **After a lesson:** keep and surface "Draft the family summary" from private notes.

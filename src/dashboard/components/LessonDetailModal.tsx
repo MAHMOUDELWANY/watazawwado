@@ -26,6 +26,7 @@ import FocusTrap from '../../components/FocusTrap';
 import { useTeacherAuth } from '../../lib/auth';
 import { useT } from '../../lib/language';
 import { PostLessonSummaryEditor } from './PostLessonSummaryEditor';
+import { getStoredLanguage } from '../../lib/language';
 
 interface LessonDetailModalProps {
   lesson: DashboardLesson | null;
@@ -67,7 +68,7 @@ export function LessonDetailModal({ lesson, onClose, onBookingUpdated, openSumma
     setBriefError(null);
     setAiBrief(null);
     try {
-      const res = await dashboardFetch(`/api/dashboard/students/${lesson.student_id}/ai-brief`, { method: 'POST' });
+      const res = await dashboardFetch(`/api/dashboard/students/${lesson.student_id}/ai-brief`, { method: 'POST', body: JSON.stringify({ lang: getStoredLanguage() }) });
       setAiBrief(res.brief);
     } catch (err: any) {
       setBriefError(err.message || t("Couldn't prepare the brief.", 'تعذر تجهيز الملخص.'));

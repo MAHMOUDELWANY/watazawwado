@@ -59,7 +59,6 @@ import NotificationsPage, { useUnreadDashboardNotifications } from './pages/Noti
 import PayLaterPage from './pages/PayLaterPage';
 import HealthPage from './pages/HealthPage';
 import PlacementTestsPage from './pages/PlacementTestsPage';
-import AssistantPage from './pages/AssistantPage';
 import CurriculumPage, { CurriculumGroupPage, CurriculumTrackPage, CurriculumLessonPage } from './pages/CurriculumPage';
 import { ChatPanel } from '../components/chat/ChatPanel';
 import { TeacherAuthDiagnosticPanel } from './components/TeacherAuthDiagnosticPanel';
@@ -227,7 +226,6 @@ export function DashboardApp() {
     { name: L('Leads', 'المهتمون'), path: '/dashboard/leads', icon: UserPlus },
     { name: L('Discounts', 'الخصومات'), path: '/dashboard/discounts', icon: Tag },
     { name: L('Requests', 'الطلبات'), path: '/dashboard/intakes', icon: ClipboardCheck },
-    { name: L('Jalila', 'جليلة'), path: '/dashboard/assistant', icon: Compass },
     { name: L('Reports', 'التقارير'), path: '/dashboard/analytics', icon: TrendingUp },
     { name: L('My hours', 'مواعيدي'), path: '/dashboard/availability', icon: CalendarClock },
     { name: L('Curriculum', 'المنهج'), path: '/dashboard/curriculum', icon: Library },
@@ -241,7 +239,6 @@ export function DashboardApp() {
     { name: L('Trials', 'التجريبية'), path: '/dashboard/trials', icon: Sparkles },
     { name: L('Students', 'طلابي'), path: '/dashboard/students', icon: Users },
     { name: L('Messages', 'الرسائل'), path: '/dashboard/messages', icon: MessageCircle },
-    { name: L('Jalila', 'جليلة'), path: '/dashboard/assistant', icon: Compass },
     { name: L('Notifications', 'الإشعارات'), path: '/dashboard/notifications', icon: Bell },
     { name: L('Bookings', 'الحجوزات'), path: '/dashboard/bookings', icon: BookOpen },
     { name: L('Reports', 'التقارير'), path: '/dashboard/analytics', icon: TrendingUp },
@@ -596,7 +593,7 @@ export function DashboardApp() {
                 <Route path="/health" element={isSuperAdmin ? <HealthPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/messages" element={<ChatPanel lang={ar ? 'ar' : 'en'} />} />
-                <Route path="/assistant" element={<AssistantPage />} />
+                <Route path="/assistant" element={<Navigate to="/dashboard" replace />} />
                 <Route path="/curriculum" element={<CurriculumPage />} />
                 <Route path="/curriculum/:group" element={<CurriculumGroupPage />} />
                 <Route path="/curriculum/:group/:track" element={<CurriculumTrackPage />} />
