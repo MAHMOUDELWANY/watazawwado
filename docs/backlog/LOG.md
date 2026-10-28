@@ -4,6 +4,15 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Launch plan A + B: bugs, wallet, booking, pending payments, checkout (2026-10-28)
+- A: admin splash never shows the teacher line; checkout resets after Back from Stripe; onboarding fallback teacher cards are neutral (no names or photos).
+- B1 My wallet (`/student/wallet`): package lessons, lesson credits and account balance at the top; Packages and Payments as two tabs. Old `/student/packages` and `/student/payments` open the matching tab with their query kept.
+- B3 booking in four screens (what, length and plan, time, review and pay). Screen 2 shows one lesson and the packages as the envelope cards of the public pricing; choosing a package buys it inside the flow (terms and early-start boxes there), and after payment the first lesson is booked from it with nothing more to pay.
+- B2 a lesson held for payment shows on home, Lessons, Wallet and Booking with "held until", Pay and "Let it go". New `POST /api/student/bookings/:id/release-hold` (own unpaid pay-now hold only; a payment confirmed meanwhile wins). The student bookings list returns `holdExpiresAt`.
+- B4 card payment inside our window (Stripe Embedded Checkout, `ui_mode=embedded_page`, older API `embedded`), only when `STRIPE_PUBLISHABLE_KEY` is set; any failure falls back to Stripe's own page. Pages outside the booking flow now confirm a Stripe return themselves. Checkout trust footer removed.
+- Checks: tsc, new tests (b2, b4, booking-first-planning), full suite in the main checkout before push.
+- Not checked: a real card payment end to end in Stripe test mode (embedded form and in-flow package purchase); the owner's signed-in pages in a browser.
+
 ### App audit, batch 4: admin (2026-10-28)
 - Admin menu in groups: the day (Overview, Today, Schedule, Messages, Notifications), People (Students, Leads, Requests, Trials, Placement), Money (Bookings, Pay later, Discounts), Academy (Faculty, Curriculum, My hours, Reports), System (Health, Settings). Dividers on the rail (hover shows "group · page"), headings in the phone menu. Header tabs are picked by path, not by list position.
 - Reports: "Updated" time in the admin's working zone (no hard-coded "Cairo").
