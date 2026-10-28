@@ -23,7 +23,8 @@ describe('Task: Student Portal Information Architecture & Application Shell Rebu
       assert.ok(studentAppSource.includes("path: '/student/lessons'"), 'Must include My Lessons route in navigation');
       assert.ok(!studentAppSource.includes("path: '/student/packages'"), 'Packages must not be primary navigation');
       // Payments and notifications left the sidebar in the 2026-09-29 redesign; they stay one tap away.
-      assert.ok(studentHomeSource.includes('to="/student/payments"'), 'Overview must link to Payments');
+      // Payments live in My wallet since 2026-10-28 (owner D3).
+      assert.ok(studentHomeSource.includes('/student/wallet?tab=payments'), 'Overview must link to the wallet payments tab');
       assert.ok(studentAppSource.includes('to="/student/notifications"'), 'Header must link to Notifications');
       // The account opens from the avatar menu (tablet/desktop) and the top of the More sheet (phone), 2026-10-23.
       assert.ok(studentAppSource.includes('accountPath="/student/account"'), 'Avatar menu opens the account');
@@ -71,7 +72,7 @@ describe('Task: Student Portal Information Architecture & Application Shell Rebu
       assert.ok(studentHomeSource.includes('to="/student/book"'), 'Quick actions must link to /student/book');
       assert.ok(!studentHomeSource.includes('to="/student/packages"'), 'Quick actions must prioritize booking, not package shopping');
       assert.ok(studentHomeSource.includes('to="/student/lessons"'), 'Quick actions must link to /student/lessons');
-      assert.ok(studentHomeSource.includes('to="/student/payments"'), 'Quick actions must link to /student/payments');
+      assert.ok(studentHomeSource.includes('/student/wallet'), 'Quick actions must link to My wallet');
     });
 
     it('verifies Next Lesson section handles valid Zoom links and pending states correctly', () => {
