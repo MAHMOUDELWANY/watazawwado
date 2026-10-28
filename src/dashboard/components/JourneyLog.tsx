@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { DateTime } from 'luxon';
-import type { DashboardStudentDetail } from '../types';
+import type { DashboardStudentDetail, StudentNote } from '../types';
+import { MonthlyNoteDraft } from './MonthlyNoteDraft';
 
 /**
  * The teacher's journey log for one student (look C, owner 2026-10-28): attendance over the last 12 weeks,
@@ -23,7 +24,7 @@ export function weeklyAttendance(bookings: DashboardStudentDetail['bookings'], n
 
 type Entry = { id: string; at: string; kind: 'note' | 'milestone'; title: string; body?: string | null };
 
-export function JourneyLog({ detail, tz, isAr }: { detail: DashboardStudentDetail; tz: string; isAr: boolean }) {
+export function JourneyLog({ detail, tz, isAr, onNoteSaved }: { detail: DashboardStudentDetail; tz: string; isAr: boolean; onNoteSaved?: (note: StudentNote) => void }) {
   const [showAll, setShowAll] = useState(false);
   const weeks = useMemo(() => weeklyAttendance(detail.bookings, DateTime.now(), tz), [detail.bookings, tz]);
   const attended = weeks.filter((n) => n > 0).length;
@@ -80,6 +81,8 @@ export function JourneyLog({ detail, tz, isAr }: { detail: DashboardStudentDetai
           ))}
         </ol>
       )}
+      {onNoteSaved && <MonthlyNoteDraft studentId={detail.student.id} onSaved={onNoteSaved} />}
+
       {entries.length > 4 && (
         <button type="button" onClick={() => setShowAll((v) => !v)} className="justify-self-start min-h-11 text-sm font-semibold text-teal underline underline-offset-4 cursor-pointer focus-ring">
           {showAll ? (isAr ? 'اعرض أقل' : 'Show less') : (isAr ? `اعرض الكل (${entries.length.toLocaleString('ar-EG')})` : `Show all (${entries.length})`)}

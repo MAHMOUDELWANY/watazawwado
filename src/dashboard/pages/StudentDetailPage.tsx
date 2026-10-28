@@ -625,7 +625,12 @@ export default function StudentDetailPage() {
             )}
           </div>
 
-          <JourneyLog detail={studentDetail} tz={Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'} isAr={isAr} />
+          <JourneyLog
+            detail={studentDetail}
+            tz={Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'}
+            isAr={isAr}
+            onNoteSaved={(note) => setStudentDetail((prev) => (prev ? { ...prev, notes: [note, ...(prev.notes || [])] } : prev))}
+          />
 
           {/* Trial & Assessment Context (if available) */}
           {trial_context && (

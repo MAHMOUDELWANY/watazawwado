@@ -71,7 +71,7 @@ import { registerFunnelRoutes } from '../server/routes/funnel.js';
 import { registerFeedbackRoutes } from '../server/routes/feedback.js';
 import { registerPrivacyRoutes } from '../server/routes/privacy.js';
 import { registerTeacherLoadRoutes } from '../server/routes/teacherLoad.js';
-import { registerSummaryDraftRoutes } from '../server/routes/summaryDraft.js';
+import { registerSummaryDraftRoutes, registerMonthlyDraftRoute } from '../server/routes/summaryDraft.js';
 import { registerCalendarFeedRoutes } from '../server/routes/calendarFeed.js';
 import { registerLessonTeacherMoveRoutes } from '../server/routes/lessonTeacherMove.js';
 import { registerAccountPreferenceRoutes } from '../server/routes/accountPreferences.js';
@@ -10294,7 +10294,8 @@ registerTeacherLoadRoutes(app, {
   requireSuperAdmin
 });
 
-registerSummaryDraftRoutes(app, {
+// TE-05 and the monthly note: Jalila drafts, the teacher edits and saves.
+const jalilaDraftDeps = {
   getClient: getSupabaseAdminClient,
   verifyTeacherAuth,
   rateLimit,
@@ -10309,7 +10310,9 @@ registerSummaryDraftRoutes(app, {
     const response = await ai.models.generateContent({ model: 'gemini-3.1-flash-lite', contents: prompt });
     return response.text || '';
   }
-});
+};
+registerSummaryDraftRoutes(app, jalilaDraftDeps);
+registerMonthlyDraftRoute(app, jalilaDraftDeps);
 
 registerNextWeekSuggestionRoutes(app, {
   getClient: getSupabaseAdminClient,

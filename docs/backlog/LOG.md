@@ -4,6 +4,11 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Phase 4: Jalila drafts the monthly note (2026-10-28)
+- Teacher's student page → Journey log → "Write the monthly note with Jalila": a 3–5 sentence letter to the family about the last 30 days, in the family's language, from what the family was already told (shared summaries and next steps), milestones and the lesson count. Private notes are never read. The teacher edits it and saves it as a family note, so it shows on the family's progress page and in the monthly report.
+- Server: `POST /api/dashboard/students/:id/monthly-draft` in `server/routes/summaryDraft.ts` (teacher of the student or admin only; nothing saved or sent by the route). UI: `src/dashboard/components/MonthlyNoteDraft.tsx`.
+- Tests: `jalila-monthly-note` (prompt content, no private fields, access check, length cap). The live Gemini call was not run here.
+
 ### Owner round 2026-10-28: English default, time zone, adult vs family, phase 4 (Jalila)
 - English is the default everywhere (RULES.md §6): public pages English at the plain path, Arabic under `/ar` (x-default English, old `/en` links redirect); Arabic only after an explicit choice, and someone who chose Arabic is sent to the `/ar` twin. The silent Arabic default stored by older builds is ignored. Emails were already English by default.
 - Time zone: the teacher Settings picker showed the old site-wide zone (Cairo) while the schedule used the device's saved zone (Warsaw). Settings now shows and saves the zone the schedule uses (with a toast). A student's saved profile zone is applied on every device. New `TimezoneCheck` banner offers the device's zone when its clock differs (students: saved to the profile; "Keep it" remembered). The zone-change event now carries `{ timezone }`.
