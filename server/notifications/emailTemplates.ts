@@ -572,7 +572,7 @@ export function renderStudent1hReminder(params: {
 
 export type StaffEventType =
   | 'new_booking' | 'new_trial' | 'new_lead' | 'new_student' | 'payment_claimed' | 'payment_confirmed'
-  | 'cancelled' | 'rescheduled' | 'alert';
+  | 'cancelled' | 'rescheduled' | 'alert' | 'new_signup' | 'payslip';
 
 const STAFF_TITLES: Record<StaffEventType, L> = {
   new_booking: { en: 'New lesson booked', ar: 'حجز حصة جديدة' },
@@ -583,7 +583,9 @@ const STAFF_TITLES: Record<StaffEventType, L> = {
   payment_confirmed: { en: 'Payment received', ar: 'وصل دفع' },
   cancelled: { en: 'Lesson cancelled', ar: 'حصة اتلغت' },
   rescheduled: { en: 'Lesson moved', ar: 'حصة اتغيّر ميعادها' },
-  alert: { en: 'Alert', ar: 'تنبيه' }
+  alert: { en: 'Alert', ar: 'تنبيه' },
+  new_signup: { en: 'New student signed up', ar: 'طالب جديد سجّل' },
+  payslip: { en: 'Your pay for the month', ar: 'مرتبك عن الشهر' }
 };
 
 // 8. Teacher / super admin notification

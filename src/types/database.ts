@@ -355,6 +355,7 @@ export interface Database {
           contact_whatsapp: string | null;
           parent_name: string | null;
           cancellation_reason: string | null;
+          not_held_reason: 'teacher_absent' | 'technical' | null;
           notes: string | null;
           fee_amount_usd: number;
           zoom_meeting_link: string | null;
@@ -384,6 +385,7 @@ export interface Database {
           contact_whatsapp?: string | null;
           parent_name?: string | null;
           cancellation_reason?: string | null;
+          not_held_reason?: 'teacher_absent' | 'technical' | null;
           notes?: string | null;
           fee_amount_usd?: number;
           zoom_meeting_link?: string | null;
@@ -413,6 +415,7 @@ export interface Database {
           contact_whatsapp?: string | null;
           parent_name?: string | null;
           cancellation_reason?: string | null;
+          not_held_reason?: 'teacher_absent' | 'technical' | null;
           notes?: string | null;
           fee_amount_usd?: number;
           zoom_meeting_link?: string | null;

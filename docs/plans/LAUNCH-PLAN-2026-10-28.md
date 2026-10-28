@@ -42,7 +42,7 @@ Owner request 2026-10-28. Investigation first, then owner decisions D1–D8 and 
 
 ## Work, in order
 
-Status 2026-10-28: A, B and C shipped (see docs/backlog/LOG.md). Next: D (teacher pay).
+Status 2026-10-28: A, B, C and D shipped (see docs/backlog/LOG.md). Next: E (teacher My month), then F (policy texts, owner reads).
 
 **A. Bugs before anything (small)**
 1. Admin splash waits for the role (no teacher line for the admin).

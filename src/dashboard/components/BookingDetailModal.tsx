@@ -33,6 +33,7 @@ import { useTeacherAuth } from '../../lib/auth';
 import { useT } from '../../lib/language';
 import { JalilaBrief } from './JalilaBrief';
 import { PostLessonSummaryEditor } from './PostLessonSummaryEditor';
+import { confirmAction } from '../../components/ui/Feedback';
 
 interface BookingDetailModalProps {
   bookingId: string | null;
@@ -216,6 +217,25 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
       setActionMessage({ type: 'error', text: err?.message || t("Couldn't record the no-show.", 'تعذر تسجيل الغياب.') });
     } finally {
       setMarkingNoShow(false);
+    }
+  };
+
+  // Launch plan D: a lesson that did not happen is not paid to the teacher and comes back to the student as a credit.
+  const handleNotHeld = async (reason: 'technical' | 'teacher_absent') => {
+    if (!booking) return;
+    const ok = await confirmAction(
+      reason === 'technical'
+        ? t('The lesson did not happen because of a technical problem on our side? The student gets the lesson back and the admin is told.', 'الحصة ما اتعملتش بسبب مشكلة تقنية من عندنا؟ الطالب هترجعله الحصة والإدارة هتعرف.')
+        : t('The teacher could not attend? The student gets the lesson back and the teacher is not paid for it.', 'المعلم ما حضرش؟ الطالب هترجعله الحصة والمعلم مش هياخد أجرها.'),
+      { confirmLabel: t('Record it', 'سجّل'), danger: true }
+    );
+    if (!ok) return;
+    try {
+      await dashboardFetch(`/api/dashboard/bookings/${booking.id}/not-held`, { method: 'POST', body: JSON.stringify({ reason }) });
+      setActionMessage({ type: 'success', text: t('Recorded. The student has the lesson back.', 'اتسجّل. الحصة رجعت للطالب.') });
+      refresh();
+    } catch (err: any) {
+      setActionMessage({ type: 'error', text: err?.message || t("Couldn't record it.", 'تعذر التسجيل.') });
     }
   };
 
@@ -1061,6 +1081,22 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                         >
                           <UserX className="w-3.5 h-3.5" />
                           {t('No-show', 'غياب')}
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handleNotHeld('technical')}
+                        disabled={notStartedYet}
+                        title={notStartedYet ? t('Available once the lesson starts', 'متاح لما الحصة تبدأ') : undefined}
+                        className="px-3.5 py-2 text-sm font-medium text-foreground hover:bg-surface-subtle rounded-xl border border-border transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer min-h-[40px]"
+                      >
+                        {t('Technical problem', 'مشكلة تقنية')}
+                      </button>
+                      {isSuperAdmin && (
+                        <button
+                          onClick={() => handleNotHeld('teacher_absent')}
+                          className="px-3.5 py-2 text-sm font-medium text-foreground hover:bg-surface-subtle rounded-xl border border-border transition-colors cursor-pointer min-h-[40px]"
+                        >
+                          {t('Teacher absent', 'المعلم ما حضرش')}
                         </button>
                       )}
                     </>

@@ -4,6 +4,15 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Launch plan D: teacher pay (2026-10-28)
+- Migration `20261028000000_teacher_pay.sql` (applied to production): `teacher_pay_rates` (hourly rate + currency per teacher), `teacher_pay_adjustments` (bonus/deduction with a reason), `teacher_payouts` (one per teacher per month, statement frozen when paid), `bookings.not_held_reason`, RPC `record_lesson_not_held` (cancels the lesson; a paid single lesson comes back as a lesson credit; package lessons need nothing because credits are used only on completion).
+- Rules (`server/payroll/payroll.ts`, tested): held and student no-show are paid at rate × length; trial, cancelled in time, teacher absent and technical problem are not; a lesson with no outcome waits; month = UTC calendar month. Never reads what students paid.
+- Admin: Money → Teacher pay (`/dashboard/payroll`): per month each teacher's total; set rate and currency; add or remove bonus/deduction with a reason; after the month ends, record the transfer (method + reference) which sends a payslip email and an in-app notice.
+- Teacher: My pay (`/dashboard/pay`, API `/api/teacher-pay/me` outside the dashboard money filter): this month so far, which lessons count and why, payslips.
+- Lesson window: "Technical problem" (the lesson's teacher or admin, from the lesson time) and "Teacher absent" (admin): the student is told the lesson is back in the wallet; the admin is alerted when a teacher reports a technical problem.
+- Also: the admin's sign-up email now has its own title (it used the teacher's "A new student chose you").
+- Not done yet: phase F policy texts (teacher agreement, student terms) for the owner to read; rates must be entered per teacher before the first payout.
+
 ### Booking after the owner's phone video + launch plan C (2026-10-28)
 - Booking, screen 1 for signed-in students: no name, email, phone or age form (from the profile; "Edit them" links to Account). A family picks the child; subject and level come from that learner's profile with "Change" for this booking only. The duplicate "Yes, continue" is gone (one Continue per screen).
 - Errors show right above the Continue button and scroll into view (the package terms boxes turn amber until ticked).

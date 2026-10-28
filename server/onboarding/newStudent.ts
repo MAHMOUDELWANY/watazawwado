@@ -108,7 +108,7 @@ export async function announceNewStudent(
     try {
       const lang = await resolveEmailLanguage(OFFICIAL_ADMIN_EMAIL);
       const mail = renderTeacherNotification({
-        eventType: 'new_student',
+        eventType: 'new_signup',
         summary: `${account.name} signed up. Teacher: ${chosen}. You can change the teacher on the student page.`,
         summaryAr: `${account.name} سجّل. المعلم: ${chosen}. تقدر تغيّر المعلم من صفحة الطالب.`,
         details: newStudentDetails(account, learners, { forAdmin: true, teacherName }),

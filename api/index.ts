@@ -72,6 +72,7 @@ import { registerFeedbackRoutes } from '../server/routes/feedback.js';
 import { registerPrivacyRoutes } from '../server/routes/privacy.js';
 import { registerTeacherLoadRoutes } from '../server/routes/teacherLoad.js';
 import { registerSummaryDraftRoutes, registerMonthlyDraftRoute } from '../server/routes/summaryDraft.js';
+import { registerPayrollRoutes, type StaffAccount } from '../server/routes/payroll.js';
 import { registerCalendarFeedRoutes } from '../server/routes/calendarFeed.js';
 import { registerLessonTeacherMoveRoutes } from '../server/routes/lessonTeacherMove.js';
 import { registerAccountPreferenceRoutes } from '../server/routes/accountPreferences.js';
@@ -2027,6 +2028,31 @@ export async function listPublicTeachers(supabaseAdmin: any): Promise<PublicTeac
       };
     })
     .filter((t: PublicTeacher) => t.id);
+}
+
+/** Every active teaching account (teachers and the super admin) with its auth user id, for payroll. */
+async function listStaffAccounts(supabaseAdmin: any): Promise<StaffAccount[]> {
+  if (!supabaseAdmin) return [];
+  const { data: accounts } = await supabaseAdmin.from('teacher_accounts').select('email, display_name, role').eq('is_active', true).order('created_at');
+  const emails = (accounts || []).map((a: any) => String(a.email || '').toLowerCase().trim()).filter(Boolean);
+  if (!emails.length) return [];
+  const idByEmail = new Map<string, string>();
+  const { data: profiles } = await supabaseAdmin.from('profiles').select('id, email').in('email', emails);
+  (profiles || []).forEach((p: any) => p.email && idByEmail.set(String(p.email).toLowerCase().trim(), p.id));
+  if (emails.some((e: string) => !idByEmail.has(e))) {
+    try {
+      (await listAllAuthUsers(supabaseAdmin)).forEach((u: any) => {
+        const e = String(u.email || '').toLowerCase().trim();
+        if (emails.includes(e) && !idByEmail.has(e)) idByEmail.set(e, u.id);
+      });
+    } catch {}
+  }
+  return (accounts || [])
+    .map((a: any) => {
+      const email = String(a.email || '').toLowerCase().trim();
+      return { id: idByEmail.get(email) || '', email, role: a.role, name: String(a.display_name || '').replace(/\s*\(.*\)\s*$/, '').trim() || email };
+    })
+    .filter((t: StaffAccount) => t.id);
 }
 
 // Middleware: Strict Super Admin Authorization
@@ -10382,6 +10408,15 @@ const jalilaDraftDeps = {
 };
 registerSummaryDraftRoutes(app, jalilaDraftDeps);
 registerMonthlyDraftRoute(app, jalilaDraftDeps);
+
+// Launch plan D: teacher pay (rates, bonuses/deductions, payouts and payslips, the teacher's own month).
+registerPayrollRoutes(app, {
+  getClient: getSupabaseAdminClient,
+  verifyTeacherAuth,
+  requireSuperAdmin,
+  rateLimit,
+  listStaff: async () => listStaffAccounts(getSupabaseAdminClient())
+});
 
 registerNextWeekSuggestionRoutes(app, {
   getClient: getSupabaseAdminClient,
