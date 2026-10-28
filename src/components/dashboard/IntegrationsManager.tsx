@@ -23,6 +23,8 @@ import { dashboardFetch } from '../../dashboard/lib/dashboardApi';
 
 interface IntegrationsManagerProps {
   lang: Language;
+  /** Super admin sees every service and its setup details; teachers only connect their own calendar. */
+  isAdmin?: boolean;
 }
 
 interface IntegrationStatusState {
@@ -43,8 +45,9 @@ interface IntegrationStatusState {
   };
 }
 
-export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }) => {
+export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang, isAdmin = false }) => {
   const isEn = lang === 'en';
+  const notReadyText = isEn ? 'Not available yet. The academy will switch it on soon.' : 'مش متاح لسه. الأكاديمية هتفعّله قريب.';
   const [status, setStatus] = useState<IntegrationStatusState | null>(null);
   const [loading, setLoading] = useState(true);
   const [connectingGoogle, setConnectingGoogle] = useState(false);
@@ -94,7 +97,9 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
   const handleConnectGoogle = async () => {
     if (!status?.googleCalendar.isConfigured) {
       setActionMessage({
-        text: isEn
+        text: !isAdmin
+          ? notReadyText
+          : isEn
           ? 'Google OAuth credentials are not configured in environment variables (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET).'
           : 'بيانات اعتماد جوجل غير مهيأة في متغيرات البيئة (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET).',
         type: 'error'
@@ -159,12 +164,16 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
         <div>
           <h2 className="font-display text-2xl font-medium text-foreground flex items-center gap-2.5">
             <Layers className="w-6 h-6 text-accent" />
-            <span>{isEn ? 'Calendar & Classroom Integrations' : 'ربط التقويم وقاعات التدريس'}</span>
+            <span>{isAdmin ? (isEn ? 'Calendar & Classroom Integrations' : 'ربط التقويم وقاعات التدريس') : (isEn ? 'Your calendar' : 'تقويمك')}</span>
           </h2>
           <p className="text-sm text-foreground/70 dark:text-muted-foreground/70 mt-1">
-            {isEn
-              ? 'Real-time synchronization engine connecting Google Calendar scheduling and Zoom online classrooms.'
-              : 'محرك المزامنة الحية لجدولة الدروس عبر تقويم جوجل وغرف زووم المباشرة.'}
+            {isAdmin
+              ? (isEn
+                ? 'Real-time synchronization engine connecting Google Calendar scheduling and Zoom online classrooms.'
+                : 'محرك المزامنة الحية لجدولة الدروس عبر تقويم جوجل وغرف زووم المباشرة.')
+              : (isEn
+                ? 'Connect your Google Calendar so your lessons show up there and your busy times are not booked.'
+                : 'اربط تقويم جوجل علشان حصصك تظهر فيه، والأوقات اللي إنت مشغول فيها متتحجزش.')}
           </p>
         </div>
 
@@ -198,7 +207,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
       )}
 
       {/* Integration Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div className={isAdmin ? 'grid grid-cols-1 md:grid-cols-3 gap-5' : 'grid grid-cols-1 max-w-md'}>
         {/* Google Calendar Card */}
         <div className="p-5 rounded-3xl glass-card border-none flex flex-col justify-between">
           <div className="space-y-3">
@@ -255,7 +264,9 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                   {isEn ? 'Configuration Required' : 'يتطلب تهيئة'}
                 </span>
                 <span className="text-[11px] text-amber-700 dark:text-amber-400 block leading-tight">
-                  {isEn ? 'Requires GOOGLE_CLIENT_ID & GOOGLE_CLIENT_SECRET env' : 'يتطلب ضبط اعتمادات جوجل في متغيرات البيئة'}
+                  {isAdmin
+                    ? (isEn ? 'Requires GOOGLE_CLIENT_ID & GOOGLE_CLIENT_SECRET env' : 'يتطلب ضبط اعتمادات جوجل في متغيرات البيئة')
+                    : notReadyText}
                 </span>
               </div>
             ) : null}
@@ -281,19 +292,22 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
                     ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'
                     : 'bg-neutral-200 dark:bg-neutral-800 text-neutral-400 dark:text-neutral-500 cursor-not-allowed'
                 }`}
-                title={!status?.googleCalendar.isConfigured ? (isEn ? 'Set GOOGLE_CLIENT_ID & GOOGLE_CLIENT_SECRET in environment' : 'يجب ضبط اعتمادات جوجل في متغيرات البيئة أولاً') : undefined}
+                title={!status?.googleCalendar.isConfigured && isAdmin ? (isEn ? 'Set GOOGLE_CLIENT_ID & GOOGLE_CLIENT_SECRET in environment' : 'يجب ضبط اعتمادات جوجل في متغيرات البيئة أولاً') : undefined}
               >
                 <Zap className="w-3.5 h-3.5" />
                 <span>{connectingGoogle ? (isEn ? 'Connecting...' : 'جاري الاتصال...') : (isEn ? 'Connect' : 'ربط')}</span>
               </button>
             )}
 
-            <span className="text-[13px] text-foreground/50 dark:text-muted-foreground/50">
-              OAuth 2.0
-            </span>
+            {isAdmin && (
+              <span className="text-[13px] text-foreground/50 dark:text-muted-foreground/50">
+                OAuth 2.0
+              </span>
+            )}
           </div>
         </div>
 
+        {isAdmin && (<>
         {/* Zoom Classroom Card */}
         <div className="p-5 rounded-3xl glass-card border-none flex flex-col justify-between">
           <div className="space-y-3">
@@ -405,9 +419,11 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
             </span>
           </div>
         </div>
+        </>)}
       </div>
 
       {/* Timezone & DST Live Audit Matrix */}
+      {isAdmin && (
       <div className="p-5 sm:p-6 rounded-3xl glass-card border-none space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-3 border-b border-border">
           <div className="flex items-center gap-2">
@@ -516,6 +532,7 @@ export const IntegrationsManager: React.FC<IntegrationsManagerProps> = ({ lang }
           </button>
         </div>
       </div>
+      )}
     </div>
   );
 };

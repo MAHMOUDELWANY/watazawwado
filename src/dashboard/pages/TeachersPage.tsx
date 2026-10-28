@@ -20,6 +20,7 @@ import { Input } from '../../components/ui/Input';
 import { TeacherAccountItem } from '../types';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { useT } from '../../lib/language';
+import { confirmAction, notify } from '../../components/ui/Feedback';
 
 export default function TeachersPage() {
   const { t } = useT();
@@ -65,7 +66,7 @@ export default function TeachersPage() {
       ? t(`Deactivate ${email}? They won't be able to sign in.`, `توقف ${email}؟ مش هيقدر يسجل دخول.`)
       : t(`Activate ${email}?`, `تفعّل ${email}؟`);
 
-    if (!window.confirm(confirmMsg)) return;
+    if (!await confirmAction(confirmMsg)) return;
 
     setActionLoading(email);
     try {
@@ -75,7 +76,7 @@ export default function TeachersPage() {
       });
       await fetchTeachers(true);
     } catch (err: any) {
-      alert(err.message || t("Couldn't update the teacher.", 'تعذر تحديث المعلم.'));
+      notify(err.message || t("Couldn't update the teacher.", 'تعذر تحديث المعلم.'), 'error');
     } finally {
       setActionLoading(null);
     }

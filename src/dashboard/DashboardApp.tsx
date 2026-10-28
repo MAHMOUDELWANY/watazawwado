@@ -66,6 +66,7 @@ import { TeacherAuthDiagnosticPanel } from './components/TeacherAuthDiagnosticPa
 import { CommandSearch } from './components/CommandSearch';
 import { useAppLanguage } from '../lib/language';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import { FeedbackHost } from '../components/ui/Feedback';
 
 type NavItem = { name: string; path: string; icon: typeof Clock };
 
@@ -221,15 +222,15 @@ export function DashboardApp() {
     { name: L('Messages', 'الرسائل'), path: '/dashboard/messages', icon: MessageCircle },
     { name: L('Notifications', 'الإشعارات'), path: '/dashboard/notifications', icon: Bell },
     { name: L('Trials', 'التجريبية'), path: '/dashboard/trials', icon: Sparkles },
-    { name: L('Placement tests', 'اختبارات المستوى'), path: '/dashboard/placement', icon: GraduationCap },
+    { name: L('Placement', 'تحديد المستوى'), path: '/dashboard/placement', icon: GraduationCap },
     { name: L('Leads', 'المهتمون'), path: '/dashboard/leads', icon: UserPlus },
-    { name: L('Discounts & invites', 'الخصومات والدعوات'), path: '/dashboard/discounts', icon: Tag },
+    { name: L('Discounts', 'الخصومات'), path: '/dashboard/discounts', icon: Tag },
     { name: L('Requests', 'الطلبات'), path: '/dashboard/intakes', icon: ClipboardCheck },
-    { name: L('Jalila (assistant)', 'جليلة (المساعدة)'), path: '/dashboard/assistant', icon: Compass },
+    { name: L('Jalila', 'جليلة'), path: '/dashboard/assistant', icon: Compass },
     { name: L('Reports', 'التقارير'), path: '/dashboard/analytics', icon: TrendingUp },
     { name: L('My hours', 'مواعيدي'), path: '/dashboard/availability', icon: CalendarClock },
     { name: L('Curriculum', 'المنهج'), path: '/dashboard/curriculum', icon: Library },
-    { name: L('System health', 'صحة النظام'), path: '/dashboard/health', icon: Activity },
+    { name: L('Health', 'صحة النظام'), path: '/dashboard/health', icon: Activity },
     { name: L('Settings', 'الإعدادات'), path: '/dashboard/settings', icon: Settings },
   ];
 
@@ -239,7 +240,7 @@ export function DashboardApp() {
     { name: L('Trials', 'التجريبية'), path: '/dashboard/trials', icon: Sparkles },
     { name: L('Students', 'طلابي'), path: '/dashboard/students', icon: Users },
     { name: L('Messages', 'الرسائل'), path: '/dashboard/messages', icon: MessageCircle },
-    { name: L('Jalila (assistant)', 'جليلة (المساعدة)'), path: '/dashboard/assistant', icon: Compass },
+    { name: L('Jalila', 'جليلة'), path: '/dashboard/assistant', icon: Compass },
     { name: L('Notifications', 'الإشعارات'), path: '/dashboard/notifications', icon: Bell },
     { name: L('Bookings', 'الحجوزات'), path: '/dashboard/bookings', icon: BookOpen },
     { name: L('Reports', 'التقارير'), path: '/dashboard/analytics', icon: TrendingUp },
@@ -258,23 +259,16 @@ export function DashboardApp() {
     ? [superAdminNavigation[0], superAdminNavigation[5], superAdminNavigation[4], superAdminNavigation[7]]
     : [teacherNavigation[0], teacherNavigation[1], teacherNavigation[3], teacherNavigation[4]];
 
+  // Phones show the same main sections as the desktop tabs, so a page never moves between screen sizes.
   const mobileTabs: MobileTab[] = [
-    ...(isSuperAdmin
-      ? [superAdminNavigation[0], superAdminNavigation[5], superAdminNavigation[4], superAdminNavigation[7]]
-      : [
-          teacherNavigation[0],
-          { ...teacherNavigation[1], name: L('Upcoming', 'الحصص الجاية') },
-          teacherNavigation[9],
-          teacherNavigation[4],
-        ]
-    ).map((item) => ({ key: item.path, label: item.name, icon: item.icon, to: item.path, active: isActive(item.path) })),
+    ...topTabs.map((item) => ({ key: item.path, label: item.name, icon: item.icon, to: item.path, active: isActive(item.path) })),
     { key: 'more', id: 'teacher-more-btn', label: L('More', 'المزيد'), icon: MoreHorizontal, onClick: () => setIsMobileMenuOpen(true) },
   ];
 
   // Each page has one place per screen size (owner, 2026-10-23): header tabs + bell on tablets and up, the rail holds the
   // rest; on phones the bottom bar holds the main sections and the "More" drawer the rest.
   const railItems = navigation.filter((item) => item.path !== '/dashboard/notifications' && !topTabs.includes(item));
-  const drawerItems = navigation.filter((item) => !mobileTabs.some((tab) => tab.to === item.path));
+  const drawerItems = navigation.filter((item) => item.path !== '/dashboard/notifications' && !mobileTabs.some((tab) => tab.to === item.path));
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
   const globalTourSteps = [
@@ -477,7 +471,7 @@ export function DashboardApp() {
 
       {/* Main Content Area */}
       <main className={`flex-1 flex flex-col min-w-0 h-screen supports-[height:100dvh]:h-dvh overflow-hidden transition-[padding] duration-300 ease-out ${railOpen ? 'md:ps-[100px]' : 'md:ps-6'}`}>
-        <header className="shrink-0 z-20 px-3 sm:px-6 lg:px-8 pt-3 md:pt-4">
+        <header className="shrink-0 z-20 px-4 sm:px-6 lg:px-8 pt-3 md:pt-4">
           <div className="max-w-6xl mx-auto flex items-center gap-2 sm:gap-3">
             {/* Start: menu (phones) and workspace name */}
             <div className="flex items-center gap-2 min-w-0 flex-1 md:flex-none">
@@ -573,9 +567,10 @@ export function DashboardApp() {
         </header>
 
         {/* Scrollable Content Container */}
-        <div className={`flex-1 overflow-y-auto overflow-x-hidden px-3 sm:px-6 lg:px-8 pt-5 sm:pt-6 ${MOBILE_TAB_BAR_PADDING} w-full max-w-full`}>
+        <div className={`flex-1 overflow-y-auto overflow-x-hidden px-4 sm:px-6 lg:px-8 pt-5 sm:pt-6 ${MOBILE_TAB_BAR_PADDING} w-full max-w-full`}>
           <div className="max-w-6xl mx-auto space-y-6 min-w-0">
             <TeacherAuthDiagnosticPanel />
+            <FeedbackHost />
             {isSuperAdmin && <CommandSearch open={commandOpen} onClose={() => setCommandOpen(false)} />}
             <ErrorBoundary>
               <Routes>

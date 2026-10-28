@@ -7,6 +7,7 @@ import { Button } from '../../components/ui/Button';
 import { Textarea } from '../../components/ui/Textarea';
 import { Input } from '../../components/ui/Input';
 import { StudentFollowUps } from './FollowUps';
+import { confirmAction } from '../../components/ui/Feedback';
 
 interface CrmNote { id: string; body: string; created_at: string }
 
@@ -53,7 +54,7 @@ export function CrmNotesPanel({ studentId }: { studentId: string }) {
   });
 
   const removeNote = (id: string) => run(async () => {
-    if (!window.confirm(t('Delete this note?', 'تمسح الملاحظة دي؟'))) return;
+    if (!await confirmAction(t('Delete this note?', 'تمسح الملاحظة دي؟'))) return;
     await dashboardFetch(`${base}/notes/${id}`, { method: 'DELETE' });
     setNotes((n) => n.filter((x) => x.id !== id));
   });

@@ -3,6 +3,7 @@ import { dashboardFetch } from '../lib/dashboardApi';
 import { useT } from '../../lib/language';
 import { Button } from '../../components/ui/Button';
 import { TeacherPicker, useActiveTeachers, moveLessonToTeacher } from './MoveTeacherControl';
+import { confirmAction } from '../../components/ui/Feedback';
 
 /** AD-02: only lessons still ahead and not finished can be picked for a bulk cancel. */
 export const bulkCancelable = (b: { status: string; scheduled_start: string }, now = Date.now()) =>
@@ -26,7 +27,7 @@ export function BulkCancelBar({ ids, onDone, onClear }: { ids: string[]; onDone:
 
   const runMove = async () => {
     if (!teacherId || reason.trim().length < 3) return;
-    if (!window.confirm(t(`Move ${ids.length} lessons to the chosen teacher? Same times and prices; each family and both teachers are told.`, `تنقل ${ids.length} حصة للمدرس اللي اخترته؟ نفس المواعيد ونفس الأسعار، وكل أسرة والمدرسين الاتنين هيوصلهم إشعار.`))) return;
+    if (!await confirmAction(t(`Move ${ids.length} lessons to the chosen teacher? Same times and prices; each family and both teachers are told.`, `تنقل ${ids.length} حصة للمدرس اللي اخترته؟ نفس المواعيد ونفس الأسعار، وكل أسرة والمدرسين الاتنين هيوصلهم إشعار.`))) return;
     setBusy(true);
     let ok = 0, failed = 0;
     let firstError: string | undefined;
@@ -48,7 +49,7 @@ export function BulkCancelBar({ ids, onDone, onClear }: { ids: string[]; onDone:
 
   const run = async () => {
     if (reason.trim().length < 3) return;
-    if (!window.confirm(t(`Cancel ${ids.length} lessons? Each family is told, and paid lessons get a lesson credit as usual.`, `تلغي ${ids.length} حصة؟ كل أسرة هيوصلها إشعار، والحصص المدفوعة بترجع رصيد زي العادي.`))) return;
+    if (!await confirmAction(t(`Cancel ${ids.length} lessons? Each family is told, and paid lessons get a lesson credit as usual.`, `تلغي ${ids.length} حصة؟ كل أسرة هيوصلها إشعار، والحصص المدفوعة بترجع رصيد زي العادي.`))) return;
     setBusy(true);
     let ok = 0, failed = 0;
     for (const id of ids) {

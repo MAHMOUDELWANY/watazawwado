@@ -17,6 +17,7 @@ import { CountryTimezonePicker } from '../../components/ui/CountryTimezonePicker
 import { setActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { useTeacherAuth } from '../../lib/auth';
 import { useT } from '../../lib/language';
+import { notify } from '../../components/ui/Feedback';
 
 interface Setting {
   key: string;
@@ -90,10 +91,7 @@ export default function SettingsPage() {
   const updateServiceField = (id: string, field: keyof ServiceItem, value: any) =>
     setServices(prev => prev.map(srv => (srv.id === id ? { ...srv, [field]: value } : srv)));
 
-  const flash = (text: string) => {
-    setSuccess(text);
-    setTimeout(() => setSuccess(null), 3000);
-  };
+  const flash = (text: string) => notify(text);
 
   const handleSaveSettings = async () => {
     try {
@@ -138,11 +136,11 @@ export default function SettingsPage() {
   const tabs = [
     ...(isSuperAdmin ? [
       { id: 'Profile', icon: User, label: t('Profile & contact', 'البيانات والتواصل') },
-      { id: 'Services', icon: BookOpen, label: t('Subjects & prices', 'المواد والأسعار') }
+      { id: 'Services', icon: BookOpen, label: t('Subjects & prices', 'المواد والأسعار') },
+      { id: 'Policy', icon: Calendar, label: t('Booking rules', 'قواعد الحجز') }
     ] : []),
-    { id: 'Policy', icon: Calendar, label: t('Booking rules', 'قواعد الحجز') },
-    { id: 'Integrations', icon: Link, label: t('Google Calendar & Zoom', 'تقويم جوجل وZoom') },
-    { id: 'Preferences', icon: Globe, label: t('Time zone & look', 'التوقيت والشكل') }
+    { id: 'Integrations', icon: Link, label: isSuperAdmin ? t('Connections', 'الربط') : t('Calendar', 'التقويم') },
+    { id: 'Preferences', icon: Globe, label: t('Time zone', 'التوقيت') }
   ];
 
   const inputClass = 'w-full px-4 py-2.5 rounded-xl border border-border glass-surface text-foreground text-sm focus:border-primary focus:ring-2 focus:ring-primary/40 outline-none transition-colors placeholder:text-muted-foreground';
@@ -159,7 +157,7 @@ export default function SettingsPage() {
           <p className="text-sm text-muted-foreground mt-1">
             {isSuperAdmin
               ? t('Profile, subjects, prices, payments and connections.', 'البيانات، المواد، الأسعار، الدفع والربط.')
-              : t('Your calendar connection and time zone.', 'ربط التقويم والتوقيت بتاعك.')}
+              : t('Your calendar and time zone. Language and dark mode are in the top bar.', 'تقويمك وتوقيتك. اللغة والوضع الليلي من الشريط اللي فوق.')}
           </p>
         </div>
         {canSaveSettings && activeTab !== 'Services' && activeTab !== 'Integrations' && activeTab !== 'Policy' && (
@@ -237,7 +235,7 @@ export default function SettingsPage() {
               <div>
                 <h2 className="text-lg font-display font-semibold text-foreground">{t('Subjects & hourly prices', 'المواد وسعر الساعة')}</h2>
                 <p className="text-sm text-muted-foreground mt-0.5">
-                  {t('Agreed prices: $9/hour for Quran & Islamic studies, from $13/hour for Arabic & English (RULES.md). Change them only after updating the rules.', 'الأسعار المتفق عليها: 9$ للساعة للقرآن والعلوم الشرعية، ومن 13$ للعربي والإنجليزي (RULES.md). غيّرها بس بعد ما تحدّث القواعد.')}
+                  {t('Agreed prices: $9/hour for Quran & Islamic studies, from $13/hour for Arabic & English. Change them only after updating the academy rules.', 'الأسعار المتفق عليها: 9$ للساعة للقرآن والعلوم الشرعية، ومن 13$ للعربي والإنجليزي. غيّرها بس بعد ما تحدّث قواعد الأكاديمية.')}
                 </p>
               </div>
               {services.length === 0 ? (
@@ -292,11 +290,11 @@ export default function SettingsPage() {
             </div>
           )}
 
-          {activeTab === 'Policy' && (
+          {isSuperAdmin && activeTab === 'Policy' && (
             <div className="glass-card rounded-2xl border border-border p-6 space-y-4 shadow-2xs">
               <h2 className="text-lg font-display font-semibold text-foreground">{t('Booking rules', 'قواعد الحجز')}</h2>
               <p className="text-sm text-muted-foreground">
-                {t('These rules are fixed for everyone (RULES.md) and match the terms students accept.', 'القواعد دي ثابتة للكل (RULES.md) ونفس الشروط اللي الطلاب بيوافقوا عليها.')}
+                {t('These rules are fixed for everyone and match the terms students accept.', 'القواعد دي ثابتة للكل ونفس الشروط اللي الطلاب بيوافقوا عليها.')}
               </p>
               <ul className="list-disc ps-5 space-y-2 text-sm text-foreground">
                 <li>{t('Free trial: one per new student, 30 minutes (max 45); can be moved once up to 1 hour before.', 'التجربة المجانية: واحدة لكل طالب جديد، 30 دقيقة (بحد أقصى 45)؛ تتغيّر مرة واحدة لحد ساعة قبلها.')}</li>
@@ -309,24 +307,14 @@ export default function SettingsPage() {
 
           {activeTab === 'Integrations' && (
             <div className="glass-card rounded-2xl border border-border p-6 shadow-2xs">
-              <IntegrationsManager lang={lang} />
+              <IntegrationsManager lang={lang} isAdmin={isSuperAdmin} />
             </div>
           )}
 
           {activeTab === 'Preferences' && (
             <div className="glass-card rounded-2xl border border-border p-6 space-y-6 shadow-2xs">
-              <h2 className="text-lg font-display font-semibold text-foreground">{t('Time zone & look', 'التوقيت والشكل')}</h2>
-              <p className="text-sm text-muted-foreground">
-                {t('Change the language any time from the language button at the top; it is remembered across the whole site.', 'غيّر اللغة في أي وقت من زرار اللغة اللي فوق؛ وهتتحفظ في الموقع كله.')}
-              </p>
+              <h2 className="text-lg font-display font-semibold text-foreground">{t('Time zone', 'التوقيت')}</h2>
               <div>
-                <label className="block text-sm font-medium text-muted-foreground mb-1" htmlFor="sp-theme">{t('Look', 'الشكل')}</label>
-                <select id="sp-theme" value={getSetting('theme')} onChange={(e) => updateSetting('theme', e.target.value)} className={`${inputClass} sm:w-1/2`}>
-                  <option value="light">{t('Light', 'فاتح')}</option>
-                  <option value="dark">{t('Dark', 'غامق')}</option>
-                </select>
-              </div>
-              <div className="pt-4 border-t border-border">
                 <h3 className="text-sm font-semibold text-foreground mb-1">{t('Your working time zone', 'التوقيت اللي بتشتغل بيه')}</h3>
                 <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
                   {t('Your schedule is shown in this time zone. If you travel, change it here to see lessons in your local time.', 'جدولك بيظهر بالتوقيت ده. لو سافرت، غيّره هنا علشان تشوف الحصص بالتوقيت المحلي.')}

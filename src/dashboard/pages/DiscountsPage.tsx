@@ -5,6 +5,7 @@ import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { useT } from '../../lib/language';
+import { confirmAction, notify } from '../../components/ui/Feedback';
 
 /**
  * Super admin: discount codes, referrals and their settings (RULES.md §4, owner decisions 2026-10-22).
@@ -179,20 +180,20 @@ export default function DiscountsPage() {
       await dashboardFetch(`/api/dashboard/admin/discount-codes/${c.id}`, { method: 'PATCH', body: JSON.stringify({ is_active: !c.is_active }) });
       await load();
     } catch (err: any) {
-      alert(err.message);
+      notify(err.message, 'error');
     } finally {
       setBusyId(null);
     }
   };
 
   const deleteCode = async (c: CodeRow) => {
-    if (!window.confirm(t(`Delete ${c.code}?`, `تمسح ${c.code}؟`))) return;
+    if (!await confirmAction(t(`Delete ${c.code}?`, `تمسح ${c.code}؟`))) return;
     setBusyId(c.id);
     try {
       await dashboardFetch(`/api/dashboard/admin/discount-codes/${c.id}`, { method: 'DELETE' });
       await load();
     } catch (err: any) {
-      alert(err.message);
+      notify(err.message, 'error');
     } finally {
       setBusyId(null);
     }

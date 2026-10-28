@@ -22,6 +22,7 @@ import { BulkCancelBar, bulkCancelable } from '../components/BulkCancelBar';
 import { EmptyState } from '../../components/EmptyState';
 import { getActiveWorkingTimezone } from '../../lib/countryTimezones';
 import { useT } from '../../lib/language';
+import { notify } from '../../components/ui/Feedback';
 
 /**
  * Lessons list. Teachers see their lessons only, with no payment information (RULES.md §1);
@@ -121,7 +122,7 @@ export default function BookingsPage() {
       fetchPayments();
       fetchBookings();
     } catch (err: any) {
-      alert(err?.message || t("Couldn't confirm the payment.", 'تعذر تأكيد الدفع.'));
+      notify(err?.message || t("Couldn't confirm the payment.", 'تعذر تأكيد الدفع.'), 'error');
     }
   };
 
@@ -133,7 +134,7 @@ export default function BookingsPage() {
       fetchPayments();
       fetchBookings();
     } catch (err: any) {
-      alert(err?.message || t("Couldn't reject the payment.", 'تعذر رفض الدفع.'));
+      notify(err?.message || t("Couldn't reject the payment.", 'تعذر رفض الدفع.'), 'error');
     }
   };
 

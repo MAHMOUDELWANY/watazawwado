@@ -4,6 +4,7 @@ import { Wallet, RotateCcw, Check, X, Loader2, MessageCircle } from 'lucide-reac
 import { dashboardFetch } from '../lib/dashboardApi';
 import { useT } from '../../lib/language';
 import { buildWhatsAppUrl } from '../../lib/whatsapp';
+import { confirmAction } from '../../components/ui/Feedback';
 
 /**
  * Super admin: "pay later" bookings waiting for approval and refund requests for lesson credits
@@ -142,8 +143,8 @@ export default function PayLaterPage() {
                   <button
                     type="button"
                     disabled={busyId === r.creditId}
-                    onClick={() => {
-                      if (window.confirm(t('Did you already send the money to the student?', 'هل بعت الفلوس للطالب فعلاً؟'))) {
+                    onClick={async () => {
+                      if (await confirmAction(t('Did you already send the money to the student?', 'هل بعت الفلوس للطالب فعلاً؟'))) {
                         act(r.creditId, `/api/dashboard/payments/${r.paymentId}/refund`, { reason: 'Student asked for a refund instead of a lesson credit' }, t('Recorded as refunded.', 'اتسجل إنه اتسدد.'));
                       }
                     }}

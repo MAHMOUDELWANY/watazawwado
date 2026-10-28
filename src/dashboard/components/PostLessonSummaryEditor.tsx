@@ -13,6 +13,7 @@ import {
 import { useT } from '../../lib/language';
 import { dashboardFetch } from '../lib/dashboardApi';
 import type { StudentNote, StudentMilestoneItem } from '../types';
+import { confirmAction } from '../../components/ui/Feedback';
 
 export type SubjectQuickMode = 'memorization' | 'tajweed' | 'reading' | 'general';
 
@@ -193,7 +194,7 @@ export function PostLessonSummaryEditor({
   const [draftError, setDraftError] = useState<string | null>(null);
   const draftWithJalila = async () => {
     if (!privateNotes.trim()) return;
-    if (familySummary.trim() && !window.confirm(t('Replace the family summary with Jalila\'s draft?', 'تستبدل ملخص الأسرة بمسودة جليلة؟'))) return;
+    if (familySummary.trim() && !await confirmAction(t('Replace the family summary with Jalila\'s draft?', 'تستبدل ملخص الأسرة بمسودة جليلة؟'))) return;
     setDrafting(true);
     setDraftError(null);
     try {

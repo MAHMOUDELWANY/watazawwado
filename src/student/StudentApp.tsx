@@ -59,6 +59,7 @@ import {  buildStudentNotifications,
   notificationReadStateKey,
   getSavedNotificationReadIds
 } from './notificationsPresentation';
+import { FeedbackHost } from '../components/ui/Feedback';
 
 export default function StudentApp() {
   const { user, session, loading, isTeacherAuthenticated, userRole, signOut } = useTeacherAuth();
@@ -570,7 +571,7 @@ export default function StudentApp() {
         className={`flex-1 flex flex-col min-w-0 h-screen supports-[height:100dvh]:h-dvh overflow-hidden transition-[padding] duration-300 ease-out ${desktopSidebarOpen ? 'md:ps-[100px]' : 'md:ps-6'}`}
         aria-hidden={sidebarOpen ? true : undefined}
       >
-        <header className="shrink-0 z-20 px-3 sm:px-6 lg:px-8 pt-3 md:pt-4">
+        <header className="shrink-0 z-20 px-4 sm:px-6 lg:px-8 pt-3 md:pt-4">
           <div className="max-w-6xl mx-auto flex items-center gap-2 sm:gap-3">
             {/* Start: who and where (phones show the logo here; tablets and up have it on the rail) */}
             <Link to="/student" className="flex md:hidden xl:flex items-center gap-2 min-w-0 flex-1 md:flex-none rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
@@ -647,7 +648,7 @@ export default function StudentApp() {
 
         <main
           id="student-main-content"
-          className={`flex-1 overflow-y-auto overflow-x-hidden w-full max-w-full px-3 sm:px-6 lg:px-8 pt-5 sm:pt-6 focus:outline-none ${MOBILE_TAB_BAR_PADDING}`}
+          className={`flex-1 overflow-y-auto overflow-x-hidden w-full max-w-full px-4 sm:px-6 lg:px-8 pt-5 sm:pt-6 focus:outline-none ${MOBILE_TAB_BAR_PADDING}`}
           tabIndex={-1}
         >
           <div className="w-full max-w-6xl mx-auto min-w-0">
@@ -715,6 +716,7 @@ export default function StudentApp() {
       </div>
 
       {/* Global Onboarding Guide */}
+      <FeedbackHost />
       <OnboardingGuide
         steps={isFamilyAccount(profile) ? familyTourSteps(isAr) : globalTourSteps}
         isOpen={showGlobalTour}

@@ -4,6 +4,15 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### App redesign, phase 1: clean-up (2026-10-28)
+- Plan and owner decisions: `docs/ux/APP-REDESIGN-PLAN.md`.
+- Settings by role: teachers see only Calendar and Time zone. Booking rules, Zoom/Brevo cards, env-var names, the time-zone audit table and the self-test are super-admin only (`IntegrationsManager` gets `isAdmin`). No `RULES.md` mentions left in settings copy. The dead "Look" select is gone (dark mode lives in the top bar).
+- Navigation: phone tabs for staff now match the desktop tabs (teacher: Today, Schedule, Students, Messages, More); Notifications left the More drawer (the bell is always in the header); shorter labels (Placement, Discounts, Jalila, Health).
+- Student home: removed the quick-action row that repeated Book/Lessons/Payments from the app bar (parents keep per-child "Book for <name>"), and the second logo in the greeting.
+- New `src/components/ui/Feedback.tsx`: `notify()` toasts and `confirmAction()` dialog, mounted once in each app shell; all 16 browser `alert()`/`confirm()` calls in the dashboard replaced. Settings saves now show a toast.
+- Phone side padding 12px → 16px in both app shells.
+- Not checked in a browser: signed-in pages (no portal login here); covered by code review, tsc, tests and build.
+
 ### Discount codes + invite-a-friend (referral) (2026-10-22)
 - Owner request and decisions (RULES.md §4, 2026-10-22): super-admin discount codes (percent or fixed, scope, first purchase, minimum, total and per-family uses, dates); codes stack with package and family savings within a total-savings cap (25% at launch); gift codes skip the cap and may be 100% (confirmed without payment); referral gives account credit to both sides, the inviter's only after the friend's first completed paid lesson.
 - How it works: the checkout modal asks `/api/checkout/quote` for the breakdown, then `/api/checkout/apply` writes the code/balance and the new stored price in one locked RPC (`apply_checkout_discount_atomic`), so Stripe verification still matches the stored price to the cent; a total of 0 confirms the booking or activates the package right there. Abandoned checkouts give the code use and balance back (`settle_checkout_redemptions`, run on every apply and after each payment); a refund reverses them (`reverse_checkout_discount`). `?ref=CODE` is kept 30 days (`wz_ref`), sent at onboarding, and a friend's code also works in the code box. Lesson completion calls `qualify_referral` and emails the inviter.

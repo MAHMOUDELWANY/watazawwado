@@ -4,6 +4,7 @@ import { DateTime } from 'luxon';
 import { dashboardFetch } from '../lib/dashboardApi';
 import { useT } from '../../lib/language';
 import { Button } from '../../components/ui/Button';
+import { confirmAction } from '../../components/ui/Feedback';
 
 interface PrivacyRequest { id: string; status: string; reason: string | null; created_at: string; resolved_at: string | null; name: string | null; email: string | null; studentId: string | null }
 
@@ -18,7 +19,7 @@ export function AdminPrivacyRequests() {
   useEffect(load, [load]);
 
   const markDone = async (id: string) => {
-    if (!window.confirm(t('Mark this request as handled? Do this only after the data has been deleted by hand.', 'تعلّم الطلب إنه اتنفّذ؟ اعمل كده بس بعد ما البيانات تتحذف بإيدك.'))) return;
+    if (!await confirmAction(t('Mark this request as handled? Do this only after the data has been deleted by hand.', 'تعلّم الطلب إنه اتنفّذ؟ اعمل كده بس بعد ما البيانات تتحذف بإيدك.'))) return;
     try { await dashboardFetch(`/api/dashboard/admin/privacy-requests/${id}/done`, { method: 'POST' }); load(); } catch { setFailed(true); }
   };
 

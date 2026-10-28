@@ -37,6 +37,7 @@ import { PostLessonSummaryEditor } from '../components/PostLessonSummaryEditor';
 import { FamilyTimeline } from '../components/FamilyTimeline';
 import { CrmNotesPanel } from '../components/CrmNotesPanel';
 import { useT } from '../../lib/language';
+import { confirmAction, notify } from '../../components/ui/Feedback';
 
 export default function StudentDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -234,7 +235,7 @@ export default function StudentDetailPage() {
         setEditingNoteId(null);
       }
     } catch (err: any) {
-      alert(err.message || t("Couldn't update the note.", 'تعذر تعديل الملاحظة.'));
+      notify(err.message || t("Couldn't update the note.", 'تعذر تعديل الملاحظة.'), 'error');
     } finally {
       setIsUpdatingNote(false);
     }
@@ -243,7 +244,7 @@ export default function StudentDetailPage() {
   // Handle Delete Note
   const handleDeleteNote = async (noteId: string) => {
     if (!id) return;
-    const confirmDelete = window.confirm(t('Delete this private note?', 'تمسح الملاحظة دي؟'));
+    const confirmDelete = await confirmAction(t('Delete this private note?', 'تمسح الملاحظة دي؟'));
     if (!confirmDelete) return;
 
     try {
@@ -259,7 +260,7 @@ export default function StudentDetailPage() {
         };
       });
     } catch (err: any) {
-      alert(err.message || t("Couldn't delete the note.", 'تعذر مسح الملاحظة.'));
+      notify(err.message || t("Couldn't delete the note.", 'تعذر مسح الملاحظة.'), 'error');
     }
   };
 
