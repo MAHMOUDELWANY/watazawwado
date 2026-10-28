@@ -4,6 +4,14 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### Booking after the owner's phone video + launch plan C (2026-10-28)
+- Booking, screen 1 for signed-in students: no name, email, phone or age form (from the profile; "Edit them" links to Account). A family picks the child; subject and level come from that learner's profile with "Change" for this booking only. The duplicate "Yes, continue" is gone (one Continue per screen).
+- Errors show right above the Continue button and scroll into view (the package terms boxes turn amber until ticked).
+- Calm header: back, step, title, four segments; no WhatsApp badge or lesson-type pill. Length is three compact choices; the trial/regular choice shows only while a trial is possible; the 60-minute WhatsApp note is gone. Plans are compact envelope-edged cards (one column on phones).
+- Checkout is one panel with one close button. "Let it go" on the pending card also clears a booking flow that held that lesson (it said "not awaiting payment").
+- C: at sign-up the learner picks a male or female teacher, then a teacher of that gender (photo, name, first line of their bio); assigned at once. The admin gets an email with everything (contact, subject, level, goal, chosen teacher) and the in-app notice names the teacher. Teachers' new-student email no longer carries the family's email or WhatsApp.
+- Checks: tsc, new tests, full suite in the main checkout. Not checked: the signed-in pages in a browser (owner checks on the phone).
+
 ### Launch plan A + B: bugs, wallet, booking, pending payments, checkout (2026-10-28)
 - A: admin splash never shows the teacher line; checkout resets after Back from Stripe; onboarding fallback teacher cards are neutral (no names or photos).
 - B1 My wallet (`/student/wallet`): package lessons, lesson credits and account balance at the top; Packages and Payments as two tabs. Old `/student/packages` and `/student/payments` open the matching tab with their query kept.

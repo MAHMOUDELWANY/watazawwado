@@ -3,7 +3,7 @@
  * email and an on-site notice with the onboarding details, a lesson chat opens between the account
  * and that teacher, and the super admin gets an on-site notice. Never throws.
  */
-import { sendEmail } from '../notifications/emailService.js';
+import { sendEmail, OFFICIAL_ADMIN_EMAIL } from '../notifications/emailService.js';
 import { renderTeacherNotification } from '../notifications/emailTemplates.js';
 import { resolveEmailLanguage } from '../notifications/dispatcher.js';
 import { notifyUser, notifySuperAdmins } from '../notifications/inbox.js';
@@ -34,13 +34,20 @@ export interface NewStudentAccount {
 
 export interface TeacherContact { id: string; email: string; name: string }
 
-/** Email rows for one teacher: the account, then each learner they will teach. */
-export function newStudentDetails(account: NewStudentAccount, learners: NewLearner[]): Array<[string, string, unknown]> {
+/**
+ * Email rows: the account, then each learner. Teachers never get the family's contact details (owner, 2026-10-28:
+ * contact stays with the admin; teachers talk through the site chat). The admin copy has them and each learner's teacher.
+ */
+export function newStudentDetails(
+  account: NewStudentAccount,
+  learners: NewLearner[],
+  opts: { forAdmin?: boolean; teacherName?: (id: string | null) => string | null } = {}
+): Array<[string, string, unknown]> {
   const rows: Array<[string, string, unknown]> = [
     [account.isFamily ? 'Parent / guardian' : 'Student', account.isFamily ? 'ولي الأمر' : 'الطالب', account.name],
     ['Guardian age', 'سن ولي الأمر', account.isFamily ? account.guardianAge : null],
-    ['Email', 'الإيميل', account.email],
-    ['WhatsApp', 'واتساب', account.whatsapp],
+    ['Email', 'الإيميل', opts.forAdmin ? account.email : null],
+    ['WhatsApp', 'واتساب', opts.forAdmin ? account.whatsapp : null],
     ['Country', 'الدولة', account.country],
     ['Time zone', 'المنطقة الزمنية', account.timezone]
   ];
@@ -53,6 +60,7 @@ export function newStudentDetails(account: NewStudentAccount, learners: NewLearn
     rows.push([`${label}: subject`, `${labelAr}: المادة`, [l.subject, l.level].filter(Boolean).join(' · ')]);
     if (l.goal) rows.push([`${label}: goal`, `${labelAr}: الهدف`, l.goal]);
     if (l.notes) rows.push([`${label}: notes`, `${labelAr}: ملاحظات`, l.notes]);
+    if (opts.forAdmin) rows.push([`${label}: teacher`, `${labelAr}: المعلم`, opts.teacherName?.(l.teacherId) || 'Not chosen yet']);
   });
   return rows;
 }
@@ -94,12 +102,28 @@ export async function announceNewStudent(
     }
 
     const allNames = learners.map(l => l.name).join(', ');
+    const teacherName = (id: string | null) => (id ? teacherById.get(id)?.name || null : null);
+    const chosen = learners.map(l => `${l.name}: ${teacherName(l.teacherId) || '-'}`).join(', ');
+    // The admin gets everything by email (contact, subject, level, goal, chosen teacher) and can reassign on the student page.
+    try {
+      const lang = await resolveEmailLanguage(OFFICIAL_ADMIN_EMAIL);
+      const mail = renderTeacherNotification({
+        eventType: 'new_student',
+        summary: `${account.name} signed up. Teacher: ${chosen}. You can change the teacher on the student page.`,
+        summaryAr: `${account.name} سجّل. المعلم: ${chosen}. تقدر تغيّر المعلم من صفحة الطالب.`,
+        details: newStudentDetails(account, learners, { forAdmin: true, teacherName }),
+        lang
+      });
+      await sendEmail({ to: OFFICIAL_ADMIN_EMAIL, ...mail });
+    } catch (err) {
+      console.warn('[Onboarding] admin email failed', err);
+    }
     await notifySuperAdmins(client, {
       kind: 'new_student',
       title: { en: 'New student signed up', ar: 'طالب جديد سجّل' },
       body: {
-        en: `${account.name}${account.isFamily ? ` (family: ${allNames})` : ''} finished signing up.`,
-        ar: `${account.name}${account.isFamily ? ` (أسرة: ${allNames})` : ''} خلّص التسجيل.`
+        en: `${account.name}${account.isFamily ? ` (family: ${allNames})` : ''} finished signing up. Teacher: ${chosen}.`,
+        ar: `${account.name}${account.isFamily ? ` (أسرة: ${allNames})` : ''} خلّص التسجيل. المعلم: ${chosen}.`
       },
       link: '/dashboard/students'
     });

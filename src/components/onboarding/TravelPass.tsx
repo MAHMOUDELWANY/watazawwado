@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { User, Users, Check } from 'lucide-react';
 import { SubjectMark } from './SubjectMark';
@@ -199,37 +199,76 @@ export function FoldedPass({ name, age, subjectId, subjectName, subjectColor, le
 export const teacherColor = (gender: 'male' | 'female' | undefined, index = 0) =>
   gender === 'female' ? '#8B4935' : gender === 'male' ? '#087D91' : index % 2 ? '#8B4935' : '#087D91';
 
-/** "Your guide on the journey": the teacher choice, with a photo (or initial) per teacher. */
+/**
+ * "Your guide on the journey" (owner D1, 2026-10-28): first a male or female teacher, then the cards of that gender
+ * (photo, name, a short line about them). The pick is assigned at once; the admin can change it later.
+ */
 export function GuideChoice({ teachers, value, onChange, isAr }: {
-  teachers: { id: string; nameAr: string; nameEn: string; gender?: 'male' | 'female'; photo?: string | null }[];
+  teachers: { id: string; nameAr: string; nameEn: string; gender?: 'male' | 'female'; photo?: string | null; bio?: string | null }[];
   value: string;
   onChange: (id: string) => void;
   isAr: boolean;
 }) {
+  const selectedGender = teachers.find((t) => t.id === value)?.gender;
+  const [tab, setTab] = useState<'male' | 'female'>(selectedGender || 'male');
+  const genders = (['male', 'female'] as const).filter((g) => teachers.some((t) => t.gender === g));
+  const shown = genders.length > 1 ? teachers.filter((t) => t.gender === tab) : teachers;
+
+  const pickGender = (g: 'male' | 'female') => {
+    setTab(g);
+    // Keep the choice on screen: move it to the first teacher of that gender.
+    const first = teachers.find((t) => t.gender === g);
+    if (first && selectedGender !== g) onChange(first.id);
+  };
+
   return (
-    <div role="radiogroup" aria-label={isAr ? 'مرشدك في الرحلة' : 'Your guide'} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      {teachers.map((t, i) => {
-        const selected = value === t.id;
-        const name = isAr ? t.nameAr : t.nameEn;
-        const color = teacherColor(t.gender, i);
-        return (
-          <button
-            key={t.id}
-            type="button"
-            role="radio"
-            aria-checked={selected}
-            onClick={() => onChange(t.id)}
-            className={`flex items-center gap-3 p-3 rounded-2xl border-2 text-start cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary ${
-              selected ? 'bg-white/70 dark:bg-white/5' : 'border-transparent bg-[#D8C6AE]/15 hover:bg-[#D8C6AE]/25'
-            }`}
-            style={selected ? { borderColor: color } : undefined}
-          >
-            <TeacherAvatar name={name} photo={t.photo} color={color} />
-            <span className="flex-1 min-w-0 font-bold text-sm text-foreground">{name}</span>
-            {selected && <Check className="w-4 h-4 shrink-0" style={{ color }} aria-hidden="true" />}
-          </button>
-        );
-      })}
+    <div className="space-y-3">
+      {genders.length > 1 && (
+        <div role="radiogroup" aria-label={isAr ? 'معلم ولا معلمة' : 'Male or female teacher'} className="grid grid-cols-2 gap-2">
+          {genders.map((g) => (
+            <button
+              key={g}
+              type="button"
+              role="radio"
+              aria-checked={tab === g}
+              onClick={() => pickGender(g)}
+              className={`min-h-11 rounded-xl border-2 text-sm font-bold cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+                tab === g ? 'bg-white/70 dark:bg-white/5' : 'border-transparent bg-[#D8C6AE]/15 hover:bg-[#D8C6AE]/25'
+              }`}
+              style={tab === g ? { borderColor: teacherColor(g) } : undefined}
+            >
+              {g === 'male' ? (isAr ? 'معلم' : 'Male teacher') : (isAr ? 'معلمة' : 'Female teacher')}
+            </button>
+          ))}
+        </div>
+      )}
+      <div role="radiogroup" aria-label={isAr ? 'مرشدك في الرحلة' : 'Your guide'} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {shown.map((t, i) => {
+          const selected = value === t.id;
+          const name = isAr ? t.nameAr : t.nameEn;
+          const color = teacherColor(t.gender, i);
+          return (
+            <button
+              key={t.id}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              onClick={() => onChange(t.id)}
+              className={`flex items-start gap-3 p-3 rounded-2xl border-2 text-start cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary ${
+                selected ? 'bg-white/70 dark:bg-white/5' : 'border-transparent bg-[#D8C6AE]/15 hover:bg-[#D8C6AE]/25'
+              }`}
+              style={selected ? { borderColor: color } : undefined}
+            >
+              <TeacherAvatar name={name} photo={t.photo} color={color} />
+              <span className="flex-1 min-w-0">
+                <span className="block font-bold text-sm text-foreground">{name}</span>
+                {t.bio && <span className="block text-xs text-muted-foreground leading-snug mt-0.5 line-clamp-2">{t.bio}</span>}
+              </span>
+              {selected && <Check className="w-4 h-4 shrink-0 mt-1" style={{ color }} aria-hidden="true" />}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

@@ -50,7 +50,7 @@ interface StudentOnboardingPageProps {
   onOpenBookingModal?: () => void;
 }
 
-export interface TeacherCard { id: string; gender: 'male' | 'female'; nameAr: string; nameEn: string; photo: string | null }
+export interface TeacherCard { id: string; gender: 'male' | 'female'; nameAr: string; nameEn: string; photo: string | null; bio?: string | null }
 
 /**
  * Shown only until the real list arrives (GET /api/student/teachers): neutral cards, no real teacher's name or photo

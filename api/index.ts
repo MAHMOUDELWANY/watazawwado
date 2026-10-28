@@ -1976,7 +1976,7 @@ export async function resolveSmartTeacherRouting(
   }
 }
 
-export type PublicTeacher = { id: string; email: string; nameEn: string; nameAr: string; gender: 'male' | 'female'; photo: string | null };
+export type PublicTeacher = { id: string; email: string; nameEn: string; nameAr: string; gender: 'male' | 'female'; photo: string | null; bio: string | null };
 
 /**
  * Teachers a new student can choose at onboarding: every active account with the 'teacher' role
@@ -1995,8 +1995,12 @@ export async function listPublicTeachers(supabaseAdmin: any): Promise<PublicTeac
   const pool = teachers.length ? teachers : accounts.filter((a: any) => a.role === 'super_admin');
   const emails = pool.map((a: any) => String(a.email || '').toLowerCase().trim()).filter(Boolean);
   const idByEmail = new Map<string, string>();
-  const { data: profiles } = await supabaseAdmin.from('profiles').select('id, email').in('email', emails);
-  (profiles || []).forEach((p: any) => p.email && idByEmail.set(String(p.email).toLowerCase().trim(), p.id));
+  const bioById = new Map<string, string>();
+  const { data: profiles } = await supabaseAdmin.from('profiles').select('id, email, bio').in('email', emails);
+  (profiles || []).forEach((p: any) => {
+    if (p.email) idByEmail.set(String(p.email).toLowerCase().trim(), p.id);
+    if (typeof p.bio === 'string' && p.bio.trim()) bioById.set(p.id, p.bio.trim());
+  });
   if (emails.some((e: string) => !idByEmail.has(e))) {
     try {
       (await listAllAuthUsers(supabaseAdmin)).forEach((u: any) => {
@@ -2017,7 +2021,9 @@ export async function listPublicTeachers(supabaseAdmin: any): Promise<PublicTeac
         nameEn,
         nameAr: String(a.display_name_ar || '').trim() || nameEn,
         gender,
-        photo: typeof a.photo_url === 'string' && /^(\/|https:\/\/)/.test(a.photo_url) ? a.photo_url : null
+        photo: typeof a.photo_url === 'string' && /^(\/|https:\/\/)/.test(a.photo_url) ? a.photo_url : null,
+        // A short line for the onboarding card (owner D1): the first sentence of the teacher's own bio.
+        bio: (() => { const b = bioById.get(idByEmail.get(email) || ''); return b ? b.split(/(?<=[.!؟?])\s/)[0].slice(0, 160) : null; })()
       };
     })
     .filter((t: PublicTeacher) => t.id);

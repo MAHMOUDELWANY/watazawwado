@@ -54,4 +54,18 @@ test('teacher email lists the account and each child it will teach', () => {
   assert.ok(flat.includes('Child 1=Yusuf · 9 · male'));
   assert.ok(flat.includes('Child 2: subject=quran-reading · beginner'));
   assert.ok(flat.includes('Child 1: notes=shy'));
+  // Teachers never get the family's contact details (owner, 2026-10-28).
+  assert.ok(flat.includes('Email=') && flat.includes('WhatsApp='));
+});
+
+test('admin email has contact details and the chosen teacher of each learner', () => {
+  const rows = newStudentDetails(
+    { ownerUserId: 'u1', name: 'Omar', email: 'o@example.com', whatsapp: '+441234', country: 'GB', timezone: 'Europe/London', isFamily: false },
+    [{ name: 'Omar', age: 30, gender: 'male', subject: 'arabic', level: 'beginner', teacherId: 't1' }],
+    { forAdmin: true, teacherName: (id) => (id === 't1' ? 'Ustadh Ali' : null) }
+  );
+  const flat = rows.map(([en, , v]) => `${en}=${v ?? ''}`);
+  assert.ok(flat.includes('Email=o@example.com'));
+  assert.ok(flat.includes('WhatsApp=+441234'));
+  assert.ok(flat.includes('Learner: teacher=Ustadh Ali'));
 });
