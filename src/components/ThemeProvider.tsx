@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { ThemeMode } from '../types';
 
 interface ThemeContextType {
@@ -10,19 +10,18 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<ThemeMode>(() => {
+  // Starts as the prerendered pages were built (light) so hydration matches; the saved or system theme is
+  // applied before the first paint. The dark class itself is already set by the script in index.html.
+  const [theme, setTheme] = useState<ThemeMode>('light');
+  useLayoutEffect(() => {
     try {
       const saved = localStorage.getItem('mahmoud_theme');
-      if (saved === 'light' || saved === 'dark') return saved;
-      
-      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        return 'dark';
-      }
+      if (saved === 'light' || saved === 'dark') return setTheme(saved);
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) setTheme('dark');
     } catch {
       // Ignore
     }
-    return 'light';
-  });
+  }, []);
 
   useEffect(() => {
     if (theme === 'dark') {
@@ -34,19 +33,22 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     document.querySelectorAll('meta[name="theme-color"]').forEach((m) => {
       m.setAttribute('content', theme === 'dark' ? '#110F0E' : '#FAF7F2');
     });
+  }, [theme]);
+
+  // Saved only when the visitor picks a theme, so the light first render never overwrites their choice.
+  const chooseTheme = (next: ThemeMode) => {
+    setTheme(next);
     try {
-      localStorage.setItem('mahmoud_theme', theme);
+      localStorage.setItem('mahmoud_theme', next);
     } catch {
       // Ignore
     }
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
+  const toggleTheme = () => chooseTheme(theme === 'light' ? 'dark' : 'light');
+
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, setTheme: chooseTheme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );

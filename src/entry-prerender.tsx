@@ -1,7 +1,7 @@
 /**
  * Build-time only (vite build --ssr): renders a public page to HTML so the first paint shows real
  * content before the JavaScript arrives. scripts/prerender-seo.ts puts the result inside #root;
- * in the browser main.tsx then renders the same page over it.
+ * in the browser main.tsx hydrates it (hydrateRoot), so the page is not drawn twice.
  */
 import React from 'react';
 import { prerenderToNodeStream } from 'react-dom/static';

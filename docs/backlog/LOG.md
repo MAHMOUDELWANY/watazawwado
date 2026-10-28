@@ -4,6 +4,14 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 
 ## Done
 
+### PU-04b Hydrate the prerendered public pages (2026-10-28)
+- `src/main.tsx` now hydrates (`hydrateRoot`) a prerendered public page instead of drawing it again; account areas and anything without the `data-prerendered` marker on `#root` (set by `scripts/prerender-seo.ts` only when the real page rendered) still use `createRoot`. It hydrates only when the visitor's language (`getStoredLanguage`) equals the page's URL language (`pathLanguage`, /ar vs plain), so someone who chose Arabic opening an English page is rendered fresh and moved to /ar as before.
+- Lazy pages (about, pricing, ...): `preloadPage` loads the page's code before hydrating, and `lazyWithReload` hands an already-loaded page to `React.lazy` synchronously. Without this the first update (dark theme, sign-in) reached a page still waiting for its code and React threw the prerendered page away, with a loader in between.
+- First render matches the build: `ThemeProvider` starts light and applies the saved/system theme in a layout effect (before paint; the `dark` class was already set by the script in `index.html`), and only saves a theme the visitor picks. `LearningGuide` starts shown and hides before paint on a phone.
+- Checked on the built site (`dist`, clean URLs) for /, /pricing, /about, /ar, /ar/pricing, desktop and 375 px, light and dark: the prerendered DOM stays (no nodes removed under `#root`), no React errors in the console; the language toggle (English ↔ /ar) and the theme toggle work and persist. Old build for comparison: every page's DOM was replaced.
+- LCP, /pricing, local build, Chrome trace at 390x844, 4x CPU, Fast 4G, cold cache: before 4.7 s, after 2.1 s (the re-painted heading was the LCP). CLS 0.00 → 0.01.
+- Files: `src/main.tsx`, `src/App.tsx`, `src/components/ThemeProvider.tsx`, `src/components/LearningGuide.tsx`, `scripts/prerender-seo.ts`, `src/entry-prerender.tsx`, `test/pu-04b-hydration.test.ts`.
+- Not checked: production (no polling of prod); `npm run dev` serves no prerendered HTML, so dev keeps `createRoot`.
 ### QA-07 step 4: intake and learning guide moved (2026-10-28)
 - `POST /api/learning-guide`, `GET /api/intake/opening`, `POST /api/intake/turn`, `POST /api/intake/complete` and `GET /api/intake/:id` moved unchanged (only `deps.*`) to `server/routes/intake.ts`, with `coerceTurnMessages`/`INTAKE_MAX_MESSAGES` and the imports only they used. The guide's system prompt is byte-identical (template-literal lines not re-indented); Gemini model names unchanged. No other route overlaps these paths, so registering in the module block is safe. The offer helpers stay with `/api/student/offers`. The phase05 and booking-first source checks read the new file (same assertions).
 - Checks: tsc pass; npm test 1813 pass / 0 fail / 5 skipped; build pass.

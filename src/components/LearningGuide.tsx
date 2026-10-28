@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { RichText } from './ui/RichText';
 import { motion, AnimatePresence } from 'motion/react';
 import { MessageCircle, X, Send, Sparkles, User, Bot } from 'lucide-react';
@@ -17,7 +17,11 @@ export const LearningGuide: React.FC<LearningGuideProps> = ({ lang }) => {
   const isEn = lang === 'en';
   const [isOpen, setIsOpen] = useState(false);
   // QA-04: on a phone the floating button sat on top of the hero's trial button; it appears once the visitor scrolls.
-  const [revealed, setRevealed] = useState(() => typeof window === 'undefined' || window.innerWidth >= 640 || window.scrollY > 240);
+  // Starts shown like the prerendered page, then hides before the first paint on a phone (keeps hydration matching).
+  const [revealed, setRevealed] = useState(true);
+  useLayoutEffect(() => {
+    if (window.innerWidth < 640 && window.scrollY <= 240) setRevealed(false);
+  }, []);
   useEffect(() => {
     if (revealed) return;
     const onScroll = () => { if (window.scrollY > 240) setRevealed(true); };

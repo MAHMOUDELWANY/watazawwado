@@ -85,14 +85,14 @@ function render(page: (typeof PUBLIC_PAGES)[number], lang: Lang, body: string | 
   swap(/<meta property="og:locale:alternate" content="[^"]*" \/>/, `<meta property="og:locale:alternate" content="${isEn ? 'ar_AR' : 'en_US'}" />`);
   swap(/<link rel="canonical" href="[^"]*" \/>/, `<link rel="canonical" href="${url}" />${hreflangLinks(page.path)}`);
   swap(/<meta property="og:url" content="[^"]*" \/>/, `<meta property="og:url" content="${url}" />`);
-  // The real page rendered at build time; main.tsx renders the same page over it in the browser.
+  // The real page rendered at build time; main.tsx hydrates it in the browser (data-prerendered marks it).
   // If rendering failed, a visually hidden summary keeps the page readable for crawlers.
   const summary =
     `<div style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)"><h1>${esc(isEn ? page.h1En : page.titleAr)}</h1>` +
     `<p>${esc(desc)}</p><nav>` +
     PUBLIC_PAGES.map((p) => `<a href="${pagePath(p.path, lang)}">${esc(isEn ? p.h1En : p.titleAr)}</a>`).join(' · ') +
     `</nav></div>`;
-  swap(/<div id="root"><\/div>/, `<div id="root">${body || summary}</div>`);
+  swap(/<div id="root"><\/div>/, body ? `<div id="root" data-prerendered>${body}</div>` : `<div id="root">${summary}</div>`);
   if (cssLink && inlineCss) html = html.replace(cssLink[0], () => `<style>${inlineCss}</style>`);
   // QA-05: the subjects page describes each bookable subject as a Course (same names and "from" prices as the site).
   if (page.path === '/learning') {

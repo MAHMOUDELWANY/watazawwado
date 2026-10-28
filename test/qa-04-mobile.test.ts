@@ -27,6 +27,6 @@ describe('QA-04 mobile', () => {
 
   it("the floating guide button waits for a scroll on phones so it does not cover the hero's trial button", () => {
     const g = read('src/components/LearningGuide.tsx');
-    assert.ok(g.includes('{!isOpen && revealed && (') && g.includes('window.innerWidth >= 640'));
+    assert.ok(g.includes('{!isOpen && revealed && (') && g.includes('window.innerWidth < 640 && window.scrollY <= 240'));
   });
 });

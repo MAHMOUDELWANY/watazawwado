@@ -8,6 +8,7 @@ import { PublicHomepage } from './components/public/homepage/PublicHomepage';
 import SEOProtection from './components/SEOProtection';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { useScrollPaletteTransition } from './lib/useScrollPaletteTransition';
+import { stripLangPrefix } from './lib/language';
 import { BrandLoader } from './components/ui/BrandLoader';
 import { InstallAppSheetHost } from './components/pwa/InstallApp';
 
@@ -17,8 +18,12 @@ import { InstallAppSheetHost } from './components/pwa/InstallApp';
  */
 const RELOAD_KEY = 'wz_chunk_reload_at';
 function lazyWithReload<T extends React.ComponentType<any>>(load: () => Promise<{ default: T }>) {
-  return lazy(() =>
-    load().catch((err) => {
+  let loaded: { default: T } | undefined;
+  const preload = () => load().then((m) => (loaded = m));
+  const Component = lazy(() => {
+    // Already loaded (preloadPage): hand it over at once, so hydrating the prerendered page never waits on it.
+    if (loaded) return { then: (resolve: (m: { default: T }) => void) => resolve(loaded!) } as unknown as Promise<{ default: T }>;
+    return preload().catch((err) => {
       let last = 0;
       try { last = Number(sessionStorage.getItem(RELOAD_KEY) || 0); } catch {}
       if (Date.now() - last > 30000) {
@@ -27,8 +32,9 @@ function lazyWithReload<T extends React.ComponentType<any>>(load: () => Promise<
         return new Promise<{ default: T }>(() => {});
       }
       throw err;
-    })
-  );
+    });
+  });
+  return Object.assign(Component, { preload });
 }
 
 // Public pages other than the homepage load on demand, so the first visit downloads less.
@@ -40,6 +46,18 @@ const FAQPage = lazyWithReload(() => import('./components/public/faq/FAQPage').t
 const PrivacyPolicyPage = lazyWithReload(() => import('./components/public/privacy/PrivacyPolicyPage').then((m) => ({ default: m.PrivacyPolicyPage })));
 const SafetyPage = lazyWithReload(() => import('./components/public/safety/SafetyPage').then((m) => ({ default: m.SafetyPage })));
 const TermsPage = lazyWithReload(() => import('./components/public/terms/TermsPage').then((m) => ({ default: m.TermsPage })));
+const LAZY_PUBLIC_PAGES: Record<string, { preload: () => Promise<unknown> }> = {
+  '/about': AboutPage, '/learning': LearningPage, '/how-it-works': HowItWorksPage, '/pricing': PricingPage,
+  '/faq': FAQPage, '/privacy': PrivacyPolicyPage, '/safety': SafetyPage, '/terms': TermsPage,
+};
+
+/**
+ * Loads a public page's code before main.tsx hydrates it: a page still waiting for its code when the first
+ * update arrives (theme, sign-in) is thrown away and drawn again, with a loader in between.
+ */
+export function preloadPage(pathname: string): Promise<unknown> {
+  return LAZY_PUBLIC_PAGES[stripLangPrefix(pathname)]?.preload() ?? Promise.resolve();
+}
 
 // The dashboard, student portal and auth pages load on demand so public visitors don't download them.
 const DashboardApp = lazyWithReload(() => import('./dashboard/DashboardApp').then(m => ({ default: m.DashboardApp })));
