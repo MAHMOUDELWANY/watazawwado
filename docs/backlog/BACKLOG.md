@@ -53,18 +53,18 @@ Principles every PR/RN task follows:
 Plan: `docs/superpowers/plans/2026-10-29-community-honor.md` (design approved 2026-10-20).
 
 ### CM-01 Consent rules and data
-- Priority P2 · Zone 🔴 (children's data) · Size M · Status review (ccr-45394ab6-m32qsv)
+- Priority P2 · Zone 🔴 (children's data) · Size M · Status done (PR #39)
 - Do: `honor_entries` and `class_board_members` (service-role only); who decides (guardian for a child, the adult
   learner for themself, otherwise only the admin with a note); the name shown; status changes; withdraw any time.
 
 ### CM-02 Hall of Honor
-- Priority P2 · Zone 🔴 · Size M · Status review (ccr-45394ab6-m32qsv) · Depends on CM-01
+- Priority P2 · Zone 🔴 · Size M · Status done (PR #39) · Depends on CM-01
 - Do: admin puts a milestone forward, the family decides on `/student/community` (or the admin records a consent given
   on WhatsApp). Closed community (owner 2026-10-29): the hall is only inside the accounts; the public `/community` page
   describes it with no names. Post text to copy into our families' groups by hand.
 
 ### CM-03 Class board
-- Priority P2 · Zone 🔴 · Size M · Status review (ccr-45394ab6-m32qsv) · Depends on CM-01
+- Priority P2 · Zone 🔴 · Size M · Status done (PR #39) · Depends on CM-01
 - Do: opt-in per learner; same teacher, same age group (teens and adults also same gender); reciprocal; shown from 3
   members; ordered by lessons this month then weekly rhythm, no rank numbers. Teacher page `/dashboard/class-board`.
 
