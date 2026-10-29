@@ -22,6 +22,7 @@ import { useActiveLearner } from '../activeLearner';
 import type { IslamicSeason } from '../../lib/islamicSeason';
 import { useProgressAchievements } from '../components/achievements/useProgressAchievements';
 import { AchievementsShelf } from '../components/achievements/AchievementsShelf';
+import { CommunityPanel } from '../components/community/CommunityPanel';
 import { LessonTimeline } from '../components/progress/LessonTimeline';
 import { ProgressCalm } from '../components/progress/ProgressCalm';
 import { ProgressRoad } from '../components/progress/ProgressRoad';
@@ -887,6 +888,7 @@ export default function StudentProgressPage({
       {data.learner && achievements.shelf.length > 0 && (
         <AchievementsShelf items={achievements.shelf} isAr={isAr} highlight={achievements.highlight} />
       )}
+      {data.learner && !previewMode && <CommunityPanel learnerId={data.learner.id} isAr={isAr} />}
       {achievements.celebration}
     </div>
   );

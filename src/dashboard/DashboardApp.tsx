@@ -41,6 +41,8 @@ import {
   Activity,
   Tag,
   Banknote,
+  Award,
+  Trophy,
 } from 'lucide-react';
 import OverviewPage from './pages/OverviewPage';
 import TodayPage from './pages/TodayPage';
@@ -59,6 +61,8 @@ import AvailabilityPage from './pages/AvailabilityPage';
 import NotificationsPage, { useUnreadDashboardNotifications } from './pages/NotificationsPage';
 import PayLaterPage from './pages/PayLaterPage';
 import PayrollPage from './pages/PayrollPage';
+import HonorPage from './pages/HonorPage';
+import ClassBoardPage from './pages/ClassBoardPage';
 import MyMonthPage from './pages/MyMonthPage';
 import HealthPage from './pages/HealthPage';
 import PlacementTestsPage from './pages/PlacementTestsPage';
@@ -239,6 +243,8 @@ export function DashboardApp() {
     { name: L('Teacher pay', 'مرتبات المعلمين'), path: '/dashboard/payroll', icon: Banknote, group: G.money },
     { name: L('Faculty', 'المعلمون'), path: '/dashboard/teachers', icon: Shield, group: G.academy },
     { name: L('Curriculum', 'المنهج'), path: '/dashboard/curriculum', icon: Library, group: G.academy },
+    { name: L('Hall of Honor', 'لوحة الشرف'), path: '/dashboard/honor', icon: Award, group: G.academy },
+    { name: L('Class board', 'لوحة الحلقة'), path: '/dashboard/class-board', icon: Trophy, group: G.academy },
     { name: L('My hours', 'مواعيدي'), path: '/dashboard/availability', icon: CalendarClock, group: G.academy },
     { name: L('Reports', 'التقارير'), path: '/dashboard/analytics', icon: TrendingUp, group: G.academy },
     { name: L('Health', 'صحة النظام'), path: '/dashboard/health', icon: Activity, group: G.system },
@@ -257,6 +263,7 @@ export function DashboardApp() {
     { name: L('My hours', 'مواعيدي'), path: '/dashboard/availability', icon: CalendarClock },
     { name: L('My month', 'شهري'), path: '/dashboard/month', icon: Banknote },
     { name: L('Curriculum', 'المنهج'), path: '/dashboard/curriculum', icon: Library },
+    { name: L('Class board', 'لوحة الحلقة'), path: '/dashboard/class-board', icon: Trophy },
     { name: L('Settings', 'الإعدادات'), path: '/dashboard/settings', icon: Settings },
   ];
 
@@ -611,6 +618,8 @@ export function DashboardApp() {
                 <Route path="/pay-later" element={isSuperAdmin ? <PayLaterPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/payroll" element={isSuperAdmin ? <PayrollPage /> : <Navigate to="/dashboard/month" replace />} />
                 <Route path="/month" element={<MyMonthPage />} />
+                <Route path="/honor" element={isSuperAdmin ? <HonorPage /> : <Navigate to="/dashboard" replace />} />
+                <Route path="/class-board" element={<ClassBoardPage />} />
                 <Route path="/pay" element={<Navigate to="/dashboard/month" replace />} />
                 <Route path="/discounts" element={isSuperAdmin ? <DiscountsPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/health" element={isSuperAdmin ? <HealthPage /> : <Navigate to="/dashboard" replace />} />

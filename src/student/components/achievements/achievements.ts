@@ -69,6 +69,11 @@ const KIND_EMBLEM: Record<string, { emblem: EmblemId; title: Bilingual; earnBy: 
 };
 KIND_EMBLEM.book_completed = KIND_EMBLEM.level_completed;
 
+/** The emblem for a teacher-recorded milestone kind (Hall of Honor and the community card use it too). */
+export function emblemForKind(kind: string | null | undefined): EmblemId {
+  return (kind && KIND_EMBLEM[kind]?.emblem) || 'teacher';
+}
+
 const TEACHER_EMBLEM = { emblem: 'teacher' as EmblemId, title: { en: "Teacher's recognition", ar: 'تقدير المعلم' } };
 
 const countEarnBy = (n: number): Bilingual =>

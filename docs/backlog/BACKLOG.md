@@ -37,13 +37,39 @@ Principles every PR/RN task follows:
   red alarm. A missed week simply starts a new rhythm; the longest rhythm stays visible.
 - **Progress is personal by default.** Children's data is private (RULES.md, terms "Children & safeguarding"). The owner
   approved (2026-10-20, PR-04 design) an opt-in social layer later: an effort-based class view and an academy Hall of
-  Honor, only with explicit guardian or adult consent. Until those tasks are built, no leaderboard and no comparing.
+  Honor, only with explicit guardian or adult consent. Built as CM-01 to CM-03 (below); outside them, still no
+  leaderboard and no comparing.
 - **Real data only.** Every number comes from attended lessons, teacher notes, placement results or teacher-set
   milestones. No fake XP that means nothing; if we show points, they map to real things (lessons, verses, rules).
 - **Motion with purpose** (`apple-design`, `animate`): a milestone unlock gets one short celebration; everything else is
   calm. Respect `prefers-reduced-motion`.
 - **Islamic adab**: no music, no gambling-like mechanics (no loot boxes, spins or random rewards), praise words in our
   voice (for example "زادك الله"), no images of faces in badges.
+
+---
+
+## CM: Community layer (owner request 2026-10-29)
+
+Plan: `docs/superpowers/plans/2026-10-29-community-honor.md` (design approved 2026-10-20).
+
+### CM-01 Consent rules and data
+- Priority P2 · Zone 🔴 (children's data) · Size M · Status review (ccr-45394ab6-m32qsv)
+- Do: `honor_entries` and `class_board_members` (service-role only); who decides (guardian for a child, the adult
+  learner for themself, otherwise only the admin with a note); the name shown; status changes; withdraw any time.
+
+### CM-02 Hall of Honor
+- Priority P2 · Zone 🔴 · Size M · Status review (ccr-45394ab6-m32qsv) · Depends on CM-01
+- Do: admin puts a milestone forward, the family decides on the progress page (or the admin records a consent given on
+  WhatsApp), public `/hall-of-honor` and `/ar/hall-of-honor`, post text to copy into our groups by hand.
+
+### CM-03 Class board
+- Priority P2 · Zone 🔴 · Size M · Status review (ccr-45394ab6-m32qsv) · Depends on CM-01
+- Do: opt-in per learner; same teacher, same age group (teens and adults also same gender); reciprocal; shown from 3
+  members; ordered by lessons this month then weekly rhythm, no rank numbers. Teacher page `/dashboard/class-board`.
+
+### CM-04 Later
+- Priority P3 · Status todo (waits for the owner)
+- Photos (with a second consent and storage), family achievements, Tier 1 suggestions from lesson counts and rhythm.
 
 ---
 

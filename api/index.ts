@@ -73,6 +73,7 @@ import { registerOpsRoutes, computeHealth, apiErrorMonitor, recordHeartbeat, HEA
 import { registerCurriculumRoutes } from '../server/routes/curriculum.js';
 import { registerGrowthRoutes, attachReferralForAccount, qualifyReferralForBooking, reverseCheckoutDiscount, settleCheckoutRedemptions } from '../server/routes/growth.js';
 import { registerProgressRoutes, validateFamilyNoteFields, canTeacherWriteForLesson } from '../server/routes/progress.js';
+import { registerHonorRoutes } from '../server/routes/honor.js';
 import { announceNewStudent, type NewLearner } from '../server/onboarding/newStudent.js';
 import { isAdultAge, isGuardianAge, isChildAge, parseAge, ADULT_MIN_AGE, GUARDIAN_MIN_AGE, CHILD_MIN_AGE, CHILD_MAX_AGE } from '../src/lib/ageRules.js';
 import { sanitizeLeadSource, isHeardAbout } from '../src/lib/leadSource.js';
@@ -10073,6 +10074,16 @@ registerCurriculumRoutes(app, {
 });
 
 registerProgressRoutes(app, {
+  getClient: getSupabaseAdminClient,
+  rateLimit,
+  verifyStudentAuth,
+  verifyTeacherAuth,
+  requireSuperAdmin,
+  getLearners: getAuthorizedLearnersForStudent
+});
+
+// Community layer: Hall of Honor (consent first) and the effort-based class board.
+registerHonorRoutes(app, {
   getClient: getSupabaseAdminClient,
   rateLimit,
   verifyStudentAuth,
