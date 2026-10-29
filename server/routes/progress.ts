@@ -389,6 +389,55 @@ export interface BuildProgressModelInput {
  * Builds the complete per-subject and overall progress read model for a learner.
  * Pure and deterministic so it can be unit-tested directly as well as via HTTP.
  */
+/**
+ * Attended lessons, deduplicated across `bookings` (status === 'completed') and `lesson_sessions`
+ * (`attendance === 'attended'` or `completion_status === 'completed'`). A session decides for its booking.
+ * Shared by the progress page and the class board so both count the same lessons.
+ */
+export function collectAttendedLessons(
+  bookings: any[],
+  lessonSessions: any[],
+  primarySubjectSlug: string
+): Array<{ id: string; subject: string; dateIso: string }> {
+  const bookingById = new Map<string, any>();
+  for (const b of bookings) {
+    if (b?.id) bookingById.set(b.id, b);
+  }
+  const attendedLessons: Array<{ id: string; subject: string; dateIso: string }> = [];
+  const handledBookingIds = new Set<string>();
+
+  for (const s of lessonSessions) {
+    if (!s) continue;
+    const isCancelledOrMissed = s.attendance === 'missed' || s.attendance === 'cancelled';
+    if (s.booking_id) {
+      handledBookingIds.add(s.booking_id);
+    }
+    if (isCancelledOrMissed) continue;
+
+    const isAttended = s.attendance === 'attended' || s.completion_status === 'completed';
+    if (!isAttended) continue;
+
+    const linkedBooking = s.booking_id ? bookingById.get(s.booking_id) : null;
+    const subject =
+      normalizeSubjectSlug(linkedBooking?.service_id) || primarySubjectSlug;
+    const dateIso = linkedBooking?.scheduled_start || s.lesson_date || s.created_at;
+    if (dateIso) {
+      attendedLessons.push({ id: `session:${s.id}`, subject, dateIso });
+    }
+  }
+
+  for (const b of bookings) {
+    if (!b || b.status !== 'completed') continue;
+    if (handledBookingIds.has(b.id)) continue;
+    const subject = normalizeSubjectSlug(b.service_id) || primarySubjectSlug;
+    const dateIso = b.scheduled_start || b.created_at;
+    if (dateIso) {
+      attendedLessons.push({ id: `booking:${b.id}`, subject, dateIso });
+    }
+  }
+  return attendedLessons;
+}
+
 export function buildLearnerProgressReadModel(input: BuildProgressModelInput) {
   const {
     learnerProfile,
@@ -443,40 +492,7 @@ export function buildLearnerProgressReadModel(input: BuildProgressModelInput) {
     subjectSet.add(primarySubjectSlug);
   }
 
-  // Deduplicate attended lessons across `bookings` (status === 'completed') and `lesson_sessions`
-  // (`attendance === 'attended'` or `completion_status === 'completed'`).
-  const attendedLessons: Array<{ id: string; subject: string; dateIso: string }> = [];
-  const handledBookingIds = new Set<string>();
-
-  for (const s of lessonSessions) {
-    if (!s) continue;
-    const isCancelledOrMissed = s.attendance === 'missed' || s.attendance === 'cancelled';
-    if (s.booking_id) {
-      handledBookingIds.add(s.booking_id);
-    }
-    if (isCancelledOrMissed) continue;
-
-    const isAttended = s.attendance === 'attended' || s.completion_status === 'completed';
-    if (!isAttended) continue;
-
-    const linkedBooking = s.booking_id ? bookingById.get(s.booking_id) : null;
-    const subject =
-      normalizeSubjectSlug(linkedBooking?.service_id) || primarySubjectSlug;
-    const dateIso = linkedBooking?.scheduled_start || s.lesson_date || s.created_at;
-    if (dateIso) {
-      attendedLessons.push({ id: `session:${s.id}`, subject, dateIso });
-    }
-  }
-
-  for (const b of bookings) {
-    if (!b || b.status !== 'completed') continue;
-    if (handledBookingIds.has(b.id)) continue;
-    const subject = normalizeSubjectSlug(b.service_id) || primarySubjectSlug;
-    const dateIso = b.scheduled_start || b.created_at;
-    if (dateIso) {
-      attendedLessons.push({ id: `booking:${b.id}`, subject, dateIso });
-    }
-  }
+  const attendedLessons = collectAttendedLessons(bookings, lessonSessions, primarySubjectSlug);
 
   // Ensure any subject with attended lessons is in subjectSet
   for (const att of attendedLessons) {

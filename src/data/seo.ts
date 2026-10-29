@@ -78,6 +78,14 @@ export const PUBLIC_PAGES: PageSeo[] = [
     h1En: 'Your child’s safety'
   },
   {
+    path: '/hall-of-honor',
+    titleEn: 'Hall of Honor: our students’ milestones | Watazawwado Academy',
+    titleAr: 'لوحة الشرف: إنجازات طلابنا | وتزودوا Watazawwado',
+    descEn: 'Milestones our students reached with their teachers: a juz memorized, a level or a book completed. Shared only with the family’s consent.',
+    descAr: 'إنجازات وصل لها طلابنا مع معلميهم: حفظ جزء، أو إتمام مستوى أو كتاب. بننشرها بموافقة الأسرة بس.',
+    h1En: 'Hall of Honor'
+  },
+  {
     path: '/privacy',
     titleEn: 'Privacy policy | Watazawwado Academy',
     titleAr: 'سياسة الخصوصية | وتزودوا Watazawwado',
