@@ -6,8 +6,8 @@ import { ageGroupFor, type AgeGroup } from '../../src/student/components/achieve
  * - Nothing about a learner is shown to anyone outside the family unless the person who runs the account agreed:
  *   the guardian for a child, the adult learner for themself. When the server cannot be sure, only the admin can
  *   record a consent the family gave elsewhere.
- * - Public data is the chosen display name, the milestone titles, its kind and subject, and the month. Never a
- *   country, age, surname we picked, photo or teacher.
+ * - The community is closed: only signed-in families and students see it. What they see of others is the chosen
+ *   display name, the milestone titles, its kind and subject, and the month. Never a country, age, photo or teacher.
  */
 
 export type ConsentKind = 'guardian' | 'learner';
@@ -82,7 +82,7 @@ export function nextHonorStatus(current: HonorStatus, action: HonorAction): Hono
   return t && t.from.includes(current) ? t.to : null;
 }
 
-export interface PublicHonorEntry {
+export interface HallEntry {
   id: string;
   name: string;
   titleEn: string;
@@ -92,12 +92,12 @@ export interface PublicHonorEntry {
   month: string;
 }
 
-/** Only what the public page needs; anything else on the rows never leaves the server. */
-export function toPublicHonorEntry(
+/** Only what the Hall of Honor shows signed-in families; anything else on the rows never leaves the server. */
+export function toHallEntry(
   entry: { id: string; display_name: string | null; published_at: string | null; status: string },
   milestone: { title_en: string; title_ar: string; kind: string } | null,
   subject: { id: string; en: string; ar: string; color: string } | null
-): PublicHonorEntry | null {
+): HallEntry | null {
   if (entry.status !== 'published' || !entry.display_name || !entry.published_at || !milestone) return null;
   return {
     id: entry.id,
@@ -110,12 +110,15 @@ export function toPublicHonorEntry(
   };
 }
 
-/** A ready text the admin copies into our WhatsApp, Facebook or Telegram groups. Never posted automatically. */
+/**
+ * A ready text the admin copies into our families' groups. Never posted automatically. It links to the Hall of Honor
+ * inside the portal, which only signed-in families and students can open.
+ */
 export function honorPostText(e: { name: string; titleEn: string; titleAr: string }, siteUrl: string): { en: string; ar: string } {
   const base = siteUrl.replace(/\/+$/, '');
   return {
-    ar: `لوحة الشرف في وتزودوا 🌙\n\n${e.name}: ${e.titleAr}\n\nما شاء الله، زاده الله علمًا. اللهم تقبّل منه ومن جميع طلابنا.\n\n${base}/ar/hall-of-honor`,
-    en: `Watazawwado Hall of Honor 🌙\n\n${e.name}: ${e.titleEn}\n\nMashaAllah. May Allah increase them in knowledge and accept from all our students.\n\n${base}/hall-of-honor`
+    ar: `لوحة الشرف في وتزودوا 🌙\n\n${e.name}: ${e.titleAr}\n\nما شاء الله، زاده الله علمًا. اللهم تقبّل منه ومن جميع طلابنا.\n\nلوحة الشرف كاملة من جوه حسابك: ${base}/student/community`,
+    en: `Watazawwado Hall of Honor 🌙\n\n${e.name}: ${e.titleEn}\n\nMashaAllah. May Allah increase them in knowledge and accept from all our students.\n\nThe full Hall of Honor is in your account: ${base}/student/community`
   };
 }
 

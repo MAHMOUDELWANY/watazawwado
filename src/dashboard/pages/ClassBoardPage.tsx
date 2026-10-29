@@ -3,6 +3,7 @@ import { dashboardFetch } from '../lib/dashboardApi';
 import { useT } from '../../lib/language';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
+import { effortLine } from '../../student/components/community/effortText';
 
 /**
  * Teacher: the class board (plan: docs/superpowers/plans/2026-10-29-community-honor.md). Each group is the same
@@ -59,11 +60,7 @@ export default function ClassBoardPage() {
                   <span className="font-semibold text-foreground">{l.name}</span>
                   {l.boardName && <span className="text-xs text-muted-foreground">{isAr ? ` · في اللوحة باسم «${l.boardName}»` : ` · on the board as “${l.boardName}”`}</span>}
                 </span>
-                <span className="text-xs text-muted-foreground">
-                  {isAr
-                    ? `${n(l.lessonsThisMonth)} حصة الشهر ده · ${n(l.rhythm)} أسبوع ورا بعض`
-                    : `${l.lessonsThisMonth} this month · ${l.rhythm} ${l.rhythm === 1 ? 'week' : 'weeks'} in a row`}
-                </span>
+                <span className="text-xs text-muted-foreground">{effortLine(l.lessonsThisMonth, l.rhythm, isAr)}</span>
               </li>
             ))}
           </ul>

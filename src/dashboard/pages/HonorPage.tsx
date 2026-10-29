@@ -127,11 +127,11 @@ export default function HonorPage() {
         <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground">{isAr ? 'لوحة الشرف' : 'Hall of Honor'}</h1>
         <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
           {isAr
-            ? 'اختار إنجاز سجّله المعلم وابعته للأسرة. ولي الأمر (أو الطالب الكبير) هو اللي يوافق ويختار الاسم، ويقدر يشيله في أي وقت. النشر في المجموعات يدوي: انسخ النص بعد الموافقة.'
-            : 'Pick a milestone a teacher recorded and send it to the family. The guardian (or the adult learner) agrees and chooses the name, and can take it down any time. Posting in our groups is by hand: copy the text once they agree.'}
+            ? 'اختار إنجاز سجّله المعلم وابعته للأسرة. ولي الأمر (أو الطالب الكبير) هو اللي يوافق ويختار الاسم، ويقدر يشيله في أي وقت. اللوحة مقفولة: بيشوفها أسر وطلاب الأكاديمية بس من جوه حساباتهم. النشر في مجموعات الأسر يدوي: انسخ النص بعد الموافقة.'
+            : 'Pick a milestone a teacher recorded and send it to the family. The guardian (or the adult learner) agrees and chooses the name, and can take it down any time. The hall is closed: only families and students of the academy see it, inside their accounts. Posting in our families’ groups is by hand: copy the text once they agree.'}
         </p>
-        <a href={isAr ? '/ar/hall-of-honor' : '/hall-of-honor'} target="_blank" rel="noreferrer" className="inline-block mt-2 text-sm underline underline-offset-2 text-foreground">
-          {isAr ? 'افتح صفحة لوحة الشرف' : 'Open the public page'}
+        <a href={isAr ? '/ar/community' : '/community'} target="_blank" rel="noreferrer" className="inline-block mt-2 text-sm underline underline-offset-2 text-foreground">
+          {isAr ? 'الصفحة اللي بتعرّف الزوار بالمجتمع' : 'The page that tells visitors about the community'}
         </a>
       </div>
 

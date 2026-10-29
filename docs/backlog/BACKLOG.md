@@ -59,8 +59,9 @@ Plan: `docs/superpowers/plans/2026-10-29-community-honor.md` (design approved 20
 
 ### CM-02 Hall of Honor
 - Priority P2 · Zone 🔴 · Size M · Status review (ccr-45394ab6-m32qsv) · Depends on CM-01
-- Do: admin puts a milestone forward, the family decides on the progress page (or the admin records a consent given on
-  WhatsApp), public `/hall-of-honor` and `/ar/hall-of-honor`, post text to copy into our groups by hand.
+- Do: admin puts a milestone forward, the family decides on `/student/community` (or the admin records a consent given
+  on WhatsApp). Closed community (owner 2026-10-29): the hall is only inside the accounts; the public `/community` page
+  describes it with no names. Post text to copy into our families' groups by hand.
 
 ### CM-03 Class board
 - Priority P2 · Zone 🔴 · Size M · Status review (ccr-45394ab6-m32qsv) · Depends on CM-01

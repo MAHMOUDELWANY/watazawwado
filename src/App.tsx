@@ -45,12 +45,12 @@ const PricingPage = lazyWithReload(() => import('./components/public/pricing/Pri
 const FAQPage = lazyWithReload(() => import('./components/public/faq/FAQPage').then((m) => ({ default: m.FAQPage })));
 const PrivacyPolicyPage = lazyWithReload(() => import('./components/public/privacy/PrivacyPolicyPage').then((m) => ({ default: m.PrivacyPolicyPage })));
 const SafetyPage = lazyWithReload(() => import('./components/public/safety/SafetyPage').then((m) => ({ default: m.SafetyPage })));
-const HallOfHonorPage = lazyWithReload(() => import('./components/public/honor/HallOfHonorPage').then((m) => ({ default: m.HallOfHonorPage })));
+const CommunityPage = lazyWithReload(() => import('./components/public/community/CommunityPage').then((m) => ({ default: m.CommunityPage })));
 const TermsPage = lazyWithReload(() => import('./components/public/terms/TermsPage').then((m) => ({ default: m.TermsPage })));
 const LAZY_PUBLIC_PAGES: Record<string, { preload: () => Promise<unknown> }> = {
   '/about': AboutPage, '/learning': LearningPage, '/how-it-works': HowItWorksPage, '/pricing': PricingPage,
   '/faq': FAQPage, '/privacy': PrivacyPolicyPage, '/safety': SafetyPage, '/terms': TermsPage,
-  '/hall-of-honor': HallOfHonorPage,
+  '/community': CommunityPage,
 };
 
 /**
@@ -99,7 +99,7 @@ export function AppRoutes() {
             <Route path="/privacy" element={<PrivacyPolicyPage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/safety" element={<SafetyPage />} />
-            <Route path="/hall-of-honor" element={<HallOfHonorPage />} />
+            <Route path="/community" element={<CommunityPage />} />
             {/* The same public pages in Arabic under /ar (English, the default, keeps the plain paths). */}
             <Route path="/ar" element={<PublicHomepage />} />
             <Route path="/ar/get-started" element={<PublicHomepage />} />
@@ -111,7 +111,7 @@ export function AppRoutes() {
             <Route path="/ar/privacy" element={<PrivacyPolicyPage />} />
             <Route path="/ar/terms" element={<TermsPage />} />
             <Route path="/ar/safety" element={<SafetyPage />} />
-            <Route path="/ar/hall-of-honor" element={<HallOfHonorPage />} />
+            <Route path="/ar/community" element={<CommunityPage />} />
           </Route>
 
           {/* Authenticated and Special Routes */}
