@@ -161,3 +161,15 @@ describe('CM-03 effort line wording', () => {
     assert.strictEqual(effortLine(1, 1, false), '1 lesson this month · 1 week in a row');
   });
 });
+
+describe('CM-03 effort fails loudly', () => {
+  it('a failed lesson query throws instead of showing zero effort', async () => {
+    const { effortFor } = await import('../server/routes/honor.js');
+    const q = (result: any) => { const b: any = { select: () => b, in: () => b, eq: () => b, limit: () => Promise.resolve(result) }; return b; };
+    const client = { from: (t: string) => q(t === 'bookings' ? { data: null, error: new Error('db down') } : { data: [], error: null }) };
+    await assert.rejects(effortFor(client, [{ id: 's1', timezone: 'UTC' }]), /db down/);
+    const ok = { from: () => q({ data: [], error: null }) };
+    const out = await effortFor(ok, [{ id: 's1', timezone: 'UTC' }]);
+    assert.deepStrictEqual(out.get('s1'), { lessonsThisMonth: 0, rhythm: 0 });
+  });
+});
