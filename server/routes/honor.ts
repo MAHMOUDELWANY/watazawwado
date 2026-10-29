@@ -33,14 +33,16 @@ function subjectOf(slug: string | null | undefined) {
 }
 
 /** Lessons this month and the current weekly rhythm for each learner, counted like the progress page. */
-async function effortFor(client: any, students: any[]): Promise<Map<string, { lessonsThisMonth: number; rhythm: number }>> {
+export async function effortFor(client: any, students: any[]): Promise<Map<string, { lessonsThisMonth: number; rhythm: number }>> {
   const out = new Map<string, { lessonsThisMonth: number; rhythm: number }>();
   const ids = students.map((s) => s.id);
   if (ids.length === 0) return out;
-  const [{ data: bookings }, { data: sessions }] = await Promise.all([
+  // A failed query throws (the route answers 500) rather than showing zero effort for everyone.
+  const [{ data: bookings, error: bErr }, { data: sessions, error: sErr }] = await Promise.all([
     client.from('bookings').select('id, student_id, service_id, status, scheduled_start, created_at').in('student_id', ids).eq('status', 'completed').limit(5000),
     client.from('lesson_sessions').select('id, booking_id, student_id, lesson_date, attendance, completion_status, created_at').in('student_id', ids).limit(5000)
   ]);
+  if (bErr || sErr) throw bErr || sErr;
   for (const s of students) {
     const tz = s.timezone || 'UTC';
     const lessons = collectAttendedLessons(
@@ -149,12 +151,14 @@ export function registerHonorRoutes(app: express.Express, deps: {
       let waitingForMore = false;
       const group = boardGroupFor(student);
       if (member && group) {
-        const { data: classmates } = await client.from('students').select(STUDENT_COLUMNS)
+        const { data: classmates, error: cErr } = await client.from('students').select(STUDENT_COLUMNS)
           .eq('assigned_teacher_id', student.assigned_teacher_id).eq('status', 'active');
+        if (cErr) throw cErr;
         const sameGroup = (classmates || []).filter((s: any) => boardGroupFor(s) === group);
-        const { data: joined } = sameGroup.length
+        const { data: joined, error: jErr } = sameGroup.length
           ? await client.from('class_board_members').select('student_id, display_name').in('student_id', sameGroup.map((s: any) => s.id))
-          : { data: [] };
+          : { data: [], error: null };
+        if (jErr) throw jErr;
         const joinedById = new Map((joined || []).map((j: any) => [j.student_id, j.display_name]));
         const onBoard = sameGroup.filter((s: any) => joinedById.has(s.id));
         if (!onBoard.some((s: any) => s.id === student.id)) onBoard.push(student);
@@ -406,9 +410,10 @@ export function registerHonorRoutes(app: express.Express, deps: {
       const { data: students, error } = await client.from('students').select(STUDENT_COLUMNS).eq('assigned_teacher_id', teacherId).eq('status', 'active');
       if (error) throw error;
       const list = students || [];
-      const { data: joined } = list.length
+      const { data: joined, error: jErr } = list.length
         ? await client.from('class_board_members').select('student_id, display_name').in('student_id', list.map((s: any) => s.id))
-        : { data: [] };
+        : { data: [], error: null };
+      if (jErr) throw jErr;
       const joinedById = new Map((joined || []).map((j: any) => [j.student_id, j.display_name]));
       const effort = await effortFor(client, list);
       const groups = new Map<string, any>();
