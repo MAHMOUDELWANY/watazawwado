@@ -26,6 +26,7 @@ import { HelpCircle, Globe, LogOut, BookOpen,
   CalendarDays,
   Gift,
   Wallet,
+  Users,
 } from 'lucide-react';
 import { useTeacherAuth } from '../lib/auth';
 import { useAppLanguage } from '../lib/language';
@@ -41,6 +42,7 @@ import StudentLessonsPage from './pages/StudentLessonsPage';
 import StudentNotificationsPage from './pages/StudentNotificationsPage';
 import StudentOffersPage from './pages/StudentOffersPage';
 import StudentInvitePage from './pages/StudentInvitePage';
+import StudentCommunityPage from './pages/StudentCommunityPage';
 import StudentPlacementPage from './pages/StudentPlacementPage';
 import StudentPlacementReportPage from './pages/StudentPlacementReportPage';
 import StudentCurriculumPage, { StudentCurriculumLessonPage } from './pages/StudentCurriculumPage';
@@ -390,11 +392,12 @@ export default function StudentApp() {
   const progress: NavItem = { name: isAr ? 'مسيرتي' : 'My progress', path: '/student/progress', icon: Compass, tour: 'student-progress' };
   const guide: NavItem = { name: isAr ? 'المرشد' : 'Guide', path: '/student/guide', icon: Sparkles, tour: 'student-guide' };
   const wallet: NavItem = { name: isAr ? 'محفظتي' : 'My wallet', path: '/student/wallet', icon: Wallet, tour: 'student-wallet' };
+  const community: NavItem = { name: isAr ? 'مجتمعنا' : 'Community', path: '/student/community', icon: Users, tour: 'student-community' };
   const invite: NavItem = { name: isAr ? 'ادعُ صاحبك' : 'Invite friends', path: '/student/invite', icon: Gift, tour: 'student-invite' };
 
   const topTabs = [home, lessons, book, curriculum];
-  const railItems = [messages, wallet, calendar, progress, guide, invite];
-  const moreItems = [curriculum, wallet, calendar, progress, guide, invite];
+  const railItems = [messages, wallet, calendar, progress, community, guide, invite];
+  const moreItems = [curriculum, wallet, calendar, progress, community, guide, invite];
   const isActive = (path: string) =>
     isTabActive(path, location.pathname, '/student') || (path === '/student/account' && isTabActive('/student/profile', location.pathname, '/student'));
 
@@ -687,6 +690,7 @@ export default function StudentApp() {
               <Route path="/guide" element={<IntakeConversation session={session} lang={lang} />} />
               <Route path="/offers" element={<StudentOffersPage session={session} lang={lang} />} />
               <Route path="/invite" element={<StudentInvitePage lang={lang} />} />
+              <Route path="/community" element={<StudentCommunityPage lang={lang} />} />
               <Route path="/messages" element={<ChatPanel lang={lang} />} />
               <Route path="/placement" element={<StudentPlacementPage lang={lang} />} />
               <Route path="/curriculum" element={<StudentCurriculumPage lang={lang} />} />

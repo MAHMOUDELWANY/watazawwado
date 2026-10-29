@@ -1,14 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useCallback, useEffect, useId, useState } from 'react';
 import { Card } from '../../../components/ui/Card';
 import { Button } from '../../../components/ui/Button';
 import { Input } from '../../../components/ui/Input';
 import { authedJson } from '../../../lib/authedJson';
 import { AchievementEmblem } from '../achievements/AchievementEmblems';
 import { emblemForKind } from '../achievements/achievements';
+import { effortLine } from './effortText';
 
 /**
- * Community card on the progress page (plan: docs/superpowers/plans/2026-10-29-community-honor.md).
+ * One learner's choices on the community page (plan: docs/superpowers/plans/2026-10-29-community-honor.md).
  * The family decides here whether an achievement goes on the Hall of Honor and whether the learner joins the
  * class board. Nothing is shown to anyone else until they say yes, and both can be undone here.
  */
@@ -28,7 +28,6 @@ interface CommunityData {
   classBoard: { available: boolean; joined: boolean; displayName: string | null; rows: BoardRow[] | null; waitingForMore: boolean };
 }
 
-const num = (n: number, isAr: boolean) => (isAr ? n.toLocaleString('ar-EG') : String(n));
 
 function errorText(err: any, isAr: boolean): string {
   if (err?.status === 400) return isAr ? 'اكتبوا اسم بس، من غير إيميل أو رقم، وفي حدود ٤٠ حرف.' : err.message;
@@ -132,16 +131,16 @@ function HonorRow({ item, data, isAr, reload }: { item: HonorItem; data: Communi
           {item.status === 'awaiting_consent' && (
             <p className="text-sm text-muted-foreground leading-relaxed">
               {isAr
-                ? 'نحب نحتفل بالإنجاز ده في لوحة الشرف على موقعنا وفي مجموعاتنا. مش هيظهر غير الاسم اللي تختاروه وعنوان الإنجاز، من غير صورة ولا بلد ولا سن، وتقدروا تشيلوه في أي وقت.'
-                : 'We would love to celebrate this on the Hall of Honor on our website and in our community groups. Only the name you choose and the achievement are shown, with no photo, country or age, and you can take it down any time.'}
+                ? 'نحب نحتفل بالإنجاز ده في لوحة الشرف. اللوحة جوه الحسابات، وبيشوفها أسر وطلاب الأكاديمية بس، وممكن ننشره كمان في مجموعات أسرنا. مش هيظهر غير الاسم اللي تختاروه وعنوان الإنجاز، من غير صورة ولا بلد ولا سن، وتقدروا تشيلوه في أي وقت.'
+                : 'We would love to celebrate this on the Hall of Honor. It lives inside the accounts, where only families and students of the academy see it, and we may share it in our families’ groups too. Only the name you choose and the achievement are shown, with no photo, country or age, and you can take it down any time.'}
             </p>
           )}
           {item.status === 'published' && (
             <p className="text-sm text-muted-foreground">
               {isAr ? `ظاهر في لوحة الشرف باسم «${item.displayName}».` : `On the Hall of Honor as “${item.displayName}”.`}{' '}
-              <Link to={isAr ? '/ar/hall-of-honor' : '/hall-of-honor'} className="underline underline-offset-2 text-foreground focus-ring rounded">
+              <a href="#hall" className="underline underline-offset-2 text-foreground focus-ring rounded">
                 {isAr ? 'شوفوا اللوحة' : 'See it'}
-              </Link>
+              </a>
             </p>
           )}
           {(item.status === 'declined' || item.status === 'withdrawn') && (
@@ -176,7 +175,7 @@ function HonorRow({ item, data, isAr, reload }: { item: HonorItem; data: Communi
   );
 }
 
-function ClassBoard({ data, isAr, reload }: { data: CommunityData; isAr: boolean; reload: () => void }) {
+function ClassBoard({ data, isAr, reload, uid }: { data: CommunityData; isAr: boolean; reload: () => void; uid: string }) {
   const board = data.classBoard;
   const [choice, setChoice] = useState<'first' | 'custom'>(data.learner.firstName ? 'first' : 'custom');
   const [custom, setCustom] = useState('');
@@ -202,19 +201,19 @@ function ClassBoard({ data, isAr, reload }: { data: CommunityData; isAr: boolean
   };
 
   return (
-    <section aria-labelledby="class-board-title" className="grid gap-3" data-testid="class-board">
+    <section aria-labelledby={`${uid}-board`} className="grid gap-3" data-testid="class-board">
       <div className="grid gap-1">
-        <h3 id="class-board-title" className="font-display text-base font-bold text-foreground">{isAr ? 'لوحة الحلقة' : 'Class board'}</h3>
+        <h3 id={`${uid}-board`} className="font-display text-base font-bold text-foreground">{isAr ? 'لوحة الحلقة' : 'Class board'}</h3>
         <p className="text-sm text-muted-foreground leading-relaxed">
           {isAr
-            ? 'طلاب نفس المعلم ونفس المرحلة بيشوفوا مجهود بعض: حصص الشهر والأسابيع ورا بعض. من غير ترتيب ولا درجات، والاسم بس.'
+            ? 'طلاب نفس المعلم ونفس المرحلة بيشوفوا مجهود بعض: حصص الشهر والأسابيع ورا بعض. اللوحة بتعرض الاسم الأول أو الاسم اللي تختاروه، ومن غير ترتيب ولا درجات.'
             : 'Learners with the same teacher and of the same age see each other’s effort: lessons this month and weeks in a row. The board shows first names or the name you choose, never a rank or a score.'}
         </p>
       </div>
 
       {!board.joined && (data.canDecide ? (
         <div className="grid gap-3">
-          <NamePicker firstName={data.learner.firstName} choice={choice} setChoice={setChoice} custom={custom} setCustom={setCustom} isAr={isAr} idPrefix="board" />
+          <NamePicker firstName={data.learner.firstName} choice={choice} setChoice={setChoice} custom={custom} setCustom={setCustom} isAr={isAr} idPrefix={`${uid}-board`} />
           <div><Button onClick={() => save(true)} isLoading={busy}>{isAr ? 'انضم للوحة' : 'Join the board'}</Button></div>
         </div>
       ) : (
@@ -229,13 +228,9 @@ function ClassBoard({ data, isAr, reload }: { data: CommunityData; isAr: boolean
               <p className="text-center text-xs text-muted-foreground">{isAr ? 'المطففين: ٢٦' : '“For this let the competitors compete” (al-Mutaffifin 83:26)'}</p>
               <ul className="grid gap-1.5">
                 {board.rows.map((r, i) => (
-                  <li key={`${r.name}-${i}`} className={`flex items-center justify-between gap-3 rounded-xl px-3 py-2 ${r.isYou ? 'bg-teal/10 ring-1 ring-teal/30' : 'bg-surface-subtle'}`}>
-                    <span className="font-semibold text-foreground truncate">{r.name}{r.isYou && <span className="text-xs text-muted-foreground font-normal">{isAr ? ' (أنت)' : ' (you)'}</span>}</span>
-                    <span className="text-xs text-muted-foreground shrink-0">
-                      {isAr
-                        ? `${num(r.lessonsThisMonth, true)} حصة الشهر ده · ${num(r.rhythm, true)} أسبوع ورا بعض`
-                        : `${r.lessonsThisMonth} ${r.lessonsThisMonth === 1 ? 'lesson' : 'lessons'} this month · ${r.rhythm} ${r.rhythm === 1 ? 'week' : 'weeks'} in a row`}
-                    </span>
+                  <li key={`${r.name}-${i}`} className={`grid gap-0.5 sm:flex sm:items-center sm:justify-between sm:gap-3 rounded-xl px-3 py-2 ${r.isYou ? 'bg-teal/10 ring-1 ring-teal/30' : 'bg-surface-subtle'}`}>
+                    <span className="font-semibold text-foreground break-words">{r.name}{r.isYou && <span className="text-xs text-muted-foreground font-normal">{isAr ? ' (أنت)' : ' (you)'}</span>}</span>
+                    <span className="text-xs text-muted-foreground">{effortLine(r.lessonsThisMonth, r.rhythm, isAr)}</span>
                   </li>
                 ))}
               </ul>
@@ -255,31 +250,38 @@ function ClassBoard({ data, isAr, reload }: { data: CommunityData; isAr: boolean
   );
 }
 
-export function CommunityPanel({ learnerId, isAr }: { learnerId: string; isAr: boolean }) {
+/** One learner's choices. Without a learnerId it is the account's own learner. `onChanged` runs after any choice. */
+export function CommunityPanel({ learnerId, isAr, onChanged }: { learnerId?: string; isAr: boolean; onChanged?: () => void }) {
   const [data, setData] = useState<CommunityData | null>(null);
-  const load = useCallback(async () => {
+  const uid = useId();
+  const fetchData = useCallback(async () => {
     try {
-      setData(await authedJson<CommunityData>(`/api/student/community?learnerId=${encodeURIComponent(learnerId)}`));
+      setData(await authedJson<CommunityData>(`/api/student/community${learnerId ? `?learnerId=${encodeURIComponent(learnerId)}` : ''}`));
     } catch {
       setData(null);
     }
   }, [learnerId]);
-  useEffect(() => { void load(); }, [load]);
+  useEffect(() => { void fetchData(); }, [fetchData]);
+  const load = useCallback(() => { void fetchData(); onChanged?.(); }, [fetchData, onChanged]);
 
   if (!data || (data.honor.length === 0 && !data.classBoard.available)) return null;
   return (
-    <Card className="p-5 sm:p-6" id="community" data-testid="community-panel">
-      <section aria-labelledby="community-title" className="grid gap-5">
-        <h2 id="community-title" className="font-display text-lg sm:text-xl font-bold text-foreground">{isAr ? 'مجتمعنا' : 'Our community'}</h2>
+    <Card className="p-5 sm:p-6" data-testid="community-panel">
+      <section aria-labelledby={`${uid}-title`} className="grid gap-5">
+        <h2 id={`${uid}-title`} className="font-display text-lg sm:text-xl font-bold text-foreground">
+          {data.learner.firstName
+            ? (isAr ? `اختيارات ${data.learner.firstName}` : `${data.learner.firstName}’s choices`)
+            : (isAr ? 'اختياراتك' : 'Your choices')}
+        </h2>
         {data.honor.length > 0 && (
-          <section aria-labelledby="honor-title" className="grid gap-3">
-            <h3 id="honor-title" className="font-display text-base font-bold text-foreground">{isAr ? 'لوحة الشرف' : 'Hall of Honor'}</h3>
+          <section aria-labelledby={`${uid}-honor`} className="grid gap-3">
+            <h3 id={`${uid}-honor`} className="font-display text-base font-bold text-foreground">{isAr ? 'لوحة الشرف' : 'Hall of Honor'}</h3>
             <ul className="grid gap-3">
               {data.honor.map((item) => <HonorRow key={item.id} item={item} data={data} isAr={isAr} reload={load} />)}
             </ul>
           </section>
         )}
-        {data.classBoard.available && <ClassBoard data={data} isAr={isAr} reload={load} />}
+        {data.classBoard.available && <ClassBoard data={data} isAr={isAr} reload={load} uid={uid} />}
       </section>
     </Card>
   );

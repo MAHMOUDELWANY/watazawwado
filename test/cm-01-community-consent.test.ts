@@ -4,7 +4,7 @@ import http from 'node:http';
 import app from '../api/index.js';
 import {
   boardGroupFor, buildClassBoard, chooseDisplayName, consentKindFor, firstNameOf, honorPostText, nextHonorStatus,
-  toPublicHonorEntry, CLASS_BOARD_MIN_MEMBERS
+  toHallEntry, CLASS_BOARD_MIN_MEMBERS
 } from '../server/community/community.js';
 import { collectAttendedLessons } from '../server/routes/progress.js';
 
@@ -60,19 +60,19 @@ describe('CM-01 entry status', () => {
   });
 });
 
-describe('CM-02 public entry', () => {
+describe('CM-02 Hall of Honor entry', () => {
   const m = { title_en: 'Memorized Juz Amma', title_ar: 'حفظ جزء عمّ', kind: 'juz_completed' };
-  it('shows only published entries and only the public fields', () => {
-    const e = toPublicHonorEntry({ id: 'e1', display_name: 'Maryam', published_at: '2026-10-20T10:00:00Z', status: 'published' }, m, null);
+  it('shows only published entries and only the fields the hall needs', () => {
+    const e = toHallEntry({ id: 'e1', display_name: 'Maryam', published_at: '2026-10-20T10:00:00Z', status: 'published' }, m, null);
     assert.deepStrictEqual(Object.keys(e!).sort(), ['id', 'kind', 'month', 'name', 'subject', 'titleAr', 'titleEn']);
     assert.strictEqual(e!.month, '2026-10');
-    assert.strictEqual(toPublicHonorEntry({ id: 'e2', display_name: 'X', published_at: '2026-10-20', status: 'withdrawn' }, m, null), null);
-    assert.strictEqual(toPublicHonorEntry({ id: 'e3', display_name: null, published_at: '2026-10-20', status: 'published' }, m, null), null);
+    assert.strictEqual(toHallEntry({ id: 'e2', display_name: 'X', published_at: '2026-10-20', status: 'withdrawn' }, m, null), null);
+    assert.strictEqual(toHallEntry({ id: 'e3', display_name: null, published_at: '2026-10-20', status: 'published' }, m, null), null);
   });
-  it('the post text names the achievement and links the page in each language', () => {
+  it('the post text names the achievement and links the hall inside the account', () => {
     const t = honorPostText({ name: 'Maryam', titleEn: m.title_en, titleAr: m.title_ar }, 'https://watazawwado.academy/');
-    assert.ok(t.en.includes('Maryam: Memorized Juz Amma') && t.en.endsWith('https://watazawwado.academy/hall-of-honor'));
-    assert.ok(t.ar.includes('حفظ جزء عمّ') && t.ar.endsWith('/ar/hall-of-honor'));
+    assert.ok(t.en.includes('Maryam: Memorized Juz Amma') && t.en.endsWith('https://watazawwado.academy/student/community'));
+    assert.ok(t.ar.includes('حفظ جزء عمّ') && t.ar.endsWith('/student/community'));
   });
 });
 
@@ -137,10 +137,27 @@ describe('CM endpoints guard who may act', () => {
     assert.strictEqual((await post('/api/dashboard/honor/nominate', 'dev-teacher-token', { milestoneId: id })).status, 403);
     assert.ok([401, 403].includes((await post(`/api/dashboard/honor/${id}/record-consent`, 'dev-student-token', { decision: 'yes', note: 'x' })).status));
   });
-  it('the class board needs a staff account; the public page needs none', async () => {
+  it('the class board needs a staff account', async () => {
     assert.strictEqual((await fetch(`${base}/api/dashboard/class-board`)).status, 401);
-    const pub = await fetch(`${base}/api/public/hall-of-honor`);
-    assert.ok([200, 500, 503].includes(pub.status));
-    if (pub.status === 200) assert.ok(Array.isArray(((await pub.json()) as any).entries));
+  });
+  it('the community is closed: the Hall of Honor needs a signed-in family or student account', async () => {
+    assert.strictEqual((await fetch(`${base}/api/public/hall-of-honor`)).status !== 200, true);
+    assert.strictEqual((await fetch(`${base}/api/student/community/hall`)).status, 401);
+    assert.strictEqual((await fetch(`${base}/api/student/community/hall`, { headers: { Authorization: 'Bearer dev-teacher-token' } })).status, 403);
+    const own = await fetch(`${base}/api/student/community/hall`, { headers: { Authorization: 'Bearer dev-student-token' } });
+    assert.ok([200, 500, 503].includes(own.status));
+    if (own.status === 200) {
+      assert.ok(Array.isArray(((await own.json()) as any).entries));
+      assert.ok(String(own.headers.get('cache-control')).includes('no-store'));
+    }
+  });
+});
+
+describe('CM-03 effort line wording', () => {
+  it('uses Arabic plurals and English singulars correctly', async () => {
+    const { arWeekCount, effortLine } = await import('../src/student/components/community/effortText.js');
+    assert.deepStrictEqual([1, 2, 3, 10, 11].map(arWeekCount), ['أسبوع واحد', 'أسبوعين', '٣ أسابيع', '١٠ أسابيع', '١١ أسبوع']);
+    assert.strictEqual(effortLine(6, 2, true), '٦ حصص الشهر ده · أسبوعين ورا بعض');
+    assert.strictEqual(effortLine(1, 1, false), '1 lesson this month · 1 week in a row');
   });
 });

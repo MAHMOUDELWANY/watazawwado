@@ -1,7 +1,7 @@
 import express from 'express';
 import {
   boardGroupFor, buildClassBoard, chooseDisplayName, consentKindFor, firstNameOf, honorPostText, nextHonorStatus,
-  toPublicHonorEntry, type BoardMember, type HonorAction, type HonorStatus
+  toHallEntry, type BoardMember, type HonorAction, type HonorStatus
 } from '../community/community.js';
 import { collectAttendedLessons, computeLessonsAttended, computeWeeklyRhythm, isUuid, normalizeSubjectSlug, resolveSubjectMeta } from './progress.js';
 import { ageGroupFor } from '../../src/student/components/achievements/achievements.js';
@@ -9,7 +9,9 @@ import { notifyUser, notifySuperAdmins, resolveLearnerAccount } from '../notific
 
 /**
  * Community layer routes (plan: docs/superpowers/plans/2026-10-29-community-honor.md).
- * - Public: GET /api/public/hall-of-honor, published entries only, with the name the family chose.
+ * - Signed-in families and students only (a closed community, owner 2026-10-29): GET /api/student/community/hall,
+ *   published entries with the name the family chose. Nothing about it is public; the public /community page only
+ *   describes the community.
  * - Family: /api/student/community, decide on a Hall of Honor entry, withdraw it, join or leave the class board.
  * - Super admin: /api/dashboard/honor, put a milestone forward, record a consent given elsewhere, take an entry down.
  * - Teacher: GET /api/dashboard/class-board, their learners' effort and who joined the board.
@@ -89,8 +91,8 @@ export function registerHonorRoutes(app: express.Express, deps: {
     return { learner, student, consentKind };
   }
 
-  // Public: the Hall of Honor.
-  app.get('/api/public/hall-of-honor', async (_req: any, res: any) => {
+  // Signed-in accounts only: the Hall of Honor.
+  app.get('/api/student/community/hall', deps.verifyStudentAuth, async (_req: any, res: any) => {
     const client = db(res); if (!client) return;
     try {
       const { data: entries, error } = await client.from('honor_entries')
@@ -105,13 +107,13 @@ export function registerHonorRoutes(app: express.Express, deps: {
       const list = (entries || [])
         .map((e: any) => {
           const m: any = byId.get(e.milestone_id) || null;
-          return toPublicHonorEntry(e, m, m ? subjectOf(m.subject) : null);
+          return toHallEntry(e, m, m ? subjectOf(m.subject) : null);
         })
         .filter(Boolean);
-      res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=300');
+      res.setHeader('Cache-Control', 'private, no-store');
       res.json({ entries: list });
     } catch (err) {
-      console.error('[GET /api/public/hall-of-honor]', err);
+      console.error('[GET /api/student/community/hall]', err);
       res.status(500).json({ error: 'Could not load the Hall of Honor.' });
     }
   });
@@ -340,10 +342,10 @@ export function registerHonorRoutes(app: express.Express, deps: {
         kind: 'honor_invite',
         title: { en: `May we celebrate ${first || 'this achievement'} on our Hall of Honor?`, ar: `تحبّوا نحتفل بإنجاز ${first || 'جديد'} في لوحة الشرف؟` },
         body: {
-          en: `"${m.title_en}". MashaAllah. Nothing is shown unless you say yes, and you choose the name. You can take it down any time.`,
-          ar: `«${m.title_ar}». ما شاء الله. مش هيظهر أي حاجة غير لو وافقتوا، وأنتم تختاروا الاسم، وتقدروا تشيلوه في أي وقت.`
+          en: `"${m.title_en}". MashaAllah. Only families and students of the academy see the Hall of Honor, inside their accounts. Nothing is shown unless you say yes, you choose the name, and you can take it down any time.`,
+          ar: `«${m.title_ar}». ما شاء الله. لوحة الشرف بيشوفها أسر وطلاب الأكاديمية بس من جوه حساباتهم. مش هيظهر أي حاجة غير لو وافقتوا، وأنتم تختاروا الاسم، وتقدروا تشيلوه في أي وقت.`
         },
-        link: `/student/progress?learnerId=${encodeURIComponent(m.student_id)}#community`
+        link: `/student/community?learnerId=${encodeURIComponent(m.student_id)}`
       }, { email: true });
       res.status(201).json({ id: row.id, status: 'awaiting_consent' });
     } catch (err) {

@@ -104,8 +104,8 @@ export const Footer: React.FC<FooterProps> = ({
                   </Link>
                 </li>
                 <li>
-                  <Link to="/hall-of-honor" className="inline-flex items-center min-h-11 hover:text-accent transition-colors">
-                    {isEn ? 'Hall of Honor' : 'لوحة الشرف'}
+                  <Link to="/community" className="inline-flex items-center min-h-11 hover:text-accent transition-colors">
+                    {isEn ? 'Our community' : 'مجتمعنا'}
                   </Link>
                 </li>
                 <li>
