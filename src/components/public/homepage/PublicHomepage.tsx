@@ -3,12 +3,15 @@ import { useOutletContext } from 'react-router-dom';
 import { Link } from '../LangLink';
 import { PublicLayoutContextType } from '../layout/PublicLayout';
 import { PublicSection, PublicButton } from '../PublicDesignSystem';
-import { Check, User, Users, Volume2, VolumeX } from 'lucide-react';
+import { Check, User, Users, Volume2, VolumeX, ShieldCheck, Mail } from 'lucide-react';
 import { WhatsAppIcon } from '../../ui/WhatsAppIcon';
 import { WelcomeRecitation } from '../WelcomeRecitation';
 import { TeacherDuo } from './TeacherDuo';
 import { HeroSubjects } from './HeroSubjects';
 import { MushafEmblem, PathEmblem, TeachersEmblem, EnvelopeEmblem, LanternEmblem, DoorAjarEmblem } from '../emblems/DoorEmblems';
+import { WeekWithUs } from './WeekWithUs';
+import { FamilyVoices } from './FamilyVoices';
+import { FAQS } from '../../../data/content';
 import { buildWhatsAppUrl } from '../../../lib/whatsapp';
 import { useWelcomeAudio } from '../../../lib/welcomeAudio';
 
@@ -52,38 +55,44 @@ const PATHS: Array<{ icon: typeof User; tone: string; title: L; body: L; note: L
 ];
 
 // Each door's portal: [top, bottom] of its deep gradient. Teal, copper and crimson take turns.
-type Door = { to: string; emblem: React.ComponentType<{ className?: string }>; tone: [string, string]; title: L; body: L };
+type Door = { to: string; emblem: React.ComponentType<{ className?: string }>; tone: [string, string]; title: L; body: L; cta: L };
 
 const EXPLORE: Door[] = [
   {
     to: '/learning', emblem: MushafEmblem, tone: ['#0B7486', '#04323A'],
     title: { en: 'Lessons and subjects', ar: 'الدروس والمواد' },
-    body: { en: '8 subjects, your own teacher.', ar: '٨ مواد، ومعلم ليك إنت.' }
+    body: { en: '8 subjects, your own teacher.', ar: '٨ مواد، ومعلم ليك إنت.' },
+    cta: { en: 'See subjects', ar: 'شوف المواد' }
   },
   {
     to: '/how-it-works', emblem: PathEmblem, tone: ['#8B4935', '#33190F'],
     title: { en: 'How it works', ar: 'كيف نعمل' },
-    body: { en: 'Four calm steps.', ar: 'أربع خطوات هادية.' }
+    body: { en: 'Four calm steps.', ar: 'أربع خطوات هادية.' },
+    cta: { en: 'See the steps', ar: 'شوف الخطوات' }
   },
   {
     to: '/about', emblem: TeachersEmblem, tone: ['#A3271F', '#3F0E10'],
     title: { en: 'About us', ar: 'من نحن' },
-    body: { en: 'Who we are, who teaches.', ar: 'إحنا مين، ومين هيعلّمك.' }
+    body: { en: 'Who we are, who teaches.', ar: 'إحنا مين، ومين هيعلّمك.' },
+    cta: { en: 'Meet us', ar: 'اتعرّف علينا' }
   },
   {
     to: '/pricing', emblem: EnvelopeEmblem, tone: ['#0A5866', '#05262D'],
     title: { en: 'Prices and packages', ar: 'الأسعار والباقات' },
-    body: { en: 'From $9 an hour.', ar: 'من 9$ للساعة.' }
+    body: { en: 'From $9 an hour.', ar: 'من 9$ للساعة.' },
+    cta: { en: 'See prices', ar: 'شوف الأسعار' }
   },
   {
-    to: '/faq', emblem: LanternEmblem, tone: ['#6E3324', '#241008'],
-    title: { en: 'Questions and answers', ar: 'الأسئلة الشائعة' },
-    body: { en: 'Short, honest answers.', ar: 'إجابات قصيرة وصادقة.' }
+    to: '/articles', emblem: LanternEmblem, tone: ['#6E3324', '#241008'],
+    title: { en: 'Articles', ar: 'مقالات' },
+    body: { en: 'Practical reading for families.', ar: 'قراية عملية للأسرة.' },
+    cta: { en: 'Read', ar: 'اقرا' }
   },
   {
-    to: '/student', emblem: DoorAjarEmblem, tone: ['#8E1F1C', '#2E0B0C'],
-    title: { en: 'Your account', ar: 'حسابك' },
-    body: { en: 'Your corner of the academy.', ar: 'ركنك في الأكاديمية.' }
+    to: '/community', emblem: DoorAjarEmblem, tone: ['#8E1F1C', '#2E0B0C'],
+    title: { en: 'Our community', ar: 'مجتمعنا' },
+    body: { en: 'Hall of Honor and class board.', ar: 'لوحة الشرف ولوحة الحلقة.' },
+    cta: { en: 'Step inside', ar: 'ادخل' }
   }
 ];
 
@@ -143,7 +152,8 @@ export function PublicHomepage() {
                 {[
                   { en: '30 minutes, free', ar: '٣٠ دقيقة مجاناً' },
                   { en: 'No card needed', ar: 'بدون بطاقة بنكية' },
-                  { en: 'Choose a male or female teacher', ar: 'تختار معلّم أو معلّمة' }
+                  { en: 'Choose a male or female teacher', ar: 'تختار معلّم أو معلّمة' },
+                  { en: 'You can sit in on any lesson', ar: 'تقدر تحضر أي حصة' }
                 ].map((point) => (
                   <li key={point.en} className="flex items-center gap-1.5 font-medium">
                     <Check className="w-4 h-4 text-[#087D91] dark:text-[#12A4BC] shrink-0" aria-hidden="true" />
@@ -151,6 +161,10 @@ export function PublicHomepage() {
                   </li>
                 ))}
               </ul>
+              <Link to="/safety" className="inline-flex items-center gap-1.5 min-h-11 text-sm font-semibold text-foreground underline underline-offset-4 decoration-[#087D91]/50 hover:decoration-[#087D91]">
+                <ShieldCheck className="w-4 h-4 text-[#087D91] dark:text-[#12A4BC] shrink-0" aria-hidden="true" />
+                {isEn ? 'How we keep children safe: the teacher opens the room, nothing is recorded' : 'إزاي بنحافظ على الأطفال: المعلم هو اللي بيفتح الغرفة، ومفيش تسجيل'}
+              </Link>
             </div>
           </div>
         </div>
@@ -217,6 +231,10 @@ export function PublicHomepage() {
         </div>
       </PublicSection>
 
+      {/* ─── 3b. THE WEEK AROUND THE LESSON, AND WHAT FAMILIES SAY ─── */}
+      <WeekWithUs isEn={isEn} />
+      <FamilyVoices isEn={isEn} />
+
       {/* ─── 4. WHY WE EXIST ─── */}
       <section className="khatam-field relative">
         <div className="public-container py-16 lg:py-24 text-center">
@@ -253,7 +271,7 @@ export function PublicHomepage() {
           </h2>
           <nav aria-label={isEn ? 'Site sections' : 'أقسام الموقع'}>
             <ul className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-5">
-              {EXPLORE.map(({ to, emblem: Emblem, tone, title, body }) => (
+              {EXPLORE.map(({ to, emblem: Emblem, tone, title, body, cta }) => (
                 <li key={to} className="door-slot">
                   <Link
                     to={to}
@@ -267,7 +285,7 @@ export function PublicHomepage() {
                     <span className="door-title">{t(title)}</span>
                     <span className="door-tagline">{t(body)}</span>
                     <span className="door-enter" aria-hidden="true">
-                      {isEn ? 'Step in' : 'ادخل'}
+                      {t(cta)}
                       <svg viewBox="0 0 16 16" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M3 8h9.5M8.5 4l4 4-4 4" />
                       </svg>
@@ -279,6 +297,29 @@ export function PublicHomepage() {
           </nav>
         </div>
       </PublicSection>
+
+      {/* ─── 5b. THE FIRST QUESTIONS FAMILIES ASK ─── */}
+      <section className="public-container pb-16 lg:pb-20" aria-labelledby="home-faq">
+        <div className="max-w-3xl mx-auto">
+          <h2 id="home-faq" className="editorial-heading font-editorial text-2xl sm:text-3xl text-foreground">
+            {isEn ? 'Questions families ask first' : 'أول أسئلة بتسألها العيلات'}
+          </h2>
+          <div className="mt-6 divide-y divide-border border-y border-border">
+            {FAQS.slice(0, 3).map((f) => (
+              <details key={f.question} className="group py-3">
+                <summary className="flex items-center justify-between gap-4 min-h-11 cursor-pointer list-none font-bold text-foreground">
+                  {isEn ? f.question : f.arabicQuestion}
+                  <span aria-hidden="true" className="text-xl leading-none text-muted-foreground transition-transform group-open:rotate-45">+</span>
+                </summary>
+                <p className="mt-2 text-muted-foreground leading-relaxed max-w-[70ch]">{isEn ? f.answer : f.arabicAnswer}</p>
+              </details>
+            ))}
+          </div>
+          <Link to="/faq" className="inline-flex items-center min-h-11 mt-2 text-sm font-semibold text-foreground underline underline-offset-4">
+            {isEn ? 'All questions and answers' : 'كل الأسئلة والإجابات'}
+          </Link>
+        </div>
+      </section>
 
       {/* ─── 5. CLOSING CALL TO ACTION ─── */}
       <section id="contact" className="public-container pb-16 lg:pb-24">
@@ -302,12 +343,30 @@ export function PublicHomepage() {
               href={buildWhatsAppUrl(isEn ? 'Assalamu Alaikum, I visited the Watazawwado website and would like to ask about lessons.' : 'السلام عليكم، زرت موقع وتزودوا وحابب أستفسر عن الدروس.')}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 py-3 px-6 rounded-xl text-sm font-bold bg-[#25D366] text-[#07361F] hover:bg-[#20BD5A] shadow-[0_10px_24px_-12px_rgba(37,211,102,0.9)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05363F] focus-visible:ring-[#25D366]"
+              className="inline-flex items-center justify-center gap-2 py-3 px-6 rounded-xl text-sm font-bold border border-[#FAF7F2]/35 bg-[#FAF7F2]/10 text-[#FAF7F2] hover:bg-[#FAF7F2]/20 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05363F] focus-visible:ring-[#F6D58E]"
             >
-              <WhatsAppIcon className="w-4 h-4 shrink-0" />
+              <WhatsAppIcon className="w-4 h-4 shrink-0 text-[#25D366]" />
               <span>{isEn ? 'Ask us on WhatsApp' : 'اسألنا على واتساب'}</span>
             </a>
           </div>
+        </div>
+      </section>
+
+      {/* ─── 6. TEACH WITH US ─── */}
+      <section id="careers" className="public-container pb-16 lg:pb-24 scroll-mt-28" aria-labelledby="careers-title">
+        <div className="max-w-3xl mx-auto rounded-[1.75rem] border border-border bg-surface px-6 py-8 sm:px-10 sm:py-10 flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-8">
+          <div className="flex-1">
+            <h2 id="careers-title" className="font-editorial text-2xl font-bold text-foreground">{isEn ? 'Teach with us' : 'اشتغل معانا'}</h2>
+            <p className="mt-2 text-muted-foreground leading-relaxed">
+              {isEn
+                ? 'Do you teach Quran, Tajweed, Arabic or English, and love one-on-one teaching? Write to us about your experience and what you teach best.'
+                : 'بتعلّم قرآن أو تجويد أو عربي أو إنجليزي، وبتحب التعليم الفردي؟ اكتبلنا عن خبرتك وأكتر حاجة بتعرف تعلّمها.'}
+            </p>
+          </div>
+          <a href="mailto:hr@watazawwado.academy" className="btn-glass shrink-0 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold">
+            <Mail className="w-4 h-4" aria-hidden="true" />
+            <span dir="ltr">hr@watazawwado.academy</span>
+          </a>
         </div>
       </section>
     </main>

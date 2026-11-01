@@ -2002,3 +2002,21 @@ html.dark .text-crimson,
 html.dark .text-brand {
   color: var(--primary-ink);
 }
+
+/* Homepage "A week with Watazawwado": one ribbon line, a lit dot per step. */
+.week-line::before {
+  content: '';
+  position: absolute;
+  inset-block: 0.6rem 0.6rem;
+  inset-inline-start: 0.6rem;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(to bottom, #087D91, #E5A93C 55%, #C51F24);
+  opacity: 0.55;
+}
+.week-dot {
+  inset-inline-start: calc(-2.5rem + 0.6rem - 0.625rem + 1px);
+  background: radial-gradient(circle at 35% 35%, #F6D58E, #E5A93C 45%, #8B4935);
+  box-shadow: 0 2px 6px -2px rgba(18, 16, 14, 0.45);
+}
+

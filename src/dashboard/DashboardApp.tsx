@@ -43,6 +43,7 @@ import {
   Banknote,
   Award,
   CalendarHeart,
+  MessageSquareHeart,
   Trophy,
 } from 'lucide-react';
 import OverviewPage from './pages/OverviewPage';
@@ -64,6 +65,7 @@ import PayLaterPage from './pages/PayLaterPage';
 import PayrollPage from './pages/PayrollPage';
 import HonorPage from './pages/HonorPage';
 import ProgramsPage from './pages/ProgramsPage';
+import ReviewsPage from './pages/ReviewsPage';
 import LessonRoomPage from './pages/LessonRoomPage';
 import ClassBoardPage from './pages/ClassBoardPage';
 import MyMonthPage from './pages/MyMonthPage';
@@ -248,6 +250,7 @@ export function DashboardApp() {
     { name: L('Curriculum', 'المنهج'), path: '/dashboard/curriculum', icon: Library, group: G.academy },
     { name: L('Hall of Honor', 'لوحة الشرف'), path: '/dashboard/honor', icon: Award, group: G.academy },
     { name: L('Programs', 'البرامج الموسمية'), path: '/dashboard/programs', icon: CalendarHeart, group: G.academy },
+    { name: L('Reviews', 'آراء الأهالي'), path: '/dashboard/reviews', icon: MessageSquareHeart, group: G.academy },
     { name: L('Class board', 'لوحة الحلقة'), path: '/dashboard/class-board', icon: Trophy, group: G.academy },
     { name: L('My hours', 'مواعيدي'), path: '/dashboard/availability', icon: CalendarClock, group: G.academy },
     { name: L('Reports', 'التقارير'), path: '/dashboard/analytics', icon: TrendingUp, group: G.academy },
@@ -624,6 +627,7 @@ export function DashboardApp() {
                 <Route path="/month" element={<MyMonthPage />} />
                 <Route path="/honor" element={isSuperAdmin ? <HonorPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/programs" element={isSuperAdmin ? <ProgramsPage /> : <Navigate to="/dashboard" replace />} />
+                <Route path="/reviews" element={isSuperAdmin ? <ReviewsPage /> : <Navigate to="/dashboard" replace />} />
                 <Route path="/room/:id" element={<LessonRoomPage />} />
                 <Route path="/class-board" element={<ClassBoardPage />} />
                 <Route path="/pay" element={<Navigate to="/dashboard/month" replace />} />

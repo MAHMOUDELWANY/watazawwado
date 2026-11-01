@@ -515,7 +515,7 @@ shared design direction (weekly rhythm, real data, no guilt, Islamic adab).
   A clear ijazah-with-sanad path page for the subjects where it applies. Who may issue an ijazah is an owner decision.
 
 ### NX-05 Real reviews from families
-- Priority P2 · Zone 🟢 · Size M · Status todo · Owner decision first (see below)
+- Priority P2 · Zone 🟢 · Size M · Status done (owner decided 2026-11-01: one-time review links, portal reviews, screenshots with consent; the admin publishes)
 - Do: a short rating after lessons; after a few lessons ask for a public review with consent. No children's photos.
 
 ### NX-06 Gift lessons

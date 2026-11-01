@@ -198,6 +198,18 @@ export function PricingPage() {
             ))}
           </ul>
 
+          <p className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-sm text-muted-foreground text-center" data-testid="pricing-safety">
+            <ShieldCheck className="w-4 h-4 text-[#087D91] dark:text-[#12A4BC] shrink-0" aria-hidden="true" />
+            <span>
+              {isEn
+                ? 'For children: you can sit in on any lesson, the teacher opens the Zoom room, and lessons are not recorded.'
+                : 'للأطفال: تقدر تحضر أي حصة، والمعلم هو اللي بيفتح غرفة Zoom، والحصص مش بتتسجّل.'}
+            </span>
+            <Link to="/safety" className="inline-flex items-center min-h-11 font-semibold text-foreground underline underline-offset-4">
+              {isEn ? 'How we keep children safe' : 'إزاي بنحافظ على الأطفال'}
+            </Link>
+          </p>
+
           <div className="text-center space-y-3">
             <PublicButton size="lg" onClick={() => onOpenTrialModal()} className="px-8">
               {isEn ? 'Book your free trial lesson' : 'احجز حصتك التجريبية المجانية'}

@@ -674,6 +674,40 @@ One entry per finished task, newest first: result, files changed, checks run, wh
 - Waiting for the owner: one line in the privacy policy that recitation audio is kept 90 days and seen only by the family, the teacher and the admin (legal text, owner reads it first).
 - Checks: tsc clean; build passes; `test/nx-03-recitations.test.ts` 5/5; full path run against the local server and real storage (upload, save, teacher list and reply, family sees reply, other family refused, non-audio refused). Screens seen on desktop and phone; the built-in browser blocks the microphone, so the "allow the microphone" message showed and recording itself was not tried on a real phone.
 
+## 2026-11-01 — Design pass, round 2: critique of home and pricing, NX-05 reviews, new home sections
+- Critique (impeccable, two separate reviewers: design review and detector): 19/32 on the 8 heuristics that apply. The look is the academy's own; the weak part was structure: home was a hub of 6 doors, and pricing shows no prices until a subject is picked. Snapshot in `.impeccable/critique/`.
+- Owner decisions (2026-11-01):
+  - Keep the pricing page as it is.
+  - Add the child-safety lines next to booking and next to the packages.
+  - The doors stay, but "Your account" goes and Articles and Community come in.
+  - New features must be visible, not buried.
+  - Real reviews: a link to send to people, plus screenshots as proof.
+  - A hiring section, as large companies have, pointing to hr@watazawwado.academy.
+- NX-05 reviews (migration 20261101000006, applied to production):
+  - Admin `/dashboard/reviews` makes one-time links (`/review/<token>`, valid 60 days) to send on WhatsApp or by email.
+  - A family with an attended lesson can also write one review from the portal home; it shows "studied with us".
+  - The admin publishes. Declining needs a reason (spam, abuse, personal data, not about us), following RULES §3.6: no hiding bad reviews, no rewards.
+  - Screenshots of families' messages upload to a private bucket with a consent note and are shown through short signed links.
+  - Links, emails and phone numbers in a review are refused. The admin gets an on-site notice for each new review.
+  - On the home page, "What families say" appears only once there are 3 or more published reviews (or 3 screenshots). It shows the average, the "studied with us" badges and the line "we show every genuine review, good or bad, and never reward reviews".
+- Home, new order:
+  1. Hero, plus "You can sit in on any lesson" and a safety link.
+  2. Verse.
+  3. Two ways to learn.
+  4. "A week with Watazawwado": a ribbon timeline of the features around the lesson (lesson room slides, homework, today's review, recitations, the weekly parents' email, progress and certificates).
+  5. Family reviews.
+  6. Mission verse.
+  7. Doors: subjects, how it works, about, prices, articles, community, each with its own action label.
+  8. The first 3 FAQ questions, inline.
+  9. Closing CTA, with the WhatsApp button now in the brand palette.
+  10. "Teach with us": mailto hr@watazawwado.academy at `#careers`. It is also in the footer, replacing the duplicate "Pricing" link.
+- Pricing: one line under the packages with the safety facts and a link to /safety. Nothing else changed.
+- Checks:
+  - tsc clean; build passes; `test/nx-05-family-reviews.test.ts` plus the SEO/RTL tests pass 17/17; the detector finds 0 issues in the new files.
+  - Seen live: the link was made, a phone number was refused, the review was sent, the link was refused the second time, declining without a reason was refused, publishing worked, and the section appeared at 3 reviews.
+  - Home and admin pages checked at phone size, with no sideways scroll. Test reviews and links removed.
+- For the owner: create the mailbox hr@watazawwado.academy at the email provider. Until then, mail to it bounces.
+
 ## 2026-11-01 — Design pass, round 1: audit (impeccable) and the fixes it found
 - Audited public pages (English and Arabic, phone 390px and desktop 1440px, rendered with the impeccable detector), the student portal (12 pages) and the teacher dashboard (overview, bookings, students) at phone size with a probe for sideways overflow, tap targets, unnamed buttons and headings.
 - Score (impeccable audit, 0-4 each): accessibility 3, performance 3, theming 2, responsive 3, implementation integrity 3 = 14/20 (Good).

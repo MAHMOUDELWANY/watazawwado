@@ -50,6 +50,7 @@ const TermsPage = lazyWithReload(() => import('./components/public/terms/TermsPa
 const articlesModule = () => import('./components/public/articles/ArticlesPages');
 const ArticlesIndexPage = lazyWithReload(() => articlesModule().then((m) => ({ default: m.ArticlesIndexPage })));
 const ArticlePage = lazyWithReload(() => articlesModule().then((m) => ({ default: m.ArticlePage })));
+const WriteReviewPage = lazyWithReload(() => import('./components/public/reviews/WriteReviewPage').then((m) => ({ default: m.WriteReviewPage })));
 const LAZY_PUBLIC_PAGES: Record<string, { preload: () => Promise<unknown> }> = {
   '/about': AboutPage, '/learning': LearningPage, '/how-it-works': HowItWorksPage, '/pricing': PricingPage,
   '/faq': FAQPage, '/privacy': PrivacyPolicyPage, '/safety': SafetyPage, '/terms': TermsPage,
@@ -108,6 +109,7 @@ export function AppRoutes() {
             <Route path="/community" element={<CommunityPage />} />
             <Route path="/articles" element={<ArticlesIndexPage />} />
             <Route path="/articles/:slug" element={<ArticlePage />} />
+            <Route path="/review/:token" element={<WriteReviewPage />} />
             {/* The same public pages in Arabic under /ar (English, the default, keeps the plain paths). */}
             <Route path="/ar" element={<PublicHomepage />} />
             <Route path="/ar/get-started" element={<PublicHomepage />} />
@@ -122,6 +124,7 @@ export function AppRoutes() {
             <Route path="/ar/community" element={<CommunityPage />} />
             <Route path="/ar/articles" element={<ArticlesIndexPage />} />
             <Route path="/ar/articles/:slug" element={<ArticlePage />} />
+            <Route path="/ar/review/:token" element={<WriteReviewPage />} />
           </Route>
 
           {/* Authenticated and Special Routes */}
